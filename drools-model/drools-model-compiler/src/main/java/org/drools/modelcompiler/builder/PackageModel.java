@@ -16,9 +16,11 @@
 
 package org.drools.modelcompiler.builder;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -36,6 +38,7 @@ import org.drools.javaparser.printer.PrettyPrinter;
 import org.drools.javaparser.printer.PrettyPrinterConfiguration;
 import org.drools.model.Model;
 import org.drools.modelcompiler.builder.generator.DRLExprIdGenerator;
+import org.drools.modelcompiler.builder.generator.ModelGenerator;
 
 public class PackageModel {
 
@@ -46,6 +49,8 @@ public class PackageModel {
     private Map<String, MethodDeclaration> ruleMethods = new HashMap<>();
 
     private Map<String, MethodDeclaration> queryMethods = new HashMap<>();
+
+    private Map<String, List<ModelGenerator.QueryParameter>> queryVariables = new HashMap<>();
 
     private DRLExprIdGenerator exprIdGenerator;
 
@@ -72,6 +77,19 @@ public class PackageModel {
 
     public void putQueryMethod(String methodName, MethodDeclaration queryMethod) {
         this.queryMethods.put(methodName, queryMethod);
+    }
+
+    public MethodDeclaration getQueryMethod(String key) {
+        return queryMethods.get(key);
+    }
+
+    public void putQueryVariable(String queryName, ModelGenerator.QueryParameter qp) {
+        this.queryVariables.computeIfAbsent(queryName, k -> new ArrayList<>());
+        this.queryVariables.get(queryName).add(qp);
+    }
+
+    public List<ModelGenerator.QueryParameter> queryVariables(String queryName) {
+        return this.queryVariables.get(queryName);
     }
 
     public String getVarsSource() {

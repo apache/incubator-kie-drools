@@ -703,7 +703,6 @@ public class CompilerTest {
     }
 
     @Test
-    @Ignore
     public void testQueryOneArgument() {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -724,7 +723,6 @@ public class CompilerTest {
     }
 
     @Test
-    @Ignore("DSL generation to be implemented")
     public void testQueryInRule() {
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +
@@ -751,7 +749,6 @@ public class CompilerTest {
     }
 
     @Test
-    @Ignore("DSL generation to be implemented")
     public void testQueryInRuleWithDeclaration() {
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +
