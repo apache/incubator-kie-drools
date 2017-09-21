@@ -42,6 +42,8 @@ import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.XStream;
 
+import static org.kie.internal.xstream.XStreamUtils.createXStream;
+
 /**
  * Asynchronous log producer that puts audit log events into JMS queue.
  * It expects to have following objects available before it is fully operational:
@@ -170,7 +172,7 @@ public class AsyncAuditLogProducer extends AbstractAuditLogger {
             queueConnection = connectionFactory.createConnection();
             queueSession = queueConnection.createSession(transacted, Session.AUTO_ACKNOWLEDGE);
            
-            XStream xstream = new XStream();
+            XStream xstream = createXStream();
             String[] voidDeny = {"void.class", "Void.class"};
             xstream.denyTypes(voidDeny);
             String eventXml = xstream.toXML(messageContent);

@@ -19,10 +19,14 @@ package org.jbpm.process.core.datatype.impl.type;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-
-import org.jbpm.process.core.datatype.DataType;
+import java.util.Map;
 
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.security.ExplicitTypePermission;
+import org.drools.core.common.ProjectClassLoader;
+import org.jbpm.process.core.datatype.DataType;
+
+import static org.kie.internal.xstream.XStreamUtils.createXStream;
 
 /**
  * Representation of an object datatype.
@@ -88,19 +92,29 @@ public class ObjectDataType implements DataType {
     }
 
     public Object readValue(String value) {
-        XStream xstream = new XStream();
-        if (classLoader != null) {
-            xstream.setClassLoader(classLoader);
-        }
-        return xstream.fromXML(value);
+        return getXStream().fromXML(value);
     }
 
     public String writeValue(Object value) {
-        XStream xstream = new XStream();
+        return getXStream().toXML(value);
+    }
+
+    private XStream getXStream() {
+        XStream xstream = createXStream();
         if (classLoader != null) {
             xstream.setClassLoader(classLoader);
+            if (classLoader instanceof ProjectClassLoader ) {
+                Map<String, byte[]> store = ((ProjectClassLoader) classLoader).getStore();
+                if (store != null) {
+                    String[] classes = store.keySet().stream()
+                                            .map( s -> s.replace( '/', '.' ) )
+                                            .map( s -> s.endsWith( ".class" ) ? s.substring( 0, s.length() - ".class".length() ) : s )
+                                            .toArray( String[]::new );
+                    xstream.addPermission( new ExplicitTypePermission( classes ) );
+                }
+            }
         }
-        return xstream.toXML(value);
+        return xstream;
     }
 
     public String getStringType() {

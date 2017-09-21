@@ -36,6 +36,8 @@ import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.XStream;
 
+import static org.kie.internal.xstream.XStreamUtils.createXStream;
+
 public class DeploymentStore {
 	
 	private static final Integer STATE_DISABLED = 0;
@@ -46,7 +48,7 @@ public class DeploymentStore {
 	
 	private static final Logger logger = LoggerFactory.getLogger(DeploymentStore.class);
 
-	private final XStream xstream = new XStream();
+	private final XStream xstream = createXStream();
 	
 	
 	private TransactionalCommandService commandService;

@@ -31,6 +31,8 @@ import org.jbpm.process.audit.ProcessInstanceLog;
 
 import com.thoughtworks.xstream.XStream;
 
+import static org.kie.internal.xstream.XStreamUtils.createXStream;
+
 /**
  * Asynchronous audit event receiver. Receives messages from JMS queue
  * that it is attached to as <code>MessageListener</code>.
@@ -68,7 +70,7 @@ public class AsyncAuditLogReceiver implements MessageListener {
             try {
                 String messageContent = textMessage.getText();
                 Integer eventType = textMessage.getIntProperty("EventType");
-                XStream xstream = new XStream();
+                XStream xstream = createXStream();
                 String[] voidDeny = {"void.class", "Void.class"};
                 xstream.denyTypes(voidDeny);
                 Object event = xstream.fromXML(messageContent);
