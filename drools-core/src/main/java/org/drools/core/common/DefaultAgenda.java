@@ -1387,7 +1387,7 @@ public class DefaultAgenda
     }
 
     private void waitInactive() {
-        while ( currentState != ExecutionState.INACTIVE && currentState != ExecutionState.INACTIVE_ON_FIRING_UNTIL_HALT ) {
+        while ( currentState != ExecutionState.INACTIVE && currentState != ExecutionState.INACTIVE_ON_FIRING_UNTIL_HALT && currentState != ExecutionState.DISPOSED ) {
             try {
                 stateMachineLock.wait();
             } catch (InterruptedException e) {
@@ -1440,17 +1440,19 @@ public class DefaultAgenda
     }
 
     public void activate() {
-        immediateHalt();
-        if (wasFiringUntilHalt) {
-            wasFiringUntilHalt = false;
-            fireUntilHalt();
+        if (currentState.isAlive()) {
+            immediateHalt();
+            if (wasFiringUntilHalt) {
+                wasFiringUntilHalt = false;
+                fireUntilHalt();
+            }
         }
     }
 
     public void deactivate() {
         synchronized (stateMachineLock) {
             pauseFiringUntilHalt();
-            if ( currentState != ExecutionState.DEACTIVATED ) {
+            if ( currentState != ExecutionState.DEACTIVATED && currentState.isAlive() ) {
                 waitAndEnterExecutionState( ExecutionState.DEACTIVATED );
             }
         }
@@ -1458,6 +1460,9 @@ public class DefaultAgenda
 
     public boolean tryDeactivate() {
         synchronized (stateMachineLock) {
+            if ( !currentState.isAlive() ) {
+                return true;
+            }
             pauseFiringUntilHalt();
             if ( currentState == ExecutionState.INACTIVE || currentState == ExecutionState.INACTIVE_ON_FIRING_UNTIL_HALT ) {
                 setCurrentState( ExecutionState.DEACTIVATED );
@@ -1518,7 +1523,9 @@ public class DefaultAgenda
         if ( log.isTraceEnabled() ) {
             log.trace("State was {} is now {}", currentState, state);
         }
-        currentState = state;
+        if (currentState != ExecutionState.DISPOSED) {
+            currentState = state;
+        }
     }
 
     public boolean dispose() {
@@ -1531,6 +1538,7 @@ public class DefaultAgenda
                 workingMemory.notifyWaitOnRest();
             }
             waitAndEnterExecutionState( ExecutionState.DISPOSED );
+            stateMachineLock.notify();
             return true;
         }
     }
