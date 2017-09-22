@@ -144,17 +144,27 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
                 phaseScope.setLastCompletedStepScope(stepScope);
             }
         } finally {
-            // If a partition thread throws an Exception, it is propagated here
-            // but the other partition threads won't finish any time soon, so we need to ask them to terminate
-            if (childThreadPlumbingTermination.terminateChildren()) {
-                logger.info("Shutting down thread pool.");
+            if (Thread.interrupted()) {
+                // 1a. If current thread is interrupted, propagate interrupt signal to children by initiating
+                // abrupt shutdown.
                 executor.shutdownNow();
             } else {
+                // 1b. Otherwise, initiate graceful shutdown of the executor. This allows partition solvers to finish
+                // solving upon detecting the termination issued in the next step (2). Shutting down the executor
+                // service is important because the JVM cannot exit until all nondaemon threads have terminated.
+                executor.shutdown();
+            }
+
+            // 2. In case on of the partition threads threw an Exception, it is propagated here
+            // but the other partition threads are not aware of the failure and may continue solving for a long time,
+            // so we need to ask them to terminate. In case no exception was thrown, this does nothing.
+            if (!childThreadPlumbingTermination.terminateChildren()) {
                 logger.info("Termination of children wasn't sucessful.");
             }
+
+            // 3. Finally, wait until the executor finishes shutting down
             try {
-                // First wait for solvers to terminate voluntarily (because we have just issued children termination)
-                final int awaitingSeconds = 10; // TODO revert back to 1 second
+                final int awaitingSeconds = 1;
                 if (!executor.awaitTermination(awaitingSeconds, TimeUnit.SECONDS)) {
                     // Some solvers refused to complete. Busy threads will be interrupted in the finally block
                     logger.warn("{}Partitioned Search threadPoolExecutor didn't terminate within timeout ({} second).",
@@ -167,6 +177,7 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
                 Thread.currentThread().interrupt();
                 throw new IllegalStateException("Thread pool shutdown was interrupted.", e);
             } finally {
+                // Initiate an abrupt shutdown
                 executor.shutdownNow();
             }
         }
