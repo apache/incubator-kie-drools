@@ -17,7 +17,9 @@ package org.jbpm.process.workitem.core.util;
 
 import java.io.OutputStream;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.processing.AbstractProcessor;
@@ -25,6 +27,7 @@ import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
 import javax.tools.FileObject;
 import javax.tools.StandardLocation;
@@ -38,7 +41,7 @@ public class WidProcessor extends AbstractProcessor {
         super();
     }
 
-    private Map<String, Wid> processingResults;
+    private Map<String, List<Wid>> processingResults;
     private boolean resetResults = true;
 
     private static final String WID_ST_TEMPLATE = "[\n" +
@@ -88,12 +91,23 @@ public class WidProcessor extends AbstractProcessor {
 
             if (element instanceof TypeElement) {
                 TypeElement typeElement = (TypeElement) element;
+
                 processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE,
                                                          MessageFormat.format("Wid Processor : processing class {0}.",
                                                                               typeElement.asType().toString()));
 
                 processingResults.put(typeElement.asType().toString(),
-                                      typeElement.getAnnotation(Wid.class));
+                                      new ArrayList<>());
+
+                if (typeElement.getInterfaces() != null && typeElement.getInterfaces().size() > 0) {
+                    for (TypeMirror mirror : typeElement.getInterfaces()) {
+                        if (mirror.getAnnotation(Wid.class) != null) {
+                            processingResults.get(typeElement.asType().toString()).add(mirror.getAnnotation(Wid.class));
+                        }
+                    }
+                }
+
+                processingResults.get(typeElement.asType().toString()).add(typeElement.getAnnotation(Wid.class));
             }
         }
 
@@ -145,12 +159,12 @@ public class WidProcessor extends AbstractProcessor {
     }
 
     // for testing
-    public Map<String, Wid> getProcessingResults() {
+    public Map<String, List<Wid>> getProcessingResults() {
         return processingResults;
     }
 
     // for testing
-    public void setProcessingResults(Map<String, Wid> processingResults) {
+    public void setProcessingResults(Map<String, List<Wid>> processingResults) {
         this.processingResults = processingResults;
     }
 }

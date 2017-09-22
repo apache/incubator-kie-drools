@@ -16,6 +16,7 @@
 package org.jbpm.process.workitem.core.util;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class WidInfo {
@@ -31,40 +32,61 @@ public class WidInfo {
     private Map<String, InternalWidParamsAndResults> results;
     private Map<String, InternalWidMavenDependencies> mavenDepends;
 
-    public WidInfo(Wid wid) {
-        this.widfile = wid.widfile();
-        this.name = wid.name();
-        this.displayName = wid.displayName();
-        this.category = wid.category();
-        this.icon = wid.icon();
-        this.description = wid.description();
-        this.defaultHandler = wid.defaultHandler();
+    public WidInfo(List<Wid> wids) {
         this.parameters = new HashMap<>();
-        if (wid.parameters().length > 0) {
-            for (WidParameter widParam : wid.parameters()) {
-                this.parameters.put(widParam.name(),
-                                    new InternalWidParamsAndResults(widParam.name(),
-                                                                    widParam.type()));
-            }
-        }
-
         this.results = new HashMap<>();
-        if (wid.results().length > 0) {
-            for (WidResult widResult : wid.results()) {
-                this.results.put(widResult.name(),
-                                 new InternalWidParamsAndResults(widResult.name(),
-                                                                 widResult.type()));
+        this.mavenDepends = new HashMap<>();
+
+        // go over all @Wid and add/overwrite parameters
+        for (Wid wid : wids) {
+            this.widfile = setParamValue(this.widfile,
+                                         wid.widfile());
+            this.name = setParamValue(this.name,
+                                      wid.name());
+            this.displayName = setParamValue(this.displayName,
+                                             wid.displayName());
+            this.category = setParamValue(this.category,
+                                          wid.category());
+            this.icon = setParamValue(this.icon,
+                                      wid.icon());
+            this.description = setParamValue(this.description,
+                                             wid.description());
+            this.defaultHandler = setParamValue(this.defaultHandler,
+                                                wid.defaultHandler());
+
+            if (wid.parameters().length > 0) {
+                for (WidParameter widParam : wid.parameters()) {
+                    this.parameters.put(widParam.name(),
+                                        new InternalWidParamsAndResults(widParam.name(),
+                                                                        widParam.type()));
+                }
+            }
+
+            if (wid.results().length > 0) {
+                for (WidResult widResult : wid.results()) {
+                    this.results.put(widResult.name(),
+                                     new InternalWidParamsAndResults(widResult.name(),
+                                                                     widResult.type()));
+                }
+            }
+
+            if (wid.mavenDepends().length > 0) {
+                for (WidMavenDepends widMavenDepends : wid.mavenDepends()) {
+                    this.mavenDepends.put(widMavenDepends.group() + "." + widMavenDepends.artifact(),
+                                          new InternalWidMavenDependencies(widMavenDepends.group(),
+                                                                           widMavenDepends.artifact(),
+                                                                           widMavenDepends.version()));
+                }
             }
         }
+    }
 
-        this.mavenDepends = new java.util.HashMap<>();
-        if (wid.mavenDepends().length > 0) {
-            for (WidMavenDepends widMavenDepends : wid.mavenDepends()) {
-                this.mavenDepends.put(widMavenDepends.group() + "." + widMavenDepends.artifact() + "." + widMavenDepends.version(),
-                                      new InternalWidMavenDependencies(widMavenDepends.group(),
-                                                                       widMavenDepends.artifact(),
-                                                                       widMavenDepends.version()));
-            }
+    private String setParamValue(String origVal,
+                                 String newVal) {
+        if (newVal != null && !newVal.isEmpty()) {
+            return newVal;
+        } else {
+            return (origVal == null || origVal.isEmpty()) ? "" : origVal;
         }
     }
 
@@ -96,7 +118,7 @@ public class WidInfo {
         }
     }
 
-    private class InternalWidMavenDependencies {
+    public class InternalWidMavenDependencies {
 
         private String group;
         private String artifact;
@@ -207,11 +229,11 @@ public class WidInfo {
         this.results = results;
     }
 
-    public java.util.Map<String, org.jbpm.process.workitem.core.util.WidInfo.InternalWidMavenDependencies> getMavenDepends() {
+    public Map<String, WidInfo.InternalWidMavenDependencies> getMavenDepends() {
         return mavenDepends;
     }
 
-    public void setMavenDepends(java.util.Map<String, org.jbpm.process.workitem.core.util.WidInfo.InternalWidMavenDependencies> mavenDepends) {
+    public void setMavenDepends(Map<String, WidInfo.InternalWidMavenDependencies> mavenDepends) {
         this.mavenDepends = mavenDepends;
     }
 }
