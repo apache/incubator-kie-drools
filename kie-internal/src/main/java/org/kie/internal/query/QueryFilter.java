@@ -19,6 +19,7 @@ package org.kie.internal.query;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -28,7 +29,7 @@ import org.kie.internal.jaxb.StringKeyObjectValueMapXmlAdapter;
 public class QueryFilter extends QueryContext {
 
     private static final long serialVersionUID = 2830463093685095275L;
-    
+
     @XmlElement
     @XmlSchemaType(name="string")
     private String language ="";

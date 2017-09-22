@@ -18,6 +18,7 @@ package org.kie.internal.jaxb;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 /**

@@ -18,6 +18,7 @@ package org.kie.api.management;
 
 import java.util.Date;
 import java.util.Map;
+
 import javax.management.ObjectName;
 
 /**
@@ -73,8 +74,8 @@ public interface GenericKieSessionMonitoringMXBean {
      * @return the timestamp of the last stats reset
      */
     Date getLastReset();
-    
-    
+
+
     public static interface IAgendaStatsData {
         long getMatchesFired();
         long getMatchesCreated();
@@ -85,20 +86,20 @@ public interface GenericKieSessionMonitoringMXBean {
     /**
      * Returns the statistics for a single rule in this session,
      * like number of matches created, cancelled and fired as well as firing time.
-     *  
+     *
      * @param ruleName the name of the rule for which statistics are requested.
-     * 
+     *
      * @return the statistics for a single rule in this session
      */
     IAgendaStatsData getStatsForRule(String ruleName);
     Map<String, IAgendaStatsData> getStatsByRule();
 
-    
+
     long getTotalProcessInstancesStarted();
-    
+
     long getTotalProcessInstancesCompleted();
-    
-    
+
+
     public static interface IGlobalProcessStatsData {
         long getProcessInstancesStarted();
         long getProcessInstancesCompleted();
@@ -109,10 +110,10 @@ public interface GenericKieSessionMonitoringMXBean {
     }
     IProcessStatsData getStatsForProcess(String processId);
     Map<String,IProcessStatsData> getStatsByProcess();
-    
-    
+
+
     String getKieSessionName();
-    
+
     /**
      * Return the total number of KieSession monitored by name by this MBean.
      * If the type of KieSession monitored is Stateful, this is the total count of Stateful KieSession(s) currently live under the specified KieSession name.
