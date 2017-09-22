@@ -30,7 +30,7 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
  * @see AndCompositeTermination
  * @see OrCompositeTermination
  */
-public abstract class AbstractCompositeTermination extends AbstractTermination implements Termination {
+public abstract class AbstractCompositeTermination extends AbstractTermination {
 
     protected final List<Termination> terminationList;
 
