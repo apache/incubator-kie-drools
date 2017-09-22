@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 /**
  * This a Sample Implementation of the DocumentStorageService saves the uploaded files on the File System on a folder (by default /docs)
  * and return the complete path to the file that will be stored in the form field property.
- *
+ * <p>
  * Check that the user that is running the app has write permissions on the storage folder.
  */
 public class DocumentStorageServiceImpl implements DocumentStorageService {
@@ -46,10 +46,11 @@ public class DocumentStorageServiceImpl implements DocumentStorageService {
     /**
      * This is the root folder where the files are going to be stored, please check that the user that is running the app has permissions to read/write inside
      */
-    private String storagePath = System.getProperty("org.jbpm.document.storage", ".docs");
+    private String storagePath = System.getProperty("org.jbpm.document.storage",
+                                                    ".docs");
     private File storageFile;
 
-    public DocumentStorageServiceImpl( String storagePath ) {
+    public DocumentStorageServiceImpl(String storagePath) {
         this.storagePath = storagePath;
         this.storageFile = new File(storagePath);
     }
@@ -59,36 +60,37 @@ public class DocumentStorageServiceImpl implements DocumentStorageService {
     }
 
     @Override
-    public Document buildDocument( String name, long size, Date lastModified, Map<String, String> params ) {
+    public Document buildDocument(String name,
+                                  long size,
+                                  Date lastModified,
+                                  Map<String, String> params) {
         String identifier = generateUniquePath();
 
-        String appURL = params.get("app.url");
-
-        if (appURL == null) appURL = "";
-
-        if (!appURL.isEmpty() && !appURL.endsWith("/")) appURL += "/";
-
-        // Generating a default download link, don't use this donwloader in real environments use it as an example
-        String link = appURL + "Controller?_fb=fdch&_fp=download&content=" + identifier;
-
-        return new DocumentImpl( identifier, name, size, lastModified, link );
+        return new DocumentImpl(identifier,
+                                name,
+                                size,
+                                lastModified);
     }
 
     @Override
-    public Document saveDocument(Document document, byte[] content) {
-        
+    public Document saveDocument(Document document,
+                                 byte[] content) {
+
         if (StringUtils.isEmpty(document.getIdentifier())) {
             document.setIdentifier(generateUniquePath());
         }
 
-        File destination = getFileByPath( document.getIdentifier() + File.separator + document.getName() );
+        File destination = getFileByPath(document.getIdentifier() + File.separator + document.getName());
 
         try {
-            FileUtils.writeByteArrayToFile(destination, content);
+            FileUtils.writeByteArrayToFile(destination,
+                                           content);
             destination.getParentFile().setLastModified(document.getLastModified().getTime());
             destination.setLastModified(document.getLastModified().getTime());
         } catch (IOException e) {
-            log.error("Error writing file {}: {}", document.getName(), e);
+            log.error("Error writing file {}: {}",
+                      document.getName(),
+                      e);
         }
 
         return document;
@@ -96,16 +98,21 @@ public class DocumentStorageServiceImpl implements DocumentStorageService {
 
     @Override
     public Document getDocument(String id) {
-        File file = getFileByPath( id );
+        File file = getFileByPath(id);
 
         if (file.exists() && !file.isFile() && !ArrayUtils.isEmpty(file.listFiles())) {
             try {
                 File destination = file.listFiles()[0];
-                Document doc = new DocumentImpl(id, destination.getName(), destination.length(), new Date(destination.lastModified()));
+                Document doc = new DocumentImpl(id,
+                                                destination.getName(),
+                                                destination.length(),
+                                                new Date(destination.lastModified()));
                 doc.setContent(FileUtils.readFileToByteArray(destination));
                 return doc;
             } catch (IOException e) {
-                log.error("Error loading document '{}': {}", id, e);
+                log.error("Error loading document '{}': {}",
+                          id,
+                          e);
             }
         }
 
@@ -114,7 +121,9 @@ public class DocumentStorageServiceImpl implements DocumentStorageService {
 
     @Override
     public boolean deleteDocument(String id) {
-        if (StringUtils.isEmpty(id)) return true;
+        if (StringUtils.isEmpty(id)) {
+            return true;
+        }
         return deleteDocument(getDocument(id));
     }
 
@@ -122,7 +131,9 @@ public class DocumentStorageServiceImpl implements DocumentStorageService {
     public boolean deleteDocument(Document doc) {
         if (doc != null) {
             File rootDoc = getDocumentContent(doc);
-            if (!ArrayUtils.isEmpty( rootDoc.listFiles() )) return deleteFile( rootDoc.listFiles()[0] );
+            if (!ArrayUtils.isEmpty(rootDoc.listFiles())) {
+                return deleteFile(rootDoc.listFiles()[0]);
+            }
             return deleteFile(rootDoc);
         }
         return true;
@@ -130,7 +141,7 @@ public class DocumentStorageServiceImpl implements DocumentStorageService {
 
     public File getDocumentContent(Document doc) {
         if (doc != null) {
-            return getFileByPath( doc.getIdentifier() );
+            return getFileByPath(doc.getIdentifier());
         }
         return null;
     }
@@ -152,7 +163,8 @@ public class DocumentStorageServiceImpl implements DocumentStorageService {
                 }
             }
         } catch (Exception e) {
-            log.error("Error deleting file: ", e);
+            log.error("Error deleting file: ",
+                      e);
             return false;
         }
         return true;
@@ -168,35 +180,38 @@ public class DocumentStorageServiceImpl implements DocumentStorageService {
         do {
             destinationPath = UUID.randomUUID().toString();
 
-            parent = getFileByPath( destinationPath );
-
-        } while ( parent.exists() );
+            parent = getFileByPath(destinationPath);
+        } while (parent.exists());
 
         return destinationPath;
     }
 
-    protected File getFileByPath( String path ) {
-        return new File( storagePath + File.separator + path );
+    protected File getFileByPath(String path) {
+        return new File(storagePath + File.separator + path);
     }
 
     @Override
-    public List<Document> listDocuments(Integer page, Integer pageSize) {
+    public List<Document> listDocuments(Integer page,
+                                        Integer pageSize) {
         List<Document> listOfDocs = new ArrayList<Document>();
-        
+
         int startIndex = page * pageSize;
         int endIndex = startIndex + pageSize;
-        
+
         File[] documents = storageFile.listFiles();
-        
+
         // make sure the endIndex is not bigger then amount of files
         if (documents.length < endIndex) {
             endIndex = documents.length;
         }
-        Arrays.sort(documents, new Comparator<File>() {
-            public int compare(File f1, File f2) {
-                return Long.compare(f1.lastModified(), f2.lastModified());
-            }
-        });
+        Arrays.sort(documents,
+                    new Comparator<File>() {
+                        public int compare(File f1,
+                                           File f2) {
+                            return Long.compare(f1.lastModified(),
+                                                f2.lastModified());
+                        }
+                    });
         for (int i = startIndex; i < endIndex; i++) {
             Document doc = getDocument(documents[i].getName());
             listOfDocs.add(doc);
