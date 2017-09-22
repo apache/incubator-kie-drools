@@ -153,13 +153,20 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
         } finally {
             // If a partition thread throws an Exception, it is propagated here
             // but the other partition threads won't finish any time soon, so we need to ask them to terminate
-            childThreadPlumbingTermination.terminateChildren();
+            if (childThreadPlumbingTermination.terminateChildren()) {
+                logger.info("Shutting down thread pool.");
+                threadPoolExecutor.shutdownNow();
+            } else {
+                logger.info("Termination of children wasn't sucessful.");
+            }
             try {
                 // First wait for solvers to terminate voluntarily (because we have just issued children termination)
-                if (!threadPoolExecutor.awaitTermination(1, TimeUnit.SECONDS)) {
+                final int awaitingSeconds = 10; // TODO revert back to 1 second
+                if (!threadPoolExecutor.awaitTermination(awaitingSeconds, TimeUnit.SECONDS)) {
                     // Some solvers refused to complete. Busy threads will be interrupted in the finally block
-                    logger.warn("{}Partitioned Search threadPoolExecutor didn't terminate within timeout (1 second).",
-                            logIndentation);
+                    logger.warn("{}Partitioned Search threadPoolExecutor didn't terminate within timeout ({} second).",
+                                logIndentation,
+                                awaitingSeconds);
                 }
             } catch (InterruptedException e) {
                 // Interrupted while waiting for thread pool termination. Busy threads will be interrupted

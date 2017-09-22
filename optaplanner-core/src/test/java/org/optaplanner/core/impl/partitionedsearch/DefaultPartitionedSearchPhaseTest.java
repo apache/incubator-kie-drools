@@ -40,8 +40,12 @@ import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 public class DefaultPartitionedSearchPhaseTest {
 
@@ -133,4 +137,60 @@ public class DefaultPartitionedSearchPhaseTest {
 
     }
 
+    @Test
+    public void terminateEarly() {
+        // TODO?
+    }
+
+    @Test
+    public void exceptionPropagation() {
+        final int partSize = 7;
+        final int partCount = 3;
+
+        TestdataSolution solution = createSolution(partCount * partSize - 1, 100);
+        solution.getEntityList().add(new FaultyEntity("XYZ"));
+        assertEquals(partSize * partCount, solution.getEntityList().size());
+
+        SolverFactory<TestdataSolution> solverFactory = createSolverFactory();
+        setPartSize(solverFactory.getSolverConfig(), partSize);
+        DefaultSolver<TestdataSolution> solver = (DefaultSolver<TestdataSolution>) solverFactory.buildSolver();
+        try {
+            solver.solve(solution);
+            fail("Test failed");
+        } catch (IllegalStateException e) {
+            Throwable t = e.getCause();
+            while (t != null) {
+                if (t instanceof PartionSolverInterruptedException) {
+                    break;
+                } else {
+                    t = t.getCause();
+                }
+            }
+            assertNotNull(t);
+        }
+    }
+
+    public static class FaultyEntity extends TestdataEntity {
+
+        private static final Logger logger = LoggerFactory.getLogger(FaultyEntity.class);
+
+        public FaultyEntity() {
+            // needed for cloning
+        }
+
+        public FaultyEntity(String code) {
+            super(code);
+        }
+
+        @Override
+        public void setValue(TestdataValue value) {
+            super.setValue(value);
+            logger.info("SOLVER FAULT");
+            throw new PartionSolverInterruptedException();
+        }
+    }
+
+    public static class PartionSolverInterruptedException extends RuntimeException {
+
+    }
 }
