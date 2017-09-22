@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.partitionedsearch;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadFactory;
@@ -102,15 +103,7 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
         int partCount = partList.size();
         phaseScope.setPartCount(partCount);
         phaseStarted(phaseScope);
-        ThreadPoolExecutor threadPoolExecutor = createThreadPoolExecutor();
-        if (threadPoolExecutor.getMaximumPoolSize() < partCount) {
-            throw new IllegalStateException(
-                    "The threadPoolExecutor's maximumPoolSize (" + threadPoolExecutor.getMaximumPoolSize()
-                    + ") is less than the partCount (" + partCount + "), so some partitions will starve.\n"
-                    + "Normally this impossible because the threadPoolExecutor should be unbounded:"
-                    + " Use runnablePartThreadLimit (" + runnablePartThreadLimit
-                    + ") instead to avoid CPU hogging and live locks.");
-        }
+        ExecutorService executor = createThreadPoolExecutor(partCount);
         ChildThreadPlumbingTermination childThreadPlumbingTermination = new ChildThreadPlumbingTermination();
         PartitionQueue<Solution_> partitionQueue = new PartitionQueue<>(partCount);
         Semaphore runnablePartThreadSemaphore
@@ -128,7 +121,7 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
                     move = move.rebase(parentScoreDirector);
                     partitionQueue.addMove(partIndex, move);
                 });
-                threadPoolExecutor.submit(() -> {
+                executor.submit(() -> {
                     try {
                         partitionSolver.solve(part);
                         partitionQueue.addFinish(partIndex);
@@ -155,14 +148,14 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
             // but the other partition threads won't finish any time soon, so we need to ask them to terminate
             if (childThreadPlumbingTermination.terminateChildren()) {
                 logger.info("Shutting down thread pool.");
-                threadPoolExecutor.shutdownNow();
+                executor.shutdownNow();
             } else {
                 logger.info("Termination of children wasn't sucessful.");
             }
             try {
                 // First wait for solvers to terminate voluntarily (because we have just issued children termination)
                 final int awaitingSeconds = 10; // TODO revert back to 1 second
-                if (!threadPoolExecutor.awaitTermination(awaitingSeconds, TimeUnit.SECONDS)) {
+                if (!executor.awaitTermination(awaitingSeconds, TimeUnit.SECONDS)) {
                     // Some solvers refused to complete. Busy threads will be interrupted in the finally block
                     logger.warn("{}Partitioned Search threadPoolExecutor didn't terminate within timeout ({} second).",
                                 logIndentation,
@@ -174,18 +167,29 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
                 Thread.currentThread().interrupt();
                 throw new IllegalStateException("Thread pool shutdown was interrupted.", e);
             } finally {
-                threadPoolExecutor.shutdownNow();
+                executor.shutdownNow();
             }
         }
         phaseEnded(phaseScope);
     }
 
-    private ThreadPoolExecutor createThreadPoolExecutor() {
+    private ExecutorService createThreadPoolExecutor(int partCount) {
         // Based on Executors.newCachedThreadPool(...)
-        return new ThreadPoolExecutor(0, Integer.MAX_VALUE,
+        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(0, Integer.MAX_VALUE,
                 60L, TimeUnit.SECONDS,
                 new SynchronousQueue<>(),
                 threadFactory);
+
+        if (threadPoolExecutor.getMaximumPoolSize() < partCount) {
+            throw new IllegalStateException(
+                    "The threadPoolExecutor's maximumPoolSize (" + threadPoolExecutor.getMaximumPoolSize()
+                    + ") is less than the partCount (" + partCount + "), so some partitions will starve.\n"
+                    + "Normally this impossible because the threadPoolExecutor should be unbounded:"
+                    + " Use runnablePartThreadLimit (" + runnablePartThreadLimit
+                    + ") instead to avoid CPU hogging and live locks.");
+        }
+
+        return threadPoolExecutor;
     }
 
     public PartitionSolver<Solution_> buildPartitionSolver(
