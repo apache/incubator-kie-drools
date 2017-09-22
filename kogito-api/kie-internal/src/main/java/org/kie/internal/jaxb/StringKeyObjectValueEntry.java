@@ -16,6 +16,7 @@
 package org.kie.internal.jaxb;
 
 import java.util.Map.Entry;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
