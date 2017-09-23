@@ -211,50 +211,57 @@ public class WebServiceWorkItemHandler extends AbstractLogOrThrowWorkItemHandler
     }
 
     @SuppressWarnings("unchecked")
-    protected synchronized Client getWSClient(WorkItem workItem,
+    protected Client getWSClient(WorkItem workItem,
                                               String interfaceRef) {
         if (clients.containsKey(interfaceRef)) {
             return clients.get(interfaceRef);
         }
 
-        String importLocation = (String) workItem.getParameter("Url");
-        String importNamespace = (String) workItem.getParameter("Namespace");
-        if (importLocation != null && importLocation.trim().length() > 0
-                && importNamespace != null && importNamespace.trim().length() > 0) {
-            Client client = getDynamicClientFactory().createClient(importLocation,
-                                                                   new QName(importNamespace,
-                                                                             interfaceRef),
-                                                                   getInternalClassLoader(),
-                                                                   null);
-            clients.put(interfaceRef,
-                        client);
-            return client;
-        }
+        synchronized (this) {
 
-        long processInstanceId = ((WorkItemImpl) workItem).getProcessInstanceId();
-        WorkflowProcessImpl process = ((WorkflowProcessImpl) ksession.getProcessInstance(processInstanceId).getProcess());
-        List<Bpmn2Import> typedImports = (List<Bpmn2Import>) process.getMetaData("Bpmn2Imports");
+        	if (clients.containsKey(interfaceRef)) {
+            	return clients.get(interfaceRef);
+        	}
 
-        if (typedImports != null) {
-            Client client = null;
-            for (Bpmn2Import importObj : typedImports) {
-                if (WSDL_IMPORT_TYPE.equalsIgnoreCase(importObj.getType())) {
-                    try {
-                        client = getDynamicClientFactory().createClient(importObj.getLocation(),
-                                                                        new QName(importObj.getNamespace(),
-                                                                                  interfaceRef),
-                                                                        getInternalClassLoader(),
-                                                                        null);
-                        clients.put(interfaceRef,
-                                    client);
-                        return client;
-                    } catch (Exception e) {
-                        logger.error("Error when creating WS Client",
-                                     e);
-                        continue;
-                    }
-                }
-            }
+	        String importLocation = (String) workItem.getParameter("Url");
+	        String importNamespace = (String) workItem.getParameter("Namespace");
+	        if (importLocation != null && importLocation.trim().length() > 0
+	                && importNamespace != null && importNamespace.trim().length() > 0) {
+	            Client client = getDynamicClientFactory().createClient(importLocation,
+	                                                                   new QName(importNamespace,
+	                                                                             interfaceRef),
+	                                                                   getInternalClassLoader(),
+	                                                                   null);
+	            clients.put(interfaceRef,
+	                        client);
+	            return client;
+	        }
+
+	        long processInstanceId = ((WorkItemImpl) workItem).getProcessInstanceId();
+	        WorkflowProcessImpl process = ((WorkflowProcessImpl) ksession.getProcessInstance(processInstanceId).getProcess());
+	        List<Bpmn2Import> typedImports = (List<Bpmn2Import>) process.getMetaData("Bpmn2Imports");
+
+	        if (typedImports != null) {
+	            Client client = null;
+	            for (Bpmn2Import importObj : typedImports) {
+	                if (WSDL_IMPORT_TYPE.equalsIgnoreCase(importObj.getType())) {
+	                    try {
+	                        client = getDynamicClientFactory().createClient(importObj.getLocation(),
+	                                                                        new QName(importObj.getNamespace(),
+	                                                                                  interfaceRef),
+	                                                                        getInternalClassLoader(),
+	                                                                        null);
+	                        clients.put(interfaceRef,
+	                                    client);
+	                        return client;
+	                    } catch (Exception e) {
+	                        logger.error("Error when creating WS Client",
+	                                     e);
+	                        continue;
+	                    }
+	                }
+	            }
+	        }
         }
         return null;
     }
