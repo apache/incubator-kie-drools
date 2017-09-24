@@ -48,7 +48,7 @@ public class MovableChainedTrailingValueFilter<Solution_> implements SelectionFi
         if (trailingEntity == null || !entityDescriptor.matchesEntity(trailingEntity)) {
             return true;
         }
-        return entityDescriptor.getMovableEntitySelectionFilter().accept(scoreDirector, trailingEntity);
+        return entityDescriptor.getEffectiveMovableEntitySelectionFilter().accept(scoreDirector, trailingEntity);
     }
 
     protected SingletonInverseVariableSupply retrieveSingletonInverseVariableSupply(ScoreDirector<Solution_> scoreDirector) {

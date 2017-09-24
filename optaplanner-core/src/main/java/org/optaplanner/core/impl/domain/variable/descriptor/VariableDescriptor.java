@@ -36,6 +36,10 @@ public abstract class VariableDescriptor<Solution_> {
 
     protected List<ShadowVariableDescriptor<Solution_>> sinkVariableDescriptorList = new ArrayList<>(4);
 
+    // ************************************************************************
+    // Constructors and simple getters/setters
+    // ************************************************************************
+
     public VariableDescriptor(EntityDescriptor<Solution_> entityDescriptor, MemberAccessor variableMemberAccessor) {
         this.entityDescriptor = entityDescriptor;
         this.variableMemberAccessor = variableMemberAccessor;

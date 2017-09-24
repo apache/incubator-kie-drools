@@ -164,6 +164,10 @@ public class SolutionDescriptor<Solution_> {
     private final ConcurrentMap<Class<?>, EntityDescriptor<Solution_>> lowestEntityDescriptorCache = new ConcurrentHashMap<>();
     private LookUpStrategyResolver lookUpStrategyResolver = null;
 
+    // ************************************************************************
+    // Constructors and simple getters/setters
+    // ************************************************************************
+
     public SolutionDescriptor(Class<Solution_> solutionClass) {
         this.solutionClass = solutionClass;
         problemFactMemberAccessorMap = new LinkedHashMap<>();
@@ -653,7 +657,7 @@ public class SolutionDescriptor<Solution_> {
 
     public void afterAnnotationsProcessed(DescriptorPolicy descriptorPolicy) {
         for (EntityDescriptor<Solution_> entityDescriptor : entityDescriptorMap.values()) {
-            entityDescriptor.linkInheritedEntityDescriptors(descriptorPolicy);
+            entityDescriptor.linkEntityDescriptors(descriptorPolicy);
         }
         for (EntityDescriptor<Solution_> entityDescriptor : entityDescriptorMap.values()) {
             entityDescriptor.linkShadowSources(descriptorPolicy);

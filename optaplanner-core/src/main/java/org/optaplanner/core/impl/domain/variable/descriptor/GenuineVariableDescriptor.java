@@ -60,6 +60,10 @@ public class GenuineVariableDescriptor<Solution_> extends VariableDescriptor<Sol
     private SelectionSorter increasingStrengthSorter;
     private SelectionSorter decreasingStrengthSorter;
 
+    // ************************************************************************
+    // Constructors and simple getters/setters
+    // ************************************************************************
+
     public GenuineVariableDescriptor(EntityDescriptor<Solution_> entityDescriptor,
             MemberAccessor variableMemberAccessor) {
         super(entityDescriptor, variableMemberAccessor);
@@ -115,7 +119,7 @@ public class GenuineVariableDescriptor<Solution_> extends VariableDescriptor<Sol
                     + ") has a PlanningVariable annotated property (" + variableMemberAccessor.getName()
                     + ") with chained (" + chained + "), which is not compatible with nullable (" + nullable + ").");
         }
-        if (chained && entityDescriptor.hasMovableEntitySelectionFilter()) {
+        if (chained && entityDescriptor.hasEffectiveMovableEntitySelectionFilter()) {
             movableChainedTrailingValueFilter = new MovableChainedTrailingValueFilter(this);
         } else {
             movableChainedTrailingValueFilter = null;

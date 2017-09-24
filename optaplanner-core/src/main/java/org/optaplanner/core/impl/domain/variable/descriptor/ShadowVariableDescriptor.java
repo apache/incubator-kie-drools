@@ -33,6 +33,10 @@ public abstract class ShadowVariableDescriptor<Solution_> extends VariableDescri
 
     private int globalShadowOrder = Integer.MAX_VALUE;
 
+    // ************************************************************************
+    // Constructors and simple getters/setters
+    // ************************************************************************
+
     public ShadowVariableDescriptor(EntityDescriptor<Solution_> entityDescriptor,
             MemberAccessor variableMemberAccessor) {
         super(entityDescriptor, variableMemberAccessor);

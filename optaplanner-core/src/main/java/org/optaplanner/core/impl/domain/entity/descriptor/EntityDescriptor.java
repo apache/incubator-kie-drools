@@ -46,6 +46,7 @@ import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescri
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.inverserelation.InverseRelationShadowVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.ComparatorSelectionSorter;
+import org.optaplanner.core.impl.heuristic.selector.common.decorator.CompositeSelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
@@ -67,19 +68,27 @@ public class EntityDescriptor<Solution_> {
     private final SolutionDescriptor<Solution_> solutionDescriptor;
 
     private final Class<?> entityClass;
-    private SelectionFilter movableEntitySelectionFilter;
+    // Only declared movable filter, excludes inherited and descending movable filters
+    private SelectionFilter declaredMovableEntitySelectionFilter;
     private SelectionSorter decreasingDifficultySorter;
-
-    private List<EntityDescriptor<Solution_>> inheritedEntityDescriptorList;
 
     // Only declared variable descriptors, excludes inherited variable descriptors
     private Map<String, GenuineVariableDescriptor<Solution_>> declaredGenuineVariableDescriptorMap;
     private Map<String, ShadowVariableDescriptor<Solution_>> declaredShadowVariableDescriptorMap;
 
+    private List<EntityDescriptor<Solution_>> inheritedEntityDescriptorList;
+
+    // Caches the inherited, declared and descending movable filters as a composite filter
+    private SelectionFilter effectiveMovableEntitySelectionFilter;
+
     // Caches the inherited and declared variable descriptors
     private Map<String, GenuineVariableDescriptor<Solution_>> effectiveGenuineVariableDescriptorMap;
     private Map<String, ShadowVariableDescriptor<Solution_>> effectiveShadowVariableDescriptorMap;
     private Map<String, VariableDescriptor<Solution_>> effectiveVariableDescriptorMap;
+
+    // ************************************************************************
+    // Constructors and simple getters/setters
+    // ************************************************************************
 
     public EntityDescriptor(SolutionDescriptor<Solution_> solutionDescriptor, Class<?> entityClass) {
         this.solutionDescriptor = solutionDescriptor;
@@ -109,7 +118,7 @@ public class EntityDescriptor<Solution_> {
             movableEntitySelectionFilterClass = null;
         }
         if (movableEntitySelectionFilterClass != null) {
-            movableEntitySelectionFilter = ConfigUtils.newInstance(this,
+            declaredMovableEntitySelectionFilter = ConfigUtils.newInstance(this,
                     "movableEntitySelectionFilterClass", movableEntitySelectionFilterClass);
         }
     }
@@ -221,14 +230,14 @@ public class EntityDescriptor<Solution_> {
         }
     }
 
-    public void linkInheritedEntityDescriptors(DescriptorPolicy descriptorPolicy) {
-        inheritedEntityDescriptorList = new ArrayList<>(4);
+    public void linkEntityDescriptors(DescriptorPolicy descriptorPolicy) {
         investigateParentsToLinkInherited(entityClass);
         createEffectiveVariableDescriptorMaps();
-        checkConsistencyAfterLinking();
+        createEffectiveMovableEntitySelectionFilter();
     }
 
     private void investigateParentsToLinkInherited(Class<?> investigateClass) {
+        inheritedEntityDescriptorList = new ArrayList<>(4);
         if (investigateClass == null || investigateClass.isArray()) {
             return;
         }
@@ -238,13 +247,13 @@ public class EntityDescriptor<Solution_> {
         }
     }
 
-    private void linkInherited(Class<?> investigateClass) {
-        EntityDescriptor<Solution_> superEntityDescriptor = solutionDescriptor.getEntityDescriptorStrict(
-                investigateClass);
-        if (superEntityDescriptor != null) {
-            inheritedEntityDescriptorList.add(superEntityDescriptor);
+    private void linkInherited(Class<?> potentialEntityClass) {
+        EntityDescriptor<Solution_> entityDescriptor = solutionDescriptor.getEntityDescriptorStrict(
+                potentialEntityClass);
+        if (entityDescriptor != null) {
+            inheritedEntityDescriptorList.add(entityDescriptor);
         } else {
-            investigateParentsToLinkInherited(investigateClass);
+            investigateParentsToLinkInherited(potentialEntityClass);
         }
     }
 
@@ -269,11 +278,28 @@ public class EntityDescriptor<Solution_> {
         effectiveVariableDescriptorMap.putAll(effectiveShadowVariableDescriptorMap);
     }
 
-    private void checkConsistencyAfterLinking() {
-        if (movableEntitySelectionFilter != null && !hasAnyDeclaredGenuineVariableDescriptor()) {
+    private void createEffectiveMovableEntitySelectionFilter() {
+        if (declaredMovableEntitySelectionFilter != null && !hasAnyDeclaredGenuineVariableDescriptor()) {
             throw new IllegalStateException("The entityClass (" + entityClass
-                    + ") has a movableEntitySelectionFilterClass (" + movableEntitySelectionFilter.getClass()
+                    + ") has a movableEntitySelectionFilterClass (" + declaredMovableEntitySelectionFilter.getClass()
                     + "), but it has no declared genuine variables, only shadow variables.");
+        }
+        List<SelectionFilter> selectionFilterList = new ArrayList<>();
+        // TODO Also add in child entity selectors
+        for (EntityDescriptor<Solution_> inheritedEntityDescriptor : inheritedEntityDescriptorList) {
+            if (inheritedEntityDescriptor.hasEffectiveMovableEntitySelectionFilter()) {
+                selectionFilterList.add(inheritedEntityDescriptor.getEffectiveMovableEntitySelectionFilter());
+            }
+        }
+        if (declaredMovableEntitySelectionFilter != null) {
+            selectionFilterList.add(declaredMovableEntitySelectionFilter);
+        }
+        if (selectionFilterList.isEmpty()) {
+            effectiveMovableEntitySelectionFilter = null;
+        } else if (selectionFilterList.size() == 1) {
+            effectiveMovableEntitySelectionFilter = selectionFilterList.get(0);
+        } else {
+            effectiveMovableEntitySelectionFilter = new CompositeSelectionFilter(selectionFilterList);
         }
     }
 
@@ -293,12 +319,12 @@ public class EntityDescriptor<Solution_> {
         return entityClass.isAssignableFrom(entity.getClass());
     }
 
-    public boolean hasMovableEntitySelectionFilter() {
-        return movableEntitySelectionFilter != null;
+    public boolean hasEffectiveMovableEntitySelectionFilter() {
+        return effectiveMovableEntitySelectionFilter != null;
     }
 
-    public SelectionFilter getMovableEntitySelectionFilter() {
-        return movableEntitySelectionFilter;
+    public SelectionFilter getEffectiveMovableEntitySelectionFilter() {
+        return effectiveMovableEntitySelectionFilter;
     }
 
     public SelectionSorter getDecreasingDifficultySorter() {
@@ -476,7 +502,7 @@ public class EntityDescriptor<Solution_> {
     }
 
     public boolean isMovable(ScoreDirector<Solution_> scoreDirector, Object entity) {
-        return movableEntitySelectionFilter == null || movableEntitySelectionFilter.accept(scoreDirector, entity);
+        return effectiveMovableEntitySelectionFilter == null || effectiveMovableEntitySelectionFilter.accept(scoreDirector, entity);
     }
 
     /**

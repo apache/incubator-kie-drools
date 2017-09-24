@@ -348,7 +348,7 @@ public class EntitySelectorConfig extends SelectorConfig<EntitySelectorConfig> {
 
     private boolean hasFiltering(EntityDescriptor entityDescriptor) {
         return !ConfigUtils.isEmptyCollection(filterClassList)
-                || entityDescriptor.hasMovableEntitySelectionFilter();
+                || entityDescriptor.hasEffectiveMovableEntitySelectionFilter();
     }
 
     private EntitySelector applyFiltering(SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
@@ -363,8 +363,8 @@ public class EntitySelectorConfig extends SelectorConfig<EntitySelectorConfig> {
                 }
             }
             // Filter out immovable entities
-            if (entityDescriptor.hasMovableEntitySelectionFilter()) {
-                filterList.add(entityDescriptor.getMovableEntitySelectionFilter());
+            if (entityDescriptor.hasEffectiveMovableEntitySelectionFilter()) {
+                filterList.add(entityDescriptor.getEffectiveMovableEntitySelectionFilter());
             }
             // Do not filter out initialized entities here for CH and ES, because they can be partially initialized
             // Instead, ValueSelectorConfig.applyReinitializeVariableFiltering() does that.
