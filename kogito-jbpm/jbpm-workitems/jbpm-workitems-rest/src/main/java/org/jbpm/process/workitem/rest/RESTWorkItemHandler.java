@@ -86,7 +86,7 @@ import org.slf4j.LoggerFactory;
  * <li>Url - resource location to be invoked - mandatory</li>
  * <li>Method - HTTP method that will be executed - defaults to GET</li>
  * <li>ContentType - data type in case of sending data - mandatory for POST,PUT</li>
- * <li>Content - actual data to be sent - mandatory for POST,PUT</li>
+ * <li>ContentData - actual data to be sent - mandatory for POST,PUT</li>
  * <li>ConnectTimeout - connection time out - default to 60 seconds</li>
  * <li>ReadTimeout - read time out - default to 60 seconds</li>
  * <li>Username - user name for authentication - overrides one given on handler initialization)</li>
@@ -102,6 +102,19 @@ import org.slf4j.LoggerFactory;
 public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(RESTWorkItemHandler.class);
+
+    public static final String PARAM_AUTH_TYPE = "AuthType";
+    public static final String PARAM_CONNECT_TIMEOUT = "ConnectTimeout";
+    public static final String PARAM_READ_TIMEOUT = "ReadTimeout";
+    public static final String PARAM_CONTENT_TYPE = "ContentType";
+    public static final String PARAM_CONTENT = "Content";
+    public static final String PARAM_CONTENT_DATA = "ContentData";
+    public static final String PARAM_USERNAME = "Username";
+    public static final String PARAM_PASSWORD = "Password";
+    public static final String PARAM_AUTHURL = "AuthUrl";
+    public static final String PARAM_RESULT = "Result";
+    public static final String PARAM_STATUS = "Status";
+    public static final String PARAM_STATUS_MSG = "StatusMsg";
 
     private String username;
     private String password;
@@ -231,16 +244,16 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
 
         // authentication type from parameters
         AuthenticationType authType = type;
-        if (params.get("AuthType") != null) {
-            authType = AuthenticationType.valueOf((String) params.get("AuthType"));
+        if (params.get(PARAM_AUTH_TYPE) != null) {
+            authType = AuthenticationType.valueOf((String) params.get(PARAM_AUTH_TYPE));
         }
 
         // optional timeout config parameters, defaulted to 60 seconds
-        Integer connectTimeout = getParamAsInt(params.get("ConnectTimeout"));
+        Integer connectTimeout = getParamAsInt(params.get(PARAM_CONNECT_TIMEOUT));
         if (connectTimeout == null) {
             connectTimeout = 60000;
         }
-        Integer readTimeout = getParamAsInt(params.get("ReadTimeout"));
+        Integer readTimeout = getParamAsInt(params.get(PARAM_READ_TIMEOUT));
         if (readTimeout == null) {
             readTimeout = 60000;
         }
@@ -275,7 +288,7 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
                                   resultClass,
                                   contentType,
                                   results);
-                results.put("StatusMsg",
+                results.put(PARAM_STATUS_MSG,
                             "request to endpoint " + urlStr + " successfully completed " + statusLine.getReasonPhrase());
             } else {
                 if (handleException) {
@@ -287,11 +300,11 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
                                 responseCode,
                                 urlStr,
                                 responseBody);
-                    results.put("StatusMsg",
+                    results.put(PARAM_STATUS_MSG,
                                 "endpoint " + urlStr + " could not be reached: " + responseBody);
                 }
             }
-            results.put("Status",
+            results.put(PARAM_STATUS,
                         responseCode);
 
             // notify manager that work item has been completed
@@ -341,17 +354,16 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
 
     protected void setBody(RequestBuilder builder,
                            Map<String, Object> params) {
-        if (params.containsKey("Content")) {
+        // backwards compat to "Content" parameter
+        if (params.containsKey(PARAM_CONTENT_DATA) || params.containsKey(PARAM_CONTENT)) {
             try {
-                String contentType = (String) params.get("ContentType");
-                Object content = params.get("Content");
+                Object content = params.get(PARAM_CONTENT_DATA) != null ? params.get(PARAM_CONTENT_DATA) : params.get(PARAM_CONTENT);
                 if (!(content instanceof String)) {
-
                     content = transformRequest(content,
-                                               contentType);
+                                               (String) params.get(PARAM_CONTENT_TYPE));
                 }
                 StringEntity entity = new StringEntity((String) content,
-                                                       ContentType.parse(contentType));
+                                                       ContentType.parse((String) params.get(PARAM_CONTENT_TYPE)));
                 builder.setEntity(entity);
             } catch (UnsupportedCharsetException e) {
                 throw new RuntimeException("Cannot set body for REST request [" + builder.getMethod() + "] " + builder.getUri(),
@@ -362,15 +374,15 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
 
     protected void setBody(HttpRequestBase theMethod,
                            Map<String, Object> params) {
-        if (params.containsKey("Content")) {
-            Object content = params.get("Content");
+        // backwards compat to "Content" parameter
+        if (params.containsKey(PARAM_CONTENT_DATA) || params.containsKey(PARAM_CONTENT)) {
+            Object content = params.get(PARAM_CONTENT_DATA) != null ? params.get(PARAM_CONTENT_DATA) : params.get(PARAM_CONTENT);
             if (!(content instanceof String)) {
-
                 content = transformRequest(content,
-                                           (String) params.get("ContentType"));
+                                           (String) params.get(PARAM_CONTENT_TYPE));
             }
             ((HttpEntityEnclosingRequestBase) theMethod).setEntity(new StringEntity((String) content,
-                                                                                    ContentType.parse((String) params.get("ContentType"))));
+                                                                                    ContentType.parse((String) params.get(PARAM_CONTENT_TYPE))));
         }
     }
 
@@ -388,7 +400,7 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
                                                       contentType,
                                                       result);
 
-                results.put("Result",
+                results.put(PARAM_RESULT,
                             resultObject);
             } catch (Throwable e) {
                 throw new RuntimeException("Unable to transform respose to object",
@@ -396,7 +408,7 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
             }
         } else {
 
-            results.put("Result",
+            results.put(PARAM_RESULT,
                         result);
         }
     }
@@ -490,8 +502,8 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
         }
 
         // user/password
-        String u = (String) params.get("Username");
-        String p = (String) params.get("Password");
+        String u = (String) params.get(PARAM_USERNAME);
+        String p = (String) params.get(PARAM_PASSWORD);
         if (u == null || p == null) {
             u = this.username;
             p = this.password;
@@ -568,7 +580,7 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
             }
 
             // 2. do POST form request to authentiate
-            String authUrlStr = (String) params.get("AuthUrl");
+            String authUrlStr = (String) params.get(PARAM_AUTHURL);
             if (authUrlStr == null) {
                 authUrlStr = authUrl;
             }
@@ -623,8 +635,8 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
                                            e);
             }
         }
-        String u = (String) params.get("Username");
-        String p = (String) params.get("Password");
+        String u = (String) params.get(PARAM_USERNAME);
+        String p = (String) params.get(PARAM_PASSWORD);
         if (u == null || p == null) {
             u = this.username;
             p = this.password;
@@ -668,7 +680,7 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
                                            e);
             }
         } else if (type == AuthenticationType.FORM_BASED) {
-            String authUrlStr = (String) params.get("AuthUrl");
+            String authUrlStr = (String) params.get(PARAM_AUTHURL);
             if (authUrlStr == null) {
                 authUrlStr = authUrl;
             }

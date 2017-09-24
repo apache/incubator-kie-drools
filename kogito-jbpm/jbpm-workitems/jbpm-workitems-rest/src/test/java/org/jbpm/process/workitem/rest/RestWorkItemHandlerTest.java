@@ -36,27 +36,36 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.runtime.process.WorkItemManager;
 
+import static org.jbpm.process.workitem.rest.RESTWorkItemHandler.PARAM_CONNECT_TIMEOUT;
+import static org.jbpm.process.workitem.rest.RESTWorkItemHandler.PARAM_CONTENT;
+import static org.jbpm.process.workitem.rest.RESTWorkItemHandler.PARAM_CONTENT_DATA;
+import static org.jbpm.process.workitem.rest.RESTWorkItemHandler.PARAM_CONTENT_TYPE;
+import static org.jbpm.process.workitem.rest.RESTWorkItemHandler.PARAM_READ_TIMEOUT;
+import static org.jbpm.process.workitem.rest.RESTWorkItemHandler.PARAM_RESULT;
+import static org.jbpm.process.workitem.rest.RESTWorkItemHandler.PARAM_STATUS;
+import static org.jbpm.process.workitem.rest.RESTWorkItemHandler.PARAM_STATUS_MSG;
 import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
 public class RestWorkItemHandlerTest {
 
-    @Parameters(name = "Http Client 4.3 api = {0}")
+    @Parameters(name = "Http Client 4.3 api = {0}, Content Param = {1}")
     public static Collection<Object[]> parameters() {
-        Object[][] locking = new Object[][]{
-                {true},
-                {false},
-        };
-        return Arrays.asList(locking);
+        return Arrays.asList(new Object[][]{
+                {true, PARAM_CONTENT}, {false, PARAM_CONTENT}, {true, PARAM_CONTENT_DATA}, {false, PARAM_CONTENT_DATA}
+        });
     }
 
     private final boolean httpClient43;
+    private String contentParamName;
 
     private final static String serverURL = "http://localhost:9998/test";
     private static Server server;
 
-    public RestWorkItemHandlerTest(boolean httpClient43) {
+    public RestWorkItemHandlerTest(boolean httpClient43,
+                                   String contentParamName) {
         this.httpClient43 = httpClient43;
+        this.contentParamName = contentParamName;
     }
 
     @SuppressWarnings({"rawtypes"})
@@ -102,17 +111,18 @@ public class RestWorkItemHandlerTest {
                                 manager);
 
         Map<String, Object> results = ((TestWorkItemManager) manager).getResults(workItem.getId());
-        assertNotNull("results cannot be null", results);
-        String result = (String) results.get("Result");
+        assertNotNull("results cannot be null",
+                      results);
+        String result = (String) results.get(PARAM_RESULT);
         assertNotNull("result cannot be null",
                       result);
         assertEquals("Hello from REST",
                      result);
-        int responseCode = (Integer) results.get("Status");
+        int responseCode = (Integer) results.get(PARAM_STATUS);
         assertNotNull(responseCode);
         assertEquals(200,
                      responseCode);
-        String responseMsg = (String) results.get("StatusMsg");
+        String responseMsg = (String) results.get(PARAM_STATUS_MSG);
         assertNotNull(responseMsg);
         assertEquals("request to endpoint " + workItem.getParameter("Url") + " successfully completed OK",
                      responseMsg);
@@ -127,18 +137,19 @@ public class RestWorkItemHandlerTest {
                               serverURL);
         workItem.setParameter("Method",
                               "GET");
-        workItem.setParameter("AcceptHeader", "application/json");
+        workItem.setParameter("AcceptHeader",
+                              "application/json");
 
         WorkItemManager manager = new TestWorkItemManager();
         handler.executeWorkItem(workItem,
                                 manager);
 
         Map<String, Object> results = ((TestWorkItemManager) manager).getResults(workItem.getId());
-        int responseCode = (Integer) results.get("Status");
+        int responseCode = (Integer) results.get(PARAM_STATUS);
         assertNotNull(responseCode);
         assertEquals(406,
                      responseCode);
-        String responseMsg = (String) results.get("StatusMsg");
+        String responseMsg = (String) results.get(PARAM_STATUS_MSG);
         assertNotNull(responseMsg);
         assertEquals("endpoint " + serverURL + " could not be reached: ",
                      responseMsg);
@@ -153,18 +164,19 @@ public class RestWorkItemHandlerTest {
                               serverURL);
         workItem.setParameter("Method",
                               "GET");
-        workItem.setParameter("AcceptHeader", "application/xml");
+        workItem.setParameter("AcceptHeader",
+                              "application/xml");
 
         WorkItemManager manager = new TestWorkItemManager();
         handler.executeWorkItem(workItem,
                                 manager);
 
         Map<String, Object> results = ((TestWorkItemManager) manager).getResults(workItem.getId());
-        int responseCode = (Integer) results.get("Status");
+        int responseCode = (Integer) results.get(PARAM_STATUS);
         assertNotNull(responseCode);
         assertEquals(406,
                      responseCode);
-        String responseMsg = (String) results.get("StatusMsg");
+        String responseMsg = (String) results.get(PARAM_STATUS_MSG);
         assertNotNull(responseMsg);
         assertEquals("endpoint " + serverURL + " could not be reached: ",
                      responseMsg);
@@ -179,18 +191,19 @@ public class RestWorkItemHandlerTest {
                               serverURL);
         workItem.setParameter("Method",
                               "GET");
-        workItem.setParameter("AcceptHeader", "text/plain");
+        workItem.setParameter("AcceptHeader",
+                              "text/plain");
 
         WorkItemManager manager = new TestWorkItemManager();
         handler.executeWorkItem(workItem,
                                 manager);
 
         Map<String, Object> results = ((TestWorkItemManager) manager).getResults(workItem.getId());
-        int responseCode = (Integer) results.get("Status");
+        int responseCode = (Integer) results.get(PARAM_STATUS);
         assertNotNull(responseCode);
         assertEquals(200,
                      responseCode);
-        String responseMsg = (String) results.get("StatusMsg");
+        String responseMsg = (String) results.get(PARAM_STATUS_MSG);
         assertNotNull(responseMsg);
         assertEquals("request to endpoint " + workItem.getParameter("Url") + " successfully completed OK",
                      responseMsg);
@@ -205,9 +218,9 @@ public class RestWorkItemHandlerTest {
                               serverURL);
         workItem.setParameter("Method",
                               "GET");
-        workItem.setParameter("ConnectTimeout",
+        workItem.setParameter(PARAM_CONNECT_TIMEOUT,
                               "30000");
-        workItem.setParameter("ReadTimeout",
+        workItem.setParameter(PARAM_READ_TIMEOUT,
                               "25000");
 
         WorkItemManager manager = new TestWorkItemManager();
@@ -215,16 +228,16 @@ public class RestWorkItemHandlerTest {
                                 manager);
 
         Map<String, Object> results = ((TestWorkItemManager) manager).getResults(workItem.getId());
-        String result = (String) results.get("Result");
+        String result = (String) results.get(PARAM_RESULT);
         assertNotNull("result cannot be null",
                       result);
         assertEquals("Hello from REST",
                      result);
-        int responseCode = (Integer) results.get("Status");
+        int responseCode = (Integer) results.get(PARAM_STATUS);
         assertNotNull(responseCode);
         assertEquals(200,
                      responseCode);
-        String responseMsg = (String) results.get("StatusMsg");
+        String responseMsg = (String) results.get(PARAM_STATUS_MSG);
         assertNotNull(responseMsg);
         assertEquals("request to endpoint " + workItem.getParameter("Url") + " successfully completed OK",
                      responseMsg);
@@ -239,9 +252,9 @@ public class RestWorkItemHandlerTest {
                               serverURL);
         workItem.setParameter("Method",
                               "GET");
-        workItem.setParameter("ConnectTimeout",
+        workItem.setParameter(PARAM_CONNECT_TIMEOUT,
                               "");
-        workItem.setParameter("ReadTimeout",
+        workItem.setParameter(PARAM_READ_TIMEOUT,
                               "");
 
         WorkItemManager manager = new TestWorkItemManager();
@@ -249,16 +262,16 @@ public class RestWorkItemHandlerTest {
                                 manager);
 
         Map<String, Object> results = ((TestWorkItemManager) manager).getResults(workItem.getId());
-        String result = (String) results.get("Result");
+        String result = (String) results.get(PARAM_RESULT);
         assertNotNull("result cannot be null",
                       result);
         assertEquals("Hello from REST",
                      result);
-        int responseCode = (Integer) results.get("Status");
+        int responseCode = (Integer) results.get(PARAM_STATUS);
         assertNotNull(responseCode);
         assertEquals(200,
                      responseCode);
-        String responseMsg = (String) results.get("StatusMsg");
+        String responseMsg = (String) results.get(PARAM_STATUS_MSG);
         assertNotNull(responseMsg);
         assertEquals("request to endpoint " + workItem.getParameter("Url") + " successfully completed OK",
                      responseMsg);
@@ -279,16 +292,16 @@ public class RestWorkItemHandlerTest {
                                 manager);
 
         Map<String, Object> results = ((TestWorkItemManager) manager).getResults(workItem.getId());
-        String result = (String) results.get("Result");
+        String result = (String) results.get(PARAM_RESULT);
         assertNotNull("result cannot be null",
                       result);
         assertEquals("Hello from REST test",
                      result);
-        int responseCode = (Integer) results.get("Status");
+        int responseCode = (Integer) results.get(PARAM_STATUS);
         assertNotNull(responseCode);
         assertEquals(200,
                      responseCode);
-        String responseMsg = (String) results.get("StatusMsg");
+        String responseMsg = (String) results.get(PARAM_STATUS_MSG);
         assertNotNull(responseMsg);
         assertEquals("request to endpoint " + workItem.getParameter("Url") + " successfully completed OK",
                      responseMsg);
@@ -305,9 +318,9 @@ public class RestWorkItemHandlerTest {
                               serverURL + "/xml");
         workItem.setParameter("Method",
                               "POST");
-        workItem.setParameter("ContentType",
+        workItem.setParameter(PARAM_CONTENT_TYPE,
                               "application/xml");
-        workItem.setParameter("Content",
+        workItem.setParameter(contentParamName,
                               "<person><name>john</name><age>25</age></person>");
 
         WorkItemManager manager = new TestWorkItemManager();
@@ -315,16 +328,16 @@ public class RestWorkItemHandlerTest {
                                 manager);
 
         Map<String, Object> results = ((TestWorkItemManager) manager).getResults(workItem.getId());
-        String result = (String) results.get("Result");
+        String result = (String) results.get(PARAM_RESULT);
         assertNotNull("result cannot be null",
                       result);
         assertEquals(expected,
                      result);
-        int responseCode = (Integer) results.get("Status");
+        int responseCode = (Integer) results.get(PARAM_STATUS);
         assertNotNull(responseCode);
         assertEquals(200,
                      responseCode);
-        String responseMsg = (String) results.get("StatusMsg");
+        String responseMsg = (String) results.get(PARAM_STATUS_MSG);
         assertNotNull(responseMsg);
         assertEquals("request to endpoint " + workItem.getParameter("Url") + " successfully completed OK",
                      responseMsg);
@@ -341,23 +354,24 @@ public class RestWorkItemHandlerTest {
                               serverURL + "/xml");
         workItem.setParameter("Method",
                               "POST");
-        workItem.setParameter("ContentType",
+        workItem.setParameter(PARAM_CONTENT_TYPE,
                               "application/xml");
-        workItem.setParameter("Content",
+        workItem.setParameter(contentParamName,
                               "<person><name>john</name><age>25</age></person>");
 
-        workItem.setParameter("AcceptHeader", "application/json");
+        workItem.setParameter("AcceptHeader",
+                              "application/json");
 
         WorkItemManager manager = new TestWorkItemManager();
         handler.executeWorkItem(workItem,
                                 manager);
 
         Map<String, Object> results = ((TestWorkItemManager) manager).getResults(workItem.getId());
-        int responseCode = (Integer) results.get("Status");
+        int responseCode = (Integer) results.get(PARAM_STATUS);
         assertNotNull(responseCode);
         assertEquals(406,
                      responseCode);
-        String responseMsg = (String) results.get("StatusMsg");
+        String responseMsg = (String) results.get(PARAM_STATUS_MSG);
         assertNotNull(responseMsg);
         assertEquals("endpoint " + serverURL + "/xml could not be reached: ",
                      responseMsg);
@@ -374,32 +388,32 @@ public class RestWorkItemHandlerTest {
                               serverURL + "/xml");
         workItem.setParameter("Method",
                               "POST");
-        workItem.setParameter("ContentType",
+        workItem.setParameter(PARAM_CONTENT_TYPE,
                               "application/xml");
-        workItem.setParameter("Content",
+        workItem.setParameter(contentParamName,
                               "<person><name>john</name><age>25</age></person>");
-        workItem.setParameter("AcceptHeader", "application/xml");
+        workItem.setParameter("AcceptHeader",
+                              "application/xml");
 
         WorkItemManager manager = new TestWorkItemManager();
         handler.executeWorkItem(workItem,
                                 manager);
 
         Map<String, Object> results = ((TestWorkItemManager) manager).getResults(workItem.getId());
-        String result = (String) results.get("Result");
+        String result = (String) results.get(PARAM_RESULT);
         assertNotNull("result cannot be null",
                       result);
         assertEquals(expected,
                      result);
-        int responseCode = (Integer) results.get("Status");
+        int responseCode = (Integer) results.get(PARAM_STATUS);
         assertNotNull(responseCode);
         assertEquals(200,
                      responseCode);
-        String responseMsg = (String) results.get("StatusMsg");
+        String responseMsg = (String) results.get(PARAM_STATUS_MSG);
         assertNotNull(responseMsg);
         assertEquals("request to endpoint " + workItem.getParameter("Url") + " successfully completed OK",
                      responseMsg);
     }
-
 
     @Test
     public void testPOSTOperationWithPathParamAndNoContent() {
@@ -416,16 +430,16 @@ public class RestWorkItemHandlerTest {
                                 manager);
 
         Map<String, Object> results = ((TestWorkItemManager) manager).getResults(workItem.getId());
-        String result = (String) results.get("Result");
+        String result = (String) results.get(PARAM_RESULT);
         assertNotNull("result cannot be null",
                       result);
         assertEquals("Created resource with name john",
                      result);
-        int responseCode = (Integer) results.get("Status");
+        int responseCode = (Integer) results.get(PARAM_STATUS);
         assertNotNull(responseCode);
         assertEquals(200,
                      responseCode);
-        String responseMsg = (String) results.get("StatusMsg");
+        String responseMsg = (String) results.get(PARAM_STATUS_MSG);
         assertNotNull(responseMsg);
         assertEquals("request to endpoint " + workItem.getParameter("Url") + " successfully completed OK",
                      responseMsg);
@@ -442,9 +456,9 @@ public class RestWorkItemHandlerTest {
                               serverURL + "/xml");
         workItem.setParameter("Method",
                               "PUT");
-        workItem.setParameter("ContentType",
+        workItem.setParameter(PARAM_CONTENT_TYPE,
                               "application/xml");
-        workItem.setParameter("Content",
+        workItem.setParameter(contentParamName,
                               "<person><name>john</name><age>25</age></person>");
 
         WorkItemManager manager = new TestWorkItemManager();
@@ -452,16 +466,16 @@ public class RestWorkItemHandlerTest {
                                 manager);
 
         Map<String, Object> results = ((TestWorkItemManager) manager).getResults(workItem.getId());
-        String result = (String) results.get("Result");
+        String result = (String) results.get(PARAM_RESULT);
         assertNotNull("result cannot be null",
                       result);
         assertEquals(expected,
                      result);
-        int responseCode = (Integer) results.get("Status");
+        int responseCode = (Integer) results.get(PARAM_STATUS);
         assertNotNull(responseCode);
         assertEquals(200,
                      responseCode);
-        String responseMsg = (String) results.get("StatusMsg");
+        String responseMsg = (String) results.get(PARAM_STATUS_MSG);
         assertNotNull(responseMsg);
         assertEquals("request to endpoint " + workItem.getParameter("Url") + " successfully completed OK",
                      responseMsg);
@@ -478,27 +492,28 @@ public class RestWorkItemHandlerTest {
                               serverURL + "/xml");
         workItem.setParameter("Method",
                               "PUT");
-        workItem.setParameter("ContentType",
+        workItem.setParameter(PARAM_CONTENT_TYPE,
                               "application/xml");
-        workItem.setParameter("Content",
+        workItem.setParameter(contentParamName,
                               "<person><name>john</name><age>25</age></person>");
-        workItem.setParameter("AcceptHeader", "application/xml");
+        workItem.setParameter("AcceptHeader",
+                              "application/xml");
 
         WorkItemManager manager = new TestWorkItemManager();
         handler.executeWorkItem(workItem,
                                 manager);
 
         Map<String, Object> results = ((TestWorkItemManager) manager).getResults(workItem.getId());
-        String result = (String) results.get("Result");
+        String result = (String) results.get(PARAM_RESULT);
         assertNotNull("result cannot be null",
                       result);
         assertEquals(expected,
                      result);
-        int responseCode = (Integer) results.get("Status");
+        int responseCode = (Integer) results.get(PARAM_STATUS);
         assertNotNull(responseCode);
         assertEquals(200,
                      responseCode);
-        String responseMsg = (String) results.get("StatusMsg");
+        String responseMsg = (String) results.get(PARAM_STATUS_MSG);
         assertNotNull(responseMsg);
         assertEquals("request to endpoint " + workItem.getParameter("Url") + " successfully completed OK",
                      responseMsg);
@@ -515,22 +530,23 @@ public class RestWorkItemHandlerTest {
                               serverURL + "/xml");
         workItem.setParameter("Method",
                               "PUT");
-        workItem.setParameter("ContentType",
+        workItem.setParameter(PARAM_CONTENT_TYPE,
                               "application/xml");
-        workItem.setParameter("Content",
+        workItem.setParameter(contentParamName,
                               "<person><name>john</name><age>25</age></person>");
-        workItem.setParameter("AcceptHeader", "application/json");
+        workItem.setParameter("AcceptHeader",
+                              "application/json");
 
         WorkItemManager manager = new TestWorkItemManager();
         handler.executeWorkItem(workItem,
                                 manager);
 
         Map<String, Object> results = ((TestWorkItemManager) manager).getResults(workItem.getId());
-        int responseCode = (Integer) results.get("Status");
+        int responseCode = (Integer) results.get(PARAM_STATUS);
         assertNotNull(responseCode);
         assertEquals(406,
                      responseCode);
-        String responseMsg = (String) results.get("StatusMsg");
+        String responseMsg = (String) results.get(PARAM_STATUS_MSG);
         assertNotNull(responseMsg);
         assertEquals("endpoint " + serverURL + "/xml could not be reached: ",
                      responseMsg);
@@ -553,16 +569,16 @@ public class RestWorkItemHandlerTest {
                                 manager);
 
         Map<String, Object> results = ((TestWorkItemManager) manager).getResults(workItem.getId());
-        String result = (String) results.get("Result");
+        String result = (String) results.get(PARAM_RESULT);
         assertNotNull("result cannot be null",
                       result);
         assertEquals(expected,
                      result);
-        int responseCode = (Integer) results.get("Status");
+        int responseCode = (Integer) results.get(PARAM_STATUS);
         assertNotNull(responseCode);
         assertEquals(200,
                      responseCode);
-        String responseMsg = (String) results.get("StatusMsg");
+        String responseMsg = (String) results.get(PARAM_STATUS_MSG);
         assertNotNull(responseMsg);
         assertEquals("request to endpoint " + workItem.getParameter("Url") + " successfully completed OK",
                      responseMsg);
@@ -629,16 +645,16 @@ public class RestWorkItemHandlerTest {
                                 manager);
 
         Map<String, Object> results = ((TestWorkItemManager) manager).getResults(workItem.getId());
-        Person result = (Person) results.get("Result");
+        Person result = (Person) results.get(PARAM_RESULT);
         assertNotNull("result cannot be null",
                       result);
         assertEquals("Person Xml",
                      result.getName());
-        int responseCode = (Integer) results.get("Status");
+        int responseCode = (Integer) results.get(PARAM_STATUS);
         assertNotNull(responseCode);
         assertEquals(200,
                      responseCode);
-        String responseMsg = (String) results.get("StatusMsg");
+        String responseMsg = (String) results.get(PARAM_STATUS_MSG);
         assertNotNull(responseMsg);
         assertEquals("request to endpoint " + workItem.getParameter("Url") + " successfully completed OK",
                      responseMsg);
@@ -661,16 +677,16 @@ public class RestWorkItemHandlerTest {
                                 manager);
 
         Map<String, Object> results = ((TestWorkItemManager) manager).getResults(workItem.getId());
-        Person result = (Person) results.get("Result");
+        Person result = (Person) results.get(PARAM_RESULT);
         assertNotNull("result cannot be null",
                       result);
         assertEquals("Person Json",
                      result.getName());
-        int responseCode = (Integer) results.get("Status");
+        int responseCode = (Integer) results.get(PARAM_STATUS);
         assertNotNull(responseCode);
         assertEquals(200,
                      responseCode);
-        String responseMsg = (String)results.get("StatusMsg");
+        String responseMsg = (String) results.get(PARAM_STATUS_MSG);
         assertNotNull(responseMsg);
         assertEquals("request to endpoint " + workItem.getParameter("Url") + " successfully completed OK",
                      responseMsg);
@@ -685,9 +701,9 @@ public class RestWorkItemHandlerTest {
                               serverURL + "/xml");
         workItem.setParameter("Method",
                               "POST");
-        workItem.setParameter("ContentType",
+        workItem.setParameter(PARAM_CONTENT_TYPE,
                               "Application/XML;charset=utf-8");
-        workItem.setParameter("Content",
+        workItem.setParameter(contentParamName,
                               "<person><name>john</name><age>25</age></person>");
         workItem.setParameter("ResultClass",
                               Person.class.getName());
@@ -697,18 +713,18 @@ public class RestWorkItemHandlerTest {
                                 manager);
 
         Map<String, Object> results = ((TestWorkItemManager) manager).getResults(workItem.getId());
-        Person result = (Person) results.get("Result");
+        Person result = (Person) results.get(PARAM_RESULT);
         assertNotNull("result cannot be null",
                       result);
         assertEquals("Post john",
                      result.getName());
         assertEquals(25,
                      result.getAge().intValue());
-        int responseCode = (Integer) results.get("Status");
+        int responseCode = (Integer) results.get(PARAM_STATUS);
         assertNotNull(responseCode);
         assertEquals(200,
                      responseCode);
-        String responseMsg = (String) results.get("StatusMsg");
+        String responseMsg = (String) results.get(PARAM_STATUS_MSG);
         assertNotNull(responseMsg);
         assertEquals("request to endpoint " + workItem.getParameter("Url") + " successfully completed OK",
                      responseMsg);
@@ -723,9 +739,9 @@ public class RestWorkItemHandlerTest {
                               serverURL + "/xml");
         workItem.setParameter("Method",
                               "PUT");
-        workItem.setParameter("ContentType",
+        workItem.setParameter(PARAM_CONTENT_TYPE,
                               "Application/Xml;charset=utf-8");
-        workItem.setParameter("Content",
+        workItem.setParameter(contentParamName,
                               "<person><name>john</name><age>25</age></person>");
         workItem.setParameter("ResultClass",
                               Person.class.getName());
@@ -735,18 +751,18 @@ public class RestWorkItemHandlerTest {
                                 manager);
 
         Map<String, Object> results = ((TestWorkItemManager) manager).getResults(workItem.getId());
-        Person result = (Person) results.get("Result");
+        Person result = (Person) results.get(PARAM_RESULT);
         assertNotNull("result cannot be null",
                       result);
         assertEquals("Put john",
                      result.getName());
         assertEquals(25,
                      result.getAge().intValue());
-        int responseCode = (Integer) results.get("Status");
+        int responseCode = (Integer) results.get(PARAM_STATUS);
         assertNotNull(responseCode);
         assertEquals(200,
                      responseCode);
-        String responseMsg = (String) results.get("StatusMsg");
+        String responseMsg = (String) results.get(PARAM_STATUS_MSG);
         assertNotNull(responseMsg);
         assertEquals("request to endpoint " + workItem.getParameter("Url") + " successfully completed OK",
                      responseMsg);
@@ -765,9 +781,9 @@ public class RestWorkItemHandlerTest {
                               serverURL + "/xml");
         workItem.setParameter("Method",
                               "POST");
-        workItem.setParameter("ContentType",
+        workItem.setParameter(PARAM_CONTENT_TYPE,
                               "application/xml");
-        workItem.setParameter("Content",
+        workItem.setParameter(contentParamName,
                               request);
         workItem.setParameter("ResultClass",
                               Person.class.getName());
@@ -777,18 +793,18 @@ public class RestWorkItemHandlerTest {
                                 manager);
 
         Map<String, Object> results = ((TestWorkItemManager) manager).getResults(workItem.getId());
-        Person result = (Person) results.get("Result");
+        Person result = (Person) results.get(PARAM_RESULT);
         assertNotNull("result cannot be null",
                       result);
         assertEquals("Post john",
                      result.getName());
         assertEquals(25,
                      result.getAge().intValue());
-        int responseCode = (Integer) results.get("Status");
+        int responseCode = (Integer) results.get(PARAM_STATUS);
         assertNotNull(responseCode);
         assertEquals(200,
                      responseCode);
-        String responseMsg = (String) results.get("StatusMsg");
+        String responseMsg = (String) results.get(PARAM_STATUS_MSG);
         assertNotNull(responseMsg);
         assertEquals("request to endpoint " + workItem.getParameter("Url") + " successfully completed OK",
                      responseMsg);
@@ -811,16 +827,16 @@ public class RestWorkItemHandlerTest {
                                 manager);
 
         Map<String, Object> results = ((TestWorkItemManager) manager).getResults(workItem.getId());
-        Person result = (Person) results.get("Result");
+        Person result = (Person) results.get(PARAM_RESULT);
         assertNotNull("result cannot be null",
                       result);
         assertEquals("Person Xml",
                      result.getName());
-        int responseCode = (Integer) results.get("Status");
+        int responseCode = (Integer) results.get(PARAM_STATUS);
         assertNotNull(responseCode);
         assertEquals(200,
                      responseCode);
-        String responseMsg = (String) results.get("StatusMsg");
+        String responseMsg = (String) results.get(PARAM_STATUS_MSG);
         assertNotNull(responseMsg);
         assertEquals("request to endpoint " + workItem.getParameter("Url") + " successfully completed OK",
                      responseMsg);
@@ -843,16 +859,16 @@ public class RestWorkItemHandlerTest {
                                 manager);
 
         Map<String, Object> results = ((TestWorkItemManager) manager).getResults(workItem.getId());
-        Person result = (Person) results.get("Result");
+        Person result = (Person) results.get(PARAM_RESULT);
         assertNotNull("result cannot be null",
                       result);
         assertEquals("Person Json",
                      result.getName());
-        int responseCode = (Integer) results.get("Status");
+        int responseCode = (Integer) results.get(PARAM_STATUS);
         assertNotNull(responseCode);
         assertEquals(200,
                      responseCode);
-        String responseMsg = (String) results.get("StatusMsg");
+        String responseMsg = (String) results.get(PARAM_STATUS_MSG);
         assertNotNull(responseMsg);
         assertEquals("request to endpoint " + workItem.getParameter("Url") + " successfully completed OK",
                      responseMsg);
@@ -870,9 +886,9 @@ public class RestWorkItemHandlerTest {
                               serverURL + "/xml-charset");
         workItem.setParameter("Method",
                               "PUT");
-        workItem.setParameter("ContentType",
+        workItem.setParameter(PARAM_CONTENT_TYPE,
                               "application/xml");
-        workItem.setParameter("Content",
+        workItem.setParameter(contentParamName,
                               "<person><name>" + nonAsciiData + "</name><age>25</age></person>");
 
         WorkItemManager manager = new TestWorkItemManager();
@@ -880,16 +896,16 @@ public class RestWorkItemHandlerTest {
                                 manager);
 
         Map<String, Object> results = ((TestWorkItemManager) manager).getResults(workItem.getId());
-        String result = (String) results.get("Result");
+        String result = (String) results.get(PARAM_RESULT);
         assertNotNull("result cannot be null",
                       result);
         assertEquals(expected,
                      result);
-        int responseCode = (Integer) results.get("Status");
+        int responseCode = (Integer) results.get(PARAM_STATUS);
         assertNotNull(responseCode);
         assertEquals(200,
                      responseCode);
-        String responseMsg = (String) results.get("StatusMsg");
+        String responseMsg = (String) results.get(PARAM_STATUS_MSG);
         assertNotNull(responseMsg);
         assertEquals("request to endpoint " + workItem.getParameter("Url") + " successfully completed OK",
                      responseMsg);
@@ -908,9 +924,9 @@ public class RestWorkItemHandlerTest {
                               serverURL + "/xml-charset");
         workItem.setParameter("Method",
                               "PUT");
-        workItem.setParameter("ContentType",
+        workItem.setParameter(PARAM_CONTENT_TYPE,
                               "application/xml; charset=utf-8");
-        workItem.setParameter("Content",
+        workItem.setParameter(contentParamName,
                               "<person><name>" + nonAsciiData + "</name><age>25</age></person>");
 
         WorkItemManager manager = new TestWorkItemManager();
@@ -918,16 +934,16 @@ public class RestWorkItemHandlerTest {
                                 manager);
 
         Map<String, Object> results = ((TestWorkItemManager) manager).getResults(workItem.getId());
-        String result = (String) results.get("Result");
+        String result = (String) results.get(PARAM_RESULT);
         assertNotNull("result cannot be null",
                       result);
         assertEquals(expected,
                      result);
-        int responseCode = (Integer) results.get("Status");
+        int responseCode = (Integer) results.get(PARAM_STATUS);
         assertNotNull(responseCode);
         assertEquals(200,
                      responseCode);
-        String responseMsg = (String) results.get("StatusMsg");
+        String responseMsg = (String) results.get(PARAM_STATUS_MSG);
         assertNotNull(responseMsg);
         assertEquals("request to endpoint " + workItem.getParameter("Url") + " successfully completed OK",
                      responseMsg);
