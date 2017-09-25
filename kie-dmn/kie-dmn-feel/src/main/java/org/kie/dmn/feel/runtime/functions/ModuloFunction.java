@@ -22,14 +22,14 @@ import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import java.math.BigDecimal;
 import java.math.MathContext;
 
-public class ModuleFunction
+public class ModuloFunction
         extends BaseFEELFunction {
 
-    public ModuleFunction() {
-        super( "module" );
+    public ModuloFunction() {
+        super( "modulo" );
     }
 
-    public FEELFnResult<BigDecimal> invoke(@ParameterName( "divident" ) BigDecimal divident, @ParameterName( "divisor" ) BigDecimal divisor) {
+    public FEELFnResult<BigDecimal> invoke(@ParameterName( "dividend" ) BigDecimal divident, @ParameterName( "divisor" ) BigDecimal divisor) {
         if ( divident == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "divident", "cannot be null"));
         }

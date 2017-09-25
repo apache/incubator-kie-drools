@@ -69,34 +69,40 @@ public class BuiltInFunctions {
             // additional functions not part of the spec version 1.1
             new NowFunction(),
             new TodayFunction(),
+            new WeekdayFunction(),
+            new YearDiffFunction(),
+            new MonthDiffFunction(),
+            new DayDiffFunction(),
+            new HourDiffFunction(),
+            new MinutesDiffFunction(),
+            new SecondsDiffFunction(),
+            new YearAddFunction(),
+            new MonthAddFunction(),
+            new DayAddFunction(),
+
+            new AbsFunction(),
+            new ModuloFunction(),
+            new ProductFunction(),
+
             new CodeFunction(),
             new InvokeFunction(),
-            new AbsFunction(),
-            new RoundFunction(),
-            new RoundDownFunction(),
-            new RoundUpFunction(),
-            new IntegerFunction(),
-            new ModuleFunction(),
-            new PercentFunction(),
-            new PowerFunction(),
-            new ProductFunction(),
+
+            // signavio profile functions
             new DayFunction(),
             new MonthFunction(),
             new YearFunction(),
             new HourFunction(),
             new MinuteFunction(),
             new SecondFunction(),
-            new YearDiffFunction(),
-            new DayAddFunction(),
-            new DayDiffFunction(),
             new DateTimeFunction(),
-            new HourDiffFunction(),
-            new MinutesDiffFunction(),
-            new MonthAddFunction(),
-            new MonthDiffFunction(),
-            new WeekdayFunction(),
-            new YearAddFunction(),
-    };
+            new RoundFunction(),
+            new RoundDownFunction(),
+            new RoundUpFunction(),
+            new IntegerFunction(),
+            new PercentFunction(),
+            new PowerFunction(),
+
+            };
 
     public static FEELFunction[] getFunctions() {
         return FUNCTIONS;
