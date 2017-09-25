@@ -50,7 +50,6 @@ import org.drools.compiler.lang.descr.RelationalExprDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.Behavior;
-import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
 import org.drools.core.time.TimeUtils;
 import org.drools.core.util.ClassUtils;
@@ -154,11 +153,7 @@ public class ModelGenerator {
         String ruleConsequenceAsBlock = rewriteConsequenceBlock( context, ruleDescr.getConsequence().toString().trim() );
         BlockStmt ruleConsequence = JavaParser.parseBlock( "{" + ruleConsequenceAsBlock + "}" );
         List<String> declUsedInRHS = ruleConsequence.getChildNodesByType(NameExpr.class).stream().map(NameExpr::getNameAsString).collect(Collectors.toList());
-        List<Entry<String, DeclarationSpec>> verifiedDeclUsedInRHS =
-                context.declarations.entrySet()
-                .stream()
-                .filter(x -> declUsedInRHS.contains(x.getKey()))
-                .collect(Collectors.toList());
+        List<String> verifiedDeclUsedInRHS = context.declarations.keySet().stream().filter(declUsedInRHS::contains).collect(Collectors.toList());
 
         boolean rhsRewritten = rewriteRHS(context, ruleBlock, ruleConsequence);
 
@@ -167,7 +162,7 @@ public class ModelGenerator {
 
         if (!verifiedDeclUsedInRHS.isEmpty()) {
             onCall = new MethodCallExpr( null, "on" );
-            verifiedDeclUsedInRHS.stream().map( k -> "var_" + k.getKey() ).forEach( onCall::addArgument );
+            verifiedDeclUsedInRHS.stream().map( k -> "var_" + k ).forEach( onCall::addArgument );
         }
 
         if(!packageModel.getGlobals().isEmpty()) {
@@ -185,8 +180,8 @@ public class ModelGenerator {
         if (rhsRewritten) {
             executeLambda.addParameter(new Parameter(new UnknownType(), "drools"));
         }
-        verifiedDeclUsedInRHS.stream().map(x -> new Parameter(classToReferenceType(x.getValue().declarationClass), x.getKey())).forEach(executeLambda::addParameter);
-        packageModel.getGlobals().entrySet().stream().map(x -> new Parameter(classToReferenceType(x.getValue()), x.getKey())).forEach(executeLambda::addParameter);
+        verifiedDeclUsedInRHS.stream().map(x -> new Parameter(new UnknownType(), x)).forEach(executeLambda::addParameter);
+        packageModel.getGlobals().keySet().stream().map(x -> new Parameter(new UnknownType(), x)).forEach(executeLambda::addParameter);
         executeLambda.setBody( ruleConsequence );
 
         thenCall.addArgument( executeCall );

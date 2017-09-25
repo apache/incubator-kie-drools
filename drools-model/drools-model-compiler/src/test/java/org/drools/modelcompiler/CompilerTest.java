@@ -98,6 +98,7 @@ public class CompilerTest {
 
 
     @Test
+    @Ignore
     public void testGlobal() {
         String str =
                 "package org.mypkg;" +
