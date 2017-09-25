@@ -60,6 +60,7 @@ public class FEELFunctionDefinitionTest extends BaseFEELTest {
                         null, FEELEvent.Severity.ERROR },
                 {"{ maximum : function( v1, v2 ) external { }, the max : maximum( 10, 20 ) }.the max", null, FEELEvent.Severity.ERROR },
                 {"{ maximum : function( v1, v2 ) external { missingDefiniton }, the max : maximum( 10, 20 ) }.the max", null, FEELEvent.Severity.ERROR },
+                {"{ maximum : function( v1, v2 ) external { missingDefiniton : }, the max : maximum( 10, 20 ) }.the max", null, FEELEvent.Severity.ERROR },
                 // variable number of parameters
                 {"{ \n"
                  + "    string format : function( mask, value ) external {\n"

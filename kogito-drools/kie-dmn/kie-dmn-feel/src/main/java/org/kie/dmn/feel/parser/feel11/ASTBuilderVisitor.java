@@ -281,6 +281,7 @@ public class ASTBuilderVisitor
         }
         BaseNode name = visit(key);
         BaseNode value = visit(expression);
+        if (value == null) return null;
         return ASTBuilderFactory.newContextEntry( ctx, name, value );
     }
 
