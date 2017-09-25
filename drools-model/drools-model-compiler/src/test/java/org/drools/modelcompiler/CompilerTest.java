@@ -96,6 +96,34 @@ public class CompilerTest {
         assertEquals( "Mario is older than Mark", result.getValue() );
     }
 
+
+    @Test
+    public void testGlobal() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "import " + Result.class.getCanonicalName() + ";" +
+                        "global org.drools.modelcompiler.Result globalResult;" +
+                        "rule X when\n" +
+                        "  $p1 : Person(name == \"Mark\")\n" +
+                        "then\n" +
+                        " globalResult.setValue($p1.getName() + \" is \" + $p1.getAge());\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+
+        Result result = new Result();
+        ksession.setGlobal("globalResult", result);
+
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Edson", 35));
+        ksession.insert(new Person("Mario", 40));
+
+        ksession.fireAllRules();
+
+        assertEquals( "Mark is 37", result.getValue() );
+
+    }
+
     @Test
     public void testShareAlpha() {
         String str =
