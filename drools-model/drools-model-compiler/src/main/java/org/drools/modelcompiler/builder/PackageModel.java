@@ -226,6 +226,7 @@ public class PackageModel {
 
     private static void addGlobal(ClassOrInterfaceDeclaration classDeclaration, String packageName, String globalName, Class<?> globalClass) {
         ClassOrInterfaceType varType = JavaParser.parseClassOrInterfaceType(Global.class.getCanonicalName());
+        varType.setTypeArguments(ModelGenerator.classToReferenceType(globalClass));
         Type declType = ModelGenerator.classToReferenceType(globalClass);
 
         MethodCallExpr declarationOfCall = new MethodCallExpr(null, "globalOf");
