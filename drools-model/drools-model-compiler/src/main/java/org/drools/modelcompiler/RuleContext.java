@@ -16,14 +16,14 @@
 
 package org.drools.modelcompiler;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
 import org.drools.model.Variable;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class RuleContext {
 
@@ -54,7 +54,11 @@ public class RuleContext {
     }
 
     void registerPattern( Variable variable, Pattern pattern ) {
-        patterns.put(variable, pattern);
+        patterns.put( variable, pattern );
+    }
+
+    Pattern getPattern( Variable variable ) {
+        return patterns.get( variable );
     }
 
     Declaration getDeclaration( Variable variable ) {

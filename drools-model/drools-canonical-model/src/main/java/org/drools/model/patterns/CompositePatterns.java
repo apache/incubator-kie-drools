@@ -1,16 +1,12 @@
 package org.drools.model.patterns;
 
+import org.drools.model.*;
+import org.drools.model.impl.DataSourceDefinitionImpl;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
-
-import org.drools.model.Condition;
-import org.drools.model.Consequence;
-import org.drools.model.Constraint;
-import org.drools.model.Variable;
-import org.drools.model.View;
-import org.drools.model.impl.DataSourceDefinitionImpl;
 
 public class CompositePatterns implements Condition, View {
 
@@ -51,7 +47,7 @@ public class CompositePatterns implements Condition, View {
     public void ensureVariablesDeclarationInView(Variable[] variables) {
         for (Variable variable : variables) {
             if ( usedVars.add( variable ) ) {
-                patterns.add( 0, new PatternImpl( variable, Constraint.EMPTY, DataSourceDefinitionImpl.DEFAULT ) );
+                patterns.add( 0, new PatternImpl( variable, SingleConstraint.EMPTY, DataSourceDefinitionImpl.DEFAULT ) );
             }
         }
     }
