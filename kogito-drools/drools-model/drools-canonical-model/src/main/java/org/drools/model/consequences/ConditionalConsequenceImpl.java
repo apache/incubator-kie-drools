@@ -24,9 +24,9 @@ public class ConditionalConsequenceImpl implements ConditionalConsequence {
 
     private final ExprViewItem expr;
     private final Consequence thenConsequence;
-    private final Consequence elseConsequence;
+    private final ConditionalConsequence elseConsequence;
 
-    public ConditionalConsequenceImpl( ExprViewItem expr, Consequence thenConsequence, Consequence elseConsequence ) {
+    public ConditionalConsequenceImpl( ExprViewItem expr, Consequence thenConsequence, ConditionalConsequence elseConsequence ) {
         this.expr = expr;
         this.thenConsequence = thenConsequence;
         this.elseConsequence = elseConsequence;
@@ -43,7 +43,7 @@ public class ConditionalConsequenceImpl implements ConditionalConsequence {
     }
 
     @Override
-    public Consequence getElse() {
+    public ConditionalConsequence getElse() {
         return elseConsequence;
     }
 }

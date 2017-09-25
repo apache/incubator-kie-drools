@@ -1,21 +1,12 @@
 package org.drools.model;
 
-import java.io.Serializable;
-import java.util.concurrent.TimeUnit;
-
 import org.drools.model.consequences.ConditionalConsequenceBuilder;
 import org.drools.model.consequences.ConsequenceBuilder;
 import org.drools.model.datasources.DataStore;
 import org.drools.model.datasources.DataStream;
 import org.drools.model.datasources.impl.DataStreamImpl;
 import org.drools.model.datasources.impl.SetDataStore;
-import org.drools.model.functions.Block0;
-import org.drools.model.functions.Block1;
-import org.drools.model.functions.Function0;
-import org.drools.model.functions.Function1;
-import org.drools.model.functions.Function2;
-import org.drools.model.functions.Predicate1;
-import org.drools.model.functions.Predicate2;
+import org.drools.model.functions.*;
 import org.drools.model.functions.accumulate.Average;
 import org.drools.model.functions.accumulate.Reduce;
 import org.drools.model.functions.accumulate.Sum;
@@ -23,33 +14,12 @@ import org.drools.model.functions.temporal.AfterPredicate;
 import org.drools.model.functions.temporal.BeforePredicate;
 import org.drools.model.functions.temporal.Interval;
 import org.drools.model.functions.temporal.TemporalPredicate;
-import org.drools.model.impl.DataSourceDefinitionImpl;
-import org.drools.model.impl.DeclarationImpl;
-import org.drools.model.impl.EntryPointImpl;
-import org.drools.model.impl.GlobalImpl;
-import org.drools.model.impl.JavaClassType;
-import org.drools.model.impl.QueryBuider;
-import org.drools.model.impl.RuleBuilder;
-import org.drools.model.impl.SourceImpl;
-import org.drools.model.impl.ValueImpl;
-import org.drools.model.impl.WindowImpl;
-import org.drools.model.impl.WindowReferenceImpl;
-import org.drools.model.view.AccumulateExprViewItem;
-import org.drools.model.view.CombinedExprViewItem;
-import org.drools.model.view.ExistentialExprViewItem;
-import org.drools.model.view.Expr1ViewItem;
-import org.drools.model.view.Expr1ViewItemImpl;
-import org.drools.model.view.Expr2ViewItem;
-import org.drools.model.view.Expr2ViewItemImpl;
-import org.drools.model.view.ExprViewItem;
-import org.drools.model.view.InputViewItem;
-import org.drools.model.view.InputViewItemImpl;
-import org.drools.model.view.OOPathBuilder;
+import org.drools.model.impl.*;
+import org.drools.model.view.*;
 import org.drools.model.view.OOPathBuilder.OOPathChunkBuilder;
-import org.drools.model.view.SetViewItem;
-import org.drools.model.view.TemporalExprViewItem;
-import org.drools.model.view.ViewItem;
-import org.drools.model.view.ViewItemBuilder;
+
+import java.io.Serializable;
+import java.util.concurrent.TimeUnit;
 
 import static org.drools.model.functions.FunctionUtils.toFunctionN;
 import static org.drools.model.impl.ViewBuilder.viewItems2Patterns;
@@ -329,8 +299,24 @@ public class DSL {
 
     // -- Conditional Named Consequnce --
 
-    public static <T> ConditionalConsequenceBuilder when(Variable<T> var, Predicate1<T> predicate) {
-        return new ConditionalConsequenceBuilder( expr( var, predicate ) );
+    public static <A> ConditionalConsequenceBuilder when(Variable<A> var, Predicate1<A> predicate) {
+        return when( expr( var, predicate ) );
+    }
+
+    public static <A> ConditionalConsequenceBuilder when(String exprId, Variable<A> var, Predicate1<A> predicate) {
+        return when( expr( exprId, var, predicate ) );
+    }
+
+    public static <A, B> ConditionalConsequenceBuilder when(Variable<A> var1, Variable<B> var2, Predicate2<A, B> predicate) {
+        return when( expr( var1, var2, predicate ) );
+    }
+
+    public static <A, B> ConditionalConsequenceBuilder when(String exprId, Variable<A> var1, Variable<B> var2, Predicate2<A, B> predicate) {
+        return when( expr( exprId, var1, var2, predicate ) );
+    }
+
+    public static ConditionalConsequenceBuilder when(ExprViewItem expr) {
+        return new ConditionalConsequenceBuilder( expr );
     }
 
     // -- RHS --

@@ -16,25 +16,19 @@
 
 package org.drools.modelcompiler;
 
-import java.util.Collection;
-
 import org.drools.core.reteoo.AlphaNode;
-import org.drools.model.Global;
+import org.drools.model.*;
 import org.drools.model.Index.ConstraintType;
-import org.drools.model.Model;
-import org.drools.model.Query1;
-import org.drools.model.Query2;
-import org.drools.model.Rule;
-import org.drools.model.Variable;
 import org.drools.model.impl.ModelImpl;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
+
+import java.util.Collection;
 
 import static java.util.Arrays.asList;
 import static org.drools.model.DSL.*;
@@ -490,7 +484,6 @@ public class FlowTest {
     }
 
     @Test
-    @Ignore("kpackage generation to be implemented")
     public void testBreakingNamedConsequence() {
         Variable<Result> resultV = declarationOf( type( Result.class ) );
         Variable<Person> markV = declarationOf( type( Person.class ) );
@@ -500,9 +493,14 @@ public class FlowTest {
                 .build(
                         expr("exprA", markV, p -> p.getName().equals("Mark"))
                                 .indexedBy( String.class, ConstraintType.EQUAL, Person::getName, "Mark" )
-                                .reactOn( "name", "age" ), // also react on age, see RuleDescr.lookAheadFieldsOfIdentifier
-                        when(markV, p -> p.getAge() < 40).then(
-                            on(markV, resultV).breaking().execute((p, r) -> r.addValue( "Found " + p.getName())) ),
+                                .reactOn( "name", "age" ),
+                        when("cond1", markV, p -> p.getAge() < 30).then(
+                            on(markV, resultV).breaking().execute((p, r) -> r.addValue( "Found young " + p.getName()))
+                        ).elseWhen("cond2", markV, p -> p.getAge() > 50).then(
+                            on(markV, resultV).breaking().execute((p, r) -> r.addValue( "Found old " + p.getName()))
+                        ).elseWhen().then(
+                            on(markV, resultV).breaking().execute((p, r) -> r.addValue( "Found " + p.getName()))
+                        ),
                         expr("exprB", olderV, p -> !p.getName().equals("Mark"))
                                 .indexedBy( String.class, ConstraintType.NOT_EQUAL, Person::getName, "Mark" )
                                 .reactOn( "name" ),

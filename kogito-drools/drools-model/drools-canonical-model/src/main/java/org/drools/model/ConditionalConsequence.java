@@ -22,5 +22,5 @@ public interface ConditionalConsequence extends RuleItem {
 
     ExprViewItem getExpr();
     Consequence getThen();
-    Consequence getElse();
+    ConditionalConsequence getElse();
 }

@@ -159,7 +159,7 @@ public class PatternBuilder {
 
         @Override
         public Pattern<T> get() {
-            return new PatternImpl(variable, Constraint.EMPTY, dataSourceDefinition);
+            return new PatternImpl(variable, SingleConstraint.EMPTY, dataSourceDefinition);
         }
     }
 

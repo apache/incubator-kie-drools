@@ -1,5 +1,7 @@
 package org.drools.model;
 
+import org.drools.model.constraints.AbstractSingleConstraint;
+import org.drools.model.constraints.AndConstraints;
 import org.drools.model.functions.PredicateN;
 
 public interface SingleConstraint extends Constraint {
@@ -21,4 +23,21 @@ public interface SingleConstraint extends Constraint {
     default Type getType() {
         return Type.SINGLE;
     }
+
+    SingleConstraint EMPTY = new AbstractSingleConstraint("EMPTY") {
+        @Override
+        public Variable[] getVariables() {
+            return new Variable[0];
+        }
+
+        @Override
+        public PredicateN getPredicate() {
+            return PredicateN.True;
+        }
+
+        @Override
+        public AndConstraints and(Constraint constraint ) {
+            return new AndConstraints(constraint);
+        }
+    };
 }
