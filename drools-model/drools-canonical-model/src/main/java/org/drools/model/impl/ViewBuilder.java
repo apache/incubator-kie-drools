@@ -1,54 +1,18 @@
 package org.drools.model.impl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Stream;
-
-import org.drools.model.AccumulateFunction;
-import org.drools.model.Argument;
-import org.drools.model.Condition;
+import org.drools.model.*;
 import org.drools.model.Condition.Type;
-import org.drools.model.ConditionalConsequence;
-import org.drools.model.Consequence;
-import org.drools.model.Constraint;
-import org.drools.model.DataSourceDefinition;
-import org.drools.model.Pattern;
-import org.drools.model.RuleItem;
-import org.drools.model.RuleItemBuilder;
-import org.drools.model.SingleConstraint;
-import org.drools.model.Variable;
 import org.drools.model.consequences.ConditionalNamedConsequenceImpl;
 import org.drools.model.consequences.NamedConsequenceImpl;
 import org.drools.model.constraints.SingleConstraint1;
 import org.drools.model.constraints.SingleConstraint2;
 import org.drools.model.constraints.TemporalConstraint;
-import org.drools.model.patterns.AccumulatePatternImpl;
-import org.drools.model.patterns.CompositePatterns;
-import org.drools.model.patterns.ExistentialPatternImpl;
-import org.drools.model.patterns.InvokerMultiValuePatternImpl;
-import org.drools.model.patterns.InvokerSingleValuePatternImpl;
-import org.drools.model.patterns.OOPathImpl;
-import org.drools.model.patterns.PatternImpl;
-import org.drools.model.patterns.QueryCallPattern;
-import org.drools.model.view.AbstractExprViewItem;
-import org.drools.model.view.AccumulateExprViewItem;
-import org.drools.model.view.CombinedExprViewItem;
-import org.drools.model.view.ExistentialExprViewItem;
-import org.drools.model.view.Expr1ViewItemImpl;
-import org.drools.model.view.Expr2ViewItemImpl;
-import org.drools.model.view.InputViewItemImpl;
-import org.drools.model.view.OOPathViewItem;
+import org.drools.model.patterns.*;
+import org.drools.model.view.*;
 import org.drools.model.view.OOPathViewItem.OOPathChunk;
-import org.drools.model.view.QueryCallViewItem;
-import org.drools.model.view.SetViewItem;
-import org.drools.model.view.TemporalExprViewItem;
-import org.drools.model.view.ViewItem;
+
+import java.util.*;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 import static org.drools.model.DSL.input;
@@ -89,13 +53,7 @@ public class ViewBuilder {
                 if (!topLevel) {
                     throw new IllegalStateException("A consequence can be only a top level item");
                 }
-                ConditionalConsequence cond = (ConditionalConsequence) ruleItem;
-                SingleConstraint constraint = cond.getExpr() instanceof Expr1ViewItemImpl ?
-                                              new SingleConstraint1( (Expr1ViewItemImpl) cond.getExpr() ):
-                                              new SingleConstraint2( (Expr2ViewItemImpl) cond.getExpr() );
-                conditions.add( new ConditionalNamedConsequenceImpl( constraint,
-                                                                     createNamedConsequence( consequences, cond.getThen() ),
-                                                                     createNamedConsequence( consequences, cond.getElse() ) ) );
+                conditions.add( createConditionalNamedConsequence(consequences, (ConditionalConsequence) ruleItem) );
                 continue;
             }
 
@@ -144,12 +102,12 @@ public class ViewBuilder {
             if ( type == Type.AND ) {
                 condition = conditionMap.get( patterVariable );
                 if ( condition == null ) {
-                    condition = new PatternImpl( patterVariable, Constraint.EMPTY, getDataSourceDefinition( inputs, patterVariable ) );
+                    condition = new PatternImpl( patterVariable, SingleConstraint.EMPTY, getDataSourceDefinition( inputs, patterVariable ) );
                     conditions.add( condition );
                     conditionMap.put( patterVariable, condition );
                 }
             } else {
-                condition = new PatternImpl( patterVariable, Constraint.EMPTY, getDataSourceDefinition( inputs, patterVariable ) );
+                condition = new PatternImpl( patterVariable, SingleConstraint.EMPTY, getDataSourceDefinition( inputs, patterVariable ) );
                 conditions.add( condition );
             }
 
@@ -173,12 +131,24 @@ public class ViewBuilder {
             if ( topLevel && inputs.size() > usedVars.size() ) {
                 inputs.keySet().removeAll( usedVars );
                 for ( Map.Entry<Variable<?>, InputViewItemImpl<?>> entry : inputs.entrySet() ) {
-                    conditions.add( 0, new PatternImpl( entry.getKey(), Constraint.EMPTY, entry.getValue().getDataSourceDefinition() ) );
+                    conditions.add( 0, new PatternImpl( entry.getKey(), SingleConstraint.EMPTY, entry.getValue().getDataSourceDefinition() ) );
                     usedVars.add( entry.getKey() );
                 }
             }
         }
         return condition;
+    }
+
+    private static ConditionalNamedConsequenceImpl createConditionalNamedConsequence(Map<String, Consequence> consequences, ConditionalConsequence cond) {
+
+        SingleConstraint constraint = cond.getExpr() == null ?
+                null :
+                cond.getExpr() instanceof Expr1ViewItemImpl ?
+                        new SingleConstraint1( (Expr1ViewItemImpl) cond.getExpr() ):
+                        new SingleConstraint2( (Expr2ViewItemImpl) cond.getExpr() );
+        return new ConditionalNamedConsequenceImpl( constraint,
+                                                    createNamedConsequence( consequences, cond.getThen() ),
+                                                    cond.getElse() != null ? createConditionalNamedConsequence( consequences, cond.getElse() ) : null );
     }
 
     private static NamedConsequenceImpl createNamedConsequence( Map<String, Consequence> consequences, Consequence consequence ) {
