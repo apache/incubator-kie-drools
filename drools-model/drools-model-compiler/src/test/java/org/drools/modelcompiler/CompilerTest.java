@@ -100,14 +100,15 @@ public class CompilerTest {
     @Test
     public void testGlobal() {
         String str =
+                "package org.mypkg;" +
                 "import " + Person.class.getCanonicalName() + ";" +
-                        "import " + Result.class.getCanonicalName() + ";" +
-                        "global org.drools.modelcompiler.Result globalResult;" +
-                        "rule X when\n" +
-                        "  $p1 : Person(name == \"Mark\")\n" +
-                        "then\n" +
-                        " globalResult.setValue($p1.getName() + \" is \" + $p1.getAge());\n" +
-                        "end";
+                "import " + Result.class.getCanonicalName() + ";" +
+                "global org.drools.modelcompiler.Result globalResult;" +
+                "rule X when\n" +
+                "  $p1 : Person(name == \"Mark\")\n" +
+                "then\n" +
+                " globalResult.setValue($p1.getName() + \" is \" + $p1.getAge());\n" +
+                "end";
 
         KieSession ksession = getKieSession( str );
 

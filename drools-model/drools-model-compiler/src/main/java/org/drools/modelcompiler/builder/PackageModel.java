@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.CompilationUnit;
@@ -45,6 +46,8 @@ public class PackageModel {
     private final String name;
     
     private Set<String> imports = new HashSet<>();
+
+    private Map<String, Class<?>> globals = new HashMap<>();
 
     private Map<String, MethodDeclaration> ruleMethods = new HashMap<>();
 
@@ -70,7 +73,26 @@ public class PackageModel {
     public void addImports(Collection<String> imports) {
         this.imports.addAll(imports);
     }
-    
+
+    public void addGlobals(Map<String, String> values) {
+        Map<String, Class<?>> transformed;
+        transformed = values
+                .entrySet()
+                .stream()
+                .collect(Collectors.toMap(e -> e.getKey(), e -> {
+                    try {
+                        return Class.forName(e.getValue());
+                    } catch (ClassNotFoundException e1) {
+                        throw new UnsupportedOperationException("Class not found", e1);
+                    }
+                }));
+        globals.putAll(transformed);
+    }
+
+    public Map<String, Class<?>> getGlobals() {
+        return globals;
+    }
+
     public void putRuleMethod(String methodName, MethodDeclaration ruleMethod) {
         this.ruleMethods.put(methodName, ruleMethod);
     }
