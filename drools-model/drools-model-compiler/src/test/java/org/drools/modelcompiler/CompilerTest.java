@@ -16,14 +16,6 @@
 
 package org.drools.modelcompiler;
 
-import java.io.File;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
-
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
 import org.drools.core.ClockType;
@@ -36,12 +28,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.KieServices;
-import org.kie.api.builder.KieBuilder;
-import org.kie.api.builder.KieFileSystem;
-import org.kie.api.builder.KieModule;
-import org.kie.api.builder.KieRepository;
-import org.kie.api.builder.Message;
-import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.*;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.builder.model.KieSessionModel;
@@ -54,16 +41,19 @@ import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
 import org.kie.api.time.SessionPseudoClock;
 
-<<<<<<< 6f38b701fcc43a2725abce76c9782c67985556d7
 import java.io.File;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.CoreMatchers.hasItem;
-=======
 import static java.util.Arrays.asList;
->>>>>>> named consequence implementation
+import java.io.File;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+
+import static java.util.Arrays.asList;
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
@@ -88,40 +78,6 @@ public class CompilerTest {
         this.testRunType = testRunType;
     }
 
-<<<<<<< 6f38b701fcc43a2725abce76c9782c67985556d7
-    public static class Result {
-        private Object value;
-
-        public Result() {
-            // empty constructor.
-        }
-
-        public Result( Object value ) {
-            this.value = value;
-        }
-
-        public Object getValue() {
-            return value;
-        }
-
-        public void setValue(Object value) {
-            this.value = value;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-
-            Result result = (Result) o;
-
-            return value.equals(result.value);
-        }
-
-    }
-
-=======
->>>>>>> named consequence implementation
     @Test
     public void testBeta() {
         String str =
@@ -940,10 +896,16 @@ public class CompilerTest {
                 "rule R when\n" +
                 "  $r : Result()\n" +
                 "  $p1 : Person(name == \"Mark\")\n" +
-                "  if ( age < 40 ) break[FoundMark]\n" +
+                "  if ( age < 30 ) break[FoundYoungMark]" +
+                "  else if ( age > 50) break[FoundOldMark]\n" +
+                "  else break[FoundMark]\n" +
                 "  $p2 : Person(name != \"Mark\", age > $p1.age)\n" +
                 "then\n" +
                 "  $r.addValue($p2.getName() + \" is older than \" + $p1.getName());\n" +
+                "then[FoundYoungMark]\n" +
+                "  $r.addValue(\"Found young \" + $p1.getName());\n" +
+                "then[FoundOldMark]\n" +
+                "  $r.addValue(\"Found old \" + $p1.getName());\n" +
                 "then[FoundMark]\n" +
                 "  $r.addValue(\"Found \" + $p1.getName());\n" +
                 "end";

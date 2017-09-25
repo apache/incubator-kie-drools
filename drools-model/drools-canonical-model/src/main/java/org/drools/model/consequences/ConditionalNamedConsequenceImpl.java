@@ -23,12 +23,24 @@ import org.drools.model.Variable;
 public class ConditionalNamedConsequenceImpl implements Condition {
     private final SingleConstraint expr;
     private final NamedConsequenceImpl thenConsequence;
-    private final NamedConsequenceImpl elseConsequence;
+    private final ConditionalNamedConsequenceImpl elseBranch;
 
-    public ConditionalNamedConsequenceImpl( SingleConstraint expr, NamedConsequenceImpl thenConsequence, NamedConsequenceImpl elseConsequence ) {
+    public ConditionalNamedConsequenceImpl( SingleConstraint expr, NamedConsequenceImpl thenConsequence, ConditionalNamedConsequenceImpl elseBranch ) {
         this.expr = expr;
         this.thenConsequence = thenConsequence;
-        this.elseConsequence = elseConsequence;
+        this.elseBranch = elseBranch;
+    }
+
+    public SingleConstraint getExpr() {
+        return expr;
+    }
+
+    public NamedConsequenceImpl getThenConsequence() {
+        return thenConsequence;
+    }
+
+    public ConditionalNamedConsequenceImpl getElseBranch() {
+        return elseBranch;
     }
 
     @Override
