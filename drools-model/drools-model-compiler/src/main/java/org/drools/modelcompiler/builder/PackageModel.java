@@ -187,6 +187,10 @@ public class PackageModel {
         BodyDeclaration<?> globalsList = JavaParser.parseBodyDeclaration("List<Global> globals = new ArrayList<>();");
         rulesClass.addMember(globalsList);
         // end of fixed part
+
+        for ( Map.Entry<String, Class<?>> g : getGlobals().entrySet() ) {
+            addGlobal(rulesClass, getName(), g.getKey(), g.getValue());
+        }
         
         // instance initializer block.
         // add to `rules` list the result of invoking each method for rule 
@@ -208,11 +212,13 @@ public class PackageModel {
             rulesListInitializerBody.addStatement( add );
         }
 
-
         for ( Map.Entry<String, Class<?>> g : getGlobals().entrySet() ) {
-            addGlobal(rulesClass, getName(), g.getKey(), g.getValue());
-        }
+            NameExpr rulesFieldName = new NameExpr( "globals" );
+            MethodCallExpr add = new MethodCallExpr(rulesFieldName, "add");
+            add.addArgument( new NameExpr("glb_" + g.getKey()) );
+            rulesListInitializerBody.addStatement( add );
 
+        }
 
         // each method per Drlx parser result
         ruleMethods.values().forEach( rulesClass::addMember );
