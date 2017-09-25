@@ -9427,4 +9427,45 @@ public class RuleModelDRLPersistenceUnmarshallingTest extends BaseRuleModelTest 
         assertEqualsIgnoreWhitespace(drl,
                                      RuleModelDRLPersistenceImpl.getInstance().marshal(m));
     }
+
+    @Test
+    public void testNotMatchesOrNotSoundsLike() {
+        final String drl = "rule \"rule1\"\n"
+                + "dialect \"mvel\"\n"
+                + "when\n"
+                + "MyTestObject(firstName not matches \"John\" || firstName not soundslike \"Peter\" )\n"
+                + "then\n"
+                + "end";
+
+        final RuleModel model = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
+                                                                                    Collections.emptyList(),
+                                                                                    dmo);
+
+        assertEqualsIgnoreWhitespace(drl,
+                                     RuleModelDRLPersistenceImpl.getInstance().marshal(model));
+    }
+
+    @Test
+    public void testNotMatchesAndNotSoundsLikeDeclaredInDsl() {
+        final String drl = "package org.mortgages;\n" +
+                "rule \"testdsl\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    Applicant's name does not matches or does not sounds like John\n" +
+                "  then\n" +
+                "end";
+
+        final String dslDefinition = "Applicant's name does not matches or does not sounds like {name}";
+        final String dslFile = "[when]" + dslDefinition + "= Applicant( name not matches \"{name}\" || name not soundslike \"{name}\" )";
+
+        when(dmo.getPackageName()).thenReturn("org.mortgages");
+
+        final RuleModel model = RuleModelDRLPersistenceImpl.getInstance().unmarshalUsingDSL(drl,
+                                                                                            Collections.emptyList(),
+                                                                                            dmo,
+                                                                                            dslFile);
+
+        assertEqualsIgnoreWhitespace(drl,
+                                     RuleModelDRLPersistenceImpl.getInstance().marshal(model));
+    }
 }
