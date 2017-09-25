@@ -36,6 +36,7 @@ public class PersistenceUtil {
     private static Logger logger = LoggerFactory.getLogger( PersistenceUtil.class );
 
     public static final String ENTITY_MANAGER_FACTORY = "org.kie.api.persistence.jpa.EntityManagerFactory";
+    public static final String TRANSACTION_MANAGER = "TRANSACTION_MANAGER";
 
     protected static final String DATASOURCE_PROPERTIES = "/datasource.properties";
     private static H2Server h2Server = new H2Server();
