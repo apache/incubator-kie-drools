@@ -141,9 +141,6 @@ public class ModelGenerator {
             addVariable(ruleBlock, decl);
         }
 
-        for ( Entry<String, Class<?>> g : packageModel.getGlobals().entrySet() ) {
-            addGlobal(ruleBlock, pkg.getName(), g.getKey(), g.getValue());
-        }
 
         VariableDeclarationExpr ruleVar = new VariableDeclarationExpr( RULE_TYPE, "rule");
 
@@ -271,22 +268,6 @@ public class ModelGenerator {
         ruleBlock.addStatement(var_assign);
     }
 
-    private static void addGlobal(BlockStmt ruleBlock, String packageName, String globalName, Class<?> globalClass) {
-        ClassOrInterfaceType varType = JavaParser.parseClassOrInterfaceType(Global.class.getCanonicalName());
-        Type declType = classToReferenceType(globalClass);
-
-        varType.setTypeArguments(declType);
-        VariableDeclarationExpr var_ = new VariableDeclarationExpr(varType, "glb_" + globalName, Modifier.FINAL);
-
-        MethodCallExpr declarationOfCall = new MethodCallExpr(null, "globalOf");
-        MethodCallExpr typeCall = new MethodCallExpr(null, "type");
-        typeCall.addArgument( new ClassExpr(declType ));
-        declarationOfCall.addArgument(typeCall);
-        declarationOfCall.addArgument(new StringLiteralExpr(packageName));
-
-        AssignExpr var_assign = new AssignExpr(var_, declarationOfCall, AssignExpr.Operator.ASSIGN);
-        ruleBlock.addStatement(var_assign);
-    }
 
     private static final ClassOrInterfaceType QUERY_TYPE = JavaParser.parseClassOrInterfaceType( Query.class.getCanonicalName() );
 
@@ -504,7 +485,7 @@ public class ModelGenerator {
         }
     }
 
-    private static Type classToReferenceType(Class<?> declClass) {
+    public static Type classToReferenceType(Class<?> declClass) {
         Type parsedType = JavaParser.parseType(declClass.getCanonicalName());
         return parsedType instanceof PrimitiveType ?
                 ((PrimitiveType) parsedType).toBoxedType() :

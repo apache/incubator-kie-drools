@@ -27,16 +27,26 @@ import java.util.stream.Collectors;
 
 import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.CompilationUnit;
+import org.drools.javaparser.ast.Modifier;
 import org.drools.javaparser.ast.body.BodyDeclaration;
 import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import org.drools.javaparser.ast.body.FieldDeclaration;
 import org.drools.javaparser.ast.body.InitializerDeclaration;
 import org.drools.javaparser.ast.body.MethodDeclaration;
+import org.drools.javaparser.ast.body.VariableDeclarator;
 import org.drools.javaparser.ast.comments.JavadocComment;
+import org.drools.javaparser.ast.expr.AssignExpr;
+import org.drools.javaparser.ast.expr.ClassExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
+import org.drools.javaparser.ast.expr.StringLiteralExpr;
+import org.drools.javaparser.ast.expr.VariableDeclarationExpr;
 import org.drools.javaparser.ast.stmt.BlockStmt;
+import org.drools.javaparser.ast.type.ClassOrInterfaceType;
+import org.drools.javaparser.ast.type.Type;
 import org.drools.javaparser.printer.PrettyPrinter;
 import org.drools.javaparser.printer.PrettyPrinterConfiguration;
+import org.drools.model.Global;
 import org.drools.model.Model;
 import org.drools.modelcompiler.builder.generator.DRLExprIdGenerator;
 import org.drools.modelcompiler.builder.generator.ModelGenerator;
@@ -159,7 +169,7 @@ public class PackageModel {
         BodyDeclaration<?> getGlobalsMethod = JavaParser.parseBodyDeclaration(
                 "    @Override\n" +
                 "    public List<Global> getGlobals() {\n" +
-                "        return Collections.emptyList();\n" +
+                "        return globals;\n" +
                 "    }\n");
         rulesClass.addMember(getGlobalsMethod);
         
@@ -174,6 +184,8 @@ public class PackageModel {
         rulesClass.addMember(rulesList);
         BodyDeclaration<?> queriesList = JavaParser.parseBodyDeclaration("List<Query> queries = new ArrayList<>();");
         rulesClass.addMember(queriesList);
+        BodyDeclaration<?> globalsList = JavaParser.parseBodyDeclaration("List<Global> globals = new ArrayList<>();");
+        rulesClass.addMember(globalsList);
         // end of fixed part
         
         // instance initializer block.
@@ -195,7 +207,13 @@ public class PackageModel {
             add.addArgument( new MethodCallExpr(null, methodName) );
             rulesListInitializerBody.addStatement( add );
         }
-        
+
+
+        for ( Map.Entry<String, Class<?>> g : getGlobals().entrySet() ) {
+            addGlobal(rulesClass, getName(), g.getKey(), g.getValue());
+        }
+
+
         // each method per Drlx parser result
         ruleMethods.values().forEach( rulesClass::addMember );
         queryMethods.values().forEach(rulesClass::addMember);
@@ -205,6 +223,22 @@ public class PackageModel {
 //        config.setColumnAlignFirstMethodChain(true);
         return new PrettyPrinter(config).print(cu);
     }
+
+    private static void addGlobal(ClassOrInterfaceDeclaration classDeclaration, String packageName, String globalName, Class<?> globalClass) {
+        ClassOrInterfaceType varType = JavaParser.parseClassOrInterfaceType(Global.class.getCanonicalName());
+        Type declType = ModelGenerator.classToReferenceType(globalClass);
+
+        MethodCallExpr declarationOfCall = new MethodCallExpr(null, "globalOf");
+        MethodCallExpr typeCall = new MethodCallExpr(null, "type");
+        typeCall.addArgument( new ClassExpr(declType ));
+        declarationOfCall.addArgument(typeCall);
+        declarationOfCall.addArgument(new StringLiteralExpr(packageName));
+
+        FieldDeclaration field = classDeclaration.addField(varType, "glb_" + globalName, Modifier.FINAL);
+
+        field.getVariables().get(0).setInitializer(declarationOfCall);
+    }
+
 
     public void print() {
         System.out.println("=====");
