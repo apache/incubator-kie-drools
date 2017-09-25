@@ -142,7 +142,7 @@ public class JPAProcessInstanceManager
             return null;
         }
         processInstance = (org.jbpm.process.instance.ProcessInstance)
-        	processInstanceInfo.getProcessInstance(kruntime, this.kruntime.getEnvironment());
+        	processInstanceInfo.getProcessInstance(kruntime, this.kruntime.getEnvironment(), readOnly);
         if (!readOnly) {
             processInstanceInfo.updateLastReadDate();
             TransactionManagerHelper.addToUpdatableSet(txm, processInstanceInfo);
@@ -160,7 +160,11 @@ public class JPAProcessInstanceManager
                 kruntime.getProcessInstance(parentProcessInstanceId);
             }
             processInstance.setKnowledgeRuntime( kruntime );
+            
             ((ProcessInstanceImpl) processInstance).reconnect();
+            if (readOnly) {
+                internalRemoveProcessInstance(processInstance);
+            }
         }
         return processInstance;
     }

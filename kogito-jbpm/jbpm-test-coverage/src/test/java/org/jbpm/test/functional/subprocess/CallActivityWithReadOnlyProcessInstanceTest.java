@@ -65,15 +65,8 @@ public class CallActivityWithReadOnlyProcessInstanceTest extends JbpmTestCase {
 
         RuntimeManager manager = createRuntimeManager(strategy, (String) null, "org/jbpm/test/functional/subprocess/CallActivityWithVar-Main.bpmn2", "org/jbpm/test/functional/subprocess/CallActivityWithVar-Sub.bpmn2");
 
-        RuntimeEngine runtimeEngine;
-        if (Strategy.SINGLETON.equals(strategy) || Strategy.REQUEST.equals(strategy)) {
-            runtimeEngine = getRuntimeEngine();
-        } else if (Strategy.PROCESS_INSTANCE.equals(strategy)) {
-            runtimeEngine = getRuntimeEngine(ProcessInstanceIdContext.get());
-        } else {
-            throw new IllegalStateException("Not possible!");
-        }
-
+        RuntimeEngine runtimeEngine = getRuntimeEngine(ProcessInstanceIdContext.get());
+        
         KieSession ksession = runtimeEngine.getKieSession();
         TaskService taskService = runtimeEngine.getTaskService();
 
