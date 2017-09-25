@@ -76,7 +76,7 @@ public final class TypeUtil {
         } else if (val instanceof Map) {
             return formatContext((Map) val, wrapForCodeUsage);
         } else {
-            return val.toString();
+            return String.valueOf(val);
         }
     }
 

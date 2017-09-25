@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/definitions/_84453b71-5d23-479f-9481-5196d92bacae" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="5.2.0.201707041212" id="_84453b71-5d23-479f-9481-5196d92bacae" name="0003-iteration-augmented" namespace="http://www.trisotech.com/definitions/_84453b71-5d23-479f-9481-5196d92bacae" triso:logoChoice="Default">
+  <semantic:extensionElements/>
+  <semantic:itemDefinition isCollection="false" label="tLoan" name="tLoan">
+    <semantic:itemComponent id="_22a98052-8bb3-495c-a0ed-c56be749ea8a" isCollection="false" name="amount">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_0231a96c-a6b2-4792-8bdc-90468e658c42" isCollection="false" name="rate">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_92c72eae-a121-4330-87a5-311fad6f1a8e" isCollection="false" name="term">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition isCollection="true" label="tLoanList" name="tLoanList">
+    <semantic:typeRef>tLoan</semantic:typeRef>
+  </semantic:itemDefinition>
+  <semantic:decision id="d_MonthlyPayment" name="MonthlyPayment" triso:displayName="MonthlyPayment">
+    <semantic:variable id="_0de889ea-d50e-4f4d-9d5a-cded8e086817" name="MonthlyPayment"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#i_Loans"/>
+    </semantic:informationRequirement>
+    <semantic:knowledgeRequirement>
+      <semantic:requiredKnowledge href="#b_PMT2"/>
+    </semantic:knowledgeRequirement>
+    <semantic:literalExpression id="_4ab135c9-0800-4352-a257-60333c91be5f">
+      <semantic:text>for i in Loans return PMT2(i)</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+  <semantic:businessKnowledgeModel id="b_PMT2" name="PMT2" triso:displayName="PMT2">
+    <semantic:encapsulatedLogic xmlns:drools="http://www.drools.org/kie-dmn/1.1" drools:kind="undefined" id="_ad7ca048-83ff-4ba5-bf93-363dad20c57b">
+      <semantic:formalParameter id="_0f436c6b-b203-4d9b-a18f-6f4e2d3cfaa4" name="loan" typeRef="tLoan"/>
+      <semantic:literalExpression expressionLanguage="http://www.omg.org/spec/FEEL/20140401" id="_bc7c7b3e-ede5-4133-b0df-70c977e76943">
+        <semantic:text>(loan.amount * loan.rate/12)/(1-(1+loan.rate/12)**-loan.term)</semantic:text>
+      </semantic:literalExpression>
+    </semantic:encapsulatedLogic>
+    <semantic:variable id="_13140f67-1b37-4868-8504-8ed9e091305c" name="PMT2"/>
+  </semantic:businessKnowledgeModel>
+  <semantic:inputData id="i_Loans" name="Loans" triso:displayName="Loans">
+    <semantic:variable id="_60a11d57-89e2-4832-9844-9502cf139678" name="Loans" typeRef="tLoanList"/>
+  </semantic:inputData>
+  <semantic:decision id="_e32a5fca-212c-4d60-be02-ce123d84f9e8" name="Sort" triso:displayName="Sort">
+    <semantic:variable id="_baba876a-5514-4133-a795-653c5ebcefc7" name="Sort"/>
+    <semantic:informationRequirement>
+      <semantic:requiredDecision href="#d_MonthlyPayment"/>
+    </semantic:informationRequirement>
+    <semantic:literalExpression id="_ebeef218-3549-4392-92c4-908d95d2ee5e">
+      <semantic:text>sort(MonthlyPayment, function(a, b) a &gt;b)</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+</semantic:definitions>

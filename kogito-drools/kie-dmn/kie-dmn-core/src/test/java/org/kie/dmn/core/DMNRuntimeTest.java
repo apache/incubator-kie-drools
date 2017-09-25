@@ -54,6 +54,7 @@ import java.util.stream.Collectors;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNContext;
+import org.kie.dmn.api.core.DMNDecisionResult;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.api.core.DMNModel;
@@ -67,6 +68,7 @@ import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.feel.marshaller.FEELStringMarshaller;
 import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.model.v1_1.ItemDefinition;
 import org.mockito.ArgumentCaptor;
@@ -1404,6 +1406,18 @@ public class DMNRuntimeTest {
         // total of: 2. x1 error in calling external decision, and x1 error in making final decision as it depends on the former.
         // please notice it will print 4 lines in the log, 2x are the "external invocation" and then 2x are the one by the caller, checked herebelow:
         assertThat( DMNRuntimeUtil.formatMessages( dmnResult.getMessages() ), dmnResult.getMessages().size(), is( 2 ) );
+    }
+
+    @Test
+    public void testInvalidFunction() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources( "InvalidFunction.dmn", this.getClass() );
+        final DMNModel model = runtime.getModel( "http://www.trisotech.com/definitions/_84453b71-5d23-479f-9481-5196d92bacae", "0003-iteration-augmented" );
+        assertThat( model, notNullValue() );
+        final DMNContext context = DMNFactory.newContext();
+        context.set( "Loans", new HashMap<>() );
+        final DMNResult result = runtime.evaluateAll(model, context);
+        final List<DMNDecisionResult> decisionResults = result.getDecisionResults();
+        FEELStringMarshaller.INSTANCE.marshall( Arrays.asList(decisionResults.get(0).getResult(), decisionResults.get(1).getResult()) );
     }
 
 }
