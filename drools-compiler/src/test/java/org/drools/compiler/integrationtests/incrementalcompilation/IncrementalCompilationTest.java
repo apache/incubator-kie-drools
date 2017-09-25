@@ -15,22 +15,6 @@
 
 package org.drools.compiler.integrationtests.incrementalcompilation;
 
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CompletionService;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.FactA;
 import org.drools.compiler.Message;
@@ -53,12 +37,8 @@ import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.Service;
-import org.kie.api.builder.KieBuilder;
-import org.kie.api.builder.KieFileSystem;
-import org.kie.api.builder.KieModule;
+import org.kie.api.builder.*;
 import org.kie.api.builder.Message.Level;
-import org.kie.api.builder.ReleaseId;
-import org.kie.api.builder.Results;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.builder.model.KieSessionModel;
@@ -71,11 +51,7 @@ import org.kie.api.definition.type.FactType;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.io.ResourceType;
 import org.kie.api.logger.KieRuntimeLogger;
-import org.kie.api.runtime.Globals;
-import org.kie.api.runtime.KieContainer;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.KieSessionConfiguration;
-import org.kie.api.runtime.StatelessKieSession;
+import org.kie.api.runtime.*;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.conf.TimedRuleExecutionOption;
 import org.kie.api.runtime.conf.TimerJobFactoryOption;
@@ -85,6 +61,11 @@ import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.command.CommandFactory;
+
+import java.io.StringReader;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Arrays.asList;
 import static org.drools.core.util.DroolsTestUtil.rulestoMap;
@@ -4376,5 +4357,43 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         ks.newKieBuilder(kfs).buildAll();
 
         kContainer.updateToVersion(releaseId3);
+    }
+
+    @Test
+    public void testChangedPackage() {
+        // DROOLS-1742
+        String drl1 = "package org.a\n" +
+                "rule \"RG_1\"\n" +
+                "    when\n" +
+                "        Boolean()\n" +
+                "        Integer()\n" +
+                "    then\n" +
+                "        System.out.println(\"RG_1\");" +
+                "end\n";
+
+        String drl2 = "package org.b\n" +
+                "rule \"RG_2\"\n" +
+                "    when\n" +
+                "        Boolean()\n" +
+                "        String()\n" +
+                "    then\n" +
+                "        System.out.println(\"RG_2\");" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
+        ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
+
+        createAndDeployJar(ks, releaseId1, drl2, drl1);
+        KieContainer kieContainer = ks.newKieContainer(releaseId1);
+        KieSession kieSession = kieContainer.newKieSession();
+
+        kieSession.insert("test");
+        assertEquals(0, kieSession.fireAllRules());
+
+        createAndDeployJar( ks, releaseId2, drl1);
+        kieContainer.updateToVersion(releaseId2);
+
+        assertEquals(0, kieSession.fireAllRules());
     }
 }
