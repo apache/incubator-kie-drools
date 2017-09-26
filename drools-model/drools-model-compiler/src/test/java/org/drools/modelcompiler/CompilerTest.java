@@ -142,7 +142,7 @@ public class CompilerTest {
                 "global java.lang.String nameG;" +
                 "global org.drools.modelcompiler.Result resultG;" +
                 "rule X when\n" +
-                "  $p1 : Person(name == nameG)\n" +
+                "  $p1 : Person(name == name)\n" +
                 "then\n" +
                 " resultG.setValue($p1.getName() + \" is \" + $p1.getAge());\n" +
                 "end";
