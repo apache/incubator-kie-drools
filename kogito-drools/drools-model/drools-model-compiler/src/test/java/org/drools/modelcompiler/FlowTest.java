@@ -369,7 +369,7 @@ public class FlowTest {
         Variable<Integer> ageV = declarationOf( type( Integer.class ) );
 
         Query1<Integer> query = query( "olderThan", ageV )
-                .view( expr("exprA", personV, ageV, (p, a) -> p.getAge() > a) );
+                .build( expr("exprA", personV, ageV, (p, a) -> p.getAge() > a) );
 
         Model model = new ModelImpl().addQuery( query );
         KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
@@ -392,7 +392,7 @@ public class FlowTest {
         Variable<Integer> ageV = declarationOf( type( Integer.class ) );
 
         Query2<Person, Integer> query = query( "olderThan", personV, ageV )
-                .view( expr("exprA", personV, ageV, (p, a) -> p.getAge() > a) );
+                .build( expr("exprA", personV, ageV, (p, a) -> p.getAge() > a) );
 
         Variable<Person> personVRule = declarationOf( type( Person.class ) );
         Rule rule = rule("R")
@@ -422,7 +422,7 @@ public class FlowTest {
         Variable<Integer> ageV = declarationOf( type( Integer.class ) );
 
         Query2<Person, Integer> query = query( "olderThan", personV, ageV )
-                .view( expr("exprA", personV, ageV, (p, a) -> p.getAge() > a) );
+                .build( expr("exprA", personV, ageV, (p, a) -> p.getAge() > a) );
 
         Rule rule = rule("R")
                 .build(
