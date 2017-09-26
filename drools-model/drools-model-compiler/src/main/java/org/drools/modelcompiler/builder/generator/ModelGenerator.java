@@ -502,7 +502,7 @@ public class ModelGenerator {
     }
 
     private static void createQueryCallDSL(RuleContext context, PackageModel packageModel, String queryName, MethodDeclaration queryMethod, List<? extends BaseDescr> descriptors) {
-        MethodCallExpr queryCall = new MethodCallExpr(null, queryMethod.getName());
+        NameExpr queryCall = new NameExpr(queryMethod.getName());
         MethodCallExpr callCall = new MethodCallExpr(queryCall, "call");
 
         for (int i = 0; i < descriptors.size(); i++) {
