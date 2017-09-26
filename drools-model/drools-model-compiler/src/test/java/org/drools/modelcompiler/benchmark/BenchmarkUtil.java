@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
-import org.drools.modelcompiler.Person;
+import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.benchmark.BuildFromKJarBenchmark.BenchmarkType;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
