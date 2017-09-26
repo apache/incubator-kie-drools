@@ -1,18 +1,9 @@
 package org.drools.modelcompiler.constraints;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.List;
-
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.reteoo.PropertySpecificUtil;
-import org.drools.core.rule.ContextEntry;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.IndexableConstraint;
-import org.drools.core.rule.IntervalProviderConstraint;
-import org.drools.core.rule.MutableTypeConstraint;
+import org.drools.core.rule.*;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.Tuple;
@@ -22,6 +13,11 @@ import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.index.IndexUtil;
 import org.drools.model.BetaIndex;
 import org.drools.model.Index;
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.List;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.getEmptyPropertyReactiveMask;
 import static org.drools.core.rule.constraint.MvelConstraint.INDEX_EVALUATOR;
@@ -102,12 +98,14 @@ public class LambdaConstraint extends MutableTypeConstraint implements Indexable
 
     @Override
     public boolean isAllowedCachedLeft(ContextEntry context, InternalFactHandle handle) {
-        return evaluator.evaluate(handle, ((LambdaContextEntry) context).getTuple());
+        LambdaContextEntry lambdaContext = ((LambdaContextEntry) context);
+        return evaluator.evaluate(handle, lambdaContext.getTuple(), lambdaContext.getWorkingMemory());
     }
 
     @Override
     public boolean isAllowedCachedRight(Tuple tuple, ContextEntry context) {
-        return evaluator.evaluate(((LambdaContextEntry) context).getHandle(), tuple);
+        LambdaContextEntry lambdaContext = ((LambdaContextEntry) context);
+        return evaluator.evaluate(lambdaContext.getHandle(), tuple, lambdaContext.getWorkingMemory());
     }
 
     @Override
