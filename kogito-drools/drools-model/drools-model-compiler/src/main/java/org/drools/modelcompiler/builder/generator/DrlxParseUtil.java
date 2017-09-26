@@ -48,7 +48,9 @@ import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.javaparser.ast.expr.ThisExpr;
 import org.drools.javaparser.ast.nodeTypes.NodeWithOptionalScope;
 import org.drools.javaparser.ast.nodeTypes.NodeWithSimpleName;
+import org.drools.javaparser.ast.type.PrimitiveType;
 import org.drools.javaparser.ast.type.ReferenceType;
+import org.drools.javaparser.ast.type.Type;
 import org.drools.modelcompiler.builder.generator.ModelGenerator.RuleContext;
 
 import static org.drools.core.util.StringUtils.ucFirst;
@@ -348,5 +350,12 @@ public class DrlxParseUtil {
 
         String expression = String.join(".", converted);
         return JavaParser.parseExpression(expression);
+    }
+
+    public static Type classToReferenceType(Class<?> declClass) {
+        Type parsedType = JavaParser.parseType(declClass.getCanonicalName());
+        return parsedType instanceof PrimitiveType ?
+                ((PrimitiveType) parsedType).toBoxedType() :
+                parsedType.getElementType();
     }
 }
