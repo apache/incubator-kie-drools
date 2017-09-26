@@ -1,6 +1,6 @@
-package org.drools.modelcompiler;
+package org.drools.modelcompiler.domain;
 
-import org.openjdk.jmh.util.Optional;
+import org.drools.modelcompiler.Address;
 
 public class Person {
     private String name;

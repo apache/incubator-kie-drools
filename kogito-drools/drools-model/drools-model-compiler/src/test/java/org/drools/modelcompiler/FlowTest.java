@@ -21,6 +21,10 @@ import org.drools.model.*;
 import org.drools.model.Index.ConstraintType;
 import org.drools.model.impl.ModelImpl;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
+import org.drools.modelcompiler.domain.Adult;
+import org.drools.modelcompiler.domain.Child;
+import org.drools.modelcompiler.domain.Person;
+import org.drools.modelcompiler.domain.Result;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.ClassObjectFilter;
@@ -512,7 +516,6 @@ public class FlowTest {
 
         Model model = new ModelImpl().addRule( rule );
         KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
-
         KieSession ksession = kieBase.newKieSession();
 
         Result result = new Result();
@@ -528,4 +531,33 @@ public class FlowTest {
 
         assertEquals( "Found Mark", results.iterator().next() );
     }
+
+    @Test
+    public void testFrom() throws Exception {
+        Variable<Result> resultV = declarationOf( type( Result.class ) );
+        Variable<Adult> dadV = declarationOf( type( Adult.class ) );
+        Variable<Child> childV = declarationOf( type( Child.class ), from( dadV, Adult::getChildren ) );
+
+        Rule rule = rule( "from" )
+                .build(
+                        expr("exprA", childV, c -> c.getAge() > 8),
+                        on(childV, resultV).execute( (c,r) -> r.setValue( c.getName() ) )
+                );
+
+
+        Model model = new ModelImpl().addRule( rule );
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
+        KieSession ksession = kieBase.newKieSession();
+
+        Result result = new Result();
+        ksession.insert( result );
+
+        Adult dad = new Adult( "dad", 40 );
+        dad.addChild( new Child( "Alan", 10 ) );
+        dad.addChild( new Child( "Betty", 7 ) );
+        ksession.insert( dad );
+        ksession.fireAllRules();
+
+        assertEquals("Alan", result.getValue());
+   }
 }

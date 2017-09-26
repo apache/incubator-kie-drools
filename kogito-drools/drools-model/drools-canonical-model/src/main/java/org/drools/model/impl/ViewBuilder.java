@@ -25,7 +25,7 @@ public class ViewBuilder {
 
     public static CompositePatterns viewItems2Patterns( RuleItemBuilder[] viewItemBuilders ) {
         List<RuleItem> ruleItems = Stream.of( viewItemBuilders ).map( RuleItemBuilder::get ).collect( toList() );
-        return viewItems2Condition( ruleItems, new HashMap<>(), new HashSet<>(), Type.AND, true );
+        return viewItems2Condition( ruleItems, new LinkedHashMap<>(), new HashSet<>(), Type.AND, true );
     }
 
     public static CompositePatterns viewItems2Condition(List<RuleItem> ruleItems, Map<Variable<?>, InputViewItemImpl<?>> inputs,
@@ -111,6 +111,16 @@ public class ViewBuilder {
                 conditions.add( condition );
             }
 
+            if ( patterVariable instanceof Declaration ) {
+                Declaration declaration = (( Declaration ) patterVariable);
+                if ( declaration.getSource() instanceof From ) {
+                    Variable var = (( From ) declaration.getSource()).getVariable();
+                    if (var.isFact()) {
+                        inputs.putIfAbsent( var, (InputViewItemImpl) input( var ) );
+                    }
+                }
+            }
+
             if ( viewItem instanceof AbstractExprViewItem && !( (AbstractExprViewItem) viewItem ).isQueryExpression() ) {
                 for (Variable var : viewItem.getVariables()) {
                     if (var.isFact()) {
@@ -130,8 +140,9 @@ public class ViewBuilder {
         if ( type == Type.AND ) {
             if ( topLevel && inputs.size() > usedVars.size() ) {
                 inputs.keySet().removeAll( usedVars );
+                int i = 0;
                 for ( Map.Entry<Variable<?>, InputViewItemImpl<?>> entry : inputs.entrySet() ) {
-                    conditions.add( 0, new PatternImpl( entry.getKey(), SingleConstraint.EMPTY, entry.getValue().getDataSourceDefinition() ) );
+                    conditions.add( i++, new PatternImpl( entry.getKey(), SingleConstraint.EMPTY, entry.getValue().getDataSourceDefinition() ) );
                     usedVars.add( entry.getKey() );
                 }
             }

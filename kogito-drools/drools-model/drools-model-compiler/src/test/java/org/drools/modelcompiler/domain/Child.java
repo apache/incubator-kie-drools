@@ -14,19 +14,25 @@
  * limitations under the License.
  */
 
-package org.drools.modelcompiler;
+package org.drools.modelcompiler.domain;
 
-import org.kie.api.definition.type.Role;
+import org.drools.core.phreak.ReactiveList;
 
-@Role(Role.Type.EVENT)
-public class StockTick {
-    private final String company;
+import java.util.List;
 
-    public StockTick( String company ) {
-        this.company = company;
+public class Child extends Person {
+
+    private final List<Toy> toys = new ReactiveList<Toy>();
+
+    public Child(String name, int age) {
+        super(name, age);
     }
 
-    public String getCompany() {
-        return company;
+    public List<Toy> getToys() {
+        return toys;
+    }
+
+    public void addToy(Toy toy) {
+        toys.add(toy);
     }
 }
