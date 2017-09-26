@@ -27,11 +27,11 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.constraint.QueryNameConstraint;
 import org.drools.core.ruleunit.RuleUnitUtil;
-import org.drools.core.spi.Accumulator;
-import org.drools.core.spi.EvalExpression;
-import org.drools.core.spi.GlobalExtractor;
-import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.spi.*;
 import org.drools.model.*;
+import org.drools.model.Consequence;
+import org.drools.model.Constraint;
+import org.drools.model.From;
 import org.drools.model.WindowReference;
 import org.drools.model.consequences.ConditionalNamedConsequenceImpl;
 import org.drools.model.consequences.NamedConsequenceImpl;
@@ -359,6 +359,12 @@ public class KiePackagesBuilder {
                         createWindowReference( ctx, window );
                     }
                     pattern.setSource( new org.drools.core.rule.WindowReference( window.getName() ) );
+                } else if ( decl.getSource() instanceof From ) {
+                    From<?> from = (From) decl.getSource();
+                    DataProvider provider = new LambdaDataProvider( ctx.getDeclaration( from.getVariable() ), from.getProvider() );
+                    org.drools.core.rule.From fromSource = new org.drools.core.rule.From(provider);
+                    fromSource.setResultPattern( pattern );
+                    pattern.setSource( fromSource );
                 } else {
                     throw new UnsupportedOperationException( "Unknown source: " + decl.getSource() );
                 }

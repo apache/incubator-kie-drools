@@ -4,7 +4,7 @@ import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
-import org.drools.modelcompiler.Person;
+import org.drools.modelcompiler.domain.Person;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
