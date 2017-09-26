@@ -742,11 +742,14 @@ public class CompilerTest {
     public void testQueryZeroArgs() {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
+                "global java.lang.Integer ageG;" +
                 "query olderThan\n" +
-                "    $p : Person(age > 40)\n" +
+                "    $p : Person(age > ageG)\n" +
                 "end ";
 
         KieSession ksession = getKieSession(str);
+
+        ksession.setGlobal("ageG", 40);
 
         ksession.insert(new Person("Mark", 39));
         ksession.insert(new Person("Mario", 41));
