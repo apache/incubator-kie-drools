@@ -49,4 +49,17 @@ public class Result {
     public String toString() {
         return value.toString();
     }
+
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) return true;
+        if ( o == null || getClass() != o.getClass() ) return false;
+        Result result = ( Result ) o;
+        return value != null ? value.equals( result.value ) : result.value == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return value != null ? value.hashCode() : 0;
+    }
 }
