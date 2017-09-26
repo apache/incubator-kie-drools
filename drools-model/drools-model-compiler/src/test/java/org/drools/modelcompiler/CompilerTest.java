@@ -21,7 +21,7 @@ import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
 import org.drools.core.ClockType;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.modelcompiler.builder.CanonicalModelKieProject;
-import org.hamcrest.CoreMatchers;
+import org.drools.modelcompiler.domain.*;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,13 +41,6 @@ import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
 import org.kie.api.time.SessionPseudoClock;
 
-import java.io.File;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
-import static org.hamcrest.CoreMatchers.hasItem;
-import static java.util.Arrays.asList;
 import java.io.File;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -111,7 +104,7 @@ public class CompilerTest {
                 "package org.mypkg;" +
                 "import " + Person.class.getCanonicalName() + ";" +
                 "import " + Result.class.getCanonicalName() + ";" +
-                "global org.drools.modelcompiler.Result globalResult;" +
+                "global Result globalResult;" +
                 "rule X when\n" +
                 "  $p1 : Person(name == \"Mark\")\n" +
                 "then\n" +
@@ -140,7 +133,7 @@ public class CompilerTest {
                 "import " + Person.class.getCanonicalName() + ";" +
                 "import " + Result.class.getCanonicalName() + ";" +
                 "global java.lang.String nameG;" +
-                "global org.drools.modelcompiler.Result resultG;" +
+                "global Result resultG;" +
                 "rule X when\n" +
                 "  $p1 : Person(nameG == name)\n" +
                 "then\n" +
@@ -987,5 +980,34 @@ public class CompilerTest {
         assertEquals(1, results.size());
 
         assertEquals( "Found Mark", results.iterator().next() );
+    }
+
+    @Test
+    @Ignore("DSL generation to be implemented")
+    public void testFrom() {
+        String str =
+                "import " + Result.class.getCanonicalName() + ";\n" +
+                "import " + Adult.class.getCanonicalName() + ";\n" +
+                "import " + Child.class.getCanonicalName() + ";\n" +
+                "rule R when\n" +
+                "  $r : Result()\n" +
+                "  $a : Adult()\n" +
+                "  $c : Child( age > 8 ) from $a.children\n" +
+                "then\n" +
+                "  $r.setValue($c.getName());\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        Result result = new Result();
+        ksession.insert( result );
+
+        Adult dad = new Adult( "dad", 40 );
+        dad.addChild( new Child( "Alan", 10 ) );
+        dad.addChild( new Child( "Betty", 7 ) );
+        ksession.insert( dad );
+        ksession.fireAllRules();
+
+        assertEquals("Alan", result.getValue());
     }
 }
