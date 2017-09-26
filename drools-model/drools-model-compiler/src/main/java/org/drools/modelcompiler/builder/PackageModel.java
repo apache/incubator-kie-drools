@@ -33,14 +33,11 @@ import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.drools.javaparser.ast.body.FieldDeclaration;
 import org.drools.javaparser.ast.body.InitializerDeclaration;
 import org.drools.javaparser.ast.body.MethodDeclaration;
-import org.drools.javaparser.ast.body.VariableDeclarator;
 import org.drools.javaparser.ast.comments.JavadocComment;
-import org.drools.javaparser.ast.expr.AssignExpr;
 import org.drools.javaparser.ast.expr.ClassExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
-import org.drools.javaparser.ast.expr.VariableDeclarationExpr;
 import org.drools.javaparser.ast.stmt.BlockStmt;
 import org.drools.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.javaparser.ast.type.Type;
@@ -49,6 +46,7 @@ import org.drools.javaparser.printer.PrettyPrinterConfiguration;
 import org.drools.model.Global;
 import org.drools.model.Model;
 import org.drools.modelcompiler.builder.generator.DRLExprIdGenerator;
+import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.ModelGenerator;
 
 public class PackageModel {
@@ -189,7 +187,7 @@ public class PackageModel {
         // end of fixed part
 
         for ( Map.Entry<String, Class<?>> g : getGlobals().entrySet() ) {
-            addGlobal(rulesClass, getName(), g.getKey(), g.getValue());
+            addGlobalField(rulesClass, getName(), g.getKey(), g.getValue());
         }
         
         // instance initializer block.
@@ -230,16 +228,17 @@ public class PackageModel {
         return new PrettyPrinter(config).print(cu);
     }
 
-    private static void addGlobal(ClassOrInterfaceDeclaration classDeclaration, String packageName, String globalName, Class<?> globalClass) {
+    private static void addGlobalField(ClassOrInterfaceDeclaration classDeclaration, String packageName, String globalName, Class<?> globalClass) {
         ClassOrInterfaceType varType = JavaParser.parseClassOrInterfaceType(Global.class.getCanonicalName());
-        varType.setTypeArguments(ModelGenerator.classToReferenceType(globalClass));
-        Type declType = ModelGenerator.classToReferenceType(globalClass);
+        varType.setTypeArguments(DrlxParseUtil.classToReferenceType(globalClass));
+        Type declType = DrlxParseUtil.classToReferenceType(globalClass);
 
         MethodCallExpr declarationOfCall = new MethodCallExpr(null, "globalOf");
         MethodCallExpr typeCall = new MethodCallExpr(null, "type");
         typeCall.addArgument( new ClassExpr(declType ));
         declarationOfCall.addArgument(typeCall);
         declarationOfCall.addArgument(new StringLiteralExpr(packageName));
+        declarationOfCall.addArgument(new StringLiteralExpr(globalName));
 
         FieldDeclaration field = classDeclaration.addField(varType, "glb_" + globalName, Modifier.FINAL);
 

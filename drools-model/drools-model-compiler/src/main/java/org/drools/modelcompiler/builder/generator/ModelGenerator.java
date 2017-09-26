@@ -235,7 +235,7 @@ public class ModelGenerator {
 
     private static void addVariable(BlockStmt ruleBlock, Entry<String, DeclarationSpec> decl) {
         ClassOrInterfaceType varType = JavaParser.parseClassOrInterfaceType(Variable.class.getCanonicalName());
-        Type declType = classToReferenceType(decl.getValue().declarationClass );
+        Type declType = DrlxParseUtil.classToReferenceType(decl.getValue().declarationClass );
 
         varType.setTypeArguments(declType);
         VariableDeclarationExpr var_ = new VariableDeclarationExpr(varType, "var_" + decl.getKey(), Modifier.FINAL);
@@ -283,7 +283,7 @@ public class ModelGenerator {
 
         Type[] genericType = queryParameters.stream()
                 .map(e -> e.type)
-                .map(ModelGenerator::classToReferenceType)
+                .map(DrlxParseUtil::classToReferenceType)
                 .toArray(Type[]::new);
 
         if(genericType.length > 0)
@@ -483,13 +483,6 @@ public class ModelGenerator {
                 throw new UnsupportedOperationException("Aggregate function result type", e);
             }
         }
-    }
-
-    public static Type classToReferenceType(Class<?> declClass) {
-        Type parsedType = JavaParser.parseType(declClass.getCanonicalName());
-        return parsedType instanceof PrimitiveType ?
-                ((PrimitiveType) parsedType).toBoxedType() :
-                parsedType.getElementType();
     }
 
     private static void visit( RuleContext context, PackageModel packageModel, NotDescr descr ) {
