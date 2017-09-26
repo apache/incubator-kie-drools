@@ -36,6 +36,7 @@ import java.util.Collection;
 
 import static java.util.Arrays.asList;
 import static org.drools.model.DSL.*;
+import static org.drools.modelcompiler.CompilerTest.getObjects;
 import static org.junit.Assert.*;
 
 public class FlowTest {
@@ -443,6 +444,40 @@ public class FlowTest {
         ksession.fireAllRules();
 
         Collection<Result> results = (Collection<Result>) ksession.getObjects( new ClassObjectFilter( Result.class ) );
+        assertEquals( 1, results.size() );
+        assertEquals( "Mario", results.iterator().next().getValue() );
+    }
+
+    @Test
+    public void testQueryInvokedWithGlobal() {
+        Global<Integer> ageG = globalOf(type(Integer.class), "defaultpkg", "ageG");
+        Variable<Person> personV = declarationOf( type( Person.class ) );
+        Variable<Integer> ageV = declarationOf( type( Integer.class ) );
+
+        Query2<Person, Integer> query = query("olderThan", personV, ageV)
+                .build( expr("exprA", personV, ageV, (_this, $age) -> _this.getAge() > $age) );
+
+        Rule rule = rule("R")
+                .build(
+                        expr( "exprB", personV, p -> p.getName().startsWith( "M" ) ),
+                        query.call(personV, ageG),
+                        on(personV).execute((drools, p) -> drools.insert(new Result(p.getName())) )
+                     );
+
+        Model model = new ModelImpl().addGlobal( ageG ).addQuery( query ).addRule( rule );
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
+
+        KieSession ksession = kieBase.newKieSession();
+
+        ksession.setGlobal("ageG", 40);
+
+        ksession.insert( new Person( "Mark", 39 ) );
+        ksession.insert( new Person( "Mario", 41 ) );
+        ksession.insert( new Person( "Edson", 41 ) );
+
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjects( ksession, Result.class );
         assertEquals( 1, results.size() );
         assertEquals( "Mario", results.iterator().next().getValue() );
     }
