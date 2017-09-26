@@ -83,6 +83,7 @@ import org.drools.javaparser.ast.type.Type;
 import org.drools.javaparser.ast.type.TypeParameter;
 import org.drools.javaparser.ast.type.UnknownType;
 import org.drools.model.BitMask;
+import org.drools.model.Global;
 import org.drools.model.Query;
 import org.drools.model.Query1;
 import org.drools.model.Query2;
@@ -108,6 +109,8 @@ public class ModelGenerator {
         String name = pkg.getName();
         PackageModel packageModel = new PackageModel(name);
         packageModel.addImports(pkg.getTypeResolver().getImports());
+        packageModel.addGlobals(pkg.getGlobals());
+
         for (RuleDescrImpl descr : rules) {
             final RuleDescr descriptor = descr.getDescr();
             if (descriptor instanceof QueryDescr) {
@@ -138,6 +141,7 @@ public class ModelGenerator {
             addVariable(ruleBlock, decl);
         }
 
+
         VariableDeclarationExpr ruleVar = new VariableDeclarationExpr( RULE_TYPE, "rule");
 
         MethodCallExpr ruleCall = new MethodCallExpr(null, "rule");
@@ -161,6 +165,14 @@ public class ModelGenerator {
             verifiedDeclUsedInRHS.stream().map( k -> "var_" + k ).forEach( onCall::addArgument );
         }
 
+        if(!packageModel.getGlobals().isEmpty()) {
+            if(onCall == null) {
+                onCall = new MethodCallExpr( null, "on" );
+            }
+            packageModel.getGlobals().keySet().stream().map(k -> "glb_" + k).forEach(onCall::addArgument);
+        }
+
+
         MethodCallExpr executeCall = new MethodCallExpr(onCall, "execute");
         LambdaExpr executeLambda = new LambdaExpr();
         executeCall.addArgument(executeLambda);
@@ -169,6 +181,7 @@ public class ModelGenerator {
             executeLambda.addParameter(new Parameter(new UnknownType(), "drools"));
         }
         verifiedDeclUsedInRHS.stream().map(x -> new Parameter(new UnknownType(), x)).forEach(executeLambda::addParameter);
+        packageModel.getGlobals().keySet().stream().map(x -> new Parameter(new UnknownType(), x)).forEach(executeLambda::addParameter);
         executeLambda.setBody( ruleConsequence );
 
         thenCall.addArgument( executeCall );
@@ -222,7 +235,7 @@ public class ModelGenerator {
 
     private static void addVariable(BlockStmt ruleBlock, Entry<String, DeclarationSpec> decl) {
         ClassOrInterfaceType varType = JavaParser.parseClassOrInterfaceType(Variable.class.getCanonicalName());
-        Type declType = classToReferenceType(decl.getValue().declarationClass );
+        Type declType = DrlxParseUtil.classToReferenceType(decl.getValue().declarationClass );
 
         varType.setTypeArguments(declType);
         VariableDeclarationExpr var_ = new VariableDeclarationExpr(varType, "var_" + decl.getKey(), Modifier.FINAL);
@@ -253,9 +266,8 @@ public class ModelGenerator {
 
         AssignExpr var_assign = new AssignExpr(var_, declarationOfCall, AssignExpr.Operator.ASSIGN);
         ruleBlock.addStatement(var_assign);
-
-        return;
     }
+
 
     private static final ClassOrInterfaceType QUERY_TYPE = JavaParser.parseClassOrInterfaceType( Query.class.getCanonicalName() );
 
@@ -271,7 +283,7 @@ public class ModelGenerator {
 
         Type[] genericType = queryParameters.stream()
                 .map(e -> e.type)
-                .map(ModelGenerator::classToReferenceType)
+                .map(DrlxParseUtil::classToReferenceType)
                 .toArray(Type[]::new);
 
         if(genericType.length > 0)
@@ -471,13 +483,6 @@ public class ModelGenerator {
                 throw new UnsupportedOperationException("Aggregate function result type", e);
             }
         }
-    }
-
-    private static Type classToReferenceType(Class<?> declClass) {
-        Type parsedType = JavaParser.parseType(declClass.getCanonicalName());
-        return parsedType instanceof PrimitiveType ?
-                ((PrimitiveType) parsedType).toBoxedType() :
-                parsedType.getElementType();
     }
 
     private static void visit( RuleContext context, PackageModel packageModel, NotDescr descr ) {
