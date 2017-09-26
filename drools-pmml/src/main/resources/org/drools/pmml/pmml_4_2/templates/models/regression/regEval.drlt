@@ -24,11 +24,11 @@
 
 @declare{'regEval'}
 
-rule "Regression Model Output @{context} : @{target} - @{category}"
-@code{ int j = 0; }
+rule "Regress Model Output @{context} : @{target} - @{category}"
+@code{ int k = 0; }
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
-    @{ pmmlPackageName }.RegTable( context == "@{context}",
+    RegTable( context == "@{context}",
               target == "@{target}",
               category == null || == "@{category}",
               $c0 : intercept,
@@ -37,20 +37,20 @@ when
               $trmC : trmCoeffs,
               $ix   : index )
     @foreach{ fld : inputFields }
-    x@{j} : @{compactUpperCase( fld.name )}( context == "@{context}", valid == true, valx@{compactUpperCase( fld.name )} : value )
-    @code{ j++; }
+    x@{k} : PMML4Data( capitalizedName == "@{compactUpperCase(fld.name)}", context == "@{context}", valid == true, valx@{compactUpperCase(fld.name)} : value )
+    @code{ k++; }
     @end{}
 then
     double x = $c0;
-    @code{j=0;} @foreach{ numP : numPredictors }
-        x += $numC[ @{j} ] * Math.pow( valx@{compactUpperCase( numP.name )}, $numE[ @{j} ]  ); @code{j++;}
+    @code{k=0;} @foreach{ numP : numPredictors }
+        x += $numC[ @{k} ] * Math.pow( (double)valx@{compactUpperCase( numP.name )}, $numE[ @{k} ]  ); @code{k++;}
     @end{}
-    @code{j=0;} @foreach{ catP : catPredictors }
-        x += $catC[ @{j} ] * ( "@{catP.value}".equals( valx@{compactUpperCase( catP.name )} ) ? 1.0 : 0.0 ); @code{j++;}
+    @code{k=0;} @foreach{ catP : catPredictors }
+        x += $catC[ @{k} ] * ( "@{catP.value}".equals( valx@{compactUpperCase( catP.name )} ) ? 1.0 : 0.0 ); @code{k++;}
     @end{}
 
-    @code{j=0;} @foreach{ trmP : trmPredictors }
-        x += $trmC[ @{j} ] * @foreach{ ref : trmP.fieldReves } valx@{ compactUpperCase( ref.field ) } @end{' * '}; @code{j++;}
+    @code{k=0;} @foreach{ trmP : trmPredictors }
+        x += $trmC[ @{k} ] * @foreach{ ref : trmP.fieldReves } (double)valx@{ compactUpperCase( ref.field ) } @end{' * '}; @code{k++;}
     @end{}
 
 
@@ -69,7 +69,7 @@ then
         @if{ normalization != null }
             x = @{ mapRegModelClassificationNormalization( normalization.value(), "x" ) };
         @end{}
-        @{ pmmlPackageName }.RegTargetBit bit = new @{ pmmlPackageName }.RegTargetBit(
+        RegTargetBit bit = new RegTargetBit(
             "@{context}",
             "@{target}",
             "@{category}",
@@ -79,7 +79,8 @@ then
             $ix );
         insertLogical( bit );
     @end{}
-end
+end 
+
 
 @end{}
 

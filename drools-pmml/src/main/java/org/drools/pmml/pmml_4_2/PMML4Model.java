@@ -32,6 +32,8 @@ public interface PMML4Model {
     public List<OutputField> getRawOutputFields();
     public List<PMMLDataField> getMiningFields();
     public List<PMMLDataField> getOutputFields();
+    public String getMiningPojo();
+    public String getMiningPojoClassName();
     public PMML4Unit getOwner();
     public MiningSchema getMiningSchema();
     public Output getOutput();

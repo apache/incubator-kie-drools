@@ -20,12 +20,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.pmml.pmml_4_2.model.AbstractPMMLData;
-import org.drools.pmml.pmml_4_2.model.PMMLRequestData;
-import org.drools.pmml.pmml_4_2.model.ParameterInfo;
 
 @comment{
    The class that is generated from this MVEL template is meant to
-   act as a POJO representing the MiningSchema found in a ScoreCard model,
+   act as a POJO representing the MiningSchema found in a Regression model,
    which is itself contained in a PMML document.
    For each element in the MiningSchema, two properties are generated:
    1) The element name, prefixed with an 'm' is used to indicate whether the data is considered "missing"

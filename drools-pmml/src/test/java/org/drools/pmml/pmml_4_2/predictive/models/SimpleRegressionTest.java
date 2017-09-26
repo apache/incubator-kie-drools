@@ -18,9 +18,13 @@ package org.drools.pmml.pmml_4_2.predictive.models;
 
 
 import org.drools.pmml.pmml_4_2.DroolsAbstractPMMLTest;
+import org.drools.pmml.pmml_4_2.model.PMMLRequestData;
+import org.drools.pmml.pmml_4_2.model.ParameterInfo;
 import org.junit.After;
 import org.junit.Test;
+import org.kie.api.KieServices;
 import org.kie.api.definition.type.FactType;
+import org.kie.api.logger.KieRuntimeLogger;
 import org.kie.api.runtime.KieSession;
 
 public class SimpleRegressionTest extends DroolsAbstractPMMLTest {
@@ -47,10 +51,12 @@ public class SimpleRegressionTest extends DroolsAbstractPMMLTest {
         kSession.fireAllRules();  //init model
 
         FactType tgt = kSession.getKieBase().getFactType( packageName, "Fld4" );
+        PMMLRequestData request = new PMMLRequestData("LinReg");
+        request.addRequestParam("Fld1",0.9);
+        request.addRequestParam("Fld2", 0.3);
+        request.addRequestParam("Fld3", "x");
+        kSession.insert(request);
 
-        kSession.getEntryPoint( "in_Fld1" ).insert( 0.9 );
-        kSession.getEntryPoint( "in_Fld2" ).insert( 0.3 );
-        kSession.getEntryPoint( "in_Fld3" ).insert( "x" );
         kSession.fireAllRules();
 
         double x = 0.5
@@ -77,9 +83,12 @@ public class SimpleRegressionTest extends DroolsAbstractPMMLTest {
 
         FactType tgt = kSession.getKieBase().getFactType( packageName, "Fld4" );
 
-        kSession.getEntryPoint( "in_Fld1" ).insert( 1.0 );
-        kSession.getEntryPoint( "in_Fld2" ).insert( 1.0 );
-        kSession.getEntryPoint( "in_Fld3" ).insert( "x" );
+        PMMLRequestData request = new PMMLRequestData("LinReg");
+        request.addRequestParam("Fld1", 1.0);
+        request.addRequestParam("Fld2", 1.0);
+        request.addRequestParam("Fld3", "x");
+        kSession.insert(request);
+        
         kSession.fireAllRules();
 
         checkFirstDataFieldOfTypeStatus( kSession.getKieBase().getFactType( packageName, "RegOut" ),

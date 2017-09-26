@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.compiler.compiler.PMMLCompiler;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
@@ -460,6 +461,11 @@ public class KnowledgeBuilderTest {
                                                       new PMMLCompiler() {
                                                           public String compile(InputStream stream, ClassLoader cl) {
                                                               return "rule R2 when then end";
+                                                          }
+
+                                                          @Override
+                                                          public Map<String,String> getMiningPojos(String filename, ClassLoader classLoader) {
+                                                              return Collections.emptyMap();
                                                           }
 
                                                           @Override

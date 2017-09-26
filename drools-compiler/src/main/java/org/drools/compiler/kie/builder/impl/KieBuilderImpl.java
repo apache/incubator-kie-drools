@@ -17,11 +17,14 @@ package org.drools.compiler.kie.builder.impl;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import java.util.zip.ZipEntry;
@@ -39,10 +42,13 @@ import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
 import org.drools.compiler.commons.jci.problems.CompilationProblem;
 import org.drools.compiler.commons.jci.readers.DiskResourceReader;
 import org.drools.compiler.commons.jci.readers.ResourceReader;
+import org.drools.compiler.compiler.PMMLCompiler;
+import org.drools.compiler.compiler.PMMLCompilerFactory;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.core.builder.conf.impl.ResourceConfigurationImpl;
+import org.drools.core.io.impl.ClassPathResource;
 import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
 import org.kie.api.KieServices;
@@ -62,6 +68,7 @@ import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.internal.builder.KieBuilderSet;
+import org.kie.internal.io.ResourceFactory;
 
 import static org.drools.compiler.kproject.ReleaseIdImpl.adapt;
 
@@ -70,6 +77,7 @@ public class KieBuilderImpl
         InternalKieBuilder {
 
     static final String RESOURCES_ROOT = "src/main/resources/";
+    static final String PMML_POJO_ROOT = "org/drools/pmml/pmml_4_2/model/";
     static final String JAVA_ROOT = "src/main/java/";
     static final String JAVA_TEST_ROOT = "src/test/java/";
 
@@ -98,6 +106,8 @@ public class KieBuilderImpl
     private ClassLoader classLoader;
 
     private PomModel pomModel;
+
+    private PMMLCompiler pmmlCompiler; // necessary for being able to pull mining schema POJOs out of the PMML
 
     public KieBuilderImpl( File file ) {
         this.srcMfs = new DiskResourceReader( file );
@@ -213,11 +223,61 @@ public class KieBuilderImpl
                 results.addMessage( Level.ERROR, "pom.xml", "Unresolved dependency " + unresolvedDep );
             }
 
+            for (String filename: srcMfs.getFileNames()) {
+                String fname = (filename.startsWith(RESOURCES_ROOT)) ? filename.substring(RESOURCES_ROOT.length()) : filename;
+                ResourceType resType = getResourceType(kModule, fname);
+                if (resType == ResourceType.PMML) {
+                    byte[] sourceBytes = srcMfs.getBytes(filename);
+                    String source = new String(sourceBytes);
+                    buildPMMLPojos(fname, kProject);
+                }
+            }
+
             compileJavaClasses( kProject.getClassLoader(), classFilter );
 
             buildKieProject( kModule, results, kProject, trgMfs );
         }
         return this;
+    }
+
+    private void buildPMMLPojos(String filename, KieProject kProject) {
+        if (this.pmmlCompiler == null) {
+            pmmlCompiler = PMMLCompilerFactory.getPMMLCompiler();
+        }
+
+        /*
+         * A single PMML document may contain multiple models, each with
+         * their own mining schema
+         */
+        Map<String,String> miningPojosMap = pmmlCompiler.getMiningPojos(filename,null);
+        if (miningPojosMap != null && !miningPojosMap.isEmpty()) {
+            // Create a separate "source" file system to hold the Java files/resources
+            KieFileSystem javaSource = KieServices.Factory.get().newKieFileSystem();
+            ClassLoader classLoader = kProject.getClassLoader();
+            /*
+             * For each of the Java text entries (the mining POJOs)
+             * create a resource and write it to the source file system
+             */
+            for (String key: miningPojosMap.keySet()) {
+                String javaCode = miningPojosMap.get(key);
+                Resource res = ResourceFactory.newByteArrayResource(javaCode.getBytes()).setResourceType(ResourceType.JAVA);
+                StringBuilder bldr = new StringBuilder(PMML_POJO_ROOT);
+                bldr.append(key.substring(0, 1).toUpperCase()+key.substring(1));
+                bldr.append(".java");
+                res.setSourcePath(bldr.toString());
+                javaSource.write(res);
+            }
+            KnowledgeBuilderConfigurationImpl kconf = new KnowledgeBuilderConfigurationImpl( classLoader );
+            JavaDialectConfiguration javaConf = (JavaDialectConfiguration) kconf.getDialectConfiguration( "java" );
+            ResourceReader src = ( (KieFileSystemImpl)javaSource ).asMemoryFileSystem();
+            List<String> javaFileNames = new ArrayList<>();
+            for (String fname: src.getFileNames()) {
+                if (fname.endsWith(".java")) {
+                    javaFileNames.add(fname);
+                }
+            }
+            compileJavaClasses(javaConf, classLoader, javaFileNames, JAVA_ROOT, src);
+        }
     }
 
     void markSource() {
@@ -633,6 +693,25 @@ public class KieBuilderImpl
 
     private static boolean isJavaSourceFile( String fileName ) {
         return fileName.endsWith( ".java" );
+    }
+
+    private void compileJavaClasses( JavaDialectConfiguration javaConf,
+                                     ClassLoader classLoader,
+                                     List<String> javaFiles,
+                                     String rootFolder,
+                                     ResourceReader source) {
+        if (!javaFiles.isEmpty()) {
+            String[] sourceFiles = javaFiles.toArray(new String[ javaFiles.size() ]);
+            JavaCompiler javaCompiler = createCompiler( javaConf, rootFolder );
+            CompilationResult res = javaCompiler.compile(sourceFiles, source, trgMfs, classLoader);
+
+            for ( CompilationProblem problem : res.getErrors() ) {
+                results.addMessage( problem );
+            }
+            for ( CompilationProblem problem : res.getWarnings() ) {
+                results.addMessage( problem );
+            }
+        }
     }
 
     private void compileJavaClasses( JavaDialectConfiguration javaConf,

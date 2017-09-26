@@ -18,6 +18,7 @@ package org.drools.pmml.pmml_4_2.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.dmg.pmml.pmml_4_2.descr.RegressionModel;
 import org.dmg.pmml.pmml_4_2.descr.Scorecard;
 import org.drools.pmml.pmml_4_2.PMML4Model;
 import org.drools.pmml.pmml_4_2.PMML4Unit;
@@ -40,6 +41,10 @@ public class PMML4ModelFactory {
                     if (serializable instanceof Scorecard) {
                         Scorecard sc = (Scorecard)serializable;
                         ScorecardModel model = new ScorecardModel(sc.getModelName(), sc, owner);
+                        pmml4Models.add(model);
+                    } else if (serializable instanceof RegressionModel) {
+                        RegressionModel rm = (RegressionModel)serializable;
+                        Regression model = new Regression(rm.getModelName(), rm, owner);
                         pmml4Models.add(model);
                     }
                 });

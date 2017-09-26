@@ -28,6 +28,7 @@ import org.drools.compiler.compiler.PMMLCompiler;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.io.impl.ClassPathResource;
 import org.drools.core.util.IoUtils;
+import org.drools.pmml.pmml_4_2.model.PMML4UnitImpl;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.io.Resource;
@@ -58,6 +59,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PMML4Compiler implements PMMLCompiler {
 
@@ -567,6 +569,28 @@ public class PMML4Compiler implements PMMLCompiler {
         }
 
     }
+
+
+	@Override
+	public Map<String, String> getMiningPojos(String fileName, ClassLoader classLoader) {
+		Map<String,String> miningPojosMap = new HashMap<>();
+		Resource cpr = new ClassPathResource(fileName);
+		PMML pmml = null;
+		try {
+			pmml = loadModel(PMML, cpr.getInputStream());
+			PMML4UnitImpl pmmlUnit = new PMML4UnitImpl(pmml);
+			List<PMML4Model> models = pmmlUnit.getModels();
+			for (PMML4Model model: models) {
+				String miningPojo = model.getMiningPojo();
+				String miningClassName = model.getMiningPojoClassName();
+				miningPojosMap.put(miningClassName, miningPojo);
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return miningPojosMap;
+	}
 
 
 

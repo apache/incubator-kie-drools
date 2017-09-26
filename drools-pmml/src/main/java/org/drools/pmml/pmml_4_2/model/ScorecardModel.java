@@ -39,12 +39,11 @@ import org.mvel2.templates.TemplateCompiler;
 import org.mvel2.templates.TemplateRegistry;
 import org.mvel2.templates.TemplateRuntime;
 
-public class ScorecardModel extends AbstractModel implements PMML4Model {
-    private static String SCORECARD_DATA_POJO_TEMPLATE = "/org/drools/pmml/pmml_4_2/templates/mvel/scorecard/scorecardDataClass.mvel";
+public class ScorecardModel extends AbstractModel {
+    private static String SCORECARD_MINING_POJO_TEMPLATE = "/org/drools/pmml/pmml_4_2/templates/mvel/scorecard/scorecardDataClass.mvel";
     private static String SCORECARD_OUTPUT_POJO_TEMPLATE = "/org/drools/pmml/pmml_4_2/templates/mvel/scorecard/scorecardOutputClass.mvel";
+    private static String SCORECARD_MINING_TEMPLATE_NAME = "ScorecardDataTemplate";
     private Scorecard rawModel;
-    private String miningPojoClassName;
-    private String outputPojoClassName;
 
     public Function<ScorecardModel,String> miningPojoClassname = (model) -> {
         return helper.compactUpperCase(getModelId()).concat("ScoreCardData");
@@ -102,14 +101,6 @@ public class ScorecardModel extends AbstractModel implements PMML4Model {
         return outputFields;
     }
 
-    private boolean isValidMiningField(PMMLDataField field) {
-        if (miningFieldMap.containsKey(field.getName())) {
-            MiningField miningField = miningFieldMap.get(field.getName());
-            if (miningField != null && miningField.getUsageType() != FIELDUSAGETYPE.PREDICTED)
-                return true;
-        }
-        return false;
-    }
 
     @Override
     public List<PMMLDataField> getMiningFields() {
@@ -123,32 +114,11 @@ public class ScorecardModel extends AbstractModel implements PMML4Model {
 
     @Override
     public List<PMMLDataField> getOutputFields() {
-    	// Until a full featured output field definition is completed
-    	// this will return a null
+        // Until a full featured output field definition is completed
+        // this will return a null
         return null;
     }
 
-    public String getMiningPojo() {
-        TemplateRegistry registry = getTemplateRegistry();
-        List<PMMLDataField> dataFields = getMiningFields();
-        Map<String, Object> vars = new HashMap<>();
-        String className = helper.compactAsJavaId(getModelId(),true);
-        vars.put("pmmlPackageName",PMML_JAVA_PACKAGE_NAME);
-        vars.put("className",className);
-        vars.put("imports",new ArrayList<>());
-        vars.put("dataFields",dataFields);
-        vars.put("modelName", this.getModelId());
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        TemplateRuntime.execute( registry.getNamedTemplate("ScoreCardDataTemplate"),
-                                 null,
-                                 new MapVariableResolverFactory(vars),
-                                 baos );
-        String returnVal = new String(baos.toByteArray());
-        System.out.println("**************** START ScoreCardData Java ****************");
-        System.out.println(returnVal);
-        System.out.println("**************** END ScoreCardData Java ****************");
-        return returnVal;
-    }
 
     public String getOutputPojo() {
         TemplateRegistry registry = getTemplateRegistry();
@@ -165,22 +135,24 @@ public class ScorecardModel extends AbstractModel implements PMML4Model {
                                  new MapVariableResolverFactory(vars),
                                  baos );
         String returnVal = new String(baos.toByteArray());
-        System.out.println("****************** START Output Java ******************");
-        System.out.println(returnVal);
-        System.out.println("******************* END Output Java *******************");
         
         return returnVal;
     }
 
-    private TemplateRegistry getTemplateRegistry() {
+    @Override
+    protected TemplateRegistry getTemplateRegistry() {
         TemplateRegistry registry = new SimpleTemplateRegistry();
-        InputStream inputStream = Scorecard.class.getResourceAsStream(SCORECARD_DATA_POJO_TEMPLATE);
+        InputStream inputStream = Scorecard.class.getResourceAsStream(SCORECARD_MINING_POJO_TEMPLATE);
         CompiledTemplate ct = TemplateCompiler.compileTemplate(inputStream);
-        registry.addNamedTemplate("ScoreCardDataTemplate",ct);
+        registry.addNamedTemplate(SCORECARD_MINING_TEMPLATE_NAME,ct);
         inputStream = Scorecard.class.getResourceAsStream(SCORECARD_OUTPUT_POJO_TEMPLATE);
         ct = TemplateCompiler.compileTemplate(inputStream);
         registry.addNamedTemplate("ScoreCardOutputTemplate",ct);
         return registry;
+    }
+
+    public String getMiningPojoClassName() {
+        return helper.compactAsJavaId(this.getModelId().concat("ScoreCardData"),true);
     }
 
     @Override
@@ -202,4 +174,8 @@ public class ScorecardModel extends AbstractModel implements PMML4Model {
         return rawModel != null ? rawModel.hashCode() : 0;
     }
 
+    @Override
+    public String getMiningPojoTemplateName() {
+        return SCORECARD_MINING_TEMPLATE_NAME;
+    }
 }

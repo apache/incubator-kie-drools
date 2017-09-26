@@ -58,7 +58,6 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
         setKSession( getModelSession( source1, VERBOSE ) );
         setKbase( getKSession().getKieBase() );
         KieSession kSession = getKSession();
-        KieRuntimeLogger logger = KieServices.Factory.get().getLoggers().newFileLogger(kSession, "/home/lleveric/generating");
 
         kSession.fireAllRules();  //init model
 
@@ -71,7 +70,6 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
 
 
         kSession.fireAllRules();  //init model
-        logger.close();
         
         Collection<ScoreCard> scoreCards = (Collection<ScoreCard>)kSession.getObjects(new ClassObjectFilter(ScoreCard.class));
         assertNotNull(scoreCards);
@@ -80,19 +78,9 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
         ScoreCard scoreCard = scoreCards.iterator().next();
         Object x = scoreCard.getRanking();
         assertTrue( x instanceof LinkedHashMap );
-//        FactType scoreCardType = getKbase().getFactType( PMML4Helper.pmmlDefaultPackageName(), "ScoreCard" );
-//        assertNotNull( scoreCardType );
-//
-//        assertEquals( 1, kSession.getObjects( new ClassObjectFilter( scoreCardType.getFactClass() ) ).size() );
-//        Object scoreCard = kSession.getObjects( new ClassObjectFilter( scoreCardType.getFactClass() ) ).iterator().next();
 
         System.out.print(  reportWMObjects( kSession )
         );
-//        assertEquals( "SampleScore", scoreCardType.get( scoreCard, "modelName" ) );
-//        assertEquals( 41.345, scoreCardType.get( scoreCard, "score" ) );
-//
-//        Object x = scoreCardType.get( scoreCard, "ranking" );
-//        assertTrue( x instanceof LinkedHashMap );
         LinkedHashMap map = (LinkedHashMap) x;
         assertTrue( map.containsKey( "LX00") );
         assertTrue( map.containsKey( "RES") );
@@ -115,7 +103,6 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
         setKbase( getKSession().getKieBase() );
         KieSession kSession = getKSession();
         
-        KieRuntimeLogger logger = KieServices.Factory.get().getLoggers().newFileLogger(kSession, "/home/lleveric/new-testScorecardOutputs");
         kSession.fireAllRules();  //init model
 
         PMMLRequestData requestData = new PMMLRequestData("SampleScorecard");
@@ -126,8 +113,6 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
 
 
         kSession.fireAllRules();  //init model
-        logger.close();
-        System.out.print(  reportWMObjects( kSession ) );
         
         checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName,"OutRC1"),
                         true, false,"SampleScorecard", "RC2" );

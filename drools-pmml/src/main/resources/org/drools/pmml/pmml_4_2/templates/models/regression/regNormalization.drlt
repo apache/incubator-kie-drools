@@ -28,7 +28,7 @@
 rule "Regression Model Normalization Factor @{context} - @{target}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
-    accumulate( $bit     : @{ pmmlPackageName }.RegTargetBit( context == "@{context}",
+    accumulate( $bit     : RegTargetBit( context == "@{context}",
                                          target == "@{target}",
                                          $wgt : weight,
                                          normalized == false ),
@@ -36,17 +36,17 @@ when
                 $den     : sumBD( java.math.BigDecimal.valueOf( $wgt ) ),
                 $list    : collectList( $bit ) )
 then
-    insert( new @{ pmmlPackageName }.RegNormalizationFactor( "@{context}", "@{target}", $den.doubleValue() ) );
+    insert( new RegNormalizationFactor( "@{context}", "@{target}", $den.doubleValue() ) );
 end
 
 rule "Regression Model Normalization @{context} - @{target}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
-    $bit : @{ pmmlPackageName }.RegTargetBit( context == "@{context}",
+    $bit : RegTargetBit( context == "@{context}",
                          target == "@{target}",
                          $wgt : weight,
                          normalized == false )
-    @{ pmmlPackageName }.RegNormalizationFactor( context == "@{context}",
+    RegNormalizationFactor( context == "@{context}",
                             target == "@{target}",
                             $den : den > 0 )
 then

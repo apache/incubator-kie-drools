@@ -18,6 +18,7 @@ package org.drools.compiler.compiler;
 
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 
 import org.kie.api.Service;
 import org.kie.internal.builder.KnowledgeBuilderResult;
@@ -25,6 +26,8 @@ import org.kie.internal.builder.KnowledgeBuilderResult;
 public interface PMMLCompiler extends Service {
 
     String compile( InputStream stream, ClassLoader classLoader );
+
+    Map<String,String> getMiningPojos(String filename, ClassLoader classLoader);
 
     List<KnowledgeBuilderResult> getResults();
 

@@ -15,7 +15,10 @@
  */
 package org.drools.pmml.pmml_4_2.model;
 
+import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -28,6 +31,9 @@ import org.dmg.pmml.pmml_4_2.descr.OutputField;
 import org.drools.pmml.pmml_4_2.PMML4Helper;
 import org.drools.pmml.pmml_4_2.PMML4Model;
 import org.drools.pmml.pmml_4_2.PMML4Unit;
+import org.mvel2.integration.impl.MapVariableResolverFactory;
+import org.mvel2.templates.TemplateRegistry;
+import org.mvel2.templates.TemplateRuntime;
 
 public abstract class AbstractModel implements PMML4Model {
     private String modelId;
@@ -38,6 +44,9 @@ public abstract class AbstractModel implements PMML4Model {
     protected static PMML4Helper helper = new PMML4Helper();
     public static String PMML_JAVA_PACKAGE_NAME = "org.drools.pmml.pmml_4_2.model";
 
+    protected abstract TemplateRegistry getTemplateRegistry();
+    protected abstract String getMiningPojoTemplateName();
+
 
     public AbstractModel(String modelId, PMML4ModelType modelType, PMML4Unit owner) {
         this.modelId = modelId;
@@ -47,22 +56,49 @@ public abstract class AbstractModel implements PMML4Model {
 
     protected void initMiningFieldMap() {
         MiningSchema schema = getMiningSchema();
-        if (schema != null) {
-            miningFieldMap = schema.getMiningFields().stream().filter(serializable -> serializable instanceof MiningField)
-                    .map(serializable -> (MiningField) serializable)
-                    .collect(Collectors.toMap(MiningField::getName,
-                                              miningField -> miningField));
+        miningFieldMap = new HashMap<>();
+        for (MiningField field: schema.getMiningFields()) {
+            miningFieldMap.put(field.getName(), field);
         }
     }
 
     protected void initOutputFieldMap() {
         Output output = getOutput();
-        if (output != null) {
-            outputFieldMap = output.getOutputFields().stream().filter(serializable -> serializable instanceof OutputField)
-                    .map(serializable -> (OutputField) serializable)
-                    .collect(Collectors.toMap(OutputField::getName,
-                                              outputField -> outputField));
+        outputFieldMap = new HashMap<>();
+        for (OutputField field: output.getOutputFields()) {
+            outputFieldMap.put(field.getName(), field);
         }
+    }
+
+    protected boolean isValidMiningField(PMMLDataField dataField) {
+        if (miningFieldMap == null || miningFieldMap.isEmpty()) {
+            initMiningFieldMap();
+        }
+        if (miningFieldMap.containsKey(dataField.getName())) {
+            return true;
+        }
+        return false;
+    }
+
+
+    @Override
+    public String getMiningPojo() {
+        TemplateRegistry registry = this.getTemplateRegistry();
+        List<PMMLDataField> dataFields = this.getMiningFields();
+        Map<String, Object> vars = new HashMap<>();
+        String className = this.getMiningPojoClassName();
+        vars.put("pmmlPackageName",PMML_JAVA_PACKAGE_NAME);
+        vars.put("className",className);
+        vars.put("imports",new ArrayList<>());
+        vars.put("dataFields",dataFields);
+        vars.put("modelName", this.getModelId());
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        TemplateRuntime.execute( registry.getNamedTemplate(this.getMiningPojoTemplateName()),
+                                 null,
+                                 new MapVariableResolverFactory(vars),
+                                 baos );
+
+        return new String(baos.toByteArray());
     }
 
     @Override

@@ -88,19 +88,6 @@ public abstract class DroolsAbstractPMMLTest {
         KieRepository kr = ks.getRepository();
         KieFileSystem kfs = ks.newKieFileSystem();
 
-        PMML4Unit pmml4Unit = new PMML4UnitImpl(pmmlSources[0]);
-        List<PMML4Model> models = pmml4Unit.getModels();
-        ScorecardModel scmodel = models.stream()
-                .filter(m -> m.getModelType() == PMML4ModelType.SCORECARD)
-                .map(m -> (ScorecardModel)m)
-                .findFirst().orElse(null);
-        if (scmodel != null) {
-            Resource res = ResourceFactory.newByteArrayResource(scmodel.getMiningPojo().getBytes()).setResourceType(ResourceType.JAVA);
-            StringBuilder bldr = new StringBuilder("org/drools/pmml/pmml_4_2/model/");
-            bldr.append(scmodel.miningPojoClassname.apply(scmodel)).append(".java");
-            res.setSourcePath(bldr.toString());
-            kfs.write(res);
-        }
         for ( int j = 0; j < pmmlSources.length; j++ ) {
             Resource res = ResourceFactory.newClassPathResource( pmmlSources[ j ] ).setResourceType( ResourceType.PMML );
             kfs.write( res );
