@@ -94,7 +94,7 @@ public class ModelGenerator {
         visit(context, packageModel, ruleDescr.getLhs());
         MethodDeclaration ruleMethod = new MethodDeclaration(EnumSet.of(Modifier.PRIVATE), RULE_TYPE, "rule_" + toId( ruleDescr.getName() ) );
 
-        BlockStmt ruleBlock = createBlockStatement(context, ruleMethod);
+        BlockStmt ruleBlock = createBlockStatement(packageModel, context, ruleMethod);
         VariableDeclarationExpr ruleVar = new VariableDeclarationExpr(RULE_TYPE, RULE_CALL);
 
         MethodCallExpr ruleCall = new MethodCallExpr(null, RULE_CALL);
@@ -139,12 +139,14 @@ public class ModelGenerator {
         packageModel.putRuleMethod("rule_" + toId( ruleDescr.getName() ), ruleMethod);
     }
 
-    private static BlockStmt createBlockStatement(RuleContext context, MethodDeclaration ruleMethod) {
+    private static BlockStmt createBlockStatement(PackageModel packageModel, RuleContext context, MethodDeclaration ruleMethod) {
         BlockStmt ruleBlock = new BlockStmt();
         ruleMethod.setBody(ruleBlock);
 
         for ( Entry<String, DeclarationSpec> decl : context.declarations.entrySet() ) {
-            addVariable(ruleBlock, decl);
+            if ( !packageModel.getGlobals().containsKey( decl.getKey() ) ) {
+                addVariable( ruleBlock, decl );
+            }
         }
         return ruleBlock;
     }
@@ -154,7 +156,7 @@ public class ModelGenerator {
         visit(context, packageModel, ruleDescr);
         MethodDeclaration queryMethod = new MethodDeclaration(EnumSet.of(Modifier.PRIVATE), getQueryType(context.queryParameters), "query_" + toId(ruleDescr.getName()));
 
-        BlockStmt ruleBlock = createBlockStatement(context, queryMethod);
+        BlockStmt ruleBlock = createBlockStatement(packageModel, context, queryMethod);
         VariableDeclarationExpr queryVar = new VariableDeclarationExpr(getQueryType(context.queryParameters), QUERY_CALL);
 
         MethodCallExpr queryCall = new MethodCallExpr(null, QUERY_CALL);
