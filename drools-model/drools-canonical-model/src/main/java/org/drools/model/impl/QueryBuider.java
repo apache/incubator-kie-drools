@@ -60,7 +60,7 @@ public class QueryBuider {
             super(name, pkg);
         }
 
-        public Query0 view(ViewItemBuilder... viewItemBuilders ) {
+        public Query0 build(ViewItemBuilder... viewItemBuilders ) {
             return new Query0Impl( pkg, name, viewItems2Patterns( asQueryExpresssion( viewItemBuilders ) ) );
         }
     }
@@ -78,7 +78,7 @@ public class QueryBuider {
             this.var1 = var1;
         }
 
-        public Query1<A> view( ViewItemBuilder... viewItemBuilders ) {
+        public Query1<A> build( ViewItemBuilder... viewItemBuilders ) {
             return new Query1Impl<>( pkg, name, viewItems2Patterns( asQueryExpresssion( viewItemBuilders ) ), var1 );
         }
     }
@@ -99,7 +99,7 @@ public class QueryBuider {
             this.var2 = var2;
         }
 
-        public Query2<A, B> view( ViewItemBuilder... viewItemBuilders ) {
+        public Query2<A, B> build( ViewItemBuilder... viewItemBuilders ) {
             return new Query2Impl<>( pkg, name, viewItems2Patterns( asQueryExpresssion( viewItemBuilders ) ), var1, var2 );
         }
     }
