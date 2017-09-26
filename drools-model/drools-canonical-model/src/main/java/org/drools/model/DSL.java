@@ -114,6 +114,10 @@ public class DSL {
         return new WindowReferenceImpl( type, value, timeUnit, patternType, predicates );
     }
 
+    public static <T> From<T> from( Variable<T> variable, Function1<T, ?> provider ) {
+        return new FromImpl<>( variable, provider );
+    }
+
     // -- LHS --
 
     public static View view(ViewItemBuilder... viewItemBuilders ) {

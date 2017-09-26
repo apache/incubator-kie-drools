@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.modelcompiler;
+package org.drools.modelcompiler.domain;
 
 import java.util.ArrayList;
 import java.util.Collection;
