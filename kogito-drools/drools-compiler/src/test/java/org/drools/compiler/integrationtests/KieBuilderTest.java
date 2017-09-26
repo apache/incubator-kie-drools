@@ -37,6 +37,7 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.StatelessKieSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
+import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
@@ -469,6 +470,7 @@ public class KieBuilderTest extends CommonTestMethodBase {
         kieBuilder.buildAll();
         final Results results = kieBuilder.getResults();
         assertEquals( expectedErrors, results.getMessages( org.kie.api.builder.Message.Level.ERROR ).size() );
+        assertNotNull(((InternalKieBuilder) kieBuilder ).getKieModuleIgnoringErrors());
     }
 
     @Test
