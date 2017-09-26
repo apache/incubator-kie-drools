@@ -28,6 +28,7 @@ import org.drools.core.util.index.IndexUtil.ConstraintType;
 import org.drools.drlx.DrlxParser;
 import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.Modifier;
+import org.drools.javaparser.ast.NodeList;
 import org.drools.javaparser.ast.body.MethodDeclaration;
 import org.drools.javaparser.ast.body.Parameter;
 import org.drools.javaparser.ast.drlx.expr.PointFreeExpr;
@@ -63,6 +64,11 @@ public class ModelGenerator {
     public static final boolean GENERATE_EXPR_ID = true;
 
     private static final String AVERAGE = "average";
+    private static final String BUILD_CALL = "build";
+    private static final String RULE_CALL = "rule";
+    private static final String EXECUTE_CALL = "execute";
+    private static final String ON_CALL = "on";
+    private static final String QUERY_CALL = "query";
 
     public static PackageModel generateModel(InternalKnowledgePackage pkg, List<RuleDescrImpl> rules) {
         String name = pkg.getName();
@@ -89,13 +95,12 @@ public class ModelGenerator {
         MethodDeclaration ruleMethod = new MethodDeclaration(EnumSet.of(Modifier.PRIVATE), RULE_TYPE, "rule_" + toId( ruleDescr.getName() ) );
 
         BlockStmt ruleBlock = createBlockStatement(context, ruleMethod);
-        VariableDeclarationExpr ruleVar = new VariableDeclarationExpr( RULE_TYPE, "rule");
+        VariableDeclarationExpr ruleVar = new VariableDeclarationExpr(RULE_TYPE, RULE_CALL);
 
-        MethodCallExpr ruleCall = new MethodCallExpr(null, "rule");
+        MethodCallExpr ruleCall = new MethodCallExpr(null, RULE_CALL);
         ruleCall.addArgument( new StringLiteralExpr( ruleDescr.getName() ) );
 
-        MethodCallExpr viewCall = new MethodCallExpr(ruleCall, "view");
-        context.expressions.forEach(viewCall::addArgument);
+        MethodCallExpr buildCall = new MethodCallExpr(ruleCall, BUILD_CALL, NodeList.nodeList(context.expressions));
 
         String ruleConsequenceAsBlock = rewriteConsequenceBlock( context, ruleDescr.getConsequence().toString().trim() );
         BlockStmt ruleConsequence = JavaParser.parseBlock( "{" + ruleConsequenceAsBlock + "}" );
@@ -108,15 +113,14 @@ public class ModelGenerator {
 
         boolean rhsRewritten = rewriteRHS(context, ruleBlock, ruleConsequence);
 
-        MethodCallExpr thenCall = new MethodCallExpr(viewCall, "then");
         MethodCallExpr onCall = null;
 
         if (!verifiedDeclUsedInRHS.isEmpty()) {
-            onCall = new MethodCallExpr( null, "on" );
+            onCall = new MethodCallExpr(null, ON_CALL);
             verifiedDeclUsedInRHS.stream().map( k -> "var_" + k ).forEach( onCall::addArgument );
         }
 
-        MethodCallExpr executeCall = new MethodCallExpr(onCall, "execute");
+        MethodCallExpr executeCall = new MethodCallExpr(onCall, EXECUTE_CALL);
         LambdaExpr executeLambda = new LambdaExpr();
         executeCall.addArgument(executeLambda);
         executeLambda.setEnclosingParameters(true);
@@ -126,12 +130,12 @@ public class ModelGenerator {
         verifiedDeclUsedInRHS.stream().map(x -> new Parameter(new UnknownType(), x)).forEach(executeLambda::addParameter);
         executeLambda.setBody( ruleConsequence );
 
-        thenCall.addArgument( executeCall );
+        buildCall.addArgument( executeCall );
 
-        AssignExpr ruleAssign = new AssignExpr(ruleVar, thenCall, AssignExpr.Operator.ASSIGN);
+        AssignExpr ruleAssign = new AssignExpr(ruleVar, buildCall, AssignExpr.Operator.ASSIGN);
         ruleBlock.addStatement(ruleAssign);
 
-        ruleBlock.addStatement( new ReturnStmt("rule") );
+        ruleBlock.addStatement( new ReturnStmt(RULE_CALL) );
         packageModel.putRuleMethod("rule_" + toId( ruleDescr.getName() ), ruleMethod);
     }
 
@@ -151,21 +155,21 @@ public class ModelGenerator {
         MethodDeclaration queryMethod = new MethodDeclaration(EnumSet.of(Modifier.PRIVATE), getQueryType(context.queryParameters), "query_" + toId(ruleDescr.getName()));
 
         BlockStmt ruleBlock = createBlockStatement(context, queryMethod);
-        VariableDeclarationExpr queryVar = new VariableDeclarationExpr(getQueryType(context.queryParameters), "query");
+        VariableDeclarationExpr queryVar = new VariableDeclarationExpr(getQueryType(context.queryParameters), QUERY_CALL);
 
-        MethodCallExpr queryCall = new MethodCallExpr(null, "query");
+        MethodCallExpr queryCall = new MethodCallExpr(null, QUERY_CALL);
         queryCall.addArgument(new StringLiteralExpr(ruleDescr.getName()));
         for (QueryParameter qp : context.queryParameters) {
             queryCall.addArgument(new NameExpr("var_" + qp.name));
         }
 
-        MethodCallExpr viewCall = new MethodCallExpr(queryCall, "view");
+        MethodCallExpr viewCall = new MethodCallExpr(queryCall, BUILD_CALL);
         context.expressions.forEach(viewCall::addArgument);
 
         AssignExpr ruleAssign = new AssignExpr(queryVar, viewCall, AssignExpr.Operator.ASSIGN);
         ruleBlock.addStatement(ruleAssign);
 
-        ruleBlock.addStatement(new ReturnStmt("query"));
+        ruleBlock.addStatement(new ReturnStmt(QUERY_CALL));
         packageModel.putQueryMethod(queryMethod);
     }
 
