@@ -42,7 +42,7 @@ public class TemporalConstraintEvaluator extends ConstraintEvaluator {
     }
 
     @Override
-    public boolean evaluate( InternalFactHandle handle, Tuple tuple ) {
+    public boolean evaluate( InternalFactHandle handle, Tuple tuple, InternalWorkingMemory workingMemory  ) {
         InternalFactHandle[] fhs = getBetaInvocationFactHandles( handle, tuple );
         long start1 = ( (EventFactHandle) fhs[0] ).getStartTimestamp();
         long duration1 = ( (EventFactHandle) fhs[0] ).getDuration();

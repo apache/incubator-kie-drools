@@ -27,10 +27,11 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.constraint.QueryNameConstraint;
 import org.drools.core.ruleunit.RuleUnitUtil;
-import org.drools.core.spi.*;
+import org.drools.core.spi.Accumulator;
+import org.drools.core.spi.DataProvider;
+import org.drools.core.spi.EvalExpression;
+import org.drools.core.spi.InternalReadAccessor;
 import org.drools.model.*;
-import org.drools.model.Consequence;
-import org.drools.model.Constraint;
 import org.drools.model.From;
 import org.drools.model.WindowReference;
 import org.drools.model.consequences.ConditionalNamedConsequenceImpl;
@@ -43,8 +44,6 @@ import org.drools.modelcompiler.consequence.LambdaConsequence;
 import org.drools.modelcompiler.constraints.*;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.definition.KiePackage;
-import org.kie.api.definition.type.Role;
-import org.kie.api.definition.type.Role.Type;
 
 import java.util.*;
 
@@ -206,8 +205,8 @@ public class KiePackagesBuilder {
             }
             case ACCUMULATE: {
                 Pattern source = buildPattern( ctx, condition );
-                Pattern pattern = new Pattern( 0, getObjectType( Object.class ) );
-                pattern.setSource( buildAccumulate( (AccumulatePattern) condition, source, pattern ) );
+                Pattern pattern = new Pattern( 0, ctx.getObjectType( Object.class ) );
+                pattern.setSource( buildAccumulate( ctx, (AccumulatePattern) condition, source, pattern ) );
                 return pattern;
             }
             case OOPATH: {
@@ -315,12 +314,12 @@ public class KiePackagesBuilder {
         return pattern;
     }
 
-    private Accumulate buildAccumulate( AccumulatePattern accPattern, Pattern source, Pattern pattern ) {
+    private Accumulate buildAccumulate( RuleContext ctx, AccumulatePattern accPattern, Pattern source, Pattern pattern ) {
         AccumulateFunction<?, ?, ?>[] accFunc = accPattern.getFunctions();
 
         if (accFunc.length == 1) {
             pattern.addDeclaration( new Declaration(accPattern.getBoundVariables()[0].getName(),
-                                                    getReadAcessor( getObjectType( Object.class ) ),
+                                                    getReadAcessor( ctx.getObjectType( Object.class ) ),
                                                     pattern,
                                                     true) );
             return new SingleAccumulate( source, new Declaration[0], new LambdaAccumulator( accPattern.getFunctions()[0]));
@@ -344,7 +343,7 @@ public class KiePackagesBuilder {
         patternClasses.add( patternClass );
         Pattern pattern = new Pattern( ctx.getNextPatternIndex(),
                                        0, // offset will be set by ReteooBuilder
-                                       getObjectType( patternClass ),
+                                       ctx.getObjectType( patternClass ),
                                        patternVariable.getName(),
                                        true );
 
@@ -380,7 +379,7 @@ public class KiePackagesBuilder {
     private <T> void createWindowReference( RuleContext ctx, WindowReference<T> window ) {
         WindowDeclaration windowDeclaration = new WindowDeclaration( window.getName(), ctx.getPkg().getName() );
         Variable<T> variable = declarationOf( type( window.getPatternType() ) );
-        Pattern windowPattern = new Pattern(0, getObjectType( window.getPatternType() ), variable.getName() );
+        Pattern windowPattern = new Pattern(0, ctx.getObjectType( window.getPatternType() ), variable.getName() );
         windowDeclaration.setPattern( windowPattern );
         for ( Predicate1<T> predicate : window.getPredicates()) {
             SingleConstraint singleConstraint = new SingleConstraint1<>( generateName("expr"), variable, predicate );
@@ -404,7 +403,7 @@ public class KiePackagesBuilder {
     private void addConstraintsToPattern( RuleContext ctx, Pattern pattern, org.drools.model.Pattern modelPattern, Constraint constraint ) {
         if (constraint.getType() == Constraint.Type.SINGLE) {
             SingleConstraint singleConstraint = (SingleConstraint) constraint;
-            Declaration[] declarations = getRequiredDeclaration(ctx, singleConstraint);
+            Declaration[] declarations = getRequiredDeclarations(ctx, singleConstraint);
 
             if (singleConstraint.getVariables().length > 0) {
                 ConstraintEvaluator constraintEvaluator = singleConstraint.isTemporal() ?
@@ -432,33 +431,16 @@ public class KiePackagesBuilder {
         }
     }
 
-    private Declaration[] getRequiredDeclaration( RuleContext ctx, SingleConstraint singleConstraint ) {
+    private Declaration[] getRequiredDeclarations( RuleContext ctx, SingleConstraint singleConstraint ) {
         Variable[] vars = singleConstraint.getVariables();
         Declaration[] declarations = new Declaration[vars.length];
         for (int i = 0; i < vars.length; i++) {
-            if (vars[i].isFact()) {
-                declarations[i] = ctx.getDeclaration( vars[i] );
-            } else {
-                Global global = ( (Global) vars[i] );
-                ClassObjectType objectType = getObjectType( global.getType().asClass() );
-                InternalReadAccessor globalExtractor = new GlobalExtractor( global.getName(), objectType);
-                declarations[i] = new Declaration( global.getName(), globalExtractor, new Pattern( 0, objectType ) );
-            }
+            declarations[i] = ctx.getDeclaration( vars[i] );
         }
         return declarations;
     }
 
     public Collection<KiePackage> getKnowledgePackages() {
         return packages.values();
-    }
-
-    private Map<Class<?>, ClassObjectType> objectTypeCache = new HashMap<>();
-    private ClassObjectType getObjectType( Class<?> patternClass ) {
-        return objectTypeCache.computeIfAbsent( patternClass, c -> new ClassObjectType( c, isEvent( c ) ) );
-    }
-
-    private boolean isEvent( Class<?> patternClass ) {
-        Role role = patternClass.getAnnotation( Role.class );
-        return role != null && role.value() == Type.EVENT;
     }
 }
