@@ -31,7 +31,6 @@ import org.kie.api.definition.KiePackage;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 
@@ -286,6 +285,23 @@ public class DslTest extends CommonTestMethodBase {
                 + "There is a Person\n"
                 + "-named Mario\n"
                 + "-aged less than 40\n"
+                + "then\n"
+                + "Log person name\n"
+                + "end\n";
+
+        assertTrue(doTest(dsl, drl).contains("Mario"));
+    }
+
+    @Test
+    public void testDSLWithApostrophe() {
+        String dsl = "[when]Person's name is {name}=$p : Person(name == \"{name}\")\n"
+                + "[then]Log person name=list.add($p.getName());";
+
+        String drl = "import org.drools.compiler.Person;\n"
+                + "global java.util.List list\n"
+                + "rule R1\n"
+                + "when\n"
+                + "Person's name is Mario\n"
                 + "then\n"
                 + "Log person name\n"
                 + "end\n";
