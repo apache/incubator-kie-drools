@@ -16,20 +16,21 @@
 
 package org.drools.modelcompiler;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.drools.model.Model;
 import org.drools.model.Rule;
 import org.drools.model.Source;
 import org.drools.model.Variable;
 import org.drools.model.impl.ModelImpl;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
+import org.drools.modelcompiler.domain.Person;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.rule.DataSource;
 import org.kie.api.runtime.rule.RuleUnit;
 import org.kie.api.runtime.rule.RuleUnitExecutor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static java.util.Arrays.asList;
 import static org.drools.model.DSL.*;
