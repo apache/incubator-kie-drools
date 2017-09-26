@@ -16,11 +16,16 @@
 
 package org.drools.modelcompiler;
 
+import org.drools.core.base.ClassObjectType;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
+import org.drools.core.spi.GlobalExtractor;
+import org.drools.core.spi.InternalReadAccessor;
+import org.drools.model.Global;
 import org.drools.model.Variable;
+import org.kie.api.definition.type.Role;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,6 +40,8 @@ public class RuleContext {
     private final Map<Variable, Pattern> patterns = new HashMap<>();
 
     private int patternIndex = -1;
+
+    private Map<Class<?>, ClassObjectType> objectTypeCache = new HashMap<>();
 
     RuleContext( KnowledgePackageImpl pkg, RuleImpl rule ) {
         this.pkg = pkg;
@@ -62,12 +69,19 @@ public class RuleContext {
     }
 
     Declaration getDeclaration( Variable variable ) {
-        Declaration declaration = queryDeclaration.get( variable );
-        if (declaration == null) {
-            Pattern pattern = patterns.get( variable );
-            declaration = pattern != null ? pattern.getDeclaration() : null;
+        if ( variable.isFact() ) {
+            Declaration declaration = queryDeclaration.get( variable );
+            if (declaration == null) {
+                Pattern pattern = patterns.get( variable );
+                declaration = pattern != null ? pattern.getDeclaration() : null;
+            }
+            return declaration;
+        } else {
+            Global global = (( Global ) variable);
+            ClassObjectType objectType = getObjectType( global.getType().asClass() );
+            InternalReadAccessor globalExtractor = new GlobalExtractor( global.getName(), objectType );
+            return new Declaration( global.getName(), globalExtractor, new Pattern( 0, objectType ) );
         }
-        return declaration;
     }
 
     Declaration getQueryDeclaration( Variable variable ) {
@@ -80,5 +94,14 @@ public class RuleContext {
 
     public Object getBoundFact( Variable variable, Object[] objs ) {
         return objs[ patterns.get( variable ).getOffset() ];
+    }
+
+    ClassObjectType getObjectType( Class<?> patternClass ) {
+        return objectTypeCache.computeIfAbsent( patternClass, c -> new ClassObjectType( c, isEvent( c ) ) );
+    }
+
+    private boolean isEvent( Class<?> patternClass ) {
+        Role role = patternClass.getAnnotation( Role.class );
+        return role != null && role.value() == Role.Type.EVENT;
     }
 }
