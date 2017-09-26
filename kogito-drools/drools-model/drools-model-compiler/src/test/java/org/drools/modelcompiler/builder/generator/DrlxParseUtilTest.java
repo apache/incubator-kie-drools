@@ -34,20 +34,6 @@ public class DrlxParseUtilTest {
     }
 
     @Test
-    public void transformMethodExpressionToMethodCallExpression() {
-
-        final Expression expr = JavaParser.parseExpression("address.addressName.startsWith(\"M\")");
-        final Expression expr1 = JavaParser.parseExpression("getAddress().addressName.startsWith(\"M\")");
-        final Expression expr2 = JavaParser.parseExpression("address.getAddressName().startsWith(\"M\")");
-
-        final MethodCallExpr expected = JavaParser.parseExpression("getAddress().getAddressName().startsWith(\"M\")");
-
-        assertEquals(expected, DrlxParseUtil.toMethodCallString(expr));
-        assertEquals(expected, DrlxParseUtil.toMethodCallString(expr1));
-        assertEquals(expected, DrlxParseUtil.toMethodCallString(expr2));
-    }
-
-    @Test
     public void transformMethodExpressionToMethodCallExpressionTypeSafe() {
 
         final Expression expr = JavaParser.parseExpression("address.addressName.startsWith(\"M\")");

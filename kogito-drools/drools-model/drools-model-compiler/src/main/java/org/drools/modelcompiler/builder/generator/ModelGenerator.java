@@ -16,38 +16,8 @@
 
 package org.drools.modelcompiler.builder.generator;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Deque;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import org.drools.compiler.compiler.DrlExprParser;
-import org.drools.compiler.lang.descr.AccumulateDescr;
-import org.drools.compiler.lang.descr.AndDescr;
-import org.drools.compiler.lang.descr.AtomicExprDescr;
-import org.drools.compiler.lang.descr.BaseDescr;
-import org.drools.compiler.lang.descr.BehaviorDescr;
-import org.drools.compiler.lang.descr.ConstraintConnectiveDescr;
-import org.drools.compiler.lang.descr.EntryPointDescr;
-import org.drools.compiler.lang.descr.ExistsDescr;
-import org.drools.compiler.lang.descr.NotDescr;
-import org.drools.compiler.lang.descr.OrDescr;
-import org.drools.compiler.lang.descr.PatternDescr;
-import org.drools.compiler.lang.descr.QueryDescr;
-import org.drools.compiler.lang.descr.RelationalExprDescr;
-import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.compiler.lang.descr.*;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.Behavior;
 import org.drools.core.rule.Pattern;
@@ -62,36 +32,25 @@ import org.drools.javaparser.ast.body.MethodDeclaration;
 import org.drools.javaparser.ast.body.Parameter;
 import org.drools.javaparser.ast.drlx.expr.PointFreeExpr;
 import org.drools.javaparser.ast.drlx.expr.TemporalLiteralExpr;
-import org.drools.javaparser.ast.expr.AssignExpr;
-import org.drools.javaparser.ast.expr.BinaryExpr;
+import org.drools.javaparser.ast.expr.*;
 import org.drools.javaparser.ast.expr.BinaryExpr.Operator;
-import org.drools.javaparser.ast.expr.ClassExpr;
-import org.drools.javaparser.ast.expr.Expression;
-import org.drools.javaparser.ast.expr.FieldAccessExpr;
-import org.drools.javaparser.ast.expr.LambdaExpr;
-import org.drools.javaparser.ast.expr.MethodCallExpr;
-import org.drools.javaparser.ast.expr.NameExpr;
-import org.drools.javaparser.ast.expr.StringLiteralExpr;
-import org.drools.javaparser.ast.expr.UnaryExpr;
-import org.drools.javaparser.ast.expr.VariableDeclarationExpr;
 import org.drools.javaparser.ast.stmt.BlockStmt;
 import org.drools.javaparser.ast.stmt.ExpressionStmt;
 import org.drools.javaparser.ast.stmt.ReturnStmt;
 import org.drools.javaparser.ast.type.ClassOrInterfaceType;
-import org.drools.javaparser.ast.type.PrimitiveType;
 import org.drools.javaparser.ast.type.Type;
 import org.drools.javaparser.ast.type.TypeParameter;
 import org.drools.javaparser.ast.type.UnknownType;
-import org.drools.model.BitMask;
-import org.drools.model.Global;
-import org.drools.model.Query;
-import org.drools.model.Query1;
-import org.drools.model.Query2;
-import org.drools.model.Rule;
-import org.drools.model.Variable;
+import org.drools.model.*;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.RuleDescrImpl;
 import org.kie.internal.builder.conf.LanguageLevelOption;
+
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.drools.javaparser.printer.PrintUtil.toDrlx;
 import static org.drools.modelcompiler.builder.generator.StringUtil.toId;
@@ -125,23 +84,11 @@ public class ModelGenerator {
     }
 
     private static void processRule(InternalKnowledgePackage pkg, PackageModel packageModel, RuleDescr ruleDescr) {
-        MethodDeclaration ruleMethod = new MethodDeclaration();
-        ruleMethod.setModifiers(EnumSet.of(Modifier.PRIVATE));
-        ruleMethod.setType( RULE_TYPE );
-        ruleMethod.setName( "rule_" + toId( ruleDescr.getName() ) );
-
-        BlockStmt ruleBlock = new BlockStmt();
-        ruleMethod.setBody(ruleBlock);
-
         RuleContext context = new RuleContext(pkg, packageModel.getExprIdGenerator() );
-
         visit(context, packageModel, ruleDescr.getLhs());
+        MethodDeclaration ruleMethod = new MethodDeclaration(EnumSet.of(Modifier.PRIVATE), RULE_TYPE, "rule_" + toId( ruleDescr.getName() ) );
 
-        for ( Entry<String, DeclarationSpec> decl : context.declarations.entrySet() ) {
-            addVariable(ruleBlock, decl);
-        }
-
-
+        BlockStmt ruleBlock = createBlockStatement(context, ruleMethod);
         VariableDeclarationExpr ruleVar = new VariableDeclarationExpr( RULE_TYPE, "rule");
 
         MethodCallExpr ruleCall = new MethodCallExpr(null, "rule");
@@ -153,7 +100,11 @@ public class ModelGenerator {
         String ruleConsequenceAsBlock = rewriteConsequenceBlock( context, ruleDescr.getConsequence().toString().trim() );
         BlockStmt ruleConsequence = JavaParser.parseBlock( "{" + ruleConsequenceAsBlock + "}" );
         List<String> declUsedInRHS = ruleConsequence.getChildNodesByType(NameExpr.class).stream().map(NameExpr::getNameAsString).collect(Collectors.toList());
-        List<String> verifiedDeclUsedInRHS = context.declarations.keySet().stream().filter(declUsedInRHS::contains).collect(Collectors.toList());
+
+        Set<String> existingDecls = new HashSet<>();
+        existingDecls.addAll(context.declarations.keySet());
+        existingDecls.addAll(packageModel.getGlobals().keySet());
+        List<String> verifiedDeclUsedInRHS = existingDecls.stream().filter(declUsedInRHS::contains).collect(Collectors.toList());
 
         boolean rhsRewritten = rewriteRHS(context, ruleBlock, ruleConsequence);
 
@@ -165,14 +116,6 @@ public class ModelGenerator {
             verifiedDeclUsedInRHS.stream().map( k -> "var_" + k ).forEach( onCall::addArgument );
         }
 
-        if(!packageModel.getGlobals().isEmpty()) {
-            if(onCall == null) {
-                onCall = new MethodCallExpr( null, "on" );
-            }
-            packageModel.getGlobals().keySet().stream().map(k -> "glb_" + k).forEach(onCall::addArgument);
-        }
-
-
         MethodCallExpr executeCall = new MethodCallExpr(onCall, "execute");
         LambdaExpr executeLambda = new LambdaExpr();
         executeCall.addArgument(executeLambda);
@@ -181,7 +124,6 @@ public class ModelGenerator {
             executeLambda.addParameter(new Parameter(new UnknownType(), "drools"));
         }
         verifiedDeclUsedInRHS.stream().map(x -> new Parameter(new UnknownType(), x)).forEach(executeLambda::addParameter);
-        packageModel.getGlobals().keySet().stream().map(x -> new Parameter(new UnknownType(), x)).forEach(executeLambda::addParameter);
         executeLambda.setBody( ruleConsequence );
 
         thenCall.addArgument( executeCall );
@@ -190,35 +132,30 @@ public class ModelGenerator {
         ruleBlock.addStatement(ruleAssign);
 
         ruleBlock.addStatement( new ReturnStmt("rule") );
-        System.out.println(ruleMethod);
         packageModel.putRuleMethod("rule_" + toId( ruleDescr.getName() ), ruleMethod);
     }
 
-    private static void processQuery(InternalKnowledgePackage pkg, PackageModel packageModel, QueryDescr ruleDescr) {
-        MethodDeclaration queryMethod = new MethodDeclaration();
-        queryMethod.setModifiers(EnumSet.of(Modifier.PRIVATE));
-        String queryMethodName = "query_" + toId(ruleDescr.getName());
-        queryMethod.setName(queryMethodName);
-        packageModel.putQueryMethod(queryMethodName, queryMethod);
-
+    private static BlockStmt createBlockStatement(RuleContext context, MethodDeclaration ruleMethod) {
         BlockStmt ruleBlock = new BlockStmt();
-        queryMethod.setBody(ruleBlock);
+        ruleMethod.setBody(ruleBlock);
 
-        RuleContext context = new RuleContext(pkg, packageModel.getExprIdGenerator());
-
-        visit(context, packageModel, ruleDescr);
-
-        queryMethod.setType(getQueryType(context.queryParameters));
-
-        for (Entry<String, DeclarationSpec> decl : context.declarations.entrySet()) {
+        for ( Entry<String, DeclarationSpec> decl : context.declarations.entrySet() ) {
             addVariable(ruleBlock, decl);
         }
+        return ruleBlock;
+    }
 
+    private static void processQuery(InternalKnowledgePackage pkg, PackageModel packageModel, QueryDescr ruleDescr) {
+        RuleContext context = new RuleContext(pkg, packageModel.getExprIdGenerator());
+        visit(context, packageModel, ruleDescr);
+        MethodDeclaration queryMethod = new MethodDeclaration(EnumSet.of(Modifier.PRIVATE), getQueryType(context.queryParameters), "query_" + toId(ruleDescr.getName()));
+
+        BlockStmt ruleBlock = createBlockStatement(context, queryMethod);
         VariableDeclarationExpr queryVar = new VariableDeclarationExpr(getQueryType(context.queryParameters), "query");
 
         MethodCallExpr queryCall = new MethodCallExpr(null, "query");
         queryCall.addArgument(new StringLiteralExpr(ruleDescr.getName()));
-        for(QueryParameter qp : context.queryParameters) {
+        for (QueryParameter qp : context.queryParameters) {
             queryCall.addArgument(new NameExpr("var_" + qp.name));
         }
 
@@ -229,8 +166,7 @@ public class ModelGenerator {
         ruleBlock.addStatement(ruleAssign);
 
         ruleBlock.addStatement(new ReturnStmt("query"));
-        System.out.println(queryMethod);
-
+        packageModel.putQueryMethod(queryMethod);
     }
 
     private static void addVariable(BlockStmt ruleBlock, Entry<String, DeclarationSpec> decl) {
@@ -268,17 +204,8 @@ public class ModelGenerator {
         ruleBlock.addStatement(var_assign);
     }
 
-
-    private static final ClassOrInterfaceType QUERY_TYPE = JavaParser.parseClassOrInterfaceType( Query.class.getCanonicalName() );
-
     private static ClassOrInterfaceType getQueryType(List<QueryParameter> queryParameters) {
-        Class<?> res;
-        switch (queryParameters.size()) {
-            case 0:  res = Query.class; break;
-            case 1:  res = Query1.class; break;
-            case 2:  res = Query2.class; break;
-            default:throw new RuntimeException("No query class found");
-        }
+        Class<?> res = Query.getQueryClassByArity(queryParameters.size());
         ClassOrInterfaceType queryType = JavaParser.parseClassOrInterfaceType(res.getCanonicalName());
 
         Type[] genericType = queryParameters.stream()
@@ -286,8 +213,9 @@ public class ModelGenerator {
                 .map(DrlxParseUtil::classToReferenceType)
                 .toArray(Type[]::new);
 
-        if(genericType.length > 0)
+        if (genericType.length > 0) {
             queryType.setTypeArguments(genericType);
+        }
 
         return queryType;
     }

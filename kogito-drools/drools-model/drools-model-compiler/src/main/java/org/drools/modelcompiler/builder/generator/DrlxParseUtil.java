@@ -16,16 +16,6 @@
 
 package org.drools.modelcompiler.builder.generator;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Deque;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.index.IndexUtil;
 import org.drools.core.util.index.IndexUtil.ConstraintType;
@@ -33,25 +23,17 @@ import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.Node;
 import org.drools.javaparser.ast.drlx.expr.InlineCastExpr;
 import org.drools.javaparser.ast.drlx.expr.NullSafeFieldAccessExpr;
-import org.drools.javaparser.ast.expr.BinaryExpr;
+import org.drools.javaparser.ast.expr.*;
 import org.drools.javaparser.ast.expr.BinaryExpr.Operator;
-import org.drools.javaparser.ast.expr.CastExpr;
-import org.drools.javaparser.ast.expr.EnclosedExpr;
-import org.drools.javaparser.ast.expr.Expression;
-import org.drools.javaparser.ast.expr.FieldAccessExpr;
-import org.drools.javaparser.ast.expr.InstanceOfExpr;
-import org.drools.javaparser.ast.expr.LiteralExpr;
-import org.drools.javaparser.ast.expr.MethodCallExpr;
-import org.drools.javaparser.ast.expr.NameExpr;
-import org.drools.javaparser.ast.expr.NullLiteralExpr;
-import org.drools.javaparser.ast.expr.StringLiteralExpr;
-import org.drools.javaparser.ast.expr.ThisExpr;
 import org.drools.javaparser.ast.nodeTypes.NodeWithOptionalScope;
 import org.drools.javaparser.ast.nodeTypes.NodeWithSimpleName;
 import org.drools.javaparser.ast.type.PrimitiveType;
 import org.drools.javaparser.ast.type.ReferenceType;
 import org.drools.javaparser.ast.type.Type;
 import org.drools.modelcompiler.builder.generator.ModelGenerator.RuleContext;
+
+import java.lang.reflect.Method;
+import java.util.*;
 
 import static org.drools.core.util.StringUtils.ucFirst;
 
@@ -340,16 +322,6 @@ public class DrlxParseUtil {
         } else {
             return field;
         }
-    }
-
-    public static MethodCallExpr toMethodCallString(Expression expr) {
-
-        final String[] expressions = expr.toString().split("\\.");
-
-        final List<String> converted = Arrays.stream(expressions).map((String e) -> property2Getter(e)).collect(Collectors.toList());
-
-        String expression = String.join(".", converted);
-        return JavaParser.parseExpression(expression);
     }
 
     public static Type classToReferenceType(Class<?> declClass) {
