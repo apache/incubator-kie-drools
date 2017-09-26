@@ -2661,6 +2661,68 @@ public class RuleModelDRLPersistenceTest extends BaseRuleModelTest {
     }
 
     @Test
+    public void testNotSoundsLikeAndNotMatches() {
+
+        final String ruleName = "test not soundslike constraint";
+
+        final RuleModel model = new RuleModel();
+        model.name = ruleName;
+
+        final FactPattern pattern = new FactPattern("Person");
+        final CompositeFieldConstraint notMatchesAndNotSoundsLike = new CompositeFieldConstraint();
+        notMatchesAndNotSoundsLike.setCompositeJunctionType(CompositeFieldConstraint.COMPOSITE_TYPE_AND);
+        pattern.addConstraint(notMatchesAndNotSoundsLike);
+
+        final SingleFieldConstraint fieldNotSoundsLikeGoo = new SingleFieldConstraint();
+        fieldNotSoundsLikeGoo.setFieldType(DataType.TYPE_STRING);
+        fieldNotSoundsLikeGoo.setFieldName("field");
+        fieldNotSoundsLikeGoo.setOperator("not soundslike");
+        fieldNotSoundsLikeGoo.setValue("goo");
+        fieldNotSoundsLikeGoo.setConstraintValueType(SingleFieldConstraint.TYPE_LITERAL);
+        notMatchesAndNotSoundsLike.addConstraint(fieldNotSoundsLikeGoo);
+
+        final SingleFieldConstraint fieldNotMatchesGoo = new SingleFieldConstraint();
+        fieldNotMatchesGoo.setFieldType(DataType.TYPE_STRING);
+        fieldNotMatchesGoo.setFieldName("field");
+        fieldNotMatchesGoo.setOperator("not matches");
+        fieldNotMatchesGoo.setValue("goo");
+        fieldNotMatchesGoo.setConstraintValueType(SingleFieldConstraint.TYPE_LITERAL);
+        notMatchesAndNotSoundsLike.addConstraint(fieldNotMatchesGoo);
+
+        model.addLhsItem(pattern);
+
+        String expected = "rule \"" + ruleName + "\""
+                + "\tdialect \"mvel\"\n when "
+                + "Person( field not soundslike \"goo\" && field not matches \"goo\" )"
+                + "then"
+                + "end";
+
+        checkMarshalling(expected,
+                         model);
+    }
+
+    @Test
+    public void testNotSoundsLikeAndNotMatchesInDsl() {
+        final String dslDefinition = "There is Person that field not matches and not soundslike {name}";
+        final String drl = "Person( field not soundslike \"{name}\" && field not matches \"{name}\" )";
+        final String dslFile = "[when]" + dslDefinition + "=" + drl;
+
+        final String drlWithDsl = "rule \"with dsl\"\n"
+                + "\tdialect \"mvel\"\n" +
+                " when\n"
+                + dslDefinition.replace("{name}", "John") + "\n"
+                + "then\n"
+                + "end\n";
+
+        final RuleModel model = ruleModelPersistence.unmarshalUsingDSL(drlWithDsl, null, dmo, dslFile);
+
+        final DSLSentence dslSentence = (DSLSentence) model.lhs[0];
+        assertEquals(dslDefinition, dslSentence.getDefinition());
+        assertEquals(drl, dslSentence.getDrl());
+        assertEquals("John", dslSentence.getValues().get(0).getValue());
+    }
+
+    @Test
     public void testInvalidComposite() throws Exception {
         RuleModel m = new RuleModel();
         CompositeFactPattern com = new CompositeFactPattern("not");
