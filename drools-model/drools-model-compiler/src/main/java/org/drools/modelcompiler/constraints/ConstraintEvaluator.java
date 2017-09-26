@@ -1,7 +1,5 @@
 package org.drools.modelcompiler.constraints;
 
-import java.util.stream.Stream;
-
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.rule.Declaration;
@@ -10,6 +8,8 @@ import org.drools.core.spi.Tuple;
 import org.drools.core.time.Interval;
 import org.drools.model.Index;
 import org.drools.model.SingleConstraint;
+
+import java.util.stream.Stream;
 
 public class ConstraintEvaluator {
 
@@ -67,14 +67,14 @@ public class ConstraintEvaluator {
                     declaration.getValue( workingMemory, tuple != null ? tuple.getObject(declaration.getPattern().getOffset()) : null );
     }
 
-    public boolean evaluate(InternalFactHandle handle, Tuple tuple) {
-        return constraint.getPredicate().test( getBetaInvocationArgs( handle, tuple ) );
+    public boolean evaluate(InternalFactHandle handle, Tuple tuple, InternalWorkingMemory workingMemory) {
+        return constraint.getPredicate().test( getBetaInvocationArgs( handle, tuple, workingMemory ) );
     }
 
-    private Object[] getBetaInvocationArgs( InternalFactHandle handle, Tuple tuple ) {
+    private Object[] getBetaInvocationArgs( InternalFactHandle handle, Tuple tuple, InternalWorkingMemory workingMemory ) {
         Object[] params = new Object[declarations.length];
         for (int i = 0; i < declarations.length; i++) {
-            params[i] = getArgument( handle, null, declarations[i], tuple );
+            params[i] = getArgument( handle, workingMemory, declarations[i], tuple );
         }
         return params;
     }
