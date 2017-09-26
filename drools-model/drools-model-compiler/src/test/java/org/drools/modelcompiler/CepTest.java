@@ -28,6 +28,7 @@ import org.drools.model.Window;
 import org.drools.model.WindowReference;
 import org.drools.model.impl.ModelImpl;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
+import org.drools.modelcompiler.domain.StockTick;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.conf.EventProcessingOption;
