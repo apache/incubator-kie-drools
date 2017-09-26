@@ -30,6 +30,7 @@ import org.drools.javaparser.ast.nodeTypes.NodeWithSimpleName;
 import org.drools.javaparser.ast.type.PrimitiveType;
 import org.drools.javaparser.ast.type.ReferenceType;
 import org.drools.javaparser.ast.type.Type;
+import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.ModelGenerator.RuleContext;
 
 import java.lang.reflect.Method;
@@ -57,7 +58,7 @@ public class DrlxParseUtil {
         throw new UnsupportedOperationException("Unknown operator " + operator);
     }
 
-    public static TypedExpression toTypedExpression(RuleContext context, Class<?> patternType, Expression drlxExpr,
+    public static TypedExpression toTypedExpression(RuleContext context, PackageModel packageModel, Class<?> patternType, Expression drlxExpr,
                                                     Set<String> usedDeclarations, Set<String> reactOnProperties) {
 
         Class<?> typeCursor = patternType;
@@ -76,6 +77,10 @@ public class DrlxParseUtil {
                 // then drlxExpr is a single NameExpr referring to a query parameter, e.g.: "$p1".
                 usedDeclarations.add(name);
                 return new TypedExpression(drlxExpr, Optional.empty());
+            } else if(packageModel.getGlobals().containsKey(name)){
+                Expression plusThis = new NameExpr(name);
+                usedDeclarations.add(name);
+                return new TypedExpression(plusThis, Optional.of(packageModel.getGlobals().get(name)));
             } else {
                 TypedExpression expression = nameExprToMethodCallExpr(name, typeCursor);
                 Expression plusThis = prepend(new NameExpr("_this"), (MethodCallExpr) expression.getExpression());
