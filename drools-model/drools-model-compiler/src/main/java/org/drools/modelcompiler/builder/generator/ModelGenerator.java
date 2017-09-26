@@ -163,7 +163,7 @@ public class ModelGenerator {
             queryCall.addArgument(new NameExpr("var_" + qp.name));
         }
 
-        MethodCallExpr viewCall = new MethodCallExpr(queryCall, "view");
+        MethodCallExpr viewCall = new MethodCallExpr(queryCall, BUILD_CALL);
         context.expressions.forEach(viewCall::addArgument);
 
         AssignExpr ruleAssign = new AssignExpr(queryVar, viewCall, AssignExpr.Operator.ASSIGN);
