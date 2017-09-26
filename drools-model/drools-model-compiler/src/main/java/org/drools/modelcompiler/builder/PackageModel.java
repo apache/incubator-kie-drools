@@ -16,23 +16,10 @@
 
 package org.drools.modelcompiler.builder;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.CompilationUnit;
 import org.drools.javaparser.ast.Modifier;
-import org.drools.javaparser.ast.body.BodyDeclaration;
-import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import org.drools.javaparser.ast.body.FieldDeclaration;
-import org.drools.javaparser.ast.body.InitializerDeclaration;
-import org.drools.javaparser.ast.body.MethodDeclaration;
+import org.drools.javaparser.ast.body.*;
 import org.drools.javaparser.ast.comments.JavadocComment;
 import org.drools.javaparser.ast.expr.ClassExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
@@ -48,6 +35,9 @@ import org.drools.model.Model;
 import org.drools.modelcompiler.builder.generator.DRLExprIdGenerator;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.ModelGenerator;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class PackageModel {
 
@@ -105,8 +95,8 @@ public class PackageModel {
         this.ruleMethods.put(methodName, ruleMethod);
     }
 
-    public void putQueryMethod(String methodName, MethodDeclaration queryMethod) {
-        this.queryMethods.put(methodName, queryMethod);
+    public void putQueryMethod(MethodDeclaration queryMethod) {
+        this.queryMethods.put(queryMethod.getNameAsString(), queryMethod);
     }
 
     public MethodDeclaration getQueryMethod(String key) {
@@ -213,7 +203,7 @@ public class PackageModel {
         for ( Map.Entry<String, Class<?>> g : getGlobals().entrySet() ) {
             NameExpr rulesFieldName = new NameExpr( "globals" );
             MethodCallExpr add = new MethodCallExpr(rulesFieldName, "add");
-            add.addArgument( new NameExpr("glb_" + g.getKey()) );
+            add.addArgument( new NameExpr("var_" + g.getKey()) );
             rulesListInitializerBody.addStatement( add );
 
         }
@@ -240,7 +230,7 @@ public class PackageModel {
         declarationOfCall.addArgument(new StringLiteralExpr(packageName));
         declarationOfCall.addArgument(new StringLiteralExpr(globalName));
 
-        FieldDeclaration field = classDeclaration.addField(varType, "glb_" + globalName, Modifier.FINAL);
+        FieldDeclaration field = classDeclaration.addField(varType, "var_" + globalName, Modifier.FINAL);
 
         field.getVariables().get(0).setInitializer(declarationOfCall);
     }
@@ -253,65 +243,4 @@ public class PackageModel {
         System.out.println(getRulesSource());
         System.out.println("=====");
     }
-    
-    @SuppressWarnings("unused")
-    @Deprecated
-    private static String getVariableSource() {
-        return "package myrules;\n" +
-               "" +
-               "import org.drools.model.*;\n" +
-               "import static org.drools.model.DSL.*;\n" +
-               "import org.drools.modelcompiler.Person;\n" +
-               "" +
-               "public class Variables {\n" +
-               "" +
-               "    public static final Variable<Person> markV = declarationOf( type( Person.class ) );\n" +
-               "    public static final Variable<Person> olderV = declarationOf( type( Person.class ) );\n" +
-               "}\n";
-    }
-
-    @SuppressWarnings("unused")
-    @Deprecated
-    private static String getRuleModelSource() {
-        return "package myrules;\n" +
-               "" +
-               "import java.util.*;\n" +
-               "import org.drools.model.*;\n" +
-               "import static org.drools.model.DSL.*;\n" +
-               "import org.drools.modelcompiler.Person;\n" +
-               "import org.drools.model.Index.ConstraintType;\n" +
-               "" +
-               "import static myrules.Variables.*;\n" +
-               "" +
-               "public class Rules implements Model {\n" +
-               "" +
-               "    int a;\n" + // workaround for ecj bug!
-               "" +
-               "    @Override\n" +
-               "    public List<Rule> getRules() {\n" +
-               "        return Arrays.asList( rule1() );\n" +
-               "    }\n" +
-               "" +
-               "    private Rule rule1() {\n" +
-               "        Rule rule = rule( \"beta\" )\n" +
-               "                .view(\n" +
-               "                        expr(markV, p -> p.getName().equals(\"Mark\"))\n" +
-               "                                .indexedBy( String.class, ConstraintType.EQUAL, Person::getName, \"Mark\" )\n" +
-               "                                .reactOn( \"name\", \"age\" ),\n" +
-               "                        expr(olderV, p -> !p.getName().equals(\"Mark\"))\n" +
-               "                                .indexedBy( String.class, ConstraintType.NOT_EQUAL, Person::getName, \"Mark\" )\n" +
-               "                                .reactOn( \"name\" ),\n" +
-               "                        expr(olderV, markV, (p1, p2) -> p1.getAge() > p2.getAge())\n" +
-               "                                .indexedBy( int.class, ConstraintType.GREATER_THAN, Person::getAge, Person::getAge )\n" +
-               "                                .reactOn( \"age\" )\n" +
-               "                     )\n" +
-               "                .then(c -> c.on(olderV, markV)\n" +
-               "                            .execute( (p1, p2) -> System.out.println( p1.getName() + \" is older than \" + p2.getName() ) ) );\n" +
-               "        return rule;\n" +
-               "    }\n" +
-               "}\n";
-    }
-
-
-
 }
