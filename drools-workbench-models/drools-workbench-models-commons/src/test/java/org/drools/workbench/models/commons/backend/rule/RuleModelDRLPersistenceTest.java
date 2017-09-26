@@ -2669,9 +2669,9 @@ public class RuleModelDRLPersistenceTest extends BaseRuleModelTest {
         model.name = ruleName;
 
         final FactPattern pattern = new FactPattern("Person");
-        final CompositeFieldConstraint notMatchesAndNotSounsLike = new CompositeFieldConstraint();
-        notMatchesAndNotSounsLike.setCompositeJunctionType(CompositeFieldConstraint.COMPOSITE_TYPE_AND);
-        pattern.addConstraint(notMatchesAndNotSounsLike);
+        final CompositeFieldConstraint notMatchesAndNotSoundsLike = new CompositeFieldConstraint();
+        notMatchesAndNotSoundsLike.setCompositeJunctionType(CompositeFieldConstraint.COMPOSITE_TYPE_AND);
+        pattern.addConstraint(notMatchesAndNotSoundsLike);
 
         final SingleFieldConstraint fieldNotSoundsLikeGoo = new SingleFieldConstraint();
         fieldNotSoundsLikeGoo.setFieldType(DataType.TYPE_STRING);
@@ -2679,7 +2679,7 @@ public class RuleModelDRLPersistenceTest extends BaseRuleModelTest {
         fieldNotSoundsLikeGoo.setOperator("not soundslike");
         fieldNotSoundsLikeGoo.setValue("goo");
         fieldNotSoundsLikeGoo.setConstraintValueType(SingleFieldConstraint.TYPE_LITERAL);
-        notMatchesAndNotSounsLike.addConstraint(fieldNotSoundsLikeGoo);
+        notMatchesAndNotSoundsLike.addConstraint(fieldNotSoundsLikeGoo);
 
         final SingleFieldConstraint fieldNotMatchesGoo = new SingleFieldConstraint();
         fieldNotMatchesGoo.setFieldType(DataType.TYPE_STRING);
@@ -2687,7 +2687,7 @@ public class RuleModelDRLPersistenceTest extends BaseRuleModelTest {
         fieldNotMatchesGoo.setOperator("not matches");
         fieldNotMatchesGoo.setValue("goo");
         fieldNotMatchesGoo.setConstraintValueType(SingleFieldConstraint.TYPE_LITERAL);
-        notMatchesAndNotSounsLike.addConstraint(fieldNotMatchesGoo);
+        notMatchesAndNotSoundsLike.addConstraint(fieldNotMatchesGoo);
 
         model.addLhsItem(pattern);
 
@@ -2703,7 +2703,7 @@ public class RuleModelDRLPersistenceTest extends BaseRuleModelTest {
 
     @Test
     public void testNotSoundsLikeAndNotMatchesInDsl() {
-        final String dslDefinition = "There is Person that field not matches and not sounslike {name}";
+        final String dslDefinition = "There is Person that field not matches and not soundslike {name}";
         final String drl = "Person( field not soundslike \"{name}\" && field not matches \"{name}\" )";
         final String dslFile = "[when]" + dslDefinition + "=" + drl;
 
