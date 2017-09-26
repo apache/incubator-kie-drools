@@ -179,6 +179,11 @@ public class PackageModel {
         for ( Map.Entry<String, Class<?>> g : getGlobals().entrySet() ) {
             addGlobalField(rulesClass, getName(), g.getKey(), g.getValue());
         }
+
+        for(Map.Entry<String, MethodDeclaration> methodName: queryMethods.entrySet()) {
+            FieldDeclaration field = rulesClass.addField(methodName.getValue().getType(), methodName.getKey(), Modifier.FINAL);
+            field.getVariables().get(0).setInitializer(new MethodCallExpr(null, methodName.getKey()));
+        }
         
         // instance initializer block.
         // add to `rules` list the result of invoking each method for rule 
@@ -196,7 +201,7 @@ public class PackageModel {
         for ( String methodName : queryMethods.keySet() ) {
             NameExpr rulesFieldName = new NameExpr( "queries" );
             MethodCallExpr add = new MethodCallExpr(rulesFieldName, "add");
-            add.addArgument( new MethodCallExpr(null, methodName) );
+            add.addArgument( new NameExpr(methodName) );
             rulesListInitializerBody.addStatement( add );
         }
 
