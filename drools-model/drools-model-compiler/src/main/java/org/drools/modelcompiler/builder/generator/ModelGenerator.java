@@ -69,6 +69,9 @@ public class ModelGenerator {
     private static final String EXECUTE_CALL = "execute";
     private static final String ON_CALL = "on";
     private static final String QUERY_CALL = "query";
+    private static final String WHEN_CALL = "when";
+    private static final String ELSE_WHEN_CALL = "elseWhen";
+    private static final String THEN_CALL = "then";
 
     public static PackageModel generateModel(InternalKnowledgePackage pkg, List<RuleDescrImpl> rules) {
         String name = pkg.getName();
@@ -367,9 +370,54 @@ public class ModelGenerator {
             visit( context, packageModel, ( (QueryDescr) descr ));
         } else if ( descr instanceof NamedConsequenceDescr) {
             visit( context, packageModel, ( (NamedConsequenceDescr) descr ));
+        } else if ( descr instanceof ConditionalBranchDescr) {
+            visit( context, packageModel, ( (ConditionalBranchDescr) descr ));
         } else {
             throw new UnsupportedOperationException("TODO"); // TODO
         }
+    }
+
+    private static void visit(RuleContext context, PackageModel packageModel, ConditionalBranchDescr desc) {
+        final EvalDescr condition = desc.getCondition();
+
+        PatternDescr patternRelated = (PatternDescr)getReferringPatternDescr(desc, (AndDescr) context.parentDesc);
+
+        MethodCallExpr when = new MethodCallExpr(null, WHEN_CALL);
+        when.addArgument(new StringLiteralExpr(UUID.randomUUID().toString().substring(0, 5)));
+        when.addArgument(new StringLiteralExpr(patternRelated.getIdentifier()));
+        MethodCallExpr then = new MethodCallExpr(when, THEN_CALL);
+
+
+
+        recurseAmongElseBranch(context, patternRelated, then, desc.getElseBranch());
+
+
+    }
+
+    private static void recurseAmongElseBranch(RuleContext context, PatternDescr patternRelated, MethodCallExpr parentMethodExpr, ConditionalBranchDescr branch) {
+        if(branch != null) {
+            MethodCallExpr elseWhen = new MethodCallExpr(parentMethodExpr, ELSE_WHEN_CALL);
+            elseWhen.addArgument(new StringLiteralExpr(UUID.randomUUID().toString()));
+            elseWhen.addArgument(new StringLiteralExpr(patternRelated.getIdentifier()));
+
+            MethodCallExpr then = new MethodCallExpr(elseWhen, THEN_CALL);
+
+            recurseAmongElseBranch(context, patternRelated, then, branch.getElseBranch());
+        } else {
+            context.addExpression(parentMethodExpr);
+        }
+
+    }
+
+    private static BaseDescr getReferringPatternDescr(ConditionalBranchDescr desc, AndDescr parent) {
+        BaseDescr patternRelated = null;
+        for(BaseDescr b : parent.getDescrs()) {
+            if(b.equals(desc)) {
+                break;
+            }
+            patternRelated = b;
+        }
+        return patternRelated;
     }
 
     private static void visit(RuleContext context, PackageModel packageModel, NamedConsequenceDescr descr) {
@@ -486,6 +534,7 @@ public class ModelGenerator {
             context.pushExprPointer( andDSL::addArgument );
         }
         for (BaseDescr subDescr : descr.getDescrs()) {
+            context.parentDesc = descr;
             visit( context, packageModel, subDescr );
         }
         if ( context.getExprPointerLevel() != 1 ) {
@@ -805,6 +854,8 @@ public class ModelGenerator {
         List<Expression> expressions = new ArrayList<>();
         Set<String> queryName = new HashSet<>();
         Map<String, String> namedConsequences = new HashMap<>();
+
+        BaseDescr parentDesc = null;
 
         public RuleContext(InternalKnowledgePackage pkg, DRLExprIdGenerator exprIdGenerator) {
             this.pkg = pkg;
