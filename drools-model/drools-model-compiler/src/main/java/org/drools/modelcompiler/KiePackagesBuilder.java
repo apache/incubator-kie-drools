@@ -360,7 +360,7 @@ public class KiePackagesBuilder {
                     pattern.setSource( new org.drools.core.rule.WindowReference( window.getName() ) );
                 } else if ( decl.getSource() instanceof From ) {
                     From<?> from = (From) decl.getSource();
-                    DataProvider provider = new LambdaDataProvider( ctx.getDeclaration( from.getVariable() ), from.getProvider() );
+                    DataProvider provider = new LambdaDataProvider( ctx.getDeclaration( from.getVariable() ), from.getProvider(), from.isReactive() );
                     org.drools.core.rule.From fromSource = new org.drools.core.rule.From(provider);
                     fromSource.setResultPattern( pattern );
                     pattern.setSource( fromSource );

@@ -24,10 +24,16 @@ public class FromImpl<T> implements From<T> {
 
     private final Variable<T> variable;
     private final Function1<T, ?> provider;
+    private final boolean reactive;
 
     public FromImpl( Variable<T> variable, Function1<T, ?> provider ) {
+        this(variable, provider, false);
+    }
+
+    public FromImpl( Variable<T> variable, Function1<T, ?> provider, boolean reactive ) {
         this.variable = variable;
         this.provider = provider;
+        this.reactive = reactive;
     }
 
     @Override
@@ -38,5 +44,10 @@ public class FromImpl<T> implements From<T> {
     @Override
     public Function1<T, ?> getProvider() {
         return provider;
+    }
+
+    @Override
+    public boolean isReactive() {
+        return reactive;
     }
 }
