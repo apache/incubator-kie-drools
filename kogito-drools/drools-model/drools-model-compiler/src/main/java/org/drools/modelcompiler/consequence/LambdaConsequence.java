@@ -16,29 +16,28 @@
 
 package org.drools.modelcompiler.consequence;
 
-import java.util.IdentityHashMap;
-import java.util.Map;
-
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.rule.Declaration;
+import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.Tuple;
 import org.drools.model.BitMask;
 import org.drools.model.Drools;
 import org.drools.model.Variable;
-import org.drools.model.bitmask.AllSetBitMask;
-import org.drools.model.bitmask.AllSetButLastBitMask;
-import org.drools.model.bitmask.EmptyBitMask;
-import org.drools.model.bitmask.EmptyButLastBitMask;
-import org.drools.model.bitmask.LongBitMask;
-import org.drools.model.bitmask.OpenBitSet;
+import org.drools.model.bitmask.*;
 import org.drools.model.functions.FunctionN;
 import org.drools.modelcompiler.RuleContext;
+
+import java.util.IdentityHashMap;
+import java.util.Map;
+
+import static java.util.Arrays.asList;
+import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
 
 public class LambdaConsequence implements Consequence {
 
@@ -125,7 +124,13 @@ public class LambdaConsequence implements Consequence {
 
         @Override
         public void update(Object object, String... modifiedProperties) {
-            workingMemory.update( fhLookup.get(object), object, modifiedProperties );
+            Class modifiedClass = object.getClass();
+            TypeDeclaration typeDeclaration = workingMemory.getKnowledgeBase().getOrCreateExactTypeDeclaration( modifiedClass );
+            org.drools.core.util.bitmask.BitMask mask = typeDeclaration.isPropertyReactive() ?
+                    calculatePositiveMask(asList(modifiedProperties), typeDeclaration.getAccessibleProperties() ) :
+                    org.drools.core.util.bitmask.AllSetBitMask.get();
+
+            knowledgeHelper.update( fhLookup.get(object), mask, modifiedClass);
         }
 
         @Override

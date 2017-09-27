@@ -1,11 +1,11 @@
 package org.drools.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.drools.model.datasources.DataSource;
 import org.drools.model.engine.BruteForceEngine;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.drools.model.DSL.*;
 import static org.junit.Assert.assertEquals;
@@ -45,7 +45,7 @@ public class FlowDSLTest {
         assertEquals("Mario is older than Mark", list.get(0));
 
         assertEquals("join", rule.getName());
-        assertEquals(10, rule.getAttribute(Rule.Attribute.SALIENCE));
+        assertEquals(10, (int) rule.getAttribute(Rule.Attribute.SALIENCE));
         assertEquals("myGroup", rule.getAttribute(Rule.Attribute.AGENDA_GROUP));
         assertEquals(false, rule.getAttribute(Rule.Attribute.NO_LOOP));
     }
