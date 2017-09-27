@@ -20,7 +20,9 @@ import org.drools.core.reteoo.AlphaNode;
 import org.drools.modelcompiler.domain.*;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
+import org.kie.internal.utils.KieHelper;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -635,5 +637,27 @@ public class CompilerTest extends BaseModelTest {
         ksession.fireAllRules();
 
         assertEquals("Alan", result.getValue());
+    }
+
+    @Test(timeout = 5000)
+    @Ignore("DSL generation to be implemented")
+    public void testNoLoop() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "rule R no-loop when\n" +
+                "  $p : Person(age > 18)\n" +
+                "then\n" +
+                "  modify($p) { setAge($p.getAge()+1) };\n" +
+                "end";
+
+        final KieSession ksession = new KieHelper().addContent( str, ResourceType.DRL )
+                .build()
+                .newKieSession();
+
+        Person me = new Person( "Mario", 40 );
+        ksession.insert( me );
+        ksession.fireAllRules();
+
+        assertEquals( 41, me.getAge() );
     }
 }
