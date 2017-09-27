@@ -25,14 +25,31 @@ public class ViewBuilder {
 
     public static CompositePatterns viewItems2Patterns( RuleItemBuilder[] viewItemBuilders ) {
         List<RuleItem> ruleItems = Stream.of( viewItemBuilders ).map( RuleItemBuilder::get ).collect( toList() );
-        return viewItems2Condition( ruleItems, new LinkedHashMap<>(), new HashSet<>(), Type.AND, true );
+        Map<Variable<?>, InputViewItemImpl<?>> inputs = new LinkedHashMap<>();
+        Set<Variable<?>> usedVars = new HashSet<>();
+        CompositePatterns view = viewItems2Condition( ruleItems, inputs, usedVars, Type.AND, true );
+        ensureVariablesDeclarationInView(view, inputs, usedVars);
+        return view;
     }
 
-    public static CompositePatterns viewItems2Condition(List<RuleItem> ruleItems, Map<Variable<?>, InputViewItemImpl<?>> inputs,
+    private static void ensureVariablesDeclarationInView(CompositePatterns view, Map<Variable<?>, InputViewItemImpl<?>> inputs, Set<Variable<?>> usedVars) {
+        if ( inputs.size() > usedVars.size() ) {
+            inputs.keySet().removeAll( usedVars );
+            int i = 0;
+            for ( Map.Entry<Variable<?>, InputViewItemImpl<?>> entry : inputs.entrySet() ) {
+                view.addCondition( i++, new PatternImpl( entry.getKey(), SingleConstraint.EMPTY, entry.getValue().getDataSourceDefinition() ) );
+                usedVars.add( entry.getKey() );
+            }
+        }
+
+        view.ensureVariablesDeclarationInView();
+    }
+
+    private static CompositePatterns viewItems2Condition(List<RuleItem> ruleItems, Map<Variable<?>, InputViewItemImpl<?>> inputs,
                                                         Set<Variable<?>> usedVars, Condition.Type type, boolean topLevel) {
         List<Condition> conditions = new ArrayList<>();
         Map<Variable<?>, Condition> conditionMap = new HashMap<>();
-        Map<String, Consequence> consequences = topLevel ? new HashMap<>() : null;
+        Map<String, Consequence> consequences = topLevel ? new LinkedHashMap<>() : null;
         Iterator<RuleItem> ruleItemIterator = ruleItems.iterator();
 
         while (ruleItemIterator.hasNext()) {
@@ -111,15 +128,7 @@ public class ViewBuilder {
                 conditions.add( condition );
             }
 
-            if ( patterVariable instanceof Declaration ) {
-                Declaration declaration = (( Declaration ) patterVariable);
-                if ( declaration.getSource() instanceof From ) {
-                    Variable var = (( From ) declaration.getSource()).getVariable();
-                    if (var.isFact()) {
-                        inputs.putIfAbsent( var, (InputViewItemImpl) input( var ) );
-                    }
-                }
-            }
+            addInputFromVariableSource( inputs, patterVariable );
 
             if ( viewItem instanceof AbstractExprViewItem && !( (AbstractExprViewItem) viewItem ).isQueryExpression() ) {
                 for (Variable var : viewItem.getVariables()) {
@@ -136,22 +145,23 @@ public class ViewBuilder {
             }
         }
 
-        CompositePatterns condition = new CompositePatterns( type, conditions, usedVars, consequences );
-        if ( type == Type.AND ) {
-            if ( topLevel && inputs.size() > usedVars.size() ) {
-                inputs.keySet().removeAll( usedVars );
-                int i = 0;
-                for ( Map.Entry<Variable<?>, InputViewItemImpl<?>> entry : inputs.entrySet() ) {
-                    conditions.add( i++, new PatternImpl( entry.getKey(), SingleConstraint.EMPTY, entry.getValue().getDataSourceDefinition() ) );
-                    usedVars.add( entry.getKey() );
+        return new CompositePatterns( type, conditions, usedVars, consequences );
+    }
+
+    private static void addInputFromVariableSource( Map<Variable<?>, InputViewItemImpl<?>> inputs, Variable<?> patterVariable ) {
+        if ( patterVariable instanceof Declaration ) {
+            Declaration declaration = (( Declaration ) patterVariable);
+            if ( declaration.getSource() instanceof From ) {
+                Variable var = (( From ) declaration.getSource()).getVariable();
+                addInputFromVariableSource( inputs, var );
+                if (var.isFact()) {
+                    inputs.putIfAbsent( var, (InputViewItemImpl) input( var ) );
                 }
             }
         }
-        return condition;
     }
 
     private static ConditionalNamedConsequenceImpl createConditionalNamedConsequence(Map<String, Consequence> consequences, ConditionalConsequence cond) {
-
         SingleConstraint constraint = cond.getExpr() == null ?
                 null :
                 cond.getExpr() instanceof Expr1ViewItemImpl ?

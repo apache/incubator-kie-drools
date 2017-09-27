@@ -16,15 +16,13 @@
 
 package org.drools.modelcompiler;
 
+import org.assertj.core.api.Assertions;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.model.*;
 import org.drools.model.Index.ConstraintType;
 import org.drools.model.impl.ModelImpl;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
-import org.drools.modelcompiler.domain.Adult;
-import org.drools.modelcompiler.domain.Child;
-import org.drools.modelcompiler.domain.Person;
-import org.drools.modelcompiler.domain.Result;
+import org.drools.modelcompiler.domain.*;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.ClassObjectFilter;
@@ -32,7 +30,9 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import static java.util.Arrays.asList;
 import static org.drools.model.DSL.*;
@@ -579,7 +579,6 @@ public class FlowTest {
                         on(childV, resultV).execute( (c,r) -> r.setValue( c.getName() ) )
                 );
 
-
         Model model = new ModelImpl().addRule( rule );
         KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
         KieSession ksession = kieBase.newKieSession();
@@ -595,4 +594,44 @@ public class FlowTest {
 
         assertEquals("Alan", result.getValue());
    }
+
+    @Test
+    public void testConcatenatedFrom() {
+        Global<List> listG = globalOf(type(List.class), "defaultpkg", "list");
+        Variable<Man> manV = declarationOf( type( Man.class ) );
+        Variable<Woman> wifeV = declarationOf( type( Woman.class ), from( manV, Man::getWife ) );
+        Variable<Child> childV = declarationOf( type( Child.class ), from( wifeV, Woman::getChildren ) );
+        Variable<Toy> toyV = declarationOf( type( Toy.class ), from( childV, Child::getToys ) );
+
+        Rule rule = rule( "oopath" )
+                .build(
+                        expr("exprA", childV, c -> c.getAge() > 10),
+                        on(toyV, listG).execute( (t,l) -> l.add(t.getName()) )
+                );
+
+        Model model = new ModelImpl().addGlobal( listG ).addRule( rule );
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
+        KieSession ksession = kieBase.newKieSession();
+
+        final List<String> list = new ArrayList<>();
+        ksession.setGlobal( "list", list );
+
+        final Woman alice = new Woman( "Alice", 38 );
+        final Man bob = new Man( "Bob", 40 );
+        bob.setWife( alice );
+
+        final Child charlie = new Child( "Charles", 12 );
+        final Child debbie = new Child( "Debbie", 10 );
+        alice.addChild( charlie );
+        alice.addChild( debbie );
+
+        charlie.addToy( new Toy( "car" ) );
+        charlie.addToy( new Toy( "ball" ) );
+        debbie.addToy( new Toy( "doll" ) );
+
+        ksession.insert( bob );
+        ksession.fireAllRules();
+
+        Assertions.assertThat(list).containsExactlyInAnyOrder("car", "ball");
+    }
 }
