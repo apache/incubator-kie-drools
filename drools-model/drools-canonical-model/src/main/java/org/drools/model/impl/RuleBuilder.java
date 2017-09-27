@@ -8,7 +8,7 @@ import org.drools.model.functions.Function1;
 import org.drools.model.patterns.CompositePatterns;
 import org.drools.model.view.ViewItemBuilder;
 
-import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Map;
 
 import static org.drools.model.impl.ViewBuilder.viewItems2Patterns;
@@ -22,7 +22,7 @@ public class RuleBuilder {
 
     private String unit;
 
-    private final Map<Rule.Attribute, Object> attributes = new HashMap<>();
+    private final Map<Rule.Attribute, Object> attributes = new IdentityHashMap<>();
 
     public RuleBuilder(String name) {
         this(DEFAULT_PACKAGE, name);
@@ -50,7 +50,7 @@ public class RuleBuilder {
                c.getSimpleName();
     }
 
-    public RuleBuilder attribute(Rule.Attribute attribute, Object value) {
+    public <T> RuleBuilder attribute(Rule.Attribute<T> attribute, T value) {
         attributes.put(attribute, value);
         return this;
     }
