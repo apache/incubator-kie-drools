@@ -1,7 +1,5 @@
 package org.drools.modelcompiler.domain;
 
-import org.drools.modelcompiler.Address;
-
 public class Person {
     private String name;
     private int age;
