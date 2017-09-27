@@ -4,28 +4,28 @@ import java.util.Map;
 
 public interface Rule {
 
-    enum Attribute {
-        SALIENCE(0),
-        NO_LOOP(false),
-        AGENDA_GROUP(null);
+    interface Attribute<T> {
+        T getDefaultValue();
 
-        private final Object defaultValue;
-
-        Attribute(Object defaultValue) {
-            this.defaultValue = defaultValue;
-        }
-
-        public Object getDefaultValue() {
-            return defaultValue;
-        }
+        Attribute<Boolean> NO_LOOP = () -> false;
+        Attribute<Boolean> LOCK_ON_ACTIVE = () -> false;
+        Attribute<Boolean> ENABLED = () -> true;
+        Attribute<Integer> SALIENCE = () -> 0;
+        Attribute<String> AGENDA_GROUP = () -> "MAIN";
+        Attribute<String> ACTIVATION_GROUP = () -> null;
+        Attribute<String> RULEFLOW_GROUP = () -> null;
+        Attribute<String> DURATION = () -> null;
+        Attribute<String> TIMER = () -> null;
+        Attribute<String> CALENDAR = () -> null;
     }
+
 
     View getView();
 
     Consequence getDefaultConsequence();
     Map<String, Consequence> getConsequences();
 
-    Object getAttribute(Attribute attribute);
+    <T> T getAttribute(Attribute<T> attribute);
 
     String getName();
     String getPackage();

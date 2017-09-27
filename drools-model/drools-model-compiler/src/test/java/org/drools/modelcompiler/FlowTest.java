@@ -142,7 +142,7 @@ public class FlowTest {
                         expr("exprA", markV, p -> p.getName().equals("Mark")),
                         expr("exprB", personV, markV, (p1, p2) -> p1.getAge() > p2.getAge()),
                         expr("exprC", nameV, personV, (s, p) -> s.equals( p.getName() )),
-                        on(nameV).execute(s -> result.setValue( s ))
+                        on(nameV).execute( result::setValue )
                       );
 
         Model model = new ModelImpl().addRule( rule );
@@ -176,7 +176,7 @@ public class FlowTest {
                                )
                           ),
                         expr("exprC", nameV, personV, (s, p) -> s.equals( p.getName() )),
-                        on(nameV).execute(s -> result.setValue( s ))
+                        on(nameV).execute( result::setValue )
                       );
 
         Model model = new ModelImpl().addRule( rule );
@@ -227,7 +227,7 @@ public class FlowTest {
         Rule rule = rule("accumulate")
                 .build(
                         accumulate(expr(person, p -> p.getName().startsWith("M")),
-                                   sum((Person p) -> p.getAge()).as(resultSum)),
+                                   sum( Person::getAge ).as(resultSum)),
                         on(resultSum).execute(sum -> result.setValue( "total = " + sum) )
                       );
 
@@ -633,5 +633,29 @@ public class FlowTest {
         ksession.fireAllRules();
 
         Assertions.assertThat(list).containsExactlyInAnyOrder("car", "ball");
+    }
+
+    @Test(timeout = 5000)
+    public void testNoLoopWithModel() {
+        Variable<Person> meV = declarationOf( type( Person.class ) );
+
+        Rule rule = rule( "noloop" ).attribute( Rule.Attribute.NO_LOOP, true )
+                .build(
+                        expr( "exprA", meV, p -> p.getAge() > 18 ).reactOn( "age" ),
+                        on( meV ).execute( ( drools, p ) -> {
+                            p.setAge( p.getAge() + 1 );
+                            drools.update( p, "age" );
+                        } )
+                );
+
+        Model model = new ModelImpl().addRule( rule );
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
+        KieSession ksession = kieBase.newKieSession();
+
+        Person me = new Person( "Mario", 40 );
+        ksession.insert( me );
+        ksession.fireAllRules();
+
+        assertEquals( 41, me.getAge() );
     }
 }
