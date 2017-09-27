@@ -603,7 +603,7 @@ public class FlowTest {
         Variable<Child> childV = declarationOf( type( Child.class ), from( wifeV, Woman::getChildren ) );
         Variable<Toy> toyV = declarationOf( type( Toy.class ), from( childV, Child::getToys ) );
 
-        Rule rule = rule( "oopath" )
+        Rule rule = rule( "froms" )
                 .build(
                         expr("exprA", childV, c -> c.getAge() > 10),
                         on(toyV, listG).execute( (t,l) -> l.add(t.getName()) )
