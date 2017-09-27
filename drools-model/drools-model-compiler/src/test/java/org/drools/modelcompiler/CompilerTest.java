@@ -16,59 +16,24 @@
 
 package org.drools.modelcompiler;
 
-import org.drools.compiler.kie.builder.impl.InternalKieModule;
-import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
-import org.drools.core.ClockType;
 import org.drools.core.reteoo.AlphaNode;
-import org.drools.modelcompiler.builder.CanonicalModelKieProject;
 import org.drools.modelcompiler.domain.*;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
-import org.kie.api.KieServices;
-import org.kie.api.builder.*;
-import org.kie.api.builder.model.KieBaseModel;
-import org.kie.api.builder.model.KieModuleModel;
-import org.kie.api.builder.model.KieSessionModel;
-import org.kie.api.conf.EventProcessingOption;
-import org.kie.api.runtime.ClassObjectFilter;
-import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.conf.ClockTypeOption;
-import org.kie.api.runtime.rule.QueryResults;
-import org.kie.api.runtime.rule.QueryResultsRow;
-import org.kie.api.time.SessionPseudoClock;
 
-import java.io.File;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import static java.util.Arrays.asList;
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-@RunWith(Parameterized.class)
-public class CompilerTest {
-
-    public static enum RUN_TYPE {
-        USE_CANONICAL_MODEL,
-        STANDARD_FROM_DRL;
-    }
-
-    @Parameters(name = "{0}")
-    public static Object[] params() {
-        return new Object[]{
-                RUN_TYPE.STANDARD_FROM_DRL,
-                RUN_TYPE.USE_CANONICAL_MODEL
-        };
-    }
-
-    private final RUN_TYPE testRunType;
+public class CompilerTest extends BaseModelTest {
 
     public CompilerTest( RUN_TYPE testRunType ) {
-        this.testRunType = testRunType;
+        super( testRunType );
     }
 
     @Test
@@ -238,60 +203,6 @@ public class CompilerTest {
         ksession.fireAllRules();
     }
 
-    private KieSession getKieSession( String str ) {
-        return getKieSession( str, null );
-    }
-
-    private KieSession getKieSession( String str, KieModuleModel model ) {
-        KieServices ks = KieServices.get();
-
-        ReleaseId releaseId = ks.newReleaseId( "org.kie", "kjar-test-" + UUID.randomUUID(), "1.0" );
-
-        KieRepository repo = ks.getRepository();
-        repo.removeKieModule( releaseId );
-
-        KieFileSystem kfs = ks.newKieFileSystem();
-        if ( model != null ) {
-            kfs.writeKModuleXML( model.toXML() );
-        }
-        kfs.writePomXML( KJARUtils.getPom( releaseId ) );
-        kfs.write( "src/main/resources/r1.drl", str );
-// This is actually taken from classloader of test (?) - or anyway it must, because the test are instantiating directly Person.
-//        String javaSrc = Person.class.getCanonicalName().replace( '.', File.separatorChar ) + ".java";
-//        Resource javaResource = ks.getResources().newFileSystemResource( "src/test/java/" + javaSrc );
-//        kfs.write( "src/main/java/" + javaSrc, javaResource );
-
-        KieBuilder kieBuilder = ( testRunType == RUN_TYPE.USE_CANONICAL_MODEL ) ?
-                                ( (KieBuilderImpl) ks.newKieBuilder( kfs ) ).buildAll( CanonicalModelKieProject::new ) :
-                                ks.newKieBuilder( kfs ).buildAll();
-        List<Message> messages = kieBuilder.getResults().getMessages();
-        if ( !messages.isEmpty() ) {
-            fail( messages.toString() );
-        }
-
-        if ( testRunType == RUN_TYPE.STANDARD_FROM_DRL ) {
-            return ks.newKieContainer( releaseId ).newKieSession();
-        } else {
-            InternalKieModule kieModule = (InternalKieModule) kieBuilder.getKieModule();
-            File kjarFile = TestFileUtils.bytesToTempKJARFile( releaseId, kieModule.getBytes(), ".jar" );
-            KieModule zipKieModule = new CanonicalKieModule( releaseId, model != null ? model : getDefaultKieModuleModel( ks ), kjarFile );
-            repo.addKieModule( zipKieModule );
-
-            KieContainer kieContainer = ks.newKieContainer( releaseId );
-            KieSession kieSession = kieContainer.newKieSession();
-
-            return kieSession;
-        }
-    }
-
-    private KieModuleModel getDefaultKieModuleModel( KieServices ks ) {
-        KieModuleModel kproj = ks.newKieModuleModel();
-        KieBaseModel kieBaseModel1 = kproj.newKieBaseModel( "kbase" ).setDefault( true );
-        KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel( "ksession" ).setDefault( true );
-        return kproj;
-
-    }
-
     @Test
     public void testInlineCast() {
         String str =
@@ -340,10 +251,6 @@ public class CompilerTest {
         ksession.fireAllRules();
 
         assertEquals( "Found: Mark", result.getValue() );
-    }
-
-    public static <T> Collection<T> getObjects( KieSession ksession, Class<T> clazz ) {
-        return (Collection<T>) ksession.getObjects( new ClassObjectFilter( clazz ) );
     }
 
     @Test
@@ -490,107 +397,6 @@ public class CompilerTest {
     }
 
     @Test
-    public void testAfter() throws Exception {
-        String str =
-                "import " + StockTick.class.getCanonicalName() + ";" +
-                "rule R when\n" +
-                "    $a : StockTick( company == \"DROO\" )\n" +
-                "    $b : StockTick( company == \"ACME\", this after[5s,8s] $a )\n" +
-                "then\n" +
-                "  System.out.println(\"fired\");\n" +
-                "end\n";
-
-        KieModuleModel kproj = KieServices.get().newKieModuleModel();
-        kproj.newKieBaseModel( "kb" )
-             .setDefault( true )
-             .setEventProcessingMode( EventProcessingOption.STREAM )
-             .newKieSessionModel( "ks" )
-             .setDefault( true ).setClockType( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-
-        KieSession ksession = getKieSession( str, kproj );
-        SessionPseudoClock clock = ksession.getSessionClock();
-
-        ksession.insert( new StockTick( "DROO" ) );
-        clock.advanceTime( 6, TimeUnit.SECONDS );
-        ksession.insert( new StockTick( "ACME" ) );
-
-        assertEquals( 1, ksession.fireAllRules() );
-
-        clock.advanceTime( 4, TimeUnit.SECONDS );
-        ksession.insert( new StockTick( "ACME" ) );
-
-        assertEquals( 0, ksession.fireAllRules() );
-    }
-
-    @Test
-    public void testAfterWithEntryPoints() throws Exception {
-        String str =
-                "import " + StockTick.class.getCanonicalName() + ";" +
-                "rule R when\n" +
-                "    $a : StockTick( company == \"DROO\" ) from entry-point ep1\n" +
-                "    $b : StockTick( company == \"ACME\", this after[5s,8s] $a ) from entry-point ep2\n" +
-                "then\n" +
-                "  System.out.println(\"fired\");\n" +
-                "end\n";
-
-        KieModuleModel kproj = KieServices.get().newKieModuleModel();
-        kproj.newKieBaseModel( "kb" )
-             .setDefault( true )
-             .setEventProcessingMode( EventProcessingOption.STREAM )
-             .newKieSessionModel( "ks" )
-             .setDefault( true ).setClockType( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-
-        KieSession ksession = getKieSession( str, kproj );
-        SessionPseudoClock clock = ksession.getSessionClock();
-
-        ksession.getEntryPoint( "ep1" ).insert( new StockTick( "DROO" ) );
-
-        clock.advanceTime( 6, TimeUnit.SECONDS );
-        ksession.getEntryPoint( "ep1" ).insert( new StockTick( "ACME" ) );
-        assertEquals( 0, ksession.fireAllRules() );
-
-        clock.advanceTime( 1, TimeUnit.SECONDS );
-        ksession.getEntryPoint( "ep2" ).insert( new StockTick( "ACME" ) );
-        assertEquals( 1, ksession.fireAllRules() );
-
-        clock.advanceTime( 4, TimeUnit.SECONDS );
-        ksession.getEntryPoint( "ep2" ).insert( new StockTick( "ACME" ) );
-        assertEquals( 0, ksession.fireAllRules() );
-    }
-
-    @Test
-    public void testSlidingWindow() throws Exception {
-        String str =
-                "import " + StockTick.class.getCanonicalName() + ";\n" +
-                "rule R when\n" +
-                "    $a : StockTick( company == \"DROO\" ) over window:length( 2 )\n" +
-                "then\n" +
-                "  System.out.println(\"fired\");\n" +
-                "end\n";
-
-        KieModuleModel kproj = KieServices.get().newKieModuleModel();
-        kproj.newKieBaseModel( "kb" )
-             .setDefault( true )
-             .setEventProcessingMode( EventProcessingOption.STREAM )
-             .newKieSessionModel( "ks" )
-             .setDefault( true ).setClockType( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-
-        KieSession ksession = getKieSession( str, kproj );
-        SessionPseudoClock clock = ksession.getSessionClock();
-
-        clock.advanceTime( 1, TimeUnit.SECONDS );
-        ksession.insert( new StockTick( "DROO" ) );
-        clock.advanceTime( 1, TimeUnit.SECONDS );
-        ksession.insert( new StockTick( "DROO" ) );
-        clock.advanceTime( 1, TimeUnit.SECONDS );
-        ksession.insert( new StockTick( "ACME" ) );
-        clock.advanceTime( 1, TimeUnit.SECONDS );
-        ksession.insert( new StockTick( "DROO" ) );
-
-        assertEquals( 2, ksession.fireAllRules() );
-    }
-
-    @Test
     public void testNot() {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -729,218 +535,6 @@ public class CompilerTest {
         Collection<Result> results = getObjects( ksession, Result.class );
         assertEquals( 1, results.size() );
         assertEquals( "Mario", results.iterator().next().getValue() );
-    }
-
-    @Test
-    public void testQueryZeroArgs() {
-        String str =
-                "import " + Person.class.getCanonicalName() + ";" +
-                "global java.lang.Integer ageG;" +
-                "query olderThan\n" +
-                "    $p : Person(age > ageG)\n" +
-                "end ";
-
-        KieSession ksession = getKieSession(str);
-
-        ksession.setGlobal("ageG", 40);
-
-        ksession.insert(new Person("Mark", 39));
-        ksession.insert(new Person("Mario", 41));
-
-        QueryResults results = ksession.getQueryResults("olderThan", 40);
-
-        assertEquals(1, results.size());
-        QueryResultsRow res = results.iterator().next();
-        Person p = (Person) res.get("$p");
-        assertEquals("Mario", p.getName());
-
-    }
-
-    @Test
-    public void testQueryOneArgument() {
-        String str =
-                "import " + Person.class.getCanonicalName() + ";" +
-                        "query olderThan( int $age )\n" +
-                        "    $p : Person(age > $age)\n" +
-                        "end ";
-
-        KieSession ksession = getKieSession( str );
-
-        ksession.insert( new Person( "Mark", 39 ) );
-        ksession.insert( new Person( "Mario", 41 ) );
-
-        QueryResults results = ksession.getQueryResults( "olderThan", 40 );
-
-        assertEquals( 1, results.size() );
-        Person p = (Person) results.iterator().next().get( "$p" );
-        assertEquals( "Mario", p.getName() );
-    }
-
-    @Test
-    public void testQueryInRule() {
-        String str =
-                "import " + Result.class.getCanonicalName() + ";" +
-                "import " + Person.class.getCanonicalName() + ";" +
-                "query olderThan( Person $p, int $age )\n" +
-                "    $p := Person(age > $age)\n" +
-                "end\n" +
-                "rule R when\n" +
-                "    olderThan( $p, 40; )\n" +
-                "then\n" +
-                "    insert(new Result($p.getName()));\n" +
-                "end";
-
-        KieSession ksession = getKieSession( str );
-
-        ksession.insert( new Person( "Mark", 39 ) );
-        ksession.insert( new Person( "Mario", 41 ) );
-
-        ksession.fireAllRules();
-
-        Collection<Result> results = getObjects( ksession, Result.class );
-        assertEquals( 1, results.size() );
-        assertEquals( "Mario", results.iterator().next().getValue() );
-    }
-
-    @Test
-    public void testQueryInRuleWithDeclaration() {
-        String str =
-                "import " + Result.class.getCanonicalName() + ";" +
-                "import " + Person.class.getCanonicalName() + ";" +
-                "query olderThan( Person $p, int $age )\n" +
-                "    $p := Person(age > $age)\n" +
-                "end\n" +
-                "rule R when\n" +
-                "    $p : Person( name.startsWith(\"M\") )\n" +
-                "    olderThan( $p, 40; )\n" +
-                "then\n" +
-                "    insert(new Result($p.getName()));\n" +
-                "end";
-
-        KieSession ksession = getKieSession( str );
-
-        ksession.insert( new Person( "Mark", 39 ) );
-        ksession.insert( new Person( "Mario", 41 ) );
-        ksession.insert( new Person( "Edson", 41 ) );
-
-        ksession.fireAllRules();
-
-        Collection<Result> results = getObjects( ksession, Result.class );
-        assertEquals( 1, results.size() );
-        assertEquals( "Mario", results.iterator().next().getValue() );
-    }
-
-
-    @Test
-    public void testQueryInvokedWithGlobal() {
-        String str =
-                "import " + Result.class.getCanonicalName() + ";" +
-                        "import " + Person.class.getCanonicalName() + ";" +
-                        "global Integer ageG;" +
-                        "query olderThan( Person $p, int $age )\n" +
-                        "    $p := Person(age > $age)\n" +
-                        "end\n" +
-                        "rule R when\n" +
-                        "    $p : Person( name.startsWith(\"M\") )\n" +
-                        "    olderThan( $p, ageG; )\n" +
-                        "then\n" +
-                        "    insert(new Result($p.getName()));\n" +
-                        "end";
-
-        KieSession ksession = getKieSession( str );
-
-        ksession.setGlobal("ageG", 40);
-
-        ksession.insert( new Person( "Mark", 39 ) );
-        ksession.insert( new Person( "Mario", 41 ) );
-        ksession.insert( new Person( "Edson", 41 ) );
-
-        ksession.fireAllRules();
-
-        Collection<Result> results = getObjects( ksession, Result.class );
-        assertEquals( 1, results.size() );
-        assertEquals( "Mario", results.iterator().next().getValue() );
-    }
-
-    @Test
-    public void testAccumulate1() {
-        String str =
-                "import " + Person.class.getCanonicalName() + ";" +
-                "import " + Result.class.getCanonicalName() + ";" +
-                "rule X when\n" +
-                 "  accumulate ( $p: Person ( getName().startsWith(\"M\")); \n" +
-                "                $sum : sum($p.getAge())  \n" +
-                "              )                          \n" +
-                "then\n" +
-                "  insert(new Result($sum));\n" +
-                "end";
-
-        KieSession ksession = getKieSession( str );
-
-        ksession.insert(new Person("Mark", 37));
-        ksession.insert(new Person("Edson", 35));
-        ksession.insert(new Person("Mario", 40));
-
-        ksession.fireAllRules();
-
-        Collection<Result> results = getObjects(ksession, Result.class);
-        assertEquals(1, results.size());
-        assertEquals(77, results.iterator().next().getValue());
-    }
-
-    @Test
-    public void testAccumulateWithProperty() {
-        String str =
-                "import " + Person.class.getCanonicalName() + ";" +
-                "import " + Result.class.getCanonicalName() + ";" +
-                "rule X when\n" +
-                 "  accumulate ( $p: Person ( getName().startsWith(\"M\")); \n" +
-                "                $sum : sum($p.getAge())  \n" +
-                "              )                          \n" +
-                "then\n" +
-                "  insert(new Result($sum));\n" +
-                "end";
-
-        KieSession ksession = getKieSession( str );
-
-        ksession.insert(new Person("Mark", 37));
-        ksession.insert(new Person("Edson", 35));
-        ksession.insert(new Person("Mario", 40));
-
-        ksession.fireAllRules();
-
-        Collection<Result> results = getObjects(ksession, Result.class);
-        assertEquals(1, results.size());
-        assertEquals(77, results.iterator().next().getValue());
-    }
-
-    @Test
-    public void testAccumulate2() {
-        String str =
-                "import " + Person.class.getCanonicalName() + ";" +
-                "import " + Result.class.getCanonicalName() + ";" +
-                "rule X when\n" +
-                 "  accumulate ( $p: Person ( getName().startsWith(\"M\")); \n" +
-                "                $sum : sum($p.getAge()),  \n" +
-                "                $average : average($p.getAge())  \n" +
-                "              )                          \n" +
-                "then\n" +
-                "  insert(new Result($sum));\n" +
-                "  insert(new Result($average));\n" +
-                "end";
-
-        KieSession ksession = getKieSession( str );
-
-        ksession.insert(new Person("Mark", 37));
-        ksession.insert(new Person("Edson", 35));
-        ksession.insert(new Person("Mario", 40));
-
-        ksession.fireAllRules();
-
-        Collection<Result> results = getObjects(ksession, Result.class);
-        assertThat(results, hasItem(new Result(38.5)));
-        assertThat(results, hasItem(new Result(77)));
-
     }
 
     @Test
