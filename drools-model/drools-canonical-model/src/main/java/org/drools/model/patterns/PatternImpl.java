@@ -1,14 +1,11 @@
 package org.drools.model.patterns;
 
+import org.drools.model.*;
+import org.drools.model.constraints.AbstractConstraint;
+import org.drools.model.impl.DataSourceDefinitionImpl;
+
 import java.util.HashSet;
 import java.util.Set;
-
-import org.drools.model.Constraint;
-import org.drools.model.DataSourceDefinition;
-import org.drools.model.Pattern;
-import org.drools.model.SingleConstraint;
-import org.drools.model.Variable;
-import org.drools.model.constraints.AbstractConstraint;
 
 public class PatternImpl<T> extends AbstractSinglePattern implements Pattern<T> {
 
@@ -16,6 +13,10 @@ public class PatternImpl<T> extends AbstractSinglePattern implements Pattern<T> 
     private Variable[] inputVariables;
     private final DataSourceDefinition dataSourceDefinition;
     private Constraint constraint;
+
+    public PatternImpl(Variable<T> variable) {
+        this(variable, SingleConstraint.EMPTY, DataSourceDefinitionImpl.DEFAULT);
+    }
 
     public PatternImpl(Variable<T> variable, Constraint constraint, DataSourceDefinition dataSourceDefinition) {
         this.variable = variable;
