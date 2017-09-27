@@ -3661,7 +3661,7 @@ public class RuleModelDRLPersistenceTest extends BaseRuleModelTest {
     @Test
     public void testMoreComplexRendering2() {
         final RuleModelPersistence p = RuleModelDRLPersistenceImpl.getInstance();
-        final RuleModel m = getComplexModel();
+        final RuleModel m = getComplexModel(true);
         final String drl = p.marshal(m);
 
         assertTrue(drl.indexOf("org.kie") == -1);
@@ -3669,7 +3669,7 @@ public class RuleModelDRLPersistenceTest extends BaseRuleModelTest {
 
     @Test
     public void testRoundTrip() {
-        final RuleModel m = getComplexModel();
+        final RuleModel m = getComplexModel(true);
         final String drl = RuleModelDRLPersistenceImpl.getInstance().marshal(m);
 
         final RuleModel m2 = RuleModelDRLPersistenceImpl.getInstance().unmarshalUsingDSL(drl,
@@ -3682,7 +3682,7 @@ public class RuleModelDRLPersistenceTest extends BaseRuleModelTest {
                      m2.lhs.length);
         assertEquals(m.rhs.length,
                      m2.rhs.length);
-        assertEquals(1,
+        assertEquals(3,
                      m.attributes.length);
 
         final RuleAttribute at = m.attributes[0];
@@ -3809,60 +3809,6 @@ public class RuleModelDRLPersistenceTest extends BaseRuleModelTest {
                      ((FactPattern) m_.lhs[0]).getFactType());
         assertEquals("fun()",
                      ((FreeFormLine) m_.rhs[0]).getText());
-    }
-
-    private RuleModel getComplexModel() {
-        final RuleModel m = new RuleModel();
-        m.name = "complex";
-        m.setPackageName("org.test");
-
-        m.addAttribute(new RuleAttribute("no-loop",
-                                         "true"));
-
-        final FactPattern pat = new FactPattern("Person");
-        pat.setBoundName("p1");
-        final SingleFieldConstraint con = new SingleFieldConstraint();
-        con.setFactType("Person");
-        con.setFieldBinding("f1");
-        con.setFieldName("age");
-        con.setOperator("<");
-        con.setValue("42");
-        pat.addConstraint(con);
-
-        m.addLhsItem(pat);
-
-        final CompositeFactPattern comp = new CompositeFactPattern("not");
-        comp.addFactPattern(new FactPattern("Cancel"));
-        m.addLhsItem(comp);
-
-        final ActionUpdateField set = new ActionUpdateField();
-        set.setVariable("p1");
-        set.addFieldValue(new ActionFieldValue("status",
-                                               "rejected",
-                                               DataType.TYPE_STRING));
-        m.addRhsItem(set);
-
-        final ActionRetractFact ret = new ActionRetractFact("p1");
-        m.addRhsItem(ret);
-
-        final DSLSentence sen = new DSLSentence();
-        sen.setDefinition("Send an email to {administrator}");
-        m.addRhsItem(sen);
-
-        addModelField("org.test.Person",
-                      "this",
-                      "org.test.Person",
-                      DataType.TYPE_THIS);
-        addModelField("org.test.Person",
-                      "age",
-                      Integer.class.getName(),
-                      DataType.TYPE_NUMERIC_INTEGER);
-        addModelField("org.test.Person",
-                      "status",
-                      String.class.getName(),
-                      DataType.TYPE_STRING);
-
-        return m;
     }
 
     @Test
@@ -4375,5 +4321,49 @@ public class RuleModelDRLPersistenceTest extends BaseRuleModelTest {
 
         checkMarshalling(expected,
                          m);
+    }
+
+    @Test
+    public void testDateInDsl() throws Exception {
+        addModelField("org.test.Person",
+                      "bornDate",
+                      DataType.TYPE_DATE,
+                      DataType.TYPE_DATE);
+
+        addModelField("org.test.Person",
+                      "retireDate",
+                      DataType.TYPE_DATE,
+                      DataType.TYPE_DATE);
+
+        final String dslConditionDefinition = "Person was born on {date}";
+        final String dslConditionDrl = "$p : Person(bornDate == \"{date}\")";
+        final String dslActionDefinition = "Person will retire on {date}";
+        final String dslActionDrl = "java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(\"dd-MMM-yyyy\"); $p.setRetireDate(sdf.parse(\"{date}\"));";
+        final String dslFile = "[when]" + dslConditionDefinition + "=" + dslConditionDrl + "\n"
+                                + "[then]" + dslActionDefinition + "=" + dslActionDrl;
+
+        final String drl = "rule \"my rule\" \n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "Person was born on 01-01-2017\n" +
+                "then\n" +
+                "Person will retire on 01-01-2067\n" +
+                "end\n";
+
+        final RuleModel m = ruleModelPersistence
+                .unmarshalUsingDSL(drl,
+                                   Collections.emptyList(),
+                                   dmo,
+                                   dslFile);
+
+        assertEquals(1, m.lhs.length);
+        assertEquals(dslConditionDefinition, ((DSLSentence) m.lhs[0]).getDefinition());
+        assertEquals(dslConditionDrl, ((DSLSentence) m.lhs[0]).getDrl());
+        assertEquals("01-01-2017", ((DSLSentence) m.lhs[0]).getValues().get(0).getValue());
+
+        assertEquals(1, m.rhs.length);
+        assertEquals(dslActionDefinition, ((DSLSentence) m.rhs[0]).getDefinition());
+        assertEquals(dslActionDrl, ((DSLSentence) m.rhs[0]).getDrl());
+        assertEquals("01-01-2067", ((DSLSentence) m.rhs[0]).getValues().get(0).getValue());
     }
 }
