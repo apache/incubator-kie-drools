@@ -91,10 +91,14 @@ public class ModelGenerator {
 
     private static void processRule(InternalKnowledgePackage pkg, PackageModel packageModel, RuleDescr ruleDescr) {
         RuleContext context = new RuleContext(pkg, packageModel.getExprIdGenerator() );
+
+        for(Entry<String, Object> kv : ruleDescr.getNamedConsequences().entrySet()) {
+            context.addNamedConsequence(kv.getKey(), kv.getValue().toString());
+        }
+
         visit(context, packageModel, ruleDescr.getLhs());
         MethodDeclaration ruleMethod = new MethodDeclaration(EnumSet.of(Modifier.PRIVATE), RULE_TYPE, "rule_" + toId( ruleDescr.getName() ) );
 
-        BlockStmt ruleBlock = createBlockStatement(packageModel, context, ruleMethod);
         VariableDeclarationExpr ruleVar = new VariableDeclarationExpr(RULE_TYPE, RULE_CALL);
 
         MethodCallExpr ruleCall = new MethodCallExpr(null, RULE_CALL);
@@ -102,24 +106,38 @@ public class ModelGenerator {
 
         MethodCallExpr buildCall = new MethodCallExpr(ruleCall, BUILD_CALL, NodeList.nodeList(context.expressions));
 
-        String ruleConsequenceAsBlock = rewriteConsequenceBlock( context, ruleDescr.getConsequence().toString().trim() );
-        BlockStmt ruleConsequence = JavaParser.parseBlock( "{" + ruleConsequenceAsBlock + "}" );
-        List<String> declUsedInRHS = ruleConsequence.getChildNodesByType(NameExpr.class).stream().map(NameExpr::getNameAsString).collect(Collectors.toList());
+        BlockStmt ruleConsequence = rewriteConsequence(context, ruleDescr.getConsequence().toString());
 
+        BlockStmt ruleVariablesBlock = createRuleVariables(packageModel, context);
+        ruleMethod.setBody(ruleVariablesBlock);
+
+        List<String> usedDeclarationInRHS = extractUsedDeclarations(packageModel, context, ruleConsequence);
+        MethodCallExpr onCall = onCall(usedDeclarationInRHS);
+        MethodCallExpr executeCall = executeCall(context, ruleVariablesBlock, ruleConsequence, usedDeclarationInRHS, onCall);
+
+        buildCall.addArgument( executeCall );
+
+        ruleVariablesBlock.addStatement(new AssignExpr(ruleVar, buildCall, AssignExpr.Operator.ASSIGN));
+
+        ruleVariablesBlock.addStatement( new ReturnStmt(RULE_CALL) );
+        packageModel.putRuleMethod("rule_" + toId( ruleDescr.getName() ), ruleMethod);
+    }
+
+    private static BlockStmt rewriteConsequence(RuleContext context, String consequence ) {
+        String ruleConsequenceAsBlock = rewriteConsequenceBlock(context, consequence.trim() );
+        return JavaParser.parseBlock(String.format("{%s}", ruleConsequenceAsBlock));
+    }
+
+    private static List<String> extractUsedDeclarations(PackageModel packageModel, RuleContext context, BlockStmt ruleConsequence) {
+        List<String> declUsedInRHS = ruleConsequence.getChildNodesByType(NameExpr.class).stream().map(NameExpr::getNameAsString).collect(Collectors.toList());
         Set<String> existingDecls = new HashSet<>();
         existingDecls.addAll(context.declarations.keySet());
         existingDecls.addAll(packageModel.getGlobals().keySet());
-        List<String> verifiedDeclUsedInRHS = existingDecls.stream().filter(declUsedInRHS::contains).collect(Collectors.toList());
+        return existingDecls.stream().filter(declUsedInRHS::contains).collect(Collectors.toList());
+    }
 
-        boolean rhsRewritten = rewriteRHS(context, ruleBlock, ruleConsequence);
-
-        MethodCallExpr onCall = null;
-
-        if (!verifiedDeclUsedInRHS.isEmpty()) {
-            onCall = new MethodCallExpr(null, ON_CALL);
-            verifiedDeclUsedInRHS.stream().map( k -> "var_" + k ).forEach( onCall::addArgument );
-        }
-
+    private static MethodCallExpr executeCall(RuleContext context, BlockStmt ruleVariablesBlock, BlockStmt ruleConsequence, List<String> verifiedDeclUsedInRHS, MethodCallExpr onCall) {
+        boolean rhsRewritten = rewriteRHS(context, ruleVariablesBlock, ruleConsequence);
         MethodCallExpr executeCall = new MethodCallExpr(onCall, EXECUTE_CALL);
         LambdaExpr executeLambda = new LambdaExpr();
         executeCall.addArgument(executeLambda);
@@ -129,19 +147,21 @@ public class ModelGenerator {
         }
         verifiedDeclUsedInRHS.stream().map(x -> new Parameter(new UnknownType(), x)).forEach(executeLambda::addParameter);
         executeLambda.setBody( ruleConsequence );
-
-        buildCall.addArgument( executeCall );
-
-        AssignExpr ruleAssign = new AssignExpr(ruleVar, buildCall, AssignExpr.Operator.ASSIGN);
-        ruleBlock.addStatement(ruleAssign);
-
-        ruleBlock.addStatement( new ReturnStmt(RULE_CALL) );
-        packageModel.putRuleMethod("rule_" + toId( ruleDescr.getName() ), ruleMethod);
+        return executeCall;
     }
 
-    private static BlockStmt createBlockStatement(PackageModel packageModel, RuleContext context, MethodDeclaration ruleMethod) {
+    private static MethodCallExpr onCall(List<String> usedArguments) {
+        MethodCallExpr onCall = null;
+
+        if (!usedArguments.isEmpty()) {
+            onCall = new MethodCallExpr(null, ON_CALL);
+            usedArguments.stream().map( k -> "var_" + k ).forEach( onCall::addArgument );
+        }
+        return onCall;
+    }
+
+    private static BlockStmt createRuleVariables(PackageModel packageModel, RuleContext context) {
         BlockStmt ruleBlock = new BlockStmt();
-        ruleMethod.setBody(ruleBlock);
 
         for ( Entry<String, DeclarationSpec> decl : context.declarations.entrySet() ) {
             if ( !packageModel.getGlobals().containsKey( decl.getKey() ) ) {
@@ -156,7 +176,8 @@ public class ModelGenerator {
         visit(context, packageModel, ruleDescr);
         MethodDeclaration queryMethod = new MethodDeclaration(EnumSet.of(Modifier.PRIVATE), getQueryType(context.queryParameters), "query_" + toId(ruleDescr.getName()));
 
-        BlockStmt ruleBlock = createBlockStatement(packageModel, context, queryMethod);
+        BlockStmt queryVariables = createRuleVariables(packageModel, context);
+        queryMethod.setBody(queryVariables);
         VariableDeclarationExpr queryVar = new VariableDeclarationExpr(getQueryType(context.queryParameters), QUERY_CALL);
 
         MethodCallExpr queryCall = new MethodCallExpr(null, QUERY_CALL);
@@ -169,9 +190,9 @@ public class ModelGenerator {
         context.expressions.forEach(viewCall::addArgument);
 
         AssignExpr ruleAssign = new AssignExpr(queryVar, viewCall, AssignExpr.Operator.ASSIGN);
-        ruleBlock.addStatement(ruleAssign);
+        queryVariables.addStatement(ruleAssign);
 
-        ruleBlock.addStatement(new ReturnStmt(QUERY_CALL));
+        queryVariables.addStatement(new ReturnStmt(QUERY_CALL));
         packageModel.putQueryMethod(queryMethod);
     }
 
@@ -344,9 +365,26 @@ public class ModelGenerator {
             visit( context, packageModel, ( (ExistsDescr) descr ));
         } else if ( descr instanceof QueryDescr) {
             visit( context, packageModel, ( (QueryDescr) descr ));
+        } else if ( descr instanceof NamedConsequenceDescr) {
+            visit( context, packageModel, ( (NamedConsequenceDescr) descr ));
         } else {
             throw new UnsupportedOperationException("TODO"); // TODO
         }
+    }
+
+    private static void visit(RuleContext context, PackageModel packageModel, NamedConsequenceDescr descr) {
+        String namedConsequenceString = context.namedConsequences.get(descr.getName());
+
+        BlockStmt ruleVariablesBlock = createRuleVariables(packageModel, context);
+
+        BlockStmt ruleConsequence = rewriteConsequence(context, namedConsequenceString);
+
+        List<String> verifiedDeclUsedInRHS = extractUsedDeclarations(packageModel, context, ruleConsequence);
+
+        MethodCallExpr onCall = onCall(verifiedDeclUsedInRHS);
+        MethodCallExpr executeCallDSL = executeCall(context, ruleVariablesBlock, ruleConsequence, verifiedDeclUsedInRHS, onCall);
+
+        context.addExpression(executeCallDSL);
     }
 
     private static void visit(RuleContext context, PackageModel packageModel, QueryDescr descr) {
@@ -766,6 +804,7 @@ public class ModelGenerator {
         Deque<Consumer<Expression>> exprPointer = new LinkedList<>();
         List<Expression> expressions = new ArrayList<>();
         Set<String> queryName = new HashSet<>();
+        Map<String, String> namedConsequences = new HashMap<>();
 
         public RuleContext(InternalKnowledgePackage pkg, DRLExprIdGenerator exprIdGenerator) {
             this.pkg = pkg;
@@ -792,6 +831,10 @@ public class ModelGenerator {
 
         public String getExprId(Class<?> patternType, String drlConstraint) {
             return exprIdGenerator.getExprId(patternType, drlConstraint);
+        }
+
+        public void addNamedConsequence(String key, String value) {
+            namedConsequences.put(key, value);
         }
     }
 

@@ -540,7 +540,6 @@ public class CompilerTest extends BaseModelTest {
     }
 
     @Test
-    @Ignore("DSL generation to be implemented")
     public void testNamedConsequence() {
         String str =
                 "import " + Result.class.getCanonicalName() + ";\n" +
