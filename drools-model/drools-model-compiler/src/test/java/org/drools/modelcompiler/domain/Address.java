@@ -1,4 +1,4 @@
-package org.drools.modelcompiler;
+package org.drools.modelcompiler.domain;
 
 public class Address {
 
