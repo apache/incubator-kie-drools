@@ -118,6 +118,10 @@ public class DSL {
         return new FromImpl<>( variable, provider );
     }
 
+    public static <T> From<T> reactiveFrom( Variable<T> variable, Function1<T, ?> provider ) {
+        return new FromImpl<>( variable, provider, true );
+    }
+
     // -- LHS --
 
     public static View view(ViewItemBuilder... viewItemBuilders ) {
