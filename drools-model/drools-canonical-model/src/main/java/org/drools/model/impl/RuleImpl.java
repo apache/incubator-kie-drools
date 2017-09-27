@@ -1,11 +1,12 @@
 package org.drools.model.impl;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.drools.model.Consequence;
 import org.drools.model.Rule;
 import org.drools.model.View;
+import org.drools.model.patterns.CompositePatterns;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class RuleImpl implements Rule {
 
@@ -29,12 +30,12 @@ public class RuleImpl implements Rule {
         this.attributes = attributes;
     }
 
-    public RuleImpl(String pkg, String name, String unit, View view, Map<String, Consequence> consequences, Map<Attribute, Object> attributes) {
+    public RuleImpl( String pkg, String name, String unit, CompositePatterns view, Map<Attribute, Object> attributes) {
         this.pkg = pkg;
         this.name = name;
         this.unit = unit;
         this.view = view;
-        this.consequences = consequences;
+        this.consequences = view.getConsequences();
         this.attributes = attributes;
     }
 

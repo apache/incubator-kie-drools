@@ -56,7 +56,7 @@ public class LambdaDataProvider implements DataProvider {
         if ( result instanceof Iterable ) {
             return (( Iterable ) result).iterator();
         }
-        return Collections.singletonList( obj ).iterator();
+        return Collections.singletonList( result ).iterator();
     }
 
     @Override
