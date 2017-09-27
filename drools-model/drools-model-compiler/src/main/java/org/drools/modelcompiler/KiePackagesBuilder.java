@@ -46,6 +46,7 @@ import org.kie.api.KieBaseConfiguration;
 import org.kie.api.definition.KiePackage;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 import static org.drools.core.rule.Pattern.getReadAcessor;
 import static org.drools.model.DSL.*;
@@ -96,6 +97,7 @@ public class KiePackagesBuilder {
 
     private RuleImpl compileRule( KnowledgePackageImpl pkg, Rule rule ) {
         RuleImpl ruleImpl = new RuleImpl( rule.getName() );
+        setRuleAttributes( rule, ruleImpl );
         ruleImpl.setPackage( rule.getPackage() );
         if (rule.getUnit() != null) {
             ruleImpl.setRuleUnitClassName( rule.getUnit() );
@@ -105,6 +107,41 @@ public class KiePackagesBuilder {
         populateLHS( ctx, pkg, rule.getView() );
         processConsequences( ctx, rule );
         return ruleImpl;
+    }
+
+    private void setRuleAttributes( Rule rule, RuleImpl ruleImpl ) {
+        Boolean noLoop = setAttribute( rule, Rule.Attribute.NO_LOOP, ruleImpl::setNoLoop );
+        Boolean lockOnActive = setAttribute( rule, Rule.Attribute.LOCK_ON_ACTIVE, ruleImpl::setLockOnActive );
+
+        setAttribute( rule, Rule.Attribute.ENABLED, e -> ruleImpl.setEnabled( new EnabledBoolean(e) ) );
+        setAttribute( rule, Rule.Attribute.SALIENCE, s -> ruleImpl.setSalience( new SalienceInteger( s ) ) );
+        String agendaGroup = setAttribute( rule, Rule.Attribute.AGENDA_GROUP, ruleImpl::setAgendaGroup );
+        setAttribute( rule, Rule.Attribute.RULEFLOW_GROUP, rfg -> {
+            ruleImpl.setRuleFlowGroup(rfg);
+            if (agendaGroup == null) {
+                ruleImpl.setAgendaGroup( rfg );
+            }
+        } );
+
+        setAttribute( rule, Rule.Attribute.ACTIVATION_GROUP, ruleImpl::setActivationGroup );
+        setAttribute( rule, Rule.Attribute.DURATION, t -> ruleImpl.setTimer( parseTimer( t ) ) );
+        setAttribute( rule, Rule.Attribute.TIMER, t -> ruleImpl.setTimer( parseTimer( t ) ) );
+        setAttribute( rule, Rule.Attribute.CALENDAR, s -> ruleImpl.setCalendars( new String[] { s } ) );
+
+        ruleImpl.setEager( noLoop != null || lockOnActive != null );
+    }
+
+    private <T> T setAttribute( Rule rule, Rule.Attribute<T> attribute, Consumer<T> consumer ) {
+        T value = rule.getAttribute( attribute );
+        if ( value != attribute.getDefaultValue() ) {
+            consumer.accept( value );
+            return value;
+        }
+        return null;
+    }
+
+    private org.drools.core.time.impl.Timer parseTimer( String s ) {
+        throw new UnsupportedOperationException();
     }
 
     private QueryImpl compileQuery( KnowledgePackageImpl pkg, Query query ) {

@@ -55,8 +55,8 @@ public class RuleImpl implements Rule {
     }
 
     @Override
-    public Object getAttribute(Attribute attribute) {
-        Object value = attributes != null ? attributes.get(attribute) : null;
+    public <T> T getAttribute(Attribute<T> attribute) {
+        T value = attributes != null ? (T) attributes.get(attribute) : null;
         return value != null ? value : attribute.getDefaultValue();
     }
 
