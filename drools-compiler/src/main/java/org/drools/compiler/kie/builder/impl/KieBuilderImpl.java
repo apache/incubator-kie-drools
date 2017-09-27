@@ -140,8 +140,7 @@ public class KieBuilderImpl
         // if pomXml is invalid, it assign pomModel to null
         PomModel pomModel = getPomModel();
 
-        // if kModuleModelXML is null it will generate a default kModule, with a default kbase name
-        // if kModuleModelXML is  invalid, it will kModule to null
+        // if kModuleModelXML is null or invalid it will generate a default kModule, with a default kbase name
         buildKieModuleModel();
 
         if ( pomModel != null ) {
@@ -440,9 +439,11 @@ public class KieBuilderImpl
                 results.addMessage( Level.ERROR,
                                     "kmodule.xml",
                                     "kmodule.xml found, but unable to read\n" + e.getMessage() );
+                // Create a default kModuleModel in the event of errors parsing the XML
+                kModuleModel = KieServices.Factory.get().newKieModuleModel();
             }
         } else {
-            // There's no kmodule.xml, create a defualt one
+            // There's no kmodule.xml, create a default one
             kModuleModel = KieServices.Factory.get().newKieModuleModel();
         }
 
