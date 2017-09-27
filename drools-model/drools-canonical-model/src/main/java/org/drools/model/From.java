@@ -21,4 +21,5 @@ import org.drools.model.functions.Function1;
 public interface From<T> extends DeclarationSource {
     Variable<T> getVariable();
     Function1<T,?> getProvider();
+    boolean isReactive();
 }

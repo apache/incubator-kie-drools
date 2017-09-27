@@ -17,12 +17,14 @@
 package org.drools.modelcompiler.constraints;
 
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.phreak.ReactiveObject;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.DataProvider;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
 import org.drools.model.functions.Function1;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 
@@ -30,10 +32,13 @@ public class LambdaDataProvider implements DataProvider {
 
     private final Function1 providerFunction;
     private Declaration declaration;
+    private final boolean reactive;
 
-    public LambdaDataProvider( Declaration declaration, Function1 providerFunction ) {
+
+    public LambdaDataProvider( Declaration declaration, Function1 providerFunction, boolean reactive ) {
         this.declaration = declaration;
         this.providerFunction = providerFunction;
+        this.reactive = reactive;
     }
 
     @Override
@@ -50,6 +55,23 @@ public class LambdaDataProvider implements DataProvider {
     public Iterator getResults( Tuple tuple, InternalWorkingMemory wm, PropagationContext ctx, Object providerContext ) {
         Object obj = tuple.get( declaration ).getObject();
         Object result = providerFunction.apply( obj );
+
+        if (isReactive()) {
+            if ( result instanceof ReactiveObject ) {
+                (( ReactiveObject ) result).addLeftTuple( tuple );
+            }
+            if ( result instanceof Iterable ) {
+                for (Object value : ( Iterable<?> ) result) {
+                    if ( value instanceof ReactiveObject ) {
+                        (( ReactiveObject ) value).addLeftTuple( tuple );
+                    }
+                }
+            }
+        }
+
+        if(obj instanceof Object[]) {
+            return Arrays.asList( (Object[]) obj ).iterator();
+        }
         if ( result instanceof Iterator ) {
             return (( Iterator ) result);
         }
@@ -61,7 +83,7 @@ public class LambdaDataProvider implements DataProvider {
 
     @Override
     public DataProvider clone() {
-        return this;
+        return new LambdaDataProvider( declaration.clone(), providerFunction, reactive );
     }
 
     @Override
@@ -73,6 +95,6 @@ public class LambdaDataProvider implements DataProvider {
 
     @Override
     public boolean isReactive() {
-        return false;
+        return reactive;
     }
 }
