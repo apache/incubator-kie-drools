@@ -1,8 +1,5 @@
 package org.drools.model.impl;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.drools.model.Consequence;
 import org.drools.model.Rule;
 import org.drools.model.RuleItemBuilder;
@@ -10,6 +7,9 @@ import org.drools.model.consequences.ConsequenceBuilder;
 import org.drools.model.functions.Function1;
 import org.drools.model.patterns.CompositePatterns;
 import org.drools.model.view.ViewItemBuilder;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.drools.model.impl.ViewBuilder.viewItems2Patterns;
 
@@ -60,11 +60,7 @@ public class RuleBuilder {
     }
 
     public Rule build( RuleItemBuilder... viewItemBuilders ) {
-        CompositePatterns view = viewItems2Patterns( viewItemBuilders );
-        for (Consequence consequence : view.getConsequences().values()) {
-            view.ensureVariablesDeclarationInView( consequence.getDeclarations() );
-        }
-        return new RuleImpl(pkg, name, unit, view, view.getConsequences(), attributes);
+        return new RuleImpl(pkg, name, unit, viewItems2Patterns( viewItemBuilders ), attributes);
     }
 
     public class RuleBuilderWithLHS {
@@ -80,7 +76,7 @@ public class RuleBuilder {
 
         public Rule then(ConsequenceBuilder.ValidBuilder builder) {
             Consequence consequence = builder.get();
-            view.ensureVariablesDeclarationInView( consequence.getDeclarations() );
+            view.ensureVariablesDeclarationInView( RuleImpl.DEFAULT_CONSEQUENCE_NAME, consequence );
             return new RuleImpl(pkg, name, unit, view, consequence, attributes);
         }
     }
