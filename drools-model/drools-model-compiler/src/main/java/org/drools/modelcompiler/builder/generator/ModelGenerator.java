@@ -388,37 +388,38 @@ public class ModelGenerator {
 
         PatternDescr patternRelated = (PatternDescr)getReferringPatternDescr(desc, (AndDescr) context.parentDesc);
 
+        Class<?> patternType = getClassFromContext(context, patternRelated.getObjectType());
+
+        final String condition = desc.getCondition().toString();
+
         MethodCallExpr when = new MethodCallExpr(null, WHEN_CALL);
-        when.addArgument(new StringLiteralExpr(UUID.randomUUID().toString().substring(0, 5)));
+        when.addArgument(new StringLiteralExpr(context.exprIdGenerator.getCondId(patternType, condition)));
         when.addArgument(new NameExpr(toVar(patternRelated.getIdentifier())));
 
-        final EvalDescr condition = desc.getCondition();
-
-        when.addArgument(whenLambda(context, packageModel, patternRelated, condition.toString()));
+        when.addArgument(whenLambda(context, packageModel, patternType, patternRelated, condition));
 
         MethodCallExpr then = new MethodCallExpr(when, THEN_CALL);
 
         MethodCallExpr rhs = namedConsequenceRHS(context, packageModel, desc.getConsequence().getName());
         then.addArgument(rhs);
 
-        recurseAmongElseBranch(context, packageModel, patternRelated, then, desc.getElseBranch());
+        recurseAmongElseBranch(context, packageModel, patternType, patternRelated, then, desc.getElseBranch());
 
     }
 
-    private static Expression whenLambda(RuleContext context, PackageModel packageModel, PatternDescr patternRelated, String condition) {
-        Class<?> patternType = getClassFromContext(context, patternRelated.getObjectType());
+    private static Expression whenLambda(RuleContext context, PackageModel packageModel, Class<?> patternType, PatternDescr patternRelated, String condition) {
         final DrlxParseResult parseResult = drlxParse(context, packageModel, patternType, patternRelated.getIdentifier(), condition );
         return generateLambdaWithoutParameters(new HashSet<>(), parseResult.expr);
     }
 
-    private static void recurseAmongElseBranch(RuleContext context, PackageModel packageModel, PatternDescr patternRelated, MethodCallExpr parentMethodExpr, ConditionalBranchDescr branch) {
+    private static void recurseAmongElseBranch(RuleContext context, PackageModel packageModel, Class<?> patternType, PatternDescr patternRelated, MethodCallExpr parentMethodExpr, ConditionalBranchDescr branch) {
         if(branch != null) {
             MethodCallExpr elseWhen = new MethodCallExpr(parentMethodExpr, ELSE_WHEN_CALL);
             String condition = branch.getCondition().toString();
             if(!condition.equals("true")) { // Default case
-                elseWhen.addArgument(new StringLiteralExpr(UUID.randomUUID().toString().substring(0, 5)));
+                elseWhen.addArgument(new StringLiteralExpr(context.exprIdGenerator.getCondId(patternType, condition)));
                 elseWhen.addArgument(new NameExpr(toVar(patternRelated.getIdentifier())));
-                elseWhen.addArgument(whenLambda(context, packageModel, patternRelated, condition));
+                elseWhen.addArgument(whenLambda(context, packageModel, patternType, patternRelated, condition));
             }
 
             MethodCallExpr then = new MethodCallExpr(elseWhen, THEN_CALL);
@@ -426,7 +427,7 @@ public class ModelGenerator {
             MethodCallExpr rhs = namedConsequenceRHS(context, packageModel, branch.getConsequence().getName());
             then.addArgument(rhs);
 
-            recurseAmongElseBranch(context, packageModel, patternRelated, then, branch.getElseBranch());
+            recurseAmongElseBranch(context, packageModel, patternType, patternRelated, then, branch.getElseBranch());
         } else {
             context.addExpression(parentMethodExpr);
         }
