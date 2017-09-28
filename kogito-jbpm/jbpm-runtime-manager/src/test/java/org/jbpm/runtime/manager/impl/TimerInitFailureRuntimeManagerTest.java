@@ -124,7 +124,7 @@ public class TimerInitFailureRuntimeManagerTest extends AbstractBaseTest {
         
         try {
             runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(pi.getId()));
-            runtime.getTaskService();
+            runtime.getKieSession();
             fail("ProcessInstance should already be completed");
         } catch (SessionNotFoundException e) {
             // expected

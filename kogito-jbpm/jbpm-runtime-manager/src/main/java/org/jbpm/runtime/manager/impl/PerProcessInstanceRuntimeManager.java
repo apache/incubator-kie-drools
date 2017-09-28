@@ -36,6 +36,7 @@ import org.jbpm.runtime.manager.impl.mapper.JPAMapper;
 import org.jbpm.runtime.manager.impl.tx.DestroySessionTransactionSynchronization;
 import org.jbpm.runtime.manager.impl.tx.DisposeSessionTransactionSynchronization;
 import org.jbpm.services.task.impl.TaskContentRegistry;
+import org.jbpm.services.task.impl.command.CommandBasedTaskService;
 import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.event.process.ProcessStartedEvent;
@@ -137,7 +138,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
 			((RuntimeEngineImpl) runtime).setManager(this);
 			((RuntimeEngineImpl) runtime).setContext(context);
 			configureRuntimeOnTaskService(internalTaskService, runtime);
-			registerDisposeCallback(runtime, new DisposeSessionTransactionSynchronization(this, runtime));
+			registerDisposeCallback(runtime, new DisposeSessionTransactionSynchronization(this, runtime), ksession.getEnvironment());
 			registerItems(runtime);
 			attachManager(runtime);
 			ksession.addEventListener(new MaintainMappingListener(ksessionId, runtime, this.identifier));
@@ -306,7 +307,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
             		event.getProcessInstance().getId()), managerId);
             factory.onDispose(runtime.getKieSession().getIdentifier());
             registerDisposeCallback(runtime, 
-                        new DestroySessionTransactionSynchronization(runtime.getKieSession()));            
+                        new DestroySessionTransactionSynchronization(runtime.getKieSession()), runtime.getKieSession().getEnvironment());            
         }
 
         @Override
@@ -588,7 +589,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
             ((RuntimeEngineImpl)engine).internalSetKieSession(ksession);
             registerItems(engine);
             attachManager(engine);
-            registerDisposeCallback(engine, new DisposeSessionTransactionSynchronization(manager, engine));
+            registerDisposeCallback(engine, new DisposeSessionTransactionSynchronization(manager, engine), ksession.getEnvironment());
             ksession.addEventListener(new MaintainMappingListener(ksessionId, engine, manager.getIdentifier()));
     		return ksession;
     	}
@@ -596,8 +597,10 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
     	@Override
     	public TaskService initTaskService(Context<?> context, InternalRuntimeManager manager, RuntimeEngine engine) {
     		InternalTaskService internalTaskService = (InternalTaskService) taskServiceFactory.newTaskService();
-    		registerDisposeCallback(engine, new DisposeSessionTransactionSynchronization(manager, engine));
-            configureRuntimeOnTaskService(internalTaskService, engine);
+    		if (internalTaskService != null) {
+        		registerDisposeCallback(engine, new DisposeSessionTransactionSynchronization(manager, engine), ((CommandBasedTaskService) internalTaskService).getEnvironment());
+                configureRuntimeOnTaskService(internalTaskService, engine);
+    		}
     		return internalTaskService;
     	}
 

@@ -170,9 +170,9 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
         }       
     }
     
-    protected void registerDisposeCallback(RuntimeEngine runtime, TransactionSynchronization sync) {
+    protected void registerDisposeCallback(RuntimeEngine runtime, TransactionSynchronization sync, Environment environment) {
         // register it if there is an active transaction as we assume then to be running in a managed environment e.g CMT       
-        TransactionManager tm = getTransactionManager(runtime.getKieSession().getEnvironment());
+        TransactionManager tm = getTransactionManager(environment);
         if (tm.getStatus() != TransactionManager.STATUS_NO_TRANSACTION
                 && tm.getStatus() != TransactionManager.STATUS_ROLLEDBACK
                 && tm.getStatus() != TransactionManager.STATUS_COMMITTED) {

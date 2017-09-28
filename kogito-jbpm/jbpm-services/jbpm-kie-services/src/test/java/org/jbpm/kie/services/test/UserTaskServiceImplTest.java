@@ -16,6 +16,13 @@
 
 package org.jbpm.kie.services.test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
@@ -51,9 +58,6 @@ import org.kie.internal.task.api.model.InternalTask;
 import org.kie.scanner.KieMavenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.junit.Assert.*;
-import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
 public class UserTaskServiceImplTest extends AbstractKieServicesBaseTest {
 
@@ -632,5 +636,31 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	assertEquals(Status.Reserved, taskInstance.getTaskData().getStatus());
     	assertEquals("Write a Document", taskInstance.getName());
     	assertTrue(StringUtils.isEmpty(((InternalTask)taskInstance).getFormName()));
+    }
+    
+    @Test
+    public void testGetTaskOfAbortedProcess() {
+        processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument.noform");
+        assertNotNull(processInstanceId);
+        List<Long> taskIds = runtimeDataService.getTasksByProcessInstanceId(processInstanceId);
+        assertNotNull(taskIds);
+        assertEquals(1, taskIds.size());
+        
+        Long taskId = taskIds.get(0);
+        
+        Task taskInstance = userTaskService.getTask(taskId);
+        assertNotNull(taskInstance);
+        assertEquals(Status.Reserved, taskInstance.getTaskData().getStatus());
+        assertEquals("Write a Document", taskInstance.getName());
+        assertTrue(StringUtils.isEmpty(((InternalTask)taskInstance).getFormName()));
+        
+        processService.abortProcessInstance(processInstanceId);
+        
+        taskInstance = userTaskService.getTask(taskId);
+        assertNotNull(taskInstance);
+        assertEquals(Status.Exited, taskInstance.getTaskData().getStatus());
+        assertEquals("Write a Document", taskInstance.getName());
+        assertTrue(StringUtils.isEmpty(((InternalTask)taskInstance).getFormName()));
+      
     }
 }

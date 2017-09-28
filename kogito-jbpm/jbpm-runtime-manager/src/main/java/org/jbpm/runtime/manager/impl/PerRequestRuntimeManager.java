@@ -93,8 +93,8 @@ public class PerRequestRuntimeManager extends AbstractRuntimeManager {
 	        ((RuntimeEngineImpl) runtime).setManager(this);
 	        
 	        configureRuntimeOnTaskService(internalTaskService, runtime);
-	        registerDisposeCallback(runtime, new DisposeSessionTransactionSynchronization(this, runtime));
-	        registerDisposeCallback(runtime, new DestroySessionTransactionSynchronization(runtime.getKieSession()));
+	        registerDisposeCallback(runtime, new DisposeSessionTransactionSynchronization(this, runtime), runtime.getKieSession().getEnvironment());
+	        registerDisposeCallback(runtime, new DestroySessionTransactionSynchronization(runtime.getKieSession()), runtime.getKieSession().getEnvironment());
 	        registerItems(runtime);
 	        attachManager(runtime);
     	} else {
@@ -226,8 +226,8 @@ public class PerRequestRuntimeManager extends AbstractRuntimeManager {
             }
     		KieSession ksession = factory.newKieSession();
     		((RuntimeEngineImpl)engine).internalSetKieSession(ksession);
-    		registerDisposeCallback(engine, new DisposeSessionTransactionSynchronization(manager, engine));
-            registerDisposeCallback(engine, new DestroySessionTransactionSynchronization(ksession));
+    		registerDisposeCallback(engine, new DisposeSessionTransactionSynchronization(manager, engine), ksession.getEnvironment());
+            registerDisposeCallback(engine, new DestroySessionTransactionSynchronization(ksession), ksession.getEnvironment());
             registerItems(engine);
             attachManager(engine);
     		return ksession;

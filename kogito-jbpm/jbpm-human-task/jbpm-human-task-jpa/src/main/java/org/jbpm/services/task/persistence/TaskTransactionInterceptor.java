@@ -274,6 +274,9 @@ public class TaskTransactionInterceptor extends AbstractInterceptor {
     			task.getTaskData().getComments().size();
     			((InternalTask)task).getDeadlines().getStartDeadlines().size();
     			((InternalTask)task).getDeadlines().getEndDeadlines().size();
+    			if (((InternalTask)task).getDelegation() != null) {
+    			    ((InternalTask)task).getDelegation().getDelegates().size();
+    			}
     		}
     	} else if (result instanceof Collection<?>) {
             ((Collection<?>) result).size();

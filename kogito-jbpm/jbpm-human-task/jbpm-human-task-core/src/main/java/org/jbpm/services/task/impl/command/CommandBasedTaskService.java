@@ -106,6 +106,7 @@ import org.jbpm.services.task.events.TaskEventSupport;
 import org.jbpm.services.task.impl.TaskContentRegistry;
 import org.jbpm.services.task.impl.TaskSummaryQueryBuilderImpl;
 import org.kie.api.command.Command;
+import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.ExecutableRunner;
 import org.kie.api.task.TaskLifeCycleEventListener;
 import org.kie.api.task.model.Attachment;
@@ -134,6 +135,7 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
 
 	private ExecutableRunner executor;
 	private TaskEventSupport taskEventSupport;
+	private Environment environment;
 
 	private QueryFilter addLanguageFilter(String language) {
 	   if( language == null ) {
@@ -146,9 +148,10 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
 	   return filter;
 	}
 
-	public CommandBasedTaskService(ExecutableRunner executor, TaskEventSupport taskEventSupport) {
+	public CommandBasedTaskService(ExecutableRunner executor, TaskEventSupport taskEventSupport, Environment environment) {
 		this.executor = executor;
 		this.taskEventSupport = taskEventSupport;
+		this.environment = environment;
 	}
 
 	@Override
@@ -803,6 +806,9 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
 		executor.execute(new ExecuteReminderCommand(taskId,fromUser));
 	}
 
+    public Environment getEnvironment() {
+        return environment;
+    }
 
 }
 

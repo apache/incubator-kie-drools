@@ -151,7 +151,7 @@ public class HumanTaskConfigurator {
         		this.commandExecutor.addInterceptor(pInterceptor.getInterceptor());
         	}        	
         	
-            service = new CommandBasedTaskService(this.commandExecutor, taskEventSupport); 
+            service = new CommandBasedTaskService(this.commandExecutor, taskEventSupport, this.environment); 
             // register listeners
             for (TaskLifeCycleEventListener listener : listeners) {
             	((EventService<TaskLifeCycleEventListener>) service).registerTaskEventListener(listener);
