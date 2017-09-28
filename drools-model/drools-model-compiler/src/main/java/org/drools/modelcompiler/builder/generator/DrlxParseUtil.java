@@ -21,17 +21,20 @@ import org.drools.core.util.index.IndexUtil;
 import org.drools.core.util.index.IndexUtil.ConstraintType;
 import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.Node;
+import org.drools.javaparser.ast.body.Parameter;
 import org.drools.javaparser.ast.drlx.expr.InlineCastExpr;
 import org.drools.javaparser.ast.drlx.expr.NullSafeFieldAccessExpr;
 import org.drools.javaparser.ast.expr.*;
 import org.drools.javaparser.ast.expr.BinaryExpr.Operator;
 import org.drools.javaparser.ast.nodeTypes.NodeWithOptionalScope;
 import org.drools.javaparser.ast.nodeTypes.NodeWithSimpleName;
+import org.drools.javaparser.ast.stmt.BlockStmt;
+import org.drools.javaparser.ast.stmt.ExpressionStmt;
 import org.drools.javaparser.ast.type.PrimitiveType;
 import org.drools.javaparser.ast.type.ReferenceType;
 import org.drools.javaparser.ast.type.Type;
+import org.drools.javaparser.ast.type.UnknownType;
 import org.drools.modelcompiler.builder.PackageModel;
-import org.drools.modelcompiler.builder.generator.ModelGenerator.RuleContext;
 
 import java.lang.reflect.Method;
 import java.util.*;
@@ -253,6 +256,24 @@ public class DrlxParseUtil {
         return Optional.empty();
     }
 
+    public static String toVar(String key) {
+        return "var_" + key;
+    }
+
+    public static BlockStmt parseBlock(String ruleConsequenceAsBlock) {
+        return JavaParser.parseBlock(String.format("{%s}", ruleConsequenceAsBlock));
+    }
+
+    public static Expression generateLambdaWithoutParameters(Set<String> usedDeclarations, Expression expr) {
+        LambdaExpr lambdaExpr = new LambdaExpr();
+        lambdaExpr.setEnclosingParameters( true );
+        lambdaExpr.addParameter( new Parameter(new UnknownType(), "_this" ) );
+        usedDeclarations.stream().map( s -> new Parameter( new UnknownType(), s ) ).forEach( lambdaExpr::addParameter );
+        lambdaExpr.setBody( new ExpressionStmt(expr ) );
+        return lambdaExpr;
+    }
+
+
     public static MethodCallExpr toMethodCallWithClassCheck(Expression expr, Class<?> clazz) {
 
         final Deque<ParsedMethod> callStackLeftToRight = new LinkedList<>();
@@ -282,7 +303,7 @@ public class DrlxParseUtil {
                 }).orElseThrow(() -> new UnsupportedOperationException("No Expression converted"));
     }
 
-    public static Expression createExpressionCall(Expression expr, Deque<ParsedMethod> expressions) {
+    private static Expression createExpressionCall(Expression expr, Deque<ParsedMethod> expressions) {
 
         if(expr instanceof NodeWithSimpleName) {
             NodeWithSimpleName fae = (NodeWithSimpleName)expr;
@@ -305,13 +326,13 @@ public class DrlxParseUtil {
 
     static class ParsedMethod {
         final Expression expression;
+
         final String fieldToResolve;
 
         public ParsedMethod(Expression expression, String fieldToResolve) {
             this.expression = expression;
             this.fieldToResolve = fieldToResolve;
         }
-
         @Override
         public String toString() {
             return "{" +
@@ -319,14 +340,7 @@ public class DrlxParseUtil {
                     ", fieldToResolve='" + fieldToResolve + '\'' +
                     '}';
         }
-    }
 
-    private static String property2Getter(String field) {
-        if(!field.contains("(")) {
-            return "get" + ucFirst(field) + "()";
-        } else {
-            return field;
-        }
     }
 
     public static Type classToReferenceType(Class<?> declClass) {
