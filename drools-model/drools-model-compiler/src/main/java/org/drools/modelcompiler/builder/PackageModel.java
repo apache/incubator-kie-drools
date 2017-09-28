@@ -39,6 +39,8 @@ import org.drools.modelcompiler.builder.generator.ModelGenerator;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
+
 public class PackageModel {
 
     private final String name;
@@ -208,7 +210,7 @@ public class PackageModel {
         for ( Map.Entry<String, Class<?>> g : getGlobals().entrySet() ) {
             NameExpr rulesFieldName = new NameExpr( "globals" );
             MethodCallExpr add = new MethodCallExpr(rulesFieldName, "add");
-            add.addArgument( new NameExpr("var_" + g.getKey()) );
+            add.addArgument( new NameExpr(toVar(g.getKey())) );
             rulesListInitializerBody.addStatement( add );
 
         }
@@ -235,11 +237,10 @@ public class PackageModel {
         declarationOfCall.addArgument(new StringLiteralExpr(packageName));
         declarationOfCall.addArgument(new StringLiteralExpr(globalName));
 
-        FieldDeclaration field = classDeclaration.addField(varType, "var_" + globalName, Modifier.FINAL);
+        FieldDeclaration field = classDeclaration.addField(varType, toVar(globalName), Modifier.FINAL);
 
         field.getVariables().get(0).setInitializer(declarationOfCall);
     }
-
 
     public void print() {
         System.out.println("=====");
