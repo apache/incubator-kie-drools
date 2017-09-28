@@ -39,8 +39,6 @@ import org.drools.modelcompiler.builder.PackageModel;
 import java.lang.reflect.Method;
 import java.util.*;
 
-import static org.drools.core.util.StringUtils.ucFirst;
-
 public class DrlxParseUtil {
 
     public static IndexUtil.ConstraintType toConstraintType(Operator operator) {
@@ -85,6 +83,7 @@ public class DrlxParseUtil {
                 usedDeclarations.add(name);
                 return new TypedExpression(plusThis, Optional.of(packageModel.getGlobals().get(name)));
             } else {
+                reactOnProperties.add(name);
                 TypedExpression expression = nameExprToMethodCallExpr(name, typeCursor);
                 Expression plusThis = prepend(new NameExpr("_this"), (MethodCallExpr) expression.getExpression());
                 return new TypedExpression(plusThis, expression.getType());
@@ -129,9 +128,16 @@ public class DrlxParseUtil {
                 }
             } else if (firstNode instanceof ThisExpr) {
                 previous = new NameExpr("_this");
-                if (childNodes.size() > 1 && childNodes.get(1) instanceof NameExpr) {
-                    NameExpr child0 = (NameExpr) childNodes.get(1);
-                    reactOnProperties.add(child0.getName().getIdentifier());
+                if (childNodes.size() > 1 && !isInLineCast) {
+                    SimpleName fieldName = null;
+                    if (childNodes.get(1) instanceof NameExpr) {
+                        fieldName = (( NameExpr ) childNodes.get( 1 )).getName();
+                    } else if (childNodes.get(1) instanceof SimpleName) {
+                        fieldName = ( SimpleName ) childNodes.get( 1 );
+                    }
+                    if (fieldName != null) {
+                        reactOnProperties.add( fieldName.getIdentifier() );
+                    }
                 }
             } else if (firstNode instanceof FieldAccessExpr && ((FieldAccessExpr) firstNode).getScope() instanceof ThisExpr) {
                 String firstName = ((FieldAccessExpr) firstNode).getName().getIdentifier();
