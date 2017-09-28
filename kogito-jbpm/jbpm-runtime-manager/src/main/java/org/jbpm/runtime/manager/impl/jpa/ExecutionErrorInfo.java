@@ -24,6 +24,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.Lob;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -33,7 +34,7 @@ import org.kie.internal.runtime.error.ExecutionError;
 
 
 @Entity
-@Table(name="ExecutionErrorInfo")
+@Table(name = "ExecutionErrorInfo", indexes = {@Index(name = "IDX_ErrorInfo_pInstId", columnList = "PROCESS_INST_ID"), @Index(name = "IDX_ErrorInfo_errorAck", columnList = "ERROR_ACK")})
 @SequenceGenerator(name="execErrorInfoIdSeq", sequenceName="EXEC_ERROR_INFO_ID_SEQ", allocationSize=1)
 public class ExecutionErrorInfo extends ExecutionError implements Serializable {
 

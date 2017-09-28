@@ -68,3 +68,6 @@ create table ExecutionErrorInfo (
     ERROR_TYPE varchar(255),
     primary key (id)
 ) ENGINE=InnoDB;
+
+create index IDX_ErrorInfo_pInstId on ExecutionErrorInfo(PROCESS_INST_ID);
+create index IDX_ErrorInfo_errorAck on ExecutionErrorInfo(ERROR_ACK);
