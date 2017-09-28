@@ -20,17 +20,15 @@ import org.drools.core.reteoo.AlphaNode;
 import org.drools.modelcompiler.domain.*;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.utils.KieHelper;
+import org.kie.api.runtime.rule.FactHandle;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class CompilerTest extends BaseModelTest {
 
@@ -38,7 +36,27 @@ public class CompilerTest extends BaseModelTest {
         super( testRunType );
     }
 
+    @Test(timeout = 5000)
+    public void testPropertyReactvity() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "rule R when\n" +
+                "  $p : Person(name == \"Mario\")\n" +
+                "then\n" +
+                "  modify($p) { setAge($p.getAge()+1) };\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        Person me = new Person( "Mario", 40 );
+        ksession.insert( me );
+        ksession.fireAllRules();
+
+        assertEquals( 41, me.getAge() );
+    }
+
     @Test
+    @Ignore("missing reacton(age) see RuleDescr.lookAheadFieldsOfIdentifier")
     public void testBeta() {
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +
@@ -56,12 +74,27 @@ public class CompilerTest extends BaseModelTest {
         Result result = new Result();
         ksession.insert( result );
 
-        ksession.insert( new Person( "Mark", 37 ) );
-        ksession.insert( new Person( "Edson", 35 ) );
-        ksession.insert( new Person( "Mario", 40 ) );
-        ksession.fireAllRules();
+        Person mark = new Person("Mark", 37);
+        Person edson = new Person("Edson", 35);
+        Person mario = new Person("Mario", 40);
 
-        assertEquals( "Mario is older than Mark", result.getValue() );
+        FactHandle markFH = ksession.insert(mark);
+        FactHandle edsonFH = ksession.insert(edson);
+        FactHandle marioFH = ksession.insert(mario);
+
+        ksession.fireAllRules();
+        assertEquals("Mario is older than Mark", result.getValue());
+
+        result.setValue( null );
+        ksession.delete( marioFH );
+        ksession.fireAllRules();
+        assertNull(result.getValue());
+
+        mark.setAge( 34 );
+        ksession.update( markFH, mark, "age" );
+
+        ksession.fireAllRules();
+        assertEquals("Edson is older than Mark", result.getValue());
     }
 
 
@@ -609,6 +642,44 @@ public class CompilerTest extends BaseModelTest {
     }
 
     @Test
+    public void testNonBreakingNamedConsequence() {
+        String str =
+                "import " + Result.class.getCanonicalName() + ";\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "rule R when\n" +
+                "  $r : Result()\n" +
+                "  $p1 : Person(name == \"Mark\")\n" +
+                "  if ( age < 30 ) break[FoundYoungMark]" +
+                "  else if ( age > 50) break[FoundOldMark]\n" +
+                "  else do[FoundMark]\n" +
+                "  $p2 : Person(name != \"Mark\", age > $p1.age)\n" +
+                "then\n" +
+                "  $r.addValue($p2.getName() + \" is older than \" + $p1.getName());\n" +
+                "then[FoundYoungMark]\n" +
+                "  $r.addValue(\"Found young \" + $p1.getName());\n" +
+                "then[FoundOldMark]\n" +
+                "  $r.addValue(\"Found old \" + $p1.getName());\n" +
+                "then[FoundMark]\n" +
+                "  $r.addValue(\"Found \" + $p1.getName());\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        Result result = new Result();
+        ksession.insert( result );
+
+        ksession.insert( new Person( "Mark", 37 ) );
+        ksession.insert( new Person( "Edson", 35 ) );
+        ksession.insert( new Person( "Mario", 40 ) );
+        ksession.fireAllRules();
+
+        Collection results = (Collection)result.getValue();
+        assertEquals(2, results.size());
+
+        assertTrue( results.containsAll( asList("Found Mark", "Mario is older than Mark") ) );
+    }
+
+    @Test
     @Ignore("DSL generation to be implemented")
     public void testFrom() {
         String str =
@@ -648,9 +719,7 @@ public class CompilerTest extends BaseModelTest {
                 "  modify($p) { setAge($p.getAge()+1) };\n" +
                 "end";
 
-        final KieSession ksession = new KieHelper().addContent( str, ResourceType.DRL )
-                .build()
-                .newKieSession();
+        KieSession ksession = getKieSession( str );
 
         Person me = new Person( "Mario", 40 );
         ksession.insert( me );
