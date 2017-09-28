@@ -24,9 +24,7 @@ import org.kie.internal.builder.RuleTemplateConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 public class DecisionTableConfigurationImpl extends ResourceConfigurationImpl implements DecisionTableConfiguration {
     public static final String DROOLS_DT_TYPE = "drools.dt.type";
@@ -38,7 +36,7 @@ public class DecisionTableConfigurationImpl extends ResourceConfigurationImpl im
     
     private String worksheetName;
 
-    private List<RuleTemplateConfiguration> templates = new ArrayList<RuleTemplateConfiguration>();
+    private Set<RuleTemplateConfiguration> templates = new HashSet<RuleTemplateConfiguration>();
     
     public DecisionTableConfigurationImpl() {
     }
@@ -64,7 +62,9 @@ public class DecisionTableConfigurationImpl extends ResourceConfigurationImpl im
     }
 
     public List<RuleTemplateConfiguration> getRuleTemplateConfigurations() {
-        return templates;
+        List<RuleTemplateConfiguration> confs = new ArrayList<>();
+        confs.addAll( templates );
+        return confs;
     }
 
     public Properties toProperties() {
@@ -104,6 +104,26 @@ public class DecisionTableConfigurationImpl extends ResourceConfigurationImpl im
 
         public int getCol() {
             return col;
+        }
+
+        @Override
+        public boolean equals( Object o ) {
+            if ( this == o ) return true;
+            if ( o == null || getClass() != o.getClass() ) return false;
+
+            RuleTemplateInfo that = ( RuleTemplateInfo ) o;
+
+            if ( row != that.row ) return false;
+            if ( col != that.col ) return false;
+            return template != null ? template.equals( that.template ) : that.template == null;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = template != null ? template.hashCode() : 0;
+            result = 31 * result + row;
+            result = 31 * result + col;
+            return result;
         }
     }
 }
