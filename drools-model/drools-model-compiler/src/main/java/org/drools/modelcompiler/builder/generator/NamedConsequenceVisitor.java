@@ -1,27 +1,18 @@
 package org.drools.modelcompiler.builder.generator;
 
-import java.util.HashSet;
-import java.util.List;
-
-import org.drools.compiler.lang.descr.AndDescr;
-import org.drools.compiler.lang.descr.BaseDescr;
-import org.drools.compiler.lang.descr.ConditionalBranchDescr;
-import org.drools.compiler.lang.descr.NamedConsequenceDescr;
-import org.drools.compiler.lang.descr.PatternDescr;
+import org.drools.compiler.lang.descr.*;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.javaparser.ast.stmt.BlockStmt;
 import org.drools.modelcompiler.builder.PackageModel;
 
+import java.util.HashSet;
+import java.util.List;
+
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
-import static org.drools.modelcompiler.builder.generator.ModelGenerator.createRuleVariables;
-import static org.drools.modelcompiler.builder.generator.ModelGenerator.drlxParse;
-import static org.drools.modelcompiler.builder.generator.ModelGenerator.executeCall;
-import static org.drools.modelcompiler.builder.generator.ModelGenerator.extractUsedDeclarations;
-import static org.drools.modelcompiler.builder.generator.ModelGenerator.onCall;
-import static org.drools.modelcompiler.builder.generator.ModelGenerator.rewriteConsequence;
+import static org.drools.modelcompiler.builder.generator.ModelGenerator.*;
 
 public class NamedConsequenceVisitor {
 
@@ -40,7 +31,7 @@ public class NamedConsequenceVisitor {
     }
 
     public void visit(NamedConsequenceDescr descr) {
-        MethodCallExpr executeCallDSL = onDSL(descr.getName());
+        MethodCallExpr executeCallDSL = onDSL(descr);
         context.addExpression(executeCallDSL);
     }
 
@@ -71,7 +62,7 @@ public class NamedConsequenceVisitor {
         }
 
         MethodCallExpr then = new MethodCallExpr(when, THEN_CALL);
-        MethodCallExpr rhs = onDSL(desc.getConsequence().getName());
+        MethodCallExpr rhs = onDSL(desc.getConsequence());
         then.addArgument(rhs);
         return then;
     }
@@ -87,14 +78,16 @@ public class NamedConsequenceVisitor {
         return patternRelated;
     }
 
-    private MethodCallExpr onDSL(String namedConsequenceName) {
-        String namedConsequenceString = context.namedConsequences.get(namedConsequenceName);
+    private MethodCallExpr onDSL(NamedConsequenceDescr namedConsequence) {
+        String namedConsequenceString = context.namedConsequences.get(namedConsequence.getName());
         BlockStmt ruleVariablesBlock = createRuleVariables(packageModel, context);
         BlockStmt ruleConsequence = rewriteConsequence(context, namedConsequenceString);
         List<String> verifiedDeclUsedInRHS = extractUsedDeclarations(packageModel, context, ruleConsequence);
 
         MethodCallExpr onCall = onCall(verifiedDeclUsedInRHS);
-        MethodCallExpr breaking = new MethodCallExpr(onCall, BREAKING_CALL);
-        return executeCall(context, ruleVariablesBlock, ruleConsequence, verifiedDeclUsedInRHS, breaking);
+        if (namedConsequence.isBreaking()) {
+            onCall = new MethodCallExpr( onCall, BREAKING_CALL );
+        }
+        return executeCall(context, ruleVariablesBlock, ruleConsequence, verifiedDeclUsedInRHS, onCall);
     }
 }
