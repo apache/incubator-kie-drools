@@ -24,7 +24,6 @@ import org.drools.compiler.lang.descr.AtomicExprDescr;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.rule.Pattern;
 import org.drools.core.util.ClassUtils;
-import org.drools.modelcompiler.builder.generator.ModelGenerator.RuleContext;
 
 public class MvelParseUtil {
 

@@ -23,16 +23,26 @@ import static org.drools.model.impl.NamesGenerator.generateName;
 
 public class DRLExprIdGenerator {
     private Map<PatternTypeDRLConstraint, String> generatedExprIds = new HashMap<>();
-    
+    private Map<PatternTypeDRLConstraint, String> generatedCondIds = new HashMap<>();
+
     public String getExprId(Class<?> patternType, String drlConstraint) {
         PatternTypeDRLConstraint key = PatternTypeDRLConstraint.of(patternType, drlConstraint);
         return generatedExprIds.computeIfAbsent(key, k -> generateNewId());
+    }
+
+    public String getCondId(Class<?> patternType, String drlConstraint) {
+        PatternTypeDRLConstraint key = PatternTypeDRLConstraint.of(patternType, drlConstraint);
+        return generatedCondIds.computeIfAbsent(key, k -> generateNewCond());
     }
     
     private String generateNewId() {
         return generateName("expr");
     }
-    
+
+    private String generateNewCond() {
+        return generateName("cond");
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
