@@ -35,7 +35,6 @@ import org.drools.javaparser.ast.type.ReferenceType;
 import org.drools.javaparser.ast.type.Type;
 import org.drools.javaparser.ast.type.UnknownType;
 import org.drools.modelcompiler.builder.PackageModel;
-import org.drools.modelcompiler.builder.generator.ModelGenerator.RuleContext;
 
 import java.lang.reflect.Method;
 import java.util.*;

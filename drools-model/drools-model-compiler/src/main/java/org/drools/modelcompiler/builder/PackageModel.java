@@ -16,10 +16,23 @@
 
 package org.drools.modelcompiler.builder;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.CompilationUnit;
 import org.drools.javaparser.ast.Modifier;
-import org.drools.javaparser.ast.body.*;
+import org.drools.javaparser.ast.body.BodyDeclaration;
+import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import org.drools.javaparser.ast.body.FieldDeclaration;
+import org.drools.javaparser.ast.body.InitializerDeclaration;
+import org.drools.javaparser.ast.body.MethodDeclaration;
 import org.drools.javaparser.ast.comments.JavadocComment;
 import org.drools.javaparser.ast.expr.ClassExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
@@ -34,10 +47,7 @@ import org.drools.model.Global;
 import org.drools.model.Model;
 import org.drools.modelcompiler.builder.generator.DRLExprIdGenerator;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
-import org.drools.modelcompiler.builder.generator.ModelGenerator;
-
-import java.util.*;
-import java.util.stream.Collectors;
+import org.drools.modelcompiler.builder.generator.QueryParameter;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 
@@ -53,7 +63,7 @@ public class PackageModel {
 
     private Map<String, MethodDeclaration> queryMethods = new HashMap<>();
 
-    private Map<String, List<ModelGenerator.QueryParameter>> queryVariables = new HashMap<>();
+    private Map<String, List<QueryParameter>> queryVariables = new HashMap<>();
 
     private DRLExprIdGenerator exprIdGenerator;
 
@@ -105,12 +115,12 @@ public class PackageModel {
         return queryMethods.get(key);
     }
 
-    public void putQueryVariable(String queryName, ModelGenerator.QueryParameter qp) {
+    public void putQueryVariable(String queryName, QueryParameter qp) {
         this.queryVariables.computeIfAbsent(queryName, k -> new ArrayList<>());
         this.queryVariables.get(queryName).add(qp);
     }
 
-    public List<ModelGenerator.QueryParameter> queryVariables(String queryName) {
+    public List<QueryParameter> queryVariables(String queryName) {
         return this.queryVariables.get(queryName);
     }
 

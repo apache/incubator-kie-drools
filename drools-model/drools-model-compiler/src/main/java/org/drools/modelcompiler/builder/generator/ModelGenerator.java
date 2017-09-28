@@ -66,18 +66,14 @@ public class ModelGenerator {
 
     public static final boolean GENERATE_EXPR_ID = true;
 
-    private static final String AVERAGE = "average";
-    private static final String BUILD_CALL = "build";
-    private static final String RULE_CALL = "rule";
-    private static final String EXECUTE_CALL = "execute";
-    private static final String ON_CALL = "on";
-    private static final String QUERY_CALL = "query";
-    private static final String WHEN_CALL = "when";
-    private static final String ELSE_WHEN_CALL = "elseWhen";
-    private static final String THEN_CALL = "then";
-    private static final String EXPR_CALL = "expr";
-    private static final String BREAKING_CALL = "breaking";
-    private static final String INPUT_CALL = "input";
+    public static final String AVERAGE = "average";
+    public static final String BUILD_CALL = "build";
+    public static final String RULE_CALL = "rule";
+    public static final String EXECUTE_CALL = "execute";
+    public static final String ON_CALL = "on";
+    public static final String QUERY_CALL = "query";
+    public static final String EXPR_CALL = "expr";
+    public static final String INPUT_CALL = "input";
 
     public static PackageModel generateModel(InternalKnowledgePackage pkg, List<RuleDescrImpl> rules) {
         String name = pkg.getName();
@@ -132,12 +128,12 @@ public class ModelGenerator {
         packageModel.putRuleMethod("rule_" + toId( ruleDescr.getName() ), ruleMethod);
     }
 
-    private static BlockStmt rewriteConsequence(RuleContext context, String consequence ) {
+    public static BlockStmt rewriteConsequence(RuleContext context, String consequence ) {
         String ruleConsequenceAsBlock = rewriteConsequenceBlock(context, consequence.trim() );
         return parseBlock(ruleConsequenceAsBlock);
     }
 
-    private static List<String> extractUsedDeclarations(PackageModel packageModel, RuleContext context, BlockStmt ruleConsequence) {
+    public static List<String> extractUsedDeclarations(PackageModel packageModel, RuleContext context, BlockStmt ruleConsequence) {
         List<String> declUsedInRHS = ruleConsequence.getChildNodesByType(NameExpr.class).stream().map(NameExpr::getNameAsString).collect(Collectors.toList());
         Set<String> existingDecls = new HashSet<>();
         existingDecls.addAll(context.declarations.keySet());
@@ -145,7 +141,7 @@ public class ModelGenerator {
         return existingDecls.stream().filter(declUsedInRHS::contains).collect(Collectors.toList());
     }
 
-    private static MethodCallExpr executeCall(RuleContext context, BlockStmt ruleVariablesBlock, BlockStmt ruleConsequence, List<String> verifiedDeclUsedInRHS, MethodCallExpr onCall) {
+    public static MethodCallExpr executeCall(RuleContext context, BlockStmt ruleVariablesBlock, BlockStmt ruleConsequence, List<String> verifiedDeclUsedInRHS, MethodCallExpr onCall) {
         boolean rhsRewritten = rewriteRHS(context, ruleVariablesBlock, ruleConsequence);
         MethodCallExpr executeCall = new MethodCallExpr(onCall, EXECUTE_CALL);
         LambdaExpr executeLambda = new LambdaExpr();
@@ -159,7 +155,7 @@ public class ModelGenerator {
         return executeCall;
     }
 
-    private static MethodCallExpr onCall(List<String> usedArguments) {
+    public static MethodCallExpr onCall(List<String> usedArguments) {
         MethodCallExpr onCall = null;
 
         if (!usedArguments.isEmpty()) {
@@ -169,7 +165,7 @@ public class ModelGenerator {
         return onCall;
     }
 
-    private static BlockStmt createRuleVariables(PackageModel packageModel, RuleContext context) {
+    public static BlockStmt createRuleVariables(PackageModel packageModel, RuleContext context) {
         BlockStmt ruleBlock = new BlockStmt();
 
         for ( Entry<String, DeclarationSpec> decl : context.declarations.entrySet() ) {
@@ -376,87 +372,22 @@ public class ModelGenerator {
         } else if ( descr instanceof QueryDescr) {
             visit( context, packageModel, ( (QueryDescr) descr ));
         } else if ( descr instanceof NamedConsequenceDescr) {
-            visit( context, packageModel, ( (NamedConsequenceDescr) descr ));
+           new NamedConsequenceVisitor(context, packageModel).visit(((NamedConsequenceDescr) descr ));
         } else if ( descr instanceof ConditionalBranchDescr) {
-            visit( context, packageModel, ( (ConditionalBranchDescr) descr ));
+            new NamedConsequenceVisitor(context, packageModel).visit(((ConditionalBranchDescr) descr ));
         } else {
             throw new UnsupportedOperationException("TODO"); // TODO
         }
     }
 
-    private static void visit(RuleContext context, PackageModel packageModel, ConditionalBranchDescr desc) {
-        PatternDescr patternRelated = (PatternDescr)getReferringPatternDescr(desc, (AndDescr) context.parentDesc);
-        Class<?> patternType = getClassFromContext(context, patternRelated.getObjectType());
-        MethodCallExpr then = whenClause(context, packageModel, desc, patternRelated, patternType, WHEN_CALL, null);
-        recurseAmongElseBranch(context, packageModel, patternType, patternRelated, then, desc.getElseBranch());
-    }
-
-    private static void recurseAmongElseBranch(RuleContext context, PackageModel packageModel, Class<?> patternType, PatternDescr patternRelated, MethodCallExpr parentMethodExpr, ConditionalBranchDescr branch) {
-        if(branch != null) {
-            MethodCallExpr then = whenClause(context, packageModel, branch, patternRelated, patternType, ELSE_WHEN_CALL, parentMethodExpr);
-            recurseAmongElseBranch(context, packageModel, patternType, patternRelated, then, branch.getElseBranch());
-        } else {
-            context.addExpression(parentMethodExpr);
-        }
-
-    }
-
-    private static Expression whenLambda(RuleContext context, PackageModel packageModel, Class<?> patternType, PatternDescr patternRelated, String condition) {
-        DrlxParseResult parseResult = drlxParse(context, packageModel, patternType, patternRelated.getIdentifier(), condition );
-        return generateLambdaWithoutParameters(new HashSet<>(), parseResult.expr);
-    }
-
-    private static MethodCallExpr whenClause(RuleContext context, PackageModel packageModel, ConditionalBranchDescr desc, PatternDescr patternRelated, Class<?> patternType, String callMethod, MethodCallExpr parentExpression) {
-        MethodCallExpr when = new MethodCallExpr(parentExpression, callMethod);
-        final String condition = desc.getCondition().toString();
-        if(!condition.equals("true")) { // Default case
-            when.addArgument(new StringLiteralExpr(context.exprIdGenerator.getCondId(patternType, condition)));
-            when.addArgument(new NameExpr(toVar(patternRelated.getIdentifier())));
-            when.addArgument(whenLambda(context, packageModel, patternType, patternRelated, condition));
-        }
-
-        MethodCallExpr then = new MethodCallExpr(when, THEN_CALL);
-
-        MethodCallExpr rhs = namedConsequenceRHS(context, packageModel, desc.getConsequence().getName());
-        then.addArgument(rhs);
-        return then;
-    }
-
-    private static BaseDescr getReferringPatternDescr(ConditionalBranchDescr desc, AndDescr parent) {
-        BaseDescr patternRelated = null;
-        for(BaseDescr b : parent.getDescrs()) {
-            if(b.equals(desc)) {
-                break;
-            }
-            patternRelated = b;
-        }
-        return patternRelated;
-    }
-
-    private static void visit(RuleContext context, PackageModel packageModel, NamedConsequenceDescr descr) {
-        MethodCallExpr executeCallDSL = namedConsequenceRHS(context, packageModel, descr.getName());
-        context.addExpression(executeCallDSL);
-    }
-
-    private static MethodCallExpr namedConsequenceRHS(RuleContext context, PackageModel packageModel, String namedConsequenceName) {
-        String namedConsequenceString = context.namedConsequences.get(namedConsequenceName);
-        BlockStmt ruleVariablesBlock = createRuleVariables(packageModel, context);
-        BlockStmt ruleConsequence = rewriteConsequence(context, namedConsequenceString);
-        List<String> verifiedDeclUsedInRHS = extractUsedDeclarations(packageModel, context, ruleConsequence);
-
-        MethodCallExpr onCall = onCall(verifiedDeclUsedInRHS);
-        MethodCallExpr breaking = new MethodCallExpr(onCall, BREAKING_CALL);
-        MethodCallExpr executeCall = executeCall(context, ruleVariablesBlock, ruleConsequence, verifiedDeclUsedInRHS, breaking);
-        return executeCall;
-    }
 
     private static void visit(RuleContext context, PackageModel packageModel, QueryDescr descr) {
 
         for (int i = 0; i < descr.getParameters().length; i++) {
             final String argument = descr.getParameters()[i];
             final String type = descr.getParameterTypes()[i];
-            context.declarations.put(argument, new DeclarationSpec(getClassFromContext(context, type)));
-            QueryParameter queryParameter = new QueryParameter(argument, getClassFromContext(context, type));
+            context.declarations.put(argument, new DeclarationSpec(context.getClassFromContext(type)));
+            QueryParameter queryParameter = new QueryParameter(argument, context.getClassFromContext(type));
             context.queryParameters.add(queryParameter);
             packageModel.putQueryVariable("query_" + descr.getName(), queryParameter);
         }
@@ -578,7 +509,7 @@ public class ModelGenerator {
             return;
         }
 
-        Class<?> patternType = getClassFromContext(context, className);
+        Class<?> patternType = context.getClassFromContext(className);
 
         if (pattern.getIdentifier() != null) {
             context.declarations.put( pattern.getIdentifier(), new DeclarationSpec( patternType, pattern ));
@@ -634,17 +565,7 @@ public class ModelGenerator {
                 ( Character.isDigit(value.charAt(0)) || value.charAt(0) == '"' || "true".equals(value) || "false".equals(value) || "null".equals(value) );
     }
 
-    private static Class<?> getClassFromContext(RuleContext context, String className) {
-        Class<?> patternType;
-        try {
-            patternType = context.pkg.getTypeResolver().resolveType(className);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException( e );
-        }
-        return patternType;
-    }
-
-    private static DrlxParseResult drlxParse(RuleContext context, PackageModel packageModel, Class<?> patternType, String bindingId, String expression) {
+    public static DrlxParseResult drlxParse(RuleContext context, PackageModel packageModel, Class<?> patternType, String bindingId, String expression) {
         Expression drlxExpr = DrlxParser.parseExpression( expression );
 
         String exprId;
@@ -764,42 +685,6 @@ public class ModelGenerator {
         }
     }
 
-    private static Expression mvelParse(RuleContext context, Pattern pattern, String bindingId, String expression) {
-        DrlExprParser drlExprParser = new DrlExprParser( LanguageLevelOption.DRL6_STRICT );
-        ConstraintConnectiveDescr result = drlExprParser.parse( expression );
-        if ( result.getDescrs().size() != 1 ) {
-            throw new UnsupportedOperationException("TODO"); // TODO
-        }
-
-        BaseDescr singletonDescr = result.getDescrs().get(0);
-        if ( !(singletonDescr instanceof RelationalExprDescr) ) {
-            throw new UnsupportedOperationException("TODO"); // TODO
-        }
-
-        System.out.println(singletonDescr);
-        RelationalExprDescr relationalExprDescr = (RelationalExprDescr) singletonDescr;
-        IndexUtil.ConstraintType decodeConstraintType = IndexUtil.ConstraintType.decode( relationalExprDescr.getOperator() );
-        // to be visited
-        // TODO what if not atomicExprDescr ?
-        Set<String> usedDeclarations = new HashSet<>();
-        Set<String> reactOnProperties = new HashSet<>();
-        TypedExpression left = MvelParseUtil.toTypedExpression( context, pattern, (AtomicExprDescr) relationalExprDescr.getLeft(), usedDeclarations, reactOnProperties );
-        TypedExpression right = MvelParseUtil.toTypedExpression( context, pattern, (AtomicExprDescr) relationalExprDescr.getRight(), usedDeclarations, reactOnProperties );
-        String combo;
-        switch ( relationalExprDescr.getOperator() ) {
-            case "==":
-                combo = left.getExpressionAsString() + ".equals(" + right.getExpressionAsString() + ")";
-                break;
-            case "!=":
-                combo = "!" + left.getExpressionAsString() + ".equals(" + right.getExpressionAsString() + ")";
-                break;
-            default:
-                combo = left.getExpressionAsString() + " " + relationalExprDescr.getOperator() + " " + right.getExpressionAsString();
-        }
-
-        return buildExpressionWithIndexing(new DrlxParseResult(pattern.getObjectType().getValueType().getClassType(), null, bindingId, decodeConstraintType, usedDeclarations, reactOnProperties, left, right, new NameExpr(combo ), false ));
-    }
-
     private static Expression buildExpressionWithIndexing(DrlxParseResult drlxParseResult ) {
 
         String exprId = drlxParseResult.exprId;
@@ -890,85 +775,4 @@ public class ModelGenerator {
         return opt.map( Stream::of ).orElseGet( Stream::empty );
     }
 
-    public static class RuleContext {
-        private final InternalKnowledgePackage pkg;
-        private DRLExprIdGenerator exprIdGenerator;
-
-        Map<String, DeclarationSpec> declarations = new HashMap<>();
-        List<QueryParameter> queryParameters = new ArrayList<>();
-        Deque<Consumer<Expression>> exprPointer = new LinkedList<>();
-        List<Expression> expressions = new ArrayList<>();
-        Set<String> queryName = new HashSet<>();
-        Map<String, String> namedConsequences = new HashMap<>();
-
-        BaseDescr parentDesc = null;
-
-        public RuleContext(InternalKnowledgePackage pkg, DRLExprIdGenerator exprIdGenerator) {
-            this.pkg = pkg;
-            this.exprIdGenerator = exprIdGenerator;
-            exprPointer.push( this.expressions::add );
-        }
-
-        public void addExpression(Expression e) {
-            exprPointer.peek().accept(e);
-        }
-        public void pushExprPointer(Consumer<Expression> p) {
-            exprPointer.push(p);
-        }
-        public Consumer<Expression> popExprPointer() {
-            return exprPointer.pop();
-        }
-        public int getExprPointerLevel() {
-            return exprPointer.size();
-        }
-
-        public InternalKnowledgePackage getPkg() {
-            return pkg;
-        }
-
-        public String getExprId(Class<?> patternType, String drlConstraint) {
-            return exprIdGenerator.getExprId(patternType, drlConstraint);
-        }
-
-        public void addNamedConsequence(String key, String value) {
-            namedConsequences.put(key, value);
-        }
-    }
-
-    public static class QueryParameter {
-        final String name;
-        final Class<?> type;
-
-        public QueryParameter(String name, Class<?> type) {
-            this.name = name;
-            this.type = type;
-        }
-    }
-
-    public static class DeclarationSpec {
-        final Class<?> declarationClass;
-        final Optional<PatternDescr> optPattern;
-
-        public DeclarationSpec( Class<?> declarationClass, PatternDescr pattern ) {
-            this.declarationClass = declarationClass;
-            this.optPattern = Optional.of(pattern);
-        }
-
-        public DeclarationSpec( Class<?> declarationClass ) {
-            this.declarationClass = declarationClass;
-            this.optPattern = Optional.empty();
-        }
-
-        Optional<String> getEntryPoint() {
-            return optPattern.flatMap(pattern -> pattern.getSource() instanceof EntryPointDescr ?
-                                                    Optional.of(((EntryPointDescr) pattern.getSource()).getEntryId()) :
-                                                    Optional.empty()
-            );
-        }
-
-        public List<BehaviorDescr> getBehaviors() {
-            return optPattern.map(PatternDescr::getBehaviors).orElse(Collections.emptyList());
-
-        }
-    }
 }
