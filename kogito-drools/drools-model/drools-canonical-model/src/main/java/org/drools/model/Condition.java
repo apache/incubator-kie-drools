@@ -15,7 +15,7 @@ public interface Condition {
 
     enum Type {
         PATTERN( false ), QUERY( false ), ACCUMULATE( false ), TEMPORAL( false ), OOPATH( false ),
-        OR( true ), AND( true ), NOT( false ), EXISTS( false ), CONSEQUENCE( false );
+        OR( true ), AND( true ), NOT( false ), EXISTS( false ), FORALL( false ), CONSEQUENCE( false );
 
         private final boolean composite;
 

@@ -502,6 +502,30 @@ public class CompilerTest extends BaseModelTest {
     }
 
     @Test
+    public void testForall() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "import " + Result.class.getCanonicalName() + ";" +
+                "rule R when\n" +
+                "  forall( $p : Person( name.length == 5 ) " +
+                        "       Person( this == $p, age > 40 ) )\n" +
+                "then\n" +
+                "  insert(new Result(\"ok\"));\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( new Person( "Mario", 41 ) );
+        ksession.insert( new Person( "Mark", 39 ) );
+        ksession.insert( new Person( "Edson", 42 ) );
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjects( ksession, Result.class );
+        assertEquals( 1, results.size() );
+        assertEquals( "ok", results.iterator().next().getValue() );
+    }
+
+    @Test
     public void testExistsEmptyPredicate() {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
