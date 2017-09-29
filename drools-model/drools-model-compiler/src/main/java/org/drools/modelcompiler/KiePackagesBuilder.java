@@ -261,6 +261,16 @@ public class KiePackagesBuilder {
                 ge.addChild( conditionToElement( ctx, condition.getSubConditions().get(0) ) );
                 return ge;
             }
+            case FORALL: {
+                Condition innerCondition = condition.getSubConditions().get(0);
+                Pattern basePattern = (Pattern) conditionToElement( ctx, innerCondition.getSubConditions().get(0) );
+                List<Pattern> remainingPatterns = new ArrayList<>();
+                for (int i = 1; i < innerCondition.getSubConditions().size(); i++) {
+                    remainingPatterns.add( (Pattern) conditionToElement( ctx, innerCondition.getSubConditions().get(i) ) );
+                }
+                Forall forall = new Forall(basePattern, remainingPatterns);
+                return forall;
+            }
             case CONSEQUENCE:
                 if (condition instanceof NamedConsequenceImpl) {
                     NamedConsequenceImpl consequence = (NamedConsequenceImpl) condition;

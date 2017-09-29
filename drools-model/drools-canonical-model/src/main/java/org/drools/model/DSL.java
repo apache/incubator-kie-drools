@@ -200,6 +200,10 @@ public class DSL {
         return exists(new Expr2ViewItemImpl<T, U>( var1, var2, predicate) );
     }
 
+    public static ExprViewItem forall(ExprViewItem expression, ExprViewItem... expressions) {
+        return new ExistentialExprViewItem( Condition.Type.FORALL, and( expression, expressions) );
+    }
+
     public static <T> ExprViewItem<T> accumulate(ExprViewItem<T> expr, AccumulateFunction<T, ?, ?>... functions) {
         return new AccumulateExprViewItem(expr, functions);
     }
