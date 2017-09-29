@@ -219,6 +219,34 @@ public class FlowTest {
     }
 
     @Test
+    public void testForall() {
+        Variable<Person> p1V = declarationOf( type( Person.class ) );
+        Variable<Person> p2V = declarationOf( type( Person.class ) );
+
+        Rule rule = rule("not")
+                .build(
+                        forall( expr( "exprA", p1V, p -> p.getName().length() == 5 ),
+                                expr( "exprB", p2V, p1V, (p2, p1) -> p2 == p1 ),
+                                expr( "exprC", p2V, p -> p.getAge() > 40 ) ),
+                        execute(drools -> drools.insert( new Result("ok") ))
+                      );
+
+        Model model = new ModelImpl().addRule( rule );
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
+
+        KieSession ksession = kieBase.newKieSession();
+
+        ksession.insert( new Person( "Mario", 41 ) );
+        ksession.insert( new Person( "Mark", 39 ) );
+        ksession.insert( new Person( "Edson", 42 ) );
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjects( ksession, Result.class );
+        assertEquals( 1, results.size() );
+        assertEquals( "ok", results.iterator().next().getValue() );
+    }
+
+    @Test
     public void testAccumulate1() {
         Result result = new Result();
         Variable<Person> person = declarationOf( type( Person.class ) );
