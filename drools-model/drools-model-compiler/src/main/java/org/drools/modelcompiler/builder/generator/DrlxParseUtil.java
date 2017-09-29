@@ -39,6 +39,8 @@ import org.drools.modelcompiler.builder.PackageModel;
 import java.lang.reflect.Method;
 import java.util.*;
 
+import static org.drools.core.util.ClassUtils.getter2property;
+
 public class DrlxParseUtil {
 
     public static IndexUtil.ConstraintType toConstraintType(Operator operator) {
@@ -88,7 +90,7 @@ public class DrlxParseUtil {
                 Expression plusThis = prepend(new NameExpr("_this"), (MethodCallExpr) expression.getExpression());
                 return new TypedExpression(plusThis, expression.getType());
             }
-        } else if (drlxExpr instanceof FieldAccessExpr) {
+        } else if (drlxExpr instanceof FieldAccessExpr || drlxExpr instanceof MethodCallExpr) {
             List<Node> childNodes = drlxExpr.getChildNodes();
             Node firstNode = childNodes.get(0);
 
@@ -136,7 +138,11 @@ public class DrlxParseUtil {
                         fieldName = ( SimpleName ) childNodes.get( 1 );
                     }
                     if (fieldName != null) {
-                        reactOnProperties.add( fieldName.getIdentifier() );
+                        if (drlxExpr instanceof MethodCallExpr) {
+                            reactOnProperties.add( getter2property( fieldName.getIdentifier() ) );
+                        } else {
+                            reactOnProperties.add( fieldName.getIdentifier() );
+                        }
                     }
                 }
             } else if (firstNode instanceof FieldAccessExpr && ((FieldAccessExpr) firstNode).getScope() instanceof ThisExpr) {
@@ -150,6 +156,14 @@ public class DrlxParseUtil {
                     throw new UnsupportedOperationException("firstNode I don't know about");
                     // TODO would it be fine to assume is a global if it's not in the declarations and not the first accesssor in a chain?
                 }
+            } else if (firstNode instanceof SimpleName) {
+                previous = new NameExpr("_this");
+                SimpleName fieldName = ( SimpleName ) firstNode;
+                String name = drlxExpr instanceof MethodCallExpr ? getter2property( fieldName.getIdentifier() ) : fieldName.getIdentifier();
+                reactOnProperties.add( name );
+                TypedExpression expression = nameExprToMethodCallExpr(name, typeCursor);
+                Expression plusThis = prepend(new NameExpr("_this"), (MethodCallExpr) expression.getExpression());
+                return new TypedExpression(plusThis, expression.getType());
             } else {
                 throw new UnsupportedOperationException("Unknown node: " + firstNode);
             }
