@@ -63,7 +63,6 @@ public class ModelGenerator {
 
     public static final boolean GENERATE_EXPR_ID = true;
 
-    public static final String AVERAGE = "average";
     public static final String BUILD_CALL = "build";
     public static final String RULE_CALL = "rule";
     public static final String EXECUTE_CALL = "execute";
@@ -359,7 +358,7 @@ public class ModelGenerator {
         } else if ( descr instanceof OrDescr) {
             visit( context, packageModel, ( (OrDescr) descr ), "or");
         } else if ( descr instanceof PatternDescr && ((PatternDescr)descr).getSource() instanceof AccumulateDescr) {
-            visit( context, packageModel, ( (AccumulateDescr)((PatternDescr) descr).getSource() ));
+            new AccumulateVisitor(context, packageModel).visit(( (AccumulateDescr)((PatternDescr) descr).getSource() ));
         } else if ( descr instanceof PatternDescr ) {
             visit( context, packageModel, ( (PatternDescr) descr ));
         } else if ( descr instanceof EvalDescr ) {
@@ -420,61 +419,6 @@ public class ModelGenerator {
         context.addExpression( dslExpr );
     }
 
-    private static void visit( RuleContext context, PackageModel packageModel, AccumulateDescr descr ) {
-        final MethodCallExpr accumulateDSL = new MethodCallExpr(null, "accumulate");
-        context.addExpression(accumulateDSL);
-        context.pushExprPointer( accumulateDSL::addArgument );
-        visit(context, packageModel, descr.getInputPattern());
-        for(AccumulateDescr.AccumulateFunctionCallDescr function: descr.getFunctions()) {
-            visit(context, function, accumulateDSL);
-        }
-        context.popExprPointer();
-    }
-
-    private static void visit(RuleContext context, AccumulateDescr.AccumulateFunctionCallDescr function, MethodCallExpr accumulateDSL) {
-
-        context.pushExprPointer(accumulateDSL::addArgument);
-
-        final MethodCallExpr functionDSL = new MethodCallExpr(null, function.getFunction());
-
-        final Expression expr = DrlxParser.parseExpression(function.getParams()[0]);
-        if (expr instanceof MethodCallExpr) {
-            final MethodCallExpr methodCallExpr = (MethodCallExpr) expr;
-
-            final NameExpr scope = (NameExpr) methodCallExpr.getScope().orElseThrow(UnsupportedOperationException::new);
-            final Class clazz = context.declarations.get(scope.getName().asString()).declarationClass;
-
-            LambdaExpr lambdaExpr = new LambdaExpr(
-                    NodeList.nodeList(new Parameter(new TypeParameter(clazz.getName()), "$p"))
-                    , new ExpressionStmt(methodCallExpr)
-                    , true);
-
-            functionDSL.addArgument(lambdaExpr);
-
-            Class<?> declClass = getReturnTypeForAggregateFunction(functionDSL.getName().asString(), clazz, methodCallExpr);
-            context.declarations.put(function.getBind(), new DeclarationSpec(declClass));
-        }
-
-        final MethodCallExpr asDSL = new MethodCallExpr(functionDSL, "as");
-        asDSL.addArgument(new NameExpr(toVar(function.getBind())));
-
-        accumulateDSL.addArgument(asDSL);
-
-        context.popExprPointer();
-    }
-
-    private static Class<?> getReturnTypeForAggregateFunction(String functionName, Class<?> clazz, MethodCallExpr field) {
-        if (AVERAGE.equals(functionName)) {
-            return Double.class;
-        } else {
-            try {
-                return clazz.getMethod(field.getName().asString()).getReturnType();
-            } catch (NoSuchMethodException e) {
-                throw new UnsupportedOperationException("Aggregate function result type", e);
-            }
-        }
-    }
-
     private static void visit(RuleContext context, PackageModel packageModel, AndDescr descr) {
         // if it's the first (implied) `and` wrapping the first level of patterns, skip adding it to the DSL.
         if ( context.getExprPointerLevel() != 1 ) {
@@ -491,7 +435,7 @@ public class ModelGenerator {
         }
     }
 
-    private static void visit(RuleContext context, PackageModel packageModel, PatternDescr pattern ) {
+    public static void visit(RuleContext context, PackageModel packageModel, PatternDescr pattern ) {
         String className = pattern.getObjectType();
 
         // Expression is a query, get bindings from query parameter type
