@@ -362,6 +362,8 @@ public class ModelGenerator {
             visit( context, packageModel, ( (AccumulateDescr)((PatternDescr) descr).getSource() ));
         } else if ( descr instanceof PatternDescr ) {
             visit( context, packageModel, ( (PatternDescr) descr ));
+        } else if ( descr instanceof EvalDescr ) {
+            visit( context, packageModel, ( (EvalDescr) descr ));
         } else if ( descr instanceof NotDescr) {
             visit( context, packageModel, ( (NotDescr) descr ), "not");
         } else if ( descr instanceof ExistsDescr) {
@@ -402,6 +404,20 @@ public class ModelGenerator {
             visit(context, packageModel, subDescr );
         }
         context.popExprPointer();
+    }
+
+    private static void visit( RuleContext context, PackageModel packageModel, EvalDescr descr ) {
+        String expression = descr.getContent().toString();
+        int dot = expression.indexOf( '.' );
+        if ( dot < 0 ) {
+            throw new UnsupportedOperationException( "unable to parse eval expression: " + expression );
+        }
+        String bindingId = expression.substring( 0, dot );
+
+        Class<?> patternType = context.declarations.get(bindingId).declarationClass;
+        DrlxParseResult drlxParseResult = drlxParse(context, packageModel, patternType, bindingId, expression);
+        Expression dslExpr = buildExpressionWithIndexing(drlxParseResult);
+        context.addExpression( dslExpr );
     }
 
     private static void visit( RuleContext context, PackageModel packageModel, AccumulateDescr descr ) {
@@ -504,7 +520,6 @@ public class ModelGenerator {
                 declarationOfCall.addArgument(typeCall);
                 dslExpr.addArgument( declarationOfCall );
             }
-            System.out.println("Adding newExpression: "+dslExpr);
             context.addExpression( dslExpr );
         } else {
             for (BaseDescr constraint : descriptors) {
@@ -512,7 +527,6 @@ public class ModelGenerator {
                 DrlxParseResult drlxParseResult = drlxParse(context, packageModel, patternType, pattern.getIdentifier(), expression);
                 Expression dslExpr = buildExpressionWithIndexing(drlxParseResult);
 
-                System.out.println("Adding newExpression: "+dslExpr);
                 context.addExpression( dslExpr );
             }
         }
@@ -544,6 +558,10 @@ public class ModelGenerator {
     }
 
     public static DrlxParseResult drlxParse(RuleContext context, PackageModel packageModel, Class<?> patternType, String bindingId, String expression) {
+        if (expression.startsWith( bindingId + "." )) {
+            expression = expression.substring( bindingId.length()+1 );
+        }
+
         Expression drlxExpr = DrlxParser.parseExpression( expression );
 
         String exprId;
