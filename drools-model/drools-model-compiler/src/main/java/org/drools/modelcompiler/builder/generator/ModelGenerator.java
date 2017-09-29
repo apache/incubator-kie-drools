@@ -16,11 +16,9 @@
 
 package org.drools.modelcompiler.builder.generator;
 
-import org.drools.compiler.compiler.DrlExprParser;
 import org.drools.compiler.lang.descr.*;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.Behavior;
-import org.drools.core.rule.Pattern;
 import org.drools.core.time.TimeUtils;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.index.IndexUtil;
@@ -42,21 +40,20 @@ import org.drools.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.javaparser.ast.type.Type;
 import org.drools.javaparser.ast.type.TypeParameter;
 import org.drools.javaparser.ast.type.UnknownType;
-import org.drools.model.*;
+import org.drools.model.BitMask;
+import org.drools.model.Query;
+import org.drools.model.Rule;
+import org.drools.model.Variable;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.RuleDescrImpl;
-import org.kie.internal.builder.conf.LanguageLevelOption;
 
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.drools.javaparser.printer.PrintUtil.toDrlx;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.parseBlock;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.*;
 import static org.drools.modelcompiler.builder.generator.StringUtil.toId;
 
 public class ModelGenerator {
@@ -360,15 +357,17 @@ public class ModelGenerator {
         if ( descr instanceof AndDescr) {
             visit(context, packageModel, ( (AndDescr) descr ));
         } else if ( descr instanceof OrDescr) {
-            visit( context, packageModel, ( (OrDescr) descr ));
+            visit( context, packageModel, ( (OrDescr) descr ), "or");
         } else if ( descr instanceof PatternDescr && ((PatternDescr)descr).getSource() instanceof AccumulateDescr) {
             visit( context, packageModel, ( (AccumulateDescr)((PatternDescr) descr).getSource() ));
         } else if ( descr instanceof PatternDescr ) {
             visit( context, packageModel, ( (PatternDescr) descr ));
         } else if ( descr instanceof NotDescr) {
-            visit( context, packageModel, ( (NotDescr) descr ));
+            visit( context, packageModel, ( (NotDescr) descr ), "not");
         } else if ( descr instanceof ExistsDescr) {
-            visit( context, packageModel, ( (ExistsDescr) descr ));
+            visit( context, packageModel, ( (ExistsDescr) descr ), "exists");
+        } else if ( descr instanceof ForallDescr) {
+            visit( context, packageModel, ( (ForallDescr) descr ), "forall");
         } else if ( descr instanceof QueryDescr) {
             visit( context, packageModel, ( (QueryDescr) descr ));
         } else if ( descr instanceof NamedConsequenceDescr) {
@@ -393,6 +392,16 @@ public class ModelGenerator {
         }
 
         visit(context, packageModel, descr.getLhs());
+    }
+
+    private static void visit( RuleContext context, PackageModel packageModel, ConditionalElementDescr descr, String methodName ) {
+        final MethodCallExpr ceDSL = new MethodCallExpr(null, methodName);
+        context.addExpression(ceDSL);
+        context.pushExprPointer( ceDSL::addArgument );
+        for (BaseDescr subDescr : descr.getDescrs()) {
+            visit(context, packageModel, subDescr );
+        }
+        context.popExprPointer();
     }
 
     private static void visit( RuleContext context, PackageModel packageModel, AccumulateDescr descr ) {
@@ -450,27 +459,6 @@ public class ModelGenerator {
         }
     }
 
-    private static void visit( RuleContext context, PackageModel packageModel, NotDescr descr ) {
-        final MethodCallExpr notDSL = new MethodCallExpr(null, "not");
-        context.addExpression(notDSL);
-        context.pushExprPointer( notDSL::addArgument );
-        for (BaseDescr subDescr : descr.getDescrs()) {
-            visit(context, packageModel, subDescr );
-        }
-        context.popExprPointer();
-    }
-
-    private static void visit( RuleContext context, PackageModel packageModel, ExistsDescr descr ) {
-        final MethodCallExpr existsDSL = new MethodCallExpr(null, "exists");
-        context.addExpression(existsDSL);
-        context.pushExprPointer( existsDSL::addArgument );
-        for (Object subDescr : descr.getDescrs()) {
-            if(subDescr instanceof BaseDescr)
-                visit(context, packageModel, (BaseDescr)subDescr );
-        }
-        context.popExprPointer();
-    }
-
     private static void visit(RuleContext context, PackageModel packageModel, AndDescr descr) {
         // if it's the first (implied) `and` wrapping the first level of patterns, skip adding it to the DSL.
         if ( context.getExprPointerLevel() != 1 ) {
@@ -485,16 +473,6 @@ public class ModelGenerator {
         if ( context.getExprPointerLevel() != 1 ) {
             context.popExprPointer();
         }
-    }
-
-    private static void visit( RuleContext context, PackageModel packageModel, OrDescr descr ) {
-        final MethodCallExpr orDSL = new MethodCallExpr(null, "or");
-        context.addExpression(orDSL);
-        context.pushExprPointer( orDSL::addArgument );
-        for (BaseDescr subDescr : descr.getDescrs()) {
-            visit(context, packageModel, subDescr );
-        }
-        context.popExprPointer();
     }
 
     private static void visit(RuleContext context, PackageModel packageModel, PatternDescr pattern ) {
