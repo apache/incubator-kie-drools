@@ -30,6 +30,7 @@ import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
+import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.lookup.ClassAndPlanningIdComparator;
 import org.optaplanner.core.impl.domain.lookup.LookUpManager;
@@ -474,7 +475,8 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
                     + ") after all " + VariableListener.class.getSimpleName()
                     + "s were triggered without changes to the genuine variables"
                     + " after completedAction (" + completedAction + ").\n"
-                    + "But all the shadow variable values are still the same, so this is impossible.");
+                    + "But all the shadow variable values are still the same, so this is impossible.\n"
+                    + "Maybe run with " + EnvironmentMode.FULL_ASSERT + " if you aren't already, to fail earlier.");
         }
     }
 
