@@ -38,7 +38,6 @@ import org.drools.javaparser.ast.stmt.ExpressionStmt;
 import org.drools.javaparser.ast.stmt.ReturnStmt;
 import org.drools.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.javaparser.ast.type.Type;
-import org.drools.javaparser.ast.type.TypeParameter;
 import org.drools.javaparser.ast.type.UnknownType;
 import org.drools.model.BitMask;
 import org.drools.model.Query;
@@ -71,11 +70,12 @@ public class ModelGenerator {
     public static final String EXPR_CALL = "expr";
     public static final String INPUT_CALL = "input";
 
-    public static PackageModel generateModel(InternalKnowledgePackage pkg, List<RuleDescrImpl> rules) {
+    public static PackageModel generateModel(InternalKnowledgePackage pkg, List<RuleDescrImpl> rules, List<FunctionDescr> functions) {
         String name = pkg.getName();
         PackageModel packageModel = new PackageModel(name);
         packageModel.addImports(pkg.getTypeResolver().getImports());
         packageModel.addGlobals(pkg.getGlobals());
+        packageModel.addAllFunctions(functions.stream().map(FunctionGenerator::toFunction).collect(Collectors.toList()));
 
         for (RuleDescrImpl descr : rules) {
             final RuleDescr descriptor = descr.getDescr();
