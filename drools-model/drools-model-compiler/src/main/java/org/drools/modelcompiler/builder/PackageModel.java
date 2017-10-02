@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.drools.compiler.lang.descr.FunctionDescr;
 import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.CompilationUnit;
 import org.drools.javaparser.ast.Modifier;
@@ -64,6 +65,8 @@ public class PackageModel {
     private Map<String, MethodDeclaration> queryMethods = new HashMap<>();
 
     private Map<String, List<QueryParameter>> queryVariables = new HashMap<>();
+
+    private List<MethodDeclaration> functions = new ArrayList<>();
 
     private DRLExprIdGenerator exprIdGenerator;
 
@@ -122,6 +125,10 @@ public class PackageModel {
 
     public List<QueryParameter> queryVariables(String queryName) {
         return this.queryVariables.get(queryName);
+    }
+
+    public void addAllFunctions(List<MethodDeclaration> functions) {
+        this.functions.addAll(functions);
     }
 
     public String getVarsSource() {
@@ -224,6 +231,8 @@ public class PackageModel {
             rulesListInitializerBody.addStatement( add );
 
         }
+
+        functions.forEach(rulesClass::addMember);
 
         // each method per Drlx parser result
         ruleMethods.values().forEach( rulesClass::addMember );
