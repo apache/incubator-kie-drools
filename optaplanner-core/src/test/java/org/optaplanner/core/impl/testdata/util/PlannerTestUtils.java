@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.security.AnyTypePermission;
 import org.apache.commons.lang3.SerializationUtils;
 import org.mockito.AdditionalAnswers;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
@@ -117,6 +118,8 @@ public class PlannerTestUtils {
         if (input != null) {
             xStream.processAnnotations(input.getClass());
         }
+        XStream.setupDefaultSecurity(xStream);
+        xStream.addPermission(new AnyTypePermission());
         String xmlString = xStream.toXML(input);
         return (T) xStream.fromXML(xmlString);
     }

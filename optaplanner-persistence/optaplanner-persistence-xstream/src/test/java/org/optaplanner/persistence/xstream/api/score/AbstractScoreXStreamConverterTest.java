@@ -33,6 +33,9 @@ public abstract class AbstractScoreXStreamConverterTest {
         XStream xStream = new XStream();
         xStream.setMode(XStream.ID_REFERENCES);
         xStream.processAnnotations(input.getClass());
+        XStream.setupDefaultSecurity(xStream);
+        xStream.allowTypesByRegExp(new String[]{"org\\.optaplanner\\.\\w+\\.config\\..*",
+                "org\\.optaplanner\\.persistence\\.xstream\\..*\\$Test\\w+ScoreWrapper"});
         String xmlString = xStream.toXML(input);
         W output = (W) xStream.fromXML(xmlString);
 

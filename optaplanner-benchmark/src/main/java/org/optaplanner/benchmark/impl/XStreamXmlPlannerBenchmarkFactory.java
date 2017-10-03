@@ -74,6 +74,7 @@ public class XStreamXmlPlannerBenchmarkFactory extends AbstractPlannerBenchmarkF
      */
     public void addXStreamAnnotations(Class... xStreamAnnotations) {
         xStream.processAnnotations(xStreamAnnotations);
+        xStream.allowTypes(xStreamAnnotations);
     }
 
     public XStream getXStream() {

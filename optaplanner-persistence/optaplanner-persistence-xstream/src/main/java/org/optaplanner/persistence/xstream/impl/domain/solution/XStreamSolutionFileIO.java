@@ -27,10 +27,14 @@ import java.io.Writer;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.XStreamException;
+import com.thoughtworks.xstream.security.AnyTypePermission;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
 /**
+ * Security warning: only use this class with XML files from a trusted source,
+ * because {@link XStream} is configured to allow all permissions,
+ * which can be exploited if the XML comes from an untrusted source.
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public class XStreamSolutionFileIO<Solution_> implements SolutionFileIO<Solution_> {
@@ -41,6 +45,9 @@ public class XStreamSolutionFileIO<Solution_> implements SolutionFileIO<Solution
         xStream = new XStream();
         xStream.setMode(XStream.ID_REFERENCES);
         xStream.processAnnotations(xStreamAnnotatedClasses);
+        XStream.setupDefaultSecurity(xStream);
+        // Presume the XML file comes from a trusted source so it works out of the box. See class javadoc.
+        xStream.addPermission(new AnyTypePermission());
     }
 
     public XStream getXStream() {

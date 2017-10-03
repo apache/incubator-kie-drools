@@ -53,6 +53,8 @@ public class XStreamXmlSolverFactory<Solution_> extends AbstractSolverFactory<So
         xStream.aliasSystemAttribute("xStreamId", "id");
         xStream.aliasSystemAttribute("xStreamRef", "reference");
         xStream.processAnnotations(SolverConfig.class);
+        XStream.setupDefaultSecurity(xStream);
+        xStream.allowTypesByRegExp(new String[]{"org\\.optaplanner\\.\\w+\\.config\\..*"});
         return xStream;
     }
 
@@ -82,6 +84,7 @@ public class XStreamXmlSolverFactory<Solution_> extends AbstractSolverFactory<So
      */
     public void addXStreamAnnotations(Class<?>... xStreamAnnotations) {
         xStream.processAnnotations(xStreamAnnotations);
+        xStream.allowTypes(xStreamAnnotations);
     }
 
     public XStream getXStream() {
