@@ -62,7 +62,6 @@ public class CompilerTest extends BaseModelTest {
     }
 
     @Test
-    @Ignore("missing reacton(age) see RuleDescr.lookAheadFieldsOfIdentifier")
     public void testBeta() {
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +

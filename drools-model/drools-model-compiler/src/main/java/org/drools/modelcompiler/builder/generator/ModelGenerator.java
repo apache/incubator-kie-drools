@@ -18,6 +18,8 @@ package org.drools.modelcompiler.builder.generator;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
@@ -129,7 +131,7 @@ public class ModelGenerator {
     }
 
     private static void processRule(InternalKnowledgePackage pkg, PackageModel packageModel, RuleDescr ruleDescr) {
-        RuleContext context = new RuleContext(pkg, packageModel.getExprIdGenerator() );
+        RuleContext context = new RuleContext(pkg, packageModel.getExprIdGenerator(), ruleDescr);
 
         for(Entry<String, Object> kv : ruleDescr.getNamedConsequences().entrySet()) {
             context.addNamedConsequence(kv.getKey(), kv.getValue().toString());
@@ -243,17 +245,17 @@ public class ModelGenerator {
         return ruleBlock;
     }
 
-    private static void processQuery(InternalKnowledgePackage pkg, PackageModel packageModel, QueryDescr ruleDescr) {
-        RuleContext context = new RuleContext(pkg, packageModel.getExprIdGenerator());
-        visit(context, packageModel, ruleDescr);
-        MethodDeclaration queryMethod = new MethodDeclaration(EnumSet.of(Modifier.PRIVATE), getQueryType(context.queryParameters), "query_" + toId(ruleDescr.getName()));
+    private static void processQuery(InternalKnowledgePackage pkg, PackageModel packageModel, QueryDescr queryDescr) {
+        RuleContext context = new RuleContext(pkg, packageModel.getExprIdGenerator(), queryDescr);
+        visit(context, packageModel, queryDescr);
+        MethodDeclaration queryMethod = new MethodDeclaration(EnumSet.of(Modifier.PRIVATE), getQueryType(context.queryParameters), "query_" + toId(queryDescr.getName()));
 
         BlockStmt queryVariables = createRuleVariables(packageModel, context);
         queryMethod.setBody(queryVariables);
         VariableDeclarationExpr queryVar = new VariableDeclarationExpr(getQueryType(context.queryParameters), QUERY_CALL);
 
         MethodCallExpr queryCall = new MethodCallExpr(null, QUERY_CALL);
-        queryCall.addArgument(new StringLiteralExpr(ruleDescr.getName()));
+        queryCall.addArgument(new StringLiteralExpr(queryDescr.getName()));
         for (QueryParameter qp : context.queryParameters) {
             queryCall.addArgument(new NameExpr(toVar(qp.name)));
         }
@@ -540,6 +542,11 @@ public class ModelGenerator {
             for (BaseDescr constraint : descriptors) {
                 String expression = constraint.toString();
                 DrlxParseResult drlxParseResult = drlxParse(context, packageModel, patternType, pattern.getIdentifier(), expression);
+
+                // need to augment the reactOn inside drlxParseResult with the look-ahead properties.
+                Collection<String> lookAheadFieldsOfIdentifier = context.getRuleDescr().lookAheadFieldsOfIdentifier(pattern);
+                drlxParseResult.reactOnProperties.addAll(lookAheadFieldsOfIdentifier);
+
                 Expression dslExpr = buildExpressionWithIndexing(drlxParseResult);
 
                 context.addExpression( dslExpr );
