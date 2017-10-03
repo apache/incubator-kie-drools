@@ -16,13 +16,28 @@
 
 package org.drools.modelcompiler;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.assertj.core.api.Assertions;
 import org.drools.core.reteoo.AlphaNode;
-import org.drools.model.*;
+import org.drools.model.Global;
 import org.drools.model.Index.ConstraintType;
+import org.drools.model.Model;
+import org.drools.model.Query1;
+import org.drools.model.Query2;
+import org.drools.model.Rule;
+import org.drools.model.Variable;
 import org.drools.model.impl.ModelImpl;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
-import org.drools.modelcompiler.domain.*;
+import org.drools.modelcompiler.domain.Adult;
+import org.drools.modelcompiler.domain.Child;
+import org.drools.modelcompiler.domain.Man;
+import org.drools.modelcompiler.domain.Person;
+import org.drools.modelcompiler.domain.Result;
+import org.drools.modelcompiler.domain.Toy;
+import org.drools.modelcompiler.domain.Woman;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.ClassObjectFilter;
@@ -30,14 +45,30 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import static java.util.Arrays.asList;
-import static org.drools.model.DSL.*;
-import static org.drools.modelcompiler.CompilerTest.getObjects;
-import static org.junit.Assert.*;
+import static org.drools.model.DSL.accumulate;
+import static org.drools.model.DSL.and;
+import static org.drools.model.DSL.average;
+import static org.drools.model.DSL.declarationOf;
+import static org.drools.model.DSL.execute;
+import static org.drools.model.DSL.expr;
+import static org.drools.model.DSL.forall;
+import static org.drools.model.DSL.from;
+import static org.drools.model.DSL.globalOf;
+import static org.drools.model.DSL.input;
+import static org.drools.model.DSL.not;
+import static org.drools.model.DSL.on;
+import static org.drools.model.DSL.or;
+import static org.drools.model.DSL.query;
+import static org.drools.model.DSL.rule;
+import static org.drools.model.DSL.sum;
+import static org.drools.model.DSL.type;
+import static org.drools.model.DSL.valueOf;
+import static org.drools.model.DSL.when;
+import static org.drools.modelcompiler.BaseModelTest.getObjects;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class FlowTest {
 

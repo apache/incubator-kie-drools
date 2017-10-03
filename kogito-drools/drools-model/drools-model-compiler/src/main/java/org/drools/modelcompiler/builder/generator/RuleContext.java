@@ -1,21 +1,17 @@
 package org.drools.modelcompiler.builder.generator;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 
 import org.drools.compiler.lang.descr.BaseDescr;
-import org.drools.compiler.lang.descr.BehaviorDescr;
-import org.drools.compiler.lang.descr.EntryPointDescr;
-import org.drools.compiler.lang.descr.PatternDescr;
+import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.base.TypeResolver;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.javaparser.ast.expr.Expression;
@@ -23,6 +19,7 @@ import org.drools.javaparser.ast.expr.Expression;
 public class RuleContext {
     private final InternalKnowledgePackage pkg;
     private DRLExprIdGenerator exprIdGenerator;
+    private final RuleDescr ruleDescr;
 
     Map<String, DeclarationSpec> declarations = new HashMap<>();
     List<QueryParameter> queryParameters = new ArrayList<>();
@@ -33,9 +30,10 @@ public class RuleContext {
 
     BaseDescr parentDesc = null;
 
-    public RuleContext(InternalKnowledgePackage pkg, DRLExprIdGenerator exprIdGenerator) {
+    public RuleContext(InternalKnowledgePackage pkg, DRLExprIdGenerator exprIdGenerator, RuleDescr ruleDescr) {
         this.pkg = pkg;
         this.exprIdGenerator = exprIdGenerator;
+        this.ruleDescr = ruleDescr;
         exprPointer.push( this.expressions::add );
     }
 
@@ -82,6 +80,8 @@ public class RuleContext {
         return patternType;
     }
 
-
+    public RuleDescr getRuleDescr() {
+        return ruleDescr;
+    }
 }
 
