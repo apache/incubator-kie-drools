@@ -16,19 +16,25 @@
 
 package org.drools.modelcompiler;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.drools.core.reteoo.AlphaNode;
-import org.drools.modelcompiler.domain.*;
+import org.drools.modelcompiler.domain.Address;
+import org.drools.modelcompiler.domain.Adult;
+import org.drools.modelcompiler.domain.Child;
+import org.drools.modelcompiler.domain.Person;
+import org.drools.modelcompiler.domain.Result;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-
 import static java.util.Arrays.asList;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class CompilerTest extends BaseModelTest {
 
@@ -56,7 +62,6 @@ public class CompilerTest extends BaseModelTest {
     }
 
     @Test
-    @Ignore("missing reacton(age) see RuleDescr.lookAheadFieldsOfIdentifier")
     public void testBeta() {
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +
