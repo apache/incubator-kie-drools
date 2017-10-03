@@ -16,7 +16,34 @@
 
 package org.drools.modelcompiler.builder.generator;
 
-import org.drools.compiler.lang.descr.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.drools.compiler.lang.descr.AccumulateDescr;
+import org.drools.compiler.lang.descr.AndDescr;
+import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.compiler.lang.descr.BehaviorDescr;
+import org.drools.compiler.lang.descr.ConditionalBranchDescr;
+import org.drools.compiler.lang.descr.ConditionalElementDescr;
+import org.drools.compiler.lang.descr.EvalDescr;
+import org.drools.compiler.lang.descr.ExistsDescr;
+import org.drools.compiler.lang.descr.ForallDescr;
+import org.drools.compiler.lang.descr.FunctionDescr;
+import org.drools.compiler.lang.descr.NamedConsequenceDescr;
+import org.drools.compiler.lang.descr.NotDescr;
+import org.drools.compiler.lang.descr.OrDescr;
+import org.drools.compiler.lang.descr.PatternDescr;
+import org.drools.compiler.lang.descr.QueryDescr;
+import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.Behavior;
 import org.drools.core.time.TimeUtils;
@@ -31,8 +58,18 @@ import org.drools.javaparser.ast.body.MethodDeclaration;
 import org.drools.javaparser.ast.body.Parameter;
 import org.drools.javaparser.ast.drlx.expr.PointFreeExpr;
 import org.drools.javaparser.ast.drlx.expr.TemporalLiteralExpr;
-import org.drools.javaparser.ast.expr.*;
+import org.drools.javaparser.ast.expr.AssignExpr;
+import org.drools.javaparser.ast.expr.BinaryExpr;
 import org.drools.javaparser.ast.expr.BinaryExpr.Operator;
+import org.drools.javaparser.ast.expr.ClassExpr;
+import org.drools.javaparser.ast.expr.Expression;
+import org.drools.javaparser.ast.expr.FieldAccessExpr;
+import org.drools.javaparser.ast.expr.LambdaExpr;
+import org.drools.javaparser.ast.expr.MethodCallExpr;
+import org.drools.javaparser.ast.expr.NameExpr;
+import org.drools.javaparser.ast.expr.StringLiteralExpr;
+import org.drools.javaparser.ast.expr.UnaryExpr;
+import org.drools.javaparser.ast.expr.VariableDeclarationExpr;
 import org.drools.javaparser.ast.stmt.BlockStmt;
 import org.drools.javaparser.ast.stmt.ExpressionStmt;
 import org.drools.javaparser.ast.stmt.ReturnStmt;
@@ -46,13 +83,10 @@ import org.drools.model.Variable;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.RuleDescrImpl;
 
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import static org.drools.javaparser.printer.PrintUtil.toDrlx;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.*;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.parseBlock;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.StringUtil.toId;
 
 public class ModelGenerator {
@@ -91,7 +125,7 @@ public class ModelGenerator {
     }
 
     private static void processRule(InternalKnowledgePackage pkg, PackageModel packageModel, RuleDescr ruleDescr) {
-        RuleContext context = new RuleContext(pkg, packageModel.getExprIdGenerator() );
+        RuleContext context = new RuleContext(pkg, packageModel.getExprIdGenerator(), ruleDescr);
 
         for(Entry<String, Object> kv : ruleDescr.getNamedConsequences().entrySet()) {
             context.addNamedConsequence(kv.getKey(), kv.getValue().toString());
@@ -172,17 +206,17 @@ public class ModelGenerator {
         return ruleBlock;
     }
 
-    private static void processQuery(InternalKnowledgePackage pkg, PackageModel packageModel, QueryDescr ruleDescr) {
-        RuleContext context = new RuleContext(pkg, packageModel.getExprIdGenerator());
-        visit(context, packageModel, ruleDescr);
-        MethodDeclaration queryMethod = new MethodDeclaration(EnumSet.of(Modifier.PRIVATE), getQueryType(context.queryParameters), "query_" + toId(ruleDescr.getName()));
+    private static void processQuery(InternalKnowledgePackage pkg, PackageModel packageModel, QueryDescr queryDescr) {
+        RuleContext context = new RuleContext(pkg, packageModel.getExprIdGenerator(), queryDescr);
+        visit(context, packageModel, queryDescr);
+        MethodDeclaration queryMethod = new MethodDeclaration(EnumSet.of(Modifier.PRIVATE), getQueryType(context.queryParameters), "query_" + toId(queryDescr.getName()));
 
         BlockStmt queryVariables = createRuleVariables(packageModel, context);
         queryMethod.setBody(queryVariables);
         VariableDeclarationExpr queryVar = new VariableDeclarationExpr(getQueryType(context.queryParameters), QUERY_CALL);
 
         MethodCallExpr queryCall = new MethodCallExpr(null, QUERY_CALL);
-        queryCall.addArgument(new StringLiteralExpr(ruleDescr.getName()));
+        queryCall.addArgument(new StringLiteralExpr(queryDescr.getName()));
         for (QueryParameter qp : context.queryParameters) {
             queryCall.addArgument(new NameExpr(toVar(qp.name)));
         }
@@ -469,6 +503,11 @@ public class ModelGenerator {
             for (BaseDescr constraint : descriptors) {
                 String expression = constraint.toString();
                 DrlxParseResult drlxParseResult = drlxParse(context, packageModel, patternType, pattern.getIdentifier(), expression);
+
+                // need to augment the reactOn inside drlxParseResult with the look-ahead properties.
+                Collection<String> lookAheadFieldsOfIdentifier = context.getRuleDescr().lookAheadFieldsOfIdentifier(pattern);
+                drlxParseResult.reactOnProperties.addAll(lookAheadFieldsOfIdentifier);
+
                 Expression dslExpr = buildExpressionWithIndexing(drlxParseResult);
 
                 context.addExpression( dslExpr );
