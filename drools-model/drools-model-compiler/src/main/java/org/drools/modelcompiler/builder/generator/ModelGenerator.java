@@ -16,7 +16,35 @@
 
 package org.drools.modelcompiler.builder.generator;
 
-import org.drools.compiler.lang.descr.*;
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.drools.compiler.lang.descr.AccumulateDescr;
+import org.drools.compiler.lang.descr.AndDescr;
+import org.drools.compiler.lang.descr.AttributeDescr;
+import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.compiler.lang.descr.BehaviorDescr;
+import org.drools.compiler.lang.descr.ConditionalBranchDescr;
+import org.drools.compiler.lang.descr.ConditionalElementDescr;
+import org.drools.compiler.lang.descr.EvalDescr;
+import org.drools.compiler.lang.descr.ExistsDescr;
+import org.drools.compiler.lang.descr.ForallDescr;
+import org.drools.compiler.lang.descr.FunctionDescr;
+import org.drools.compiler.lang.descr.NamedConsequenceDescr;
+import org.drools.compiler.lang.descr.NotDescr;
+import org.drools.compiler.lang.descr.OrDescr;
+import org.drools.compiler.lang.descr.PatternDescr;
+import org.drools.compiler.lang.descr.QueryDescr;
+import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.Behavior;
 import org.drools.core.time.TimeUtils;
@@ -31,8 +59,18 @@ import org.drools.javaparser.ast.body.MethodDeclaration;
 import org.drools.javaparser.ast.body.Parameter;
 import org.drools.javaparser.ast.drlx.expr.PointFreeExpr;
 import org.drools.javaparser.ast.drlx.expr.TemporalLiteralExpr;
-import org.drools.javaparser.ast.expr.*;
+import org.drools.javaparser.ast.expr.AssignExpr;
+import org.drools.javaparser.ast.expr.BinaryExpr;
 import org.drools.javaparser.ast.expr.BinaryExpr.Operator;
+import org.drools.javaparser.ast.expr.ClassExpr;
+import org.drools.javaparser.ast.expr.Expression;
+import org.drools.javaparser.ast.expr.FieldAccessExpr;
+import org.drools.javaparser.ast.expr.LambdaExpr;
+import org.drools.javaparser.ast.expr.MethodCallExpr;
+import org.drools.javaparser.ast.expr.NameExpr;
+import org.drools.javaparser.ast.expr.StringLiteralExpr;
+import org.drools.javaparser.ast.expr.UnaryExpr;
+import org.drools.javaparser.ast.expr.VariableDeclarationExpr;
 import org.drools.javaparser.ast.stmt.BlockStmt;
 import org.drools.javaparser.ast.stmt.ExpressionStmt;
 import org.drools.javaparser.ast.stmt.ReturnStmt;
@@ -46,19 +84,18 @@ import org.drools.model.Variable;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.RuleDescrImpl;
 
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import static org.drools.javaparser.printer.PrintUtil.toDrlx;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.*;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.parseBlock;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.StringUtil.toId;
 
 public class ModelGenerator {
 
     private static final ClassOrInterfaceType RULE_TYPE = JavaParser.parseClassOrInterfaceType( Rule.class.getCanonicalName() );
     private static final ClassOrInterfaceType BITMASK_TYPE = JavaParser.parseClassOrInterfaceType( BitMask.class.getCanonicalName() );
+
+    private static final Expression RULE_ATTRIBUTE_NO_LOOP = JavaParser.parseExpression("Rule.Attribute.NO_LOOP");
 
     public static final boolean GENERATE_EXPR_ID = true;
 
@@ -69,6 +106,7 @@ public class ModelGenerator {
     public static final String QUERY_CALL = "query";
     public static final String EXPR_CALL = "expr";
     public static final String INPUT_CALL = "input";
+    private static final String ATTRIBUTE_CALL = "attribute";
 
     public static PackageModel generateModel(InternalKnowledgePackage pkg, List<RuleDescrImpl> rules, List<FunctionDescr> functions) {
         String name = pkg.getName();
@@ -105,7 +143,16 @@ public class ModelGenerator {
         MethodCallExpr ruleCall = new MethodCallExpr(null, RULE_CALL);
         ruleCall.addArgument( new StringLiteralExpr( ruleDescr.getName() ) );
 
-        MethodCallExpr buildCall = new MethodCallExpr(ruleCall, BUILD_CALL, NodeList.nodeList(context.expressions));
+        MethodCallExpr buildCallScope = ruleCall;
+        List<Entry<Expression, Expression>> ruleAttributes = ruleAttributes(ruleDescr);
+        for (Entry<Expression, Expression> ra : ruleAttributes) {
+            MethodCallExpr attributeCall = new MethodCallExpr(buildCallScope, ATTRIBUTE_CALL);
+            attributeCall.addArgument(ra.getKey());
+            attributeCall.addArgument(ra.getValue());
+            buildCallScope = attributeCall;
+        }
+
+        MethodCallExpr buildCall = new MethodCallExpr(buildCallScope, BUILD_CALL, NodeList.nodeList(context.expressions));
 
         BlockStmt ruleConsequence = rewriteConsequence(context, ruleDescr.getConsequence().toString());
 
@@ -122,6 +169,30 @@ public class ModelGenerator {
 
         ruleVariablesBlock.addStatement( new ReturnStmt(RULE_CALL) );
         packageModel.putRuleMethod("rule_" + toId( ruleDescr.getName() ), ruleMethod);
+    }
+
+    /**
+     * Build a list of tuples for the arguments of the model DSL method {@link org.drools.model.impl.RuleBuilder#attribute(org.drools.model.Rule.Attribute, Object)}
+     * starting from a drools-compiler {@link RuleDescr}.
+     * The tuple represent the Rule Attribute expressed in JavParser form, and the attribute value expressed in JavaParser form.
+     */
+    private static List<Entry<Expression, Expression>> ruleAttributes(RuleDescr ruleDescr) {
+        List<Entry<Expression, Expression>> ruleAttributes = new ArrayList<>();
+        for (Entry<String, AttributeDescr> as : ruleDescr.getAttributes().entrySet()) {
+            switch (as.getKey()) {
+                case "dialect":
+                    if (!as.getValue().getValue().equals("java")) {
+                        throw new UnsupportedOperationException("Unsupported dialect: " + as.getValue().getValue());
+                    }
+                    break;
+                case "no-loop":
+                    ruleAttributes.add(new AbstractMap.SimpleEntry<>(RULE_ATTRIBUTE_NO_LOOP, JavaParser.parseExpression(as.getValue().getValue())));
+                    break;
+                default:
+                    throw new UnsupportedOperationException("Unhandled case for rule attribute: " + as.getKey());
+            }
+        }
+        return ruleAttributes;
     }
 
     public static BlockStmt rewriteConsequence(RuleContext context, String consequence ) {
