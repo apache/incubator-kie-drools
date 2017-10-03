@@ -738,7 +738,6 @@ public class CompilerTest extends BaseModelTest {
     }
 
     @Test(timeout = 5000)
-    @Ignore("DSL generation to be implemented")
     public void testNoLoop() {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
