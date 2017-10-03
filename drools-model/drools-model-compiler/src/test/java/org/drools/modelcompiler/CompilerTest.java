@@ -32,15 +32,12 @@ import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
 import org.drools.modelcompiler.domain.Toy;
 import org.drools.modelcompiler.domain.Woman;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class CompilerTest extends BaseModelTest {
 
