@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.Collectors;
 import org.junit.runners.Parameterized;
-import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 
 public class FEELConditionsAndLoopsTest extends BaseFEELTest {
 
@@ -34,11 +33,17 @@ public class FEELConditionsAndLoopsTest extends BaseFEELTest {
                 { "if date(\"2016-08-02\") > date(\"2015-12-25\") then \"yey\" else \"nay\"", "yey" , null},
                 {"if null then \"foo\" else \"bar\"", "bar" , null },
                 {"if \"xyz\" then \"foo\" else \"bar\"", "bar" , null },
+                {"if true then if true then 1 else 2 else if true then 3 else 4", BigDecimal.valueOf( 1 ), null},
+                {"1 + if true then 1 else 2", BigDecimal.valueOf( 2 ), null},
 
                 // for
                 {"for x in [ 10, 20, 30 ], y in [ 1, 2, 3 ] return x * y",
                         Arrays.asList( 10, 20, 30, 20, 40, 60, 30, 60, 90 ).stream().map( x -> BigDecimal.valueOf( x ) ).collect( Collectors.toList() ),
-                 null }
+                 null },
+                {"count( for x in [1, 2, 3] return x+1 )", BigDecimal.valueOf( 3 ), null},
+
+                // quantified
+                {"if every x in [ 1, 2, 3 ] satisfies x < 5 then \"foo\" else \"bar\"", "foo", null}
 
         };
         return Arrays.asList( cases );
