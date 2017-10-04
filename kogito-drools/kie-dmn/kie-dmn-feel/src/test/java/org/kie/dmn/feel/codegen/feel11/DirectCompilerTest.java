@@ -149,6 +149,12 @@ public class DirectCompilerTest {
     }
 
     @Test
+    public void test_exponentiationExpression() {
+        assertThat(parseCompileEvaluate("3 ** 3"), is(BigDecimal.valueOf(27)));
+        assertThat(parseCompileEvaluate("3 ** null"), nullValue());
+    }
+
+    @Test
     public void testNameReference() {
         String inputExpression = "someSimpleName";
         CompiledFEELExpression nameRef = parse( inputExpression, mapOf( entry("someSimpleName", BuiltInType.STRING) ) );
