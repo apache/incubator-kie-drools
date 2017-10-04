@@ -511,7 +511,7 @@ public class UserGroupCallbackTaskCommand<T> extends TaskCommand<T> {
      }
      
      protected boolean isBusinessAdmin(String userId, List<OrganizationalEntity> businessAdmins, TaskContext context) {
-         List<String> usersGroup = context.getUserGroupCallback().getGroupsForUser(userId);
+         List<String> usersGroup = new ArrayList<String>(context.getUserGroupCallback().getGroupsForUser(userId));
          usersGroup.add(userId);
          
          return businessAdmins.stream().anyMatch(oe -> usersGroup.contains(oe.getId()));

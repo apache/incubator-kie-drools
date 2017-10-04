@@ -153,6 +153,24 @@
 		  "methodName": "getId",
 		  "elementKind": "method",
 		  "justification": "Added support for providing id via task definition"
+		 },
+		 {
+		  "code": "java.method.addedToInterface",
+		  "new": "method void org.jbpm.services.api.UserTaskService::updateTask(java.lang.Long, java.lang.String, org.jbpm.services.api.model.UserTaskInstanceDesc, java.util.Map<java.lang.String, java.lang.Object>, java.util.Map<java.lang.String, java.lang.Object>)",
+		  "package": "org.jbpm.services.api",
+		  "classSimpleName": "UserTaskService",
+		  "methodName": "updateTask",
+		  "elementKind": "method",
+		  "justification": "Added support for update task operation"
+		 },
+		 {
+		  "code": "java.method.addedToInterface",
+		  "new": "method java.lang.String org.jbpm.services.api.model.UserTaskInstanceDesc::getFormName()",
+		  "package": "org.jbpm.services.api.model",
+		  "classSimpleName": "UserTaskInstanceDesc",
+		  "methodName": "getFormName",
+		  "elementKind": "method",
+		  "justification": "Added support for update task operation"
 		 }
       ]
     }

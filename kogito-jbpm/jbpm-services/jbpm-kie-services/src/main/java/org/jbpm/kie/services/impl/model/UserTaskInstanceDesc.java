@@ -37,10 +37,9 @@ public class UserTaskInstanceDesc implements org.jbpm.services.api.model.UserTas
 	private Long processInstanceId;
 	private Date createdOn;
 	private Date dueDate;
+	private String formName;
 	
-	
-	
-	public UserTaskInstanceDesc(Long taskId, String status,
+    public UserTaskInstanceDesc(Long taskId, String status,
 			Date activationTime, String name, String description,
 			Integer priority, String actualOwner, String createdBy,
 			String deploymentId, String processId, Long processInstanceId,
@@ -60,6 +59,16 @@ public class UserTaskInstanceDesc implements org.jbpm.services.api.model.UserTas
 		this.createdOn = createdOn;
 		this.dueDate = dueDate;
 	}
+    
+    public UserTaskInstanceDesc(Long taskId, String name, String description, Integer priority, Date dueDate, String formName) {
+        super();
+        this.taskId = taskId;
+        this.name = name;
+        this.description = description;
+        this.priority = priority;
+        this.dueDate = dueDate;
+        this.formName = formName;
+    }
 
 	@Override
 	public Long getTaskId() {
@@ -138,8 +147,33 @@ public class UserTaskInstanceDesc implements org.jbpm.services.api.model.UserTas
 		
 		return this.deploymentId;
 	}
-
+	
 	@Override
+    public String getFormName() {
+        return formName;
+    }
+    
+    public void setFormName(String formName) {
+        this.formName = formName;
+    }
+	
+    public void setName(String name) {
+        this.name = name;
+    }
+    
+    public void setDescription(String description) {
+        this.description = description;
+    }
+    
+    public void setPriority(Integer priority) {
+        this.priority = priority;
+    }
+    
+    public void setDueDate(Date dueDate) {
+        this.dueDate = dueDate;
+    }
+
+    @Override
 	public String toString() {
 		return "UserTaskInstanceDesc [taskId=" + taskId + ", name=" + name
 				+ ", deploymentId=" + deploymentId + ", processInstanceId="

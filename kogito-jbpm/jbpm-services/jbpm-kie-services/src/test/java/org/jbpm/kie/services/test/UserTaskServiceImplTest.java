@@ -21,6 +21,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
 import java.io.File;
@@ -40,6 +41,7 @@ import org.jbpm.services.api.ProcessInstanceNotFoundException;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.api.model.UserTaskInstanceDesc;
 import org.jbpm.services.task.commands.GetTaskCommand;
+import org.jbpm.services.task.exception.PermissionDeniedException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -662,5 +664,119 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         assertEquals("Write a Document", taskInstance.getName());
         assertTrue(StringUtils.isEmpty(((InternalTask)taskInstance).getFormName()));
       
+    }
+    
+    @Test
+    public void testUpdateTask() {
+        processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
+        assertNotNull(processInstanceId);
+        List<Long> taskIds = runtimeDataService.getTasksByProcessInstanceId(processInstanceId);
+        assertNotNull(taskIds);
+        assertEquals(1, taskIds.size());
+        
+        Long taskId = taskIds.get(0);
+        
+        UserTaskInstanceDesc task = runtimeDataService.getTaskById(taskId);
+        assertNotNull(task);
+        assertEquals(Status.Reserved.toString(), task.getStatus());
+        assertEquals("Write a Document", task.getName());
+        assertEquals("Write a Document", task.getDescription());
+        assertEquals(9, task.getPriority().intValue()); 
+        assertNull(task.getDueDate());
+        
+        
+        ((org.jbpm.kie.services.impl.model.UserTaskInstanceDesc)task).setName("updated");
+        ((org.jbpm.kie.services.impl.model.UserTaskInstanceDesc)task).setPriority(5);
+        ((org.jbpm.kie.services.impl.model.UserTaskInstanceDesc)task).setDescription("my description");
+        ((org.jbpm.kie.services.impl.model.UserTaskInstanceDesc)task).setFormName("BasicForm");
+        ((org.jbpm.kie.services.impl.model.UserTaskInstanceDesc)task).setDueDate(new Date());
+        
+        userTaskService.updateTask(taskId, "salaboy", task, null, null);
+        
+        task = runtimeDataService.getTaskById(taskId);
+        assertNotNull(task);
+        assertEquals(Status.Reserved.toString(), task.getStatus());
+        assertEquals("updated", task.getName());
+        assertEquals("my description", task.getDescription());
+        assertEquals(5, task.getPriority().intValue()); 
+        assertNotNull(task.getDueDate());
+        
+        Task updatedTask = userTaskService.getTask(taskId);
+        assertEquals("BasicForm", updatedTask.getFormName());
+    }
+    
+    @Test
+    public void testUpdateTaskWithData() {
+        processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
+        assertNotNull(processInstanceId);
+        List<Long> taskIds = runtimeDataService.getTasksByProcessInstanceId(processInstanceId);
+        assertNotNull(taskIds);
+        assertEquals(1, taskIds.size());
+        
+        Long taskId = taskIds.get(0);
+        
+        UserTaskInstanceDesc task = runtimeDataService.getTaskById(taskId);
+        assertNotNull(task);
+        assertEquals(Status.Reserved.toString(), task.getStatus());
+        assertEquals("Write a Document", task.getName());
+        assertEquals(9, task.getPriority().intValue()); 
+        
+        Map<String, Object> inputs = userTaskService.getTaskInputContentByTaskId(taskId);
+        assertEquals(6, inputs.size());
+        Map<String, Object> outputs = userTaskService.getTaskOutputContentByTaskId(taskId);
+        assertEquals(0, outputs.size());
+        
+        ((org.jbpm.kie.services.impl.model.UserTaskInstanceDesc)task).setName("updated");
+        ((org.jbpm.kie.services.impl.model.UserTaskInstanceDesc)task).setPriority(5);
+        
+        Map<String, Object> updatedInputs = new HashMap<>();
+        updatedInputs.put("new task input", "test");
+        Map<String, Object> updatedOutputs = new HashMap<>();
+        updatedOutputs.put("new task output", "reviewed");
+        
+        userTaskService.updateTask(taskId, "salaboy", task, updatedInputs, updatedOutputs);
+        
+        task = runtimeDataService.getTaskById(taskId);
+        assertNotNull(task);
+        assertEquals(Status.Reserved.toString(), task.getStatus());
+        assertEquals("updated", task.getName());
+        assertEquals(5, task.getPriority().intValue()); 
+        
+        inputs = userTaskService.getTaskInputContentByTaskId(taskId);
+        
+        assertEquals("test", inputs.get("new task input"));
+        outputs = userTaskService.getTaskOutputContentByTaskId(taskId);
+        assertEquals("reviewed", outputs.get("new task output"));
+    }
+    
+    @Test
+    public void testUpdateTaskPermissionDenied() {
+        processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
+        assertNotNull(processInstanceId);
+        List<Long> taskIds = runtimeDataService.getTasksByProcessInstanceId(processInstanceId);
+        assertNotNull(taskIds);
+        assertEquals(1, taskIds.size());
+        
+        Long taskId = taskIds.get(0);
+        
+        UserTaskInstanceDesc task = runtimeDataService.getTaskById(taskId);
+        assertNotNull(task);
+        assertEquals("Write a Document", task.getName());
+        
+        try {
+            ((org.jbpm.kie.services.impl.model.UserTaskInstanceDesc)task).setName("updated");
+            
+            userTaskService.updateTask(taskId, "john", task, null, null);
+            fail("John is not admin nor potential owner");
+        } catch (PermissionDeniedException e) {
+            //expected
+        }
+        
+        task = runtimeDataService.getTaskById(taskId);
+        assertNotNull(task);
+        assertEquals(Status.Reserved.toString(), task.getStatus());
+        assertEquals("Write a Document", task.getName());
+        assertEquals(9, task.getPriority().intValue()); 
+        
     }
 }

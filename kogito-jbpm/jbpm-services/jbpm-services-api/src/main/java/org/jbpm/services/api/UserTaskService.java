@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.jbpm.services.api.model.UserTaskInstanceDesc;
 import org.kie.api.command.Command;
 import org.kie.api.runtime.manager.Context;
 import org.kie.api.task.model.Attachment;
@@ -231,6 +232,23 @@ public interface UserTaskService {
      */
     void setDescription(Long taskId, String description);
 
+    /**
+     * Updates user task properties and data inputs and outputs. Allowed properties to be updated are:
+     * <ul>
+     *  <li>name</li>
+     *  <li>description</li>
+     *  <li>priority</li>
+     *  <li>expiration date</li>
+     *  <li>formName</li>    
+     * </ul>
+     * 
+     * @param userId user id who is going to perform the update
+     * @param userTask user task with properties to be updated
+     * @param inputData map of input variables to be added/replaced on a task
+     * @param outputData map of output variables to be added/replaced on a task
+     * @throws TaskNotFoundException in case task id was not given or task was not found with given id
+     */
+    void updateTask(Long taskId, String userId, UserTaskInstanceDesc userTask, Map<String, Object> inputData, Map<String, Object> outputData);
 	
 	// user task instance content operations
 	

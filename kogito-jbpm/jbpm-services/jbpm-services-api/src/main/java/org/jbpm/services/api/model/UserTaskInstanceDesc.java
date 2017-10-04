@@ -44,4 +44,6 @@ public interface UserTaskInstanceDesc {
 	String getActualOwner();
 
 	String getDeploymentId();
+	
+	String getFormName();
 }
