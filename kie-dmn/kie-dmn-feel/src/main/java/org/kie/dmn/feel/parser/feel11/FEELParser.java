@@ -131,8 +131,17 @@ public class FEELParser {
             final SyntaxErrorEvent error;
 
             CommonToken token = (CommonToken) offendingSymbol;
-            if( ((Parser)recognizer).getRuleInvocationStack().contains( "nameDefinition" ) ) {
-                error = generateInvalidVariableError( offendingSymbol, line, charPositionInLine, e, token );
+            final int tokenIndex = token.getTokenIndex();
+            final Parser parser = (Parser) recognizer;
+            if( parser.getRuleInvocationStack().contains( "nameDefinition" ) ) {
+                error = generateInvalidVariableError(offendingSymbol, line, charPositionInLine, e, token);
+            } else if ( "}".equals(token.getText()) && tokenIndex > 1 && ":".equals(parser.getTokenStream().get(tokenIndex - 1).getText()) ) {
+                error = new SyntaxErrorEvent( FEELEvent.Severity.ERROR,
+                                            Msg.createMessage(Msg.MISSING_EXPRESSION, parser.getTokenStream().get(tokenIndex - 2).getText()),
+                                            e,
+                                            line,
+                                            charPositionInLine,
+                                            offendingSymbol );
             } else {
                 error = new SyntaxErrorEvent( FEELEvent.Severity.ERROR,
                                                   msg,
