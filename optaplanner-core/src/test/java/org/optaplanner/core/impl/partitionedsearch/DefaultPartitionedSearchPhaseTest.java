@@ -141,7 +141,7 @@ public class DefaultPartitionedSearchPhaseTest {
         final int partCount = 3;
 
         TestdataSolution solution = createSolution(partCount * partSize - 1, 100);
-        solution.getEntityList().add(new FaultyEntity("XYZ"));
+        solution.getEntityList().add(new TestdataFaultyEntity("XYZ"));
         assertEquals(partSize * partCount, solution.getEntityList().size());
 
         SolverFactory<TestdataSolution> solverFactory = createSolverFactory(false);
@@ -193,7 +193,7 @@ public class DefaultPartitionedSearchPhaseTest {
 
         TestdataSolution solution = createSolution(partCount * partSize - 1, 10);
         CountDownLatch latch = new CountDownLatch(1);
-        solution.getEntityList().add(new BusyEntity("XYZ", latch));
+        solution.getEntityList().add(new TestdataBusyEntity("XYZ", latch));
 
         SolverFactory<TestdataSolution> solverFactory = createSolverFactory(true);
         setPartSize(solverFactory.getSolverConfig(), partSize);
@@ -223,65 +223,4 @@ public class DefaultPartitionedSearchPhaseTest {
         }
     }
 
-    public static class BusyEntity extends TestdataEntity {
-
-        private static final Logger logger = LoggerFactory.getLogger(BusyEntity.class);
-        private CountDownLatch latch;
-
-        public BusyEntity() {
-            // needed for cloning
-        }
-
-        public BusyEntity(String code, CountDownLatch cdl) {
-            super(code);
-            this.latch = cdl;
-        }
-
-        public CountDownLatch getLatch() {
-            return latch;
-        }
-
-        public void setLatch(CountDownLatch latch) {
-            this.latch = latch;
-        }
-
-        @Override
-        public void setValue(TestdataValue value) {
-            super.setValue(value);
-            if (latch.getCount() == 0) {
-                logger.debug("This entity was already interrupted in the past. Not going to busy wait again.");
-                return;
-            }
-            latch.countDown();
-            long start = System.currentTimeMillis();
-            logger.info("{}.setValue() started.", BusyEntity.class.getSimpleName());
-            while (!Thread.currentThread().isInterrupted()) {
-                // busy wait
-            }
-            logger.info("{}.setValue() interrupted after {}ms.",
-                        BusyEntity.class.getSimpleName(),
-                        System.currentTimeMillis() - start);
-        }
-    }
-
-    public static class FaultyEntity extends TestdataEntity {
-
-        private static final Logger logger = LoggerFactory.getLogger(FaultyEntity.class);
-
-        public FaultyEntity() {
-            // needed for cloning
-        }
-
-        public FaultyEntity(String code) {
-            super(code);
-        }
-
-        @Override
-        public void setValue(TestdataValue value) {
-            super.setValue(value);
-            logger.info("Going to divide by zero.");
-            int zero = 0;
-            logger.info("{}", 1 / zero);
-        }
-    }
 }
