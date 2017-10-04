@@ -10,7 +10,7 @@ import org.kie.dmn.feel.lang.Type;
 
 public class DirectCompilerResult {
 
-    public final Expression expression;
+    private final Expression expression;
     public final Type resultType;
     
     private final Set<FieldDeclaration> fieldDeclarations = new HashSet<>();
@@ -51,5 +51,9 @@ public class DirectCompilerResult {
             result.addAll(fs.getFieldDeclarations());
         }
         return result;
+    }
+
+    public Expression getExpression() {
+        return expression;
     }
 }
