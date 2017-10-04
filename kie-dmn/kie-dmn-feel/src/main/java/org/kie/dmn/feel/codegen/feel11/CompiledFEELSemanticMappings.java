@@ -80,4 +80,5 @@ public class CompiledFEELSemanticMappings {
     public static Object div(Object left, Object right) {
         return InfixOpNode.div(left, right, null);
     }
+
 }
