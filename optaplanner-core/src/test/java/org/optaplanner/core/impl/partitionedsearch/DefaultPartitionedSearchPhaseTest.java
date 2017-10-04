@@ -151,6 +151,7 @@ public class DefaultPartitionedSearchPhaseTest {
             solver.solve(solution);
             fail("The exception was not propagated.");
         } catch (IllegalStateException ex) {
+            assertTrue(ex.getMessage().contains("Relayed"));
             findCauseOrFail(ex, ArithmeticException.class);
         }
     }
@@ -205,13 +206,14 @@ public class DefaultPartitionedSearchPhaseTest {
 
         latch.await();
         // Now we know the busy entity is busy so we can attempt to shut down.
-        // This will initiate an abrupt shutdown that will interrupt all busy threads in the pool.
+        // This will initiate an abrupt shutdown that will interrupt the main solver thread.
         executor.shutdownNow();
 
-        // This verifies that solver checks Thread's interrupted flag and terminates solving when it detects the flag.
+        // This verifies that PartitionQueue doesn't clear interrupted flag when the main solver thread is interrupted.
         assertTrue("Executor must terminate successfully when it's shut down abruptly",
                    executor.awaitTermination(1000, TimeUnit.MILLISECONDS));
-        // This verifies that solver doesn't clear the interrupted flag
+
+        // This verifies that interruption is propagated to caller (wrapped as an IllegalStateException)
         try {
             solvedSolution.get();
             fail("InterruptedException should have been propagated to solver thread.");
