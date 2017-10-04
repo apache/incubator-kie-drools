@@ -162,10 +162,22 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
 //        throw new UnsupportedOperationException("TODO"); // TODO
 //    }
 //
-//    @Override
-//    public DirectCompilerResult visitMultExpression(FEEL_1_1Parser.MultExpressionContext ctx) {
-//        throw new UnsupportedOperationException("TODO"); // TODO
-//    }
+
+    @Override
+    public DirectCompilerResult visitMultExpression(FEEL_1_1Parser.MultExpressionContext ctx) {
+        DirectCompilerResult left = visit(ctx.multiplicativeExpression());
+        DirectCompilerResult right = visit(ctx.powerExpression());
+
+        String opText = ctx.op.getText();
+        InfixOperator op = InfixOperator.determineOperator(opText);
+        if (op == InfixOperator.MULT) {
+            return visitMult(left, right);
+        } else if (op == InfixOperator.DIV) {
+            return visitDiv(left, right);
+        } else {
+            throw new UnsupportedOperationException("this was a visitMultExpression but unrecognized op: " + opText); // parser problem.
+        }
+    }
 
     @Override
     public DirectCompilerResult visitAddExpression(FEEL_1_1Parser.AddExpressionContext ctx) {
@@ -179,7 +191,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         } else if ( op == InfixOperator.SUB ) {
             return visitSub(left, right);
         } else {
-            throw new UnsupportedOperationException(); // parser problem.
+            throw new UnsupportedOperationException("this was a visitAddExpression but unrecognized op: " + opText); // parser problem.
         }
     }
     
@@ -213,7 +225,12 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
             Expression result = groundToNullIfAnyIsNull(addCall, left.expression, right.expression);
             return DirectCompilerResult.of(result, BuiltInType.NUMBER, DirectCompilerResult.unifyFDs(left, right));
         } else {
-            throw new UnsupportedOperationException("TODO"); // TODO
+            // TODO temporary support strategy:
+            MethodCallExpr addCall = new MethodCallExpr(null, "add");
+            addCall.addArgument(left.expression);
+            addCall.addArgument(right.expression);
+            Expression result = groundToNullIfAnyIsNull(addCall, left.expression, right.expression);
+            return DirectCompilerResult.of(result, BuiltInType.UNKNOWN, DirectCompilerResult.unifyFDs(left, right));
         }
     }
     
@@ -224,7 +241,8 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         } else if ( left.resultType == BuiltInType.STRING && right.resultType == BuiltInType.STRING ) {
             // DMN spec Table 45
             // Subtraction is undefined.
-            // TODO incosistent when FEEL is evaluated, because for now is important to check the actual java code produced
+            // TODO incosistent when FEEL is in evaluation mode (in contrast to this compilation mode),
+            // for now is more important to check the actual java code produced
             BinaryExpr postFixMinus = new BinaryExpr(left.expression, new StringLiteralExpr("-"), BinaryExpr.Operator.PLUS);
             BinaryExpr plusCall = new BinaryExpr(postFixMinus, right.expression, BinaryExpr.Operator.PLUS);
             Expression result = groundToNullIfAnyIsNull(plusCall, left.expression, right.expression);
@@ -236,7 +254,52 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
             Expression result = groundToNullIfAnyIsNull(subtractCall, left.expression, right.expression);
             return DirectCompilerResult.of(result, BuiltInType.NUMBER, DirectCompilerResult.unifyFDs(left, right));
         } else {
-            throw new UnsupportedOperationException("TODO"); // TODO
+            // TODO temporary support strategy:
+            MethodCallExpr addCall = new MethodCallExpr(null, "sub");
+            addCall.addArgument(left.expression);
+            addCall.addArgument(right.expression);
+            Expression result = groundToNullIfAnyIsNull(addCall, left.expression, right.expression);
+            return DirectCompilerResult.of(result, BuiltInType.UNKNOWN, DirectCompilerResult.unifyFDs(left, right));
+        }
+    }
+
+    private DirectCompilerResult visitMult(DirectCompilerResult left, DirectCompilerResult right) {
+        if (left.expression instanceof NullLiteralExpr || right.expression instanceof NullLiteralExpr) {
+            // optimization: if either left or right is a null literal, just null
+            return DirectCompilerResult.of(new NullLiteralExpr(), BuiltInType.STRING, DirectCompilerResult.unifyFDs(left, right));
+        } else if (left.resultType == BuiltInType.NUMBER && right.resultType == BuiltInType.NUMBER) {
+            MethodCallExpr addCall = new MethodCallExpr(left.expression, "multiply");
+            addCall.addArgument(right.expression);
+            addCall.addArgument(DECIMAL_128);
+            Expression result = groundToNullIfAnyIsNull(addCall, left.expression, right.expression);
+            return DirectCompilerResult.of(result, BuiltInType.NUMBER, DirectCompilerResult.unifyFDs(left, right));
+        } else {
+            // TODO temporary support strategy:
+            MethodCallExpr addCall = new MethodCallExpr(null, "mult");
+            addCall.addArgument(left.expression);
+            addCall.addArgument(right.expression);
+            Expression result = groundToNullIfAnyIsNull(addCall, left.expression, right.expression);
+            return DirectCompilerResult.of(result, BuiltInType.UNKNOWN, DirectCompilerResult.unifyFDs(left, right));
+        }
+    }
+
+    private DirectCompilerResult visitDiv(DirectCompilerResult left, DirectCompilerResult right) {
+        if (left.expression instanceof NullLiteralExpr || right.expression instanceof NullLiteralExpr) {
+            // optimization: if either left or right is a null literal, just null
+            return DirectCompilerResult.of(new NullLiteralExpr(), BuiltInType.STRING, DirectCompilerResult.unifyFDs(left, right));
+        } else if (left.resultType == BuiltInType.NUMBER && right.resultType == BuiltInType.NUMBER) {
+            MethodCallExpr subtractCall = new MethodCallExpr(left.expression, "divide");
+            subtractCall.addArgument(right.expression);
+            subtractCall.addArgument(DECIMAL_128);
+            Expression result = groundToNullIfAnyIsNull(subtractCall, left.expression, right.expression);
+            return DirectCompilerResult.of(result, BuiltInType.NUMBER, DirectCompilerResult.unifyFDs(left, right));
+        } else {
+            // TODO temporary support strategy:
+            MethodCallExpr addCall = new MethodCallExpr(null, "div");
+            addCall.addArgument(left.expression);
+            addCall.addArgument(right.expression);
+            Expression result = groundToNullIfAnyIsNull(addCall, left.expression, right.expression);
+            return DirectCompilerResult.of(result, BuiltInType.UNKNOWN, DirectCompilerResult.unifyFDs(left, right));
         }
     }
 
@@ -299,7 +362,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
     public DirectCompilerResult visitCondOr(FEEL_1_1Parser.CondOrContext ctx) {
         DirectCompilerResult left = visit( ctx.left );
         DirectCompilerResult right = visit( ctx.right );
-        MethodCallExpr result = new MethodCallExpr(new NameExpr(CompiledFEELUtils.class.getSimpleName()), "or");
+        MethodCallExpr result = new MethodCallExpr(null, "or");
         result.addArgument(left.expression);
         result.addArgument(right.expression);
         return DirectCompilerResult.of(result, BuiltInType.BOOLEAN);
@@ -309,7 +372,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
     public DirectCompilerResult visitCondAnd(FEEL_1_1Parser.CondAndContext ctx) {
         DirectCompilerResult left = visit( ctx.left );
         DirectCompilerResult right = visit( ctx.right );
-        MethodCallExpr result = new MethodCallExpr(new NameExpr(CompiledFEELUtils.class.getSimpleName()), "and");
+        MethodCallExpr result = new MethodCallExpr(null, "and");
         result.addArgument(left.expression);
         result.addArgument(right.expression);
         return DirectCompilerResult.of(result, BuiltInType.BOOLEAN);
@@ -434,7 +497,8 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         Expression errorExpression = JavaParser.parseExpression(CompiledFEELUtils.class.getCanonicalName()+".conditionWasNotBoolean(feelExprCtx)");
         MethodCallExpr castC = new MethodCallExpr(new ClassExpr(JavaParser.parseType(Boolean.class.getSimpleName())), "cast");
         castC.addArgument(new EnclosedExpr(c.expression));
-        ConditionalExpr safeInternal = new ConditionalExpr(castC, new EnclosedExpr(t.expression), new EnclosedExpr(e.expression));
+        Expression safeInternal = new ConditionalExpr(castC, new EnclosedExpr(t.expression), new EnclosedExpr(e.expression));
+        safeInternal = new EnclosedExpr(safeInternal);
         MethodCallExpr instanceOfBoolean = new MethodCallExpr(new ClassExpr(JavaParser.parseType(Boolean.class.getSimpleName())), "isInstance");
         instanceOfBoolean.addArgument(new EnclosedExpr(c.expression));
         ConditionalExpr result = new ConditionalExpr(instanceOfBoolean, safeInternal, errorExpression);

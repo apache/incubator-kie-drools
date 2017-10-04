@@ -10,7 +10,8 @@ import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
-import com.github.javaparser.ast.comments.LineComment;
+import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.comments.JavadocComment;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import org.drools.compiler.commons.jci.compilers.CompilationResult;
@@ -50,13 +51,19 @@ public class CompilerBytecodeLoader {
 
         cu.setPackageDeclaration(cuPackage);
         
+        List<MethodDeclaration> lookupMethodList = cu.getChildNodesByType(MethodDeclaration.class);
+        if (lookupMethodList.size() != 1) {
+            throw new RuntimeException("Something unexpected changed in the template.");
+        }
+        MethodDeclaration lookupMethod = lookupMethodList.get(0);
+        lookupMethod.setComment(new JavadocComment("   FEEL: " + feelExpression + "   "));
+
         List<ReturnStmt> lookupReturnList = cu.getChildNodesByType(ReturnStmt.class);
         if (lookupReturnList.size() != 1) {
             throw new RuntimeException("Something unexpected changed in the template.");
         }
         ReturnStmt returnStmt = lookupReturnList.get(0);
         returnStmt.setExpression(theExpression);
-        returnStmt.setComment(new LineComment(" FEEL: " + feelExpression));
         
         List<ClassOrInterfaceDeclaration> classDecls = cu.getChildNodesByType(ClassOrInterfaceDeclaration.class);
         if (classDecls.size() != 1) {
