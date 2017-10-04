@@ -159,7 +159,8 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
             // but the other partition threads are not aware of the failure and may continue solving for a long time,
             // so we need to ask them to terminate. In case no exception was thrown, this does nothing.
             if (!childThreadPlumbingTermination.terminateChildren()) {
-                logger.info("Termination of children wasn't sucessful.");
+                // This may happen as a result of the abrupt shutdown in step 1a.
+                logger.info("Children have already been interrupted.");
             }
 
             // 3. Finally, wait until the executor finishes shutting down

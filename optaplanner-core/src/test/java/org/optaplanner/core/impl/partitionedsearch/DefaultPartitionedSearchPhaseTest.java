@@ -211,7 +211,7 @@ public class DefaultPartitionedSearchPhaseTest {
 
         // This verifies that PartitionQueue doesn't clear interrupted flag when the main solver thread is interrupted.
         assertTrue("Executor must terminate successfully when it's shut down abruptly",
-                   executor.awaitTermination(1000, TimeUnit.MILLISECONDS));
+                   executor.awaitTermination(100, TimeUnit.MILLISECONDS));
 
         // This verifies that interruption is propagated to caller (wrapped as an IllegalStateException)
         try {
@@ -248,12 +248,19 @@ public class DefaultPartitionedSearchPhaseTest {
         @Override
         public void setValue(TestdataValue value) {
             super.setValue(value);
+            if (latch.getCount() == 0) {
+                logger.debug("This entity was already interrupted in the past. Not going to busy wait again.");
+                return;
+            }
             latch.countDown();
-            logger.info("SETVALUE... STARTED");
+            long start = System.currentTimeMillis();
+            logger.info("{}.setValue() started.", BusyEntity.class.getSimpleName());
             while (!Thread.currentThread().isInterrupted()) {
                 // busy wait
             }
-            logger.info("SETVALUE... INTERRUPTED!");
+            logger.info("{}.setValue() interrupted after {}ms.",
+                        BusyEntity.class.getSimpleName(),
+                        System.currentTimeMillis() - start);
         }
     }
 
@@ -272,7 +279,7 @@ public class DefaultPartitionedSearchPhaseTest {
         @Override
         public void setValue(TestdataValue value) {
             super.setValue(value);
-            logger.info("SOLVER FAULT");
+            logger.info("Going to divide by zero.");
             int zero = 0;
             logger.info("{}", 1 / zero);
         }

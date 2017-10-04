@@ -30,7 +30,7 @@ public class ChildThreadPlumbingTermination extends AbstractTermination {
 
     /**
      * This method is thread-safe.
-     * @return true if successful
+     * @return true if termination hasn't been requested previously
      */
     public synchronized boolean terminateChildren() {
         boolean terminationEarlySuccessful = !terminateChildren;
