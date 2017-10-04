@@ -23,6 +23,7 @@ import static org.kie.dmn.feel.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.feel.util.DynamicTypeUtils.mapOf;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 
@@ -163,6 +164,14 @@ public class DirectCompilerTest {
     }
 
     @Test
+    public void test_listExpression() {
+        assertThat(parseCompileEvaluate("[]"), is(Collections.emptyList()));
+        assertThat(parseCompileEvaluate("[ ]"), is(Collections.emptyList()));
+        assertThat(parseCompileEvaluate("[1]"), is(Arrays.asList(BigDecimal.valueOf(1))));
+        assertThat(parseCompileEvaluate("[1, 2,3]"), is(Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2), BigDecimal.valueOf(3))));
+    }
+
+    @Test
     public void testNameReference() {
         String inputExpression = "someSimpleName";
         CompiledFEELExpression nameRef = parse( inputExpression, mapOf( entry("someSimpleName", BuiltInType.STRING) ) );
@@ -224,7 +233,7 @@ public class DirectCompilerTest {
         DirectCompilerVisitor v = new DirectCompilerVisitor(inputTypes);
         DirectCompilerResult directResult = v.visit(tree);
         
-        Expression expr = directResult.expression;
+        Expression expr = directResult.getExpression();
         CompiledFEELExpression cu = new CompilerBytecodeLoader().makeFromJPExpression(input, expr, directResult.getFieldDeclarations());
 
         return cu;
