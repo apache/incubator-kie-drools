@@ -155,6 +155,14 @@ public class DirectCompilerTest {
     }
 
     @Test
+    public void test_logicalNegationExpression() {
+        assertThat(parseCompileEvaluate("not true"), is(false));
+        assertThat(parseCompileEvaluate("not false"), is(true));
+        assertThat(parseCompileEvaluate("not null"), nullValue());
+        assertThat(parseCompileEvaluate("not 3"), nullValue());
+    }
+
+    @Test
     public void testNameReference() {
         String inputExpression = "someSimpleName";
         CompiledFEELExpression nameRef = parse( inputExpression, mapOf( entry("someSimpleName", BuiltInType.STRING) ) );
