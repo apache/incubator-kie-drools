@@ -45,7 +45,7 @@ public class DirectCompilerResult {
         return fieldDeclarations.add(d);
     }
     
-    public static Set<FieldDeclaration> unifyFDs( DirectCompilerResult... sets ) {
+    public static Set<FieldDeclaration> mergeFDs( DirectCompilerResult... sets ) {
         Set<FieldDeclaration> result = new HashSet<>();
         for ( DirectCompilerResult fs : sets ) {
             result.addAll(fs.getFieldDeclarations());
