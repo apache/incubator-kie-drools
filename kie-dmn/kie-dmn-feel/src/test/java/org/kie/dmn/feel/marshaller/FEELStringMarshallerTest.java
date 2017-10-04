@@ -65,6 +65,7 @@ public class FEELStringMarshallerTest {
                 { Period.of( 0, 0, -4 ), "P0M" },
                 { Period.of( 0, 0, 0 ), "P0M" },
                 // lists
+                {Arrays.asList( null, null ), "[ null, null ]"},
                 { Arrays.asList( 1, 2, 3, 4 ), "[ 1, 2, 3, 4 ]" },
                 { Arrays.asList( "foo", "bar", "baz" ), "[ foo, bar, baz ]" },
                 { Arrays.asList( Duration.ofDays( 4 ), Duration.ofDays( 2 ), Duration.ofHours( 25 ) ), "[ P4D, P2D, P1DT1H ]" },
