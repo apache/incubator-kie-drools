@@ -51,9 +51,6 @@ expression
 // #2
 textualExpression
     : functionDefinition
-    | forExpression
-    | ifExpression
-    | quantifiedExpression
     | conditionalOrExpression
     ;
 
@@ -256,6 +253,9 @@ unaryExpressionNotPlusMinus
 
 primary
     : literal                     #primaryLiteral
+    | forExpression               #primaryForExpression
+    | quantifiedExpression        #primaryQuantifiedExpression
+    | ifExpression                #primaryIfExpression
     | interval                    #primaryInterval
     | list                        #primaryList
     | context                     #primaryContext
