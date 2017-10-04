@@ -69,21 +69,9 @@ public class BuiltInFunctions {
             // additional functions not part of the spec version 1.1
             new NowFunction(),
             new TodayFunction(),
-            new WeekdayFunction(),
-            new YearDiffFunction(),
-            new MonthDiffFunction(),
-            new DayDiffFunction(),
-            new HourDiffFunction(),
-            new MinutesDiffFunction(),
-            new SecondsDiffFunction(),
-            new YearAddFunction(),
-            new MonthAddFunction(),
-            new DayAddFunction(),
-
             new AbsFunction(),
             new ModuloFunction(),
             new ProductFunction(),
-
             new CodeFunction(),
             new InvokeFunction(),
 
@@ -101,6 +89,16 @@ public class BuiltInFunctions {
             new IntegerFunction(),
             new PercentFunction(),
             new PowerFunction(),
+            new WeekdayFunction(),
+            new YearDiffFunction(),
+            new MonthDiffFunction(),
+            new DayDiffFunction(),
+            new HourDiffFunction(),
+            new MinutesDiffFunction(),
+            new SecondsDiffFunction(),
+            new YearAddFunction(),
+            new MonthAddFunction(),
+            new DayAddFunction(),
 
             };
 
