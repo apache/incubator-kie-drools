@@ -156,12 +156,20 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
 //    public DirectCompilerResult visitLogicalNegation(FEEL_1_1Parser.LogicalNegationContext ctx) {
 //        throw new UnsupportedOperationException("TODO"); // TODO
 //    }
-//
-//    @Override
-//    public DirectCompilerResult visitPowExpression(FEEL_1_1Parser.PowExpressionContext ctx) {
-//        throw new UnsupportedOperationException("TODO"); // TODO
-//    }
-//
+
+    @Override
+    public DirectCompilerResult visitPowExpression(FEEL_1_1Parser.PowExpressionContext ctx) {
+        DirectCompilerResult left = visit(ctx.powerExpression());
+        DirectCompilerResult right = visit(ctx.filterPathExpression());
+
+        String opText = ctx.op.getText();
+        InfixOperator op = InfixOperator.determineOperator(opText);
+        if (op == InfixOperator.POW) {
+            return visitPow(left, right);
+        } else {
+            throw new UnsupportedOperationException("this was a visitPowExpression but unrecognized op: " + opText); // parser problem.
+        }
+    }
 
     @Override
     public DirectCompilerResult visitMultExpression(FEEL_1_1Parser.MultExpressionContext ctx) {
@@ -213,7 +221,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
     private DirectCompilerResult visitAdd( DirectCompilerResult left, DirectCompilerResult right ) {
         if ( left.expression instanceof NullLiteralExpr || right.expression instanceof NullLiteralExpr ) {
             // optimization: if either left or right is a null literal, just null
-            return DirectCompilerResult.of(new NullLiteralExpr(), BuiltInType.STRING, DirectCompilerResult.unifyFDs(left, right));
+            return DirectCompilerResult.of(new NullLiteralExpr(), BuiltInType.UNKNOWN, DirectCompilerResult.unifyFDs(left, right));
         } else if ( left.resultType == BuiltInType.STRING && right.resultType == BuiltInType.STRING ) {
             BinaryExpr plusCall = new BinaryExpr(left.expression, right.expression, BinaryExpr.Operator.PLUS);
             Expression result = groundToNullIfAnyIsNull(plusCall, left.expression, right.expression);
@@ -237,7 +245,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
     private DirectCompilerResult visitSub( DirectCompilerResult left, DirectCompilerResult right ) {
         if ( left.expression instanceof NullLiteralExpr || right.expression instanceof NullLiteralExpr ) {
             // optimization: if either left or right is a null literal, just null
-            return DirectCompilerResult.of(new NullLiteralExpr(), BuiltInType.STRING, DirectCompilerResult.unifyFDs(left, right));
+            return DirectCompilerResult.of(new NullLiteralExpr(), BuiltInType.UNKNOWN, DirectCompilerResult.unifyFDs(left, right));
         } else if ( left.resultType == BuiltInType.STRING && right.resultType == BuiltInType.STRING ) {
             // DMN spec Table 45
             // Subtraction is undefined.
@@ -266,7 +274,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
     private DirectCompilerResult visitMult(DirectCompilerResult left, DirectCompilerResult right) {
         if (left.expression instanceof NullLiteralExpr || right.expression instanceof NullLiteralExpr) {
             // optimization: if either left or right is a null literal, just null
-            return DirectCompilerResult.of(new NullLiteralExpr(), BuiltInType.STRING, DirectCompilerResult.unifyFDs(left, right));
+            return DirectCompilerResult.of(new NullLiteralExpr(), BuiltInType.UNKNOWN, DirectCompilerResult.unifyFDs(left, right));
         } else if (left.resultType == BuiltInType.NUMBER && right.resultType == BuiltInType.NUMBER) {
             MethodCallExpr addCall = new MethodCallExpr(left.expression, "multiply");
             addCall.addArgument(right.expression);
@@ -286,7 +294,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
     private DirectCompilerResult visitDiv(DirectCompilerResult left, DirectCompilerResult right) {
         if (left.expression instanceof NullLiteralExpr || right.expression instanceof NullLiteralExpr) {
             // optimization: if either left or right is a null literal, just null
-            return DirectCompilerResult.of(new NullLiteralExpr(), BuiltInType.STRING, DirectCompilerResult.unifyFDs(left, right));
+            return DirectCompilerResult.of(new NullLiteralExpr(), BuiltInType.UNKNOWN, DirectCompilerResult.unifyFDs(left, right));
         } else if (left.resultType == BuiltInType.NUMBER && right.resultType == BuiltInType.NUMBER) {
             MethodCallExpr subtractCall = new MethodCallExpr(left.expression, "divide");
             subtractCall.addArgument(right.expression);
@@ -300,6 +308,21 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
             addCall.addArgument(right.expression);
             Expression result = groundToNullIfAnyIsNull(addCall, left.expression, right.expression);
             return DirectCompilerResult.of(result, BuiltInType.UNKNOWN, DirectCompilerResult.unifyFDs(left, right));
+        }
+    }
+
+    private DirectCompilerResult visitPow(DirectCompilerResult left, DirectCompilerResult right) {
+        if (left.expression instanceof NullLiteralExpr || right.expression instanceof NullLiteralExpr) {
+            // optimization: if either left or right is a null literal, just null
+            return DirectCompilerResult.of(new NullLiteralExpr(), BuiltInType.UNKNOWN, DirectCompilerResult.unifyFDs(left, right));
+        } else if (left.resultType == BuiltInType.NUMBER && right.resultType == BuiltInType.NUMBER) {
+            MethodCallExpr subtractCall = new MethodCallExpr(left.expression, "pow");
+            subtractCall.addArgument(new MethodCallExpr(right.expression, "intValue"));
+            subtractCall.addArgument(DECIMAL_128);
+            Expression result = groundToNullIfAnyIsNull(subtractCall, left.expression, right.expression);
+            return DirectCompilerResult.of(result, BuiltInType.NUMBER, DirectCompilerResult.unifyFDs(left, right));
+        } else {
+            throw new UnsupportedOperationException("this was a visitPow but either left or right is not a number"); // parser problem.
         }
     }
 
