@@ -141,6 +141,14 @@ public class DirectCompilerTest {
     }
     
     @Test
+    public void test_multiplicativeExpression() {
+        assertThat(parseCompileEvaluate("3 * 5"), is(BigDecimal.valueOf(15)));
+        assertThat(parseCompileEvaluate("3 * null"), nullValue());
+        assertThat(parseCompileEvaluate("10 / 2"), is(BigDecimal.valueOf(5)));
+        assertThat(parseCompileEvaluate("10 / null"), nullValue());
+    }
+
+    @Test
     public void testNameReference() {
         String inputExpression = "someSimpleName";
         CompiledFEELExpression nameRef = parse( inputExpression, mapOf( entry("someSimpleName", BuiltInType.STRING) ) );
