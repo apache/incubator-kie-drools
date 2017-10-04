@@ -193,7 +193,8 @@ There are several ways to serialize a solution:
 [[xStreamSolutionFileIO]]
 ==== ``XStreamSolutionFileIO``: Serialize To And From An XML Format
 
-To use the `XStreamSolutionFileIO` instance to read and write solutions, just configure your `Solution` class as an ``xStreamAnnotatedClass``:
+To use the `XStreamSolutionFileIO` instance to read and write solutions,
+configure your `Solution` class as an ``xStreamAnnotatedClass``:
 
 [source,xml,options="nowrap"]
 ----
@@ -206,13 +207,21 @@ To use the `XStreamSolutionFileIO` instance to read and write solutions, just co
 
 Those input files need to have been written with a `XStreamSolutionFileIO` instance, not just any `XStream` instance,
 because the `XStreamSolutionFileIO` uses a customized `XStream` instance.
-Add XStream annotations (such as ``@XStreamAlias``) on your domain classes to use a less verbose XML format.
 
-[WARNING]
+[IMPORTANT]
 ====
-XML is a very verbose format.
-Reading or writing large datasets in this format can cause an `OutOfMemoryError`, `StackOverflowError` or large performance degradation.
+The `inputSolutionFile` needs to come from a trusted source:
+if it contains malicious data, it can be exploited.
+The `XStreamSolutionFileIO` disables the `XStream` security framework, so it just works out of the box.
+
+If you expose benchmarking in production, use `XStreamSolutionFileIO.getXStream()`
+to enable the security framework and explicitly whitelist all marshalled classes.
 ====
+
+Add XStream annotations (such as ``@XStreamAlias``) on your domain classes to use a less verbose XML format.
+Regardless, XML is still a very verbose format.
+Reading or writing large datasets in this format can cause an `OutOfMemoryError`, `StackOverflowError`
+or large performance degradation.
 
 
 [[customSolutionFileIO]]
