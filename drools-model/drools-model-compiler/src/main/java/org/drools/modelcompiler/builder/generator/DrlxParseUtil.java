@@ -369,4 +369,13 @@ public class DrlxParseUtil {
                 ((PrimitiveType) parsedType).toBoxedType() :
                 parsedType.getElementType();
     }
+
+    public static String findBindingIdFromDotExpression(String expression) {
+        int dot = expression.indexOf( '.' );
+        if ( dot < 0 ) {
+            throw new UnsupportedOperationException( "unable to parse expression: " + expression );
+        }
+        return expression.substring(0, dot);
+    }
+
 }
