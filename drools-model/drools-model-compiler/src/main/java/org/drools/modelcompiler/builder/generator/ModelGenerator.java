@@ -18,7 +18,6 @@ package org.drools.modelcompiler.builder.generator;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashSet;
@@ -40,6 +39,7 @@ import org.drools.compiler.lang.descr.ConditionalElementDescr;
 import org.drools.compiler.lang.descr.EvalDescr;
 import org.drools.compiler.lang.descr.ExistsDescr;
 import org.drools.compiler.lang.descr.ForallDescr;
+import org.drools.compiler.lang.descr.FromDescr;
 import org.drools.compiler.lang.descr.FunctionDescr;
 import org.drools.compiler.lang.descr.NamedConsequenceDescr;
 import org.drools.compiler.lang.descr.NotDescr;
@@ -55,6 +55,7 @@ import org.drools.core.util.index.IndexUtil;
 import org.drools.core.util.index.IndexUtil.ConstraintType;
 import org.drools.drlx.DrlxParser;
 import org.drools.javaparser.JavaParser;
+import org.drools.javaparser.ParseResult;
 import org.drools.javaparser.ast.Modifier;
 import org.drools.javaparser.ast.NodeList;
 import org.drools.javaparser.ast.body.MethodDeclaration;
@@ -109,6 +110,8 @@ public class ModelGenerator {
     public static final String EXPR_CALL = "expr";
     public static final String INPUT_CALL = "input";
     private static final String ATTRIBUTE_CALL = "attribute";
+    private static final String DECLARATION_OF_CALL = "declarationOf";
+    private static final String TYPE_CALL = "type";
 
     public static PackageModel generateModel(InternalKnowledgePackage pkg, List<RuleDescrImpl> rules, List<FunctionDescr> functions) {
         String name = pkg.getName();
@@ -237,9 +240,9 @@ public class ModelGenerator {
     public static BlockStmt createRuleVariables(PackageModel packageModel, RuleContext context) {
         BlockStmt ruleBlock = new BlockStmt();
 
-        for ( Entry<String, DeclarationSpec> decl : context.declarations.entrySet() ) {
-            if ( !packageModel.getGlobals().containsKey( decl.getKey() ) ) {
-                addVariable( ruleBlock, decl );
+        for (Entry<String, DeclarationSpec> decl : context.declarations.entrySet()) {
+            if (!packageModel.getGlobals().containsKey(decl.getKey())) {
+                addVariable(packageModel, context, ruleBlock, decl);
             }
         }
         return ruleBlock;
@@ -270,18 +273,26 @@ public class ModelGenerator {
         packageModel.putQueryMethod(queryMethod);
     }
 
-    private static void addVariable(BlockStmt ruleBlock, Entry<String, DeclarationSpec> decl) {
+    private static void addVariable(PackageModel packageModel, RuleContext ruleContext, BlockStmt ruleBlock, Entry<String, DeclarationSpec> decl) {
         ClassOrInterfaceType varType = JavaParser.parseClassOrInterfaceType(Variable.class.getCanonicalName());
         Type declType = DrlxParseUtil.classToReferenceType(decl.getValue().declarationClass );
 
         varType.setTypeArguments(declType);
         VariableDeclarationExpr var_ = new VariableDeclarationExpr(varType, toVar(decl.getKey()), Modifier.FINAL);
 
-        MethodCallExpr declarationOfCall = new MethodCallExpr(null, "declarationOf");
-        MethodCallExpr typeCall = new MethodCallExpr(null, "type");
+        MethodCallExpr declarationOfCall = new MethodCallExpr(null, DECLARATION_OF_CALL);
+        MethodCallExpr typeCall = new MethodCallExpr(null, TYPE_CALL);
         typeCall.addArgument( new ClassExpr(declType ));
+
         declarationOfCall.addArgument(typeCall);
         declarationOfCall.addArgument(new StringLiteralExpr(decl.getKey()));
+
+        final Optional<Expression> fromExpr = decl
+                .getValue()
+                .optSource
+                .flatMap(new FromVisitor(ruleContext, packageModel)::visit);
+
+        optToStream(fromExpr).forEach(declarationOfCall::addArgument);
 
         decl.getValue().getEntryPoint().ifPresent( ep -> {
             MethodCallExpr entryPointCall = new MethodCallExpr(null, "entryPoint");
@@ -479,12 +490,8 @@ public class ModelGenerator {
     }
 
     private static void visit( RuleContext context, PackageModel packageModel, EvalDescr descr ) {
-        String expression = descr.getContent().toString();
-        int dot = expression.indexOf( '.' );
-        if ( dot < 0 ) {
-            throw new UnsupportedOperationException( "unable to parse eval expression: " + expression );
-        }
-        String bindingId = expression.substring( 0, dot );
+        final String expression = descr.getContent().toString();
+        final String bindingId = DrlxParseUtil.findBindingIdFromDotExpression(expression);
 
         Class<?> patternType = context.declarations.get(bindingId).declarationClass;
         DrlxParseResult drlxParseResult = drlxParse(context, packageModel, patternType, bindingId, expression);
@@ -523,7 +530,7 @@ public class ModelGenerator {
         Class<?> patternType = context.getClassFromContext(className);
 
         if (pattern.getIdentifier() != null) {
-            context.declarations.put( pattern.getIdentifier(), new DeclarationSpec( patternType, pattern ));
+            context.declarations.put( pattern.getIdentifier(), new DeclarationSpec(patternType, pattern));
         }
 
         if (descriptors.isEmpty()) {
@@ -531,8 +538,8 @@ public class ModelGenerator {
             if (pattern.getIdentifier() != null) {
                 dslExpr.addArgument(new NameExpr(toVar(pattern.getIdentifier())));
             } else {
-                MethodCallExpr declarationOfCall = new MethodCallExpr(null, "declarationOf");
-                MethodCallExpr typeCall = new MethodCallExpr(null, "type");
+                MethodCallExpr declarationOfCall = new MethodCallExpr(null, DECLARATION_OF_CALL);
+                MethodCallExpr typeCall = new MethodCallExpr(null, TYPE_CALL);
                 typeCall.addArgument( new ClassExpr( JavaParser.parseClassOrInterfaceType(patternType.getCanonicalName()) ));
                 declarationOfCall.addArgument(typeCall);
                 dslExpr.addArgument( declarationOfCall );
@@ -658,6 +665,16 @@ public class ModelGenerator {
             return new DrlxParseResult(patternType, exprId, bindingId, null, new HashSet<>(), new HashSet<>(), null, null, withThis, false);
         }
 
+        if (drlxExpr instanceof NameExpr) {
+            NameExpr methodCallExpr = (NameExpr) drlxExpr;
+
+            NameExpr _this = new NameExpr("_this");
+            MethodCallExpr converted = DrlxParseUtil.toMethodCallWithClassCheck(methodCallExpr, patternType);
+            Expression withThis = DrlxParseUtil.prepend(_this, converted);
+
+            return new DrlxParseResult(patternType, exprId, bindingId, null, new HashSet<>(), new HashSet<>(), null, null, withThis, false);
+        }
+
         throw new UnsupportedOperationException("Unknown expression: " + toDrlx(drlxExpr)); // TODO
 
     }
@@ -720,8 +737,8 @@ public class ModelGenerator {
         if (bindingId != null) {
             exprDSL.addArgument( new NameExpr(toVar(bindingId)) );
         } else {
-            MethodCallExpr declarationOfCall = new MethodCallExpr(null, "declarationOf");
-            MethodCallExpr typeCall = new MethodCallExpr(null, "type");
+            MethodCallExpr declarationOfCall = new MethodCallExpr(null, DECLARATION_OF_CALL);
+            MethodCallExpr typeCall = new MethodCallExpr(null, TYPE_CALL);
             typeCall.addArgument( new ClassExpr( JavaParser.parseClassOrInterfaceType(drlxParseResult.patternType.getCanonicalName()) ));
             declarationOfCall.addArgument(typeCall);
             exprDSL.addArgument( declarationOfCall );
