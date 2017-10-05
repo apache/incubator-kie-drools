@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.assertj.core.api.Assertions;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.io.impl.ClassPathResource;
@@ -483,32 +484,22 @@ public abstract class AbstractAuditLogServiceTest extends AbstractBaseTest {
         }
         
         assertEquals(3, listVariables.size());
-        VariableInstanceLog var = listVariables.get(0);
-        
-        assertEquals("One", var.getValue());
-        // Various DBs return various empty values. (E.g. Oracle returns null.)
-        assertThat(var.getOldValue(), AnyOf.anyOf(Is.is(""), Is.is((String) null), Is.is(" ")));
-        assertEquals(processInstance.getProcessInstanceId(), var.getProcessInstanceId());
-        assertEquals(processInstance.getProcessId(), var.getProcessId());
-        assertEquals("list[0]", var.getVariableId());
-        assertEquals("list", var.getVariableInstanceId());
-        
-        var = listVariables.get(1);
-        assertEquals("Two", var.getValue());
-        assertThat(var.getOldValue(), AnyOf.anyOf(Is.is(""), Is.is((String) null), Is.is(" ")));
-        assertEquals(processInstance.getProcessInstanceId(), var.getProcessInstanceId());
-        assertEquals(processInstance.getProcessId(), var.getProcessId());
-        assertEquals("list[1]", var.getVariableId());
-        assertEquals("list", var.getVariableInstanceId());
-        
-        var = listVariables.get(2);        
-        assertEquals("Three", var.getValue());
-        assertThat(var.getOldValue(), AnyOf.anyOf(Is.is(""), Is.is((String) null), Is.is(" ")));
-        assertEquals(processInstance.getProcessInstanceId(), var.getProcessInstanceId());
-        assertEquals(processInstance.getProcessId(), var.getProcessId());
-        assertEquals("list[2]", var.getVariableId());
-        assertEquals("list", var.getVariableInstanceId());
-        
+
+        List<String> variableValues = new ArrayList<String>();
+        List<String> variableIds = new ArrayList<String>();
+        for (VariableInstanceLog var : listVariables) {
+            variableValues.add(var.getValue());
+            variableIds.add(var.getVariableId());
+            // Various DBs return various empty values. (E.g. Oracle returns null.)
+            assertThat(var.getOldValue(), AnyOf.anyOf(Is.is(""), Is.is((String) null), Is.is(" ")));
+            assertEquals(processInstance.getProcessInstanceId(), var.getProcessInstanceId());
+            assertEquals(processInstance.getProcessId(), var.getProcessId());
+            assertEquals("list", var.getVariableInstanceId());
+        }
+
+        Assertions.assertThat(variableValues).contains("One", "Two", "Three");
+        Assertions.assertThat(variableIds).contains("list[0]", "list[1]", "list[2]");
+
         // Test findVariableInstancesByName* methods
         List<VariableInstanceLog> emptyVarLogs = auditLogService.findVariableInstancesByName("s", true) ;
         assertTrue( emptyVarLogs.isEmpty());

@@ -81,6 +81,7 @@ public class AuditLogServiceTest extends AbstractAuditLogServiceTest {
             session.dispose();
         }
         session = null;
+        auditLogService.clear();
         auditLogService = null;
         cleanUp(context);
         System.clearProperty("org.jbpm.var.log.length");
