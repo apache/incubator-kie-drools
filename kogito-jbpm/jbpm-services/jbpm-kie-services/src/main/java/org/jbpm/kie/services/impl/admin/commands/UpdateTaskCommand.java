@@ -72,12 +72,21 @@ public class UpdateTaskCommand extends UserGroupCallbackTaskCommand<Void> {
         }
         
         // process task meta data
-        ((InternalTask) task).setFormName(userTask.getFormName());
-        ((InternalTask) task).setName(userTask.getName());
-        ((InternalTask) task).setDescription(userTask.getDescription());
-        ((InternalTask) task).setPriority(userTask.getPriority());
-        ((InternalTaskData) task.getTaskData()).setExpirationTime(userTask.getDueDate());
-        
+        if (userTask.getFormName() != null) {
+            ((InternalTask) task).setFormName(userTask.getFormName());
+        }
+        if (userTask.getName() != null) {
+            ((InternalTask) task).setName(userTask.getName());
+        }
+        if (userTask.getDescription() != null) {
+            ((InternalTask) task).setDescription(userTask.getDescription());
+        }
+        if (userTask.getPriority() != null) {
+            ((InternalTask) task).setPriority(userTask.getPriority());
+        }
+        if (userTask.getDueDate() != null) {
+            ((InternalTaskData) task.getTaskData()).setExpirationTime(userTask.getDueDate());
+        }
         
         // process task inputs
         long inputContentId = task.getTaskData().getDocumentContentId();
