@@ -1,4 +1,4 @@
-alter table RequestInfo add column priority number(10,0);
+alter table RequestInfo add priority number(10,0);
 alter table ProcessInstanceLog add processType number(10,0);
 
 update ProcessInstanceLog set processType = 1;
@@ -28,12 +28,12 @@ create sequence CASE_ID_INFO_ID_SEQ;
 
 create sequence CASE_ROLE_ASSIGN_LOG_ID_SEQ;
 
-ALTER TABLE NodeInstanceLog ADD COLUMN referenceId number(19,0);
-ALTER TABLE NodeInstanceLog ADD COLUMN nodeContainerId varchar2(255 char);
+ALTER TABLE NodeInstanceLog ADD referenceId number(19,0);
+ALTER TABLE NodeInstanceLog ADD nodeContainerId varchar2(255 char);
 
-ALTER TABLE RequestInfo ADD COLUMN processInstanceId number(19,0);
+ALTER TABLE RequestInfo ADD processInstanceId number(19,0);
 
-ALTER TABLE AuditTaskImpl ADD COLUMN lastModificationDate timestamp;
+ALTER TABLE AuditTaskImpl ADD lastModificationDate timestamp;
 update AuditTaskImpl ati set lastModificationDate = (
     select max(logTime) from TaskEvent where taskId=ati.taskId group by taskId
 );
