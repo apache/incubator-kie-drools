@@ -16,14 +16,20 @@
 
 package org.kie.dmn.feel.runtime;
 
-import org.junit.runners.Parameterized;
-import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import static org.kie.dmn.feel.util.DynamicTypeUtils.entry;
+import static org.kie.dmn.feel.util.DynamicTypeUtils.mapOf;
 
 import java.math.BigDecimal;
-import java.time.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collection;
+
+import org.junit.runners.Parameterized;
 
 public class FEELExtendedFunctionsTest
         extends BaseFEELTest {
@@ -170,6 +176,19 @@ public class FEELExtendedFunctionsTest
                 { "yearAdd( date( \"2015-07-02\" ), -2 )", LocalDate.of( 2013, 7, 2 ), null },
                 { "yearAdd( \"2015-07-02\", 2 )", LocalDate.of( 2017, 7, 2 ), null },
                 { "yearAdd( \"2015-07-02\", -2 )", LocalDate.of( 2013, 7, 2 ), null },
+
+                                                {"append([2.5, 5.8, 4.3], 6.7)", Arrays.asList(new BigDecimal("2.5"), new BigDecimal("5.8"), new BigDecimal("4.3"), new BigDecimal("6.7")), null},
+                                                {"appendAll([2.5, 5.8, 4.3], [2.1, 3.5, 7.4])", Arrays.asList(new BigDecimal("2.5"), new BigDecimal("5.8"), new BigDecimal("4.3"), new BigDecimal("2.1"), new BigDecimal("3.5"), new BigDecimal("7.4")), null},
+                                                {"notContainsAny([\"item1\", \"item2\"], [\"item2\", \"item3\"])", false, null},
+                                                {"notContainsAny([\"item1\", \"item2\"], [\"item3\"])", true, null},
+                                                {"containsOnly([\"item1\", \"item2\"], [\"item2\", \"item3\"])", false, null},
+                                                {"containsOnly([\"item1\", \"item2\"], [\"item2\"])", true, null},
+                                                {"areElementsOf([\"item2\", \"item3\"], [\"item1\", \"item2\", \"item3\"])", true, null},
+                                                {"areElementsOf([\"item0\", \"item3\"], [\"item1\", \"item2\", \"item3\"])", false, null},
+                                                {"zip([\"id\", \"value\"], [\"23a3e98\", \"c45da1b\"], [40, 120])", Arrays.asList(mapOf(entry("id", "23a3e98"), entry("value", new BigDecimal("40"))), mapOf(entry("id", "c45da1b"), entry("value", new BigDecimal("120")))), null},
+                                                //{"remove([\"item1\", \"item2\"], \"item1\")", Arrays.asList("item2"), null},
+                                                {"removeAll([\"item1\", \"item2\", \"item3\"], [\"item1\", \"item2\"])", Arrays.asList("item3"), null},
+                                                {"removeAll([\"item1\", \"item2\", \"item3\"], [\"item1\", \"item0\"])", Arrays.asList("item2", "item3"), null},
 
         };
         return Arrays.asList( cases );
