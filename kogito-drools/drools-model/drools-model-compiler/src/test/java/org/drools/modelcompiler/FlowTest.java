@@ -630,7 +630,7 @@ public class FlowTest {
     public void testFrom() throws Exception {
         Variable<Result> resultV = declarationOf( type( Result.class ) );
         Variable<Adult> dadV = declarationOf( type( Adult.class ) );
-        Variable<Child> childV = declarationOf( type( Child.class ), from( dadV, Adult::getChildren ) );
+        Variable<Child> childV = declarationOf( type( Child.class ), from(dadV, adult -> adult.getChildren()) );
 
         Rule rule = rule( "from" )
                 .build(
