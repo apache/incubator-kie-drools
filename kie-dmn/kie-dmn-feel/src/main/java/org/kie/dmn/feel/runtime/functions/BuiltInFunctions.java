@@ -99,6 +99,13 @@ public class BuiltInFunctions {
             new YearAddFunction(),
             new MonthAddFunction(),
             new DayAddFunction(),
+                                                                         new AppendAllFunction(),
+                                                                         new ZipFunction(),
+                                                                         new SignavioNotContainsAnyFunction(),
+                                                                         new SignavioContainsOnlyFunction(),
+                                                                         new SignavioAreElementsOfFunction(),
+                                                                         // TODO uncomment: new SignavioRemoveFunction(),
+                                                                         new SignavioRemoveAllFunction(),
 
             };
 
