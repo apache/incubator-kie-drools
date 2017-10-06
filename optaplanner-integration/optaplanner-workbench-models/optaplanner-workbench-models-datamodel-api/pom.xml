@@ -5,26 +5,27 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.optaplanner</groupId>
-    <artifactId>optaplanner</artifactId>
+    <artifactId>optaplanner-workbench-models</artifactId>
     <version>8.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>optaplanner-integration</artifactId>
-  <packaging>pom</packaging>
+  <artifactId>optaplanner-workbench-models-datamodel-api</artifactId>
+  <packaging>jar</packaging>
 
-  <name>OptaPlanner integration</name>
+  <name>Drools data model API implementations for OptaPlanner Workbench</name>
   <description>
     OptaPlanner solves planning problems.
     This lightweight, embeddable planning engine implements powerful and scalable algorithms
     to optimize business resource scheduling and planning.
 
-    This module contains the integation modules.
+    This module provides OptaPlanner implementations of Drools data model interfaces used by OptaPlanner Workbench.
   </description>
-  <url>https://www.optaplanner.org</url>
 
-  <modules>
-    <module>optaplanner-core-gwt</module>
-    <module>optaplanner-workbench-models</module>
-  </modules>
+  <dependencies>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-workbench-models-datamodel-api</artifactId>
+    </dependency>
+  </dependencies>
 
 </project>

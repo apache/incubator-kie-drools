@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2017 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.8.0//EN"
+    "http://gwtproject.org/doctype/2.8.0/gwt-module.dtd">
+<module>
+
+  <source path="org/optaplanner/core/api/score" includes="AbstractScore.java"/>
+  <source path="org/optaplanner/core/api/score" includes="AbstractBendableScore.java"/>
+  <source path="org/optaplanner/core/api/score" includes="FeasibilityScore.java"/>
+  <source path="org/optaplanner/core/api/score" includes="Score.java"/>
+  <source path="org/optaplanner/core/api/score/buildin/bendable" includes="BendableScore.java"/>
+  <source path="org/optaplanner/core/api/score/buildin/bendablebigdecimal" includes="BendableBigDecimalScore.java"/>
+  <source path="org/optaplanner/core/api/score/buildin/bendablelong" includes="BendableLongScore.java"/>
+  <source path="org/optaplanner/core/api/score/buildin/hardmediumsoft" includes="HardMediumSoftScore.java"/>
+  <source path="org/optaplanner/core/api/score/buildin/hardmediumsoftbigdecimal" includes="HardMediumSoftBigDecimalScore.java"/>
+  <source path="org/optaplanner/core/api/score/buildin/hardmediumsoftlong" includes="HardMediumSoftLongScore.java"/>
+  <source path="org/optaplanner/core/api/score/buildin/hardsoft" includes="HardSoftScore.java"/>
+  <source path="org/optaplanner/core/api/score/buildin/hardsoftbigdecimal" includes="HardSoftBigDecimalScore.java"/>
+  <source path="org/optaplanner/core/api/score/buildin/hardsoftdouble" includes="HardSoftDoubleScore.java"/>
+  <source path="org/optaplanner/core/api/score/buildin/hardsoftlong" includes="HardSoftLongScore.java"/>
+  <source path="org/optaplanner/core/api/score/buildin/simple" includes="SimpleScore.java"/>
+  <source path="org/optaplanner/core/api/score/buildin/simplebigdecimal" includes="SimpleBigDecimalScore.java"/>
+  <source path="org/optaplanner/core/api/score/buildin/simpledouble" includes="SimpleDoubleScore.java"/>
+  <source path="org/optaplanner/core/api/score/buildin/simplelong" includes="SimpleLongScore.java"/>
+  <source path="org/optaplanner/core/config/constructionheuristic" includes="ConstructionHeuristicType.java"/>
+  <source path="org/optaplanner/core/config/heuristic/selector/entity" includes="EntitySorterManner.java"/>
+  <source path="org/optaplanner/core/config/heuristic/selector/value" includes="ValueSorterManner.java"/>
+  <source path="org/optaplanner/core/config/localsearch" includes="LocalSearchType.java"/>
+
+</module>
