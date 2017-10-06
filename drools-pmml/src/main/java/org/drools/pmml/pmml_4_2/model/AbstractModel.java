@@ -39,7 +39,7 @@ public abstract class AbstractModel implements PMML4Model {
     private String modelId;
     private PMML4ModelType modelType;
     private PMML4Unit owner;
-    protected Map<String, MiningField> miningFieldMap;
+    private Map<String, MiningField> miningFieldMap;
     protected Map<String, OutputField> outputFieldMap;
     protected static PMML4Helper helper = new PMML4Helper();
     public static String PMML_JAVA_PACKAGE_NAME = "org.drools.pmml.pmml_4_2.model";
@@ -70,21 +70,21 @@ public abstract class AbstractModel implements PMML4Model {
         }
     }
 
-    protected boolean isValidMiningField(PMMLDataField dataField) {
+    protected MiningField getValidMiningField(PMMLDataField dataField) {
         if (miningFieldMap == null || miningFieldMap.isEmpty()) {
             initMiningFieldMap();
         }
         if (miningFieldMap.containsKey(dataField.getName())) {
-            return true;
+            return miningFieldMap.get(dataField.getName());
         }
-        return false;
+        return null;
     }
 
 
     @Override
     public String getMiningPojo() {
         TemplateRegistry registry = this.getTemplateRegistry();
-        List<PMMLDataField> dataFields = this.getMiningFields();
+        List<PMMLMiningField> dataFields = this.getMiningFields();
         Map<String, Object> vars = new HashMap<>();
         String className = this.getMiningPojoClassName();
         vars.put("pmmlPackageName",PMML_JAVA_PACKAGE_NAME);
@@ -99,6 +99,21 @@ public abstract class AbstractModel implements PMML4Model {
                                  baos );
 
         return new String(baos.toByteArray());
+    }
+    
+    @Override
+    public List<PMMLMiningField> getMiningFields() {
+		List<PMMLMiningField> fields = new ArrayList<>();
+		List<PMMLDataField> dataDictionary = getOwner().getDataDictionaryFields();
+		if (dataDictionary != null && !dataDictionary.isEmpty()) {
+			for (PMMLDataField field: dataDictionary) {
+				MiningField mf = getValidMiningField(field);
+				if (mf != null) {
+					fields.add(new PMMLMiningField(field.getRawDataField(), this.getModelId(), mf.getUsageType()));
+				}
+			}
+		}
+		return fields;
     }
 
     @Override
@@ -115,5 +130,21 @@ public abstract class AbstractModel implements PMML4Model {
     public PMML4Unit getOwner() {
         return this.owner;
     }
+    
+    @Override
+    public List<MiningField> getRawMiningFields() {
+		List<MiningField> fields = new ArrayList<>();
+		Map<String,MiningField> fieldMap = getMiningFieldMap();
+		if (!fieldMap.isEmpty()) {
+			fields.addAll(fieldMap.values());
+		}
+		return fields;
+    }
 
+    protected Map<String,MiningField> getMiningFieldMap() {
+    	if (miningFieldMap == null) {
+    		initMiningFieldMap();
+    	}
+    	return miningFieldMap;
+    }
 }

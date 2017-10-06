@@ -22,11 +22,13 @@ import org.drools.pmml.pmml_4_2.PMML4Helper;
 public class PMMLDataField {
     private String type;
     private String name;
+    private DataField rawDataField;
     private static PMML4Helper helper = new PMML4Helper();
 
     public PMMLDataField(DataField field) {
         this.type = helper.mapDatatype(field.getDataType(),true);
         this.name = helper.compactAsJavaId(field.getName());
+        this.rawDataField = field;
     }
 
     public String getType() {
@@ -48,8 +50,14 @@ public class PMMLDataField {
     public String getCompactUpperCaseName() {
         return helper.compactUpperCase(name);
     }
+    
+    
 
-    @Override
+    public DataField getRawDataField() {
+		return rawDataField;
+	}
+
+	@Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

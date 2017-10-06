@@ -195,7 +195,7 @@ public abstract class PMML4Data<T> implements PMML4DataType {
 				+this.getContext()+", displayName="+this.getDisplayValue()
 				+", missing="+this.isMissing()+", valid="+this.isValid()
 				+", value="+this.getValue().toString()+", weight="
-				+this.getWeight()+" )";
+				+this.getWeight()+", placeholder="+this.isPlaceholder()+" )";
 	}
 	
 }

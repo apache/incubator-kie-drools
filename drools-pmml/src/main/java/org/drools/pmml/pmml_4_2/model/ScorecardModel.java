@@ -76,19 +76,6 @@ public class ScorecardModel extends AbstractModel {
     }
 
     @Override
-    public List<MiningField> getRawMiningFields() {
-        List<MiningField> miningFields = null;
-        if (miningFieldMap == null || miningFieldMap.isEmpty()) {
-            initMiningFieldMap();
-            miningFields = (miningFieldMap != null && !miningFieldMap.isEmpty()) ?
-                    new ArrayList<>(miningFieldMap.values()) : new ArrayList<>();
-        } else {
-            miningFields = new ArrayList<>(miningFieldMap.values());
-        }
-        return miningFields;
-    }
-
-    @Override
     public List<OutputField> getRawOutputFields() {
         List<OutputField> outputFields = null;
         if (outputFieldMap == null || outputFieldMap.isEmpty()) {
@@ -101,16 +88,6 @@ public class ScorecardModel extends AbstractModel {
         return outputFields;
     }
 
-
-    @Override
-    public List<PMMLDataField> getMiningFields() {
-        List<PMMLDataField> dataDictionaryFields = getOwner().getDataDictionaryFields();
-        List<PMMLDataField> miningFieldList = dataDictionaryFields.stream()
-                .filter(ddf -> isValidMiningField(ddf))
-                .collect(Collectors.toList());
-
-        return (miningFieldList != null && !miningFieldList.isEmpty()) ? miningFieldList : new ArrayList<>();
-    }
 
     @Override
     public List<PMMLDataField> getOutputFields() {

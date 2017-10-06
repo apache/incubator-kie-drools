@@ -582,6 +582,7 @@ public class PMML4Compiler implements PMMLCompiler {
 			List<PMML4Model> models = pmmlUnit.getModels();
 			for (PMML4Model model: models) {
 				String miningPojo = model.getMiningPojo();
+				System.out.println(miningPojo);
 				String miningClassName = model.getMiningPojoClassName();
 				miningPojosMap.put(miningClassName, miningPojo);
 			}
