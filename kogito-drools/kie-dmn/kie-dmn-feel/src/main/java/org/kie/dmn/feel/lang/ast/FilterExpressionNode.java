@@ -68,7 +68,8 @@ public class FilterExpressionNode
             if( filter.getResultType() != BuiltInType.BOOLEAN ) {
                 // check if index
                 Object f = filter.evaluate( ctx );
-                if ( f != null && f instanceof Number ) {
+                if (f == null) return null;
+                if (f instanceof Number ) {
                     // what to do if Number is not an integer??
                     int i = ((Number) f).intValue();
                     if ( i > 0 && i <= list.size() ) {

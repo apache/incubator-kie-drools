@@ -69,8 +69,7 @@ public class FEELListsTest extends BaseFEELTest {
                 {"[ {x:1, y:2}, {x:2, y:3} ][x = 0]", Collections.emptyList(), null },
 
                 // Other filtering
-                // TODO - DROOLS-1679
-//                {"[\"a\", \"b\", \"c\"][a]", null, FEELEvent.Severity.ERROR }
+                {"[\"a\", \"b\", \"c\"][a]", null, FEELEvent.Severity.ERROR },
 
                 // Selection
                 {"[ {x:1, y:2}, {x:2, y:3} ].y", Arrays.asList( BigDecimal.valueOf( 2 ), BigDecimal.valueOf( 3 ) ), null },
