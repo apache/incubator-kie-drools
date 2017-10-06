@@ -32,11 +32,7 @@ public class SignavioNumberFunction
     public FEELFnResult<BigDecimal> invoke(@ParameterName("text") String text, @ParameterName("default_value") BigDecimal default_value) {
         FEELFnResult<BigDecimal> delegated = BuiltInFunctions.getFunction(NumberFunction.class).invoke(text, null, ".");
 
-        if (delegated.isRight()) {
-            return delegated;
-        } else {
-            return FEELFnResult.ofResult(default_value);
-        }
+        return FEELFnResult.ofResult(delegated.getOrElse(default_value));
     }
 
 }
