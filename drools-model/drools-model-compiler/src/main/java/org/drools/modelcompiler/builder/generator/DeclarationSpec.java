@@ -10,17 +10,20 @@ import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.PatternSourceDescr;
 
 public class DeclarationSpec {
+    final String bindingId;
     final Class<?> declarationClass;
     final Optional<PatternDescr> optPattern;
     final Optional<PatternSourceDescr> optSource;
 
-    public DeclarationSpec(Class<?> declarationClass, PatternDescr pattern) {
+    public DeclarationSpec(String bindingId, Class<?> declarationClass, PatternDescr pattern) {
+        this.bindingId = bindingId;
         this.declarationClass = declarationClass;
         this.optPattern = Optional.of(pattern);
         this.optSource = Optional.ofNullable(pattern.getSource());
     }
 
-    public DeclarationSpec( Class<?> declarationClass ) {
+    public DeclarationSpec(String bindingId, Class<?> declarationClass) {
+        this.bindingId = bindingId;
         this.declarationClass = declarationClass;
         this.optPattern = Optional.empty();
         this.optSource = Optional.empty();
@@ -36,5 +39,13 @@ public class DeclarationSpec {
     public List<BehaviorDescr> getBehaviors() {
         return optPattern.map(PatternDescr::getBehaviors).orElse(Collections.emptyList());
 
+    }
+
+    public String getBindingId() {
+        return bindingId;
+    }
+
+    public Class<?> getDeclarationClass() {
+        return declarationClass;
     }
 }
