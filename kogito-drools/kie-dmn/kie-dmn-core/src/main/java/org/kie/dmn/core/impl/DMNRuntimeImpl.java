@@ -50,6 +50,8 @@ import org.kie.dmn.feel.runtime.FEELFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus.*;
+
 public class DMNRuntimeImpl
         implements DMNRuntime {
     private static final Logger logger = LoggerFactory.getLogger( DMNRuntimeImpl.class );
@@ -246,9 +248,8 @@ public class DMNRuntimeImpl
             return true;
         } else {
             // check if the decision was already evaluated before and returned error
-            DMNDecisionResult dr = result.getDecisionResultById( decision.getId() );
-            if( dr.getEvaluationStatus() == DMNDecisionResult.DecisionEvaluationStatus.FAILED ||
-                dr.getEvaluationStatus() == DMNDecisionResult.DecisionEvaluationStatus.SKIPPED ) {
+            DMNDecisionResult.DecisionEvaluationStatus status = result.getDecisionResultById( decision.getId() ).getEvaluationStatus();
+            if ( FAILED == status || SKIPPED == status || EVALUATING == status ) {
                 return false;
             }
         }
@@ -256,6 +257,7 @@ public class DMNRuntimeImpl
             DMNRuntimeEventManagerUtils.fireBeforeEvaluateDecision( eventManager, decision, result );
             boolean missingInput = false;
             DMNDecisionResultImpl dr = (DMNDecisionResultImpl) result.getDecisionResultById( decision.getId() );
+            dr.setEvaluationStatus(DMNDecisionResult.DecisionEvaluationStatus.EVALUATING);
             for( DMNNode dep : decision.getDependencies().values() ) {
                 try {
                     if ( !checkDependencyValueIsValid(dep, result ) ) {

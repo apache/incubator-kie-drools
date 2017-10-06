@@ -40,6 +40,15 @@ import org.slf4j.LoggerFactory;
 
 public final class DMNRuntimeUtil {
 
+    public static DMNRuntime createRuntime(final Class testClass) {
+        final KieServices ks = KieServices.Factory.get();
+        final KieContainer kieContainer = KieHelper.getKieContainer(
+        ks.newReleaseId("org.kie", "dmn-test-"+UUID.randomUUID(), "1.0"));
+        final DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
+        Assert.assertNotNull(runtime);
+        return runtime;
+    }
+
     public static DMNRuntime createRuntime(final String resourceName, final Class testClass) {
         final KieServices ks = KieServices.Factory.get();
         final KieContainer kieContainer = KieHelper.getKieContainer(

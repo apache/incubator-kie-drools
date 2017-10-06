@@ -25,7 +25,7 @@ import java.util.List;
 public interface DMNDecisionResult {
 
     enum DecisionEvaluationStatus {
-        NOT_EVALUATED, SUCCEEDED, SKIPPED, FAILED;
+        NOT_EVALUATED, EVALUATING, SUCCEEDED, SKIPPED, FAILED;
     }
 
     /**
