@@ -16,6 +16,7 @@
 
 package org.drools.modelcompiler;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -853,5 +854,39 @@ public class CompilerTest extends BaseModelTest {
         Collection<Result> results = getObjects( ksession, Result.class );
         assertEquals( 1, results.size() );
         assertEquals( "Hello Mario!", results.iterator().next().getValue() );
+    }
+
+    @Test
+    public void testPojo() throws Exception {
+        String str =
+                "import " + Result.class.getCanonicalName() + ";" +
+                        "import " + Person.class.getCanonicalName() + ";" +
+                        "\n" +
+                        "declare POJOPerson\n" +
+                        "    name : String\n" +
+                        "end\n" +
+                        "rule R when\n" +
+                        "  $p : Person( name.length == 4 )\n" +
+                        "then\n" +
+                        "   POJOPerson p = new POJOPerson();\n" +
+                        "   p.setName($p.getName());\n" +
+                        "   insert(new Result(p));\n" +
+                        "end";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert(new Person("Mario", 40));
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Edson", 35));
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjects(ksession, Result.class);
+        assertEquals(1, results.size());
+        Object result = results.iterator().next().getValue();
+        Class<?> resultClass = result.getClass();
+        Method name = resultClass.getMethod("getName");
+        assertEquals("defaultpkg.POJOPerson", resultClass.getName());
+        assertEquals("Mark", name.invoke(result));
+
     }
 }
