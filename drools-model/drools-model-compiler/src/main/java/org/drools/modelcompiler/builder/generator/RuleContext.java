@@ -43,6 +43,8 @@ public class RuleContext {
     }
 
     public void addDeclaration(DeclarationSpec d) {
+        // It would be probably be better to avoid putting the same declaration multiple times
+        // instead of using Set semantic here
         if(!existsDeclaration(d.bindingId)) {
             this.declarations.add(d);
         }
