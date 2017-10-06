@@ -38,6 +38,7 @@ import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
 import org.drools.modelcompiler.domain.Toy;
 import org.drools.modelcompiler.domain.Woman;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.ClassObjectFilter;
@@ -667,6 +668,72 @@ public class FlowTest {
                         expr("exprA", childV, c -> c.getAge() > 10),
                         on(toyV, listG).execute( (t,l) -> l.add(t.getName()) )
                 );
+
+        Model model = new ModelImpl().addGlobal( listG ).addRule( rule );
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
+        KieSession ksession = kieBase.newKieSession();
+
+        final List<String> list = new ArrayList<>();
+        ksession.setGlobal( "list", list );
+
+        final Woman alice = new Woman( "Alice", 38 );
+        final Man bob = new Man( "Bob", 40 );
+        bob.setWife( alice );
+
+        final Child charlie = new Child( "Charles", 12 );
+        final Child debbie = new Child( "Debbie", 10 );
+        alice.addChild( charlie );
+        alice.addChild( debbie );
+
+        charlie.addToy( new Toy( "car" ) );
+        charlie.addToy( new Toy( "ball" ) );
+        debbie.addToy( new Toy( "doll" ) );
+
+        ksession.insert( bob );
+        ksession.fireAllRules();
+
+        Assertions.assertThat(list).containsExactlyInAnyOrder("car", "ball");
+    }
+
+
+    @Test
+    @Ignore("generated")
+    public void testConcatenatedFrom2() {
+
+        final org.drools.model.Global<java.util.List> listG = globalOf(type(java.util.List.class),
+                                                                          "defaultpkg",
+                                                                          "list");
+
+        final org.drools.model.Variable<org.drools.modelcompiler.domain.Man> var_$m = declarationOf(type(org.drools.modelcompiler.domain.Man.class),
+                                                                                                    "$m");
+        final org.drools.model.Variable<org.drools.modelcompiler.domain.Woman> var_$w = declarationOf(type(org.drools.modelcompiler.domain.Woman.class),
+                                                                                                      "$w",
+                                                                                                      from(var_$m,
+                                                                                                           (_this) -> _this.getWife()));
+        final org.drools.model.Variable<org.drools.modelcompiler.domain.Child> var_$c = declarationOf(type(org.drools.modelcompiler.domain.Child.class),
+                                                                                                      "$c",
+                                                                                                      from(var_$w,
+                                                                                                           (_this) -> _this.getChildren()));
+        final org.drools.model.Variable<org.drools.modelcompiler.domain.Toy> var_$t = declarationOf(type(org.drools.modelcompiler.domain.Toy.class),
+                                                                                                    "$t",
+                                                                                                    from(var_$c,
+                                                                                                         (_this) -> _this.getToys()));
+        org.drools.model.Rule rule = rule("R").build(
+                                                        input(var_$m),
+                                                     input(var_$w),
+                                                        input(var_$c),
+                                                        expr("$expr$1$",
+                                                          var_$c,
+                                                          (_this) -> _this.getAge() > 10).indexedBy(int.class,
+                                                                                                    org.drools.model.Index.ConstraintType.GREATER_THAN,
+                                                                                                    _this -> _this.getAge(),
+                                                                                                    10).reactOn("age"),
+                                                     input(var_$t),
+                                                     on(var_$t,
+                                                        listG).execute(($t, list) -> {
+                                                         list.add($t.getName());
+                                                     }));
+
 
         Model model = new ModelImpl().addGlobal( listG ).addRule( rule );
         KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
