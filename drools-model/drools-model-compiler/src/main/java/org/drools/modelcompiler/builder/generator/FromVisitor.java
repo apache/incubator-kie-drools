@@ -30,7 +30,7 @@ public class FromVisitor {
         if (sourceDescr instanceof FromDescr) {
             final String expression = ((FromDescr) sourceDescr).getDataSource().toString();
             final String bindingId = DrlxParseUtil.findBindingIdFromDotExpression(expression);
-            final DeclarationSpec declarationSpec = ruleContext.declarations.get(bindingId);
+            final DeclarationSpec declarationSpec = ruleContext.getDeclarationById(bindingId).orElseThrow(RuntimeException::new);
             final Class<?> clazz = declarationSpec.declarationClass;
 
             final DrlxParseResult drlxParseResult = drlxParse(ruleContext, packageModel, clazz, bindingId, expression);
