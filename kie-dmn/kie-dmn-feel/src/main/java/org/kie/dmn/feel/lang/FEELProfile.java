@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.core.compiler;
+package org.kie.dmn.feel.lang;
 
 import java.util.List;
 
-import org.kie.dmn.api.marshalling.v1_1.DMNExtensionRegister;
-import org.kie.dmn.feel.lang.FEELProfile;
+import org.kie.dmn.feel.runtime.FEELFunction;
 
-public interface DMNProfile extends FEELProfile {
+public interface FEELProfile {
 
-    List<DMNExtensionRegister> getExtensionRegisters();
-
-    List<DRGElementCompiler> getDRGElementCompilers();
-
+    List<FEELFunction> getFEELFunctions();
 }

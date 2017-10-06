@@ -30,7 +30,6 @@ import java.util.Map;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.Test;
-import org.kie.dmn.feel.lang.CompilerContext;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.ast.BetweenNode;
@@ -60,8 +59,6 @@ import org.kie.dmn.feel.lang.ast.SignedUnaryNode;
 import org.kie.dmn.feel.lang.ast.StringNode;
 import org.kie.dmn.feel.lang.ast.TypeNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode;
-import org.kie.dmn.feel.lang.impl.CompilerContextImpl;
-import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
 import org.kie.dmn.feel.lang.impl.MapBackedType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.util.Msg;
@@ -1286,9 +1283,7 @@ public class FEELParserTest {
     }
 
     private BaseNode parse(String input, Map<String, Type> inputTypes) {
-        CompilerContext ctx = new CompilerContextImpl(new FEELEventListenersManager());
-        inputTypes.forEach(ctx::addInputVariableType);
-        FEEL_1_1Parser parser = FEELParser.parse(null, input, ctx);
+        FEEL_1_1Parser parser = FEELParser.parse(null, input, inputTypes, Collections.emptyMap(), Collections.emptyList());
 
         ParseTree tree = parser.expression();
 

@@ -47,6 +47,8 @@ public class DMNWeaverService implements KieWeaverService<DMNPackage> {
         for ( Map.Entry<String, DMNModel> entry : dmnpkg.getAllModels().entrySet() ) {
             existing.addModel( entry.getKey(), entry.getValue() );
         }
+
+        existing.addProfiles(((DMNPackageImpl) dmnpkg).getProfiles());
     }
 
     @Override

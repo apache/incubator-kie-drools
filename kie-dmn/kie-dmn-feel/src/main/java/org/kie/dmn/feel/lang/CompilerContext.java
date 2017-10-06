@@ -35,7 +35,7 @@ public interface CompilerContext {
 
     Set<FEELEventListener> getListeners();
 
-    CompilerContext addFEELFunctions(FEELFunction customFunction);
+    CompilerContext addFEELFunctions(Collection<FEELFunction> customFunction);
 
     Collection<FEELFunction> getFEELFunctions();
 

@@ -16,10 +16,9 @@
 
 package org.kie.dmn.feel.lang.impl;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -32,7 +31,7 @@ public class CompilerContextImpl implements CompilerContext {
     private final FEELEventListenersManager eventsManager;
     private Map<String, Object> inputVariables = new HashMap<>();
     private Map<String, Type> inputVariableTypes = new HashMap<>();
-    private List<FEELFunction> customFunctions = new ArrayList<>();
+    private Set<FEELFunction> customFunctions = new LinkedHashSet<>();
 
     public CompilerContextImpl(FEELEventListenersManager eventsManager) {
         this.eventsManager = eventsManager;
@@ -66,8 +65,8 @@ public class CompilerContextImpl implements CompilerContext {
     }
 
     @Override
-    public CompilerContextImpl addFEELFunctions(FEELFunction customFunction) {
-        this.customFunctions.add(customFunction);
+    public CompilerContextImpl addFEELFunctions(Collection<FEELFunction> customFunction) {
+        this.customFunctions.addAll(customFunction);
         return this;
     }
 

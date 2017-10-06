@@ -16,11 +16,15 @@
 
 package org.kie.dmn.core.ast;
 
+import java.util.List;
+
 import org.kie.dmn.api.core.DMNResult;
+import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.core.api.EvaluatorResult.ResultType;
-import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
+import org.kie.dmn.core.compiler.DMNProfile;
+import org.kie.dmn.core.impl.DMNRuntimeImpl;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.ast.FunctionDefNode;
@@ -48,7 +52,9 @@ public class DMNLiteralExpressionEvaluator
     @Override
     public EvaluatorResult evaluate(DMNRuntimeEventManager dmrem, DMNResult result) {
         // in case an exception is thrown, the parent node will report it
-        Object val = FEEL.newInstance().evaluate( expression, result.getContext().getAll() );
+        List<DMNProfile> profiles = ((DMNRuntimeImpl) dmrem.getRuntime()).getProfiles();
+        @SuppressWarnings({"unchecked", "rawtypes"})
+        Object val = FEEL.newInstance((List) profiles).evaluate(expression, result.getContext().getAll());
         return new EvaluatorResultImpl( val, ResultType.SUCCESS );
     }
 }
