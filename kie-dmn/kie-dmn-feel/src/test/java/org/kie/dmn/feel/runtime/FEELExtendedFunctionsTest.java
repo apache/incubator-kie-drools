@@ -31,8 +31,7 @@ import java.util.Collection;
 
 import org.junit.runners.Parameterized;
 
-public class FEELExtendedFunctionsTest
-        extends BaseFEELTest {
+public class FEELExtendedFunctionsTest extends ExtendedFunctionsBaseFEELTest {
 
     @Parameterized.Parameters(name = "{index}: {0} ({1}) = {2}")
     public static Collection<Object[]> data() {
