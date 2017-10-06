@@ -46,6 +46,7 @@ import org.drools.compiler.lang.descr.OrDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.QueryDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.Behavior;
 import org.drools.core.time.TimeUtils;
