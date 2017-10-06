@@ -48,7 +48,9 @@ public class AccumulateVisitor {
             final MethodCallExpr methodCallExpr = (MethodCallExpr) expr;
 
             final NameExpr scope = (NameExpr) methodCallExpr.getScope().orElseThrow(UnsupportedOperationException::new);
-            final Class clazz = context.declarations.get(scope.getName().asString()).declarationClass;
+            final Class clazz = context.getDeclarationById(scope.getName().asString())
+                    .map(DeclarationSpec::getDeclarationClass)
+                    .orElseThrow(RuntimeException::new);
 
             LambdaExpr lambdaExpr = new LambdaExpr(
                     NodeList.nodeList(new Parameter(new TypeParameter(clazz.getName()), "$p"))
@@ -58,7 +60,7 @@ public class AccumulateVisitor {
             functionDSL.addArgument(lambdaExpr);
 
             Class<?> declClass = getReturnTypeForAggregateFunction(functionDSL.getName().asString(), clazz, methodCallExpr);
-            context.declarations.put(function.getBind(), new DeclarationSpec(declClass));
+            context.addDeclaration(new DeclarationSpec(function.getBind(), declClass));
         }
 
         final MethodCallExpr asDSL = new MethodCallExpr(functionDSL, "as");
