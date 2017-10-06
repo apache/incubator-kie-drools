@@ -72,7 +72,7 @@ public class DrlxParseUtil {
             return new TypedExpression(new NameExpr("_this"), Optional.empty());
         } else if (drlxExpr instanceof NameExpr) {
             String name = drlxExpr.toString();
-            if (context.declarations.containsKey(name)) {
+            if (context.existsDeclaration(name)) {
                 // then drlxExpr is a single NameExpr referring to a binding, e.g.: "$p1".
                 usedDeclarations.add(name);
                 return new TypedExpression(drlxExpr, Optional.empty());
@@ -109,12 +109,13 @@ public class DrlxParseUtil {
 
             if (firstNode instanceof NameExpr) {
                 String firstName = ((NameExpr) firstNode).getName().getIdentifier();
-                if (context.declarations.containsKey(firstName)) {
+                Optional<DeclarationSpec> declarationById = context.getDeclarationById(firstName);
+                if (declarationById.isPresent()) {
                     // do NOT append any reactOnProperties.
                     // because reactOnProperties is referring only to the properties of the type of the pattern, not other declarations properites.
                     usedDeclarations.add(firstName);
                     if (!isInLineCast) {
-                        typeCursor = context.declarations.get(firstName).declarationClass;
+                        typeCursor = declarationById.get().declarationClass;
                     }
                     previous = new NameExpr(firstName);
                 } else {
@@ -205,7 +206,7 @@ public class DrlxParseUtil {
                 if (isGlobal) {
                     implicitThis = false;
                     telescoping.append(part);
-                } else if (idx == 0 && context.declarations.containsKey(part)) {
+                } else if (idx == 0 && context.existsDeclaration(part)) {
                     implicitThis = false;
                     usedDeclarations.add(part);
                     telescoping.append(part);

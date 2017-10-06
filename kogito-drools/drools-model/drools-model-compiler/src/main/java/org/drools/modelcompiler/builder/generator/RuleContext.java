@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -21,7 +22,7 @@ public class RuleContext {
     private DRLExprIdGenerator exprIdGenerator;
     private final RuleDescr ruleDescr;
 
-    Map<String, DeclarationSpec> declarations = new HashMap<>();
+    private List<DeclarationSpec> declarations = new ArrayList<>();
     List<QueryParameter> queryParameters = new ArrayList<>();
     Deque<Consumer<Expression>> exprPointer = new LinkedList<>();
     List<Expression> expressions = new ArrayList<>();
@@ -35,6 +36,26 @@ public class RuleContext {
         this.exprIdGenerator = exprIdGenerator;
         this.ruleDescr = ruleDescr;
         exprPointer.push( this.expressions::add );
+    }
+
+    public Optional<DeclarationSpec> getDeclarationById(String id) {
+        return declarations.stream().filter(d -> d.bindingId.equals(id)).findFirst();
+    }
+
+    public void addDeclaration(DeclarationSpec d) {
+        // It would be probably be better to avoid putting the same declaration multiple times
+        // instead of using Set semantic here
+        if(!existsDeclaration(d.bindingId)) {
+            this.declarations.add(d);
+        }
+    }
+
+    public List<DeclarationSpec> getDeclarations() {
+        return declarations;
+    }
+
+    public Boolean existsDeclaration(String id) {
+        return getDeclarationById(id).isPresent();
     }
 
     public void addExpression(Expression e) {

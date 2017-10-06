@@ -16,16 +16,22 @@
 
 package org.drools.modelcompiler;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import org.assertj.core.api.Assertions;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Adult;
 import org.drools.modelcompiler.domain.Child;
+import org.drools.modelcompiler.domain.Man;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
+import org.drools.modelcompiler.domain.Toy;
+import org.drools.modelcompiler.domain.Woman;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
@@ -734,6 +740,51 @@ public class CompilerTest extends BaseModelTest {
         ksession.fireAllRules();
 
         assertEquals("Alan", result.getValue());
+    }
+
+    @Test
+    public void testConcatenatedFrom() {
+        String str =
+                "import " + Result.class.getCanonicalName() + ";\n" +
+                "import " + Man.class.getCanonicalName() + ";\n" +
+                "import " + Woman.class.getCanonicalName() + ";\n" +
+                "import " + Child.class.getCanonicalName() + ";\n" +
+                "import " + Toy.class.getCanonicalName() + ";\n" +
+                "global java.util.List list;\n" +
+                "rule R when\n" +
+                "  $m : Man()\n" +
+                "  $w : Woman() from $m.wife\n" +
+                "  $c : Child( age > 10 ) from $w.children\n" +
+                "  $t : Toy() from $c.toys\n" +
+                "then\n" +
+                "  list.add($t.getName());\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        Result result = new Result();
+        ksession.insert( result );
+
+        final List<String> list = new ArrayList<>();
+        ksession.setGlobal( "list", list );
+
+        final Woman alice = new Woman( "Alice", 38 );
+        final Man bob = new Man( "Bob", 40 );
+        bob.setWife( alice );
+
+        final Child charlie = new Child( "Charles", 12 );
+        final Child debbie = new Child( "Debbie", 10 );
+        alice.addChild( charlie );
+        alice.addChild( debbie );
+
+        charlie.addToy( new Toy( "car" ) );
+        charlie.addToy( new Toy( "ball" ) );
+        debbie.addToy( new Toy( "doll" ) );
+
+        ksession.insert( bob );
+        ksession.fireAllRules();
+
+        Assertions.assertThat(list).containsExactlyInAnyOrder("car", "ball");
     }
 
     @Test(timeout = 5000)
