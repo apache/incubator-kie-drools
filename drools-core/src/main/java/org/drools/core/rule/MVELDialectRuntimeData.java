@@ -134,7 +134,9 @@ public class MVELDialectRuntimeData
             }
             wireList.add( entry.getKey() );
         }
-        this.mvelReaders = new HashSet<MVELCompileable>();
+        if ( this.mvelReaders == null ) {
+            this.mvelReaders = new HashSet<MVELCompileable>();
+        }
         this.mvelReaders.addAll( other.mvelReaders );
     }
 

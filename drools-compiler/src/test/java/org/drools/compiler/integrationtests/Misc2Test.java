@@ -21,6 +21,7 @@ import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Message;
 import org.drools.compiler.Person;
+import org.drools.compiler.PersonHolder;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.DrlParser;
@@ -77,6 +78,7 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
 import org.kie.api.conf.DeclarativeAgendaOption;
 import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.definition.type.Modifies;
@@ -8793,5 +8795,60 @@ public class Misc2Test extends CommonTestMethodBase {
         kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL );
 
         assertTrue( kbuilder.getErrors().toString().contains( "StackOverflowError" ) );
+    }
+
+    @Test
+    public void testMergeMVELDialect() {
+        // DROOLS-1751
+        String drl1 = "package com.sample\n" +
+                "import org.drools.compiler.*;\n" +
+                "rule rule1 \n" +
+                "    when\n" +
+                "        (PersonHolder($addresses : person.addresses))\n" +
+                "            &&\n" +
+                "        (Address (street == \"AAA\") from $addresses)\n" +
+                "    then\n" +
+                "end";
+
+        KnowledgeBuilder kbuilder1 = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder1.add(ResourceFactory.newByteArrayResource(drl1.getBytes()), ResourceType.DRL);
+        Collection<KiePackage> knowledgePackages1 = kbuilder1.getKnowledgePackages();
+
+        String drl2 = "package com.sample\n" +
+                "import org.drools.compiler.*;\n" +
+                "rule rule2 \n" +
+                "    when\n" +
+                "        PersonHolder()\n" +
+                "    then\n" +
+                "end";
+
+        KnowledgeBuilder kbuilder2 = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder2.add(ResourceFactory.newByteArrayResource(drl2.getBytes()), ResourceType.DRL);
+        Collection<KiePackage> knowledgePackages2 = kbuilder2.getKnowledgePackages();
+
+        InternalKnowledgeBase kbase1 = KnowledgeBaseFactory.newKnowledgeBase();
+        Collection<KiePackage> combinedPackages1 = new ArrayList<KiePackage>();
+        combinedPackages1.addAll(knowledgePackages1);
+        combinedPackages1.addAll(knowledgePackages2);
+        kbase1.addPackages(combinedPackages1); // Add once to make inUse=true
+
+        InternalKnowledgeBase kbase2 = KnowledgeBaseFactory.newKnowledgeBase();
+        Collection<KiePackage> combinedPackages2 = new ArrayList<KiePackage>();
+        combinedPackages2.addAll(knowledgePackages1);
+        combinedPackages2.addAll(knowledgePackages2);
+        kbase2.addPackages(combinedPackages2); // this will cause package deepClone
+
+        KieSession ksession = kbase2.newKieSession();
+
+        PersonHolder personHolder = new PersonHolder();
+        Person person = new Person("John");
+        Address address = new Address("AAA", "BBB", "111");
+        person.addAddress(address);
+        personHolder.setPerson(person);
+
+        ksession.insert(personHolder);
+        int fired = ksession.fireAllRules();
+
+        assertEquals(2, fired);
     }
 }
