@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.feel.runtime;
+package org.kie.dmn.signavio.feel.runtime;
 
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
@@ -39,6 +39,7 @@ import org.kie.dmn.feel.lang.CompilerContext;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
 import org.kie.dmn.feel.lang.impl.FEELImpl;
+import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.functions.AppendAllFunction;
 import org.kie.dmn.feel.runtime.functions.AreElementsOfFunction;
 import org.kie.dmn.feel.runtime.functions.AvgFunction;

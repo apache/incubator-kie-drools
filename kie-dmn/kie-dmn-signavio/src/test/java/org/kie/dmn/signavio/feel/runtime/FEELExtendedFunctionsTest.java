@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.feel.runtime;
+package org.kie.dmn.signavio.feel.runtime;
 
-import static org.kie.dmn.feel.util.DynamicTypeUtils.entry;
-import static org.kie.dmn.feel.util.DynamicTypeUtils.mapOf;
+import static org.kie.dmn.signavio.util.DynamicTypeUtils.entry;
+import static org.kie.dmn.signavio.util.DynamicTypeUtils.mapOf;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
