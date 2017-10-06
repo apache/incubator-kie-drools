@@ -43,7 +43,7 @@ public class MvelParseUtil {
                 if ( isGlobal ) {
                     implicitThis = false;
                     telescoping.append( part );
-                } else if ( idx == 0 && context.declarations.containsKey(part) ) {
+                } else if ( idx == 0 && context.existsDeclaration(part) ) {
                     implicitThis = false;
                     usedDeclarations.add( part );
                     telescoping.append( part );

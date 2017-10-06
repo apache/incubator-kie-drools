@@ -39,7 +39,6 @@ import org.drools.compiler.lang.descr.ConditionalElementDescr;
 import org.drools.compiler.lang.descr.EvalDescr;
 import org.drools.compiler.lang.descr.ExistsDescr;
 import org.drools.compiler.lang.descr.ForallDescr;
-import org.drools.compiler.lang.descr.FromDescr;
 import org.drools.compiler.lang.descr.FunctionDescr;
 import org.drools.compiler.lang.descr.NamedConsequenceDescr;
 import org.drools.compiler.lang.descr.NotDescr;
@@ -55,7 +54,6 @@ import org.drools.core.util.index.IndexUtil;
 import org.drools.core.util.index.IndexUtil.ConstraintType;
 import org.drools.drlx.DrlxParser;
 import org.drools.javaparser.JavaParser;
-import org.drools.javaparser.ParseResult;
 import org.drools.javaparser.ast.Modifier;
 import org.drools.javaparser.ast.NodeList;
 import org.drools.javaparser.ast.body.MethodDeclaration;
@@ -208,7 +206,7 @@ public class ModelGenerator {
     public static List<String> extractUsedDeclarations(PackageModel packageModel, RuleContext context, BlockStmt ruleConsequence) {
         List<String> declUsedInRHS = ruleConsequence.getChildNodesByType(NameExpr.class).stream().map(NameExpr::getNameAsString).collect(Collectors.toList());
         Set<String> existingDecls = new HashSet<>();
-        existingDecls.addAll(context.declarations.keySet());
+        existingDecls.addAll(context.getDeclarations().stream().map(DeclarationSpec::getBindingId).collect(Collectors.toList()));
         existingDecls.addAll(packageModel.getGlobals().keySet());
         return existingDecls.stream().filter(declUsedInRHS::contains).collect(Collectors.toList());
     }
@@ -240,8 +238,8 @@ public class ModelGenerator {
     public static BlockStmt createRuleVariables(PackageModel packageModel, RuleContext context) {
         BlockStmt ruleBlock = new BlockStmt();
 
-        for (Entry<String, DeclarationSpec> decl : context.declarations.entrySet()) {
-            if (!packageModel.getGlobals().containsKey(decl.getKey())) {
+        for (DeclarationSpec decl : context.getDeclarations()) {
+            if (!packageModel.getGlobals().containsKey(decl.getBindingId())) {
                 addVariable(packageModel, context, ruleBlock, decl);
             }
         }
@@ -273,33 +271,32 @@ public class ModelGenerator {
         packageModel.putQueryMethod(queryMethod);
     }
 
-    private static void addVariable(PackageModel packageModel, RuleContext ruleContext, BlockStmt ruleBlock, Entry<String, DeclarationSpec> decl) {
+    private static void addVariable(PackageModel packageModel, RuleContext ruleContext, BlockStmt ruleBlock, DeclarationSpec decl) {
         ClassOrInterfaceType varType = JavaParser.parseClassOrInterfaceType(Variable.class.getCanonicalName());
-        Type declType = DrlxParseUtil.classToReferenceType(decl.getValue().declarationClass );
+        Type declType = DrlxParseUtil.classToReferenceType(decl.declarationClass );
 
         varType.setTypeArguments(declType);
-        VariableDeclarationExpr var_ = new VariableDeclarationExpr(varType, toVar(decl.getKey()), Modifier.FINAL);
+        VariableDeclarationExpr var_ = new VariableDeclarationExpr(varType, toVar(decl.getBindingId()), Modifier.FINAL);
 
         MethodCallExpr declarationOfCall = new MethodCallExpr(null, DECLARATION_OF_CALL);
         MethodCallExpr typeCall = new MethodCallExpr(null, TYPE_CALL);
         typeCall.addArgument( new ClassExpr(declType ));
 
         declarationOfCall.addArgument(typeCall);
-        declarationOfCall.addArgument(new StringLiteralExpr(decl.getKey()));
+        declarationOfCall.addArgument(new StringLiteralExpr(decl.getBindingId()));
 
         final Optional<Expression> fromExpr = decl
-                .getValue()
                 .optSource
                 .flatMap(new FromVisitor(ruleContext, packageModel)::visit);
 
         optToStream(fromExpr).forEach(declarationOfCall::addArgument);
 
-        decl.getValue().getEntryPoint().ifPresent( ep -> {
+        decl.getEntryPoint().ifPresent( ep -> {
             MethodCallExpr entryPointCall = new MethodCallExpr(null, "entryPoint");
             entryPointCall.addArgument( new StringLiteralExpr(ep ) );
             declarationOfCall.addArgument( entryPointCall );
         } );
-        for ( BehaviorDescr behaviorDescr : decl.getValue().getBehaviors() ) {
+        for ( BehaviorDescr behaviorDescr : decl.getBehaviors() ) {
             MethodCallExpr windowCall = new MethodCallExpr(null, "window");
             if ( Behavior.BehaviorType.TIME_WINDOW.matches(behaviorDescr.getSubType() ) ) {
                 windowCall.addArgument( "Window.Type.TIME" );
@@ -350,7 +347,7 @@ public class ModelGenerator {
                 continue;
             }
             String decl = consequence.substring( declStart+1, declEnd ).trim();
-            if ( context.declarations.get( decl ) == null) {
+            if ( !context.getDeclarationById( decl ).isPresent()) {
                 continue;
             }
             int blockStart = consequence.indexOf( '{', declEnd+1 );
@@ -397,7 +394,7 @@ public class ModelGenerator {
             Expression argExpr = updateExpr.getArgument( 0 );
             if (argExpr instanceof NameExpr) {
                 String updatedVar = ( (NameExpr) argExpr ).getNameAsString();
-                Class<?> updatedClass = context.declarations.get( updatedVar ).declarationClass;
+                Class<?> updatedClass = context.getDeclarationById( updatedVar ).map(DeclarationSpec::getDeclarationClass).orElseThrow(RuntimeException::new);
 
                 MethodCallExpr bitMaskCreation = new MethodCallExpr( new NameExpr( BitMask.class.getCanonicalName() ), "getPatternMask" );
                 bitMaskCreation.addArgument( new ClassExpr( JavaParser.parseClassOrInterfaceType( updatedClass.getCanonicalName() ) ) );
@@ -470,7 +467,7 @@ public class ModelGenerator {
         for (int i = 0; i < descr.getParameters().length; i++) {
             final String argument = descr.getParameters()[i];
             final String type = descr.getParameterTypes()[i];
-            context.declarations.put(argument, new DeclarationSpec(context.getClassFromContext(type)));
+            context.addDeclaration(new DeclarationSpec(argument, context.getClassFromContext(type)));
             QueryParameter queryParameter = new QueryParameter(argument, context.getClassFromContext(type));
             context.queryParameters.add(queryParameter);
             packageModel.putQueryVariable("query_" + descr.getName(), queryParameter);
@@ -493,7 +490,9 @@ public class ModelGenerator {
         final String expression = descr.getContent().toString();
         final String bindingId = DrlxParseUtil.findBindingIdFromDotExpression(expression);
 
-        Class<?> patternType = context.declarations.get(bindingId).declarationClass;
+        Class<?> patternType = context.getDeclarationById(bindingId)
+                .map(DeclarationSpec::getDeclarationClass)
+                .orElseThrow(RuntimeException::new);
         DrlxParseResult drlxParseResult = drlxParse(context, packageModel, patternType, bindingId, expression);
         Expression dslExpr = buildExpressionWithIndexing(drlxParseResult);
         context.addExpression( dslExpr );
@@ -521,19 +520,19 @@ public class ModelGenerator {
         // Expression is a query, get bindings from query parameter type
         String queryName = "query_" + className;
         MethodDeclaration queryMethod = packageModel.getQueryMethod(queryName);
-        List<? extends BaseDescr> descriptors = pattern.getConstraint().getDescrs();
+        List<? extends BaseDescr> constraintDescrs = pattern.getConstraint().getDescrs();
         if(queryMethod != null) {
-            createQueryCallDSL(context, packageModel, queryName, queryMethod, descriptors);
+            createQueryCallDSL(context, packageModel, queryName, queryMethod, constraintDescrs);
             return;
         }
 
         Class<?> patternType = context.getClassFromContext(className);
 
         if (pattern.getIdentifier() != null) {
-            context.declarations.put( pattern.getIdentifier(), new DeclarationSpec(patternType, pattern));
+            context.addDeclaration(new DeclarationSpec(pattern.getIdentifier(), patternType, pattern));
         }
 
-        if (descriptors.isEmpty()) {
+        if (constraintDescrs.isEmpty() && pattern.getSource() == null) {
             MethodCallExpr dslExpr = new MethodCallExpr(null, INPUT_CALL);
             if (pattern.getIdentifier() != null) {
                 dslExpr.addArgument(new NameExpr(toVar(pattern.getIdentifier())));
@@ -546,7 +545,7 @@ public class ModelGenerator {
             }
             context.addExpression( dslExpr );
         } else {
-            for (BaseDescr constraint : descriptors) {
+            for (BaseDescr constraint : constraintDescrs) {
                 String expression = constraint.toString();
                 DrlxParseResult drlxParseResult = drlxParse(context, packageModel, patternType, pattern.getIdentifier(), expression);
 
@@ -573,7 +572,7 @@ public class ModelGenerator {
                 callCall.addArgument(valueOfMethod);
             } else {
                 QueryParameter qp = packageModel.queryVariables(queryName).get(i);
-                context.declarations.put(itemText, new DeclarationSpec(qp.type));
+                context.addDeclaration(new DeclarationSpec(itemText, qp.type));
                 callCall.addArgument(new NameExpr(toVar(itemText)));
             }
         }
