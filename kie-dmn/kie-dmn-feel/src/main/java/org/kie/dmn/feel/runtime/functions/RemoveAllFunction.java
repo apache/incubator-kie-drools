@@ -16,28 +16,31 @@
 
 package org.kie.dmn.feel.runtime.functions;
 
-import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
-public class SignavioRightFunction
+public class RemoveAllFunction
         extends BaseFEELFunction {
 
-    public SignavioRightFunction() {
-        super("right");
+    public RemoveAllFunction() {
+        super("removeAll");
     }
 
-    public FEELFnResult<String> invoke(@ParameterName("text") String text, @ParameterName("num_chars") BigDecimal num_chars) {
-        if (text == null) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "text", "cannot be null"));
-        }
-        if (num_chars == null) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "num_chars", "cannot be null"));
+    public FEELFnResult<List> invoke(@ParameterName("list1") List list1, @ParameterName("list2") List list2) {
+        if (list1 == null) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list1", "cannot be null"));
         }
 
-        String result = text.substring(text.length() - num_chars.intValue(), text.length());
+        // spec requires us to return a new list
+        List<Object> result = new ArrayList<Object>(list1);
 
-        return FEELFnResult.ofResult(result);
+        for (Object element : list2) {
+            result.remove(element);
+        }
+
+        return FEELFnResult.ofResult( result );
     }
 }

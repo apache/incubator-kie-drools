@@ -16,20 +16,18 @@
 
 package org.kie.dmn.feel.runtime.functions;
 
-import java.util.regex.Pattern;
+import java.math.BigDecimal;
 
-public class SignavioIsAlphanumericFunction
+public class IsNumericFunction
         extends BaseFEELFunction {
 
-    private static final Pattern ALPHA_NUMERIC_PATTERN = Pattern.compile("[a-zA-Z0-9]+");
-
-    public SignavioIsAlphanumericFunction() {
-        super("isAlphanumeric");
+    public IsNumericFunction() {
+        super("isNumeric");
     }
 
     public FEELFnResult<Boolean> invoke(@ParameterName("text") String text) {
-        boolean result = ALPHA_NUMERIC_PATTERN.matcher(text).matches();
+        FEELFnResult<BigDecimal> delegate = BuiltInFunctions.getFunction(NumberFunction.class).invoke(text, null, null);
         
-        return FEELFnResult.ofResult(result);
+        return FEELFnResult.ofResult(delegate.cata(e -> Boolean.FALSE, value -> Boolean.TRUE));
     }
 }

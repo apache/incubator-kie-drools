@@ -16,18 +16,14 @@
 
 package org.kie.dmn.feel.runtime.functions;
 
-import java.math.BigDecimal;
-
-public class SignavioIsNumericFunction
+public class LowerFunction
         extends BaseFEELFunction {
 
-    public SignavioIsNumericFunction() {
-        super("isNumeric");
+    public LowerFunction() {
+        super("lower");
     }
 
-    public FEELFnResult<Boolean> invoke(@ParameterName("text") String text) {
-        FEELFnResult<BigDecimal> delegate = BuiltInFunctions.getFunction(NumberFunction.class).invoke(text, null, null);
-        
-        return FEELFnResult.ofResult(delegate.cata(e -> Boolean.FALSE, value -> Boolean.TRUE));
+    public FEELFnResult<String> invoke(@ParameterName("text") String text) {
+        return BuiltInFunctions.getFunction(StringLowerCaseFunction.class).invoke(text);
     }
 }

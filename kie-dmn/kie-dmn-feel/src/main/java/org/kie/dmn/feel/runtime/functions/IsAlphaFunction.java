@@ -18,17 +18,17 @@ package org.kie.dmn.feel.runtime.functions;
 
 import java.util.regex.Pattern;
 
-public class SignavioIsSpacesFunction
+public class IsAlphaFunction
         extends BaseFEELFunction {
 
-    private static final Pattern SPACE_PATTERN = Pattern.compile(" +");
+    private static final Pattern ALPHA_PATTERN = Pattern.compile("[a-zA-Z]+");
 
-    public SignavioIsSpacesFunction() {
-        super("isSpaces");
+    public IsAlphaFunction() {
+        super("isAlpha");
     }
 
     public FEELFnResult<Boolean> invoke(@ParameterName("text") String text) {
-        boolean result = SPACE_PATTERN.matcher(text).matches();
+        boolean result = ALPHA_PATTERN.matcher(text).matches();
         
         return FEELFnResult.ofResult(result);
     }

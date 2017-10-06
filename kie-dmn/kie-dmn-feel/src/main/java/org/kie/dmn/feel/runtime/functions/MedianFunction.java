@@ -24,10 +24,10 @@ import java.util.stream.Collectors;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
-public class SignavioMedianFunction
+public class MedianFunction
         extends BaseFEELFunction {
 
-    public SignavioMedianFunction() {
+    public MedianFunction() {
         super("median");
     }
 

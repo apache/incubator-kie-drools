@@ -21,21 +21,21 @@ import java.util.List;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
-public class SignavioContainsOnlyFunction
+public class AreElementsOfFunction
         extends BaseFEELFunction {
 
-    public SignavioContainsOnlyFunction() {
-        super("containsOnly");
+    public AreElementsOfFunction() {
+        super("areElementsOf");
     }
 
     public FEELFnResult<Boolean> invoke(@ParameterName("list1") List list1, @ParameterName("list2") List list2) {
-        if (list1 == null) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list1", "cannot be null"));
+        if (list2 == null) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list2", "cannot be null"));
         }
 
         boolean result = true;
-        for (Object element : list2) {
-            result = list1.contains(element) && result;
+        for (Object element : list1) {
+            result = list2.contains(element) && result;
 
             // optimization: terminate early if an element is not actually contained.
             if (!result) {

@@ -22,10 +22,10 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.util.EvalHelper;
 
-public class SignavioTextOccurrencesFunction
+public class TextOccurrencesFunction
         extends BaseFEELFunction {
 
-    public SignavioTextOccurrencesFunction() {
+    public TextOccurrencesFunction() {
         super("textOccurrences");
     }
 

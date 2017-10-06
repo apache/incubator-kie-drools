@@ -16,14 +16,25 @@
 
 package org.kie.dmn.feel.runtime.functions;
 
-public class SignavioMidFunction
+import java.math.BigDecimal;
+import java.util.List;
+
+public class AvgFunction
         extends BaseFEELFunction {
 
-    public SignavioMidFunction() {
-        super("mid");
+    public AvgFunction() {
+        super("avg");
     }
 
-    public FEELFnResult<String> invoke(@ParameterName("text") String text, @ParameterName("start") Number start, @ParameterName("num_chars") Number num_chars) {
-        return BuiltInFunctions.getFunction(SubstringFunction.class).invoke(text, start, num_chars);
+    public FEELFnResult<BigDecimal> invoke(@ParameterName( "list" ) List list) {
+        return BuiltInFunctions.getFunction(MeanFunction.class).invoke(list);
+    }
+
+    public FEELFnResult<BigDecimal> invoke(@ParameterName("list") Number single) {
+        return BuiltInFunctions.getFunction(MeanFunction.class).invoke(single);
+    }
+
+    public FEELFnResult<BigDecimal> invoke(@ParameterName("n") Object[] list) {
+        return BuiltInFunctions.getFunction(MeanFunction.class).invoke(list);
     }
 }

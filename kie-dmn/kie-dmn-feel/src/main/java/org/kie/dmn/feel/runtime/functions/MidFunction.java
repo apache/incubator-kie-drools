@@ -16,20 +16,14 @@
 
 package org.kie.dmn.feel.runtime.functions;
 
-import java.util.regex.Pattern;
-
-public class SignavioIsAlphaFunction
+public class MidFunction
         extends BaseFEELFunction {
 
-    private static final Pattern ALPHA_PATTERN = Pattern.compile("[a-zA-Z]+");
-
-    public SignavioIsAlphaFunction() {
-        super("isAlpha");
+    public MidFunction() {
+        super("mid");
     }
 
-    public FEELFnResult<Boolean> invoke(@ParameterName("text") String text) {
-        boolean result = ALPHA_PATTERN.matcher(text).matches();
-        
-        return FEELFnResult.ofResult(result);
+    public FEELFnResult<String> invoke(@ParameterName("text") String text, @ParameterName("start") Number start, @ParameterName("num_chars") Number num_chars) {
+        return BuiltInFunctions.getFunction(SubstringFunction.class).invoke(text, start, num_chars);
     }
 }

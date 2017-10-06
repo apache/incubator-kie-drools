@@ -24,10 +24,10 @@ import java.util.stream.Collectors;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
-public class SignavioModeFunction
+public class ModeFunction
         extends BaseFEELFunction {
 
-    public SignavioModeFunction() {
+    public ModeFunction() {
         super("mode");
     }
 

@@ -16,14 +16,16 @@
 
 package org.kie.dmn.feel.runtime.functions;
 
-public class SignavioUpperFunction
+import java.math.BigDecimal;
+
+public class LenFunction
         extends BaseFEELFunction {
 
-    public SignavioUpperFunction() {
-        super("upper");
+    public LenFunction() {
+        super("len");
     }
 
-    public FEELFnResult<String> invoke(@ParameterName("text") String text) {
-        return BuiltInFunctions.getFunction(StringUpperCaseFunction.class).invoke(text);
+    public FEELFnResult<BigDecimal> invoke(@ParameterName("text") String text) {
+        return BuiltInFunctions.getFunction(StringLengthFunction.class).invoke(text);
     }
 }

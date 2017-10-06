@@ -17,26 +17,35 @@
 package org.kie.dmn.feel.runtime.functions;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
-public class SignavioLeftFunction
+public class TextFunction
         extends BaseFEELFunction {
 
-    public SignavioLeftFunction() {
-        super("left");
+    public TextFunction() {
+        super("text");
     }
 
-    public FEELFnResult<String> invoke(@ParameterName("text") String text, @ParameterName("num_chars") BigDecimal num_chars) {
-        if (text == null) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "text", "cannot be null"));
+    public FEELFnResult<String> invoke(@ParameterName("num") BigDecimal num, @ParameterName("format_text") String format_text) {
+        if (num == null) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "num", "cannot be null"));
         }
-        if (num_chars == null) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "num_chars", "cannot be null"));
+        if (format_text == null) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "format_text", "cannot be null"));
         }
 
-        String result = text.substring(0, num_chars.intValue());
+        DecimalFormat df = null;
+        try {
+            df = new DecimalFormat(format_text);
+
+        } catch (IllegalArgumentException e) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "format_text", "illegal specific format: " + format_text + " because: " + e.getMessage()));
+        }
+
+        String result = df.format(num);
 
         return FEELFnResult.ofResult(result);
     }

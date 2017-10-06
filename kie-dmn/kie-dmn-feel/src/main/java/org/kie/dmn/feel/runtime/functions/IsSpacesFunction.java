@@ -16,14 +16,20 @@
 
 package org.kie.dmn.feel.runtime.functions;
 
-public class SignavioLowerFunction
+import java.util.regex.Pattern;
+
+public class IsSpacesFunction
         extends BaseFEELFunction {
 
-    public SignavioLowerFunction() {
-        super("lower");
+    private static final Pattern SPACE_PATTERN = Pattern.compile(" +");
+
+    public IsSpacesFunction() {
+        super("isSpaces");
     }
 
-    public FEELFnResult<String> invoke(@ParameterName("text") String text) {
-        return BuiltInFunctions.getFunction(StringLowerCaseFunction.class).invoke(text);
+    public FEELFnResult<Boolean> invoke(@ParameterName("text") String text) {
+        boolean result = SPACE_PATTERN.matcher(text).matches();
+        
+        return FEELFnResult.ofResult(result);
     }
 }

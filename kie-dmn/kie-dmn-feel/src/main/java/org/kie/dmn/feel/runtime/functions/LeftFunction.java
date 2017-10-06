@@ -16,33 +16,28 @@
 
 package org.kie.dmn.feel.runtime.functions;
 
-import java.util.List;
+import java.math.BigDecimal;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
-public class SignavioNotContainsAnyFunction
+public class LeftFunction
         extends BaseFEELFunction {
 
-    public SignavioNotContainsAnyFunction() {
-        super("notContainsAny");
+    public LeftFunction() {
+        super("left");
     }
 
-    public FEELFnResult<Boolean> invoke(@ParameterName("list1") List list1, @ParameterName("list2") List list2) {
-        if (list1 == null) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list1", "cannot be null"));
+    public FEELFnResult<String> invoke(@ParameterName("text") String text, @ParameterName("num_chars") BigDecimal num_chars) {
+        if (text == null) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "text", "cannot be null"));
+        }
+        if (num_chars == null) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "num_chars", "cannot be null"));
         }
 
-        boolean result = true;
-        for (Object element : list2) {
-            result = (!list1.contains(element)) && result;
+        String result = text.substring(0, num_chars.intValue());
 
-            // optimization: terminate early if any element is actually contained.
-            if (!result) {
-                return FEELFnResult.ofResult(result);
-            }
-        }
-
-        return FEELFnResult.ofResult( result );
+        return FEELFnResult.ofResult(result);
     }
 }

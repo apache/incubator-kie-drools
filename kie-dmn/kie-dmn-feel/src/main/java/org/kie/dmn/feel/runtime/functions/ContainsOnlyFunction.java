@@ -16,29 +16,31 @@
 
 package org.kie.dmn.feel.runtime.functions;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
-public class SignavioRemoveAllFunction
+public class ContainsOnlyFunction
         extends BaseFEELFunction {
 
-    public SignavioRemoveAllFunction() {
-        super("removeAll");
+    public ContainsOnlyFunction() {
+        super("containsOnly");
     }
 
-    public FEELFnResult<List> invoke(@ParameterName("list1") List list1, @ParameterName("list2") List list2) {
+    public FEELFnResult<Boolean> invoke(@ParameterName("list1") List list1, @ParameterName("list2") List list2) {
         if (list1 == null) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list1", "cannot be null"));
         }
 
-        // spec requires us to return a new list
-        List<Object> result = new ArrayList<Object>(list1);
-
+        boolean result = true;
         for (Object element : list2) {
-            result.remove(element);
+            result = list1.contains(element) && result;
+
+            // optimization: terminate early if an element is not actually contained.
+            if (!result) {
+                return FEELFnResult.ofResult(result);
+            }
         }
 
         return FEELFnResult.ofResult( result );

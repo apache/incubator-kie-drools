@@ -28,10 +28,10 @@ import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
 import java.util.function.Function;
 
-public class SecondsDiffFunction
+public class DiffFunction
         extends BaseFEELFunction {
 
-    public SecondsDiffFunction() {
+    public DiffFunction() {
         super( "secondsDiff" );
     }
 
