@@ -38,7 +38,7 @@ public class SubstringAfterFunction
         if( index >= 0 ) {
             return FEELFnResult.ofResult( string.substring( index+match.length() ) );
         } else {
-            return FEELFnResult.ofResult( string );
+            return FEELFnResult.ofResult( "" );
         }
     }
 
