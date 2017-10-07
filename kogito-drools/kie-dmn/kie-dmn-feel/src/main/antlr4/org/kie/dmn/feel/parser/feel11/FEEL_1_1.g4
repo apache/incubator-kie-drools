@@ -626,7 +626,7 @@ StringCharacter
 
 fragment
 EscapeSequence
-	:	'\\' [btnfr"'\\]
+	:	'\\' ~[u]     // required to support FEEL regexps
     |   UnicodeEscape // This is not in the spec but prevents having to preprocess the input
 	;
 

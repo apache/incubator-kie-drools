@@ -71,6 +71,7 @@ public class FEELFunctionsTest extends BaseFEELTest {
                 { "replace(\"banana\",\"a\",\"o\")", "bonono" , null},
                 { "replace(\"banana\",\"(an)+\", \"**\")", "b**a" , null},
                 { "replace(\"banana\",\"[aeiouy]\",\"[$0]\")", "b[a]n[a]n[a]" , null},
+                { "replace(\"0123456789\",\"(\\d{3})(\\d{3})(\\d{4})\",\"($1) $2-$3\")", "(012) 345-6789" , null},
                 { "list contains([1, 2, 3], 2)", Boolean.TRUE , null},
                 { "list contains([1, 2, 3], 5)", Boolean.FALSE , null},
                 { "count([1, 2, 3])", BigDecimal.valueOf( 3 ) , null},

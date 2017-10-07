@@ -144,7 +144,11 @@ public class EvalHelper {
                                 }
                                 break;
                             }
+                            default:
+                                r.append( "\\" ).append( cn );
                         }
+                    } else {
+                        r.append( c );
                     }
                 } else {
                     r.append( c );
