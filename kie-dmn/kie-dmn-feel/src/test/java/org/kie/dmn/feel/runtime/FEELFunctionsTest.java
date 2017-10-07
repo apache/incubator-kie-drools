@@ -52,7 +52,7 @@ public class FEELFunctionsTest extends BaseFEELTest {
                 { "substring before( \"foobar\", \"xyz\")", "" , null},
                 { "substring before( \"foobar\", \"foo\")", "" , null},
                 { "substring after( \"foobar\", \"foo\")", "bar" , null},
-                { "substring after( \"foobar\", \"xyz\")", "foobar" , null},
+                { "substring after( \"foobar\", \"xyz\")", "" , null},
                 { "substring after( \"foobar\", \"bar\")", "" , null},
                 { "contains(\"foobar\", \"ob\")", Boolean.TRUE , null},
                 { "contains(\"foobar\", \"of\")", Boolean.FALSE , null},

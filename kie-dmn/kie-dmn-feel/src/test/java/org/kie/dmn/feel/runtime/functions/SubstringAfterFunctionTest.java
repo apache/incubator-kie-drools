@@ -44,6 +44,6 @@ public class SubstringAfterFunctionTest {
 
     @Test
     public void invokeMatchNotExists() {
-        FunctionTestUtil.assertResult(substringAfterFunction.invoke("foobar", "oook"), "foobar");
+        FunctionTestUtil.assertResult(substringAfterFunction.invoke("foobar", "oook"), "");
     }
 }
