@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools-examples-api</artifactId>
-    <version>7.3.1-SNAPSHOT</version>
+    <version>7.4.0.t014</version>
   </parent>
 
   <name>Drools API examples - Named KieSession from File</name>
