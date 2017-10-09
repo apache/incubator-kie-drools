@@ -74,7 +74,8 @@ public class KiePackagesBuilder {
             KnowledgePackageImpl pkg = (KnowledgePackageImpl) packages.computeIfAbsent( query.getPackage(), this::createKiePackage );
             pkg.addRule( compileQuery( pkg, query ) );
         }
-        for (Rule rule : model.getRules()) {
+        List<Rule> rules = model.getRules();
+        for (Rule rule : rules) {
             KnowledgePackageImpl pkg = (KnowledgePackageImpl) packages.computeIfAbsent( rule.getPackage(), this::createKiePackage );
             pkg.addRule( compileRule( pkg, rule ) );
         }

@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.drools.compiler.lang.descr.FunctionDescr;
 import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.CompilationUnit;
 import org.drools.javaparser.ast.Modifier;
@@ -43,7 +42,6 @@ import org.drools.javaparser.ast.stmt.BlockStmt;
 import org.drools.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.javaparser.ast.type.Type;
 import org.drools.javaparser.printer.PrettyPrinter;
-import org.drools.javaparser.printer.PrettyPrinterConfiguration;
 import org.drools.model.Global;
 import org.drools.model.Model;
 import org.drools.modelcompiler.builder.generator.DRLExprIdGenerator;
@@ -67,6 +65,8 @@ public class PackageModel {
     private Map<String, List<QueryParameter>> queryVariables = new HashMap<>();
 
     private List<MethodDeclaration> functions = new ArrayList<>();
+
+    private List<ClassOrInterfaceDeclaration> generatedPOJOs = new ArrayList<>();
 
     private DRLExprIdGenerator exprIdGenerator;
 
@@ -131,12 +131,22 @@ public class PackageModel {
         this.functions.addAll(functions);
     }
 
+    public void addAllGeneratedPOJOs(List<ClassOrInterfaceDeclaration> pojos) {
+        this.generatedPOJOs.addAll(pojos);
+    }
+
+    public List<ClassOrInterfaceDeclaration> getGeneratedPOJOsSource() {
+        return generatedPOJOs;
+    }
+
     public String getVarsSource() {
 //        if (true) return getVariableSource();
         return null;
     }
 
-    public String getRulesSource() {
+
+
+    public String getRulesSource(PrettyPrinter prettyPrinter) {
 //        if (true) return getRuleModelSource();
 
         CompilationUnit cu = new CompilationUnit();
@@ -147,7 +157,7 @@ public class PackageModel {
         cu.addImport(JavaParser.parseImport("import org.drools.model.*;"                   ));
         cu.addImport(JavaParser.parseImport("import static org.drools.model.DSL.*;"        ));
         cu.addImport(JavaParser.parseImport("import org.drools.model.Index.ConstraintType;"));
-        
+
         // imports from DRL:
         for ( String i : imports ) {
             if ( i.equals(name+".*") ) {
@@ -238,10 +248,9 @@ public class PackageModel {
         ruleMethods.values().forEach( rulesClass::addMember );
         queryMethods.values().forEach(rulesClass::addMember);
         
-        PrettyPrinterConfiguration config = new PrettyPrinterConfiguration();
-        config.setColumnAlignParameters(true);
+
 //        config.setColumnAlignFirstMethodChain(true);
-        return new PrettyPrinter(config).print(cu);
+        return prettyPrinter.print(cu);
     }
 
     private static void addGlobalField(ClassOrInterfaceDeclaration classDeclaration, String packageName, String globalName, Class<?> globalClass) {
@@ -261,11 +270,9 @@ public class PackageModel {
         field.getVariables().get(0).setInitializer(declarationOfCall);
     }
 
-    public void print() {
+    public void print(String source) {
         System.out.println("=====");
-        System.out.println("PackageModel "+name);
-        System.out.println("    imports: "+imports);
-        System.out.println(getRulesSource());
+        System.out.println(source);
         System.out.println("=====");
     }
 }
