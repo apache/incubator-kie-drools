@@ -37,6 +37,7 @@ import org.drools.javaparser.ast.type.UnknownType;
 import org.drools.modelcompiler.builder.PackageModel;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.util.*;
 
 import static org.drools.core.util.ClassUtils.getter2property;
@@ -379,4 +380,23 @@ public class DrlxParseUtil {
         return expression.substring(0, dot);
     }
 
+    public static Class extractGenericType(Class<?> clazz, final String methodName) {
+        Method method = null;
+        try {
+            method = clazz.getMethod(methodName, null);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException();
+        }
+
+        java.lang.reflect.Type returnType = method.getGenericReturnType();
+
+        if(returnType instanceof ParameterizedType){
+            ParameterizedType type = (ParameterizedType) returnType;
+            java.lang.reflect.Type[] typeArguments = type.getActualTypeArguments();
+            for(java.lang.reflect.Type typeArgument : typeArguments){
+                return (Class) typeArgument;
+            }
+        }
+        throw new RuntimeException("No generic type");
+    }
 }

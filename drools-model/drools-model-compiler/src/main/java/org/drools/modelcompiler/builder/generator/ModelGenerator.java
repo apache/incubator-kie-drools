@@ -16,9 +16,44 @@
 
 package org.drools.modelcompiler.builder.generator;
 
-import org.drools.compiler.lang.descr.*;
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.drools.compiler.lang.descr.AccumulateDescr;
+import org.drools.compiler.lang.descr.AndDescr;
+import org.drools.compiler.lang.descr.AttributeDescr;
+import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.compiler.lang.descr.BehaviorDescr;
+import org.drools.compiler.lang.descr.ConditionalBranchDescr;
+import org.drools.compiler.lang.descr.ConditionalElementDescr;
+import org.drools.compiler.lang.descr.EvalDescr;
+import org.drools.compiler.lang.descr.ExistsDescr;
+import org.drools.compiler.lang.descr.ForallDescr;
+import org.drools.compiler.lang.descr.FunctionDescr;
+import org.drools.compiler.lang.descr.NamedConsequenceDescr;
+import org.drools.compiler.lang.descr.NotDescr;
+import org.drools.compiler.lang.descr.OrDescr;
+import org.drools.compiler.lang.descr.PatternDescr;
+import org.drools.compiler.lang.descr.QueryDescr;
+import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.Behavior;
+import org.drools.core.rule.Pattern;
+import org.drools.core.rule.RuleConditionElement;
+import org.drools.core.rule.constraint.XpathConstraint;
+import org.drools.core.spi.Constraint;
 import org.drools.core.time.TimeUtils;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.index.IndexUtil;
@@ -29,10 +64,21 @@ import org.drools.javaparser.ast.Modifier;
 import org.drools.javaparser.ast.NodeList;
 import org.drools.javaparser.ast.body.MethodDeclaration;
 import org.drools.javaparser.ast.body.Parameter;
+import org.drools.javaparser.ast.drlx.OOPathExpr;
 import org.drools.javaparser.ast.drlx.expr.PointFreeExpr;
 import org.drools.javaparser.ast.drlx.expr.TemporalLiteralExpr;
-import org.drools.javaparser.ast.expr.*;
+import org.drools.javaparser.ast.expr.AssignExpr;
+import org.drools.javaparser.ast.expr.BinaryExpr;
 import org.drools.javaparser.ast.expr.BinaryExpr.Operator;
+import org.drools.javaparser.ast.expr.ClassExpr;
+import org.drools.javaparser.ast.expr.Expression;
+import org.drools.javaparser.ast.expr.FieldAccessExpr;
+import org.drools.javaparser.ast.expr.LambdaExpr;
+import org.drools.javaparser.ast.expr.MethodCallExpr;
+import org.drools.javaparser.ast.expr.NameExpr;
+import org.drools.javaparser.ast.expr.StringLiteralExpr;
+import org.drools.javaparser.ast.expr.UnaryExpr;
+import org.drools.javaparser.ast.expr.VariableDeclarationExpr;
 import org.drools.javaparser.ast.stmt.BlockStmt;
 import org.drools.javaparser.ast.stmt.ExpressionStmt;
 import org.drools.javaparser.ast.stmt.ReturnStmt;
@@ -46,13 +92,10 @@ import org.drools.model.Variable;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.RuleDescrImpl;
 
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import static org.drools.javaparser.printer.PrintUtil.toDrlx;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.*;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.parseBlock;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.StringUtil.toId;
 
 public class ModelGenerator {
@@ -88,19 +131,53 @@ public class ModelGenerator {
             if (descriptor instanceof QueryDescr) {
                 processQuery(pkg, packageModel, (QueryDescr) descriptor);
             } else {
-                processRule(pkg, packageModel, descriptor);
+                processRule(pkg, packageModel, descriptor, descr.getImpl());
             }
         }
 
         return packageModel;
     }
 
-    private static void processRule(InternalKnowledgePackage pkg, PackageModel packageModel, RuleDescr ruleDescr) {
+    private static void processRuleImpl(InternalKnowledgePackage pkg, PackageModel packageModel, RuleContext context, RuleImpl impl) {
+        List<RuleConditionElement> children = impl.getLhs().getChildren();
+        if (!children.isEmpty() && children.iterator().next() instanceof Pattern) {
+            final Pattern pattern = (Pattern) children.iterator().next();
+
+            List<DeclarationSpec> ooPathDeclarationSpec = new ArrayList<>();
+
+            for (Constraint constraint : pattern.getConstraints()) {
+                if (constraint instanceof XpathConstraint) {
+                    for (XpathConstraint.XpathChunk chunk : ((XpathConstraint)constraint).getChunks()) {
+
+                        final Class<?> returnedClass = chunk.getReturnedClass();
+
+                        final String expressionId = context.getExprId(returnedClass, chunk.toString());
+
+
+//                        final Expression expr = generateLambdaWithoutParameters(chunk.getAccessor());
+//
+//
+//                        final MethodCallExpr reactiveFrom = new MethodCallExpr(null, "reactiveFrom");
+//                        reactiveFrom.addArgument(new StringLiteralExpr("nameOfPreviousField"));
+//                        reactiveFrom.addArgument(exprArg);
+
+                        final DeclarationSpec decl = new DeclarationSpec(expressionId, returnedClass);
+                        ooPathDeclarationSpec.add(decl);
+                    }
+                }
+            }
+        }
+    }
+
+
+    private static void processRule(InternalKnowledgePackage pkg, PackageModel packageModel, RuleDescr ruleDescr, RuleImpl impl) {
         RuleContext context = new RuleContext(pkg, packageModel.getExprIdGenerator(), ruleDescr);
 
         for(Entry<String, Object> kv : ruleDescr.getNamedConsequences().entrySet()) {
             context.addNamedConsequence(kv.getKey(), kv.getValue().toString());
         }
+
+        processRuleImpl(pkg, packageModel, context, impl);
 
         visit(context, packageModel, ruleDescr.getLhs());
         MethodDeclaration ruleMethod = new MethodDeclaration(EnumSet.of(Modifier.PRIVATE), RULE_TYPE, "rule_" + toId( ruleDescr.getName() ) );
@@ -254,6 +331,8 @@ public class ModelGenerator {
                 .flatMap(new FromVisitor(ruleContext, packageModel)::visit);
 
         optToStream(fromExpr).forEach(declarationOfCall::addArgument);
+
+        optToStream(decl.optionalReactiveFrom).forEach(declarationOfCall::addArgument);
 
         decl.getEntryPoint().ifPresent( ep -> {
             MethodCallExpr entryPointCall = new MethodCallExpr(null, "entryPoint");
@@ -513,13 +592,18 @@ public class ModelGenerator {
                 String expression = constraint.toString();
                 DrlxParseResult drlxParseResult = drlxParse(context, packageModel, patternType, pattern.getIdentifier(), expression);
 
-                // need to augment the reactOn inside drlxParseResult with the look-ahead properties.
-                Collection<String> lookAheadFieldsOfIdentifier = context.getRuleDescr().lookAheadFieldsOfIdentifier(pattern);
-                drlxParseResult.reactOnProperties.addAll(lookAheadFieldsOfIdentifier);
+                if(drlxParseResult.expr instanceof OOPathExpr) {
+                    new OOPathExprVisitor(context, packageModel).visit(patternType, pattern.getIdentifier(), (OOPathExpr)drlxParseResult.expr);
+                } else {
+                    // need to augment the reactOn inside drlxParseResult with the look-ahead properties.
+                    Collection<String> lookAheadFieldsOfIdentifier = context.getRuleDescr().lookAheadFieldsOfIdentifier(pattern);
+                    drlxParseResult.reactOnProperties.addAll(lookAheadFieldsOfIdentifier);
 
-                Expression dslExpr = buildExpressionWithIndexing(drlxParseResult);
+                    Expression dslExpr = buildExpressionWithIndexing(drlxParseResult);
 
-                context.addExpression( dslExpr );
+                    context.addExpression( dslExpr );
+                }
+
             }
         }
     }
@@ -638,6 +722,10 @@ public class ModelGenerator {
             return new DrlxParseResult(patternType, exprId, bindingId, null, new HashSet<>(), new HashSet<>(), null, null, withThis, false);
         }
 
+        if(drlxExpr instanceof OOPathExpr) {
+            return new DrlxParseResult(patternType, exprId, bindingId, null, new HashSet<>(), new HashSet<>(), null, null, drlxExpr, false);
+        }
+
         throw new UnsupportedOperationException("Unknown expression: " + toDrlx(drlxExpr)); // TODO
 
     }
@@ -683,7 +771,7 @@ public class ModelGenerator {
         }
     }
 
-    private static Expression buildExpressionWithIndexing(DrlxParseResult drlxParseResult ) {
+    public static Expression buildExpressionWithIndexing(DrlxParseResult drlxParseResult ) {
 
         String exprId = drlxParseResult.exprId;
         String bindingId = drlxParseResult.bindingId;
