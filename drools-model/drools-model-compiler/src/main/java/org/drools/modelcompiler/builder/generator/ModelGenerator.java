@@ -46,6 +46,7 @@ import org.drools.compiler.lang.descr.OrDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.QueryDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.Behavior;
 import org.drools.core.time.TimeUtils;
@@ -111,12 +112,13 @@ public class ModelGenerator {
     private static final String DECLARATION_OF_CALL = "declarationOf";
     private static final String TYPE_CALL = "type";
 
-    public static PackageModel generateModel(InternalKnowledgePackage pkg, List<RuleDescrImpl> rules, List<FunctionDescr> functions) {
+    public static PackageModel generateModel(InternalKnowledgePackage pkg, List<RuleDescrImpl> rules, List<FunctionDescr> functions, List<TypeDeclarationDescr> typeDeclarations) {
         String name = pkg.getName();
         PackageModel packageModel = new PackageModel(name);
         packageModel.addImports(pkg.getTypeResolver().getImports());
         packageModel.addGlobals(pkg.getGlobals());
         packageModel.addAllFunctions(functions.stream().map(FunctionGenerator::toFunction).collect(Collectors.toList()));
+        packageModel.addAllGeneratedPOJOs(typeDeclarations.stream().map(POJOGenerator::toClassDeclaration).collect(Collectors.toList()));
 
         for (RuleDescrImpl descr : rules) {
             final RuleDescr descriptor = descr.getDescr();
@@ -127,7 +129,6 @@ public class ModelGenerator {
             }
         }
 
-        packageModel.print();
         return packageModel;
     }
 
