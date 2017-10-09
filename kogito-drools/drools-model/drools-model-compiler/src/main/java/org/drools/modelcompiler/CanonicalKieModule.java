@@ -16,10 +16,6 @@
 
 package org.drools.modelcompiler;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Collection;
-
 import org.drools.compiler.kie.builder.impl.KieProject;
 import org.drools.compiler.kie.builder.impl.ResultsImpl;
 import org.drools.compiler.kie.builder.impl.ZipKieModule;
@@ -30,6 +26,11 @@ import org.drools.modelcompiler.builder.KieBaseBuilder;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Map;
 
 public class CanonicalKieModule extends ZipKieModule {
 
@@ -49,10 +50,14 @@ public class CanonicalKieModule extends ZipKieModule {
     }
 
     @Override
-    public InternalKnowledgeBase createKieBase( KieBaseModelImpl kBaseModel, KieProject kieProject, ResultsImpl messages, KieBaseConfiguration conf ) {
-        KieProjectClassLoader kieProjectCL = new KieProjectClassLoader(kieProject);
+    public Map<String, byte[]> getClassesMap( boolean includeTypeDeclarations ) {
+        return super.getClassesMap( true );
+    }
 
-        KieBaseBuilder builder = new KieBaseBuilder( kBaseModel, kieProject.getClassLoader(), conf );
+    @Override
+    public InternalKnowledgeBase createKieBase( KieBaseModelImpl kBaseModel, KieProject kieProject, ResultsImpl messages, KieBaseConfiguration conf ) {
+        ClassLoader kieProjectCL = kieProject.getClassLoader();
+        KieBaseBuilder builder = new KieBaseBuilder( kBaseModel, kieProjectCL, conf );
 
         if (ruleClassesNames == null) {
             String packages = null;
@@ -62,41 +67,20 @@ public class CanonicalKieModule extends ZipKieModule {
                 throw new RuntimeException( e );
             }
             for ( String pkg : packages.split( "\n" ) ) {
-                builder.addModel( kieProjectCL.createInstance( pkg + "." + RULES_FILE_NAME ) );
+                builder.addModel( createInstance( kieProjectCL, pkg + "." + RULES_FILE_NAME ) );
             }
         } else {
-            ruleClassesNames.forEach( s -> builder.addModel( kieProjectCL.createInstance( s ) ) );
+            ruleClassesNames.forEach( s -> builder.addModel( createInstance( kieProjectCL, s ) ) );
         }
 
         return builder.createKieBase();
     }
 
-    class KieProjectClassLoader extends ClassLoader {
-        public KieProjectClassLoader(KieProject kieProject) {
-            super(kieProject.getClassLoader());
-        }
-
-        public Class<?> loadClass(String className) throws ClassNotFoundException {
-            try {
-                return super.loadClass( className );
-            } catch (ClassNotFoundException cnfe) { }
-
-            String fileName = className.replace( '.', '/' ) + ".class";
-            byte[] bytes = getBytes(fileName);
-
-            if (bytes == null) {
-                throw new ClassNotFoundException(className);
-            }
-
-            return defineClass(className, bytes, 0, bytes.length);
-        }
-
-        public <T> T createInstance(String className) {
-            try {
-                return (T) loadClass( className ).newInstance();
-            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-                throw new RuntimeException( e );
-            }
+    private <T> T createInstance(ClassLoader cl, String className) {
+        try {
+            return (T) cl.loadClass( className ).newInstance();
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException( e );
         }
     }
 }
