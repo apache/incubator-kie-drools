@@ -30,6 +30,11 @@ import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieModuleKieProject;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
+import org.drools.javaparser.JavaParser;
+import org.drools.javaparser.ast.CompilationUnit;
+import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import org.drools.javaparser.printer.PrettyPrinter;
+import org.drools.javaparser.printer.PrettyPrinterConfiguration;
 import org.kie.internal.builder.KnowledgeBuilder;
 
 import static org.drools.modelcompiler.CanonicalKieModule.PACKAGE_LIST;
@@ -69,6 +74,10 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
         List<String> sources = new ArrayList<>();
         StringBuilder pkgNames = new StringBuilder();
 
+        PrettyPrinterConfiguration config = new PrettyPrinterConfiguration();
+        config.setColumnAlignParameters(true);
+        PrettyPrinter prettyPrinter = new PrettyPrinter(config);
+
         for (PackageModel pkgModel : modelBuilder.getPackageModels()) {
             String pkgName = pkgModel.getName();
             pkgNames.append( pkgName ).append( "\n" );
@@ -81,8 +90,19 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
                 sources.add(varsSourceName);
             }
 
+            for(ClassOrInterfaceDeclaration generatedPojo : pkgModel.getGeneratedPOJOsSource()) {
+                final String source = toPojoSource(pkgModel.getName(), prettyPrinter, generatedPojo);
+                pkgModel.print(source);
+                final String varsSourceName = "src/main/java/" + folderName + "/" + generatedPojo.getName() + ".java";
+                srcMfs.write(varsSourceName, source.getBytes());
+                sources.add(varsSourceName);
+            }
+
+
             String rulesSourceName = "src/main/java/" + folderName + "/" + RULES_FILE_NAME + ".java";
-            byte[] rulesBytes = pkgModel.getRulesSource().getBytes();
+            String rulesSource = pkgModel.getRulesSource(prettyPrinter);
+            pkgModel.print(rulesSource);
+            byte[] rulesBytes = rulesSource.getBytes();
             srcMfs.write(rulesSourceName, rulesBytes);
             sources.add(rulesSourceName);
         }
@@ -90,6 +110,22 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
         trgMfs.write( PACKAGE_LIST, pkgNames.toString().getBytes() );
         return sources.toArray(new String[sources.size()]);
     }
+
+    private String toPojoSource(String packageName, PrettyPrinter prettyPrinter, ClassOrInterfaceDeclaration pojo) {
+        CompilationUnit cu = new CompilationUnit();
+        cu.setPackageDeclaration( packageName );
+
+        // fixed part
+        cu.addImport(JavaParser.parseImport("import java.util.*;"                          ));
+        cu.addImport(JavaParser.parseImport("import org.drools.model.*;"                   ));
+        cu.addImport(JavaParser.parseImport("import static org.drools.model.DSL.*;"        ));
+        cu.addImport(JavaParser.parseImport("import org.drools.model.Index.ConstraintType;"));
+
+        cu.addType(pojo);
+
+        return prettyPrinter.print(cu);
+    }
+
 
     private JavaCompiler createCompiler() {
         EclipseJavaCompiler javaCompiler = (EclipseJavaCompiler) JavaCompilerFactory.getInstance().loadCompiler( JavaDialectConfiguration.CompilerType.ECLIPSE, "1.8" );
