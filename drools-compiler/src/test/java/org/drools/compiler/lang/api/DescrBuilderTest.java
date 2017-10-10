@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.assertj.core.api.Assertions;
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.StockTick;
@@ -51,7 +52,6 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.mockito.ArgumentCaptor;
 
-import static org.drools.compiler.compiler.xml.rules.DumperTestHelper.assertEqualsIgnoreWhitespace;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -273,7 +273,7 @@ public class DescrBuilderTest extends CommonTestMethodBase {
                       pkg.getRules().size() );
 
         String drl = new DrlDumper().dump( pkg );
-        assertEqualsIgnoreWhitespace(expected, drl);
+        Assertions.assertThat(expected).isEqualToIgnoringWhitespace(drl);
 
         KiePackage kpkg = compilePkgDescr( pkg );
         assertEquals( "org.drools.compiler",

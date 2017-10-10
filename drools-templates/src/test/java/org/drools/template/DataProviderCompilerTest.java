@@ -15,6 +15,7 @@
 
 package org.drools.template;
 
+import org.assertj.core.api.Assertions;
 import org.drools.template.parser.Column;
 import org.drools.template.parser.DefaultTemplateContainer;
 import org.drools.template.parser.TemplateContainer;
@@ -23,8 +24,6 @@ import org.junit.Test;
 
 import java.io.InputStream;
 import java.util.*;
-
-import static org.junit.Assert.assertEquals;
 
 public class DataProviderCompilerTest {
 
@@ -133,9 +132,8 @@ public class DataProviderCompilerTest {
         final DataProviderCompiler converter = new DataProviderCompiler();
         final String drl = converter.compile(tdp,
                                              "/templates/rule_template_1.drl");
-        //        System.out.println( drl );
-        assertEqualsIgnoreWhitespace(EXPECTED_RULES.toString(),
-                                     drl);
+
+        Assertions.assertThat(EXPECTED_RULES.toString()).isEqualToIgnoringWhitespace(drl);
     }
     
     @Test
@@ -144,8 +142,7 @@ public class DataProviderCompilerTest {
         final DataProviderCompiler converter = new DataProviderCompiler();
         final String drl = converter.compile( tdp,
                                               "/templates/rule_template_indented.drl" );
-        assertEqualsIgnoreWhitespace( EXPECTED_RULES.toString(),
-                                      drl );
+        Assertions.assertThat(EXPECTED_RULES.toString()).isEqualToIgnoringWhitespace(drl);
     }
 
     @Test
@@ -172,9 +169,7 @@ public class DataProviderCompilerTest {
                 this.getClass().getResourceAsStream("/templates/rule_template_1.drl");
         final String drl = converter.compile(maps,
                                              templateStream);
-        //        System.out.println( drl );
-        assertEqualsIgnoreWhitespace(EXPECTED_RULES.toString(),
-                                     drl);
+        Assertions.assertThat(EXPECTED_RULES.toString()).isEqualToIgnoringWhitespace(drl);
     }
 
     public static class OBJ {
@@ -242,19 +237,7 @@ public class DataProviderCompilerTest {
         }
         final String drl = converter.compile(objs,
                                              templateStream);
-        //        System.out.println( drl );
-        assertEqualsIgnoreWhitespace(EXPECTED_RULES.toString(),
-                                     drl);
-    }
-
-    private static void assertEqualsIgnoreWhitespace(final String expected,
-                                                     final String actual) {
-        final String cleanExpected = expected.replaceAll("\\s+",
-                                                         "");
-        final String cleanActual = actual.replaceAll("\\s+",
-                                                     "");
-        assertEquals(cleanExpected,
-                     cleanActual);
+        Assertions.assertThat(EXPECTED_RULES.toString()).isEqualToIgnoringWhitespace(drl);
     }
 
 }

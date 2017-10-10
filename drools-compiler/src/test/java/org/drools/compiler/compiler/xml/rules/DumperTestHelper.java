@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 
+import org.assertj.core.api.Assertions;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.xml.XmlDumper;
@@ -49,9 +50,8 @@ public class DumperTestHelper {
         
         System.out.println(buffer);
         System.out.println(result);
-        
-        assertEqualsIgnoreWhitespace( buffer,
-                                      result );
+
+        Assertions.assertThat(buffer).isEqualToIgnoringWhitespace(result);
         assertNotNull( result );
     }
 
@@ -65,8 +65,7 @@ public class DumperTestHelper {
         String result2 = dumper.dump( pkgDerivated );
         System.out.println( result1 );
 
-        assertEqualsIgnoreWhitespace( result1,
-                                      result2 );
+        Assertions.assertThat(result1).isEqualToIgnoringWhitespace(result2);
     }
 
     public static String dump(String filename) throws Exception {
@@ -74,16 +73,6 @@ public class DumperTestHelper {
         final PackageDescr pkgOriginal = parser.parse( new InputStreamReader( DumperTestHelper.class.getResourceAsStream( filename ) ) );
         final DrlDumper dumper = new DrlDumper();
         return dumper.dump( pkgOriginal );
-    }
-
-    public static void assertEqualsIgnoreWhitespace(final String expected,
-                                                    final String actual) {
-        final String cleanExpected = expected.replaceAll( "\\s+",
-                                                          "" );
-        final String cleanActual = actual.replaceAll( "\\s+",
-                                                      "" );
-        assertEquals( cleanExpected,
-                      cleanActual );
     }
 
     private static String readFile(final String file) throws IOException {

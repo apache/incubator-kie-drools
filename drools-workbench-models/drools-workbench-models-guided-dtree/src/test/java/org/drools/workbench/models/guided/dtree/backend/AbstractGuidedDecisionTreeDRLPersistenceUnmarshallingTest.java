@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.assertj.core.api.Assertions;
 import org.drools.workbench.models.guided.dtree.shared.model.GuidedDecisionTree;
 import org.junit.After;
 import org.junit.Before;
@@ -29,8 +30,10 @@ import org.kie.soup.project.datamodel.oracle.MethodInfo;
 import org.kie.soup.project.datamodel.oracle.ModelField;
 import org.kie.soup.project.datamodel.oracle.PackageDataModelOracle;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public abstract class AbstractGuidedDecisionTreeDRLPersistenceUnmarshallingTest {
 
@@ -100,9 +103,6 @@ public abstract class AbstractGuidedDecisionTreeDRLPersistenceUnmarshallingTest 
 
     protected void assertEqualsIgnoreWhitespace(final String expected,
                                                 final String actual) {
-        final String cleanExpected = expected.replaceAll("\\s+", "");
-        final String cleanActual = actual.replaceAll("\\s+", "");
-
-        assertEquals(cleanExpected, cleanActual);
+        Assertions.assertThat(expected).isEqualToIgnoringWhitespace(actual);
     }
 }
