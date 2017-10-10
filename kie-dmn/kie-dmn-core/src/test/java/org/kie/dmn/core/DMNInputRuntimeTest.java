@@ -68,7 +68,7 @@ public class DMNInputRuntimeTest {
         final DMNContext context = DMNFactory.newContext();
         context.set( "Full Name", "John Doe" );
 
-        DMNResult dmnResult = runtime.evaluateDecisionByName( dmnModel, "Greeting Message", context );
+        DMNResult dmnResult = runtime.evaluateByName( dmnModel, context, "Greeting Message");
 
         assertThat( dmnResult.getDecisionResults().size(), is(1) );
         assertThat( dmnResult.getDecisionResultByName( "Greeting Message" ).getResult(), is( "Hello John Doe" ) );
@@ -77,15 +77,15 @@ public class DMNInputRuntimeTest {
 
         assertThat( result.get( "Greeting Message" ), is( "Hello John Doe" ) );
 
-        dmnResult = runtime.evaluateDecisionByName( dmnModel, "nonExistantName", context );
+        dmnResult = runtime.evaluateByName( dmnModel, context, "nonExistantName");
         assertThat( dmnResult.getDecisionResults().size(), is(1) );
         assertThat( dmnResult.getDecisionResultByName( "Greeting Message" ).getEvaluationStatus(), is( DMNDecisionResult.DecisionEvaluationStatus.NOT_EVALUATED ) );
 
-        dmnResult = runtime.evaluateDecisionByName( dmnModel, "", context );
+        dmnResult = runtime.evaluateByName( dmnModel, context, "" );
         assertThat( dmnResult.getDecisionResults().size(), is(1) );
         assertThat( dmnResult.getDecisionResultByName( "Greeting Message" ).getEvaluationStatus(), is( DMNDecisionResult.DecisionEvaluationStatus.NOT_EVALUATED ) );
 
-        dmnResult = runtime.evaluateDecisionByName( dmnModel, null, context );
+        dmnResult = runtime.evaluateByName( dmnModel, context, (String) null);
         assertThat( dmnResult.getDecisionResults().size(), is(1) );
         assertThat( dmnResult.getDecisionResultByName( "Greeting Message" ).getEvaluationStatus(), is( DMNDecisionResult.DecisionEvaluationStatus.NOT_EVALUATED ) );
     }
@@ -99,7 +99,7 @@ public class DMNInputRuntimeTest {
         final DMNContext context = DMNFactory.newContext();
         context.set( "Full Name", "John Doe" );
 
-        DMNResult dmnResult = runtime.evaluateDecisionById( dmnModel, "d_GreetingMessage", context );
+        DMNResult dmnResult = runtime.evaluateById( dmnModel, context, "d_GreetingMessage" );
 
         assertThat( dmnResult.getDecisionResults().size(), is(1) );
         assertThat( dmnResult.getDecisionResultById( "d_GreetingMessage" ).getResult(), is( "Hello John Doe" ) );
@@ -108,15 +108,15 @@ public class DMNInputRuntimeTest {
 
         assertThat( result.get( "Greeting Message" ), is( "Hello John Doe" ) );
 
-        dmnResult = runtime.evaluateDecisionById( dmnModel, "nonExistantId", context );
+        dmnResult = runtime.evaluateById( dmnModel, context, "nonExistantId" );
         assertThat( dmnResult.getDecisionResults().size(), is(1) );
         assertThat( dmnResult.getDecisionResultByName( "Greeting Message" ).getEvaluationStatus(), is( DMNDecisionResult.DecisionEvaluationStatus.NOT_EVALUATED ) );
 
-        dmnResult = runtime.evaluateDecisionById( dmnModel, "", context );
+        dmnResult = runtime.evaluateById( dmnModel, context, "" );
         assertThat( dmnResult.getDecisionResults().size(), is(1) );
         assertThat( dmnResult.getDecisionResultByName( "Greeting Message" ).getEvaluationStatus(), is( DMNDecisionResult.DecisionEvaluationStatus.NOT_EVALUATED ) );
 
-        dmnResult = runtime.evaluateDecisionById( dmnModel, null, context );
+        dmnResult = runtime.evaluateById( dmnModel, context, (String) null);
         assertThat( dmnResult.getDecisionResults().size(), is(1) );
         assertThat( dmnResult.getDecisionResultByName( "Greeting Message" ).getEvaluationStatus(), is( DMNDecisionResult.DecisionEvaluationStatus.NOT_EVALUATED ) );
     }
