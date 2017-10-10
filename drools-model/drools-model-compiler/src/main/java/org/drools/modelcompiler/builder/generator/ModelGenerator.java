@@ -50,10 +50,6 @@ import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.Behavior;
-import org.drools.core.rule.Pattern;
-import org.drools.core.rule.RuleConditionElement;
-import org.drools.core.rule.constraint.XpathConstraint;
-import org.drools.core.spi.Constraint;
 import org.drools.core.time.TimeUtils;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.index.IndexUtil;
@@ -138,46 +134,12 @@ public class ModelGenerator {
         return packageModel;
     }
 
-    private static void processRuleImpl(InternalKnowledgePackage pkg, PackageModel packageModel, RuleContext context, RuleImpl impl) {
-        List<RuleConditionElement> children = impl.getLhs().getChildren();
-        if (!children.isEmpty() && children.iterator().next() instanceof Pattern) {
-            final Pattern pattern = (Pattern) children.iterator().next();
-
-            List<DeclarationSpec> ooPathDeclarationSpec = new ArrayList<>();
-
-            for (Constraint constraint : pattern.getConstraints()) {
-                if (constraint instanceof XpathConstraint) {
-                    for (XpathConstraint.XpathChunk chunk : ((XpathConstraint)constraint).getChunks()) {
-
-                        final Class<?> returnedClass = chunk.getReturnedClass();
-
-                        final String expressionId = context.getExprId(returnedClass, chunk.toString());
-
-
-//                        final Expression expr = generateLambdaWithoutParameters(chunk.getAccessor());
-//
-//
-//                        final MethodCallExpr reactiveFrom = new MethodCallExpr(null, "reactiveFrom");
-//                        reactiveFrom.addArgument(new StringLiteralExpr("nameOfPreviousField"));
-//                        reactiveFrom.addArgument(exprArg);
-
-                        final DeclarationSpec decl = new DeclarationSpec(expressionId, returnedClass);
-                        ooPathDeclarationSpec.add(decl);
-                    }
-                }
-            }
-        }
-    }
-
-
     private static void processRule(InternalKnowledgePackage pkg, PackageModel packageModel, RuleDescr ruleDescr, RuleImpl impl) {
         RuleContext context = new RuleContext(pkg, packageModel.getExprIdGenerator(), ruleDescr);
 
         for(Entry<String, Object> kv : ruleDescr.getNamedConsequences().entrySet()) {
             context.addNamedConsequence(kv.getKey(), kv.getValue().toString());
         }
-
-        processRuleImpl(pkg, packageModel, context, impl);
 
         visit(context, packageModel, ruleDescr.getLhs());
         MethodDeclaration ruleMethod = new MethodDeclaration(EnumSet.of(Modifier.PRIVATE), RULE_TYPE, "rule_" + toId( ruleDescr.getName() ) );
