@@ -467,6 +467,11 @@ public class TimerManager {
             this.paramaeters = paramaeters;
         }
 
+        @Override
+        public boolean isNewTimer() {
+            return false;
+        }
+
     }
 
     /**
