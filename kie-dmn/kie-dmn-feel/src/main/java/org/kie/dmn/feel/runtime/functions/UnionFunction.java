@@ -18,8 +18,12 @@ package org.kie.dmn.feel.runtime.functions;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
 
+import java.util.Set;
+import java.util.SortedSet;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
@@ -36,21 +40,22 @@ public class UnionFunction
         if ( lists == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "lists", "cannot be null"));
         }
-        // spec requires us to return a new list
-        List result = new ArrayList();
-        for ( Object list : lists ) {
-            if ( list instanceof Collection ) {
-                ((Collection) list).stream().forEach( i -> {
-                    if ( !result.contains( i ) ) result.add( i );
-                } );
-            } else if ( list != null ) {
-                // singleton list
-                if ( !result.contains( list ) ) result.add( list );
+
+        final Set<Object> resultSet = new LinkedHashSet<>();
+        for ( final Object list : lists ) {
+            if ( list != null ) {
+                if ( list instanceof Collection ) {
+                    resultSet.addAll((Collection) list);
+                } else {
+                    resultSet.add(list);
+                }
             } else {
                 // TODO review accordingly to spec, original behavior was: return null;
                 return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "lists", "one of the elements in list is null"));
             }
         }
-        return FEELFnResult.ofResult( result );
+
+        // spec requires us to return a new list
+        return FEELFnResult.ofResult( new ArrayList<>(resultSet) );
     }
 }
