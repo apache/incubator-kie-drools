@@ -1,0 +1,63 @@
+package example;
+import java.io.Serializable;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import org.drools.persistence.jpa.marshaller.VariableEntity;
+
+@Entity
+@Table(
+        name = "CASE_DETAIL"
+)
+public class CaseDetail extends VariableEntity implements Serializable {
+    private static final long serialVersionUID = 1L;
+    @Id
+    @Basic(
+            optional = true
+    )
+    @GeneratedValue(
+            strategy = GenerationType.AUTO
+    )
+    @Column(
+            name = "CASE_DETAIL_ID"
+    )
+    private Integer caseDetailId;
+
+    public CaseDetail() {
+    }
+
+    public CaseDetail(Integer caseDetailId) {
+        this.caseDetailId = caseDetailId;
+    }
+
+    public Integer getCaseDetailId() {
+        return this.caseDetailId;
+    }
+
+    public void setCaseDetailId(Integer caseDetailId) {
+        this.caseDetailId = caseDetailId;
+    }
+
+    public int hashCode() {
+        int hash = 0;
+        hash = hash + (this.caseDetailId != null?this.caseDetailId.hashCode():0);
+        return hash;
+    }
+
+    public boolean equals(Object object) {
+        if(!(object instanceof CaseDetail)) {
+            return false;
+        } else {
+            CaseDetail other = (CaseDetail)object;
+            return (this.caseDetailId != null || other.caseDetailId == null) && (this.caseDetailId == null || this.caseDetailId.equals(other.caseDetailId));
+        }
+    }
+
+    public String toString() {
+        return "example.CaseDetail[ caseDetailId=" + this.caseDetailId + " ]";
+    }
+}

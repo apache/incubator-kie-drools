@@ -57,7 +57,7 @@ import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
 public class ProcessServiceImplTest extends AbstractKieServicesBaseTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentServiceTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProcessServiceImplTest.class);
 
     private List<DeploymentUnit> units = new ArrayList<DeploymentUnit>();
 
