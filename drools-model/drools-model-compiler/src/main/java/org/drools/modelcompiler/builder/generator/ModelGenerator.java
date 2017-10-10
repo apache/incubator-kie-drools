@@ -288,12 +288,6 @@ public class ModelGenerator {
         declarationOfCall.addArgument(typeCall);
         declarationOfCall.addArgument(new StringLiteralExpr(decl.getBindingId()));
 
-        final Optional<Expression> fromExpr = decl
-                .optSource
-                .flatMap(new FromVisitor(ruleContext, packageModel)::visit);
-
-        optToStream(fromExpr).forEach(declarationOfCall::addArgument);
-
         optToStream(decl.optionalReactiveFrom).forEach(declarationOfCall::addArgument);
 
         decl.getEntryPoint().ifPresent( ep -> {
@@ -534,7 +528,12 @@ public class ModelGenerator {
         Class<?> patternType = context.getClassFromContext(className);
 
         if (pattern.getIdentifier() != null) {
-            context.addDeclaration(new DeclarationSpec(pattern.getIdentifier(), patternType, pattern));
+            if(pattern.getSource() != null) {
+                final Optional<Expression> e = new FromVisitor(context, packageModel).visit(pattern.getSource());
+                context.addDeclaration(new DeclarationSpec(pattern.getIdentifier(), patternType, pattern, e));
+            } else {
+                context.addDeclaration(new DeclarationSpec(pattern.getIdentifier(), patternType, pattern));
+            }
         }
 
         if (constraintDescrs.isEmpty() && pattern.getSource() == null) {

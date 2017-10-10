@@ -7,29 +7,18 @@ import java.util.Optional;
 import org.drools.compiler.lang.descr.BehaviorDescr;
 import org.drools.compiler.lang.descr.EntryPointDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
-import org.drools.compiler.lang.descr.PatternSourceDescr;
 import org.drools.javaparser.ast.expr.Expression;
 
 public class DeclarationSpec {
     final String bindingId;
     final Class<?> declarationClass;
     final Optional<PatternDescr> optPattern;
-    final Optional<PatternSourceDescr> optSource;
     final Optional<Expression> optionalReactiveFrom;
-
-    public DeclarationSpec(String bindingId, Class<?> declarationClass, PatternDescr pattern) {
-        this.bindingId = bindingId;
-        this.declarationClass = declarationClass;
-        this.optPattern = Optional.of(pattern);
-        this.optSource = Optional.ofNullable(pattern.getSource());
-        this.optionalReactiveFrom = Optional.empty();
-    }
 
     public DeclarationSpec(String bindingId, Class<?> declarationClass) {
         this.bindingId = bindingId;
         this.declarationClass = declarationClass;
         this.optPattern = Optional.empty();
-        this.optSource = Optional.empty();
         this.optionalReactiveFrom = Optional.empty();
     }
 
@@ -37,8 +26,21 @@ public class DeclarationSpec {
         this.bindingId = bindingId;
         this.declarationClass = declarationClass;
         this.optPattern = Optional.empty();
-        this.optSource = Optional.empty();
         this.optionalReactiveFrom = Optional.of(optionalReactiveFrom);
+    }
+
+    public DeclarationSpec(String bindingId, Class<?> declarationClass, PatternDescr pattern) {
+        this.bindingId = bindingId;
+        this.declarationClass = declarationClass;
+        this.optPattern = Optional.of(pattern);
+        this.optionalReactiveFrom = Optional.empty();
+    }
+
+    public DeclarationSpec(String bindingId, Class<?> declarationClass, PatternDescr pattern, Optional<Expression> optionalReactiveFrom) {
+        this.bindingId = bindingId;
+        this.declarationClass = declarationClass;
+        this.optPattern = Optional.of(pattern);
+        this.optionalReactiveFrom = optionalReactiveFrom;
     }
 
     Optional<String> getEntryPoint() {
