@@ -102,6 +102,15 @@ public interface CaseService {
     CaseInstance getCaseInstance(String caseId, boolean withData, boolean withRoles, boolean withMilestones, boolean withStages) throws CaseNotFoundException;
 
     /**
+     * Closes case with given case id (including all attached process instances if any).
+     * Does not affect case file so in case it can still be used to reopen the case by starting new instances.
+     * @param caseId unique case id in the format PREFIX-GENERATED_ID as described on startCase method
+     * @param optional comment to be added when closing the case instance
+     * @throws CaseNotFoundException thrown in case case was not found with given id
+     */
+    void closeCase(String caseId, String comment) throws CaseNotFoundException;
+    
+    /**
      * Cancels case with given case id (including all attached process instances if any).
      * Does not affect case file so in case it can still be used to reopen the case by starting new instances.
      * @param caseId unique case id in the format PREFIX-GENERATED_ID as described on startCase method

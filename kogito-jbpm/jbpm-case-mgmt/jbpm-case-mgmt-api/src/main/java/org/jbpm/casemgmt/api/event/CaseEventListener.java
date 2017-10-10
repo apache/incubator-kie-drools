@@ -30,6 +30,12 @@ public interface CaseEventListener extends EventListener {
 
     default void afterCaseStarted(CaseStartEvent event) {        
     };
+    
+    default void beforeCaseClosed(CaseCloseEvent event) {        
+    };
+    
+    default void afterCaseClosed(CaseCloseEvent event) {        
+    };
 
     default void beforeCaseCancelled(CaseCancelEvent event) {        
     };

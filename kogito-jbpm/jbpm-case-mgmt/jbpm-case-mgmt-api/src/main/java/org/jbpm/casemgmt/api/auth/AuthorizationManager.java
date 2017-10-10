@@ -28,6 +28,7 @@ public interface AuthorizationManager {
     public static final String ADMIN_ROLE = "admin";
     
     public enum ProtectedOperation {
+        CLOSE_CASE,
         CANCEL_CASE,
         DESTROY_CASE,
         REOPEN_CASE,

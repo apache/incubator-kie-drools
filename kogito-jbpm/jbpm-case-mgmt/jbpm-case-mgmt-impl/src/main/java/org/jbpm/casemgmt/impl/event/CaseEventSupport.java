@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.drools.core.event.AbstractEventSupport;
 import org.jbpm.casemgmt.api.event.CaseCancelEvent;
+import org.jbpm.casemgmt.api.event.CaseCloseEvent;
 import org.jbpm.casemgmt.api.event.CaseCommentEvent;
 import org.jbpm.casemgmt.api.event.CaseDataEvent;
 import org.jbpm.casemgmt.api.event.CaseDestroyEvent;
@@ -75,6 +76,33 @@ public class CaseEventSupport extends AbstractEventSupport<CaseEventListener> {
 
             do {
                 iter.next().afterCaseStarted(event);
+            } while (iter.hasNext());
+        }
+    }
+    
+    /*
+     * fire*CaseClosed
+     */
+    public void fireBeforeCaseClosed(String caseId, String comment) {
+        final Iterator<CaseEventListener> iter = getEventListenersIterator();
+
+        if (iter.hasNext()) {
+            final CaseCloseEvent event = new CaseCloseEvent(identityProvider.getName(), caseId, comment);
+
+            do{
+                iter.next().beforeCaseClosed(event);
+            } while (iter.hasNext());
+        }
+    }
+
+    public void fireAfterCaseClosed(String caseId, String comment) {
+        final Iterator<CaseEventListener> iter = getEventListenersIterator();
+
+        if (iter.hasNext()) {
+            final CaseCloseEvent event = new CaseCloseEvent(identityProvider.getName(), caseId, comment);
+
+            do {
+                iter.next().afterCaseClosed(event);
             } while (iter.hasNext());
         }
     }

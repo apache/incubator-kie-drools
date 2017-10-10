@@ -16,6 +16,12 @@
 
 package org.jbpm.casemgmt.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -23,7 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jbpm.casemgmt.api.CaseNotFoundException;
+import org.assertj.core.api.Assertions;
 import org.jbpm.casemgmt.api.model.AdHocFragment;
 import org.jbpm.casemgmt.api.model.CaseStatus;
 import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
@@ -44,8 +50,6 @@ import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.query.QueryFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.junit.Assert.*;
 
 public class CaseRuntimeDataServiceImplTest extends AbstractCaseServicesBaseTest {
 
@@ -644,14 +648,11 @@ public class CaseRuntimeDataServiceImplTest extends AbstractCaseServicesBaseTest
             userTaskService.completeAutoProgress(tasks.get(0).getId(),
                     "john",
                     params);
-
-            try {
-                caseService.getCaseInstance(caseId);
-                fail("Case should already be finished");
-            } catch (CaseNotFoundException e) {
-                // expected
-                caseId = null;
-            }
+        
+            CaseInstance instance = caseService.getCaseInstance(caseId);
+            Assertions.assertThat(instance.getStatus()).isEqualTo(CaseStatus.CLOSED.getId());
+            caseId = null;
+            
         } catch (Exception e) {
             logger.error("Unexpected error {}", e.getMessage(), e);
             fail("Unexpected exception " + e.getMessage());

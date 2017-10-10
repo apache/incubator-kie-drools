@@ -52,6 +52,7 @@ import org.jbpm.casemgmt.impl.command.AddDynamicTaskCommand;
 import org.jbpm.casemgmt.impl.command.AddDynamicTaskToStageCommand;
 import org.jbpm.casemgmt.impl.command.CancelCaseCommand;
 import org.jbpm.casemgmt.impl.command.CaseCommentCommand;
+import org.jbpm.casemgmt.impl.command.CloseCaseCommand;
 import org.jbpm.casemgmt.impl.command.ModifyRoleAssignmentCommand;
 import org.jbpm.casemgmt.impl.command.RemoveDataCaseFileInstanceCommand;
 import org.jbpm.casemgmt.impl.command.ReopenCaseCommand;
@@ -220,11 +221,19 @@ public class CaseServiceImpl implements CaseService {
                 caseInstance.setCaseStages(stages);
             }
             
-            return caseInstance;
-        } else {
-            return null;
-        }
-    }    
+        } 
+        
+        return caseInstance;
+    }   
+    
+
+    @Override
+    public void closeCase(String caseId, String comment) throws CaseNotFoundException {
+        authorizationManager.checkOperationAuthorization(caseId, ProtectedOperation.CLOSE_CASE);
+        logger.debug("About to close case {} with comment {}", caseId, comment);        
+        ProcessInstanceDesc pi = verifyCaseIdExists(caseId);        
+        processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new CloseCaseCommand(identityProvider, pi.getDeploymentId(), caseId, comment, processService, runtimeDataService));
+    }
 
     @Override
     public void cancelCase(String caseId) throws CaseNotFoundException {
@@ -652,5 +661,6 @@ public class CaseServiceImpl implements CaseService {
         
         return false;
     }
+
 
 }

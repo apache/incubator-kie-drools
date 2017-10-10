@@ -553,7 +553,13 @@ public abstract class AbstractCaseServicesBaseTest {
     }
 
     public void assertCaseInstanceNotActive(String caseId) {
-        Throwable thrown = catchThrowable(() -> caseService.getCaseInstance(caseId));
-        assertThat(thrown).as("Case instance is still active").isInstanceOf(CaseNotFoundException.class);
+        try {
+            CaseInstance caseInstance = caseService.getCaseInstance(caseId);
+            assertThat(caseInstance).isNotNull();
+            assertThat(caseInstance.getStatus()).isIn(CaseStatus.CLOSED.getId(), CaseStatus.CANCELLED.getId());
+        } catch (CaseNotFoundException ex) {
+            // in case it does not exist at all
+        }
+        
     }
 }
