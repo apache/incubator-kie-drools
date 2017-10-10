@@ -1,7 +1,6 @@
 package org.drools.modelcompiler.builder.generator;
 
 import java.util.HashSet;
-import java.util.List;
 
 import org.drools.javaparser.ast.drlx.OOPathChunk;
 import org.drools.javaparser.ast.drlx.OOPathExpr;
@@ -33,33 +32,32 @@ public class OOPathExprVisitor {
 
         for (OOPathChunk chunk : ooPathExpr.getChunks()) {
 
-            String fieldName = chunk.getField().toString();
+            final String fieldName = chunk.getField().toString();
 
-            TypedExpression callExpr = DrlxParseUtil.nameExprToMethodCallExpr(fieldName, previousClass);
-            Class<?> expressionType = callExpr.getType().orElseThrow(RuntimeException::new);
-            if (expressionType == List.class) {
-                expressionType = extractGenericType(previousClass, ((MethodCallExpr) callExpr.getExpression()).getName().toString());
+            final TypedExpression callExpr = DrlxParseUtil.nameExprToMethodCallExpr(fieldName, previousClass);
+            Class<?> fieldType = callExpr.getType().orElseThrow(RuntimeException::new);
+            if (Iterable.class.isAssignableFrom(fieldType)) { // Hack to find the generic types of collections
+                fieldType = extractGenericType(previousClass, ((MethodCallExpr) callExpr.getExpression()).getName().toString());
             }
-            String bindingId = context.getExprId(expressionType, fieldName);
 
-            Expression withThis = prepend(new NameExpr("_this"), callExpr.getExpression());
-            final Expression expr = generateLambdaWithoutParameters(new HashSet<>(), withThis);
+            final String bindingId = context.getExprId(fieldType, fieldName);
+            final Expression accessorLambda = generateLambdaWithoutParameters(new HashSet<>(),
+                                                                    prepend(new NameExpr("_this"), callExpr.getExpression()));
 
             final MethodCallExpr reactiveFrom = new MethodCallExpr(null, "reactiveFrom");
             reactiveFrom.addArgument(new NameExpr(toVar(previousBind)));
-            reactiveFrom.addArgument(expr);
+            reactiveFrom.addArgument(accessorLambda);
 
-            context.addDeclaration(new DeclarationSpec(bindingId, expressionType, reactiveFrom));
+            context.addDeclaration(new DeclarationSpec(bindingId, fieldType, reactiveFrom));
 
-            Expression condition = chunk.getCondition();
+            final Expression condition = chunk.getCondition();
             if (condition != null) {
-                final ModelGenerator.DrlxParseResult drlxParseResult = ModelGenerator.drlxParse(context, packageModel, expressionType, bindingId, condition.toString());
-                Expression dslExpr = buildExpressionWithIndexing(drlxParseResult);
-                context.addExpression(dslExpr);
+                final ModelGenerator.DrlxParseResult drlxParseResult = ModelGenerator.drlxParse(context, packageModel, fieldType, bindingId, condition.toString());
+                context.addExpression(buildExpressionWithIndexing(drlxParseResult));
             }
 
             previousBind = bindingId;
-            previousClass = expressionType;
+            previousClass = fieldType;
         }
     }
 }
