@@ -161,10 +161,10 @@ Check the maven repository [path]_pom.xml_
 
 *Prerequisites*
 
-* Set up Git.
-* Authenticate with GitHub using either HTTPS or SSH. 
-+
-See https://help.github.com/articles/set-up-git/[GitHub] for more information about setting up and authenticating Git. 
+* Set up https://git-scm.com/[Git].
+* Authenticate on GitHub using either HTTPS or SSH.
+** See https://help.github.com/articles/set-up-git/[GitHub] for more information about setting up and authenticating Git.
+* Set up http://maven.apache.org/[Maven].
 
 Build and run the examples from source.
 
@@ -172,22 +172,11 @@ Build and run the examples from source.
 +
 [source,sh,options="nowrap"]
 ----
-$ git clone git@github.com:kiegroup/optaplanner.git optaplanner
+$ git clone https://github.com/kiegroup/optaplanner.git
 ...
 ----
-+
-[NOTE]
-====
-If you don't have a GitHub account or your local Git installation isn't configured with it, use this command instead, to avoid an authentication issue:
 
-[source,sh,options="nowrap"]
-----
-$ git clone https://github.com/kiegroup/optaplanner.git optaplanner
-...
-----
-====
-
-. Build it with http://maven.apache.org/[Maven]:
+. Build it with Maven:
 +
 [source,sh,options="nowrap"]
 ----
