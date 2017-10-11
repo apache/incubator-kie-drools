@@ -18,7 +18,6 @@ package org.jbpm.casemgmt.impl;
 
 import static java.util.stream.Collectors.toMap;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.fail;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -38,6 +37,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.assertj.core.api.Assertions;
+import org.jbpm.bpmn2.objects.Person;
 import org.jbpm.casemgmt.api.AdHocFragmentNotFoundException;
 import org.jbpm.casemgmt.api.CaseActiveException;
 import org.jbpm.casemgmt.api.CaseCommentNotFoundException;
@@ -94,6 +94,7 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
         processes.add("cases/CaseFileConditionalEvent.bpmn2");
         processes.add("cases/CaseWithRolesDefinition.bpmn2");
         processes.add("cases/CaseWithTwoStagesConditions.bpmn2");
+        processes.add("cases/CaseWithExpressionOnCaseFileItem.bpmn2");
         // add processes that can be used by cases but are not cases themselves
         processes.add("processes/DataVerificationProcess.bpmn2");
         return processes;
@@ -2188,7 +2189,44 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
             assertEquals(2, caseProcessInstances.size());            
             
             caseId = null;
+        } catch (Exception e) {
+            logger.error("Unexpected error {}", e.getMessage(), e);
+            fail("Unexpected exception " + e.getMessage());
+        } finally {
+            if (caseId != null) {
+                caseService.cancelCase(caseId);
+            }
+        }
+    }
 
+    @Test
+    public void testStartExpressionCaseWithCaseFile() {
+        Map<String, Object> data = new HashMap<>();
+        data.put("person", new Person("john"));
+        CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), EXPRESSION_CASE_P_ID, data);
+
+        String caseId = caseService.startCase(deploymentUnit.getIdentifier(), EXPRESSION_CASE_P_ID, caseFile);
+        assertNotNull(caseId);
+        assertEquals(FIRST_CASE_ID, caseId);
+        try {
+            CaseInstance cInstance = caseService.getCaseInstance(caseId, true, false, false, false);
+            assertNotNull(cInstance);
+            assertEquals(FIRST_CASE_ID, cInstance.getCaseId());
+            assertNotNull(cInstance.getCaseFile());
+            assertEquals("john", ((Person) cInstance.getCaseFile().getData("person")).getName());
+            assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
+            
+            List<TaskSummary> tasks = caseRuntimeDataService.getCaseTasksAssignedAsPotentialOwner(caseId, "john",null, new QueryContext());
+            assertNotNull(tasks);
+            assertEquals(1, tasks.size());
+            
+            Map<String, Object> taskInputs = userTaskService.getTaskInputContentByTaskId(tasks.get(0).getId());
+            Object personName = taskInputs.get("personName");
+            
+            assertEquals("john", personName);
+
+            caseService.cancelCase(caseId);
+            caseId = null;
         } catch (Exception e) {
             logger.error("Unexpected error {}", e.getMessage(), e);
             fail("Unexpected exception " + e.getMessage());

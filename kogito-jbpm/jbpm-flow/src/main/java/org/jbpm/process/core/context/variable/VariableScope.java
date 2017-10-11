@@ -72,7 +72,7 @@ public class VariableScope extends AbstractContext {
                 return variable;
             }
         }
-        if (variableName.startsWith(CASE_FILE_PREFIX)) {
+        if (variableName.startsWith(CASE_FILE_PREFIX) && variableName.indexOf(".") == -1) {
             Variable caseVariable = new Variable();
             caseVariable.setName(CASE_FILE_PREFIX+variableName);
             caseVariable.setType(new ObjectDataType());
