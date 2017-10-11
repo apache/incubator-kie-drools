@@ -38,6 +38,7 @@ import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1BaseVisitor;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser.ContextEntryContext;
+import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser.KeyNameContext;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser.NameRefContext;
 import org.kie.dmn.feel.parser.feel11.ParserHelper;
 import org.kie.dmn.feel.util.EvalHelper;
@@ -237,9 +238,19 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
             // optimization: if either left or right is a null literal, just null
             return DirectCompilerResult.of(new NullLiteralExpr(), BuiltInType.UNKNOWN, DirectCompilerResult.mergeFDs(left, right));
         } else if ( left.resultType == BuiltInType.STRING && right.resultType == BuiltInType.STRING ) {
-            BinaryExpr plusCall = new BinaryExpr(left.getExpression(), right.getExpression(), BinaryExpr.Operator.PLUS);
-            Expression result = groundToNullIfAnyIsNull(plusCall, left.getExpression(), right.getExpression());
-            return DirectCompilerResult.of(result, BuiltInType.STRING, DirectCompilerResult.mergeFDs(left, right));
+            if (left.getExpression() instanceof StringLiteralExpr && right.getExpression() instanceof StringLiteralExpr) {
+                BinaryExpr plusCall = new BinaryExpr(left.getExpression(), right.getExpression(), BinaryExpr.Operator.PLUS);
+                Expression result = groundToNullIfAnyIsNull(plusCall, left.getExpression(), right.getExpression());
+                return DirectCompilerResult.of(result, BuiltInType.STRING, DirectCompilerResult.mergeFDs(left, right));
+            } else {
+                Expression newStringBuilderExpr = JavaParser.parseExpression("new StringBuilder()");
+                MethodCallExpr appendL = new MethodCallExpr(newStringBuilderExpr, "append");
+                appendL.addArgument(left.getExpression());
+                MethodCallExpr appendR = new MethodCallExpr(appendL, "append");
+                appendR.addArgument(right.getExpression());
+                Expression result = new MethodCallExpr(appendR, "toString");
+                return DirectCompilerResult.of(result, BuiltInType.STRING, DirectCompilerResult.mergeFDs(left, right));
+            }
         } else if ( left.resultType == BuiltInType.NUMBER && right.resultType == BuiltInType.NUMBER ) {
             MethodCallExpr addCall = new MethodCallExpr(left.getExpression(), "add");
             addCall.addArgument(right.getExpression());
@@ -440,37 +451,53 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
 //    }
 //
 //    @Override
-//    public DirectCompilerResult visitKeyString(FEEL_1_1Parser.KeyStringContext ctx) {
-//        throw new UnsupportedOperationException("TODO"); // TODO
-//    }
-//
-//    @Override
 //    public DirectCompilerResult visitContextEntry(FEEL_1_1Parser.ContextEntryContext ctx) {
-//        throw new UnsupportedOperationException("TODO"); // TODO
+//        throw new UnsupportedOperationException("TODO"); // TODO I don't think this will be needed for this visitor.
 //    }
+
+    @Override
+    public DirectCompilerResult visitKeyString(FEEL_1_1Parser.KeyStringContext ctx) {
+        // Need to repeat the same impl as visitStringLiteral because is an ANTLR terminal node, so cannot delegate.
+        StringLiteralExpr expr = new StringLiteralExpr(EvalHelper.unescapeString(ParserHelper.getOriginalText(ctx)));
+        return DirectCompilerResult.of(expr, BuiltInType.STRING);
+    }
+
+    @Override
+    public DirectCompilerResult visitKeyName(KeyNameContext ctx) {
+        StringLiteralExpr expr = new StringLiteralExpr(EvalHelper.normalizeVariableName(ParserHelper.getOriginalText(ctx)));
+        return DirectCompilerResult.of(expr, BuiltInType.STRING);
+    }
 
     @Override
     public DirectCompilerResult visitContextEntries(FEEL_1_1Parser.ContextEntriesContext ctx) {
         MethodCallExpr openContextCall = new MethodCallExpr(new NameExpr(CompiledFEELSupport.class.getSimpleName()), "openContext");
         openContextCall.addArgument(new NameExpr("feelExprCtx"));
 
-        // TODO must add some tracking for scope/type resolution at compile time in the scope helper or similia 
-
+        scopeHelper.pushScope();
+        MapBackedType returnType = new MapBackedType();
         Expression chainedCallScope = openContextCall;
 
         List<DirectCompilerResult> collectedEntryValues = new ArrayList<>();
         for (ContextEntryContext ceCtx : ctx.contextEntry()) {
-            String keyText = ParserHelper.getOriginalText(ceCtx.key()); // TODO temporary because it might reference a name
+            DirectCompilerResult key = visit(ceCtx.key());
+            if (key.resultType != BuiltInType.STRING) {
+                throw new IllegalArgumentException("a Context Entry Key must be a valid FEEL String type");
+            }
+            String keyText = ((StringLiteralExpr) key.getExpression()).getValue();
             DirectCompilerResult entryValueResult = visit(ceCtx.expression());
             collectedEntryValues.add(entryValueResult);
             MethodCallExpr setEntryContextCall = new MethodCallExpr(chainedCallScope, "setEntry");
             setEntryContextCall.addArgument(new StringLiteralExpr(keyText));
             setEntryContextCall.addArgument(entryValueResult.getExpression());
             chainedCallScope = setEntryContextCall;
+
+            scopeHelper.addType(keyText, entryValueResult.resultType);
+            returnType.addField(keyText, entryValueResult.resultType);
         }
 
         MethodCallExpr closeContextCall = new MethodCallExpr(chainedCallScope, "closeContext");
-        return DirectCompilerResult.of(closeContextCall, BuiltInType.CONTEXT, DirectCompilerResult.mergeFDs(collectedEntryValues.toArray(new DirectCompilerResult[]{})));
+        scopeHelper.popScope();
+        return DirectCompilerResult.of(closeContextCall, returnType, DirectCompilerResult.mergeFDs(collectedEntryValues.toArray(new DirectCompilerResult[]{})));
     }
 
     @Override
@@ -478,8 +505,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         if (ctx.contextEntries() == null) {
             return DirectCompilerResult.of(EMPTY_MAP, BuiltInType.CONTEXT);
         } else {
-            DirectCompilerResult visitContextEntriesResult = visit(ctx.contextEntries());
-            return DirectCompilerResult.of(visitContextEntriesResult.getExpression(), BuiltInType.CONTEXT, visitContextEntriesResult.getFieldDeclarations());
+            return visit(ctx.contextEntries());
         }
     }
 
