@@ -38,6 +38,7 @@ import org.kie.dmn.feel.lang.impl.JavaBackedType;
 import org.kie.dmn.feel.lang.impl.MapBackedType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.parser.feel11.FEELParser;
+import org.kie.dmn.feel.parser.feel11.FEELParserTest;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser;
 import org.kie.dmn.feel.runtime.FEELConditionsAndLoopsTest;
 import org.kie.dmn.feel.runtime.FEELTernaryLogicTest;
@@ -176,8 +177,67 @@ public class DirectCompilerTest {
         assertThat(parseCompileEvaluate("{}"), is(Collections.emptyMap()));
         assertThat(parseCompileEvaluate("{ }"), is(Collections.emptyMap()));
         assertThat(parseCompileEvaluate("{ a : 1 }"), is(mapOf(entry("a", new BigDecimal(1)))));
+        assertThat(parseCompileEvaluate("{ \"a\" : 1 }"), is(mapOf(entry("a", new BigDecimal(1)))));
+        assertThat(parseCompileEvaluate("{ \" a\" : 1 }"), is(mapOf(entry(" a", new BigDecimal(1))))); // Demonstrating a bad practice.
         assertThat(parseCompileEvaluate("{ a : 1, b : 2, c : 3 }"), is(mapOf(entry("a", new BigDecimal(1)), entry("b", new BigDecimal(2)), entry("c", new BigDecimal(3)))));
-        assertThat(parseCompileEvaluate("{ a : 1 , street name : \"Broadway St.\"}"), is(mapOf(entry("a", new BigDecimal(1)), entry("street name", "Broadway St."))));
+        assertThat(parseCompileEvaluate("{ a : 1, a name : \"John Doe\" }"), is(mapOf(entry("a", new BigDecimal(1)), entry("a name", "John Doe"))));
+
+        assertThat(parseCompileEvaluate("{ a : 1, b : a }"), is(mapOf(entry("a", new BigDecimal(1)), entry("b", new BigDecimal(1)))));
+    }
+    
+    /**
+     * See {@link FEELParserTest}
+     */
+    @Test
+    public void testContextWithMultipleEntries() {
+        String inputExpression = "{ \"a string key\" : 10," + "\n"
+                               + " a non-string key : 11," + "\n"
+                               + " a key.with + /' odd chars : 12 }";
+        assertThat(parseCompileEvaluate(inputExpression), is(mapOf(entry("a string key", new BigDecimal(10)), entry("a non-string key", new BigDecimal(11)), entry("a key.with + /' odd chars", new BigDecimal(12)))));
+    }
+    
+    /**
+     * See {@link FEELParserTest}
+     */
+    @Test
+    public void testNestedContexts() {
+        String inputExpression = "{ a value : 10," + "\n"
+                       + " an applicant : { " + "\n"
+                       + "    first name : \"Edson\", " + "\n"
+                       + "    last + name : \"Tirelli\", " + "\n"
+                       + "    full name : first name + last + name, " + "\n"
+                       + "    address : {" + "\n"
+                       + "        street : \"55 broadway st\"," + "\n"
+                       + "        city : \"New York\" " + "\n"
+                       + "    }, " + "\n"
+                       + "    xxx: last + name" + "\n"
+                       + " } " + "\n"
+                       + "}";
+        assertThat(parseCompileEvaluate(inputExpression), is(mapOf(entry("a value", new BigDecimal(10)), 
+                                                                   entry("an applicant", mapOf(entry("first name", "Edson"),
+                                                                                               entry("last + name", "Tirelli"),
+                                                                                               entry("full name", "EdsonTirelli"),
+                                                                                               entry("address", mapOf(entry("street", "55 broadway st"),
+                                                                                                                      entry("city", "New York"))),
+                                                                                               entry("xxx", "Tirelli"))))));
+    }
+
+    /**
+     * See {@link FEELParserTest}
+     */
+    @Test
+    public void testNestedContexts2() {
+        String complexContext = "{ an applicant : {                                \n" +
+                                "    home address : {                              \n" +
+                                "        street name: \"broadway st\",             \n" +
+                                "        city : \"New York\"                       \n" +
+                                "    }                                             \n" +
+                                "   },                                             \n" +
+                                "   street : an applicant.home address.street name \n" +
+                                "}                                                 ";
+        assertThat(parseCompileEvaluate(complexContext), is(mapOf(entry("an applicant", mapOf(entry("home address", mapOf(entry("street name", "broadway st"),
+                                                                                                                          entry("city", "New York"))))),
+                                                                  entry("street", "broadway st"))));
     }
 
     @Test
