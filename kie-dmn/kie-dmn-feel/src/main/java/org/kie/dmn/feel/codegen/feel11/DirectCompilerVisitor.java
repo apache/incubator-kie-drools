@@ -37,6 +37,7 @@ import org.kie.dmn.feel.lang.impl.MapBackedType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1BaseVisitor;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser;
+import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser.ContextEntryContext;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser.NameRefContext;
 import org.kie.dmn.feel.parser.feel11.ParserHelper;
 import org.kie.dmn.feel.util.EvalHelper;
@@ -45,6 +46,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
 
     private static final Expression DECIMAL_128 = JavaParser.parseExpression("java.math.MathContext.DECIMAL128");
     private static final Expression EMPTY_LIST = JavaParser.parseExpression("java.util.Collections.emptyList()");
+    private static final Expression EMPTY_MAP = JavaParser.parseExpression("java.util.Collections.emptyMap()");
     // TODO as this is now compiled it might not be needed for this compilation strategy, just need the layer 0 of input Types, but to be checked.
     private ScopeHelper scopeHelper;
 
@@ -446,17 +448,41 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
 //    public DirectCompilerResult visitContextEntry(FEEL_1_1Parser.ContextEntryContext ctx) {
 //        throw new UnsupportedOperationException("TODO"); // TODO
 //    }
-//
-//    @Override
-//    public DirectCompilerResult visitContextEntries(FEEL_1_1Parser.ContextEntriesContext ctx) {
-//        throw new UnsupportedOperationException("TODO"); // TODO
-//    }
-//
-//    @Override
-//    public DirectCompilerResult visitContext(FEEL_1_1Parser.ContextContext ctx) {
-//        throw new UnsupportedOperationException("TODO"); // TODO
-//    }
-//
+
+    @Override
+    public DirectCompilerResult visitContextEntries(FEEL_1_1Parser.ContextEntriesContext ctx) {
+        MethodCallExpr openContextCall = new MethodCallExpr(new NameExpr(CompiledFEELSupport.class.getSimpleName()), "openContext");
+        openContextCall.addArgument(new NameExpr("feelExprCtx"));
+
+        // TODO must add some tracking for scope/type resolution at compile time in the scope helper or similia 
+
+        Expression chainedCallScope = openContextCall;
+
+        List<DirectCompilerResult> collectedEntryValues = new ArrayList<>();
+        for (ContextEntryContext ceCtx : ctx.contextEntry()) {
+            String keyText = ParserHelper.getOriginalText(ceCtx.key()); // TODO temporary because it might reference a name
+            DirectCompilerResult entryValueResult = visit(ceCtx.expression());
+            collectedEntryValues.add(entryValueResult);
+            MethodCallExpr setEntryContextCall = new MethodCallExpr(chainedCallScope, "setEntry");
+            setEntryContextCall.addArgument(new StringLiteralExpr(keyText));
+            setEntryContextCall.addArgument(entryValueResult.getExpression());
+            chainedCallScope = setEntryContextCall;
+        }
+
+        MethodCallExpr closeContextCall = new MethodCallExpr(chainedCallScope, "closeContext");
+        return DirectCompilerResult.of(closeContextCall, BuiltInType.CONTEXT, DirectCompilerResult.mergeFDs(collectedEntryValues.toArray(new DirectCompilerResult[]{})));
+    }
+
+    @Override
+    public DirectCompilerResult visitContext(FEEL_1_1Parser.ContextContext ctx) {
+        if (ctx.contextEntries() == null) {
+            return DirectCompilerResult.of(EMPTY_MAP, BuiltInType.CONTEXT);
+        } else {
+            DirectCompilerResult visitContextEntriesResult = visit(ctx.contextEntries());
+            return DirectCompilerResult.of(visitContextEntriesResult.getExpression(), BuiltInType.CONTEXT, visitContextEntriesResult.getFieldDeclarations());
+        }
+    }
+
 //    @Override
 //    public DirectCompilerResult visitFormalParameters(FEEL_1_1Parser.FormalParametersContext ctx) {
 //        throw new UnsupportedOperationException("TODO"); // TODO
@@ -543,7 +569,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
 //        }
 //        return DirectCompilerResult.of(parsed, BuiltInType.UNKNOWN);
         
-        Expression errorExpression = JavaParser.parseExpression(CompiledFEELUtils.class.getCanonicalName()+".conditionWasNotBoolean(feelExprCtx)");
+        Expression errorExpression = JavaParser.parseExpression(CompiledFEELSupport.class.getSimpleName() + ".conditionWasNotBoolean(feelExprCtx)");
         MethodCallExpr castC = new MethodCallExpr(new ClassExpr(JavaParser.parseType(Boolean.class.getSimpleName())), "cast");
         castC.addArgument(new EnclosedExpr(c.getExpression()));
         Expression safeInternal = new ConditionalExpr(castC, new EnclosedExpr(t.getExpression()), new EnclosedExpr(e.getExpression()));

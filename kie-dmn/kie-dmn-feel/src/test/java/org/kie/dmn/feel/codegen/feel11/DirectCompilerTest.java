@@ -172,6 +172,15 @@ public class DirectCompilerTest {
     }
 
     @Test
+    public void test_contextExpression() {
+        assertThat(parseCompileEvaluate("{}"), is(Collections.emptyMap()));
+        assertThat(parseCompileEvaluate("{ }"), is(Collections.emptyMap()));
+        assertThat(parseCompileEvaluate("{ a : 1 }"), is(mapOf(entry("a", new BigDecimal(1)))));
+        assertThat(parseCompileEvaluate("{ a : 1, b : 2, c : 3 }"), is(mapOf(entry("a", new BigDecimal(1)), entry("b", new BigDecimal(2)), entry("c", new BigDecimal(3)))));
+        assertThat(parseCompileEvaluate("{ a : 1 , street name : \"Broadway St.\"}"), is(mapOf(entry("a", new BigDecimal(1)), entry("street name", "Broadway St."))));
+    }
+
+    @Test
     public void testNameReference() {
         String inputExpression = "someSimpleName";
         CompiledFEELExpression nameRef = parse( inputExpression, mapOf( entry("someSimpleName", BuiltInType.STRING) ) );
