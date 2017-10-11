@@ -16,12 +16,13 @@
 
 package org.jbpm.kie.services.test.objects;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
 import org.kie.api.task.UserGroupCallback;
+
+import static java.util.Arrays.asList;
 
 public class TestUserGroupCallbackImpl implements UserGroupCallback {
 
@@ -29,10 +30,14 @@ public class TestUserGroupCallbackImpl implements UserGroupCallback {
 
     static {
         userGroupMap = new HashMap<>();
-        userGroupMap.put("maciej", Arrays.asList("admins"));
-        userGroupMap.put("tihomir", Arrays.asList("supplier"));
-        userGroupMap.put("kris", Arrays.asList("admins", "managers"));
-        userGroupMap.put("Administrator", Arrays.asList("Administrators"));
+        userGroupMap.put("maciej", asList("admins"));
+        userGroupMap.put("tihomir", asList("supplier"));
+        userGroupMap.put("kris", asList("admins", "managers"));
+        userGroupMap.put("Administrator", asList("Administrators"));
+        userGroupMap.put("salaboy", asList("managers","HR","IT","Accounting"));
+        userGroupMap.put("katy", asList("HR","IT","Accounting"));
+        userGroupMap.put("john", asList("HR","Accounting"));
+        userGroupMap.put("mary", asList("HR"));
     }
 
     @Override

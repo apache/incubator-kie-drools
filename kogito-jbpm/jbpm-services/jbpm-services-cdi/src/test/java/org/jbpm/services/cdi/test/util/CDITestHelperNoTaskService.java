@@ -16,8 +16,6 @@
 
 package org.jbpm.services.cdi.test.util;
 
-import java.util.Properties;
-
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
@@ -25,13 +23,13 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 import javax.persistence.EntityManagerFactory;
 
+import org.jbpm.kie.services.test.objects.TestUserGroupCallbackImpl;
 import org.jbpm.runtime.manager.impl.ManagedAuditEventBuilderImpl;
 import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.jbpm.services.api.DeploymentService;
 import org.jbpm.services.cdi.Kjar;
 import org.jbpm.services.cdi.impl.manager.InjectableRegisterableItemsFactory;
 import org.jbpm.services.task.audit.JPATaskLifeCycleEventListener;
-import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.manager.RuntimeEnvironment;
 import org.kie.api.runtime.manager.RuntimeEnvironmentBuilder;
@@ -44,10 +42,11 @@ import org.kie.internal.runtime.manager.cdi.qualifier.Singleton;
 
 @ApplicationScoped
 public class CDITestHelperNoTaskService {
+
     @Inject
     private BeanManager beanManager;
     private EntityManagerFactory emf;
-    
+
     @Inject
     @Kjar
     private DeploymentService deploymentService;
@@ -85,15 +84,9 @@ public class CDITestHelperNoTaskService {
 
     @Produces
     public UserGroupCallback getUserGroupCallback() {
-        Properties properties= new Properties();
-        properties.setProperty("mary", "HR");
-        properties.setProperty("john", "HR,Accounting");
-        properties.setProperty("salaboy", "HR,IT,Accounting");
-        properties.setProperty("katy", "HR,IT,Accounting");
-        return new JBossUserGroupCallbackImpl(properties);
-    }  
- 
-    
+        return new TestUserGroupCallbackImpl();
+    }
+
     @Produces
     public DeploymentService produceKjarDeployService() {
     	return deploymentService;

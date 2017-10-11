@@ -114,6 +114,7 @@ public class QueryServiceCDIImplTest extends QueryServiceImplTest {
                 .addClass("org.jbpm.services.cdi.test.util.CDITestHelperNoTaskService")
                 .addClass("org.jbpm.services.cdi.test.util.CountDownDeploymentListenerCDIImpl")
                 .addClass("org.jbpm.kie.services.test.objects.CoundDownDeploymentListener")
+                .addClass("org.jbpm.kie.services.test.objects.TestUserGroupCallbackImpl")
                 .addAsResource("jndi.properties", "jndi.properties")
                 .addAsManifestResource("META-INF/persistence.xml", ArchivePaths.create("persistence.xml"))
                 .addAsManifestResource("META-INF/beans.xml", ArchivePaths.create("beans.xml"));
@@ -136,35 +137,30 @@ public class QueryServiceCDIImplTest extends QueryServiceImplTest {
     @Inject 
     @Override
     public void setDeploymentService(DeploymentService deploymentService) {
-        
         super.setDeploymentService(deploymentService);
     }
 
     @Inject
     @Override
     public void setBpmn2Service(DefinitionService bpmn2Service) {
-        
         super.setBpmn2Service(bpmn2Service);
     }
 
     @Inject
     @Override
     public void setRuntimeDataService(RuntimeDataService runtimeDataService) {
-        
         super.setRuntimeDataService(runtimeDataService);
     }
 
     @Inject
     @Override
     public void setProcessService(ProcessService processService) {
-        
         super.setProcessService(processService);
     }
 
     @Inject
     @Override
     public void setUserTaskService(UserTaskService userTaskService) {
-        
         super.setUserTaskService(userTaskService);
     }
 
