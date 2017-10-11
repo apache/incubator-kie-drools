@@ -17,6 +17,7 @@
 package org.optaplanner.persistence.jpa.impl.score;
 
 import java.util.Map;
+import javax.naming.InitialContext;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.GeneratedValue;
@@ -35,6 +36,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.kie.test.util.db.PersistenceUtil;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.persistence.jpa.impl.score.util.OptaplannerPersistenceUtil;
 
 import static org.junit.Assert.*;
 
@@ -46,9 +48,9 @@ public abstract class AbstractScoreHibernateTypeTest {
 
     @Before
     public void setUp() throws Exception {
-        context = PersistenceUtil.setupWithPoolingDataSource("optaplanner-persistence-jpa-test");
+        context = OptaplannerPersistenceUtil.setupWithPoolingDataSource(OptaplannerPersistenceUtil.OPTAPLANNER_PERSISTENCE_UNIT_NAME);
         entityManagerFactory = (EntityManagerFactory) context.get(PersistenceUtil.ENTITY_MANAGER_FACTORY);
-        transactionManager = (TransactionManager) context.get(PersistenceUtil.TRANSACTION_MANAGER);
+        transactionManager = (TransactionManager) InitialContext.doLookup("java:comp/TransactionManager");
     }
 
     @After
