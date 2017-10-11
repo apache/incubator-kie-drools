@@ -28,6 +28,7 @@ import java.util.List;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import org.assertj.core.api.Assertions;
 import org.jbpm.services.task.impl.factories.TaskFactory;
 import org.jbpm.test.util.PoolingDataSource;
 import org.junit.After;
@@ -96,7 +97,7 @@ public class TaskCommentTest extends HumanTaskServicesBaseTest{
             Comment commentById = taskService.getCommentById(commentId.longValue());
             assertNotNull(commentById);
             assertEquals(commentId, commentById.getId());
-            assertEquals(date, commentById.getAddedAt());
+            Assertions.assertThat(date).isEqualToIgnoringMillis(commentById.getAddedAt());
             assertEquals(user, commentById.getAddedBy());
             assertEquals(txt, commentById.getText());
 

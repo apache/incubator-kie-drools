@@ -44,6 +44,7 @@ import javax.naming.InitialContext;
 import javax.persistence.EntityManagerFactory;
 import javax.transaction.UserTransaction;
 
+import org.assertj.core.api.Assertions;
 import org.hornetq.jms.server.embedded.EmbeddedJMS;
 import org.jboss.narayana.jta.jms.ConnectionFactoryProxy;
 import org.jboss.narayana.jta.jms.TransactionHelperImpl;
@@ -409,30 +410,20 @@ public class AsyncAuditLogProducerTest extends AbstractBaseTest {
         }
         
         assertEquals(3, listVariables.size());
-        VariableInstanceLog var = listVariables.get(0);
-        
-        assertEquals("john", var.getValue());
-        assertEquals("", var.getOldValue());
-        assertEquals(processInstance.getId(), var.getProcessInstanceId().longValue());
-        assertEquals(processInstance.getProcessId(), var.getProcessId());
-        assertEquals("list[0]", var.getVariableId());
-        assertEquals("list", var.getVariableInstanceId());
-        
-        var = listVariables.get(1);
-        assertEquals("mary", var.getValue());
-        assertEquals("", var.getOldValue());
-        assertEquals(processInstance.getId(), var.getProcessInstanceId().longValue());
-        assertEquals(processInstance.getProcessId(), var.getProcessId());
-        assertEquals("list[1]", var.getVariableId());
-        assertEquals("list", var.getVariableInstanceId());
-        
-        var = listVariables.get(2);        
-        assertEquals("peter", var.getValue());
-        assertEquals("", var.getOldValue());
-        assertEquals(processInstance.getId(), var.getProcessInstanceId().longValue());
-        assertEquals(processInstance.getProcessId(), var.getProcessId());
-        assertEquals("list[2]", var.getVariableId());
-        assertEquals("list", var.getVariableInstanceId());
+
+        List<String> variableValues = new ArrayList<String>();
+        List<String> variableIds = new ArrayList<String>();
+        for (VariableInstanceLog var : listVariables) {
+            variableValues.add(var.getValue());
+            variableIds.add(var.getVariableId());
+            assertEquals("", var.getOldValue());
+            assertEquals(processInstance.getId(), var.getProcessInstanceId().longValue());
+            assertEquals(processInstance.getProcessId(), var.getProcessId());
+            assertEquals("list", var.getVariableInstanceId());
+        }
+
+        Assertions.assertThat(variableValues).contains("john", "mary", "peter");
+        Assertions.assertThat(variableIds).contains("list[0]", "list[1]", "list[2]");
         
         logService.clear();
         processInstances = logService.findProcessInstances("com.sample.ruleflow3");
