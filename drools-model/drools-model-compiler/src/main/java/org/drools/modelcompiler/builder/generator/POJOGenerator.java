@@ -142,11 +142,7 @@ public class POJOGenerator {
     }
 
     private static String quote(String str) {
-        return quote(str, "\"{0}\"");
-    }
-
-    private static String quote(String generatedClassName, String pattern) {
-        return format(pattern, generatedClassName);
+        return format("\"{0}\"", str);
     }
 }
 
