@@ -16,10 +16,10 @@
 
 package org.kie.dmn.feel.runtime;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
 import org.junit.runners.Parameterized;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 
 public class FEELExpressionsTest extends BaseFEELTest {
 
@@ -78,8 +78,7 @@ public class FEELExpressionsTest extends BaseFEELTest {
                 {"{ test : > x, y : 20, x : 10, result : y in ( test ) }.result", Boolean.TRUE , null},
                 {"{ test : > x, y : 20, x : 10, result : test( y ) }.result", Boolean.TRUE , null},
 
-                // TODO - DROOLS-1678
-//                {"{ test : in x, y : 20, x : [10, 20, 30], result : test( y ) }.result", Boolean.TRUE , null},
+                {"{ test : in x, y : 20, x : [10, 20, 30], result : test( y ) }.result", null, FEELEvent.Severity.ERROR},
                 
                 {"2 in 2", Boolean.TRUE , null},
                 {"{ x : 2, result : x in 2 }.result", Boolean.TRUE , null},
