@@ -13,6 +13,8 @@ import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.drools.javaparser.ast.body.ConstructorDeclaration;
 import org.drools.javaparser.ast.body.FieldDeclaration;
 import org.drools.javaparser.ast.body.MethodDeclaration;
+import org.drools.javaparser.ast.expr.FieldAccessExpr;
+import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.stmt.BlockStmt;
 import org.drools.javaparser.ast.stmt.Statement;
 import org.drools.javaparser.ast.type.ClassOrInterfaceType;
@@ -53,12 +55,12 @@ public class POJOGenerator {
             field.createSetter();
             MethodDeclaration getter = field.createGetter();
 
-            ctorFieldStatement.add(JavaParser.parseStatement(format("this.{0} = {0};", fieldName)));
+            ctorFieldStatement.add(replaceFieldName(parseStatement("this.__fieldName = __fieldName;"), fieldName));
             fullArgumentsCtor.addParameter(returnType, fieldName);
 
             equalsFieldStatement.add(generateEqualsForField(getter, fieldName));
             hashCodeFieldStatement.add(generateHashCodeForField(getter, fieldName));
-            toStringFieldStatement.add(format("+ {0}+{1}", quote(fieldName+"="), fieldName));
+            toStringFieldStatement.add(format("+ {0}+{1}", quote(fieldName + "="), fieldName));
         }
 
         fullArgumentsCtor.setBody(new BlockStmt(ctorFieldStatement));
@@ -87,23 +89,42 @@ public class POJOGenerator {
     }
 
     private static Statement classCastStatement(String className) {
-        return parseStatement(format("{0} that = ({0}) o;\n", className));
+        Statement statement = parseStatement("__className that = (__className) o;");
+        statement.getChildNodesByType(ClassOrInterfaceType.class)
+                .stream()
+                .filter(n1 -> n1.getName().toString().equals("__className"))
+                .forEach(n -> n.replace(JavaParser.parseClassOrInterfaceType(className)));
+        return statement;
     }
 
     private static Statement generateEqualsForField(MethodDeclaration getter, String fieldName) {
 
         Type type = getter.getType();
+        Statement statement;
         if (type instanceof ClassOrInterfaceType) {
-            return parseStatement(format(" if( {0} != null ? !{0}.equals(that.{0}) : that.{0} != null) '{' return false; '}'", fieldName));
+            statement = parseStatement(" if( __fieldName != null ? !__fieldName.equals(that.__fieldName) : that.__fieldName != null) { return false; }");
         } else if (type instanceof PrimitiveType) {
-            return parseStatement(format(" if( {0} != that.{0}) '{' return false; '}'", fieldName));
+            statement = parseStatement(" if( __fieldName != that.__fieldName) { return false; }");
         } else {
             throw new RuntimeException("Unknown type");
         }
+        return replaceFieldName(statement, fieldName);
+    }
+
+    private static Statement replaceFieldName(Statement statement, String fieldName) {
+        statement.getChildNodesByType(NameExpr.class)
+                .stream()
+                .filter(n -> n.getName().toString().equals("__fieldName"))
+                .forEach(n -> n.replace(new NameExpr(fieldName)));
+        statement.getChildNodesByType(FieldAccessExpr.class)
+                .stream()
+                .filter(n -> n.getName().toString().equals("__fieldName"))
+                .forEach(n -> n.replace(new FieldAccessExpr(n.getScope(), fieldName)));
+        return statement;
     }
 
     private static MethodDeclaration generateHashCodeMethod(List<Statement> hashCodeFieldStatement) {
-        final Statement header = JavaParser.parseStatement("int result = 17;");
+        final Statement header = parseStatement("int result = 17;");
         NodeList<Statement> hashCodeStatements = nodeList(header);
         hashCodeStatements.addAll(hashCodeFieldStatement);
         hashCodeStatements.add(parseStatement("return result;"));
@@ -132,7 +153,7 @@ public class POJOGenerator {
         final String body = String.join(format("+ {0}", quote(", ")), toStringFieldStatement);
         final String close = format("+{0};", quote(" )"));
 
-        final Statement toStringStatement = JavaParser.parseStatement(header + body + close);
+        final Statement toStringStatement = parseStatement(header + body + close);
 
         final Type returnType = JavaParser.parseType(String.class.getSimpleName());
         final MethodDeclaration equals = new MethodDeclaration(EnumSet.of(Modifier.PUBLIC), returnType, TO_STRING);
