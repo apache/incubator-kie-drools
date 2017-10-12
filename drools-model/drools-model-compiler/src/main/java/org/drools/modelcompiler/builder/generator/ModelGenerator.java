@@ -16,37 +16,7 @@
 
 package org.drools.modelcompiler.builder.generator;
 
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import org.drools.compiler.lang.descr.AccumulateDescr;
-import org.drools.compiler.lang.descr.AndDescr;
-import org.drools.compiler.lang.descr.AttributeDescr;
-import org.drools.compiler.lang.descr.BaseDescr;
-import org.drools.compiler.lang.descr.BehaviorDescr;
-import org.drools.compiler.lang.descr.ConditionalBranchDescr;
-import org.drools.compiler.lang.descr.ConditionalElementDescr;
-import org.drools.compiler.lang.descr.EvalDescr;
-import org.drools.compiler.lang.descr.ExistsDescr;
-import org.drools.compiler.lang.descr.ForallDescr;
-import org.drools.compiler.lang.descr.FunctionDescr;
-import org.drools.compiler.lang.descr.NamedConsequenceDescr;
-import org.drools.compiler.lang.descr.NotDescr;
-import org.drools.compiler.lang.descr.OrDescr;
-import org.drools.compiler.lang.descr.PatternDescr;
-import org.drools.compiler.lang.descr.QueryDescr;
-import org.drools.compiler.lang.descr.RuleDescr;
-import org.drools.compiler.lang.descr.TypeDeclarationDescr;
+import org.drools.compiler.lang.descr.*;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.Behavior;
 import org.drools.core.time.TimeUtils;
@@ -61,18 +31,8 @@ import org.drools.javaparser.ast.body.MethodDeclaration;
 import org.drools.javaparser.ast.body.Parameter;
 import org.drools.javaparser.ast.drlx.expr.PointFreeExpr;
 import org.drools.javaparser.ast.drlx.expr.TemporalLiteralExpr;
-import org.drools.javaparser.ast.expr.AssignExpr;
-import org.drools.javaparser.ast.expr.BinaryExpr;
+import org.drools.javaparser.ast.expr.*;
 import org.drools.javaparser.ast.expr.BinaryExpr.Operator;
-import org.drools.javaparser.ast.expr.ClassExpr;
-import org.drools.javaparser.ast.expr.Expression;
-import org.drools.javaparser.ast.expr.FieldAccessExpr;
-import org.drools.javaparser.ast.expr.LambdaExpr;
-import org.drools.javaparser.ast.expr.MethodCallExpr;
-import org.drools.javaparser.ast.expr.NameExpr;
-import org.drools.javaparser.ast.expr.StringLiteralExpr;
-import org.drools.javaparser.ast.expr.UnaryExpr;
-import org.drools.javaparser.ast.expr.VariableDeclarationExpr;
 import org.drools.javaparser.ast.stmt.BlockStmt;
 import org.drools.javaparser.ast.stmt.ExpressionStmt;
 import org.drools.javaparser.ast.stmt.ReturnStmt;
@@ -86,10 +46,13 @@ import org.drools.model.Variable;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.RuleDescrImpl;
 
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import static org.drools.javaparser.printer.PrintUtil.toDrlx;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.parseBlock;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.*;
 import static org.drools.modelcompiler.builder.generator.StringUtil.toId;
 
 public class ModelGenerator {
@@ -591,7 +554,7 @@ public class ModelGenerator {
             expression = expression.substring( bindingId.length()+1 );
         }
 
-        Expression drlxExpr = DrlxParser.parseExpression( expression );
+        Expression drlxExpr = DrlxParser.parseExpression( expression ).getExpr();
 
         String exprId;
         if ( GENERATE_EXPR_ID ) {
