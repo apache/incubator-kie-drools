@@ -161,8 +161,6 @@ will be removed.
            Environment env = KnowledgeBaseFactory.newEnvironment();
            env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
                     emf );
-           // env.set(EnvironmentName.TRANSACTION_MANAGER,
-           // TransactionManagerServices.getTransactionManager());
            env.set( EnvironmentName.GLOBALS,
                     new MapGlobalResolver() );
            return env;
@@ -308,7 +306,7 @@ populates a `HashMap<String, Object>` object with at least 3 objects:
     *   This object returns a proxy for an `EntityManager` object when the
         `EntityManagerFactory.createEntityManager()` method is called.   
 2.  A proxy object for a `UserTransaction` object.   
-3.  A (bitronix) `PoolingDataSource` object.   
+3.  A `PoolingDataSource` object.   
 
 When the test runs, a `SessionInfo`, `WorkItemInfo` or `ProcessInstanceInfo` object
 will eventually be created, updated, filled with marshalled information (see the `.update()` 

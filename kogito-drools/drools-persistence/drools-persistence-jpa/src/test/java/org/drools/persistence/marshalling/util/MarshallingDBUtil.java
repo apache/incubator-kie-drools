@@ -16,11 +16,10 @@
 
 package org.drools.persistence.marshalling.util;
 
-import bitronix.tm.resource.jdbc.PoolingDataSource;
-
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Table;
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.lang.annotation.Annotation;
@@ -32,6 +31,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
+
+import org.kie.test.util.db.PoolingDataSource;
 
 import static org.drools.persistence.util.DroolsPersistenceUtil.DATASOURCE;
 import static org.drools.persistence.util.DroolsPersistenceUtil.getDatasourceProperties;

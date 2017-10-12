@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -14,38 +14,46 @@
  */
 package org.drools.persistence.jta;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.transaction.HeuristicMixedException;
 import javax.transaction.HeuristicRollbackException;
 import javax.transaction.NotSupportedException;
 import javax.transaction.RollbackException;
 import javax.transaction.SystemException;
+import javax.transaction.TransactionManager;
 import javax.transaction.UserTransaction;
-
 import org.drools.core.impl.EnvironmentFactory;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 
-import bitronix.tm.BitronixTransactionManager;
-
 public class JtaTransactionManagerFactoryTest {
+
+    @BeforeClass
+    public static void setupOnce() throws NamingException {
+        InitialContext initContext = new InitialContext();
+        initContext.rebind("java:comp/UserTransaction", com.arjuna.ats.jta.UserTransaction.userTransaction());
+        initContext.rebind("java:comp/TransactionManager", com.arjuna.ats.jta.TransactionManager.transactionManager());
+        initContext.rebind("java:comp/TransactionSynchronizationRegistry", new com.arjuna.ats.internal.jta.transaction.arjunacore.TransactionSynchronizationRegistryImple());
+    }
 
     @Test
     public void usesEnvironmentToCreateTransactionManager() throws Exception {
         Environment env = EnvironmentFactory.newEnvironment();
-        
+
         env.set(EnvironmentName.TRANSACTION, DUMMY_UT);
         JtaTransactionManager txm = (JtaTransactionManager) new JtaTransactionManagerFactory().newTransactionManager(env);
         assertEquals(DUMMY_UT, txm.ut);
     }
-    
+
     @Test
     public void createsWithoutEnvironment() throws Exception {
         JtaTransactionManager txm = (JtaTransactionManager) new JtaTransactionManagerFactory().newTransactionManager();
-        // Should be BitronixTransactionManager since Bitronix InitialContext is bootstrapped from src/test/resources/jndi.properties
-        assertEquals(BitronixTransactionManager.class, txm.ut.getClass());
+        assertTrue(TransactionManager.class.isAssignableFrom(txm.tm.getClass()));
     }
     
     private static final UserTransaction DUMMY_UT = new UserTransaction() {

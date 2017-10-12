@@ -20,9 +20,8 @@
 
     <!-- These are properties used in the database profiles. Some of them must be initialized
          to be empty so that Maven applies their values via filtering to the resources. -->
-    <maven.btm.maxPoolSize>16</maven.btm.maxPoolSize>
     <maven.hibernate.dialect>org.hibernate.dialect.H2Dialect</maven.hibernate.dialect>
-    <maven.datasource.classname>bitronix.tm.resource.jdbc.lrc.LrcXADataSource</maven.datasource.classname>
+    <maven.datasource.classname>org.h2.jdbcx.JdbcDataSource</maven.datasource.classname>
     <maven.jdbc.driver.class>org.h2.Driver</maven.jdbc.driver.class>
     <maven.jdbc.db.name/>
     <maven.jdbc.db.port/>
@@ -30,7 +29,7 @@
     <maven.jdbc.driver.jar/>
     <maven.jdbc.username/>
     <maven.jdbc.password/>
-    <maven.jdbc.url>jdbc:h2:</maven.jdbc.url>
+    <maven.jdbc.url>jdbc:h2:mem:test</maven.jdbc.url>
     <maven.jdbc.schema>public</maven.jdbc.schema>
   </properties>
 
@@ -188,8 +187,8 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.codehaus.btm</groupId>
-      <artifactId>btm</artifactId>
+      <groupId>org.jboss.narayana.jta</groupId>
+      <artifactId>narayana-jta</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

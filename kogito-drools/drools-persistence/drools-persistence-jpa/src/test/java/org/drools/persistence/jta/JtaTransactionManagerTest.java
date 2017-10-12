@@ -15,6 +15,11 @@
  */
 package org.drools.persistence.jta;
 
+import static org.drools.persistence.util.DroolsPersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
+import static org.drools.persistence.util.DroolsPersistenceUtil.createEnvironment;
+import static org.drools.persistence.util.DroolsPersistenceUtil.setupWithPoolingDataSource;
+import static org.junit.Assert.*;
+
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,9 +27,8 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.transaction.RollbackException;
 import javax.transaction.UserTransaction;
-
-import bitronix.tm.internal.BitronixRollbackException;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
@@ -48,9 +52,6 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.test.util.db.PersistenceUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.drools.persistence.util.DroolsPersistenceUtil.*;
-import static org.junit.Assert.*;
 
 public class JtaTransactionManagerTest {
 
@@ -144,10 +145,9 @@ public class JtaTransactionManagerTest {
             tx.commit();
         }
         catch( Exception e ) { 
-            if( e instanceof BitronixRollbackException || e.getCause() instanceof TransientObjectException ) { 
+            if( e instanceof RollbackException || e.getCause() instanceof TransientObjectException ) {
                 rollBackExceptionthrown = true;
-                
-                // Depends on JTA version (and thus BTM version)
+
                 if( tx.getStatus() == 1 ) {
                     tx.rollback();
                 }
