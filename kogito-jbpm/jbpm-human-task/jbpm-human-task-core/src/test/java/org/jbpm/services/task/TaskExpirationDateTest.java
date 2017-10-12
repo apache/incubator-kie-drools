@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+
+import org.assertj.core.api.Assertions;
 import org.jbpm.services.task.impl.factories.TaskFactory;
 import org.jbpm.test.util.PoolingDataSource;
 import org.junit.After;
@@ -37,6 +39,7 @@ public class TaskExpirationDateTest extends HumanTaskServicesBaseTest{
 
         private PoolingDataSource pds;
         private EntityManagerFactory emf;
+        private static final Date TODAY = new Date();
 
         @Before
         public void setup() {
@@ -70,14 +73,11 @@ public class TaskExpirationDateTest extends HumanTaskServicesBaseTest{
 
             assertEquals(1, tasks.size());
             TaskSummary taskSum = tasks.get(0);
-
-            Date exDate = new Date();
-
             assertNull(taskService.getExpirationDate(taskSum.getId()));
 
-            taskService.setExpirationDate(taskSum.getId(), exDate);
+            taskService.setExpirationDate(taskSum.getId(), TODAY);
             Date date = taskService.getExpirationDate(taskSum.getId());
             assertNotNull(date);
-            assertEquals(exDate, date);
+            Assertions.assertThat(date).isCloseTo(TODAY, 1000);
         }
 }
