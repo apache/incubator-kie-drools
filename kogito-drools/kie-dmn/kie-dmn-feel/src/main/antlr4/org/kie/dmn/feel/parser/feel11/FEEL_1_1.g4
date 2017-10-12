@@ -240,9 +240,9 @@ filterPathExpression
     ;
 
 unaryExpression
-	:	'+' unaryExpression          #signedUnaryExpression
-	|	'-' unaryExpression          #signedUnaryExpression
-	|	unaryExpressionNotPlusMinus  #nonSignedUnaryExpression
+    :   unaryExpressionNotPlusMinus              #nonSignedUnaryExpression
+	|	'+' unaryExpressionNotPlusMinus          #signedUnaryExpression
+	|	'-' unaryExpressionNotPlusMinus          #signedUnaryExpression
 	;
 
 unaryExpressionNotPlusMinus

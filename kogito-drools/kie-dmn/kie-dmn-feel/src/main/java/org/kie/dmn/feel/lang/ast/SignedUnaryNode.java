@@ -60,6 +60,7 @@ public class SignedUnaryNode
 
     @Override
     public Object evaluate(EvaluationContext ctx) {
+        if (expression == null) return null;
         BigDecimal result = EvalHelper.getBigDecimalOrNull( expression.evaluate( ctx ) );
         if ( result == null ) {
             ctx.notifyEvt( astEvent(Severity.WARN, Msg.createMessage(Msg.NEGATING_A_NULL)));

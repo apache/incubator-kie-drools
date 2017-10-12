@@ -91,7 +91,7 @@ public class ASTBuilderVisitor
 
     @Override
     public BaseNode visitSignedUnaryExpression(FEEL_1_1Parser.SignedUnaryExpressionContext ctx) {
-        BaseNode node = visit( ctx.unaryExpression() );
+        BaseNode node = visit( ctx.unaryExpressionNotPlusMinus() );
         return ASTBuilderFactory.newSignedUnaryNode( ctx, node );
     }
 
