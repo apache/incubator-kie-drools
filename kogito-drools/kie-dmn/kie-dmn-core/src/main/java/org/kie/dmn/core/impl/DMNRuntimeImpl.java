@@ -135,6 +135,56 @@ public class DMNRuntimeImpl
     }
 
     @Override
+    public DMNResult evaluateByName( DMNModel model, DMNContext context, String... decisionNames ) {
+        final DMNResultImpl result = createResult( model, context );
+        for (String name : decisionNames) {
+            evaluateByNameInternal( model, context, result, name );
+        }
+        return result;
+    }
+
+    private void evaluateByNameInternal( DMNModel model, DMNContext context, DMNResultImpl result, String name ) {
+        DecisionNode decision = model.getDecisionByName( name );
+        if ( decision != null ) {
+            evaluateDecision( context, result, decision );
+        } else {
+            MsgUtil.reportMessage( logger,
+                                   DMNMessage.Severity.ERROR,
+                                   null,
+                                   result,
+                                   null,
+                                   null,
+                                   Msg.DECISION_NOT_FOUND_FOR_NAME,
+                                   name );
+        }
+    }
+
+    @Override
+    public DMNResult evaluateById( DMNModel model, DMNContext context, String... decisionIds ) {
+        final DMNResultImpl result = createResult( model, context );
+        for ( String id : decisionIds ) {
+            evaluateByIdInternal( model, context, result, id );
+        }
+        return result;
+    }
+
+    private void evaluateByIdInternal( DMNModel model, DMNContext context, DMNResultImpl result, String id ) {
+        DecisionNode decision = model.getDecisionById( id );
+        if ( decision != null ) {
+            evaluateDecision( context, result, decision );
+        } else {
+            MsgUtil.reportMessage( logger,
+                                   DMNMessage.Severity.ERROR,
+                                   null,
+                                   result,
+                                   null,
+                                   null,
+                                   Msg.DECISION_NOT_FOUND_FOR_ID,
+                                   id );
+        }
+    }
+
+    @Override
     public void addListener(DMNRuntimeEventListener listener) {
         this.eventManager.addListener( listener );
     }

@@ -73,7 +73,7 @@ public class InvokeFunction extends BaseFEELFunction {
             DMNContext dmnContext = dmnRuntime.newContext();
             dmnContext.getAll().putAll(parameters);
 
-            DMNResult requiredDecisionResult = dmnRuntime.evaluateDecisionByName(dmnModel, decisionName, dmnContext);
+            DMNResult requiredDecisionResult = dmnRuntime.evaluateByName(dmnModel, dmnContext, decisionName );
             if (requiredDecisionResult.hasErrors()) {
                 return FEELFnResult.ofError(
                         new FEELEventBase(FEELEvent.Severity.ERROR, "Errors occurred while invoking the external decision: " + requiredDecisionResult.getMessages(), null)
