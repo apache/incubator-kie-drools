@@ -527,12 +527,11 @@ public class ModelGenerator {
         Class<?> patternType = context.getClassFromContext(className);
 
         if (pattern.getIdentifier() != null) {
-            if(pattern.getSource() != null) {
-                final Optional<Expression> e = new FromVisitor(context, packageModel).visit(pattern.getSource());
-                context.addDeclaration(new DeclarationSpec(pattern.getIdentifier(), patternType, pattern, e));
-            } else {
-                context.addDeclaration(new DeclarationSpec(pattern.getIdentifier(), patternType, pattern));
-            }
+            final Optional<Expression> declarationSource =
+                    Optional.ofNullable(pattern.getSource())
+                            .flatMap(new FromVisitor(context, packageModel)::visit);
+
+            context.addDeclaration(new DeclarationSpec(pattern.getIdentifier(), patternType, pattern, declarationSource));
         }
 
         if (constraintDescrs.isEmpty() && pattern.getSource() == null) {
