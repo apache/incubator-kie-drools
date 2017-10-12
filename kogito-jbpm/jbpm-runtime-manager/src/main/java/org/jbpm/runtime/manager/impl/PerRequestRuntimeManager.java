@@ -21,7 +21,6 @@ import java.util.Map;
 import org.drools.core.time.TimerService;
 import org.jbpm.process.core.timer.TimerServiceRegistry;
 import org.jbpm.process.core.timer.impl.GlobalTimerService;
-import org.jbpm.runtime.manager.impl.error.ExecutionErrorManagerImpl;
 import org.jbpm.runtime.manager.impl.factory.LocalTaskServiceFactory;
 import org.jbpm.runtime.manager.impl.tx.DestroySessionTransactionSynchronization;
 import org.jbpm.runtime.manager.impl.tx.DisposeSessionTransactionSynchronization;
@@ -102,7 +101,7 @@ public class PerRequestRuntimeManager extends AbstractRuntimeManager {
 	        ((RuntimeEngineImpl) runtime).setManager(this);
     	}
         local.get().put(identifier, runtime);
-        ((ExecutionErrorManagerImpl)executionErrorManager).createHandler();
+
         return runtime;
     }
     
@@ -137,7 +136,6 @@ public class PerRequestRuntimeManager extends AbstractRuntimeManager {
     	try {
         	if (canDispose(runtime)) {
         	    local.get().remove(identifier);
-        	    ((ExecutionErrorManagerImpl)executionErrorManager).closeHandler();
                 try {
                     Long ksessionId = ((RuntimeEngineImpl)runtime).getKieSessionId();
                     factory.onDispose(ksessionId);
@@ -167,7 +165,6 @@ public class PerRequestRuntimeManager extends AbstractRuntimeManager {
         	}
     	} catch (Exception e) {
     	    local.get().remove(identifier);
-    	    ((ExecutionErrorManagerImpl)executionErrorManager).closeHandler();
     	    throw new RuntimeException(e);
     	}
     }

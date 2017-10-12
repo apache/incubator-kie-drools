@@ -37,7 +37,6 @@ import org.drools.persistence.api.TransactionManager;
 import org.drools.persistence.api.TransactionManagerHelper;
 import org.jbpm.process.core.timer.TimerServiceRegistry;
 import org.jbpm.process.core.timer.impl.GlobalTimerService;
-import org.jbpm.runtime.manager.impl.error.ExecutionErrorManagerImpl;
 import org.jbpm.runtime.manager.impl.factory.LocalTaskServiceFactory;
 import org.jbpm.runtime.manager.impl.mapper.EnvironmentAwareProcessInstanceContext;
 import org.jbpm.runtime.manager.impl.mapper.InMemoryMapper;
@@ -187,9 +186,7 @@ public class PerCaseRuntimeManager extends AbstractRuntimeManager {
         }
         Long ksessionId = mapper.findMapping(context, this.identifier);
         createLockOnGetEngine(ksessionId, runtime);
-        saveLocalRuntime(caseId, processInstanceId, runtime);
-        
-        ((ExecutionErrorManagerImpl)executionErrorManager).createHandler();
+        saveLocalRuntime(caseId, processInstanceId, runtime);        
 
         return runtime;
     }
@@ -248,7 +245,6 @@ public class PerCaseRuntimeManager extends AbstractRuntimeManager {
         try {
             if (canDispose(runtime)) {
                 removeLocalRuntime(runtime);                
-                ((ExecutionErrorManagerImpl)executionErrorManager).closeHandler();
                 
                 Long ksessionId = ((RuntimeEngineImpl)runtime).getKieSessionId();
                 releaseAndCleanLock(ksessionId, runtime);
@@ -270,8 +266,7 @@ public class PerCaseRuntimeManager extends AbstractRuntimeManager {
             }
         } catch (Exception e) {
             releaseAndCleanLock(runtime);
-            removeLocalRuntime(runtime);
-            ((ExecutionErrorManagerImpl)executionErrorManager).closeHandler();            
+            removeLocalRuntime(runtime);           
             throw new RuntimeException(e);
         }            
     }

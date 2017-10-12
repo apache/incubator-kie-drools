@@ -90,8 +90,14 @@ public class ExecutionErrorHandlerImpl implements ExecutionErrorHandler {
                 ExecutionError error = filter.filter(errorContext);
                 logger.debug("Filter {} returned {} for {}", filter, error, cause);
                 if (error != null) {
-                    storage.store(error);
-                    logger.debug("Error event {} stored successfully in {}", error, storage);
+                    
+                    try {
+                        storage.store(error);
+                        logger.debug("Error event {} stored successfully in {}", error, storage);
+                    } catch (Throwable e) {
+                        logger.warn("Could not persist execution error {} due to {}", error, e.getMessage());
+                        logger.debug("Stack trace ", e);
+                    }
                     
                 } else {
                     logger.debug("Filter {} accepted error {} but didn't produce results (error should be ignored)", filter, cause);

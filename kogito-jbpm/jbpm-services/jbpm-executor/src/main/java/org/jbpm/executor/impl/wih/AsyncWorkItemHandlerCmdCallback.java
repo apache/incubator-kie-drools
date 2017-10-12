@@ -25,6 +25,7 @@ import org.jbpm.process.core.context.exception.ExceptionScope;
 import org.jbpm.process.instance.context.exception.ExceptionScopeInstance;
 import org.jbpm.process.instance.impl.NoOpExecutionErrorHandler;
 import org.jbpm.runtime.manager.impl.AbstractRuntimeManager;
+import org.jbpm.runtime.manager.impl.error.ExecutionErrorManagerImpl;
 import org.jbpm.workflow.instance.NodeInstanceContainer;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
@@ -124,6 +125,7 @@ public class AsyncWorkItemHandlerCmdCallback implements CommandCallback {
           logger.error("Error when handling callback from executor", e);  
         } finally {
             manager.disposeRuntimeEngine(engine);
+            closeErrorHandler(manager);
         }
     }
     
@@ -132,7 +134,16 @@ public class AsyncWorkItemHandlerCmdCallback implements CommandCallback {
         if (errorManager == null) {
             return new NoOpExecutionErrorHandler();
         }
-        return errorManager.getHandler();
+        return ((ExecutionErrorManagerImpl) errorManager).createHandler();
+    }
+    
+    private void closeErrorHandler(RuntimeManager manager) {
+        ExecutionErrorManager errorManager = ((AbstractRuntimeManager) manager).getExecutionErrorManager();
+        
+        if (errorManager == null) {
+            return;
+        }
+        ((ExecutionErrorManagerImpl) errorManager).closeHandler();
     }
 
     protected RuntimeManager getRuntimeManager(CommandContext ctx) {

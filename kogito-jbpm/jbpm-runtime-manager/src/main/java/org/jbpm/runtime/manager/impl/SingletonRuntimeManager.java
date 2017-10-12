@@ -15,13 +15,19 @@
  */
 package org.jbpm.runtime.manager.impl;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.runtime.process.InternalProcessRuntime;
 import org.drools.persistence.api.TransactionManager;
 import org.jbpm.process.instance.ProcessRuntimeImpl;
-import org.jbpm.runtime.manager.impl.error.ExecutionErrorManagerImpl;
 import org.jbpm.services.task.impl.TaskContentRegistry;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.Context;
@@ -34,13 +40,6 @@ import org.kie.internal.task.api.ContentMarshallerContext;
 import org.kie.internal.task.api.InternalTaskService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 
 /**
  * This RuntimeManager is backed by a "Singleton" strategy, meaning that only one <code>RuntimeEngine</code> instance will
@@ -176,7 +175,6 @@ public class SingletonRuntimeManager extends AbstractRuntimeManager {
     		throw new IllegalStateException("Runtime manager " + identifier + " is already closed");
     	}
     	checkPermission();
-    	((ExecutionErrorManagerImpl)executionErrorManager).createHandler();
         // always return the same instance
         return this.singleton;
     }
@@ -203,7 +201,6 @@ public class SingletonRuntimeManager extends AbstractRuntimeManager {
     @Override
     public void disposeRuntimeEngine(RuntimeEngine runtime) {
         // no-op, singleton session is always active
-        ((ExecutionErrorManagerImpl)executionErrorManager).closeHandler();
     }
 
     @Override

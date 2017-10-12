@@ -43,6 +43,9 @@ public class ExecutionErrorHandlerInterceptor extends AbstractInterceptor {
         if (counter == null) {
             counter = new AtomicInteger( 0 );
             invocationsCounter.set( counter );
+            if (executionErrorManager != null) {
+                ((ExecutionErrorManagerImpl)executionErrorManager).createHandler();
+            }
         }
         counter.incrementAndGet();
         try {
@@ -50,6 +53,9 @@ public class ExecutionErrorHandlerInterceptor extends AbstractInterceptor {
         } finally {
             if (counter.decrementAndGet() == 0) {
                 invocationsCounter.remove();
+                if (executionErrorManager != null) {
+                    ((ExecutionErrorManagerImpl)executionErrorManager).closeHandler();
+                }
             }
         }
     }
