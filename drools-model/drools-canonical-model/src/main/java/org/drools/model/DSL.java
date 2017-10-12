@@ -21,7 +21,6 @@ import org.drools.model.view.OOPathBuilder.OOPathChunkBuilder;
 import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
-import static org.drools.model.functions.FunctionUtils.toFunctionN;
 import static org.drools.model.impl.ViewBuilder.viewItems2Patterns;
 
 public class DSL {
@@ -229,39 +228,19 @@ public class DSL {
         return andExprs;
     }
 
-    public static <T> SetViewItemBuilder<T> set(Variable<T> var) {
-        return new SetViewItemBuilder<T>(var);
+    public static <T> BindViewItemBuilder<T> bind( Variable<T> var) {
+        return new BindViewItemBuilder<T>(var);
     }
 
-    public static class SetViewItemBuilder<T> {
+    public static class BindViewItemBuilder<T> {
         private final Variable<T> var;
 
-        private SetViewItemBuilder(Variable<T> var) {
+        private BindViewItemBuilder( Variable<T> var) {
             this.var = var;
         }
 
-        public SetViewItem<T> invoking(Function0<T> f) {
-            return new SetViewItem<T>(toFunctionN(f), false, var);
-        }
-
-        public <A> SetViewItem<T> invoking(Variable<A> var1, Function1<A, T> f) {
-            return new SetViewItem<T>(toFunctionN(f), false, var, var1);
-        }
-
-        public <A, B> SetViewItem<T> invoking(Variable<A> var1, Variable<B> var2, Function2<A, B, T> f) {
-            return new SetViewItem<T>(toFunctionN(f), false, var, var1, var2);
-        }
-
-        public SetViewItem<T> in(Function0<Iterable<? extends T>> f) {
-            return new SetViewItem<T>(toFunctionN(f), true, var);
-        }
-
-        public <A> SetViewItem<T> in(Variable<A> var1, Function1<A, Iterable<? extends T>> f) {
-            return new SetViewItem<T>(toFunctionN(f), true, var, var1);
-        }
-
-        public <A, B> SetViewItem<T> in(Variable<A> var1, Variable<B> var2, Function2<A, B, Iterable<? extends T>> f) {
-            return new SetViewItem<T>(toFunctionN(f), true, var, var1, var2);
+        public <A> BindViewItem<T> as( Variable<A> var1, Function1<A, T> f) {
+            return new BindViewItem<T>(var, f, var1);
         }
     }
 
