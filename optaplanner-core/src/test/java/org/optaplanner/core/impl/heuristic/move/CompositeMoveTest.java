@@ -51,12 +51,37 @@ public class CompositeMoveTest {
     }
 
     @Test
+    public void createUndoMoveWithNonDoableMove() {
+        InnerScoreDirector<TestdataSolution> scoreDirector = PlannerTestUtils.mockScoreDirector(
+                TestdataSolution.buildSolutionDescriptor());
+
+        DummyMove a = new DummyMove("a");
+        DummyMove b = new NotDoableDummyMove("b");
+        DummyMove c = new DummyMove("c");
+        CompositeMove<TestdataSolution> move = new CompositeMove<>(a, b, c);
+        CompositeMove<TestdataSolution> undoMove = move.doMove(scoreDirector);
+        assertAllCodesOfArray(move.getMoves(), "a", "b", "c");
+        assertAllCodesOfArray(undoMove.getMoves(), "undo c", "undo a");
+
+        a = new NotDoableDummyMove("a");
+        b = new DummyMove("b");
+        c = new NotDoableDummyMove("c");
+        move = new CompositeMove<>(a, b, c);
+        undoMove = move.doMove(scoreDirector);
+        assertAllCodesOfArray(move.getMoves(), "a", "b", "c");
+        assertAllCodesOfArray(undoMove.getMoves(), "undo b");
+    }
+
+    @Test
     public void doMove() {
         InnerScoreDirector<TestdataSolution> scoreDirector = PlannerTestUtils.mockScoreDirector(
                 TestdataSolution.buildSolutionDescriptor());
         DummyMove a = mock(DummyMove.class);
+        when(a.isMoveDoable(any())).thenReturn(true);
         DummyMove b = mock(DummyMove.class);
+        when(b.isMoveDoable(any())).thenReturn(true);
         DummyMove c = mock(DummyMove.class);
+        when(c.isMoveDoable(any())).thenReturn(true);
         CompositeMove<TestdataSolution> move = new CompositeMove<>(a, b, c);
         move.doMove(scoreDirector);
         verify(a, times(1)).doMove(scoreDirector);
@@ -99,10 +124,25 @@ public class CompositeMoveTest {
     public void isMoveDoable() {
         InnerScoreDirector<TestdataSolution> scoreDirector = PlannerTestUtils.mockScoreDirector(
                 TestdataSolution.buildSolutionDescriptor());
+
         DummyMove first = new DummyMove();
-        DummyMove second = mock(DummyMove.class);
-        when(second.isMoveDoable(scoreDirector)).thenReturn(false);
+        DummyMove second = new DummyMove();
         Move<TestdataSolution> move = CompositeMove.buildMove(first, second);
+        assertEquals(true, move.isMoveDoable(scoreDirector));
+
+        first = new DummyMove();
+        second = new NotDoableDummyMove();
+        move = CompositeMove.buildMove(first, second);
+        assertEquals(true, move.isMoveDoable(scoreDirector));
+
+        first = new NotDoableDummyMove();
+        second = new DummyMove();
+        move = CompositeMove.buildMove(first, second);
+        assertEquals(true, move.isMoveDoable(scoreDirector));
+
+        first = new NotDoableDummyMove();
+        second = new NotDoableDummyMove();
+        move = CompositeMove.buildMove(first, second);
         assertEquals(false, move.isMoveDoable(scoreDirector));
     }
 
