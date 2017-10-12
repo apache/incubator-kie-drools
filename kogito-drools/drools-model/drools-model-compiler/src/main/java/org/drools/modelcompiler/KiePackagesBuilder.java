@@ -37,6 +37,7 @@ import org.drools.model.WindowReference;
 import org.drools.model.consequences.ConditionalNamedConsequenceImpl;
 import org.drools.model.consequences.NamedConsequenceImpl;
 import org.drools.model.constraints.SingleConstraint1;
+import org.drools.model.functions.Function1;
 import org.drools.model.functions.Predicate1;
 import org.drools.model.impl.DeclarationImpl;
 import org.drools.model.patterns.QueryCallPattern;
@@ -350,8 +351,18 @@ public class KiePackagesBuilder {
     }
 
     private Pattern buildPattern( RuleContext ctx, Condition condition ) {
-        org.drools.model.Pattern modelPattern = (org.drools.model.Pattern) condition;
+        org.drools.model.Pattern<Object> modelPattern = (org.drools.model.Pattern) condition;
         Pattern pattern = addPatternForVariable( ctx, modelPattern.getPatternVariable() );
+
+        for (Map.Entry<Variable, Function1<Object,?>> entry : modelPattern.getBindings().entrySet()) {
+            Declaration declaration = new Declaration(entry.getKey().getName(),
+                                                      new LambdaReadAccessor(0, entry.getKey().getType().asClass(),
+                                                                             entry.getValue()),
+                                                      pattern,
+                                                      true);
+            pattern.addDeclaration( declaration );
+            ctx.addInnerDeclaration(entry.getKey(), declaration);
+        }
 
         Declaration queryArgDecl = ctx.getQueryDeclaration( modelPattern.getPatternVariable() );
         if (queryArgDecl != null) {

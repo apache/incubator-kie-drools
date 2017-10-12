@@ -2,10 +2,10 @@ package org.drools.model.patterns;
 
 import org.drools.model.*;
 import org.drools.model.constraints.AbstractConstraint;
+import org.drools.model.functions.Function1;
 import org.drools.model.impl.DataSourceDefinitionImpl;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class PatternImpl<T> extends AbstractSinglePattern implements Pattern<T> {
 
@@ -13,6 +13,7 @@ public class PatternImpl<T> extends AbstractSinglePattern implements Pattern<T> 
     private Variable[] inputVariables;
     private final DataSourceDefinition dataSourceDefinition;
     private Constraint constraint;
+    private Map<Variable, Function1<T, ?>> bindings;
 
     public PatternImpl(Variable<T> variable) {
         this(variable, SingleConstraint.EMPTY, DataSourceDefinitionImpl.DEFAULT);
@@ -54,6 +55,17 @@ public class PatternImpl<T> extends AbstractSinglePattern implements Pattern<T> 
 
     public void addConstraint( Constraint constraint ) {
         this.constraint = ( (AbstractConstraint) this.constraint ).and( constraint );
+    }
+
+    public void addBinding(Variable boundVar, Function1<T, ?> func) {
+        if (bindings == null) {
+            bindings = new HashMap<>();
+        }
+        bindings.put(boundVar, func);
+    }
+
+    public Map<Variable, Function1<T, ?>> getBindings() {
+        return bindings != null ? bindings : Collections.emptyMap();
     }
 
     private Variable[] collectInputVariables() {

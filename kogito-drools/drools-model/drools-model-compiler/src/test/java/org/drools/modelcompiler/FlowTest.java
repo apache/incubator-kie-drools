@@ -16,29 +16,13 @@
 
 package org.drools.modelcompiler;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import org.assertj.core.api.Assertions;
 import org.drools.core.reteoo.AlphaNode;
-import org.drools.model.Global;
+import org.drools.model.*;
 import org.drools.model.Index.ConstraintType;
-import org.drools.model.Model;
-import org.drools.model.Query1;
-import org.drools.model.Query2;
-import org.drools.model.Rule;
-import org.drools.model.Variable;
 import org.drools.model.impl.ModelImpl;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
-import org.drools.modelcompiler.domain.Adult;
-import org.drools.modelcompiler.domain.Child;
-import org.drools.modelcompiler.domain.Man;
-import org.drools.modelcompiler.domain.Person;
-import org.drools.modelcompiler.domain.Result;
-import org.drools.modelcompiler.domain.Toy;
-import org.drools.modelcompiler.domain.Woman;
-import org.junit.Ignore;
+import org.drools.modelcompiler.domain.*;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.ClassObjectFilter;
@@ -46,30 +30,14 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import static java.util.Arrays.asList;
-import static org.drools.model.DSL.accumulate;
-import static org.drools.model.DSL.and;
-import static org.drools.model.DSL.average;
-import static org.drools.model.DSL.declarationOf;
-import static org.drools.model.DSL.execute;
-import static org.drools.model.DSL.expr;
-import static org.drools.model.DSL.forall;
-import static org.drools.model.DSL.from;
-import static org.drools.model.DSL.globalOf;
-import static org.drools.model.DSL.input;
-import static org.drools.model.DSL.not;
-import static org.drools.model.DSL.on;
-import static org.drools.model.DSL.or;
-import static org.drools.model.DSL.query;
-import static org.drools.model.DSL.rule;
-import static org.drools.model.DSL.sum;
-import static org.drools.model.DSL.type;
-import static org.drools.model.DSL.valueOf;
-import static org.drools.model.DSL.when;
+import static org.drools.model.DSL.*;
 import static org.drools.modelcompiler.BaseModelTest.getObjects;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class FlowTest {
 
@@ -119,6 +87,53 @@ public class FlowTest {
 
         ksession.fireAllRules();
         assertEquals("Edson is older than Mark", result.getValue());
+    }
+
+    @Test
+    public void testBetaWithDeclaration() {
+        Variable<Person> markV = declarationOf(type(Person.class));
+        Variable<Integer> markAge = declarationOf(type(Integer.class));
+        Variable<Person> olderV = declarationOf(type(Person.class));
+
+        Rule rule = rule("beta")
+                .build(expr("exprA", markV, p -> p.getName().equals("Mark"))
+                                .indexedBy(String.class, ConstraintType.EQUAL, Person::getName, "Mark")
+                                .reactOn("name", "age"), // also react on age, see RuleDescr.lookAheadFieldsOfIdentifier
+                        bind(markAge).as(markV, m -> m.getAge()),
+                        expr("exprB", olderV, p -> !p.getName().equals("Mark"))
+                                .indexedBy(String.class, ConstraintType.NOT_EQUAL, Person::getName, "Mark")
+                                .reactOn("name"),
+                        expr("exprC", olderV, markAge, (p1, age) -> p1.getAge() > age)
+                                .indexedBy(int.class, ConstraintType.GREATER_THAN, Person::getAge, int.class::cast)
+                                .reactOn("age"),
+                        on(olderV, markV).execute((drools, p1, p2) -> drools.insert(p1.getName() + " is older than " + p2.getName())));
+
+        Model model = new ModelImpl().addRule(rule);
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model);
+
+        KieSession ksession = kieBase.newKieSession();
+
+        Person mark = new Person("Mark", 37);
+        Person edson = new Person("Edson", 35);
+        Person mario = new Person("Mario", 40);
+
+        FactHandle markFH = ksession.insert(mark);
+        FactHandle edsonFH = ksession.insert(edson);
+        FactHandle marioFH = ksession.insert(mario);
+
+        ksession.fireAllRules();
+        Collection<String> results = getObjects(ksession, String.class);
+        Assertions.assertThat(results).containsExactlyInAnyOrder("Mario is older than Mark");
+
+        ksession.delete(marioFH);
+        ksession.fireAllRules();
+
+        mark.setAge(34);
+        ksession.update(markFH, mark, "age");
+
+        ksession.fireAllRules();
+        results = getObjects(ksession, String.class);
+        Assertions.assertThat(results).containsExactlyInAnyOrder("Mario is older than Mark", "Edson is older than Mark");
     }
 
     @Test
