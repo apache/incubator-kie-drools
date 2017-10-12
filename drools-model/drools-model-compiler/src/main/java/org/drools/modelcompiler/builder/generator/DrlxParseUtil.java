@@ -379,24 +379,4 @@ public class DrlxParseUtil {
         }
         return expression.substring(0, dot);
     }
-
-    public static Class extractGenericType(Class<?> clazz, final String methodName) {
-        Method method = null;
-        try {
-            method = clazz.getMethod(methodName, null);
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException();
-        }
-
-        java.lang.reflect.Type returnType = method.getGenericReturnType();
-
-        if(returnType instanceof ParameterizedType){
-            ParameterizedType type = (ParameterizedType) returnType;
-            java.lang.reflect.Type[] typeArguments = type.getActualTypeArguments();
-            for(java.lang.reflect.Type typeArgument : typeArguments){
-                return (Class) typeArgument;
-            }
-        }
-        throw new RuntimeException("No generic type");
-    }
 }

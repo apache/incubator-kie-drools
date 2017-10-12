@@ -9,7 +9,7 @@ import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.modelcompiler.builder.PackageModel;
 
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.extractGenericType;
+import static org.drools.core.util.ClassUtils.extractGenericType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.prepend;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
@@ -36,7 +36,7 @@ public class OOPathExprVisitor {
 
             final TypedExpression callExpr = DrlxParseUtil.nameExprToMethodCallExpr(fieldName, previousClass);
             Class<?> fieldType = callExpr.getType().orElseThrow(RuntimeException::new);
-            if (Iterable.class.isAssignableFrom(fieldType)) { // Hack to find the generic types of collections
+            if (Iterable.class.isAssignableFrom(fieldType)) {
                 fieldType = extractGenericType(previousClass, ((MethodCallExpr) callExpr.getExpression()).getName().toString());
             }
 

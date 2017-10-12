@@ -48,7 +48,6 @@ import org.drools.compiler.lang.descr.QueryDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.Behavior;
 import org.drools.core.time.TimeUtils;
 import org.drools.core.util.ClassUtils;
@@ -127,14 +126,14 @@ public class ModelGenerator {
             if (descriptor instanceof QueryDescr) {
                 processQuery(pkg, packageModel, (QueryDescr) descriptor);
             } else {
-                processRule(pkg, packageModel, descriptor, descr.getImpl());
+                processRule(pkg, packageModel, descriptor);
             }
         }
 
         return packageModel;
     }
 
-    private static void processRule(InternalKnowledgePackage pkg, PackageModel packageModel, RuleDescr ruleDescr, RuleImpl impl) {
+    private static void processRule(InternalKnowledgePackage pkg, PackageModel packageModel, RuleDescr ruleDescr) {
         RuleContext context = new RuleContext(pkg, packageModel.getExprIdGenerator(), ruleDescr);
 
         for(Entry<String, Object> kv : ruleDescr.getNamedConsequences().entrySet()) {
@@ -288,7 +287,7 @@ public class ModelGenerator {
         declarationOfCall.addArgument(typeCall);
         declarationOfCall.addArgument(new StringLiteralExpr(decl.getBindingId()));
 
-        optToStream(decl.optionalReactiveFrom).forEach(declarationOfCall::addArgument);
+        decl.declarationSource.ifPresent(declarationOfCall::addArgument);
 
         decl.getEntryPoint().ifPresent( ep -> {
             MethodCallExpr entryPointCall = new MethodCallExpr(null, "entryPoint");

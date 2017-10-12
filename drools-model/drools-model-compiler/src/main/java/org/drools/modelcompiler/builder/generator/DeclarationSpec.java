@@ -13,34 +13,34 @@ public class DeclarationSpec {
     final String bindingId;
     final Class<?> declarationClass;
     final Optional<PatternDescr> optPattern;
-    final Optional<Expression> optionalReactiveFrom;
+    final Optional<Expression> declarationSource;
 
     public DeclarationSpec(String bindingId, Class<?> declarationClass) {
         this.bindingId = bindingId;
         this.declarationClass = declarationClass;
         this.optPattern = Optional.empty();
-        this.optionalReactiveFrom = Optional.empty();
+        this.declarationSource = Optional.empty();
     }
 
-    public DeclarationSpec(String bindingId, Class<?> declarationClass, Expression optionalReactiveFrom) {
+    public DeclarationSpec(String bindingId, Class<?> declarationClass, Expression declarationSource) {
         this.bindingId = bindingId;
         this.declarationClass = declarationClass;
         this.optPattern = Optional.empty();
-        this.optionalReactiveFrom = Optional.of(optionalReactiveFrom);
+        this.declarationSource = Optional.of(declarationSource);
     }
 
     public DeclarationSpec(String bindingId, Class<?> declarationClass, PatternDescr pattern) {
         this.bindingId = bindingId;
         this.declarationClass = declarationClass;
         this.optPattern = Optional.of(pattern);
-        this.optionalReactiveFrom = Optional.empty();
+        this.declarationSource = Optional.empty();
     }
 
-    public DeclarationSpec(String bindingId, Class<?> declarationClass, PatternDescr pattern, Optional<Expression> optionalReactiveFrom) {
+    public DeclarationSpec(String bindingId, Class<?> declarationClass, PatternDescr pattern, Optional<Expression> declarationSource) {
         this.bindingId = bindingId;
         this.declarationClass = declarationClass;
         this.optPattern = Optional.of(pattern);
-        this.optionalReactiveFrom = optionalReactiveFrom;
+        this.declarationSource = declarationSource;
     }
 
     Optional<String> getEntryPoint() {
