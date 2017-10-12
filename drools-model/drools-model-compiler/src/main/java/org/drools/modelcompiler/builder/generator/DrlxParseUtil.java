@@ -37,6 +37,7 @@ import org.drools.javaparser.ast.type.UnknownType;
 import org.drools.modelcompiler.builder.PackageModel;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.util.*;
 
 import static org.drools.core.util.ClassUtils.getter2property;
@@ -378,5 +379,4 @@ public class DrlxParseUtil {
         }
         return expression.substring(0, dot);
     }
-
 }
