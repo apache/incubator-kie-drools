@@ -35,17 +35,51 @@ public class OOPathTest extends BaseModelTest {
     }
 
     @Test
-    @Ignore("DSL generation to be implemented")
-    public void testReactiveOOPath() {
+    public void testOOPath() {
         final String str =
                 "import org.drools.modelcompiler.domain.*;\n" +
                 "global java.util.List list\n" +
                 "\n" +
                 "rule R when\n" +
-                "  Man( $toy: /wife/children[age > 10]/toys )\n" +
+                " $man: Man( /wife/children[age > 10] )\n" +
                 "then\n" +
-                "  list.add( $toy.getName() );\n" +
+                "  list.add( $man.getName() );\n" +
                 "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        final List<String> list = new ArrayList<>();
+        ksession.setGlobal( "list", list );
+
+        final Woman alice = new Woman( "Alice", 38 );
+        final Man bob = new Man( "Bob", 40 );
+        final Man carl = new Man( "Carl", 40 );
+        bob.setWife( alice );
+
+        final Child charlie = new Child( "Charles", 12 );
+        final Child debbie = new Child( "Debbie", 10 );
+        alice.addChild( charlie );
+        alice.addChild( debbie );
+
+        ksession.insert( bob );
+        ksession.insert( carl );
+        ksession.fireAllRules();
+
+        Assertions.assertThat(list).containsExactlyInAnyOrder("Bob");
+    }
+
+    @Test
+    @Ignore
+    public void testReactiveOOPath() {
+        final String str =
+                "import org.drools.modelcompiler.domain.*;\n" +
+                        "global java.util.List list\n" +
+                        "\n" +
+                        "rule R when\n" +
+                        "  Man( $toy: /wife/children[age > 10]/toys )\n" +
+                        "then\n" +
+                        "  list.add( $toy.getName() );\n" +
+                        "end\n";
 
         KieSession ksession = getKieSession( str );
 
@@ -76,6 +110,7 @@ public class OOPathTest extends BaseModelTest {
 
         Assertions.assertThat(list).containsExactlyInAnyOrder("doll");
     }
+
 
     @Test
     @Ignore("DSL generation to be implemented")

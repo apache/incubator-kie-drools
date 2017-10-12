@@ -39,6 +39,44 @@ import static org.drools.model.DSL.*;
 public class OOPathFlowTest {
 
     @Test
+    public void testOOPath() {
+        Global<List> listG = globalOf(type(List.class), "defaultpkg", "list");
+        Variable<Man> manV = declarationOf( type( Man.class ) );
+        Variable<Woman> wifeV = declarationOf( type( Woman.class ), reactiveFrom( manV, Man::getWife ) );
+        Variable<Child> childV = declarationOf( type( Child.class ), reactiveFrom( wifeV, Woman::getChildren ) );
+
+        Rule rule = rule( "oopath" )
+                .build(
+                        expr("exprA", childV, c -> c.getAge() > 10),
+                        on(manV, listG).execute( (t, l) -> l.add(t.getName()) )
+                );
+
+        Model model = new ModelImpl().addGlobal( listG ).addRule( rule );
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
+        KieSession ksession = kieBase.newKieSession();
+
+        final List<String> list = new ArrayList<>();
+        ksession.setGlobal( "list", list );
+
+        final Woman alice = new Woman( "Alice", 38 );
+        final Man bob = new Man( "Bob", 40 );
+        final Man carl = new Man( "Bob", 42 );
+        bob.setWife( alice );
+
+        final Child charlie = new Child( "Charles", 12 );
+        final Child debbie = new Child( "Debbie", 10 );
+        alice.addChild( charlie );
+        alice.addChild( debbie );
+
+        ksession.insert( bob );
+        ksession.insert( carl );
+        ksession.fireAllRules();
+
+        Assertions.assertThat(list).containsExactlyInAnyOrder("Bob");
+
+    }
+
+    @Test
     public void testReactiveOOPath() {
         Global<List> listG = globalOf(type(List.class), "defaultpkg", "list");
         Variable<Man> manV = declarationOf( type( Man.class ) );
