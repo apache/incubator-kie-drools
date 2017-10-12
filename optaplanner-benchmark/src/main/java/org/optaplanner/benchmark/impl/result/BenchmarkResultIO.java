@@ -53,6 +53,8 @@ public class BenchmarkResultIO {
     public BenchmarkResultIO() {
         xStream = XStreamXmlSolverFactory.buildXStream();
         xStream.processAnnotations(PlannerBenchmarkResult.class);
+        xStream.allowTypesByRegExp(new String[]{"org\\.optaplanner\\.\\w+\\.api\\..*"});
+        xStream.allowTypesByRegExp(new String[]{"org\\.optaplanner\\.\\w+\\.impl\\..*"});
         AbstractScoreXStreamConverter.registerScoreConverters(xStream);
     }
 
