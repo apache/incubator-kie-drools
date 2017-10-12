@@ -92,25 +92,21 @@ public class ViewBuilder {
                 continue;
             }
 
-            Variable<?> patterVariable = viewItem.getFirstVariable();
-            if ( viewItem instanceof InputViewItemImpl ) {
-                inputs.put( patterVariable, (InputViewItemImpl) viewItem );
+            if ( viewItem instanceof BindViewItem ) {
+                BindViewItem bindViewItem = (BindViewItem) viewItem;
+                PatternImpl pattern = (PatternImpl) conditionMap.get(bindViewItem.getInputVariable());
+                if (pattern != null) {
+                    pattern.addBinding( bindViewItem.getFirstVariable(), bindViewItem.getInvokedFunction() );
+                    usedVars.add( bindViewItem.getFirstVariable() );
+                } else {
+                    throw new UnsupportedOperationException("TODO: binding without constraints not implemented");
+                }
                 continue;
             }
 
-            if ( viewItem instanceof SetViewItem ) {
-                SetViewItem setViewItem = (SetViewItem) viewItem;
-                Pattern pattern = setViewItem.isMultivalue() ?
-                                  new InvokerMultiValuePatternImpl( DataSourceDefinitionImpl.DEFAULT,
-                                                                    setViewItem.getInvokedFunction(),
-                                                                    patterVariable,
-                                                                    setViewItem.getInputVariables() ) :
-                                  new InvokerSingleValuePatternImpl( DataSourceDefinitionImpl.DEFAULT,
-                                                                     setViewItem.getInvokedFunction(),
-                                                                     patterVariable,
-                                                                     setViewItem.getInputVariables() );
-                conditionMap.put( patterVariable, pattern );
-                conditions.add( pattern );
+            Variable<?> patterVariable = viewItem.getFirstVariable();
+            if ( viewItem instanceof InputViewItemImpl ) {
+                inputs.put( patterVariable, (InputViewItemImpl) viewItem );
                 continue;
             }
 
