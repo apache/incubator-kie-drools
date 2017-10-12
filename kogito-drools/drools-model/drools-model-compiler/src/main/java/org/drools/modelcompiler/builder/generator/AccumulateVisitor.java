@@ -43,7 +43,7 @@ public class AccumulateVisitor {
 
         final MethodCallExpr functionDSL = new MethodCallExpr(null, function.getFunction());
 
-        final Expression expr = DrlxParser.parseExpression(function.getParams()[0]);
+        final Expression expr = DrlxParser.parseExpression(function.getParams()[0]).getExpr();
         if (expr instanceof MethodCallExpr) {
             final MethodCallExpr methodCallExpr = (MethodCallExpr) expr;
 
