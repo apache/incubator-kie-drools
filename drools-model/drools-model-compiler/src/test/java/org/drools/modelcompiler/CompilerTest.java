@@ -16,6 +16,7 @@
 
 package org.drools.modelcompiler;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -864,6 +865,8 @@ public class CompilerTest extends BaseModelTest {
                         "\n" +
                         "declare POJOPerson\n" +
                         "    name : String\n" +
+                        "    surname : String\n" +
+                        "    age :  int\n" +
                         "end\n" +
                         "rule R when\n" +
                         "  $p : Person( name.length == 4 )\n" +
@@ -887,6 +890,52 @@ public class CompilerTest extends BaseModelTest {
         Method name = resultClass.getMethod("getName");
         assertEquals("defaultpkg.POJOPerson", resultClass.getName());
         assertEquals("Mark", name.invoke(result));
+
+        Constructor<?>[] constructors = resultClass.getConstructors();
+        assertEquals(2, constructors.length);
+
+        Object instance1 = resultClass.newInstance();
+        Constructor<?> ctor = resultClass.getConstructor(String.class, String.class, int.class);
+        Object luca = ctor.newInstance("Luca", null, 32);
+        Method getName = resultClass.getMethod("getName");
+        Method getAge = resultClass.getMethod("getAge");
+
+        assertEquals("Luca", getName.invoke(luca));
+        assertEquals(32, getAge.invoke(luca));
+
+        assertEquals("POJOPerson( name=Luca, surname=null, age=32 )", luca.toString());
+
+//
+//
+//        Object a = resultClass.newInstance();
+//
+//        Method setName = resultClass.getMethod("setName", String.class);
+//        Method setSurname = resultClass.getMethod("setSurname", String.class);
+//
+//        setName.invoke(a, "Luca");
+//        setSurname.invoke(a, "Molteni");
+//
+//        Object b = resultClass.newInstance();
+//        setName.invoke(b, "Luca");
+//        setSurname.invoke(b, "Molteni");
+//
+//        assertEquals(a.hashCode(), b.hashCode());
+
+//
+//        Object a = resultClass.newInstance();
+//        assertEquals(a, a);
+//
+//        Method setName = resultClass.getMethod("setName", String.class);
+//        Method setSurname = resultClass.getMethod("setSurname", String.class);
+//
+//        setName.invoke(a, "Luca");
+//        setSurname.invoke(a, "Molteni");
+//
+//        Object b = resultClass.newInstance();
+//        setName.invoke(b, "Luca");
+//        setSurname.invoke(b, "Molteni");
+//
+//        assertEquals(a, b);
 
     }
 }
