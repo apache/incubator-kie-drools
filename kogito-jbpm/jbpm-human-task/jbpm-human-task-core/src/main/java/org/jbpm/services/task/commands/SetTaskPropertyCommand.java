@@ -259,11 +259,11 @@ public class SetTaskPropertyCommand extends UserGroupCallbackTaskCommand<Void> {
         
         switch (property) {
 		case FAULT_PROPERTY:
-			doCallbackUserOperation(userId, context);
+			doCallbackUserOperation(userId, context, true);
 			service.setFault(taskId, userId, faultData);
 			break;
 		case OUTPUT_PROPERTY:
-			doCallbackUserOperation(userId, context);
+			doCallbackUserOperation(userId, context, true);
 			service.setOutput(taskId, userId, output);
 			break;
 		case PRIORITY_PROPERTY:

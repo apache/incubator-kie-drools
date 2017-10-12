@@ -39,7 +39,7 @@ public class DeleteFaultCommand extends UserGroupCallbackTaskCommand<Void> {
 
     public Void execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
-        doCallbackUserOperation(userId, context);
+        doCallbackUserOperation(userId, context, true);
         doUserGroupCallbackOperation(userId, null, context);
     	context.getTaskInstanceService().deleteFault(taskId, userId);
     	return null;

@@ -32,7 +32,6 @@ import java.util.Map;
 import org.assertj.core.api.Fail;
 import org.jbpm.services.task.events.DefaultTaskEventListener;
 import org.jbpm.services.task.exception.PermissionDeniedException;
-import org.jbpm.services.task.impl.TaskContentRegistry;
 import org.jbpm.services.task.impl.factories.TaskFactory;
 import org.jbpm.services.task.impl.model.xml.JaxbContent;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
@@ -48,7 +47,6 @@ import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.api.task.model.User;
-import org.kie.internal.task.api.ContentMarshallerContext;
 import org.kie.internal.task.api.EventService;
 import org.kie.internal.task.api.TaskModelProvider;
 import org.kie.internal.task.api.model.AccessType;
@@ -63,7 +61,6 @@ import org.kie.internal.task.api.model.InternalTaskData;
 
 public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
 
-    
     @Test
     /*
     * Related to BZ-1105868 
@@ -1240,7 +1237,6 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
     @Test
     public void testForwardFromReadyToGroup() throws Exception {
         
-
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Darth Vader') ],businessAdministrators = [ new User('Administrator') ], }),";
@@ -1253,13 +1249,13 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         long taskId = task.getId();
 
         // Check is Forwarded
-        PermissionDeniedException denied = null;
+        IllegalArgumentException failed = null;
         try {
             taskService.forward(taskId, "Darth Vader", "Knights Templer");
-        } catch (PermissionDeniedException e) {
-            denied = e;
+        } catch (IllegalArgumentException e) {
+            failed = e;
         }
-        assertNotNull("Should get permissed denied exception", denied);
+        assertNotNull("Should get permissed denied exception", failed);
     }
 
     @Test
@@ -2780,6 +2776,45 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         
         // now let's check what was actually given to listeners
         assertEquals(0, outputsAfterCompletion.size());        
+    }
+    
+    @Test
+    public void testDelegateFromReservedWithNotExistingTargetUser() throws Exception {
+        
+        // One potential owner, should go straight to state Reserved
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet'), new User('Darth Vader') ],businessAdministrators = [ new User('Administrator') ], }),";
+        str += "name = 'This is my task name' })";
+
+
+        Task task = TaskFactory.evalTask(new StringReader(str));
+        taskService.addTask(task, new HashMap<String, Object>());
+        long taskId = task.getId();
+
+        // Claim and Reserved
+
+        taskService.claim(taskId, "Darth Vader");
+
+        Task task1 = taskService.getTaskById(taskId);
+        assertEquals(Status.Reserved, task1.getTaskData().getStatus());
+        assertEquals("Darth Vader", task1.getTaskData().getActualOwner().getId());
+
+        // Check was not delegated
+        IllegalArgumentException failed = null;
+        try {
+            taskService.delegate(taskId, "Darth Vader", "not existing");
+        } catch (IllegalArgumentException e) {
+            failed = e;
+        }
+        assertNotNull("Should get permissed denied exception", failed);
+
+        Task task2 = taskService.getTaskById(taskId);
+        User user = createUser("Darth Vader");
+        assertTrue(task2.getPeopleAssignments().getPotentialOwners().contains(user));
+        user = createUser("Tony Stark");
+        assertFalse(task2.getPeopleAssignments().getPotentialOwners().contains(user));
+        assertEquals("Darth Vader", task2.getTaskData().getActualOwner().getId());
+        assertEquals(Status.Reserved, task2.getTaskData().getStatus());
     }
     
     protected void testCompleteWithContentAndVarListener(TaskLifeCycleEventListener listener) {

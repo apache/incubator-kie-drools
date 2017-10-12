@@ -47,7 +47,7 @@ public class SkipTaskCommand extends UserGroupCallbackTaskCommand<Void> {
 
     public Void execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
-        doCallbackUserOperation(userId, context);
+        doCallbackUserOperation(userId, context, true);
         groupIds = doUserGroupCallbackOperation(userId, null, context);
         context.set("local:groups", groupIds);
     	context.getTaskInstanceService().skip(taskId, userId);

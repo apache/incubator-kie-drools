@@ -282,7 +282,12 @@ public class JaxbTaskSerializationTest extends AbstractTaskSerializationTest {
        for( Object [] data : testData ) {
            int property = (Integer) data[0];
            cmd = new SetTaskPropertyCommand(taskId, userId, property, data[1]);
-           cmd.execute(mockContext);
+           try {
+               cmd.execute(mockContext);
+           } catch (IllegalArgumentException e) {
+               // expected for fault and output
+               assertTrue(e.getMessage().startsWith("User user was not found in callback "));
+           }
        }
     }
 

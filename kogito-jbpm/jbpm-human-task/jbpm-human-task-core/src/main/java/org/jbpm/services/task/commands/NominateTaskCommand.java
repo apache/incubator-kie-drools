@@ -62,7 +62,7 @@ public class NominateTaskCommand extends UserGroupCallbackTaskCommand<Void> {
 
 	public Void execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
-        doCallbackUserOperation(userId, context);
+        doCallbackUserOperation(userId, context, true);
         List<OrganizationalEntity> realPotOwners = convertListFromJaxbImplToInterface(potentialOwners);
         doCallbackOperationForPotentialOwners(realPotOwners, context);
         groupIds = doUserGroupCallbackOperation(userId, null, context);

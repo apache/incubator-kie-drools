@@ -94,9 +94,18 @@ public class UserGroupCallbackTaskCommand<T> extends TaskCommand<T> {
 
     protected boolean doCallbackUserOperation(String userId, TaskContext context) {
 
+        return doCallbackUserOperation(userId, context, false);
+
+    }
+    
+    protected boolean doCallbackUserOperation(String userId, TaskContext context, boolean throwExceptionWhenNotFound) {
+
         if (userId != null && context.getUserGroupCallback().existsUser(userId)) {
             addUserFromCallbackOperation(userId, context);
             return true;
+        }
+        if (throwExceptionWhenNotFound) {
+            throw new IllegalArgumentException("User " + userId + " was not found in callback " + context.getUserGroupCallback());
         }
         return false;
 
