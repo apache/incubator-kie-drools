@@ -16,12 +16,8 @@
 
 package org.drools.compiler.integrationtests;
 
-import org.drools.compiler.Address;
-import org.drools.compiler.Cheese;
-import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.*;
 import org.drools.compiler.Message;
-import org.drools.compiler.Person;
-import org.drools.compiler.PersonHolder;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.DrlParser;
@@ -35,14 +31,9 @@ import org.drools.core.InitialFact;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.common.DefaultFactHandle;
-import org.drools.core.common.InternalAgenda;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.Memory;
-import org.drools.core.common.NodeMemories;
-import org.drools.core.common.TupleSets;
+import org.drools.core.common.*;
 import org.drools.core.conflict.SalienceConflictResolver;
+import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.facttemplates.FactTemplate;
@@ -52,17 +43,7 @@ import org.drools.core.facttemplates.FieldTemplateImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.io.impl.ByteArrayResource;
-import org.drools.core.reteoo.AlphaNode;
-import org.drools.core.reteoo.BetaMemory;
-import org.drools.core.reteoo.JoinNode;
-import org.drools.core.reteoo.LeftInputAdapterNode;
-import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.reteoo.Rete;
-import org.drools.core.reteoo.ReteComparator;
-import org.drools.core.reteoo.ReteDumper;
-import org.drools.core.reteoo.RightTuple;
-import org.drools.core.reteoo.SegmentMemory;
+import org.drools.core.reteoo.*;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.Salience;
 import org.junit.Assert;
@@ -71,14 +52,10 @@ import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
-import org.kie.api.builder.KieBuilder;
-import org.kie.api.builder.KieFileSystem;
-import org.kie.api.builder.KieModule;
-import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.*;
 import org.kie.api.builder.Results;
 import org.kie.api.conf.DeclarativeAgendaOption;
 import org.kie.api.conf.EventProcessingOption;
-import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.definition.type.Modifies;
@@ -86,12 +63,7 @@ import org.kie.api.definition.type.Position;
 import org.kie.api.definition.type.PropertyReactive;
 import org.kie.api.event.kiebase.DefaultKieBaseEventListener;
 import org.kie.api.event.kiebase.KieBaseEventListener;
-import org.kie.api.event.rule.AfterMatchFiredEvent;
-import org.kie.api.event.rule.AgendaEventListener;
-import org.kie.api.event.rule.DebugAgendaEventListener;
-import org.kie.api.event.rule.DefaultAgendaEventListener;
-import org.kie.api.event.rule.MatchCancelledEvent;
-import org.kie.api.event.rule.MatchCreatedEvent;
+import org.kie.api.event.rule.*;
 import org.kie.api.io.ResourceType;
 import org.kie.api.marshalling.Marshaller;
 import org.kie.api.runtime.KieContainer;
@@ -102,14 +74,10 @@ import org.kie.api.runtime.rule.Agenda;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderConfiguration;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.builder.KnowledgeBuilderResult;
-import org.kie.internal.builder.KnowledgeBuilderResults;
-import org.kie.internal.builder.ResultSeverity;
+import org.kie.internal.builder.*;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.kie.internal.builder.conf.RuleEngineOption;
+import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
@@ -127,19 +95,8 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CompletionService;
-import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.*;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
@@ -8812,7 +8769,7 @@ public class Misc2Test extends CommonTestMethodBase {
 
         KnowledgeBuilder kbuilder1 = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder1.add(ResourceFactory.newByteArrayResource(drl1.getBytes()), ResourceType.DRL);
-        Collection<KiePackage> knowledgePackages1 = kbuilder1.getKnowledgePackages();
+        Collection<KnowledgePackage> knowledgePackages1 = kbuilder1.getKnowledgePackages();
 
         String drl2 = "package com.sample\n" +
                 "import org.drools.compiler.*;\n" +
@@ -8824,18 +8781,26 @@ public class Misc2Test extends CommonTestMethodBase {
 
         KnowledgeBuilder kbuilder2 = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder2.add(ResourceFactory.newByteArrayResource(drl2.getBytes()), ResourceType.DRL);
-        Collection<KiePackage> knowledgePackages2 = kbuilder2.getKnowledgePackages();
+        Collection<KnowledgePackage> knowledgePackages2 = kbuilder2.getKnowledgePackages();
 
-        InternalKnowledgeBase kbase1 = KnowledgeBaseFactory.newKnowledgeBase();
-        Collection<KiePackage> combinedPackages1 = new ArrayList<KiePackage>();
-        combinedPackages1.addAll(knowledgePackages1);
-        combinedPackages1.addAll(knowledgePackages2);
+        InternalKnowledgeBase kbase1 = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        Collection<InternalKnowledgePackage> combinedPackages1 = new ArrayList<InternalKnowledgePackage>();
+        for (KnowledgePackage kpkg : knowledgePackages1) {
+            combinedPackages1.add( (( InternalKnowledgePackage ) kpkg));
+        }
+        for (KnowledgePackage kpkg : knowledgePackages2) {
+            combinedPackages1.add( (( InternalKnowledgePackage ) kpkg));
+        }
         kbase1.addPackages(combinedPackages1); // Add once to make inUse=true
 
-        InternalKnowledgeBase kbase2 = KnowledgeBaseFactory.newKnowledgeBase();
-        Collection<KiePackage> combinedPackages2 = new ArrayList<KiePackage>();
-        combinedPackages2.addAll(knowledgePackages1);
-        combinedPackages2.addAll(knowledgePackages2);
+        InternalKnowledgeBase kbase2 = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        Collection<InternalKnowledgePackage> combinedPackages2 = new ArrayList<InternalKnowledgePackage>();
+        for (KnowledgePackage kpkg : knowledgePackages1) {
+            combinedPackages2.add( (( InternalKnowledgePackage ) kpkg));
+        }
+        for (KnowledgePackage kpkg : knowledgePackages2) {
+            combinedPackages2.add( (( InternalKnowledgePackage ) kpkg));
+        }
         kbase2.addPackages(combinedPackages2); // this will cause package deepClone
 
         KieSession ksession = kbase2.newKieSession();
