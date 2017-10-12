@@ -16,27 +16,17 @@
 
 package org.drools.modelcompiler;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import org.assertj.core.api.Assertions;
 import org.drools.core.reteoo.AlphaNode;
-import org.drools.modelcompiler.domain.Address;
-import org.drools.modelcompiler.domain.Adult;
-import org.drools.modelcompiler.domain.Child;
-import org.drools.modelcompiler.domain.Man;
-import org.drools.modelcompiler.domain.Person;
-import org.drools.modelcompiler.domain.Result;
-import org.drools.modelcompiler.domain.Toy;
-import org.drools.modelcompiler.domain.Woman;
+import org.drools.modelcompiler.domain.*;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.util.*;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.*;
@@ -75,6 +65,48 @@ public class CompilerTest extends BaseModelTest {
                 "  $r : Result()\n" +
                 "  $p1 : Person(name == \"Mark\")\n" +
                 "  $p2 : Person(name != \"Mark\", age > $p1.age)\n" +
+                "then\n" +
+                "  $r.setValue($p2.getName() + \" is older than \" + $p1.getName());\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        Result result = new Result();
+        ksession.insert( result );
+
+        Person mark = new Person("Mark", 37);
+        Person edson = new Person("Edson", 35);
+        Person mario = new Person("Mario", 40);
+
+        FactHandle markFH = ksession.insert(mark);
+        FactHandle edsonFH = ksession.insert(edson);
+        FactHandle marioFH = ksession.insert(mario);
+
+        ksession.fireAllRules();
+        assertEquals("Mario is older than Mark", result.getValue());
+
+        result.setValue( null );
+        ksession.delete( marioFH );
+        ksession.fireAllRules();
+        assertNull(result.getValue());
+
+        mark.setAge( 34 );
+        ksession.update( markFH, mark, "age" );
+
+        ksession.fireAllRules();
+        assertEquals("Edson is older than Mark", result.getValue());
+    }
+
+    @Test
+    @Ignore("TODO: implement inner declaration binding")
+    public void testBetaWithDeclaration() {
+        String str =
+                "import " + Result.class.getCanonicalName() + ";" +
+                "import " + Person.class.getCanonicalName() + ";" +
+                "rule R when\n" +
+                "  $r : Result()\n" +
+                "  $p1 : Person(name == \"Mark\", $markAge : age)\n" +
+                "  $p2 : Person(name != \"Mark\", age > $markAge)\n" +
                 "then\n" +
                 "  $r.setValue($p2.getName() + \" is older than \" + $p1.getName());\n" +
                 "end";

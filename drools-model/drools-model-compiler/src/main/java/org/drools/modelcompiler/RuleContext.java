@@ -36,6 +36,7 @@ public class RuleContext {
     private final RuleImpl rule;
 
     private final Map<Variable, Declaration> queryDeclaration = new HashMap<>();
+    private final Map<Variable, Declaration> innerDeclaration = new HashMap<>();
 
     private final Map<Variable, Pattern> patterns = new HashMap<>();
 
@@ -70,7 +71,10 @@ public class RuleContext {
 
     Declaration getDeclaration( Variable variable ) {
         if ( variable.isFact() ) {
-            Declaration declaration = queryDeclaration.get( variable );
+            Declaration declaration = innerDeclaration.get( variable );
+            if (declaration == null) {
+                declaration = queryDeclaration.get( variable );
+            }
             if (declaration == null) {
                 Pattern pattern = patterns.get( variable );
                 declaration = pattern != null ? pattern.getDeclaration() : null;
@@ -90,6 +94,10 @@ public class RuleContext {
 
     void addQueryDeclaration(Variable variable, Declaration declaration) {
         queryDeclaration.put( variable, declaration );
+    }
+
+    void addInnerDeclaration(Variable variable, Declaration declaration) {
+        innerDeclaration.put( variable, declaration );
     }
 
     public Object getBoundFact( Variable variable, Object[] objs ) {
