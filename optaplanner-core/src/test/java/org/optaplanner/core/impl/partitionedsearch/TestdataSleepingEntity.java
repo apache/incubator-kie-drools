@@ -22,15 +22,15 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TestdataBusyEntity extends TestdataEntity {
+public class TestdataSleepingEntity extends TestdataEntity {
 
-    private static final Logger logger = LoggerFactory.getLogger(TestdataBusyEntity.class);
+    private static final Logger logger = LoggerFactory.getLogger(TestdataSleepingEntity.class);
     private CountDownLatch latch;
 
-    public TestdataBusyEntity() {
+    public TestdataSleepingEntity() {
     }
 
-    public TestdataBusyEntity(String code, CountDownLatch cdl) {
+    public TestdataSleepingEntity(String code, CountDownLatch cdl) {
         super(code);
         this.latch = cdl;
     }
@@ -47,17 +47,20 @@ public class TestdataBusyEntity extends TestdataEntity {
     public void setValue(TestdataValue value) {
         super.setValue(value);
         if (latch.getCount() == 0) {
-            logger.debug("This entity was already interrupted in the past. Not going to busy wait again.");
+            logger.debug("This entity was already interrupted in the past. Not going to sleep again.");
             return;
         }
         latch.countDown();
         long start = System.currentTimeMillis();
-        logger.info("{}.setValue() started.", TestdataBusyEntity.class.getSimpleName());
-        while (!Thread.currentThread().isInterrupted()) {
-            // busy wait
+        logger.info("{}.setValue() started and going to sleep.", TestdataSleepingEntity.class.getSimpleName());
+        try {
+            Thread.sleep(Long.MAX_VALUE);
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException("Interrupted while sleeping", ex);
         }
         logger.info("{}.setValue() interrupted after {}ms.",
-                    TestdataBusyEntity.class.getSimpleName(),
+                    TestdataSleepingEntity.class.getSimpleName(),
                     System.currentTimeMillis() - start);
     }
 

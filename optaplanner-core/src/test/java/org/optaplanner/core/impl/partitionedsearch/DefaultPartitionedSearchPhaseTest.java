@@ -18,7 +18,6 @@ package org.optaplanner.core.impl.partitionedsearch;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -40,13 +39,13 @@ import org.optaplanner.core.impl.partitionedsearch.scope.PartitionedSearchPhaseS
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.solver.DefaultSolver;
+import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -54,32 +53,7 @@ import static org.junit.Assert.fail;
 
 public class DefaultPartitionedSearchPhaseTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(DefaultPartitionedSearchPhaseTest.class);
-
-    private static void findCauseOrFail(Throwable ex, Class<? extends Throwable> cause) {
-        findCauseOrFail(ex, cause, "");
-    }
-
-    private static void findCauseOrFail(Throwable ex, Class<? extends Throwable> cause, String msgSubstring) {
-        Throwable t = ex.getCause();
-        while (t != null) {
-            if (cause.isAssignableFrom(t.getClass())) {
-                break;
-            } else {
-                t = t.getCause();
-            }
-        }
-        if (t == null) {
-            logger.error("Solver failure was caused by something unexpected:", ex);
-            fail("Solver failure should have been caused by " + cause.getCanonicalName()
-                    + " but was caused by something unexpected.");
-        } else {
-            assertTrue("Exception message (" + t.getMessage() + ") should contain substring: " + msgSubstring,
-                       Objects.toString(t.getMessage(), "").contains(msgSubstring));
-        }
-    }
-
-    @Test
+    @Test(timeout = 1000)
     public void partCount() {
         final int partSize = 3;
         final int partCount = 7;
@@ -135,7 +109,7 @@ public class DefaultPartitionedSearchPhaseTest {
         phaseConfig.setSolutionPartitionerCustomProperties(map);
     }
 
-    @Test
+    @Test(timeout = 1000)
     public void exceptionPropagation() {
         final int partSize = 7;
         final int partCount = 3;
@@ -151,8 +125,8 @@ public class DefaultPartitionedSearchPhaseTest {
             solver.solve(solution);
             fail("The exception was not propagated.");
         } catch (IllegalStateException ex) {
-            assertTrue(ex.getMessage().contains("Relayed"));
-            findCauseOrFail(ex, ArithmeticException.class);
+            assertThat(ex).hasMessageMatching(".*partIndex.*Relayed.*");
+            assertThat(ex).hasRootCauseExactlyInstanceOf(TestdataFaultyEntity.TestException.class);
         }
     }
 
@@ -166,46 +140,50 @@ public class DefaultPartitionedSearchPhaseTest {
         SolverFactory<TestdataSolution> solverFactory = createSolverFactory(true);
         setPartSize(solverFactory.getSolverConfig(), partSize);
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
+        CountDownLatch solvingStarted = new CountDownLatch(1);
+        ((DefaultSolver<TestdataSolution>) solver).addPhaseLifecycleListener(
+                new PhaseLifecycleListenerAdapter<TestdataSolution>() {
+            @Override
+            public void solvingStarted(DefaultSolverScope<TestdataSolution> solverScope) {
+                solvingStarted.countDown();
+            }
+        });
 
         ExecutorService executor = Executors.newSingleThreadExecutor();
-        Future<TestdataSolution> solvedSolution = executor.submit(() -> {
+        Future<TestdataSolution> solutionFuture = executor.submit(() -> {
             return solver.solve(solution);
         });
 
-        while (!solver.isSolving()) {
-            // wait until solver starts solving before terminating early
-        }
+        // make sure solver has started solving before terminating early
+        solvingStarted.await();
         assertTrue(solver.terminateEarly());
         assertTrue(solver.isTerminateEarly());
 
         executor.shutdown();
         assertTrue(executor.awaitTermination(100, TimeUnit.MILLISECONDS));
-        assertNotNull(solvedSolution.get());
+        assertNotNull(solutionFuture.get());
     }
 
     @Test(timeout = 5000)
-    // FIXME rename, because this test interrupts the main thread in PQueue iterator!!
-    // TODO add another test that will interrupt one of the PartSolver threads (will require custom ThreadFactory that
-    // will provide access to created threads)
-    public void shutdownAbruptly() throws InterruptedException {
+    public void shutdownMainThreadAbruptly() throws InterruptedException {
         final int partSize = 5;
         final int partCount = 3;
 
         TestdataSolution solution = createSolution(partCount * partSize - 1, 10);
-        CountDownLatch latch = new CountDownLatch(1);
-        solution.getEntityList().add(new TestdataBusyEntity("XYZ", latch));
+        CountDownLatch sleepAnnouncement = new CountDownLatch(1);
+        solution.getEntityList().add(new TestdataSleepingEntity("XYZ", sleepAnnouncement));
 
         SolverFactory<TestdataSolution> solverFactory = createSolverFactory(true);
         setPartSize(solverFactory.getSolverConfig(), partSize);
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
 
         ExecutorService executor = Executors.newSingleThreadExecutor();
-        Future<TestdataSolution> solvedSolution = executor.submit(() -> {
+        Future<TestdataSolution> solutionFuture = executor.submit(() -> {
             return solver.solve(solution);
         });
 
-        latch.await();
-        // Now we know the busy entity is busy so we can attempt to shut down.
+        sleepAnnouncement.await();
+        // Now we know the sleeping entity is sleeping so we can attempt to shut down.
         // This will initiate an abrupt shutdown that will interrupt the main solver thread.
         executor.shutdownNow();
 
@@ -215,11 +193,11 @@ public class DefaultPartitionedSearchPhaseTest {
 
         // This verifies that interruption is propagated to caller (wrapped as an IllegalStateException)
         try {
-            solvedSolution.get();
+            solutionFuture.get();
             fail("InterruptedException should have been propagated to solver thread.");
         } catch (ExecutionException ex) {
-            findCauseOrFail(ex, IllegalStateException.class, "Solver thread was interrupted in Partitioned Search");
-            findCauseOrFail(ex, InterruptedException.class);
+            assertThat(ex).hasCause(new IllegalStateException("Solver thread was interrupted in Partitioned Search."));
+            assertThat(ex).hasRootCauseExactlyInstanceOf(InterruptedException.class);
         }
     }
 

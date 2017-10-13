@@ -40,7 +40,9 @@ public class TestdataSolutionPartitioner implements SolutionPartitioner<Testdata
         TestdataSolution workingSolution = scoreDirector.getWorkingSolution();
         List<TestdataEntity> allEntities = workingSolution.getEntityList();
         if (allEntities.size() % partSize > 0) {
-            throw new IllegalStateException("This partitioner can only make equally sized partitions.");
+            throw new IllegalStateException("This partitioner can only make equally sized partitions."
+                    + " This is impossible because number of allEntities (" + allEntities.size()
+                    + ") is not divisible by partSize (" + partSize + ").");
         }
         List<TestdataSolution> partitions = new ArrayList<>();
         for (int i = 0; i < allEntities.size() / partSize; i++) {

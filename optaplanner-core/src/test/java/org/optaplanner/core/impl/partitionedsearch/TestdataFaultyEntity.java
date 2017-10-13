@@ -34,9 +34,16 @@ public class TestdataFaultyEntity extends TestdataEntity {
     @Override
     public void setValue(TestdataValue value) {
         super.setValue(value);
-        logger.info("Going to divide by zero.");
-        int zero = 0;
-        logger.info("{}", 1 / zero);
+        if (Thread.currentThread().getName().matches("OptaPool-\\d+-PartThread-\\d+")) {
+            logger.info("Throwing exception on a partition thread.");
+            throw new TestException();
+        }
     }
 
+    public static class TestException extends RuntimeException {
+
+        public TestException() {
+            super("Unexpected solver failure.");
+        }
+    }
 }

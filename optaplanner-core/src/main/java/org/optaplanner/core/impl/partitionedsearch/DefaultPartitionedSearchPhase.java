@@ -127,7 +127,7 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
                         partitionQueue.addFinish(partIndex);
                     } catch (Throwable throwable) {
                         // Any Exception or even Error that happens here (on a partition thread) must be stored
-                        // in the partitionQueue in order to be propagated to the solver thread
+                        // in the partitionQueue in order to be propagated to the solver thread.
                         partitionQueue.addExceptionThrown(partIndex, throwable);
                     }
                 });
@@ -144,41 +144,43 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
                 phaseScope.setLastCompletedStepScope(stepScope);
             }
         } finally {
+            // 1. In case on of the partition threads threw an Exception, it is propagated here
+            // but the other partition threads are not aware of the failure and may continue solving for a long time,
+            // so we need to ask them to terminate. In case no exception was thrown, this does nothing.
+            childThreadPlumbingTermination.terminateChildren();
+
+            // Intentionally clearing the interrupted flag so that awaitTermination() in step 3 works.
             if (Thread.interrupted()) {
-                // 1a. If current thread is interrupted, propagate interrupt signal to children by initiating
-                // abrupt shutdown.
+                // 2a. If the current thread is interrupted, propagate interrupt signal to children by initiating
+                // an abrupt shutdown.
                 executor.shutdownNow();
             } else {
-                // 1b. Otherwise, initiate graceful shutdown of the executor. This allows partition solvers to finish
-                // solving upon detecting the termination issued in the next step (2). Shutting down the executor
+                // 2b. Otherwise, initiate an orderly shutdown of the executor. This allows partition solvers to finish
+                // solving upon detecting the termination issued previously (step 1). Shutting down the executor
                 // service is important because the JVM cannot exit until all nondaemon threads have terminated.
                 executor.shutdown();
             }
 
-            // 2. In case on of the partition threads threw an Exception, it is propagated here
-            // but the other partition threads are not aware of the failure and may continue solving for a long time,
-            // so we need to ask them to terminate. In case no exception was thrown, this does nothing.
-            if (!childThreadPlumbingTermination.terminateChildren()) {
-                // This may happen as a result of the abrupt shutdown in step 1a.
-                logger.info("Children have already been interrupted.");
-            }
-
-            // 3. Finally, wait until the executor finishes shutting down
+            // 3. Finally, wait until the executor finishes shutting down.
             try {
                 final int awaitingSeconds = 1;
                 if (!executor.awaitTermination(awaitingSeconds, TimeUnit.SECONDS)) {
-                    // Some solvers refused to complete. Busy threads will be interrupted in the finally block
-                    logger.warn("{}Partitioned Search threadPoolExecutor didn't terminate within timeout ({} second).",
-                                logIndentation,
-                                awaitingSeconds);
+                    // Some solvers refused to complete. Busy threads will be interrupted in the finally block.
+                    // We're only logging the error instead throwing an exception to prevent eating the original
+                    // exception.
+                    logger.error(
+                            "{}Partitioned Search threadPoolExecutor didn't terminate within timeout ({} second).",
+                            logIndentation,
+                            awaitingSeconds);
                 }
             } catch (InterruptedException e) {
                 // Interrupted while waiting for thread pool termination. Busy threads will be interrupted
-                // in the finally block
+                // in the finally block.
                 Thread.currentThread().interrupt();
-                throw new IllegalStateException("Thread pool shutdown was interrupted.", e);
+                // If there is an original exception it will be eaten by this.
+                throw new IllegalStateException("Thread pool termination was interrupted.", e);
             } finally {
-                // Initiate an abrupt shutdown
+                // Initiate an abrupt shutdown for the case when any of the previous measures failed.
                 executor.shutdownNow();
             }
         }
