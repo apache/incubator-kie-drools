@@ -17,9 +17,7 @@
 package org.kie.dmn.feel.runtime.functions;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
@@ -62,12 +60,11 @@ public class UnionFunctionTest {
 
     @Test
     public void invokeListIsNull() {
-        FunctionTestUtil.assertResultError(unionFunction.invoke(new Object[]{null}), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResult(unionFunction.invoke(new Object[]{null}), Collections.singletonList(null));
     }
 
     @Test
     public void invokeListContainsNull() {
-        // TODO - Ask Edson about this - nulls in list
         FunctionTestUtil.assertResult(unionFunction.invoke(new Object[]{Arrays.asList(null, 10, null)}), Arrays.asList(null, 10));
     }
 

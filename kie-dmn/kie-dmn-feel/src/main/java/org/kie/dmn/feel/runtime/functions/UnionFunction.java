@@ -18,16 +18,11 @@ package org.kie.dmn.feel.runtime.functions;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
-
 import java.util.Set;
-import java.util.SortedSet;
-import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 
 public class UnionFunction
         extends BaseFEELFunction {
@@ -36,22 +31,17 @@ public class UnionFunction
         super( "union" );
     }
 
-    public FEELFnResult<List> invoke(@ParameterName("list") Object[] lists) {
+    public FEELFnResult<List<Object>> invoke(@ParameterName("list") Object[] lists) {
         if ( lists == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "lists", "cannot be null"));
         }
 
         final Set<Object> resultSet = new LinkedHashSet<>();
         for ( final Object list : lists ) {
-            if ( list != null ) {
-                if ( list instanceof Collection ) {
-                    resultSet.addAll((Collection) list);
-                } else {
-                    resultSet.add(list);
-                }
+            if ( list instanceof Collection ) {
+                resultSet.addAll((Collection) list);
             } else {
-                // TODO review accordingly to spec, original behavior was: return null;
-                return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "lists", "one of the elements in list is null"));
+                resultSet.add(list);
             }
         }
 

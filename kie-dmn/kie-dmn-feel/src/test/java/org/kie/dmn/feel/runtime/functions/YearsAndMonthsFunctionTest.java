@@ -16,20 +16,16 @@
 
 package org.kie.dmn.feel.runtime.functions;
 
-import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Month;
 import java.time.Period;
 import java.time.Year;
 import java.time.YearMonth;
-import java.time.chrono.JapaneseDate;
 import java.time.temporal.Temporal;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.mockito.cglib.core.Local;
 
 public class YearsAndMonthsFunctionTest {
 
@@ -50,6 +46,7 @@ public class YearsAndMonthsFunctionTest {
     @Test
     public void invokeUnsupportedTemporal() {
         FunctionTestUtil.assertResultError(yamFunction.invoke(Instant.EPOCH, Instant.EPOCH), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(yamFunction.invoke(LocalDate.of(2017, 1, 1), Instant.EPOCH), InvalidParametersEvent.class);
     }
 
     @Test
