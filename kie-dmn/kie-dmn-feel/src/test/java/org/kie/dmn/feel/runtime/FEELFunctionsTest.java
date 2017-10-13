@@ -131,7 +131,7 @@ public class FEELFunctionsTest extends BaseFEELTest {
                 { "index of( null, 1 )", null , FEELEvent.Severity.ERROR},
                 { "union( [1, 2, 1], [2, 3], 2, 4 )", Arrays.asList( BigDecimal.valueOf( 1 ), BigDecimal.valueOf( 2 ), BigDecimal.valueOf( 3 ), BigDecimal.valueOf( 4 ) ) , null},
                 { "union( [1, 2, null], 4 )", Arrays.asList( BigDecimal.valueOf( 1 ), BigDecimal.valueOf( 2 ), null, BigDecimal.valueOf( 4 ) ) , null},
-                { "union( null, 4 )", null , FEELEvent.Severity.ERROR},
+                { "union( null, 4 )", Arrays.asList( null, BigDecimal.valueOf(4) ), null},
                 { "distinct values( [1, 2, 3, 2, 4] )", Arrays.asList( BigDecimal.valueOf( 1 ), BigDecimal.valueOf( 2 ), BigDecimal.valueOf( 3 ), BigDecimal.valueOf( 4 ) ) , null},
                 { "distinct values( [1, 2, null, 2, 4] )", Arrays.asList( BigDecimal.valueOf( 1 ), BigDecimal.valueOf( 2 ), null, BigDecimal.valueOf( 4 ) ) , null},
                 { "distinct values( 1 )", Arrays.asList( BigDecimal.valueOf( 1 ) ) , null},
