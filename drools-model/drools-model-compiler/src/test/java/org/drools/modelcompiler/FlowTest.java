@@ -99,7 +99,54 @@ public class FlowTest {
                 .build(expr("exprA", markV, p -> p.getName().equals("Mark"))
                                 .indexedBy(String.class, ConstraintType.EQUAL, Person::getName, "Mark")
                                 .reactOn("name", "age"), // also react on age, see RuleDescr.lookAheadFieldsOfIdentifier
-                        bind(markAge).as(markV, m -> m.getAge()),
+                        bind(markAge).as(markV, Person::getAge),
+                        expr("exprB", olderV, p -> !p.getName().equals("Mark"))
+                                .indexedBy(String.class, ConstraintType.NOT_EQUAL, Person::getName, "Mark")
+                                .reactOn("name"),
+                        expr("exprC", olderV, markAge, (p1, age) -> p1.getAge() > age)
+                                .indexedBy(int.class, ConstraintType.GREATER_THAN, Person::getAge, int.class::cast)
+                                .reactOn("age"),
+                        on(olderV, markV).execute((drools, p1, p2) -> drools.insert(p1.getName() + " is older than " + p2.getName())));
+
+        Model model = new ModelImpl().addRule(rule);
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model);
+
+        KieSession ksession = kieBase.newKieSession();
+
+        Person mark = new Person("Mark", 37);
+        Person edson = new Person("Edson", 35);
+        Person mario = new Person("Mario", 40);
+
+        FactHandle markFH = ksession.insert(mark);
+        FactHandle edsonFH = ksession.insert(edson);
+        FactHandle marioFH = ksession.insert(mario);
+
+        ksession.fireAllRules();
+        Collection<String> results = getObjects(ksession, String.class);
+        Assertions.assertThat(results).containsExactlyInAnyOrder("Mario is older than Mark");
+
+        ksession.delete(marioFH);
+        ksession.fireAllRules();
+
+        mark.setAge(34);
+        ksession.update(markFH, mark, "age");
+
+        ksession.fireAllRules();
+        results = getObjects(ksession, String.class);
+        Assertions.assertThat(results).containsExactlyInAnyOrder("Mario is older than Mark", "Edson is older than Mark");
+    }
+
+    @Test
+    public void testBetaWithDeclarationBeforePattern() {
+        Variable<Person> markV = declarationOf(type(Person.class));
+        Variable<Integer> markAge = declarationOf(type(Integer.class));
+        Variable<Person> olderV = declarationOf(type(Person.class));
+
+        Rule rule = rule("beta")
+                .build( bind(markAge).as(markV, Person::getAge ),
+                        expr("exprA", markV, p -> p.getName().equals("Mark"))
+                                .indexedBy(String.class, ConstraintType.EQUAL, Person::getName, "Mark")
+                                .reactOn("name", "age"), // also react on age, see RuleDescr.lookAheadFieldsOfIdentifier
                         expr("exprB", olderV, p -> !p.getName().equals("Mark"))
                                 .indexedBy(String.class, ConstraintType.NOT_EQUAL, Person::getName, "Mark")
                                 .reactOn("name"),

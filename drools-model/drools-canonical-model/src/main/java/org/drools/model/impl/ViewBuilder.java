@@ -95,12 +95,13 @@ public class ViewBuilder {
             if ( viewItem instanceof BindViewItem ) {
                 BindViewItem bindViewItem = (BindViewItem) viewItem;
                 PatternImpl pattern = (PatternImpl) conditionMap.get(bindViewItem.getInputVariable());
-                if (pattern != null) {
-                    pattern.addBinding( bindViewItem.getFirstVariable(), bindViewItem.getInvokedFunction() );
-                    usedVars.add( bindViewItem.getFirstVariable() );
-                } else {
-                    throw new UnsupportedOperationException("TODO: binding without constraints not implemented");
+                if (pattern == null) {
+                    pattern = new PatternImpl( bindViewItem.getInputVariable() );
+                    conditions.add( pattern );
+                    conditionMap.put( bindViewItem.getInputVariable(), pattern );
                 }
+                pattern.addBinding( bindViewItem.getFirstVariable(), bindViewItem.getInvokedFunction() );
+                usedVars.add( bindViewItem.getFirstVariable() );
                 continue;
             }
 
