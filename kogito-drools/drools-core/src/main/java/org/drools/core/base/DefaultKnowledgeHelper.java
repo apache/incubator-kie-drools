@@ -562,11 +562,6 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
         return null;
     }
 
-    public void modify(Object newObject) {
-        // TODO Auto-generated method stub
-
-    }
-
     public KieRuntime getKieRuntime() {
         return getKnowledgeRuntime();
     }

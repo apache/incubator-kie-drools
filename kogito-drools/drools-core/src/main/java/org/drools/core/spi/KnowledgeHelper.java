@@ -98,8 +98,6 @@ public interface KnowledgeHelper
     void update(Object newObject);
     void update(Object newObject, BitMask mask, Class<?> modifiedClass);
 
-    void modify( Object newObject ) ;
-
     /**
      * @deprecated Use delete
      */

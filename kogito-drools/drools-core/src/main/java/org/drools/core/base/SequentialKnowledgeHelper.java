@@ -309,10 +309,6 @@ public class SequentialKnowledgeHelper
         // TODO Auto-generated method stub
     }
 
-    public void modify(Object newObject) {
-        // TODO Auto-generated method stub
-    }
-
     public void blockMatch(Match match) {
         // TODO Auto-generated method stub
     }
