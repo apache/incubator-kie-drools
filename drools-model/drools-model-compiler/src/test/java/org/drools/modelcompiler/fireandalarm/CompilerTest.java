@@ -1,16 +1,19 @@
 package org.drools.modelcompiler.fireandalarm;
 
+import org.drools.modelcompiler.BaseModelTest;
 import org.drools.modelcompiler.fireandalarm.model.Alarm;
 import org.drools.modelcompiler.fireandalarm.model.Fire;
 import org.drools.modelcompiler.fireandalarm.model.Room;
 import org.drools.modelcompiler.fireandalarm.model.Sprinkler;
 import org.junit.Test;
-import org.kie.api.KieServices;
-import org.kie.api.builder.KieFileSystem;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
-public class CompilerTest {
+public class CompilerTest extends BaseModelTest {
+
+    public CompilerTest( RUN_TYPE testRunType ) {
+        super( testRunType );
+    }
 
     @Test
     public void testFireAndAlarm() {
@@ -80,10 +83,10 @@ public class CompilerTest {
         ksession.fireAllRules();
     }
 
-    private KieSession getKieSession(String str) {
-        KieServices ks = KieServices.Factory.get();
-        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
-        ks.newKieBuilder( kfs ).buildAll();
-        return ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
-    }
+//    private KieSession getKieSession(String str) {
+//        KieServices ks = KieServices.Factory.get();
+//        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
+//        ks.newKieBuilder( kfs ).buildAll();
+//        return ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
+//    }
 }
