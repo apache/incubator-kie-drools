@@ -196,7 +196,7 @@ public class ExhaustiveSearchPhaseConfig extends PhaseConfig<ExhaustiveSearchPha
             throw new IllegalArgumentException("The phaseConfig (" + this
                     + ") has no entitySelector configured"
                     + " and because there are multiple in the entityClassSet (" + solutionDescriptor.getEntityClassSet()
-                    + "), it can not be deducted automatically.");
+                    + "), it can not be deduced automatically.");
         }
         return entityDescriptors.iterator().next();
     }

@@ -30,9 +30,9 @@ import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSele
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 
 /**
- * A {@link CompositeMoveSelector} that cartesian products 2 or more {@link MoveSelector}s.
+ * A {@link CompositeMoveSelector} that Cartesian products 2 or more {@link MoveSelector}s.
  * <p>
- * For example: a cartesian product of {A, B, C} and {X, Y} will result in {AX, AY, BX, BY, CX, CY}.
+ * For example: a Cartesian product of {A, B, C} and {X, Y} will result in {AX, AY, BX, BY, CX, CY}.
  * <p>
  * Warning: there is no duplicated {@link Move} check, so union of {A, B} and {B} will result in {AB, BB}.
  * @see CompositeMoveSelector

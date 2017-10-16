@@ -18,7 +18,7 @@
     This lightweight, embeddable planning engine implements powerful and scalable algorithms
     to optimize business resource scheduling and planning.
 
-    This module contains the integation modules.
+    This module contains the integration modules.
   </description>
   <url>https://www.optaplanner.org</url>
 

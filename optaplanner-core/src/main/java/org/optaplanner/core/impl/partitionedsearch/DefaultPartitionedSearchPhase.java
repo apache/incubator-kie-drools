@@ -144,7 +144,7 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
                 phaseScope.setLastCompletedStepScope(stepScope);
             }
         } finally {
-            // 1. In case on of the partition threads threw an Exception, it is propagated here
+            // 1. In case one of the partition threads threw an Exception, it is propagated here
             // but the other partition threads are not aware of the failure and may continue solving for a long time,
             // so we need to ask them to terminate. In case no exception was thrown, this does nothing.
             childThreadPlumbingTermination.terminateChildren();
@@ -195,7 +195,7 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
             throw new IllegalStateException(
                     "The threadPoolExecutor's maximumPoolSize (" + threadPoolExecutor.getMaximumPoolSize()
                     + ") is less than the partCount (" + partCount + "), so some partitions will starve.\n"
-                    + "Normally this impossible because the threadPoolExecutor should be unbounded:"
+                    + "Normally this is impossible because the threadPoolExecutor should be unbounded:"
                     + " Use runnablePartThreadLimit (" + runnablePartThreadLimit
                     + ") instead to avoid CPU hogging and live locks.");
         }

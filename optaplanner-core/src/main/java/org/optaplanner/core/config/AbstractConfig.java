@@ -84,7 +84,7 @@ public abstract class AbstractConfig<C extends AbstractConfig> {
                         + ") has no entityClass (" + entityClass
                         + ") configured and because there are multiple in the entityClassSet ("
                         + solutionDescriptor.getEntityClassSet()
-                        + "), it can not be deducted automatically.");
+                        + "), it can not be deduced automatically.");
             }
             entityDescriptor = entityDescriptors.iterator().next();
         }
@@ -112,7 +112,7 @@ public abstract class AbstractConfig<C extends AbstractConfig> {
                         + ") for entityClass (" + entityDescriptor.getEntityClass()
                         + ") and because there are multiple variableNames ("
                         + entityDescriptor.getGenuineVariableNameSet()
-                        + "), it can not be deducted automatically.");
+                        + "), it can not be deduced automatically.");
             }
             variableDescriptor = variableDescriptors.iterator().next();
         }
