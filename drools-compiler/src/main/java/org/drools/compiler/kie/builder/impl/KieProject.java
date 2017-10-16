@@ -15,16 +15,16 @@
 
 package org.drools.compiler.kie.builder.impl;
 
-import java.io.InputStream;
-import java.util.Collection;
-import java.util.Set;
-
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.internal.builder.KnowledgeBuilder;
+
+import java.io.InputStream;
+import java.util.Collection;
+import java.util.Set;
 
 public interface KieProject {
     
@@ -47,8 +47,6 @@ public interface KieProject {
     void init();   
     
     ClassLoader getClassLoader();
-
-    ClassLoader getClonedClassLoader();
 
     ResultsImpl verify();
     ResultsImpl verify( String... kModelNames );
