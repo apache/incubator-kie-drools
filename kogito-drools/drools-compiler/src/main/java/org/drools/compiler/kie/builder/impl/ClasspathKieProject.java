@@ -468,10 +468,6 @@ public class ClasspathKieProject extends AbstractKieProject {
         return this.classLoader;
     }
 
-    public ClassLoader getClonedClassLoader() {
-        return createProjectClassLoader(classLoader.getParent());
-    }
-
     public InputStream getPomAsStream() {
         return classLoader.getResourceAsStream("pom.xml");
     }

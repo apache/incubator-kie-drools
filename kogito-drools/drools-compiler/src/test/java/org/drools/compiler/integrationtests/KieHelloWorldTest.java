@@ -17,6 +17,10 @@ package org.drools.compiler.integrationtests;
 
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Message;
+import org.drools.compiler.kie.builder.impl.KieContainerImpl;
+import org.drools.compiler.kie.builder.impl.KieProject;
+import org.drools.compiler.kie.builder.impl.ResultsImpl;
+import org.drools.core.common.ProjectClassLoader;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -30,6 +34,7 @@ import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
 
@@ -56,6 +61,26 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
         int count = ksession.fireAllRules();
          
         assertEquals( 1, count );
+    }
+
+    @Test
+    public void testClassLoaderStore() throws Exception {
+        // DROOLS-1766
+        String drl = "package org; declare Person name : String end";
+        KieServices ks = KieServices.Factory.get();
+
+        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", drl );
+        ks.newKieBuilder( kfs ).buildAll();
+
+        KieContainer kcontainer = ks.newKieContainer(ks.getRepository().getDefaultReleaseId());
+
+        KieProject kieProject = (( KieContainerImpl ) kcontainer).getKieProject();
+        ResultsImpl messages = kieProject.verify();
+
+        assertSame( kieProject.getClassLoader(), kcontainer.getClassLoader() );
+
+        ProjectClassLoader pcl = (( ProjectClassLoader ) kieProject.getClassLoader());
+        assertNotNull( pcl.getStore().get("org/Person.class") );
     }
 
     @Test
