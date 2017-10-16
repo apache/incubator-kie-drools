@@ -63,6 +63,8 @@
               org.jbpm.runtime.manager.impl;resolution:=optional,
               org.jbpm.services.task.persistence;resolution:=optional,
               org.appformer.maven.support,
+              org.kie.soup.project.datamodel,
+              org.kie.soup.project.datamodel.commons,
               org.kie.api,
               org.kie.api.builder,
               org.kie.api.builder.model,
