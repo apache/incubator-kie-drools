@@ -36,7 +36,7 @@ import org.kie.soup.project.datamodel.imports.Imports;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
-import static org.kie.internal.xstream.XStreamUtils.createXStream;
+import static org.kie.internal.xstream.XStreamUtils.createTrustingXStream;
 
 /**
  * Persists the scenario model.
@@ -47,7 +47,7 @@ public class ScenarioXMLPersistence {
     private static final ScenarioXMLPersistence INSTANCE = new ScenarioXMLPersistence();
 
     private ScenarioXMLPersistence() {
-        xt = createXStream(new DomDriver());
+        xt = createTrustingXStream(new DomDriver());
         xt.alias("scenario", Scenario.class);
         xt.alias("execution-trace", ExecutionTrace.class);
         xt.alias("expectation", Expectation.class);
