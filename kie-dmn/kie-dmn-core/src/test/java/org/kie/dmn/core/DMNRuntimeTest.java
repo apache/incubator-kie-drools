@@ -66,6 +66,8 @@ import org.kie.dmn.api.core.event.BeforeEvaluateDecisionEvent;
 import org.kie.dmn.api.core.event.BeforeEvaluateDecisionTableEvent;
 import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
 import org.kie.dmn.core.api.DMNFactory;
+import org.kie.dmn.core.ast.DecisionNodeImpl;
+import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.marshaller.FEELStringMarshaller;
@@ -1420,5 +1422,29 @@ public class DMNRuntimeTest {
         FEELStringMarshaller.INSTANCE.marshall( Arrays.asList(decisionResults.get(0).getResult(), decisionResults.get(1).getResult()) );
     }
 
+    @Test
+    public void testCycleDetection() {
+        DecisionNodeImpl a = new DecisionNodeImpl();
+        DecisionNodeImpl b = new DecisionNodeImpl();
+        a.addDependency("b", b);
+        b.addDependency("a", b);
+        DMNModelImpl model = new DMNModelImpl();
+        model.addDecision(a);
+        model.addDecision(b);
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime(this.getClass());
+        DMNResult result = runtime.evaluateAll(model, DMNFactory.newContext());
+        assertTrue(result.hasErrors());
+    }
+
+    @Test
+    public void testCycleDetectionCornerCase() {
+        DecisionNodeImpl decision = new DecisionNodeImpl();
+        decision.addDependency("self", decision);
+        DMNModelImpl model = new DMNModelImpl();
+        model.addDecision(decision);
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime(this.getClass());
+        DMNResult result = runtime.evaluateAll(model, DMNFactory.newContext());
+        assertTrue(result.hasErrors());
+    }
 }
 
