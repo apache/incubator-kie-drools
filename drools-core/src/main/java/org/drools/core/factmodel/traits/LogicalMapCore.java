@@ -20,15 +20,16 @@ import org.drools.core.factmodel.MapCore;
 import java.util.Map;
 
 @Traitable( logical=true )
-public class LogicalMapCore<K> extends MapCore<K> {
-
+public class LogicalMapCore<K> extends MapCore {
 
 
     public LogicalMapCore( Map core ) {
         super( core );
 
-        for ( String key : this._getDynamicProperties().keySet() ) {
-            this._getFieldTMS().registerField( Map.class, key, Object.class, this._getDynamicProperties().get( key ), null );
+        TraitFieldTMS tms = _getFieldTMS();
+        Map<String,Object> props = _getDynamicProperties();
+        for ( String key : props.keySet() ) {
+            tms.registerField( Map.class, key, Object.class, props.get( key ), null );
         }
     }
 }

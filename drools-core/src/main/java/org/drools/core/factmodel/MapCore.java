@@ -16,32 +16,23 @@
 
 package org.drools.core.factmodel;
 
-import org.drools.core.factmodel.traits.CoreWrapper;
-import org.drools.core.factmodel.traits.LogicalTypeInconsistencyException;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitFieldTMS;
 import org.drools.core.factmodel.traits.TraitFieldTMSImpl;
-import org.drools.core.factmodel.traits.TraitTypeMap;
 import org.drools.core.factmodel.traits.Traitable;
-import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.rule.TypeDeclaration;
 
-import java.io.Serializable;
-import java.util.BitSet;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
 @Traitable
-public class MapCore<K> implements TraitableBean<Map,CoreWrapper<Map>>, Serializable, Map<String,Object>, CoreWrapper<Map> {
+public class MapCore<K> implements TraitableMap {
 
     private String id;
 
-    private TraitFieldTMS __$$field_Tms$$;
     private Map<String,Object> __$$dynamic_properties_map$$;
-    private Map<String,Thing<Map>> __$$dynamic_traits_map$$;
 
     public MapCore() {
 
@@ -53,14 +44,16 @@ public class MapCore<K> implements TraitableBean<Map,CoreWrapper<Map>>, Serializ
     }
 
     public TraitFieldTMS _getFieldTMS() {
-        if ( __$$field_Tms$$ == null ) {
-            __$$field_Tms$$ = new TraitFieldTMSImpl();
+    	TraitFieldTMS tms = ( TraitFieldTMS ) _getDynamicProperties().get( FIELDTMS_FIELD_NAME );
+        if ( tms == null ) {
+        	tms = new TraitFieldTMSImpl();
+            _getDynamicProperties().put( FIELDTMS_FIELD_NAME, tms );
         }
-        return __$$field_Tms$$;
+        return tms;
     }
 
     public void _setFieldTMS( TraitFieldTMS __$$field_Tms$$ ) {
-        this.__$$field_Tms$$ = __$$field_Tms$$;
+        _getDynamicProperties().put( FIELDTMS_FIELD_NAME, __$$field_Tms$$ );
     }
 
 
@@ -82,63 +75,14 @@ public class MapCore<K> implements TraitableBean<Map,CoreWrapper<Map>>, Serializ
 
 
     public void _setTraitMap(Map map) {
-        __$$dynamic_traits_map$$ = map;
+        _getDynamicProperties().put( TRAITSET_FIELD_NAME, map );
     }
 
 
     public Map<String, Thing<Map>> _getTraitMap() {
-        return __$$dynamic_traits_map$$;
+        return ( Map<String, Thing<Map>> ) _getDynamicProperties().get( TRAITSET_FIELD_NAME );
     }
 
-    public void addTrait(String type, Thing proxy) throws LogicalTypeInconsistencyException {
-        ((TraitTypeMap) _getTraitMap()).putSafe(type, proxy);
-    }
-
-    public Thing getTrait(String type) {
-        return _getTraitMap().get( type );
-    }
-
-    public boolean hasTrait(String type) {
-        return isTraitMapInitialized() && _getTraitMap().containsKey(type);
-    }
-
-    public Collection<Thing<Map>> removeTrait( String type ) {
-        if ( isTraitMapInitialized() ) {
-            return ((TraitTypeMap)_getTraitMap()).removeCascade(type);
-        } else {
-            return null;
-        }
-    }
-
-    public Collection<Thing<Map>> removeTrait( BitSet typeCode ) {
-        if ( isTraitMapInitialized() ) {
-            return ((TraitTypeMap)_getTraitMap()).removeCascade( typeCode );
-        } else {
-            return null;
-        }
-    }
-
-    public boolean hasTraits() {
-        return __$$dynamic_traits_map$$ != null && ! __$$dynamic_traits_map$$.isEmpty();
-    }
-
-    public Collection<String> getTraits() {
-        if ( isTraitMapInitialized() ) {
-            return _getTraitMap().keySet();
-        } else {
-            return Collections.emptySet();
-        }
-    }
-
-    public Collection<Thing> getMostSpecificTraits() {
-        if ( _getTraitMap() == null ) { return Collections.EMPTY_LIST; }
-        return ((TraitTypeMap) _getTraitMap()).getMostSpecificTraits();
-    }
-
-    public BitSet getCurrentTypeCode() {
-        TraitTypeMap map = ((TraitTypeMap) _getTraitMap());
-        return map != null ? map.getCurrentTypeCode() : null;
-    }
 
     public int size() {
         return _getDynamicProperties().size();
@@ -196,22 +140,12 @@ public class MapCore<K> implements TraitableBean<Map,CoreWrapper<Map>>, Serializ
         MapCore mapCore = (MapCore) o;
 
         if (!__$$dynamic_properties_map$$.equals(mapCore.__$$dynamic_properties_map$$)) return false;
-        if (!__$$dynamic_traits_map$$.equals(mapCore.__$$dynamic_traits_map$$)) return false;
 
         return true;
     }
 
     public int hashCode() {
-        return __$$dynamic_properties_map$$.hashCode() ^ __$$dynamic_traits_map$$.hashCode();
-    }
-
-    public boolean isTraitMapInitialized() {
-        return __$$dynamic_traits_map$$ != null;
-    }
-
-
-    public void _setBottomTypeCode( BitSet bottomTypeCode ) {
-        ((TraitTypeMap) _getTraitMap()).setBottomCode( bottomTypeCode );
+        return __$$dynamic_properties_map$$.hashCode();
     }
 
     public void init( Map core ) {

@@ -18,46 +18,91 @@ package org.drools.core.factmodel.traits;
 
 import java.util.BitSet;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 
 public interface TraitableBean<K, X extends TraitableBean> {
 
-    public static final String MAP_FIELD_NAME = "__$$dynamic_properties_map$$";
-    public String TRAITSET_FIELD_NAME = "__$$dynamic_traits_map$$";
-    public static String FIELDTMS_FIELD_NAME = "__$$field_Tms$$";
+    String MAP_FIELD_NAME = "__$$dynamic_properties_map$$";
+    String TRAITSET_FIELD_NAME = "__$$dynamic_traits_map$$";
+    String FIELDTMS_FIELD_NAME = "__$$field_Tms$$";
 
-    public Map<String,Object> _getDynamicProperties();
+    Map<String,Object> _getDynamicProperties();
 
-    public void _setDynamicProperties( Map<String,Object> map );
+    void _setDynamicProperties( Map<String,Object> map );
 
-    public Map<String,Thing<K>> _getTraitMap();
+    Map<String,Thing<K>> _getTraitMap();
 
-    public void _setTraitMap( Map<String,Thing<K>> map );
-
-
-    public void addTrait(String type, Thing<K> proxy) throws LogicalTypeInconsistencyException;
-
-    public Thing<K> getTrait( String type );
-
-    public boolean hasTrait( String type );
-
-    public boolean hasTraits();
-
-    public Collection<Thing<K>> removeTrait( String type );
-
-    public Collection<Thing<K>> removeTrait( BitSet typeCode );
-
-    public Collection<String> getTraits();
+    void _setTraitMap( Map<String,Thing<K>> map );
 
 
-    public Collection<Thing> getMostSpecificTraits();
-
-    public BitSet getCurrentTypeCode();
-
-    public void _setBottomTypeCode( BitSet code );
-
-
-    public TraitFieldTMS _getFieldTMS();
+    TraitFieldTMS _getFieldTMS();
 
     void _setFieldTMS( TraitFieldTMS traitFieldTMS );
+
+
+	default void addTrait(String type, Thing proxy) throws LogicalTypeInconsistencyException {
+		((TraitTypeMap) _getTraitMap()).putSafe(type, proxy);
+	}
+
+	default Thing<K> getTrait(String type) {
+		return _getTraitMap().get( type );
+	}
+
+	default boolean hasTrait(String type) {
+		return isTraitMapInitialized() && _getTraitMap().containsKey(type);
+	}
+
+	default boolean hasTraits() {
+		return _getTraitMap() != null && ! _getTraitMap().isEmpty();
+	}
+
+	default Collection<Thing<K>> removeTrait( String type ) {
+		if ( isTraitMapInitialized() ) {
+			return ((TraitTypeMap)_getTraitMap()).removeCascade(type);
+		} else {
+			return null;
+		}
+	}
+
+	default Collection<Thing<K>> removeTrait( BitSet typeCode ) {
+		if ( isTraitMapInitialized() ) {
+			return ((TraitTypeMap)_getTraitMap()).removeCascade( typeCode );
+		} else {
+			return null;
+		}
+	}
+
+	default Collection<String> getTraits() {
+		if ( isTraitMapInitialized() ) {
+			return _getTraitMap().keySet();
+		} else {
+			return Collections.emptySet();
+		}
+	}
+
+	default Collection<Thing<K>> getMostSpecificTraits() {
+		if ( _getTraitMap() == null ) {
+			return Collections.emptyList();
+		}
+		return ((TraitTypeMap) _getTraitMap()).getMostSpecificTraits();
+	}
+
+	default BitSet getCurrentTypeCode() {
+		if ( _getTraitMap() == null ) {
+			return null;
+		}
+		return ((TraitTypeMap) _getTraitMap()).getCurrentTypeCode();
+	}
+
+	default boolean isTraitMapInitialized() {
+		return _getTraitMap() != null;
+	}
+
+
+	default void _setBottomTypeCode( BitSet bottomTypeCode ) {
+		((TraitTypeMap) _getTraitMap()).setBottomCode( bottomTypeCode );
+	}
+
+
 }

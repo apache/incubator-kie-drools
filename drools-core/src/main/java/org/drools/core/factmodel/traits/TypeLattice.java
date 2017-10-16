@@ -23,11 +23,11 @@ import java.util.BitSet;
 
 public interface TypeLattice<T> extends CodedHierarchy<T> {
 
-    public BitSet getTopCode();
+    BitSet getTopCode();
 
-    public void setTopCode( BitSet code );
+    void setTopCode( BitSet code );
 
-    public BitSet getBottomCode();
+    BitSet getBottomCode();
 
-    public void setBottomCode( BitSet code );
+    void setBottomCode( BitSet code );
 }

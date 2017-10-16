@@ -20,5 +20,5 @@ import java.util.Map;
 
 public interface MapWrapper {
 
-    public Map<String,Object> getInnerMap();
+    Map<String,Object> getInnerMap();
 }

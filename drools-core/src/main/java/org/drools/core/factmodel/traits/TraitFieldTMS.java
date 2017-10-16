@@ -22,34 +22,34 @@ import java.io.Externalizable;
 
 public interface TraitFieldTMS extends Externalizable {
 
-    public void init( WorkingMemory wm );
+    void init( WorkingMemory wm );
 
-    public boolean needsInit();
-
-
-
-    public void registerField( Class domainKlass, String name );
-
-    public void registerField( Class domainKlass, String name, Class klass, Object value, String initial );
-
-    public boolean isManagingField( String name );
-
-    public TraitField getRegisteredTraitField( String name );
+    boolean needsInit();
 
 
 
-    public Object set( String name, Object value, Class klass );
+    void registerField( Class domainKlass, String name );
 
-    public Object get( String name, Class klass );
+    void registerField( Class domainKlass, String name, Class klass, Object value, String initial );
+
+    boolean isManagingField( String name );
+
+    TraitField getRegisteredTraitField( String name );
 
 
-    public Object donField( String name, TraitType trait, String value, Class klass, boolean logical );
 
-    public Object shedField( String name, TraitType trait, Class rangeKlass, Class asKlass );
+    Object set( String name, Object value, Class klass );
+
+    Object get( String name, Class klass );
 
 
-    public BitMask getModificationMask();
+    Object donField( String name, TraitType trait, String value, Class klass, boolean logical );
 
-    public void resetModificationMask();
+    Object shedField( String name, TraitType trait, Class rangeKlass, Class asKlass );
+
+
+    BitMask getModificationMask();
+
+    void resetModificationMask();
 
 }
