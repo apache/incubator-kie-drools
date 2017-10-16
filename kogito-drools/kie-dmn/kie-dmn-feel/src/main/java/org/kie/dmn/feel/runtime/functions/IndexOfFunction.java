@@ -29,7 +29,7 @@ public class IndexOfFunction
         super( "index of" );
     }
 
-    public FEELFnResult<List> invoke(@ParameterName( "list" ) List list, @ParameterName( "match" ) Object match) {
+    public FEELFnResult<List<BigDecimal>> invoke(@ParameterName( "list" ) List list, @ParameterName( "match" ) Object match) {
         if ( list == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "cannot be null"));
         }

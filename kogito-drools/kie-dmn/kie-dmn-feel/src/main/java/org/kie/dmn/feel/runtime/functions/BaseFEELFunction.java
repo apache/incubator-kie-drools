@@ -18,6 +18,7 @@ package org.kie.dmn.feel.runtime.functions;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -187,7 +188,7 @@ public abstract class BaseFEELFunction
         CandidateMethod candidate = null;
         // first, look for exact matches
         for ( Method m : getClass().getDeclaredMethods() ) {
-            if ( !m.getName().equals( "invoke" ) ) {
+            if ( !Modifier.isPublic(m.getModifiers()) || !m.getName().equals( "invoke" ) ) {
                 continue;
             }
 

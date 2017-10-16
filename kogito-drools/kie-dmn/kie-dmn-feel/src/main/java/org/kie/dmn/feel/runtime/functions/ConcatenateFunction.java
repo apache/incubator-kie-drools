@@ -29,7 +29,7 @@ public class ConcatenateFunction
         super( "concatenate" );
     }
 
-    public FEELFnResult<List> invoke(@ParameterName("list") Object[] lists) {
+    public FEELFnResult<List<Object>> invoke(@ParameterName("list") Object[] lists) {
         if ( lists == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "cannot be null"));
         }

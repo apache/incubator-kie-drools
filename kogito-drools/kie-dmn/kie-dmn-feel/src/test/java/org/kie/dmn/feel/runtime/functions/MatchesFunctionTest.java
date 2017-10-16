@@ -37,6 +37,11 @@ public class MatchesFunctionTest {
     }
 
     @Test
+    public void invokeUnsupportedFlags() {
+        FunctionTestUtil.assertResult(matchesFunction.invoke("foobar", "fo.bar", "g"), true);
+    }
+
+    @Test
     public void invokeWithoutFlagsMatch() {
         FunctionTestUtil.assertResult(matchesFunction.invoke("test", "test"), true);
         FunctionTestUtil.assertResult(matchesFunction.invoke("foobar", "^fo*b"), true);

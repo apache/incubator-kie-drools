@@ -29,12 +29,12 @@ public class ReverseFunction
         super( "reverse" );
     }
 
-    public FEELFnResult<List> invoke(@ParameterName("list") List list) {
+    public FEELFnResult<List<Object>> invoke(@ParameterName("list") List list) {
         if ( list == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "cannot be null"));
         }
         // spec requires us to return a new list
-        List result = new ArrayList( list );
+        final List<Object> result = new ArrayList<>( list );
         Collections.reverse( result );
         return FEELFnResult.ofResult( result );
     }
