@@ -16,42 +16,11 @@
 
 package org.drools.modelcompiler.builder.generator;
 
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import org.drools.compiler.lang.descr.AccumulateDescr;
-import org.drools.compiler.lang.descr.AndDescr;
-import org.drools.compiler.lang.descr.AttributeDescr;
-import org.drools.compiler.lang.descr.BaseDescr;
-import org.drools.compiler.lang.descr.BehaviorDescr;
-import org.drools.compiler.lang.descr.ConditionalBranchDescr;
-import org.drools.compiler.lang.descr.ConditionalElementDescr;
-import org.drools.compiler.lang.descr.EvalDescr;
-import org.drools.compiler.lang.descr.ExistsDescr;
-import org.drools.compiler.lang.descr.ForallDescr;
-import org.drools.compiler.lang.descr.FunctionDescr;
-import org.drools.compiler.lang.descr.NamedConsequenceDescr;
-import org.drools.compiler.lang.descr.NotDescr;
-import org.drools.compiler.lang.descr.OrDescr;
-import org.drools.compiler.lang.descr.PatternDescr;
-import org.drools.compiler.lang.descr.QueryDescr;
-import org.drools.compiler.lang.descr.RuleDescr;
-import org.drools.compiler.lang.descr.TypeDeclarationDescr;
+import org.drools.compiler.lang.descr.*;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.Behavior;
 import org.drools.core.time.TimeUtils;
 import org.drools.core.util.ClassUtils;
-import org.drools.core.util.index.IndexUtil;
 import org.drools.core.util.index.IndexUtil.ConstraintType;
 import org.drools.drlx.DrlxParser;
 import org.drools.javaparser.JavaParser;
@@ -60,20 +29,11 @@ import org.drools.javaparser.ast.NodeList;
 import org.drools.javaparser.ast.body.MethodDeclaration;
 import org.drools.javaparser.ast.body.Parameter;
 import org.drools.javaparser.ast.drlx.OOPathExpr;
+import org.drools.javaparser.ast.drlx.expr.DrlxExpression;
 import org.drools.javaparser.ast.drlx.expr.PointFreeExpr;
 import org.drools.javaparser.ast.drlx.expr.TemporalLiteralExpr;
-import org.drools.javaparser.ast.expr.AssignExpr;
-import org.drools.javaparser.ast.expr.BinaryExpr;
+import org.drools.javaparser.ast.expr.*;
 import org.drools.javaparser.ast.expr.BinaryExpr.Operator;
-import org.drools.javaparser.ast.expr.ClassExpr;
-import org.drools.javaparser.ast.expr.Expression;
-import org.drools.javaparser.ast.expr.FieldAccessExpr;
-import org.drools.javaparser.ast.expr.LambdaExpr;
-import org.drools.javaparser.ast.expr.MethodCallExpr;
-import org.drools.javaparser.ast.expr.NameExpr;
-import org.drools.javaparser.ast.expr.StringLiteralExpr;
-import org.drools.javaparser.ast.expr.UnaryExpr;
-import org.drools.javaparser.ast.expr.VariableDeclarationExpr;
 import org.drools.javaparser.ast.stmt.BlockStmt;
 import org.drools.javaparser.ast.stmt.ExpressionStmt;
 import org.drools.javaparser.ast.stmt.ReturnStmt;
@@ -87,10 +47,13 @@ import org.drools.model.Variable;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.RuleDescrImpl;
 
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import static org.drools.javaparser.printer.PrintUtil.toDrlx;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.parseBlock;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.*;
 import static org.drools.modelcompiler.builder.generator.StringUtil.toId;
 
 public class ModelGenerator {
@@ -593,11 +556,21 @@ public class ModelGenerator {
     }
 
     public static DrlxParseResult drlxParse(RuleContext context, PackageModel packageModel, Class<?> patternType, String bindingId, String expression) {
-        if (expression.startsWith( bindingId + "." )) {
+        if ( bindingId != null && expression.startsWith( bindingId + "." ) ) {
             expression = expression.substring( bindingId.length()+1 );
         }
 
-        Expression drlxExpr = DrlxParser.parseExpression( expression ).getExpr();
+        DrlxExpression drlx = DrlxParser.parseExpression( expression );
+        DrlxParseResult result = getDrlxParseResult( context, packageModel, patternType, bindingId, expression, drlx );
+        if (drlx.getBind() != null) {
+            context.addDeclaration( new DeclarationSpec( drlx.getBind().asString(), result.exprType ) );
+        }
+        return result;
+
+    }
+
+    private static DrlxParseResult getDrlxParseResult( RuleContext context, PackageModel packageModel, Class<?> patternType, String bindingId, String expression, DrlxExpression drlx ) {
+        Expression drlxExpr = drlx.getExpr();
 
         String exprId;
         if ( GENERATE_EXPR_ID ) {
@@ -608,7 +581,7 @@ public class ModelGenerator {
             BinaryExpr binaryExpr = (BinaryExpr) drlxExpr;
             Operator operator = binaryExpr.getOperator();
 
-            IndexUtil.ConstraintType decodeConstraintType = DrlxParseUtil.toConstraintType( operator );
+            ConstraintType decodeConstraintType = DrlxParseUtil.toConstraintType( operator );
             Set<String> usedDeclarations = new HashSet<>();
             Set<String> reactOnProperties = new HashSet<>();
             TypedExpression left = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, binaryExpr.getLeft(), usedDeclarations, reactOnProperties );
@@ -639,7 +612,9 @@ public class ModelGenerator {
                 combo = new BinaryExpr( left.getPrefixExpression(), combo, Operator.AND );
             }
 
-            return new DrlxParseResult(patternType, exprId, bindingId, decodeConstraintType, usedDeclarations, reactOnProperties, left, right, combo, false );
+            return new DrlxParseResult(patternType, exprId, bindingId, combo, left.getType())
+                    .setDecodeConstraintType( decodeConstraintType ).setUsedDeclarations( usedDeclarations )
+                    .setReactOnProperties( reactOnProperties ).setLeft( left ).setRight( right );
         }
 
         if ( drlxExpr instanceof PointFreeExpr ) {
@@ -647,7 +622,7 @@ public class ModelGenerator {
 
             Set<String> usedDeclarations = new HashSet<>();
             Set<String> reactOnProperties = new HashSet<>();
-            DrlxParseUtil.toTypedExpression( context, packageModel, patternType, pointFreeExpr.getLeft(), usedDeclarations, reactOnProperties );
+            TypedExpression left = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, pointFreeExpr.getLeft(), usedDeclarations, reactOnProperties );
             DrlxParseUtil.toTypedExpression( context, packageModel, patternType, pointFreeExpr.getRight(), usedDeclarations, reactOnProperties );
 
             MethodCallExpr methodCallExpr = new MethodCallExpr( null, pointFreeExpr.getOperator().asString() );
@@ -658,64 +633,90 @@ public class ModelGenerator {
                 }
             }
 
-            return new DrlxParseResult(patternType, exprId, bindingId, null, usedDeclarations, reactOnProperties, null, null, methodCallExpr, true );
+            return new DrlxParseResult(patternType, exprId, bindingId, methodCallExpr, left.getType() )
+                    .setUsedDeclarations( usedDeclarations ).setReactOnProperties( reactOnProperties ).setStatic( true );
         }
 
         if (drlxExpr instanceof MethodCallExpr) {
             MethodCallExpr methodCallExpr = (MethodCallExpr) drlxExpr;
 
             NameExpr _this = new NameExpr("_this");
-            MethodCallExpr converted = DrlxParseUtil.toMethodCallWithClassCheck(methodCallExpr, patternType);
-            Expression withThis = DrlxParseUtil.prepend(_this, converted);
+            TypedExpression converted = DrlxParseUtil.toMethodCallWithClassCheck(methodCallExpr, patternType);
+            Expression withThis = DrlxParseUtil.prepend(_this, converted.getExpression());
 
-            return new DrlxParseResult(patternType, exprId, bindingId, null, new HashSet<>(), new HashSet<>(), null, null, withThis, false);
+            return new DrlxParseResult(patternType, exprId, bindingId, withThis, converted.getType());
         }
 
         if (drlxExpr instanceof NameExpr) {
             NameExpr methodCallExpr = (NameExpr) drlxExpr;
 
             NameExpr _this = new NameExpr("_this");
-            MethodCallExpr converted = DrlxParseUtil.toMethodCallWithClassCheck(methodCallExpr, patternType);
-            Expression withThis = DrlxParseUtil.prepend(_this, converted);
+            TypedExpression converted = DrlxParseUtil.toMethodCallWithClassCheck(methodCallExpr, patternType);
+            Expression withThis = DrlxParseUtil.prepend(_this, converted.getExpression());
 
-            return new DrlxParseResult(patternType, exprId, bindingId, null, new HashSet<>(), new HashSet<>(), null, null, withThis, false);
+            return new DrlxParseResult(patternType, exprId, bindingId, withThis, converted.getType());
         }
 
-        if(drlxExpr instanceof OOPathExpr) {
-            return new DrlxParseResult(patternType, exprId, bindingId, null, new HashSet<>(), new HashSet<>(), null, null, drlxExpr, false);
+        if (drlxExpr instanceof OOPathExpr ) {
+            return new DrlxParseResult(patternType, exprId, bindingId, drlxExpr, null);
         }
 
         throw new UnsupportedOperationException("Unknown expression: " + toDrlx(drlxExpr)); // TODO
-
     }
 
     static class DrlxParseResult {
 
-        public DrlxParseResult(Class<?> patternType, String exprId, String bindingId, ConstraintType decodeConstraintType, Set<String> usedDeclarations, Set<String> reactOnProperties, TypedExpression left, TypedExpression right, Expression expr, boolean isStatic) {
-            this.patternType = patternType;
-            this.exprId = exprId;
-            this.bindingId = bindingId;
-            this.decodeConstraintType = decodeConstraintType;
-            this.usedDeclarations = usedDeclarations;
-            this.reactOnProperties = reactOnProperties;
-            this.left = left;
-            this.right = right;
-            this.expr = expr;
-            this.isStatic = isStatic;
-        }
+        final Class<?> patternType;
+        final String exprId;
+        final String bindingId;
+        final Expression expr;
+        final Class<?> exprType;
 
-        Class<?> patternType;
-        String exprId;
-        String bindingId;
         ConstraintType decodeConstraintType;
-
-        Set<String> usedDeclarations;
-        Set<String> reactOnProperties;
+        Set<String> usedDeclarations = Collections.emptySet();
+        Set<String> reactOnProperties = Collections.emptySet();
 
         TypedExpression left;
         TypedExpression right;
-        Expression expr;
         boolean isStatic;
+
+        public DrlxParseResult(Class<?> patternType, String exprId, String bindingId, Expression expr, Class<?> exprType) {
+            this.patternType = patternType;
+            this.exprId = exprId;
+            this.bindingId = bindingId;
+            this.expr = expr;
+            this.exprType = exprType;
+        }
+
+        public DrlxParseResult setDecodeConstraintType( ConstraintType decodeConstraintType ) {
+            this.decodeConstraintType = decodeConstraintType;
+            return this;
+        }
+
+        public DrlxParseResult setUsedDeclarations( Set<String> usedDeclarations ) {
+            this.usedDeclarations = usedDeclarations;
+            return this;
+        }
+
+        public DrlxParseResult setReactOnProperties( Set<String> reactOnProperties ) {
+            this.reactOnProperties = reactOnProperties;
+            return this;
+        }
+
+        public DrlxParseResult setLeft( TypedExpression left ) {
+            this.left = left;
+            return this;
+        }
+
+        public DrlxParseResult setRight( TypedExpression right ) {
+            this.right = right;
+            return this;
+        }
+
+        public DrlxParseResult setStatic( boolean aStatic ) {
+            isStatic = aStatic;
+            return this;
+        }
     }
 
 
@@ -769,7 +770,7 @@ public class ModelGenerator {
         // .indexBy(..) is only added if left is not an identity expression:
         if ( decodeConstraintType != null && !(left.getExpression() instanceof NameExpr && ((NameExpr)left.getExpression()).getName().getIdentifier().equals("_this")) ) {
             Class<?> indexType = Stream.of( left, right ).map( TypedExpression::getType )
-                                       .flatMap( ModelGenerator::optToStream )
+                                       .filter( Objects::nonNull )
                                        .findFirst().get();
 
             ClassExpr indexedBy_indexedClass = new ClassExpr( JavaParser.parseType( indexType.getCanonicalName() ) );

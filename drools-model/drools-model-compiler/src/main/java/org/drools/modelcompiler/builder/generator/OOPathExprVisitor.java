@@ -1,7 +1,5 @@
 package org.drools.modelcompiler.builder.generator;
 
-import java.util.HashSet;
-
 import org.drools.javaparser.ast.drlx.OOPathChunk;
 import org.drools.javaparser.ast.drlx.OOPathExpr;
 import org.drools.javaparser.ast.expr.Expression;
@@ -9,10 +7,10 @@ import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.modelcompiler.builder.PackageModel;
 
+import java.util.HashSet;
+
 import static org.drools.core.util.ClassUtils.extractGenericType;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.prepend;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.*;
 import static org.drools.modelcompiler.builder.generator.ModelGenerator.buildExpressionWithIndexing;
 
 public class OOPathExprVisitor {
@@ -35,7 +33,7 @@ public class OOPathExprVisitor {
             final String fieldName = chunk.getField().toString();
 
             final TypedExpression callExpr = DrlxParseUtil.nameExprToMethodCallExpr(fieldName, previousClass);
-            Class<?> fieldType = callExpr.getType().orElseThrow(RuntimeException::new);
+            Class<?> fieldType = callExpr.getType();
             if (Iterable.class.isAssignableFrom(fieldType)) {
                 fieldType = extractGenericType(previousClass, ((MethodCallExpr) callExpr.getExpression()).getName().toString());
             }

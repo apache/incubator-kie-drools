@@ -36,8 +36,8 @@ import org.drools.javaparser.ast.type.Type;
 import org.drools.javaparser.ast.type.UnknownType;
 import org.drools.modelcompiler.builder.PackageModel;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
 import java.util.*;
 
 import static org.drools.core.util.ClassUtils.getter2property;
@@ -68,23 +68,23 @@ public class DrlxParseUtil {
         Class<?> typeCursor = patternType;
 
         if (drlxExpr instanceof LiteralExpr) {
-            return new TypedExpression(drlxExpr, Optional.empty());
+            return new TypedExpression(drlxExpr);
         } else if (drlxExpr instanceof ThisExpr) {
-            return new TypedExpression(new NameExpr("_this"), Optional.empty());
+            return new TypedExpression(new NameExpr("_this"));
         } else if (drlxExpr instanceof NameExpr) {
             String name = drlxExpr.toString();
             if (context.existsDeclaration(name)) {
                 // then drlxExpr is a single NameExpr referring to a binding, e.g.: "$p1".
                 usedDeclarations.add(name);
-                return new TypedExpression(drlxExpr, Optional.empty());
+                return new TypedExpression(drlxExpr);
             } if (context.queryParameters.stream().anyMatch(qp -> qp.name.equals(name))) {
                 // then drlxExpr is a single NameExpr referring to a query parameter, e.g.: "$p1".
                 usedDeclarations.add(name);
-                return new TypedExpression(drlxExpr, Optional.empty());
+                return new TypedExpression(drlxExpr);
             } else if(packageModel.getGlobals().containsKey(name)){
                 Expression plusThis = new NameExpr(name);
                 usedDeclarations.add(name);
-                return new TypedExpression(plusThis, Optional.of(packageModel.getGlobals().get(name)));
+                return new TypedExpression(plusThis, packageModel.getGlobals().get(name));
             } else {
                 reactOnProperties.add(name);
                 TypedExpression expression = nameExprToMethodCallExpr(name, typeCursor);
@@ -192,47 +192,25 @@ public class DrlxParseUtil {
                 previous = new MethodCallExpr(previous, accessor.getName());
             }
 
-            return typedExpression.setExpression(previous).setType(Optional.of(typeCursor));
-        } else {
-            // TODO the below should not be needed anymore...
-            drlxExpr.getChildNodes();
-            String expression = drlxExpr.toString();
-            String[] parts = expression.split("\\.");
-            StringBuilder telescoping = new StringBuilder();
-            boolean implicitThis = true;
-
-            for (int idx = 0; idx < parts.length; idx++) {
-                String part = parts[idx];
-                boolean isGlobal = false;
-                if (isGlobal) {
-                    implicitThis = false;
-                    telescoping.append(part);
-                } else if (idx == 0 && context.existsDeclaration(part)) {
-                    implicitThis = false;
-                    usedDeclarations.add(part);
-                    telescoping.append(part);
-                } else {
-                    if ((idx == 0 && implicitThis) || (idx == 1 && implicitThis == false)) {
-                        reactOnProperties.add(part);
-                    }
-                    Method accessor = ClassUtils.getAccessor(typeCursor, part);
-                    typeCursor = accessor.getReturnType();
-                    telescoping.append("." + accessor.getName() + "()");
-                }
-            }
-            return new TypedExpression(implicitThis ? "_this" + telescoping.toString() : telescoping.toString(), Optional.of(typeCursor));
+            return typedExpression.setExpression(previous).setType(typeCursor);
         }
+
+        throw new UnsupportedOperationException();
     }
 
     public static TypedExpression nameExprToMethodCallExpr(String name, Class<?> clazz) {
         Method accessor = ClassUtils.getAccessor(clazz, name);
-        if (accessor == null) {
-            throw new UnsupportedOperationException("Accessor missing");
+        if (accessor != null) {
+            MethodCallExpr body = new MethodCallExpr( null, accessor.getName() );
+            return new TypedExpression( body, accessor.getReturnType() );
         }
-        Class<?> accessorReturnType = accessor.getReturnType();
-
-        MethodCallExpr body = new MethodCallExpr(null, accessor.getName());
-        return new TypedExpression(body, Optional.of(accessorReturnType));
+        try {
+            Field field = clazz.getField( name );
+            FieldAccessExpr expr = new FieldAccessExpr( null, name );
+            return new TypedExpression( expr, field.getType() );
+        } catch (NoSuchFieldException e) {
+            throw new IllegalArgumentException( "Unknown field " + name + " on class " + clazz );
+        }
     }
 
     public static Class<?> returnTypeOfMethodCallExpr(MethodCallExpr methodCallExpr, Class<?> clazz) {
@@ -296,7 +274,7 @@ public class DrlxParseUtil {
     }
 
 
-    public static MethodCallExpr toMethodCallWithClassCheck(Expression expr, Class<?> clazz) {
+    public static TypedExpression toMethodCallWithClassCheck(Expression expr, Class<?> clazz) {
 
         final Deque<ParsedMethod> callStackLeftToRight = new LinkedList<>();
 
@@ -307,7 +285,7 @@ public class DrlxParseUtil {
         for (ParsedMethod e : callStackLeftToRight) {
             if (e.expression instanceof NameExpr || e.expression instanceof FieldAccessExpr) {
                 TypedExpression te = nameExprToMethodCallExpr(e.fieldToResolve, previousClass);
-                Class<?> returnType = te.getType().orElseThrow(() -> new UnsupportedOperationException("Need return type here"));
+                Class<?> returnType = te.getType();
                 methodCall.add(te.getExpression());
                 previousClass = returnType;
             } else if (e.expression instanceof MethodCallExpr) {
@@ -318,11 +296,13 @@ public class DrlxParseUtil {
             }
         }
 
-        return (MethodCallExpr) methodCall.stream()
-                .reduce((Expression a, Expression b) -> {
-                    ((MethodCallExpr) b).setScope(a);
+        Expression call = methodCall.stream()
+                .reduce((a, b) -> {
+                    ((NodeWithOptionalScope) b).setScope(a);
                     return b;
                 }).orElseThrow(() -> new UnsupportedOperationException("No Expression converted"));
+
+        return new TypedExpression(call, previousClass);
     }
 
     private static Expression createExpressionCall(Expression expr, Deque<ParsedMethod> expressions) {
