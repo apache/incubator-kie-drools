@@ -16,7 +16,6 @@
 
 package org.drools.compiler.factmodel.traits;
 
-import org.drools.core.factmodel.traits.LogicalTypeInconsistencyException;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitFieldTMS;
 import org.drools.core.factmodel.traits.TraitTypeMap;
@@ -24,8 +23,6 @@ import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.factmodel.traits.TraitableBean;
 
 import java.util.BitSet;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -113,43 +110,6 @@ public class StudentImpl implements IStudent<StudentImpl>, TraitableBean<Student
     }
 
     public void _setTraitMap(Map<String, Thing<StudentImpl>> map) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public void addTrait(String type, Thing<StudentImpl> proxy) throws LogicalTypeInconsistencyException {
-        traitMap.put( type, proxy );
-    }
-
-    public Thing<StudentImpl> getTrait(String type) {
-        return traitMap.get( type );
-    }
-
-    public boolean hasTraits() {
-        return traitMap != null && ! traitMap.isEmpty();
-    }
-
-
-    public boolean hasTrait(String type) {
-        return traitMap.containsKey( type );
-    }
-
-    public Collection<Thing<StudentImpl>> removeTrait(String type) {
-        return ((TraitTypeMap) _getTraitMap()).removeCascade( type );
-    }
-
-    public Collection<Thing<StudentImpl>> removeTrait(BitSet typeCode) {
-        return ((TraitTypeMap) _getTraitMap()).removeCascade(typeCode);
-    }
-
-    public Collection<String> getTraits() {
-        return Collections.EMPTY_SET;
-    }
-
-    public Collection<Thing> getMostSpecificTraits() {
-        return Collections.EMPTY_SET;
-    }
-
-    public void _setBottomTypeCode(BitSet code) {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 

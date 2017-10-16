@@ -51,6 +51,8 @@ public class FieldDefinition
     private String             initExpr   = null;
     private boolean            recursive  = false;
     private Map<String,Object> metaData;
+	private String             getterName = null;
+	private String             setterName = null;
 
     private List<AnnotationDefinition> annotations;
 
@@ -104,6 +106,8 @@ public class FieldDefinition
         this.priority = in.readInt();
         this.initExpr = (String) in.readObject();
         this.metaData = (Map<String, Object>) in.readObject();
+        this.getterName = ( String ) in.readObject();
+        this.setterName = ( String ) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -119,6 +123,8 @@ public class FieldDefinition
         out.writeInt( this.priority );
         out.writeObject( this.initExpr );
         out.writeObject( this.metaData );
+        out.writeObject( this.getterName );
+        out.writeObject( this.setterName );
     }
 
     /**
@@ -172,7 +178,10 @@ public class FieldDefinition
      * @return
      */
     public String getReadMethod() {
-        String prefix = null;
+    	if ( getterName != null ) {
+    		return getterName;
+	    }
+        String prefix;
         if ( "boolean".equals( this.type ) ) {
             prefix = "is";
         } else {
@@ -188,8 +197,8 @@ public class FieldDefinition
      * @return
      */
     public String getWriteMethod() {
-        return "set" + this.name.substring( 0,
-                1 ).toUpperCase() + this.name.substring( 1 );
+        return setterName != null ? setterName :
+		        "set" + this.name.substring( 0, 1 ).toUpperCase() + this.name.substring( 1 );
     }
 
     /**
@@ -530,4 +539,19 @@ public class FieldDefinition
         this.overriding = overriding;
     }
 
+	public String getGetterName() {
+		return getterName;
+	}
+
+	public void setGetterName( String getterName ) {
+		this.getterName = getterName;
+	}
+
+	public String getSetterName() {
+		return setterName;
+	}
+
+	public void setSetterName( String setterName ) {
+		this.setterName = setterName;
+	}
 }

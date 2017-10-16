@@ -19,9 +19,6 @@ package org.drools.core.factmodel.traits;
 import org.kie.api.definition.type.PropertyReactive;
 
 import java.io.Serializable;
-import java.util.BitSet;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
 
@@ -79,83 +76,6 @@ public class Entity implements TraitableBean<Entity,Entity>, Serializable {
 
     public Map<String, Thing<Entity>> _getTraitMap() {
         return __$$dynamic_traits_map$$;
-    }
-
-    public void addTrait(String type, Thing proxy) throws LogicalTypeInconsistencyException {
-       ((TraitTypeMap) _getTraitMap()).putSafe(type, proxy);
-    }
-
-    public Thing getTrait(String type) {
-        return _getTraitMap().get( type );
-    }
-
-    public boolean hasTrait(String type) {
-        return isTraitMapInitialized() && _getTraitMap().containsKey(type);
-    }
-
-    public boolean hasTraits() {
-        return __$$dynamic_traits_map$$ != null && ! __$$dynamic_traits_map$$.isEmpty();
-    }
-
-    public Collection<Thing<Entity>> removeTrait( String type ) {
-        if ( isTraitMapInitialized() ) {
-            return ((TraitTypeMap)_getTraitMap()).removeCascade(type);
-        } else {
-            return null;
-        }        
-    }
-
-    public Collection<Thing<Entity>> removeTrait( BitSet typeCode ) {
-        if ( isTraitMapInitialized() ) {
-            return ((TraitTypeMap)_getTraitMap()).removeCascade( typeCode );
-        } else {
-            return null;
-        }
-    }
-
-    public Collection<String> getTraits() {
-        if ( isTraitMapInitialized() ) {
-            return _getTraitMap().keySet();
-        } else {
-            return Collections.emptySet();
-        }
-    }
-
-    public Collection<Thing> getMostSpecificTraits() {
-        if ( __$$dynamic_traits_map$$ == null ) {
-            return Collections.EMPTY_LIST;
-        }
-        return ((TraitTypeMap) __$$dynamic_traits_map$$).getMostSpecificTraits();
-    }
-
-    public BitSet getCurrentTypeCode() {
-        if ( __$$dynamic_traits_map$$ == null ) {
-            return null;
-        }
-        return ((TraitTypeMap) __$$dynamic_traits_map$$).getCurrentTypeCode();
-    }
-
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Entity that = (Entity) o;
-
-        return !(id != null ? !id.equals(that.id) : that.id != null);
-
-    }
-
-    public int hashCode() {
-        return id != null ? id.hashCode() : 0;
-    }
-
-    public boolean isTraitMapInitialized() {
-        return __$$dynamic_traits_map$$ != null;
-    }
-
-
-    public void _setBottomTypeCode( BitSet bottomTypeCode ) {
-        ((TraitTypeMap) __$$dynamic_traits_map$$).setBottomCode( bottomTypeCode );
     }
 
     @Override

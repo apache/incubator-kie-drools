@@ -146,6 +146,8 @@ public class TraitFieldTMSImpl implements TraitFieldTMS, Externalizable {
         return typeCache;
     }
 
-
-
+	@Override
+	public String toString() {
+		return "TraitFieldTMSImpl{}";
+	}
 }

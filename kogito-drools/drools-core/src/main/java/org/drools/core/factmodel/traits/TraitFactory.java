@@ -58,7 +58,7 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> extends A
 
     private void registerRuntimeClass( String proxyName ) {
         if ( runtimeClasses == null ) {
-            runtimeClasses = new HashSet<String>();
+            runtimeClasses = new HashSet<>();
         }
         runtimeClasses.add( ClassUtils.convertClassToResourcePath( proxyName ) );
     }

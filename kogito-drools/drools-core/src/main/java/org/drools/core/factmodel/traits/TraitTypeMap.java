@@ -191,8 +191,14 @@ public class TraitTypeMap<T extends String, K extends Thing<C>, C>
 
     @Override
     public String toString() {
-        return "VetoableTypedMap{" +
-               "innerMap=" + innerMap + '}';
+        StringBuilder bldr = new StringBuilder();
+        bldr.append( "TraitTypeMap{" );
+        for ( String trt : innerMap.keySet() ) {
+        	Object proxy = innerMap.get( trt );
+        	bldr.append( trt ).append( " : " ).append( proxy.getClass().getName() ).append( "@" ).append( System.identityHashCode( proxy ) ).append( "; " );
+        }
+	    bldr.append( "}" );
+        return bldr.toString();
     }
 
     public void writeExternal( ObjectOutput objectOutput ) throws IOException {
