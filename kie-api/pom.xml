@@ -28,6 +28,8 @@
           <instructions>
             <Import-Package>
               org.appformer.maven.support,
+              org.kie.soup.project.datamodel,
+              org.kie.soup.project.datamodel.commons,
               *;resolution:=optional,
               org.jbpm.runtime.manager.impl;resolution:=optional,
               org.drools.compiler.kie.builder.impl,
