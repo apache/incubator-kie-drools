@@ -157,9 +157,15 @@ public class CepTest extends BaseModelTest {
     }
 
     @Test
-    @Ignore("DSL generation to be implemented")
+    @Ignore
     public void testDeclaredSlidingWindow() throws Exception {
-//        WindowReference window = window( Window.Type.TIME, 5, TimeUnit.SECONDS, StockTick.class, s -> s.getCompany().equals( "DROO" ) );
+//        WindowReference window = window(
+//              Window.Type.TIME,
+//              5,
+//              TimeUnit.SECONDS,
+//              StockTick.class,
+//              s -> s.getCompany().equals( "DROO" )
+// );
 //        Variable<StockTick> drooV = declarationOf( type( StockTick.class ), window );
 //
 //        Rule rule = rule( "window" )

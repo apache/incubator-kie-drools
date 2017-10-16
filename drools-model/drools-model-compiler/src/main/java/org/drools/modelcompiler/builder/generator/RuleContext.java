@@ -79,20 +79,6 @@ public class RuleContext {
         namedConsequences.put(key, value);
     }
 
-    public TypeResolver getTypeResolver() {
-        return pkg.getTypeResolver();
-    }
-
-    public Class<?> getClassFromContext(String className) {
-        Class<?> patternType;
-        try {
-            patternType = getTypeResolver().resolveType(className);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException( e );
-        }
-        return patternType;
-    }
-
     public RuleDescr getRuleDescr() {
         return ruleDescr;
     }

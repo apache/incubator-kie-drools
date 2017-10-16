@@ -16,6 +16,7 @@
 
 package org.drools.modelcompiler.builder;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -34,16 +35,19 @@ import org.drools.javaparser.ast.body.FieldDeclaration;
 import org.drools.javaparser.ast.body.InitializerDeclaration;
 import org.drools.javaparser.ast.body.MethodDeclaration;
 import org.drools.javaparser.ast.comments.JavadocComment;
+import org.drools.javaparser.ast.expr.AssignExpr;
 import org.drools.javaparser.ast.expr.ClassExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
+import org.drools.javaparser.ast.expr.VariableDeclarationExpr;
 import org.drools.javaparser.ast.stmt.BlockStmt;
 import org.drools.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.javaparser.ast.type.Type;
 import org.drools.javaparser.printer.PrettyPrinter;
 import org.drools.model.Global;
 import org.drools.model.Model;
+import org.drools.model.WindowReference;
 import org.drools.modelcompiler.builder.generator.DRLExprIdGenerator;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.QueryParameter;
@@ -61,6 +65,8 @@ public class PackageModel {
     private Map<String, MethodDeclaration> ruleMethods = new HashMap<>();
 
     private Map<String, MethodDeclaration> queryMethods = new HashMap<>();
+
+    private Map<String, MethodCallExpr> windowReferences = new HashMap<>();
 
     private Map<String, List<QueryParameter>> queryVariables = new HashMap<>();
 
@@ -139,6 +145,13 @@ public class PackageModel {
         return generatedPOJOs;
     }
 
+    public void addAllWindowDeclarations(String methodName, MethodCallExpr windowMethod) {
+        this.windowReferences.put(methodName, windowMethod);
+    }
+
+    final static Type WINDOW_REFERENCE_TYPE = JavaParser.parseType(WindowReference.class.getCanonicalName());
+
+
     public String getVarsSource() {
 //        if (true) return getVariableSource();
         return null;
@@ -197,13 +210,28 @@ public class PackageModel {
                 "    }\n");
         rulesClass.addMember(getQueriesMethod);
 
+
+        BodyDeclaration<?> getWindowReferences = JavaParser.parseBodyDeclaration(
+                "    public List<WindowReference> getWindowReferences() {\n" +
+                "        return windowReferences;\n" +
+                "    }\n");
+        rulesClass.addMember(getWindowReferences);
+
         BodyDeclaration<?> rulesList = JavaParser.parseBodyDeclaration("List<Rule> rules = new ArrayList<>();");
         rulesClass.addMember(rulesList);
         BodyDeclaration<?> queriesList = JavaParser.parseBodyDeclaration("List<Query> queries = new ArrayList<>();");
         rulesClass.addMember(queriesList);
         BodyDeclaration<?> globalsList = JavaParser.parseBodyDeclaration("List<Global> globals = new ArrayList<>();");
         rulesClass.addMember(globalsList);
+        BodyDeclaration<?> windowReferencesList = JavaParser.parseBodyDeclaration("List<WindowReference> windowReferences = new ArrayList<>();");
+        rulesClass.addMember(windowReferencesList);
         // end of fixed part
+
+
+        for(Map.Entry<String, MethodCallExpr> windowDeclaration : windowReferences.entrySet()) {
+            FieldDeclaration f =  rulesClass.addField(WINDOW_REFERENCE_TYPE, windowDeclaration.getKey());
+            f.getVariables().get(0).setInitializer(windowDeclaration.getValue());
+        }
 
         for ( Map.Entry<String, Class<?>> g : getGlobals().entrySet() ) {
             addGlobalField(rulesClass, getName(), g.getKey(), g.getValue());
@@ -231,6 +259,13 @@ public class PackageModel {
             NameExpr rulesFieldName = new NameExpr( "queries" );
             MethodCallExpr add = new MethodCallExpr(rulesFieldName, "add");
             add.addArgument( new NameExpr(methodName) );
+            rulesListInitializerBody.addStatement( add );
+        }
+
+        for ( String fieldName : windowReferences.keySet() ) {
+            NameExpr rulesFieldName = new NameExpr( "windowReferences" );
+            MethodCallExpr add = new MethodCallExpr(rulesFieldName, "add");
+            add.addArgument( new NameExpr(fieldName) );
             rulesListInitializerBody.addStatement( add );
         }
 
