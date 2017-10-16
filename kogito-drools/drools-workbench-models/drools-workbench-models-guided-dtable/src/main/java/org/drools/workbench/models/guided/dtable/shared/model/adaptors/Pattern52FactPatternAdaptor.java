@@ -20,8 +20,8 @@ import java.util.List;
 import org.drools.workbench.models.datamodel.rule.CEPWindow;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
 import org.drools.workbench.models.datamodel.rule.FieldConstraint;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 /**
  * Adaptor to use RuleModel class in GuidedDecisionTable
@@ -35,9 +35,9 @@ public class Pattern52FactPatternAdaptor extends FactPattern {
     public Pattern52FactPatternAdaptor() {
     }
 
-    public Pattern52FactPatternAdaptor( final Pattern52 pattern ) {
-        PortablePreconditions.checkNotNull( "pattern",
-                                            pattern );
+    public Pattern52FactPatternAdaptor(final Pattern52 pattern) {
+        PortablePreconditions.checkNotNull("pattern",
+                                           pattern);
         this.pattern = pattern;
     }
 
@@ -62,22 +62,22 @@ public class Pattern52FactPatternAdaptor extends FactPattern {
     }
 
     @Override
-    public void setBoundName( final String boundName ) {
+    public void setBoundName(final String boundName) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void setNegated( final boolean isNegated ) {
+    public void setNegated(final boolean isNegated) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void addConstraint( final FieldConstraint constraint ) {
+    public void addConstraint(final FieldConstraint constraint) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void removeConstraint( final int idx ) {
+    public void removeConstraint(final int idx) {
         throw new UnsupportedOperationException();
     }
 
@@ -87,17 +87,17 @@ public class Pattern52FactPatternAdaptor extends FactPattern {
     }
 
     @Override
-    public void setFieldConstraints( final List<FieldConstraint> sortedConstraints ) {
+    public void setFieldConstraints(final List<FieldConstraint> sortedConstraints) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void setFactType( final String factType ) {
+    public void setFactType(final String factType) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void setWindow( final CEPWindow window ) {
+    public void setWindow(final CEPWindow window) {
         throw new UnsupportedOperationException();
     }
 
@@ -110,5 +110,4 @@ public class Pattern52FactPatternAdaptor extends FactPattern {
     public int getNumberOfConstraints() {
         throw new UnsupportedOperationException();
     }
-
 }

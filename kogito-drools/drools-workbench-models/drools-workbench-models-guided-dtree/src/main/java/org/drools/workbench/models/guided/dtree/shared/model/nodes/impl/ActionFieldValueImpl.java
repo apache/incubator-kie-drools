@@ -15,9 +15,9 @@
  */
 package org.drools.workbench.models.guided.dtree.shared.model.nodes.impl;
 
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.ActionFieldValue;
 import org.drools.workbench.models.guided.dtree.shared.model.values.Value;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class ActionFieldValueImpl implements ActionFieldValue {
 
@@ -28,10 +28,10 @@ public class ActionFieldValueImpl implements ActionFieldValue {
         //Errai marshalling
     }
 
-    public ActionFieldValueImpl( final String fieldName,
-                                 final Value value ) {
-        setFieldName( fieldName );
-        setValue( value );
+    public ActionFieldValueImpl(final String fieldName,
+                                final Value value) {
+        setFieldName(fieldName);
+        setValue(value);
     }
 
     @Override
@@ -40,9 +40,9 @@ public class ActionFieldValueImpl implements ActionFieldValue {
     }
 
     @Override
-    public void setFieldName( final String fieldName ) {
-        this.fieldName = PortablePreconditions.checkNotNull( "fieldName",
-                                                             fieldName );
+    public void setFieldName(final String fieldName) {
+        this.fieldName = PortablePreconditions.checkNotNull("fieldName",
+                                                            fieldName);
     }
 
     @Override
@@ -51,25 +51,25 @@ public class ActionFieldValueImpl implements ActionFieldValue {
     }
 
     @Override
-    public void setValue( final Value value ) {
+    public void setValue(final Value value) {
         this.value = value;
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof ActionFieldValueImpl ) ) {
+        if (!(o instanceof ActionFieldValueImpl)) {
             return false;
         }
 
         ActionFieldValueImpl that = (ActionFieldValueImpl) o;
 
-        if ( !fieldName.equals( that.fieldName ) ) {
+        if (!fieldName.equals(that.fieldName)) {
             return false;
         }
-        if ( !value.equals( that.value ) ) {
+        if (!value.equals(that.value)) {
             return false;
         }
 

@@ -15,8 +15,8 @@
  */
 package org.drools.workbench.models.guided.dtree.shared.model.values.impl;
 
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.drools.workbench.models.guided.dtree.shared.model.values.Value;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class IntegerValue implements Value<Integer> {
 
@@ -26,27 +26,27 @@ public class IntegerValue implements Value<Integer> {
         //Errai marshalling
     }
 
-    public IntegerValue( final Integer value ) {
-        setValue( value );
+    public IntegerValue(final Integer value) {
+        setValue(value);
     }
 
-    public IntegerValue( final IntegerValue value ) {
-        setValue( value.getValue() );
+    public IntegerValue(final IntegerValue value) {
+        setValue(value.getValue());
     }
 
     @Override
-    public void setValue( final String value ) {
+    public void setValue(final String value) {
         try {
-            setValue( new Integer( value ) );
-        } catch ( NumberFormatException nfe ) {
-            setValue( new Integer( 0 ) );
+            setValue(new Integer(value));
+        } catch (NumberFormatException nfe) {
+            setValue(new Integer(0));
         }
     }
 
     @Override
-    public void setValue( final Integer value ) {
-        this.value = PortablePreconditions.checkNotNull( "value",
-                                                         value );
+    public void setValue(final Integer value) {
+        this.value = PortablePreconditions.checkNotNull("value",
+                                                        value);
     }
 
     @Override
@@ -55,17 +55,17 @@ public class IntegerValue implements Value<Integer> {
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof IntegerValue ) ) {
+        if (!(o instanceof IntegerValue)) {
             return false;
         }
 
         IntegerValue that = (IntegerValue) o;
 
-        if ( !value.equals( that.value ) ) {
+        if (!value.equals(that.value)) {
             return false;
         }
 

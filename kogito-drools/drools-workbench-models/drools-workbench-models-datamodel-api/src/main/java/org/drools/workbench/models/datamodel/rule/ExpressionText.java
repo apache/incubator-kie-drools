@@ -16,34 +16,33 @@
 
 package org.drools.workbench.models.datamodel.rule;
 
-import org.appformer.project.datamodel.oracle.DataType;
+import org.kie.soup.project.datamodel.oracle.DataType;
 
 public class ExpressionText extends ExpressionPart {
 
     public ExpressionText() {
     }
 
-    public ExpressionText( final String text,
-                           final String classType,
-                           final String genericType ) {
-        super( text,
-               classType,
-               genericType );
+    public ExpressionText(final String text,
+                          final String classType,
+                          final String genericType) {
+        super(text,
+              classType,
+              genericType);
     }
 
-    public ExpressionText( final String text ) {
-        super( text,
-               "java.lang.String",
-               DataType.TYPE_STRING );
+    public ExpressionText(final String text) {
+        super(text,
+              "java.lang.String",
+              DataType.TYPE_STRING);
     }
 
-    public void setText( final String text ) {
+    public void setText(final String text) {
         this.name = text;
     }
 
     @Override
-    public void accept( final ExpressionVisitor visitor ) {
-        visitor.visit( this );
+    public void accept(final ExpressionVisitor visitor) {
+        visitor.visit(this);
     }
-
 }

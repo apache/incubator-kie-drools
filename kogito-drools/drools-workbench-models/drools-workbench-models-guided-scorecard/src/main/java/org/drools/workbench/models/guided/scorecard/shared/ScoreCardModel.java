@@ -19,9 +19,9 @@ package org.drools.workbench.models.guided.scorecard.shared;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.appformer.project.datamodel.imports.HasImports;
-import org.appformer.project.datamodel.imports.Imports;
-import org.appformer.project.datamodel.packages.HasPackageName;
+import org.kie.soup.project.datamodel.imports.HasImports;
+import org.kie.soup.project.datamodel.imports.Imports;
+import org.kie.soup.project.datamodel.packages.HasPackageName;
 
 public class ScoreCardModel implements HasImports,
                                        HasPackageName {
@@ -50,7 +50,7 @@ public class ScoreCardModel implements HasImports,
         return reasonCodeField;
     }
 
-    public void setReasonCodeField( final String reasonCodeField ) {
+    public void setReasonCodeField(final String reasonCodeField) {
         this.reasonCodeField = reasonCodeField;
     }
 
@@ -58,7 +58,7 @@ public class ScoreCardModel implements HasImports,
         return factName;
     }
 
-    public void setFactName( final String factName ) {
+    public void setFactName(final String factName) {
         this.factName = factName;
     }
 
@@ -66,7 +66,7 @@ public class ScoreCardModel implements HasImports,
         return fieldName;
     }
 
-    public void setFieldName( final String fieldName ) {
+    public void setFieldName(final String fieldName) {
         this.fieldName = fieldName;
     }
 
@@ -74,7 +74,7 @@ public class ScoreCardModel implements HasImports,
         return initialScore;
     }
 
-    public void setInitialScore( final double initialScore ) {
+    public void setInitialScore(final double initialScore) {
         this.initialScore = initialScore;
     }
 
@@ -82,7 +82,7 @@ public class ScoreCardModel implements HasImports,
         return name;
     }
 
-    public void setName( String name ) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -90,7 +90,7 @@ public class ScoreCardModel implements HasImports,
         return reasonCodesAlgorithm;
     }
 
-    public void setReasonCodesAlgorithm( final String reasonCodesAlgorithm ) {
+    public void setReasonCodesAlgorithm(final String reasonCodesAlgorithm) {
         this.reasonCodesAlgorithm = reasonCodesAlgorithm;
     }
 
@@ -98,7 +98,7 @@ public class ScoreCardModel implements HasImports,
         return baselineScore;
     }
 
-    public void setBaselineScore( final double baselineScore ) {
+    public void setBaselineScore(final double baselineScore) {
         this.baselineScore = baselineScore;
     }
 
@@ -106,7 +106,7 @@ public class ScoreCardModel implements HasImports,
         return useReasonCodes;
     }
 
-    public void setUseReasonCodes( final boolean useReasonCodes ) {
+    public void setUseReasonCodes(final boolean useReasonCodes) {
         this.useReasonCodes = useReasonCodes;
     }
 
@@ -114,7 +114,7 @@ public class ScoreCardModel implements HasImports,
         return characteristics;
     }
 
-    public void setCharacteristics( final List<Characteristic> characteristics ) {
+    public void setCharacteristics(final List<Characteristic> characteristics) {
         this.characteristics = characteristics;
     }
 
@@ -124,7 +124,7 @@ public class ScoreCardModel implements HasImports,
     }
 
     @Override
-    public void setPackageName( final String packageName ) {
+    public void setPackageName(final String packageName) {
         this.packageName = packageName;
     }
 
@@ -134,7 +134,7 @@ public class ScoreCardModel implements HasImports,
     }
 
     @Override
-    public void setImports( final Imports imports ) {
+    public void setImports(final Imports imports) {
         this.imports = imports;
     }
 
@@ -142,7 +142,7 @@ public class ScoreCardModel implements HasImports,
         return ruleFlowGroup;
     }
 
-    public void setRuleFlowGroup( String ruleFlowGroup ) {
+    public void setRuleFlowGroup(String ruleFlowGroup) {
         this.ruleFlowGroup = ruleFlowGroup;
     }
 
@@ -150,58 +150,58 @@ public class ScoreCardModel implements HasImports,
         return agendaGroup;
     }
 
-    public void setAgendaGroup( String agendaGroup ) {
+    public void setAgendaGroup(String agendaGroup) {
         this.agendaGroup = agendaGroup;
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof ScoreCardModel ) ) {
+        if (!(o instanceof ScoreCardModel)) {
             return false;
         }
 
         ScoreCardModel that = (ScoreCardModel) o;
 
-        if ( Double.compare( that.baselineScore, baselineScore ) != 0 ) {
+        if (Double.compare(that.baselineScore, baselineScore) != 0) {
             return false;
         }
-        if ( Double.compare( that.initialScore, initialScore ) != 0 ) {
+        if (Double.compare(that.initialScore, initialScore) != 0) {
             return false;
         }
-        if ( useReasonCodes != that.useReasonCodes ) {
+        if (useReasonCodes != that.useReasonCodes) {
             return false;
         }
-        if ( agendaGroup != null ? !agendaGroup.equals( that.agendaGroup ) : that.agendaGroup != null ) {
+        if (agendaGroup != null ? !agendaGroup.equals(that.agendaGroup) : that.agendaGroup != null) {
             return false;
         }
-        if ( characteristics != null ? !characteristics.equals( that.characteristics ) : that.characteristics != null ) {
+        if (characteristics != null ? !characteristics.equals(that.characteristics) : that.characteristics != null) {
             return false;
         }
-        if ( factName != null ? !factName.equals( that.factName ) : that.factName != null ) {
+        if (factName != null ? !factName.equals(that.factName) : that.factName != null) {
             return false;
         }
-        if ( fieldName != null ? !fieldName.equals( that.fieldName ) : that.fieldName != null ) {
+        if (fieldName != null ? !fieldName.equals(that.fieldName) : that.fieldName != null) {
             return false;
         }
-        if ( imports != null ? !imports.equals( that.imports ) : that.imports != null ) {
+        if (imports != null ? !imports.equals(that.imports) : that.imports != null) {
             return false;
         }
-        if ( name != null ? !name.equals( that.name ) : that.name != null ) {
+        if (name != null ? !name.equals(that.name) : that.name != null) {
             return false;
         }
-        if ( packageName != null ? !packageName.equals( that.packageName ) : that.packageName != null ) {
+        if (packageName != null ? !packageName.equals(that.packageName) : that.packageName != null) {
             return false;
         }
-        if ( reasonCodeField != null ? !reasonCodeField.equals( that.reasonCodeField ) : that.reasonCodeField != null ) {
+        if (reasonCodeField != null ? !reasonCodeField.equals(that.reasonCodeField) : that.reasonCodeField != null) {
             return false;
         }
-        if ( reasonCodesAlgorithm != null ? !reasonCodesAlgorithm.equals( that.reasonCodesAlgorithm ) : that.reasonCodesAlgorithm != null ) {
+        if (reasonCodesAlgorithm != null ? !reasonCodesAlgorithm.equals(that.reasonCodesAlgorithm) : that.reasonCodesAlgorithm != null) {
             return false;
         }
-        if ( ruleFlowGroup != null ? !ruleFlowGroup.equals( that.ruleFlowGroup ) : that.ruleFlowGroup != null ) {
+        if (ruleFlowGroup != null ? !ruleFlowGroup.equals(that.ruleFlowGroup) : that.ruleFlowGroup != null) {
             return false;
         }
 
@@ -214,33 +214,32 @@ public class ScoreCardModel implements HasImports,
         long temp;
         result = name != null ? name.hashCode() : 0;
         result = ~~result;
-        result = 31 * result + ( reasonCodesAlgorithm != null ? reasonCodesAlgorithm.hashCode() : 0 );
+        result = 31 * result + (reasonCodesAlgorithm != null ? reasonCodesAlgorithm.hashCode() : 0);
         result = ~~result;
-        temp = Double.doubleToLongBits( baselineScore );
-        result = 31 * result + (int) ( temp ^ ( temp >>> 32 ) );
+        temp = Double.doubleToLongBits(baselineScore);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
         result = ~~result;
-        temp = Double.doubleToLongBits( initialScore );
-        result = 31 * result + (int) ( temp ^ ( temp >>> 32 ) );
+        temp = Double.doubleToLongBits(initialScore);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
         result = ~~result;
-        result = 31 * result + ( useReasonCodes ? 1 : 0 );
+        result = 31 * result + (useReasonCodes ? 1 : 0);
         result = ~~result;
-        result = 31 * result + ( factName != null ? factName.hashCode() : 0 );
+        result = 31 * result + (factName != null ? factName.hashCode() : 0);
         result = ~~result;
-        result = 31 * result + ( fieldName != null ? fieldName.hashCode() : 0 );
+        result = 31 * result + (fieldName != null ? fieldName.hashCode() : 0);
         result = ~~result;
-        result = 31 * result + ( reasonCodeField != null ? reasonCodeField.hashCode() : 0 );
+        result = 31 * result + (reasonCodeField != null ? reasonCodeField.hashCode() : 0);
         result = ~~result;
-        result = 31 * result + ( characteristics != null ? characteristics.hashCode() : 0 );
+        result = 31 * result + (characteristics != null ? characteristics.hashCode() : 0);
         result = ~~result;
-        result = 31 * result + ( packageName != null ? packageName.hashCode() : 0 );
+        result = 31 * result + (packageName != null ? packageName.hashCode() : 0);
         result = ~~result;
-        result = 31 * result + ( imports != null ? imports.hashCode() : 0 );
+        result = 31 * result + (imports != null ? imports.hashCode() : 0);
         result = ~~result;
-        result = 31 * result + ( agendaGroup != null ? agendaGroup.hashCode() : 0 );
+        result = 31 * result + (agendaGroup != null ? agendaGroup.hashCode() : 0);
         result = ~~result;
-        result = 31 * result + ( ruleFlowGroup != null ? ruleFlowGroup.hashCode() : 0 );
+        result = 31 * result + (ruleFlowGroup != null ? ruleFlowGroup.hashCode() : 0);
         result = ~~result;
         return result;
     }
-
 }

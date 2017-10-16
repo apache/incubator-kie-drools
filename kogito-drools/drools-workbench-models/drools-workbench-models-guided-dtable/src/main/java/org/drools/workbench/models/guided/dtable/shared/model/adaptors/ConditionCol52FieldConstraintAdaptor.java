@@ -17,8 +17,8 @@ package org.drools.workbench.models.guided.dtable.shared.model.adaptors;
 
 import org.drools.workbench.models.datamodel.rule.FieldConstraint;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 /**
  * Adaptor to use RuleModel class in GuidedDecisionTable
@@ -32,9 +32,9 @@ public class ConditionCol52FieldConstraintAdaptor extends SingleFieldConstraint 
     public ConditionCol52FieldConstraintAdaptor() {
     }
 
-    public ConditionCol52FieldConstraintAdaptor( final ConditionCol52 condition ) {
-        PortablePreconditions.checkNotNull( "condition",
-                                            condition );
+    public ConditionCol52FieldConstraintAdaptor(final ConditionCol52 condition) {
+        PortablePreconditions.checkNotNull("condition",
+                                           condition);
         this.condition = condition;
     }
 
@@ -59,7 +59,7 @@ public class ConditionCol52FieldConstraintAdaptor extends SingleFieldConstraint 
     }
 
     @Override
-    public void setFieldBinding( final String fieldBinding ) {
+    public void setFieldBinding(final String fieldBinding) {
         throw new UnsupportedOperationException();
     }
 
@@ -69,28 +69,27 @@ public class ConditionCol52FieldConstraintAdaptor extends SingleFieldConstraint 
     }
 
     @Override
-    public void removeConnective( final int index ) {
+    public void removeConnective(final int index) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void setFieldName( final String fieldName ) {
+    public void setFieldName(final String fieldName) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void setFieldType( final String fieldType ) {
+    public void setFieldType(final String fieldType) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void setParent( final FieldConstraint parent ) {
+    public void setParent(final FieldConstraint parent) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void setId( final String id ) {
+    public void setId(final String id) {
         throw new UnsupportedOperationException();
     }
-
 }

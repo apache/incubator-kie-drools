@@ -18,8 +18,8 @@ package org.drools.workbench.models.guided.dtree.shared.model.parser;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.drools.workbench.models.guided.dtree.shared.model.parser.messages.ParserMessage;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class GuidedDecisionTreeParserError {
 
@@ -31,15 +31,15 @@ public class GuidedDecisionTreeParserError {
         //Errai marshalling
     }
 
-    public GuidedDecisionTreeParserError( final String originalRuleName,
-                                          final String originalDrl,
-                                          final List<ParserMessage> messages ) {
-        this.originalRuleName = PortablePreconditions.checkNotNull( "originalRuleName",
-                                                                    originalRuleName );
-        this.originalDrl = PortablePreconditions.checkNotNull( "originalDrl",
-                                                               originalDrl );
-        this.messages = PortablePreconditions.checkNotNull( "messages",
-                                                            messages );
+    public GuidedDecisionTreeParserError(final String originalRuleName,
+                                         final String originalDrl,
+                                         final List<ParserMessage> messages) {
+        this.originalRuleName = PortablePreconditions.checkNotNull("originalRuleName",
+                                                                   originalRuleName);
+        this.originalDrl = PortablePreconditions.checkNotNull("originalDrl",
+                                                              originalDrl);
+        this.messages = PortablePreconditions.checkNotNull("messages",
+                                                           messages);
     }
 
     public String getOriginalDrl() {
@@ -53,5 +53,4 @@ public class GuidedDecisionTreeParserError {
     public List<ParserMessage> getMessages() {
         return messages;
     }
-
 }

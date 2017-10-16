@@ -16,7 +16,6 @@
 
 package org.drools.workbench.models.testscenarios.backend;
 
-import org.drools.core.base.TypeResolver;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.time.impl.PseudoClockScheduler;
@@ -25,6 +24,7 @@ import org.drools.workbench.models.testscenarios.backend.verifiers.FactVerifier;
 import org.drools.workbench.models.testscenarios.backend.verifiers.RuleFiredVerifier;
 import org.drools.workbench.models.testscenarios.shared.*;
 import org.kie.api.runtime.KieSession;
+import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import java.lang.reflect.InvocationTargetException;
 import java.security.InvalidParameterException;
@@ -43,7 +43,6 @@ public class TestScenarioKSessionWrapper {
     private final Map<String, Object> populatedData;
     private final boolean usesTimeWalk;
 
-
     public TestScenarioKSessionWrapper(KieSession ksession,
                                        final TypeResolver resolver,
                                        Map<String, Object> populatedData,
@@ -52,59 +51,59 @@ public class TestScenarioKSessionWrapper {
         this.ksession = ksession;
         this.populatedData = populatedData;
         this.usesTimeWalk = usesTimeWalk;
-        this.methodExecutor = new MethodExecutor( populatedData );
+        this.methodExecutor = new MethodExecutor(populatedData);
 
-        factVerifier = initFactVerifier( resolver,
-                                         globalData );
+        factVerifier = initFactVerifier(resolver,
+                                        globalData);
     }
 
-    private FactVerifier initFactVerifier( TypeResolver resolver,
-                                           Map<String, Object> globalData ) {
-        return new FactVerifier( populatedData,
-                                 resolver,
-                                 ksession,
-                                 globalData );
+    private FactVerifier initFactVerifier(TypeResolver resolver,
+                                          Map<String, Object> globalData) {
+        return new FactVerifier(populatedData,
+                                resolver,
+                                ksession,
+                                globalData);
     }
 
-    public void activateRuleFlowGroup( String activateRuleFlowGroupName ) {
+    public void activateRuleFlowGroup(String activateRuleFlowGroupName) {
         // mark does not want to make the following methods public, so for now we have to downcast
-        ((InternalAgendaGroup)ksession.getAgenda().getRuleFlowGroup( activateRuleFlowGroupName )).setAutoDeactivate( false );
+        ((InternalAgendaGroup) ksession.getAgenda().getRuleFlowGroup(activateRuleFlowGroupName)).setAutoDeactivate(false);
         // same for the following method
-        ( (InternalAgenda) ksession.getAgenda() ).activateRuleFlowGroup( activateRuleFlowGroupName );
+        ((InternalAgenda) ksession.getAgenda()).activateRuleFlowGroup(activateRuleFlowGroupName);
     }
 
-    public void verifyExpectation( Expectation expectation ) throws InvocationTargetException,
+    public void verifyExpectation(Expectation expectation) throws InvocationTargetException,
             NoSuchMethodException,
             IllegalAccessException,
             InstantiationException {
-        if ( expectation instanceof VerifyFact ) {
-            factVerifier.verify( (VerifyFact) expectation );
-        } else if ( expectation instanceof VerifyRuleFired ) {
-            ruleFiredVerifier.verifyFiringCounts( (VerifyRuleFired) expectation );
+        if (expectation instanceof VerifyFact) {
+            factVerifier.verify((VerifyFact) expectation);
+        } else if (expectation instanceof VerifyRuleFired) {
+            ruleFiredVerifier.verifyFiringCounts((VerifyRuleFired) expectation);
         }
     }
 
-    public void executeMethod( CallMethod callMethod ) {
-        methodExecutor.executeMethod( callMethod );
+    public void executeMethod(CallMethod callMethod) {
+        methodExecutor.executeMethod(callMethod);
     }
 
-    private void fireAllRules( ScenarioSettings scenarioSettings ) {
-        this.ksession.fireAllRules( eventListener.getAgendaFilter( scenarioSettings.getRuleList(),
-                                                                   scenarioSettings.isInclusive() ),
-                                    scenarioSettings.getMaxRuleFirings() );
+    private void fireAllRules(ScenarioSettings scenarioSettings) {
+        this.ksession.fireAllRules(eventListener.getAgendaFilter(scenarioSettings.getRuleList(),
+                                                                 scenarioSettings.isInclusive()),
+                                   scenarioSettings.getMaxRuleFirings());
     }
 
     private void resetEventListener() {
-        if ( eventListener != null ) {
-            this.ksession.removeEventListener( eventListener ); //remove the old
+        if (eventListener != null) {
+            this.ksession.removeEventListener(eventListener); //remove the old
         }
         eventListener = new TestingEventListener();
-        this.ksession.addEventListener( eventListener );
-        this.ruleFiredVerifier.setFireCounter( eventListener.getFiringCounts() );
+        this.ksession.addEventListener(eventListener);
+        this.ruleFiredVerifier.setFireCounter(eventListener.getFiringCounts());
     }
 
-    public void executeSubScenario( ExecutionTrace executionTrace,
-                                    ScenarioSettings scenarioSettings ) throws InvalidClockTypeException {
+    public void executeSubScenario(ExecutionTrace executionTrace,
+                                   ScenarioSettings scenarioSettings) throws InvalidClockTypeException {
 
         resetEventListener();
 
@@ -113,27 +112,26 @@ public class TestScenarioKSessionWrapper {
             applyTimeMachine(executionTrace);
         }
 
-
         long startTime = System.currentTimeMillis();
 
-        fireAllRules( scenarioSettings );
+        fireAllRules(scenarioSettings);
 
-        executionTrace.setExecutionTimeResult( System.currentTimeMillis() - startTime );
-        executionTrace.setNumberOfRulesFired( eventListener.totalFires );
-        executionTrace.setRulesFired( eventListener.getRulesFiredSummary() );
+        executionTrace.setExecutionTimeResult(System.currentTimeMillis() - startTime);
+        executionTrace.setNumberOfRulesFired(eventListener.totalFires);
+        executionTrace.setRulesFired(eventListener.getRulesFiredSummary());
     }
 
-    private void applyTimeMachine( ExecutionTrace executionTrace ) throws InvalidClockTypeException {
-        if(ksession.getSessionClock() instanceof PseudoClockScheduler) {
+    private void applyTimeMachine(ExecutionTrace executionTrace) throws InvalidClockTypeException {
+        if (ksession.getSessionClock() instanceof PseudoClockScheduler) {
             ((PseudoClockScheduler) ksession.getSessionClock()).advanceTime(getTargetTime(executionTrace) - getCurrentTime(),
-                    TimeUnit.MILLISECONDS);
-        }else{
+                                                                            TimeUnit.MILLISECONDS);
+        } else {
             throw new InvalidClockTypeException();
         }
     }
 
-    private long getTargetTime( ExecutionTrace executionTrace ) {
-        if ( executionTrace.getScenarioSimulatedDate() != null ) {
+    private long getTargetTime(ExecutionTrace executionTrace) {
+        if (executionTrace.getScenarioSimulatedDate() != null) {
             return executionTrace.getScenarioSimulatedDate().getTime();
         } else {
             return new Date().getTime();

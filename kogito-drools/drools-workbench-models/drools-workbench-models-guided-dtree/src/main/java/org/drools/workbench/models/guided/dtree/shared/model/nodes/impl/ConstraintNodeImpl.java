@@ -15,9 +15,9 @@
  */
 package org.drools.workbench.models.guided.dtree.shared.model.nodes.impl;
 
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.ConstraintNode;
 import org.drools.workbench.models.guided.dtree.shared.model.values.Value;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class ConstraintNodeImpl extends BaseBoundNodeImpl implements ConstraintNode {
 
@@ -30,20 +30,20 @@ public class ConstraintNodeImpl extends BaseBoundNodeImpl implements ConstraintN
         //Errai marshalling
     }
 
-    public ConstraintNodeImpl( final String className,
-                               final String fieldName ) {
-        setClassName( className );
-        setFieldName( fieldName );
+    public ConstraintNodeImpl(final String className,
+                              final String fieldName) {
+        setClassName(className);
+        setFieldName(fieldName);
     }
 
-    public ConstraintNodeImpl( final String className,
-                               final String fieldName,
-                               final String operator,
-                               final Value value ) {
-        setClassName( className );
-        setFieldName( fieldName );
-        setOperator( operator );
-        setValue( value );
+    public ConstraintNodeImpl(final String className,
+                              final String fieldName,
+                              final String operator,
+                              final Value value) {
+        setClassName(className);
+        setFieldName(fieldName);
+        setOperator(operator);
+        setValue(value);
     }
 
     @Override
@@ -52,9 +52,9 @@ public class ConstraintNodeImpl extends BaseBoundNodeImpl implements ConstraintN
     }
 
     @Override
-    public void setClassName( final String className ) {
-        this.className = PortablePreconditions.checkNotNull( "className",
-                                                             className );
+    public void setClassName(final String className) {
+        this.className = PortablePreconditions.checkNotNull("className",
+                                                            className);
     }
 
     @Override
@@ -63,9 +63,9 @@ public class ConstraintNodeImpl extends BaseBoundNodeImpl implements ConstraintN
     }
 
     @Override
-    public void setFieldName( final String fieldName ) {
-        this.fieldName = PortablePreconditions.checkNotNull( "fieldName",
-                                                             fieldName );
+    public void setFieldName(final String fieldName) {
+        this.fieldName = PortablePreconditions.checkNotNull("fieldName",
+                                                            fieldName);
     }
 
     @Override
@@ -74,7 +74,7 @@ public class ConstraintNodeImpl extends BaseBoundNodeImpl implements ConstraintN
     }
 
     @Override
-    public void setOperator( final String operator ) {
+    public void setOperator(final String operator) {
         this.operator = operator;
     }
 
@@ -84,34 +84,34 @@ public class ConstraintNodeImpl extends BaseBoundNodeImpl implements ConstraintN
     }
 
     @Override
-    public void setValue( final Value value ) {
+    public void setValue(final Value value) {
         this.value = value;
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof ConstraintNodeImpl ) ) {
+        if (!(o instanceof ConstraintNodeImpl)) {
             return false;
         }
-        if ( !super.equals( o ) ) {
+        if (!super.equals(o)) {
             return false;
         }
 
         ConstraintNodeImpl nodes = (ConstraintNodeImpl) o;
 
-        if ( !className.equals( nodes.className ) ) {
+        if (!className.equals(nodes.className)) {
             return false;
         }
-        if ( !fieldName.equals( nodes.fieldName ) ) {
+        if (!fieldName.equals(nodes.fieldName)) {
             return false;
         }
-        if ( operator != null ? !operator.equals( nodes.operator ) : nodes.operator != null ) {
+        if (operator != null ? !operator.equals(nodes.operator) : nodes.operator != null) {
             return false;
         }
-        if ( value != null ? !value.equals( nodes.value ) : nodes.value != null ) {
+        if (value != null ? !value.equals(nodes.value) : nodes.value != null) {
             return false;
         }
 
@@ -123,8 +123,8 @@ public class ConstraintNodeImpl extends BaseBoundNodeImpl implements ConstraintN
         int result = super.hashCode();
         result = 31 * result + className.hashCode();
         result = 31 * result + fieldName.hashCode();
-        result = 31 * result + ( operator != null ? operator.hashCode() : 0 );
-        result = 31 * result + ( value != null ? value.hashCode() : 0 );
+        result = 31 * result + (operator != null ? operator.hashCode() : 0);
+        result = 31 * result + (value != null ? value.hashCode() : 0);
         return result;
     }
 }

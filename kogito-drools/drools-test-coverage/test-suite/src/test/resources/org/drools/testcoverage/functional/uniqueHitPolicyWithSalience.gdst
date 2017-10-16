@@ -171,12 +171,12 @@
   </auditLog>
   <imports>
     <imports>
-      <org.appformer.project.datamodel.imports.Import>
+      <org.kie.soup.project.datamodel.imports.Import>
         <type>org.drools.testcoverage.common.model.Person</type>
-      </org.appformer.project.datamodel.imports.Import>
-      <org.appformer.project.datamodel.imports.Import>
+      </org.kie.soup.project.datamodel.imports.Import>
+      <org.kie.soup.project.datamodel.imports.Import>
         <type>org.drools.testcoverage.common.model.Message</type>
-      </org.appformer.project.datamodel.imports.Import>
+      </org.kie.soup.project.datamodel.imports.Import>
     </imports>
   </imports>
   <packageName>org.drools.testcoverage.functional</packageName>

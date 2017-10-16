@@ -24,11 +24,12 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.drools.core.base.TypeResolver;
 import org.drools.workbench.models.testscenarios.backend.SqlDateWrapper;
 import org.drools.workbench.models.testscenarios.shared.VerifyField;
+import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 public class FactFieldValueVerifierTest extends TestCase {
+
     public void testSQLDate() throws Exception {
 
         SqlDateWrapper sqlDateWrapper = new SqlDateWrapper();

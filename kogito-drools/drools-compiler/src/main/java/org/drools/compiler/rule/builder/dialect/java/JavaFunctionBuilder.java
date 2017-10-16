@@ -15,15 +15,15 @@
 
 package org.drools.compiler.rule.builder.dialect.java;
 
-import org.drools.core.base.TypeResolver;
 import org.drools.compiler.compiler.FunctionError;
+import org.drools.compiler.lang.descr.FunctionDescr;
 import org.drools.compiler.rule.builder.FunctionBuilder;
 import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.rule.LineMappings;
 import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
-import org.drools.compiler.lang.descr.FunctionDescr;
-import org.drools.core.rule.LineMappings;
 import org.kie.internal.builder.KnowledgeBuilderResult;
+import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 import org.mvel2.integration.impl.MapVariableResolverFactory;
 import org.mvel2.templates.TemplateRuntime;
 
@@ -36,16 +36,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-
 public class JavaFunctionBuilder
-    implements
+        implements
         FunctionBuilder {
 
     //    private static final StringTemplateGroup functionGroup = new StringTemplateGroup( new InputStreamReader( JavaFunctionBuilder.class.getResourceAsStream( "javaFunction.stg" ) ),
     //                                                                                      AngleBracketTemplateLexer.class );
 
     private static final String template = StringUtils.readFileAsString(
-            new InputStreamReader( JavaFunctionBuilder.class.getResourceAsStream( "javaFunction.mvel" ), IoUtils.UTF8_CHARSET ) );
+            new InputStreamReader(JavaFunctionBuilder.class.getResourceAsStream("javaFunction.mvel"), IoUtils.UTF8_CHARSET));
 
     public JavaFunctionBuilder() {
 
@@ -62,85 +61,83 @@ public class JavaFunctionBuilder
 
         final Map<String, Object> vars = new HashMap<String, Object>();
 
-        vars.put( "package",
-                  pkg.getName() );
+        vars.put("package",
+                 pkg.getName());
 
-        vars.put( "imports",
-                  pkg.getImports().keySet() );
+        vars.put("imports",
+                 pkg.getImports().keySet());
 
         final List<String> staticImports = new LinkedList<String>();
         for (String staticImport : pkg.getStaticImports()) {
-            if ( !staticImport.endsWith( functionDescr.getName() ) ) {
-                staticImports.add( staticImport );
+            if (!staticImport.endsWith(functionDescr.getName())) {
+                staticImports.add(staticImport);
             }
         }
 
-        vars.put( "staticImports",
-                  staticImports );
+        vars.put("staticImports",
+                 staticImports);
 
-        vars.put( "className",
-                  StringUtils.ucFirst( functionDescr.getName() ) );
+        vars.put("className",
+                 StringUtils.ucFirst(functionDescr.getName()));
 
-        vars.put( "methodName",
-                  functionDescr.getName() );
+        vars.put("methodName",
+                 functionDescr.getName());
 
-        vars.put( "returnType",
-                  functionDescr.getReturnType() );
+        vars.put("returnType",
+                 functionDescr.getReturnType());
 
-        vars.put( "parameterTypes",
-                  functionDescr.getParameterTypes() );
+        vars.put("parameterTypes",
+                 functionDescr.getParameterTypes());
 
-        vars.put( "parameterNames",
-                  functionDescr.getParameterNames() );
-        
+        vars.put("parameterNames",
+                 functionDescr.getParameterNames());
+
         vars.put("hashCode",
-                functionDescr.getText().hashCode() );
+                 functionDescr.getText().hashCode());
 
         // Check that all the parameters are resolvable
         final List<String> names = functionDescr.getParameterNames();
         final List<String> types = functionDescr.getParameterTypes();
-        for ( int i = 0, size = names.size(); i < size; i++ ) {
+        for (int i = 0, size = names.size(); i < size; i++) {
             try {
                 typeResolver.resolveType(types.get(i));
-            } catch ( final ClassNotFoundException e ) {
-                errors.add( new FunctionError( functionDescr,
-                                               e,
-                                               "Unable to resolve type "+types.get( i )+" while building function." ) );
+            } catch (final ClassNotFoundException e) {
+                errors.add(new FunctionError(functionDescr,
+                                             e,
+                                             "Unable to resolve type " + types.get(i) + " while building function."));
                 break;
             }
         }
 
-        vars.put( "text",
-                  functionDescr.getText() );
+        vars.put("text",
+                 functionDescr.getText());
 
-        final String text = String.valueOf(TemplateRuntime.eval( template, null, new MapVariableResolverFactory(vars)));
+        final String text = String.valueOf(TemplateRuntime.eval(template, null, new MapVariableResolverFactory(vars)));
 
-        final BufferedReader reader = new BufferedReader( new StringReader( text ) );
+        final BufferedReader reader = new BufferedReader(new StringReader(text));
         final String lineStartsWith = "    public static " + functionDescr.getReturnType() + " " + functionDescr.getName();
         try {
             String line;
             int offset = 0;
-            while ( (line = reader.readLine()) != null ) {
+            while ((line = reader.readLine()) != null) {
                 offset++;
-                if ( line.startsWith( lineStartsWith ) ) {
+                if (line.startsWith(lineStartsWith)) {
                     break;
                 }
             }
-            functionDescr.setOffset( offset );
-        } catch ( final IOException e ) {
+            functionDescr.setOffset(offset);
+        } catch (final IOException e) {
             // won't ever happen, it's just reading over a string.
-            throw new RuntimeException( "Error determining start offset with function" );
+            throw new RuntimeException("Error determining start offset with function");
         }
 
-        final String name = pkg.getName() + "." + StringUtils.ucFirst( functionDescr.getName() );
-        final LineMappings mapping = new LineMappings( name );
-        mapping.setStartLine( functionDescr.getLine() );
-        mapping.setOffset( functionDescr.getOffset() );
-        lineMappings.put( name,
-                          mapping );
+        final String name = pkg.getName() + "." + StringUtils.ucFirst(functionDescr.getName());
+        final LineMappings mapping = new LineMappings(name);
+        mapping.setStartLine(functionDescr.getLine());
+        mapping.setOffset(functionDescr.getOffset());
+        lineMappings.put(name,
+                         mapping);
 
         return text;
-
     }
-
 }

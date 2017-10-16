@@ -18,10 +18,10 @@ package org.drools.workbench.models.guided.dtree.shared.model.nodes.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.ActionFieldValue;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.ActionUpdateNode;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.TypeNode;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class ActionUpdateNodeImpl extends BaseNodeImpl implements ActionUpdateNode {
 
@@ -33,8 +33,8 @@ public class ActionUpdateNodeImpl extends BaseNodeImpl implements ActionUpdateNo
         //Errai marshalling
     }
 
-    public ActionUpdateNodeImpl( final TypeNode boundNode ) {
-        setBoundNode( boundNode );
+    public ActionUpdateNodeImpl(final TypeNode boundNode) {
+        setBoundNode(boundNode);
     }
 
     @Override
@@ -43,9 +43,9 @@ public class ActionUpdateNodeImpl extends BaseNodeImpl implements ActionUpdateNo
     }
 
     @Override
-    public void setBoundNode( final TypeNode boundNode ) {
-        this.boundNode = PortablePreconditions.checkNotNull( "boundNode",
-                                                             boundNode );
+    public void setBoundNode(final TypeNode boundNode) {
+        this.boundNode = PortablePreconditions.checkNotNull("boundNode",
+                                                            boundNode);
     }
 
     @Override
@@ -54,7 +54,7 @@ public class ActionUpdateNodeImpl extends BaseNodeImpl implements ActionUpdateNo
     }
 
     @Override
-    public void setModify( final boolean isModify ) {
+    public void setModify(final boolean isModify) {
         this.isModify = isModify;
     }
 
@@ -64,23 +64,23 @@ public class ActionUpdateNodeImpl extends BaseNodeImpl implements ActionUpdateNo
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof ActionUpdateNodeImpl ) ) {
+        if (!(o instanceof ActionUpdateNodeImpl)) {
             return false;
         }
 
         ActionUpdateNodeImpl nodes = (ActionUpdateNodeImpl) o;
 
-        if ( isModify != nodes.isModify ) {
+        if (isModify != nodes.isModify) {
             return false;
         }
-        if ( !boundNode.equals( nodes.boundNode ) ) {
+        if (!boundNode.equals(nodes.boundNode)) {
             return false;
         }
-        if ( !fieldValues.equals( nodes.fieldValues ) ) {
+        if (!fieldValues.equals(nodes.fieldValues)) {
             return false;
         }
 
@@ -90,7 +90,7 @@ public class ActionUpdateNodeImpl extends BaseNodeImpl implements ActionUpdateNo
     @Override
     public int hashCode() {
         int result = boundNode.hashCode();
-        result = 31 * result + ( isModify ? 1 : 0 );
+        result = 31 * result + (isModify ? 1 : 0);
         result = 31 * result + fieldValues.hashCode();
         return result;
     }

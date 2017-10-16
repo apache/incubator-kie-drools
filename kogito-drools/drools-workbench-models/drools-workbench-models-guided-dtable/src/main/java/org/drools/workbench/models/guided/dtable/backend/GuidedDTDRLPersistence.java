@@ -23,10 +23,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.StringTokenizer;
 
-import org.appformer.project.datamodel.oracle.DataType;
-import org.appformer.project.datamodel.oracle.OperatorsOracle;
-import org.appformer.project.datamodel.commons.imports.ImportsWriter;
-import org.appformer.project.datamodel.commons.packages.PackageNameWriter;
 import org.drools.workbench.models.datamodel.rule.ActionExecuteWorkItem;
 import org.drools.workbench.models.datamodel.rule.ActionFieldList;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
@@ -78,6 +74,10 @@ import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryBRLCon
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryCol;
 import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
+import org.kie.soup.project.datamodel.commons.imports.ImportsWriter;
+import org.kie.soup.project.datamodel.commons.packages.PackageNameWriter;
+import org.kie.soup.project.datamodel.oracle.DataType;
+import org.kie.soup.project.datamodel.oracle.OperatorsOracle;
 
 /**
  * This takes care of converting GuidedDT object to DRL (via the RuleModel).
@@ -944,7 +944,7 @@ public class GuidedDTDRLPersistence {
         } else {
 
             sfc.setOperator(c.getOperator());
-            if (OperatorsOracle.operatorRequiresList( c.getOperator())) {
+            if (OperatorsOracle.operatorRequiresList(c.getOperator())) {
                 sfc.setValue(makeInList(cell));
             } else {
                 if (!c.getOperator().equals("== null") && !c.getOperator().equals("!= null")) {

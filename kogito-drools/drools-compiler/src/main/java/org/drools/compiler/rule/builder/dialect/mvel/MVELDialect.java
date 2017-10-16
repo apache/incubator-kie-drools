@@ -67,7 +67,6 @@ import org.drools.compiler.rule.builder.WindowReferenceBuilder;
 import org.drools.compiler.rule.builder.dialect.DialectUtil;
 import org.drools.compiler.rule.builder.dialect.java.JavaFunctionBuilder;
 import org.drools.core.base.EvaluatorWrapper;
-import org.drools.core.base.TypeResolver;
 import org.drools.core.base.mvel.MVELCompilationUnit;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.Declaration;
@@ -78,6 +77,7 @@ import org.drools.core.util.StringUtils;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.KnowledgeBuilderResult;
+import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 import org.mvel2.MVEL;
 import org.mvel2.optimizers.OptimizerFactory;
 
@@ -100,56 +100,56 @@ public class MVELDialect
         Dialect,
         Externalizable {
 
-    private String                                       id                         = "mvel";
+    private String id = "mvel";
 
-    private final static String                          EXPRESSION_DIALECT_NAME    = "MVEL";
+    private final static String EXPRESSION_DIALECT_NAME = "MVEL";
 
-    protected static final PatternBuilder                PATTERN_BUILDER            = new PatternBuilder();
-    protected static final QueryBuilder                  QUERY_BUILDER              = new QueryBuilder();
-    protected static final MVELAccumulateBuilder         ACCUMULATE_BUILDER         = new MVELAccumulateBuilder();
-    protected static final SalienceBuilder               SALIENCE_BUILDER           = new MVELSalienceBuilder();
-    protected static final EnabledBuilder                ENABLED_BUILDER            = new MVELEnabledBuilder();
-    protected static final MVELEvalBuilder               EVAL_BUILDER               = new MVELEvalBuilder();
-    protected static final MVELReturnValueBuilder        RETURN_VALUE_BUILDER       = new MVELReturnValueBuilder();
-    protected static final MVELConsequenceBuilder        CONSEQUENCE_BUILDER        = new MVELConsequenceBuilder();
+    protected static final PatternBuilder PATTERN_BUILDER = new PatternBuilder();
+    protected static final QueryBuilder QUERY_BUILDER = new QueryBuilder();
+    protected static final MVELAccumulateBuilder ACCUMULATE_BUILDER = new MVELAccumulateBuilder();
+    protected static final SalienceBuilder SALIENCE_BUILDER = new MVELSalienceBuilder();
+    protected static final EnabledBuilder ENABLED_BUILDER = new MVELEnabledBuilder();
+    protected static final MVELEvalBuilder EVAL_BUILDER = new MVELEvalBuilder();
+    protected static final MVELReturnValueBuilder RETURN_VALUE_BUILDER = new MVELReturnValueBuilder();
+    protected static final MVELConsequenceBuilder CONSEQUENCE_BUILDER = new MVELConsequenceBuilder();
 
-    protected static final MVELFromBuilder               FROM_BUILDER               = new MVELFromBuilder();
-    protected static final JavaFunctionBuilder           FUNCTION_BUILDER           = new JavaFunctionBuilder();
-    protected static final CollectBuilder                COLLECT_BUILDER            = new CollectBuilder();
+    protected static final MVELFromBuilder FROM_BUILDER = new MVELFromBuilder();
+    protected static final JavaFunctionBuilder FUNCTION_BUILDER = new JavaFunctionBuilder();
+    protected static final CollectBuilder COLLECT_BUILDER = new CollectBuilder();
 
-    protected static final ForallBuilder                 FORALL_BUILDER             = new ForallBuilder();
-    protected static final EntryPointBuilder             ENTRY_POINT_BUILDER        = new EntryPointBuilder();
-    protected static final WindowReferenceBuilder        WINDOW_REFERENCE_BUILDER   = new WindowReferenceBuilder();
+    protected static final ForallBuilder FORALL_BUILDER = new ForallBuilder();
+    protected static final EntryPointBuilder ENTRY_POINT_BUILDER = new EntryPointBuilder();
+    protected static final WindowReferenceBuilder WINDOW_REFERENCE_BUILDER = new WindowReferenceBuilder();
 
-    protected static final GroupElementBuilder           GE_BUILDER                 = new GroupElementBuilder();
-    protected static final NamedConsequenceBuilder       NAMED_CONSEQUENCE_BUILDER  = new NamedConsequenceBuilder();
-    protected static final ConditionalBranchBuilder      CONDITIONAL_BRANCH_BUILDER = new ConditionalBranchBuilder();
+    protected static final GroupElementBuilder GE_BUILDER = new GroupElementBuilder();
+    protected static final NamedConsequenceBuilder NAMED_CONSEQUENCE_BUILDER = new NamedConsequenceBuilder();
+    protected static final ConditionalBranchBuilder CONDITIONAL_BRANCH_BUILDER = new ConditionalBranchBuilder();
 
     // a map of registered builders
-    private static Map<Class< ? >, EngineElementBuilder> builders;
+    private static Map<Class<?>, EngineElementBuilder> builders;
 
     static {
         initBuilder();
     }
 
-    private final Map                      interceptors = MVELCompilationUnit.INTERCEPTORS;
+    private final Map interceptors = MVELCompilationUnit.INTERCEPTORS;
 
     protected List<KnowledgeBuilderResult> results;
     // private final JavaFunctionBuilder function = new JavaFunctionBuilder();
 
-    protected MemoryResourceReader         src;
+    protected MemoryResourceReader src;
 
-    protected InternalKnowledgePackage     pkg;
-    private MVELDialectConfiguration       configuration;
+    protected InternalKnowledgePackage pkg;
+    private MVELDialectConfiguration configuration;
 
-    private PackageRegistry                packageRegistry;
+    private PackageRegistry packageRegistry;
 
-    private boolean                        strictMode;
-    private int                            languageLevel;
+    private boolean strictMode;
+    private int languageLevel;
 
-    private MVELDialectRuntimeData         data;
+    private MVELDialectRuntimeData data;
 
-    private final ClassLoader              rootClassLoader;
+    private final ClassLoader rootClassLoader;
 
     static {
         // always use mvel reflective optimizer
@@ -160,11 +160,11 @@ public class MVELDialect
                        KnowledgeBuilderConfigurationImpl pkgConf,
                        PackageRegistry pkgRegistry,
                        InternalKnowledgePackage pkg) {
-        this( rootClassLoader,
-              pkgConf,
-              pkgRegistry,
-              pkg,
-              "mvel" );
+        this(rootClassLoader,
+             pkgConf,
+             pkgRegistry,
+             pkg,
+             "mvel");
     }
 
     public MVELDialect(ClassLoader rootClassLoader,
@@ -177,7 +177,7 @@ public class MVELDialect
         this.pkg = pkg;
         this.packageRegistry = pkgRegistry;
         this.configuration = (MVELDialectConfiguration) pkgConf.getDialectConfiguration("mvel");
-        setLanguageLevel( this.configuration.getLangLevel() );
+        setLanguageLevel(this.configuration.getLangLevel());
         this.strictMode = this.configuration.isStrict();
 
         // setting MVEL option directly
@@ -192,43 +192,43 @@ public class MVELDialect
         // this.data );
 
         // initialise the dialect runtime data if it doesn't already exist
-        if ( pkg.getDialectRuntimeRegistry().getDialectData( getId() ) == null ) {
+        if (pkg.getDialectRuntimeRegistry().getDialectData(getId()) == null) {
             data = new MVELDialectRuntimeData();
-            this.pkg.getDialectRuntimeRegistry().setDialectData( getId(),
-                                                                 data );
-            data.onAdd( this.pkg.getDialectRuntimeRegistry(),
-                        rootClassLoader );
+            this.pkg.getDialectRuntimeRegistry().setDialectData(getId(),
+                                                                data);
+            data.onAdd(this.pkg.getDialectRuntimeRegistry(),
+                       rootClassLoader);
         } else {
-            data = (MVELDialectRuntimeData) this.pkg.getDialectRuntimeRegistry().getDialectData( "mvel" );
+            data = (MVELDialectRuntimeData) this.pkg.getDialectRuntimeRegistry().getDialectData("mvel");
         }
 
         this.results = new ArrayList<KnowledgeBuilderResult>();
         this.src = new MemoryResourceReader();
-        if ( this.pkg != null ) {
-            this.addImport( new ImportDescr( this.pkg.getName() + ".*" ) );
+        if (this.pkg != null) {
+            this.addImport(new ImportDescr(this.pkg.getName() + ".*"));
         }
-        this.addImport( new ImportDescr( "java.lang.*" ) );
+        this.addImport(new ImportDescr("java.lang.*"));
     }
 
     public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
+            ClassNotFoundException {
         results = (List<KnowledgeBuilderResult>) in.readObject();
         src = (MemoryResourceReader) in.readObject();
         pkg = (InternalKnowledgePackage) in.readObject();
         packageRegistry = (PackageRegistry) in.readObject();
         configuration = (MVELDialectConfiguration) in.readObject();
         strictMode = in.readBoolean();
-        data = (MVELDialectRuntimeData) this.pkg.getDialectRuntimeRegistry().getDialectData( "mvel" );
+        data = (MVELDialectRuntimeData) this.pkg.getDialectRuntimeRegistry().getDialectData("mvel");
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject( results );
-        out.writeObject( src );
-        out.writeObject( pkg );
-        out.writeObject( packageRegistry );
-        out.writeObject( configuration );
-        out.writeBoolean( strictMode );
-        out.writeObject( data );
+        out.writeObject(results);
+        out.writeObject(src);
+        out.writeObject(pkg);
+        out.writeObject(packageRegistry);
+        out.writeObject(configuration);
+        out.writeBoolean(strictMode);
+        out.writeObject(data);
     }
 
     public void setLanguageLevel(int languageLevel) {
@@ -249,7 +249,7 @@ public class MVELDialect
     // }
 
     public static void initBuilder() {
-        if ( builders != null ) {
+        if (builders != null) {
             return;
         }
         reinitBuilder();
@@ -260,55 +260,55 @@ public class MVELDialect
         // statically adding all builders to the map
         // but in the future we can move that to a configuration
         // if we want to
-        builders = new HashMap<Class< ? >, EngineElementBuilder>();
+        builders = new HashMap<Class<?>, EngineElementBuilder>();
 
-        builders.put( AndDescr.class,
-                      GE_BUILDER );
+        builders.put(AndDescr.class,
+                     GE_BUILDER);
 
-        builders.put( OrDescr.class,
-                      GE_BUILDER );
+        builders.put(OrDescr.class,
+                     GE_BUILDER);
 
-        builders.put( NotDescr.class,
-                      GE_BUILDER );
+        builders.put(NotDescr.class,
+                     GE_BUILDER);
 
-        builders.put( ExistsDescr.class,
-                      GE_BUILDER );
+        builders.put(ExistsDescr.class,
+                     GE_BUILDER);
 
-        builders.put( PatternDescr.class,
-                      PATTERN_BUILDER );
+        builders.put(PatternDescr.class,
+                     PATTERN_BUILDER);
 
-        builders.put( FromDescr.class,
-                      FROM_BUILDER );
+        builders.put(FromDescr.class,
+                     FROM_BUILDER);
 
-        builders.put( QueryDescr.class,
-                      QUERY_BUILDER );
+        builders.put(QueryDescr.class,
+                     QUERY_BUILDER);
 
-        builders.put( AccumulateDescr.class,
-                      ACCUMULATE_BUILDER );
+        builders.put(AccumulateDescr.class,
+                     ACCUMULATE_BUILDER);
 
-        builders.put( EvalDescr.class,
-                      EVAL_BUILDER );
+        builders.put(EvalDescr.class,
+                     EVAL_BUILDER);
 
-        builders.put( CollectDescr.class,
-                      COLLECT_BUILDER );
+        builders.put(CollectDescr.class,
+                     COLLECT_BUILDER);
 
-        builders.put( ForallDescr.class,
-                      FORALL_BUILDER );
+        builders.put(ForallDescr.class,
+                     FORALL_BUILDER);
 
-        builders.put( FunctionDescr.class,
-                      FUNCTION_BUILDER );
+        builders.put(FunctionDescr.class,
+                     FUNCTION_BUILDER);
 
-        builders.put( EntryPointDescr.class,
-                      ENTRY_POINT_BUILDER );
+        builders.put(EntryPointDescr.class,
+                     ENTRY_POINT_BUILDER);
 
-        builders.put( WindowReferenceDescr.class,
-                      WINDOW_REFERENCE_BUILDER );
+        builders.put(WindowReferenceDescr.class,
+                     WINDOW_REFERENCE_BUILDER);
 
-        builders.put( NamedConsequenceDescr.class,
-                      NAMED_CONSEQUENCE_BUILDER );
+        builders.put(NamedConsequenceDescr.class,
+                     NAMED_CONSEQUENCE_BUILDER);
 
-        builders.put( ConditionalBranchDescr.class,
-                      CONDITIONAL_BRANCH_BUILDER );
+        builders.put(ConditionalBranchDescr.class,
+                     CONDITIONAL_BRANCH_BUILDER);
     }
 
     public void init(RuleDescr ruleDescr) {
@@ -318,23 +318,23 @@ public class MVELDialect
 
         // @todo: why is this here, MVEL doesn't compile anything? mdp
         String pkgName = this.pkg == null ? "" : this.pkg.getName();
-        final String ruleClassName = DialectUtil.getUniqueLegalName( pkgName,
-                                                                     ruleDescr.getName(),
-                                                                     ruleDescr.getConsequence().hashCode(),
-                                                                     "mvel",
-                                                                     "Rule",
-                                                                     this.src );
-        ruleDescr.setClassName( StringUtils.ucFirst( ruleClassName ) );
+        final String ruleClassName = DialectUtil.getUniqueLegalName(pkgName,
+                                                                    ruleDescr.getName(),
+                                                                    ruleDescr.getConsequence().hashCode(),
+                                                                    "mvel",
+                                                                    "Rule",
+                                                                    this.src);
+        ruleDescr.setClassName(StringUtils.ucFirst(ruleClassName));
     }
 
     public void init(final ProcessDescr processDescr) {
-        final String processDescrClassName = DialectUtil.getUniqueLegalName( this.pkg.getName(),
-                                                                             processDescr.getName(),
-                                                                             processDescr.getProcessId().hashCode(),
-                                                                             "mvel",
-                                                                             "Process",
-                                                                             this.src );
-        processDescr.setClassName( StringUtils.ucFirst( processDescrClassName ) );
+        final String processDescrClassName = DialectUtil.getUniqueLegalName(this.pkg.getName(),
+                                                                            processDescr.getName(),
+                                                                            processDescr.getProcessId().hashCode(),
+                                                                            "mvel",
+                                                                            "Process",
+                                                                            this.src);
+        processDescr.setClassName(StringUtils.ucFirst(processDescrClassName));
     }
 
     public String getExpressionDialectName() {
@@ -346,14 +346,13 @@ public class MVELDialect
         final RuleDescr ruleDescr = context.getRuleDescr();
 
         // setup the line mappins for this rule
-        final String name = this.pkg.getName() + "." + StringUtils.ucFirst( ruleDescr.getClassName() );
-        final LineMappings mapping = new LineMappings( name );
-        mapping.setStartLine( ruleDescr.getConsequenceLine() );
-        mapping.setOffset( ruleDescr.getConsequenceOffset() );
+        final String name = this.pkg.getName() + "." + StringUtils.ucFirst(ruleDescr.getClassName());
+        final LineMappings mapping = new LineMappings(name);
+        mapping.setStartLine(ruleDescr.getConsequenceLine());
+        mapping.setOffset(ruleDescr.getConsequenceOffset());
 
-        context.getPkg().getDialectRuntimeRegistry().getLineMappings().put( name,
-                                                                            mapping );
-
+        context.getPkg().getDialectRuntimeRegistry().getLineMappings().put(name,
+                                                                           mapping);
     }
 
     public void addFunction(FunctionDescr functionDescr,
@@ -392,80 +391,80 @@ public class MVELDialect
 
     public void addImport(ImportDescr importDescr) {
         String importEntry = importDescr.getTarget();
-        if ( importEntry.endsWith( ".*" ) ) {
-            importEntry = importEntry.substring( 0,
-                                                 importEntry.length() - 2 );
-            data.addPackageImport( importEntry );
+        if (importEntry.endsWith(".*")) {
+            importEntry = importEntry.substring(0,
+                                                importEntry.length() - 2);
+            data.addPackageImport(importEntry);
         } else {
             try {
-                Class cls = this.packageRegistry.getTypeResolver().resolveType( importEntry );
-                data.addImport( cls.getSimpleName(), cls );
-            } catch ( ClassNotFoundException e ) {
-                this.results.add( new ImportError( importDescr, 1 ) );
+                Class cls = this.packageRegistry.getTypeResolver().resolveType(importEntry);
+                data.addImport(cls.getSimpleName(), cls);
+            } catch (ClassNotFoundException e) {
+                this.results.add(new ImportError(importDescr, 1));
             }
         }
     }
 
     public void addStaticImport(ImportDescr importDescr) {
         String staticImportEntry = importDescr.getTarget();
-        if ( staticImportEntry.endsWith( "*" ) ) {
-            addStaticPackageImport( importDescr );
+        if (staticImportEntry.endsWith("*")) {
+            addStaticPackageImport(importDescr);
             return;
         }
 
-        int index = staticImportEntry.lastIndexOf( '.' );
-        String className = staticImportEntry.substring( 0, index );
-        String methodName = staticImportEntry.substring( index + 1 );
+        int index = staticImportEntry.lastIndexOf('.');
+        String className = staticImportEntry.substring(0, index);
+        String methodName = staticImportEntry.substring(index + 1);
 
         try {
-            Class cls = this.packageRegistry.getPackageClassLoader().loadClass( className );
-            if ( cls != null ) {
+            Class cls = this.packageRegistry.getPackageClassLoader().loadClass(className);
+            if (cls != null) {
 
                 // First try and find a matching method
-                for ( Method method : cls.getDeclaredMethods() ) {
-                    if ( method.getName().equals( methodName ) ) {
-                        this.data.addImport( methodName, method );
+                for (Method method : cls.getDeclaredMethods()) {
+                    if (method.getName().equals(methodName)) {
+                        this.data.addImport(methodName, method);
                         return;
                     }
                 }
 
                 //no matching method, so now try and find a matching public property
-                for ( Field field : cls.getFields() ) {
-                    if ( field.isAccessible() && field.getName().equals( methodName ) ) {
-                        this.data.addImport( methodName, field );
+                for (Field field : cls.getFields()) {
+                    if (field.isAccessible() && field.getName().equals(methodName)) {
+                        this.data.addImport(methodName, field);
                         return;
                     }
                 }
             }
-        } catch ( ClassNotFoundException e ) {
+        } catch (ClassNotFoundException e) {
         }
         // we never managed to make the import, so log an error
-        this.results.add( new ImportError( importDescr, -1 ) );
+        this.results.add(new ImportError(importDescr, -1));
     }
 
     public void addStaticPackageImport(ImportDescr importDescr) {
         String staticImportEntry = importDescr.getTarget();
-        int index = staticImportEntry.lastIndexOf( '.' );
-        String className = staticImportEntry.substring( 0, index );
+        int index = staticImportEntry.lastIndexOf('.');
+        String className = staticImportEntry.substring(0, index);
         Class cls = null;
         try {
             cls = rootClassLoader.loadClass(className);
-        } catch ( ClassNotFoundException e ) {
+        } catch (ClassNotFoundException e) {
         }
-        if ( cls == null ) {
-            results.add( new ImportError( importDescr, -1 ) );
+        if (cls == null) {
+            results.add(new ImportError(importDescr, -1));
             return;
         }
 
-        for ( Method method : cls.getDeclaredMethods() ) {
-            if ( (method.getModifiers() | Modifier.STATIC) > 0 ) {
-                this.data.addImport( method.getName(), method );
+        for (Method method : cls.getDeclaredMethods()) {
+            if ((method.getModifiers() | Modifier.STATIC) > 0) {
+                this.data.addImport(method.getName(), method);
             }
         }
 
-        for ( Field field : cls.getFields() ) {
-            if ( field.isAccessible() && (field.getModifiers() | Modifier.STATIC) > 0 ) {
-                this.data.addImport( field.getName(), field );
+        for (Field field : cls.getFields()) {
+            if (field.isAccessible() && (field.getModifiers() | Modifier.STATIC) > 0) {
+                this.data.addImport(field.getName(), field);
                 return;
             }
         }
@@ -489,39 +488,39 @@ public class MVELDialect
                                             final BaseDescr descr,
                                             final Object content,
                                             final BoundIdentifiers availableIdentifiers) {
-        return analyzeExpression( context,
-                                  descr,
-                                  content,
-                                  availableIdentifiers,
-                                  null );
+        return analyzeExpression(context,
+                                 descr,
+                                 content,
+                                 availableIdentifiers,
+                                 null);
     }
 
     public AnalysisResult analyzeExpression(final PackageBuildContext context,
                                             final BaseDescr descr,
                                             final Object content,
                                             final BoundIdentifiers availableIdentifiers,
-                                            final Map<String, Class< ? >> localTypes) {
+                                            final Map<String, Class<?>> localTypes) {
 
         AnalysisResult result = null;
         // the following is required for proper error handling
         BaseDescr temp = context.getParentDescr();
-        context.setParentDescr( descr );
+        context.setParentDescr(descr);
         try {
-            result = MVELExprAnalyzer.analyzeExpression( context,
-                                                         (String) content,
-                                                         availableIdentifiers,
-                                                         localTypes,
-                                                         "drools",
-                                                         KnowledgeHelper.class );
-        } catch ( final Exception e ) {
-            DialectUtil.copyErrorLocation( e, descr );
-            context.addError( new DescrBuildError( context.getParentDescr(),
-                                                   descr,
-                                                   null,
-                                                   "Unable to determine the used declarations.\n" + e.getMessage() ) );
+            result = MVELExprAnalyzer.analyzeExpression(context,
+                                                        (String) content,
+                                                        availableIdentifiers,
+                                                        localTypes,
+                                                        "drools",
+                                                        KnowledgeHelper.class);
+        } catch (final Exception e) {
+            DialectUtil.copyErrorLocation(e, descr);
+            context.addError(new DescrBuildError(context.getParentDescr(),
+                                                 descr,
+                                                 null,
+                                                 "Unable to determine the used declarations.\n" + e.getMessage()));
         } finally {
             // setting it back to original parent descr
-            context.setParentDescr( temp );
+            context.setParentDescr(temp);
         }
         return result;
     }
@@ -530,34 +529,34 @@ public class MVELDialect
                                        final BaseDescr descr,
                                        final String text,
                                        final BoundIdentifiers availableIdentifiers) {
-        return analyzeBlock( context,
-                             text,
-                             availableIdentifiers,
-                             null,
-                             "drools",
-                             KnowledgeHelper.class );
+        return analyzeBlock(context,
+                            text,
+                            availableIdentifiers,
+                            null,
+                            "drools",
+                            KnowledgeHelper.class);
     }
 
     public AnalysisResult analyzeBlock(final PackageBuildContext context,
                                        final String text,
                                        final BoundIdentifiers availableIdentifiers,
-                                       final Map<String, Class< ? >> localTypes,
+                                       final Map<String, Class<?>> localTypes,
                                        String contextIndeifier,
                                        Class kcontextClass) {
 
-        return MVELExprAnalyzer.analyzeExpression( context,
-                                                   text,
-                                                   availableIdentifiers,
-                                                   localTypes,
-                                                   contextIndeifier,
-                                                   kcontextClass );
+        return MVELExprAnalyzer.analyzeExpression(context,
+                                                  text,
+                                                  availableIdentifiers,
+                                                  localTypes,
+                                                  contextIndeifier,
+                                                  kcontextClass);
     }
 
     public MVELCompilationUnit getMVELCompilationUnit(final String expression,
                                                       final AnalysisResult analysis,
                                                       Declaration[] previousDeclarations,
                                                       Declaration[] localDeclarations,
-                                                      final Map<String, Class< ? >> otherInputVariables,
+                                                      final Map<String, Class<?>> otherInputVariables,
                                                       final PackageBuildContext context,
                                                       String contextIndeifier,
                                                       Class kcontextClass,
@@ -566,63 +565,63 @@ public class MVELDialect
         Map<String, Class> resolvedInputs = new LinkedHashMap<String, Class>();
         List<String> ids = new ArrayList<String>();
 
-        if ( analysis.getBoundIdentifiers().getThisClass() != null || (localDeclarations != null && localDeclarations.length > 0) ) {
+        if (analysis.getBoundIdentifiers().getThisClass() != null || (localDeclarations != null && localDeclarations.length > 0)) {
             Class cls = analysis.getBoundIdentifiers().getThisClass();
-            ids.add( "this" );
-            resolvedInputs.put( "this",
-                                (cls != null) ? cls : Object.class ); // the only time cls is null is in accumumulate's acc/reverse
+            ids.add("this");
+            resolvedInputs.put("this",
+                               (cls != null) ? cls : Object.class); // the only time cls is null is in accumumulate's acc/reverse
         }
-        ids.add( contextIndeifier );
-        resolvedInputs.put( contextIndeifier,
-                            kcontextClass );
-        ids.add( "kcontext" );
-        resolvedInputs.put( "kcontext",
-                            kcontextClass );
+        ids.add(contextIndeifier);
+        resolvedInputs.put(contextIndeifier,
+                           kcontextClass);
+        ids.add("kcontext");
+        resolvedInputs.put("kcontext",
+                           kcontextClass);
 
         if (scope.hasRule()) {
-            ids.add( "rule" );
-            resolvedInputs.put( "rule",
-                                Rule.class );
+            ids.add("rule");
+            resolvedInputs.put("rule",
+                               Rule.class);
         }
 
         List<String> strList = new ArrayList<String>();
-        for ( String identifier : analysis.getIdentifiers() ) {
-            Class<?> type = analysis.getBoundIdentifiers().resolveVarType( identifier );
+        for (String identifier : analysis.getIdentifiers()) {
+            Class<?> type = analysis.getBoundIdentifiers().resolveVarType(identifier);
             if (type != null) {
-                strList.add( identifier );
-                ids.add( identifier );
-                resolvedInputs.put( identifier, type );
+                strList.add(identifier);
+                ids.add(identifier);
+                resolvedInputs.put(identifier, type);
             }
         }
-        String[] globalIdentifiers = strList.toArray( new String[strList.size()] );
+        String[] globalIdentifiers = strList.toArray(new String[strList.size()]);
 
         strList.clear();
-        for ( String op : analysis.getBoundIdentifiers().getOperators().keySet() ) {
-            strList.add( op );
-            ids.add( op );
-            resolvedInputs.put( op, context.getConfiguration().getComponentFactory().getExpressionProcessor().getEvaluatorWrapperClass() );
+        for (String op : analysis.getBoundIdentifiers().getOperators().keySet()) {
+            strList.add(op);
+            ids.add(op);
+            resolvedInputs.put(op, context.getConfiguration().getComponentFactory().getExpressionProcessor().getEvaluatorWrapperClass());
         }
         EvaluatorWrapper[] operators = new EvaluatorWrapper[strList.size()];
-        for ( int i = 0; i < operators.length; i++ ) {
-            operators[i] = analysis.getBoundIdentifiers().getOperators().get( strList.get( i ) );
+        for (int i = 0; i < operators.length; i++) {
+            operators[i] = analysis.getBoundIdentifiers().getOperators().get(strList.get(i));
         }
 
-        if ( previousDeclarations != null ) {
-            for ( Declaration decl : previousDeclarations ) {
-                if ( analysis.getBoundIdentifiers().getDeclrClasses().containsKey( decl.getIdentifier() ) ) {
-                    ids.add( decl.getIdentifier() );
-                    resolvedInputs.put( decl.getIdentifier(),
-                                        decl.getDeclarationClass() );
+        if (previousDeclarations != null) {
+            for (Declaration decl : previousDeclarations) {
+                if (analysis.getBoundIdentifiers().getDeclrClasses().containsKey(decl.getIdentifier())) {
+                    ids.add(decl.getIdentifier());
+                    resolvedInputs.put(decl.getIdentifier(),
+                                       decl.getDeclarationClass());
                 }
             }
         }
 
-        if ( localDeclarations != null ) {
-            for ( Declaration decl : localDeclarations ) {
-                if ( analysis.getBoundIdentifiers().getDeclrClasses().containsKey( decl.getIdentifier() ) ) {
-                    ids.add( decl.getIdentifier() );
-                    resolvedInputs.put( decl.getIdentifier(),
-                                        decl.getDeclarationClass() );
+        if (localDeclarations != null) {
+            for (Declaration decl : localDeclarations) {
+                if (analysis.getBoundIdentifiers().getDeclrClasses().containsKey(decl.getIdentifier())) {
+                    ids.add(decl.getIdentifier());
+                    resolvedInputs.put(decl.getIdentifier(),
+                                       decl.getDeclarationClass());
                 }
             }
         }
@@ -631,32 +630,32 @@ public class MVELDialect
         // but in the case of accumulate it could be vars from the "init" section.        
         //String[] otherIdentifiers = otherInputVariables == null ? new String[]{} : new String[otherInputVariables.size()];
         strList = new ArrayList<String>();
-        if ( otherInputVariables != null ) {
+        if (otherInputVariables != null) {
             MVELAnalysisResult mvelAnalysis = (MVELAnalysisResult) analysis;
-            for ( Entry<String, Class< ? >> stringClassEntry : otherInputVariables.entrySet() ) {
-                if ( (!analysis.getNotBoundedIdentifiers().contains( stringClassEntry.getKey() ) && !mvelAnalysis.getMvelVariables().keySet().contains( stringClassEntry.getKey() )) || "rule".equals( stringClassEntry.getKey() ) ) {
+            for (Entry<String, Class<?>> stringClassEntry : otherInputVariables.entrySet()) {
+                if ((!analysis.getNotBoundedIdentifiers().contains(stringClassEntry.getKey()) && !mvelAnalysis.getMvelVariables().keySet().contains(stringClassEntry.getKey())) || "rule".equals(stringClassEntry.getKey())) {
                     // no point including them if they aren't used
                     // and rule was already included
                     continue;
                 }
-                ids.add( stringClassEntry.getKey() );
-                strList.add( stringClassEntry.getKey() );
-                resolvedInputs.put( stringClassEntry.getKey(), stringClassEntry.getValue() );
+                ids.add(stringClassEntry.getKey());
+                strList.add(stringClassEntry.getKey());
+                resolvedInputs.put(stringClassEntry.getKey(), stringClassEntry.getValue());
             }
         }
-        String[] otherIdentifiers = strList.toArray( new String[strList.size()] );
+        String[] otherIdentifiers = strList.toArray(new String[strList.size()]);
 
         String[] inputIdentifiers = new String[resolvedInputs.size()];
         String[] inputTypes = new String[resolvedInputs.size()];
         int i = 0;
-        for ( String id : ids ) {
+        for (String id : ids) {
             inputIdentifiers[i] = id;
-            inputTypes[i++] = resolvedInputs.get( id ).getName();
+            inputTypes[i++] = resolvedInputs.get(id).getName();
         }
 
         String name;
-        if ( context != null && context.getPkg() != null && context.getPkg().getName() != null ) {
-            if ( context instanceof RuleBuildContext ) {
+        if (context != null && context.getPkg() != null && context.getPkg().getName() != null) {
+            if (context instanceof RuleBuildContext) {
                 name = context.getPkg().getName() + "." + ((RuleBuildContext) context).getRuleDescr().getClassName();
             } else {
                 name = context.getPkg().getName() + ".Unknown";
@@ -664,25 +663,25 @@ public class MVELDialect
         } else {
             name = "Unknown";
         }
-        return new MVELCompilationUnit( name,
-                                        expression,
-                                        globalIdentifiers,
-                                        operators,
-                                        previousDeclarations,
-                                        localDeclarations,
-                                        otherIdentifiers,
-                                        inputIdentifiers,
-                                        inputTypes,
-                                        languageLevel,
-                                        ((MVELAnalysisResult) analysis).isTypesafe(),
-                                        readLocalsFromTuple );
+        return new MVELCompilationUnit(name,
+                                       expression,
+                                       globalIdentifiers,
+                                       operators,
+                                       previousDeclarations,
+                                       localDeclarations,
+                                       otherIdentifiers,
+                                       inputIdentifiers,
+                                       inputTypes,
+                                       languageLevel,
+                                       ((MVELAnalysisResult) analysis).isTypesafe(),
+                                       readLocalsFromTuple);
     }
 
     public EngineElementBuilder getBuilder(final Class clazz) {
-        return builders.get( clazz );
+        return builders.get(clazz);
     }
 
-    public Map<Class< ? >, EngineElementBuilder> getBuilders() {
+    public Map<Class<?>, EngineElementBuilder> getBuilders() {
         return builders;
     }
 
@@ -715,7 +714,7 @@ public class MVELDialect
     }
 
     public PredicateBuilder getPredicateBuilder() {
-        throw new RuntimeException( "mvel PredicateBuilder is no longer in use" );
+        throw new RuntimeException("mvel PredicateBuilder is no longer in use");
     }
 
     public SalienceBuilder getSalienceBuilder() {
@@ -739,7 +738,7 @@ public class MVELDialect
     }
 
     public RuleClassBuilder getRuleClassBuilder() {
-        throw new UnsupportedOperationException( "MVELDialect.getRuleClassBuilder is not supported" );
+        throw new UnsupportedOperationException("MVELDialect.getRuleClassBuilder is not supported");
     }
 
     public TypeResolver getTypeResolver() {

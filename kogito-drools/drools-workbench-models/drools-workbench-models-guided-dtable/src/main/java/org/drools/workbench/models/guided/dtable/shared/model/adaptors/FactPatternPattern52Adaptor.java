@@ -21,12 +21,12 @@ import org.drools.workbench.models.datamodel.rule.CEPWindow;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
 import org.drools.workbench.models.datamodel.rule.FromEntryPointFactPattern;
 import org.drools.workbench.models.datamodel.rule.IFactPattern;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumnFieldDiff;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 /**
  * Adaptor to use RuleModel class in GuidedDecisionTable
@@ -40,9 +40,9 @@ public class FactPatternPattern52Adaptor extends Pattern52 {
     public FactPatternPattern52Adaptor() {
     }
 
-    public FactPatternPattern52Adaptor( final IFactPattern fp ) {
-        PortablePreconditions.checkNotNull( "fp",
-                                            fp );
+    public FactPatternPattern52Adaptor(final IFactPattern fp) {
+        PortablePreconditions.checkNotNull("fp",
+                                           fp);
         this.fp = fp;
     }
 
@@ -53,46 +53,46 @@ public class FactPatternPattern52Adaptor extends Pattern52 {
 
     @Override
     public String getBoundName() {
-        if ( fp instanceof FactPattern ) {
-            return ( (FactPattern) fp ).getBoundName();
+        if (fp instanceof FactPattern) {
+            return ((FactPattern) fp).getBoundName();
         }
         throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean isBound() {
-        if ( fp instanceof FactPattern ) {
-            return ( (FactPattern) fp ).isBound();
+        if (fp instanceof FactPattern) {
+            return ((FactPattern) fp).isBound();
         }
         throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean isNegated() {
-        if ( fp instanceof FactPattern ) {
-            return ( (FactPattern) fp ).isNegated();
+        if (fp instanceof FactPattern) {
+            return ((FactPattern) fp).isNegated();
         }
         throw new UnsupportedOperationException();
     }
 
     @Override
     public CEPWindow getWindow() {
-        if ( fp instanceof FactPattern ) {
-            return ( (FactPattern) fp ).getWindow();
+        if (fp instanceof FactPattern) {
+            return ((FactPattern) fp).getWindow();
         }
         throw new UnsupportedOperationException();
     }
 
     @Override
     public String getEntryPointName() {
-        if ( fp instanceof FromEntryPointFactPattern ) {
-            return ( (FromEntryPointFactPattern) fp ).getEntryPointName();
+        if (fp instanceof FromEntryPointFactPattern) {
+            return ((FromEntryPointFactPattern) fp).getEntryPointName();
         }
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public List<BaseColumnFieldDiff> diff( BaseColumn otherColumn ) {
+    public List<BaseColumnFieldDiff> diff(BaseColumn otherColumn) {
         throw new UnsupportedOperationException();
     }
 
@@ -102,22 +102,22 @@ public class FactPatternPattern52Adaptor extends Pattern52 {
     }
 
     @Override
-    public void update( Pattern52 other ) {
+    public void update(Pattern52 other) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void setFactType( String factType ) {
+    public void setFactType(String factType) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void setBoundName( String boundName ) {
+    public void setBoundName(String boundName) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void setNegated( boolean negated ) {
+    public void setNegated(boolean negated) {
         throw new UnsupportedOperationException();
     }
 
@@ -127,17 +127,17 @@ public class FactPatternPattern52Adaptor extends Pattern52 {
     }
 
     @Override
-    public void setChildColumns( List<ConditionCol52> conditions ) {
+    public void setChildColumns(List<ConditionCol52> conditions) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void setWindow( CEPWindow window ) {
+    public void setWindow(CEPWindow window) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void setEntryPointName( String entryPointName ) {
+    public void setEntryPointName(String entryPointName) {
         throw new UnsupportedOperationException();
     }
 
@@ -147,7 +147,7 @@ public class FactPatternPattern52Adaptor extends Pattern52 {
     }
 
     @Override
-    public void setHeader( String header ) {
+    public void setHeader(String header) {
         throw new UnsupportedOperationException();
     }
 
@@ -157,7 +157,7 @@ public class FactPatternPattern52Adaptor extends Pattern52 {
     }
 
     @Override
-    public void setHideColumn( boolean hideColumn ) {
+    public void setHideColumn(boolean hideColumn) {
         throw new UnsupportedOperationException();
     }
 
@@ -167,7 +167,7 @@ public class FactPatternPattern52Adaptor extends Pattern52 {
     }
 
     @Override
-    public void setWidth( int width ) {
+    public void setWidth(int width) {
         throw new UnsupportedOperationException();
     }
 
@@ -177,8 +177,7 @@ public class FactPatternPattern52Adaptor extends Pattern52 {
     }
 
     @Override
-    public void setDefaultValue( DTCellValue52 defaultValue ) {
+    public void setDefaultValue(DTCellValue52 defaultValue) {
         throw new UnsupportedOperationException();
     }
-
 }

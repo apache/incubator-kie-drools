@@ -15,7 +15,7 @@
  */
 package org.drools.workbench.models.guided.dtree.shared.model.parser.messages;
 
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 /**
  * Multiple "root" TypeNodes were found when constructing the Decision Tree
@@ -28,9 +28,9 @@ public class AmbiguousRootParserMessage implements ParserMessage {
         //Errai marshalling
     }
 
-    public AmbiguousRootParserMessage( final String className ) {
-        this.className = PortablePreconditions.checkNotNull( "className",
-                                                             className );
+    public AmbiguousRootParserMessage(final String className) {
+        this.className = PortablePreconditions.checkNotNull("className",
+                                                            className);
     }
 
     public String getClassName() {

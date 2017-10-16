@@ -16,7 +16,6 @@
 
 package org.drools.workbench.models.testscenarios.backend;
 
-import org.drools.core.base.TypeResolver;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.junit.runner.Description;
 import org.junit.runner.JUnitCore;
@@ -24,6 +23,7 @@ import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunListener;
 import org.kie.api.runtime.KieSession;
+import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import java.util.Map;
 
@@ -32,41 +32,39 @@ public class TestServiceImpl
         TestService<Scenario> {
 
     @Override
-    public void run( Scenario scenario,
-                     Map<String, KieSession> ksessions,
-                     TypeResolver resolver,
-                     RunListener listener ) {
+    public void run(Scenario scenario,
+                    Map<String, KieSession> ksessions,
+                    TypeResolver resolver,
+                    RunListener listener) {
         try {
 
             long time = System.nanoTime();
 
             // execute the test scenario
-            ScenarioRunner4JUnit runner = new ScenarioRunner4JUnit( scenario,
-                                                                    ksessions );
+            ScenarioRunner4JUnit runner = new ScenarioRunner4JUnit(scenario,
+                                                                   ksessions);
             JUnitCore junit = new JUnitCore();
-            junit.addListener( listener );
-            junit.run( runner );
+            junit.addListener(listener);
+            junit.run(runner);
 
             Result result = new Result();
             listener.testRunFinished(result);
-
-        } catch ( Exception e ) {
-            reportUnrecoverableError( "Error running scenario " + scenario.getName(),
-                                      listener,
-                                      e );
+        } catch (Exception e) {
+            reportUnrecoverableError("Error running scenario " + scenario.getName(),
+                                     listener,
+                                     e);
         }
     }
 
-    private void reportUnrecoverableError( String message,
-                                           RunListener listener,
-                                           Exception e ) {
+    private void reportUnrecoverableError(String message,
+                                          RunListener listener,
+                                          Exception e) {
         try {
-            Description description = Description.createSuiteDescription( message );
-            listener.testFailure( new Failure( description,
-                                               e ) );
-        } catch ( Exception e2 ) {
+            Description description = Description.createSuiteDescription(message);
+            listener.testFailure(new Failure(description,
+                                             e));
+        } catch (Exception e2) {
             // intentionally left empty as there is nothing to do
         }
     }
-
 }

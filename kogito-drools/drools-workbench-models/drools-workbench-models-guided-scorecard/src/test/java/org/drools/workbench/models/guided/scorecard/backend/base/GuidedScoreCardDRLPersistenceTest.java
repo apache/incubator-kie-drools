@@ -15,13 +15,13 @@
  */
 package org.drools.workbench.models.guided.scorecard.backend.base;
 
-import org.appformer.project.datamodel.imports.Import;
 import org.drools.scorecards.StringUtil;
 import org.drools.workbench.models.guided.scorecard.backend.GuidedScoreCardDRLPersistence;
 import org.drools.workbench.models.guided.scorecard.shared.Attribute;
 import org.drools.workbench.models.guided.scorecard.shared.Characteristic;
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
 import org.junit.Test;
+import org.kie.soup.project.datamodel.imports.Import;
 
 import static org.junit.Assert.*;
 
@@ -30,160 +30,159 @@ public class GuidedScoreCardDRLPersistenceTest {
     @Test
     public void testEmptyModel() {
         final ScoreCardModel model = new ScoreCardModel();
-        model.setName( "test" );
+        model.setName("test");
 
-        final String drl = GuidedScoreCardDRLPersistence.marshal( model );
-        assertNotNull( drl );
+        final String drl = GuidedScoreCardDRLPersistence.marshal(model);
+        assertNotNull(drl);
 
-        assertFalse( drl.contains( "package" ) );
-        assertEquals( 12,
-                      StringUtil.countMatches( drl,
-                                               "rule \"" ) );
+        assertFalse(drl.contains("package"));
+        assertEquals(12,
+                     StringUtil.countMatches(drl,
+                                             "rule \""));
 
-        assertEquals( 2,
-                      StringUtil.countMatches( drl,
-                                               "import " ) );
+        assertEquals(2,
+                     StringUtil.countMatches(drl,
+                                             "import "));
     }
 
     @Test
     public void testEmptyModelEmptyStringPackageName() {
         final ScoreCardModel model = new ScoreCardModel();
-        model.setName( "test" );
-        model.setPackageName( "" );
+        model.setName("test");
+        model.setPackageName("");
 
-        final String drl = GuidedScoreCardDRLPersistence.marshal( model );
-        assertNotNull( drl );
+        final String drl = GuidedScoreCardDRLPersistence.marshal(model);
+        assertNotNull(drl);
 
-        assertFalse( drl.contains( "package" ) );
-        assertEquals( 12,
-                      StringUtil.countMatches( drl,
-                                               "rule \"" ) );
+        assertFalse(drl.contains("package"));
+        assertEquals(12,
+                     StringUtil.countMatches(drl,
+                                             "rule \""));
 
-        assertEquals( 2,
-                      StringUtil.countMatches( drl,
-                                               "import " ) );
+        assertEquals(2,
+                     StringUtil.countMatches(drl,
+                                             "import "));
     }
 
     @Test
     public void testEmptyModelInPackage() {
         final ScoreCardModel model = new ScoreCardModel();
-        model.setName( "test" );
-        model.setPackageName( "org.drools.workbench.models.guided.scorecard.backend" );
+        model.setName("test");
+        model.setPackageName("org.drools.workbench.models.guided.scorecard.backend");
 
-        final String drl = GuidedScoreCardDRLPersistence.marshal( model );
-        assertNotNull( drl );
+        final String drl = GuidedScoreCardDRLPersistence.marshal(model);
+        assertNotNull(drl);
 
-        assertTrue( drl.contains( "package org.drools.workbench.models.guided.scorecard.backend" ) );
-        assertEquals( 12,
-                      StringUtil.countMatches( drl,
-                                               "rule \"" ) );
+        assertTrue(drl.contains("package org.drools.workbench.models.guided.scorecard.backend"));
+        assertEquals(12,
+                     StringUtil.countMatches(drl,
+                                             "rule \""));
 
-        assertEquals( 2,
-                      StringUtil.countMatches( drl,
-                                               "import " ) );
+        assertEquals(2,
+                     StringUtil.countMatches(drl,
+                                             "import "));
     }
 
     @Test
     public void testModelWithImports() {
         final ScoreCardModel model = new ScoreCardModel();
-        model.setName( "test" );
-        model.setPackageName( "org.drools.workbench.models.guided.scorecard.backend" );
-        model.getImports().addImport( new Import( "org.smurf.Pupa" ) );
+        model.setName("test");
+        model.setPackageName("org.drools.workbench.models.guided.scorecard.backend");
+        model.getImports().addImport(new Import("org.smurf.Pupa"));
 
-        final String drl = GuidedScoreCardDRLPersistence.marshal( model );
-        assertNotNull( drl );
+        final String drl = GuidedScoreCardDRLPersistence.marshal(model);
+        assertNotNull(drl);
 
-        assertTrue( drl.contains( "package org.drools.workbench.models.guided.scorecard.backend" ) );
-        assertEquals( 12,
-                      StringUtil.countMatches( drl,
-                                               "rule \"" ) );
+        assertTrue(drl.contains("package org.drools.workbench.models.guided.scorecard.backend"));
+        assertEquals(12,
+                     StringUtil.countMatches(drl,
+                                             "rule \""));
 
-        assertEquals( 3,
-                      StringUtil.countMatches( drl,
-                                               "import " ) );
+        assertEquals(3,
+                     StringUtil.countMatches(drl,
+                                             "import "));
     }
 
     @Test
     public void testModelWithImportsAndFactName() {
         final ScoreCardModel model = new ScoreCardModel();
-        model.setName( "test" );
-        model.setPackageName( "org.drools.workbench.models.guided.scorecard.backend" );
-        model.getImports().addImport( new Import( "org.smurf.Pupa" ) );
-        model.setFactName( "org.drools.MoreCheese" );
+        model.setName("test");
+        model.setPackageName("org.drools.workbench.models.guided.scorecard.backend");
+        model.getImports().addImport(new Import("org.smurf.Pupa"));
+        model.setFactName("org.drools.MoreCheese");
 
-        final String drl = GuidedScoreCardDRLPersistence.marshal( model );
-        assertNotNull( drl );
+        final String drl = GuidedScoreCardDRLPersistence.marshal(model);
+        assertNotNull(drl);
 
-        assertTrue( drl.contains( "package org.drools.workbench.models.guided.scorecard.backend" ) );
-        assertEquals( 12,
-                      StringUtil.countMatches( drl,
-                                               "rule \"" ) );
+        assertTrue(drl.contains("package org.drools.workbench.models.guided.scorecard.backend"));
+        assertEquals(12,
+                     StringUtil.countMatches(drl,
+                                             "rule \""));
 
-        assertEquals( 3,
-                      StringUtil.countMatches( drl,
-                                               "import " ) );
+        assertEquals(3,
+                     StringUtil.countMatches(drl,
+                                             "import "));
     }
 
     @Test
     public void testModelWithImportsAndFactNameDuplicatingExplicitImport() {
         final ScoreCardModel model = new ScoreCardModel();
-        model.setName( "test" );
-        model.setPackageName( "org.drools.workbench.models.guided.scorecard.backend" );
-        model.getImports().addImport( new Import( "org.smurf.Pupa" ) );
-        model.setFactName( "org.smurf.Pupa" );
+        model.setName("test");
+        model.setPackageName("org.drools.workbench.models.guided.scorecard.backend");
+        model.getImports().addImport(new Import("org.smurf.Pupa"));
+        model.setFactName("org.smurf.Pupa");
 
-        final String drl = GuidedScoreCardDRLPersistence.marshal( model );
-        assertNotNull( drl );
+        final String drl = GuidedScoreCardDRLPersistence.marshal(model);
+        assertNotNull(drl);
 
-        assertTrue( drl.contains( "package org.drools.workbench.models.guided.scorecard.backend" ) );
-        assertEquals( 12,
-                      StringUtil.countMatches( drl,
-                                               "rule \"" ) );
+        assertTrue(drl.contains("package org.drools.workbench.models.guided.scorecard.backend"));
+        assertEquals(12,
+                     StringUtil.countMatches(drl,
+                                             "rule \""));
 
-        assertEquals( 3,
-                      StringUtil.countMatches( drl,
-                                               "import " ) );
+        assertEquals(3,
+                     StringUtil.countMatches(drl,
+                                             "import "));
     }
 
     @Test
     public void testBasicModel() {
 
         final ScoreCardModel model = new ScoreCardModel();
-        model.setName( "test" );
+        model.setName("test");
 
-        model.setPackageName( "org.drools.workbench.models.guided.scorecard.backend" );
-        model.getImports().addImport( new Import( "org.drools.workbench.models.guided.scorecard.backend.test1.Applicant" ) );
-        model.setReasonCodesAlgorithm( "none" );
-        model.setBaselineScore( 0.0 );
-        model.setInitialScore( 0.0 );
+        model.setPackageName("org.drools.workbench.models.guided.scorecard.backend");
+        model.getImports().addImport(new Import("org.drools.workbench.models.guided.scorecard.backend.test1.Applicant"));
+        model.setReasonCodesAlgorithm("none");
+        model.setBaselineScore(0.0);
+        model.setInitialScore(0.0);
 
-        model.setFactName( "org.drools.workbench.models.guided.scorecard.backend.test1.Applicant" );
-        model.setFieldName( "score" );
-        model.setUseReasonCodes( false );
-        model.setReasonCodeField( "" );
+        model.setFactName("org.drools.workbench.models.guided.scorecard.backend.test1.Applicant");
+        model.setFieldName("score");
+        model.setUseReasonCodes(false);
+        model.setReasonCodeField("");
 
         final Characteristic c = new Characteristic();
-        c.setName( "c1" );
-        c.setFact( "org.drools.workbench.models.guided.scorecard.backend.test1.Applicant" );
-        c.setDataType( "Double" );
-        c.setField( "age" );
-        c.setBaselineScore( 0.0 );
-        c.setReasonCode( "" );
+        c.setName("c1");
+        c.setFact("org.drools.workbench.models.guided.scorecard.backend.test1.Applicant");
+        c.setDataType("Double");
+        c.setField("age");
+        c.setBaselineScore(0.0);
+        c.setReasonCode("");
 
         final Attribute a = new Attribute();
-        a.setOperator( "=" );
-        a.setValue( "10" );
-        a.setPartialScore( 0.1 );
-        a.setReasonCode( "" );
+        a.setOperator("=");
+        a.setValue("10");
+        a.setPartialScore(0.1);
+        a.setReasonCode("");
 
-        c.getAttributes().add( a );
-        model.getCharacteristics().add( c );
+        c.getAttributes().add(a);
+        model.getCharacteristics().add(c);
 
-        final String drl1 = GuidedScoreCardDRLPersistence.marshal( model );
-        assertNotNull( drl1 );
+        final String drl1 = GuidedScoreCardDRLPersistence.marshal(model);
+        assertNotNull(drl1);
 
-        final String drl2 = GuidedScoreCardDRLPersistence.marshal( model );
-        assertNotNull( drl2 );
+        final String drl2 = GuidedScoreCardDRLPersistence.marshal(model);
+        assertNotNull(drl2);
     }
-
 }

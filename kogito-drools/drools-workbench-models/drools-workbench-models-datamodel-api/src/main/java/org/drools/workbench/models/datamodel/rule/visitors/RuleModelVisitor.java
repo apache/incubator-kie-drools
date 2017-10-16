@@ -17,7 +17,6 @@ package org.drools.workbench.models.datamodel.rule.visitors;
 
 import java.util.Map;
 
-import org.appformer.project.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
 import org.drools.workbench.models.datamodel.rule.ActionInsertFact;
 import org.drools.workbench.models.datamodel.rule.ActionSetField;
@@ -42,6 +41,7 @@ import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraintEBLeftSide;
 import org.drools.workbench.models.datamodel.rule.TemplateAware;
+import org.kie.soup.project.datamodel.oracle.DataType;
 
 /**
  * A Rule Model Visitor to extract Interpolation Variables (Template Keys)

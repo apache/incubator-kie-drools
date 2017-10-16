@@ -15,11 +15,11 @@
  */
 package org.drools.workbench.models.guided.template.backend.upgrade;
 
-import org.appformer.project.datamodel.commons.IUpgradeHelper;
 import org.drools.workbench.models.datamodel.rule.ActionCallMethod;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
 import org.drools.workbench.models.datamodel.rule.RuleMetadata;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
+import org.kie.soup.project.datamodel.commons.IUpgradeHelper;
 
 /**
  * Utility class to support upgrades of the RuleModel model. Release pre-5.2
@@ -28,33 +28,33 @@ public class RuleModelUpgradeHelper1
         implements
         IUpgradeHelper<RuleModel, RuleModel> {
 
-    public RuleModel upgrade( RuleModel model ) {
-        updateMetadata( model );
-        updateMethodCall( model );
+    public RuleModel upgrade(RuleModel model) {
+        updateMetadata(model);
+        updateMethodCall(model);
         return model;
     }
 
     //Fixme, hack for a upgrade to add Metadata
-    private void updateMetadata( RuleModel model ) {
-        if ( model.metadataList == null ) {
-            model.metadataList = new RuleMetadata[ 0 ];
+    private void updateMetadata(RuleModel model) {
+        if (model.metadataList == null) {
+            model.metadataList = new RuleMetadata[0];
         }
     }
 
     // The way method calls are done changed after 5.0.0.CR1 so every rule done
     // before that needs to be updated.
-    private RuleModel updateMethodCall( RuleModel model ) {
+    private RuleModel updateMethodCall(RuleModel model) {
 
-        for ( int i = 0; i < model.rhs.length; i++ ) {
-            if ( model.rhs[ i ] instanceof ActionCallMethod ) {
-                ActionCallMethod action = (ActionCallMethod) model.rhs[ i ];
+        for (int i = 0; i < model.rhs.length; i++) {
+            if (model.rhs[i] instanceof ActionCallMethod) {
+                ActionCallMethod action = (ActionCallMethod) model.rhs[i];
                 // Check if method name is filled, if not this was made with an older Guvnor version
-                if ( action.getMethodName() == null || "".equals( action.getMethodName() ) ) {
-                    if ( action.getFieldValues() != null && action.getFieldValues().length >= 1 ) {
-                        action.setMethodName( action.getFieldValues()[ 0 ].getField() );
+                if (action.getMethodName() == null || "".equals(action.getMethodName())) {
+                    if (action.getFieldValues() != null && action.getFieldValues().length >= 1) {
+                        action.setMethodName(action.getFieldValues()[0].getField());
 
-                        action.setFieldValues( new ActionFieldValue[ 0 ] );
-                        action.setState( ActionCallMethod.TYPE_DEFINED );
+                        action.setFieldValues(new ActionFieldValue[0]);
+                        action.setState(ActionCallMethod.TYPE_DEFINED);
                     }
                 }
             }
@@ -62,5 +62,4 @@ public class RuleModelUpgradeHelper1
 
         return model;
     }
-
 }

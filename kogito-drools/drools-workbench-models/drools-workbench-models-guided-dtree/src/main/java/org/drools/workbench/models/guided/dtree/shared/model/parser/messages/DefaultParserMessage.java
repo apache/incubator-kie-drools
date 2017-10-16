@@ -15,7 +15,7 @@
  */
 package org.drools.workbench.models.guided.dtree.shared.model.parser.messages;
 
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 /**
  * Generic message that cannot be represented by one of the more explicit concrete implementations
@@ -28,9 +28,9 @@ public class DefaultParserMessage implements ParserMessage {
         //Errai marshalling
     }
 
-    public DefaultParserMessage( final String message ) {
-        this.message = PortablePreconditions.checkNotNull( "message",
-                                                           message );
+    public DefaultParserMessage(final String message) {
+        this.message = PortablePreconditions.checkNotNull("message",
+                                                          message);
     }
 
     public String getMessage() {

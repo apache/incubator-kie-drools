@@ -15,8 +15,8 @@
  */
 package org.drools.workbench.models.guided.dtree.shared.model.values.impl;
 
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.drools.workbench.models.guided.dtree.shared.model.values.Value;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class LongValue implements Value<Long> {
 
@@ -26,27 +26,27 @@ public class LongValue implements Value<Long> {
         //Errai marshalling
     }
 
-    public LongValue( final Long value ) {
-        setValue( value );
+    public LongValue(final Long value) {
+        setValue(value);
     }
 
-    public LongValue( final LongValue value ) {
-        setValue( value.getValue() );
+    public LongValue(final LongValue value) {
+        setValue(value.getValue());
     }
 
     @Override
-    public void setValue( final String value ) {
+    public void setValue(final String value) {
         try {
-            setValue( new Long( value ) );
-        } catch ( NumberFormatException nfe ) {
-            setValue( new Long( 0 ) );
+            setValue(new Long(value));
+        } catch (NumberFormatException nfe) {
+            setValue(new Long(0));
         }
     }
 
     @Override
-    public void setValue( final Long value ) {
-        this.value = PortablePreconditions.checkNotNull( "value",
-                                                         value );
+    public void setValue(final Long value) {
+        this.value = PortablePreconditions.checkNotNull("value",
+                                                        value);
     }
 
     @Override
@@ -55,17 +55,17 @@ public class LongValue implements Value<Long> {
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof LongValue ) ) {
+        if (!(o instanceof LongValue)) {
             return false;
         }
 
         LongValue longValue = (LongValue) o;
 
-        if ( !value.equals( longValue.value ) ) {
+        if (!value.equals(longValue.value)) {
             return false;
         }
 

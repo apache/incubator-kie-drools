@@ -19,9 +19,9 @@ import java.lang.reflect.Field;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.appformer.project.datamodel.oracle.DataType;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.soup.project.datamodel.oracle.DataType;
 
 import static org.junit.Assert.*;
 
@@ -45,112 +45,111 @@ public class DTCellValue52Test {
     public void setup() throws Exception {
         dcv = new DTCellValue52();
         final Class<?> c = dcv.getClass();
-        fieldBoolean = c.getDeclaredField( "valueBoolean" );
-        fieldDate = c.getDeclaredField( "valueDate" );
-        fieldNumeric = c.getDeclaredField( "valueNumeric" );
-        fieldString = c.getDeclaredField( "valueString" );
-        fieldDataType = c.getDeclaredField( "dataType" );
-        fieldBoolean.setAccessible( true );
-        fieldDate.setAccessible( true );
-        fieldNumeric.setAccessible( true );
-        fieldString.setAccessible( true );
-        fieldDataType.setAccessible( true );
+        fieldBoolean = c.getDeclaredField("valueBoolean");
+        fieldDate = c.getDeclaredField("valueDate");
+        fieldNumeric = c.getDeclaredField("valueNumeric");
+        fieldString = c.getDeclaredField("valueString");
+        fieldDataType = c.getDeclaredField("dataType");
+        fieldBoolean.setAccessible(true);
+        fieldDate.setAccessible(true);
+        fieldNumeric.setAccessible(true);
+        fieldString.setAccessible(true);
+        fieldDataType.setAccessible(true);
     }
 
     @Test
     public void testGetBooleanValue() throws Exception {
-        dcv.setBooleanValue( true );
-        fieldDate.set( dcv,
-                       now );
-        fieldNumeric.set( dcv,
-                          1L );
-        fieldString.set( dcv,
-                         "woot" );
-        assertEquals( DataType.DataTypes.BOOLEAN,
-                      dcv.getDataType() );
-        assertTrue( dcv.getBooleanValue() );
-        assertNull( dcv.getDateValue() );
-        assertNull( dcv.getNumericValue() );
-        assertNull( dcv.getStringValue() );
+        dcv.setBooleanValue(true);
+        fieldDate.set(dcv,
+                      now);
+        fieldNumeric.set(dcv,
+                         1L);
+        fieldString.set(dcv,
+                        "woot");
+        assertEquals(DataType.DataTypes.BOOLEAN,
+                     dcv.getDataType());
+        assertTrue(dcv.getBooleanValue());
+        assertNull(dcv.getDateValue());
+        assertNull(dcv.getNumericValue());
+        assertNull(dcv.getStringValue());
     }
 
     @Test
     public void testGetDateValue() throws Exception {
-        fieldBoolean.set( dcv,
-                          true );
-        dcv.setDateValue( now );
-        fieldNumeric.set( dcv,
-                          1L );
-        fieldString.set( dcv,
-                         "woot" );
-        assertEquals( DataType.DataTypes.DATE,
-                      dcv.getDataType() );
-        assertNull( dcv.getBooleanValue() );
-        assertEquals( now,
-                      dcv.getDateValue() );
-        assertNull( dcv.getNumericValue() );
-        assertNull( dcv.getStringValue() );
+        fieldBoolean.set(dcv,
+                         true);
+        dcv.setDateValue(now);
+        fieldNumeric.set(dcv,
+                         1L);
+        fieldString.set(dcv,
+                        "woot");
+        assertEquals(DataType.DataTypes.DATE,
+                     dcv.getDataType());
+        assertNull(dcv.getBooleanValue());
+        assertEquals(now,
+                     dcv.getDateValue());
+        assertNull(dcv.getNumericValue());
+        assertNull(dcv.getStringValue());
     }
 
     @Test
     public void testGetNumericValue() throws Exception {
-        fieldBoolean.set( dcv,
-                          true );
-        fieldDate.set( dcv,
-                       now );
-        dcv.setNumericValue( 1L );
-        fieldString.set( dcv,
-                         "woot" );
-        assertEquals( DataType.DataTypes.NUMERIC_LONG,
-                      dcv.getDataType() );
-        assertNull( dcv.getBooleanValue() );
-        assertNull( dcv.getDateValue() );
-        assertEquals( 1L,
-                      dcv.getNumericValue() );
-        assertNull( dcv.getStringValue() );
+        fieldBoolean.set(dcv,
+                         true);
+        fieldDate.set(dcv,
+                      now);
+        dcv.setNumericValue(1L);
+        fieldString.set(dcv,
+                        "woot");
+        assertEquals(DataType.DataTypes.NUMERIC_LONG,
+                     dcv.getDataType());
+        assertNull(dcv.getBooleanValue());
+        assertNull(dcv.getDateValue());
+        assertEquals(1L,
+                     dcv.getNumericValue());
+        assertNull(dcv.getStringValue());
     }
 
     @Test
     public void testGetStringValue() throws Exception {
-        fieldBoolean.set( dcv,
-                          true );
-        fieldDate.set( dcv,
-                       now );
-        fieldNumeric.set( dcv,
-                          1L );
-        dcv.setStringValue( "woot" );
-        assertEquals( DataType.DataTypes.STRING,
-                      dcv.getDataType() );
-        assertNull( dcv.getBooleanValue() );
-        assertNull( dcv.getDateValue() );
-        assertNull( dcv.getNumericValue() );
-        assertEquals( "woot",
-                      dcv.getStringValue() );
+        fieldBoolean.set(dcv,
+                         true);
+        fieldDate.set(dcv,
+                      now);
+        fieldNumeric.set(dcv,
+                         1L);
+        dcv.setStringValue("woot");
+        assertEquals(DataType.DataTypes.STRING,
+                     dcv.getDataType());
+        assertNull(dcv.getBooleanValue());
+        assertNull(dcv.getDateValue());
+        assertNull(dcv.getNumericValue());
+        assertEquals("woot",
+                     dcv.getStringValue());
     }
 
     @Test
     public void testDefaultValue() throws Exception {
-        final DTCellValue52 defaultValue = new DTCellValue52( 1 );
-        final DTCellValue52 clone = new DTCellValue52( defaultValue );
-        assertEquals( DataType.DataTypes.NUMERIC_INTEGER,
-                      clone.getDataType() );
-        assertNull( clone.getBooleanValue() );
-        assertNull( clone.getDateValue() );
-        assertEquals( 1,
-                      clone.getNumericValue() );
-        assertNull( clone.getStringValue() );
+        final DTCellValue52 defaultValue = new DTCellValue52(1);
+        final DTCellValue52 clone = new DTCellValue52(defaultValue);
+        assertEquals(DataType.DataTypes.NUMERIC_INTEGER,
+                     clone.getDataType());
+        assertNull(clone.getBooleanValue());
+        assertNull(clone.getDateValue());
+        assertEquals(1,
+                     clone.getNumericValue());
+        assertNull(clone.getStringValue());
     }
 
     @Test
     public void testDefaultValueNull() throws Exception {
         final DTCellValue52 defaultValue = null;
-        final DTCellValue52 clone = new DTCellValue52( defaultValue );
-        assertEquals( DataType.DataTypes.STRING,
-                      clone.getDataType() );
-        assertNull( clone.getBooleanValue() );
-        assertNull( clone.getDateValue() );
-        assertNull( clone.getNumericValue() );
-        assertNull( clone.getStringValue() );
+        final DTCellValue52 clone = new DTCellValue52(defaultValue);
+        assertEquals(DataType.DataTypes.STRING,
+                     clone.getDataType());
+        assertNull(clone.getBooleanValue());
+        assertNull(clone.getDateValue());
+        assertNull(clone.getNumericValue());
+        assertNull(clone.getStringValue());
     }
-
 }

@@ -35,6 +35,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 import static org.junit.Assert.assertEquals;
@@ -168,7 +169,16 @@ public class KieProjectRuntimeModulesTest extends AbstractKnowledgeTest {
         Enumeration<URL> foundResources = kieContainer.getClassLoader().getResources("META-INF/beans.xml");
         assertNotNull(foundResources);
 
-        List<URL> resourcesAsList = Collections.list(foundResources);
+        List<URL> resourcesAsList = Collections
+                                      .list(foundResources)
+                                      .stream()
+                                      /*
+                                       * This module and uberfire-commons depenency have beans.xml files
+                                       * which are found when calling `getResources` with a relative path.
+                                       */
+                                      .filter(url -> !url.toString().contains("uberfire-commons")
+                                                      && !url.toString().contains("drools-cdi"))
+                                      .collect(Collectors.toList());
         assertNotNull(resourcesAsList);
         assertEquals(1, resourcesAsList.size());
 

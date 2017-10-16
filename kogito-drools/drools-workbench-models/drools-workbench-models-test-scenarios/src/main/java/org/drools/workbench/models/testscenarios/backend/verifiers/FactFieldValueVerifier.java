@@ -16,11 +16,11 @@
 
 package org.drools.workbench.models.testscenarios.backend.verifiers;
 
-import org.drools.core.base.TypeResolver;
 import org.drools.core.util.MVELSafeHelper;
 import org.drools.workbench.models.testscenarios.backend.util.DateObjectFactory;
 import org.drools.workbench.models.testscenarios.backend.util.FieldTypeResolver;
 import org.drools.workbench.models.testscenarios.shared.VerifyField;
+import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
@@ -81,22 +81,20 @@ public class FactFieldValueVerifier {
                     currentField.setExplanation(getSuccessfulExplanation());
                 }
             }
-
         }
-
     }
 
     private Object getExpectedResult() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         Object expectedResult = currentField.getExpected().trim();
         if (currentField.getExpected().startsWith("=")) {
             expectedResult = MVELSafeHelper.getEvaluator().eval(currentField.getExpected().substring(1),
-                    this.populatedData);
+                                                                this.populatedData);
         } else if (currentField.getNature() == VerifyField.TYPE_ENUM) {
             try {
                 // The string representation of enum value is using a
                 // format like CheeseType.CHEDDAR
                 String classNameOfEnum = currentField.getExpected().substring(0,
-                        currentField.getExpected().indexOf("."));
+                                                                              currentField.getExpected().indexOf("."));
                 String valueOfEnum = currentField.getExpected().substring(currentField.getExpected().indexOf(".") + 1);
                 String fullName = resolver.getFullTypeName(classNameOfEnum);
                 if (fullName != null && !"".equals(fullName)) {
@@ -104,9 +102,8 @@ public class FactFieldValueVerifier {
                 }
 
                 Serializable compiled = MVEL.compileExpression(valueOfEnum,
-                        pctx);
+                                                               pctx);
                 expectedResult = MVELSafeHelper.getEvaluator().executeExpression(compiled);
-
             } catch (ClassNotFoundException e) {
                 //Do nothing.
             }
@@ -146,21 +143,21 @@ class ResultVerifier {
 
     protected ResultVerifier(Object factObject) {
         addVariable("__fact__",
-                factObject);
+                    factObject);
     }
 
     protected void setExpected(Object expected) {
         addVariable("__expected__",
-                expected);
+                    expected);
     }
 
     private void addVariable(String name,
                              Object object) {
         variables.put(name,
-                object);
+                      object);
 
         parserContext.addInput(name,
-                object.getClass());
+                               object.getClass());
     }
 
     protected Boolean isSuccess(VerifyField currentField) {
@@ -168,14 +165,13 @@ class ResultVerifier {
         CompiledExpression expression = new ExpressionCompiler(s, parserContext).compile();
 
         return (Boolean) MVELSafeHelper.getEvaluator().executeExpression(expression,
-                variables);
+                                                                         variables);
     }
 
     protected String getActual(VerifyField currentField) {
         Object actualValue = MVELSafeHelper.getEvaluator().executeExpression(new ExpressionCompiler("__fact__." + currentField.getFieldName(), parserContext).compile(),
-                variables);
+                                                                             variables);
 
         return (actualValue != null) ? actualValue.toString() : "";
-
     }
 }

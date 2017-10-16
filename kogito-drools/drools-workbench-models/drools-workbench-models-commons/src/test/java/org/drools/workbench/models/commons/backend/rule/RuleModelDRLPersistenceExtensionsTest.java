@@ -19,7 +19,6 @@ package org.drools.workbench.models.commons.backend.rule;
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.drools.workbench.models.commons.backend.oracle.PackageDataModelOracleImpl;
 import org.drools.workbench.models.commons.backend.rule.actions.TestIAction;
 import org.drools.workbench.models.commons.backend.rule.exception.RuleModelDRLPersistenceException;
 import org.drools.workbench.models.commons.backend.rule.extensions.TestIActionPersistenceExtension;
@@ -28,6 +27,7 @@ import org.drools.workbench.models.datamodel.rule.FreeFormLine;
 import org.drools.workbench.models.datamodel.rule.IAction;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.junit.Test;
+import org.kie.soup.project.datamodel.commons.oracle.PackageDataModelOracleImpl;
 
 import static org.junit.Assert.*;
 

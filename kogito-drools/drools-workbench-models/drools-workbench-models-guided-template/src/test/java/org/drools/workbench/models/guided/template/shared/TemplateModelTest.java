@@ -16,11 +16,11 @@
 
 package org.drools.workbench.models.guided.template.shared;
 
-import org.appformer.project.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.junit.Assert;
 import org.junit.Test;
+import org.kie.soup.project.datamodel.oracle.DataType;
 
 import static org.junit.Assert.assertEquals;
 
@@ -31,22 +31,22 @@ public class TemplateModelTest {
         TemplateModel m = new TemplateModel();
         m.name = "t1";
 
-        FactPattern p = new FactPattern( "Person" );
+        FactPattern p = new FactPattern("Person");
         SingleFieldConstraint con = new SingleFieldConstraint();
-        con.setFieldType( DataType.TYPE_STRING );
-        con.setFieldName( "field1" );
-        con.setOperator( "==" );
-        con.setValue( "$f1" );
-        con.setConstraintValueType( SingleFieldConstraint.TYPE_TEMPLATE );
-        p.addConstraint( con );
+        con.setFieldType(DataType.TYPE_STRING);
+        con.setFieldName("field1");
+        con.setOperator("==");
+        con.setValue("$f1");
+        con.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        p.addConstraint(con);
 
-        m.addLhsItem( p );
+        m.addLhsItem(p);
 
         try {
-            m.addRow( new String[]{} );
-            Assert.fail( "Expected IlegalArgumentException" );
-        } catch ( IllegalArgumentException iae ) {
-            assertEquals( "Invalid numbers of columns: 0 expected: 1" , iae.getMessage() );
+            m.addRow(new String[]{});
+            Assert.fail("Expected IlegalArgumentException");
+        } catch (IllegalArgumentException iae) {
+            assertEquals("Invalid numbers of columns: 0 expected: 1", iae.getMessage());
         }
     }
 }

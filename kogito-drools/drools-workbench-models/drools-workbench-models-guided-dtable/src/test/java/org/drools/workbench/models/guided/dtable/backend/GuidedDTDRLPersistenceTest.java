@@ -19,8 +19,6 @@ package org.drools.workbench.models.guided.dtable.backend;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.appformer.project.datamodel.imports.Import;
-import org.appformer.project.datamodel.oracle.DataType;
 import org.drools.workbench.models.commons.backend.rule.RuleModelDRLPersistenceImpl;
 import org.drools.workbench.models.datamodel.rule.ActionExecuteWorkItem;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
@@ -70,6 +68,8 @@ import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.models.guided.dtable.shared.model.RowNumberCol52;
 import org.junit.Test;
+import org.kie.soup.project.datamodel.imports.Import;
+import org.kie.soup.project.datamodel.oracle.DataType;
 
 import static org.junit.Assert.*;
 
@@ -4945,7 +4945,7 @@ public class GuidedDTDRLPersistenceTest {
     public void testPackageNameAndImports() throws Exception {
         GuidedDecisionTable52 dt = new GuidedDecisionTable52();
         dt.setPackageName("org.drools.guvnor.models.guided.dtable.backend");
-        dt.getImports().addImport(new Import( "java.lang.String"));
+        dt.getImports().addImport(new Import("java.lang.String"));
 
         dt.setTableName("michael");
 

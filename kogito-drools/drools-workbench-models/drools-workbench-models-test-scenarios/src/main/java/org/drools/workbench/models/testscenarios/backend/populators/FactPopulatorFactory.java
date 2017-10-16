@@ -18,14 +18,14 @@ package org.drools.workbench.models.testscenarios.backend.populators;
 
 import java.util.Map;
 
-import org.drools.core.base.TypeResolver;
 import org.drools.workbench.models.testscenarios.shared.FactData;
+import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 public class FactPopulatorFactory {
 
     private Map<String, Object> populatedData;
     private Map<String, Object> globalData;
-    private final TypeResolver  typeResolver;
+    private final TypeResolver typeResolver;
 
     public FactPopulatorFactory(Map<String, Object> populatedData,
                                 Map<String, Object> globalData,
@@ -36,28 +36,28 @@ public class FactPopulatorFactory {
     }
 
     public Populator createFactPopulator(FactData fact) throws ClassNotFoundException,
-                                                       IllegalAccessException,
-                                                       InstantiationException {
-        if ( fact.isModify() ) {
+            IllegalAccessException,
+            InstantiationException {
+        if (fact.isModify()) {
             return new ExistingFactPopulator(
-                                              populatedData,
-                                              typeResolver,
-                                              fact );
+                    populatedData,
+                    typeResolver,
+                    fact);
         } else {
             return new NewFactPopulator(
-                                         populatedData,
-                                         typeResolver,
-                                         fact );
+                    populatedData,
+                    typeResolver,
+                    fact);
         }
     }
 
     public Populator createGlobalFactPopulator(FactData fact) throws ClassNotFoundException,
-                                                             IllegalAccessException,
-                                                             InstantiationException {
+            IllegalAccessException,
+            InstantiationException {
         return new GlobalFactPopulator(
-                                        populatedData,
-                                        typeResolver,
-                                        fact,
-                                        globalData );
+                populatedData,
+                typeResolver,
+                fact,
+                globalData);
     }
 }

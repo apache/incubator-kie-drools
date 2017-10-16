@@ -15,11 +15,11 @@
  */
 package org.drools.workbench.models.guided.dtable.backend.util;
 
-import org.appformer.project.datamodel.commons.IUpgradeHelper;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.kie.soup.project.datamodel.commons.IUpgradeHelper;
 
 import java.util.List;
 
@@ -34,10 +34,11 @@ public class GuidedDecisionTableUpgradeHelper2
 
     /**
      * Convert the data-types in the Decision Table model
+     *
      * @param source
      * @return The new DTModel
      */
-    public GuidedDecisionTable52 upgrade( GuidedDecisionTable52 source ) {
+    public GuidedDecisionTable52 upgrade(GuidedDecisionTable52 source) {
 
         final GuidedDecisionTable52 destination = source;
 
@@ -48,48 +49,47 @@ public class GuidedDecisionTableUpgradeHelper2
 
         //Find the Salience and Duration column indexes
         List<BaseColumn> allColumns = destination.getExpandedColumns();
-        for ( int iCol = 0; iCol < allColumns.size(); iCol++ ) {
-            final BaseColumn column = allColumns.get( iCol );
-            if ( column instanceof AttributeCol52 ) {
+        for (int iCol = 0; iCol < allColumns.size(); iCol++) {
+            final BaseColumn column = allColumns.get(iCol);
+            if (column instanceof AttributeCol52) {
                 AttributeCol52 attributeCol = (AttributeCol52) column;
                 final String attributeName = attributeCol.getAttribute();
-                if ( GuidedDecisionTable52.SALIENCE_ATTR.equals( attributeName ) ) {
+                if (GuidedDecisionTable52.SALIENCE_ATTR.equals(attributeName)) {
                     iSalienceColumnIndex = iCol;
-                } else if ( GuidedDecisionTable52.DURATION_ATTR.equals( attributeName ) ) {
+                } else if (GuidedDecisionTable52.DURATION_ATTR.equals(attributeName)) {
                     iDurationColumnIndex = iCol;
                 }
             }
         }
 
         //Update data-types
-        for ( List<DTCellValue52> row : destination.getData() ) {
+        for (List<DTCellValue52> row : destination.getData()) {
 
             //Row numbers are Integers
-            final int rowNumberValue = row.get( iRowNumberColumnIndex ).getNumericValue().intValue();
-            row.get( iRowNumberColumnIndex ).setNumericValue( rowNumberValue );
+            final int rowNumberValue = row.get(iRowNumberColumnIndex).getNumericValue().intValue();
+            row.get(iRowNumberColumnIndex).setNumericValue(rowNumberValue);
 
             //Salience should be an Integer
-            if ( iSalienceColumnIndex != null ) {
-                final Number salienceValue = row.get( iSalienceColumnIndex ).getNumericValue();
-                if ( salienceValue == null ) {
-                    row.get( iSalienceColumnIndex ).setNumericValue( (Integer) null );
+            if (iSalienceColumnIndex != null) {
+                final Number salienceValue = row.get(iSalienceColumnIndex).getNumericValue();
+                if (salienceValue == null) {
+                    row.get(iSalienceColumnIndex).setNumericValue((Integer) null);
                 } else {
-                    row.get( iSalienceColumnIndex ).setNumericValue( salienceValue.intValue() );
+                    row.get(iSalienceColumnIndex).setNumericValue(salienceValue.intValue());
                 }
             }
 
             //Duration should be a Long
-            if ( iDurationColumnIndex != null ) {
-                final Number durationValue = row.get( iDurationColumnIndex ).getNumericValue();
-                if ( durationValue == null ) {
-                    row.get( iDurationColumnIndex ).setNumericValue( (Long) null );
+            if (iDurationColumnIndex != null) {
+                final Number durationValue = row.get(iDurationColumnIndex).getNumericValue();
+                if (durationValue == null) {
+                    row.get(iDurationColumnIndex).setNumericValue((Long) null);
                 } else {
-                    row.get( iDurationColumnIndex ).setNumericValue( durationValue.longValue() );
+                    row.get(iDurationColumnIndex).setNumericValue(durationValue.longValue());
                 }
             }
         }
 
         return destination;
     }
-
 }

@@ -15,7 +15,7 @@
  */
 package org.drools.workbench.models.guided.dtree.shared.model.parser.messages;
 
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 /**
  * A bound Type referenced could not be located in the tree
@@ -28,9 +28,9 @@ public class BindingNotFoundParserMessage implements ParserMessage {
         //Errai marshalling
     }
 
-    public BindingNotFoundParserMessage( final String binding ) {
-        this.binding = PortablePreconditions.checkNotNull( "binding",
-                                                           binding );
+    public BindingNotFoundParserMessage(final String binding) {
+        this.binding = PortablePreconditions.checkNotNull("binding",
+                                                          binding);
     }
 
     public String getBinding() {

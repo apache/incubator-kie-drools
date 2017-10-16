@@ -15,9 +15,9 @@
  */
 package org.drools.workbench.models.guided.template.backend.upgrade;
 
-import org.appformer.project.datamodel.commons.IUpgradeHelper;
 import org.drools.workbench.models.datamodel.rule.InterpolationVariable;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
+import org.kie.soup.project.datamodel.commons.IUpgradeHelper;
 
 /**
  * Utility class to support upgrades of the TemplateModel model
@@ -26,16 +26,15 @@ public class TemplateModelUpgradeHelper1
         implements
         IUpgradeHelper<TemplateModel, TemplateModel> {
 
-    public TemplateModel upgrade( TemplateModel model ) {
-        updateInterpolationVariableFieldTypes( model );
+    public TemplateModel upgrade(TemplateModel model) {
+        updateInterpolationVariableFieldTypes(model);
         return model;
     }
 
-    private void updateInterpolationVariableFieldTypes( TemplateModel model ) {
+    private void updateInterpolationVariableFieldTypes(TemplateModel model) {
         //Fields' data-types may be qualified with Fact type. This can be removed
-        for ( InterpolationVariable variable : model.getInterpolationVariablesList() ) {
-            variable.setFactField( variable.getFactField() );
+        for (InterpolationVariable variable : model.getInterpolationVariablesList()) {
+            variable.setFactField(variable.getFactField());
         }
     }
-
 }

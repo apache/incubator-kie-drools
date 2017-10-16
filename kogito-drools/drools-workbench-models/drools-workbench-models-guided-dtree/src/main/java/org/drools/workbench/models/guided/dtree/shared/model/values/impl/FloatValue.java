@@ -15,8 +15,8 @@
  */
 package org.drools.workbench.models.guided.dtree.shared.model.values.impl;
 
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.drools.workbench.models.guided.dtree.shared.model.values.Value;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class FloatValue implements Value<Float> {
 
@@ -26,27 +26,27 @@ public class FloatValue implements Value<Float> {
         //Errai marshalling
     }
 
-    public FloatValue( final Float value ) {
-        setValue( value );
+    public FloatValue(final Float value) {
+        setValue(value);
     }
 
-    public FloatValue( final FloatValue value ) {
-        setValue( value.getValue() );
+    public FloatValue(final FloatValue value) {
+        setValue(value.getValue());
     }
 
     @Override
-    public void setValue( final String value ) {
+    public void setValue(final String value) {
         try {
-            setValue( new Float( value ) );
-        } catch ( NumberFormatException nfe ) {
-            setValue( new Float( 0 ) );
+            setValue(new Float(value));
+        } catch (NumberFormatException nfe) {
+            setValue(new Float(0));
         }
     }
 
     @Override
-    public void setValue( final Float value ) {
-        this.value = PortablePreconditions.checkNotNull( "value",
-                                                         value );
+    public void setValue(final Float value) {
+        this.value = PortablePreconditions.checkNotNull("value",
+                                                        value);
     }
 
     @Override
@@ -55,17 +55,17 @@ public class FloatValue implements Value<Float> {
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof FloatValue ) ) {
+        if (!(o instanceof FloatValue)) {
             return false;
         }
 
         FloatValue that = (FloatValue) o;
 
-        if ( !value.equals( that.value ) ) {
+        if (!value.equals(that.value)) {
             return false;
         }
 

@@ -35,9 +35,9 @@ import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.RuleClassBuilder;
 import org.drools.compiler.rule.builder.RuleConditionBuilder;
 import org.drools.compiler.rule.builder.SalienceBuilder;
-import org.drools.core.base.TypeResolver;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.KnowledgeBuilderResult;
+import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import java.util.List;
 import java.util.Map;
@@ -49,6 +49,7 @@ import java.util.Map;
  * ove the MVEL and Java dialect implementations.
  */
 public interface Dialect {
+
     String getId();
 
     // this is needed because some dialects use other dialects
@@ -56,7 +57,7 @@ public interface Dialect {
     // to execute complex expressions
     String getExpressionDialectName();
 
-    Map<Class<?>,EngineElementBuilder> getBuilders();
+    Map<Class<?>, EngineElementBuilder> getBuilders();
 
     TypeResolver getTypeResolver();
 
@@ -121,7 +122,6 @@ public interface Dialect {
 
     void preCompileAddFunction(FunctionDescr functionDescr,
                                TypeResolver typeResolver);
-    
-    PackageRegistry getPackageRegistry();
 
+    PackageRegistry getPackageRegistry();
 }

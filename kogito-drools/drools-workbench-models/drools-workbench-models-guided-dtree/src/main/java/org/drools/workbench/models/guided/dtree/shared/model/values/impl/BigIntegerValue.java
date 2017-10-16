@@ -17,8 +17,8 @@ package org.drools.workbench.models.guided.dtree.shared.model.values.impl;
 
 import java.math.BigInteger;
 
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.drools.workbench.models.guided.dtree.shared.model.values.Value;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class BigIntegerValue implements Value<BigInteger> {
 
@@ -28,27 +28,27 @@ public class BigIntegerValue implements Value<BigInteger> {
         //Errai marshalling
     }
 
-    public BigIntegerValue( final BigInteger value ) {
-        setValue( value );
+    public BigIntegerValue(final BigInteger value) {
+        setValue(value);
     }
 
-    public BigIntegerValue( final BigIntegerValue value ) {
-        setValue( value.getValue() );
+    public BigIntegerValue(final BigIntegerValue value) {
+        setValue(value.getValue());
     }
 
     @Override
-    public void setValue( final String value ) {
+    public void setValue(final String value) {
         try {
-            setValue( new BigInteger( value ) );
-        } catch ( NumberFormatException nfe ) {
-            setValue( new BigInteger( "0" ) );
+            setValue(new BigInteger(value));
+        } catch (NumberFormatException nfe) {
+            setValue(new BigInteger("0"));
         }
     }
 
     @Override
-    public void setValue( final BigInteger value ) {
-        this.value = PortablePreconditions.checkNotNull( "value",
-                                                         value );
+    public void setValue(final BigInteger value) {
+        this.value = PortablePreconditions.checkNotNull("value",
+                                                        value);
     }
 
     @Override
@@ -57,17 +57,17 @@ public class BigIntegerValue implements Value<BigInteger> {
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof BigIntegerValue ) ) {
+        if (!(o instanceof BigIntegerValue)) {
             return false;
         }
 
         BigIntegerValue that = (BigIntegerValue) o;
 
-        if ( !value.equals( that.value ) ) {
+        if (!value.equals(that.value)) {
             return false;
         }
 

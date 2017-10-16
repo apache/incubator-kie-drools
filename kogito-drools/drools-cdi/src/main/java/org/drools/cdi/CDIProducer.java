@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright (C) 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.drools.cdi;
 
-package org.drools.workbench.models.testscenarios.backend;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Produces;
 
-import org.junit.runner.notification.RunListener;
-import org.kie.api.runtime.KieSession;
-import org.kie.soup.project.datamodel.commons.types.TypeResolver;
+import org.drools.core.util.MVELSafeHelper;
+import org.kie.soup.project.datamodel.commons.util.MVELEvaluator;
 
-import java.util.Map;
+@Dependent
+public class CDIProducer {
 
-public interface TestService<T> {
-
-    void run(T target,
-             Map<String, KieSession> ksessions,
-             TypeResolver resolver,
-             RunListener listener);
+    @Produces
+    public MVELEvaluator getEvaluator() {
+        return MVELSafeHelper.getEvaluator();
+    }
 }

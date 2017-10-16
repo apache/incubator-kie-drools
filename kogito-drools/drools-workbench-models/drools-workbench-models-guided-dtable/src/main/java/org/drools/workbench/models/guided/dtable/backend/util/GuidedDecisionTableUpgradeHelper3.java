@@ -15,7 +15,6 @@
  */
 package org.drools.workbench.models.guided.dtable.backend.util;
 
-import org.appformer.project.datamodel.commons.IUpgradeHelper;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLVariableColumn;
@@ -26,6 +25,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.DTColumnConfig52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryCol;
 import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
+import org.kie.soup.project.datamodel.commons.IUpgradeHelper;
 
 /**
  * Helper class to upgrade Default Values to DTCellValue52 objects instead of
@@ -37,34 +37,35 @@ public class GuidedDecisionTableUpgradeHelper3
 
     /**
      * Convert the Default Values in the Decision Table model
+     *
      * @param source
      * @return The new DTModel
      */
-    public GuidedDecisionTable52 upgrade( GuidedDecisionTable52 source ) {
+    public GuidedDecisionTable52 upgrade(GuidedDecisionTable52 source) {
 
         final GuidedDecisionTable52 destination = source;
 
-        for ( BaseColumn column : source.getExpandedColumns() ) {
+        for (BaseColumn column : source.getExpandedColumns()) {
             DTColumnConfig52 dtColumn = null;
-            if ( column instanceof MetadataCol52 ) {
+            if (column instanceof MetadataCol52) {
                 dtColumn = (DTColumnConfig52) column;
-            } else if ( column instanceof AttributeCol52 ) {
+            } else if (column instanceof AttributeCol52) {
                 dtColumn = (DTColumnConfig52) column;
-            } else if ( column instanceof ConditionCol52 ) {
+            } else if (column instanceof ConditionCol52) {
                 dtColumn = (DTColumnConfig52) column;
-            } else if ( column instanceof ActionCol52 ) {
+            } else if (column instanceof ActionCol52) {
                 dtColumn = (DTColumnConfig52) column;
             }
-            if ( dtColumn instanceof LimitedEntryCol ) {
+            if (dtColumn instanceof LimitedEntryCol) {
                 dtColumn = null;
             }
-            if ( dtColumn instanceof BRLVariableColumn ) {
+            if (dtColumn instanceof BRLVariableColumn) {
                 dtColumn = null;
             }
-            if ( dtColumn != null ) {
+            if (dtColumn != null) {
                 final String legacyDefaultValue = dtColumn.defaultValue;
-                if ( legacyDefaultValue != null ) {
-                    dtColumn.setDefaultValue( new DTCellValue52( legacyDefaultValue ) );
+                if (legacyDefaultValue != null) {
+                    dtColumn.setDefaultValue(new DTCellValue52(legacyDefaultValue));
                     dtColumn.defaultValue = null;
                 }
             }

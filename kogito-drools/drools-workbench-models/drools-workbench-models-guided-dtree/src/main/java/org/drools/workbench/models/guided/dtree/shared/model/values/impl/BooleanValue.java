@@ -15,8 +15,8 @@
  */
 package org.drools.workbench.models.guided.dtree.shared.model.values.impl;
 
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.drools.workbench.models.guided.dtree.shared.model.values.Value;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class BooleanValue implements Value<Boolean> {
 
@@ -26,23 +26,23 @@ public class BooleanValue implements Value<Boolean> {
         //Errai marshalling
     }
 
-    public BooleanValue( final Boolean value ) {
-        setValue( value );
+    public BooleanValue(final Boolean value) {
+        setValue(value);
     }
 
-    public BooleanValue( final BooleanValue value ) {
-        setValue( value.getValue() );
-    }
-
-    @Override
-    public void setValue( final String value ) {
-        setValue( new Boolean( value ) );
+    public BooleanValue(final BooleanValue value) {
+        setValue(value.getValue());
     }
 
     @Override
-    public void setValue( final Boolean value ) {
-        this.value = PortablePreconditions.checkNotNull( "value",
-                                                         value );
+    public void setValue(final String value) {
+        setValue(new Boolean(value));
+    }
+
+    @Override
+    public void setValue(final Boolean value) {
+        this.value = PortablePreconditions.checkNotNull("value",
+                                                        value);
     }
 
     @Override
@@ -51,17 +51,17 @@ public class BooleanValue implements Value<Boolean> {
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof BooleanValue ) ) {
+        if (!(o instanceof BooleanValue)) {
             return false;
         }
 
         BooleanValue that = (BooleanValue) o;
 
-        if ( !value.equals( that.value ) ) {
+        if (!value.equals(that.value)) {
             return false;
         }
 

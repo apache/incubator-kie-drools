@@ -17,8 +17,8 @@ package org.drools.workbench.models.guided.dtree.shared.model.values.impl;
 
 import java.util.Date;
 
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.drools.workbench.models.guided.dtree.shared.model.values.Value;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class DateValue implements Value<Date> {
 
@@ -28,24 +28,24 @@ public class DateValue implements Value<Date> {
         //Errai marshalling
     }
 
-    public DateValue( final Date value ) {
-        setValue( value );
+    public DateValue(final Date value) {
+        setValue(value);
     }
 
-    public DateValue( final DateValue value ) {
-        setValue( value.getValue() );
+    public DateValue(final DateValue value) {
+        setValue(value.getValue());
     }
 
     @Override
-    public void setValue( final String value ) {
+    public void setValue(final String value) {
         //This class can be used server or client side where we have to use different String->Date conversion classes
-        throw new UnsupportedOperationException( "Please use DateValue.setValue(Date)" );
+        throw new UnsupportedOperationException("Please use DateValue.setValue(Date)");
     }
 
     @Override
-    public void setValue( final Date value ) {
-        this.value = PortablePreconditions.checkNotNull( "value",
-                                                         value );
+    public void setValue(final Date value) {
+        this.value = PortablePreconditions.checkNotNull("value",
+                                                        value);
     }
 
     @Override
@@ -54,17 +54,17 @@ public class DateValue implements Value<Date> {
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof DateValue ) ) {
+        if (!(o instanceof DateValue)) {
             return false;
         }
 
         DateValue dateValue = (DateValue) o;
 
-        if ( !value.equals( dateValue.value ) ) {
+        if (!value.equals(dateValue.value)) {
             return false;
         }
 

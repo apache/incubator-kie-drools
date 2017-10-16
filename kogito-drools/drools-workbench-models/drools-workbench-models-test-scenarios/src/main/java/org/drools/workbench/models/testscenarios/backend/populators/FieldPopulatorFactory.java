@@ -19,11 +19,11 @@ package org.drools.workbench.models.testscenarios.backend.populators;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.drools.core.base.TypeResolver;
 import org.drools.workbench.models.testscenarios.shared.CollectionFieldData;
 import org.drools.workbench.models.testscenarios.shared.FactAssignmentField;
 import org.drools.workbench.models.testscenarios.shared.Field;
 import org.drools.workbench.models.testscenarios.shared.FieldData;
+import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 class FieldPopulatorFactory {
 
@@ -45,12 +45,12 @@ class FieldPopulatorFactory {
                 throw new IllegalArgumentException("Field value can not be null");
             } else {
                 return getFieldDataPopulator(factObject,
-                        fieldData);
+                                             fieldData);
             }
-        } else if (field instanceof FactAssignmentField ) {
+        } else if (field instanceof FactAssignmentField) {
             return new FactAssignmentFieldPopulator(factObject,
-                    (FactAssignmentField) field,
-                    typeResolver);
+                                                    (FactAssignmentField) field,
+                                                    typeResolver);
         } else if (field instanceof CollectionFieldData) {
             return new CollectionFieldPopulator(
                     factObject,
@@ -69,14 +69,13 @@ class FieldPopulatorFactory {
 //        } else
         if (fieldData.getValue().startsWith("=")) {
             return new ExpressionFieldPopulator(factObject,
-                    fieldData.getName(),
-                    fieldData.getValue().substring(1));
-
+                                                fieldData.getName(),
+                                                fieldData.getValue().substring(1));
         } else if (fieldData.getNature() == FieldData.TYPE_ENUM) {
             return new EnumFieldPopulator(factObject,
-                    fieldData.getName(),
-                    fieldData.getValue(),
-                    typeResolver);
+                                          fieldData.getName(),
+                                          fieldData.getValue(),
+                                          typeResolver);
         } else if (isDate(fieldData.getName())) {
             return new DateFieldPopulator(
                     factObject,
@@ -85,8 +84,8 @@ class FieldPopulatorFactory {
                     fieldData.getValue());
         } else {
             return new SimpleFieldPopulator(factObject,
-                    fieldData.getName(),
-                    fieldData.getValue());
+                                            fieldData.getName(),
+                                            fieldData.getValue());
         }
     }
 
@@ -131,5 +130,4 @@ class FieldPopulatorFactory {
             return firstLetter.toUpperCase() + tail;
         }
     }
-
 }

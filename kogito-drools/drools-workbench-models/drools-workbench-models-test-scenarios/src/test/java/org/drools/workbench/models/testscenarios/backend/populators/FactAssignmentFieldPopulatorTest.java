@@ -23,20 +23,20 @@ import static org.junit.Assert.assertNull;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import org.drools.core.base.ClassTypeResolver;
-import org.drools.core.base.TypeResolver;
-import org.junit.Test;
 import org.drools.workbench.models.testscenarios.backend.MatryoshkaDoll;
 import org.drools.workbench.models.testscenarios.backend.Mouse;
 import org.drools.workbench.models.testscenarios.shared.FactAssignmentField;
 import org.drools.workbench.models.testscenarios.shared.FieldData;
+import org.junit.Test;
+import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
+import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 public class FactAssignmentFieldPopulatorTest {
 
     @Test
     public void testFactAssignmentField() throws Exception {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        TypeResolver typeResolver = new ClassTypeResolver(new HashSet<String>(),classLoader );
+        TypeResolver typeResolver = new ClassTypeResolver(new HashSet<String>(), classLoader);
         typeResolver.addImport("org.drools.workbench.models.testscenarios.backend.Cheese");
 
         Mouse mouse = new Mouse();
@@ -53,7 +53,7 @@ public class FactAssignmentFieldPopulatorTest {
     @Test
     public void testSimpleFields() throws Exception {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        TypeResolver typeResolver = new ClassTypeResolver(new HashSet<String>(),classLoader );
+        TypeResolver typeResolver = new ClassTypeResolver(new HashSet<String>(), classLoader);
         typeResolver.addImport("org.drools.workbench.models.testscenarios.backend.Cheese");
 
         Mouse mouse = new Mouse();
@@ -71,7 +71,7 @@ public class FactAssignmentFieldPopulatorTest {
     @Test
     public void testMatryoshkaDollSituation() throws Exception {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        TypeResolver typeResolver = new ClassTypeResolver(new HashSet<String>(),classLoader );
+        TypeResolver typeResolver = new ClassTypeResolver(new HashSet<String>(), classLoader);
         typeResolver.addImport("org.drools.workbench.models.testscenarios.backend.MatryoshkaDoll");
 
         MatryoshkaDoll matryoshkaDoll = new MatryoshkaDoll();

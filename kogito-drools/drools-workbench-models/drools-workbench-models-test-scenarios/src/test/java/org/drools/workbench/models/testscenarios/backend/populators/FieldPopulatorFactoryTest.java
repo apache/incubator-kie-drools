@@ -16,18 +16,20 @@
 
 package org.drools.workbench.models.testscenarios.backend.populators;
 
-import org.drools.core.base.TypeResolver;
 import org.drools.workbench.models.testscenarios.backend.Cheese;
 import org.drools.workbench.models.testscenarios.shared.Fact;
 import org.drools.workbench.models.testscenarios.shared.FactAssignmentField;
 import org.drools.workbench.models.testscenarios.shared.Field;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
+
+import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 public class FieldPopulatorFactoryTest {
 
@@ -46,7 +48,6 @@ public class FieldPopulatorFactoryTest {
 
         FactAssignmentField field = new FactAssignmentField();
         field.setFact(new Fact());
-
 
         Mockito.<Class>when(
                 typeResolver.resolveType(Matchers.<String>any())

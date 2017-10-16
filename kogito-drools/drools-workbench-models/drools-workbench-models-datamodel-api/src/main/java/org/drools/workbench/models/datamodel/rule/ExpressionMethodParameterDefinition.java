@@ -16,7 +16,7 @@
 
 package org.drools.workbench.models.datamodel.rule;
 
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 /**
  * Meta Data for a ExpressionMethod's parameter definitions.
@@ -30,11 +30,11 @@ public class ExpressionMethodParameterDefinition {
         //Empty constructor for Errai marshalling. Cannot use @MapsTo since we don't want any Errai JAR dependencies here.
     }
 
-    public ExpressionMethodParameterDefinition( final int index,
-                                                final String dataType ) {
+    public ExpressionMethodParameterDefinition(final int index,
+                                               final String dataType) {
         this.index = index;
         this.dataType = PortablePreconditions.checkNotNull("dataType",
-                                                           dataType );
+                                                           dataType);
     }
 
     public int getIndex() {
@@ -46,21 +46,20 @@ public class ExpressionMethodParameterDefinition {
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof ExpressionMethodParameterDefinition ) ) {
+        if (!(o instanceof ExpressionMethodParameterDefinition)) {
             return false;
         }
 
         ExpressionMethodParameterDefinition that = (ExpressionMethodParameterDefinition) o;
 
-        if ( index != that.index ) {
+        if (index != that.index) {
             return false;
         }
-        return dataType.equals( that.dataType );
-
+        return dataType.equals(that.dataType);
     }
 
     @Override

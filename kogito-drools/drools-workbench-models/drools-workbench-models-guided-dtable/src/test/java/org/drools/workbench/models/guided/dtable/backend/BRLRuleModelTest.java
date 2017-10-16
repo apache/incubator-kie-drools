@@ -18,7 +18,6 @@ package org.drools.workbench.models.guided.dtable.backend;
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.appformer.project.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
 import org.drools.workbench.models.datamodel.rule.ActionInsertFact;
 import org.drools.workbench.models.datamodel.rule.ActionSetField;
@@ -47,6 +46,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.adaptors.ActionIns
 import org.drools.workbench.models.guided.dtable.shared.model.adaptors.ConditionCol52FieldConstraintAdaptor;
 import org.drools.workbench.models.guided.dtable.shared.model.adaptors.Pattern52FactPatternAdaptor;
 import org.junit.Test;
+import org.kie.soup.project.datamodel.oracle.DataType;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

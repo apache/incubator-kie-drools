@@ -23,9 +23,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
 
-import org.drools.core.base.TypeResolver;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.kie.api.runtime.rule.RuleUnit;
+import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import static org.drools.core.ruleunit.RuleUnitUtil.getUnitName;
 
@@ -34,17 +34,19 @@ public class RuleUnitRegistry {
     private State state = State.UNKNOWN;
 
     private enum State {
-        UNIT, NO_UNIT, UNKNOWN;
+        UNIT,
+        NO_UNIT,
+        UNKNOWN;
 
         State hasUnit(boolean hasUnit) {
             if (hasUnit) {
                 if (this == NO_UNIT) {
-                    throw new IllegalStateException( "Cannot mix rules with and without unit" );
+                    throw new IllegalStateException("Cannot mix rules with and without unit");
                 }
                 return UNIT;
             } else {
                 if (this == UNIT) {
-                    throw new IllegalStateException( "Cannot mix rules with and without unit" );
+                    throw new IllegalStateException("Cannot mix rules with and without unit");
                 }
                 return NO_UNIT;
             }
@@ -58,7 +60,7 @@ public class RuleUnitRegistry {
                 return this;
             }
             if (this != other) {
-                throw new IllegalStateException( "Cannot mix rules with and without unit" );
+                throw new IllegalStateException("Cannot mix rules with and without unit");
             }
             return this;
         }
@@ -74,46 +76,46 @@ public class RuleUnitRegistry {
         this(null);
     }
 
-    public RuleUnitRegistry( TypeResolver typeResolver ) {
+    public RuleUnitRegistry(TypeResolver typeResolver) {
         this.typeResolver = typeResolver;
     }
 
-    public RuleUnitDescr getRuleUnitDescr( RuleUnit ruleUnit ) {
-        RuleUnitDescr ruleUnitDescr = ruleUnits.get( getUnitName(ruleUnit) );
+    public RuleUnitDescr getRuleUnitDescr(RuleUnit ruleUnit) {
+        RuleUnitDescr ruleUnitDescr = ruleUnits.get(getUnitName(ruleUnit));
         if (ruleUnitDescr == null) {
-            throw new IllegalStateException( "Unknown RuleUnit: " + getUnitName(ruleUnit) );
+            throw new IllegalStateException("Unknown RuleUnit: " + getUnitName(ruleUnit));
         }
         return ruleUnitDescr;
     }
 
-    public Optional<RuleUnitDescr> getRuleUnitFor( RuleImpl rule ) {
+    public Optional<RuleUnitDescr> getRuleUnitFor(RuleImpl rule) {
         String unitClassName = rule.getRuleUnitClassName();
-        state = state.hasUnit( unitClassName != null );
-        return Optional.ofNullable( unitClassName )
-                       .map( name -> ruleUnits.computeIfAbsent( name, this::findRuleUnitDescr ) );
+        state = state.hasUnit(unitClassName != null);
+        return Optional.ofNullable(unitClassName)
+                .map(name -> ruleUnits.computeIfAbsent(name, this::findRuleUnitDescr));
     }
 
-    private RuleUnitDescr findRuleUnitDescr( String ruleUnit ) {
-        if (nonExistingUnits.contains( ruleUnit )) {
+    private RuleUnitDescr findRuleUnitDescr(String ruleUnit) {
+        if (nonExistingUnits.contains(ruleUnit)) {
             return null;
         }
         try {
-            return new RuleUnitDescr((Class<? extends RuleUnit>) typeResolver.resolveType( ruleUnit ));
+            return new RuleUnitDescr((Class<? extends RuleUnit>) typeResolver.resolveType(ruleUnit));
         } catch (ClassNotFoundException e) {
-            nonExistingUnits.add( ruleUnit );
+            nonExistingUnits.add(ruleUnit);
             return null;
         }
     }
 
-    public void registerRuleUnit( String unitName, Supplier<Class<? extends RuleUnit>> unitSupplier) {
-        ruleUnits.computeIfAbsent( unitName, n -> new RuleUnitDescr( unitSupplier.get() ) );
+    public void registerRuleUnit(String unitName, Supplier<Class<? extends RuleUnit>> unitSupplier) {
+        ruleUnits.computeIfAbsent(unitName, n -> new RuleUnitDescr(unitSupplier.get()));
     }
 
-    public void add( RuleUnitRegistry other ) {
+    public void add(RuleUnitRegistry other) {
         if (other != null) {
-            ruleUnits.putAll( other.ruleUnits );
-            state = state.merge( other.state );
-            nonExistingUnits.addAll( other.nonExistingUnits );
+            ruleUnits.putAll(other.ruleUnits);
+            state = state.merge(other.state);
+            nonExistingUnits.addAll(other.nonExistingUnits);
         }
     }
 

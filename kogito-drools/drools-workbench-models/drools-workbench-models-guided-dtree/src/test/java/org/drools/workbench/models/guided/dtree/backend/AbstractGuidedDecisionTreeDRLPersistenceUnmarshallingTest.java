@@ -21,13 +21,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.appformer.project.datamodel.oracle.FieldAccessorsAndMutators;
-import org.appformer.project.datamodel.oracle.MethodInfo;
-import org.appformer.project.datamodel.oracle.ModelField;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.guided.dtree.shared.model.GuidedDecisionTree;
 import org.junit.After;
 import org.junit.Before;
+import org.kie.soup.project.datamodel.oracle.FieldAccessorsAndMutators;
+import org.kie.soup.project.datamodel.oracle.MethodInfo;
+import org.kie.soup.project.datamodel.oracle.ModelField;
+import org.kie.soup.project.datamodel.oracle.PackageDataModelOracle;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -44,10 +44,10 @@ public abstract class AbstractGuidedDecisionTreeDRLPersistenceUnmarshallingTest 
 
     @Before
     public void setUp() throws Exception {
-        dmo = mock( PackageDataModelOracle.class );
-        when( dmo.getProjectModelFields() ).thenReturn( packageModelFields );
-        when( dmo.getProjectJavaEnumDefinitions() ).thenReturn( projectJavaEnumDefinitions );
-        when( dmo.getProjectMethodInformation() ).thenReturn( projectMethodInformation );
+        dmo = mock(PackageDataModelOracle.class);
+        when(dmo.getProjectModelFields()).thenReturn(packageModelFields);
+        when(dmo.getProjectJavaEnumDefinitions()).thenReturn(projectJavaEnumDefinitions);
+        when(dmo.getProjectMethodInformation()).thenReturn(projectMethodInformation);
     }
 
     @After
@@ -57,52 +57,52 @@ public abstract class AbstractGuidedDecisionTreeDRLPersistenceUnmarshallingTest 
         projectMethodInformation.clear();
     }
 
-    protected void addModelField( final String factName,
-                                  final String fieldName,
-                                  final String clazz,
-                                  final String type ) {
-        ModelField[] modelFields = new ModelField[ 1 ];
-        modelFields[ 0 ] = new ModelField( fieldName,
-                                           clazz,
-                                           ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
-                                           ModelField.FIELD_ORIGIN.DECLARED,
-                                           FieldAccessorsAndMutators.BOTH,
-                                           type );
-        if ( packageModelFields.containsKey( factName ) ) {
-            final List<ModelField> existingModelFields = new ArrayList<ModelField>( Arrays.asList( packageModelFields.get( factName ) ) );
-            existingModelFields.add( modelFields[ 0 ] );
-            modelFields = existingModelFields.toArray( modelFields );
+    protected void addModelField(final String factName,
+                                 final String fieldName,
+                                 final String clazz,
+                                 final String type) {
+        ModelField[] modelFields = new ModelField[1];
+        modelFields[0] = new ModelField(fieldName,
+                                        clazz,
+                                        ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                                        ModelField.FIELD_ORIGIN.DECLARED,
+                                        FieldAccessorsAndMutators.BOTH,
+                                        type);
+        if (packageModelFields.containsKey(factName)) {
+            final List<ModelField> existingModelFields = new ArrayList<ModelField>(Arrays.asList(packageModelFields.get(factName)));
+            existingModelFields.add(modelFields[0]);
+            modelFields = existingModelFields.toArray(modelFields);
         }
-        packageModelFields.put( factName,
-                                modelFields );
+        packageModelFields.put(factName,
+                               modelFields);
     }
 
-    protected void addJavaEnumDefinition( final String factName,
-                                          final String fieldName,
-                                          final String[] values ) {
+    protected void addJavaEnumDefinition(final String factName,
+                                         final String fieldName,
+                                         final String[] values) {
         final String key = factName + "#" + fieldName;
-        projectJavaEnumDefinitions.put( key,
-                                        values );
+        projectJavaEnumDefinitions.put(key,
+                                       values);
     }
 
-    protected GuidedDecisionTree getAndTestUnmarshalledModel( final String drl,
-                                                              final String baseFileName,
-                                                              final int expectedParseErrorsSize ) {
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   baseFileName,
-                                                                                                   dmo );
+    protected GuidedDecisionTree getAndTestUnmarshalledModel(final String drl,
+                                                             final String baseFileName,
+                                                             final int expectedParseErrorsSize) {
+        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal(drl,
+                                                                                                  baseFileName,
+                                                                                                  dmo);
 
-        assertNotNull( model );
-        assertEquals( expectedParseErrorsSize,
-                      model.getParserErrors().size() );
+        assertNotNull(model);
+        assertEquals(expectedParseErrorsSize,
+                     model.getParserErrors().size());
         return model;
     }
 
-    protected void assertEqualsIgnoreWhitespace( final String expected,
-                                                 final String actual ) {
-        final String cleanExpected = expected.replaceAll( "\\s+", "" );
-        final String cleanActual = actual.replaceAll( "\\s+", "" );
+    protected void assertEqualsIgnoreWhitespace(final String expected,
+                                                final String actual) {
+        final String cleanExpected = expected.replaceAll("\\s+", "");
+        final String cleanActual = actual.replaceAll("\\s+", "");
 
-        assertEquals( cleanExpected, cleanActual );
+        assertEquals(cleanExpected, cleanActual);
     }
 }

@@ -94,7 +94,6 @@ import org.drools.compiler.rule.builder.dialect.asm.ASMReturnValueStubBuilder;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELEnabledBuilder;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELFromBuilder;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELSalienceBuilder;
-import org.drools.core.base.TypeResolver;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.io.internal.InternalResource;
@@ -105,37 +104,38 @@ import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.KnowledgeBuilderResult;
+import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 public class JavaDialect
-    implements
-    Dialect {
+        implements
+        Dialect {
 
-    public static final String                         ID                            = "java";
+    public static final String ID = "java";
 
-    private final static String                        EXPRESSION_DIALECT_NAME       = "mvel";
+    private final static String EXPRESSION_DIALECT_NAME = "mvel";
 
     // builders
-    protected static final PatternBuilder              PATTERN_BUILDER               = new PatternBuilder();
-    protected static final QueryBuilder                QUERY_BUILDER                 = new QueryBuilder();
-    protected static final SalienceBuilder             SALIENCE_BUILDER              = new MVELSalienceBuilder();
-    protected static final EnabledBuilder              ENABLED_BUILDER               = new MVELEnabledBuilder();
-    protected static final JavaAccumulateBuilder       ACCUMULATE_BUILDER            = new JavaAccumulateBuilder();
+    protected static final PatternBuilder PATTERN_BUILDER = new PatternBuilder();
+    protected static final QueryBuilder QUERY_BUILDER = new QueryBuilder();
+    protected static final SalienceBuilder SALIENCE_BUILDER = new MVELSalienceBuilder();
+    protected static final EnabledBuilder ENABLED_BUILDER = new MVELEnabledBuilder();
+    protected static final JavaAccumulateBuilder ACCUMULATE_BUILDER = new JavaAccumulateBuilder();
 
-    protected static final RuleConditionBuilder        EVAL_BUILDER                  = new ASMEvalStubBuilder();
-    protected static final PredicateBuilder            PREDICATE_BUILDER             = new ASMPredicateStubBuilder();
-    protected static final ReturnValueBuilder          RETURN_VALUE_BUILDER          = new ASMReturnValueStubBuilder();
-    protected static final ConsequenceBuilder          CONSEQUENCE_BUILDER           = new ASMConsequenceStubBuilder();
+    protected static final RuleConditionBuilder EVAL_BUILDER = new ASMEvalStubBuilder();
+    protected static final PredicateBuilder PREDICATE_BUILDER = new ASMPredicateStubBuilder();
+    protected static final ReturnValueBuilder RETURN_VALUE_BUILDER = new ASMReturnValueStubBuilder();
+    protected static final ConsequenceBuilder CONSEQUENCE_BUILDER = new ASMConsequenceStubBuilder();
 
-    protected static final JavaRuleClassBuilder        RULE_CLASS_BUILDER            = new JavaRuleClassBuilder();
-    protected static final MVELFromBuilder             FROM_BUILDER                  = new MVELFromBuilder();
-    protected static final JavaFunctionBuilder         FUNCTION_BUILDER              = new JavaFunctionBuilder();
-    protected static final CollectBuilder              COLLECT_BUIDER                = new CollectBuilder();
-    protected static final ForallBuilder               FORALL_BUILDER                = new ForallBuilder();
-    protected static final EntryPointBuilder           ENTRY_POINT_BUILDER           = new EntryPointBuilder();
-    protected static final WindowReferenceBuilder      WINDOW_REFERENCE_BUILDER      = new WindowReferenceBuilder();
-    protected static final GroupElementBuilder         GE_BUILDER                    = new GroupElementBuilder();
-    protected static final NamedConsequenceBuilder     NAMED_CONSEQUENCE_BUILDER     = new NamedConsequenceBuilder();
-    protected static final ConditionalBranchBuilder    CONDITIONAL_BRANCH_BUILDER    = new ConditionalBranchBuilder();
+    protected static final JavaRuleClassBuilder RULE_CLASS_BUILDER = new JavaRuleClassBuilder();
+    protected static final MVELFromBuilder FROM_BUILDER = new MVELFromBuilder();
+    protected static final JavaFunctionBuilder FUNCTION_BUILDER = new JavaFunctionBuilder();
+    protected static final CollectBuilder COLLECT_BUIDER = new CollectBuilder();
+    protected static final ForallBuilder FORALL_BUILDER = new ForallBuilder();
+    protected static final EntryPointBuilder ENTRY_POINT_BUILDER = new EntryPointBuilder();
+    protected static final WindowReferenceBuilder WINDOW_REFERENCE_BUILDER = new WindowReferenceBuilder();
+    protected static final GroupElementBuilder GE_BUILDER = new GroupElementBuilder();
+    protected static final NamedConsequenceBuilder NAMED_CONSEQUENCE_BUILDER = new NamedConsequenceBuilder();
+    protected static final ConditionalBranchBuilder CONDITIONAL_BRANCH_BUILDER = new ConditionalBranchBuilder();
 
     // a map of registered builders
     private static Map<Class<?>, EngineElementBuilder> builders;
@@ -145,19 +145,19 @@ public class JavaDialect
     }
 
     //
-    private static final JavaExprAnalyzer            analyzer                      = new JavaExprAnalyzer();
+    private static final JavaExprAnalyzer analyzer = new JavaExprAnalyzer();
 
-    private final JavaDialectConfiguration           configuration;
+    private final JavaDialectConfiguration configuration;
 
-    private JavaCompiler                             compiler;
-    private final InternalKnowledgePackage           pkg;
-    private final ClassLoader                        rootClassLoader;
-    private final KnowledgeBuilderConfigurationImpl  pkgConf;
-    private final List<String>                       generatedClassList;
-    private final MemoryResourceReader               src;
-    private final PackageStore                       packageStoreWrapper;
-    private final Map<String, ErrorHandler>          errorHandlers;
-    private final List<KnowledgeBuilderResult>       results;
+    private JavaCompiler compiler;
+    private final InternalKnowledgePackage pkg;
+    private final ClassLoader rootClassLoader;
+    private final KnowledgeBuilderConfigurationImpl pkgConf;
+    private final List<String> generatedClassList;
+    private final MemoryResourceReader src;
+    private final PackageStore packageStoreWrapper;
+    private final Map<String, ErrorHandler> errorHandlers;
+    private final List<KnowledgeBuilderResult> results;
 
     private final PackageRegistry packageRegistry;
 
@@ -170,36 +170,36 @@ public class JavaDialect
         this.pkg = pkg;
         this.packageRegistry = pkgRegistry;
 
-        this.configuration = (JavaDialectConfiguration) pkgConf.getDialectConfiguration( "java" );
+        this.configuration = (JavaDialectConfiguration) pkgConf.getDialectConfiguration("java");
 
         this.errorHandlers = new ConcurrentHashMap<String, ErrorHandler>();
         this.results = new ArrayList<KnowledgeBuilderResult>();
 
         this.src = new MemoryResourceReader();
 
-        this.generatedClassList = Collections.synchronizedList( new ArrayList<String>() );
+        this.generatedClassList = Collections.synchronizedList(new ArrayList<String>());
 
-        JavaDialectRuntimeData data = (JavaDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData( ID );
+        JavaDialectRuntimeData data = (JavaDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData(ID);
 
         // initialise the dialect runtime data if it doesn't already exist
-        if ( data == null ) {
+        if (data == null) {
             data = new JavaDialectRuntimeData();
-            this.pkg.getDialectRuntimeRegistry().setDialectData( ID,
-                                                                 data );
-            data.onAdd( this.pkg.getDialectRuntimeRegistry(),
-                        rootClassLoader );
+            this.pkg.getDialectRuntimeRegistry().setDialectData(ID,
+                                                                data);
+            data.onAdd(this.pkg.getDialectRuntimeRegistry(),
+                       rootClassLoader);
         } else {
-            data = (JavaDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData( ID );
+            data = (JavaDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData(ID);
         }
 
-        this.packageStoreWrapper = new PackageStore( data,
-                                                     this.results );
+        this.packageStoreWrapper = new PackageStore(data,
+                                                    this.results);
 
         loadCompiler();
     }
 
     public static synchronized void initBuilder() {
-        if ( builders != null ) {
+        if (builders != null) {
             return;
         }
         reinitBuilder();
@@ -212,50 +212,50 @@ public class JavaDialect
         // if we want to
         builders = new HashMap<Class<?>, EngineElementBuilder>();
 
-        builders.put( CollectDescr.class,
-                      COLLECT_BUIDER );
+        builders.put(CollectDescr.class,
+                     COLLECT_BUIDER);
 
-        builders.put( ForallDescr.class,
-                      FORALL_BUILDER );
+        builders.put(ForallDescr.class,
+                     FORALL_BUILDER);
 
-        builders.put( AndDescr.class,
-                      GE_BUILDER );
+        builders.put(AndDescr.class,
+                     GE_BUILDER);
 
-        builders.put( OrDescr.class,
-                      GE_BUILDER );
+        builders.put(OrDescr.class,
+                     GE_BUILDER);
 
-        builders.put( NotDescr.class,
-                      GE_BUILDER );
+        builders.put(NotDescr.class,
+                     GE_BUILDER);
 
-        builders.put( ExistsDescr.class,
-                      GE_BUILDER );
+        builders.put(ExistsDescr.class,
+                     GE_BUILDER);
 
-        builders.put( PatternDescr.class,
-                      PATTERN_BUILDER );
+        builders.put(PatternDescr.class,
+                     PATTERN_BUILDER);
 
-        builders.put( QueryDescr.class,
-                      QUERY_BUILDER );
+        builders.put(QueryDescr.class,
+                     QUERY_BUILDER);
 
-        builders.put( FromDescr.class,
-                      FROM_BUILDER );
+        builders.put(FromDescr.class,
+                     FROM_BUILDER);
 
-        builders.put( AccumulateDescr.class,
-                      ACCUMULATE_BUILDER );
+        builders.put(AccumulateDescr.class,
+                     ACCUMULATE_BUILDER);
 
-        builders.put( EvalDescr.class,
-                      EVAL_BUILDER );
+        builders.put(EvalDescr.class,
+                     EVAL_BUILDER);
 
-        builders.put( EntryPointDescr.class,
-                      ENTRY_POINT_BUILDER );
+        builders.put(EntryPointDescr.class,
+                     ENTRY_POINT_BUILDER);
 
-        builders.put( WindowReferenceDescr.class,
-                      WINDOW_REFERENCE_BUILDER );
+        builders.put(WindowReferenceDescr.class,
+                     WINDOW_REFERENCE_BUILDER);
 
-        builders.put( NamedConsequenceDescr.class,
-                      NAMED_CONSEQUENCE_BUILDER );
+        builders.put(NamedConsequenceDescr.class,
+                     NAMED_CONSEQUENCE_BUILDER);
 
-        builders.put( ConditionalBranchDescr.class,
-                      CONDITIONAL_BRANCH_BUILDER );
+        builders.put(ConditionalBranchDescr.class,
+                     CONDITIONAL_BRANCH_BUILDER);
     }
 
     public Map<Class<?>, EngineElementBuilder> getBuilders() {
@@ -263,23 +263,23 @@ public class JavaDialect
     }
 
     public void init(final RuleDescr ruleDescr) {
-        final String ruleClassName = DialectUtil.getUniqueLegalName( this.pkg.getName(),
-                                                                     ruleDescr.getName(),
-                                                                     ruleDescr.getConsequence().hashCode(),
-                                                                     "java",
-                                                                     "Rule",
-                                                                     this.src);
-        ruleDescr.setClassName( StringUtils.ucFirst( ruleClassName ) );
+        final String ruleClassName = DialectUtil.getUniqueLegalName(this.pkg.getName(),
+                                                                    ruleDescr.getName(),
+                                                                    ruleDescr.getConsequence().hashCode(),
+                                                                    "java",
+                                                                    "Rule",
+                                                                    this.src);
+        ruleDescr.setClassName(StringUtils.ucFirst(ruleClassName));
     }
 
     public void init(final ProcessDescr processDescr) {
-        final String processDescrClassName = DialectUtil.getUniqueLegalName( this.pkg.getName(),
-                                                                             processDescr.getName(),
-                                                                             processDescr.getProcessId().hashCode(),
-                                                                             "java",
-                                                                             "Process",
-                                                                             this.src );
-        processDescr.setClassName( StringUtils.ucFirst( processDescrClassName ) );
+        final String processDescrClassName = DialectUtil.getUniqueLegalName(this.pkg.getName(),
+                                                                            processDescr.getName(),
+                                                                            processDescr.getProcessId().hashCode(),
+                                                                            "java",
+                                                                            "Process",
+                                                                            this.src);
+        processDescr.setClassName(StringUtils.ucFirst(processDescrClassName));
     }
 
     public String getExpressionDialectName() {
@@ -290,27 +290,27 @@ public class JavaDialect
                                             final BaseDescr descr,
                                             final Object content,
                                             final BoundIdentifiers availableIdentifiers) {
-        return analyzeExpression( context,
-                                  descr,
-                                  content,
-                                  availableIdentifiers,
-                                  null );
+        return analyzeExpression(context,
+                                 descr,
+                                 content,
+                                 availableIdentifiers,
+                                 null);
     }
 
     public AnalysisResult analyzeExpression(final PackageBuildContext context,
                                             final BaseDescr descr,
                                             final Object content,
                                             final BoundIdentifiers availableIdentifiers,
-                                            final Map<String,Class<?>> localTypes ) {
+                                            final Map<String, Class<?>> localTypes) {
         JavaAnalysisResult result = null;
         try {
             result = analyzer.analyzeExpression((String) content,
-                    availableIdentifiers);
-        } catch ( final Exception e ) {
+                                                availableIdentifiers);
+        } catch (final Exception e) {
             context.addError(new DescrBuildError(context.getParentDescr(),
-                    descr,
-                    e,
-                    "Unable to determine the used declarations.\n" + e));
+                                                 descr,
+                                                 e,
+                                                 "Unable to determine the used declarations.\n" + e));
         }
         return result;
     }
@@ -321,13 +321,13 @@ public class JavaDialect
                                        final BoundIdentifiers availableIdentifiers) {
         JavaAnalysisResult result = null;
         try {
-            result = analyzer.analyzeBlock( text,
-                                            availableIdentifiers );
-        } catch ( final Exception e ) {
-            context.addError( new DescrBuildError( context.getParentDescr(),
-                                                          descr,
-                                                          e,
-                                                          "Unable to determine the used declarations.\n" + e ) );
+            result = analyzer.analyzeBlock(text,
+                                           availableIdentifiers);
+        } catch (final Exception e) {
+            context.addError(new DescrBuildError(context.getParentDescr(),
+                                                 descr,
+                                                 e,
+                                                 "Unable to determine the used declarations.\n" + e));
         }
         return result;
     }
@@ -342,7 +342,7 @@ public class JavaDialect
     }
 
     public RuleConditionBuilder getBuilder(final Class clazz) {
-        return (RuleConditionBuilder) builders.get( clazz );
+        return (RuleConditionBuilder) builders.get(clazz);
     }
 
     public PatternBuilder getPatternBuilder() {
@@ -403,30 +403,30 @@ public class JavaDialect
      * code.
      */
     public void compileAll() {
-        if ( this.generatedClassList.isEmpty() ) {
+        if (this.generatedClassList.isEmpty()) {
             this.errorHandlers.clear();
             return;
         }
         final String[] classes = new String[this.generatedClassList.size()];
-        this.generatedClassList.toArray( classes );
+        this.generatedClassList.toArray(classes);
 
         File dumpDir = this.configuration.getPackageBuilderConfiguration().getDumpDir();
-        if ( dumpDir != null ) {
-            dumpResources( classes,
-                           dumpDir );
+        if (dumpDir != null) {
+            dumpResources(classes,
+                          dumpDir);
         }
 
-        final CompilationResult result = this.compiler.compile( classes,
-                                                                this.src,
-                                                                this.packageStoreWrapper,
-                                                                rootClassLoader );
+        final CompilationResult result = this.compiler.compile(classes,
+                                                               this.src,
+                                                               this.packageStoreWrapper,
+                                                               rootClassLoader);
 
         //this will sort out the errors based on what class/file they happened in
-        if ( result.getErrors().length > 0 ) {
-            for ( int i = 0; i < result.getErrors().length; i++ ) {
+        if (result.getErrors().length > 0) {
+            for (int i = 0; i < result.getErrors().length; i++) {
                 final CompilationProblem err = result.getErrors()[i];
-                final ErrorHandler handler = this.errorHandlers.get( err.getFileName() );
-                handler.addError( err );
+                final ErrorHandler handler = this.errorHandlers.get(err.getFileName());
+                handler.addError(err);
             }
 
             final Collection errors = this.errorHandlers.values();
@@ -453,7 +453,7 @@ public class JavaDialect
                                File dumpDir) {
         for (String aClass : classes) {
             File target = new File(dumpDir,
-                    aClass);
+                                   aClass);
             FileOutputStream out = null;
             try {
                 File parent = target.getParentFile();
@@ -486,55 +486,53 @@ public class JavaDialect
 
         RuleClassBuilder classBuilder = context.getDialect().getRuleClassBuilder();
 
-        String ruleClass = classBuilder.buildRule( context );
+        String ruleClass = classBuilder.buildRule(context);
         // return if there is no ruleclass name;
-        if ( ruleClass == null ) {
+        if (ruleClass == null) {
             return;
         }
 
         // The compilation result is for the entire rule, so difficult to associate with any descr
-        addClassCompileTask( this.pkg.getName() + "." + ruleDescr.getClassName(),
-                             ruleDescr,
-                             ruleClass,
-                             this.src,
-                             new RuleErrorHandler( ruleDescr,
-                                                   rule,
-                                                   "Rule Compilation error" ) );
+        addClassCompileTask(this.pkg.getName() + "." + ruleDescr.getClassName(),
+                            ruleDescr,
+                            ruleClass,
+                            this.src,
+                            new RuleErrorHandler(ruleDescr,
+                                                 rule,
+                                                 "Rule Compilation error"));
 
-        JavaDialectRuntimeData data = (JavaDialectRuntimeData) this.pkg.getDialectRuntimeRegistry().getDialectData( ID );
+        JavaDialectRuntimeData data = (JavaDialectRuntimeData) this.pkg.getDialectRuntimeRegistry().getDialectData(ID);
 
-        for ( Map.Entry<String, String> invokers : context.getInvokers().entrySet() ) {
+        for (Map.Entry<String, String> invokers : context.getInvokers().entrySet()) {
             final String className = invokers.getKey();
 
             // Check if an invoker - returnvalue, predicate, eval or consequence has been associated
             // If so we add it to the PackageCompilationData as it will get wired up on compilation
-            final Object invoker = context.getInvokerLookup( className );
-            if ( invoker != null ) {
-                data.putInvoker( className,
-                                 invoker );
+            final Object invoker = context.getInvokerLookup(className);
+            if (invoker != null) {
+                data.putInvoker(className,
+                                invoker);
             }
             final String text = invokers.getValue();
 
-            final BaseDescr descr = context.getDescrLookup( className );
-            addClassCompileTask( className,
-                                 descr,
-                                 text,
-                                 this.src,
-                                 new RuleInvokerErrorHandler( descr,
-                                                              rule,
-                                                              "Unable to generate rule invoker." ) );
-
+            final BaseDescr descr = context.getDescrLookup(className);
+            addClassCompileTask(className,
+                                descr,
+                                text,
+                                this.src,
+                                new RuleInvokerErrorHandler(descr,
+                                                            rule,
+                                                            "Unable to generate rule invoker."));
         }
 
         // setup the line mappins for this rule
-        final String name = this.pkg.getName() + "." + StringUtils.ucFirst( ruleDescr.getClassName() );
-        final LineMappings mapping = new LineMappings( name );
-        mapping.setStartLine( ruleDescr.getConsequenceLine() );
-        mapping.setOffset( ruleDescr.getConsequenceOffset() );
+        final String name = this.pkg.getName() + "." + StringUtils.ucFirst(ruleDescr.getClassName());
+        final LineMappings mapping = new LineMappings(name);
+        mapping.setStartLine(ruleDescr.getConsequenceLine());
+        mapping.setOffset(ruleDescr.getConsequenceOffset());
 
-        this.pkg.getDialectRuntimeRegistry().getLineMappings().put( name,
-                                                                    mapping );
-
+        this.pkg.getDialectRuntimeRegistry().getLineMappings().put(name,
+                                                                   mapping);
     }
 
     public void addFunction(final FunctionDescr functionDescr,
@@ -542,63 +540,62 @@ public class JavaDialect
                             final Resource resource) {
 
         //logger.info( functionDescr + " : " + typeResolver );
-        final String functionClassName = this.pkg.getName() + "." + StringUtils.ucFirst( functionDescr.getName() );
-        functionDescr.setClassName( functionClassName );
+        final String functionClassName = this.pkg.getName() + "." + StringUtils.ucFirst(functionDescr.getName());
+        functionDescr.setClassName(functionClassName);
 
-        this.pkg.addStaticImport( functionClassName + "." + functionDescr.getName() );
+        this.pkg.addStaticImport(functionClassName + "." + functionDescr.getName());
 
-        Function function = new Function( functionDescr.getNamespace(), functionDescr.getName(), ID );
-        if ( resource != null && ((InternalResource) resource).hasURL() ) {
-            function.setResource( resource );
+        Function function = new Function(functionDescr.getNamespace(), functionDescr.getName(), ID);
+        if (resource != null && ((InternalResource) resource).hasURL()) {
+            function.setResource(resource);
         }
-        this.pkg.addFunction( function );
+        this.pkg.addFunction(function);
 
-        final String functionSrc = getFunctionBuilder().build( this.pkg,
-                                                               functionDescr,
-                                                               typeResolver,
-                                                               this.pkg.getDialectRuntimeRegistry().getLineMappings(),
-                                                               this.results );
+        final String functionSrc = getFunctionBuilder().build(this.pkg,
+                                                              functionDescr,
+                                                              typeResolver,
+                                                              this.pkg.getDialectRuntimeRegistry().getLineMappings(),
+                                                              this.results);
 
-        addClassCompileTask( functionClassName,
-                             functionDescr,
-                             functionSrc,
-                             this.src,
-                             new FunctionErrorHandler( functionDescr,
-                                                       "Function Compilation error" ) );
+        addClassCompileTask(functionClassName,
+                            functionDescr,
+                            functionSrc,
+                            this.src,
+                            new FunctionErrorHandler(functionDescr,
+                                                     "Function Compilation error"));
 
-        final LineMappings mapping = new LineMappings( functionClassName );
-        mapping.setStartLine( functionDescr.getLine() );
-        mapping.setOffset( functionDescr.getOffset() );
-        this.pkg.getDialectRuntimeRegistry().getLineMappings().put( functionClassName,
-                                                                    mapping );
+        final LineMappings mapping = new LineMappings(functionClassName);
+        mapping.setStartLine(functionDescr.getLine());
+        mapping.setOffset(functionDescr.getOffset());
+        this.pkg.getDialectRuntimeRegistry().getLineMappings().put(functionClassName,
+                                                                   mapping);
     }
 
     public void preCompileAddFunction(FunctionDescr functionDescr,
                                       TypeResolver typeResolver) {
-        final String functionClassName = this.pkg.getName() + "." + StringUtils.ucFirst( functionDescr.getName() );
-        this.pkg.addStaticImport( functionClassName + "." + functionDescr.getName() );
+        final String functionClassName = this.pkg.getName() + "." + StringUtils.ucFirst(functionDescr.getName());
+        this.pkg.addStaticImport(functionClassName + "." + functionDescr.getName());
     }
 
     public void postCompileAddFunction(FunctionDescr functionDescr,
                                        TypeResolver typeResolver) {
-        final String functionClassName = this.pkg.getName() + "." + StringUtils.ucFirst( functionDescr.getName() );
+        final String functionClassName = this.pkg.getName() + "." + StringUtils.ucFirst(functionDescr.getName());
         ImportDescr importDescr = new ImportDescr(functionClassName + "." + functionDescr.getName());
         importDescr.setResource(functionDescr.getResource());
         importDescr.setNamespace(functionDescr.getNamespace());
-        this.packageRegistry.addStaticImport( importDescr );
+        this.packageRegistry.addStaticImport(importDescr);
     }
 
     public void addSrc(String resourceName,
                        byte[] content) {
 
-        src.add( resourceName,
-                 content );
+        src.add(resourceName,
+                content);
 
-        this.errorHandlers.put( resourceName,
-                                new SrcErrorHandler( "Src compile error" ) );
+        this.errorHandlers.put(resourceName,
+                               new SrcErrorHandler("Src compile error"));
 
-        addClassName( resourceName );
-
+        addClassName(resourceName);
     }
 
     /**
@@ -608,54 +605,54 @@ public class JavaDialect
      * The ErrorHandler is required to map the errors back to the
      * element that caused it.
      */
-    public void addClassCompileTask( final String className,
-                                     final BaseDescr descr,
-                                     final String text,
-                                     final MemoryResourceReader src,
-                                     final ErrorHandler handler) {
-        final String fileName = className.replace( '.',
-                                                   '/' ) + ".java";
+    public void addClassCompileTask(final String className,
+                                    final BaseDescr descr,
+                                    final String text,
+                                    final MemoryResourceReader src,
+                                    final ErrorHandler handler) {
+        final String fileName = className.replace('.',
+                                                  '/') + ".java";
 
         if (src != null) {
-            src.add( fileName,
-                     text.getBytes( IoUtils.UTF8_CHARSET ) );
+            src.add(fileName,
+                    text.getBytes(IoUtils.UTF8_CHARSET));
         } else {
-            this.src.add( fileName,
-                          text.getBytes( IoUtils.UTF8_CHARSET ) );
+            this.src.add(fileName,
+                         text.getBytes(IoUtils.UTF8_CHARSET));
         }
 
-        this.errorHandlers.put( fileName,
-                                handler );
+        this.errorHandlers.put(fileName,
+                               handler);
 
-        addClassName( fileName );
+        addClassName(fileName);
     }
 
     public void addClassName(final String className) {
         boolean found = false;
-        if( pkgConf.isPreCompiled() ) {
+        if (pkgConf.isPreCompiled()) {
             // recover bytecode from cache 
-            Map<String, List<CompilationCacheEntry>> cache = pkgConf.getCompilationCache().getCacheForDialect( ID );
-            if( cache != null ) {
-                String resourceName = className.replace( ".java", ".class" );
-                List<CompilationCacheEntry> bytecodes = cache.get( resourceName );
-                if( bytecodes != null ) {
-                    for( CompilationCacheEntry entry : bytecodes ) {
+            Map<String, List<CompilationCacheEntry>> cache = pkgConf.getCompilationCache().getCacheForDialect(ID);
+            if (cache != null) {
+                String resourceName = className.replace(".java", ".class");
+                List<CompilationCacheEntry> bytecodes = cache.get(resourceName);
+                if (bytecodes != null) {
+                    for (CompilationCacheEntry entry : bytecodes) {
                         //System.out.println("Found in cache = "+entry.className);
-                        this.packageStoreWrapper.write( entry.className, entry.bytecode );
+                        this.packageStoreWrapper.write(entry.className, entry.bytecode);
                     }
                     found = true;
                 }
             }
         }
-        if( ! found ) {
+        if (!found) {
             // compile as usual
             //System.out.println("compiling = "+className);
-            this.generatedClassList.add( className );
+            this.generatedClassList.add(className);
         }
     }
 
     private void loadCompiler() {
-        this.compiler = JavaCompilerFactory.getInstance().loadCompiler( this.configuration );
+        this.compiler = JavaCompilerFactory.getInstance().loadCompiler(this.configuration);
     }
 
     public void addImport(ImportDescr importDescr) {
@@ -682,5 +679,4 @@ public class JavaDialect
     public PackageRegistry getPackageRegistry() {
         return this.packageRegistry;
     }
-
 }

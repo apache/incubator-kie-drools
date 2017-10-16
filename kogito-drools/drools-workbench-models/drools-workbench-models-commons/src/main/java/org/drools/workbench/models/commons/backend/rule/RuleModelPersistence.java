@@ -19,8 +19,8 @@ package org.drools.workbench.models.commons.backend.rule;
 import java.util.Collection;
 import java.util.List;
 
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
+import org.kie.soup.project.datamodel.oracle.PackageDataModelOracle;
 
 public interface RuleModelPersistence {
 

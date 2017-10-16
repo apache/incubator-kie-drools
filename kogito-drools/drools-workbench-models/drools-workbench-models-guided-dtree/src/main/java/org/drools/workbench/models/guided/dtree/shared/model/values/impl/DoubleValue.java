@@ -15,8 +15,8 @@
  */
 package org.drools.workbench.models.guided.dtree.shared.model.values.impl;
 
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.drools.workbench.models.guided.dtree.shared.model.values.Value;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class DoubleValue implements Value<Double> {
 
@@ -26,27 +26,27 @@ public class DoubleValue implements Value<Double> {
         //Errai marshalling
     }
 
-    public DoubleValue( final Double value ) {
-        setValue( value );
+    public DoubleValue(final Double value) {
+        setValue(value);
     }
 
-    public DoubleValue( final DoubleValue value ) {
-        setValue( value.getValue() );
+    public DoubleValue(final DoubleValue value) {
+        setValue(value.getValue());
     }
 
     @Override
-    public void setValue( final String value ) {
+    public void setValue(final String value) {
         try {
-            setValue( new Double( value ) );
-        } catch ( NumberFormatException nfe ) {
-            setValue( new Double( 0 ) );
+            setValue(new Double(value));
+        } catch (NumberFormatException nfe) {
+            setValue(new Double(0));
         }
     }
 
     @Override
-    public void setValue( final Double value ) {
-        this.value = PortablePreconditions.checkNotNull( "value",
-                                                         value );
+    public void setValue(final Double value) {
+        this.value = PortablePreconditions.checkNotNull("value",
+                                                        value);
     }
 
     @Override
@@ -55,17 +55,17 @@ public class DoubleValue implements Value<Double> {
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof DoubleValue ) ) {
+        if (!(o instanceof DoubleValue)) {
             return false;
         }
 
         DoubleValue that = (DoubleValue) o;
 
-        if ( !value.equals( that.value ) ) {
+        if (!value.equals(that.value)) {
             return false;
         }
 

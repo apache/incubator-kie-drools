@@ -24,8 +24,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.appformer.project.datamodel.imports.HasImports;
-import org.appformer.project.datamodel.imports.Imports;
+import org.kie.soup.project.datamodel.imports.HasImports;
+import org.kie.soup.project.datamodel.imports.Imports;
 
 /**
  * This represents a test scenario. It also encapsulates the result of a
@@ -80,8 +80,8 @@ public class Scenario implements HasImports {
     public Scenario() {
     }
 
-    public Scenario( String packageName,
-                     String name ) {
+    public Scenario(String packageName,
+                    String name) {
         this.packageName = packageName;
         this.name = name;
     }
@@ -91,9 +91,9 @@ public class Scenario implements HasImports {
      * results contained.
      */
     public boolean wasSuccessful() {
-        for ( Fixture fixture : fixtures ) {
-            if ( fixture instanceof Expectation ) {
-                if ( !( (Expectation) fixture ).wasSuccessful() ) {
+        for (Fixture fixture : fixtures) {
+            if (fixture instanceof Expectation) {
+                if (!((Expectation) fixture).wasSuccessful()) {
                     return false;
                 }
             }
@@ -105,83 +105,83 @@ public class Scenario implements HasImports {
      * Will slip in a fixture after the specified one, but before the next
      * execution trace.
      */
-    public void insertBetween( final Fixture fixtureBeforeTheNewOne,
-                               final Fixture newFixture ) {
+    public void insertBetween(final Fixture fixtureBeforeTheNewOne,
+                              final Fixture newFixture) {
 
         boolean inserted = false;
-        int start = ( fixtureBeforeTheNewOne == null ) ? 0 : fixtures.indexOf( fixtureBeforeTheNewOne ) + 1;
+        int start = (fixtureBeforeTheNewOne == null) ? 0 : fixtures.indexOf(fixtureBeforeTheNewOne) + 1;
 
-        for ( int j = start; j < fixtures.size(); j++ ) {
-            if ( fixtures.get( j ) instanceof ExecutionTrace ) {
-                getFixtures().add( j,
-                                   newFixture );
+        for (int j = start; j < fixtures.size(); j++) {
+            if (fixtures.get(j) instanceof ExecutionTrace) {
+                getFixtures().add(j,
+                                  newFixture);
                 return;
             }
         }
 
-        if ( !inserted ) {
-            fixtures.add( newFixture );
+        if (!inserted) {
+            fixtures.add(newFixture);
         }
     }
 
     /**
      * Remove the specified fixture.
      */
-    public void removeFixture( final Fixture f ) {
-        this.fixtures.remove( f );
-        this.globals.remove( f );
+    public void removeFixture(final Fixture f) {
+        this.fixtures.remove(f);
+        this.globals.remove(f);
     }
 
     /**
      * Remove fixtures between this ExecutionTrace and the previous one.
      */
-    public void removeExecutionTrace( final ExecutionTrace executionTrace ) {
-        removeExpected( executionTrace );
-        removeGiven( executionTrace );
+    public void removeExecutionTrace(final ExecutionTrace executionTrace) {
+        removeExpected(executionTrace);
+        removeGiven(executionTrace);
     }
 
-    private void removeExpected( final ExecutionTrace executionTrace ) {
+    private void removeExpected(final ExecutionTrace executionTrace) {
         boolean remove = false;
-        for ( Iterator<Fixture> iterator = getFixtures().iterator(); iterator.hasNext(); ) {
+        for (Iterator<Fixture> iterator = getFixtures().iterator(); iterator.hasNext(); ) {
             Fixture fixture = iterator.next();
 
-            if ( fixture.equals( executionTrace ) ) {
+            if (fixture.equals(executionTrace)) {
                 remove = true;
                 continue;
-            } else if ( remove && fixture instanceof ExecutionTrace ) {
+            } else if (remove && fixture instanceof ExecutionTrace) {
                 break;
             }
 
-            if ( remove && fixture instanceof Expectation ) {
+            if (remove && fixture instanceof Expectation) {
                 iterator.remove();
-                globals.remove( fixture );
+                globals.remove(fixture);
             }
         }
     }
 
-    private void removeGiven( final ExecutionTrace executionTrace ) {
+    private void removeGiven(final ExecutionTrace executionTrace) {
 
-        Collections.reverse( getFixtures() );
+        Collections.reverse(getFixtures());
 
         boolean remove = false;
         Iterator<Fixture> iterator = getFixtures().iterator();
-        while ( iterator.hasNext() ) {
+        while (iterator.hasNext()) {
             Fixture fixture = iterator.next();
 
             // Catch the first or next ExecutionTrace.
-            if ( fixture.equals( executionTrace ) ) {
+            if (fixture.equals(executionTrace)) {
                 remove = true;
-            } else if ( remove && fixture instanceof ExecutionTrace ) {
+            } else if (remove && fixture instanceof ExecutionTrace) {
                 break;
             }
 
-            if ( remove && !( fixture instanceof Expectation ) ) {
+            if (remove && !(fixture instanceof Expectation)) {
                 iterator.remove();
-                globals.remove( fixture );
+                globals.remove(fixture);
             }
         }
 
-        Collections.reverse( getFixtures() );
+        Collections.reverse(getFixtures());
     }
 
     /**
@@ -189,16 +189,16 @@ public class Scenario implements HasImports {
      */
     public Map<String, FactData> getFactTypes() {
         Map<String, FactData> factTypesByName = new HashMap<String, FactData>();
-        for ( Fixture fixture : fixtures ) {
-            if ( fixture instanceof FactData ) {
+        for (Fixture fixture : fixtures) {
+            if (fixture instanceof FactData) {
                 FactData factData = (FactData) fixture;
-                factTypesByName.put( factData.getName(),
-                                     factData );
+                factTypesByName.put(factData.getName(),
+                                    factData);
             }
         }
-        for ( FactData factData : globals ) {
-            factTypesByName.put( factData.getName(),
-                                 factData );
+        for (FactData factData : globals) {
+            factTypesByName.put(factData.getName(),
+                                factData);
         }
         return factTypesByName;
     }
@@ -208,16 +208,16 @@ public class Scenario implements HasImports {
      */
     public Map<String, String> getVariableTypes() {
         Map<String, String> map = new HashMap<String, String>();
-        for ( Fixture fixture : fixtures ) {
-            if ( fixture instanceof FactData ) {
+        for (Fixture fixture : fixtures) {
+            if (fixture instanceof FactData) {
                 FactData factData = (FactData) fixture;
-                map.put( factData.getName(),
-                         factData.getType() );
+                map.put(factData.getName(),
+                        factData.getType());
             }
         }
-        for ( FactData factData : globals ) {
-            map.put( factData.getName(),
-                     factData.getType() );
+        for (FactData factData : globals) {
+            map.put(factData.getName(),
+                    factData.getType());
         }
         return map;
     }
@@ -227,26 +227,26 @@ public class Scenario implements HasImports {
      */
     public Map<String, List<FactData>> getFactTypesToFactData() {
         Map<String, List<FactData>> map = new HashMap<String, List<FactData>>();
-        for ( Fixture fixture : fixtures ) {
-            if ( fixture instanceof FactData ) {
+        for (Fixture fixture : fixtures) {
+            if (fixture instanceof FactData) {
                 FactData factData = (FactData) fixture;
-                List<FactData> fd = map.get( factData.getType() );
-                if ( fd == null ) {
+                List<FactData> fd = map.get(factData.getType());
+                if (fd == null) {
                     fd = new ArrayList<FactData>();
-                    map.put( factData.getType(),
-                             fd );
+                    map.put(factData.getType(),
+                            fd);
                 }
-                fd.add( factData );
+                fd.add(factData);
             }
         }
-        for ( FactData factData : globals ) {
-            List<FactData> fd = map.get( factData.getType() );
-            if ( fd == null ) {
+        for (FactData factData : globals) {
+            List<FactData> fd = map.get(factData.getType());
+            if (fd == null) {
                 fd = new ArrayList<FactData>();
-                map.put( factData.getType(),
-                         fd );
+                map.put(factData.getType(),
+                        fd);
             }
-            fd.add( factData );
+            fd.add(factData);
         }
         return map;
     }
@@ -254,30 +254,31 @@ public class Scenario implements HasImports {
     /**
      * This will return a list of fact names that are in scope (including
      * globals).
+     *
      * @return List<String>
      */
-    public List<String> getFactNamesInScope( final ExecutionTrace executionTrace,
-                                             final boolean includeGlobals ) {
-        if ( executionTrace == null ) {
+    public List<String> getFactNamesInScope(final ExecutionTrace executionTrace,
+                                            final boolean includeGlobals) {
+        if (executionTrace == null) {
             return Collections.emptyList();
         }
 
         List<String> factDataNames = new ArrayList<String>();
-        int p = this.getFixtures().indexOf( executionTrace );
-        for ( int i = 0; i < p; i++ ) {
-            Fixture fixture = (Fixture) getFixtures().get( i );
-            if ( fixture instanceof FactData ) {
+        int p = this.getFixtures().indexOf(executionTrace);
+        for (int i = 0; i < p; i++) {
+            Fixture fixture = (Fixture) getFixtures().get(i);
+            if (fixture instanceof FactData) {
                 FactData factData = (FactData) fixture;
-                factDataNames.add( factData.getName() );
-            } else if ( fixture instanceof RetractFact ) {
+                factDataNames.add(factData.getName());
+            } else if (fixture instanceof RetractFact) {
                 RetractFact retractFact = (RetractFact) fixture;
-                factDataNames.remove( retractFact.getName() );
+                factDataNames.remove(retractFact.getName());
             }
         }
 
-        if ( includeGlobals ) {
-            for ( FactData factData : getGlobals() ) {
-                factDataNames.add( factData.getName() );
+        if (includeGlobals) {
+            for (FactData factData : getGlobals()) {
+                factDataNames.add(factData.getName());
             }
         }
         return factDataNames;
@@ -286,21 +287,21 @@ public class Scenario implements HasImports {
     /**
      * @return true if a fact name is already in use.
      */
-    public boolean isFactNameReserved( final String factName ) {
-        if ( isFactNameUsedInGlobals( factName ) ) {
+    public boolean isFactNameReserved(final String factName) {
+        if (isFactNameUsedInGlobals(factName)) {
             return true;
-        } else if ( isFactNameUsedInFactDataFixtures( factName ) ) {
+        } else if (isFactNameUsedInFactDataFixtures(factName)) {
             return true;
         } else {
             return false;
         }
     }
 
-    protected boolean isFactNameUsedInFactDataFixtures( final String factName ) {
-        for ( Fixture fixture : fixtures ) {
-            if ( fixture instanceof FactData ) {
+    protected boolean isFactNameUsedInFactDataFixtures(final String factName) {
+        for (Fixture fixture : fixtures) {
+            if (fixture instanceof FactData) {
                 FactData factData = (FactData) fixture;
-                if ( factData.getName().equals( factName ) ) {
+                if (factData.getName().equals(factName)) {
                     return true;
                 }
             }
@@ -308,9 +309,9 @@ public class Scenario implements HasImports {
         return false;
     }
 
-    protected boolean isFactNameUsedInGlobals( final String factName ) {
-        for ( FactData factData : globals ) {
-            if ( factData.getName().equals( factName ) ) {
+    protected boolean isFactNameUsedInGlobals(final String factName) {
+        for (FactData factData : globals) {
+            if (factData.getName().equals(factName)) {
                 return true;
             }
         }
@@ -320,16 +321,16 @@ public class Scenario implements HasImports {
 
     /**
      * @return true if a fact is actually used (ie if its not, its safe to
-     *         remove it).
+     * remove it).
      */
-    public boolean isFactDataReferenced( final FactData factData ) {
-        int start = fixtures.indexOf( factData ) + 1;
+    public boolean isFactDataReferenced(final FactData factData) {
+        int start = fixtures.indexOf(factData) + 1;
         String factName = factData.getName();
 
-        for ( Fixture fixture : fixtures.subList( start,
-                                                  fixtures.size() ) ) {
-            if ( isFactNameUsedInThisFixture( fixture,
-                                              factName ) ) {
+        for (Fixture fixture : fixtures.subList(start,
+                                                fixtures.size())) {
+            if (isFactNameUsedInThisFixture(fixture,
+                                            factName)) {
                 return true;
             }
         }
@@ -337,14 +338,14 @@ public class Scenario implements HasImports {
         return false;
     }
 
-    private boolean isFactNameUsedInThisFixture( final Fixture fixture,
-                                                 final String factName ) {
-        if ( fixture instanceof FactData ) {
-            return ( (FactData) fixture ).getName().equals( factName );
-        } else if ( fixture instanceof VerifyFact ) {
-            return ( (VerifyFact) fixture ).getName().equals( factName );
-        } else if ( fixture instanceof RetractFact ) {
-            return ( (RetractFact) fixture ).getName().equals( factName );
+    private boolean isFactNameUsedInThisFixture(final Fixture fixture,
+                                                final String factName) {
+        if (fixture instanceof FactData) {
+            return ((FactData) fixture).getName().equals(factName);
+        } else if (fixture instanceof VerifyFact) {
+            return ((VerifyFact) fixture).getName().equals(factName);
+        } else if (fixture instanceof RetractFact) {
+            return ((RetractFact) fixture).getName().equals(factName);
         } else {
             return false;
         }
@@ -355,17 +356,17 @@ public class Scenario implements HasImports {
      */
     public List<String> getFailureMessages() {
         List<String> messages = new ArrayList<String>();
-        for ( Fixture fixture : fixtures ) {
-            if ( fixture instanceof VerifyRuleFired ) {
+        for (Fixture fixture : fixtures) {
+            if (fixture instanceof VerifyRuleFired) {
                 VerifyRuleFired verifyRuleFired = (VerifyRuleFired) fixture;
-                if ( ruleFailedToFire( verifyRuleFired ) ) {
-                    messages.add( verifyRuleFired.getExplanation() );
+                if (ruleFailedToFire(verifyRuleFired)) {
+                    messages.add(verifyRuleFired.getExplanation());
                 }
-            } else if ( fixture instanceof VerifyFact ) {
+            } else if (fixture instanceof VerifyFact) {
                 VerifyFact verifyFact = (VerifyFact) fixture;
-                for ( VerifyField verifyField : verifyFact.getFieldValues() ) {
-                    if ( fieldExpectationFailed( verifyField ) ) {
-                        messages.add( verifyField.getExplanation() );
+                for (VerifyField verifyField : verifyFact.getFieldValues()) {
+                    if (fieldExpectationFailed(verifyField)) {
+                        messages.add(verifyField.getExplanation());
                     }
                 }
             }
@@ -379,31 +380,31 @@ public class Scenario implements HasImports {
     public int[] countFailuresTotal() {
         int total = 0;
         int failures = 0;
-        for ( Fixture fixture : fixtures ) {
-            if ( fixture instanceof VerifyRuleFired ) {
+        for (Fixture fixture : fixtures) {
+            if (fixture instanceof VerifyRuleFired) {
                 total++;
                 VerifyRuleFired verifyRuleFired = (VerifyRuleFired) fixture;
-                if ( ruleFailedToFire( verifyRuleFired ) ) {
+                if (ruleFailedToFire(verifyRuleFired)) {
                     failures++;
                 }
-            } else if ( fixture instanceof VerifyFact ) {
+            } else if (fixture instanceof VerifyFact) {
                 VerifyFact verifyFact = (VerifyFact) fixture;
-                for ( VerifyField verifyField : verifyFact.getFieldValues() ) {
-                    if ( fieldExpectationFailed( verifyField ) ) {
+                for (VerifyField verifyField : verifyFact.getFieldValues()) {
+                    if (fieldExpectationFailed(verifyField)) {
                         failures++;
                     }
                     total++;
                 }
             }
         }
-        return new int[]{ failures, total };
+        return new int[]{failures, total};
     }
 
-    protected boolean fieldExpectationFailed( VerifyField verifyField ) {
+    protected boolean fieldExpectationFailed(VerifyField verifyField) {
         return verifyField.getSuccessResult() != null && !verifyField.getSuccessResult();
     }
 
-    protected boolean ruleFailedToFire( VerifyRuleFired verifyRuleFired ) {
+    protected boolean ruleFailedToFire(VerifyRuleFired verifyRuleFired) {
         return verifyRuleFired.getSuccessResult() != null && !verifyRuleFired.getSuccessResult();
     }
 
@@ -419,7 +420,7 @@ public class Scenario implements HasImports {
         return globals;
     }
 
-    public void setLastRunResult( final Date lastRunResult ) {
+    public void setLastRunResult(final Date lastRunResult) {
         this.lastRunResult = lastRunResult;
     }
 
@@ -431,7 +432,7 @@ public class Scenario implements HasImports {
         return rules;
     }
 
-    public void setInclusive( final boolean inclusive ) {
+    public void setInclusive(final boolean inclusive) {
         this.inclusive = inclusive;
     }
 
@@ -439,7 +440,7 @@ public class Scenario implements HasImports {
         return inclusive;
     }
 
-    public void setName( String name ) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -448,7 +449,7 @@ public class Scenario implements HasImports {
     }
 
     @Override
-    public void setImports( final Imports imports ) {
+    public void setImports(final Imports imports) {
         this.imports = imports;
     }
 
@@ -465,7 +466,7 @@ public class Scenario implements HasImports {
         return ksessions;
     }
 
-    public void setPackageName( String packageName ) {
+    public void setPackageName(String packageName) {
         this.packageName = packageName;
     }
 }

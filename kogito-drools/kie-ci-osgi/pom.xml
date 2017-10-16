@@ -123,6 +123,8 @@
               javax.security.auth.x500,
               org.apache.commons.logging,
               org.appformer.maven.support,
+              org.kie.soup.project.datamodel,
+              org.kie.soup.project.datamodel.commons,
               org.drools.compiler.kie.builder.impl,
               org.drools.compiler.kproject,
               org.drools.compiler.kproject.models,
