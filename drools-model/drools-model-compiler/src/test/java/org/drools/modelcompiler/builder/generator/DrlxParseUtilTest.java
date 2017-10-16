@@ -42,9 +42,9 @@ public class DrlxParseUtilTest {
 
         final MethodCallExpr expected = JavaParser.parseExpression("getAddress().getAddressName().startsWith(\"M\")");
 
-        assertEquals(expected.toString(), DrlxParseUtil.toMethodCallWithClassCheck(expr, Person.class).toString());
-        assertEquals(expected.toString(), DrlxParseUtil.toMethodCallWithClassCheck(expr1, Person.class).toString());
-        assertEquals(expected.toString(), DrlxParseUtil.toMethodCallWithClassCheck(expr2, Person.class).toString());
+        assertEquals(expected.toString(), DrlxParseUtil.toMethodCallWithClassCheck(expr, Person.class).getExpression().toString());
+        assertEquals(expected.toString(), DrlxParseUtil.toMethodCallWithClassCheck(expr1, Person.class).getExpression().toString());
+        assertEquals(expected.toString(), DrlxParseUtil.toMethodCallWithClassCheck(expr2, Person.class).getExpression().toString());
     }
 
 
