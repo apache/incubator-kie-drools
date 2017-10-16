@@ -42,9 +42,9 @@ public final class FunctionTestUtil {
         Assert.assertThat(resultValue, Matchers.comparesEqualTo(expectedResult));
     }
 
-    public static void assertResultList(final FEELFnResult<List> result, final List<Object> expectedResult) {
+    public static <T> void assertResultList(final FEELFnResult<List<T>> result, final List<Object> expectedResult) {
         assertResultNotError(result);
-        final List<Object> resultList = result.cata(left -> null, right -> right);
+        final List<T> resultList = result.cata(left -> null, right -> right);
         Assert.assertThat(resultList, Matchers.hasSize(expectedResult.size()));
         if (expectedResult.isEmpty()) {
             Assert.assertThat(resultList, Matchers.empty());

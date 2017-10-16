@@ -18,12 +18,11 @@ package org.kie.dmn.feel.runtime.functions;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
-
-import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import java.util.Set;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 
 public class UnionFunction
         extends BaseFEELFunction {
@@ -32,25 +31,21 @@ public class UnionFunction
         super( "union" );
     }
 
-    public FEELFnResult<List> invoke(@ParameterName("list") Object[] lists) {
+    public FEELFnResult<List<Object>> invoke(@ParameterName("list") Object[] lists) {
         if ( lists == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "lists", "cannot be null"));
         }
-        // spec requires us to return a new list
-        List result = new ArrayList();
-        for ( Object list : lists ) {
+
+        final Set<Object> resultSet = new LinkedHashSet<>();
+        for ( final Object list : lists ) {
             if ( list instanceof Collection ) {
-                ((Collection) list).stream().forEach( i -> {
-                    if ( !result.contains( i ) ) result.add( i );
-                } );
-            } else if ( list != null ) {
-                // singleton list
-                if ( !result.contains( list ) ) result.add( list );
+                resultSet.addAll((Collection) list);
             } else {
-                // TODO review accordingly to spec, original behavior was: return null;
-                return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "lists", "one of the elements in list is null"));
+                resultSet.add(list);
             }
         }
-        return FEELFnResult.ofResult( result );
+
+        // spec requires us to return a new list
+        return FEELFnResult.ofResult( new ArrayList<>(resultSet) );
     }
 }

@@ -27,23 +27,7 @@ public class SubstringFunction
     }
 
     public FEELFnResult<String> invoke(@ParameterName("string") String string, @ParameterName("start position") Number start) {
-        if ( string == null ) {
-            return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, "string", "cannot be null" ) );
-        }
-        if ( start == null ) {
-            return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, "start position", "cannot be null" ) );
-        }
-        if ( Math.abs( start.intValue() ) > string.length() ) {
-            return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, "parameter 'start position' inconsistent with parameter 'string' length" ) );
-        }
-
-        if ( start.intValue() > 0 ) {
-            return FEELFnResult.ofResult( string.substring( start.intValue() - 1 ) );
-        } else if ( start.intValue() < 0 ) {
-            return FEELFnResult.ofResult( string.substring( string.length() + start.intValue() ) );
-        } else {
-            return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, "start position", "cannot be zero" ) );
-        }
+        return invoke(string, start, null);
     }
 
     public FEELFnResult<String> invoke(@ParameterName("string") String string, @ParameterName("start position") Number start, @ParameterName("length") Number length) {
@@ -53,14 +37,19 @@ public class SubstringFunction
         if ( start == null ) {
             return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, "start position", "cannot be null" ) );
         }
+        if ( length != null && length.intValue() <= 0 ) {
+            return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, "length", "must be a positive number when specified" ) );
+        }
         if ( Math.abs( start.intValue() ) > string.length() ) {
             return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, "parameter 'start position' inconsistent with parameter 'string' length" ) );
         }
 
         if ( start.intValue() > 0 ) {
-            return FEELFnResult.ofResult( string.substring( start.intValue() - 1, Math.min( string.length(), start.intValue() + length.intValue() - 1 ) ) );
+            final int end = length != null ? Math.min( string.length(), start.intValue() + length.intValue() - 1 ) : string.length();
+            return FEELFnResult.ofResult( string.substring( start.intValue() - 1, end ) );
         } else if ( start.intValue() < 0 ) {
-            return FEELFnResult.ofResult( string.substring( string.length() + start.intValue(), Math.min( string.length(), string.length() + start.intValue() + length.intValue() ) ) );
+            final int end = length != null ? Math.min( string.length(), string.length() + start.intValue() + length.intValue() ) : string.length();
+            return FEELFnResult.ofResult( string.substring( string.length() + start.intValue(), end ) );
         } else {
             return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, "start position", "cannot be zero" ) );
         }

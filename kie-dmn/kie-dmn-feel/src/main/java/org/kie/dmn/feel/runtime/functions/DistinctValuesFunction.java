@@ -29,7 +29,7 @@ public class DistinctValuesFunction
         super( "distinct values" );
     }
 
-    public FEELFnResult<List> invoke(@ParameterName( "list" ) Object list) {
+    public FEELFnResult<List<Object>> invoke(@ParameterName( "list" ) Object list) {
         if ( list == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "cannot be null"));
         }

@@ -16,16 +16,15 @@
 
 package org.kie.dmn.feel.runtime.functions;
 
+import java.time.DateTimeException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.Period;
+import java.time.Year;
+import java.time.YearMonth;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
-
-import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 
 public class YearsAndMonthsFunction
         extends BaseFEELFunction {
@@ -39,16 +38,41 @@ public class YearsAndMonthsFunction
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "cannot be null"));
         }
         if ( to == null ) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "cannot be null"));
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "to", "cannot be null"));
         }
-        if( ! ( from instanceof LocalDate ) ) {
-            from = LocalDate.from( from );
+        final LocalDate fromDate = getLocalDateFromTemporal(from);
+        if (fromDate == null) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "is of type not suitable for years and months function"));
         }
-        if( ! ( to instanceof LocalDate ) ) {
-            to = LocalDate.from( to );
+        final LocalDate toDate = getLocalDateFromTemporal(to);
+        if (toDate == null) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "to", "is of type not suitable for years and months function"));
         }
 
-        return FEELFnResult.ofResult( Period.between( (LocalDate)from, (LocalDate)to ).withDays( 0 ) );
+        return FEELFnResult.ofResult( Period.between( fromDate, toDate ).withDays( 0 ) );
     }
 
+    private LocalDate getLocalDateFromTemporal(final Temporal temporal) {
+        if (temporal instanceof LocalDate) {
+            return (LocalDate) temporal;
+        } else if (temporal instanceof Year) {
+            return getLocalDateFromYear((Year) temporal);
+        } else if (temporal instanceof YearMonth) {
+            return getLocalDateFromYearAndMonth((YearMonth) temporal);
+        } else {
+            try {
+                return LocalDate.from(temporal);
+            } catch (DateTimeException ex) {
+                return null;
+            }
+        }
+    }
+
+    private LocalDate getLocalDateFromYear(final Year year) {
+        return LocalDate.of(year.getValue(), 1, 1);
+    }
+
+    private LocalDate getLocalDateFromYearAndMonth(final YearMonth yearMonth) {
+        return LocalDate.of(yearMonth.getYear(), yearMonth.getMonth(), 1);
+    }
 }
