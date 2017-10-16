@@ -16,28 +16,25 @@
 
 package org.drools.modelcompiler.builder.generator;
 
-import java.util.Optional;
-
 import org.drools.javaparser.ast.expr.Expression;
 
 public class TypedExpression {
 
     private Expression expression;
-    private Optional<Class<?>> type;
+    private Class<?> type;
     private Expression prefixExpression;
 
     public TypedExpression() { }
 
-    public TypedExpression( Expression expression, Optional<Class<?>> type ) {
+    public TypedExpression( Expression expression ) {
+        this(expression, null);
+    }
+
+    public TypedExpression( Expression expression, Class<?> type ) {
         this.expression = expression;
         this.type = type;
     }
-    
-    public TypedExpression( String expression, Optional<Class<?>> type ) {
-        this.type = type;
-        this.expression = null;
-    }
-    
+
     public Expression getExpression() {
         return expression;
     }
@@ -47,7 +44,7 @@ public class TypedExpression {
         return this;
     }
 
-    public TypedExpression setType( Optional<Class<?>> type ) {
+    public TypedExpression setType( Class<?> type ) {
         this.type = type;
         return this;
     }
@@ -65,11 +62,11 @@ public class TypedExpression {
         return expression.toString();
     }
 
-    public Optional<Class<?>> getType() {
+    public Class<?> getType() {
         return type;
     }
 
     public boolean isPrimitive() {
-        return type.map( Class::isPrimitive ).orElse( false );
+        return type != null && type.isPrimitive();
     }
 }
