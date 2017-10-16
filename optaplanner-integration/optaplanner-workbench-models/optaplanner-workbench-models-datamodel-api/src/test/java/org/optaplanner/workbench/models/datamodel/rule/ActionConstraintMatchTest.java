@@ -16,10 +16,10 @@
 
 package org.optaplanner.workbench.models.datamodel.rule;
 
-import org.appformer.project.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.rule.IAction;
 import org.drools.workbench.models.datamodel.rule.InterpolationVariable;
 import org.junit.Test;
+import org.kie.soup.project.datamodel.oracle.DataType;
 
 import java.util.Arrays;
 import java.util.Collection;

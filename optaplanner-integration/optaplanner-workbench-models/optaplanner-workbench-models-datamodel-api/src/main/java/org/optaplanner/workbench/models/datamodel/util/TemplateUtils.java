@@ -22,8 +22,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
-import org.appformer.project.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.rule.InterpolationVariable;
+import org.kie.soup.project.datamodel.oracle.DataType;
 
 public final class TemplateUtils {
 

@@ -19,9 +19,9 @@ package org.optaplanner.workbench.models.datamodel.util;
 import java.util.Collection;
 import java.util.function.Function;
 
-import org.appformer.project.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.rule.InterpolationVariable;
 import org.junit.Test;
+import org.kie.soup.project.datamodel.oracle.DataType;
 
 import static org.junit.Assert.*;
 
