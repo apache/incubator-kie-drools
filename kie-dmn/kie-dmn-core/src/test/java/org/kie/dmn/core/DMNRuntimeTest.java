@@ -978,7 +978,7 @@ public class DMNRuntimeTest {
         loan.put("Term", 1);
         context.set("Loan", loan);
 
-        DMNResult dmnResult = runtime.evaluateDecisionByName( dmnModel, "Loan Payment", context );
+        DMNResult dmnResult = runtime.evaluateByName( dmnModel, context, "Loan Payment");
         assertThat( DMNRuntimeUtil.formatMessages( dmnResult.getMessages() ), dmnResult.hasErrors(), is( true ) );
         assertThat( dmnResult.getMessages().size(), is( 1 ) );
         assertThat( dmnResult.getMessages().get( 0 ).getSourceId(), is("_93062144-ebc7-4ef7-a156-c342aeffac49") );

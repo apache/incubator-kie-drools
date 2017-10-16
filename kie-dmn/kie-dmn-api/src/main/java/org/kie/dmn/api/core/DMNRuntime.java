@@ -56,6 +56,8 @@ public interface DMNRuntime extends DMNRuntimeEventManager {
      * Evaluate the decision identified by the given name and
      * all dependent decisions, given the context
      *
+     * @deprecated consider using {@link #evaluateByName(DMNModel, DMNContext, String...)} instead
+     *
      * @param model the model to evaluate
      * @param decisionName the root decision to evaluate, identified
      *                     by name
@@ -63,11 +65,14 @@ public interface DMNRuntime extends DMNRuntimeEventManager {
      *
      * @return the result of the evaluation
      */
+    @Deprecated
     DMNResult evaluateDecisionByName(DMNModel model, String decisionName, DMNContext context );
 
     /**
      * Evaluate the decision identified by the given ID and
      * all dependent decisions, given the context
+     *
+     * @deprecated consider using {@link #evaluateById(DMNModel, DMNContext, String...)} instead
      *
      * @param model the model to evaluate
      * @param decisionId the root decision to evaluate, identified
@@ -76,7 +81,34 @@ public interface DMNRuntime extends DMNRuntimeEventManager {
      *
      * @return the result of the evaluation
      */
+    @Deprecated
     DMNResult evaluateDecisionById(DMNModel model, String decisionId, DMNContext context );
+
+    /**
+     * Evaluate all decisions identified by the given names and
+     * all dependent decisions, given the context
+     *
+     * @param model the model to evaluate
+     * @param decisionNames list of root decisions to evaluate, identified
+     *                     by name
+     * @param context the context with all the input variables
+     *
+     * @return the result of the evaluation
+     */
+    DMNResult evaluateByName( DMNModel model, DMNContext context, String... decisionNames );
+
+    /**
+     * Evaluate all decision identified by the given IDs and
+     * all dependent decisions, given the context
+     *
+     * @param model the model to evaluate
+     * @param decisionIds list of root decisions to evaluate, identified
+     *                   by ID
+     * @param context the context with all the input variables
+     *
+     * @return the result of the evaluation
+     */
+    DMNResult evaluateById( DMNModel model, DMNContext context, String... decisionIds );
 
     /**
      * Creates a new empty DMNContext
