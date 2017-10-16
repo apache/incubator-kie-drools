@@ -18,12 +18,12 @@ package org.drools.workbench.models.guided.dtree.shared.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.appformer.project.datamodel.imports.HasImports;
-import org.appformer.project.datamodel.imports.Imports;
-import org.appformer.project.datamodel.packages.HasPackageName;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.TypeNode;
 import org.drools.workbench.models.guided.dtree.shared.model.parser.GuidedDecisionTreeParserError;
+import org.kie.soup.commons.validation.PortablePreconditions;
+import org.kie.soup.project.datamodel.imports.HasImports;
+import org.kie.soup.project.datamodel.imports.Imports;
+import org.kie.soup.project.datamodel.packages.HasPackageName;
 
 public class GuidedDecisionTree implements HasImports,
                                            HasPackageName {
@@ -41,9 +41,9 @@ public class GuidedDecisionTree implements HasImports,
     }
 
     @Override
-    public void setImports( final Imports imports ) {
-        this.imports = PortablePreconditions.checkNotNull( "imports",
-                                                           imports );
+    public void setImports(final Imports imports) {
+        this.imports = PortablePreconditions.checkNotNull("imports",
+                                                          imports);
     }
 
     @Override
@@ -52,25 +52,25 @@ public class GuidedDecisionTree implements HasImports,
     }
 
     @Override
-    public void setPackageName( final String packageName ) {
-        this.packageName = PortablePreconditions.checkNotNull( "packageName",
-                                                               packageName );
+    public void setPackageName(final String packageName) {
+        this.packageName = PortablePreconditions.checkNotNull("packageName",
+                                                              packageName);
     }
 
     public String getTreeName() {
         return this.treeName;
     }
 
-    public void setTreeName( final String treeName ) {
-        this.treeName = PortablePreconditions.checkNotNull( "treeName",
-                                                            treeName );
+    public void setTreeName(final String treeName) {
+        this.treeName = PortablePreconditions.checkNotNull("treeName",
+                                                           treeName);
     }
 
     public TypeNode getRoot() {
         return this.root;
     }
 
-    public void setRoot( final TypeNode root ) {
+    public void setRoot(final TypeNode root) {
         this.root = root;
     }
 

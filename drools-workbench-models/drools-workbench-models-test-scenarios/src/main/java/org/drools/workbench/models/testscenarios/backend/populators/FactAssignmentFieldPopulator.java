@@ -21,9 +21,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
-import org.drools.core.base.TypeResolver;
 import org.drools.workbench.models.testscenarios.shared.FactAssignmentField;
 import org.drools.workbench.models.testscenarios.shared.Field;
+import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 public class FactAssignmentFieldPopulator
         extends FieldPopulator {
@@ -36,18 +36,18 @@ public class FactAssignmentFieldPopulator
                                         TypeResolver resolver)
             throws ClassNotFoundException, IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
         super(factObject,
-                field.getName());
+              field.getName());
         this.fact = resolver.resolveType(resolver.getFullTypeName(field.getFact().getType())).newInstance();
 
         initSubFieldPopulators(field,
-                resolver);
+                               resolver);
     }
 
     private void initSubFieldPopulators(FactAssignmentField field,
                                         TypeResolver resolver)
             throws ClassNotFoundException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         FieldPopulatorFactory fieldPopulatorFactory = new FieldPopulatorFactory(fact,
-                resolver);
+                                                                                resolver);
         for (Field subField : field.getFact().getFieldData()) {
             try {
                 subFieldPopulators.add(fieldPopulatorFactory.getFieldPopulator(subField));
@@ -61,7 +61,7 @@ public class FactAssignmentFieldPopulator
     @Override
     public void populate(Map<String, Object> populatedData) {
         populateField(fact,
-                populatedData);
+                      populatedData);
         for (FieldPopulator fieldPopulator : subFieldPopulators) {
             fieldPopulator.populate(populatedData);
         }

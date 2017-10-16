@@ -16,13 +16,12 @@
 
 package org.drools.workbench.models.testscenarios.backend.util;
 
-import org.appformer.project.datamodel.imports.Imports;
+import org.drools.workbench.models.testscenarios.shared.CollectionFieldData;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.models.testscenarios.shared.Expectation;
-import org.drools.workbench.models.testscenarios.shared.FactData;
-import org.drools.workbench.models.testscenarios.shared.CollectionFieldData;
 import org.drools.workbench.models.testscenarios.shared.Fact;
 import org.drools.workbench.models.testscenarios.shared.FactAssignmentField;
+import org.drools.workbench.models.testscenarios.shared.FactData;
 import org.drools.workbench.models.testscenarios.shared.Field;
 import org.drools.workbench.models.testscenarios.shared.FieldData;
 import org.drools.workbench.models.testscenarios.shared.FieldPlaceHolder;
@@ -32,12 +31,12 @@ import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.models.testscenarios.shared.VerifyFact;
 import org.drools.workbench.models.testscenarios.shared.VerifyField;
 import org.drools.workbench.models.testscenarios.shared.VerifyRuleFired;
+import org.kie.soup.project.datamodel.imports.Imports;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
 import static org.kie.internal.xstream.XStreamUtils.createXStream;
-
 
 /**
  * Persists the scenario model.
@@ -65,20 +64,17 @@ public class ScenarioXMLPersistence {
         xt.alias("expect-field", VerifyField.class);
         xt.alias("expect-rule", VerifyRuleFired.class);
 
-
         xt.omitField(ExecutionTrace.class, "rulesFired");
 
         //See https://issues.jboss.org/browse/GUVNOR-1115
         xt.aliasPackage("org.drools.guvnor.client", "org.drools.ide.common.client");
 
         xt.registerConverter(new FieldConverter(xt));
-
     }
 
     public static ScenarioXMLPersistence getInstance() {
         return INSTANCE;
     }
-
 
     public String marshal(Scenario sc) {
         if (sc.getFixtures().size() > 1 && sc.getFixtures().get(sc.getFixtures().size() - 1) instanceof ExecutionTrace) {
@@ -87,7 +83,6 @@ public class ScenarioXMLPersistence {
             if (f instanceof Expectation) {
                 sc.getFixtures().remove(sc.getFixtures().size() - 1);
             }
-
         }
         String s = xt.toXML(sc);
         return s;
@@ -106,5 +101,4 @@ public class ScenarioXMLPersistence {
 
         return scenario;
     }
-
 }

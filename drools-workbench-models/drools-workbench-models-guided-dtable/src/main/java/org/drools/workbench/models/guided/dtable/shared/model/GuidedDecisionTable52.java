@@ -20,15 +20,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import org.appformer.project.datamodel.imports.HasImports;
-import org.appformer.project.datamodel.imports.Imports;
-import org.appformer.project.datamodel.packages.HasPackageName;
 import org.drools.workbench.models.datamodel.auditlog.AuditLog;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
 import org.drools.workbench.models.datamodel.rule.FromCompositeFactPattern;
 import org.drools.workbench.models.datamodel.rule.IPattern;
 import org.drools.workbench.models.guided.dtable.shared.auditlog.DecisionTableAuditLogFilter;
 import org.drools.workbench.models.guided.dtable.shared.model.adaptors.FactPatternPattern52Adaptor;
+import org.kie.soup.project.datamodel.imports.HasImports;
+import org.kie.soup.project.datamodel.imports.Imports;
+import org.kie.soup.project.datamodel.packages.HasPackageName;
 
 /**
  * This is a decision table model for a guided editor. It is not template or XLS
@@ -103,17 +103,17 @@ public class GuidedDecisionTable52 implements HasImports,
      */
     public enum HitPolicy {
 
-        NONE( "#" ),
-        RESOLVED_HIT( "RC" ),
-        UNIQUE_HIT( "U" ),
-        FIRST_HIT( "F" ),
-        RULE_ORDER( "R" );
+        NONE("#"),
+        RESOLVED_HIT("RC"),
+        UNIQUE_HIT("U"),
+        FIRST_HIT("F"),
+        RULE_ORDER("R");
 
         public static final String RESOLVED_HIT_METADATA_NAME = "ResolvedHitPriorityOverRow";
 
         private final String id;
 
-        HitPolicy( final String id ) {
+        HitPolicy(final String id) {
             this.id = id;
         }
 
@@ -147,6 +147,7 @@ public class GuidedDecisionTable52 implements HasImports,
 
     /**
      * Return an immutable list of Pattern columns
+     *
      * @return
      */
     public List<Pattern52> getPatterns() {
@@ -276,6 +277,7 @@ public class GuidedDecisionTable52 implements HasImports,
      * knowledge of individual columns is necessary; for example separate
      * columns in the user-interface or where individual columns need to be
      * analysed.
+     *
      * @return A List of individual columns
      */
     public List<BaseColumn> getExpandedColumns() {
@@ -397,6 +399,7 @@ public class GuidedDecisionTable52 implements HasImports,
 
     /**
      * Retrieve, or lazily instantiate a new, AuditLog.
+     *
      * @return
      */
     public AuditLog getAuditLog() {
@@ -482,33 +485,33 @@ public class GuidedDecisionTable52 implements HasImports,
     @Override
     public int hashCode() {
         int result = tableName != null ? tableName.hashCode() : 0;
-        result=~~result;
+        result = ~~result;
         result = 31 * result + (parentName != null ? parentName.hashCode() : 0);
-        result=~~result;
+        result = ~~result;
         result = 31 * result + (rowNumberCol != null ? rowNumberCol.hashCode() : 0);
-        result=~~result;
+        result = ~~result;
         result = 31 * result + (descriptionCol != null ? descriptionCol.hashCode() : 0);
-        result=~~result;
+        result = ~~result;
         result = 31 * result + (metadataCols != null ? metadataCols.hashCode() : 0);
-        result=~~result;
+        result = ~~result;
         result = 31 * result + (attributeCols != null ? attributeCols.hashCode() : 0);
-        result=~~result;
+        result = ~~result;
         result = 31 * result + (conditionPatterns != null ? conditionPatterns.hashCode() : 0);
-        result=~~result;
+        result = ~~result;
         result = 31 * result + (actionCols != null ? actionCols.hashCode() : 0);
-        result=~~result;
+        result = ~~result;
         result = 31 * result + (auditLog != null ? auditLog.hashCode() : 0);
-        result=~~result;
+        result = ~~result;
         result = 31 * result + (imports != null ? imports.hashCode() : 0);
-        result=~~result;
+        result = ~~result;
         result = 31 * result + (packageName != null ? packageName.hashCode() : 0);
-        result=~~result;
+        result = ~~result;
         result = 31 * result + (getTableFormat() != null ? getTableFormat().hashCode() : 0);
-        result=~~result;
+        result = ~~result;
         result = 31 * result + (getHitPolicy() != null ? getHitPolicy().hashCode() : 0);
-        result=~~result;
+        result = ~~result;
         result = 31 * result + (data != null ? data.hashCode() : 0);
-        result=~~result;
+        result = ~~result;
         return result;
     }
 }

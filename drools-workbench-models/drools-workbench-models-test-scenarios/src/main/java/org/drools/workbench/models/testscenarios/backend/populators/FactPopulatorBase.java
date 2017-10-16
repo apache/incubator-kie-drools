@@ -21,9 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.base.TypeResolver;
 import org.drools.workbench.models.testscenarios.shared.FactData;
 import org.drools.workbench.models.testscenarios.shared.Field;
+import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 abstract class FactPopulatorBase
         implements
@@ -49,7 +49,7 @@ abstract class FactPopulatorBase
             throws ClassNotFoundException, IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
 
         FieldPopulatorFactory fieldPopulatorFactory = new FieldPopulatorFactory(factObject,
-                typeResolver);
+                                                                                typeResolver);
 
         List<FieldPopulator> fieldPopulators = new ArrayList<FieldPopulator>();
         for (Field field : fact.getFieldData()) {

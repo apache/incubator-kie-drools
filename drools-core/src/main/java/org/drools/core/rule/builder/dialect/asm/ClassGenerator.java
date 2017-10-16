@@ -29,9 +29,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.core.base.TypeResolver;
 import org.drools.core.util.ByteArrayClassLoader;
 import org.drools.core.util.ClassUtils;
+import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 import org.mvel2.asm.ClassWriter;
 import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Type;
@@ -85,6 +85,7 @@ public class ClassGenerator {
     }
 
     private interface ClassPartDescr {
+
         void write(ClassGenerator cg, ClassWriter cw);
     }
 
@@ -125,9 +126,11 @@ public class ClassGenerator {
     }
 
     private static class InternalClassLoader extends ClassLoader {
+
         InternalClassLoader(ClassLoader classLoader) {
             super(classLoader);
         }
+
         Class<?> defineClass(String name, byte[] b) {
             return defineClass(name, b, 0, b.length);
         }
@@ -153,14 +156,15 @@ public class ClassGenerator {
             if (fos != null) {
                 try {
                     fos.close();
-                } catch (IOException e) { }
+                } catch (IOException e) {
+                }
             }
         }
     }
 
     public <T> T newInstance() {
         try {
-            return (T)generateClass().newInstance();
+            return (T) generateClass().newInstance();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -168,7 +172,7 @@ public class ClassGenerator {
 
     public <T> T newInstance(Class paramType, Object param) {
         try {
-            return (T)generateClass().getConstructor(paramType).newInstance(param);
+            return (T) generateClass().getConstructor(paramType).newInstance(param);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -176,7 +180,7 @@ public class ClassGenerator {
 
     public <T> T newInstance(Class paramType1, Object param1, Class paramType2, Object param2) {
         try {
-            return (T)generateClass().getConstructor(paramType1, paramType2).newInstance(param1, param2);
+            return (T) generateClass().getConstructor(paramType1, paramType2).newInstance(param1, param2);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -249,7 +253,7 @@ public class ClassGenerator {
         String arrayPrefix = "";
         while (className.endsWith("[]")) {
             arrayPrefix += "[";
-            className = className.substring(0, className.length()-2);
+            className = className.substring(0, className.length() - 2);
         }
         String typeDescriptor;
         try {
@@ -268,7 +272,7 @@ public class ClassGenerator {
         String arrayPrefix = "";
         while (className.endsWith("[]")) {
             arrayPrefix += "[";
-            className = className.substring(0, className.length()-2);
+            className = className.substring(0, className.length() - 2);
         }
         String typeDescriptor;
         boolean isPrimitive = false;
@@ -287,7 +291,7 @@ public class ClassGenerator {
         return className;
     }
 
-    private String[] toInteralNames( Class<?>[] classes ) {
+    private String[] toInteralNames(Class<?>[] classes) {
         if (classes == null) return null;
         String[] internals = new String[classes.length];
         for (int i = 0; i < classes.length; i++) internals[i] = toInteralName(classes[i]);
@@ -318,6 +322,7 @@ public class ClassGenerator {
     }
 
     private static class FieldDescr implements ClassPartDescr {
+
         private final int access;
         private final String name;
         private final String desc;
@@ -391,6 +396,7 @@ public class ClassGenerator {
     // MethodBody
 
     public abstract static class MethodBody {
+
         private ClassGenerator classGenerator;
         protected MethodVisitor mv;
         private Map<Integer, Type> storedTypes;
@@ -557,9 +563,9 @@ public class ClassGenerator {
             }
         }
 
-       protected final void push(Object obj) {
+        protected final void push(Object obj) {
             if (obj instanceof Boolean) {
-                mv.visitFieldInsn(GETSTATIC, "java/lang/Boolean", (Boolean)obj ? "TRUE" : "FALSE", "Ljava/lang/Boolean;");
+                mv.visitFieldInsn(GETSTATIC, "java/lang/Boolean", (Boolean) obj ? "TRUE" : "FALSE", "Ljava/lang/Boolean;");
             } else {
                 mv.visitLdcInsn(obj);
             }
@@ -574,10 +580,10 @@ public class ClassGenerator {
             if (type == String.class || type == Object.class) {
                 mv.visitLdcInsn(obj);
             } else if (type == char.class) {
-                mv.visitIntInsn(BIPUSH, (int)((Character)obj).charValue());
+                mv.visitIntInsn(BIPUSH, (int) ((Character) obj).charValue());
             } else if (type.isPrimitive()) {
                 if (obj instanceof String) {
-                    obj = coerceStringToPrimitive(type, (String)obj);
+                    obj = coerceStringToPrimitive(type, (String) obj);
                 } else {
                     obj = coercePrimitiveToPrimitive(type, obj);
                 }
@@ -585,23 +591,23 @@ public class ClassGenerator {
             } else if (type == Class.class) {
                 mv.visitLdcInsn(classGenerator.toType((Class<?>) obj));
             } else if (type == Character.class) {
-                invokeConstructor(Character.class, new Object[]{ obj.toString().charAt(0) }, char.class);
+                invokeConstructor(Character.class, new Object[]{obj.toString().charAt(0)}, char.class);
             } else if (type.isInterface() || isAbstract(type.getModifiers())) {
                 push(obj, obj.getClass());
             } else {
-                invokeConstructor(type, new Object[]{ obj.toString() }, String.class);
+                invokeConstructor(type, new Object[]{obj.toString()}, String.class);
             }
         }
 
         private Object coercePrimitiveToPrimitive(Class<?> primitiveType, Object value) {
             if (primitiveType == long.class) {
-                return ((Number)value).longValue();
+                return ((Number) value).longValue();
             }
             if (primitiveType == double.class) {
-                return ((Number)value).doubleValue();
+                return ((Number) value).doubleValue();
             }
             if (primitiveType == float.class) {
-                return ((Number)value).floatValue();
+                return ((Number) value).floatValue();
             }
             return value;
         }
@@ -793,6 +799,7 @@ public class ClassGenerator {
         public String superClassDescriptor() {
             return classGenerator.getSuperClassDescriptor();
         }
+
         public String methodDescr(Class<?> type, Class<?>... args) {
             return classGenerator.methodDescr(type, args);
         }
@@ -821,6 +828,7 @@ public class ClassGenerator {
     // MethodDescr
 
     private static class MethodDescr implements ClassPartDescr {
+
         private final int access;
         private final String name;
         private final String desc;
@@ -924,7 +932,7 @@ public class ClassGenerator {
             throw new RuntimeException("Not Implemented");
         }
 
-        public void registerClass( String className, Class<?> clazz ) {
+        public void registerClass(String className, Class<?> clazz) {
             throw new RuntimeException("Not Implemented");
         }
 
@@ -968,7 +976,7 @@ public class ClassGenerator {
     }
 
     public static ClassWriter createClassWriter(ClassLoader classLoader, int access, String name, String signature, String superName, String[] interfaces) {
-        ClassWriter cw = new InternalClassWriter(classLoader, ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES );
+        ClassWriter cw = new InternalClassWriter(classLoader, ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
         cw.visit(ClassLevel.getJavaVersion(classLoader), access, name, signature, superName, interfaces);
         return cw;
     }

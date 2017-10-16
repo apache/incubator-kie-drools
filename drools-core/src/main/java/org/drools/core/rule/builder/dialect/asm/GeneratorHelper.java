@@ -16,8 +16,6 @@
 package org.drools.core.rule.builder.dialect.asm;
 
 import org.drools.core.WorkingMemory;
-import org.drools.core.base.ClassTypeResolver;
-import org.drools.core.base.TypeResolver;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.InternalKnowledgePackage;
@@ -27,6 +25,8 @@ import org.drools.core.rule.Pattern;
 import org.drools.core.spi.CompiledInvoker;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.asm.MethodComparator;
+import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
+import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 import org.mvel2.asm.Label;
 import org.mvel2.asm.MethodVisitor;
 
@@ -56,6 +56,7 @@ public final class GeneratorHelper {
     }
 
     public static class DeclarationMatcher implements Comparable {
+
         private final Declaration declaration;
         private final int originalIndex;
         private final int rootDistance;
@@ -79,7 +80,7 @@ public final class GeneratorHelper {
         }
 
         public int compareTo(Object obj) {
-            return ((DeclarationMatcher)obj).rootDistance - rootDistance;
+            return ((DeclarationMatcher) obj).rootDistance - rootDistance;
         }
     }
 
@@ -95,9 +96,9 @@ public final class GeneratorHelper {
     }
 
     public static ClassGenerator createInvokerClassGenerator(final String className,
-                                                              final InvokerDataProvider data,
-                                                              final ClassLoader classLoader,
-                                                              final TypeResolver typeResolver) {
+                                                             final InvokerDataProvider data,
+                                                             final ClassLoader classLoader,
+                                                             final TypeResolver typeResolver) {
         final ClassGenerator generator = new ClassGenerator(className, classLoader, typeResolver)
                 .addStaticField(ACC_PRIVATE + ACC_FINAL, "serialVersionUID", Long.TYPE, INVOKER_SERIAL_UID)
                 .addDefaultConstructor();
@@ -108,8 +109,8 @@ public final class GeneratorHelper {
                 mv.visitInsn(IRETURN);
             }
         })
-        .addMethod(ACC_PUBLIC, "getMethodBytecode", generator.methodDescr(List.class), new GetMethodBytecodeMethod(data))
-        .addMethod(ACC_PUBLIC, "equals", generator.methodDescr(Boolean.TYPE, Object.class), new EqualsMethod());
+                .addMethod(ACC_PUBLIC, "getMethodBytecode", generator.methodDescr(List.class), new GetMethodBytecodeMethod(data))
+                .addMethod(ACC_PUBLIC, "equals", generator.methodDescr(Boolean.TYPE, Object.class), new EqualsMethod());
 
         return generator;
     }
@@ -177,6 +178,7 @@ public final class GeneratorHelper {
     }
 
     public static abstract class DeclarationAccessorMethod extends ClassGenerator.MethodBody {
+
         protected int storeObjectFromDeclaration(Declaration declaration, int registry) {
             return storeObjectFromDeclaration(declaration, declaration.getTypeName(), registry);
         }
@@ -184,11 +186,11 @@ public final class GeneratorHelper {
         protected int storeObjectFromDeclaration(Declaration declaration, String declarationType, int registry) {
             String readMethod = declaration.getNativeReadMethodName();
             boolean isObject = readMethod.equals("getValue");
-            String expectedTypeDescr = typeDescr( declarationType );
-            boolean needsPrimitive = ! ( expectedTypeDescr.startsWith( "L" ) || expectedTypeDescr.startsWith( "[" ) );
+            String expectedTypeDescr = typeDescr(declarationType);
+            boolean needsPrimitive = !(expectedTypeDescr.startsWith("L") || expectedTypeDescr.startsWith("["));
             String returnedType = isObject ? "Ljava/lang/Object;" : typeDescr(declaration.getTypeName());
             mv.visitMethodInsn(INVOKEVIRTUAL, Declaration.class.getName().replace('.', '/'), readMethod,
-                               "(L" + InternalWorkingMemory.class.getName().replace('.', '/') +";Ljava/lang/Object;)" + returnedType);
+                               "(L" + InternalWorkingMemory.class.getName().replace('.', '/') + ";Ljava/lang/Object;)" + returnedType);
             if (isObject) {
                 Class<?> declarationClass = declaration.getDeclarationClass();
                 if (declarationClass != null) {
@@ -196,19 +198,19 @@ public final class GeneratorHelper {
                 }
             }
 
-            if ( needsPrimitive && isObject ) {
-                castToPrimitive( convertPrimitiveNameToType( declarationType) );
-            } else if ( ! needsPrimitive && ! isObject ) {
-                castFromPrimitive( convertPrimitiveNameToType( declaration.getExtractor().getExtractToClassName() ) );
-            } else if ( needsPrimitive && ! isObject && ! returnedType.equals( declarationType ) ) {
-                castPrimitiveToPrimitive( declaration.getExtractor().getExtractToClass(), convertPrimitiveNameToType( declarationType ) );
+            if (needsPrimitive && isObject) {
+                castToPrimitive(convertPrimitiveNameToType(declarationType));
+            } else if (!needsPrimitive && !isObject) {
+                castFromPrimitive(convertPrimitiveNameToType(declaration.getExtractor().getExtractToClassName()));
+            } else if (needsPrimitive && !isObject && !returnedType.equals(declarationType)) {
+                castPrimitiveToPrimitive(declaration.getExtractor().getExtractToClass(), convertPrimitiveNameToType(declarationType));
             }
 
             return store(registry, declarationType);
         }
 
         protected Tuple traverseTuplesUntilDeclaration(Tuple currentTuple, int declarOffset, int tupleReg) {
-            while ( currentTuple.getFactHandle() == null || currentTuple.getIndex() > declarOffset ) {
+            while (currentTuple.getFactHandle() == null || currentTuple.getIndex() > declarOffset) {
                 // FactHandle is null for eval, not and join nodes as it has no right input
                 mv.visitVarInsn(ALOAD, tupleReg);
                 invokeInterface(Tuple.class, "getParent", Tuple.class);
@@ -243,6 +245,7 @@ public final class GeneratorHelper {
     }
 
     public static abstract class EvaluateMethod extends DeclarationAccessorMethod {
+
         protected int objAstorePos;
 
         protected int[] parseDeclarations(Declaration[] declarations, int declarReg, int tupleReg, int wmReg, boolean readLocalsFromTuple) {
@@ -271,7 +274,7 @@ public final class GeneratorHelper {
                 boolean isObject = readMethod.equals("getValue");
                 String declarationType = declarations[i].getTypeName();
                 String returnedType = isObject ? "Ljava/lang/Object;" : typeDescr(declarationType);
-                mv.visitMethodInsn(INVOKEVIRTUAL, Declaration.class.getName().replace('.', '/'), readMethod, "(L" + InternalWorkingMemory.class.getName().replace('.', '/') +";Ljava/lang/Object;)" + returnedType);
+                mv.visitMethodInsn(INVOKEVIRTUAL, Declaration.class.getName().replace('.', '/'), readMethod, "(L" + InternalWorkingMemory.class.getName().replace('.', '/') + ";Ljava/lang/Object;)" + returnedType);
                 if (isObject) {
                     mv.visitTypeInsn(CHECKCAST, internalName(declarationType));
                 }
@@ -285,7 +288,7 @@ public final class GeneratorHelper {
                 mv.visitVarInsn(ALOAD, wmReg); // workingMemory
                 push(globals[i]);
                 invokeInterface(WorkingMemory.class, "getGlobal", Object.class, String.class);
-                Class<?> primitiveType = convertPrimitiveNameToType( globalTypes[i] );
+                Class<?> primitiveType = convertPrimitiveNameToType(globalTypes[i]);
                 if (primitiveType != null) {
                     cast(convertFromPrimitiveType(primitiveType), primitiveType);
                 } else {

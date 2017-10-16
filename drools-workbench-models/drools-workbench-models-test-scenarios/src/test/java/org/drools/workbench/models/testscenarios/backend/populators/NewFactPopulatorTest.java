@@ -21,8 +21,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-import org.drools.core.base.ClassTypeResolver;
-import org.drools.core.base.TypeResolver;
 import org.drools.workbench.models.testscenarios.shared.FactData;
 import org.drools.workbench.models.testscenarios.shared.Field;
 import org.drools.workbench.models.testscenarios.shared.FieldData;
@@ -30,49 +28,50 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
+import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class NewFactPopulatorTest {
 
-    private TypeResolver            typeResolver;
+    private TypeResolver typeResolver;
     private HashMap<String, Object> populatedData;
     private KieSession workingMemory;
 
     @Before
     public void setUp() throws Exception {
-        typeResolver = new ClassTypeResolver( new HashSet<String>(),
-                                              Thread.currentThread().getContextClassLoader() );
+        typeResolver = new ClassTypeResolver(new HashSet<String>(),
+                                             Thread.currentThread().getContextClassLoader());
         populatedData = new HashMap<String, Object>();
-        workingMemory = mock( KieSession.class );
+        workingMemory = mock(KieSession.class);
     }
 
     @Test
     public void testDummyRunNoRules() throws Exception {
-        typeResolver.addImport( "org.drools.workbench.models.testscenarios.backend.Cheese" );
+        typeResolver.addImport("org.drools.workbench.models.testscenarios.backend.Cheese");
 
         List<Field> fieldData = new ArrayList<Field>();
-        fieldData.add( new FieldData( "type",
-                                      "cheddar" ) );
-        fieldData.add( new FieldData( "price",
-                                      "42" ) );
-        FactData fact = new FactData( "Cheese",
-                                      "c1",
-                                      fieldData,
-                                      false );
+        fieldData.add(new FieldData("type",
+                                    "cheddar"));
+        fieldData.add(new FieldData("price",
+                                    "42"));
+        FactData fact = new FactData("Cheese",
+                                     "c1",
+                                     fieldData,
+                                     false);
 
         NewFactPopulator newFactPopulator = new NewFactPopulator(
-                                                                  populatedData,
-                                                                  typeResolver,
-                                                                  fact );
+                populatedData,
+                typeResolver,
+                fact);
 
-        newFactPopulator.populate( workingMemory, new HashMap<String, FactHandle>() );
+        newFactPopulator.populate(workingMemory, new HashMap<String, FactHandle>());
 
-        assertTrue( populatedData.containsKey( "c1" ) );
-        assertNotNull( populatedData.get( "c1" ) );
-        
-        verify( workingMemory ).insert( populatedData.get( "c1" ) );
+        assertTrue(populatedData.containsKey("c1"));
+        assertNotNull(populatedData.get("c1"));
+
+        verify(workingMemory).insert(populatedData.get("c1"));
     }
-
 }

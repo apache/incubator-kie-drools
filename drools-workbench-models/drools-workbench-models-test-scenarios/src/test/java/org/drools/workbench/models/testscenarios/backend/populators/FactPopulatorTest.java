@@ -24,8 +24,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.base.ClassTypeResolver;
-import org.drools.core.base.TypeResolver;
 import org.drools.workbench.models.testscenarios.backend.Cheese;
 import org.drools.workbench.models.testscenarios.backend.CheeseType;
 import org.drools.workbench.models.testscenarios.backend.Cheesery;
@@ -40,6 +38,8 @@ import org.drools.workbench.models.testscenarios.shared.FieldData;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
+import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
+import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import static java.util.Arrays.*;
 import static org.junit.Assert.*;
@@ -49,8 +49,8 @@ public class FactPopulatorTest {
 
     static {
         try {
-            Class.forName( "org.drools.core.base.mvel.MVELCompilationUnit" );
-        } catch ( ClassNotFoundException e ) {
+            Class.forName("org.drools.core.base.mvel.MVELCompilationUnit");
+        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
@@ -61,9 +61,9 @@ public class FactPopulatorTest {
 
     @Before
     public void setUp() throws Exception {
-        workingMemory = mock( KieSession.class );
+        workingMemory = mock(KieSession.class);
         populatedData = new HashMap<String, Object>();
-        factPopulator = new FactPopulator( workingMemory, populatedData );
+        factPopulator = new FactPopulator(workingMemory, populatedData);
     }
 
     @Test
@@ -74,23 +74,23 @@ public class FactPopulatorTest {
                 Arrays.<Field>asList(
                         new FieldData(
                                 "name",
-                                "mic" ),
+                                "mic"),
                         new FieldData(
                                 "age",
-                                "=30 + 3" ) ),
-                false );
+                                "=30 + 3")),
+                false);
 
-        factPopulator.add( new NewFactPopulator( populatedData, getTypeResolver(), factData ) );
+        factPopulator.add(new NewFactPopulator(populatedData, getTypeResolver(), factData));
 
         factPopulator.populate();
 
-        assertTrue( populatedData.containsKey( "p1" ) );
+        assertTrue(populatedData.containsKey("p1"));
 
-        Person person = (Person) populatedData.get( "p1" );
-        assertEquals( "mic",
-                      person.getName() );
-        assertEquals( 33,
-                      person.getAge() );
+        Person person = (Person) populatedData.get("p1");
+        assertEquals("mic",
+                     person.getName());
+        assertEquals(33,
+                     person.getAge());
     }
 
     @Test
@@ -98,21 +98,21 @@ public class FactPopulatorTest {
 
         FieldData fieldData = new FieldData(
                 "cheeseType",
-                "CheeseType.CHEDDAR" );
-        fieldData.setNature( FieldData.TYPE_ENUM );
-        FactData factData = new FactData( "Cheese",
-                                          "c1",
-                                          asList( (Field) fieldData ),
-                                          false );
+                "CheeseType.CHEDDAR");
+        fieldData.setNature(FieldData.TYPE_ENUM);
+        FactData factData = new FactData("Cheese",
+                                         "c1",
+                                         asList((Field) fieldData),
+                                         false);
 
-        factPopulator.add( new NewFactPopulator( populatedData, getTypeResolver(), factData ) );
+        factPopulator.add(new NewFactPopulator(populatedData, getTypeResolver(), factData));
 
         factPopulator.populate();
 
-        assertTrue( populatedData.containsKey( "c1" ) );
+        assertTrue(populatedData.containsKey("c1"));
 
-        Cheese cheese = (Cheese) populatedData.get( "c1" );
-        assertEquals( CheeseType.CHEDDAR, cheese.getCheeseType() );
+        Cheese cheese = (Cheese) populatedData.get("c1");
+        assertEquals(CheeseType.CHEDDAR, cheese.getCheeseType());
     }
 
     @Test
@@ -126,13 +126,13 @@ public class FactPopulatorTest {
                 Arrays.<Field>asList(
                         new FieldData(
                                 "type",
-                                "cheddar" ),
+                                "cheddar"),
                         new FieldData(
                                 "price",
-                                "42" ) ),
-                false );
+                                "42")),
+                false);
 
-        factPopulator.add( new NewFactPopulator( populatedData, typeResolver, cheeseFactData ) );
+        factPopulator.add(new NewFactPopulator(populatedData, typeResolver, cheeseFactData));
 
         FactData outerFactData = new FactData(
                 "OuterFact",
@@ -140,21 +140,21 @@ public class FactPopulatorTest {
                 Arrays.<Field>asList(
                         new FieldData(
                                 "name",
-                                "mic" ),
+                                "mic"),
                         new FieldData(
                                 "innerFact",
-                                "=c1" ) ),
-                false );
+                                "=c1")),
+                false);
 
-        factPopulator.add( new NewFactPopulator( populatedData, typeResolver, outerFactData ) );
+        factPopulator.add(new NewFactPopulator(populatedData, typeResolver, outerFactData));
 
         factPopulator.populate();
 
-        assertTrue( populatedData.containsKey( "c1" ) );
-        assertTrue( populatedData.containsKey( "p1" ) );
+        assertTrue(populatedData.containsKey("c1"));
+        assertTrue(populatedData.containsKey("p1"));
 
-        OuterFact o = (OuterFact) populatedData.get( "p1" );
-        assertEquals( populatedData.get( "c1" ), o.getInnerFact() );
+        OuterFact o = (OuterFact) populatedData.get("p1");
+        assertEquals(populatedData.get("c1"), o.getInnerFact());
     }
 
     @Test
@@ -168,13 +168,13 @@ public class FactPopulatorTest {
                 Arrays.<Field>asList(
                         new FieldData(
                                 "name",
-                                "mic" ),
+                                "mic"),
                         new FieldData(
                                 "innerFact",
-                                "=c1" ) ),
-                false );
+                                "=c1")),
+                false);
 
-        factPopulator.add( new NewFactPopulator( populatedData, typeResolver, outerFactData ) );
+        factPopulator.add(new NewFactPopulator(populatedData, typeResolver, outerFactData));
 
         FactData cheeseFactData = new FactData(
                 "Cheese",
@@ -182,21 +182,21 @@ public class FactPopulatorTest {
                 Arrays.<Field>asList(
                         new FieldData(
                                 "type",
-                                "cheddar" ),
+                                "cheddar"),
                         new FieldData(
                                 "price",
-                                "42" ) ),
-                false );
+                                "42")),
+                false);
 
-        factPopulator.add( new NewFactPopulator( populatedData, typeResolver, cheeseFactData ) );
+        factPopulator.add(new NewFactPopulator(populatedData, typeResolver, cheeseFactData));
 
         factPopulator.populate();
 
-        assertTrue( populatedData.containsKey( "c1" ) );
-        assertTrue( populatedData.containsKey( "p1" ) );
+        assertTrue(populatedData.containsKey("c1"));
+        assertTrue(populatedData.containsKey("p1"));
 
-        OuterFact o = (OuterFact) populatedData.get( "p1" );
-        assertEquals( populatedData.get( "c1" ), o.getInnerFact() );
+        OuterFact o = (OuterFact) populatedData.get("p1");
+        assertEquals(populatedData.get("c1"), o.getInnerFact());
     }
 
     @Test
@@ -206,15 +206,15 @@ public class FactPopulatorTest {
                 new NewFactPopulator(
                         populatedData,
                         getTypeResolver(),
-                        new FactData( "Cheese",
-                                      "c1",
-                                      new ArrayList<Field>(),
-                                      false ) ) );
+                        new FactData("Cheese",
+                                     "c1",
+                                     new ArrayList<Field>(),
+                                     false)));
 
         factPopulator.populate();
 
-        assertTrue( populatedData.containsKey( "c1" ) );
-        assertTrue( populatedData.get( "c1" ) instanceof Cheese );
+        assertTrue(populatedData.containsKey("c1"));
+        assertTrue(populatedData.get("c1") instanceof Cheese);
     }
 
     @Test
@@ -224,30 +224,30 @@ public class FactPopulatorTest {
                 new NewFactPopulator(
                         populatedData,
                         getTypeResolver(),
-                        new FactData( "Cheese",
-                                      "c1",
-                                      Arrays.<Field>asList(
-                                              new FieldData(
-                                                      "price",
-                                                      "" ) ),
-                                      false ) ) );
+                        new FactData("Cheese",
+                                     "c1",
+                                     Arrays.<Field>asList(
+                                             new FieldData(
+                                                     "price",
+                                                     "")),
+                                     false)));
 
         factPopulator.populate();
 
-        assertTrue( populatedData.containsKey( "c1" ) );
-        assertTrue( populatedData.get( "c1" ) instanceof Cheese );
+        assertTrue(populatedData.containsKey("c1"));
+        assertTrue(populatedData.get("c1") instanceof Cheese);
     }
 
     @Test
     public void testPopulatingExistingFact() throws Exception {
         Cheese cheese = new Cheese();
-        cheese.setType( "whee" );
-        cheese.setPrice( 1 );
+        cheese.setType("whee");
+        cheese.setPrice(1);
 
         Map<String, Object> populatedData = new HashMap<String, Object>();
         populatedData.put(
                 "x",
-                cheese );
+                cheese);
 
         factPopulator.add(
                 new ExistingFactPopulator(
@@ -259,16 +259,16 @@ public class FactPopulatorTest {
                                 Arrays.<Field>asList(
                                         new FieldData(
                                                 "type",
-                                                null ),
+                                                null),
                                         new FieldData(
                                                 "price",
-                                                "42" ) ),
-                                false ) ) );
+                                                "42")),
+                                false)));
 
         factPopulator.populate();
 
-        assertEquals( "whee", cheese.getType() );
-        assertEquals( 42, cheese.getPrice() );
+        assertEquals("whee", cheese.getType());
+        assertEquals(42, cheese.getPrice());
     }
 
     @Test
@@ -284,11 +284,11 @@ public class FactPopulatorTest {
                                 Arrays.<Field>asList(
                                         new FieldData(
                                                 "type",
-                                                "cheddar" ),
+                                                "cheddar"),
                                         new FieldData(
                                                 "usedBy",
-                                                "10-Jul-2008" ) ),
-                                false ) ) );
+                                                "10-Jul-2008")),
+                                false)));
         factPopulator.add(
                 new NewFactPopulator(
                         populatedData,
@@ -299,20 +299,19 @@ public class FactPopulatorTest {
                                 Arrays.<Field>asList(
                                         new FieldData(
                                                 "name",
-                                                "mic" ),
+                                                "mic"),
                                         new FieldData(
                                                 "innerFact",
-                                                "=c1" ) ),
-                                false ) ) );
+                                                "=c1")),
+                                false)));
 
         factPopulator.populate();
 
-        assertTrue( populatedData.containsKey( "c1" ) );
-        assertTrue( populatedData.containsKey( "p1" ) );
+        assertTrue(populatedData.containsKey("c1"));
+        assertTrue(populatedData.containsKey("p1"));
 
-        Cheese c = (Cheese) populatedData.get( "c1" );
-        assertNotNull( c.getUsedBy() );
-
+        Cheese c = (Cheese) populatedData.get("c1");
+        assertNotNull(c.getUsedBy());
     }
 
     @Test
@@ -328,16 +327,15 @@ public class FactPopulatorTest {
                                 Arrays.<Field>asList(
                                         new FieldData(
                                                 "sqlDate",
-                                                "10-Jul-2008" ) ),
-                                false ) ) );
+                                                "10-Jul-2008")),
+                                false)));
 
         factPopulator.populate();
 
-        assertTrue( populatedData.containsKey( "c1" ) );
+        assertTrue(populatedData.containsKey("c1"));
 
-        SqlDateWrapper sqlDateWrapper = (SqlDateWrapper) populatedData.get( "c1" );
-        assertNotNull( sqlDateWrapper.getSqlDate() );
-
+        SqlDateWrapper sqlDateWrapper = (SqlDateWrapper) populatedData.get("c1");
+        assertNotNull(sqlDateWrapper.getSqlDate());
     }
 
     @Test
@@ -347,16 +345,16 @@ public class FactPopulatorTest {
                 new NewFactPopulator(
                         populatedData,
                         getTypeResolver(),
-                        new FactData( "Cheese",
-                                      "c1",
-                                      Arrays.<Field>asList(
-                                              new FieldData(
-                                                      "type",
-                                                      "cheddar" ),
-                                              new FieldData(
-                                                      "price",
-                                                      "42" ) ),
-                                      false ) ) );
+                        new FactData("Cheese",
+                                     "c1",
+                                     Arrays.<Field>asList(
+                                             new FieldData(
+                                                     "type",
+                                                     "cheddar"),
+                                             new FieldData(
+                                                     "price",
+                                                     "42")),
+                                     false)));
         factPopulator.add(
                 new NewFactPopulator(
                         populatedData,
@@ -367,30 +365,30 @@ public class FactPopulatorTest {
                                 Arrays.<Field>asList(
                                         new FieldData(
                                                 "type",
-                                                "= c1.type" ) ),
-                                false ) ) );
+                                                "= c1.type")),
+                                false)));
 
         factPopulator.populate();
 
-        assertTrue( populatedData.containsKey( "c1" ) );
-        assertTrue( populatedData.containsKey( "c2" ) );
+        assertTrue(populatedData.containsKey("c1"));
+        assertTrue(populatedData.containsKey("c2"));
 
-        Cheese c = (Cheese) populatedData.get( "c1" );
-        assertEquals( "cheddar", c.getType() );
-        assertEquals( 42, c.getPrice() );
+        Cheese c = (Cheese) populatedData.get("c1");
+        assertEquals("cheddar", c.getType());
+        assertEquals(42, c.getPrice());
 
-        Cheese c2 = (Cheese) populatedData.get( "c2" );
-        assertEquals( c.getType(), c2.getType() );
+        Cheese c2 = (Cheese) populatedData.get("c2");
+        assertEquals(c.getType(), c2.getType());
     }
 
     @Test
     public void testPopulateEmptyString() throws Exception {
         Cheese cheese = new Cheese();
-        cheese.setType( "whee" );
-        cheese.setPrice( 1 );
-        populatedData.put( "x", cheese );
+        cheese.setType("whee");
+        cheese.setPrice(1);
+        populatedData.put("x", cheese);
 
-        assertEquals( 1, cheese.getPrice() );
+        assertEquals(1, cheese.getPrice());
 
         //An empty String is a 'value' as opposed to null
         factPopulator.add(
@@ -403,16 +401,16 @@ public class FactPopulatorTest {
                                 Arrays.<Field>asList(
                                         new FieldData(
                                                 "type",
-                                                "" ),
+                                                ""),
                                         new FieldData(
                                                 "price",
-                                                "42" ) ),
-                                false ) ) );
+                                                "42")),
+                                false)));
 
         factPopulator.populate();
 
-        assertEquals( "", cheese.getType() );
-        assertEquals( 42, cheese.getPrice() );
+        assertEquals("", cheese.getType());
+        assertEquals(42, cheese.getPrice());
     }
 
     @Test
@@ -420,62 +418,61 @@ public class FactPopulatorTest {
 
         TypeResolver typeResolver = getTypeResolver();
 
-        FactData fd1 = new FactData( "Cheese",
-                                     "f1",
-                                     Arrays.<Field>asList(
-                                             new FieldData( "type",
-                                                            "" ),
-                                             new FieldData( "price",
-                                                            "42" ) ),
-                                     false );
+        FactData fd1 = new FactData("Cheese",
+                                    "f1",
+                                    Arrays.<Field>asList(
+                                            new FieldData("type",
+                                                          ""),
+                                            new FieldData("price",
+                                                          "42")),
+                                    false);
 
-        factPopulator.add( new NewFactPopulator( populatedData, typeResolver, fd1 ) );
+        factPopulator.add(new NewFactPopulator(populatedData, typeResolver, fd1));
 
-        FactData fd2 = new FactData( "Cheese",
-                                     "f2",
-                                     Arrays.<Field>asList(
-                                             new FieldData( "type",
-                                                            "" ),
-                                             new FieldData( "price",
-                                                            "43" ) ),
-                                     false );
-        factPopulator.add( new NewFactPopulator( populatedData, typeResolver, fd2 ) );
+        FactData fd2 = new FactData("Cheese",
+                                    "f2",
+                                    Arrays.<Field>asList(
+                                            new FieldData("type",
+                                                          ""),
+                                            new FieldData("price",
+                                                          "43")),
+                                    false);
+        factPopulator.add(new NewFactPopulator(populatedData, typeResolver, fd2));
 
-        FactData fd3 = new FactData( "Cheese",
-                                     "f3",
-                                     Arrays.<Field>asList(
-                                             new FieldData( "type",
-                                                            "" ),
-                                             new FieldData( "price",
-                                                            "45" ) ),
-                                     false );
+        FactData fd3 = new FactData("Cheese",
+                                    "f3",
+                                    Arrays.<Field>asList(
+                                            new FieldData("type",
+                                                          ""),
+                                            new FieldData("price",
+                                                          "45")),
+                                    false);
 
-        factPopulator.add( new NewFactPopulator( populatedData, typeResolver, fd3 ) );
+        factPopulator.add(new NewFactPopulator(populatedData, typeResolver, fd3));
 
         FieldData field = new FieldData();
-        field.setName( "cheeses" );
-        field.setNature( FieldData.TYPE_COLLECTION );
-        field.setValue( "=[f1,f2,f3]" );
+        field.setName("cheeses");
+        field.setNature(FieldData.TYPE_COLLECTION);
+        field.setValue("=[f1,f2,f3]");
         List<Field> lstField = new ArrayList<Field>();
-        lstField.add( field );
-        FactData lst = new FactData( "Cheesery",
-                                     "listChesse",
-                                     lstField,
-                                     false );
-        factPopulator.add( new NewFactPopulator( populatedData, typeResolver, lst ) );
+        lstField.add(field);
+        FactData lst = new FactData("Cheesery",
+                                    "listChesse",
+                                    lstField,
+                                    false);
+        factPopulator.add(new NewFactPopulator(populatedData, typeResolver, lst));
 
         factPopulator.populate();
 
-        Cheesery listChesse = (Cheesery) populatedData.get( "listChesse" );
-        Cheese f1 = (Cheese) populatedData.get( "f1" );
-        Cheese f2 = (Cheese) populatedData.get( "f2" );
-        Cheese f3 = (Cheese) populatedData.get( "f3" );
+        Cheesery listChesse = (Cheesery) populatedData.get("listChesse");
+        Cheese f1 = (Cheese) populatedData.get("f1");
+        Cheese f2 = (Cheese) populatedData.get("f2");
+        Cheese f3 = (Cheese) populatedData.get("f3");
 
-        assertEquals( 3, listChesse.getCheeses().size() );
-        assertTrue( listChesse.getCheeses().contains( f1 ) );
-        assertTrue( listChesse.getCheeses().contains( f2 ) );
-        assertTrue( listChesse.getCheeses().contains( f3 ) );
-
+        assertEquals(3, listChesse.getCheeses().size());
+        assertTrue(listChesse.getCheeses().contains(f1));
+        assertTrue(listChesse.getCheeses().contains(f2));
+        assertTrue(listChesse.getCheeses().contains(f3));
     }
 
     @Test
@@ -484,16 +481,16 @@ public class FactPopulatorTest {
 
         List<Field> fieldData = new ArrayList<Field>();
         CollectionFieldData collectionFieldData = new CollectionFieldData();
-        collectionFieldData.setName( "cheeses" );
-        fieldData.add( collectionFieldData );
-        collectionFieldData.getCollectionFieldList().add( new FieldData( "cheeses", "=cheese1" ) );
-        collectionFieldData.getCollectionFieldList().add( new FieldData( "cheeses", "=cheese2" ) );
+        collectionFieldData.setName("cheeses");
+        fieldData.add(collectionFieldData);
+        collectionFieldData.getCollectionFieldList().add(new FieldData("cheeses", "=cheese1"));
+        collectionFieldData.getCollectionFieldList().add(new FieldData("cheeses", "=cheese2"));
 
         FactData cheeseryFactData = new FactData(
                 "Cheesery",
                 "cheesery",
                 fieldData,
-                false );
+                false);
 
         FactData cheeseFactData1 = new FactData(
                 "Cheese",
@@ -508,32 +505,32 @@ public class FactPopulatorTest {
                 false
         );
 
-        factPopulator.add( new NewFactPopulator(
+        factPopulator.add(new NewFactPopulator(
                 populatedData,
                 typeResolver,
-                cheeseryFactData ) );
+                cheeseryFactData));
 
-        factPopulator.add( new NewFactPopulator(
+        factPopulator.add(new NewFactPopulator(
                 populatedData,
                 typeResolver,
-                cheeseFactData1 ) );
+                cheeseFactData1));
 
-        factPopulator.add( new NewFactPopulator(
+        factPopulator.add(new NewFactPopulator(
                 populatedData,
                 typeResolver,
-                cheeseFactData2 ) );
+                cheeseFactData2));
 
         factPopulator.populate();
 
-        assertTrue( populatedData.containsKey( "cheesery" ) );
-        Cheesery cheesery = (Cheesery) populatedData.get( "cheesery" );
-        assertNotNull( cheesery );
+        assertTrue(populatedData.containsKey("cheesery"));
+        Cheesery cheesery = (Cheesery) populatedData.get("cheesery");
+        assertNotNull(cheesery);
 
-        assertEquals( 2, cheesery.getCheeses().size() );
-        assertNotNull( cheesery.getCheeses().get( 0 ) );
-        assertTrue( cheesery.getCheeses().get( 0 ) instanceof Cheese );
-        assertNotNull( cheesery.getCheeses().get( 1 ) );
-        assertTrue( cheesery.getCheeses().get( 1 ) instanceof Cheese );
+        assertEquals(2, cheesery.getCheeses().size());
+        assertNotNull(cheesery.getCheeses().get(0));
+        assertTrue(cheesery.getCheeses().get(0) instanceof Cheese);
+        assertNotNull(cheesery.getCheeses().get(1));
+        assertTrue(cheesery.getCheeses().get(1) instanceof Cheese);
     }
 
     @Test
@@ -542,41 +539,41 @@ public class FactPopulatorTest {
 
         List<Field> fieldData = new ArrayList<Field>();
         CollectionFieldData collectionFieldData = new CollectionFieldData();
-        collectionFieldData.setName( "list" );
-        fieldData.add( collectionFieldData );
-        collectionFieldData.getCollectionFieldList().add( new FieldData( "list", "=1+3" ) );
+        collectionFieldData.setName("list");
+        fieldData.add(collectionFieldData);
+        collectionFieldData.getCollectionFieldList().add(new FieldData("list", "=1+3"));
 
         FactData wrapperFactData = new FactData(
                 "MyCollectionWrapper",
                 "wrapper",
                 fieldData,
-                false );
+                false);
 
-        factPopulator.add( new NewFactPopulator(
+        factPopulator.add(new NewFactPopulator(
                 populatedData,
                 typeResolver,
-                wrapperFactData ) );
+                wrapperFactData));
 
         factPopulator.populate();
 
-        assertTrue( populatedData.containsKey( "wrapper" ) );
-        MyCollectionWrapper wrapper = (MyCollectionWrapper) populatedData.get( "wrapper" );
-        assertNotNull( wrapper );
+        assertTrue(populatedData.containsKey("wrapper"));
+        MyCollectionWrapper wrapper = (MyCollectionWrapper) populatedData.get("wrapper");
+        assertNotNull(wrapper);
 
-        assertEquals( 1, wrapper.getList().size() );
-        assertNotNull( wrapper.getList().get( 0 ) );
-        assertEquals( 4, wrapper.getList().get( 0 ) );
+        assertEquals(1, wrapper.getList().size());
+        assertNotNull(wrapper.getList().get(0));
+        assertEquals(4, wrapper.getList().get(0));
     }
 
     private TypeResolver getTypeResolver() {
-        TypeResolver resolver = new ClassTypeResolver( new HashSet<String>(), getClassLoader() );
-        resolver.addImport( "org.drools.workbench.models.testscenarios.backend.MyCollectionWrapper" );
-        resolver.addImport( "org.drools.workbench.models.testscenarios.backend.Cheesery" );
-        resolver.addImport( "org.drools.workbench.models.testscenarios.backend.Cheese" );
-        resolver.addImport( "org.drools.workbench.models.testscenarios.backend.SqlDateWrapper" );
-        resolver.addImport( "org.drools.workbench.models.testscenarios.backend.CheeseType" );
-        resolver.addImport( "org.drools.workbench.models.testscenarios.backend.Person" );
-        resolver.addImport( "org.drools.workbench.models.testscenarios.backend.OuterFact" );
+        TypeResolver resolver = new ClassTypeResolver(new HashSet<String>(), getClassLoader());
+        resolver.addImport("org.drools.workbench.models.testscenarios.backend.MyCollectionWrapper");
+        resolver.addImport("org.drools.workbench.models.testscenarios.backend.Cheesery");
+        resolver.addImport("org.drools.workbench.models.testscenarios.backend.Cheese");
+        resolver.addImport("org.drools.workbench.models.testscenarios.backend.SqlDateWrapper");
+        resolver.addImport("org.drools.workbench.models.testscenarios.backend.CheeseType");
+        resolver.addImport("org.drools.workbench.models.testscenarios.backend.Person");
+        resolver.addImport("org.drools.workbench.models.testscenarios.backend.OuterFact");
         return resolver;
     }
 
@@ -584,5 +581,4 @@ public class FactPopulatorTest {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         return classLoader;
     }
-
 }

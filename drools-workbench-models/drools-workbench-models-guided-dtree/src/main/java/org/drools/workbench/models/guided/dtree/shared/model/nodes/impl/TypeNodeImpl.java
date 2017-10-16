@@ -15,8 +15,8 @@
  */
 package org.drools.workbench.models.guided.dtree.shared.model.nodes.impl;
 
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.TypeNode;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class TypeNodeImpl extends BaseBoundNodeImpl implements TypeNode {
 
@@ -26,8 +26,8 @@ public class TypeNodeImpl extends BaseBoundNodeImpl implements TypeNode {
         //Errai marshalling
     }
 
-    public TypeNodeImpl( final String className ) {
-        setClassName( className );
+    public TypeNodeImpl(final String className) {
+        setClassName(className);
     }
 
     @Override
@@ -36,26 +36,26 @@ public class TypeNodeImpl extends BaseBoundNodeImpl implements TypeNode {
     }
 
     @Override
-    public void setClassName( final String className ) {
-        this.className = PortablePreconditions.checkNotNull( "className",
-                                                             className );
+    public void setClassName(final String className) {
+        this.className = PortablePreconditions.checkNotNull("className",
+                                                            className);
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof TypeNodeImpl ) ) {
+        if (!(o instanceof TypeNodeImpl)) {
             return false;
         }
-        if ( !super.equals( o ) ) {
+        if (!super.equals(o)) {
             return false;
         }
 
         TypeNodeImpl nodes = (TypeNodeImpl) o;
 
-        if ( !className.equals( nodes.className ) ) {
+        if (!className.equals(nodes.className)) {
             return false;
         }
 

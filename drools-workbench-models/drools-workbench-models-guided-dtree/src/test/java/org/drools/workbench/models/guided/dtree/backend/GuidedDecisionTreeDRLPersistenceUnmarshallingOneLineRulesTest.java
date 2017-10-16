@@ -15,8 +15,8 @@
 
 package org.drools.workbench.models.guided.dtree.backend;
 
-import org.appformer.project.datamodel.oracle.DataType;
 import org.junit.Test;
+import org.kie.soup.project.datamodel.oracle.DataType;
 
 public class GuidedDecisionTreeDRLPersistenceUnmarshallingOneLineRulesTest extends AbstractGuidedDecisionTreeDRLPersistenceUnmarshallingTest {
 
@@ -24,32 +24,32 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingOneLineRulesTest exten
     public void testOneLineEmpty() throws Exception {
         final String drl = "";
 
-        addModelField( "Person",
-                       "this",
-                       "Person",
-                       DataType.TYPE_THIS );
-        addModelField( "Person",
-                       "integerField",
-                       Integer.class.getName(),
-                       DataType.TYPE_NUMERIC_INTEGER );
+        addModelField("Person",
+                      "this",
+                      "Person",
+                      DataType.TYPE_THIS);
+        addModelField("Person",
+                      "integerField",
+                      Integer.class.getName(),
+                      DataType.TYPE_NUMERIC_INTEGER);
 
-        getAndTestUnmarshalledModel( drl, "test", 0 );
+        getAndTestUnmarshalledModel(drl, "test", 0);
     }
 
     @Test
     public void testOneLinePackage() throws Exception {
         final String drl = "package a.b";
 
-        addModelField( "Person",
-                       "this",
-                       "Person",
-                       DataType.TYPE_THIS );
-        addModelField( "Person",
-                       "integerField",
-                       Integer.class.getName(),
-                       DataType.TYPE_NUMERIC_INTEGER );
+        addModelField("Person",
+                      "this",
+                      "Person",
+                      DataType.TYPE_THIS);
+        addModelField("Person",
+                      "integerField",
+                      Integer.class.getName(),
+                      DataType.TYPE_NUMERIC_INTEGER);
 
-        getAndTestUnmarshalledModel( drl, "test", 0 );
+        getAndTestUnmarshalledModel(drl, "test", 0);
     }
 
     @Test
@@ -59,16 +59,16 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingOneLineRulesTest exten
                 "then " +
                 "end";
 
-        addModelField( "Person",
-                       "this",
-                       "Person",
-                       DataType.TYPE_THIS );
-        addModelField( "Person",
-                       "integerField",
-                       Integer.class.getName(),
-                       DataType.TYPE_NUMERIC_INTEGER );
+        addModelField("Person",
+                      "this",
+                      "Person",
+                      DataType.TYPE_THIS);
+        addModelField("Person",
+                      "integerField",
+                      Integer.class.getName(),
+                      DataType.TYPE_NUMERIC_INTEGER);
 
-        getAndTestUnmarshalledModel( drl, "test", 0 );
+        getAndTestUnmarshalledModel(drl, "test", 0);
     }
 
     @Test
@@ -79,16 +79,16 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingOneLineRulesTest exten
                 "then " +
                 "end";
 
-        addModelField( "Person",
-                       "this",
-                       "Person",
-                       DataType.TYPE_THIS );
-        addModelField( "Person",
-                       "integerField",
-                       Integer.class.getName(),
-                       DataType.TYPE_NUMERIC_INTEGER );
+        addModelField("Person",
+                      "this",
+                      "Person",
+                      DataType.TYPE_THIS);
+        addModelField("Person",
+                      "integerField",
+                      Integer.class.getName(),
+                      DataType.TYPE_NUMERIC_INTEGER);
 
-        getAndTestUnmarshalledModel( drl, "test", 1 );
+        getAndTestUnmarshalledModel(drl, "test", 1);
     }
 
     @Test
@@ -104,16 +104,15 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingOneLineRulesTest exten
                 "then " +
                 "end";
 
-        addModelField( "Person",
-                       "this",
-                       "Person",
-                       DataType.TYPE_THIS );
-        addModelField( "Person",
-                       "integerField",
-                       Integer.class.getName(),
-                       DataType.TYPE_NUMERIC_INTEGER );
+        addModelField("Person",
+                      "this",
+                      "Person",
+                      DataType.TYPE_THIS);
+        addModelField("Person",
+                      "integerField",
+                      Integer.class.getName(),
+                      DataType.TYPE_NUMERIC_INTEGER);
 
-        getAndTestUnmarshalledModel( drl, "test", 1 );
+        getAndTestUnmarshalledModel(drl, "test", 1);
     }
-
 }

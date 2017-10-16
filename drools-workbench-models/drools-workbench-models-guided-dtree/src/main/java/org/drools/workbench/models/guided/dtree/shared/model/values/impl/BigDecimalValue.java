@@ -17,8 +17,8 @@ package org.drools.workbench.models.guided.dtree.shared.model.values.impl;
 
 import java.math.BigDecimal;
 
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.drools.workbench.models.guided.dtree.shared.model.values.Value;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class BigDecimalValue implements Value<BigDecimal> {
 
@@ -28,27 +28,27 @@ public class BigDecimalValue implements Value<BigDecimal> {
         //Errai marshalling
     }
 
-    public BigDecimalValue( final BigDecimal value ) {
-        setValue( value );
+    public BigDecimalValue(final BigDecimal value) {
+        setValue(value);
     }
 
-    public BigDecimalValue( final BigDecimalValue value ) {
-        setValue( value.getValue() );
+    public BigDecimalValue(final BigDecimalValue value) {
+        setValue(value.getValue());
     }
 
     @Override
-    public void setValue( final String value ) {
+    public void setValue(final String value) {
         try {
-            setValue( new BigDecimal( value ) );
-        } catch ( NumberFormatException nfe ) {
-            setValue( new BigDecimal( 0 ) );
+            setValue(new BigDecimal(value));
+        } catch (NumberFormatException nfe) {
+            setValue(new BigDecimal(0));
         }
     }
 
     @Override
-    public void setValue( final BigDecimal value ) {
-        this.value = PortablePreconditions.checkNotNull( "value",
-                                                         value );
+    public void setValue(final BigDecimal value) {
+        this.value = PortablePreconditions.checkNotNull("value",
+                                                        value);
     }
 
     @Override
@@ -57,17 +57,17 @@ public class BigDecimalValue implements Value<BigDecimal> {
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof BigDecimalValue ) ) {
+        if (!(o instanceof BigDecimalValue)) {
             return false;
         }
 
         BigDecimalValue that = (BigDecimalValue) o;
 
-        if ( !value.equals( that.value ) ) {
+        if (!value.equals(that.value)) {
             return false;
         }
 

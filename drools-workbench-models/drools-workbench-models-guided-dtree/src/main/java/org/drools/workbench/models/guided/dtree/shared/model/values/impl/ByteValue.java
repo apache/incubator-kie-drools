@@ -15,8 +15,8 @@
  */
 package org.drools.workbench.models.guided.dtree.shared.model.values.impl;
 
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.drools.workbench.models.guided.dtree.shared.model.values.Value;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class ByteValue implements Value<Byte> {
 
@@ -26,27 +26,27 @@ public class ByteValue implements Value<Byte> {
         //Errai marshalling
     }
 
-    public ByteValue( final Byte value ) {
-        setValue( value );
+    public ByteValue(final Byte value) {
+        setValue(value);
     }
 
-    public ByteValue( final ByteValue value ) {
-        setValue( value.getValue() );
+    public ByteValue(final ByteValue value) {
+        setValue(value.getValue());
     }
 
     @Override
-    public void setValue( final String value ) {
+    public void setValue(final String value) {
         try {
-            setValue( new Byte( value ) );
-        } catch ( NumberFormatException nfe ) {
-            setValue( new Byte( "0" ) );
+            setValue(new Byte(value));
+        } catch (NumberFormatException nfe) {
+            setValue(new Byte("0"));
         }
     }
 
     @Override
-    public void setValue( final Byte value ) {
-        this.value = PortablePreconditions.checkNotNull( "value",
-                                                         value );
+    public void setValue(final Byte value) {
+        this.value = PortablePreconditions.checkNotNull("value",
+                                                        value);
     }
 
     @Override
@@ -55,17 +55,17 @@ public class ByteValue implements Value<Byte> {
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof ByteValue ) ) {
+        if (!(o instanceof ByteValue)) {
             return false;
         }
 
         ByteValue byteValue = (ByteValue) o;
 
-        if ( !value.equals( byteValue.value ) ) {
+        if (!value.equals(byteValue.value)) {
             return false;
         }
 

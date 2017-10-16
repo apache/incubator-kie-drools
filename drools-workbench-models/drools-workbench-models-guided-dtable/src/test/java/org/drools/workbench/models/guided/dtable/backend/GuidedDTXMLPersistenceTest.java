@@ -16,19 +16,19 @@
 
 package org.drools.workbench.models.guided.dtable.backend;
 
-import org.appformer.project.datamodel.oracle.DataType;
 import org.assertj.core.api.Assertions;
 import org.drools.workbench.models.guided.dtable.backend.util.DataUtilities;
-import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
-import org.junit.Before;
-import org.junit.Test;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
+import org.junit.Before;
+import org.junit.Test;
+import org.kie.soup.project.datamodel.oracle.DataType;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -52,74 +52,73 @@ public class GuidedDTXMLPersistenceTest {
 
         GuidedDecisionTable52 dt = new GuidedDecisionTable52();
 
-        dt.getActionCols().add( new ActionInsertFactCol52() );
+        dt.getActionCols().add(new ActionInsertFactCol52());
         ActionSetFieldCol52 set = new ActionSetFieldCol52();
-        set.setFactField( "foo" );
-        dt.getActionCols().add( set );
+        set.setFactField("foo");
+        dt.getActionCols().add(set);
 
-        dt.getMetadataCols().add( new MetadataCol52() );
+        dt.getMetadataCols().add(new MetadataCol52());
 
-        dt.getAttributeCols().add( new AttributeCol52() );
+        dt.getAttributeCols().add(new AttributeCol52());
 
         Pattern52 p = new Pattern52();
         ConditionCol52 c = new ConditionCol52();
-        p.getChildColumns().add( c );
-        dt.getConditions().add( p );
+        p.getChildColumns().add(c);
+        dt.getConditions().add(p);
 
-        dt.setData( upgrader.makeDataLists( new String[][]{ new String[]{ "1", "hola" } } ) );
-        dt.setTableName( "blah" );
+        dt.setData(upgrader.makeDataLists(new String[][]{new String[]{"1", "hola"}}));
+        dt.setTableName("blah");
 
-        String xml = GuidedDTXMLPersistence.getInstance().marshal( dt );
-        System.out.println( xml );
-        assertNotNull( xml );
-        assertEquals( -1,
-                      xml.indexOf( "ActionSetField" ) );
-        assertEquals( -1,
-                      xml.indexOf( "ConditionCol" ) );
-        assertEquals( -1,
-                      xml.indexOf( "GuidedDecisionTable" ) );
+        String xml = GuidedDTXMLPersistence.getInstance().marshal(dt);
+        System.out.println(xml);
+        assertNotNull(xml);
+        assertEquals(-1,
+                     xml.indexOf("ActionSetField"));
+        assertEquals(-1,
+                     xml.indexOf("ConditionCol"));
+        assertEquals(-1,
+                     xml.indexOf("GuidedDecisionTable"));
 
-        GuidedDecisionTable52 dt_ = GuidedDTXMLPersistence.getInstance().unmarshal( xml );
-        assertNotNull( dt_ );
-        assertEquals( "blah",
-                      dt_.getTableName() );
-        assertEquals( 1,
-                      dt_.getMetadataCols().size() );
-        assertEquals( 1,
-                      dt_.getAttributeCols().size() );
-        assertEquals( 2,
-                      dt_.getActionCols().size() );
-        assertEquals( 1,
-                      dt_.getConditions().size() );
-        assertEquals( 1,
-                      dt_.getConditions().get( 0 ).getChildColumns().size() );
-
+        GuidedDecisionTable52 dt_ = GuidedDTXMLPersistence.getInstance().unmarshal(xml);
+        assertNotNull(dt_);
+        assertEquals("blah",
+                     dt_.getTableName());
+        assertEquals(1,
+                     dt_.getMetadataCols().size());
+        assertEquals(1,
+                     dt_.getAttributeCols().size());
+        assertEquals(2,
+                     dt_.getActionCols().size());
+        assertEquals(1,
+                     dt_.getConditions().size());
+        assertEquals(1,
+                     dt_.getConditions().get(0).getChildColumns().size());
     }
 
     @Test
     public void testBackwardsCompatibility() throws Exception {
-        String xml = loadResource( "ExistingDecisionTable.xml" );
-        GuidedDecisionTable52 dt_ = GuidedDTXMLPersistence.getInstance().unmarshal( xml );
-        assertNotNull( dt_ );
-        assertEquals( "blah",
-                      dt_.getTableName() );
-        assertEquals( 1,
-                      dt_.getMetadataCols().size() );
-        assertEquals( 1,
-                      dt_.getAttributeCols().size() );
-        assertEquals( 2,
-                      dt_.getActionCols().size() );
-        assertEquals( 1,
-                      dt_.getConditions().size() );
-        assertEquals( 1,
-                      dt_.getConditions().get( 0 ).getChildColumns().size() );
+        String xml = loadResource("ExistingDecisionTable.xml");
+        GuidedDecisionTable52 dt_ = GuidedDTXMLPersistence.getInstance().unmarshal(xml);
+        assertNotNull(dt_);
+        assertEquals("blah",
+                     dt_.getTableName());
+        assertEquals(1,
+                     dt_.getMetadataCols().size());
+        assertEquals(1,
+                     dt_.getAttributeCols().size());
+        assertEquals(2,
+                     dt_.getActionCols().size());
+        assertEquals(1,
+                     dt_.getConditions().size());
+        assertEquals(1,
+                     dt_.getConditions().get(0).getChildColumns().size());
 
-        assertTrue( dt_.getActionCols().get( 1 ) instanceof ActionSetFieldCol52 );
-        ActionSetFieldCol52 asf = (ActionSetFieldCol52) dt_.getActionCols().get( 1 );
-        assertEquals( "foo",
-                      asf.getFactField() );
-        assertEquals( false,
-                      asf.isUpdate() );
+        assertTrue(dt_.getActionCols().get(1) instanceof ActionSetFieldCol52);
+        ActionSetFieldCol52 asf = (ActionSetFieldCol52) dt_.getActionCols().get(1);
+        assertEquals("foo",
+                     asf.getFactField());
+        assertEquals(false,
+                     asf.isUpdate());
     }
 
     @Test

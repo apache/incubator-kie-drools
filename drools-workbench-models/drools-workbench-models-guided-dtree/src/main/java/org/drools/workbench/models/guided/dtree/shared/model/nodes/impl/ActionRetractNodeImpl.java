@@ -15,9 +15,9 @@
  */
 package org.drools.workbench.models.guided.dtree.shared.model.nodes.impl;
 
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.ActionRetractNode;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.TypeNode;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class ActionRetractNodeImpl extends BaseNodeImpl implements ActionRetractNode {
 
@@ -27,8 +27,8 @@ public class ActionRetractNodeImpl extends BaseNodeImpl implements ActionRetract
         //Errai marshalling
     }
 
-    public ActionRetractNodeImpl( final TypeNode boundNode ) {
-        setBoundNode( boundNode );
+    public ActionRetractNodeImpl(final TypeNode boundNode) {
+        setBoundNode(boundNode);
     }
 
     @Override
@@ -37,23 +37,23 @@ public class ActionRetractNodeImpl extends BaseNodeImpl implements ActionRetract
     }
 
     @Override
-    public void setBoundNode( final TypeNode boundNode ) {
-        this.boundNode = PortablePreconditions.checkNotNull( "boundNode",
-                                                             boundNode );
+    public void setBoundNode(final TypeNode boundNode) {
+        this.boundNode = PortablePreconditions.checkNotNull("boundNode",
+                                                            boundNode);
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof ActionRetractNodeImpl ) ) {
+        if (!(o instanceof ActionRetractNodeImpl)) {
             return false;
         }
 
         ActionRetractNodeImpl nodes = (ActionRetractNodeImpl) o;
 
-        if ( boundNode != null ? !boundNode.equals( nodes.boundNode ) : nodes.boundNode != null ) {
+        if (boundNode != null ? !boundNode.equals(nodes.boundNode) : nodes.boundNode != null) {
             return false;
         }
 

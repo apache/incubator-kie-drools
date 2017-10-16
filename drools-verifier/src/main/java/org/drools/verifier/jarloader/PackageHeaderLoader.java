@@ -16,8 +16,9 @@
 package org.drools.verifier.jarloader;
 
 import com.google.common.collect.TreeMultimap;
-import org.drools.core.base.ClassTypeResolver;
+
 import org.drools.core.util.asm.ClassFieldInspector;
+import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
 
 import java.io.IOException;
 import java.util.*;
@@ -34,7 +35,6 @@ public class PackageHeaderLoader {
     private TreeMultimap<String, String> fieldsByClassNames = TreeMultimap.create();
     private List<String> missingClasses = new ArrayList<String>();
 
-
     public PackageHeaderLoader(Collection<String> imports, List<JarInputStream> jarInputStreams) throws IOException {
         findImportsFromJars(imports, jarInputStreams);
     }
@@ -50,11 +50,9 @@ public class PackageHeaderLoader {
 
                 Class clazz = resolver.resolveType(className);
                 addFields(clazz);
-
             } catch (ClassNotFoundException e) {
                 missingClasses.add(className);
             }
-
         }
     }
 

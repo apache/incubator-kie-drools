@@ -15,8 +15,8 @@
  */
 package org.drools.workbench.models.datamodel.rule.builder;
 
-import org.appformer.project.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
+import org.kie.soup.project.datamodel.oracle.DataType;
 
 /**
  * Specific implementation for MVEL
@@ -29,77 +29,77 @@ public class MvelDRLConstraintValueBuilder extends DRLConstraintValueBuilder {
      * Numerics, Booleans, (Java 1.5+) enums and all other fieldTypes are not
      * escaped at all. Guvnor-type enums are really a pick list of Strings and
      * in these cases the underlying fieldType is a String.
+     *
      * @param buf
      * @param constraintType
      * @param fieldType
      * @param fieldValue
      */
-    public void buildLHSFieldValue( StringBuilder buf,
-                                    int constraintType,
-                                    String fieldType,
-                                    String fieldValue ) {
+    public void buildLHSFieldValue(StringBuilder buf,
+                                   int constraintType,
+                                   String fieldType,
+                                   String fieldValue) {
 
-        final boolean isDelimitedString = isDelimitedString( fieldValue );
+        final boolean isDelimitedString = isDelimitedString(fieldValue);
 
-        if ( fieldType == null || fieldType.length() == 0 ) {
+        if (fieldType == null || fieldType.length() == 0) {
             //This should ideally be an error however we show leniency to legacy code
-            if ( fieldValue == null ) {
+            if (fieldValue == null) {
                 return;
             }
-            if ( !isDelimitedString ) {
-                buf.append( "\"" );
+            if (!isDelimitedString) {
+                buf.append("\"");
             }
-            buf.append( fieldValue );
-            if ( !isDelimitedString ) {
-                buf.append( "\"" );
+            buf.append(fieldValue);
+            if (!isDelimitedString) {
+                buf.append("\"");
             }
             return;
         }
 
-        if ( fieldType.equals( DataType.TYPE_BOOLEAN ) ) {
-            buf.append( fieldValue );
-        } else if ( fieldType.equals( DataType.TYPE_DATE ) ) {
-            buf.append( "\"" );
-            buf.append( fieldValue );
-            buf.append( "\"" );
-        } else if ( fieldType.equals( DataType.TYPE_NUMERIC_BIGDECIMAL ) ) {
-            buf.append( fieldValue + "B" );
-        } else if ( fieldType.equals( DataType.TYPE_NUMERIC_BIGINTEGER ) ) {
-            buf.append( fieldValue + "I" );
-        } else if ( fieldType.equals( DataType.TYPE_NUMERIC_BYTE ) ) {
-            buf.append( fieldValue );
-        } else if ( fieldType.equals( DataType.TYPE_NUMERIC_DOUBLE ) ) {
-            buf.append( fieldValue );
-        } else if ( fieldType.equals( DataType.TYPE_NUMERIC_FLOAT ) ) {
-            buf.append( fieldValue );
-        } else if ( fieldType.equals( DataType.TYPE_NUMERIC_INTEGER ) ) {
-            buf.append( fieldValue );
-        } else if ( fieldType.equals( DataType.TYPE_NUMERIC_LONG ) ) {
-            buf.append( fieldValue );
-        } else if ( fieldType.equals( DataType.TYPE_NUMERIC_SHORT ) ) {
-            buf.append( fieldValue );
-        } else if ( fieldType.equals( DataType.TYPE_STRING ) ) {
-            if ( !isDelimitedString ) {
-                buf.append( "\"" );
+        if (fieldType.equals(DataType.TYPE_BOOLEAN)) {
+            buf.append(fieldValue);
+        } else if (fieldType.equals(DataType.TYPE_DATE)) {
+            buf.append("\"");
+            buf.append(fieldValue);
+            buf.append("\"");
+        } else if (fieldType.equals(DataType.TYPE_NUMERIC_BIGDECIMAL)) {
+            buf.append(fieldValue + "B");
+        } else if (fieldType.equals(DataType.TYPE_NUMERIC_BIGINTEGER)) {
+            buf.append(fieldValue + "I");
+        } else if (fieldType.equals(DataType.TYPE_NUMERIC_BYTE)) {
+            buf.append(fieldValue);
+        } else if (fieldType.equals(DataType.TYPE_NUMERIC_DOUBLE)) {
+            buf.append(fieldValue);
+        } else if (fieldType.equals(DataType.TYPE_NUMERIC_FLOAT)) {
+            buf.append(fieldValue);
+        } else if (fieldType.equals(DataType.TYPE_NUMERIC_INTEGER)) {
+            buf.append(fieldValue);
+        } else if (fieldType.equals(DataType.TYPE_NUMERIC_LONG)) {
+            buf.append(fieldValue);
+        } else if (fieldType.equals(DataType.TYPE_NUMERIC_SHORT)) {
+            buf.append(fieldValue);
+        } else if (fieldType.equals(DataType.TYPE_STRING)) {
+            if (!isDelimitedString) {
+                buf.append("\"");
             }
-            buf.append( fieldValue );
-            if ( !isDelimitedString ) {
-                buf.append( "\"" );
+            buf.append(fieldValue);
+            if (!isDelimitedString) {
+                buf.append("\"");
             }
-        } else if ( fieldType.equals( DataType.TYPE_COMPARABLE ) ) {
-            buf.append( fieldValue );
+        } else if (fieldType.equals(DataType.TYPE_COMPARABLE)) {
+            buf.append(fieldValue);
         } else {
-            if ( !isDelimitedString ) {
-                addQuote( constraintType,
-                          buf );
+            if (!isDelimitedString) {
+                addQuote(constraintType,
+                         buf);
             }
-            buf.append( fieldValue );
-            if ( !isDelimitedString ) {
-                addQuote( constraintType,
-                          buf );
+            buf.append(fieldValue);
+            if (!isDelimitedString) {
+                addQuote(constraintType,
+                         buf);
             }
         }
-
     }
 
     /**
@@ -109,79 +109,78 @@ public class MvelDRLConstraintValueBuilder extends DRLConstraintValueBuilder {
      * Booleans, (Java 1.5+) enums and all other fieldTypes are not escaped at
      * all. Guvnor-type enums are really a pick list of Strings and in these
      * cases the underlying fieldType is a String.
+     *
      * @param buf
      * @param fieldType
      * @param fieldValue
      */
-    public void buildRHSFieldValue( StringBuilder buf,
-                                    String fieldType,
-                                    String fieldValue ) {
+    public void buildRHSFieldValue(StringBuilder buf,
+                                   String fieldType,
+                                   String fieldValue) {
 
-        final boolean isDelimitedString = isDelimitedString( fieldValue );
+        final boolean isDelimitedString = isDelimitedString(fieldValue);
 
-        if ( fieldType == null || fieldType.length() == 0 ) {
+        if (fieldType == null || fieldType.length() == 0) {
             //This should ideally be an error however we show leniency to legacy code
-            if ( fieldValue == null ) {
+            if (fieldValue == null) {
                 return;
             }
-            if ( !isDelimitedString ) {
-                buf.append( "\"" );
+            if (!isDelimitedString) {
+                buf.append("\"");
             }
-            buf.append( fieldValue );
-            if ( !isDelimitedString ) {
-                buf.append( "\"" );
+            buf.append(fieldValue);
+            if (!isDelimitedString) {
+                buf.append("\"");
             }
             return;
         }
 
-        if ( fieldType.equals( DataType.TYPE_BOOLEAN ) ) {
-            buf.append( fieldValue );
-        } else if ( fieldType.equals( DataType.TYPE_DATE ) ) {
-            buf.append( "sdf.parse(\"" );
-            buf.append( fieldValue );
-            buf.append( "\")" );
-        } else if ( fieldType.equals( DataType.TYPE_NUMERIC_BIGDECIMAL ) ) {
-            buf.append( fieldValue + "B" );
-        } else if ( fieldType.equals( DataType.TYPE_NUMERIC_BIGINTEGER ) ) {
-            buf.append( fieldValue + "I" );
-        } else if ( fieldType.equals( DataType.TYPE_NUMERIC_BYTE ) ) {
-            buf.append( fieldValue );
-        } else if ( fieldType.equals( DataType.TYPE_NUMERIC_DOUBLE ) ) {
-            buf.append( fieldValue );
-        } else if ( fieldType.equals( DataType.TYPE_NUMERIC_FLOAT ) ) {
-            buf.append( fieldValue );
-        } else if ( fieldType.equals( DataType.TYPE_NUMERIC_INTEGER ) ) {
-            buf.append( fieldValue );
-        } else if ( fieldType.equals( DataType.TYPE_NUMERIC_LONG ) ) {
-            buf.append( fieldValue );
-        } else if ( fieldType.equals( DataType.TYPE_NUMERIC_SHORT ) ) {
-            buf.append( fieldValue );
-        } else if ( fieldType.equals( DataType.TYPE_STRING ) ) {
-            if ( !isDelimitedString ) {
-                buf.append( "\"" );
+        if (fieldType.equals(DataType.TYPE_BOOLEAN)) {
+            buf.append(fieldValue);
+        } else if (fieldType.equals(DataType.TYPE_DATE)) {
+            buf.append("sdf.parse(\"");
+            buf.append(fieldValue);
+            buf.append("\")");
+        } else if (fieldType.equals(DataType.TYPE_NUMERIC_BIGDECIMAL)) {
+            buf.append(fieldValue + "B");
+        } else if (fieldType.equals(DataType.TYPE_NUMERIC_BIGINTEGER)) {
+            buf.append(fieldValue + "I");
+        } else if (fieldType.equals(DataType.TYPE_NUMERIC_BYTE)) {
+            buf.append(fieldValue);
+        } else if (fieldType.equals(DataType.TYPE_NUMERIC_DOUBLE)) {
+            buf.append(fieldValue);
+        } else if (fieldType.equals(DataType.TYPE_NUMERIC_FLOAT)) {
+            buf.append(fieldValue);
+        } else if (fieldType.equals(DataType.TYPE_NUMERIC_INTEGER)) {
+            buf.append(fieldValue);
+        } else if (fieldType.equals(DataType.TYPE_NUMERIC_LONG)) {
+            buf.append(fieldValue);
+        } else if (fieldType.equals(DataType.TYPE_NUMERIC_SHORT)) {
+            buf.append(fieldValue);
+        } else if (fieldType.equals(DataType.TYPE_STRING)) {
+            if (!isDelimitedString) {
+                buf.append("\"");
             }
-            buf.append( fieldValue );
-            if ( !isDelimitedString ) {
-                buf.append( "\"" );
+            buf.append(fieldValue);
+            if (!isDelimitedString) {
+                buf.append("\"");
             }
-        } else if ( fieldType.equals( DataType.TYPE_COMPARABLE ) ) {
-            buf.append( fieldValue );
+        } else if (fieldType.equals(DataType.TYPE_COMPARABLE)) {
+            buf.append(fieldValue);
         } else {
-            buf.append( fieldValue );
+            buf.append(fieldValue);
         }
-
     }
 
     //Add a quote to literal values, if applicable
-    private static void addQuote( int constraintType,
-                                  StringBuilder buf ) {
-        if ( constraintType == BaseSingleFieldConstraint.TYPE_LITERAL ) {
-            buf.append( "\"" );
+    private static void addQuote(int constraintType,
+                                 StringBuilder buf) {
+        if (constraintType == BaseSingleFieldConstraint.TYPE_LITERAL) {
+            buf.append("\"");
         }
     }
 
-    protected boolean isDelimitedString( final String content ) {
-        return content.startsWith( "\"" ) && content.endsWith( "\"" );
+    protected boolean isDelimitedString(final String content) {
+        return content.startsWith("\"") && content.endsWith("\"");
     }
-
 }
