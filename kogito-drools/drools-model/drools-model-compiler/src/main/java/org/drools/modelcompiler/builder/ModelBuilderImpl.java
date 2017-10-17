@@ -36,7 +36,13 @@ public class ModelBuilderImpl extends KnowledgeBuilderImpl {
         List<RuleDescrImpl> collect = packageDescr.getRules().stream()
             .map(descr -> new RuleDescrImpl(descr, pkgRegistry.getPackage().getRule(descr.getName())))
             .collect(Collectors.toList());
-        packageModels.add(generateModel(pkgRegistry.getPackage(), collect, packageDescr.getFunctions(), packageDescr.getTypeDeclarations()));
+        packageModels.add(
+                generateModel(pkgRegistry.getPackage(),
+                              collect,
+                              packageDescr.getFunctions(),
+                              packageDescr.getTypeDeclarations(),
+                              packageDescr.getWindowDeclarations()
+                ));
     }
 
     public List<PackageModel> getPackageModels() {
