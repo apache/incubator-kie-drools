@@ -1,21 +1,13 @@
 package org.drools.modelcompiler.builder.generator;
 
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Consumer;
-
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
-import org.drools.core.base.TypeResolver;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.javaparser.ast.expr.Expression;
+import org.kie.soup.project.datamodel.commons.types.TypeResolver;
+
+import java.util.*;
+import java.util.function.Consumer;
 
 public class RuleContext {
     private final InternalKnowledgePackage pkg;
