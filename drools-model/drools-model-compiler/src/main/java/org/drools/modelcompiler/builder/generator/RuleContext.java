@@ -12,7 +12,7 @@ import java.util.function.Consumer;
 public class RuleContext {
     private final InternalKnowledgePackage pkg;
     private DRLExprIdGenerator exprIdGenerator;
-    private final RuleDescr ruleDescr;
+    private final Optional<RuleDescr> ruleDescr;
 
     private List<DeclarationSpec> declarations = new ArrayList<>();
     List<QueryParameter> queryParameters = new ArrayList<>();
@@ -23,7 +23,7 @@ public class RuleContext {
 
     BaseDescr parentDesc = null;
 
-    public RuleContext(InternalKnowledgePackage pkg, DRLExprIdGenerator exprIdGenerator, RuleDescr ruleDescr) {
+    public RuleContext(InternalKnowledgePackage pkg, DRLExprIdGenerator exprIdGenerator, Optional<RuleDescr> ruleDescr) {
         this.pkg = pkg;
         this.exprIdGenerator = exprIdGenerator;
         this.ruleDescr = ruleDescr;
@@ -79,7 +79,7 @@ public class RuleContext {
         namedConsequences.put(key, value);
     }
 
-    public RuleDescr getRuleDescr() {
+    public Optional<RuleDescr> getRuleDescr() {
         return ruleDescr;
     }
 }

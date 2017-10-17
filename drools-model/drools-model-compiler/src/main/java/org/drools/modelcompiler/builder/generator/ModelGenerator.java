@@ -140,7 +140,7 @@ public class ModelGenerator {
     }
 
     private static void processRule(InternalKnowledgePackage pkg, PackageModel packageModel, RuleDescr ruleDescr) {
-        RuleContext context = new RuleContext(pkg, packageModel.getExprIdGenerator(), ruleDescr);
+        RuleContext context = new RuleContext(pkg, packageModel.getExprIdGenerator(), Optional.of(ruleDescr));
 
         for(Entry<String, Object> kv : ruleDescr.getNamedConsequences().entrySet()) {
             context.addNamedConsequence(kv.getKey(), kv.getValue().toString());
@@ -255,7 +255,7 @@ public class ModelGenerator {
     }
 
     private static void processQuery(InternalKnowledgePackage pkg, PackageModel packageModel, QueryDescr queryDescr) {
-        RuleContext context = new RuleContext(pkg, packageModel.getExprIdGenerator(), queryDescr);
+        RuleContext context = new RuleContext(pkg, packageModel.getExprIdGenerator(), Optional.of(queryDescr));
         visit(context, packageModel, queryDescr);
         MethodDeclaration queryMethod = new MethodDeclaration(EnumSet.of(Modifier.PRIVATE), getQueryType(context.queryParameters), "query_" + toId(queryDescr.getName()));
 
@@ -561,7 +561,9 @@ public class ModelGenerator {
                     new OOPathExprVisitor(context, packageModel).visit(patternType, pattern.getIdentifier(), (OOPathExpr)drlxParseResult.expr);
                 } else {
                     // need to augment the reactOn inside drlxParseResult with the look-ahead properties.
-                    Collection<String> lookAheadFieldsOfIdentifier = context.getRuleDescr().lookAheadFieldsOfIdentifier(pattern);
+                    Collection<String> lookAheadFieldsOfIdentifier = context.getRuleDescr()
+                        .map(ruleDescr -> ruleDescr.lookAheadFieldsOfIdentifier(pattern))
+                            .orElseGet(Collections::emptyList);
                     drlxParseResult.reactOnProperties.addAll(lookAheadFieldsOfIdentifier);
 
                     Expression dslExpr = buildExpressionWithIndexing(drlxParseResult);

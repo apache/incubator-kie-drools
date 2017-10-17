@@ -67,7 +67,7 @@ public class WindowDeclarationGenerator {
     public Optional<Expression> parseCondition(PackageModel packageModel, PatternDescr pattern, Class<?> patternType) {
         return Optional.ofNullable(pattern.getConstraint().getDescrs().iterator().next()).map(d -> {
             String expression = d.toString();
-            RuleContext context = new RuleContext(pkg, packageModel.getExprIdGenerator(), null);
+            RuleContext context = new RuleContext(pkg, packageModel.getExprIdGenerator(), Optional.empty());
             ModelGenerator.DrlxParseResult drlxParseResult = drlxParse(context, packageModel, patternType, pattern.getIdentifier(), expression);
 
             return generateLambdaWithoutParameters(drlxParseResult.usedDeclarations, drlxParseResult.expr);
