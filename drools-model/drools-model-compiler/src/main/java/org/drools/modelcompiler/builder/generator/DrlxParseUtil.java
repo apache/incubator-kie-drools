@@ -25,8 +25,22 @@ import org.drools.javaparser.ast.Node;
 import org.drools.javaparser.ast.body.Parameter;
 import org.drools.javaparser.ast.drlx.expr.InlineCastExpr;
 import org.drools.javaparser.ast.drlx.expr.NullSafeFieldAccessExpr;
-import org.drools.javaparser.ast.expr.*;
+import org.drools.javaparser.ast.expr.BinaryExpr;
 import org.drools.javaparser.ast.expr.BinaryExpr.Operator;
+import org.drools.javaparser.ast.expr.CastExpr;
+import org.drools.javaparser.ast.expr.EnclosedExpr;
+import org.drools.javaparser.ast.expr.Expression;
+import org.drools.javaparser.ast.expr.FieldAccessExpr;
+import org.drools.javaparser.ast.expr.InstanceOfExpr;
+import org.drools.javaparser.ast.expr.LambdaExpr;
+import org.drools.javaparser.ast.expr.LiteralExpr;
+import org.drools.javaparser.ast.expr.MethodCallExpr;
+import org.drools.javaparser.ast.expr.NameExpr;
+import org.drools.javaparser.ast.expr.NullLiteralExpr;
+import org.drools.javaparser.ast.expr.SimpleName;
+import org.drools.javaparser.ast.expr.StringLiteralExpr;
+import org.drools.javaparser.ast.expr.ThisExpr;
+import org.drools.javaparser.ast.expr.UnaryExpr;
 import org.drools.javaparser.ast.nodeTypes.NodeWithOptionalScope;
 import org.drools.javaparser.ast.nodeTypes.NodeWithSimpleName;
 import org.drools.javaparser.ast.stmt.BlockStmt;
@@ -39,7 +53,12 @@ import org.drools.modelcompiler.builder.PackageModel;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 import static org.drools.core.util.ClassUtils.getter2property;
 
@@ -68,10 +87,17 @@ public class DrlxParseUtil {
 
         Class<?> typeCursor = patternType;
 
-        if (drlxExpr instanceof LiteralExpr) {
+        if (drlxExpr instanceof UnaryExpr) {
+            UnaryExpr unaryExpr = (UnaryExpr) drlxExpr;
+            TypedExpression typedExpr = toTypedExpression( context, packageModel, patternType, unaryExpr.getExpression(), usedDeclarations, reactOnProperties );
+            return new TypedExpression( new UnaryExpr( typedExpr.getExpression(), unaryExpr.getOperator() ), typedExpr.getType() );
+
+        } else if (drlxExpr instanceof LiteralExpr) {
             return new TypedExpression(drlxExpr);
+
         } else if (drlxExpr instanceof ThisExpr) {
             return new TypedExpression(new NameExpr("_this"));
+
         } else if (drlxExpr instanceof NameExpr) {
             String name = drlxExpr.toString();
             if (context.existsDeclaration(name)) {
