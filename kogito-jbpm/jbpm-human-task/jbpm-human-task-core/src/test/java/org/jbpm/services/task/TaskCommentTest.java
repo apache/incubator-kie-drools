@@ -25,6 +25,7 @@ import java.io.StringReader;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
@@ -147,32 +148,36 @@ public class TaskCommentTest extends HumanTaskServicesBaseTest{
             List<TaskSummary> tasks = taskService.getTasksAssignedAsBusinessAdministrator("Bobba Fet", "en-UK");
             TaskSummary taskSum = tasks.get(0);
 
-            String[] messages = new String[commentsCount];
-            Long[] commentId = new Long[commentsCount];
-
+            final Map<Long, Comment> savedComments = new HashMap<>();
             for(int i = 0; i < commentsCount; i++) {
                 Comment comment = TaskModelProvider.getFactory().newComment();
-                messages[i] = "Comment "+i+".";
-                ((InternalComment)comment).setAddedAt(new Date());
+                ((InternalComment)comment).setAddedAt(TODAY);
                 User user = TaskModelProvider.getFactory().newUser();
                 ((InternalOrganizationalEntity) user).setId("Troll");
                 ((InternalComment)comment).setAddedBy(user);
-                ((InternalComment)comment).setText(messages[i]);
+                ((InternalComment)comment).setText("Comment "+i+".");
 
-                commentId[i] = taskService.addComment(taskSum.getId(), comment);
-                assertNotNull(commentId[i]);
+                final Long commentId = taskService.addComment(taskSum.getId(), comment);
+                assertNotNull(commentId);
+                savedComments.put(commentId, comment);
             }
 
             List<Comment> allCommentList = taskService.getAllCommentsByTaskId(taskSum.getId());
             assertEquals(commentsCount, allCommentList.size());
 
-            for(int i = 0; i < commentsCount; i++) {
-                Comment comment = allCommentList.get(i);
+            Long lastId = 0L;
+            for (Comment comment : allCommentList) {
                 assertNotNull(comment);
-                assertEquals(commentId[i], comment.getId());
+                assertNotNull(comment.getId());
+                assertTrue(comment.getId() > lastId);
+
+                Comment savedComment = savedComments.get(comment.getId());
+                assertNotNull(savedComment);
                 assertNotNull(comment.getAddedAt());
-                assertEquals(messages[i], comment.getText());
+                Assertions.assertThat(comment.getAddedAt()).isCloseTo(TODAY, 1000);
+                assertEquals(savedComment.getText(), comment.getText());
                 assertEquals("Troll", comment.getAddedBy().getId());
+                lastId = comment.getId();
             }
         }
 }

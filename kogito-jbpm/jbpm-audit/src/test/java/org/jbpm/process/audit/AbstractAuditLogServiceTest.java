@@ -300,7 +300,7 @@ public abstract class AbstractAuditLogServiceTest extends AbstractBaseTest {
         }
         auditLogService.clear();
         processInstances = auditLogService.findProcessInstances("com.sample.ruleflow3");
-        assertTrue(processInstances.isEmpty());
+        Assertions.assertThat(processInstances).isNullOrEmpty();
     }
     
     public static void runTestLogger5(KieSession session, AuditLogService auditLogService) throws Exception {
