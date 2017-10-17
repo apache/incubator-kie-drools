@@ -127,7 +127,7 @@ public class ModelGenerator {
         PackageModel packageModel = new PackageModel(name);
         packageModel.addImports(pkg.getTypeResolver().getImports());
         packageModel.addGlobals(pkg.getGlobals());
-        new WindowDeclarationGenerator(packageModel, pkg).addWindowDeclarations(windowDeclarations);
+        new WindowReferenceGenerator(packageModel, pkg).addWindowReferences(windowDeclarations);
         packageModel.addAllFunctions(functions.stream().map(FunctionGenerator::toFunction).collect(toList()));
         packageModel.addAllGeneratedPOJOs(typeDeclarations.stream().map(POJOGenerator::toClassDeclaration).collect(toList()));
 
@@ -540,7 +540,7 @@ public class ModelGenerator {
             final Optional<PatternSourceDescr> source = Optional.ofNullable(pattern.getSource());
 
             final Optional<Expression> declarationSourceFrom = source.flatMap(new FromVisitor(context, packageModel)::visit);
-            final Optional<Expression> declarationSourceWindow = source.flatMap(new WindowDeclarationGenerator(packageModel, context.getPkg())::visit);
+            final Optional<Expression> declarationSourceWindow = source.flatMap(new WindowReferenceGenerator(packageModel, context.getPkg())::visit);
 
             // Use Java 9 Optional::or method
             final Optional<Expression> declarationSource = declarationSourceFrom.isPresent() ? declarationSourceFrom : declarationSourceWindow;

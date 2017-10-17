@@ -28,12 +28,12 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateL
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.ModelGenerator.drlxParse;
 
-public class WindowDeclarationGenerator {
+public class WindowReferenceGenerator {
 
     final PackageModel packageModel;
     final InternalKnowledgePackage pkg;
 
-    public WindowDeclarationGenerator(PackageModel packageModel, InternalKnowledgePackage pkg) {
+    public WindowReferenceGenerator(PackageModel packageModel, InternalKnowledgePackage pkg) {
         this.packageModel = packageModel;
         this.pkg = pkg;
     }
@@ -51,8 +51,8 @@ public class WindowDeclarationGenerator {
         }
     }
 
-    public void addWindowDeclarations(Set<WindowDeclarationDescr> windowDeclarations) {
-        for (WindowDeclarationDescr descr : windowDeclarations) {
+    public void addWindowReferences(Set<WindowDeclarationDescr> windowReferences) {
+        for (WindowDeclarationDescr descr : windowReferences) {
             addField(packageModel, descr);
         }
     }
@@ -85,7 +85,7 @@ public class WindowDeclarationGenerator {
 
         parseCondition(packageModel, pattern, initClass).ifPresent(initializer::addArgument);
 
-        packageModel.addAllWindowDeclarations(windowName, initializer);
+        packageModel.addAllWindowReferences(windowName, initializer);
     }
 
     public Optional<Expression> parseCondition(PackageModel packageModel, PatternDescr pattern, Class<?> patternType) {
