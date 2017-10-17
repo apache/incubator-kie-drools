@@ -16,7 +16,39 @@
 
 package org.drools.modelcompiler.builder.generator;
 
-import org.drools.compiler.lang.descr.*;
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Stream;
+
+import org.drools.compiler.lang.descr.AccumulateDescr;
+import org.drools.compiler.lang.descr.AndDescr;
+import org.drools.compiler.lang.descr.AttributeDescr;
+import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.compiler.lang.descr.BehaviorDescr;
+import org.drools.compiler.lang.descr.ConditionalBranchDescr;
+import org.drools.compiler.lang.descr.ConditionalElementDescr;
+import org.drools.compiler.lang.descr.EvalDescr;
+import org.drools.compiler.lang.descr.ExistsDescr;
+import org.drools.compiler.lang.descr.ForallDescr;
+import org.drools.compiler.lang.descr.FunctionDescr;
+import org.drools.compiler.lang.descr.NamedConsequenceDescr;
+import org.drools.compiler.lang.descr.NotDescr;
+import org.drools.compiler.lang.descr.OrDescr;
+import org.drools.compiler.lang.descr.PatternDescr;
+import org.drools.compiler.lang.descr.PatternSourceDescr;
+import org.drools.compiler.lang.descr.QueryDescr;
+import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.compiler.lang.descr.TypeDeclarationDescr;
+import org.drools.compiler.lang.descr.WindowDeclarationDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.Behavior;
 import org.drools.core.time.TimeUtils;
@@ -31,9 +63,20 @@ import org.drools.javaparser.ast.body.Parameter;
 import org.drools.javaparser.ast.drlx.OOPathExpr;
 import org.drools.javaparser.ast.drlx.expr.DrlxExpression;
 import org.drools.javaparser.ast.drlx.expr.PointFreeExpr;
+import org.drools.javaparser.ast.drlx.expr.TemporalLiteralChunkExpr;
 import org.drools.javaparser.ast.drlx.expr.TemporalLiteralExpr;
-import org.drools.javaparser.ast.expr.*;
+import org.drools.javaparser.ast.expr.AssignExpr;
+import org.drools.javaparser.ast.expr.BinaryExpr;
 import org.drools.javaparser.ast.expr.BinaryExpr.Operator;
+import org.drools.javaparser.ast.expr.ClassExpr;
+import org.drools.javaparser.ast.expr.Expression;
+import org.drools.javaparser.ast.expr.FieldAccessExpr;
+import org.drools.javaparser.ast.expr.LambdaExpr;
+import org.drools.javaparser.ast.expr.MethodCallExpr;
+import org.drools.javaparser.ast.expr.NameExpr;
+import org.drools.javaparser.ast.expr.StringLiteralExpr;
+import org.drools.javaparser.ast.expr.UnaryExpr;
+import org.drools.javaparser.ast.expr.VariableDeclarationExpr;
 import org.drools.javaparser.ast.stmt.BlockStmt;
 import org.drools.javaparser.ast.stmt.ExpressionStmt;
 import org.drools.javaparser.ast.stmt.ReturnStmt;
@@ -47,13 +90,12 @@ import org.drools.model.Variable;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.RuleDescrImpl;
 
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
+import static java.util.stream.Collectors.toList;
 import static org.drools.javaparser.printer.PrintUtil.toDrlx;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.*;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassFromContext;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.parseBlock;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.StringUtil.toId;
 
 public class ModelGenerator {
@@ -76,13 +118,18 @@ public class ModelGenerator {
     private static final String DECLARATION_OF_CALL = "declarationOf";
     private static final String TYPE_CALL = "type";
 
-    public static PackageModel generateModel(InternalKnowledgePackage pkg, List<RuleDescrImpl> rules, List<FunctionDescr> functions, List<TypeDeclarationDescr> typeDeclarations) {
+    public static PackageModel generateModel(InternalKnowledgePackage pkg,
+                                             List<RuleDescrImpl> rules,
+                                             List<FunctionDescr> functions,
+                                             List<TypeDeclarationDescr> typeDeclarations,
+                                             Set<WindowDeclarationDescr> windowDeclarations) {
         String name = pkg.getName();
         PackageModel packageModel = new PackageModel(name);
         packageModel.addImports(pkg.getTypeResolver().getImports());
         packageModel.addGlobals(pkg.getGlobals());
-        packageModel.addAllFunctions(functions.stream().map(FunctionGenerator::toFunction).collect(Collectors.toList()));
-        packageModel.addAllGeneratedPOJOs(typeDeclarations.stream().map(POJOGenerator::toClassDeclaration).collect(Collectors.toList()));
+        new WindowReferenceGenerator(packageModel, pkg).addWindowReferences(windowDeclarations);
+        packageModel.addAllFunctions(functions.stream().map(FunctionGenerator::toFunction).collect(toList()));
+        packageModel.addAllGeneratedPOJOs(typeDeclarations.stream().map(POJOGenerator::toClassDeclaration).collect(toList()));
 
         for (RuleDescrImpl descr : rules) {
             final RuleDescr descriptor = descr.getDescr();
@@ -97,7 +144,7 @@ public class ModelGenerator {
     }
 
     private static void processRule(InternalKnowledgePackage pkg, PackageModel packageModel, RuleDescr ruleDescr) {
-        RuleContext context = new RuleContext(pkg, packageModel.getExprIdGenerator(), ruleDescr);
+        RuleContext context = new RuleContext(pkg, packageModel.getExprIdGenerator(), Optional.of(ruleDescr));
 
         for(Entry<String, Object> kv : ruleDescr.getNamedConsequences().entrySet()) {
             context.addNamedConsequence(kv.getKey(), kv.getValue().toString());
@@ -169,11 +216,11 @@ public class ModelGenerator {
     }
 
     public static List<String> extractUsedDeclarations(PackageModel packageModel, RuleContext context, BlockStmt ruleConsequence) {
-        List<String> declUsedInRHS = ruleConsequence.getChildNodesByType(NameExpr.class).stream().map(NameExpr::getNameAsString).collect(Collectors.toList());
+        List<String> declUsedInRHS = ruleConsequence.getChildNodesByType(NameExpr.class).stream().map(NameExpr::getNameAsString).collect(toList());
         Set<String> existingDecls = new HashSet<>();
-        existingDecls.addAll(context.getDeclarations().stream().map(DeclarationSpec::getBindingId).collect(Collectors.toList()));
+        existingDecls.addAll(context.getDeclarations().stream().map(DeclarationSpec::getBindingId).collect(toList()));
         existingDecls.addAll(packageModel.getGlobals().keySet());
-        return existingDecls.stream().filter(declUsedInRHS::contains).collect(Collectors.toList());
+        return existingDecls.stream().filter(declUsedInRHS::contains).collect(toList());
     }
 
     public static MethodCallExpr executeCall(RuleContext context, BlockStmt ruleVariablesBlock, BlockStmt ruleConsequence, List<String> verifiedDeclUsedInRHS, MethodCallExpr onCall) {
@@ -205,14 +252,14 @@ public class ModelGenerator {
 
         for (DeclarationSpec decl : context.getDeclarations()) {
             if (!packageModel.getGlobals().containsKey(decl.getBindingId())) {
-                addVariable(packageModel, context, ruleBlock, decl);
+                addVariable(ruleBlock, decl);
             }
         }
         return ruleBlock;
     }
 
     private static void processQuery(InternalKnowledgePackage pkg, PackageModel packageModel, QueryDescr queryDescr) {
-        RuleContext context = new RuleContext(pkg, packageModel.getExprIdGenerator(), queryDescr);
+        RuleContext context = new RuleContext(pkg, packageModel.getExprIdGenerator(), Optional.of(queryDescr));
         visit(context, packageModel, queryDescr);
         MethodDeclaration queryMethod = new MethodDeclaration(EnumSet.of(Modifier.PRIVATE), getQueryType(context.queryParameters), "query_" + toId(queryDescr.getName()));
 
@@ -236,7 +283,7 @@ public class ModelGenerator {
         packageModel.putQueryMethod(queryMethod);
     }
 
-    private static void addVariable(PackageModel packageModel, RuleContext ruleContext, BlockStmt ruleBlock, DeclarationSpec decl) {
+    private static void addVariable(BlockStmt ruleBlock, DeclarationSpec decl) {
         ClassOrInterfaceType varType = JavaParser.parseClassOrInterfaceType(Variable.class.getCanonicalName());
         Type declType = DrlxParseUtil.classToReferenceType(decl.declarationClass );
 
@@ -428,8 +475,8 @@ public class ModelGenerator {
         for (int i = 0; i < descr.getParameters().length; i++) {
             final String argument = descr.getParameters()[i];
             final String type = descr.getParameterTypes()[i];
-            context.addDeclaration(new DeclarationSpec(argument, context.getClassFromContext(type)));
-            QueryParameter queryParameter = new QueryParameter(argument, context.getClassFromContext(type));
+            context.addDeclaration(new DeclarationSpec(argument, getClassFromContext(context.getPkg(), type)));
+            QueryParameter queryParameter = new QueryParameter(argument, getClassFromContext(context.getPkg(),type));
             context.queryParameters.add(queryParameter);
             packageModel.putQueryVariable("query_" + descr.getName(), queryParameter);
         }
@@ -487,12 +534,16 @@ public class ModelGenerator {
             return;
         }
 
-        Class<?> patternType = context.getClassFromContext(className);
+        Class<?> patternType = getClassFromContext(context.getPkg(),className);
 
         if (pattern.getIdentifier() != null) {
-            final Optional<Expression> declarationSource =
-                    Optional.ofNullable(pattern.getSource())
-                            .flatMap(new FromVisitor(context, packageModel)::visit);
+            final Optional<PatternSourceDescr> source = Optional.ofNullable(pattern.getSource());
+
+            final Optional<Expression> declarationSourceFrom = source.flatMap(new FromVisitor(context, packageModel)::visit);
+            final Optional<Expression> declarationSourceWindow = source.flatMap(new WindowReferenceGenerator(packageModel, context.getPkg())::visit);
+
+            // Use Java 9 Optional::or method
+            final Optional<Expression> declarationSource = declarationSourceFrom.isPresent() ? declarationSourceFrom : declarationSourceWindow;
 
             context.addDeclaration(new DeclarationSpec(pattern.getIdentifier(), patternType, pattern, declarationSource));
         }
@@ -518,7 +569,9 @@ public class ModelGenerator {
                     new OOPathExprVisitor(context, packageModel).visit(patternType, pattern.getIdentifier(), (OOPathExpr)drlxParseResult.expr);
                 } else {
                     // need to augment the reactOn inside drlxParseResult with the look-ahead properties.
-                    Collection<String> lookAheadFieldsOfIdentifier = context.getRuleDescr().lookAheadFieldsOfIdentifier(pattern);
+                    Collection<String> lookAheadFieldsOfIdentifier = context.getRuleDescr()
+                        .map(ruleDescr -> ruleDescr.lookAheadFieldsOfIdentifier(pattern))
+                            .orElseGet(Collections::emptyList);
                     drlxParseResult.reactOnProperties.addAll(lookAheadFieldsOfIdentifier);
 
                     Expression dslExpr = buildExpressionWithIndexing(drlxParseResult);
@@ -724,8 +777,9 @@ public class ModelGenerator {
     private static void addArgumentToMethodCall( Expression expr, MethodCallExpr methodCallExpr ) {
         if (expr instanceof TemporalLiteralExpr ) {
             TemporalLiteralExpr tempExpr1 = (TemporalLiteralExpr) expr;
-            methodCallExpr.addArgument( "" + tempExpr1.getValue() );
-            methodCallExpr.addArgument( "java.util.concurrent.TimeUnit." + tempExpr1.getTimeUnit() );
+            final TemporalLiteralChunkExpr firstTemporalExpression = tempExpr1.getChunks().iterator().next();
+            methodCallExpr.addArgument("" + firstTemporalExpression.getValue() );
+            methodCallExpr.addArgument( "java.util.concurrent.TimeUnit." + firstTemporalExpression.getTimeUnit() );
         } else {
             methodCallExpr.addArgument( expr );
         }

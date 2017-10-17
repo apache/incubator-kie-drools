@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassFromContext;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.ModelGenerator.*;
 
@@ -37,7 +38,7 @@ public class NamedConsequenceVisitor {
 
     public void visit(ConditionalBranchDescr desc) {
         PatternDescr patternRelated = (PatternDescr) getReferringPatternDescr(desc, (AndDescr) context.parentDesc);
-        Class<?> patternRelatedClass = context.getClassFromContext(patternRelated.getObjectType());
+        Class<?> patternRelatedClass = getClassFromContext(context.getPkg(),patternRelated.getObjectType());
         MethodCallExpr whenBlock = whenThenDSL(desc, patternRelated, patternRelatedClass, WHEN_CALL, null);
         recurseAmongElseBranch(patternRelatedClass, patternRelated, whenBlock, desc.getElseBranch());
     }

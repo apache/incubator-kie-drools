@@ -16,9 +16,10 @@
 
 package org.drools.modelcompiler;
 
+import java.util.concurrent.TimeUnit;
+
 import org.drools.core.ClockType;
 import org.drools.modelcompiler.domain.StockTick;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.model.KieModuleModel;
@@ -27,9 +28,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.time.SessionPseudoClock;
 
-import java.util.concurrent.TimeUnit;
-
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class CepTest extends BaseModelTest {
 
@@ -133,7 +132,7 @@ public class CepTest extends BaseModelTest {
                 "import " + StockTick.class.getCanonicalName() + ";" +
                 "rule R when\n" +
                 "    $a : StockTick( company == \"DROO\" )\n" +
-                "    not( StockTick( company == \"ACME\", this after[5,8] $a ) )\n" +
+                "    not( StockTick( company == \"ACME\", this after[5s,8s] $a ) )\n" +
                 "then\n" +
                 "  System.out.println(\"fired\");\n" +
                 "end\n";
@@ -142,24 +141,29 @@ public class CepTest extends BaseModelTest {
         SessionPseudoClock clock = ksession.getSessionClock();
 
         ksession.insert( new StockTick("DROO") );
-        clock.advanceTime( 6, TimeUnit.MILLISECONDS );
+        clock.advanceTime( 6, TimeUnit.SECONDS );
         ksession.insert( new StockTick("ACME") );
 
-        clock.advanceTime( 10, TimeUnit.MILLISECONDS );
+        clock.advanceTime( 10, TimeUnit.SECONDS );
         assertEquals(0, ksession.fireAllRules());
 
         ksession.insert( new StockTick("DROO") );
-        clock.advanceTime( 3, TimeUnit.MILLISECONDS );
+        clock.advanceTime( 3, TimeUnit.SECONDS );
         ksession.insert( new StockTick("ACME") );
 
-        clock.advanceTime( 10, TimeUnit.MILLISECONDS );
+        clock.advanceTime( 10, TimeUnit.SECONDS );
         assertEquals(1, ksession.fireAllRules());
     }
 
     @Test
-    @Ignore("DSL generation to be implemented")
     public void testDeclaredSlidingWindow() throws Exception {
-//        WindowReference window = window( Window.Type.TIME, 5, TimeUnit.SECONDS, StockTick.class, s -> s.getCompany().equals( "DROO" ) );
+//        WindowReference w = window(
+//                Window.Type.TIME,
+//                5,
+//                TimeUnit.SECONDS,
+//                StockTick.class,
+//              s -> s.getCompany().equals( "DROO" )
+// );
 //        Variable<StockTick> drooV = declarationOf( type( StockTick.class ), window );
 //
 //        Rule rule = rule( "window" )
@@ -176,7 +180,7 @@ public class CepTest extends BaseModelTest {
                 "rule R when\n" +
                 "    $a : StockTick() from window DeclaredWindow\n" +
                 "then\n" +
-                "  System.out.println(\"fired\");\n" +
+                "  System.out.println($a.getCompany());\n" +
                 "end\n";
 
         KieSession ksession = getKieSession( str, getCepKieModuleModel() );

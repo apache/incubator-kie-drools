@@ -16,6 +16,7 @@
 
 package org.drools.modelcompiler.builder.generator;
 
+import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.index.IndexUtil;
 import org.drools.core.util.index.IndexUtil.ConstraintType;
@@ -359,4 +360,15 @@ public class DrlxParseUtil {
         }
         return expression.substring(0, dot);
     }
+
+    public static Class<?> getClassFromContext(InternalKnowledgePackage pkg, String className) {
+        Class<?> patternType;
+        try {
+            patternType = pkg.getTypeResolver().resolveType(className);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException( e );
+        }
+        return patternType;
+    }
+
 }

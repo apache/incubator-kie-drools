@@ -44,6 +44,7 @@ import org.drools.javaparser.ast.type.Type;
 import org.drools.javaparser.printer.PrettyPrinter;
 import org.drools.model.Global;
 import org.drools.model.Model;
+import org.drools.model.WindowReference;
 import org.drools.modelcompiler.builder.generator.DRLExprIdGenerator;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.QueryParameter;
@@ -61,6 +62,8 @@ public class PackageModel {
     private Map<String, MethodDeclaration> ruleMethods = new HashMap<>();
 
     private Map<String, MethodDeclaration> queryMethods = new HashMap<>();
+
+    private Map<String, MethodCallExpr> windowReferences = new HashMap<>();
 
     private Map<String, List<QueryParameter>> queryVariables = new HashMap<>();
 
@@ -139,6 +142,17 @@ public class PackageModel {
         return generatedPOJOs;
     }
 
+    public void addAllWindowReferences(String methodName, MethodCallExpr windowMethod) {
+        this.windowReferences.put(methodName, windowMethod);
+    }
+
+    public Map<String, MethodCallExpr> getWindowReferences() {
+        return windowReferences;
+    }
+
+    final static Type WINDOW_REFERENCE_TYPE = JavaParser.parseType(WindowReference.class.getCanonicalName());
+
+
     public String getVarsSource() {
 //        if (true) return getVariableSource();
         return null;
@@ -203,7 +217,15 @@ public class PackageModel {
         rulesClass.addMember(queriesList);
         BodyDeclaration<?> globalsList = JavaParser.parseBodyDeclaration("List<Global> globals = new ArrayList<>();");
         rulesClass.addMember(globalsList);
+        BodyDeclaration<?> windowReferencesList = JavaParser.parseBodyDeclaration("List<WindowReference> windowReferences = new ArrayList<>();");
+        rulesClass.addMember(windowReferencesList);
         // end of fixed part
+
+
+        for(Map.Entry<String, MethodCallExpr> windowReference : windowReferences.entrySet()) {
+            FieldDeclaration f =  rulesClass.addField(WINDOW_REFERENCE_TYPE, windowReference.getKey());
+            f.getVariables().get(0).setInitializer(windowReference.getValue());
+        }
 
         for ( Map.Entry<String, Class<?>> g : getGlobals().entrySet() ) {
             addGlobalField(rulesClass, getName(), g.getKey(), g.getValue());
@@ -231,6 +253,13 @@ public class PackageModel {
             NameExpr rulesFieldName = new NameExpr( "queries" );
             MethodCallExpr add = new MethodCallExpr(rulesFieldName, "add");
             add.addArgument( new NameExpr(methodName) );
+            rulesListInitializerBody.addStatement( add );
+        }
+
+        for ( String fieldName : windowReferences.keySet() ) {
+            NameExpr rulesFieldName = new NameExpr( "windowReferences" );
+            MethodCallExpr add = new MethodCallExpr(rulesFieldName, "add");
+            add.addArgument( new NameExpr(fieldName) );
             rulesListInitializerBody.addStatement( add );
         }
 
