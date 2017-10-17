@@ -16,11 +16,6 @@
 
 package org.drools.modelcompiler;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
 import org.assertj.core.api.Assertions;
 import org.drools.core.ClockType;
 import org.drools.core.impl.KnowledgeBaseFactory;
@@ -53,6 +48,11 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.time.SessionPseudoClock;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 import static java.util.Arrays.asList;
 import static org.drools.model.DSL.accumulate;
 import static org.drools.model.DSL.and;
@@ -76,7 +76,9 @@ import static org.drools.model.DSL.valueOf;
 import static org.drools.model.DSL.when;
 import static org.drools.model.DSL.window;
 import static org.drools.modelcompiler.BaseModelTest.getObjects;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class FlowTest {
 

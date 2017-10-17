@@ -78,9 +78,12 @@ public class KiePackagesBuilder {
             pkg.addRule( compileQuery( pkg, query ) );
         }
         List<Rule> rules = model.getRules();
+        int ruleCounter = 0;
         for (Rule rule : rules) {
             KnowledgePackageImpl pkg = (KnowledgePackageImpl) packages.computeIfAbsent( rule.getPackage(), this::createKiePackage );
-            pkg.addRule( compileRule( pkg, rule ) );
+            RuleImpl ruleImpl = compileRule( pkg, rule );
+            ruleImpl.setLoadOrder( ruleCounter++ );
+            pkg.addRule( ruleImpl );
         }
     }
 
