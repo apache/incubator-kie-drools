@@ -16,15 +16,6 @@
 
 package org.drools.modelcompiler.builder;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.CompilationUnit;
 import org.drools.javaparser.ast.Modifier;
@@ -49,6 +40,16 @@ import org.drools.modelcompiler.builder.generator.DRLExprIdGenerator;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.QueryParameter;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 
 public class PackageModel {
@@ -59,7 +60,7 @@ public class PackageModel {
 
     private Map<String, Class<?>> globals = new HashMap<>();
 
-    private Map<String, MethodDeclaration> ruleMethods = new HashMap<>();
+    private Map<String, MethodDeclaration> ruleMethods = new LinkedHashMap<>(); // keep rules order to obey implicit salience
 
     private Map<String, MethodDeclaration> queryMethods = new HashMap<>();
 

@@ -5,10 +5,11 @@ import org.drools.modelcompiler.fireandalarm.model.Alarm;
 import org.drools.modelcompiler.fireandalarm.model.Fire;
 import org.drools.modelcompiler.fireandalarm.model.Room;
 import org.drools.modelcompiler.fireandalarm.model.Sprinkler;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
+
+import static org.junit.Assert.assertEquals;
 
 public class CompilerTest extends BaseModelTest {
 
@@ -17,57 +18,61 @@ public class CompilerTest extends BaseModelTest {
     }
 
     @Test
-    @Ignore
     public void testFireAndAlarm() {
         String str =
-                "import " + Alarm.class.getCanonicalName() + ";" +
-                "import " + Fire.class.getCanonicalName() + ";" +
-                "import " + Room.class.getCanonicalName() + ";" +
-                "import " + Sprinkler.class.getCanonicalName() + ";" +
-                "rule \"When there is a fire turn on the sprinkler\"\n" +
+                "import " + StringBuilder.class.getCanonicalName() + ";\n" +
+                "import " + Alarm.class.getCanonicalName() + ";\n" +
+                "import " + Fire.class.getCanonicalName() + ";\n" +
+                "import " + Room.class.getCanonicalName() + ";\n" +
+                "import " + Sprinkler.class.getCanonicalName() + ";\n" +
+                "global StringBuilder sb;" +
+                "rule \"When there is a fire turn on the sprinkler\"" +
                 "when\n" +
                 "   Fire( $room : room )\n" +
                 "   $sprinkler : Sprinkler( room == $room, !on )\n" +
                 "then\n" +
                 "   modify( $sprinkler ) { setOn( true ) };\n" +
-                "   System.out.println( \"Turn on the sprinkler for room \" + $room.getName() );\n" +
+                "   sb.append( \"Turn on the sprinkler for room \" + $room.getName() + \"\\n\");\n" +
                 "end\n" +
                 "\n" +
-                "rule \"When the fire is gone turn off the sprinkler\"\n" +
+                "rule \"When the fire is gone turn off the sprinkler\"" +
                 "when\n" +
                 "   $sprinkler : Sprinkler( $room : room, on == true )\n" +
                 "   not Fire( room == $room )\n" +
                 "then\n" +
                 "   modify( $sprinkler ) { setOn( false ) };\n" +
-                "   System.out.println( \"Turn off the sprinkler for room \" + $room.getName() );\n" +
+                "   sb.append( \"Turn off the sprinkler for room \" + $room.getName() + \"\\n\" );\n" +
                 "end\n" +
                 "\n" +
-                "rule \"Raise the alarm when we have one or more fires\"\n" +
+                "rule \"Raise the alarm when we have one or more fires\"" +
                 "when\n" +
                 "   exists Fire()\n" +
                 "then\n" +
                 "   insert( new Alarm() );\n" +
-                "   System.out.println( \"Raise the alarm\" );\n" +
+                "   sb.append( \"Raise the alarm\\n\" );\n" +
                 "end\n" +
                 "\n" +
-                "rule \"Lower the alarm when all the fires have gone\"\n" +
+                "rule \"Lower the alarm when all the fires have gone\"" +
                 "when\n" +
                 "   not Fire()\n" +
                 "   $alarm : Alarm()\n" +
                 "then\n" +
                 "   retract( $alarm );\n" +
-                "   System.out.println( \"Lower the alarm\" );\n" +
+                "   sb.append( \"Lower the alarm\\n\" );\n" +
                 "end\n" +
                 "\n" +
-                "rule \"Status output when things are ok\"\n" +
+                "rule \"Status output when things are ok\"" +
                 "when\n" +
                 "   not Alarm()\n" +
                 "   not Sprinkler( on )\n" +
                 "then\n" +
-                "   System.out.println( \"Everything is ok\" );\n" +
+                "   sb.append( \"Everything is ok\\n\" );\n" +
                 "end\n";
 
         KieSession ksession = getKieSession(str);
+
+        StringBuilder sb = new StringBuilder();
+        ksession.setGlobal( "sb", sb );
 
         // phase 1
         Room room1 = new Room("Room 1");
@@ -83,12 +88,13 @@ public class CompilerTest extends BaseModelTest {
         // phase 3
         ksession.delete(fireFact1);
         ksession.fireAllRules();
-    }
 
-//    private KieSession getKieSession(String str) {
-//        KieServices ks = KieServices.Factory.get();
-//        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
-//        ks.newKieBuilder( kfs ).buildAll();
-//        return ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
-//    }
+        String result = "Raise the alarm\n" +
+                "Turn on the sprinkler for room Room 1\n" +
+                "Turn off the sprinkler for room Room 1\n" +
+                "Lower the alarm\n" +
+                "Everything is ok\n";
+
+        assertEquals(result, sb.toString());
+    }
 }
