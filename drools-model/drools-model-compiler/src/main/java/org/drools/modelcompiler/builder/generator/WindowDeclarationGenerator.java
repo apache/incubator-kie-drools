@@ -2,6 +2,7 @@ package org.drools.modelcompiler.builder.generator;
 
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.drools.compiler.lang.descr.BehaviorDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
@@ -9,9 +10,13 @@ import org.drools.compiler.lang.descr.PatternSourceDescr;
 import org.drools.compiler.lang.descr.WindowDeclarationDescr;
 import org.drools.compiler.lang.descr.WindowReferenceDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.drlx.DrlxParser;
 import org.drools.javaparser.JavaParser;
+import org.drools.javaparser.ast.drlx.expr.TemporalLiteralChunkExpr;
+import org.drools.javaparser.ast.drlx.expr.TemporalLiteralExpr;
 import org.drools.javaparser.ast.expr.ClassExpr;
 import org.drools.javaparser.ast.expr.Expression;
+import org.drools.javaparser.ast.expr.IntegerLiteralExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.type.Type;
@@ -69,6 +74,10 @@ public class WindowDeclarationGenerator {
         final WindowDefinition.Type windowType = behavior.windowType;
         initializer.addArgument(new NameExpr(windowType.getDeclaringClass().getCanonicalName() + "." + windowType.toString()));
 
+        initializer.addArgument(new IntegerLiteralExpr(behavior.duration.getValue()));
+        final TimeUnit timeUnit = behavior.duration.getTimeUnit();
+        initializer.addArgument(new NameExpr(timeUnit.getDeclaringClass().getCanonicalName() + "." + timeUnit.name()));
+
         final Class<?> initClass = DrlxParseUtil.getClassFromContext(pkg, pattern.getObjectType());
 
         final Type initType = JavaParser.parseType(initClass.getCanonicalName());
@@ -91,9 +100,7 @@ public class WindowDeclarationGenerator {
 
     public ParsedBehavior parseTypeFromBehavior(BehaviorDescr descr) {
         final WindowDefinition.Type windowType = Window.Type.valueOf(descr.getSubType().toUpperCase());
-        final ParsedDuration duration = parseDuration(descr.getParameters().get(0));
-
-        // Parse duration here
+        final TemporalLiteralChunkExpr duration = parseDuration(descr.getParameters().get(0));
 
         ParsedBehavior parsedBehavior = new ParsedBehavior();
         parsedBehavior.windowType = windowType;
@@ -104,16 +111,12 @@ public class WindowDeclarationGenerator {
     static class ParsedBehavior {
 
         Window.Type windowType;
-        ParsedDuration duration;
+        TemporalLiteralChunkExpr duration;
     }
 
-    public static ParsedDuration parseDuration(String duration) {
-        ParsedDuration result = new ParsedDuration();
-
-        return result;
+    public static TemporalLiteralChunkExpr parseDuration(String duration) {
+        TemporalLiteralExpr te = DrlxParser.parseTemporalLiteral(duration);
+        return te.getChunks().iterator().next();
     }
 
-    static class ParsedDuration {
-
-    }
 }

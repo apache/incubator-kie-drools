@@ -63,6 +63,7 @@ import org.drools.javaparser.ast.body.Parameter;
 import org.drools.javaparser.ast.drlx.OOPathExpr;
 import org.drools.javaparser.ast.drlx.expr.DrlxExpression;
 import org.drools.javaparser.ast.drlx.expr.PointFreeExpr;
+import org.drools.javaparser.ast.drlx.expr.TemporalLiteralChunkExpr;
 import org.drools.javaparser.ast.drlx.expr.TemporalLiteralExpr;
 import org.drools.javaparser.ast.expr.AssignExpr;
 import org.drools.javaparser.ast.expr.BinaryExpr;
@@ -776,8 +777,9 @@ public class ModelGenerator {
     private static void addArgumentToMethodCall( Expression expr, MethodCallExpr methodCallExpr ) {
         if (expr instanceof TemporalLiteralExpr ) {
             TemporalLiteralExpr tempExpr1 = (TemporalLiteralExpr) expr;
-            methodCallExpr.addArgument( "" + tempExpr1.getValue() );
-            methodCallExpr.addArgument( "java.util.concurrent.TimeUnit." + tempExpr1.getTimeUnit() );
+            final TemporalLiteralChunkExpr firstTemporalExpression = tempExpr1.getChunks().iterator().next();
+            methodCallExpr.addArgument("" + firstTemporalExpression.getValue() );
+            methodCallExpr.addArgument( "java.util.concurrent.TimeUnit." + firstTemporalExpression.getTimeUnit() );
         } else {
             methodCallExpr.addArgument( expr );
         }
