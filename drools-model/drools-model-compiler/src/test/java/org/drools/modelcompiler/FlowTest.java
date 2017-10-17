@@ -16,26 +16,65 @@
 
 package org.drools.modelcompiler;
 
-import org.assertj.core.api.Assertions;
-import org.drools.core.reteoo.AlphaNode;
-import org.drools.model.*;
-import org.drools.model.Index.ConstraintType;
-import org.drools.model.impl.ModelImpl;
-import org.drools.modelcompiler.builder.KieBaseBuilder;
-import org.drools.modelcompiler.domain.*;
-import org.junit.Test;
-import org.kie.api.KieBase;
-import org.kie.api.runtime.ClassObjectFilter;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.rule.FactHandle;
-import org.kie.api.runtime.rule.QueryResults;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import org.assertj.core.api.Assertions;
+import org.drools.core.ClockType;
+import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.core.reteoo.AlphaNode;
+import org.drools.model.Global;
+import org.drools.model.Index.ConstraintType;
+import org.drools.model.Model;
+import org.drools.model.Query1;
+import org.drools.model.Query2;
+import org.drools.model.Rule;
+import org.drools.model.Variable;
+import org.drools.model.impl.ModelImpl;
+import org.drools.modelcompiler.builder.KieBaseBuilder;
+import org.drools.modelcompiler.domain.Adult;
+import org.drools.modelcompiler.domain.Child;
+import org.drools.modelcompiler.domain.Man;
+import org.drools.modelcompiler.domain.Person;
+import org.drools.modelcompiler.domain.Result;
+import org.drools.modelcompiler.domain.StockTick;
+import org.drools.modelcompiler.domain.Toy;
+import org.drools.modelcompiler.domain.Woman;
+import org.junit.Test;
+import org.kie.api.KieBase;
+import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.runtime.ClassObjectFilter;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.conf.ClockTypeOption;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.QueryResults;
+import org.kie.api.time.SessionPseudoClock;
 
 import static java.util.Arrays.asList;
-import static org.drools.model.DSL.*;
+import static org.drools.model.DSL.accumulate;
+import static org.drools.model.DSL.and;
+import static org.drools.model.DSL.average;
+import static org.drools.model.DSL.bind;
+import static org.drools.model.DSL.declarationOf;
+import static org.drools.model.DSL.execute;
+import static org.drools.model.DSL.expr;
+import static org.drools.model.DSL.forall;
+import static org.drools.model.DSL.from;
+import static org.drools.model.DSL.globalOf;
+import static org.drools.model.DSL.input;
+import static org.drools.model.DSL.not;
+import static org.drools.model.DSL.on;
+import static org.drools.model.DSL.or;
+import static org.drools.model.DSL.query;
+import static org.drools.model.DSL.rule;
+import static org.drools.model.DSL.sum;
+import static org.drools.model.DSL.type;
+import static org.drools.model.DSL.valueOf;
+import static org.drools.model.DSL.when;
+import static org.drools.model.DSL.window;
 import static org.drools.modelcompiler.BaseModelTest.getObjects;
 import static org.junit.Assert.*;
 
@@ -779,5 +818,44 @@ public class FlowTest {
         ksession.fireAllRules();
 
         assertEquals( 41, me.getAge() );
+    }
+
+
+    @Test
+    public void testDeclaredSlidingWindow() {
+        org.drools.model.WindowReference var_DeclaredWindow = window(org.drools.model.WindowDefinition.Type.TIME,
+                                                                     5,
+                                                                     java.util.concurrent.TimeUnit.SECONDS,
+                                                                     org.drools.modelcompiler.domain.StockTick.class,
+                                                                     (_this) -> _this.getCompany().equals("DROO"));
+
+
+        final org.drools.model.Variable<org.drools.modelcompiler.domain.StockTick> var_$a = declarationOf(type(org.drools.modelcompiler.domain.StockTick.class),
+                                                                                                          "$a",
+                                                                                                          var_DeclaredWindow);
+        org.drools.model.Rule rule = rule("R").build(on(var_$a).execute(($a) -> {
+            System.out.println($a.getCompany());
+        }));
+
+        Model model = new ModelImpl().addRule( rule );
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model, EventProcessingOption.STREAM);
+        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption(ClockTypeOption.get(ClockType.PSEUDO_CLOCK.getId() ));
+
+        KieSession ksession = kieBase.newKieSession(sessionConfig, null);
+
+        SessionPseudoClock clock = ksession.getSessionClock();
+
+        clock.advanceTime(2, TimeUnit.SECONDS );
+        ksession.insert( new StockTick("DROO") );
+        clock.advanceTime( 2, TimeUnit.SECONDS );
+        ksession.insert( new StockTick("DROO") );
+        clock.advanceTime( 2, TimeUnit.SECONDS );
+        ksession.insert( new StockTick("ACME") );
+        clock.advanceTime( 2, TimeUnit.SECONDS );
+        ksession.insert( new StockTick("DROO") );
+
+        assertEquals(2, ksession.fireAllRules());
+
     }
 }
