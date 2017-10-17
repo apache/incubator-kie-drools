@@ -1,8 +1,5 @@
 package org.drools.model.consequences;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.drools.model.Consequence;
 import org.drools.model.Drools;
 import org.drools.model.RuleItemBuilder;
@@ -17,6 +14,9 @@ import org.drools.model.functions.Function0;
 import org.drools.model.functions.Function1;
 import org.drools.model.functions.Function2;
 import org.drools.model.functions.FunctionN;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.drools.model.functions.FunctionUtils.toFunctionN;
 
@@ -196,7 +196,7 @@ public class ConsequenceBuilder {
             this.block = new BlockN() {
                 @Override
                 public void execute(Object... objs) {
-                    block.execute((Drools)objs[0], (A)objs[1], (B)objs[2], (C)objs[2]);
+                    block.execute((Drools)objs[0], (A)objs[1], (B)objs[2], (C)objs[3]);
                 }
             };
             return this;
