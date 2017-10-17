@@ -157,7 +157,6 @@ public class CepTest extends BaseModelTest {
     }
 
     @Test
-    @Ignore
     public void testDeclaredSlidingWindow() throws Exception {
 //        WindowReference window = window(
 //              Window.Type.TIME,

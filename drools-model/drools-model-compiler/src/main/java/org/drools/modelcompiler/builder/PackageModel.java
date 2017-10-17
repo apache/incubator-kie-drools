@@ -149,6 +149,10 @@ public class PackageModel {
         this.windowReferences.put(methodName, windowMethod);
     }
 
+    public Map<String, MethodCallExpr> getWindowReferences() {
+        return windowReferences;
+    }
+
     final static Type WINDOW_REFERENCE_TYPE = JavaParser.parseType(WindowReference.class.getCanonicalName());
 
 

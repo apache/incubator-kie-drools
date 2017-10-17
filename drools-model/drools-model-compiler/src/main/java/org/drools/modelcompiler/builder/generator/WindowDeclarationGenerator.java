@@ -5,7 +5,9 @@ import java.util.Set;
 
 import org.drools.compiler.lang.descr.BehaviorDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
+import org.drools.compiler.lang.descr.PatternSourceDescr;
 import org.drools.compiler.lang.descr.WindowDeclarationDescr;
+import org.drools.compiler.lang.descr.WindowReferenceDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.expr.ClassExpr;
@@ -29,6 +31,19 @@ public class WindowDeclarationGenerator {
     public WindowDeclarationGenerator(PackageModel packageModel, InternalKnowledgePackage pkg) {
         this.packageModel = packageModel;
         this.pkg = pkg;
+    }
+
+    public Optional<Expression> visit(PatternSourceDescr sourceDescr) {
+        if (sourceDescr instanceof WindowReferenceDescr) {
+            final WindowReferenceDescr source = ((WindowReferenceDescr) sourceDescr);
+            final String windowVariable = toVar(source.getName());
+            if (packageModel.getWindowReferences().containsKey(windowVariable)) {
+                return Optional.of(new NameExpr(windowVariable));
+            }
+            return Optional.empty();
+        } else {
+            return Optional.empty();
+        }
     }
 
     public void addWindowDeclarations(Set<WindowDeclarationDescr> windowDeclarations) {
@@ -72,7 +87,6 @@ public class WindowDeclarationGenerator {
 
             return generateLambdaWithoutParameters(drlxParseResult.usedDeclarations, drlxParseResult.expr);
         });
-
     }
 
     public ParsedBehavior parseTypeFromBehavior(BehaviorDescr descr) {

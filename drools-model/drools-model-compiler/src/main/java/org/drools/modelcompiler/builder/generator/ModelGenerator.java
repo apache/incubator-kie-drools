@@ -44,6 +44,7 @@ import org.drools.compiler.lang.descr.NamedConsequenceDescr;
 import org.drools.compiler.lang.descr.NotDescr;
 import org.drools.compiler.lang.descr.OrDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
+import org.drools.compiler.lang.descr.PatternSourceDescr;
 import org.drools.compiler.lang.descr.QueryDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
@@ -535,9 +536,13 @@ public class ModelGenerator {
         Class<?> patternType = getClassFromContext(context.getPkg(),className);
 
         if (pattern.getIdentifier() != null) {
-            final Optional<Expression> declarationSource =
-                    Optional.ofNullable(pattern.getSource())
-                            .flatMap(new FromVisitor(context, packageModel)::visit);
+            final Optional<PatternSourceDescr> source = Optional.ofNullable(pattern.getSource());
+
+            final Optional<Expression> declarationSourceFrom = source.flatMap(new FromVisitor(context, packageModel)::visit);
+            final Optional<Expression> declarationSourceWindow = source.flatMap(new WindowDeclarationGenerator(packageModel, context.getPkg())::visit);
+
+            // Use Java 9 Optional::or method
+            final Optional<Expression> declarationSource = declarationSourceFrom.isPresent() ? declarationSourceFrom : declarationSourceWindow;
 
             context.addDeclaration(new DeclarationSpec(pattern.getIdentifier(), patternType, pattern, declarationSource));
         }
