@@ -45,6 +45,8 @@ import org.drools.modelcompiler.consequence.LambdaConsequence;
 import org.drools.modelcompiler.constraints.*;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.definition.KiePackage;
+import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
+import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import java.util.*;
 import java.util.function.Consumer;
