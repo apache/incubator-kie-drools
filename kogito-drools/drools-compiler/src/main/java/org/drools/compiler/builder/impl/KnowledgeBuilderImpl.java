@@ -15,31 +15,6 @@
 
 package org.drools.compiler.builder.impl;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.io.StringReader;
-import java.lang.reflect.Array;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Stack;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
-import java.util.function.Supplier;
-
 import org.drools.compiler.compiler.AnnotationDeclarationError;
 import org.drools.compiler.compiler.BPMN2ProcessFactory;
 import org.drools.compiler.compiler.BaseKnowledgeBuilderResultImpl;
@@ -156,6 +131,31 @@ import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.io.StringReader;
+import java.lang.reflect.Array;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Stack;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
+import java.util.function.Supplier;
 
 import static org.drools.core.impl.KnowledgeBaseImpl.registerFunctionClassAndInnerClasses;
 import static org.drools.core.util.StringUtils.isEmpty;
@@ -2427,5 +2427,93 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
     public <T> T getCachedOrCreate(String key, Supplier<T> creator) {
         return (T) getBuilderCache().computeIfAbsent(key, k -> creator.get());
+    }
+
+    // composite build lifecycle
+
+    public void buildPackages( Collection<CompositePackageDescr> packages ) {
+        initPackageRegistries(packages);
+        normalizeTypeAnnotations( packages );
+        buildTypeDeclarations(packages);
+        buildEntryPoints( packages );
+        buildOtherDeclarations(packages);
+        normalizeRuleAnnotations( packages );
+        buildRules(packages);
+    }
+
+    protected void initPackageRegistries(Collection<CompositePackageDescr> packages) {
+        for ( CompositePackageDescr packageDescr : packages ) {
+            if ( StringUtils.isEmpty(packageDescr.getName()) ) {
+                packageDescr.setName( getBuilderConfiguration().getDefaultPackageName() );
+            }
+            getOrCreatePackageRegistry( packageDescr );
+        }
+    }
+
+    protected void normalizeTypeAnnotations( Collection<CompositePackageDescr> packages ) {
+        for (CompositePackageDescr packageDescr : packages) {
+            normalizeTypeDeclarationAnnotations( packageDescr, getOrCreatePackageRegistry( packageDescr ).getTypeResolver() );
+        }
+    }
+
+    protected void normalizeRuleAnnotations( Collection<CompositePackageDescr> packages ) {
+        for (CompositePackageDescr packageDescr : packages) {
+            normalizeRuleAnnotations( packageDescr, getOrCreatePackageRegistry( packageDescr ).getTypeResolver() );
+        }
+    }
+
+    protected void buildEntryPoints( Collection<CompositePackageDescr> packages ) {
+        for (CompositePackageDescr packageDescr : packages) {
+            processEntryPointDeclarations(getPackageRegistry( packageDescr.getNamespace() ), packageDescr);
+        }
+    }
+
+    protected void buildTypeDeclarations( Collection<CompositePackageDescr> packages ) {
+        Map<String,AbstractClassTypeDeclarationDescr> unprocesseableDescrs = new HashMap<String,AbstractClassTypeDeclarationDescr>();
+        List<TypeDefinition> unresolvedTypes = new ArrayList<TypeDefinition>();
+        List<AbstractClassTypeDeclarationDescr> unsortedDescrs = new ArrayList<AbstractClassTypeDeclarationDescr>();
+        for (CompositePackageDescr packageDescr : packages) {
+            for (TypeDeclarationDescr typeDeclarationDescr : packageDescr.getTypeDeclarations()) {
+                unsortedDescrs.add( typeDeclarationDescr );
+            }
+            for (EnumDeclarationDescr enumDeclarationDescr : packageDescr.getEnumDeclarations()) {
+                unsortedDescrs.add( enumDeclarationDescr );
+            }
+        }
+
+        getTypeBuilder().processTypeDeclarations( packages, unsortedDescrs, unresolvedTypes, unprocesseableDescrs );
+
+        for ( CompositePackageDescr packageDescr : packages ) {
+            for ( ImportDescr importDescr : packageDescr.getImports() ) {
+                getPackageRegistry( packageDescr.getNamespace() ).addImport( importDescr );
+            }
+        }
+    }
+
+    protected void buildOtherDeclarations(Collection<CompositePackageDescr> packages) {
+        for (CompositePackageDescr packageDescr : packages) {
+            setAssetFilter(packageDescr.getFilter());
+            PackageRegistry pkgRegistry = getPackageRegistry(packageDescr.getNamespace());
+            processOtherDeclarations( pkgRegistry, packageDescr );
+            setAssetFilter(null);
+        }
+    }
+
+    protected void buildRules(Collection<CompositePackageDescr> packages) {
+        for (CompositePackageDescr packageDescr : packages) {
+            setAssetFilter(packageDescr.getFilter());
+            PackageRegistry pkgRegistry = getPackageRegistry(packageDescr.getNamespace());
+            compileKnowledgePackages(packageDescr, pkgRegistry);
+            setAssetFilter(null);
+        }
+
+        wireAllRules();
+        processKieBaseTypes();
+
+        for (CompositePackageDescr packageDescr : packages) {
+            setAssetFilter(packageDescr.getFilter());
+            compileRete( packageDescr );
+            setAssetFilter(null);
+        }
     }
 }
