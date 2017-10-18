@@ -69,7 +69,6 @@ public class OOPathTest extends BaseModelTest {
     }
 
     @Test
-    @Ignore
     public void testReactiveOOPath() {
         final String str =
                 "import org.drools.modelcompiler.domain.*;\n" +

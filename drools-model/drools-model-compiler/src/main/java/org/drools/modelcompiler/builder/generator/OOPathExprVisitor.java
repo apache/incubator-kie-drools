@@ -8,6 +8,7 @@ import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.modelcompiler.builder.PackageModel;
 
 import java.util.HashSet;
+import java.util.List;
 
 import static org.drools.core.util.ClassUtils.extractGenericType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.*;
@@ -57,5 +58,18 @@ public class OOPathExprVisitor {
             previousBind = bindingId;
             previousClass = fieldType;
         }
+
+        // If the OOPath has an inner binding, it will be in the context's declarations without its type (as it's inferred from the last OOPath chunk).
+        // We remove the original expression without type and use its name in the last expression
+        final List<DeclarationSpec> declarations = context.getDeclarations();
+        if(!declarations.isEmpty() && declarations.iterator().next().declarationClass == null) {
+            final String innerBindingId = declarations.iterator().next().bindingId;
+
+            final int lastIndex = declarations.size() - 1;
+            final DeclarationSpec last = declarations.get(lastIndex);
+            declarations.set(lastIndex, new DeclarationSpec(innerBindingId, last.declarationClass, last.optPattern, last.declarationSource));
+            declarations.remove(0);
+        }
+
     }
 }

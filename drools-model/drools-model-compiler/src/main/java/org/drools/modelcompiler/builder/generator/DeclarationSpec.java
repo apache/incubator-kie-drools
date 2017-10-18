@@ -36,10 +36,10 @@ public class DeclarationSpec {
         this.declarationSource = Optional.empty();
     }
 
-    public DeclarationSpec(String bindingId, Class<?> declarationClass, PatternDescr pattern, Optional<Expression> declarationSource) {
+    public DeclarationSpec(String bindingId, Class<?> declarationClass, Optional<PatternDescr> pattern, Optional<Expression> declarationSource) {
         this.bindingId = bindingId;
         this.declarationClass = declarationClass;
-        this.optPattern = Optional.of(pattern);
+        this.optPattern = pattern;
         this.declarationSource = declarationSource;
     }
 
