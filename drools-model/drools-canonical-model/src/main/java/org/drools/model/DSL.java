@@ -232,15 +232,30 @@ public class DSL {
         return new BindViewItemBuilder<T>(var);
     }
 
-    public static class BindViewItemBuilder<T> {
-        private final Variable<T> var;
+    public static class BindViewItemBuilder<T> implements ViewItemBuilder<T> {
+        private final Variable<T> boundVariable;
+        private Function1 function;
+        private Variable inputVariable;
+        private String reactOn;
 
-        private BindViewItemBuilder( Variable<T> var) {
-            this.var = var;
+        private BindViewItemBuilder( Variable<T> boundVariable) {
+            this.boundVariable = boundVariable;
         }
 
-        public <A> BindViewItem<T> as( Variable<A> var1, Function1<A, T> f) {
-            return new BindViewItem<T>(var, f, var1);
+        public <A> BindViewItemBuilder<T> as( Variable<A> var1, Function1<A, T> f) {
+            this.function = f;
+            this.inputVariable = var1;
+            return this;
+        }
+
+        public BindViewItemBuilder<T> reactOn( String reactOn ) {
+            this.reactOn = reactOn;
+            return this;
+        }
+
+        @Override
+        public ViewItem<T> get() {
+            return new BindViewItem<T>(boundVariable, function, inputVariable, reactOn);
         }
     }
 

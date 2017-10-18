@@ -17,42 +17,93 @@
 package org.drools.modelcompiler;
 
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.base.*;
+import org.drools.core.base.ClassFieldAccessorCache;
+import org.drools.core.base.ClassObjectType;
+import org.drools.core.base.DroolsQuery;
+import org.drools.core.base.EnabledBoolean;
+import org.drools.core.base.SalienceInteger;
 import org.drools.core.base.extractors.ArrayElementReader;
 import org.drools.core.base.extractors.SelfReferenceClassFieldReader;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.rule.*;
+import org.drools.core.rule.Accumulate;
+import org.drools.core.rule.Behavior;
+import org.drools.core.rule.ConditionalBranch;
 import org.drools.core.rule.Declaration;
+import org.drools.core.rule.EntryPointId;
+import org.drools.core.rule.EvalCondition;
+import org.drools.core.rule.Forall;
+import org.drools.core.rule.GroupElement;
+import org.drools.core.rule.MultiAccumulate;
+import org.drools.core.rule.NamedConsequence;
 import org.drools.core.rule.Pattern;
+import org.drools.core.rule.QueryArgument;
+import org.drools.core.rule.QueryElement;
+import org.drools.core.rule.QueryImpl;
+import org.drools.core.rule.RuleConditionElement;
+import org.drools.core.rule.SingleAccumulate;
+import org.drools.core.rule.SlidingLengthWindow;
+import org.drools.core.rule.SlidingTimeWindow;
+import org.drools.core.rule.WindowDeclaration;
 import org.drools.core.rule.constraint.QueryNameConstraint;
 import org.drools.core.ruleunit.RuleUnitUtil;
 import org.drools.core.spi.Accumulator;
 import org.drools.core.spi.DataProvider;
 import org.drools.core.spi.EvalExpression;
 import org.drools.core.spi.InternalReadAccessor;
-import org.drools.model.*;
+import org.drools.model.AccumulateFunction;
+import org.drools.model.AccumulatePattern;
+import org.drools.model.Argument;
+import org.drools.model.Binding;
+import org.drools.model.Condition;
+import org.drools.model.Consequence;
+import org.drools.model.Constraint;
+import org.drools.model.EntryPoint;
 import org.drools.model.From;
+import org.drools.model.Global;
+import org.drools.model.Model;
+import org.drools.model.OOPath;
+import org.drools.model.Query;
+import org.drools.model.Rule;
+import org.drools.model.SingleConstraint;
+import org.drools.model.Value;
+import org.drools.model.Variable;
+import org.drools.model.View;
+import org.drools.model.WindowDefinition;
 import org.drools.model.WindowReference;
 import org.drools.model.consequences.ConditionalNamedConsequenceImpl;
 import org.drools.model.consequences.NamedConsequenceImpl;
 import org.drools.model.constraints.SingleConstraint1;
-import org.drools.model.functions.Function1;
 import org.drools.model.functions.Predicate1;
 import org.drools.model.impl.DeclarationImpl;
 import org.drools.model.patterns.QueryCallPattern;
 import org.drools.modelcompiler.consequence.LambdaConsequence;
-import org.drools.modelcompiler.constraints.*;
+import org.drools.modelcompiler.constraints.ConstraintEvaluator;
+import org.drools.modelcompiler.constraints.LambdaAccumulator;
+import org.drools.modelcompiler.constraints.LambdaConstraint;
+import org.drools.modelcompiler.constraints.LambdaDataProvider;
+import org.drools.modelcompiler.constraints.LambdaEvalExpression;
+import org.drools.modelcompiler.constraints.LambdaReadAccessor;
+import org.drools.modelcompiler.constraints.TemporalConstraintEvaluator;
+import org.drools.modelcompiler.constraints.UnificationConstraint;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.definition.KiePackage;
 import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import static org.drools.core.rule.Pattern.getReadAcessor;
-import static org.drools.model.DSL.*;
+import static org.drools.model.DSL.declarationOf;
+import static org.drools.model.DSL.entryPoint;
+import static org.drools.model.DSL.type;
 import static org.drools.model.impl.NamesGenerator.generateName;
 import static org.drools.modelcompiler.ModelCompilerUtil.conditionToGroupElementType;
 
@@ -359,14 +410,17 @@ public class KiePackagesBuilder {
         org.drools.model.Pattern<Object> modelPattern = (org.drools.model.Pattern) condition;
         Pattern pattern = addPatternForVariable( ctx, modelPattern.getPatternVariable() );
 
-        for (Map.Entry<Variable, Function1<Object,?>> entry : modelPattern.getBindings().entrySet()) {
-            Declaration declaration = new Declaration(entry.getKey().getName(),
-                                                      new LambdaReadAccessor(0, entry.getKey().getType().asClass(),
-                                                                             entry.getValue()),
+        for (Binding binding : modelPattern.getBindings()) {
+            Declaration declaration = new Declaration(binding.getBoundVariable().getName(),
+                                                      new LambdaReadAccessor(0, binding.getBoundVariable().getType().asClass(),
+                                                                                binding.getBindingFunction()),
                                                       pattern,
                                                       true);
             pattern.addDeclaration( declaration );
-            ctx.addInnerDeclaration(entry.getKey(), declaration);
+            if (binding.getReactOn() != null) {
+                addFieldsToPatternWatchlist( pattern, binding.getReactOn() );
+            }
+            ctx.addInnerDeclaration(binding.getBoundVariable(), declaration);
         }
 
         Declaration queryArgDecl = ctx.getQueryDeclaration( modelPattern.getPatternVariable() );
@@ -484,14 +538,16 @@ public class KiePackagesBuilder {
         }
     }
 
-    private void addFieldsToPatternWatchlist( Pattern pattern, String[] fields ) {
+    private void addFieldsToPatternWatchlist( Pattern pattern, String... fields ) {
         if (fields != null && fields.length > 0) {
             Collection<String> watchlist = pattern.getListenedProperties();
             if ( watchlist == null ) {
                 watchlist = new HashSet<>( );
                 pattern.setListenedProperties( watchlist );
             }
-            watchlist.addAll( Arrays.asList( fields ) );
+            for (String field : fields) {
+                watchlist.add( field );
+            }
         }
     }
 
