@@ -1,9 +1,14 @@
 package org.drools.model.patterns;
 
-import org.drools.model.*;
-import org.drools.model.functions.Function1;
+import org.drools.model.AccumulateFunction;
+import org.drools.model.AccumulatePattern;
+import org.drools.model.Binding;
+import org.drools.model.Constraint;
+import org.drools.model.DataSourceDefinition;
+import org.drools.model.Pattern;
+import org.drools.model.Variable;
 
-import java.util.Map;
+import java.util.List;
 
 public class AccumulatePatternImpl<T> extends AbstractSinglePattern implements AccumulatePattern<T> {
 
@@ -41,7 +46,7 @@ public class AccumulatePatternImpl<T> extends AbstractSinglePattern implements A
     }
 
     @Override
-    public Map<Variable, Function1<T, ?>> getBindings() {
+    public List<Binding> getBindings() {
         return pattern.getBindings();
     }
 
