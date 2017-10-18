@@ -734,9 +734,11 @@ public class ModelGenerator {
 
             if (drlx.getBind() != null) {
                 return new DrlxParseResult( patternType, exprId, bindingId, null, converted.getType() )
-                        .setLeft( new TypedExpression( withThis, converted.getType() ) );
+                        .setLeft( new TypedExpression( withThis, converted.getType() ) )
+                        .addReactOnProperty( methodCallExpr.getNameAsString() );
             } else {
-                return new DrlxParseResult( patternType, exprId, bindingId, withThis, converted.getType() );
+                return new DrlxParseResult( patternType, exprId, bindingId, withThis, converted.getType() )
+                        .addReactOnProperty( methodCallExpr.getNameAsString() );
             }
         }
 
@@ -785,6 +787,14 @@ public class ModelGenerator {
 
         public DrlxParseResult setReactOnProperties( Set<String> reactOnProperties ) {
             this.reactOnProperties = reactOnProperties;
+            return this;
+        }
+
+        public DrlxParseResult addReactOnProperty( String reactOnProperty ) {
+            if (reactOnProperties.isEmpty()) {
+                reactOnProperties = new HashSet<>();
+            }
+            this.reactOnProperties.add(reactOnProperty);
             return this;
         }
 

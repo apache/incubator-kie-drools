@@ -1,9 +1,14 @@
 package org.drools.modelcompiler.constraints;
 
+import org.drools.core.base.field.ObjectFieldImpl;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.reteoo.PropertySpecificUtil;
-import org.drools.core.rule.*;
+import org.drools.core.rule.ContextEntry;
+import org.drools.core.rule.Declaration;
+import org.drools.core.rule.IndexableConstraint;
+import org.drools.core.rule.IntervalProviderConstraint;
+import org.drools.core.rule.MutableTypeConstraint;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.Tuple;
@@ -11,6 +16,7 @@ import org.drools.core.time.Interval;
 import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.index.IndexUtil;
+import org.drools.model.AlphaIndex;
 import org.drools.model.BetaIndex;
 import org.drools.model.Index;
 
@@ -40,7 +46,9 @@ public class LambdaConstraint extends MutableTypeConstraint implements Indexable
         if (index != null) {
             // TODO LambdaReadAccessor.index ???
             readAccessor = new LambdaReadAccessor( 0, index.getIndexedClass(), index.getLeftOperandExtractor() );
-            if (index instanceof BetaIndex) {
+            if (index instanceof AlphaIndex) {
+                field = new ObjectFieldImpl( ( ( AlphaIndex ) index).getRightValue() );
+            } else if (index instanceof BetaIndex) {
                 indexingDeclaration = evaluator.getRequiredDeclarations()[0];
             }
         }

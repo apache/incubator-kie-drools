@@ -18,18 +18,30 @@ package org.drools.modelcompiler;
 
 import org.assertj.core.api.Assertions;
 import org.drools.core.reteoo.AlphaNode;
-import org.drools.modelcompiler.domain.*;
-import org.junit.Ignore;
+import org.drools.modelcompiler.domain.Address;
+import org.drools.modelcompiler.domain.Adult;
+import org.drools.modelcompiler.domain.Child;
+import org.drools.modelcompiler.domain.Man;
+import org.drools.modelcompiler.domain.Person;
+import org.drools.modelcompiler.domain.Result;
+import org.drools.modelcompiler.domain.Toy;
+import org.drools.modelcompiler.domain.Woman;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class CompilerTest extends BaseModelTest {
 
@@ -98,7 +110,6 @@ public class CompilerTest extends BaseModelTest {
     }
 
     @Test
-    @Ignore("TODO: implement inner declaration binding")
     public void testBetaWithDeclaration() {
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +

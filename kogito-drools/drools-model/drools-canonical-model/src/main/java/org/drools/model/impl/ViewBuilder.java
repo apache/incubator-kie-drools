@@ -100,7 +100,7 @@ public class ViewBuilder {
                     conditions.add( pattern );
                     conditionMap.put( bindViewItem.getInputVariable(), pattern );
                 }
-                pattern.addBinding( bindViewItem.getFirstVariable(), bindViewItem.getInvokedFunction() );
+                pattern.addBinding( bindViewItem );
                 usedVars.add( bindViewItem.getFirstVariable() );
                 continue;
             }

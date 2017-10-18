@@ -1,8 +1,6 @@
 package org.drools.model;
 
-import org.drools.model.functions.Function1;
-
-import java.util.Map;
+import java.util.List;
 
 public interface Pattern<T> extends Condition {
 
@@ -14,5 +12,5 @@ public interface Pattern<T> extends Condition {
 
     Constraint getConstraint();
 
-    Map<Variable, Function1<T,?>> getBindings();
+    List<Binding> getBindings();
 }
