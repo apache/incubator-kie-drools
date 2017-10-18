@@ -16,10 +16,10 @@
 
 package org.drools.modelcompiler;
 
-import java.util.concurrent.TimeUnit;
-
 import org.drools.core.ClockType;
+import org.drools.modelcompiler.domain.StockFact;
 import org.drools.modelcompiler.domain.StockTick;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.model.KieModuleModel;
@@ -28,7 +28,9 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.time.SessionPseudoClock;
 
-import static org.junit.Assert.*;
+import java.util.concurrent.TimeUnit;
+
+import static org.junit.Assert.assertEquals;
 
 public class CepTest extends BaseModelTest {
 
@@ -196,5 +198,33 @@ public class CepTest extends BaseModelTest {
         ksession.insert( new StockTick("DROO") );
 
         assertEquals(2, ksession.fireAllRules());
+    }
+
+    @Test
+    @Ignore("TODO")
+    public void testWithDeclaredEvent() throws Exception {
+        String str =
+                "import " + StockFact.class.getCanonicalName() + ";\n" +
+                "declare StockFact @role( event ) end;\n" +
+                "rule R when\n" +
+                "    $a : StockFact( company == \"DROO\" )\n" +
+                "    $b : StockFact( company == \"ACME\", this after[5s,8s] $a )\n" +
+                "then\n" +
+                "  System.out.println(\"fired\");\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str, getCepKieModuleModel() );
+        SessionPseudoClock clock = ksession.getSessionClock();
+
+        ksession.insert( new StockFact( "DROO" ) );
+        clock.advanceTime( 6, TimeUnit.SECONDS );
+        ksession.insert( new StockFact( "ACME" ) );
+
+        assertEquals( 1, ksession.fireAllRules() );
+
+        clock.advanceTime( 4, TimeUnit.SECONDS );
+        ksession.insert( new StockFact( "ACME" ) );
+
+        assertEquals( 0, ksession.fireAllRules() );
     }
 }

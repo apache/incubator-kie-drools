@@ -16,12 +16,14 @@
 
 package org.drools.modelcompiler.domain;
 
-import org.kie.api.definition.type.Role;
+public class StockFact {
+    private final String company;
 
-@Role(Role.Type.EVENT)
-public class StockTick extends StockFact {
+    public StockFact( String company ) {
+        this.company = company;
+    }
 
-    public StockTick( String company ) {
-        super( company );
+    public String getCompany() {
+        return company;
     }
 }
