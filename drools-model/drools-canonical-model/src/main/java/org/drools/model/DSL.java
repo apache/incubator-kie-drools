@@ -109,17 +109,8 @@ public class DSL {
         return new WindowReferenceImpl( type, value, patternType, predicates );
     }
 
-    // Broken in EJC
-//    public static <T> WindowReference<T> window( Window.Type type, long value, TimeUnit timeUnit, Class<T> patternType, Predicate1<T>... predicates ) {
-//        return new WindowReferenceImpl( type, value, timeUnit, patternType, predicates );
-//    }
-
-    public static <T> WindowReference<T> window( Window.Type type, long value, TimeUnit timeUnit, Class<T> patternType, Predicate1<T> predicate ) {
-        return new WindowReferenceImpl( type, value, timeUnit, patternType, predicate );
-    }
-
-    public static <T> WindowReference<T> window( Window.Type type, long value, TimeUnit timeUnit, Class<T> patternType, Predicate1<T> predicate1,  Predicate1<T> predicate2) {
-        return new WindowReferenceImpl( type, value, timeUnit, patternType, predicate1, predicate2 );
+    public static <T> WindowReference<T> window( Window.Type type, long value, TimeUnit timeUnit, Class<T> patternType, Predicate1<T>... predicates ) {
+        return new WindowReferenceImpl( type, value, timeUnit, patternType, predicates );
     }
 
     public static <T> From<T> from( Variable<T> variable, Function1<T, ?> provider ) {
