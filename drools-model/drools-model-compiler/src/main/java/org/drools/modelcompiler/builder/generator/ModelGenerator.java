@@ -132,7 +132,15 @@ public class ModelGenerator {
         packageModel.addGlobals(pkg.getGlobals());
         new WindowReferenceGenerator(packageModel, pkg).addWindowReferences(windowDeclarations);
         packageModel.addAllFunctions(functions.stream().map(FunctionGenerator::toFunction).collect(toList()));
-        packageModel.addAllGeneratedPOJOs(typeDeclarations.stream().map(POJOGenerator::toClassDeclaration).collect(toList()));
+        for (TypeDeclarationDescr typeDescr : typeDeclarations) {
+        // TODO
+//            try {
+//                Class<?> existingType = pkg.getTypeResolver().resolveType( typeDescr.getTypeName() );
+//                System.out.println(existingType);
+//            } catch (ClassNotFoundException e) {
+                packageModel.addGeneratedPOJO(POJOGenerator.toClassDeclaration(typeDescr));
+//            }
+        }
 
         for (RuleDescrImpl descr : rules) {
             final RuleDescr descriptor = descr.getDescr();

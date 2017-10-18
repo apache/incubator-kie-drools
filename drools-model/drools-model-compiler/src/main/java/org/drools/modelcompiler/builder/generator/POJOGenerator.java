@@ -1,9 +1,6 @@
 package org.drools.modelcompiler.builder.generator;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-
+import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.compiler.lang.descr.TypeFieldDescr;
 import org.drools.javaparser.JavaParser;
@@ -15,11 +12,17 @@ import org.drools.javaparser.ast.body.FieldDeclaration;
 import org.drools.javaparser.ast.body.MethodDeclaration;
 import org.drools.javaparser.ast.expr.FieldAccessExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
+import org.drools.javaparser.ast.expr.NormalAnnotationExpr;
 import org.drools.javaparser.ast.stmt.BlockStmt;
 import org.drools.javaparser.ast.stmt.Statement;
 import org.drools.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.javaparser.ast.type.PrimitiveType;
 import org.drools.javaparser.ast.type.Type;
+import org.kie.api.definition.type.Role;
+
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
 
 import static java.text.MessageFormat.format;
 import static org.drools.javaparser.JavaParser.parseStatement;
@@ -37,33 +40,41 @@ public class POJOGenerator {
         String generatedClassName = typeDeclaration.getTypeName();
         ClassOrInterfaceDeclaration generatedClass = new ClassOrInterfaceDeclaration(classModifiers, false, generatedClassName);
 
+        for (AnnotationDescr ann : typeDeclaration.getAnnotations()) {
+            String annFqn = ann.getFullyQualifiedName();
+            NormalAnnotationExpr annExpr = generatedClass.addAndGetAnnotation(annFqn);
+            ann.getValueMap().forEach( (k, v) -> annExpr.addPair( k, getAnnotationValue(annFqn, k, v.toString()) ));
+        }
+
         generatedClass.addConstructor(Modifier.PUBLIC); // No-args ctor
-        final ConstructorDeclaration fullArgumentsCtor = generatedClass.addConstructor(Modifier.PUBLIC);
 
         List<Statement> equalsFieldStatement = new ArrayList<>();
         List<Statement> hashCodeFieldStatement = new ArrayList<>();
         List<String> toStringFieldStatement = new ArrayList<>();
         NodeList<Statement> ctorFieldStatement = NodeList.nodeList();
 
-        for (TypeFieldDescr kv : typeDeclaration.getFields().values()) {
-            final String fieldName = kv.getFieldName();
-            final String typeName = kv.getPattern().getObjectType();
+        if (!typeDeclaration.getFields().isEmpty()) {
+            final ConstructorDeclaration fullArgumentsCtor = generatedClass.addConstructor( Modifier.PUBLIC );
+            for (TypeFieldDescr kv : typeDeclaration.getFields().values()) {
+                final String fieldName = kv.getFieldName();
+                final String typeName = kv.getPattern().getObjectType();
 
-            Type returnType = JavaParser.parseType(typeName);
+                Type returnType = JavaParser.parseType( typeName );
 
-            FieldDeclaration field = generatedClass.addField(returnType, fieldName, Modifier.PRIVATE);
-            field.createSetter();
-            MethodDeclaration getter = field.createGetter();
+                FieldDeclaration field = generatedClass.addField( returnType, fieldName, Modifier.PRIVATE );
+                field.createSetter();
+                MethodDeclaration getter = field.createGetter();
 
-            ctorFieldStatement.add(replaceFieldName(parseStatement("this.__fieldName = __fieldName;"), fieldName));
-            fullArgumentsCtor.addParameter(returnType, fieldName);
+                ctorFieldStatement.add( replaceFieldName( parseStatement( "this.__fieldName = __fieldName;" ), fieldName ) );
+                fullArgumentsCtor.addParameter( returnType, fieldName );
 
-            equalsFieldStatement.add(generateEqualsForField(getter, fieldName));
-            hashCodeFieldStatement.add(generateHashCodeForField(getter, fieldName));
-            toStringFieldStatement.add(format("+ {0}+{1}", quote(fieldName + "="), fieldName));
+                equalsFieldStatement.add( generateEqualsForField( getter, fieldName ) );
+                hashCodeFieldStatement.add( generateHashCodeForField( getter, fieldName ) );
+                toStringFieldStatement.add( format( "+ {0}+{1}", quote( fieldName + "=" ), fieldName ) );
+            }
+            fullArgumentsCtor.setBody( new BlockStmt( ctorFieldStatement ) );
         }
 
-        fullArgumentsCtor.setBody(new BlockStmt(ctorFieldStatement));
         generatedClass.addMember(generateEqualsMethod(generatedClassName, equalsFieldStatement));
         generatedClass.addMember(generateHashCodeMethod(hashCodeFieldStatement));
         generatedClass.addMember(generateToStringMethod(generatedClassName, toStringFieldStatement));
@@ -165,59 +176,11 @@ public class POJOGenerator {
     private static String quote(String str) {
         return format("\"{0}\"", str);
     }
-}
 
-class SimplePojo2 {
-
-    final String name;
-    final String surname;
-
-    final int age;
-
-    public SimplePojo2(String name, String surname, int age) {
-        this.name = name;
-        this.surname = surname;
-        this.age = age;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
+    private static String getAnnotationValue(String annotationName, String valueName, String value) {
+        if (annotationName.equals( Role.class.getCanonicalName() )) {
+            return Role.Type.class.getCanonicalName() + "." + value.toUpperCase();
         }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        SimplePojo2 that = (SimplePojo2) o;
-
-        if (age != that.age) {
-            return false;
-        }
-        if (name != null ? !name.equals(that.name) : that.name != null) {
-            return false;
-        }
-
-        if (surname != null ? !surname.equals(that.surname) : that.surname != null) {
-            return false;
-        }
-
-        return true;
-
-//        return surname != null ? surname.equals(that.surname) : that.surname == null;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = 17;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (surname != null ? surname.hashCode() : 0);
-        result = 31 * result + age;
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return "SimplePojo2(" + "name=" + name + ", surname='" + surname + '\'' + ", age=" + age + ')';
+        throw new UnsupportedOperationException("Unknown annotation: " + annotationName);
     }
 }
