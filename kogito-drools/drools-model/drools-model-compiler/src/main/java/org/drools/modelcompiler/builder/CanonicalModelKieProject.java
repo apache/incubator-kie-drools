@@ -16,10 +16,6 @@
 
 package org.drools.modelcompiler.builder;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.drools.compiler.commons.jci.compilers.CompilationResult;
 import org.drools.compiler.commons.jci.compilers.EclipseJavaCompiler;
 import org.drools.compiler.commons.jci.compilers.JavaCompiler;
@@ -37,11 +33,17 @@ import org.drools.javaparser.printer.PrettyPrinter;
 import org.drools.javaparser.printer.PrettyPrinterConfiguration;
 import org.kie.internal.builder.KnowledgeBuilder;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import static org.drools.modelcompiler.CanonicalKieModule.PACKAGE_LIST;
 import static org.drools.modelcompiler.CanonicalKieModule.RULES_FILE_NAME;
 import static org.drools.modelcompiler.CanonicalKieModule.VARIABLES_FILE_NAME;
 
 public class CanonicalModelKieProject extends KieModuleKieProject {
+
+    private static final JavaDialectConfiguration.CompilerType COMPILER_TYPE = JavaDialectConfiguration.CompilerType.NATIVE;
 
     private ModelBuilderImpl modelBuilder;
 
@@ -126,10 +128,11 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
         return prettyPrinter.print(cu);
     }
 
-
     private JavaCompiler createCompiler() {
-        EclipseJavaCompiler javaCompiler = (EclipseJavaCompiler) JavaCompilerFactory.getInstance().loadCompiler( JavaDialectConfiguration.CompilerType.ECLIPSE, "1.8" );
-        javaCompiler.setPrefix( "src/main/java/" );
+        JavaCompiler javaCompiler = JavaCompilerFactory.getInstance().loadCompiler( COMPILER_TYPE, "1.8" );
+        if (COMPILER_TYPE == JavaDialectConfiguration.CompilerType.ECLIPSE) {
+            ((EclipseJavaCompiler)javaCompiler).setPrefix( "src/main/java/" );
+        }
         return javaCompiler;
     }
 }
