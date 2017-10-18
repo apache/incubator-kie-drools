@@ -139,8 +139,8 @@ public class FlowTest {
         Rule rule = rule("beta")
                 .build(expr("exprA", markV, p -> p.getName().equals("Mark"))
                                 .indexedBy(String.class, ConstraintType.EQUAL, Person::getName, "Mark")
-                                .reactOn("name", "age"), // also react on age, see RuleDescr.lookAheadFieldsOfIdentifier
-                        bind(markAge).as(markV, Person::getAge),
+                                .reactOn("name"), // also react on age, see RuleDescr.lookAheadFieldsOfIdentifier
+                        bind(markAge).as(markV, Person::getAge).reactOn("age"),
                         expr("exprB", olderV, p -> !p.getName().equals("Mark"))
                                 .indexedBy(String.class, ConstraintType.NOT_EQUAL, Person::getName, "Mark")
                                 .reactOn("name"),
@@ -184,10 +184,10 @@ public class FlowTest {
         Variable<Person> olderV = declarationOf(type(Person.class));
 
         Rule rule = rule("beta")
-                .build( bind(markAge).as(markV, Person::getAge ),
+                .build( bind(markAge).as(markV, Person::getAge ).reactOn("age"),
                         expr("exprA", markV, p -> p.getName().equals("Mark"))
                                 .indexedBy(String.class, ConstraintType.EQUAL, Person::getName, "Mark")
-                                .reactOn("name", "age"), // also react on age, see RuleDescr.lookAheadFieldsOfIdentifier
+                                .reactOn("name"), // also react on age, see RuleDescr.lookAheadFieldsOfIdentifier
                         expr("exprB", olderV, p -> !p.getName().equals("Mark"))
                                 .indexedBy(String.class, ConstraintType.NOT_EQUAL, Person::getName, "Mark")
                                 .reactOn("name"),

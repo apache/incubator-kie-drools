@@ -1,11 +1,19 @@
 package org.drools.model.patterns;
 
-import org.drools.model.*;
+import org.drools.model.Binding;
+import org.drools.model.Constraint;
+import org.drools.model.DataSourceDefinition;
+import org.drools.model.Pattern;
+import org.drools.model.SingleConstraint;
+import org.drools.model.Variable;
 import org.drools.model.constraints.AbstractConstraint;
-import org.drools.model.functions.Function1;
 import org.drools.model.impl.DataSourceDefinitionImpl;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class PatternImpl<T> extends AbstractSinglePattern implements Pattern<T> {
 
@@ -13,7 +21,7 @@ public class PatternImpl<T> extends AbstractSinglePattern implements Pattern<T> 
     private Variable[] inputVariables;
     private final DataSourceDefinition dataSourceDefinition;
     private Constraint constraint;
-    private Map<Variable, Function1<T, ?>> bindings;
+    private List<Binding> bindings;
 
     public PatternImpl(Variable<T> variable) {
         this(variable, SingleConstraint.EMPTY, DataSourceDefinitionImpl.DEFAULT);
@@ -57,15 +65,15 @@ public class PatternImpl<T> extends AbstractSinglePattern implements Pattern<T> 
         this.constraint = ( (AbstractConstraint) this.constraint ).and( constraint );
     }
 
-    public void addBinding(Variable boundVar, Function1<T, ?> func) {
+    public void addBinding(Binding binding) {
         if (bindings == null) {
-            bindings = new HashMap<>();
+            bindings = new ArrayList<>();
         }
-        bindings.put(boundVar, func);
+        bindings.add(binding);
     }
 
-    public Map<Variable, Function1<T, ?>> getBindings() {
-        return bindings != null ? bindings : Collections.emptyMap();
+    public List<Binding> getBindings() {
+        return bindings != null ? bindings : Collections.emptyList();
     }
 
     private Variable[] collectInputVariables() {
