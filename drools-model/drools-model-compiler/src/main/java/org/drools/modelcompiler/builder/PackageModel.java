@@ -135,8 +135,8 @@ public class PackageModel {
         this.functions.addAll(functions);
     }
 
-    public void addAllGeneratedPOJOs(List<ClassOrInterfaceDeclaration> pojos) {
-        this.generatedPOJOs.addAll(pojos);
+    public void addGeneratedPOJO(ClassOrInterfaceDeclaration pojo) {
+        this.generatedPOJOs.add(pojo);
     }
 
     public List<ClassOrInterfaceDeclaration> getGeneratedPOJOsSource() {
