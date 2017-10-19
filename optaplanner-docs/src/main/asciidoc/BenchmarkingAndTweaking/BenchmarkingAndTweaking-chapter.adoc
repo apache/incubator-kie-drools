@@ -983,7 +983,7 @@ Just add a `<subSingleCount>` element to an <<inheritedSolverBenchmark,`<inherit
     <solver>
       ...
     </solver>
-    <subSingleCount>10<subSingleCount>
+    <subSingleCount>10</subSingleCount>
   </inheritedSolverBenchmark>
   ...
 </plannerBenchmark>
