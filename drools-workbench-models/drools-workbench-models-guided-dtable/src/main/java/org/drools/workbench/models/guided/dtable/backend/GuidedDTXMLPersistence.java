@@ -16,31 +16,17 @@
 
 package org.drools.workbench.models.guided.dtable.backend;
 
-import java.math.BigDecimal;
-
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.drools.workbench.models.guided.dtable.backend.util.GuidedDecisionTableUpgradeHelper1;
 import org.drools.workbench.models.guided.dtable.backend.util.GuidedDecisionTableUpgradeHelper2;
 import org.drools.workbench.models.guided.dtable.backend.util.GuidedDecisionTableUpgradeHelper3;
-import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.ActionRetractFactCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
-import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
-import org.drools.workbench.models.guided.dtable.shared.model.legacy.ActionInsertFactCol;
-import org.drools.workbench.models.guided.dtable.shared.model.legacy.ActionRetractFactCol;
-import org.drools.workbench.models.guided.dtable.shared.model.legacy.ActionSetFieldCol;
-import org.drools.workbench.models.guided.dtable.shared.model.legacy.AttributeCol;
-import org.drools.workbench.models.guided.dtable.shared.model.legacy.ConditionCol;
-import org.drools.workbench.models.guided.dtable.shared.model.legacy.GuidedDecisionTable;
-import org.drools.workbench.models.guided.dtable.shared.model.legacy.MetadataCol;
+import org.drools.workbench.models.guided.dtable.shared.model.*;
+import org.drools.workbench.models.guided.dtable.shared.model.legacy.*;
 
-import static org.kie.internal.xstream.XStreamUtils.createXStream;
+import java.math.BigDecimal;
+
+import static org.kie.internal.xstream.XStreamUtils.createTrustingXStream;
 
 @SuppressWarnings("deprecation")
 public class GuidedDTXMLPersistence {
@@ -52,7 +38,7 @@ public class GuidedDTXMLPersistence {
     private static final GuidedDTXMLPersistence INSTANCE = new GuidedDTXMLPersistence();
 
     private GuidedDTXMLPersistence() {
-        xt = createXStream( new DomDriver() );
+        xt = createTrustingXStream( new DomDriver() );
 
         //Legacy model
         xt.alias( "decision-table",

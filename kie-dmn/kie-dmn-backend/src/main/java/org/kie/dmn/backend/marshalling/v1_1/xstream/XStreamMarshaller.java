@@ -16,17 +16,20 @@
 
 package org.kie.dmn.backend.marshalling.v1_1.xstream;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.AbstractPullReader;
+import com.thoughtworks.xstream.io.xml.QNameMap;
+import com.thoughtworks.xstream.io.xml.StaxDriver;
+import com.thoughtworks.xstream.io.xml.StaxWriter;
+import org.kie.dmn.api.marshalling.v1_1.DMNExtensionRegister;
+import org.kie.dmn.api.marshalling.v1_1.DMNMarshaller;
+import org.kie.dmn.backend.marshalling.CustomStaxReader;
+import org.kie.dmn.backend.marshalling.CustomStaxWriter;
+import org.kie.dmn.model.v1_1.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.xml.sax.InputSource;
+
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -37,58 +40,12 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.stream.StreamResult;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.xml.AbstractPullReader;
-import com.thoughtworks.xstream.io.xml.QNameMap;
-import com.thoughtworks.xstream.io.xml.StaxDriver;
-import com.thoughtworks.xstream.io.xml.StaxWriter;
-import org.kie.dmn.api.marshalling.v1_1.DMNExtensionRegister;
-import org.kie.dmn.api.marshalling.v1_1.DMNMarshaller;
-import org.kie.dmn.backend.marshalling.CustomStaxReader;
-import org.kie.dmn.backend.marshalling.CustomStaxWriter;
-import org.kie.dmn.model.v1_1.Artifact;
-import org.kie.dmn.model.v1_1.Association;
-import org.kie.dmn.model.v1_1.AuthorityRequirement;
-import org.kie.dmn.model.v1_1.Binding;
-import org.kie.dmn.model.v1_1.BusinessContextElement;
-import org.kie.dmn.model.v1_1.BusinessKnowledgeModel;
-import org.kie.dmn.model.v1_1.Context;
-import org.kie.dmn.model.v1_1.ContextEntry;
-import org.kie.dmn.model.v1_1.DMNElement;
-import org.kie.dmn.model.v1_1.DMNElementReference;
-import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_1.Decision;
-import org.kie.dmn.model.v1_1.DecisionRule;
-import org.kie.dmn.model.v1_1.DecisionService;
-import org.kie.dmn.model.v1_1.DecisionTable;
-import org.kie.dmn.model.v1_1.Definitions;
-import org.kie.dmn.model.v1_1.ElementCollection;
-import org.kie.dmn.model.v1_1.Expression;
-import org.kie.dmn.model.v1_1.FunctionDefinition;
-import org.kie.dmn.model.v1_1.Import;
-import org.kie.dmn.model.v1_1.ImportedValues;
-import org.kie.dmn.model.v1_1.InformationItem;
-import org.kie.dmn.model.v1_1.InformationRequirement;
-import org.kie.dmn.model.v1_1.InputClause;
-import org.kie.dmn.model.v1_1.InputData;
-import org.kie.dmn.model.v1_1.Invocation;
-import org.kie.dmn.model.v1_1.ItemDefinition;
-import org.kie.dmn.model.v1_1.KnowledgeRequirement;
-import org.kie.dmn.model.v1_1.KnowledgeSource;
-import org.kie.dmn.model.v1_1.LiteralExpression;
-import org.kie.dmn.model.v1_1.NamedElement;
-import org.kie.dmn.model.v1_1.OrganizationUnit;
-import org.kie.dmn.model.v1_1.OutputClause;
-import org.kie.dmn.model.v1_1.PerformanceIndicator;
-import org.kie.dmn.model.v1_1.Relation;
-import org.kie.dmn.model.v1_1.TextAnnotation;
-import org.kie.dmn.model.v1_1.UnaryTests;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.xml.sax.InputSource;
-
-import static org.kie.internal.xstream.XStreamUtils.createXStream;
+import static org.kie.internal.xstream.XStreamUtils.createNonTrustingXStream;
 
 public class XStreamMarshaller
         implements DMNMarshaller {
@@ -222,7 +179,7 @@ public class XStreamMarshaller
      }
     
     private XStream newXStream() {
-        XStream xStream = createXStream( staxDriver, Definitions.class.getClassLoader() );
+        XStream xStream = createNonTrustingXStream( staxDriver, Definitions.class.getClassLoader() );
         
         xStream.alias( "artifact", Artifact.class );
         xStream.alias( "definitions", Definitions.class );

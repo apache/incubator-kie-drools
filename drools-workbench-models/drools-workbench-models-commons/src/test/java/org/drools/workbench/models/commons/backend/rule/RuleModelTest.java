@@ -15,30 +15,16 @@
 
 package org.drools.workbench.models.commons.backend.rule;
 
-import java.util.List;
-
 import com.thoughtworks.xstream.XStream;
-import org.drools.workbench.models.datamodel.rule.ActionRetractFact;
-import org.drools.workbench.models.datamodel.rule.ActionSetField;
-import org.drools.workbench.models.datamodel.rule.CompositeFactPattern;
-import org.drools.workbench.models.datamodel.rule.CompositeFieldConstraint;
-import org.drools.workbench.models.datamodel.rule.DSLSentence;
-import org.drools.workbench.models.datamodel.rule.ExpressionField;
-import org.drools.workbench.models.datamodel.rule.FactPattern;
-import org.drools.workbench.models.datamodel.rule.FromCompositeFactPattern;
-import org.drools.workbench.models.datamodel.rule.IAction;
-import org.drools.workbench.models.datamodel.rule.IPattern;
-import org.drools.workbench.models.datamodel.rule.RuleAttribute;
-import org.drools.workbench.models.datamodel.rule.RuleMetadata;
-import org.drools.workbench.models.datamodel.rule.RuleModel;
-import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
-import org.drools.workbench.models.datamodel.rule.SingleFieldConstraintEBLeftSide;
+import org.drools.workbench.models.datamodel.rule.*;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
 import static org.junit.Assert.*;
-import static org.kie.internal.xstream.XStreamUtils.createXStream;
+import static org.kie.internal.xstream.XStreamUtils.createTrustingXStream;
 
 public class RuleModelTest {
 
@@ -214,7 +200,7 @@ public class RuleModelTest {
         assertTrue( model.isBoundFactUsed( "q" ) );
         assertFalse( model.isBoundFactUsed( "x" ) );
 
-        final XStream xt = createXStream();
+        final XStream xt = createTrustingXStream();
 
         xt.alias( "rule",
                 RuleModel.class );
