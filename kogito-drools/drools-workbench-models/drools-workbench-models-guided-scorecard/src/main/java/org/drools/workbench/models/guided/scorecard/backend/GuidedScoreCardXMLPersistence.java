@@ -21,8 +21,7 @@ import java.math.BigDecimal;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
-
-import static org.kie.internal.xstream.XStreamUtils.createXStream;
+import org.kie.internal.xstream.XStreamUtils;
 
 public class GuidedScoreCardXMLPersistence {
 
@@ -30,7 +29,7 @@ public class GuidedScoreCardXMLPersistence {
     private static final GuidedScoreCardXMLPersistence INSTANCE = new GuidedScoreCardXMLPersistence();
 
     private GuidedScoreCardXMLPersistence() {
-        xt = createXStream( new DomDriver() );
+        xt = XStreamUtils.createTrustingXStream(new DomDriver());
 
         //All numerical values are historically BigDecimal
         xt.alias( "valueNumeric", Number.class,

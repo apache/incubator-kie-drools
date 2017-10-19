@@ -39,8 +39,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.legacy.AttributeCo
 import org.drools.workbench.models.guided.dtable.shared.model.legacy.ConditionCol;
 import org.drools.workbench.models.guided.dtable.shared.model.legacy.GuidedDecisionTable;
 import org.drools.workbench.models.guided.dtable.shared.model.legacy.MetadataCol;
-
-import static org.kie.internal.xstream.XStreamUtils.createXStream;
+import org.kie.internal.xstream.XStreamUtils;
 
 @SuppressWarnings("deprecation")
 public class GuidedDTXMLPersistence {
@@ -52,7 +51,7 @@ public class GuidedDTXMLPersistence {
     private static final GuidedDTXMLPersistence INSTANCE = new GuidedDTXMLPersistence();
 
     private GuidedDTXMLPersistence() {
-        xt = createXStream( new DomDriver() );
+        xt = XStreamUtils.createTrustingXStream(new DomDriver());
 
         //Legacy model
         xt.alias( "decision-table",

@@ -34,11 +34,15 @@ import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraintEBLeftSide;
 import org.junit.Test;
+import org.kie.internal.xstream.XStreamUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.*;
-import static org.kie.internal.xstream.XStreamUtils.createXStream;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class RuleModelTest {
 
@@ -214,7 +218,7 @@ public class RuleModelTest {
         assertTrue( model.isBoundFactUsed( "q" ) );
         assertFalse( model.isBoundFactUsed( "x" ) );
 
-        final XStream xt = createXStream();
+        final XStream xt = XStreamUtils.createTrustingXStream();
 
         xt.alias( "rule",
                 RuleModel.class );
