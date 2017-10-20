@@ -16,12 +16,18 @@
 
 package org.drools.modelcompiler.domain;
 
+import org.kie.api.definition.type.Duration;
 import org.kie.api.definition.type.Role;
 
 @Role(Role.Type.EVENT)
+@Duration("duration")
 public class StockTick extends StockFact {
 
     public StockTick( String company ) {
         super( company );
+    }
+
+    public StockTick( String company, long duration ) {
+        super( company, duration );
     }
 }

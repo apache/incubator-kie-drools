@@ -18,7 +18,7 @@ package org.drools.modelcompiler.builder.generator;
 
 import org.junit.Test;
 
-import static org.drools.modelcompiler.builder.generator.StringUtil.toId;
+import static org.drools.modelcompiler.util.StringUtil.toId;
 import static org.junit.Assert.assertEquals;
 
 public class StringUtilTest {

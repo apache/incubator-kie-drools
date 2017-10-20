@@ -20,9 +20,9 @@ import org.drools.model.AnnotationValue;
 
 public class AnnotationValueImpl implements AnnotationValue {
     private final String key;
-    private final String value;
+    private final Object value;
 
-    public AnnotationValueImpl( String key, String value ) {
+    public AnnotationValueImpl( String key, Object value ) {
         this.key = key;
         this.value = value;
     }
@@ -33,7 +33,7 @@ public class AnnotationValueImpl implements AnnotationValue {
     }
 
     @Override
-    public String getValue() {
+    public Object getValue() {
         return value;
     }
 

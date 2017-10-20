@@ -18,5 +18,5 @@ package org.drools.model;
 
 public interface AnnotationValue {
     String getKey();
-    String getValue();
+    Object getValue();
 }
