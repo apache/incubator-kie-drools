@@ -21,13 +21,19 @@ import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.stream.Stream;
 
 import org.jbpm.casemgmt.api.auth.AuthorizationManager;
+import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
+import org.jbpm.casemgmt.api.model.instance.CommentInstance;
+import org.jbpm.casemgmt.impl.model.instance.CaseFileInstanceImpl;
+import org.jbpm.casemgmt.impl.model.instance.CommentInstanceImpl;
 import org.jbpm.shared.services.impl.TransactionalCommandService;
 import org.jbpm.shared.services.impl.commands.QueryNameCommand;
 import org.kie.internal.identity.IdentityProvider;
@@ -41,6 +47,8 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
     
     private static final String NO_ACCESS_MSG = "User {0} is not authorized to access case {1}";
     private static final String NO_AUTH_OPER_MSG = "User {0} is not authorized to {1} on case {2}";
+    private static final String NO_AUTH_TO_DATA = "User {0} does not have access to data item named {1} in case {2}";
+    private static final String NO_AUTH_TO_COMMENT = "User {0} does not have access to comment {1} in case {2}";
 
     private IdentityProvider identityProvider;
     private TransactionalCommandService commandService;
@@ -150,4 +158,135 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
     }
 
 
+    @Override
+    public Map<String, Object> filterByDataAuthorization(String caseId, CaseFileInstance caseFileInstance, Map<String, Object> data) {
+        if (data == null || data.isEmpty()) {
+            logger.debug("No data to be filtered");
+            return data;
+        }
+        
+        Map<String, List<String>> accessRestrictions = ((CaseFileInstanceImpl) caseFileInstance).getAccessRestrictions();
+        if (accessRestrictions == null || accessRestrictions.isEmpty()) {
+            logger.debug("Case {} does not define any data restrictions returning unfiltered map", caseId);
+            return data;
+        }
+        
+        List<String> callerAuthorization = collectUserAuthInfo();
+        logger.debug("Caller authorization set is {}", callerAuthorization);
+        
+        List<String> callerCaseRoles = getCallerRoles(caseFileInstance, callerAuthorization);
+        logger.debug("Caller case role set is {}", callerCaseRoles);
+        Map<String, Object> filteredData = new HashMap<>(data);
+        for (Entry<String, List<String>> entry : accessRestrictions.entrySet()) {
+            
+            List<String> requiredRoles = entry.getValue();
+            if (requiredRoles.isEmpty() || requiredRoles.stream().anyMatch(role -> callerCaseRoles.contains(role))) {
+                logger.debug("Caller {} has access to data item named {}", identityProvider.getName(), entry.getKey());
+                continue;
+            }
+            logger.debug("Caller {} does not have access to data item named {}, required roles are {} and caller has {}", 
+                    identityProvider.getName(), entry.getKey(), requiredRoles, callerCaseRoles);
+            filteredData.remove(entry.getKey());
+        }
+        
+        return filteredData;
+    }
+
+    @Override
+    public void checkDataAuthorization(String caseId, CaseFileInstance caseFileInstance, Collection<String> dataNames) {
+        if (dataNames == null || dataNames.isEmpty()) {
+            logger.debug("No data to be checked");
+            return;
+        }
+        
+        Map<String, List<String>> accessRestrictions = ((CaseFileInstanceImpl) caseFileInstance).getAccessRestrictions();
+        if (accessRestrictions == null || accessRestrictions.isEmpty()) {
+            logger.debug("Case {} does not define any data restrictions", caseId);
+            return;
+        }
+        
+        List<String> callerAuthorization = collectUserAuthInfo();
+        logger.debug("Caller {} authorization set is {}", identityProvider.getName(), callerAuthorization);
+        
+        List<String> callerCaseRoles = getCallerRoles(caseFileInstance, callerAuthorization);
+        logger.debug("Caller {} case role set is {}", identityProvider.getName(), callerCaseRoles);
+        
+        for (Entry<String, List<String>> entry : accessRestrictions.entrySet()) {
+            
+            if (dataNames.contains(entry.getKey())) {
+                List<String> requiredRoles = entry.getValue();
+                if (requiredRoles.isEmpty() || requiredRoles.stream().anyMatch(role -> callerCaseRoles.contains(role))) {
+                    logger.debug("Caller has access to data item named {}", entry.getKey());
+                    continue;
+                }
+                logger.warn("User {} does not have access to data item {} in case {}, required roles are {} and user has {}", 
+                        identityProvider.getName(), entry.getKey(), caseId, requiredRoles, callerCaseRoles);
+                throw new SecurityException(MessageFormat.format(NO_AUTH_TO_DATA, identityProvider.getName(), entry.getKey(), caseId, requiredRoles, callerCaseRoles));
+            }
+        }
+    }
+    
+    @Override
+    public List<CommentInstance> filterByCommentAuthorization(String caseId, CaseFileInstance caseFileInstance, List<CommentInstance> comments) {
+        if (comments == null || comments.isEmpty()) {
+            logger.debug("No comments to be filtered");
+            return comments;
+        }
+        
+        List<String> callerAuthorization = collectUserAuthInfo();
+        logger.debug("Caller {} authorization set is {}", identityProvider.getName(), callerAuthorization);
+        
+        List<String> callerCaseRoles = getCallerRoles(caseFileInstance, callerAuthorization);
+        logger.debug("Caller {} case role set is {}", identityProvider.getName(), callerCaseRoles);
+        
+        List<CommentInstance> filteredComments = new ArrayList<>(comments);
+        
+        for (CommentInstance commentInstance : comments) {
+            CommentInstanceImpl comment = ((CommentInstanceImpl) commentInstance);
+            List<String> requiredRoles = comment.getRestrictedTo();
+            if (requiredRoles == null || requiredRoles.isEmpty()) {
+                continue;
+            }
+            
+            if (requiredRoles.isEmpty() || requiredRoles.stream().anyMatch(role -> callerCaseRoles.contains(role))) {
+                logger.debug("Caller {} has access to comment {}", identityProvider.getName(), comment.getId());
+                continue;
+            }
+            logger.debug("Caller {} does not have access to comment {}", identityProvider.getName(), comment.getId());
+            filteredComments.remove(comment);
+        }
+        
+        return filteredComments;
+    }
+    
+    @Override
+    public void checkCommentAuthorization(String caseId, CaseFileInstance caseFileInstance, CommentInstance commentInstance) {
+        CommentInstanceImpl comment = ((CommentInstanceImpl) commentInstance);
+        if (comment.getRestrictedTo() == null || comment.getRestrictedTo().isEmpty()) {
+            return;
+        }
+        
+        List<String> callerAuthorization = collectUserAuthInfo();
+        logger.debug("Caller {} authorization set is {}", identityProvider.getName(), callerAuthorization);
+        
+        List<String> callerCaseRoles = getCallerRoles(caseFileInstance, callerAuthorization);
+        logger.debug("Caller {} case role set is {}", identityProvider.getName(), callerCaseRoles);
+        
+        List<String> requiredRoles = comment.getRestrictedTo();
+        if (requiredRoles.isEmpty() || requiredRoles.stream().anyMatch(role -> callerCaseRoles.contains(role))) {
+            logger.debug("Caller has access to comment {}", comment.getId());
+            return;
+        }
+        logger.warn("User {} does not have access to comment {} in case {}, required roles are {} and user has {}", 
+                identityProvider.getName(), comment.getId(), caseId, requiredRoles, callerCaseRoles);
+        throw new SecurityException(MessageFormat.format(NO_AUTH_TO_COMMENT, identityProvider.getName(), comment.getId(), caseId));
+    }
+    
+    protected List<String> getCallerRoles(CaseFileInstance caseFileInstance, List<String> callerAuthorization) {
+        List<String> callerRoles = ((CaseFileInstanceImpl) caseFileInstance).getRolesForOrgEntities(callerAuthorization);
+        // always add public group
+        callerRoles.add(PUBLIC_GROUP);
+        
+        return callerRoles;
+    }
 }

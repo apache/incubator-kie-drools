@@ -18,6 +18,9 @@ package org.jbpm.casemgmt.impl.model;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.jbpm.casemgmt.api.model.AdHocFragment;
 import org.jbpm.casemgmt.api.model.CaseDefinition;
@@ -41,17 +44,26 @@ public class CaseDefinitionImpl implements CaseDefinition, Serializable {
     
     private Collection<AdHocFragment> adHocFragments;
     
+    private Map<String, List<String>> dataAccessRestrictions;
+    
     public CaseDefinitionImpl() {
         
     }
     
-    public CaseDefinitionImpl(ProcessAssetDesc processDef, String identifierPrefix, Collection<CaseStage> caseStages, Collection<CaseMilestone> caseMilestones, Collection<CaseRole> caseRoles, Collection<AdHocFragment> adHocFragments) {
+    public CaseDefinitionImpl(ProcessAssetDesc processDef, 
+            String identifierPrefix, 
+            Collection<CaseStage> caseStages, 
+            Collection<CaseMilestone> caseMilestones, 
+            Collection<CaseRole> caseRoles, 
+            Collection<AdHocFragment> adHocFragments,
+            Map<String, List<String>> dataAccessRestrictions) {
         this.processDef = processDef;
         this.identifierPrefix = identifierPrefix;
         this.caseStages = caseStages;
         this.caseMilestones = caseMilestones;
         this.caseRoles = caseRoles; 
         this.adHocFragments = adHocFragments;
+        this.dataAccessRestrictions = dataAccessRestrictions;
     }
 
     @Override
@@ -103,12 +115,20 @@ public class CaseDefinitionImpl implements CaseDefinition, Serializable {
         return adHocFragments;
     }
 
+    @Override
+    public Map<String, List<String>> getDataAccessRestrictions() {
+        if (dataAccessRestrictions == null) {
+            dataAccessRestrictions = new HashMap<>();
+        }
+        return dataAccessRestrictions;
+    }
 
     @Override
     public String toString() {
         return "CaseDefinitionImpl [identifierPrefix=" + identifierPrefix + ", caseStages=" + caseStages +
                 ", caseMilestones=" + caseMilestones + ", caseRoles=" + caseRoles + "]";
     }
+
 
 
 }

@@ -17,6 +17,8 @@
 package org.jbpm.casemgmt.api.model;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Describes case structure and requirements.
@@ -28,25 +30,21 @@ public interface CaseDefinition {
 
     /**
      * Returns id of the case that shall be used to instantiate new instance of this case
-     * @return
      */
     String getId();
     
     /**
      * Returns version of this case
-     * @return
      */
     String getVersion();
     
     /**
      * Returns case name of this case.
-     * @return
      */
     String getName();
     
     /**
      * Returns case identifier prefix to be used for every instance of this case.
-     * @return
      */
     String getIdentifierPrefix();
 
@@ -57,25 +55,26 @@ public interface CaseDefinition {
     
     /**
      * Returns available case stages in this case.
-     * @return
      */
     Collection<CaseStage> getCaseStages();
     
     /**
      * Returns available case milestones for this case.
-     * @return
      */
     Collection<CaseMilestone> getCaseMilestones();
     
     /**
      * Returns case roles for this case.
-     * @return
      */
     Collection<CaseRole> getCaseRoles();
     
     /**
      * Returns available adhoc fragments that can be signaled.
-     * @return
      */
     Collection<AdHocFragment> getAdHocFragments();
+    
+    /**
+     * Returns default case file data restrictions. 
+     */
+    Map<String, List<String>> getDataAccessRestrictions();
 }

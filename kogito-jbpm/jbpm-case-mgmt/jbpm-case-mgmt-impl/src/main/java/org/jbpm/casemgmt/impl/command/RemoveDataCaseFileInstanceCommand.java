@@ -18,6 +18,7 @@ package org.jbpm.casemgmt.impl.command;
 
 import org.drools.core.ClassObjectFilter;
 import org.drools.core.command.impl.RegistryContext;
+import org.jbpm.casemgmt.api.auth.AuthorizationManager;
 import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
 import org.jbpm.casemgmt.impl.event.CaseEventSupport;
 import org.kie.api.runtime.KieSession;
@@ -38,10 +39,12 @@ public class RemoveDataCaseFileInstanceCommand extends CaseCommand<Void> {
     private static final long serialVersionUID = 6345222909719335953L;
 
     private List<String> variableNames;
+    private AuthorizationManager authorizationManager;
     
-    public RemoveDataCaseFileInstanceCommand(IdentityProvider identityProvider, List<String> variableNames) {                
+    public RemoveDataCaseFileInstanceCommand(IdentityProvider identityProvider, List<String> variableNames, AuthorizationManager authorizationManager) {                
         super(identityProvider);
         this.variableNames = variableNames;        
+        this.authorizationManager = authorizationManager;
     }
 
     @Override
@@ -53,6 +56,10 @@ public class RemoveDataCaseFileInstanceCommand extends CaseCommand<Void> {
             throw new IllegalStateException("Not able to find distinct case file - found case files " + caseFiles.size());
         }
         CaseFileInstance caseFile = (CaseFileInstance) caseFiles.iterator().next();
+        
+        // apply authorization
+        authorizationManager.checkDataAuthorization(caseFile.getCaseId(), caseFile, variableNames);
+        
         FactHandle factHandle = ksession.getFactHandle(caseFile);
         
         Map<String, Object> remove = new HashMap<>();        

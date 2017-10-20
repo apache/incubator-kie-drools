@@ -24,6 +24,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import org.jbpm.casemgmt.api.auth.AuthorizationManager;
 import org.jbpm.casemgmt.api.model.CaseRole;
@@ -60,6 +62,8 @@ public class CaseFileInstanceImpl implements CaseFileInstance, CaseAssignment, S
     private Map<String, Object> data = new HashMap<>();    
     private Map<String, CaseRoleInstance> roles = new HashMap<>();    
     private List<CommentInstance> comments = new ArrayList<>();
+    
+    private Map<String, List<String>> accessRestrictions = new HashMap<>();
     
     private TaskModelFactory factory = TaskModelProvider.getFactory();
     
@@ -228,6 +232,32 @@ public class CaseFileInstanceImpl implements CaseFileInstance, CaseAssignment, S
         ((CaseRoleInstanceImpl)caseRoleInstance).addRoleAssignment(actualOwner);
     }
     
+    public List<String> getRolesForOrgEntities(List<String> orgEntities) {
+        List<String> collected = new ArrayList<>();
+        if (roles == null || roles.isEmpty()) {
+            return collected;
+        }
+        
+        List<CaseRoleInstance> roleInstances = new ArrayList<>();
+        for (Entry<String, CaseRoleInstance> entry : roles.entrySet()) {
+            roleInstances.add(entry.getValue());
+        }
+        
+        for (CaseRoleInstance cri : roleInstances) {
+            if (cri.getRoleAssignments() == null || cri.getRoleAssignments().isEmpty()) {
+                continue;
+            }
+            
+            for (OrganizationalEntity assignee : cri.getRoleAssignments()) {
+                if (orgEntities.contains(assignee.getId())) {
+                    collected.add(cri.getRoleName());
+                }
+            }
+                        
+        }
+        return collected;
+    }
+    
     public Map<String, CaseRoleInstance> getRolesAssignments() {
         return roles;
     }
@@ -270,6 +300,18 @@ public class CaseFileInstanceImpl implements CaseFileInstance, CaseAssignment, S
 
     public void setDefinitionId(String caseDefinitionId) {
         this.definitionId = caseDefinitionId;
+    }
+    
+    public void addDataAccessRestriction(String name, List<String> restrictedTo) {
+        if (this.accessRestrictions.get(name) != null && restrictedTo.isEmpty()) {
+            // not possible to reset restrictions with empty, use of dedicated method to remove restrictions
+            return;
+        }
+        this.accessRestrictions.put(name, restrictedTo);
+    }
+    
+    public void removeDataAccessRestriction(String name) {
+        this.accessRestrictions.remove(name);
     }
 
     @Override
@@ -325,6 +367,14 @@ public class CaseFileInstanceImpl implements CaseFileInstance, CaseAssignment, S
         } else if (!data.equals(other.data))
             return false;
         return true;
+    }
+
+    public Map<String, List<String>> getAccessRestrictions() {
+        return accessRestrictions;
+    }
+
+    public void setAccessRestrictions(Map<String, List<String>> accessRestrictions) {
+        this.accessRestrictions = accessRestrictions;
     }
 
 }

@@ -18,12 +18,15 @@ package org.jbpm.casemgmt.impl.command;
 
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import org.drools.core.ClassObjectFilter;
 import org.drools.core.command.impl.RegistryContext;
+import org.jbpm.casemgmt.api.auth.AuthorizationManager;
 import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
 import org.jbpm.casemgmt.impl.event.CaseEventSupport;
+import org.jbpm.casemgmt.impl.model.instance.CaseFileInstanceImpl;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
@@ -37,14 +40,20 @@ public class AddDataCaseFileInstanceCommand extends CaseCommand<Void> {
     private static final long serialVersionUID = 6345222909719335953L;
 
     private Map<String, Object> parameters;
+    private AuthorizationManager authorizationManager;
     
-    public AddDataCaseFileInstanceCommand(IdentityProvider identityProvider, Map<String, Object> parameters) {
+    private List<String> accessRestriction;
+    
+    public AddDataCaseFileInstanceCommand(IdentityProvider identityProvider, Map<String, Object> parameters, List<String> accessRestriction, AuthorizationManager authorizationManager) {
         super(identityProvider);
-        this.parameters = parameters;        
+        this.parameters = parameters;   
+        this.authorizationManager = authorizationManager;
+        this.accessRestriction = accessRestriction;
     }
 
     @Override
-    public Void execute(Context context) {
+    public Void execute(Context context) {        
+        
         KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
         
         Collection<? extends Object> caseFiles = ksession.getObjects(new ClassObjectFilter(CaseFileInstance.class));
@@ -52,11 +61,23 @@ public class AddDataCaseFileInstanceCommand extends CaseCommand<Void> {
             throw new IllegalStateException("Not able to find distinct case file - found case files " + caseFiles.size());
         }
         CaseFileInstance caseFile = (CaseFileInstance) caseFiles.iterator().next();
+        // apply authorization
+        authorizationManager.checkDataAuthorization(caseFile.getCaseId(), caseFile, parameters.keySet());
+        
         FactHandle factHandle = ksession.getFactHandle(caseFile);
         
         CaseEventSupport caseEventSupport = getCaseEventSupport(context);
         caseEventSupport.fireBeforeCaseDataAdded(caseFile.getCaseId(), caseFile.getDefinitionId(), parameters);
         caseFile.addAll(parameters);
+        
+        // setup data restriction if any are given
+        for (String name : parameters.keySet()) {
+            if (accessRestriction != null) {
+                ((CaseFileInstanceImpl) caseFile).addDataAccessRestriction(name, accessRestriction);
+            } else {
+                ((CaseFileInstanceImpl) caseFile).removeDataAccessRestriction(name);
+            }
+        }
         
         
         ksession.update(factHandle, caseFile);

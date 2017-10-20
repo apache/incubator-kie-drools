@@ -167,8 +167,9 @@ public class CaseRuntimeDataServiceImpl implements CaseRuntimeDataService, Deplo
                 Collection<CaseStage> caseStages = collectCaseStages(event.getDeploymentId(), process.getId(), ((WorkflowProcess)process));                
                 Collection<CaseRole> caseRoles = collectCaseRoles(process);
                 Collection<AdHocFragment> adHocFragments = collectAdHocFragments((WorkflowProcess)process);
+                Map<String, List<String>> dataAccessRestrictions = collectDataAccessRestrictions(process);
                 
-                CaseDefinitionImpl caseDef = new CaseDefinitionImpl((ProcessAssetDesc) mapProcessById.get(process.getId()), caseIdPrefix, caseStages, caseMilestones, caseRoles, adHocFragments);
+                CaseDefinitionImpl caseDef = new CaseDefinitionImpl((ProcessAssetDesc) mapProcessById.get(process.getId()), caseIdPrefix, caseStages, caseMilestones, caseRoles, adHocFragments, dataAccessRestrictions);
                 
                 availableCases.add(caseDef);
                 caseIdGenerator.register(caseIdPrefix);
@@ -737,6 +738,27 @@ public class CaseRuntimeDataServiceImpl implements CaseRuntimeDataService, Deplo
         
         checkAdHoc(process, result);
         
+        return result;
+    }
+    
+    private Map<String, List<String>> collectDataAccessRestrictions(Process process) {
+        // expected format: item:role1,role2;item2:role2,role3
+        // where item and item2 are the case file data item names and role1, role2, role3 are case roles
+        String dataAccess = (String) process.getMetaData().get("customCaseDataAccess");
+        if (dataAccess == null) {
+            return new HashMap<>();
+        }
+        Map<String, List<String>> result = new HashMap<String, List<String>>();
+        String[] accessStrings = dataAccess.split(";");
+        for (String accessString: accessStrings) {
+            String[] elements = accessString.split(":");
+            
+            String dataItem = elements[0];
+            List<String> roles = Arrays.asList(elements[1].split(","));
+            
+            result.put(dataItem, roles);
+            
+        }
         return result;
     }
     

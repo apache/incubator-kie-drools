@@ -16,6 +16,13 @@
 
 package org.jbpm.casemgmt.api.auth;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
+import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
+import org.jbpm.casemgmt.api.model.instance.CommentInstance;
+
 /**
  * Responsible for authorizing access to case instances based on the context.
  *
@@ -54,4 +61,40 @@ public interface AuthorizationManager {
      * @throws SecurityException thrown when caller is not authorized to access the case instance
      */
     void checkOperationAuthorization(String caseId, ProtectedOperation operation) throws SecurityException;
+    
+    /**
+     * Filters provided data by data restrictions. This guarantees only data authorized for given user will be returned.
+     * @param caseId unique id of the case
+     * @param caseFileInstance case file associated with given case instance
+     * @param data actual data to be filtered
+     * @return returns filtered map of data if any restriction applied
+     */
+    Map<String, Object> filterByDataAuthorization(String caseId, CaseFileInstance caseFileInstance, Map<String, Object> data);
+    
+    /**
+     * Check if caller (based on identity provider) is authorized to manipulate given data
+     * @param caseId unique id of the case
+     * @param caseFileInstance case file associated with given case instance
+     * @param dataNames data names to be manipulated/put into the case instance
+     * @throws SecurityException thrown when caller is not authorized to manipulate any of the given data
+     */
+    void checkDataAuthorization(String caseId, CaseFileInstance caseFileInstance, Collection<String> dataNames);
+    
+    /**
+     * Filters provided comments by their restrictions. This guarantees only comments authorized to be seen by user will be returned.
+     * @param caseId unique id of the case
+     * @param caseFileInstance case file associated with given case instance
+     * @param comments comments to be filtered
+     * @return filtered comments if any restrictions applied or same as given as argument
+     */
+    List<CommentInstance> filterByCommentAuthorization(String caseId, CaseFileInstance caseFileInstance, List<CommentInstance> comments);
+    
+    /**
+     * Check if caller (based on identity provider) is authorized to manipulate given comment
+     * @param caseId unique id of the case
+     * @param caseFileInstance case file associated with given case instance
+     * @param commentInstance comment that is about to be manipulated (updated or removed)
+     * @throws SecurityException thrown when caller is not authorized to manipulate given comment
+     */
+    void checkCommentAuthorization(String caseId, CaseFileInstance caseFileInstance, CommentInstance commentInstance);
 }

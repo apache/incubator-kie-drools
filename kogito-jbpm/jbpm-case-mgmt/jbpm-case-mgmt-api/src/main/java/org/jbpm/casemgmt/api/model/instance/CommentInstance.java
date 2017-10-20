@@ -18,6 +18,7 @@ package org.jbpm.casemgmt.api.model.instance;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Represents single case comment instance that can be attached 
@@ -48,4 +49,10 @@ public interface CommentInstance extends Serializable {
      * @return the comment
      */
     String getComment();
+    
+    /**
+     * List of case roles given comment is restricted to
+     * @return restrictions
+     */
+    List<String> getRestrictedTo();
 }

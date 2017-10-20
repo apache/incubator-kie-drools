@@ -51,6 +51,7 @@ public class CaseFileInstanceMarshallingStrategy implements ObjectMarshallingStr
     private static final String CASE_ROLE_ASSIGNMENTS_KEY = "CaseRoleAssignments";
     private static final String CASE_COMMENTS_KEY = "CaseComments";
     private static final String CASE_DATA_KEY = "CaseData";
+    private static final String CASE_DATA_RESTRICTIONS_KEY = "CaseDataRestrictions";
     
     private Map<String, ObjectMarshallingStrategy> marshallersByName = new LinkedHashMap<String, ObjectMarshallingStrategy>();
     
@@ -151,6 +152,8 @@ public class CaseFileInstanceMarshallingStrategy implements ObjectMarshallingStr
             logger.debug("Serialized content for object {} is {}", dataEntry.getValue(), serializedContent);
         }
         
+        caseFileContent.put(CASE_DATA_RESTRICTIONS_KEY, new HashMap<>(caseFile.getAccessRestrictions()));
+        
         byte[] caseFileBytes = caseFileMarshaller.marshal(context, os, caseFileContent);
         logger.debug("Content of the case file instance after marshaller is of length {}", (caseFileBytes == null ? 0 : caseFileBytes.length));
         return caseFileBytes;
@@ -181,7 +184,7 @@ public class CaseFileInstanceMarshallingStrategy implements ObjectMarshallingStr
             caseFileInstance.add(serializedContent.getName(), value);
             logger.debug("Data unmarshalled into {} and put into case file under '{}' name", value, serializedContent.getName());
         }
-                
+        caseFileInstance.setAccessRestrictions((Map<String, List<String>>) caseFileContent.get(CASE_DATA_RESTRICTIONS_KEY));   
         logger.debug("Unmarshal of CaseFileInstance completed - result {}", caseFileInstance);
         return caseFileInstance;
     }
