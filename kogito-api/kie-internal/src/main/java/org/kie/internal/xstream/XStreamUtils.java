@@ -16,6 +16,8 @@
 
 package org.kie.internal.xstream;
 
+import java.util.function.Function;
+
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.converters.reflection.ReflectionProvider;
@@ -24,8 +26,6 @@ import com.thoughtworks.xstream.io.HierarchicalStreamDriver;
 import com.thoughtworks.xstream.mapper.MapperWrapper;
 import com.thoughtworks.xstream.security.AnyTypePermission;
 import com.thoughtworks.xstream.security.WildcardTypePermission;
-
-import java.util.function.Function;
 
 import static com.thoughtworks.xstream.XStream.setupDefaultSecurity;
 
