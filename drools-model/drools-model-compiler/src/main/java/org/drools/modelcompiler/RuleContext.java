@@ -16,6 +16,9 @@
 
 package org.drools.modelcompiler;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -25,13 +28,10 @@ import org.drools.core.spi.GlobalExtractor;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.model.Global;
 import org.drools.model.Variable;
-import org.kie.api.definition.type.Role;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class RuleContext {
 
+    private final KiePackagesBuilder builder;
     private final KnowledgePackageImpl pkg;
     private final RuleImpl rule;
 
@@ -42,9 +42,8 @@ public class RuleContext {
 
     private int patternIndex = -1;
 
-    private Map<Class<?>, ClassObjectType> objectTypeCache = new HashMap<>();
-
-    RuleContext( KnowledgePackageImpl pkg, RuleImpl rule ) {
+    RuleContext( KiePackagesBuilder builder, KnowledgePackageImpl pkg, RuleImpl rule ) {
+        this.builder = builder;
         this.pkg = pkg;
         this.rule = rule;
     }
@@ -82,7 +81,7 @@ public class RuleContext {
             return declaration;
         } else {
             Global global = (( Global ) variable);
-            ClassObjectType objectType = getObjectType( global.getType().asClass() );
+            ClassObjectType objectType = builder.getObjectType( global.getType().asClass() );
             InternalReadAccessor globalExtractor = new GlobalExtractor( global.getName(), objectType );
             return new Declaration( global.getName(), globalExtractor, new Pattern( 0, objectType ) );
         }
@@ -102,14 +101,5 @@ public class RuleContext {
 
     public Object getBoundFact( Variable variable, Object[] objs ) {
         return objs[ patterns.get( variable ).getOffset() ];
-    }
-
-    ClassObjectType getObjectType( Class<?> patternClass ) {
-        return objectTypeCache.computeIfAbsent( patternClass, c -> new ClassObjectType( c, isEvent( c ) ) );
-    }
-
-    private boolean isEvent( Class<?> patternClass ) {
-        Role role = patternClass.getAnnotation( Role.class );
-        return role != null && role.value() == Role.Type.EVENT;
     }
 }

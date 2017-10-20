@@ -16,6 +16,15 @@
 
 package org.drools.modelcompiler;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Consumer;
+
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassObjectType;
@@ -89,20 +98,12 @@ import org.drools.modelcompiler.constraints.LambdaEvalExpression;
 import org.drools.modelcompiler.constraints.LambdaReadAccessor;
 import org.drools.modelcompiler.constraints.TemporalConstraintEvaluator;
 import org.drools.modelcompiler.constraints.UnificationConstraint;
+import org.drools.modelcompiler.util.TypeDeclarationUtil;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.type.Role;
 import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Consumer;
 
 import static org.drools.core.rule.Pattern.getReadAcessor;
 import static org.drools.core.rule.TypeDeclaration.createTypeDeclarationForBean;
@@ -111,6 +112,8 @@ import static org.drools.model.DSL.entryPoint;
 import static org.drools.model.DSL.type;
 import static org.drools.model.impl.NamesGenerator.generateName;
 import static org.drools.modelcompiler.ModelCompilerUtil.conditionToGroupElementType;
+import static org.drools.modelcompiler.util.TypeDeclarationUtil.wireDurationAccessor;
+import static org.drools.modelcompiler.util.TypeDeclarationUtil.wireTimestampAccessor;
 
 public class KiePackagesBuilder {
 
@@ -119,6 +122,8 @@ public class KiePackagesBuilder {
     private Map<String, KiePackage> packages = new HashMap<>();
 
     private Set<Class<?>> patternClasses = new HashSet<>();
+
+    private Map<Class<?>, ClassObjectType> objectTypeCache = new HashMap<>();
 
     public KiePackagesBuilder( KieBaseConfiguration conf ) {
         this.configuration = ( (RuleBaseConfiguration) conf );
@@ -160,6 +165,18 @@ public class KiePackagesBuilder {
                             typeDeclaration.setRole( Role.Type.EVENT );
                         }
                     }
+                } else if (ann.getKey().equalsIgnoreCase( "duration" )) {
+                    for (AnnotationValue annVal : ann.getValue()) {
+                        if (annVal.getKey().equals( "value" )) {
+                            wireDurationAccessor( annVal.getValue().toString(), typeDeclaration, pkg );
+                        }
+                    }
+                } else if (ann.getKey().equalsIgnoreCase( "timestamp" )) {
+                    for (AnnotationValue annVal : ann.getValue()) {
+                        if (annVal.getKey().equals( "value" )) {
+                            wireTimestampAccessor( annVal.getValue().toString(), typeDeclaration, pkg );
+                        }
+                    }
                 } else {
                     throw new UnsupportedOperationException("Unknown annotation: " + ann.getKey());
                 }
@@ -193,7 +210,7 @@ public class KiePackagesBuilder {
             ruleImpl.setRuleUnitClassName( rule.getUnit() );
             pkg.getRuleUnitRegistry().getRuleUnitFor( ruleImpl );
         }
-        RuleContext ctx = new RuleContext( pkg, ruleImpl );
+        RuleContext ctx = new RuleContext( this, pkg, ruleImpl );
         populateLHS( ctx, pkg, rule.getView() );
         processConsequences( ctx, rule );
         return ruleImpl;
@@ -237,7 +254,7 @@ public class KiePackagesBuilder {
     private QueryImpl compileQuery( KnowledgePackageImpl pkg, Query query ) {
         QueryImpl queryImpl = new QueryImpl( query.getName() );
         queryImpl.setPackage( query.getPackage() );
-        RuleContext ctx = new RuleContext( pkg, queryImpl );
+        RuleContext ctx = new RuleContext( this, pkg, queryImpl );
         addQueryPattern( query, queryImpl, ctx );
         populateLHS( ctx, pkg, query.getView() );
         return queryImpl;
@@ -332,7 +349,7 @@ public class KiePackagesBuilder {
             }
             case ACCUMULATE: {
                 Pattern source = buildPattern( ctx, condition );
-                Pattern pattern = new Pattern( 0, ctx.getObjectType( Object.class ) );
+                Pattern pattern = new Pattern( 0, getObjectType( Object.class ) );
                 pattern.setSource( buildAccumulate( ctx, (AccumulatePattern) condition, source, pattern ) );
                 return pattern;
             }
@@ -443,8 +460,8 @@ public class KiePackagesBuilder {
 
         for (Binding binding : modelPattern.getBindings()) {
             Declaration declaration = new Declaration(binding.getBoundVariable().getName(),
-                                                      new LambdaReadAccessor(0, binding.getBoundVariable().getType().asClass(),
-                                                                                binding.getBindingFunction()),
+                                                      new LambdaReadAccessor(binding.getBoundVariable().getType().asClass(),
+                                                                             binding.getBindingFunction()),
                                                       pattern,
                                                       true);
             pattern.addDeclaration( declaration );
@@ -468,7 +485,7 @@ public class KiePackagesBuilder {
 
         if (accFunc.length == 1) {
             pattern.addDeclaration( new Declaration(accPattern.getBoundVariables()[0].getName(),
-                                                    getReadAcessor( ctx.getObjectType( Object.class ) ),
+                                                    getReadAcessor( getObjectType( Object.class ) ),
                                                     pattern,
                                                     true) );
             return new SingleAccumulate( source, new Declaration[0], new LambdaAccumulator( accPattern.getFunctions()[0]));
@@ -492,7 +509,7 @@ public class KiePackagesBuilder {
         patternClasses.add( patternClass );
         Pattern pattern = new Pattern( ctx.getNextPatternIndex(),
                                        0, // offset will be set by ReteooBuilder
-                                       ctx.getObjectType( patternClass ),
+                                       getObjectType( patternClass ),
                                        patternVariable.getName(),
                                        true );
 
@@ -528,7 +545,7 @@ public class KiePackagesBuilder {
     private <T> void createWindowReference( RuleContext ctx, WindowReference<T> window ) {
         WindowDeclaration windowDeclaration = new WindowDeclaration( window.getName(), ctx.getPkg().getName() );
         Variable<T> variable = declarationOf( type( window.getPatternType() ) );
-        Pattern windowPattern = new Pattern(0, ctx.getObjectType( window.getPatternType() ), variable.getName() );
+        Pattern windowPattern = new Pattern(0, getObjectType( window.getPatternType() ), variable.getName() );
         windowDeclaration.setPattern( windowPattern );
         for ( Predicate1<T> predicate : window.getPredicates()) {
             SingleConstraint singleConstraint = new SingleConstraint1<>( generateName("expr"), variable, predicate );
@@ -593,5 +610,22 @@ public class KiePackagesBuilder {
 
     public Collection<KiePackage> getKnowledgePackages() {
         return packages.values();
+    }
+
+
+    ClassObjectType getObjectType( Class<?> patternClass ) {
+        return objectTypeCache.computeIfAbsent( patternClass, c -> {
+            boolean isEvent = false;
+            if (!patternClass.getName().startsWith( "java." )) {
+                KnowledgePackageImpl pkg = (KnowledgePackageImpl) packages.computeIfAbsent( patternClass.getPackage().getName(), this::createKiePackage );
+                TypeDeclaration typeDeclaration = pkg.getTypeDeclaration( patternClass );
+                if ( typeDeclaration == null ) {
+                    typeDeclaration = TypeDeclarationUtil.createTypeDeclaration( pkg, patternClass );
+                    pkg.addTypeDeclaration( typeDeclaration );
+                }
+                isEvent = typeDeclaration.getRole() == Role.Type.EVENT;
+            }
+            return new ClassObjectType( c, isEvent );
+        } );
     }
 }
