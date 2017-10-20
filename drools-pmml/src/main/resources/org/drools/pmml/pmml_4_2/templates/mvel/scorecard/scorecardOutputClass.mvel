@@ -5,27 +5,27 @@ import java.util.Map;
 
 import org.drools.pmml.pmml_4_2.model.AbstractPMMLData;
 
-public class @{pmmlPackageName}.@{className} {
+public class @{className} {
     public @{className}() {
        super();
     }
 
     @foreach{dataField: dataFields}
-    private boolean m@{dataField.name} = true;
-    private @{dataField.type} v@{dataField.name};
+    private boolean m@{dataField.compactUpperCaseName} = true;
+    private @{dataField.type} v@{dataField.compactUpperCaseName};
     @end{}
 
     @foreach{dataField: dataFields}
     public @{dataField.type} getV@{dataField.compactUpperCaseName}() {
-       return this.@{dataField.name};
+       return this.v@{dataField.compactUpperCaseName};
     }
 
     public void setV@{dataField.compactUpperCaseName}( @{dataField.type} @{dataField.name} ) {
-       this.@{dataField.name} = @{dataField.name};
+       this.v@{dataField.compactUpperCaseName} = @{dataField.name};
     }
 
     public boolean getM@{dataField.compactUpperCaseName}() {
-       return this.m@{dataField.name}
+       return this.m@{dataField.compactUpperCaseName};
     }
 
     public void setM@{dataField.compactUpperCaseName}( boolean m@{dataField.compactUpperCaseName} ) {
@@ -43,7 +43,7 @@ public class @{pmmlPackageName}.@{className} {
 
        @{className} that = (@{className})o;
        @foreach{dataField: dataFields}
-       if ( getM@{dataField.compactUpperCaseName}() != that.getM@{dataField.compactUpperCaseName} ) {
+       if ( getM@{dataField.compactUpperCaseName}() != that.getM@{dataField.compactUpperCaseName}() ) {
            return false;
        }
        if ( getV@{dataField.compactUpperCaseName}() != null ? !getV@{dataField.compactUpperCaseName}().equals(that.getV@{dataField.compactUpperCaseName}()) : that.getV@{dataField.compactUpperCaseName}() != null ) {
@@ -56,7 +56,7 @@ public class @{pmmlPackageName}.@{className} {
     public int hashCode() {
         int result = 0;
         @foreach{dataField: dataFields}
-        result = 31 * result + ( getM@{dataField.compactUpperCaseName} ? 1 : 0 )
+        result = 31 * result + ( getM@{dataField.compactUpperCaseName}() ? 1 : 0 )
                 + ( getV@{dataField.compactUpperCaseName}() != null ? getV@{dataField.compactUpperCaseName}().hashCode() : 0 );
         @end{}
         return result;

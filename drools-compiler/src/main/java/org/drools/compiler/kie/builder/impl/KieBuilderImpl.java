@@ -227,8 +227,6 @@ public class KieBuilderImpl
                 String fname = (filename.startsWith(RESOURCES_ROOT)) ? filename.substring(RESOURCES_ROOT.length()) : filename;
                 ResourceType resType = getResourceType(kModule, fname);
                 if (resType == ResourceType.PMML) {
-                    byte[] sourceBytes = srcMfs.getBytes(filename);
-                    String source = new String(sourceBytes);
                     buildPMMLPojos(fname, kProject);
                 }
             }
@@ -244,6 +242,8 @@ public class KieBuilderImpl
         if (this.pmmlCompiler == null) {
             pmmlCompiler = PMMLCompilerFactory.getPMMLCompiler();
         }
+        // Create a separate "source" file system to hold the Java files/resources
+        KieFileSystem javaSource = KieServices.Factory.get().newKieFileSystem();
 
         /*
          * A single PMML document may contain multiple models, each with
@@ -251,9 +251,6 @@ public class KieBuilderImpl
          */
         Map<String,String> miningPojosMap = pmmlCompiler.getMiningPojos(filename,null);
         if (miningPojosMap != null && !miningPojosMap.isEmpty()) {
-            // Create a separate "source" file system to hold the Java files/resources
-            KieFileSystem javaSource = KieServices.Factory.get().newKieFileSystem();
-            ClassLoader classLoader = kProject.getClassLoader();
             /*
              * For each of the Java text entries (the mining POJOs)
              * create a resource and write it to the source file system
@@ -267,17 +264,25 @@ public class KieBuilderImpl
                 res.setSourcePath(bldr.toString());
                 javaSource.write(res);
             }
+        }
+        ResourceReader src = ( (KieFileSystemImpl)javaSource ).asMemoryFileSystem();
+        List<String> javaFileNames = getJavaFileNames(src);
+        if (javaFileNames != null && !javaFileNames.isEmpty()) {
+            ClassLoader classLoader = kProject.getClassLoader();
             KnowledgeBuilderConfigurationImpl kconf = new KnowledgeBuilderConfigurationImpl( classLoader );
             JavaDialectConfiguration javaConf = (JavaDialectConfiguration) kconf.getDialectConfiguration( "java" );
-            ResourceReader src = ( (KieFileSystemImpl)javaSource ).asMemoryFileSystem();
-            List<String> javaFileNames = new ArrayList<>();
-            for (String fname: src.getFileNames()) {
-                if (fname.endsWith(".java")) {
-                    javaFileNames.add(fname);
-                }
-            }
-            compileJavaClasses(javaConf, classLoader, javaFileNames, JAVA_ROOT, src);
+        	compileJavaClasses(javaConf, classLoader, javaFileNames, JAVA_ROOT, src);
         }
+    }
+    
+    private List<String> getJavaFileNames(ResourceReader src) {
+    	List<String> javaFileNames = new ArrayList<>();
+        for (String fname: src.getFileNames()) {
+            if (fname.endsWith(".java")) {
+                javaFileNames.add(fname);
+            }
+        }
+    	return javaFileNames;
     }
 
     void markSource() {

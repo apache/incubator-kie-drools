@@ -16,12 +16,18 @@
 package org.drools.pmml.pmml_4_2;
 
 import java.util.List;
+import java.util.Map;
 
 import org.dmg.pmml.pmml_4_2.descr.PMML;
+import org.drools.pmml.pmml_4_2.model.PMML4ModelType;
 import org.drools.pmml.pmml_4_2.model.PMMLDataField;
 
 public interface PMML4Unit {
     public PMML getRawPMML();
     public List<PMML4Model> getModels();
     public List<PMMLDataField> getDataDictionaryFields();
+    public Map<String,PMML4Model> getRootModels();
+    public <T extends PMML4Model> Map<String,T> getModels(PMML4ModelType modelTypeFilter, PMML4Model parent);
+    public boolean containsMiningModel();
+    public Map<String, PMMLDataField> getDataDictionaryMap();
 }

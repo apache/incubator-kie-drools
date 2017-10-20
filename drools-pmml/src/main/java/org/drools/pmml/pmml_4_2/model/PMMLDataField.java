@@ -15,20 +15,45 @@
  */
 package org.drools.pmml.pmml_4_2.model;
 
+import java.util.Map.Entry;
+
+import org.dmg.pmml.pmml_4_2.descr.DATATYPE;
 import org.dmg.pmml.pmml_4_2.descr.DataField;
+import org.dmg.pmml.pmml_4_2.descr.MiningField;
 import org.dmg.pmml.pmml_4_2.descr.OutputField;
 import org.drools.pmml.pmml_4_2.PMML4Helper;
 
 public class PMMLDataField {
     private String type;
     private String name;
-    private DataField rawDataField;
+    private DataField dataDictionaryField;
     private static PMML4Helper helper = new PMML4Helper();
+    
+    public PMMLDataField(String name, DATATYPE type) {
+    	this.name = name;
+    	this.type = helper.mapDatatype(type, true);
+    }
+    
+    public PMMLDataField(MiningField miningField, DataField field) {
+    	this.name = miningField.getName();
+    	this.type = helper.mapDatatype(field.getDataType(), true);
+    	this.dataDictionaryField = field;
+    }
+    
+    public PMMLDataField(OutputField outputField, DataField field) {
+    	this.name = outputField.getName();
+    	if (outputField.getDataType() != null) {
+    		this.type = helper.mapDatatype(outputField.getDataType(), true);
+    	} else if (field != null) {
+    		this.type = helper.mapDatatype(field.getDataType(), true);
+    	}
+    	this.dataDictionaryField = field;
+    }
 
     public PMMLDataField(DataField field) {
         this.type = helper.mapDatatype(field.getDataType(),true);
         this.name = helper.compactAsJavaId(field.getName());
-        this.rawDataField = field;
+        this.dataDictionaryField = field;
     }
 
     public String getType() {
@@ -54,7 +79,7 @@ public class PMMLDataField {
     
 
     public DataField getRawDataField() {
-		return rawDataField;
+		return dataDictionaryField;
 	}
 
 	@Override

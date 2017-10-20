@@ -17,6 +17,7 @@
 package org.drools.pmml.pmml_4_2;
 
 import org.dmg.pmml.pmml_4_2.descr.ClusteringModel;
+import org.dmg.pmml.pmml_4_2.descr.MiningModel;
 import org.dmg.pmml.pmml_4_2.descr.NaiveBayesModel;
 import org.dmg.pmml.pmml_4_2.descr.NeuralNetwork;
 import org.dmg.pmml.pmml_4_2.descr.PMML;
@@ -28,6 +29,9 @@ import org.drools.compiler.compiler.PMMLCompiler;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.io.impl.ClassPathResource;
 import org.drools.core.util.IoUtils;
+import org.drools.pmml.pmml_4_2.model.MiningModelCompilationUnit;
+import org.drools.pmml.pmml_4_2.model.Miningmodel;
+import org.drools.pmml.pmml_4_2.model.PMML4ModelType;
 import org.drools.pmml.pmml_4_2.model.PMML4UnitImpl;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -480,12 +484,21 @@ public class PMML4Compiler implements PMMLCompiler {
         }
         return byteArrayResource;
     }
+    
 
 
     public String compile( InputStream source, ClassLoader classLoader ) {
         this.results = new ArrayList<KnowledgeBuilderResult>();
         PMML pmml = loadModel( PMML, source );
         helper.setResolver( classLoader );
+        PMML4Unit unit = new PMML4UnitImpl(pmml);
+        StringBuilder builder = new StringBuilder(); 
+        if (unit.containsMiningModel()) {
+        	Map<String,Miningmodel> modelsMap = unit.getModels(PMML4ModelType.MINING, null); // grab root mining model(s)
+        	for (Miningmodel model: modelsMap.values()) {
+        		builder.append(model.generateRules());
+        	}
+        }
         if ( getResults().isEmpty() ) {
             return generateTheory( pmml );
         } else {
@@ -581,14 +594,20 @@ public class PMML4Compiler implements PMMLCompiler {
 			PMML4UnitImpl pmmlUnit = new PMML4UnitImpl(pmml);
 			List<PMML4Model> models = pmmlUnit.getModels();
 			for (PMML4Model model: models) {
-				String miningPojo = model.getMiningPojo();
-				System.out.println(miningPojo);
-				String miningClassName = model.getMiningPojoClassName();
-				miningPojosMap.put(miningClassName, miningPojo);
+				Map.Entry<String, String> miningPojo = model.getMappedMiningPojo();
+				if (miningPojo != null) {
+					miningPojosMap.put(miningPojo.getKey(), miningPojo.getValue());
+				}
+				
+				Map.Entry<String, String> outputPojo = model.getMappedOutputPojo();
+				if (outputPojo != null) {
+					miningPojosMap.put(outputPojo.getKey(), outputPojo.getValue());
+				}
 			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (Exception e) {
+			PMMLError err = new PMMLError("Unable to retrieve the mining and output POJOs for PMML: "+e.getMessage());
+			err.setResource(cpr);
+			this.results.add(err);
 		}
 		return miningPojosMap;
 	}

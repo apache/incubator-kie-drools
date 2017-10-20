@@ -28,44 +28,29 @@ import org.dmg.pmml.pmml_4_2.descr.Output;
 import org.dmg.pmml.pmml_4_2.descr.OutputField;
 import org.dmg.pmml.pmml_4_2.descr.RegressionModel;
 import org.dmg.pmml.pmml_4_2.descr.Scorecard;
+import org.drools.pmml.pmml_4_2.PMML4Model;
 import org.drools.pmml.pmml_4_2.PMML4Unit;
 import org.mvel2.templates.CompiledTemplate;
 import org.mvel2.templates.SimpleTemplateRegistry;
 import org.mvel2.templates.TemplateCompiler;
 import org.mvel2.templates.TemplateRegistry;
 
-public class Regression extends AbstractModel {
+public class Regression extends AbstractModel<RegressionModel> {
 	private static final String MINING_POJO_TEMPLATE = "/org/drools/pmml/pmml_4_2/templates/mvel/regression/regressionMiningPojo.mvel";
-	private static final String MINING_TEMPLATE_NAME = "RegressionTemplate";
-	private RegressionModel rawModel;
+	private static final String OUTPUT_POJO_TEMPLATE = "/org/drools/pmml/pmml_4_2/templates/mvel/regression/regressionOutputPojo.mvel";
 
-	public Regression(String modelId, RegressionModel rawModel, PMML4Unit owner) {
-		super(modelId, PMML4ModelType.REGRESSION, owner);
-		this.rawModel = rawModel;
+	public Regression(String modelId, RegressionModel rawModel, PMML4Model parentModel, PMML4Unit owner) {
+		super(modelId, PMML4ModelType.REGRESSION, owner, parentModel, rawModel);
 	}
-
-	@Override
-	public List<OutputField> getRawOutputFields() {
-		List<OutputField> fields = new ArrayList<>();
-		if (this.outputFieldMap == null) {
-			initOutputFieldMap();
-		}
-		if (outputFieldMap != null && !outputFieldMap.isEmpty()) {
-			fields.addAll(outputFieldMap.values());
-		}
-		return fields;
-	}
-
-	@Override
-	public List<PMMLDataField> getOutputFields() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 
 	@Override
 	public String getMiningPojoClassName() {
-		return this.getModelId()+this.getModelType();
+		return helper.compactAsJavaId(this.getModelId().concat("RegressionData"), true);
+	}
+	
+	@Override
+	public String getOutputPojoClassName() {
+		return helper.compactAsJavaId(this.getModelId().concat("RegressionOutput"), true);
 	}
 
 	@Override
@@ -80,21 +65,32 @@ public class Regression extends AbstractModel {
 
 	@Override
 	public Output getOutput() {
-		// TODO Auto-generated method stub
+		for (Serializable ser: rawModel.getExtensionsAndRegressionTablesAndMiningSchemas()) {
+			if (ser instanceof Output) {
+				return (Output)ser;
+			}
+		}
 		return null;
 	}
 
-    @Override
-    protected TemplateRegistry getTemplateRegistry() {
-        TemplateRegistry registry = new SimpleTemplateRegistry();
+	@Override
+	protected void addMiningTemplateToRegistry(TemplateRegistry registry) {
         InputStream inputStream = Scorecard.class.getResourceAsStream(MINING_POJO_TEMPLATE);
-        CompiledTemplate ct = TemplateCompiler.compileTemplate(inputStream);
-        registry.addNamedTemplate(MINING_TEMPLATE_NAME,ct);
-        return registry;
-    }
+        if (inputStream != null) {
+	        CompiledTemplate ct = TemplateCompiler.compileTemplate(inputStream);
+	        registry.addNamedTemplate(getMiningPojoTemplateName(),ct);
+        }
+	}
+	
+	@Override
+	protected void addOutputTemplateToRegistry(TemplateRegistry registry) {
+		InputStream inputStream = Scorecard.class.getResourceAsStream(OUTPUT_POJO_TEMPLATE);
+		if (inputStream != null) {
+			CompiledTemplate ct = TemplateCompiler.compileTemplate(inputStream);
+			if (ct != null) {
+				registry.addNamedTemplate(getOutputPojoTemplateName(), ct);
+			}
+		}
+	}
 
-    @Override
-    public String getMiningPojoTemplateName() {
-    	return MINING_TEMPLATE_NAME;
-    }
 }

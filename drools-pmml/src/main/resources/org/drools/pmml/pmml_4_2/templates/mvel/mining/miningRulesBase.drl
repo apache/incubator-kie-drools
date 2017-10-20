@@ -1,0 +1,36 @@
+package org.drools.pmml.pmml_4_2.rules
+
+import org.drools.pmml.pmml_4_2.descr.*;
+import org.drools.pmml.pmml_4_2.*;
+import org.drools.pmml.pmml_4_2.model.Miningmodel;
+import org.drools.pmml.pmml_4_2.model.mining.*;
+
+rule "Setup Mining Model"
+agenda-group "Sample-MiningModel-Main"
+salience 1000
+when
+    mm : Miningmodel( functionName != null, scoreable == true )
+then
+end
+
+
+rule "Setup Sample-MiningModel-Main Segmentation"
+agenda-group "Sample-MiningModel-Main"
+salience 900
+when
+    mm : Pmml4MiningModel( context == "root", segmentation != null )
+    sg : Segmentation( multipleModelMethod != null, segments != null ) from mm.segmentation
+    not Pmml4Segmentation( this == sg, owner == mm )
+then
+    Pmml4Segmentation segOwner = new Pmml4Segmentation( mm, sg );
+    insert( segOwner );
+end
+
+rule "Setup Sample-MiningModel-Main Segments"
+agenda-group "Sample-MiningModel-Main"
+when
+    Pmml4Segmentation( segments != null )
+    
+    mms : MiningModelSegmentation( owner == mm, level == 0, name == "Sample-MiningModel-Main" )
+    seg : Segment( $id : id, predicate != null ) from mms.segment
+

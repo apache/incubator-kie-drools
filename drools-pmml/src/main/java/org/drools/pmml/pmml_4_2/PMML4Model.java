@@ -15,26 +15,38 @@
  */
 package org.drools.pmml.pmml_4_2;
 
+import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
+import org.dmg.pmml.pmml_4_2.descr.DataDictionary;
 import org.dmg.pmml.pmml_4_2.descr.MiningField;
 import org.dmg.pmml.pmml_4_2.descr.MiningSchema;
 import org.dmg.pmml.pmml_4_2.descr.Output;
 import org.dmg.pmml.pmml_4_2.descr.OutputField;
 import org.drools.pmml.pmml_4_2.model.PMML4ModelType;
-import org.drools.pmml.pmml_4_2.model.PMMLDataField;
 import org.drools.pmml.pmml_4_2.model.PMMLMiningField;
+import org.drools.pmml.pmml_4_2.model.PMMLOutputField;
 
 public interface PMML4Model {
     public String getModelId();
     public PMML4ModelType getModelType();
+    public PMML4Model getParentModel();
+    public void setParentModel(PMML4Model parentModel);
+    public Map<String,PMML4Model> getChildModels();
     public List<MiningField> getRawMiningFields();
     public List<OutputField> getRawOutputFields();
     public List<PMMLMiningField> getMiningFields();
-    public List<PMMLDataField> getOutputFields();
+    public List<PMMLOutputField> getOutputFields();
     public String getMiningPojo();
+    public String getOutputPojo();
+    public Map.Entry<String, String> getMappedMiningPojo();
+    public Map.Entry<String, String> getMappedOutputPojo();
     public String getMiningPojoClassName();
+    public String getOutputPojoClassName();
     public PMML4Unit getOwner();
     public MiningSchema getMiningSchema();
     public Output getOutput();
+    public DataDictionary getDataDictionary();
+    public Serializable getRawModel();
 }
