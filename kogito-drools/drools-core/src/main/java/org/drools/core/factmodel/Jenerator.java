@@ -17,6 +17,10 @@
 package org.drools.core.factmodel;
 
 
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.DomDriver;
+import org.drools.core.util.IoUtils;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -24,11 +28,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 import java.util.jar.JarOutputStream;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.xml.DomDriver;
-import org.drools.core.util.IoUtils;
-
-import static org.kie.internal.xstream.XStreamUtils.createXStream;
+import static org.kie.internal.xstream.XStreamUtils.createTrustingXStream;
 
 /**
  * This will generate a jar from a meta model.
@@ -75,7 +75,7 @@ public class Jenerator {
     }
 
     private byte[] toXML(Fact[] facts) {
-        XStream x = createXStream(new DomDriver());
+        XStream x = createTrustingXStream(new DomDriver());
         return x.toXML(facts).getBytes(IoUtils.UTF8_CHARSET);
 
     }
@@ -92,7 +92,7 @@ public class Jenerator {
     }
 
     private Fact[] fromXML(JarInputStream jis) {
-        XStream x = createXStream(new DomDriver());
+        XStream x = createTrustingXStream(new DomDriver());
         return (Fact[]) x.fromXML(jis);
 
     }

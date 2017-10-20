@@ -16,9 +16,7 @@
 
 package org.drools.verifier.report;
 
-import java.io.IOException;
-import java.io.OutputStream;
-
+import com.thoughtworks.xstream.XStream;
 import org.drools.core.util.IoUtils;
 import org.drools.verifier.components.LiteralRestriction;
 import org.drools.verifier.data.VerifierReport;
@@ -26,9 +24,10 @@ import org.drools.verifier.report.components.Gap;
 import org.drools.verifier.report.components.MissingNumberPattern;
 import org.drools.verifier.report.components.VerifierMessage;
 
-import com.thoughtworks.xstream.XStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
-import static org.kie.internal.xstream.XStreamUtils.createXStream;
+import static org.kie.internal.xstream.XStreamUtils.createTrustingXStream;
 
 public class XMLReportWriter
     implements
@@ -36,7 +35,7 @@ public class XMLReportWriter
 
     public void writeReport(OutputStream out,
                             VerifierReport result) throws IOException {
-        XStream xstream = createXStream();
+        XStream xstream = createTrustingXStream();
 
         xstream.alias( "result",
                        VerifierReport.class );
