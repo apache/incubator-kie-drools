@@ -16,17 +16,16 @@
 
 package org.drools.modelcompiler;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.Child;
 import org.drools.modelcompiler.domain.Man;
 import org.drools.modelcompiler.domain.Toy;
 import org.drools.modelcompiler.domain.Woman;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class OOPathTest extends BaseModelTest {
 
@@ -69,7 +68,6 @@ public class OOPathTest extends BaseModelTest {
     }
 
     @Test
-    @Ignore
     public void testReactiveOOPath() {
         final String str =
                 "import org.drools.modelcompiler.domain.*;\n" +
@@ -113,7 +111,6 @@ public class OOPathTest extends BaseModelTest {
 
 
     @Test
-    @Ignore("DSL generation to be implemented")
     public void testBackReferenceConstraint() {
         final String str =
                 "import org.drools.modelcompiler.domain.*;\n" +
