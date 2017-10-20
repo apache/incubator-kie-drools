@@ -858,6 +858,5 @@ public class FlowTest {
         ksession.insert( new StockTick("DROO") );
 
         assertEquals(2, ksession.fireAllRules());
-
     }
 }
