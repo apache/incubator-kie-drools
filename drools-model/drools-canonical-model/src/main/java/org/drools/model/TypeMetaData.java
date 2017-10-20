@@ -16,15 +16,10 @@
 
 package org.drools.model;
 
-import java.util.List;
+import java.util.Map;
 
-public interface Model {
-
-    List<Global> getGlobals();
-
-    List<Rule> getRules();
-
-    List<Query> getQueries();
-
-    List<TypeMetaData> getTypeMetaDatas();
+public interface TypeMetaData {
+    String getPackage();
+    String getName();
+    Map<String, AnnotationValue[]> getAnnotations();
 }

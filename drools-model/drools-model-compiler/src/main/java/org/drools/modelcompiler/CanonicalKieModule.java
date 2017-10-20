@@ -83,4 +83,6 @@ public class CanonicalKieModule extends ZipKieModule {
             throw new RuntimeException( e );
         }
     }
+
+
 }
