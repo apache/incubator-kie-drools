@@ -785,12 +785,12 @@ public class ModelGenerator {
     static class DrlxParseResult {
 
         final Class<?> patternType;
-        final String exprId;
-        final String patternBinding;
         final Expression expr;
         final Class<?> exprType;
 
-        String exprBinding;
+        private String exprId;
+        private String patternBinding;
+        private String exprBinding;
 
         ConstraintType decodeConstraintType;
         Set<String> usedDeclarations = Collections.emptySet();
@@ -846,9 +846,24 @@ public class ModelGenerator {
             return this;
         }
 
-        public DrlxParseResult setExprBinding( String exprBinding ) {
+        public String getExprId() {
+            return exprId;
+        }
+
+        public String getPatternBinding() {
+            return patternBinding;
+        }
+
+        public void setExprId(String exprId) {
+            this.exprId = exprId;
+        }
+
+        public void setPatternBinding(String patternBinding) {
+            this.patternBinding = patternBinding;
+        }
+
+        public void setExprBinding(String exprBinding) {
             this.exprBinding = exprBinding;
-            return this;
         }
     }
 
