@@ -16,8 +16,6 @@
 
 package org.kie.internal.xstream;
 
-import java.util.function.Function;
-
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.converters.reflection.ReflectionProvider;
@@ -27,10 +25,15 @@ import com.thoughtworks.xstream.mapper.MapperWrapper;
 import com.thoughtworks.xstream.security.AnyTypePermission;
 import com.thoughtworks.xstream.security.WildcardTypePermission;
 
+import java.util.function.Function;
+
 import static com.thoughtworks.xstream.XStream.setupDefaultSecurity;
 
 public class XStreamUtils {
-    private static final String[] VOID_TYPES = {"void.class", "Void.class"};
+
+    private static final String[] WHITELISTED_PACKAGES = new String[] {
+        "org.drools.core.command.**"
+    };
 
     /**
      * Vulnerable to CVE-210137285 variants. Do not use. Will be removed in the next few days!
@@ -232,6 +235,7 @@ public class XStreamUtils {
         // TODO remove if setupDefaultSecurity already does this.
         // See comment in https://github.com/x-stream/xstream/pull/99
         xstream.addPermission( new AnyAnnotationTypePermission());
+        xstream.addPermission( new WildcardTypePermission( WHITELISTED_PACKAGES ) );
         // Do not add root permissions for "java", "org.kie" or the like here because that creates a security problem.
         // For more information, see http://x-stream.github.io/security.html and various xstream dev list conversations.
         // Instead, embrace a whitelist approach and expose that in your API's.
