@@ -16,14 +16,6 @@
 
 package org.drools.modelcompiler;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import org.assertj.core.api.Assertions;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.modelcompiler.domain.Address;
@@ -34,10 +26,17 @@ import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
 import org.drools.modelcompiler.domain.Toy;
 import org.drools.modelcompiler.domain.Woman;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
@@ -1027,10 +1026,8 @@ public class CompilerTest extends BaseModelTest {
         public String toString() {
             return "MyNumber [value=" + value + "]";
         }
-
     }
 
-    @Ignore("Failing to bind IFF the DSL expr() representing the `even` predicate used as a constraint is just true.")
     @Test
     public void testPojoPredicateIsUsedAsConstraint() {
         String str = "import " + MyNumber.class.getCanonicalName() + ";" +
@@ -1054,6 +1051,31 @@ public class CompilerTest extends BaseModelTest {
         results = getObjects(ksession, Integer.class);
         assertTrue(results.contains(2));
         assertFalse(results.contains(1)); // This is because MyNumber(1) would fail for "even" predicate/getter used here in pattern as a constraint. 
+    }
+
+    @Test
+    public void testPojoPredicateIsUsedAsConstraintOK() {
+        String str = "import " + MyNumber.class.getCanonicalName() + ";" +
+                     "rule R when\n" +
+                     "  $n : MyNumber(even, $value : value)" +
+                     "then\n" +
+                     "  insert($value);\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert(new MyNumber(2));
+        ksession.fireAllRules();
+
+        Collection<Integer> results = getObjects(ksession, Integer.class);
+        assertTrue(results.contains(2));
+
+        ksession.insert(new MyNumber(1));
+        ksession.fireAllRules();
+
+        results = getObjects(ksession, Integer.class);
+        assertTrue(results.contains(2));
+        assertFalse(results.contains(1)); // This is because MyNumber(1) would fail for "even" predicate/getter used here in pattern as a constraint.
     }
 
     @Test
