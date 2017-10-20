@@ -44,6 +44,7 @@ import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.rule.SingleAccumulate;
 import org.drools.core.rule.SlidingLengthWindow;
 import org.drools.core.rule.SlidingTimeWindow;
+import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.WindowDeclaration;
 import org.drools.core.rule.constraint.QueryNameConstraint;
 import org.drools.core.ruleunit.RuleUnitUtil;
@@ -53,6 +54,7 @@ import org.drools.core.spi.EvalExpression;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.model.AccumulateFunction;
 import org.drools.model.AccumulatePattern;
+import org.drools.model.AnnotationValue;
 import org.drools.model.Argument;
 import org.drools.model.Binding;
 import org.drools.model.Condition;
@@ -66,6 +68,7 @@ import org.drools.model.OOPath;
 import org.drools.model.Query;
 import org.drools.model.Rule;
 import org.drools.model.SingleConstraint;
+import org.drools.model.TypeMetaData;
 import org.drools.model.Value;
 import org.drools.model.Variable;
 import org.drools.model.View;
@@ -88,6 +91,7 @@ import org.drools.modelcompiler.constraints.TemporalConstraintEvaluator;
 import org.drools.modelcompiler.constraints.UnificationConstraint;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.definition.KiePackage;
+import org.kie.api.definition.type.Role;
 import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
@@ -101,6 +105,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 import static org.drools.core.rule.Pattern.getReadAcessor;
+import static org.drools.core.rule.TypeDeclaration.createTypeDeclarationForBean;
 import static org.drools.model.DSL.declarationOf;
 import static org.drools.model.DSL.entryPoint;
 import static org.drools.model.DSL.type;
@@ -120,21 +125,48 @@ public class KiePackagesBuilder {
     }
 
     public void addModel( Model model ) {
+        for (TypeMetaData metaType : model.getTypeMetaDatas()) {
+            KnowledgePackageImpl pkg = (KnowledgePackageImpl) packages.computeIfAbsent( metaType.getPackage(), this::createKiePackage );
+            pkg.addTypeDeclaration( createTypeDeclaration(pkg, metaType) );
+        }
+
         for (Global global : model.getGlobals()) {
             KnowledgePackageImpl pkg = (KnowledgePackageImpl) packages.computeIfAbsent( global.getPackage(), this::createKiePackage );
             pkg.addGlobal( global.getName(), global.getType().asClass() );
         }
+
         for (Query query : model.getQueries()) {
             KnowledgePackageImpl pkg = (KnowledgePackageImpl) packages.computeIfAbsent( query.getPackage(), this::createKiePackage );
             pkg.addRule( compileQuery( pkg, query ) );
         }
-        List<Rule> rules = model.getRules();
+
         int ruleCounter = 0;
-        for (Rule rule : rules) {
+        for (Rule rule : model.getRules()) {
             KnowledgePackageImpl pkg = (KnowledgePackageImpl) packages.computeIfAbsent( rule.getPackage(), this::createKiePackage );
             RuleImpl ruleImpl = compileRule( pkg, rule );
             ruleImpl.setLoadOrder( ruleCounter++ );
             pkg.addRule( ruleImpl );
+        }
+    }
+
+    private TypeDeclaration createTypeDeclaration( KnowledgePackageImpl pkg, TypeMetaData metaType ) {
+        try {
+            Class<?> typeClass = pkg.getTypeResolver().resolveType( metaType.getPackage() + "." + metaType.getName() );
+            TypeDeclaration typeDeclaration = createTypeDeclarationForBean( typeClass );
+            for (Map.Entry<String, AnnotationValue[]> ann :  metaType.getAnnotations().entrySet()) {
+                if (ann.getKey().equalsIgnoreCase( "role" )) {
+                    for (AnnotationValue annVal : ann.getValue()) {
+                        if (annVal.getKey().equals( "value" ) && annVal.getValue().equals( "event" )) {
+                            typeDeclaration.setRole( Role.Type.EVENT );
+                        }
+                    }
+                } else {
+                    throw new UnsupportedOperationException("Unknown annotation: " + ann.getKey());
+                }
+            }
+            return typeDeclaration;
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException( e );
         }
     }
 
@@ -326,8 +358,7 @@ public class KiePackagesBuilder {
                 for (int i = 1; i < innerCondition.getSubConditions().size(); i++) {
                     remainingPatterns.add( (Pattern) conditionToElement( ctx, innerCondition.getSubConditions().get(i) ) );
                 }
-                Forall forall = new Forall(basePattern, remainingPatterns);
-                return forall;
+                return new Forall(basePattern, remainingPatterns);
             }
             case CONSEQUENCE:
                 if (condition instanceof NamedConsequenceImpl) {
