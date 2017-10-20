@@ -59,7 +59,7 @@ public class KieMetaInfoBuilder {
         return generateKieModuleMetaInfo(null);
     }
 
-    private KieModuleMetaInfo generateKieModuleMetaInfo(ResourceStore trgMfs) {
+    public KieModuleMetaInfo generateKieModuleMetaInfo(ResourceStore trgMfs) {
         // TODO: I think this method is wrong because it is only inspecting packages that are included
         // in at least one kbase, but I believe it should inspect all packages, even if not included in
         // any kbase, as they could be included in the future
