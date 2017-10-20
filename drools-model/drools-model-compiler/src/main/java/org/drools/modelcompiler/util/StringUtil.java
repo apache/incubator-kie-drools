@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.modelcompiler.builder.generator;
+package org.drools.modelcompiler.util;
 
 public class StringUtil {
 
