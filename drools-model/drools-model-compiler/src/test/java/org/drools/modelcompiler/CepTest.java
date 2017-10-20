@@ -19,7 +19,6 @@ package org.drools.modelcompiler;
 import org.drools.core.ClockType;
 import org.drools.modelcompiler.domain.StockFact;
 import org.drools.modelcompiler.domain.StockTick;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.model.KieModuleModel;
@@ -201,7 +200,6 @@ public class CepTest extends BaseModelTest {
     }
 
     @Test
-    @Ignore("TODO")
     public void testWithDeclaredEvent() throws Exception {
         String str =
                 "import " + StockFact.class.getCanonicalName() + ";\n" +

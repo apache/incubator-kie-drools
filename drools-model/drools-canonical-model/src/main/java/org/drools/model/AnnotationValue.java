@@ -16,15 +16,7 @@
 
 package org.drools.model;
 
-import java.util.List;
-
-public interface Model {
-
-    List<Global> getGlobals();
-
-    List<Rule> getRules();
-
-    List<Query> getQueries();
-
-    List<TypeMetaData> getTypeMetaDatas();
+public interface AnnotationValue {
+    String getKey();
+    String getValue();
 }

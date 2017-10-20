@@ -904,20 +904,20 @@ public class CompilerTest extends BaseModelTest {
     public void testPojo() throws Exception {
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +
-                        "import " + Person.class.getCanonicalName() + ";" +
-                        "\n" +
-                        "declare POJOPerson\n" +
-                        "    name : String\n" +
-                        "    surname : String\n" +
-                        "    age :  int\n" +
-                        "end\n" +
-                        "rule R when\n" +
-                        "  $p : Person( name.length == 4 )\n" +
-                        "then\n" +
-                        "   POJOPerson p = new POJOPerson();\n" +
-                        "   p.setName($p.getName());\n" +
-                        "   insert(new Result(p));\n" +
-                        "end";
+                "import " + Person.class.getCanonicalName() + ";" +
+                "\n" +
+                "declare POJOPerson\n" +
+                "    name : String\n" +
+                "    surname : String\n" +
+                "    age :  int\n" +
+                "end\n" +
+                "rule R when\n" +
+                "  $p : Person( name.length == 4 )\n" +
+                "then\n" +
+                "   POJOPerson p = new POJOPerson();\n" +
+                "   p.setName($p.getName());\n" +
+                "   insert(new Result(p));\n" +
+                "end";
 
         KieSession ksession = getKieSession(str);
 
@@ -928,7 +928,8 @@ public class CompilerTest extends BaseModelTest {
 
         Collection<Result> results = getObjects(ksession, Result.class);
         assertEquals(1, results.size());
-        Object result = results.iterator().next().getValue();
+        Result r = results.iterator().next();
+        Object result = r.getValue();
         Class<?> resultClass = result.getClass();
         Method name = resultClass.getMethod("getName");
         assertEquals("defaultpkg.POJOPerson", resultClass.getName());
@@ -947,38 +948,60 @@ public class CompilerTest extends BaseModelTest {
         assertEquals(32, getAge.invoke(luca));
 
         assertEquals("POJOPerson( name=Luca, surname=null, age=32 )", luca.toString());
+    }
 
-//
-//
-//        Object a = resultClass.newInstance();
-//
-//        Method setName = resultClass.getMethod("setName", String.class);
-//        Method setSurname = resultClass.getMethod("setSurname", String.class);
-//
-//        setName.invoke(a, "Luca");
-//        setSurname.invoke(a, "Molteni");
-//
-//        Object b = resultClass.newInstance();
-//        setName.invoke(b, "Luca");
-//        setSurname.invoke(b, "Molteni");
-//
-//        assertEquals(a.hashCode(), b.hashCode());
+    @Test
+    public void testDeclaredTypeInLhs() throws Exception {
+        String str =
+                "import " + Result.class.getCanonicalName() + ";" +
+                "import " + Person.class.getCanonicalName() + ";" +
+                "\n" +
+                "declare POJOPerson\n" +
+                "    name : String\n" +
+                "    surname : String\n" +
+                "    age :  int\n" +
+                "end\n" +
+                "rule R1 when\n" +
+                "  $p : Person( name.length == 4 )\n" +
+                "then\n" +
+                "   POJOPerson p = new POJOPerson();\n" +
+                "   p.setName($p.getName());\n" +
+                "   insert(p);\n" +
+                "end\n" +
+                "rule R2 when\n" +
+                "  $p : POJOPerson( name.length == 4 )\n" +
+                "then\n" +
+                "   insert(new Result($p));\n" +
+                "end\n";
 
-//
-//        Object a = resultClass.newInstance();
-//        assertEquals(a, a);
-//
-//        Method setName = resultClass.getMethod("setName", String.class);
-//        Method setSurname = resultClass.getMethod("setSurname", String.class);
-//
-//        setName.invoke(a, "Luca");
-//        setSurname.invoke(a, "Molteni");
-//
-//        Object b = resultClass.newInstance();
-//        setName.invoke(b, "Luca");
-//        setSurname.invoke(b, "Molteni");
-//
-//        assertEquals(a, b);
+        KieSession ksession = getKieSession(str);
 
+        ksession.insert(new Person("Mario", 40));
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Edson", 35));
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjects(ksession, Result.class);
+        assertEquals(1, results.size());
+        Result r = results.iterator().next();
+        Object result = r.getValue();
+        Class<?> resultClass = result.getClass();
+        Method name = resultClass.getMethod("getName");
+        assertEquals("defaultpkg.POJOPerson", resultClass.getName());
+        assertEquals("Mark", name.invoke(result));
+
+        Constructor<?>[] constructors = resultClass.getConstructors();
+        assertEquals(2, constructors.length);
+
+        Object instance1 = resultClass.newInstance();
+        Constructor<?> ctor = resultClass.getConstructor(String.class, String.class, int.class);
+        Object luca = ctor.newInstance("Luca", null, 32);
+        Method getName = resultClass.getMethod("getName");
+        Method getAge = resultClass.getMethod("getAge");
+
+        assertEquals("Luca", getName.invoke(luca));
+        assertEquals(32, getAge.invoke(luca));
+
+        assertEquals("POJOPerson( name=Luca, surname=null, age=32 )", luca.toString());
     }
 }
