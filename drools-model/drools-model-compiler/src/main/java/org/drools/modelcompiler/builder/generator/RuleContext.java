@@ -4,17 +4,17 @@ import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.javaparser.ast.expr.Expression;
-import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import java.util.*;
 import java.util.function.Consumer;
 
 public class RuleContext {
     private final InternalKnowledgePackage pkg;
-    private DRLExprIdGenerator exprIdGenerator;
+    private DRLIdGenerator exprIdGenerator;
     private final Optional<RuleDescr> ruleDescr;
 
     private List<DeclarationSpec> declarations = new ArrayList<>();
+    private List<DeclarationSpec> ooPathDeclarations = new ArrayList<>();
     List<QueryParameter> queryParameters = new ArrayList<>();
     Deque<Consumer<Expression>> exprPointer = new LinkedList<>();
     List<Expression> expressions = new ArrayList<>();
@@ -23,7 +23,7 @@ public class RuleContext {
 
     BaseDescr parentDesc = null;
 
-    public RuleContext(InternalKnowledgePackage pkg, DRLExprIdGenerator exprIdGenerator, Optional<RuleDescr> ruleDescr) {
+    public RuleContext(InternalKnowledgePackage pkg, DRLIdGenerator exprIdGenerator, Optional<RuleDescr> ruleDescr) {
         this.pkg = pkg;
         this.exprIdGenerator = exprIdGenerator;
         this.ruleDescr = ruleDescr;
@@ -31,14 +31,24 @@ public class RuleContext {
     }
 
     public Optional<DeclarationSpec> getDeclarationById(String id) {
-        return declarations.stream().filter(d -> d.bindingId.equals(id)).findFirst();
+        return declarations.stream().filter(d -> d.getBindingId().equals(id)).findFirst();
+    }
+
+    public Optional<DeclarationSpec> getOOPathDeclarationById(String id) {
+        return ooPathDeclarations.stream().filter(d -> d.getBindingId().equals(id)).findFirst();
     }
 
     public void addDeclaration(DeclarationSpec d) {
         // It would be probably be better to avoid putting the same declaration multiple times
         // instead of using Set semantic here
-        if(!existsDeclaration(d.bindingId)) {
+        if(!getDeclarationById(d.getBindingId()).isPresent()) {
             this.declarations.add(d);
+        }
+    }
+
+    public void addOOPathDeclaration(DeclarationSpec d) {
+        if(!getOOPathDeclarationById(d.getBindingId()).isPresent()) {
+            this.ooPathDeclarations.add(d);
         }
     }
 
@@ -46,8 +56,8 @@ public class RuleContext {
         return declarations;
     }
 
-    public Boolean existsDeclaration(String id) {
-        return getDeclarationById(id).isPresent();
+    public List<DeclarationSpec> getOOPathDeclarations() {
+        return ooPathDeclarations;
     }
 
     public void addExpression(Expression e) {
@@ -73,6 +83,10 @@ public class RuleContext {
 
     public String getConditionId(Class<?> patternType, String drlConstraint) {
         return exprIdGenerator.getCondId(patternType, drlConstraint);
+    }
+
+    public String getOOPathId(Class<?> patternType, String drlConstraint) {
+        return exprIdGenerator.getOOPathId(patternType, drlConstraint);
     }
 
     public void addNamedConsequence(String key, String value) {
