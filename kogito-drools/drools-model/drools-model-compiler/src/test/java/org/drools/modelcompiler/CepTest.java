@@ -16,6 +16,10 @@
 
 package org.drools.modelcompiler;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 import org.drools.core.ClockType;
 import org.drools.modelcompiler.domain.StockFact;
 import org.drools.modelcompiler.domain.StockTick;
@@ -26,8 +30,6 @@ import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.time.SessionPseudoClock;
-
-import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
 
@@ -224,5 +226,78 @@ public class CepTest extends BaseModelTest {
         ksession.insert( new StockFact( "ACME" ) );
 
         assertEquals( 0, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testExpireEventOnEndTimestamp() throws Exception {
+        String str =
+                "package org.drools.compiler;\n" +
+                "import " + StockTick.class.getCanonicalName() + ";\n" +
+                "global java.util.List resultsAfter;\n" +
+                "\n" +
+                "rule \"after[60,80]\"\n" +
+                "when\n" +
+                "$a : StockTick( company == \"DROO\" )\n" +
+                "$b : StockTick( company == \"ACME\", this after[60,80] $a )\n" +
+                "then\n" +
+                "       resultsAfter.add( $b );\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str, getCepKieModuleModel() );
+        SessionPseudoClock clock = ksession.getSessionClock();
+
+        List<StockTick> resultsAfter = new ArrayList<StockTick>();
+        ksession.setGlobal("resultsAfter", resultsAfter);
+
+        // inserting new StockTick with duration 30 at time 0 => rule
+        // after[60,80] should fire when ACME lasts at 100-120
+        ksession.insert(new StockTick("DROO", 30));
+
+        clock.advanceTime(100, TimeUnit.MILLISECONDS);
+
+        ksession.insert(new StockTick("ACME", 20));
+
+        ksession.fireAllRules();
+
+        assertEquals(1, resultsAfter.size());
+    }
+
+    @Test
+    public void testExpireEventOnEndTimestampWithDeclaredEvent() throws Exception {
+        String str =
+                "package org.drools.compiler;\n" +
+                "import " + StockFact.class.getCanonicalName() + ";\n" +
+                "global java.util.List resultsAfter;\n" +
+                "\n" +
+                "declare StockFact\n" +
+                "    @role( event )\n" +
+                "    @duration( duration )\n" +
+                "end\n" +
+                "\n" +
+                "rule \"after[60,80]\"\n" +
+                "when\n" +
+                "$a : StockFact( company == \"DROO\" )\n" +
+                "$b : StockFact( company == \"ACME\", this after[60,80] $a )\n" +
+                "then\n" +
+                "       resultsAfter.add( $b );\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str, getCepKieModuleModel() );
+        SessionPseudoClock clock = ksession.getSessionClock();
+
+        List<StockTick> resultsAfter = new ArrayList<StockTick>();
+        ksession.setGlobal("resultsAfter", resultsAfter);
+
+        // inserting new StockTick with duration 30 at time 0 => rule
+        // after[60,80] should fire when ACME lasts at 100-120
+        ksession.insert(new StockFact("DROO", 30));
+
+        clock.advanceTime(100, TimeUnit.MILLISECONDS);
+
+        ksession.insert(new StockFact("ACME", 20));
+
+        ksession.fireAllRules();
+
+        assertEquals(1, resultsAfter.size());
     }
 }

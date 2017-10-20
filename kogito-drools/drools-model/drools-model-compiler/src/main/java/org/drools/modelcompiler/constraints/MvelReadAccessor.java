@@ -16,27 +16,35 @@
 
 package org.drools.modelcompiler.constraints;
 
+import java.io.Serializable;
+
 import org.drools.core.base.ValueType;
 import org.drools.core.base.extractors.BaseObjectClassFieldReader;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.spi.InternalReadAccessor;
-import org.drools.model.functions.Function1;
+import org.mvel2.MVEL;
+import org.mvel2.ParserContext;
 
-public class LambdaReadAccessor extends BaseObjectClassFieldReader implements InternalReadAccessor {
+public class MvelReadAccessor extends BaseObjectClassFieldReader implements InternalReadAccessor {
 
-    private final Function1 lambda;
+    private final Serializable expression;
 
-    public LambdaReadAccessor( Class<?> fieldType, Function1 lambda ) {
-        this(0, fieldType, lambda);
+    public MvelReadAccessor( Class<?> thisType, Class<?> fieldType, String expr ) {
+        this(0, thisType, fieldType, expr);
     }
 
-    public LambdaReadAccessor( int index, Class<?> fieldType, Function1 lambda ) {
+    public MvelReadAccessor( int index, Class<?> thisType, Class<?> fieldType, String expr ) {
         super(index, fieldType, ValueType.determineValueType( fieldType ));
-        this.lambda = lambda;
+
+        ParserContext parserContext = new ParserContext();
+        parserContext.setStrictTypeEnforcement(true);
+        parserContext.setStrongTyping(true);
+        parserContext.addInput("this", thisType);
+        this.expression = MVEL.compileExpression(expr, parserContext);
     }
 
     @Override
     public Object getValue( InternalWorkingMemory workingMemory, Object object ) {
-        return lambda.apply( object );
+        return MVEL.executeExpression(expression, object);
     }
 }

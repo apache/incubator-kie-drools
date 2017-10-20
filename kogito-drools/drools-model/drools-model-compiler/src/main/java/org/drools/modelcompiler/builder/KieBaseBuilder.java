@@ -58,7 +58,6 @@ public class KieBaseBuilder {
     public InternalKnowledgeBase createKieBase() {
         Collection<KiePackage> pkgs = builder.getKnowledgePackages();
         InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase( kBaseName, conf );
-        builder.getPatternClasses().forEach( kBase::getOrCreateExactTypeDeclaration );
         kBase.addPackages( pkgs );
         return kBase;
     }

@@ -33,7 +33,8 @@ public class AfterPredicate extends AbstractTemporalPredicate {
 
     @Override
     public boolean evaluate(long start1, long duration1, long start2, long duration2) {
-        long diff = start1 - start2;
+        long end2 = start2 + duration2;
+        long diff = start1 - end2;
         return diff >= interval.getLowerBound() && diff <= interval.getUpperBound();
     }
 }

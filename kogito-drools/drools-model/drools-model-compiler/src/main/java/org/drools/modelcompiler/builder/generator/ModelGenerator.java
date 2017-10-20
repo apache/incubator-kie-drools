@@ -100,7 +100,7 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateL
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassFromContext;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.parseBlock;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
-import static org.drools.modelcompiler.builder.generator.StringUtil.toId;
+import static org.drools.modelcompiler.util.StringUtil.toId;
 
 public class ModelGenerator {
 
