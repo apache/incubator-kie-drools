@@ -10,7 +10,7 @@ import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.javaparser.ast.expr.Expression;
 
 public class DeclarationSpec {
-    final String bindingId;
+    private final String bindingId;
     final Class<?> declarationClass;
     final Optional<PatternDescr> optPattern;
     final Optional<Expression> declarationSource;
@@ -36,10 +36,10 @@ public class DeclarationSpec {
         this.declarationSource = Optional.empty();
     }
 
-    public DeclarationSpec(String bindingId, Class<?> declarationClass, PatternDescr pattern, Optional<Expression> declarationSource) {
+    public DeclarationSpec(String bindingId, Class<?> declarationClass, Optional<PatternDescr> pattern, Optional<Expression> declarationSource) {
         this.bindingId = bindingId;
         this.declarationClass = declarationClass;
-        this.optPattern = Optional.of(pattern);
+        this.optPattern = pattern;
         this.declarationSource = declarationSource;
     }
 
