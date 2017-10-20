@@ -18,6 +18,7 @@ package org.drools.modelcompiler.builder.generator;
 
 import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.AndDescr;
+import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.AttributeDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.BehaviorDescr;
@@ -26,16 +27,15 @@ import org.drools.compiler.lang.descr.ConditionalElementDescr;
 import org.drools.compiler.lang.descr.EvalDescr;
 import org.drools.compiler.lang.descr.ExistsDescr;
 import org.drools.compiler.lang.descr.ForallDescr;
-import org.drools.compiler.lang.descr.FunctionDescr;
 import org.drools.compiler.lang.descr.NamedConsequenceDescr;
 import org.drools.compiler.lang.descr.NotDescr;
 import org.drools.compiler.lang.descr.OrDescr;
+import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.PatternSourceDescr;
 import org.drools.compiler.lang.descr.QueryDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
-import org.drools.compiler.lang.descr.WindowDeclarationDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.Behavior;
 import org.drools.core.time.TimeUtils;
@@ -76,7 +76,7 @@ import org.drools.model.Query;
 import org.drools.model.Rule;
 import org.drools.model.Variable;
 import org.drools.modelcompiler.builder.PackageModel;
-import org.drools.modelcompiler.builder.RuleDescrImpl;
+import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -85,6 +85,7 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
@@ -93,6 +94,7 @@ import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 import static org.drools.javaparser.printer.PrintUtil.toDrlx;
+import static org.drools.modelcompiler.builder.JavaParserCompiler.compileAll;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassFromContext;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.parseBlock;
@@ -120,38 +122,59 @@ public class ModelGenerator {
     private static final String ATTRIBUTE_CALL = "attribute";
     private static final String DECLARATION_OF_CALL = "declarationOf";
     private static final String TYPE_CALL = "type";
+    private static final String TYPE_META_DATA_CALL = "typeMetaData";
 
-    public static PackageModel generateModel(InternalKnowledgePackage pkg,
-                                             List<RuleDescrImpl> rules,
-                                             List<FunctionDescr> functions,
-                                             List<TypeDeclarationDescr> typeDeclarations,
-                                             Set<WindowDeclarationDescr> windowDeclarations) {
-        String name = pkg.getName();
-        PackageModel packageModel = new PackageModel(name);
+    public static PackageModel generateModel(InternalKnowledgePackage pkg, PackageDescr packageDescr) {
+        String pkgName = pkg.getName();
+        TypeResolver typeResolver = pkg.getTypeResolver();
+
+        PackageModel packageModel = new PackageModel(pkgName);
         packageModel.addImports(pkg.getTypeResolver().getImports());
         packageModel.addGlobals(pkg.getGlobals());
-        new WindowReferenceGenerator(packageModel, pkg).addWindowReferences(windowDeclarations);
-        packageModel.addAllFunctions(functions.stream().map(FunctionGenerator::toFunction).collect(toList()));
-        for (TypeDeclarationDescr typeDescr : typeDeclarations) {
-        // TODO
-//            try {
-//                Class<?> existingType = pkg.getTypeResolver().resolveType( typeDescr.getTypeName() );
-//                System.out.println(existingType);
-//            } catch (ClassNotFoundException e) {
+        new WindowReferenceGenerator(packageModel, pkg).addWindowReferences(packageDescr.getWindowDeclarations());
+        packageModel.addAllFunctions(packageDescr.getFunctions().stream().map(FunctionGenerator::toFunction).collect(toList()));
+
+        for (TypeDeclarationDescr typeDescr : packageDescr.getTypeDeclarations()) {
+            try {
+                processType(pkg, packageModel, typeDescr, typeResolver.resolveType( typeDescr.getTypeName() ));
+            } catch (ClassNotFoundException e) {
                 packageModel.addGeneratedPOJO(POJOGenerator.toClassDeclaration(typeDescr));
-//            }
+            }
         }
 
-        for (RuleDescrImpl descr : rules) {
-            final RuleDescr descriptor = descr.getDescr();
-            if (descriptor instanceof QueryDescr) {
-                processQuery(pkg, packageModel, (QueryDescr) descriptor);
+        Map<String, Class<?>> classMap = compileAll( pkg.getPackageClassLoader(), pkgName, packageModel.getGeneratedPOJOsSource() );
+        for (Map.Entry<String, Class<?>> entry : classMap.entrySet()) {
+            typeResolver.registerClass( entry.getKey(), entry.getValue() );
+            typeResolver.registerClass( entry.getValue().getSimpleName(), entry.getValue() );
+        }
+
+        for (RuleDescr descr : packageDescr.getRules()) {
+            if (descr instanceof QueryDescr) {
+                processQuery(pkg, packageModel, (QueryDescr) descr);
             } else {
-                processRule(pkg, packageModel, descriptor);
+                processRule(pkg, packageModel, descr);
             }
         }
 
         return packageModel;
+    }
+
+    private static void processType(InternalKnowledgePackage pkg, PackageModel packageModel, TypeDeclarationDescr typeDescr, Class<?> type) {
+        MethodCallExpr typeMetaDataCall = new MethodCallExpr(null, TYPE_META_DATA_CALL);
+        typeMetaDataCall.addArgument( new StringLiteralExpr(type.getPackage().getName()) );
+        typeMetaDataCall.addArgument( new StringLiteralExpr(type.getSimpleName()) );
+
+        for (AnnotationDescr ann : typeDescr.getAnnotations()) {
+            typeMetaDataCall = new MethodCallExpr(typeMetaDataCall, "addAnnotation");
+            typeMetaDataCall.addArgument( new StringLiteralExpr( ann.getName() ) );
+            for (Map.Entry<String, Object> entry : ann.getValueMap().entrySet()) {
+                MethodCallExpr annotationValueCall = new MethodCallExpr(null, "annotationValue");
+                annotationValueCall.addArgument( new StringLiteralExpr(entry.getKey()) );
+                annotationValueCall.addArgument( new StringLiteralExpr(entry.getValue().toString()) );
+                typeMetaDataCall.addArgument( annotationValueCall );
+            }
+        }
+        packageModel.addTypeMetaDataExpressions(typeMetaDataCall);
     }
 
     private static void processRule(InternalKnowledgePackage pkg, PackageModel packageModel, RuleDescr ruleDescr) {

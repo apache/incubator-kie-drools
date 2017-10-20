@@ -26,6 +26,7 @@ import org.drools.javaparser.ast.body.InitializerDeclaration;
 import org.drools.javaparser.ast.body.MethodDeclaration;
 import org.drools.javaparser.ast.comments.JavadocComment;
 import org.drools.javaparser.ast.expr.ClassExpr;
+import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
@@ -72,6 +73,8 @@ public class PackageModel {
 
     private List<ClassOrInterfaceDeclaration> generatedPOJOs = new ArrayList<>();
 
+    private List<Expression> typeMetaDataExpressions = new ArrayList<>();
+
     private DRLExprIdGenerator exprIdGenerator;
 
     public PackageModel( String name ) {
@@ -108,6 +111,10 @@ public class PackageModel {
 
     public Map<String, Class<?>> getGlobals() {
         return globals;
+    }
+
+    public void addTypeMetaDataExpressions(Expression typeMetaDataExpression) {
+        typeMetaDataExpressions.add(typeMetaDataExpression);
     }
 
     public void putRuleMethod(String methodName, MethodDeclaration ruleMethod) {
@@ -212,6 +219,13 @@ public class PackageModel {
                 "    }\n");
         rulesClass.addMember(getQueriesMethod);
 
+        BodyDeclaration<?> getTypeMetaDataMethod = JavaParser.parseBodyDeclaration(
+                "    @Override\n" +
+                "    public List<TypeMetaData> getTypeMetaDatas() {\n" +
+                "        return typeMetaDatas;\n" +
+                "    }\n");
+        rulesClass.addMember(getTypeMetaDataMethod);
+
         BodyDeclaration<?> rulesList = JavaParser.parseBodyDeclaration("List<Rule> rules = new ArrayList<>();");
         rulesClass.addMember(rulesList);
         BodyDeclaration<?> queriesList = JavaParser.parseBodyDeclaration("List<Query> queries = new ArrayList<>();");
@@ -220,6 +234,8 @@ public class PackageModel {
         rulesClass.addMember(globalsList);
         BodyDeclaration<?> windowReferencesList = JavaParser.parseBodyDeclaration("List<WindowReference> windowReferences = new ArrayList<>();");
         rulesClass.addMember(windowReferencesList);
+        BodyDeclaration<?> typeMetaDatasList = JavaParser.parseBodyDeclaration("List<TypeMetaData> typeMetaDatas = new ArrayList<>();");
+        rulesClass.addMember(typeMetaDatasList);
         // end of fixed part
 
 
@@ -269,7 +285,13 @@ public class PackageModel {
             MethodCallExpr add = new MethodCallExpr(rulesFieldName, "add");
             add.addArgument( new NameExpr(toVar(g.getKey())) );
             rulesListInitializerBody.addStatement( add );
+        }
 
+        for (Expression expr : typeMetaDataExpressions) {
+            NameExpr rulesFieldName = new NameExpr( "typeMetaDatas" );
+            MethodCallExpr add = new MethodCallExpr(rulesFieldName, "add");
+            add.addArgument( expr );
+            rulesListInitializerBody.addStatement( add );
         }
 
         functions.forEach(rulesClass::addMember);
