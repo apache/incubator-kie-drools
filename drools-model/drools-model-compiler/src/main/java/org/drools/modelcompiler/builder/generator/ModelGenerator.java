@@ -607,7 +607,7 @@ public class ModelGenerator {
         String queryName = "query_" + className;
         MethodDeclaration queryMethod = packageModel.getQueryMethod(queryName);
         if (queryMethod != null) {
-            NameExpr queryCall = new NameExpr(queryMethod.getName());
+            NameExpr queryCall = new NameExpr(queryMethod.getNameAsString());
             MethodCallExpr callCall = new MethodCallExpr(queryCall, "call");
 
             for (int i = 0; i < descriptors.size(); i++) {
