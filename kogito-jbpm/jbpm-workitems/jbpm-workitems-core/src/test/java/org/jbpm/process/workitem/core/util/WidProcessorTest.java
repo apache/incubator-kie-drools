@@ -151,6 +151,43 @@ public class WidProcessorTest {
                      widMavenDepends[0].version());
     }
 
+
+    @Test
+    public void testGeneratedWidAndIndexFiles() throws Exception {
+        Map<String, List<Wid>> processingResults = new HashMap<>();
+
+        widProcessor.setProcessingResults(processingResults);
+        widProcessor.setResetResults(false);
+
+        Compiler compiler = compileWithGenerator();
+        compiler.compile(source1);
+
+        assertNotNull(processingResults);
+        assertEquals(1,
+                     processingResults.keySet().size());
+
+        List<Wid> widInfoList = processingResults.get("org.jbpm.process.workitem.core.util.MyTestClass");
+        assertNotNull(widInfoList);
+        assertEquals(1,
+                     widInfoList.size());
+
+        Map<String, WidInfo> wrappedResults = new HashMap<>();
+        wrappedResults.put("widinfo", new WidInfo(widInfoList));
+
+        try {
+            widProcessor.getTemplateData(widProcessor.WID_ST_TEMPLATE,
+                                         wrappedResults);
+        } catch(Exception e) {
+            fail("Error building wid template: " + e.getMessage());
+        }
+        try {
+            widProcessor.getTemplateData(widProcessor.INDEX_ST_TEMPLATE, wrappedResults);
+        } catch(Exception e) {
+            fail("Error building index template: " + e.getMessage());
+        }
+
+    }
+
     @Test
     public void testWidInheritanceFromInterface() throws Exception {
         Map<String, List<Wid>> processingResults = new HashMap<>();

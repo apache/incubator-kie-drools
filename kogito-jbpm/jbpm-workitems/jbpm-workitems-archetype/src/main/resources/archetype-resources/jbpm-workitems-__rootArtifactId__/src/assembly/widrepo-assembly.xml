@@ -33,6 +33,7 @@
       <outputDirectory>${classPrefix}</outputDirectory>
       <includes>
         <include>*.wid</include>
+        <include>*.html</include>
       </includes>
     </fileSet>
   </fileSets>
