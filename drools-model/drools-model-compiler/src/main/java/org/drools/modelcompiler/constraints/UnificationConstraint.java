@@ -39,7 +39,7 @@ public class UnificationConstraint extends MutableTypeConstraint implements Inde
 
     public UnificationConstraint( Declaration declaration ) {
         this.declaration = declaration;
-        readAccessor = new LambdaReadAccessor( 0, declaration.getDeclarationClass(), x -> x );
+        readAccessor = new LambdaReadAccessor( declaration.getDeclarationClass(), x -> x );
     }
 
     @Override
