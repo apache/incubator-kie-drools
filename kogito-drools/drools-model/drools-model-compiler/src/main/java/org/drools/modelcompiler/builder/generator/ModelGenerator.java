@@ -578,7 +578,7 @@ public class ModelGenerator {
         Optional<Expression> declarationSourceFrom = source.flatMap(new FromVisitor(context, packageModel)::visit);
         Optional<Expression> declarationSourceWindow = source.flatMap(new WindowReferenceGenerator(packageModel, context.getPkg())::visit);
         Optional<Expression> declarationSource = declarationSourceFrom.isPresent() ? declarationSourceFrom : declarationSourceWindow;
-        context.addDeclaration(new DeclarationSpec(pattern.getIdentifier(), patternType, pattern, declarationSource));
+        context.addDeclaration(new DeclarationSpec(pattern.getIdentifier(), patternType, Optional.of(pattern), declarationSource));
 
         if (constraintDescrs.isEmpty() && pattern.getSource() == null) {
             MethodCallExpr dslExpr = new MethodCallExpr(null, INPUT_CALL);
@@ -587,10 +587,18 @@ public class ModelGenerator {
         } else {
             for (BaseDescr constraint : constraintDescrs) {
                 String expression = constraint.toString();
-                DrlxParseResult drlxParseResult = drlxParse(context, packageModel, patternType, pattern.getIdentifier(), expression);
+                String patternIdentifier = pattern.getIdentifier();
+                DrlxParseResult drlxParseResult = drlxParse(context, packageModel, patternType, patternIdentifier, expression);
 
                 if(drlxParseResult.expr instanceof OOPathExpr) {
-                    new OOPathExprVisitor(context, packageModel).visit(patternType, pattern.getIdentifier(), (OOPathExpr)drlxParseResult.expr);
+
+                    // If the  outer pattern does not have a binding we generate it
+                    if(patternIdentifier == null) {
+                        patternIdentifier = context.getExprId(patternType, expression);
+                        context.addDeclaration(new DeclarationSpec(patternIdentifier, patternType, Optional.of(pattern), Optional.empty()));
+                    }
+
+                    new OOPathExprVisitor(context, packageModel).visit(patternType, patternIdentifier, (OOPathExpr)drlxParseResult.expr);
                 } else {
                     // need to augment the reactOn inside drlxParseResult with the look-ahead properties.
                     Collection<String> lookAheadFieldsOfIdentifier = context.getRuleDescr()
@@ -777,12 +785,12 @@ public class ModelGenerator {
     static class DrlxParseResult {
 
         final Class<?> patternType;
-        final String exprId;
-        final String patternBinding;
         final Expression expr;
         final Class<?> exprType;
 
-        String exprBinding;
+        private String exprId;
+        private String patternBinding;
+        private String exprBinding;
 
         ConstraintType decodeConstraintType;
         Set<String> usedDeclarations = Collections.emptySet();
@@ -838,9 +846,24 @@ public class ModelGenerator {
             return this;
         }
 
-        public DrlxParseResult setExprBinding( String exprBinding ) {
+        public String getExprId() {
+            return exprId;
+        }
+
+        public String getPatternBinding() {
+            return patternBinding;
+        }
+
+        public void setExprId(String exprId) {
+            this.exprId = exprId;
+        }
+
+        public void setPatternBinding(String patternBinding) {
+            this.patternBinding = patternBinding;
+        }
+
+        public void setExprBinding(String exprBinding) {
             this.exprBinding = exprBinding;
-            return this;
         }
     }
 

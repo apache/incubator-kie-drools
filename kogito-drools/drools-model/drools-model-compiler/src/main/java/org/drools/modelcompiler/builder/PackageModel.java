@@ -37,7 +37,7 @@ import org.drools.javaparser.printer.PrettyPrinter;
 import org.drools.model.Global;
 import org.drools.model.Model;
 import org.drools.model.WindowReference;
-import org.drools.modelcompiler.builder.generator.DRLExprIdGenerator;
+import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.QueryParameter;
 
@@ -75,18 +75,18 @@ public class PackageModel {
 
     private List<Expression> typeMetaDataExpressions = new ArrayList<>();
 
-    private DRLExprIdGenerator exprIdGenerator;
+    private DRLIdGenerator exprIdGenerator;
 
     public PackageModel( String name ) {
         this.name = name;
-        exprIdGenerator = new DRLExprIdGenerator();
+        exprIdGenerator = new DRLIdGenerator();
     }
 
     public String getName() {
         return name;
     }
     
-    public DRLExprIdGenerator getExprIdGenerator() {
+    public DRLIdGenerator getExprIdGenerator() {
         return exprIdGenerator;
     }
 

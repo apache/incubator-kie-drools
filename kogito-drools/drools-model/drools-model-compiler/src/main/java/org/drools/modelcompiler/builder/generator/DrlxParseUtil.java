@@ -100,7 +100,7 @@ public class DrlxParseUtil {
 
         } else if (drlxExpr instanceof NameExpr) {
             String name = drlxExpr.toString();
-            if (context.existsDeclaration(name)) {
+            if (context.getDeclarationById(name).isPresent()) {
                 // then drlxExpr is a single NameExpr referring to a binding, e.g.: "$p1".
                 usedDeclarations.add(name);
                 return new TypedExpression(drlxExpr);
@@ -136,7 +136,8 @@ public class DrlxParseUtil {
             Expression previous;
 
             if (firstNode instanceof NameExpr) {
-                String firstName = ((NameExpr) firstNode).getName().getIdentifier();
+                NameExpr firstNodeName = (NameExpr) firstNode;
+                String firstName = firstNodeName.getName().getIdentifier();
                 Optional<DeclarationSpec> declarationById = context.getDeclarationById(firstName);
                 if (declarationById.isPresent()) {
                     // do NOT append any reactOnProperties.
@@ -147,11 +148,25 @@ public class DrlxParseUtil {
                     }
                     previous = new NameExpr(firstName);
                 } else {
+
+                    // In OOPath a declaration is based on a position rather than a name.
+                    // Only an OOPath chunk can have a backreference expression
+                    Optional<DeclarationSpec> backReference = Optional.empty();
+                    if(firstNodeName.getBackReferencesCount()  > 0) {
+                        List<DeclarationSpec> ooPathDeclarations = context.getOOPathDeclarations();
+                        DeclarationSpec backReferenceDeclaration = ooPathDeclarations.get(ooPathDeclarations.size() - 1 - firstNodeName.getBackReferencesCount());
+                        typeCursor = backReferenceDeclaration.declarationClass;
+                        backReference = Optional.of(backReferenceDeclaration);
+                        usedDeclarations.add(backReferenceDeclaration.getBindingId());
+                    }
+
                     Method firstAccessor = ClassUtils.getAccessor(typeCursor, firstName);
                     if (firstAccessor != null) {
                         reactOnProperties.add(firstName);
                         typeCursor = firstAccessor.getReturnType();
-                        previous = new MethodCallExpr(new NameExpr("_this"), firstAccessor.getName());
+                        NameExpr thisAccessor = new NameExpr("_this");
+                        final NameExpr scope = backReference.map(d -> new NameExpr(d.getBindingId())).orElse(thisAccessor);
+                        previous = new MethodCallExpr(scope, firstAccessor.getName());
                     } else {
                         throw new UnsupportedOperationException("firstNode I don't know about");
                         // TODO would it be fine to assume is a global if it's not in the declarations and not the first accesssor in a chain?

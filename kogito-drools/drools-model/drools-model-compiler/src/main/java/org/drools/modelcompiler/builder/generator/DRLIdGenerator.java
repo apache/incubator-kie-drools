@@ -21,9 +21,10 @@ import java.util.Map;
 
 import static org.drools.model.impl.NamesGenerator.generateName;
 
-public class DRLExprIdGenerator {
+public class DRLIdGenerator {
     private Map<PatternTypeDRLConstraint, String> generatedExprIds = new HashMap<>();
     private Map<PatternTypeDRLConstraint, String> generatedCondIds = new HashMap<>();
+    private Map<PatternTypeDRLConstraint, String> generateOOPathId = new HashMap<>();
 
     public String getExprId(Class<?> patternType, String drlConstraint) {
         PatternTypeDRLConstraint key = PatternTypeDRLConstraint.of(patternType, drlConstraint);
@@ -34,6 +35,11 @@ public class DRLExprIdGenerator {
         PatternTypeDRLConstraint key = PatternTypeDRLConstraint.of(patternType, drlConstraint);
         return generatedCondIds.computeIfAbsent(key, k -> generateNewCond());
     }
+
+    public String getOOPathId(Class<?> patternType, String drlConstraint) {
+        PatternTypeDRLConstraint key = PatternTypeDRLConstraint.of(patternType, drlConstraint);
+        return generateOOPathId.computeIfAbsent(key, k -> generateOOPathExpr());
+    }
     
     private String generateNewId() {
         return generateName("expr");
@@ -41,6 +47,10 @@ public class DRLExprIdGenerator {
 
     private String generateNewCond() {
         return generateName("cond");
+    }
+
+    private String generateOOPathExpr() {
+        return generateName("ooChunk");
     }
 
     @Override
