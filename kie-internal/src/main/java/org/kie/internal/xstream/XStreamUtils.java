@@ -129,6 +129,15 @@ public class XStreamUtils {
     public static XStream createTrustingXStream(ReflectionProvider reflectionProvider ) {
         return internalCreateTrustingXStream( new XStream(reflectionProvider) );
     }
+    
+    /**
+     * Only use for XML or JSON that comes from a 100% trusted source.
+     * The XML/JSON must be as safe as executable java code.
+     * Otherwise, you MUST use {@link #createNonTrustingXStream()}.
+     */
+    public static XStream createTrustingXStream(ReflectionProvider reflectionProvider, HierarchicalStreamDriver hierarchicalStreamDriver ) {
+        return internalCreateTrustingXStream( new XStream(reflectionProvider, hierarchicalStreamDriver) );
+    }
 
     /**
      * Only use for XML or JSON that comes from a 100% trusted source.
@@ -189,6 +198,15 @@ public class XStreamUtils {
      */
     public static XStream createNonTrustingXStream(ReflectionProvider reflectionProvider ) {
         return internalCreateNonTrustingXStream( new XStream(reflectionProvider) );
+    }
+    
+    /**
+     * Use for XML or JSON that might not come from a trusted source (such as REST services payloads, ...).
+     * Automatically whitelists all classes with an {@link XStreamAlias} annotation.
+     * Often requires whitelisting additional domain specific classes, which you'll need to expose in your API's.
+     */
+    public static XStream createNonTrustingXStream(ReflectionProvider reflectionProvider, HierarchicalStreamDriver hierarchicalStreamDriver ) {
+        return internalCreateNonTrustingXStream( new XStream(reflectionProvider, hierarchicalStreamDriver) );
     }
 
     /**
