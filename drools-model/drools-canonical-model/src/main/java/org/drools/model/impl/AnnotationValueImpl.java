@@ -14,17 +14,31 @@
  * limitations under the License.
  */
 
-package org.drools.model;
+package org.drools.model.impl;
 
-import java.util.List;
+import org.drools.model.AnnotationValue;
 
-public interface Model {
+public class AnnotationValueImpl implements AnnotationValue {
+    private final String key;
+    private final String value;
 
-    List<Global> getGlobals();
+    public AnnotationValueImpl( String key, String value ) {
+        this.key = key;
+        this.value = value;
+    }
 
-    List<Rule> getRules();
+    @Override
+    public String getKey() {
+        return key;
+    }
 
-    List<Query> getQueries();
+    @Override
+    public String getValue() {
+        return value;
+    }
 
-    List<TypeMetaData> getTypeMetaDatas();
+    @Override
+    public String toString() {
+        return key + " -> " + value;
+    }
 }

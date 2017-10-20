@@ -39,6 +39,16 @@ public class DSL {
         return new DataStreamImpl();
     }
 
+    // -- TypeMetaData --
+
+    public static TypeMetaDataImpl typeMetaData(String pkg, String name) {
+        return new TypeMetaDataImpl(pkg, name);
+    }
+
+    public static AnnotationValue annotationValue(String key, String value) {
+        return new AnnotationValueImpl( key, value );
+    }
+
     // -- Variable --
 
     public static <T> Variable<T> any(Class<T> type) {
