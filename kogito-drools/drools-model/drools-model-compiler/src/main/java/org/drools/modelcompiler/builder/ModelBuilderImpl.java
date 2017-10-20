@@ -16,13 +16,14 @@
 
 package org.drools.modelcompiler.builder;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.PackageRegistry;
+import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import static org.drools.modelcompiler.builder.generator.ModelGenerator.generateModel;
 
@@ -31,18 +32,24 @@ public class ModelBuilderImpl extends KnowledgeBuilderImpl {
     private final List<PackageModel> packageModels = new ArrayList<>();
 
     @Override
+    public void buildPackages( Collection<CompositePackageDescr> packages ) {
+        initPackageRegistries(packages);
+        buildOtherDeclarations(packages);
+        buildRules(packages);
+    }
+
+    protected void buildRules(Collection<CompositePackageDescr> packages) {
+        for (CompositePackageDescr packageDescr : packages) {
+            setAssetFilter(packageDescr.getFilter());
+            PackageRegistry pkgRegistry = getPackageRegistry(packageDescr.getNamespace());
+            compileKnowledgePackages(packageDescr, pkgRegistry);
+            setAssetFilter(null);
+        }
+    }
+
+    @Override
     protected void compileKnowledgePackages( PackageDescr packageDescr, PackageRegistry pkgRegistry ) {
-        super.compileKnowledgePackages( packageDescr, pkgRegistry );
-        List<RuleDescrImpl> collect = packageDescr.getRules().stream()
-            .map(descr -> new RuleDescrImpl(descr, pkgRegistry.getPackage().getRule(descr.getName())))
-            .collect(Collectors.toList());
-        packageModels.add(
-                generateModel(pkgRegistry.getPackage(),
-                              collect,
-                              packageDescr.getFunctions(),
-                              packageDescr.getTypeDeclarations(),
-                              packageDescr.getWindowDeclarations()
-                ));
+        packageModels.add( generateModel(pkgRegistry.getPackage(), packageDescr) );
     }
 
     public List<PackageModel> getPackageModels() {
