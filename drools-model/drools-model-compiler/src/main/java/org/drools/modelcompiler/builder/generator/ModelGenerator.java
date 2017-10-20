@@ -94,6 +94,7 @@ import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 import static org.drools.javaparser.printer.PrintUtil.toDrlx;
+import static org.drools.model.impl.NamesGenerator.generateName;
 import static org.drools.modelcompiler.builder.JavaParserCompiler.compileAll;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassFromContext;
@@ -136,7 +137,7 @@ public class ModelGenerator {
 
         for (TypeDeclarationDescr typeDescr : packageDescr.getTypeDeclarations()) {
             try {
-                processType(pkg, packageModel, typeDescr, typeResolver.resolveType( typeDescr.getTypeName() ));
+                processType( packageModel, typeDescr, typeResolver.resolveType( typeDescr.getTypeName() ));
             } catch (ClassNotFoundException e) {
                 packageModel.addGeneratedPOJO(POJOGenerator.toClassDeclaration(typeDescr));
             }
@@ -159,7 +160,7 @@ public class ModelGenerator {
         return packageModel;
     }
 
-    private static void processType(InternalKnowledgePackage pkg, PackageModel packageModel, TypeDeclarationDescr typeDescr, Class<?> type) {
+    private static void processType(PackageModel packageModel, TypeDeclarationDescr typeDescr, Class<?> type) {
         MethodCallExpr typeMetaDataCall = new MethodCallExpr(null, TYPE_META_DATA_CALL);
         typeMetaDataCall.addArgument( new StringLiteralExpr(type.getPackage().getName()) );
         typeMetaDataCall.addArgument( new StringLiteralExpr(type.getSimpleName()) );
@@ -560,41 +561,28 @@ public class ModelGenerator {
 
     public static void visit(RuleContext context, PackageModel packageModel, PatternDescr pattern ) {
         String className = pattern.getObjectType();
+        List<? extends BaseDescr> constraintDescrs = pattern.getConstraint().getDescrs();
 
         // Expression is a query, get bindings from query parameter type
-        String queryName = "query_" + className;
-        MethodDeclaration queryMethod = packageModel.getQueryMethod(queryName);
-        List<? extends BaseDescr> constraintDescrs = pattern.getConstraint().getDescrs();
-        if(queryMethod != null) {
-            createQueryCallDSL(context, packageModel, queryName, queryMethod, constraintDescrs);
+        if ( bindQuery( context, packageModel, className, constraintDescrs ) ) {
             return;
         }
 
         Class<?> patternType = getClassFromContext(context.getPkg(),className);
 
-        if (pattern.getIdentifier() != null) {
-            final Optional<PatternSourceDescr> source = Optional.ofNullable(pattern.getSource());
-
-            final Optional<Expression> declarationSourceFrom = source.flatMap(new FromVisitor(context, packageModel)::visit);
-            final Optional<Expression> declarationSourceWindow = source.flatMap(new WindowReferenceGenerator(packageModel, context.getPkg())::visit);
-
-            // Use Java 9 Optional::or method
-            final Optional<Expression> declarationSource = declarationSourceFrom.isPresent() ? declarationSourceFrom : declarationSourceWindow;
-
-            context.addDeclaration(new DeclarationSpec(pattern.getIdentifier(), patternType, pattern, declarationSource));
+        if (pattern.getIdentifier() == null) {
+            pattern.setIdentifier( generateName("pattern_" + patternType.getSimpleName()) );
         }
+
+        Optional<PatternSourceDescr> source = Optional.ofNullable(pattern.getSource());
+        Optional<Expression> declarationSourceFrom = source.flatMap(new FromVisitor(context, packageModel)::visit);
+        Optional<Expression> declarationSourceWindow = source.flatMap(new WindowReferenceGenerator(packageModel, context.getPkg())::visit);
+        Optional<Expression> declarationSource = declarationSourceFrom.isPresent() ? declarationSourceFrom : declarationSourceWindow;
+        context.addDeclaration(new DeclarationSpec(pattern.getIdentifier(), patternType, pattern, declarationSource));
 
         if (constraintDescrs.isEmpty() && pattern.getSource() == null) {
             MethodCallExpr dslExpr = new MethodCallExpr(null, INPUT_CALL);
-            if (pattern.getIdentifier() != null) {
-                dslExpr.addArgument(new NameExpr(toVar(pattern.getIdentifier())));
-            } else {
-                MethodCallExpr declarationOfCall = new MethodCallExpr(null, DECLARATION_OF_CALL);
-                MethodCallExpr typeCall = new MethodCallExpr(null, TYPE_CALL);
-                typeCall.addArgument( new ClassExpr( JavaParser.parseClassOrInterfaceType(patternType.getCanonicalName()) ));
-                declarationOfCall.addArgument(typeCall);
-                dslExpr.addArgument( declarationOfCall );
-            }
+            dslExpr.addArgument(new NameExpr(toVar(pattern.getIdentifier())));
             context.addExpression( dslExpr );
         } else {
             for (BaseDescr constraint : constraintDescrs) {
@@ -615,6 +603,32 @@ public class ModelGenerator {
         }
     }
 
+    private static boolean bindQuery( RuleContext context, PackageModel packageModel, String className, List<? extends BaseDescr> descriptors ) {
+        String queryName = "query_" + className;
+        MethodDeclaration queryMethod = packageModel.getQueryMethod(queryName);
+        if (queryMethod != null) {
+            NameExpr queryCall = new NameExpr(queryMethod.getName());
+            MethodCallExpr callCall = new MethodCallExpr(queryCall, "call");
+
+            for (int i = 0; i < descriptors.size(); i++) {
+                String itemText = descriptors.get(i).getText();
+                if(isLiteral(itemText)) {
+                    MethodCallExpr valueOfMethod = new MethodCallExpr(null, "valueOf");
+                    valueOfMethod.addArgument(new NameExpr(itemText));
+                    callCall.addArgument(valueOfMethod);
+                } else {
+                    QueryParameter qp = packageModel.queryVariables(queryName).get(i);
+                    context.addDeclaration(new DeclarationSpec(itemText, qp.type));
+                    callCall.addArgument(new NameExpr(toVar(itemText)));
+                }
+            }
+
+            context.addExpression(callCall);
+            return true;
+        }
+        return false;
+    }
+
     private static void processExpression( RuleContext context, DrlxParseResult drlxParseResult ) {
         if (drlxParseResult.expr != null) {
             Expression dslExpr = buildExpressionWithIndexing( drlxParseResult );
@@ -626,33 +640,13 @@ public class ModelGenerator {
         }
     }
 
-    private static void createQueryCallDSL(RuleContext context, PackageModel packageModel, String queryName, MethodDeclaration queryMethod, List<? extends BaseDescr> descriptors) {
-        NameExpr queryCall = new NameExpr(queryMethod.getName());
-        MethodCallExpr callCall = new MethodCallExpr(queryCall, "call");
-
-        for (int i = 0; i < descriptors.size(); i++) {
-            String itemText = descriptors.get(i).getText();
-            if(isLiteral(itemText)) {
-                MethodCallExpr valueOfMethod = new MethodCallExpr(null, "valueOf");
-                valueOfMethod.addArgument(new NameExpr(itemText));
-                callCall.addArgument(valueOfMethod);
-            } else {
-                QueryParameter qp = packageModel.queryVariables(queryName).get(i);
-                context.addDeclaration(new DeclarationSpec(itemText, qp.type));
-                callCall.addArgument(new NameExpr(toVar(itemText)));
-            }
-        }
-
-        context.addExpression(callCall);
-    }
-
     public static boolean isLiteral(String value) {
         return value != null && value.length() > 0 &&
                 ( Character.isDigit(value.charAt(0)) || value.charAt(0) == '"' || "true".equals(value) || "false".equals(value) || "null".equals(value) );
     }
 
     public static DrlxParseResult drlxParse(RuleContext context, PackageModel packageModel, Class<?> patternType, String bindingId, String expression) {
-        if ( bindingId != null && expression.startsWith( bindingId + "." ) ) {
+        if ( expression.startsWith( bindingId + "." ) ) {
             expression = expression.substring( bindingId.length()+1 );
         }
 
@@ -878,7 +872,7 @@ public class ModelGenerator {
             exprDSL.addArgument( new StringLiteralExpr(exprId) );
         }
 
-        exprDSL.addArgument( createPatternBindingExpr(drlxParseResult, patternBinding) );
+        exprDSL.addArgument( new NameExpr(toVar(patternBinding)) );
 
         usedDeclarations.stream().map( x -> new NameExpr(toVar(x))).forEach(exprDSL::addArgument);
 
@@ -942,32 +936,12 @@ public class ModelGenerator {
         return drlxParseResult.isStatic ? expr : generateLambdaWithoutParameters(drlxParseResult.usedDeclarations, expr);
     }
 
-    private static Expression createPatternBindingExpr(DrlxParseResult drlxParseResult, String patternBinding) {
-        if (patternBinding != null) {
-            return new NameExpr(toVar(patternBinding));
-        } else {
-            MethodCallExpr declarationOfCall = new MethodCallExpr( null, DECLARATION_OF_CALL );
-            MethodCallExpr typeCall = new MethodCallExpr( null, TYPE_CALL );
-            typeCall.addArgument( new ClassExpr( JavaParser.parseClassOrInterfaceType( drlxParseResult.patternType.getCanonicalName() ) ) );
-            declarationOfCall.addArgument( typeCall );
-            return declarationOfCall;
-        }
-    }
-
     public static Expression buildBinding(DrlxParseResult drlxParseResult ) {
         MethodCallExpr bindDSL = new MethodCallExpr(null, BIND_CALL);
-        bindDSL.addArgument( createPatternBindingExpr( drlxParseResult, drlxParseResult.exprBinding ) );
+        bindDSL.addArgument( new NameExpr(toVar(drlxParseResult.exprBinding)) );
         MethodCallExpr bindAsDSL = new MethodCallExpr(bindDSL, BIND_AS_CALL);
-        bindAsDSL.addArgument( createPatternBindingExpr( drlxParseResult, drlxParseResult.patternBinding ) );
+        bindAsDSL.addArgument( new NameExpr(toVar(drlxParseResult.patternBinding)) );
         bindAsDSL.addArgument( buildConstraintExpression( drlxParseResult, drlxParseResult.left.getExpression() ) );
         return buildReactOn( bindAsDSL, drlxParseResult.reactOnProperties );
     }
-
-    /**
-     * waiting for java 9 Optional improvement
-     */
-    static <T> Stream<T> optToStream(Optional<T> opt) {
-        return opt.map( Stream::of ).orElseGet( Stream::empty );
-    }
-
 }
