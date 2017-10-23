@@ -16,6 +16,8 @@
 
 package org.drools.testcoverage.common.util;
 
+import java.io.StringReader;
+
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -24,16 +26,11 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieContainer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import java.io.StringReader;
 
 /**
  * Util class that provides various methods related to KieBase.
  */
 public final class KieBaseUtil {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(KieBaseUtil.class);
 
     public static KieBase getDefaultKieBaseFromKieBuilder(final KieBuilder kbuilder) {
         return getDefaultKieBaseFromKieModule(kbuilder.getKieModule());
@@ -48,19 +45,22 @@ public final class KieBaseUtil {
     }
 
     public static KieBase getKieBaseFromClasspathResources(final Class classLoaderFromClass,
-                                final boolean failIfBuildError, final String... resources) {
-        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromClasspathResources(classLoaderFromClass, failIfBuildError, resources);
+            final KieBaseTestConfiguration kieBaseTestConfiguration, final boolean failIfBuildError, final String... resources) {
+        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromClasspathResources(kieBaseTestConfiguration,
+                classLoaderFromClass, failIfBuildError, resources);
         return getDefaultKieBaseFromKieBuilder(kieBuilder);
     }
 
-    public static KieBase getKieBaseFromResources(final boolean failIfBuildError, final Resource... resources) {
-        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromResources(failIfBuildError, resources);
+    public static KieBase getKieBaseFromResources(final KieBaseTestConfiguration kieBaseTestConfiguration,
+            final boolean failIfBuildError, final Resource... resources) {
+        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration, failIfBuildError, resources);
         return getDefaultKieBaseFromKieBuilder(kieBuilder);
     }
 
-    public static KieBase getKieBaseFromDRLResources(final boolean failIfBuildError, final Resource... resources) {
+    public static KieBase getKieBaseFromDRLResources(final KieBaseTestConfiguration kieBaseTestConfiguration,
+            final boolean failIfBuildError, final Resource... resources) {
         generateDRLResourceTargetPath(resources);
-        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromResources(failIfBuildError, resources);
+        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration, failIfBuildError, resources);
         return getDefaultKieBaseFromKieBuilder(kieBuilder);
     }
 
@@ -118,7 +118,7 @@ public final class KieBaseUtil {
                                final KieBaseTestConfiguration kieBaseTestConfiguration, final Resource... resources) {
         final KieModuleModel module = KieUtil.createKieModuleModel();
         kieBaseTestConfiguration.getKieBaseModel(module);
-        return KieUtil.buildAndInstallKieModuleIntoRepo(releaseId, module, resources);
+        return KieUtil.buildAndInstallKieModuleIntoRepo(kieBaseTestConfiguration, releaseId, module, resources);
     }
 
     private KieBaseUtil() {

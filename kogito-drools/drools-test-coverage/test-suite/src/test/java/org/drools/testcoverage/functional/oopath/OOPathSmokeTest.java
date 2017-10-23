@@ -16,13 +16,17 @@
 
 package org.drools.testcoverage.functional.oopath;
 
+import java.util.Collection;
 import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.common.model.Address;
 import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.After;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
@@ -33,11 +37,23 @@ import org.kie.api.runtime.KieSession;
 /**
  * Tests basic usage of OOPath expressions.
  */
+@RunWith(Parameterized.class)
 public class OOPathSmokeTest {
     private static final KieServices KIE_SERVICES = KieServices.Factory.get();
     private static final ReleaseId RELEASE_ID = KIE_SERVICES.newReleaseId("org.drools.testcoverage.oopath", "marshalling-test", "1.0");
 
     private KieSession kieSession;
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public OOPathSmokeTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseConfigurations();
+    }
 
     @After
     public void disposeKieSession() {
@@ -49,7 +65,8 @@ public class OOPathSmokeTest {
 
     @Test
     public void testBuildKieBase() {
-        final KieBase kieBase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), true, "oopath.drl");
+        final KieBase kieBase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), kieBaseTestConfiguration,
+                true, "oopath.drl");
         Assertions.assertThat(kieBase).isNotNull();
     }
 
@@ -68,7 +85,8 @@ public class OOPathSmokeTest {
 
     @Test
     public void testFireRule() {
-        final KieBase kieBase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), true, "oopath.drl");
+        final KieBase kieBase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), kieBaseTestConfiguration,
+                true, "oopath.drl");
         this.kieSession = kieBase.newKieSession();
 
         final Person person = new Person("Bruno", 21);

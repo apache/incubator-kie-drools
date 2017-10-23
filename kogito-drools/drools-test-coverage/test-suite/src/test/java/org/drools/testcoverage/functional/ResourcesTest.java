@@ -16,12 +16,17 @@
 
 package org.drools.testcoverage.functional;
 
+import java.util.Collection;
 import org.assertj.core.api.Assertions;
 import org.drools.decisiontable.ExternalSpreadsheetCompiler;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.ResourceUtil;
 import org.drools.testcoverage.common.util.TestConstants;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.definition.KiePackage;
@@ -35,11 +40,24 @@ import java.io.StringReader;
  * Tests loading of different types of resources (DRL, DSL, DRF, BPMN2, DTABLE).
  * Packages are loaded and built using KnowledgeBuilder.
  */
+@RunWith(Parameterized.class)
 public class ResourcesTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public ResourcesTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseConfigurations();
+    }
 
     @Test
     public void testDRL() {
-        final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), true, "aggregation.drl");
+        final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration,
+                true, "aggregation.drl");
 
         // since 6.2.x java.lang is also returned as a package
         Assertions.assertThat((long) kbase.getKiePackages().size()).as("Unexpected number of KiePackages").isEqualTo((long) 3);
@@ -50,7 +68,8 @@ public class ResourcesTest {
     @Test
     public void testDSL() {
         // DSL must go before rules otherwise error is thrown during building
-        final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), true, "sample.dsl", "sample.dslr");
+        final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration,
+                true, "sample.dsl", "sample.dslr");
 
         Assertions.assertThat((long) kbase.getKiePackages().size()).as("Unexpected number of KiePackages").isEqualTo((long) 1);
         verifyPackageWithRules(kbase, TestConstants.PACKAGE_FUNCTIONAL, 1);
@@ -58,7 +77,8 @@ public class ResourcesTest {
 
     @Test
     public void testXLS() {
-        final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), true, "sample.xls");
+        final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration,
+                true, "sample.xls");
 
         Assertions.assertThat((long) kbase.getKiePackages().size()).as("Unexpected number of packages in kbase").isEqualTo((long) 2);
 
@@ -70,7 +90,7 @@ public class ResourcesTest {
     public void testCSV() {
         final Resource decisionTable =
                 ResourceUtil.getDecisionTableResourceFromClasspath("sample.csv", getClass(), DecisionTableInputType.CSV);
-        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(true, decisionTable);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, true, decisionTable);
 
         Assertions.assertThat((long) kbase.getKiePackages().size()).as("Unexpected number of packages in kbase").isEqualTo((long) 2);
 
@@ -91,7 +111,7 @@ public class ResourcesTest {
         final Resource res = KieServices.Factory.get().getResources().newReaderResource(new StringReader(drl));
         res.setTargetPath(TestConstants.DRL_TEST_TARGET_PATH);
 
-        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(true, res);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, true, res);
 
         Assertions.assertThat((long) kbase.getKiePackages().size()).as("Unexpected number of packages in kbase").isEqualTo((long) 2);
 
@@ -111,7 +131,7 @@ public class ResourcesTest {
 
         final Resource res = KieServices.Factory.get().getResources().newReaderResource(new StringReader(drl))
                   .setResourceType(ResourceType.DRL).setSourcePath("src/main/resources/r1.txt");
-        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(true, res);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, true, res);
 
         verifyPackageWithRules(kbase, "org.drools.testcoverage.functional", 1);
     }

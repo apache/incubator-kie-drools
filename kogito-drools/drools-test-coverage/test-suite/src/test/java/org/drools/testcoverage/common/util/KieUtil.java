@@ -17,6 +17,8 @@
 package org.drools.testcoverage.common.util;
 
 import org.assertj.core.api.Assertions;
+import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
+import org.drools.modelcompiler.builder.CanonicalModelKieProject;
 import org.kie.api.KieServices;
 import org.kie.api.builder.*;
 import org.kie.api.builder.model.KieModuleModel;
@@ -38,17 +40,17 @@ public final class KieUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KieUtil.class);
 
-    public static KieModule buildAndInstallKieModuleIntoRepo(final String groupId,
-                                                             final KieModuleModel kieModuleModel, final Resource... resources) {
+    public static KieModule buildAndInstallKieModuleIntoRepo(final KieBaseTestConfiguration kieBaseTestConfiguration,
+            final String groupId, final KieModuleModel kieModuleModel, final Resource... resources) {
         final ReleaseId releaseId = generateReleaseId(groupId);
-        return buildAndInstallKieModuleIntoRepo(releaseId, kieModuleModel, resources);
+        return buildAndInstallKieModuleIntoRepo(kieBaseTestConfiguration, releaseId, kieModuleModel, resources);
     }
 
-    public static KieModule buildAndInstallKieModuleIntoRepo(final ReleaseId releaseId,
-                                                             final KieModuleModel kieModuleModel, final Resource... resources) {
+    public static KieModule buildAndInstallKieModuleIntoRepo(final KieBaseTestConfiguration kieBaseTestConfiguration,
+            final ReleaseId releaseId, final KieModuleModel kieModuleModel, final Resource... resources) {
         final KieServices kieServices = KieServices.Factory.get();
         final KieFileSystem fileSystem = getKieFileSystemWithKieModule(kieModuleModel, releaseId, resources);
-        final KieBuilder builder = getKieBuilderFromKieFileSystem(fileSystem, true);
+        final KieBuilder builder = getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, fileSystem, true);
         final KieModule kieModule = builder.getKieModule();
         kieServices.getRepository().addKieModule(kieModule);
         return kieModule;
@@ -70,23 +72,29 @@ public final class KieUtil {
         return fileSystem;
     }
 
-    public static KieBuilder getKieBuilderFromKieFileSystem(final KieFileSystem fileSystem, final boolean failIfBuildError) {
-        return getKieBuilderFromFileSystemWithResources(fileSystem, failIfBuildError);
+    public static KieBuilder getKieBuilderFromKieFileSystem(final KieBaseTestConfiguration kieBaseTestConfiguration,
+            final KieFileSystem fileSystem, final boolean failIfBuildError) {
+        return getKieBuilderFromFileSystemWithResources(kieBaseTestConfiguration, fileSystem, failIfBuildError);
     }
 
-    public static KieBuilder getKieBuilderFromResources(final boolean failIfBuildError, final Resource... resources) {
-        return getKieBuilderFromFileSystemWithResources(
+    public static KieBuilder getKieBuilderFromResources(final KieBaseTestConfiguration kieBaseTestConfiguration,
+            final boolean failIfBuildError, final Resource... resources) {
+        return getKieBuilderFromFileSystemWithResources(kieBaseTestConfiguration,
                 KieServices.Factory.get().newKieFileSystem(), failIfBuildError, resources);
     }
 
-    private static KieBuilder getKieBuilderFromFileSystemWithResources(final KieFileSystem kfs,
-                                                                       final boolean failIfBuildError, final Resource... resources) {
+    private static KieBuilder getKieBuilderFromFileSystemWithResources(final KieBaseTestConfiguration kieBaseTestConfiguration,
+            final KieFileSystem kfs, final boolean failIfBuildError, final Resource... resources) {
         for (Resource res : resources) {
             kfs.write(res);
         }
 
-        final KieBuilder kbuilder = KieServices.Factory.get().newKieBuilder(kfs);
-        kbuilder.buildAll();
+        final KieBuilderImpl kbuilder = (KieBuilderImpl) KieServices.Factory.get().newKieBuilder(kfs);
+        if (kieBaseTestConfiguration.useCanonicalModel()) {
+            kbuilder.buildAll(CanonicalModelKieProject::new);
+        } else {
+            kbuilder.buildAll();
+        }
 
         // Messages from KieBuilder with increasing severity
         List<Message> msgs = kbuilder.getResults().getMessages(Message.Level.INFO);
@@ -116,15 +124,14 @@ public final class KieUtil {
         return kieServices.newReleaseId(groupId, UUID.randomUUID().toString(), "1.0.0-SNAPSHOT");
     }
 
-    public static KieBuilder getKieBuilderFromClasspathResources(final Class classLoaderFromClass,
-                                                                 final boolean failIfBuildError,
-                                                                 final String... resources) {
+    public static KieBuilder getKieBuilderFromClasspathResources(final KieBaseTestConfiguration kieBaseTestConfiguration,
+            final Class classLoaderFromClass, final boolean failIfBuildError, final String... resources) {
         final List<Resource> result = new ArrayList<>();
         for (String resource : resources) {
             result.add(KieServices.Factory.get().getResources().newClassPathResource(resource, classLoaderFromClass));
         }
 
-        return getKieBuilderFromResources(failIfBuildError, result.toArray(new Resource[]{}));
+        return getKieBuilderFromResources(kieBaseTestConfiguration, failIfBuildError, result.toArray(new Resource[]{}));
     }
 
     public static Resource[] createResources(final String drlFile, final Class<?> clazz) {

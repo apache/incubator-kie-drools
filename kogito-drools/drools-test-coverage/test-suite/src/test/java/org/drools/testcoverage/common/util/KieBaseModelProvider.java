@@ -26,4 +26,5 @@ import org.kie.api.builder.model.KieModuleModel;
 public interface KieBaseModelProvider {
     KieBaseModel getKieBaseModel(KieModuleModel kieModuleModel);
     KieBaseConfiguration getKieBaseConfiguration();
+    boolean useCanonicalModel();
 }
