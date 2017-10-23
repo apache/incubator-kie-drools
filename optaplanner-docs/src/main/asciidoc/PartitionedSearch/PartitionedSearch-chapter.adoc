@@ -29,8 +29,6 @@ is to run a non-partitioned Local Search after the Partitioned Search phase.
 [NOTE]
 ====
 Not all use cases can be partitioned.
-It only works on use cases for which the planning entities and value ranges can be split into n partition,
-such that none of the constraints cross the boundaries between partitions.
 Partitioning only works for use cases where the planning entities and value ranges can be split into n partitions,
 without any of the constraints crossing boundaries between partitions.
 ====
@@ -213,7 +211,7 @@ To configure values of a `SolutionPartitioner` dynamically in the solver configu
   </partitionedSearch>
 ----
 
-Then add a public setter for each custom property, which is called when a `Solver` is build.
+Then add a public setter for each custom property, which is called when a `Solver` is built.
 Most value types are supported (including boolean, integers, doubles and strings).
 
 [source,java,options="nowrap"]
