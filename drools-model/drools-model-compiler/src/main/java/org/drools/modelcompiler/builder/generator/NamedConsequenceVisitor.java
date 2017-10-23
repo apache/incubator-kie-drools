@@ -1,19 +1,28 @@
 package org.drools.modelcompiler.builder.generator;
 
-import org.drools.compiler.lang.descr.*;
+import java.util.HashSet;
+import java.util.List;
+
+import org.drools.compiler.lang.descr.AndDescr;
+import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.compiler.lang.descr.ConditionalBranchDescr;
+import org.drools.compiler.lang.descr.NamedConsequenceDescr;
+import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.javaparser.ast.stmt.BlockStmt;
 import org.drools.modelcompiler.builder.PackageModel;
 
-import java.util.HashSet;
-import java.util.List;
-
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassFromContext;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
-import static org.drools.modelcompiler.builder.generator.ModelGenerator.*;
+import static org.drools.modelcompiler.builder.generator.ModelGenerator.createRuleVariables;
+import static org.drools.modelcompiler.builder.generator.ModelGenerator.drlxParse;
+import static org.drools.modelcompiler.builder.generator.ModelGenerator.executeCall;
+import static org.drools.modelcompiler.builder.generator.ModelGenerator.extractUsedDeclarations;
+import static org.drools.modelcompiler.builder.generator.ModelGenerator.onCall;
+import static org.drools.modelcompiler.builder.generator.ModelGenerator.rewriteConsequence;
 
 public class NamedConsequenceVisitor {
 
