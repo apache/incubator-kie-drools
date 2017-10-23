@@ -21,9 +21,13 @@ import org.drools.decisiontable.ExternalSpreadsheetCompiler;
 import org.drools.template.DataProviderCompiler;
 import org.drools.template.ObjectDataCompiler;
 import org.drools.template.objects.ArrayDataProvider;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.TestConstants;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.definition.KiePackage;
@@ -39,9 +43,21 @@ import java.util.*;
 /**
  * Tests templates - providers, generating rules, performance.
  */
+@RunWith(Parameterized.class)
 public class TemplatesTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(TemplatesTest.class);
     private static final StringBuffer EXPECTED_RULES = new StringBuffer();
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public TemplatesTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseConfigurations();
+    }
 
     static {
         final String head = "package " + TestConstants.PACKAGE_FUNCTIONAL + ";\n"
@@ -212,7 +228,7 @@ public class TemplatesTest {
     private void testCorrectnessCheck(final String drl) {
         final Resource drlResource = KieServices.Factory.get().getResources().newReaderResource(new StringReader(drl));
         drlResource.setTargetPath(TestConstants.DRL_TEST_TARGET_PATH);
-        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(true, drlResource);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, true, drlResource);
 
         final KieSession session = kbase.newKieSession();
 
@@ -245,7 +261,7 @@ public class TemplatesTest {
     private void testManyRows(final String drl, final int expectedResultListSize, final int expectedRulesCount) {
         final Resource drlResource = KieServices.Factory.get().getResources().newReaderResource(new StringReader(drl));
         drlResource.setTargetPath(TestConstants.DRL_TEST_TARGET_PATH);
-        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(true, drlResource);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, true, drlResource);
 
         final KieSession session = kbase.newKieSession();
 
@@ -272,7 +288,7 @@ public class TemplatesTest {
     private void testManyRules(final String drl, final int expectedRulesCount) {
         final Resource drlResource = KieServices.Factory.get().getResources().newReaderResource(new StringReader(drl));
         drlResource.setTargetPath(TestConstants.DRL_TEST_TARGET_PATH);
-        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(true, drlResource);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, true, drlResource);
 
         Collection<KiePackage> pkgs = kbase.getKiePackages();
         Assertions.assertThat(pkgs.size()).isEqualTo(1);
