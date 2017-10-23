@@ -8,4 +8,5 @@ public interface ExprViewItem<T> extends ViewItem<T> {
     String getExprId();
 
     ExprViewItem reactOn(String... props);
+    ExprViewItem watch(String... props);
 }

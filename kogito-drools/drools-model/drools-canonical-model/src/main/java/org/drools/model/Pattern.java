@@ -1,6 +1,6 @@
 package org.drools.model;
 
-import java.util.List;
+import java.util.Collection;
 
 public interface Pattern<T> extends Condition {
 
@@ -12,5 +12,7 @@ public interface Pattern<T> extends Condition {
 
     Constraint getConstraint();
 
-    List<Binding> getBindings();
+    Collection<Binding> getBindings();
+
+    String[] getWatchedProps();
 }
