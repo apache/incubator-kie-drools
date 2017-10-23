@@ -63,7 +63,6 @@ import org.drools.core.spi.EvalExpression;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.model.AccumulateFunction;
 import org.drools.model.AccumulatePattern;
-import org.drools.model.AnnotationValue;
 import org.drools.model.Argument;
 import org.drools.model.Binding;
 import org.drools.model.Condition;
@@ -98,7 +97,6 @@ import org.drools.modelcompiler.constraints.LambdaEvalExpression;
 import org.drools.modelcompiler.constraints.LambdaReadAccessor;
 import org.drools.modelcompiler.constraints.TemporalConstraintEvaluator;
 import org.drools.modelcompiler.constraints.UnificationConstraint;
-import org.drools.modelcompiler.util.TypeDeclarationUtil;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.type.Role;
@@ -106,14 +104,12 @@ import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import static org.drools.core.rule.Pattern.getReadAcessor;
-import static org.drools.core.rule.TypeDeclaration.createTypeDeclarationForBean;
 import static org.drools.model.DSL.declarationOf;
 import static org.drools.model.DSL.entryPoint;
 import static org.drools.model.DSL.type;
 import static org.drools.model.impl.NamesGenerator.generateName;
 import static org.drools.modelcompiler.ModelCompilerUtil.conditionToGroupElementType;
-import static org.drools.modelcompiler.util.TypeDeclarationUtil.wireDurationAccessor;
-import static org.drools.modelcompiler.util.TypeDeclarationUtil.wireTimestampAccessor;
+import static org.drools.modelcompiler.util.TypeDeclarationUtil.createTypeDeclaration;
 
 public class KiePackagesBuilder {
 
@@ -151,39 +147,6 @@ public class KiePackagesBuilder {
             RuleImpl ruleImpl = compileRule( pkg, rule );
             ruleImpl.setLoadOrder( ruleCounter++ );
             pkg.addRule( ruleImpl );
-        }
-    }
-
-    private TypeDeclaration createTypeDeclaration( KnowledgePackageImpl pkg, TypeMetaData metaType ) {
-        try {
-            Class<?> typeClass = pkg.getTypeResolver().resolveType( metaType.getPackage() + "." + metaType.getName() );
-            TypeDeclaration typeDeclaration = createTypeDeclarationForBean( typeClass );
-            for (Map.Entry<String, AnnotationValue[]> ann :  metaType.getAnnotations().entrySet()) {
-                if (ann.getKey().equalsIgnoreCase( "role" )) {
-                    for (AnnotationValue annVal : ann.getValue()) {
-                        if (annVal.getKey().equals( "value" ) && annVal.getValue().equals( "event" )) {
-                            typeDeclaration.setRole( Role.Type.EVENT );
-                        }
-                    }
-                } else if (ann.getKey().equalsIgnoreCase( "duration" )) {
-                    for (AnnotationValue annVal : ann.getValue()) {
-                        if (annVal.getKey().equals( "value" )) {
-                            wireDurationAccessor( annVal.getValue().toString(), typeDeclaration, pkg );
-                        }
-                    }
-                } else if (ann.getKey().equalsIgnoreCase( "timestamp" )) {
-                    for (AnnotationValue annVal : ann.getValue()) {
-                        if (annVal.getKey().equals( "value" )) {
-                            wireTimestampAccessor( annVal.getValue().toString(), typeDeclaration, pkg );
-                        }
-                    }
-                } else {
-                    throw new UnsupportedOperationException("Unknown annotation: " + ann.getKey());
-                }
-            }
-            return typeDeclaration;
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException( e );
         }
     }
 
@@ -620,7 +583,7 @@ public class KiePackagesBuilder {
                 KnowledgePackageImpl pkg = (KnowledgePackageImpl) packages.computeIfAbsent( patternClass.getPackage().getName(), this::createKiePackage );
                 TypeDeclaration typeDeclaration = pkg.getTypeDeclaration( patternClass );
                 if ( typeDeclaration == null ) {
-                    typeDeclaration = TypeDeclarationUtil.createTypeDeclaration( pkg, patternClass );
+                    typeDeclaration = createTypeDeclaration( pkg, patternClass );
                     pkg.addTypeDeclaration( typeDeclaration );
                 }
                 isEvent = typeDeclaration.getRole() == Role.Type.EVENT;
