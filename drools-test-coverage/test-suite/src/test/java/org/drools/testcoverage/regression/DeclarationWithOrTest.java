@@ -18,13 +18,18 @@ package org.drools.testcoverage.regression;
 
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.assertj.core.api.Assertions;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestConstants;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.io.Resource;
@@ -34,6 +39,7 @@ import org.kie.api.runtime.KieSession;
 /**
  * Tests handling a variable binding in LHS with OR (BZ 1136424).
  */
+@RunWith(Parameterized.class)
 public class DeclarationWithOrTest {
 
     private static final String FACT = "working";
@@ -48,6 +54,17 @@ public class DeclarationWithOrTest {
         " list.add(\"" + FACT + "\");\n" +
         "end";
 
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public DeclarationWithOrTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseConfigurations();
+    }
+
     /**
      * Verifies that the rule with binding and OR in LHS compiles and works as expected.
      */
@@ -56,7 +73,7 @@ public class DeclarationWithOrTest {
 
         final Resource resource = KieServices.Factory.get().getResources().newReaderResource(new StringReader(DRL));
         resource.setTargetPath(TestConstants.DRL_TEST_TARGET_PATH);
-        final KieBuilder kbuilder = KieUtil.getKieBuilderFromResources(true, resource);
+        final KieBuilder kbuilder = KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration, true, resource);
 
         final KieContainer kcontainer = KieServices.Factory.get().newKieContainer(kbuilder.getKieModule().getReleaseId());
         final KieSession ksession = kcontainer.newKieSession();
