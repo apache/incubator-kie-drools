@@ -16,6 +16,20 @@
 
 package org.drools.modelcompiler.builder.generator;
 
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Stream;
+
 import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.AnnotationDescr;
@@ -78,21 +92,8 @@ import org.drools.model.Variable;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Stream;
-
 import static java.util.stream.Collectors.toList;
+
 import static org.drools.javaparser.printer.PrintUtil.toDrlx;
 import static org.drools.model.impl.NamesGenerator.generateName;
 import static org.drools.modelcompiler.builder.JavaParserCompiler.compileAll;
@@ -605,10 +606,16 @@ public class ModelGenerator {
                         .map(ruleDescr -> ruleDescr.lookAheadFieldsOfIdentifier(pattern))
                             .orElseGet(Collections::emptyList);
                     drlxParseResult.reactOnProperties.addAll(lookAheadFieldsOfIdentifier);
+                    drlxParseResult.watchedProperties = getPatternListenedProperties(pattern);
                     processExpression( context, drlxParseResult );
                 }
             }
         }
+    }
+
+    private static String[] getPatternListenedProperties(PatternDescr pattern) {
+        AnnotationDescr watchAnn = pattern != null ? pattern.getAnnotation( "watch" ) : null;
+        return watchAnn == null ? new String[0] : watchAnn.getValue().toString().split(",");
     }
 
     private static boolean bindQuery( RuleContext context, PackageModel packageModel, String className, List<? extends BaseDescr> descriptors ) {
@@ -795,6 +802,7 @@ public class ModelGenerator {
         ConstraintType decodeConstraintType;
         Set<String> usedDeclarations = Collections.emptySet();
         Set<String> reactOnProperties = Collections.emptySet();
+        String[] watchedProperties;
 
         TypedExpression left;
         TypedExpression right;
@@ -880,31 +888,33 @@ public class ModelGenerator {
         }
     }
 
-    public static Expression buildExpressionWithIndexing(DrlxParseResult drlxParseResult ) {
-
+    public static Expression buildExpressionWithIndexing(DrlxParseResult drlxParseResult) {
         String exprId = drlxParseResult.exprId;
-        String patternBinding = drlxParseResult.patternBinding;
-        Set<String> usedDeclarations = drlxParseResult.usedDeclarations;
-        ConstraintType decodeConstraintType = drlxParseResult.decodeConstraintType;
-        TypedExpression left = drlxParseResult.left;
-        TypedExpression right = drlxParseResult.right;
-        Set<String> reactOnProperties = drlxParseResult.reactOnProperties;
-
         MethodCallExpr exprDSL = new MethodCallExpr(null, EXPR_CALL);
         if (exprId != null && !"".equals(exprId)) {
             exprDSL.addArgument( new StringLiteralExpr(exprId) );
         }
 
-        exprDSL.addArgument( new NameExpr(toVar(patternBinding)) );
+        exprDSL = buildExpression( drlxParseResult, exprDSL );
+        exprDSL = buildIndexedBy( drlxParseResult, exprDSL );
+        exprDSL = buildReactOn( drlxParseResult, exprDSL );
+        return exprDSL;
+    }
 
-        usedDeclarations.stream().map( x -> new NameExpr(toVar(x))).forEach(exprDSL::addArgument);
-
+    private static MethodCallExpr buildExpression( DrlxParseResult drlxParseResult, MethodCallExpr exprDSL ) {
+        exprDSL.addArgument( new NameExpr(toVar(drlxParseResult.patternBinding)) );
+        drlxParseResult.usedDeclarations.stream().map( x -> new NameExpr(toVar(x))).forEach(exprDSL::addArgument);
         exprDSL.addArgument(buildConstraintExpression( drlxParseResult, drlxParseResult.expr ));
+        return exprDSL;
+    }
 
-        Expression result = exprDSL;
 
+    private static MethodCallExpr buildIndexedBy( DrlxParseResult drlxParseResult, MethodCallExpr exprDSL ) {
+        Set<String> usedDeclarations = drlxParseResult.usedDeclarations;
+        ConstraintType decodeConstraintType = drlxParseResult.decodeConstraintType;
+        TypedExpression left = drlxParseResult.left;
+        TypedExpression right = drlxParseResult.right;
 
-        // -- all indexing stuff --
         // .indexBy(..) is only added if left is not an identity expression:
         if ( decodeConstraintType != null && !(left.getExpression() instanceof NameExpr && ((NameExpr)left.getExpression()).getName().getIdentifier().equals("_this")) ) {
             Class<?> indexType = Stream.of( left, right ).map( TypedExpression::getType )
@@ -933,26 +943,28 @@ public class ModelGenerator {
             } else {
                 throw new UnsupportedOperationException( "TODO" ); // TODO: possibly not to be indexed
             }
-            result = indexedByDSL;
+            return indexedByDSL;
         }
-        // -- END all indexing stuff --
-
-
-        // -- all reactOn stuff --
-        result = buildReactOn( result, reactOnProperties );
-        return result;
+        return exprDSL;
     }
 
-    private static Expression buildReactOn( Expression result, Set<String> reactOnProperties ) {
-        if ( !reactOnProperties.isEmpty() ) {
-            MethodCallExpr reactOnDSL = new MethodCallExpr(result, "reactOn");
-            reactOnProperties.stream()
+    private static MethodCallExpr buildReactOn( DrlxParseResult drlxParseResult, MethodCallExpr exprDSL ) {
+        if ( !drlxParseResult.reactOnProperties.isEmpty() ) {
+            exprDSL = new MethodCallExpr(exprDSL, "reactOn");
+            drlxParseResult.reactOnProperties.stream()
                              .map( StringLiteralExpr::new )
-                             .forEach( reactOnDSL::addArgument );
+                             .forEach( exprDSL::addArgument );
 
-            return reactOnDSL;
         }
-        return result;
+
+        if ( drlxParseResult.watchedProperties != null && drlxParseResult.watchedProperties.length > 0 ) {
+            exprDSL = new MethodCallExpr(exprDSL, "watch");
+            Stream.of( drlxParseResult.watchedProperties )
+                    .map( StringLiteralExpr::new )
+                    .forEach( exprDSL::addArgument );
+        }
+
+        return exprDSL;
     }
 
     private static Expression buildConstraintExpression( DrlxParseResult drlxParseResult, Expression expr ) {
@@ -965,6 +977,6 @@ public class ModelGenerator {
         MethodCallExpr bindAsDSL = new MethodCallExpr(bindDSL, BIND_AS_CALL);
         bindAsDSL.addArgument( new NameExpr(toVar(drlxParseResult.patternBinding)) );
         bindAsDSL.addArgument( buildConstraintExpression( drlxParseResult, drlxParseResult.left.getExpression() ) );
-        return buildReactOn( bindAsDSL, drlxParseResult.reactOnProperties );
+        return buildReactOn( drlxParseResult, bindAsDSL );
     }
 }
