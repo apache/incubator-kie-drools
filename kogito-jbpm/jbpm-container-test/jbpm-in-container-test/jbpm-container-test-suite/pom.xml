@@ -146,6 +146,10 @@
       <artifactId>drools-core</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency> <!-- To make use of TransactionManager in CountDownProcessEventListener -->
+      <groupId>org.drools</groupId>
+      <artifactId>drools-persistence-api</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-human-task-core</artifactId>

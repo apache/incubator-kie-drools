@@ -35,12 +35,14 @@ import org.jbpm.test.container.AbstractRuntimeEJBServicesTest;
 import org.jbpm.test.container.groups.EAP;
 import org.jbpm.test.container.groups.WAS;
 import org.jbpm.test.container.groups.WLS;
+import org.jbpm.test.container.listeners.CountDownProcessEventListener;
 import org.jbpm.test.container.listeners.TrackingAgendaEventListener;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runners.MethodSorters;
+import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.ProcessInstance;
@@ -244,6 +246,18 @@ public class ETransactionTest extends AbstractRuntimeEJBServicesTest {
 
     @Test
     public void testTimer() throws Exception {
+        CountDownProcessEventListener listener = new CountDownProcessEventListener(0) {
+            @Override
+            public void afterNodeLeft(ProcessNodeLeftEvent event) {
+                if ("Timer".equals(event.getNodeInstance().getNodeName())) {
+                    countDown();
+                }
+            }
+        };
+        RuntimeManager manager = deploymentService.getRuntimeManager(kieJar);
+        RuntimeEngine engine = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
+        engine.getKieSession().addEventListener(listener);
+
         Long processInstanceId = startProcessInstance(PROCESS_ID);
 
         UserTransaction ut = InitialContext.doLookup(USER_TRANSACTION_NAME);
@@ -271,7 +285,8 @@ public class ETransactionTest extends AbstractRuntimeEJBServicesTest {
 
         ut.commit();
 
-        Thread.sleep(2000);             //to make sure the timer is completed
+        listener.reset(1);
+        listener.waitTillCompleted();
 
         Assertions.assertThat(hasNodeLeft(processInstanceId, "timer")).isTrue();
         Assertions.assertThat(hasNodeLeft(processInstanceId, "Timer")).isTrue();

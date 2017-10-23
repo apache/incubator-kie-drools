@@ -24,6 +24,7 @@ import java.util.Map;
 import org.assertj.core.api.Assertions;
 import org.jbpm.test.container.AbstractRuntimeEJBServicesTest;
 import org.jbpm.test.container.groups.EAP;
+import org.jbpm.test.container.listeners.CountDownProcessEventListener;
 import org.jbpm.test.container.mock.RestService;
 import org.jbpm.services.api.model.VariableDesc;
 import org.junit.AfterClass;
@@ -33,7 +34,6 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runners.MethodSorters;
-import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 import org.kie.api.runtime.manager.RuntimeEngine;
@@ -47,8 +47,21 @@ import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 @Category({EAP.class})
 public class EThreadInfoTest extends AbstractRuntimeEJBServicesTest {
 
-    private static final Object LOCK = new Object();
-    public static final int TIMEOUT = 4000;
+    private static CountDownProcessEventListener listener = new CountDownProcessEventListener() {
+        @Override
+        public void afterProcessCompleted(ProcessCompletedEvent event) {
+            if ("org.jboss.qa.bpms.ThreadInfo".equals(event.getProcessInstance().getProcessId())) {
+                countDown();
+            }
+        }
+
+        @Override
+        public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {
+            if ("User Task".equals(event.getNodeInstance().getNodeName())) {
+                countDown();
+            }
+        }
+    };
 
     @BeforeClass
     public static void startRestService() {
@@ -63,25 +76,9 @@ public class EThreadInfoTest extends AbstractRuntimeEJBServicesTest {
         }
         RuntimeManager manager = deploymentService.getRuntimeManager(kieJar);
         RuntimeEngine engine = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
-        engine.getKieSession().addEventListener(new DefaultProcessEventListener() {
-            @Override
-            public void afterProcessCompleted(ProcessCompletedEvent event) {
-                if (event.getProcessInstance().getProcessId().equals("org.jboss.qa.bpms.ThreadInfo")) {
-                    synchronized (LOCK) {
-                        LOCK.notifyAll();
-                    }
-                }
-            }
 
-            @Override
-            public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {
-                if (event.getNodeInstance().getNodeName().equals("User Task")) {
-                    synchronized (LOCK) {
-                        LOCK.notifyAll();
-                    }
-                }
-            }
-        });
+        engine.getKieSession().addEventListener(listener);
+        listener.reset(1);
     }
 
     @AfterClass
@@ -95,9 +92,7 @@ public class EThreadInfoTest extends AbstractRuntimeEJBServicesTest {
 
         processService.signalProcessInstance(pid, "start", "timer");
 
-        waitTillPrepared();             //to make sure the timer is completed
-        Thread.sleep(TIMEOUT);
-        System.out.println("After LOCK");
+        listener.waitTillCompleted();
 
         Assertions.assertThat(hasNodeLeft(pid, "timer")).isTrue();
         Assertions.assertThat(hasNodeLeft(pid, "Timer")).isTrue();
@@ -128,8 +123,7 @@ public class EThreadInfoTest extends AbstractRuntimeEJBServicesTest {
 
         processService.signalProcessInstance(pid, "start", "log");
 
-        waitTillPrepared();             //to make sure the async task is completed
-        Thread.sleep(TIMEOUT);
+        listener.waitTillCompleted();
 
         Assertions.assertThat(hasNodeLeft(pid, "log")).isTrue();
         Assertions.assertThat(hasNodeLeft(pid, "Log")).isTrue();
@@ -164,8 +158,7 @@ public class EThreadInfoTest extends AbstractRuntimeEJBServicesTest {
 
         processService.signalProcessInstance(pid, "start", "rest");
 
-        waitTillPrepared();             //to make sure the rest request is completed
-        Thread.sleep(TIMEOUT);
+        listener.waitTillCompleted();
 
         Assertions.assertThat(hasNodeLeft(pid, "rest")).isTrue();
         Assertions.assertThat(hasNodeLeft(pid, "REST")).isTrue();
@@ -207,8 +200,7 @@ public class EThreadInfoTest extends AbstractRuntimeEJBServicesTest {
 
         processService.signalProcessInstance(pid, "start", "script");
 
-        waitTillPrepared();             //to make sure the script task is completed
-        Thread.sleep(TIMEOUT);
+        listener.waitTillCompleted();
 
         Assertions.assertThat(hasNodeLeft(pid, "script")).isTrue();
         Assertions.assertThat(hasNodeLeft(pid, "Script")).isTrue();
@@ -238,8 +230,7 @@ public class EThreadInfoTest extends AbstractRuntimeEJBServicesTest {
 
         processService.signalProcessInstance(pid, "start", "usertask");
 
-        waitTillPrepared();             //to make sure the task is created and available to start
-        Thread.sleep(TIMEOUT);
+        listener.waitTillCompleted();
 
         List<TaskSummary> taskSummaries = runtimeDataService.getTasksAssignedAsPotentialOwner("john", new QueryFilter());
         Assertions.assertThat(taskSummaries).isNotNull().hasSize(1);
@@ -274,9 +265,7 @@ public class EThreadInfoTest extends AbstractRuntimeEJBServicesTest {
 
         processService.signalProcessInstance(pid, "start", "rule");
 
-        waitTillPrepared();             //to make sure the rule is fired
-        Thread.sleep(TIMEOUT);
-        System.out.println("After LOCK");
+        listener.waitTillCompleted();
 
         Assertions.assertThat(hasNodeLeft(pid, "rule")).isTrue();
         Assertions.assertThat(hasNodeLeft(pid, "Rule")).isTrue();
@@ -306,9 +295,7 @@ public class EThreadInfoTest extends AbstractRuntimeEJBServicesTest {
 
         processService.signalProcessInstance(pid, "start", "embedded");
 
-        waitTillPrepared();             //to make sure the embedded process is completed
-        Thread.sleep(TIMEOUT);
-        System.out.println("After LOCK");
+        listener.waitTillCompleted();
 
         Assertions.assertThat(hasNodeLeft(pid, "embedded")).isTrue();
         Assertions.assertThat(hasNodeLeft(pid, "Embedded")).isTrue();
@@ -338,9 +325,7 @@ public class EThreadInfoTest extends AbstractRuntimeEJBServicesTest {
 
         processService.signalProcessInstance(pid, "start", "subprocess");
 
-        waitTillPrepared();             //to make sure the subprocess is completed
-        Thread.sleep(TIMEOUT);
-        System.out.println("After LOCK");
+        listener.waitTillCompleted();
 
         Assertions.assertThat(hasNodeLeft(pid, "subprocess")).isTrue();
         Assertions.assertThat(hasNodeLeft(pid, "HelloWorld_1.0")).isTrue();
@@ -380,12 +365,6 @@ public class EThreadInfoTest extends AbstractRuntimeEJBServicesTest {
         query.setAscending(false);
 
         return runtimeDataService.getVariableHistory(pid, "threadName", query);
-    }
-
-    private void waitTillPrepared() throws InterruptedException {
-        synchronized (LOCK) {
-            LOCK.wait();
-        }
     }
 
 }
