@@ -18,13 +18,19 @@ package org.drools.testcoverage.regression;
 
 import java.io.StringReader;
 
+import java.util.Collection;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestConstants;
 import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieServices;
 import org.kie.api.io.Resource;
 
+@RunWith(Parameterized.class)
 public class ImportReplaceTest {
 
     private static final String declares =
@@ -52,6 +58,17 @@ public class ImportReplaceTest {
             + "        insert(new Holder(person));\n"
             + "end\n";
 
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public ImportReplaceTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseConfigurations();
+    }
+
     @Test
     public void test() {
         final Resource declaresResource =
@@ -63,10 +80,10 @@ public class ImportReplaceTest {
         rulesResource.setTargetPath("src/main/resources/rules.drl");
 
         // this should be OK
-        KieUtil.getKieBuilderFromResources(true, declaresResource, rulesResource);
+        KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration, true, declaresResource, rulesResource);
 
         // this should be fine too
-        KieUtil.getKieBuilderFromResources(true, rulesResource, declaresResource);
+        KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration, true, rulesResource, declaresResource);
     }
 
 }

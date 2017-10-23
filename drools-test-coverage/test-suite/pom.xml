@@ -44,6 +44,13 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <!-- TODO - remove version when model-compiler is in bom -->
+      <groupId>org.drools</groupId>
+      <artifactId>drools-model-compiler</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-decisiontables</artifactId>
       <scope>test</scope>

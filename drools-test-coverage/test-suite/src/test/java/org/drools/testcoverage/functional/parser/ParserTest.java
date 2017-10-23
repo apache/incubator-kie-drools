@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -44,8 +45,11 @@ public abstract class ParserTest {
 
     protected final File file;
 
-    public ParserTest(File file) {
+    protected final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public ParserTest(final File file, final KieBaseTestConfiguration kieBaseTestConfiguration) {
         this.file = file;
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
     }
 
     protected static List<File> getFiles(final String directory) {
@@ -71,7 +75,8 @@ public abstract class ParserTest {
         final Set<Object[]> set = new HashSet<>();
 
         for (File file : files) {
-            set.add(new Object[] { file });
+            set.add(new Object[] { file, KieBaseTestConfiguration.CLOUD_EQUALITY });
+            set.add(new Object[] { file, KieBaseTestConfiguration.CLOUD_EQUALITY_CANONICAL_MODEL });
         }
 
         return set;

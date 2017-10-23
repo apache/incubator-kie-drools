@@ -16,14 +16,25 @@
 
 package org.drools.testcoverage.regression;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.common.model.Message;
 import org.drools.testcoverage.common.model.Person;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.command.Command;
@@ -34,17 +45,11 @@ import org.kie.api.runtime.StatelessKieSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-
 /**
  * Test to verify BRMS-532 (Drools Session insert
  * ConcurrentModificationException in Multithreading Environment) is fixed
  */
+@RunWith(Parameterized.class)
 public class SessionInsertMultiThreadingTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SessionInsertMultiThreadingTest.class);
@@ -52,20 +57,28 @@ public class SessionInsertMultiThreadingTest {
     private static final int THREADS = 50;
     private static final int RUNS_PER_THREAD = 100;
 
-    private static KieBase kbase;
-    private static ExecutorService executor;
+    private KieBase kbase;
+    private ExecutorService executor;
 
-    @BeforeClass
-    public static void createKbase() throws Exception {
-        final Resource resource = KieServices.Factory.get().getResources().newClassPathResource(
-                "sessionInsertMultithreadingTest.drl",
-                SessionInsertMultiThreadingTest.class);
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
 
-        kbase = KieBaseUtil.getKieBaseFromResources(true, resource);
+    public SessionInsertMultiThreadingTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseConfigurations();
     }
 
     @Before
     public void createExecutor() {
+        final Resource resource = KieServices.Factory.get().getResources().newClassPathResource(
+                "sessionInsertMultithreadingTest.drl",
+                SessionInsertMultiThreadingTest.class);
+
+        kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, true, resource);
+
         executor = Executors.newFixedThreadPool(THREADS);
     }
 
