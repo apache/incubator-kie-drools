@@ -440,6 +440,7 @@ public class KiePackagesBuilder {
         }
 
         addConstraintsToPattern( ctx, pattern, modelPattern, modelPattern.getConstraint() );
+        addFieldsToPatternWatchlist( pattern, modelPattern.getWatchedProps() );
         return pattern;
     }
 
@@ -539,7 +540,6 @@ public class KiePackagesBuilder {
                                                           new TemporalConstraintEvaluator( declarations, pattern, singleConstraint ) :
                                                           new ConstraintEvaluator( declarations, pattern, singleConstraint );
                 pattern.addConstraint( new LambdaConstraint( constraintEvaluator ) );
-                addFieldsToPatternWatchlist( pattern, singleConstraint.getReactiveProps() );
             }
 
         } else if (modelPattern.getConstraint().getType() == Constraint.Type.AND) {

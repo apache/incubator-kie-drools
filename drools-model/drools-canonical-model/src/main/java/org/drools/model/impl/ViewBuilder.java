@@ -1,20 +1,57 @@
 package org.drools.model.impl;
 
-import org.drools.model.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Stream;
+
+import org.drools.model.AccumulateFunction;
+import org.drools.model.Argument;
+import org.drools.model.Condition;
 import org.drools.model.Condition.Type;
+import org.drools.model.ConditionalConsequence;
+import org.drools.model.Consequence;
+import org.drools.model.DataSourceDefinition;
+import org.drools.model.Declaration;
+import org.drools.model.From;
+import org.drools.model.Pattern;
+import org.drools.model.RuleItem;
+import org.drools.model.RuleItemBuilder;
+import org.drools.model.SingleConstraint;
+import org.drools.model.Variable;
 import org.drools.model.consequences.ConditionalNamedConsequenceImpl;
 import org.drools.model.consequences.NamedConsequenceImpl;
 import org.drools.model.constraints.SingleConstraint1;
 import org.drools.model.constraints.SingleConstraint2;
 import org.drools.model.constraints.TemporalConstraint;
-import org.drools.model.patterns.*;
-import org.drools.model.view.*;
+import org.drools.model.patterns.AccumulatePatternImpl;
+import org.drools.model.patterns.CompositePatterns;
+import org.drools.model.patterns.ExistentialPatternImpl;
+import org.drools.model.patterns.OOPathImpl;
+import org.drools.model.patterns.PatternImpl;
+import org.drools.model.patterns.QueryCallPattern;
+import org.drools.model.view.AbstractExprViewItem;
+import org.drools.model.view.AccumulateExprViewItem;
+import org.drools.model.view.BindViewItem;
+import org.drools.model.view.CombinedExprViewItem;
+import org.drools.model.view.ExistentialExprViewItem;
+import org.drools.model.view.Expr1ViewItemImpl;
+import org.drools.model.view.Expr2ViewItemImpl;
+import org.drools.model.view.InputViewItemImpl;
+import org.drools.model.view.OOPathViewItem;
 import org.drools.model.view.OOPathViewItem.OOPathChunk;
-
-import java.util.*;
-import java.util.stream.Stream;
+import org.drools.model.view.QueryCallViewItem;
+import org.drools.model.view.TemporalExprViewItem;
+import org.drools.model.view.ViewItem;
 
 import static java.util.stream.Collectors.toList;
+
 import static org.drools.model.DSL.input;
 import static org.drools.model.constraints.AbstractSingleConstraint.fromExpr;
 import static org.drools.model.impl.NamesGenerator.generateName;
@@ -184,6 +221,10 @@ public class ViewBuilder {
     }
 
     private static Condition viewItem2Condition( ViewItem viewItem, Condition condition, Set<Variable<?>> usedVars, Map<Variable<?>, InputViewItemImpl<?>> inputs ) {
+        if ( viewItem instanceof AbstractExprViewItem ) {
+            ( (PatternImpl) condition ).addWatchedProps( (( AbstractExprViewItem ) viewItem).getWatchedProps() );
+        }
+
         if ( viewItem instanceof Expr1ViewItemImpl ) {
             Expr1ViewItemImpl expr = (Expr1ViewItemImpl)viewItem;
             if (expr.getPredicate() != null) {
