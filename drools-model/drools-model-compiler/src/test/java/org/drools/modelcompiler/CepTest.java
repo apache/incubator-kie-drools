@@ -300,4 +300,35 @@ public class CepTest extends BaseModelTest {
 
         assertEquals(1, resultsAfter.size());
     }
+
+    @Test
+    public void testExpires() throws Exception {
+        String str =
+                "package org.drools.compiler;\n" +
+                "import " + StockFact.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "declare StockFact\n" +
+                "    @role( value = event )\n" +
+                "    @expires( value = 2s, policy = TIME_SOFT )\n" +
+                "end\n" +
+                "\n" +
+                "rule \"expiration\"\n" +
+                "when\n" +
+                "   StockFact( company == \"DROO\" )\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str, getCepKieModuleModel() );
+        SessionPseudoClock clock = ksession.getSessionClock();
+
+        ksession.insert(new StockFact("DROO"));
+
+        clock.advanceTime(1, TimeUnit.SECONDS);
+        ksession.fireAllRules();
+        assertEquals(1, ksession.getObjects().size());
+
+        clock.advanceTime(2, TimeUnit.SECONDS);
+        ksession.fireAllRules();
+        assertEquals(0, ksession.getObjects().size());
+    }
 }
