@@ -48,7 +48,7 @@ public final class KieSessionUtil {
         final KieBaseModel kieBaseModel = kieBaseTestConfiguration.getKieBaseModel(module);
 
         kieSessionTestConfiguration.getKieSessionModel(kieBaseModel);
-        final KieModule kieModule = KieUtil.buildAndInstallKieModuleIntoRepo(moduleGroupId, module, resources);
+        final KieModule kieModule = KieUtil.buildAndInstallKieModuleIntoRepo(kieBaseTestConfiguration, moduleGroupId, module, resources);
 
         return getDefaultKieSessionFromReleaseId(kieModule.getReleaseId(), kieSessionTestConfiguration.isStateful(), false);
     }

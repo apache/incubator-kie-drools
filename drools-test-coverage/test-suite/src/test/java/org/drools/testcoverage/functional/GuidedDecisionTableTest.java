@@ -16,18 +16,24 @@
 
 package org.drools.testcoverage.functional;
 
+import java.util.Collection;
 import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.common.listener.TrackingAgendaEventListener;
 import org.drools.testcoverage.common.model.Address;
 import org.drools.testcoverage.common.model.Person;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieSession;
 
+@RunWith(Parameterized.class)
 public class GuidedDecisionTableTest {
 
     private Address barcelonaCityCenter;
@@ -37,6 +43,17 @@ public class GuidedDecisionTableTest {
     private Person oldPeter;
     private KieSession kSession;
     private TrackingAgendaEventListener rulesFired;
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public GuidedDecisionTableTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseConfigurations();
+    }
 
     @Before
     public void setUp() throws Exception {
@@ -266,7 +283,7 @@ public class GuidedDecisionTableTest {
     private void initKieSession(String gdstName) {
         final Resource resource = KieServices.Factory.get().getResources().newClassPathResource(gdstName,
                                                                                                 GuidedDecisionTableTest.class);
-        final KieBase kBase = KieBaseUtil.getKieBaseFromResources(true,
+        final KieBase kBase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, true,
                                                                   resource);
 
         kSession = kBase.newKieSession();
