@@ -16,15 +16,20 @@
 
 package org.drools.testcoverage.regression;
 
+import java.util.Collection;
 import org.assertj.core.api.Assertions;
 import org.drools.compiler.StockTick;
 import org.drools.compiler.integrationtests.SerializationHelper;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestConstants;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
@@ -41,7 +46,9 @@ import java.io.StringReader;
 /**
  * Verifies that serialization and de-serialization of a composite trigger succeeds (BZ 1142914).
  */
+@RunWith(Parameterized.class)
 public class DeserializationWithCompositeTriggerTest {
+
     private static final String DRL =
             "package org.drools.test;\n" +
             "import org.drools.compiler.StockTick;\n" +
@@ -62,11 +69,22 @@ public class DeserializationWithCompositeTriggerTest {
 
     private KieSession ksession;
 
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public DeserializationWithCompositeTriggerTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseConfigurations();
+    }
+
     @Before
     public void prepare() {
         final Resource resource = KieServices.Factory.get().getResources().newReaderResource(new StringReader(DRL));
         resource.setTargetPath(TestConstants.DRL_TEST_TARGET_PATH);
-        final KieBuilder kbuilder = KieUtil.getKieBuilderFromResources(true, resource);
+        final KieBuilder kbuilder = KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration, true, resource);
         final KieContainer kcontainer = KieServices.Factory.get().newKieContainer(kbuilder.getKieModule().getReleaseId());
 
         final KieBaseConfiguration kieBaseConfiguration = KieServices.Factory.get().newKieBaseConfiguration();

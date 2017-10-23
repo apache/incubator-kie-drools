@@ -20,9 +20,13 @@ import org.assertj.core.api.Assertions;
 import org.drools.decisiontable.ExternalSpreadsheetCompiler;
 import org.drools.testcoverage.common.model.Cheese;
 import org.drools.testcoverage.common.model.Person;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.TestConstants;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.definition.KiePackage;
@@ -37,9 +41,21 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+@RunWith(Parameterized.class)
 public class RuleTemplateTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RuleTemplateTest.class);
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public RuleTemplateTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseConfigurations();
+    }
 
     @Test
     public void testSampleCheese() {
@@ -63,7 +79,7 @@ public class RuleTemplateTest {
         final Resource drlResource = kieServices.getResources().newReaderResource(new StringReader(drl));
         drlResource.setTargetPath(TestConstants.DRL_TEST_TARGET_PATH);
 
-        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(true, drlResource);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, true, drlResource);
         final Collection<KiePackage> pkgs = kbase.getKiePackages();
 
         Assertions.assertThat(pkgs.size()).isEqualTo(2);
