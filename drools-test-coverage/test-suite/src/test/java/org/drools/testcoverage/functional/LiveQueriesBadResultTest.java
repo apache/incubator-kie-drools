@@ -16,10 +16,15 @@
 
 package org.drools.testcoverage.functional;
 
+import java.util.Collection;
 import org.drools.testcoverage.common.model.Person;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.Row;
@@ -30,9 +35,21 @@ import java.util.ArrayList;
 /**
  * Tests bad using and accessing to livequeries.
  */
+@RunWith(Parameterized.class)
 public class LiveQueriesBadResultTest {
 
     private ArrayList<Object> inserted, updated, deleted;
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public LiveQueriesBadResultTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseConfigurations();
+    }
 
     @Before
     public void initialize() {
@@ -62,7 +79,8 @@ public class LiveQueriesBadResultTest {
             }
         };
 
-        final KieBase kieBase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), true, "query.drl");
+        final KieBase kieBase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration,
+                true, "query.drl");
         KieSession ksession = kieBase.newKieSession();
         ksession.insert(new Person("Petr"));
 
@@ -92,6 +110,7 @@ public class LiveQueriesBadResultTest {
 
         final KieBase kieBase = KieBaseUtil.getKieBaseFromClasspathResources(
                 getClass(),
+                kieBaseTestConfiguration,
                 false,
                 "query-bad-parametr-access.drl");
         KieSession ksession = kieBase.newKieSession();
@@ -121,7 +140,8 @@ public class LiveQueriesBadResultTest {
             }
         };
 
-        final KieBase kieBase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), true, "query.drl");
+        final KieBase kieBase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration,
+                true, "query.drl");
         KieSession ksession = kieBase.newKieSession();
         ksession.insert(new Person("Petr", 25));
 
@@ -130,7 +150,8 @@ public class LiveQueriesBadResultTest {
 
     @Test(expected = RuntimeException.class)
     public void testOfBadListener() {
-        final KieBase kieBase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), true, "query.drl");
+        final KieBase kieBase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration,
+                true, "query.drl");
         KieSession ksession = kieBase.newKieSession();
         ksession.insert(new Person("Petr", 25));
 
@@ -159,7 +180,8 @@ public class LiveQueriesBadResultTest {
             }
         };
 
-        final KieBase kieBase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), true, "query.drl");
+        final KieBase kieBase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration,
+                true, "query.drl");
         KieSession ksession = kieBase.newKieSession();
         ksession.insert(new Person("Petr", 25));
 

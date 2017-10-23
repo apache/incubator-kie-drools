@@ -17,14 +17,19 @@
 package org.drools.testcoverage.functional.oopath;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.common.model.Address;
 import org.drools.testcoverage.common.model.Employee;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.After;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieSession;
@@ -33,12 +38,24 @@ import org.kie.api.runtime.rule.FactHandle;
 /**
  * Tests usage of OOPath expressions resulting in multiple conditional branches (e.g. OR operator).
  */
+@RunWith(Parameterized.class)
 public class OOPathLogicalBranchesTest {
 
     private static final KieServices KIE_SERVICES = KieServices.Factory.get();
 
     private KieSession kieSession;
     private List<String> results;
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public OOPathLogicalBranchesTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseConfigurations();
+    }
 
     @After
     public void disposeKieSession() {
@@ -62,7 +79,8 @@ public class OOPathLogicalBranchesTest {
                 "  list.add( $address.getCity() );\n" +
                 "end\n";
 
-        final KieBase kieBase = KieBaseUtil.getKieBaseFromDRLResources(true, KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
+        final KieBase kieBase = KieBaseUtil.getKieBaseFromDRLResources(kieBaseTestConfiguration,
+                true, KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
         this.initKieSession(kieBase);
 
         this.kieSession.fireAllRules();
@@ -83,7 +101,8 @@ public class OOPathLogicalBranchesTest {
                 "  list.add( $address.getCity() );\n" +
                 "end\n";
 
-        final KieBase kieBase = KieBaseUtil.getKieBaseFromDRLResources(true, KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
+        final KieBase kieBase = KieBaseUtil.getKieBaseFromDRLResources(kieBaseTestConfiguration,
+                true, KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
         this.initKieSession(kieBase);
 
         this.kieSession.fireAllRules();
@@ -104,7 +123,8 @@ public class OOPathLogicalBranchesTest {
                 "  list.add( $address.getCity() );\n" +
                 "end\n";
 
-        final KieBase kieBase = KieBaseUtil.getKieBaseFromDRLResources(true, KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
+        final KieBase kieBase = KieBaseUtil.getKieBaseFromDRLResources(kieBaseTestConfiguration,
+                true, KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
         this.initKieSession(kieBase);
 
         this.kieSession.fireAllRules();
@@ -125,7 +145,8 @@ public class OOPathLogicalBranchesTest {
                 "  list.add( $emp.getName() );\n" +
                 "end\n";
 
-        final KieBase kieBase = KieBaseUtil.getKieBaseFromDRLResources(true, KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
+        final KieBase kieBase = KieBaseUtil.getKieBaseFromDRLResources(kieBaseTestConfiguration,
+                true, KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
         this.initKieSession(kieBase);
 
         this.kieSession.fireAllRules();
@@ -147,7 +168,8 @@ public class OOPathLogicalBranchesTest {
                 "  list.add( $address.getCity() );\n" +
                 "end\n";
 
-        final KieBase kieBase = KieBaseUtil.getKieBaseFromDRLResources(true, KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
+        final KieBase kieBase = KieBaseUtil.getKieBaseFromDRLResources(kieBaseTestConfiguration,
+                true, KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
         this.initKieSession(kieBase);
 
         this.kieSession.fireAllRules();
@@ -171,7 +193,8 @@ public class OOPathLogicalBranchesTest {
                 "  list.add( $employee.getName() );\n" +
                 "end\n";
 
-        final KieBase kieBase = KieBaseUtil.getKieBaseFromDRLResources(true, KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
+        final KieBase kieBase = KieBaseUtil.getKieBaseFromDRLResources(kieBaseTestConfiguration,
+                true, KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
         this.initKieSession(kieBase);
 
         this.kieSession.fireAllRules();
@@ -191,7 +214,8 @@ public class OOPathLogicalBranchesTest {
                 "  list.add( $address.getCity() );\n" +
                 "end\n";
 
-        final KieBase kieBase = KieBaseUtil.getKieBaseFromDRLResources(true, KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
+        final KieBase kieBase = KieBaseUtil.getKieBaseFromDRLResources(kieBaseTestConfiguration,
+                true, KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
         this.initKieSession(kieBase);
 
         this.kieSession.fireAllRules();
@@ -212,7 +236,8 @@ public class OOPathLogicalBranchesTest {
                 "  list.add( $address.getCity() );\n" +
                 "end\n";
 
-        final KieBase kieBase = KieBaseUtil.getKieBaseFromDRLResources(true, KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
+        final KieBase kieBase = KieBaseUtil.getKieBaseFromDRLResources(kieBaseTestConfiguration,
+                true, KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
         this.initKieSession(kieBase);
 
         this.kieSession.fireAllRules();
@@ -233,7 +258,8 @@ public class OOPathLogicalBranchesTest {
                 "  list.add( $emp.getName() );\n" +
                 "end\n";
 
-        final KieBase kieBase = KieBaseUtil.getKieBaseFromDRLResources(true, KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
+        final KieBase kieBase = KieBaseUtil.getKieBaseFromDRLResources(kieBaseTestConfiguration,
+                true, KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
         this.initKieSession(kieBase);
 
         this.kieSession.fireAllRules();
@@ -255,7 +281,8 @@ public class OOPathLogicalBranchesTest {
                 "  list.add( $address.getCity() );\n" +
                 "end\n";
 
-        final KieBase kieBase = KieBaseUtil.getKieBaseFromDRLResources(true, KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
+        final KieBase kieBase = KieBaseUtil.getKieBaseFromDRLResources(kieBaseTestConfiguration,
+                true, KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
         this.initKieSession(kieBase);
 
         this.kieSession.fireAllRules();
@@ -277,7 +304,8 @@ public class OOPathLogicalBranchesTest {
                 "  list.add( $employee.getName() );\n" +
                 "end\n";
 
-        final KieBase kieBase = KieBaseUtil.getKieBaseFromDRLResources(true, KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
+        final KieBase kieBase = KieBaseUtil.getKieBaseFromDRLResources(kieBaseTestConfiguration,
+                true, KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
         this.createKieSession(kieBase);
 
         final Employee bruno = this.createEmployee("Bruno", new Address("Elm", 10, "Small City"));
