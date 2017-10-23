@@ -10,6 +10,7 @@ public abstract class AbstractExprViewItem<T> implements ExprViewItem<T>  {
     private final Variable<T> var;
 
     private String[] reactiveProps;
+    private String[] watchedProps;
 
     private boolean queryExpression;
 
@@ -32,6 +33,11 @@ public abstract class AbstractExprViewItem<T> implements ExprViewItem<T>  {
         return this;
     }
 
+    public AbstractExprViewItem<T> watch(String... props) {
+        this.watchedProps = props;
+        return this;
+    }
+
     @Override
     public String getExprId() {
         return exprId;
@@ -39,6 +45,10 @@ public abstract class AbstractExprViewItem<T> implements ExprViewItem<T>  {
 
     public String[] getReactiveProps() {
         return reactiveProps;
+    }
+
+    public String[] getWatchedProps() {
+        return watchedProps;
     }
 
     public boolean isQueryExpression() {
