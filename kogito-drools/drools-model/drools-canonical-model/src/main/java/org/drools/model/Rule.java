@@ -10,6 +10,7 @@ public interface Rule {
         Attribute<Boolean> NO_LOOP = () -> false;
         Attribute<Boolean> LOCK_ON_ACTIVE = () -> false;
         Attribute<Boolean> ENABLED = () -> true;
+        Attribute<Boolean> AUTO_FOCUS = () -> true;
         Attribute<Integer> SALIENCE = () -> 0;
         Attribute<String> AGENDA_GROUP = () -> "MAIN";
         Attribute<String> ACTIVATION_GROUP = () -> null;
