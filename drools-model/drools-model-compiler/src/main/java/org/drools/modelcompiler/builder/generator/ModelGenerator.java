@@ -28,6 +28,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
 
 import org.drools.compiler.lang.descr.AccumulateDescr;
@@ -69,7 +70,9 @@ import org.drools.javaparser.ast.drlx.expr.TemporalLiteralExpr;
 import org.drools.javaparser.ast.expr.AssignExpr;
 import org.drools.javaparser.ast.expr.BinaryExpr;
 import org.drools.javaparser.ast.expr.BinaryExpr.Operator;
+import org.drools.javaparser.ast.expr.CastExpr;
 import org.drools.javaparser.ast.expr.ClassExpr;
+import org.drools.javaparser.ast.expr.EnclosedExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.FieldAccessExpr;
 import org.drools.javaparser.ast.expr.LambdaExpr;
@@ -114,6 +117,7 @@ public class ModelGenerator {
         attributesMap.put("no-loop", JavaParser.parseExpression("Rule.Attribute.NO_LOOP"));
         attributesMap.put("salience", JavaParser.parseExpression("Rule.Attribute.SALIENCE"));
         attributesMap.put("enabled", JavaParser.parseExpression("Rule.Attribute.ENABLED"));
+        attributesMap.put("auto-focus", JavaParser.parseExpression("Rule.Attribute.AUTO_FOCUS"));
         attributesMap.put("lock-on-active", JavaParser.parseExpression("Rule.Attribute.LOCK_ON_ACTIVE"));
         attributesMap.put("agenda-group", JavaParser.parseExpression("Rule.Attribute.AGENDA_GROUP"));
         attributesMap.put("activation-group", JavaParser.parseExpression("Rule.Attribute.ACTIVATION_GROUP"));
@@ -257,6 +261,7 @@ public class ModelGenerator {
                 case "no-loop":
                 case "salience":
                 case "enabled":
+                case "auto-focus":
                 case "lock-on-active":
                     attributeCall.addArgument(JavaParser.parseExpression(as.getValue().getValue()));
                     break;
@@ -297,12 +302,12 @@ public class ModelGenerator {
     }
 
     public static MethodCallExpr executeCall(RuleContext context, BlockStmt ruleVariablesBlock, BlockStmt ruleConsequence, List<String> verifiedDeclUsedInRHS, MethodCallExpr onCall) {
-        boolean rhsRewritten = rewriteRHS(context, ruleVariablesBlock, ruleConsequence);
+        boolean requireDrools = rewriteRHS(context, ruleVariablesBlock, ruleConsequence);
         MethodCallExpr executeCall = new MethodCallExpr(onCall, EXECUTE_CALL);
         LambdaExpr executeLambda = new LambdaExpr();
         executeCall.addArgument(executeLambda);
         executeLambda.setEnclosingParameters(true);
-        if (rhsRewritten) {
+        if (requireDrools) {
             executeLambda.addParameter(new Parameter(new UnknownType(), "drools"));
         }
         verifiedDeclUsedInRHS.stream().map(x -> new Parameter(new UnknownType(), x)).forEach(executeLambda::addParameter);
@@ -455,24 +460,41 @@ public class ModelGenerator {
         return sb.toString();
     }
 
+    private static Map<String, String> returnedTypes = new HashMap<>();
+
+    static {
+        returnedTypes.put("getKnowledgeRuntime", "org.kie.api.runtime.KieRuntime");
+        returnedTypes.put("getKieRuntime", "org.kie.api.runtime.KieRuntime");
+    }
+
     private static boolean rewriteRHS(RuleContext context, BlockStmt ruleBlock, BlockStmt rhs) {
+        AtomicBoolean requireDrools = new AtomicBoolean( false );
         List<MethodCallExpr> methodCallExprs = rhs.getChildNodesByType(MethodCallExpr.class);
         List<MethodCallExpr> updateExprs = new ArrayList<>();
 
-        boolean hasWMAs = methodCallExprs.stream()
-           .filter( ModelGenerator::isWMAMethod )
-           .peek( mce -> {
-                if (!mce.getScope().isPresent()) {
-                    mce.setScope(new NameExpr("drools"));
+        for (MethodCallExpr methodCallExpr : methodCallExprs) {
+            if ( isDroolsMethod( methodCallExpr ) ) {
+                if (!methodCallExpr.getScope().isPresent()) {
+                    methodCallExpr.setScope(new NameExpr("drools"));
                 }
-                if (mce.getNameAsString().equals("update")) {
-                    updateExprs.add(mce);
+                if (methodCallExpr.getNameAsString().equals("update")) {
+                    updateExprs.add(methodCallExpr);
+                } else if (methodCallExpr.getNameAsString().equals("retract")) {
+                    methodCallExpr.setName( new SimpleName( "delete" ) );
                 }
-                if (mce.getNameAsString().equals("retract")) {
-                    mce.setName( new SimpleName( "delete" ) );
-                }
-           })
-           .count() > 0;
+                requireDrools.set( true );
+            } else {
+                methodCallExpr.getScope().ifPresent( scope -> {
+                    if (scope instanceof MethodCallExpr && hasScope( (( MethodCallExpr ) scope), "drools" )) {
+                        String returnedType = returnedTypes.get( (( MethodCallExpr ) scope).getNameAsString() );
+                        if (returnedType != null) {
+                            methodCallExpr.setScope( new EnclosedExpr( new CastExpr( new ClassOrInterfaceType( returnedType ), scope ) ) );
+                        }
+                        requireDrools.set( true );
+                    }
+                } );
+            }
+        }
 
         for (MethodCallExpr updateExpr : updateExprs) {
             Expression argExpr = updateExpr.getArgument( 0 );
@@ -498,24 +520,20 @@ public class ModelGenerator {
             }
         }
 
-        return hasWMAs;
+        return requireDrools.get();
     }
 
-    private static boolean isWMAMethod( MethodCallExpr mce ) {
-        return isDroolsScopeInWMA( mce ) && (
+    private static boolean isDroolsMethod( MethodCallExpr mce ) {
+        return hasScope( mce, "drools" ) || (
+                !mce.getScope().isPresent() && (
                 mce.getNameAsString().equals("insert") ||
                 mce.getNameAsString().equals("delete") ||
                 mce.getNameAsString().equals("retract") ||
-                mce.getNameAsString().equals("update") );
-    }
-
-    private static boolean isDroolsScopeInWMA( MethodCallExpr mce ) {
-        return !mce.getScope().isPresent() || hasScope( mce, "drools" );
+                mce.getNameAsString().equals("update") ) );
     }
 
     private static boolean hasScope( MethodCallExpr mce, String scope ) {
-        return mce.getScope().get() instanceof NameExpr &&
-               ( (NameExpr) mce.getScope().get() ).getNameAsString().equals( scope );
+        return mce.getScope().map( s -> s instanceof NameExpr && (( NameExpr ) s).getNameAsString().equals( scope ) ).orElse( false );
     }
 
     private static void visit(RuleContext context, PackageModel packageModel, BaseDescr descr) {
