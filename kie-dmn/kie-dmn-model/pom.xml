@@ -7,7 +7,7 @@
   <parent>
     <artifactId>kie-dmn</artifactId>
     <groupId>org.kie</groupId>
-    <version>7.4.1-SNAPSHOT</version>
+    <version>7.4.2-SNAPSHOT</version>
   </parent>
 
   <artifactId>kie-dmn-model</artifactId>
