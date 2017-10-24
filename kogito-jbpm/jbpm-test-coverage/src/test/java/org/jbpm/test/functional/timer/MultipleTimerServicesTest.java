@@ -28,7 +28,7 @@ import javax.persistence.Persistence;
 import org.jbpm.process.core.timer.GlobalSchedulerService;
 import org.jbpm.process.core.timer.impl.QuartzSchedulerService;
 import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
-import org.jbpm.test.listener.CountDownProcessEventListener;
+import org.jbpm.test.listener.NodeLeftCountDownProcessEventListener;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -133,9 +133,9 @@ public class MultipleTimerServicesTest extends TimerBaseTest {
     }
     
     public void testGlobalTimerServiceOnIndependentManager() throws Exception {
-        
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("timer", 3);
-        CountDownProcessEventListener countDownListener2 = new CountDownProcessEventListener("timer", 3);
+
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("timer", 3);
+        NodeLeftCountDownProcessEventListener countDownListener2 = new NodeLeftCountDownProcessEventListener("timer", 3);
         
         // prepare listener to assert results
         final List<Long> timerExporations = new ArrayList<Long>();

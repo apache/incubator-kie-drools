@@ -104,7 +104,7 @@
       </potentialOwner>
     </userTask>
     <scriptTask id="_7" name="Script" >
-      <script>System.out.println("Timer tirgerred");</script>
+      <script>System.out.println("Timer triggered");</script>
     </scriptTask>
 
     <!-- connections -->

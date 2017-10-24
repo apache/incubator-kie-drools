@@ -25,8 +25,8 @@ import org.jbpm.process.instance.event.listeners.RuleAwareProcessEventLister;
 import org.jbpm.runtime.manager.impl.error.ExecutionErrorHandlerInterceptor;
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
+import org.jbpm.test.listener.NodeLeftCountDownProcessEventListener;
 import org.jbpm.test.util.AbstractBaseTest;
-import org.jbpm.test.util.CountDownProcessEventListener;
 import org.jbpm.test.util.PoolingDataSource;
 import org.jbpm.workflow.instance.WorkflowRuntimeException;
 import org.junit.After;
@@ -847,7 +847,7 @@ public class SingletonRuntimeManagerTest extends AbstractBaseTest {
 
     @Test(timeout=10000)
     public void testTimerStartWithDeactivate() {
-        final CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("Hello", 1);
+        final NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("Hello", 1);
         RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
                 .newDefaultBuilder()
                 .userGroupCallback(userGroupCallback)

@@ -24,7 +24,7 @@ import org.jbpm.executor.impl.wih.AsyncWorkItemHandler;
 import org.jbpm.process.audit.JPAAuditLogService;
 import org.jbpm.process.audit.VariableInstanceLog;
 import org.jbpm.test.JbpmAsyncJobTestCase;
-import org.jbpm.test.listener.CountDownProcessEventListener;
+import org.jbpm.test.listener.NodeLeftCountDownProcessEventListener;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
@@ -74,7 +74,7 @@ public class AsyncTaskCallbackTest extends JbpmAsyncJobTestCase {
 
     @Test(timeout=30000)
     public void testTaskCallback() throws Exception {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("Continue", 1);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("Continue", 1);
         addProcessEventListener(countDownListener);
         KieSession ksession = createKSession(ASYNC_EXECUTOR_CALLBACK, ASYNC_DATA_EXECUTOR);
         WorkItemManager wim = ksession.getWorkItemManager();

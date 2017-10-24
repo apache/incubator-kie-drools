@@ -24,7 +24,7 @@ import java.util.Map;
 import org.assertj.core.api.Assertions;
 import org.jbpm.executor.ExecutorServiceFactory;
 import org.jbpm.test.JbpmTestCase;
-import org.jbpm.test.listener.CountDownProcessEventListener;
+import org.jbpm.test.listener.NodeLeftCountDownProcessEventListener;
 import org.jbpm.test.wih.FirstErrorWorkItemHandler;
 import org.junit.After;
 import org.junit.Before;
@@ -126,7 +126,7 @@ public class AsyncThreadContinuationTest extends JbpmTestCase {
 
     @Test(timeout = 10000)
     public void testRepeatIntermediateTimerAfterException() {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("MySignal", 1, true);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("MySignal", 1, true);
         
         KieSession ksession = createKSession(BPMN_IT);
         ksession.addEventListener(countDownListener);

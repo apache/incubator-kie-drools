@@ -143,6 +143,12 @@
       <groupId>org.kie</groupId>
       <artifactId>kie-internal</artifactId>
     </dependency>
+    <!-- To make use of CountDownProcessEventListeners -->
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-test-util</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>

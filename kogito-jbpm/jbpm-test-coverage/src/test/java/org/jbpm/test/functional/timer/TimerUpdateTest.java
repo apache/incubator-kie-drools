@@ -21,7 +21,7 @@ import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.jbpm.process.instance.command.UpdateTimerCommand;
 import org.jbpm.test.JbpmTestCase;
-import org.jbpm.test.listener.CountDownProcessEventListener;
+import org.jbpm.test.listener.NodeLeftCountDownProcessEventListener;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.event.process.DefaultProcessEventListener;
@@ -72,7 +72,7 @@ public class TimerUpdateTest extends JbpmTestCase {
 
     @Test(timeout = 30000)
     public void updateTimerLongerDelayTest() {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener(TIMER_NAME, 1);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener(TIMER_NAME, 1);
         //delay is set for 5s
         setProcessScenario(TIMER_FILE);
 
@@ -104,7 +104,7 @@ public class TimerUpdateTest extends JbpmTestCase {
 
     @Test(timeout = 30000)
     public void updateTimerShortherDelayTest() {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener(TIMER_NAME, 1);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener(TIMER_NAME, 1);
         //delay is set for 5s
         setProcessScenario(TIMER_FILE);
 
@@ -136,7 +136,7 @@ public class TimerUpdateTest extends JbpmTestCase {
 
     @Test(timeout = 30000)
     public void updateTimerBeforeDelayTest() {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener(TIMER_NAME, 1);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener(TIMER_NAME, 1);
         //delay is set for 5s
         setProcessScenario(TIMER_FILE);
 
@@ -168,7 +168,7 @@ public class TimerUpdateTest extends JbpmTestCase {
     
     @Test(timeout = 30000)
     public void updateBoundaryTimerTest() {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener(BOUNDARY_TIMER_NAME, 1);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener(BOUNDARY_TIMER_NAME, 1);
         //timer is set for long duration (100s)
         setProcessScenario(BOUNDARY_TIMER_FILE);
 
@@ -200,7 +200,7 @@ public class TimerUpdateTest extends JbpmTestCase {
     
     @Test(timeout = 30000)
     public void updateTimerSubprocessLongerDelayTest() {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener(TIMER_SUBPROCESS_NAME, 1);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener(TIMER_SUBPROCESS_NAME, 1);
         //delay is set for 5s
         setProcessScenario(TIMER_SUBPROCESS_FILE);
 

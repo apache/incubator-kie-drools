@@ -40,7 +40,7 @@ import org.jbpm.process.core.timer.impl.GlobalTimerService;
 import org.jbpm.process.core.timer.impl.GlobalTimerService.GlobalJobHandle;
 import org.jbpm.process.core.timer.impl.QuartzSchedulerService;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
-import org.jbpm.test.listener.CountDownProcessEventListener;
+import org.jbpm.test.listener.NodeLeftCountDownProcessEventListener;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -88,7 +88,7 @@ public class GlobalTimerServiceVolumeTest extends TimerBaseTest {
     private EntityManagerFactory emf;
 
     private int numberOfProcesses = 10;
-    private CountDownProcessEventListener countDownListener;
+    private NodeLeftCountDownProcessEventListener countDownListener;
 
     @Parameters(name = "Strategy : {0}")
     public static Collection<Object[]> data() {
@@ -122,7 +122,7 @@ public class GlobalTimerServiceVolumeTest extends TimerBaseTest {
 
         emf = Persistence.createEntityManagerFactory("org.jbpm.test.persistence");
 
-        countDownListener = new CountDownProcessEventListener("timer", numberOfProcesses);
+        countDownListener = new NodeLeftCountDownProcessEventListener("timer", numberOfProcesses);
         // prepare listener to assert results
         final List<Long> timerExporations = new ArrayList<Long>();
         ProcessEventListener listener = new DefaultProcessEventListener(){

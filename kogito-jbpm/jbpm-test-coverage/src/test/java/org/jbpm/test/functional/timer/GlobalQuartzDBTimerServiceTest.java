@@ -37,7 +37,7 @@ import org.jbpm.process.core.timer.impl.GlobalTimerService;
 import org.jbpm.process.core.timer.impl.QuartzSchedulerService;
 import org.jbpm.runtime.manager.impl.AbstractRuntimeManager;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
-import org.jbpm.test.listener.CountDownProcessEventListener;
+import org.jbpm.test.listener.NodeLeftCountDownProcessEventListener;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -124,7 +124,7 @@ public class GlobalQuartzDBTimerServiceTest extends GlobalTimerServiceBaseTest {
     
     @Test(timeout=20000)
     public void testTimerStartManagerClose() throws Exception {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("StartProcess", 3);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("StartProcess", 3);
         QuartzSchedulerService additionalCopy = new QuartzSchedulerService();
         additionalCopy.initScheduler(null);
         // prepare listener to assert results
@@ -261,7 +261,7 @@ public class GlobalQuartzDBTimerServiceTest extends GlobalTimerServiceBaseTest {
     @Test(timeout=20000)
     public void testContinueTimer() throws Exception {
         // JBPM-4443
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("timer", 2);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("timer", 2);
         // prepare listener to assert results
         final List<Long> timerExporations = new ArrayList<Long>();
         ProcessEventListener listener = new DefaultProcessEventListener(){
@@ -359,7 +359,7 @@ public class GlobalQuartzDBTimerServiceTest extends GlobalTimerServiceBaseTest {
         // RHBPMS-4729
         System.setProperty("org.quartz.properties", "quartz-db-short-misfire.properties");
 
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("StartProcess", 2);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("StartProcess", 2);
         // prepare listener to assert results
         final List<Long> timerExporations = new ArrayList<Long>();
         ProcessEventListener listener = new DefaultProcessEventListener(){

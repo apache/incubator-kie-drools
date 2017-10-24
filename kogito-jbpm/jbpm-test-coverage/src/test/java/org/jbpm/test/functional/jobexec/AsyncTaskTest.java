@@ -24,7 +24,7 @@ import org.jbpm.executor.impl.ExecutorServiceImpl;
 import org.jbpm.executor.impl.wih.AsyncWorkItemHandler;
 import org.jbpm.test.JbpmAsyncJobTestCase;
 import org.jbpm.test.listener.CountDownAsyncJobListener;
-import org.jbpm.test.listener.CountDownProcessEventListener;
+import org.jbpm.test.listener.NodeLeftCountDownProcessEventListener;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
@@ -49,7 +49,7 @@ public class AsyncTaskTest extends JbpmAsyncJobTestCase {
 
     @Test(timeout=10000)
     public void testTaskErrorHandling() throws Exception {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("Task 1", 1);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("Task 1", 1);
         addProcessEventListener(countDownListener);
         KieSession ksession = createKSession(ASYNC_EXECUTOR);
         WorkItemManager wim = ksession.getWorkItemManager();
@@ -82,7 +82,7 @@ public class AsyncTaskTest extends JbpmAsyncJobTestCase {
     @Test(timeout=10000)
     @BZ("1121027")
     public void testTaskComplete() throws Exception {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("Process async", 1);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("Process async", 1);
         CountDownAsyncJobListener countDownJobListener = new CountDownAsyncJobListener(1);
         try {
             ((ExecutorServiceImpl) getExecutorService()).addAsyncJobListener(countDownJobListener);

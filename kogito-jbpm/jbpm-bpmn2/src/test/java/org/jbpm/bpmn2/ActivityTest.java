@@ -38,7 +38,7 @@ import org.jbpm.process.instance.event.listeners.RuleAwareProcessEventLister;
 import org.jbpm.process.instance.event.listeners.TriggerRulesEventListener;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
-import org.jbpm.test.util.CountDownProcessEventListener;
+import org.jbpm.test.listener.NodeLeftCountDownProcessEventListener;
 import org.jbpm.workflow.instance.WorkflowRuntimeException;
 import org.jbpm.workflow.instance.node.DynamicNodeInstance;
 import org.jbpm.workflow.instance.node.DynamicUtils;
@@ -546,7 +546,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     @Test(timeout=10000)
     @RequirePersistence
     public void testProcesWithHumanTaskWithTimer() throws Exception {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("Timer", 1);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("Timer", 1);
         KieBase kbase = createKnowledgeBase("BPMN2-SubProcessWithTimer.bpmn2");
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ksession.addEventListener(countDownListener);
@@ -756,7 +756,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     @Test(timeout=10000)
     @RequirePersistence
     public void testCallActivityWithTimer() throws Exception {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("Timer", 1);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("Timer", 1);
         KieBase kbase = createKnowledgeBase("BPMN2-ParentProcess.bpmn2",
                 "BPMN2-SubProcessWithTimer.bpmn2");
         ksession = createKnowledgeSession(kbase);
@@ -1364,7 +1364,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     @RequirePersistence
     @Test(timeout=10000)
     public void testNullVariableInScriptTaskProcess() throws Exception {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("Timer", 1, true);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("Timer", 1, true);
         KieBase kbase = createKnowledgeBase("BPMN2-NullVariableInScriptTaskProcess.bpmn2");
         ksession = createKnowledgeSession(kbase);
         ksession.addEventListener(countDownListener);
@@ -1396,7 +1396,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testCallActivityWithBoundaryEvent() throws Exception {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("Boundary event", 1);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("Boundary event", 1);
         KieBase kbase = createKnowledgeBase(
                 "BPMN2-CallActivityWithBoundaryEvent.bpmn2",
                 "BPMN2-CallActivitySubProcessWithBoundaryEvent.bpmn2");

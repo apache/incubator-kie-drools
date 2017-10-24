@@ -22,7 +22,7 @@ import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
-import org.jbpm.test.util.CountDownProcessEventListener;
+import org.jbpm.test.listener.NodeLeftCountDownProcessEventListener;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.jbpm.workflow.instance.node.CompositeContextNodeInstance;
@@ -458,7 +458,7 @@ public class FlowTest extends JbpmBpmn2TestCase {
 
     @Test(timeout=10000)
     public void testInclusiveSplitAndJoinWithTimer() throws Exception {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("timer", 2);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("timer", 2);
         KieBase kbase = createKnowledgeBase("BPMN2-InclusiveSplitAndJoinWithTimer.bpmn2");
         ksession = createKnowledgeSession(kbase);
         ksession.addEventListener(countDownListener);
@@ -1358,7 +1358,7 @@ public class FlowTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testMultipleInOutgoingSequenceFlows() throws Exception {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("timer", 1);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("timer", 1);
         System.setProperty("jbpm.enable.multi.con", "true");
         KieBase kbase = createKnowledgeBase("BPMN2-MultipleInOutgoingSequenceFlows.bpmn2");
         ksession = createKnowledgeSession(kbase);
@@ -1517,7 +1517,7 @@ public class FlowTest extends JbpmBpmn2TestCase {
     
     @Test
     public void testTimerAndGateway() throws Exception {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("timer", 1);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("timer", 1);
         KieBase kbase = createKnowledgeBase("timer/BPMN2-ParallelSplitWithTimerProcess.bpmn2");
         ksession = createKnowledgeSession(kbase);
         ksession.addEventListener(countDownListener);

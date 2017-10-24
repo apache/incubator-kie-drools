@@ -20,14 +20,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 import javax.persistence.Persistence;
 
 import org.jbpm.process.core.timer.impl.ThreadPoolSchedulerService;
 import org.jbpm.test.functional.timer.addon.TransactionalThreadPoolSchedulerService;
-import org.jbpm.test.listener.CountDownProcessEventListener;
+import org.jbpm.test.listener.NodeLeftCountDownProcessEventListener;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -95,7 +93,7 @@ public class GlobalThreadPoolTimerServiceTest extends GlobalTimerServiceBaseTest
     
     @Test(timeout=20000)
     public void testInterediateTimerWithGlobalTestServiceWithinTransaction() throws Exception {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("timer", 3);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("timer", 3);
 
         globalScheduler = new TransactionalThreadPoolSchedulerService(3);
         // prepare listener to assert results

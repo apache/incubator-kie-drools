@@ -42,8 +42,8 @@ import org.jbpm.services.task.HumanTaskServiceFactory;
 import org.jbpm.services.task.audit.JPATaskLifeCycleEventListener;
 import org.jbpm.services.task.events.DefaultTaskEventListener;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
+import org.jbpm.test.listener.NodeLeftCountDownProcessEventListener;
 import org.jbpm.test.util.AbstractBaseTest;
-import org.jbpm.test.util.CountDownProcessEventListener;
 import org.jbpm.test.util.PoolingDataSource;
 import org.junit.After;
 import org.junit.Before;
@@ -704,7 +704,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
 
     @Test(timeout=30000)
     public void testRestoreTimersAfterManagerClose() throws Exception {
-        final CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("timer", 2);
+        final NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("timer", 2);
     	final List<Long> timerExpirations = new ArrayList<Long>();
 
         RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
@@ -1153,7 +1153,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
 
     @Test(timeout=10000)
     public void testReusableSubprocessWithWaitForCompletionFalse() throws Exception {
-        final CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("SLATimer", 1);
+        final NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("SLATimer", 1);
         RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
     			.newDefaultBuilder()
                 .userGroupCallback(userGroupCallback)
@@ -1374,7 +1374,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
     }
     @Test(timeout=10000)
     public void testTimerStartWithDeactivate() {
-        final CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("Hello", 1);
+        final NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("Hello", 1);
         RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
                 .newDefaultBuilder()
                 .userGroupCallback(userGroupCallback)
@@ -1462,7 +1462,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
 
     @Test(timeout=20000)
     public void testTimersOnMultiInstanceSubprocess() throws Exception {
-        final CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("MIDelayTimer", 2);
+        final NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("MIDelayTimer", 2);
         final List<Long> timerExpirations = new ArrayList<Long>();
 
         RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()

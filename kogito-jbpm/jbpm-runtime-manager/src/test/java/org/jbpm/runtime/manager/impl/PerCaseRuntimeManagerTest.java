@@ -31,8 +31,8 @@ import javax.persistence.EntityManagerFactory;
 import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
+import org.jbpm.test.listener.NodeLeftCountDownProcessEventListener;
 import org.jbpm.test.util.AbstractBaseTest;
-import org.jbpm.test.util.CountDownProcessEventListener;
 import org.jbpm.test.util.PoolingDataSource;
 import org.junit.After;
 import org.junit.Before;
@@ -370,7 +370,7 @@ public class PerCaseRuntimeManagerTest extends AbstractBaseTest {
     @Test(timeout=10000)
     public void testTimerOnPerCaseManager() throws Exception {
         final Set<Long> ksessionUsed = new HashSet<Long>();
-        final CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("timer", 3);
+        final NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("timer", 3);
         final List<Long> timerExpirations = new ArrayList<Long>();
          
         RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
@@ -483,7 +483,7 @@ public class PerCaseRuntimeManagerTest extends AbstractBaseTest {
     
     @Test(timeout=10000)
     public void testTimerStartWithDeactivate() {
-        final CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("Hello", 1);
+        final NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("Hello", 1);
         RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
                 .newDefaultBuilder()
                 .userGroupCallback(userGroupCallback)

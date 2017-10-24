@@ -23,7 +23,7 @@ import java.util.HashMap;
 import org.drools.core.time.TimeUtils;
 import org.jbpm.process.core.timer.BusinessCalendarImpl;
 import org.jbpm.test.JbpmTestCase;
-import org.jbpm.test.listener.CountDownProcessEventListener;
+import org.jbpm.test.listener.NodeLeftCountDownProcessEventListener;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
@@ -40,7 +40,7 @@ public class BoundaryEventOnTaskWithCalendarTest extends JbpmTestCase {
 
     @Test(timeout=10000)
     public void testProcess() throws Exception {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("deadline1", 1);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("deadline1", 1);
         addProcessEventListener(countDownListener);
         createRuntimeManager("org/jbpm/test/functional/event/BoundaryEventWithCalendar.bpmn2");
         RuntimeEngine runtimeEngine = getRuntimeEngine();
@@ -68,7 +68,7 @@ public class BoundaryEventOnTaskWithCalendarTest extends JbpmTestCase {
  
     @Test(timeout=10000)
     public void testProcessWithTimeCycleISO() throws Exception {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("deadline1", 1);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("deadline1", 1);
         addProcessEventListener(countDownListener);
         createRuntimeManager("org/jbpm/test/functional/event/BoundaryEventWithCycleCalendar.bpmn2");
         RuntimeEngine runtimeEngine = getRuntimeEngine();

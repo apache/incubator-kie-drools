@@ -30,8 +30,8 @@ import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.jbpm.bpmn2.concurrency.MultipleProcessesPerThreadTest;
 import org.jbpm.persistence.util.PersistenceUtil;
+import org.jbpm.test.listener.NodeLeftCountDownProcessEventListener;
 import org.jbpm.test.util.AbstractBaseTest;
-import org.jbpm.test.util.CountDownProcessEventListener;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -102,7 +102,7 @@ public class UnmarshallingOverdueTimersTest extends AbstractBaseTest {
     
     @Test(timeout=10000)
     public void startDisposeAndReloadTimerProcess() throws Exception {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("timer", 1);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("timer", 1);
         if( debug ) { 
             String shellVar = "TEST";
             String shellVarVal = System.getenv(shellVar);

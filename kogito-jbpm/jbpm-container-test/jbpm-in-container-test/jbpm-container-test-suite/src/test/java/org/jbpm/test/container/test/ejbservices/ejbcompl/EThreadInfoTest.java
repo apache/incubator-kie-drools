@@ -24,9 +24,9 @@ import java.util.Map;
 import org.assertj.core.api.Assertions;
 import org.jbpm.test.container.AbstractRuntimeEJBServicesTest;
 import org.jbpm.test.container.groups.EAP;
-import org.jbpm.test.container.listeners.CountDownProcessEventListener;
 import org.jbpm.test.container.mock.RestService;
 import org.jbpm.services.api.model.VariableDesc;
+import org.jbpm.test.listener.DefaultCountDownProcessEventListener;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -47,7 +47,7 @@ import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 @Category({EAP.class})
 public class EThreadInfoTest extends AbstractRuntimeEJBServicesTest {
 
-    private static CountDownProcessEventListener listener = new CountDownProcessEventListener() {
+    private static DefaultCountDownProcessEventListener listener = new DefaultCountDownProcessEventListener() {
         @Override
         public void afterProcessCompleted(ProcessCompletedEvent event) {
             if ("org.jboss.qa.bpms.ThreadInfo".equals(event.getProcessInstance().getProcessId())) {

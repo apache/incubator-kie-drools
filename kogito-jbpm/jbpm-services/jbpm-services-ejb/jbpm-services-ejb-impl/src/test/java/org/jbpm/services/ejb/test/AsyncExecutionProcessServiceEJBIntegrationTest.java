@@ -36,7 +36,7 @@ import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.ejb.api.DeploymentServiceEJBLocal;
 import org.jbpm.services.ejb.api.ProcessServiceEJBLocal;
 import org.jbpm.services.ejb.api.RuntimeDataServiceEJBLocal;
-import org.jbpm.test.util.CountDownProcessEventListener;
+import org.jbpm.test.listener.NodeLeftCountDownProcessEventListener;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -61,7 +61,7 @@ public class AsyncExecutionProcessServiceEJBIntegrationTest extends AbstractTest
 		}
 		WebArchive war = ShrinkWrap.createFromZipFile(WebArchive.class, archive);
 		war.addPackage("org.jbpm.services.ejb.test"); // test cases
-		war.addClass("org.jbpm.test.util.CountDownProcessEventListener");
+		war.addClass("org.jbpm.test.listener.NodeLeftCountDownProcessEventListener");
 		// deploy test kjar
 		deployKjar();
 		
@@ -117,7 +117,7 @@ public class AsyncExecutionProcessServiceEJBIntegrationTest extends AbstractTest
     @Test
     public void testStartProcessWithParms() throws Exception {
     	assertNotNull(deploymentService);
-    	final CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("Task 1", 1);
+    	final NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("Task 1", 1);
         
         KModuleDeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
 

@@ -51,7 +51,7 @@ import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.process.instance.timer.TimerInstance;
 import org.jbpm.process.instance.timer.TimerManager;
-import org.jbpm.test.util.CountDownProcessEventListener;
+import org.jbpm.test.listener.NodeLeftCountDownProcessEventListener;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -370,7 +370,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
     @Test(timeout=10000)
     public void testEventBasedSplit2() throws Exception {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("timer", 2);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("timer", 2);
         KieBase kbase = createKnowledgeBase("BPMN2-EventBasedSplit2.bpmn2");
         ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("Email1",
@@ -776,7 +776,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
     @Test(timeout=10000)
     public void testEventSubprocessTimer() throws Exception {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("Script Task 1", 1);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("Script Task 1", 1);
 
         KieBase kbase = createKnowledgeBase("BPMN2-EventSubprocessTimer.bpmn2");
 
@@ -802,7 +802,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
     @Test(timeout=10000)
     @RequirePersistence
     public void testEventSubprocessTimerCycle() throws Exception {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("Script Task 1", 4);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("Script Task 1", 4);
 
         KieBase kbase = createKnowledgeBase("BPMN2-EventSubprocessTimerCycle.bpmn2");
 
@@ -865,7 +865,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
     @Test(timeout=10000)
     public void testEventSubprocessMessageWithLocalVars() throws Exception {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("timer", 1);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("timer", 1);
 
         KieBase kbase = createKnowledgeBase("subprocess/BPMN2-EventSubProcessWithLocalVariables.bpmn2");
         final Set<String> variablevalues = new HashSet<String>();
@@ -1023,7 +1023,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
     @Test(timeout=10000)
     public void testTimerBoundaryEventDuration() throws Exception {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("TimerEvent", 1);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("TimerEvent", 1);
         KieBase kbase = createKnowledgeBase("BPMN2-TimerBoundaryEventDuration.bpmn2");
         ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("MyTask", new DoNothingWorkItemHandler());
@@ -1038,7 +1038,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
     @Test(timeout=10000)
     public void testTimerBoundaryEventDurationISO() throws Exception {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("TimerEvent", 1);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("TimerEvent", 1);
         KieBase kbase = createKnowledgeBase("BPMN2-TimerBoundaryEventDurationISO.bpmn2");
         ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("MyTask", new DoNothingWorkItemHandler());
@@ -1053,7 +1053,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
     @Test(timeout=10000)
     public void testTimerBoundaryEventDateISO() throws Exception {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("TimerEvent", 1);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("TimerEvent", 1);
 
         KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-TimerBoundaryEventDateISO.bpmn2");
         ksession = createKnowledgeSession(kbase);
@@ -1072,7 +1072,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
     @Test(timeout=10000)
     public void testTimerBoundaryEventCycle1() throws Exception {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("TimerEvent", 1);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("TimerEvent", 1);
 
         KieBase kbase = createKnowledgeBase("BPMN2-TimerBoundaryEventCycle1.bpmn2");
         ksession = createKnowledgeSession(kbase);
@@ -1088,7 +1088,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
     @Test(timeout=10000)
     public void testTimerBoundaryEventCycle2() throws Exception {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("TimerEvent", 3);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("TimerEvent", 3);
 
         KieBase kbase = createKnowledgeBase("BPMN2-TimerBoundaryEventCycle2.bpmn2");
         ksession = createKnowledgeSession(kbase);
@@ -1106,7 +1106,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
     @Test(timeout=10000)
     @RequirePersistence(false)
     public void testTimerBoundaryEventCycleISO() throws Exception {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("TimerEvent", 2);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("TimerEvent", 2);
         KieBase kbase = createKnowledgeBase("BPMN2-TimerBoundaryEventCycleISO.bpmn2");
         ksession = createKnowledgeSession(kbase);
         ksession.addEventListener(countDownListener);
@@ -1121,7 +1121,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
     @Test(timeout=10000)
     @RequirePersistence
     public void testTimerBoundaryEventCycleISOWithPersistence() throws Exception {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("TimerEvent", 2);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("TimerEvent", 2);
         // load up the knowledge base
         KieBase kbase = createKnowledgeBase("BPMN2-TimerBoundaryEventCycleISO.bpmn2");
 
@@ -1151,7 +1151,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
     @Test(timeout=10000)
     public void testTimerBoundaryEventInterrupting() throws Exception {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("TimerEvent", 1);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("TimerEvent", 1);
 
         KieBase kbase = createKnowledgeBase("BPMN2-TimerBoundaryEventInterrupting.bpmn2");
         ksession = createKnowledgeSession(kbase);
@@ -1170,7 +1170,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
     @Test(timeout=10000)
     public void testTimerBoundaryEventInterruptingOnTask() throws Exception {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("TimerEvent", 1);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("TimerEvent", 1);
 
         KieBase kbase = createKnowledgeBase("BPMN2-TimerBoundaryEventInterruptingOnTask.bpmn2");
         ksession = createKnowledgeSession(kbase);
@@ -1250,7 +1250,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
     @Test(timeout=10000)
     public void testIntermediateCatchEventTimerDuration() throws Exception {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("timer", 1);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("timer", 1);
 
         KieBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventTimerDuration.bpmn2");
         ksession = createKnowledgeSession(kbase);
@@ -1273,7 +1273,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
     @Test(timeout=10000)
     public void testIntermediateCatchEventTimerDateISO() throws Exception {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("timer", 1);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("timer", 1);
 
         KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-IntermediateCatchEventTimerDateISO.bpmn2");
         ksession = createKnowledgeSession(kbase);
@@ -1294,7 +1294,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
     @Test(timeout=10000)
     public void testIntermediateCatchEventTimerDurationISO() throws Exception {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("timer", 1);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("timer", 1);
 
         KieBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventTimerDurationISO.bpmn2");
         ksession = createKnowledgeSession(kbase);
@@ -1315,7 +1315,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
     @Test(timeout=10000)
     public void testIntermediateCatchEventTimerCycle1() throws Exception {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("timer", 1);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("timer", 1);
 
         KieBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventTimerCycle1.bpmn2");
         ksession = createKnowledgeSession(kbase);
@@ -1336,7 +1336,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
     @Test(timeout=10000)
     public void testIntermediateCatchEventTimerCycleISO() throws Exception {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("timer", 5);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("timer", 5);
 
         KieBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventTimerCycleISO.bpmn2");
         ksession = createKnowledgeSession(kbase);
@@ -1354,7 +1354,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
     @Test(timeout=10000)
     public void testIntermediateCatchEventTimerCycle2() throws Exception {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("timer", 3);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("timer", 3);
 
         KieBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventTimerCycle2.bpmn2");
         ksession = createKnowledgeSession(kbase);
@@ -1435,7 +1435,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
     @RequirePersistence(false)
     public void testIntermediateCatchEventTimerCycleWithError()
             throws Exception {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("timer", 3);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("timer", 3);
 
         KieBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventTimerCycleWithError.bpmn2");
         ksession = createKnowledgeSession(kbase);
@@ -1461,7 +1461,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
     @Test(timeout=10000)
     @RequirePersistence
     public void testIntermediateCatchEventTimerCycleWithErrorWithPersistence() throws Exception {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("timer", 2);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("timer", 2);
 
         KieBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventTimerCycleWithError.bpmn2");
         ksession = createKnowledgeSession(kbase);
@@ -2036,7 +2036,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
     @Test(timeout=10000)
     public void testTimerMultipleInstances() throws Exception {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("timer", 3);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("timer", 3);
         KieBase kbase = createKnowledgeBase("BPMN2-MultiInstanceLoopBoundaryTimer.bpmn2");
 
         ksession = createKnowledgeSession(kbase);
@@ -2062,7 +2062,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
     @Test(timeout=10000)
     public void testIntermediateCatchEventTimerCycleCron() throws Exception {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("timer", 3);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("timer", 3);
         KieBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventTimerCycleCron.bpmn2");
         ksession = createKnowledgeSession(kbase);
         ksession.addEventListener(countDownListener);
@@ -2079,7 +2079,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
     @Test(timeout=10000)
     public void testIntermediateCatchEventTimerDurationValueFromGlobal() throws Exception {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("timer", 1);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("timer", 1);
         KieBase kbase = createKnowledgeBase("BPMN2-GlobalTimerInterrupted.bpmn2");
         ksession = createKnowledgeSession(kbase);
         ksession.addEventListener(countDownListener);
@@ -2097,7 +2097,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
     @Test(timeout=10000)
     public void testTimerBoundaryEventCronCycle() throws Exception {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("Send Update Timer", 3);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("Send Update Timer", 3);
         KieBase kbase = createKnowledgeBase("BPMN2-BoundaryTimerCycleCron.bpmn2");
         ksession = createKnowledgeSession(kbase);
         ksession.addEventListener(countDownListener);
@@ -2124,9 +2124,9 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
     @Test(timeout=10000)
     public void testIntermediateTimerParallelGateway() throws Exception {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("Timer1", 1);
-        CountDownProcessEventListener countDownListener2 = new CountDownProcessEventListener("Timer2", 1);
-        CountDownProcessEventListener countDownListener3 = new CountDownProcessEventListener("Timer3", 1);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("Timer1", 1);
+        NodeLeftCountDownProcessEventListener countDownListener2 = new NodeLeftCountDownProcessEventListener("Timer2", 1);
+        NodeLeftCountDownProcessEventListener countDownListener3 = new NodeLeftCountDownProcessEventListener("Timer3", 1);
         KieBase kbase = createKnowledgeBase("timer/BPMN2-IntermediateTimerParallelGateway.bpmn2");
 
         ksession = createKnowledgeSession(kbase);
@@ -2148,7 +2148,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
     @Test(timeout=10000)
     public void testIntermediateTimerEventMI() throws Exception {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("After timer", 3);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("After timer", 3);
         KieBase kbase = createKnowledgeBase("timer/BPMN2-IntermediateTimerEventMI.bpmn2");
 
         ksession = createKnowledgeSession(kbase);
@@ -2456,7 +2456,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
     @RequirePersistence
     public void testIntermediateCatchEventTimerDurationWithError()
             throws Exception {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("timer", 1);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("timer", 1);
 
         KieBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventTimerDurationWithError.bpmn2");
         ksession = createKnowledgeSession(kbase);
@@ -2487,7 +2487,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
     @Test(timeout=10000)
     public void testTimerBoundaryEventCronCycleVariable() throws Exception {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("Send Update Timer", 3);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("Send Update Timer", 3);
         KieBase kbase = createKnowledgeBase("BPMN2-BoundaryTimerCycleCronVariable.bpmn2");
         ksession = createKnowledgeSession(kbase);
         ksession.addEventListener(countDownListener);
@@ -2518,7 +2518,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
     @Test(timeout=10000)
     public void testMultipleTimerBoundaryEventCronCycleVariable() throws Exception {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("Send Update Timer", 2);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("Send Update Timer", 2);
         KieBase kbase = createKnowledgeBase("BPMN2-MultipleBoundaryTimerCycleCronVariable.bpmn2");
         ksession = createKnowledgeSession(kbase);
         ksession.addEventListener(countDownListener);
@@ -2552,10 +2552,10 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
     public void testEventBasedSplitWithCronTimerAndSignal() throws Exception {
         System.setProperty("jbpm.enable.multi.con", "true");
         try {
-            CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("Request photos of order in use", 1);
-            CountDownProcessEventListener countDownListener2 = new CountDownProcessEventListener("Request an online review", 1);
-            CountDownProcessEventListener countDownListener3 = new CountDownProcessEventListener("Send a thank you card", 1);
-            CountDownProcessEventListener countDownListener4 = new CountDownProcessEventListener("Request an online review", 1);
+            NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("Request photos of order in use", 1);
+            NodeLeftCountDownProcessEventListener countDownListener2 = new NodeLeftCountDownProcessEventListener("Request an online review", 1);
+            NodeLeftCountDownProcessEventListener countDownListener3 = new NodeLeftCountDownProcessEventListener("Send a thank you card", 1);
+            NodeLeftCountDownProcessEventListener countDownListener4 = new NodeLeftCountDownProcessEventListener("Request an online review", 1);
             KieBase kbase = createKnowledgeBase("timer/BPMN2-CronTimerWithEventBasedGateway.bpmn2");
             ksession = createKnowledgeSession(kbase);
             

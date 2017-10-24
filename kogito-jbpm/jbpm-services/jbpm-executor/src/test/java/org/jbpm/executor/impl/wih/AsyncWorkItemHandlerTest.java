@@ -49,8 +49,8 @@ import org.jbpm.runtime.manager.impl.DefaultRegisterableItemsFactory;
 import org.jbpm.services.task.events.DefaultTaskEventListener;
 import org.jbpm.services.task.exception.TaskExecutionException;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
+import org.jbpm.test.listener.NodeLeftCountDownProcessEventListener;
 import org.jbpm.test.util.AbstractExecutorBaseTest;
-import org.jbpm.test.util.CountDownProcessEventListener;
 import org.jbpm.test.util.ExecutorTestUtil;
 import org.jbpm.test.util.PoolingDataSource;
 import org.junit.After;
@@ -118,7 +118,7 @@ public class AsyncWorkItemHandlerTest extends AbstractExecutorBaseTest {
 
     @Test(timeout=10000)
     public void testRunProcessWithAsyncHandler() throws Exception {
-        final CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("Hello", 1);
+        final NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("Hello", 1);
         RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get().newDefaultBuilder()
                 .userGroupCallback(userGroupCallback)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
@@ -158,7 +158,7 @@ public class AsyncWorkItemHandlerTest extends AbstractExecutorBaseTest {
     
     @Test(timeout=10000)
     public void testRunProcessWithAsyncHandlerWithAbort() throws Exception {
-        final CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("Task 1", 1);
+        final NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("Task 1", 1);
         RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get().newDefaultBuilder()
                 .userGroupCallback(userGroupCallback)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
@@ -201,7 +201,7 @@ public class AsyncWorkItemHandlerTest extends AbstractExecutorBaseTest {
     
     @Test(timeout=10000)
     public void testRunProcessWithAsyncHandlerDuplicatedRegister() throws Exception {
-        final CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("Task 1", 1);
+        final NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("Task 1", 1);
         RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get().newDefaultBuilder()
                 .userGroupCallback(userGroupCallback)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
@@ -246,7 +246,7 @@ public class AsyncWorkItemHandlerTest extends AbstractExecutorBaseTest {
     
     @Test(timeout=10000)
     public void testRunProcessWithAsyncHandlerDelayed() throws Exception {
-        final CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("Task 1", 1);
+        final NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("Task 1", 1);
         RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get().newDefaultBuilder()
                 .userGroupCallback(userGroupCallback)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTaskWithParams.bpmn2"), ResourceType.BPMN2)
@@ -289,7 +289,7 @@ public class AsyncWorkItemHandlerTest extends AbstractExecutorBaseTest {
     
     @Test(timeout=10000)
     public void testRunProcessWithAsyncHandlerAndReturnNullCommand() throws Exception {
-        final CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("Task 1", 1);
+        final NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("Task 1", 1);
         RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get().newDefaultBuilder()
                 .userGroupCallback(userGroupCallback)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
@@ -487,7 +487,7 @@ public class AsyncWorkItemHandlerTest extends AbstractExecutorBaseTest {
     
     @Test(timeout=10000)
     public void testRunProcessWithAsyncHandlerCallbackErrorRetry() throws Exception {
-        final CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("Task 1", 1);
+        final NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("Task 1", 1);
         RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get().newDefaultBuilder()
                 .userGroupCallback(userGroupCallback)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTaskWithError.bpmn2"), ResourceType.BPMN2)
@@ -541,7 +541,7 @@ public class AsyncWorkItemHandlerTest extends AbstractExecutorBaseTest {
     
     @Test(timeout=10000)
     public void testRunProcessWithAsyncHandlerWthSecurityManager() throws Exception {
-        final CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("Task 1", 1);
+        final NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("Task 1", 1);
         RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get().newDefaultBuilder()
                 .userGroupCallback(userGroupCallback)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
@@ -602,7 +602,7 @@ public class AsyncWorkItemHandlerTest extends AbstractExecutorBaseTest {
     
     @Test(timeout=20000)
     public void testRunProcessWithAsyncHandlerCallbackErrorRetryUpdateJobData() throws Exception {
-        final CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("Task 1", 1);
+        final NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("Task 1", 1);
         RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get().newDefaultBuilder()
                 .userGroupCallback(userGroupCallback)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
@@ -730,7 +730,7 @@ public class AsyncWorkItemHandlerTest extends AbstractExecutorBaseTest {
     
     @Test(timeout=10000)
     public void testRunProcessWithAsyncHandlerSkipExecutionError() throws Exception {
-        final CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("Handling error", 1);
+        final NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("Handling error", 1);
         ((ExecutorServiceImpl) executorService).setRetries(0);
         RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get().newDefaultBuilder()
                 .userGroupCallback(userGroupCallback)

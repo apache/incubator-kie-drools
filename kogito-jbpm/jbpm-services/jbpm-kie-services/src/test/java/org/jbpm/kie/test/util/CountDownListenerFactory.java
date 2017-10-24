@@ -19,17 +19,19 @@ package org.jbpm.kie.test.util;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.jbpm.test.listener.NodeLeftCountDownProcessEventListener;
+
 public class CountDownListenerFactory {
 
-    private static Map<String, CountDownProcessEventListener> listeners = new ConcurrentHashMap<>();
+    private static Map<String, NodeLeftCountDownProcessEventListener> listeners = new ConcurrentHashMap<>();
     
     private static Map<String, CountDownTaskEventListener> tasklisteners = new ConcurrentHashMap<>();
     
-    public static CountDownProcessEventListener get(String id, String nodeName, int threads) {
+    public static NodeLeftCountDownProcessEventListener get(String id, String nodeName, int threads) {
         if (listeners.containsKey(id)) {
             return listeners.get(id);
         }
-        CountDownProcessEventListener listener = new CountDownProcessEventListener(nodeName, threads);
+        NodeLeftCountDownProcessEventListener listener = new NodeLeftCountDownProcessEventListener(nodeName, threads);
         listeners.put(id, listener);
         return listener;
     }
@@ -43,11 +45,11 @@ public class CountDownListenerFactory {
         return listener;
     }
     
-    public static CountDownProcessEventListener getExisting(String id) {
+    public static NodeLeftCountDownProcessEventListener getExisting(String id) {
         return listeners.get(id);
     }
     
-    public static CountDownProcessEventListener removeExisting(String id) {
+    public static NodeLeftCountDownProcessEventListener removeExisting(String id) {
         return listeners.remove(id);
     }
     

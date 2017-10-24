@@ -30,6 +30,7 @@ import org.jbpm.process.builder.ProcessBuilderFactoryServiceImpl;
 import org.jbpm.process.instance.ProcessRuntimeFactoryServiceImpl;
 import org.jbpm.process.workitem.webservice.WebServiceWorkItemHandler;
 import org.jbpm.test.AbstractBaseTest;
+import org.jbpm.test.listener.NodeLeftCountDownProcessEventListener;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -86,7 +87,7 @@ public class JaxWSServiceTaskTest extends AbstractBaseTest {
 
     @Test(timeout = 10000)
     public void testAsyncServiceInvocation() throws Exception {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("Service Task",
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("Service Task",
                                                                                             1);
         KieBase kbase = readKnowledgeBase();
         KieSession ksession = createSession(kbase);

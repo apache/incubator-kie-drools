@@ -35,8 +35,8 @@ import org.jbpm.test.container.AbstractRuntimeEJBServicesTest;
 import org.jbpm.test.container.groups.EAP;
 import org.jbpm.test.container.groups.WAS;
 import org.jbpm.test.container.groups.WLS;
-import org.jbpm.test.container.listeners.CountDownProcessEventListener;
 import org.jbpm.test.container.listeners.TrackingAgendaEventListener;
+import org.jbpm.test.listener.DefaultCountDownProcessEventListener;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -246,7 +246,7 @@ public class ETransactionTest extends AbstractRuntimeEJBServicesTest {
 
     @Test
     public void testTimer() throws Exception {
-        CountDownProcessEventListener listener = new CountDownProcessEventListener(0) {
+        DefaultCountDownProcessEventListener listener = new DefaultCountDownProcessEventListener(0) {
             @Override
             public void afterNodeLeft(ProcessNodeLeftEvent event) {
                 if ("Timer".equals(event.getNodeInstance().getNodeName())) {

@@ -20,7 +20,7 @@ import org.jbpm.bpmn2.xml.XmlBPMNProcessDumper;
 import org.jbpm.persistence.session.objects.TestWorkItemHandler;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
-import org.jbpm.test.util.CountDownProcessEventListener;
+import org.jbpm.test.listener.NodeLeftCountDownProcessEventListener;
 import org.junit.Test;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
@@ -94,7 +94,7 @@ public class ProcessFactoryTest extends JbpmBpmn2TestCase {
 
     @Test(timeout=10000)
     public void testBoundaryTimerTimeCycle() throws Exception {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("BoundaryTimerEvent", 1);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("BoundaryTimerEvent", 1);
         RuleFlowProcessFactory factory = RuleFlowProcessFactory.createProcess("org.jbpm.process");
         factory
             // header
@@ -135,7 +135,7 @@ public class ProcessFactoryTest extends JbpmBpmn2TestCase {
 
     @Test(timeout=10000)
     public void testBoundaryTimerTimeDuration() throws Exception {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("BoundaryTimerEvent", 1);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("BoundaryTimerEvent", 1);
         RuleFlowProcessFactory factory = RuleFlowProcessFactory.createProcess("org.jbpm.process");
         factory
             // header

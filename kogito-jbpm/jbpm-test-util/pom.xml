@@ -17,6 +17,14 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-persistence-api</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.jboss.narayana.jta</groupId>
       <artifactId>narayana-jta</artifactId>
     </dependency>

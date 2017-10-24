@@ -41,14 +41,12 @@ import org.jbpm.persistence.JpaProcessPersistenceContextManager;
 import org.jbpm.persistence.jta.ContainerManagedTransactionManager;
 import org.jbpm.process.core.timer.GlobalSchedulerService;
 import org.jbpm.process.core.timer.TimerServiceRegistry;
-import org.jbpm.process.core.timer.impl.QuartzSchedulerService;
 import org.jbpm.runtime.manager.impl.AbstractRuntimeManager;
 import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
 import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.services.task.persistence.JPATaskPersistenceContextManager;
-import org.jbpm.test.functional.timer.TimerBaseTest.TestRegisterableItemsFactory;
-import org.jbpm.test.listener.CountDownProcessEventListener;
+import org.jbpm.test.listener.NodeLeftCountDownProcessEventListener;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.node.HumanTaskNodeInstance;
 import org.junit.Ignore;
@@ -113,7 +111,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
 
     @Test(timeout=20000)
     public void testInterediateTimerWithGlobalTestService() throws Exception {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("timer", 3);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("timer", 3);
         // prepare listener to assert results
         final List<Long> timerExporations = new ArrayList<Long>();
         ProcessEventListener listener = new DefaultProcessEventListener(){
@@ -169,7 +167,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
     
     @Test(timeout=20000)
     public void testTimerStart() throws Exception {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("StartProcess", 5);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("StartProcess", 5);
         // prepare listener to assert results
         final List<Long> timerExporations = new ArrayList<Long>();
         ProcessEventListener listener = new DefaultProcessEventListener(){
@@ -239,7 +237,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
     
     @Test(timeout=20000)
     public void testInterediateTimerWithHTAfterWithGlobalTestService() throws Exception {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("timer", 3);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("timer", 3);
         // prepare listener to assert results
         final List<Long> timerExpirations = new ArrayList<Long>();
         ProcessEventListener listener = new DefaultProcessEventListener(){
@@ -309,7 +307,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
     
     @Test(timeout=20000)
     public void testInterediateTimerWithHTBeforeWithGlobalTestService() throws Exception {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("timer", 3);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("timer", 3);
         // prepare listener to assert results
         final List<Long> timerExporations = new ArrayList<Long>();
         ProcessEventListener listener = new DefaultProcessEventListener(){
@@ -726,7 +724,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
     
     @Test(timeout=20000)
     public void testInterediateTimerWithGlobalTestServiceSimulateCMT() throws Exception {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("timer", 3);
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("timer", 3);
         // prepare listener to assert results
         final List<Long> timerExporations = new ArrayList<Long>();
         ProcessEventListener listener = new DefaultProcessEventListener(){
@@ -841,7 +839,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
     
     @Test(timeout=20000)
     public void testTimerFailureAndRetrigger() throws Exception {        
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("Timer_1m", 3);        
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("Timer_1m", 3);        
         final List<Long> timerExporations = new ArrayList<Long>();
         ProcessEventListener listener = new DefaultProcessEventListener(){
 
