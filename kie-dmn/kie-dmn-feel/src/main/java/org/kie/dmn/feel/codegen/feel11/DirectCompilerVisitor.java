@@ -1,3 +1,19 @@
+/*
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.kie.dmn.feel.codegen.feel11;
 
 import java.lang.reflect.Method;
@@ -15,6 +31,7 @@ import java.util.stream.Stream;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.body.FieldDeclaration;
+import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
@@ -23,15 +40,23 @@ import com.github.javaparser.ast.expr.ClassExpr;
 import com.github.javaparser.ast.expr.ConditionalExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.UnaryExpr;
+import com.github.javaparser.ast.stmt.ExpressionStmt;
+import com.github.javaparser.ast.stmt.Statement;
+import com.github.javaparser.ast.type.UnknownType;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.CompositeType;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.ast.InfixOpNode.InfixOperator;
+import org.kie.dmn.feel.lang.ast.RangeNode;
+import org.kie.dmn.feel.lang.ast.RangeNode.IntervalBoundary;
+import org.kie.dmn.feel.lang.ast.UnaryTestNode.UnaryOperator;
 import org.kie.dmn.feel.lang.impl.JavaBackedType;
 import org.kie.dmn.feel.lang.impl.MapBackedType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
@@ -41,15 +66,20 @@ import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser.ContextEntryContext;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser.KeyNameContext;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser.NameRefContext;
 import org.kie.dmn.feel.parser.feel11.ParserHelper;
+import org.kie.dmn.feel.runtime.Range;
+import org.kie.dmn.feel.runtime.UnaryTest;
+import org.kie.dmn.feel.runtime.impl.RangeImpl;
 import org.kie.dmn.feel.util.EvalHelper;
 
 public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerResult> {
 
+    private static final Expression DASH_UNARY_TEST = JavaParser.parseExpression(org.kie.dmn.feel.lang.ast.DashNode.DashUnaryTest.class.getCanonicalName() + ".INSTANCE");
     private static final Expression DECIMAL_128 = JavaParser.parseExpression("java.math.MathContext.DECIMAL128");
     private static final Expression EMPTY_LIST = JavaParser.parseExpression("java.util.Collections.emptyList()");
     private static final Expression EMPTY_MAP = JavaParser.parseExpression("java.util.Collections.emptyMap()");
     // TODO as this is now compiled it might not be needed for this compilation strategy, just need the layer 0 of input Types, but to be checked.
     private ScopeHelper scopeHelper;
+    private boolean replaceEqualForUnaryTest = false;
 
     private static class ScopeHelper {
 
@@ -88,6 +118,19 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
     public DirectCompilerVisitor(Map<String, Type> inputTypes) {
         this.scopeHelper = new ScopeHelper();
         this.scopeHelper.addTypes(inputTypes);
+    }
+
+    /**
+     * DMN defines a special case where, unless the expressions are unary tests
+     * or ranges, they need to be converted into an equality test unary expression.
+     * This way, we have to compile and check the low level AST nodes to properly
+     * deal with this case
+     * 
+     * @param replaceEqualForUnaryTest use `true` to obtain the behavior described.
+     */
+    public DirectCompilerVisitor(Map<String, Type> inputTypes, boolean replaceEqualForUnaryTest) {
+        this(inputTypes);
+        this.replaceEqualForUnaryTest = replaceEqualForUnaryTest;
     }
 
     @Override
@@ -356,12 +399,35 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
 //        throw new UnsupportedOperationException("TODO"); // TODO
 //    }
 
+    /**
+     * NOTE: technically this rule of the grammar does not have an equivalent Java expression (or a valid FEEL expression) per-se.
+     * Using here as assuming if this grammar rule trigger, it is intended as a List, either to be returned, or re-used internally in this visitor.
+     */
     @Override
     public DirectCompilerResult visitExpressionList(FEEL_1_1Parser.ExpressionListContext ctx) {
         List<DirectCompilerResult> exprs = new ArrayList<>();
         for (int i = 0; i < ctx.getChildCount(); i++) {
             if (ctx.getChild(i) instanceof FEEL_1_1Parser.ExpressionContext) {
-                exprs.add(visit(ctx.getChild(i)));
+                FEEL_1_1Parser.ExpressionContext childCtx = (FEEL_1_1Parser.ExpressionContext) ctx.getChild(i);
+                DirectCompilerResult child = visit(childCtx);
+
+                if (!replaceEqualForUnaryTest) {
+                    // we are NOT compiling unary test, so we continue as-is
+                    exprs.add(child);
+                } else {
+                    if (child.resultType == BuiltInType.UNARY_TEST) {
+                        // is already a unary test, so we can add it as-is
+                        exprs.add(child);
+                    } else if (child.resultType == BuiltInType.RANGE) {
+                        // being a range, need the `in` operator.
+                        DirectCompilerResult replaced = createUnaryTestExpression(childCtx, child, UnaryOperator.IN);
+                        exprs.add(replaced);
+                    } else {
+                        // implied a unarytest for the `=` equal operator.
+                        DirectCompilerResult replaced = createUnaryTestExpression(childCtx, child, UnaryOperator.EQ);
+                        exprs.add(replaced);
+                    }
+                }
             }
         }
         MethodCallExpr list = new MethodCallExpr(new NameExpr(Arrays.class.getCanonicalName()), "asList");
@@ -373,17 +439,139 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
 //    public DirectCompilerResult visitRelExpressionValueList(FEEL_1_1Parser.RelExpressionValueListContext ctx) {
 //        throw new UnsupportedOperationException("TODO"); // TODO
 //    }
-//
-//    @Override
-//    public DirectCompilerResult visitInterval(FEEL_1_1Parser.IntervalContext ctx) {
-//        throw new UnsupportedOperationException("TODO"); // TODO
-//    }
-//
-//    @Override
-//    public DirectCompilerResult visitPositiveUnaryTestIneq(FEEL_1_1Parser.PositiveUnaryTestIneqContext ctx) {
-//        throw new UnsupportedOperationException("TODO"); // TODO
-//    }
-//
+
+    @Override
+    public DirectCompilerResult visitInterval(FEEL_1_1Parser.IntervalContext ctx) {
+        DirectCompilerResult start = visit(ctx.start);
+        DirectCompilerResult end = visit(ctx.end);
+        RangeNode.IntervalBoundary low = ctx.low.getText().equals("[") ? RangeNode.IntervalBoundary.CLOSED : RangeNode.IntervalBoundary.OPEN;
+        RangeNode.IntervalBoundary up = ctx.up.getText().equals("]") ? RangeNode.IntervalBoundary.CLOSED : RangeNode.IntervalBoundary.OPEN;
+
+        Expression BOUNDARY_CLOSED = JavaParser.parseExpression(org.kie.dmn.feel.runtime.Range.RangeBoundary.class.getCanonicalName() + ".CLOSED");
+        Expression BOUNDARY_OPEN = JavaParser.parseExpression(org.kie.dmn.feel.runtime.Range.RangeBoundary.class.getCanonicalName() + ".OPEN");
+        
+        String originalText = ParserHelper.getOriginalText(ctx);
+
+        ObjectCreationExpr initializer = new ObjectCreationExpr();
+        initializer.setType(JavaParser.parseClassOrInterfaceType(RangeImpl.class.getCanonicalName()));
+        initializer.addArgument(low == IntervalBoundary.CLOSED ? BOUNDARY_CLOSED : BOUNDARY_OPEN);
+        initializer.addArgument(start.getExpression());
+        initializer.addArgument(end.getExpression());
+        initializer.addArgument(up == IntervalBoundary.CLOSED ? BOUNDARY_CLOSED : BOUNDARY_OPEN);
+        String constantName = "RANGE_" + CodegenStringUtil.escapeIdentifier(originalText);
+        VariableDeclarator vd = new VariableDeclarator(JavaParser.parseClassOrInterfaceType(Range.class.getCanonicalName()), constantName);
+        vd.setInitializer(initializer);
+        FieldDeclaration fd = new FieldDeclaration();
+        fd.setModifier(Modifier.PUBLIC, true);
+        fd.setModifier(Modifier.STATIC, true);
+        fd.setModifier(Modifier.FINAL, true);
+        fd.addVariable(vd);
+
+        fd.setJavadocComment(" FEEL range: " + originalText + " ");
+
+        DirectCompilerResult directCompilerResult = DirectCompilerResult.of(new NameExpr(constantName), BuiltInType.RANGE, DirectCompilerResult.mergeFDs(start, end));
+        directCompilerResult.addFieldDesclaration(fd);
+        return directCompilerResult;
+    }
+
+    @Override
+    public DirectCompilerResult visitPositiveUnaryTestIneq(FEEL_1_1Parser.PositiveUnaryTestIneqContext ctx) {
+        DirectCompilerResult endpoint = visit(ctx.endpoint());
+        String opText = ctx.op.getText();
+        UnaryOperator op = UnaryOperator.determineOperator(opText);
+
+        return createUnaryTestExpression(ctx, endpoint, op);
+    }
+
+    /**
+     * Create a DirectCompilerResult for an equivalent expression representing a Unary test.
+     * That means the resulting expression is the name of the unary test,
+     * which is referring to a FieldDeclaration, for a class field member using said name, of type UnaryTest and as value a lambda expression of a unarytest
+     * 
+     * @param ctx mainly used to retrieve original text information (used to build the FieldDeclaration javadoc of the original FEEL text representation)
+     * @param endpoint the right of the unary test
+     * @param op the operator of the unarytest
+     */
+    private DirectCompilerResult createUnaryTestExpression(ParserRuleContext ctx, DirectCompilerResult endpoint, UnaryOperator op) {
+        String originalText = ParserHelper.getOriginalText(ctx);
+
+        LambdaExpr initializer = new LambdaExpr();
+        initializer.setEnclosingParameters(true);
+        initializer.addParameter(new Parameter(new UnknownType(), "feelExprCtx"));
+        initializer.addParameter(new Parameter(new UnknownType(), "left"));
+        Statement lambdaBody = null;
+        switch (op) {
+            case EQ:
+            {
+                MethodCallExpr expression = new MethodCallExpr(null, "eq");
+                expression.addArgument(new NameExpr("left"));
+                expression.addArgument(endpoint.getExpression());
+                lambdaBody = new ExpressionStmt(expression);
+            }
+                break;
+            case GT:
+            {
+                MethodCallExpr expression = new MethodCallExpr(null, "gt");
+                expression.addArgument(new NameExpr("left"));
+                expression.addArgument(endpoint.getExpression());
+                lambdaBody = new ExpressionStmt(expression);
+            }
+                break;
+            case GTE:
+            {
+                MethodCallExpr expression = new MethodCallExpr(null, "gte");
+                expression.addArgument(new NameExpr("left"));
+                expression.addArgument(endpoint.getExpression());
+                lambdaBody = new ExpressionStmt(expression);
+            }
+                break;
+            case IN:
+            {
+                MethodCallExpr expression = new MethodCallExpr(endpoint.getExpression(), "includes");
+                expression.addArgument(new NameExpr("left"));
+                lambdaBody = new ExpressionStmt(expression);
+            }
+                break;
+            case LT:
+            {
+                MethodCallExpr expression = new MethodCallExpr(null, "lt");
+                expression.addArgument(new NameExpr("left"));
+                expression.addArgument(endpoint.getExpression());
+                lambdaBody = new ExpressionStmt(expression);
+            }
+                break;
+            case LTE:
+            {
+                MethodCallExpr expression = new MethodCallExpr(null, "lte");
+                expression.addArgument(new NameExpr("left"));
+                expression.addArgument(endpoint.getExpression());
+                lambdaBody = new ExpressionStmt(expression);
+            }
+                break;
+            case NE:
+                throw new UnsupportedOperationException("TODO"); // TODO
+            case NOT:
+                throw new UnsupportedOperationException("TODO"); // TODO
+            default:
+                throw new UnsupportedOperationException("Unable to determine operator of unary test");
+        }
+        initializer.setBody(lambdaBody);
+        String constantName = "UT_" + CodegenStringUtil.escapeIdentifier(originalText);
+        VariableDeclarator vd = new VariableDeclarator(JavaParser.parseClassOrInterfaceType(UnaryTest.class.getCanonicalName()), constantName);
+        vd.setInitializer(initializer);
+        FieldDeclaration fd = new FieldDeclaration();
+        fd.setModifier(Modifier.PUBLIC, true);
+        fd.setModifier(Modifier.STATIC, true);
+        fd.setModifier(Modifier.FINAL, true);
+        fd.addVariable(vd);
+
+        fd.setJavadocComment(" FEEL unary test: " + originalText + " ");
+
+        DirectCompilerResult directCompilerResult = DirectCompilerResult.of(new NameExpr(constantName), BuiltInType.UNARY_TEST, endpoint.getFieldDeclarations());
+        directCompilerResult.addFieldDesclaration(fd);
+        return directCompilerResult;
+    }
+
 //    @Override
 //    public DirectCompilerResult visitSimpleUnaryTests(FEEL_1_1Parser.SimpleUnaryTestsContext ctx) {
 //        throw new UnsupportedOperationException("TODO"); // TODO
@@ -398,17 +586,17 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
 //    public DirectCompilerResult visitRelExpressionValue(RelExpressionValueContext ctx) {
 //        throw new UnsupportedOperationException("TODO"); // TODO
 //    }
-//
-//    @Override
-//    public DirectCompilerResult visitPositiveUnaryTestNull(FEEL_1_1Parser.PositiveUnaryTestNullContext ctx) {
-//        throw new UnsupportedOperationException("TODO"); // TODO
-//    }
-//
-//    @Override
-//    public DirectCompilerResult visitPositiveUnaryTestDash(FEEL_1_1Parser.PositiveUnaryTestDashContext ctx) {
-//        throw new UnsupportedOperationException("TODO"); // TODO
-//    }
-//
+
+    @Override
+    public DirectCompilerResult visitPositiveUnaryTestNull(FEEL_1_1Parser.PositiveUnaryTestNullContext ctx) {
+        throw new UnsupportedOperationException("TODO"); // TODO
+    }
+
+    @Override
+    public DirectCompilerResult visitPositiveUnaryTestDash(FEEL_1_1Parser.PositiveUnaryTestDashContext ctx) {
+        return DirectCompilerResult.of(DASH_UNARY_TEST, BuiltInType.UNARY_TEST);
+    }
+
 //    @Override
 //    public DirectCompilerResult visitCompExpression(FEEL_1_1Parser.CompExpressionContext ctx) {
 //        throw new UnsupportedOperationException("TODO"); // TODO

@@ -16,10 +16,23 @@
 
 package org.kie.dmn.feel.codegen.feel11;
 
-import java.util.function.Function;
+public class CodegenStringUtil {
 
-import org.kie.dmn.feel.lang.EvaluationContext;
-
-public interface CompiledFEELExpression extends Function<EvaluationContext, Object> {
-    
+    /**
+     * Escape for identifier part (not beginning)
+     * 
+     * Similar to drools-model's StringUtil
+     */
+    public static String escapeIdentifier(String partOfIdentifier) {
+        StringBuilder result = new StringBuilder();
+        char[] cs = partOfIdentifier.toCharArray();
+        for (char c : cs) {
+            if (Character.isJavaIdentifierPart(c)) {
+                result.append(c);
+            } else {
+                result.append("_" + Integer.valueOf(c));
+            }
+        }
+        return result.toString();
+    }
 }
