@@ -128,7 +128,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
     
     @Override
     public DirectCompilerResult visitSignedUnaryExpression(FEEL_1_1Parser.SignedUnaryExpressionContext ctx) {
-        DirectCompilerResult unaryExpr = visit( ctx.unaryExpression() );
+        DirectCompilerResult unaryExpr = visit(ctx.unaryExpressionNotPlusMinus());
         if ( unaryExpr.resultType != BuiltInType.NUMBER ) {
             throw new IllegalArgumentException("signedunary should be only over a FEEL NUMBER (bigdecimal).");
         }
