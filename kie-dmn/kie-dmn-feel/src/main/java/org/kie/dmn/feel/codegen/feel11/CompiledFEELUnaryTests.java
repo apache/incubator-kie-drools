@@ -16,10 +16,12 @@
 
 package org.kie.dmn.feel.codegen.feel11;
 
-import java.util.function.Function;
+import java.util.List;
 
-import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.runtime.UnaryTest;
 
-public interface CompiledFEELExpression extends Function<EvaluationContext, Object> {
-    
+public interface CompiledFEELUnaryTests {
+
+    List<UnaryTest> getUnaryTests();
+
 }
