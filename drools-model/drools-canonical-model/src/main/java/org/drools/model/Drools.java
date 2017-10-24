@@ -8,4 +8,8 @@ public interface Drools {
     void update(Object object, BitMask modifiedProperties);
 
     void delete(Object object);
+
+    Object getKnowledgeRuntime();
+
+    Object getKieRuntime();
 }
