@@ -182,6 +182,7 @@ public class KiePackagesBuilder {
     private void setRuleAttributes( Rule rule, RuleImpl ruleImpl ) {
         Boolean noLoop = setAttribute( rule, Rule.Attribute.NO_LOOP, ruleImpl::setNoLoop );
         Boolean lockOnActive = setAttribute( rule, Rule.Attribute.LOCK_ON_ACTIVE, ruleImpl::setLockOnActive );
+        setAttribute( rule, Rule.Attribute.AUTO_FOCUS, ruleImpl::setAutoFocus );
 
         setAttribute( rule, Rule.Attribute.ENABLED, e -> ruleImpl.setEnabled( new EnabledBoolean(e) ) );
         setAttribute( rule, Rule.Attribute.SALIENCE, s -> ruleImpl.setSalience( new SalienceInteger( s ) ) );
@@ -196,7 +197,7 @@ public class KiePackagesBuilder {
         setAttribute( rule, Rule.Attribute.ACTIVATION_GROUP, ruleImpl::setActivationGroup );
         setAttribute( rule, Rule.Attribute.DURATION, t -> ruleImpl.setTimer( parseTimer( t ) ) );
         setAttribute( rule, Rule.Attribute.TIMER, t -> ruleImpl.setTimer( parseTimer( t ) ) );
-        setAttribute( rule, Rule.Attribute.CALENDARS, s -> ruleImpl.setCalendars( s ) );
+        setAttribute( rule, Rule.Attribute.CALENDARS, ruleImpl::setCalendars );
 
         ruleImpl.setEager( noLoop != null || lockOnActive != null );
     }
