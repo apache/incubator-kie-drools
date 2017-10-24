@@ -16,6 +16,8 @@
 
 package org.kie.dmn.feel.codegen.feel11;
 
+import java.util.Map;
+
 import org.junit.Test;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
@@ -33,7 +35,7 @@ public class ManualContextTest {
         //           street : an applicant.home address.street name
         //        }
         @Override
-        public Object apply(EvaluationContext feelExprCtx) {
+        public Map apply(EvaluationContext feelExprCtx) {
             return CompiledFEELSupport.openContext(feelExprCtx)
                                       .setEntry("an applicant", CompiledFEELSupport.openContext(feelExprCtx)
                                                                                    .setEntry("home address", CompiledFEELSupport.openContext(feelExprCtx)
