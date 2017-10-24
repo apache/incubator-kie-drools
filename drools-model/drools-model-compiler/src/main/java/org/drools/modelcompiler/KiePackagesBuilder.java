@@ -196,7 +196,7 @@ public class KiePackagesBuilder {
         setAttribute( rule, Rule.Attribute.ACTIVATION_GROUP, ruleImpl::setActivationGroup );
         setAttribute( rule, Rule.Attribute.DURATION, t -> ruleImpl.setTimer( parseTimer( t ) ) );
         setAttribute( rule, Rule.Attribute.TIMER, t -> ruleImpl.setTimer( parseTimer( t ) ) );
-        setAttribute( rule, Rule.Attribute.CALENDAR, s -> ruleImpl.setCalendars( new String[] { s } ) );
+        setAttribute( rule, Rule.Attribute.CALENDARS, s -> ruleImpl.setCalendars( s ) );
 
         ruleImpl.setEager( noLoop != null || lockOnActive != null );
     }

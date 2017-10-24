@@ -16,6 +16,14 @@
 
 package org.drools.modelcompiler;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.assertj.core.api.Assertions;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.modelcompiler.domain.Address;
@@ -30,15 +38,8 @@ import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import static java.util.Arrays.asList;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -828,25 +829,6 @@ public class CompilerTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Assertions.assertThat(list).containsExactlyInAnyOrder("car", "ball");
-    }
-
-    @Test(timeout = 5000)
-    public void testNoLoop() {
-        String str =
-                "import " + Person.class.getCanonicalName() + ";" +
-                "rule R no-loop when\n" +
-                "  $p : Person(age > 18)\n" +
-                "then\n" +
-                "  modify($p) { setAge($p.getAge()+1) };\n" +
-                "end";
-
-        KieSession ksession = getKieSession( str );
-
-        Person me = new Person( "Mario", 40 );
-        ksession.insert( me );
-        ksession.fireAllRules();
-
-        assertEquals( 41, me.getAge() );
     }
 
     @Test
