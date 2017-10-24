@@ -16,7 +16,7 @@ public interface Rule {
         Attribute<String> RULEFLOW_GROUP = () -> null;
         Attribute<String> DURATION = () -> null;
         Attribute<String> TIMER = () -> null;
-        Attribute<String> CALENDAR = () -> null;
+        Attribute<String[]> CALENDARS = () -> new String[0];
     }
 
 

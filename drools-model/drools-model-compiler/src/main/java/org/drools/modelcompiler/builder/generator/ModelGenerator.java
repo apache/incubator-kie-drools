@@ -16,11 +16,11 @@
 
 package org.drools.modelcompiler.builder.generator;
 
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -108,7 +108,20 @@ public class ModelGenerator {
     private static final ClassOrInterfaceType RULE_TYPE = JavaParser.parseClassOrInterfaceType( Rule.class.getCanonicalName() );
     private static final ClassOrInterfaceType BITMASK_TYPE = JavaParser.parseClassOrInterfaceType( BitMask.class.getCanonicalName() );
 
-    private static final Expression RULE_ATTRIBUTE_NO_LOOP = JavaParser.parseExpression("Rule.Attribute.NO_LOOP");
+    private static final Map<String, Expression> attributesMap = new HashMap<>();
+
+    static {
+        attributesMap.put("no-loop", JavaParser.parseExpression("Rule.Attribute.NO_LOOP"));
+        attributesMap.put("salience", JavaParser.parseExpression("Rule.Attribute.SALIENCE"));
+        attributesMap.put("enabled", JavaParser.parseExpression("Rule.Attribute.ENABLED"));
+        attributesMap.put("lock-on-active", JavaParser.parseExpression("Rule.Attribute.LOCK_ON_ACTIVE"));
+        attributesMap.put("agenda-group", JavaParser.parseExpression("Rule.Attribute.AGENDA_GROUP"));
+        attributesMap.put("activation-group", JavaParser.parseExpression("Rule.Attribute.ACTIVATION_GROUP"));
+        attributesMap.put("ruleflow-group", JavaParser.parseExpression("Rule.Attribute.RULEFLOW_GROUP"));
+        attributesMap.put("duration", JavaParser.parseExpression("Rule.Attribute.DURATION"));
+        attributesMap.put("timer", JavaParser.parseExpression("Rule.Attribute.TIMER"));
+        attributesMap.put("calendars", JavaParser.parseExpression("Rule.Attribute.CALENDARS"));
+    }
 
     public static final boolean GENERATE_EXPR_ID = true;
 
@@ -195,12 +208,9 @@ public class ModelGenerator {
         ruleCall.addArgument( new StringLiteralExpr( ruleDescr.getName() ) );
 
         MethodCallExpr buildCallScope = ruleCall;
-        List<Entry<Expression, Expression>> ruleAttributes = ruleAttributes(ruleDescr);
-        for (Entry<Expression, Expression> ra : ruleAttributes) {
-            MethodCallExpr attributeCall = new MethodCallExpr(buildCallScope, ATTRIBUTE_CALL);
-            attributeCall.addArgument(ra.getKey());
-            attributeCall.addArgument(ra.getValue());
-            buildCallScope = attributeCall;
+        for (MethodCallExpr attributeExpr : ruleAttributes(ruleDescr)) {
+            attributeExpr.setScope( buildCallScope );
+            buildCallScope = attributeExpr;
         }
 
         MethodCallExpr buildCall = new MethodCallExpr(buildCallScope, BUILD_CALL, NodeList.nodeList(context.expressions));
@@ -227,9 +237,17 @@ public class ModelGenerator {
      * starting from a drools-compiler {@link RuleDescr}.
      * The tuple represent the Rule Attribute expressed in JavParser form, and the attribute value expressed in JavaParser form.
      */
-    private static List<Entry<Expression, Expression>> ruleAttributes(RuleDescr ruleDescr) {
-        List<Entry<Expression, Expression>> ruleAttributes = new ArrayList<>();
+    private static List<MethodCallExpr> ruleAttributes(RuleDescr ruleDescr) {
+        List<MethodCallExpr> ruleAttributes = new ArrayList<>();
         for (Entry<String, AttributeDescr> as : ruleDescr.getAttributes().entrySet()) {
+            if (as.getKey().equals( "dialect" )) {
+                if (!as.getValue().getValue().equals("java")) {
+                    throw new UnsupportedOperationException("Unsupported dialect: " + as.getValue().getValue());
+                }
+                continue;
+            }
+            MethodCallExpr attributeCall = new MethodCallExpr(null, ATTRIBUTE_CALL);
+            attributeCall.addArgument(attributesMap.get(as.getKey()));
             switch (as.getKey()) {
                 case "dialect":
                     if (!as.getValue().getValue().equals("java")) {
@@ -237,11 +255,30 @@ public class ModelGenerator {
                     }
                     break;
                 case "no-loop":
-                    ruleAttributes.add(new AbstractMap.SimpleEntry<>(RULE_ATTRIBUTE_NO_LOOP, JavaParser.parseExpression(as.getValue().getValue())));
+                case "salience":
+                case "enabled":
+                case "lock-on-active":
+                    attributeCall.addArgument(JavaParser.parseExpression(as.getValue().getValue()));
+                    break;
+                case "agenda-group":
+                case "activation-group":
+                case "ruleflow-group":
+                case "duration":
+                case "timer":
+                    attributeCall.addArgument(new StringLiteralExpr( as.getValue().getValue()) );
+                    break;
+                case "calendars":
+                    String value = as.getValue().getValue().trim();
+                    if (value.startsWith( "[" )) {
+                        value = value.substring( 1, value.length()-1 ).trim();
+                    }
+                    Expression arrayExpr = JavaParser.parseExpression("new String[] { " + value + " }");
+                    attributeCall.addArgument( arrayExpr );
                     break;
                 default:
                     throw new UnsupportedOperationException("Unhandled case for rule attribute: " + as.getKey());
             }
+            ruleAttributes.add(attributeCall);
         }
         return ruleAttributes;
     }
