@@ -16,22 +16,26 @@
 
 package org.drools.testcoverage.common.util;
 
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 import org.assertj.core.api.Assertions;
 import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
 import org.drools.modelcompiler.builder.CanonicalModelKieProject;
 import org.kie.api.KieServices;
-import org.kie.api.builder.*;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.KieModule;
+import org.kie.api.builder.Message;
+import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.command.KieCommands;
 import org.kie.api.io.KieResources;
 import org.kie.api.io.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 /**
  * Util class that provides various methods related to Kie API.
