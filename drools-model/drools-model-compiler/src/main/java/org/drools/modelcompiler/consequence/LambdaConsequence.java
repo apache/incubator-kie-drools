@@ -40,7 +40,6 @@ import org.drools.model.bitmask.LongBitMask;
 import org.drools.model.bitmask.OpenBitSet;
 import org.drools.model.functions.FunctionN;
 import org.drools.modelcompiler.RuleContext;
-import org.kie.api.runtime.KieRuntime;
 
 import static java.util.Arrays.asList;
 
@@ -155,12 +154,9 @@ public class LambdaConsequence implements Consequence {
             fhLookup.put( fh.getObject(), fh );
         }
 
-        public KieRuntime getKnowledgeRuntime() {
-            return knowledgeHelper.getKnowledgeRuntime();
-        }
-
-        public KieRuntime getKieRuntime() {
-            return knowledgeHelper.getKieRuntime();
+        @Override
+        public <T> T getRuntime(Class<T> runtimeClass) {
+            return (T)knowledgeHelper.getKieRuntime();
         }
     }
 

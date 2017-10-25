@@ -19,11 +19,16 @@ package org.drools.modelcompiler;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.List;
 
+import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
 import org.junit.Test;
+import org.kie.api.event.rule.AfterMatchFiredEvent;
+import org.kie.api.event.rule.DefaultAgendaEventListener;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.FactHandle;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -182,4 +187,139 @@ public class RuleAttributesTest extends BaseModelTest {
             return day != Calendar.SATURDAY && day != Calendar.SUNDAY;
         }
     };
+
+    @Test
+    public void testAutoFocus() {
+        String str =
+                "package org.drools.testcoverage.functional;\n" +
+                        "//generated from Decision Table\n" +
+                        "// rule values at A9, header at A4\n" +
+                        "rule \"a\"\n" +
+                        "  when\n" +
+                        "    String(this == \"lockOnActive\")\n" +
+                        "  then\n" +
+                        "    drools.getKnowledgeRuntime().getAgenda().getAgendaGroup(\"a\").setFocus();\n" +
+                        "end\n" +
+                        "\n" +
+                        "// rule values at A10, header at A4\n" +
+                        "rule \"a1\"\n" +
+                        "  salience 0\n" +
+                        "  lock-on-active true\n" +
+                        "  agenda-group \"a\"\n" +
+                        "  when\n" +
+                        "    String(this == \"lockOnActive2\")\n" +
+                        "  then\n" +
+                        "end\n" +
+                        "\n" +
+                        "// rule values at A11, header at A4\n" +
+                        "rule \"a2\"\n" +
+                        "  salience 10\n" +
+                        "  lock-on-active false\n" +
+                        "  agenda-group \"a\"\n" +
+                        "  when\n" +
+                        "    String(this == \"lockOnActive\")\n" +
+                        "  then\n" +
+                        "    insert(new String(\"lockOnActive2\"));\n" +
+                        "end\n" +
+                        "\n" +
+                        "// rule values at A12, header at A4\n" +
+                        "rule \"a3\"\n" +
+                        "  salience 5\n" +
+                        "  lock-on-active true\n" +
+                        "  agenda-group \"a\"\n" +
+                        "  when\n" +
+                        "    String(this == \"lockOnActive\")\n" +
+                        "  then\n" +
+                        "end\n" +
+                        "\n" +
+                        "// rule values at A13, header at A4\n" +
+                        "rule \"b1\"\n" +
+                        "  salience 10\n" +
+                        "  agenda-group \"b\"\n" +
+                        "  when\n" +
+                        "    String(this == \"withoutAutoFocus\")\n" +
+                        "  then\n" +
+                        "end\n" +
+                        "\n" +
+                        "// rule values at A14, header at A4\n" +
+                        "rule \"b2\"\n" +
+                        "  salience 5\n" +
+                        "  auto-focus true\n" +
+                        "  agenda-group \"b\"\n" +
+                        "  when\n" +
+                        "    String(this == \"autoFocus\")\n" +
+                        "  then\n" +
+                        "    insert(new String(\"withoutAutoFocus\"));\n" +
+                        "end\n" +
+                        "\n" +
+                        "// rule values at A15, header at A4\n" +
+                        "rule \"c1\"\n" +
+                        "  salience 0\n" +
+                        "  activation-group \"c\"\n" +
+                        "  when\n" +
+                        "    String(this == \"activationGroup\")\n" +
+                        "  then\n" +
+                        "end\n" +
+                        "\n" +
+                        "// rule values at A16, header at A4\n" +
+                        "rule \"c2\"\n" +
+                        "  salience 10\n" +
+                        "  activation-group \"c\"\n" +
+                        "  when\n" +
+                        "    String(this == \"activationGroup\")\n" +
+                        "  then\n" +
+                        "end\n" +
+                        "\n" +
+                        "// rule values at A17, header at A4\n" +
+                        "rule \"c3\"\n" +
+                        "  salience 5\n" +
+                        "  activation-group \"c\"\n" +
+                        "  when\n" +
+                        "    String(this == \"activationGroup\")\n" +
+                        "  then\n" +
+                        "end\n" +
+                        "\n";
+
+        KieSession ksession = getKieSession( str );
+
+        final OrderListener listener = new OrderListener();
+        ksession.addEventListener(listener);
+
+        // first test - we try to fire rule in agenda group which has auto focus
+        // disable, we won't succeed
+        final FactHandle withoutAutoFocus = ksession.insert("withoutAutoFocus");
+        ksession.fireAllRules();
+        Assertions.assertThat(listener.size()).isEqualTo(0);
+
+        // second test - we try to fire rule in agenda group with auto focus
+        // enabled
+        // it fires and it's defined consequence causes to fire second rule
+        // which has no auto focus
+        ksession.insert("autoFocus");
+        ksession.delete(withoutAutoFocus);
+        ksession.fireAllRules();
+        Assertions.assertThat(listener.size()).isEqualTo(2);
+        final String[] expected = {"b2", "b1"};
+        for (int i = 0; i < listener.size(); i++) {
+            Assertions.assertThat(listener.get(i)).isEqualTo(expected[i]);
+        }
+    }
+
+    public static class OrderListener extends DefaultAgendaEventListener {
+
+        private List<String> rulesFired = new ArrayList<String>();
+
+        @Override
+        public void afterMatchFired(final AfterMatchFiredEvent event) {
+            rulesFired.add(event.getMatch().getRule().getName());
+        }
+
+        public int size() {
+            return rulesFired.size();
+        }
+
+        public String get(final int index) {
+            return rulesFired.get(index);
+        }
+    }
 }
