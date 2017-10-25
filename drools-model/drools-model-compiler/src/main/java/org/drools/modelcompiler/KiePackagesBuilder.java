@@ -167,6 +167,7 @@ public class KiePackagesBuilder {
 
     private RuleImpl compileRule( KnowledgePackageImpl pkg, Rule rule ) {
         RuleImpl ruleImpl = new RuleImpl( rule.getName() );
+        ruleImpl.setPackage( pkg.getName() );
         setRuleAttributes( rule, ruleImpl );
         ruleImpl.setPackage( rule.getPackage() );
         if (rule.getUnit() != null) {
@@ -199,7 +200,7 @@ public class KiePackagesBuilder {
         setAttribute( rule, Rule.Attribute.TIMER, t -> ruleImpl.setTimer( parseTimer( t ) ) );
         setAttribute( rule, Rule.Attribute.CALENDARS, ruleImpl::setCalendars );
 
-        ruleImpl.setEager( noLoop != null || lockOnActive != null );
+        ruleImpl.setEager( ruleImpl.isEager() || noLoop != null || lockOnActive != null );
     }
 
     private <T> T setAttribute( Rule rule, Rule.Attribute<T> attribute, Consumer<T> consumer ) {

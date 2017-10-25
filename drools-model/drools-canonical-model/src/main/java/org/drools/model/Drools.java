@@ -9,7 +9,5 @@ public interface Drools {
 
     void delete(Object object);
 
-    Object getKnowledgeRuntime();
-
-    Object getKieRuntime();
+    <T> T getRuntime(Class<T> runtimeClass);
 }
