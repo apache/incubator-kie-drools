@@ -16,18 +16,38 @@
 
 package org.jbpm.process.workitem;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Map;
+
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Test;
-
-import java.util.Map;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 import static org.junit.Assert.*;
 
+@RunWith(Parameterized.class)
 public class WorkItemRepositoryTest extends AbstractBaseTest {
+
+    @Parameters(name = "Repository Name : {0}")
+    public static Collection<Object[]> data() {
+        return Arrays.asList(new Object[][] {
+                {"repository"},
+                {"repositorynoindexconf"}
+        });
+    }
+
+    private String repoName;
+
+    public WorkItemRepositoryTest(String repoName) {
+        this.repoName = repoName;
+    }
 
     @Test
     public void testGetWorkDefinitions() throws Exception {
-        Map<String, WorkDefinitionImpl> repoResults = WorkItemRepository.getWorkDefinitions(getClass().getResource("repository").toURI().toString());
+        Map<String, WorkDefinitionImpl> repoResults = WorkItemRepository.getWorkDefinitions(getClass().getResource(repoName).toURI().toString());
         assertNotNull(repoResults);
         assertFalse(repoResults.isEmpty());
         assertEquals(repoResults.size(), 9);
@@ -35,7 +55,7 @@ public class WorkItemRepositoryTest extends AbstractBaseTest {
 
     @Test
     public void testGetWorkDefinitionsForNames() throws Exception {
-        Map<String, WorkDefinitionImpl> repoResults = WorkItemRepository.getWorkDefinitions(getClass().getResource("repository").toURI().toString(),
+        Map<String, WorkDefinitionImpl> repoResults = WorkItemRepository.getWorkDefinitions(getClass().getResource(repoName).toURI().toString(),
                 new String[]{"TestServiceOne", "TestServiceTwo"});
 
         assertNotNull(repoResults);
@@ -45,20 +65,20 @@ public class WorkItemRepositoryTest extends AbstractBaseTest {
 
     @Test
     public void testGetWorkDefinitionsForInvalidNames() throws Exception {
-        Map<String, WorkDefinitionImpl> repoResults = WorkItemRepository.getWorkDefinitions(getClass().getResource("repository").toURI().toString(),
+        Map<String, WorkDefinitionImpl> repoResults = WorkItemRepository.getWorkDefinitions(getClass().getResource(repoName).toURI().toString(),
                 new String[]{"TestServiceOne", "INVALID_NAME"});
 
         assertNotNull(repoResults);
         assertFalse(repoResults.isEmpty());
         assertEquals(repoResults.size(), 1);
 
-        Map<String, WorkDefinitionImpl> repoResults2 = WorkItemRepository.getWorkDefinitions(getClass().getResource("repository").toURI().toString(),
+        Map<String, WorkDefinitionImpl> repoResults2 = WorkItemRepository.getWorkDefinitions(getClass().getResource(repoName).toURI().toString(),
                 new String[]{"INVALID_NAME1", "INVALID_NAME2"});
 
         assertNotNull(repoResults2);
         assertTrue(repoResults2.isEmpty());
 
-        Map<String, WorkDefinitionImpl> repoResults3 = WorkItemRepository.getWorkDefinitions(getClass().getResource("repository").toURI().toString(),
+        Map<String, WorkDefinitionImpl> repoResults3 = WorkItemRepository.getWorkDefinitions(getClass().getResource(repoName).toURI().toString(),
                 new String[]{});
 
         assertNotNull(repoResults3);
