@@ -70,9 +70,7 @@ import org.drools.javaparser.ast.drlx.expr.TemporalLiteralExpr;
 import org.drools.javaparser.ast.expr.AssignExpr;
 import org.drools.javaparser.ast.expr.BinaryExpr;
 import org.drools.javaparser.ast.expr.BinaryExpr.Operator;
-import org.drools.javaparser.ast.expr.CastExpr;
 import org.drools.javaparser.ast.expr.ClassExpr;
-import org.drools.javaparser.ast.expr.EnclosedExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.FieldAccessExpr;
 import org.drools.javaparser.ast.expr.LambdaExpr;
@@ -113,6 +111,8 @@ public class ModelGenerator {
 
     private static final Map<String, Expression> attributesMap = new HashMap<>();
 
+    private static final Map<String, Expression> consequenceMethods = new HashMap<>();
+
     static {
         attributesMap.put("no-loop", JavaParser.parseExpression("Rule.Attribute.NO_LOOP"));
         attributesMap.put("salience", JavaParser.parseExpression("Rule.Attribute.SALIENCE"));
@@ -125,6 +125,9 @@ public class ModelGenerator {
         attributesMap.put("duration", JavaParser.parseExpression("Rule.Attribute.DURATION"));
         attributesMap.put("timer", JavaParser.parseExpression("Rule.Attribute.TIMER"));
         attributesMap.put("calendars", JavaParser.parseExpression("Rule.Attribute.CALENDARS"));
+
+        consequenceMethods.put("getKnowledgeRuntime", JavaParser.parseExpression("drools.getRuntime(org.kie.api.runtime.KieRuntime.class)"));
+        consequenceMethods.put("getKieRuntime", JavaParser.parseExpression("drools.getRuntime(org.kie.api.runtime.KieRuntime.class)"));
     }
 
     public static final boolean GENERATE_EXPR_ID = true;
@@ -209,6 +212,9 @@ public class ModelGenerator {
         VariableDeclarationExpr ruleVar = new VariableDeclarationExpr(RULE_TYPE, RULE_CALL);
 
         MethodCallExpr ruleCall = new MethodCallExpr(null, RULE_CALL);
+        if (!ruleDescr.getNamespace().isEmpty()) {
+            ruleCall.addArgument( new StringLiteralExpr( ruleDescr.getNamespace() ) );
+        }
         ruleCall.addArgument( new StringLiteralExpr( ruleDescr.getName() ) );
 
         MethodCallExpr buildCallScope = ruleCall;
@@ -346,6 +352,9 @@ public class ModelGenerator {
         VariableDeclarationExpr queryVar = new VariableDeclarationExpr(getQueryType(context.queryParameters), QUERY_CALL);
 
         MethodCallExpr queryCall = new MethodCallExpr(null, QUERY_CALL);
+        if (!queryDescr.getNamespace().isEmpty()) {
+            queryCall.addArgument( new StringLiteralExpr( queryDescr.getNamespace() ) );
+        }
         queryCall.addArgument(new StringLiteralExpr(queryDescr.getName()));
         for (QueryParameter qp : context.queryParameters) {
             queryCall.addArgument(new NameExpr(toVar(qp.name)));
@@ -460,13 +469,6 @@ public class ModelGenerator {
         return sb.toString();
     }
 
-    private static Map<String, String> returnedTypes = new HashMap<>();
-
-    static {
-        returnedTypes.put("getKnowledgeRuntime", "org.kie.api.runtime.KieRuntime");
-        returnedTypes.put("getKieRuntime", "org.kie.api.runtime.KieRuntime");
-    }
-
     private static boolean rewriteRHS(RuleContext context, BlockStmt ruleBlock, BlockStmt rhs) {
         AtomicBoolean requireDrools = new AtomicBoolean( false );
         List<MethodCallExpr> methodCallExprs = rhs.getChildNodesByType(MethodCallExpr.class);
@@ -486,9 +488,9 @@ public class ModelGenerator {
             } else {
                 methodCallExpr.getScope().ifPresent( scope -> {
                     if (scope instanceof MethodCallExpr && hasScope( (( MethodCallExpr ) scope), "drools" )) {
-                        String returnedType = returnedTypes.get( (( MethodCallExpr ) scope).getNameAsString() );
-                        if (returnedType != null) {
-                            methodCallExpr.setScope( new EnclosedExpr( new CastExpr( new ClassOrInterfaceType( returnedType ), scope ) ) );
+                        Expression newScope = consequenceMethods.get( (( MethodCallExpr ) scope).getNameAsString() );
+                        if (newScope != null) {
+                            methodCallExpr.setScope( newScope );
                         }
                         requireDrools.set( true );
                     }
