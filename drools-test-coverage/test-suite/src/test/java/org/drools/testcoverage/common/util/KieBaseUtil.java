@@ -16,17 +16,24 @@
 
 package org.drools.testcoverage.common.util;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringReader;
+
+import org.drools.compiler.kie.builder.impl.InternalKieModule;
+import org.drools.modelcompiler.CanonicalKieModule;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieContainer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import java.io.StringReader;
 
 /**
  * Util class that provides various methods related to KieBase.
@@ -55,7 +62,40 @@ public final class KieBaseUtil {
     public static KieBase getKieBaseFromResources(final KieBaseTestConfiguration kieBaseTestConfiguration,
             final boolean failIfBuildError, final Resource... resources) {
         final KieBuilder kieBuilder = KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration, failIfBuildError, resources);
+        if (kieBaseTestConfiguration.useCanonicalModel()) {
+            generateKieModuleForCanonicalModel( kieBuilder );
+        }
         return getDefaultKieBaseFromKieBuilder(kieBuilder);
+    }
+
+    private static void generateKieModuleForCanonicalModel( KieBuilder kieBuilder ) {
+        KieServices ks = KieServices.get();
+        ReleaseId releaseId = kieBuilder.getKieModule().getReleaseId();
+        InternalKieModule kieModule = ( InternalKieModule ) kieBuilder.getKieModule();
+        File kjarFile = bytesToTempKJARFile( releaseId, kieModule.getBytes(), ".jar" );
+        KieModule zipKieModule = new CanonicalKieModule( releaseId, getDefaultKieModuleModel( ks ), kjarFile );
+        ks.getRepository().addKieModule( zipKieModule );
+    }
+
+    private static KieModuleModel getDefaultKieModuleModel( KieServices ks ) {
+        KieModuleModel kproj = KieServices.get().newKieModuleModel();
+        KieBaseModel kieBaseModel1 = kproj.newKieBaseModel( "kbase" ).setDefault( true );
+        KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel( "ksession" ).setDefault( true );
+        return kproj;
+    }
+
+    private static File bytesToTempKJARFile( ReleaseId releaseId, byte[] bytes, String extension ) {
+        File file = new File( System.getProperty( "java.io.tmpdir" ), releaseId.getArtifactId() + "-" + releaseId.getVersion() + extension );
+        try {
+            new PrintWriter(file).close();
+            FileOutputStream fos = new FileOutputStream( file, false );
+            fos.write( bytes );
+            fos.flush();
+            fos.close();
+        } catch ( IOException e ) {
+            throw new RuntimeException( e );
+        }
+        return file;
     }
 
     public static KieBase getKieBaseFromDRLResources(final KieBaseTestConfiguration kieBaseTestConfiguration,
