@@ -46,9 +46,11 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.Collections;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 
 
 public class DMNCompilerImpl
@@ -199,7 +201,42 @@ public class DMNCompilerImpl
                 }
             }
         }
+        detectCycles( model );
     }
+
+    private void detectCycles( DMNModelImpl model ) {
+        /*
+        Boolean.TRUE = node is either safe or already reported for having a cyclic dependency
+        Boolean.FALSE = node is being checked at the moment
+         */
+        final Map<DecisionNodeImpl, Boolean> registry = new HashMap<>();
+        for ( DecisionNode decision : model.getDecisions() ) {
+            final DecisionNodeImpl decisionNode = (DecisionNodeImpl) decision;
+            detectCycles( decisionNode, registry, model );
+        }
+    }
+
+    private void detectCycles( DecisionNodeImpl node, Map<DecisionNodeImpl, Boolean> registry, DMNModelImpl model ) {
+        if ( Boolean.TRUE.equals(registry.get( node ) ) ) return;
+        if ( Boolean.FALSE.equals( registry.put( node, Boolean.FALSE ) ) ) {
+            MsgUtil.reportMessage( logger,
+                                   DMNMessage.Severity.ERROR,
+                                   node.getSource(),
+                                   model,
+                                   null,
+                                   null,
+                                   Msg.CYCLIC_DEP_FOR_NODE,
+                                   node.getName() );
+            registry.put( node, Boolean.TRUE );
+        }
+        for ( DMNNode dependency : node.getDependencies().values() ) {
+            if ( dependency instanceof DecisionNodeImpl ) {
+                detectCycles( (DecisionNodeImpl) dependency, registry, model );
+            }
+        }
+        registry.put( node, Boolean.TRUE );
+    }
+
 
     public void linkRequirements(DMNModelImpl model, DMNBaseNode node) {
         for ( InformationRequirement ir : node.getInformationRequirement() ) {

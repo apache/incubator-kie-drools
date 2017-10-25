@@ -94,4 +94,31 @@ public class ValidatorDecisionTest extends AbstractValidatorTest {
         assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(2));
         assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND)));
     }
+
+
+    @Test
+    public void testDECISION_CYCLIC_DEPENDENCY() {
+        final List<DMNMessage> validate = validator.validate( getReader("decision/DECISION_CYCLIC_DEPENDENCY.dmn"), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION );
+        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(2));
+        assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND)));
+    }
+
+    @Test
+    public void testDECISION_CYCLIC_DEPENDENCY_SELF_REFERENCE() {
+        final List<DMNMessage> validate = validator.validate( getReader("decision/DECISION_CYCLIC_DEPENDENCY_SELF_REFERENCE.dmn"), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION );
+        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(1));
+        assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND)));
+    }
+
+    @Test
+    public void testDECISION_DEADLY_DIAMOND() {
+        final List<DMNMessage> validate = validator.validate( getReader("decision/DECISION_DEADLY_DIAMOND.dmn"), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION );
+        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(0));
+    }
+
+    @Test
+    public void testDECISION_DEADLY_KITE() {
+        final List<DMNMessage> validate = validator.validate( getReader("decision/DECISION_DEADLY_KITE.dmn"), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION );
+        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(0));
+    }
 }

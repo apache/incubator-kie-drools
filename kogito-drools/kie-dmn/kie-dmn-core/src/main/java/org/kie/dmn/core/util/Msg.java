@@ -8,6 +8,7 @@ public class Msg {
     public static final Message2 REQ_INPUT_NOT_FOUND_FOR_NODE                        = new Message2( DMNMessageType.REQ_NOT_FOUND, "Required input '%s' not found on node '%s'" );
     public static final Message2 REQ_DECISION_NOT_FOUND_FOR_NODE                     = new Message2( DMNMessageType.REQ_NOT_FOUND, "Required Decision '%s' not found on node '%s'" );
     public static final Message2 REQ_BKM_NOT_FOUND_FOR_NODE                          = new Message2( DMNMessageType.REQ_NOT_FOUND, "Required Business Knowledge Model '%s' not found on node '%s'" );
+    public static final Message1 CYCLIC_DEP_FOR_NODE                                 = new Message1( DMNMessageType.REQ_NOT_FOUND, "Cyclic dependency detected for node '%s'");
     public static final Message2 REQ_DEP_NOT_FOUND_FOR_NODE                          = new Message2( DMNMessageType.REQ_NOT_FOUND, "Required dependency '%s' not found on node '%s'" );
     public static final Message2 REQ_DEP_INVALID_TYPE                                = new Message2( DMNMessageType.REQ_NOT_FOUND, "Required dependency '%s' on node '%s' does not match the node type" );
     public static final Message2 UNABLE_TO_EVALUATE_DECISION_REQ_DEP                 = new Message2( DMNMessageType.REQ_NOT_FOUND, "Unable to evaluate decision '%s' as it depends on decision '%s'" );
