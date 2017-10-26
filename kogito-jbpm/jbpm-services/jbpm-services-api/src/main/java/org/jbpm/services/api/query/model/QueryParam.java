@@ -29,6 +29,22 @@ public class QueryParam implements Serializable {
     
     private static final long serialVersionUID = -7751811350486978746L;
     
+    public static final String MILLISECOND = "MILLISECOND";
+    public static final String HUNDRETH = "HUNDRETH";
+    public static final String TENTH = "TENTH";
+    public static final String SECOND = "SECOND";
+    public static final String MINUTE = "MINUTE";
+    public static final String HOUR = "HOUR";
+    public static final String DAY = "DAY";
+    public static final String DAY_OF_WEEK = "DAY_OF_WEEK";
+    public static final String WEEK = "WEEK";
+    public static final String MONTH = "MONTH";
+    public static final String QUARTER = "QUARTER";
+    public static final String YEAR = "YEAR";
+    public static final String DECADE = "DECADE";
+    public static final String CENTURY = "CENTURY";
+    public static final String MILLENIUM = "MILLENIUM";
+    
     private String column;
     private String operator;
     private List<?> value;
@@ -119,6 +135,10 @@ public class QueryParam implements Serializable {
     
     public static QueryParam[] groupBy(String column) {
         return new QueryParam[] {new QueryParam(column, "group", Arrays.asList(column)), new QueryParam(column, null, Arrays.asList(column))};
+    }
+    
+    public static QueryParam[] groupBy(String column, String intervalSize, int maxInterval) {
+        return new QueryParam[] {new QueryParam(column, "group", Arrays.asList(column, intervalSize, maxInterval)), new QueryParam(column, null, Arrays.asList(column))};
     }
     
     public String getColumn() {

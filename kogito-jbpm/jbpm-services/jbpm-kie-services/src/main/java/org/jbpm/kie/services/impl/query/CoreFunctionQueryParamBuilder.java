@@ -45,7 +45,11 @@ public class CoreFunctionQueryParamBuilder implements QueryParamBuilder<Object> 
         index++;
         if ("group".equalsIgnoreCase(param.getOperator())) {
             // if operator is group consider it as group functions
-            return new GroupColumnFilter(param.getColumn(), (String)param.getValue().get(0));
+            if (param.getValue().size() > 1) {
+                return new GroupColumnFilter(param.getColumn(), (String)param.getValue().get(0), (String)param.getValue().get(1), (Integer)param.getValue().get(2));
+            } else {
+                return new GroupColumnFilter(param.getColumn(), (String)param.getValue().get(0), null, -1);
+            }
         }
         // check core functions
         CoreFunctionType type = CoreFunctionType.getByName(param.getOperator());

@@ -24,10 +24,14 @@ public class GroupColumnFilter implements Serializable {
 
     private String newColumnId;
     private String columnId;
+    private String intervalSize;
+    private int maxIntervals;
     
-    public GroupColumnFilter(String columnId, String newColumnId) {        
+    public GroupColumnFilter(String columnId, String newColumnId, String intervalSize, int maxIntervals) {        
         this.columnId = columnId;
         this.newColumnId = newColumnId;
+        this.intervalSize = intervalSize;
+        this.maxIntervals = maxIntervals;
     }
 
     public String getNewColumnId() {
@@ -44,5 +48,21 @@ public class GroupColumnFilter implements Serializable {
     
     public void setColumnId(String columnId) {
         this.columnId = columnId;
+    }
+   
+    public String getIntervalSize() {
+        return intervalSize;
+    }
+    
+    public void setIntervalSize(String intervalSize) {
+        this.intervalSize = intervalSize;
+    }
+    
+    public int getMaxIntervals() {
+        return maxIntervals;
+    }
+    
+    public void setMaxIntervals(int maxIntervals) {
+        this.maxIntervals = maxIntervals;
     }
 }

@@ -171,6 +171,16 @@
 		  "methodName": "getFormName",
 		  "elementKind": "method",
 		  "justification": "Added support for update task operation"
+		 },
+		 {
+		  "code": "java.field.serialVersionUIDUnchanged",
+		  "old": "field org.jbpm.services.api.query.model.QueryParam.serialVersionUID",
+		  "new": "field org.jbpm.services.api.query.model.QueryParam.serialVersionUID",
+		  "package": "org.jbpm.services.api.query.model",
+		  "classSimpleName": "QueryParam",
+		  "fieldName": "serialVersionUID",
+		  "elementKind": "field",
+		  "justification": "Included support for group operation with intervals"
 		 }
       ]
     }

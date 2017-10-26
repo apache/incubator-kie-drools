@@ -40,6 +40,8 @@ import org.dashbuilder.dataset.def.DataSetDefRegistry;
 import org.dashbuilder.dataset.def.SQLDataSetDefBuilder;
 import org.dashbuilder.dataset.exception.DataSetLookupException;
 import org.dashbuilder.dataset.filter.ColumnFilter;
+import org.dashbuilder.dataset.group.DateIntervalType;
+import org.dashbuilder.dataset.impl.AbstractDataSetLookupBuilder;
 import org.jbpm.kie.services.impl.model.ProcessAssetDesc;
 import org.jbpm.kie.services.impl.query.persistence.PersistDataSetListener;
 import org.jbpm.kie.services.impl.query.persistence.QueryDefinitionEntity;
@@ -225,8 +227,12 @@ public class QueryServiceImpl implements QueryService, DeploymentEventListener {
                 // add aggregate function
                 builder.column(((AggregateColumnFilter) filter).getColumnId(), ((AggregateColumnFilter) filter).getType(), ((AggregateColumnFilter) filter).getColumnId());
             } else if (filter instanceof GroupColumnFilter) {
+                GroupColumnFilter groupFilter = ((GroupColumnFilter) filter);
                 // add group function
                 builder.group(((GroupColumnFilter) filter).getColumnId(), ((GroupColumnFilter) filter).getNewColumnId());
+                if (groupFilter.getIntervalSize() != null) {
+                    ((AbstractDataSetLookupBuilder<?>) builder).dynamic(groupFilter.getMaxIntervals(), DateIntervalType.valueOf(groupFilter.getIntervalSize()), true);
+                }
             } else if (filter instanceof ExtraColumnFilter) {
                 // add extra column
                 builder.column(((ExtraColumnFilter) filter).getColumnId(), ((ExtraColumnFilter) filter).getNewColumnId());

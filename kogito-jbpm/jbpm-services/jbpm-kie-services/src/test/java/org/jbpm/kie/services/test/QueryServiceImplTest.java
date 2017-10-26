@@ -16,12 +16,29 @@
 
 package org.jbpm.kie.services.test;
 
+import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_PROCESSID;
+import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_PROCESSINSTANCEID;
+import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_PROCESSNAME;
+import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_START;
+import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_STATUS;
+import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_TASK_VAR_NAME;
+import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_TASK_VAR_VALUE;
+import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_VAR_NAME;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.lang.reflect.Field;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,10 +86,6 @@ import org.kie.internal.runtime.manager.InternalRuntimeManager;
 import org.kie.scanner.KieMavenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.jbpm.services.api.query.QueryResultMapper.*;
-import static org.junit.Assert.*;
-import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
 public class QueryServiceImplTest extends AbstractKieServicesBaseTest {
 
@@ -1130,7 +1143,92 @@ public class QueryServiceImplTest extends AbstractKieServicesBaseTest {
         assertNotNull(queries);
         assertEquals(0, queries.size());
     }
+    
+    @Test
+    public void testGetProcessInstancesGroupWithInterval() {
 
+        query = new SqlQueryDefinition("getAllProcessInstances", dataSourceJNDIname);
+        query.setExpression("select * from processinstancelog");
+
+        queryService.registerQuery(query);
+
+        List<QueryDefinition> queries = queryService.getQueries(new QueryContext());
+        assertNotNull(queries);
+        assertEquals(1, queries.size());
+
+        QueryParam[] parameters = QueryParam.getBuilder().append(QueryParam.groupBy(COLUMN_START, QueryParam.DAY, 30)).get();
+
+        Collection<List<Object>> instances = queryService.query(query.getName(), RawListQueryMapper.get(), new QueryContext(), parameters);
+        assertNotNull(instances);
+        assertEquals(0, instances.size());
+
+        processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
+        assertNotNull(processInstanceId);
+
+        long processInstanceId2 = processService.startProcess(deploymentUnit.getIdentifier(), "org.jboss.qa.bpms.HumanTask");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        // expected date is day when processes started
+        String expectedDate = sdf.format(new Date());
+
+        instances = queryService.query(query.getName(), RawListQueryMapper.get(), new QueryContext(), parameters);
+        assertNotNull(instances);
+        assertEquals(1, instances.size());
+        // write document process
+        List<Object> result = instances.iterator().next();
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        
+        assertEquals(expectedDate, result.get(0));
+
+        processService.abortProcessInstance(processInstanceId2);
+        processService.abortProcessInstance(processInstanceId);
+        processInstanceId = null;
+
+    }
+
+    
+    @Test
+    public void testGetProcessInstancesGroupWithoutInterval() {
+
+        query = new SqlQueryDefinition("getAllProcessInstances", dataSourceJNDIname);
+        query.setExpression("select * from processinstancelog");
+
+        queryService.registerQuery(query);
+
+        List<QueryDefinition> queries = queryService.getQueries(new QueryContext());
+        assertNotNull(queries);
+        assertEquals(1, queries.size());
+
+        QueryParam[] parameters = QueryParam.getBuilder().append(QueryParam.groupBy(COLUMN_START)).get();
+
+        Collection<List<Object>> instances = queryService.query(query.getName(), RawListQueryMapper.get(), new QueryContext(), parameters);
+        assertNotNull(instances);
+        assertEquals(0, instances.size());
+
+        processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
+        assertNotNull(processInstanceId);
+
+        long processInstanceId2 = processService.startProcess(deploymentUnit.getIdentifier(), "org.jboss.qa.bpms.HumanTask");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
+        // expected date is day when processes started
+        String expectedDate = sdf.format(new Date());
+
+        instances = queryService.query(query.getName(), RawListQueryMapper.get(), new QueryContext(), parameters);
+        assertNotNull(instances);
+        assertEquals(1, instances.size());
+        // write document process
+        List<Object> result = instances.iterator().next();
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        
+        assertEquals(expectedDate, result.get(0));
+
+        processService.abortProcessInstance(processInstanceId2);
+        processService.abortProcessInstance(processInstanceId);
+        processInstanceId = null;
+
+    }
+    
     protected void setFieldValue(Object instance, String fieldName, Object value) {
         try {
             Field f = instance.getClass().getDeclaredField(fieldName);
