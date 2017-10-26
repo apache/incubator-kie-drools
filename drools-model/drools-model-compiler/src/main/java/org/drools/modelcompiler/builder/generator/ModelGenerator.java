@@ -529,6 +529,7 @@ public class ModelGenerator {
         return hasScope( mce, "drools" ) || (
                 !mce.getScope().isPresent() && (
                 mce.getNameAsString().equals("insert") ||
+                mce.getNameAsString().equals("insertLogical") ||
                 mce.getNameAsString().equals("delete") ||
                 mce.getNameAsString().equals("retract") ||
                 mce.getNameAsString().equals("update") ) );
