@@ -15,6 +15,9 @@
 
 package org.drools.core.common;
 
+import org.drools.core.util.ClassUtils;
+import org.kie.internal.utils.KieTypeResolver;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,7 +36,7 @@ import org.drools.core.util.ClassUtils;
 
 import static org.drools.core.util.ClassUtils.convertClassToResourcePath;
 
-public class ProjectClassLoader extends ClassLoader {
+public class ProjectClassLoader extends ClassLoader implements KieTypeResolver {
 
     private static final boolean CACHE_NON_EXISTING_CLASSES = true;
     private static final ClassNotFoundException dummyCFNE = CACHE_NON_EXISTING_CLASSES ?
@@ -61,7 +64,7 @@ public class ProjectClassLoader extends ClassLoader {
         this.resourceProvider = resourceProvider;
     }
 
-    public static class IBMClassLoader extends ProjectClassLoader {
+    public static class IBMClassLoader extends ProjectClassLoader implements KieTypeResolver {
         private final boolean parentImplementsFindResources;
 
         private static final Enumeration<URL> EMPTY_RESOURCE_ENUM = new Vector<URL>().elements();
@@ -387,7 +390,7 @@ public class ProjectClassLoader extends ClassLoader {
         return result;
     }
 
-    interface InternalTypesClassLoader {
+    interface InternalTypesClassLoader extends KieTypeResolver {
         Class<?> defineClass(String name, byte[] bytecode);
         Class<?> loadType(String name, boolean resolve) throws ClassNotFoundException;
     }
