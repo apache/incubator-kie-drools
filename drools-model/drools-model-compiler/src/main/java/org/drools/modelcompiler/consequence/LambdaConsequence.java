@@ -42,7 +42,6 @@ import org.drools.model.functions.FunctionN;
 import org.drools.modelcompiler.RuleContext;
 
 import static java.util.Arrays.asList;
-
 import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
 
 public class LambdaConsequence implements Consequence {
@@ -126,6 +125,11 @@ public class LambdaConsequence implements Consequence {
         @Override
         public void insert(Object object) {
             workingMemory.insert(object);
+        }
+
+        @Override
+        public void insertLogical(Object object) {
+            knowledgeHelper.insertLogical(object);
         }
 
         @Override
