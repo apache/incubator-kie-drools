@@ -32,12 +32,12 @@
     </dependency>
 
     <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-maven-support</artifactId>
+      <groupId>org.kie.soup</groupId>
+      <artifactId>kie-soup-maven-support</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-maven-integration</artifactId>
+      <groupId>org.kie.soup</groupId>
+      <artifactId>kie-soup-maven-integration</artifactId>
     </dependency>
 
     <dependency>
@@ -83,7 +83,7 @@
             <configuration>
               <artifactSet>
                 <excludes>
-                  <exclude>org.uberfire:uberfire-maven-support</exclude>
+                  <exclude>org.kie.soup:kie-soup-maven-support</exclude>
                   <exclude>org.kie:kie-api</exclude>
                   <exclude>org.kie:kie-internal</exclude>
                   <exclude>org.drools:*</exclude>
