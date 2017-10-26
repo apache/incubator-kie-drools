@@ -32,7 +32,11 @@ import static com.thoughtworks.xstream.XStream.setupDefaultSecurity;
 public class XStreamUtils {
 
     private static final String[] WHITELISTED_PACKAGES = new String[] {
-        "org.drools.core.command.**"
+        "org.drools.core.command.**",
+        "org.drools.core.runtime.impl.ExecutionResultImpl",
+        "org.drools.core.runtime.rule.impl.FlatQueryResults",
+        "org.drools.core.common.DefaultFactHandle",
+        "org.drools.core.common.EventFactHandle"
     };
 
     /**
