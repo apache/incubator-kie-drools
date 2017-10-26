@@ -32,6 +32,8 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.drools.core.util.ClassUtils;
+
 import static org.drools.core.util.ClassUtils.convertClassToResourcePath;
 
 public class ProjectClassLoader extends ClassLoader implements KieTypeResolver {
@@ -96,6 +98,10 @@ public class ProjectClassLoader extends ClassLoader implements KieTypeResolver {
             projectClassLoader.setDroolsClassLoader(cls.getClassLoader());
         }
         return projectClassLoader;
+    }
+
+    public ClassLoader getTypesClassLoader() {
+        return typesClassLoader instanceof ClassLoader ? (( ClassLoader ) typesClassLoader) : this;
     }
 
     public static ClassLoader findParentClassLoader() {

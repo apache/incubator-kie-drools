@@ -15,16 +15,16 @@
 
 package org.drools.core.rule.constraint;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.drools.core.base.EvaluatorWrapper;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Tuple;
 import org.mvel2.util.Soundex;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 public class EvaluatorHelper {
 
@@ -89,9 +89,7 @@ public class EvaluatorHelper {
         if (list instanceof Collection) {
             return ((Collection)list).contains(item);
         } else if (list instanceof Object[]) {
-            for (Object i : (Object[])list) {
-                if (i.equals(item)) return true;
-            }
+            return arrayContains( ( Object[] ) list, item );
         } else if (list instanceof int[]) {
             return contains((int[]) list, ((Integer)item).intValue());
         } else if (list instanceof long[]) {
@@ -112,11 +110,20 @@ public class EvaluatorHelper {
         return false;
     }
 
+    private static boolean arrayContains( Object[] list, Object item ) {
+        for (Object i : list) {
+            if (i.equals(item)) return true;
+        }
+        return false;
+    }
+
     public static boolean contains(Object list, boolean primitiveItem) {
         if (list instanceof Collection) {
             return ((Collection)list).contains(primitiveItem);
         }
-        return contains((boolean[]) list, primitiveItem);
+        return !list.getClass().getComponentType().isPrimitive() ?
+                arrayContains((Object[]) list, primitiveItem) :
+                contains((boolean[]) list, primitiveItem);
     }
 
     private static boolean contains(boolean[] list, boolean primitiveItem) {
@@ -130,7 +137,9 @@ public class EvaluatorHelper {
         if (list instanceof Collection) {
             return ((Collection)list).contains(primitiveItem);
         }
-        return contains((int[]) list, primitiveItem);
+        return !list.getClass().getComponentType().isPrimitive() ?
+                arrayContains((Object[]) list, primitiveItem) :
+                contains((int[]) list, primitiveItem);
     }
 
     private static boolean contains(int[] list, int primitiveItem) {
@@ -144,7 +153,9 @@ public class EvaluatorHelper {
         if (list instanceof Collection) {
             return ((Collection)list).contains(primitiveItem);
         }
-        return contains((long[]) list, primitiveItem);
+        return !list.getClass().getComponentType().isPrimitive() ?
+                arrayContains((Object[]) list, primitiveItem) :
+                contains((long[]) list, primitiveItem);
     }
 
     private static boolean contains(long[] list, long primitiveItem) {
@@ -158,7 +169,9 @@ public class EvaluatorHelper {
         if (list instanceof Collection) {
             return ((Collection)list).contains(primitiveItem);
         }
-        return contains((double[]) list, primitiveItem);
+        return !list.getClass().getComponentType().isPrimitive() ?
+                arrayContains((Object[]) list, primitiveItem) :
+                contains((double[]) list, primitiveItem);
     }
 
     private static boolean contains(double[] list, double primitiveItem) {
@@ -172,7 +185,9 @@ public class EvaluatorHelper {
         if (list instanceof Collection) {
             return ((Collection)list).contains(primitiveItem);
         }
-        return contains((float[]) list, primitiveItem);
+        return !list.getClass().getComponentType().isPrimitive() ?
+                arrayContains((Object[]) list, primitiveItem) :
+                contains((float[]) list, primitiveItem);
     }
 
     private static boolean contains(float[] list, float primitiveItem) {
@@ -186,7 +201,9 @@ public class EvaluatorHelper {
         if (list instanceof Collection) {
             return ((Collection)list).contains(primitiveItem);
         }
-        return contains((byte[]) list, primitiveItem);
+        return !list.getClass().getComponentType().isPrimitive() ?
+                arrayContains((Object[]) list, primitiveItem) :
+                contains((byte[]) list, primitiveItem);
     }
 
     private static boolean contains(byte[] list, byte primitiveItem) {
@@ -200,7 +217,9 @@ public class EvaluatorHelper {
         if (list instanceof Collection) {
             return ((Collection)list).contains(primitiveItem);
         }
-        return contains((char[]) list, primitiveItem);
+        return !list.getClass().getComponentType().isPrimitive() ?
+                arrayContains((Object[]) list, primitiveItem) :
+                contains((char[]) list, primitiveItem);
     }
 
     private static boolean contains(char[] list, char primitiveItem) {
@@ -214,7 +233,9 @@ public class EvaluatorHelper {
         if (list instanceof Collection) {
             return ((Collection)list).contains(primitiveItem);
         }
-        return contains((short[]) list, primitiveItem);
+        return !list.getClass().getComponentType().isPrimitive() ?
+                arrayContains((Object[]) list, primitiveItem) :
+                contains((short[]) list, primitiveItem);
     }
 
     private static boolean contains(short[] list, short primitiveItem) {
