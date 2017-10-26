@@ -27,4 +27,6 @@ public interface Consequence extends RuleItem {
 
         String[] getUpdatedFields();
     }
+
+    String getLanguage();
 }

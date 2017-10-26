@@ -1,12 +1,20 @@
 package org.drools.modelcompiler.builder.generator;
 
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Consumer;
+
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.javaparser.ast.expr.Expression;
-
-import java.util.*;
-import java.util.function.Consumer;
 
 public class RuleContext {
     private final InternalKnowledgePackage pkg;
@@ -20,6 +28,12 @@ public class RuleContext {
     List<Expression> expressions = new ArrayList<>();
     Set<String> queryName = new HashSet<>();
     Map<String, String> namedConsequences = new HashMap<>();
+
+    private RuleDialect ruleDialect = RuleDialect.JAVA; // assumed is java by default as per Drools manual.
+    public static enum RuleDialect {
+        JAVA,
+        MVEL;
+    }
 
     BaseDescr parentDesc = null;
 
@@ -96,5 +110,14 @@ public class RuleContext {
     public Optional<RuleDescr> getRuleDescr() {
         return ruleDescr;
     }
+
+    public RuleDialect getRuleDialect() {
+        return ruleDialect;
+    }
+
+    public void setRuleDialect(RuleDialect ruleDialect) {
+        this.ruleDialect = ruleDialect;
+    }
+
 }
 

@@ -54,7 +54,7 @@ public class AccumulateTest extends BaseModelTest {
 
         ksession.fireAllRules();
 
-        Collection<Result> results = getObjects(ksession, Result.class);
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
         assertEquals(1, results.size());
         assertEquals(77, results.iterator().next().getValue());
     }
@@ -80,7 +80,7 @@ public class AccumulateTest extends BaseModelTest {
 
         ksession.fireAllRules();
 
-        Collection<Result> results = getObjects(ksession, Result.class);
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
         assertEquals(1, results.size());
         assertEquals(77, results.iterator().next().getValue());
     }
@@ -108,7 +108,7 @@ public class AccumulateTest extends BaseModelTest {
 
         ksession.fireAllRules();
 
-        Collection<Result> results = getObjects(ksession, Result.class);
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
         assertThat(results, hasItem(new Result(38.5)));
         assertThat(results, hasItem(new Result(77)));
     }
