@@ -17,6 +17,7 @@
 package org.drools.modelcompiler.builder;
 
 import org.drools.compiler.commons.jci.compilers.CompilationResult;
+import org.drools.compiler.compiler.io.Folder;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kie.builder.impl.AbstractKieModule;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
@@ -58,6 +59,7 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
 
         String[] resources = writeModel( srcMfs, trgMfs );
         CompilationResult res = getCompiler().compile( resources, srcMfs, trgMfs, getClassLoader() );
+        srcMfs.copyFolder(srcMfs.getFolder("src/main/java"), trgMfs, trgMfs.getFolder("generated-sources/main/java"));
 
         if ( res.getErrors().length != 0 ) {
             throw new RuntimeException( "Compilation errors: " + Arrays.toString( res.getErrors() ) );
