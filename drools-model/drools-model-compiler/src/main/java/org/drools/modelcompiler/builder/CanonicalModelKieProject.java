@@ -16,28 +16,17 @@
 
 package org.drools.modelcompiler.builder;
 
+import java.util.Arrays;
+
 import org.drools.compiler.commons.jci.compilers.CompilationResult;
-import org.drools.compiler.compiler.io.Folder;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kie.builder.impl.AbstractKieModule;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieModuleKieProject;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
-import org.drools.javaparser.JavaParser;
-import org.drools.javaparser.ast.CompilationUnit;
-import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import org.drools.javaparser.printer.PrettyPrinter;
 import org.kie.internal.builder.KnowledgeBuilder;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import static org.drools.modelcompiler.CanonicalKieModule.PACKAGE_LIST;
-import static org.drools.modelcompiler.CanonicalKieModule.RULES_FILE_NAME;
-import static org.drools.modelcompiler.CanonicalKieModule.VARIABLES_FILE_NAME;
 import static org.drools.modelcompiler.builder.JavaParserCompiler.getCompiler;
-import static org.drools.modelcompiler.builder.JavaParserCompiler.getPrettyPrinter;
 
 public class CanonicalModelKieProject extends KieModuleKieProject {
 
@@ -57,65 +46,12 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
     public void writeProjectOutput( MemoryFileSystem trgMfs ) {
         MemoryFileSystem srcMfs = new MemoryFileSystem();
 
-        String[] resources = writeModel( srcMfs, trgMfs );
+        String[] resources = new ModelWriter().writeModel(srcMfs, trgMfs, modelBuilder.getPackageModels());
         CompilationResult res = getCompiler().compile( resources, srcMfs, trgMfs, getClassLoader() );
         srcMfs.copyFolder(srcMfs.getFolder("src/main/java"), trgMfs, trgMfs.getFolder("generated-sources/main/java"));
 
         if ( res.getErrors().length != 0 ) {
             throw new RuntimeException( "Compilation errors: " + Arrays.toString( res.getErrors() ) );
         }
-    }
-
-    private String[] writeModel( MemoryFileSystem srcMfs, MemoryFileSystem trgMfs ) {
-        List<String> sources = new ArrayList<>();
-        StringBuilder pkgNames = new StringBuilder();
-
-        PrettyPrinter prettyPrinter = getPrettyPrinter();
-
-        for (PackageModel pkgModel : modelBuilder.getPackageModels()) {
-            String pkgName = pkgModel.getName();
-            pkgNames.append( pkgName ).append( "\n" );
-            String folderName = pkgName.replace( '.', '/' );
-
-            if ( pkgModel.getVarsSource() != null ) {
-                String varsSourceName = "src/main/java/" + folderName + "/" + VARIABLES_FILE_NAME + ".java";
-                byte[] varsBytes = pkgModel.getVarsSource().getBytes();
-                srcMfs.write( varsSourceName, varsBytes );
-                sources.add( varsSourceName );
-            }
-
-            for (ClassOrInterfaceDeclaration generatedPojo : pkgModel.getGeneratedPOJOsSource()) {
-                final String source = toPojoSource( pkgModel.getName(), prettyPrinter, generatedPojo );
-                pkgModel.print( source );
-                final String varsSourceName = "src/main/java/" + folderName + "/" + generatedPojo.getName() + ".java";
-                srcMfs.write( varsSourceName, source.getBytes() );
-                sources.add( varsSourceName );
-            }
-
-            String rulesSourceName = "src/main/java/" + folderName + "/" + RULES_FILE_NAME + ".java";
-            String rulesSource = pkgModel.getRulesSource( prettyPrinter );
-            pkgModel.print( rulesSource );
-            byte[] rulesBytes = rulesSource.getBytes();
-            srcMfs.write( rulesSourceName, rulesBytes );
-            sources.add( rulesSourceName );
-        }
-
-        trgMfs.write( PACKAGE_LIST, pkgNames.toString().getBytes() );
-        return sources.toArray( new String[sources.size()] );
-    }
-
-    private String toPojoSource( String packageName, PrettyPrinter prettyPrinter, ClassOrInterfaceDeclaration pojo ) {
-        CompilationUnit cu = new CompilationUnit();
-        cu.setPackageDeclaration( packageName );
-
-        // fixed part
-        cu.addImport( JavaParser.parseImport( "import java.util.*;" ) );
-        cu.addImport( JavaParser.parseImport( "import org.drools.model.*;" ) );
-        cu.addImport( JavaParser.parseImport( "import static org.drools.model.DSL.*;" ) );
-        cu.addImport( JavaParser.parseImport( "import org.drools.model.Index.ConstraintType;" ) );
-
-        cu.addType( pojo );
-
-        return prettyPrinter.print( cu );
     }
 }
