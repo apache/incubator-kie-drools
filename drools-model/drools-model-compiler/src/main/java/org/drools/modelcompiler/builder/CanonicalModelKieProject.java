@@ -48,7 +48,6 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
 
         String[] resources = new ModelWriter().writeModel(srcMfs, trgMfs, modelBuilder.getPackageModels());
         CompilationResult res = getCompiler().compile( resources, srcMfs, trgMfs, getClassLoader() );
-        srcMfs.copyFolder(srcMfs.getFolder("src/main/java"), trgMfs, trgMfs.getFolder("generated-sources/main/java"));
 
         if ( res.getErrors().length != 0 ) {
             throw new RuntimeException( "Compilation errors: " + Arrays.toString( res.getErrors() ) );
