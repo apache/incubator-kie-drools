@@ -12,6 +12,10 @@
   <name>Drools API examples - Named KieSession from File</name>
   <artifactId>named-kiesession-from-file</artifactId>
 
+  <properties>
+    <java.module.name>org.drools.examples.api.namedkiesessionfromfile</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.drools</groupId>

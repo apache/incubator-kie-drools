@@ -15,6 +15,10 @@
   <name>Drools Workbench - Guided Rule Templates Model</name>
   <description>Drools Workbench - Guided Rule Templates Model</description>
 
+  <properties>
+    <java.module.name>org.drools.workbench.models.guided.template</java.module.name>
+  </properties>
+
   <dependencies>
 
     <!-- Internal dependencies -->

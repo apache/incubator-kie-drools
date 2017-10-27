@@ -14,6 +14,10 @@
   <name>Drools :: Scorecards</name>
   <description>Add support for PMML scorecards</description>
 
+  <properties>
+    <java.module.name>org.drools.scorecards</java.module.name>
+  </properties>
+
   <dependencies>
     <!-- Internal dependencies -->
     <dependency>

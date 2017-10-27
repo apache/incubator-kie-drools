@@ -15,7 +15,7 @@
   <name>Drools :: Compiler</name>
 
   <properties>
-    <osgi.Bundle-SymbolicName>org.drools.compiler</osgi.Bundle-SymbolicName>
+    <java.module.name>org.drools.compiler</java.module.name>
     <excludedGroups>org.drools.compiler.TurtleTestCategory</excludedGroups>
     <surefire.forkCount>2</surefire.forkCount>
   </properties>

@@ -16,7 +16,7 @@
   <name>KIE :: Decision Model Notation :: FEEL</name>
 
   <properties>
-    <osgi.Bundle-SymbolicName>org.kie.dmn.feel</osgi.Bundle-SymbolicName>
+    <java.module.name>org.kie.dmn.feel</java.module.name>
     <surefire.forkCount>2</surefire.forkCount>
     <enforcer.skip>true</enforcer.skip>
   </properties>

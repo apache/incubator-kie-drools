@@ -16,7 +16,7 @@
   <description>Persistence APIs for Drools</description>
 
   <properties>
-    <osgi.Bundle-SymbolicName>org.drools.persistence.api</osgi.Bundle-SymbolicName>
+    <java.module.name>org.drools.persistence.api</java.module.name>
   </properties>
 
   <dependencies>

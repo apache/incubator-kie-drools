@@ -16,7 +16,7 @@
   <name>KIE :: CI for OSGi</name>
 
   <properties>
-    <osgi.Bundle-SymbolicName>org.kie.scanner.osgi</osgi.Bundle-SymbolicName>
+    <java.module.name>org.kie.scanner.osgi</java.module.name>
   </properties>
 
   <dependencies>

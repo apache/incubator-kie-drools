@@ -12,6 +12,10 @@
   <artifactId>cdi-example</artifactId>
   <name>Drools CDI Example</name>
 
+  <properties>
+    <java.module.name>org.drools.examples.cdi.basic</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.drools</groupId>

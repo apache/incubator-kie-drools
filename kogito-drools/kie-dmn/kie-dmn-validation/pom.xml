@@ -10,6 +10,10 @@
 
   <name>KIE :: Decision Model Notation :: Validation</name>
 
+  <properties>
+    <java.module.name>org.kie.dmn.validation</java.module.name>
+  </properties>
+
   <dependencyManagement>
     <dependencies>
       <dependency>

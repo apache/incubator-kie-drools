@@ -15,7 +15,7 @@
   <name>Drools :: Beliefs</name>
 
   <properties>
-    <osgi.Bundle-SymbolicName>org.drools.beliefs</osgi.Bundle-SymbolicName>
+    <java.module.name>org.drools.beliefs</java.module.name>
   </properties>
 
   <dependencies>

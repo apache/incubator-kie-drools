@@ -16,6 +16,7 @@
   <description>Drools test coverage test suite (tests not requiring specific dependencies)</description>
 
   <properties>
+    <java.module.name>org.drools.testcoverage.testsuite</java.module.name>
     <excludedGroups>org.drools.compiler.TurtleTestCategory</excludedGroups>
   </properties>
 

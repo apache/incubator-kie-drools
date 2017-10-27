@@ -12,6 +12,10 @@
   <artifactId>kiemodulemodel-example</artifactId>
   <name>Drools API examples - KieModuleModel Example</name>
 
+  <properties>
+    <java.module.name>org.drools.examples.api.kiemodulemodel</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.drools</groupId>

@@ -28,6 +28,10 @@
   <artifactId>ruleunit</artifactId>
   <name>Drools API examples - RuleUnit</name>
 
+  <properties>
+    <java.module.name>org.drools.examples.api.ruleunit</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.drools</groupId>

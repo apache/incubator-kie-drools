@@ -13,6 +13,10 @@
 
   <name>cdi-example-scopes</name>
 
+  <properties>
+    <java.module.name>org.drools.examples.cdi.scopes</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie</groupId>

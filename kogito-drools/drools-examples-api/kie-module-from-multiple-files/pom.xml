@@ -12,6 +12,10 @@
   <artifactId>kie-module-from-multiple-files</artifactId>
   <name>Drools API examples - KieModule from Multiple Files</name>
 
+  <properties>
+    <java.module.name>org.drools.examples.api.kiemodulefrommultiplefiles</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.drools</groupId>

@@ -33,7 +33,7 @@
   <description>Drools Workbench - Data Model API</description>
 
   <properties>
-    <osgi.Bundle-SymbolicName>org.drools.workbench.models.datamodel</osgi.Bundle-SymbolicName>
+    <java.module.name>org.drools.workbench.models.datamodel</java.module.name>
   </properties>
 
   <build>

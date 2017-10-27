@@ -16,7 +16,7 @@
   <name>Drools :: Templates</name>
 
   <properties>
-    <osgi.Bundle-SymbolicName>org.drools.templates</osgi.Bundle-SymbolicName>
+    <java.module.name>org.drools.templates</java.module.name>
   </properties>
 
   <dependencies>

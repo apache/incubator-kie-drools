@@ -12,6 +12,10 @@
   <artifactId>kiecontainer-from-kierepo</artifactId>
   <name>Drools API examples - KieContainer from KieRepo</name>
 
+  <properties>
+    <java.module.name>org.drools.examples.api.kiecontainerfromkierepo</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie</groupId>

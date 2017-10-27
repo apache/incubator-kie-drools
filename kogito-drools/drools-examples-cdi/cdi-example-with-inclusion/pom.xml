@@ -12,6 +12,10 @@
   <artifactId>cdi-example-with-inclusion</artifactId>
   <name>Drools CDI Example With Inclusion</name>
 
+  <properties>
+    <java.module.name>org.drools.examples.cdi.inclusion</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.drools</groupId>
