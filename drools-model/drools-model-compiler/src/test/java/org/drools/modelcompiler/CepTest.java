@@ -60,7 +60,7 @@ public class CepTest extends BaseModelTest {
                         "  System.out.println(\"fired\");\n" +
                         "end\n";
 
-        KieSession ksession = getKieSession( str, getCepKieModuleModel() );
+        KieSession ksession = getKieSession(getCepKieModuleModel(), str);
         SessionPseudoClock clock = ksession.getSessionClock();
 
         ksession.insert( new StockTick( "DROO" ) );
@@ -86,7 +86,7 @@ public class CepTest extends BaseModelTest {
                         "  System.out.println(\"fired\");\n" +
                         "end\n";
 
-        KieSession ksession = getKieSession( str, getCepKieModuleModel() );
+        KieSession ksession = getKieSession(getCepKieModuleModel(), str);
         SessionPseudoClock clock = ksession.getSessionClock();
 
         ksession.getEntryPoint( "ep1" ).insert( new StockTick( "DROO" ) );
@@ -114,7 +114,7 @@ public class CepTest extends BaseModelTest {
                         "  System.out.println(\"fired\");\n" +
                         "end\n";
 
-        KieSession ksession = getKieSession( str, getCepKieModuleModel() );
+        KieSession ksession = getKieSession(getCepKieModuleModel(), str);
         SessionPseudoClock clock = ksession.getSessionClock();
 
         clock.advanceTime( 1, TimeUnit.SECONDS );
@@ -140,7 +140,7 @@ public class CepTest extends BaseModelTest {
                 "  System.out.println(\"fired\");\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( str, getCepKieModuleModel() );
+        KieSession ksession = getKieSession(getCepKieModuleModel(), str);
         SessionPseudoClock clock = ksession.getSessionClock();
 
         ksession.insert( new StockTick("DROO") );
@@ -186,7 +186,7 @@ public class CepTest extends BaseModelTest {
                 "  System.out.println($a.getCompany());\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( str, getCepKieModuleModel() );
+        KieSession ksession = getKieSession(getCepKieModuleModel(), str);
         SessionPseudoClock clock = ksession.getSessionClock();
 
         clock.advanceTime( 2, TimeUnit.SECONDS );
@@ -213,7 +213,7 @@ public class CepTest extends BaseModelTest {
                 "  System.out.println(\"fired\");\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( str, getCepKieModuleModel() );
+        KieSession ksession = getKieSession(getCepKieModuleModel(), str);
         SessionPseudoClock clock = ksession.getSessionClock();
 
         ksession.insert( new StockFact( "DROO" ) );
@@ -243,7 +243,7 @@ public class CepTest extends BaseModelTest {
                 "       resultsAfter.add( $b );\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str, getCepKieModuleModel() );
+        KieSession ksession = getKieSession(getCepKieModuleModel(), str);
         SessionPseudoClock clock = ksession.getSessionClock();
 
         List<StockTick> resultsAfter = new ArrayList<StockTick>();
@@ -282,7 +282,7 @@ public class CepTest extends BaseModelTest {
                 "       resultsAfter.add( $b );\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str, getCepKieModuleModel() );
+        KieSession ksession = getKieSession(getCepKieModuleModel(), str);
         SessionPseudoClock clock = ksession.getSessionClock();
 
         List<StockTick> resultsAfter = new ArrayList<StockTick>();
@@ -318,7 +318,7 @@ public class CepTest extends BaseModelTest {
                 "then\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str, getCepKieModuleModel() );
+        KieSession ksession = getKieSession(getCepKieModuleModel(), str);
         SessionPseudoClock clock = ksession.getSessionClock();
 
         ksession.insert(new StockFact("DROO"));
