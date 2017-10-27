@@ -17,6 +17,12 @@
       <groupId>com.google.testing.compile</groupId>
       <artifactId>compile-testing</artifactId>
       <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.sun</groupId>
+          <artifactId>tools</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
   </dependencies>
 

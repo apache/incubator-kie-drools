@@ -88,6 +88,11 @@
       <artifactId>jboss-jms-api_2.0_spec</artifactId>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>org.jboss.spec.javax.xml.bind</groupId>
+      <artifactId>jboss-jaxb-api_2.2_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
     <!-- test -->
     <dependency>
