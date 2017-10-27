@@ -42,7 +42,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.drools.core.util.IoUtils.readBytesFromInputStream;
-import static org.kie.internal.xstream.XStreamUtils.createTrustingXStream;
+import static org.kie.soup.commons.xstream.XStreamUtils.createTrustingXStream;
 
 public class KieModuleModelImpl implements KieModuleModel {
 

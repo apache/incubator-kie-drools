@@ -50,6 +50,11 @@
       <optional>true</optional>
     </dependency>
     <dependency>
+      <groupId>org.kie.soup</groupId>
+      <artifactId>kie-soup-commons</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
       <groupId>org.mvel</groupId>
       <artifactId>mvel2</artifactId>
     </dependency>

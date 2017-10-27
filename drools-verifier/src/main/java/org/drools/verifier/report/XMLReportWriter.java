@@ -27,7 +27,7 @@ import org.drools.verifier.report.components.VerifierMessage;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import static org.kie.internal.xstream.XStreamUtils.createTrustingXStream;
+import static org.kie.soup.commons.xstream.XStreamUtils.createTrustingXStream;
 
 public class XMLReportWriter
     implements

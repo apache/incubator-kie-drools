@@ -34,7 +34,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
 import static org.junit.Assert.assertEquals;
-import static org.kie.internal.xstream.XStreamUtils.createTrustingXStream;
+import static org.kie.soup.commons.xstream.XStreamUtils.createTrustingXStream;
 
 public class ReteooBuilderTest {
 
