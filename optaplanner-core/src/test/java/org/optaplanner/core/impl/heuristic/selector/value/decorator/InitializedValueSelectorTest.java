@@ -39,7 +39,7 @@ public class InitializedValueSelectorTest {
     public void originalSelectionNullable() {
         EntityDescriptor entityDescriptor = TestdataNullableEntity.buildEntityDescriptor();
         TestdataNullableEntity e1 = new TestdataNullableEntity("e1");
-        // This variable is unable to have entity's as values, but it's an interesting nullable test anyway
+        // This variable is unable to have entities as values, but it's an interesting nullable test anyway
         GenuineVariableDescriptor variableDescriptor = entityDescriptor.getGenuineVariableDescriptor("value");
         TestdataValue v1 = new TestdataValue("v1");
         TestdataValue v2 = null;

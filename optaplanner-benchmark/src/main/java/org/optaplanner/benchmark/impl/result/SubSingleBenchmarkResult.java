@@ -265,7 +265,7 @@ public class SubSingleBenchmarkResult implements BenchmarkResult {
             if (!oldSubSingleStatistic.getCsvFile().exists()) {
                 if (oldResult.hasAnyFailure()) {
                     newSubSingleStatistic.initPointList();
-                    logger.debug("Old result ({}) is a failure, skipping merge of it's sub single statistic ({}).",
+                    logger.debug("Old result ({}) is a failure, skipping merge of its sub single statistic ({}).",
                             oldResult, oldSubSingleStatistic);
                     continue;
                 } else {

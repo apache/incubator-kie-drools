@@ -40,7 +40,7 @@ public class AssetClassAllocation extends AbstractPersistable {
     private AssetClass assetClass;
 
     // Planning variables: changes during planning, between score calculations.
-    private Long quantityMillis; // In milli's (so multiplied by 1000)
+    private Long quantityMillis; // In millis (so multiplied by 1000)
 
     public AssetClass getAssetClass() {
         return assetClass;

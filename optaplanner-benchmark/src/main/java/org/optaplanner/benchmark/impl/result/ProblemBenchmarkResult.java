@@ -385,7 +385,7 @@ public class ProblemBenchmarkResult<Solution_> {
     }
 
     /**
-     * HACK to avoid loading the problem just to extract it's problemScale.
+     * HACK to avoid loading the problem just to extract its problemScale.
      * Called multiple times, for every {@link SingleBenchmarkResult} of this {@link ProblemBenchmarkResult}.
      *
      * @param registeringEntityCount {@code >= 0}

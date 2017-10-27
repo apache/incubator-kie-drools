@@ -132,7 +132,7 @@ public class CartesianProductMoveSelector extends CompositeMoveSelector {
                 System.arraycopy(subSelections, 0, moveList, 0, startingIndex);
                 moveList[startingIndex] = moveIteratorList.get(startingIndex).next(); // Increment the 4 in 004999
             }
-            for (int i = startingIndex + 1; i < childSize; i++) { // Increment the 9's in 004999
+            for (int i = startingIndex + 1; i < childSize; i++) { // Increment the 9s in 004999
                 Iterator<Move> moveIterator = childMoveSelectorList.get(i).iterator();
                 moveIteratorList.set(i, moveIterator);
                 Move next;

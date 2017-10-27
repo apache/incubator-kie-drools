@@ -238,7 +238,7 @@ public abstract class ReflectionsWorkaroundClasspathHelper {
         return distinctUrls(urls);
     }
 
-    // REMOVED SERVLET API's
+    // REMOVED SERVLET APIs
 
     /**
      * Cleans the URL.

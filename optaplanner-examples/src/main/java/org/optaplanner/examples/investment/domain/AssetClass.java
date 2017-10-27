@@ -28,8 +28,8 @@ public class AssetClass extends AbstractPersistable {
     private String name;
     private Region region;
     private Sector sector;
-    private long expectedReturnMillis; // In milli's (so multiplied by 1000)
-    private long standardDeviationRiskMillis; // In milli's (so multiplied by 1000)
+    private long expectedReturnMillis; // In millis (so multiplied by 1000)
+    private long standardDeviationRiskMillis; // In millis (so multiplied by 1000)
 
     private Map<AssetClass, Long> correlationMillisMap;
 

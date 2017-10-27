@@ -99,7 +99,7 @@ public enum EnvironmentMode {
      * Note that in most use cases the impact of the random seed is relatively low on the result.
      * An occasional bad result is far more likely to be caused by another issue (such as a score trap).
      * <p>
-     * In multi-threaded scenario's, this mode allows the use of work stealing and other non deterministic speed tricks.
+     * In multi-threaded scenarios, this mode allows the use of work stealing and other non deterministic speed tricks.
      */
     NON_REPRODUCIBLE;
 

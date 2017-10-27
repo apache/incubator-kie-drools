@@ -51,7 +51,7 @@ public class MutationCounter<Solution_> {
                 Object bEntity =  bIt.next();
                 for (GenuineVariableDescriptor<Solution_> variableDescriptor : entityDescriptor.getGenuineVariableDescriptors()) {
                     // TODO broken if the value is an entity, because then it's never the same
-                    // But we don't want to depend on value/entity equals() => use surrogate entity id's to compare
+                    // But we don't want to depend on value/entity equals() => use surrogate entity IDs to compare
                     // https://issues.jboss.org/browse/PLANNER-170
                     if (variableDescriptor.getValue(aEntity) != variableDescriptor.getValue(bEntity)) {
                         mutationCount++;

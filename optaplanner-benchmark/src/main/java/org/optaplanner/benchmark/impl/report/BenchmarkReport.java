@@ -342,7 +342,7 @@ public class BenchmarkReport {
     }
 
     private void writeBestScoreSummaryChart() {
-        // Each scoreLevel has it's own dataset and chartFile
+        // Each scoreLevel has its own dataset and chartFile
         List<DefaultCategoryDataset> datasetList = new ArrayList<>(CHARTED_SCORE_LEVEL_SIZE);
         for (SolverBenchmarkResult solverBenchmarkResult : plannerBenchmarkResult.getSolverBenchmarkResultList()) {
             String solverLabel = solverBenchmarkResult.getNameWithFavoriteSuffix();
@@ -373,7 +373,7 @@ public class BenchmarkReport {
     }
 
     private void writeBestScoreScalabilitySummaryChart() {
-        // Each scoreLevel has it's own dataset and chartFile
+        // Each scoreLevel has its own dataset and chartFile
         List<List<XYSeries>> seriesListList = new ArrayList<>(
                 CHARTED_SCORE_LEVEL_SIZE);
         int solverBenchmarkIndex = 0;
@@ -415,7 +415,7 @@ public class BenchmarkReport {
     }
 
     private void writeBestScoreDistributionSummaryChart() {
-        // Each scoreLevel has it's own dataset and chartFile
+        // Each scoreLevel has its own dataset and chartFile
         List<DefaultBoxAndWhiskerCategoryDataset> datasetList = new ArrayList<>(CHARTED_SCORE_LEVEL_SIZE);
         for (SolverBenchmarkResult solverBenchmarkResult : plannerBenchmarkResult.getSolverBenchmarkResultList()) {
             String solverLabel = solverBenchmarkResult.getNameWithFavoriteSuffix();
@@ -458,7 +458,7 @@ public class BenchmarkReport {
     }
 
     private void writeWinningScoreDifferenceSummaryChart() {
-        // Each scoreLevel has it's own dataset and chartFile
+        // Each scoreLevel has its own dataset and chartFile
         List<DefaultCategoryDataset> datasetList = new ArrayList<>(CHARTED_SCORE_LEVEL_SIZE);
         for (SolverBenchmarkResult solverBenchmarkResult : plannerBenchmarkResult.getSolverBenchmarkResultList()) {
             String solverLabel = solverBenchmarkResult.getNameWithFavoriteSuffix();
@@ -490,7 +490,7 @@ public class BenchmarkReport {
     }
 
     private void writeWorstScoreDifferencePercentageSummaryChart() {
-        // Each scoreLevel has it's own dataset and chartFile
+        // Each scoreLevel has its own dataset and chartFile
         List<DefaultCategoryDataset> datasetList = new ArrayList<>(CHARTED_SCORE_LEVEL_SIZE);
         for (SolverBenchmarkResult solverBenchmarkResult : plannerBenchmarkResult.getSolverBenchmarkResultList()) {
             String solverLabel = solverBenchmarkResult.getNameWithFavoriteSuffix();
@@ -608,7 +608,7 @@ public class BenchmarkReport {
     }
 
     private void writeBestScorePerTimeSpentSummaryChart() {
-        // Each scoreLevel has it's own dataset and chartFile
+        // Each scoreLevel has its own dataset and chartFile
         List<List<XYSeries>> seriesListList = new ArrayList<>(
                 CHARTED_SCORE_LEVEL_SIZE);
         int solverBenchmarkIndex = 0;

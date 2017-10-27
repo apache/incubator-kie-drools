@@ -27,7 +27,7 @@ public class Machine extends AbstractPersistable {
     private int index;
 
     private long powerConsumptionMicros; // when it's up
-    private long spinUpDownCostMicros; // In micro's, sum of upCost and downCost
+    private long spinUpDownCostMicros; // In micros, sum of upCost and downCost
 
     // Order is equal to resourceList so Resource.getIndex() can be used for the index
     private List<MachineCapacity> machineCapacityList;

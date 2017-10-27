@@ -24,7 +24,7 @@ import org.optaplanner.examples.investment.domain.util.InvestmentNumericUtil;
 public class Region extends AbstractPersistable {
 
     private String name;
-    private Long quantityMillisMaximum; // In milli's (so multiplied by 1000)
+    private Long quantityMillisMaximum; // In millis (so multiplied by 1000)
 
     public String getName() {
         return name;

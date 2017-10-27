@@ -25,7 +25,7 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 @XStreamAlias("InvestmentParametrization")
 public class InvestmentParametrization extends AbstractPersistable {
 
-    private long standardDeviationMillisMaximum; // In milli's (so multiplied by 1000)
+    private long standardDeviationMillisMaximum; // In millis (so multiplied by 1000)
 
     public long getStandardDeviationMillisMaximum() {
         return standardDeviationMillisMaximum;
