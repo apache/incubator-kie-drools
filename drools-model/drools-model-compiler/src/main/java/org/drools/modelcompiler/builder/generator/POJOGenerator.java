@@ -1,8 +1,10 @@
 package org.drools.modelcompiler.builder.generator;
 
 import org.drools.compiler.lang.descr.AnnotationDescr;
+import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.compiler.lang.descr.TypeFieldDescr;
+import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.Modifier;
 import org.drools.javaparser.ast.NodeList;
@@ -11,28 +13,79 @@ import org.drools.javaparser.ast.body.ConstructorDeclaration;
 import org.drools.javaparser.ast.body.FieldDeclaration;
 import org.drools.javaparser.ast.body.MethodDeclaration;
 import org.drools.javaparser.ast.expr.FieldAccessExpr;
+import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.NormalAnnotationExpr;
+import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.javaparser.ast.stmt.BlockStmt;
 import org.drools.javaparser.ast.stmt.Statement;
 import org.drools.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.javaparser.ast.type.PrimitiveType;
 import org.drools.javaparser.ast.type.Type;
+import org.drools.modelcompiler.builder.GeneratedClassWithPackage;
+import org.drools.modelcompiler.builder.PackageModel;
 import org.kie.api.definition.type.Role;
+import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 
 import static java.text.MessageFormat.format;
 import static org.drools.javaparser.JavaParser.parseStatement;
 import static org.drools.javaparser.ast.NodeList.nodeList;
+import static org.drools.modelcompiler.builder.JavaParserCompiler.compileAll;
 
 public class POJOGenerator {
 
     private static final String EQUALS = "equals";
     private static final String HASH_CODE = "hashCode";
     private static final String TO_STRING = "toString";
+
+    private static final String TYPE_META_DATA_CALL = "typeMetaData";
+
+    public static void generatePOJO(InternalKnowledgePackage pkg, PackageDescr packageDescr, PackageModel packageModel) {
+        TypeResolver typeResolver = pkg.getTypeResolver();
+
+        for (TypeDeclarationDescr typeDescr : packageDescr.getTypeDeclarations()) {
+            try {
+                processType( packageModel, typeDescr, typeResolver.resolveType( typeDescr.getTypeName() ));
+            } catch (ClassNotFoundException e) {
+                packageModel.addGeneratedPOJO(POJOGenerator.toClassDeclaration(typeDescr));
+            }
+        }
+    }
+
+    public static Map<String, Class<?>> compileType(ClassLoader packageClassLoader, String pkgName, List<GeneratedClassWithPackage> classesWithPackage) {
+        return compileAll(packageClassLoader, pkgName, classesWithPackage);
+    }
+
+    public static void registerType(TypeResolver typeResolver, Map<String, Class<?>> classMap) {
+        for (Map.Entry<String, Class<?>> entry : classMap.entrySet()) {
+            typeResolver.registerClass(entry.getKey(), entry.getValue());
+            typeResolver.registerClass(entry.getValue().getSimpleName(), entry.getValue());
+        }
+    }
+
+    private static void processType(PackageModel packageModel, TypeDeclarationDescr typeDescr, Class<?> type) {
+        MethodCallExpr typeMetaDataCall = new MethodCallExpr(null, TYPE_META_DATA_CALL);
+        typeMetaDataCall.addArgument( new StringLiteralExpr(type.getPackage().getName()) );
+        typeMetaDataCall.addArgument( new StringLiteralExpr(type.getSimpleName()) );
+
+        for (AnnotationDescr ann : typeDescr.getAnnotations()) {
+            typeMetaDataCall = new MethodCallExpr(typeMetaDataCall, "addAnnotation");
+            typeMetaDataCall.addArgument( new StringLiteralExpr( ann.getName() ) );
+            for (Map.Entry<String, Object> entry : ann.getValueMap().entrySet()) {
+                MethodCallExpr annotationValueCall = new MethodCallExpr(null, "annotationValue");
+                annotationValueCall.addArgument( new StringLiteralExpr(entry.getKey()) );
+                annotationValueCall.addArgument( new StringLiteralExpr(entry.getValue().toString()) );
+                typeMetaDataCall.addArgument( annotationValueCall );
+            }
+        }
+        packageModel.addTypeMetaDataExpressions(typeMetaDataCall);
+    }
 
     public static ClassOrInterfaceDeclaration toClassDeclaration(TypeDeclarationDescr typeDeclaration) {
 
