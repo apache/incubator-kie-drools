@@ -50,7 +50,6 @@ import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.PatternSourceDescr;
 import org.drools.compiler.lang.descr.QueryDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
-import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.Behavior;
 import org.drools.core.time.TimeUtils;
@@ -146,31 +145,12 @@ public class ModelGenerator {
     private static final String ATTRIBUTE_CALL = "attribute";
     private static final String DECLARATION_OF_CALL = "declarationOf";
     private static final String TYPE_CALL = "type";
-    private static final String TYPE_META_DATA_CALL = "typeMetaData";
 
-    public static PackageModel generateModel(InternalKnowledgePackage pkg, PackageDescr packageDescr) {
-        String pkgName = pkg.getName();
-        TypeResolver typeResolver = pkg.getTypeResolver();
-
-        PackageModel packageModel = new PackageModel(pkgName);
+    public static void generateModel(InternalKnowledgePackage pkg, PackageDescr packageDescr, PackageModel packageModel) {
         packageModel.addImports(pkg.getTypeResolver().getImports());
         packageModel.addGlobals(pkg.getGlobals());
         new WindowReferenceGenerator(packageModel, pkg).addWindowReferences(packageDescr.getWindowDeclarations());
         packageModel.addAllFunctions(packageDescr.getFunctions().stream().map(FunctionGenerator::toFunction).collect(toList()));
-
-        for (TypeDeclarationDescr typeDescr : packageDescr.getTypeDeclarations()) {
-            try {
-                processType( packageModel, typeDescr, typeResolver.resolveType( typeDescr.getTypeName() ));
-            } catch (ClassNotFoundException e) {
-                packageModel.addGeneratedPOJO(POJOGenerator.toClassDeclaration(typeDescr));
-            }
-        }
-
-        Map<String, Class<?>> classMap = compileAll( pkg.getPackageClassLoader(), pkgName, packageModel.getGeneratedPOJOsSource() );
-        for (Map.Entry<String, Class<?>> entry : classMap.entrySet()) {
-            typeResolver.registerClass( entry.getKey(), entry.getValue() );
-            typeResolver.registerClass( entry.getValue().getSimpleName(), entry.getValue() );
-        }
 
         for (RuleDescr descr : packageDescr.getRules()) {
             if (descr instanceof QueryDescr) {
@@ -179,26 +159,6 @@ public class ModelGenerator {
                 processRule(pkg, packageModel, descr);
             }
         }
-
-        return packageModel;
-    }
-
-    private static void processType(PackageModel packageModel, TypeDeclarationDescr typeDescr, Class<?> type) {
-        MethodCallExpr typeMetaDataCall = new MethodCallExpr(null, TYPE_META_DATA_CALL);
-        typeMetaDataCall.addArgument( new StringLiteralExpr(type.getPackage().getName()) );
-        typeMetaDataCall.addArgument( new StringLiteralExpr(type.getSimpleName()) );
-
-        for (AnnotationDescr ann : typeDescr.getAnnotations()) {
-            typeMetaDataCall = new MethodCallExpr(typeMetaDataCall, "addAnnotation");
-            typeMetaDataCall.addArgument( new StringLiteralExpr( ann.getName() ) );
-            for (Map.Entry<String, Object> entry : ann.getValueMap().entrySet()) {
-                MethodCallExpr annotationValueCall = new MethodCallExpr(null, "annotationValue");
-                annotationValueCall.addArgument( new StringLiteralExpr(entry.getKey()) );
-                annotationValueCall.addArgument( new StringLiteralExpr(entry.getValue().toString()) );
-                typeMetaDataCall.addArgument( annotationValueCall );
-            }
-        }
-        packageModel.addTypeMetaDataExpressions(typeMetaDataCall);
     }
 
     private static void processRule(InternalKnowledgePackage pkg, PackageModel packageModel, RuleDescr ruleDescr) {

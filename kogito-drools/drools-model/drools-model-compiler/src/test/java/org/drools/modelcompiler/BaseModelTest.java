@@ -59,11 +59,11 @@ public abstract class BaseModelTest {
         this.testRunType = testRunType;
     }
 
-    protected KieSession getKieSession( String str ) {
-        return getKieSession( str, null );
+    protected KieSession getKieSession( String... rules ) {
+        return getKieSession(null, rules);
     }
 
-    protected KieSession getKieSession( String str, KieModuleModel model ) {
+    protected KieSession getKieSession(KieModuleModel model, String... stringRules) {
         KieServices ks = KieServices.get();
 
         ReleaseId releaseId = ks.newReleaseId( "org.kie", "kjar-test-" + UUID.randomUUID(), "1.0" );
@@ -76,7 +76,10 @@ public abstract class BaseModelTest {
             kfs.writeKModuleXML( model.toXML() );
         }
         kfs.writePomXML( KJARUtils.getPom( releaseId ) );
-        kfs.write( "src/main/resources/r1.drl", str );
+        for (int i = 0; i < stringRules.length; i++) {
+            kfs.write(String.format("src/main/resources/r%d.drl", i), stringRules[i] );
+        }
+
 // This is actually taken from classloader of test (?) - or anyway it must, because the test are instantiating directly Person.
 //        String javaSrc = Person.class.getCanonicalName().replace( '.', File.separatorChar ) + ".java";
 //        Resource javaResource = ks.getResources().newFileSystemResource( "src/test/java/" + javaSrc );

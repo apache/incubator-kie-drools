@@ -16,29 +16,59 @@
 
 package org.drools.modelcompiler.builder;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import org.drools.core.definitions.InternalKnowledgePackage;
 
 import static org.drools.modelcompiler.builder.generator.ModelGenerator.generateModel;
+import static org.drools.modelcompiler.builder.generator.POJOGenerator.compileType;
+import static org.drools.modelcompiler.builder.generator.POJOGenerator.generatePOJO;
+import static org.drools.modelcompiler.builder.generator.POJOGenerator.registerType;
 
 public class ModelBuilderImpl extends KnowledgeBuilderImpl {
 
-    private final List<PackageModel> packageModels = new ArrayList<>();
+    private final Map<String, PackageModel> packageModels = new HashMap<>();
 
     @Override
-    public void buildPackages( Collection<CompositePackageDescr> packages ) {
+    public void buildPackages(Collection<CompositePackageDescr> packages) {
         initPackageRegistries(packages);
         buildOtherDeclarations(packages);
         buildRules(packages);
     }
 
     protected void buildRules(Collection<CompositePackageDescr> packages) {
+        for (CompositePackageDescr packageDescr : packages) {
+            PackageRegistry pkgRegistry = getPackageRegistry(packageDescr.getNamespace());
+            generatePOJOs(packageDescr, pkgRegistry);
+        }
+
+        List<GeneratedClassWithPackage> allGeneratedPojos =
+                packageModels.values().stream()
+                        .flatMap(p -> p.getGeneratedPOJOsSource().stream().map(c -> new GeneratedClassWithPackage(c, p.getName())))
+                        .collect(Collectors.toList());
+
+
+        // Every class gets compiled in each classloader, maybe they can be compiled only one time?
+        final Map<String, Class<?>> allCompiledClasses = new HashMap<>();
+        for (CompositePackageDescr packageDescr : packages) {
+            InternalKnowledgePackage pkg = getPackageRegistry(packageDescr.getNamespace()).getPackage();
+            allCompiledClasses.putAll(compileType(pkg.getPackageClassLoader(), pkg.getName(), allGeneratedPojos));
+        }
+
+        for (CompositePackageDescr packageDescr : packages) {
+            InternalKnowledgePackage pkg = getPackageRegistry(packageDescr.getNamespace()).getPackage();
+            allGeneratedPojos.forEach(c -> registerType(pkg.getTypeResolver(), allCompiledClasses));
+        }
+
         for (CompositePackageDescr packageDescr : packages) {
             setAssetFilter(packageDescr.getFilter());
             PackageRegistry pkgRegistry = getPackageRegistry(packageDescr.getNamespace());
@@ -47,12 +77,22 @@ public class ModelBuilderImpl extends KnowledgeBuilderImpl {
         }
     }
 
+    protected void generatePOJOs(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
+        InternalKnowledgePackage pkg = pkgRegistry.getPackage();
+        String pkgName = pkg.getName();
+        PackageModel model = packageModels.computeIfAbsent(pkgName, s -> new PackageModel(pkgName));
+        generatePOJO(pkg, packageDescr, model);
+    }
+
     @Override
-    protected void compileKnowledgePackages( PackageDescr packageDescr, PackageRegistry pkgRegistry ) {
-        packageModels.add( generateModel(pkgRegistry.getPackage(), packageDescr) );
+    protected void compileKnowledgePackages(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
+        InternalKnowledgePackage pkg = pkgRegistry.getPackage();
+        String pkgName = pkg.getName();
+        PackageModel model = packageModels.computeIfAbsent(pkgName, s -> new PackageModel(pkgName));
+        generateModel(pkg, packageDescr, model);
     }
 
     public List<PackageModel> getPackageModels() {
-        return packageModels;
+        return new ArrayList<>(packageModels.values());
     }
 }

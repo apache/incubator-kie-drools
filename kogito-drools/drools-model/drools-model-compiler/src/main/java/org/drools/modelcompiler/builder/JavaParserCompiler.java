@@ -16,9 +16,11 @@
 
 package org.drools.modelcompiler.builder;
 
+import org.drools.compiler.commons.jci.compilers.CompilationResult;
 import org.drools.compiler.commons.jci.compilers.EclipseJavaCompiler;
 import org.drools.compiler.commons.jci.compilers.JavaCompiler;
 import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
+import org.drools.compiler.commons.jci.problems.CompilationProblem;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.javaparser.ast.CompilationUnit;
@@ -27,10 +29,12 @@ import org.drools.javaparser.printer.PrettyPrinter;
 import org.drools.javaparser.printer.PrettyPrinterConfiguration;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class JavaParserCompiler {
 
@@ -63,7 +67,7 @@ public class JavaParserCompiler {
         return PRETTY_PRINTER;
     }
 
-    public static Map<String, Class<?>> compileAll( ClassLoader classLoader, String pkgName, List<ClassOrInterfaceDeclaration> classes ) {
+    public static Map<String, Class<?>> compileAll( ClassLoader classLoader, String pkgName, List<GeneratedClassWithPackage> classes ) {
         if (classes == null || classes.isEmpty()) {
             return Collections.emptyMap();
         }
@@ -71,16 +75,21 @@ public class JavaParserCompiler {
         MemoryFileSystem srcMfs = new MemoryFileSystem();
         MemoryFileSystem trgMfs = new MemoryFileSystem();
 
-        String[] resources = writeModel( pkgName, classes, srcMfs );
-        getCompiler().compile( resources, srcMfs, trgMfs, classLoader );
+        List<ClassOrInterfaceDeclaration> allGeneratedClasses = classes.stream().map(GeneratedClassWithPackage::getGeneratedClass).collect(Collectors.toList());
+        String[] resources = writeModel(pkgName, allGeneratedClasses, srcMfs );
+        CompilationResult resultCompilation = getCompiler().compile(resources, srcMfs, trgMfs, classLoader);
+        CompilationProblem[] errors = resultCompilation.getErrors();
+        if(errors.length != 0) {
+            throw new RuntimeException("Error during compilation " + Arrays.stream(errors).map(CompilationProblem::getMessage).collect(Collectors.joining("\n")));
+        }
 
         InternalClassLoader internalClassLoader = new InternalClassLoader( classLoader, trgMfs );
 
         Map<String, Class<?>> result = new HashMap<>();
-        for (ClassOrInterfaceDeclaration cls : classes) {
-            String className = pkgName + "." + cls.getNameAsString();
+        for (GeneratedClassWithPackage cls : classes) {
+            String fullClassName = pkgName + "." + cls.getGeneratedClass().getNameAsString();
             try {
-                result.put(className, Class.forName(pkgName + "." + cls.getNameAsString(), true, internalClassLoader));
+                result.put(fullClassName, Class.forName(fullClassName, true, internalClassLoader));
             } catch (ClassNotFoundException e) {
                 throw new RuntimeException( e );
             }
