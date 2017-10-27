@@ -113,6 +113,8 @@ public class ModelGenerator {
 
     private static final Map<String, Expression> consequenceMethods = new HashMap<>();
 
+    private static final IndexIdGenerator indexIdGenerator = new IndexIdGenerator();
+
     static {
         attributesMap.put("no-loop", JavaParser.parseExpression("Rule.Attribute.NO_LOOP"));
         attributesMap.put("salience", JavaParser.parseExpression("Rule.Attribute.SALIENCE"));
@@ -968,13 +970,15 @@ public class ModelGenerator {
 
 
     private static MethodCallExpr buildIndexedBy( DrlxParseResult drlxParseResult, MethodCallExpr exprDSL ) {
-        Set<String> usedDeclarations = drlxParseResult.usedDeclarations;
         ConstraintType decodeConstraintType = drlxParseResult.decodeConstraintType;
         TypedExpression left = drlxParseResult.left;
         TypedExpression right = drlxParseResult.right;
 
         // .indexBy(..) is only added if left is not an identity expression:
-        if ( decodeConstraintType != null && !(left.getExpression() instanceof NameExpr && ((NameExpr)left.getExpression()).getName().getIdentifier().equals("_this")) ) {
+        if ( decodeConstraintType != null &&
+             !(left.getExpression() instanceof NameExpr &&
+             ((NameExpr)left.getExpression()).getName().getIdentifier().equals("_this")) &&
+             left.getFieldName() != null ) {
             Class<?> indexType = Stream.of( left, right ).map( TypedExpression::getType )
                                        .filter( Objects::nonNull )
                                        .findFirst().get();
@@ -989,10 +993,12 @@ public class ModelGenerator {
             MethodCallExpr indexedByDSL = new MethodCallExpr(exprDSL, "indexedBy");
             indexedByDSL.addArgument( indexedBy_indexedClass );
             indexedByDSL.addArgument( indexedBy_constraintType );
+            indexedByDSL.addArgument( "" + indexIdGenerator.getFieldId( drlxParseResult.patternType, left.getFieldName() ) );
             indexedByDSL.addArgument( indexedBy_leftOperandExtractor );
+
+            Set<String> usedDeclarations = drlxParseResult.usedDeclarations;
             if ( usedDeclarations.isEmpty() ) {
-                Expression indexedBy_rightValue = right.getExpression();
-                indexedByDSL.addArgument( indexedBy_rightValue );
+                indexedByDSL.addArgument( right.getExpression() );
             } else if ( usedDeclarations.size() == 1 ) {
                 LambdaExpr indexedBy_rightOperandExtractor = new LambdaExpr();
                 indexedBy_rightOperandExtractor.addParameter(new Parameter(new UnknownType(), usedDeclarations.iterator().next()));

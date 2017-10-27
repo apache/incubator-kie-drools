@@ -22,6 +22,7 @@ public class TypedExpression {
 
     private Expression expression;
     private Class<?> type;
+    private String fieldName;
     private Expression prefixExpression;
 
     public TypedExpression() { }
@@ -31,8 +32,17 @@ public class TypedExpression {
     }
 
     public TypedExpression( Expression expression, Class<?> type ) {
+        this(expression, type, null);
+    }
+
+    public TypedExpression( Expression expression, Class<?> type, String fieldName ) {
         this.expression = expression;
         this.type = type;
+        this.fieldName = fieldName;
+    }
+
+    public String getFieldName() {
+        return fieldName;
     }
 
     public Expression getExpression() {

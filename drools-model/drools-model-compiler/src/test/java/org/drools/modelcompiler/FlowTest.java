@@ -16,6 +16,11 @@
 
 package org.drools.modelcompiler;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 import org.assertj.core.api.Assertions;
 import org.drools.core.ClockType;
 import org.drools.core.impl.KnowledgeBaseFactory;
@@ -48,12 +53,8 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.time.SessionPseudoClock;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
 import static java.util.Arrays.asList;
+
 import static org.drools.model.DSL.accumulate;
 import static org.drools.model.DSL.and;
 import static org.drools.model.DSL.average;
@@ -91,13 +92,13 @@ public class FlowTest {
         Rule rule = rule( "beta" )
                 .build(
                         expr("exprA", markV, p -> p.getName().equals("Mark"))
-                                .indexedBy( String.class, ConstraintType.EQUAL, Person::getName, "Mark" )
+                                .indexedBy( String.class, ConstraintType.EQUAL, 1, Person::getName, "Mark" )
                                 .reactOn( "name", "age" ), // also react on age, see RuleDescr.lookAheadFieldsOfIdentifier
                         expr("exprB", olderV, p -> !p.getName().equals("Mark"))
-                                .indexedBy( String.class, ConstraintType.NOT_EQUAL, Person::getName, "Mark" )
+                                .indexedBy( String.class, ConstraintType.NOT_EQUAL, 1, Person::getName, "Mark" )
                                 .reactOn( "name" ),
                         expr("exprC", olderV, markV, (p1, p2) -> p1.getAge() > p2.getAge())
-                                .indexedBy( int.class, ConstraintType.GREATER_THAN, Person::getAge, Person::getAge )
+                                .indexedBy( int.class, ConstraintType.GREATER_THAN, 0, Person::getAge, Person::getAge )
                                 .reactOn( "age" ),
                         on(olderV, markV).execute((p1, p2) -> result.setValue( p1.getName() + " is older than " + p2.getName()))
                      );
@@ -138,14 +139,14 @@ public class FlowTest {
 
         Rule rule = rule("beta")
                 .build(expr("exprA", markV, p -> p.getName().equals("Mark"))
-                                .indexedBy(String.class, ConstraintType.EQUAL, Person::getName, "Mark")
+                                .indexedBy(String.class, ConstraintType.EQUAL, 1, Person::getName, "Mark")
                                 .reactOn("name"), // also react on age, see RuleDescr.lookAheadFieldsOfIdentifier
                         bind(markAge).as(markV, Person::getAge).reactOn("age"),
                         expr("exprB", olderV, p -> !p.getName().equals("Mark"))
-                                .indexedBy(String.class, ConstraintType.NOT_EQUAL, Person::getName, "Mark")
+                                .indexedBy(String.class, ConstraintType.NOT_EQUAL, 1, Person::getName, "Mark")
                                 .reactOn("name"),
                         expr("exprC", olderV, markAge, (p1, age) -> p1.getAge() > age)
-                                .indexedBy(int.class, ConstraintType.GREATER_THAN, Person::getAge, int.class::cast)
+                                .indexedBy(int.class, ConstraintType.GREATER_THAN, 0, Person::getAge, int.class::cast)
                                 .reactOn("age"),
                         on(olderV, markV).execute((drools, p1, p2) -> drools.insert(p1.getName() + " is older than " + p2.getName())));
 
@@ -186,13 +187,13 @@ public class FlowTest {
         Rule rule = rule("beta")
                 .build( bind(markAge).as(markV, Person::getAge ).reactOn("age"),
                         expr("exprA", markV, p -> p.getName().equals("Mark"))
-                                .indexedBy(String.class, ConstraintType.EQUAL, Person::getName, "Mark")
+                                .indexedBy(String.class, ConstraintType.EQUAL, 1, Person::getName, "Mark")
                                 .reactOn("name"), // also react on age, see RuleDescr.lookAheadFieldsOfIdentifier
                         expr("exprB", olderV, p -> !p.getName().equals("Mark"))
-                                .indexedBy(String.class, ConstraintType.NOT_EQUAL, Person::getName, "Mark")
+                                .indexedBy(String.class, ConstraintType.NOT_EQUAL, 1, Person::getName, "Mark")
                                 .reactOn("name"),
                         expr("exprC", olderV, markAge, (p1, age) -> p1.getAge() > age)
-                                .indexedBy(int.class, ConstraintType.GREATER_THAN, Person::getAge, int.class::cast)
+                                .indexedBy(int.class, ConstraintType.GREATER_THAN, 0, Person::getAge, int.class::cast)
                                 .reactOn("age"),
                         on(olderV, markV).execute((drools, p1, p2) -> drools.insert(p1.getName() + " is older than " + p2.getName())));
 
@@ -233,13 +234,13 @@ public class FlowTest {
         Rule rule = rule( "beta" )
                 .build(
                         expr("exprA", markV, p -> p.getName().equals("Mark"))
-                                .indexedBy( String.class, ConstraintType.EQUAL, Person::getName, "Mark" )
+                                .indexedBy( String.class, ConstraintType.EQUAL, 1, Person::getName, "Mark" )
                                 .reactOn( "name", "age" ), // also react on age, see RuleDescr.lookAheadFieldsOfIdentifier
                         expr("exprB", olderV, p -> !p.getName().equals("Mark"))
-                                .indexedBy( String.class, ConstraintType.NOT_EQUAL, Person::getName, "Mark" )
+                                .indexedBy( String.class, ConstraintType.NOT_EQUAL, 1, Person::getName, "Mark" )
                                 .reactOn( "name" ),
                         expr("exprC", olderV, markV, (p1, p2) -> p1.getAge() > p2.getAge())
-                                .indexedBy( int.class, ConstraintType.GREATER_THAN, Person::getAge, Person::getAge )
+                                .indexedBy( int.class, ConstraintType.GREATER_THAN, 0, Person::getAge, Person::getAge )
                                 .reactOn( "age" ),
                         on(olderV, markV, resultV)
                             .execute((p1, p2, r) -> r.setValue( p1.getName() + " is older than " + p2.getName()) )
@@ -444,7 +445,7 @@ public class FlowTest {
         Rule rule = rule( "org.mypkg", "global" )
                 .build(
                         expr("exprA", markV, p -> p.getName().equals("Mark"))
-                                .indexedBy( String.class, ConstraintType.EQUAL, Person::getName, "Mark" )
+                                .indexedBy( String.class, ConstraintType.EQUAL, 0, Person::getName, "Mark" )
                                 .reactOn( "name" ),
                         on(markV, resultG)
                               .execute((p, r) -> r.setValue( p.getName() + " is " + p.getAge() ) )
@@ -654,14 +655,14 @@ public class FlowTest {
         Rule rule = rule( "beta" )
                 .build(
                         expr("exprA", markV, p -> p.getName().equals("Mark"))
-                                .indexedBy( String.class, ConstraintType.EQUAL, Person::getName, "Mark" )
+                                .indexedBy( String.class, ConstraintType.EQUAL, 1, Person::getName, "Mark" )
                                 .reactOn( "name", "age" ), // also react on age, see RuleDescr.lookAheadFieldsOfIdentifier
                         on(markV, resultV).execute((p, r) -> r.addValue( "Found " + p.getName())),
                         expr("exprB", olderV, p -> !p.getName().equals("Mark"))
-                                .indexedBy( String.class, ConstraintType.NOT_EQUAL, Person::getName, "Mark" )
+                                .indexedBy( String.class, ConstraintType.NOT_EQUAL, 1, Person::getName, "Mark" )
                                 .reactOn( "name" ),
                         expr("exprC", olderV, markV, (p1, p2) -> p1.getAge() > p2.getAge())
-                                .indexedBy( int.class, ConstraintType.GREATER_THAN, Person::getAge, Person::getAge )
+                                .indexedBy( int.class, ConstraintType.GREATER_THAN, 0, Person::getAge, Person::getAge )
                                 .reactOn( "age" ),
                         on(olderV, markV, resultV).execute((p1, p2, r) -> r.addValue( p1.getName() + " is older than " + p2.getName()))
                      );
@@ -694,7 +695,7 @@ public class FlowTest {
         Rule rule = rule( "beta" )
                 .build(
                         expr("exprA", markV, p -> p.getName().equals("Mark"))
-                                .indexedBy( String.class, ConstraintType.EQUAL, Person::getName, "Mark" )
+                                .indexedBy( String.class, ConstraintType.EQUAL, 1, Person::getName, "Mark" )
                                 .reactOn( "name", "age" ),
                         when("cond1", markV, p -> p.getAge() < 30).then(
                             on(markV, resultV).breaking().execute((p, r) -> r.addValue( "Found young " + p.getName()))
@@ -704,10 +705,10 @@ public class FlowTest {
                             on(markV, resultV).breaking().execute((p, r) -> r.addValue( "Found " + p.getName()))
                         ),
                         expr("exprB", olderV, p -> !p.getName().equals("Mark"))
-                                .indexedBy( String.class, ConstraintType.NOT_EQUAL, Person::getName, "Mark" )
+                                .indexedBy( String.class, ConstraintType.NOT_EQUAL, 1, Person::getName, "Mark" )
                                 .reactOn( "name" ),
                         expr("exprC", olderV, markV, (p1, p2) -> p1.getAge() > p2.getAge())
-                                .indexedBy( int.class, ConstraintType.GREATER_THAN, Person::getAge, Person::getAge )
+                                .indexedBy( int.class, ConstraintType.GREATER_THAN, 0, Person::getAge, Person::getAge )
                                 .reactOn( "age" ),
                         on(olderV, markV, resultV).execute((p1, p2, r) -> r.addValue( p1.getName() + " is older than " + p2.getName()))
                      );
