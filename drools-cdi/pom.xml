@@ -31,7 +31,7 @@
   <name>Drools :: CDI</name>
 
   <properties>
-    <osgi.Bundle-SymbolicName>org.drools.cdi</osgi.Bundle-SymbolicName>
+    <java.module.name>org.drools.cdi</java.module.name>
   </properties>
 
   <dependencies>

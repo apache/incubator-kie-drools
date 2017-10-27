@@ -12,6 +12,10 @@
   <artifactId>kiebase-inclusion</artifactId>
   <name>Drools API examples - KieBase Inclusion</name>
 
+  <properties>
+    <java.module.name>org.drools.examples.api.kiebaseinclusion</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.drools</groupId>

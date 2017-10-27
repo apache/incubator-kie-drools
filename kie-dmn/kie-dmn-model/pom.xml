@@ -16,7 +16,7 @@
   <name>KIE :: Decision Model Notation :: Model</name>
   
   <properties>
-    <osgi.Bundle-SymbolicName>org.kie.dmn.model</osgi.Bundle-SymbolicName>
+    <java.module.name>org.kie.dmn.model</java.module.name>
   </properties>
   
   <build>

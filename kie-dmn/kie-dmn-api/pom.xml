@@ -16,7 +16,7 @@
   <name>KIE :: Decision Model Notation :: API</name>
 
   <properties>
-    <osgi.Bundle-SymbolicName>org.kie.dmn.api</osgi.Bundle-SymbolicName>
+    <java.module.name>org.kie.dmn.api</java.module.name>
   </properties>
   
   <dependencies>

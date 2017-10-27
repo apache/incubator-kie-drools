@@ -31,6 +31,7 @@
   <description>Support for PMML-Encoded Predictive Models</description>
 
   <properties>
+    <java.module.name>org.drools.pmml</java.module.name>
     <surefire.forkCount>2</surefire.forkCount>
   </properties>
 

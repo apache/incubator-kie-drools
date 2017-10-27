@@ -16,7 +16,7 @@
   <description>JPA implementation for Drools</description>
 
   <properties>
-    <osgi.Bundle-SymbolicName>org.drools.persistence.jpa</osgi.Bundle-SymbolicName>
+    <java.module.name>org.drools.persistence.jpa</java.module.name>
 
     <!-- These are properties used in the database profiles. Some of them must be initialized
          to be empty so that Maven applies their values via filtering to the resources. -->

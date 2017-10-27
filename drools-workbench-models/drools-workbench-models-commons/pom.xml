@@ -16,7 +16,7 @@
   <description>Drools Workbench - Common Model</description>
 
   <properties>
-    <osgi.Bundle-SymbolicName>org.drools.workbench.models.commons</osgi.Bundle-SymbolicName>
+    <java.module.name>org.drools.workbench.models.commons</java.module.name>
   </properties>
 
   <dependencies>

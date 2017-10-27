@@ -14,6 +14,10 @@
   <name>Drools :: Verifier</name>
   <description>Drools Verifier analyses the quality of Drools rules and reports any issues.</description>
 
+  <properties>
+    <java.module.name>org.drools.verifier</java.module.name>
+  </properties>
+
   <dependencies>
     <!-- Internal dependencies -->
     <dependency>

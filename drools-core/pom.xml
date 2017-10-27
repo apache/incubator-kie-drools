@@ -15,7 +15,7 @@
   <name>Drools :: Core</name>
 
   <properties>
-    <osgi.Bundle-SymbolicName>org.drools.core</osgi.Bundle-SymbolicName>
+    <java.module.name>org.drools.core</java.module.name>
     <surefire.forkCount>2</surefire.forkCount>
   </properties>
 

@@ -15,7 +15,7 @@
   <name>Drools :: Decision Tables</name>
 
   <properties>
-    <osgi.Bundle-SymbolicName>org.drools.decisiontables;singleton:=true</osgi.Bundle-SymbolicName>
+    <java.module.name>org.drools.decisiontables</java.module.name>
   </properties>
 
   <dependencies>

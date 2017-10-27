@@ -16,7 +16,7 @@
   <name>KIE :: Decision Model Notation :: Core</name>
   
   <properties>
-    <osgi.Bundle-SymbolicName>org.kie.dmn.core</osgi.Bundle-SymbolicName>
+    <java.module.name>org.kie.dmn.core</java.module.name>
   </properties>
 
   <dependencyManagement>
