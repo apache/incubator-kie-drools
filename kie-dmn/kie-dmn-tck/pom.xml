@@ -29,6 +29,10 @@
   <artifactId>kie-dmn-tck</artifactId>
   <name>KIE :: Decision Model Notation :: TCK</name>
 
+  <properties>
+    <java.module.name>org.kie.dmn.tck</java.module.name>
+  </properties>
+
   <profiles>
     <profile>
       <id>tck</id>

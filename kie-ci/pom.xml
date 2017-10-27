@@ -14,6 +14,10 @@
 
   <name>KIE :: CI</name>
 
+  <properties>
+    <java.module.name>org.kie.ci</java.module.name>
+  </properties>
+
   <dependencies>
     <!-- Internal dependencies -->
     <dependency>

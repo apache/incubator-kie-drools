@@ -16,7 +16,7 @@
   <name>KIE :: Decision Model Notation :: Backend</name>
   
   <properties>
-    <osgi.Bundle-SymbolicName>org.kie.dmn.backend</osgi.Bundle-SymbolicName>
+    <java.module.name>org.kie.dmn.backend</java.module.name>
   </properties>
 
   <dependencies>

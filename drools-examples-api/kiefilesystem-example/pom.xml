@@ -12,6 +12,10 @@
   <artifactId>kiefilesystem-example</artifactId>
   <name>Drools API examples - KieFileSystemExample</name>
 
+  <properties>
+    <java.module.name>org.drools.examples.api.kiefilesystem</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.drools</groupId>

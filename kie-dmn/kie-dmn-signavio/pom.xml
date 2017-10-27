@@ -10,7 +10,7 @@
     <name>KIE :: Decision Model Notation :: Signavio extensions support</name>
   
   <properties>
-    <osgi.Bundle-SymbolicName>org.kie.dmn.signavio</osgi.Bundle-SymbolicName>
+    <java.module.name>org.kie.dmn.signavio</java.module.name>
   </properties>
 
   <dependencyManagement>

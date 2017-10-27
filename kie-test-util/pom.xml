@@ -14,6 +14,10 @@
   <name>KIE :: Test Utility Classes</name>
   <!-- IMPORTANT! This module should only be added as a "test" scoped dependency. -->
 
+  <properties>
+    <java.module.name>org.kie.testutil</java.module.name>
+  </properties>
+
   <dependencies>
     <!-- IMPORTANT! Do not add any drools/jbpm/kie dependencies here. -->
     <!-- This is meant to be a lightweight test utility artifact. -->

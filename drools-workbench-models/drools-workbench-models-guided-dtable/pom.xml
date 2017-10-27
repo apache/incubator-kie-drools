@@ -16,7 +16,7 @@
   <description>Drools Workbench - Guided Decision Table Model</description>
 
   <properties>
-    <osgi.Bundle-SymbolicName>org.drools.workbench.models.guided.dtable</osgi.Bundle-SymbolicName>
+    <java.module.name>org.drools.workbench.models.guided.dtable</java.module.name>
   </properties>
 
   <dependencies>
