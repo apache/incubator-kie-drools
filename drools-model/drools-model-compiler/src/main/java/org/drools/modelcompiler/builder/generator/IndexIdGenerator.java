@@ -14,11 +14,17 @@
  * limitations under the License.
  */
 
-package org.drools.model.view;
+package org.drools.modelcompiler.builder.generator;
 
-import org.drools.model.Index;
-import org.drools.model.functions.Function1;
+import java.util.HashMap;
+import java.util.Map;
 
-public interface Expr1ViewItem<T> extends ExprViewItem<T> {
-    <U> Expr1ViewItem<T> indexedBy( Class<?> indexedClass, Index.ConstraintType constraintType, int indexId, Function1<T, U> leftOperandExtractor, U rightValue );
+public class IndexIdGenerator {
+
+    private final Map<Class<?>, Map<String, Integer>> idMap = new HashMap<>();
+
+    public int getFieldId(Class<?> type, String fieldName) {
+        Map<String, Integer> typeMap = idMap.computeIfAbsent( type, t -> new HashMap<>() );
+        return typeMap.computeIfAbsent( fieldName, f -> typeMap.size() );
+    }
 }

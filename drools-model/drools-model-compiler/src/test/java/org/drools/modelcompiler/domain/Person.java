@@ -6,6 +6,7 @@ public class Person extends AbstractReactiveObject {
     private String name;
     private int age;
     private Address address;
+    private int id = 0;
 
     public Person() { }
 
@@ -19,7 +20,6 @@ public class Person extends AbstractReactiveObject {
         this.age = age;
         this.address = address;
     }
-
 
     public String getName() {
         return name;
@@ -40,6 +40,14 @@ public class Person extends AbstractReactiveObject {
 
     public Address getAddress() {
         return address;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId( int id ) {
+        this.id = id;
     }
 
     @Override
