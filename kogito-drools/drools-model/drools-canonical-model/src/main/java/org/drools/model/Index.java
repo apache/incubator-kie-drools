@@ -23,5 +23,7 @@ public interface Index<A, V> {
 
     ConstraintType getConstraintType();
 
+    int getIndexId();
+
     Function1<A, V> getLeftOperandExtractor();
 }

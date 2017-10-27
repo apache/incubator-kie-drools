@@ -50,6 +50,11 @@ public abstract class AbstractSingleConstraint extends AbstractConstraint implem
         return exprId;
     }
 
+    @Override
+    public String toString() {
+        return "Constraint for " + exprId;
+    }
+
     public static AbstractSingleConstraint fromExpr( ExprViewItem expr ) {
         if (expr instanceof Expr1ViewItemImpl) {
             return new SingleConstraint1( (Expr1ViewItemImpl) expr );

@@ -7,8 +7,8 @@ public class BetaIndexImpl<A, B, V> extends AbstractIndex<A, V> implements BetaI
 
     private final Function1<B, V> rightOperandExtractor;
 
-    public BetaIndexImpl(Class<?> indexedClass, ConstraintType constraintType, Function1<A, V> leftOperandExtractor, Function1<B, V> rightOperandExtractor) {
-        super( indexedClass, constraintType, leftOperandExtractor );
+    public BetaIndexImpl(Class<?> indexedClass, ConstraintType constraintType, int indexId, Function1<A, V> leftOperandExtractor, Function1<B, V> rightOperandExtractor) {
+        super( indexedClass, constraintType, indexId, leftOperandExtractor );
         this.rightOperandExtractor = rightOperandExtractor;
     }
 

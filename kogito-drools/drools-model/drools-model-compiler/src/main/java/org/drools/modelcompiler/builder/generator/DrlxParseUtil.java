@@ -16,6 +16,15 @@
 
 package org.drools.modelcompiler.builder.generator;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.index.IndexUtil;
@@ -50,15 +59,6 @@ import org.drools.javaparser.ast.type.ReferenceType;
 import org.drools.javaparser.ast.type.Type;
 import org.drools.javaparser.ast.type.UnknownType;
 import org.drools.modelcompiler.builder.PackageModel;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 import static org.drools.core.util.ClassUtils.getter2property;
 
@@ -116,7 +116,7 @@ public class DrlxParseUtil {
                 reactOnProperties.add(name);
                 TypedExpression expression = nameExprToMethodCallExpr(name, typeCursor);
                 Expression plusThis = prepend(new NameExpr("_this"), (MethodCallExpr) expression.getExpression());
-                return new TypedExpression(plusThis, expression.getType());
+                return new TypedExpression(plusThis, expression.getType(), name);
             }
         } else if (drlxExpr instanceof FieldAccessExpr || drlxExpr instanceof MethodCallExpr) {
             List<Node> childNodes = drlxExpr.getChildNodes();
