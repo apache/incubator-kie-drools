@@ -146,6 +146,35 @@ public class DeclaredTypesTest extends BaseModelTest {
     }
 
     @Test
+    public void testPojoReferencingEachOthers() throws Exception {
+        String factA =
+                "package org.kie.test;" +
+                        "\n" +
+                        "declare FactA\n" +
+                        "    fieldB: FactB\n" +
+                        "end\n";
+
+        String factB =
+                "package org.kie.test;" +
+                        "\n" +
+                        "declare FactB\n" +
+                        "    fieldA: FactA\n" +
+                        "end\n";
+
+        String rule =
+                "package org.kie.test\n" +
+                        "rule R1 when\n" +
+                        "   $fieldA : FactA( $fieldB : fieldB )\n" +
+                        "   FactB( this == $fieldB, fieldA == $fieldA )\n" +
+                        "then\n" +
+                        "end";
+
+        KieSession ksession = getKieSession(rule, factA, factB);
+
+        ksession.fireAllRules();
+    }
+
+    @Test
     public void testDeclaredTypeInLhs() throws Exception {
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +
