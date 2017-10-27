@@ -23,6 +23,10 @@
     This module wraps OptaPlanner core classes used by OptaPlanner Workbench.
   </description>
 
+  <properties>
+    <java.module.name>org.optaplanner.workbench.models.core</java.module.name>
+  </properties>
+
   <dependencyManagement>
     <dependencies>
       <dependency>

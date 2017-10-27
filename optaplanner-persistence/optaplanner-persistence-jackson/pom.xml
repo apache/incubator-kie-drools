@@ -23,7 +23,7 @@
   <url>https://www.optaplanner.org</url>
 
   <properties>
-    <osgi.Bundle-SymbolicName>org.optaplanner.persistence.jackson</osgi.Bundle-SymbolicName>
+    <java.module.name>org.optaplanner.persistence.jackson</java.module.name>
   </properties>
 
   <dependencies>

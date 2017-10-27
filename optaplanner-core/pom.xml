@@ -23,7 +23,7 @@
   <url>https://www.optaplanner.org</url>
 
   <properties>
-    <osgi.Bundle-SymbolicName>org.optaplanner.core</osgi.Bundle-SymbolicName>
+    <java.module.name>org.optaplanner.core</java.module.name>
   </properties>
 
   <dependencies>

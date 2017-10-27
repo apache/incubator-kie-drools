@@ -21,6 +21,10 @@
     This module provides OptaPlanner implementations of Drools data model interfaces used by OptaPlanner Workbench.
   </description>
 
+  <properties>
+    <java.module.name>org.optaplanner.workbench.models.datamodel</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.drools</groupId>

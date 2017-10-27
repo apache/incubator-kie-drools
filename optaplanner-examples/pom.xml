@@ -21,6 +21,10 @@
   </description>
   <url>https://www.optaplanner.org</url>
 
+  <properties>
+    <java.module.name>org.optaplanner.examples</java.module.name>
+  </properties>
+
   <repositories>
     <!-- TODO remove this once maven central replicates the jboss repository -->
     <!-- Included so the examples sources in the distribution zip build out-of-the-box with maven -->
