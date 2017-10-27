@@ -1,5 +1,7 @@
 package org.drools.modelcompiler.constraints;
 
+import java.util.stream.Stream;
+
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.rule.Declaration;
@@ -8,8 +10,6 @@ import org.drools.core.spi.Tuple;
 import org.drools.core.time.Interval;
 import org.drools.model.Index;
 import org.drools.model.SingleConstraint;
-
-import java.util.stream.Stream;
 
 public class ConstraintEvaluator {
 
@@ -95,6 +95,11 @@ public class ConstraintEvaluator {
 
     public String[] getReactiveProps() {
         return constraint.getReactiveProps();
+    }
+
+    @Override
+    public String toString() {
+        return constraint.toString();
     }
 
     @Override

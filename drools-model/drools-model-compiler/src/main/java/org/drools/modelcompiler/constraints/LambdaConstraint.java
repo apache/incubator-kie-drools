@@ -1,5 +1,10 @@
 package org.drools.modelcompiler.constraints;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.List;
+
 import org.drools.core.base.field.ObjectFieldImpl;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -20,11 +25,6 @@ import org.drools.model.AlphaIndex;
 import org.drools.model.BetaIndex;
 import org.drools.model.Index;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.List;
-
 import static org.drools.core.reteoo.PropertySpecificUtil.getEmptyPropertyReactiveMask;
 import static org.drools.core.rule.constraint.MvelConstraint.INDEX_EVALUATOR;
 
@@ -44,14 +44,18 @@ public class LambdaConstraint extends MutableTypeConstraint implements Indexable
     private void initIndexes() {
         Index index = evaluator.getIndex();
         if (index != null) {
-            // TODO LambdaReadAccessor.index ???
-            readAccessor = new LambdaReadAccessor( 0, index.getIndexedClass(), index.getLeftOperandExtractor() );
+            readAccessor = new LambdaReadAccessor( index.getIndexId(), index.getIndexedClass(), index.getLeftOperandExtractor() );
             if (index instanceof AlphaIndex) {
                 field = new ObjectFieldImpl( ( ( AlphaIndex ) index).getRightValue() );
             } else if (index instanceof BetaIndex) {
                 indexingDeclaration = evaluator.getRequiredDeclarations()[0];
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        return evaluator.toString();
     }
 
     @Override
@@ -229,8 +233,7 @@ public class LambdaConstraint extends MutableTypeConstraint implements Indexable
 
     @Override
     public boolean equals(Object other) {
-        if ( this == other ) return true;
-        return other != null && getClass() == other.getClass() && evaluator.equals( ( (LambdaConstraint) other ).evaluator );
+        return this == other || other != null && getClass() == other.getClass() && evaluator.equals( (( LambdaConstraint ) other).evaluator );
     }
 
     @Override
