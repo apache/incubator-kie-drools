@@ -16,7 +16,7 @@
   <description>The Drools and jBPM public API which is backwards compatible between releases.</description>
 
   <properties>
-    <osgi.Bundle-SymbolicName>org.kie.api</osgi.Bundle-SymbolicName>
+    <java.module.name>org.kie.api</java.module.name>
   </properties>
 
   <build>

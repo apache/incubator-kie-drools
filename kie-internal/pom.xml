@@ -16,7 +16,7 @@
   <description>The Drools and jBPM internal API which is NOT backwards compatible between releases.</description>
 
   <properties>
-    <osgi.Bundle-SymbolicName>org.kie.internal.api</osgi.Bundle-SymbolicName>
+    <java.module.name>org.kie.internal.api</java.module.name>
   </properties>
 
   <build>
