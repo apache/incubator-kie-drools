@@ -16,9 +16,7 @@
 
 package org.drools.modelcompiler.builder;
 
-import java.util.Arrays;
-
-import org.drools.compiler.commons.jci.compilers.CompilationResult;
+import org.drools.compiler.compiler.io.Folder;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kie.builder.impl.AbstractKieModule;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
@@ -26,31 +24,27 @@ import org.drools.compiler.kie.builder.impl.KieModuleKieProject;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.kie.internal.builder.KnowledgeBuilder;
 
-import static org.drools.modelcompiler.builder.JavaParserCompiler.getCompiler;
-
-public class CanonicalModelKieProject extends KieModuleKieProject {
+public class CanonicalModelMavenPluginKieProject extends KieModuleKieProject {
 
     private ModelBuilderImpl modelBuilder;
 
-    public CanonicalModelKieProject( InternalKieModule kieModule, ClassLoader classLoader ) {
-        super( kieModule, classLoader );
+    public CanonicalModelMavenPluginKieProject(InternalKieModule kieModule, ClassLoader classLoader) {
+        super(kieModule, classLoader);
     }
 
     @Override
-    protected KnowledgeBuilder createKnowledgeBuilder( KieBaseModelImpl kBaseModel, AbstractKieModule kModule ) {
+    protected KnowledgeBuilder createKnowledgeBuilder(KieBaseModelImpl kBaseModel, AbstractKieModule kModule) {
         modelBuilder = new ModelBuilderImpl();
         return modelBuilder;
     }
 
     @Override
-    public void writeProjectOutput( MemoryFileSystem trgMfs ) {
+    public void writeProjectOutput(MemoryFileSystem trgMfs) {
         MemoryFileSystem srcMfs = new MemoryFileSystem();
 
-        String[] resources = new ModelWriter().writeModel(srcMfs, trgMfs, modelBuilder.getPackageModels());
-        CompilationResult res = getCompiler().compile( resources, srcMfs, trgMfs, getClassLoader() );
-
-        if ( res.getErrors().length != 0 ) {
-            throw new RuntimeException( "Compilation errors: " + Arrays.toString( res.getErrors() ) );
-        }
+        new ModelWriter().writeModel(srcMfs, trgMfs, modelBuilder.getPackageModels());
+        final Folder sourceFolder = srcMfs.getFolder("src/main/java");
+        final Folder targetFolder = trgMfs.getFolder(".");
+        srcMfs.copyFolder(sourceFolder, trgMfs, targetFolder);
     }
 }
