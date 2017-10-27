@@ -58,8 +58,11 @@ public class POJOGenerator {
         }
     }
 
-    public static void registerType(InternalKnowledgePackage pkg, GeneratedClassWithPackage classWithPackage, TypeResolver typeResolver) {
-        Map<String, Class<?>> classMap = compileAll(pkg.getPackageClassLoader(), classWithPackage.getPackageName(), Collections.singletonList(classWithPackage.getGeneratedClass()));
+    public static Map<String, Class<?>> compileType(ClassLoader packageClassLoader, String pkgName, List<GeneratedClassWithPackage> classesWithPackage) {
+        return compileAll(packageClassLoader, pkgName, classesWithPackage);
+    }
+
+    public static void registerType(TypeResolver typeResolver, Map<String, Class<?>> classMap) {
         for (Map.Entry<String, Class<?>> entry : classMap.entrySet()) {
             typeResolver.registerClass(entry.getKey(), entry.getValue());
             typeResolver.registerClass(entry.getValue().getSimpleName(), entry.getValue());

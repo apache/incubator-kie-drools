@@ -30,6 +30,7 @@ import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
 
 import static org.drools.modelcompiler.builder.generator.ModelGenerator.generateModel;
+import static org.drools.modelcompiler.builder.generator.POJOGenerator.compileType;
 import static org.drools.modelcompiler.builder.generator.POJOGenerator.generatePOJO;
 import static org.drools.modelcompiler.builder.generator.POJOGenerator.registerType;
 
@@ -50,14 +51,22 @@ public class ModelBuilderImpl extends KnowledgeBuilderImpl {
             generatePOJOs(packageDescr, pkgRegistry);
         }
 
-        List<GeneratedClassWithPackage> allPojos =
+        List<GeneratedClassWithPackage> allGeneratedPojos =
                 packageModels.values().stream()
                         .flatMap(p -> p.getGeneratedPOJOsSource().stream().map(c -> new GeneratedClassWithPackage(c, p.getName())))
                         .collect(Collectors.toList());
 
+
+        // Every class gets compiled in each classloader, maybe they can be compiled only one time?
+        final Map<String, Class<?>> allCompiledClasses = new HashMap<>();
         for (CompositePackageDescr packageDescr : packages) {
-            InternalKnowledgePackage aPackage = getPackageRegistry(packageDescr.getNamespace()).getPackage();
-            allPojos.forEach(c -> registerType(aPackage, c, aPackage.getTypeResolver()));
+            InternalKnowledgePackage pkg = getPackageRegistry(packageDescr.getNamespace()).getPackage();
+            allCompiledClasses.putAll(compileType(pkg.getPackageClassLoader(), pkg.getName(), allGeneratedPojos));
+        }
+
+        for (CompositePackageDescr packageDescr : packages) {
+            InternalKnowledgePackage pkg = getPackageRegistry(packageDescr.getNamespace()).getPackage();
+            allGeneratedPojos.forEach(c -> registerType(pkg.getTypeResolver(), allCompiledClasses));
         }
 
         for (CompositePackageDescr packageDescr : packages) {
