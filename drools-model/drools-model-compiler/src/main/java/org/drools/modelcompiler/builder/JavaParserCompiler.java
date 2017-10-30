@@ -75,8 +75,7 @@ public class JavaParserCompiler {
         MemoryFileSystem srcMfs = new MemoryFileSystem();
         MemoryFileSystem trgMfs = new MemoryFileSystem();
 
-        List<ClassOrInterfaceDeclaration> allGeneratedClasses = classes.stream().map(GeneratedClassWithPackage::getGeneratedClass).collect(Collectors.toList());
-        String[] resources = writeModel(pkgName, allGeneratedClasses, srcMfs );
+        String[] resources = writeModel(classes, srcMfs);
         CompilationResult resultCompilation = getCompiler().compile(resources, srcMfs, trgMfs, classLoader);
         CompilationProblem[] errors = resultCompilation.getErrors();
         if(errors.length != 0) {
@@ -87,7 +86,7 @@ public class JavaParserCompiler {
 
         Map<String, Class<?>> result = new HashMap<>();
         for (GeneratedClassWithPackage cls : classes) {
-            String fullClassName = pkgName + "." + cls.getGeneratedClass().getNameAsString();
+            final String fullClassName = cls.getPackageName() + "." + cls.getGeneratedClass().getNameAsString();
             try {
                 result.put(fullClassName, Class.forName(fullClassName, true, internalClassLoader));
             } catch (ClassNotFoundException e) {
@@ -97,15 +96,15 @@ public class JavaParserCompiler {
         return result;
     }
 
-    private static String[] writeModel( String pkgName, List<ClassOrInterfaceDeclaration> classes, MemoryFileSystem srcMfs ) {
+    private static String[] writeModel(List<GeneratedClassWithPackage> classes, MemoryFileSystem srcMfs ) {
         List<String> sources = new ArrayList<>();
 
-        String folderName = pkgName.replace( '.', '/' );
-
-        for (ClassOrInterfaceDeclaration generatedPojo : classes) {
-            final String source = toPojoSource( pkgName, generatedPojo );
-            final String varsSourceName = "src/main/java/" + folderName + "/" + generatedPojo.getName() + ".java";
-            srcMfs.write( varsSourceName, source.getBytes() );
+        for (GeneratedClassWithPackage generatedPojo : classes) {
+            final String pkgName = generatedPojo.getPackageName();
+            final String folderName = pkgName.replace( '.', '/' );
+            final ClassOrInterfaceDeclaration generatedClass = generatedPojo.getGeneratedClass();
+            final String varsSourceName = String.format("src/main/java/%s/%s.java", folderName, generatedClass.getName());
+            srcMfs.write( varsSourceName, toPojoSource(pkgName, generatedClass).getBytes() );
             sources.add( varsSourceName );
         }
 
