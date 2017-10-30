@@ -34,6 +34,7 @@ import org.jbpm.services.cdi.Undeploy;
 import org.jbpm.services.task.audit.service.TaskAuditService;
 import org.jbpm.shared.services.impl.TransactionalCommandService;
 import org.kie.api.task.TaskService;
+import org.kie.api.task.UserGroupCallback;
 import org.kie.internal.identity.IdentityProvider;
 
 @ApplicationScoped
@@ -90,6 +91,12 @@ public class RuntimeDataServiceCDIImpl extends RuntimeDataServiceImpl {
     @Override
     public void setDeploymentRolesManager(DeploymentRolesManager deploymentRolesManager) {
         super.setDeploymentRolesManager(deploymentRolesManager);
+    }
+
+    @Inject
+    @Override
+    public void setUserGroupCallback(UserGroupCallback userGroupCallback) {
+        super.setUserGroupCallback(userGroupCallback);
     }
 
     @PostConstruct

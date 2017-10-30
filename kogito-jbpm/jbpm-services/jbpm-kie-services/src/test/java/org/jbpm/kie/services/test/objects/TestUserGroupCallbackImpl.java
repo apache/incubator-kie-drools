@@ -35,7 +35,7 @@ public class TestUserGroupCallbackImpl implements UserGroupCallback {
         userGroupMap.put("kris", asList("admins", "managers"));
         userGroupMap.put("Administrator", asList("Administrators"));
         userGroupMap.put("salaboy", asList("managers","HR","IT","Accounting"));
-        userGroupMap.put("katy", asList("HR","IT","Accounting"));
+        userGroupMap.put("katy", asList("HR","IT","Accounting", "admins"));
         userGroupMap.put("john", asList("HR","Accounting"));
         userGroupMap.put("mary", asList("HR"));
     }

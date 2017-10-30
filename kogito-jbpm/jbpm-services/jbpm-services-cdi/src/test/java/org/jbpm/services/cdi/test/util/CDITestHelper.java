@@ -86,7 +86,7 @@ public class CDITestHelper {
         properties.setProperty("mary", "HR");
         properties.setProperty("john", "HR,Accounting");
         properties.setProperty("salaboy", "HR,IT,Accounting");
-        properties.setProperty("katy", "HR,IT,Accounting");
+        properties.setProperty("katy", "HR,IT,Accounting,admins");
         return new JBossUserGroupCallbackImpl(properties);
     }
     
