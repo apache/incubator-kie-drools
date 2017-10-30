@@ -1119,8 +1119,12 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
         List<TaskEvent> taskEvents = commandService.execute(
     				new QueryNameCommand<List<TaskEvent>>("getAllTasksEvents", params));
 
-        if(taskEvents == null || taskEvents.size() < 1) {
-            throw new TaskNotFoundException( MessageFormat.format(TASK_NOT_FOUND, taskId) );
+        if(taskEvents == null || taskEvents.isEmpty()) {
+            
+            UserTaskInstanceDesc task = getTaskById(taskId);
+            if (task == null) {
+                throw new TaskNotFoundException( MessageFormat.format(TASK_NOT_FOUND, taskId) );
+            }
         }
         return taskEvents;
     }

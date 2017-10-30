@@ -1302,6 +1302,14 @@ public class RuntimeDataServiceImplTest extends AbstractKieServicesBaseTest {
     	assertEquals(2, auditTasks.size());
     	assertEquals(TaskEvent.TaskEventType.ADDED, auditTasks.get(0).getType());
     	assertEquals(TaskEvent.TaskEventType.STARTED, auditTasks.get(1).getType());
+    	
+    	QueryFilter filter = new QueryFilter();
+    	filter.setFilterParams("t.type = :type ");
+    	filter.setParams(Collections.singletonMap("type", TaskEvent.TaskEventType.COMPLETED));
+    	auditTasks = runtimeDataService.getTaskEvents(userTask.getTaskId(), filter);
+    	
+    	assertNotNull(auditTasks);
+        assertEquals(0, auditTasks.size());
 
     	processService.abortProcessInstance(processInstanceId);
     	processInstanceId = null;
