@@ -191,7 +191,7 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
                 return;
             }
             QuickOpenAction action = listPanel.getModel().getElementAt(selectedIndex);
-            action.actionPerformed(null);
+            action.actionPerformed(new ActionEvent(listPanel, -1, null));
         });
 
         refreshQuickOpenPanel(listPanel, fileList);
@@ -234,7 +234,7 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
             setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
             try {
                 solutionBusiness.openSolution(file);
-                setSolutionLoaded();
+                setSolutionLoaded(e.getSource());
             } finally {
                 setCursor(Cursor.getDefaultCursor());
             }
@@ -391,7 +391,7 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
                 setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                 try {
                     solutionBusiness.openSolution(fileChooser.getSelectedFile());
-                    setSolutionLoaded();
+                    setSolutionLoaded(e.getSource());
                 } finally {
                     setCursor(Cursor.getDefaultCursor());
                 }
@@ -500,7 +500,7 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
                 setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                 try {
                     solutionBusiness.importSolution(file);
-                    setSolutionLoaded();
+                    setSolutionLoaded(e.getSource());
                 } finally {
                     setCursor(Cursor.getDefaultCursor());
                 }
@@ -631,7 +631,13 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
 
     }
 
-    private void setSolutionLoaded() {
+    private void setSolutionLoaded(Object eventSource) {
+        if (eventSource != quickOpenUnsolvedJList) {
+            quickOpenUnsolvedJList.clearSelection();
+        }
+        if (eventSource != quickOpenSolvedJList) {
+            quickOpenSolvedJList.clearSelection();
+        }
         setTitle(solutionBusiness.getAppName() + " - " + solutionBusiness.getSolutionFileName());
         ((CardLayout) middlePanel.getLayout()).show(middlePanel, "solutionPanel");
         setSolvingState(false);
