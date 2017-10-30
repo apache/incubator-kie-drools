@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.XStream;
 
-import static org.kie.internal.xstream.XStreamUtils.createXStream;
+import static org.kie.soup.commons.xstream.XStreamUtils.createXStream;
 
 /**
  * Asynchronous log producer that puts audit log events into JMS queue.

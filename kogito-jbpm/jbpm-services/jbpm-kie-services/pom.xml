@@ -84,6 +84,10 @@
       <artifactId>kie-internal</artifactId>
     </dependency>    
     <dependency>
+      <groupId>org.kie.soup</groupId>
+      <artifactId>kie-soup-commons</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-ci</artifactId>
       <exclusions>

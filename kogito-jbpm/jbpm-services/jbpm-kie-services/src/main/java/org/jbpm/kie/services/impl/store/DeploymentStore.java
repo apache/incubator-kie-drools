@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.XStream;
 
-import static org.kie.internal.xstream.XStreamUtils.createXStream;
+import static org.kie.soup.commons.xstream.XStreamUtils.createXStream;
 
 public class DeploymentStore {
 	

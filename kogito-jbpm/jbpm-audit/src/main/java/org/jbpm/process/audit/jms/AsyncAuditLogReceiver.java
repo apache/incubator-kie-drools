@@ -31,7 +31,7 @@ import org.jbpm.process.audit.ProcessInstanceLog;
 
 import com.thoughtworks.xstream.XStream;
 
-import static org.kie.internal.xstream.XStreamUtils.createXStream;
+import static org.kie.soup.commons.xstream.XStreamUtils.createXStream;
 
 /**
  * Asynchronous audit event receiver. Receives messages from JMS queue

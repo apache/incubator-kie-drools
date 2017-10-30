@@ -26,7 +26,7 @@ import com.thoughtworks.xstream.security.ExplicitTypePermission;
 import org.drools.core.common.ProjectClassLoader;
 import org.jbpm.process.core.datatype.DataType;
 
-import static org.kie.internal.xstream.XStreamUtils.createXStream;
+import static org.kie.soup.commons.xstream.XStreamUtils.createXStream;
 
 /**
  * Representation of an object datatype.
