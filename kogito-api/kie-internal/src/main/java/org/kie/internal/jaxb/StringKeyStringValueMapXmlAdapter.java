@@ -22,7 +22,7 @@ import java.util.Map.Entry;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 /**
- * This is a {@link XmlAdapter} for mapping Map<String, String> instances
+ * This is a {@link XmlAdapter} for mapping Map&lt;String, String&gt; instances
  * to classes/instances that <b>both</b> JAXB/XML and JSON can deal with.
  * <p>
  * The most important reason for the existence of this class is that it works well
