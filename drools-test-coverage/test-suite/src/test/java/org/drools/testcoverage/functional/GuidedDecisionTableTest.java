@@ -366,6 +366,107 @@ public class GuidedDecisionTableTest {
         kSession.dispose();
     }
 
+    /**
+     * The decision table assumes 3 groups of cities according to people living there
+     * The test assert that people move to bigger city, if they like big cities
+     */
+    @Test
+    public void testMoveToBiggerCities() throws Exception {
+        initKieSession("moveToBiggerCities.gdst");
+        final Address brno = producePeopleInCity("Brno", 7000);
+        final Address prague = producePeopleInCity("Prague", 30000);
+        final Address london = producePeopleInCity("London", 60000);
+
+        final Address smallCity = new Address();
+        smallCity.setCity("city with just one person");
+
+        peter70Years.setAddress(smallCity);
+        peter70Years.setLikes("big city");
+
+        william25Years.setAddress(brno);
+        william25Years.setLikes("big city");
+
+        mary33Years.setAddress(prague);
+        mary33Years.setLikes("big city");
+
+        elizabeth35Years.setAddress(london);
+        elizabeth35Years.setLikes("big city");
+
+        kSession.insert(smallCity);
+        final FactHandle peter = kSession.insert(peter70Years);
+        final FactHandle wiliam = kSession.insert(william25Years);
+        final FactHandle mary = kSession.insert(mary33Years);
+        final FactHandle elizabeth = kSession.insert(elizabeth35Years);
+
+        Assertions.assertThat(kSession.fireAllRules()).isEqualTo(3);
+        Assertions.assertThat(((Person) kSession.getObject(peter)).getAddress().getCity()).isEqualTo("Brno");
+        Assertions.assertThat(((Person) kSession.getObject(wiliam)).getAddress().getCity()).isEqualTo("Prague");
+        Assertions.assertThat(((Person) kSession.getObject(mary)).getAddress().getCity()).isEqualTo("London");
+        // No other bigger city
+        Assertions.assertThat(((Person) kSession.getObject(elizabeth)).getAddress().getCity()).isEqualTo("London");
+
+        kSession.dispose();
+    }
+
+    @Test
+    public void testMoveToBiggerCitiesPeopleNotLikeBigCities() throws Exception {
+        initKieSession("moveToBiggerCities.gdst");
+        final Address brno = producePeopleInCity("Brno", 7000);
+        final Address prague = producePeopleInCity("Prague", 30000);
+        final Address london = producePeopleInCity("London", 60000);
+
+        final Address smallCity = new Address();
+        smallCity.setCity("city with just one person");
+
+        peter70Years.setAddress(smallCity);
+        william25Years.setAddress(brno);
+        mary33Years.setAddress(prague);
+        elizabeth35Years.setAddress(london);
+
+        kSession.insert(smallCity);
+        kSession.insert(peter70Years);
+        kSession.insert(william25Years);
+        kSession.insert(mary33Years);
+        kSession.insert(elizabeth35Years);
+
+        Assertions.assertThat(kSession.fireAllRules()).isEqualTo(0);
+
+        kSession.dispose();
+    }
+
+    @Test
+    public void testMoveToBiggerCitiesTooBigGapBetweenCitySizes() throws Exception {
+        initKieSession("moveToBiggerCities.gdst");
+        final Address brno = producePeopleInCity("Brno", 7000);
+        producePeopleInCity("London", 60000);
+
+        william25Years.setAddress(brno);
+        william25Years.setLikes("big city");
+
+        kSession.insert(william25Years);
+
+        Assertions.assertThat(kSession.fireAllRules()).isEqualTo(0);
+
+        kSession.dispose();
+    }
+
+
+    private Address producePeopleInCity(final String city, final int countOfPeople) {
+        final Address address = new Address();
+        address.setCity(city);
+        kSession.insert(address);
+
+        for (int i = 0; i < countOfPeople; i++) {
+            final Person person = new Person();
+            person.setName("Inhabitant " + i);
+            person.setAddress(address);
+
+            kSession.insert(person);
+        }
+
+        return address;
+    }
+
     private void initKieSession(String gdstName) {
         final Resource resource = KieServices.Factory.get().getResources().newClassPathResource(gdstName,
                                                                                                 GuidedDecisionTableTest.class);
