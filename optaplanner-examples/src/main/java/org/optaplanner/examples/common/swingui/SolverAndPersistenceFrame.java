@@ -28,9 +28,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -51,10 +49,9 @@ import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingWorker;
 import javax.swing.filechooser.FileFilter;
-
-import static javax.swing.ListSelectionModel.SINGLE_SELECTION;
 
 import org.apache.commons.io.FilenameUtils;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
@@ -85,10 +82,8 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
     private SolutionPanel<Solution_> solutionPanel;
     private ConstraintMatchesDialog constraintMatchesDialog;
 
-    private JList<QuickOpenAction> quickOpenUnsolvedPanel;
-    private List<Action> quickOpenUnsolvedActionList;
-    private JList<QuickOpenAction> quickOpenSolvedPanel;
-    private List<Action> quickOpenSolvedActionList;
+    private JList<QuickOpenAction> quickOpenUnsolvedJList;
+    private JList<QuickOpenAction> quickOpenSolvedJList;
     private Action openAction;
     private Action saveAction;
     private Action importAction;
@@ -104,7 +99,6 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
     private JTextField scoreField;
     private ShowConstraintMatchesDialogAction showConstraintMatchesDialogAction;
 
-    private Map<JList<QuickOpenAction>, DefaultListModel<QuickOpenAction>> listModels;
 
     public SolverAndPersistenceFrame(SolutionBusiness<Solution_> solutionBusiness,
             SolutionPanel<Solution_> solutionPanel) {
@@ -120,7 +114,6 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
         refreshScreenDuringSolvingFalseIcon = new ImageIcon(getClass().getResource("refreshScreenDuringSolvingFalseIcon.png"));
         registerListeners();
         constraintMatchesDialog = new ConstraintMatchesDialog(this, solutionBusiness);
-        listModels = new HashMap<>();
     }
 
     private void registerListeners() {
@@ -176,33 +169,32 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
     }
 
     private JComponent createQuickOpenUnsolvedPanel() {
-        DefaultListModel<QuickOpenAction> model = new DefaultListModel<>();
-        quickOpenUnsolvedPanel = new JList<>(model);
-        listModels.put(quickOpenUnsolvedPanel, model);
-        quickOpenUnsolvedActionList = new ArrayList<>();
+        quickOpenUnsolvedJList = new JList<>(new DefaultListModel<>());
         List<File> unsolvedFileList = solutionBusiness.getUnsolvedFileList();
-        return createQuickOpenPanel(quickOpenUnsolvedPanel, "Unsolved dataset", quickOpenUnsolvedActionList,
-                unsolvedFileList);
+        return createQuickOpenPanel(quickOpenUnsolvedJList, "Unsolved dataset", unsolvedFileList);
     }
 
     private JComponent createQuickOpenSolvedPanel() {
-        DefaultListModel<QuickOpenAction> model = new DefaultListModel<>();
-        quickOpenSolvedPanel = new JList<>(model);
-        listModels.put(quickOpenSolvedPanel, model);
-        quickOpenSolvedActionList = new ArrayList<>();
+        quickOpenSolvedJList = new JList<>(new DefaultListModel<>());
         List<File> solvedFileList = solutionBusiness.getSolvedFileList();
-        return createQuickOpenPanel(quickOpenSolvedPanel, "Solved dataset", quickOpenSolvedActionList,
-                solvedFileList);
+        return createQuickOpenPanel(quickOpenSolvedJList, "Solved dataset", solvedFileList);
     }
 
-    private JComponent createQuickOpenPanel(JList<QuickOpenAction> listPanel, String title, List<Action> quickOpenActions, List<File> files) {
-        listPanel.setSelectionMode(SINGLE_SELECTION);
+    private JComponent createQuickOpenPanel(JList<QuickOpenAction> listPanel, String title, List<File> fileList) {
+        listPanel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         listPanel.addListSelectionListener(event -> {
-            QuickOpenAction action = listPanel.getModel().getElementAt(listPanel.getSelectedIndex());
+            if (event.getValueIsAdjusting()) {
+                return;
+            }
+            int selectedIndex = listPanel.getSelectedIndex();
+            if (selectedIndex < 0) {
+                return;
+            }
+            QuickOpenAction action = listPanel.getModel().getElementAt(selectedIndex);
             action.actionPerformed(null);
         });
 
-        refreshQuickOpenPanel(listPanel, quickOpenActions, files);
+        refreshQuickOpenPanel(listPanel, fileList);
 
         JScrollPane scrollPane = new JScrollPane(listPanel);
         scrollPane.getVerticalScrollBar().setUnitIncrement(25);
@@ -217,14 +209,12 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
         return titlePanel;
     }
 
-    private void refreshQuickOpenPanel(JList<QuickOpenAction> listPanel, List<Action> quickOpenActions, List<File> files) {
-        DefaultListModel<QuickOpenAction> model = listModels.get(listPanel);
+    private void refreshQuickOpenPanel(JList<QuickOpenAction> listPanel, List<File> fileList) {
+        DefaultListModel<QuickOpenAction> model = (DefaultListModel<QuickOpenAction>) listPanel.getModel();
         model.clear();
-        quickOpenActions.clear();
 
-        for (File file : files) {
+        for (File file : fileList) {
             QuickOpenAction action = new QuickOpenAction(file);
-            quickOpenActions.add(action);
             model.addElement(action);
             listPanel.clearSelection();
         }
@@ -444,10 +434,8 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
                 } finally {
                     setCursor(Cursor.getDefaultCursor());
                 }
-                refreshQuickOpenPanel(quickOpenUnsolvedPanel, quickOpenUnsolvedActionList,
-                        solutionBusiness.getUnsolvedFileList());
-                refreshQuickOpenPanel(quickOpenSolvedPanel, quickOpenSolvedActionList,
-                        solutionBusiness.getSolvedFileList());
+                refreshQuickOpenPanel(quickOpenUnsolvedJList,  solutionBusiness.getUnsolvedFileList());
+                refreshQuickOpenPanel(quickOpenSolvedJList,  solutionBusiness.getSolvedFileList());
                 SolverAndPersistenceFrame.this.validate();
             }
         }
@@ -651,12 +639,8 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
     }
 
     private void setSolvingState(boolean solving) {
-        for (Action action : quickOpenUnsolvedActionList) {
-            action.setEnabled(!solving);
-        }
-        for (Action action : quickOpenSolvedActionList) {
-            action.setEnabled(!solving);
-        }
+        quickOpenUnsolvedJList.setEnabled(!solving);
+        quickOpenSolvedJList.setEnabled(!solving);
         importAction.setEnabled(!solving && solutionBusiness.hasImporter());
         openAction.setEnabled(!solving);
         saveAction.setEnabled(!solving);
