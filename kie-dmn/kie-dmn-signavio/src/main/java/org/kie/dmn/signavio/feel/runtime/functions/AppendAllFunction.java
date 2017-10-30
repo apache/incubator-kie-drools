@@ -31,7 +31,7 @@ public class AppendAllFunction
         super("appendAll");
     }
 
-    public FEELFnResult<List> invoke(@ParameterName("list") Object[] lists) {
+    public FEELFnResult<List<Object>> invoke(@ParameterName("list") Object[] lists) {
         return BuiltInFunctions.getFunction(ConcatenateFunction.class).invoke(lists);
     }
 }
