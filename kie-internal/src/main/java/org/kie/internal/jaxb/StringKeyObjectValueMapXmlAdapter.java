@@ -31,7 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This is a {@link XmlAdapter} for mapping Map<String, Object> instances
+ * This is a {@link XmlAdapter} for mapping Map&lt;String, Object&gt; instances
  * to classes/instances that <b>both</b> JAXB/XML and JSON can deal with.
  * <p>
  * The most important reason for the existence of this class is that it works well

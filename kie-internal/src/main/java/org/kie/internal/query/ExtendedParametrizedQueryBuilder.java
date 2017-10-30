@@ -48,7 +48,7 @@ public interface ExtendedParametrizedQueryBuilder<T,R> extends ParametrizedQuery
 
     /**
      * Create the {@link ParametrizedQuery} instance that can be used
-     * to retrieve the results, a {@link List<TaskSummary>} instance.
+     * to retrieve the results, a {@link List&lt;TaskSummary&gt;} instance.
      * </p>
      * Further modifications to the {@link TaskQueryBuilder} instance
      * will <em>not</em> affect the query criteria used in the {@link ParametrizedQuery}
