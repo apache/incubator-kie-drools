@@ -88,7 +88,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static org.kie.internal.xstream.XStreamUtils.createTrustingXStream;
+import static org.kie.soup.commons.xstream.XStreamUtils.createTrustingXStream;
 
 public class XStreamMarshaller
         implements DMNMarshaller {

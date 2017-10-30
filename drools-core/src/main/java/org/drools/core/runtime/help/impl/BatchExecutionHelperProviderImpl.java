@@ -20,7 +20,7 @@ import org.kie.internal.runtime.helper.BatchExecutionHelperProvider;
 
 import com.thoughtworks.xstream.XStream;
 
-import static org.kie.internal.xstream.XStreamUtils.createTrustingXStream;
+import static org.kie.soup.commons.xstream.XStreamUtils.createTrustingXStream;
 
 public class BatchExecutionHelperProviderImpl
     implements

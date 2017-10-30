@@ -21,7 +21,7 @@ import java.math.BigDecimal;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
-import org.kie.internal.xstream.XStreamUtils;
+import org.kie.soup.commons.xstream.XStreamUtils;
 
 public class GuidedScoreCardXMLPersistence {
 
