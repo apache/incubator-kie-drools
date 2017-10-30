@@ -156,28 +156,23 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
     }
 
     private JComponent createQuickOpenPanel() {
-        JPanel quickOpenPanel = new JPanel(new BorderLayout());
-        JLabel quickOpenLabel = new JLabel("Quick open");
-        quickOpenLabel.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
-        quickOpenPanel.add(quickOpenLabel, BorderLayout.NORTH);
         JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
                 createQuickOpenUnsolvedPanel(), createQuickOpenSolvedPanel());
         splitPane.setResizeWeight(0.8);
         splitPane.setBorder(null);
-        quickOpenPanel.add(splitPane, BorderLayout.CENTER);
-        return quickOpenPanel;
+        return splitPane;
     }
 
     private JComponent createQuickOpenUnsolvedPanel() {
         quickOpenUnsolvedJList = new JList<>(new DefaultListModel<>());
         List<File> unsolvedFileList = solutionBusiness.getUnsolvedFileList();
-        return createQuickOpenPanel(quickOpenUnsolvedJList, "Unsolved dataset", unsolvedFileList);
+        return createQuickOpenPanel(quickOpenUnsolvedJList, "Unsolved dataset shortcuts", unsolvedFileList);
     }
 
     private JComponent createQuickOpenSolvedPanel() {
         quickOpenSolvedJList = new JList<>(new DefaultListModel<>());
         List<File> solvedFileList = solutionBusiness.getSolvedFileList();
-        return createQuickOpenPanel(quickOpenSolvedJList, "Solved dataset", solvedFileList);
+        return createQuickOpenPanel(quickOpenSolvedJList, "Solved dataset shortcuts", solvedFileList);
     }
 
     private JComponent createQuickOpenPanel(JList<QuickOpenAction> listPanel, String title, List<File> fileList) {
@@ -203,9 +198,11 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
         scrollPane.setPreferredSize(new Dimension(180, 200));
 
         JPanel titlePanel = new JPanel(new BorderLayout());
+        titlePanel.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
+        JLabel titleLabel = new JLabel(title);
+        titleLabel.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
+        titlePanel.add(titleLabel, BorderLayout.NORTH);
         titlePanel.add(scrollPane, BorderLayout.CENTER);
-        titlePanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createEmptyBorder(2, 2, 2, 2), BorderFactory.createTitledBorder(title)));
         return titlePanel;
     }
 
@@ -434,8 +431,8 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
                 } finally {
                     setCursor(Cursor.getDefaultCursor());
                 }
-                refreshQuickOpenPanel(quickOpenUnsolvedJList,  solutionBusiness.getUnsolvedFileList());
-                refreshQuickOpenPanel(quickOpenSolvedJList,  solutionBusiness.getSolvedFileList());
+                refreshQuickOpenPanel(quickOpenUnsolvedJList, solutionBusiness.getUnsolvedFileList());
+                refreshQuickOpenPanel(quickOpenSolvedJList, solutionBusiness.getSolvedFileList());
                 SolverAndPersistenceFrame.this.validate();
             }
         }
