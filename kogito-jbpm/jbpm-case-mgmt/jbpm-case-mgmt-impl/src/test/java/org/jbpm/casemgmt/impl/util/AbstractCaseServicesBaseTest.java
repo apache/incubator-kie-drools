@@ -344,7 +344,11 @@ public abstract class AbstractCaseServicesBaseTest {
         kfs.writePomXML(getPom(releaseId));
         // set the deployment descriptor so we use per case runtime strategy
         DeploymentDescriptor customDescriptor = new DeploymentDescriptorImpl("org.jbpm.domain");
-        DeploymentDescriptorBuilder ddBuilder = customDescriptor.getBuilder().runtimeStrategy(RuntimeStrategy.PER_CASE).addMarshalingStrategy(new ObjectModel("mvel", CaseMarshallerFactory.builder().withDoc().toString())).addEventListener(new ObjectModel("mvel", "new org.jbpm.casemgmt.impl.util.TrackingCaseEventListener()"));
+        DeploymentDescriptorBuilder ddBuilder = customDescriptor.getBuilder()
+                .runtimeStrategy(RuntimeStrategy.PER_CASE)
+                .addMarshalingStrategy(new ObjectModel("mvel", CaseMarshallerFactory.builder().withDoc().toString()))
+                .addEventListener(new ObjectModel("mvel", "new org.jbpm.casemgmt.impl.util.TrackingCaseEventListener()"))
+                .addWorkItemHandler(new NamedObjectModel("mvel", "StartCaseInstance", "new org.jbpm.casemgmt.impl.wih.StartCaseWorkItemHandler(ksession)"));
 
         for (ObjectModel listener : getProcessListeners()) {
             ddBuilder.addEventListener(listener);

@@ -16,6 +16,8 @@
 
 package org.jbpm.casemgmt.api.event;
 
+import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
+
 /**
  * Represents generic event of case operation
  */
@@ -23,10 +25,12 @@ public class CaseEvent {
 
     private String caseId;
     private String user; 
+    private CaseFileInstance caseFile;
     
-    public CaseEvent(String user, String caseId) {
+    public CaseEvent(String user, String caseId, CaseFileInstance caseFile) {
         this.user = user;
         this.caseId = caseId;
+        this.caseFile = caseFile;
     }
 
     /**
@@ -42,4 +46,9 @@ public class CaseEvent {
     public String getUser() {
         return this.user;
     }
+
+    public CaseFileInstance getCaseFile() {
+        return caseFile;
+    }    
+    
 }

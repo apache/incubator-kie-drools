@@ -18,6 +18,8 @@ package org.jbpm.casemgmt.api.event;
 
 import java.util.Map;
 
+import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
+
 /**
  * Represents occurrence of start case operation
  */
@@ -28,15 +30,15 @@ public class CaseReopenEvent extends CaseEvent {
     private Map<String, Object> data;
     private Long processInstanceId;
     
-    public CaseReopenEvent(String user, String caseId, String deploymentId, String caseDefinitionId, Map<String, Object> data) {
-        super(user, caseId);
+    public CaseReopenEvent(String user, String caseId, CaseFileInstance caseFile, String deploymentId, String caseDefinitionId, Map<String, Object> data) {
+        super(user, caseId, caseFile);
         this.deploymentId = deploymentId;
         this.caseDefinitionId = caseDefinitionId;
         this.data = data;
     }
     
-    public CaseReopenEvent(String user, String caseId, String deploymentId, String caseDefinitionId, Map<String, Object> data, Long processInstanceId) {
-        super(user, caseId);
+    public CaseReopenEvent(String user, String caseId, CaseFileInstance caseFile, String deploymentId, String caseDefinitionId, Map<String, Object> data, Long processInstanceId) {
+        super(user, caseId, caseFile);
         this.deploymentId = deploymentId;
         this.caseDefinitionId = caseDefinitionId;
         this.data = data;

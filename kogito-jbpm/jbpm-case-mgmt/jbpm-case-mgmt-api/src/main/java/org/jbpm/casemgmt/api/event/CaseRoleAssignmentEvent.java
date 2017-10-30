@@ -16,6 +16,7 @@
 
 package org.jbpm.casemgmt.api.event;
 
+import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
 import org.kie.api.task.model.OrganizationalEntity;
 
 /**
@@ -26,8 +27,8 @@ public class CaseRoleAssignmentEvent extends CaseEvent {
     private String role;
     private OrganizationalEntity entity;
     
-    public CaseRoleAssignmentEvent(String user, String caseId, String role, OrganizationalEntity entity) {
-        super(user, caseId);
+    public CaseRoleAssignmentEvent(String user, String caseId, CaseFileInstance caseFile, String role, OrganizationalEntity entity) {
+        super(user, caseId, caseFile);
         this.role = role;
         this.entity = entity;
     }

@@ -16,9 +16,12 @@
 
 package org.jbpm.casemgmt.impl.command;
 
+import org.drools.core.ClassObjectFilter;
 import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.InternalAgenda;
+import org.jbpm.casemgmt.api.CaseNotFoundException;
+import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
 import org.jbpm.casemgmt.impl.event.CaseEventSupport;
 import org.jbpm.runtime.manager.impl.PerCaseRuntimeManager;
 import org.kie.api.runtime.EnvironmentName;
@@ -27,6 +30,7 @@ import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.internal.identity.IdentityProvider;
 import org.kie.api.runtime.Context;
 
+import java.util.Collection;
 import java.util.Collections;
 
 public abstract class CaseCommand<T> implements ExecutableCommand<T> {
@@ -70,5 +74,15 @@ public abstract class CaseCommand<T> implements ExecutableCommand<T> {
             agenda.setFocus("MAIN");
         }
         ksession.fireAllRules();
+    }
+    
+    protected CaseFileInstance getCaseFile(KieSession ksession, String caseId) {
+        Collection<? extends Object> caseFiles = ksession.getObjects(new ClassObjectFilter(CaseFileInstance.class));
+        if (caseFiles.size() == 0) {
+            return null;
+        }
+        CaseFileInstance caseFile = (CaseFileInstance) caseFiles.iterator().next(); 
+        
+        return caseFile;
     }
 }

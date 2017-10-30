@@ -94,9 +94,9 @@ public class CaseCommentCommand extends CaseCommand<Void> {
 
         if (add) {
             CommentInstance commentInstance = new CommentInstanceImpl(author, comment, restrictedTo);
-            caseEventSupport.fireBeforeCaseCommentAdded(caseFile.getCaseId(), commentInstance);
+            caseEventSupport.fireBeforeCaseCommentAdded(caseFile.getCaseId(), caseFile, commentInstance);
             ((CaseFileInstanceImpl)caseFile).addComment(commentInstance);
-            caseEventSupport.fireAfterCaseCommentAdded(caseFile.getCaseId(), commentInstance);
+            caseEventSupport.fireAfterCaseCommentAdded(caseFile.getCaseId(), caseFile, commentInstance);
         } else if (update) {
             CommentInstance toUpdate = ((CaseFileInstanceImpl)caseFile).getComments().stream()
                     .filter(c -> c.getId().equals(commentId))
@@ -108,12 +108,12 @@ public class CaseCommentCommand extends CaseCommand<Void> {
             // apply authorization
             authorizationManager.checkCommentAuthorization(caseFile.getCaseId(), caseFile, toUpdate);
             
-            caseEventSupport.fireBeforeCaseCommentUpdated(caseFile.getCaseId(), toUpdate);
+            caseEventSupport.fireBeforeCaseCommentUpdated(caseFile.getCaseId(), caseFile, toUpdate);
             ((CommentInstanceImpl)toUpdate).setComment(updatedText);
             if (restrictedTo != null) {
                 ((CommentInstanceImpl)toUpdate).setRestrictedTo(restrictedTo);
             }
-            caseEventSupport.fireBeforeCaseCommentUpdated(caseFile.getCaseId(), toUpdate);
+            caseEventSupport.fireBeforeCaseCommentUpdated(caseFile.getCaseId(), caseFile, toUpdate);
         } else if (remove) {
             CommentInstance toRemove = ((CaseFileInstanceImpl)caseFile).getComments().stream()
                     .filter(c -> c.getId().equals(commentId))
@@ -123,9 +123,9 @@ public class CaseCommentCommand extends CaseCommand<Void> {
             // apply authorization
             authorizationManager.checkCommentAuthorization(caseFile.getCaseId(), caseFile, toRemove);
             
-            caseEventSupport.fireBeforeCaseCommentRemoved(caseFile.getCaseId(), toRemove);
+            caseEventSupport.fireBeforeCaseCommentRemoved(caseFile.getCaseId(), caseFile, toRemove);
             ((CaseFileInstanceImpl)caseFile).removeComment(toRemove);
-            caseEventSupport.fireBeforeCaseCommentRemoved(caseFile.getCaseId(), toRemove);
+            caseEventSupport.fireBeforeCaseCommentRemoved(caseFile.getCaseId(), caseFile, toRemove);
         }
         ksession.update(factHandle, caseFile);
         triggerRules(ksession);

@@ -29,14 +29,14 @@ public class CaseStartEvent extends CaseEvent {
     private Long processInstanceId;
     
     public CaseStartEvent(String user, String caseId, String deploymentId, String caseDefinitionId, CaseFileInstance caseFile) {
-        super(user, caseId);
+        super(user, caseId, caseFile);
         this.deploymentId = deploymentId;
         this.caseDefinitionId = caseDefinitionId;
         this.caseFile = caseFile;
     }
     
     public CaseStartEvent(String user, String caseId, String deploymentId, String caseDefinitionId, CaseFileInstance caseFile, Long processInstanceId) {
-        super(user, caseId);
+        super(user, caseId, caseFile);
         this.deploymentId = deploymentId;
         this.caseDefinitionId = caseDefinitionId;
         this.caseFile = caseFile;

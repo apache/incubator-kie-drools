@@ -16,28 +16,25 @@
 
 package org.jbpm.casemgmt.impl.command;
 
-import org.drools.core.ClassObjectFilter;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.drools.core.command.impl.RegistryContext;
-import org.jbpm.casemgmt.api.CaseNotFoundException;
 import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
 import org.jbpm.casemgmt.impl.event.CaseEventSupport;
 import org.jbpm.casemgmt.impl.model.instance.CaseFileInstanceImpl;
 import org.jbpm.services.api.ProcessService;
+import org.kie.api.runtime.Context;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.KieInternalServices;
 import org.kie.internal.identity.IdentityProvider;
-import org.kie.api.runtime.Context;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.process.CorrelationKeyFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 public class ReopenCaseCommand extends CaseCommand<Void> {
     
@@ -67,15 +64,14 @@ public class ReopenCaseCommand extends CaseCommand<Void> {
     public Void execute(Context context) {
         
         CaseEventSupport caseEventSupport = getCaseEventSupport(context);
-        caseEventSupport.fireBeforeCaseReopened(caseId, deploymentId, caseDefinitionId, data);
+        
         KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
-                
+                               
+        CaseFileInstance caseFile = getCaseFile(ksession, caseId);                        
+        
+        caseEventSupport.fireBeforeCaseReopened(caseId, caseFile, deploymentId, caseDefinitionId, data);
+        
         logger.debug("Updating case file in working memory");
-        Collection<? extends Object> caseFiles = ksession.getObjects(new ClassObjectFilter(CaseFileInstance.class));
-        if (caseFiles.size() == 0) {
-            throw new CaseNotFoundException("Case with id " + caseId + " was not found");
-        }
-        CaseFileInstance caseFile = (CaseFileInstance) caseFiles.iterator().next();                        
         FactHandle factHandle = ksession.getFactHandle(caseFile);
         ((CaseFileInstanceImpl)caseFile).setCaseReopenDate(new Date());
         if (data != null && !data.isEmpty()) {
@@ -90,7 +86,7 @@ public class ReopenCaseCommand extends CaseCommand<Void> {
         params.put(EnvironmentName.CASE_ID, caseId);
         long processInstanceId = processService.startProcess(deploymentId, caseDefinitionId, correlationKey, params);
         logger.debug("Case {} successfully reopened (process instance id {})", caseId, processInstanceId);
-        caseEventSupport.fireAfterCaseReopened(caseId, deploymentId, caseDefinitionId, data, processInstanceId);
+        caseEventSupport.fireAfterCaseReopened(caseId, caseFile, deploymentId, caseDefinitionId, data, processInstanceId);
         return null;
     }
     

@@ -61,13 +61,13 @@ public class ModifyRoleAssignmentCommand extends CaseCommand<Void> {
         CaseEventSupport caseEventSupport = getCaseEventSupport(context);
         
         if (add) {
-            caseEventSupport.fireBeforeCaseRoleAssignmentAdded(caseFile.getCaseId(), roleName, entity);
+            caseEventSupport.fireBeforeCaseRoleAssignmentAdded(caseFile.getCaseId(), caseFile, roleName, entity);
             ((CaseAssignment) caseFile).assign(roleName, entity);
-            caseEventSupport.fireAfterCaseRoleAssignmentAdded(caseFile.getCaseId(), roleName, entity);
+            caseEventSupport.fireAfterCaseRoleAssignmentAdded(caseFile.getCaseId(), caseFile, roleName, entity);
         } else {
-            caseEventSupport.fireBeforeCaseRoleAssignmentRemoved(caseFile.getCaseId(), roleName, entity);
+            caseEventSupport.fireBeforeCaseRoleAssignmentRemoved(caseFile.getCaseId(), caseFile, roleName, entity);
             ((CaseAssignment) caseFile).remove(roleName, entity);            
-            caseEventSupport.fireAfterCaseRoleAssignmentRemoved(caseFile.getCaseId(), roleName, entity);
+            caseEventSupport.fireAfterCaseRoleAssignmentRemoved(caseFile.getCaseId(), caseFile, roleName, entity);
         }
         
         ksession.update(factHandle, caseFile);

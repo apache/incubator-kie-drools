@@ -18,6 +18,8 @@ package org.jbpm.casemgmt.api.event;
 
 import java.util.Map;
 
+import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
+
 /**
  * Represents occurrence of case data (that is part of case file) related operation
  */
@@ -26,8 +28,8 @@ public class CaseDataEvent extends CaseEvent {
     private Map<String, Object> data;
     private String definitionId;
 
-    public CaseDataEvent(String user, String caseId, String definitionId, Map<String, Object> data) {
-        super(user, caseId);
+    public CaseDataEvent(String user, String caseId, CaseFileInstance caseFile, String definitionId, Map<String, Object> data) {
+        super(user, caseId, caseFile);
         this.definitionId = definitionId;
         this.data = data;
     }

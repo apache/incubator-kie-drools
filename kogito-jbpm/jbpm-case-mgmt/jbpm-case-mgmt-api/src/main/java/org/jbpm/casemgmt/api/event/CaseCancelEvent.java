@@ -18,6 +18,8 @@ package org.jbpm.casemgmt.api.event;
 
 import java.util.List;
 
+import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
+
 /**
  * Represents occurrence of case close operation
  */
@@ -25,8 +27,8 @@ public class CaseCancelEvent extends CaseEvent {
 
     private List<Long> processInstanceIds;
     
-    public CaseCancelEvent(String user, String caseId, List<Long> processInstanceIds) {
-        super(user, caseId);
+    public CaseCancelEvent(String user, String caseId, CaseFileInstance caseFile, List<Long> processInstanceIds) {
+        super(user, caseId, caseFile);
         this.processInstanceIds = processInstanceIds;
     }
     

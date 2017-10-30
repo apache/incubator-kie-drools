@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.regex.Matcher;
 
 import org.drools.core.WorkItemHandlerNotFoundException;
@@ -329,19 +328,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
         if (getNode() == null) {
             setMetaData("NodeType", workItem.getName());
             
-            Map<String, Object> results = workItem.getResults();
-            if (results != null && !results.isEmpty()) {
-                VariableScope variableScope = (VariableScope) ((ContextContainer) getProcessInstance().getProcess()).getDefaultContext( VariableScope.VARIABLE_SCOPE );
-                VariableScopeInstance variableScopeInstance = (VariableScopeInstance)(VariableScopeInstance)getProcessInstance().getContextInstance(VariableScope.VARIABLE_SCOPE);;
-                for (Entry<String, Object> result : results.entrySet()) {
-                    
-                    if (variableScope.findVariable(result.getKey()) != null) {
-    
-                        variableScopeInstance.getVariableScope().validateVariable(getProcessInstance().getProcessName(), result.getKey(), result.getValue());    
-                        variableScopeInstance.setVariable(result.getKey(), result.getValue());
-                    }
-                }
-            }
+            mapDynamicOutputData(workItem.getResults());
         }
         if (isInversionOfControl()) {
             KieRuntime kruntime = ((ProcessInstance) getProcessInstance()).getKnowledgeRuntime();

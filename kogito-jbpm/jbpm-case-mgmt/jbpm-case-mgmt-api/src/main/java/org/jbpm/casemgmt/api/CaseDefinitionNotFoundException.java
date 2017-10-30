@@ -14,30 +14,22 @@
  * limitations under the License.
  */
 
-package org.jbpm.casemgmt.api.event;
-
-import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
+package org.jbpm.casemgmt.api;
 
 /**
- * Represents occurrence of case close operation
+ * Thrown then accessing case definition that does not exist
+ *
  */
-public class CaseCloseEvent extends CaseEvent {
+public class CaseDefinitionNotFoundException extends RuntimeException {
 
-    private String comment;
-    
-    public CaseCloseEvent(String user, String caseId, CaseFileInstance caseFile, String comment) {
-        super(user, caseId, caseFile);
-        this.comment = comment;
-    }
-    
-    
-    protected String getComment() {
-        return comment;
+    private static final long serialVersionUID = -6105558767536810447L;
+
+    public CaseDefinitionNotFoundException(String message, Throwable cause) {
+        super(message, cause);
     }
 
-    @Override
-    public String toString() {
-        return "CaseCloseEvent [comment=" + comment + ", caseId=" + getCaseId() + "]";
+    public CaseDefinitionNotFoundException(String message) {
+        super(message);
     }
-    
+
 }

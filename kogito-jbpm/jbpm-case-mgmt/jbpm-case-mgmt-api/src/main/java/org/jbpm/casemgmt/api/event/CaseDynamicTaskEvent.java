@@ -18,6 +18,8 @@ package org.jbpm.casemgmt.api.event;
 
 import java.util.Map;
 
+import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
+
 /**
  * Represents occurrence of dynamic task add to case operation
  */
@@ -27,8 +29,8 @@ public class CaseDynamicTaskEvent extends CaseEvent {
     private Map<String, Object> data;
     private long processInstanceId;
 
-    public CaseDynamicTaskEvent(String user, String caseId, String nodeType, Map<String, Object> data, long processInstanceId) {
-        super(user, caseId);
+    public CaseDynamicTaskEvent(String user, String caseId, CaseFileInstance caseFile, String nodeType, Map<String, Object> data, long processInstanceId) {
+        super(user, caseId, caseFile);
         this.data = data;
         this.nodeType = nodeType;
         this.processInstanceId = processInstanceId;

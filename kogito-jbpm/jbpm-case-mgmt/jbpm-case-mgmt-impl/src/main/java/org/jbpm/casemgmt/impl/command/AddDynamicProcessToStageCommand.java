@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.drools.core.command.impl.RegistryContext;
 import org.jbpm.casemgmt.api.StageNotFoundException;
+import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
 import org.jbpm.casemgmt.impl.event.CaseEventSupport;
 import org.jbpm.services.api.ProcessDefinitionNotFoundException;
 import org.jbpm.services.api.ProcessInstanceNotFoundException;
@@ -81,8 +82,12 @@ public class AddDynamicProcessToStageCommand extends CaseCommand<Long> {
         }
 
         try {
+            
+            CaseFileInstance caseFile = getCaseFile(ksession, caseId);  
+            
             CaseEventSupport caseEventSupport = getCaseEventSupport(context);
             caseEventSupport.fireBeforeDynamicProcessAdded(caseId,
+                                                           caseFile,
                                                            processInstanceId,
                                                            processId,
                                                            parameters);
@@ -97,6 +102,7 @@ public class AddDynamicProcessToStageCommand extends CaseCommand<Long> {
             }
 
             caseEventSupport.fireAfterDynamicProcessAdded(caseId,
+                                                          caseFile,
                                                           processInstanceId,
                                                           processId,
                                                           parameters,

@@ -376,6 +376,9 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
 			        }
                 }
 		    }
+        } else {
+            // handle dynamic sub processes without data output mapping            
+            mapDynamicOutputData(subProcessVariableScopeInstance.getVariables());
         }
     }
 

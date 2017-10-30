@@ -17,6 +17,7 @@
 package org.jbpm.casemgmt.impl.command;
 
 import org.drools.core.command.impl.RegistryContext;
+import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
 import org.jbpm.casemgmt.impl.event.CaseEventSupport;
 import org.jbpm.services.api.ProcessInstanceNotFoundException;
 import org.jbpm.workflow.instance.node.DynamicUtils;
@@ -56,12 +57,14 @@ public class AddDynamicTaskCommand extends CaseCommand<Void> {
             throw new ProcessInstanceNotFoundException("No process instance found with id " + processInstanceId);
         }        
         
+        CaseFileInstance caseFile = getCaseFile(ksession, caseId);  
+        
         CaseEventSupport caseEventSupport = getCaseEventSupport(context);
-        caseEventSupport.fireBeforeDynamicTaskAdded(caseId, processInstanceId, nodeType, parameters);
+        caseEventSupport.fireBeforeDynamicTaskAdded(caseId, caseFile, processInstanceId, nodeType, parameters);
         
         DynamicUtils.addDynamicWorkItem(processInstance, ksession, nodeType, parameters);
         
-        caseEventSupport.fireAfterDynamicTaskAdded(caseId, processInstanceId, nodeType, parameters);
+        caseEventSupport.fireAfterDynamicTaskAdded(caseId, caseFile, processInstanceId, nodeType, parameters);
         return null;
     }
 

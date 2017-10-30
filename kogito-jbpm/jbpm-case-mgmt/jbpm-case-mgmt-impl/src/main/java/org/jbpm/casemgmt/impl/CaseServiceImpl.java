@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 import org.drools.core.ClassObjectFilter;
 import org.jbpm.casemgmt.api.AdHocFragmentNotFoundException;
 import org.jbpm.casemgmt.api.CaseActiveException;
+import org.jbpm.casemgmt.api.CaseDefinitionNotFoundException;
 import org.jbpm.casemgmt.api.CaseNotFoundException;
 import org.jbpm.casemgmt.api.CaseRuntimeDataService;
 import org.jbpm.casemgmt.api.CaseService;
@@ -557,6 +558,9 @@ public class CaseServiceImpl implements CaseService {
     @Override
     public CaseFileInstance newCaseFileInstance(String deploymentId, String caseDefinition, Map<String, Object> data) {
         CaseDefinition def = caseRuntimeDataService.getCase(deploymentId, caseDefinition);
+        if (def == null) {
+            throw new CaseDefinitionNotFoundException("Case definition " + caseDefinition + " does not exist in deployment " + deploymentId);
+        }
         CaseFileInstanceImpl caseFile = new CaseFileInstanceImpl(caseDefinition, data);
         caseFile.setupRoles(def.getCaseRoles());
         caseFile.setAccessRestrictions(def.getDataAccessRestrictions());
@@ -567,6 +571,9 @@ public class CaseServiceImpl implements CaseService {
     @Override
     public CaseFileInstance newCaseFileInstanceWithRestrictions(String deploymentId, String caseDefinition, Map<String, Object> data, Map<String, List<String>> accessRestrictions) {
         CaseDefinition def = caseRuntimeDataService.getCase(deploymentId, caseDefinition);
+        if (def == null) {
+            throw new CaseDefinitionNotFoundException("Case definition " + caseDefinition + " does not exist in deployment " + deploymentId);
+        }
         CaseFileInstanceImpl caseFile = new CaseFileInstanceImpl(caseDefinition, data);
         caseFile.setupRoles(def.getCaseRoles());
         
@@ -582,6 +589,9 @@ public class CaseServiceImpl implements CaseService {
     @Override
     public CaseFileInstance newCaseFileInstance(String deploymentId, String caseDefinition, Map<String, Object> data, Map<String, OrganizationalEntity> rolesAssignment) {
         CaseDefinition def = caseRuntimeDataService.getCase(deploymentId, caseDefinition);
+        if (def == null) {
+            throw new CaseDefinitionNotFoundException("Case definition " + caseDefinition + " does not exist in deployment " + deploymentId);
+        }
         CaseFileInstanceImpl caseFile = new CaseFileInstanceImpl(caseDefinition, data);
         caseFile.setupRoles(def.getCaseRoles());
         caseFile.setAccessRestrictions(def.getDataAccessRestrictions());
@@ -594,6 +604,9 @@ public class CaseServiceImpl implements CaseService {
     @Override
     public CaseFileInstance newCaseFileInstanceWithRestrictions(String deploymentId, String caseDefinition, Map<String, Object> data, Map<String, OrganizationalEntity> rolesAssignment, Map<String, List<String>> accessRestrictions) {
         CaseDefinition def = caseRuntimeDataService.getCase(deploymentId, caseDefinition);
+        if (def == null) {
+            throw new CaseDefinitionNotFoundException("Case definition " + caseDefinition + " does not exist in deployment " + deploymentId);
+        }
         CaseFileInstanceImpl caseFile = new CaseFileInstanceImpl(caseDefinition, data);
         caseFile.setupRoles(def.getCaseRoles());
         Map<String, List<String>> combinedAccessRestrictions = def.getDataAccessRestrictions();

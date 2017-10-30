@@ -17,10 +17,12 @@
 package org.jbpm.workflow.instance.node;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 
 import org.drools.core.common.InternalAgenda;
@@ -31,6 +33,8 @@ import org.drools.core.spi.Activation;
 import org.drools.core.time.TimeUtils;
 import org.drools.core.time.impl.CronExpression;
 import org.drools.core.util.MVELSafeHelper;
+import org.jbpm.process.core.ContextContainer;
+import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.timer.BusinessCalendar;
 import org.jbpm.process.core.timer.DateTimeUtils;
@@ -395,5 +399,31 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
             }
         }
         return true;
+    }
+    
+    protected void mapDynamicOutputData(Map<String, Object> results) {
+        if (results != null && !results.isEmpty()) {
+            VariableScope variableScope = (VariableScope) ((ContextContainer) getProcessInstance().getProcess()).getDefaultContext( VariableScope.VARIABLE_SCOPE );
+            VariableScopeInstance variableScopeInstance = (VariableScopeInstance)getProcessInstance().getContextInstance(VariableScope.VARIABLE_SCOPE);
+            for (Entry<String, Object> result : results.entrySet()) {
+                
+                String variableName = result.getKey();
+                Variable variable = variableScope.findVariable(variableName);
+                if (variable == null) {
+                    // check if there is any match for case file data
+                    variableName = VariableScope.CASE_FILE_PREFIX + variableName;
+                    // check only those that are defined and avoid dynamically created case file variables
+                    List<String> definedVariables = Arrays.asList(variableScope.getVariableNames());
+                    if (definedVariables.contains(variableName)) {
+                        variable = variableScope.findVariable(variableName);
+                    }
+                }
+                
+                if (variable != null) {    
+                    variableScopeInstance.getVariableScope().validateVariable(getProcessInstance().getProcessName(), variableName, result.getValue());    
+                    variableScopeInstance.setVariable(variableName, result.getValue());
+                }
+            }
+        }
     }
 }

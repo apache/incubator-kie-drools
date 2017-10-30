@@ -67,7 +67,7 @@ public class AddDataCaseFileInstanceCommand extends CaseCommand<Void> {
         FactHandle factHandle = ksession.getFactHandle(caseFile);
         
         CaseEventSupport caseEventSupport = getCaseEventSupport(context);
-        caseEventSupport.fireBeforeCaseDataAdded(caseFile.getCaseId(), caseFile.getDefinitionId(), parameters);
+        caseEventSupport.fireBeforeCaseDataAdded(caseFile.getCaseId(), caseFile, caseFile.getDefinitionId(), parameters);
         caseFile.addAll(parameters);
         
         // setup data restriction if any are given
@@ -82,7 +82,7 @@ public class AddDataCaseFileInstanceCommand extends CaseCommand<Void> {
         
         ksession.update(factHandle, caseFile);
         triggerRules(ksession);
-        caseEventSupport.fireAfterCaseDataAdded(caseFile.getCaseId(), caseFile.getDefinitionId(), parameters);
+        caseEventSupport.fireAfterCaseDataAdded(caseFile.getCaseId(), caseFile, caseFile.getDefinitionId(), parameters);
         return null;
     }
 }

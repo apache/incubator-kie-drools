@@ -18,6 +18,7 @@ package org.jbpm.casemgmt.impl.command;
 
 import org.drools.core.command.impl.RegistryContext;
 import org.jbpm.casemgmt.api.StageNotFoundException;
+import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
 import org.jbpm.casemgmt.impl.event.CaseEventSupport;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.jbpm.workflow.instance.node.DynamicNodeInstance;
@@ -70,12 +71,15 @@ public class AddDynamicTaskToStageCommand extends CaseCommand<Void> {
         if (dynamicContext == null) {
             throw new StageNotFoundException("No stage found with id " + stageId);
         }
+        
+        CaseFileInstance caseFile = getCaseFile(ksession, caseId);  
+        
         CaseEventSupport caseEventSupport = getCaseEventSupport(context);
-        caseEventSupport.fireBeforeDynamicTaskAdded(caseId, processInstanceId, nodeType, parameters);
+        caseEventSupport.fireBeforeDynamicTaskAdded(caseId, caseFile, processInstanceId, nodeType, parameters);
         
         DynamicUtils.addDynamicWorkItem(dynamicContext, ksession, nodeType, parameters);
         
-        caseEventSupport.fireAfterDynamicTaskAdded(caseId, processInstanceId, nodeType, parameters);
+        caseEventSupport.fireAfterDynamicTaskAdded(caseId, caseFile, processInstanceId, nodeType, parameters);
         return null;
     }
 

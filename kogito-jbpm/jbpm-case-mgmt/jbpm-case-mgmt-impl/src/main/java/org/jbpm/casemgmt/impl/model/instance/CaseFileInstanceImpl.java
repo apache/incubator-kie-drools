@@ -16,6 +16,8 @@
 
 package org.jbpm.casemgmt.impl.model.instance;
 
+import static java.util.stream.Collectors.toMap;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,7 +27,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.stream.Collectors;
 
 import org.jbpm.casemgmt.api.auth.AuthorizationManager;
 import org.jbpm.casemgmt.api.model.CaseRole;
@@ -38,8 +39,6 @@ import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.User;
 import org.kie.internal.task.api.TaskModelFactory;
 import org.kie.internal.task.api.TaskModelProvider;
-
-import static java.util.stream.Collectors.toMap;
 
 /*
  * Implementation note: since the CaseFileInstanceImpl will be marshalled/unmarshalled by 
@@ -58,6 +57,9 @@ public class CaseFileInstanceImpl implements CaseFileInstance, CaseAssignment, S
     private Date caseStartDate;
     private Date caseEndDate;
     private Date caseReopenDate;
+    
+    private Long parentInstanceId;
+    private Long parentWorkItemId;
     
     private Map<String, Object> data = new HashMap<>();    
     private Map<String, CaseRoleInstance> roles = new HashMap<>();    
@@ -312,6 +314,22 @@ public class CaseFileInstanceImpl implements CaseFileInstance, CaseAssignment, S
     
     public void removeDataAccessRestriction(String name) {
         this.accessRestrictions.remove(name);
+    }
+    
+    public Long getParentInstanceId() {
+        return parentInstanceId;
+    }
+    
+    public void setParentInstanceId(Long parentInstanceId) {
+        this.parentInstanceId = parentInstanceId;
+    }
+    
+    public Long getParentWorkItemId() {
+        return parentWorkItemId;
+    }
+    
+    public void setParentWorkItemId(Long parentWorkItemId) {
+        this.parentWorkItemId = parentWorkItemId;
     }
 
     @Override

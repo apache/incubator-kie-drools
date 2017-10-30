@@ -16,6 +16,7 @@
 
 package org.jbpm.casemgmt.api.event;
 
+import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
 import org.jbpm.casemgmt.api.model.instance.CommentInstance;
 
 /**
@@ -25,8 +26,8 @@ public class CaseCommentEvent extends CaseEvent {
 
     private CommentInstance comment;
     
-    public CaseCommentEvent(String user, String caseId, CommentInstance comment) {
-        super(user, caseId);
+    public CaseCommentEvent(String user, String caseId, CaseFileInstance caseFile, CommentInstance comment) {
+        super(user, caseId, caseFile);
         this.comment = comment;
     }
     

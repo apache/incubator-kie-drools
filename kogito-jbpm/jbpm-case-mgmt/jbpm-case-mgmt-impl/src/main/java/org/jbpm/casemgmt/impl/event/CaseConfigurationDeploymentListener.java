@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.jbpm.casemgmt.api.event.CaseEventListener;
 import org.jbpm.casemgmt.impl.audit.CaseInstanceAuditEventListener;
+import org.jbpm.casemgmt.impl.wih.NotifyParentCaseEventListener;
 import org.jbpm.runtime.manager.impl.PerCaseRuntimeManager;
 import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
 import org.jbpm.services.api.DeploymentEvent;
@@ -63,6 +64,7 @@ public class CaseConfigurationDeploymentListener implements DeploymentEventListe
                         
             CaseInstanceAuditEventListener auditEventListener = new CaseInstanceAuditEventListener(new TransactionalCommandService(((SimpleRuntimeEnvironment) runtimeManager.getEnvironment()).getEmf()));
             caseEventListeners.add(auditEventListener);
+            caseEventListeners.add(new NotifyParentCaseEventListener(identityProvider));
             
             CaseEventSupport caseEventSupport = new CaseEventSupport(identityProvider, caseEventListeners);
             ((PerCaseRuntimeManager) runtimeManager).setCaseEventSupport(caseEventSupport);

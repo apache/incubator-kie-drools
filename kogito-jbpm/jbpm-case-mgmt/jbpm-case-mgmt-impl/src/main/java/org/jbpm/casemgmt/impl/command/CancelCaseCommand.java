@@ -16,13 +16,16 @@
 
 package org.jbpm.casemgmt.impl.command;
 
+import org.drools.core.command.impl.RegistryContext;
 import org.jbpm.casemgmt.api.CaseNotFoundException;
+import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
 import org.jbpm.casemgmt.impl.event.CaseEventSupport;
 import org.jbpm.runtime.manager.impl.PerCaseRuntimeManager;
 import org.jbpm.services.api.ProcessService;
 import org.jbpm.services.api.RuntimeDataService;
 import org.jbpm.services.api.model.ProcessInstanceDesc;
 import org.kie.api.runtime.Context;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.query.QueryContext;
@@ -77,21 +80,25 @@ public class CancelCaseCommand extends CaseCommand<Void> {
                 )
                 .map(pi -> pi.getId()).collect(toList());
         CaseEventSupport caseEventSupport = getCaseEventSupport(context);
-        caseEventSupport.fireBeforeCaseCancelled(caseId, processInstanceIds);
+        KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
+        
+        CaseFileInstance caseFile = getCaseFile(ksession, caseId);  
+        
+        caseEventSupport.fireBeforeCaseCancelled(caseId, caseFile, processInstanceIds);
         
         logger.debug("Case {} consists of following process instances (ids) {}", caseId, processInstanceIds);
         processService.abortProcessInstances(processInstanceIds);
-        caseEventSupport.fireAfterCaseCancelled(caseId, processInstanceIds);
+        caseEventSupport.fireAfterCaseCancelled(caseId, caseFile, processInstanceIds);
         
         if (destroy) {
             RuntimeManager runtimeManager = getRuntimeManager(context);
             if (runtimeManager instanceof PerCaseRuntimeManager) {
-                caseEventSupport.fireBeforeCaseDestroyed(caseId, processInstanceIds);
+                caseEventSupport.fireBeforeCaseDestroyed(caseId, caseFile, processInstanceIds);
                 logger.debug("Case {} aborted, destroying case data including per case runtime engine (including working memory)", caseId);
                 
                 ((PerCaseRuntimeManager) runtimeManager).destroyCase(CaseContext.get(caseId));
                 
-                caseEventSupport.fireAfterCaseDestroyed(caseId, processInstanceIds);
+                caseEventSupport.fireAfterCaseDestroyed(caseId, caseFile, processInstanceIds);
             }
         }
         return null;

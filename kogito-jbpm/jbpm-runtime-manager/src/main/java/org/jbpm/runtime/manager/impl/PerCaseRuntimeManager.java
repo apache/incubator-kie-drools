@@ -48,6 +48,7 @@ import org.jbpm.services.task.impl.command.CommandBasedTaskService;
 import org.kie.api.command.BatchExecutionCommand;
 import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessCompletedEvent;
+import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.ExecutableRunner;
@@ -718,6 +719,20 @@ public class PerCaseRuntimeManager extends AbstractRuntimeManager {
     @Override
     protected boolean isUseLocking() {
         return useLocking;
+    }
+
+    @Override
+    protected void registerItems(RuntimeEngine runtime) {
+        super.registerItems(runtime);
+        if (getCaseEventSupport() != null) {
+            // add any process listeners from case event listeners
+            List<? extends EventListener> eventListener = getCaseEventSupport().getEventListeners();
+            for (EventListener listener : eventListener) {
+                if (listener instanceof ProcessEventListener) {
+                    runtime.getKieSession().addEventListener((ProcessEventListener) listener);
+                }
+            }
+        }
     }
 
 }
