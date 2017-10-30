@@ -15,7 +15,6 @@
  */
 package org.drools.workbench.models.guided.template.backend.upgrade;
 
-import org.appformer.project.datamodel.commons.IUpgradeHelper;
 import org.drools.workbench.models.datamodel.rule.CompositeFactPattern;
 import org.drools.workbench.models.datamodel.rule.CompositeFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.ConnectiveConstraint;
@@ -24,6 +23,7 @@ import org.drools.workbench.models.datamodel.rule.FieldConstraint;
 import org.drools.workbench.models.datamodel.rule.IPattern;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
+import org.kie.soup.project.datamodel.commons.IUpgradeHelper;
 
 /**
  * Utility class to support upgrades of the RuleModel model. This implementation
@@ -34,8 +34,8 @@ public class RuleModelUpgradeHelper2
         implements
         IUpgradeHelper<RuleModel, RuleModel> {
 
-    public RuleModel upgrade( RuleModel model ) {
-        updateConnectiveConstraints( model );
+    public RuleModel upgrade(RuleModel model) {
+        updateConnectiveConstraints(model);
         return model;
     }
 
@@ -44,60 +44,59 @@ public class RuleModelUpgradeHelper2
     //known Fact and Field) it became essential as a hack to have ConnectiveConstraints on sub-fields
     //in a Pattern when an Expression is not used. This codes ensures ConnectiveConstraints on legacy
     //repositories have the fields correctly set.
-    private void updateConnectiveConstraints( RuleModel model ) {
-        for ( IPattern p : model.lhs ) {
-            fixConnectiveConstraints( p );
+    private void updateConnectiveConstraints(RuleModel model) {
+        for (IPattern p : model.lhs) {
+            fixConnectiveConstraints(p);
         }
     }
 
     //Descent into the model
-    private void fixConnectiveConstraints( IPattern p ) {
-        if ( p instanceof FactPattern) {
+    private void fixConnectiveConstraints(IPattern p) {
+        if (p instanceof FactPattern) {
             fixConnectiveConstraints((FactPattern) p);
-        } else if ( p instanceof CompositeFactPattern) {
-            fixConnectiveConstraints( (CompositeFactPattern) p );
+        } else if (p instanceof CompositeFactPattern) {
+            fixConnectiveConstraints((CompositeFactPattern) p);
         }
     }
 
-    private void fixConnectiveConstraints( FactPattern p ) {
-        for ( FieldConstraint fc : p.getFieldConstraints() ) {
-            fixConnectiveConstraints( fc );
+    private void fixConnectiveConstraints(FactPattern p) {
+        for (FieldConstraint fc : p.getFieldConstraints()) {
+            fixConnectiveConstraints(fc);
         }
     }
 
-    private void fixConnectiveConstraints( CompositeFactPattern p ) {
-        for ( IPattern sp : p.getPatterns() ) {
-            fixConnectiveConstraints( sp );
+    private void fixConnectiveConstraints(CompositeFactPattern p) {
+        for (IPattern sp : p.getPatterns()) {
+            fixConnectiveConstraints(sp);
         }
     }
 
-    private void fixConnectiveConstraints( FieldConstraint fc ) {
-        if ( fc instanceof SingleFieldConstraint) {
-            fixConnectiveConstraints( (SingleFieldConstraint) fc );
-        } else if ( fc instanceof CompositeFieldConstraint) {
-            fixConnectiveConstraints( (CompositeFieldConstraint) fc );
+    private void fixConnectiveConstraints(FieldConstraint fc) {
+        if (fc instanceof SingleFieldConstraint) {
+            fixConnectiveConstraints((SingleFieldConstraint) fc);
+        } else if (fc instanceof CompositeFieldConstraint) {
+            fixConnectiveConstraints((CompositeFieldConstraint) fc);
         }
     }
 
-    private void fixConnectiveConstraints( SingleFieldConstraint sfc ) {
-        if ( sfc.getConnectives() == null ) {
+    private void fixConnectiveConstraints(SingleFieldConstraint sfc) {
+        if (sfc.getConnectives() == null) {
             return;
         }
-        for ( ConnectiveConstraint cc : sfc.getConnectives() ) {
-            if ( cc.getFieldName() == null ) {
-                cc.setFieldName( sfc.getFieldName() );
-                cc.setFieldType( sfc.getFieldType() );
+        for (ConnectiveConstraint cc : sfc.getConnectives()) {
+            if (cc.getFieldName() == null) {
+                cc.setFieldName(sfc.getFieldName());
+                cc.setFieldType(sfc.getFieldType());
             }
         }
     }
 
-    private void fixConnectiveConstraints( CompositeFieldConstraint cfc ) {
-        if ( cfc.getConstraints() == null ) {
+    private void fixConnectiveConstraints(CompositeFieldConstraint cfc) {
+        if (cfc.getConstraints() == null) {
             return;
         }
-        for ( FieldConstraint fc : cfc.getConstraints() ) {
-            fixConnectiveConstraints( fc );
+        for (FieldConstraint fc : cfc.getConstraints()) {
+            fixConnectiveConstraints(fc);
         }
     }
-
 }

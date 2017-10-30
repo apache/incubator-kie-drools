@@ -27,11 +27,11 @@ import org.drools.workbench.models.datamodel.rule.IAction;
 import org.drools.workbench.models.datamodel.rule.IPattern;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.drools.workbench.models.guided.dtable.shared.model.adaptors.ActionInsertFactCol52ActionInsertFactAdaptor;
 import org.drools.workbench.models.guided.dtable.shared.model.adaptors.ActionInsertFactCol52ActionInsertLogicalFactAdaptor;
 import org.drools.workbench.models.guided.dtable.shared.model.adaptors.ConditionCol52FieldConstraintAdaptor;
 import org.drools.workbench.models.guided.dtable.shared.model.adaptors.Pattern52FactPatternAdaptor;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 /**
  * A RuleModel that can provide details of bound Facts and Fields from an
@@ -55,7 +55,7 @@ public class BRLRuleModel extends RuleModel {
 
     @Override
     public List<String> getLHSBoundFacts() {
-        final Set<String> facts = new HashSet<String>();
+        final Set<String> facts = new HashSet<>();
         for (CompositeColumn<? extends BaseColumn> col : dtable.getConditions()) {
             if (col instanceof Pattern52) {
                 final Pattern52 p = (Pattern52) col;
@@ -178,10 +178,10 @@ public class BRLRuleModel extends RuleModel {
 
     @Override
     public List<String> getAllVariables() {
-        final Set<String> variables = new HashSet<String>();
+        final Set<String> variables = new HashSet<>();
         variables.addAll(getAllLHSVariables());
         variables.addAll(getAllRHSVariables());
-        return new ArrayList<String>(variables);
+        return new ArrayList<>(variables);
     }
 
     @Override
@@ -231,7 +231,7 @@ public class BRLRuleModel extends RuleModel {
 
     @Override
     public List<String> getAllRHSVariables() {
-        final Set<String> variables = new HashSet<String>();
+        final Set<String> variables = new HashSet<>();
         for (ActionCol52 col : dtable.getActionCols()) {
             if (col instanceof ActionInsertFactCol52) {
                 final ActionInsertFactCol52 action = (ActionInsertFactCol52) col;
@@ -245,7 +245,7 @@ public class BRLRuleModel extends RuleModel {
             }
         }
         variables.addAll(super.getAllRHSVariables());
-        return new ArrayList<String>(variables);
+        return new ArrayList<>(variables);
     }
 
     @Override
@@ -256,6 +256,11 @@ public class BRLRuleModel extends RuleModel {
                 if (action.getBoundName().equals(binding)) {
                     return true;
                 }
+            } else if (col instanceof ActionSetFieldCol52) {
+                final ActionSetFieldCol52 action = (ActionSetFieldCol52) col;
+                if (action.getBoundName().equals(binding)) {
+                    return true;
+                }
             } else if (col instanceof ActionRetractFactCol52) {
 
                 if (col instanceof LimitedEntryActionRetractFactCol52) {
@@ -263,7 +268,7 @@ public class BRLRuleModel extends RuleModel {
                     //Check whether Limited Entry retraction is bound to Pattern
                     final LimitedEntryActionRetractFactCol52 ler = (LimitedEntryActionRetractFactCol52) col;
                     if (ler.getValue().getStringValue().equals(binding)) {
-                        return false;
+                        return true;
                     }
                 } else {
 
@@ -291,7 +296,7 @@ public class BRLRuleModel extends RuleModel {
 
     @Override
     public List<String> getBoundVariablesInScope(final BaseSingleFieldConstraint con) {
-        final Set<String> variables = new HashSet<String>();
+        final Set<String> variables = new HashSet<>();
         for (CompositeColumn<? extends BaseColumn> col : dtable.getConditions()) {
             if (col instanceof Pattern52) {
                 final Pattern52 p = (Pattern52) col;
@@ -312,7 +317,7 @@ public class BRLRuleModel extends RuleModel {
             }
         }
         variables.addAll(super.getBoundVariablesInScope(con));
-        return new ArrayList<String>(variables);
+        return new ArrayList<>(variables);
     }
 
     @Override
@@ -322,7 +327,7 @@ public class BRLRuleModel extends RuleModel {
 
     @Override
     public List<String> getRHSBoundFacts() {
-        final Set<String> variables = new HashSet<String>();
+        final Set<String> variables = new HashSet<>();
         for (ActionCol52 col : dtable.getActionCols()) {
             if (col instanceof ActionInsertFactCol52) {
                 final ActionInsertFactCol52 action = (ActionInsertFactCol52) col;
@@ -336,7 +341,7 @@ public class BRLRuleModel extends RuleModel {
             }
         }
         variables.addAll(super.getRHSBoundFacts());
-        return new ArrayList<String>(variables);
+        return new ArrayList<>(variables);
     }
 
     @Override

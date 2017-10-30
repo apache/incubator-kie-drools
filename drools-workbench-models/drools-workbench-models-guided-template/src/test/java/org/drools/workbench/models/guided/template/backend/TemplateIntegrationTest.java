@@ -66,9 +66,9 @@ public class TemplateIntegrationTest {
             "  </rhs>\n" +
             "  <imports>\n" +
             "    <imports>\n" +
-            "      <org.appformer.project.datamodel.imports.Import>\n" +
+            "      <org.kie.soup.project.datamodel.imports.Import>\n" +
             "        <type>" + Company.class.getCanonicalName() + "</type>\n" +
-            "      </org.appformer.project.datamodel.imports.Import>\n" +
+            "      </org.kie.soup.project.datamodel.imports.Import>\n" +
             "    </imports>\n" +
             "  </imports>\n" +
             "  <packageName>com.sample</packageName>\n" +

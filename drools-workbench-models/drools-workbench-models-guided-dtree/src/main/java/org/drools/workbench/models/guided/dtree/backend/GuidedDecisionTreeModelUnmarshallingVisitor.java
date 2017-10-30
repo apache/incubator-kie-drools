@@ -25,16 +25,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.appformer.project.datamodel.imports.Import;
-import org.appformer.project.datamodel.imports.Imports;
-import org.appformer.project.datamodel.oracle.DataType;
-import org.appformer.project.datamodel.oracle.ModelField;
-import org.appformer.project.datamodel.oracle.OperatorsOracle;
 import org.drools.core.util.DateUtils;
-import org.appformer.project.datamodel.commons.imports.ImportsParser;
-import org.appformer.project.datamodel.commons.packages.PackageNameParser;
 import org.drools.workbench.models.commons.backend.rule.RuleModelDRLPersistenceImpl;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.ActionInsertFact;
 import org.drools.workbench.models.datamodel.rule.ActionInsertLogicalFact;
 import org.drools.workbench.models.datamodel.rule.ActionRetractFact;
@@ -50,7 +42,6 @@ import org.drools.workbench.models.datamodel.rule.IPattern;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraintEBLeftSide;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.drools.workbench.models.guided.dtree.shared.model.GuidedDecisionTree;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.ActionFieldValue;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.ActionInsertNode;
@@ -91,109 +82,115 @@ import org.drools.workbench.models.guided.dtree.shared.model.values.impl.Integer
 import org.drools.workbench.models.guided.dtree.shared.model.values.impl.LongValue;
 import org.drools.workbench.models.guided.dtree.shared.model.values.impl.ShortValue;
 import org.drools.workbench.models.guided.dtree.shared.model.values.impl.StringValue;
+import org.kie.soup.commons.validation.PortablePreconditions;
+import org.kie.soup.project.datamodel.commons.imports.ImportsParser;
+import org.kie.soup.project.datamodel.commons.packages.PackageNameParser;
+import org.kie.soup.project.datamodel.imports.Import;
+import org.kie.soup.project.datamodel.imports.Imports;
+import org.kie.soup.project.datamodel.oracle.DataType;
+import org.kie.soup.project.datamodel.oracle.ModelField;
+import org.kie.soup.project.datamodel.oracle.OperatorsOracle;
+import org.kie.soup.project.datamodel.oracle.PackageDataModelOracle;
 
 /**
  * Visitor that converts DRL into GuidedDecisionTree
  */
 public class GuidedDecisionTreeModelUnmarshallingVisitor {
 
-    public GuidedDecisionTree visit( final String drl,
-                                     final String baseFileName,
-                                     final PackageDataModelOracle dmo ) {
-        return visit( drl,
-                      baseFileName,
-                      Collections.EMPTY_LIST,
-                      dmo );
+    public GuidedDecisionTree visit(final String drl,
+                                    final String baseFileName,
+                                    final PackageDataModelOracle dmo) {
+        return visit(drl,
+                     baseFileName,
+                     Collections.EMPTY_LIST,
+                     dmo);
     }
 
-    private GuidedDecisionTree visit( final String drl,
-                                      final String baseFileName,
-                                      final List<String> globals,
-                                      final PackageDataModelOracle dmo ) {
-        PortablePreconditions.checkNotNull( "drl",
-                                            drl );
-        PortablePreconditions.checkNotNull( "baseFileName",
-                                            baseFileName );
-        PortablePreconditions.checkNotNull( "globals",
-                                            globals );
-        PortablePreconditions.checkNotNull( "dmo",
-                                            dmo );
+    private GuidedDecisionTree visit(final String drl,
+                                     final String baseFileName,
+                                     final List<String> globals,
+                                     final PackageDataModelOracle dmo) {
+        PortablePreconditions.checkNotNull("drl",
+                                           drl);
+        PortablePreconditions.checkNotNull("baseFileName",
+                                           baseFileName);
+        PortablePreconditions.checkNotNull("globals",
+                                           globals);
+        PortablePreconditions.checkNotNull("dmo",
+                                           dmo);
 
         final GuidedDecisionTree model = new GuidedDecisionTree();
-        model.setTreeName( baseFileName );
+        model.setTreeName(baseFileName);
 
         //De-serialize Package name
-        final String packageName = PackageNameParser.parsePackageName( drl );
-        model.setPackageName( packageName );
+        final String packageName = PackageNameParser.parsePackageName(drl);
+        model.setPackageName(packageName);
 
         //De-serialize imports
-        final Imports imports = ImportsParser.parseImports( drl );
-        for ( Import item : imports.getImports() ) {
-            model.getImports().addImport( item );
+        final Imports imports = ImportsParser.parseImports(drl);
+        for (Import item : imports.getImports()) {
+            model.getImports().addImport(item);
         }
 
         //Split DRL into separate rules
         final List<String> rules = new ArrayList<String>();
-        final Pattern pattern = Pattern.compile( "\\s?rule\\s(.+?)\\send\\s?",
-                                                 Pattern.DOTALL );
-        final Matcher matcher = pattern.matcher( drl );
-        while ( matcher.find() ) {
-            rules.add( matcher.group() );
+        final Pattern pattern = Pattern.compile("\\s?rule\\s(.+?)\\send\\s?",
+                                                Pattern.DOTALL);
+        final Matcher matcher = pattern.matcher(drl);
+        while (matcher.find()) {
+            rules.add(matcher.group());
         }
 
         //Build a linear Path of Nodes for each rule
         final List<GuidedDecisionTreeParserExtendedError> rulesParserContent = new ArrayList<GuidedDecisionTreeParserExtendedError>();
-        for ( String rule : rules ) {
+        for (String rule : rules) {
             final GuidedDecisionTreeParserExtendedError ruleParserContent = new GuidedDecisionTreeParserExtendedError();
-            rulesParserContent.add( ruleParserContent );
+            rulesParserContent.add(ruleParserContent);
 
             try {
 
-                final RuleModel rm = RuleModelDRLPersistenceImpl.getInstance().unmarshal( rule,
-                                                                                          globals,
-                                                                                          dmo );
-                ruleParserContent.setOriginalRuleName( rm.name );
-                ruleParserContent.setOriginalDrl( rule );
+                final RuleModel rm = RuleModelDRLPersistenceImpl.getInstance().unmarshal(rule,
+                                                                                         globals,
+                                                                                         dmo);
+                ruleParserContent.setOriginalRuleName(rm.name);
+                ruleParserContent.setOriginalDrl(rule);
 
-                for ( IPattern p : rm.lhs ) {
-                    ruleParserContent.getNodes().addAll( visit( p,
-                                                                model,
-                                                                dmo,
-                                                                ruleParserContent.getMessages() ) );
+                for (IPattern p : rm.lhs) {
+                    ruleParserContent.getNodes().addAll(visit(p,
+                                                              model,
+                                                              dmo,
+                                                              ruleParserContent.getMessages()));
                 }
-                for ( IAction a : rm.rhs ) {
-                    ruleParserContent.getNodes().addAll( visit( a,
-                                                                getTypesOnPath( ruleParserContent.getNodes() ),
-                                                                model,
-                                                                dmo,
-                                                                ruleParserContent.getMessages() ) );
-
+                for (IAction a : rm.rhs) {
+                    ruleParserContent.getNodes().addAll(visit(a,
+                                                              getTypesOnPath(ruleParserContent.getNodes()),
+                                                              model,
+                                                              dmo,
+                                                              ruleParserContent.getMessages()));
                 }
-
-            } catch ( Exception e ) {
-                ruleParserContent.getMessages().add( new DefaultParserMessage( e.getMessage() ) );
-
+            } catch (Exception e) {
+                ruleParserContent.getMessages().add(new DefaultParserMessage(e.getMessage()));
             }
         }
 
         //Combine Paths into a single tree.
-        for ( GuidedDecisionTreeParserExtendedError ruleParserContent : rulesParserContent ) {
+        for (GuidedDecisionTreeParserExtendedError ruleParserContent : rulesParserContent) {
             Node activeModelNode = null;
             boolean error = !ruleParserContent.getMessages().isEmpty();
-            for ( int index = 0; !error && index < ruleParserContent.getNodes().size(); index++ ) {
-                final Node node = ruleParserContent.getNodes().get( index );
-                switch ( index ) {
+            for (int index = 0; !error && index < ruleParserContent.getNodes().size(); index++) {
+                final Node node = ruleParserContent.getNodes().get(index);
+                switch (index) {
                     case 0:
-                        if ( !( node instanceof TypeNode ) ) {
-                            ruleParserContent.getMessages().add( new InvalidRootParserMessage() );
+                        if (!(node instanceof TypeNode)) {
+                            ruleParserContent.getMessages().add(new InvalidRootParserMessage());
                             error = true;
                             break;
                         }
                         final TypeNode root = (TypeNode) node;
-                        if ( model.getRoot() == null ) {
-                            model.setRoot( root );
-                        } else if ( !root.equals( model.getRoot() ) ) {
-                            ruleParserContent.getMessages().add( new AmbiguousRootParserMessage( root.getClassName() ) );
+                        if (model.getRoot() == null) {
+                            model.setRoot(root);
+                        } else if (!root.equals(model.getRoot())) {
+                            ruleParserContent.getMessages().add(new AmbiguousRootParserMessage(root.getClassName()));
                             error = true;
                             break;
                         }
@@ -201,77 +198,77 @@ public class GuidedDecisionTreeModelUnmarshallingVisitor {
                         break;
 
                     default:
-                        if ( !activeModelNode.getChildren().contains( node ) ) {
+                        if (!activeModelNode.getChildren().contains(node)) {
                             //If the active node in the Model doesn't contain the child add it as a new child
-                            activeModelNode.addChild( node );
+                            activeModelNode.addChild(node);
                             activeModelNode = node;
                         } else {
                             //Otherwise swap out the Node in the Path for the existing one in the Model
-                            activeModelNode = activeModelNode.getChildren().get( activeModelNode.getChildren().indexOf( node ) );
+                            activeModelNode = activeModelNode.getChildren().get(activeModelNode.getChildren().indexOf(node));
                         }
                 }
             }
-            if ( !ruleParserContent.getMessages().isEmpty() ) {
-                model.getParserErrors().add( new GuidedDecisionTreeParserError( ruleParserContent.getOriginalRuleName(),
-                                                                                ruleParserContent.getOriginalDrl(),
-                                                                                ruleParserContent.getMessages() ) );
+            if (!ruleParserContent.getMessages().isEmpty()) {
+                model.getParserErrors().add(new GuidedDecisionTreeParserError(ruleParserContent.getOriginalRuleName(),
+                                                                              ruleParserContent.getOriginalDrl(),
+                                                                              ruleParserContent.getMessages()));
             }
         }
 
         return model;
     }
 
-    private List<Node> visit( final IPattern p,
-                              final GuidedDecisionTree model,
-                              final PackageDataModelOracle dmo,
-                              final List<ParserMessage> messages ) {
+    private List<Node> visit(final IPattern p,
+                             final GuidedDecisionTree model,
+                             final PackageDataModelOracle dmo,
+                             final List<ParserMessage> messages) {
         final List<Node> nodes = new ArrayList<Node>();
-        if ( !( p instanceof FactPattern ) ) {
-            messages.add( new UnsupportedIPatternParserMessage() );
+        if (!(p instanceof FactPattern)) {
+            messages.add(new UnsupportedIPatternParserMessage());
             return nodes;
         }
         final FactPattern fp = (FactPattern) p;
-        if ( fp.isNegated() ) {
-            messages.add( new UnsupportedIPatternParserMessage() );
+        if (fp.isNegated()) {
+            messages.add(new UnsupportedIPatternParserMessage());
             return nodes;
         }
-        if ( fp.getWindow().getOperator() != null ) {
-            messages.add( new UnsupportedIPatternParserMessage() );
+        if (fp.getWindow().getOperator() != null) {
+            messages.add(new UnsupportedIPatternParserMessage());
             return nodes;
         }
-        final TypeNode node = new TypeNodeImpl( fp.getFactType() );
-        if ( fp.isBound() ) {
-            node.setBinding( fp.getBoundName() );
+        final TypeNode node = new TypeNodeImpl(fp.getFactType());
+        if (fp.isBound()) {
+            node.setBinding(fp.getBoundName());
         }
-        nodes.add( node );
-        for ( FieldConstraint fc : fp.getFieldConstraints() ) {
-            nodes.addAll( visit( fc,
-                                 model,
-                                 dmo,
-                                 messages ) );
+        nodes.add(node);
+        for (FieldConstraint fc : fp.getFieldConstraints()) {
+            nodes.addAll(visit(fc,
+                               model,
+                               dmo,
+                               messages));
         }
         return nodes;
     }
 
-    private List<Node> visit( final FieldConstraint fc,
-                              final GuidedDecisionTree model,
-                              final PackageDataModelOracle dmo,
-                              final List<ParserMessage> messages ) {
+    private List<Node> visit(final FieldConstraint fc,
+                             final GuidedDecisionTree model,
+                             final PackageDataModelOracle dmo,
+                             final List<ParserMessage> messages) {
         final List<Node> nodes = new ArrayList<Node>();
-        if ( fc instanceof CompositeFieldConstraint ) {
-            messages.add( new UnsupportedFieldConstraintParserMessage() );
+        if (fc instanceof CompositeFieldConstraint) {
+            messages.add(new UnsupportedFieldConstraintParserMessage());
             return nodes;
-        } else if ( fc instanceof SingleFieldConstraintEBLeftSide ) {
-            messages.add( new UnsupportedFieldConstraintParserMessage() );
+        } else if (fc instanceof SingleFieldConstraintEBLeftSide) {
+            messages.add(new UnsupportedFieldConstraintParserMessage());
             return nodes;
         }
-        if ( !( fc instanceof SingleFieldConstraint ) ) {
-            messages.add( new UnsupportedFieldConstraintParserMessage() );
+        if (!(fc instanceof SingleFieldConstraint)) {
+            messages.add(new UnsupportedFieldConstraintParserMessage());
             return nodes;
         }
         final SingleFieldConstraint sfc = (SingleFieldConstraint) fc;
-        if ( sfc.getConnectives() != null ) {
-            messages.add( new UnsupportedFieldConstraintParserMessage() );
+        if (sfc.getConnectives() != null) {
+            messages.add(new UnsupportedFieldConstraintParserMessage());
             return nodes;
         }
 
@@ -279,258 +276,233 @@ public class GuidedDecisionTreeModelUnmarshallingVisitor {
         final String className = sfc.getFactType();
         final String fieldName = sfc.getFieldName();
 
-        if ( sfc.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_LITERAL ) {
+        if (sfc.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_LITERAL) {
             final String operator = sfc.getOperator();
-            final boolean isValueRequired = OperatorsOracle.isValueRequired( operator );
-            if ( isValueRequired ) {
-                final Value value = getValue( className,
-                                              fieldName,
-                                              model,
-                                              dmo,
-                                              messages,
-                                              sfc.getValue() );
-                if ( value != null ) {
-                    node = new ConstraintNodeImpl( className,
-                                                   fieldName,
-                                                   operator,
-                                                   value );
+            final boolean isValueRequired = OperatorsOracle.isValueRequired(operator);
+            if (isValueRequired) {
+                final Value value = getValue(className,
+                                             fieldName,
+                                             model,
+                                             dmo,
+                                             messages,
+                                             sfc.getValue());
+                if (value != null) {
+                    node = new ConstraintNodeImpl(className,
+                                                  fieldName,
+                                                  operator,
+                                                  value);
                 }
             } else {
-                node = new ConstraintNodeImpl( className,
-                                               fieldName );
+                node = new ConstraintNodeImpl(className,
+                                              fieldName);
             }
-
-        } else if ( sfc.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_ENUM ) {
+        } else if (sfc.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_ENUM) {
             final String operator = sfc.getOperator();
-            final boolean isValueRequired = OperatorsOracle.isValueRequired( operator );
-            if ( isValueRequired ) {
-                final Value value = getValue( className,
-                                              fieldName,
-                                              model,
-                                              dmo,
-                                              messages,
-                                              sfc.getValue() );
-                if ( value != null ) {
-                    node = new ConstraintNodeImpl( className,
-                                                   fieldName,
-                                                   operator,
-                                                   value );
+            final boolean isValueRequired = OperatorsOracle.isValueRequired(operator);
+            if (isValueRequired) {
+                final Value value = getValue(className,
+                                             fieldName,
+                                             model,
+                                             dmo,
+                                             messages,
+                                             sfc.getValue());
+                if (value != null) {
+                    node = new ConstraintNodeImpl(className,
+                                                  fieldName,
+                                                  operator,
+                                                  value);
                 }
             } else {
-                node = new ConstraintNodeImpl( className,
-                                               fieldName );
+                node = new ConstraintNodeImpl(className,
+                                              fieldName);
             }
-
-        } else if ( sfc.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_UNDEFINED ) {
+        } else if (sfc.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_UNDEFINED) {
             final String operator = sfc.getOperator();
-            final boolean isValueRequired = OperatorsOracle.isValueRequired( operator );
-            if ( isValueRequired ) {
-                node = new ConstraintNodeImpl( className,
-                                               fieldName );
+            final boolean isValueRequired = OperatorsOracle.isValueRequired(operator);
+            if (isValueRequired) {
+                node = new ConstraintNodeImpl(className,
+                                              fieldName);
             } else {
-                node = new ConstraintNodeImpl( className,
-                                               fieldName,
-                                               operator,
-                                               null );
+                node = new ConstraintNodeImpl(className,
+                                              fieldName,
+                                              operator,
+                                              null);
             }
-
         } else {
-            messages.add( new UnsupportedFieldConstraintTypeParserMessage() );
+            messages.add(new UnsupportedFieldConstraintTypeParserMessage());
             return nodes;
         }
 
-        if ( node != null ) {
-            if ( sfc.isBound() ) {
-                node.setBinding( sfc.getFieldBinding() );
+        if (node != null) {
+            if (sfc.isBound()) {
+                node.setBinding(sfc.getFieldBinding());
             }
-            nodes.add( node );
+            nodes.add(node);
         }
 
         return nodes;
     }
 
-    private Value getValue( final String className,
-                            final String fieldName,
-                            final GuidedDecisionTree model,
-                            final PackageDataModelOracle dmo,
-                            final List<ParserMessage> messages,
-                            final String value ) {
-        final String dataType = getDataType( className,
-                                             fieldName,
-                                             model,
-                                             dmo );
-        if ( dataType == null ) {
-            messages.add( new DataTypeNotFoundParserMessage( className,
-                                                             fieldName ) );
+    private Value getValue(final String className,
+                           final String fieldName,
+                           final GuidedDecisionTree model,
+                           final PackageDataModelOracle dmo,
+                           final List<ParserMessage> messages,
+                           final String value) {
+        final String dataType = getDataType(className,
+                                            fieldName,
+                                            model,
+                                            dmo);
+        if (dataType == null) {
+            messages.add(new DataTypeNotFoundParserMessage(className,
+                                                           fieldName));
             return null;
         }
 
-        if ( DataType.TYPE_STRING.equals( dataType ) ) {
+        if (DataType.TYPE_STRING.equals(dataType)) {
             String _value = value;
-            if ( _value.startsWith( "\"" ) && _value.endsWith( "\"" ) ) {
-                _value = value.substring( 1,
-                                          _value.length() - 1 );
+            if (_value.startsWith("\"") && _value.endsWith("\"")) {
+                _value = value.substring(1,
+                                         _value.length() - 1);
             }
-            return new StringValue( new String( _value ) );
-
-        } else if ( DataType.TYPE_NUMERIC.equals( dataType ) ) {
+            return new StringValue(new String(_value));
+        } else if (DataType.TYPE_NUMERIC.equals(dataType)) {
             try {
                 String _value = value;
-                if ( _value.endsWith( "B" ) ) {
-                    _value = _value.substring( 0,
-                                               _value.length() - 1 );
+                if (_value.endsWith("B")) {
+                    _value = _value.substring(0,
+                                              _value.length() - 1);
                 }
-                return new BigDecimalValue( new BigDecimal( _value ) );
-
-            } catch ( NumberFormatException e ) {
-                messages.add( new DataTypeConversionErrorParserMessage( value,
-                                                                        BigDecimal.class.getName() ) );
+                return new BigDecimalValue(new BigDecimal(_value));
+            } catch (NumberFormatException e) {
+                messages.add(new DataTypeConversionErrorParserMessage(value,
+                                                                      BigDecimal.class.getName()));
                 return null;
             }
-
-        } else if ( DataType.TYPE_NUMERIC_BIGDECIMAL.equals( dataType ) ) {
+        } else if (DataType.TYPE_NUMERIC_BIGDECIMAL.equals(dataType)) {
             try {
                 String _value = value;
-                if ( _value.endsWith( "B" ) ) {
-                    _value = _value.substring( 0,
-                                               _value.length() - 1 );
+                if (_value.endsWith("B")) {
+                    _value = _value.substring(0,
+                                              _value.length() - 1);
                 }
-                return new BigDecimalValue( new BigDecimal( _value ) );
-
-            } catch ( NumberFormatException e ) {
-                messages.add( new DataTypeConversionErrorParserMessage( value,
-                                                                        BigDecimal.class.getName() ) );
+                return new BigDecimalValue(new BigDecimal(_value));
+            } catch (NumberFormatException e) {
+                messages.add(new DataTypeConversionErrorParserMessage(value,
+                                                                      BigDecimal.class.getName()));
                 return null;
             }
-
-        } else if ( DataType.TYPE_NUMERIC_BIGINTEGER.equals( dataType ) ) {
+        } else if (DataType.TYPE_NUMERIC_BIGINTEGER.equals(dataType)) {
             try {
                 String _value = value;
-                if ( _value.endsWith( "I" ) ) {
-                    _value = _value.substring( 0,
-                                               _value.length() - 1 );
+                if (_value.endsWith("I")) {
+                    _value = _value.substring(0,
+                                              _value.length() - 1);
                 }
-                return new BigIntegerValue( new BigInteger( _value ) );
-
-            } catch ( NumberFormatException e ) {
-                messages.add( new DataTypeConversionErrorParserMessage( value,
-                                                                        BigInteger.class.getName() ) );
+                return new BigIntegerValue(new BigInteger(_value));
+            } catch (NumberFormatException e) {
+                messages.add(new DataTypeConversionErrorParserMessage(value,
+                                                                      BigInteger.class.getName()));
                 return null;
             }
-
-        } else if ( DataType.TYPE_NUMERIC_BYTE.equals( dataType ) ) {
+        } else if (DataType.TYPE_NUMERIC_BYTE.equals(dataType)) {
             try {
-                return new ByteValue( new Byte( value ) );
-
-            } catch ( NumberFormatException e ) {
-                messages.add( new DataTypeConversionErrorParserMessage( value,
-                                                                        Byte.class.getName() ) );
+                return new ByteValue(new Byte(value));
+            } catch (NumberFormatException e) {
+                messages.add(new DataTypeConversionErrorParserMessage(value,
+                                                                      Byte.class.getName()));
                 return null;
             }
-
-        } else if ( DataType.TYPE_NUMERIC_DOUBLE.equals( dataType ) ) {
+        } else if (DataType.TYPE_NUMERIC_DOUBLE.equals(dataType)) {
             try {
-                return new DoubleValue( new Double( value ) );
-
-            } catch ( NumberFormatException e ) {
-                messages.add( new DataTypeConversionErrorParserMessage( value,
-                                                                        Double.class.getName() ) );
+                return new DoubleValue(new Double(value));
+            } catch (NumberFormatException e) {
+                messages.add(new DataTypeConversionErrorParserMessage(value,
+                                                                      Double.class.getName()));
                 return null;
             }
-
-        } else if ( DataType.TYPE_NUMERIC_FLOAT.equals( dataType ) ) {
+        } else if (DataType.TYPE_NUMERIC_FLOAT.equals(dataType)) {
             try {
-                return new FloatValue( new Float( value ) );
-
-            } catch ( NumberFormatException e ) {
-                messages.add( new DataTypeConversionErrorParserMessage( value,
-                                                                        Float.class.getName() ) );
+                return new FloatValue(new Float(value));
+            } catch (NumberFormatException e) {
+                messages.add(new DataTypeConversionErrorParserMessage(value,
+                                                                      Float.class.getName()));
                 return null;
             }
-
-        } else if ( DataType.TYPE_NUMERIC_INTEGER.equals( dataType ) ) {
+        } else if (DataType.TYPE_NUMERIC_INTEGER.equals(dataType)) {
             try {
-                return new IntegerValue( new Integer( value ) );
-
-            } catch ( NumberFormatException e ) {
-                messages.add( new DataTypeConversionErrorParserMessage( value,
-                                                                        Integer.class.getName() ) );
+                return new IntegerValue(new Integer(value));
+            } catch (NumberFormatException e) {
+                messages.add(new DataTypeConversionErrorParserMessage(value,
+                                                                      Integer.class.getName()));
                 return null;
             }
-
-        } else if ( DataType.TYPE_NUMERIC_LONG.equals( dataType ) ) {
+        } else if (DataType.TYPE_NUMERIC_LONG.equals(dataType)) {
             try {
-                return new LongValue( new Long( value ) );
-
-            } catch ( NumberFormatException e ) {
-                messages.add( new DataTypeConversionErrorParserMessage( value,
-                                                                        Long.class.getName() ) );
+                return new LongValue(new Long(value));
+            } catch (NumberFormatException e) {
+                messages.add(new DataTypeConversionErrorParserMessage(value,
+                                                                      Long.class.getName()));
                 return null;
             }
-
-        } else if ( DataType.TYPE_NUMERIC_SHORT.equals( dataType ) ) {
+        } else if (DataType.TYPE_NUMERIC_SHORT.equals(dataType)) {
             try {
-                return new ShortValue( new Short( value ) );
-
-            } catch ( NumberFormatException e ) {
-                messages.add( new DataTypeConversionErrorParserMessage( value,
-                                                                        Short.class.getName() ) );
+                return new ShortValue(new Short(value));
+            } catch (NumberFormatException e) {
+                messages.add(new DataTypeConversionErrorParserMessage(value,
+                                                                      Short.class.getName()));
                 return null;
             }
-
-        } else if ( DataType.TYPE_BOOLEAN.equals( dataType ) ) {
-            if ( value.equalsIgnoreCase( "true" ) || value.equalsIgnoreCase( "false" ) ) {
-                return new BooleanValue( Boolean.parseBoolean( value ) );
+        } else if (DataType.TYPE_BOOLEAN.equals(dataType)) {
+            if (value.equalsIgnoreCase("true") || value.equalsIgnoreCase("false")) {
+                return new BooleanValue(Boolean.parseBoolean(value));
             } else {
-                messages.add( new DataTypeConversionErrorParserMessage( value,
-                                                                        Boolean.class.getName() ) );
+                messages.add(new DataTypeConversionErrorParserMessage(value,
+                                                                      Boolean.class.getName()));
             }
             return null;
-
-        } else if ( DataType.TYPE_DATE.equals( dataType ) ) {
+        } else if (DataType.TYPE_DATE.equals(dataType)) {
             try {
                 String _value = value;
-                if ( _value.startsWith( "\"" ) && _value.endsWith( "\"" ) ) {
-                    _value = value.substring( 1,
-                                              _value.length() - 1 );
+                if (_value.startsWith("\"") && _value.endsWith("\"")) {
+                    _value = value.substring(1,
+                                             _value.length() - 1);
                 }
-                return new DateValue( DateUtils.parseDate( _value ) );
-
-            } catch ( IllegalArgumentException e ) {
-                messages.add( new DataTypeConversionErrorParserMessage( value,
-                                                                        Date.class.getName() ) );
+                return new DateValue(DateUtils.parseDate(_value));
+            } catch (IllegalArgumentException e) {
+                messages.add(new DataTypeConversionErrorParserMessage(value,
+                                                                      Date.class.getName()));
                 return null;
             }
-
-        } else if ( DataType.TYPE_COMPARABLE.equals( dataType ) ) {
+        } else if (DataType.TYPE_COMPARABLE.equals(dataType)) {
             String _value = value;
-            if ( _value.startsWith( "\"" ) && _value.endsWith( "\"" ) ) {
-                _value = value.substring( 1,
-                                          _value.length() - 1 );
+            if (_value.startsWith("\"") && _value.endsWith("\"")) {
+                _value = value.substring(1,
+                                         _value.length() - 1);
             }
-            return new EnumValue( new String( _value ) );
+            return new EnumValue(new String(_value));
         }
 
         return null;
     }
 
-    private String getDataType( final String className,
-                                final String fieldName,
-                                final GuidedDecisionTree model,
-                                final PackageDataModelOracle dmo ) {
+    private String getDataType(final String className,
+                               final String fieldName,
+                               final GuidedDecisionTree model,
+                               final PackageDataModelOracle dmo) {
         //Assume className is within the same package as the decision tree
-        String fqcn = ( model.getPackageName().isEmpty() ? className : model.getPackageName() + "." + className );
+        String fqcn = (model.getPackageName().isEmpty() ? className : model.getPackageName() + "." + className);
 
         //Check whether className is imported
-        for ( Import i : model.getImports().getImports() ) {
-            if ( i.getType().endsWith( className ) ) {
+        for (Import i : model.getImports().getImports()) {
+            if (i.getType().endsWith(className)) {
                 fqcn = i.getType();
             }
         }
-        for ( Map.Entry<String, ModelField[]> e : dmo.getProjectModelFields().entrySet() ) {
-            if ( e.getKey().equals( fqcn ) ) {
-                for ( ModelField mf : e.getValue() ) {
-                    if ( mf.getName().equals( fieldName ) ) {
+        for (Map.Entry<String, ModelField[]> e : dmo.getProjectModelFields().entrySet()) {
+            if (e.getKey().equals(fqcn)) {
+                for (ModelField mf : e.getValue()) {
+                    if (mf.getName().equals(fieldName)) {
                         return mf.getType();
                     }
                 }
@@ -539,157 +511,151 @@ public class GuidedDecisionTreeModelUnmarshallingVisitor {
         return null;
     }
 
-    private List<Node> visit( final IAction a,
-                              final List<TypeNode> types,
-                              final GuidedDecisionTree model,
-                              final PackageDataModelOracle dmo,
-                              final List<ParserMessage> messages ) {
+    private List<Node> visit(final IAction a,
+                             final List<TypeNode> types,
+                             final GuidedDecisionTree model,
+                             final PackageDataModelOracle dmo,
+                             final List<ParserMessage> messages) {
         final List<Node> nodes = new ArrayList<Node>();
-        if ( a instanceof ActionRetractFact ) {
+        if (a instanceof ActionRetractFact) {
             final ActionRetractFact arf = (ActionRetractFact) a;
             final String binding = arf.getVariableName();
-            for ( TypeNode tn : types ) {
-                if ( tn.isBound() ) {
-                    if ( tn.getBinding().equals( binding ) ) {
-                        final ActionRetractNode arn = new ActionRetractNodeImpl( tn );
-                        nodes.add( arn );
+            for (TypeNode tn : types) {
+                if (tn.isBound()) {
+                    if (tn.getBinding().equals(binding)) {
+                        final ActionRetractNode arn = new ActionRetractNodeImpl(tn);
+                        nodes.add(arn);
                         return nodes;
                     }
                 }
             }
-            messages.add( new BindingNotFoundParserMessage( binding ) );
+            messages.add(new BindingNotFoundParserMessage(binding));
             return nodes;
-
-        } else if ( a instanceof ActionInsertLogicalFact ) {
+        } else if (a instanceof ActionInsertLogicalFact) {
             final ActionInsertLogicalFact aif = (ActionInsertLogicalFact) a;
-            final ActionInsertNode aun = new ActionInsertNodeImpl( aif.getFactType() );
-            aun.setLogicalInsertion( true );
-            for ( org.drools.workbench.models.datamodel.rule.ActionFieldValue afv : aif.getFieldValues() ) {
-                if ( afv.getNature() != FieldNatureType.TYPE_LITERAL ) {
-                    messages.add( new UnsupportedFieldNatureTypeParserMessage() );
+            final ActionInsertNode aun = new ActionInsertNodeImpl(aif.getFactType());
+            aun.setLogicalInsertion(true);
+            for (org.drools.workbench.models.datamodel.rule.ActionFieldValue afv : aif.getFieldValues()) {
+                if (afv.getNature() != FieldNatureType.TYPE_LITERAL) {
+                    messages.add(new UnsupportedFieldNatureTypeParserMessage());
                     return nodes;
                 }
                 final String fieldName = afv.getField();
-                final Value value = getValue( aif.getFactType(),
-                                              afv.getField(),
-                                              model,
-                                              dmo,
-                                              messages,
-                                              afv.getValue() );
-                if ( value != null ) {
-                    final ActionFieldValue _afv = new ActionFieldValueImpl( fieldName,
-                                                                            value );
-                    aun.getFieldValues().add( _afv );
+                final Value value = getValue(aif.getFactType(),
+                                             afv.getField(),
+                                             model,
+                                             dmo,
+                                             messages,
+                                             afv.getValue());
+                if (value != null) {
+                    final ActionFieldValue _afv = new ActionFieldValueImpl(fieldName,
+                                                                           value);
+                    aun.getFieldValues().add(_afv);
                 }
             }
-            nodes.add( aun );
+            nodes.add(aun);
             return nodes;
-
-        } else if ( a instanceof ActionInsertFact ) {
+        } else if (a instanceof ActionInsertFact) {
             final ActionInsertFact aif = (ActionInsertFact) a;
-            final ActionInsertNode aun = new ActionInsertNodeImpl( aif.getFactType() );
-            aun.setLogicalInsertion( false );
-            for ( org.drools.workbench.models.datamodel.rule.ActionFieldValue afv : aif.getFieldValues() ) {
-                if ( afv.getNature() != FieldNatureType.TYPE_LITERAL ) {
-                    messages.add( new UnsupportedFieldNatureTypeParserMessage() );
+            final ActionInsertNode aun = new ActionInsertNodeImpl(aif.getFactType());
+            aun.setLogicalInsertion(false);
+            for (org.drools.workbench.models.datamodel.rule.ActionFieldValue afv : aif.getFieldValues()) {
+                if (afv.getNature() != FieldNatureType.TYPE_LITERAL) {
+                    messages.add(new UnsupportedFieldNatureTypeParserMessage());
                     return nodes;
                 }
                 final String fieldName = afv.getField();
-                final Value value = getValue( aif.getFactType(),
-                                              afv.getField(),
-                                              model,
-                                              dmo,
-                                              messages,
-                                              afv.getValue() );
-                if ( value != null ) {
-                    final ActionFieldValue _afv = new ActionFieldValueImpl( fieldName,
-                                                                            value );
-                    aun.getFieldValues().add( _afv );
+                final Value value = getValue(aif.getFactType(),
+                                             afv.getField(),
+                                             model,
+                                             dmo,
+                                             messages,
+                                             afv.getValue());
+                if (value != null) {
+                    final ActionFieldValue _afv = new ActionFieldValueImpl(fieldName,
+                                                                           value);
+                    aun.getFieldValues().add(_afv);
                 }
             }
-            nodes.add( aun );
+            nodes.add(aun);
             return nodes;
-
-        } else if ( a instanceof ActionUpdateField ) {
+        } else if (a instanceof ActionUpdateField) {
             final ActionUpdateField auf = (ActionUpdateField) a;
             final String binding = auf.getVariable();
-            for ( TypeNode tn : types ) {
-                if ( tn.isBound() ) {
-                    if ( tn.getBinding().equals( binding ) ) {
-                        final ActionUpdateNode aun = new ActionUpdateNodeImpl( tn );
-                        aun.setModify( true );
-                        for ( org.drools.workbench.models.datamodel.rule.ActionFieldValue afv : auf.getFieldValues() ) {
-                            if ( afv.getNature() != FieldNatureType.TYPE_LITERAL ) {
-                                messages.add( new UnsupportedFieldNatureTypeParserMessage() );
+            for (TypeNode tn : types) {
+                if (tn.isBound()) {
+                    if (tn.getBinding().equals(binding)) {
+                        final ActionUpdateNode aun = new ActionUpdateNodeImpl(tn);
+                        aun.setModify(true);
+                        for (org.drools.workbench.models.datamodel.rule.ActionFieldValue afv : auf.getFieldValues()) {
+                            if (afv.getNature() != FieldNatureType.TYPE_LITERAL) {
+                                messages.add(new UnsupportedFieldNatureTypeParserMessage());
                                 return nodes;
                             }
                             final String fieldName = afv.getField();
-                            final Value value = getValue( tn.getClassName(),
-                                                          afv.getField(),
-                                                          model,
-                                                          dmo,
-                                                          messages,
-                                                          afv.getValue() );
-                            if ( value != null ) {
-                                final ActionFieldValue _afv = new ActionFieldValueImpl( fieldName,
-                                                                                        value );
-                                aun.getFieldValues().add( _afv );
+                            final Value value = getValue(tn.getClassName(),
+                                                         afv.getField(),
+                                                         model,
+                                                         dmo,
+                                                         messages,
+                                                         afv.getValue());
+                            if (value != null) {
+                                final ActionFieldValue _afv = new ActionFieldValueImpl(fieldName,
+                                                                                       value);
+                                aun.getFieldValues().add(_afv);
                             }
                         }
-                        nodes.add( aun );
+                        nodes.add(aun);
                         return nodes;
                     }
                 }
             }
-            messages.add( new BindingNotFoundParserMessage( binding ) );
+            messages.add(new BindingNotFoundParserMessage(binding));
             return nodes;
-
-        } else if ( a instanceof ActionSetField ) {
+        } else if (a instanceof ActionSetField) {
             final ActionSetField asf = (ActionSetField) a;
             final String binding = asf.getVariable();
-            for ( TypeNode tn : types ) {
-                if ( tn.isBound() ) {
-                    if ( tn.getBinding().equals( binding ) ) {
-                        final ActionUpdateNode aun = new ActionUpdateNodeImpl( tn );
-                        for ( org.drools.workbench.models.datamodel.rule.ActionFieldValue afv : asf.getFieldValues() ) {
-                            if ( afv.getNature() != FieldNatureType.TYPE_LITERAL ) {
-                                messages.add( new UnsupportedFieldNatureTypeParserMessage() );
+            for (TypeNode tn : types) {
+                if (tn.isBound()) {
+                    if (tn.getBinding().equals(binding)) {
+                        final ActionUpdateNode aun = new ActionUpdateNodeImpl(tn);
+                        for (org.drools.workbench.models.datamodel.rule.ActionFieldValue afv : asf.getFieldValues()) {
+                            if (afv.getNature() != FieldNatureType.TYPE_LITERAL) {
+                                messages.add(new UnsupportedFieldNatureTypeParserMessage());
                                 return nodes;
                             }
                             final String fieldName = afv.getField();
-                            final Value value = getValue( tn.getClassName(),
-                                                          afv.getField(),
-                                                          model,
-                                                          dmo,
-                                                          messages,
-                                                          afv.getValue() );
-                            if ( value != null ) {
-                                final ActionFieldValue _afv = new ActionFieldValueImpl( fieldName,
-                                                                                        value );
-                                aun.getFieldValues().add( _afv );
+                            final Value value = getValue(tn.getClassName(),
+                                                         afv.getField(),
+                                                         model,
+                                                         dmo,
+                                                         messages,
+                                                         afv.getValue());
+                            if (value != null) {
+                                final ActionFieldValue _afv = new ActionFieldValueImpl(fieldName,
+                                                                                       value);
+                                aun.getFieldValues().add(_afv);
                             }
                         }
-                        nodes.add( aun );
+                        nodes.add(aun);
                         return nodes;
                     }
                 }
             }
-            messages.add( new BindingNotFoundParserMessage( binding ) );
+            messages.add(new BindingNotFoundParserMessage(binding));
             return nodes;
-
         } else {
-            messages.add( new UnsupportedIActionParserMessage() );
+            messages.add(new UnsupportedIActionParserMessage());
             return nodes;
         }
-
     }
 
-    private List<TypeNode> getTypesOnPath( final List<Node> nodes ) {
+    private List<TypeNode> getTypesOnPath(final List<Node> nodes) {
         final List<TypeNode> types = new ArrayList<TypeNode>();
-        for ( Node node : nodes ) {
-            if ( node instanceof TypeNode ) {
+        for (Node node : nodes) {
+            if (node instanceof TypeNode) {
                 final TypeNode tn = (TypeNode) node;
-                types.add( tn );
+                types.add(tn);
             }
         }
         return types;
@@ -700,16 +666,16 @@ public class GuidedDecisionTreeModelUnmarshallingVisitor {
         private List<Node> nodes = new ArrayList<Node>();
 
         private GuidedDecisionTreeParserExtendedError() {
-            super( "",
-                   "",
-                   new ArrayList<ParserMessage>() );
+            super("",
+                  "",
+                  new ArrayList<ParserMessage>());
         }
 
-        private void setOriginalDrl( final String originalDrl ) {
+        private void setOriginalDrl(final String originalDrl) {
             this.originalDrl = originalDrl;
         }
 
-        private void setOriginalRuleName( final String originalRuleName ) {
+        private void setOriginalRuleName(final String originalRuleName) {
             this.originalRuleName = originalRuleName;
         }
 
@@ -717,5 +683,4 @@ public class GuidedDecisionTreeModelUnmarshallingVisitor {
             return nodes;
         }
     }
-
 }

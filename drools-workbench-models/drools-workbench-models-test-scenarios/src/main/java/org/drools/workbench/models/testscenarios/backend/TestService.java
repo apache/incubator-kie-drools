@@ -16,17 +16,16 @@
 
 package org.drools.workbench.models.testscenarios.backend;
 
-import org.drools.core.base.TypeResolver;
 import org.junit.runner.notification.RunListener;
 import org.kie.api.runtime.KieSession;
+import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import java.util.Map;
 
 public interface TestService<T> {
-    
-    void run( T target,
-              Map<String, KieSession> ksessions,
-              TypeResolver resolver,
-              RunListener listener );
 
+    void run(T target,
+             Map<String, KieSession> ksessions,
+             TypeResolver resolver,
+             RunListener listener);
 }

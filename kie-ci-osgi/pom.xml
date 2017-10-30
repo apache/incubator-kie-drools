@@ -5,7 +5,7 @@
   <parent>
     <artifactId>drools</artifactId>
     <groupId>org.drools</groupId>
-    <version>8.0.0-SNAPSHOT</version>
+    <version>7.5.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -123,6 +123,8 @@
               javax.security.auth.x500,
               org.apache.commons.logging,
               org.appformer.maven.support,
+              org.kie.soup.project.datamodel,
+              org.kie.soup.project.datamodel.commons,
               org.drools.compiler.kie.builder.impl,
               org.drools.compiler.kproject,
               org.drools.compiler.kproject.models,

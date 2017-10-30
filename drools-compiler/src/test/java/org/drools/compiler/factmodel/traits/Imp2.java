@@ -16,11 +16,9 @@
 
 package org.drools.compiler.factmodel.traits;
 
-import org.drools.core.factmodel.traits.LogicalTypeInconsistencyException;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitFieldTMS;
 import org.drools.core.factmodel.traits.TraitFieldTMSImpl;
-import org.drools.core.factmodel.traits.TraitTypeMap;
 import org.drools.core.factmodel.traits.TraitableBean;
 
 import java.util.BitSet;
@@ -72,10 +70,6 @@ public class Imp2 implements TraitableBean<Imp2,Imp2> {
         __$$dynamic_traits_map$$ = map;
     }
 
-    public boolean hasTraits() {
-        return __$$dynamic_traits_map$$ != null && ! __$$dynamic_traits_map$$.isEmpty();
-    }
-
     public Map<String, Thing<Imp2>> _getTraitMap() {
         if ( __$$dynamic_traits_map$$ == null ) {
             __$$dynamic_traits_map$$ = new HashMap<String, Thing<Imp2>>();
@@ -83,49 +77,6 @@ public class Imp2 implements TraitableBean<Imp2,Imp2> {
         return __$$dynamic_traits_map$$;
     }
 
-    public void addTrait(String type, Thing proxy) {
-        _getTraitMap().put(type, proxy);
-    }
-
-    public Thing getTrait(String type) {
-        return _getTraitMap().get( type );
-    }
-
-    public boolean hasTrait(String type) {
-        return _getTraitMap().containsKey(type);
-    }
-
-    public BitSet getCurrentTypeCode() {
-        return ((TraitTypeMap) __$$dynamic_traits_map$$).getCurrentTypeCode();
-    }
-
-    public Collection<Thing<Imp2>> removeTrait(String type) {
-        return ((TraitTypeMap)_getTraitMap()).removeCascade( type );
-    }
-
-    public Collection<Thing<Imp2>> removeTrait( BitSet typeCode ) {
-        return ((TraitTypeMap)_getTraitMap()).removeCascade( typeCode );
-    }
-
-    public Collection<String> getTraits() {
-        return _getTraitMap().keySet();
-    }
-
-    public void denyTrait(Class trait) throws LogicalTypeInconsistencyException {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public void allowTrait(Class trait) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public Collection<Thing> getMostSpecificTraits() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public void _setBottomTypeCode(BitSet code) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
 
     public TraitFieldTMS _getFieldTMS() {
         return null;  //To change body of implemented methods use File | Settings | File Templates.

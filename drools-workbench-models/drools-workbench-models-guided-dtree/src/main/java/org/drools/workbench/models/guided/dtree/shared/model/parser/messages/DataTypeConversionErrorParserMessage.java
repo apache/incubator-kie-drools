@@ -15,7 +15,7 @@
  */
 package org.drools.workbench.models.guided.dtree.shared.model.parser.messages;
 
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 /**
  * A String value could not be converted to a type-safe Value class
@@ -29,12 +29,12 @@ public class DataTypeConversionErrorParserMessage implements ParserMessage {
         //Errai marshalling
     }
 
-    public DataTypeConversionErrorParserMessage( final String value,
-                                                 final String dataTypeClassName ) {
-        this.value = PortablePreconditions.checkNotNull( "value",
-                                                         value );
-        this.dataTypeClassName = PortablePreconditions.checkNotNull( "dataTypeClassName",
-                                                                     dataTypeClassName );
+    public DataTypeConversionErrorParserMessage(final String value,
+                                                final String dataTypeClassName) {
+        this.value = PortablePreconditions.checkNotNull("value",
+                                                        value);
+        this.dataTypeClassName = PortablePreconditions.checkNotNull("dataTypeClassName",
+                                                                    dataTypeClassName);
     }
 
     public String getValue() {
@@ -44,5 +44,4 @@ public class DataTypeConversionErrorParserMessage implements ParserMessage {
     public String getDataTypeClassName() {
         return dataTypeClassName;
     }
-
 }

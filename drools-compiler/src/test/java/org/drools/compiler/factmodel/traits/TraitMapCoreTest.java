@@ -16,11 +16,13 @@
 package org.drools.compiler.factmodel.traits;
 
 import org.drools.compiler.CommonTestMethodBase;
+import org.drools.core.ClassObjectFilter;
+import org.drools.core.factmodel.TraitableMap;
 import org.drools.core.factmodel.traits.TraitFactory;
+import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.factmodel.traits.VirtualPropertyMode;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -1266,4 +1268,66 @@ public class TraitMapCoreTest extends CommonTestMethodBase {
         assertEquals( 1, list.size() );
         assertNotNull(list.get(0));
     }
+
+
+
+
+	@Test()
+	public void donCustomMapTest() {
+		String source = "package org.drools.traits.test; \n" +
+				"import java.util.*\n;" +
+				"import " + TraitMapCoreTest.DomainMap.class.getCanonicalName() + ";\n" +
+				"" +
+				"global List list; \n" +
+				"" +
+				"" +
+				"declare trait PersonMap" +
+				"@propertyReactive \n" +
+				"   name : String \n" +
+				"   age  : int \n" +
+				"   height : Double \n" +
+				"end\n" +
+				"" +
+				"" +
+				"rule Don \n" +
+				"when \n" +
+				"  $m : Map( this[ \"age\"] == 18 ) " +
+				"then \n" +
+				"   don( $m, PersonMap.class );\n" +
+				"end \n" +
+				"" +
+				"rule Log \n" +
+				"when \n" +
+				"   $p : PersonMap( name == \"john\", age > 10 ) \n" +
+				"then \n" +
+				"   modify ( $p ) { \n" +
+				"       setHeight( 184.0 ); \n" +
+				"   }" +
+				"end \n";
+
+		KieSession ksession = loadKnowledgeBaseFromString( source ).newKieSession();
+		TraitFactory.setMode( VirtualPropertyMode.MAP, ksession.getKieBase() );
+
+		List list = new ArrayList();
+		ksession.setGlobal( "list", list );
+
+		HashMap map = new DomainMap();
+		map.put( "name", "john" );
+		map.put( "age", 18 );
+
+		ksession.insert( map );
+		ksession.fireAllRules();
+
+		assertTrue( map.containsKey( "height" ) );
+		assertEquals( map.get( "height"), 184.0 );
+
+		assertEquals( 2, ksession.getObjects().size() );
+		assertEquals( 1, ksession.getObjects( new ClassObjectFilter( DomainMap.class ) ).size() );
+
+	}
+
+	@Traitable
+	public static class DomainMap extends HashMap<String,Object> implements TraitableMap {
+
+	}
 }

@@ -123,12 +123,6 @@ public class KieModuleKieProject extends AbstractKieProject {
         return this.cl;
     }
 
-    public ClassLoader getClonedClassLoader() {
-        ProjectClassLoader clonedCL = createProjectClassLoader( cl.getParent(), kieModule.createResourceProvider() );
-        initClassLoader( clonedCL );
-        return clonedCL;
-    }
-
     public Map<String, KieBaseModel> updateToModule(InternalKieModule updatedKieModule) {
         Map<String, KieBaseModel> oldKieBaseModels = new HashMap<String, KieBaseModel>();
         oldKieBaseModels.putAll( kBaseModels );

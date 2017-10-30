@@ -6,7 +6,7 @@
   <parent>
     <artifactId>drools-workbench-models</artifactId>
     <groupId>org.drools</groupId>
-    <version>8.0.0-SNAPSHOT</version>
+    <version>7.5.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>drools-workbench-models-test-scenarios</artifactId>
@@ -47,13 +47,13 @@
     </dependency>
 
     <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-project-datamodel-api</artifactId>
+      <groupId>org.kie.soup</groupId>
+      <artifactId>kie-soup-project-datamodel-api</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-project-datamodel-commons</artifactId>
+      <groupId>org.kie.soup</groupId>
+      <artifactId>kie-soup-project-datamodel-commons</artifactId>
     </dependency>
 
     <dependency>

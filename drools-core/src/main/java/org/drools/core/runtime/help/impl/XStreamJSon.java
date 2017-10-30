@@ -16,17 +16,6 @@
 
 package org.drools.core.runtime.help.impl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.concurrent.TimeUnit;
-
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.MarshallingContext;
@@ -69,7 +58,18 @@ import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
 import org.kie.internal.command.CommandFactory;
 
-import static org.kie.internal.xstream.XStreamUtils.createXStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.concurrent.TimeUnit;
+
+import static org.kie.internal.xstream.XStreamUtils.createTrustingXStream;
 
 
 public class XStreamJSon {
@@ -77,7 +77,7 @@ public class XStreamJSon {
 
     public static XStream newJSonMarshaller() {
         JettisonMappedXmlDriver jet = new JettisonMappedXmlDriver();
-        XStream xstream = createXStream( jet );
+        XStream xstream = createTrustingXStream( jet );
 
         XStreamHelper.setAliases( xstream );
 

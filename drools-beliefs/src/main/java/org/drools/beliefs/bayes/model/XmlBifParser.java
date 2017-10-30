@@ -15,16 +15,6 @@
 
 package org.drools.beliefs.bayes.model;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.drools.beliefs.bayes.BayesNetwork;
@@ -37,7 +27,17 @@ import org.drools.core.io.internal.InternalResource;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.KnowledgeBuilderErrors;
 
-import static org.kie.internal.xstream.XStreamUtils.createXStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import static org.kie.internal.xstream.XStreamUtils.createTrustingXStream;
 
 public class XmlBifParser {
 
@@ -52,7 +52,7 @@ public class XmlBifParser {
 
         try {
             String encoding = resource instanceof InternalResource ? ((InternalResource) resource).getEncoding() : null;
-            XStream xstream = encoding != null ? createXStream(new DomDriver(encoding)) : createXStream();
+            XStream xstream = encoding != null ? createTrustingXStream(new DomDriver(encoding)) : createTrustingXStream();
             initXStream(xstream);
 
             Bif bif = (Bif) xstream.fromXML(is);
@@ -64,7 +64,7 @@ public class XmlBifParser {
     }
 
     public static Bif loadBif(URL url) {
-        XStream xstream = createXStream();
+        XStream xstream = createTrustingXStream();
         initXStream( xstream );
 
         Bif bif = (Bif) xstream.fromXML(url);

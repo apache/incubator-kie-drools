@@ -20,14 +20,14 @@ import org.kie.internal.runtime.helper.BatchExecutionHelperProvider;
 
 import com.thoughtworks.xstream.XStream;
 
-import static org.kie.internal.xstream.XStreamUtils.createXStream;
+import static org.kie.internal.xstream.XStreamUtils.createTrustingXStream;
 
 public class BatchExecutionHelperProviderImpl
     implements
     BatchExecutionHelperProvider {
 
     public XStream newXStreamMarshaller() {
-        XStream xstream = createXStream();
+        XStream xstream = createTrustingXStream();
         return newXStreamMarshaller(xstream);
     }
 

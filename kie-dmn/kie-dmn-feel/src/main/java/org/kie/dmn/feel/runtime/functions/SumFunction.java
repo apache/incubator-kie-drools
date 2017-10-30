@@ -34,14 +34,22 @@ public class SumFunction
     }
 
     public FEELFnResult<BigDecimal> invoke(@ParameterName("list") List list) {
+        if ( list == null ) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "the list cannot be null"));
+        }
         BigDecimal sum = BigDecimal.ZERO;
         for ( Object element : list ) {
             if ( element instanceof BigDecimal ) {
                 sum = sum.add( (BigDecimal) element );
             } else if ( element instanceof Number ) {
-                sum = sum.add( EvalHelper.getBigDecimalOrNull( element ) );
+                BigDecimal value = EvalHelper.getBigDecimalOrNull( element );
+                if (value == null) {
+                    return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "an element in the list is not suitable for the sum"));
+                } else {
+                    sum = sum.add( value );
+                }
             } else {
-                return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "an element in the list is not suitable for the sum"));
+                return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "an element in the list is not a number"));
             }
         }
         return FEELFnResult.ofResult( sum );

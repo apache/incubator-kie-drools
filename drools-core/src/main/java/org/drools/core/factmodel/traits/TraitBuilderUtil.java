@@ -53,10 +53,10 @@ public class TraitBuilderUtil {
 
         MixinInfo mixinInfo = new MixinInfo( traitClass );
         try {
-            mixinInfo.mixinClasses = new ArrayList<Class<?>>();
+            mixinInfo.mixinClasses = new ArrayList<>();
             mixinInfo.mixinClasses.addAll( mixinMethodMap.keySet() );
-            mixinInfo.mixinMethods = new HashMap<Class<?>, Set<Method>>();
-            mixinInfo.mixinGetSet = new HashMap<Class<?>, Map<String, Method>>();
+            mixinInfo.mixinMethods = new HashMap<>();
+            mixinInfo.mixinGetSet = new HashMap<>();
 
             for (Map.Entry<Class<?>, List<Method>> entry : mixinMethodMap.entrySet()) {
                 Class<?> mixinClass = entry.getKey();
@@ -66,21 +66,13 @@ public class TraitBuilderUtil {
                     try {
                         traitClass.getMethod( m.getName(), m.getParameterTypes() );
                         if ( cfi.getGetterMethods().containsValue( m ) || cfi.getSetterMethods().containsValue( m )) {
-                            Map<String, Method> map = mixinInfo.mixinGetSet.get(mixinClass);
-                            if (map == null) {
-                                map = new HashMap<String, Method>();
-                                mixinInfo.mixinGetSet.put( mixinClass, map );
-                            }
-                            map.put( m.getName(), m );
+	                        Map<String, Method> map = mixinInfo.mixinGetSet.computeIfAbsent( mixinClass, k -> new HashMap<>() );
+	                        map.put( m.getName(), m );
                         } else {
-                            Set<Method> set = mixinInfo.mixinMethods.get(mixinClass);
-                            if (set == null) {
-                                set = new HashSet<Method>();
-                                mixinInfo.mixinMethods.put( mixinClass, set );
-                            }
-                            set.add( m );
+	                        Set<Method> set = mixinInfo.mixinMethods.computeIfAbsent( mixinClass, k -> new HashSet<>() );
+	                        set.add( m );
                         }
-                    } catch (NoSuchMethodException e) {
+                    } catch ( NoSuchMethodException ignored ) {
 
                     }
                 }
@@ -94,7 +86,7 @@ public class TraitBuilderUtil {
 
     private static Map<Class<?>, List<Method>> findMixinMethodImpls(Class<?> traitClass) {
         // Use a LinkedHashMap to preserve the order of the names in the extends clause of declaration
-        Map<Class<?>, List<Method>> map = new LinkedHashMap<Class<?>, List<Method>>();
+        Map<Class<?>, List<Method>> map = new LinkedHashMap<>();
         findMixinMethodImpls(traitClass, map);
         return map;
     }
@@ -147,11 +139,11 @@ public class TraitBuilderUtil {
         return annTrait != null && ! annTrait.impl().equals( Trait.NullMixin.class );
     }
 
-    private static <K extends Annotation> K getAnnotation( Class klass, Class<K> annotationClass ) {
+    private static <K extends Annotation> K getAnnotation( Class<?> klass, Class<K> annotationClass ) {
         if ( klass.equals( Thing.class ) ) {
             return null;
         }
-        K ann = (K) klass.getAnnotation( annotationClass );
+        K ann = klass.getAnnotation( annotationClass );
 
         if ( ann == null ) {
             for ( Class sup : klass.getInterfaces() ) {
@@ -170,7 +162,7 @@ public class TraitBuilderUtil {
         if ( mixinInfo == null ) {
             return;
         }
-        Set<String> createdSignatures = new HashSet<String>();
+        Set<String> createdSignatures = new HashSet<>();
         for ( Class<?> mixinClass : mixinInfo.mixinClasses ) {
             String mixin = getMixinName( mixinClass );
 
@@ -215,11 +207,10 @@ public class TraitBuilderUtil {
                 mv.visitMethodInsn( INVOKEVIRTUAL,
                                     Type.getInternalName( mixinClass ),
                                     method.getName(),
-                                    signature );
+                                    signature,
+                                    false );
 
                 mv.visitInsn( BuildUtils.returnType( method.getReturnType().getName() ) );
-                int stack = TraitFactory.getStackSize( method ) ;
-//                mv.visitMaxs( stack, stack );
                 mv.visitMaxs( 0, 0 );
                 mv.visitEnd();
             }

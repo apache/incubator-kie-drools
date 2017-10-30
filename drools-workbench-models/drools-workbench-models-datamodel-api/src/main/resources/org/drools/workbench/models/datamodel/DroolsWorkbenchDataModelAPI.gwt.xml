@@ -19,7 +19,7 @@
     "http://google-web-toolkit.googlecode.com/svn/tags/2.5.0/distro-source/core/src/gwt-module.dtd">
 <module>
 
-  <inherits name="org.appformer.project.datamodel.AFProjectDataModelAPI"/>
+  <inherits name="org.kie.soup.project.datamodel.ProjectDataModelAPI"/>
 
   <source path='auditlog'/>
   <source path='oracle'/>

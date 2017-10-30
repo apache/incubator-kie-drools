@@ -16,18 +16,12 @@
 
 package org.drools.workbench.models.commons.backend.rule;
 
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.appformer.project.datamodel.oracle.DataType;
-import org.appformer.project.datamodel.oracle.FieldAccessorsAndMutators;
-import org.appformer.project.datamodel.oracle.MethodInfo;
-import org.appformer.project.datamodel.oracle.ModelField;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
 import org.drools.workbench.models.datamodel.rule.ActionInsertFact;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
@@ -37,6 +31,11 @@ import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.soup.project.datamodel.oracle.DataType;
+import org.kie.soup.project.datamodel.oracle.FieldAccessorsAndMutators;
+import org.kie.soup.project.datamodel.oracle.MethodInfo;
+import org.kie.soup.project.datamodel.oracle.ModelField;
+import org.kie.soup.project.datamodel.oracle.PackageDataModelOracle;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -50,10 +49,10 @@ public class RuleModelDRLPersistenceUnmarshallingI18NTest {
 
     @Before
     public void setUp() throws Exception {
-        dmo = mock( PackageDataModelOracle.class );
-        when( dmo.getProjectModelFields() ).thenReturn( packageModelFields );
-        when( dmo.getProjectJavaEnumDefinitions() ).thenReturn( projectJavaEnumDefinitions );
-        when( dmo.getProjectMethodInformation() ).thenReturn( projectMethodInformation );
+        dmo = mock(PackageDataModelOracle.class);
+        when(dmo.getProjectModelFields()).thenReturn(packageModelFields);
+        when(dmo.getProjectJavaEnumDefinitions()).thenReturn(projectJavaEnumDefinitions);
+        when(dmo.getProjectMethodInformation()).thenReturn(projectMethodInformation);
     }
 
     @After
@@ -63,24 +62,24 @@ public class RuleModelDRLPersistenceUnmarshallingI18NTest {
         projectMethodInformation.clear();
     }
 
-    private void addModelField( final String factName,
-                                final String fieldName,
-                                final String clazz,
-                                final String type ) {
-        ModelField[] modelFields = new ModelField[ 1 ];
-        modelFields[ 0 ] = new ModelField( fieldName,
-                                           clazz,
-                                           ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
-                                           ModelField.FIELD_ORIGIN.DECLARED,
-                                           FieldAccessorsAndMutators.BOTH,
-                                           type );
-        if ( packageModelFields.containsKey( factName ) ) {
-            final List<ModelField> existingModelFields = new ArrayList<ModelField>( Arrays.asList( packageModelFields.get( factName ) ) );
-            existingModelFields.add( modelFields[ 0 ] );
-            modelFields = existingModelFields.toArray( modelFields );
+    private void addModelField(final String factName,
+                               final String fieldName,
+                               final String clazz,
+                               final String type) {
+        ModelField[] modelFields = new ModelField[1];
+        modelFields[0] = new ModelField(fieldName,
+                                        clazz,
+                                        ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                                        ModelField.FIELD_ORIGIN.DECLARED,
+                                        FieldAccessorsAndMutators.BOTH,
+                                        type);
+        if (packageModelFields.containsKey(factName)) {
+            final List<ModelField> existingModelFields = new ArrayList<ModelField>(Arrays.asList(packageModelFields.get(factName)));
+            existingModelFields.add(modelFields[0]);
+            modelFields = existingModelFields.toArray(modelFields);
         }
-        packageModelFields.put( factName,
-                                modelFields );
+        packageModelFields.put(factName,
+                               modelFields);
     }
 
     @Test
@@ -95,37 +94,37 @@ public class RuleModelDRLPersistenceUnmarshallingI18NTest {
                 "insert( fact0 );\n" +
                 "end";
 
-        addModelField( "Applicant",
-                       "age",
-                       "java.lang.Integer",
-                       DataType.TYPE_NUMERIC_INTEGER );
+        addModelField("Applicant",
+                      "age",
+                      "java.lang.Integer",
+                      DataType.TYPE_NUMERIC_INTEGER);
 
-        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
-                                                                                 new ArrayList<String>(),
-                                                                                 dmo );
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
+                                                                                new ArrayList<String>(),
+                                                                                dmo);
 
-        assertNotNull( m );
+        assertNotNull(m);
 
-        assertEquals( 1,
-                      m.rhs.length );
-        assertTrue( m.rhs[ 0 ] instanceof ActionInsertFact );
-        final ActionInsertFact aif = (ActionInsertFact) m.rhs[ 0 ];
-        assertEquals( "Applicant",
-                      aif.getFactType() );
-        assertEquals( "fact0",
-                      aif.getBoundName() );
+        assertEquals(1,
+                     m.rhs.length);
+        assertTrue(m.rhs[0] instanceof ActionInsertFact);
+        final ActionInsertFact aif = (ActionInsertFact) m.rhs[0];
+        assertEquals("Applicant",
+                     aif.getFactType());
+        assertEquals("fact0",
+                     aif.getBoundName());
 
-        assertEquals( 1,
-                      aif.getFieldValues().length );
-        final ActionFieldValue afv = aif.getFieldValues()[ 0 ];
-        assertEquals( "age",
-                      afv.getField() );
-        assertEquals( "55",
-                      afv.getValue() );
-        assertEquals( DataType.TYPE_NUMERIC_INTEGER,
-                      afv.getType() );
-        assertEquals( FieldNatureType.TYPE_LITERAL,
-                      afv.getNature() );
+        assertEquals(1,
+                     aif.getFieldValues().length);
+        final ActionFieldValue afv = aif.getFieldValues()[0];
+        assertEquals("age",
+                     afv.getField());
+        assertEquals("55",
+                     afv.getValue());
+        assertEquals(DataType.TYPE_NUMERIC_INTEGER,
+                     afv.getType());
+        assertEquals(FieldNatureType.TYPE_LITERAL,
+                     afv.getNature());
     }
 
     @Test
@@ -140,38 +139,37 @@ public class RuleModelDRLPersistenceUnmarshallingI18NTest {
                 "insert( fact0 );\n" +
                 "end";
 
-        addModelField( "帽子",
-                       "サイズ",
-                       "java.lang.Integer",
-                       DataType.TYPE_NUMERIC_INTEGER );
+        addModelField("帽子",
+                      "サイズ",
+                      "java.lang.Integer",
+                      DataType.TYPE_NUMERIC_INTEGER);
 
-        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
-                                                                                 new ArrayList<String>(),
-                                                                                 dmo );
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
+                                                                                new ArrayList<String>(),
+                                                                                dmo);
 
-        assertNotNull( m );
+        assertNotNull(m);
 
-        assertEquals( 1,
-                      m.rhs.length );
-        assertTrue( m.rhs[ 0 ] instanceof ActionInsertFact );
-        final ActionInsertFact aif = (ActionInsertFact) m.rhs[ 0 ];
-        assertEquals( "帽子",
-                      aif.getFactType() );
-        assertEquals( "fact0",
-                      aif.getBoundName() );
+        assertEquals(1,
+                     m.rhs.length);
+        assertTrue(m.rhs[0] instanceof ActionInsertFact);
+        final ActionInsertFact aif = (ActionInsertFact) m.rhs[0];
+        assertEquals("帽子",
+                     aif.getFactType());
+        assertEquals("fact0",
+                     aif.getBoundName());
 
-        assertEquals( 1,
-                      aif.getFieldValues().length );
-        final ActionFieldValue afv = aif.getFieldValues()[ 0 ];
-        assertEquals( "サイズ",
-                      afv.getField() );
-        assertEquals( "55",
-                      afv.getValue() );
-        assertEquals( DataType.TYPE_NUMERIC_INTEGER,
-                      afv.getType() );
-        assertEquals( FieldNatureType.TYPE_LITERAL,
-                      afv.getNature() );
-
+        assertEquals(1,
+                     aif.getFieldValues().length);
+        final ActionFieldValue afv = aif.getFieldValues()[0];
+        assertEquals("サイズ",
+                     afv.getField());
+        assertEquals("55",
+                     afv.getValue());
+        assertEquals(DataType.TYPE_NUMERIC_INTEGER,
+                     afv.getType());
+        assertEquals(FieldNatureType.TYPE_LITERAL,
+                     afv.getNature());
     }
 
     @Test
@@ -184,34 +182,34 @@ public class RuleModelDRLPersistenceUnmarshallingI18NTest {
                 "then\n" +
                 "end";
 
-        addModelField( "Applicant",
-                       "age",
-                       "java.lang.Integer",
-                       DataType.TYPE_NUMERIC_INTEGER );
+        addModelField("Applicant",
+                      "age",
+                      "java.lang.Integer",
+                      DataType.TYPE_NUMERIC_INTEGER);
 
-        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
-                                                                                 new ArrayList<String>(),
-                                                                                 dmo );
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
+                                                                                new ArrayList<String>(),
+                                                                                dmo);
 
-        assertNotNull( m );
+        assertNotNull(m);
 
-        assertEquals( 1,
-                      m.lhs.length );
-        assertTrue( m.lhs[ 0 ] instanceof FactPattern );
-        final FactPattern fp = (FactPattern) m.lhs[ 0 ];
-        assertEquals( "Applicant",
-                      fp.getFactType() );
-        assertEquals( 1,
-                      fp.getNumberOfConstraints() );
+        assertEquals(1,
+                     m.lhs.length);
+        assertTrue(m.lhs[0] instanceof FactPattern);
+        final FactPattern fp = (FactPattern) m.lhs[0];
+        assertEquals("Applicant",
+                     fp.getFactType());
+        assertEquals(1,
+                     fp.getNumberOfConstraints());
 
-        assertTrue( fp.getConstraint( 0 ) instanceof SingleFieldConstraint );
-        final SingleFieldConstraint sfc = (SingleFieldConstraint) fp.getConstraint( 0 );
-        assertEquals( "age",
-                      sfc.getFieldName() );
-        assertEquals( DataType.TYPE_NUMERIC_INTEGER,
-                      sfc.getFieldType() );
-        assertEquals( "$a",
-                      sfc.getFieldBinding() );
+        assertTrue(fp.getConstraint(0) instanceof SingleFieldConstraint);
+        final SingleFieldConstraint sfc = (SingleFieldConstraint) fp.getConstraint(0);
+        assertEquals("age",
+                     sfc.getFieldName());
+        assertEquals(DataType.TYPE_NUMERIC_INTEGER,
+                     sfc.getFieldType());
+        assertEquals("$a",
+                     sfc.getFieldBinding());
     }
 
     @Test
@@ -224,34 +222,33 @@ public class RuleModelDRLPersistenceUnmarshallingI18NTest {
                 "then\n" +
                 "end";
 
-        addModelField( "Applicant",
-                       "age",
-                       "java.lang.Integer",
-                       DataType.TYPE_NUMERIC_INTEGER );
+        addModelField("Applicant",
+                      "age",
+                      "java.lang.Integer",
+                      DataType.TYPE_NUMERIC_INTEGER);
 
-        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
-                                                                                 new ArrayList<String>(),
-                                                                                 dmo );
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
+                                                                                new ArrayList<String>(),
+                                                                                dmo);
 
-        assertNotNull( m );
+        assertNotNull(m);
 
-        assertEquals( 1,
-                      m.lhs.length );
-        assertTrue( m.lhs[ 0 ] instanceof FactPattern );
-        final FactPattern fp = (FactPattern) m.lhs[ 0 ];
-        assertEquals( "Applicant",
-                      fp.getFactType() );
-        assertEquals( 1,
-                      fp.getNumberOfConstraints() );
+        assertEquals(1,
+                     m.lhs.length);
+        assertTrue(m.lhs[0] instanceof FactPattern);
+        final FactPattern fp = (FactPattern) m.lhs[0];
+        assertEquals("Applicant",
+                     fp.getFactType());
+        assertEquals(1,
+                     fp.getNumberOfConstraints());
 
-        assertTrue( fp.getConstraint( 0 ) instanceof SingleFieldConstraint );
-        final SingleFieldConstraint sfc = (SingleFieldConstraint) fp.getConstraint( 0 );
-        assertEquals( "age",
-                      sfc.getFieldName() );
-        assertEquals( DataType.TYPE_NUMERIC_INTEGER,
-                      sfc.getFieldType() );
-        assertEquals( "製品番号",
-                      sfc.getFieldBinding() );
+        assertTrue(fp.getConstraint(0) instanceof SingleFieldConstraint);
+        final SingleFieldConstraint sfc = (SingleFieldConstraint) fp.getConstraint(0);
+        assertEquals("age",
+                     sfc.getFieldName());
+        assertEquals(DataType.TYPE_NUMERIC_INTEGER,
+                     sfc.getFieldType());
+        assertEquals("製品番号",
+                     sfc.getFieldBinding());
     }
-
 }

@@ -26,6 +26,7 @@ import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
@@ -980,7 +981,7 @@ public class DMNRuntimeTest {
         loan.put("Term", 1);
         context.set("Loan", loan);
 
-        DMNResult dmnResult = runtime.evaluateDecisionByName( dmnModel, "Loan Payment", context );
+        DMNResult dmnResult = runtime.evaluateByName( dmnModel, context, "Loan Payment");
         assertThat( DMNRuntimeUtil.formatMessages( dmnResult.getMessages() ), dmnResult.hasErrors(), is( true ) );
         assertThat( dmnResult.getMessages().size(), is( 1 ) );
         assertThat( dmnResult.getMessages().get( 0 ).getSourceId(), is("_93062144-ebc7-4ef7-a156-c342aeffac49") );
@@ -1437,7 +1438,7 @@ public class DMNRuntimeTest {
     }
 
     @Test
-    public void testCycleDetectionCornerCase() {
+    public void testCycleDetectionSelfReference() {
         DecisionNodeImpl decision = new DecisionNodeImpl();
         decision.addDependency("self", decision);
         DMNModelImpl model = new DMNModelImpl();
@@ -1445,6 +1446,42 @@ public class DMNRuntimeTest {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime(this.getClass());
         DMNResult result = runtime.evaluateAll(model, DMNFactory.newContext());
         assertTrue(result.hasErrors());
+    }
+
+    @Test
+    public void testSharedDependency() {
+      DecisionNodeImpl a = new DecisionNodeImpl();
+      DecisionNodeImpl b = new DecisionNodeImpl();
+      DecisionNodeImpl c = new DecisionNodeImpl();
+      a.addDependency("c", c);
+      b.addDependency("c", c);
+      DMNModelImpl model = new DMNModelImpl();
+      model.addDecision(a);
+      model.addDecision(b);
+      model.addDecision(c);
+      DMNRuntime runtime = DMNRuntimeUtil.createRuntime(this.getClass());
+      DMNResult result = runtime.evaluateAll(model, DMNFactory.newContext());
+      assertFalse(result.hasErrors());
+    }
+
+    @Test
+    public void testCycleDetectionDeadlyDiamond() {
+        DecisionNodeImpl a = new DecisionNodeImpl();
+        DecisionNodeImpl b = new DecisionNodeImpl();
+        DecisionNodeImpl c = new DecisionNodeImpl();
+        DecisionNodeImpl d = new DecisionNodeImpl();
+        a.addDependency("b", b);
+        a.addDependency("c", c);
+        b.addDependency("d", d);
+        c.addDependency("d", d);
+        DMNModelImpl model = new DMNModelImpl();
+        model.addDecision(a);
+        model.addDecision(b);
+        model.addDecision(c);
+        model.addDecision(d);
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime(this.getClass());
+        DMNResult result = runtime.evaluateAll(model, DMNFactory.newContext());
+        assertFalse(result.hasErrors());
     }
 }
 
