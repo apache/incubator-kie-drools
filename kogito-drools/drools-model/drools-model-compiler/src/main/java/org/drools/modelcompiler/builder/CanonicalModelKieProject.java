@@ -46,11 +46,15 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
     public void writeProjectOutput( MemoryFileSystem trgMfs ) {
         MemoryFileSystem srcMfs = new MemoryFileSystem();
 
-        String[] resources = new ModelWriter().writeModel(srcMfs, trgMfs, modelBuilder.getPackageModels());
-        CompilationResult res = getCompiler().compile( resources, srcMfs, trgMfs, getClassLoader() );
+        final ModelWriter modelWriter = new ModelWriter();
+        final ModelWriter.Result result = modelWriter.writeModel(srcMfs, modelBuilder.getPackageModels());
+        CompilationResult res = getCompiler().compile(result.getSources(), srcMfs, trgMfs, getClassLoader() );
 
         if ( res.getErrors().length != 0 ) {
             throw new RuntimeException( "Compilation errors: " + Arrays.toString( res.getErrors() ) );
         }
+
+        modelWriter.writePackages(result.getPackages(), trgMfs);
+
     }
 }
