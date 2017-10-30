@@ -13,7 +13,7 @@
   <name>jBPM :: Shared Services</name>
 
   <properties>
-    <osgi.Bundle-SymbolicName>org.jbpm.shared.services</osgi.Bundle-SymbolicName>
+    <java.module.name>org.jbpm.shared.services</java.module.name>
   </properties>
 
   <dependencies>

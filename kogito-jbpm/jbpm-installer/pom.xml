@@ -13,6 +13,7 @@
   <name>jBPM :: Installer</name>
 
   <properties>
+    <java.module.name>org.jbpm.installer</java.module.name>
     <findbugs.skip>true</findbugs.skip>
   </properties>
 

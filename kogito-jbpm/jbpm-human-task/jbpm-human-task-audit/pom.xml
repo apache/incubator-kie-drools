@@ -15,7 +15,7 @@
   <name>jBPM :: Human Task Audit</name>
 
   <properties>
-    <osgi.Bundle-SymbolicName>org.jbpm.services.task.audit</osgi.Bundle-SymbolicName>
+    <java.module.name>org.jbpm.services.task.audit</java.module.name>
   </properties>
 
   <dependencies>

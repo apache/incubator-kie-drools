@@ -12,6 +12,10 @@
   <artifactId>jbpm-workitems-jms</artifactId>
   <name>jBPM :: WorkItems :: JMS</name>
 
+  <properties>
+    <java.module.name>org.jbpm.workitem.jms</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.jboss.spec.javax.jms</groupId>

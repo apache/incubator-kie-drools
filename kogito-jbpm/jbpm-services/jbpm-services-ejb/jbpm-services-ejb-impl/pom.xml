@@ -11,6 +11,7 @@
   
   <!--  skip tests from maven build for now as they require server installation -->
   <properties>
+    <java.module.name>org.jbpm.services.ejb.impl</java.module.name>
     <skipTests>true</skipTests>
     
     <!-- temp fix until ${version.org.jboss.as} in ip-bom gets corrected -->  

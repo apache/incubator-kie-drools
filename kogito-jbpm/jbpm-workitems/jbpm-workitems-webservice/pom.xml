@@ -12,6 +12,10 @@
   <artifactId>jbpm-workitems-webservice</artifactId>
   <name>jBPM :: WorkItems :: Webservice</name>
 
+  <properties>
+    <java.module.name>org.jbpm.workitem.webservice</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.cxf</groupId>

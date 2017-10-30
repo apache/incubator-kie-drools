@@ -13,7 +13,7 @@
   <name>jBPM :: Human Task Core</name>
 
   <properties>
-    <osgi.Bundle-SymbolicName>org.jbpm.services.task</osgi.Bundle-SymbolicName>
+    <java.module.name>org.jbpm.services.task</java.module.name>
 
     <!--  Oracle test properties
     <maven.datasource.classname>oracle.jdbc.xa.client.OracleXADataSource</maven.datasource.classname>

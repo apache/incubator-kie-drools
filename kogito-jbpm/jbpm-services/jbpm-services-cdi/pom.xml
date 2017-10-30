@@ -7,7 +7,11 @@
   </parent>
   <artifactId>jbpm-services-cdi</artifactId>
   <name>jBPM :: CDI Services</name>
-  
+
+  <properties>
+    <java.module.name>org.jbpm.services.cdi</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.drools</groupId>

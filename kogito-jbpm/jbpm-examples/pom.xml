@@ -13,6 +13,10 @@
   <name>jBPM :: Examples</name>
   <description>Run JBPMExamplesApp to try the jBPM examples.</description>
 
+  <properties>
+    <java.module.name>org.jbpm.examples</java.module.name>
+  </properties>
+
   <build>
     <pluginManagement>
       <plugins>

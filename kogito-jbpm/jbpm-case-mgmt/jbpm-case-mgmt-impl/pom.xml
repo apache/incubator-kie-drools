@@ -10,6 +10,10 @@
   <name>jBPM :: Case Management Impl</name>
   <description>jBPM Case Management Impl</description>
 
+  <properties>
+    <java.module.name>org.jbpm.casemgmt.impl</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie</groupId>

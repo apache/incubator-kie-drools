@@ -12,7 +12,7 @@
   <description>jBPM JPA Human Task Persistence</description>
 
   <properties>
-    <osgi.Bundle-SymbolicName>org.jbpm.services.task.jpa</osgi.Bundle-SymbolicName>
+    <java.module.name>org.jbpm.services.task.jpa</java.module.name>
   </properties>
 
   <dependencies>

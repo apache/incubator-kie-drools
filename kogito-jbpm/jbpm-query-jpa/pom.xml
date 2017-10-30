@@ -17,7 +17,7 @@
   <description>jBPM JPA Query</description>
 
   <properties>
-    <osgi.Bundle-SymbolicName>org.jbpm.query.jpa</osgi.Bundle-SymbolicName>
+    <java.module.name>org.jbpm.query.jpa</java.module.name>
   </properties>
 
   <build>

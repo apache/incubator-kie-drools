@@ -10,7 +10,11 @@
 
   <name>jBPM :: Case Management API</name>
   <description>jBPM Case Management API</description>
-  
+
+  <properties>
+    <java.module.name>org.jbpm.casemgmt.api</java.module.name>
+  </properties>
+
    <dependencies>
     <dependency>
       <groupId>org.kie</groupId>

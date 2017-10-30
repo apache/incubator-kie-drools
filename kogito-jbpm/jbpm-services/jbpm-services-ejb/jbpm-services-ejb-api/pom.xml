@@ -7,7 +7,11 @@
   </parent>
   <artifactId>jbpm-services-ejb-api</artifactId>
   <name>jBPM :: EJB Services API</name>
-  
+
+  <properties>
+    <java.module.name>org.jbpm.services.ejb.api</java.module.name>
+  </properties>
+
   <dependencies>
   	<dependency>
       <groupId>org.jbpm</groupId>

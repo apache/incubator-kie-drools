@@ -13,6 +13,10 @@
 
   <name>jBPM :: Executor Service</name>
 
+  <properties>
+    <java.module.name>org.jbpm.executor.service</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.drools</groupId>

@@ -12,6 +12,10 @@
   <artifactId>jbpm-workitems-rest</artifactId>
   <name>jBPM :: WorkItems :: Rest</name>
 
+  <properties>
+    <java.module.name>org.jbpm.workitem.rest</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.cxf</groupId>

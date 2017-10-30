@@ -15,7 +15,7 @@
   <name>jBPM :: Human Task WorkItems</name>
 
   <properties>
-    <osgi.Bundle-SymbolicName>org.jbpm.services.task.wih</osgi.Bundle-SymbolicName>
+    <java.module.name>org.jbpm.services.task.wih</java.module.name>
   </properties>
 
   <dependencies>

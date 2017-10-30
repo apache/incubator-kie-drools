@@ -12,6 +12,10 @@
   <artifactId>jbpm-workitems-bpmn2</artifactId>
   <name>jBPM :: WorkItems :: BPMN2</name>
 
+  <properties>
+    <java.module.name>org.jbpm.workitem.bpmn2</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.cxf</groupId>

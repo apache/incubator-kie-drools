@@ -17,7 +17,7 @@
   <description>jBPM Persistence API</description>
 
   <properties>
-    <osgi.Bundle-SymbolicName>org.jbpm.persistence.api</osgi.Bundle-SymbolicName>
+    <java.module.name>org.jbpm.persistence.api</java.module.name>
   </properties>
 
   <dependencies>

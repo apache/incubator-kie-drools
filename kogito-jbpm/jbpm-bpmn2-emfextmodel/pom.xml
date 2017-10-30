@@ -17,7 +17,7 @@
   <description>jBPM BPMN2 EMF Extension Model</description>
 
   <properties>
-    <osgi.Bundle-SymbolicName>org.jbpm.bpmn2.emfextmodel;singleton:=true</osgi.Bundle-SymbolicName>
+    <java.module.name>org.jbpm.bpmn2.emfextmodel</java.module.name>
   </properties>
 
   <build>

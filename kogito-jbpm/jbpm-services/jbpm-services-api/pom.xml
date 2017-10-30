@@ -10,7 +10,7 @@
   <name>jBPM :: Services API</name>
 
   <properties>
-    <osgi.Bundle-SymbolicName>org.jbpm.services.api;singleton:=true</osgi.Bundle-SymbolicName>
+    <java.module.name>org.jbpm.services.api</java.module.name>
   </properties>
 
   <dependencies>

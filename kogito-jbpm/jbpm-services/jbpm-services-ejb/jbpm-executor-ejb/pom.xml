@@ -11,6 +11,7 @@
 
   <!--  skip tests from maven build for now as they require server installation -->
   <properties>
+    <java.module.nane>org.jbpm.executor.ejb</java.module.nane>
     <skipTests>true</skipTests>
   </properties>
 

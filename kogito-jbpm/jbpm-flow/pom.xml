@@ -17,7 +17,7 @@
   <description>jBPM Flow</description>
 
   <properties>
-    <osgi.Bundle-SymbolicName>org.jbpm.flow.core</osgi.Bundle-SymbolicName>
+    <java.module.name>org.jbpm.flow.core</java.module.name>
   </properties>
 
   <profiles>

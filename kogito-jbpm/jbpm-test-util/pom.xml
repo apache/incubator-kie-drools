@@ -15,6 +15,10 @@
   <name>jBPM :: Test Util</name>
   <description>jBPM Test Util</description>
 
+  <properties>
+    <java.module.name>org.jbpm.testutil</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie</groupId>

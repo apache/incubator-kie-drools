@@ -10,6 +10,7 @@
   <name>jBPM :: Executor Service CDI add-ons</name>
 
   <properties>
+    <java.module.name>org.jbpm.executor.cdi</java.module.name>
     <maven.hibernate.dialect>org.hibernate.dialect.H2Dialect</maven.hibernate.dialect>
     <maven.datasource.classname>org.h2.jdbcx.JdbcDataSource</maven.datasource.classname>
     <maven.jdbc.driver.class>org.h2.Driver</maven.jdbc.driver.class>

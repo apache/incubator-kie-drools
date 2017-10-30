@@ -16,7 +16,7 @@
   <name>jBPM :: Audit</name>
 
   <properties>
-    <osgi.Bundle-SymbolicName>org.jbpm.process.audit</osgi.Bundle-SymbolicName>
+    <java.module.name>org.jbpm.process.audit</java.module.name>
 
     <maven.jdbc.url>jdbc:h2:mem:bamTest;MVCC=TRUE</maven.jdbc.url>
   </properties>

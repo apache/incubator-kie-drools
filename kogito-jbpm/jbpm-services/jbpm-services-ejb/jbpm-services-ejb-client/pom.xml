@@ -8,6 +8,11 @@
   </parent>
   <artifactId>jbpm-services-ejb-client</artifactId>
   <name>jBPM :: EJB Services Client</name>
+
+  <properties>
+    <java.module.name>org.jbpm.services.ejb.client</java.module.name>
+  </properties>
+
   <dependencies>
     
     <dependency>

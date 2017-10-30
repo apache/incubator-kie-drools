@@ -12,6 +12,10 @@
 
   <name>jBPM :: Document Service</name>
 
+  <properties>
+    <java.module.name>org.jbpm.document</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.slf4j</groupId>

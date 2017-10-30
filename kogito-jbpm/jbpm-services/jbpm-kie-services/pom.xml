@@ -12,7 +12,7 @@
   <name>jBPM :: KIE Services</name>
 
   <properties>
-    <osgi.Bundle-SymbolicName>org.jbpm.kie.services.api;singleton:=true</osgi.Bundle-SymbolicName>
+    <java.module.name>org.jbpm.kie.services.api</java.module.name>
   </properties>
 
   <dependencies>

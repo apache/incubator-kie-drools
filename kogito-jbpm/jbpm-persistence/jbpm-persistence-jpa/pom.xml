@@ -17,7 +17,7 @@
   <description>jBPM JPA Persistence</description>
 
   <properties>
-    <osgi.Bundle-SymbolicName>org.jbpm.persistence.jpa</osgi.Bundle-SymbolicName>
+    <java.module.name>org.jbpm.persistence.jpa</java.module.name>
   </properties>
 
   <dependencies>
