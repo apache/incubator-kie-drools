@@ -2,6 +2,7 @@ package org.drools.modelcompiler.builder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.javaparser.JavaParser;
@@ -16,15 +17,15 @@ import static org.drools.modelcompiler.builder.JavaParserCompiler.getPrettyPrint
 
 public class ModelWriter {
 
-    public String[] writeModel(MemoryFileSystem srcMfs, MemoryFileSystem trgMfs, List<PackageModel> packageModels) {
+    public Result writeModel(MemoryFileSystem srcMfs, List<PackageModel> packageModels) {
         List<String> sources = new ArrayList<>();
-        StringBuilder pkgNames = new StringBuilder();
+        List<String> pkgNames = new ArrayList<>();
 
         PrettyPrinter prettyPrinter = getPrettyPrinter();
 
         for (PackageModel pkgModel : packageModels) {
             String pkgName = pkgModel.getName();
-            pkgNames.append( pkgName ).append( "\n" );
+            pkgNames.add(pkgName);
             String folderName = pkgName.replace( '.', '/' );
 
             if ( pkgModel.getVarsSource() != null ) {
@@ -50,8 +51,7 @@ public class ModelWriter {
             sources.add( rulesSourceName );
         }
 
-        trgMfs.write( PACKAGE_LIST, pkgNames.toString().getBytes() );
-        return sources.toArray( new String[sources.size()] );
+        return new Result(sources.toArray(new String[sources.size()]), pkgNames);
     }
 
     private String toPojoSource(String packageName, PrettyPrinter prettyPrinter, ClassOrInterfaceDeclaration pojo ) {
@@ -67,6 +67,29 @@ public class ModelWriter {
         cu.addType( pojo );
 
         return prettyPrinter.print( cu );
+    }
+
+    public void writePackages(List<String> packages, MemoryFileSystem trgMfs) {
+        final String pkgNames = packages.stream().collect(Collectors.joining("\n"));
+        trgMfs.write(PACKAGE_LIST, pkgNames.getBytes() );
+    }
+
+    public static class Result {
+        final private String[] sources;
+        final private List<String> packages;
+
+        public Result(String[] sources, List<String> packages) {
+            this.sources = sources;
+            this.packages = packages;
+        }
+
+        public String[] getSources() {
+            return sources;
+        }
+
+        public List<String> getPackages() {
+            return packages;
+        }
     }
 
 }
