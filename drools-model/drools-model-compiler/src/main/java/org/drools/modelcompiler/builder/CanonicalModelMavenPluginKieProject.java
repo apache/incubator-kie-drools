@@ -16,6 +16,9 @@
 
 package org.drools.modelcompiler.builder;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.compiler.compiler.io.Folder;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kie.builder.impl.AbstractKieModule;
@@ -26,7 +29,7 @@ import org.kie.internal.builder.KnowledgeBuilder;
 
 public class CanonicalModelMavenPluginKieProject extends KieModuleKieProject {
 
-    private ModelBuilderImpl modelBuilder;
+    private List<ModelBuilderImpl> modelBuilders = new ArrayList<>();
 
     public CanonicalModelMavenPluginKieProject(InternalKieModule kieModule, ClassLoader classLoader) {
         super(kieModule, classLoader);
@@ -34,17 +37,19 @@ public class CanonicalModelMavenPluginKieProject extends KieModuleKieProject {
 
     @Override
     protected KnowledgeBuilder createKnowledgeBuilder(KieBaseModelImpl kBaseModel, AbstractKieModule kModule) {
-        modelBuilder = new ModelBuilderImpl();
+        ModelBuilderImpl modelBuilder = new ModelBuilderImpl();
+        modelBuilders.add(modelBuilder);
         return modelBuilder;
     }
 
     @Override
     public void writeProjectOutput(MemoryFileSystem trgMfs) {
         MemoryFileSystem srcMfs = new MemoryFileSystem();
-
-        new ModelWriter().writeModel(srcMfs, trgMfs, modelBuilder.getPackageModels());
-        final Folder sourceFolder = srcMfs.getFolder("src/main/java");
-        final Folder targetFolder = trgMfs.getFolder(".");
-        srcMfs.copyFolder(sourceFolder, trgMfs, targetFolder);
+        for(ModelBuilderImpl modelBuilder: modelBuilders) {
+            new ModelWriter().writeModel(srcMfs, trgMfs, modelBuilder.getPackageModels());
+            final Folder sourceFolder = srcMfs.getFolder("src/main/java");
+            final Folder targetFolder = trgMfs.getFolder(".");
+            srcMfs.copyFolder(sourceFolder, trgMfs, targetFolder);
+        }
     }
 }
