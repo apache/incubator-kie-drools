@@ -45,11 +45,15 @@ public class CanonicalModelMavenPluginKieProject extends KieModuleKieProject {
     @Override
     public void writeProjectOutput(MemoryFileSystem trgMfs) {
         MemoryFileSystem srcMfs = new MemoryFileSystem();
+        final List<String> packages = new ArrayList<>();
+        final ModelWriter modelWriter = new ModelWriter();
         for(ModelBuilderImpl modelBuilder: modelBuilders) {
-            new ModelWriter().writeModel(srcMfs, trgMfs, modelBuilder.getPackageModels());
+            ModelWriter.Result result = modelWriter.writeModel(srcMfs, modelBuilder.getPackageModels());
+            packages.addAll(result.getPackages());
             final Folder sourceFolder = srcMfs.getFolder("src/main/java");
             final Folder targetFolder = trgMfs.getFolder(".");
             srcMfs.copyFolder(sourceFolder, trgMfs, targetFolder);
         }
+        modelWriter.writePackages(packages, trgMfs);
     }
 }
