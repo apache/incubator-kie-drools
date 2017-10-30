@@ -33,7 +33,7 @@ import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.models.testscenarios.shared.VerifyFact;
 import org.drools.workbench.models.testscenarios.shared.VerifyField;
 import org.drools.workbench.models.testscenarios.shared.VerifyRuleFired;
-import org.kie.internal.xstream.XStreamUtils;
+import org.kie.soup.commons.xstream.XStreamUtils;
 import org.kie.soup.project.datamodel.imports.Imports;
 
 /**

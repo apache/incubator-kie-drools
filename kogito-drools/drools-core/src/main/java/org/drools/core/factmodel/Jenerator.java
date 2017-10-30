@@ -28,7 +28,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 import java.util.jar.JarOutputStream;
 
-import static org.kie.internal.xstream.XStreamUtils.createTrustingXStream;
+import static org.kie.soup.commons.xstream.XStreamUtils.createTrustingXStream;
 
 /**
  * This will generate a jar from a meta model.

@@ -69,7 +69,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 
-import static org.kie.internal.xstream.XStreamUtils.createTrustingXStream;
+import static org.kie.soup.commons.xstream.XStreamUtils.createTrustingXStream;
 
 
 public class XStreamJSon {

@@ -51,7 +51,7 @@ import org.drools.workbench.models.guided.template.backend.upgrade.RuleModelUpgr
 import org.drools.workbench.models.guided.template.backend.upgrade.RuleModelUpgradeHelper3;
 import org.drools.workbench.models.guided.template.backend.upgrade.TemplateModelUpgradeHelper1;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
-import org.kie.internal.xstream.XStreamUtils;
+import org.kie.soup.commons.xstream.XStreamUtils;
 
 /**
  * This class persists the rule model to XML and back. This is the 'brl' xml
