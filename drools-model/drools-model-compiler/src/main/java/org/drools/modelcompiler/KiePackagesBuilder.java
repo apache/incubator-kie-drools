@@ -89,6 +89,7 @@ import org.drools.model.functions.Predicate1;
 import org.drools.model.impl.DeclarationImpl;
 import org.drools.model.patterns.QueryCallPattern;
 import org.drools.modelcompiler.consequence.LambdaConsequence;
+import org.drools.modelcompiler.consequence.MVELConsequence;
 import org.drools.modelcompiler.constraints.ConstraintEvaluator;
 import org.drools.modelcompiler.constraints.LambdaAccumulator;
 import org.drools.modelcompiler.constraints.LambdaConstraint;
@@ -259,7 +260,13 @@ public class KiePackagesBuilder {
 
     private void processConsequence( RuleContext ctx, Consequence consequence, String name ) {
         if ( name.equals( RuleImpl.DEFAULT_CONSEQUENCE_NAME ) ) {
-            ctx.getRule().setConsequence( new LambdaConsequence( consequence, ctx ) );
+            if ("java".equals(consequence.getLanguage())) {
+                ctx.getRule().setConsequence(new LambdaConsequence(consequence, ctx));
+            } else if ("mvel".equals(consequence.getLanguage())) {
+                ctx.getRule().setConsequence(new MVELConsequence(consequence, ctx));
+            } else {
+                throw new UnsupportedOperationException("Unknown script language for consequence: " + consequence.getLanguage());
+            }
         } else {
             ctx.getRule().addNamedConsequence( name, new LambdaConsequence( consequence, ctx ) );
         }

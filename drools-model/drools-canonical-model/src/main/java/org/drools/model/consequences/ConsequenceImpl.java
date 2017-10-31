@@ -20,7 +20,9 @@ public class ConsequenceImpl implements Consequence {
 
     private final boolean breaking;
 
-    ConsequenceImpl( BlockN block, Variable[] variables, FunctionN[] inserts, Update[] updates, Variable[] deletes, boolean usingDrools, boolean breaking ) {
+    private final String language;
+
+    ConsequenceImpl(BlockN block, Variable[] variables, FunctionN[] inserts, Update[] updates, Variable[] deletes, boolean usingDrools, boolean breaking, String language) {
         this.variables = variables;
         this.declarations = Stream.of(variables).filter( Variable::isFact ).toArray(Variable[]::new);
         this.block = block;
@@ -29,6 +31,7 @@ public class ConsequenceImpl implements Consequence {
         this.deletes = deletes == null ? new Variable[0] : deletes;
         this.usingDrools = usingDrools;
         this.breaking = breaking;
+        this.language = language;
     }
 
     @Override
@@ -94,5 +97,10 @@ public class ConsequenceImpl implements Consequence {
         public String[] getUpdatedFields() {
             return updatedFields;
         }
+    }
+
+    @Override
+    public String getLanguage() {
+        return this.language;
     }
 }
