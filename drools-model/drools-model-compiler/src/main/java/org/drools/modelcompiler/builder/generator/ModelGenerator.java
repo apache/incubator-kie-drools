@@ -89,6 +89,7 @@ import org.drools.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.javaparser.ast.type.Type;
 import org.drools.javaparser.ast.type.UnknownType;
 import org.drools.model.BitMask;
+import org.drools.model.Query;
 import org.drools.model.QueryDef;
 import org.drools.model.Rule;
 import org.drools.model.Variable;
@@ -194,7 +195,8 @@ public class ModelGenerator {
 
         BlockStmt ruleConsequence = rewriteConsequence(context, ruleDescr.getConsequence().toString());
 
-        BlockStmt ruleVariablesBlock = createRuleVariables(packageModel, context);
+        BlockStmt ruleVariablesBlock = new BlockStmt();
+        createRuleVariables(ruleVariablesBlock, packageModel, context);
         ruleMethod.setBody(ruleVariablesBlock);
 
         List<String> usedDeclarationInRHS = extractUsedDeclarations(packageModel, context, ruleConsequence);
@@ -320,25 +322,26 @@ public class ModelGenerator {
         return onCall;
     }
 
-    public static BlockStmt createRuleVariables(PackageModel packageModel, RuleContext context) {
-        BlockStmt ruleBlock = new BlockStmt();
+    public static void createRuleVariables(BlockStmt block, PackageModel packageModel, RuleContext context) {
 
         for (DeclarationSpec decl : context.getDeclarations()) {
             if (!packageModel.getGlobals().containsKey(decl.getBindingId())) {
-                addVariable(ruleBlock, decl);
+                addVariable(block, decl);
             }
         }
-        return ruleBlock;
     }
 
     private static void processQuery(InternalKnowledgePackage pkg, PackageModel packageModel, QueryDescr queryDescr) {
         RuleContext context = new RuleContext(pkg, packageModel.getExprIdGenerator(), Optional.of(queryDescr));
         visit(context, packageModel, queryDescr);
-        MethodDeclaration queryMethod = new MethodDeclaration(EnumSet.of(Modifier.PRIVATE), getQueryType(context.queryParameters), "query_" + toId(queryDescr.getName()));
+        final Type queryType = JavaParser.parseType(Query.class.getCanonicalName());
+        MethodDeclaration queryMethod = new MethodDeclaration(EnumSet.of(Modifier.PRIVATE), queryType, "query_" + toId(queryDescr.getName()));
 
-        BlockStmt queryVariables = createRuleVariables(packageModel, context);
-        queryMethod.setBody(queryVariables);
-        VariableDeclarationExpr queryVar = new VariableDeclarationExpr(getQueryType(context.queryParameters), QUERY_CALL);
+        BlockStmt ruleBody = new BlockStmt();
+        createRuleVariables(ruleBody, packageModel, context);
+        queryMethod.setBody(ruleBody);
+        final String queryDefVariableName = QUERY_CALL + "_def";
+        VariableDeclarationExpr queryDefVar = new VariableDeclarationExpr(getQueryType(context.queryParameters), queryDefVariableName);
 
         MethodCallExpr queryCall = new MethodCallExpr(null, QUERY_CALL);
         if (!queryDescr.getNamespace().isEmpty()) {
@@ -349,13 +352,18 @@ public class ModelGenerator {
             queryCall.addArgument(new NameExpr(toVar(qp.name)));
         }
 
-        MethodCallExpr viewCall = new MethodCallExpr(queryCall, BUILD_CALL);
-        context.expressions.forEach(viewCall::addArgument);
+        AssignExpr ruleAssign = new AssignExpr(queryDefVar, queryCall, AssignExpr.Operator.ASSIGN);
+        ruleBody.addStatement(ruleAssign);
 
-        AssignExpr ruleAssign = new AssignExpr(queryVar, viewCall, AssignExpr.Operator.ASSIGN);
-        queryVariables.addStatement(ruleAssign);
+        VariableDeclarationExpr queryBuildVar = new VariableDeclarationExpr(queryType, (QUERY_CALL + "_build"));
 
-        queryVariables.addStatement(new ReturnStmt(QUERY_CALL));
+        MethodCallExpr buildCall = new MethodCallExpr(new NameExpr(queryDefVariableName), BUILD_CALL);
+        context.expressions.forEach(buildCall::addArgument);
+
+        AssignExpr queryBuildAssign = new AssignExpr(queryBuildVar, buildCall, AssignExpr.Operator.ASSIGN);
+        ruleBody.addStatement(queryBuildAssign);
+
+        ruleBody.addStatement(new ReturnStmt(QUERY_CALL + "_build"));
         packageModel.putQueryMethod(queryMethod);
     }
 
