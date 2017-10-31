@@ -32,6 +32,6 @@ public class AppendAllFunction
     }
 
     public FEELFnResult<List> invoke(@ParameterName("list") Object[] lists) {
-        return BuiltInFunctions.getFunction(ConcatenateFunction.class).invoke(lists);
+        return (FEELFnResult) BuiltInFunctions.getFunction(ConcatenateFunction.class).invoke(lists);
     }
 }
