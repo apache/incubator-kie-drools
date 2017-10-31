@@ -32,7 +32,7 @@ import org.kie.dmn.signavio.feel.runtime.functions.DateTimeFunction;
 import org.kie.dmn.signavio.feel.runtime.functions.DayAddFunction;
 import org.kie.dmn.signavio.feel.runtime.functions.DayDiffFunction;
 import org.kie.dmn.signavio.feel.runtime.functions.DayFunction;
-import org.kie.dmn.signavio.feel.runtime.functions.DiffFunction;
+import org.kie.dmn.signavio.feel.runtime.functions.SecondsDiffFunction;
 import org.kie.dmn.signavio.feel.runtime.functions.HourDiffFunction;
 import org.kie.dmn.signavio.feel.runtime.functions.HourFunction;
 import org.kie.dmn.signavio.feel.runtime.functions.IntegerFunction;
@@ -119,7 +119,7 @@ public class KieDMNSignavioProfile implements DMNProfile {
                                                                                new DayDiffFunction(),
                                                                                new HourDiffFunction(),
                                                                                new MinutesDiffFunction(),
-                                                                               new DiffFunction(),
+                                                                               new SecondsDiffFunction(),
                                                                                new YearAddFunction(),
                                                                                new MonthAddFunction(),
                                                                                new DayAddFunction(),
