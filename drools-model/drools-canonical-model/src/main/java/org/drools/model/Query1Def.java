@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package org.drools.model.view;
+package org.drools.model;
 
-import org.drools.model.Argument;
-import org.drools.model.QueryDef;
+import org.drools.model.view.QueryCallViewItem;
 
-public interface QueryCallViewItem extends ViewItem {
+public interface Query1Def<A> extends QueryDef {
+    QueryCallViewItem call(Argument<A> aVar);
 
-    QueryDef getQuery();
-
-    Argument<?>[] getArguments();
+    Variable<A> getArg1();
 }

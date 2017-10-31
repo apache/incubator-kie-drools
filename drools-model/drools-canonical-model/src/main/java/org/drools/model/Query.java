@@ -17,15 +17,6 @@
 package org.drools.model;
 
 public interface Query {
-
-    Class[] QUERIES_BY_ARITY = new Class[] {
-            Query.class, Query1.class, Query2.class
-    };
-
-    static Class getQueryClassByArity(int arity) {
-        return QUERIES_BY_ARITY[arity];
-    }
-
     String getPackage();
     String getName();
 

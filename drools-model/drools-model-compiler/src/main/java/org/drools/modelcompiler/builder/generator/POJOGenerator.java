@@ -1,5 +1,10 @@
 package org.drools.modelcompiler.builder.generator;
 
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
@@ -24,16 +29,12 @@ import org.drools.javaparser.ast.type.PrimitiveType;
 import org.drools.javaparser.ast.type.Type;
 import org.drools.modelcompiler.builder.GeneratedClassWithPackage;
 import org.drools.modelcompiler.builder.PackageModel;
+import org.kie.api.definition.type.Position;
 import org.kie.api.definition.type.Role;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Map;
-
 import static java.text.MessageFormat.format;
+
 import static org.drools.javaparser.JavaParser.parseStatement;
 import static org.drools.javaparser.ast.NodeList.nodeList;
 import static org.drools.modelcompiler.builder.JavaParserCompiler.compileAll;
@@ -108,6 +109,7 @@ public class POJOGenerator {
 
         if (!typeDeclaration.getFields().isEmpty()) {
             final ConstructorDeclaration fullArgumentsCtor = generatedClass.addConstructor( Modifier.PUBLIC );
+            int position = 0;
             for (TypeFieldDescr kv : typeDeclaration.getFields().values()) {
                 final String fieldName = kv.getFieldName();
                 final String typeName = kv.getPattern().getObjectType();
@@ -116,6 +118,7 @@ public class POJOGenerator {
 
                 FieldDeclaration field = generatedClass.addField( returnType, fieldName, Modifier.PRIVATE );
                 field.createSetter();
+                field.addAndGetAnnotation( Position.class.getName() ).addPair( "value", "" + position++ );
                 MethodDeclaration getter = field.createGetter();
 
                 ctorFieldStatement.add( replaceFieldName( parseStatement( "this.__fieldName = __fieldName;" ), fieldName ) );

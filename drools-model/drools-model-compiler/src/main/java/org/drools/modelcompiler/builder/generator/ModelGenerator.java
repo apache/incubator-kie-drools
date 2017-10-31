@@ -16,6 +16,7 @@
 
 package org.drools.modelcompiler.builder.generator;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -41,6 +42,7 @@ import org.drools.compiler.lang.descr.ConditionalBranchDescr;
 import org.drools.compiler.lang.descr.ConditionalElementDescr;
 import org.drools.compiler.lang.descr.EvalDescr;
 import org.drools.compiler.lang.descr.ExistsDescr;
+import org.drools.compiler.lang.descr.ExprConstraintDescr;
 import org.drools.compiler.lang.descr.ForallDescr;
 import org.drools.compiler.lang.descr.NamedConsequenceDescr;
 import org.drools.compiler.lang.descr.NotDescr;
@@ -86,17 +88,16 @@ import org.drools.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.javaparser.ast.type.Type;
 import org.drools.javaparser.ast.type.UnknownType;
 import org.drools.model.BitMask;
-import org.drools.model.Query;
+import org.drools.model.QueryDef;
 import org.drools.model.Rule;
 import org.drools.model.Variable;
 import org.drools.modelcompiler.builder.PackageModel;
-import org.kie.soup.project.datamodel.commons.types.TypeResolver;
+import org.kie.api.definition.type.Position;
 
 import static java.util.stream.Collectors.toList;
 
 import static org.drools.javaparser.printer.PrintUtil.toDrlx;
 import static org.drools.model.impl.NamesGenerator.generateName;
-import static org.drools.modelcompiler.builder.JavaParserCompiler.compileAll;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassFromContext;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.parseBlock;
@@ -372,7 +373,7 @@ public class ModelGenerator {
 
 
     private static ClassOrInterfaceType getQueryType(List<QueryParameter> queryParameters) {
-        Class<?> res = Query.getQueryClassByArity(queryParameters.size());
+        Class<?> res = QueryDef.getQueryClassByArity(queryParameters.size());
         ClassOrInterfaceType queryType = JavaParser.parseClassOrInterfaceType(res.getCanonicalName());
 
         Type[] genericType = queryParameters.stream()
@@ -607,7 +608,7 @@ public class ModelGenerator {
             context.addExpression( dslExpr );
         } else {
             for (BaseDescr constraint : constraintDescrs) {
-                String expression = constraint.toString();
+                String expression = getConstraintExpression(patternType, constraint);
                 String patternIdentifier = pattern.getIdentifier();
                 DrlxParseResult drlxParseResult = drlxParse(context, packageModel, patternType, patternIdentifier, expression);
 
@@ -631,6 +632,24 @@ public class ModelGenerator {
                 }
             }
         }
+    }
+
+    private static String getConstraintExpression(Class<?> patternType, BaseDescr constraint) {
+        if (constraint instanceof ExprConstraintDescr && (( ExprConstraintDescr ) constraint).getType() == ExprConstraintDescr.Type.POSITIONAL) {
+            int position = (( ExprConstraintDescr ) constraint).getPosition();
+            return getFieldAtPosition(patternType, position) + " == " + constraint.toString();
+        }
+        return constraint.toString();
+    }
+
+    private static String getFieldAtPosition(Class<?> patternType, int position) {
+        for (Field field : patternType.getDeclaredFields()) {
+            Position p = field.getAnnotation( Position.class );
+            if (p != null && p.value() == position) {
+                return field.getName();
+            }
+        }
+        throw new RuntimeException( "Cannot find field in position " + position + " for " + patternType );
     }
 
     private static String[] getPatternListenedProperties(PatternDescr pattern) {
