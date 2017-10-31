@@ -1,0 +1,162 @@
+<decision-table52>
+  <tableName>movePeopleToAddress</tableName>
+  <rowNumberCol>
+    <hideColumn>false</hideColumn>
+    <width>50</width>
+  </rowNumberCol>
+  <descriptionCol>
+    <hideColumn>false</hideColumn>
+    <width>150</width>
+  </descriptionCol>
+  <metadataCols/>
+  <attributeCols/>
+  <conditionPatterns>
+    <org.drools.workbench.models.guided.dtable.shared.model.BRLConditionColumn>
+      <hideColumn>false</hideColumn>
+      <width>-1</width>
+      <header>lives in brno tech park</header>
+      <constraintValueType>1</constraintValueType>
+      <parameters/>
+      <definition>
+        <org.drools.workbench.models.datamodel.rule.DSLSentence>
+          <drl>$p : Person ( age &gt; {age} )</drl>
+          <definition>There is person younger than {age:[0-9]*}</definition>
+          <values>
+            <org.drools.workbench.models.datamodel.rule.DSLComplexVariableValue>
+              <value>50</value>
+              <id>[0-9]*</id>
+            </org.drools.workbench.models.datamodel.rule.DSLComplexVariableValue>
+          </values>
+        </org.drools.workbench.models.datamodel.rule.DSLSentence>
+        <org.drools.workbench.models.datamodel.rule.DSLSentence>
+          <drl>address.city == &quot;{city}&quot; &amp;&amp; address.street == &quot;{street}&quot; &amp;&amp; address.number == {number} </drl>
+          <definition>- lives in {city} on {street} on {number:[0-9]*}</definition>
+          <values>
+            <org.drools.workbench.models.datamodel.rule.DSLVariableValue>
+              <value>Brno</value>
+            </org.drools.workbench.models.datamodel.rule.DSLVariableValue>
+            <org.drools.workbench.models.datamodel.rule.DSLVariableValue>
+              <value>Technology Park</value>
+            </org.drools.workbench.models.datamodel.rule.DSLVariableValue>
+            <org.drools.workbench.models.datamodel.rule.DSLComplexVariableValue>
+              <value>1</value>
+              <id>[0-9]*</id>
+            </org.drools.workbench.models.datamodel.rule.DSLComplexVariableValue>
+          </values>
+        </org.drools.workbench.models.datamodel.rule.DSLSentence>
+      </definition>
+      <childColumns>
+        <org.drools.workbench.models.guided.dtable.shared.model.BRLConditionVariableColumn>
+          <hideColumn>false</hideColumn>
+          <width>100</width>
+          <header>lives in brno tech park</header>
+          <constraintValueType>1</constraintValueType>
+          <fieldType>Boolean</fieldType>
+          <parameters/>
+          <varName></varName>
+        </org.drools.workbench.models.guided.dtable.shared.model.BRLConditionVariableColumn>
+      </childColumns>
+    </org.drools.workbench.models.guided.dtable.shared.model.BRLConditionColumn>
+  </conditionPatterns>
+  <actionCols>
+    <org.drools.workbench.models.guided.dtable.shared.model.BRLActionColumn>
+      <hideColumn>false</hideColumn>
+      <width>-1</width>
+      <header>move to city center</header>
+      <definition>
+        <org.drools.workbench.models.datamodel.rule.DSLSentence>
+          <drl>modify($p) \{ final Address a = new Address(); a.setCity(&quot;{city}&quot;); a.setStreet(&quot;{street}&quot;); a.setNumber({number}); setAddress(a); \}</drl>
+          <definition>Move the person to {city} on {street} on {number:[0-9]*}</definition>
+          <values>
+            <org.drools.workbench.models.datamodel.rule.DSLVariableValue>
+              <value>Brno</value>
+            </org.drools.workbench.models.datamodel.rule.DSLVariableValue>
+            <org.drools.workbench.models.datamodel.rule.DSLVariableValue>
+              <value>Joštova</value>
+            </org.drools.workbench.models.datamodel.rule.DSLVariableValue>
+            <org.drools.workbench.models.datamodel.rule.DSLComplexVariableValue>
+              <value>1</value>
+              <id>[0-9]*</id>
+            </org.drools.workbench.models.datamodel.rule.DSLComplexVariableValue>
+          </values>
+        </org.drools.workbench.models.datamodel.rule.DSLSentence>
+      </definition>
+      <childColumns>
+        <org.drools.workbench.models.guided.dtable.shared.model.BRLActionVariableColumn>
+          <hideColumn>false</hideColumn>
+          <width>100</width>
+          <header>move to city center</header>
+          <varName></varName>
+          <fieldType>Boolean</fieldType>
+        </org.drools.workbench.models.guided.dtable.shared.model.BRLActionVariableColumn>
+      </childColumns>
+    </org.drools.workbench.models.guided.dtable.shared.model.BRLActionColumn>
+  </actionCols>
+  <auditLog>
+    <filter class="org.drools.guvnor.client.modeldriven.dt52.auditlog.DecisionTableAuditLogFilter">
+      <acceptedTypes>
+        <entry>
+          <string>INSERT_ROW</string>
+          <boolean>false</boolean>
+        </entry>
+        <entry>
+          <string>INSERT_COLUMN</string>
+          <boolean>false</boolean>
+        </entry>
+        <entry>
+          <string>DELETE_ROW</string>
+          <boolean>false</boolean>
+        </entry>
+        <entry>
+          <string>DELETE_COLUMN</string>
+          <boolean>false</boolean>
+        </entry>
+        <entry>
+          <string>UPDATE_COLUMN</string>
+          <boolean>false</boolean>
+        </entry>
+      </acceptedTypes>
+    </filter>
+    <entries/>
+  </auditLog>
+  <imports>
+    <imports>
+      <org.kie.soup.project.datamodel.imports.Import>
+        <type>org.drools.testcoverage.common.model.Address</type>
+      </org.kie.soup.project.datamodel.imports.Import>
+      <org.kie.soup.project.datamodel.imports.Import>
+        <type>org.drools.testcoverage.common.model.Person</type>
+      </org.kie.soup.project.datamodel.imports.Import>
+    </imports>
+  </imports>
+  <packageName>org.drools.testcoverage.functional</packageName>
+  <tableFormat>EXTENDED_ENTRY</tableFormat>
+  <hitPolicy>NONE</hitPolicy>
+  <data>
+    <list>
+      <value>
+        <valueNumeric class="int">1</valueNumeric>
+        <valueString></valueString>
+        <dataType>NUMERIC_INTEGER</dataType>
+        <isOtherwise>false</isOtherwise>
+      </value>
+      <value>
+        <valueString></valueString>
+        <dataType>STRING</dataType>
+        <isOtherwise>false</isOtherwise>
+      </value>
+      <value>
+        <valueBoolean>true</valueBoolean>
+        <valueString></valueString>
+        <dataType>BOOLEAN</dataType>
+        <isOtherwise>false</isOtherwise>
+      </value>
+      <value>
+        <valueBoolean>true</valueBoolean>
+        <valueString></valueString>
+        <dataType>BOOLEAN</dataType>
+        <isOtherwise>false</isOtherwise>
+      </value>
+    </list>
+  </data>
+</decision-table52>
