@@ -14,27 +14,10 @@
  * limitations under the License.
  */
 
-package org.drools.model.impl;
+package org.drools.model;
 
-import org.drools.model.Query0;
-import org.drools.model.Variable;
-import org.drools.model.View;
 import org.drools.model.view.QueryCallViewItem;
-import org.drools.model.view.QueryCallViewItemImpl;
 
-public class Query0Impl extends QueryImpl implements Query0 {
-
-    public Query0Impl(String pkg, String name, View view) {
-        super( pkg, name, view );
-    }
-
-    @Override
-    public QueryCallViewItem call() {
-        return new QueryCallViewItemImpl( this );
-    }
-
-    @Override
-    public Variable<?>[] getArguments() {
-        return new Variable<?>[] { };
-    }
+public interface Query0Def extends QueryDef {
+    QueryCallViewItem call();
 }

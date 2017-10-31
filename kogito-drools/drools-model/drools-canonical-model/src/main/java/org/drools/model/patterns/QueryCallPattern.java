@@ -18,25 +18,25 @@ package org.drools.model.patterns;
 
 import org.drools.model.Argument;
 import org.drools.model.Condition;
-import org.drools.model.Query;
+import org.drools.model.QueryDef;
 import org.drools.model.Variable;
 import org.drools.model.view.QueryCallViewItem;
 
 public class QueryCallPattern implements Condition {
 
-    private final Query query;
+    private final QueryDef query;
     private final Argument<?>[] arguments;
 
     public QueryCallPattern( QueryCallViewItem queryCallView ) {
         this(queryCallView.getQuery(), queryCallView.getArguments());
     }
 
-    public QueryCallPattern( Query query, Argument<?>... arguments ) {
+    public QueryCallPattern( QueryDef query, Argument<?>... arguments ) {
         this.query = query;
         this.arguments = arguments;
     }
 
-    public Query getQuery() {
+    public QueryDef getQuery() {
         return query;
     }
 

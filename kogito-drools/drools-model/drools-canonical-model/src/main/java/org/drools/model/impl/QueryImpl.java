@@ -17,17 +17,17 @@
 package org.drools.model.impl;
 
 import org.drools.model.Query;
+import org.drools.model.QueryDef;
+import org.drools.model.Variable;
 import org.drools.model.View;
 
-public abstract class QueryImpl implements Query {
+public class QueryImpl implements Query {
 
-    private final String pkg;
-    private final String name;
+    private final QueryDef queryDef;
     private final View view;
 
-    public QueryImpl( String pkg, String name, View view ) {
-        this.pkg = pkg;
-        this.name = name;
+    public QueryImpl( QueryDef queryDef, View view ) {
+        this.queryDef = queryDef;
         this.view = view;
     }
 
@@ -38,11 +38,16 @@ public abstract class QueryImpl implements Query {
 
     @Override
     public String getName() {
-        return name;
+        return queryDef.getName();
     }
 
     @Override
     public String getPackage() {
-        return pkg;
+        return queryDef.getPackage();
+    }
+
+    @Override
+    public Variable<?>[] getArguments() {
+        return queryDef.getArguments();
     }
 }

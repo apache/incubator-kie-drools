@@ -16,8 +16,22 @@
 
 package org.drools.model;
 
-import org.drools.model.view.QueryCallViewItem;
+import org.drools.model.view.ViewItemBuilder;
 
-public interface Query1<A> extends Query {
-    QueryCallViewItem call(Argument<A> aVar);
+public interface QueryDef {
+
+    Class[] QUERIES_BY_ARITY = new Class[] {
+            QueryDef.class, Query1Def.class, Query2Def.class
+    };
+
+    static Class getQueryClassByArity(int arity) {
+        return QUERIES_BY_ARITY[arity];
+    }
+
+    String getPackage();
+    String getName();
+
+    Variable<?>[] getArguments();
+
+    Query build( ViewItemBuilder... viewItemBuilders );
 }

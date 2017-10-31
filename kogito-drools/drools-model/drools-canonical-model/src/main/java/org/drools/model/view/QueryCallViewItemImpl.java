@@ -17,27 +17,32 @@
 package org.drools.model.view;
 
 import org.drools.model.Argument;
-import org.drools.model.Query;
+import org.drools.model.QueryDef;
 import org.drools.model.Variable;
 
 public class QueryCallViewItemImpl implements QueryCallViewItem {
 
-    private final Query query;
+    private final QueryDef query;
     private final Argument<?>[] arguments;
 
-    public QueryCallViewItemImpl( Query query, Argument<?>... arguments ) {
+    public QueryCallViewItemImpl( QueryDef query, Argument<?>... arguments ) {
         this.query = query;
         this.arguments = arguments;
     }
 
     @Override
-    public Query getQuery() {
+    public QueryDef getQuery() {
         return query;
     }
 
     @Override
     public Argument<?>[] getArguments() {
         return arguments;
+    }
+
+    @Override
+    public Variable getFirstVariable() {
+        return null;
     }
 
     @Override

@@ -28,8 +28,9 @@ import org.drools.core.reteoo.AlphaNode;
 import org.drools.model.Global;
 import org.drools.model.Index.ConstraintType;
 import org.drools.model.Model;
-import org.drools.model.Query1;
-import org.drools.model.Query2;
+import org.drools.model.Query;
+import org.drools.model.Query1Def;
+import org.drools.model.Query2Def;
 import org.drools.model.Rule;
 import org.drools.model.Variable;
 import org.drools.model.impl.ModelImpl;
@@ -38,6 +39,7 @@ import org.drools.modelcompiler.domain.Adult;
 import org.drools.modelcompiler.domain.Child;
 import org.drools.modelcompiler.domain.Man;
 import org.drools.modelcompiler.domain.Person;
+import org.drools.modelcompiler.domain.Relationship;
 import org.drools.modelcompiler.domain.Result;
 import org.drools.modelcompiler.domain.StockTick;
 import org.drools.modelcompiler.domain.Toy;
@@ -531,10 +533,9 @@ public class FlowTest {
     @Test
     public void testQuery() {
         Variable<Person> personV = declarationOf( type( Person.class ), "$p" );
-        Variable<Integer> ageV = declarationOf( type( Integer.class ) );
 
-        Query1<Integer> query = query( "olderThan", ageV )
-                .build( expr("exprA", personV, ageV, (p, a) -> p.getAge() > a) );
+        Query1Def<Integer> qdef = query( "olderThan", Integer.class );
+        Query query = qdef.build( expr("exprA", personV, qdef.getArg1(), (p, a) -> p.getAge() > a) );
 
         Model model = new ModelImpl().addQuery( query );
         KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
@@ -554,15 +555,14 @@ public class FlowTest {
     @Test
     public void testQueryInRule() {
         Variable<Person> personV = declarationOf( type( Person.class ) );
-        Variable<Integer> ageV = declarationOf( type( Integer.class ) );
 
-        Query2<Person, Integer> query = query( "olderThan", personV, ageV )
-                .build( expr("exprA", personV, ageV, (p, a) -> p.getAge() > a) );
+        Query2Def<Person, Integer> qdef = query( "olderThan", Person.class, Integer.class );
+        Query query = qdef.build( expr("exprA", qdef.getArg1(), qdef.getArg2(), (p, a) -> p.getAge() > a) );
 
         Variable<Person> personVRule = declarationOf( type( Person.class ) );
         Rule rule = rule("R")
                 .build(
-                        query.call(personVRule, valueOf(40)),
+                        qdef.call(personVRule, valueOf(40)),
                         on(personVRule).execute((drools, p) -> drools.insert(new Result(p.getName())) )
                       );
 
@@ -582,17 +582,78 @@ public class FlowTest {
     }
 
     @Test
+    public void testQueryInvokingQuery() {
+        Variable<Relationship> relV = declarationOf( type( Relationship.class ) );
+
+        Query2Def<String, String> query1Def = query( "isRelatedTo1", String.class, String.class );
+        Query2Def<String, String> query2Def = query( "isRelatedTo2", String.class, String.class );
+
+        Query query2 = query2Def.build(
+                        expr("exprA", relV, query2Def.getArg1(), (r, s) -> r.getStart().equals( s )),
+                        expr("exprB", relV, query2Def.getArg2(), (r, e) -> r.getEnd().equals( e ))
+                );
+
+        Query query1 = query1Def.build( query2Def.call(query1Def.getArg1(), query1Def.getArg2()) );
+
+        Model model = new ModelImpl().addQuery( query2 ).addQuery( query1 );
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
+
+        KieSession ksession = kieBase.newKieSession();
+
+        ksession.insert( new Relationship( "A", "B" ) );
+        ksession.insert( new Relationship( "B", "C" ) );
+
+        QueryResults results = ksession.getQueryResults( "isRelatedTo1", "A", "B" );
+
+        assertEquals( 1, results.size() );
+        assertEquals( "B", results.iterator().next().get( query1Def.getArg2().getName() ) );
+    }
+
+    @Test
+    public void testPositionalRecursiveQueryWithUnification() {
+        Variable<Relationship> relV = declarationOf( type( Relationship.class ) );
+        Variable<String> unifV = declarationOf( type( String.class ) );
+
+        Query2Def<String, String> qdef = query( "isRelatedTo", String.class, String.class );
+        Query query = qdef.build(
+                        or(
+                                and(
+                                        expr("exprA", relV, qdef.getArg1(), (r, s) -> r.getStart().equals( s )),
+                                        expr("exprB", relV, qdef.getArg2(), (r, e) -> r.getEnd().equals( e ))
+                                ),
+                                and(
+                                        bind(unifV).as(relV, Relationship::getStart),
+                                        expr("exprD", relV, qdef.getArg2(), (r, e) -> r.getEnd().equals( e )),
+                                        qdef.call(qdef.getArg1(), unifV)
+                                )
+                        )
+                );
+
+        Model model = new ModelImpl().addQuery( query );
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
+
+        KieSession ksession = kieBase.newKieSession();
+
+        ksession.insert( new Relationship( "A", "B" ) );
+        ksession.insert( new Relationship( "B", "C" ) );
+
+        QueryResults results = ksession.getQueryResults( "isRelatedTo", "A", "C" );
+
+        assertEquals( 1, results.size() );
+        assertEquals( "B", results.iterator().next().get( unifV.getName() ) );
+    }
+
+    @Test
     public void testQueryInRuleWithDeclaration() {
         Variable<Person> personV = declarationOf( type( Person.class ) );
-        Variable<Integer> ageV = declarationOf( type( Integer.class ) );
 
-        Query2<Person, Integer> query = query( "olderThan", personV, ageV )
-                .build( expr("exprA", personV, ageV, (p, a) -> p.getAge() > a) );
+        Query2Def<Person, Integer> qdef = query( "olderThan", Person.class, Integer.class );
+        Query query = qdef.build( expr("exprA", qdef.getArg1(), qdef.getArg2(), (p, a) -> p.getAge() > a) );
 
         Rule rule = rule("R")
                 .build(
                         expr( "exprB", personV, p -> p.getName().startsWith( "M" ) ),
-                        query.call(personV, valueOf(40)),
+                        qdef.call(personV, valueOf(40)),
                         on(personV).execute((drools, p) -> drools.insert(new Result(p.getName())) )
                      );
 
@@ -616,15 +677,14 @@ public class FlowTest {
     public void testQueryInvokedWithGlobal() {
         Global<Integer> ageG = globalOf(type(Integer.class), "defaultpkg", "ageG");
         Variable<Person> personV = declarationOf( type( Person.class ) );
-        Variable<Integer> ageV = declarationOf( type( Integer.class ) );
 
-        Query2<Person, Integer> query = query("olderThan", personV, ageV)
-                .build( expr("exprA", personV, ageV, (_this, $age) -> _this.getAge() > $age) );
+        Query2Def<Person, Integer> qdef = query("olderThan", Person.class, Integer.class);
+        Query query = qdef.build( expr("exprA", qdef.getArg1(), qdef.getArg2(), (_this, $age) -> _this.getAge() > $age) );
 
         Rule rule = rule("R")
                 .build(
                         expr( "exprB", personV, p -> p.getName().startsWith( "M" ) ),
-                        query.call(personV, ageG),
+                        qdef.call(personV, ageG),
                         on(personV).execute((drools, p) -> drools.insert(new Result(p.getName())) )
                      );
 
