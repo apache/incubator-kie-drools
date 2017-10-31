@@ -62,7 +62,7 @@ public class FEELImpl
     
     @Override
     public CompiledExpression compile(String expression, CompilerContext ctx) {
-        FEEL_1_1Parser parser = FEELParser.parse( getEventsManager(ctx.getListeners()), expression, ctx.getInputVariableTypes(), ctx.getInputVariables() );
+        FEEL_1_1Parser parser = FEELParser.parse(getEventsManager(ctx.getListeners()), expression, ctx);
         ParseTree tree = parser.compilation_unit();
         ASTBuilderVisitor v = new ASTBuilderVisitor( ctx.getInputVariableTypes() );
         BaseNode expr = v.visit( tree );
@@ -71,7 +71,7 @@ public class FEELImpl
     }
 
     public CompiledExpression compileExpressionList(String expression, CompilerContext ctx) {
-        FEEL_1_1Parser parser = FEELParser.parse( getEventsManager(ctx.getListeners()), expression, ctx.getInputVariableTypes(), ctx.getInputVariables() );
+        FEEL_1_1Parser parser = FEELParser.parse(getEventsManager(ctx.getListeners()), expression, ctx);
         ParseTree tree = parser.expressionList();
         ASTBuilderVisitor v = new ASTBuilderVisitor( ctx.getInputVariableTypes() );
         BaseNode expr = v.visit( tree );
