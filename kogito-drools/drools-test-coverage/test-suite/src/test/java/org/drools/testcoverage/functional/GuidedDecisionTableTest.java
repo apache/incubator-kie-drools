@@ -16,6 +16,8 @@
 
 package org.drools.testcoverage.functional;
 
+import java.util.stream.Stream;
+
 import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.common.listener.TrackingAgendaEventListener;
 import org.drools.testcoverage.common.model.Address;
@@ -450,6 +452,33 @@ public class GuidedDecisionTableTest {
         kSession.dispose();
     }
 
+    /**
+     * This test evaluates table that uses dsl sentences in runtime
+     * Especially it moves people older than 50 from Brno technology park to Brno city center
+     */
+    @Test
+    public void testMoveToPeopleToAddress() throws Exception {
+        initKieSession("person_actions.dsl", "movePeopleToAddress.gdst");
+
+        final Address technologyPark = new Address();
+        technologyPark.setCity("Brno");
+        technologyPark.setStreet("Technology Park");
+        technologyPark.setNumber(1);
+        kSession.insert(technologyPark);
+
+        peter70Years.setAddress(technologyPark);
+        william25Years.setAddress(technologyPark);
+
+        final FactHandle peter = kSession.insert(peter70Years);
+        final FactHandle william = kSession.insert(william25Years);
+
+        Assertions.assertThat(kSession.fireAllRules()).isEqualTo(1);
+        Assertions.assertThat(((Person) kSession.getObject(peter)).getAddress().getStreet()).isEqualTo("Joštova");
+        Assertions.assertThat(((Person) kSession.getObject(william)).getAddress().getStreet()).isEqualTo("Technology Park");
+
+        kSession.dispose();
+    }
+
 
     private Address producePeopleInCity(final String city, final int countOfPeople) {
         final Address address = new Address();
@@ -467,11 +496,15 @@ public class GuidedDecisionTableTest {
         return address;
     }
 
-    private void initKieSession(String gdstName) {
-        final Resource resource = KieServices.Factory.get().getResources().newClassPathResource(gdstName,
-                                                                                                GuidedDecisionTableTest.class);
+    private void initKieSession(String... resourceNames) {
+        final Resource[] resources = Stream.of(resourceNames)
+                .map(resource -> KieServices.Factory.get()
+                                                    .getResources()
+                                                    .newClassPathResource(resource, GuidedDecisionTableTest.class))
+                .toArray(Resource[]::new);
+
         final KieBase kBase = KieBaseUtil.getKieBaseFromResources(true,
-                                                                  resource);
+                                                                  resources);
 
         kSession = kBase.newKieSession();
 
