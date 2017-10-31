@@ -104,7 +104,7 @@ public class QueryTest extends BaseModelTest {
 
         ksession.fireAllRules();
 
-        Collection<Result> results = getObjects( ksession, Result.class );
+        Collection<Result> results = getObjectsIntoList( ksession, Result.class );
         assertEquals( 1, results.size() );
         assertEquals( "Mario", results.iterator().next().getValue() );
     }
@@ -132,7 +132,7 @@ public class QueryTest extends BaseModelTest {
 
         ksession.fireAllRules();
 
-        Collection<Result> results = getObjects( ksession, Result.class );
+        Collection<Result> results = getObjectsIntoList( ksession, Result.class );
         assertEquals( 1, results.size() );
         assertEquals( "Mario", results.iterator().next().getValue() );
     }
@@ -164,7 +164,7 @@ public class QueryTest extends BaseModelTest {
 
         ksession.fireAllRules();
 
-        Collection<Result> results = getObjects( ksession, Result.class );
+        Collection<Result> results = getObjectsIntoList( ksession, Result.class );
         assertEquals( 1, results.size() );
         assertEquals( "Mario", results.iterator().next().getValue() );
     }

@@ -16,6 +16,11 @@
 
 package org.drools.modelcompiler;
 
+import java.io.File;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
 import org.drools.modelcompiler.builder.CanonicalModelKieProject;
@@ -24,18 +29,18 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.KieServices;
-import org.kie.api.builder.*;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.KieModule;
+import org.kie.api.builder.KieRepository;
+import org.kie.api.builder.Message;
+import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
-
-import java.io.File;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
 
 import static org.junit.Assert.fail;
 
@@ -116,7 +121,7 @@ public abstract class BaseModelTest {
         return kproj;
     }
 
-    public static <T> Collection<T> getObjects( KieSession ksession, Class<T> clazz ) {
-        return (Collection<T>) ksession.getObjects( new ClassObjectFilter( clazz ) );
+    public static <T> List<T> getObjectsIntoList(KieSession ksession, Class<T> clazz) {
+        return (List<T>) ksession.getObjects(new ClassObjectFilter(clazz)).stream().collect(Collectors.toList());
     }
 }
