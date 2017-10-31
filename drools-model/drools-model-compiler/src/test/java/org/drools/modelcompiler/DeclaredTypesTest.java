@@ -60,7 +60,7 @@ public class DeclaredTypesTest extends BaseModelTest {
         ksession.insert(new Person("Edson", 35));
         ksession.fireAllRules();
 
-        Collection<Result> results = getObjects(ksession, Result.class);
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
         assertEquals(1, results.size());
         Result r = results.iterator().next();
         Object result = r.getValue();
@@ -121,7 +121,7 @@ public class DeclaredTypesTest extends BaseModelTest {
         ksession.insert(new Person("Edson", 35));
         ksession.fireAllRules();
 
-        Collection<Result> results = getObjects(ksession, Result.class);
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
         assertEquals(1, results.size());
         Result r = results.iterator().next();
         Object result = r.getValue();
@@ -205,7 +205,7 @@ public class DeclaredTypesTest extends BaseModelTest {
         ksession.insert(new Person("Edson", 35));
         ksession.fireAllRules();
 
-        Collection<Result> results = getObjects(ksession, Result.class);
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
         assertEquals(1, results.size());
         Result r = results.iterator().next();
         Object result = r.getValue();
@@ -265,13 +265,13 @@ public class DeclaredTypesTest extends BaseModelTest {
         ksession.insert(new MyNumber(2));
         ksession.fireAllRules();
 
-        Collection<Integer> results = getObjects(ksession, Integer.class);
+        Collection<Integer> results = getObjectsIntoList(ksession, Integer.class);
         assertTrue(results.contains(2));
 
         ksession.insert(new MyNumber(1));
         ksession.fireAllRules();
 
-        results = getObjects(ksession, Integer.class);
+        results = getObjectsIntoList(ksession, Integer.class);
         assertTrue(results.contains(2));
         assertFalse(results.contains(1)); // This is because MyNumber(1) would fail for "even" predicate/getter used here in pattern as a constraint. 
     }
@@ -290,13 +290,13 @@ public class DeclaredTypesTest extends BaseModelTest {
         ksession.insert(new MyNumber(2));
         ksession.fireAllRules();
 
-        Collection<Integer> results = getObjects(ksession, Integer.class);
+        Collection<Integer> results = getObjectsIntoList(ksession, Integer.class);
         assertTrue(results.contains(2));
 
         ksession.insert(new MyNumber(1));
         ksession.fireAllRules();
 
-        results = getObjects(ksession, Integer.class);
+        results = getObjectsIntoList(ksession, Integer.class);
         assertTrue(results.contains(2));
         assertFalse(results.contains(1)); // This is because MyNumber(1) would fail for "even" predicate/getter used here in pattern as a constraint.
     }
@@ -315,13 +315,13 @@ public class DeclaredTypesTest extends BaseModelTest {
         ksession.insert(new MyNumber(2));
         ksession.fireAllRules();
 
-        Collection<Integer> results = getObjects(ksession, Integer.class);
+        Collection<Integer> results = getObjectsIntoList(ksession, Integer.class);
         assertTrue(results.contains(2));
 
         ksession.insert(new MyNumber(1));
         ksession.fireAllRules();
 
-        results = getObjects(ksession, Integer.class);
+        results = getObjectsIntoList(ksession, Integer.class);
         assertTrue(results.contains(2));
         assertTrue(results.contains(1)); // This is because MyNumber(1) would simply bind for "even" predicate/getter to $even variable, and not used as a constraint.  
     }

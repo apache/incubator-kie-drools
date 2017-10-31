@@ -82,7 +82,7 @@ public class RuleAttributesTest extends BaseModelTest {
         ksession.insert(new Person("Mario", 40));
         ksession.fireAllRules();
 
-        Collection<String> results = getObjects(ksession, String.class);
+        Collection<String> results = getObjectsIntoList(ksession, String.class);
         assertEquals(1, results.size());
         assertTrue(results.contains("R2"));
     }
