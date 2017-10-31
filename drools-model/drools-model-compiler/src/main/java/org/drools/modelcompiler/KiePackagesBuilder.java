@@ -103,6 +103,7 @@ import org.kie.api.definition.type.Role;
 import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
+import static org.drools.core.rule.GroupElement.AND;
 import static org.drools.core.rule.Pattern.getReadAcessor;
 import static org.drools.model.DSL.declarationOf;
 import static org.drools.model.DSL.entryPoint;
@@ -230,7 +231,9 @@ public class KiePackagesBuilder {
                                        0, // offset is 0 by default
                                        ClassObjectType.DroolsQuery_ObjectType,
                                        null );
-        QueryNameConstraint constraint = new QueryNameConstraint( null, query.getName() );
+
+        InternalReadAccessor extractor = new LambdaReadAccessor(DroolsQuery.class, q -> ((DroolsQuery)q).getName());
+        QueryNameConstraint constraint = new QueryNameConstraint( extractor, query.getName() );
         pattern.addConstraint( constraint );
         queryImpl.getLhs().addChild(pattern);
 
@@ -367,12 +370,15 @@ public class KiePackagesBuilder {
                                       consequence.getElseBranch() != null ? buildConditionalConsequence(ctx, consequence.getElseBranch()) : null );
     }
 
-    private GroupElement addSubConditions( RuleContext ctx, GroupElement ge, List<Condition> subconditions) {
+    private RuleConditionElement addSubConditions( RuleContext ctx, GroupElement ge, List<Condition> subconditions) {
         for (Condition subCondition : subconditions) {
             RuleConditionElement element = conditionToElement( ctx, subCondition );
             if (element != null) {
                 ge.addChild( element );
             }
+        }
+        if (ge.getType() == AND && ge.getChildren().size() == 1) {
+            return ge.getChildren().get(0);
         }
         return ge;
     }

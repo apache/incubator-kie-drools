@@ -251,7 +251,7 @@ public class DrlxParseUtil {
             FieldAccessExpr expr = new FieldAccessExpr( null, name );
             return new TypedExpression( expr, field.getType() );
         } catch (NoSuchFieldException e) {
-            throw new IllegalArgumentException( "Unknown field " + name + " on class " + clazz );
+            throw new IllegalArgumentException( "Unknown field " + name + " on " + clazz );
         }
     }
 

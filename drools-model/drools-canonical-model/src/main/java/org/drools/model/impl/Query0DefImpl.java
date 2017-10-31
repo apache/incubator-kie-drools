@@ -16,28 +16,30 @@
 
 package org.drools.model.impl;
 
-import org.drools.model.Argument;
-import org.drools.model.Query1;
+import org.drools.model.Query0Def;
 import org.drools.model.Variable;
-import org.drools.model.View;
 import org.drools.model.view.QueryCallViewItem;
 import org.drools.model.view.QueryCallViewItemImpl;
 
-public class Query1Impl<A> extends QueryImpl implements Query1<A> {
-    private final Variable<A> var1;
+import static org.drools.model.impl.RuleBuilder.DEFAULT_PACKAGE;
 
-    public Query1Impl( String pkg, String name, View view, Variable<A> var1 ) {
-        super( pkg, name, view );
-        this.var1 = var1;
+public class Query0DefImpl extends QueryDefImpl implements Query0Def {
+
+    public Query0DefImpl( String name) {
+        this(DEFAULT_PACKAGE, name);
+    }
+
+    public Query0DefImpl( String pkg, String name) {
+        super( pkg, name );
     }
 
     @Override
-    public QueryCallViewItem call( Argument<A> aVar ) {
-        return new QueryCallViewItemImpl( this, aVar );
+    public QueryCallViewItem call() {
+        return new QueryCallViewItemImpl( this );
     }
 
     @Override
     public Variable<?>[] getArguments() {
-        return new Variable<?>[] { var1 };
+        return new Variable<?>[] { };
     }
 }

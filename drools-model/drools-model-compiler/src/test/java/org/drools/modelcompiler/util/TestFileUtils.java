@@ -1,4 +1,4 @@
-package org.drools.modelcompiler;
+package org.drools.modelcompiler.util;
 
 import java.io.File;
 import java.io.FileOutputStream;
