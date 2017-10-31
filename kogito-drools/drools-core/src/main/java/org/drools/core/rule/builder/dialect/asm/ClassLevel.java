@@ -21,6 +21,7 @@ import static org.mvel2.asm.Opcodes.V1_5;
 import static org.mvel2.asm.Opcodes.V1_6;
 import static org.mvel2.asm.Opcodes.V1_7;
 import static org.mvel2.asm.Opcodes.V1_8;
+import static org.mvel2.asm.Opcodes.V9;
 
 public class ClassLevel {
     public static final String JAVA_LANG_LEVEL_PROPERTY = "drools.dialect.java.compiler.lnglevel";
@@ -60,8 +61,10 @@ public class ClassLevel {
             return V1_7;
         } else if ( level.startsWith( "1.8" ) ) {
             return V1_8;
+        } else if ( level.startsWith( "9" ) ) {
+            return V9;
         } else {
-            return V1_7;
+            return V1_8;
         }
     }
 }
