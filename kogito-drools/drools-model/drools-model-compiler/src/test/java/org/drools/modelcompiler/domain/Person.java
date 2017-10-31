@@ -69,6 +69,9 @@ public class Person extends AbstractReactiveObject {
         this.likes = likes;
     }
 
+    /**
+     * WARN: this toString() implementation is actually used in some tests.
+     */
     @Override
     public String toString() {
         return name;

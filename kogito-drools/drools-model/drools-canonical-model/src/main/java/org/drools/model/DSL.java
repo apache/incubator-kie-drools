@@ -381,6 +381,10 @@ public class DSL {
         return new ConsequenceBuilder._0(block);
     }
 
+    public static ConsequenceBuilder._0 executeScript(String language, String script) {
+        return new ConsequenceBuilder._0(language, script);
+    }
+
     public static <A> ConsequenceBuilder._1<A> on(Variable<A> dec1) {
         return new ConsequenceBuilder._1(dec1);
     }

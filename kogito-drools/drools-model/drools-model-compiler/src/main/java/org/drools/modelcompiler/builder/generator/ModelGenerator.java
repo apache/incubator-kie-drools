@@ -30,6 +30,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.drools.compiler.lang.descr.AccumulateDescr;
@@ -92,10 +93,10 @@ import org.drools.model.QueryDef;
 import org.drools.model.Rule;
 import org.drools.model.Variable;
 import org.drools.modelcompiler.builder.PackageModel;
+import org.drools.modelcompiler.builder.generator.RuleContext.RuleDialect;
 import org.kie.api.definition.type.Position;
 
 import static java.util.stream.Collectors.toList;
-
 import static org.drools.javaparser.printer.PrintUtil.toDrlx;
 import static org.drools.model.impl.NamesGenerator.generateName;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
@@ -137,6 +138,7 @@ public class ModelGenerator {
     public static final String BUILD_CALL = "build";
     public static final String RULE_CALL = "rule";
     public static final String EXECUTE_CALL = "execute";
+    public static final String EXECUTESCRIPT_CALL = "executeScript";
     public static final String ON_CALL = "on";
     public static final String QUERY_CALL = "query";
     public static final String EXPR_CALL = "expr";
@@ -181,7 +183,7 @@ public class ModelGenerator {
         ruleCall.addArgument( new StringLiteralExpr( ruleDescr.getName() ) );
 
         MethodCallExpr buildCallScope = ruleCall;
-        for (MethodCallExpr attributeExpr : ruleAttributes(ruleDescr)) {
+        for (MethodCallExpr attributeExpr : ruleAttributes(context, ruleDescr)) {
             attributeExpr.setScope( buildCallScope );
             buildCallScope = attributeExpr;
         }
@@ -195,7 +197,12 @@ public class ModelGenerator {
 
         List<String> usedDeclarationInRHS = extractUsedDeclarations(packageModel, context, ruleConsequence);
         MethodCallExpr onCall = onCall(usedDeclarationInRHS);
-        MethodCallExpr executeCall = executeCall(context, ruleVariablesBlock, ruleConsequence, usedDeclarationInRHS, onCall);
+        MethodCallExpr executeCall = null;
+        if (context.getRuleDialect() == RuleDialect.JAVA) {
+            executeCall = executeCall(context, ruleVariablesBlock, ruleConsequence, usedDeclarationInRHS, onCall);
+        } else if (context.getRuleDialect() == RuleDialect.MVEL) {
+            executeCall = executeScriptCall(ruleDescr, onCall);
+        }
 
         buildCall.addArgument( executeCall );
 
@@ -206,16 +213,18 @@ public class ModelGenerator {
     }
 
     /**
-     * Build a list of tuples for the arguments of the model DSL method {@link org.drools.model.impl.RuleBuilder#attribute(org.drools.model.Rule.Attribute, Object)}
+     * Build a list of method calls, representing each needed {@link org.drools.model.impl.RuleBuilder#attribute(org.drools.model.Rule.Attribute, Object)}
      * starting from a drools-compiler {@link RuleDescr}.
      * The tuple represent the Rule Attribute expressed in JavParser form, and the attribute value expressed in JavaParser form.
+     * @param context 
      */
-    private static List<MethodCallExpr> ruleAttributes(RuleDescr ruleDescr) {
+    private static List<MethodCallExpr> ruleAttributes(RuleContext context, RuleDescr ruleDescr) {
         List<MethodCallExpr> ruleAttributes = new ArrayList<>();
         for (Entry<String, AttributeDescr> as : ruleDescr.getAttributes().entrySet()) {
+            // dialect=mvel is not an attribute of DSL expr(), so we check it before.
             if (as.getKey().equals( "dialect" )) {
-                if (!as.getValue().getValue().equals("java")) {
-                    throw new UnsupportedOperationException("Unsupported dialect: " + as.getValue().getValue());
+                if (as.getValue().getValue().equals("mvel")) {
+                    context.setRuleDialect(RuleDialect.MVEL);
                 }
                 continue;
             }
@@ -223,10 +232,7 @@ public class ModelGenerator {
             attributeCall.addArgument(attributesMap.get(as.getKey()));
             switch (as.getKey()) {
                 case "dialect":
-                    if (!as.getValue().getValue().equals("java")) {
-                        throw new UnsupportedOperationException("Unsupported dialect: " + as.getValue().getValue());
-                    }
-                    break;
+                    throw new RuntimeException("should not have reached this part of the code");
                 case "no-loop":
                 case "salience":
                 case "enabled":
@@ -258,16 +264,25 @@ public class ModelGenerator {
     }
 
     public static BlockStmt rewriteConsequence(RuleContext context, String consequence ) {
+        if (context.getRuleDialect() == RuleDialect.MVEL) {
+            // anyhow the consequence will be used as a ScriptBlock.
+            return null;
+        }
         String ruleConsequenceAsBlock = rewriteConsequenceBlock(context, consequence.trim() );
         return parseBlock(ruleConsequenceAsBlock);
     }
 
     public static List<String> extractUsedDeclarations(PackageModel packageModel, RuleContext context, BlockStmt ruleConsequence) {
-        List<String> declUsedInRHS = ruleConsequence.getChildNodesByType(NameExpr.class).stream().map(NameExpr::getNameAsString).collect(toList());
         Set<String> existingDecls = new HashSet<>();
         existingDecls.addAll(context.getDeclarations().stream().map(DeclarationSpec::getBindingId).collect(toList()));
         existingDecls.addAll(packageModel.getGlobals().keySet());
-        return existingDecls.stream().filter(declUsedInRHS::contains).collect(toList());
+        if (context.getRuleDialect() == RuleDialect.JAVA) {
+            List<String> declUsedInRHS = ruleConsequence.getChildNodesByType(NameExpr.class).stream().map(NameExpr::getNameAsString).collect(toList());
+            return existingDecls.stream().filter(declUsedInRHS::contains).collect(toList());
+        } else {
+            // if dialect is MVEL then avoid optimization, and just return them all.
+            return existingDecls.stream().collect(Collectors.toList());
+        }
     }
 
     public static MethodCallExpr executeCall(RuleContext context, BlockStmt ruleVariablesBlock, BlockStmt ruleConsequence, List<String> verifiedDeclUsedInRHS, MethodCallExpr onCall) {
@@ -281,6 +296,15 @@ public class ModelGenerator {
         }
         verifiedDeclUsedInRHS.stream().map(x -> new Parameter(new UnknownType(), x)).forEach(executeLambda::addParameter);
         executeLambda.setBody( ruleConsequence );
+        return executeCall;
+    }
+
+    private static MethodCallExpr executeScriptCall(RuleDescr ruleDescr, MethodCallExpr onCall) {
+        MethodCallExpr executeCall = new MethodCallExpr(onCall, EXECUTESCRIPT_CALL);
+        executeCall.addArgument(new StringLiteralExpr("mvel"));
+        StringLiteralExpr scriptText = new StringLiteralExpr();
+        scriptText.setString(ruleDescr.getConsequence().toString()); // use the setter method in order for the string literal be properly escaped.
+        executeCall.addArgument(scriptText);
         return executeCall;
     }
 

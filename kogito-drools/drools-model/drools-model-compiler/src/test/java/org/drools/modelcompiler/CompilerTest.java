@@ -16,8 +16,6 @@
 
 package org.drools.modelcompiler;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -34,12 +32,12 @@ import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
 import org.drools.modelcompiler.domain.Toy;
 import org.drools.modelcompiler.domain.Woman;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static java.util.Arrays.asList;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -361,7 +359,7 @@ public class CompilerTest extends BaseModelTest {
         ksession.insert( new Person( "Mario", 40 ) );
         ksession.fireAllRules();
 
-        Collection<Result> results = getObjects( ksession, Result.class );
+        Collection<Result> results = getObjectsIntoList( ksession, Result.class );
         assertEquals( 1, results.size() );
         assertEquals( "Mark", results.iterator().next().getValue() );
     }
@@ -384,7 +382,7 @@ public class CompilerTest extends BaseModelTest {
         ksession.insert( new Person( "Luca", 32 , new Address("Milan")) );
         ksession.fireAllRules();
 
-        Collection<Result> results = getObjects( ksession, Result.class );
+        Collection<Result> results = getObjectsIntoList( ksession, Result.class );
         assertEquals( 1, results.size() );
         assertEquals( "Luca", results.iterator().next().getValue() );
     }
@@ -408,10 +406,10 @@ public class CompilerTest extends BaseModelTest {
         ksession.insert( new Person( "Mario", 40 ) );
         ksession.fireAllRules();
 
-        Collection<Result> results = getObjects( ksession, Result.class );
+        Collection<Result> results = getObjectsIntoList( ksession, Result.class );
         assertEquals( 1, results.size() );
         assertEquals( "Mark", results.iterator().next().getValue() );
-        assertEquals( 1, getObjects( ksession, Person.class ).size() );
+        assertEquals( 1, getObjectsIntoList( ksession, Person.class ).size() );
     }
 
     @Test
@@ -433,10 +431,10 @@ public class CompilerTest extends BaseModelTest {
         ksession.insert( new Person( "Mario", 40 ) );
         ksession.fireAllRules();
 
-        Collection<Result> results = getObjects( ksession, Result.class );
+        Collection<Result> results = getObjectsIntoList( ksession, Result.class );
         assertEquals( 1, results.size() );
         assertEquals( "Mark", results.iterator().next().getValue() );
-        assertEquals( 1, getObjects( ksession, Person.class ).size() );
+        assertEquals( 1, getObjectsIntoList( ksession, Person.class ).size() );
     }
 
     @Test
@@ -504,7 +502,7 @@ public class CompilerTest extends BaseModelTest {
         ksession.insert( mario );
         ksession.fireAllRules();
 
-        Collection<Result> results = getObjects( ksession, Result.class );
+        Collection<Result> results = getObjectsIntoList( ksession, Result.class );
         assertEquals( 1, results.size() );
         assertEquals( "ok", results.iterator().next().getValue() );
     }
@@ -529,7 +527,7 @@ public class CompilerTest extends BaseModelTest {
         ksession.insert( mario );
         ksession.fireAllRules();
 
-        Collection<Result> results = getObjects( ksession, Result.class );
+        Collection<Result> results = getObjectsIntoList( ksession, Result.class );
         assertEquals( 0, results.size() );
     }
 
@@ -551,7 +549,7 @@ public class CompilerTest extends BaseModelTest {
         ksession.insert( mario );
         ksession.fireAllRules();
 
-        Collection<Result> results = getObjects( ksession, Result.class );
+        Collection<Result> results = getObjectsIntoList( ksession, Result.class );
         assertEquals( 1, results.size() );
         assertEquals( "ok", results.iterator().next().getValue() );
     }
@@ -575,7 +573,7 @@ public class CompilerTest extends BaseModelTest {
         ksession.insert( new Person( "Edson", 42 ) );
         ksession.fireAllRules();
 
-        Collection<Result> results = getObjects( ksession, Result.class );
+        Collection<Result> results = getObjectsIntoList( ksession, Result.class );
         assertEquals( 1, results.size() );
         assertEquals( "ok", results.iterator().next().getValue() );
     }
@@ -600,7 +598,7 @@ public class CompilerTest extends BaseModelTest {
         ksession.insert( mario );
         ksession.fireAllRules();
 
-        Collection<Result> results = getObjects( ksession, Result.class );
+        Collection<Result> results = getObjectsIntoList( ksession, Result.class );
         assertEquals( 1, results.size() );
         assertEquals( "ok", results.iterator().next().getValue() );
     }
@@ -623,7 +621,7 @@ public class CompilerTest extends BaseModelTest {
         ksession.insert( mario );
         ksession.fireAllRules();
 
-        Collection<Result> results = getObjects( ksession, Result.class );
+        Collection<Result> results = getObjectsIntoList( ksession, Result.class );
         assertEquals( 1, results.size() );
         assertEquals( "ok", results.iterator().next().getValue() );
     }
@@ -646,7 +644,7 @@ public class CompilerTest extends BaseModelTest {
         ksession.insert( mario );
         ksession.fireAllRules();
 
-        Collection<Result> results = getObjects( ksession, Result.class );
+        Collection<Result> results = getObjectsIntoList( ksession, Result.class );
         assertEquals( 1, results.size() );
         assertEquals( "Mario", results.iterator().next().getValue() );
     }
@@ -850,7 +848,7 @@ public class CompilerTest extends BaseModelTest {
         ksession.insert( new Person( "Edson", 35 ) );
         ksession.fireAllRules();
 
-        Collection<Result> results = getObjects( ksession, Result.class );
+        Collection<Result> results = getObjectsIntoList( ksession, Result.class );
         assertEquals( 1, results.size() );
         assertEquals( "Mario", results.iterator().next().getValue() );
     }
@@ -878,7 +876,7 @@ public class CompilerTest extends BaseModelTest {
         ksession.insert( new Person( "Edson", 35 ) );
         ksession.fireAllRules();
 
-        Collection<Result> results = getObjects( ksession, Result.class );
+        Collection<Result> results = getObjectsIntoList( ksession, Result.class );
         assertEquals( 1, results.size() );
         assertEquals( "Hello Mario!", results.iterator().next().getValue() );
     }
@@ -896,13 +894,87 @@ public class CompilerTest extends BaseModelTest {
         FactHandle fh_47 = ksession.insert(47);
         ksession.fireAllRules();
 
-        Collection<String> results = getObjects(ksession, String.class);
+        Collection<String> results = getObjectsIntoList(ksession, String.class);
         assertTrue(results.contains("Hello World"));
 
         ksession.delete(fh_47);
         ksession.fireAllRules();
 
-        results = getObjects(ksession, String.class);
+        results = getObjectsIntoList(ksession, String.class);
         assertFalse(results.contains("Hello World"));
+    }
+
+    @Test
+    public void testMVELinsert() {
+        String str = "rule R\n" +
+                     "dialect \"mvel\"\n" +
+                     "when\n" +
+                     "  Integer()\n" +
+                     "then\n" +
+                     "  System.out.println(\"Hello World\");\n" +
+                     "  insert(\"Hello World\");\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+
+        FactHandle fh_47 = ksession.insert(47);
+        ksession.fireAllRules();
+
+        Collection<String> results = getObjectsIntoList(ksession, String.class);
+        assertTrue(results.contains("Hello World"));
+    }
+
+    @Test
+    public void testMVELmodify() {
+        String str = "import " + Person.class.getCanonicalName() + ";\n" +
+                     "rule R\n" +
+                     "dialect \"mvel\"\n" +
+                     "when\n" +
+                     "  $p : Person()\n" +
+                     "then\n" +
+                     "  modify($p) { setAge(1); }\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+        
+        ksession.insert(new Person("Matteo", 47));
+        ksession.fireAllRules();
+
+        Collection<Person> results = getObjectsIntoList(ksession, Person.class);
+        assertEquals(1, results.iterator().next().getAge());
+        results.forEach(System.out::println);
+    }
+
+    @Ignore("missing MVEL imports at package level..")
+    @Test
+    public void testMVELmultiple() {
+        String str = "dialect \"mvel\"\n" +
+                     "import " + Person.class.getCanonicalName() + ";\n" +
+                     "rule R1\n" +
+                     "when\n" +
+                     "  Integer()\n" +
+                     "then\n" +
+                     "  System.out.println(\"Hello World\");\n" +
+                     "  insert(new Person(\"Matteo\", 47));\n" +
+                     "  insert(\"Hello World\");\n" +
+                     "end\n" +
+                     "rule R2\n" +
+                     "dialect \"mvel\"\n" +
+                     "when\n" +
+                     "  $p : Person()\n" +
+                     "then\n" +
+                     "  modify($p) { setAge(1); }\n" +
+                     "  insert(\"Modified person age to 1 for: \"+$p.name)\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+
+        FactHandle fh_47 = ksession.insert(47);
+        ksession.fireAllRules();
+
+        Collection<String> results = getObjectsIntoList(ksession, String.class);
+        System.out.println(results);
+        assertTrue(results.contains("Hello World"));
+        assertTrue(results.contains("Modified person age to 1 for: Matteo"));
     }
 }
