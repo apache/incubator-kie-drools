@@ -16,6 +16,17 @@
 
 package org.drools.core.factmodel.traits;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Serializable;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.BitSet;
+import java.util.Map;
+import java.util.Set;
+
 import org.drools.core.factmodel.BuildUtils;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.FieldDefinition;
@@ -28,17 +39,6 @@ import org.mvel2.asm.FieldVisitor;
 import org.mvel2.asm.Label;
 import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Type;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.Serializable;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.BitSet;
-import java.util.Map;
-import java.util.Set;
 
 import static org.drools.core.factmodel.traits.TraitBuilderUtil.buildMixinMethods;
 import static org.drools.core.factmodel.traits.TraitBuilderUtil.findMixinInfo;
@@ -93,11 +93,11 @@ public class TraitMapProxyClassBuilderImpl extends AbstractProxyClassBuilderImpl
         }
 
         {
-            fv = cw.visitField( ACC_PUBLIC + ACC_FINAL, "object", descrCore, null, null );
+            fv = cw.visitField( ACC_PUBLIC, "object", descrCore, null, null );
             fv.visitEnd();
         }
         {
-            fv = cw.visitField( ACC_PUBLIC + ACC_FINAL, "map", Type.getDescriptor( Map.class ), "Ljava/util/Map<Ljava/lang/String;Ljava/lang/Object;>;", null );
+            fv = cw.visitField( ACC_PUBLIC, "map", Type.getDescriptor( Map.class ), "Ljava/util/Map<Ljava/lang/String;Ljava/lang/Object;>;", null );
             fv.visitEnd();
         }
 
@@ -261,7 +261,7 @@ public class TraitMapProxyClassBuilderImpl extends AbstractProxyClassBuilderImpl
                                 Type.getInternalName( proxyBaseClass ),
                                 "writeExternal",
                                 "(" + Type.getDescriptor( ObjectOutput.class ) + ")V",
-                                true );
+                                false );
 
 
             mv.visitInsn( RETURN );
