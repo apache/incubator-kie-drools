@@ -8,15 +8,15 @@ import org.drools.model.Variable;
 public class CombinedExprViewItem<T> extends AbstractExprViewItem<T> {
 
     private final Condition.Type type;
-    private final ExprViewItem[] expressions;
+    private final ViewItem[] expressions;
 
-    public CombinedExprViewItem(Condition.Type type, ExprViewItem[] expressions) {
+    public CombinedExprViewItem(Condition.Type type, ViewItem[] expressions) {
         super(getCombinedVariable(expressions));
         this.type = type;
         this.expressions = expressions;
     }
 
-    public ExprViewItem[] getExpressions() {
+    public ViewItem[] getExpressions() {
         return expressions;
     }
 
@@ -33,9 +33,9 @@ public class CombinedExprViewItem<T> extends AbstractExprViewItem<T> {
         return type;
     }
 
-    private static Variable getCombinedVariable(ExprViewItem... expressions) {
+    private static Variable getCombinedVariable(ViewItem... expressions) {
         Variable var = null;
-        for (ExprViewItem expression : expressions) {
+        for (ViewItem expression : expressions) {
             if (var == null) {
                 var = expression.getFirstVariable();
             } else if (var != expression.getFirstVariable()) {
@@ -43,5 +43,15 @@ public class CombinedExprViewItem<T> extends AbstractExprViewItem<T> {
             }
         }
         return var;
+    }
+
+    @Override
+    public void setQueryExpression( boolean queryExpression ) {
+        super.setQueryExpression( queryExpression );
+        for (ViewItem expr : expressions) {
+            if (expr instanceof AbstractExprViewItem) {
+                (( AbstractExprViewItem ) expr).setQueryExpression( queryExpression );
+            }
+        }
     }
 }
