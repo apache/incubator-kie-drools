@@ -24,6 +24,7 @@
   <source path='auditlog'/>
   <source path='oracle'/>
   <source path='rule'/>
+  <source path='imports'/>
   <source path='workitems'/>
 
 </module>
