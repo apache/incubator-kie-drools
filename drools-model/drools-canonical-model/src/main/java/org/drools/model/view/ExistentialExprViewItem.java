@@ -22,15 +22,15 @@ import org.drools.model.Variable;
 public class ExistentialExprViewItem<T> extends AbstractExprViewItem<T> {
 
     private final Condition.Type type;
-    private final ExprViewItem expression;
+    private final ViewItem expression;
 
-    public ExistentialExprViewItem(Condition.Type type, ExprViewItem expression) {
+    public ExistentialExprViewItem(Condition.Type type, ViewItem expression) {
         super(expression.getFirstVariable());
         this.type = type;
         this.expression = expression;
     }
 
-    public ExprViewItem getExpression() {
+    public ViewItem getExpression() {
         return expression;
     }
 

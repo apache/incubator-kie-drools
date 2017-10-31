@@ -1,12 +1,20 @@
 package org.drools.model;
 
+import java.io.Serializable;
+import java.util.concurrent.TimeUnit;
+
 import org.drools.model.consequences.ConditionalConsequenceBuilder;
 import org.drools.model.consequences.ConsequenceBuilder;
 import org.drools.model.datasources.DataStore;
 import org.drools.model.datasources.DataStream;
 import org.drools.model.datasources.impl.DataStreamImpl;
 import org.drools.model.datasources.impl.SetDataStore;
-import org.drools.model.functions.*;
+import org.drools.model.functions.Block0;
+import org.drools.model.functions.Block1;
+import org.drools.model.functions.Function1;
+import org.drools.model.functions.Function2;
+import org.drools.model.functions.Predicate1;
+import org.drools.model.functions.Predicate2;
 import org.drools.model.functions.accumulate.Average;
 import org.drools.model.functions.accumulate.Reduce;
 import org.drools.model.functions.accumulate.Sum;
@@ -14,12 +22,38 @@ import org.drools.model.functions.temporal.AfterPredicate;
 import org.drools.model.functions.temporal.BeforePredicate;
 import org.drools.model.functions.temporal.Interval;
 import org.drools.model.functions.temporal.TemporalPredicate;
-import org.drools.model.impl.*;
-import org.drools.model.view.*;
+import org.drools.model.impl.AnnotationValueImpl;
+import org.drools.model.impl.DataSourceDefinitionImpl;
+import org.drools.model.impl.DeclarationImpl;
+import org.drools.model.impl.EntryPointImpl;
+import org.drools.model.impl.FromImpl;
+import org.drools.model.impl.GlobalImpl;
+import org.drools.model.impl.JavaClassType;
+import org.drools.model.impl.Query0DefImpl;
+import org.drools.model.impl.Query1DefImpl;
+import org.drools.model.impl.Query2DefImpl;
+import org.drools.model.impl.RuleBuilder;
+import org.drools.model.impl.SourceImpl;
+import org.drools.model.impl.TypeMetaDataImpl;
+import org.drools.model.impl.ValueImpl;
+import org.drools.model.impl.WindowImpl;
+import org.drools.model.impl.WindowReferenceImpl;
+import org.drools.model.view.AccumulateExprViewItem;
+import org.drools.model.view.BindViewItem;
+import org.drools.model.view.CombinedExprViewItem;
+import org.drools.model.view.ExistentialExprViewItem;
+import org.drools.model.view.Expr1ViewItem;
+import org.drools.model.view.Expr1ViewItemImpl;
+import org.drools.model.view.Expr2ViewItem;
+import org.drools.model.view.Expr2ViewItemImpl;
+import org.drools.model.view.ExprViewItem;
+import org.drools.model.view.InputViewItem;
+import org.drools.model.view.InputViewItemImpl;
+import org.drools.model.view.OOPathBuilder;
 import org.drools.model.view.OOPathBuilder.OOPathChunkBuilder;
-
-import java.io.Serializable;
-import java.util.concurrent.TimeUnit;
+import org.drools.model.view.TemporalExprViewItem;
+import org.drools.model.view.ViewItem;
+import org.drools.model.view.ViewItemBuilder;
 
 import static org.drools.model.impl.ViewBuilder.viewItems2Patterns;
 
@@ -209,7 +243,7 @@ public class DSL {
         return exists(new Expr2ViewItemImpl<T, U>( var1, var2, predicate) );
     }
 
-    public static ExprViewItem forall(ExprViewItem expression, ExprViewItem... expressions) {
+    public static ExprViewItem forall(ViewItem expression, ViewItem... expressions) {
         return new ExistentialExprViewItem( Condition.Type.FORALL, and( expression, expressions) );
     }
 
@@ -217,24 +251,26 @@ public class DSL {
         return new AccumulateExprViewItem(expr, functions);
     }
 
-    public static ExprViewItem or(ExprViewItem expression, ExprViewItem... expressions) {
+    public static ViewItem or(ViewItemBuilder<?> expression, ViewItemBuilder<?>... expressions) {
         if (expressions == null || expressions.length == 0) {
-            return expression;
+            return expression.get();
         }
         return new CombinedExprViewItem(Condition.Type.OR, combineExprs( expression, expressions ) );
     }
 
-    public static ExprViewItem and(ExprViewItem expression, ExprViewItem... expressions) {
+    public static ViewItem and(ViewItemBuilder<?> expression, ViewItemBuilder<?>... expressions) {
         if (expressions == null || expressions.length == 0) {
-            return expression;
+            return expression.get();
         }
         return new CombinedExprViewItem(Condition.Type.AND, combineExprs( expression, expressions ) );
     }
 
-    private static ExprViewItem[] combineExprs( ExprViewItem expression, ExprViewItem[] expressions ) {
-        ExprViewItem[] andExprs = new ExprViewItem[expressions.length+1];
-        andExprs[0] = expression;
-        System.arraycopy( expressions, 0, andExprs, 1, expressions.length );
+    private static ViewItem[] combineExprs( ViewItemBuilder<?> expression, ViewItemBuilder<?>... expressions ) {
+        ViewItem[] andExprs = new ViewItem[expressions.length+1];
+        andExprs[0] = expression.get();
+        for (int i = 0; i < expressions.length; i++) {
+            andExprs[i+1] = expressions[i].get();
+        }
         return andExprs;
     }
 
@@ -369,24 +405,28 @@ public class DSL {
 
     // -- query --
 
-    public static <A> QueryBuider._0<A> query( String name) {
-        return new QueryBuider._0<A>( name );
+    public static <A> Query0Def query( String name ) {
+        return new Query0DefImpl( name );
     }
 
-    public static <A> QueryBuider._1<A> query( String name, Variable<A> var1 ) {
-        return new QueryBuider._1<A>( name, var1 );
+    public static <A> Query0Def query( String pkg, String name ) {
+        return new Query0DefImpl( pkg, name );
     }
 
-    public static <A> QueryBuider._1<A> query( String pkg, String name, Variable<A> var1 ) {
-        return new QueryBuider._1<A>( pkg, name, var1 );
+    public static <A> Query1Def<A> query( String name, Class<A> type1 ) {
+        return new Query1DefImpl<A>( name, type1 );
     }
 
-    public static <A, B> QueryBuider._2<A, B> query( String name, Variable<A> var1, Variable<B> var2 ) {
-        return new QueryBuider._2<A, B>( name, var1, var2 );
+    public static <A> Query1Def<A> query( String pkg, String name, Class<A> type1 ) {
+        return new Query1DefImpl<A>( pkg, name, type1 );
     }
 
-    public static <A, B> QueryBuider._2<A, B> query( String pkg, String name, Variable<A> var1, Variable<B> var2 ) {
-        return new QueryBuider._2<A, B>( pkg, name, var1, var2 );
+    public static <A,B> Query2Def<A,B> query( String name, Class<A> type1, Class<B> type2 ) {
+        return new Query2DefImpl<A,B>( name, type1, type2 );
+    }
+
+    public static <A,B> Query2Def<A,B> query( String pkg, String name, Class<A> type1, Class<B> type2 ) {
+        return new Query2DefImpl<A,B>( pkg, name, type1, type2 );
     }
 
     public static <T> Value<T> valueOf(T value) {

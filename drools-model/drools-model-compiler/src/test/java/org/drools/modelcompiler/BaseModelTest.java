@@ -19,6 +19,7 @@ package org.drools.modelcompiler;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
 import org.drools.modelcompiler.builder.CanonicalModelKieProject;
+import org.drools.modelcompiler.util.TestFileUtils;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;

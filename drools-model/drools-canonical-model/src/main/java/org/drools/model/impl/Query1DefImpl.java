@@ -17,29 +17,38 @@
 package org.drools.model.impl;
 
 import org.drools.model.Argument;
-import org.drools.model.Query2;
+import org.drools.model.Query1Def;
 import org.drools.model.Variable;
-import org.drools.model.View;
 import org.drools.model.view.QueryCallViewItem;
 import org.drools.model.view.QueryCallViewItemImpl;
 
-public class Query2Impl<A, B> extends QueryImpl implements Query2<A, B> {
-    private final Variable<A> var1;
-    private final Variable<B> var2;
+import static org.drools.model.DSL.declarationOf;
+import static org.drools.model.DSL.type;
+import static org.drools.model.impl.RuleBuilder.DEFAULT_PACKAGE;
 
-    public Query2Impl( String pkg, String name, View view, Variable<A> var1, Variable<B> var2 ) {
-        super( pkg, name, view );
-        this.var1 = var1;
-        this.var2 = var2;
+public class Query1DefImpl<A> extends QueryDefImpl implements Query1Def<A> {
+    private final Variable<A> arg1;
+
+    public Query1DefImpl( String name, Class<A> type1 ) {
+        this(DEFAULT_PACKAGE, name, type1);
+    }
+
+    public Query1DefImpl( String pkg, String name, Class<A> type1 ) {
+        super( pkg, name );
+        this.arg1 = declarationOf( type(type1) );
     }
 
     @Override
-    public QueryCallViewItem call( Argument<A> aVar, Argument<B> bVar ) {
-        return new QueryCallViewItemImpl( this, aVar, bVar );
+    public QueryCallViewItem call( Argument<A> aVar ) {
+        return new QueryCallViewItemImpl( this, aVar );
     }
 
     @Override
     public Variable<?>[] getArguments() {
-        return new Variable<?>[] { var1, var2 };
+        return new Variable<?>[] {arg1};
+    }
+
+    public Variable<A> getArg1() {
+        return arg1;
     }
 }

@@ -16,14 +16,14 @@
 
 package org.drools.model.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.model.Global;
 import org.drools.model.Model;
 import org.drools.model.Query;
 import org.drools.model.Rule;
 import org.drools.model.TypeMetaData;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ModelImpl implements Model {
     private List<Rule> rules = new ArrayList<>();
