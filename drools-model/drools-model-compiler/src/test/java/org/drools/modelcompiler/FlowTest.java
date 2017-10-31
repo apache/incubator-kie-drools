@@ -56,13 +56,13 @@ import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.time.SessionPseudoClock;
 
 import static java.util.Arrays.asList;
-
 import static org.drools.model.DSL.accumulate;
 import static org.drools.model.DSL.and;
 import static org.drools.model.DSL.average;
 import static org.drools.model.DSL.bind;
 import static org.drools.model.DSL.declarationOf;
 import static org.drools.model.DSL.execute;
+import static org.drools.model.DSL.executeScript;
 import static org.drools.model.DSL.expr;
 import static org.drools.model.DSL.forall;
 import static org.drools.model.DSL.from;
@@ -78,7 +78,7 @@ import static org.drools.model.DSL.type;
 import static org.drools.model.DSL.valueOf;
 import static org.drools.model.DSL.when;
 import static org.drools.model.DSL.window;
-import static org.drools.modelcompiler.BaseModelTest.getObjects;
+import static org.drools.modelcompiler.BaseModelTest.getObjectsIntoList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -166,7 +166,7 @@ public class FlowTest {
         FactHandle marioFH = ksession.insert(mario);
 
         ksession.fireAllRules();
-        Collection<String> results = getObjects(ksession, String.class);
+        Collection<String> results = getObjectsIntoList(ksession, String.class);
         Assertions.assertThat(results).containsExactlyInAnyOrder("Mario is older than Mark");
 
         ksession.delete(marioFH);
@@ -176,7 +176,7 @@ public class FlowTest {
         ksession.update(markFH, mark, "age");
 
         ksession.fireAllRules();
-        results = getObjects(ksession, String.class);
+        results = getObjectsIntoList(ksession, String.class);
         Assertions.assertThat(results).containsExactlyInAnyOrder("Mario is older than Mark", "Edson is older than Mark");
     }
 
@@ -213,7 +213,7 @@ public class FlowTest {
         FactHandle marioFH = ksession.insert(mario);
 
         ksession.fireAllRules();
-        Collection<String> results = getObjects(ksession, String.class);
+        Collection<String> results = getObjectsIntoList(ksession, String.class);
         Assertions.assertThat(results).containsExactlyInAnyOrder("Mario is older than Mark");
 
         ksession.delete(marioFH);
@@ -223,7 +223,7 @@ public class FlowTest {
         ksession.update(markFH, mark, "age");
 
         ksession.fireAllRules();
-        results = getObjects(ksession, String.class);
+        results = getObjectsIntoList(ksession, String.class);
         Assertions.assertThat(results).containsExactlyInAnyOrder("Mario is older than Mark", "Edson is older than Mark");
     }
 
@@ -379,7 +379,7 @@ public class FlowTest {
         ksession.insert( new Person( "Edson", 42 ) );
         ksession.fireAllRules();
 
-        Collection<Result> results = getObjects( ksession, Result.class );
+        Collection<Result> results = getObjectsIntoList( ksession, Result.class );
         assertEquals( 1, results.size() );
         assertEquals( "ok", results.iterator().next().getValue() );
     }
@@ -701,7 +701,7 @@ public class FlowTest {
 
         ksession.fireAllRules();
 
-        Collection<Result> results = getObjects( ksession, Result.class );
+        Collection<Result> results = getObjectsIntoList( ksession, Result.class );
         assertEquals( 1, results.size() );
         assertEquals( "Mario", results.iterator().next().getValue() );
     }
@@ -919,5 +919,50 @@ public class FlowTest {
         ksession.insert( new StockTick("DROO") );
 
         assertEquals(2, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testMVELinsert() {
+        final org.drools.model.Variable<java.lang.Integer> var_$pattern_Integer$1$ = declarationOf(type(java.lang.Integer.class),
+                                                                                                   "$pattern_Integer$1$");
+
+        org.drools.model.Rule rule = rule("R").build(input(var_$pattern_Integer$1$),
+                                                     executeScript("mvel",
+                                                                   "System.out.println(\"Hello World\");\n" +
+                                                                   "drools.insert(\"Hello World\");")
+                                                     );
+
+        Model model = new ModelImpl().addRule(rule);
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model);
+
+        KieSession ksession = kieBase.newKieSession();
+
+        FactHandle fh_47 = ksession.insert(47);
+        ksession.fireAllRules();
+
+        Collection<String> results = getObjectsIntoList(ksession, String.class);
+        assertTrue(results.contains("Hello World"));
+    }
+
+    @Test
+    public void testMVELmodify() {
+        final org.drools.model.Variable<org.drools.modelcompiler.domain.Person> var_$p = declarationOf(type(org.drools.modelcompiler.domain.Person.class),
+                                                                                                       "$p");
+        final org.drools.model.BitMask mask_$p = org.drools.model.BitMask.getPatternMask(org.drools.modelcompiler.domain.Person.class,
+                                                                                         "age");
+
+        org.drools.model.Rule rule = rule("R").build(input(var_$p),
+                                                     on(var_$p).executeScript("mvel", "System.out.println($p); modify($p) { setAge(1); } System.out.println($p);"));
+
+        Model model = new ModelImpl().addRule(rule);
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model);
+
+        KieSession ksession = kieBase.newKieSession();
+
+        ksession.insert(new Person("Matteo", 47));
+        ksession.fireAllRules();
+
+        List<Person> results = getObjectsIntoList(ksession, Person.class);
+        assertEquals(1, results.get(0).getAge());
     }
 }
