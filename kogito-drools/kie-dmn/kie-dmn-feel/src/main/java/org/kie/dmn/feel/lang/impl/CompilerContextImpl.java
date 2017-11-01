@@ -16,18 +16,22 @@
 
 package org.kie.dmn.feel.lang.impl;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.feel.lang.CompilerContext;
 import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.runtime.FEELFunction;
 
 public class CompilerContextImpl implements CompilerContext {
     private final FEELEventListenersManager eventsManager;
     private Map<String, Object> inputVariables = new HashMap<>();
     private Map<String, Type> inputVariableTypes = new HashMap<>();
+    private Set<FEELFunction> customFunctions = new LinkedHashSet<>();
 
     public CompilerContextImpl(FEELEventListenersManager eventsManager) {
         this.eventsManager = eventsManager;
@@ -58,5 +62,16 @@ public class CompilerContextImpl implements CompilerContext {
     @Override
     public Map<String, Object> getInputVariables() {
         return this.inputVariables;
+    }
+
+    @Override
+    public CompilerContextImpl addFEELFunctions(Collection<FEELFunction> customFunction) {
+        this.customFunctions.addAll(customFunction);
+        return this;
+    }
+
+    @Override
+    public Collection<FEELFunction> getFEELFunctions() {
+        return this.customFunctions;
     }
 }

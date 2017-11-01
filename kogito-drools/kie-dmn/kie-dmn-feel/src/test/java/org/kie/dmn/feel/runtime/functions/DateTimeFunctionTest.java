@@ -23,17 +23,18 @@ import java.time.OffsetTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 public class DateTimeFunctionTest {
 
-    private DateTimeFunction dateTimeFunction;
+    private DateAndTimeFunction dateTimeFunction;
 
     @Before
     public void setUp() {
-        dateTimeFunction = new DateTimeFunction();
+        dateTimeFunction = new DateAndTimeFunction();
     }
 
     @Test

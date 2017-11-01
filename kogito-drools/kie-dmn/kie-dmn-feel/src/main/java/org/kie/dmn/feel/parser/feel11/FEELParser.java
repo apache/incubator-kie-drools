@@ -16,15 +16,29 @@
 
 package org.kie.dmn.feel.parser.feel11;
 
-import org.antlr.v4.runtime.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
+
+import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.BaseErrorListener;
+import org.antlr.v4.runtime.CommonToken;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.DefaultErrorStrategy;
+import org.antlr.v4.runtime.FailedPredicateException;
+import org.antlr.v4.runtime.Parser;
+import org.antlr.v4.runtime.RecognitionException;
+import org.antlr.v4.runtime.Recognizer;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
+import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
 import org.kie.dmn.feel.util.Msg;
-
-import java.util.*;
-import java.util.regex.Pattern;
 
 public class FEELParser {
 
@@ -34,12 +48,16 @@ public class FEELParser {
     );
     private static final Pattern DIGITS_PATTERN = Pattern.compile( "[0-9]*" );
 
-    public static FEEL_1_1Parser parse(FEELEventListenersManager eventsManager, String source, Map<String, Type> inputVariableTypes, Map<String, Object> inputVariables) {
+    public static FEEL_1_1Parser parse(FEELEventListenersManager eventsManager, String source, Map<String, Type> inputVariableTypes, Map<String, Object> inputVariables, Collection<FEELFunction> additionalFunctions) {
         ANTLRInputStream input = new ANTLRInputStream(source);
         FEEL_1_1Lexer lexer = new FEEL_1_1Lexer( input );
         CommonTokenStream tokens = new CommonTokenStream( lexer );
         FEEL_1_1Parser parser = new FEEL_1_1Parser( tokens );
-        parser.setHelper( new ParserHelper( eventsManager ) );
+
+        ParserHelper parserHelper = new ParserHelper(eventsManager);
+        additionalFunctions.forEach(f -> parserHelper.getSymbolTable().getBuiltInScope().define(f.getSymbol()));
+
+        parser.setHelper(parserHelper);
         parser.setErrorHandler( new FEELErrorHandler() );
         parser.removeErrorListeners(); // removes the error listener that prints to the console
         parser.addErrorListener( new FEELParserErrorListener( eventsManager ) );

@@ -19,9 +19,12 @@ package org.kie.dmn.feel.lang.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -30,6 +33,7 @@ import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.CompilerContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.FEELProfile;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.ast.DashNode;
@@ -39,6 +43,7 @@ import org.kie.dmn.feel.lang.ast.UnaryTestNode;
 import org.kie.dmn.feel.parser.feel11.ASTBuilderVisitor;
 import org.kie.dmn.feel.parser.feel11.FEELParser;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser;
+import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.UnaryTest;
 
 /**
@@ -51,6 +56,29 @@ public class FEELImpl
 
     private Set<FEELEventListener> instanceEventListeners = new HashSet<>();
 
+    private final List<FEELProfile> profiles;
+    // pre-cached results from the above profiles...
+    private final Optional<ExecutionFrameImpl> customFrame;
+    private final Collection<FEELFunction> customFunctions;
+
+    public FEELImpl() {
+        this(Collections.emptyList());
+    }
+
+    public FEELImpl(List<FEELProfile> profiles) {
+        this.profiles = Collections.unmodifiableList(profiles);
+        ExecutionFrameImpl frame = new ExecutionFrameImpl(null);
+        Map<String, FEELFunction> functions = new HashMap<>();
+        for (FEELProfile p : profiles) {
+            for (FEELFunction f : p.getFEELFunctions()) {
+                frame.setValue(f.getName(), f);
+                functions.put(f.getName(), f);
+            }
+        }
+        customFrame = Optional.of(frame);
+        customFunctions = Collections.unmodifiableCollection(functions.values());
+    }
+
     @Override
     public CompilerContext newCompilerContext() {
         return newCompilerContext(Collections.emptySet());
@@ -62,7 +90,7 @@ public class FEELImpl
     
     @Override
     public CompiledExpression compile(String expression, CompilerContext ctx) {
-        FEEL_1_1Parser parser = FEELParser.parse( getEventsManager(ctx.getListeners()), expression, ctx.getInputVariableTypes(), ctx.getInputVariables() );
+        FEEL_1_1Parser parser = FEELParser.parse(getEventsManager(ctx.getListeners()), expression, ctx.getInputVariableTypes(), ctx.getInputVariables(), mergeFunctions(ctx));
         ParseTree tree = parser.compilation_unit();
         ASTBuilderVisitor v = new ASTBuilderVisitor( ctx.getInputVariableTypes() );
         BaseNode expr = v.visit( tree );
@@ -71,12 +99,22 @@ public class FEELImpl
     }
 
     public CompiledExpression compileExpressionList(String expression, CompilerContext ctx) {
-        FEEL_1_1Parser parser = FEELParser.parse( getEventsManager(ctx.getListeners()), expression, ctx.getInputVariableTypes(), ctx.getInputVariables() );
+        FEEL_1_1Parser parser = FEELParser.parse(getEventsManager(ctx.getListeners()), expression, ctx.getInputVariableTypes(), ctx.getInputVariables(), mergeFunctions(ctx));
         ParseTree tree = parser.expressionList();
-        ASTBuilderVisitor v = new ASTBuilderVisitor( ctx.getInputVariableTypes() );
-        BaseNode expr = v.visit( tree );
-        CompiledExpression ce = new CompiledExpressionImpl( expr );
+        ASTBuilderVisitor v = new ASTBuilderVisitor(ctx.getInputVariableTypes());
+        BaseNode expr = v.visit(tree);
+        CompiledExpression ce = new CompiledExpressionImpl(expr);
         return ce;
+    }
+
+    private Collection<FEELFunction> mergeFunctions(CompilerContext ctx) {
+        if (ctx.getFEELFunctions().isEmpty()) {
+            return customFunctions;
+        } else {
+            Collection<FEELFunction> result = new LinkedHashSet<>(customFunctions);
+            result.addAll(ctx.getFEELFunctions());
+            return result;
+        }
     }
 
     @Override
@@ -91,6 +129,7 @@ public class FEELImpl
         if ( inputVariables != null ) {
             inputVariables.entrySet().stream().forEach( e -> compilerCtx.addInputVariable( e.getKey(), e.getValue() ) );
         }
+        compilerCtx.addFEELFunctions(customFunctions);
         CompiledExpression expr = compile( expression, compilerCtx );
         return evaluate( expr, ctx );
     }
@@ -101,6 +140,7 @@ public class FEELImpl
         if ( inputVariables != null ) {
             inputVariables.entrySet().stream().forEach( e -> ctx.addInputVariable( e.getKey(), e.getValue() ) );
         }
+        ctx.addFEELFunctions(customFunctions);
         CompiledExpression expr = compile( expression, ctx );
         if ( inputVariables == null ) {
             return evaluate( expr, EMPTY_INPUT );
@@ -111,12 +151,27 @@ public class FEELImpl
 
     @Override
     public Object evaluate(CompiledExpression expr, Map<String, Object> inputVariables) {
-        return ((CompiledExpressionImpl) expr).evaluate( getEventsManager(Collections.emptySet()), inputVariables );
+        return ((CompiledExpressionImpl) expr).evaluate(newEvaluationContext(Collections.EMPTY_SET, inputVariables));
     }
     
     @Override
     public Object evaluate(CompiledExpression expr, EvaluationContext ctx) {
-        return ((CompiledExpressionImpl) expr).evaluate( getEventsManager(ctx.getListeners()), ctx.getAllValues() );
+        return ((CompiledExpressionImpl) expr).evaluate(newEvaluationContext(ctx.getListeners(), ctx.getAllValues()));
+    }
+
+    private EvaluationContext newEvaluationContext(Collection<FEELEventListener> listeners, Map<String, Object> inputVariables) {
+        FEELEventListenersManager eventsManager = getEventsManager(listeners);
+        EvaluationContextImpl ctx = new EvaluationContextImpl( eventsManager );
+        if (customFrame.isPresent()) {
+            ExecutionFrameImpl globalFrame = (ExecutionFrameImpl) ctx.pop();
+            ExecutionFrameImpl interveawedFrame = customFrame.get();
+            interveawedFrame.setParentFrame(ctx.peek());
+            globalFrame.setParentFrame(interveawedFrame);
+            ctx.push(interveawedFrame);
+            ctx.push(globalFrame);
+        }
+        ctx.setValues(inputVariables);
+        return ctx;
     }
 
     @Override

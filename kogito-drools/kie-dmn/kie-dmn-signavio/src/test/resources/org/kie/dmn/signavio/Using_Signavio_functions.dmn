@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions namespace="http://www.signavio.com/dmn/1.1/diagram/4f781f4198a642379eca6f12909f4bc3.xml" exporterVersion="11.7.2" name="Using Signavio functions" id="id-da97ab3e39054f4b859d3253be531607" sigExt:revisionId="37648e150d4742da96f9a34b3f0fc41f" sigExt:revisionNumber="3" xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:sig="http://www.signavio.com/dmn/1.1/diagram/4f781f4198a642379eca6f12909f4bc3.xml" xmlns:sigExt="http://www.signavio.com/schema/dmn/1.1/" xmlns:feel="http://www.omg.org/spec/FEEL/20140401">
+    <extensionElements/>
+    <itemDefinition isCollection="false" name="start" id="id-cbac7ab6bfbc48c1a509fcd89fd7c191" label="Start">
+        <typeRef>feel:string</typeRef>
+    </itemDefinition>
+    <itemDefinition isCollection="false" name="myContext" id="id-7086d1565d8ac2f97b9cb901374921e0" label="My Context">
+        <typeRef>feel:boolean</typeRef>
+    </itemDefinition>
+    <decision name="start" id="id-5b52a261e33b16cff1d8f13a35209d2e" label="Start" sigExt:shapeId="sid-68F255CE-7BAE-407C-A0D2-FE46BF5A1630" sigExt:diagramId="4f781f4198a642379eca6f12909f4bc3">
+        <extensionElements/>
+        <variable typeRef="sig:start" name="start" id="id-5b52a261e33b16cff1d8f13a35209d2e_variable"/>
+        <literalExpression expressionLanguage="http://www.omg.org/spec/FEEL/20140401">
+            <text>"abc"</text>
+        </literalExpression>
+    </decision>
+    <decision name="myContext" id="id-bb8d3a822b6dbc8253f18cc81ae52e2e" label="My Context" sigExt:shapeId="sid-D940898E-14C3-4881-BDD3-2C7428C71A5D" sigExt:diagramId="4f781f4198a642379eca6f12909f4bc3">
+        <extensionElements/>
+        <variable typeRef="sig:myContext" name="myContext" id="id-bb8d3a822b6dbc8253f18cc81ae52e2e_variable"/>
+        <informationRequirement>
+            <requiredDecision href="#id-5b52a261e33b16cff1d8f13a35209d2e"/>
+        </informationRequirement>
+        <context>
+            <contextEntry>
+                <variable name="myVar"/>
+                <literalExpression expressionLanguage="http://www.omg.org/spec/FEEL/20140401">
+                    <text>isAlpha(start)</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <literalExpression expressionLanguage="http://www.omg.org/spec/FEEL/20140401">
+                    <text>myVar</text>
+                </literalExpression>
+            </contextEntry>
+        </context>
+    </decision>
+</definitions>

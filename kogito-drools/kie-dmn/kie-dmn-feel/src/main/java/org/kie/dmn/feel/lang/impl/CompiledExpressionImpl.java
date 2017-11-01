@@ -17,10 +17,8 @@
 package org.kie.dmn.feel.lang.impl;
 
 import org.kie.dmn.feel.lang.CompiledExpression;
+import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.ast.ASTNode;
-import org.kie.dmn.feel.lang.types.SymbolTable;
-
-import java.util.Map;
 
 public class CompiledExpressionImpl implements CompiledExpression {
     private ASTNode     expression;
@@ -37,10 +35,8 @@ public class CompiledExpressionImpl implements CompiledExpression {
         this.expression = expression;
     }
 
-    public Object evaluate(FEELEventListenersManager eventsManager, Map<String, Object> inputVariables) {
-        EvaluationContextImpl ctx = new EvaluationContextImpl( eventsManager );
-        inputVariables.entrySet().stream().forEach( e -> ctx.setValue( e.getKey(), e.getValue() ) );
-        return expression.evaluate( ctx );
+    public Object evaluate(EvaluationContext evaluationContext) {
+        return expression.evaluate(evaluationContext);
     }
 
     @Override

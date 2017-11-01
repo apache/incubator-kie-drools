@@ -16,24 +16,30 @@
 
 package org.kie.dmn.core.impl;
 
-import org.kie.api.io.Resource;
-import org.kie.api.io.ResourceType;
-import org.kie.dmn.api.core.DMNModel;
-import org.kie.dmn.api.core.DMNPackage;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceType;
+import org.kie.dmn.api.core.DMNModel;
+import org.kie.dmn.api.core.DMNPackage;
+import org.kie.dmn.core.compiler.DMNProfile;
 
 public class DMNPackageImpl implements DMNPackage, Externalizable {
 
     private String namespace;
 
     private Map<String, DMNModel> models = new HashMap<>(  );
+    private List<DMNProfile> profiles = new ArrayList<>();
+
+    // adding something here? don't forget to update merge of DMNWeaverService
 
     public DMNPackageImpl() {
         this("");
@@ -88,4 +94,13 @@ public class DMNPackageImpl implements DMNPackage, Externalizable {
         this.models = (Map<String, DMNModel>) in.readObject();
     }
 
+    public void addProfiles(List<DMNProfile> profiles) {
+        this.profiles.addAll(profiles);
+    }
+
+    public List<DMNProfile> getProfiles() {
+        return profiles;
+    }
+
+    // adding something here? don't forget to update merge of DMNWeaverService
 }

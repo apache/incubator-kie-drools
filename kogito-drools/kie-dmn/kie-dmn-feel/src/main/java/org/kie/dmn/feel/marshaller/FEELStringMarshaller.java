@@ -66,7 +66,7 @@ public class FEELStringMarshaller implements FEELMarshaller<String> {
         } else if ( feelType.equals( org.kie.dmn.feel.lang.types.BuiltInType.TIME ) ) {
             return BuiltInFunctions.getFunction( TimeFunction.class ).invoke( value ).cata( justNull(), Function.identity() );
         } else if ( feelType.equals( org.kie.dmn.feel.lang.types.BuiltInType.DATE_TIME ) ) {
-            return BuiltInFunctions.getFunction( DateTimeFunction.class ).invoke( value ).cata( justNull(), Function.identity() );
+            return BuiltInFunctions.getFunction( DateAndTimeFunction.class ).invoke( value ).cata( justNull(), Function.identity() );
         } else if ( feelType.equals( org.kie.dmn.feel.lang.types.BuiltInType.DURATION ) ) {
             return BuiltInFunctions.getFunction( DurationFunction.class ).invoke( value ).cata( justNull(), Function.identity() );
         } else if ( feelType.equals( org.kie.dmn.feel.lang.types.BuiltInType.BOOLEAN ) ) {

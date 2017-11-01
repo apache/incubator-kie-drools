@@ -20,13 +20,9 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
-import java.util.function.Function;
 
-import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
-import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 
 public class DateFunction
         extends BaseFEELFunction {
@@ -45,7 +41,7 @@ public class DateFunction
         } catch (DateTimeException e) {
             // try to parse it as a date time and extract the date component
             // NOTE: this is an extension to the standard
-            return BuiltInFunctions.getFunction( DateTimeFunction.class ).invoke( val )
+            return BuiltInFunctions.getFunction( DateAndTimeFunction.class ).invoke( val )
                 .cata( overrideLeft -> FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "date-parsing exception", e)),
                        r -> invoke( r )
                        );   
