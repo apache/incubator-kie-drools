@@ -38,7 +38,8 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  */
 public final class PartitionChangeMove<Solution_> extends AbstractMove<Solution_> {
 
-    public static <Solution_> PartitionChangeMove<Solution_> createMove(InnerScoreDirector<Solution_> scoreDirector) {
+    public static <Solution_> PartitionChangeMove<Solution_> createMove(InnerScoreDirector<Solution_> scoreDirector,
+                                                                        int partIndex) {
         SolutionDescriptor<Solution_> solutionDescriptor = scoreDirector.getSolutionDescriptor();
         Solution_ workingSolution = scoreDirector.getWorkingSolution();
 
@@ -63,13 +64,16 @@ public final class PartitionChangeMove<Solution_> extends AbstractMove<Solution_
                 }
             }
         }
-        return new PartitionChangeMove<>(changeMap);
+        return new PartitionChangeMove<>(changeMap, partIndex);
     }
 
     private final Map<GenuineVariableDescriptor<Solution_>, List<Pair<Object, Object>>> changeMap;
+    private final int partIndex;
 
-    public PartitionChangeMove(Map<GenuineVariableDescriptor<Solution_>, List<Pair<Object, Object>>> changeMap) {
+    public PartitionChangeMove(Map<GenuineVariableDescriptor<Solution_>, List<Pair<Object, Object>>> changeMap,
+                               int partIndex) {
         this.changeMap = changeMap;
+        this.partIndex = partIndex;
     }
 
     @Override
@@ -134,8 +138,12 @@ public final class PartitionChangeMove<Solution_> extends AbstractMove<Solution_
             }
             destinationChangeMap.put(variableDescriptor, destinationPairList);
         }
-        return new PartitionChangeMove<>(destinationChangeMap);
+        return new PartitionChangeMove<>(destinationChangeMap, partIndex);
     }
 
-    // TODO implement toString()
+    @Override
+    public String toString() {
+        return "partIndex=" + partIndex;
+    }
+
 }

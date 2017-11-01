@@ -5,7 +5,7 @@
     <encoder>
       <!-- %L lowers performance -->
       <!--<pattern>%d{HH:mm:ss.SSS} [%t] %-5p %L%n  %m%n</pattern>-->
-      <pattern>%d{HH:mm:ss.SSS} [%t] %-5p %m%n</pattern>
+      <pattern>%d{HH:mm:ss.SSS} [%-4.4t] %-5p %m%n</pattern>
     </encoder>
   </appender>
 

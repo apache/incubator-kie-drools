@@ -130,7 +130,7 @@ public class HeuristicConfigPolicy {
     // ************************************************************************
 
     public HeuristicConfigPolicy createPhaseConfigPolicy() {
-        return new HeuristicConfigPolicy(environmentMode, scoreDirectorFactory);
+        return new HeuristicConfigPolicy(environmentMode, logIndentation, scoreDirectorFactory);
     }
 
     public HeuristicConfigPolicy createChildThreadConfigPolicy(ChildThreadType childThreadType) {

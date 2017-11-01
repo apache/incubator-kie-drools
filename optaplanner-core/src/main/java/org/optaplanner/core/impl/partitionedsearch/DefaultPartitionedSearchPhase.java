@@ -116,7 +116,7 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
                         childThreadPlumbingTermination, runnablePartThreadSemaphore, solverScope);
                 partitionSolver.addEventListener(event -> {
                     InnerScoreDirector<Solution_> childScoreDirector = partitionSolver.solverScope.getScoreDirector();
-                    PartitionChangeMove<Solution_> move = PartitionChangeMove.createMove(childScoreDirector);
+                    PartitionChangeMove<Solution_> move = PartitionChangeMove.createMove(childScoreDirector, partIndex);
                     InnerScoreDirector<Solution_> parentScoreDirector = solverScope.getScoreDirector();
                     move = move.rebase(parentScoreDirector);
                     partitionQueue.addMove(partIndex, move);
