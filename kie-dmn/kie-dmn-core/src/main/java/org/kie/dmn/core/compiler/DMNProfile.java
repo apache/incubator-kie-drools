@@ -19,11 +19,12 @@ package org.kie.dmn.core.compiler;
 import java.util.List;
 
 import org.kie.dmn.api.marshalling.v1_1.DMNExtensionRegister;
+import org.kie.dmn.feel.lang.FEELProfile;
 
-public interface DMNProfile {
+public interface DMNProfile extends FEELProfile {
 
     List<DMNExtensionRegister> getExtensionRegisters();
 
     List<DRGElementCompiler> getDRGElementCompilers();
-    
+
 }

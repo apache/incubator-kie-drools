@@ -1,5 +1,14 @@
 package org.kie.dmn.core.compiler;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+
 import org.antlr.v4.runtime.CommonToken;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNMessage;
@@ -16,8 +25,6 @@ import org.kie.dmn.feel.lang.CompilerContext;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
-import org.kie.dmn.feel.lang.impl.FEELImpl;
-import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
@@ -26,14 +33,13 @@ import org.kie.dmn.model.v1_1.DMNElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
-
 public class DMNFEELHelper {
 
     private static final Logger logger = LoggerFactory.getLogger( DMNFEELHelper.class );
 
     private final FEEL                   feel;
     private final FEELEventsListenerImpl listener;
+    private final List<FEELFunction> feelFunctions = new ArrayList<>();
 
     public DMNFEELHelper() {
         this.listener = new FEELEventsListenerImpl();
@@ -84,12 +90,17 @@ public class DMNFEELHelper {
         return false;
     }
 
+    public void registerFEELFunctions(Collection<FEELFunction> feelFunctions) {
+        this.feelFunctions.addAll(feelFunctions);
+    }
+
     public CompiledExpression compileFeelExpression(DMNCompilerContext ctx, String expression, DMNModelImpl model, DMNElement element, Msg.Message errorMsg, Object... msgParams) {
         CompilerContext feelctx = feel.newCompilerContext();
 
         for ( Map.Entry<String, DMNType> entry : ctx.getVariables().entrySet() ) {
             feelctx.addInputVariableType( entry.getKey(), ((BaseDMNTypeImpl) entry.getValue()).getFeelType() );
         }
+        feelctx.addFEELFunctions(this.feelFunctions);
         CompiledExpression ce = feel.compile( expression, feelctx );
         processEvents( model, element, errorMsg, msgParams );
         return ce;
@@ -216,5 +227,7 @@ public class DMNFEELHelper {
             return feelEvents;
         }
     }
+
+
 
 }

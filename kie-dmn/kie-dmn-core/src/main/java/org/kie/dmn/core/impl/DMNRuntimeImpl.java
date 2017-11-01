@@ -44,6 +44,7 @@ import org.kie.dmn.core.ast.BusinessKnowledgeModelNodeImpl;
 import org.kie.dmn.core.ast.DMNBaseNode;
 import org.kie.dmn.core.ast.DecisionNodeImpl;
 import org.kie.dmn.core.ast.InputDataNodeImpl;
+import org.kie.dmn.core.compiler.DMNProfile;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.runtime.FEELFunction;
@@ -479,4 +480,19 @@ public class DMNRuntimeImpl
         return this;
     }
 
+    public List<DMNProfile> getProfiles() {
+        // need list to preserve ordering
+        List<DMNProfile> profiles = new ArrayList<>();
+        runtime.getKieBase().getKiePackages().forEach(kpkg -> {
+            DMNPackageImpl dmnPkg = (DMNPackageImpl) ((InternalKnowledgePackage) kpkg).getResourceTypePackages().get(ResourceType.DMN);
+            if (dmnPkg != null) {
+                for (DMNProfile p : dmnPkg.getProfiles()) {
+                    if (!profiles.contains(p)) {
+                        profiles.add(p);
+                    }
+                }
+            }
+        });
+        return profiles;
+    }
 }

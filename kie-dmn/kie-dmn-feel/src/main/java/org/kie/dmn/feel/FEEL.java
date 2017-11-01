@@ -24,6 +24,7 @@ import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.CompilerContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.FEELProfile;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.impl.FEELImpl;
 import org.kie.dmn.feel.runtime.UnaryTest;
@@ -42,6 +43,15 @@ public interface FEEL {
      */
     static FEEL newInstance() {
         return new FEELImpl();
+    }
+
+    /**
+     * Factory method to create a new FEEL engine instance using custom FEELProfile(s)
+     *
+     * @return a newly instantiated FEEL engine instance
+     */
+    static FEEL newInstance(List<FEELProfile> profiles) {
+        return new FEELImpl(profiles);
     }
 
     /**
