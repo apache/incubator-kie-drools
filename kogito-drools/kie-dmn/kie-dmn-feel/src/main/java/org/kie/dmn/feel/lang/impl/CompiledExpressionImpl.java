@@ -36,6 +36,9 @@ public class CompiledExpressionImpl implements CompiledExpression {
     }
 
     public Object evaluate(EvaluationContext evaluationContext) {
+        if (expression == null) {
+            return null;
+        }
         return expression.evaluate(evaluationContext);
     }
 

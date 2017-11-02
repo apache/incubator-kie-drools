@@ -21,6 +21,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasEntry;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
@@ -319,5 +320,19 @@ public class DMNDecisionTableRuntimeTest {
         assertThat( result.get( "Compare Boolean" ), is( "Not same boolean" ) );
         assertThat( result.get( "Compare Number" ), is( "Bigger" ) );
         assertThat( result.get( "Compare String" ), is( "Different String" ) );
+    }
+
+    @Test
+    public void testEmptyOutputCell() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "DT_empty_output_cell.dmn", this.getClass() );
+        final DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/definitions/_77ae284e-ce52-4579-a50f-f3cc584d7f4b", "Calculation1" );
+        assertThat( dmnModel, notNullValue() );
+        final DMNContext context = DMNFactory.newContext();
+        context.set( "MonthlyDeptPmt", BigDecimal.valueOf( 1 ) );
+        context.set( "MonthlyPmt", BigDecimal.valueOf( 1 ) );
+        context.set( "MonthlyIncome", BigDecimal.valueOf( 1 ) );
+        final DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+        assertThat( dmnResult.hasErrors(), is( false ) );
+        assertNull( dmnResult.getContext().get("Logique de décision 1") );
     }
 }
