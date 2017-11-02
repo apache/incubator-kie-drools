@@ -40,7 +40,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionService;
@@ -639,27 +638,15 @@ public class JavaDialectRuntimeData
 
         public InputStream getResourceAsStream( final String name ) {
             final byte[] clsBytes = this.store.read( name );
-            if (clsBytes != null) {
-                return new ByteArrayInputStream( clsBytes );
-            }
-            return null;
+            return clsBytes != null ? new ByteArrayInputStream( clsBytes ) : getParent().getResourceAsStream( name );
         }
 
         public URL getResource( String name ) {
-            return null;
+            return getParent().getResource( name );
         }
 
         public Enumeration<URL> getResources( String name ) throws IOException {
-            return new Enumeration<URL>() {
-
-                public boolean hasMoreElements() {
-                    return false;
-                }
-
-                public URL nextElement() {
-                    throw new NoSuchElementException();
-                }
-            };
+            return getParent().getResources( name );
         }
 
         private Object getLockObject(String className) {
