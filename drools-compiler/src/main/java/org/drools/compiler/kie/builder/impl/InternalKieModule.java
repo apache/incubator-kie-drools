@@ -40,6 +40,8 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.ResourceChangeSet;
 
+import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.buildKieModule;
+
 public interface InternalKieModule extends KieModule, Serializable {
 
     void cacheKnowledgeBuilderForKieBase(String kieBaseName, KnowledgeBuilder kbuilder);
@@ -94,4 +96,10 @@ public interface InternalKieModule extends KieModule, Serializable {
     KnowledgeBuilderConfiguration getBuilderConfiguration( KieBaseModel kBaseModel );
 
     InternalKnowledgeBase createKieBase( KieBaseModelImpl kBaseModel, KieProject kieProject, ResultsImpl messages, KieBaseConfiguration conf );
+
+    default ResultsImpl build() {
+        ResultsImpl messages = new ResultsImpl();
+        buildKieModule(this, messages);
+        return messages;
+    }
 }

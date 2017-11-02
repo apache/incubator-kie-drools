@@ -18,6 +18,7 @@ package org.kie.scanner;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Constructor;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +28,10 @@ import java.util.TimerTask;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.drools.core.impl.InternalKieContainer;
+import org.appformer.maven.integration.ArtifactResolver;
+import org.appformer.maven.integration.DependencyDescriptor;
+import org.appformer.maven.support.DependencyFilter;
+import org.appformer.maven.support.PomModel;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.InternalKieScanner;
 import org.drools.compiler.kie.builder.impl.MemoryKieModule;
@@ -35,6 +39,7 @@ import org.drools.compiler.kie.builder.impl.ResultsImpl;
 import org.drools.compiler.kie.builder.impl.ZipKieModule;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
+import org.drools.core.impl.InternalKieContainer;
 import org.eclipse.aether.artifact.Artifact;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieModule;
@@ -45,10 +50,6 @@ import org.kie.api.builder.Results;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.event.kiescanner.KieScannerEventListener;
 import org.kie.api.runtime.KieContainer;
-import org.appformer.maven.integration.ArtifactResolver;
-import org.appformer.maven.integration.DependencyDescriptor;
-import org.appformer.maven.support.DependencyFilter;
-import org.appformer.maven.support.PomModel;
 import org.kie.scanner.event.KieScannerEventSupport;
 import org.kie.scanner.management.KieScannerMBean;
 import org.kie.scanner.management.KieScannerMBeanImpl;
@@ -56,7 +57,6 @@ import org.kie.scanner.management.MBeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.buildKieModule;
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsforEmptyKieModule;
 import static org.drools.compiler.kproject.ReleaseIdImpl.adapt;
 
@@ -182,7 +182,7 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
 
         MemoryKieModule kieModule = new MemoryKieModule(releaseId);
         addDependencies(kieModule, resolver, resolver.getPomDirectDependencies( DependencyFilter.COMPILE_FILTER ));
-        build(kieModule);
+        kieModule.build();
         return kieModule;
     }
 
@@ -195,7 +195,7 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
         ZipKieModule kieModule = createZipKieModule(releaseId, artifact.getFile());
         if (kieModule != null) {
             addDependencies(kieModule, resolver, resolver.getArtifactDependecies(dependencyDescriptor.toString()));
-            build(kieModule);
+            kieModule.build();
         }
         return kieModule;
     }
@@ -218,9 +218,35 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
         }
     }
 
+    private static Constructor<ZipKieModule> kieModelConstructor = findKieModelConstructor();
+
+    private static Constructor<ZipKieModule> findKieModelConstructor() {
+        // TODO inject CanonicalKieModule via service or make kie-ci to depend on the canonical model ?
+        Class zipKieModuleClass = null;
+        try {
+            zipKieModuleClass = Class.forName( "org.drools.modelcompiler.CanonicalKieModule" );
+        } catch (ClassNotFoundException e) {
+            try {
+                zipKieModuleClass = Class.forName( "org.drools.compiler.kie.builder.impl.ZipKieModule" );
+            } catch (ClassNotFoundException e1) {
+                throw new RuntimeException( e1 );
+            }
+        }
+        try {
+            return zipKieModuleClass.getConstructor( ReleaseId.class, KieModuleModel.class, File.class );
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException( e );
+        }
+    }
+
     private static ZipKieModule createZipKieModule( org.appformer.maven.support.AFReleaseId releaseId, File jar ) {
+        // TODO fall back to plain ZipKieModule in case the jar doesn't contain the META-INF/packages (rename?) file
         KieModuleModel kieModuleModel = getKieModuleModelFromJar(jar);
-        return kieModuleModel != null ? new ZipKieModule(adapt( releaseId ), kieModuleModel, jar) : null;
+        try {
+            return kieModuleModel != null ? kieModelConstructor.newInstance(adapt( releaseId ), kieModuleModel, jar) : null;
+        } catch (Exception e) {
+            throw new RuntimeException( e );
+        }
     }
 
     private static KieModuleModel getKieModuleModelFromJar(File jar) {
@@ -241,12 +267,6 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
 			}
         }
         return null;
-    }
-
-    private ResultsImpl build(InternalKieModule kieModule) {
-        ResultsImpl messages = new ResultsImpl();
-        buildKieModule(kieModule, messages);
-        return messages;
     }
 
     public synchronized void start(long pollingInterval) {
@@ -352,7 +372,7 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
         ZipKieModule kieModule = createZipKieModule(newReleaseId, artifact.getFile());
         if (kieModule != null) {
             addDependencies(kieModule, artifactResolver, artifactResolver.getArtifactDependecies(newReleaseId.toString()));
-            ResultsImpl messages = build(kieModule);
+            ResultsImpl messages = kieModule.build();
             if ( messages.filterMessages(Message.Level.ERROR).isEmpty()) {
                 Results updateMessages = kieContainer.updateDependencyToVersion(adapt( oldDependency.getArtifactReleaseId() ), adapt( newReleaseId ));
                 oldDependency.setArtifactVersion(artifact.getVersion());
