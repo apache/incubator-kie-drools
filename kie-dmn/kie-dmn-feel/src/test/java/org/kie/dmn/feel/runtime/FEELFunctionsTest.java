@@ -30,6 +30,7 @@ public class FEELFunctionsTest extends BaseFEELTest {
         final Object[][] cases = new Object[][] {
                 // constants
                 { "string(1.1)", "1.1" , null},
+                { "replace( \"  foo   bar zed  \", \"^(\\s)+|(\\s)+$|\\s+(?=\\s)\", \"\" )", "foo bar zed", null },
                 { "string(null)", null, null},
                 { "string(date(\"2016-08-14\"))", "2016-08-14" , null},
                 { "string(\"Happy %.0fth birthday, Mr %s!\", 38, \"Doe\")", "Happy 38th birthday, Mr Doe!", null},
