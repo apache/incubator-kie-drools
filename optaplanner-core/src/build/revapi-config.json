@@ -62,6 +62,39 @@
           "methodName": "setKieContainer",
           "elementKind": "method",
           "justification": "Encapsulate SolverConfigContext"
+        },
+        {
+          "code": "java.class.nowFinal",
+          "old": "class org.optaplanner.core.api.score.constraint.ConstraintMatch",
+          "new": "class org.optaplanner.core.api.score.constraint.ConstraintMatch",
+          "oldModifiers": "public",
+          "newModifiers": "public final",
+          "package": "org.optaplanner.core.api.score.constraint",
+          "classSimpleName": "ConstraintMatch",
+          "elementKind": "class",
+          "justification": "This should have been a final class originally because extending classes are likely to cause equals and compareTo issues."
+        },
+        {
+          "code": "java.class.nowFinal",
+          "old": "class org.optaplanner.core.api.score.constraint.ConstraintMatchTotal",
+          "new": "class org.optaplanner.core.api.score.constraint.ConstraintMatchTotal",
+          "oldModifiers": "public",
+          "newModifiers": "public final",
+          "package": "org.optaplanner.core.api.score.constraint",
+          "classSimpleName": "ConstraintMatchTotal",
+          "elementKind": "class",
+          "justification": "This should have been a final class originally because extending classes are likely to cause equals and compareTo issues."
+        },
+        {
+          "code": "java.class.nowFinal",
+          "old": "class org.optaplanner.core.api.score.constraint.Indictment",
+          "new": "class org.optaplanner.core.api.score.constraint.Indictment",
+          "oldModifiers": "public",
+          "newModifiers": "public final",
+          "package": "org.optaplanner.core.api.score.constraint",
+          "classSimpleName": "Indictment",
+          "elementKind": "class",
+          "justification": "This should have been a final class originally because extending classes are likely to cause equals and compareTo issues."
         }
       ]
     }
