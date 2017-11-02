@@ -131,16 +131,16 @@ public class SimpleDoubleScoreTest extends AbstractScoreTest {
 
     @Test
     public void equalsAndHashCode() {
-        assertScoresEqualsAndHashCode(
+        PlannerAssert.assertObjectsAreEqual(
                 SimpleDoubleScore.valueOf(-10.0),
                 SimpleDoubleScore.valueOf(-10.0),
                 SimpleDoubleScore.valueOfUninitialized(0, -10.0)
         );
-        assertScoresEqualsAndHashCode(
+        PlannerAssert.assertObjectsAreEqual(
                 SimpleDoubleScore.valueOfUninitialized(-7, -10.0),
                 SimpleDoubleScore.valueOfUninitialized(-7, -10.0)
         );
-        assertScoresNotEquals(
+        PlannerAssert.assertObjectsAreNotEqual(
                 SimpleDoubleScore.valueOf(-10.0),
                 SimpleDoubleScore.valueOf(-30.0),
                 SimpleDoubleScore.valueOfUninitialized(-7, -10.0)

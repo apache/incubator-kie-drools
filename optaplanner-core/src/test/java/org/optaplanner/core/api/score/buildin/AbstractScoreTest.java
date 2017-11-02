@@ -23,25 +23,6 @@ import static org.junit.Assert.*;
 
 public abstract class AbstractScoreTest {
 
-    public static void assertScoresEqualsAndHashCode(Score... scores) {
-        for (int i = 0; i < scores.length; i++) {
-            for (int j = i + 1; j < scores.length; j++) {
-                assertEquals(scores[i], scores[j]);
-                assertEquals(scores[i].hashCode(), scores[j].hashCode());
-                assertEquals(0, scores[i].compareTo(scores[j]));
-            }
-        }
-    }
-
-    public static void assertScoresNotEquals(Score... scores) {
-        for (int i = 0; i < scores.length; i++) {
-            for (int j = i + 1; j < scores.length; j++) {
-                assertNotEquals(scores[i], scores[j]);
-                assertNotEquals(0, scores[i].compareTo(scores[j]));
-            }
-        }
-    }
-
     public static void assertScoreNotFeasible(FeasibilityScore... scores) {
         for (FeasibilityScore score : scores) {
             assertEquals(score + " should not be feasible.", false, score.isFeasible());

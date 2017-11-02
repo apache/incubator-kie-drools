@@ -27,7 +27,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 /**
  * Retrievable from {@link ScoreDirector#getIndictmentMap()}.
  */
-public class Indictment implements Serializable, Comparable<Indictment> {
+public final class Indictment implements Serializable, Comparable<Indictment> {
 
     protected final Object justification;
 
@@ -97,13 +97,27 @@ public class Indictment implements Serializable, Comparable<Indictment> {
     // Infrastructure methods
     // ************************************************************************
 
+    // TODO this should sort on justification, not scoreTotal (use a different comparator for that)
     @Override
     public int compareTo(Indictment other) {
-        return new CompareToBuilder()
-                .append(getScoreTotal(), other.getScoreTotal())
-                // The justification might not implement Comparable - so we leave it in original order
-                //.append(getJustification(), other.getJustification())
-                .toComparison();
+        return ((Comparable) justification).compareTo(other.justification);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        } else if (o instanceof Indictment) {
+            Indictment other = (Indictment) o;
+            return justification.equals(other.justification);
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return justification.hashCode();
     }
 
     @Override

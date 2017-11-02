@@ -131,17 +131,17 @@ public class SimpleBigDecimalScoreTest extends AbstractScoreTest {
 
     @Test
     public void equalsAndHashCode() {
-        assertScoresEqualsAndHashCode(
+        PlannerAssert.assertObjectsAreEqual(
                 SimpleBigDecimalScore.valueOf(new BigDecimal("-10.0")),
                 SimpleBigDecimalScore.valueOf(new BigDecimal("-10.0")),
                 SimpleBigDecimalScore.valueOf(new BigDecimal("-10.000")),
                 SimpleBigDecimalScore.valueOfUninitialized(0, new BigDecimal("-10.0"))
         );
-        assertScoresEqualsAndHashCode(
+        PlannerAssert.assertObjectsAreEqual(
                 SimpleBigDecimalScore.valueOfUninitialized(-7, new BigDecimal("-10.0")),
                 SimpleBigDecimalScore.valueOfUninitialized(-7, new BigDecimal("-10.0"))
         );
-        assertScoresNotEquals(
+        PlannerAssert.assertObjectsAreNotEqual(
                 SimpleBigDecimalScore.valueOf(new BigDecimal("-10.0")),
                 SimpleBigDecimalScore.valueOf(new BigDecimal("-30.0")),
                 SimpleBigDecimalScore.valueOfUninitialized(-7, new BigDecimal("-10.0"))

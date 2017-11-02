@@ -131,16 +131,16 @@ public class SimpleLongScoreTest extends AbstractScoreTest {
 
     @Test
     public void equalsAndHashCode() {
-        assertScoresEqualsAndHashCode(
+        PlannerAssert.assertObjectsAreEqual(
                 SimpleLongScore.valueOf(-10L),
                 SimpleLongScore.valueOf(-10L),
                 SimpleLongScore.valueOfUninitialized(0, -10L)
         );
-        assertScoresEqualsAndHashCode(
+        PlannerAssert.assertObjectsAreEqual(
                 SimpleLongScore.valueOfUninitialized(-7, -10L),
                 SimpleLongScore.valueOfUninitialized(-7, -10L)
         );
-        assertScoresNotEquals(
+        PlannerAssert.assertObjectsAreNotEqual(
                 SimpleLongScore.valueOf(-10L),
                 SimpleLongScore.valueOf(-30L),
                 SimpleLongScore.valueOfUninitialized(-7, -10L)

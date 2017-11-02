@@ -146,16 +146,16 @@ public class HardSoftScoreTest extends AbstractScoreTest {
 
     @Test
     public void equalsAndHashCode() {
-        assertScoresEqualsAndHashCode(
+        PlannerAssert.assertObjectsAreEqual(
                 HardSoftScore.valueOf(-10, -200),
                 HardSoftScore.valueOf(-10, -200),
                 HardSoftScore.valueOfUninitialized(0, -10, -200)
         );
-        assertScoresEqualsAndHashCode(
+        PlannerAssert.assertObjectsAreEqual(
                 HardSoftScore.valueOfUninitialized(-7, -10, -200),
                 HardSoftScore.valueOfUninitialized(-7, -10, -200)
         );
-        assertScoresNotEquals(
+        PlannerAssert.assertObjectsAreNotEqual(
                 HardSoftScore.valueOf(-10, -200),
                 HardSoftScore.valueOf(-30, -200),
                 HardSoftScore.valueOf(-10, -400),

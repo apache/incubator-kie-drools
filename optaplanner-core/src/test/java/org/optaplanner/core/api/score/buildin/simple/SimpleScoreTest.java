@@ -129,16 +129,16 @@ public class SimpleScoreTest extends AbstractScoreTest {
 
     @Test
     public void equalsAndHashCode() {
-        assertScoresEqualsAndHashCode(
+        PlannerAssert.assertObjectsAreEqual(
                 SimpleScore.valueOf(-10),
                 SimpleScore.valueOf(-10),
                 SimpleScore.valueOfUninitialized(0, -10)
         );
-        assertScoresEqualsAndHashCode(
+        PlannerAssert.assertObjectsAreEqual(
                 SimpleScore.valueOfUninitialized(-7, -10),
                 SimpleScore.valueOfUninitialized(-7, -10)
         );
-        assertScoresNotEquals(
+        PlannerAssert.assertObjectsAreNotEqual(
                 SimpleScore.valueOf(-10),
                 SimpleScore.valueOf(-30),
                 SimpleScore.valueOfUninitialized(-7, -10)

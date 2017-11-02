@@ -28,7 +28,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 /**
  * Retrievable from {@link ScoreDirector#getConstraintMatchTotals()}.
  */
-public class ConstraintMatchTotal implements Serializable, Comparable<ConstraintMatchTotal> {
+public final class ConstraintMatchTotal implements Serializable, Comparable<ConstraintMatchTotal> {
 
     protected final String constraintPackage;
     protected final String constraintName;
@@ -120,11 +120,33 @@ public class ConstraintMatchTotal implements Serializable, Comparable<Constraint
 
     @Override
     public int compareTo(ConstraintMatchTotal other) {
-        return new CompareToBuilder()
-                .append(getConstraintPackage(), other.getConstraintPackage())
-                .append(getConstraintName(), other.getConstraintName())
-                .append(getScoreTotal(), other.getScoreTotal())
-                .toComparison();
+        if (!constraintPackage.equals(other.constraintPackage)) {
+            return constraintPackage.compareTo(other.constraintPackage);
+        } else if (!constraintName.equals(other.constraintName)) {
+            return constraintName.compareTo(other.constraintName);
+        } else {
+            return 0;
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        } else if (o instanceof ConstraintMatchTotal) {
+            ConstraintMatchTotal other = (ConstraintMatchTotal) o;
+            return constraintPackage.equals(other.constraintPackage)
+                    && constraintName.equals(other.constraintName);
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return ((17 * 37)
+                + constraintPackage.hashCode()) * 37
+                + constraintName.hashCode();
     }
 
     @Override

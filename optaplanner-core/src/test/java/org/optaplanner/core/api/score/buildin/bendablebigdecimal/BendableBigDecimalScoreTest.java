@@ -213,17 +213,17 @@ public class BendableBigDecimalScoreTest extends AbstractScoreTest {
 
     @Test
     public void equalsAndHashCodeHSS() {
-        assertScoresEqualsAndHashCode(
+        PlannerAssert.assertObjectsAreEqual(
                 scoreDefinitionHSS.createScore(new BigDecimal("-10"), new BigDecimal("-200"), new BigDecimal("-3000")),
                 scoreDefinitionHSS.createScore(new BigDecimal("-10"), new BigDecimal("-200"), new BigDecimal("-3000")),
                 scoreDefinitionHSS.createScore(new BigDecimal("-10.000"), new BigDecimal("-200.000"), new BigDecimal("-3000.000")),
                 scoreDefinitionHSS.createScoreUninitialized(0, new BigDecimal("-10"), new BigDecimal("-200"), new BigDecimal("-3000"))
         );
-        assertScoresEqualsAndHashCode(
+        PlannerAssert.assertObjectsAreEqual(
                 scoreDefinitionHSS.createScoreUninitialized(-7, new BigDecimal("-10"), new BigDecimal("-200"), new BigDecimal("-3000")),
                 scoreDefinitionHSS.createScoreUninitialized(-7, new BigDecimal("-10"), new BigDecimal("-200"), new BigDecimal("-3000"))
         );
-        assertScoresNotEquals(
+        PlannerAssert.assertObjectsAreNotEqual(
                 scoreDefinitionHSS.createScore(new BigDecimal("-10"), new BigDecimal("-200"), new BigDecimal("-3000")),
                 scoreDefinitionHSS.createScore(new BigDecimal("-30"), new BigDecimal("-200"), new BigDecimal("-3000")),
                 scoreDefinitionHSS.createScore(new BigDecimal("-10"), new BigDecimal("-400"), new BigDecimal("-3000")),
@@ -320,7 +320,7 @@ public class BendableBigDecimalScoreTest extends AbstractScoreTest {
 
     @Test
     public void equalsAndHashCodeHHSSS() {
-        assertScoresEqualsAndHashCode(
+        PlannerAssert.assertObjectsAreEqual(
                 scoreDefinitionHHSSS.createScore(MINUS_TEN, MINUS_20, MINUS_30, ZERO, ZERO),
                 scoreDefinitionHHSSS.createScore(MINUS_TEN, MINUS_20, MINUS_30, ZERO, ZERO)
         );

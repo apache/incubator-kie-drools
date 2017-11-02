@@ -25,7 +25,7 @@ import org.optaplanner.core.api.score.Score;
 /**
  * Retrievable from {@link ConstraintMatchTotal#getConstraintMatchSet()}.
  */
-public class ConstraintMatch implements Serializable, Comparable<ConstraintMatch> {
+public final class ConstraintMatch implements Serializable, Comparable<ConstraintMatch> {
 
     protected final String constraintPackage;
     protected final String constraintName;
@@ -77,12 +77,45 @@ public class ConstraintMatch implements Serializable, Comparable<ConstraintMatch
 
     @Override
     public int compareTo(ConstraintMatch other) {
-        return new CompareToBuilder()
-                .append(getConstraintPackage(), other.getConstraintPackage())
-                .append(getConstraintName(), other.getConstraintName())
-                .append(getJustificationList(), other.getJustificationList())
-                .append(getScore(), other.getScore())
-                .toComparison();
+        if (!constraintPackage.equals(other.constraintPackage)) {
+            return constraintPackage.compareTo(other.constraintPackage);
+        } else if (!constraintName.equals(other.constraintName)) {
+            return constraintName.compareTo(other.constraintName);
+        } else {
+            for (int i = 0; i < justificationList.size() && i < other.justificationList.size(); i++) {
+                int comparison = ((Comparable) justificationList.get(i)).compareTo(other.justificationList.get(i));
+                if (comparison != 0) {
+                    return comparison;
+                }
+            }
+            if (justificationList.size() != other.justificationList.size()) {
+                return justificationList.size() < other.justificationList.size() ? -1 : 1;
+            } else {
+                return 0;
+            }
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        } else if (o instanceof ConstraintMatch) {
+            ConstraintMatch other = (ConstraintMatch) o;
+            return constraintPackage.equals(other.constraintPackage)
+                    && constraintName.equals(other.constraintName)
+                    && justificationList.equals(other.justificationList);
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return (((17 * 37)
+                + constraintPackage.hashCode()) * 37
+                + constraintName.hashCode()) * 37
+                + justificationList.hashCode();
     }
 
     @Override

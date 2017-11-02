@@ -161,17 +161,17 @@ public class HardSoftBigDecimalScoreTest extends AbstractScoreTest {
 
     @Test
     public void equalsAndHashCode() {
-        assertScoresEqualsAndHashCode(
+        PlannerAssert.assertObjectsAreEqual(
                 HardSoftBigDecimalScore.valueOf(new BigDecimal("-10.0"), new BigDecimal("-200.0")),
                 HardSoftBigDecimalScore.valueOf(new BigDecimal("-10.0"), new BigDecimal("-200.0")),
                 HardSoftBigDecimalScore.valueOf(new BigDecimal("-10.000"), new BigDecimal("-200.000")),
                 HardSoftBigDecimalScore.valueOfUninitialized(0, new BigDecimal("-10.0"), new BigDecimal("-200.0"))
         );
-        assertScoresEqualsAndHashCode(
+        PlannerAssert.assertObjectsAreEqual(
                 HardSoftBigDecimalScore.valueOfUninitialized(-7, new BigDecimal("-10.0"), new BigDecimal("-200.0")),
                 HardSoftBigDecimalScore.valueOfUninitialized(-7, new BigDecimal("-10.0"), new BigDecimal("-200.0"))
         );
-        assertScoresNotEquals(
+        PlannerAssert.assertObjectsAreNotEqual(
                 HardSoftBigDecimalScore.valueOf(new BigDecimal("-10.0"), new BigDecimal("-200.0")),
                 HardSoftBigDecimalScore.valueOf(new BigDecimal("-30.0"), new BigDecimal("-200.0")),
                 HardSoftBigDecimalScore.valueOf(new BigDecimal("-10.0"), new BigDecimal("-400.0")),

@@ -169,16 +169,16 @@ public class BendableLongScoreTest extends AbstractScoreTest {
 
     @Test
     public void equalsAndHashCodeHSS() {
-        assertScoresEqualsAndHashCode(
+        PlannerAssert.assertObjectsAreEqual(
                 scoreDefinitionHSS.createScore(-10L, -200L, -3000L),
                 scoreDefinitionHSS.createScore(-10L, -200L, -3000L),
                 scoreDefinitionHSS.createScoreUninitialized(0, -10L, -200L, -3000L)
         );
-        assertScoresEqualsAndHashCode(
+        PlannerAssert.assertObjectsAreEqual(
                 scoreDefinitionHSS.createScoreUninitialized(-7, -10L, -200L, -3000L),
                 scoreDefinitionHSS.createScoreUninitialized(-7, -10L, -200L, -3000L)
         );
-        assertScoresNotEquals(
+        PlannerAssert.assertObjectsAreNotEqual(
                 scoreDefinitionHSS.createScore(-10L, -200L, -3000L),
                 scoreDefinitionHSS.createScore(-30L, -200L, -3000L),
                 scoreDefinitionHSS.createScore(-10L, -400L, -3000L),
@@ -283,7 +283,7 @@ public class BendableLongScoreTest extends AbstractScoreTest {
 
     @Test
     public void equalsAndHashCodeHHSSS() {
-        assertScoresEqualsAndHashCode(
+        PlannerAssert.assertObjectsAreEqual(
                 scoreDefinitionHHSSS.createScore(-10000000000L, -20000000000L, -30000000000L, 0L, 0L),
                 scoreDefinitionHHSSS.createScore(-10000000000L, -20000000000L, -30000000000L, 0L, 0L)
         );
