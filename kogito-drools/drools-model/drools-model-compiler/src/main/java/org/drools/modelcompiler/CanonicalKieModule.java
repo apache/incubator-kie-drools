@@ -16,6 +16,11 @@
 
 package org.drools.modelcompiler;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Map;
+
 import org.drools.compiler.kie.builder.impl.KieProject;
 import org.drools.compiler.kie.builder.impl.ResultsImpl;
 import org.drools.compiler.kie.builder.impl.ZipKieModule;
@@ -26,11 +31,6 @@ import org.drools.modelcompiler.builder.KieBaseBuilder;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Map;
 
 public class CanonicalKieModule extends ZipKieModule {
 
@@ -52,6 +52,12 @@ public class CanonicalKieModule extends ZipKieModule {
     @Override
     public Map<String, byte[]> getClassesMap( boolean includeTypeDeclarations ) {
         return super.getClassesMap( true );
+    }
+
+    @Override
+    public ResultsImpl build() {
+        // TODO should this initialize the CanonicalKieModule in some way? (doesn't seem necessary so far)
+        return new ResultsImpl();
     }
 
     @Override
@@ -83,6 +89,4 @@ public class CanonicalKieModule extends ZipKieModule {
             throw new RuntimeException( e );
         }
     }
-
-
 }
