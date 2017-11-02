@@ -35,7 +35,6 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.rule.Declaration;
-import org.drools.core.rule.ImportDeclaration;
 import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.KnowledgeHelper;
@@ -43,6 +42,7 @@ import org.drools.core.spi.Tuple;
 import org.drools.model.Variable;
 import org.drools.model.functions.ScriptBlock;
 import org.drools.modelcompiler.RuleContext;
+import org.kie.api.definition.KiePackage;
 import org.mvel2.MVEL;
 import org.mvel2.compiler.ExecutableStatement;
 import org.mvel2.integration.impl.CachingMapVariableResolverFactory;
@@ -126,9 +126,12 @@ public class MVELConsequence implements Consequence {
         runtimeData.onAdd(null, Thread.currentThread().getContextClassLoader()); // this classloader will be used by the CompilationUnit to load the imports.
         runtimeData.addPackageImport(context.getPkg().getName());
         runtimeData.addPackageImport("java.lang");
-        Map<String, Object> imports = runtimeData.getImports(); // sorry a hack.
-        for (ImportDeclaration id : context.getPkg().getImports().values()) {
-            imports.put(id.getTarget(), id.getTarget());
+        // sorry kind of a hack. runtimeData.getImports() does not hold information about imports, so we rely on all known builder's KBPackages
+        // therefore we assume for the ScriptBlock all available KBPackages are the default available and imported for the scope of the Script itself.
+        for (KiePackage kp : context.getKnowledgePackages()) {
+            if (!kp.getName().equals(context.getPkg().getName())) {
+                runtimeData.addPackageImport(kp.getName());
+            }
         }
 
         Serializable cuResult = cu.getCompiledExpression(runtimeData); // sometimes here it was passed as a 2nd argument a String?? similar to `rule R in file file.drl`
