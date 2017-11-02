@@ -90,7 +90,7 @@ public class OOPathExprVisitor {
             }
         });
 
-        ooPathConditionExpressions.forEach(d -> context.addExpression(buildExpressionWithIndexing(d)));
+        ooPathConditionExpressions.forEach(d -> context.addExpression(buildExpressionWithIndexing(context, d)));
 
 
     }

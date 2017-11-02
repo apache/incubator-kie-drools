@@ -3,13 +3,12 @@ package org.drools.modelcompiler.builder.generator;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
@@ -19,15 +18,16 @@ import org.drools.javaparser.ast.expr.Expression;
 public class RuleContext {
     private final InternalKnowledgePackage pkg;
     private DRLIdGenerator exprIdGenerator;
-    private final Optional<RuleDescr> ruleDescr;
+    private final Optional<RuleDescr> descr;
 
     private List<DeclarationSpec> declarations = new ArrayList<>();
     private List<DeclarationSpec> ooPathDeclarations = new ArrayList<>();
-    List<QueryParameter> queryParameters = new ArrayList<>();
     Deque<Consumer<Expression>> exprPointer = new LinkedList<>();
     List<Expression> expressions = new ArrayList<>();
-    Set<String> queryName = new HashSet<>();
     Map<String, String> namedConsequences = new HashMap<>();
+
+    List<QueryParameter> queryParameters = new ArrayList<>();
+    Optional<String> queryName = Optional.empty();
 
     private RuleDialect ruleDialect = RuleDialect.JAVA; // assumed is java by default as per Drools manual.
     public static enum RuleDialect {
@@ -40,7 +40,7 @@ public class RuleContext {
     public RuleContext(InternalKnowledgePackage pkg, DRLIdGenerator exprIdGenerator, Optional<RuleDescr> ruleDescr) {
         this.pkg = pkg;
         this.exprIdGenerator = exprIdGenerator;
-        this.ruleDescr = ruleDescr;
+        this.descr = ruleDescr;
         exprPointer.push( this.expressions::add );
     }
 
@@ -108,7 +108,7 @@ public class RuleContext {
     }
 
     public Optional<RuleDescr> getRuleDescr() {
-        return ruleDescr;
+        return descr;
     }
 
     public RuleDialect getRuleDialect() {
@@ -117,6 +117,10 @@ public class RuleContext {
 
     public void setRuleDialect(RuleDialect ruleDialect) {
         this.ruleDialect = ruleDialect;
+    }
+
+    public Optional<QueryParameter> queryParameterWithName(Predicate<? super QueryParameter> predicate) {
+        return queryParameters.stream().filter(predicate).findFirst();
     }
 
 }

@@ -156,9 +156,17 @@ public class ModelGenerator {
         new WindowReferenceGenerator(packageModel, pkg).addWindowReferences(packageDescr.getWindowDeclarations());
         packageModel.addAllFunctions(packageDescr.getFunctions().stream().map(FunctionGenerator::toFunction).collect(toList()));
 
+
+        for(RuleDescr descr : packageDescr.getRules()) {
+            if (descr instanceof QueryDescr) {
+                processQueryDef(pkg, packageModel, (QueryDescr) descr);
+            }
+        }
+
         for (RuleDescr descr : packageDescr.getRules()) {
             if (descr instanceof QueryDescr) {
-                processQuery(pkg, packageModel, (QueryDescr) descr);
+                QueryDefWithType qd = packageModel.getQueryDefWithType().get(descr.getName() + "_def");
+                processQuery(pkg, packageModel, qd.context, (QueryDescr) descr);
             } else {
                 processRule(pkg, packageModel, descr);
             }
@@ -325,44 +333,81 @@ public class ModelGenerator {
     public static void createRuleVariables(BlockStmt block, PackageModel packageModel, RuleContext context) {
 
         for (DeclarationSpec decl : context.getDeclarations()) {
-            if (!packageModel.getGlobals().containsKey(decl.getBindingId())) {
+            if (!packageModel.getGlobals().containsKey(decl.getBindingId()) && !context.queryParameterWithName(p -> p.name.equals(decl.getBindingId())).isPresent()) {
                 addVariable(block, decl);
             }
         }
     }
 
-    private static void processQuery(InternalKnowledgePackage pkg, PackageModel packageModel, QueryDescr queryDescr) {
+    private static void processQueryDef(InternalKnowledgePackage pkg, PackageModel packageModel, QueryDescr queryDescr) {
         RuleContext context = new RuleContext(pkg, packageModel.getExprIdGenerator(), Optional.of(queryDescr));
-        visit(context, packageModel, queryDescr);
-        final Type queryType = JavaParser.parseType(Query.class.getCanonicalName());
-        MethodDeclaration queryMethod = new MethodDeclaration(EnumSet.of(Modifier.PRIVATE), queryType, "query_" + toId(queryDescr.getName()));
+        String queryName = queryDescr.getName();
+        final String queryDefVariableName = queryName + "_def";
+        context.queryName = Optional.of(queryDefVariableName);
 
-        BlockStmt ruleBody = new BlockStmt();
-        queryMethod.setBody(ruleBody);
-        final String queryDefVariableName = QUERY_CALL + "_def";
-        VariableDeclarationExpr queryDefVar = new VariableDeclarationExpr(getQueryType(context.queryParameters), queryDefVariableName);
+        parseQueryParameters(context, packageModel, queryDescr);
+        ClassOrInterfaceType queryDefType = getQueryType(context.queryParameters);
 
         MethodCallExpr queryCall = new MethodCallExpr(null, QUERY_CALL);
         if (!queryDescr.getNamespace().isEmpty()) {
             queryCall.addArgument( new StringLiteralExpr( queryDescr.getNamespace() ) );
         }
-        queryCall.addArgument(new StringLiteralExpr(queryDescr.getName()));
+        queryCall.addArgument(new StringLiteralExpr(queryName));
         for (QueryParameter qp : context.queryParameters) {
             queryCall.addArgument(new ClassExpr(JavaParser.parseType(qp.type.getCanonicalName())));
         }
+        packageModel.getQueryDefWithType().put(queryDefVariableName, new QueryDefWithType(queryDefType, queryCall, context));
+    }
 
-        AssignExpr ruleAssign = new AssignExpr(queryDefVar, queryCall, AssignExpr.Operator.ASSIGN);
-        ruleBody.addStatement(ruleAssign);
+    public static class QueryDefWithType {
+        private ClassOrInterfaceType queryType;
+        private MethodCallExpr methodCallExpr;
+        private RuleContext context;
 
-        VariableDeclarationExpr queryBuildVar = new VariableDeclarationExpr(queryType, (QUERY_CALL + "_build"));
+        public QueryDefWithType(ClassOrInterfaceType queryType, MethodCallExpr methodCallExpr, RuleContext contex) {
+            this.queryType = queryType;
+            this.methodCallExpr = methodCallExpr;
+            this.context = contex;
+        }
+
+        public ClassOrInterfaceType getQueryType() {
+            return queryType;
+        }
+
+        public MethodCallExpr getMethodCallExpr() {
+            return methodCallExpr;
+        }
+
+        public RuleContext getContext() {
+            return context;
+        }
+    }
+
+
+    private static void processQuery(InternalKnowledgePackage pkg, PackageModel packageModel, RuleContext context, QueryDescr queryDescr) {
+        final String queryDefVariableName = queryDescr.getName() + "_def";
+
+        visit(context, packageModel, queryDescr);
+        final Type queryType = JavaParser.parseType(Query.class.getCanonicalName());
+
+        MethodDeclaration queryMethod = new MethodDeclaration(EnumSet.of(Modifier.PRIVATE), queryType, "query_" + toId(queryDescr.getName()));
+
+        BlockStmt queryBody = new BlockStmt();
+        createRuleVariables(queryBody, packageModel, context);
+        queryMethod.setBody(queryBody);
+
+        String queryBuildVarName = queryDescr.getName() + "_build";
+        VariableDeclarationExpr queryBuildVar = new VariableDeclarationExpr(queryType, queryBuildVarName);
 
         MethodCallExpr buildCall = new MethodCallExpr(new NameExpr(queryDefVariableName), BUILD_CALL);
         context.expressions.forEach(buildCall::addArgument);
 
         AssignExpr queryBuildAssign = new AssignExpr(queryBuildVar, buildCall, AssignExpr.Operator.ASSIGN);
-        ruleBody.addStatement(queryBuildAssign);
+        queryBody.addStatement(queryBuildAssign);
 
-        ruleBody.addStatement(new ReturnStmt(QUERY_CALL + "_build"));
+        queryBody.addStatement(JavaParser.parseStatement(String.format("queries.add(%s);", queryBuildVarName)));
+
+        queryBody.addStatement(new ReturnStmt(queryBuildVarName));
         packageModel.putQueryMethod(queryMethod);
     }
 
@@ -564,15 +609,18 @@ public class ModelGenerator {
     }
 
 
-    private static void visit(RuleContext context, PackageModel packageModel, QueryDescr descr) {
-
+    private static void parseQueryParameters(RuleContext context, PackageModel packageModel, QueryDescr descr) {
         for (int i = 0; i < descr.getParameters().length; i++) {
             final String argument = descr.getParameters()[i];
             final String type = descr.getParameterTypes()[i];
+            context.addDeclaration(new DeclarationSpec(argument, getClassFromContext(context.getPkg(), type)));
             QueryParameter queryParameter = new QueryParameter(argument, getClassFromContext(context.getPkg(),type));
             context.queryParameters.add(queryParameter);
+            packageModel.putQueryVariable("query_" + descr.getName(), queryParameter);
         }
+    }
 
+    private static void visit(RuleContext context, PackageModel packageModel, QueryDescr descr) {
         visit(context, packageModel, descr.getLhs());
     }
 
@@ -618,6 +666,21 @@ public class ModelGenerator {
 
         // Expression is a query, get bindings from query parameter type
         if ( bindQuery( context, packageModel, className, constraintDescrs ) ) {
+            return;
+        }
+
+        String queryDef = className + "_def";
+        if(packageModel.getQueryDefWithType().containsKey(queryDef)) {
+            MethodCallExpr callMethod = new MethodCallExpr(new NameExpr(queryDef), "call");
+
+            List<QueryParameter> parameters = packageModel.getQueryDefWithType().get(queryDef).context.queryParameters;
+            for (int i = 1; i <= parameters.size(); i++) {
+                String queryName = context.queryName.orElseThrow(RuntimeException::new);
+                MethodCallExpr parameterCall = new MethodCallExpr(new NameExpr(queryName), "getArg" + i);
+                callMethod.addArgument(parameterCall);
+            }
+
+            context.expressions.add(callMethod);
             return;
         }
 
@@ -716,7 +779,7 @@ public class ModelGenerator {
 
     private static void processExpression( RuleContext context, DrlxParseResult drlxParseResult ) {
         if (drlxParseResult.expr != null) {
-            Expression dslExpr = buildExpressionWithIndexing( drlxParseResult );
+            Expression dslExpr = buildExpressionWithIndexing(context, drlxParseResult );
             context.addExpression( dslExpr );
         }
         if (drlxParseResult.exprBinding != null) {
@@ -958,22 +1021,33 @@ public class ModelGenerator {
         }
     }
 
-    public static Expression buildExpressionWithIndexing(DrlxParseResult drlxParseResult) {
+    public static Expression buildExpressionWithIndexing(RuleContext context, DrlxParseResult drlxParseResult) {
         String exprId = drlxParseResult.exprId;
         MethodCallExpr exprDSL = new MethodCallExpr(null, EXPR_CALL);
         if (exprId != null && !"".equals(exprId)) {
             exprDSL.addArgument( new StringLiteralExpr(exprId) );
         }
 
-        exprDSL = buildExpression( drlxParseResult, exprDSL );
+        exprDSL = buildExpression(context, drlxParseResult, exprDSL );
         exprDSL = buildIndexedBy( drlxParseResult, exprDSL );
         exprDSL = buildReactOn( drlxParseResult, exprDSL );
         return exprDSL;
     }
 
-    private static MethodCallExpr buildExpression( DrlxParseResult drlxParseResult, MethodCallExpr exprDSL ) {
+    private static MethodCallExpr buildExpression(RuleContext context, DrlxParseResult drlxParseResult, MethodCallExpr exprDSL ) {
         exprDSL.addArgument( new NameExpr(toVar(drlxParseResult.patternBinding)) );
-        drlxParseResult.usedDeclarations.stream().map( x -> new NameExpr(toVar(x))).forEach(exprDSL::addArgument);
+        drlxParseResult.usedDeclarations.stream().map(x -> {
+            Optional<QueryParameter> optQueryParameter = context.queryParameterWithName(p -> p.name.equals(x));
+            return optQueryParameter.map(qp -> {
+
+                final String queryDef = context.queryName.orElseThrow(RuntimeException::new);
+
+                final int queryParameterIndex = context.queryParameters.indexOf(qp) + 1;
+                return (Expression)new MethodCallExpr(new NameExpr(queryDef), "getArg"+ queryParameterIndex);
+
+            }).orElse(new NameExpr(toVar(x)));
+
+        }).forEach(exprDSL::addArgument);
         exprDSL.addArgument(buildConstraintExpression( drlxParseResult, drlxParseResult.expr ));
         return exprDSL;
     }

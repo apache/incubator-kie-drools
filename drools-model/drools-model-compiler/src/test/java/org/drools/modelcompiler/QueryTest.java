@@ -19,6 +19,7 @@ package org.drools.modelcompiler;
 import java.util.Collection;
 
 import org.assertj.core.api.Assertions;
+import org.drools.core.rule.QueryImpl;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Relationship;
 import org.drools.modelcompiler.domain.Result;
@@ -229,7 +230,9 @@ public class QueryTest extends BaseModelTest {
         QueryResults results = ksession.getQueryResults( "isRelatedTo", "A", "B" );
 
         assertEquals( 1, results.size() );
-        assertEquals( "B", results.iterator().next().get( "y" ) );
+        String paramName = ((QueryImpl) ksession.getKieBase().getQuery("defaultpkg", "isRelatedTo" )).getParameters()[1].getIdentifier();
+        assertEquals("B", results.iterator().next().get(paramName));
+
     }
 
     @Test
