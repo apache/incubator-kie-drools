@@ -74,6 +74,7 @@ public class BuiltInFunctions {
             new ProductFunction(),
             new CodeFunction(),
             new InvokeFunction(),
+            new SplitFunction()
 
             };
 
