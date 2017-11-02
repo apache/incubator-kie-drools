@@ -28,7 +28,7 @@
     </semantic:literalExpression>
   </semantic:decision>
   <semantic:businessKnowledgeModel id="b_PMT2" name="PMT2" triso:displayName="PMT2">
-    <semantic:encapsulatedLogic xmlns:drools="http://www.drools.org/kie-dmn/1.1" drools:kind="undefined" id="_ad7ca048-83ff-4ba5-bf93-363dad20c57b">
+    <semantic:encapsulatedLogic xmlns:drools="http://www.drools.org/kie/dmn/1.1" drools:kind="undefined" id="_ad7ca048-83ff-4ba5-bf93-363dad20c57b">
       <semantic:formalParameter id="_0f436c6b-b203-4d9b-a18f-6f4e2d3cfaa4" name="loan" typeRef="tLoan"/>
       <semantic:literalExpression expressionLanguage="http://www.omg.org/spec/FEEL/20140401" id="_bc7c7b3e-ede5-4133-b0df-70c977e76943">
         <semantic:text>(loan.amount * loan.rate/12)/(1-(1+loan.rate/12)**-loan.term)</semantic:text>
