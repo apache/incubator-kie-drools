@@ -36,6 +36,38 @@
                 <dependencySourceInclude>org.jbpm:*</dependencySourceInclude>
                 <dependencySourceInclude>org.kie:kie-api</dependencySourceInclude>
               </dependencySourceIncludes>
+              <additionalDependencies>
+                <additionalDependency>
+                  <groupId>org.jboss.spec.javax.jms</groupId>
+                  <artifactId>jboss-jms-api_2.0_spec</artifactId>
+                  <version>${version.org.jboss.spec.javax.jms.jboss-jms-api_2.0_spec}</version>
+                </additionalDependency>
+                <additionalDependency>
+                  <groupId>org.jboss.spec.javax.security.jacc</groupId>
+                  <artifactId>jboss-jacc-api_1.5_spec</artifactId>
+                  <version>${version.org.jboss.spec.javax.security.jacc.jboss-jacc-api_1.5_spec}</version>
+                </additionalDependency>
+                <additionalDependency>
+                  <groupId>org.quartz-scheduler</groupId>
+                  <artifactId>quartz</artifactId>
+                  <version>${version.org.quartz-scheduler}</version>
+                </additionalDependency>
+                <additionalDependency>
+                  <groupId>jivesoftware</groupId>
+                  <artifactId>smack</artifactId>
+                  <version>${version.jivesoftware.smack}</version>
+                </additionalDependency>
+                <additionalDependency>
+                  <groupId>rome</groupId>
+                  <artifactId>rome</artifactId>
+                  <version>${version.rome}</version>
+                </additionalDependency>
+                <additionalDependency>
+                  <groupId>commons-net</groupId>
+                  <artifactId>commons-net</artifactId>
+                  <version>${version.commons-net}</version>
+                </additionalDependency>
+              </additionalDependencies>
             </configuration>
           </execution>
         </executions>
