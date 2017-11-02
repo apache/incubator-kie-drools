@@ -130,6 +130,7 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
             this.constraintUndoListener = constraintUndoListener;
         }
 
+        @Override
         public final void run() {
             constraintUndoListener.run();
             if (constraintMatchEnabled) {
