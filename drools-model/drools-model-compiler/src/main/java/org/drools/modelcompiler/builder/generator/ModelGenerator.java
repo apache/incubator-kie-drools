@@ -174,6 +174,8 @@ public class ModelGenerator {
         visit(context, packageModel, ruleDescr.getLhs());
         MethodDeclaration ruleMethod = new MethodDeclaration(EnumSet.of(Modifier.PRIVATE), RULE_TYPE, "rule_" + toId( ruleDescr.getName() ) );
 
+        ruleMethod.setJavadocComment(" Rule name: " + ruleDescr.getName() + " ");
+
         VariableDeclarationExpr ruleVar = new VariableDeclarationExpr(RULE_TYPE, RULE_CALL);
 
         MethodCallExpr ruleCall = new MethodCallExpr(null, RULE_CALL);
