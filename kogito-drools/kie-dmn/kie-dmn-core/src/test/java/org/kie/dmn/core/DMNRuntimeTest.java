@@ -1483,5 +1483,25 @@ public class DMNRuntimeTest {
         DMNResult result = runtime.evaluateAll(model, DMNFactory.newContext());
         assertFalse(result.hasErrors());
     }
+
+    @Test
+    public void testEx_4_3simplified() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime("Ex_4_3simplified.dmn", this.getClass());
+        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_5c5a9c72-627e-4666-ae85-31356fed3658", "Ex_4_3simplified");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        DMNContext context = DMNFactory.newContext();
+        context.set("number", 123.123456d);
+
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        System.out.println(dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnModel.hasErrors(), is(false));
+
+        DMNContext result = dmnResult.getContext();
+
+        assertThat(result.get("Formatted Monthly Payment"), is("€123.12"));
+    }
+
 }
 

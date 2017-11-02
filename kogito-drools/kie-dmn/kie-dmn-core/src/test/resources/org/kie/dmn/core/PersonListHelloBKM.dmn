@@ -31,7 +31,7 @@
     </semantic:literalExpression>
   </semantic:decision>
   <semantic:businessKnowledgeModel id="_b2ae3f58-ab6f-4c0b-9038-e9a873b695b1" name="My BKM" triso:displayName="My BKM">
-    <semantic:encapsulatedLogic xmlns:drools="http://www.drools.org/kie-dmn/1.1" drools:kind="F" id="_cc3280d8-8692-4258-9310-68bef344035c">
+    <semantic:encapsulatedLogic xmlns:drools="http://www.drools.org/kie/dmn/1.1" drools:kind="F" id="_cc3280d8-8692-4258-9310-68bef344035c">
       <semantic:formalParameter id="_b0bda696-6c2c-45c1-8a23-a7261b30dcd1" name="pName" typeRef="feel:string"/>
       <semantic:formalParameter id="_d269a9e6-17fa-4517-bca8-4db83e0c68c0" name="pAge" typeRef="feel:number"/>
       <semantic:literalExpression id="_dd9f0b13-d29b-4903-af14-d77a29ad4058">

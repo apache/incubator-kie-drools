@@ -144,7 +144,7 @@ Is Soul a Match(Candidate2, Candidate1)
 &lt;li&gt;Matching interests of the other person must match at least the number specified&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;&amp;nbsp;&lt;/p&gt;</semantic:description>
-    <semantic:encapsulatedLogic xmlns:drools="http://www.drools.org/kie-dmn/1.1" drools:kind="F" id="_2396a065-ed4a-4f0e-8bba-c66a3a6dd697">
+    <semantic:encapsulatedLogic xmlns:drools="http://www.drools.org/kie/dmn/1.1" drools:kind="F" id="_2396a065-ed4a-4f0e-8bba-c66a3a6dd697">
       <semantic:formalParameter id="_1426566d-e6a4-4a1b-a4a4-da747132400d" name="Profile" typeRef="tProfile"/>
       <semantic:formalParameter id="_65c7fa56-63fa-4009-958e-a60ca88c3232" name="Candidate" typeRef="tProfile"/>
       <semantic:literalExpression id="_fd97e464-37b7-4f65-a71e-0a9d4ff309a8">
@@ -188,7 +188,7 @@ Number of Matching Interests(Profile, Candidate) &gt;= Profile.Minimum Matching 
   <semantic:businessKnowledgeModel id="_1e8c0870-a5c8-44b8-a3b0-ca6b07122fd9" name="absolute" triso:displayName="absolute">
     <semantic:description>&lt;p&gt;Given a number, this BKM returns the absolute value of that number. I.e., if the number is greater or equal to zero, it returns the number itself. If the number is negative, it returns the number multiplied by -1.&amp;nbsp;&lt;/p&gt;
 &lt;p&gt;This BKM could easily be implemented with a simple "if" statement, but it is here demonstrating how the model can easily integrate with Java functions to provide functionality not available out of the box in FEEL.&lt;/p&gt;</semantic:description>
-    <semantic:encapsulatedLogic xmlns:drools="http://www.drools.org/kie-dmn/1.1" drools:kind="J" id="_faaac0ba-3cb6-4969-b6bb-1b429baacb80">
+    <semantic:encapsulatedLogic xmlns:drools="http://www.drools.org/kie/dmn/1.1" drools:kind="J" id="_faaac0ba-3cb6-4969-b6bb-1b429baacb80">
       <semantic:formalParameter id="_08935875-c71a-44a6-af85-0fa2f794aac9" name="value" typeRef="feel:number"/>
       <semantic:context>
         <semantic:contextEntry>

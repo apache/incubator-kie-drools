@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/definitions/_5c5a9c72-627e-4666-ae85-31356fed3658" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="5.2.9" id="_5c5a9c72-627e-4666-ae85-31356fed3658" name="Ex_4_3simplified" namespace="http://www.trisotech.com/definitions/_5c5a9c72-627e-4666-ae85-31356fed3658" triso:logoChoice="Default">
+  <semantic:extensionElements/>
+  <semantic:itemDefinition isCollection="false" label="tLoan" name="tLoan">
+    <semantic:itemComponent id="_fb68e1a0-0b83-495a-bc3c-c657c9b733f6" isCollection="false" name="rate">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_2a7942d0-7d5b-457c-94bc-0bbaba6bd1f1" isCollection="false" name="pointsPct">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_17a5dad8-b2c4-4d52-889c-e85b1e4d6fb6" isCollection="false" name="fees">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_fc17077d-4db7-4ec0-8624-76e916cc1d48" isCollection="false" name="term">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+  </semantic:itemDefinition>
+  <semantic:decision id="_4db17be3-b572-4e5f-b3cb-9b9429ae9ea6" name="Formatted Monthly Payment">
+    <semantic:variable id="_1876c26e-15bb-423a-8861-fb178a88f539" name="Formatted Monthly Payment"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_0349872a-4981-4c6a-9cbd-5d56c995c0d6"/>
+    </semantic:informationRequirement>
+    <semantic:context id="_b99277ee-b8fd-47ca-b025-365970d85d7e">
+      <semantic:contextEntry>
+        <semantic:variable id="_ed9660f2-625b-4509-96a4-bc9b0673aca8" name="Monthly Payment" typeRef="feel:number"/>
+        <semantic:literalExpression id="_7e1f59eb-3ca9-42fb-9cf1-2474eef7cf00">
+          <semantic:text>number</semantic:text>
+        </semantic:literalExpression>
+      </semantic:contextEntry>
+      <semantic:contextEntry>
+        <semantic:variable id="_50445aec-10dc-45b2-9a30-727d4e495401" name="format number"/>
+        <semantic:functionDefinition xmlns:drools="http://www.drools.org/kie/dmn/1.1" drools:kind="J" id="_d182c21d-dfa9-4c14-8890-42ca61f73144">
+          <semantic:formalParameter id="_c8f96bd9-ecd1-41b3-ba1d-9ea77a821703" name="mask" typeRef="feel:string"/>
+          <semantic:formalParameter id="_cf7e04fe-54e6-413a-9bb9-077a16ea8b8b" name="value" typeRef="feel:number"/>
+          <semantic:context>
+            <semantic:contextEntry>
+              <semantic:variable id="_dcff902d-e5ef-4dfc-9755-da1e3819d155" name="class" typeRef="feel:string"/>
+              <semantic:literalExpression id="_93445679-8670-409a-813d-63eb23f50c32">
+                <semantic:text>"java.lang.String"</semantic:text>
+              </semantic:literalExpression>
+            </semantic:contextEntry>
+            <semantic:contextEntry>
+              <semantic:variable id="_1153922b-a5be-4fd9-b28f-c90e44ab5d9a" name="method signature" typeRef="feel:string"/>
+              <semantic:literalExpression id="_7013b3e8-81eb-4e85-a51d-a6453583e9b0">
+                <semantic:text>"format(java.lang.String, [Ljava.lang.Object; )"</semantic:text>
+              </semantic:literalExpression>
+            </semantic:contextEntry>
+          </semantic:context>
+        </semantic:functionDefinition>
+      </semantic:contextEntry>
+      <semantic:contextEntry>
+        <semantic:literalExpression id="_c35cac29-e6e1-4c7d-9a8d-851fd8fe50bb">
+          <semantic:text>format number("€%,4.2f", Monthly Payment)</semantic:text>
+        </semantic:literalExpression>
+      </semantic:contextEntry>
+    </semantic:context>
+  </semantic:decision>
+  <semantic:inputData id="_0349872a-4981-4c6a-9cbd-5d56c995c0d6" name="number">
+    <semantic:variable id="_03a39593-0c62-4fe8-a3d6-8391214b6f50" name="number" typeRef="feel:number"/>
+  </semantic:inputData>
+</semantic:definitions>
