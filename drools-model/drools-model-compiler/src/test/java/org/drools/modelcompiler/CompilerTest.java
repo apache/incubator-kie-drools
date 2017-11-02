@@ -32,7 +32,6 @@ import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
 import org.drools.modelcompiler.domain.Toy;
 import org.drools.modelcompiler.domain.Woman;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
@@ -945,27 +944,33 @@ public class CompilerTest extends BaseModelTest {
         results.forEach(System.out::println);
     }
 
-    @Ignore("missing MVEL imports at package level..")
     @Test
     public void testMVELmultiple() {
-        String str = "dialect \"mvel\"\n" +
+        String str = "package mypackage;" +
+                     "dialect \"mvel\"\n" + // MVEL dialect defined at package level.
                      "import " + Person.class.getCanonicalName() + ";\n" +
                      "rule R1\n" +
                      "when\n" +
                      "  Integer()\n" +
                      "then\n" +
-                     "  System.out.println(\"Hello World\");\n" +
-                     "  insert(new Person(\"Matteo\", 47));\n" +
-                     "  insert(\"Hello World\");\n" +
+                     "  System.out.println(\"Hello World\")\n" + // no ending ; as per MVEL dialect
+                     "  insert(new Person(\"Matteo\", 47))\n" +
+                     "  insert(\"Hello World\")\n" +
                      "end\n" +
                      "rule R2\n" +
-                     "dialect \"mvel\"\n" +
                      "when\n" +
                      "  $p : Person()\n" +
                      "then\n" +
                      "  modify($p) { setAge(1); }\n" +
-                     "  insert(\"Modified person age to 1 for: \"+$p.name)\n" +
-                     "end";
+                     "  insert(\"Modified person age to 1 for: \"+$p.name)\n" + // Please notice $p.name is MVEL dialect.
+                     "end\n" +
+                     "rule R3\n" +
+                     "when\n" +
+                     "  $s : String( this == \"Hello World\")\n" +
+                     "  $p : Person()\n" + // this is artificially added to ensure working even with unnecessary declaration passed to on().execute().
+                     "then\n" +
+                     "  retract($s)" +
+                     "end\n";
 
         KieSession ksession = getKieSession(str);
 
@@ -974,7 +979,7 @@ public class CompilerTest extends BaseModelTest {
 
         Collection<String> results = getObjectsIntoList(ksession, String.class);
         System.out.println(results);
-        assertTrue(results.contains("Hello World"));
+        assertFalse(results.contains("Hello World"));
         assertTrue(results.contains("Modified person age to 1 for: Matteo"));
     }
 }
