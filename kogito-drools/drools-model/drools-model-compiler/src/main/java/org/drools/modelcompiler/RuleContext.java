@@ -16,6 +16,7 @@
 
 package org.drools.modelcompiler;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,6 +29,7 @@ import org.drools.core.spi.GlobalExtractor;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.model.Global;
 import org.drools.model.Variable;
+import org.kie.api.definition.KiePackage;
 
 public class RuleContext {
 
@@ -46,6 +48,13 @@ public class RuleContext {
         this.builder = builder;
         this.pkg = pkg;
         this.rule = rule;
+    }
+
+    /**
+     * All KiePackage known to the KiePackagesBuilder
+     */
+    public Collection<KiePackage> getKnowledgePackages() {
+        return builder.getKnowledgePackages();
     }
 
     public KnowledgePackageImpl getPkg() {

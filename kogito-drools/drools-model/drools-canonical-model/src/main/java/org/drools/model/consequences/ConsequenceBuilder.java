@@ -187,6 +187,13 @@ public class ConsequenceBuilder {
             return this;
         }
 
+        public _2<A, B> executeScript(String language, String script) {
+            this.usingDrools = true;
+            this.language = language;
+            this.block = new ScriptBlock(script);
+            return this;
+        }
+
         public <R> _2 insert(final Function2<A, B, R> f) {
             addInsert(toFunctionN(f));
             return this;
@@ -216,6 +223,13 @@ public class ConsequenceBuilder {
                     block.execute((Drools)objs[0], (A)objs[1], (B)objs[2], (C)objs[3]);
                 }
             };
+            return this;
+        }
+
+        public _3<A, B, C> executeScript(String language, String script) {
+            this.usingDrools = true;
+            this.language = language;
+            this.block = new ScriptBlock(script);
             return this;
         }
 
