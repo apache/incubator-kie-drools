@@ -338,7 +338,6 @@ public class ModelGenerator {
         MethodDeclaration queryMethod = new MethodDeclaration(EnumSet.of(Modifier.PRIVATE), queryType, "query_" + toId(queryDescr.getName()));
 
         BlockStmt ruleBody = new BlockStmt();
-        createRuleVariables(ruleBody, packageModel, context);
         queryMethod.setBody(ruleBody);
         final String queryDefVariableName = QUERY_CALL + "_def";
         VariableDeclarationExpr queryDefVar = new VariableDeclarationExpr(getQueryType(context.queryParameters), queryDefVariableName);
@@ -349,7 +348,7 @@ public class ModelGenerator {
         }
         queryCall.addArgument(new StringLiteralExpr(queryDescr.getName()));
         for (QueryParameter qp : context.queryParameters) {
-            queryCall.addArgument(new NameExpr(toVar(qp.name)));
+            queryCall.addArgument(new ClassExpr(JavaParser.parseType(qp.type.getCanonicalName())));
         }
 
         AssignExpr ruleAssign = new AssignExpr(queryDefVar, queryCall, AssignExpr.Operator.ASSIGN);
@@ -570,10 +569,8 @@ public class ModelGenerator {
         for (int i = 0; i < descr.getParameters().length; i++) {
             final String argument = descr.getParameters()[i];
             final String type = descr.getParameterTypes()[i];
-            context.addDeclaration(new DeclarationSpec(argument, getClassFromContext(context.getPkg(), type)));
             QueryParameter queryParameter = new QueryParameter(argument, getClassFromContext(context.getPkg(),type));
             context.queryParameters.add(queryParameter);
-            packageModel.putQueryVariable("query_" + descr.getName(), queryParameter);
         }
 
         visit(context, packageModel, descr.getLhs());
