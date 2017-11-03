@@ -864,7 +864,26 @@ public class DMNRuntimeTest {
         assertThat( dmnModel, notNullValue() );
         assertThat( DMNRuntimeUtil.formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( true ) );
         assertThat( dmnModel.getMessages().size(), is( 1 ) );
-        assertThat( dmnModel.getMessages().get( 0 ).getSourceId(), is( "_oApprovalStatus" ) );
+    }
+
+    @Test
+    public void test_non_Priority_table_missing_output_values() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "DTABLE_NON_PRIORITY_MISSING_OUTVALS.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel(
+        "https://github.com/kiegroup/kie-dmn",
+        "DTABLE_NON_PRIORITY_MISSING_OUTVALS" );
+        assertThat( dmnModel, notNullValue() );
+        assertThat( DMNRuntimeUtil.formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
+    }
+
+    @Test
+    public void testPriority_table_one_output_value() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "DTABLE_PRIORITY_ONE_OUTVAL.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel(
+        "https://github.com/kiegroup/kie-dmn",
+        "DTABLE_PRIORITY_ONE_OUTVAL" );
+        assertThat( dmnModel, notNullValue() );
+        assertThat( DMNRuntimeUtil.formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
     }
     
     @Test
