@@ -30,22 +30,25 @@ import java.util.stream.Collectors;
  * 
  */
 public class PMMLRequestData {
+	private String correlationId;
     private String modelName;
     private List<ParameterInfo> requestParams;
 
-    public PMMLRequestData() {
+    public PMMLRequestData(String correlationId) {
+    	this.correlationId = correlationId;
         this.requestParams = new ArrayList<>();
     }
 
-    public PMMLRequestData(String modelName) {
+    public PMMLRequestData(String correlationId, String modelName) {
+    	this.correlationId = correlationId;
         this.modelName = modelName;
         this.requestParams = new ArrayList<>();
     }
 
-    private <T> T getValue(String parameterName) {
-        ParameterInfo pinfo = requestParams.stream().filter(pi -> pi.getName().equals(parameterName)).findFirst().orElse(null);
-        return (pinfo != null) ? (T)pinfo.getValue() : null;
-    }
+//    private <T> T getValue(String parameterName) {
+//        ParameterInfo pinfo = requestParams.stream().filter(pi -> pi.getName().equals(parameterName)).findFirst().orElse(null);
+//        return (pinfo != null) ? (T)pinfo.getValue() : null;
+//    }
 
     public String getModelName() {
         return this.modelName;
@@ -77,12 +80,27 @@ public class PMMLRequestData {
     }
 
     public synchronized boolean addRequestParam(String paramName, Object value) {
+    	if (paramName == null || paramName.trim().isEmpty() || value == null) {
+    		return false;
+    	}
         Class<?> clazz = value.getClass();
         ParameterInfo parameter = new ParameterInfo(paramName, clazz, value);
         return this.addRequestParam(parameter);
     }
+    
+    public String getCorrelationId() {
+		return correlationId;
+	}
 
-    @Override
+	public void setCorrelationId(String correlationId) {
+		this.correlationId = correlationId;
+	}
+
+	public void setModelName(String modelName) {
+		this.modelName = modelName;
+	}
+
+	@Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder("PMMLRequestData( ");
         stringBuilder.append("modelName='").append(modelName).append("', requestParams=[");

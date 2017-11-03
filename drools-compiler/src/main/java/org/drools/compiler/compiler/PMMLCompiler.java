@@ -26,8 +26,12 @@ import org.kie.internal.builder.KnowledgeBuilderResult;
 public interface PMMLCompiler extends Service {
 
     String compile( InputStream stream, ClassLoader classLoader );
+    
+    Map<String,String> compileWithMining(InputStream stream, ClassLoader classLoader);
 
     Map<String,String> getMiningPojos(String filename, ClassLoader classLoader);
+    
+    List<String> getAgendaNames(String filename);
 
     List<KnowledgeBuilderResult> getResults();
 

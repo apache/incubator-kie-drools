@@ -6,20 +6,6 @@ import java.util.Map;
 
 import org.kie.api.definition.type.PropertyReactive;
 
-/*
- * declare @{ pmmlPackageName }.TreeToken
-@propertyReactive
-    context     : String
-    current     : String
-    marker      : String
-    visitMode   : String
-    downward    : boolean
-    trail       : java.util.List
-    results     : java.util.Map
-    confidence  : double
-    totalCount  : double
-end
- */
 @PropertyReactive
 public abstract class AbstractTreeToken {
 	private String context;

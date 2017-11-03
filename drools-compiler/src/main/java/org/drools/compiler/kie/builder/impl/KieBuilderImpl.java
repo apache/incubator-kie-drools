@@ -222,22 +222,45 @@ public class KieBuilderImpl
             for ( ReleaseId unresolvedDep : kModule.getUnresolvedDependencies() ) {
                 results.addMessage( Level.ERROR, "pom.xml", "Unresolved dependency " + unresolvedDep );
             }
-
-            for (String filename: srcMfs.getFileNames()) {
-                String fname = (filename.startsWith(RESOURCES_ROOT)) ? filename.substring(RESOURCES_ROOT.length()) : filename;
-                ResourceType resType = getResourceType(kModule, fname);
-                if (resType == ResourceType.PMML) {
-                    buildPMMLPojos(fname, kProject);
-                }
+            
+            List<String> pmmlResources = getPmmlResources();
+            List<String> pmmlKieBaseNames = new ArrayList<>();
+            if (pmmlResources != null) {
+            	for (String filename: pmmlResources) {
+            		buildPMMLPojos(filename, kProject);
+            		List<String> kbn = getKieBaseNamesForSegments(filename);
+            		if (kbn != null && !kbn.isEmpty()) {
+            			pmmlKieBaseNames.addAll(kbn);
+            		}
+            	}
             }
-
             compileJavaClasses( kProject.getClassLoader(), classFilter );
 
             buildKieProject( kModule, results, kProject, trgMfs );
         }
         return this;
     }
+    
+    
+    private List<String> getPmmlResources() {
+    	List<String> resources = new ArrayList<>();
+    	for (String filename: srcMfs.getFileNames()) {
+    		String fname = (filename.startsWith(RESOURCES_ROOT)) ? filename.substring(RESOURCES_ROOT.length()) : filename;
+    		ResourceType resType = getResourceType(kModule, fname);
+    		if (resType == ResourceType.PMML) {
+    			resources.add(fname);
+    		}
+    	}
+    	return resources;
+    }
 
+    private List<String> getKieBaseNamesForSegments(String filename) {
+    	if (this.pmmlCompiler == null) {
+    		pmmlCompiler = PMMLCompilerFactory.getPMMLCompiler();
+    	}
+    	return pmmlCompiler.getAgendaNames(filename);
+    }
+    
     private void buildPMMLPojos(String filename, KieProject kProject) {
         if (this.pmmlCompiler == null) {
             pmmlCompiler = PMMLCompilerFactory.getPMMLCompiler();

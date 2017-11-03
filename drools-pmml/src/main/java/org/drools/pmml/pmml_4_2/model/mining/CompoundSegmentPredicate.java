@@ -155,6 +155,20 @@ public class CompoundSegmentPredicate implements PredicateRuleProducer {
 		return this.booleanOperator != null && this.booleanOperator.equalsIgnoreCase("surrogate");
 	}
 	
+	private String buildSurrogationPredicate() {
+		StringBuilder builder = new StringBuilder();
+		String predicate = this.getPrimaryPredicateRule();
+		builder.append("( ").append(predicate).append(" )");
+		for (int lastPred = 0; lastPred < getSubpredicateCount(); lastPred++) {
+			predicate = this.getNextPredicateRule(lastPred);
+			if (predicate != null) {
+				builder.append(" || ( ").append(predicate).append(" )");
+			}
+		}
+		
+		return builder.toString();
+	}
+	
 	@Override
 	public String getPredicateRule() {
 		if (booleanOperator.equalsIgnoreCase("and")) {
@@ -163,6 +177,8 @@ public class CompoundSegmentPredicate implements PredicateRuleProducer {
 			return buildOrPredicate();
 		} else if (booleanOperator.equalsIgnoreCase("xor")) {
 			return buildXorPredicate();
+		} else if (hasSurrogation()) {
+			return buildSurrogationPredicate();
 		}
 		return null;
 	}

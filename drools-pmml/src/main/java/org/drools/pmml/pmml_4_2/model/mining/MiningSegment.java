@@ -1,6 +1,7 @@
 package org.drools.pmml.pmml_4_2.model.mining;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,34 +9,37 @@ import org.dmg.pmml.pmml_4_2.descr.PMML;
 import org.dmg.pmml.pmml_4_2.descr.Segment;
 import org.drools.pmml.pmml_4_2.PMML4Compiler;
 import org.drools.pmml.pmml_4_2.PMML4Model;
+import org.drools.pmml.pmml_4_2.PMML4Result;
 import org.drools.pmml.pmml_4_2.model.PMML4ModelFactory;
+import org.drools.pmml.pmml_4_2.model.PMMLRequestData;
+import org.kie.api.KieBase;
+import org.kie.api.KieServices;
+import org.kie.api.definition.type.PropertyReactive;
+import org.kie.api.io.Resource;
+import org.kie.api.runtime.KieSession;
+import org.kie.internal.io.ResourceFactory;
 import org.mvel2.integration.impl.MapVariableResolverFactory;
 import org.mvel2.templates.CompiledTemplate;
 import org.mvel2.templates.TemplateCompiler;
 import org.mvel2.templates.TemplateRuntime;
 
+@PropertyReactive
 public class MiningSegment {
 	private String segmentId;
 	private MiningSegmentation owner;
 	private PredicateRuleProducer predicateRuleProducer;
 	private boolean alwaysTrue;
 	private PMML4Model internalModel;
+	private String segmentAgendaId;
+	private int segmentIndex;
 	private static CompiledTemplate launchTemplate;
-	private static int SEGMENT_COUNTER = 1;
-	private static final String SEGMENT_CAN_LAUNCH_TEMPLATE = ""
-			+ "rule 'Segment Can Launch - Segment @{segmentId}' \n"
-			+ "agenda-group '@{segmentAgendaId}' \n"
-			+ "salience @{segmentSalience} \n"
-			+ "when \n"
-			+ "   @{miningPojoClass}(@{segmentPredicate}) \n"
-			+ "then \n"
-			+ "   \n"
-			+ "end \n\n";
 	
-	public MiningSegment(MiningSegmentation owner, Segment segment) {
+	public MiningSegment(MiningSegmentation owner, Segment segment, int segmentIndex) {
 		this.owner = owner;
+		
 		this.internalModel = PMML4ModelFactory.getInstance().getModel(segment,owner);
 		this.segmentId = segment.getId();
+		this.segmentIndex = segmentIndex;
 		if (segment.getSimplePredicate() != null) {
 			predicateRuleProducer = new SimpleSegmentPredicate(segment.getSimplePredicate());
 		} else if (segment.getSimpleSetPredicate() != null) {
@@ -52,9 +56,9 @@ public class MiningSegment {
 	}
 	
 	public String getSegmentId() {
-		if (this.segmentId == null || this.segmentId.trim().length() < 1) {
+		if (this.segmentId == null || this.segmentId.trim().isEmpty()) {
 			StringBuilder bldr = new StringBuilder(owner.getSegmentationId());
-			bldr.append("Segment").append(SEGMENT_COUNTER++);
+			bldr.append("Segment").append(this.segmentIndex);
 			this.segmentId = bldr.toString();
 		}
 		return this.segmentId;
@@ -62,7 +66,15 @@ public class MiningSegment {
 	
 	private synchronized CompiledTemplate getLaunchTemplate() {
 		if (launchTemplate == null) {
-			launchTemplate = TemplateCompiler.compileTemplate(SEGMENT_CAN_LAUNCH_TEMPLATE);
+			Resource res = ResourceFactory.newClassPathResource("org/drools/pmml/pmml_4_2/templates/mvel/mining/selectFirstSegOnly.mvel");
+			if (res != null) {
+				try {
+					launchTemplate = TemplateCompiler.compileTemplate(res.getInputStream());
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 		return launchTemplate;
 	}
@@ -73,7 +85,7 @@ public class MiningSegment {
 		if (template != null) {
 			Map<String, Object> vars = new HashMap<>();
 			vars.put("segmentId", getSegmentId());
-			vars.put("segmentAgendaId", segmentationAgenda);
+			vars.put("segmentationAgendaId", segmentationAgenda);
 			vars.put("segmentSalience", new Integer(1000 - segmentIndex));
 			if (predicateRuleProducer instanceof CompoundSegmentPredicate) {
 				CompoundSegmentPredicate predProd = (CompoundSegmentPredicate)predicateRuleProducer;
@@ -92,9 +104,9 @@ public class MiningSegment {
 		pmml.setDataDictionary(this.internalModel.getDataDictionary());
 		pmml.getAssociationModelsAndBaselineModelsAndClusteringModels().add(this.internalModel.getRawModel());
 		PMML4Compiler compiler = new PMML4Compiler();
-		String innerRules = compiler.generateTheory(pmml);
+		String innerRules = compiler.generateTheory(pmml,this.getSegmentAgendaId());
 		System.out.println(innerRules);
-		return new String(baos.toByteArray());
+		return (new String(baos.toByteArray())).concat(innerRules);
 	}
 	
 	private String getSurrogationPredicateText(CompoundSegmentPredicate predicate, int lastPredicate) {
@@ -123,4 +135,45 @@ public class MiningSegment {
 	public String getPredicateText() {
 		return this.predicateRuleProducer.getPredicateRule();
 	}
+	
+	public String getSegmentAgendaId() {
+		if (this.segmentAgendaId == null || this.segmentAgendaId.trim().isEmpty()) {
+			this.segmentAgendaId = this.getOwner().getSegmentationAgendaId().concat("_SEGMENT_"+this.getSegmentId());
+		}
+		return this.segmentAgendaId;
+	}
+	
+	public int getSegmentIndex() {
+		return this.segmentIndex;
+	}
+
+	public boolean isAlwaysTrue() {
+		return alwaysTrue;
+	}
+
+	public PMML4Model getInternalModel() {
+		return internalModel;
+	}
+	
+	public void applyModel(SegmentExecution segExecution) {
+		KieServices services = KieServices.Factory.get();
+		KieBase kbase = services.getKieClasspathContainer().getKieBase();
+		KieSession session = kbase.newKieSession();
+		segExecution.setState(SegmentExecutionState.EXECUTING);
+		PMML4Result result = null;
+		try {
+			PMMLRequestData rqst = segExecution.getRequestData();
+			session.insert(rqst);
+			session.fireAllRules();
+			result = new PMML4Result(segExecution);
+			result.setResultCode("COMPLETE");
+		} finally {
+			if (result == null || result.getResultCode() == null || result.getResultCode().equals("ERROR")) {
+				segExecution.setState(SegmentExecutionState.ERROR);
+			} else {
+				segExecution.setState(SegmentExecutionState.COMPLETE);
+			}
+		}
+	}
+	
 }

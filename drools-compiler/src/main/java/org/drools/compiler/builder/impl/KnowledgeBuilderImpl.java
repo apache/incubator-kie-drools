@@ -804,10 +804,18 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         if (compiler != null) {
             if (compiler.getResults().isEmpty()) {
                 this.resource = resource;
+                List<PackageDescr> descrs = pmmlModelToPackageDescr(compiler,resource);
+                if (descrs != null && !descrs.isEmpty()) {
+                	for (PackageDescr pkgDescr: descrs) {
+                		addPackage(pkgDescr);
+                	}
+                }
+                /*
                 PackageDescr descr = pmmlModelToPackageDescr(compiler, resource);
                 if (descr != null) {
                     addPackage(descr);
                 }
+                */
                 this.resource = null;
             } else {
                 this.results.addAll(compiler.getResults());
@@ -818,18 +826,27 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         }
     }
 
-    PackageDescr pmmlModelToPackageDescr(PMMLCompiler compiler,
+    List<PackageDescr> pmmlModelToPackageDescr(PMMLCompiler compiler,
                                          Resource resource) throws DroolsParserException,
             IOException {
-        String theory = compiler.compile(resource.getInputStream(),
-                                         rootClassLoader);
-
+//        String theory = compiler.compile(resource.getInputStream(),
+//                                         rootClassLoader);
+    	List<PackageDescr> packageDescrs = new ArrayList<>();
+    	Map<String,String> theories = compiler.compileWithMining(resource.getInputStream(), rootClassLoader);
         if (!compiler.getResults().isEmpty()) {
             this.results.addAll(compiler.getResults());
             return null;
         }
+    	if (theories != null && !theories.isEmpty()) {
+    		for (String theory: theories.values()) {
+    			PackageDescr descr = generatedDrlToPackageDescr(resource,theory);
+    			if (descr != null) {
+    				packageDescrs.add(descr);
+    			}
+    		}
+    	}
 
-        return generatedDrlToPackageDescr(resource, theory);
+        return packageDescrs;//generatedDrlToPackageDescr(resource, theory);
     }
 
     void addPackageFromXSD(Resource resource,

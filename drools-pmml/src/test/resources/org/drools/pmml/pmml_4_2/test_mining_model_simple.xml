@@ -1,4 +1,5 @@
-<PMML version="4.2" xsi:schemaLocation="http://www.dmg.org/PMML-4_2 http://www.dmg.org/v4-1/pmml-4-2.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.dmg.org/PMML-4_2">
+<PMML version="4.2" xsi:schemaLocation="http://www.dmg.org/PMML-4_2 http://www.dmg.org/v4-1/pmml-4-2.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xmlns="http://www.dmg.org/PMML-4_2">
    <Header>
       <Application name="Drools-PMML" version="7.0.0-SNAPSHOT" />
    </Header>
@@ -32,7 +33,7 @@
       </MiningSchema>
       <Segmentation multipleModelMethod="selectFirst">
          <Segment id="1">
-            <SimplePredicate field="fld2" operator="lessOrEqual" value="10.0" />
+            <SimplePredicate field="fld1" operator="lessOrEqual" value="30.0" />
             <TreeModel functionName="classification" modelName="SampleMineTree1">
                <MiningSchema>
                   <MiningField name="fld1" />
@@ -95,8 +96,9 @@
          </Segment>
          <Segment id="2">
             <CompoundPredicate booleanOperator="surrogate">
-               <SimplePredicate field="fld1" operator="greaterThan" value="10.0" />
-               <SimplePredicate field="fld2" operator="greaterOrEqual" value="50.0"/>
+               <SimplePredicate field="fld1" operator="greaterThan" value="30.0" />
+               <SimplePredicate field="fld2" operator="greaterOrEqual" value="50.0" />
+               <True />
             </CompoundPredicate>
             <TreeModel functionName="classification" missingValuePenalty="0.8" missingValueStrategy="weightedConfidence"
                modelName="Missing" noTrueChildStrategy="returnLastPrediction">

@@ -176,5 +176,7 @@ public class CompoundSegmentPredicateTest {
 			assertNotNull(text);
 			System.out.println(text);
 		}
+		String text2 = testPredicate.getPredicateRule();
+		System.out.println(text2);
 	}
 }

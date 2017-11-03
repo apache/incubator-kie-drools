@@ -1,40 +1,62 @@
 package org.drools.pmml.pmml_4_2.model.mining;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.dmg.pmml.pmml_4_2.descr.MULTIPLEMODELMETHOD;
 import org.dmg.pmml.pmml_4_2.descr.Segment;
 import org.dmg.pmml.pmml_4_2.descr.Segmentation;
 import org.drools.pmml.pmml_4_2.model.Miningmodel;
 import org.drools.pmml.pmml_4_2.model.PMMLMiningField;
+import org.kie.api.io.Resource;
+import org.kie.internal.io.ResourceFactory;
+import org.mvel2.integration.impl.MapVariableResolverFactory;
+import org.mvel2.templates.CompiledTemplate;
+import org.mvel2.templates.SimpleTemplateRegistry;
+import org.mvel2.templates.TemplateCompiler;
+import org.mvel2.templates.TemplateRegistry;
+import org.mvel2.templates.TemplateRuntime;
 
 public class MiningSegmentation {
 	private Miningmodel owner;
 	private String segmentationId;
 	private MULTIPLEMODELMETHOD multipleModelMethod;
 	private List<MiningSegment> miningSegments;
-	private static final String SEGMENTATION_HEADER_SCRIPT = ""
-			+ "rule 'Segmentation Start - @{segmentationId}'"
-			+ "agenda-group '@{modelId}_@{segmentationId}"
-			+ "salience 1000"
-			+ "when"
-			+ "then"
-			+ "end";
+	
+	private static TemplateRegistry templates;
+	private static Map<String,String> templateNameToFile;
+	private static final String segmentActivationSelectFirst = "org/drools/pmml/pmml_4_2/templates/mvel/mining/selectFirstSegOnly.mvel";
 	
 	public MiningSegmentation(Miningmodel owner, Segmentation segmentation) {
 		this.owner = owner;
 		this.multipleModelMethod = segmentation.getMultipleModelMethod();
 		this.miningSegments = new ArrayList<>();
 		initSegments(segmentation.getSegments());
+		initTemplates();
 	}
 	
 	private void initSegments(List<Segment> segments) {
 		if (segments != null && !segments.isEmpty()) {
-			for (Segment seg: segments) {
-				MiningSegment ms = new MiningSegment(this,seg);
+			for (int index = 0; index < segments.size(); index++) {
+				Segment seg = segments.get(index);
+				MiningSegment ms = new MiningSegment(this,seg,index);
 				miningSegments.add(ms);
 			}
+		}
+	}
+	
+	private synchronized static void initTemplates() {
+		if (templates == null) {
+			templates = new SimpleTemplateRegistry();
+		}
+		if (templateNameToFile == null) {
+			templateNameToFile = new HashMap<>();
+			templateNameToFile.put(MULTIPLEMODELMETHOD.SELECT_FIRST.name(), segmentActivationSelectFirst);
 		}
 	}
 	
@@ -52,6 +74,10 @@ public class MiningSegmentation {
 
 	public MULTIPLEMODELMETHOD getMultipleModelMethod() {
 		return this.multipleModelMethod;
+	}
+	
+	public String getMultipleModelHandling() {
+		return this.multipleModelMethod.name();
 	}
 	
 	public void setMultipleModelMethod(MULTIPLEMODELMETHOD multipleModelMethod) {
@@ -72,10 +98,26 @@ public class MiningSegmentation {
 	public void setSegmentationId(String segmentationId) {
 		this.segmentationId = segmentationId;
 	}
+	
+	private void loadTemplates(MULTIPLEMODELMETHOD mmm) {
+		if (!templates.contains(mmm.name())) {
+			Resource res = ResourceFactory.newClassPathResource(templateNameToFile.get(mmm.name()), MiningSegmentation.class);
+			if (res != null) {
+				try {
+					InputStream strm = res.getInputStream();
+					templates.addNamedTemplate(mmm.name(), TemplateCompiler.compileTemplate(strm));
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+	}
 
 	public String generateSegmentationRules() {
 		StringBuilder builder = new StringBuilder();
-		
+		loadTemplates(this.multipleModelMethod);
+		Map<String, Object> templateVars = new HashMap<>();
 		switch (this.multipleModelMethod) {
 			case AVERAGE:
 				break;
@@ -90,13 +132,19 @@ public class MiningSegmentation {
 			case SELECT_ALL:
 				break;
 			case SELECT_FIRST:
-				for (int x = 0; x < miningSegments.size(); x++) {
-					String segmentationAgendaGroup = getOwner().getModelId()+"_"+getSegmentationId();
-					String segRules = miningSegments.get(x).generateSegmentRules(segmentationAgendaGroup,x);
-					if (segRules != null && !segRules.trim().isEmpty()) {
-						builder.append(segRules);
-					}
-				}
+				templateVars.put("miningModel", this.getOwner());
+				templateVars.put("childSegments", this.getMiningSegments());
+				templateVars.put("packageName", "org.drools.pmml.pmml_4_2."+this.getSegmentationId());
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				CompiledTemplate ct = templates.getNamedTemplate(this.multipleModelMethod.name());
+				TemplateRuntime.execute(ct,null,new MapVariableResolverFactory(templateVars),baos);
+				builder.append(new String(baos.toByteArray()));
+//				for (int x = 0; x < miningSegments.size(); x++) {
+//					String segRules = generateRulesForSegment(x);
+//					if (segRules != null && !segRules.trim().isEmpty()) {
+//						builder.append(segRules);
+//					}
+//				}
 				break;
 			case SUM:
 				break;
@@ -107,5 +155,17 @@ public class MiningSegmentation {
 		}
 		
 		return builder.toString();
+	}
+	
+ 
+	
+	public String generateRulesForSegment(int index) {
+		StringBuilder builder = new StringBuilder();
+		String segRules = miningSegments.get(index).generateSegmentRules(getSegmentationAgendaId(), index);
+		return segRules;
+	}
+	
+	public String getSegmentationAgendaId() {
+		return getOwner().getModelId()+"_"+getSegmentationId();
 	}
 }

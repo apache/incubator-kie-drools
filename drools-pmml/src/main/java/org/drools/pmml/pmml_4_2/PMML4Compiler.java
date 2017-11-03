@@ -16,8 +16,30 @@
 
 package org.drools.pmml.pmml_4_2;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.xml.XMLConstants;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+
 import org.dmg.pmml.pmml_4_2.descr.ClusteringModel;
-import org.dmg.pmml.pmml_4_2.descr.MiningModel;
+import org.dmg.pmml.pmml_4_2.descr.Header;
 import org.dmg.pmml.pmml_4_2.descr.NaiveBayesModel;
 import org.dmg.pmml.pmml_4_2.descr.NeuralNetwork;
 import org.dmg.pmml.pmml_4_2.descr.PMML;
@@ -29,12 +51,16 @@ import org.drools.compiler.compiler.PMMLCompiler;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.io.impl.ClassPathResource;
 import org.drools.core.util.IoUtils;
-import org.drools.pmml.pmml_4_2.model.MiningModelCompilationUnit;
 import org.drools.pmml.pmml_4_2.model.Miningmodel;
 import org.drools.pmml.pmml_4_2.model.PMML4ModelType;
 import org.drools.pmml.pmml_4_2.model.PMML4UnitImpl;
+import org.drools.pmml.pmml_4_2.model.mining.MiningSegment;
+import org.drools.pmml.pmml_4_2.model.mining.MiningSegmentation;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
+import org.kie.api.builder.model.KieBaseModel;
+import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
@@ -45,25 +71,6 @@ import org.mvel2.templates.SimpleTemplateRegistry;
 import org.mvel2.templates.TemplateCompiler;
 import org.mvel2.templates.TemplateRegistry;
 import org.xml.sax.SAXException;
-
-import javax.xml.XMLConstants;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class PMML4Compiler implements PMMLCompiler {
 
@@ -249,8 +256,7 @@ public class PMML4Compiler implements PMMLCompiler {
     private static List<KnowledgeBuilderResult> visitorBuildResults = new ArrayList<KnowledgeBuilderResult>();
     private List<KnowledgeBuilderResult> results;
     private Schema schema;
-
-
+    
     private PMML4Helper helper;
 
 
@@ -274,8 +280,12 @@ public class PMML4Compiler implements PMMLCompiler {
     public PMML4Helper getHelper() {
         return helper;
     }
+    
+    public String generateTheory(PMML pmml) {
+    	return generateTheory(pmml,null);
+    }
 
-    public String generateTheory( PMML pmml ) {
+    public String generateTheory( PMML pmml, String agendaGroup ) {
         StringBuilder sb = new StringBuilder();
         //dumpModel( pmml, System.out );
 
@@ -286,10 +296,13 @@ public class PMML4Compiler implements PMMLCompiler {
             this.results.add( new PMMLError( e.getMessage() ) );
             return null;
         }
-
+        
         KieSession visitorSession = visitor.newKieSession();
 
         helper.reset();
+        if (agendaGroup != null && !agendaGroup.trim().isEmpty()) {
+        	helper.addAttribute("agenda-group", agendaGroup);
+        }
         visitorSession.setGlobal( "registry", registry );
             visitorSession.setGlobal( "fld2var", new HashMap() );
             visitorSession.setGlobal( "utils", helper );
@@ -303,7 +316,7 @@ public class PMML4Compiler implements PMMLCompiler {
 
         visitorSession.dispose();
 
-        System.out.println( modelEvaluatingRules );
+//        System.out.println( modelEvaluatingRules );
         return modelEvaluatingRules;
 	}
 
@@ -485,25 +498,159 @@ public class PMML4Compiler implements PMMLCompiler {
         return byteArrayResource;
     }
     
-
-
-    public String compile( InputStream source, ClassLoader classLoader ) {
-        this.results = new ArrayList<KnowledgeBuilderResult>();
-        PMML pmml = loadModel( PMML, source );
+    private List<String> getChildAgendas(MiningSegmentation owner, List<String> list) {
+    	if (owner == null) return list;
+    	List<MiningSegment> segments = owner.getMiningSegments();
+    	for (MiningSegment seg: segments) {
+    		list.add(seg.getSegmentAgendaId());
+    		if (seg.getModel().getModelType() == PMML4ModelType.MINING) {
+    			getChildAgendas(((Miningmodel)seg.getModel()).getSegmentation(),list);
+    		}
+    	}
+    	return list;
+    }
+    
+    public List<String> getAgendaNames(String fileName) {
+    	List<String> agendaNames = new ArrayList<>();
+    	Resource cpr = new ClassPathResource(fileName);
+		PMML pmml = null;
+		try {
+			pmml = loadModel(PMML, cpr.getInputStream());
+			PMML4UnitImpl pmmlUnit = new PMML4UnitImpl(pmml);
+			Map<String,PMML4Model> rootModels = pmmlUnit.getRootModels();
+			if (rootModels != null && !rootModels.isEmpty()) {
+				PMML4Model rootModel = rootModels.values().iterator().next();
+				if (rootModel instanceof Miningmodel) {
+					Miningmodel root = (Miningmodel)rootModel;
+					getChildAgendas(root.getSegmentation(), agendaNames);
+				}
+			}
+		} catch(Exception e) {
+			PMMLError err = new PMMLError("Unable to retrieve the agenda names for PMML: "+e.getMessage());
+			err.setResource(cpr);
+			this.results.add(err);
+		}
+		return agendaNames;
+    }
+    
+    
+    public Map<String,String> compileWithMining(InputStream source, ClassLoader classLoader) {
+    	this.results = new ArrayList<KnowledgeBuilderResult>();
+    	Map<String,String> modelSources = new HashMap<>();
+    	PMML pmml = loadModel(PMML, source);
+    	helper.setResolver(classLoader);
+    	PMML4Unit unit = new PMML4UnitImpl(pmml);
+    	if (unit.containsMiningModel()) {
+    		try {
+	    		Map<String,PMML4Model> rootModel = unit.getRootModels();
+	    		if (rootModel.size() > 1) {
+	    			throw new IllegalStateException("PMML contains more than one root model. Current implementation only allows for a single root model");
+	    		}
+	    		PMML4Model singleRoot = rootModel.values().iterator().next();
+	    		if (!(singleRoot instanceof Miningmodel)) {
+	    			throw new IllegalStateException("PMML contains reference to a MiningModel that is not the root model");
+	    		}
+	    		Miningmodel root = (Miningmodel)singleRoot;
+	    		if (root != null) {
+	    			// Get the root rules
+	    			String rootRules = root.generateRules();
+	    			if (rootRules != null && !rootRules.trim().isEmpty()) {
+	    				System.out.println(rootRules);
+	    				modelSources.put(root.getModelId(), rootRules);
+	    			}
+	    			getChildModelRules(root, modelSources, classLoader);
+	    		}
+    		} catch(Exception e) {
+    			PMMLError err = new PMMLError(e.getMessage());
+    			this.results.add(err);
+    		}
+    	} else {
+    		String simpleModel = compile(pmml,classLoader);
+    		if (simpleModel != null) {
+    			modelSources.put("SINGLE_MODEL", simpleModel);
+    		}
+    	}
+    	return modelSources;
+    }
+    
+    protected Map<String,String> getChildModelRules(Miningmodel parent, Map<String,String> rulesMap, ClassLoader classLoader) {
+    	MiningSegmentation segm = parent.getSegmentation();
+    	List<MiningSegment> segments = segm.getMiningSegments();
+    	int x = 0;
+    	for (MiningSegment segment: segments) {
+    		PMML4Model childModel = segment.getModel();
+    		if (childModel != null) {
+    			if (childModel instanceof Miningmodel) {
+    				// get root rules
+    				String rootRules = ((Miningmodel)childModel).generateRules();
+    				if (rootRules != null && !rootRules.trim().isEmpty()) {
+    					rulesMap.put(childModel.getModelId(), rootRules);
+    				}
+    				// add the children rules
+    				getChildModelRules((Miningmodel)childModel,rulesMap,classLoader);
+    			} else {
+    				PMML innerModel = new PMML();
+    				innerModel.setDataDictionary(parent.getDataDictionary());
+    				innerModel.getAssociationModelsAndBaselineModelsAndClusteringModels().add(childModel.getRawModel());
+    				innerModel.setHeader(new Header());
+    				helper.setPack(PMML4Helper.pmmlDefaultPackageName()+".mining.segment_"+segment.getSegmentId());
+    				String modelAsRules = this.compile(innerModel, classLoader, segment.getSegmentAgendaId());
+    				FileOutputStream fos = null;
+    				try {
+						fos = new FileOutputStream("/home/lleveric/tmp/segment"+(x++)+".drl");
+						fos.write(modelAsRules.getBytes());
+						fos.close();
+					} catch (FileNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} finally {
+						if (fos != null) {
+							try {
+								fos.close();
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+					}
+    				if (modelAsRules != null && getResults().isEmpty()) {
+    					rulesMap.put(childModel.getModelId(), modelAsRules);
+    				}
+    			}
+    		}
+    	}
+    	return rulesMap;
+    }
+    
+    public String compile( PMML pmml, ClassLoader classLoader, String agendaId) {
         helper.setResolver( classLoader );
-        PMML4Unit unit = new PMML4UnitImpl(pmml);
-        StringBuilder builder = new StringBuilder(); 
-        if (unit.containsMiningModel()) {
-        	Map<String,Miningmodel> modelsMap = unit.getModels(PMML4ModelType.MINING, null); // grab root mining model(s)
-        	for (Miningmodel model: modelsMap.values()) {
-        		builder.append(model.generateRules());
-        	}
+    	
+        if ( getResults().isEmpty() ) {
+            return generateTheory( pmml, agendaId );
+        } else {
+            return null;
         }
+    }
+    
+    public String compile( PMML pmml, ClassLoader classLoader) {
+        helper.setResolver( classLoader );
+    	
         if ( getResults().isEmpty() ) {
             return generateTheory( pmml );
         } else {
             return null;
         }
+   	
+    }
+
+
+    public String compile( InputStream source, ClassLoader classLoader ) {
+        this.results = new ArrayList<KnowledgeBuilderResult>();
+        PMML pmml = loadModel( PMML, source );
+        return compile(pmml,classLoader);
     }
 
     public List<KnowledgeBuilderResult> getResults() {

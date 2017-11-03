@@ -462,15 +462,25 @@ public class KnowledgeBuilderTest {
                                                           public String compile(InputStream stream, ClassLoader cl) {
                                                               return "rule R2 when then end";
                                                           }
+                                                          
+                                                          @Override
+                                                          public Map<String,String> compileWithMining(InputStream stream, ClassLoader cl) {
+                                                             return Collections.EMPTY_MAP;
+                                                          }
 
                                                           @Override
                                                           public Map<String,String> getMiningPojos(String filename, ClassLoader classLoader) {
-                                                              return Collections.emptyMap();
+                                                             return Collections.emptyMap();
+                                                          }
+
+                                                          @Override
+                                                          public List<String> getAgendaNames(String filename) {
+                                                             return Collections.emptyList();
                                                           }
 
                                                           @Override
                                                           public List<KnowledgeBuilderResult> getResults() {
-                                                              return Collections.emptyList();
+                                                             return Collections.emptyList();
                                                           }
 
                                                           @Override

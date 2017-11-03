@@ -20,13 +20,41 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.pmml.pmml_4_2.model.AbstractPMMLData;
+import org.kie.api.definition.rule.Propagation;
+import org.kie.api.definition.rule.Propagation.Type;
+import org.kie.api.definition.type.PropertyReactive;
 
+@PropertyReactive
+@Propagation(Type.IMMEDIATE)
 public class @{className} extends AbstractPMMLData {
     @foreach{ dataField: dataFields }
     private boolean m@{dataField.compactUpperCaseName};
     private @{dataField.type} v@{dataField.compactUpperCaseName};
     @end{}
 
+	public @{className}(String correlationId) {
+	   super(correlationId);
+	}
+	
+	public @{className}(String correlationId, String modelName) {
+	   super(correlationId,modelName);
+	}
+	
+	public @{className}(PMMLRequestData requestData) {
+	   super(requestData.getCorrelationId(),requestData.getModelName());
+	   Map<String, ParameterInfo> mappedFields = requestData.getMappedRequestParams();
+	   @foreach{ dataField: dataFields }
+       @{dataField.type} val@{dataField.compactUpperCaseName} = getMappedParameterValue( mappedFields, "@{dataField.compactUpperCaseName}" );
+       if ( val@{dataField.compactUpperCaseName} != null ) {
+          this.m@{dataField.compactUpperCaseName} = false;
+          this.v@{dataField.compactUpperCaseName} = val@{dataField.compactUpperCaseName};
+       } else {
+          this.m@{dataField.compactUpperCaseName} = true;
+          this.v@{dataField.compactUpperCaseName} = null;
+       }
+	   @end{}
+	}
+	
 	@foreach{ dataField: dataFields }
 	public boolean getM@{dataField.compactUpperCaseName}() {
 	   return this.m@{dataField.compactUpperCaseName};
@@ -44,4 +72,38 @@ public class @{className} extends AbstractPMMLData {
 	   this.v@{dataField.compactUpperCaseName} = value;
 	}
 	@end{}
+	
+	private <T> T getMappedParameterValue(Map<String, ParameterInfo> params, String fieldName) {
+	   T value = null;
+	   if (params.containsKey(fieldName)) {
+	      ParameterInfo pInf = params.get(fieldName);
+	      if (pInf != null) {
+	         value = (T)pInf.getValue();
+	      }
+	   }
+	   return value;
+	}
+	
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public String toString() {
+       StringBuilder builder = new StringBuilder();
+       builder.append("@{className}( correlationId=").append(this.getCorrelationId()).append(", modelName=@{modelName}, ");
+       @foreach{dataField: dataFields}
+       builder.append(" m@{dataField.compactUpperCaseName}=").append(m@{dataField.compactUpperCaseName}).append(", ");
+       builder.append(" v@{dataField.compactUpperCaseName}=").append(v@{dataField.compactUpperCaseName}).append(", ");
+       @end{}
+       int last = builder.lastIndexOf(",");
+       builder.delete(last,last+1);
+       builder.append(")");
+       return builder.toString();
+    }
+
 }

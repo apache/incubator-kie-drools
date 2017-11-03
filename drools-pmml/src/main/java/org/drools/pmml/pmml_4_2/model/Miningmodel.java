@@ -140,6 +140,10 @@ public class Miningmodel extends AbstractModel<MiningModel> {
 	public void setScoreable(boolean scoreable) {
 		this.scoreable = scoreable;
 	}
+	
+	public MiningSegmentation getSegmentation() {
+		return this.segmentation;
+	}
 
 	public String generateRules() {
 		StringBuilder bldr = new StringBuilder();

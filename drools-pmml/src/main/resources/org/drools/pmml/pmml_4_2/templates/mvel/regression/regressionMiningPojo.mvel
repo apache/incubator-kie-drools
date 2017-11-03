@@ -35,19 +35,19 @@ public class @{className} extends AbstractPMMLData {
     private @{dataField.type} v@{dataField.compactUpperCaseName};
     @end{}
 
-    public @{className}() {
-       super();
+    public @{className}(String correlationId) {
+       super(correlationId);
     }
 
-    public @{className}( String modelName ) {
-       super(modelName);
+    public @{className}(String correlationId, String modelName ) {
+       super(correlationId,modelName);
        @foreach{dataField: dataFields}
        @if{ dataField.type=="Double" }v@{dataField.compactUpperCaseName} = 0.0; @elseif{ dataField.type=="Integer" }v@{dataField.compactUpperCaseName} = 0; @end{}
        @end{}
     }
 
     public @{className}( PMMLRequestData requestData ) {
-       super( requestData.getModelName() );
+       super( requestData.getCorrelationId(), requestData.getModelName() );
        Map<String, ParameterInfo> mappedFields = requestData.getMappedRequestParams();
        @foreach{dataField: dataFields}
        @{dataField.type} val@{dataField.compactUpperCaseName} = getMappedParameterValue( mappedFields, "@{dataField.name}" );
@@ -101,7 +101,7 @@ public class @{className} extends AbstractPMMLData {
     @Override
     public String toString() {
        StringBuilder builder = new StringBuilder();
-       builder.append("@{className}ScoreCardData( modelName=@{modelName}, ");
+       builder.append("@{className}ScoreCardData( correlationId=").append(this.getCorrelationId()).append(", modelName=@{modelName}, ");
        @foreach{dataField: dataFields}
        builder.append(" m@{dataField.compactUpperCaseName}=").append(m@{dataField.compactUpperCaseName}).append(", ");
        builder.append(" v@{dataField.compactUpperCaseName}=").append(v@{dataField.compactUpperCaseName}).append(", ");
