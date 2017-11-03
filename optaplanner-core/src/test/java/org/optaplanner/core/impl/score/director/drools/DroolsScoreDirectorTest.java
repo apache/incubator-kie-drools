@@ -47,6 +47,13 @@ public class DroolsScoreDirectorTest {
         assertNotNull(director.getConstraintMatchTotals());
     }
 
+    @Test
+    public void indictmentMapNeverNull() {
+        DroolsScoreDirector<Object> director = new DroolsScoreDirector<>(mockDroolsScoreDirectorFactory(), false, true);
+        director.setWorkingSolution(new Object());
+        assertNotNull(director.getIndictmentMap());
+    }
+
     @SuppressWarnings("unchecked")
     private DroolsScoreDirectorFactory<Object> mockDroolsScoreDirectorFactory() {
         DroolsScoreDirectorFactory<Object> factory = mock(DroolsScoreDirectorFactory.class);
