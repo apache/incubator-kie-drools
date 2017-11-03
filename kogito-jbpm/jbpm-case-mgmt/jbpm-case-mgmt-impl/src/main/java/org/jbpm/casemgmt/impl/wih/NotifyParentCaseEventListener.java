@@ -102,6 +102,9 @@ public class NotifyParentCaseEventListener extends DefaultProcessEventListener i
             results.put("CaseId", event.getCaseId());
             processService.completeWorkItem(caseFileInstance.getParentWorkItemId(), results);
             logger.debug("Parent instance id {}, work item id {}, has been successfully notified about case {} completion", caseFileInstance.getParentInstanceId(), caseFileInstance.getParentWorkItemId(), event.getCaseId());
+            
+            caseFileInstance.setParentInstanceId(null);
+            caseFileInstance.setParentWorkItemId(null);
         }
     }
     

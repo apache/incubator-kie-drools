@@ -140,6 +140,8 @@ public class StartCaseWorkItemHandler implements WorkItemHandler {
                 logger.debug("Case is already completed, not possible to fetch case file data any more");
             }
             logger.debug("Completing directly (without waiting for case instance {} completion) work item with id {}", caseId, workItem.getId()); 
+            ((CaseFileInstanceImpl) subCaseFile).setParentInstanceId(null);
+            ((CaseFileInstanceImpl) subCaseFile).setParentWorkItemId(null);
             manager.completeWorkItem(workItem.getId(), results);
         } else {
             // save case id so the abort work item can abort/destroy the case instance

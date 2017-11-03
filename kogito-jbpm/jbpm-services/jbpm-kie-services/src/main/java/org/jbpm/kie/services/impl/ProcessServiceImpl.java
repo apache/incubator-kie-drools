@@ -155,14 +155,21 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
 	}
 
 	@Override
-	public void abortProcessInstance(Long processInstanceId) {
-		ProcessInstanceDesc piDesc = dataService.getProcessInstanceById(processInstanceId);
-		if (piDesc == null || piDesc.getState() != 1) {
-			throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found");
-		}
-		DeployedUnit deployedUnit = deploymentService.getDeployedUnit(piDesc.getDeploymentId());
+    public void abortProcessInstance(Long processInstanceId) {
+        ProcessInstanceDesc piDesc = dataService.getProcessInstanceById(processInstanceId);
+        if (piDesc == null || piDesc.getState() != ProcessInstance.STATE_ACTIVE) {
+            throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found");
+        }
+        
+        abortProcessInstance(piDesc.getDeploymentId(), processInstanceId);
+	}
+	
+	@Override
+	public void abortProcessInstance(String deploymentId, Long processInstanceId) {
+		
+		DeployedUnit deployedUnit = deploymentService.getDeployedUnit(deploymentId);
 		if (deployedUnit == null) {
-			throw new DeploymentNotFoundException("No deployments available for " + piDesc.getDeploymentId());
+			throw new DeploymentNotFoundException("No deployments available for " + deploymentId);
 		}
 		RuntimeManager manager = deployedUnit.getRuntimeManager();
         RuntimeEngine engine = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));
@@ -171,27 +178,43 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
             ksession.abortProcessInstance(processInstanceId);
         } catch(SessionNotFoundException e) {
             throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found", e);
+        } catch(IllegalArgumentException e) {
+            throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found", e);
         } finally {
         	disposeRuntimeEngine(manager, engine);
         }
 	}
-
+	
 	@Override
-	public void abortProcessInstances(List<Long> processInstanceIds) {
-		for (long processInstanceId : processInstanceIds) {
-			abortProcessInstance(processInstanceId);
-		}
+    public void abortProcessInstances(List<Long> processInstanceIds) {
+	    for (long processInstanceId : processInstanceIds) {
+            abortProcessInstance(processInstanceId);
+        }
 	}
 
 	@Override
-	public void signalProcessInstance(Long processInstanceId, String signalName, Object event) {
-		ProcessInstanceDesc piDesc = dataService.getProcessInstanceById(processInstanceId);
-		if (piDesc == null || piDesc.getState() != 1) {
-			throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found");
+	public void abortProcessInstances(String deploymentId, List<Long> processInstanceIds) {
+		for (long processInstanceId : processInstanceIds) {
+			abortProcessInstance(deploymentId, processInstanceId);
 		}
-		DeployedUnit deployedUnit = deploymentService.getDeployedUnit(piDesc.getDeploymentId());
+	}
+	
+	@Override
+    public void signalProcessInstance(Long processInstanceId, String signalName, Object event) {
+        ProcessInstanceDesc piDesc = dataService.getProcessInstanceById(processInstanceId);
+        if (piDesc == null || piDesc.getState() != ProcessInstance.STATE_ACTIVE) {
+            throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found");
+        }
+        
+        signalProcessInstance(piDesc.getDeploymentId(), processInstanceId, signalName, event);
+	}
+
+	@Override
+	public void signalProcessInstance(String deploymentId, Long processInstanceId, String signalName, Object event) {
+		
+		DeployedUnit deployedUnit = deploymentService.getDeployedUnit(deploymentId);
 		if (deployedUnit == null) {
-			throw new DeploymentNotFoundException("No deployments available for " + piDesc.getDeploymentId());
+			throw new DeploymentNotFoundException("No deployments available for " + deploymentId);
 		}
 		RuntimeManager manager = deployedUnit.getRuntimeManager();
 		event = process(event, ((InternalRuntimeManager) manager).getEnvironment().getClassLoader());
@@ -214,27 +237,41 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
 
 	}
 
+	@Override
+    public void signalProcessInstances(String deploymentId, List<Long> processInstanceIds, String signalName, Object event) {
+        for (Long processInstanceId : processInstanceIds) {
+            signalProcessInstance(deploymentId, processInstanceId, signalName, event);
+        }
+
+    }
 
     @Override
-    public void signalEvent(String deployment, String signalName, Object event) {
-        DeployedUnit deployedUnit = deploymentService.getDeployedUnit(deployment);
+    public void signalEvent(String deploymentId, String signalName, Object event) {
+        DeployedUnit deployedUnit = deploymentService.getDeployedUnit(deploymentId);
         if (deployedUnit == null) {
-            throw new DeploymentNotFoundException("No deployments available for " + deployment);
+            throw new DeploymentNotFoundException("No deployments available for " + deploymentId);
         }
         RuntimeManager manager = deployedUnit.getRuntimeManager();
         event = process(event, ((InternalRuntimeManager) manager).getEnvironment().getClassLoader());
         manager.signalEvent(signalName, event);
     }
+    
+    @Override
+    public ProcessInstance getProcessInstance(Long processInstanceId) {
+        ProcessInstanceDesc piDesc = dataService.getProcessInstanceById(processInstanceId);
+        if (piDesc == null) {
+            return null;
+        }
+        
+        return getProcessInstance(piDesc.getDeploymentId(), processInstanceId);
+    }
 
 	@Override
-	public ProcessInstance getProcessInstance(Long processInstanceId) {
-		ProcessInstanceDesc piDesc = dataService.getProcessInstanceById(processInstanceId);
-		if (piDesc == null) {
-			return null;
-		}
-		DeployedUnit deployedUnit = deploymentService.getDeployedUnit(piDesc.getDeploymentId());
+	public ProcessInstance getProcessInstance(String deploymentId, Long processInstanceId) {
+		
+		DeployedUnit deployedUnit = deploymentService.getDeployedUnit(deploymentId);
 		if (deployedUnit == null) {
-			throw new DeploymentNotFoundException("No deployments available for " + piDesc.getDeploymentId());
+			throw new DeploymentNotFoundException("No deployments available for " + deploymentId);
 		}
 		RuntimeManager manager = deployedUnit.getRuntimeManager();
         RuntimeEngine engine = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));
@@ -247,16 +284,23 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
         	disposeRuntimeEngine(manager, engine);
         }
 	}
+	
+	@Override
+    public ProcessInstance getProcessInstance(CorrelationKey key) {
+        ProcessInstanceDesc piDesc = dataService.getProcessInstanceByCorrelationKey(key);
+        if (piDesc == null) {
+            return null;
+        }
+        
+        return getProcessInstance(piDesc.getDeploymentId(), key);
+	}
 
 	@Override
-	public ProcessInstance getProcessInstance(CorrelationKey key) {
-		ProcessInstanceDesc piDesc = dataService.getProcessInstanceByCorrelationKey(key);
-		if (piDesc == null) {
-			return null;
-		}
-		DeployedUnit deployedUnit = deploymentService.getDeployedUnit(piDesc.getDeploymentId());
+	public ProcessInstance getProcessInstance(String deploymentId, CorrelationKey key) {
+		
+		DeployedUnit deployedUnit = deploymentService.getDeployedUnit(deploymentId);
 		if (deployedUnit == null) {
-			throw new DeploymentNotFoundException("No deployments available for " + piDesc.getDeploymentId());
+			throw new DeploymentNotFoundException("No deployments available for " + deploymentId);
 		}
 		RuntimeManager manager = deployedUnit.getRuntimeManager();
         RuntimeEngine engine = manager.getRuntimeEngine(CorrelationKeyContext.get(key));
@@ -267,22 +311,33 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
         	disposeRuntimeEngine(manager, engine);
         }
 	}
+	
+	@Override
+    public void setProcessVariable(Long processInstanceId, String variableId, Object value) {
+        ProcessInstanceDesc piDesc = dataService.getProcessInstanceById(processInstanceId);
+        if (piDesc == null || piDesc.getState() != ProcessInstance.STATE_ACTIVE) {
+            throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found");
+        }
+        
+        setProcessVariable(piDesc.getDeploymentId(), processInstanceId, variableId, value);
+	}
 
 	@Override
-	public void setProcessVariable(Long processInstanceId, String variableId, Object value) {
-		ProcessInstanceDesc piDesc = dataService.getProcessInstanceById(processInstanceId);
-		if (piDesc == null || piDesc.getState() != 1) {
-			throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found");
-		}
-		DeployedUnit deployedUnit = deploymentService.getDeployedUnit(piDesc.getDeploymentId());
+	public void setProcessVariable(String deploymentId, Long processInstanceId, String variableId, Object value) {
+		
+		DeployedUnit deployedUnit = deploymentService.getDeployedUnit(deploymentId);
 		if (deployedUnit == null) {
-			throw new DeploymentNotFoundException("No deployments available for " + piDesc.getDeploymentId());
+			throw new DeploymentNotFoundException("No deployments available for " + deploymentId);
 		}
 		RuntimeManager manager = deployedUnit.getRuntimeManager();
 		value = process(value, ((InternalRuntimeManager) manager).getEnvironment().getClassLoader());
         RuntimeEngine engine = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));
         try {
             KieSession ksession = engine.getKieSession();
+            ProcessInstance pi = ksession.getProcessInstance(processInstanceId); 
+            if (pi == null) {
+                throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found");
+            }
             ksession.execute(new SetProcessInstanceVariablesCommand(processInstanceId, Collections.singletonMap(variableId, value)));
         } catch(SessionNotFoundException e) {
             throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found", e);
@@ -290,22 +345,33 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
         	disposeRuntimeEngine(manager, engine);
         }
 	}
+	
+	@Override
+    public void setProcessVariables(Long processInstanceId, Map<String, Object> variables) {
+        ProcessInstanceDesc piDesc = dataService.getProcessInstanceById(processInstanceId);
+        if (piDesc == null || piDesc.getState() != ProcessInstance.STATE_ACTIVE) {
+            throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found");
+        }
+        
+        setProcessVariables(piDesc.getDeploymentId(), processInstanceId, variables);
+	}
 
 	@Override
-	public void setProcessVariables(Long processInstanceId, Map<String, Object> variables) {
-		ProcessInstanceDesc piDesc = dataService.getProcessInstanceById(processInstanceId);
-		if (piDesc == null || piDesc.getState() != 1) {
-			throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found");
-		}
-		DeployedUnit deployedUnit = deploymentService.getDeployedUnit(piDesc.getDeploymentId());
+	public void setProcessVariables(String deploymentId, Long processInstanceId, Map<String, Object> variables) {
+		
+		DeployedUnit deployedUnit = deploymentService.getDeployedUnit(deploymentId);
 		if (deployedUnit == null) {
-			throw new DeploymentNotFoundException("No deployments available for " + piDesc.getDeploymentId());
+			throw new DeploymentNotFoundException("No deployments available for " + deploymentId);
 		}
 		RuntimeManager manager = deployedUnit.getRuntimeManager();
 		variables = process(variables, ((InternalRuntimeManager) manager).getEnvironment().getClassLoader());
         RuntimeEngine engine = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));
         try {
             KieSession ksession = engine.getKieSession();
+            ProcessInstance pi = ksession.getProcessInstance(processInstanceId); 
+            if (pi == null) {
+                throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found");
+            }
             ksession.execute(new SetProcessInstanceVariablesCommand(processInstanceId, variables));
         } catch(SessionNotFoundException e) {
             throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found", e);
@@ -313,16 +379,23 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
         	disposeRuntimeEngine(manager, engine);
         }
 	}
+	
+	@Override
+    public Object getProcessInstanceVariable(Long processInstanceId, String variableName) {
+        ProcessInstanceDesc piDesc = dataService.getProcessInstanceById(processInstanceId);
+        if (piDesc == null || piDesc.getState() != ProcessInstance.STATE_ACTIVE) {
+            throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found");
+        }
+        
+        return getProcessInstanceVariable(piDesc.getDeploymentId(), processInstanceId, variableName);
+	}
 
 	@Override
-	public Object getProcessInstanceVariable(Long processInstanceId, String variableName) {
-		ProcessInstanceDesc piDesc = dataService.getProcessInstanceById(processInstanceId);
-		if (piDesc == null || piDesc.getState() != 1) {
-			throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found");
-		}
-		DeployedUnit deployedUnit = deploymentService.getDeployedUnit(piDesc.getDeploymentId());
+	public Object getProcessInstanceVariable(String deploymentId, Long processInstanceId, String variableName) {
+		
+		DeployedUnit deployedUnit = deploymentService.getDeployedUnit(deploymentId);
 		if (deployedUnit == null) {
-			throw new DeploymentNotFoundException("No deployments available for " + piDesc.getDeploymentId());
+			throw new DeploymentNotFoundException("No deployments available for " + deploymentId);
 		}
 		RuntimeManager manager = deployedUnit.getRuntimeManager();
         RuntimeEngine engine = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));
@@ -348,16 +421,23 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
         	disposeRuntimeEngine(manager, engine);
         }
 	}
+	
+	@Override
+    public Map<String, Object> getProcessInstanceVariables(Long processInstanceId) {
+        ProcessInstanceDesc piDesc = dataService.getProcessInstanceById(processInstanceId);
+        if (piDesc == null || piDesc.getState() != ProcessInstance.STATE_ACTIVE) {
+            throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found");
+        }
+        
+        return getProcessInstanceVariables(piDesc.getDeploymentId(), processInstanceId);                
+	}
 
 	@Override
-	public Map<String, Object> getProcessInstanceVariables(Long processInstanceId) {
-		ProcessInstanceDesc piDesc = dataService.getProcessInstanceById(processInstanceId);
-		if (piDesc == null || piDesc.getState() != 1) {
-			throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found");
-		}
-		DeployedUnit deployedUnit = deploymentService.getDeployedUnit(piDesc.getDeploymentId());
+	public Map<String, Object> getProcessInstanceVariables(String deploymentId, Long processInstanceId) {
+		
+		DeployedUnit deployedUnit = deploymentService.getDeployedUnit(deploymentId);
 		if (deployedUnit == null) {
-			throw new DeploymentNotFoundException("No deployments available for " + piDesc.getDeploymentId());
+			throw new DeploymentNotFoundException("No deployments available for " + deploymentId);
 		}
 		RuntimeManager manager = deployedUnit.getRuntimeManager();
         RuntimeEngine engine = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));
@@ -372,16 +452,23 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
         	disposeRuntimeEngine(manager, engine);
         }
 	}
+	
+	@Override
+    public Collection<String> getAvailableSignals(Long processInstanceId) {
+        ProcessInstanceDesc piDesc = dataService.getProcessInstanceById(processInstanceId);
+        if (piDesc == null) {
+            throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found");
+        }
+        
+        return getAvailableSignals(piDesc.getDeploymentId(), processInstanceId);                
+	}
 
 	@Override
-	public Collection<String> getAvailableSignals(Long processInstanceId) {
-		ProcessInstanceDesc piDesc = dataService.getProcessInstanceById(processInstanceId);
-		if (piDesc == null) {
-			throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found");
-		}
-		DeployedUnit deployedUnit = deploymentService.getDeployedUnit(piDesc.getDeploymentId());
+	public Collection<String> getAvailableSignals(String deploymentId, Long processInstanceId) {
+		
+		DeployedUnit deployedUnit = deploymentService.getDeployedUnit(deploymentId);
 		if (deployedUnit == null) {
-			throw new DeploymentNotFoundException("No deployments available for " + piDesc.getDeploymentId());
+			throw new DeploymentNotFoundException("No deployments available for " + deploymentId);
 		}
 		RuntimeManager manager = deployedUnit.getRuntimeManager();
         RuntimeEngine engine = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));
@@ -405,23 +492,34 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
         	disposeRuntimeEngine(manager, engine);
         }
 	}
+	
+	@Override
+    public void completeWorkItem(Long id, Map<String, Object> results) {
+        NodeInstanceDesc nodeDesc = dataService.getNodeInstanceForWorkItem(id);
+        if (nodeDesc == null) {
+            throw new WorkItemNotFoundException("Work item with id " + id + " was not found");
+        }
+        
+        completeWorkItem(nodeDesc.getDeploymentId(), nodeDesc.getProcessInstanceId(), id, results);
+	}
 
 	@Override
-	public void completeWorkItem(Long id, Map<String, Object> results) {
-		NodeInstanceDesc nodeDesc = dataService.getNodeInstanceForWorkItem(id);
-		if (nodeDesc == null) {
-			throw new WorkItemNotFoundException("Work item with id " + id + " was not found");
-		}
-		DeployedUnit deployedUnit = deploymentService.getDeployedUnit(nodeDesc.getDeploymentId());
+	public void completeWorkItem(String deploymentId, Long processInstanceId, Long id, Map<String, Object> results) {
+		
+		DeployedUnit deployedUnit = deploymentService.getDeployedUnit(deploymentId);
 		if (deployedUnit == null) {
-			throw new DeploymentNotFoundException("No deployments available for " + nodeDesc.getDeploymentId());
+			throw new DeploymentNotFoundException("No deployments available for " + deploymentId);
 		}
-		Long processInstanceId = nodeDesc.getProcessInstanceId();
+		
 		RuntimeManager manager = deployedUnit.getRuntimeManager();
 		results = process(results, ((InternalRuntimeManager) manager).getEnvironment().getClassLoader());
         RuntimeEngine engine = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));
         try {
             KieSession ksession = engine.getKieSession();
+            WorkItem workItem = ((WorkItemManager)ksession.getWorkItemManager()).getWorkItem(id);
+            if (workItem == null) {
+                throw new WorkItemNotFoundException("Work item with id " + id + " was not found");
+            }
             ksession.getWorkItemManager().completeWorkItem(id, results);
         } catch(SessionNotFoundException e) {
             throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found", e);
@@ -430,22 +528,33 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
         }
 
 	}
+	
+	@Override
+    public void abortWorkItem(Long id) {
+        NodeInstanceDesc nodeDesc = dataService.getNodeInstanceForWorkItem(id);
+        if (nodeDesc == null) {
+            throw new WorkItemNotFoundException("Work item with id " + id + " was not found");
+        }
+        
+        abortWorkItem(nodeDesc.getDeploymentId(), nodeDesc.getProcessInstanceId(), id);
+	}
 
 	@Override
-	public void abortWorkItem(Long id) {
-		NodeInstanceDesc nodeDesc = dataService.getNodeInstanceForWorkItem(id);
-		if (nodeDesc == null) {
-			throw new WorkItemNotFoundException("Work item with id " + id + " was not found");
-		}
-		DeployedUnit deployedUnit = deploymentService.getDeployedUnit(nodeDesc.getDeploymentId());
+	public void abortWorkItem(String deploymentId, Long processInstanceId, Long id) {
+		
+		DeployedUnit deployedUnit = deploymentService.getDeployedUnit(deploymentId);
 		if (deployedUnit == null) {
-			throw new DeploymentNotFoundException("No deployments available for " + nodeDesc.getDeploymentId());
+			throw new DeploymentNotFoundException("No deployments available for " + deploymentId);
 		}
-		Long processInstanceId = nodeDesc.getProcessInstanceId();
+		
 		RuntimeManager manager = deployedUnit.getRuntimeManager();
         RuntimeEngine engine = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));
         try {
             KieSession ksession = engine.getKieSession();
+            WorkItem workItem = ((WorkItemManager)ksession.getWorkItemManager()).getWorkItem(id);
+            if (workItem == null) {
+                throw new WorkItemNotFoundException("Work item with id " + id + " was not found");
+            }
             ksession.getWorkItemManager().abortWorkItem(id);
         } catch(SessionNotFoundException e) {
             throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found", e);
@@ -453,39 +562,56 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
         	disposeRuntimeEngine(manager, engine);
         }
 	}
+	
+	@Override
+    public WorkItem getWorkItem(Long id) {
+        NodeInstanceDesc nodeDesc = dataService.getNodeInstanceForWorkItem(id);
+        if (nodeDesc == null) {
+            throw new WorkItemNotFoundException("Work item with id " + id + " was not found");
+        }
+        
+        return getWorkItem(nodeDesc.getDeploymentId(), nodeDesc.getProcessInstanceId(), id);
+	}
 
 	@Override
-	public WorkItem getWorkItem(Long id) {
-		NodeInstanceDesc nodeDesc = dataService.getNodeInstanceForWorkItem(id);
-		if (nodeDesc == null) {
-			throw new WorkItemNotFoundException("Work item with id " + id + " was not found");
-		}
-		DeployedUnit deployedUnit = deploymentService.getDeployedUnit(nodeDesc.getDeploymentId());
+	public WorkItem getWorkItem(String deploymentId, Long processInstanceId, Long id) {
+		
+		DeployedUnit deployedUnit = deploymentService.getDeployedUnit(deploymentId);
 		if (deployedUnit == null) {
-			throw new DeploymentNotFoundException("No deployments available for " + nodeDesc.getDeploymentId());
-		}
-		Long processInstanceId = nodeDesc.getProcessInstanceId();
+			throw new DeploymentNotFoundException("No deployments available for " + deploymentId);
+		}		
 		RuntimeManager manager = deployedUnit.getRuntimeManager();
         RuntimeEngine engine = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));
         try {
             KieSession ksession = engine.getKieSession();
-            return ((WorkItemManager)ksession.getWorkItemManager()).getWorkItem(id);
+            WorkItem workItem = ((WorkItemManager)ksession.getWorkItemManager()).getWorkItem(id);
+            if (workItem == null) {
+                throw new WorkItemNotFoundException("Work item with id " + id + " was not found");
+            }
+            return workItem;
         } catch(SessionNotFoundException e) {
             throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found", e);
         } finally {
         	disposeRuntimeEngine(manager, engine);
         }
 	}
+	
+	@Override
+    public List<WorkItem> getWorkItemByProcessInstance(Long processInstanceId) {
+        ProcessInstanceDesc piDesc = dataService.getProcessInstanceById(processInstanceId);
+        if (piDesc == null || piDesc.getState() != ProcessInstance.STATE_ACTIVE) {
+            throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found");
+        }
+        
+        return getWorkItemByProcessInstance(piDesc.getDeploymentId(), processInstanceId);
+	}
 
 	@Override
-	public List<WorkItem> getWorkItemByProcessInstance(Long processInstanceId) {
-		ProcessInstanceDesc piDesc = dataService.getProcessInstanceById(processInstanceId);
-		if (piDesc == null || piDesc.getState() != 1) {
-			throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found");
-		}
-		DeployedUnit deployedUnit = deploymentService.getDeployedUnit(piDesc.getDeploymentId());
+	public List<WorkItem> getWorkItemByProcessInstance(String deploymentId, Long processInstanceId) {
+		
+		DeployedUnit deployedUnit = deploymentService.getDeployedUnit(deploymentId);
 		if (deployedUnit == null) {
-			throw new DeploymentNotFoundException("No deployments available for " + piDesc.getDeploymentId());
+			throw new DeploymentNotFoundException("No deployments available for " + deploymentId);
 		}
 		RuntimeManager manager = deployedUnit.getRuntimeManager();
         RuntimeEngine engine = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));

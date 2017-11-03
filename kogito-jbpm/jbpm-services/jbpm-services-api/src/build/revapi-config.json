@@ -181,6 +181,141 @@
 		  "fieldName": "serialVersionUID",
 		  "elementKind": "field",
 		  "justification": "Included support for group operation with intervals"
+		 }, 
+		 {
+		   "code": "java.method.addedToInterface",
+		   "new": "method void org.jbpm.services.api.ProcessService::abortProcessInstance(java.lang.String, java.lang.Long)",
+		   "package": "org.jbpm.services.api",
+		   "classSimpleName": "ProcessService",
+		   "methodName": "abortProcessInstance",
+		   "elementKind": "method",
+		   "justification": "Allow to use given deployment id to avoid additional db look up"
+		 },
+		 {
+		   "code": "java.method.addedToInterface",
+		   "new": "method void org.jbpm.services.api.ProcessService::abortProcessInstances(java.lang.String, java.util.List<java.lang.Long>)",
+		   "package": "org.jbpm.services.api",
+		   "classSimpleName": "ProcessService",
+		   "methodName": "abortProcessInstances",
+		   "elementKind": "method",
+		   "justification": "Allow to use given deployment id to avoid additional db look up"
+		 },
+		 {
+		   "code": "java.method.addedToInterface",
+		   "new": "method void org.jbpm.services.api.ProcessService::abortWorkItem(java.lang.String, java.lang.Long, java.lang.Long)",
+		   "package": "org.jbpm.services.api",
+		   "classSimpleName": "ProcessService",
+		   "methodName": "abortWorkItem",
+		   "elementKind": "method",
+		   "justification": "Allow to use given deployment id to avoid additional db look up"
+		 },
+		 {
+		   "code": "java.method.addedToInterface",
+		   "new": "method void org.jbpm.services.api.ProcessService::completeWorkItem(java.lang.String, java.lang.Long, java.lang.Long, java.util.Map<java.lang.String, java.lang.Object>)",
+		   "package": "org.jbpm.services.api",
+		   "classSimpleName": "ProcessService",
+		   "methodName": "completeWorkItem",
+		   "elementKind": "method",
+		   "justification": "Allow to use given deployment id to avoid additional db look up"
+		 },
+		 {
+		   "code": "java.method.addedToInterface",
+		   "new": "method java.util.Collection<java.lang.String> org.jbpm.services.api.ProcessService::getAvailableSignals(java.lang.String, java.lang.Long)",
+		   "package": "org.jbpm.services.api",
+		   "classSimpleName": "ProcessService",
+		   "methodName": "getAvailableSignals",
+		   "elementKind": "method",
+		   "justification": "Allow to use given deployment id to avoid additional db look up"
+		 },
+		 {
+		   "code": "java.method.addedToInterface",
+		   "new": "method org.kie.api.runtime.process.ProcessInstance org.jbpm.services.api.ProcessService::getProcessInstance(java.lang.String, java.lang.Long)",
+		   "package": "org.jbpm.services.api",
+		   "classSimpleName": "ProcessService",
+		   "methodName": "getProcessInstance",
+		   "elementKind": "method",
+		   "justification": "Allow to use given deployment id to avoid additional db look up"
+		 },
+		 {
+		   "code": "java.method.addedToInterface",
+		   "new": "method org.kie.api.runtime.process.ProcessInstance org.jbpm.services.api.ProcessService::getProcessInstance(java.lang.String, org.kie.internal.process.CorrelationKey)",
+		   "package": "org.jbpm.services.api",
+		   "classSimpleName": "ProcessService",
+		   "methodName": "getProcessInstance",
+		   "elementKind": "method",
+		   "justification": "Allow to use given deployment id to avoid additional db look up"
+		 },
+		 {
+		   "code": "java.method.addedToInterface",
+		   "new": "method java.lang.Object org.jbpm.services.api.ProcessService::getProcessInstanceVariable(java.lang.String, java.lang.Long, java.lang.String)",
+		   "package": "org.jbpm.services.api",
+		   "classSimpleName": "ProcessService",
+		   "methodName": "getProcessInstanceVariable",
+		   "elementKind": "method",
+		   "justification": "Allow to use given deployment id to avoid additional db look up"
+		 },
+		 {
+		   "code": "java.method.addedToInterface",
+		   "new": "method java.util.Map<java.lang.String, java.lang.Object> org.jbpm.services.api.ProcessService::getProcessInstanceVariables(java.lang.String, java.lang.Long)",
+		   "package": "org.jbpm.services.api",
+		   "classSimpleName": "ProcessService",
+		   "methodName": "getProcessInstanceVariables",
+		   "elementKind": "method",
+		   "justification": "Allow to use given deployment id to avoid additional db look up"
+		 },
+		 {
+		   "code": "java.method.addedToInterface",
+		   "new": "method org.kie.api.runtime.process.WorkItem org.jbpm.services.api.ProcessService::getWorkItem(java.lang.String, java.lang.Long, java.lang.Long)",
+		   "package": "org.jbpm.services.api",
+		   "classSimpleName": "ProcessService",
+		   "methodName": "getWorkItem",
+		   "elementKind": "method",
+		   "justification": "Allow to use given deployment id to avoid additional db look up"
+		 },
+		 {
+		   "code": "java.method.addedToInterface",
+		   "new": "method java.util.List<org.kie.api.runtime.process.WorkItem> org.jbpm.services.api.ProcessService::getWorkItemByProcessInstance(java.lang.String, java.lang.Long)",
+		   "package": "org.jbpm.services.api",
+		   "classSimpleName": "ProcessService",
+		   "methodName": "getWorkItemByProcessInstance",
+		   "elementKind": "method",
+		   "justification": "Allow to use given deployment id to avoid additional db look up"
+		 },
+		 {
+		   "code": "java.method.addedToInterface",
+		   "new": "method void org.jbpm.services.api.ProcessService::setProcessVariable(java.lang.String, java.lang.Long, java.lang.String, java.lang.Object)",
+		   "package": "org.jbpm.services.api",
+		   "classSimpleName": "ProcessService",
+		   "methodName": "setProcessVariable",
+		   "elementKind": "method",
+		   "justification": "Allow to use given deployment id to avoid additional db look up"
+		 },
+		 {
+		   "code": "java.method.addedToInterface",
+		   "new": "method void org.jbpm.services.api.ProcessService::setProcessVariables(java.lang.String, java.lang.Long, java.util.Map<java.lang.String, java.lang.Object>)",
+		   "package": "org.jbpm.services.api",
+		   "classSimpleName": "ProcessService",
+		   "methodName": "setProcessVariables",
+		   "elementKind": "method",
+		   "justification": "Allow to use given deployment id to avoid additional db look up"
+		 },
+		 {
+		   "code": "java.method.addedToInterface",
+		   "new": "method void org.jbpm.services.api.ProcessService::signalProcessInstance(java.lang.String, java.lang.Long, java.lang.String, java.lang.Object)",
+		   "package": "org.jbpm.services.api",
+		   "classSimpleName": "ProcessService",
+		   "methodName": "signalProcessInstance",
+		   "elementKind": "method",
+		   "justification": "Allow to use given deployment id to avoid additional db look up"
+		 },
+		 {
+		   "code": "java.method.addedToInterface",
+		   "new": "method void org.jbpm.services.api.ProcessService::signalProcessInstances(java.lang.String, java.util.List<java.lang.Long>, java.lang.String, java.lang.Object)",
+		   "package": "org.jbpm.services.api",
+		   "classSimpleName": "ProcessService",
+		   "methodName": "signalProcessInstances",
+		   "elementKind": "method",
+		   "justification": "Allow to use given deployment id to avoid additional db look up"
 		 }
       ]
     }
