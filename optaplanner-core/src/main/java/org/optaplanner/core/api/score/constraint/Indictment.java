@@ -99,7 +99,7 @@ public final class Indictment implements Serializable, Comparable<Indictment> {
 
     @Override
     public int compareTo(Indictment other) {
-        if (justification instanceof Comparable) {
+        if (!(justification instanceof Comparable)) {
             throw new IllegalStateException("The justification (" + justification + ") does not implement "
                     + Comparable.class.getSimpleName() + ", so it cannot be compared with otherJustification ("
                     + other.justification + ").");
