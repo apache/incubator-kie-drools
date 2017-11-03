@@ -97,9 +97,13 @@ public final class Indictment implements Serializable, Comparable<Indictment> {
     // Infrastructure methods
     // ************************************************************************
 
-    // TODO this should sort on justification, not scoreTotal (use a different comparator for that)
     @Override
     public int compareTo(Indictment other) {
+        if (justification instanceof Comparable) {
+            throw new IllegalStateException("The justification (" + justification + ") does not implement "
+                    + Comparable.class.getSimpleName() + ", so it cannot be compared with otherJustification ("
+                    + other.justification + ").");
+        }
         return ((Comparable) justification).compareTo(other.justification);
     }
 
@@ -122,7 +126,7 @@ public final class Indictment implements Serializable, Comparable<Indictment> {
 
     @Override
     public String toString() {
-        return justification + "=" + getScoreTotal();
+        return justification + "=" + scoreTotal;
     }
 
 }
