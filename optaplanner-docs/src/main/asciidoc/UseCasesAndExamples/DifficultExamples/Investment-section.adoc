@@ -29,3 +29,4 @@ irrinki_1 has 2 regions, 3 sectors and 6 asset classes with a search space of 10
 ----
 
 Larger datasets have not been created or tested yet, but should not pose a problem.
+A good source of data is https://www.portfoliovisualizer.com/asset-correlations[this Asset Correlation website].
