@@ -113,6 +113,72 @@ public class RuleModelDRLPersistenceTest extends BaseRuleModelTest {
         }
     }
 
+    /*
+     * https://issues.jboss.org/browse/DROOLS-1903
+     */
+    @Test
+    public void testDSLWithFrom() {
+        final RuleModel m = new RuleModel();
+        m.name = "testDSLWithFrom";
+        m.lhs = new IPattern[2];
+        m.rhs = new IAction[0];
+
+        final FromCollectCompositeFactPattern from = new FromCollectCompositeFactPattern();
+
+        final FromCompositeFactPattern rightPattern = new FromCompositeFactPattern();
+        final FactPattern person = new FactPattern("Person");
+        person.setBoundName("$person");
+
+        m.lhs[0] = person;
+
+        rightPattern.setFactPattern(new FactPattern("Person"));
+        rightPattern.setExpression(new ExpressionFormLine(new ExpressionVariable(person.getBoundName(),
+                                                                                 person.getFactType())));
+
+        from.setRightPattern(rightPattern);
+
+        from.setFactPattern(new FactPattern("java.util.List"));
+
+        m.lhs[1] = from;
+
+        final RuleModel modelSpy = spy(m);
+        doReturn(true).when(modelSpy).hasDSLSentences();
+
+        final String drl = ruleModelPersistence.marshal(modelSpy);
+        final RuleModel tempModel = spy(ruleModelPersistence.unmarshalUsingDSL(drl,
+                                                                               null,
+                                                                               dmo,
+                                                                               ""));
+        doReturn(true).when(tempModel).hasDSLSentences();
+
+        final String newDrl = ruleModelPersistence.marshal(tempModel);
+
+        final RuleModel newModel = ruleModelPersistence.unmarshalUsingDSL(newDrl,
+                                                                          null,
+                                                                          dmo,
+                                                                          "");
+
+        assertTrue(newModel.lhs[0] instanceof FactPattern);
+        assertTrue(newModel.lhs[1] instanceof FromCollectCompositeFactPattern);
+
+        final String[] rows = newDrl.split("\n");
+        boolean foundWhen = false;
+        for (final String row : rows) {
+
+            if (row.trim().startsWith("then")) {
+                break;
+            }
+
+            if (foundWhen && !row.trim().isEmpty() && !row.trim().startsWith(">")) {
+                fail("Each row inside the LHS needs to start with >. The row with the issue: " + row);
+            }
+
+            if (row.trim().startsWith("when")) {
+                foundWhen = true;
+            }
+        }
+    }
+
     @Test
     public void testFreeForm() {
         RuleModel m = new RuleModel();
@@ -4340,7 +4406,7 @@ public class RuleModelDRLPersistenceTest extends BaseRuleModelTest {
         final String dslActionDefinition = "Person will retire on {date}";
         final String dslActionDrl = "java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(\"dd-MMM-yyyy\"); $p.setRetireDate(sdf.parse(\"{date}\"));";
         final String dslFile = "[when]" + dslConditionDefinition + "=" + dslConditionDrl + "\n"
-                                + "[then]" + dslActionDefinition + "=" + dslActionDrl;
+                + "[then]" + dslActionDefinition + "=" + dslActionDrl;
 
         final String drl = "rule \"my rule\" \n" +
                 "dialect \"mvel\"\n" +

@@ -691,7 +691,7 @@ public class RuleModelDRLPersistenceImpl
                 buf.append(" from ");
                 renderExpression(pattern.getExpression());
                 if (!isSubPattern) {
-                    buf.append(")");
+                   buf.append(")");
                 }
                 buf.append("\n");
             }
@@ -717,6 +717,9 @@ public class RuleModelDRLPersistenceImpl
                                     gctx);
 
                 buf.append(" from collect ( ");
+
+                buf.append("\n");
+
                 if (pattern.getRightPattern() != null) {
                     if (pattern.getRightPattern() instanceof FactPattern) {
                         generateFactPattern((FactPattern) pattern.getRightPattern(),
@@ -738,6 +741,11 @@ public class RuleModelDRLPersistenceImpl
                     } else {
                         throw new IllegalArgumentException("Unsupported pattern " + pattern.getRightPattern() + " for FROM COLLECT");
                     }
+                }
+                if (isDSLEnhanced) {
+                    buf.append("\n"); // Just in case we add a row. Not sure what the methods above append.
+                    buf.append(indentation);
+                    buf.append(">");
                 }
                 buf.append(") \n");
             }
