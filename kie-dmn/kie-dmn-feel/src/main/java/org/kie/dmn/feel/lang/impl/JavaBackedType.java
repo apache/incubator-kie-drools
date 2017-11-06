@@ -2,7 +2,14 @@ package org.kie.dmn.feel.lang.impl;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -15,9 +22,10 @@ import org.kie.dmn.feel.parser.feel11.ParserHelper;
 import org.kie.dmn.feel.util.EvalHelper;
 
 public class JavaBackedType implements CompositeType {
-    private static Map<Class<?>, JavaBackedType> cache = new HashMap<>();
+
+    private static Map<Class<?>, JavaBackedType> cache = new ConcurrentHashMap<>();
     
-    private static Set<Method> javaObjectMethods = new HashSet<>( Arrays.asList( Object.class.getMethods() ) );
+    private static Set<Method> javaObjectMethods = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(Object.class.getMethods())));
     
     private Class<?> wrapped;
     private Map<String, Type> properties = new LinkedHashMap<>();
