@@ -722,6 +722,11 @@ public class ModelGenerator {
                             .orElseGet(Collections::emptyList);
                     drlxParseResult.reactOnProperties.addAll(lookAheadFieldsOfIdentifier);
                     drlxParseResult.watchedProperties = getPatternListenedProperties(pattern);
+
+                    if(pattern.isUnification()) {
+                        drlxParseResult.setPatternBindingUnification(true);
+                    }
+
                     processExpression( context, drlxParseResult );
                 }
             }
@@ -930,6 +935,8 @@ public class ModelGenerator {
 
         private String exprId;
         private String patternBinding;
+        boolean isPatternBindingUnification = false;
+
         private String exprBinding;
 
         ConstraintType decodeConstraintType;
@@ -961,6 +968,11 @@ public class ModelGenerator {
 
         public DrlxParseResult setReactOnProperties( Set<String> reactOnProperties ) {
             this.reactOnProperties = reactOnProperties;
+            return this;
+        }
+
+        public DrlxParseResult setPatternBindingUnification( Boolean unification) {
+            this.isPatternBindingUnification = unification;
             return this;
         }
 
@@ -1035,8 +1047,13 @@ public class ModelGenerator {
     }
 
     private static MethodCallExpr buildExpression(RuleContext context, DrlxParseResult drlxParseResult, MethodCallExpr exprDSL ) {
-        exprDSL.addArgument( new NameExpr(toVar(drlxParseResult.patternBinding)) );
-        drlxParseResult.usedDeclarations.stream().map(x -> {
+        final Set<String> usedDeclarationsWithUnification = new HashSet<>(drlxParseResult.usedDeclarations);
+        if(!drlxParseResult.isPatternBindingUnification) {
+            exprDSL.addArgument(new NameExpr(toVar(drlxParseResult.patternBinding)));
+        } else {
+            usedDeclarationsWithUnification.add(drlxParseResult.patternBinding);
+        }
+        usedDeclarationsWithUnification.stream().map(x -> {
             Optional<QueryParameter> optQueryParameter = context.queryParameterWithName(p -> p.name.equals(x));
             return optQueryParameter.map(qp -> {
 
@@ -1089,7 +1106,7 @@ public class ModelGenerator {
                 indexedBy_rightOperandExtractor.setBody(new ExpressionStmt(!leftContainsThis ? left.getExpression() : right.getExpression()) );
                 indexedByDSL.addArgument( indexedBy_rightOperandExtractor );
             } else {
-                throw new UnsupportedOperationException( "TODO" ); // TODO: possibly not to be indexed
+//                throw new UnsupportedOperationException( "TODO" ); // TODO: possibly not to be indexed
             }
             return indexedByDSL;
         }
