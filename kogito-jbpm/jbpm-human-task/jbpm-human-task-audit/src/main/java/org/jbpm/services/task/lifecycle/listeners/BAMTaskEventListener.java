@@ -122,26 +122,18 @@ public class BAMTaskEventListener extends PersistableEventListener  {
         createTask(event, null, null);
     }
 
-    /**
-     * When a task is skipped, the status for dashbuilder integration task must be Exited.
-     *
-     * @param ti The task.
-     */
+
     public void afterTaskSkippedEvent(TaskEvent event) {
-        createOrUpdateTask(event, Status.Exited);
+        createOrUpdateTask(event, Status.Obsolete);
     }
 
     public void afterTaskStoppedEvent(TaskEvent event) {
         updateTask(event);
     }
 
-    /**
-     * When a task is failed, the status for dashbuilder integration task must be Exited.
-     *
-     * @param ti The task.
-     */
+    
     public void afterTaskFailedEvent(TaskEvent event) {
-        createOrUpdateTask(event, Status.Error);
+        createOrUpdateTask(event, Status.Failed);
     }
 
     public void afterTaskExitedEvent(TaskEvent event) {
