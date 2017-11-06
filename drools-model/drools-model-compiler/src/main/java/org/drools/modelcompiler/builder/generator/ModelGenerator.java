@@ -827,7 +827,7 @@ public class ModelGenerator {
             Operator operator = binaryExpr.getOperator();
 
             ConstraintType decodeConstraintType = DrlxParseUtil.toConstraintType( operator );
-            Set<String> usedDeclarations = new HashSet<>();
+            List<String> usedDeclarations = new ArrayList<>();
             Set<String> reactOnProperties = new HashSet<>();
             TypedExpression left = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, binaryExpr.getLeft(), usedDeclarations, reactOnProperties );
             TypedExpression right = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, binaryExpr.getRight(), usedDeclarations, reactOnProperties );
@@ -865,7 +865,7 @@ public class ModelGenerator {
         if ( drlxExpr instanceof UnaryExpr ) {
             UnaryExpr unaryExpr = (UnaryExpr) drlxExpr;
 
-            Set<String> usedDeclarations = new HashSet<>();
+            List<String> usedDeclarations = new ArrayList<>();
             Set<String> reactOnProperties = new HashSet<>();
             TypedExpression left = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, unaryExpr, usedDeclarations, reactOnProperties );
 
@@ -876,7 +876,7 @@ public class ModelGenerator {
         if ( drlxExpr instanceof PointFreeExpr ) {
             PointFreeExpr pointFreeExpr = (PointFreeExpr) drlxExpr;
 
-            Set<String> usedDeclarations = new HashSet<>();
+            List<String> usedDeclarations = new ArrayList<>();
             Set<String> reactOnProperties = new HashSet<>();
             TypedExpression left = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, pointFreeExpr.getLeft(), usedDeclarations, reactOnProperties );
             DrlxParseUtil.toTypedExpression( context, packageModel, patternType, pointFreeExpr.getRight(), usedDeclarations, reactOnProperties );
@@ -940,7 +940,7 @@ public class ModelGenerator {
         private String exprBinding;
 
         ConstraintType decodeConstraintType;
-        Set<String> usedDeclarations = Collections.emptySet();
+        List<String> usedDeclarations = Collections.emptyList();
         Set<String> reactOnProperties = Collections.emptySet();
         String[] watchedProperties;
 
@@ -961,7 +961,7 @@ public class ModelGenerator {
             return this;
         }
 
-        public DrlxParseResult setUsedDeclarations( Set<String> usedDeclarations ) {
+        public DrlxParseResult setUsedDeclarations( List<String> usedDeclarations ) {
             this.usedDeclarations = usedDeclarations;
             return this;
         }
@@ -1047,12 +1047,13 @@ public class ModelGenerator {
     }
 
     private static MethodCallExpr buildExpression(RuleContext context, DrlxParseResult drlxParseResult, MethodCallExpr exprDSL ) {
-        final Set<String> usedDeclarationsWithUnification = new HashSet<>(drlxParseResult.usedDeclarations);
+        final List<String> usedDeclarationsWithUnification = new ArrayList<>();
         if(!drlxParseResult.isPatternBindingUnification) {
             exprDSL.addArgument(new NameExpr(toVar(drlxParseResult.patternBinding)));
         } else {
             usedDeclarationsWithUnification.add(drlxParseResult.patternBinding);
         }
+        usedDeclarationsWithUnification.addAll(drlxParseResult.usedDeclarations);
         usedDeclarationsWithUnification.stream().map(x -> {
             Optional<QueryParameter> optQueryParameter = context.queryParameterWithName(p -> p.name.equals(x));
             return optQueryParameter.map(qp -> {
@@ -1097,7 +1098,7 @@ public class ModelGenerator {
             indexedByDSL.addArgument( "" + indexIdGenerator.getFieldId( drlxParseResult.patternType, left.getFieldName() ) );
             indexedByDSL.addArgument( indexedBy_leftOperandExtractor );
 
-            Set<String> usedDeclarations = drlxParseResult.usedDeclarations;
+            List<String> usedDeclarations = drlxParseResult.usedDeclarations;
             if ( usedDeclarations.isEmpty() ) {
                 indexedByDSL.addArgument( right.getExpression() );
             } else if ( usedDeclarations.size() == 1 ) {

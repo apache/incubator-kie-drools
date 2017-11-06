@@ -46,7 +46,7 @@ public class OOPathExprVisitor {
             }
 
             final String bindingId = context.getOOPathId(fieldType, fieldName);
-            final Expression accessorLambda = generateLambdaWithoutParameters(new HashSet<>(),
+            final Expression accessorLambda = generateLambdaWithoutParameters(new ArrayList<>(),
                                                                     prepend(new NameExpr("_this"), callExpr.getExpression()));
 
             final MethodCallExpr reactiveFrom = new MethodCallExpr(null, "reactiveFrom");

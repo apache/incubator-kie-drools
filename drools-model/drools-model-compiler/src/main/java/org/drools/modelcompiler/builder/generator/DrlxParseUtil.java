@@ -83,7 +83,7 @@ public class DrlxParseUtil {
     }
 
     public static TypedExpression toTypedExpression(RuleContext context, PackageModel packageModel, Class<?> patternType, Expression drlxExpr,
-                                                    Set<String> usedDeclarations, Set<String> reactOnProperties) {
+                                                    List<String> usedDeclarations, Set<String> reactOnProperties) {
 
         Class<?> typeCursor = patternType;
 
@@ -306,7 +306,7 @@ public class DrlxParseUtil {
         return JavaParser.parseBlock(String.format("{%s}", ruleConsequenceAsBlock));
     }
 
-    public static Expression generateLambdaWithoutParameters(Set<String> usedDeclarations, Expression expr) {
+    public static Expression generateLambdaWithoutParameters(List<String> usedDeclarations, Expression expr) {
         LambdaExpr lambdaExpr = new LambdaExpr();
         lambdaExpr.setEnclosingParameters( true );
         lambdaExpr.addParameter( new Parameter(new UnknownType(), "_this" ) );
