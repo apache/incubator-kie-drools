@@ -404,6 +404,7 @@ public class DMNEvaluatorCompiler {
         }
         java.util.List<DTOutputClause> outputs = new ArrayList<>();
         index = 0;
+        boolean hasOutputValues = false;
         for ( OutputClause oc : dt.getOutput() ) {
             String outputName = oc.getName();
             if( outputName != null ) {
@@ -442,17 +443,20 @@ public class DMNEvaluatorCompiler {
                     outputValues = typeRef.getAllowedValuesFEEL();
                 }
             }
-            if ( dt.getHitPolicy().equals(HitPolicy.PRIORITY) && ( outputValues == null || outputValues.isEmpty() ) ) {
-                MsgUtil.reportMessage( logger,
-                        DMNMessage.Severity.ERROR,
-                        oc,
-                        model,
-                        null,
-                        null,
-                        Msg.MISSING_OUTPUT_VALUES,
-                        oc );
+            if ( outputValues != null && !outputValues.isEmpty() ) {
+                hasOutputValues = true;
             }
             outputs.add( new DTOutputClause( outputName, id, outputValues, defaultValue, typeRef.getFeelType() ) );
+        }
+        if ( dt.getHitPolicy().equals(HitPolicy.PRIORITY) && !hasOutputValues ) {
+            MsgUtil.reportMessage( logger,
+            DMNMessage.Severity.ERROR,
+            dt.getParent(),
+            model,
+            null,
+            null,
+            Msg.MISSING_OUTPUT_VALUES,
+            dt.getParent() );
         }
         java.util.List<DTDecisionRule> rules = new ArrayList<>();
         index = 0;
