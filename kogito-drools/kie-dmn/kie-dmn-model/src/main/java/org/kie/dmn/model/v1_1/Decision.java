@@ -129,4 +129,8 @@ public class Decision extends DRGElement {
         this.expression = value;
     }
 
+    @Override
+    public String toString() {
+        return getName();
+    }
 }

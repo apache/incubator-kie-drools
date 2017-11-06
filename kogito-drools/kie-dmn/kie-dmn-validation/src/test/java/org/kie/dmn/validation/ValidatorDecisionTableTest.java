@@ -53,7 +53,7 @@ public class ValidatorDecisionTableTest
     @Test
     public void testDTABLE_PRIORITY_MISSING_OUTVALS() {
         List<DMNMessage> validate = validator.validate( getReader( "DTABLE_PRIORITY_MISSING_OUTVALS.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 1 ) );
+        assertThat( ValidatorUtil.formatMessages( validate ), validate.isEmpty(), is( false ) );
         assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.MISSING_OUTPUT_VALUES ) ) );
     }
 
