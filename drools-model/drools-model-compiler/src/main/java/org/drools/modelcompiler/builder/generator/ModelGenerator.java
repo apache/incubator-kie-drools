@@ -103,6 +103,7 @@ import static org.drools.model.impl.NamesGenerator.generateName;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassFromContext;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.parseBlock;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toQueryDef;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.util.StringUtil.toId;
 
@@ -165,13 +166,14 @@ public class ModelGenerator {
 
         for (RuleDescr descr : packageDescr.getRules()) {
             if (descr instanceof QueryDescr) {
-                QueryDefWithType qd = packageModel.getQueryDefWithType().get(descr.getName() + "_def");
+                QueryDefWithType qd = packageModel.getQueryDefWithType().get(toQueryDef(descr.getName()));
                 processQuery(pkg, packageModel, qd.context, (QueryDescr) descr);
             } else {
                 processRule(pkg, packageModel, descr);
             }
         }
     }
+
 
     private static void processRule(InternalKnowledgePackage pkg, PackageModel packageModel, RuleDescr ruleDescr) {
         RuleContext context = new RuleContext(pkg, packageModel.getExprIdGenerator(), Optional.of(ruleDescr));
@@ -342,7 +344,7 @@ public class ModelGenerator {
     private static void processQueryDef(InternalKnowledgePackage pkg, PackageModel packageModel, QueryDescr queryDescr) {
         RuleContext context = new RuleContext(pkg, packageModel.getExprIdGenerator(), Optional.of(queryDescr));
         String queryName = queryDescr.getName();
-        final String queryDefVariableName = queryName + "_def";
+        final String queryDefVariableName = toQueryDef(queryName);
         context.queryName = Optional.of(queryDefVariableName);
 
         parseQueryParameters(context, packageModel, queryDescr);
@@ -385,7 +387,7 @@ public class ModelGenerator {
 
 
     private static void processQuery(InternalKnowledgePackage pkg, PackageModel packageModel, RuleContext context, QueryDescr queryDescr) {
-        final String queryDefVariableName = queryDescr.getName() + "_def";
+        final String queryDefVariableName = toQueryDef(queryDescr.getName());
 
         visit(context, packageModel, queryDescr);
         final Type queryType = JavaParser.parseType(Query.class.getCanonicalName());
@@ -669,7 +671,7 @@ public class ModelGenerator {
             return;
         }
 
-        String queryDef = className + "_def";
+        String queryDef = toQueryDef(className);
         if(packageModel.getQueryDefWithType().containsKey(queryDef)) {
             MethodCallExpr callMethod = new MethodCallExpr(new NameExpr(queryDef), "call");
 
@@ -760,7 +762,7 @@ public class ModelGenerator {
         String queryName = "query_" + className;
         MethodDeclaration queryMethod = packageModel.getQueryMethod(queryName);
         if (queryMethod != null) {
-            NameExpr queryCall = new NameExpr(queryMethod.getNameAsString());
+            NameExpr queryCall = new NameExpr(toQueryDef(className));
             MethodCallExpr callCall = new MethodCallExpr(queryCall, "call");
 
             for (int i = 0; i < descriptors.size(); i++) {
