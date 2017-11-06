@@ -113,7 +113,7 @@ public class CaseCommentCommand extends CaseCommand<Void> {
             if (restrictedTo != null) {
                 ((CommentInstanceImpl)toUpdate).setRestrictedTo(restrictedTo);
             }
-            caseEventSupport.fireBeforeCaseCommentUpdated(caseFile.getCaseId(), caseFile, toUpdate);
+            caseEventSupport.fireAfterCaseCommentUpdated(caseFile.getCaseId(), caseFile, toUpdate);
         } else if (remove) {
             CommentInstance toRemove = ((CaseFileInstanceImpl)caseFile).getComments().stream()
                     .filter(c -> c.getId().equals(commentId))
@@ -125,7 +125,7 @@ public class CaseCommentCommand extends CaseCommand<Void> {
             
             caseEventSupport.fireBeforeCaseCommentRemoved(caseFile.getCaseId(), caseFile, toRemove);
             ((CaseFileInstanceImpl)caseFile).removeComment(toRemove);
-            caseEventSupport.fireBeforeCaseCommentRemoved(caseFile.getCaseId(), caseFile, toRemove);
+            caseEventSupport.fireAfterCaseCommentRemoved(caseFile.getCaseId(), caseFile, toRemove);
         }
         ksession.update(factHandle, caseFile);
         triggerRules(ksession);

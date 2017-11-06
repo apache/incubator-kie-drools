@@ -134,6 +134,8 @@ public abstract class AbstractCaseServicesBaseTest {
 
     protected AuthorizationManager authorizationManager;
 
+    private List<String> listenerMvelDefinitions = new ArrayList<>();
+
     protected static final String EMPTY_CASE_P_ID = "EmptyCase";
     protected static final String USER_TASK_STAGE_CASE_P_ID = "UserTaskWithStageCase";
     protected static final String USER_TASK_CASE_P_ID = "UserTaskCase";
@@ -184,23 +186,6 @@ public abstract class AbstractCaseServicesBaseTest {
         deploymentUnit = prepareDeploymentUnit();
     }
 
-    protected DeploymentUnit prepareDeploymentUnit() {
-        assertThat(deploymentService).isNotNull();
-        KModuleDeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-
-        final DeploymentDescriptor descriptor = new DeploymentDescriptorImpl();
-        descriptor.getBuilder().addEventListener(new NamedObjectModel(
-                "mvel",
-                "processIdentity",
-                "new org.jbpm.kie.services.impl.IdentityProviderAwareProcessListener(ksession)"
-        ));
-        deploymentUnit.setDeploymentDescriptor(descriptor);
-        deploymentUnit.setStrategy(RuntimeStrategy.PER_CASE);
-
-        deploymentService.deploy(deploymentUnit);
-        return deploymentUnit;
-    }
-
     @After
     public void tearDown() {
         clearDocumentStorageProperty();
@@ -220,6 +205,23 @@ public abstract class AbstractCaseServicesBaseTest {
 
         close();
         ServiceRegistry.get().clear();
+    }
+
+    protected DeploymentUnit prepareDeploymentUnit() {
+        assertThat(deploymentService).isNotNull();
+        KModuleDeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
+
+        final DeploymentDescriptor descriptor = new DeploymentDescriptorImpl();
+        descriptor.getBuilder().addEventListener(new NamedObjectModel(
+                "mvel",
+                "processIdentity",
+                "new org.jbpm.kie.services.impl.IdentityProviderAwareProcessListener(ksession)"
+        ));
+        deploymentUnit.setDeploymentDescriptor(descriptor);
+        deploymentUnit.setStrategy(RuntimeStrategy.PER_CASE);
+
+        deploymentService.deploy(deploymentUnit);
+        return deploymentUnit;
     }
 
     protected void close() {
@@ -342,17 +344,8 @@ public abstract class AbstractCaseServicesBaseTest {
 
         KieFileSystem kfs = createKieFileSystemWithKProject(ks);
         kfs.writePomXML(getPom(releaseId));
-        // set the deployment descriptor so we use per case runtime strategy
-        DeploymentDescriptor customDescriptor = new DeploymentDescriptorImpl("org.jbpm.domain");
-        DeploymentDescriptorBuilder ddBuilder = customDescriptor.getBuilder()
-                .runtimeStrategy(RuntimeStrategy.PER_CASE)
-                .addMarshalingStrategy(new ObjectModel("mvel", CaseMarshallerFactory.builder().withDoc().toString()))
-                .addEventListener(new ObjectModel("mvel", "new org.jbpm.casemgmt.impl.util.TrackingCaseEventListener()"))
-                .addWorkItemHandler(new NamedObjectModel("mvel", "StartCaseInstance", "new org.jbpm.casemgmt.impl.wih.StartCaseWorkItemHandler(ksession)"));
 
-        for (ObjectModel listener : getProcessListeners()) {
-            ddBuilder.addEventListener(listener);
-        }
+        DeploymentDescriptor customDescriptor = createDeploymentDescriptor();
 
         if (extraResources == null) {
             extraResources = new HashMap<String, String>();
@@ -377,6 +370,27 @@ public abstract class AbstractCaseServicesBaseTest {
         }
 
         return (InternalKieModule) kieBuilder.getKieModule();
+    }
+
+    protected DeploymentDescriptor createDeploymentDescriptor() {
+        //add this listener by default
+        listenerMvelDefinitions.add("new org.jbpm.casemgmt.impl.util.TrackingCaseEventListener()");
+
+        DeploymentDescriptor customDescriptor = new DeploymentDescriptorImpl("org.jbpm.domain");
+        DeploymentDescriptorBuilder ddBuilder = customDescriptor.getBuilder()
+                .runtimeStrategy(RuntimeStrategy.PER_CASE)
+                .addMarshalingStrategy(new ObjectModel("mvel", CaseMarshallerFactory.builder().withDoc().toString()))
+                .addWorkItemHandler(new NamedObjectModel("mvel", "StartCaseInstance", "new org.jbpm.casemgmt.impl.wih.StartCaseWorkItemHandler(ksession)"));
+
+        listenerMvelDefinitions.forEach(
+                listenerDefinition -> ddBuilder.addEventListener(new ObjectModel("mvel", listenerDefinition))
+        );
+
+        getProcessListeners().forEach(
+                listener -> ddBuilder.addEventListener(listener)
+        );
+
+        return customDescriptor;
     }
 
     protected KieFileSystem createKieFileSystemWithKProject(KieServices ks) {
@@ -432,6 +446,10 @@ public abstract class AbstractCaseServicesBaseTest {
                 new File(tempDir, file).delete();
             }
         }
+    }
+
+    protected void registerListenerMvelDefinition(String listenerMvelDefinition) {
+        this.listenerMvelDefinitions.add(listenerMvelDefinition);
     }
 
     public void setDeploymentService(DeploymentService deploymentService) {

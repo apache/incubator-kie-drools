@@ -211,7 +211,7 @@ public class CaseEventSupport extends AbstractEventSupport<CaseEventListener> {
             final CaseCommentEvent event = new CaseCommentEvent(identityProvider.getName(), caseId, caseFile, commentInstance);
 
             do {
-                iter.next().beforeCaseCommentAdded(event);
+                iter.next().afterCaseCommentAdded(event);
             } while (iter.hasNext());
         }        
     }
@@ -238,7 +238,7 @@ public class CaseEventSupport extends AbstractEventSupport<CaseEventListener> {
             final CaseCommentEvent event = new CaseCommentEvent(identityProvider.getName(), caseId, caseFile, commentInstance);
 
             do {
-                iter.next().beforeCaseCommentUpdated(event);
+                iter.next().afterCaseCommentUpdated(event);
             } while (iter.hasNext());
         }        
     }
@@ -265,7 +265,7 @@ public class CaseEventSupport extends AbstractEventSupport<CaseEventListener> {
             final CaseCommentEvent event = new CaseCommentEvent(identityProvider.getName(), caseId, caseFile, commentInstance);
 
             do {
-                iter.next().beforeCaseCommentRemoved(event);
+                iter.next().afterCaseCommentRemoved(event);
             } while (iter.hasNext());
         }        
     }
