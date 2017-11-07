@@ -273,6 +273,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
         processBuilder = ProcessBuilderFactory.newProcessBuilder(this);
         typeBuilder = new TypeDeclarationBuilder(this);
+        builderCache = new ConcurrentHashMap<>();
     }
 
     public KnowledgeBuilderImpl(InternalKnowledgeBase kBase,
@@ -299,6 +300,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
         processBuilder = ProcessBuilderFactory.newProcessBuilder(this);
         typeBuilder = new TypeDeclarationBuilder(this);
+        builderCache = new ConcurrentHashMap<>();
     }
 
     private PMMLCompiler getPMMLCompiler() {
@@ -2418,15 +2420,8 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         }
     }
 
-    private Map<String, Object> getBuilderCache() {
-        if (builderCache == null) {
-            builderCache = new HashMap<>();
-        }
-        return builderCache;
-    }
-
     public <T> T getCachedOrCreate(String key, Supplier<T> creator) {
-        return (T) getBuilderCache().computeIfAbsent(key, k -> creator.get());
+        return (T) builderCache.computeIfAbsent(key, k -> creator.get());
     }
 
     // composite build lifecycle
