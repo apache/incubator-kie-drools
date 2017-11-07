@@ -784,14 +784,17 @@ public class ModelGenerator {
         return false;
     }
 
-    private static void processExpression( RuleContext context, DrlxParseResult drlxParseResult ) {
-        if (drlxParseResult.expr != null) {
-            Expression dslExpr = buildExpressionWithIndexing(context, drlxParseResult );
-            context.addExpression( dslExpr );
+    private static void processExpression(RuleContext context, DrlxParseResult drlxParseResult) {
+        if (drlxParseResult.hasUnificationVariable()) {
+            Expression dslExpr = buildUnificationExpression(context, drlxParseResult);
+            context.addExpression(dslExpr);
+        } else if (drlxParseResult.expr != null) {
+            Expression dslExpr = buildExpressionWithIndexing(context, drlxParseResult);
+            context.addExpression(dslExpr);
         }
         if (drlxParseResult.exprBinding != null) {
-            Expression dslExpr = buildBinding( drlxParseResult );
-            context.addExpression( dslExpr );
+            Expression dslExpr = buildBinding(drlxParseResult);
+            context.addExpression(dslExpr);
         }
     }
 
@@ -1020,6 +1023,18 @@ public class ModelGenerator {
         public void setExprBinding(String exprBinding) {
             this.exprBinding = exprBinding;
         }
+
+        public boolean hasUnificationVariable() {
+            return left.getUnificationVariable().isPresent() || right.getUnificationVariable().isPresent();
+        }
+
+        public String getUnificationVariable() {
+            return left.getUnificationVariable().isPresent() ? left.getUnificationVariable().get() : right.getUnificationVariable().get();
+        }
+
+        public Class<?> getUnificationVariableType() {
+            return left.getUnificationVariable().isPresent() ? right.getType() : left.getType();
+        }
     }
 
 
@@ -1045,6 +1060,12 @@ public class ModelGenerator {
         exprDSL = buildExpression(context, drlxParseResult, exprDSL );
         exprDSL = buildIndexedBy( drlxParseResult, exprDSL );
         exprDSL = buildReactOn( drlxParseResult, exprDSL );
+        return exprDSL;
+    }
+
+    public static Expression buildUnificationExpression(RuleContext context, DrlxParseResult drlxParseResult) {
+        MethodCallExpr exprDSL = buildBinding(drlxParseResult);
+        context.addDeclaration(new DeclarationSpec(drlxParseResult.getUnificationVariable(), drlxParseResult.getUnificationVariableType()));
         return exprDSL;
     }
 
@@ -1139,9 +1160,13 @@ public class ModelGenerator {
         return drlxParseResult.isStatic ? expr : generateLambdaWithoutParameters(drlxParseResult.usedDeclarations, expr);
     }
 
-    public static Expression buildBinding(DrlxParseResult drlxParseResult ) {
+    public static MethodCallExpr buildBinding(DrlxParseResult drlxParseResult ) {
         MethodCallExpr bindDSL = new MethodCallExpr(null, BIND_CALL);
-        bindDSL.addArgument( new NameExpr(toVar(drlxParseResult.exprBinding)) );
+        if(drlxParseResult.hasUnificationVariable()) {
+            bindDSL.addArgument(new NameExpr(toVar(drlxParseResult.getUnificationVariable())));
+        } else {
+            bindDSL.addArgument( new NameExpr(toVar(drlxParseResult.exprBinding)) );
+        }
         MethodCallExpr bindAsDSL = new MethodCallExpr(bindDSL, BIND_AS_CALL);
         bindAsDSL.addArgument( new NameExpr(toVar(drlxParseResult.patternBinding)) );
         bindAsDSL.addArgument( buildConstraintExpression( drlxParseResult, drlxParseResult.left.getExpression() ) );

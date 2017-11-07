@@ -113,8 +113,15 @@ public class DrlxParseUtil {
                 usedDeclarations.add(name);
                 return new TypedExpression(plusThis, packageModel.getGlobals().get(name));
             } else {
+                TypedExpression expression;
+                try {
+                    expression = nameExprToMethodCallExpr(name, typeCursor);
+                } catch (IllegalArgumentException e) {
+                    String unificationVariable = context.getUnificationId(typeCursor, name);
+                    expression = new TypedExpression(unificationVariable, typeCursor);
+                    return expression;
+                }
                 reactOnProperties.add(name);
-                TypedExpression expression = nameExprToMethodCallExpr(name, typeCursor);
                 Expression plusThis = prepend(new NameExpr("_this"), (MethodCallExpr) expression.getExpression());
                 return new TypedExpression(plusThis, expression.getType(), name);
             }

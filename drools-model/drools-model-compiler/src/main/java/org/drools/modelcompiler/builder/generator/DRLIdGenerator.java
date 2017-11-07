@@ -25,6 +25,7 @@ public class DRLIdGenerator {
     private Map<PatternTypeDRLConstraint, String> generatedExprIds = new HashMap<>();
     private Map<PatternTypeDRLConstraint, String> generatedCondIds = new HashMap<>();
     private Map<PatternTypeDRLConstraint, String> generateOOPathId = new HashMap<>();
+    private Map<PatternTypeDRLConstraint, String> generateUnificationVariableId = new HashMap<>();
 
     public String getExprId(Class<?> patternType, String drlConstraint) {
         PatternTypeDRLConstraint key = PatternTypeDRLConstraint.of(patternType, drlConstraint);
@@ -40,6 +41,11 @@ public class DRLIdGenerator {
         PatternTypeDRLConstraint key = PatternTypeDRLConstraint.of(patternType, drlConstraint);
         return generateOOPathId.computeIfAbsent(key, k -> generateOOPathExpr());
     }
+
+    public String getUnificationVariable(Class<?> patternType, String drlConstraint) {
+        PatternTypeDRLConstraint key = PatternTypeDRLConstraint.of(patternType, drlConstraint);
+        return generateUnificationVariableId.computeIfAbsent(key, k -> generateUnificationExpr());
+    }
     
     private String generateNewId() {
         return generateName("expr");
@@ -51,6 +57,10 @@ public class DRLIdGenerator {
 
     private String generateOOPathExpr() {
         return generateName("ooChunk");
+    }
+
+    private String generateUnificationExpr() {
+        return generateName("unificationExpr");
     }
 
     @Override

@@ -17,7 +17,7 @@ import org.drools.javaparser.ast.expr.Expression;
 
 public class RuleContext {
     private final InternalKnowledgePackage pkg;
-    private DRLIdGenerator exprIdGenerator;
+    private DRLIdGenerator idGenerator;
     private final Optional<RuleDescr> descr;
 
     private List<DeclarationSpec> declarations = new ArrayList<>();
@@ -39,7 +39,7 @@ public class RuleContext {
 
     public RuleContext(InternalKnowledgePackage pkg, DRLIdGenerator exprIdGenerator, Optional<RuleDescr> ruleDescr) {
         this.pkg = pkg;
-        this.exprIdGenerator = exprIdGenerator;
+        this.idGenerator = exprIdGenerator;
         this.descr = ruleDescr;
         exprPointer.push( this.expressions::add );
     }
@@ -92,15 +92,19 @@ public class RuleContext {
     }
 
     public String getExprId(Class<?> patternType, String drlConstraint) {
-        return exprIdGenerator.getExprId(patternType, drlConstraint);
+        return idGenerator.getExprId(patternType, drlConstraint);
     }
 
     public String getConditionId(Class<?> patternType, String drlConstraint) {
-        return exprIdGenerator.getCondId(patternType, drlConstraint);
+        return idGenerator.getCondId(patternType, drlConstraint);
     }
 
     public String getOOPathId(Class<?> patternType, String drlConstraint) {
-        return exprIdGenerator.getOOPathId(patternType, drlConstraint);
+        return idGenerator.getOOPathId(patternType, drlConstraint);
+    }
+
+    public String getUnificationId(Class<?> patternType, String drlConstraint) {
+        return idGenerator.getUnificationVariable(patternType, drlConstraint);
     }
 
     public void addNamedConsequence(String key, String value) {
