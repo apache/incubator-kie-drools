@@ -622,7 +622,7 @@ public class FlowTest {
                                         expr("exprB", relV, qdef.getArg2(), (r, e) -> r.getEnd().equals( e ))
                                 ),
                                 and(
-                                        bind(unifV).as(relV, Relationship::getStart),
+                                        bind(unifV).as(relV, relationship -> relationship.getStart()),
                                         expr("exprD", relV, qdef.getArg2(), (r, e) -> r.getEnd().equals( e )),
                                         qdef.call(qdef.getArg1(), unifV)
                                 )
