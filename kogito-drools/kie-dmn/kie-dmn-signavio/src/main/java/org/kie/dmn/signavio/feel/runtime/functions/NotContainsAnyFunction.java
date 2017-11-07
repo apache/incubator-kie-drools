@@ -36,16 +36,16 @@ public class NotContainsAnyFunction
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list1", "cannot be null"));
         }
 
-        boolean result = true;
-        for (Object element : list2) {
-            result = (!list1.contains(element)) && result;
-
-            // optimization: terminate early if any element is actually contained.
-            if (!result) {
-                return FEELFnResult.ofResult(result);
+        if (list2 == null) {
+            return FEELFnResult.ofResult(true);
+        } else {
+            for (Object element : list2) {
+                if (list1.contains(element)) {
+                    return FEELFnResult.ofResult(false);
+                }
             }
-        }
 
-        return FEELFnResult.ofResult( result );
+            return FEELFnResult.ofResult(true);
+        }
     }
 }

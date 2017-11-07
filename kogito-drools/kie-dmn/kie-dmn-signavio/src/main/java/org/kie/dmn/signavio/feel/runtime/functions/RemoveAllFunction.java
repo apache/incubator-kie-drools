@@ -39,11 +39,7 @@ public class RemoveAllFunction
 
         // spec requires us to return a new list
         List<Object> result = new ArrayList<Object>(list1);
-
-        for (Object element : list2) {
-            result.remove(element);
-        }
-
+        result.removeAll(list2);
         return FEELFnResult.ofResult( result );
     }
 }

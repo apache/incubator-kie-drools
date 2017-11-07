@@ -16,6 +16,7 @@
 
 package org.kie.dmn.signavio.feel.runtime.functions;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
@@ -36,16 +37,10 @@ public class AreElementsOfFunction
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list2", "cannot be null"));
         }
 
-        boolean result = true;
-        for (Object element : list1) {
-            result = list2.contains(element) && result;
-
-            // optimization: terminate early if an element is not actually contained.
-            if (!result) {
-                return FEELFnResult.ofResult(result);
-            }
+        if (list1 == null) {
+            return FEELFnResult.ofResult(list2.containsAll(Collections.emptyList()));
+        } else {
+            return FEELFnResult.ofResult(list2.containsAll(list1));
         }
-
-        return FEELFnResult.ofResult( result );
     }
 }
