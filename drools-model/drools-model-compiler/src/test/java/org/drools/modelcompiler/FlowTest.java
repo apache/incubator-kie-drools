@@ -609,63 +609,6 @@ public class FlowTest {
         assertEquals( "B", results.iterator().next().get( query1Def.getArg2().getName() ) );
     }
 
-
-    final org.drools.model.Query2Def<java.lang.String, java.lang.String> queryDef_isRelatedTo = query("isRelatedTo",
-                                                                                                      java.lang.String.class,
-                                                                                                      java.lang.String.class);
-
-    final org.drools.model.Query query_isRelatedTo = query_isRelatedTo();
-
-    {
-    }
-
-    private org.drools.model.Query query_isRelatedTo() {
-        final org.drools.model.Variable<org.drools.modelcompiler.domain.Relationship> var_$pattern_Relationship$1$ = declarationOf(type(org.drools.modelcompiler.domain.Relationship.class),
-                                                                                                                                   "$pattern_Relationship$1$");
-        final org.drools.model.Variable<org.drools.modelcompiler.domain.Relationship> var_$pattern_Relationship$2$ = declarationOf(type(org.drools.modelcompiler.domain.Relationship.class),
-                                                                                                                                   "$pattern_Relationship$2$");
-        final org.drools.model.Variable<java.lang.String> var_$unificationExpr$1$ = declarationOf(type(java.lang.String.class),
-                                                                                                  "$unificationExpr$1$");
-        org.drools.model.Query isRelatedTo_build = queryDef_isRelatedTo.build(or(expr("$expr$1$",
-                                                                                      var_$pattern_Relationship$1$,
-                                                                                      queryDef_isRelatedTo.getArg1(),
-                                                                                      (_this, x) -> _this.getStart()
-                                                                                              .equals(x)).indexedBy(java.lang.String.class,
-                                                                                                                    org.drools.model.Index.ConstraintType.EQUAL,
-                                                                                                                    0,
-                                                                                                                    _this -> _this.getStart(),
-                                                                                                                    x -> x)
-                                                                                         .reactOn("start"),
-                                                                                 expr("$expr$2$",
-                                                                                      var_$pattern_Relationship$1$,
-                                                                                      queryDef_isRelatedTo.getArg2(),
-                                                                                      (_this, y) -> _this.getEnd()
-                                                                                              .equals(y)).indexedBy(java.lang.String.class,
-                                                                                                                    org.drools.model.Index.ConstraintType.EQUAL,
-                                                                                                                    1,
-                                                                                                                    _this -> _this.getEnd(),
-                                                                                                                    y -> y)
-                                                                                         .reactOn("end"),
-                                                                                 and(bind(var_$unificationExpr$1$).as(var_$pattern_Relationship$2$,
-                                                                                                                      (_this) -> _this.getStart())
-                                                                                             .reactOn("start"),
-                                                                                     expr("$expr$2$",
-                                                                                          var_$pattern_Relationship$2$,
-                                                                                          queryDef_isRelatedTo.getArg2(),
-                                                                                          (_this, y) -> _this.getEnd()
-                                                                                                  .equals(y)).indexedBy(java.lang.String.class,
-                                                                                                                        org.drools.model.Index.ConstraintType.EQUAL,
-                                                                                                                        1,
-                                                                                                                        _this -> _this.getEnd(),
-                                                                                                                        y -> y)
-                                                                                             .reactOn("end"))),
-                                                                              queryDef_isRelatedTo.call(queryDef_isRelatedTo.getArg1(),
-                                                                                                        queryDef_isRelatedTo.getArg2()));
-        return isRelatedTo_build;
-    }
-}
-
-
     @Test
     public void testPositionalRecursiveQueryWithUnification() {
         Variable<Relationship> relV = declarationOf( type( Relationship.class ) );
