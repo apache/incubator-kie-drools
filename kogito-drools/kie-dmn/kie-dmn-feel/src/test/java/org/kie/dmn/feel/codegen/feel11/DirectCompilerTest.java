@@ -295,7 +295,7 @@ public class DirectCompilerTest {
     }
 
     private CompiledFEELExpression parse(String input, Map<String, Type> inputTypes) {
-        FEEL_1_1Parser parser = FEELParser.parse( null, input, inputTypes, Collections.emptyMap() );
+        FEEL_1_1Parser parser = FEELParser.parse(null, input, inputTypes, Collections.emptyMap(), Collections.emptyList());
 
         ParseTree tree = parser.compilation_unit();
 
