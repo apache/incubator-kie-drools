@@ -169,7 +169,8 @@ public class QuartzSchedulerService implements GlobalSchedulerService {
 
         // Define a Trigger that will fire "now"
         org.quartz.Trigger triggerq = new SimpleTrigger(quartzJobHandle.getJobName()+"_trigger", quartzJobHandle.getJobGroup(), nextFireTime);
-            
+        logger.debug("triggerq.name = {}, triggerq.startTime = {}", triggerq.getName(), triggerq.getStartTime()); // nextFireTime is mapped to startTime
+
         // Schedule the job with the trigger
         try {
             if (scheduler.isShutdown()) {
