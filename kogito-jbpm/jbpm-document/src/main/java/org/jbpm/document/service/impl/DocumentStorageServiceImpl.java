@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -191,8 +192,7 @@ public class DocumentStorageServiceImpl implements DocumentStorageService {
     }
 
     @Override
-    public List<Document> listDocuments(Integer page,
-                                        Integer pageSize) {
+    public List<Document> listDocuments(Integer page, Integer pageSize) {
         List<Document> listOfDocs = new ArrayList<Document>();
 
         int startIndex = page * pageSize;
@@ -200,18 +200,17 @@ public class DocumentStorageServiceImpl implements DocumentStorageService {
 
         File[] documents = storageFile.listFiles();
 
+        if (documents == null) { // happens when the docs folder doesn't exist
+            return Collections.emptyList();
+        }
+
         // make sure the endIndex is not bigger then amount of files
         if (documents.length < endIndex) {
             endIndex = documents.length;
         }
         Arrays.sort(documents,
-                    new Comparator<File>() {
-                        public int compare(File f1,
-                                           File f2) {
-                            return Long.compare(f1.lastModified(),
-                                                f2.lastModified());
-                        }
-                    });
+                Comparator.comparingLong(File::lastModified)
+        );
         for (int i = startIndex; i < endIndex; i++) {
             Document doc = getDocument(documents[i].getName());
             listOfDocs.add(doc);

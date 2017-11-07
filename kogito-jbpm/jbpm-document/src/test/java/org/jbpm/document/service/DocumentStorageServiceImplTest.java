@@ -16,9 +16,7 @@
 
 package org.jbpm.document.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.util.Arrays;
@@ -190,5 +188,16 @@ public class DocumentStorageServiceImplTest {
         assertEquals(1, docs.size());
         
         assertEquals("mydoc", docs.get(0).getName());
+    }
+
+    @Test
+    public void testListDocumentsNonexistentDocsFolder() {
+        // Delete document storage contents AND the dir itself
+        File docsDir = new File(STORAGE_PATH_TEST);
+        deleteFolder(docsDir);
+        docsDir.delete();
+
+        List<Document> docs = documentStorageService.listDocuments(0, 10);
+        assertTrue("When documents directory doesn't exist, empty doc list should be returned", docs.isEmpty());
     }
 }
