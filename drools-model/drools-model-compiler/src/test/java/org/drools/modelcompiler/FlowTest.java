@@ -612,6 +612,7 @@ public class FlowTest {
     @Test
     public void testPositionalRecursiveQueryWithUnification() {
         Variable<Relationship> relV = declarationOf( type( Relationship.class ) );
+        Variable<Relationship> relV2 = declarationOf( type( Relationship.class ) );
         Variable<String> unifV = declarationOf( type( String.class ) );
 
         Query2Def<String, String> qdef = query( "isRelatedTo", String.class, String.class );
@@ -622,8 +623,8 @@ public class FlowTest {
                                         expr("exprB", relV, qdef.getArg2(), (r, e) -> r.getEnd().equals( e ))
                                 ),
                                 and(
-                                        bind(unifV).as(relV, relationship -> relationship.getStart()),
-                                        expr("exprD", relV, qdef.getArg2(), (r, e) -> r.getEnd().equals( e )),
+                                        bind(unifV).as(relV2, relationship -> relationship.getStart()),
+                                        expr("exprD", relV2, qdef.getArg2(), (r, e) -> r.getEnd().equals( e )),
                                         qdef.call(qdef.getArg1(), unifV)
                                 )
                         )
