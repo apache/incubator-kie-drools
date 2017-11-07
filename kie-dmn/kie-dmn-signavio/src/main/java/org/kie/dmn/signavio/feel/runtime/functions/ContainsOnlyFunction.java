@@ -36,16 +36,16 @@ public class ContainsOnlyFunction
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list1", "cannot be null"));
         }
 
-        boolean result = true;
-        for (Object element : list2) {
-            result = list1.contains(element) && result;
-
-            // optimization: terminate early if an element is not actually contained.
-            if (!result) {
-                return FEELFnResult.ofResult(result);
+        if (list2 == null) {
+            return FEELFnResult.ofResult(false);
+        } else {
+            for (Object element : list1) {
+                if (!list2.contains(element)) {
+                    return FEELFnResult.ofResult(false);
+                }
             }
-        }
 
-        return FEELFnResult.ofResult( result );
+            return FEELFnResult.ofResult( true );
+        }
     }
 }
