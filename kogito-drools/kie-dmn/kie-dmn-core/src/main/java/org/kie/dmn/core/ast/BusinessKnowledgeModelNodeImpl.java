@@ -67,4 +67,9 @@ public class BusinessKnowledgeModelNodeImpl
     public void setResultType(DMNType resultType) {
         this.resultType = resultType;
     }
+
+    @Override
+    public DMNType getType() {
+        return getResultType();
+    }
 }

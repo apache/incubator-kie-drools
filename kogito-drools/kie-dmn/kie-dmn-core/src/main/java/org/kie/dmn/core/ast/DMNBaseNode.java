@@ -16,13 +16,18 @@
 
 package org.kie.dmn.core.ast;
 
-import org.kie.dmn.api.core.ast.DMNNode;
-import org.kie.dmn.model.v1_1.*;
-
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.kie.dmn.api.core.DMNType;
+import org.kie.dmn.api.core.ast.DMNNode;
+import org.kie.dmn.model.v1_1.BusinessKnowledgeModel;
+import org.kie.dmn.model.v1_1.Decision;
+import org.kie.dmn.model.v1_1.InformationRequirement;
+import org.kie.dmn.model.v1_1.KnowledgeRequirement;
+import org.kie.dmn.model.v1_1.NamedElement;
 
 public abstract class DMNBaseNode
         implements DMNNode {
@@ -37,6 +42,8 @@ public abstract class DMNBaseNode
     public DMNBaseNode(NamedElement source) {
         this.source = source;
     }
+
+    public abstract DMNType getType();
 
     public String getId() {
         return source != null ? source.getId() : null;
