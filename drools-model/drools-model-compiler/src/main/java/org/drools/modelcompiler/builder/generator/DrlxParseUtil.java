@@ -419,9 +419,4 @@ public class DrlxParseUtil {
         return patternType;
     }
 
-
-    public static String toQueryDef(String queryName) {
-        return "queryDef_" + queryName;
-    }
-
 }
