@@ -21,9 +21,11 @@ import java.util.List;
 
 import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.Child;
+import org.drools.modelcompiler.domain.InternationalAddress;
 import org.drools.modelcompiler.domain.Man;
 import org.drools.modelcompiler.domain.Toy;
 import org.drools.modelcompiler.domain.Woman;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
@@ -145,5 +147,78 @@ public class OOPathTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Assertions.assertThat(list).containsExactlyInAnyOrder("ball", "guitar");
+    }
+
+    @Test
+    public void testSimpleOOPathCast1() {
+        final String str = "import org.drools.modelcompiler.domain.*;\n" +
+                           "global java.util.List list\n" +
+                           "\n" +
+                           "rule R when\n" +
+                           "  $man : Man( $italy: /address#InternationalAddress[ state == \"Italy\" ] )\n" +
+                           "then\n" +
+                           "  list.add( $man.getName() );\n" +
+                           "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        final List<String> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+
+        final Man bob = new Man("Bob", 40);
+        bob.setAddress(new InternationalAddress("Via Verdi", "Italy"));
+        ksession.insert(bob);
+        ksession.fireAllRules();
+
+        Assertions.assertThat(list).containsExactlyInAnyOrder("Bob");
+    }
+
+    @Test
+    public void testSimpleOOPathCast2() {
+        final String str = "import org.drools.modelcompiler.domain.*;\n" +
+                           "global java.util.List list\n" +
+                           "\n" +
+                           "rule R when\n" +
+                           "  Man( $name : name, $italy: /address#InternationalAddress[ state == \"Italy\" ] )\n" +
+                           "then\n" +
+                           "  list.add( $name );\n" +
+                           "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        final List<String> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+
+        final Man bob = new Man("Bob", 40);
+        bob.setAddress(new InternationalAddress("Via Verdi", "Italy"));
+        ksession.insert(bob);
+        ksession.fireAllRules();
+
+        Assertions.assertThat(list).containsExactlyInAnyOrder("Bob");
+    }
+
+    @Ignore("NPE at org.drools.core.rule.LogicTransformer.processElement(LogicTransformer.java:194)")
+    @Test
+    public void testSimpleOOPathCast3() {
+        final String str = "import org.drools.modelcompiler.domain.*;\n" +
+                           "global java.util.List list\n" +
+                           "\n" +
+                           "rule R when\n" +
+                           "  Man( $italy: /address#InternationalAddress[ state == \"Italy\" ], $name : name )\n" +
+                           "then\n" +
+                           "  list.add( $name );\n" +
+                           "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        final List<String> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+
+        final Man bob = new Man("Bob", 40);
+        bob.setAddress(new InternationalAddress("Via Verdi", "Italy"));
+        ksession.insert(bob);
+        ksession.fireAllRules();
+
+        Assertions.assertThat(list).containsExactlyInAnyOrder("Bob");
     }
 }

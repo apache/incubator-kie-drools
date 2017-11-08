@@ -16,6 +16,9 @@
 
 package org.drools.modelcompiler;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.assertj.core.api.Assertions;
 import org.drools.model.Global;
 import org.drools.model.Model;
@@ -24,6 +27,7 @@ import org.drools.model.Variable;
 import org.drools.model.impl.ModelImpl;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
 import org.drools.modelcompiler.domain.Child;
+import org.drools.modelcompiler.domain.InternationalAddress;
 import org.drools.modelcompiler.domain.Man;
 import org.drools.modelcompiler.domain.Toy;
 import org.drools.modelcompiler.domain.Woman;
@@ -31,10 +35,13 @@ import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.drools.model.DSL.*;
+import static org.drools.model.DSL.declarationOf;
+import static org.drools.model.DSL.expr;
+import static org.drools.model.DSL.globalOf;
+import static org.drools.model.DSL.on;
+import static org.drools.model.DSL.reactiveFrom;
+import static org.drools.model.DSL.rule;
+import static org.drools.model.DSL.type;
 
 public class OOPathFlowTest {
 
@@ -162,4 +169,33 @@ public class OOPathFlowTest {
 
         Assertions.assertThat(list).containsExactlyInAnyOrder("ball", "guitar");
     }
+
+    @Test
+    public void testOOPathCast() {
+        Global<List> listG = globalOf(type(List.class), "defaultpkg", "list");
+        Variable<Man> manV = declarationOf(type(Man.class), "$man");
+        // Drools doc: In this way subsequent constraints can also safely access to properties declared only in that subclass 
+        Variable<InternationalAddress> addressV = declarationOf(type(InternationalAddress.class), "$italy", reactiveFrom(manV, Man::getAddress));
+
+        Rule rule = rule("oopath")
+                                  .build(
+                                         expr("exprA", addressV, c -> c.getState().equals("Italy")),
+                                         on(manV, listG).execute((t, l) -> l.add(t.getName())));
+
+        Model model = new ModelImpl().addGlobal(listG).addRule(rule);
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model);
+        KieSession ksession = kieBase.newKieSession();
+
+        final List<String> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+
+        final Man bob = new Man("Bob", 40);
+        bob.setAddress(new InternationalAddress("Via Verdi", "Italy"));
+        ksession.insert(bob);
+        ksession.fireAllRules();
+
+        Assertions.assertThat(list).containsExactlyInAnyOrder("Bob");
+
+    }
+
 }

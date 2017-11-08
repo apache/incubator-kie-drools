@@ -40,7 +40,10 @@ public class OOPathExprVisitor {
             final String fieldName = chunk.getField().toString();
 
             final TypedExpression callExpr = DrlxParseUtil.nameExprToMethodCallExpr(fieldName, previousClass);
-            Class<?> fieldType = callExpr.getType();
+            Class<?> fieldType = (chunk.getInlineCast() != null)
+                    ? DrlxParseUtil.getClassFromContext(context.getPkg(), chunk.getInlineCast().toString())
+                    : callExpr.getType();
+
             if (Iterable.class.isAssignableFrom(fieldType)) {
                 fieldType = extractGenericType(previousClass, ((MethodCallExpr) callExpr.getExpression()).getName().toString());
             }
