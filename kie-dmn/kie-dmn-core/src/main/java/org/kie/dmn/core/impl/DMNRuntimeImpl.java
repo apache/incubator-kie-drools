@@ -16,6 +16,10 @@
 
 package org.kie.dmn.core.impl;
 
+import static org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus.EVALUATING;
+import static org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus.FAILED;
+import static org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus.SKIPPED;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -50,8 +54,6 @@ import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus.*;
 
 public class DMNRuntimeImpl
         implements DMNRuntime {
@@ -248,7 +250,8 @@ public class DMNRuntimeImpl
                                            Msg.ERROR_EVAL_NODE_DEP_WRONG_TYPE,
                                            getIdentifier( bkm ),
                                            getIdentifier( dep ),
-                                           result.getContext().get( dep.getName() )
+                                           result.getContext().get(dep.getName()),
+                                           ((DMNBaseNode) dep).getType()
                                            );
                     return;
                 }
@@ -322,7 +325,8 @@ public class DMNRuntimeImpl
                                 Msg.ERROR_EVAL_NODE_DEP_WRONG_TYPE,
                                 getIdentifier( decision ),
                                 getIdentifier( dep ),
-                                result.getContext().get( dep.getName() )
+                                result.getContext().get( dep.getName() ),
+                                                                   ((DMNBaseNode) dep).getType()
                                 );
                         reportFailure( dr, message, DMNDecisionResult.DecisionEvaluationStatus.SKIPPED );
                     }
