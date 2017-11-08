@@ -703,9 +703,15 @@ public class ModelGenerator {
             dslExpr.addArgument(new NameExpr(toVar(pattern.getIdentifier())));
             context.addExpression( dslExpr );
         } else {
-//            final MethodCallExpr andDSL = new MethodCallExpr(null, "and");
-//            context.addExpression(andDSL);
-//            context.pushExprPointer( andDSL::addArgument );
+
+            final boolean allConstraintsArePositional = !constraintDescrs.isEmpty() && constraintDescrs.stream()
+                    .allMatch(c -> c instanceof ExprConstraintDescr
+                            && ((ExprConstraintDescr) c).getType().equals(ExprConstraintDescr.Type.POSITIONAL));
+            if(allConstraintsArePositional) {
+                final MethodCallExpr andDSL = new MethodCallExpr(null, "and");
+                context.addExpression(andDSL);
+                context.pushExprPointer(andDSL::addArgument);
+            }
 
             for (BaseDescr constraint : constraintDescrs) {
                 String expression = getConstraintExpression(patternType, constraint);
@@ -736,7 +742,9 @@ public class ModelGenerator {
                     processExpression( context, drlxParseResult );
                 }
             }
-//            context.popExprPointer();
+            if(allConstraintsArePositional) {
+                context.popExprPointer();
+            }
         }
     }
 
