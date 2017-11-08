@@ -703,6 +703,10 @@ public class ModelGenerator {
             dslExpr.addArgument(new NameExpr(toVar(pattern.getIdentifier())));
             context.addExpression( dslExpr );
         } else {
+//            final MethodCallExpr andDSL = new MethodCallExpr(null, "and");
+//            context.addExpression(andDSL);
+//            context.pushExprPointer( andDSL::addArgument );
+
             for (BaseDescr constraint : constraintDescrs) {
                 String expression = getConstraintExpression(patternType, constraint);
                 String patternIdentifier = pattern.getIdentifier();
@@ -732,6 +736,7 @@ public class ModelGenerator {
                     processExpression( context, drlxParseResult );
                 }
             }
+//            context.popExprPointer();
         }
     }
 
@@ -1025,7 +1030,8 @@ public class ModelGenerator {
         }
 
         public boolean hasUnificationVariable() {
-            return left.getUnificationVariable().isPresent() || right.getUnificationVariable().isPresent();
+            return Optional.ofNullable(left).flatMap(TypedExpression::getUnificationVariable).isPresent() ||
+                    Optional.ofNullable(right).flatMap(TypedExpression::getUnificationVariable).isPresent();
         }
 
         public String getUnificationVariable() {
