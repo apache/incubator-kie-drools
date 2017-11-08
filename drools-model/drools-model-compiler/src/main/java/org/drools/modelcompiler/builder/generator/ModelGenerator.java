@@ -407,8 +407,6 @@ public class ModelGenerator {
         AssignExpr queryBuildAssign = new AssignExpr(queryBuildVar, buildCall, AssignExpr.Operator.ASSIGN);
         queryBody.addStatement(queryBuildAssign);
 
-        queryBody.addStatement(JavaParser.parseStatement(String.format("queries.add(%s);", queryBuildVarName)));
-
         queryBody.addStatement(new ReturnStmt(queryBuildVarName));
         packageModel.putQueryMethod(queryMethod);
     }

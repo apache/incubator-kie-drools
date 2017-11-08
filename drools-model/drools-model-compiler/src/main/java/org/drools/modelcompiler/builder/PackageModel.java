@@ -278,6 +278,12 @@ public class PackageModel {
             rulesListInitializerBody.addStatement( add );
         }
 
+        for ( String methodName : queryMethods.keySet() ) {
+            NameExpr rulesFieldName = new NameExpr( "queries" );
+            MethodCallExpr add = new MethodCallExpr(rulesFieldName, "add");
+            add.addArgument( new NameExpr(methodName) );
+            rulesListInitializerBody.addStatement( add );
+        }
 
         for ( String fieldName : windowReferences.keySet() ) {
             NameExpr rulesFieldName = new NameExpr( "windowReferences" );
