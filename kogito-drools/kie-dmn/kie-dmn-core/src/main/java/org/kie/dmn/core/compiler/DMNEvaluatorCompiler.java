@@ -15,6 +15,7 @@ import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.decisiontables.*;
+import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
 import org.kie.dmn.feel.runtime.functions.DTInvokerFunction;
 import org.kie.dmn.model.v1_1.*;
 import org.kie.dmn.model.v1_1.HitPolicy;
@@ -285,6 +286,9 @@ public class DMNEvaluatorCompiler {
                                                                               Msg.FUNC_DEF_COMPILATION_ERR,
                                                                               functionName,
                                                                               node.getIdentifierString() );
+                        if( feelFunction != null ) {
+                            ((BaseFEELFunction)feelFunction).setName( functionName );
+                        }
 
                         DMNInvocationEvaluator invoker = new DMNInvocationEvaluator( node.getName(), node.getSource(), functionName, new Invocation(),
                                                                                      ( fctx, fname ) -> feelFunction );

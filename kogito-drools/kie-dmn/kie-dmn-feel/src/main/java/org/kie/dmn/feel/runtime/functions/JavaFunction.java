@@ -25,6 +25,7 @@ import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
@@ -64,8 +65,12 @@ public class JavaFunction
             Object[] actualParams = prepareParams( params );
             Object result = method.invoke( clazz, actualParams );
             return FEELFnResult.ofResult( result );
-        } catch ( Exception e ) {
-            capturedException = new FEELEventBase(Severity.ERROR, "Error invoking function", new RuntimeException("Error invoking function " + getSignature() + ".", e));
+        } catch ( InvocationTargetException e ) {
+            String message = e.getTargetException().getMessage();
+            capturedException = new FEELEventBase(Severity.ERROR, "Error invoking "+toString()+": "+message, new RuntimeException("Error invoking function " + getSignature() + ".", e));
+        } catch ( IllegalAccessException e ) {
+            String message = e.getCause().getMessage();
+            capturedException = new FEELEventBase(Severity.ERROR, "Error invoking "+toString()+": "+message, new RuntimeException("Error invoking function " + getSignature() + ".", e));
         } finally {
             ctx.exitFrame();
         }
