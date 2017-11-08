@@ -35,8 +35,9 @@ import org.kie.api.runtime.KieSession;
 
 public class DataTypeEvaluationConcurrentSessionsTest extends AbstractConcurrentSessionsTest {
 
-    public DataTypeEvaluationConcurrentSessionsTest(final boolean enforcedJitting, final boolean serializeKieBase) {
-        super(enforcedJitting, serializeKieBase);
+    public DataTypeEvaluationConcurrentSessionsTest(final boolean enforcedJitting, final boolean serializeKieBase,
+                                                       final boolean sharedKieBase) {
+        super(enforcedJitting, serializeKieBase, sharedKieBase);
     }
 
     @Test

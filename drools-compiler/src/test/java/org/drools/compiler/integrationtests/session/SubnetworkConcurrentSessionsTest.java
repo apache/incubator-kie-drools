@@ -21,8 +21,9 @@ import org.kie.api.runtime.KieSession;
 
 public class SubnetworkConcurrentSessionsTest extends AbstractConcurrentSessionsTest {
 
-    public SubnetworkConcurrentSessionsTest(final boolean enforcedJitting, final boolean serializeKieBase) {
-        super(enforcedJitting, serializeKieBase);
+    public SubnetworkConcurrentSessionsTest(final boolean enforcedJitting, final boolean serializeKieBase,
+                                            final boolean sharedKieBase) {
+        super(enforcedJitting, serializeKieBase, sharedKieBase);
     }
 
     @Test(timeout = 5000)

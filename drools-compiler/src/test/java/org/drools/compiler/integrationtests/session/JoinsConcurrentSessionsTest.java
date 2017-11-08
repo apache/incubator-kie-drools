@@ -29,8 +29,9 @@ import org.kie.api.runtime.KieSession;
 
 public class JoinsConcurrentSessionsTest extends AbstractConcurrentSessionsTest {
 
-    public JoinsConcurrentSessionsTest(final boolean enforcedJitting, final boolean serializeKieBase) {
-        super(enforcedJitting, serializeKieBase);
+    public JoinsConcurrentSessionsTest(final boolean enforcedJitting, final boolean serializeKieBase,
+                                       final boolean sharedKieBase) {
+        super(enforcedJitting, serializeKieBase, sharedKieBase);
     }
 
     @Test

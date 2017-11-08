@@ -47,19 +47,26 @@ public abstract class AbstractConcurrentSessionsTest {
 
     protected final boolean enforcedJitting;
     protected final boolean serializeKieBase;
+    protected final boolean sharedKieBase;
 
-    @Parameterized.Parameters(name = "Enforced jitting={0}, Serialize KieBase={1}")
+    @Parameterized.Parameters(name = "Enforced jitting={0}, Serialize KieBase={1}, Share KieBase={2}")
     public static List<Boolean[]> getTestParameters() {
         return Arrays.asList(
-                new Boolean[]{false, false},
-                new Boolean[]{false, true},
-                new Boolean[]{true, false},
-                new Boolean[]{true, true});
+                new Boolean[]{false, false, false},
+                new Boolean[]{false, true, false},
+                new Boolean[]{true, false, false},
+                new Boolean[]{true, true, false},
+                new Boolean[]{false, false, true},
+                new Boolean[]{false, true, true},
+                new Boolean[]{true, false, true},
+                new Boolean[]{true, true, true});
     }
 
-    public AbstractConcurrentSessionsTest(final boolean enforcedJitting, final boolean serializeKieBase) {
+    public AbstractConcurrentSessionsTest(final boolean enforcedJitting, final boolean serializeKieBase,
+                                          final boolean sharedKieBase) {
         this.enforcedJitting = enforcedJitting;
         this.serializeKieBase = serializeKieBase;
+        this.sharedKieBase = sharedKieBase;
     }
 
     interface KieSessionExecutor {
@@ -103,10 +110,22 @@ public abstract class AbstractConcurrentSessionsTest {
 
                 for (int i = 0; i < threadCount; i++) {
                     final int counter = i;
+
+                    KieBase kieBaseLocal;
+                    if (sharedKieBase) {
+                        kieBaseLocal = kieBase;
+                    } else {
+                        if (serializeKieBase) {
+                            kieBaseLocal = serializeAndDeserializeKieBase(kieHelper.build(kieBaseOptions));
+                        } else {
+                            kieBaseLocal = kieHelper.build(kieBaseOptions);
+                        }
+                    }
+
                     tasks[i] = new Callable<Boolean>() {
                         @Override
                         public Boolean call() throws Exception {
-                            return kieSessionExecutor.execute(kieBase.newKieSession(), counter);
+                            return kieSessionExecutor.execute(kieBaseLocal.newKieSession(), counter);
                         }
                     };
                 }

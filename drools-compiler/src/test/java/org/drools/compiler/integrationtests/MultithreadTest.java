@@ -28,6 +28,7 @@ import java.util.concurrent.CompletionService;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
@@ -71,7 +72,7 @@ public class MultithreadTest extends CommonTestMethodBase {
     private static final Logger LOG = LoggerFactory.getLogger(MultithreadTest.class);
 
     @Test(timeout = 10000)
-    public void testConcurrentInsertionsFewObjectsManyThreads() {
+    public void testConcurrentInsertionsFewObjectsManyThreads() throws InterruptedException {
         final String drl = "import org.drools.compiler.integrationtests.MultithreadTest.Bean\n" +
                 "\n" +
                 "rule \"R\"\n" +
@@ -83,7 +84,7 @@ public class MultithreadTest extends CommonTestMethodBase {
     }
 
     @Test(timeout = 10000)
-    public void testConcurrentInsertionsManyObjectsFewThreads() {
+    public void testConcurrentInsertionsManyObjectsFewThreads() throws InterruptedException {
         final String drl = "import org.drools.compiler.integrationtests.MultithreadTest.Bean\n" +
                 "\n" +
                 "rule \"R\"\n" +
@@ -95,7 +96,7 @@ public class MultithreadTest extends CommonTestMethodBase {
     }
 
     @Test(timeout = 10000)
-    public void testConcurrentInsertionsNewSessionEachThreadObjectTypeNode() {
+    public void testConcurrentInsertionsNewSessionEachThreadObjectTypeNode() throws InterruptedException {
         final String drl = "import org.drools.compiler.integrationtests.MultithreadTest.Bean\n" +
                 " query existsBeanSeed5More() \n" +
                 "     Bean( seed > 5 ) \n" +
@@ -116,7 +117,7 @@ public class MultithreadTest extends CommonTestMethodBase {
     }
 
     @Test(timeout = 10000)
-    public void testConcurrentInsertionsNewSessionEachThread() {
+    public void testConcurrentInsertionsNewSessionEachThread() throws InterruptedException {
         final String drl = "import org.drools.compiler.integrationtests.MultithreadTest.Bean\n" +
                 " query existsBeanSeed5More() \n" +
                 "     Bean( seed > 5 ) \n" +
@@ -148,11 +149,11 @@ public class MultithreadTest extends CommonTestMethodBase {
     }
 
     private void testConcurrentInsertions(final String drl, final int objectCount, final int threadCount,
-            final boolean newSessionForEachThread, final boolean updateFacts) {
+            final boolean newSessionForEachThread, final boolean updateFacts) throws InterruptedException {
 
         final KieBase kieBase = new KieHelper().addContent(drl, ResourceType.DRL).build();
 
-        Executor executor = Executors.newCachedThreadPool(new ThreadFactory() {
+        ExecutorService executor = Executors.newCachedThreadPool(new ThreadFactory() {
             public Thread newThread(Runnable r) {
                 Thread t = new Thread(r);
                 t.setDaemon(true);
@@ -161,37 +162,44 @@ public class MultithreadTest extends CommonTestMethodBase {
         });
 
         KieSession ksession = null;
-        Callable<Boolean>[] tasks = new Callable[threadCount];
-        if (newSessionForEachThread) {
-            for (int i = 0; i < threadCount; i++) {
-                tasks[i] = getTask( objectCount, kieBase, updateFacts );
-            }
-        } else {
-            ksession = kieBase.newKieSession();
-            for (int i = 0; i < threadCount; i++) {
-                tasks[i] = getTask( objectCount, ksession, false , updateFacts );
-            }
-        }
-
-        CompletionService<Boolean> ecs = new ExecutorCompletionService<Boolean>(executor);
-        for (Callable<Boolean> task : tasks) {
-            ecs.submit( task );
-        }
-
-        int successCounter = 0;
-        for (int i = 0; i < threadCount; i++) {
-            try {
-                if ( ecs.take().get() ) {
-                    successCounter++;
+        try {
+            Callable<Boolean>[] tasks = new Callable[threadCount];
+            if (newSessionForEachThread) {
+                for (int i = 0; i < threadCount; i++) {
+                    tasks[i] = getTask(objectCount, kieBase, updateFacts);
                 }
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+            } else {
+                ksession = kieBase.newKieSession();
+                for (int i = 0; i < threadCount; i++) {
+                    tasks[i] = getTask(objectCount, ksession, false, updateFacts);
+                }
             }
-        }
 
-        assertEquals(threadCount, successCounter);
-        if (ksession != null) {
-            ksession.dispose();
+            CompletionService<Boolean> ecs = new ExecutorCompletionService<Boolean>(executor);
+            for (Callable<Boolean> task : tasks) {
+                ecs.submit(task);
+            }
+
+            int successCounter = 0;
+            for (int i = 0; i < threadCount; i++) {
+                try {
+                    if (ecs.take().get()) {
+                        successCounter++;
+                    }
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            assertEquals(threadCount, successCounter);
+            if (ksession != null) {
+                ksession.dispose();
+            }
+        } finally {
+            executor.shutdown();
+            if (!executor.awaitTermination(5, TimeUnit.SECONDS)) {
+                executor.shutdownNow();
+            }
         }
     }
 
