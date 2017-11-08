@@ -632,35 +632,6 @@ public class FlowTest {
                 )
         );
 
-//        org.drools.model.Query isRelatedTo_build = queryDef_isRelatedTo.build(
-//                or(
-//                        and(
-//                                expr("$expr$1$",
-//                                     var_$pattern_Relationship$1$,
-//                                     queryDef_isRelatedTo.getArg1(),
-//                                     (_this, x) -> _this.getStart()
-//                                             .equals(x)),
-//                                expr("$expr$2$",
-//                                     var_$pattern_Relationship$1$,
-//                                     queryDef_isRelatedTo.getArg2(),
-//                                     (_this, y) -> _this.getEnd()
-//                                             .equals(y))
-//                        ),
-//                        and(
-//                                and(
-//                                        bind(var_$unificationExpr$1$).as(var_$pattern_Relationship$2$,
-//                                                                         (_this) -> _this.getStart()).reactOn("start"),
-//                                        expr("$expr$2$",
-//                                             var_$pattern_Relationship$2$,
-//                                             queryDef_isRelatedTo.getArg2(),
-//                                             (_this, y) -> _this.getEnd().equals(y))
-//                                )
-//                        )
-//                ),
-//                queryDef_isRelatedTo.call(queryDef_isRelatedTo.getArg1(),
-//                                          queryDef_isRelatedTo.getArg2()));
-
-
         Model model = new ModelImpl().addQuery( query );
         KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
 

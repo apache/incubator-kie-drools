@@ -103,8 +103,12 @@ public class RuleContext {
         return idGenerator.getOOPathId(patternType, drlConstraint);
     }
 
-    public String getUnificationId(Class<?> patternType, String drlConstraint) {
-        return idGenerator.getUnificationVariable(patternType, drlConstraint);
+    public String getOrCreateUnificationId(String drlConstraint) {
+        return idGenerator.getOrCreateUnificationVariable(drlConstraint);
+    }
+
+    public Optional<String> getUnificationId(String drlConstraint) {
+        return idGenerator.getUnificationVariable(drlConstraint);
     }
 
     public void addNamedConsequence(String key, String value) {

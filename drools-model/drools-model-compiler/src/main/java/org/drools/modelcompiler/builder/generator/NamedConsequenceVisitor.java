@@ -1,7 +1,6 @@
 package org.drools.modelcompiler.builder.generator;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import org.drools.compiler.lang.descr.AndDescr;
@@ -18,7 +17,7 @@ import org.drools.modelcompiler.builder.PackageModel;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassFromContext;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
-import static org.drools.modelcompiler.builder.generator.ModelGenerator.createRuleVariables;
+import static org.drools.modelcompiler.builder.generator.ModelGenerator.createVariables;
 import static org.drools.modelcompiler.builder.generator.ModelGenerator.drlxParse;
 import static org.drools.modelcompiler.builder.generator.ModelGenerator.executeCall;
 import static org.drools.modelcompiler.builder.generator.ModelGenerator.extractUsedDeclarations;
@@ -92,7 +91,7 @@ public class NamedConsequenceVisitor {
     private MethodCallExpr onDSL(NamedConsequenceDescr namedConsequence) {
         String namedConsequenceString = context.namedConsequences.get(namedConsequence.getName());
         BlockStmt ruleVariablesBlock = new BlockStmt();
-        createRuleVariables(ruleVariablesBlock, packageModel, context);
+        createVariables(ruleVariablesBlock, packageModel, context);
         BlockStmt ruleConsequence = rewriteConsequence(context, namedConsequenceString);
         List<String> verifiedDeclUsedInRHS = extractUsedDeclarations(packageModel, context, ruleConsequence);
 

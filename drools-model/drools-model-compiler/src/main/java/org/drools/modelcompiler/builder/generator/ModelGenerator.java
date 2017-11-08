@@ -206,7 +206,7 @@ public class ModelGenerator {
         BlockStmt ruleConsequence = rewriteConsequence(context, ruleDescr.getConsequence().toString());
 
         BlockStmt ruleVariablesBlock = new BlockStmt();
-        createRuleVariables(ruleVariablesBlock, packageModel, context);
+        createVariables(ruleVariablesBlock, packageModel, context);
         ruleMethod.setBody(ruleVariablesBlock);
 
         List<String> usedDeclarationInRHS = extractUsedDeclarations(packageModel, context, ruleConsequence);
@@ -332,7 +332,7 @@ public class ModelGenerator {
         return onCall;
     }
 
-    public static void createRuleVariables(BlockStmt block, PackageModel packageModel, RuleContext context) {
+    public static void createVariables(BlockStmt block, PackageModel packageModel, RuleContext context) {
 
         for (DeclarationSpec decl : context.getDeclarations()) {
             if (!packageModel.getGlobals().containsKey(decl.getBindingId()) && !context.queryParameterWithName(p -> p.name.equals(decl.getBindingId())).isPresent()) {
@@ -395,7 +395,7 @@ public class ModelGenerator {
         MethodDeclaration queryMethod = new MethodDeclaration(EnumSet.of(Modifier.PRIVATE), queryType, "query_" + toId(queryDescr.getName()));
 
         BlockStmt queryBody = new BlockStmt();
-        createRuleVariables(queryBody, packageModel, context);
+        createVariables(queryBody, packageModel, context);
         queryMethod.setBody(queryBody);
 
         String queryBuildVarName = queryDescr.getName() + "_build";
@@ -676,13 +676,17 @@ public class ModelGenerator {
             MethodCallExpr callMethod = new MethodCallExpr(new NameExpr(queryDef), "call");
 
             List<QueryParameter> parameters = packageModel.getQueryDefWithType().get(queryDef).context.queryParameters;
-            for (int i = 1; i <= parameters.size(); i++) {
+            for (int i = 0; i < parameters.size(); i++) {
                 String queryName = context.queryName.orElseThrow(RuntimeException::new);
-                MethodCallExpr parameterCall = new MethodCallExpr(new NameExpr(queryName), "getArg" + i);
+                ExprConstraintDescr variableName = (ExprConstraintDescr) pattern.getConstraint().getDescrs().get(i);
+                Optional<String> unificationId = context.getUnificationId(variableName.toString());
+                int queryIndex = i + 1;
+                Expression parameterCall = unificationId.map(name -> (Expression)new NameExpr(toVar(name)))
+                        .orElseGet(() -> new MethodCallExpr(new NameExpr(queryName), "getArg" + queryIndex));
                 callMethod.addArgument(parameterCall);
             }
 
-            context.expressions.add(callMethod);
+            context.addExpression(callMethod);
             return;
         }
 

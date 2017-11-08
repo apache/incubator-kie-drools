@@ -18,6 +18,7 @@ package org.drools.modelcompiler.builder.generator;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.drools.model.impl.NamesGenerator.generateName;
 
@@ -42,11 +43,16 @@ public class DRLIdGenerator {
         return generateOOPathId.computeIfAbsent(key, k -> generateOOPathExpr());
     }
 
-    public String getUnificationVariable(Class<?> patternType, String drlConstraint) {
-        PatternTypeDRLConstraint key = PatternTypeDRLConstraint.of(patternType, drlConstraint);
+    public String getOrCreateUnificationVariable(String drlConstraint) {
+        PatternTypeDRLConstraint key = PatternTypeDRLConstraint.of(Object.class, drlConstraint);
         return generateUnificationVariableId.computeIfAbsent(key, k -> generateUnificationExpr());
     }
-    
+
+    public Optional<String> getUnificationVariable(String drlConstraint) {
+        PatternTypeDRLConstraint key = PatternTypeDRLConstraint.of(Object.class, drlConstraint);
+        return Optional.ofNullable(generateUnificationVariableId.get(key));
+    }
+
     private String generateNewId() {
         return generateName("expr");
     }

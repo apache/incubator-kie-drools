@@ -117,7 +117,7 @@ public class DrlxParseUtil {
                 try {
                     expression = nameExprToMethodCallExpr(name, typeCursor);
                 } catch (IllegalArgumentException e) {
-                    String unificationVariable = context.getUnificationId(typeCursor, name);
+                    String unificationVariable = context.getOrCreateUnificationId(name);
                     expression = new TypedExpression(unificationVariable, typeCursor);
                     return expression;
                 }
