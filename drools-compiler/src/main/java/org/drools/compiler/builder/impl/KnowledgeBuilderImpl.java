@@ -2426,7 +2426,15 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     }
 
     public <T> T getCachedOrCreate(String key, Supplier<T> creator) {
-        return (T) getBuilderCache().computeIfAbsent(key, k -> creator.get());
+        final Map<String, Object> builderCache = getBuilderCache();
+        final T cachedValue = (T) builderCache.get(key);
+        if (cachedValue == null) {
+            T newValue = creator.get();
+            builderCache.put(key, newValue);
+            return newValue;
+        } else {
+            return cachedValue;
+        }
     }
 
     // composite build lifecycle
