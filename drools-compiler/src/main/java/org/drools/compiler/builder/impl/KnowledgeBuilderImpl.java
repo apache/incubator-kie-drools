@@ -2429,7 +2429,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         final Map<String, Object> builderCache = getBuilderCache();
         final T cachedValue = (T) builderCache.get(key);
         if (cachedValue == null) {
-            T newValue = creator.get();
+            final T newValue = creator.get();
             builderCache.put(key, newValue);
             return newValue;
         } else {
