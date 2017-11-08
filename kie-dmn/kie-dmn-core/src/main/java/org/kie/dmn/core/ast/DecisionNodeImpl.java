@@ -16,12 +16,12 @@
 
 package org.kie.dmn.core.ast;
 
+import java.util.Objects;
+
 import org.kie.dmn.api.core.DMNType;
+import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.model.v1_1.Decision;
-import org.kie.dmn.api.core.ast.DecisionNode;
-
-import java.util.Objects;
 
 public class DecisionNodeImpl
         extends DMNBaseNode implements DecisionNode {
@@ -74,5 +74,9 @@ public class DecisionNodeImpl
         return Objects.hash(getId(), getName());
     }
 
+    @Override
+    public DMNType getType() {
+        return getResultType();
+    }
 
 }
