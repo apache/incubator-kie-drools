@@ -16,17 +16,20 @@
 
 package org.drools.modelcompiler;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.drools.core.ClockType;
+import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.modelcompiler.domain.StockFact;
 import org.drools.modelcompiler.domain.StockTick;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.time.SessionPseudoClock;
@@ -322,6 +325,50 @@ public class CepTest extends BaseModelTest {
         SessionPseudoClock clock = ksession.getSessionClock();
 
         ksession.insert(new StockFact("DROO"));
+
+        clock.advanceTime(1, TimeUnit.SECONDS);
+        ksession.fireAllRules();
+        assertEquals(1, ksession.getObjects().size());
+
+        clock.advanceTime(2, TimeUnit.SECONDS);
+        ksession.fireAllRules();
+        assertEquals(0, ksession.getObjects().size());
+    }
+    
+    @Test
+    public void testDeclareAndExpires() throws Exception {
+        String str =
+                "package org.drools.compiler;\n" +
+                "declare StockFact\n" +
+                "    @role( value = event )\n" +
+                "    @expires( value = 2s, policy = TIME_SOFT )\n" +
+                "    company : String\n" +
+                "    duration : long\n" +
+                "end\n" +
+                "\n" +
+                "rule \"expiration\"\n" +
+                "when\n" +
+                "   StockFact( company == \"DROO\" )\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession(getCepKieModuleModel(), str);
+        SessionPseudoClock clock = ksession.getSessionClock();
+
+        Object DROO = null;
+        if (testRunType == RUN_TYPE.STANDARD_FROM_DRL) {
+            FactType stockFactType = ksession.getKieBase().getFactType("org.drools.compiler", "StockFact");
+            DROO = stockFactType.newInstance();
+            stockFactType.set(DROO, "company", "DROO");
+        } else if (testRunType == RUN_TYPE.USE_CANONICAL_MODEL) {
+            ClassLoader cl = ((KnowledgeBaseImpl) ksession.getKieBase()).getRootClassLoader();
+            Class<?> stockFactClass = cl.loadClass("org.drools.compiler.StockFact");
+            DROO = stockFactClass.newInstance();
+            Method setCompanyMethod = stockFactClass.getMethod("setCompany", String.class);
+            setCompanyMethod.invoke(DROO, "DROO");
+        }
+
+        ksession.insert(DROO);
 
         clock.advanceTime(1, TimeUnit.SECONDS);
         ksession.fireAllRules();

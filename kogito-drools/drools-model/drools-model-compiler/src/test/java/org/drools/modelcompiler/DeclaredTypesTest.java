@@ -19,14 +19,16 @@ package org.drools.modelcompiler;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.List;
 
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class DeclaredTypesTest extends BaseModelTest {
 
@@ -324,5 +326,31 @@ public class DeclaredTypesTest extends BaseModelTest {
         results = getObjectsIntoList(ksession, Integer.class);
         assertTrue(results.contains(2));
         assertTrue(results.contains(1)); // This is because MyNumber(1) would simply bind for "even" predicate/getter to $even variable, and not used as a constraint.  
+    }
+
+    @Test
+    public void testDeclaredWithAllPrimitives() {
+        String str = "declare DeclaredAllPrimitives\n" +
+                     "    my_byte    : byte    \n" +
+                     "    my_short   : short   \n" +
+                     "    my_int     : int     \n" +
+                     "    my_long    : long    \n" +
+                     "    my_float   : float   \n" +
+                     "    my_double  : double  \n" +
+                     "    my_char    : char    \n" +
+                     "    my_boolean : boolean \n" +
+                     "end\n" +
+                     "rule R\n" +
+                     "when\n" +
+                     "then\n" +
+                     "  insert(new DeclaredAllPrimitives((byte) 1, (short) 1, 1, 1L, 1f, 1d, 'x', true));\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.fireAllRules();
+
+        List<Object> results = getObjectsIntoList(ksession, Object.class);
+        assertEquals(1, results.size());
     }
 }
