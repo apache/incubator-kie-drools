@@ -83,7 +83,7 @@ public class DrlxParseUtil {
     }
 
     public static TypedExpression toTypedExpression(RuleContext context, PackageModel packageModel, Class<?> patternType, Expression drlxExpr,
-                                                    Set<String> usedDeclarations, Set<String> reactOnProperties) {
+                                                    List<String> usedDeclarations, Set<String> reactOnProperties) {
 
         Class<?> typeCursor = patternType;
 
@@ -113,8 +113,15 @@ public class DrlxParseUtil {
                 usedDeclarations.add(name);
                 return new TypedExpression(plusThis, packageModel.getGlobals().get(name));
             } else {
+                TypedExpression expression;
+                try {
+                    expression = nameExprToMethodCallExpr(name, typeCursor);
+                } catch (IllegalArgumentException e) {
+                    String unificationVariable = context.getOrCreateUnificationId(name);
+                    expression = new TypedExpression(unificationVariable, typeCursor);
+                    return expression;
+                }
                 reactOnProperties.add(name);
-                TypedExpression expression = nameExprToMethodCallExpr(name, typeCursor);
                 Expression plusThis = prepend(new NameExpr("_this"), (MethodCallExpr) expression.getExpression());
                 return new TypedExpression(plusThis, expression.getType(), name);
             }
@@ -306,7 +313,7 @@ public class DrlxParseUtil {
         return JavaParser.parseBlock(String.format("{%s}", ruleConsequenceAsBlock));
     }
 
-    public static Expression generateLambdaWithoutParameters(Set<String> usedDeclarations, Expression expr) {
+    public static Expression generateLambdaWithoutParameters(List<String> usedDeclarations, Expression expr) {
         LambdaExpr lambdaExpr = new LambdaExpr();
         lambdaExpr.setEnclosingParameters( true );
         lambdaExpr.addParameter( new Parameter(new UnknownType(), "_this" ) );
