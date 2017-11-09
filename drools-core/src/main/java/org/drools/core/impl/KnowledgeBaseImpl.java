@@ -16,6 +16,30 @@
 
 package org.drools.core.impl;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.base.ClassFieldAccessorCache;
@@ -92,30 +116,6 @@ import org.kie.internal.weaver.KieWeavers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-
 import static org.drools.core.common.ProjectClassLoader.createProjectClassLoader;
 import static org.drools.core.util.BitMaskUtil.isSet;
 import static org.drools.core.util.ClassUtils.areNullSafeEquals;
@@ -185,6 +185,7 @@ public class KnowledgeBaseImpl
     private transient Queue<Runnable> kbaseModificationsQueue = new ConcurrentLinkedQueue<Runnable>();
 
     private transient AtomicInteger sessionDeactivationsCounter = new AtomicInteger();
+    private transient AtomicBoolean flushingUpdates = new AtomicBoolean( false );
 
 	private ReleaseId resolvedReleaseId;
 	private String containerId;
@@ -781,7 +782,12 @@ public class KnowledgeBaseImpl
     }
 
     public boolean flushModifications() {
+        if (!flushingUpdates.compareAndSet( false, true )) {
+            return false;
+        }
+
         if (kbaseModificationsQueue.isEmpty()) {
+            flushingUpdates.set( false );
             return false;
         }
 
@@ -791,6 +797,7 @@ public class KnowledgeBaseImpl
                 kbaseModificationsQueue.poll().run();
             }
         } finally {
+            flushingUpdates.set( false );
             unlockAndActivate();
         }
         return true;

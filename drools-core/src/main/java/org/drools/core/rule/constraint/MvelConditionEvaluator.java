@@ -15,6 +15,9 @@
 
 package org.drools.core.rule.constraint;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.drools.core.base.EvaluatorWrapper;
 import org.drools.core.base.mvel.MVELCompilationUnit;
 import org.drools.core.common.InternalFactHandle;
@@ -41,20 +44,17 @@ import org.mvel2.compiler.ExecutableStatement;
 import org.mvel2.integration.VariableResolverFactory;
 import org.mvel2.util.ASTLinkedList;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static org.drools.core.rule.constraint.EvaluatorHelper.valuesAsMap;
 
 public class MvelConditionEvaluator implements ConditionEvaluator {
 
-    protected final Declaration[] declarations;
+    private final Declaration[] declarations;
     private final EvaluatorWrapper[] operators;
 
     private final String conditionClass;
     private final ParserConfiguration parserConfiguration;
-    protected ExecutableStatement executableStatement;
-    protected MVELCompilationUnit compilationUnit;
+    private final ExecutableStatement executableStatement;
+    private final MVELCompilationUnit compilationUnit;
 
     private boolean evaluated = false;
 
@@ -89,7 +89,7 @@ public class MvelConditionEvaluator implements ConditionEvaluator {
         return evaluate(executableStatement, handle, workingMemory, tuple);
     }
 
-    public boolean evaluate(ExecutableStatement statement, InternalFactHandle handle, InternalWorkingMemory workingMemory, Tuple tuple) {
+    private boolean evaluate(ExecutableStatement statement, InternalFactHandle handle, InternalWorkingMemory workingMemory, Tuple tuple) {
         if (compilationUnit == null) {
             Map<String, Object> vars = valuesAsMap(handle.getObject(), workingMemory, tuple, declarations);
             if (operators.length > 0) {
@@ -142,6 +142,7 @@ public class MvelConditionEvaluator implements ConditionEvaluator {
     private void ensureCompleteEvaluation(ASTNode node, InternalFactHandle handle, InternalWorkingMemory workingMemory, Tuple tuple) {
         node = unwrap(node);
         if (!(node instanceof And || node instanceof Or)) {
+            evaluateIfNecessary(handle, workingMemory, tuple, node);
             return;
         }
         ensureBranchEvaluation(handle, workingMemory, tuple, ((BooleanNode)node).getLeft());
@@ -157,13 +158,17 @@ public class MvelConditionEvaluator implements ConditionEvaluator {
     }
 
     private void ensureBranchEvaluation(InternalFactHandle handle, InternalWorkingMemory workingMemory, Tuple tuple, ASTNode node) {
+        evaluateIfNecessary( handle, workingMemory, tuple, node );
+        ensureCompleteEvaluation(node, handle, workingMemory, tuple);
+    }
+
+    private void evaluateIfNecessary( InternalFactHandle handle, InternalWorkingMemory workingMemory, Tuple tuple, ASTNode node ) {
         if (!isEvaluated(node)) {
             ASTNode next = node.nextASTNode;
             node.nextASTNode = null;
             evaluate(asCompiledExpression(node), handle, workingMemory, tuple);
             node.nextASTNode = next;
         }
-        ensureCompleteEvaluation(node, handle, workingMemory, tuple);
     }
 
     private ASTNode unwrapNegation(ASTNode node) {

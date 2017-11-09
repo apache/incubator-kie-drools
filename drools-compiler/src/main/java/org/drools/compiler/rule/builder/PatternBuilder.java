@@ -165,10 +165,7 @@ public class PatternBuilder
         }
 
         if ( patternDescr.getObjectType() == null || patternDescr.getObjectType().equals( "" ) ) {
-            context.addError(new DescrBuildError(context.getParentDescr(),
-                                                 patternDescr,
-                                                 null,
-                                                 "ObjectType not correctly defined"));
+            registerDescrBuildError( context, patternDescr, "ObjectType not correctly defined" );
             return null;
         }
 
@@ -206,6 +203,7 @@ public class PatternBuilder
         if (expr.charAt( 0 ) != '/') {
             return;
         }
+
         int separator = expr.indexOf( '/', 1 );
         if (separator < 0) {
             return;
@@ -292,10 +290,8 @@ public class PatternBuilder
             try {
                 final Class<?> userProvidedClass = context.getDialect().getTypeResolver().resolveType( objectType );
                 if ( !Modifier.isPublic(userProvidedClass.getModifiers()) ) {
-                    context.addError(new DescrBuildError(context.getParentDescr(),
-                                                         patternDescr,
-                                                         null,
-                                                         "The class '" + objectType + "' is not public"));
+                    registerDescrBuildError( context, patternDescr,
+                                             "The class '" + objectType + "' is not public" );
                     return null;
                 }
                 return new ClassObjectType( userProvidedClass, isEvent(context, userProvidedClass) );
@@ -338,23 +334,31 @@ public class PatternBuilder
     private void processBehaviors( RuleBuildContext context, PatternDescr patternDescr, Pattern pattern ) {
         for ( BehaviorDescr behaviorDescr : patternDescr.getBehaviors() ) {
             if ( pattern.getObjectType().isEvent() ) {
-                if ( Behavior.BehaviorType.TIME_WINDOW.matches( behaviorDescr.getSubType() ) ) {
-                    SlidingTimeWindow window = new SlidingTimeWindow( TimeUtils.parseTimeString( behaviorDescr.getParameters().get( 0 ) ) );
+                Behavior window = createWindow( behaviorDescr );
+                if (window != null) {
                     pattern.addBehavior( window );
-                } else if ( Behavior.BehaviorType.LENGTH_WINDOW.matches( behaviorDescr.getSubType() ) ) {
-                    SlidingLengthWindow window = new SlidingLengthWindow( Integer.valueOf( behaviorDescr.getParameters().get( 0 ) ) );
-                    pattern.addBehavior( window );
+                    context.setNeedStreamMode();
+                } else {
+                    registerDescrBuildError( context, patternDescr,
+                                             "Unknown window type '" + behaviorDescr.getSubType() + "'" );
                 }
-                context.setNeedStreamMode();
             } else {
                 // Some behaviors can only be assigned to patterns declared as events
-                context.addError(new DescrBuildError(context.getParentDescr(),
-                                                     patternDescr,
-                                                     null,
-                                                     "A Sliding Window can only be assigned to types declared with @role( event ). The type '" + pattern.getObjectType() + "' in '" + context.getRule().getName()
-                                                     + "' is not declared as an Event."));
+                registerDescrBuildError( context, patternDescr,
+                                         "A Sliding Window can only be assigned to types declared with @role( event ). The type '" + pattern.getObjectType() + "' in '" + context.getRule().getName()
+                                          + "' is not declared as an Event.");
             }
         }
+    }
+
+    private Behavior createWindow( BehaviorDescr behaviorDescr ) {
+        if ( Behavior.BehaviorType.TIME_WINDOW.matches( behaviorDescr.getSubType() ) ) {
+            return new SlidingTimeWindow( TimeUtils.parseTimeString( behaviorDescr.getParameters().get( 0 ) ) );
+        }
+        if ( Behavior.BehaviorType.LENGTH_WINDOW.matches( behaviorDescr.getSubType() ) ) {
+            return new SlidingLengthWindow( Integer.valueOf( behaviorDescr.getParameters().get( 0 ) ) );
+        }
+        return null;
     }
 
     private RuleConditionElement buildQuery( RuleBuildContext context, PatternDescr descr, PatternDescr patternDescr ) {
@@ -397,10 +401,8 @@ public class PatternBuilder
 
         if ( rce == null ) {
             // this isn't a query either, so log an error
-            context.addError(new DescrBuildError(context.getParentDescr(),
-                                                 patternDescr,
-                                                 null,
-                                                 "Unable to resolve ObjectType '" + patternDescr.getObjectType() + "'"));
+            registerDescrBuildError( context, patternDescr,
+                                     "Unable to resolve ObjectType '" + patternDescr.getObjectType() + "'" );
         }
         return rce;
     }
@@ -429,10 +431,8 @@ public class PatternBuilder
                    leftExpression + " == " + rightIdentifier );
         } else {
             // This declaration already exists, so throw an Exception
-            context.addError(new DescrBuildError(context.getParentDescr(),
-                                                 patternDescr,
-                                                 null,
-                                                 "Duplicate declaration for variable '" + rightIdentifier + "' in the rule '" + context.getRule().getName() + "'"));
+            registerDescrBuildError( context, patternDescr,
+                                     "Duplicate declaration for variable '" + rightIdentifier + "' in the rule '" + context.getRule().getName() + "'" );
         }
     }
 
@@ -478,10 +478,7 @@ public class PatternBuilder
             Watch watch = patternDescr.getTypedAnnotation(Watch.class);
             watchedValues = watch == null ? null : watch.value();
         } catch (Exception e) {
-            context.addError( new DescrBuildError( context.getParentDescr(),
-                                                   patternDescr,
-                                                   null,
-                                                   e.getMessage() ) );
+            registerDescrBuildError( context, patternDescr, e.getMessage() );
         }
 
         if (watchedValues == null) {
@@ -495,10 +492,8 @@ public class PatternBuilder
             propertyName = propertyName.trim();
             if (propertyName.equals("*") || propertyName.equals("!*")) {
                 if (listenedProperties.contains("*") || listenedProperties.contains("!*")) {
-                    context.addError( new DescrBuildError( context.getParentDescr(),
-                                                           patternDescr,
-                                                           null,
-                                                           "Duplicate usage of wildcard * in @" + Watch.class.getSimpleName() + " annotation" ) );
+                    registerDescrBuildError( context, patternDescr,
+                                             "Duplicate usage of wildcard * in @" + Watch.class.getSimpleName() + " annotation" );
                 } else {
                     listenedProperties.add(propertyName);
                 }
@@ -507,15 +502,11 @@ public class PatternBuilder
             boolean isNegative = propertyName.startsWith("!");
             propertyName = isNegative ? propertyName.substring(1).trim() : propertyName;
             if (settableProperties != null && !settableProperties.contains(propertyName)) {
-                context.addError( new DescrBuildError( context.getParentDescr(),
-                                                       patternDescr,
-                                                       null,
-                                                       "Unknown property " + propertyName + " in @" + Watch.class.getSimpleName() + " annotation" ) );
+                registerDescrBuildError( context, patternDescr,
+                                         "Unknown property " + propertyName + " in @" + Watch.class.getSimpleName() + " annotation" );
             } else if (listenedProperties.contains(propertyName) || listenedProperties.contains("!" + propertyName)) {
-                context.addError( new DescrBuildError( context.getParentDescr(),
-                                                       patternDescr,
-                                                       null,
-                                                       "Duplicate property " + propertyName + " in @" + Watch.class.getSimpleName() + " annotation" ) );
+                registerDescrBuildError( context, patternDescr,
+                                         "Duplicate property " + propertyName + " in @" + Watch.class.getSimpleName() + " annotation" );
             } else {
                 listenedProperties.add(isNegative ? "!" + propertyName : propertyName);
             }
@@ -540,10 +531,8 @@ public class PatternBuilder
         Class<?> patternClass = ((ClassObjectType)patternType).getClassType();
         TypeDeclaration typeDeclaration = getTypeDeclarationForPattern(context, pattern);
         if (!typeDeclaration.isPropertyReactive()) {
-            context.addError( new DescrBuildError( context.getParentDescr(),
-                                                   patternDescr,
-                                                   null,
-                                                   "Wrong usage of @" + Watch.class.getSimpleName() + " annotation on class " + patternClass.getName() + " that is not annotated as @PropertyReactive" ) );
+            registerDescrBuildError( context, patternDescr,
+                                     "Wrong usage of @" + Watch.class.getSimpleName() + " annotation on class " + patternClass.getName() + " that is not annotated as @PropertyReactive" );
         }
         typeDeclaration.setTypeClass(patternClass);
         return typeDeclaration.getSettableProperties();
@@ -666,28 +655,22 @@ public class PatternBuilder
             TypeDeclaration tDecl = context.getKnowledgeBuilder().getTypeDeclaration( klazz );
 
             if ( tDecl == null ) {
-                context.addError(new DescrBuildError(context.getParentDescr(),
-                                                     descr,
-                                                     klazz,
-                                                     "Unable to find @positional definitions for :" + klazz + "\n"));
+                registerDescrBuildError( context, patternDescr,
+                                         "Unable to find @positional definitions for :" + klazz + "\n" );
                 return;
             }
 
             ClassDefinition clsDef = tDecl.getTypeClassDef();
             if ( clsDef == null ) {
-                context.addError(new DescrBuildError(context.getParentDescr(),
-                                                     descr,
-                                                     null,
-                                                     "Unable to find @positional field " + descr.getPosition() + " for class " + tDecl.getTypeName() + "\n"));
+                registerDescrBuildError( context, patternDescr,
+                                         "Unable to find @positional field " + descr.getPosition() + " for class " + tDecl.getTypeName() + "\n" );
                 return;
             }
 
             FieldDefinition field = clsDef.getField( descr.getPosition() );
             if ( field == null ) {
-                context.addError(new DescrBuildError(context.getParentDescr(),
-                                                     descr,
-                                                     null,
-                                                     "Unable to find @positional field " + descr.getPosition() + " for class " + tDecl.getTypeName() + "\n"));
+                registerDescrBuildError( context, patternDescr,
+                                         "Unable to find @positional field " + descr.getPosition() + " for class " + tDecl.getTypeName() + "\n" );
                 return;
             }
 
@@ -781,10 +764,8 @@ public class PatternBuilder
         XpathAnalysis xpathAnalysis = XpathAnalysis.analyze(expression);
 
         if (xpathAnalysis.hasError()) {
-            context.addError(new DescrBuildError(context.getParentDescr(),
-                                                 descr,
-                                                 null,
-                                                 "Invalid xpath expression '" + expression + "': " + xpathAnalysis.getError()));
+            registerDescrBuildError( context, patternDescr,
+                                     "Invalid xpath expression '" + expression + "': " + xpathAnalysis.getError() );
             return null;
         }
 
@@ -809,10 +790,8 @@ public class PatternBuilder
                 context.getPkg().getClassFieldAccessorStore().getClassObjectType( ((ClassObjectType) currentObjectType), xpathChunk );
 
                 if ( xpathChunk == null ) {
-                    context.addError( new DescrBuildError( context.getParentDescr(),
-                                                           descr,
-                                                           null,
-                                                           "Invalid xpath expression '" + expression + "': cannot access " + part.getField() + " on " + patternClass ) );
+                    registerDescrBuildError( context, patternDescr,
+                                             "Invalid xpath expression '" + expression + "': cannot access " + part.getField() + " on " + patternClass );
                     pattern.setObjectType( originalType );
                     return null;
                 }
@@ -821,10 +800,8 @@ public class PatternBuilder
                     try {
                         patternClass = context.getDialect().getTypeResolver().resolveType( part.getInlineCast() );
                     } catch (ClassNotFoundException e) {
-                        context.addError( new DescrBuildError( context.getParentDescr(),
-                                                               descr,
-                                                               null,
-                                                               "Unknown class " + part.getInlineCast() + " in xpath expression '" + expression + "'" ) );
+                        registerDescrBuildError( context, patternDescr,
+                                                 "Unknown class " + part.getInlineCast() + " in xpath expression '" + expression + "'" );
                         return null;
                     }
                     part.addInlineCastConstraint( patternClass );
@@ -1399,10 +1376,8 @@ public class PatternBuilder
                                                                      true );
 
         if (extractor == null) {
-            context.addError(new DescrBuildError(context.getParentDescr(),
-                                                 patternDescr,
-                                                 null,
-                                                 "Field Reader does not exist for declaration '" + fieldBindingDescr.getVariable() + "' in '" + fieldBindingDescr + "' in the rule '" + context.getRule().getName() + "'"));
+            registerDescrBuildError( context, patternDescr,
+                                     "Field Reader does not exist for declaration '" + fieldBindingDescr.getVariable() + "' in '" + fieldBindingDescr + "' in the rule '" + context.getRule().getName() + "'" );
             return;
         }
 
@@ -1812,10 +1787,8 @@ public class PatternBuilder
                 if ( reportError && ! alternatives && context.isTypesafe() ) {
                     DialectUtil.copyErrorLocation(e,
                                                   descr);
-                    context.addError(new DescrBuildError(context.getParentDescr(),
-                                                         descr,
-                                                         e,
-                                                         "Unable to create Field Extractor for '" + fieldName + "'" + e.getMessage()));
+                    registerDescrBuildError( context, descr, e,
+                                             "Unable to create Field Extractor for '" + fieldName + "'" + e.getMessage() );
                 }
                 // if there was an error, set the reader back to null
                 reader = null;
@@ -1857,10 +1830,7 @@ public class PatternBuilder
                 if ( analysis == null ) {
                     // something bad happened
                     if ( reportError ) {
-                        context.addError(new DescrBuildError(context.getParentDescr(),
-                                                             descr,
-                                                             null,
-                                                             "Unable to analyze expression '" + fieldName + "'"));
+                        registerDescrBuildError( context, descr, "Unable to analyze expression '" + fieldName + "'" );
                     }
                     return null;
                 }
@@ -1869,10 +1839,8 @@ public class PatternBuilder
 
                 if ( !usedIdentifiers.getDeclrClasses().isEmpty() ) {
                     if ( reportError && descr instanceof BindingDescr ) {
-                        context.addError(new DescrBuildError(context.getParentDescr(),
-                                                             descr,
-                                                             null,
-                                                             "Variables can not be used inside bindings. Variable " + usedIdentifiers.getDeclrClasses().keySet() + " is being used in binding '" + fieldName + "'"));
+                        registerDescrBuildError( context, descr,
+                                                 "Variables can not be used inside bindings. Variable " + usedIdentifiers.getDeclrClasses().keySet() + " is being used in binding '" + fieldName + "'" );
                     }
                     return null;
                 }
@@ -1895,10 +1863,8 @@ public class PatternBuilder
 
                 if ( reportError ) {
                     DialectUtil.copyErrorLocation(e, descr);
-                    context.addError(new DescrBuildError(context.getParentDescr(),
-                                                         descr,
-                                                         e,
-                                                         "Unable to create reader for '" + fieldName + "':" + e.getMessage()));
+                    registerDescrBuildError( context, descr, e,
+                                             "Unable to create reader for '" + fieldName + "':" + e.getMessage() );
                 }
                 // if there was an error, set the reader back to null
                 reader = null;
@@ -1919,23 +1885,27 @@ public class PatternBuilder
         result.setResource(patternDescr.getResource());
 
         if (result == null) {
-            context.addError(new DescrBuildError(context.getParentDescr(),
-                                                 patternDescr,
-                                                 null,
-                                                 "Unable to parse pattern expression:\n" + expression));
+            registerDescrBuildError( context, patternDescr,
+                                     "Unable to parse pattern expression:\n" + expression );
             return null;
         }
 
         result.copyLocation( original );
         if ( parser.hasErrors() ) {
             for ( DroolsParserException error : parser.getErrors() ) {
-                context.addError(new DescrBuildError(context.getParentDescr(),
-                                                     patternDescr,
-                                                     null,
-                                                     "Unable to parse pattern expression:\n" + error.getMessage()));
+                registerDescrBuildError( context, patternDescr,
+                                         "Unable to parse pattern expression:\n" + error.getMessage() );
             }
             return null;
         }
         return result;
+    }
+
+    private static void registerDescrBuildError( RuleBuildContext context, BaseDescr patternDescr, String error ) {
+        registerDescrBuildError( context, patternDescr, null, error );
+    }
+
+    private static void registerDescrBuildError( RuleBuildContext context, BaseDescr patternDescr, Object object, String error ) {
+        context.addError(new DescrBuildError( context.getParentDescr(), patternDescr, object, error ));
     }
 }

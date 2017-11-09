@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
@@ -27,7 +28,7 @@ import javax.persistence.OneToMany;
 @MappedSuperclass
 public abstract class VariableEntity implements Serializable {
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "MAP_VAR_ID", nullable = true)
     private Set<MappedVariable> mappedVariables;
 

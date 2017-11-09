@@ -15,6 +15,28 @@
 
 package org.drools.compiler.builder.impl;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.io.StringReader;
+import java.lang.reflect.Array;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Stack;
+import java.util.UUID;
+
 import org.drools.compiler.compiler.AnnotationDeclarationError;
 import org.drools.compiler.compiler.BPMN2ProcessFactory;
 import org.drools.compiler.compiler.BaseKnowledgeBuilderResultImpl;
@@ -131,28 +153,6 @@ import org.kie.internal.utils.ServiceRegistryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.io.StringReader;
-import java.lang.reflect.Array;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Stack;
-import java.util.UUID;
 
 import static org.drools.core.util.ClassUtils.convertClassToResourcePath;
 import static org.drools.core.util.StringUtils.isEmpty;
@@ -338,7 +338,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
      */
     public void addPackageFromDrl(final Reader reader) throws DroolsParserException,
                                                               IOException {
-        addPackageFromDrl(reader, new ReaderResource(reader, ResourceType.DRL));
+        addPackageFromDrl(reader, new ReaderResource( reader, ResourceType.DRL) );
     }
 
     /**
@@ -461,8 +461,8 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     }
 
     public void addPackageFromScoreCard(Resource resource,
-                                        ResourceConfiguration configuration) throws DroolsParserException,
-                                                                                    IOException {
+                                        ResourceConfiguration configuration ) throws DroolsParserException,
+                                                                                     IOException {
         this.resource = resource;
         addPackage( scoreCardToPackageDescr( resource, configuration ) );
         this.resource = null;
@@ -795,7 +795,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     void addPackageForExternalType(Resource resource,
                                    ResourceType type,
                                    ResourceConfiguration configuration) throws Exception {
-        KieAssemblers assemblers = ServiceRegistryImpl.getInstance().get(KieAssemblers.class);
+        KieAssemblers assemblers = ServiceRegistryImpl.getInstance().get( KieAssemblers.class );
 
         KieAssemblerService assembler = assemblers.getAssemblers().get( type );
 
@@ -871,7 +871,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         Reader resourceReader = null;
         try {
             resourceReader = resource.getReader();
-            ChangeSet changeSet = reader.read(resourceReader);
+            ChangeSet changeSet = reader.read( resourceReader );
             if (changeSet == null) {
                 // @TODO should log an error
             }
@@ -1674,9 +1674,9 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     }
 
     @SuppressWarnings("unchecked")
-    private AccumulateFunction loadAccumulateFunction(PackageRegistry pkgRegistry,
-                                                      String identifier,
-                                                      String className) {
+    private AccumulateFunction loadAccumulateFunction( PackageRegistry pkgRegistry,
+                                                       String identifier,
+                                                       String className ) {
         try {
             Class< ? extends AccumulateFunction> clazz = (Class< ? extends AccumulateFunction>) pkgRegistry.getTypeResolver().resolveType(className);
             return clazz.newInstance();
@@ -1711,6 +1711,15 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     }
 
     public TypeDeclaration getAndRegisterTypeDeclaration(Class<?> cls, String packageName) {
+        if (kBase != null) {
+            InternalKnowledgePackage pkg = kBase.getPackage( packageName );
+            if ( pkg != null ) {
+                TypeDeclaration typeDeclaration = pkg.getTypeDeclaration( cls );
+                if ( typeDeclaration != null ) {
+                    return typeDeclaration;
+                }
+            }
+        }
         return typeBuilder.getAndRegisterTypeDeclaration(cls, packageName);
     }
 
@@ -2257,7 +2266,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
             }
             throw new IllegalArgumentException("Could not parse knowledge.");
         }
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(conf);
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( conf );
         kbase.addKnowledgePackages(getKnowledgePackages());
         return kbase;
     }

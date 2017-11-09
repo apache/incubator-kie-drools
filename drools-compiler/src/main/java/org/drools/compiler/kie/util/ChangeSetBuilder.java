@@ -97,6 +97,13 @@ public class ChangeSetBuilder {
                 PackageDescr opkg = new DrlParser().parse( new ByteArrayResource( ob ) );
                 PackageDescr cpkg = new DrlParser().parse( new ByteArrayResource( cb ) );
                 String pkgName = isEmpty(cpkg.getName()) ? getDefaultPackageName() : cpkg.getName();
+                String oldPkgName = isEmpty(opkg.getName()) ? getDefaultPackageName() : opkg.getName();
+
+                if (!oldPkgName.equals(pkgName)) {
+                    // if the package name is changed everthing has to be recreated from scratch
+                    // so it is useless to further investigate other changes
+                    return pkgcs;
+                }
 
                 for( RuleDescr crd : cpkg.getRules() ) {
                     pkgcs.getLoadOrder().add(new ResourceChangeSet.RuleLoadOrder(pkgName, crd.getName(), crd.getLoadOrder()));
