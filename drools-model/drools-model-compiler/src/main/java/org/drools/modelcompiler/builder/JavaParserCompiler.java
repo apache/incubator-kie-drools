@@ -16,6 +16,14 @@
 
 package org.drools.modelcompiler.builder;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.drools.compiler.commons.jci.compilers.CompilationResult;
 import org.drools.compiler.commons.jci.compilers.EclipseJavaCompiler;
 import org.drools.compiler.commons.jci.compilers.JavaCompiler;
@@ -27,14 +35,6 @@ import org.drools.javaparser.ast.CompilationUnit;
 import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.drools.javaparser.printer.PrettyPrinter;
 import org.drools.javaparser.printer.PrettyPrinterConfiguration;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public class JavaParserCompiler {
 
@@ -79,6 +79,7 @@ public class JavaParserCompiler {
         CompilationResult resultCompilation = getCompiler().compile(resources, srcMfs, trgMfs, classLoader);
         CompilationProblem[] errors = resultCompilation.getErrors();
         if(errors.length != 0) {
+            classes.forEach(System.out::println);
             throw new RuntimeException("Error during compilation " + Arrays.stream(errors).map(CompilationProblem::getMessage).collect(Collectors.joining("\n")));
         }
 

@@ -18,4 +18,10 @@ public class GeneratedClassWithPackage {
     public String getPackageName() {
         return packageName;
     }
+
+    @Override
+    public String toString() {
+        return "GeneratedClassWithPackage [generatedClass=" + generatedClass + ", packageName=" + packageName + "]";
+    }
+
 }
