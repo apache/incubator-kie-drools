@@ -220,6 +220,9 @@ public class EvalHelper {
                 case "timezone":
                     current = Duration.ofSeconds( ((Temporal) current).get( ChronoField.OFFSET_SECONDS ) );
                     break;
+                case "weekday":
+                    current = ((Temporal) current).get( ChronoField.DAY_OF_WEEK );
+                    break;
                 default:
                     return null;
             }

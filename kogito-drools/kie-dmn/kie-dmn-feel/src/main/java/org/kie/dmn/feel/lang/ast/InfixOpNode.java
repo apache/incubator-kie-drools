@@ -210,24 +210,32 @@ public class InfixOpNode
             return ((OffsetDateTime) left).plus( (Period) right);
         } else if ( left instanceof LocalDateTime && right instanceof Period ) {
             return ((LocalDateTime) left).plus( (Period) right);
+        } else if ( left instanceof LocalDate && right instanceof Period ) {
+            return ((LocalDate) left).plus( (Period) right);
         } else if ( left instanceof ZonedDateTime && right instanceof Duration ) {
             return ((ZonedDateTime) left).plus( (Duration) right);
         } else if ( left instanceof OffsetDateTime && right instanceof Duration ) {
             return ((OffsetDateTime) left).plus( (Duration) right);
         } else if ( left instanceof LocalDateTime && right instanceof Duration ) {
             return ((LocalDateTime) left).plus( (Duration) right);
+        } else if ( left instanceof LocalDate && right instanceof Duration ) {
+            return ((LocalDate) left).plusDays( ((Duration) right).toDays() );
         } else if ( left instanceof Period && right instanceof ZonedDateTime ) {
             return ((ZonedDateTime) right).plus( (Period) left);
         } else if ( left instanceof Period && right instanceof OffsetDateTime ) {
             return ((OffsetDateTime) right).plus( (Period) left);
         } else if ( left instanceof Period && right instanceof LocalDateTime ) {
             return ((LocalDateTime) right).plus( (Period) left);
+        } else if ( left instanceof Period && right instanceof LocalDate ) {
+            return ((LocalDate) right).plus( (Period) left);
         } else if ( left instanceof Duration && right instanceof ZonedDateTime ) {
             return ((ZonedDateTime) right).plus( (Duration) left);
         } else if ( left instanceof Duration && right instanceof OffsetDateTime ) {
             return ((OffsetDateTime) right).plus( (Duration) left);
         } else if ( left instanceof Duration && right instanceof LocalDateTime ) {
             return ((LocalDateTime) right).plus( (Duration) left);
+        } else if ( left instanceof Duration && right instanceof LocalDate ) {
+            return ((LocalDate) right).plusDays( ((Duration) left).toDays() );
         } else if ( left instanceof LocalTime && right instanceof Duration ) {
             return ((LocalTime) left).plus( (Duration) right);
         } else if ( left instanceof Duration && right instanceof LocalTime ) {
@@ -267,12 +275,16 @@ public class InfixOpNode
             return ((OffsetDateTime) left).minus( (Period) right);
         } else if ( left instanceof LocalDateTime && right instanceof Period ) {
             return ((LocalDateTime) left).minus( (Period) right);
+        } else if ( left instanceof LocalDate && right instanceof Period ) {
+            return ((LocalDate) left).minus( (Period) right);
         } else if ( left instanceof ZonedDateTime && right instanceof Duration ) {
             return ((ZonedDateTime) left).minus( (Duration) right);
         } else if ( left instanceof OffsetDateTime && right instanceof Duration ) {
             return ((OffsetDateTime) left).minus( (Duration) right);
         } else if ( left instanceof LocalDateTime && right instanceof Duration ) {
             return ((LocalDateTime) left).minus( (Duration) right);
+        } else if ( left instanceof LocalDate && right instanceof Duration ) {
+            return ((LocalDate) left).minusDays( ((Duration) right).toDays() );
         } else if ( left instanceof LocalTime && right instanceof Duration ) {
             return ((LocalTime) left).minus( (Duration) right);
         } else if ( left instanceof OffsetTime && right instanceof Duration ) {
