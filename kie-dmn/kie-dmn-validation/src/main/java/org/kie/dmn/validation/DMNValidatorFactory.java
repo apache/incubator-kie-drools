@@ -16,9 +16,13 @@
 
 package org.kie.dmn.validation;
 
-public class DMNValidatorFactory {
+public final class DMNValidatorFactory {
 
     public static DMNValidator newValidator() {
         return new DMNValidatorImpl();
+    }
+
+    private DMNValidatorFactory() {
+        // Constructing instances is not allowed for this class
     }
 }

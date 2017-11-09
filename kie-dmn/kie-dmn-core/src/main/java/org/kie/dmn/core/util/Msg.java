@@ -2,7 +2,7 @@ package org.kie.dmn.core.util;
 
 import org.kie.dmn.api.core.DMNMessageType;
 
-public class Msg {
+public final class Msg {
     // consolidated
     public static final Message2 UNSUPPORTED_ELEMENT                                 = new Message2( DMNMessageType.UNSUPPORTED_ELEMENT, "Element %s with type='%s' is not supported." );
     public static final Message2 REQ_INPUT_NOT_FOUND_FOR_NODE                        = new Message2( DMNMessageType.REQ_NOT_FOUND, "Required input '%s' not found on node '%s'" );
@@ -138,5 +138,9 @@ public class Msg {
         public Message4(DMNMessageType id, String mask) {
             super( id, mask );
         }
+    }
+
+    private Msg() {
+        // Constructing instances is not allowed for this class
     }
 }
