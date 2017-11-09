@@ -22,4 +22,8 @@ public interface NamedJobContext extends JobContext {
     String getJobName();
     
     Long getProcessInstanceId();
+    
+    default String getDeploymentId() {
+        return null;
+    }
 }

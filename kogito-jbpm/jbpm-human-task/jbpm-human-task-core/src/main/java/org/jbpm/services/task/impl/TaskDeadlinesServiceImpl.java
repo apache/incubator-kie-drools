@@ -99,7 +99,7 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
                     0,
                     null,
                     null ) ;
-            JobHandle handle = timerService.scheduleJob(deadlineJob, new TaskDeadlineJobContext(deadlineJob.getId(), task.getTaskData().getProcessInstanceId()), trigger);
+            JobHandle handle = timerService.scheduleJob(deadlineJob, new TaskDeadlineJobContext(deadlineJob.getId(), task.getTaskData().getProcessInstanceId(), deploymentId), trigger);
             logger.debug( "scheduling timer job for deadline {} and task {}  using timer service {}", deadlineJob.getId(), taskId, timerService);
             jobHandles.put(deadlineJob.getId(), handle);
 
@@ -146,7 +146,7 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
                     logger.debug("unscheduling timer job for deadline {} {} and task {}  using timer service {}", deadlineJob.getId(), summary.getDeadlineId(), taskId, timerService);
                     JobHandle jobHandle = jobHandles.remove(deadlineJob.getId()); 
                     if (jobHandle == null) {        
-                        jobHandle = ((GlobalTimerService) timerService).buildJobHandleForContext(new TaskDeadlineJobContext(deadlineJob.getId(), task.getTaskData().getProcessInstanceId()));
+                        jobHandle = ((GlobalTimerService) timerService).buildJobHandleForContext(new TaskDeadlineJobContext(deadlineJob.getId(), task.getTaskData().getProcessInstanceId(), deploymentId));
                     }
                     timerService.removeJob(jobHandle);
                     // mark the deadlines so they won't be rescheduled again
@@ -167,7 +167,7 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
                     logger.debug("unscheduling timer job for deadline {} and task {}  using timer service {}", deadlineJob.getId(), taskId, timerService);
                     JobHandle jobHandle = jobHandles.remove(deadlineJob.getId()); 
                     if (jobHandle == null) {        
-                        jobHandle = ((GlobalTimerService) timerService).buildJobHandleForContext(new TaskDeadlineJobContext(deadlineJob.getId(), task.getTaskData().getProcessInstanceId()));
+                        jobHandle = ((GlobalTimerService) timerService).buildJobHandleForContext(new TaskDeadlineJobContext(deadlineJob.getId(), task.getTaskData().getProcessInstanceId(), deploymentId));
                     }
                     timerService.removeJob(jobHandle);
                     // mark the deadlines so they won't be rescheduled again
@@ -217,7 +217,7 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
             logger.debug("unscheduling timer job for deadline {} {} and task {}  using timer service {}", deadlineJob.getId(), deadline.getId(), taskId, timerService);
             JobHandle jobHandle = jobHandles.remove(deadlineJob.getId()); 
             if (jobHandle == null) {        
-                jobHandle = ((GlobalTimerService) timerService).buildJobHandleForContext(new TaskDeadlineJobContext(deadlineJob.getId(), task.getTaskData().getProcessInstanceId()));
+                jobHandle = ((GlobalTimerService) timerService).buildJobHandleForContext(new TaskDeadlineJobContext(deadlineJob.getId(), task.getTaskData().getProcessInstanceId(), deploymentId));
             }
             timerService.removeJob(jobHandle);
             // mark the deadlines so they won't be rescheduled again                  
@@ -408,10 +408,12 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
         private JobHandle jobHandle;
         private String jobName;
         private Long processInstanceId;
+        private String deploymentId;
         
-        public TaskDeadlineJobContext(String jobName, Long processInstanceId) {
+        public TaskDeadlineJobContext(String jobName, Long processInstanceId, String deploymentId) {
             this.jobName = jobName;
             this.processInstanceId = processInstanceId;
+            this.deploymentId = deploymentId;
         }
         
         @Override
@@ -433,6 +435,11 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
 		public Long getProcessInstanceId() {
 			return processInstanceId;
 		}
+
+		@Override
+        public String getDeploymentId() {
+            return deploymentId;
+        }
 
         @Override
         public InternalWorkingMemory getWorkingMemory() {
