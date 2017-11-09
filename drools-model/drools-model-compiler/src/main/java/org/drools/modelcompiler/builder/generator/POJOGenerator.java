@@ -1,9 +1,13 @@
 package org.drools.modelcompiler.builder.generator;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
@@ -17,6 +21,7 @@ import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.drools.javaparser.ast.body.ConstructorDeclaration;
 import org.drools.javaparser.ast.body.FieldDeclaration;
 import org.drools.javaparser.ast.body.MethodDeclaration;
+import org.drools.javaparser.ast.comments.JavadocComment;
 import org.drools.javaparser.ast.expr.FieldAccessExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
@@ -26,6 +31,7 @@ import org.drools.javaparser.ast.stmt.BlockStmt;
 import org.drools.javaparser.ast.stmt.Statement;
 import org.drools.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.javaparser.ast.type.PrimitiveType;
+import org.drools.javaparser.ast.type.PrimitiveType.Primitive;
 import org.drools.javaparser.ast.type.Type;
 import org.drools.modelcompiler.builder.GeneratedClassWithPackage;
 import org.drools.modelcompiler.builder.PackageModel;
@@ -34,7 +40,6 @@ import org.kie.api.definition.type.Role;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import static java.text.MessageFormat.format;
-
 import static org.drools.javaparser.JavaParser.parseStatement;
 import static org.drools.javaparser.ast.NodeList.nodeList;
 import static org.drools.modelcompiler.builder.JavaParserCompiler.compileAll;
@@ -46,6 +51,13 @@ public class POJOGenerator {
     private static final String TO_STRING = "toString";
 
     private static final String TYPE_META_DATA_CALL = "typeMetaData";
+
+    public static final Map<String, Class<?>> predefinedClassLevelAnnotation = new HashMap<>();
+    static {
+        predefinedClassLevelAnnotation.put("role", Role.class);
+        predefinedClassLevelAnnotation.put("duration", org.kie.api.definition.type.Duration.class);
+        predefinedClassLevelAnnotation.put("expires", org.kie.api.definition.type.Expires.class);
+    }
 
     public static void generatePOJO(InternalKnowledgePackage pkg, PackageDescr packageDescr, PackageModel packageModel) {
         TypeResolver typeResolver = pkg.getTypeResolver();
@@ -88,18 +100,31 @@ public class POJOGenerator {
         packageModel.addTypeMetaDataExpressions(typeMetaDataCall);
     }
 
+    /**
+     * 
+     */
     public static ClassOrInterfaceDeclaration toClassDeclaration(TypeDeclarationDescr typeDeclaration) {
-
         EnumSet<Modifier> classModifiers = EnumSet.of(Modifier.PUBLIC);
         String generatedClassName = typeDeclaration.getTypeName();
         ClassOrInterfaceDeclaration generatedClass = new ClassOrInterfaceDeclaration(classModifiers, false, generatedClassName);
 
+        List<AnnotationDescr> softAnnotations = new ArrayList<>();
         for (AnnotationDescr ann : typeDeclaration.getAnnotations()) {
-            String annFqn = ann.getFullyQualifiedName();
-            NormalAnnotationExpr annExpr = generatedClass.addAndGetAnnotation(annFqn);
-            ann.getValueMap().forEach( (k, v) -> annExpr.addPair( k, getAnnotationValue(annFqn, k, v.toString()) ));
+            final String annFqn = Optional.ofNullable(ann.getFullyQualifiedName())
+                                          .orElse(Optional.ofNullable(predefinedClassLevelAnnotation.get(ann.getName())).map(Class::getCanonicalName).orElse(null));
+            if (annFqn != null) {
+                NormalAnnotationExpr annExpr = generatedClass.addAndGetAnnotation(annFqn);
+                ann.getValueMap().forEach((k, v) -> annExpr.addPair(k, getAnnotationValue(annFqn, k, v.toString())));
+            } else {
+                softAnnotations.add(ann);
+            }
         }
-
+        if (softAnnotations.size() > 0) {
+            String softAnnDictionary = softAnnotations.stream().map(a -> "<dt>" + a.getName() + "</dt><dd>" + a.getValuesAsString() + "</dd>").collect(Collectors.joining());
+            JavadocComment generatedClassJavadoc = new JavadocComment("<dl>" + softAnnDictionary + "</dl>");
+            generatedClass.setJavadocComment(generatedClassJavadoc);
+        }
+        
         generatedClass.addConstructor(Modifier.PUBLIC); // No-args ctor
 
         List<Statement> equalsFieldStatement = new ArrayList<>();
@@ -125,7 +150,7 @@ public class POJOGenerator {
                 fullArgumentsCtor.addParameter( returnType, fieldName );
 
                 equalsFieldStatement.add( generateEqualsForField( getter, fieldName ) );
-                hashCodeFieldStatement.add( generateHashCodeForField( getter, fieldName ) );
+                hashCodeFieldStatement.addAll(generateHashCodeForField(getter, fieldName));
                 toStringFieldStatement.add( format( "+ {0}+{1}", quote( fieldName + "=" ), fieldName ) );
             }
             fullArgumentsCtor.setBody( new BlockStmt( ctorFieldStatement ) );
@@ -203,13 +228,34 @@ public class POJOGenerator {
         return equals;
     }
 
-    private static Statement generateHashCodeForField(MethodDeclaration getter, String fieldName) {
-
+    private static List<Statement> generateHashCodeForField(MethodDeclaration getter, String fieldName) {
         Type type = getter.getType();
         if (type instanceof ClassOrInterfaceType) {
-            return parseStatement(format("result = 31 * result + ({0} != null ? {0}.hashCode() : 0);", fieldName));
+            return Arrays.asList(parseStatement(format("result = 31 * result + ({0} != null ? {0}.hashCode() : 0);", fieldName)));
         } else if (type instanceof PrimitiveType) {
-            return parseStatement(format("result = result + {0};", fieldName));
+            List<Statement> result = new ArrayList<>();
+            String primitiveToInt = fieldName;
+            Primitive primitiveType = ((PrimitiveType) type).getType();
+            switch (primitiveType) {
+                case BOOLEAN:
+                    primitiveToInt = format("({0} ? 1231 : 1237)", fieldName);
+                    break;
+                case DOUBLE:
+                    Statement doubleToLongStatement = parseStatement(format("long temp{0} = Double.doubleToLongBits({0});", fieldName));
+                    result.add(doubleToLongStatement);
+                    // please notice the actual primitiveToInt is using the doubleToLongStatement variable.
+                    primitiveToInt = format("(int) (temp{0} ^ (temp{0} >>> 32))", fieldName);
+                    break;
+                case FLOAT:
+                    primitiveToInt = format("Float.floatToIntBits({0})", fieldName);
+                    break;
+                case LONG:
+                    primitiveToInt = format("(int) ({0} ^ ({0} >>> 32))", fieldName);
+                    break;
+            }
+            Statement primitiveStatement = parseStatement(format("result = 31 * result + {0};", primitiveToInt));
+            result.add(primitiveStatement);
+            return result;
         } else {
             throw new RuntimeException("Unknown type");
         }
@@ -236,6 +282,14 @@ public class POJOGenerator {
     private static String getAnnotationValue(String annotationName, String valueName, String value) {
         if (annotationName.equals( Role.class.getCanonicalName() )) {
             return Role.Type.class.getCanonicalName() + "." + value.toUpperCase();
+        } else if (annotationName.equals(org.kie.api.definition.type.Expires.class.getCanonicalName())) {
+            if ("value".equals(valueName)) {
+                return quote(value);
+            } else if ("policy".equals(valueName)) {
+                return org.kie.api.definition.type.Expires.Policy.class.getCanonicalName() + "." + value.toUpperCase();
+            } else {
+                throw new UnsupportedOperationException("Unrecognized annotation value for Expires: " + valueName);
+            }
         }
         throw new UnsupportedOperationException("Unknown annotation: " + annotationName);
     }
