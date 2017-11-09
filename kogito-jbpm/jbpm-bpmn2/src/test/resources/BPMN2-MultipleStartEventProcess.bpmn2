@@ -7,7 +7,7 @@
     <startEvent id="StartEvent_1" name="StartTimer">
       <outgoing>SequenceFlow_3</outgoing>
       <timerEventDefinition id="TimerEventDefinition_1">
-        <timeCycle xsi:type="tFormalExpression" id="_FormalExpression_2">500</timeCycle>
+        <timeCycle xsi:type="tFormalExpression" id="_FormalExpression_2">R2/PT0.5S</timeCycle>
       </timerEventDefinition>
     </startEvent>
     <sequenceFlow id="SequenceFlow_2" tns:priority="1" name="" sourceRef="_1" targetRef="ExclusiveGateway_1"/>

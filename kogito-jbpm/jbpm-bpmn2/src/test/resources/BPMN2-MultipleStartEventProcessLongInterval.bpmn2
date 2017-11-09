@@ -3,12 +3,11 @@
   <process id="MultipleStartEvents" tns:packageName="defaultPackage" name="MultipleStartEvents" isExecutable="true" processType="Private">
     <startEvent id="_1" name="StartProcess">
       <outgoing>SequenceFlow_2</outgoing>
-      <signalEventDefinition id="SignalEventDefinition_1" signalRef="startSignal"/>
     </startEvent>
     <startEvent id="StartEvent_1" name="StartTimer">
       <outgoing>SequenceFlow_3</outgoing>
       <timerEventDefinition id="TimerEventDefinition_1">
-        <timeCycle xsi:type="tFormalExpression" id="_FormalExpression_2">R2/PT0.5S</timeCycle>
+        <timeDuration xsi:type="tFormalExpression" id="_FormalExpression_2">P10D</timeDuration>
       </timerEventDefinition>
     </startEvent>
     <sequenceFlow id="SequenceFlow_2" tns:priority="1" name="" sourceRef="_1" targetRef="ExclusiveGateway_1"/>
@@ -36,7 +35,7 @@
           <dataInputRefs>_DataInput_6</dataInputRefs>
           <dataInputRefs>_DataInput_7</dataInputRefs>
         </inputSet>
-        <outputSet id="OutputSet_1"/>
+        <outputSet/>
       </ioSpecification>
       <dataInputAssociation id="_DataInputAssociation_2">
         <targetRef>_DataInput_2</targetRef>
@@ -73,16 +72,16 @@
       <bpmndi:BPMNShape id="BPMNShape_StartEvent_1" bpmnElement="_1" isHorizontal="true">
         <dc:Bounds height="48.0" width="48.0" x="45.0" y="45.0"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_StartEvent_2" bpmnElement="StartEvent_1" isHorizontal="true">
+      <bpmndi:BPMNShape id="BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds height="48.0" width="48.0" x="45.0" y="190.0"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_UserTask_1" bpmnElement="UserTask_1" isHorizontal="true">
+      <bpmndi:BPMNShape id="BPMNShape_UserTask_1" bpmnElement="UserTask_1">
         <dc:Bounds height="50.0" width="110.0" x="330.0" y="111.0"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_EndEvent_1" bpmnElement="EndEvent_1" isHorizontal="true">
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_1" bpmnElement="EndEvent_1">
         <dc:Bounds height="48.0" width="48.0" x="580.0" y="114.0"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_ExclusiveGateway_1" bpmnElement="ExclusiveGateway_1" isHorizontal="true">
+      <bpmndi:BPMNShape id="BPMNShape_ExclusiveGateway_1" bpmnElement="ExclusiveGateway_1">
         <dc:Bounds height="50.0" width="50.0" x="187.0" y="112.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_1" bpmnElement="SequenceFlow_1" sourceElement="BPMNShape_UserTask_1" targetElement="BPMNShape_EndEvent_1">
