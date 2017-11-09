@@ -16,6 +16,10 @@
 
 package org.drools.modelcompiler.constraints;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.phreak.ReactiveObject;
 import org.drools.core.rule.Declaration;
@@ -23,10 +27,6 @@ import org.drools.core.spi.DataProvider;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
 import org.drools.model.functions.Function1;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
 
 public class LambdaDataProvider implements DataProvider {
 
@@ -53,7 +53,7 @@ public class LambdaDataProvider implements DataProvider {
 
     @Override
     public Iterator getResults( Tuple tuple, InternalWorkingMemory wm, PropagationContext ctx, Object providerContext ) {
-        Object obj = tuple.get( declaration ).getObject();
+        Object obj = declaration.getExtractor().isGlobal() ? declaration.getExtractor().getValue(wm, declaration.getIdentifier()) : tuple.get(declaration).getObject();
         Object result = providerFunction.apply( obj );
 
         if (isReactive()) {
