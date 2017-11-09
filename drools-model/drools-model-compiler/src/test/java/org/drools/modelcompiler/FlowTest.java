@@ -17,6 +17,7 @@
 package org.drools.modelcompiler;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -80,6 +81,7 @@ import static org.drools.model.DSL.when;
 import static org.drools.model.DSL.window;
 import static org.drools.modelcompiler.BaseModelTest.getObjectsIntoList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -818,6 +820,50 @@ public class FlowTest {
 
         assertEquals("Alan", result.getValue());
    }
+
+    @Test
+    public void testFromGlobal() throws Exception {
+        // global java.util.List list
+        // rule R when
+        //   $o : String(length > 3) from list
+        // then
+        //   insert($o);
+        // end
+
+        final Global<List> var_list = globalOf(type(List.class),
+                                                         "defaultpkg",
+                                                         "list");
+
+        final Variable<String> var_$o = declarationOf(type(String.class),
+                                                      "$o",
+                                                      from(var_list, x -> x)); // cannot use Function.identity() here because target type is ?.
+
+        Rule rule = rule("R").build(expr("$expr$1$",
+                                         var_$o,
+                                         (_this) -> _this.length() > 3).indexedBy(int.class,
+                                                                                  org.drools.model.Index.ConstraintType.GREATER_THAN,
+                                                                                  0,
+                                                                                  _this -> _this.length(),
+                                                                                  3)
+                                                                       .reactOn("length"),
+                                    on(var_$o).execute((drools, $o) -> {
+                                        drools.insert($o);
+                                    }));
+
+        Model model = new ModelImpl().addGlobal(var_list).addRule(rule);
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model);
+        KieSession ksession = kieBase.newKieSession();
+
+        List<String> messages = Arrays.asList("a", "Hello World!", "b");
+        ksession.setGlobal("list", messages);
+
+        ksession.fireAllRules();
+
+        List<String> results = getObjectsIntoList(ksession, String.class);
+        assertFalse(results.contains("a"));
+        assertTrue(results.contains("Hello World!"));
+        assertFalse(results.contains("b"));
+    }
 
     @Test
     public void testConcatenatedFrom() {
