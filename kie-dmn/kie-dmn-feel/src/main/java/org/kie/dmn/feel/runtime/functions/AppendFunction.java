@@ -41,4 +41,19 @@ public class AppendFunction
         result.addAll(Arrays.asList(items));
         return FEELFnResult.ofResult( result );
     }
+
+    public FEELFnResult<List<Object>> invoke( @ParameterName( "list" ) Object singleton, @ParameterName( "item" ) Object[] items ) {
+        if ( singleton == null ) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "cannot be null"));
+        }
+        if ( items == null ) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "item", "cannot be null"));
+        }
+        // spec requires us to return a new list
+        final List<Object> result = new ArrayList<Object>();
+        result.add( singleton );
+        result.addAll(Arrays.asList(items));
+        return FEELFnResult.ofResult( result );
+    }
+
 }

@@ -97,6 +97,7 @@ public class FEELFunctionsTest extends BaseFEELTest {
                 { "append( [1, 2] )", Arrays.asList( BigDecimal.valueOf( 1 ), BigDecimal.valueOf( 2 ) ) , null},
                 { "append( [1, 2], null, 4 )", Arrays.asList( BigDecimal.valueOf( 1 ), BigDecimal.valueOf( 2 ), null, BigDecimal.valueOf( 4 ) ) , null},
                 { "append( null, 1, 2 )", null , FEELEvent.Severity.ERROR},
+                { "append( 0, 1, 2 )",  Arrays.asList( BigDecimal.valueOf( 0 ), BigDecimal.valueOf( 1 ), BigDecimal.valueOf( 2 ) ), null},
                 { "concatenate( [1, 2], [3] )", Arrays.asList( BigDecimal.valueOf( 1 ), BigDecimal.valueOf( 2 ), BigDecimal.valueOf( 3 ) ) , null},
                 { "concatenate( [1, 2], 3, [4] )", Arrays.asList( BigDecimal.valueOf( 1 ), BigDecimal.valueOf( 2 ), BigDecimal.valueOf( 3 ), BigDecimal.valueOf( 4 ) ) , null},
                 { "concatenate( [1, 2], null )", null , FEELEvent.Severity.ERROR},
