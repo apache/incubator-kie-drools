@@ -16,7 +16,10 @@
 
 package org.drools.modelcompiler.builder.generator;
 
+import java.util.Optional;
+
 import org.drools.javaparser.ast.expr.Expression;
+import org.drools.javaparser.ast.expr.MethodCallExpr;
 
 public class TypedExpression {
 
@@ -24,6 +27,7 @@ public class TypedExpression {
     private Class<?> type;
     private String fieldName;
     private Expression prefixExpression;
+    private Optional<String> unificationVariable = Optional.empty();
 
     public TypedExpression() { }
 
@@ -39,6 +43,11 @@ public class TypedExpression {
         this.expression = expression;
         this.type = type;
         this.fieldName = fieldName;
+    }
+
+    public TypedExpression( String unificationVariable, Class<?> type) {
+        this.unificationVariable = Optional.of(unificationVariable);
+        this.type = type;
     }
 
     public String getFieldName() {
@@ -78,5 +87,9 @@ public class TypedExpression {
 
     public boolean isPrimitive() {
         return type != null && type.isPrimitive();
+    }
+
+    public Optional<String> getUnificationVariable() {
+        return unificationVariable;
     }
 }

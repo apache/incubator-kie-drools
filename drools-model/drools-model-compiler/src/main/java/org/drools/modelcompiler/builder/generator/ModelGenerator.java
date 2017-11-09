@@ -89,7 +89,6 @@ import org.drools.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.javaparser.ast.type.Type;
 import org.drools.javaparser.ast.type.UnknownType;
 import org.drools.model.BitMask;
-import org.drools.model.QueryDef;
 import org.drools.model.Rule;
 import org.drools.model.Variable;
 import org.drools.modelcompiler.builder.PackageModel;
@@ -140,7 +139,6 @@ public class ModelGenerator {
     public static final String EXECUTE_CALL = "execute";
     public static final String EXECUTESCRIPT_CALL = "executeScript";
     public static final String ON_CALL = "on";
-    public static final String QUERY_CALL = "query";
     public static final String EXPR_CALL = "expr";
     public static final String INPUT_CALL = "input";
     public static final String BIND_CALL = "bind";
@@ -155,14 +153,22 @@ public class ModelGenerator {
         new WindowReferenceGenerator(packageModel, pkg).addWindowReferences(packageDescr.getWindowDeclarations());
         packageModel.addAllFunctions(packageDescr.getFunctions().stream().map(FunctionGenerator::toFunction).collect(toList()));
 
+
+        for(RuleDescr descr : packageDescr.getRules()) {
+            if (descr instanceof QueryDescr) {
+                QueryGenerator.processQueryDef(pkg, packageModel, (QueryDescr) descr);
+            }
+        }
+
         for (RuleDescr descr : packageDescr.getRules()) {
             if (descr instanceof QueryDescr) {
-                processQuery(pkg, packageModel, (QueryDescr) descr);
+                QueryGenerator.processQuery(packageModel, (QueryDescr) descr);
             } else {
                 processRule(pkg, packageModel, descr);
             }
         }
     }
+
 
     private static void processRule(InternalKnowledgePackage pkg, PackageModel packageModel, RuleDescr ruleDescr) {
         RuleContext context = new RuleContext(pkg, packageModel.getExprIdGenerator(), Optional.of(ruleDescr));
@@ -194,7 +200,8 @@ public class ModelGenerator {
 
         BlockStmt ruleConsequence = rewriteConsequence(context, ruleDescr.getConsequence().toString());
 
-        BlockStmt ruleVariablesBlock = createRuleVariables(packageModel, context);
+        BlockStmt ruleVariablesBlock = new BlockStmt();
+        createVariables(ruleVariablesBlock, packageModel, context);
         ruleMethod.setBody(ruleVariablesBlock);
 
         List<String> usedDeclarationInRHS = extractUsedDeclarations(packageModel, context, ruleConsequence);
@@ -320,43 +327,13 @@ public class ModelGenerator {
         return onCall;
     }
 
-    public static BlockStmt createRuleVariables(PackageModel packageModel, RuleContext context) {
-        BlockStmt ruleBlock = new BlockStmt();
+    public static void createVariables(BlockStmt block, PackageModel packageModel, RuleContext context) {
 
         for (DeclarationSpec decl : context.getDeclarations()) {
-            if (!packageModel.getGlobals().containsKey(decl.getBindingId())) {
-                addVariable(ruleBlock, decl);
+            if (!packageModel.getGlobals().containsKey(decl.getBindingId()) && !context.queryParameterWithName(p -> p.name.equals(decl.getBindingId())).isPresent()) {
+                addVariable(block, decl);
             }
         }
-        return ruleBlock;
-    }
-
-    private static void processQuery(InternalKnowledgePackage pkg, PackageModel packageModel, QueryDescr queryDescr) {
-        RuleContext context = new RuleContext(pkg, packageModel.getExprIdGenerator(), Optional.of(queryDescr));
-        visit(context, packageModel, queryDescr);
-        MethodDeclaration queryMethod = new MethodDeclaration(EnumSet.of(Modifier.PRIVATE), getQueryType(context.queryParameters), "query_" + toId(queryDescr.getName()));
-
-        BlockStmt queryVariables = createRuleVariables(packageModel, context);
-        queryMethod.setBody(queryVariables);
-        VariableDeclarationExpr queryVar = new VariableDeclarationExpr(getQueryType(context.queryParameters), QUERY_CALL);
-
-        MethodCallExpr queryCall = new MethodCallExpr(null, QUERY_CALL);
-        if (!queryDescr.getNamespace().isEmpty()) {
-            queryCall.addArgument( new StringLiteralExpr( queryDescr.getNamespace() ) );
-        }
-        queryCall.addArgument(new StringLiteralExpr(queryDescr.getName()));
-        for (QueryParameter qp : context.queryParameters) {
-            queryCall.addArgument(new NameExpr(toVar(qp.name)));
-        }
-
-        MethodCallExpr viewCall = new MethodCallExpr(queryCall, BUILD_CALL);
-        context.expressions.forEach(viewCall::addArgument);
-
-        AssignExpr ruleAssign = new AssignExpr(queryVar, viewCall, AssignExpr.Operator.ASSIGN);
-        queryVariables.addStatement(ruleAssign);
-
-        queryVariables.addStatement(new ReturnStmt(QUERY_CALL));
-        packageModel.putQueryMethod(queryMethod);
     }
 
     private static void addVariable(BlockStmt ruleBlock, DeclarationSpec decl) {
@@ -397,22 +374,6 @@ public class ModelGenerator {
         ruleBlock.addStatement(var_assign);
     }
 
-
-    private static ClassOrInterfaceType getQueryType(List<QueryParameter> queryParameters) {
-        Class<?> res = QueryDef.getQueryClassByArity(queryParameters.size());
-        ClassOrInterfaceType queryType = JavaParser.parseClassOrInterfaceType(res.getCanonicalName());
-
-        Type[] genericType = queryParameters.stream()
-                .map(e -> e.type)
-                .map(DrlxParseUtil::classToReferenceType)
-                .toArray(Type[]::new);
-
-        if (genericType.length > 0) {
-            queryType.setTypeArguments(genericType);
-        }
-
-        return queryType;
-    }
 
     private static String rewriteConsequenceBlock( RuleContext context, String consequence ) {
         int modifyPos = consequence.indexOf( "modify" );
@@ -556,21 +517,6 @@ public class ModelGenerator {
         }
     }
 
-
-    private static void visit(RuleContext context, PackageModel packageModel, QueryDescr descr) {
-
-        for (int i = 0; i < descr.getParameters().length; i++) {
-            final String argument = descr.getParameters()[i];
-            final String type = descr.getParameterTypes()[i];
-            context.addDeclaration(new DeclarationSpec(argument, getClassFromContext(context.getPkg(), type)));
-            QueryParameter queryParameter = new QueryParameter(argument, getClassFromContext(context.getPkg(),type));
-            context.queryParameters.add(queryParameter);
-            packageModel.putQueryVariable("query_" + descr.getName(), queryParameter);
-        }
-
-        visit(context, packageModel, descr.getLhs());
-    }
-
     private static void visit( RuleContext context, PackageModel packageModel, ConditionalElementDescr descr, String methodName ) {
         final MethodCallExpr ceDSL = new MethodCallExpr(null, methodName);
         context.addExpression(ceDSL);
@@ -591,7 +537,7 @@ public class ModelGenerator {
         processExpression( context, drlxParse(context, packageModel, patternType, bindingId, expression) );
     }
 
-    private static void visit(RuleContext context, PackageModel packageModel, AndDescr descr) {
+    public static void visit(RuleContext context, PackageModel packageModel, AndDescr descr) {
         // if it's the first (implied) `and` wrapping the first level of patterns, skip adding it to the DSL.
         if ( context.getExprPointerLevel() != 1 ) {
             final MethodCallExpr andDSL = new MethodCallExpr(null, "and");
@@ -612,7 +558,11 @@ public class ModelGenerator {
         List<? extends BaseDescr> constraintDescrs = pattern.getConstraint().getDescrs();
 
         // Expression is a query, get bindings from query parameter type
-        if ( bindQuery( context, packageModel, className, constraintDescrs ) ) {
+        if ( QueryGenerator.bindQuery( context, packageModel, className, constraintDescrs ) ) {
+            return;
+        }
+
+        if(QueryGenerator.createQueryCall(className, packageModel, context, pattern)) {
             return;
         }
 
@@ -633,6 +583,16 @@ public class ModelGenerator {
             dslExpr.addArgument(new NameExpr(toVar(pattern.getIdentifier())));
             context.addExpression( dslExpr );
         } else {
+
+            final boolean allConstraintsArePositional = !constraintDescrs.isEmpty() && constraintDescrs.stream()
+                    .allMatch(c -> c instanceof ExprConstraintDescr
+                            && ((ExprConstraintDescr) c).getType().equals(ExprConstraintDescr.Type.POSITIONAL));
+            if(allConstraintsArePositional) {
+                final MethodCallExpr andDSL = new MethodCallExpr(null, "and");
+                context.addExpression(andDSL);
+                context.pushExprPointer(andDSL::addArgument);
+            }
+
             for (BaseDescr constraint : constraintDescrs) {
                 String expression = getConstraintExpression(patternType, constraint);
                 String patternIdentifier = pattern.getIdentifier();
@@ -654,8 +614,16 @@ public class ModelGenerator {
                             .orElseGet(Collections::emptyList);
                     drlxParseResult.reactOnProperties.addAll(lookAheadFieldsOfIdentifier);
                     drlxParseResult.watchedProperties = getPatternListenedProperties(pattern);
+
+                    if(pattern.isUnification()) {
+                        drlxParseResult.setPatternBindingUnification(true);
+                    }
+
                     processExpression( context, drlxParseResult );
                 }
+            }
+            if(allConstraintsArePositional) {
+                context.popExprPointer();
             }
         }
     }
@@ -683,46 +651,19 @@ public class ModelGenerator {
         return watchAnn == null ? new String[0] : watchAnn.getValue().toString().split(",");
     }
 
-    private static boolean bindQuery( RuleContext context, PackageModel packageModel, String className, List<? extends BaseDescr> descriptors ) {
-        String queryName = "query_" + className;
-        MethodDeclaration queryMethod = packageModel.getQueryMethod(queryName);
-        if (queryMethod != null) {
-            NameExpr queryCall = new NameExpr(queryMethod.getNameAsString());
-            MethodCallExpr callCall = new MethodCallExpr(queryCall, "call");
 
-            for (int i = 0; i < descriptors.size(); i++) {
-                String itemText = descriptors.get(i).getText();
-                if(isLiteral(itemText)) {
-                    MethodCallExpr valueOfMethod = new MethodCallExpr(null, "valueOf");
-                    valueOfMethod.addArgument(new NameExpr(itemText));
-                    callCall.addArgument(valueOfMethod);
-                } else {
-                    QueryParameter qp = packageModel.queryVariables(queryName).get(i);
-                    context.addDeclaration(new DeclarationSpec(itemText, qp.type));
-                    callCall.addArgument(new NameExpr(toVar(itemText)));
-                }
-            }
-
-            context.addExpression(callCall);
-            return true;
-        }
-        return false;
-    }
-
-    private static void processExpression( RuleContext context, DrlxParseResult drlxParseResult ) {
-        if (drlxParseResult.expr != null) {
-            Expression dslExpr = buildExpressionWithIndexing( drlxParseResult );
-            context.addExpression( dslExpr );
+    private static void processExpression(RuleContext context, DrlxParseResult drlxParseResult) {
+        if (drlxParseResult.hasUnificationVariable()) {
+            Expression dslExpr = buildUnificationExpression(context, drlxParseResult);
+            context.addExpression(dslExpr);
+        } else if (drlxParseResult.expr != null) {
+            Expression dslExpr = buildExpressionWithIndexing(context, drlxParseResult);
+            context.addExpression(dslExpr);
         }
         if (drlxParseResult.exprBinding != null) {
-            Expression dslExpr = buildBinding( drlxParseResult );
-            context.addExpression( dslExpr );
+            Expression dslExpr = buildBinding(drlxParseResult);
+            context.addExpression(dslExpr);
         }
-    }
-
-    public static boolean isLiteral(String value) {
-        return value != null && value.length() > 0 &&
-                ( Character.isDigit(value.charAt(0)) || value.charAt(0) == '"' || "true".equals(value) || "false".equals(value) || "null".equals(value) );
     }
 
     public static DrlxParseResult drlxParse(RuleContext context, PackageModel packageModel, Class<?> patternType, String bindingId, String expression) {
@@ -754,7 +695,7 @@ public class ModelGenerator {
             Operator operator = binaryExpr.getOperator();
 
             ConstraintType decodeConstraintType = DrlxParseUtil.toConstraintType( operator );
-            Set<String> usedDeclarations = new HashSet<>();
+            List<String> usedDeclarations = new ArrayList<>();
             Set<String> reactOnProperties = new HashSet<>();
             TypedExpression left = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, binaryExpr.getLeft(), usedDeclarations, reactOnProperties );
             TypedExpression right = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, binaryExpr.getRight(), usedDeclarations, reactOnProperties );
@@ -792,7 +733,7 @@ public class ModelGenerator {
         if ( drlxExpr instanceof UnaryExpr ) {
             UnaryExpr unaryExpr = (UnaryExpr) drlxExpr;
 
-            Set<String> usedDeclarations = new HashSet<>();
+            List<String> usedDeclarations = new ArrayList<>();
             Set<String> reactOnProperties = new HashSet<>();
             TypedExpression left = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, unaryExpr, usedDeclarations, reactOnProperties );
 
@@ -803,7 +744,7 @@ public class ModelGenerator {
         if ( drlxExpr instanceof PointFreeExpr ) {
             PointFreeExpr pointFreeExpr = (PointFreeExpr) drlxExpr;
 
-            Set<String> usedDeclarations = new HashSet<>();
+            List<String> usedDeclarations = new ArrayList<>();
             Set<String> reactOnProperties = new HashSet<>();
             TypedExpression left = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, pointFreeExpr.getLeft(), usedDeclarations, reactOnProperties );
             DrlxParseUtil.toTypedExpression( context, packageModel, patternType, pointFreeExpr.getRight(), usedDeclarations, reactOnProperties );
@@ -862,10 +803,12 @@ public class ModelGenerator {
 
         private String exprId;
         private String patternBinding;
+        boolean isPatternBindingUnification = false;
+
         private String exprBinding;
 
         ConstraintType decodeConstraintType;
-        Set<String> usedDeclarations = Collections.emptySet();
+        List<String> usedDeclarations = Collections.emptyList();
         Set<String> reactOnProperties = Collections.emptySet();
         String[] watchedProperties;
 
@@ -886,13 +829,18 @@ public class ModelGenerator {
             return this;
         }
 
-        public DrlxParseResult setUsedDeclarations( Set<String> usedDeclarations ) {
+        public DrlxParseResult setUsedDeclarations( List<String> usedDeclarations ) {
             this.usedDeclarations = usedDeclarations;
             return this;
         }
 
         public DrlxParseResult setReactOnProperties( Set<String> reactOnProperties ) {
             this.reactOnProperties = reactOnProperties;
+            return this;
+        }
+
+        public DrlxParseResult setPatternBindingUnification( Boolean unification) {
+            this.isPatternBindingUnification = unification;
             return this;
         }
 
@@ -938,6 +886,19 @@ public class ModelGenerator {
         public void setExprBinding(String exprBinding) {
             this.exprBinding = exprBinding;
         }
+
+        public boolean hasUnificationVariable() {
+            return Optional.ofNullable(left).flatMap(TypedExpression::getUnificationVariable).isPresent() ||
+                    Optional.ofNullable(right).flatMap(TypedExpression::getUnificationVariable).isPresent();
+        }
+
+        public String getUnificationVariable() {
+            return left.getUnificationVariable().isPresent() ? left.getUnificationVariable().get() : right.getUnificationVariable().get();
+        }
+
+        public Class<?> getUnificationVariableType() {
+            return left.getUnificationVariable().isPresent() ? right.getType() : left.getType();
+        }
     }
 
 
@@ -953,26 +914,39 @@ public class ModelGenerator {
         }
     }
 
-    public static Expression buildExpressionWithIndexing(DrlxParseResult drlxParseResult) {
+    public static Expression buildExpressionWithIndexing(RuleContext context, DrlxParseResult drlxParseResult) {
         String exprId = drlxParseResult.exprId;
         MethodCallExpr exprDSL = new MethodCallExpr(null, EXPR_CALL);
         if (exprId != null && !"".equals(exprId)) {
             exprDSL.addArgument( new StringLiteralExpr(exprId) );
         }
 
-        exprDSL = buildExpression( drlxParseResult, exprDSL );
+        exprDSL = buildExpression(context, drlxParseResult, exprDSL );
         exprDSL = buildIndexedBy( drlxParseResult, exprDSL );
         exprDSL = buildReactOn( drlxParseResult, exprDSL );
         return exprDSL;
     }
 
-    private static MethodCallExpr buildExpression( DrlxParseResult drlxParseResult, MethodCallExpr exprDSL ) {
-        exprDSL.addArgument( new NameExpr(toVar(drlxParseResult.patternBinding)) );
-        drlxParseResult.usedDeclarations.stream().map( x -> new NameExpr(toVar(x))).forEach(exprDSL::addArgument);
-        exprDSL.addArgument(buildConstraintExpression( drlxParseResult, drlxParseResult.expr ));
+    public static Expression buildUnificationExpression(RuleContext context, DrlxParseResult drlxParseResult) {
+        MethodCallExpr exprDSL = buildBinding(drlxParseResult);
+        context.addDeclaration(new DeclarationSpec(drlxParseResult.getUnificationVariable(), drlxParseResult.getUnificationVariableType()));
         return exprDSL;
     }
 
+    private static MethodCallExpr buildExpression(RuleContext context, DrlxParseResult drlxParseResult, MethodCallExpr exprDSL ) {
+        final List<String> usedDeclarationsWithUnification = new ArrayList<>();
+        if(!drlxParseResult.isPatternBindingUnification) {
+            exprDSL.addArgument(new NameExpr(toVar(drlxParseResult.patternBinding)));
+        } else {
+            usedDeclarationsWithUnification.add(drlxParseResult.patternBinding);
+        }
+        usedDeclarationsWithUnification.addAll(drlxParseResult.usedDeclarations);
+        usedDeclarationsWithUnification.stream()
+                .map(x -> QueryGenerator.substituteBindingWithQueryParameter(context, x))
+                .forEach(exprDSL::addArgument);
+        exprDSL.addArgument(buildConstraintExpression( drlxParseResult, drlxParseResult.expr ));
+        return exprDSL;
+    }
 
     private static MethodCallExpr buildIndexedBy( DrlxParseResult drlxParseResult, MethodCallExpr exprDSL ) {
         ConstraintType decodeConstraintType = drlxParseResult.decodeConstraintType;
@@ -1001,7 +975,7 @@ public class ModelGenerator {
             indexedByDSL.addArgument( "" + indexIdGenerator.getFieldId( drlxParseResult.patternType, left.getFieldName() ) );
             indexedByDSL.addArgument( indexedBy_leftOperandExtractor );
 
-            Set<String> usedDeclarations = drlxParseResult.usedDeclarations;
+            List<String> usedDeclarations = drlxParseResult.usedDeclarations;
             if ( usedDeclarations.isEmpty() ) {
                 indexedByDSL.addArgument( right.getExpression() );
             } else if ( usedDeclarations.size() == 1 ) {
@@ -1010,7 +984,7 @@ public class ModelGenerator {
                 indexedBy_rightOperandExtractor.setBody(new ExpressionStmt(!leftContainsThis ? left.getExpression() : right.getExpression()) );
                 indexedByDSL.addArgument( indexedBy_rightOperandExtractor );
             } else {
-                throw new UnsupportedOperationException( "TODO" ); // TODO: possibly not to be indexed
+//                throw new UnsupportedOperationException( "TODO" ); // TODO: possibly not to be indexed
             }
             return indexedByDSL;
         }
@@ -1040,9 +1014,13 @@ public class ModelGenerator {
         return drlxParseResult.isStatic ? expr : generateLambdaWithoutParameters(drlxParseResult.usedDeclarations, expr);
     }
 
-    public static Expression buildBinding(DrlxParseResult drlxParseResult ) {
+    public static MethodCallExpr buildBinding(DrlxParseResult drlxParseResult ) {
         MethodCallExpr bindDSL = new MethodCallExpr(null, BIND_CALL);
-        bindDSL.addArgument( new NameExpr(toVar(drlxParseResult.exprBinding)) );
+        if(drlxParseResult.hasUnificationVariable()) {
+            bindDSL.addArgument(new NameExpr(toVar(drlxParseResult.getUnificationVariable())));
+        } else {
+            bindDSL.addArgument( new NameExpr(toVar(drlxParseResult.exprBinding)) );
+        }
         MethodCallExpr bindAsDSL = new MethodCallExpr(bindDSL, BIND_AS_CALL);
         bindAsDSL.addArgument( new NameExpr(toVar(drlxParseResult.patternBinding)) );
         bindAsDSL.addArgument( buildConstraintExpression( drlxParseResult, drlxParseResult.left.getExpression() ) );

@@ -49,6 +49,8 @@ import org.drools.model.Model;
 import org.drools.model.WindowReference;
 import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
+import org.drools.modelcompiler.builder.generator.ModelGenerator;
+import org.drools.modelcompiler.builder.generator.QueryGenerator;
 import org.drools.modelcompiler.builder.generator.QueryParameter;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
@@ -64,6 +66,8 @@ public class PackageModel {
     private Map<String, MethodDeclaration> ruleMethods = new LinkedHashMap<>(); // keep rules order to obey implicit salience
 
     private Map<String, MethodDeclaration> queryMethods = new HashMap<>();
+
+    private Map<String, QueryGenerator.QueryDefWithType> queryDefWithType = new HashMap<>();
 
     private Map<String, MethodCallExpr> windowReferences = new HashMap<>();
 
@@ -136,6 +140,10 @@ public class PackageModel {
 
     public List<QueryParameter> queryVariables(String queryName) {
         return this.queryVariables.get(queryName);
+    }
+
+    public Map<String, QueryGenerator.QueryDefWithType> getQueryDefWithType() {
+        return queryDefWithType;
     }
 
     public void addAllFunctions(List<MethodDeclaration> functions) {
@@ -248,11 +256,16 @@ public class PackageModel {
             addGlobalField(rulesClass, getName(), g.getKey(), g.getValue());
         }
 
+        for(Map.Entry<String, QueryGenerator.QueryDefWithType> queryDef: queryDefWithType.entrySet()) {
+            FieldDeclaration field = rulesClass.addField(queryDef.getValue().getQueryType(), queryDef.getKey(), Modifier.FINAL);
+            field.getVariables().get(0).setInitializer(queryDef.getValue().getMethodCallExpr());
+        }
+
         for(Map.Entry<String, MethodDeclaration> methodName: queryMethods.entrySet()) {
             FieldDeclaration field = rulesClass.addField(methodName.getValue().getType(), methodName.getKey(), Modifier.FINAL);
             field.getVariables().get(0).setInitializer(new MethodCallExpr(null, methodName.getKey()));
         }
-        
+
         // instance initializer block.
         // add to `rules` list the result of invoking each method for rule 
         InitializerDeclaration rulesListInitializer = new InitializerDeclaration();

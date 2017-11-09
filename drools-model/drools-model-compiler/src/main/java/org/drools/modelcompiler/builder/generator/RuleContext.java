@@ -3,13 +3,12 @@ package org.drools.modelcompiler.builder.generator;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
@@ -18,16 +17,17 @@ import org.drools.javaparser.ast.expr.Expression;
 
 public class RuleContext {
     private final InternalKnowledgePackage pkg;
-    private DRLIdGenerator exprIdGenerator;
-    private final Optional<RuleDescr> ruleDescr;
+    private DRLIdGenerator idGenerator;
+    private final Optional<RuleDescr> descr;
 
     private List<DeclarationSpec> declarations = new ArrayList<>();
     private List<DeclarationSpec> ooPathDeclarations = new ArrayList<>();
-    List<QueryParameter> queryParameters = new ArrayList<>();
     Deque<Consumer<Expression>> exprPointer = new LinkedList<>();
     List<Expression> expressions = new ArrayList<>();
-    Set<String> queryName = new HashSet<>();
     Map<String, String> namedConsequences = new HashMap<>();
+
+    List<QueryParameter> queryParameters = new ArrayList<>();
+    Optional<String> queryName = Optional.empty();
 
     private RuleDialect ruleDialect = RuleDialect.JAVA; // assumed is java by default as per Drools manual.
     public static enum RuleDialect {
@@ -39,8 +39,8 @@ public class RuleContext {
 
     public RuleContext(InternalKnowledgePackage pkg, DRLIdGenerator exprIdGenerator, Optional<RuleDescr> ruleDescr) {
         this.pkg = pkg;
-        this.exprIdGenerator = exprIdGenerator;
-        this.ruleDescr = ruleDescr;
+        this.idGenerator = exprIdGenerator;
+        this.descr = ruleDescr;
         exprPointer.push( this.expressions::add );
     }
 
@@ -92,15 +92,23 @@ public class RuleContext {
     }
 
     public String getExprId(Class<?> patternType, String drlConstraint) {
-        return exprIdGenerator.getExprId(patternType, drlConstraint);
+        return idGenerator.getExprId(patternType, drlConstraint);
     }
 
     public String getConditionId(Class<?> patternType, String drlConstraint) {
-        return exprIdGenerator.getCondId(patternType, drlConstraint);
+        return idGenerator.getCondId(patternType, drlConstraint);
     }
 
     public String getOOPathId(Class<?> patternType, String drlConstraint) {
-        return exprIdGenerator.getOOPathId(patternType, drlConstraint);
+        return idGenerator.getOOPathId(patternType, drlConstraint);
+    }
+
+    public String getOrCreateUnificationId(String drlConstraint) {
+        return idGenerator.getOrCreateUnificationVariable(drlConstraint);
+    }
+
+    public Optional<String> getUnificationId(String drlConstraint) {
+        return idGenerator.getUnificationVariable(drlConstraint);
     }
 
     public void addNamedConsequence(String key, String value) {
@@ -108,7 +116,7 @@ public class RuleContext {
     }
 
     public Optional<RuleDescr> getRuleDescr() {
-        return ruleDescr;
+        return descr;
     }
 
     public RuleDialect getRuleDialect() {
@@ -117,6 +125,10 @@ public class RuleContext {
 
     public void setRuleDialect(RuleDialect ruleDialect) {
         this.ruleDialect = ruleDialect;
+    }
+
+    public Optional<QueryParameter> queryParameterWithName(Predicate<? super QueryParameter> predicate) {
+        return queryParameters.stream().filter(predicate).findFirst();
     }
 
 }
