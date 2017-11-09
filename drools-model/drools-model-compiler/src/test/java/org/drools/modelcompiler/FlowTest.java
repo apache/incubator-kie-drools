@@ -613,23 +613,26 @@ public class FlowTest {
 
     @Test
     public void testPositionalRecursiveQueryWithUnification() {
-        Variable<Relationship> relV = declarationOf( type( Relationship.class ) );
-        Variable<String> unifV = declarationOf( type( String.class ) );
+        Variable<Relationship> var_$pattern_Relationship$1$ = declarationOf( type( Relationship.class ) );
+        Variable<Relationship> var_$pattern_Relationship$2$ = declarationOf( type( Relationship.class ) );
+        Variable<String> var_$unificationExpr$1$ = declarationOf( type( String.class ) );
 
-        Query2Def<String, String> qdef = query( "isRelatedTo", String.class, String.class );
-        Query query = qdef.build(
-                        or(
+        Query2Def<String, String> queryDef_isRelatedTo = query( "isRelatedTo", String.class, String.class );
+        Query query = queryDef_isRelatedTo.build(
+                or(
+                        and(
+                                expr("exprA", var_$pattern_Relationship$1$, queryDef_isRelatedTo.getArg1(), (r, s) -> r.getStart().equals(s)),
+                                expr("exprB", var_$pattern_Relationship$1$, queryDef_isRelatedTo.getArg2(), (r, e) -> r.getEnd().equals(e))
+                        ),
+                        and(
                                 and(
-                                        expr("exprA", relV, qdef.getArg1(), (r, s) -> r.getStart().equals( s )),
-                                        expr("exprB", relV, qdef.getArg2(), (r, e) -> r.getEnd().equals( e ))
+                                        bind(var_$unificationExpr$1$).as(var_$pattern_Relationship$2$, relationship -> relationship.getStart()),
+                                        expr("exprD", var_$pattern_Relationship$2$, queryDef_isRelatedTo.getArg2(), (r, e) -> r.getEnd().equals(e))
                                 ),
-                                and(
-                                        bind(unifV).as(relV, Relationship::getStart),
-                                        expr("exprD", relV, qdef.getArg2(), (r, e) -> r.getEnd().equals( e )),
-                                        qdef.call(qdef.getArg1(), unifV)
-                                )
+                                queryDef_isRelatedTo.call(queryDef_isRelatedTo.getArg1(), var_$unificationExpr$1$)
                         )
-                );
+                )
+        );
 
         Model model = new ModelImpl().addQuery( query );
         KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
@@ -642,7 +645,7 @@ public class FlowTest {
         QueryResults results = ksession.getQueryResults( "isRelatedTo", "A", "C" );
 
         assertEquals( 1, results.size() );
-        assertEquals( "B", results.iterator().next().get( unifV.getName() ) );
+        assertEquals( "B", results.iterator().next().get( var_$unificationExpr$1$.getName() ) );
     }
 
     @Test
