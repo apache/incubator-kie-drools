@@ -18,6 +18,7 @@ package org.kie.dmn.signavio;
 
 import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -105,5 +106,43 @@ public class SignavioTest {
         evaluateAll.getMessages().forEach(System.out::println);
 
         assertEquals(true, evaluateAll.getContext().get("myContext"));
+    }
+
+    /**
+     * Check the custom Signavio functions work in the LiteralExpression too
+     */
+    @Test
+    public void testUsingSignavioFunctionsInLiteralExpression() {
+        final KieServices ks = KieServices.Factory.get();
+        final KieFileSystem kfs = ks.newKieFileSystem();
+
+        KieModuleModel kmm = ks.newKieModuleModel();
+        kmm.setConfigurationProperty("org.kie.dmn.profiles.signavio", "org.kie.dmn.signavio.KieDMNSignavioProfile");
+        kfs.writeKModuleXML(kmm.toXML());
+        kfs.write(ks.getResources().newClassPathResource("Starts_with_an_A.dmn", this.getClass()));
+
+        KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
+        Results results = kieBuilder.getResults();
+        LOG.info("buildAll() completed.");
+        results.getMessages(Level.WARNING).forEach(e -> LOG.warn("{}", e));
+        assertTrue(results.getMessages(Level.WARNING).size() == 0);
+
+        final KieContainer kieContainer = ks.newKieContainer(ks.getRepository().getDefaultReleaseId());
+        DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
+        assertStartsWithAnA(runtime, "Abc", true);
+        assertStartsWithAnA(runtime, "Xyz", false);
+    }
+
+    private void assertStartsWithAnA(final DMNRuntime runtime, final String testString, final boolean startsWithAnA) {
+        DMNContext context = runtime.newContext();
+        context.set("surname", testString);
+
+        DMNModel model0 = runtime.getModels().get(0);
+        DMNResult evaluateAll = runtime.evaluateAll(model0, context);
+        evaluateAll.getMessages().forEach(System.out::println);
+
+        assertFalse(evaluateAll.getMessages().toString(), evaluateAll.hasErrors());
+
+        assertEquals(startsWithAnA, evaluateAll.getContext().get("startsWithAnA"));
     }
 }
