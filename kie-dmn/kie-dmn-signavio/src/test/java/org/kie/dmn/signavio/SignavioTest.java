@@ -129,32 +129,20 @@ public class SignavioTest {
 
         final KieContainer kieContainer = ks.newKieContainer(ks.getRepository().getDefaultReleaseId());
         DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
+        assertStartsWithAnA(runtime, "Abc", true);
+        assertStartsWithAnA(runtime, "Xyz", false);
+    }
 
-        List<DMNModel> models = runtime.getModels();
+    private void assertStartsWithAnA(final DMNRuntime runtime, final String testString, final boolean startsWithAnA) {
+        DMNContext context = runtime.newContext();
+        context.set("surname", testString);
 
-        {
-            DMNContext context = runtime.newContext();
-            context.set("surname", "Abc");
-    
-            DMNModel model0 = models.get(0);
-            DMNResult evaluateAll = runtime.evaluateAll(model0, context);
-            evaluateAll.getMessages().forEach(System.out::println);
-            
-            assertFalse(evaluateAll.getMessages().toString(), evaluateAll.hasErrors());
-    
-            assertEquals(true, evaluateAll.getContext().get("startsWithAnA"));
-        }
-        {
-            DMNContext context = runtime.newContext();
-            context.set("surname", "Xyz");
-    
-            DMNModel model0 = models.get(0);
-            DMNResult evaluateAll = runtime.evaluateAll(model0, context);
-            evaluateAll.getMessages().forEach(System.out::println);
+        DMNModel model0 = runtime.getModels().get(0);
+        DMNResult evaluateAll = runtime.evaluateAll(model0, context);
+        evaluateAll.getMessages().forEach(System.out::println);
 
-            assertFalse(evaluateAll.getMessages().toString(), evaluateAll.hasErrors());
-    
-            assertEquals(false, evaluateAll.getContext().get("startsWithAnA"));
-        }
+        assertFalse(evaluateAll.getMessages().toString(), evaluateAll.hasErrors());
+
+        assertEquals(startsWithAnA, evaluateAll.getContext().get("startsWithAnA"));
     }
 }
