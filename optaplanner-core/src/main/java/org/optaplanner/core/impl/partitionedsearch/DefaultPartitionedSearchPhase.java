@@ -107,7 +107,7 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
         ChildThreadPlumbingTermination childThreadPlumbingTermination = new ChildThreadPlumbingTermination();
         PartitionQueue<Solution_> partitionQueue = new PartitionQueue<>(partCount);
         Semaphore runnablePartThreadSemaphore
-                = runnablePartThreadLimit == null ? null : new Semaphore(runnablePartThreadLimit);
+                = runnablePartThreadLimit == null ? null : new Semaphore(runnablePartThreadLimit, true);
         try {
             for (ListIterator<Solution_> it = partList.listIterator(); it.hasNext();) {
                 int partIndex = it.nextIndex();
