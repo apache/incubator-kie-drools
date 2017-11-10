@@ -552,9 +552,20 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
             }
                 break;
             case NE:
-                throw new UnsupportedOperationException("TODO"); // TODO
-            case NOT:
-                throw new UnsupportedOperationException("TODO"); // TODO
+            {
+                MethodCallExpr expression = new MethodCallExpr(null, "ne");
+                expression.addArgument(new NameExpr("left"));
+                expression.addArgument(endpoint.getExpression());
+                lambdaBody = new ExpressionStmt(expression);
+            }
+                break;
+            case NOT: {
+                MethodCallExpr expression = new MethodCallExpr(null, "not");
+                expression.addArgument(new NameExpr("left"));
+                expression.addArgument(endpoint.getExpression());
+                lambdaBody = new ExpressionStmt(expression);
+            }
+                break;
             default:
                 throw new UnsupportedOperationException("Unable to determine operator of unary test");
         }
@@ -896,8 +907,9 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         return visit( ctx.expression() );
     }
 
-//    @Override
-//    public DirectCompilerResult visitNegatedUnaryTests(FEEL_1_1Parser.NegatedUnaryTestsContext ctx) {
-//        throw new UnsupportedOperationException("TODO"); // TODO
-//    }
+    @Override
+    public DirectCompilerResult visitNegatedUnaryTests(FEEL_1_1Parser.NegatedUnaryTestsContext ctx) {
+        FEEL_1_1Parser.SimpleUnaryTestsContext child = (FEEL_1_1Parser.SimpleUnaryTestsContext) ctx.getChild(2);
+        return createUnaryTestExpression(ctx, child.accept(this), UnaryOperator.NOT);
+    }
 }
