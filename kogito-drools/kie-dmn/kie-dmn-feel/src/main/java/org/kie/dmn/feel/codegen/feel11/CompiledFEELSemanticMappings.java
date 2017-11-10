@@ -17,6 +17,7 @@
 package org.kie.dmn.feel.codegen.feel11;
 
 import org.kie.dmn.feel.lang.ast.InfixOpNode;
+import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.util.EvalHelper;
 
 /**
@@ -135,5 +136,26 @@ public class CompiledFEELSemanticMappings {
      */
     public static Boolean eq(Object left, Object right) {
         return EvalHelper.isEqual(left, right, null);
+    }
+
+    /**
+     * FEEL spec Table 39
+     */
+    public static Boolean ne(Object left, Object right) {
+        return not(EvalHelper.isEqual(left, right, null));
+    }
+
+    public static Boolean not(Object arg, UnaryTest test) {
+        return not(test.apply(null, arg));
+    }
+
+    private static Boolean not(Object arg) {
+        if (Boolean.TRUE.equals(arg)) {
+            return Boolean.FALSE;
+        }
+        if (Boolean.FALSE.equals(arg)) {
+            return Boolean.TRUE;
+        }
+        return null;
     }
 }
