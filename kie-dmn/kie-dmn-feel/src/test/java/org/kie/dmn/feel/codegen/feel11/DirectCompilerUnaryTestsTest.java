@@ -65,6 +65,7 @@ public class DirectCompilerUnaryTestsTest {
         assertThat(parseCompileEvaluate(">=1, >2, <3, <=4", 3), is(Arrays.asList(true, true, false, true)));
         assertThat(parseCompileEvaluate(">=1, >2, <3, <=4", 4), is(Arrays.asList(true, true, false, true)));
         assertThat(parseCompileEvaluate(">=1, >2, <3, <=4", 5), is(Arrays.asList(true, true, false, false)));
+        assertThat(parseCompileEvaluate("!=1, !=42", 1), is(Arrays.asList(false, true)));
     }
     
     @Test
@@ -73,6 +74,11 @@ public class DirectCompilerUnaryTestsTest {
         assertThat(parseCompileEvaluate("<47, =47", 1), is(Arrays.asList(true, false)));
         assertThat(parseCompileEvaluate("<47, 1", 1), is(Arrays.asList(true, true)));
         assertThat(parseCompileEvaluate("<47, 47", 1), is(Arrays.asList(true, false)));
+    }
+
+    @Test
+    public void test_not() {
+        assertThat(parseCompileEvaluate("not(=47), not(<1), not(!=1)", 1), is(Arrays.asList(true, true, true)));
     }
 
     @Test
