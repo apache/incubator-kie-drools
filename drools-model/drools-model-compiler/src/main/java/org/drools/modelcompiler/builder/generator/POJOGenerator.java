@@ -14,6 +14,7 @@ import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.compiler.lang.descr.TypeFieldDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.factmodel.GeneratedFact;
 import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.Modifier;
 import org.drools.javaparser.ast.NodeList;
@@ -40,6 +41,7 @@ import org.kie.api.definition.type.Role;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import static java.text.MessageFormat.format;
+
 import static org.drools.javaparser.JavaParser.parseStatement;
 import static org.drools.javaparser.ast.NodeList.nodeList;
 import static org.drools.modelcompiler.builder.JavaParserCompiler.compileAll;
@@ -107,6 +109,7 @@ public class POJOGenerator {
         EnumSet<Modifier> classModifiers = EnumSet.of(Modifier.PUBLIC);
         String generatedClassName = typeDeclaration.getTypeName();
         ClassOrInterfaceDeclaration generatedClass = new ClassOrInterfaceDeclaration(classModifiers, false, generatedClassName);
+        generatedClass.addImplementedType( GeneratedFact.class.getName() );
 
         List<AnnotationDescr> softAnnotations = new ArrayList<>();
         for (AnnotationDescr ann : typeDeclaration.getAnnotations()) {
