@@ -21,7 +21,7 @@ public class GeneratedClassWithPackage {
 
     @Override
     public String toString() {
-        return "GeneratedClassWithPackage [generatedClass=" + generatedClass + ", packageName=" + packageName + "]";
+        return "package " + packageName + "\n" + generatedClass;
     }
 
 }
