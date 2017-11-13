@@ -615,7 +615,7 @@ public class KnowledgePackageImpl
         if (decl == null) {
             return null;
         } else {
-            if (decl.isDefinition()) {
+            if (decl.isDefinition() || decl.isGeneratedFact()) {
                 return decl.getTypeClassDef();
             } else {
                 throw new UnsupportedOperationException("KieBase.getFactType should only be used to retrieve declared beans. Class " + typeName + " exists outside DRL ");
