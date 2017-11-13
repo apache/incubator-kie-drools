@@ -127,6 +127,8 @@ public class ModelGenerator {
         attributesMap.put("duration", JavaParser.parseExpression("Rule.Attribute.DURATION"));
         attributesMap.put("timer", JavaParser.parseExpression("Rule.Attribute.TIMER"));
         attributesMap.put("calendars", JavaParser.parseExpression("Rule.Attribute.CALENDARS"));
+        attributesMap.put("date-effective", JavaParser.parseExpression("Rule.Attribute.DATE_EFFECTIVE"));
+        attributesMap.put("date-expires", JavaParser.parseExpression("Rule.Attribute.DATE_EXPIRES"));
 
         consequenceMethods.put("getKnowledgeRuntime", JavaParser.parseExpression("drools.getRuntime(org.kie.api.runtime.KieRuntime.class)"));
         consequenceMethods.put("getKieRuntime", JavaParser.parseExpression("drools.getRuntime(org.kie.api.runtime.KieRuntime.class)"));
@@ -263,6 +265,10 @@ public class ModelGenerator {
                     }
                     Expression arrayExpr = JavaParser.parseExpression("new String[] { " + value + " }");
                     attributeCall.addArgument( arrayExpr );
+                    break;
+                case "date-effective":
+                case "date-expires":
+                    attributeCall.addArgument(JavaParser.parseExpression(String.format("GregorianCalendar.from(LocalDate.parse(\"%s\", dateTimeFormatter).atStartOfDay(ZoneId.systemDefault()))", as.getValue().getValue())));
                     break;
                 default:
                     throw new UnsupportedOperationException("Unhandled case for rule attribute: " + as.getKey());
