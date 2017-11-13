@@ -28,6 +28,7 @@ public class TypedExpression {
     private String fieldName;
     private Expression prefixExpression;
     private Optional<String> unificationVariable = Optional.empty();
+    private Optional<String> unificationName = Optional.empty();
 
     public TypedExpression() { }
 
@@ -45,9 +46,10 @@ public class TypedExpression {
         this.fieldName = fieldName;
     }
 
-    public TypedExpression( String unificationVariable, Class<?> type) {
+    public TypedExpression( String unificationVariable, Class<?> type, String name) {
         this.unificationVariable = Optional.of(unificationVariable);
         this.type = type;
+        this.unificationName = Optional.of(name);
     }
 
     public String getFieldName() {
@@ -91,5 +93,9 @@ public class TypedExpression {
 
     public Optional<String> getUnificationVariable() {
         return unificationVariable;
+    }
+
+    public Optional<String> getUnificationName() {
+        return unificationName;
     }
 }
