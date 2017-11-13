@@ -253,7 +253,15 @@ public class ClassDefinition
     public Object get(Object bean,
                       String field) {
         FieldDefinition fieldDefinition = getField( field );
-        return fieldDefinition != null ? fieldDefinition.getFieldAccessor().getValue( bean ) : null;
+        if (fieldDefinition != null) {
+            return fieldDefinition.getFieldAccessor().getValue( bean );
+        }
+        try {
+            java.lang.reflect.Field f = definedClass.getDeclaredField( field );
+            f.setAccessible( true );
+            return f.get( bean );
+        } catch (IllegalAccessException | NoSuchFieldException e) { }
+        return null;
     }
 
     public void set(Object bean,
@@ -262,6 +270,12 @@ public class ClassDefinition
         FieldDefinition fieldDefinition = getField( field );
         if (fieldDefinition != null) {
             fieldDefinition.getFieldAccessor().setValue( bean, value );
+        } else {
+            try {
+                java.lang.reflect.Field f = definedClass.getDeclaredField( field );
+                f.setAccessible( true );
+                f.set( bean, value );
+            } catch (IllegalAccessException | NoSuchFieldException e) { }
         }
     }
 

@@ -24,6 +24,7 @@ import java.util.List;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
 import org.junit.Test;
+import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
 
 import static org.junit.Assert.assertEquals;
@@ -352,5 +353,35 @@ public class DeclaredTypesTest extends BaseModelTest {
 
         List<Object> results = getObjectsIntoList(ksession, Object.class);
         assertEquals(1, results.size());
+    }
+
+    @Test
+    public void testFactType() throws Exception {
+        String str =
+                "package org.test;\n" +
+                "import " + Person.class.getCanonicalName() + ";" +
+                "declare Name\n" +
+                "    value : String\n" +
+                "end\n" +
+                "rule R when\n" +
+                "    Name($v : value == \"Mario\")\n" +
+                "then\n" +
+                "    insert($v);" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        FactType nameType = ksession.getKieBase().getFactType("org.test", "Name");
+        Object name = nameType.newInstance();
+        nameType.set(name, "value", "Mario");
+
+        ksession.insert(name);
+        ksession.fireAllRules();
+
+        assertEquals( "Mario", nameType.get( name, "value" ) );
+
+        Collection<String> results = getObjectsIntoList(ksession, String.class);
+        assertEquals( 1, results.size() );
+        assertEquals( "Mario", results.iterator().next() );
     }
 }
