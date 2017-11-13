@@ -2,6 +2,8 @@ package org.drools.model.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -19,6 +21,7 @@ import org.drools.model.ConditionalConsequence;
 import org.drools.model.Consequence;
 import org.drools.model.DataSourceDefinition;
 import org.drools.model.Declaration;
+import org.drools.model.DeclarationSource;
 import org.drools.model.From;
 import org.drools.model.Pattern;
 import org.drools.model.RuleItem;
@@ -179,6 +182,8 @@ public class ViewBuilder {
             }
         }
 
+        Collections.sort( conditions, ConditionComparator.INSTANCE );
+
         return new CompositePatterns( type, conditions, usedVars, consequences );
     }
 
@@ -280,5 +285,36 @@ public class ViewBuilder {
         }
 
         throw new UnsupportedOperationException( "Unknown ViewItem: " + viewItem );
+    }
+
+    private static class ConditionComparator implements Comparator<Condition> {
+
+        private static final ConditionComparator INSTANCE = new ConditionComparator();
+
+        @Override
+        public int compare( Condition c1, Condition c2 ) {
+            if (c1 instanceof Pattern && c2 instanceof Pattern) {
+                Pattern p1 = (( Pattern ) c1);
+                Pattern p2 = (( Pattern ) c2);
+                if (p1.getPatternVariable() == getSourceVariable( p2 )) {
+                    return -1;
+                }
+                if (p2.getPatternVariable() == getSourceVariable( p1 )) {
+                    return 1;
+                }
+            }
+            return 0;
+        }
+
+        private static Variable getSourceVariable( Pattern pattern) {
+            Variable source = pattern.getPatternVariable();
+            if (source instanceof Declaration) {
+                DeclarationSource declarationSource = (( Declaration ) source).getSource();
+                if (declarationSource instanceof From) {
+                    return (( From ) declarationSource).getVariable();
+                }
+            }
+            return null;
+        }
     }
 }
