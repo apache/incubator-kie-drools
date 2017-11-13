@@ -348,7 +348,7 @@ public class ModelGenerator {
         typeCall.addArgument( new ClassExpr(declType ));
 
         declarationOfCall.addArgument(typeCall);
-        declarationOfCall.addArgument(new StringLiteralExpr(decl.getBindingId()));
+        declarationOfCall.addArgument(new StringLiteralExpr(decl.variableName.orElse(decl.getBindingId())));
 
         decl.declarationSource.ifPresent(declarationOfCall::addArgument);
 
@@ -896,6 +896,10 @@ public class ModelGenerator {
             return left.getUnificationVariable().isPresent() ? left.getUnificationVariable().get() : right.getUnificationVariable().get();
         }
 
+        public String getUnificationName() {
+            return left.getUnificationName().isPresent() ? left.getUnificationName().get() : right.getUnificationName().get();
+        }
+
         public Class<?> getUnificationVariableType() {
             return left.getUnificationVariable().isPresent() ? right.getType() : left.getType();
         }
@@ -929,7 +933,10 @@ public class ModelGenerator {
 
     public static Expression buildUnificationExpression(RuleContext context, DrlxParseResult drlxParseResult) {
         MethodCallExpr exprDSL = buildBinding(drlxParseResult);
-        context.addDeclaration(new DeclarationSpec(drlxParseResult.getUnificationVariable(), drlxParseResult.getUnificationVariableType()));
+        context.addDeclaration(new DeclarationSpec(drlxParseResult.getUnificationVariable(),
+                                                   drlxParseResult.getUnificationVariableType(),
+                                                    drlxParseResult.getUnificationName()
+                                                    ));
         return exprDSL;
     }
 
