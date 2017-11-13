@@ -18,6 +18,8 @@ package org.jbpm.services.task.wih.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import org.kie.api.runtime.process.CaseAssignment;
 import org.kie.api.runtime.process.CaseData;
@@ -58,6 +60,10 @@ public class PeopleAssignmentHelper {
     private String administratorUser = DEFAULT_ADMIN_USER;
     private String administratorGroup = DEFAULT_ADMIN_GROUP;
     
+    private Predicate<? super OrganizationalEntity> userFilter = (OrganizationalEntity oe) -> { return oe instanceof User;};
+    private Predicate<? super OrganizationalEntity> groupFilter = (OrganizationalEntity oe) -> { return oe instanceof Group;};
+    private Predicate<? super OrganizationalEntity> noFilter = (OrganizationalEntity oe) -> { return true;};
+    
     public PeopleAssignmentHelper() {
         this.separator = System.getProperty("org.jbpm.ht.user.separator", ",");
     }
@@ -94,7 +100,7 @@ public class PeopleAssignmentHelper {
 	protected void assignActors(WorkItem workItem, PeopleAssignments peopleAssignments, InternalTaskData taskData) {
 	    List<OrganizationalEntity> potentialOwners = peopleAssignments.getPotentialOwners();
         
-	    Object actorIds = adjustParam(workItem.getParameter(ACTOR_ID));        
+	    Object actorIds = adjustParam(workItem.getParameter(ACTOR_ID), userFilter);        
 	    
 	    if (actorIds instanceof Collection) {
             processPeopleAssignments((Collection<OrganizationalEntity>)actorIds, potentialOwners);
@@ -115,7 +121,7 @@ public class PeopleAssignmentHelper {
 	protected void assignGroups(WorkItem workItem, PeopleAssignments peopleAssignments) {
 	    List<OrganizationalEntity> potentialOwners = peopleAssignments.getPotentialOwners();
 	    
-	    Object groupIds = adjustParam(workItem.getParameter(GROUP_ID));
+	    Object groupIds = adjustParam(workItem.getParameter(GROUP_ID), groupFilter);
         
 	    if (groupIds instanceof Collection) {
             processPeopleAssignments((Collection<OrganizationalEntity>)groupIds, potentialOwners);
@@ -128,8 +134,8 @@ public class PeopleAssignmentHelper {
 	protected void assignBusinessAdministrators(WorkItem workItem, PeopleAssignments peopleAssignments) {
 	    List<OrganizationalEntity> businessAdministrators = peopleAssignments.getBusinessAdministrators();
 	    
-	    Object businessAdminGroupIds = adjustParam(workItem.getParameter(BUSINESSADMINISTRATOR_GROUP_ID));
-	    Object businessAdministratorIds = adjustParam(workItem.getParameter(BUSINESSADMINISTRATOR_ID));
+	    Object businessAdminGroupIds = adjustParam(workItem.getParameter(BUSINESSADMINISTRATOR_GROUP_ID), groupFilter);
+	    Object businessAdministratorIds = adjustParam(workItem.getParameter(BUSINESSADMINISTRATOR_ID), userFilter);
 		
         
         if (!hasAdminAssigned(businessAdministrators)) {
@@ -156,7 +162,7 @@ public class PeopleAssignmentHelper {
 	@SuppressWarnings("unchecked")
     protected void assignTaskStakeholders(WorkItem workItem, InternalPeopleAssignments peopleAssignments) {
 	    List<OrganizationalEntity> taskStakeholders = peopleAssignments.getTaskStakeholders();
-	    Object taskStakehodlerIds = adjustParam(workItem.getParameter(TASKSTAKEHOLDER_ID));
+	    Object taskStakehodlerIds = adjustParam(workItem.getParameter(TASKSTAKEHOLDER_ID), noFilter);
 		
 	    if (taskStakehodlerIds instanceof Collection) {
             processPeopleAssignments((Collection<OrganizationalEntity>)taskStakehodlerIds, taskStakeholders);
@@ -168,7 +174,7 @@ public class PeopleAssignmentHelper {
 	@SuppressWarnings("unchecked")
     protected void assignExcludedOwners(WorkItem workItem, InternalPeopleAssignments peopleAssignments) {
         List<OrganizationalEntity> excludedOwners = peopleAssignments.getExcludedOwners();
-        Object excludedOwnerIds = adjustParam(workItem.getParameter(EXCLUDED_OWNER_ID));
+        Object excludedOwnerIds = adjustParam(workItem.getParameter(EXCLUDED_OWNER_ID), userFilter);
         
         if (excludedOwnerIds instanceof Collection) {
             processPeopleAssignments((Collection<OrganizationalEntity>)excludedOwnerIds, excludedOwners);
@@ -182,7 +188,7 @@ public class PeopleAssignmentHelper {
     protected void assignRecipients(WorkItem workItem, InternalPeopleAssignments peopleAssignments) {
         List<OrganizationalEntity> recipients = peopleAssignments.getRecipients();
         
-        Object recipientIds = adjustParam(workItem.getParameter(RECIPIENT_ID));
+        Object recipientIds = adjustParam(workItem.getParameter(RECIPIENT_ID), noFilter);
         
         if (recipientIds instanceof Collection) {
             processPeopleAssignments((Collection<OrganizationalEntity>)recipientIds, recipients);
@@ -264,14 +270,28 @@ public class PeopleAssignmentHelper {
 	    return false;
 	}
 	
-    protected Object adjustParam(Object currentValue) {
+    protected Object adjustParam(Object currentValue, Predicate<? super OrganizationalEntity> filter) {
         if (currentValue == null || caseFile == null) {
             return currentValue;
         }
         try {
-            // check if there is case file prefix and if so remove it before checking case file data
+            
             if (caseFile instanceof CaseAssignment) {
-                return ((CaseAssignment) caseFile).getAssignments(currentValue.toString());
+                Collection<OrganizationalEntity> foundMatchingAssignment = new ArrayList<>();
+                String[] ids = currentValue.toString().split(separator);
+                for (String id : ids) {
+                    Collection<OrganizationalEntity> tmp = ((CaseAssignment) caseFile).getAssignments(id)
+                            .stream()
+                            .filter(filter)
+                            .collect(Collectors.toList());
+                    
+                    if (tmp.isEmpty()) {
+                        throw new RuntimeException("Case role '" + id + "' has no matching assignments");
+                    }
+                    
+                    foundMatchingAssignment.addAll(tmp);
+                }
+                return foundMatchingAssignment;
             }
             
         } catch (IllegalArgumentException e) {
