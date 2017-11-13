@@ -1,5 +1,6 @@
 package org.drools.model;
 
+import java.util.Calendar;
 import java.util.Map;
 
 public interface Rule {
@@ -18,6 +19,8 @@ public interface Rule {
         Attribute<String> DURATION = () -> null;
         Attribute<String> TIMER = () -> null;
         Attribute<String[]> CALENDARS = () -> new String[0];
+        Attribute<Calendar> DATE_EFFECTIVE = () -> null;
+        Attribute<Calendar> DATE_EXPIRES = () -> null;
     }
 
 

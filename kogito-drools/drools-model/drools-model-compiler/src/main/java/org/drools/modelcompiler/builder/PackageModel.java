@@ -187,6 +187,10 @@ public class PackageModel {
         cu.addImport(JavaParser.parseImport("import org.drools.model.*;"                   ));
         cu.addImport(JavaParser.parseImport("import static org.drools.model.DSL.*;"        ));
         cu.addImport(JavaParser.parseImport("import org.drools.model.Index.ConstraintType;"));
+        cu.addImport(JavaParser.parseImport("import java.time.*;"));
+        cu.addImport(JavaParser.parseImport("import java.time.format.*;"));
+        cu.addImport(JavaParser.parseImport("import java.text.*;"));
+        cu.addImport(JavaParser.parseImport("import org.drools.core.util.*;"));
 
         // imports from DRL:
         for ( String i : imports ) {
@@ -198,6 +202,10 @@ public class PackageModel {
         
         ClassOrInterfaceDeclaration rulesClass = cu.addClass("Rules");
         rulesClass.addImplementedType(Model.class);
+
+        BodyDeclaration<?> dateFormatter = JavaParser.parseBodyDeclaration(
+                "private final static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DateUtils.getDateFormatMask());\n");
+        rulesClass.addMember(dateFormatter);
 
         BodyDeclaration<?> getRulesMethod = JavaParser.parseBodyDeclaration(
                 "    @Override\n" +
@@ -212,14 +220,14 @@ public class PackageModel {
         sb.append("\n");
         JavadocComment exprIdComment = new JavadocComment(sb.toString());
         getRulesMethod.setComment(exprIdComment);
-        
+
         BodyDeclaration<?> getGlobalsMethod = JavaParser.parseBodyDeclaration(
                 "    @Override\n" +
                 "    public List<Global> getGlobals() {\n" +
                 "        return globals;\n" +
                 "    }\n");
         rulesClass.addMember(getGlobalsMethod);
-        
+
         BodyDeclaration<?> getQueriesMethod = JavaParser.parseBodyDeclaration(
                 "    @Override\n" +
                 "    public List<Query> getQueries() {\n" +
