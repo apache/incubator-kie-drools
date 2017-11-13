@@ -15,6 +15,7 @@
  */
 package org.jbpm.services.task;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -915,6 +916,43 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         assertEquals(Status.Reserved, task3.getTaskData().getStatus());
         assertEquals(Status.Suspended, task3.getTaskData().getPreviousStatus());
         assertEquals("Darth Vader", task3.getTaskData().getActualOwner().getId());
+    }
+    
+    @Test
+    public void testResumeFromCompleted() {       
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet'), new User('Darth Vader') ],businessAdministrators = [ new User('Administrator') ], }),";
+        str += "name = 'This is my task name' })";
+
+        Task task = TaskFactory.evalTask(new StringReader(str));
+        taskService.addTask(task, new HashMap<String, Object>());
+
+        long taskId = task.getId();
+        taskService.claim(taskId, "Darth Vader");
+
+        Task task1 = taskService.getTaskById(taskId);
+        assertEquals(Status.Reserved, task1.getTaskData().getStatus());
+        assertEquals("Darth Vader", task1.getTaskData().getActualOwner().getId());
+
+        taskService.start(taskId, "Darth Vader");
+
+        task1 = taskService.getTaskById(taskId);
+        assertEquals(Status.InProgress, task1.getTaskData().getStatus());
+        assertEquals("Darth Vader", task1.getTaskData().getActualOwner().getId());
+
+        taskService.complete(taskId, "Darth Vader", null);
+
+        task1 = taskService.getTaskById(taskId);
+        assertEquals(Status.Completed, task1.getTaskData().getStatus());
+        assertEquals("Darth Vader", task1.getTaskData().getActualOwner().getId());
+       
+        assertThatExceptionOfType(PermissionDeniedException.class).isThrownBy(() -> { 
+            taskService.resume(taskId, "Darth Vader"); })
+        .withMessageContaining("was unable to execute operation 'Resume' on task id");                
+
+        task1 = taskService.getTaskById(taskId);
+        assertEquals(Status.Completed, task1.getTaskData().getStatus());
+        assertEquals("Darth Vader", task1.getTaskData().getActualOwner().getId());
     }
 
     @Test

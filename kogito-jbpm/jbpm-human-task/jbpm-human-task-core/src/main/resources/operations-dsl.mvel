@@ -43,12 +43,12 @@
             } ],   
     Operation.Resume 
         : [ new OperationCommand().{ 
-                previousStatus = [ Status.Ready ],
+                status = [ Status.Suspended ],
                 allowed = [ Allowed.PotentialOwner, Allowed.BusinessAdministrator  ],              
                 setToPreviousStatus = true
             },
             new OperationCommand().{ 
-                previousStatus = [ Status.Reserved, Status.InProgress ],
+                status = [ Status.Suspended ],
                 allowed = [ Allowed.Owner, Allowed.BusinessAdministrator ],          
                 setToPreviousStatus = true
             } ],
