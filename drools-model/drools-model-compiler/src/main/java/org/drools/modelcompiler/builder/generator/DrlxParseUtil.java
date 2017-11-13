@@ -310,7 +310,7 @@ public class DrlxParseUtil {
     }
 
     public static BlockStmt parseBlock(String ruleConsequenceAsBlock) {
-        return JavaParser.parseBlock(String.format("{%s}", ruleConsequenceAsBlock));
+        return JavaParser.parseBlock(String.format("{\n%s\n}", ruleConsequenceAsBlock)); // if the RHS is composed only of a line of comment like `//do nothing.` then JavaParser would fail to recognize the ending }
     }
 
     public static Expression generateLambdaWithoutParameters(List<String> usedDeclarations, Expression expr) {
