@@ -257,22 +257,8 @@ public class QueryTest extends BaseModelTest {
         assertEquals( 1, results.size() );
         final QueryResultsRow firstResult = results.iterator().next();
 
-        // TODO find unification parameter name
-
-        Object resultDrlx;
-        try {
-            resultDrlx = firstResult.get("z");
-        } catch (IllegalArgumentException e) {
-            resultDrlx = null;
-        }
-
-        Object resultDSL;
-        try {
-            resultDSL = firstResult.get("$unificationExpr$1$");
-        } catch (IllegalArgumentException e) {
-            resultDSL = null;
-        }
-        assertTrue("B".equals(resultDrlx) || "B".equals(resultDSL));
+        Object resultDrlx = firstResult.get("z");
+        assertTrue("B".equals(resultDrlx));
     }
 
     @Test

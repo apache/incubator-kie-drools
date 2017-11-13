@@ -14,12 +14,22 @@ public class DeclarationSpec {
     final Class<?> declarationClass;
     final Optional<PatternDescr> optPattern;
     final Optional<Expression> declarationSource;
+    final Optional<String> variableName;
 
     public DeclarationSpec(String bindingId, Class<?> declarationClass) {
         this.bindingId = bindingId;
         this.declarationClass = declarationClass;
         this.optPattern = Optional.empty();
         this.declarationSource = Optional.empty();
+        this.variableName = Optional.empty();
+    }
+
+    public DeclarationSpec(String bindingId, Class<?> declarationClass, String variableName) {
+        this.bindingId = bindingId;
+        this.declarationClass = declarationClass;
+        this.optPattern = Optional.empty();
+        this.declarationSource = Optional.empty();
+        this.variableName = Optional.of(variableName);
     }
 
     public DeclarationSpec(String bindingId, Class<?> declarationClass, Expression declarationSource) {
@@ -27,6 +37,7 @@ public class DeclarationSpec {
         this.declarationClass = declarationClass;
         this.optPattern = Optional.empty();
         this.declarationSource = Optional.of(declarationSource);
+        this.variableName = Optional.empty();
     }
 
     public DeclarationSpec(String bindingId, Class<?> declarationClass, PatternDescr pattern) {
@@ -34,6 +45,7 @@ public class DeclarationSpec {
         this.declarationClass = declarationClass;
         this.optPattern = Optional.of(pattern);
         this.declarationSource = Optional.empty();
+        this.variableName = Optional.empty();
     }
 
     public DeclarationSpec(String bindingId, Class<?> declarationClass, Optional<PatternDescr> pattern, Optional<Expression> declarationSource) {
@@ -41,6 +53,7 @@ public class DeclarationSpec {
         this.declarationClass = declarationClass;
         this.optPattern = pattern;
         this.declarationSource = declarationSource;
+        this.variableName = Optional.empty();
     }
 
     Optional<String> getEntryPoint() {
