@@ -201,6 +201,8 @@ public class KiePackagesBuilder {
         setAttribute( rule, Rule.Attribute.DURATION, t -> ruleImpl.setTimer( parseTimer( t ) ) );
         setAttribute( rule, Rule.Attribute.TIMER, t -> ruleImpl.setTimer( parseTimer( t ) ) );
         setAttribute( rule, Rule.Attribute.CALENDARS, ruleImpl::setCalendars );
+        setAttribute( rule, Rule.Attribute.DATE_EFFECTIVE, ruleImpl::setDateEffective );
+        setAttribute( rule, Rule.Attribute.DATE_EXPIRES, ruleImpl::setDateExpires );
 
         ruleImpl.setEager( ruleImpl.isEager() || noLoop != null || lockOnActive != null );
     }
