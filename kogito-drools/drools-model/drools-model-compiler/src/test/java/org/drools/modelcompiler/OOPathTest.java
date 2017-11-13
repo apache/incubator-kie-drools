@@ -25,7 +25,6 @@ import org.drools.modelcompiler.domain.InternationalAddress;
 import org.drools.modelcompiler.domain.Man;
 import org.drools.modelcompiler.domain.Toy;
 import org.drools.modelcompiler.domain.Woman;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
@@ -197,14 +196,13 @@ public class OOPathTest extends BaseModelTest {
         Assertions.assertThat(list).containsExactlyInAnyOrder("Bob");
     }
 
-    @Ignore("NPE at org.drools.core.rule.LogicTransformer.processElement(LogicTransformer.java:194)")
     @Test
     public void testSimpleOOPathCast3() {
         final String str = "import org.drools.modelcompiler.domain.*;\n" +
                            "global java.util.List list\n" +
                            "\n" +
                            "rule R when\n" +
-                           "  Man( $italy: /address#InternationalAddress[ state == \"Italy\" ], $name : name )\n" +
+                           "  Man( $italy: /address#InternationalAddress[ state == \"Italy\" ], $name : name != null )\n" +
                            "then\n" +
                            "  list.add( $name );\n" +
                            "end\n";
