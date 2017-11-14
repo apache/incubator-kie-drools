@@ -550,7 +550,8 @@ public class ModelGenerator {
         Class<?> patternType = context.getDeclarationById(bindingId)
                 .map(DeclarationSpec::getDeclarationClass)
                 .orElseThrow(RuntimeException::new);
-        processExpression( context, drlxParse(context, packageModel, patternType, bindingId, expression) );
+        DrlxParseResult drlxParseResult = drlxParse(context, packageModel, patternType, bindingId, expression);
+        processExpression(context, drlxParseResult);
     }
 
     public static void visit(RuleContext context, PackageModel packageModel, AndDescr descr) {
@@ -784,7 +785,10 @@ public class ModelGenerator {
             Optional<MethodDeclaration> functionCall = packageModel.getFunctions().stream().filter(m -> m.getName().equals(methodCallExpr.getName())).findFirst();
             if(functionCall.isPresent()) {
                 Class<?> returnType = DrlxParseUtil.getClassFromContext(context.getPkg(), functionCall.get().getType().asString());
-                methodCallExpr.getArguments().set(0, new NameExpr("_this"));
+                NodeList<Expression> arguments = methodCallExpr.getArguments();
+                for(int i = 0; i < arguments.size(); i++) {
+                    arguments.set(i, new NameExpr("_this"));
+                }
                 return new DrlxParseResult(patternType, exprId, bindingId, methodCallExpr, returnType);
             } else {
                 NameExpr _this = new NameExpr("_this");
