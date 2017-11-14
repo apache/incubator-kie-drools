@@ -855,6 +855,32 @@ public class CompilerTest extends BaseModelTest {
 
 
     @Test
+    @Ignore
+    public void testEval2() {
+        String str =
+                "import " + Result.class.getCanonicalName() + ";" +
+                "import " + Person.class.getCanonicalName() + ";" +
+                "rule R when\n" +
+                "  $p : Person( girlAge : age )\n" +
+                "  $p2 : Person(age == girlAge + 3 )\n" +
+                "then\n" +
+                "  insert(new Result($p2.getName()));\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( new Person( "Mario", 40 ) );
+        ksession.insert( new Person( "Mark", 37 ) );
+        ksession.insert( new Person( "Edson", 35 ) );
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList( ksession, Result.class );
+        assertEquals( 1, results.size() );
+        assertEquals( "Mario", results.iterator().next().getValue() );
+    }
+
+
+    @Test
     public void testFunction() {
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +
@@ -890,8 +916,35 @@ public class CompilerTest extends BaseModelTest {
                 "    return p.getAge() == 40; \n"+
                 "}" +
                 "rule R when\n" +
-                "  $p : Person()\n" +
-                "  eval( isFortyYearsOld($p, true) )\n" +
+                        "  $p : Person()\n" +
+                        "  eval( isFortyYearsOld($p, true) )\n" +
+                "then\n" +
+                "  insert(new Result($p.getName()));\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( new Person( "Mario", 40 ) );
+        ksession.insert( new Person( "Mark", 37 ) );
+        ksession.insert( new Person( "Edson", 35 ) );
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList( ksession, Result.class );
+        assertEquals( 1, results.size() );
+        assertEquals( "Mario", results.iterator().next().getValue() );
+    }
+
+    @Test
+    @Ignore
+    public void testFunction3() {
+        String str =
+                "import " + Result.class.getCanonicalName() + ";" +
+                "import " + Person.class.getCanonicalName() + ";" +
+                "function Boolean isFortyYearsOld(Person p, Boolean booleanParameter) {\n" +
+                "    return p.getAge() == 40; \n"+
+                "}" +
+                "rule R when\n" +
+                "  $p : Person(isFortyYearsOld(this, true))\n" +
                 "then\n" +
                 "  insert(new Result($p.getName()));\n" +
                 "end";
