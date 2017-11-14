@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.drools.compiler.lang.descr.FromDescr;
 import org.drools.compiler.lang.descr.PatternSourceDescr;
+import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
@@ -29,18 +30,26 @@ public class FromVisitor {
     public Optional<Expression> visit(PatternSourceDescr sourceDescr) {
         if (sourceDescr instanceof FromDescr) {
             final String expression = ((FromDescr) sourceDescr).getDataSource().toString();
-            final String bindingId = DrlxParseUtil.findBindingIdFromDotExpression(expression);
-            final DeclarationSpec declarationSpec = ruleContext.getDeclarationById(bindingId).orElseThrow(RuntimeException::new);
-            final Class<?> clazz = declarationSpec.declarationClass;
-
-            final DrlxParseResult drlxParseResult = drlxParse(ruleContext, packageModel, clazz, bindingId, expression);
-
-            final Expression parsedExpression = drlxParseResult.expr;
-            final Expression exprArg = generateLambdaWithoutParameters(drlxParseResult.usedDeclarations, parsedExpression);
+            Optional<String> optContainsBinding = DrlxParseUtil.findBindingIdFromDotExpression(expression);
+            final String bindingId = optContainsBinding.orElse(expression);
 
             final MethodCallExpr fromCall = new MethodCallExpr(null, FROM_CALL);
             fromCall.addArgument(new NameExpr(toVar(bindingId)));
-            fromCall.addArgument(exprArg);
+
+            if (optContainsBinding.isPresent()) {
+                final DeclarationSpec declarationSpec = ruleContext.getDeclarationById(bindingId).orElseThrow(RuntimeException::new);
+                final Class<?> clazz = declarationSpec.declarationClass;
+
+                final DrlxParseResult drlxParseResult = drlxParse(ruleContext, packageModel, clazz, bindingId, expression);
+
+                final Expression parsedExpression = drlxParseResult.expr;
+                final Expression exprArg = generateLambdaWithoutParameters(drlxParseResult.usedDeclarations, parsedExpression);
+
+                fromCall.addArgument(exprArg);
+            } else {
+                fromCall.addArgument(JavaParser.parseExpression("x -> x")); // cannot use Function.identity() here because target type is ?.
+                fromCall.setLineComment(" cannot use Function.identity() here because target type is ?.");
+            }
 
             return Optional.of(fromCall);
         } else {
