@@ -73,30 +73,9 @@ public final class KieBaseUtil {
         KieServices ks = KieServices.get();
         ReleaseId releaseId = kieBuilder.getKieModule().getReleaseId();
         InternalKieModule kieModule = ( InternalKieModule ) kieBuilder.getKieModule();
-        File kjarFile = bytesToTempKJARFile( releaseId, kieModule.getBytes(), ".jar" );
-        KieModule zipKieModule = new CanonicalKieModule( releaseId, getDefaultKieModuleModel( ks ), kjarFile );
+        File kjarFile = FileUtil.bytesToTempKJARFile( releaseId, kieModule.getBytes(), ".jar" );
+        KieModule zipKieModule = new CanonicalKieModule( releaseId, KieUtil.getDefaultKieModuleModel( ks ), kjarFile );
         ks.getRepository().addKieModule( zipKieModule );
-    }
-
-    private static KieModuleModel getDefaultKieModuleModel( KieServices ks ) {
-        KieModuleModel kproj = KieServices.get().newKieModuleModel();
-        KieBaseModel kieBaseModel1 = kproj.newKieBaseModel( "kbase" ).setDefault( true );
-        KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel( "ksession" ).setDefault( true );
-        return kproj;
-    }
-
-    private static File bytesToTempKJARFile( ReleaseId releaseId, byte[] bytes, String extension ) {
-        File file = new File( System.getProperty( "java.io.tmpdir" ), releaseId.getArtifactId() + "-" + releaseId.getVersion() + extension );
-        try {
-            new PrintWriter(file).close();
-            FileOutputStream fos = new FileOutputStream( file, false );
-            fos.write( bytes );
-            fos.flush();
-            fos.close();
-        } catch ( IOException e ) {
-            throw new RuntimeException( e );
-        }
-        return file;
     }
 
     public static KieBase getKieBaseFromDRLResources(final KieBaseTestConfiguration kieBaseTestConfiguration,
