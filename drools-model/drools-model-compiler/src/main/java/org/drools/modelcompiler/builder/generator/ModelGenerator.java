@@ -786,10 +786,13 @@ public class ModelGenerator {
             if(functionCall.isPresent()) {
                 Class<?> returnType = DrlxParseUtil.getClassFromContext(context.getPkg(), functionCall.get().getType().asString());
                 NodeList<Expression> arguments = methodCallExpr.getArguments();
-                for(int i = 0; i < arguments.size(); i++) {
-                    arguments.set(i, new NameExpr("_this"));
+                List<String> usedDeclarations = new ArrayList<>();
+                for(Expression arg : arguments) {
+                    if(arg instanceof NameExpr) {
+                        usedDeclarations.add(arg.toString());
+                    }
                 }
-                return new DrlxParseResult(patternType, exprId, bindingId, methodCallExpr, returnType);
+                return new DrlxParseResult(patternType, exprId, bindingId, methodCallExpr, returnType).setUsedDeclarations(usedDeclarations);
             } else {
                 NameExpr _this = new NameExpr("_this");
                 TypedExpression converted = DrlxParseUtil.toMethodCallWithClassCheck(methodCallExpr, patternType);
