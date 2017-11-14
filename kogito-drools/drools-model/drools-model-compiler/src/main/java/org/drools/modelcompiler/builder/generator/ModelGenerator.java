@@ -96,6 +96,7 @@ import org.drools.modelcompiler.builder.generator.RuleContext.RuleDialect;
 import org.kie.api.definition.type.Position;
 
 import static java.util.stream.Collectors.toList;
+
 import static org.drools.javaparser.printer.PrintUtil.toDrlx;
 import static org.drools.model.impl.NamesGenerator.generateName;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
@@ -110,8 +111,8 @@ public class ModelGenerator {
     private static final ClassOrInterfaceType BITMASK_TYPE = JavaParser.parseClassOrInterfaceType( BitMask.class.getCanonicalName() );
 
     private static final Map<String, Expression> attributesMap = new HashMap<>();
-
     private static final Map<String, Expression> consequenceMethods = new HashMap<>();
+    private static final Map<String, CustomOperatorSpec> customOperators = new HashMap<>();
 
     private static final IndexIdGenerator indexIdGenerator = new IndexIdGenerator();
 
@@ -132,6 +133,10 @@ public class ModelGenerator {
 
         consequenceMethods.put("getKnowledgeRuntime", JavaParser.parseExpression("drools.getRuntime(org.kie.api.runtime.KieRuntime.class)"));
         consequenceMethods.put("getKieRuntime", JavaParser.parseExpression("drools.getRuntime(org.kie.api.runtime.KieRuntime.class)"));
+
+        customOperators.put("before", TemporalOperatorSpec.INSTANCE);
+        customOperators.put("after", TemporalOperatorSpec.INSTANCE);
+        customOperators.put("in", InOperatorSpec.INSTANCE);
     }
 
     public static final boolean GENERATE_EXPR_ID = true;
@@ -756,18 +761,19 @@ public class ModelGenerator {
             List<String> usedDeclarations = new ArrayList<>();
             Set<String> reactOnProperties = new HashSet<>();
             TypedExpression left = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, pointFreeExpr.getLeft(), usedDeclarations, reactOnProperties );
-            DrlxParseUtil.toTypedExpression( context, packageModel, patternType, pointFreeExpr.getRight(), usedDeclarations, reactOnProperties );
-
-            MethodCallExpr methodCallExpr = new MethodCallExpr( null, pointFreeExpr.getOperator().asString() );
-            if (pointFreeExpr.getArg1() != null) {
-                addArgumentToMethodCall( pointFreeExpr.getArg1(), methodCallExpr );
-                if (pointFreeExpr.getArg2() != null) {
-                    addArgumentToMethodCall( pointFreeExpr.getArg2(), methodCallExpr );
-                }
+            for (Expression rightExpr : pointFreeExpr.getRight()) {
+                DrlxParseUtil.toTypedExpression( context, packageModel, patternType, rightExpr, usedDeclarations, reactOnProperties );
             }
 
+            String operator = pointFreeExpr.getOperator().asString();
+            CustomOperatorSpec opSpec = customOperators.get( operator );
+            if (opSpec == null) {
+                throw new UnsupportedOperationException("Unknown operator '" + operator + "' in expression: " + toDrlx(drlxExpr));
+            }
+            MethodCallExpr methodCallExpr = opSpec.getMethodCallExpr( pointFreeExpr, left );
+
             return new DrlxParseResult(patternType, exprId, bindingId, methodCallExpr, left.getType() )
-                    .setUsedDeclarations( usedDeclarations ).setReactOnProperties( reactOnProperties ).setStatic( true );
+                    .setUsedDeclarations( usedDeclarations ).setReactOnProperties( reactOnProperties ).setLeft( left ).setStatic( opSpec.isStatic() );
         }
 
         if (drlxExpr instanceof MethodCallExpr) {
@@ -802,6 +808,50 @@ public class ModelGenerator {
         }
 
         throw new UnsupportedOperationException("Unknown expression: " + toDrlx(drlxExpr)); // TODO
+    }
+
+    private interface CustomOperatorSpec {
+        MethodCallExpr getMethodCallExpr( PointFreeExpr pointFreeExpr, TypedExpression left );
+        boolean isStatic();
+    }
+
+    private static class TemporalOperatorSpec implements CustomOperatorSpec {
+        static final TemporalOperatorSpec INSTANCE = new TemporalOperatorSpec();
+
+        public MethodCallExpr getMethodCallExpr( PointFreeExpr pointFreeExpr, TypedExpression left ) {
+            MethodCallExpr methodCallExpr = new MethodCallExpr( null, pointFreeExpr.getOperator().asString() );
+            if (pointFreeExpr.getArg1() != null) {
+                addArgumentToMethodCall( pointFreeExpr.getArg1(), methodCallExpr );
+                if (pointFreeExpr.getArg2() != null) {
+                    addArgumentToMethodCall( pointFreeExpr.getArg2(), methodCallExpr );
+                }
+            }
+            return methodCallExpr;
+        }
+
+        @Override
+        public boolean isStatic() {
+            return true;
+        }
+    }
+
+    private static class InOperatorSpec implements CustomOperatorSpec {
+        static final InOperatorSpec INSTANCE = new InOperatorSpec();
+
+        public MethodCallExpr getMethodCallExpr( PointFreeExpr pointFreeExpr, TypedExpression left ) {
+            MethodCallExpr asList = new MethodCallExpr( new NameExpr("java.util.Arrays"), "asList" );
+            for (Expression rightExpr : pointFreeExpr.getRight()) {
+                asList.addArgument( rightExpr );
+            }
+            MethodCallExpr methodCallExpr = new MethodCallExpr( asList, "contains" );
+            methodCallExpr.addArgument( left.getExpression() );
+            return methodCallExpr;
+        }
+
+        @Override
+        public boolean isStatic() {
+            return false;
+        }
     }
 
     static class DrlxParseResult {
