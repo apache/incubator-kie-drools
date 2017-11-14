@@ -430,7 +430,7 @@ public class KiePackagesBuilder {
                                  arguments,
                                  varIndexList.stream().mapToInt(i->i).toArray(),
                                  requiredDeclarations.toArray( new Declaration[requiredDeclarations.size()] ),
-                                 true, // TODO: openQuery
+                                 queryPattern.isOpen(),
                                  false ); // TODO: query.isAbductive() );
     }
 

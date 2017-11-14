@@ -274,27 +274,28 @@ public class QueryTest extends BaseModelTest {
                 "    thing : String\n" +
                 "    location : String\n" +
                 "end\n" +
-                "rule \"testPullQueryRule\"\n" +
-                "  when\n" +
+                "// rule values at A11, header at A6\n" +
+                "rule \"testPullQueryRule\" when\n" +
                 "    String(this == \"pull\")\n" +
                 "    Person($l : likes)\n" +
                 "    ?isContainedIn($l, \"office\";)\n" +
-                "  then\n" +
+                "then\n" +
                 "end\n" +
                 "\n" +
-                "rule \"testPushQueryRule\"\n" +
-                "  when\n" +
+                "// rule values at A12, header at A6\n" +
+                "rule \"testPushQueryRule\" when\n" +
                 "    String(this == \"push\")\n" +
                 "    Person($l : likes)\n" +
                 "    isContainedIn($l, \"office\";)\n" +
-                "  then\n" +
+                "then\n" +
                 "end";
 
         KieSession ksession = getKieSession( str );
-        final TrackingAgendaEventListener listener = new TrackingAgendaEventListener();
-        ksession.addEventListener(listener);
 
         FactType locationType = ksession.getKieBase().getFactType("org.test", "Location");
+
+        final TrackingAgendaEventListener listener = new TrackingAgendaEventListener();
+        ksession.addEventListener(listener);
 
         final Person peter = new Person("Peter");
         peter.setLikes("steak");
@@ -307,13 +308,15 @@ public class QueryTest extends BaseModelTest {
         ksession.insert(peter);
         final FactHandle steakHandle = ksession.insert(steakLocation);
         final FactHandle tableHandle = ksession.insert(tableLocation);
-        ksession.insert("push");
+        ksession.insert("pull");
         ksession.fireAllRules();
 
-        Assertions.assertThat(listener.isRuleFired("testPushQueryRule")).isTrue();
-        Assertions.assertThat(listener.isRuleFired("testPullQueryRule")).isFalse();
+        Assertions.assertThat(listener.isRuleFired("testPullQueryRule")).isTrue();
+        Assertions.assertThat(listener.isRuleFired("testPushQueryRule")).isFalse();
         listener.clear();
 
+        // when location is changed of what Peter likes, pull query should
+        // ignore it
         final Object steakLocation2 = locationType.newInstance();
         locationType.set(steakLocation2, "thing", "steak");
         locationType.set(steakLocation2, "location", "desk");
@@ -326,8 +329,8 @@ public class QueryTest extends BaseModelTest {
         ksession.delete(tableHandle);
         ksession.fireAllRules();
 
-        Assertions.assertThat(listener.isRuleFired("testPushQueryRule")).isTrue();
         Assertions.assertThat(listener.isRuleFired("testPullQueryRule")).isFalse();
+        Assertions.assertThat(listener.isRuleFired("testPushQueryRule")).isFalse();
         listener.clear();
 
         final Person paul = new Person("Paul");
@@ -335,8 +338,7 @@ public class QueryTest extends BaseModelTest {
         ksession.insert(paul);
         ksession.fireAllRules();
 
-        Assertions.assertThat(listener.isRuleFired("testPushQueryRule")).isTrue();
-        Assertions.assertThat(listener.isRuleFired("testPullQueryRule")).isFalse();
-        listener.clear();
+        Assertions.assertThat(listener.isRuleFired("testPullQueryRule")).isTrue();
+        Assertions.assertThat(listener.isRuleFired("testPushQueryRule")).isFalse();
     }
 }
