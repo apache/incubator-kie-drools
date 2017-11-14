@@ -136,18 +136,20 @@ public class ModelGenerator {
 
     public static final boolean GENERATE_EXPR_ID = true;
 
-    public static final String BUILD_CALL = "build";
-    public static final String RULE_CALL = "rule";
-    public static final String EXECUTE_CALL = "execute";
-    public static final String EXECUTESCRIPT_CALL = "executeScript";
-    public static final String ON_CALL = "on";
-    public static final String EXPR_CALL = "expr";
-    public static final String INPUT_CALL = "input";
-    public static final String BIND_CALL = "bind";
-    public static final String BIND_AS_CALL = "as";
-    private static final String ATTRIBUTE_CALL = "attribute";
-    private static final String DECLARATION_OF_CALL = "declarationOf";
-    private static final String TYPE_CALL = "type";
+    static final String BUILD_CALL = "build";
+    static final String RULE_CALL = "rule";
+    static final String EXECUTE_CALL = "execute";
+    static final String EXECUTESCRIPT_CALL = "executeScript";
+    static final String ON_CALL = "on";
+    static final String EXPR_CALL = "expr";
+    static final String INPUT_CALL = "input";
+    static final String BIND_CALL = "bind";
+    static final String BIND_AS_CALL = "as";
+    static final String ATTRIBUTE_CALL = "attribute";
+    static final String DECLARATION_OF_CALL = "declarationOf";
+    static final String TYPE_CALL = "type";
+    static final String QUERY_INVOCATION_CALL = "call";
+    static final String VALUE_OF_CALL = "valueOf";
 
     public static void generateModel(InternalKnowledgePackage pkg, PackageDescr packageDescr, PackageModel packageModel) {
         packageModel.addImports(pkg.getTypeResolver().getImports());
@@ -564,11 +566,11 @@ public class ModelGenerator {
         List<? extends BaseDescr> constraintDescrs = pattern.getConstraint().getDescrs();
 
         // Expression is a query, get bindings from query parameter type
-        if ( QueryGenerator.bindQuery( context, packageModel, className, constraintDescrs ) ) {
+        if ( QueryGenerator.bindQuery( context, packageModel, pattern, constraintDescrs ) ) {
             return;
         }
 
-        if(QueryGenerator.createQueryCall(className, packageModel, context, pattern)) {
+        if ( QueryGenerator.createQueryCall(packageModel, context, pattern) ) {
             return;
         }
 

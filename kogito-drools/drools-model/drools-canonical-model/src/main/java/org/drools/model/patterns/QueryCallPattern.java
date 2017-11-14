@@ -25,14 +25,16 @@ import org.drools.model.view.QueryCallViewItem;
 public class QueryCallPattern implements Condition {
 
     private final QueryDef query;
+    private final boolean open;
     private final Argument<?>[] arguments;
 
     public QueryCallPattern( QueryCallViewItem queryCallView ) {
-        this(queryCallView.getQuery(), queryCallView.getArguments());
+        this(queryCallView.getQuery(), queryCallView.isOpen(), queryCallView.getArguments());
     }
 
-    public QueryCallPattern( QueryDef query, Argument<?>... arguments ) {
+    public QueryCallPattern( QueryDef query, boolean open, Argument<?>... arguments ) {
         this.query = query;
+        this.open = open;
         this.arguments = arguments;
     }
 
@@ -42,6 +44,10 @@ public class QueryCallPattern implements Condition {
 
     public Argument<?>[] getArguments() {
         return arguments;
+    }
+
+    public boolean isOpen() {
+        return open;
     }
 
     @Override

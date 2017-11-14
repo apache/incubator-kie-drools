@@ -23,10 +23,12 @@ import org.drools.model.Variable;
 public class QueryCallViewItemImpl implements QueryCallViewItem {
 
     private final QueryDef query;
+    private final boolean open;
     private final Argument<?>[] arguments;
 
-    public QueryCallViewItemImpl( QueryDef query, Argument<?>... arguments ) {
+    public QueryCallViewItemImpl( QueryDef query, boolean open, Argument<?>... arguments ) {
         this.query = query;
+        this.open = open;
         this.arguments = arguments;
     }
 
@@ -38,6 +40,11 @@ public class QueryCallViewItemImpl implements QueryCallViewItem {
     @Override
     public Argument<?>[] getArguments() {
         return arguments;
+    }
+
+    @Override
+    public boolean isOpen() {
+        return open;
     }
 
     @Override

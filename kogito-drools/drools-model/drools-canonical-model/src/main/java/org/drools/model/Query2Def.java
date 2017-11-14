@@ -19,7 +19,12 @@ package org.drools.model;
 import org.drools.model.view.QueryCallViewItem;
 
 public interface Query2Def<A, B> extends QueryDef {
-    QueryCallViewItem call( Argument<A> aVar, Argument<B> bVar );
+
+    default QueryCallViewItem call( Argument<A> aVar, Argument<B> bVar ) {
+        return call( true, aVar, bVar );
+    }
+
+    QueryCallViewItem call( boolean open, Argument<A> aVar, Argument<B> bVar );
 
     Variable<A> getArg1();
     Variable<B> getArg2();

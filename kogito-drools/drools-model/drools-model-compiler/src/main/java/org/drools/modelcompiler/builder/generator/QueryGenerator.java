@@ -30,6 +30,8 @@ import org.drools.modelcompiler.builder.PackageModel;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassFromContext;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.ModelGenerator.BUILD_CALL;
+import static org.drools.modelcompiler.builder.generator.ModelGenerator.QUERY_INVOCATION_CALL;
+import static org.drools.modelcompiler.builder.generator.ModelGenerator.VALUE_OF_CALL;
 import static org.drools.modelcompiler.util.StringUtil.toId;
 
 public class QueryGenerator {
@@ -139,17 +141,18 @@ public class QueryGenerator {
         return queryType;
     }
 
-    public static boolean bindQuery( RuleContext context, PackageModel packageModel, String className, List<? extends BaseDescr> descriptors ) {
-        String queryName = "query_" + className;
+    public static boolean bindQuery( RuleContext context, PackageModel packageModel, PatternDescr pattern, List<? extends BaseDescr> descriptors ) {
+        String queryName = "query_" + pattern.getObjectType();
         MethodDeclaration queryMethod = packageModel.getQueryMethod(queryName);
         if (queryMethod != null) {
-            NameExpr queryCall = new NameExpr(toQueryDef(className));
-            MethodCallExpr callCall = new MethodCallExpr(queryCall, "call");
+            NameExpr queryCall = new NameExpr(toQueryDef(pattern.getObjectType()));
+            MethodCallExpr callCall = new MethodCallExpr(queryCall, QUERY_INVOCATION_CALL);
+            callCall.addArgument( "" + !pattern.isQuery() );
 
             for (int i = 0; i < descriptors.size(); i++) {
                 String itemText = descriptors.get(i).getText();
                 if(isLiteral(itemText)) {
-                    MethodCallExpr valueOfMethod = new MethodCallExpr(null, "valueOf");
+                    MethodCallExpr valueOfMethod = new MethodCallExpr(null, VALUE_OF_CALL);
                     valueOfMethod.addArgument(new NameExpr(itemText));
                     callCall.addArgument(valueOfMethod);
                 } else {
@@ -170,10 +173,11 @@ public class QueryGenerator {
                 ( Character.isDigit(value.charAt(0)) || value.charAt(0) == '"' || "true".equals(value) || "false".equals(value) || "null".equals(value) );
     }
 
-    public static boolean createQueryCall(String className, PackageModel packageModel, RuleContext context, PatternDescr pattern) {
-        String queryDef = toQueryDef(className);
-        if(packageModel.getQueryDefWithType().containsKey(queryDef)) {
-            MethodCallExpr callMethod = new MethodCallExpr(new NameExpr(queryDef), "call");
+    public static boolean createQueryCall(PackageModel packageModel, RuleContext context, PatternDescr pattern) {
+        String queryDef = toQueryDef(pattern.getObjectType());
+        if (packageModel.getQueryDefWithType().containsKey(queryDef)) {
+            MethodCallExpr callMethod = new MethodCallExpr(new NameExpr(queryDef), QUERY_INVOCATION_CALL);
+            callMethod.addArgument( "" + !pattern.isQuery() );
 
             List<QueryParameter> parameters = packageModel.getQueryDefWithType().get(queryDef).getContext().queryParameters;
             for (int i = 0; i < parameters.size(); i++) {

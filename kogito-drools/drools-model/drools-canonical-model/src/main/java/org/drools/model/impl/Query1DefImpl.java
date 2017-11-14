@@ -39,8 +39,8 @@ public class Query1DefImpl<A> extends QueryDefImpl implements Query1Def<A> {
     }
 
     @Override
-    public QueryCallViewItem call( Argument<A> aVar ) {
-        return new QueryCallViewItemImpl( this, aVar );
+    public QueryCallViewItem call( boolean open, Argument<A> aVar ) {
+        return new QueryCallViewItemImpl( this, open, aVar );
     }
 
     @Override

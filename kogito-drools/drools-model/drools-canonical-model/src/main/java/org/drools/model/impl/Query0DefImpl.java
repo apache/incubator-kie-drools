@@ -34,8 +34,8 @@ public class Query0DefImpl extends QueryDefImpl implements Query0Def {
     }
 
     @Override
-    public QueryCallViewItem call() {
-        return new QueryCallViewItemImpl( this );
+    public QueryCallViewItem call(boolean open) {
+        return new QueryCallViewItemImpl( this, open );
     }
 
     @Override

@@ -41,8 +41,8 @@ public class Query2DefImpl<A, B> extends QueryDefImpl implements Query2Def<A, B>
     }
 
     @Override
-    public QueryCallViewItem call( Argument<A> aVar, Argument<B> bVar ) {
-        return new QueryCallViewItemImpl( this, aVar, bVar );
+    public QueryCallViewItem call( boolean open, Argument<A> aVar, Argument<B> bVar ) {
+        return new QueryCallViewItemImpl( this, open, aVar, bVar );
     }
 
     @Override
