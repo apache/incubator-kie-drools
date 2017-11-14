@@ -86,6 +86,7 @@ public class ModelBuilderImpl extends KnowledgeBuilderImpl {
 
     @Override
     protected void compileKnowledgePackages(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
+        validateUniqueRuleNames(packageDescr);
         InternalKnowledgePackage pkg = pkgRegistry.getPackage();
         String pkgName = pkg.getName();
         PackageModel model = packageModels.computeIfAbsent(pkgName, s -> new PackageModel(pkgName));
