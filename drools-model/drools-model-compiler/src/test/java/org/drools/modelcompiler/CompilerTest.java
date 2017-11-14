@@ -886,12 +886,12 @@ public class CompilerTest extends BaseModelTest {
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +
                 "import " + Person.class.getCanonicalName() + ";" +
-                "function Boolean isFortyYearsOld(Person p, Person p2) {\n" +
+                "function Boolean isFortyYearsOld(Person p, Boolean booleanParameter) {\n" +
                 "    return p.getAge() == 40; \n"+
                 "}" +
                 "rule R when\n" +
                 "  $p : Person()\n" +
-                "  eval( isFortyYearsOld($p, $p) )\n" +
+                "  eval( isFortyYearsOld($p, true) )\n" +
                 "then\n" +
                 "  insert(new Result($p.getName()));\n" +
                 "end";
