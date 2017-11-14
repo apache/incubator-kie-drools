@@ -16,13 +16,16 @@
 
 package org.drools.testcoverage.common.util;
 
+import java.io.File;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import org.assertj.core.api.Assertions;
+import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
+import org.drools.modelcompiler.CanonicalKieModule;
 import org.drools.modelcompiler.builder.CanonicalModelKieProject;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -30,7 +33,9 @@ import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.command.KieCommands;
 import org.kie.api.io.KieResources;
 import org.kie.api.io.Resource;
@@ -55,8 +60,13 @@ public final class KieUtil {
         final KieServices kieServices = KieServices.Factory.get();
         final KieFileSystem fileSystem = getKieFileSystemWithKieModule(kieModuleModel, releaseId, resources);
         final KieBuilder builder = getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, fileSystem, true);
-        final KieModule kieModule = builder.getKieModule();
+        KieModule kieModule = builder.getKieModule();
+        if (kieBaseTestConfiguration.useCanonicalModel()) {
+            final File kjarFile = FileUtil.bytesToTempKJARFile(releaseId, ((InternalKieModule) kieModule).getBytes(), ".jar" );
+            kieModule = new CanonicalKieModule(releaseId, getDefaultKieModuleModel(kieServices), kjarFile );
+        }
         kieServices.getRepository().addKieModule(kieModule);
+
         return kieModule;
     }
 
@@ -85,6 +95,13 @@ public final class KieUtil {
             final boolean failIfBuildError, final Resource... resources) {
         return getKieBuilderFromFileSystemWithResources(kieBaseTestConfiguration,
                 KieServices.Factory.get().newKieFileSystem(), failIfBuildError, resources);
+    }
+
+    public static KieModuleModel getDefaultKieModuleModel(KieServices ks) {
+        final KieModuleModel kproj = KieServices.get().newKieModuleModel();
+        final KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("kbase").setDefault(true);
+        final KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel("ksession").setDefault(true);
+        return kproj;
     }
 
     private static KieBuilder getKieBuilderFromFileSystemWithResources(final KieBaseTestConfiguration kieBaseTestConfiguration,
