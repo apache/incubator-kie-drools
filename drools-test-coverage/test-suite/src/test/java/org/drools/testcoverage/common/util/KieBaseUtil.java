@@ -16,12 +16,8 @@
 
 package org.drools.testcoverage.common.util;
 
-import java.io.StringReader;
-
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.StringReader;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.modelcompiler.CanonicalKieModule;
@@ -30,9 +26,7 @@ import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
-import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
-import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieContainer;
 
@@ -57,6 +51,9 @@ public final class KieBaseUtil {
             final KieBaseTestConfiguration kieBaseTestConfiguration, final boolean failIfBuildError, final String... resources) {
         final KieBuilder kieBuilder = KieUtil.getKieBuilderFromClasspathResources(kieBaseTestConfiguration,
                 classLoaderFromClass, failIfBuildError, resources);
+        if (kieBaseTestConfiguration.useCanonicalModel()) {
+            generateKieModuleForCanonicalModel( kieBuilder );
+        }
         return getDefaultKieBaseFromKieBuilder(kieBuilder);
     }
 
