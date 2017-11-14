@@ -24,4 +24,6 @@ public interface QueryCallViewItem extends ViewItem {
     QueryDef getQuery();
 
     Argument<?>[] getArguments();
+
+    boolean isOpen();
 }
