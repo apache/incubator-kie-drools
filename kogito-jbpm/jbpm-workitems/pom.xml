@@ -15,19 +15,10 @@
 
   <modules>
     <module>jbpm-workitems-core</module>
-    <module>jbpm-workitems-archive</module>
     <module>jbpm-workitems-bpmn2</module>
     <module>jbpm-workitems-email</module>
-    <module>jbpm-workitems-exec</module>
-    <module>jbpm-workitems-ftp</module>
-    <module>jbpm-workitems-jabber</module>
-    <module>jbpm-workitems-java</module>
     <module>jbpm-workitems-jms</module>
-    <module>jbpm-workitems-jpa</module>
-    <module>jbpm-workitems-parser</module>
     <module>jbpm-workitems-rest</module>
-    <module>jbpm-workitems-rss</module>
-    <module>jbpm-workitems-transform</module>
     <module>jbpm-workitems-webservice</module>
     <module>jbpm-workitems-archetype</module>
   </modules>
@@ -72,10 +63,6 @@
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-compress</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
