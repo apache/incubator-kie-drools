@@ -401,12 +401,12 @@ public class DrlxParseUtil {
                 parsedType.getElementType();
     }
 
-    public static String findBindingIdFromDotExpression(String expression) {
+    public static Optional<String> findBindingIdFromDotExpression(String expression) {
         int dot = expression.indexOf( '.' );
         if ( dot < 0 ) {
-            throw new UnsupportedOperationException( "unable to parse expression: " + expression );
+            return Optional.empty();
         }
-        return expression.substring(0, dot);
+        return Optional.of(expression.substring(0, dot));
     }
 
     public static Class<?> getClassFromContext(InternalKnowledgePackage pkg, String className) {

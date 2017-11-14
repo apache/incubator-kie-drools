@@ -535,7 +535,8 @@ public class ModelGenerator {
 
     private static void visit( RuleContext context, PackageModel packageModel, EvalDescr descr ) {
         final String expression = descr.getContent().toString();
-        final String bindingId = DrlxParseUtil.findBindingIdFromDotExpression(expression);
+        // accordingly to history the EvalDescr always expected a fieldaccess-expression like content here:
+        final String bindingId = DrlxParseUtil.findBindingIdFromDotExpression(expression).orElseThrow(() -> new UnsupportedOperationException("unable to parse eval expression: " + expression));
 
         Class<?> patternType = context.getDeclarationById(bindingId)
                 .map(DeclarationSpec::getDeclarationClass)
