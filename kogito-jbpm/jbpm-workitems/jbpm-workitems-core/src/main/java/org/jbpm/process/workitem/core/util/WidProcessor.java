@@ -83,38 +83,15 @@ public class WidProcessor extends AbstractProcessor {
 
     public static final String INDEX_ST_TEMPLATE = "<html>\n" +
             "<head>\n" +
-            "    <style type=\"text/css\">\n" +
-            "        table.table-style {\n" +
-            "            font-family: verdana, arial, sans-serif;\n" +
-            "            font-size: 11px;\n" +
-            "            color: #333333;\n" +
-            "            border-width: 1px;\n" +
-            "            border-color: #3A3A3A;\n" +
-            "            border-collapse: collapse;\n" +
-            "        }\n" +
-            "        table.table-style th {\n" +
-            "            border-width: 1px;\n" +
-            "            padding: 8px;\n" +
-            "            border-style: solid;\n" +
-            "            border-color: #517994;\n" +
-            "            background-color: #B2CFD8;\n" +
-            "        }\n" +
-            "        table.table-style tr:hover td {\n" +
-            "            background-color: #DFEBF1;\n" +
-            "        }\n" +
-            "        table.table-style td {\n" +
-            "            border-width: 1px;\n" +
-            "            padding: 8px;\n" +
-            "            border-style: solid;\n" +
-            "            border-color: #517994;\n" +
-            "            background-color: #ffffff;\n" +
-            "        }\n" +
-            "    </style>\n" +
+            "<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css\">\n"+
+            "<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js\"></script>\n" +
+            "<script src=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js\"></script>\n" +
             "</head>\n" +
             "<body>\n" +
+            "<div class=\"container\">\n" +
             "$widInfo:{k|\n" +
             "<h2>Workitem Info</h2>\n" +
-            "<table class=\"table-style\">\n" +
+            "<table class=\"table table-hover\">\n" +
             "    <thead>\n" +
             "    <tr>\n" +
             "        <th>Name</th>\n" +
@@ -137,7 +114,7 @@ public class WidProcessor extends AbstractProcessor {
             "<br/>\n" +
             "$if(widInfo.(k).parameters)$\n" +
             "<h2>Parameters</h2>\n" +
-            "<table class=\"table-style\">\n" +
+            "<table class=\"table table-hover\">\n" +
             "    <thead>\n" +
             "    <tr>\n" +
             "        <th>Name</th>\n" +
@@ -157,7 +134,7 @@ public class WidProcessor extends AbstractProcessor {
             "$endif$\n" +
             "$if(widInfo.(k).results)$\n" +
             "<h2>Results</h2>\n" +
-            "<table class=\"table-style\">\n" +
+            "<table class=\"table table-hover\">\n" +
             "    <thead>\n" +
             "    <tr>\n" +
             "        <th>Name</th>\n" +
@@ -177,7 +154,7 @@ public class WidProcessor extends AbstractProcessor {
             "$endif$\n" +
             "$if(widInfo.(k).mavenDepends)$\n" +
             "<h2>Maven Dependencies</h2>\n" +
-            "<table class=\"table-style\">\n" +
+            "<table class=\"table table-hover\">\n" +
             "    <thead>\n" +
             "    <tr>\n" +
             "        <th>Group</th>\n" +
@@ -198,6 +175,7 @@ public class WidProcessor extends AbstractProcessor {
             "<br/>\n" +
             "$endif$\n" +
             "}$\n" +
+            "</div>\n" +
             "</body>\n" +
             "</html>";
 
