@@ -162,7 +162,7 @@ public class GlobalNumberExtractor extends BaseDateClassFieldReader
     }
 
     public int getIndex() {
-        throw new RuntimeException( "Can't extract a value from global " + identifier + " without a working memory reference" );
+        return -1;
     }
 
     public int getIntValue(Object object) {
