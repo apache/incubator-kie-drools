@@ -855,16 +855,16 @@ public class CompilerTest extends BaseModelTest {
 
 
     @Test
-    @Ignore
-    public void testEval2() {
+    @Ignore("fix the indexedBy problem")
+    public void testAgeWithSum() {
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +
                 "import " + Person.class.getCanonicalName() + ";" +
                 "rule R when\n" +
-                "  $p : Person( girlAge : age )\n" +
-                "  $p2 : Person(age == girlAge + 3 )\n" +
+                "  $p : Person( personAge : age )\n" +
+                "  $plusTwo : Person(age == personAge + 2 )\n" +
                 "then\n" +
-                "  insert(new Result($p2.getName()));\n" +
+                "  insert(new Result($plusTwo.getName()));\n" +
                 "end";
 
         KieSession ksession = getKieSession( str );
@@ -876,7 +876,7 @@ public class CompilerTest extends BaseModelTest {
 
         Collection<Result> results = getObjectsIntoList( ksession, Result.class );
         assertEquals( 1, results.size() );
-        assertEquals( "Mario", results.iterator().next().getValue() );
+        assertEquals( "Mark", results.iterator().next().getValue() );
     }
 
 

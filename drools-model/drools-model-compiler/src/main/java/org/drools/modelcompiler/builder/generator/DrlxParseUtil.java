@@ -94,6 +94,17 @@ public class DrlxParseUtil {
             TypedExpression typedExpr = toTypedExpression( context, packageModel, patternType, unaryExpr.getExpression(), usedDeclarations, reactOnProperties );
             return new TypedExpression( new UnaryExpr( typedExpr.getExpression(), unaryExpr.getOperator() ), typedExpr.getType() );
 
+        } else if (drlxExpr instanceof BinaryExpr) {
+            BinaryExpr binaryExpr = (BinaryExpr) drlxExpr;
+
+            Operator operator = binaryExpr.getOperator();
+
+            TypedExpression left = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, binaryExpr.getLeft(), usedDeclarations, reactOnProperties );
+            TypedExpression right = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, binaryExpr.getRight(), usedDeclarations, reactOnProperties );
+
+            BinaryExpr combo = new BinaryExpr( left.getExpression(), right.getExpression(), operator );
+            return new TypedExpression( combo, left.getType() );
+
         } else if (drlxExpr instanceof LiteralExpr) {
             return new TypedExpression(drlxExpr);
 
