@@ -508,6 +508,7 @@ public class ModelGenerator {
         } else if ( descr instanceof OrDescr) {
             visit( context, packageModel, ( (OrDescr) descr ), "or");
         } else if ( descr instanceof PatternDescr && ((PatternDescr)descr).getSource() instanceof AccumulateDescr) {
+            visit(context, packageModel, (PatternDescr) descr);
             new AccumulateVisitor(context, packageModel).visit(( (AccumulateDescr)((PatternDescr) descr).getSource() ));
         } else if ( descr instanceof PatternDescr ) {
             visit( context, packageModel, ( (PatternDescr) descr ));
