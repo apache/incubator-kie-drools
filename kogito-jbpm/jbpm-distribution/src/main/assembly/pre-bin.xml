@@ -13,7 +13,12 @@
         <include>org.jbpm:jbpm-persistence-jpa</include>
         <include>org.jbpm:jbpm-bpmn2</include>
         <include>org.jbpm:jbpm-audit</include>
-        <include>org.jbpm:jbpm-workitems</include>
+        <include>org.jbpm:jbpm-workitems-bpmn2</include>
+        <include>org.jbpm:jbpm-workitems-core</include>
+        <include>org.jbpm:jbpm-workitems-email</include>
+        <include>org.jbpm:jbpm-workitems-jms</include>
+        <include>org.jbpm:jbpm-workitems-rest</include>
+        <include>org.jbpm:jbpm-workitems-webservice</include>
         <include>org.jbpm:jbpm-services-api</include>
         <include>org.jbpm:jbpm-kie-services</include>
         <include>org.jbpm:jbpm-services-cdi</include>
@@ -45,7 +50,12 @@
         <exclude>org.jbpm:jbpm-persistence-jpa</exclude>
         <exclude>org.jbpm:jbpm-bpmn2</exclude>
         <exclude>org.jbpm:jbpm-audit</exclude>
-        <exclude>org.jbpm:jbpm-workitems</exclude>
+        <exclude>org.jbpm:jbpm-workitems-bpmn2</exclude>
+        <exclude>org.jbpm:jbpm-workitems-core</exclude>
+        <exclude>org.jbpm:jbpm-workitems-email</exclude>
+        <exclude>org.jbpm:jbpm-workitems-jms</exclude>
+        <exclude>org.jbpm:jbpm-workitems-rest</exclude>
+        <exclude>org.jbpm:jbpm-workitems-webservice</exclude>
         <exclude>org.jbpm:jbpm-services-api</exclude>
         <exclude>org.jbpm:jbpm-kie-services</exclude>
         <exclude>org.jbpm:jbpm-services-cdi</exclude>
