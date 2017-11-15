@@ -78,14 +78,19 @@ public class DrlxParseUtil {
                 return ConstraintType.LESS_THAN;
             case LESS_EQUALS:
                 return ConstraintType.LESS_OR_EQUAL;
+            default:
+                return ConstraintType.UNKNOWN;
         }
-        throw new UnsupportedOperationException("Unknown operator " + operator);
     }
 
     public static TypedExpression toTypedExpression(RuleContext context, PackageModel packageModel, Class<?> patternType, Expression drlxExpr,
                                                     List<String> usedDeclarations, Set<String> reactOnProperties) {
 
         Class<?> typeCursor = patternType;
+
+        if(drlxExpr instanceof EnclosedExpr) {
+            drlxExpr = ((EnclosedExpr) drlxExpr).getInner();
+        }
 
         if (drlxExpr instanceof UnaryExpr) {
             UnaryExpr unaryExpr = (UnaryExpr) drlxExpr;
@@ -97,6 +102,10 @@ public class DrlxParseUtil {
 
         } else if (drlxExpr instanceof ThisExpr) {
             return new TypedExpression(new NameExpr("_this"));
+
+        } else if (drlxExpr instanceof CastExpr) {
+            CastExpr castExpr = (CastExpr)drlxExpr;
+            return new TypedExpression(castExpr, getClassFromContext(context.getPkg(), castExpr.getType().asString()));
 
         } else if (drlxExpr instanceof NameExpr) {
             String name = drlxExpr.toString();

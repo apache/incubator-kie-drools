@@ -16,22 +16,17 @@
 
 package org.drools.model;
 
-import org.drools.model.view.ViewItemBuilder;
+import org.drools.model.view.QueryCallViewItem;
 
-public interface QueryDef {
+public interface Query3Def<A, B, C> extends QueryDef {
 
-    Class[] QUERIES_BY_ARITY = new Class[] {
-            QueryDef.class, Query1Def.class, Query2Def.class, Query3Def.class, Query4Def.class
-    };
-
-    static Class getQueryClassByArity(int arity) {
-        return QUERIES_BY_ARITY[arity];
+    default QueryCallViewItem call(Argument<A> aVar, Argument<B> bVar, Argument<C> cVar) {
+        return call( true, aVar, bVar, cVar);
     }
 
-    String getPackage();
-    String getName();
+    QueryCallViewItem call(boolean open, Argument<A> aVar, Argument<B> bVar, Argument<C> cVar);
 
-    Variable<?>[] getArguments();
-
-    Query build( ViewItemBuilder... viewItemBuilders );
+    Variable<A> getArg1();
+    Variable<B> getArg2();
+    Variable<C> getArg3();
 }
