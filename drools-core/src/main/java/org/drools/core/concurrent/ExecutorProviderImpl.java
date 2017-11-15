@@ -91,7 +91,7 @@ public class ExecutorProviderImpl implements KieExecutors {
     }
 
     public ExecutorService newFixedThreadPool(int nThreads) {
-        return Executors.newFixedThreadPool(Pool.SIZE, ExecutorHolder.threadFactory);
+        return Executors.newFixedThreadPool(nThreads, ExecutorHolder.threadFactory);
     }
 
     public <T> CompletionService<T> getCompletionService() {
