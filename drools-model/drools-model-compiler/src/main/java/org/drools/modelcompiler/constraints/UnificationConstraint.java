@@ -28,6 +28,7 @@ import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.drools.core.util.index.IndexUtil;
+import org.drools.model.Index;
 import org.drools.modelcompiler.constraints.LambdaConstraint.LambdaContextEntry;
 
 import static org.drools.core.rule.constraint.MvelConstraint.INDEX_EVALUATOR;
@@ -36,10 +37,21 @@ public class UnificationConstraint extends MutableTypeConstraint implements Inde
 
     private final Declaration declaration;
     private final InternalReadAccessor readAccessor;
+    private final ConstraintEvaluator evaluator;
 
     public UnificationConstraint( Declaration declaration ) {
+        this(declaration, null);
+    }
+
+    public UnificationConstraint( Declaration declaration, ConstraintEvaluator evaluator ) {
         this.declaration = declaration;
-        readAccessor = new LambdaReadAccessor( declaration.getDeclarationClass(), x -> x );
+        this.evaluator = evaluator;
+        if (evaluator != null) {
+            Index index = evaluator.getIndex();
+            this.readAccessor = new LambdaReadAccessor( index.getIndexId(), index.getIndexedClass(), index.getLeftOperandExtractor() );
+        } else {
+            this.readAccessor = new LambdaReadAccessor( declaration.getDeclarationClass(), x -> x );
+        }
     }
 
     @Override
@@ -79,13 +91,16 @@ public class UnificationConstraint extends MutableTypeConstraint implements Inde
 
     @Override
     public void replaceDeclaration( Declaration oldDecl, Declaration newDecl ) {
-        throw new UnsupportedOperationException();
-
+        if (evaluator != null) {
+            evaluator.replaceDeclaration( oldDecl, newDecl );
+        } else {
+            throw new UnsupportedOperationException();
+        }
     }
 
     @Override
     public MutableTypeConstraint clone() {
-        return new UnificationConstraint( declaration );
+        return new UnificationConstraint( declaration, evaluator );
     }
 
     @Override
@@ -100,18 +115,21 @@ public class UnificationConstraint extends MutableTypeConstraint implements Inde
 
     @Override
     public boolean isAllowedCachedLeft( ContextEntry context, InternalFactHandle handle ) {
-        return evaluateUnification( handle, ((LambdaContextEntry) context).getTuple() );
+        return evaluateUnification( handle, ((LambdaContextEntry) context).getTuple(), ((LambdaContextEntry) context).getWorkingMemory() );
     }
 
     @Override
     public boolean isAllowedCachedRight( Tuple tuple, ContextEntry context ) {
-        return evaluateUnification( ((LambdaContextEntry) context).getHandle(), tuple );
+        return evaluateUnification( ((LambdaContextEntry) context).getHandle(), tuple, ((LambdaContextEntry) context).getWorkingMemory() );
     }
 
-    private boolean evaluateUnification( InternalFactHandle handle, Tuple tuple ) {
+    private boolean evaluateUnification( InternalFactHandle handle, Tuple tuple, InternalWorkingMemory workingMemory ) {
         DroolsQuery query = ( DroolsQuery ) tuple.getObject( 0 );
         if (query.getVariables()[declaration.getExtractor().getIndex()] != null) {
             return true;
+        }
+        if (evaluator != null) {
+            return evaluator.evaluate(handle, tuple, workingMemory);
         }
         Object argument = declaration.getValue( null, query );
         return handle.getObject().equals( argument );

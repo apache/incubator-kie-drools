@@ -16,7 +16,9 @@
 
 package org.drools.modelcompiler;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.assertj.core.api.Assertions;
 import org.drools.core.rule.QueryImpl;
@@ -25,11 +27,15 @@ import org.drools.modelcompiler.domain.Relationship;
 import org.drools.modelcompiler.domain.Result;
 import org.drools.modelcompiler.util.TrackingAgendaEventListener;
 import org.junit.Test;
+import org.kie.api.KieServices;
+import org.kie.api.command.Command;
 import org.kie.api.definition.type.FactType;
+import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
+import org.kie.api.runtime.rule.Variable;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -340,5 +346,81 @@ public class QueryTest extends BaseModelTest {
 
         Assertions.assertThat(listener.isRuleFired("testPullQueryRule")).isTrue();
         Assertions.assertThat(listener.isRuleFired("testPushQueryRule")).isFalse();
+    }
+
+    @Test
+    public void testRecursiveQueryWithBatchCommand() throws Exception {
+        String str =
+                "package org.test;\n" +
+                        "import " + Person.class.getCanonicalName() + ";" +
+                        "query isContainedIn(String x, String y)\n" +
+                        "    Location (x, y;)\n" +
+                        "    or\n" +
+                        "    ( Location (z, y;) and ?isContainedIn(x, z;))\n" +
+                        "end\n" +
+                        "declare Location\n" +
+                        "    thing : String\n" +
+                        "    location : String\n" +
+                        "end";
+
+        KieServices kieServices = KieServices.Factory.get();
+        KieSession ksession = getKieSession( str );
+
+        FactType locationType = ksession.getKieBase().getFactType("org.test", "Location");
+
+        // a pear is in the kitchen
+        final Object pear = locationType.newInstance();
+        locationType.set(pear, "thing", "pear");
+        locationType.set(pear, "location", "kitchen");
+
+        // a desk is in the office
+        final Object desk = locationType.newInstance();
+        locationType.set(desk, "thing", "desk");
+        locationType.set(desk, "location", "office");
+
+        // a flashlight is on the desk
+        final Object flashlight = locationType.newInstance();
+        locationType.set(flashlight, "thing", "flashlight");
+        locationType.set(flashlight, "location", "desk");
+
+        // an envelope is on the desk
+        final Object envelope = locationType.newInstance();
+        locationType.set(envelope, "thing", "envelope");
+        locationType.set(envelope, "location", "desk");
+
+        // a key is in the envelope
+        final Object key = locationType.newInstance();
+        locationType.set(key, "thing", "key");
+        locationType.set(key, "location", "envelope");
+
+        // create working memory objects
+        final List<Command<?>> commands = new ArrayList<Command<?>>();
+
+        // Location instances
+        commands.add(kieServices.getCommands().newInsert(pear));
+        commands.add(kieServices.getCommands().newInsert(desk));
+        commands.add(kieServices.getCommands().newInsert(flashlight));
+        commands.add(kieServices.getCommands().newInsert(envelope));
+        commands.add(kieServices.getCommands().newInsert(key));
+
+        // fire all rules
+        final String queryAlias = "myQuery";
+        commands.add(kieServices.getCommands().newQuery(queryAlias, "isContainedIn", new Object[] { Variable.v, "office" }));
+
+        final ExecutionResults results = ksession.execute(kieServices.getCommands().newBatchExecution(commands, null));
+        final QueryResults qResults = (QueryResults) results.getValue(queryAlias);
+
+        String paramName = ((QueryImpl ) ksession.getKieBase().getQuery("org.test", "isContainedIn" )).getParameters()[0].getIdentifier();
+        final List<String> l = new ArrayList<String>();
+        for (QueryResultsRow r : qResults) {
+            l.add((String) r.get(paramName));
+        }
+
+        // items in the office should be the following
+        Assertions.assertThat(l.size()).isEqualTo(4);
+        Assertions.assertThat(l.contains("desk")).isTrue();
+        Assertions.assertThat(l.contains("flashlight")).isTrue();
+        Assertions.assertThat(l.contains("envelope")).isTrue();
+        Assertions.assertThat(l.contains("key")).isTrue();
     }
 }

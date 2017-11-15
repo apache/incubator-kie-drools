@@ -16,6 +16,13 @@
 
 package org.drools.core.rule;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Stack;
+
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.extractors.ArrayElementReader;
 import org.drools.core.base.extractors.SelfReferenceClassFieldReader;
@@ -23,13 +30,6 @@ import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.Constraint;
 import org.drools.core.spi.DataProvider;
 import org.drools.core.spi.DeclarationScopeResolver;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Stack;
 
 /**
  * LogicTransformation is reponsible for removing redundant nodes and move Or
@@ -261,9 +261,9 @@ public class LogicTransformer {
         for ( Declaration aDecl : decl ) {
             Declaration resolved = resolver.getDeclaration( aDecl.getIdentifier() );
 
-            if ( constraint instanceof MvelConstraint && ( (MvelConstraint) constraint ).isUnification() ) {
+            if ( constraint instanceof IndexableConstraint && ( (IndexableConstraint) constraint ).isUnification() ) {
                 if ( ClassObjectType.DroolsQuery_ObjectType.isAssignableFrom( resolved.getPattern().getObjectType() ) ) {
-                    Declaration redeclaredDeclr = new Declaration( resolved.getIdentifier(), ( (MvelConstraint) constraint ).getFieldExtractor(), pattern, false );
+                    Declaration redeclaredDeclr = new Declaration( resolved.getIdentifier(), ( (IndexableConstraint) constraint ).getFieldExtractor(), pattern, false );
                     pattern.addDeclaration( redeclaredDeclr );
                 } else if ( resolved.getPattern() != pattern ) {
                     ( (MvelConstraint) constraint ).unsetUnification();

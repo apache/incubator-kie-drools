@@ -16,15 +16,6 @@
 
 package org.drools.core.rule;
 
-import org.drools.core.base.DroolsQuery;
-import org.drools.core.base.extractors.ArrayElementReader;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.util.MVELSafeHelper;
-import org.kie.api.runtime.rule.Variable;
-import org.mvel2.MVEL;
-import org.mvel2.ParserContext;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -33,6 +24,14 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.drools.core.base.DroolsQuery;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.util.MVELSafeHelper;
+import org.kie.api.runtime.rule.Variable;
+import org.mvel2.MVEL;
+import org.mvel2.ParserContext;
 
 import static org.drools.core.rule.QueryArgument.Declr.evaluateDeclaration;
 
@@ -58,7 +57,7 @@ public interface QueryArgument extends Externalizable {
 
         static Object evaluateDeclaration( InternalWorkingMemory wm, LeftTuple leftTuple, Declaration declaration ) {
             Object tupleObject = leftTuple.get( declaration ).getObject();
-            if ( tupleObject instanceof DroolsQuery && declaration.getExtractor() instanceof ArrayElementReader &&
+            if ( tupleObject instanceof DroolsQuery && declaration.getExtractor().getIndex() >= 0 &&
                  ( (DroolsQuery) tupleObject ).getVariables()[declaration.getExtractor().getIndex()] != null ) {
                 return Variable.v;
             }

@@ -71,6 +71,7 @@ import org.drools.model.Constraint;
 import org.drools.model.EntryPoint;
 import org.drools.model.From;
 import org.drools.model.Global;
+import org.drools.model.Index;
 import org.drools.model.Model;
 import org.drools.model.OOPath;
 import org.drools.model.Query;
@@ -243,10 +244,9 @@ public class KiePackagesBuilder {
         Variable<?>[] args = query.getArguments();
         Declaration[] declarations = new Declaration[args.length];
         for (int i = 0; i < args.length; i++) {
-            declarations[i] = new Declaration( args[i].getName(), pattern );
             int index = i;
-            declarations[i].setReadAccessor( new LambdaReadAccessor(index, args[index].getType().asClass(),
-                                                                    obj -> ( (DroolsQuery) obj ).getElements()[index] ) );
+            LambdaReadAccessor accessor = new LambdaReadAccessor(index, args[index].getType().asClass(), obj -> ( (DroolsQuery) obj ).getElements()[index] );
+            declarations[i] = new Declaration( args[i].getName(), accessor, pattern, true );
             pattern.addDeclaration( declarations[i] );
             ctx.addQueryDeclaration( args[i], declarations[i] );
         }
@@ -550,13 +550,26 @@ public class KiePackagesBuilder {
     private void addConstraintsToPattern( RuleContext ctx, Pattern pattern, org.drools.model.Pattern modelPattern, Constraint constraint ) {
         if (constraint.getType() == Constraint.Type.SINGLE) {
             SingleConstraint singleConstraint = (SingleConstraint) constraint;
-            Declaration[] declarations = getRequiredDeclarations(ctx, singleConstraint);
+            boolean isEqual = singleConstraint.getIndex() != null && singleConstraint.getIndex().getConstraintType() == Index.ConstraintType.EQUAL;
 
             if (singleConstraint.getVariables().length > 0) {
+                Variable[] vars = singleConstraint.getVariables();
+                Declaration[] declarations = new Declaration[vars.length];
+                Declaration unificationDeclaration = null;
+                for (int i = 0; i < vars.length; i++) {
+                    declarations[i] = ctx.getDeclaration( vars[i] );
+                    if ( isEqual && (( ClassObjectType ) declarations[i].getPattern().getObjectType()).getClassType() == DroolsQuery.class ) {
+                        unificationDeclaration = declarations[i];
+                    }
+                }
+
                 ConstraintEvaluator constraintEvaluator = singleConstraint.isTemporal() ?
                                                           new TemporalConstraintEvaluator( declarations, pattern, singleConstraint ) :
                                                           new ConstraintEvaluator( declarations, pattern, singleConstraint );
-                pattern.addConstraint( new LambdaConstraint( constraintEvaluator ) );
+                org.drools.core.spi.Constraint droolsConstraint = unificationDeclaration != null ?
+                                                                  new UnificationConstraint(unificationDeclaration, constraintEvaluator) :
+                                                                  new LambdaConstraint( constraintEvaluator );
+                pattern.addConstraint( droolsConstraint );
             }
 
         } else if (modelPattern.getConstraint().getType() == Constraint.Type.AND) {
@@ -579,19 +592,9 @@ public class KiePackagesBuilder {
         }
     }
 
-    private Declaration[] getRequiredDeclarations( RuleContext ctx, SingleConstraint singleConstraint ) {
-        Variable[] vars = singleConstraint.getVariables();
-        Declaration[] declarations = new Declaration[vars.length];
-        for (int i = 0; i < vars.length; i++) {
-            declarations[i] = ctx.getDeclaration( vars[i] );
-        }
-        return declarations;
-    }
-
     public Collection<KiePackage> getKnowledgePackages() {
         return packages.values();
     }
-
 
     ClassObjectType getObjectType( Class<?> patternClass ) {
         return objectTypeCache.computeIfAbsent( patternClass, c -> {

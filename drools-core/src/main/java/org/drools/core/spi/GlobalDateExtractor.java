@@ -16,11 +16,6 @@
 
 package org.drools.core.spi;
 
-import org.drools.core.base.ClassObjectType;
-import org.drools.core.base.extractors.BaseDateClassFieldReader;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.util.ClassUtils;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -29,6 +24,11 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
+
+import org.drools.core.base.ClassObjectType;
+import org.drools.core.base.extractors.BaseDateClassFieldReader;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.util.ClassUtils;
 
 public class GlobalDateExtractor extends BaseDateClassFieldReader
     implements
@@ -150,7 +150,7 @@ public class GlobalDateExtractor extends BaseDateClassFieldReader
     }
 
     public int getIndex() {
-        throw new RuntimeException( "Can't extract a value from global " + identifier + " without a working memory reference" );
+        return -1;
     }
 
     public int getIntValue(Object object) {
