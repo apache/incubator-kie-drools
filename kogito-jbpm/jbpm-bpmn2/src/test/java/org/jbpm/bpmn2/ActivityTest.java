@@ -81,9 +81,12 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @RunWith(Parameterized.class)
 public class ActivityTest extends JbpmBpmn2TestCase {
@@ -1963,5 +1966,32 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         log = logService.findProcessInstance(processInstance.getId());
         assertNotNull(log);
         assertEquals("Parent process should be completed and not aborted", ProcessInstance.STATE_COMPLETED, log.getStatus().intValue());
+    }
+    
+    @Test
+    public void testBusinessRuleTaskFireLimit() throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-BusinessRuleTaskLoop.bpmn2",
+                "BPMN2-BusinessRuleTaskInfiniteLoop.drl");
+        ksession = createKnowledgeSession(kbase);
+        ksession.insert(new Person());
+        assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> { 
+            ksession.startProcess("BPMN2-BusinessRuleTask");
+        })
+        .withMessageContaining("Fire rule limit reached 10000");        
+    }
+    
+    @Test
+    public void testBusinessRuleTaskFireLimitAsParameter() throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-BusinessRuleTaskWithDataInputLoop.bpmn2",
+                "BPMN2-BusinessRuleTaskInfiniteLoop.drl");
+        ksession = createKnowledgeSession(kbase);
+        ksession.insert(new Person());
+        
+        Map<String, Object> parameters = Collections.singletonMap("limit", 5);
+        
+        assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> { 
+            ksession.startProcess("BPMN2-BusinessRuleTask", parameters);
+        })
+        .withMessageContaining("Fire rule limit reached 5");        
     }
 }
