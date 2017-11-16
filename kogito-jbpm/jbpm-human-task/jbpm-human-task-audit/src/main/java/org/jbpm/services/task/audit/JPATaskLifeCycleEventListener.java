@@ -574,20 +574,6 @@ public class JPATaskLifeCycleEventListener extends PersistableEventListener impl
             }
             persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.RELEASED, ti.getTaskData().getProcessInstanceId(), ti.getTaskData().getWorkItemId(), userId));
           
-            AuditTaskImpl auditTaskImpl = getAuditTask(event, persistenceContext, ti);
-            if (auditTaskImpl == null) {
-                logger.warn("Unable find audit task entry for task id {} '{}', skipping audit task update", ti.getId(), ti.getName());
-                return;
-            }
-            auditTaskImpl.setDescription(ti.getDescription());
-            auditTaskImpl.setName(ti.getName());  
-            auditTaskImpl.setActivationTime(ti.getTaskData().getActivationTime());
-            auditTaskImpl.setPriority(ti.getPriority());
-            auditTaskImpl.setDueDate(ti.getTaskData().getExpirationTime());
-            auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
-            auditTaskImpl.setActualOwner(userId);
-            updateLastModifiedDate(auditTaskImpl);
-            persistenceContext.merge(auditTaskImpl);
         } finally {
             cleanup(persistenceContext);
         }
