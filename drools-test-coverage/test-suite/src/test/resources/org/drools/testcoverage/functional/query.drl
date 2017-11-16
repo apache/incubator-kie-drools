@@ -21,11 +21,6 @@ import org.drools.testcoverage.common.model.Pet;
 import java.util.ArrayList;
 import java.util.List;
 
-// query with empty name
-query ""
-    person : Person()
-end
-
 // simple query, just returns all persons
 query "simple query with no parameters"
     person : Person()
