@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.index.IndexUtil;
 import org.drools.core.util.index.IndexUtil.ConstraintType;
@@ -36,19 +35,27 @@ import org.drools.javaparser.ast.body.Parameter;
 import org.drools.javaparser.ast.drlx.expr.DrlxExpression;
 import org.drools.javaparser.ast.drlx.expr.InlineCastExpr;
 import org.drools.javaparser.ast.drlx.expr.NullSafeFieldAccessExpr;
+import org.drools.javaparser.ast.expr.ArrayAccessExpr;
+import org.drools.javaparser.ast.expr.ArrayCreationExpr;
 import org.drools.javaparser.ast.expr.BinaryExpr;
 import org.drools.javaparser.ast.expr.BinaryExpr.Operator;
+import org.drools.javaparser.ast.expr.BooleanLiteralExpr;
 import org.drools.javaparser.ast.expr.CastExpr;
+import org.drools.javaparser.ast.expr.CharLiteralExpr;
+import org.drools.javaparser.ast.expr.DoubleLiteralExpr;
 import org.drools.javaparser.ast.expr.EnclosedExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.FieldAccessExpr;
 import org.drools.javaparser.ast.expr.InstanceOfExpr;
+import org.drools.javaparser.ast.expr.IntegerLiteralExpr;
 import org.drools.javaparser.ast.expr.LambdaExpr;
 import org.drools.javaparser.ast.expr.LiteralExpr;
+import org.drools.javaparser.ast.expr.LongLiteralExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.NullLiteralExpr;
 import org.drools.javaparser.ast.expr.SimpleName;
+import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.javaparser.ast.expr.ThisExpr;
 import org.drools.javaparser.ast.expr.UnaryExpr;
 import org.drools.javaparser.ast.nodeTypes.NodeWithOptionalScope;
@@ -60,6 +67,8 @@ import org.drools.javaparser.ast.type.ReferenceType;
 import org.drools.javaparser.ast.type.Type;
 import org.drools.javaparser.ast.type.UnknownType;
 import org.drools.modelcompiler.builder.PackageModel;
+import org.drools.modelcompiler.util.ClassUtil;
+import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import static org.drools.core.util.ClassUtils.getter2property;
 import static org.drools.modelcompiler.util.ClassUtil.findMethod;
@@ -118,7 +127,7 @@ public class DrlxParseUtil {
 
         } else if (drlxExpr instanceof CastExpr) {
             CastExpr castExpr = (CastExpr)drlxExpr;
-            return new TypedExpression(castExpr, getClassFromContext(context.getPkg(), castExpr.getType().asString()));
+            return new TypedExpression(castExpr, getClassFromContext(context.getPkg().getTypeResolver(), castExpr.getType().asString()));
 
         } else if (drlxExpr instanceof NameExpr) {
             String name = drlxExpr.toString();
@@ -284,16 +293,35 @@ public class DrlxParseUtil {
         }
     }
 
-    public static Class<?> returnTypeOfMethodCallExpr(MethodCallExpr methodCallExpr, Class<?> clazz) {
+    public static Class<?> returnTypeOfMethodCallExpr(TypeResolver typeResolver, MethodCallExpr methodCallExpr, Class<?> clazz) {
         final Class[] argsType = methodCallExpr.getArguments().stream()
-                .map(DrlxParseUtil::getExpressionType)
+                .map((Expression e) -> getExpressionType(typeResolver, e))
                 .toArray(Class[]::new);
         return findMethod(clazz, methodCallExpr.getNameAsString(), argsType).getReturnType();
     }
 
-    private static Class<?> getExpressionType(Expression expr) {
-        // TODO This currently works only if the arguments are strings
-        return String.class;
+    public static Class<?> getExpressionType(TypeResolver typeResolver, Expression expr) {
+        if(expr instanceof BooleanLiteralExpr) {
+            return Boolean.class;
+        } else if(expr instanceof CharLiteralExpr) {
+            return Character.class;
+        } else if(expr instanceof DoubleLiteralExpr) {
+            return Double.class;
+        } else if(expr instanceof IntegerLiteralExpr) {
+            return Integer.class;
+        } else if(expr instanceof LongLiteralExpr) {
+            return Long.class;
+        } else if(expr instanceof NullLiteralExpr) {
+            return ClassUtil.NullType.class;
+        } else if(expr instanceof StringLiteralExpr) {
+            return String.class;
+        } else if(expr instanceof ArrayAccessExpr) {
+            return getClassFromContext(typeResolver, ((ArrayCreationExpr)((ArrayAccessExpr) expr).getName()).getElementType().asString());
+        } else if(expr instanceof ArrayCreationExpr) {
+            return getClassFromContext(typeResolver, ((ArrayCreationExpr) expr).getElementType().asString());
+        } else {
+            throw new RuntimeException("Unknown expression type: " + expr);
+        }
     }
 
     public static Expression prepend(Expression scope, Expression expr) {
@@ -344,7 +372,7 @@ public class DrlxParseUtil {
     }
 
 
-    public static TypedExpression toMethodCallWithClassCheck(Expression expr, Class<?> clazz) {
+    public static TypedExpression toMethodCallWithClassCheck(Expression expr, Class<?> clazz, TypeResolver typeResolver) {
 
         final Deque<ParsedMethod> callStackLeftToRight = new LinkedList<>();
 
@@ -359,7 +387,7 @@ public class DrlxParseUtil {
                 methodCall.add(te.getExpression());
                 previousClass = returnType;
             } else if (e.expression instanceof MethodCallExpr) {
-                Class<?> returnType = returnTypeOfMethodCallExpr((MethodCallExpr) e.expression, previousClass);
+                Class<?> returnType = returnTypeOfMethodCallExpr(typeResolver, (MethodCallExpr) e.expression, previousClass);
                 MethodCallExpr cloned = ((MethodCallExpr) e.expression.clone()).removeScope();
                 methodCall.add(cloned);
                 previousClass = returnType;
@@ -449,10 +477,10 @@ public class DrlxParseUtil {
         return Optional.empty();
     }
 
-    public static Class<?> getClassFromContext(InternalKnowledgePackage pkg, String className) {
+    public static Class<?> getClassFromContext(TypeResolver typeResolver, String className) {
         Class<?> patternType;
         try {
-            patternType = pkg.getTypeResolver().resolveType(className);
+            patternType = typeResolver.resolveType(className);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException( e );
         }
