@@ -35,6 +35,9 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 public class ConstraintsTest extends CommonTestMethodBase {
     
     @Test
@@ -71,7 +74,7 @@ public class ConstraintsTest extends CommonTestMethodBase {
         ksession.insert(message);
         final int rules = ksession.fireAllRules();
 
-        Assert.assertEquals(1, rules);
+        assertEquals(1, rules);
     }
 
     @Test
@@ -113,7 +116,7 @@ public class ConstraintsTest extends CommonTestMethodBase {
         ksession.insert(message);
         final int rules = ksession.fireAllRules();
 
-        Assert.assertEquals(1, rules);
+        assertEquals(1, rules);
     }
 
     @Test
@@ -164,7 +167,7 @@ public class ConstraintsTest extends CommonTestMethodBase {
         ksession.insert(message);
         final int rules = ksession.fireAllRules();
 
-        Assert.assertEquals(1, rules);
+        assertEquals(1, rules);
     }
 
     @Test
@@ -190,11 +193,11 @@ public class ConstraintsTest extends CommonTestMethodBase {
 
         ksession.insert(new Mailbox("foo@mail"));
         int rules = ksession.fireAllRules();
-        Assert.assertEquals(0, rules);
+        assertEquals(0, rules);
 
         ksession.insert(new Mailbox("john@mail"));
         rules = ksession.fireAllRules();
-        Assert.assertEquals(2, rules);
+        assertEquals(2, rules);
     }
 
     @Test

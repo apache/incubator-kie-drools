@@ -60,7 +60,11 @@ import java.util.List;
 import java.util.Map;
 
 import static org.drools.core.util.DroolsTestUtil.rulestoMap;
-
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 public class IndexingTest extends CommonTestMethodBase {
 
@@ -817,19 +821,19 @@ public class IndexingTest extends CommonTestMethodBase {
         FactHandle fq1 = kieSession.insert(queen1);
         FactHandle fq2 = kieSession.insert(queen2);
         // initially both queens have null row
-        Assert.assertEquals( 0, kieSession.fireAllRules() );
+        assertEquals( 0, kieSession.fireAllRules() );
 
         // now Q1 is the only queen on row1
         kieSession.update(fq1, queen1.setRow(row1));
-        Assert.assertEquals(0, kieSession.fireAllRules());
+        assertEquals(0, kieSession.fireAllRules());
 
         // Q1 moved to row2 but it's still alone
         kieSession.update(fq1, queen1.setRow(row2));
-        Assert.assertEquals(0, kieSession.fireAllRules());
+        assertEquals(0, kieSession.fireAllRules());
 
         // now Q2 is on row2 together with Q1 -> rule should fire
         kieSession.update(fq2, queen2.setRow(row2));
-        Assert.assertEquals(1, kieSession.fireAllRules());
+        assertEquals(1, kieSession.fireAllRules());
     }
 
     public static class Queen {

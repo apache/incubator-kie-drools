@@ -45,6 +45,8 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Collection;
 
+import static org.junit.Assert.assertEquals;
+
 public class CustomOperatorTest extends CommonTestMethodBase {
 
     @Test

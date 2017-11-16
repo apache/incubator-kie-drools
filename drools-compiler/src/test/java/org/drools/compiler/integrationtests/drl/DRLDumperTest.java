@@ -34,6 +34,9 @@ import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 public class DRLDumperTest extends CommonTestMethodBase {
 
     private static Logger logger = LoggerFactory.getLogger( DRLDumperTest.class );

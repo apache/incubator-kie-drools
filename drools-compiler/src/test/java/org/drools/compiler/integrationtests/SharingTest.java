@@ -29,6 +29,10 @@ import org.kie.api.runtime.rule.Agenda;
 import org.kie.internal.utils.KieHelper;
 
 import static org.drools.core.util.DroolsTestUtil.rulestoMap;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class SharingTest extends CommonTestMethodBase {
 

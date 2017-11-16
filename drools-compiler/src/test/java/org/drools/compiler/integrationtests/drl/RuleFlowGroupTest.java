@@ -24,6 +24,8 @@ import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
+import static org.junit.Assert.assertEquals;
+
 public class RuleFlowGroupTest extends CommonTestMethodBase {
 
     @Test

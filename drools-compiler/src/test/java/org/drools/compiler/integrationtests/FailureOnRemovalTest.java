@@ -41,6 +41,9 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+
 public class FailureOnRemovalTest extends CommonTestMethodBase {
     
     private static final String  LS                   = System.getProperty( "line.separator" );

@@ -31,6 +31,8 @@ import org.kie.api.runtime.rule.Agenda;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.utils.KieHelper;
 
+import static org.junit.Assert.assertEquals;
+
 public class SubnetworkTest extends CommonTestMethodBase {
 
     @Test

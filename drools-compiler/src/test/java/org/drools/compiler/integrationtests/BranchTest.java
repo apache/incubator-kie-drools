@@ -29,6 +29,9 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 public class BranchTest extends CommonTestMethodBase {
 
     @Test

@@ -38,6 +38,10 @@ import org.kie.internal.io.ResourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+
 public class ImportsTest extends CommonTestMethodBase {
 
     private static Logger logger = LoggerFactory.getLogger(ImportsTest.class);

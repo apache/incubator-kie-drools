@@ -16,6 +16,7 @@
 
 package org.drools.compiler.integrationtests.session;
 
+import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 

@@ -15,6 +15,11 @@
 
 package org.drools.compiler;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.util.Collection;
+import java.util.function.Predicate;
+
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.integrationtests.SerializationHelper;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
@@ -24,7 +29,6 @@ import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.builder.NodeFactory;
-import org.junit.Assert;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
@@ -56,10 +60,10 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.util.Collection;
-import java.util.function.Predicate;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * This contains methods common to many of the tests in drools-compiler. </p>
@@ -67,7 +71,7 @@ import java.util.function.Predicate;
  * common so that tests in drools-compiler can be reused (with persistence) in
  * drools-persistence-jpa.
  */
-public class CommonTestMethodBase extends Assert {
+public class CommonTestMethodBase {
 
     private static Logger logger = LoggerFactory.getLogger(CommonTestMethodBase.class);
 

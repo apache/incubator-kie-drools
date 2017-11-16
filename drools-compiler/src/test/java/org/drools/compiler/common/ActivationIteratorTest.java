@@ -37,6 +37,9 @@ import org.kie.internal.utils.KieHelper;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 public class ActivationIteratorTest extends CommonTestMethodBase {
 
     @Test

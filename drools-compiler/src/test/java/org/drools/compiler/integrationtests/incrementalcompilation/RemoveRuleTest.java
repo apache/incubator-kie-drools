@@ -18,6 +18,7 @@ package org.drools.compiler.integrationtests.incrementalcompilation;
 
 import java.util.Arrays;
 import java.util.Collection;
+
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -25,11 +26,15 @@ import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectSink;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.runtime.KieSession;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 public class RemoveRuleTest extends CommonTestMethodBase {
 
@@ -116,7 +121,7 @@ public class RemoveRuleTest extends CommonTestMethodBase {
 
         final Collection<KiePackage> kpgs = loadKnowledgePackagesFromString( str );
 
-        Assert.assertEquals(1, kpgs.size());
+        assertEquals(1, kpgs.size());
 
         final InternalKnowledgeBase kbase = (InternalKnowledgeBase) getKnowledgeBase();
         kbase.addPackages( kpgs );

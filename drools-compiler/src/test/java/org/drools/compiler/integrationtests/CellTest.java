@@ -28,6 +28,8 @@ import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
 
+import static org.junit.Assert.assertEquals;
+
 public class CellTest extends CommonTestMethodBase {
 
     @Test
