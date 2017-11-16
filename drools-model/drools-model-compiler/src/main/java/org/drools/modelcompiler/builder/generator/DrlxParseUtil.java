@@ -47,7 +47,6 @@ import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.NullLiteralExpr;
 import org.drools.javaparser.ast.expr.SimpleName;
-import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.javaparser.ast.expr.ThisExpr;
 import org.drools.javaparser.ast.expr.UnaryExpr;
 import org.drools.javaparser.ast.nodeTypes.NodeWithOptionalScope;
@@ -61,6 +60,7 @@ import org.drools.javaparser.ast.type.UnknownType;
 import org.drools.modelcompiler.builder.PackageModel;
 
 import static org.drools.core.util.ClassUtils.getter2property;
+import static org.drools.modelcompiler.util.ClassUtil.findMethod;
 
 public class DrlxParseUtil {
 
@@ -263,18 +263,15 @@ public class DrlxParseUtil {
     }
 
     public static Class<?> returnTypeOfMethodCallExpr(MethodCallExpr methodCallExpr, Class<?> clazz) {
-        // This currently works only if the arguments are strings
         final Class[] argsType = methodCallExpr.getArguments().stream()
-                .map((Expression e) -> ((StringLiteralExpr)e).getValue())
-                .map(String::getClass).toArray(Class[]::new);
-        Method accessor;
-        try {
-            String methodName = methodCallExpr.getName().asString();
-            accessor = clazz.getMethod(methodName, argsType);
-        } catch (NoSuchMethodException e) {
-            throw new UnsupportedOperationException("Method missing");
-        }
-        return accessor.getReturnType();
+                .map(DrlxParseUtil::getExpressionType)
+                .toArray(Class[]::new);
+        return findMethod(clazz, methodCallExpr.getNameAsString(), argsType).getReturnType();
+    }
+
+    private static Class<?> getExpressionType(Expression expr) {
+        // TODO This currently works only if the arguments are strings
+        return String.class;
     }
 
     public static Expression prepend(Expression scope, Expression expr) {

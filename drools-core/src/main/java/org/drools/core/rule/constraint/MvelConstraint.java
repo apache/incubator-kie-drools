@@ -32,7 +32,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.drools.core.base.ClassFieldReader;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.base.EvaluatorWrapper;
-import org.drools.core.base.extractors.ArrayElementReader;
 import org.drools.core.base.extractors.MVELObjectClassFieldReader;
 import org.drools.core.base.mvel.MVELCompilationUnit;
 import org.drools.core.common.DroolsObjectInputStream;
@@ -60,6 +59,7 @@ import org.drools.core.rule.constraint.ConditionAnalyzer.SingleCondition;
 import org.drools.core.spi.AcceptsReadAccessor;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.spi.ReadAccessor;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.drools.core.util.MemoryUtil;
@@ -197,6 +197,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         return isUnification;
     }
 
+    @Override
     public void unsetUnification() {
         isUnification = false;
     }
@@ -776,7 +777,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         private ContextEntry contextEntry;
         private Declaration declaration;
         private Variable variable;
-        private ArrayElementReader reader;
+        private ReadAccessor reader;
 
         public UnificationContextEntry() { }
 
@@ -784,14 +785,14 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
                                        Declaration declaration) {
             this.contextEntry = contextEntry;
             this.declaration = declaration;
-            reader = ( ArrayElementReader ) this.declaration.getExtractor();
+            reader = this.declaration.getExtractor();
         }
 
         public ContextEntry getContextEntry() {
             return this.contextEntry;
         }
 
-        public ArrayElementReader getReader() {
+        public ReadAccessor getReader() {
             return reader;
         }
 
