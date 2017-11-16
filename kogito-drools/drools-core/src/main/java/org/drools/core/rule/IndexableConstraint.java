@@ -34,4 +34,6 @@ public interface IndexableConstraint extends Constraint {
     FieldIndex getFieldIndex();
 
     InternalReadAccessor getFieldExtractor();
+
+    default void unsetUnification() { }
 }
