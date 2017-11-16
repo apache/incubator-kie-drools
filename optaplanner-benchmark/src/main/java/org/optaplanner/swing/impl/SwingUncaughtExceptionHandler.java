@@ -22,7 +22,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
+import java.io.StringWriter;
 import java.util.concurrent.Semaphore;
+
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
@@ -49,13 +51,16 @@ public class SwingUncaughtExceptionHandler implements Thread.UncaughtExceptionHa
 
     @Override
     public void uncaughtException(Thread t, Throwable e) {
+        StringWriter sw = new StringWriter();
+        sw.append("Exception in thread \"").append(t.getName()).append("\" ");
+        e.printStackTrace(new java.io.PrintWriter(sw));
+        String trace = sw.toString();
         // Not logger.error() because it needs to show up red (and linked) in the IDE console
-        System.err.append("Exception in thread \"").append(t.getName()).append("\" ");
-        e.printStackTrace();
-        displayException(t, e);
+        System.err.print(trace);
+        displayException(e, trace);
     }
 
-    private void displayException(Thread t, Throwable e) {
+    private void displayException(Throwable e, String trace) {
         if (!windowCountSemaphore.tryAcquire()) {
             System.err.println("Too many exception windows open, failed to display the latest exception.");
             return;
@@ -72,22 +77,8 @@ public class SwingUncaughtExceptionHandler implements Thread.UncaughtExceptionHa
         contentPanel.add(new JLabel("An uncaught exception has occurred: "), BorderLayout.NORTH);
         JTextArea stackTraceTextArea = new JTextArea(30, 80);
         stackTraceTextArea.setEditable(false);
-        stackTraceTextArea.append("Exception in thread \"" + t.getName() + "\" " + e.getClass().getName()
-                + ": " + e.getMessage() + "\n");
-        for (StackTraceElement stackTraceElement : e.getStackTrace()) {
-            stackTraceTextArea.append("    at " + stackTraceElement.toString() + "\n");
-        }
-        Throwable parentException = e;
-        Throwable cause = e.getCause();
-        while (cause != null && cause != parentException) {
-            stackTraceTextArea.append("Caused by: " + "\" " + cause.getClass().getName()
-                    + ": " + cause.getMessage() + "\n");
-            for (StackTraceElement stackTraceElement : e.getStackTrace()) {
-                stackTraceTextArea.append("    at " + stackTraceElement.toString() + "\n");
-            }
-            parentException = cause;
-            cause = cause.getCause();
-        }
+        stackTraceTextArea.setTabSize(4);
+        stackTraceTextArea.append(trace);
         JScrollPane stackTraceScrollPane = new JScrollPane(stackTraceTextArea,
                 ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         contentPanel.add(stackTraceScrollPane, BorderLayout.CENTER);
