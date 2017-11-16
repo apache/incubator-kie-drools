@@ -38,136 +38,137 @@ import static org.junit.Assert.assertEquals;
 
 public class DataTypeEvaluationSharedSessionParallelTest extends AbstractParallelTest {
 
-   public DataTypeEvaluationSharedSessionParallelTest(final boolean enforcedJitting, final boolean serializeKieBase) {
-      super(enforcedJitting, serializeKieBase);
-   }
+    public DataTypeEvaluationSharedSessionParallelTest(final boolean enforcedJitting, final boolean serializeKieBase) {
+        super(enforcedJitting, serializeKieBase);
+    }
 
-   @Test
-   public void testBooleanPrimitive() throws InterruptedException {
-      testFactAttributeType("    $factWithBoolean: FactWithBoolean(booleanValue == false) \n", new FactWithBoolean(false));
-   }
+    @Test
+    public void testBooleanPrimitive() throws InterruptedException {
+        testFactAttributeType("    $factWithBoolean: FactWithBoolean(booleanValue == false) \n", new FactWithBoolean(false));
+    }
 
-   @Test
-   public void testBoolean() throws InterruptedException {
-      testFactAttributeType("    $factWithBoolean: FactWithBoolean(booleanObjectValue == false) \n", new FactWithBoolean(false));
-   }
+    @Test
+    public void testBoolean() throws InterruptedException {
+        testFactAttributeType("    $factWithBoolean: FactWithBoolean(booleanObjectValue == false) \n", new FactWithBoolean(false));
+    }
 
-   @Test
-   public void testBytePrimitive() throws InterruptedException {
-      testFactAttributeType("    $factWithByte: FactWithByte(byteValue == 15) \n", new FactWithByte((byte) 15));
-   }
+    @Test
+    public void testBytePrimitive() throws InterruptedException {
+        testFactAttributeType("    $factWithByte: FactWithByte(byteValue == 15) \n", new FactWithByte((byte) 15));
+    }
 
-   @Test
-   public void testByte() throws InterruptedException {
-      testFactAttributeType("    $factWithByte: FactWithByte(byteObjectValue == 15) \n", new FactWithByte((byte) 15));
-   }
+    @Test
+    public void testByte() throws InterruptedException {
+        testFactAttributeType("    $factWithByte: FactWithByte(byteObjectValue == 15) \n", new FactWithByte((byte) 15));
+    }
 
-   @Test
-   public void testShortPrimitive() throws InterruptedException {
-      testFactAttributeType("    $factWithShort: FactWithShort(shortValue == 15) \n", new FactWithShort((short) 15));
-   }
+    @Test
+    public void testShortPrimitive() throws InterruptedException {
+        testFactAttributeType("    $factWithShort: FactWithShort(shortValue == 15) \n", new FactWithShort((short) 15));
+    }
 
-   @Test
-   public void testShort() throws InterruptedException {
-      testFactAttributeType("    $factWithShort: FactWithShort(shortObjectValue == 15) \n", new FactWithShort((short) 15));
-   }
+    @Test
+    public void testShort() throws InterruptedException {
+        testFactAttributeType("    $factWithShort: FactWithShort(shortObjectValue == 15) \n", new FactWithShort((short) 15));
+    }
 
-   @Test
-   public void testIntPrimitive() throws InterruptedException {
-      testFactAttributeType("    $factWithInt: FactWithInteger(intValue == 15) \n", new FactWithInteger(15));
-   }
+    @Test
+    public void testIntPrimitive() throws InterruptedException {
+        testFactAttributeType("    $factWithInt: FactWithInteger(intValue == 15) \n", new FactWithInteger(15));
+    }
 
-   @Test
-   public void testInteger() throws InterruptedException {
-      testFactAttributeType("    $factWithInteger: FactWithInteger(integerValue == 15) \n", new FactWithInteger(15));
-   }
+    @Test
+    public void testInteger() throws InterruptedException {
+        testFactAttributeType("    $factWithInteger: FactWithInteger(integerValue == 15) \n", new FactWithInteger(15));
+    }
 
-   @Test
-   public void testLongPrimitive() throws InterruptedException {
-      testFactAttributeType("    $factWithLong: FactWithLong(longValue == 15) \n", new FactWithLong(15));
-   }
+    @Test
+    public void testLongPrimitive() throws InterruptedException {
+        testFactAttributeType("    $factWithLong: FactWithLong(longValue == 15) \n", new FactWithLong(15));
+    }
 
-   @Test
-   public void testLong() throws InterruptedException {
-      testFactAttributeType("    $factWithLong: FactWithLong(longObjectValue == 15) \n", new FactWithLong(15));
-   }
+    @Test
+    public void testLong() throws InterruptedException {
+        testFactAttributeType("    $factWithLong: FactWithLong(longObjectValue == 15) \n", new FactWithLong(15));
+    }
 
-   @Test
-   public void testFloatPrimitive() throws InterruptedException {
-      testFactAttributeType("    $factWithFloat: FactWithFloat(floatValue == 15.1) \n", new FactWithFloat(15.1f));
-   }
+    @Test
+    public void testFloatPrimitive() throws InterruptedException {
+        testFactAttributeType("    $factWithFloat: FactWithFloat(floatValue == 15.1) \n", new FactWithFloat(15.1f));
+    }
 
-   @Test
-   public void testFloat() throws InterruptedException {
-      testFactAttributeType("    $factWithFloat: FactWithFloat(floatObjectValue == 15.1) \n", new FactWithFloat(15.1f));
-   }
+    @Test
+    public void testFloat() throws InterruptedException {
+        testFactAttributeType("    $factWithFloat: FactWithFloat(floatObjectValue == 15.1) \n", new FactWithFloat(15.1f));
+    }
 
-   @Test
-   public void testDoublePrimitive() throws InterruptedException {
-      testFactAttributeType("    $factWithDouble: FactWithDouble(doubleValue == 15.1) \n", new FactWithDouble(15.1d));
-   }
+    @Test
+    public void testDoublePrimitive() throws InterruptedException {
+        testFactAttributeType("    $factWithDouble: FactWithDouble(doubleValue == 15.1) \n", new FactWithDouble(15.1d));
+    }
 
-   @Test
-   public void testDouble() throws InterruptedException {
-      testFactAttributeType("    $factWithDouble: FactWithDouble(doubleObjectValue == 15.1) \n", new FactWithDouble(15.1d));
-   }
+    @Test
+    public void testDouble() throws InterruptedException {
+        testFactAttributeType("    $factWithDouble: FactWithDouble(doubleObjectValue == 15.1) \n", new FactWithDouble(15.1d));
+    }
 
-   @Test
-   public void testBigDecimal() throws InterruptedException {
-      testFactAttributeType("    $factWithBigDecimal: FactWithBigDecimal(bigDecimalValue == 10) \n", new FactWithBigDecimal(BigDecimal.TEN));
-   }
+    @Test
+    public void testBigDecimal() throws InterruptedException {
+        testFactAttributeType("    $factWithBigDecimal: FactWithBigDecimal(bigDecimalValue == 10) \n", new FactWithBigDecimal(BigDecimal.TEN));
+    }
 
-   @Test
-   public void testCharPrimitive() throws InterruptedException {
-      testFactAttributeType("    $factWithChar: FactWithCharacter(charValue == 'a') \n", new FactWithCharacter('a'));
-   }
+    @Test
+    public void testCharPrimitive() throws InterruptedException {
+        testFactAttributeType("    $factWithChar: FactWithCharacter(charValue == 'a') \n", new FactWithCharacter('a'));
+    }
 
-   @Test
-   public void testCharacter() throws InterruptedException {
-      testFactAttributeType("    $factWithChar: FactWithCharacter(characterValue == 'a') \n", new FactWithCharacter('a'));
-   }
+    @Test
+    public void testCharacter() throws InterruptedException {
+        testFactAttributeType("    $factWithChar: FactWithCharacter(characterValue == 'a') \n", new FactWithCharacter('a'));
+    }
 
-   @Test
-   public void testString() throws InterruptedException {
-      testFactAttributeType("    $factWithString: FactWithString(stringValue == \"test\") \n", new FactWithString("test"));
-   }
+    @Test
+    public void testString() throws InterruptedException {
+        testFactAttributeType("    $factWithString: FactWithString(stringValue == \"test\") \n", new FactWithString("test"));
+    }
 
-   @Test
-   public void testEnum() throws InterruptedException {
-      testFactAttributeType("    $factWithEnum: FactWithEnum(enumValue == AnEnum.FIRST) \n", new FactWithEnum(AnEnum.FIRST));
-   }
+    @Test
+    public void testEnum() throws InterruptedException {
+        testFactAttributeType("    $factWithEnum: FactWithEnum(enumValue == AnEnum.FIRST) \n", new FactWithEnum(AnEnum.FIRST));
+    }
 
-   private void testFactAttributeType(final String ruleConstraint, final Object factInserted) throws InterruptedException {
-      int numberOfThreads = 10;
+    private void testFactAttributeType(final String ruleConstraint, final Object factInserted) throws InterruptedException {
+        int numberOfThreads = 10;
 
 
-      final String drl =
-          " import org.drools.compiler.integrationtests.facts.*;\n" +
-              " global " + AtomicInteger.class.getCanonicalName() + " numberOfFirings;\n" +
-              " rule R1 \n" +
-              " when \n" +
-              ruleConstraint +
-              " then \n" +
-              " numberOfFirings.incrementAndGet(); \n" +
-              " end ";
+        final String drl =
+            " import org.drools.compiler.integrationtests.facts.*;\n" +
+                " global " + AtomicInteger.class.getCanonicalName() + " numberOfFirings;\n" +
+                " rule R1 \n" +
+                " when \n" +
+                ruleConstraint +
+                " then \n" +
+                " numberOfFirings.incrementAndGet(); \n" +
+                " end ";
 
-      KieSession kieSession = getKieBase(drl).newKieSession();
+        KieSession kieSession = getKieBase(drl).newKieSession();
 
-      AtomicInteger numberOfFirings = new AtomicInteger(0);
+        AtomicInteger numberOfFirings = new AtomicInteger(0);
 
-      parallelTest(numberOfThreads, new ParallelTestExecutor() {
-         @Override
-         public boolean execute(int counter) {
-            if (kieSession.getGlobal("numberOfFirings") == null) {
-               kieSession.setGlobal("numberOfFirings", numberOfFirings);
-            };
-            kieSession.insert(factInserted);
-            kieSession.fireAllRules();
-            return true;
-         }
-      });
-      disposeSession(kieSession);
-      assertEquals(1, numberOfFirings.get());
-   }
+        parallelTest(numberOfThreads, new ParallelTestExecutor() {
+            @Override
+            public boolean execute(int counter) {
+                if (kieSession.getGlobal("numberOfFirings") == null) {
+                    kieSession.setGlobal("numberOfFirings", numberOfFirings);
+                }
+                ;
+                kieSession.insert(factInserted);
+                kieSession.fireAllRules();
+                return true;
+            }
+        });
+        disposeSession(kieSession);
+        assertEquals(1, numberOfFirings.get());
+    }
 
 }
