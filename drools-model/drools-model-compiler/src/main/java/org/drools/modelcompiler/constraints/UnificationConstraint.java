@@ -39,6 +39,8 @@ public class UnificationConstraint extends MutableTypeConstraint implements Inde
     private final InternalReadAccessor readAccessor;
     private final ConstraintEvaluator evaluator;
 
+    private boolean unification = true;
+
     public UnificationConstraint( Declaration declaration ) {
         this(declaration, null);
     }
@@ -56,7 +58,12 @@ public class UnificationConstraint extends MutableTypeConstraint implements Inde
 
     @Override
     public boolean isUnification() {
-        return true;
+        return unification;
+    }
+
+    @Override
+    public void unsetUnification() {
+        unification = false;
     }
 
     @Override
@@ -124,6 +131,9 @@ public class UnificationConstraint extends MutableTypeConstraint implements Inde
     }
 
     private boolean evaluateUnification( InternalFactHandle handle, Tuple tuple, InternalWorkingMemory workingMemory ) {
+        if (!unification) {
+            return evaluator.evaluate(handle, tuple, workingMemory);
+        }
         DroolsQuery query = ( DroolsQuery ) tuple.getObject( 0 );
         if (query.getVariables()[declaration.getExtractor().getIndex()] != null) {
             return true;

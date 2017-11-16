@@ -423,4 +423,50 @@ public class QueryTest extends BaseModelTest {
         Assertions.assertThat(l.contains("envelope")).isTrue();
         Assertions.assertThat(l.contains("key")).isTrue();
     }
+
+    @Test
+    public void testQueryUnificationUnset() {
+        String str = "package drl;\n" +
+                "declare Anon " +
+                "    cld : String @key " +
+                "    sup : String @key " +
+                "end " +
+
+                "rule Init " +
+                "when " +
+                "then " +
+                "    insert( 'aa' ); " +
+                "    insert( 'bb' ); " +
+                "    insert( 'cc' ); " +
+                "    insertLogical( new Anon( 'aa', 'bb' ) ); " +
+                "    insertLogical( new Anon( 'cc', 'aa' ) ); " +
+                "end " +
+
+                "query unravel( String $g, String $c ) " +
+                "    ( " +
+                "        ( Anon( $g, $c ; ) and $c := String( this.contains( \"b\" ) ) ) " +
+                "        or " +
+                "        ( Anon( $g, $x ; ) and unravel( $x, $c ; ) ) " +
+                "    ) " +
+                "end " +
+
+                "rule Check " +
+                "when " +
+                "    Anon( $e, $par ; ) " +
+                "    unravel( $par, $comp ; ) " +
+                "    ( Double() or Anon() ) " +
+                "then\n" +
+                "end\n" +
+
+                "rule Mod " +
+                "no-loop " +
+                "when\n" +
+                "    $a : Anon( ) " +
+                "    ( Double() or Anon() ) " +
+                "then " +
+                "end ";
+
+        KieSession ksession = getKieSession( str );
+        ksession.fireAllRules();
+    }
 }
