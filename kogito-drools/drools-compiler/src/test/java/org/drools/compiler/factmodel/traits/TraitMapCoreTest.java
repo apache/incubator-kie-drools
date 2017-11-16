@@ -29,9 +29,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 public class TraitMapCoreTest extends CommonTestMethodBase {
-
-
 
     @Test(timeout=10000)
     public void testMapCoreManyTraits(  ) {
@@ -92,13 +95,6 @@ public class TraitMapCoreTest extends CommonTestMethodBase {
         assertEquals( 3.0, map.get( "GPA" ) );
     }
 
-
-
-
-
-
-
-
     @Test(timeout=10000)
     public void donMapTest() {
         String source = "package org.drools.traits.test; \n" +
@@ -152,8 +148,6 @@ public class TraitMapCoreTest extends CommonTestMethodBase {
         assertEquals( map.get( "height"), 184.0 );
 
     }
-
-
 
     @Test(timeout=10000)
     public void testMapCore2(  ) {
@@ -282,9 +276,6 @@ public class TraitMapCoreTest extends CommonTestMethodBase {
 
     }
 
-
-
-
     @Test(timeout=10000)
     public void testMapCoreAliasing(  ) {
         String source = "package org.drools.core.factmodel.traits.test;\n" +
@@ -351,8 +342,6 @@ public class TraitMapCoreTest extends CommonTestMethodBase {
 
     }
 
-
-
     @Test(timeout=10000)
     public void testMapCoreAliasingLogicalTrueWithTypeClash(  ) {
         String source = "package org.drools.core.factmodel.traits.test;\n" +
@@ -403,7 +392,6 @@ public class TraitMapCoreTest extends CommonTestMethodBase {
 
         assertTrue( list.size() == 1 && list.get( 0 ) == null );
     }
-
 
     @Test
     public void testDrools216(){
@@ -808,8 +796,6 @@ public class TraitMapCoreTest extends CommonTestMethodBase {
         assertTrue(list.contains("person has personID"));
     }
 
-
-
     @Test
     public void testMapTraitsMismatchTypes()
     {
@@ -873,7 +859,6 @@ public class TraitMapCoreTest extends CommonTestMethodBase {
         assertNotNull( list.get( 1 ) );
     }
 
-
     @Test
     public void testMapTraitNoType()
     {
@@ -929,7 +914,6 @@ public class TraitMapCoreTest extends CommonTestMethodBase {
         assertTrue(list.contains("correct2"));
     }
 
-
     @Test(timeout=10000)
     public void testMapTraitMismatchTypes()
     {
@@ -978,8 +962,6 @@ public class TraitMapCoreTest extends CommonTestMethodBase {
         assertEquals( 1, list.size() );
         assertEquals( null, list.get( 0 ) );
     }
-
-
 
     @Test
     public void testMapTraitPossibilities1()
@@ -1046,7 +1028,6 @@ public class TraitMapCoreTest extends CommonTestMethodBase {
         assertEquals( 1, list.size() );
         assertNotNull(list.get(0));
     }
-
 
     @Test
     public void testMapTraitPossibilities2()
@@ -1120,7 +1101,6 @@ public class TraitMapCoreTest extends CommonTestMethodBase {
         assertNotNull(list.get(0));
     }
 
-
     @Test
     public void testMapTraitPossibilities3()
     {
@@ -1192,7 +1172,6 @@ public class TraitMapCoreTest extends CommonTestMethodBase {
         assertEquals( 1, list.size() );
         assertNotNull(list.get(0));
     }
-
 
     @Test
     public void testMapTraitPossibilities4()
@@ -1269,65 +1248,62 @@ public class TraitMapCoreTest extends CommonTestMethodBase {
         assertNotNull(list.get(0));
     }
 
+    @Test()
+    public void donCustomMapTest() {
+        String source = "package org.drools.traits.test; \n" +
+                "import java.util.*\n;" +
+                "import " + TraitMapCoreTest.DomainMap.class.getCanonicalName() + ";\n" +
+                "" +
+                "global List list; \n" +
+                "" +
+                "" +
+                "declare trait PersonMap" +
+                "@propertyReactive \n" +
+                "   name : String \n" +
+                "   age  : int \n" +
+                "   height : Double \n" +
+                "end\n" +
+                "" +
+                "" +
+                "rule Don \n" +
+                "when \n" +
+                "  $m : Map( this[ \"age\"] == 18 ) " +
+                "then \n" +
+                "   don( $m, PersonMap.class );\n" +
+                "end \n" +
+                "" +
+                "rule Log \n" +
+                "when \n" +
+                "   $p : PersonMap( name == \"john\", age > 10 ) \n" +
+                "then \n" +
+                "   modify ( $p ) { \n" +
+                "       setHeight( 184.0 ); \n" +
+                "   }" +
+                "end \n";
 
+        KieSession ksession = loadKnowledgeBaseFromString( source ).newKieSession();
+        TraitFactory.setMode( VirtualPropertyMode.MAP, ksession.getKieBase() );
 
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
 
-	@Test()
-	public void donCustomMapTest() {
-		String source = "package org.drools.traits.test; \n" +
-				"import java.util.*\n;" +
-				"import " + TraitMapCoreTest.DomainMap.class.getCanonicalName() + ";\n" +
-				"" +
-				"global List list; \n" +
-				"" +
-				"" +
-				"declare trait PersonMap" +
-				"@propertyReactive \n" +
-				"   name : String \n" +
-				"   age  : int \n" +
-				"   height : Double \n" +
-				"end\n" +
-				"" +
-				"" +
-				"rule Don \n" +
-				"when \n" +
-				"  $m : Map( this[ \"age\"] == 18 ) " +
-				"then \n" +
-				"   don( $m, PersonMap.class );\n" +
-				"end \n" +
-				"" +
-				"rule Log \n" +
-				"when \n" +
-				"   $p : PersonMap( name == \"john\", age > 10 ) \n" +
-				"then \n" +
-				"   modify ( $p ) { \n" +
-				"       setHeight( 184.0 ); \n" +
-				"   }" +
-				"end \n";
+        HashMap map = new DomainMap();
+        map.put( "name", "john" );
+        map.put( "age", 18 );
 
-		KieSession ksession = loadKnowledgeBaseFromString( source ).newKieSession();
-		TraitFactory.setMode( VirtualPropertyMode.MAP, ksession.getKieBase() );
+        ksession.insert( map );
+        ksession.fireAllRules();
 
-		List list = new ArrayList();
-		ksession.setGlobal( "list", list );
+        assertTrue( map.containsKey( "height" ) );
+        assertEquals( map.get( "height"), 184.0 );
 
-		HashMap map = new DomainMap();
-		map.put( "name", "john" );
-		map.put( "age", 18 );
+        assertEquals( 2, ksession.getObjects().size() );
+        assertEquals( 1, ksession.getObjects( new ClassObjectFilter( DomainMap.class ) ).size() );
 
-		ksession.insert( map );
-		ksession.fireAllRules();
+    }
 
-		assertTrue( map.containsKey( "height" ) );
-		assertEquals( map.get( "height"), 184.0 );
+    @Traitable
+    public static class DomainMap extends HashMap<String,Object> implements TraitableMap {
 
-		assertEquals( 2, ksession.getObjects().size() );
-		assertEquals( 1, ksession.getObjects( new ClassObjectFilter( DomainMap.class ) ).size() );
-
-	}
-
-	@Traitable
-	public static class DomainMap extends HashMap<String,Object> implements TraitableMap {
-
-	}
+    }
 }

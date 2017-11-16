@@ -16,6 +16,8 @@
 
 package org.drools.compiler.integrationtests.session;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -262,23 +264,20 @@ public class UpdateTest extends CommonTestMethodBase {
         final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_JoinNodeModifyObject.drl"));
         final KieSession ksession = kbase.newKieSession();
 
-        try {
-            final List orderedFacts = new ArrayList();
-            final List errors = new ArrayList();
-            ksession.setGlobal("orderedNumbers", orderedFacts);
-            ksession.setGlobal("errors", errors);
-            final int MAX = 2;
-            for (int i = 1; i <= MAX; i++) {
-                final IndexedNumber n = new IndexedNumber(i, MAX - i + 1);
-                ksession.insert(n);
-            }
-            ksession.fireAllRules();
-            assertTrue("Processing generated errors: " + errors.toString(), errors.isEmpty());
-            for (int i = 1; i <= MAX; i++) {
-                final IndexedNumber n = (IndexedNumber) orderedFacts.get(i - 1);
-                assertEquals("Fact is out of order", i, n.getIndex());
-            }
-        } finally {
+        final List orderedFacts = new ArrayList();
+        final List errors = new ArrayList();
+        ksession.setGlobal("orderedNumbers", orderedFacts);
+        ksession.setGlobal("errors", errors);
+        final int MAX = 2;
+        for (int i = 1; i <= MAX; i++) {
+            final IndexedNumber n = new IndexedNumber(i, MAX - i + 1);
+            ksession.insert(n);
+        }
+        ksession.fireAllRules();
+        assertTrue("Processing generated errors: " + errors.toString(), errors.isEmpty());
+        for (int i = 1; i <= MAX; i++) {
+            final IndexedNumber n = (IndexedNumber) orderedFacts.get(i - 1);
+            assertEquals("Fact is out of order", i, n.getIndex());
         }
     }
 

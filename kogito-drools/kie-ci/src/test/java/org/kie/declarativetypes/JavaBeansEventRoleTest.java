@@ -24,6 +24,8 @@ import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieModule;
 import org.kie.scanner.KieModuleMetaData;
 
+import static org.junit.Assert.assertTrue;
+
 public class JavaBeansEventRoleTest extends CommonTestMethodBase {
 
     @Test

@@ -24,6 +24,8 @@ import org.kie.api.builder.KieFileSystem;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.IncrementalResults;
 
+import static org.junit.Assert.assertEquals;
+
 public class KieBuilderSetImplTest extends CommonTestMethodBase {
 
     @Test

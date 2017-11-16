@@ -29,6 +29,8 @@ import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
+import static org.junit.Assert.assertEquals;
+
 public class TypeCoercionTest extends CommonTestMethodBase {
 
     @Test

@@ -27,6 +27,7 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 
+import static org.junit.Assert.fail;
 
 public class QueryTest2 extends CommonTestMethodBase {
     

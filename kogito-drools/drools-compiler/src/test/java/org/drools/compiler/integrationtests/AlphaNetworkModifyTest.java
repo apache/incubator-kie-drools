@@ -31,6 +31,8 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
+
 public class AlphaNetworkModifyTest extends CommonTestMethodBase {
     
     public ObjectTypeNode getObjectTypeNode(KieBase kbase, String nodeName) {

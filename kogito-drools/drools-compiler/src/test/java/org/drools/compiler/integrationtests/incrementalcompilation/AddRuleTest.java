@@ -30,6 +30,9 @@ import org.kie.api.definition.KiePackage;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+
 public class AddRuleTest extends CommonTestMethodBase {
 
     @Test

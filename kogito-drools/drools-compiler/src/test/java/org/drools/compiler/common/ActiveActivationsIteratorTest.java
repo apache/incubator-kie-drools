@@ -21,6 +21,7 @@ import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.util.Iterator;
+import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
@@ -28,6 +29,8 @@ import org.kie.internal.utils.KieHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.junit.Assert.fail;
 
 public class ActiveActivationsIteratorTest extends CommonTestMethodBase {
 
@@ -107,7 +110,7 @@ public class ActiveActivationsIteratorTest extends CommonTestMethodBase {
                                List list) {
         for ( Object object : objects ) {
             if ( !list.contains( object ) ) {
-                fail( "does not contain:" + object );
+                fail("does not contain:" + object );
             }
         }
     }

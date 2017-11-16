@@ -39,7 +39,6 @@ import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.RuleConditionElement;
-import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
@@ -57,6 +56,13 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.utils.KieHelper;
+
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class AnnotationsTest  extends CommonTestMethodBase {
 
@@ -274,13 +280,13 @@ public class AnnotationsTest  extends CommonTestMethodBase {
         Rule rule = kbase.getRule( "org.drools.compiler.integrationtests",
                                    "X" );
 
-        Assert.assertEquals( "John Doe",
+        assertEquals( "John Doe",
                              rule.getMetaData().get( "author" ) );
-        Assert.assertEquals( "Hello World!",
+        assertEquals( "Hello World!",
                              rule.getMetaData().get( "output" ) );
-        Assert.assertEquals( 20,
+        assertEquals( 20,
                              ((Number)rule.getMetaData().get( "value" )).intValue() );
-        Assert.assertEquals( "Hello World!",
+        assertEquals( "Hello World!",
                              rule.getMetaData().get( "alt" ) );
 
     }
@@ -306,7 +312,7 @@ public class AnnotationsTest  extends CommonTestMethodBase {
         Rule rule = kbase.getRule( "org.drools.compiler.integrationtests",
                                    "X" );
 
-        Assert.assertEquals( " \"<- these are supposed to be the only quotes ->\" ",
+        assertEquals( " \"<- these are supposed to be the only quotes ->\" ",
                              rule.getMetaData().get( "alt" ) );
 
     }
@@ -317,7 +323,7 @@ public class AnnotationsTest  extends CommonTestMethodBase {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newReaderResource( new StringReader( drl ) ),
                       ResourceType.DRL );
-        Assert.assertFalse( kbuilder.getErrors().toString(),
+        assertFalse( kbuilder.getErrors().toString(),
                             kbuilder.hasErrors() );
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( id,

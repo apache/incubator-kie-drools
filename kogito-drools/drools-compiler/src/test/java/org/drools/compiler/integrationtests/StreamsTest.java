@@ -62,6 +62,12 @@ import org.mockito.ArgumentCaptor;
 
 import static org.drools.core.rule.TypeDeclaration.NEVER_EXPIRES;
 import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
@@ -368,11 +374,11 @@ public class StreamsTest extends CommonTestMethodBase {
                times(3)).afterMatchFired(captor.capture());
         List<org.kie.api.event.rule.AfterMatchFiredEvent> aafe = captor.getAllValues();
 
-        Assert.assertThat(aafe.get(0).getMatch().getRule().getName(),
+        assertThat(aafe.get(0).getMatch().getRule().getName(),
                           is("R1"));
-        Assert.assertThat(aafe.get(1).getMatch().getRule().getName(),
+        assertThat(aafe.get(1).getMatch().getRule().getName(),
                           is("R2"));
-        Assert.assertThat(aafe.get(2).getMatch().getRule().getName(),
+        assertThat(aafe.get(2).getMatch().getRule().getName(),
                           is("R3"));
     }
 
@@ -409,7 +415,7 @@ public class StreamsTest extends CommonTestMethodBase {
                 times(1)).afterMatchFired(captor.capture());
         List<org.kie.api.event.rule.AfterMatchFiredEvent> aafe = captor.getAllValues();
 
-        Assert.assertThat(aafe.get(0).getMatch().getRule().getName(),
+        assertThat(aafe.get(0).getMatch().getRule().getName(),
                 is("R1"));
     }
     
@@ -639,9 +645,9 @@ public class StreamsTest extends CommonTestMethodBase {
                times(1)).afterMatchFired(captor.capture());
 
         AfterMatchFiredEvent aafe = captor.getValue();
-        Assert.assertThat(((Number) aafe.getMatch().getDeclarationValue("$sum")).intValue(),
+        assertThat(((Number) aafe.getMatch().getDeclarationValue("$sum")).intValue(),
                           is(95));
-        Assert.assertThat(((Number) aafe.getMatch().getDeclarationValue("$cnt")).intValue(),
+        assertThat(((Number) aafe.getMatch().getDeclarationValue("$cnt")).intValue(),
                           is(3));
 
     }
@@ -685,7 +691,7 @@ public class StreamsTest extends CommonTestMethodBase {
                times(1)).afterMatchFired(captor.capture());
 
         AfterMatchFiredEvent aafe = captor.getValue();
-        Assert.assertThat(((Number) aafe.getMatch().getDeclarationValue("$sum")).intValue(),
+        assertThat(((Number) aafe.getMatch().getDeclarationValue("$sum")).intValue(),
                           is(33));
     }
     
@@ -722,9 +728,9 @@ public class StreamsTest extends CommonTestMethodBase {
                times(1)).afterMatchFired(captor.capture());
 
         AfterMatchFiredEvent aafe = captor.getValue();
-        Assert.assertThat( (StockTick) aafe.getMatch().getDeclarationValue("f1"),
+        assertThat( (StockTick) aafe.getMatch().getDeclarationValue("f1"),
                            is(st1));
-        Assert.assertThat( (StockTick) aafe.getMatch().getDeclarationValue("f2"),
+        assertThat( (StockTick) aafe.getMatch().getDeclarationValue("f2"),
                            is(st2));
     }
 

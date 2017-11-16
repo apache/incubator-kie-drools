@@ -50,6 +50,10 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Arrays.asList;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 @Ignore
 public class PhreakConcurrencyTest extends CommonTestMethodBase {
@@ -123,7 +127,6 @@ public class PhreakConcurrencyTest extends CommonTestMethodBase {
         }
 
         assertTrue(success);
-
         assertEquals(EP_NR, ksession.fireAllRules());
 
         for (int i = 0; i < EP_NR; i++) {

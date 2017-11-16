@@ -31,6 +31,8 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.conf.ShareAlphaNodesOption;
 
+import static org.junit.Assert.assertEquals;
+
 public class AlphaTest extends CommonTestMethodBase {
 
     @Test

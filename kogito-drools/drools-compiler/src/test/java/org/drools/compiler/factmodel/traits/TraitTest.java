@@ -100,6 +100,14 @@ import org.kie.internal.utils.KieHelper;
 import org.mockito.ArgumentCaptor;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 
 @RunWith(Parameterized.class)
@@ -343,7 +351,7 @@ public class TraitTest extends CommonTestMethodBase {
         if (!errors.isEmpty()) {
             System.err.println( errors.toString() );
         }
-        Assert.assertTrue( errors.isEmpty() );
+        assertTrue( errors.isEmpty() );
 
     }
 
@@ -364,7 +372,7 @@ public class TraitTest extends CommonTestMethodBase {
         if (!errors.isEmpty()) {
             System.err.println( errors );
         }
-        Assert.assertTrue( errors.isEmpty() );
+        assertTrue( errors.isEmpty() );
 
     }
 
@@ -432,7 +440,7 @@ public class TraitTest extends CommonTestMethodBase {
             proxy4.getFields().put( "field",
                                     "xyz" );
 
-            Assert.assertEquals( proxy2,
+            assertEquals( proxy2,
                                  proxy4 );
 
         } catch (InstantiationException e) {
@@ -1355,8 +1363,8 @@ public class TraitTest extends CommonTestMethodBase {
 
         ks.fireAllRules();
 
-        Assert.assertTrue( info.contains( "DON" ) );
-        Assert.assertTrue( info.contains( "EQUAL" ) );
+        assertTrue( info.contains( "DON" ) );
+        assertTrue( info.contains( "EQUAL" ) );
 
     }
 

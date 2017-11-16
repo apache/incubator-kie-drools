@@ -28,6 +28,8 @@ import org.kie.api.runtime.KieContainer;
 
 import java.util.Collection;
 
+import static org.junit.Assert.assertEquals;
+
 // DROOLS-1044
 public class KieBaseIncludesTest extends CommonTestMethodBase {
 

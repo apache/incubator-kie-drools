@@ -28,6 +28,8 @@ import org.kie.api.runtime.KieSession;
 import org.kie.internal.conf.ConstraintJittingThresholdOption;
 import org.kie.internal.utils.KieHelper;
 
+import static org.junit.Assert.assertEquals;
+
 public class JittingTest extends CommonTestMethodBase {
 
     @Test

@@ -23,6 +23,8 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 
+import static org.junit.Assert.fail;
+
 public class VariableTest extends CommonTestMethodBase {
 
     @Test

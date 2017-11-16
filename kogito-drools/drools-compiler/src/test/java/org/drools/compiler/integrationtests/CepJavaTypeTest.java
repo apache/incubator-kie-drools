@@ -30,6 +30,9 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 public class CepJavaTypeTest extends CommonTestMethodBase {
 
     @Role(value = Role.Type.EVENT)

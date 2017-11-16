@@ -44,6 +44,10 @@ import org.kie.api.runtime.KieSession;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.xml.sax.SAXException;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 public class ChangeSetTest extends CommonTestMethodBase {
 
     @Test

@@ -23,6 +23,8 @@ import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
+import static org.junit.Assert.assertEquals;
+
 public class InlineCastTest extends CommonTestMethodBase {
 
     @Test

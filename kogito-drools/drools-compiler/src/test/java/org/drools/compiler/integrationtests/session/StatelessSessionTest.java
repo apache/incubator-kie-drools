@@ -49,6 +49,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
+
 public class StatelessSessionTest extends CommonTestMethodBase {
     final List list = new ArrayList();
     final Cheesery cheesery = new Cheesery();
@@ -62,8 +68,7 @@ public class StatelessSessionTest extends CommonTestMethodBase {
 
         session.execute( stilton );
 
-        assertEquals( "stilton",
-                      list.get( 0 ) );
+        assertEquals( "stilton", list.get( 0 ) );
     }
 
     @Test

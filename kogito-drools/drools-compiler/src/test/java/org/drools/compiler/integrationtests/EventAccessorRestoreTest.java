@@ -37,6 +37,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 public class EventAccessorRestoreTest extends CommonTestMethodBase {
 
     @Rule

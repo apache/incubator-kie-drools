@@ -33,6 +33,9 @@ import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.internal.io.ResourceFactory;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 /**
  * Tests queries using temporal operators on events from two entry points.
  */
@@ -91,13 +94,6 @@ public class CepQueryTest extends CommonTestMethodBase {
 
         firstEntryPoint.insert(new TestEvent("zero"));
         secondEntryPoint.insert(new TestEvent("one"));
-//        clock.advanceTime(10, TimeUnit.SECONDS);
-//
-//        secondEntryPoint.insert(new TestEvent("two"));
-//        clock.advanceTime(10, TimeUnit.SECONDS);
-//
-//        secondEntryPoint.insert(new TestEvent("three"));
-//        ksession.fireAllRules();
     }
 
     /**

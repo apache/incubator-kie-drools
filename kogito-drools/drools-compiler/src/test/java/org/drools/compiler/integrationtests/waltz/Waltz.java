@@ -28,6 +28,8 @@ import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
+import static org.junit.Assert.fail;
+
 /**
  * This is a sample file to launch a rule package from a rule source file.
  */

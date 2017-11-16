@@ -68,7 +68,6 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.NodeMemories;
-import org.drools.core.common.TupleSets;
 import org.drools.core.conflict.SalienceConflictResolver;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -80,9 +79,6 @@ import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.io.impl.ByteArrayResource;
-import org.drools.core.reteoo.AlphaNode;
-import org.drools.core.reteoo.BetaMemory;
-import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeNode;
@@ -92,7 +88,6 @@ import org.drools.core.reteoo.ReteDumper;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.Salience;
-import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -147,6 +142,12 @@ import org.slf4j.LoggerFactory;
 
 import static java.util.Arrays.asList;
 import static org.drools.compiler.TestUtil.assertDrlHasCompilationError;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeTrue;
 
 /**
@@ -3981,8 +3982,8 @@ public class Misc2Test extends CommonTestMethodBase {
 
         //We must have 1 INFO result.
         KnowledgeBuilderResults infos = kbuilder.getResults( ResultSeverity.INFO );
-        Assert.assertNotNull( infos );
-        Assert.assertEquals( 1, infos.size() );
+        assertNotNull( infos );
+        assertEquals( 1, infos.size() );
 
     }
 
@@ -7551,7 +7552,7 @@ public class Misc2Test extends CommonTestMethodBase {
 
         ksession.fireAllRules();
 
-        Assert.assertEquals( 1, globalList.size() );
+        assertEquals( 1, globalList.size() );
     }
 
     public static class NonStringConstructorClass {

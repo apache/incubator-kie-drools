@@ -48,6 +48,10 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+
 public class PatternTest extends CommonTestMethodBase {
 
     @Test
@@ -416,7 +420,7 @@ public class PatternTest extends CommonTestMethodBase {
         final FactHandle fh1 = ksession.insert(p1);
 
         final Person p2 = new Person("darth", 25);
-        final FactHandle fh2 = ksession.insert(p2); // creates activation.
+        ksession.insert(p2); // creates activation.
 
         p1.setName("yoda");
         ksession.update(fh1, p1); // creates activation

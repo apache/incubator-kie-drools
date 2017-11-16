@@ -70,7 +70,6 @@ import org.drools.core.time.impl.DurationTimer;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.core.util.DateUtils;
 import org.drools.core.util.DroolsStreamUtils;
-import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -112,8 +111,18 @@ import org.mockito.ArgumentCaptor;
 
 import static org.drools.compiler.TestUtil.assertDrlHasCompilationError;
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 public class CepEspTest extends CommonTestMethodBase {
     
@@ -2428,13 +2437,13 @@ public class CepEspTest extends CommonTestMethodBase {
                 times( 4 ) ).afterMatchFired(captor.capture());
         List<AfterMatchFiredEvent> aafe = captor.getAllValues();
 
-        Assert.assertThat( aafe.get( 0 ).getMatch().getRule().getName(),
+        assertThat( aafe.get( 0 ).getMatch().getRule().getName(),
                            is( "R1" ) );
-        Assert.assertThat( aafe.get( 1 ).getMatch().getRule().getName(),
+        assertThat( aafe.get( 1 ).getMatch().getRule().getName(),
                            is( "R1" ) );
-        Assert.assertThat( aafe.get( 2 ).getMatch().getRule().getName(),
+        assertThat( aafe.get( 2 ).getMatch().getRule().getName(),
                            is( "R1" ) );
-        Assert.assertThat( aafe.get( 3 ).getMatch().getRule().getName(),
+        assertThat( aafe.get( 3 ).getMatch().getRule().getName(),
                            is( "R3" ) );
     }
 
@@ -2504,13 +2513,13 @@ public class CepEspTest extends CommonTestMethodBase {
                 times( 4 ) ).afterMatchFired(captor.capture());
         List<AfterMatchFiredEvent> aafe = captor.getAllValues();
 
-        Assert.assertThat( aafe.get( 0 ).getMatch().getRule().getName(),
+        assertThat( aafe.get( 0 ).getMatch().getRule().getName(),
                            is( "R1" ) );
-        Assert.assertThat( aafe.get( 1 ).getMatch().getRule().getName(),
+        assertThat( aafe.get( 1 ).getMatch().getRule().getName(),
                            is( "R1" ) );
-        Assert.assertThat( aafe.get( 2 ).getMatch().getRule().getName(),
+        assertThat( aafe.get( 2 ).getMatch().getRule().getName(),
                            is( "R1" ) );
-        Assert.assertThat( aafe.get( 3 ).getMatch().getRule().getName(),
+        assertThat( aafe.get( 3 ).getMatch().getRule().getName(),
                            is( "R3" ) );
     }
 

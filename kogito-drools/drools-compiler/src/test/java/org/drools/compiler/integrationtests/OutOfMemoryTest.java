@@ -40,6 +40,9 @@ import org.slf4j.LoggerFactory;
 import java.io.FileWriter;
 import java.util.HashMap;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.fail;
+
 /** Run all the tests with the ReteOO engine implementation */
 public class OutOfMemoryTest extends CommonTestMethodBase {
 

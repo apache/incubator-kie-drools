@@ -46,6 +46,9 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.utils.KieHelper;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+
 public class ExecutionFlowControlTest extends CommonTestMethodBase {
 
     @Test(timeout = 10000)
@@ -736,8 +739,8 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
         System.out.println( "Holds: " + inrec.getValue() );
         ksession.insert( inrec );
         ksession.fireAllRules();
-        Assert.assertEquals( 1, ksession.getFactHandles().size() );
-        Assert.assertEquals( "setting 1", inrec.getOutcome() );
+        assertEquals( 1, ksession.getFactHandles().size() );
+        assertEquals( "setting 1", inrec.getOutcome() );
 
         ksession.dispose();
         ksession = kbase.newKieSession();
@@ -745,8 +748,8 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
         System.out.println( "Holds: " + inrec.getValue() );
         ksession.insert( inrec );
         ksession.fireAllRules();
-        Assert.assertEquals( 1, ksession.getFactHandles().size() );
-        Assert.assertEquals( "setting null", inrec.getOutcome() );
+        assertEquals( 1, ksession.getFactHandles().size() );
+        assertEquals( "setting null", inrec.getOutcome() );
 
         ksession.dispose();
         ksession = kbase.newKieSession();
@@ -754,8 +757,8 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
         System.out.println( "Holds: " + inrec.getValue() );
         ksession.insert( inrec );
         ksession.fireAllRules(); // appropriate rule is not fired!
-        Assert.assertEquals( 1, ksession.getFactHandles().size() );
-        Assert.assertEquals( "setting 0", inrec.getOutcome() );
+        assertEquals( 1, ksession.getFactHandles().size() );
+        assertEquals( "setting 0", inrec.getOutcome() );
     }
 
     @Test
