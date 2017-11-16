@@ -219,6 +219,26 @@ public class QueryTest extends BaseModelTest {
     }
 
     @Test
+    public void testUnificationParameterInPattern() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "query personsAges(int ages)\n" +
+                        "$p : Person(ages := age)\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( new Person( "Mark", 39 ) );
+        ksession.insert( new Person( "Mario", 41 ) );
+
+        QueryResults results = ksession.getQueryResults( "personsAges",  41 );
+
+        assertEquals( 1, results.size() );
+        Person p = (Person) results.iterator().next().get( "$p" );
+        assertEquals( "Mario", p.getName() );
+    }
+
+    @Test
     public void testQueryCallingQuery() {
         String str =
                 "import " + Relationship.class.getCanonicalName() + ";" +
