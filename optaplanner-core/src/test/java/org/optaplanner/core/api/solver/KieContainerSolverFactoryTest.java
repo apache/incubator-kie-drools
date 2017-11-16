@@ -36,6 +36,8 @@ import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirectorFactory;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
+import static org.junit.Assert.assertNotNull;
+
 public class KieContainerSolverFactoryTest extends CommonTestMethodBase {
 
     private static KieServices kieServices;
