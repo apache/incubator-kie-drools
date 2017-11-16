@@ -542,13 +542,16 @@ public class ModelGenerator {
 
     private static void visit( RuleContext context, PackageModel packageModel, EvalDescr descr ) {
         final String expression = descr.getContent().toString();
-        // accordingly to history the EvalDescr always expected a fieldaccess-expression like content here:
-        final String bindingId = DrlxParseUtil.findBindingIdFromDotExpression(expression).orElseThrow(() -> new UnsupportedOperationException("unable to parse eval expression: " + expression));
+
+        final Optional<String> bindingIdFromFunctionCall =  DrlxParseUtil.findBindingIdFromFunctionCallExpression(expression);
+        final Optional<String> bindingIdFromDot = DrlxParseUtil.findBindingIdFromDotExpression(expression);
+        final String bindingId = bindingIdFromFunctionCall.map(Optional::of).orElse(bindingIdFromDot).orElseThrow(() -> new UnsupportedOperationException("unable to parse eval expression: " + expression));
 
         Class<?> patternType = context.getDeclarationById(bindingId)
                 .map(DeclarationSpec::getDeclarationClass)
                 .orElseThrow(RuntimeException::new);
-        processExpression( context, drlxParse(context, packageModel, patternType, bindingId, expression) );
+        DrlxParseResult drlxParseResult = drlxParse(context, packageModel, patternType, bindingId, expression);
+        processExpression(context, drlxParseResult);
     }
 
     public static void visit(RuleContext context, PackageModel packageModel, AndDescr descr) {
@@ -782,11 +785,24 @@ public class ModelGenerator {
         if (drlxExpr instanceof MethodCallExpr) {
             MethodCallExpr methodCallExpr = (MethodCallExpr) drlxExpr;
 
-            NameExpr _this = new NameExpr("_this");
-            TypedExpression converted = DrlxParseUtil.toMethodCallWithClassCheck(methodCallExpr, patternType);
-            Expression withThis = DrlxParseUtil.prepend(_this, converted.getExpression());
+            Optional<MethodDeclaration> functionCall = packageModel.getFunctions().stream().filter(m -> m.getName().equals(methodCallExpr.getName())).findFirst();
+            if(functionCall.isPresent()) {
+                Class<?> returnType = DrlxParseUtil.getClassFromContext(context.getPkg(), functionCall.get().getType().asString());
+                NodeList<Expression> arguments = methodCallExpr.getArguments();
+                List<String> usedDeclarations = new ArrayList<>();
+                for(Expression arg : arguments) {
+                    if(arg instanceof NameExpr) {
+                        usedDeclarations.add(arg.toString());
+                    }
+                }
+                return new DrlxParseResult(patternType, exprId, bindingId, methodCallExpr, returnType).setUsedDeclarations(usedDeclarations);
+            } else {
+                NameExpr _this = new NameExpr("_this");
+                TypedExpression converted = DrlxParseUtil.toMethodCallWithClassCheck(methodCallExpr, patternType);
+                Expression withThis = DrlxParseUtil.prepend(_this, converted.getExpression());
+                return new DrlxParseResult(patternType, exprId, bindingId, withThis, converted.getType());
+            }
 
-            return new DrlxParseResult(patternType, exprId, bindingId, withThis, converted.getType());
         }
 
         if (drlxExpr instanceof NameExpr) {

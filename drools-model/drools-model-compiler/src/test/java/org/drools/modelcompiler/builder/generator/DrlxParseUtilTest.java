@@ -1,5 +1,7 @@
 package org.drools.modelcompiler.builder.generator;
 
+import java.util.Optional;
+
 import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
@@ -45,6 +47,20 @@ public class DrlxParseUtilTest {
         assertEquals(expected.toString(), DrlxParseUtil.toMethodCallWithClassCheck(expr, Person.class).getExpression().toString());
         assertEquals(expected.toString(), DrlxParseUtil.toMethodCallWithClassCheck(expr1, Person.class).getExpression().toString());
         assertEquals(expected.toString(), DrlxParseUtil.toMethodCallWithClassCheck(expr2, Person.class).getExpression().toString());
+    }
+
+    @Test
+    public void findBindingFromFunctionCallExpression() {
+
+        final Optional<String> bindingId = DrlxParseUtil.findBindingIdFromFunctionCallExpression("isFortyYearsOld($p)");
+        assertEquals(Optional.of("$p"), bindingId);
+
+        final Optional<String> bindingId2 = DrlxParseUtil.findBindingIdFromFunctionCallExpression("isFortyYearsOld(function2($p))");
+        assertEquals(Optional.of("$p"), bindingId2);
+
+        final Optional<String> bindingId3 = DrlxParseUtil.findBindingIdFromFunctionCallExpression("isCool($p.getValue())");
+        assertEquals(Optional.of("$p"), bindingId3);
+
     }
 
 
