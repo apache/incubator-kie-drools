@@ -32,6 +32,7 @@ import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
 import org.drools.modelcompiler.domain.Toy;
 import org.drools.modelcompiler.domain.Woman;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
@@ -854,6 +855,32 @@ public class CompilerTest extends BaseModelTest {
 
 
     @Test
+    @Ignore("fix the indexedBy problem")
+    public void testAgeWithSum() {
+        String str =
+                "import " + Result.class.getCanonicalName() + ";" +
+                "import " + Person.class.getCanonicalName() + ";" +
+                "rule R when\n" +
+                "  $p : Person( personAge : age )\n" +
+                "  $plusTwo : Person(age == personAge + 2 )\n" +
+                "then\n" +
+                "  insert(new Result($plusTwo.getName()));\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( new Person( "Mario", 40 ) );
+        ksession.insert( new Person( "Mark", 37 ) );
+        ksession.insert( new Person( "Edson", 35 ) );
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList( ksession, Result.class );
+        assertEquals( 1, results.size() );
+        assertEquals( "Mark", results.iterator().next().getValue() );
+    }
+
+
+    @Test
     public void testFunction() {
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +
@@ -878,6 +905,60 @@ public class CompilerTest extends BaseModelTest {
         Collection<Result> results = getObjectsIntoList( ksession, Result.class );
         assertEquals( 1, results.size() );
         assertEquals( "Hello Mario!", results.iterator().next().getValue() );
+    }
+
+    @Test
+    public void testFunction2() {
+        String str =
+                "import " + Result.class.getCanonicalName() + ";" +
+                "import " + Person.class.getCanonicalName() + ";" +
+                "function Boolean isFortyYearsOld(Person p, Boolean booleanParameter) {\n" +
+                "    return p.getAge() == 40; \n"+
+                "}" +
+                "rule R when\n" +
+                        "  $p : Person()\n" +
+                        "  eval( isFortyYearsOld($p, true) )\n" +
+                "then\n" +
+                "  insert(new Result($p.getName()));\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( new Person( "Mario", 40 ) );
+        ksession.insert( new Person( "Mark", 37 ) );
+        ksession.insert( new Person( "Edson", 35 ) );
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList( ksession, Result.class );
+        assertEquals( 1, results.size() );
+        assertEquals( "Mario", results.iterator().next().getValue() );
+    }
+
+    @Test
+    @Ignore
+    public void testFunction3() {
+        String str =
+                "import " + Result.class.getCanonicalName() + ";" +
+                "import " + Person.class.getCanonicalName() + ";" +
+                "function Boolean isFortyYearsOld(Person p, Boolean booleanParameter) {\n" +
+                "    return p.getAge() == 40; \n"+
+                "}" +
+                "rule R when\n" +
+                "  $p : Person(isFortyYearsOld(this, true))\n" +
+                "then\n" +
+                "  insert(new Result($p.getName()));\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( new Person( "Mario", 40 ) );
+        ksession.insert( new Person( "Mark", 37 ) );
+        ksession.insert( new Person( "Edson", 35 ) );
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList( ksession, Result.class );
+        assertEquals( 1, results.size() );
+        assertEquals( "Mario", results.iterator().next().getValue() );
     }
 
     @Test

@@ -29,9 +29,11 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.index.IndexUtil;
 import org.drools.core.util.index.IndexUtil.ConstraintType;
+import org.drools.drlx.DrlxParser;
 import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.Node;
 import org.drools.javaparser.ast.body.Parameter;
+import org.drools.javaparser.ast.drlx.expr.DrlxExpression;
 import org.drools.javaparser.ast.drlx.expr.InlineCastExpr;
 import org.drools.javaparser.ast.drlx.expr.NullSafeFieldAccessExpr;
 import org.drools.javaparser.ast.expr.BinaryExpr;
@@ -96,6 +98,17 @@ public class DrlxParseUtil {
             UnaryExpr unaryExpr = (UnaryExpr) drlxExpr;
             TypedExpression typedExpr = toTypedExpression( context, packageModel, patternType, unaryExpr.getExpression(), usedDeclarations, reactOnProperties );
             return new TypedExpression( new UnaryExpr( typedExpr.getExpression(), unaryExpr.getOperator() ), typedExpr.getType() );
+
+        } else if (drlxExpr instanceof BinaryExpr) {
+            BinaryExpr binaryExpr = (BinaryExpr) drlxExpr;
+
+            Operator operator = binaryExpr.getOperator();
+
+            TypedExpression left = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, binaryExpr.getLeft(), usedDeclarations, reactOnProperties );
+            TypedExpression right = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, binaryExpr.getRight(), usedDeclarations, reactOnProperties );
+
+            BinaryExpr combo = new BinaryExpr( left.getExpression(), right.getExpression(), operator );
+            return new TypedExpression( combo, left.getType() );
 
         } else if (drlxExpr instanceof LiteralExpr) {
             return new TypedExpression(drlxExpr);
@@ -306,6 +319,8 @@ public class DrlxParseUtil {
             final NodeWithOptionalScope<?> exprWithScope = (NodeWithOptionalScope) expr;
 
             return exprWithScope.getScope().map(DrlxParseUtil::findRootNode).orElse(Optional.of(expr));
+        } else if(expr instanceof NameExpr) {
+            return Optional.of(expr);
         }
 
         return Optional.empty();
@@ -413,6 +428,25 @@ public class DrlxParseUtil {
             return Optional.empty();
         }
         return Optional.of(expression.substring(0, dot));
+    }
+
+    public static Optional<String> findBindingIdFromFunctionCallExpression(String expression) {
+        final Optional<Expression> parsedExpression = Optional.<DrlxExpression>ofNullable(DrlxParser.parseExpression(expression))
+                .map(DrlxExpression::getExpr);
+
+        return parsedExpression.flatMap(DrlxParseUtil::findLeafOverArgument).map(Object::toString);
+    }
+
+    private static Optional<Expression> findLeafOverArgument(Expression expr) {
+        if (expr instanceof MethodCallExpr) {
+            final Optional<Expression> optFirstArgument = ((MethodCallExpr)expr).getArguments().stream().findFirst();
+            return optFirstArgument
+                    .flatMap(DrlxParseUtil::findRootNode)
+                    .flatMap(DrlxParseUtil::findLeafOverArgument);
+        } else if (expr instanceof NameExpr) {
+            return Optional.of(expr);
+        }
+        return Optional.empty();
     }
 
     public static Class<?> getClassFromContext(InternalKnowledgePackage pkg, String className) {
