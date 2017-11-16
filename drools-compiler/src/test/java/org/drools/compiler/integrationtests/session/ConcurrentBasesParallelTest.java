@@ -19,6 +19,8 @@ package org.drools.compiler.integrationtests.session;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.QueryResults;
+import org.kie.api.runtime.rule.QueryResultsRow;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -695,6 +697,86 @@ public class ConcurrentBasesParallelTest extends AbstractParallelTest {
                     assertTrue(list.contains(identifier));
                     assertTrue(!list.contains(otherIdentifier));
                     return rulesFired == objectCount;
+                } finally {
+                    disposeSession(session);
+                }
+            }
+        };
+
+        parallelTest(numberOfThreads, exec);
+    }
+
+    @Test
+    public void testQueries() throws InterruptedException {
+        int numberOfThreads = 100;
+        int numberOfObjects = 100;
+
+        ParallelTestExecutor exec = new ParallelTestExecutor() {
+            @Override
+            public boolean execute(int counter) throws InterruptedException {
+                String query = "import " + BeanA.class.getCanonicalName() + ";\n" +
+                    "query Query " +
+                    "    bean : BeanA( seed == "+ counter +" ) " +
+                    "end";
+
+                KieBase base = getKieBase(query);
+                KieSession session = null;
+
+                try {
+                    session = base.newKieSession();
+                    BeanA bean = new BeanA(counter);
+                    session.insert(bean);
+                    for (int i = 0; i < numberOfObjects; i++) {
+                        if (i != counter) {
+                            session.insert(new BeanA(i));
+                        }
+                    }
+                    QueryResults results = session.getQueryResults("Query");
+                    assertEquals(1, results.size());
+                    for (QueryResultsRow row : results) {
+                        assertEquals(bean, (BeanA) row.get("bean"));
+                    }
+                    return true;
+                } finally {
+                    disposeSession(session);
+                }
+            }
+        };
+
+        parallelTest(numberOfThreads, exec);
+    }
+
+    @Test
+    public void testQueries2() throws InterruptedException {
+        int numberOfThreads = 100;
+        int numberOfObjects = 100;
+
+        String queryTemplate = "import " + BeanA.class.getCanonicalName() + ";\n" +
+            "query Query " +
+            "    bean : BeanA( seed == ${seed} ) " +
+            "end";
+
+        ParallelTestExecutor exec = new ParallelTestExecutor() {
+            @Override
+            public boolean execute(int counter) throws InterruptedException {
+                int seed = counter % 2;
+                String seedString = "" + seed;
+                String queryDrl = queryTemplate.replace("${seed}", seedString);
+                KieBase base = getKieBase(queryDrl);
+                KieSession session = null;
+
+                try {
+                    session = base.newKieSession();
+                    for (int i = 0; i < numberOfObjects; i++) {
+                        session.insert(new BeanA(seed));
+                    }
+                    QueryResults results = session.getQueryResults("Query");
+                    assertEquals(numberOfObjects, results.size());
+                    for (QueryResultsRow row : results) {
+                        BeanA bean = (BeanA) row.get("bean");
+                        assertEquals(seed, bean.getSeed());
+                    }
+                    return true;
                 } finally {
                     disposeSession(session);
                 }
