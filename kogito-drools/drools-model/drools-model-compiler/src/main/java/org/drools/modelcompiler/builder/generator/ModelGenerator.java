@@ -610,6 +610,9 @@ public class ModelGenerator {
             for (BaseDescr constraint : constraintDescrs) {
                 String expression = getConstraintExpression(patternType, constraint);
                 String patternIdentifier = pattern.getIdentifier();
+                if(expression.contains(":=")) {
+                    expression = expression.replace(":=", "==");
+                }
                 DrlxParseResult drlxParseResult = drlxParse(context, packageModel, patternType, patternIdentifier, expression);
 
                 if(drlxParseResult.expr instanceof OOPathExpr) {
