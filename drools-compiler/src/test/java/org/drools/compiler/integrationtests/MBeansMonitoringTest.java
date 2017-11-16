@@ -55,6 +55,12 @@ import org.kie.internal.runtime.conf.ForceEagerActivationOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 public class MBeansMonitoringTest extends CommonTestMethodBase {
     public static final Logger LOG = LoggerFactory.getLogger(MBeansMonitoringTest.class);
     
@@ -181,7 +187,7 @@ public class MBeansMonitoringTest extends CommonTestMethodBase {
     	mbserver.invoke( kbOn, "startInternalMBeans", new Object[0], new String[0] );
 
     	Object expOffset = mbserver.getAttribute( new ObjectName( kbOn + ",group=EntryPoints,EntryPoint=DEFAULT,ObjectType=org.drools.compiler.StockTick" ), "ExpirationOffset" );
-    	Assert.assertEquals( 10001, ((Number) expOffset).longValue() );
+    	assertEquals( 10001, ((Number) expOffset).longValue() );
     }
     
     @Test

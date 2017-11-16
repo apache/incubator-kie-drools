@@ -58,6 +58,11 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.mvel2.MVEL;
 import org.mvel2.ParserContext;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 public class MVELTest extends CommonTestMethodBase {
 
     @Test

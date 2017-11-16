@@ -17,6 +17,10 @@
 package org.drools.compiler.integrationtests;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -103,7 +107,7 @@ public class MapConstraintTest extends CommonTestMethodBase {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL);
 
-        Assert.assertTrue(kbuilder.hasErrors());
+        assertTrue(kbuilder.hasErrors());
     }
 
     @Test

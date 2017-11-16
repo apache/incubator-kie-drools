@@ -38,6 +38,8 @@ import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static org.junit.Assert.assertEquals;
+
 public class DynamicRulesChangesTest extends CommonTestMethodBase {
 
     private static final int PARALLEL_THREADS = 1;

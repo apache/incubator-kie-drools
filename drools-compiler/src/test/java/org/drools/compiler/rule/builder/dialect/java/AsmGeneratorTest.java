@@ -31,6 +31,10 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 public class AsmGeneratorTest extends CommonTestMethodBase {
      
     @Test

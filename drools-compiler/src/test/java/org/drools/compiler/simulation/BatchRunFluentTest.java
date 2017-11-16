@@ -31,6 +31,11 @@ import org.kie.api.runtime.builder.Scope;
 import org.kie.api.runtime.builder.ExecutableBuilder;
 import org.kie.api.runtime.builder.KieSessionFluent;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
+
 public class BatchRunFluentTest extends CommonTestMethodBase {
     String header = "package org.drools.compiler\n" +
                     "import " + Message.class.getCanonicalName() + "\n";

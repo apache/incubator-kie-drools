@@ -29,6 +29,11 @@ import org.kie.internal.utils.KieHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 public class MatchTest extends CommonTestMethodBase {
 
     private static Logger logger = LoggerFactory.getLogger(MatchTest.class);

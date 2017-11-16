@@ -18,10 +18,13 @@ package org.drools.compiler.integrationtests;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.drools.compiler.CommonTestMethodBase;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
+
+import static org.junit.Assert.assertEquals;
 
 public class DroolsFromRHSTest extends CommonTestMethodBase {
 
@@ -37,11 +40,9 @@ public class DroolsFromRHSTest extends CommonTestMethodBase {
         ksession.insert(0);
         ksession.fireAllRules();
 
-        assertEquals( 10,
-                results.size() );
+        assertEquals( 10, results.size() );
         for ( int i = 0; i < 10; i++ ) {
-            assertEquals(i,
-                    results.get( i ) );
+            assertEquals(i, results.get( i ) );
         }
     }
 

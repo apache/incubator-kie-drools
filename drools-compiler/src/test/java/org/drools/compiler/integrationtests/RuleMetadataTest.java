@@ -22,6 +22,10 @@ import org.drools.core.rule.ConsequenceMetaData;
 import org.junit.Test;
 import org.kie.api.KieBase;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 public class RuleMetadataTest extends CommonTestMethodBase {
 
     @Test

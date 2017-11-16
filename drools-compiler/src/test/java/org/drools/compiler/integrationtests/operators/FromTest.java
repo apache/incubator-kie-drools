@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+
 import org.drools.compiler.Address;
 import org.drools.compiler.Cheese;
 import org.drools.compiler.Cheesery;
@@ -62,8 +63,12 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.utils.KieHelper;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 public class FromTest extends CommonTestMethodBase {
 

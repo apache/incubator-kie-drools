@@ -106,6 +106,12 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.utils.KieHelper;
 
 import static org.drools.compiler.integrationtests.SerializationHelper.getSerialisedStatefulKnowledgeSession;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class MarshallingTest extends CommonTestMethodBase {
 
@@ -214,7 +220,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         assertEquals( "match Integer",
                       rules[3].getName() );
 
-        Assert.assertEquals(1, session.getObjects().size());
+        assertEquals(1, session.getObjects().size());
         assertEquals( bob,
                       IteratorToList.convert( session.getObjects().iterator() ).get(0) );
 

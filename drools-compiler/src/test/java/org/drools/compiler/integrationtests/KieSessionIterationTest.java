@@ -26,6 +26,8 @@ import org.kie.internal.utils.KieHelper;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import static org.junit.Assert.assertTrue;
+
 /**
  * Tests iteration through the list of KieSessions of a KieBase.
  */

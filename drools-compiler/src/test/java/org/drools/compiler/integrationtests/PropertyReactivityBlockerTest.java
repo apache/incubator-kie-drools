@@ -43,6 +43,8 @@ import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.utils.KieHelper;
 
+import static org.junit.Assert.assertEquals;
+
 public class PropertyReactivityBlockerTest extends CommonTestMethodBase {
     
     @Test()
