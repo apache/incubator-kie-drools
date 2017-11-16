@@ -29,7 +29,7 @@ import org.drools.compiler.rule.builder.dialect.mvel.MVELConsequenceBuilder;
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.EvaluatorWrapper;
 import org.drools.core.base.mvel.MVELCompilationUnit;
-import org.drools.core.base.mvel.MVELCompilationUnit.DroolsVarFactory;
+import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -45,6 +45,7 @@ import org.drools.modelcompiler.RuleContext;
 import org.kie.api.definition.KiePackage;
 import org.mvel2.MVEL;
 import org.mvel2.compiler.ExecutableStatement;
+import org.mvel2.integration.VariableResolverFactory;
 import org.mvel2.integration.impl.CachingMapVariableResolverFactory;
 
 public class MVELConsequence implements Consequence {
@@ -143,17 +144,18 @@ public class MVELConsequence implements Consequence {
         mvelContext.put("this", knowledgeHelper);
         mvelContext.put("drools", knowledgeHelper);
         mvelContext.put("kcontext", knowledgeHelper);
-        mvelContext.put("rule", null);
+        mvelContext.put("rule", knowledgeHelper.getRule());
         for (Entry<Variable, Object> kv : facts.entrySet()) {
             mvelContext.put(kv.getKey().getName(), kv.getValue());
         }
 
-        DroolsVarFactory droolsVarFactory = new DroolsVarFactory();
-        droolsVarFactory.setKnowledgeHelper(knowledgeHelper);
+        CachingMapVariableResolverFactory cachingFactory = new CachingMapVariableResolverFactory(mvelContext);
 
-        CachingMapVariableResolverFactory factory = new CachingMapVariableResolverFactory(mvelContext);
-        factory.setNextFactory(droolsVarFactory);
+        VariableResolverFactory factory = cu.getFactory( knowledgeHelper,  ((AgendaItem )knowledgeHelper.getMatch()).getTerminalNode().getRequiredDeclarations(),
+                knowledgeHelper.getRule(), knowledgeHelper.getTuple(), null, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver()  );
 
-        MVEL.executeExpression(compiledExpression, factory);
+        cachingFactory.setNextFactory(factory);
+
+        MVEL.executeExpression(compiledExpression, knowledgeHelper, cachingFactory);
     }
 }
