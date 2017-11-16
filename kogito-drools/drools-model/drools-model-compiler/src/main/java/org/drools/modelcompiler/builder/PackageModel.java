@@ -168,6 +168,9 @@ public class PackageModel {
 
     final static Type WINDOW_REFERENCE_TYPE = JavaParser.parseType(WindowReference.class.getCanonicalName());
 
+    public List<MethodDeclaration> getFunctions() {
+        return functions;
+    }
 
     public String getVarsSource() {
 //        if (true) return getVariableSource();
