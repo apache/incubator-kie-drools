@@ -40,6 +40,16 @@ public class Query2DefImpl<A, B> extends QueryDefImpl implements Query2Def<A, B>
         this.arg2 = declarationOf( type(type2) );
     }
 
+    public Query2DefImpl( String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name ) {
+        this(DEFAULT_PACKAGE, name, type1, arg1name, type2, arg2name);
+    }
+
+    public Query2DefImpl( String pkg, String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name ) {
+        super( pkg, name );
+        this.arg1 = declarationOf( type(type1) , arg1name);
+        this.arg2 = declarationOf( type(type2) , arg2name);
+    }
+
     @Override
     public QueryCallViewItem call( boolean open, Argument<A> aVar, Argument<B> bVar ) {
         return new QueryCallViewItemImpl( this, open, aVar, bVar );

@@ -430,10 +430,9 @@ public class QueryTest extends BaseModelTest {
         final ExecutionResults results = ksession.execute(kieServices.getCommands().newBatchExecution(commands, null));
         final QueryResults qResults = (QueryResults) results.getValue(queryAlias);
 
-        String paramName = ((QueryImpl ) ksession.getKieBase().getQuery("org.test", "isContainedIn" )).getParameters()[0].getIdentifier();
         final List<String> l = new ArrayList<String>();
         for (QueryResultsRow r : qResults) {
-            l.add((String) r.get(paramName));
+            l.add((String) r.get("x"));
         }
 
         // items in the office should be the following
