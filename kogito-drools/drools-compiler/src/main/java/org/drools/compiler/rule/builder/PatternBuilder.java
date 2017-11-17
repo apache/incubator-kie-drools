@@ -772,7 +772,9 @@ public class PatternBuilder
                 } else {
                     // A constraint is using a declration bound to an xpath in the same pattern
                     // Move the constraint inside the last chunk of the xpath defining this declaration, rewriting it as 'this'
-                    constraint = buildCcdDescr(context, patternDescr, pattern,
+                    Pattern modifiedPattern = pattern.clone();
+                    modifiedPattern.setObjectType( new ClassObjectType( declCorrXpath.getDeclarationClass() ) );
+                    constraint = buildCcdDescr(context, patternDescr, modifiedPattern,
                                                d.replaceVariable(declCorrXpath.getBindingName(), "this"), descr, mvelCtx);
                     if (constraint != null) {
                         pattern.getXpathConstraint().getChunks().getLast().addConstraint(constraint);

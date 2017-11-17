@@ -1258,4 +1258,64 @@ public class OOPathTest {
 
         assertEquals( 1, list.size() );
     }
+
+    @Test
+    public void testConstraintExternalToOopath() {
+        // DROOLS-2135
+        final String drl =
+                "import "+ Parent.class.getCanonicalName() +";\n" +
+                "import "+ Son.class.getCanonicalName() +";\n" +
+                "global java.util.List list\n\n" +
+                "rule R when\n" +
+                "  Parent( $child : /children, $child.name == \"joe\" )\n" +
+                "then\n" +
+                "  list.add( $child.getName() );\n" +
+                "end\n";
+
+        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                .build()
+                .newKieSession();
+
+        List<String> list = new ArrayList<>();
+        ksession.setGlobal( "list", list );
+
+        Son joe = new Son("joe");
+        Son jack = new Son("jack");
+        Parent parent = new Parent(Arrays.asList(joe, jack));
+
+        ksession.insert(parent);
+        ksession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+        assertEquals( "joe", list.get(0) );
+    }
+
+    public class Son {
+        private String name;
+        public Son(String name) {
+            this.name = name;
+        }
+        public String getName() {
+            return name;
+        }
+        public void setName(String name) {
+            this.name = name;
+        }
+        public String toString() {
+            return this.name;
+        }
+    }
+
+    public class Parent {
+        private List<Son> children;
+        public Parent(List<Son> children) {
+            this.children = children;
+        }
+        public List<Son> getChildren() {
+            return children;
+        }
+        public void setChildren(List<Son> children) {
+            this.children = children;
+        }
+    }
 }
