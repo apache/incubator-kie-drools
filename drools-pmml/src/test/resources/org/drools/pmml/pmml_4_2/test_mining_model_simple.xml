@@ -3,8 +3,10 @@
    <Header>
       <Application name="Drools-PMML" version="7.0.0-SNAPSHOT" />
    </Header>
-   <DataDictionary numberOfFields="5">
-      <DataField dataType="double" name="fld1" optype="continuous" />
+   <DataDictionary numberOfFields="6">
+      <DataField dataType="double" name="fld1" optype="continuous">
+         <Value property="missing" value="-1.0" />
+      </DataField>
       <DataField dataType="double" name="fld2" optype="continuous">
          <Value property="missing" value="-1.0" />
       </DataField>
@@ -22,6 +24,12 @@
          <Value value="tgtY" />
          <Value value="tgtZ" />
       </DataField>
+      <DataField dataType="string" name="fld6" optype="categorical">
+         <Value value="optA" />
+         <Value value="optB" />
+         <Value value="optC" />
+         <Value property="missing" value="miss" />
+      </DataField>
    </DataDictionary>
    <MiningModel modelName="SampleMine" functionName="classification">
       <MiningSchema>
@@ -29,6 +37,7 @@
          <MiningField name="fld2" />
          <MiningField name="fld3" />
          <MiningField name="fld4" />
+         <MiningField name="fld6" />
          <MiningField name="fld5" usageType="predicted" />
       </MiningSchema>
       <Segmentation multipleModelMethod="selectFirst">
@@ -105,7 +114,7 @@
                <MiningSchema>
                   <MiningField name="fld1" />
                   <MiningField name="fld2" />
-                  <MiningField name="fld3" />
+                  <MiningField name="fld6" />
                   <MiningField name="fld5" usageType="predicted" />
                </MiningSchema>
                <Output>
@@ -115,7 +124,7 @@
                <Node defaultChild="2" id="1">
                   <True />
                   <Node defaultChild="3" id="2">
-                     <SimplePredicate field="fld3" operator="equal" value="optA" />
+                     <SimplePredicate field="fld6" operator="equal" value="optA" />
                      <Node id="3" recordCount="40" score="tgtX">
                         <CompoundPredicate booleanOperator="surrogate">
                            <SimplePredicate field="fld1" operator="greaterOrEqual" value="50" />
@@ -137,8 +146,8 @@
                   </Node>
                   <Node id="5" recordCount="50" score="tgtY">
                      <CompoundPredicate booleanOperator="or">
-                        <SimplePredicate field="fld3" operator="equal" value="optB" />
-                        <SimplePredicate field="fld3" operator="equal" value="optC" />
+                        <SimplePredicate field="fld6" operator="equal" value="optB" />
+                        <SimplePredicate field="fld6" operator="equal" value="optC" />
                      </CompoundPredicate>
                      <ScoreDistribution confidence="0.4" recordCount="20" value="tgtX" />
                      <ScoreDistribution confidence="0.56" recordCount="28" value="tgtY" />

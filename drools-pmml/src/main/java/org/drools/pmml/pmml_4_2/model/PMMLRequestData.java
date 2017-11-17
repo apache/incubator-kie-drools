@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 public class PMMLRequestData {
 	private String correlationId;
     private String modelName;
+    private String source;
     private List<ParameterInfo> requestParams;
 
     public PMMLRequestData(String correlationId) {
@@ -44,11 +45,6 @@ public class PMMLRequestData {
         this.modelName = modelName;
         this.requestParams = new ArrayList<>();
     }
-
-//    private <T> T getValue(String parameterName) {
-//        ParameterInfo pinfo = requestParams.stream().filter(pi -> pi.getName().equals(parameterName)).findFirst().orElse(null);
-//        return (pinfo != null) ? (T)pinfo.getValue() : null;
-//    }
 
     public String getModelName() {
         return this.modelName;
@@ -99,11 +95,21 @@ public class PMMLRequestData {
 	public void setModelName(String modelName) {
 		this.modelName = modelName;
 	}
+	
+	public String getSource() {
+		return this.source;
+	}
+	
+	public void setSource(String source) {
+		this.source = source;
+	}
 
 	@Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder("PMMLRequestData( ");
-        stringBuilder.append("modelName='").append(modelName).append("', requestParams=[");
+        stringBuilder.append("correlationId=").append(correlationId).append(", ");
+        stringBuilder.append("modelName=").append(modelName);
+        stringBuilder.append("source=").append(source).append(", requestParams=[");
         Iterator<ParameterInfo> iter = requestParams.iterator();
         boolean firstParam = true;
         while (iter.hasNext()) {

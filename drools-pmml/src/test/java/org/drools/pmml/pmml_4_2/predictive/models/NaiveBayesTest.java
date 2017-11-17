@@ -19,6 +19,7 @@ package org.drools.pmml.pmml_4_2.predictive.models;
 
 import org.drools.pmml.pmml_4_2.DroolsAbstractPMMLTest;
 import org.junit.After;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.QueryResults;
@@ -26,7 +27,7 @@ import org.kie.api.runtime.rule.Variable;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-
+@Ignore
 public class NaiveBayesTest extends DroolsAbstractPMMLTest {
 
 

@@ -15,16 +15,18 @@
 
 package org.drools.compiler.kie.builder.impl;
 
+import static org.drools.compiler.kproject.ReleaseIdImpl.adapt;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import java.util.zip.ZipEntry;
@@ -44,11 +46,11 @@ import org.drools.compiler.commons.jci.readers.DiskResourceReader;
 import org.drools.compiler.commons.jci.readers.ResourceReader;
 import org.drools.compiler.compiler.PMMLCompiler;
 import org.drools.compiler.compiler.PMMLCompilerFactory;
+import org.drools.compiler.compiler.PMMLResource;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.core.builder.conf.impl.ResourceConfigurationImpl;
-import org.drools.core.io.impl.ClassPathResource;
 import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
 import org.kie.api.KieServices;
@@ -62,6 +64,7 @@ import org.kie.api.builder.Results;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.builder.model.KieSessionModel;
+import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
@@ -69,8 +72,7 @@ import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.internal.builder.KieBuilderSet;
 import org.kie.internal.io.ResourceFactory;
-
-import static org.drools.compiler.kproject.ReleaseIdImpl.adapt;
+import org.kie.internal.io.ResourceTypeImpl;
 
 public class KieBuilderImpl
         implements
@@ -108,8 +110,14 @@ public class KieBuilderImpl
     private PomModel pomModel;
 
     private PMMLCompiler pmmlCompiler; // necessary for being able to pull mining schema POJOs out of the PMML
+    
+    private List<PMMLResource> pmmlResources;
 
     public KieBuilderImpl( File file ) {
+    	String fileName = file.getName();
+    	if (fileName.endsWith(ResourceType.PMML.getDefaultExtension())) {
+    		// Attempt to pre-compile
+    	}
         this.srcMfs = new DiskResourceReader( file );
     }
 
@@ -120,6 +128,43 @@ public class KieBuilderImpl
     public KieBuilderImpl( KieFileSystem kieFileSystem,
                            ClassLoader classLoader ) {
         this.classLoader = classLoader;
+        ResourceReader tmpSrc = ((KieFileSystemImpl)kieFileSystem).asMemoryFileSystem();
+        Collection<String> fileNames = tmpSrc.getFileNames();
+        if (fileNames != null && !fileNames.isEmpty()) {
+        	for (String fn : fileNames) {
+        		boolean isPmmlFile = false;
+        		String fileName = (fn.startsWith(RESOURCES_ROOT)) ? fn.substring(RESOURCES_ROOT.length()) : fn;
+        		if (tmpSrc.isAvailable(fn+".properties")) {
+                    Properties prop = new Properties();
+                    try {
+                        prop.load(new ByteArrayInputStream(tmpSrc.getBytes(fn + ".properties")));
+                    } catch (IOException e) {
+                        System.out.println("Error loading resource configuration from file: " + fn + ".properties");
+                    }
+        			ResourceConfiguration rc = ResourceTypeImpl.fromProperties(prop);
+        			isPmmlFile = ResourceType.PMML.equals(((ResourceConfigurationImpl) rc).getResourceType());
+        		}
+        		if (fileName.endsWith(ResourceType.PMML.getDefaultExtension()) || isPmmlFile) {
+        			pmmlResources = getPmmlCompiler().precompile(fileName, classLoader, null);
+        		}
+        	}
+        }
+        if (pmmlResources != null) {
+        	for (PMMLResource res: pmmlResources) {
+        		if (res.getKieBaseModel() != null) {
+	        		String packageName = res.getPackageName();
+	        		String packageDir = packageName.replaceAll("\\.", "/");
+	        		Map<String,String> rules = res.getRules();
+	        		for (String key: rules.keySet()) {
+	        			Resource ruleResource = ResourceFactory.newByteArrayResource(rules.get(key).getBytes()).setResourceType(ResourceType.DRL);
+	        			StringBuilder bldr = new StringBuilder();
+	        			bldr.append(packageDir).append("/").append(key).append(".drl");
+	        			ruleResource.setSourcePath(bldr.toString());
+	        			kieFileSystem.write(ruleResource);
+	        		}
+        		}
+        	}
+        }
         srcMfs = ( (KieFileSystemImpl) kieFileSystem ).asMemoryFileSystem();
     }
 
@@ -223,15 +268,10 @@ public class KieBuilderImpl
                 results.addMessage( Level.ERROR, "pom.xml", "Unresolved dependency " + unresolvedDep );
             }
             
-            List<String> pmmlResources = getPmmlResources();
-            List<String> pmmlKieBaseNames = new ArrayList<>();
+            
             if (pmmlResources != null) {
-            	for (String filename: pmmlResources) {
-            		buildPMMLPojos(filename, kProject);
-            		List<String> kbn = getKieBaseNamesForSegments(filename);
-            		if (kbn != null && !kbn.isEmpty()) {
-            			pmmlKieBaseNames.addAll(kbn);
-            		}
+            	for (PMMLResource resource: pmmlResources) {
+            		buildPMMLPojos(kProject);
             	}
             }
             compileJavaClasses( kProject.getClassLoader(), classFilter );
@@ -242,61 +282,36 @@ public class KieBuilderImpl
     }
     
     
-    private List<String> getPmmlResources() {
-    	List<String> resources = new ArrayList<>();
-    	for (String filename: srcMfs.getFileNames()) {
-    		String fname = (filename.startsWith(RESOURCES_ROOT)) ? filename.substring(RESOURCES_ROOT.length()) : filename;
-    		ResourceType resType = getResourceType(kModule, fname);
-    		if (resType == ResourceType.PMML) {
-    			resources.add(fname);
-    		}
-    	}
-    	return resources;
-    }
 
-    private List<String> getKieBaseNamesForSegments(String filename) {
-    	if (this.pmmlCompiler == null) {
-    		pmmlCompiler = PMMLCompilerFactory.getPMMLCompiler();
+    
+    private void buildPMMLPojos(KieProject kProject) {
+    	if (pmmlResources != null) {
+    		KieFileSystem javaSource = KieServices.Factory.get().newKieFileSystem();
+    		for (PMMLResource resource: pmmlResources) {
+    			Map<String,String> pojos = resource.getPojoDefinitions();
+    			for (String key: pojos.keySet()) {
+    				String javaCode = pojos.get(key);
+    				if (javaCode != null && !javaCode.trim().isEmpty()) {
+	    				Resource res = ResourceFactory.newByteArrayResource(javaCode.getBytes()).setResourceType(ResourceType.JAVA);
+	    				StringBuilder bldr = new StringBuilder(PMML_POJO_ROOT);
+	    				bldr.append(key.substring(0, 1).toUpperCase()+key.substring(1)).append(".java");
+	    				res.setSourcePath(bldr.toString());
+	    				javaSource.write(res);
+    				}
+    			}
+    		}
+    		
+    		ResourceReader src = ((KieFileSystemImpl)javaSource).asMemoryFileSystem();
+            List<String> javaFileNames = getJavaFileNames(src);
+            if (javaFileNames != null && !javaFileNames.isEmpty()) {
+                ClassLoader classLoader = kProject.getClassLoader();
+                KnowledgeBuilderConfigurationImpl kconf = new KnowledgeBuilderConfigurationImpl( classLoader );
+                JavaDialectConfiguration javaConf = (JavaDialectConfiguration) kconf.getDialectConfiguration( "java" );
+            	compileJavaClasses(javaConf, classLoader, javaFileNames, JAVA_ROOT, src);
+            }
     	}
-    	return pmmlCompiler.getAgendaNames(filename);
     }
     
-    private void buildPMMLPojos(String filename, KieProject kProject) {
-        if (this.pmmlCompiler == null) {
-            pmmlCompiler = PMMLCompilerFactory.getPMMLCompiler();
-        }
-        // Create a separate "source" file system to hold the Java files/resources
-        KieFileSystem javaSource = KieServices.Factory.get().newKieFileSystem();
-
-        /*
-         * A single PMML document may contain multiple models, each with
-         * their own mining schema
-         */
-        Map<String,String> miningPojosMap = pmmlCompiler.getMiningPojos(filename,null);
-        if (miningPojosMap != null && !miningPojosMap.isEmpty()) {
-            /*
-             * For each of the Java text entries (the mining POJOs)
-             * create a resource and write it to the source file system
-             */
-            for (String key: miningPojosMap.keySet()) {
-                String javaCode = miningPojosMap.get(key);
-                Resource res = ResourceFactory.newByteArrayResource(javaCode.getBytes()).setResourceType(ResourceType.JAVA);
-                StringBuilder bldr = new StringBuilder(PMML_POJO_ROOT);
-                bldr.append(key.substring(0, 1).toUpperCase()+key.substring(1));
-                bldr.append(".java");
-                res.setSourcePath(bldr.toString());
-                javaSource.write(res);
-            }
-        }
-        ResourceReader src = ( (KieFileSystemImpl)javaSource ).asMemoryFileSystem();
-        List<String> javaFileNames = getJavaFileNames(src);
-        if (javaFileNames != null && !javaFileNames.isEmpty()) {
-            ClassLoader classLoader = kProject.getClassLoader();
-            KnowledgeBuilderConfigurationImpl kconf = new KnowledgeBuilderConfigurationImpl( classLoader );
-            JavaDialectConfiguration javaConf = (JavaDialectConfiguration) kconf.getDialectConfiguration( "java" );
-        	compileJavaClasses(javaConf, classLoader, javaFileNames, JAVA_ROOT, src);
-        }
-    }
     
     private List<String> getJavaFileNames(ResourceReader src) {
     	List<String> javaFileNames = new ArrayList<>();
@@ -533,6 +548,14 @@ public class KieBuilderImpl
         } else {
             // There's no kmodule.xml, create a default one
             kModuleModel = KieServices.Factory.get().newKieModuleModel();
+        }
+        
+        if (pmmlResources != null && !pmmlResources.isEmpty()) {
+        	for (PMMLResource resource : pmmlResources) {
+        		if (resource.getKieBaseModel() != null) {
+        			((KieModuleModelImpl)kModuleModel).getRawKieBaseModels().put(resource.getKieBaseModel().getName(), resource.getKieBaseModel());
+        		}
+        	}
         }
 
         if ( setDefaultsforEmptyKieModule( kModuleModel ) ) {
@@ -771,6 +794,13 @@ public class KieBuilderImpl
             ( (EclipseJavaCompiler) javaCompiler ).setPrefix( prefix );
         }
         return javaCompiler;
+    }
+    
+    private PMMLCompiler getPmmlCompiler() {
+    	if (this.pmmlCompiler == null) {
+    		this.pmmlCompiler = PMMLCompilerFactory.getPMMLCompiler();
+    	}
+    	return this.pmmlCompiler;
     }
 
     public static String findPomProperties( ZipFile zipFile ) {

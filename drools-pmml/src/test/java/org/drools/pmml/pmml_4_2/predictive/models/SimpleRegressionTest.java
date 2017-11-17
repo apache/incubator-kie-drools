@@ -18,6 +18,7 @@ package org.drools.pmml.pmml_4_2.predictive.models;
 
 
 import org.drools.pmml.pmml_4_2.DroolsAbstractPMMLTest;
+import org.drools.pmml.pmml_4_2.PMML4Compiler;
 import org.drools.pmml.pmml_4_2.model.PMMLRequestData;
 import org.drools.pmml.pmml_4_2.model.ParameterInfo;
 import org.junit.After;
@@ -49,15 +50,16 @@ public class SimpleRegressionTest extends DroolsAbstractPMMLTest {
         KieSession kSession = getKSession();
 
         kSession.fireAllRules();  //init model
-
-        FactType tgt = kSession.getKieBase().getFactType( packageName, "Fld4" );
-        PMMLRequestData request = new PMMLRequestData("LinReg");
+        PMMLRequestData request = new PMMLRequestData("123","LinReg");
         request.addRequestParam("Fld1",0.9);
         request.addRequestParam("Fld2", 0.3);
         request.addRequestParam("Fld3", "x");
         kSession.insert(request);
 
         kSession.fireAllRules();
+        String pkgName = PMML4Compiler.PMML_DROOLS+"."+request.getModelName();
+
+        FactType tgt = kSession.getKieBase().getFactType( pkgName, "Fld4" );
 
         double x = 0.5
                    + 5 * 0.9 * 0.9
@@ -83,19 +85,20 @@ public class SimpleRegressionTest extends DroolsAbstractPMMLTest {
 
         FactType tgt = kSession.getKieBase().getFactType( packageName, "Fld4" );
 
-        PMMLRequestData request = new PMMLRequestData("LinReg");
+        PMMLRequestData request = new PMMLRequestData("123","LinReg");
         request.addRequestParam("Fld1", 1.0);
         request.addRequestParam("Fld2", 1.0);
         request.addRequestParam("Fld3", "x");
         kSession.insert(request);
         
         kSession.fireAllRules();
+        String pkgName = PMML4Compiler.PMML_DROOLS+"."+request.getModelName();
 
-        checkFirstDataFieldOfTypeStatus( kSession.getKieBase().getFactType( packageName, "RegOut" ),
+        checkFirstDataFieldOfTypeStatus( kSession.getKieBase().getFactType( pkgName, "RegOut" ),
                                             true, false, "LinReg", "catC" );
-        checkFirstDataFieldOfTypeStatus( kSession.getKieBase().getFactType( packageName, "RegProb" ),
+        checkFirstDataFieldOfTypeStatus( kSession.getKieBase().getFactType( pkgName, "RegProb" ),
                                             true, false, "LinReg", 0.709228 );
-        checkFirstDataFieldOfTypeStatus( kSession.getKieBase().getFactType( packageName, "RegProbA" ),
+        checkFirstDataFieldOfTypeStatus( kSession.getKieBase().getFactType( pkgName, "RegProbA" ),
                                             true, false, "LinReg", 0.010635 );
 
 

@@ -55,7 +55,7 @@ when
                 // FIXME: DROOLS-1248
                 $sum : sumBD( java.math.BigDecimal.valueOf( $below ? ($base - $val) : ($val - $base) ) ) )
 then
-    System.out.println( "The CUMULATED score for code " + $code + " from set " + $set + " is >>> " + $sum );
+//    System.out.println( "The CUMULATED score for code " + $code + " from set " + $set + " is >>> " + $sum );
     insertLogical( new CodeScore( $card, $code, $sum.doubleValue() ) );
 end
 
@@ -97,6 +97,19 @@ then
         setRanking( $map );
     }
 end
+
+rule "Update PMMLResult with Scorecard"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
+salience -16
+when
+   $sc: ScoreCard( )
+   $reslt: PMML4Result( resultVariables == null || "ScoreCard" not memberOf resultVariables.keySet() )
+then
+   $reslt.setResultCode("OK");
+   $reslt.addResultVariable("ScoreCard",$sc);
+   update($reslt);
+end
+
 
 @end{}
 

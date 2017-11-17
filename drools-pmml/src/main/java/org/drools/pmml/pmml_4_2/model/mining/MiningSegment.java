@@ -24,7 +24,7 @@ import org.mvel2.templates.TemplateCompiler;
 import org.mvel2.templates.TemplateRuntime;
 
 @PropertyReactive
-public class MiningSegment {
+public class MiningSegment implements Comparable<MiningSegment> {
 	private String segmentId;
 	private MiningSegmentation owner;
 	private PredicateRuleProducer predicateRuleProducer;
@@ -33,6 +33,7 @@ public class MiningSegment {
 	private String segmentAgendaId;
 	private int segmentIndex;
 	private static CompiledTemplate launchTemplate;
+	private static final String segmentPackageRootName = "org.drools.pmml.pmml_4_2";
 	
 	public MiningSegment(MiningSegmentation owner, Segment segment, int segmentIndex) {
 		this.owner = owner;
@@ -104,8 +105,7 @@ public class MiningSegment {
 		pmml.setDataDictionary(this.internalModel.getDataDictionary());
 		pmml.getAssociationModelsAndBaselineModelsAndClusteringModels().add(this.internalModel.getRawModel());
 		PMML4Compiler compiler = new PMML4Compiler();
-		String innerRules = compiler.generateTheory(pmml,this.getSegmentAgendaId());
-		System.out.println(innerRules);
+		String innerRules = compiler.generateTheory(pmml);
 		return (new String(baos.toByteArray())).concat(innerRules);
 	}
 	
@@ -136,6 +136,12 @@ public class MiningSegment {
 		return this.predicateRuleProducer.getPredicateRule();
 	}
 	
+	public String getSegmentPackageName() {
+		StringBuilder builder = new StringBuilder(segmentPackageRootName);
+		builder.append(".mining.segment_").append(this.getSegmentId());
+		return builder.toString();
+	}
+	
 	public String getSegmentAgendaId() {
 		if (this.segmentAgendaId == null || this.segmentAgendaId.trim().isEmpty()) {
 			this.segmentAgendaId = this.getOwner().getSegmentationAgendaId().concat("_SEGMENT_"+this.getSegmentId());
@@ -154,26 +160,11 @@ public class MiningSegment {
 	public PMML4Model getInternalModel() {
 		return internalModel;
 	}
-	
-	public void applyModel(SegmentExecution segExecution) {
-		KieServices services = KieServices.Factory.get();
-		KieBase kbase = services.getKieClasspathContainer().getKieBase();
-		KieSession session = kbase.newKieSession();
-		segExecution.setState(SegmentExecutionState.EXECUTING);
-		PMML4Result result = null;
-		try {
-			PMMLRequestData rqst = segExecution.getRequestData();
-			session.insert(rqst);
-			session.fireAllRules();
-			result = new PMML4Result(segExecution);
-			result.setResultCode("COMPLETE");
-		} finally {
-			if (result == null || result.getResultCode() == null || result.getResultCode().equals("ERROR")) {
-				segExecution.setState(SegmentExecutionState.ERROR);
-			} else {
-				segExecution.setState(SegmentExecutionState.COMPLETE);
-			}
-		}
+
+	@Override
+	public int compareTo(MiningSegment ms) {
+		if (ms.segmentIndex == this.segmentIndex) return 0;
+		return (ms.segmentIndex > this.segmentIndex) ? 1:-1;
 	}
 	
 }

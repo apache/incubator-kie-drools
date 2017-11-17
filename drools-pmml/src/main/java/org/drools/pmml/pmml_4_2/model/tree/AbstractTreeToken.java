@@ -8,6 +8,7 @@ import org.kie.api.definition.type.PropertyReactive;
 
 @PropertyReactive
 public abstract class AbstractTreeToken {
+	private String correlationId;
 	private String context;
 	private String current;
 	private String marker;
@@ -22,14 +23,16 @@ public abstract class AbstractTreeToken {
 		
 	}
 	
-	public AbstractTreeToken(String context) {
+	public AbstractTreeToken(String correlationId, String context) {
+		this.correlationId = correlationId;
 		this.context = context;
 	}
 	
 	
 	
-	public AbstractTreeToken(String context, String current, String marker, String visitMode, Boolean downward,
+	public AbstractTreeToken(String correlationId, String context, String current, String marker, String visitMode, Boolean downward,
 			List trail, Map results, Double confidence, Double totalCount) {
+		this.correlationId = correlationId;
 		this.context = context;
 		this.current = current;
 		this.marker = marker;
@@ -99,33 +102,42 @@ public abstract class AbstractTreeToken {
 		this.totalCount = totalCount * 1.0;
 	}
 	
+	public String getCorrelationId() {
+		return this.correlationId;
+	}
+	
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
+		builder.append("correlationId=").append(this.correlationId).append(", ");
 		builder.append("context=").append(this.context).append(", ");
 		builder.append("current=").append(this.current).append(", ");
 		builder.append("marker=").append(this.marker).append(", ");
 		builder.append("visitMode=").append(this.visitMode).append(", ");
 		builder.append("downward=").append(this.downward).append(", ");
-		builder.append("trail=[");
-		Iterator lstIter = this.trail.iterator();
-		while (lstIter.hasNext()) {
-			builder.append("   ").append(lstIter.next().toString());
-			if (lstIter.hasNext()) {
-				builder.append(", ");
+		if (this.trail != null) {
+			builder.append("trail=[");
+			Iterator lstIter = this.trail.iterator();
+			while (lstIter.hasNext()) {
+				builder.append("   ").append(lstIter.next().toString());
+				if (lstIter.hasNext()) {
+					builder.append(", ");
+				}
 			}
+			builder.append("], ");
 		}
-		builder.append("], ");
+		if (this.results != null) {
 		builder.append("results=[");
-		Iterator keyIter = this.results.keySet().iterator();
-		while (keyIter.hasNext()) {
-			Object key = keyIter.next();
-			Object value = this.results.get(key);
-			builder.append("   ").append(key.toString()).append("->").append(value != null ? value.toString() : "null");
-			if (keyIter.hasNext()) {
-				builder.append(", ");
+			Iterator keyIter = this.results.keySet().iterator();
+			while (keyIter.hasNext()) {
+				Object key = keyIter.next();
+				Object value = this.results.get(key);
+				builder.append("   ").append(key.toString()).append("->").append(value != null ? value.toString() : "null");
+				if (keyIter.hasNext()) {
+					builder.append(", ");
+				}
 			}
+			builder.append("], ");
 		}
-		builder.append("], ");
 		builder.append("confidence=").append(this.confidence).append(", ");
 		builder.append("totalCount=").append(this.totalCount).append(", ");
 		return builder.toString();

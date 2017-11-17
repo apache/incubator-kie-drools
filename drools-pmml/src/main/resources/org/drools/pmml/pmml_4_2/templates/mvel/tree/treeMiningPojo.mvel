@@ -21,15 +21,17 @@ import java.util.Map;
 
 import org.drools.pmml.pmml_4_2.model.tree.AbstractTreeToken;
 import org.drools.pmml.pmml_4_2.model.datatypes.PMML4Data;
+import org.kie.api.definition.type.PropertyReactive;
 
 @comment{
    The class that is generated from this MVEL template is meant to
-   act as a POJO representing the MiningSchema found in a Regression model,
+   act as a POJO representing the MiningSchema found in a Tree model,
    which is itself contained in a PMML document.
    For each element in the MiningSchema, two properties are generated:
    1) The element name, prefixed with an 'm' is used to indicate whether the data is considered "missing"
    2) The element name, prefixed with a 'v' is used to hold the value
 }
+@PropertyReactive
 public class @{className} extends AbstractTreeToken {
 @code{ String fldUsage; }
     @foreach{dataField: dataFields}
@@ -47,22 +49,22 @@ public class @{className} extends AbstractTreeToken {
        super();
     }
 
-    public @{className}( String modelName ) {
-       super(modelName);
+    public @{className}( String correlationId, String modelName ) {
+       super(correlationId, modelName);
        @foreach{dataField: dataFields}
        @if{ dataField.type=="Double" }v@{dataField.compactUpperCaseName} = 0.0; @elseif{ dataField.type=="Integer" }v@{dataField.compactUpperCaseName} = 0; @end{}
        @end{}
     }
 
-    public @{className}(String context, String current, String marker, String visitMode, boolean downward,
+    public @{className}(String correlationId, String context, String current, String marker, String visitMode, boolean downward,
                         List trail, Map results, Double confidence, Double totalCount) {
-       super(context,current,marker,visitMode,downward,trail,results,confidence,totalCount);
+       super(correlationId, context,current,marker,visitMode,downward,trail,results,confidence,totalCount);
     }
 
     
-    public @{className}(String context, String current, String marker, String visitMode, boolean downward,
+    public @{className}( String correlationId, String context, String current, String marker, String visitMode, boolean downward,
                         List trail, Map results, Double confidence, Double totalCount, Map<String, PMML4Data> fields) {
-       super(context,current,marker,visitMode,downward,trail,results,confidence,totalCount);
+       super(correlationId,context,current,marker,visitMode,downward,trail,results,confidence,totalCount);
        String fldName;
        @foreach{dataField: dataFields}
        @code{ fldUsage = dataField.fieldUsageType.value; }
@@ -79,7 +81,7 @@ public class @{className} extends AbstractTreeToken {
     }
 
     public @{className}( PMMLRequestData requestData ) {
-       super( requestData.getModelName() );
+       super( requestData.getCorrelationId(), requestData.getModelName() );
        Map<String, ParameterInfo> mappedFields = requestData.getMappedRequestParams();
        @foreach{dataField: dataFields}
        @code{ fldUsage = dataField.fieldUsageType.value; }
@@ -109,10 +111,8 @@ public class @{className} extends AbstractTreeToken {
     private <T> T getMappedPMML4DataValue(Map<String, PMML4Data> map, String fieldName) {
        T value = null;
        if (map.containsKey( fieldName )) {
-          System.out.println("PMML4Data map contains field: "+fieldName);
           PMML4Data data = map.get( fieldName );
           if ( data != null && !data.isPlaceholder() ) {
-             System.out.println("Found field: "+fieldName+" - type is: "+data.getClass().getName());
              value = (T)data.getValue();
           }
        } else {

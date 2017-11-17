@@ -181,9 +181,9 @@ public class KnowledgeBaseImpl
 
     private transient InternalKieContainer kieContainer;
 
-	private ReleaseId resolvedReleaseId;
-	private String containerId;
-	private AtomicBoolean mbeanRegistered = new AtomicBoolean(false);
+    private ReleaseId resolvedReleaseId;
+    private String containerId;
+    private AtomicBoolean mbeanRegistered = new AtomicBoolean(false);
 
     private RuleUnitRegistry ruleUnitRegistry = new RuleUnitRegistry();
 
@@ -223,12 +223,12 @@ public class KnowledgeBaseImpl
     }
 
     @Override
-	public void initMBeans() {
-		if (config != null && config.isMBeansEnabled() && mbeanRegistered.compareAndSet(false, true)) {
-		    // no further synch enforced at this point, even if other threads might not immediately see (yet) the MBean registered on JMX.
+    public void initMBeans() {
+        if (config != null && config.isMBeansEnabled() && mbeanRegistered.compareAndSet(false, true)) {
+            // no further synch enforced at this point, even if other threads might not immediately see (yet) the MBean registered on JMX.
             DroolsManagementAgent.getInstance().registerKnowledgeBase(this);
         }
-	}
+    }
 
     public int nextWorkingMemoryCounter() {
         return this.workingMemoryCounter.getAndIncrement();
@@ -1761,28 +1761,32 @@ public class KnowledgeBaseImpl
     }
 
     @Override
-	public ReleaseId getResolvedReleaseId() {
-		return resolvedReleaseId;
-	}
+    public ReleaseId getResolvedReleaseId() {
+        return resolvedReleaseId;
+    }
 
     @Override
-	public void setResolvedReleaseId(ReleaseId currentReleaseId) {
-		this.resolvedReleaseId = currentReleaseId;
-	}
+    public void setResolvedReleaseId(ReleaseId currentReleaseId) {
+        this.resolvedReleaseId = currentReleaseId;
+    }
 
     @Override
-	public String getContainerId() {
-		return containerId;
-	}
+    public String getContainerId() {
+        return containerId;
+    }
 
     @Override
-	public void setContainerId(String containerId) {
-		this.containerId = containerId;
-	}
+    public void setContainerId(String containerId) {
+        this.containerId = containerId;
+    }
 
     @Override
     public void setKieContainer( InternalKieContainer kieContainer ) {
         this.kieContainer = kieContainer;
+    }
+
+    public InternalKieContainer getKieContainer() {
+       return this.kieContainer;
     }
 
     public RuleUnitRegistry getRuleUnitRegistry() {

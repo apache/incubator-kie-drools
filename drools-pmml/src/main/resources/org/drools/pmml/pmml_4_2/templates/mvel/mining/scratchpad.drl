@@ -1,0 +1,31 @@
+//created on: Nov 13, 2017
+package org.drools.pmml.pmml_4_2
+
+import org.drools.pmml.pmml_4_2.*;
+import org.drools.pmml.pmml_4_2.model.*;
+import org.drools.pmml.pmml_4_2.model.mining.*;
+
+
+
+//declare any global variables here
+
+
+
+
+rule "Your First Rule"
+when
+   rqst: PMMLRequestData( mappedRequestParams != null )
+   pi: ParameterInfo( name == "test", value != null ) from rqst.mappedRequestParams
+then
+        //actions
+
+end
+
+rule "Your Second Rule"
+    //include attributes such as "salience" here...
+    when
+        //conditions
+    then
+        //actions
+
+end

@@ -18,6 +18,7 @@ package org.drools.pmml.pmml_4_2.model;
 import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.dmg.pmml.pmml_4_2.descr.DataDictionary;
+import org.dmg.pmml.pmml_4_2.descr.FIELDUSAGETYPE;
 import org.dmg.pmml.pmml_4_2.descr.MiningField;
 import org.dmg.pmml.pmml_4_2.descr.MiningSchema;
 import org.dmg.pmml.pmml_4_2.descr.Output;
@@ -143,7 +145,6 @@ public abstract class AbstractModel<T> implements PMML4Model {
         	return null;
         }
         result.put(className, new String(baos.toByteArray()));
-        System.out.println(result.get(className));
         return result.entrySet().iterator().next();
     }
 
@@ -231,9 +232,10 @@ public abstract class AbstractModel<T> implements PMML4Model {
     @Override
     public List<PMMLMiningField> getMiningFields() {
 		List<PMMLMiningField> fields = new ArrayList<>();
-		
+		Map<String,MiningField> excludesTargetMap = 
+				getFilteredMiningFieldMap(false, FIELDUSAGETYPE.TARGET);
 		Map<String, PMMLDataField> dataDictionary = getOwner().getDataDictionaryMap();
-		for (String key: miningFieldMap.keySet()) {
+		for (String key: excludesTargetMap.keySet()) {
 			PMMLDataField df = dataDictionary.get(key);
 			MiningField mf = miningFieldMap.get(key);
 			fields.add(new PMMLMiningField(mf, df.getRawDataField(), this.getModelId()));
@@ -247,6 +249,15 @@ public abstract class AbstractModel<T> implements PMML4Model {
     	for (String key: outputFieldMap.keySet()) {
     		OutputField of = outputFieldMap.get(key);
     		fields.add(new PMMLOutputField(of, null, this.getModelId()));
+    	}
+    	Map<String,MiningField> includeFromMining = getFilteredMiningFieldMap(true, FIELDUSAGETYPE.PREDICTED, FIELDUSAGETYPE.TARGET);
+    	Map<String, PMMLDataField> dataDictionary = getOwner().getDataDictionaryMap();
+    	if (includeFromMining != null && !includeFromMining.isEmpty()) {
+    		for (String key: includeFromMining.keySet()) {
+    			MiningField field = includeFromMining.get(key);
+    			PMMLDataField df = dataDictionary.get(key);
+    			fields.add(new PMMLOutputField(field, df.getRawDataField(), this.getModelId()));
+    		}
     	}
     	return fields;
     }
@@ -308,6 +319,31 @@ public abstract class AbstractModel<T> implements PMML4Model {
 
     public Map<String,MiningField> getMiningFieldMap() {
     	return new HashMap<>(miningFieldMap);
+    }
+    
+    public Map<String,MiningField> getFilteredMiningFieldMap(boolean includeFiltered,FIELDUSAGETYPE...filterTypes) {
+    	Map<String, MiningField> mfm = new HashMap<>();
+    	List<FIELDUSAGETYPE> filteredTypes = Arrays.asList(filterTypes);
+    	for (String key: miningFieldMap.keySet()) {
+    		MiningField field = miningFieldMap.get(key);
+    		FIELDUSAGETYPE usageType = field.getUsageType();
+    		if ((includeFiltered && filteredTypes.contains(usageType)) 
+    				|| (!includeFiltered && !filteredTypes.contains(usageType))) {
+    			mfm.put(key, field);
+    		}
+    	}
+    	return mfm;
+    }
+    
+    public List<PMMLMiningField> getActiveMiningFields() {
+    	List<PMMLMiningField> activeMiningFields = new ArrayList<>();
+    	List<PMMLMiningField> allMiningFields = this.getMiningFields();
+    	for (PMMLMiningField field : allMiningFields) {
+    		if (field.getFieldUsageType() == FIELDUSAGETYPE.ACTIVE) {
+    			activeMiningFields.add(field);
+    		}
+    	}
+    	return activeMiningFields;
     }
     
     /**

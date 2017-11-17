@@ -82,6 +82,18 @@ then
 end 
 
 
+rule "Update PMML4Result with target - @{context} : @{target} - @{category}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
+when
+   $tgt: @{target}( context == "@{context}" )
+   $reslt: PMML4Result( resultVariables == null || "@{target}" not memberOf resultVariables.keySet() )
+then
+   System.out.println("Updating PMML4Result with target  - @{context} : @{target} - @{category}");
+   $reslt.setResultCode("OK");
+   $reslt.addResultVariable("@{target}",$tgt);
+   update($reslt);
+end
+
 @end{}
 
 

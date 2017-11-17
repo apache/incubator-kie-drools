@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.compiler.compiler.PMMLCompiler;
+import org.drools.compiler.compiler.PMMLResource;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -35,6 +36,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
@@ -464,21 +466,6 @@ public class KnowledgeBuilderTest {
                                                           }
                                                           
                                                           @Override
-                                                          public Map<String,String> compileWithMining(InputStream stream, ClassLoader cl) {
-                                                             return Collections.EMPTY_MAP;
-                                                          }
-
-                                                          @Override
-                                                          public Map<String,String> getMiningPojos(String filename, ClassLoader classLoader) {
-                                                             return Collections.emptyMap();
-                                                          }
-
-                                                          @Override
-                                                          public List<String> getAgendaNames(String filename) {
-                                                             return Collections.emptyList();
-                                                          }
-
-                                                          @Override
                                                           public List<KnowledgeBuilderResult> getResults() {
                                                              return Collections.emptyList();
                                                           }
@@ -491,6 +478,18 @@ public class KnowledgeBuilderTest {
                                                           public Resource[] transform( Resource input, ClassLoader classLoader ) {
                                                               return new Resource[ 0 ];
                                                           }
+
+														@Override
+														public List<PMMLResource> precompile(InputStream stream,
+																ClassLoader classLoader, KieBaseModel rootModel) {
+															return Collections.emptyList();
+														}
+
+														@Override
+														public List<PMMLResource> precompile(String fileName,
+																ClassLoader classLoader, KieBaseModel rootModel) {
+															return Collections.emptyList();
+														}
                                                       } );
 
         serviceRegistry.reload();

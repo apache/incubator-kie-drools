@@ -19,6 +19,7 @@ package org.drools.pmml.pmml_4_2.predictive.models;
 
 import org.drools.pmml.pmml_4_2.DroolsAbstractPMMLTest;
 import org.junit.After;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.ClassObjectFilter;
@@ -28,7 +29,7 @@ import java.util.Collection;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-
+@Ignore
 public class ClusteringTest extends DroolsAbstractPMMLTest {
 
 

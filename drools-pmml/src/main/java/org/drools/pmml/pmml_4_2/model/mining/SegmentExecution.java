@@ -1,21 +1,29 @@
 package org.drools.pmml.pmml_4_2.model.mining;
 
+import java.util.Collection;
+import java.util.Iterator;
+
+import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.pmml.pmml_4_2.PMML4Result;
 import org.drools.pmml.pmml_4_2.model.PMMLRequestData;
 import org.kie.api.KieBase;
-import org.kie.api.KieServices;
 import org.kie.api.definition.type.PropertyReactive;
+import org.kie.api.event.rule.AfterMatchFiredEvent;
+import org.kie.api.event.rule.BeforeMatchFiredEvent;
+import org.kie.api.event.rule.DefaultAgendaEventListener;
+import org.kie.api.event.rule.MatchCancelledEvent;
+import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieContext;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.AgendaFilter;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
-import org.kie.internal.runtime.KnowledgeContext;
 
 @PropertyReactive
-public class SegmentExecution {
+public class SegmentExecution implements Comparable<SegmentExecution> {
 	private String correlationId;
 	private String segmentationId;
 	private String segmentId;
@@ -24,6 +32,7 @@ public class SegmentExecution {
 	private String agendaId;
 	private PMMLRequestData requestData;
 	private PMML4Result result;
+	
 	
 	public SegmentExecution() {
 	}
@@ -131,29 +140,58 @@ public class SegmentExecution {
 		this.result = result;
 	}
 	
-	public void applySegmentModel(PMMLRequestData requestData) {
-		KieServices services = KieServices.Factory.get();
-		KieContainer container = services.getKieClasspathContainer();
-		KieBase kbase = container.getKieBase(agendaId);
-		KieSession session = kbase.newKieSession();
-		session.insert(requestData);
-		session.fireAllRules();
-		System.out.println("Load session for the appropriate segment");
-		PMML4Result res = new PMML4Result();
-		res.setResultCode("OK");
-		this.result = res; 
+	public void applySegmentModel(PMMLRequestData requestData, KieContext ctx) {
+		KieBase kb = ctx.getKieRuntime().getKieBase();
+		KnowledgeBaseImpl kbi = (KnowledgeBaseImpl)kb;
+		KieContainer container = kbi.getKieContainer();
+		
+		KieSession segmentSession = container.newKieSession("SEGMENT_"+this.segmentId);
+
+		// Update the state and let the Mining session know
+		this.state = SegmentExecutionState.EXECUTING;
+		FactHandle handle = ctx.getKieRuntime().getFactHandle(this);
+		ctx.getKieRuntime().update(handle, this);
+		
+		// Insert the request and a target result holder
+		// into the segment session and fire the rules
+		segmentSession.insert(requestData);
+		PMML4Result result = new PMML4Result(this);
+		segmentSession.insert(result);
+		segmentSession.fireAllRules();
+		
+		// Update my result and insert the result
+		// into the Mining session
+		this.result = result;
+		segmentSession.dispose();
+		
+		ctx.getKieRuntime().insert(result);
+	}
+	
+	public class SegmentEventListener extends DefaultAgendaEventListener {
+		@Override
+		public void matchCancelled(MatchCancelledEvent event) {
+	        System.out.println("Match cancelled - "+
+		            event.getCause().name()+" - "+event.getMatch().getRule().getPackageName()+" : "+event.getMatch().getRule().getName());
+		}
+
+		@Override
+		public void matchCreated(MatchCreatedEvent event) {
+	        System.out.println("Match created - "+event.getMatch().getRule().getPackageName()+" : "+event.getMatch().getRule().getName());
+		}
+
+		@Override
+		public void afterMatchFired(AfterMatchFiredEvent event) {
+	        System.out.println("After match fired - "+event.getMatch().getRule().getPackageName()+" : "+event.getMatch().getRule().getName());
+		}
+
+		@Override
+		public void beforeMatchFired(BeforeMatchFiredEvent event) {
+	        System.out.println("Before match fired - "+event.getMatch().getRule().getPackageName()+" : "+event.getMatch().getRule().getName());
+		}
+		
 	}
 	
 	
-	public void applyModel(KnowledgeHelper helper) {
-//		helper.halt();
-		helper.setFocus(this.agendaId);
-//		helper.getWorkingMemory().getAgenda().getAgendaGroup("SampleMine_SampleMineSegmentation_SEGMENT_2").clear();
-//		helper.getWorkingMemory().fireAllRules(new SegmentAgendaFilter());
-//		applySegmentModel(this.requestData);
-	}
-
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -203,18 +241,13 @@ public class SegmentExecution {
 		}
 		return true;
 	}
-	
-	private class SegmentAgendaFilter implements AgendaFilter {
 
-		@Override
-		public boolean accept(Match match) {
-			RuleTerminalNodeLeftTuple rtnlt = (RuleTerminalNodeLeftTuple)match;
-			String agendaName = rtnlt.getAgendaGroup().getName();
-			System.out.println(agendaName);
-			return agendaName.equals(agendaId);
-		}
-		
+
+
+	@Override
+	public int compareTo(SegmentExecution segEx) {
+		if (this.segmentIndex == segEx.segmentIndex) return 0;
+		return (this.segmentIndex > segEx.segmentIndex) ? 1:-1;
 	}
 	
-
 }

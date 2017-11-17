@@ -44,7 +44,7 @@ public class @{className} extends AbstractPMMLData {
 	   super(requestData.getCorrelationId(),requestData.getModelName());
 	   Map<String, ParameterInfo> mappedFields = requestData.getMappedRequestParams();
 	   @foreach{ dataField: dataFields }
-       @{dataField.type} val@{dataField.compactUpperCaseName} = getMappedParameterValue( mappedFields, "@{dataField.compactUpperCaseName}" );
+       @{dataField.type} val@{dataField.compactUpperCaseName} = getMappedParameterValue( mappedFields, "@{dataField.name}" );
        if ( val@{dataField.compactUpperCaseName} != null ) {
           this.m@{dataField.compactUpperCaseName} = false;
           this.v@{dataField.compactUpperCaseName} = val@{dataField.compactUpperCaseName};

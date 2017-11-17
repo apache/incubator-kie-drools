@@ -58,6 +58,8 @@ public class Miningmodel extends AbstractModel<MiningModel> {
 		}
 		
 		if (segmentation != null) {
+			List<MiningSegment> segments = segmentation.getMiningSegments();
+			DataDictionary dd = this.getDataDictionary();
 			for (MiningSegment seg : segmentation.getMiningSegments()) {
 				childModels.put(seg.getModel().getModelId(), seg.getModel());
 			}

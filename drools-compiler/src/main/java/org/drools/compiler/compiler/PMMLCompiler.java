@@ -21,17 +21,16 @@ import java.util.List;
 import java.util.Map;
 
 import org.kie.api.Service;
+import org.kie.api.builder.model.KieBaseModel;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 
 public interface PMMLCompiler extends Service {
 
     String compile( InputStream stream, ClassLoader classLoader );
     
-    Map<String,String> compileWithMining(InputStream stream, ClassLoader classLoader);
-
-    Map<String,String> getMiningPojos(String filename, ClassLoader classLoader);
+    List<PMMLResource> precompile( InputStream stream, ClassLoader classLoader, KieBaseModel rootModel);
     
-    List<String> getAgendaNames(String filename);
+    List<PMMLResource> precompile( String fileName, ClassLoader classLoader, KieBaseModel rootModel);
 
     List<KnowledgeBuilderResult> getResults();
 

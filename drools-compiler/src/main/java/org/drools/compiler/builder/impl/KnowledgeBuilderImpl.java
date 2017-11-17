@@ -800,37 +800,40 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     public void addPackageFromPMML(Resource resource,
                                    ResourceType type,
                                    ResourceConfiguration configuration) throws Exception {
-        PMMLCompiler compiler = getPMMLCompiler();
-        if (compiler != null) {
-            if (compiler.getResults().isEmpty()) {
-                this.resource = resource;
-                List<PackageDescr> descrs = pmmlModelToPackageDescr(compiler,resource);
-                if (descrs != null && !descrs.isEmpty()) {
-                	for (PackageDescr pkgDescr: descrs) {
-                		addPackage(pkgDescr);
-                	}
-                }
+    	/** 
+    	 * The following is no longer necessary as the actions for compiling a PMML
+    	 * resource are now done in a "pre-compile" step
+    	 */
+    	
+//        PMMLCompiler compiler = getPMMLCompiler();
+//        if (compiler != null) {
+//            if (compiler.getResults().isEmpty()) {
+//                this.resource = resource;
+//                List<PackageDescr> descrs = pmmlModelToPackageDescr(compiler,resource);
+//                if (descrs != null && !descrs.isEmpty()) {
+//                	for (PackageDescr pkgDescr: descrs) {
+//                		addPackage(pkgDescr);
+//                	}
+//                }
                 /*
                 PackageDescr descr = pmmlModelToPackageDescr(compiler, resource);
                 if (descr != null) {
                     addPackage(descr);
                 }
                 */
-                this.resource = null;
-            } else {
-                this.results.addAll(compiler.getResults());
-            }
-            compiler.clearResults();
-        } else {
-            addPackageForExternalType(resource, type, configuration);
-        }
+//                this.resource = null;
+//            } else {
+//                this.results.addAll(compiler.getResults());
+//            }
+//            compiler.clearResults();
+//        } else {
+//            addPackageForExternalType(resource, type, configuration);
+//        }
     }
-
+/*
     List<PackageDescr> pmmlModelToPackageDescr(PMMLCompiler compiler,
                                          Resource resource) throws DroolsParserException,
             IOException {
-//        String theory = compiler.compile(resource.getInputStream(),
-//                                         rootClassLoader);
     	List<PackageDescr> packageDescrs = new ArrayList<>();
     	Map<String,String> theories = compiler.compileWithMining(resource.getInputStream(), rootClassLoader);
         if (!compiler.getResults().isEmpty()) {
@@ -846,9 +849,9 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     		}
     	}
 
-        return packageDescrs;//generatedDrlToPackageDescr(resource, theory);
+        return packageDescrs;
     }
-
+*/
     void addPackageFromXSD(Resource resource,
                            JaxbConfigurationImpl configuration) throws IOException {
         if (configuration != null) {

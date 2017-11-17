@@ -182,6 +182,16 @@ public class PMML4UnitImpl implements PMML4Unit {
     	return rootModels;
     }
     
+    @Override
+    public Miningmodel getRootMiningModel() {
+    	for (PMML4Model model: this.modelsMap.values()) {
+    		if (model.getParentModel() == null && model instanceof Miningmodel) {
+    			return (Miningmodel)model;
+    		}
+    	}
+    	return null;
+    }
+    
     /**
      * Retrieves a Map whose entries consist of
      *    key -> a model identifier

@@ -27,6 +27,7 @@
 rule "Tree Input Linker @{context}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
+   rqst: PMMLRequestData( modelName == "@{context}" )
    @foreach{ inputField: fields.keySet() }
    @{inputField} : PMML4Data( context == "@{context}", capitalizedName == "@{inputField}", placeholder == false, 
               valid == true || ( valid == false && missing == true && value != null ) )
@@ -41,7 +42,7 @@ then
     @foreach{ inputField: fields.keySet() }
     inputMap.put( "@{inputField}", @{inputField} );
     @end{}
-    @{context}TreeToken tok = new @{context}TreeToken( "@{context}",
+    @{context}TreeToken tok = new @{context}TreeToken( rqst.getCorrelationId(),"@{context}",
                                                        "@{rootId}",
                                                        null,
                                                        "@{visitMode}",
@@ -52,6 +53,18 @@ then
                                                        0.0,
                                                        inputMap);
     insertLogical(tok);
+end
+
+rule "Update PMML4Result"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
+salience -2
+when
+   $tgtFld: @{targetField}()
+   $reslt: PMML4Result( resultVariables == null || "@{targetField}" not memberOf resultVariables.keySet() )
+then
+   $reslt.setResultCode("OK");
+   $reslt.addResultVariable("@{targetField}",$tgtFld);
+   update($reslt);
 end
 
 

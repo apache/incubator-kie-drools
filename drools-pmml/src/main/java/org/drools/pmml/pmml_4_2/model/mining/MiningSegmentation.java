@@ -118,6 +118,7 @@ public class MiningSegmentation {
 		StringBuilder builder = new StringBuilder();
 		loadTemplates(this.multipleModelMethod);
 		Map<String, Object> templateVars = new HashMap<>();
+		String pkgName = "org.drools.pmml.pmml_4_2."+this.getSegmentationId();
 		switch (this.multipleModelMethod) {
 			case AVERAGE:
 				break;
@@ -134,17 +135,11 @@ public class MiningSegmentation {
 			case SELECT_FIRST:
 				templateVars.put("miningModel", this.getOwner());
 				templateVars.put("childSegments", this.getMiningSegments());
-				templateVars.put("packageName", "org.drools.pmml.pmml_4_2."+this.getSegmentationId());
+				templateVars.put("packageName", pkgName);
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				CompiledTemplate ct = templates.getNamedTemplate(this.multipleModelMethod.name());
 				TemplateRuntime.execute(ct,null,new MapVariableResolverFactory(templateVars),baos);
 				builder.append(new String(baos.toByteArray()));
-//				for (int x = 0; x < miningSegments.size(); x++) {
-//					String segRules = generateRulesForSegment(x);
-//					if (segRules != null && !segRules.trim().isEmpty()) {
-//						builder.append(segRules);
-//					}
-//				}
 				break;
 			case SUM:
 				break;

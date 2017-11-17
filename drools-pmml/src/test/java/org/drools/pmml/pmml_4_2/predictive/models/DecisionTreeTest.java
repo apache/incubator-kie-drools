@@ -33,6 +33,13 @@ import org.junit.After;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.definition.type.FactType;
+import org.kie.api.event.rule.AfterMatchFiredEvent;
+import org.kie.api.event.rule.AgendaGroupPoppedEvent;
+import org.kie.api.event.rule.AgendaGroupPushedEvent;
+import org.kie.api.event.rule.BeforeMatchFiredEvent;
+import org.kie.api.event.rule.DefaultAgendaEventListener;
+import org.kie.api.event.rule.MatchCancelledEvent;
+import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.logger.KieRuntimeLogger;
 import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.KieSession;
@@ -66,14 +73,11 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
         setKSession( getModelSession( source1, VERBOSE ) );
         setKbase( getKSession().getKieBase() );
         KieSession kSession = getKSession();
-        KieRuntimeLogger logger = KieServices.Factory.get().getLoggers().newFileLogger(kSession, "/home/lleveric/decisionTreeSimple");
-
 
         kSession.fireAllRules();  //init model
 
-        FactType tgt = kSession.getKieBase().getFactType( packageName, "Fld5" );
         
-        PMMLRequestData request = new PMMLRequestData("SimpleTree");
+        PMMLRequestData request = new PMMLRequestData("123","TreeTest");
         request.addRequestParam("Fld1", 30.0);
         request.addRequestParam("Fld2", 60.0);
         request.addRequestParam("Fld3", "false");
@@ -81,7 +85,9 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
         kSession.insert(request);
         
         kSession.fireAllRules();
-        logger.close();
+
+        String pkgName = PMML4Compiler.PMML_DROOLS+"."+request.getModelName();
+        FactType tgt = kSession.getKieBase().getFactType( pkgName, "Fld5" );
         System.out.print(  reportWMObjects( kSession )
         );
 
@@ -115,20 +121,20 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
         setKSession( getModelSession( source2, VERBOSE ) );
         setKbase( getKSession().getKieBase() );
         KieSession kSession = getKSession();
-        KieRuntimeLogger logger = KieServices.Factory.get().getLoggers().newFileLogger(kSession, "/home/lleveric/decisionTreeMissing1");
-
+        
         kSession.fireAllRules();  //init model
+        kSession.addEventListener(new TestAgendaListener());
 
-        FactType tgt = kSession.getKieBase().getFactType( packageName, "Fld9" );
-
-        PMMLRequestData requestData = new PMMLRequestData("Missing");
+        PMMLRequestData requestData = new PMMLRequestData("123","Missing");
         requestData.addRequestParam(new ParameterInfo<>("Fld1", Double.class, 45.0));
         requestData.addRequestParam(new ParameterInfo<>("Fld2",Double.class,60.0));
         requestData.addRequestParam(new ParameterInfo<>("Fld3",String.class,"optA"));
         kSession.insert(requestData);
 
         kSession.fireAllRules();
-        logger.close();
+
+        String pkgName = PMML4Compiler.PMML_DROOLS+"."+requestData.getModelName();
+        FactType tgt = kSession.getKieBase().getFactType( pkgName, "Fld9" );
 
         AbstractTreeToken token = (AbstractTreeToken)getToken(kSession,"Missing");//((DefaultFactHandle)fh).getObject();
         assertEquals(0.6, token.getConfidence().doubleValue(),0.0);
@@ -141,6 +147,33 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
         checkGeneratedRules();
     }
 
+	public class TestAgendaListener extends DefaultAgendaEventListener {
+	    public void matchCancelled(MatchCancelledEvent event) {
+	        System.out.println("Match cancelled - "+
+	            event.getCause().name()+" - "+event.getMatch().getRule().getPackageName()+" : "+event.getMatch().getRule().getName());
+	    }
+
+	    public void matchCreated(MatchCreatedEvent event) {
+	        System.out.println("Match created - "+event.getMatch().getRule().getPackageName()+" : "+event.getMatch().getRule().getName());
+	    }
+
+	    public void afterMatchFired(AfterMatchFiredEvent event) {
+	        System.out.println("After match fired - "+event.getMatch().getRule().getPackageName()+" : "+event.getMatch().getRule().getName());
+	    }
+
+	    public void agendaGroupPopped(AgendaGroupPoppedEvent event) {
+	        System.out.println("Agenda group popped - "+event.getAgendaGroup().getName());
+	    }
+
+	    public void agendaGroupPushed(AgendaGroupPushedEvent event) {
+	        System.out.println("Agenda group pushed - "+event.getAgendaGroup().getName());
+	    }
+
+	    public void beforeMatchFired(BeforeMatchFiredEvent event) {
+	        System.out.println("Before match fired - "+event.getMatch().getRule().getPackageName()+" : "+event.getMatch().getRule().getName());
+	    }
+		
+	}
 
 
     @Test
@@ -148,20 +181,21 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
         setKSession( getModelSession( source2, VERBOSE ) );
         setKbase( getKSession().getKieBase() );
         KieSession kSession = getKSession();
-        KieRuntimeLogger logger = KieServices.Factory.get().getLoggers().newFileLogger(kSession, "/home/lleveric/decisionTreeMissingWeighted1");
 
         kSession.fireAllRules();  //init model
 
-        FactType tgt = kSession.getKieBase().getFactType( packageName, "Fld9" );
 
-        PMMLRequestData data = new PMMLRequestData("Missing");
+        PMMLRequestData data = new PMMLRequestData("123","Missing");
         data.addRequestParam(new ParameterInfo<>("Fld1", Double.class, -1.0));
         data.addRequestParam(new ParameterInfo<>("Fld2", Double.class, -1.0));
         data.addRequestParam(new ParameterInfo<>("Fld3", String.class, "optA"));
         kSession.insert(data);
 
         kSession.fireAllRules();
-        logger.close();
+
+        String pkgName = PMML4Compiler.PMML_DROOLS+"."+data.getModelName();
+        FactType tgt = kSession.getKieBase().getFactType( pkgName, "Fld9" );
+
         System.out.print(  reportWMObjects( kSession ));
 
         AbstractTreeToken token = (AbstractTreeToken)getToken( kSession, "Missing" );
@@ -184,15 +218,16 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
 
         kSession.fireAllRules();  //init model
 
-        FactType tgt = kSession.getKieBase().getFactType( packageName, "Fld9" );
-
-        PMMLRequestData data = new PMMLRequestData("Missing");
+        PMMLRequestData data = new PMMLRequestData("123","Missing");
         data.addRequestParam(new ParameterInfo<>("Fld1", Double.class, -1.0));
         data.addRequestParam(new ParameterInfo<>("Fld2", Double.class, -1.0));
         data.addRequestParam(new ParameterInfo<>("Fld3", String.class, "miss"));
         kSession.insert(data);
 
         kSession.fireAllRules();
+        String pkgName = PMML4Compiler.PMML_DROOLS+"."+data.getModelName();
+        FactType tgt = kSession.getKieBase().getFactType( pkgName, "Fld9" );
+
 
         AbstractTreeToken token = (AbstractTreeToken)getToken( kSession, "Missing" );
         assertEquals( 0.6, token.getConfidence(), 0.0 );

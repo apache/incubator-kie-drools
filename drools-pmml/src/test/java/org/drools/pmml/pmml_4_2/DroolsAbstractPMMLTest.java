@@ -18,6 +18,7 @@ package org.drools.pmml.pmml_4_2;
 
 
 import java.io.ByteArrayInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -29,6 +30,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.PriorityQueue;
 
+import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EventFactHandle;
 import org.drools.pmml.pmml_4_2.model.PMML4ModelType;
@@ -54,6 +56,7 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.Variable;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.utils.KieHelper;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -96,9 +99,9 @@ public abstract class DroolsAbstractPMMLTest {
         KieModuleModel model = ks.newKieModuleModel();
         model.setConfigurationProperty( "drools.propertySpecific", "ALLOWED" );
         KieBaseModel kbModel = model.newKieBaseModel( DEFAULT_KIEBASE )
-                .setDefault( true )
+//                .setDefault( true )
                 .addPackage( BASE_PACK )
-                .setEventProcessingMode( EventProcessingOption.STREAM )
+                .setEventProcessingMode( EventProcessingOption.CLOUD )
                 ;
 
         kfs.writeKModuleXML( model.toXML() );
@@ -111,7 +114,21 @@ public abstract class DroolsAbstractPMMLTest {
         }
 
         KieContainer kContainer = ks.newKieContainer( kr.getDefaultReleaseId() );
+        
+        InternalKieModule module = (InternalKieModule)kr.getKieModule(kContainer.getReleaseId());
+        FileOutputStream fos = null;
+        try {
+	        fos = new FileOutputStream("/home/lleveric/tmp/module.kjar");
+	        fos.write(module.getBytes());
+        } catch (IOException iox) {
+        	iox.printStackTrace();
+        } finally {
+        	if (fos != null) {
+        		try { fos.close(); }catch(Exception e){}
+        	}
+        }
 
+//        KieBase kieBase = kContainer.getKieBase("SampleMine_SampleMineSegmentation_SEGMENT_1");
         KieBase kieBase = kContainer.getKieBase();
 
         setKbase( kieBase );

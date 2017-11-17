@@ -1,6 +1,7 @@
 package org.drools.pmml.pmml_4_2.model;
 
 import org.dmg.pmml.pmml_4_2.descr.DataField;
+import org.dmg.pmml.pmml_4_2.descr.MiningField;
 import org.dmg.pmml.pmml_4_2.descr.OPTYPE;
 import org.dmg.pmml.pmml_4_2.descr.OutputField;
 import org.dmg.pmml.pmml_4_2.descr.RESULTFEATURE;
@@ -18,6 +19,12 @@ public class PMMLOutputField extends PMMLDataField {
 		this.opType = outputField.getOptype();
 		this.targetField = outputField.getTargetField();
 		this.featureType = outputField.getFeature();
+	}
+	
+	public PMMLOutputField(MiningField miningField, DataField field, String modelId) {
+		super(miningField,field);
+		this.modelId = modelId;
+		this.featureType = RESULTFEATURE.PREDICTED_VALUE;
 	}
 
 

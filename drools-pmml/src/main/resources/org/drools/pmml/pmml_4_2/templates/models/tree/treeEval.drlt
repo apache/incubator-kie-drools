@@ -44,6 +44,18 @@ then
 end
 
 
+rule "Update PMML4Result for True Answer - Node @{context}:@{id}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
+salience 3
+no-loop
+when
+   $tok: @{context}TreeToken( context == "@{context}", current == "null", totalCount > 0, confidence != null )
+   $reslt: PMML4Result( resultVariables == null || "@{context}TreeToken" not memberOf resultVariables.keySet() )
+then
+   $reslt.setResultCode("OK");
+   $reslt.addResultVariable("@{context}TreeToken",$tok);
+   update($reslt);
+end
 
 rule "Eval Tree Node @{context} - @{id} - True"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }

@@ -26,6 +26,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 
 import org.drools.pmml.pmml_4_2.DroolsAbstractPMMLTest;
+import org.drools.pmml.pmml_4_2.PMML4Compiler;
 import org.drools.pmml.pmml_4_2.model.PMMLRequestData;
 import org.drools.pmml.pmml_4_2.model.ScoreCard;
 import org.junit.After;
@@ -61,7 +62,7 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
 
         kSession.fireAllRules();  //init model
 
-        PMMLRequestData requestData = new PMMLRequestData("Sample Score");
+        PMMLRequestData requestData = new PMMLRequestData("123","Sample Score");
         requestData.addRequestParam("age",33.0);
         requestData.addRequestParam("occupation", "SKYDIVER");
         requestData.addRequestParam("residenceState","KN");
@@ -105,7 +106,7 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
         
         kSession.fireAllRules();  //init model
 
-        PMMLRequestData requestData = new PMMLRequestData("SampleScorecard");
+        PMMLRequestData requestData = new PMMLRequestData("123","SampleScorecard");
         requestData.addRequestParam("cage","engineering");
         requestData.addRequestParam("age",25);
         requestData.addRequestParam("wage",500.0);
@@ -113,12 +114,12 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
 
 
         kSession.fireAllRules();  //init model
-        
-        checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName,"OutRC1"),
+        String pkgName = PMML4Compiler.PMML_DROOLS+"."+requestData.getModelName();
+        checkFirstDataFieldOfTypeStatus(getKbase().getFactType(pkgName,"OutRC1"),
                         true, false,"SampleScorecard", "RC2" );
-        checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName,"OutRC2"),
+        checkFirstDataFieldOfTypeStatus(getKbase().getFactType(pkgName,"OutRC2"),
                         true, false,"SampleScorecard", "RC1" );
-        checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName,"OutRC3"),
+        checkFirstDataFieldOfTypeStatus(getKbase().getFactType(pkgName,"OutRC3"),
                         true, false,"SampleScorecard", "RC1" );
 
         checkGeneratedRules();
