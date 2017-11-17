@@ -555,6 +555,29 @@ public class FlowTest {
         assertEquals( "Mario", p.getName() );
     }
 
+
+    @Test
+    public void testQueryWithNamedArg() {
+        Variable<Person> personV = declarationOf( type( Person.class ), "$p" );
+
+        Query1Def<Integer> qdef = query( "olderThan", Integer.class, "ageArg");
+        Query query = qdef.build( expr("exprA", personV, qdef.getArg("ageArg", Integer.class), (p, a) -> p.getAge() > a) );
+
+        Model model = new ModelImpl().addQuery( query );
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
+
+        KieSession ksession = kieBase.newKieSession();
+
+        ksession.insert( new Person( "Mark", 39 ) );
+        ksession.insert( new Person( "Mario", 41 ) );
+
+        QueryResults results = ksession.getQueryResults( "olderThan", 40 );
+
+        assertEquals( 1, results.size() );
+        Person p = (Person) results.iterator().next().get( "$p" );
+        assertEquals( "Mario", p.getName() );
+    }
+
     @Test
     public void testQueryInRule() {
         Variable<Person> personV = declarationOf( type( Person.class ) );

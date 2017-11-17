@@ -33,9 +33,18 @@ public class Query1DefImpl<A> extends QueryDefImpl implements Query1Def<A> {
         this(DEFAULT_PACKAGE, name, type1);
     }
 
+    public Query1DefImpl( String name, Class<A> type1, String arg1name ) {
+        this(DEFAULT_PACKAGE, name, type1, arg1name);
+    }
+
     public Query1DefImpl( String pkg, String name, Class<A> type1 ) {
         super( pkg, name );
         this.arg1 = declarationOf( type(type1) );
+    }
+
+    public Query1DefImpl( String pkg, String name, Class<A> type1, String arg1name ) {
+        super( pkg, name );
+        this.arg1 = declarationOf( type(type1) , arg1name);
     }
 
     @Override

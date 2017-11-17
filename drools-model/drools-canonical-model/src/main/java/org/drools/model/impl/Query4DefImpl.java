@@ -17,7 +17,6 @@
 package org.drools.model.impl;
 
 import org.drools.model.Argument;
-import org.drools.model.Query3Def;
 import org.drools.model.Query4Def;
 import org.drools.model.Variable;
 import org.drools.model.view.QueryCallViewItem;
@@ -43,6 +42,18 @@ public class Query4DefImpl<A, B, C, D> extends QueryDefImpl implements Query4Def
         this.arg2 = declarationOf( type(type2) );
         this.arg3 = declarationOf( type(type3) );
         this.arg4 = declarationOf( type(type4) );
+    }
+
+    public Query4DefImpl(String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name, Class<C> type3, String arg3name, Class<D> type4, String arg4name ) {
+        this(DEFAULT_PACKAGE, name, type1, arg1name, type2, arg2name, type3, arg3name, type4, arg4name);
+    }
+
+    public Query4DefImpl(String pkg, String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name, Class<C> type3, String arg3name, Class<D> type4, String arg4name  ) {
+        super( pkg, name );
+        this.arg1 = declarationOf( type(type1), arg1name);
+        this.arg2 = declarationOf( type(type2), arg2name);
+        this.arg3 = declarationOf( type(type3), arg3name);
+        this.arg4 = declarationOf( type(type4), arg4name);
     }
 
     @Override
