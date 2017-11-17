@@ -53,7 +53,7 @@ public class AccumulateVisitor {
                     .orElseThrow(RuntimeException::new);
 
             LambdaExpr lambdaExpr = new LambdaExpr(
-                    NodeList.nodeList(new Parameter(new TypeParameter(clazz.getName()), "$p"))
+                    NodeList.nodeList(new Parameter(new TypeParameter(clazz.getName()), scope.getName().asString()))
                     , new ExpressionStmt(methodCallExpr)
                     , true);
 
