@@ -583,7 +583,7 @@ public class ModelGenerator {
             return;
         }
 
-        Class<?> patternType = getClassFromContext(context.getPkg(),className);
+        Class<?> patternType = getClassFromContext(context.getPkg().getTypeResolver(), className);
 
         if (pattern.getIdentifier() == null) {
             pattern.setIdentifier( generateName("pattern_" + patternType.getSimpleName()) );
@@ -787,7 +787,7 @@ public class ModelGenerator {
 
             Optional<MethodDeclaration> functionCall = packageModel.getFunctions().stream().filter(m -> m.getName().equals(methodCallExpr.getName())).findFirst();
             if(functionCall.isPresent()) {
-                Class<?> returnType = DrlxParseUtil.getClassFromContext(context.getPkg(), functionCall.get().getType().asString());
+                Class<?> returnType = DrlxParseUtil.getClassFromContext(context.getPkg().getTypeResolver(), functionCall.get().getType().asString());
                 NodeList<Expression> arguments = methodCallExpr.getArguments();
                 List<String> usedDeclarations = new ArrayList<>();
                 for(Expression arg : arguments) {
@@ -798,7 +798,7 @@ public class ModelGenerator {
                 return new DrlxParseResult(patternType, exprId, bindingId, methodCallExpr, returnType).setUsedDeclarations(usedDeclarations);
             } else {
                 NameExpr _this = new NameExpr("_this");
-                TypedExpression converted = DrlxParseUtil.toMethodCallWithClassCheck(methodCallExpr, patternType);
+                TypedExpression converted = DrlxParseUtil.toMethodCallWithClassCheck(methodCallExpr, patternType, context.getPkg().getTypeResolver());
                 Expression withThis = DrlxParseUtil.prepend(_this, converted.getExpression());
                 return new DrlxParseResult(patternType, exprId, bindingId, withThis, converted.getType());
             }
@@ -809,7 +809,7 @@ public class ModelGenerator {
             NameExpr methodCallExpr = (NameExpr) drlxExpr;
 
             NameExpr _this = new NameExpr("_this");
-            TypedExpression converted = DrlxParseUtil.toMethodCallWithClassCheck(methodCallExpr, patternType);
+            TypedExpression converted = DrlxParseUtil.toMethodCallWithClassCheck(methodCallExpr, patternType, context.getPkg().getTypeResolver());
             Expression withThis = DrlxParseUtil.prepend(_this, converted.getExpression());
 
             if (drlx.getBind() != null) {

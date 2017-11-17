@@ -78,7 +78,7 @@ public class WindowReferenceGenerator {
         final TimeUnit timeUnit = behavior.duration.getTimeUnit();
         initializer.addArgument(new NameExpr(timeUnit.getDeclaringClass().getCanonicalName() + "." + timeUnit.name()));
 
-        final Class<?> initClass = DrlxParseUtil.getClassFromContext(pkg, pattern.getObjectType());
+        final Class<?> initClass = DrlxParseUtil.getClassFromContext(pkg.getTypeResolver(), pattern.getObjectType());
 
         final Type initType = JavaParser.parseType(initClass.getCanonicalName());
         initializer.addArgument(new ClassExpr(initType));
