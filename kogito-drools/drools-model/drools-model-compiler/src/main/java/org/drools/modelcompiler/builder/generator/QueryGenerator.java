@@ -54,6 +54,7 @@ public class QueryGenerator {
         queryCall.addArgument(new StringLiteralExpr(queryName));
         for (QueryParameter qp : context.queryParameters) {
             queryCall.addArgument(new ClassExpr(JavaParser.parseType(qp.type.getCanonicalName())));
+            queryCall.addArgument(new StringLiteralExpr(qp.name));
         }
         packageModel.getQueryDefWithType().put(queryDefVariableName, new QueryDefWithType(queryDefType, queryCall, context));
     }

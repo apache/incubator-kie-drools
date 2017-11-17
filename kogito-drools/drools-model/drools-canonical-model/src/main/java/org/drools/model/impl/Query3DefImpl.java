@@ -42,6 +42,17 @@ public class Query3DefImpl<A, B, C> extends QueryDefImpl implements Query3Def<A,
         this.arg3 = declarationOf( type(type3) );
     }
 
+    public Query3DefImpl(String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name, Class<C> type3, String arg3name ) {
+        this(DEFAULT_PACKAGE, name, type1, arg1name, type2, arg2name, type3, arg3name);
+    }
+
+    public Query3DefImpl(String pkg, String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name, Class<C> type3, String arg3name  ) {
+        super( pkg, name );
+        this.arg1 = declarationOf( type(type1), arg1name);
+        this.arg2 = declarationOf( type(type2), arg2name );
+        this.arg3 = declarationOf( type(type3), arg3name);
+    }
+
     @Override
     public QueryCallViewItem call( boolean open, Argument<A> aVar, Argument<B> bVar, Argument<C> cVar ) {
         return new QueryCallViewItemImpl( this, open, aVar, bVar, cVar );
