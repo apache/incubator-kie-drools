@@ -17,7 +17,6 @@
 package org.drools.model.impl;
 
 import org.drools.model.Argument;
-import org.drools.model.Query3Def;
 import org.drools.model.Query4Def;
 import org.drools.model.Variable;
 import org.drools.model.view.QueryCallViewItem;
