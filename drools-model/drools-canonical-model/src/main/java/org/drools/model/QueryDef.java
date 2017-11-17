@@ -32,6 +32,9 @@ public interface QueryDef {
     String getName();
 
     Variable<?>[] getArguments();
+    default <T> Variable<T> getArg(String argName, Class<T> argType) {
+        return null;
+    }
 
     Query build( ViewItemBuilder... viewItemBuilders );
 }

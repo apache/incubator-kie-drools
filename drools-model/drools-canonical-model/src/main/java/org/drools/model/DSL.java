@@ -423,6 +423,10 @@ public class DSL {
         return new Query1DefImpl<A>( name, type1 );
     }
 
+    public static <A> Query1Def<A> query( String name, Class<A> type1, String arg1name ) {
+        return new Query1DefImpl<A>( name, type1, arg1name);
+    }
+
     public static <A> Query1Def<A> query( String pkg, String name, Class<A> type1 ) {
         return new Query1DefImpl<A>( pkg, name, type1 );
     }
