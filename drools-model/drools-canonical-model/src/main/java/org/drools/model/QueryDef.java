@@ -16,6 +16,8 @@
 
 package org.drools.model;
 
+import java.util.Arrays;
+
 import org.drools.model.view.ViewItemBuilder;
 
 public interface QueryDef {
@@ -32,6 +34,14 @@ public interface QueryDef {
     String getName();
 
     Variable<?>[] getArguments();
+
+    default <T> Variable<T> getArg(String argName, Class<T> argType) {
+        return Arrays.stream(getArguments())
+                .filter(a -> a.getName().equals(argName))
+                .map(a -> (Variable<T>)a)
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Unknown argument: " + argName));
+    }
 
     Query build( ViewItemBuilder... viewItemBuilders );
 }
