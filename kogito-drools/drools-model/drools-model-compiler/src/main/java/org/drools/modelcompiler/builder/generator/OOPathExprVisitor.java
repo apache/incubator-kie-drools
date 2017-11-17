@@ -1,7 +1,6 @@
 package org.drools.modelcompiler.builder.generator;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,7 +40,7 @@ public class OOPathExprVisitor {
 
             final TypedExpression callExpr = DrlxParseUtil.nameExprToMethodCallExpr(fieldName, previousClass);
             Class<?> fieldType = (chunk.getInlineCast() != null)
-                    ? DrlxParseUtil.getClassFromContext(context.getPkg(), chunk.getInlineCast().toString())
+                    ? DrlxParseUtil.getClassFromContext(context.getPkg().getTypeResolver(), chunk.getInlineCast().toString())
                     : callExpr.getType();
 
             if (Iterable.class.isAssignableFrom(fieldType)) {
