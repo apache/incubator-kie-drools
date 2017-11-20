@@ -1,5 +1,7 @@
 package org.drools.model.functions;
 
-public interface FunctionN<R> {
+import java.io.Serializable;
+
+public interface FunctionN<R> extends Serializable {
     R apply(Object... objs);
 }

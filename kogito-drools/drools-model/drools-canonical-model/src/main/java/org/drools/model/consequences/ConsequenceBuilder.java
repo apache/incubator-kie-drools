@@ -90,27 +90,17 @@ public class ConsequenceBuilder {
     public static class _0 extends AbstractValidBuilder<_0> {
         public _0(final Block0 block) {
             super(new Variable[0]);
-            this.block = new BlockN() {
-                @Override
-                public void execute(Object... objs) {
-                    block.execute();
-                }
-            };
+            this.block = block.asBlockN();
         }
 
         public _0(final Block1<Drools> block) {
-            super(new Variable[0]);
+            super();
             this.usingDrools = true;
-            this.block = new BlockN() {
-                @Override
-                public void execute(Object... objs) {
-                    block.execute((Drools)objs[0]);
-                }
-            };
+            this.block = block.asBlockN();
         }
 
         public _0(String language, String script) {
-            super(new Variable[0]);
+            super();
             this.usingDrools = true;
             this.language = language;
             this.block = new ScriptBlock(script);
@@ -128,23 +118,13 @@ public class ConsequenceBuilder {
         }
 
         public _1<A> execute(final Block1<A> block) {
-            this.block = new BlockN() {
-                @Override
-                public void execute(Object... objs) {
-                    block.execute((A)objs[0]);
-                }
-            };
+            this.block = block.asBlockN();
             return this;
         }
 
         public _1<A> execute(final Block2<Drools, A> block) {
             this.usingDrools = true;
-            this.block = new BlockN() {
-                @Override
-                public void execute(Object... objs) {
-                    block.execute((Drools)objs[0], (A)objs[1]);
-                }
-            };
+            this.block = block.asBlockN();
             return this;
         }
 
@@ -167,23 +147,13 @@ public class ConsequenceBuilder {
         }
 
         public _2<A, B> execute(final Block2<A, B> block) {
-            this.block = new BlockN() {
-                @Override
-                public void execute(Object... objs) {
-                    block.execute((A)objs[0], (B)objs[1]);
-                }
-            };
+            this.block = block.asBlockN();
             return this;
         }
 
         public _2<A, B> execute(final Block3<Drools, A, B> block) {
             this.usingDrools = true;
-            this.block = new BlockN() {
-                @Override
-                public void execute(Object... objs) {
-                    block.execute((Drools)objs[0], (A)objs[1], (B)objs[2]);
-                }
-            };
+            this.block = block.asBlockN();
             return this;
         }
 
@@ -206,23 +176,13 @@ public class ConsequenceBuilder {
         }
 
         public _3<A, B, C> execute(final Block3<A, B, C> block) {
-            this.block = new BlockN() {
-                @Override
-                public void execute(Object... objs) {
-                    block.execute((A)objs[0], (B)objs[1], (C)objs[2]);
-                }
-            };
+            this.block = block.asBlockN();
             return this;
         }
 
         public _3<A, B, C> execute(final Block4<Drools, A, B, C> block ) {
             this.usingDrools = true;
-            this.block = new BlockN() {
-                @Override
-                public void execute(Object... objs) {
-                    block.execute((Drools)objs[0], (A)objs[1], (B)objs[2], (C)objs[3]);
-                }
-            };
+            this.block = block.asBlockN();
             return this;
         }
 

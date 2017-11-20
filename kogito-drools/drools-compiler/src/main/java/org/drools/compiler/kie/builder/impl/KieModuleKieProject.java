@@ -26,14 +26,8 @@ import org.drools.core.common.ProjectClassLoader;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieSessionModel;
-import org.kie.api.internal.utils.ServiceRegistry;
-import org.kie.internal.utils.ClassLoaderResolver;
-import org.kie.internal.utils.NoDepsClassLoaderResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.drools.core.common.ProjectClassLoader.createProjectClassLoader;
-import static org.drools.core.util.ClassUtils.convertResourceToClassName;
 
 /**
  * Discovers all KieModules on the classpath, via the kmodule.xml file.
@@ -59,14 +53,7 @@ public class KieModuleKieProject extends AbstractKieProject {
     
     public KieModuleKieProject(InternalKieModule kieModule, ClassLoader parent) {
         this.kieModule = kieModule;
-        if( parent == null ) {
-            ClassLoaderResolver resolver = ServiceRegistry.getInstance().get(ClassLoaderResolver.class);
-            if (resolver==null)  {
-                resolver = new NoDepsClassLoaderResolver();
-            }
-            parent = resolver.getClassLoader( kieModule );
-        }
-        this.cl = createProjectClassLoader( parent, kieModule.createResourceProvider() );
+        this.cl = kieModule.createModuleClassLoader( parent );
     }
 
     public void init() {
@@ -81,13 +68,7 @@ public class KieModuleKieProject extends AbstractKieProject {
     }
 
     private void initClassLoader(ProjectClassLoader projectCL) {
-        for ( Map.Entry<String, byte[]> entry : getClassesMap().entrySet() ) {
-            if ( entry.getValue() != null ) {
-                String resourceName = entry.getKey();
-                String className = convertResourceToClassName( resourceName );
-                projectCL.storeClass( className, resourceName, entry.getValue() );
-            }
-        }
+        projectCL.storeClasses( getClassesMap() );
     }
 
     private Map<String, byte[]> getClassesMap() {

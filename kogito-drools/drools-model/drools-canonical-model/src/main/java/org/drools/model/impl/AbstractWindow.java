@@ -22,7 +22,7 @@ import org.drools.model.WindowDefinition;
 
 import static org.drools.model.functions.temporal.TimeUtil.unitToLong;
 
-public abstract class AbstractWindow implements WindowDefinition {
+public abstract class AbstractWindow implements WindowDefinition, ModelComponent {
 
     private final Type type;
     private final long value;
@@ -44,5 +44,14 @@ public abstract class AbstractWindow implements WindowDefinition {
     @Override
     public Type getType() {
         return type;
+    }
+
+    @Override
+    public boolean isEqualTo( ModelComponent o ) {
+        if ( this == o ) return true;
+        if ( !(o instanceof AbstractWindow) ) return false;
+
+        AbstractWindow that = ( AbstractWindow ) o;
+        return type == that.type && value == that.value;
     }
 }

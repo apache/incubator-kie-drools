@@ -9,8 +9,9 @@ import org.drools.model.Constraint;
 import org.drools.model.DataSourceDefinition;
 import org.drools.model.Pattern;
 import org.drools.model.Variable;
+import org.drools.model.impl.ModelComponent;
 
-public class AccumulatePatternImpl<T> extends AbstractSinglePattern implements AccumulatePattern<T> {
+public class AccumulatePatternImpl<T> extends AbstractSinglePattern implements AccumulatePattern<T>, ModelComponent {
 
     private final Pattern<T> pattern;
     private final AccumulateFunction<T, ?, ?>[] functions;
@@ -68,5 +69,17 @@ public class AccumulatePatternImpl<T> extends AbstractSinglePattern implements A
     @Override
     public Type getType() {
         return Type.ACCUMULATE;
+    }
+
+    @Override
+    public boolean isEqualTo( ModelComponent o ) {
+        if ( this == o ) return true;
+        if ( !(o instanceof AccumulatePatternImpl) ) return false;
+
+        AccumulatePatternImpl<?> that = ( AccumulatePatternImpl<?> ) o;
+
+        if ( !ModelComponent.areEqualInModel( pattern, that.pattern ) ) return false;
+        if ( !ModelComponent.areEqualInModel( functions, that.functions ) ) return false;
+        return ModelComponent.areEqualInModel( boundVariables, that.boundVariables );
     }
 }

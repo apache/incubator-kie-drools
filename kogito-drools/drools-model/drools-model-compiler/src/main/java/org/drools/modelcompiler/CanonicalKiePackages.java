@@ -14,30 +14,25 @@
  * limitations under the License.
  */
 
-package org.drools.model.impl;
+package org.drools.modelcompiler;
 
-import org.drools.model.EntryPoint;
+import java.util.Collection;
+import java.util.Map;
 
-public class EntryPointImpl implements EntryPoint, ModelComponent {
+import org.kie.api.definition.KiePackage;
 
-    private final String name;
+public class CanonicalKiePackages {
+    private final Map<String, KiePackage> packages;
 
-    public EntryPointImpl( String name ) {
-        this.name = name;
+    public CanonicalKiePackages( Map<String, KiePackage> packages ) {
+        this.packages = packages;
     }
 
-    @Override
-    public String getName() {
-        return name;
+    public Collection<KiePackage> getKiePackages() {
+        return packages.values();
     }
 
-    @Override
-    public boolean isEqualTo( ModelComponent o ) {
-        if ( this == o ) return true;
-        if ( !(o instanceof EntryPointImpl) ) return false;
-
-        EntryPointImpl that = ( EntryPointImpl ) o;
-
-        return name != null ? name.equals( that.name ) : that.name == null;
+    public KiePackage getKiePackage( String pkgName ) {
+        return packages.get(pkgName);
     }
 }

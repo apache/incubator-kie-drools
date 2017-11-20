@@ -32,7 +32,6 @@ import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieModule;
-import org.kie.api.builder.KieRepository;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieBaseModel;
@@ -71,11 +70,28 @@ public abstract class BaseModelTest {
 
     protected KieSession getKieSession(KieModuleModel model, String... stringRules) {
         KieServices ks = KieServices.get();
-
         ReleaseId releaseId = ks.newReleaseId( "org.kie", "kjar-test-" + UUID.randomUUID(), "1.0" );
 
-        KieRepository repo = ks.getRepository();
-        repo.removeKieModule( releaseId );
+        KieBuilder kieBuilder = createKieBuilder( ks, model, releaseId, stringRules );
+
+        return getKieContainer( ks, model, releaseId, kieBuilder ).newKieSession();
+    }
+
+    protected KieContainer getKieContainer( KieServices ks, KieModuleModel model, ReleaseId releaseId, KieBuilder kieBuilder ) {
+        if ( testRunType == RUN_TYPE.USE_CANONICAL_MODEL ) {
+            addKieModuleFromCanonicalModel( ks, model, releaseId, (InternalKieModule) kieBuilder.getKieModule() );
+        }
+        return ks.newKieContainer( releaseId );
+    }
+
+    protected void addKieModuleFromCanonicalModel( KieServices ks, KieModuleModel model, ReleaseId releaseId, InternalKieModule kieModule ) {
+        File kjarFile = TestFileUtils.bytesToTempKJARFile( releaseId, kieModule.getBytes(), ".jar" );
+        KieModule zipKieModule = new CanonicalKieModule( releaseId, model != null ? model : getDefaultKieModuleModel( ks ), kjarFile );
+        ks.getRepository().addKieModule( zipKieModule );
+    }
+
+    protected KieBuilder createKieBuilder( KieServices ks, KieModuleModel model, ReleaseId releaseId, String... stringRules ) {
+        ks.getRepository().removeKieModule( releaseId );
 
         KieFileSystem kfs = ks.newKieFileSystem();
         if ( model != null ) {
@@ -86,35 +102,18 @@ public abstract class BaseModelTest {
             kfs.write(String.format("src/main/resources/r%d.drl", i), stringRules[i] );
         }
 
-// This is actually taken from classloader of test (?) - or anyway it must, because the test are instantiating directly Person.
-//        String javaSrc = Person.class.getCanonicalName().replace( '.', File.separatorChar ) + ".java";
-//        Resource javaResource = ks.getResources().newFileSystemResource( "src/test/java/" + javaSrc );
-//        kfs.write( "src/main/java/" + javaSrc, javaResource );
-
-        KieBuilder kieBuilder = ( testRunType == CompilerTest.RUN_TYPE.USE_CANONICAL_MODEL ) ?
+        KieBuilder kieBuilder = ( testRunType == RUN_TYPE.USE_CANONICAL_MODEL ) ?
                 ( (KieBuilderImpl ) ks.newKieBuilder( kfs ) ).buildAll( CanonicalModelKieProject::new ) :
                 ks.newKieBuilder( kfs ).buildAll();
+
         List<Message> messages = kieBuilder.getResults().getMessages();
         if ( !messages.isEmpty() ) {
             fail( messages.toString() );
         }
-
-        if ( testRunType == CompilerTest.RUN_TYPE.STANDARD_FROM_DRL ) {
-            return ks.newKieContainer( releaseId ).newKieSession();
-        } else {
-            InternalKieModule kieModule = (InternalKieModule) kieBuilder.getKieModule();
-            File kjarFile = TestFileUtils.bytesToTempKJARFile( releaseId, kieModule.getBytes(), ".jar" );
-            KieModule zipKieModule = new CanonicalKieModule( releaseId, model != null ? model : getDefaultKieModuleModel( ks ), kjarFile );
-            repo.addKieModule( zipKieModule );
-
-            KieContainer kieContainer = ks.newKieContainer( releaseId );
-            KieSession kieSession = kieContainer.newKieSession();
-
-            return kieSession;
-        }
+        return kieBuilder;
     }
 
-    private KieModuleModel getDefaultKieModuleModel( KieServices ks ) {
+    protected KieModuleModel getDefaultKieModuleModel( KieServices ks ) {
         KieModuleModel kproj = ks.newKieModuleModel();
         KieBaseModel kieBaseModel1 = kproj.newKieBaseModel( "kbase" ).setDefault( true );
         KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel( "ksession" ).setDefault( true );

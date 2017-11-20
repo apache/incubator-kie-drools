@@ -3,6 +3,7 @@ package org.drools.model;
 import org.drools.model.constraints.AbstractSingleConstraint;
 import org.drools.model.constraints.AndConstraints;
 import org.drools.model.functions.PredicateN;
+import org.drools.model.impl.ModelComponent;
 
 public interface SingleConstraint extends Constraint {
     Variable[] getVariables();
@@ -38,6 +39,11 @@ public interface SingleConstraint extends Constraint {
         @Override
         public AndConstraints and(Constraint constraint ) {
             return new AndConstraints(constraint);
+        }
+
+        @Override
+        public boolean isEqualTo( ModelComponent other ) {
+            return this == other;
         }
     };
 }

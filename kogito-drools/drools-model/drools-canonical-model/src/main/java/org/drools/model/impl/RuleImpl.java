@@ -1,14 +1,14 @@
 package org.drools.model.impl;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.drools.model.Consequence;
 import org.drools.model.Rule;
 import org.drools.model.View;
 import org.drools.model.patterns.CompositePatterns;
 
-import java.util.HashMap;
-import java.util.Map;
-
-public class RuleImpl implements Rule {
+public class RuleImpl implements Rule, ModelComponent {
 
     public static final String DEFAULT_CONSEQUENCE_NAME = "default";
 
@@ -73,5 +73,20 @@ public class RuleImpl implements Rule {
     @Override
     public String getUnit() {
         return unit;
+    }
+
+    @Override
+    public boolean isEqualTo( ModelComponent o ) {
+        if ( this == o ) return true;
+        if ( o == null || getClass() != o.getClass() ) return false;
+
+        RuleImpl rule = ( RuleImpl ) o;
+
+        if ( !pkg.equals( rule.pkg ) ) return false;
+        if ( !name.equals( rule.name ) ) return false;
+        if ( unit != null ? !unit.equals( rule.unit ) : rule.unit != null ) return false;
+        if ( !ModelComponent.areEqualInModel( view, rule.view ) ) return false;
+        if ( !ModelComponent.areEqualInModel( consequences, rule.consequences ) ) return false;
+        return attributes != null ? attributes.equals( rule.attributes ) : rule.attributes == null;
     }
 }

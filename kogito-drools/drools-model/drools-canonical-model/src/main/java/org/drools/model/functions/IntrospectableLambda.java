@@ -14,30 +14,30 @@
  * limitations under the License.
  */
 
-package org.drools.model.impl;
+package org.drools.model.functions;
 
-import org.drools.model.EntryPoint;
+public abstract class IntrospectableLambda {
+    private String lambdaFingerprint;
 
-public class EntryPointImpl implements EntryPoint, ModelComponent {
+    protected abstract Object getLambda();
 
-    private final String name;
-
-    public EntryPointImpl( String name ) {
-        this.name = name;
+    @Override
+    public String toString() {
+        if(lambdaFingerprint == null) {
+            lambdaFingerprint = LambdaIntrospector.getLambdaFingerprint(getLambda());
+        }
+        return lambdaFingerprint;
     }
 
     @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public boolean isEqualTo( ModelComponent o ) {
+    public boolean equals( Object o ) {
         if ( this == o ) return true;
-        if ( !(o instanceof EntryPointImpl) ) return false;
+        if ( !(o instanceof IntrospectableLambda) ) return false;
+        return toString().equals( o.toString() );
+    }
 
-        EntryPointImpl that = ( EntryPointImpl ) o;
-
-        return name != null ? name.equals( that.name ) : that.name == null;
+    @Override
+    public int hashCode() {
+        return toString().hashCode();
     }
 }

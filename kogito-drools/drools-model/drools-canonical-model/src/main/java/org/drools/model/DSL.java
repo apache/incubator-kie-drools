@@ -156,11 +156,19 @@ public class DSL {
     }
 
     public static <T> WindowReference<T> window( Window.Type type, long value, Class<T> patternType, Predicate1<T>... predicates ) {
-        return new WindowReferenceImpl( type, value, patternType, predicates );
+        Predicate1<T>[] ps = new Predicate1[predicates.length];
+        for (int i = 0; i < predicates.length; i++) {
+            ps[i] = new Predicate1.Impl<T>( predicates[i] );
+        }
+        return new WindowReferenceImpl( type, value, patternType, ps );
     }
 
     public static <T> WindowReference<T> window( Window.Type type, long value, TimeUnit timeUnit, Class<T> patternType, Predicate1<T>... predicates ) {
-        return new WindowReferenceImpl( type, value, timeUnit, patternType, predicates );
+        Predicate1<T>[] ps = new Predicate1[predicates.length];
+        for (int i = 0; i < predicates.length; i++) {
+            ps[i] = new Predicate1.Impl<T>( predicates[i] );
+        }
+        return new WindowReferenceImpl( type, value, timeUnit, patternType, ps );
     }
 
     public static <T> From<T> from( Variable<T> variable, Function1<T, ?> provider ) {
@@ -190,19 +198,19 @@ public class DSL {
     }
 
     public static <T> Expr1ViewItem<T> expr( Variable<T> var, Predicate1<T> predicate ) {
-        return new Expr1ViewItemImpl<T>( var, predicate );
+        return new Expr1ViewItemImpl<T>( var, new Predicate1.Impl<T>(predicate) );
     }
 
     public static <T, U> Expr2ViewItem<T, U> expr(Variable<T> var1, Variable<U> var2, Predicate2<T, U> predicate) {
-        return new Expr2ViewItemImpl<T, U>( var1, var2, predicate );
+        return new Expr2ViewItemImpl<T, U>( var1, var2, new Predicate2.Impl<T, U>(predicate) );
     }
 
     public static <T> Expr1ViewItem<T> expr(String exprId, Variable<T> var, Predicate1<T> predicate) {
-        return new Expr1ViewItemImpl<T>( exprId, var, predicate);
+        return new Expr1ViewItemImpl<T>( exprId, var, new Predicate1.Impl<T>(predicate));
     }
 
     public static <T, U> Expr2ViewItem<T, U> expr( String exprId, Variable<T> var1, Variable<U> var2, Predicate2<T, U> predicate ) {
-        return new Expr2ViewItemImpl<T, U>( exprId, var1, var2, predicate);
+        return new Expr2ViewItemImpl<T, U>( exprId, var1, var2, new Predicate2.Impl<T, U>(predicate));
     }
 
     public static <T> OOPathChunkBuilder<T, T> from( Source<T> source ) {
@@ -222,11 +230,11 @@ public class DSL {
     }
 
     public static <T> ExprViewItem<T> not(Variable<T> var, Predicate1<T> predicate) {
-        return not(new Expr1ViewItemImpl<T>( var, predicate) );
+        return not(new Expr1ViewItemImpl<T>( var, new Predicate1.Impl<T>(predicate)) );
     }
 
     public static <T, U> ExprViewItem<T> not(Variable<T> var1, Variable<U> var2, Predicate2<T, U> predicate) {
-        return not(new Expr2ViewItemImpl<T, U>( var1, var2, predicate) );
+        return not(new Expr2ViewItemImpl<T, U>( var1, var2, new Predicate2.Impl<T, U>(predicate)) );
     }
 
     public static ExprViewItem exists(ExprViewItem expression, ExprViewItem... expressions) {
@@ -242,11 +250,11 @@ public class DSL {
     }
 
     public static <T> ExprViewItem<T> exists(Variable<T> var, Predicate1<T> predicate) {
-        return exists(new Expr1ViewItemImpl<T>( var, predicate) );
+        return exists(new Expr1ViewItemImpl<T>( var, new Predicate1.Impl<T>(predicate)) );
     }
 
     public static <T, U> ExprViewItem<T> exists(Variable<T> var1, Variable<U> var2, Predicate2<T, U> predicate) {
-        return exists(new Expr2ViewItemImpl<T, U>( var1, var2, predicate) );
+        return exists(new Expr2ViewItemImpl<T, U>( var1, var2, new Predicate2.Impl<T, U>(predicate)) );
     }
 
     public static ExprViewItem forall(ViewItem expression, ViewItem... expressions) {
@@ -482,7 +490,7 @@ public class DSL {
     public static <A,B,C, D> Query4Def<A,B,C,D> query( String pkg, String name, Class<A> type1, Class<B> type2, Class<C> type3, Class<D> type4) {
         return new Query4DefImpl<A,B,C,D>( pkg, name, type1, type2, type3, type4 );
     }
- 
+
     public static <A> Query1Def<A> query( String pkg, String name, Class<A> type1, String arg1name ) {
         return new Query1DefImpl<A>( pkg, name, type1, arg1name);
     }
