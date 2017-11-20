@@ -79,10 +79,10 @@ public class LookUpStrategyImmutableTest {
     }
 
     @Test
-    public void locateImmutable() {
+    public void lookUpImmutable() {
         // make sure we are working with different instances
         assertNotSame(internalObject, externalObject);
-        // since they are immutable we don't care about which instance is located
+        // since they are immutable we don't care about which instance is looked up
         assertEquals(internalObject, lookUpManager.lookUpWorkingObject(externalObject));
     }
 

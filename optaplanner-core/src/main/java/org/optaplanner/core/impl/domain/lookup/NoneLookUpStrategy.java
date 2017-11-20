@@ -38,7 +38,7 @@ public class NoneLookUpStrategy implements LookUpStrategy {
     @Override
     public <E> E lookUpWorkingObject(Map<Object, Object> idToWorkingObjectMap, E externalObject) {
         throw new IllegalArgumentException("The externalObject (" + externalObject
-                + ") cannot be located.\n"
+                + ") cannot be looked up.\n"
                 + "Maybe give the class (" + externalObject.getClass()
                 + ") a " + PlanningId.class.getSimpleName() + " annotation"
                 + " or change the " + PlanningSolution.class.getSimpleName() + " annotation's "

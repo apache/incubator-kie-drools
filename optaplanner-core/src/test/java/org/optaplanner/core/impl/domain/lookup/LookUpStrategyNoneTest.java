@@ -88,31 +88,31 @@ public class LookUpStrategyNoneTest {
     }
 
     @Test
-    public void locateWithId() {
+    public void lookUpWithId() {
         TestdataObjectId object = new TestdataObjectId(0);
         lookUpManager.addWorkingObject(object);
         // not allowed
         expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage("cannot be located");
+        expectedException.expectMessage("cannot be looked up");
         lookUpManager.lookUpWorkingObject(object);
     }
 
     @Test
-    public void locateWithoutId() {
+    public void lookUpWithoutId() {
         TestdataObjectNoId object = new TestdataObjectNoId();
         lookUpManager.addWorkingObject(object);
         // not allowed
         expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage("cannot be located");
+        expectedException.expectMessage("cannot be looked up");
         lookUpManager.lookUpWorkingObject(object);
     }
 
     @Test
-    public void locateWithoutAdding() {
+    public void lookUpWithoutAdding() {
         TestdataObjectId object = new TestdataObjectId(0);
         // not allowed
         expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage("cannot be located");
+        expectedException.expectMessage("cannot be looked up");
         lookUpManager.lookUpWorkingObject(object);
     }
 

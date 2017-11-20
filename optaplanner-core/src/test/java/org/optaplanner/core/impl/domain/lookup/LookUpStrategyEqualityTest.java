@@ -47,7 +47,7 @@ public class LookUpStrategyEqualityTest {
         TestdataObjectEquals object = new TestdataObjectEquals(0);
         lookUpManager.addWorkingObject(object);
         lookUpManager.removeWorkingObject(object);
-        // the removed object cannot be located
+        // the removed object cannot be looked up
         assertNull(lookUpManager.lookUpWorkingObject(object));
     }
 
@@ -103,14 +103,14 @@ public class LookUpStrategyEqualityTest {
     }
 
     @Test
-    public void locateWithEquals() {
+    public void lookUpWithEquals() {
         TestdataObjectEquals object = new TestdataObjectEquals(1);
         lookUpManager.addWorkingObject(object);
         assertSame(object, lookUpManager.lookUpWorkingObject(new TestdataObjectEquals(1)));
     }
 
     @Test
-    public void locateWithoutEquals() {
+    public void lookUpWithoutEquals() {
         TestdataObjectNoId object = new TestdataObjectNoId();
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("override the equals() method");
@@ -118,7 +118,7 @@ public class LookUpStrategyEqualityTest {
     }
 
     @Test
-    public void locateWithoutAdding() {
+    public void lookUpWithoutAdding() {
         TestdataObjectEquals object = new TestdataObjectEquals(0);
         assertNull(lookUpManager.lookUpWorkingObject(object));
     }

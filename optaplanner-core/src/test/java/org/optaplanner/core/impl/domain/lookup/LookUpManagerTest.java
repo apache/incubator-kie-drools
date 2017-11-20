@@ -39,7 +39,7 @@ public class LookUpManagerTest {
     }
 
     @Test
-    public void locateNull() {
+    public void lookUpNull() {
         assertNull(lookUpManager.lookUpWorkingObject(null));
     }
 
@@ -49,7 +49,7 @@ public class LookUpManagerTest {
         TestdataObjectId p = new TestdataObjectId(1);
         // the objects should be added during the reset
         lookUpManager.resetWorkingObjects(Arrays.asList(o, p));
-        // so it's possible to locate and remove them
+        // so it's possible to look up and remove them
         Assert.assertSame(o, lookUpManager.lookUpWorkingObject(new TestdataObjectId(0)));
         Assert.assertSame(p, lookUpManager.lookUpWorkingObject(new TestdataObjectId(1)));
         lookUpManager.removeWorkingObject(o);

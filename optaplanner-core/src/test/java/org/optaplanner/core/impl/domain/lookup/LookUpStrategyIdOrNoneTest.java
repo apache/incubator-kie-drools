@@ -48,7 +48,7 @@ public class LookUpStrategyIdOrNoneTest {
         TestdataObjectId object = new TestdataObjectId(0);
         lookUpManager.addWorkingObject(object);
         lookUpManager.removeWorkingObject(object);
-        // the removed object cannot be located
+        // the removed object cannot be looked up
         assertNull(lookUpManager.lookUpWorkingObject(object));
     }
 
@@ -101,23 +101,23 @@ public class LookUpStrategyIdOrNoneTest {
     }
 
     @Test
-    public void locateWithId() {
+    public void lookUpWithId() {
         TestdataObjectId object = new TestdataObjectId(1);
         lookUpManager.addWorkingObject(object);
         assertSame(object, lookUpManager.lookUpWorkingObject(new TestdataObjectId(1)));
     }
 
     @Test
-    public void locateWithoutId() {
+    public void lookUpWithoutId() {
         TestdataObjectNoId object = new TestdataObjectNoId();
         lookUpManager.addWorkingObject(object);
         expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage("cannot be located");
+        expectedException.expectMessage("cannot be looked up");
         lookUpManager.lookUpWorkingObject(object);
     }
 
     @Test
-    public void locateWithoutAdding() {
+    public void lookUpWithoutAdding() {
         TestdataObjectId object = new TestdataObjectId(0);
         assertNull(lookUpManager.lookUpWorkingObject(object));
     }

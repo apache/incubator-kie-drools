@@ -144,8 +144,8 @@ public interface ScoreDirector<Solution_> extends AutoCloseable {
      * Matching uses a {@link PlanningId} by default.
      * @param externalObject sometimes null
      * @return null if externalObject is null or if there is no workingObject for externalObject
-     * @throws IllegalArgumentException if it cannot be located or if the externalObject's class is not supported
-     * @throws IllegalStateException if it cannot be located
+     * @throws IllegalArgumentException if it cannot be looked up or if the externalObject's class is not supported
+     * @throws IllegalStateException if it cannot be looked up
      * @param <E> the object type
      */
     <E> E lookUpWorkingObject(E externalObject);
