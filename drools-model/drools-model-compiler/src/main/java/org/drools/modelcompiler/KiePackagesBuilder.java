@@ -17,6 +17,7 @@
 package org.drools.modelcompiler;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -119,39 +120,53 @@ public class KiePackagesBuilder {
 
     private final RuleBaseConfiguration configuration;
 
-    private Map<String, KiePackage> packages = new HashMap<>();
+    private final Map<String, KiePackage> packages = new HashMap<>();
 
-    private Set<Class<?>> patternClasses = new HashSet<>();
+    private final Set<Class<?>> patternClasses = new HashSet<>();
 
-    private Map<Class<?>, ClassObjectType> objectTypeCache = new HashMap<>();
+    private final Map<Class<?>, ClassObjectType> objectTypeCache = new HashMap<>();
+
+    private final Collection<Model> models;
 
     public KiePackagesBuilder( KieBaseConfiguration conf ) {
+        this(conf, new ArrayList<>());
+    }
+
+    public KiePackagesBuilder( KieBaseConfiguration conf, Collection<Model> models ) {
         this.configuration = ( (RuleBaseConfiguration) conf );
+        this.models = models;
     }
 
     public void addModel( Model model ) {
-        for (TypeMetaData metaType : model.getTypeMetaDatas()) {
-            KnowledgePackageImpl pkg = (KnowledgePackageImpl) packages.computeIfAbsent( metaType.getPackage(), this::createKiePackage );
-            pkg.addTypeDeclaration( createTypeDeclaration(pkg, metaType) );
-        }
+        models.add(model);
+    }
 
-        for (Global global : model.getGlobals()) {
-            KnowledgePackageImpl pkg = (KnowledgePackageImpl) packages.computeIfAbsent( global.getPackage(), this::createKiePackage );
-            pkg.addGlobal( global.getName(), global.getType().asClass() );
-        }
+    public CanonicalKiePackages build() {
+        for (Model model : models) {
+            for (TypeMetaData metaType : model.getTypeMetaDatas()) {
+                KnowledgePackageImpl pkg = ( KnowledgePackageImpl ) packages.computeIfAbsent( metaType.getPackage(), this::createKiePackage );
+                pkg.addTypeDeclaration( createTypeDeclaration( pkg, metaType ) );
+            }
 
-        for (Query query : model.getQueries()) {
-            KnowledgePackageImpl pkg = (KnowledgePackageImpl) packages.computeIfAbsent( query.getPackage(), this::createKiePackage );
-            pkg.addRule( compileQuery( pkg, query ) );
-        }
+            for (Global global : model.getGlobals()) {
+                KnowledgePackageImpl pkg = ( KnowledgePackageImpl ) packages.computeIfAbsent( global.getPackage(), this::createKiePackage );
+                pkg.addGlobal( global.getName(), global.getType().asClass() );
+            }
 
-        int ruleCounter = 0;
-        for (Rule rule : model.getRules()) {
-            KnowledgePackageImpl pkg = (KnowledgePackageImpl) packages.computeIfAbsent( rule.getPackage(), this::createKiePackage );
-            RuleImpl ruleImpl = compileRule( pkg, rule );
-            ruleImpl.setLoadOrder( ruleCounter++ );
-            pkg.addRule( ruleImpl );
+            for (Query query : model.getQueries()) {
+                KnowledgePackageImpl pkg = ( KnowledgePackageImpl ) packages.computeIfAbsent( query.getPackage(), this::createKiePackage );
+                pkg.addRule( compileQuery( pkg, query ) );
+            }
+
+            int ruleCounter = 0;
+            for (Rule rule : model.getRules()) {
+                KnowledgePackageImpl pkg = ( KnowledgePackageImpl ) packages.computeIfAbsent( rule.getPackage(), this::createKiePackage );
+                RuleImpl ruleImpl = compileRule( pkg, rule );
+                ruleImpl.setLoadOrder( ruleCounter++ );
+                pkg.addRule( ruleImpl );
+            }
         }
+        return new CanonicalKiePackages(packages);
     }
 
     private KnowledgePackageImpl createKiePackage(String name) {
@@ -163,10 +178,6 @@ public class KiePackagesBuilder {
         typeResolver.addImport( name + ".*" );
         kpkg.setTypeResolver(typeResolver);
         return kpkg;
-    }
-
-    public Collection<Class<?>> getPatternClasses() {
-        return patternClasses;
     }
 
     private RuleImpl compileRule( KnowledgePackageImpl pkg, Rule rule ) {
@@ -604,13 +615,11 @@ public class KiePackagesBuilder {
                 watchlist = new HashSet<>( );
                 pattern.setListenedProperties( watchlist );
             }
-            for (String field : fields) {
-                watchlist.add( field );
-            }
+            watchlist.addAll( Arrays.asList( fields ) );
         }
     }
 
-    public Collection<KiePackage> getKnowledgePackages() {
+    Collection<KiePackage> getKiePackages() {
         return packages.values();
     }
 

@@ -6,11 +6,12 @@ import java.util.List;
 import org.drools.model.Constraint;
 import org.drools.model.Index;
 import org.drools.model.SingleConstraint;
+import org.drools.model.impl.ModelComponent;
 import org.drools.model.view.Expr1ViewItemImpl;
 import org.drools.model.view.Expr2ViewItemImpl;
 import org.drools.model.view.ExprViewItem;
 
-public abstract class AbstractSingleConstraint extends AbstractConstraint implements SingleConstraint {
+public abstract class AbstractSingleConstraint extends AbstractConstraint implements SingleConstraint, ModelComponent {
 
     private final String exprId;
 

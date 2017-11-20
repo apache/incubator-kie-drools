@@ -3,8 +3,9 @@ package org.drools.model.view;
 import org.drools.model.Binding;
 import org.drools.model.Variable;
 import org.drools.model.functions.Function1;
+import org.drools.model.impl.ModelComponent;
 
-public class BindViewItem<T> implements ViewItem<T>, Binding {
+public class BindViewItem<T> implements ViewItem<T>, Binding, ModelComponent {
 
     private final Variable<T> boundVariable;
     private final Function1 bindingFunction;
@@ -46,5 +47,19 @@ public class BindViewItem<T> implements ViewItem<T>, Binding {
     @Override
     public String getReactOn() {
         return reactOn;
+    }
+
+
+    @Override
+    public boolean isEqualTo( ModelComponent o ) {
+        if ( this == o ) return true;
+        if ( !(o instanceof BindViewItem) ) return false;
+
+        BindViewItem<?> that = ( BindViewItem<?> ) o;
+
+        if ( !ModelComponent.areEqualInModel( boundVariable, that.boundVariable )) return false;
+        if ( !ModelComponent.areEqualInModel( inputVariable, that.inputVariable )) return false;
+        if ( !bindingFunction.equals( that.bindingFunction )) return false;
+        return reactOn == null ? that.reactOn == null : reactOn.equals( that.reactOn );
     }
 }

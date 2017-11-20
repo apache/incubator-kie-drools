@@ -10,37 +10,29 @@ import org.drools.javaparser.ast.CompilationUnit;
 import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.drools.javaparser.printer.PrettyPrinter;
 
-import static org.drools.modelcompiler.CanonicalKieModule.PACKAGE_LIST;
-import static org.drools.modelcompiler.CanonicalKieModule.RULES_FILE_NAME;
-import static org.drools.modelcompiler.CanonicalKieModule.VARIABLES_FILE_NAME;
+import static org.drools.modelcompiler.CanonicalKieModule.MODEL_FILE;
 import static org.drools.modelcompiler.builder.JavaParserCompiler.getPrettyPrinter;
 
 public class ModelWriter {
 
+    public static final String RULES_FILE_NAME = "Rules";
+
     public Result writeModel(MemoryFileSystem srcMfs, List<PackageModel> packageModels) {
-        List<String> sources = new ArrayList<>();
-        List<String> pkgNames = new ArrayList<>();
+        List<String> sourceFiles = new ArrayList<>();
+        List<String> modelFiles = new ArrayList<>();
 
         PrettyPrinter prettyPrinter = getPrettyPrinter();
 
         for (PackageModel pkgModel : packageModels) {
             String pkgName = pkgModel.getName();
-            pkgNames.add(pkgName);
             String folderName = pkgName.replace( '.', '/' );
-
-            if ( pkgModel.getVarsSource() != null ) {
-                String varsSourceName = "src/main/java/" + folderName + "/" + VARIABLES_FILE_NAME + ".java";
-                byte[] varsBytes = pkgModel.getVarsSource().getBytes();
-                srcMfs.write( varsSourceName, varsBytes );
-                sources.add( varsSourceName );
-            }
 
             for (ClassOrInterfaceDeclaration generatedPojo : pkgModel.getGeneratedPOJOsSource()) {
                 final String source = toPojoSource( pkgModel.getName(), prettyPrinter, generatedPojo );
                 pkgModel.print( source );
-                final String varsSourceName = "src/main/java/" + folderName + "/" + generatedPojo.getName() + ".java";
-                srcMfs.write( varsSourceName, source.getBytes() );
-                sources.add( varsSourceName );
+                String pojoSourceName = "src/main/java/" + folderName + "/" + generatedPojo.getName() + ".java";
+                srcMfs.write( pojoSourceName, source.getBytes() );
+                sourceFiles.add( pojoSourceName );
             }
 
             String rulesSourceName = "src/main/java/" + folderName + "/" + RULES_FILE_NAME + ".java";
@@ -48,10 +40,11 @@ public class ModelWriter {
             pkgModel.print( rulesSource );
             byte[] rulesBytes = rulesSource.getBytes();
             srcMfs.write( rulesSourceName, rulesBytes );
-            sources.add( rulesSourceName );
+            modelFiles.add( pkgName + "." + RULES_FILE_NAME );
+            sourceFiles.add( rulesSourceName );
         }
 
-        return new Result(sources.toArray(new String[sources.size()]), pkgNames);
+        return new Result(sourceFiles, modelFiles);
     }
 
     private String toPojoSource(String packageName, PrettyPrinter prettyPrinter, ClassOrInterfaceDeclaration pojo ) {
@@ -69,27 +62,22 @@ public class ModelWriter {
         return prettyPrinter.print( cu );
     }
 
-    public void writePackages(List<String> packages, MemoryFileSystem trgMfs) {
-        final String pkgNames = packages.stream().collect(Collectors.joining("\n"));
-        trgMfs.write(PACKAGE_LIST, pkgNames.getBytes() );
+    public void writeModelFile( List<String> modelSources, MemoryFileSystem trgMfs) {
+        final String pkgNames = modelSources.stream().collect(Collectors.joining("\n"));
+        trgMfs.write( MODEL_FILE, pkgNames.getBytes() );
     }
 
     public static class Result {
-        final private String[] sources;
-        final private List<String> packages;
+        final List<String> sourceFiles;
+        final List<String> modelFiles;
 
-        public Result(String[] sources, List<String> packages) {
-            this.sources = sources;
-            this.packages = packages;
+        public Result( List<String> sourceFiles, List<String> modelFiles ) {
+            this.sourceFiles = sourceFiles;
+            this.modelFiles = modelFiles;
         }
 
         public String[] getSources() {
-            return sources;
-        }
-
-        public List<String> getPackages() {
-            return packages;
+            return sourceFiles.toArray( new String[sourceFiles.size()] );
         }
     }
-
 }

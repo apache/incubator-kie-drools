@@ -33,4 +33,19 @@ public class ScriptBlock implements BlockN {
     public String getScript() {
         return script;
     }
+
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) return true;
+        if ( !(o instanceof ScriptBlock) ) return false;
+
+        ScriptBlock that = ( ScriptBlock ) o;
+
+        return script.equals( that.script );
+    }
+
+    @Override
+    public int hashCode() {
+        return script.hashCode();
+    }
 }

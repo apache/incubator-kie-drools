@@ -1,5 +1,45 @@
 package org.drools.compiler.kie.builder.impl;
 
+import java.io.File;
+import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.NavigableMap;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import org.appformer.maven.support.DependencyFilter;
+import org.appformer.maven.support.PomModel;
+import org.drools.compiler.kie.builder.impl.KieRepositoryImpl.KieModuleRepo;
+import org.drools.compiler.kproject.ReleaseIdImpl;
+import org.drools.compiler.kproject.models.KieBaseModelImpl;
+import org.drools.core.common.ResourceProvider;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.kie.api.KieBaseConfiguration;
+import org.kie.api.builder.KieModule;
+import org.kie.api.builder.KieRepository;
+import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.ReleaseIdComparator.ComparableVersion;
+import org.kie.api.builder.Results;
+import org.kie.api.builder.model.KieBaseModel;
+import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.definition.KiePackage;
+import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceConfiguration;
+import org.kie.internal.builder.CompositeKnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderConfiguration;
+import org.kie.internal.builder.ResourceChangeSet;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -10,28 +50,6 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.NavigableMap;
-import java.util.concurrent.BrokenBarrierException;
-import java.util.concurrent.CyclicBarrier;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import org.drools.compiler.kie.builder.impl.KieRepositoryImpl.KieModuleRepo;
-import org.drools.compiler.kproject.ReleaseIdImpl;
-import org.drools.core.common.ResourceProvider;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.kie.api.builder.KieModule;
-import org.kie.api.builder.KieRepository;
-import org.kie.api.builder.ReleaseId;
-import org.kie.api.builder.ReleaseIdComparator.ComparableVersion;
-import org.kie.api.builder.model.KieBaseModel;
 
 /**
  * This test contains
@@ -245,6 +263,153 @@ public class KieModuleRepoTest {
                       1l, redeployKieModule.getCreationTimestamp() );
     }
 
+    private static class InternalKieModuleStub implements InternalKieModule {
+        @Override
+        public void cacheKnowledgeBuilderForKieBase( String kieBaseName, KnowledgeBuilder kbuilder ) {
+            throw new UnsupportedOperationException( "org.drools.compiler.kie.builder.impl.KieModuleRepoTest.InternalKieModuleStub.cacheKnowledgeBuilderForKieBase -> TODO" );
+        }
+
+        @Override
+        public KnowledgeBuilder getKnowledgeBuilderForKieBase( String kieBaseName ) {
+            throw new UnsupportedOperationException( "org.drools.compiler.kie.builder.impl.KieModuleRepoTest.InternalKieModuleStub.getKnowledgeBuilderForKieBase -> TODO" );
+        }
+
+        @Override
+        public Collection<KiePackage> getKnowledgePackagesForKieBase( String kieBaseName ) {
+            throw new UnsupportedOperationException( "org.drools.compiler.kie.builder.impl.KieModuleRepoTest.InternalKieModuleStub.getKnowledgePackagesForKieBase -> TODO" );
+        }
+
+        @Override
+        public void cacheResultsForKieBase( String kieBaseName, Results results ) {
+            throw new UnsupportedOperationException( "org.drools.compiler.kie.builder.impl.KieModuleRepoTest.InternalKieModuleStub.cacheResultsForKieBase -> TODO" );
+        }
+
+        @Override
+        public Map<String, Results> getKnowledgeResultsCache() {
+            throw new UnsupportedOperationException( "org.drools.compiler.kie.builder.impl.KieModuleRepoTest.InternalKieModuleStub.getKnowledgeResultsCache -> TODO" );
+        }
+
+        @Override
+        public KieModuleModel getKieModuleModel() {
+            throw new UnsupportedOperationException( "org.drools.compiler.kie.builder.impl.KieModuleRepoTest.InternalKieModuleStub.getKieModuleModel -> TODO" );
+        }
+
+        @Override
+        public byte[] getBytes() {
+            throw new UnsupportedOperationException( "org.drools.compiler.kie.builder.impl.KieModuleRepoTest.InternalKieModuleStub.getBytes -> TODO" );
+        }
+
+        @Override
+        public boolean hasResource( String fileName ) {
+            throw new UnsupportedOperationException( "org.drools.compiler.kie.builder.impl.KieModuleRepoTest.InternalKieModuleStub.hasResource -> TODO" );
+        }
+
+        @Override
+        public Resource getResource( String fileName ) {
+            throw new UnsupportedOperationException( "org.drools.compiler.kie.builder.impl.KieModuleRepoTest.InternalKieModuleStub.getResource -> TODO" );
+        }
+
+        @Override
+        public ResourceConfiguration getResourceConfiguration( String fileName ) {
+            throw new UnsupportedOperationException( "org.drools.compiler.kie.builder.impl.KieModuleRepoTest.InternalKieModuleStub.getResourceConfiguration -> TODO" );
+        }
+
+        @Override
+        public Map<ReleaseId, InternalKieModule> getKieDependencies() {
+            throw new UnsupportedOperationException( "org.drools.compiler.kie.builder.impl.KieModuleRepoTest.InternalKieModuleStub.getKieDependencies -> TODO" );
+        }
+
+        @Override
+        public void addKieDependency( InternalKieModule dependency ) {
+            throw new UnsupportedOperationException( "org.drools.compiler.kie.builder.impl.KieModuleRepoTest.InternalKieModuleStub.addKieDependency -> TODO" );
+        }
+
+        @Override
+        public Collection<ReleaseId> getJarDependencies( DependencyFilter filter ) {
+            throw new UnsupportedOperationException( "org.drools.compiler.kie.builder.impl.KieModuleRepoTest.InternalKieModuleStub.getJarDependencies -> TODO" );
+        }
+
+        @Override
+        public Collection<ReleaseId> getUnresolvedDependencies() {
+            throw new UnsupportedOperationException( "org.drools.compiler.kie.builder.impl.KieModuleRepoTest.InternalKieModuleStub.getUnresolvedDependencies -> TODO" );
+        }
+
+        @Override
+        public void setUnresolvedDependencies( Collection<ReleaseId> unresolvedDependencies ) {
+            throw new UnsupportedOperationException( "org.drools.compiler.kie.builder.impl.KieModuleRepoTest.InternalKieModuleStub.setUnresolvedDependencies -> TODO" );
+        }
+
+        @Override
+        public boolean isAvailable( String pResourceName ) {
+            throw new UnsupportedOperationException( "org.drools.compiler.kie.builder.impl.KieModuleRepoTest.InternalKieModuleStub.isAvailable -> TODO" );
+        }
+
+        @Override
+        public byte[] getBytes( String pResourceName ) {
+            throw new UnsupportedOperationException( "org.drools.compiler.kie.builder.impl.KieModuleRepoTest.InternalKieModuleStub.getBytes -> TODO" );
+        }
+
+        @Override
+        public Collection<String> getFileNames() {
+            return Collections.emptyList();
+        }
+
+        @Override
+        public File getFile() {
+            throw new UnsupportedOperationException( "org.drools.compiler.kie.builder.impl.KieModuleRepoTest.InternalKieModuleStub.getFile -> TODO" );
+        }
+
+        @Override
+        public ResourceProvider createResourceProvider() {
+            throw new UnsupportedOperationException( "org.drools.compiler.kie.builder.impl.KieModuleRepoTest.InternalKieModuleStub.createResourceProvider -> TODO" );
+        }
+
+        @Override
+        public Map<String, byte[]> getClassesMap( boolean includeTypeDeclarations ) {
+            throw new UnsupportedOperationException( "org.drools.compiler.kie.builder.impl.KieModuleRepoTest.InternalKieModuleStub.getClassesMap -> TODO" );
+        }
+
+        @Override
+        public boolean addResourceToCompiler( CompositeKnowledgeBuilder ckbuilder, KieBaseModel kieBaseModel, String fileName ) {
+            throw new UnsupportedOperationException( "org.drools.compiler.kie.builder.impl.KieModuleRepoTest.InternalKieModuleStub.addResourceToCompiler -> TODO" );
+        }
+
+        @Override
+        public boolean addResourceToCompiler( CompositeKnowledgeBuilder ckbuilder, KieBaseModel kieBaseModel, String fileName, ResourceChangeSet rcs ) {
+            throw new UnsupportedOperationException( "org.drools.compiler.kie.builder.impl.KieModuleRepoTest.InternalKieModuleStub.addResourceToCompiler -> TODO" );
+        }
+
+        @Override
+        public long getCreationTimestamp() {
+            return 0L;
+        }
+
+        @Override
+        public InputStream getPomAsStream() {
+            throw new UnsupportedOperationException( "org.drools.compiler.kie.builder.impl.KieModuleRepoTest.InternalKieModuleStub.getPomAsStream -> TODO" );
+        }
+
+        @Override
+        public PomModel getPomModel() {
+            throw new UnsupportedOperationException( "org.drools.compiler.kie.builder.impl.KieModuleRepoTest.InternalKieModuleStub.getPomModel -> TODO" );
+        }
+
+        @Override
+        public KnowledgeBuilderConfiguration getBuilderConfiguration( KieBaseModel kBaseModel ) {
+            throw new UnsupportedOperationException( "org.drools.compiler.kie.builder.impl.KieModuleRepoTest.InternalKieModuleStub.getBuilderConfiguration -> TODO" );
+        }
+
+        @Override
+        public InternalKnowledgeBase createKieBase( KieBaseModelImpl kBaseModel, KieProject kieProject, ResultsImpl messages, KieBaseConfiguration conf ) {
+            throw new UnsupportedOperationException( "org.drools.compiler.kie.builder.impl.KieModuleRepoTest.InternalKieModuleStub.createKieBase -> TODO" );
+        }
+
+        @Override
+        public ReleaseId getReleaseId() {
+            return new ReleaseIdImpl("org", "deployTwiceAfterUpdateDependency", "1.0-SNAPSHOT");
+        }
+    }
+
     // 2. simultaneous deploy requests
     // - multitenant UI
     // - duplicate REST requests
@@ -253,9 +418,7 @@ public class KieModuleRepoTest {
 
         // setup
         final ReleaseIdImpl releaseId = new ReleaseIdImpl("org", "deployTwiceAfterUpdateDependency", "1.0-SNAPSHOT");
-        final InternalKieModule originalOldKieModule = mock(InternalKieModule.class);
-        when(originalOldKieModule.getReleaseId()).thenReturn(releaseId);
-        when(originalOldKieModule.getCreationTimestamp()).thenReturn(0l);
+        final InternalKieModule originalOldKieModule = new InternalKieModuleStub();
 
         final ReleaseId dependentReleaseid = new ReleaseIdImpl("org", "deployTwiceAfterUpdate", "1.0-SNAPSHOT");
         final KieContainerImpl kieContainer = createMockKieContainer(dependentReleaseid, kieModuleRepo);

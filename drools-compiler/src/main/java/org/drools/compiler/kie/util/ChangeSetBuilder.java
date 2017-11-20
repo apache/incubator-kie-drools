@@ -15,6 +15,15 @@
  */
 package org.drools.compiler.kie.util;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
@@ -32,36 +41,28 @@ import org.kie.internal.builder.ResourceChangeSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
 import static org.drools.core.util.StringUtils.isEmpty;
 
 public class ChangeSetBuilder {
     
-    private final Logger logger = LoggerFactory.getLogger( ChangeSetBuilder.class );
+    private static final Logger logger = LoggerFactory.getLogger( ChangeSetBuilder.class );
 
-    private String defaultPackageName;
+    private static String defaultPackageName;
 
-    public KieJarChangeSet build( InternalKieModule original, InternalKieModule currentJar ) {
+    private ChangeSetBuilder() { }
+
+    public static KieJarChangeSet build( InternalKieModule original, InternalKieModule currentJar ) {
         KieJarChangeSet result = new KieJarChangeSet();
         
         Collection<String> originalFiles = original.getFileNames();
         Collection<String> currentFiles = currentJar.getFileNames();
         
-        ArrayList<String> removedFiles = new ArrayList<String>( originalFiles );
+        ArrayList<String> removedFiles = new ArrayList<>( originalFiles );
         removedFiles.removeAll( currentFiles );
         if( ! removedFiles.isEmpty() ) {
             for( String file : removedFiles ) {
                 // there should be a way to get the JAR name/url to produce a proper URL for the file in it
-                result.getChanges().put( file, new ResourceChangeSet( file, ChangeType.REMOVED ) );
+                result.removeFile( file );
             }
         }
 
@@ -74,12 +75,12 @@ public class ChangeSetBuilder {
                     // check that: (NOT drl file) OR (NOT equalsIgnoringSpaces)
                     if ( !ResourceType.DRL.matchesExtension(file) || !StringUtils.codeAwareEqualsIgnoreSpaces(new String(ob), new String(cb)) ) {
                         // parse the file to figure out the difference
-                        result.getChanges().put( file, diffResource( file, ob, cb ) );
+                        result.registerChanges( file, diffResource( file, ob, cb ) );
                     }
                 }
             } else {
                 // file was added
-                result.getChanges().put( file, new ResourceChangeSet( file, ChangeType.ADDED ) );
+                result.addFile( file );
             }
         }
         
@@ -87,7 +88,7 @@ public class ChangeSetBuilder {
     }
 
 
-    public ResourceChangeSet diffResource(String file,
+    private static ResourceChangeSet diffResource(String file,
                                           byte[] ob,
                                           byte[] cb) {
         ResourceChangeSet pkgcs = new ResourceChangeSet( file, ChangeType.UPDATED );
@@ -109,24 +110,20 @@ public class ChangeSetBuilder {
                     pkgcs.getLoadOrder().add(new ResourceChangeSet.RuleLoadOrder(pkgName, crd.getName(), crd.getLoadOrder()));
                 }
 
-                List<RuleDescr> orules = new ArrayList<RuleDescr>( opkg.getRules() ); // needs to be cloned
+                List<RuleDescr> orules = new ArrayList<>( opkg.getRules() ); // needs to be cloned
                 diffDescrs(ob, cb, pkgcs, orules, cpkg.getRules(), ResourceChange.Type.RULE, RULE_CONVERTER);
 
-                List<FunctionDescr> ofuncs = new ArrayList<FunctionDescr>( opkg.getFunctions() ); // needs to be cloned
+                List<FunctionDescr> ofuncs = new ArrayList<>( opkg.getFunctions() ); // needs to be cloned
                 diffDescrs(ob, cb, pkgcs, ofuncs, cpkg.getFunctions(), ResourceChange.Type.FUNCTION, FUNC_CONVERTER);
 
-                List<GlobalDescr> oglobals = new ArrayList<GlobalDescr>( opkg.getGlobals() ); // needs to be cloned
+                List<GlobalDescr> oglobals = new ArrayList<>( opkg.getGlobals() ); // needs to be cloned
                 diffDescrs(ob, cb, pkgcs, oglobals, cpkg.getGlobals(), ResourceChange.Type.GLOBAL, GLOBAL_CONVERTER);
             } catch ( Exception e ) {
                 logger.error( "Error analyzing the contents of "+file+". Skipping.", e );
             }
         }
-        Collections.sort( pkgcs.getChanges(), new Comparator<ResourceChange>() {
-            public int compare(ResourceChange o1,
-                               ResourceChange o2) {
-                return o1.getChangeType().ordinal() - o2.getChangeType().ordinal();
-            }
-        } );
+
+        pkgcs.getChanges().sort( Comparator.comparingInt( r -> r.getChangeType().ordinal() ) );
         return pkgcs;
     }
 
@@ -158,15 +155,15 @@ public class ChangeSetBuilder {
         }
     }
 
-    private <T extends BaseDescr> void diffDescrs(byte[] ob, byte[] cb,
+    private static <T extends BaseDescr> void diffDescrs(byte[] ob, byte[] cb,
                                                   ResourceChangeSet pkgcs,
                                                   List<T> odescrs, List<T> cdescrs,
                                                   ResourceChange.Type type, DescrNameConverter<T> descrNameConverter) {
 
         Set<String> updatedRules = null;
         if (type == ResourceChange.Type.RULE) {
-            updatedRules = new HashSet<String>();
-            Collections.sort( (List<RuleDescr>) cdescrs, RULE_HIERARCHY_COMPARATOR );
+            updatedRules = new HashSet<>();
+            (( List<RuleDescr> ) cdescrs).sort( RULE_HIERARCHY_COMPARATOR );
         }
 
         for( T crd : cdescrs ) {
@@ -212,49 +209,7 @@ public class ChangeSetBuilder {
         }
     }
 
-    private boolean segmentEquals( byte[] a1, int s1, int e1,
-                                     byte[] a2, int s2, int e2) {
-        int length = e1 - s1;
-        if( length <= 0 || length != e2-s2 || s1+length > a1.length || s2+length > a2.length ) {
-            return false;
-        }
-        for( int i = 0; i < length; i++ ) {
-            if( a1[s1+i] != a2[s2+i] ) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-
-    public String toProperties( KieJarChangeSet kcs ) {
-        StringBuilder builder = new StringBuilder();
-        builder.append( "kiejar.changeset.version=1.0\n" );
-        int i = 0;
-        for( ResourceChangeSet rcs : kcs.getChanges().values() ) {
-            String prefix = "kiejar.changeset."+rcs.getChangeType()+".r"+(i++);
-            builder.append( prefix )
-                   .append( "=" )
-                   .append( rcs.getResourceName() )
-                   .append( "\n" );
-            int j = 0;
-            for( ResourceChange change : rcs.getChanges() ) {
-                builder.append( prefix )
-                       .append( "." )
-                       .append( change.getChangeType() )
-                       .append( "." )
-                       .append( change.getType() )
-                       .append( j++ )
-                       .append( "=" )
-                       .append( change.getName() )
-                       .append( "\n" );
-            }
-        }
-        
-        return builder.toString();
-    }
-
-    private String getDefaultPackageName() {
+    private static String getDefaultPackageName() {
         if (defaultPackageName == null) {
             defaultPackageName = new KnowledgeBuilderConfigurationImpl().getDefaultPackageName();
         }

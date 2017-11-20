@@ -1,6 +1,8 @@
 package org.drools.model.functions;
 
-public interface Function0<R> {
+import java.io.Serializable;
+
+public interface Function0<R> extends Serializable {
     R apply();
 
     public static final class Null implements Function0 {
@@ -15,10 +17,9 @@ public interface Function0<R> {
         }
     }
 
-    class Impl<R> implements Function0<R> {
+    class Impl<R> extends IntrospectableLambda implements Function0<R> {
 
         private final Function0<R> function;
-        private String lambdaFingerprint;
 
         public Impl(Function0<R> function) {
             this.function = function;
@@ -30,11 +31,8 @@ public interface Function0<R> {
         }
 
         @Override
-        public String toString() {
-            if(lambdaFingerprint == null) {
-                lambdaFingerprint = LambdaIntrospector.getLambdaFingerprint(function);
-            }
-            return lambdaFingerprint;
+        protected Object getLambda() {
+            return function;
         }
     }
 }

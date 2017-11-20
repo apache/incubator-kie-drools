@@ -49,7 +49,6 @@ import org.drools.model.Model;
 import org.drools.model.WindowReference;
 import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
-import org.drools.modelcompiler.builder.generator.ModelGenerator;
 import org.drools.modelcompiler.builder.generator.QueryGenerator;
 import org.drools.modelcompiler.builder.generator.QueryParameter;
 
@@ -171,13 +170,6 @@ public class PackageModel {
     public List<MethodDeclaration> getFunctions() {
         return functions;
     }
-
-    public String getVarsSource() {
-//        if (true) return getVariableSource();
-        return null;
-    }
-
-
 
     public String getRulesSource(PrettyPrinter prettyPrinter) {
 //        if (true) return getRuleModelSource();

@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.model.Constraint;
+import org.drools.model.impl.ModelComponent;
 
-public class AndConstraints extends AbstractConstraint {
+public class AndConstraints extends AbstractConstraint implements ModelComponent {
 
     private final List<Constraint> constraints = new ArrayList<Constraint>();
 
@@ -29,5 +30,15 @@ public class AndConstraints extends AbstractConstraint {
     @Override
     public Type getType() {
         return Type.AND;
+    }
+
+    @Override
+    public boolean isEqualTo( ModelComponent o ) {
+        if ( this == o ) return true;
+        if ( !(o instanceof AndConstraints) ) return false;
+
+        AndConstraints that = ( AndConstraints ) o;
+
+        return ModelComponent.areEqualInModel( constraints, that.constraints );
     }
 }

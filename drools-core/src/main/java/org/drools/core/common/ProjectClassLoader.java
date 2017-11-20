@@ -15,9 +15,6 @@
 
 package org.drools.core.common;
 
-import org.drools.core.util.ClassUtils;
-import org.kie.internal.utils.KieTypeResolver;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,8 +30,10 @@ import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.drools.core.util.ClassUtils;
+import org.kie.internal.utils.KieTypeResolver;
 
 import static org.drools.core.util.ClassUtils.convertClassToResourcePath;
+import static org.drools.core.util.ClassUtils.convertResourceToClassName;
 
 public class ProjectClassLoader extends ClassLoader implements KieTypeResolver {
 
@@ -234,6 +233,16 @@ public class ProjectClassLoader extends ClassLoader implements KieTypeResolver {
 
     public void storeClass(String name, byte[] bytecode) {
         storeClass(name, convertClassToResourcePath(name), bytecode);
+    }
+
+    public void storeClasses(Map<String, byte[]> classesMap) {
+        for ( Map.Entry<String, byte[]> entry : classesMap.entrySet() ) {
+            if ( entry.getValue() != null ) {
+                String resourceName = entry.getKey();
+                String className = convertResourceToClassName( resourceName );
+                storeClass( className, resourceName, entry.getValue() );
+            }
+        }
     }
 
     public void storeClass(String name, String resourceName, byte[] bytecode) {

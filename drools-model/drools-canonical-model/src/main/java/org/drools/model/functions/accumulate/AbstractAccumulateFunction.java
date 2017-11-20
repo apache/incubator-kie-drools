@@ -1,10 +1,10 @@
 package org.drools.model.functions.accumulate;
 
-import org.drools.model.AccumulateFunction;
-import org.drools.model.Variable;
-
 import java.io.Serializable;
 import java.util.Optional;
+
+import org.drools.model.AccumulateFunction;
+import org.drools.model.Variable;
 
 public abstract class AbstractAccumulateFunction<T, A extends Serializable, R> implements AccumulateFunction<T, A, R> {
     private Variable<R> var;

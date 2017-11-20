@@ -23,7 +23,10 @@ import java.util.Map;
 
 import org.appformer.maven.support.DependencyFilter;
 import org.appformer.maven.support.PomModel;
+import org.drools.compiler.kie.util.ChangeSetBuilder;
+import org.drools.compiler.kie.util.KieJarChangeSet;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
+import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.common.ResourceProvider;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.kie.api.KieBaseConfiguration;
@@ -33,14 +36,19 @@ import org.kie.api.builder.Results;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.definition.KiePackage;
+import org.kie.api.internal.utils.ServiceRegistry;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.ResourceChangeSet;
+import org.kie.internal.utils.ClassLoaderResolver;
+import org.kie.internal.utils.NoDepsClassLoaderResolver;
 
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.buildKieModule;
+import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.filterFileInKBase;
+import static org.drools.core.common.ProjectClassLoader.createProjectClassLoader;
 
 public interface InternalKieModule extends KieModule, Serializable {
 
@@ -101,5 +109,28 @@ public interface InternalKieModule extends KieModule, Serializable {
         ResultsImpl messages = new ResultsImpl();
         buildKieModule(this, messages);
         return messages;
+    }
+
+    default KieJarChangeSet getChanges(InternalKieModule newKieModule) {
+        return ChangeSetBuilder.build( this, newKieModule );
+    }
+
+    default boolean isFileInKBase(KieBaseModel kieBase, String fileName) {
+        return filterFileInKBase(this, kieBase, fileName);
+    }
+
+    default Runnable createKieBaseUpdater(KieBaseUpdateContext context) {
+        return new KieBaseUpdater( context );
+    }
+
+    default ProjectClassLoader createModuleClassLoader( ClassLoader parent ) {
+        if( parent == null ) {
+            ClassLoaderResolver resolver = ServiceRegistry.getInstance().get(ClassLoaderResolver.class);
+            if (resolver==null)  {
+                resolver = new NoDepsClassLoaderResolver();
+            }
+            parent = resolver.getClassLoader( this );
+        }
+        return createProjectClassLoader( parent, createResourceProvider() );
     }
 }

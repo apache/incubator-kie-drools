@@ -16,6 +16,8 @@
 
 package org.drools.model.patterns;
 
+import java.util.Arrays;
+
 import org.drools.model.Argument;
 import org.drools.model.Condition;
 import org.drools.model.QueryDef;
@@ -58,6 +60,26 @@ public class QueryCallPattern implements Condition {
     @Override
     public Variable<?>[] getBoundVariables() {
         throw new UnsupportedOperationException( "org.drools.model.patterns.QueryCallPattern.getBoundVariables -> TODO" );
+    }
 
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) return true;
+        if ( !(o instanceof QueryCallPattern) ) return false;
+
+        QueryCallPattern that = ( QueryCallPattern ) o;
+
+        if ( open != that.open ) return false;
+        if ( query != null ? !query.equals( that.query ) : that.query != null ) return false;
+        // Probably incorrect - comparing Object[] arrays with Arrays.equals
+        return Arrays.equals( arguments, that.arguments );
+    }
+
+    @Override
+    public int hashCode() {
+        int result = query != null ? query.hashCode() : 0;
+        result = 31 * result + (open ? 1 : 0);
+        result = 31 * result + Arrays.hashCode( arguments );
+        return result;
     }
 }

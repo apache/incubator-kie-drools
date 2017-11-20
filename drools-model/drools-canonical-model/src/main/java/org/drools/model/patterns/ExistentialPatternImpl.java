@@ -46,4 +46,22 @@ public class ExistentialPatternImpl implements Condition {
     public Variable<?>[] getBoundVariables() {
         throw new UnsupportedOperationException();
     }
+
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) return true;
+        if ( !(o instanceof ExistentialPatternImpl) ) return false;
+
+        ExistentialPatternImpl that = ( ExistentialPatternImpl ) o;
+
+        if ( condition != null ? !condition.equals( that.condition ) : that.condition != null ) return false;
+        return type == that.type;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = condition != null ? condition.hashCode() : 0;
+        result = 31 * result + type.hashCode();
+        return result;
+    }
 }

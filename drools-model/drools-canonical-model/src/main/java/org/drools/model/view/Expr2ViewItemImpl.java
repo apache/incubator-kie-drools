@@ -9,8 +9,6 @@ import org.drools.model.functions.Function1;
 import org.drools.model.functions.Predicate2;
 import org.drools.model.index.BetaIndexImpl;
 
-import static org.drools.model.functions.LambdaIntrospector.getLambdaFingerprint;
-
 public class Expr2ViewItemImpl<T, U> extends AbstractExprViewItem<T> implements Expr2ViewItem<T, U> {
 
     private final Variable<U> var2;
@@ -19,7 +17,7 @@ public class Expr2ViewItemImpl<T, U> extends AbstractExprViewItem<T> implements 
     private BetaIndex<T, U, ?> index;
 
     public Expr2ViewItemImpl( Variable<T> var1, Variable<U> var2, Predicate2<T, U> predicate ) {
-        super(getLambdaFingerprint(predicate), var1);
+        super(predicate.toString(), var1);
         this.var2 = var2;
         this.predicate = predicate;
     }

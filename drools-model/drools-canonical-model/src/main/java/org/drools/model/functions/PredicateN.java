@@ -1,6 +1,8 @@
 package org.drools.model.functions;
 
-public interface PredicateN {
+import java.io.Serializable;
+
+public interface PredicateN extends Serializable {
     boolean test(Object... objs);
 
     PredicateN True = objs -> true;

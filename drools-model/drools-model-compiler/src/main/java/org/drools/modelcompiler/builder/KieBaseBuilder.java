@@ -16,22 +16,18 @@
 
 package org.drools.modelcompiler.builder;
 
-import java.util.Collection;
-
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
-import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.model.Model;
+import org.drools.modelcompiler.CanonicalKiePackages;
 import org.drools.modelcompiler.KiePackagesBuilder;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
 import org.kie.api.conf.KieBaseOption;
-import org.kie.api.definition.KiePackage;
 
 public class KieBaseBuilder {
 
-    private final KiePackagesBuilder builder;
     private final String kBaseName;
     private final KieBaseConfiguration conf;
 
@@ -44,48 +40,25 @@ public class KieBaseBuilder {
     }
 
     public KieBaseBuilder(KieBaseModelImpl kBaseModel, ClassLoader cl, KieBaseConfiguration conf) {
-        if (conf == null) {
-            conf = getKnowledgeBaseConfiguration(kBaseModel, cl);
-        } else if (conf instanceof RuleBaseConfiguration ) {
-            ((RuleBaseConfiguration)conf).setClassLoader(cl);
-        }
-
-        this.kBaseName = kBaseModel != null ? kBaseModel.getName() : "defaultkiebase";
         this.conf = conf;
-        this.builder = new KiePackagesBuilder(conf);
+        this.kBaseName = kBaseModel != null ? kBaseModel.getName() : "defaultkiebase";
     }
 
-    public InternalKnowledgeBase createKieBase() {
-        Collection<KiePackage> pkgs = builder.getKnowledgePackages();
+    public InternalKnowledgeBase createKieBase(CanonicalKiePackages kpkgs) {
         InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase( kBaseName, conf );
-        kBase.addPackages( pkgs );
+        kBase.addPackages( kpkgs.getKiePackages() );
         return kBase;
     }
 
-    public KieBaseBuilder addModel( Model model ) {
-        builder.addModel(model);
-        return this;
-    }
-
-    private static KieBaseConfiguration getKnowledgeBaseConfiguration( KieBaseModelImpl kBaseModel, ClassLoader cl ) {
-        KieBaseConfiguration kbConf = KieServices.get().newKieBaseConfiguration( null, cl );
-        if (kBaseModel != null) {
-            kbConf.setOption( kBaseModel.getEqualsBehavior() );
-            kbConf.setOption( kBaseModel.getEventProcessingMode() );
-            kbConf.setOption( kBaseModel.getDeclarativeAgenda() );
-        }
-        return kbConf;
-    }
-
     public static InternalKnowledgeBase createKieBaseFromModel( Model model, KieBaseOption... options ) {
-        if (options == null || options.length == 0) {
-            return new KieBaseBuilder().addModel( model ).createKieBase();
-        }
-
         KieBaseConfiguration kieBaseConf = KieServices.get().newKieBaseConfiguration();
-        for (KieBaseOption option : options) {
-            kieBaseConf.setOption(option);
+        if (options == null || options.length == 0) {
+            for (KieBaseOption option : options) {
+                kieBaseConf.setOption( option );
+            }
         }
-        return new KieBaseBuilder(kieBaseConf).addModel( model ).createKieBase();
+        KiePackagesBuilder builder = new KiePackagesBuilder(kieBaseConf);
+        builder.addModel( model );
+        return new KieBaseBuilder(kieBaseConf).createKieBase(builder.build());
     }
 }

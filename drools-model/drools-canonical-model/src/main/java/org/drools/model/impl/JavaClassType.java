@@ -23,4 +23,19 @@ public class JavaClassType<T> implements Type<T> {
     public Class<T> asClass() {
         return type;
     }
+
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) return true;
+        if ( !(o instanceof JavaClassType) ) return false;
+
+        JavaClassType<?> that = ( JavaClassType<?> ) o;
+
+        return type.equals( that.type );
+    }
+
+    @Override
+    public int hashCode() {
+        return type.hashCode();
+    }
 }

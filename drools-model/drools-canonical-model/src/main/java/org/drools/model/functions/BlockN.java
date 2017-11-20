@@ -1,5 +1,7 @@
 package org.drools.model.functions;
 
-public interface BlockN {
+import java.io.Serializable;
+
+public interface BlockN extends Serializable {
     void execute(Object... objs);
 }

@@ -16,10 +16,10 @@
 
 package org.drools.model.impl;
 
-import org.drools.model.Type;
 import org.drools.model.Global;
+import org.drools.model.Type;
 
-public class GlobalImpl<T> extends VariableImpl<T> implements Global<T> {
+public class GlobalImpl<T> extends VariableImpl<T> implements Global<T>, ModelComponent {
     private final String pkg;
 
     public GlobalImpl(Type<T> type, String pkg) {
@@ -35,5 +35,12 @@ public class GlobalImpl<T> extends VariableImpl<T> implements Global<T> {
     @Override
     public String getPackage() {
         return pkg;
+    }
+
+    @Override
+    public boolean isEqualTo( ModelComponent var ) {
+        if ( !super.isEqualTo( var ) ) return false;
+        GlobalImpl<?> global = ( GlobalImpl<?> ) var;
+        return pkg != null ? pkg.equals( global.pkg ) : global.pkg == null;
     }
 }

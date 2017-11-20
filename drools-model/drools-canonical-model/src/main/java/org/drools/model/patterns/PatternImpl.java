@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.drools.model.Binding;
@@ -15,14 +16,15 @@ import org.drools.model.SingleConstraint;
 import org.drools.model.Variable;
 import org.drools.model.constraints.AbstractConstraint;
 import org.drools.model.impl.DataSourceDefinitionImpl;
+import org.drools.model.impl.ModelComponent;
 
-public class PatternImpl<T> extends AbstractSinglePattern implements Pattern<T> {
+public class PatternImpl<T> extends AbstractSinglePattern implements Pattern<T>, ModelComponent {
 
     private final Variable<T> variable;
     private Variable[] inputVariables;
     private final DataSourceDefinition dataSourceDefinition;
     private Constraint constraint;
-    private Collection<Binding> bindings;
+    private List<Binding> bindings;
     private Collection<String> watchedProps;
 
     public PatternImpl(Variable<T> variable) {
@@ -110,5 +112,21 @@ public class PatternImpl<T> extends AbstractSinglePattern implements Pattern<T> 
                 collectInputVariables(child, varSet);
             }
         }
+    }
+
+    @Override
+    public boolean isEqualTo( ModelComponent o ) {
+        if ( this == o ) return true;
+        if ( !(o instanceof PatternImpl) ) return false;
+
+        PatternImpl<?> pattern = ( PatternImpl<?> ) o;
+
+        if ( !ModelComponent.areEqualInModel( variable, pattern.variable ) ) return false;
+        if ( !ModelComponent.areEqualInModel( inputVariables, pattern.inputVariables ) ) return false;
+        if ( dataSourceDefinition != null ? !dataSourceDefinition.equals( pattern.dataSourceDefinition ) : pattern.dataSourceDefinition != null )
+            return false;
+        if ( !ModelComponent.areEqualInModel( constraint, pattern.constraint ) ) return false;
+        if ( !ModelComponent.areEqualInModel( bindings, pattern.bindings ) ) return false;
+        return watchedProps != null ? watchedProps.equals( pattern.watchedProps ) : pattern.watchedProps == null;
     }
 }

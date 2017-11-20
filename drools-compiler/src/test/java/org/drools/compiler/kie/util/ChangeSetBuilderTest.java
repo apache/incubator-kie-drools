@@ -15,14 +15,6 @@
 
 package org.drools.compiler.kie.util;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,11 +32,8 @@ import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.internal.builder.ChangeType;
 import org.kie.internal.builder.ResourceChange;
-import org.kie.internal.builder.ResourceChangeSet;
 import org.kie.internal.builder.ResourceChange.Type;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.kie.internal.builder.ResourceChangeSet;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
@@ -73,8 +62,7 @@ public class ChangeSetBuilderTest {
         InternalKieModule kieJar1 = createKieJar( drl1, drl2 );
         InternalKieModule kieJar2 = createKieJar( drl1, drl2 );
 
-        ChangeSetBuilder builder = new ChangeSetBuilder();
-        KieJarChangeSet changes = builder.build( kieJar1, kieJar2 );
+        KieJarChangeSet changes = ChangeSetBuilder.build( kieJar1, kieJar2 );
         
         assertThat( changes.getChanges().size(), is(0));
     }
@@ -102,7 +90,7 @@ public class ChangeSetBuilderTest {
         InternalKieModule kieJar1 = createKieJar( drl1, drl2 );
         InternalKieModule kieJar2 = createKieJar( drl1, drl3 );
 
-        KieJarChangeSet changes = new ChangeSetBuilder().build( kieJar1, kieJar2 );
+        KieJarChangeSet changes = ChangeSetBuilder.build( kieJar1, kieJar2 );
         
         String modifiedFile = (String) kieJar2.getFileNames().toArray()[1];
         
@@ -135,7 +123,7 @@ public class ChangeSetBuilderTest {
         InternalKieModule kieJar1 = createKieJar( drl1, drl2 );
         InternalKieModule kieJar2 = createKieJar( drl1 );
 
-        KieJarChangeSet changes = new ChangeSetBuilder().build( kieJar1, kieJar2 );
+        KieJarChangeSet changes = ChangeSetBuilder.build( kieJar1, kieJar2 );
 
         String removedFile = (String) kieJar1.getFileNames().toArray()[1];
         
@@ -191,8 +179,7 @@ public class ChangeSetBuilderTest {
         InternalKieModule kieJar1 = createKieJar( drl1, drl2 );
         InternalKieModule kieJar2 = createKieJar( drl1_5, null, drl3 );
 
-        ChangeSetBuilder builder = new ChangeSetBuilder();
-        KieJarChangeSet changes = builder.build( kieJar1, kieJar2 );
+        KieJarChangeSet changes = ChangeSetBuilder.build( kieJar1, kieJar2 );
         
 //        System.out.println( builder.toProperties( changes ) );
 
@@ -242,8 +229,7 @@ public class ChangeSetBuilderTest {
         InternalKieModule kieJar1 = createKieJar( drl1 + drl2 + drl3 );
         InternalKieModule kieJar2 = createKieJar( drl1 + drl3 );
 
-        ChangeSetBuilder builder = new ChangeSetBuilder();
-        KieJarChangeSet changes = builder.build( kieJar1, kieJar2 );
+        KieJarChangeSet changes = ChangeSetBuilder.build( kieJar1, kieJar2 );
         assertEquals( 1, changes.getChanges().size() );
 
         ResourceChangeSet rcs = changes.getChanges().values().iterator().next();

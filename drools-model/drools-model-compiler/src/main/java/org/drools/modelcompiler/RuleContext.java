@@ -54,7 +54,7 @@ public class RuleContext {
      * All KiePackage known to the KiePackagesBuilder
      */
     public Collection<KiePackage> getKnowledgePackages() {
-        return builder.getKnowledgePackages();
+        return builder.getKiePackages();
     }
 
     public KnowledgePackageImpl getPkg() {

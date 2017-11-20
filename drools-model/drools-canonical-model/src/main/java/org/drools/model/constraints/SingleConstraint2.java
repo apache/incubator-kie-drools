@@ -3,6 +3,7 @@ package org.drools.model.constraints;
 import org.drools.model.Variable;
 import org.drools.model.functions.Predicate2;
 import org.drools.model.functions.PredicateN;
+import org.drools.model.impl.ModelComponent;
 import org.drools.model.view.Expr2ViewItemImpl;
 
 import static org.drools.model.functions.LambdaIntrospector.getLambdaFingerprint;
@@ -41,5 +42,17 @@ public class SingleConstraint2<A, B> extends AbstractSingleConstraint {
     @Override
     public PredicateN getPredicate() {
         return objs -> predicate.test( (A)objs[0], (B)objs[1] );
+    }
+
+    @Override
+    public boolean isEqualTo( ModelComponent o ) {
+        if ( this == o ) return true;
+        if ( o == null || getClass() != o.getClass() ) return false;
+
+        SingleConstraint2<?, ?> that = ( SingleConstraint2<?, ?> ) o;
+
+        if ( !ModelComponent.areEqualInModel( var1, that.var1 ) ) return false;
+        if ( !ModelComponent.areEqualInModel( var2, that.var2 ) ) return false;
+        return predicate.equals( that.predicate );
     }
 }

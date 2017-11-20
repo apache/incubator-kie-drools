@@ -68,4 +68,22 @@ public class OOPathViewItem<S, T> implements ViewItem<T> {
             return expr;
         }
     }
+
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) return true;
+        if ( !(o instanceof OOPathViewItem) ) return false;
+
+        OOPathViewItem<?, ?> that = ( OOPathViewItem<?, ?> ) o;
+
+        if ( source != null ? !source.equals( that.source ) : that.source != null ) return false;
+        return chunks != null ? chunks.equals( that.chunks ) : that.chunks == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = source != null ? source.hashCode() : 0;
+        result = 31 * result + (chunks != null ? chunks.hashCode() : 0);
+        return result;
+    }
 }

@@ -15,16 +15,29 @@
 
 package org.drools.compiler.kie.util;
 
-import org.kie.internal.builder.ResourceChangeSet;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import org.kie.internal.builder.ChangeType;
+import org.kie.internal.builder.ResourceChangeSet;
 
 public class KieJarChangeSet {
     private final Map<String, ResourceChangeSet> changes = new HashMap<String, ResourceChangeSet>();
 
     public Map<String, ResourceChangeSet> getChanges() {
         return changes;
+    }
+
+    public void removeFile(String file) {
+        changes.put( file, new ResourceChangeSet( file, ChangeType.REMOVED ) );
+    }
+
+    public void addFile(String file) {
+        changes.put( file, new ResourceChangeSet( file, ChangeType.ADDED ) );
+    }
+
+    public void registerChanges(String file, ResourceChangeSet changeSet) {
+        changes.put( file, changeSet );
     }
 
     public boolean contains(String resourceName) {

@@ -1,12 +1,27 @@
+/*
+ * Copyright 2005 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.drools.model.functions;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.model.Variable;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.Label;
@@ -14,10 +29,9 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
 public class LambdaIntrospector {
-
     private static final LambdaIntrospector INSTANCE = new LambdaIntrospector();
 
-    private Map<String, Map<String, String>> methodFingerprintsMap = new HashMap<String, Map<String, String>>();
+    private Map<ClassIdentifier, Map<String, String>> methodFingerprintsMap = new HashMap<>();
 
     private LambdaIntrospector() { }
 
@@ -26,40 +40,67 @@ public class LambdaIntrospector {
     }
 
     public static String getLambdaFingerprint(Object lambda) {
-        StringBuilder sb = new StringBuilder();
-        sb.append( LambdaIntrospector.getInstance().introspectLambda( lambda ) );
-        return sb.toString();
+        String result = LambdaIntrospector.getInstance().introspectLambda( lambda );
+        return result == null ? "" : result;
     }
 
     private String introspectLambda(Object lambda) {
-        SerializedLambda extracted = SerializedLambda.extractLambda( (Serializable) lambda );
-        return getFingerprintsForClass( lambda, extracted ).get( extracted.implMethodName );
+        if (lambda instanceof IntrospectableLambda) {
+            lambda = (( IntrospectableLambda ) lambda).getLambda();
+        }
+        java.lang.invoke.SerializedLambda extracted = extractLambda( (Serializable) lambda );
+        return getFingerprintsForClass( lambda, extracted ).get( extracted.getImplMethodName() );
     }
 
-    private Map<String, String> getFingerprintsForClass(Object lambda, SerializedLambda extracted) {
-        Map<String, String> fingerprints = methodFingerprintsMap.get(extracted.implClass);
-        if (fingerprints == null) {
-            LambdaClassVisitor visitor = new LambdaClassVisitor(lambda);
+    public static java.lang.invoke.SerializedLambda extractLambda(Serializable lambda) {
+        try {
+            Method method = lambda.getClass().getDeclaredMethod( "writeReplace" );
+            method.setAccessible( true );
+            return ( java.lang.invoke.SerializedLambda ) method.invoke( lambda );
+        } catch (Exception e) {
+            throw new RuntimeException( e );
+        }
+    }
 
-            InputStream classStream = null;
-            try {
-                classStream = lambda.getClass().getClassLoader()
-                                    .getResourceAsStream( extracted.implClass.replace( '.', '/' ) + ".class" );
+    private Map<String, String> getFingerprintsForClass( Object lambda, java.lang.invoke.SerializedLambda extracted) {
+        ClassLoader lambdaClassLoader = lambda.getClass().getClassLoader();
+        String className = extracted.getImplClass();
+        ClassIdentifier id = new ClassIdentifier( lambdaClassLoader, className );
+        Map<String, String> fingerprints = methodFingerprintsMap.get( id );
+
+        if (fingerprints == null) {
+            LambdaIntrospector.LambdaClassVisitor visitor = new LambdaIntrospector.LambdaClassVisitor(lambda);
+            try (InputStream classStream = lambdaClassLoader.getResourceAsStream( className.replace( '.', '/' ) + ".class" )) {
                 ClassReader reader = new ClassReader( classStream);
                 reader.accept(visitor, ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
             } catch (Exception e) {
                 throw new RuntimeException( e );
-            } finally {
-                try {
-                    classStream.close();
-                } catch (IOException e) {
-                    throw new RuntimeException( e );
-                }
             }
             fingerprints = visitor.getMethodsMap();
-            methodFingerprintsMap.put( extracted.implClass, fingerprints );
+            methodFingerprintsMap.put( id, fingerprints );
         }
         return fingerprints;
+    }
+
+    private static class ClassIdentifier {
+        private final ClassLoader classLoader;
+        private final String className;
+
+        private ClassIdentifier( ClassLoader classLoader, String className ) {
+            this.classLoader = classLoader;
+            this.className = className;
+        }
+
+        @Override
+        public boolean equals( Object o ) {
+            ClassIdentifier that = ( ClassIdentifier ) o;
+            return className.equals( that.className ) && classLoader == that.classLoader;
+        }
+
+        @Override
+        public int hashCode() {
+            return 31 * className.hashCode() + classLoader.hashCode();
+        }
     }
 
     private static class LambdaClassVisitor extends ClassVisitor {
@@ -75,7 +116,7 @@ public class LambdaIntrospector {
 
         @Override
         public MethodVisitor visitMethod( int access, String name, String desc, String signature, String[] exceptions ) {
-            return name.startsWith( "lambda$" ) ? new LambdaMethodVisitor(this, name) : super.visitMethod(access, name, desc, signature, exceptions);
+            return name.startsWith( "lambda$" ) ? new LambdaIntrospector.LambdaMethodVisitor(this, name) : super.visitMethod(access, name, desc, signature, exceptions);
         }
 
         public void setMethodFingerprint( String methodname, String methodFingerprint ) {
@@ -89,11 +130,11 @@ public class LambdaIntrospector {
 
     public static class LambdaMethodVisitor extends MethodVisitor {
 
-        private final LambdaClassVisitor lambdaClassVisitor;
+        private final LambdaIntrospector.LambdaClassVisitor lambdaClassVisitor;
         private final String methodName;
         private final StringBuilder sb = new StringBuilder();
 
-        public LambdaMethodVisitor(LambdaClassVisitor lambdaClassVisitor, String methodName) {
+        public LambdaMethodVisitor( LambdaIntrospector.LambdaClassVisitor lambdaClassVisitor, String methodName) {
             super(Opcodes.ASM5);
             this.lambdaClassVisitor = lambdaClassVisitor;
             this.methodName = methodName;

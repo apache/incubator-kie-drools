@@ -52,4 +52,13 @@ public class DeclarationImpl<T> extends VariableImpl<T> implements Declaration<T
         this.window = window;
         return this;
     }
+
+    @Override
+    public boolean isEqualTo( ModelComponent var ) {
+        if ( !super.isEqualTo( var ) ) return false;
+        if ( !(var instanceof DeclarationImpl) ) return false;
+        DeclarationImpl decl = (DeclarationImpl) var;
+        if ( source != null ? !source.equals( decl.source ) : decl.source != null ) return false;
+        return window != null ? window.equals( decl.window ) : decl.window == null;
+    }
 }

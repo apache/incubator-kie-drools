@@ -38,7 +38,7 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
 
     @Override
     protected KnowledgeBuilder createKnowledgeBuilder( KieBaseModelImpl kBaseModel, AbstractKieModule kModule ) {
-        modelBuilder = new ModelBuilderImpl();
+        modelBuilder = new ModelBuilderImpl( getBuilderConfiguration( kBaseModel, kModule ) );
         return modelBuilder;
     }
 
@@ -54,7 +54,6 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
             throw new RuntimeException( "Compilation errors: " + Arrays.toString( res.getErrors() ) );
         }
 
-        modelWriter.writePackages(result.getPackages(), trgMfs);
-
+        modelWriter.writeModelFile(result.modelFiles, trgMfs);
     }
 }

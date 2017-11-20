@@ -16,6 +16,7 @@
 
 package org.drools.model.impl;
 
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import org.drools.model.WindowReference;
@@ -23,7 +24,7 @@ import org.drools.model.functions.Predicate1;
 
 import static org.drools.model.impl.NamesGenerator.generateName;
 
-public class WindowReferenceImpl<T> extends AbstractWindow implements WindowReference<T> {
+public class WindowReferenceImpl<T> extends AbstractWindow implements WindowReference<T>, ModelComponent {
 
     private final Class<T> patternType;
     private final Predicate1<T>[] predicates;
@@ -50,5 +51,18 @@ public class WindowReferenceImpl<T> extends AbstractWindow implements WindowRefe
 
     public String getName() {
         return name;
+    }
+
+    @Override
+    public boolean isEqualTo( ModelComponent o ) {
+        if ( this == o ) return true;
+        if ( !(o instanceof WindowReferenceImpl) ) return false;
+
+        WindowReferenceImpl<?> that = ( WindowReferenceImpl<?> ) o;
+
+        if ( !super.isEqualTo( that ) ) return false;
+        if ( patternType != null ? !patternType.equals( that.patternType ) : that.patternType != null ) return false;
+        if ( !Arrays.equals( predicates, that.predicates ) ) return false;
+        return name != null ? name.equals( that.name ) : that.name == null;
     }
 }
