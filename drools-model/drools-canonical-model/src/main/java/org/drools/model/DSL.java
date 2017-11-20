@@ -1,6 +1,7 @@
 package org.drools.model;
 
 import java.io.Serializable;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import org.drools.model.consequences.ConditionalConsequenceBuilder;
@@ -249,7 +250,7 @@ public class DSL {
         return new ExistentialExprViewItem( Condition.Type.FORALL, and( expression, expressions) );
     }
 
-    public static <T> ExprViewItem<T> accumulate(ExprViewItem<T> expr, AccumulateFunction<T, ?, ?>... functions) {
+    public static <T> ExprViewItem<T> accumulate(ExprViewItem<T> expr, AccumulateFunction<?, ?, ?>... functions) {
         return new AccumulateExprViewItem(expr, functions);
     }
 
@@ -340,7 +341,15 @@ public class DSL {
     // -- Accumulate Functions --
 
     public static <T, N extends Number> Sum<T, N> sum(Function1<T, N> mapper) {
-        return new Sum(mapper);
+        return new Sum(Optional.empty(), Optional.of(mapper));
+    }
+
+    public static <T, N extends Number> Sum<T, N> sum(Variable<T> source, Function1<T, N> mapper) {
+        return new Sum(Optional.of(source), Optional.of(mapper));
+    }
+
+    public static <N extends Number> Sum<N, N> sum(Variable<N> source) {
+        return new Sum<N, N>(Optional.of(source), x -> x);
     }
 
     public static <T> Average<T> average(Function1<T, ? extends Number> mapper) {

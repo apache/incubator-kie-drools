@@ -26,6 +26,7 @@ import org.assertj.core.api.Assertions;
 import org.drools.core.ClockType;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.reteoo.AlphaNode;
+import org.drools.model.DSL;
 import org.drools.model.Global;
 import org.drools.model.Index.ConstraintType;
 import org.drools.model.Model;
@@ -34,6 +35,8 @@ import org.drools.model.Query1Def;
 import org.drools.model.Query2Def;
 import org.drools.model.Rule;
 import org.drools.model.Variable;
+import org.drools.model.functions.accumulate.AbstractAccumulateFunction;
+import org.drools.model.functions.accumulate.Sum;
 import org.drools.model.impl.ModelImpl;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
 import org.drools.modelcompiler.domain.Adult;
@@ -454,10 +457,17 @@ public class FlowTest {
                                                                                                        "$p");
         final org.drools.model.Variable<Integer> var_$sum = declarationOf(type(Integer.class),
                                                                           "$sum");
-        org.drools.model.Rule rule = rule("X").build(accumulate(expr("$expr$1$",
+
+        final Variable<Integer> var_$age = declarationOf(type(Integer.class), "$age");
+        AbstractAccumulateFunction<Person, Sum.Context<Integer>, Integer> sumExpr = sum((Person $p) -> $p.getAge()).as(var_$sum);
+
+        org.drools.model.Rule rule = rule("X").build(
+                                                    bind(var_$age).as(var_$p, p -> p.getAge()),
+                                                    accumulate(expr("$expr$1$",
                                                                      var_$p,
                                                                      (_this) -> _this.getAge() > 36),
-                                                                sum((org.drools.modelcompiler.domain.Person $p) -> $p.getAge()).as(var_$sum)),
+                                                               sum(var_$age).as(var_$sum)
+                                                     ),
                                                      on(var_$sum).execute((drools, $sum) -> {
                                                          drools.insert(new Result($sum));
                                                      }));
