@@ -199,7 +199,7 @@ public class FEELImpl
                     continue;
                 } else if ( o instanceof UnaryTestNode || o instanceof DashNode ) {
                     tests.add( o );
-                } else if( o instanceof RangeNode ) {
+                } else if (o instanceof RangeNode || o instanceof ListNode) {
                     tests.add( new UnaryTestNode( "in", o ) );
                 } else {
                     tests.add( new UnaryTestNode( "=", o ) );
