@@ -163,8 +163,8 @@ public class UnaryTestNode
                     c.notifyEvt(astEvent(Severity.ERROR, Msg.createMessage(Msg.EXPRESSION_IS_RANGE_BUT_VALUE_IS_NOT_COMPARABLE, o.toString(), val.toString())));
                     throw e;
                 }
-            } else if (val instanceof List) {
-                return ((List) val).contains(o);
+            } else if (val instanceof Collection) {
+                return ((Collection) val).contains(o);
             } else {
                 return false; // make consistent with #createNotUnaryTest()
             }
@@ -200,8 +200,8 @@ public class UnaryTestNode
                         c.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.EXPRESSION_IS_RANGE_BUT_VALUE_IS_NOT_COMPARABLE, o.toString(), test.toString() ) ) );
                         throw e;
                     }
-                } else if (test instanceof List) {
-                    return !((List) val).contains(o);
+                } else if (test instanceof Collection) {
+                    return !((Collection) val).contains(o);
                 } else {
                     // test is a constant, so return false if it is equal to "o"
                     if( test.equals( o ) ) {
