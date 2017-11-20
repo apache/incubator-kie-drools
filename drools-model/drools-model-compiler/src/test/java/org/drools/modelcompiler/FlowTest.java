@@ -417,37 +417,6 @@ public class FlowTest {
 
 
     @Test
-    public void testAccumulateWithInnerBindingPattern() {
-
-        final org.drools.model.Variable<java.lang.Object> var_$pattern_Object$1$ = declarationOf(type(java.lang.Object.class),
-                                                                                                 "$pattern_Object$1$");
-        final org.drools.model.Variable<org.drools.modelcompiler.domain.Person> var_$p = declarationOf(type(org.drools.modelcompiler.domain.Person.class),
-                                                                                                       "$p");
-        final org.drools.model.Variable<Integer> var_$sum = declarationOf(type(Integer.class),
-                                                                          "$sum");
-        org.drools.model.Rule rule = rule("X").build(accumulate(expr("$expr$1$",
-                                                                     var_$p,
-                                                                     (_this) -> _this.getAge() > 36),
-                                                                sum((org.drools.modelcompiler.domain.Person $p) -> $p.getAge()).as(var_$sum)),
-                                                     on(var_$sum).execute((drools, $sum) -> {
-                                                         drools.insert(new Result($sum));
-                                                     }));
-
-        Model model = new ModelImpl().addRule( rule );
-        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
-
-        KieSession ksession = kieBase.newKieSession();
-
-        ksession.insert(new Person("Mark", 37));
-        ksession.insert(new Person("Edson", 35));
-        ksession.insert(new Person("Mario", 40));
-
-        ksession.fireAllRules();
-        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
-        assertThat(results, hasItem(new Result(37)));
-    }
-
-    @Test
     public void testAccumulate2() {
         Result result = new Result();
         Variable<Person> person = declarationOf( type( Person.class ) );
@@ -474,6 +443,37 @@ public class FlowTest {
 
         ksession.fireAllRules();
         assertEquals("total = 77; average = 38.5", result.getValue());
+    }
+
+    @Test
+    public void testAccumulate3() {
+
+        final org.drools.model.Variable<java.lang.Object> var_$pattern_Object$1$ = declarationOf(type(java.lang.Object.class),
+                                                                                                 "$pattern_Object$1$");
+        final org.drools.model.Variable<org.drools.modelcompiler.domain.Person> var_$p = declarationOf(type(org.drools.modelcompiler.domain.Person.class),
+                                                                                                       "$p");
+        final org.drools.model.Variable<Integer> var_$sum = declarationOf(type(Integer.class),
+                                                                          "$sum");
+        org.drools.model.Rule rule = rule("X").build(accumulate(expr("$expr$1$",
+                                                                     var_$p,
+                                                                     (_this) -> _this.getAge() > 36),
+                                                                sum((org.drools.modelcompiler.domain.Person $p) -> $p.getAge()).as(var_$sum)),
+                                                     on(var_$sum).execute((drools, $sum) -> {
+                                                         drools.insert(new Result($sum));
+                                                     }));
+
+        Model model = new ModelImpl().addRule( rule );
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
+
+        KieSession ksession = kieBase.newKieSession();
+
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Edson", 35));
+        ksession.insert(new Person("Mario", 40));
+
+        ksession.fireAllRules();
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertThat(results, hasItem(new Result(77)));
     }
 
     @Test
