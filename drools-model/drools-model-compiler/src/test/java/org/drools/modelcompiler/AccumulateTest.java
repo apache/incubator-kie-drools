@@ -18,6 +18,7 @@ package org.drools.modelcompiler;
 
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
@@ -111,5 +112,30 @@ public class AccumulateTest extends BaseModelTest {
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
         assertThat(results, hasItem(new Result(38.5)));
         assertThat(results, hasItem(new Result(77)));
+    }
+
+    @Test
+    public void testAccumulate3() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "import " + Result.class.getCanonicalName() + ";" +
+                        "rule X when\n" +
+                        "  accumulate ( Person ( $age : age > 36); \n" +
+                        "                $c : sum($age)  \n" +
+                        "              )                          \n" +
+                        "then\n" +
+                        "  insert(new Result($c));\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Edson", 35));
+        ksession.insert(new Person("Mario", 40));
+
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(77, results.iterator().next().getValue());
     }
 }

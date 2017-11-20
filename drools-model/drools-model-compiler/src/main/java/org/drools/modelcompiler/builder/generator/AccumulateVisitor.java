@@ -61,6 +61,8 @@ public class AccumulateVisitor {
 
             Class<?> declClass = getReturnTypeForAggregateFunction(functionDSL.getName().asString(), clazz, methodCallExpr);
             context.addDeclaration(new DeclarationSpec(function.getBind(), declClass));
+        } else if (expr instanceof NameExpr){
+            functionDSL.addArgument(new NameExpr(toVar(((NameExpr) expr).getName().asString())));
         }
 
         final MethodCallExpr asDSL = new MethodCallExpr(functionDSL, "as");
