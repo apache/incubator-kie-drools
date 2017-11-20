@@ -68,4 +68,24 @@ public class OOPathImpl implements OOPath {
     public List<OOPathChunk<?>> getChunks() {
         return chunks;
     }
+
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) return true;
+        if ( !(o instanceof OOPathImpl) ) return false;
+
+        OOPathImpl ooPath = ( OOPathImpl ) o;
+
+        if ( source != null ? !source.equals( ooPath.source ) : ooPath.source != null ) return false;
+        if ( chunks != null ? !chunks.equals( ooPath.chunks ) : ooPath.chunks != null ) return false;
+        return firstCondition != null ? firstCondition.equals( ooPath.firstCondition ) : ooPath.firstCondition == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = source != null ? source.hashCode() : 0;
+        result = 31 * result + (chunks != null ? chunks.hashCode() : 0);
+        result = 31 * result + (firstCondition != null ? firstCondition.hashCode() : 0);
+        return result;
+    }
 }

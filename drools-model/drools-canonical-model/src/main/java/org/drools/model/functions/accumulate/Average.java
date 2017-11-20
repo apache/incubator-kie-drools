@@ -1,12 +1,13 @@
 package org.drools.model.functions.accumulate;
 
-import org.drools.model.Variable;
-import org.drools.model.functions.Function1;
-
 import java.io.Serializable;
 import java.util.Optional;
 
-public class Average<T> extends AbstractAccumulateFunction<T, Average.Context, Double> {
+import org.drools.model.Variable;
+import org.drools.model.functions.Function1;
+import org.drools.model.impl.ModelComponent;
+
+public class Average<T> extends AbstractAccumulateFunction<T, Average.Context, Double> implements ModelComponent {
 
     private final Function1<T, ? extends Number> mapper;
 
@@ -66,5 +67,16 @@ public class Average<T> extends AbstractAccumulateFunction<T, Average.Context, D
         private double result() {
             return count == 0 ? 0 : total / count;
         }
+    }
+
+    @Override
+    public boolean isEqualTo( ModelComponent o ) {
+        if ( this == o ) return true;
+        if ( !(o instanceof Average) ) return false;
+
+        Average<?> that = ( Average<?> ) o;
+
+        if ( !ModelComponent.areEqualInModel( getVariable(), that.getVariable() ) ) return false;
+        return mapper.equals( that.mapper );
     }
 }

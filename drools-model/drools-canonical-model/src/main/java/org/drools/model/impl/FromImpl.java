@@ -20,7 +20,7 @@ import org.drools.model.From;
 import org.drools.model.Variable;
 import org.drools.model.functions.Function1;
 
-public class FromImpl<T> implements From<T> {
+public class FromImpl<T> implements From<T>, ModelComponent {
 
     private final Variable<T> variable;
     private final Function1<T, ?> provider;
@@ -49,5 +49,17 @@ public class FromImpl<T> implements From<T> {
     @Override
     public boolean isReactive() {
         return reactive;
+    }
+
+    @Override
+    public boolean isEqualTo( ModelComponent o ) {
+        if ( this == o ) return true;
+        if ( !(o instanceof FromImpl) ) return false;
+
+        FromImpl<?> from = ( FromImpl<?> ) o;
+
+        if ( reactive != from.reactive ) return false;
+        if ( !ModelComponent.areEqualInModel( variable, from.variable ) ) return false;
+        return provider != null ? provider.equals( from.provider ) : from.provider == null;
     }
 }

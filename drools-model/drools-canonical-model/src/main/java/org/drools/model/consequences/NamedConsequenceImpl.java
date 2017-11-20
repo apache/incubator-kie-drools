@@ -18,8 +18,9 @@ package org.drools.model.consequences;
 
 import org.drools.model.Condition;
 import org.drools.model.Variable;
+import org.drools.model.impl.ModelComponent;
 
-public class NamedConsequenceImpl implements Condition {
+public class NamedConsequenceImpl implements Condition, ModelComponent {
 
     private final String name;
     private final boolean breaking;
@@ -45,5 +46,16 @@ public class NamedConsequenceImpl implements Condition {
     @Override
     public Variable<?>[] getBoundVariables() {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean isEqualTo( ModelComponent o ) {
+        if ( this == o ) return true;
+        if ( !(o instanceof NamedConsequenceImpl) ) return false;
+
+        NamedConsequenceImpl that = ( NamedConsequenceImpl ) o;
+
+        if ( breaking != that.breaking ) return false;
+        return name != null ? name.equals( that.name ) : that.name == null;
     }
 }

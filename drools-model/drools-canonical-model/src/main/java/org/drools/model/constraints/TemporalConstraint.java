@@ -19,6 +19,7 @@ package org.drools.model.constraints;
 import org.drools.model.Variable;
 import org.drools.model.functions.PredicateN;
 import org.drools.model.functions.temporal.TemporalPredicate;
+import org.drools.model.impl.ModelComponent;
 import org.drools.model.view.TemporalExprViewItem;
 
 public class TemporalConstraint<A> extends AbstractSingleConstraint {
@@ -55,5 +56,18 @@ public class TemporalConstraint<A> extends AbstractSingleConstraint {
 
     public TemporalPredicate getTemporalPredicate() {
         return temporalPredicate;
+    }
+
+
+    @Override
+    public boolean isEqualTo( ModelComponent o ) {
+        if ( this == o ) return true;
+        if ( o == null || getClass() != o.getClass() ) return false;
+
+        TemporalConstraint<?> that = ( TemporalConstraint<?> ) o;
+
+        if ( !ModelComponent.areEqualInModel( var1, that.var1 ) ) return false;
+        if ( !ModelComponent.areEqualInModel( var2, that.var2 ) ) return false;
+        return temporalPredicate.equals( that.temporalPredicate );
     }
 }

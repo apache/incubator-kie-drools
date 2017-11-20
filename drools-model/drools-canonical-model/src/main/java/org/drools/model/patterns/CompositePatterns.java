@@ -1,19 +1,20 @@
 package org.drools.model.patterns;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Stream;
+
 import org.drools.model.Condition;
 import org.drools.model.Consequence;
 import org.drools.model.Variable;
 import org.drools.model.View;
 import org.drools.model.consequences.ConditionalNamedConsequenceImpl;
 import org.drools.model.consequences.NamedConsequenceImpl;
+import org.drools.model.impl.ModelComponent;
 import org.drools.model.impl.RuleImpl;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Stream;
-
-public class CompositePatterns implements Condition, View {
+public class CompositePatterns implements Condition, View, ModelComponent {
 
     private final Type type;
     private final List<Condition> patterns;
@@ -80,5 +81,17 @@ public class CompositePatterns implements Condition, View {
             result++;
         }
         throw new IllegalArgumentException( "Cannot find consequence with name " + name );
+    }
+
+    @Override
+    public boolean isEqualTo( ModelComponent o ) {
+        if ( this == o ) return true;
+        if ( !(o instanceof CompositePatterns) ) return false;
+
+        CompositePatterns patterns1 = ( CompositePatterns ) o;
+
+        if ( type != patterns1.type ) return false;
+        if ( !ModelComponent.areEqualInModel( patterns, patterns1.patterns ) ) return false;
+        return ModelComponent.areEqualInModel( consequences, patterns1.consequences );
     }
 }
