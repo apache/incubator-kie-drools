@@ -1542,5 +1542,28 @@ public class DMNRuntimeTest {
         // but should have been a FEEL:number.
         assertThat(dmnResult.getMessages().stream().filter(m -> m.getMessageType() == DMNMessageType.ERROR_EVAL_NODE).anyMatch(m -> m.getMessage().endsWith("is not allowed by the declared type (DMNType{ http://www.omg.org/spec/FEEL/20140401 : number })")), is(true));
     }
+
+    @Test
+    public void testDrools2125() {
+        // DROOLS-2125
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime("drools2125.dmn", this.getClass());
+        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_9f976b29-4cdd-42e9-8737-0ccbc2ad9498", "drools2125");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        DMNContext context = DMNFactory.newContext();
+        context.set("person", "Bob");
+        context.set("list of persons", Arrays.asList("Bob", "John"));
+
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        DMNContext result = dmnResult.getContext();
+        assertThat(result.get("person is Bob"), is("yes"));
+        assertThat(result.get("persons complies with UT list"), is("yes"));
+        assertThat(result.get("person on the list of persons"), is("yes"));
+        assertThat(result.get("persons complies with hardcoded list"), is("yes"));
+        assertThat(result.get("person is person"), is("yes"));
+    }
 }
 
