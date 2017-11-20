@@ -197,14 +197,14 @@ public abstract class BaseFEELFunction
             if( injectCtx ) {
                 actualParams = new Object[ params.length + 1 ];
                 int j = 0;
-                for( int i = 0; i < m.getParameterCount() && j < params.length; i++ ) {
+                for (int i = 0; i < m.getParameterCount(); i++) {
                     if( EvaluationContext.class.isAssignableFrom( m.getParameterTypes()[i] ) ) {
                         if( isNamedParams ) {
                             actualParams[i] = new NamedParameter( "ctx", ctx );
                         } else {
                             actualParams[i] = ctx;
                         }
-                    } else {
+                    } else if (j < params.length) {
                         actualParams[i] = params[j];
                         j++;
                     }
