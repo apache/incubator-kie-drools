@@ -1,11 +1,12 @@
 package org.drools.model.constraints;
 
-import org.drools.model.Constraint;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public class OrConstraints extends AbstractConstraint {
+import org.drools.model.Constraint;
+import org.drools.model.impl.ModelComponent;
+
+public class OrConstraints extends AbstractConstraint implements ModelComponent {
 
     private final List<Constraint> constraints = new ArrayList<Constraint>();
 
@@ -29,5 +30,15 @@ public class OrConstraints extends AbstractConstraint {
     @Override
     public Type getType() {
         return Type.OR;
+    }
+
+    @Override
+    public boolean isEqualTo( ModelComponent o ) {
+        if ( this == o ) return true;
+        if ( !(o instanceof OrConstraints) ) return false;
+
+        OrConstraints that = ( OrConstraints ) o;
+
+        return ModelComponent.areEqualInModel( constraints, that.constraints );
     }
 }

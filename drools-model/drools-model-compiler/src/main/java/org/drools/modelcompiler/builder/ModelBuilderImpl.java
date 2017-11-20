@@ -23,11 +23,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.impl.InternalKnowledgeBase;
 
 import static org.drools.modelcompiler.builder.generator.ModelGenerator.generateModel;
 import static org.drools.modelcompiler.builder.generator.POJOGenerator.compileType;
@@ -37,6 +39,22 @@ import static org.drools.modelcompiler.builder.generator.POJOGenerator.registerT
 public class ModelBuilderImpl extends KnowledgeBuilderImpl {
 
     private final Map<String, PackageModel> packageModels = new HashMap<>();
+
+    public ModelBuilderImpl() {
+        super();
+    }
+
+    public ModelBuilderImpl(KnowledgeBuilderConfigurationImpl configuration) {
+        super(configuration);
+    }
+
+    public ModelBuilderImpl(InternalKnowledgeBase kBase) {
+        super(kBase);
+    }
+
+    public ModelBuilderImpl(InternalKnowledgeBase kBase, KnowledgeBuilderConfigurationImpl configuration) {
+        super(kBase, configuration);
+    }
 
     @Override
     public void buildPackages(Collection<CompositePackageDescr> packages) {
