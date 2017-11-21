@@ -6,6 +6,7 @@ public interface Function2<A, B, R> {
     class Impl<A,B,R> implements Function2<A,B,R> {
 
         private final Function2<A,B,R> function;
+        private String lambdaFingerprint;
 
         public Impl(Function2<A,B,R> function) {
             this.function = function;
@@ -18,7 +19,10 @@ public interface Function2<A, B, R> {
 
         @Override
         public String toString() {
-            return LambdaIntrospector.getLambdaFingerprint(function);
+            if(lambdaFingerprint == null) {
+                lambdaFingerprint = LambdaIntrospector.getLambdaFingerprint(function);
+            }
+            return lambdaFingerprint;
         }
     }
 }

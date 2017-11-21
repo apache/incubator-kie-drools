@@ -18,6 +18,7 @@ public interface Function0<R> {
     class Impl<R> implements Function0<R> {
 
         private final Function0<R> function;
+        private String lambdaFingerprint;
 
         public Impl(Function0<R> function) {
             this.function = function;
@@ -30,7 +31,10 @@ public interface Function0<R> {
 
         @Override
         public String toString() {
-            return LambdaIntrospector.getLambdaFingerprint(function);
+            if(lambdaFingerprint == null) {
+                lambdaFingerprint = LambdaIntrospector.getLambdaFingerprint(function);
+            }
+            return lambdaFingerprint;
         }
     }
 }

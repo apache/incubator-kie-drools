@@ -8,6 +8,7 @@ public interface Function1<T, R> extends Serializable {
     class Impl<T,R> implements Function1<T, R> {
 
         private final Function1<T,R> function;
+        private String lambdaFingerprint;
 
         public Impl(Function1<T, R> function) {
             this.function = function;
@@ -20,7 +21,10 @@ public interface Function1<T, R> extends Serializable {
 
         @Override
         public String toString() {
-            return LambdaIntrospector.getLambdaFingerprint(function);
+            if(lambdaFingerprint == null) {
+                lambdaFingerprint = LambdaIntrospector.getLambdaFingerprint(function);
+            }
+            return lambdaFingerprint;
         }
     }
 
