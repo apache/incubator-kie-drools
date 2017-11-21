@@ -458,7 +458,7 @@ public class FlowTest {
         final org.drools.model.Variable<Integer> var_$sum = declarationOf(type(Integer.class),
                                                                           "$sum");
 
-        final Variable<Integer> var_$age = declarationOf(type(Integer.class), "$a");
+        final Variable<Integer> var_$age = declarationOf(type(Integer.class), "$age");
         AbstractAccumulateFunction<Person, Sum.Context<Integer>, Integer> sumExpr = sum((Person $p) -> $p.getAge()).as(var_$sum);
 
         org.drools.model.Rule rule = rule("X").build(

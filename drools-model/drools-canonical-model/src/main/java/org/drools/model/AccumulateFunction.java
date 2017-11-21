@@ -5,7 +5,7 @@ import java.util.Optional;
 
 public interface AccumulateFunction<T, A extends Serializable, R> {
 
-    Optional<Variable<R>> getOptSource();
+    Optional<Variable<T>> getOptSource();
 
     A init();
 

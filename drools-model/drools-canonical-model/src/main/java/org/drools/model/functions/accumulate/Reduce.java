@@ -17,7 +17,7 @@ public class Reduce<T, R extends Serializable> extends AbstractAccumulateFunctio
     }
 
     @Override
-    public Optional<Variable<R>> getOptSource() {
+    public Optional<Variable<T>> getOptSource() {
         return Optional.empty();
     }
 

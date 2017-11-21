@@ -17,6 +17,9 @@ import org.drools.model.functions.Function2;
 import org.drools.model.functions.Predicate1;
 import org.drools.model.functions.Predicate2;
 import org.drools.model.functions.accumulate.Average;
+import org.drools.model.functions.accumulate.Count;
+import org.drools.model.functions.accumulate.Max;
+import org.drools.model.functions.accumulate.Min;
 import org.drools.model.functions.accumulate.Reduce;
 import org.drools.model.functions.accumulate.Sum;
 import org.drools.model.functions.temporal.AfterPredicate;
@@ -352,8 +355,24 @@ public class DSL {
         return new Sum<N, N>(Optional.of(source), x -> x);
     }
 
+    public static <T> Count<T> count(Variable<T> source) {
+        return new Count<>(Optional.of(source));
+    }
+
     public static <T> Average<T> average(Function1<T, ? extends Number> mapper) {
-        return new Average<T>(mapper);
+        return new Average<T>(Optional.empty(), mapper);
+    }
+
+    public static <T extends Number>  Min<T> min(Variable<T> source) {
+        return new Min<T>(Optional.of(source), x -> x.doubleValue());
+    }
+
+    public static <T extends Number>  Max<T> max(Variable<T> source) {
+        return new Max<T>(Optional.of(source), x -> x.doubleValue());
+    }
+
+    public static <N extends Number> Average<N> average(Variable<N> source) {
+        return new Average<N>(Optional.of(source), x -> x);
     }
 
     public static <T, R extends Serializable> Reduce<T, R> reduce(R zero, Function2<R, T, R> reducingFunction) {

@@ -1,7 +1,12 @@
 package org.drools.modelcompiler.builder.generator;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.drlx.DrlxParser;
+import org.drools.javaparser.ast.Node;
 import org.drools.javaparser.ast.NodeList;
 import org.drools.javaparser.ast.body.Parameter;
 import org.drools.javaparser.ast.expr.Expression;
@@ -17,6 +22,9 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 public class AccumulateVisitor {
 
     public static final String AVERAGE = "average";
+    public static final String COUNT = "count";
+    public static final String MIN = "min";
+    public static final String MAX = "max";
 
     final RuleContext context;
     final PackageModel packageModel;
@@ -34,7 +42,25 @@ public class AccumulateVisitor {
         for (AccumulateDescr.AccumulateFunctionCallDescr function : descr.getFunctions()) {
             visit(context, function, accumulateDSL);
         }
+
+        // Remove eventual binding expression created in pattern
+        // Re-add them as base expressions
+        final List<Node> bindExprs = accumulateDSL
+                .getChildNodes()
+                .stream()
+                .filter(a -> a.toString().startsWith("bind"))
+                .collect(Collectors.toList());
+
+
+        for(Node bindExpr : bindExprs) {
+            accumulateDSL.remove(bindExpr);
+        }
+
         context.popExprPointer();
+
+        for(Node bindExpr : bindExprs) {
+            context.expressions.add(0, (MethodCallExpr)bindExpr);
+        }
     }
 
     private void visit(RuleContext context, AccumulateDescr.AccumulateFunctionCallDescr function, MethodCallExpr accumulateDSL) {
@@ -44,6 +70,7 @@ public class AccumulateVisitor {
         final MethodCallExpr functionDSL = new MethodCallExpr(null, function.getFunction());
 
         final Expression expr = DrlxParser.parseExpression(function.getParams()[0]).getExpr();
+        final String bindingId = Optional.ofNullable(function.getBind()).orElse(context.getExprId(Number.class, function.getFunction()));
         if (expr instanceof MethodCallExpr) {
             final MethodCallExpr methodCallExpr = (MethodCallExpr) expr;
 
@@ -60,13 +87,16 @@ public class AccumulateVisitor {
             functionDSL.addArgument(lambdaExpr);
 
             Class<?> declClass = getReturnTypeForAggregateFunction(functionDSL.getName().asString(), clazz, methodCallExpr);
-            context.addDeclaration(new DeclarationSpec(function.getBind(), declClass));
+            context.addDeclaration(new DeclarationSpec(bindingId, declClass));
         } else if (expr instanceof NameExpr){
             functionDSL.addArgument(new NameExpr(toVar(((NameExpr) expr).getName().asString())));
+            final Optional<DeclarationSpec> declarationById = context.getDeclarationById(expr.toString());
+            final Class bindClass = getReturnTypeForAggregateFunction(functionDSL.getName().asString(), declarationById.map(a -> a.declarationClass));
+            context.addDeclaration(new DeclarationSpec(bindingId, bindClass));
         }
 
         final MethodCallExpr asDSL = new MethodCallExpr(functionDSL, "as");
-        asDSL.addArgument(new NameExpr(toVar(function.getBind())));
+        asDSL.addArgument(new NameExpr(toVar(bindingId)));
 
         accumulateDSL.addArgument(asDSL);
 
@@ -82,6 +112,20 @@ public class AccumulateVisitor {
             } catch (NoSuchMethodException e) {
                 throw new UnsupportedOperationException("Aggregate function result type", e);
             }
+        }
+    }
+
+    private Class<?> getReturnTypeForAggregateFunction(String functionName, Optional<Class> orElse) {
+        if (AVERAGE.equals(functionName)) {
+            return Double.class;
+        } else if (COUNT.equals(functionName)) {
+            return Integer.class;
+        } else if (MIN.equals(functionName)) {
+            return Double.class;
+        } else if (MAX.equals(functionName)) {
+            return Double.class;
+        } else {
+            return orElse.orElse(Number.class);
         }
     }
 }

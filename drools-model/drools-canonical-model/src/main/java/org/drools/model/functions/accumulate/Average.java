@@ -9,13 +9,15 @@ import java.util.Optional;
 public class Average<T> extends AbstractAccumulateFunction<T, Average.Context, Double> {
 
     private final Function1<T, ? extends Number> mapper;
+    private final Optional<Variable<T>> optSource;
 
-    public Average(Function1<T, ? extends Number> mapper) {
+    public Average(Optional<Variable<T>> source, Function1<T, ? extends Number> mapper) {
         this.mapper = mapper;
+        this.optSource = source;
     }
 
     @Override
-    public Optional<Variable<Double>> getOptSource() {
+    public Optional<Variable<T>> getOptSource() {
         return Optional.empty();
     }
 
