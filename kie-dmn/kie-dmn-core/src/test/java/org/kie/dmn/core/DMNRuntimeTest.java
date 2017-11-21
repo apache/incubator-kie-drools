@@ -1610,7 +1610,7 @@ public class DMNRuntimeTest {
         System.out.println(dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(true));
 
-        assertThat(dmnResult.getMessages().stream().filter(m -> m.getMessageType() == DMNMessageType.ERROR_EVAL_NODE).anyMatch(m -> m.getMessage().contains("... [string clipped after 20 chars, total length is")), is(true));
+        assertThat(dmnResult.getMessages().stream().filter(m -> m.getMessageType() == DMNMessageType.ERROR_EVAL_NODE).anyMatch(m -> m.getMessage().contains("... [string clipped after 50 chars, total length is")), is(true));
     }
 }
 
