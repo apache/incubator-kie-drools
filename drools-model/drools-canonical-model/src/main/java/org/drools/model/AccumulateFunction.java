@@ -1,8 +1,11 @@
 package org.drools.model;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 public interface AccumulateFunction<T, A extends Serializable, R> {
+
+    Optional<Variable<R>> getOptSource();
 
     A init();
 

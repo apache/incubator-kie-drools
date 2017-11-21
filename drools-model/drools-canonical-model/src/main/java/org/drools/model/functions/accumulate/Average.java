@@ -1,8 +1,10 @@
 package org.drools.model.functions.accumulate;
 
+import org.drools.model.Variable;
 import org.drools.model.functions.Function1;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 public class Average<T> extends AbstractAccumulateFunction<T, Average.Context, Double> {
 
@@ -10,6 +12,11 @@ public class Average<T> extends AbstractAccumulateFunction<T, Average.Context, D
 
     public Average(Function1<T, ? extends Number> mapper) {
         this.mapper = mapper;
+    }
+
+    @Override
+    public Optional<Variable<Double>> getOptSource() {
+        return Optional.empty();
     }
 
     @Override

@@ -36,6 +36,11 @@ public class Sum<T, N extends Number> extends AbstractAccumulateFunction<T, Sum.
         return acc.result();
     }
 
+    @Override
+    public Optional<Variable<N>> getOptSource() {
+        return optSource;
+    }
+
     public static class Context<N extends Number> implements Serializable {
         private Double total;
         private Class<N> clazz;

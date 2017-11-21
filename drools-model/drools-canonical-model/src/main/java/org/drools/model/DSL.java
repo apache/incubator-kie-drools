@@ -292,7 +292,7 @@ public class DSL {
         }
 
         public <A> BindViewItemBuilder<T> as( Variable<A> var1, Function1<A, T> f) {
-            this.function = f;
+            this.function = new Function1.Impl<>(f);
             this.inputVariable = var1;
             return this;
         }
@@ -341,11 +341,11 @@ public class DSL {
     // -- Accumulate Functions --
 
     public static <T, N extends Number> Sum<T, N> sum(Function1<T, N> mapper) {
-        return new Sum(Optional.empty(), mapper);
+        return new Sum(Optional.empty(), new Function1.Impl<>(mapper));
     }
 
     public static <T, N extends Number> Sum<T, N> sum(Variable<T> source, Function1<T, N> mapper) {
-        return new Sum(Optional.of(source), mapper);
+        return new Sum(Optional.of(source), new Function1.Impl<>(mapper));
     }
 
     public static <N extends Number> Sum<N, N> sum(Variable<N> source) {
@@ -357,7 +357,7 @@ public class DSL {
     }
 
     public static <T, R extends Serializable> Reduce<T, R> reduce(R zero, Function2<R, T, R> reducingFunction) {
-        return new Reduce(zero, reducingFunction);
+        return new Reduce(zero, new Function2.Impl<>(reducingFunction));
     }
 
     // -- Conditional Named Consequnce --

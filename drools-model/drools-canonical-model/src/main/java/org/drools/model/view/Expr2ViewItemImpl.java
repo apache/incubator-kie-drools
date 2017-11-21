@@ -19,7 +19,7 @@ public class Expr2ViewItemImpl<T, U> extends AbstractExprViewItem<T> implements 
     private BetaIndex<T, U, ?> index;
 
     public Expr2ViewItemImpl( Variable<T> var1, Variable<U> var2, Predicate2<T, U> predicate ) {
-        super(getLambdaFingerprint(predicate, var1, var2), var1);
+        super(getLambdaFingerprint(predicate), var1);
         this.var2 = var2;
         this.predicate = predicate;
     }

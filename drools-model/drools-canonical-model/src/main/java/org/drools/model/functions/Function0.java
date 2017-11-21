@@ -14,4 +14,23 @@ public interface Function0<R> {
             return null;
         }
     }
+
+    class Impl<R> implements Function0<R> {
+
+        private final Function0<R> function;
+
+        public Impl(Function0<R> function) {
+            this.function = function;
+        }
+
+        @Override
+        public R apply() {
+            return function.apply();
+        }
+
+        @Override
+        public String toString() {
+            return LambdaIntrospector.getLambdaFingerprint(function);
+        }
+    }
 }
