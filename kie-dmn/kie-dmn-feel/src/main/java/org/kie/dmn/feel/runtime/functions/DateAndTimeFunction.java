@@ -26,6 +26,7 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalQueries;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
@@ -60,9 +61,10 @@ public class DateAndTimeFunction
         }
         if ( !(date instanceof LocalDate) ) {
             // FEEL Spec Table 58 "date is a date or date time [...] creates a date time from the given date (ignoring any time component)" [that means ignoring any TZ from `date` parameter, too]
-            date = BuiltInFunctions.getFunction(DateFunction.class).invoke(date).getOrElse(null);
+            // I try to convert `date` to a LocalDate, if the query method returns null would signify conversion is not possible.
+            date = date.query(TemporalQueries.localDate());
 
-            if (!(date instanceof LocalDate)) {
+            if (date == null) {
                 return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "date", "must be an instance of LocalDate (or must be possible to convert to a FEEL date using built-in date(date) )"));
             }
         }
