@@ -20,7 +20,7 @@ package org.kie.dmn.feel.util;
  * Utility class for I18N messages.
  *
  */
-public class Msg {
+public final class Msg {
 
     public static final Message0 NULL_OR_UNKNOWN_OPERATOR = new Message0("Null or unknown operator");
     public static final Message1 UNKNOWN_VARIABLE_REFERENCE = new Message1("Unknown variable name '%s'");
@@ -106,5 +106,7 @@ public class Msg {
         }
     }
 
-    
+    private Msg() {
+        // Constructing instances is not allowed for this class
+    }
 }

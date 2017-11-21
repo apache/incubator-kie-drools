@@ -33,7 +33,7 @@ import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DMNRuntimeEventManagerUtils {
+public final class DMNRuntimeEventManagerUtils {
 
     private static final Logger logger = LoggerFactory.getLogger( DMNRuntimeEventManagerUtils.class );
 
@@ -75,5 +75,9 @@ public class DMNRuntimeEventManagerUtils {
                 logger.error( "Error notifying listener '"+listener+"'", t );
             }
         }
+    }
+
+    private DMNRuntimeEventManagerUtils() {
+        // Constructing instances is not allowed for this class
     }
 }

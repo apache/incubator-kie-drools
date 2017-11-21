@@ -30,7 +30,7 @@ import org.kie.dmn.model.v1_1.Invocation;
 import org.kie.dmn.model.v1_1.LiteralExpression;
 import org.kie.dmn.model.v1_1.Relation;
 
-public class MarshallingUtils {
+public final class MarshallingUtils {
     private final static Pattern QNAME_PAT = Pattern.compile( "((\\{([^\\}]*)\\})?([^:]*):)?(.*)" );
 
     public static QName parseQNameString(String qns) {
@@ -73,5 +73,9 @@ public class MarshallingUtils {
             nodeName = "relation";
         }
         return nodeName;
+    }
+
+    private MarshallingUtils() {
+        // Constructing instances is not allowed for this class
     }
 }

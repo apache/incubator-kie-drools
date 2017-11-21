@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-public class DMNCompilerHelper {
+public final class DMNCompilerHelper {
     private static final Logger logger = LoggerFactory.getLogger( DMNCompilerHelper.class );
 
     public static boolean checkVariableName(DMNModelImpl model, NamedElement element, String variableName) {
@@ -60,4 +60,7 @@ public class DMNCompilerHelper {
                                node.getIdentifierString() );
     }
 
+    private DMNCompilerHelper() {
+        // Constructing instances is not allowed for this class
+    }
 }
