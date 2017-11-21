@@ -18,7 +18,6 @@ package org.kie.dmn.core.impl;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -85,7 +84,9 @@ public class CompositeTypeImpl
     
     @Override
     protected boolean internalIsInstanceOf(Object o) {
-        if ( o instanceof Map<?, ?> ) {
+        if (getBaseType() != null) {
+            return getBaseType().isInstanceOf(o);
+        } else if (o instanceof Map<?, ?>) {
             Map<?, ?> instance = (Map<?, ?>) o;
             for ( Entry<String, DMNType> f : fields.entrySet() ) {
                 if ( !instance.containsKey(f.getKey()) ) {
@@ -121,7 +122,9 @@ public class CompositeTypeImpl
 
     @Override
     protected boolean internalIsAssignableValue(Object o) {
-        if ( o instanceof Map<?, ?> ) {
+        if (getBaseType() != null) {
+            return getBaseType().isAssignableValue(o);
+        } else if (o instanceof Map<?, ?>) {
             Map<?, ?> instance = (Map<?, ?>) o;
             for ( Entry<String, DMNType> f : fields.entrySet() ) {
                 if ( !instance.containsKey(f.getKey()) ) {
