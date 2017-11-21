@@ -1565,5 +1565,30 @@ public class DMNRuntimeTest {
         assertThat(result.get("persons complies with hardcoded list"), is("yes"));
         assertThat(result.get("person is person"), is("yes"));
     }
+
+    @Test
+    public void testDROOLS2147() {
+        // DROOLS-2147
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DROOLS-2147.dmn", this.getClass());
+        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_cbdacb7b-f72d-457d-b4f4-54020a06db24", "Drawing 1");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        DMNContext context = DMNFactory.newContext();
+
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        DMNContext resultContext = dmnResult.getContext();
+        List people = (List) resultContext.get("People");
+        List peopleGroups = (List) resultContext.get("People groups");
+
+        assertEquals(6, people.size());
+
+        assertEquals(3, peopleGroups.size());
+        assertEquals(2, ((List) peopleGroups.get(0)).size());
+        assertEquals(2, ((List) peopleGroups.get(1)).size());
+        assertEquals(2, ((List) peopleGroups.get(2)).size());
+    }
 }
 
