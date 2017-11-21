@@ -470,17 +470,17 @@ public class KiePackagesBuilder {
             final AccumulateFunction<?, ?, ?> accFunction = accFunctions[0];
             final Optional<? extends Variable<?>> functionSource = accFunction.getOptSource();
 
-            final Optional<Declaration> sourceDecl = functionSource.map(fs -> {
+            final Declaration declaration = functionSource.map(fs -> {
                 final Declaration variableDeclaration = ctx.getDeclaration(fs);
                 final InternalReadAccessor accessor = variableDeclaration.getExtractor();
                 return new Declaration(fs.getName(), accessor, pattern, true);
-            });
+            }).orElseGet(() ->
+                                 new Declaration(accPattern.getBoundVariables()[0].getName(),
+                                                 getReadAcessor(getObjectType(Object.class)),
+                                                 pattern,
+                                                 true));
 
-            Declaration decl = new Declaration(accPattern.getBoundVariables()[0].getName(),
-                                               getReadAcessor(getObjectType(Object.class)),
-                                               pattern,
-                                               true);
-            pattern.addDeclaration(sourceDecl.orElse(decl));
+            pattern.addDeclaration(declaration);
             return new SingleAccumulate( source, new Declaration[0], new LambdaAccumulator( accFunction));
         }
 
