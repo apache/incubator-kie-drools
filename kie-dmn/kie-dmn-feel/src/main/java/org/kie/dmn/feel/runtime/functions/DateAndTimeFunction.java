@@ -16,15 +16,19 @@
 
 package org.kie.dmn.feel.runtime.functions;
 
-import java.time.*;
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.OffsetTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
 
-import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 
 public class DateAndTimeFunction
         extends BaseFEELFunction {
@@ -50,12 +54,17 @@ public class DateAndTimeFunction
         }
     }
 
-    public FEELFnResult<TemporalAccessor> invoke(@ParameterName( "date" ) Temporal date, @ParameterName( "time" ) Temporal time) {
+    public FEELFnResult<TemporalAccessor> invoke(@ParameterName( "date" ) TemporalAccessor date, @ParameterName( "time" ) TemporalAccessor time) {
         if ( date == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "date", "cannot be null"));
         }
         if ( !(date instanceof LocalDate) ) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "date", "must be an instance of LocalDate"));
+            // FEEL Spec Table 58 "date is a date or date time [...] creates a date time from the given date (ignoring any time component)" [that means ignoring any TZ from `date` parameter, too]
+            date = BuiltInFunctions.getFunction(DateFunction.class).invoke(date).getOrElse(null);
+
+            if (!(date instanceof LocalDate)) {
+                return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "date", "must be an instance of LocalDate (or must be possible to convert to a FEEL date using built-in date(date) )"));
+            }
         }
         if ( time == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "time", "cannot be null"));

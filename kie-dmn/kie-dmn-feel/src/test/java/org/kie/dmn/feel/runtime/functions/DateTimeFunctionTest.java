@@ -68,10 +68,7 @@ public class DateTimeFunctionTest {
 
     @Test
     public void invokeParamTemporalWrongTemporal() {
-        FunctionTestUtil.assertResultError(
-                dateTimeFunction.invoke(
-                        LocalDateTime.of(2017, 6, 12, 0, 0),
-                        LocalTime.of(10, 6, 20)), InvalidParametersEvent.class);
+        // reminder: 1st parameter accordingly to FEEL Spec Table 58 "date is a date or date time [...] creates a date time from the given date (ignoring any time component)" [that means ignoring any TZ from `date` parameter, too]
         FunctionTestUtil.assertResultError(
                 dateTimeFunction.invoke(
                         LocalDate.of(2017, 6, 12),
