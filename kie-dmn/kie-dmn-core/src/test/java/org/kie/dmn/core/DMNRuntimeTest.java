@@ -1590,5 +1590,27 @@ public class DMNRuntimeTest {
         assertEquals(2, ((List) peopleGroups.get(1)).size());
         assertEquals(2, ((List) peopleGroups.get(2)).size());
     }
+
+    @Test
+    public void testDROOLS2147_message() {
+        // DROOLS-2147 truncate message length
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime("Ex_4_3simplified.dmn", this.getClass());
+        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_5c5a9c72-627e-4666-ae85-31356fed3658", "Ex_4_3simplified");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        DMNContext context = DMNFactory.newContext();
+        StringBuilder sb = new StringBuilder("abcdefghijklmnopqrstuvwxyz");
+        for (int i = 0; i < 100; i++) {
+            sb.append("abcdefghijklmnopqrstuvwxyz");
+        }
+        context.set("number", sb.toString());
+
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        System.out.println(dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(true));
+
+        assertThat(dmnResult.getMessages().stream().filter(m -> m.getMessageType() == DMNMessageType.ERROR_EVAL_NODE).anyMatch(m -> m.getMessage().contains("... [string clipped after 20 chars, total length is")), is(true));
+    }
 }
 

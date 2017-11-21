@@ -51,7 +51,7 @@ public class DMNTypeTest {
         Map<String, Object> instanceBob = prototype(entry("name", "Bob"), entry("age", 42));
         Map<String, Object> instanceJohn = prototype(entry("name", "John"), entry("age", 47));
 
-        Map<String, Object> instanceNOTaPerson = prototype(entry("name", "Bob"));
+        Map<String, Object> instanceNOTaPerson = prototype(entry("name", "NOTAPERSON"));
 
         assertTrue(dmnPerson.isAssignableValue(instanceBob));
         assertTrue(dmnPerson.isAssignableValue(instanceJohn));
@@ -74,7 +74,11 @@ public class DMNTypeTest {
         assertFalse(dmnListOfPersonsGrouped.isAssignableValue(the3Lists));
 
         List<Object> groupsOfBobAndBobHimself = Arrays.asList(instanceBob, onlyBob, bobANDjohn);
-        assertTrue(dmnListOfPersonsGrouped.isAssignableValue(groupsOfBobAndBobHimself)); // [bob, [bob], [bob, john]] because for the property of FEEL spec a=[a] is equivalent to [[bob], [bob], [bob, john]]  
+        assertTrue(dmnListOfPersonsGrouped.isAssignableValue(groupsOfBobAndBobHimself)); // [bob, [bob], [bob, john]] because for the property of FEEL spec a=[a] is equivalent to [[bob], [bob], [bob, john]]
+
+        DMNType listOfGroups = typeRegistry.registerType(new CompositeTypeImpl(testNS, "listOfGroups", null, true, null, dmnListOfPersonsGrouped, null));
+        List<Object> groupsContainingBobPartitionedBySize = Arrays.asList(the2ListsThatContainBob, Arrays.asList(bobANDjohn));
+        assertTrue(listOfGroups.isAssignableValue(groupsContainingBobPartitionedBySize)); // [ [[B], [B, J]], [[B, J]] ]
     }
 }
 
