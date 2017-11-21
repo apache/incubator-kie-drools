@@ -341,11 +341,11 @@ public class DSL {
     // -- Accumulate Functions --
 
     public static <T, N extends Number> Sum<T, N> sum(Function1<T, N> mapper) {
-        return new Sum(Optional.empty(), Optional.of(mapper));
+        return new Sum(Optional.empty(), mapper);
     }
 
     public static <T, N extends Number> Sum<T, N> sum(Variable<T> source, Function1<T, N> mapper) {
-        return new Sum(Optional.of(source), Optional.of(mapper));
+        return new Sum(Optional.of(source), mapper);
     }
 
     public static <N extends Number> Sum<N, N> sum(Variable<N> source) {
