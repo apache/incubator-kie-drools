@@ -23,7 +23,7 @@ import org.kie.dmn.core.compiler.DMNCompilerConfigurationImpl;
 import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.impl.DMNContextImpl;
 
-public class DMNFactory {
+public final class DMNFactory {
 
     public static DMNContext newContext() {
         return new DMNContextImpl();
@@ -39,4 +39,7 @@ public class DMNFactory {
         return new DMNCompilerConfigurationImpl();
     }
 
+    private DMNFactory() {
+        // Constructing instances is not allowed for this Factory
+    }
 }

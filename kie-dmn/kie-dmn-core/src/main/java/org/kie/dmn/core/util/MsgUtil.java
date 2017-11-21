@@ -1,21 +1,19 @@
 package org.kie.dmn.core.util;
 
 import org.kie.dmn.api.core.DMNMessage;
+import org.kie.dmn.api.core.DMNMessage.Severity;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.api.DMNMessageManager;
-import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.dmn.core.util.Msg.Message;
 import org.kie.dmn.core.util.Msg.Message0;
 import org.kie.dmn.core.util.Msg.Message1;
 import org.kie.dmn.core.util.Msg.Message2;
 import org.kie.dmn.core.util.Msg.Message3;
 import org.kie.dmn.core.util.Msg.Message4;
-import org.kie.dmn.api.core.DMNMessage.Severity;
-import org.kie.dmn.model.v1_1.DMNElement;
 import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
 import org.slf4j.Logger;
 
-public class MsgUtil {
+public final class MsgUtil {
 
     public static String createMessage( Message0 message) {
         return MsgUtil.buildMessage(message);
@@ -85,4 +83,7 @@ public class MsgUtil {
         }
     }
 
+    private MsgUtil() {
+        // Constructing instances is not allowed for this class
+    }
 }

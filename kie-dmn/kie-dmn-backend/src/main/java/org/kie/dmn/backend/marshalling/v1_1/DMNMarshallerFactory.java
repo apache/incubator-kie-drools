@@ -22,7 +22,7 @@ import org.kie.dmn.api.marshalling.v1_1.DMNMarshaller;
 
 import java.util.List;
 
-public class DMNMarshallerFactory {
+public final class DMNMarshallerFactory {
 
     public static DMNMarshaller newDefaultMarshaller() {
         return new XStreamMarshaller();
@@ -32,5 +32,7 @@ public class DMNMarshallerFactory {
         return new XStreamMarshaller(extensionElementRegisters);
     }
 
-
+    private DMNMarshallerFactory() {
+        // Constructing instances is not allowed for this class
+    }
 }
