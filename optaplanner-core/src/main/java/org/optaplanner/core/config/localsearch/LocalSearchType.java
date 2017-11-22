@@ -20,7 +20,8 @@ public enum LocalSearchType {
     HILL_CLIMBING,
     TABU_SEARCH,
     SIMULATED_ANNEALING,
-    LATE_ACCEPTANCE;
+    LATE_ACCEPTANCE,
+    VARIABLE_NEIGHBORHOOD_DESCENT;
 
     /**
      * @return {@link #values()} without duplicates (abstract types that end up behaving as one of the other types).

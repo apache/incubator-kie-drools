@@ -33,6 +33,7 @@ import org.optaplanner.core.config.heuristic.selector.move.generic.SwapMoveSelec
 import org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorConfig;
 import org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorType;
 import org.optaplanner.core.config.localsearch.decider.forager.LocalSearchForagerConfig;
+import org.optaplanner.core.config.localsearch.decider.forager.LocalSearchPickEarlyType;
 import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
@@ -171,6 +172,9 @@ public class LocalSearchPhaseConfig extends PhaseConfig<LocalSearchPhaseConfig> 
                 case LATE_ACCEPTANCE:
                     acceptorConfig_.setAcceptorTypeList(Collections.singletonList(AcceptorType.LATE_ACCEPTANCE));
                     break;
+                case VARIABLE_NEIGHBORHOOD_DESCENT:
+                    acceptorConfig_.setAcceptorTypeList(Collections.singletonList(AcceptorType.HILL_CLIMBING));
+                    break;
                 default:
                     throw new IllegalStateException("The localSearchType (" + localSearchType_
                             + ") is not implemented.");
@@ -204,6 +208,9 @@ public class LocalSearchPhaseConfig extends PhaseConfig<LocalSearchPhaseConfig> 
                     // Fast stepping algorithm
                     foragerConfig_.setAcceptedCountLimit(1);
                     break;
+                case VARIABLE_NEIGHBORHOOD_DESCENT:
+                    foragerConfig_.setPickEarlyType(LocalSearchPickEarlyType.FIRST_LAST_STEP_SCORE_IMPROVING);
+                    break;
                 default:
                     throw new IllegalStateException("The localSearchType (" + localSearchType_
                             + ") is not implemented.");
@@ -215,7 +222,12 @@ public class LocalSearchPhaseConfig extends PhaseConfig<LocalSearchPhaseConfig> 
     protected MoveSelector buildMoveSelector(HeuristicConfigPolicy configPolicy) {
         MoveSelector moveSelector;
         SelectionCacheType defaultCacheType = SelectionCacheType.JUST_IN_TIME;
-        SelectionOrder defaultSelectionOrder = SelectionOrder.RANDOM;
+        SelectionOrder defaultSelectionOrder;
+        if (localSearchType == LocalSearchType.VARIABLE_NEIGHBORHOOD_DESCENT) {
+            defaultSelectionOrder = SelectionOrder.ORIGINAL;
+        } else {
+            defaultSelectionOrder = SelectionOrder.RANDOM;
+        }
         if (ConfigUtils.isEmptyCollection(moveSelectorConfigList)) {
             // Default to changeMoveSelector and swapMoveSelector
             UnionMoveSelectorConfig unionMoveSelectorConfig = new UnionMoveSelectorConfig();

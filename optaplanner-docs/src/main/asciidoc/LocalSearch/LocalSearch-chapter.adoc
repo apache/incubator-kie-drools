@@ -619,6 +619,56 @@ The following ``finalistPodiumType``s are supported:
 * ``STRATEGIC_OSCILLATION_BY_LEVEL_ON_BEST_SCORE``: Like ``STRATEGIC_OSCILLATION_BY_LEVEL``, but define improving as better than the best score (instead of the last completed step score).
 
 
+
+
+[[variableNeighborhoodDescent]]
+== Variable Neighborhood Descent
+
+
+[[variableNeighborhoodDescentAlgorithm]]
+=== Algorithm Description
+
+Variable Neighborhood Descent iteratively tries multiple move selectors
+in original order (depleting each one entirely before trying the next one),
+accepting the first improving move (which also resets the move selector).
+
+
+[[variableNeighborhoodDescentConfiguration]]
+=== Configuration
+
+Simplest configuration:
+
+[source,xml,options="nowrap"]
+----
+  <localSearch>
+    <localSearchType>VARIABLE_NEIGHBORHOOD_DESCENT</localSearchType>
+  </localSearch>
+----
+
+Advanced configuration:
+
+[source,xml,options="nowrap"]
+----
+  <localSearch>
+    <unionMoveSelector>
+      <selectionOrder>ORIGINAL</selectionOrder>
+      <changeMoveSelector/>
+      <swapMoveSelector/>
+      ...
+    </unionMoveSelector>
+    <acceptor>
+      <acceptorType>HILL_CLIMBING</acceptorType>
+    </acceptor>
+    <forager>
+      <pickEarlyType>FIRST_LAST_STEP_SCORE_IMPROVING</pickEarlyType>
+    </forager>
+  </localSearch>
+----
+
+Variable Neighborhood Descent doesn't scale well,
+but it is useful in some use cases with a very erratic score landscape.
+
+
 [[customTerminationSelectorOrAcceptor]]
 == Using a Custom Termination, MoveSelector, EntitySelector, ValueSelector or Acceptor
 
