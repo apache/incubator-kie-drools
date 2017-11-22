@@ -21,6 +21,7 @@ import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.time.OffsetTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
@@ -124,7 +125,14 @@ public class TimeFunction
             if( date.query( TemporalQueries.offset() ) == null ) {
                 return FEELFnResult.ofResult( LocalTime.from( date ) );
             } else {
-                return FEELFnResult.ofResult( OffsetTime.from( date ) );
+                ZoneId zone = date.query(TemporalQueries.zoneId());
+                if (!(zone instanceof ZoneOffset)) {
+                    // TZ is a ZoneRegion, so do NOT normalize (although the result will be unreversible, but will keep what was supplied originally).
+                    // Unfortunately java.time.Parsed is a package-private class, hence will need to re-parse in order to have it instantiated. 
+                    return invoke(date.query(TemporalQueries.localTime()) + "@" + zone);
+                } else {
+                    return FEELFnResult.ofResult(OffsetTime.from(date));
+                }
             }
         } catch (DateTimeException e) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "time-parsing exception", e));

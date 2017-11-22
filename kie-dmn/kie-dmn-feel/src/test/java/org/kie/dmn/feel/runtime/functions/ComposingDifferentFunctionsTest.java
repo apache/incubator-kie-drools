@@ -89,4 +89,17 @@ public class ComposingDifferentFunctionsTest {
         FEELFnResult<TemporalAccessor> result = dateTimeFunction.invoke(p1.getOrElse(null), p2.getOrElse(null));
         FunctionTestUtil.assertResult(result, ZonedDateTime.of(2017, 1, 1, 23, 59, 1, 0, ZoneId.of("Europe/Paris")));
     }
+
+    @Test
+    public void testComposite5() {
+        FEELFnResult<TemporalAccessor> p1 = dateTimeFunction.invoke("2017-08-10T10:20:00@Europe/Paris");
+        FunctionTestUtil.assertResult(p1, ZonedDateTime.of(2017, 8, 10, 10, 20, 0, 0, ZoneId.of("Europe/Paris")));
+
+        TemporalAccessor timeOnDateTime = timeFunction.invoke(p1.getOrElse(null)).getOrElse(null);
+        assertNotNull(timeOnDateTime);
+        assertEquals(LocalTime.of(10, 20, 0), timeOnDateTime.query(TemporalQueries.localTime()));
+        assertEquals(ZoneId.of("Europe/Paris"), timeOnDateTime.query(TemporalQueries.zone()));
+
+        FunctionTestUtil.assertResult(stringFunction.invoke(timeOnDateTime), "10:20:00@Europe/Paris");
+    }
 }
