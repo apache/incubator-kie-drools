@@ -67,7 +67,7 @@ public class FEELDateTimeDurationTest extends BaseFEELTest {
                 { "date and time(date(\"2016-07-29\"), time(\"05:48:23.765-05:00\") )", DateTimeFormatter.ISO_DATE_TIME.parse( "2016-07-29T05:48:23.765-05:00", ZonedDateTime::from ) , null},
                 { "duration( \"P2DT20H14M\" )", Duration.parse( "P2DT20H14M" ) , null},
                 { "duration( \"P2Y2M\" )", Period.parse( "P2Y2M" ) , null},
-                { "duration( \"P26M\" )", Period.parse( "P26M" ) , null},
+                { "duration( \"P26M\" )", Period.parse( "P2Y2M" ) , null},
                 { "years and months duration( date(\"2011-12-22\"), date(\"2013-08-24\") )", Period.parse( "P1Y8M" ) , null},
 
                 // comparison operators
