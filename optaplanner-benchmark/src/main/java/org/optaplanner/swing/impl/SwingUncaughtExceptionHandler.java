@@ -22,6 +22,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
+import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.concurrent.Semaphore;
 
@@ -51,10 +52,10 @@ public class SwingUncaughtExceptionHandler implements Thread.UncaughtExceptionHa
 
     @Override
     public void uncaughtException(Thread t, Throwable e) {
-        StringWriter sw = new StringWriter();
-        sw.append("Exception in thread \"").append(t.getName()).append("\" ");
-        e.printStackTrace(new java.io.PrintWriter(sw));
-        String trace = sw.toString();
+        StringWriter stringWriter = new StringWriter();
+        stringWriter.append("Exception in thread \"").append(t.getName()).append("\" ");
+        e.printStackTrace(new PrintWriter(stringWriter));
+        String trace = stringWriter.toString();
         // Not logger.error() because it needs to show up red (and linked) in the IDE console
         System.err.print(trace);
         displayException(e, trace);
