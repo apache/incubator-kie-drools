@@ -16,11 +16,17 @@
 
 package org.kie.dmn.feel.runtime.functions;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalQueries;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -28,12 +34,16 @@ import org.junit.Test;
 public class ComposingDifferentFunctionsTest {
 
     private DateAndTimeFunction dateTimeFunction;
+    private DateFunction dateFunction;
     private TimeFunction timeFunction;
+    private StringFunction stringFunction;
 
     @Before
     public void setUp() {
         dateTimeFunction = new DateAndTimeFunction();
+        dateFunction = new DateFunction();
         timeFunction = new TimeFunction();
+        stringFunction = new StringFunction();
     }
 
     @Test
@@ -46,5 +56,37 @@ public class ComposingDifferentFunctionsTest {
 
         FEELFnResult<TemporalAccessor> result = dateTimeFunction.invoke(p1.getOrElse(null), p2.getOrElse(null));
         FunctionTestUtil.assertResult(result, LocalDateTime.of(2017, 8, 10, 23, 59, 1));
+    }
+
+    @Test
+    public void testComposite2() {
+        FEELFnResult<TemporalAccessor> p1 = dateTimeFunction.invoke("-999999999-12-31T23:59:59.999999999+02:00");
+        FunctionTestUtil.assertResult(p1, ZonedDateTime.of(-999999999, 12, 31, 23, 59, 59, 999_999_999, ZoneOffset.of("+02:00")));
+
+        FunctionTestUtil.assertResult(stringFunction.invoke(p1.getOrElse(null)), "-999999999-12-31T23:59:59.999999999+02:00");
+    }
+
+    @Test
+    public void testComposite3() {
+        FEELFnResult<TemporalAccessor> p1 = dateTimeFunction.invoke("-999999999-12-31T23:59:59.999999999@Europe/Paris");
+        FunctionTestUtil.assertResult(p1, ZonedDateTime.of(-999999999, 12, 31, 23, 59, 59, 999_999_999, ZoneId.of("Europe/Paris")));
+
+        FunctionTestUtil.assertResult(stringFunction.invoke(p1.getOrElse(null)), "-999999999-12-31T23:59:59.999999999@Europe/Paris");
+    }
+
+    @Test
+    public void testComposite4() {
+        FEELFnResult<TemporalAccessor> p1 = dateFunction.invoke("2017-01-01");
+        FEELFnResult<TemporalAccessor> p2 = timeFunction.invoke("23:59:01@Europe/Paris");
+
+        FunctionTestUtil.assertResult(p1, LocalDate.of(2017, 1, 1));
+
+        TemporalAccessor p2TA = p2.getOrElse(null);
+        assertNotNull(p2TA);
+        assertEquals(LocalTime.of(23, 59, 1), p2TA.query(TemporalQueries.localTime()));
+        assertEquals(ZoneId.of("Europe/Paris"), p2TA.query(TemporalQueries.zone()));
+
+        FEELFnResult<TemporalAccessor> result = dateTimeFunction.invoke(p1.getOrElse(null), p2.getOrElse(null));
+        FunctionTestUtil.assertResult(result, ZonedDateTime.of(2017, 1, 1, 23, 59, 1, 0, ZoneId.of("Europe/Paris")));
     }
 }

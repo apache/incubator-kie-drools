@@ -19,6 +19,7 @@ package org.kie.dmn.feel.runtime.functions;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAccessor;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
@@ -47,6 +48,17 @@ public class DateFunctionTest {
     @Test
     public void invokeParamStringDate() {
         FunctionTestUtil.assertResult(dateFunction.invoke("2017-09-07"), LocalDate.of(2017, 9, 7));
+    }
+
+    @Test
+    public void invokeParamStringPaddingYearsDate() {
+        FunctionTestUtil.assertResult(dateFunction.invoke("0001-12-31"), LocalDate.of(1, 12, 31));
+        FunctionTestUtil.assertResult(dateFunction.invoke("0012-12-31"), LocalDate.of(12, 12, 31));
+        FunctionTestUtil.assertResult(dateFunction.invoke("0123-12-31"), LocalDate.of(123, 12, 31));
+        FunctionTestUtil.assertResult(dateFunction.invoke("1234-12-31"), LocalDate.of(1234, 12, 31));
+        FunctionTestUtil.assertResultError(dateFunction.invoke("01211-12-31"), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(dateFunction.invoke("012117-12-31"), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(dateFunction.invoke("001211-12-31"), InvalidParametersEvent.class);
     }
 
     @Test

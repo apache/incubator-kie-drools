@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
@@ -52,6 +53,20 @@ public class DateTimeFunctionTest {
     @Test
     public void invokeParamStringDateTime() {
         FunctionTestUtil.assertResult(dateTimeFunction.invoke("2017-09-07T10:20:30"), LocalDateTime.of(2017, 9, 7, 10, 20, 30));
+        FunctionTestUtil.assertResult(dateTimeFunction.invoke("99999-12-31T11:22:33"), LocalDateTime.of(99999, 12, 31, 11, 22, 33));
+    }
+
+    @Test
+    public void invokeParamStringDateTimeZoned() {
+        FunctionTestUtil.assertResult(dateTimeFunction.invoke("2011-12-31T10:15:30@Europe/Paris"), ZonedDateTime.of(2011, 12, 31, 10, 15, 30, 0, ZoneId.of("Europe/Paris")));
+        FunctionTestUtil.assertResult(dateTimeFunction.invoke("2011-12-31T10:15:30.987@Europe/Paris"), ZonedDateTime.of(2011, 12, 31, 10, 15, 30, 987_000_000, ZoneId.of("Europe/Paris")));
+        FunctionTestUtil.assertResult(dateTimeFunction.invoke("2011-12-31T10:15:30.123456789@Europe/Paris"), ZonedDateTime.of(2011, 12, 31, 10, 15, 30, 123_456_789, ZoneId.of("Europe/Paris")));
+        FunctionTestUtil.assertResult(dateTimeFunction.invoke("999999999-12-31T23:59:59.999999999@Europe/Paris"), ZonedDateTime.of(999999999, 12, 31, 23, 59, 59, 999_999_999, ZoneId.of("Europe/Paris")));
+    }
+    @Test
+    public void invokeParamStringDateOffset() {
+        FunctionTestUtil.assertResult(dateTimeFunction.invoke("2017-12-31T23:59:59.999999999+02:00"), ZonedDateTime.of(2017, 12, 31, 23, 59, 59, 999_999_999, ZoneOffset.of("+02:00")));
+        FunctionTestUtil.assertResult(dateTimeFunction.invoke("-999999999-12-31T23:59:59.999999999+02:00"), ZonedDateTime.of(-999999999, 12, 31, 23, 59, 59, 999_999_999, ZoneOffset.of("+02:00")));
     }
 
     @Test
