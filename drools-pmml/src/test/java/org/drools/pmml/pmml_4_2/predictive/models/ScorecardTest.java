@@ -44,8 +44,8 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
 
 
     private static final boolean VERBOSE = true;
-    private static final String source1 = "org/drools/pmml/pmml_4_2/test_scorecard.xml";
-    private static final String source2 = "org/drools/pmml/pmml_4_2/test_scorecardOut.xml";
+    private static final String source1 = "org/drools/pmml/pmml_4_2/test_scorecard.pmml";
+    private static final String source2 = "org/drools/pmml/pmml_4_2/test_scorecardOut.pmml";
     private static final String packageName = "org.drools.pmml.pmml_4_2.test";
 
 

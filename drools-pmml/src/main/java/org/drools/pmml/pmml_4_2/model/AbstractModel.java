@@ -238,7 +238,11 @@ public abstract class AbstractModel<T> implements PMML4Model {
 		for (String key: excludesTargetMap.keySet()) {
 			PMMLDataField df = dataDictionary.get(key);
 			MiningField mf = miningFieldMap.get(key);
-			fields.add(new PMMLMiningField(mf, df.getRawDataField(), this.getModelId()));
+			if (df != null) {
+				fields.add(new PMMLMiningField(mf, df.getRawDataField(), this.getModelId(), true));
+			} else {
+				fields.add(new PMMLMiningField(mf, this.getModelId()));
+			}
 		}
 		return fields;
     }

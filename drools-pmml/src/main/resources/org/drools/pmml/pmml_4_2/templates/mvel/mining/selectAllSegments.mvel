@@ -45,7 +45,7 @@ rule "Execute Next Segment"
 agenda-group "MiningSegmentation"
 when
    $segExec: SegmentExecution( $corrId: correlationId, $segmId: segmentationId, state == SegmentExecutionState.WAITING, $segIdx: segmentIndex ) 
-   not SegmentExecution( correlationId == $corrId, segmentationId == $segmId, state == SegmentExecutionState.EXECUTING,  segmentIndex < $segIndex )
+   not SegmentExecution( correlationId == $corrId, segmentationId == $segmId, state == SegmentExecutionState.EXECUTING,  segmentIndex < $segIdx )
 then
    $segExec.applySegmentModel($segExec.getRequestData(),kcontext);
 end
@@ -68,6 +68,7 @@ when
    $segExec: SegmentExecution( $corrId: correlationId, $segmId: segmentationId, $segId: segmentId, state == SegmentExecutionState.EXECUTING )
    PMML4Result( correlationId == $corrId, segmentationId == $segmId, $segId == segmentId, resultCode != null && resultCode != "OK" )
 then
+   System.out.println("Segment "+$segExec.getSegmentId()+" completed with error");
    modify($segExec) {
       setState(SegmentExecutionState.ERROR);
    }

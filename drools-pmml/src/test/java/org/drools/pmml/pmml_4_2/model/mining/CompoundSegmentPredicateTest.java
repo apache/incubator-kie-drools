@@ -68,7 +68,7 @@ public class CompoundSegmentPredicateTest {
 		CompoundSegmentPredicate testPredicate = new CompoundSegmentPredicate(predicate);
 		String text = testPredicate.getPredicateRule();
 		assertNotNull(text);
-		System.out.println(text);
+		assertEquals(text,"((vTF1 == ABC) && (vTF2 > 4))");
 	}
 	
 	@Test
@@ -84,7 +84,7 @@ public class CompoundSegmentPredicateTest {
 		CompoundSegmentPredicate testPredicate = new CompoundSegmentPredicate(predicate);
 		String text = testPredicate.getPredicateRule();
 		assertNotNull(text);
-		System.out.println(text);
+		assertEquals(text,"((vTF1 == ABC) && (vTF2 in (  10,  12,  1 )))");
 	}
 
 	@Test
@@ -99,7 +99,7 @@ public class CompoundSegmentPredicateTest {
 		CompoundSegmentPredicate testPredicate = new CompoundSegmentPredicate(predicate);
 		String text = testPredicate.getPredicateRule();
 		assertNotNull(text);
-		System.out.println(text);
+		assertEquals(text,"((vTF1 <= 0) || (vTF1 > 4))");
 	}
 
 	@Test
@@ -114,7 +114,7 @@ public class CompoundSegmentPredicateTest {
 		CompoundSegmentPredicate testPredicate = new CompoundSegmentPredicate(predicate);
 		String text = testPredicate.getPredicateRule();
 		assertNotNull(text);
-		System.out.println(text);
+		assertEquals(text,"((vTF1 > 100) || (vTF2 not in (  1,  8,  16,  21 )))");
 	}
 	
 	@Test
@@ -129,8 +129,7 @@ public class CompoundSegmentPredicateTest {
 		CompoundSegmentPredicate testPredicate = new CompoundSegmentPredicate(predicate);
 		String text = testPredicate.getPredicateRule();
 		assertNotNull(text);
-		System.out.println(text);
-
+		assertEquals(text,"((vTF1 <= 0) ^ (vTF1 > 4))");
 	}
 	
 	@Test
@@ -150,7 +149,7 @@ public class CompoundSegmentPredicateTest {
 		CompoundSegmentPredicate testPredicate = new CompoundSegmentPredicate(outerPredicate);
 		String text = testPredicate.getPredicateRule();
 		assertNotNull(text);
-		System.out.println(text);
+		assertEquals(text,"((vTF1 <= 150) || (((vTF1 > 150) && (vTF2 in (  \"red\" ,  \"white\" ,  \"blue\"  )))))");
 	}
 	
 	@Test
@@ -170,13 +169,10 @@ public class CompoundSegmentPredicateTest {
 		CompoundSegmentPredicate testPredicate = new CompoundSegmentPredicate(outerPredicate);
 		String text = testPredicate.getPrimaryPredicateRule();
 		assertNotNull(text);
-		System.out.println("Primary predicate: "+text);
-		for (int x = 0; x < testPredicate.getSubpredicateCount(); x++) {
-			text = testPredicate.getNextPredicateRule(x);
-			assertNotNull(text);
-			System.out.println(text);
+		assertEquals(text,"vTF1 <= 150");
+		for (int cnt = 0; cnt < testPredicate.getSubpredicateCount(); cnt++) {
+			text = testPredicate.getNextPredicateRule(cnt);
+			assertEquals(text,"( (mTF1==true) && ( ((vTF1 > 150) && (vTF2 in (  \"red\" ,  \"white\" ,  \"blue\"  ))) ) )");
 		}
-		String text2 = testPredicate.getPredicateRule();
-		System.out.println(text2);
 	}
 }

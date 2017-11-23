@@ -18,6 +18,7 @@ package org.drools.pmml.pmml_4_2;
 
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -85,6 +86,30 @@ public abstract class DroolsAbstractPMMLTest {
     protected KieSession getModelSession(String pmmlSource, boolean verbose) {
         return getModelSession(new String[] {pmmlSource}, verbose);
     }
+    
+    protected KieSession getModelSession(File fileName) {
+        KieServices ks = KieServices.Factory.get();
+        KieRepository kr = ks.getRepository();
+        KieFileSystem kfs = ks.newKieFileSystem();
+
+        KieModuleModel model = ks.newKieModuleModel();
+        model.setConfigurationProperty( "drools.propertySpecific", "ALLOWED" );
+        KieBaseModel kbModel = model.newKieBaseModel( DEFAULT_KIEBASE )
+                .addPackage( BASE_PACK )
+                .setEventProcessingMode( EventProcessingOption.CLOUD )
+                ;
+        
+        KieBuilder kb = ks.newKieBuilder(fileName);
+        kb.buildAll();
+        if (kb.getResults().hasMessages(Message.Level.ERROR)) {
+            throw new RuntimeException( "Build Errors:\n" + kb.getResults().toString() );
+        }
+        KieContainer kContainer = ks.newKieContainer( kr.getDefaultReleaseId() );
+        KieBase kieBase = kContainer.getKieBase();
+
+        setKbase( kieBase );
+        return kieBase.newKieSession();
+    }
 
     protected KieSession getModelSession( String[] pmmlSources, boolean verbose ) {
         KieServices ks = KieServices.Factory.get();
@@ -99,7 +124,6 @@ public abstract class DroolsAbstractPMMLTest {
         KieModuleModel model = ks.newKieModuleModel();
         model.setConfigurationProperty( "drools.propertySpecific", "ALLOWED" );
         KieBaseModel kbModel = model.newKieBaseModel( DEFAULT_KIEBASE )
-//                .setDefault( true )
                 .addPackage( BASE_PACK )
                 .setEventProcessingMode( EventProcessingOption.CLOUD )
                 ;

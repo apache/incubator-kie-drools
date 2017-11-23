@@ -5,9 +5,12 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -19,6 +22,7 @@ import java.util.Map;
 import org.drools.core.ClassObjectFilter;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.pmml.pmml_4_2.DroolsAbstractPMMLTest;
+import org.drools.pmml.pmml_4_2.PMML4Helper;
 import org.drools.pmml.pmml_4_2.PMML4Result;
 import org.drools.pmml.pmml_4_2.model.AbstractModel;
 import org.drools.pmml.pmml_4_2.model.PMMLRequestData;
@@ -44,10 +48,147 @@ import org.kie.api.runtime.rule.Match;
 
 public class MiningmodelTest extends DroolsAbstractPMMLTest {
     private static final boolean VERBOSE = true;
-    private static final String source1 = "org/drools/pmml/pmml_4_2/test_mining_model_simple.xml";
-    private static final String source2 = "org/drools/pmml/pmml_4_2/test_mining_model_simple2.xml";
+    private static final String source1 = "org/drools/pmml/pmml_4_2/test_mining_model_simple.pmml";
+    private static final String source2 = "org/drools/pmml/pmml_4_2/test_mining_model_simple2.pmml";
+    private static final String source3 = "org/drools/pmml/pmml_4_2/filebased";
+    private static final String source4 = "org/drools/pmml/pmml_4_2/test_mining_model_selectall.pmml";
+    private static final String source5 = "org/drools/pmml/pmml_4_2/test_mining_model_modelchain.pmml";
+    private static final String RESOURCES_TEST_ROOT="src/test/resources/";
 
 
+    @Test
+    public void testFolderBased() {
+    	String filename = RESOURCES_TEST_ROOT+source3;
+    	File file = new File(filename);
+    	setKSession( getModelSession(file) );
+    	setKbase( getKSession().getKieBase() );
+    	KieSession kSession = getKSession();
+    	
+    	assertNotNull(kSession);
+        kSession.fireAllRules();  //init model
+        
+        PMMLRequestData request = new PMMLRequestData("1234","SampleMine");
+        request.addRequestParam("fld1", 30.0);
+        request.addRequestParam("fld2", 60.0);
+        request.addRequestParam("fld3", "false");
+        request.addRequestParam("fld4", "optA");
+        kSession.insert(request);
+        
+        kSession.fireAllRules();
+
+        // Check for a PMML4Result in WorkingMemory
+        Collection<PMML4Result> objs = (Collection<PMML4Result>)kSession.getObjects(new ClassObjectFilter(PMML4Result.class));
+        assertEquals(1,objs.size());
+        
+        PMML4Result result = objs.iterator().next();
+        assertNotNull(result);
+        assertEquals("OK",result.getResultCode());
+        assertNotNull(result.getResultVariables());
+
+        Map<String,Object> resultVars = result.getResultVariables();
+        assertEquals(1,resultVars.size());
+        Object fldFive = getResultValue(result,"Fld5",null);
+        assertNotNull(fldFive);
+        
+        Object fldFiveMissing = getResultValue(result,"Fld5","missing");
+        assertNotNull(fldFiveMissing);
+        assertTrue(fldFiveMissing.equals(Boolean.FALSE));
+        
+        Object fldFiveValue = getResultValue(result,"Fld5","value");
+        assertNotNull(fldFiveValue);
+        assertEquals("tgtY",fldFiveValue);
+        
+    }
+    
+    @Test
+    public void testModelChain() {
+        setKSession( getModelSession( source5, VERBOSE ) );
+        setKbase( getKSession().getKieBase() );
+        KieSession kSession = getKSession();
+
+        kSession.fireAllRules();  //init model
+        PMMLRequestData requestData = new PMMLRequestData("1234","SampleSelectAllMine");
+        requestData.addRequestParam("age",33.0);
+        requestData.addRequestParam("occupation", "SKYDIVER");
+        requestData.addRequestParam("residenceState","KN");
+        requestData.addRequestParam("validLicense", true);
+        kSession.insert(requestData);
+
+        kSession.fireAllRules();  //init model
+    }
+    
+    @Test
+    public void testSelectAll() {
+        setKSession( getModelSession( source4, VERBOSE ) );
+        setKbase( getKSession().getKieBase() );
+        KieSession kSession = getKSession();
+
+        kSession.fireAllRules();  //init model
+        PMMLRequestData requestData = new PMMLRequestData("1234","SampleSelectAllMine");
+        requestData.addRequestParam("age",33.0);
+        requestData.addRequestParam("occupation", "SKYDIVER");
+        requestData.addRequestParam("residenceState","KN");
+        requestData.addRequestParam("validLicense", true);
+        kSession.insert(requestData);
+
+        kSession.fireAllRules();  //init model
+//        System.out.print(  reportWMObjects( kSession ));
+        Collection<PMML4Result> objs = (Collection<PMML4Result>)kSession.getObjects(new ClassObjectFilter(PMML4Result.class));
+        assertEquals(2,objs.size());
+        
+        PMML4Result results[] = objs.toArray(new PMML4Result[objs.size()]);
+        assertNotNull(results[0]);
+        assertEquals("OK",results[0].getResultCode());
+        assertEquals("1234",results[0].getCorrelationId());
+        
+        assertNotNull(results[1]);
+        assertEquals("OK",results[1].getResultCode());
+        assertEquals("1234",results[1].getCorrelationId());
+        
+        Object sc[] = new Object[2];
+        ScoreCard scorecard[] = new ScoreCard[2];
+        Map map[] = new Map[2];
+        
+        for (int cnt = 0; cnt < 2; cnt++) {
+            sc[cnt] = getResultValue(results[cnt], "ScoreCard", null);
+            assertNotNull(sc[cnt]);
+            assertTrue(sc[cnt] instanceof ScoreCard);
+            scorecard[cnt] = (ScoreCard)sc[cnt];
+            map[cnt] = scorecard[cnt].getRanking();
+            assertNotNull(map[cnt]);
+            assertTrue(map[cnt] instanceof LinkedHashMap);
+            LinkedHashMap ranking = (LinkedHashMap)map[cnt];
+            
+            assertTrue( ranking.containsKey( "LX00") || ranking.containsKey("LC00") );
+            if (ranking.containsKey("LX00")) {
+                assertTrue( ranking.containsKey( "RES") );
+                assertTrue( ranking.containsKey( "CX2" ) );
+                assertEquals( -1.0, ranking.get( "LX00" ) );
+                assertEquals( -10.0, ranking.get( "RES" ) );
+                assertEquals( -30.0, ranking.get( "CX2" ) );
+
+                Iterator iter = ranking.keySet().iterator();
+                assertEquals( "LX00", iter.next() );
+                assertEquals( "RES", iter.next() );
+                assertEquals( "CX2", iter.next() );
+                assertEquals( 41.345, scorecard[cnt].getScore(), 1e-6 );
+            } else {
+                assertTrue( ranking.containsKey( "RST") );
+                assertTrue( ranking.containsKey( "DX2" ) );
+                assertEquals( -1.0, ranking.get( "LC00" ) );
+                assertEquals( 10.0, ranking.get( "RST" ) );
+                assertEquals( -30.0, ranking.get( "DX2" ) );
+
+                Iterator iter = ranking.keySet().iterator();
+                assertEquals( "RST", iter.next() );
+                assertEquals( "LC00", iter.next() );
+                assertEquals( "DX2", iter.next() );
+                assertEquals( 21.345, scorecard[cnt].getScore(), 1e-6 );
+            }
+        }
+        
+    }
+    
 	@Test
 	public void testSelectFirstSegmentFirst() {
         setKSession( getModelSession( source1, VERBOSE ) );
@@ -64,7 +205,7 @@ public class MiningmodelTest extends DroolsAbstractPMMLTest {
         kSession.insert(request);
         
         kSession.fireAllRules();
-        System.out.print(reportWMObjects( kSession ));
+//        System.out.print(reportWMObjects( kSession ));
         // Check for a PMML4Result in WorkingMemory
         Collection<PMML4Result> objs = (Collection<PMML4Result>)kSession.getObjects(new ClassObjectFilter(PMML4Result.class));
         assertEquals(1,objs.size());
@@ -79,7 +220,6 @@ public class MiningmodelTest extends DroolsAbstractPMMLTest {
         Object fldFive = getResultValue(result,"Fld5",null);
         assertNotNull(fldFive);
         
-        System.out.println(fldFive);
         Object fldFiveMissing = getResultValue(result,"Fld5","missing");
         assertNotNull(fldFiveMissing);
         assertTrue(fldFiveMissing.equals(Boolean.FALSE));
@@ -168,7 +308,7 @@ public class MiningmodelTest extends DroolsAbstractPMMLTest {
         kSession.insert(requestData);
 
         kSession.fireAllRules();
-        System.out.print(  reportWMObjects( kSession ));
+//        System.out.print(  reportWMObjects( kSession ));
         Collection<PMML4Result> objs = (Collection<PMML4Result>)kSession.getObjects(new ClassObjectFilter(PMML4Result.class));
         assertEquals(1,objs.size());
         
@@ -221,13 +361,12 @@ public class MiningmodelTest extends DroolsAbstractPMMLTest {
         kSession.insert(requestData);
 
         kSession.fireAllRules();  //init model
-        System.out.print(  reportWMObjects( kSession ));
+//        System.out.print(  reportWMObjects( kSession ));
         Collection<PMML4Result> objs = (Collection<PMML4Result>)kSession.getObjects(new ClassObjectFilter(PMML4Result.class));
         assertEquals(1,objs.size());
         
         PMML4Result result = objs.iterator().next();
         assertNotNull(result);
-        System.out.println(result);
         
         Object sc = getResultValue(result, "ScoreCard", null);
         assertNotNull(sc);
@@ -267,7 +406,7 @@ public class MiningmodelTest extends DroolsAbstractPMMLTest {
         kSession.insert(request);
 
         kSession.fireAllRules();
-        System.out.print(  reportWMObjects( kSession ));
+//        System.out.print(  reportWMObjects( kSession ));
         Collection<PMML4Result> objs = (Collection<PMML4Result>)kSession.getObjects(new ClassObjectFilter(PMML4Result.class));
         assertNotNull(objs);
         assertEquals(1,objs.size());

@@ -57,8 +57,8 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
 
 
     private static final boolean VERBOSE = false;
-    private static final String source1 = "org/drools/pmml/pmml_4_2/test_tree_simple.xml";
-    private static final String source2 = "org/drools/pmml/pmml_4_2/test_tree_missing.xml";
+    private static final String source1 = "org/drools/pmml/pmml_4_2/test_tree_simple.pmml";
+    private static final String source2 = "org/drools/pmml/pmml_4_2/test_tree_missing.pmml";
     private static final String packageName = "org.drools.pmml.pmml_4_2.test";
 
 
@@ -88,8 +88,7 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
 
         String pkgName = PMML4Compiler.PMML_DROOLS+"."+request.getModelName();
         FactType tgt = kSession.getKieBase().getFactType( pkgName, "Fld5" );
-        System.out.print(  reportWMObjects( kSession )
-        );
+//        System.out.print(  reportWMObjects( kSession ));
 
         checkFirstDataFieldOfTypeStatus( tgt, true, false, "Missing", "tgtY" );
 
@@ -123,7 +122,6 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
         KieSession kSession = getKSession();
         
         kSession.fireAllRules();  //init model
-        kSession.addEventListener(new TestAgendaListener());
 
         PMMLRequestData requestData = new PMMLRequestData("123","Missing");
         requestData.addRequestParam(new ParameterInfo<>("Fld1", Double.class, 45.0));
@@ -140,40 +138,12 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
         assertEquals(0.6, token.getConfidence().doubleValue(),0.0);
         assertEquals("null", token.getCurrent());
         
-        System.out.print(  reportWMObjects( kSession ));
+//        System.out.print(  reportWMObjects( kSession ));
 
         checkFirstDataFieldOfTypeStatus( tgt, true, false, "Missing", "tgtZ" );
 
         checkGeneratedRules();
     }
-
-	public class TestAgendaListener extends DefaultAgendaEventListener {
-	    public void matchCancelled(MatchCancelledEvent event) {
-	        System.out.println("Match cancelled - "+
-	            event.getCause().name()+" - "+event.getMatch().getRule().getPackageName()+" : "+event.getMatch().getRule().getName());
-	    }
-
-	    public void matchCreated(MatchCreatedEvent event) {
-	        System.out.println("Match created - "+event.getMatch().getRule().getPackageName()+" : "+event.getMatch().getRule().getName());
-	    }
-
-	    public void afterMatchFired(AfterMatchFiredEvent event) {
-	        System.out.println("After match fired - "+event.getMatch().getRule().getPackageName()+" : "+event.getMatch().getRule().getName());
-	    }
-
-	    public void agendaGroupPopped(AgendaGroupPoppedEvent event) {
-	        System.out.println("Agenda group popped - "+event.getAgendaGroup().getName());
-	    }
-
-	    public void agendaGroupPushed(AgendaGroupPushedEvent event) {
-	        System.out.println("Agenda group pushed - "+event.getAgendaGroup().getName());
-	    }
-
-	    public void beforeMatchFired(BeforeMatchFiredEvent event) {
-	        System.out.println("Before match fired - "+event.getMatch().getRule().getPackageName()+" : "+event.getMatch().getRule().getName());
-	    }
-		
-	}
 
 
     @Test
@@ -196,7 +166,7 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
         String pkgName = PMML4Compiler.PMML_DROOLS+"."+data.getModelName();
         FactType tgt = kSession.getKieBase().getFactType( pkgName, "Fld9" );
 
-        System.out.print(  reportWMObjects( kSession ));
+//        System.out.print(  reportWMObjects( kSession ));
 
         AbstractTreeToken token = (AbstractTreeToken)getToken( kSession, "Missing" );
         assertEquals( 0.8, token.getConfidence(), 0.0 );

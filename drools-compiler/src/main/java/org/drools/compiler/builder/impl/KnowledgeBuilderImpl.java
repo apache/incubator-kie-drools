@@ -40,6 +40,7 @@ import org.drools.compiler.compiler.GuidedRuleTemplateProvider;
 import org.drools.compiler.compiler.GuidedScoreCardFactory;
 import org.drools.compiler.compiler.PMMLCompiler;
 import org.drools.compiler.compiler.PMMLCompilerFactory;
+import org.drools.compiler.compiler.PMMLResource;
 import org.drools.compiler.compiler.PackageBuilderErrors;
 import org.drools.compiler.compiler.PackageBuilderResults;
 import org.drools.compiler.compiler.PackageRegistry;
@@ -804,7 +805,6 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     	 * The following is no longer necessary as the actions for compiling a PMML
     	 * resource are now done in a "pre-compile" step
     	 */
-    	
 //        PMMLCompiler compiler = getPMMLCompiler();
 //        if (compiler != null) {
 //            if (compiler.getResults().isEmpty()) {

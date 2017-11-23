@@ -26,7 +26,6 @@ public class SimpleSegmentPredicateTest {
 		String text = ssp.getPredicateRule();
 		assertNotNull(text);
 		assertEquals("vTF2 == 123",text);
-		System.out.println(predicate.getOperator()+" gives "+text);
 	}
 	
 	@Test
@@ -36,7 +35,6 @@ public class SimpleSegmentPredicateTest {
 		String text = ssp.getPredicateRule();
 		assertNotNull(text);
 		assertEquals("vTF2 != 123",text);
-		System.out.println(predicate.getOperator()+" gives "+text);
 	}
 	
 	@Test
@@ -46,7 +44,6 @@ public class SimpleSegmentPredicateTest {
 		String text = ssp.getPredicateRule();
 		assertNotNull(text);
 		assertEquals("vTF2 > 123",text);
-		System.out.println(predicate.getOperator()+" gives "+text);
 	}
 	
 	@Test
@@ -56,7 +53,6 @@ public class SimpleSegmentPredicateTest {
 		String text = ssp.getPredicateRule();
 		assertNotNull(text);
 		assertEquals("vTF2 < 123",text);
-		System.out.println(predicate.getOperator()+" gives "+text);
 	}
 	
 	@Test
@@ -66,7 +62,6 @@ public class SimpleSegmentPredicateTest {
 		String text = ssp.getPredicateRule();
 		assertNotNull(text);
 		assertEquals("mTF2 == true",text);
-		System.out.println(predicate.getOperator()+" gives "+text);
 	}
 	
 	@Test
@@ -76,7 +71,6 @@ public class SimpleSegmentPredicateTest {
 		String text = ssp.getPredicateRule();
 		assertNotNull(text);
 		assertEquals("vTF2 >= 123",text);
-		System.out.println(predicate.getOperator()+" gives "+text);
 	}
 	
 	@Test
@@ -86,7 +80,6 @@ public class SimpleSegmentPredicateTest {
 		String text = ssp.getPredicateRule();
 		assertNotNull(text);
 		assertEquals("vTF2 <= 123",text);
-		System.out.println(predicate.getOperator()+" gives "+text);
 	}
 	
 	@Test
@@ -96,7 +89,6 @@ public class SimpleSegmentPredicateTest {
 		String text = ssp.getPredicateRule();
 		assertNotNull(text);
 		assertEquals("mTF2 == false",text);
-		System.out.println(predicate.getOperator()+" gives "+text);
 	}
 	
 	@Test(expected=IllegalStateException.class)

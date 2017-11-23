@@ -21,10 +21,11 @@ import org.drools.pmml.pmml_4_2.PMML4Helper;
 import org.drools.pmml.pmml_4_2.DroolsAbstractPMMLTest;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
-
+@Ignore
 public class FunctionsTest extends DroolsAbstractPMMLTest {
 
     private static final boolean VERBOSE = false;

@@ -550,7 +550,7 @@ public class PMML4Compiler implements PMMLCompiler {
 	    		resources.add(resource);
     		}
     	}
-//    	dumpResourceContents(resources);
+    	dumpResourceContents(resources);
     	return resources;
     }
 

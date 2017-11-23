@@ -36,7 +36,9 @@ public class PMMLDataField {
     
     public PMMLDataField(MiningField miningField, DataField field) {
     	this.name = miningField.getName();
-    	this.type = helper.mapDatatype(field.getDataType(), true);
+    	if (field != null) {
+    		this.type = helper.mapDatatype(field.getDataType(), true);
+    	}
     	this.dataDictionaryField = field;
     }
     

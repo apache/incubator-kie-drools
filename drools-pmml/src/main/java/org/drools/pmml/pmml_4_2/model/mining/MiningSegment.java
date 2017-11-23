@@ -3,6 +3,7 @@ package org.drools.pmml.pmml_4_2.model.mining;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.dmg.pmml.pmml_4_2.descr.PMML;
@@ -11,6 +12,7 @@ import org.drools.pmml.pmml_4_2.PMML4Compiler;
 import org.drools.pmml.pmml_4_2.PMML4Model;
 import org.drools.pmml.pmml_4_2.PMML4Result;
 import org.drools.pmml.pmml_4_2.model.PMML4ModelFactory;
+import org.drools.pmml.pmml_4_2.model.PMMLMiningField;
 import org.drools.pmml.pmml_4_2.model.PMMLRequestData;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -54,6 +56,16 @@ public class MiningSegment implements Comparable<MiningSegment> {
 	
 	public PMML4Model getModel() {
 		return this.internalModel;
+	}
+	
+	public boolean checkForMiningFieldMapping() {
+		List<PMMLMiningField> miningFields = this.internalModel.getMiningFields();
+		for (PMMLMiningField field : miningFields) {
+			if (!field.isInDictionary()) {
+				System.out.println("must search for output named: "+field.getName());
+			}
+		}
+		return false;
 	}
 	
 	public String getSegmentId() {
@@ -133,7 +145,7 @@ public class MiningSegment implements Comparable<MiningSegment> {
 	}
 	
 	public String getPredicateText() {
-		return this.predicateRuleProducer.getPredicateRule();
+		return this.alwaysTrue ? "" : this.predicateRuleProducer.getPredicateRule();
 	}
 	
 	public String getSegmentPackageName() {

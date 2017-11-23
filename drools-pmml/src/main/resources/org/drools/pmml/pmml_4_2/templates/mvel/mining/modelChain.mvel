@@ -32,24 +32,76 @@ agenda-group "MiningSegmentation"
 salience 1000
 auto-focus
 when
-   rqst: PMMLRequestData( correlationId != null, modelName == "@{miningModel.modelId}", rqstInf: requestParams != null )
+   rqst: PMMLRequestData( correlationId != null, modelName == "@{miningModel.modelId}", rqstInf: requestParams != null, source == null || source == "EXTERNAL" )
    not @{miningModel.miningPojoClassName}()
 then
    @{miningModel.miningPojoClassName} modelData = new @{miningModel.miningPojoClassName}(rqst);
    insert(modelData);
 end
 
+rule "Execute Next Segment"
+agenda-group "MiningSegmentation"
+when
+   $segExec: SegmentExecution( $corrId: correlationId, $segmId: segmentationId, state == SegmentExecutionState.WAITING, $segIdx: segmentIndex ) 
+   not SegmentExecution( correlationId == $corrId, segmentationId == $segmId, state == SegmentExecutionState.EXECUTING,  segmentIndex < $segIdx )
+then
+   $segExec.applySegmentModel($segExec.getRequestData(),kcontext);
+end
+
+rule "Segment Complete"
+agenda-group "MiningSegmentation"
+when
+   $segExec: SegmentExecution( $corrId: correlationId, $segmId: segmentationId, $segId: segmentId, state == SegmentExecutionState.EXECUTING, $rslt: result != null )
+   PMML4Result( this == $rslt, resultCode == "OK" )
+then
+   System.out.println("Segment "+$segExec.getSegmentId()+" completed");
+   modify($segExec) {
+      setState(SegmentExecutionState.COMPLETE);
+   }
+end
+
+
+rule "Segment Complete with Error"
+agenda-group "MiningSegmentation"
+when
+   $segExec: SegmentExecution( $corrId: correlationId, $segmId: segmentationId, $segId: segmentId, state == SegmentExecutionState.EXECUTING, $rslt: result != null )
+   PMML4Result( this == $rslt, resultCode != null && resultCode != "OK" )
+then
+   System.out.println("Segment "+$segExec.getSegmentId()+" completed with error");
+   modify($segExec) {
+      setState(SegmentExecutionState.ERROR);
+   }
+end
+
+@foreach{ resultMapping: resultMappings }
+rule "propagate results for segmentation @{resultMapping.segmentationId}- @{resultMapping.fromSegmentId} to @{resultMapping.toSegmentId}"
+agenda-group "MiningSegmentation"
+salience 200
+when
+   $segExec: SegmentExecution( $corrId: correlationId, $segmId: segmentationId == "@{resultMapping.segmentationId}", 
+                               $segId: segmentId, state == SegmentExecutionState.COMPLETE, result != null )
+   $rslt: PMML4Result( ) from $segExec.result
+then
+   System.out.println("Do the mappings, Jim!");
+end
+@end{}
+
 @foreach{ childSegment: childSegments }
-@code{ salienceValue = 1000 - childSegment.segmentIndex; }
+@code{ salienceValue = 100 - childSegment.segmentIndex; }
 @code{ internalModel = childSegment.model; }
 
 rule "Check Segment Can Fire - Segment @{childSegment.segmentId}"
 agenda-group "MiningSegmentation"
 salience @{salienceValue}
 when
-   model: @{miningModel.miningPojoClassName}( @{childSegment.predicateText} )
+   @if{ childSegment.predicateText != null && childSegment.predicateText != "" }
+   model: @{miningModel.miningPojoClassName}( $corrId: correlationId, @{childSegment.predicateText} )
+   @else{}
+   model: @{miningModel.miningPojoClassName}( $corrId: correlationId )
+   @end{}
 then
    PMMLRequestData rqstData = new PMMLRequestData(model.getCorrelationId(),"@{childSegment.model.modelId}");
+   rqstData.setSource("@{childSegment.owner.segmentationId}:@{childSegment.segmentId}");
    @foreach{ field: childSegment.model.miningFields }
    rqstData.addRequestParam( "@{field.name}",model.getV@{field.compactUpperCaseName}() );
    @end{}
@@ -62,7 +114,7 @@ then
    insertLogical(segEx);
 end
 
-rule "Execute Next Segment 
+
 
 @end{}
 

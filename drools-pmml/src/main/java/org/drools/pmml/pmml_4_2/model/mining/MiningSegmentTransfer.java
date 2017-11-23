@@ -17,6 +17,13 @@ public class MiningSegmentTransfer {
 	private PMMLRequestData outboundRequest;
 	private PMML4Result inboundResult;
 	
+	public MiningSegmentTransfer(String segmentationId, String fromSegmentId, String toSegmentId) {
+		this.segmentationId = segmentationId;
+		this.fromSegmentId = fromSegmentId;
+		this.toSegmentId = toSegmentId;
+		this.requestFromResultMap = new HashMap<>();
+	}
+	
 	public MiningSegmentTransfer(PMML4Result inboundResult, String toSegmentId) {
 		this.inboundResult = inboundResult;
 		this.correlationId = inboundResult.getCorrelationId();

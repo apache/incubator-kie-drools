@@ -19,10 +19,11 @@ package org.drools.pmml.pmml_4_2.predictive;
 
 import org.drools.pmml.pmml_4_2.DroolsAbstractPMMLTest;
 import org.junit.After;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
-
+@Ignore
 public class TargetsAndOutputsTest extends DroolsAbstractPMMLTest {
 
     private static final boolean VERBOSE = true;

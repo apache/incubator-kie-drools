@@ -13,6 +13,7 @@ import org.dmg.pmml.pmml_4_2.descr.Segment;
 import org.dmg.pmml.pmml_4_2.descr.Segmentation;
 import org.drools.pmml.pmml_4_2.model.Miningmodel;
 import org.drools.pmml.pmml_4_2.model.PMMLMiningField;
+import org.drools.pmml.pmml_4_2.model.PMMLOutputField;
 import org.kie.api.io.Resource;
 import org.kie.internal.io.ResourceFactory;
 import org.mvel2.integration.impl.MapVariableResolverFactory;
@@ -31,6 +32,8 @@ public class MiningSegmentation {
 	private static TemplateRegistry templates;
 	private static Map<String,String> templateNameToFile;
 	private static final String segmentActivationSelectFirst = "org/drools/pmml/pmml_4_2/templates/mvel/mining/selectFirstSegOnly.mvel";
+	private static final String segmentSelectAll = "org/drools/pmml/pmml_4_2/templates/mvel/mining/selectAllSegments.mvel";
+	private static final String segmentModelChain = "org/drools/pmml/pmml_4_2/templates/mvel/mining/modelChain.mvel";
 	
 	public MiningSegmentation(Miningmodel owner, Segmentation segmentation) {
 		this.owner = owner;
@@ -57,6 +60,8 @@ public class MiningSegmentation {
 		if (templateNameToFile == null) {
 			templateNameToFile = new HashMap<>();
 			templateNameToFile.put(MULTIPLEMODELMETHOD.SELECT_FIRST.name(), segmentActivationSelectFirst);
+			templateNameToFile.put(MULTIPLEMODELMETHOD.SELECT_ALL.name(), segmentSelectAll);
+			templateNameToFile.put(MULTIPLEMODELMETHOD.MODEL_CHAIN.name(), segmentModelChain);
 		}
 	}
 	
@@ -113,12 +118,38 @@ public class MiningSegmentation {
 			}
 		}
 	}
+	
+	public MiningSegmentTransfer getSegmentTransfer(MiningSegment targetSegment, String targetFieldName) {
+		MiningSegmentTransfer xfer = null;
+		int lastIndex = targetSegment.getSegmentIndex() - 1;
+		if (lastIndex < 0) {
+			throw new IndexOutOfBoundsException("Cannot have an undefined mining field in the first segment");
+		}
+		for (int idx = lastIndex; idx >= 0; idx--) {
+			MiningSegment seg = miningSegments.get(idx);
+			if (seg != null && seg.getInternalModel() != null) {
+				List<PMMLOutputField> outputs = seg.getInternalModel().getOutputFields();
+				if (outputs != null) {
+					for (PMMLOutputField field: outputs) {
+						if (field.getName().equals(targetFieldName)) {
+							xfer = new MiningSegmentTransfer(this.segmentationId, seg.getSegmentId(), targetSegment.getSegmentId());
+							xfer.addResultToRequestMapping(targetFieldName, targetFieldName);
+							return xfer;
+						}
+					}
+				}
+			}
+		}
+		return xfer;
+	}
 
 	public String generateSegmentationRules() {
 		StringBuilder builder = new StringBuilder();
 		loadTemplates(this.multipleModelMethod);
 		Map<String, Object> templateVars = new HashMap<>();
 		String pkgName = "org.drools.pmml.pmml_4_2."+this.getSegmentationId();
+		CompiledTemplate ct = null;
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		switch (this.multipleModelMethod) {
 			case AVERAGE:
 				break;
@@ -129,15 +160,31 @@ public class MiningSegmentation {
 			case MEDIAN:
 				break;
 			case MODEL_CHAIN:
+				List<MiningSegmentTransfer> segmentTransfers = new ArrayList<>();
+				MiningSegmentTransfer mst = new MiningSegmentTransfer(this.getSegmentationId(), "1","2");
+				mst.addResultToRequestMapping("calculatedScore", "previousScore");
+				segmentTransfers.add(mst);
+				templateVars.put("miningModel", this.getOwner());
+				templateVars.put("childSegments", this.getMiningSegments());
+				templateVars.put("packageName", pkgName);
+				templateVars.put("resultMappings", segmentTransfers);
+				ct = templates.getNamedTemplate(this.multipleModelMethod.name());
+				TemplateRuntime.execute(ct,null,new MapVariableResolverFactory(templateVars),baos);
+				builder.append(new String(baos.toByteArray()));
 				break;
 			case SELECT_ALL:
+				templateVars.put("miningModel", this.getOwner());
+				templateVars.put("childSegments", this.getMiningSegments());
+				templateVars.put("packageName", pkgName);
+				ct = templates.getNamedTemplate(this.multipleModelMethod.name());
+				TemplateRuntime.execute(ct,null,new MapVariableResolverFactory(templateVars),baos);
+				builder.append(new String(baos.toByteArray()));
 				break;
 			case SELECT_FIRST:
 				templateVars.put("miningModel", this.getOwner());
 				templateVars.put("childSegments", this.getMiningSegments());
 				templateVars.put("packageName", pkgName);
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				CompiledTemplate ct = templates.getNamedTemplate(this.multipleModelMethod.name());
+				ct = templates.getNamedTemplate(this.multipleModelMethod.name());
 				TemplateRuntime.execute(ct,null,new MapVariableResolverFactory(templateVars),baos);
 				builder.append(new String(baos.toByteArray()));
 				break;

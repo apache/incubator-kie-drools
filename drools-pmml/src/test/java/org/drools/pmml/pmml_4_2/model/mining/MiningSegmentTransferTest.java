@@ -69,7 +69,6 @@ public class MiningSegmentTransferTest {
 	public void testSimpleResult() {
 		MiningSegmentTransfer mst = new MiningSegmentTransfer(simpleResult,"SEGMENT_2");
 		doBaselineAssertions(simpleResult,mst);
-		System.out.println(mst);
 	}
 
 	@Test
@@ -78,7 +77,6 @@ public class MiningSegmentTransferTest {
 		mst.addResultToRequestMapping("var1", "someVarA");
 		doBaselineAssertions(simpleResult,mst);
 		assertEquals(1,mst.getResultFieldNameToRequestFieldName().size());
-		System.out.println(mst);
 	}
 	
 	@Test
@@ -92,7 +90,5 @@ public class MiningSegmentTransferTest {
 		PMMLRequestData rqst = mst.getOutboundRequest();
 		assertNotNull(rqst);
 		assertEquals(complexResult.getCorrelationId(),rqst.getCorrelationId());
-		System.out.println(mst);
-		System.out.println(rqst);
 	}
 }

@@ -32,8 +32,8 @@ public class SimpleRegressionTest extends DroolsAbstractPMMLTest {
 
 
     private static final boolean VERBOSE = true;
-    private static final String source1 = "org/drools/pmml/pmml_4_2/test_regression.xml";
-    private static final String source2 = "org/drools/pmml/pmml_4_2/test_regression_clax.xml";
+    private static final String source1 = "org/drools/pmml/pmml_4_2/test_regression.pmml";
+    private static final String source2 = "org/drools/pmml/pmml_4_2/test_regression_clax.pmml";
     private static final String packageName = "org.drools.pmml.pmml_4_2.test";
 
 

@@ -5,13 +5,22 @@ import org.dmg.pmml.pmml_4_2.descr.FIELDUSAGETYPE;
 import org.dmg.pmml.pmml_4_2.descr.MiningField;
 
 public class PMMLMiningField extends PMMLDataField {
+	private boolean inDictionary;
 	private String modelId;
 	private FIELDUSAGETYPE fieldUsageType;
 
-	public PMMLMiningField(MiningField miningField, DataField field, String modelId) {
+	public PMMLMiningField(MiningField miningField, DataField field, String modelId, boolean inDictionary) {
 		super(miningField,field);
 		this.modelId = modelId;
 		this.fieldUsageType = miningField.getUsageType();
+		this.inDictionary = inDictionary;
+	}
+	
+	public PMMLMiningField(MiningField miningField, String modelId) {
+		super(miningField, null);
+		this.fieldUsageType = miningField.getUsageType();
+		this.modelId = modelId;
+		this.inDictionary = false;
 	}
 
 	public String getModelId() {
@@ -30,5 +39,8 @@ public class PMMLMiningField extends PMMLDataField {
 		this.fieldUsageType = fieldUsageType;
 	}
 
+	public boolean isInDictionary() {
+		return this.inDictionary;
+	}
 
 }

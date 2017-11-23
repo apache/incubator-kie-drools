@@ -1,0 +1,161 @@
+<PMML version="4.2" xsi:schemaLocation="http://www.dmg.org/PMML-4_2 http://www.dmg.org/v4-1/pmml-4-2.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xmlns="http://www.dmg.org/PMML-4_2">
+   <Header>
+      <Application name="Drools-PMML" version="7.0.0-SNAPSHOT" />
+   </Header>
+   <DataDictionary numberOfFields="6">
+      <DataField dataType="double" name="fld1" optype="continuous">
+         <Value property="missing" value="-1.0" />
+      </DataField>
+      <DataField dataType="double" name="fld2" optype="continuous">
+         <Value property="missing" value="-1.0" />
+      </DataField>
+      <DataField dataType="string" name="fld3" optype="categorical">
+         <Value value="true" />
+         <Value value="false" />
+      </DataField>
+      <DataField dataType="string" name="fld4" optype="categorical">
+         <Value value="optA" />
+         <Value value="optB" />
+         <Value value="optC" />
+      </DataField>
+      <DataField dataType="string" name="fld5" optype="categorical">
+         <Value value="tgtX" />
+         <Value value="tgtY" />
+         <Value value="tgtZ" />
+      </DataField>
+      <DataField dataType="string" name="fld6" optype="categorical">
+         <Value value="optA" />
+         <Value value="optB" />
+         <Value value="optC" />
+         <Value property="missing" value="miss" />
+      </DataField>
+   </DataDictionary>
+   <MiningModel modelName="SampleMine" functionName="classification">
+      <MiningSchema>
+         <MiningField name="fld1" />
+         <MiningField name="fld2" />
+         <MiningField name="fld3" />
+         <MiningField name="fld4" />
+         <MiningField name="fld6" />
+         <MiningField name="fld5" usageType="predicted" />
+      </MiningSchema>
+      <Segmentation multipleModelMethod="selectFirst">
+         <Segment id="1">
+            <SimplePredicate field="fld1" operator="lessOrEqual" value="30.0" />
+            <TreeModel functionName="classification" modelName="SampleMineTree1">
+               <MiningSchema>
+                  <MiningField name="fld1" />
+                  <MiningField name="fld2" />
+                  <MiningField name="fld3" />
+                  <MiningField name="fld4" />
+                  <MiningField name="fld5" usageType="predicted" />
+               </MiningSchema>
+               <Node score="tgtX">
+                  <True />
+                  <Node score="tgtX">
+                     <SimplePredicate field="fld4" operator="equal" value="optA" />
+                     <Node score="tgtX">
+                        <CompoundPredicate booleanOperator="surrogate">
+                           <SimplePredicate field="fld1" operator="lessThan" value="30.0" />
+                           <SimplePredicate field="fld2" operator="greaterThan" value="20.0" />
+                        </CompoundPredicate>
+                        <Node score="tgtX">
+                           <SimplePredicate field="fld2" operator="lessThan" value="40.0" />
+                        </Node>
+                        <Node score="tgtZ">
+                           <SimplePredicate field="fld2" operator="greaterOrEqual" value="10.0" />
+                        </Node>
+                     </Node>
+                     <Node score="tgtZ">
+                        <CompoundPredicate booleanOperator="or">
+                           <SimplePredicate field="fld1" operator="greaterOrEqual" value="60.0" />
+                           <SimplePredicate field="fld1" operator="lessOrEqual" value="70.0" />
+                        </CompoundPredicate>
+                        <Node score="tgtZ">
+                           <SimpleSetPredicate booleanOperator="isNotIn" field="fld4">
+                              <Array type="string">optA optB</Array>
+                           </SimpleSetPredicate>
+                        </Node>
+                     </Node>
+                  </Node>
+                  <Node score="tgtY">
+                     <CompoundPredicate booleanOperator="or">
+                        <SimplePredicate field="fld4" operator="equal" value="optA" />
+                        <SimplePredicate field="fld4" operator="equal" value="optC" />
+                     </CompoundPredicate>
+                     <Node score="tgtY">
+                        <CompoundPredicate booleanOperator="and">
+                           <SimplePredicate field="fld1" operator="greaterThan" value="10.0" />
+                           <SimplePredicate field="fld1" operator="lessThan" value="50.0" />
+                           <SimplePredicate field="fld4" operator="equal" value="optA" />
+                           <SimplePredicate field="fld2" operator="lessThan" value="100.0" />
+                           <SimplePredicate field="fld3" operator="equal" value="false" />
+                        </CompoundPredicate>
+                     </Node>
+                     <Node score="tgtZ">
+                        <CompoundPredicate booleanOperator="and">
+                           <SimplePredicate field="fld4" operator="equal" value="optC" />
+                           <SimplePredicate field="fld2" operator="lessThan" value="30.0" />
+                        </CompoundPredicate>
+                     </Node>
+                  </Node>
+               </Node>
+            </TreeModel>
+         </Segment>
+         <Segment id="2">
+            <CompoundPredicate booleanOperator="surrogate">
+               <SimplePredicate field="fld1" operator="greaterThan" value="30.0" />
+               <SimplePredicate field="fld2" operator="greaterOrEqual" value="50.0" />
+               <True />
+            </CompoundPredicate>
+            <TreeModel functionName="classification" missingValuePenalty="0.8" missingValueStrategy="weightedConfidence"
+               modelName="Missing" noTrueChildStrategy="returnLastPrediction">
+               <MiningSchema>
+                  <MiningField name="fld1" />
+                  <MiningField name="fld2" />
+                  <MiningField name="fld6" />
+                  <MiningField name="fld5" usageType="predicted" />
+               </MiningSchema>
+               <Output>
+                  <OutputField name="outClass" targetField="fld5" />
+                  <OutputField name="outProb" targetField="fld5" feature="probability" />
+               </Output>
+               <Node defaultChild="2" id="1">
+                  <True />
+                  <Node defaultChild="3" id="2">
+                     <SimplePredicate field="fld6" operator="equal" value="optA" />
+                     <Node id="3" recordCount="40" score="tgtX">
+                        <CompoundPredicate booleanOperator="surrogate">
+                           <SimplePredicate field="fld1" operator="greaterOrEqual" value="50" />
+                           <SimplePredicate field="fld2" operator="lessThan" value="80" />
+                        </CompoundPredicate>
+                        <ScoreDistribution confidence="0.9" recordCount="36" value="tgtX" />
+                        <ScoreDistribution confidence="0.05" recordCount="2" value="tgtY" />
+                        <ScoreDistribution confidence="0.05" recordCount="2" value="tgtZ" />
+                     </Node>
+                     <Node id="4" recordCount="10" score="tgtZ">
+                        <CompoundPredicate booleanOperator="surrogate">
+                           <SimplePredicate field="fld1" operator="lessThan" value="50" />
+                           <SimplePredicate field="fld2" operator="greaterOrEqual" value="80" />
+                        </CompoundPredicate>
+                        <ScoreDistribution confidence="0.4" recordCount="4" value="tgtX" />
+                        <ScoreDistribution confidence="0.0" recordCount="0" value="tgtY" />
+                        <ScoreDistribution confidence="0.6" recordCount="6" value="tgtZ" />
+                     </Node>
+                  </Node>
+                  <Node id="5" recordCount="50" score="tgtY">
+                     <CompoundPredicate booleanOperator="or">
+                        <SimplePredicate field="fld6" operator="equal" value="optB" />
+                        <SimplePredicate field="fld6" operator="equal" value="optC" />
+                     </CompoundPredicate>
+                     <ScoreDistribution confidence="0.4" recordCount="20" value="tgtX" />
+                     <ScoreDistribution confidence="0.56" recordCount="28" value="tgtY" />
+                     <ScoreDistribution confidence="0.04" recordCount="2" value="tgtZ" />
+                  </Node>
+               </Node>
+            </TreeModel>
+         </Segment>
+      </Segmentation>
+   </MiningModel>
+</PMML>
