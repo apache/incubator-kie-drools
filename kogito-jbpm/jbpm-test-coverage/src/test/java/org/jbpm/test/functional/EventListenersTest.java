@@ -26,6 +26,8 @@ import org.junit.Test;
 import org.kie.api.command.Command;
 import org.kie.api.runtime.KieSession;
 
+import static org.junit.Assert.*;
+
 /**
  * Test to ensure event listeners for processes work properly BRMS 5.3 PRD: BRMS-BPM-10
  */

@@ -19,6 +19,7 @@ package org.jbpm.test.functional.task;
 import static org.jbpm.test.tools.IterableListenerAssert.assertNextNode;
 import static org.jbpm.test.tools.IterableListenerAssert.assertProcessCompleted;
 import static org.jbpm.test.tools.IterableListenerAssert.assertProcessStarted;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;

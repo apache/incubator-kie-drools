@@ -17,6 +17,7 @@
 package org.jbpm.bpmn2.concurrency.persistence;
 
 import static org.jbpm.persistence.util.PersistenceUtil.*;
+import static org.junit.Assert.*;
 
 import java.util.HashMap;
 

@@ -23,6 +23,8 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.junit.Assert.*;
+
 public class ResourceTest extends JbpmBpmn2TestCase {
 
     private static final Logger logger = LoggerFactory.getLogger(ResourceTest.class);

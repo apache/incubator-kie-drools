@@ -30,6 +30,8 @@ import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
 import qa.tools.ikeeper.annotation.BZ;
 
+import static org.junit.Assert.*;
+
 public class EventSubprocessTest extends JbpmTestCase {
 
     private static final String ERROR_CODE_EXCEPTION =

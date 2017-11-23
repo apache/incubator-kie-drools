@@ -46,6 +46,8 @@ import org.kie.internal.io.ResourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.junit.Assert.*;
+
 public class JaxWSServiceTaskTest extends AbstractBaseTest {
 
     private static final Logger logger = LoggerFactory.getLogger(JaxWSServiceTaskTest.class);

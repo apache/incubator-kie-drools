@@ -31,6 +31,8 @@ import org.kie.api.task.TaskService;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 
+import static org.junit.Assert.*;
+
 public class RetrySyncWorkItemByJPATest extends JbpmTestCase {
 
     private static final String RETRY_WORKITEM_JPA_PROCESS_ID = "org.jbpm.test.retryWorkitem-jpa";

@@ -32,6 +32,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 
 import static org.jbpm.test.tools.IterableListenerAssert.*;
+import static org.junit.Assert.*;
 
 public class SubprocessesTest extends JbpmTestCase {
 

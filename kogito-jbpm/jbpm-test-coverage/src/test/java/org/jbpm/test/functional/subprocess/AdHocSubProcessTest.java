@@ -34,6 +34,7 @@ import org.kie.internal.command.CommandFactory;
 import qa.tools.ikeeper.annotation.BZ;
 
 import static org.jbpm.test.tools.TrackingListenerAssert.*;
+import static org.junit.Assert.*;
 
 public class AdHocSubProcessTest extends JbpmTestCase {
 

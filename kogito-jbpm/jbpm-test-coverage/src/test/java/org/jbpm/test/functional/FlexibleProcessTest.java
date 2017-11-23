@@ -34,6 +34,7 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
 
 import static org.jbpm.test.tools.TrackingListenerAssert.*;
+import static org.junit.Assert.*;
 
 /**
  * Flexible process test. (process fragments without strict process flow

@@ -39,6 +39,8 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.junit.Assert.*;
+
 @RunWith(Parameterized.class)
 public class EndEventTest extends JbpmBpmn2TestCase {
 

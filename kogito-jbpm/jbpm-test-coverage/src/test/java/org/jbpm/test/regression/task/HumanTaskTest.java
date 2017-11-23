@@ -18,6 +18,7 @@ package org.jbpm.test.regression.task;
 
 import static org.jbpm.test.tools.TrackingListenerAssert.assertTriggered;
 import static org.jbpm.test.tools.TrackingListenerAssert.assertTriggeredAndLeft;
+import static org.junit.Assert.*;
 
 import java.util.HashMap;
 import java.util.List;

@@ -29,6 +29,8 @@ import org.kie.api.task.TaskService;
 import org.kie.api.task.model.TaskSummary;
 import qa.tools.ikeeper.annotation.BZ;
 
+import static org.junit.Assert.*;
+
 public class HumanTaskCleanUpEarlyFlushTest extends JbpmTestCase {
 
     private static final String SUBPROCESS_PARENT =

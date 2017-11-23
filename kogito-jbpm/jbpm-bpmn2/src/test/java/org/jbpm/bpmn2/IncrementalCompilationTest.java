@@ -29,6 +29,8 @@ import org.kie.api.builder.Results;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 
+import static org.junit.Assert.*;
+
 public class IncrementalCompilationTest extends AbstractBaseTest {
 
     @Test

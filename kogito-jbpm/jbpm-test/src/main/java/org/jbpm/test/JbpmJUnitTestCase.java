@@ -17,6 +17,7 @@
 package org.jbpm.test;
 
 import static org.jbpm.test.JBPMHelper.txStateName;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.FilenameFilter;

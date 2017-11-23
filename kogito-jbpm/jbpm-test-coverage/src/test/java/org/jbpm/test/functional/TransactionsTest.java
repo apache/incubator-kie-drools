@@ -34,6 +34,8 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 
+import static org.junit.Assert.*;
+
 public class TransactionsTest extends JbpmTestCase {
 
     private static final String TRANSACTIONS = "org/jbpm/test/functional/Transactions.bpmn";

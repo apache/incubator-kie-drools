@@ -31,6 +31,8 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.process.ProcessInstance;
 
+import static org.junit.Assert.*;
+
 @RunWith(Parameterized.class)
 public class ExceptionAfterTimerNodeTest extends JbpmTestCase {
 

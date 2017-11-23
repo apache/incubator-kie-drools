@@ -37,6 +37,8 @@ import org.kie.api.task.TaskService;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 
+import static org.junit.Assert.*;
+
 @RunWith(Parameterized.class)
 public class CallActivityWithReadOnlyProcessInstanceTest extends JbpmTestCase {
 

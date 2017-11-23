@@ -30,6 +30,8 @@ import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.ProcessInstance;
 
+import static org.junit.Assert.*;
+
 public class ServiceTaskHandlerTest extends JbpmTestCase {
     
     private KieSession ksession;

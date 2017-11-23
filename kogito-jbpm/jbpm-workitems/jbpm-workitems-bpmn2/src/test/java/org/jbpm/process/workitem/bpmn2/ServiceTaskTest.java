@@ -34,6 +34,8 @@ import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 
+import static org.junit.Assert.*;
+
 public class ServiceTaskTest extends AbstractBaseTest {
 
     @Test

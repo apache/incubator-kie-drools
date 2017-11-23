@@ -31,6 +31,8 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.command.CommandFactory;
 
+import static org.junit.Assert.*;
+
 /**
  * Event-based gateway execution test. branches: condition event, signal event, message event, timer event
  * (default after 1 sec)

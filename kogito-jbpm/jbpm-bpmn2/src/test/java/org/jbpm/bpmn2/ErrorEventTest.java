@@ -53,6 +53,8 @@ import org.kie.api.runtime.process.WorkItemManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.junit.Assert.*;
+
 @RunWith(Parameterized.class)
 public class ErrorEventTest extends JbpmBpmn2TestCase {
 

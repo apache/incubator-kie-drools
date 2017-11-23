@@ -36,6 +36,8 @@ import org.kie.api.task.TaskService;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Task;
 
+import static org.junit.Assert.*;
+
 public class HumanTaskReassignmentTest extends JbpmTestCase {
 
     private static final String PROCESS_FILE = "org/jbpm/test/functional/task/TaskReassignmentTimeout.bpmn2";

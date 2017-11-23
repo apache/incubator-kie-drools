@@ -79,6 +79,8 @@ import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.junit.Assert.*;
+
 
 public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
     

@@ -40,6 +40,8 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.Assert.*;
+
 public class TimerCycleOnBinaryPackageTest extends JbpmBpmn2TestCase {
 
     private static final Logger logger = LoggerFactory.getLogger(TimerCycleOnBinaryPackageTest.class);

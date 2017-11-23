@@ -32,6 +32,8 @@ import org.kie.internal.process.CorrelationKeyFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.junit.Assert.*;
+
 public abstract class AbstractStartProcessWithCorrelationKeyTest extends JbpmTestCase {
     
     private static final Logger logger = LoggerFactory.getLogger(AbstractStartProcessWithCorrelationKeyTest.class);

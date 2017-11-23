@@ -62,6 +62,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import static org.junit.Assert.*;
+
 public class ConcurrentGlobalTimerServiceTest extends TimerBaseTest {
     
     private static final Logger logger = LoggerFactory.getLogger(ConcurrentGlobalTimerServiceTest.class);

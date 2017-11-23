@@ -33,6 +33,8 @@ import org.kie.api.task.model.TaskSummary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.junit.Assert.*;
+
 public class HumanTaskVariablesAccessTest extends JbpmTestCase {
 
     private static final Logger logger = LoggerFactory.getLogger(HumanTaskVariablesAccessTest.class);

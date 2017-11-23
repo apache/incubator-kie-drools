@@ -35,6 +35,7 @@ import org.kie.internal.command.CommandFactory;
 import qa.tools.ikeeper.annotation.BZ;
 
 import static org.jbpm.test.tools.IterableListenerAssert.*;
+import static org.junit.Assert.*;
 
 public class EndEventTest extends JbpmTestCase {
 

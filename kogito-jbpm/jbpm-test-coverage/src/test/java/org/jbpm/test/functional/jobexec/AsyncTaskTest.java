@@ -33,6 +33,8 @@ import org.kie.api.runtime.query.QueryContext;
 
 import qa.tools.ikeeper.annotation.BZ;
 
+import static org.junit.Assert.*;
+
 //
 // TODO: Add asserts job results
 //

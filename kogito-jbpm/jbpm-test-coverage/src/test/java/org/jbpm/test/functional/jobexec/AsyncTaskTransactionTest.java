@@ -33,6 +33,8 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.api.runtime.query.QueryContext;
 
+import static org.junit.Assert.*;
+
 public class AsyncTaskTransactionTest extends JbpmAsyncJobTestCase {
 
     public static final String ASYNC_DATA_EXECUTOR = "org/jbpm/test/functional/jobexec/AsyncDataExecutor.bpmn2";

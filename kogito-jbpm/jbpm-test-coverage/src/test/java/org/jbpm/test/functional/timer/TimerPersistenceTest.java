@@ -17,6 +17,7 @@
 package org.jbpm.test.functional.timer;
 
 import static org.jbpm.test.JBPMHelper.processStateName;
+import static org.junit.Assert.*;
 import static org.kie.api.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 
 import java.util.HashMap;

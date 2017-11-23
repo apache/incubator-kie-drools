@@ -36,6 +36,8 @@ import org.kie.api.task.model.Content;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.logger.KnowledgeRuntimeLoggerFactory;
 
+import static org.junit.Assert.*;
+
 public class LocalTaskServiceTest extends JbpmTestCase {
 
     private static final String HUMAN_TASK = "org/jbpm/test/functional/common/HumanTask.bpmn2";
@@ -126,11 +128,11 @@ public class LocalTaskServiceTest extends JbpmTestCase {
         ProcessInstance process = kieSession.startProcess(EVALUTION_ID, parameters);
 
         //The process is in the first Human Task waiting for its completion
-        Assert.assertEquals(ProcessInstance.STATE_ACTIVE, process.getState());
+        assertEquals(ProcessInstance.STATE_ACTIVE, process.getState());
 
         //gets salaboy's tasks
         List<TaskSummary> salaboysTasks = taskService.getTasksAssignedAsPotentialOwner("salaboy", "en-UK");
-        Assert.assertEquals(1, salaboysTasks.size());
+        assertEquals(1, salaboysTasks.size());
 
 
         taskService.start(salaboysTasks.get(0).getId(), "salaboy");
@@ -139,12 +141,12 @@ public class LocalTaskServiceTest extends JbpmTestCase {
 
         List<TaskSummary> pmsTasks = taskService.getTasksAssignedAsPotentialOwner("john", "en-UK");
 
-        Assert.assertEquals(1, pmsTasks.size());
+        assertEquals(1, pmsTasks.size());
 
 
         List<TaskSummary> hrsTasks = taskService.getTasksAssignedAsPotentialOwner("mary", "en-UK");
 
-        Assert.assertEquals(1, hrsTasks.size());
+        assertEquals(1, hrsTasks.size());
 
     }
 

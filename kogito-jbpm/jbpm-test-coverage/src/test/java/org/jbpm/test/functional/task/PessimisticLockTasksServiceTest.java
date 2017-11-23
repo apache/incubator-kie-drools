@@ -51,6 +51,8 @@ import org.kie.internal.runtime.manager.InternalRuntimeManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.junit.Assert.*;
+
 public class PessimisticLockTasksServiceTest extends JbpmTestCase {
 
     private static final Logger logger = LoggerFactory.getLogger(PessimisticLockTasksServiceTest.class);
@@ -109,11 +111,11 @@ public class PessimisticLockTasksServiceTest extends JbpmTestCase {
 
 
         //The process is in the first Human Task waiting for its completion
-        Assert.assertEquals(ProcessInstance.STATE_ACTIVE, process.getState());
+        assertEquals(ProcessInstance.STATE_ACTIVE, process.getState());
 
         //gets salaboy's tasks
         List<TaskSummary> salaboysTasks = taskService.getTasksAssignedAsPotentialOwner("salaboy", "en-UK");
-        Assert.assertEquals(1, salaboysTasks.size());
+        assertEquals(1, salaboysTasks.size());
 
         final long taskId = salaboysTasks.get(0).getId();
         final CountDownLatch t2StartLockedTask = new CountDownLatch(1);
@@ -191,10 +193,10 @@ public class PessimisticLockTasksServiceTest extends JbpmTestCase {
         }
 
         List<TaskSummary> pmsTasks = taskService.getTasksAssignedAsPotentialOwner("john", "en-UK");
-        Assert.assertEquals(1, pmsTasks.size());
+        assertEquals(1, pmsTasks.size());
 
         List<TaskSummary> hrsTasks = taskService.getTasksAssignedAsPotentialOwner("mary", "en-UK");
-        Assert.assertEquals(1, hrsTasks.size());
+        assertEquals(1, hrsTasks.size());
 
         ksession.abortProcessInstance(process.getId());
         assertProcessInstanceAborted(process.getId());

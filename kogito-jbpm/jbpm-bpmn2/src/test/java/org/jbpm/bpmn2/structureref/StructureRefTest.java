@@ -35,6 +35,8 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.junit.Assert.*;
+
 @RunWith(Parameterized.class)
 public class StructureRefTest extends JbpmBpmn2TestCase {
 

@@ -30,6 +30,8 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItemManager;
 
+import static org.junit.Assert.*;
+
 //
 // BZ-1121396
 // BZ-1121040

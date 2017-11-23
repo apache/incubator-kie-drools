@@ -54,6 +54,8 @@ import org.kie.api.task.model.TaskSummary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.junit.Assert.*;
+
 public class PatientVariablePersistenceStrategyTest extends JbpmTestCase {
 
     private static final Logger logger = LoggerFactory.getLogger(PatientVariablePersistenceStrategyTest.class);
@@ -115,7 +117,7 @@ public class PatientVariablePersistenceStrategyTest extends JbpmTestCase {
         taskService.start(frontDeskTasks.get(0).getId(), "frontDesk");
         //frontDesk completes its task
         MedicalRecord taskMedicalRecord = getTaskContent(runtimeEngine, frontDeskTasks.get(0));
-        Assert.assertNotNull(taskMedicalRecord.getId());
+        assertNotNull(taskMedicalRecord.getId());
         taskMedicalRecord.setDescription("Initial Description of the Medical Record");
                 
         Map<String, Object> output = new HashMap<String, Object>();
@@ -152,7 +154,7 @@ public class PatientVariablePersistenceStrategyTest extends JbpmTestCase {
         
         taskMedicalRecord = getTaskContent(runtimeEngine, doctorTasks.get(0));
         
-        Assert.assertNotNull(taskMedicalRecord.getId());
+        assertNotNull(taskMedicalRecord.getId());
         taskMedicalRecord.setDescription("Initial Description of the Medical Record - Updated");
         
         taskService.start(doctorTasks.get(0).getId(), "doctor");

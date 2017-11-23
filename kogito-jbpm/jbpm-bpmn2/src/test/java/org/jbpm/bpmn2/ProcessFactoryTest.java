@@ -28,6 +28,8 @@ import org.kie.api.KieBase;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.process.ProcessInstance;
 
+import static org.junit.Assert.*;
+
 public class ProcessFactoryTest extends JbpmBpmn2TestCase {
     
     public ProcessFactoryTest() {

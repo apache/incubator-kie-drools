@@ -47,6 +47,8 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.manager.SessionNotFoundException;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 
+import static org.junit.Assert.*;
+
 @RunWith(Parameterized.class)
 public class GlobalThreadPoolTimerServiceTest extends GlobalTimerServiceBaseTest {
     

@@ -42,6 +42,8 @@ import java.util.Collection;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static org.junit.Assert.*;
+
 /**
  * Tests stateful/stateless KieSession ProcessEventListener registration - DROOLS-818.
  */

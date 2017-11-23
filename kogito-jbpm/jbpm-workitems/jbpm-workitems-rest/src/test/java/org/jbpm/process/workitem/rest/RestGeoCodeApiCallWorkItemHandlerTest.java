@@ -27,6 +27,8 @@ import org.jbpm.test.AbstractBaseTest;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import static org.junit.Assert.*;
+
 public class RestGeoCodeApiCallWorkItemHandlerTest extends AbstractBaseTest {
 
     @Test

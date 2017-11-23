@@ -42,6 +42,8 @@ import org.kie.api.runtime.process.WorkItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.junit.Assert.*;
+
 @RunWith(Parameterized.class)
 public class EscalationEventTest extends JbpmBpmn2TestCase {
 

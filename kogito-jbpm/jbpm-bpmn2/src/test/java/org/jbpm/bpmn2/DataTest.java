@@ -51,6 +51,8 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import static org.junit.Assert.*;
+
 @RunWith(Parameterized.class)
 public class DataTest extends JbpmBpmn2TestCase {
 

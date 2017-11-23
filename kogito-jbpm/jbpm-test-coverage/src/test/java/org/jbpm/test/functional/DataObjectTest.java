@@ -34,6 +34,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.WorkItem;
 
 import static org.jbpm.test.tools.IterableListenerAssert.*;
+import static org.junit.Assert.*;
 
 /**
  * Testing data object and association.

@@ -28,6 +28,8 @@ import org.kie.api.task.TaskService;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.task.api.InternalTaskService;
 
+import static org.junit.Assert.*;
+
 
 public class SupportProcessTest extends JbpmTestCase{
     

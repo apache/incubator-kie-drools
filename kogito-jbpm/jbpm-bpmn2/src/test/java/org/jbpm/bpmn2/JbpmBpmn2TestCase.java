@@ -16,6 +16,7 @@
 
 package org.jbpm.bpmn2;
 
+import static org.junit.Assert.*;
 import static org.kie.api.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 import static org.kie.api.runtime.EnvironmentName.OBJECT_MARSHALLING_STRATEGIES;
 import static org.kie.api.runtime.EnvironmentName.TRANSACTION_MANAGER;

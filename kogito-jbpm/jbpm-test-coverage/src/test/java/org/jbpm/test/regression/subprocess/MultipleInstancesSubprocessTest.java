@@ -33,6 +33,8 @@ import org.kie.api.runtime.process.ProcessInstance;
 
 import qa.tools.ikeeper.annotation.BZ;
 
+import static org.junit.Assert.*;
+
 public class MultipleInstancesSubprocessTest extends JbpmTestCase {
 
     private static final String TIMER_EVENT_PARENT =

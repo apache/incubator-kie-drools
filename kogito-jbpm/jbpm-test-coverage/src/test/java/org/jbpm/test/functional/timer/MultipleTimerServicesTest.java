@@ -50,6 +50,8 @@ import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.junit.Assert.*;
+
 /**
  * This test is dedicated to quartz scheduler service as it is controlled
  * by  org.quartz.properties system property, runtime manager will be bootstrapped

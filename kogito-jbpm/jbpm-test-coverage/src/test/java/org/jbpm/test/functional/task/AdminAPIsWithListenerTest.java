@@ -49,6 +49,8 @@ import org.kie.internal.task.api.UserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.junit.Assert.*;
+
 public class AdminAPIsWithListenerTest extends JbpmTestCase {
 
     private static final Logger logger = LoggerFactory.getLogger(AdminAPIsWithListenerTest.class);
@@ -104,11 +106,11 @@ public class AdminAPIsWithListenerTest extends JbpmTestCase {
         ProcessInstance process = ksession.startProcess("org.jbpm.PatientAppointment", parameters);
 
         //The process is in the first Human Task waiting for its completion
-        Assert.assertEquals(ProcessInstance.STATE_ACTIVE, process.getState());
+        assertEquals(ProcessInstance.STATE_ACTIVE, process.getState());
 
         //gets frontDesk's tasks
         List<TaskSummary> frontDeskTasks = taskService.getTasksAssignedAsPotentialOwner("frontDesk", "en-UK");
-        Assert.assertEquals(1, frontDeskTasks.size());
+        assertEquals(1, frontDeskTasks.size());
 
         //doctor doesn't have any task
         List<TaskSummary> doctorTasks = taskService.getTasksAssignedAsPotentialOwner("doctor", "en-UK");
@@ -125,7 +127,7 @@ public class AdminAPIsWithListenerTest extends JbpmTestCase {
 
         //Now doctor has 1 task
         doctorTasks = taskService.getTasksAssignedAsPotentialOwner("doctor", "en-UK");
-        Assert.assertEquals(1, doctorTasks.size());
+        assertEquals(1, doctorTasks.size());
 
         //No tasks for manager yet
         managerTasks = taskService.getTasksAssignedAsPotentialOwner("manager", "en-UK");
@@ -138,7 +140,7 @@ public class AdminAPIsWithListenerTest extends JbpmTestCase {
 
         // tasks for manager 
         managerTasks = taskService.getTasksAssignedAsPotentialOwner("manager", "en-UK");
-        Assert.assertEquals(1, managerTasks.size());
+        assertEquals(1, managerTasks.size());
         taskService.start(managerTasks.get(0).getId(), "manager");
 
         taskService.complete(managerTasks.get(0).getId(), "manager", null);
@@ -149,14 +151,14 @@ public class AdminAPIsWithListenerTest extends JbpmTestCase {
 
 
         final EntityManager em = emfTasks.createEntityManager();       
-        Assert.assertEquals(0, em.createQuery("select t from TaskImpl t").getResultList().size());
-        Assert.assertEquals(0, em.createQuery("select i from I18NTextImpl i").getResultList().size());
-        Assert.assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_BAs").getResultList().size());
-        Assert.assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_ExclOwners").getResultList().size());
-        Assert.assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_PotOwners").getResultList().size());
-        Assert.assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_Recipients").getResultList().size());
-        Assert.assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_Stakeholders").getResultList().size());
-        Assert.assertEquals(0, em.createQuery("select c from ContentImpl c").getResultList().size());
+        assertEquals(0, em.createQuery("select t from TaskImpl t").getResultList().size());
+        assertEquals(0, em.createQuery("select i from I18NTextImpl i").getResultList().size());
+        assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_BAs").getResultList().size());
+        assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_ExclOwners").getResultList().size());
+        assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_PotOwners").getResultList().size());
+        assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_Recipients").getResultList().size());
+        assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_Stakeholders").getResultList().size());
+        assertEquals(0, em.createQuery("select c from ContentImpl c").getResultList().size());
         em.close();
     }
 
@@ -179,11 +181,11 @@ public class AdminAPIsWithListenerTest extends JbpmTestCase {
         long processInstanceId = process.getId();
 
         //The process is in the first Human Task waiting for its completion
-        Assert.assertEquals(ProcessInstance.STATE_ACTIVE, process.getState());
+        assertEquals(ProcessInstance.STATE_ACTIVE, process.getState());
 
         //gets frontDesk's tasks
         List<TaskSummary> frontDeskTasks = taskService.getTasksAssignedAsPotentialOwner("frontDesk", "en-UK");
-        Assert.assertEquals(1, frontDeskTasks.size());
+        assertEquals(1, frontDeskTasks.size());
 
         //doctor doesn't have any task
         List<TaskSummary> doctorTasks = taskService.getTasksAssignedAsPotentialOwner("doctor", "en-UK");
@@ -200,7 +202,7 @@ public class AdminAPIsWithListenerTest extends JbpmTestCase {
 
         //Now doctor has 1 task
         doctorTasks = taskService.getTasksAssignedAsPotentialOwner("doctor", "en-UK");
-        Assert.assertEquals(1, doctorTasks.size());
+        assertEquals(1, doctorTasks.size());
 
         //No tasks for manager yet
         managerTasks = taskService.getTasksAssignedAsPotentialOwner("manager", "en-UK");
@@ -220,14 +222,14 @@ public class AdminAPIsWithListenerTest extends JbpmTestCase {
 
         final EntityManager em = emfTasks.createEntityManager();
 
-        Assert.assertEquals(0, em.createQuery("select t from TaskImpl t").getResultList().size());
-        Assert.assertEquals(0, em.createQuery("select i from I18NTextImpl i").getResultList().size());
-        Assert.assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_BAs").getResultList().size());
-        Assert.assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_ExclOwners").getResultList().size());
-        Assert.assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_PotOwners").getResultList().size());
-        Assert.assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_Recipients").getResultList().size());
-        Assert.assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_Stakeholders").getResultList().size());
-        Assert.assertEquals(0, em.createQuery("select c from ContentImpl c").getResultList().size());
+        assertEquals(0, em.createQuery("select t from TaskImpl t").getResultList().size());
+        assertEquals(0, em.createQuery("select i from I18NTextImpl i").getResultList().size());
+        assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_BAs").getResultList().size());
+        assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_ExclOwners").getResultList().size());
+        assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_PotOwners").getResultList().size());
+        assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_Recipients").getResultList().size());
+        assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_Stakeholders").getResultList().size());
+        assertEquals(0, em.createQuery("select c from ContentImpl c").getResultList().size());
         em.close();
     }
     
@@ -257,14 +259,14 @@ public class AdminAPIsWithListenerTest extends JbpmTestCase {
 
         final EntityManager em = emfTasks.createEntityManager();
 
-        Assert.assertEquals(0, em.createQuery("select t from TaskImpl t").getResultList().size());
-        Assert.assertEquals(0, em.createQuery("select i from I18NTextImpl i").getResultList().size());
-        Assert.assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_BAs").getResultList().size());
-        Assert.assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_ExclOwners").getResultList().size());
-        Assert.assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_PotOwners").getResultList().size());
-        Assert.assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_Recipients").getResultList().size());
-        Assert.assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_Stakeholders").getResultList().size());
-        Assert.assertEquals(0, em.createQuery("select c from ContentImpl c").getResultList().size());
+        assertEquals(0, em.createQuery("select t from TaskImpl t").getResultList().size());
+        assertEquals(0, em.createQuery("select i from I18NTextImpl i").getResultList().size());
+        assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_BAs").getResultList().size());
+        assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_ExclOwners").getResultList().size());
+        assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_PotOwners").getResultList().size());
+        assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_Recipients").getResultList().size());
+        assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_Stakeholders").getResultList().size());
+        assertEquals(0, em.createQuery("select c from ContentImpl c").getResultList().size());
         em.close();
 
     }
@@ -323,14 +325,14 @@ public class AdminAPIsWithListenerTest extends JbpmTestCase {
         
         final EntityManager em = emfTasks.createEntityManager();
 
-        Assert.assertEquals(0, em.createQuery("select t from TaskImpl t").getResultList().size());
-        Assert.assertEquals(0, em.createQuery("select i from I18NTextImpl i").getResultList().size());
-        Assert.assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_BAs").getResultList().size());
-        Assert.assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_ExclOwners").getResultList().size());
-        Assert.assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_PotOwners").getResultList().size());
-        Assert.assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_Recipients").getResultList().size());
-        Assert.assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_Stakeholders").getResultList().size());
-        Assert.assertEquals(0, em.createQuery("select c from ContentImpl c").getResultList().size());
+        assertEquals(0, em.createQuery("select t from TaskImpl t").getResultList().size());
+        assertEquals(0, em.createQuery("select i from I18NTextImpl i").getResultList().size());
+        assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_BAs").getResultList().size());
+        assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_ExclOwners").getResultList().size());
+        assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_PotOwners").getResultList().size());
+        assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_Recipients").getResultList().size());
+        assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_Stakeholders").getResultList().size());
+        assertEquals(0, em.createQuery("select c from ContentImpl c").getResultList().size());
         em.close();
     }
 
@@ -388,14 +390,14 @@ public class AdminAPIsWithListenerTest extends JbpmTestCase {
 
         final EntityManager em = emfTasks.createEntityManager();
 
-        Assert.assertEquals(0, em.createQuery("select t from TaskImpl t").getResultList().size());
-        Assert.assertEquals(0, em.createQuery("select i from I18NTextImpl i").getResultList().size());
-        Assert.assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_BAs").getResultList().size());
-        Assert.assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_ExclOwners").getResultList().size());
-        Assert.assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_PotOwners").getResultList().size());
-        Assert.assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_Recipients").getResultList().size());
-        Assert.assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_Stakeholders").getResultList().size());
-        Assert.assertEquals(0, em.createQuery("select c from ContentImpl c").getResultList().size());
+        assertEquals(0, em.createQuery("select t from TaskImpl t").getResultList().size());
+        assertEquals(0, em.createQuery("select i from I18NTextImpl i").getResultList().size());
+        assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_BAs").getResultList().size());
+        assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_ExclOwners").getResultList().size());
+        assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_PotOwners").getResultList().size());
+        assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_Recipients").getResultList().size());
+        assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_Stakeholders").getResultList().size());
+        assertEquals(0, em.createQuery("select c from ContentImpl c").getResultList().size());
         em.close();
     }
 }

@@ -28,6 +28,7 @@ import org.kie.api.command.Command;
 import org.kie.api.runtime.KieSession;
 
 import static org.jbpm.test.tools.IterableListenerAssert.*;
+import static org.junit.Assert.*;
 
 public class StartEventTest extends JbpmTestCase {
 

@@ -34,6 +34,8 @@ import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.KieBase;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
+import static org.junit.Assert.*;
+
 @RunWith(Parameterized.class)
 public class LoggingTaskHandlerWrapperTest extends JbpmBpmn2TestCase {
     

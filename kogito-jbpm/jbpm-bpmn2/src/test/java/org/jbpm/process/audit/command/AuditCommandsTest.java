@@ -37,6 +37,8 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
 
+import static org.junit.Assert.*;
+
 public class AuditCommandsTest extends JbpmBpmn2TestCase {
 
     public AuditCommandsTest() { 
