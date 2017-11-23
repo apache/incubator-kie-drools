@@ -1,14 +1,17 @@
-package org.drools.model.functions.accumulate;
+   package org.drools.model.functions.accumulate;
 
+import org.drools.model.Variable;
 import org.drools.model.functions.Function1;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 public class Sum<T, N extends Number> extends AbstractAccumulateFunction<T, Sum.Context<N>, N> {
 
     private final Function1<T, N> mapper;
 
-    public Sum(Function1<T, N> mapper) {
+    public Sum(Optional<Variable<T>> source, Function1<T, N> mapper) {
+        super(source);
         this.mapper = mapper;
     }
 
@@ -30,6 +33,11 @@ public class Sum<T, N extends Number> extends AbstractAccumulateFunction<T, Sum.
     @Override
     public N result(Context<N> acc) {
         return acc.result();
+    }
+
+    @Override
+    public Optional<Variable<T>> getOptSource() {
+        return optSource;
     }
 
     public static class Context<N extends Number> implements Serializable {
