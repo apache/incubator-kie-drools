@@ -62,7 +62,6 @@ public class FEELCodeMarshallerUnmarshallTest {
                 { BuiltInType.UNKNOWN, "duration( \"P737DT20H8M3S\" )", Duration.ofSeconds( 63749283 )},
                 // months and years duration
                 { BuiltInType.UNKNOWN, "duration( \"P4Y5M\" )", Period.of( 4, 5, 0 ) },
-                { BuiltInType.UNKNOWN, "duration( \"P4Y25M\" )", Period.of( 4, 25, 0 ) },
                 { BuiltInType.UNKNOWN, "duration( \"P6Y1M\" )", Period.of( 6, 1, 0 ) },
                 { BuiltInType.UNKNOWN, "duration( \"-P6Y1M\" )", Period.of( -6, -1, 0 ) },
                 { BuiltInType.UNKNOWN, "duration( \"P0M\" )", Period.of( 0, 0, 0 ) },
