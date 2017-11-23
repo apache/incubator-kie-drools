@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.dmn.feel.runtime.Range;
@@ -75,31 +76,31 @@ public class StringFunctionTest {
     @Test
     public void invokeLocalTime() {
         final LocalTime localTime = LocalTime.now();
-        FunctionTestUtil.assertResult(stringFunction.invoke(localTime), localTime.toString());
+        FunctionTestUtil.assertResult(stringFunction.invoke(localTime), TimeFunction.FEEL_TIME.format(localTime));
     }
 
     @Test
     public void invokeOffsetTime() {
         final OffsetTime offsetTime = OffsetTime.now();
-        FunctionTestUtil.assertResult(stringFunction.invoke(offsetTime), offsetTime.toString());
+        FunctionTestUtil.assertResult(stringFunction.invoke(offsetTime), TimeFunction.FEEL_TIME.format(offsetTime));
     }
 
     @Test
     public void invokeLocalDateTime() {
         final LocalDateTime localDateTime = LocalDateTime.now();
-        FunctionTestUtil.assertResult(stringFunction.invoke(localDateTime), localDateTime.toString());
+        FunctionTestUtil.assertResult(stringFunction.invoke(localDateTime), DateAndTimeFunction.FEEL_DATE_TIME.format(localDateTime));
     }
 
     @Test
     public void invokeOffsetDateTime() {
         final OffsetDateTime offsetDateTime = OffsetDateTime.now();
-        FunctionTestUtil.assertResult(stringFunction.invoke(offsetDateTime), offsetDateTime.toString());
+        FunctionTestUtil.assertResult(stringFunction.invoke(offsetDateTime), DateAndTimeFunction.FEEL_DATE_TIME.format(offsetDateTime));
     }
 
     @Test
     public void invokeZonedDateTime() {
         final ZonedDateTime zonedDateTime = ZonedDateTime.now();
-        FunctionTestUtil.assertResult(stringFunction.invoke(zonedDateTime), zonedDateTime.toString());
+        FunctionTestUtil.assertResult(stringFunction.invoke(zonedDateTime), DateAndTimeFunction.REGION_DATETIME_FORMATTER.format(zonedDateTime));
     }
 
     @Test

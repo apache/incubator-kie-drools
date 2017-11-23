@@ -16,6 +16,8 @@
 
 package org.kie.dmn.feel.runtime.functions;
 
+import static org.junit.Assert.assertEquals;
+
 import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.Duration;
@@ -23,8 +25,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalQueries;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
@@ -68,6 +73,25 @@ public class TimeFunctionTest {
     public void invokeStringParamWithOffset() {
         FunctionTestUtil.assertResult(timeFunction.invoke("10:15:06+01:00"), OffsetTime.of(10,15,6, 0, ZoneOffset.ofHours(1)));
         FunctionTestUtil.assertResult(timeFunction.invoke("10:15:06-01:00"), OffsetTime.of(10,15,6, 0, ZoneOffset.ofHours(-1)));
+    }
+
+    @Test
+    public void parseWithZone() {
+        TemporalAccessor parsedResult = timeFunction.invoke("00:01:00@Etc/UTC").getOrElse(null);
+        assertEquals(LocalTime.of(0, 1, 0), parsedResult.query(TemporalQueries.localTime()));
+        assertEquals(ZoneId.of("Etc/UTC"), parsedResult.query(TemporalQueries.zone()));
+    }
+
+    @Test
+    public void parseWithZoneIANA() {
+        TemporalAccessor parsedResult = timeFunction.invoke("00:01:00@Europe/Paris").getOrElse(null);
+        assertEquals(LocalTime.of(0, 1, 0), parsedResult.query(TemporalQueries.localTime()));
+        assertEquals(ZoneId.of("Europe/Paris"), parsedResult.query(TemporalQueries.zone()));
+    }
+
+    @Test
+    public void invokeWrongIANAformat() {
+        FunctionTestUtil.assertResultError(timeFunction.invoke("13:20:00+02:00@Europe/Paris"), InvalidParametersEvent.class);
     }
 
     @Test

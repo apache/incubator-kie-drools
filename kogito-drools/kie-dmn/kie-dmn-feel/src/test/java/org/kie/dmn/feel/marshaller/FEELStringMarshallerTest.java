@@ -42,8 +42,8 @@ public class FEELStringMarshallerTest {
                 { OffsetTime.of( 14, 32, 55, 125000000, ZoneOffset.UTC ), "14:32:55.125Z" },
                 // date and time
                 { LocalDateTime.of( 2017, 06, 30, 10, 49, 11 ), "2017-06-30T10:49:11" },
-                { LocalDateTime.of( 2017, 06, 30, 10, 49, 11, 650000000 ), "2017-06-30T10:49:11.650" },
-                { OffsetDateTime.of( 2017, 06, 30, 10, 49, 11, 650000000, ZoneOffset.ofHours( 3 ) ), "2017-06-30T10:49:11.650+03:00" },
+                { LocalDateTime.of( 2017, 06, 30, 10, 49, 11, 650000000 ), "2017-06-30T10:49:11.65" },
+                { OffsetDateTime.of( 2017, 06, 30, 10, 49, 11, 650000000, ZoneOffset.ofHours( 3 ) ), "2017-06-30T10:49:11.65+03:00" },
                 // days and time duration
                 { Duration.ofDays( 5 ).plusHours( 4 ).plusMinutes( 23 ).plusSeconds( 55 ), "P5DT4H23M55S" },
                 { Duration.ofDays( -5 ).minusHours( 4 ).minusMinutes( 23 ).minusSeconds( 55 ), "-P5DT4H23M55S" },

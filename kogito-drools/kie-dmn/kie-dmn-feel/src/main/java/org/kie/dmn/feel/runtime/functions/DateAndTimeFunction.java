@@ -21,10 +21,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
-import java.time.OffsetTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalQueries;
 
@@ -34,6 +35,23 @@ import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 public class DateAndTimeFunction
         extends BaseFEELFunction {
 
+    public static final DateTimeFormatter FEEL_DATE_TIME;
+    public static final DateTimeFormatter REGION_DATETIME_FORMATTER;
+    static {
+        FEEL_DATE_TIME = new DateTimeFormatterBuilder().parseCaseInsensitive()
+                                                       .append(DateFunction.FEEL_DATE)
+                                                       .appendLiteral('T')
+                                                       .append(TimeFunction.FEEL_TIME)
+                                                       .toFormatter();
+        REGION_DATETIME_FORMATTER = new DateTimeFormatterBuilder().parseCaseInsensitive()
+                                                                 .append(DateFunction.FEEL_DATE)
+                                                                 .appendLiteral('T')
+                                                                 .append(DateTimeFormatter.ISO_LOCAL_TIME)
+                                                                 .appendLiteral("@")
+                                                                 .appendZoneRegionId()
+                                                                 .toFormatter();
+    }
+
     public DateAndTimeFunction() {
         super( "date and time" );
     }
@@ -42,10 +60,13 @@ public class DateAndTimeFunction
         if ( val == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "cannot be null"));
         }
+        if (!DateFunction.BEGIN_YEAR.matcher(val).find()) { // please notice the regex strictly requires the beginning, so we can use find.
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "year not compliant with XML Schema Part 2 Datatypes"));
+        }
         
         try {
             if( val.contains( "T" ) ) {
-                return FEELFnResult.ofResult( DateTimeFormatter.ISO_DATE_TIME.parseBest( val, ZonedDateTime::from, OffsetDateTime::from, LocalDateTime::from ) );
+                return FEELFnResult.ofResult(FEEL_DATE_TIME.parseBest(val, ZonedDateTime::from, OffsetDateTime::from, LocalDateTime::from));
             } else {
                 TemporalAccessor value = DateTimeFormatter.ISO_DATE.parse( val, LocalDate::from );
                 return FEELFnResult.ofResult( LocalDateTime.of( (LocalDate)value, LocalTime.of( 0, 0 ) ) );
@@ -71,15 +92,15 @@ public class DateAndTimeFunction
         if ( time == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "time", "cannot be null"));
         }
-        if ( !(time instanceof LocalTime || time instanceof OffsetTime) ) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "time", "must be an instance of LocalTime or OffsetTime"));
+        if (!(time instanceof LocalTime || (time.query(TemporalQueries.localTime()) != null && time.query(TemporalQueries.zone()) != null))) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "time", "must be an instance of LocalTime or (it must contain localTime AND zone)"));
         }
         
         try {
             if( date instanceof LocalDate && time instanceof LocalTime ) {
                 return FEELFnResult.ofResult( LocalDateTime.of( (LocalDate) date, (LocalTime) time ) );
-            } else if( date instanceof LocalDate && time instanceof OffsetTime ) {
-                return FEELFnResult.ofResult( ZonedDateTime.of( (LocalDate) date, LocalTime.from( time ), ZoneOffset.from( time ) ) );
+            } else if (date instanceof LocalDate && (time.query(TemporalQueries.localTime()) != null && time.query(TemporalQueries.zone()) != null)) {
+                return FEELFnResult.ofResult(ZonedDateTime.of((LocalDate) date, LocalTime.from(time), ZoneId.from(time)));
             }
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "cannot invoke function for the input parameters"));
         } catch (DateTimeException e) {
