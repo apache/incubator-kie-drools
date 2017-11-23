@@ -18,7 +18,7 @@ public class Expr1ViewItemImpl<T> extends AbstractExprViewItem<T> implements Exp
     private AlphaIndex<T, ?> index;
 
     public Expr1ViewItemImpl( Variable<T> var, Predicate1<T> predicate ) {
-        super(getLambdaFingerprint(predicate, var), var);
+        super(getLambdaFingerprint(predicate), var);
         this.predicate = predicate;
     }
 

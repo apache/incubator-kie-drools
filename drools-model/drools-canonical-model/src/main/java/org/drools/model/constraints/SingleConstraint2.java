@@ -14,7 +14,7 @@ public class SingleConstraint2<A, B> extends AbstractSingleConstraint {
     private final Predicate2<A, B> predicate;
 
     public SingleConstraint2(Variable<A> var1, Variable<B> var2, Predicate2<A, B> predicate) {
-        super(getLambdaFingerprint(predicate, var1, var2));
+        super(getLambdaFingerprint(predicate));
         this.var1 = var1;
         this.var2 = var2;
         this.predicate = predicate;

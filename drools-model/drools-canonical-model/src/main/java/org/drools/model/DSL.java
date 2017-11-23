@@ -1,6 +1,7 @@
 package org.drools.model;
 
 import java.io.Serializable;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import org.drools.model.consequences.ConditionalConsequenceBuilder;
@@ -16,6 +17,9 @@ import org.drools.model.functions.Function2;
 import org.drools.model.functions.Predicate1;
 import org.drools.model.functions.Predicate2;
 import org.drools.model.functions.accumulate.Average;
+import org.drools.model.functions.accumulate.Count;
+import org.drools.model.functions.accumulate.Max;
+import org.drools.model.functions.accumulate.Min;
 import org.drools.model.functions.accumulate.Reduce;
 import org.drools.model.functions.accumulate.Sum;
 import org.drools.model.functions.temporal.AfterPredicate;
@@ -249,7 +253,7 @@ public class DSL {
         return new ExistentialExprViewItem( Condition.Type.FORALL, and( expression, expressions) );
     }
 
-    public static <T> ExprViewItem<T> accumulate(ExprViewItem<T> expr, AccumulateFunction<T, ?, ?>... functions) {
+    public static <T> ExprViewItem<T> accumulate(ExprViewItem<T> expr, AccumulateFunction<?, ?, ?>... functions) {
         return new AccumulateExprViewItem(expr, functions);
     }
 
@@ -291,7 +295,7 @@ public class DSL {
         }
 
         public <A> BindViewItemBuilder<T> as( Variable<A> var1, Function1<A, T> f) {
-            this.function = f;
+            this.function = new Function1.Impl<>(f);
             this.inputVariable = var1;
             return this;
         }
@@ -340,15 +344,39 @@ public class DSL {
     // -- Accumulate Functions --
 
     public static <T, N extends Number> Sum<T, N> sum(Function1<T, N> mapper) {
-        return new Sum(mapper);
+        return new Sum(Optional.empty(), new Function1.Impl<>(mapper));
+    }
+
+    public static <T, N extends Number> Sum<T, N> sum(Variable<T> source, Function1<T, N> mapper) {
+        return new Sum(Optional.of(source), new Function1.Impl<>(mapper));
+    }
+
+    public static <N extends Number> Sum<N, N> sum(Variable<N> source) {
+        return new Sum<N, N>(Optional.of(source), x -> x);
+    }
+
+    public static <T> Count<T> count(Variable<T> source) {
+        return new Count<>(Optional.of(source));
     }
 
     public static <T> Average<T> average(Function1<T, ? extends Number> mapper) {
-        return new Average<T>(mapper);
+        return new Average<T>(Optional.empty(), mapper);
+    }
+
+    public static <T extends Number>  Min<T> min(Variable<T> source) {
+        return new Min<T>(Optional.of(source), x -> x.doubleValue());
+    }
+
+    public static <T extends Number>  Max<T> max(Variable<T> source) {
+        return new Max<T>(Optional.of(source), x -> x.doubleValue());
+    }
+
+    public static <N extends Number> Average<N> average(Variable<N> source) {
+        return new Average<N>(Optional.of(source), x -> x);
     }
 
     public static <T, R extends Serializable> Reduce<T, R> reduce(R zero, Function2<R, T, R> reducingFunction) {
-        return new Reduce(zero, reducingFunction);
+        return new Reduce(Optional.empty(), zero, new Function2.Impl<>(reducingFunction));
     }
 
     // -- Conditional Named Consequnce --
