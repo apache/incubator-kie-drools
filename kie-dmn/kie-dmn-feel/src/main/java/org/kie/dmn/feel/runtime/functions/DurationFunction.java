@@ -46,7 +46,7 @@ public class DurationFunction
         } catch( DateTimeParseException e ) {
             // if it failed, try to parse as years/months
             try {
-                return FEELFnResult.ofResult( Period.parse( val ) );
+                return FEELFnResult.ofResult( Period.parse( val ).normalized() );
             } catch( DateTimeParseException e2 ) {
                 // failed to parse, so return null according to the spec
                 return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "date-parsing exception", 

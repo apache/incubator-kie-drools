@@ -62,7 +62,6 @@ public class FEELStringMarshallerUnmarshallTest {
                 { BuiltInType.DURATION, "P737DT20H8M3S", Duration.ofSeconds( 63749283 )},
                 // months and years duration
                 { BuiltInType.DURATION, "P4Y5M", Period.of( 4, 5, 0 ) },
-                { BuiltInType.DURATION, "P4Y25M", Period.of( 4, 25, 0 ) },
                 { BuiltInType.DURATION, "P6Y1M", Period.of( 6, 1, 0 ) },
                 { BuiltInType.DURATION, "-P6Y1M", Period.of( -6, -1, 0 ) },
                 { BuiltInType.DURATION, "P0M", Period.of( 0, 0, 0 ) },
