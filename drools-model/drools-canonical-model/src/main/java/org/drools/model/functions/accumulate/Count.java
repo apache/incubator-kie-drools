@@ -9,10 +9,8 @@
 
    public class Count<T> extends AbstractAccumulateFunction<T,Count.Context<T>,Integer> {
 
-       private final Optional<Variable<T>> optSource;
-
        public Count(Optional<Variable<T>> source) {
-           this.optSource = source;
+           super(source);
        }
 
        @Override

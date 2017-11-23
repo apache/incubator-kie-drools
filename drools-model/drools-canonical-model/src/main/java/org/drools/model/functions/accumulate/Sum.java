@@ -9,11 +9,10 @@ import java.util.Optional;
 public class Sum<T, N extends Number> extends AbstractAccumulateFunction<T, Sum.Context<N>, N> {
 
     private final Function1<T, N> mapper;
-    private final Optional<Variable<T>> optSource;
 
     public Sum(Optional<Variable<T>> source, Function1<T, N> mapper) {
+        super(source);
         this.mapper = mapper;
-        this.optSource = source;
     }
 
     @Override

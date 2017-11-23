@@ -28,7 +28,6 @@ import java.util.function.Consumer;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassFieldAccessorCache;
-import org.drools.core.base.ClassFieldReader;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.base.EnabledBoolean;
@@ -468,13 +467,8 @@ public class KiePackagesBuilder {
 
         if (accFunctions.length == 1) {
             final AccumulateFunction<?, ?, ?> accFunction = accFunctions[0];
-            final Optional<? extends Variable<?>> functionSource = accFunction.getOptSource();
 
-            functionSource.ifPresent(fs -> {
-                final Declaration variableDeclaration = ctx.getDeclaration(fs);
-                final InternalReadAccessor accessor = variableDeclaration.getExtractor();
-                pattern.addDeclaration(new Declaration(fs.getName(), accessor, pattern, true));
-            });
+            addSourceDeclaration(ctx, pattern, accFunction.getOptSource());
 
             final Declaration declaration = new Declaration(accPattern.getBoundVariables()[0].getName(),
                                                             getReadAcessor(getObjectType(Object.class)),
@@ -488,6 +482,9 @@ public class KiePackagesBuilder {
         InternalReadAccessor reader = new SelfReferenceClassFieldReader( Object[].class );
         Accumulator[] accumulators = new Accumulator[accFunctions.length];
         for (int i = 0; i < accPattern.getFunctions().length; i++) {
+
+            addSourceDeclaration(ctx, pattern, accFunctions[i].getOptSource());
+
             Variable accVar = accPattern.getBoundVariables()[i];
             pattern.addDeclaration( new Declaration(accVar.getName(),
                                                     new ArrayElementReader( reader, i, accVar.getType().asClass()),
@@ -496,6 +493,14 @@ public class KiePackagesBuilder {
             accumulators[i] = new LambdaAccumulator( accFunctions[i] );
         }
         return new MultiAccumulate( source, new Declaration[0], accumulators);
+    }
+
+    private void addSourceDeclaration(RuleContext ctx, Pattern pattern, Optional<? extends Variable<?>> functionSource) {
+        functionSource.ifPresent(fs -> {
+            final Declaration variableDeclaration = ctx.getDeclaration(fs);
+            final InternalReadAccessor accessor = variableDeclaration.getExtractor();
+            pattern.addDeclaration(new Declaration(fs.getName(), accessor, pattern, true));
+        });
     }
 
     private Pattern addPatternForVariable( RuleContext ctx, Variable patternVariable ) {

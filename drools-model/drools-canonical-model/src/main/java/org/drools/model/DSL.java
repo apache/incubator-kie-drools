@@ -376,7 +376,7 @@ public class DSL {
     }
 
     public static <T, R extends Serializable> Reduce<T, R> reduce(R zero, Function2<R, T, R> reducingFunction) {
-        return new Reduce(zero, new Function2.Impl<>(reducingFunction));
+        return new Reduce(Optional.empty(), zero, new Function2.Impl<>(reducingFunction));
     }
 
     // -- Conditional Named Consequnce --

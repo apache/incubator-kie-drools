@@ -9,11 +9,10 @@
    public class Max<T> extends AbstractAccumulateFunction<T, Max.Context, Double> {
 
        private final Function1<T, ? extends Number> mapper;
-       private final Optional<Variable<T>> optSource;
 
        public Max(Optional<Variable<T>> source, Function1<T, Double> mapper) {
+           super(source);
            this.mapper = mapper;
-           this.optSource = source;
        }
 
        @Override
