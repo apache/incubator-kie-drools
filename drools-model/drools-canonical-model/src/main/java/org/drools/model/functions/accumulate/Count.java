@@ -10,7 +10,6 @@
    public class Count<T> extends AbstractAccumulateFunction<T,Count.Context<T>,Integer> {
 
        private final Optional<Variable<T>> optSource;
-       private Variable<Integer> var;
 
        public Count(Optional<Variable<T>> source) {
            this.optSource = source;
@@ -34,11 +33,6 @@
        @Override
        public Integer result(Context<T> acc) {
            return acc.result();
-       }
-
-       @Override
-       public Variable<Integer> getVariable() {
-           return var;
        }
 
        @Override
