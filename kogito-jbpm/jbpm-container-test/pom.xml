@@ -42,6 +42,8 @@
 
     <version.wildfly10>10.1.0.Final</version.wildfly10>
     <version.tomcat8>8.0.43</version.tomcat8>
+    <!-- jboss-remoting version compatible with jboss-remote-naming -->
+    <version.org.jboss.remoting.naming>4.0.18.Final</version.org.jboss.remoting.naming>
   </properties>
 
   <modules>
