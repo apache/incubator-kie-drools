@@ -18,6 +18,7 @@ package org.drools.modelcompiler;
 
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
@@ -65,8 +66,8 @@ public class AccumulateTest extends BaseModelTest {
                 "import " + Person.class.getCanonicalName() + ";" +
                         "import " + Result.class.getCanonicalName() + ";" +
                         "rule X when\n" +
-                        "  accumulate ( $p: Person ( getName().startsWith(\"M\")); \n" +
-                        "                $sum : sum($p.getAge())  \n" +
+                        "  accumulate ( $person: Person ( getName().startsWith(\"M\")); \n" +
+                        "                $sum : sum($person.getAge())  \n" +
                         "              )                          \n" +
                         "then\n" +
                         "  insert(new Result($sum));\n" +
@@ -94,6 +95,34 @@ public class AccumulateTest extends BaseModelTest {
                         "  accumulate ( $p: Person ( getName().startsWith(\"M\")); \n" +
                         "                $sum : sum($p.getAge()),  \n" +
                         "                $average : average($p.getAge())  \n" +
+                        "              )                          \n" +
+                        "then\n" +
+                        "  insert(new Result($sum));\n" +
+                        "  insert(new Result($average));\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Edson", 35));
+        ksession.insert(new Person("Mario", 40));
+
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertThat(results, hasItem(new Result(38.5)));
+        assertThat(results, hasItem(new Result(77)));
+    }
+
+    @Test
+    public void testAccumulate3() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "import " + Result.class.getCanonicalName() + ";" +
+                        "rule X when\n" +
+                        "  accumulate ( Person ( $age : age > 36); \n" +
+                        "                $sum : sum($age),  \n" +
+                        "                $average : average($age)  \n" +
                         "              )                          \n" +
                         "then\n" +
                         "  insert(new Result($sum));\n" +

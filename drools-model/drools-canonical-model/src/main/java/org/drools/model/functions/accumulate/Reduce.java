@@ -1,17 +1,25 @@
 package org.drools.model.functions.accumulate;
 
+import org.drools.model.Variable;
 import org.drools.model.functions.Function2;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 public class Reduce<T, R extends Serializable> extends AbstractAccumulateFunction<T, Reduce.Context<R>, R> {
 
     private final R zero;
     private final Function2<R, T, R> reducingFunction;
 
-    public Reduce(R zero, Function2<R, T, R> reducingFunction) {
+    public Reduce(Optional<Variable<T>> source, R zero, Function2<R, T, R> reducingFunction) {
+        super(source);
         this.zero = zero;
         this.reducingFunction = reducingFunction;
+    }
+
+    @Override
+    public Optional<Variable<T>> getOptSource() {
+        return Optional.empty();
     }
 
     @Override
