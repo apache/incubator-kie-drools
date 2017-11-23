@@ -21,8 +21,10 @@ import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.time.OffsetTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalQueries;
 
@@ -31,6 +33,20 @@ import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 public class TimeFunction
         extends BaseFEELFunction {
+
+    public static final DateTimeFormatter FEEL_TIME;
+    static {
+        FEEL_TIME = new DateTimeFormatterBuilder().parseCaseInsensitive()
+                                                  .append(DateTimeFormatter.ISO_LOCAL_TIME)
+                                                  .optionalStart()
+                                                  .appendLiteral("@")
+                                                  .appendZoneRegionId()
+                                                  .optionalEnd()
+                                                  .optionalStart()
+                                                  .appendOffsetId()
+                                                  .optionalEnd()
+                                                  .toFormatter();
+    }
 
     public TimeFunction() {
         super( "time" );
@@ -42,7 +58,19 @@ public class TimeFunction
         }
         
         try {
-            return FEELFnResult.ofResult( DateTimeFormatter.ISO_TIME.parseBest( val, OffsetTime::from, LocalTime::from ) );
+            TemporalAccessor parsed = FEEL_TIME.parse(val);
+
+            if (parsed.query(TemporalQueries.offset()) != null) {
+                // it is an offset-zoned time, so I can know for certain an OffsetTime
+                OffsetTime asOffSetTime = parsed.query(OffsetTime::from);
+                return FEELFnResult.ofResult(asOffSetTime);
+            } else if (parsed.query(TemporalQueries.zone()) == null) {
+                // if it does not contain any zone information at all, then I know for certain is a local time.
+                LocalTime asLocalTime = parsed.query(LocalTime::from);
+                return FEELFnResult.ofResult(asLocalTime);
+            }
+
+            return FEELFnResult.ofResult(parsed);
         } catch (DateTimeException e) {
             // try to parse it as a date time and extract the date component
             // NOTE: this is an extension to the standard
@@ -97,7 +125,14 @@ public class TimeFunction
             if( date.query( TemporalQueries.offset() ) == null ) {
                 return FEELFnResult.ofResult( LocalTime.from( date ) );
             } else {
-                return FEELFnResult.ofResult( OffsetTime.from( date ) );
+                ZoneId zone = date.query(TemporalQueries.zoneId());
+                if (!(zone instanceof ZoneOffset)) {
+                    // TZ is a ZoneRegion, so do NOT normalize (although the result will be unreversible, but will keep what was supplied originally).
+                    // Unfortunately java.time.Parsed is a package-private class, hence will need to re-parse in order to have it instantiated. 
+                    return invoke(date.query(TemporalQueries.localTime()) + "@" + zone);
+                } else {
+                    return FEELFnResult.ofResult(OffsetTime.from(date));
+                }
             }
         } catch (DateTimeException e) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "time-parsing exception", e));
