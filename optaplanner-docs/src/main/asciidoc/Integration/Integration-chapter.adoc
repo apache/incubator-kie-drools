@@ -500,6 +500,28 @@ If it has trouble finding classpath resources (such as the solver config, score 
 provide the `ClassLoader` of your classes <<solverConfigurationByXML,during the SolverFactory creation>>.
 
 
+[[integrationWithJPMS]]
+=== Java Platform Module System (Jigsaw)
+
+When using Planner from code on the modulepath (Java 9 and higher),
+_open_ your packages that contain your domain objects, DRL files and solver configuration
+in your `module-info.java` file:
+
+[source,java,options="nowrap"]
+----
+module org.optaplanner.cloudbalancing {
+    requires org.optaplanner.core;
+    ...
+
+    opens org.optaplanner.examples.cloudbalancing.domain; // Domain classes
+    opens org.optaplanner.examples.cloudbalancing.solver; // DRL file and solver configuration
+    ...
+}
+----
+
+Otherwise Planner can't reach those classes or files, even if they are exported.
+
+
 [[integrationWithOSGi]]
 === OSGi
 
