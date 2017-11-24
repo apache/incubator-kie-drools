@@ -35,6 +35,7 @@ import org.drools.compiler.kie.util.KieJarChangeSet;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieSessionModelImpl;
 import org.drools.compiler.management.KieContainerMonitor;
+import org.drools.core.SessionConfigurationImpl;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.ClassAwareObjectStore;
 import org.drools.core.common.InternalWorkingMemory;
@@ -45,7 +46,6 @@ import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKieContainer;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.impl.StatelessKnowledgeSessionImpl;
 import org.drools.core.management.DroolsManagementAgent;
@@ -763,7 +763,7 @@ public class KieContainerImpl
     }
 
     private KieSessionConfiguration getKieSessionConfiguration( KieSessionModel kSessionModel ) {
-        KieSessionConfiguration ksConf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KieSessionConfiguration ksConf = new SessionConfigurationImpl( null, kProject.getClassLoader() );
         ksConf.setOption( kSessionModel.getClockType() );
         ksConf.setOption( kSessionModel.getBeliefSystem() );
         return ksConf;
