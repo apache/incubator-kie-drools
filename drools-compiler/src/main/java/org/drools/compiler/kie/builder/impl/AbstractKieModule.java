@@ -33,6 +33,7 @@ import com.google.protobuf.ExtensionRegistry;
 import org.appformer.maven.support.DependencyFilter;
 import org.appformer.maven.support.PomModel;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.kie.builder.impl.KieModuleCache.CompDataEntry;
 import org.drools.compiler.kie.builder.impl.KieModuleCache.CompilationData;
 import org.drools.compiler.kie.builder.impl.KieModuleCache.Header;
@@ -149,7 +150,12 @@ public abstract class AbstractKieModule
         return releaseId;
     }
 
-    public KnowledgeBuilder getKnowledgeBuilderForKieBase(String kieBaseName) {
+    @Override
+    public ClassLoader getModuleClassLoader() {
+        return kBuilders.isEmpty() ? null : (( KnowledgeBuilderImpl ) kBuilders.values().iterator().next()).getRootClassLoader();
+    }
+
+    public KnowledgeBuilder getKnowledgeBuilderForKieBase( String kieBaseName) {
         return kBuilders.get(kieBaseName);
     }
 

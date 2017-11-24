@@ -15,6 +15,13 @@
 
 package org.drools.compiler.kie.builder.impl;
 
+import java.io.File;
+import java.lang.ref.WeakReference;
+import java.util.Properties;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
 import org.drools.compiler.kie.builder.impl.event.KieServicesEventListerner;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
@@ -45,13 +52,6 @@ import org.kie.api.persistence.jpa.KieStoreServices;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSessionConfiguration;
-
-import java.io.File;
-import java.lang.ref.WeakReference;
-import java.util.Properties;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 import static org.drools.compiler.compiler.io.memory.MemoryFileSystem.readFromJar;
 import static org.drools.core.common.ProjectClassLoader.findParentClassLoader;
@@ -184,6 +184,9 @@ public class KieServicesImpl implements InternalKieServices {
         InternalKieModule kieModule = (InternalKieModule) getRepository().getKieModule(releaseId);
         if (kieModule == null) {
             throw new RuntimeException("Cannot find KieModule: " + releaseId);
+        }
+        if (classLoader == null) {
+            classLoader = kieModule.getModuleClassLoader();
         }
         KieProject kProject = new KieModuleKieProject( kieModule, classLoader );
 

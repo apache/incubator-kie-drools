@@ -94,4 +94,6 @@ public interface InternalKieModule extends KieModule, Serializable {
     KnowledgeBuilderConfiguration getBuilderConfiguration( KieBaseModel kBaseModel );
 
     InternalKnowledgeBase createKieBase( KieBaseModelImpl kBaseModel, KieProject kieProject, ResultsImpl messages, KieBaseConfiguration conf );
+
+    ClassLoader getModuleClassLoader();
 }

@@ -15,6 +15,22 @@
 
 package org.drools.compiler.integrationtests.incrementalcompilation;
 
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.FactA;
 import org.drools.compiler.Message;
@@ -37,8 +53,12 @@ import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.Service;
-import org.kie.api.builder.*;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.KieModule;
 import org.kie.api.builder.Message.Level;
+import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.Results;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.builder.model.KieSessionModel;
@@ -51,7 +71,11 @@ import org.kie.api.definition.type.FactType;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.io.ResourceType;
 import org.kie.api.logger.KieRuntimeLogger;
-import org.kie.api.runtime.*;
+import org.kie.api.runtime.Globals;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.StatelessKieSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.conf.TimedRuleExecutionOption;
 import org.kie.api.runtime.conf.TimerJobFactoryOption;
@@ -62,12 +86,8 @@ import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.command.CommandFactory;
 
-import java.io.StringReader;
-import java.util.*;
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import static java.util.Arrays.asList;
+
 import static org.drools.core.util.DroolsTestUtil.rulestoMap;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -729,20 +749,8 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
                         "end\n";
 
         KieServices ks = KieServices.Factory.get();
-        KieFileSystem kfs = ks.newKieFileSystem();
 
-        KieBuilder kieBuilder = ks.newKieBuilder( kfs );
-
-        kfs.generateAndWritePomXML( releaseId1 );
-        kfs.write( ks.getResources()
-                           .newReaderResource( new StringReader( drl1 ) )
-                           .setResourceType( ResourceType.DRL )
-                           .setSourcePath( "drl1.txt" ) );
-
-        kieBuilder.buildAll();
-        assertEquals( 0, kieBuilder.getResults().getMessages().size() );
-        KieModule kieModule = kieBuilder.getKieModule();
-        assertEquals( releaseId1, kieModule.getReleaseId() );
+        createAndDeployJar(ks, releaseId1, drl1);
 
         KieContainer kc = ks.newKieContainer( releaseId1 );
 
@@ -756,17 +764,7 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         assertTrue( list.containsAll( asList( "000", "aFoo" ) ) );
         list.clear();
 
-        kfs.generateAndWritePomXML( releaseId2 );
-        kfs.write( ks.getResources()
-                           .newReaderResource( new StringReader( drl2 ) )
-                           .setResourceType( ResourceType.DRL )
-                           .setSourcePath( "drl2.txt" ) );
-
-        IncrementalResults results = ( (InternalKieBuilder) kieBuilder ).incrementalBuild();
-        assertEquals( 0, results.getAddedMessages().size() );
-
-        kieModule = kieBuilder.getKieModule();
-        assertEquals( releaseId2, kieModule.getReleaseId() );
+        createAndDeployJar(ks, releaseId2, drl1, drl2);
 
         Results updateResults = kc.updateToVersion( releaseId2 );
         assertEquals( 0, updateResults.getMessages().size() );
@@ -808,39 +806,24 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
                 "";
 
         KieServices ks = KieServices.Factory.get();
-        KieFileSystem kfs = ks.newKieFileSystem();
-        ReleaseId id = ks.newReleaseId( "org.test", "myTest", "1.0-SNAPSHOT" );
 
-        KieBuilder kieBuilder = ks.newKieBuilder( kfs );
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
+        ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
 
-        kfs.generateAndWritePomXML( id );
-        kfs.write( ks.getResources()
-                     .newReaderResource( new StringReader( drl1 ) )
-                     .setResourceType( ResourceType.DRL )
-                     .setSourcePath( "drl1.drl" ) );
+        createAndDeployJar(ks, releaseId1, drl1);
 
-        kieBuilder.buildAll();
-
-        KieContainer kc = ks.newKieContainer( id );
+        KieContainer kc = ks.newKieContainer( releaseId1 );
         KieSession ksession = kc.newKieSession();
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list", list );
         ksession.fireAllRules();
 
-        kfs.write( ks.getResources()
-                     .newReaderResource( new StringReader( drl2 ) )
-                     .setResourceType( ResourceType.DRL )
-                     .setSourcePath( "drl2.txt" ) );
-
-        IncrementalResults results = ( (InternalKieBuilder) kieBuilder ).incrementalBuild();
-        assertEquals( 0, results.getAddedMessages().size() );
-
-        Results updateResults = kc.updateToVersion( id );
+        createAndDeployJar(ks, releaseId2, drl1, drl2);
+        Results updateResults = kc.updateToVersion( releaseId2 );
         assertEquals( 0, updateResults.getMessages().size() );
 
         ksession.fireAllRules();
         assertEquals( 2, list.size() );
-
     }
 
     @Test
