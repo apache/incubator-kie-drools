@@ -514,7 +514,7 @@
                 <configuration>
                   <properties>
                     <cargo.jboss.configuration>standalone-full</cargo.jboss.configuration>
-                    <cargo.jvmargs>-Xmx2g</cargo.jvmargs>
+                    <cargo.jvmargs>-Xmx1g</cargo.jvmargs>
                     <!-- Datasource -->
                     <cargo.datasource.datasource.jbpm>
                       cargo.datasource.driver=${org.jbpm.datasource.driver.class}|

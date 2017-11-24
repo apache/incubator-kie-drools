@@ -42,7 +42,7 @@
       <id>hibernate-entitymanager</id>
       <dependencies>
         <dependency>
-          <groupId>org.jboss.qa.droolsjbpm.integration</groupId>
+          <groupId>org.jbpm</groupId>
           <artifactId>idep-hibernate-entitymanager</artifactId>
         </dependency>
       </dependencies>
@@ -74,6 +74,12 @@
             <exclusion>
               <groupId>org.jboss.spec.javax.annotation</groupId>
               <artifactId>jboss-annotations-api_1.2_spec</artifactId>
+            </exclusion>
+            <!-- Seems as a bug in ShrinkWrap which resolves also optional dependencies,
+                 so we have to exclude all of them -->
+            <exclusion>
+              <groupId>org.springframework</groupId>
+              <artifactId>*</artifactId>
             </exclusion>
           </exclusions>
         </dependency>
