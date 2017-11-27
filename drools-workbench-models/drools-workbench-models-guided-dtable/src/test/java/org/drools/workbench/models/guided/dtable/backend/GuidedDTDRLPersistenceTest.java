@@ -71,7 +71,12 @@ import org.junit.Test;
 import org.kie.soup.project.datamodel.imports.Import;
 import org.kie.soup.project.datamodel.oracle.DataType;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 public class GuidedDTDRLPersistenceTest {
 
@@ -657,7 +662,7 @@ public class GuidedDTDRLPersistenceTest {
         col2.setFactField("age");
         col2.setConstraintValueType(BaseSingleFieldConstraint.TYPE_RET_VALUE);
         col2.setOperator("<");
-        col2.setBinding("$name");
+        col2.setBinding("$age");
         p1.getChildColumns().add(col2);
         allColumns.add(col2);
 
@@ -713,7 +718,7 @@ public class GuidedDTDRLPersistenceTest {
                      cons.getOperator());
         assertEquals("33 + 1",
                      cons.getValue());
-        assertNull(cons.getFieldBinding());
+        assertEquals("$age", cons.getFieldBinding());
 
         cons = (SingleFieldConstraint) person.getConstraint(2);
         assertEquals(BaseSingleFieldConstraint.TYPE_PREDICATE,
@@ -824,6 +829,7 @@ public class GuidedDTDRLPersistenceTest {
                      cons.getOperator());
         assertEquals("33 + 1",
                      cons.getValue());
+        assertNull(cons.getFieldBinding());
 
         cons = (SingleFieldConstraint) person.getConstraint(2);
         assertEquals(BaseSingleFieldConstraint.TYPE_PREDICATE,

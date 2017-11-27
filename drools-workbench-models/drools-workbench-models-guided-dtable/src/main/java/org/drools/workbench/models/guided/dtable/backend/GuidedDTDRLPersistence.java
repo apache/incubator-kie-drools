@@ -952,7 +952,8 @@ public class GuidedDTDRLPersistence {
                 }
             }
         }
-        if (c.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_LITERAL && c.isBound()) {
+        final int constraintValueType = c.getConstraintValueType();
+        if ((constraintValueType == BaseSingleFieldConstraint.TYPE_LITERAL || constraintValueType == BaseSingleFieldConstraint.TYPE_RET_VALUE) && c.isBound()) {
             sfc.setFieldBinding(c.getBinding());
         }
         sfc.setParameters(c.getParameters());
