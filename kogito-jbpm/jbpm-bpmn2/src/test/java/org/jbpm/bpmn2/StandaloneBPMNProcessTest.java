@@ -65,7 +65,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 @RunWith(Parameterized.class)
 public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
@@ -100,7 +100,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBase("BPMN2-MinimalProcess.bpmn2");
         KieSession ksession = createKnowledgeSession(kbase);
         ProcessInstance processInstance = ksession.startProcess("Minimal");
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -108,7 +108,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBase("BPMN2-MinimalProcessWithGraphical.bpmn2");
         KieSession ksession = createKnowledgeSession(kbase);
         ProcessInstance processInstance = ksession.startProcess("Minimal");
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -116,7 +116,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBase("BPMN2-MinimalProcessWithDIGraphical.bpmn2");
         KieSession ksession = createKnowledgeSession(kbase);
         ProcessInstance processInstance = ksession.startProcess("Minimal");
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -124,7 +124,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBase("BPMN2-CompositeProcessWithDIGraphical.bpmn2");
         KieSession ksession = createKnowledgeSession(kbase);
         ProcessInstance processInstance = ksession.startProcess("Composite");
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -132,7 +132,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBase("BPMN2-ScriptTask.bpmn2");
         KieSession ksession = createKnowledgeSession(kbase);
         ProcessInstance processInstance = ksession.startProcess("ScriptTask");
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -142,7 +142,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("employee", "UserId-12345");
         ProcessInstance processInstance = ksession.startProcess("Evaluation", params);
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -154,7 +154,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("employee", "UserId-12345");
         ProcessInstance processInstance = ksession.startProcess("Evaluation", params);
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -165,7 +165,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("employee", "UserId-12345");
         ProcessInstance processInstance = ksession.startProcess("com.sample.evaluation", params);
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -178,7 +178,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("employee", "john2");
         ProcessInstance processInstance = ksession.startProcess("Evaluation", params);
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -193,27 +193,27 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         String varValue = "initialValue";
         params.put(varId, varValue);
         ProcessInstance processInstance = ksession.startProcess("UserTask", params);
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         
         // Test jbpm-audit findVariableInstancesByName* methods
         if( isPersistence() ) { 
             List<VariableInstanceLog> varLogs = logService.findVariableInstancesByName(varId, true);
-            assertTrue( ! varLogs.isEmpty() );
-            for( VariableInstanceLog varLog : varLogs ) { 
-                assertEquals( varId, varLog.getVariableId());
+            assertThat(varLogs).isNotEmpty();
+            for( VariableInstanceLog varLog : varLogs ) {
+                assertThat(varLog.getVariableId()).isEqualTo(varId);
             }
             varLogs = logService.findVariableInstancesByNameAndValue( varId, varValue, true);
-            assertTrue( ! varLogs.isEmpty() );
-            for( VariableInstanceLog varLog : varLogs ) { 
-                assertEquals( varId, varLog.getVariableId());
-                assertEquals( varValue, varLog.getValue() );
+            assertThat(varLogs).isNotEmpty();
+            for( VariableInstanceLog varLog : varLogs ) {
+                assertThat(varLog.getVariableId()).isEqualTo(varId);
+                assertThat(varLog.getValue()).isEqualTo(varValue);
             }
         }
         
         ksession = restoreSession(ksession, true);
         WorkItem workItem = workItemHandler.getWorkItem();
-        assertNotNull(workItem);
-        assertEquals("john", workItem.getParameter("ActorId"));
+        assertThat(workItem).isNotNull();
+        assertThat(workItem.getParameter("ActorId")).isEqualTo("john");
         ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
     }
@@ -225,20 +225,20 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
         ProcessInstance processInstance = ksession.startProcess("UserTask");
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         ksession = restoreSession(ksession, true);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
         WorkItem workItem = workItemHandler.getWorkItem();
-        assertNotNull(workItem);
-        assertEquals("john", workItem.getParameter("ActorId"));
+        assertThat(workItem).isNotNull();
+        assertThat(workItem.getParameter("ActorId")).isEqualTo("john");
         Map<String, Object> results = new HashMap<String, Object>();
         results.put("ActorId", "mary");
         ksession.getWorkItemManager().completeWorkItem(workItem.getId(), results);
         ksession = restoreSession(ksession, true);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
         workItem = workItemHandler.getWorkItem();
-        assertNotNull(workItem);
-        assertEquals("mary", workItem.getParameter("SwimlaneActorId"));
+        assertThat(workItem).isNotNull();
+        assertThat(workItem.getParameter("SwimlaneActorId")).isEqualTo("mary");
         ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
     }
@@ -252,7 +252,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         params.put("x", "First");
         params.put("y", "Second");
         ProcessInstance processInstance = ksession.startProcess("com.sample.test", params);
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -264,7 +264,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         params.put("x", "NotFirst");
         params.put("y", "Second");
         ProcessInstance processInstance = ksession.startProcess("com.sample.test", params);
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -274,7 +274,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", 15);
         ProcessInstance processInstance = ksession.startProcess("com.sample.test", params);
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -284,7 +284,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", -5);
         ProcessInstance processInstance = ksession.startProcess("com.sample.test", params);
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -303,7 +303,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         params.put("x", document);
         params.put("y", "SomeString");
         ProcessInstance processInstance = ksession.startProcess("com.sample.test", params);
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -314,7 +314,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
         // Yes
         ProcessInstance processInstance = ksession.startProcess("com.sample.test");
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         ksession = restoreSession(ksession, true);
         ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
         ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
@@ -322,7 +322,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
         // No
         processInstance = ksession.startProcess("com.sample.test");
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         ksession = restoreSession(ksession, true);
         ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
         ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
@@ -339,20 +339,20 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         ksession.getWorkItemManager().registerWorkItemHandler("Email2", new DoNothingWorkItemHandler());
         // Yes
         ProcessInstance processInstance = ksession.startProcess("com.sample.test");
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         ksession = restoreSession(ksession, true);
         ksession.getWorkItemManager().registerWorkItemHandler("Email1", new DoNothingWorkItemHandler());
         ksession.getWorkItemManager().registerWorkItemHandler("Email2", new DoNothingWorkItemHandler());
         ksession.signalEvent("Yes", "YesValue", processInstance.getId());
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         // No
         processInstance = ksession.startProcess("com.sample.test");
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         ksession = restoreSession(ksession, true);
         ksession.getWorkItemManager().registerWorkItemHandler("Email1", new DoNothingWorkItemHandler());
         ksession.getWorkItemManager().registerWorkItemHandler("Email2", new DoNothingWorkItemHandler());
         ksession.signalEvent("No", "NoValue", processInstance.getId());
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_ACTIVE);
     }
 
     @Test
@@ -365,12 +365,12 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         ksession.getWorkItemManager().registerWorkItemHandler("Email2", new DoNothingWorkItemHandler());
         // Yes
         ProcessInstance processInstance = ksession.startProcess("com.sample.test");
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         ksession = restoreSession(ksession, true);
         ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
         ksession.getWorkItemManager().registerWorkItemHandler("Email2", new DoNothingWorkItemHandler());
         ksession.signalEvent("Yes", "YesValue", processInstance.getId());
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         ksession = restoreSession(ksession, true);
         ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
         ksession.getWorkItemManager().registerWorkItemHandler("Email2", new DoNothingWorkItemHandler());
@@ -388,7 +388,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
         // Yes
         ProcessInstance processInstance = ksession.startProcess("com.sample.test");
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         ksession = restoreSession(ksession, true);
         ksession.addEventListener(countDownListener);
         ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
@@ -406,7 +406,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
         // Timer
         processInstance = ksession.startProcess("com.sample.test");
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         
         countDownListener.waitTillCompleted();
         ksession = restoreSession(ksession, true);
@@ -427,7 +427,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         jack.setName("Jack");
         // Yes
         ProcessInstance processInstance = ksession.startProcess("com.sample.test");
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         ksession = restoreSession(ksession);
         ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
         ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
@@ -435,7 +435,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
         // Condition
         processInstance = ksession.startProcess("com.sample.test");
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         ksession = restoreSession(ksession);
         ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
         ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
@@ -451,7 +451,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
         // Yes
         ProcessInstance processInstance = ksession.startProcess("com.sample.test");
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         ksession = restoreSession(ksession, true);
         ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
         ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
@@ -476,7 +476,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         ksession.getWorkItemManager().registerWorkItemHandler("Receive Task", receiveTaskHandler);
         // Yes
         ProcessInstance processInstance = ksession.startProcess("com.sample.test");
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         ksession = restoreSession(ksession, true);
         ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
         ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
@@ -515,8 +515,8 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", "oldValue");
         ProcessInstance processInstance = ksession.startProcess("ParentProcess", params);
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
-        assertEquals("new value", ((WorkflowProcessInstance) processInstance).getVariable("y"));
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_COMPLETED);
+        assertThat(((WorkflowProcessInstance) processInstance).getVariable("y")).isEqualTo("new value");
     }
 
     @Test
@@ -524,7 +524,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBase("BPMN2-SubProcess.bpmn2");
         KieSession ksession = createKnowledgeSession(kbase);
         ProcessInstance processInstance = ksession.startProcess("SubProcess");
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -537,7 +537,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         myList.add("Second Item");
         params.put("list", myList);
         ProcessInstance processInstance = ksession.startProcess("MultiInstanceLoopCharacteristicsProcess", params);
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -557,7 +557,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         ksession.addEventListener(countDownListener);
         ksession.getWorkItemManager().registerWorkItemHandler("MyTask", new DoNothingWorkItemHandler());
         ProcessInstance processInstance = ksession.startProcess("TimerBoundaryEvent");
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         countDownListener.waitTillCompleted();
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
     }
@@ -570,7 +570,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         ksession.addEventListener(countDownListener);
         ksession.getWorkItemManager().registerWorkItemHandler("MyTask", new DoNothingWorkItemHandler());
         ProcessInstance processInstance = ksession.startProcess("TimerBoundaryEvent");
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         countDownListener.waitTillCompleted();
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
     }
@@ -584,16 +584,16 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
         ProcessInstance processInstance = ksession.startProcess("AdHocSubProcess");
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         WorkItem workItem = workItemHandler.getWorkItem();
-        assertNull(workItem);
+        assertThat(workItem).isNull();
         ksession = restoreSession(ksession);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
         ksession.fireAllRules();
         
         ksession.signalEvent("Hello2", null, processInstance.getId());
         workItem = workItemHandler.getWorkItem();
-        assertNotNull(workItem);
+        assertThat(workItem).isNotNull();
         ksession = restoreSession(ksession);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
         ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
@@ -610,15 +610,15 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
         ProcessInstance processInstance = ksession.startProcess("AdHocSubProcess");
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-        
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_ACTIVE);
+
         WorkItem workItem = workItemHandler.getWorkItem();
-        assertNull(workItem);
+        assertThat(workItem).isNull();
         ksession = restoreSession(ksession);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
         ksession.fireAllRules();
         workItem = workItemHandler.getWorkItem();
-        assertNotNull("WorkItem should not be null.", workItem);
+        assertThat(workItem).isNotNull().withFailMessage("WorkItem should not be null.");
         ksession = restoreSession(ksession);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
         ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
@@ -632,7 +632,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         KieSession ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
         ProcessInstance processInstance = ksession.startProcess("IntermediateCatchEvent");
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         ksession = restoreSession(ksession, true);
         // now signal process instance
         ksession.signalEvent("MyMessage", "SomeValue", processInstance.getId());
@@ -645,7 +645,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         KieSession ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
         ProcessInstance processInstance = ksession.startProcess("IntermediateCatchEvent");
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         ksession = restoreSession(ksession, true);
         // now signal process instance
         ksession.signalEvent("Message-HelloMessage", "SomeValue", processInstance.getId());
@@ -660,7 +660,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         ksession.addEventListener(countDownListener);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new DoNothingWorkItemHandler());
         ProcessInstance processInstance = ksession.startProcess("IntermediateCatchEvent");
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         // now wait for 1 second for timer to trigger
         countDownListener.waitTillCompleted();
         ksession = restoreSession(ksession, true);
@@ -674,7 +674,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventCondition.bpmn2");
         KieSession ksession = createKnowledgeSession(kbase);
         ProcessInstance processInstance = ksession.startProcess("IntermediateCatchEvent");
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         ksession = restoreSession(ksession);
         // now activate condition
         Person person = new Person();
@@ -700,7 +700,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         params.put("s", "john");
         WorkflowProcessInstance processInstance = (WorkflowProcessInstance) ksession.startProcess("ServiceProcess", params);
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
-        assertEquals("Hello john!", processInstance.getVariable("s"));
+        assertThat(processInstance.getVariable("s")).isEqualTo("Hello john!");
     }
 
     @Test
@@ -721,7 +721,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         ReceiveTaskHandler receiveTaskHandler = new ReceiveTaskHandler(ksession);
         ksession.getWorkItemManager().registerWorkItemHandler("Receive Task", receiveTaskHandler);
         WorkflowProcessInstance processInstance = (WorkflowProcessInstance) ksession.startProcess("ReceiveTask");
-        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         ksession = restoreSession(ksession);
         receiveTaskHandler.messageReceived("HelloMessage", "Hello john!");
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
@@ -756,10 +756,10 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
             }
             
         });
-        
-        assertEquals(0, list.size());
+
+        assertThat(list.size()).isEqualTo(0);
         countDownListener.waitTillCompleted();
-        assertEquals(5, list.size());
+        assertThat(list.size()).isEqualTo(5);
     }
 
     @Test
@@ -773,7 +773,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
             }
         });
         ksession.signalEvent("MySignal", "NewValue");
-        assertEquals(1, list.size());
+        assertThat(list.size()).isEqualTo(1);
     }
 
     @Test
@@ -796,7 +796,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
             }
         });
         ksession.signalEvent("Message-HelloMessage", "NewValue");
-        assertEquals(1, list.size());
+        assertThat(list.size()).isEqualTo(1);
     }
 
     @Test
@@ -807,7 +807,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", "MyValue");
         ProcessInstance processInstance = ksession.startProcess("MessageEndEvent", params);
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -818,7 +818,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", "MyValue");
         ProcessInstance processInstance = ksession.startProcess("MessageIntermediateEvent", params);
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -828,7 +828,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", "MyValue");
         ProcessInstance processInstance = ksession.startProcess("SignalIntermediateEvent", params);
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -836,7 +836,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBase("BPMN2-IntermediateThrowEventNone.bpmn2");
         KieSession ksession = createKnowledgeSession(kbase);
         ProcessInstance processInstance = ksession.startProcess("NoneIntermediateEvent", null);
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
     
     @Test
@@ -868,22 +868,22 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         params.put("serviceInputItem", input );
         ProcessInstance processInstance = ksession.startProcess("ServiceProcess", params);
 
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         
         WorkItem workItem = workItemHandler.getWorkItem();
-        assertNotNull(workItem);
+        assertThat(workItem).isNotNull();
         ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
         
         // Check that event was passed to Event SubProcess (and grabbed by WorkItemHandler);
-        assertTrue( "Event was not passed to Event Subprocess", caughtEventObjectHolder[0] != null && caughtEventObjectHolder[0] instanceof WorkItem );
+        assertThat(caughtEventObjectHolder[0] != null && caughtEventObjectHolder[0] instanceof WorkItem).isTrue().withFailMessage("Event was not passed to Event Subprocess.");
         workItem = (WorkItem) caughtEventObjectHolder[0];
         Object throwObj = workItem.getParameter(ExceptionService.exceptionParameterName);
-        assertTrue( "WorkItem doesn't contain Throwable", throwObj instanceof Throwable );
-        assertTrue("Exception message does not match service input.", ((Throwable) throwObj).getMessage().endsWith(input) );
+        assertThat(throwObj instanceof Throwable).isTrue().withFailMessage("WorkItem doesn't contain Throwable.");
+        assertThat(((Throwable) throwObj).getMessage().endsWith(input)).isTrue().withFailMessage("Exception message does not match service input.");
 
         // Complete process
         processInstance = ksession.getProcessInstance(processInstance.getId());
-        assertTrue( "Process instance has not been aborted.", processInstance == null || processInstance.getState() == ProcessInstance.STATE_ABORTED );
+        assertThat(processInstance == null || processInstance.getState() == ProcessInstance.STATE_ABORTED).isTrue().withFailMessage("Process instance has not been aborted.");
         
     }
     
@@ -902,7 +902,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
     	Resource processResource = ResourceFactory.newClassPathResource("xxe-protection/BPMN2-XXE-Process.bpmn2");
     	
     	File dtdFile = new File("src/test/resources/xxe-protection/external.dtd");
-    	assertTrue(dtdFile.exists());
+        assertThat(dtdFile).exists();
     	
     	String dtdContent = IoUtils.readFileAsString(dtdFile);
     	dtdContent = dtdContent.replaceAll("@@PATH@@", dtdFile.getParentFile().getAbsolutePath());
@@ -913,8 +913,8 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
     	String processAsString = new String(data, "UTF-8");
     	// replace place holders with actual paths
     	File testFiles = new File("src/test/resources/xxe-protection");
-    	
-    	assertTrue(testFiles.exists());
+
+        assertThat(testFiles).exists();
     	
     	String path = testFiles.getAbsolutePath();
     	processAsString = processAsString.replaceAll("@@PATH@@", path);
@@ -929,11 +929,10 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         
         String var1 = getProcessVarValue(processInstance, "testScript1");
         String var2 = getProcessVarValue(processInstance, "testScript2");
-        
-        assertNull(var1);
-        assertNull(var2);
-        
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+
+        assertThat(var1).isNull();
+        assertThat(var2).isNull();
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
     
     public static void runTestSignallingExceptionServiceTask(KieSession ksession) throws Exception {
@@ -954,19 +953,19 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         ProcessInstance processInstance = ksession.startProcess("ServiceProcess", params);
 
         // Check that event was passed to Event SubProcess (and grabbed by WorkItemHandler);
-        assertTrue( "Event was not passed to Event Subprocess", caughtEventObjectHolder[0] != null && caughtEventObjectHolder[0] instanceof WorkItem );
+        assertThat(caughtEventObjectHolder[0] != null && caughtEventObjectHolder[0] instanceof WorkItem).isTrue().withFailMessage("Event was not passed to Event Subprocess.");
         WorkItem workItem = (WorkItem) caughtEventObjectHolder[0];
         Object throwObj = workItem.getParameter(ExceptionService.exceptionParameterName);
-        assertTrue( "WorkItem doesn't contain Throwable", throwObj instanceof Throwable );
-        assertTrue("Exception message does not match service input.", ((Throwable) throwObj).getMessage().endsWith(input) );
+        assertThat(throwObj instanceof Throwable).isTrue().withFailMessage("WorkItem doesn't contain Throwable.");
+        assertThat(((Throwable) throwObj).getMessage().endsWith(input)).isTrue().withFailMessage("Exception message does not match service input.");
 
         // Complete process
-        assertEquals( "Process instance is not active.", ProcessInstance.STATE_ACTIVE, processInstance.getState() );
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_ACTIVE).withFailMessage("Process instance is not active.");
         ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
         
         processInstance = ksession.getProcessInstance(processInstance.getId());
-        if( processInstance != null ) { 
-            assertEquals( "Process instance is not completed.", ProcessInstance.STATE_COMPLETED, processInstance.getState() );
+        if( processInstance != null ) {
+            assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_COMPLETED).withFailMessage("Process instance is not completed.");
         } // otherwise, persistence use => processInstance == null => process is completed
     }
     
