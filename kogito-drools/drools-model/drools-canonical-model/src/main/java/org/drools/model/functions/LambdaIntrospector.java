@@ -18,8 +18,10 @@ package org.drools.model.functions;
 
 import java.io.InputStream;
 import java.io.Serializable;
+import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.objectweb.asm.ClassReader;
@@ -29,42 +31,46 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
 public class LambdaIntrospector {
-    private static final LambdaIntrospector INSTANCE = new LambdaIntrospector();
 
-    private Map<ClassIdentifier, Map<String, String>> methodFingerprintsMap = new HashMap<>();
+    private static final int CACHE_SIZE = 32;
 
-    private LambdaIntrospector() { }
-
-    public static LambdaIntrospector getInstance() {
-        return INSTANCE;
-    }
+    private static final Map<ClassIdentifier, Map<String, String>> methodFingerprintsMap = new LinkedHashMap() {
+        @Override
+        protected boolean removeEldestEntry( Map.Entry eldest) {
+            return (size() > CACHE_SIZE);
+        }
+    };
 
     public static String getLambdaFingerprint(Object lambda) {
-        String result = LambdaIntrospector.getInstance().introspectLambda( lambda );
-        return result == null ? "" : result;
-    }
-
-    private String introspectLambda(Object lambda) {
         if (lambda instanceof IntrospectableLambda) {
             lambda = (( IntrospectableLambda ) lambda).getLambda();
         }
-        java.lang.invoke.SerializedLambda extracted = extractLambda( (Serializable) lambda );
-        return getFingerprintsForClass( lambda, extracted ).get( extracted.getImplMethodName() );
+        SerializedLambda extracted = extractLambda( (Serializable) lambda );
+        String result = getFingerprintsForClass( lambda, extracted ).get( extracted.getImplMethodName() );
+        if (result == null) {
+            if ( !extracted.getCapturingClass().equals( extracted.getImplClass() ) ) {
+                // the lambda is a method reference
+                result = extracted.getCapturingClass().replace( '/', '.' ) + "::" + extracted.getImplMethodName();
+            } else {
+                throw new UnsupportedOperationException( "Unable to introspect lambda " + lambda );
+            }
+        }
+        return result;
     }
 
-    public static java.lang.invoke.SerializedLambda extractLambda(Serializable lambda) {
+    public static SerializedLambda extractLambda(Serializable lambda) {
         try {
             Method method = lambda.getClass().getDeclaredMethod( "writeReplace" );
             method.setAccessible( true );
-            return ( java.lang.invoke.SerializedLambda ) method.invoke( lambda );
+            return ( SerializedLambda ) method.invoke( lambda );
         } catch (Exception e) {
             throw new RuntimeException( e );
         }
     }
 
-    private Map<String, String> getFingerprintsForClass( Object lambda, java.lang.invoke.SerializedLambda extracted) {
+    private static Map<String, String> getFingerprintsForClass( Object lambda, SerializedLambda extracted) {
         ClassLoader lambdaClassLoader = lambda.getClass().getClassLoader();
-        String className = extracted.getImplClass();
+        String className = extracted.getCapturingClass();
         ClassIdentifier id = new ClassIdentifier( lambdaClassLoader, className );
         Map<String, String> fingerprints = methodFingerprintsMap.get( id );
 
