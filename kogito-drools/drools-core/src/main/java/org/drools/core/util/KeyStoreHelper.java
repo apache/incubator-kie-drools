@@ -28,22 +28,21 @@ import java.security.SignatureException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
+
 import javax.crypto.SecretKey;
 
 import org.drools.core.RuleBaseConfiguration;
 
 import static org.drools.core.util.KeyStoreConstants.KEY_CERTIFICATE_TYPE;
 import static org.drools.core.util.KeyStoreConstants.KEY_PASSWORD_TYPE;
-import static org.drools.core.util.KeyStoreConstants.PROP_PWD_ALIAS;
-import static org.drools.core.util.KeyStoreConstants.PROP_PWD_PWD;
-import static org.drools.core.util.KeyStoreConstants.PROP_PWD_KS_PWD;
-import static org.drools.core.util.KeyStoreConstants.PROP_PWD_KS_URL;
 import static org.drools.core.util.KeyStoreConstants.PROP_PUB_KS_PWD;
 import static org.drools.core.util.KeyStoreConstants.PROP_PUB_KS_URL;
 import static org.drools.core.util.KeyStoreConstants.PROP_PVT_ALIAS;
 import static org.drools.core.util.KeyStoreConstants.PROP_PVT_KS_PWD;
 import static org.drools.core.util.KeyStoreConstants.PROP_PVT_KS_URL;
 import static org.drools.core.util.KeyStoreConstants.PROP_PVT_PWD;
+import static org.drools.core.util.KeyStoreConstants.PROP_PWD_KS_PWD;
+import static org.drools.core.util.KeyStoreConstants.PROP_PWD_KS_URL;
 
 /**
  * A helper class to deal with the key store and signing process during
@@ -73,8 +72,6 @@ public class KeyStoreHelper {
 
     private URL pwdKeyStoreURL;
     private char[] pwdKeyStorePwd;
-    private String pwdKeyAlias;
-    private char[] pwdKeyPassword;
 
     private KeyStore pvtKeyStore;
     private KeyStore pubKeyStore;
@@ -123,8 +120,6 @@ public class KeyStoreHelper {
             pwdKeyStoreURL = new URL(url);
         }
         pwdKeyStorePwd = System.getProperty(PROP_PWD_KS_PWD, "").toCharArray();
-        pwdKeyAlias = System.getProperty(PROP_PWD_ALIAS, "");
-        pwdKeyPassword = System.getProperty(PROP_PWD_PWD, "").toCharArray();
     }
 
     private void initKeyStore() throws NoSuchAlgorithmException, CertificateException, IOException, KeyStoreException {
@@ -210,12 +205,12 @@ public class KeyStoreHelper {
         return sig.verify( signature );
     }
 
-    public String getPasswordKey() {
+    public String getPasswordKey(String pwdKeyAlias, char[] pwdKeyPassword) {
         SecretKey passwordKey;
         try {
             passwordKey = (SecretKey) pwdKeyStore.getKey(pwdKeyAlias, pwdKeyPassword);
         } catch (Exception e) {
-            throw new RuntimeException("Unable to load a key from Key Store. Source " + e.getMessage());
+            throw new RuntimeException("Unable to load a key from Key Store. Source " + e.getCause());
         }
         return new String(passwordKey.getEncoded());
     }

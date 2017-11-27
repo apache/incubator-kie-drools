@@ -23,12 +23,12 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 import java.security.UnrecoverableKeyException;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
-import org.drools.core.util.KeyStoreHelper;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class KeyStoreHelperTest {
 
@@ -81,16 +81,30 @@ public class KeyStoreHelperTest {
     public void testLoadPassword() {
         // $ keytool -importpassword -keystore droolsServer.jceks -keypass keypwd -alias droolsKey -storepass serverpwd -storetype JCEKS
         // password is passwd
-        // Set properties to simulate the server
-        URL serverKeyStoreURL = getClass().getResource( "droolsServer.jceks" );
-        System.setProperty( KeyStoreConstants.PROP_PWD_KS_URL, serverKeyStoreURL.toExternalForm() );
-        System.setProperty( KeyStoreConstants.PROP_PWD_KS_PWD, "serverpwd" );
-        System.setProperty( KeyStoreConstants.PROP_PWD_ALIAS, "droolsKey" );
-        System.setProperty( KeyStoreConstants.PROP_PWD_PWD, "keypwd" );
 
+        // test no key store
         KeyStoreHelper serverHelper = new KeyStoreHelper();
-        final String passwordKey = serverHelper.getPasswordKey();
+        try {
+            serverHelper.getPasswordKey(null, null);
+            fail();
+        } catch (RuntimeException re) {
+            assertTrue(true);
+        }
 
-        assertEquals("passwd", passwordKey);
+        // Set properties to simulate the server
+        URL serverKeyStoreURL = getClass().getResource("droolsServer.jceks");
+        System.setProperty(KeyStoreConstants.PROP_PWD_KS_URL, serverKeyStoreURL.toExternalForm());
+        System.setProperty(KeyStoreConstants.PROP_PWD_KS_PWD, "serverpwd");
+        String PROP_PWD_ALIAS = "droolsKey";
+        char[] PROP_PWD_PWD = "keypwd".toCharArray();
+
+        try {
+            serverHelper = new KeyStoreHelper();
+
+            String passwordKey = serverHelper.getPasswordKey(PROP_PWD_ALIAS, PROP_PWD_PWD);
+            assertEquals("passwd", passwordKey);
+        } catch (RuntimeException re) {
+            fail();
+        }
     }
 }

@@ -37,10 +37,6 @@ public class KeyStoreConstants {
     public static final String PROP_PWD_KS_URL = "kie.keystore.keyStoreURL";
     // the key store password
     public static final String PROP_PWD_KS_PWD = "kie.keystore.keyStorePwd";
-    // the private key identifier
-    public static final String PROP_PWD_ALIAS = "kie.keystore.keyAlias";
-    // the private key identifier
-    public static final String PROP_PWD_PWD = "kie.keystore.keyPwd";
 
     public static final String KEY_CERTIFICATE_TYPE = "JKS";
 
