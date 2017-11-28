@@ -196,7 +196,10 @@ public class JoinInstance extends NodeInstanceImpl {
 
 
     private boolean checkNodes(Set<Long> vistedNodes, Node startAt, Node currentNode, Node lookFor) {
-    	
+    	if (currentNode == null) {
+    	    // for dynamic/ad hoc task there is no node 
+    	    return false;
+    	}
         List<Connection> connections = currentNode.getOutgoingConnections(org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
         // special handling for XOR split as it usually is used for arbitrary loops
         if (currentNode instanceof Split && ((Split) currentNode).getType() == Split.TYPE_XOR) {

@@ -68,6 +68,7 @@ import org.jbpm.services.api.model.VariableDesc;
 import org.jbpm.services.task.impl.model.GroupImpl;
 import org.jbpm.services.task.impl.model.UserImpl;
 import org.junit.Test;
+import org.kie.api.runtime.process.CaseAssignment;
 import org.kie.api.runtime.query.QueryContext;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Status;
@@ -97,6 +98,7 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
         processes.add("cases/CaseWithTwoStagesConditions.bpmn2");
         processes.add("cases/CaseWithExpressionOnCaseFileItem.bpmn2");
         processes.add("cases/UserTaskCaseDataRestrictions.bpmn2");
+        processes.add("cases/InclusiveGatewayInDynamicCase.bpmn2");
         // add processes that can be used by cases but are not cases themselves
         processes.add("processes/DataVerificationProcess.bpmn2");
         return processes;
@@ -2651,6 +2653,56 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
         } finally {
             if (caseId != null) {
                 identityProvider.setName("john");
+                caseService.cancelCase(caseId);
+            }
+        }
+    }
+    
+    @Test
+    public void testInclusiveGatewayWithDynamicActivity() {
+        Map<String, OrganizationalEntity> roleAssignments = new HashMap<>();
+        roleAssignments.put("actorRole", new UserImpl("john"));
+        roleAssignments.put("groupRole", new GroupImpl("managers"));
+
+        Map<String, Object> data = new HashMap<>();
+        CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), "InclusiveGatewayCase", data, roleAssignments);
+                
+        ((CaseAssignment)caseFile).assignUser("generalRole", "john");
+
+        String caseId = caseService.startCase(deploymentUnit.getIdentifier(), "InclusiveGatewayCase", caseFile);
+        assertNotNull(caseId);
+        assertEquals(FIRST_CASE_ID, caseId);
+        try {
+            CaseInstance cInstance = caseService.getCaseInstance(caseId);
+            assertNotNull(cInstance);
+            assertEquals(FIRST_CASE_ID, cInstance.getCaseId());
+            assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
+            
+            List<TaskSummary> tasks = caseRuntimeDataService.getCaseTasksAssignedAsPotentialOwner(caseId, "john", null, new QueryContext());
+            assertThat(tasks).hasSize(2);
+            
+            caseService.addDynamicTask(caseId, caseService.newHumanTaskSpec("First task", "another test", "actorRole", null, new HashMap<>()));
+            
+            List<TaskSummary> allTasks = caseRuntimeDataService.getCaseTasksAssignedAsPotentialOwner(caseId, "john", null, new QueryContext());
+            assertThat(allTasks).hasSize(3);
+            
+            // now complete only tasks from case definition and leave dynamic task alone
+            for (TaskSummary task : tasks) {
+                userTaskService.completeAutoProgress(task.getId(), "john", null);
+            }
+            
+            // dynamic task should still be there
+            allTasks = caseRuntimeDataService.getCaseTasksAssignedAsPotentialOwner(caseId, "john", null, new QueryContext());
+            assertThat(allTasks).hasSize(1);
+            
+            cInstance = caseService.getCaseInstance(caseId);
+            assertNotNull(cInstance);
+            
+        } catch (Exception e) {
+            logger.error("Unexpected error {}", e.getMessage(), e);
+            fail("Unexpected exception " + e.getMessage());
+        } finally {
+            if (caseId != null) {
                 caseService.cancelCase(caseId);
             }
         }
