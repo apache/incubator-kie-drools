@@ -271,8 +271,8 @@ public class DSL {
         return new ExistentialExprViewItem( Condition.Type.FORALL, and( expression, expressions) );
     }
 
-    public static <T> ExprViewItem<T> accumulate(ExprViewItem<T> expr, AccumulateFunction<?, ?, ?>... functions) {
-        return new AccumulateExprViewItem(expr, functions);
+    public static <T> ExprViewItem<T> accumulate(ViewItem<?> viewItem, AccumulateFunction<?, ?, ?>... functions) {
+        return new AccumulateExprViewItem(viewItem, functions);
     }
 
     public static ViewItem or(ViewItemBuilder<?> expression, ViewItemBuilder<?>... expressions) {
