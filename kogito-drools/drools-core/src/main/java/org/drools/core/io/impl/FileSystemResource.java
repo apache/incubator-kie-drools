@@ -64,7 +64,11 @@ public class FileSystemResource  extends BaseResource implements InternalResourc
             throw new IllegalArgumentException( "File must not be null" );
         }
         this.file = new File( StringUtils.cleanPath(file.getPath()) );
-        setSourcePath( file.getName() );
+        try {
+            setSourcePath( file.getCanonicalPath() );
+        } catch (IOException e) {
+            setSourcePath( file.getAbsolutePath() );
+        }
         setResourceType( ResourceType.determineResourceType( getSourcePath() ) );
     }
 
