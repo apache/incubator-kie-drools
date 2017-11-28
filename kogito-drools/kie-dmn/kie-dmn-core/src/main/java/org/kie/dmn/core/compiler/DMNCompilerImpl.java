@@ -113,8 +113,12 @@ public class DMNCompilerImpl
     public DMNModel compile(Resource resource) {
         try {
             DMNModel model = compile( resource.getReader() );
-            ((DMNModelImpl)model).setResource( resource );
-            return model;
+            if (model == null) {
+                return null;
+            } else {
+                ((DMNModelImpl) model).setResource(resource);
+                return model;
+            }
         } catch ( IOException e ) {
             logger.error( "Error retrieving reader for resource: " + resource.getSourcePath(), e );
         }

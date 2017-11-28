@@ -22,6 +22,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.*;
 
+import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNRuntime;
@@ -102,5 +103,12 @@ public class DMNCompilerTest {
         assertThat( ((SimpleTypeImpl)termMonths).getFeelType(), is( BuiltInType.NUMBER ) );
     }
 
-
+    @Test
+    public void testCompilationThrowsNPE() {
+        try {
+            DMNRuntimeUtil.createRuntime( "compilationThrowsNPE.dmn", this.getClass() );
+        } catch (IllegalStateException ex) {
+            assertThat(ex.getMessage(), Matchers.containsString("Unable to compile DMN model for the resource"));
+        }
+    }
 }
