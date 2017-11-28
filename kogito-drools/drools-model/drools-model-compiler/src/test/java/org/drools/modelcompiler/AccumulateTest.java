@@ -16,13 +16,15 @@
 
 package org.drools.modelcompiler;
 
+import java.util.Collection;
+
+import org.drools.modelcompiler.domain.Adult;
+import org.drools.modelcompiler.domain.Child;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
-
-import java.util.Collection;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.assertEquals;
@@ -140,5 +142,31 @@ public class AccumulateTest extends BaseModelTest {
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
         assertThat(results, hasItem(new Result(38.5)));
         assertThat(results, hasItem(new Result(77)));
+    }
+
+    @Test
+    @Ignore("fix accumulate with and")
+    public void testAccumulateWithAnd() {
+        String str =
+                "import " + Adult.class.getCanonicalName() + ";\n" +
+                "import " + Child.class.getCanonicalName() + ";\n" +
+                "import " + Result.class.getCanonicalName() + ";\n" +
+                "rule R when\n" +
+                "  accumulate( $c : Child( age < 10 ) and $a : Adult( name == $c.parent ), $parentAge : sum($a.getAge()) )\n" +
+                "then\n" +
+                "  insert(new Result($parentAge));\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        Adult a = new Adult( "Mario", 43 );
+        Child c = new Child( "Sofia", 6, "Mario" );
+
+        ksession.insert( a );
+        ksession.insert( c );
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertThat(results, hasItem(new Result(43)));
     }
 }
