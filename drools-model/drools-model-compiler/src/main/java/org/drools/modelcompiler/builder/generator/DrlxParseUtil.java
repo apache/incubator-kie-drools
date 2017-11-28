@@ -24,6 +24,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.SortedSet;
 
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.index.IndexUtil;
@@ -362,7 +363,7 @@ public class DrlxParseUtil {
         return JavaParser.parseBlock(String.format("{\n%s\n}", ruleConsequenceAsBlock)); // if the RHS is composed only of a line of comment like `//do nothing.` then JavaParser would fail to recognize the ending }
     }
 
-    public static Expression generateLambdaWithoutParameters(List<String> usedDeclarations, Expression expr) {
+    public static Expression generateLambdaWithoutParameters(SortedSet<String> usedDeclarations, Expression expr) {
         LambdaExpr lambdaExpr = new LambdaExpr();
         lambdaExpr.setEnclosingParameters( true );
         lambdaExpr.addParameter( new Parameter(new UnknownType(), "_this" ) );

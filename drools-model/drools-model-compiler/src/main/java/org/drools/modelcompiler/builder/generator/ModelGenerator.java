@@ -29,6 +29,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -93,10 +94,10 @@ import org.drools.model.Rule;
 import org.drools.model.Variable;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.RuleContext.RuleDialect;
+import org.drools.modelcompiler.util.InsertionOrderSet;
 import org.kie.api.definition.type.Position;
 
 import static java.util.stream.Collectors.toList;
-
 import static org.drools.javaparser.printer.PrintUtil.toDrlx;
 import static org.drools.model.impl.NamesGenerator.generateName;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
@@ -887,7 +888,7 @@ public class ModelGenerator {
         private String exprBinding;
 
         ConstraintType decodeConstraintType;
-        List<String> usedDeclarations = Collections.emptyList();
+        SortedSet<String> usedDeclarations = new InsertionOrderSet<>();
         Set<String> reactOnProperties = Collections.emptySet();
         String[] watchedProperties;
 
@@ -909,7 +910,7 @@ public class ModelGenerator {
         }
 
         public DrlxParseResult setUsedDeclarations( List<String> usedDeclarations ) {
-            this.usedDeclarations = usedDeclarations;
+            this.usedDeclarations = new InsertionOrderSet<>(usedDeclarations);
             return this;
         }
 
@@ -1005,7 +1006,7 @@ public class ModelGenerator {
         }
 
         exprDSL = buildExpression(context, drlxParseResult, exprDSL );
-        exprDSL = buildIndexedBy( drlxParseResult, exprDSL );
+        exprDSL = buildIndexedBy(context, drlxParseResult, exprDSL);
         exprDSL = buildReactOn( drlxParseResult, exprDSL );
         return exprDSL;
     }
@@ -1034,7 +1035,7 @@ public class ModelGenerator {
         return exprDSL;
     }
 
-    private static MethodCallExpr buildIndexedBy( DrlxParseResult drlxParseResult, MethodCallExpr exprDSL ) {
+    private static MethodCallExpr buildIndexedBy(RuleContext context, DrlxParseResult drlxParseResult, MethodCallExpr exprDSL) {
         ConstraintType decodeConstraintType = drlxParseResult.decodeConstraintType;
         TypedExpression left = drlxParseResult.left;
         TypedExpression right = drlxParseResult.right;
@@ -1061,16 +1062,23 @@ public class ModelGenerator {
             indexedByDSL.addArgument( "" + indexIdGenerator.getFieldId( drlxParseResult.patternType, left.getFieldName() ) );
             indexedByDSL.addArgument( indexedBy_leftOperandExtractor );
 
-            List<String> usedDeclarations = drlxParseResult.usedDeclarations;
+            Set<String> usedDeclarations = drlxParseResult.usedDeclarations;
             if ( usedDeclarations.isEmpty() ) {
                 indexedByDSL.addArgument( right.getExpression() );
-            } else if ( usedDeclarations.size() == 1 ) {
-                LambdaExpr indexedBy_rightOperandExtractor = new LambdaExpr();
-                indexedBy_rightOperandExtractor.addParameter(new Parameter(new UnknownType(), usedDeclarations.iterator().next()));
-                indexedBy_rightOperandExtractor.setBody(new ExpressionStmt(!leftContainsThis ? left.getExpression() : right.getExpression()) );
-                indexedByDSL.addArgument( indexedBy_rightOperandExtractor );
+            } else if (usedDeclarations.size() == 1) {
+                // we ask if "right" expression is simply a symbol, hence just purely a declaration referenced by name
+                if (context.getDeclarationById(right.getExpressionAsString()).isPresent()) {
+                    LambdaExpr indexedBy_rightOperandExtractor = new LambdaExpr();
+                    indexedBy_rightOperandExtractor.addParameter(new Parameter(new UnknownType(), usedDeclarations.iterator().next()));
+                    indexedBy_rightOperandExtractor.setBody(new ExpressionStmt(!leftContainsThis ? left.getExpression() : right.getExpression()));
+                    indexedByDSL.addArgument(indexedBy_rightOperandExtractor);
+                } else {
+                    // this is a case where a Beta node should NOT create the index because the "right" is not just-a-symbol, the "right" is not a declaration referenced by name
+                    return exprDSL;
+                }
             } else {
-//                throw new UnsupportedOperationException( "TODO" ); // TODO: possibly not to be indexed
+                // this is a case where a Beta node should NOT create the index because the "right" is not just-a-symbol, the "right" is not a declaration referenced by name
+                return exprDSL;
             }
             return indexedByDSL;
         }
