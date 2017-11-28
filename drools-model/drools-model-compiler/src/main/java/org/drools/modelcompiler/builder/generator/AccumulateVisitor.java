@@ -38,7 +38,7 @@ public class AccumulateVisitor {
         final MethodCallExpr accumulateDSL = new MethodCallExpr(null, "accumulate");
         context.addExpression(accumulateDSL);
         context.pushExprPointer(accumulateDSL::addArgument);
-        ModelGenerator.visit(context, packageModel, descr.getInputPattern());
+        ModelGenerator.visit(context, packageModel, descr.getInputPattern() == null ? descr.getInput() : descr.getInputPattern());
         for (AccumulateDescr.AccumulateFunctionCallDescr function : descr.getFunctions()) {
             visit(context, function, accumulateDSL);
         }
