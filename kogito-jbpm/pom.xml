@@ -171,13 +171,6 @@
         <scope>import</scope>
       </dependency>
       <dependency>
-        <groupId>org.dashbuilder</groupId>
-        <artifactId>dashbuilder-bom</artifactId>
-        <version>${version.org.dashbuilder}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
         <groupId>org.kie.soup</groupId>
         <artifactId>kie-soup-bom</artifactId>
         <version>${version.org.kie}</version>
