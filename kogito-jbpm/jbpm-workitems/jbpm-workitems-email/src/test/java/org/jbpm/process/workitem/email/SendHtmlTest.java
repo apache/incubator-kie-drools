@@ -64,6 +64,8 @@ public class SendHtmlTest extends AbstractBaseTest {
 
     private Random random = new Random();
     private int uniqueTestNum = -1;
+    
+    private EmailWorkItemHandler emailWorkItemHandler = new EmailWorkItemHandler();
 
     @Before
     public void setUp() throws Exception {
@@ -184,7 +186,7 @@ public class SendHtmlTest extends AbstractBaseTest {
         Connection connection = new Connection(emailHost, emailPort, authUsername, authPassword);
 
         // send email
-        Email email = EmailWorkItemHandler.createEmail(workItem, connection);
+        Email email = emailWorkItemHandler.createEmail(workItem, connection);
         SendHtml.sendHtml(email, connection);
 
         List<WiserMessage> messages = wiser.getMessages();
@@ -264,7 +266,7 @@ public class SendHtmlTest extends AbstractBaseTest {
      */
     private void sendAndCheckThatMessagesAreSent(WorkItemImpl workItem, Connection connection) throws Exception {
         // send email
-        Email email = EmailWorkItemHandler.createEmail(workItem, connection);
+        Email email = emailWorkItemHandler.createEmail(workItem, connection);
         SendHtml.sendHtml(email, connection);
 
         List<WiserMessage> messages = wiser.getMessages();
@@ -286,7 +288,7 @@ public class SendHtmlTest extends AbstractBaseTest {
         Connection connection = new Connection(emailHost, emailPort, username, password);
 
         // send email
-        Email email = EmailWorkItemHandler.createEmail(workItem, connection);
+        Email email = emailWorkItemHandler.createEmail(workItem, connection);
         try {
             SendHtml.sendHtml(email, connection);
         } catch (Throwable t) {

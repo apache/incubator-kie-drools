@@ -29,6 +29,7 @@ import org.kie.api.runtime.process.WorkItemManager;
  *                   multiple addresses must be separated using a semi-colon (';') 
  *  - "Subject" (String): the subject of the email
  *  - "Body" (String): the body of the email (using HTML)
+ *  - "Template" (String): optional template to generate body of the email, template when given will override Body parameter
  * Is completed immediately and does not return any result parameters.  
  * 
  * Sending an email cannot be aborted.
@@ -37,6 +38,7 @@ import org.kie.api.runtime.process.WorkItemManager;
 public class EmailWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
 
 	private Connection connection;
+	private TemplateManager templateManager = TemplateManager.get();
 
 	public EmailWorkItemHandler() {
 	}
@@ -86,7 +88,7 @@ public class EmailWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
 		}
 	}
 
-	protected static Email createEmail(WorkItem workItem, Connection connection) {
+	protected Email createEmail(WorkItem workItem, Connection connection) {
 	    Email email = new Email();
         Message message = new Message();
         message.setFrom((String) workItem.getParameter("From"));
@@ -134,9 +136,15 @@ public class EmailWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
         }
 
         // Fill message
+        String body = (String) workItem.getParameter("Body");
+        String template = (String) workItem.getParameter("Template");
+        if (template != null) {            
+            body = templateManager.render(template, workItem.getParameters());
+        }
+        
         message.setRecipients(recipients);
         message.setSubject((String) workItem.getParameter("Subject"));
-        message.setBody((String) workItem.getParameter("Body"));
+        message.setBody(body);
 
         // fill attachments
         String attachmentList = (String) workItem.getParameter("Attachments");

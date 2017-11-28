@@ -45,6 +45,8 @@ public class SendHtmlRealTest extends AbstractBaseTest {
     private static final Logger logger = LoggerFactory.getLogger(SendHtmlRealTest.class);
     private Random random = new Random();
     int uniqueTestNum = -1;
+    
+    private EmailWorkItemHandler emailWorkItemHandler = new EmailWorkItemHandler();
 
     // the following fields should all be filled with information that relates to 1 domain: willywonka.com, for example.
     String fromAddress = "XXXX @gmail.com";
@@ -79,7 +81,7 @@ public class SendHtmlRealTest extends AbstractBaseTest {
         // Gmail requires use of the STARTTLS protocol
         connection.setStartTls(true);
 
-        Email email = EmailWorkItemHandler.createEmail(workItem, connection);
+        Email email = emailWorkItemHandler.createEmail(workItem, connection);
         SendHtml.sendHtml(email);
     }
 }

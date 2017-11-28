@@ -70,13 +70,8 @@ public class SendHtml {
     public static void sendHtml(Email email,
                                 Connection connection,
                                 boolean debug) {
-        int port = Integer.parseInt(connection.getPort());
-        String mailhost = connection.getHost();
-        String username = connection.getUserName();
-        String password = connection.getPassword();
 
         Session session = getSession(connection);
-
         session.setDebug(debug);
 
         try {
@@ -84,19 +79,34 @@ public class SendHtml {
                                       session);
 
             // send the thing off
-            Transport t = (Transport) session.getTransport("smtp");
+            Transport t = null;
             try {
-                t.connect(mailhost,
-                          port,
-                          username,
-                          password);
-                t.sendMessage(msg,
-                              msg.getAllRecipients());
+                
+                if (connection != null) {
+                    t = (Transport) session.getTransport("smtp");
+                    
+                    int port = Integer.parseInt(connection.getPort());
+                    String mailhost = connection.getHost();
+                    String username = connection.getUserName();
+                    String password = connection.getPassword();
+                
+                    t.connect(mailhost,
+                              port,
+                              username,
+                              password);
+                    t.sendMessage(msg,
+                                  msg.getAllRecipients());
+                } else {
+                    Transport.send(msg, msg.getAllRecipients());
+                }
+                
             } catch (Exception e) {
                 throw new RuntimeException("Connection failure",
                                            e);
             } finally {
-                t.close();
+                if (t != null) {
+                    t.close();
+                }
             }
         } catch (Exception e) {
             throw new RuntimeException("Unable to send email",
@@ -212,6 +222,9 @@ public class SendHtml {
         try {
             session = InitialContext.doLookup(MAIL_JNDI_KEY);
         } catch (NamingException e1) {
+            if (connection == null) {
+                throw new RuntimeException("Connection details are not given and mail session was not found in JNDI - " + MAIL_JNDI_KEY, e1);
+            }
             String username = connection.getUserName();
             String password = connection.getPassword();
 

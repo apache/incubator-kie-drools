@@ -16,6 +16,7 @@
 
 package org.jbpm.process.workitem.email;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import javax.mail.internet.InternetAddress;
@@ -45,6 +46,9 @@ public class EmailWorkItemHandlerTest extends AbstractBaseTest {
 
     @Before
     public void setUp() throws Exception {
+        System.setProperty("org.jbpm.email.templates.dir", new File("src/test/resources/templates").getAbsolutePath());
+        TemplateManager.reset();
+        
         ChainedProperties props = ChainedProperties.getChainedProperties( "email.conf", ClassLoaderUtil.getClassLoader( null, getClass(), false ));
         emailHost = props.getProperty( "mail.smtp.host", "localhost" );
         emailPort = props.getProperty( "mail.smtp.port", "2345" );
@@ -58,6 +62,7 @@ public class EmailWorkItemHandlerTest extends AbstractBaseTest {
 
     @After
     public void tearDown() throws Exception {
+        System.clearProperty("org.jbpm.email.templates.dir");
         if( wiser != null ) {
             wiser.getMessages().clear();
             wiser.stop();
@@ -190,6 +195,38 @@ public class EmailWorkItemHandlerTest extends AbstractBaseTest {
 
         WorkItemManager manager = new DefaultWorkItemManager(null);
         handler.executeWorkItem( workItem, manager );
+    }
+    
+    @Test
+    public void testEmailWithTemplate() throws Exception {
+        EmailWorkItemHandler handler = new EmailWorkItemHandler();
+        handler.setConnection( emailHost, emailPort, null, null );
+
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setParameter( "To", "person1@domain.com" );
+        workItem.setParameter( "From", "person2@domain.com" );
+        workItem.setParameter( "Reply-To", "person3@domain.com" );
+        workItem.setParameter( "Subject", "Subject 1" );
+        workItem.setParameter( "Template", "basic-email" );
+        workItem.setParameter( "Name", "John Doe" );
+        
+        String expectedBody = "<html><body>Hello John Doe</body></html>";
+
+        WorkItemManager manager = new DefaultWorkItemManager(null);
+        handler.executeWorkItem( workItem, manager );
+
+        assertEquals( 1, wiser.getMessages().size() );
+
+        MimeMessage msg = (( WiserMessage  ) wiser.getMessages().get( 0 )).getMimeMessage();
+        // Side effect of MIME encoding (I think.. ): \r\n..
+        String content = ((String) msg.getContent()).replace("\r\n", "");
+        assertEquals( expectedBody, content );
+        assertEquals( workItem.getParameter( "Subject" ), msg.getSubject() );
+        assertEquals( workItem.getParameter( "From" ), ((InternetAddress)msg.getFrom()[0]).getAddress() );
+        assertEquals( workItem.getParameter( "Reply-To" ), ((InternetAddress)msg.getReplyTo()[0]).getAddress() );
+        assertEquals( workItem.getParameter( "To" ), ((InternetAddress)msg.getRecipients( RecipientType.TO )[0]).getAddress() );
+        assertNull( msg.getRecipients( RecipientType.CC ) );
+        assertNull( msg.getRecipients( RecipientType.BCC ) );
     }
 }
 

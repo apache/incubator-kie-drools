@@ -104,7 +104,7 @@ public class DefaultUserInfo extends AbstractUserGroupInfo implements UserInfo {
         if (entityInfo != null) {
             return (String) entityInfo.get("email");
         }
-        throw new IllegalStateException("No EMail address found for " + entity.getId());
+        return null;
     }
 
     public String getLanguageForEntity(OrganizationalEntity entity) {
