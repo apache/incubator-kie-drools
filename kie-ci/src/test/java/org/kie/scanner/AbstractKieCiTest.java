@@ -15,28 +15,28 @@
 
 package org.kie.scanner;
 
-import org.drools.core.util.FileManager;
-import org.kie.api.KieServices;
-import org.kie.api.builder.model.KieBaseModel;
-import org.kie.api.builder.KieBuilder;
-import org.kie.api.builder.KieFileSystem;
-import org.kie.api.builder.KieModule;
-import org.kie.api.builder.model.KieModuleModel;
-import org.kie.api.builder.model.KieSessionModel;
-import org.kie.api.builder.ReleaseId;
-import org.apache.maven.model.Dependency;
-import org.drools.compiler.kie.builder.impl.InternalKieModule;
-import org.kie.api.conf.EqualityBehaviorOption;
-import org.kie.api.conf.EventProcessingOption;
-import org.kie.api.io.Resource;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.conf.ClockTypeOption;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import org.apache.maven.model.Dependency;
+import org.drools.compiler.kie.builder.impl.InternalKieModule;
+import org.drools.core.util.FileManager;
+import org.kie.api.KieServices;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.KieModule;
+import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.model.KieBaseModel;
+import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.builder.model.KieSessionModel;
+import org.kie.api.conf.EqualityBehaviorOption;
+import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.io.Resource;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.conf.ClockTypeOption;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -58,8 +58,12 @@ public class AbstractKieCiTest {
     }
 
     protected InternalKieModule createKieJarWithDependencies(KieServices ks, ReleaseId releaseId, boolean isdefault, String rule, ReleaseId... dependencies) throws IOException {
+        return createKieJarWithPom(ks, releaseId, isdefault, rule, getPom(releaseId, dependencies));
+    }
+
+    protected InternalKieModule createKieJarWithPom(KieServices ks, ReleaseId releaseId, boolean isdefault, String rule, String pom) throws IOException {
         KieFileSystem kfs = createKieFileSystemWithKProject(ks, isdefault);
-        kfs.writePomXML(getPom(releaseId, dependencies));
+        kfs.writePomXML(pom);
 
         String file = "org/test/" + rule + ".drl";
         kfs.write("src/main/resources/KBase1/" + file, createDRL(rule));
@@ -68,7 +72,7 @@ public class AbstractKieCiTest {
         assertTrue(kieBuilder.buildAll().getResults().getMessages().isEmpty());
         return (InternalKieModule) kieBuilder.getKieModule();
     }
-    
+
     protected InternalKieModule createKieJarWithDependencies(KieServices ks, ReleaseId releaseId, boolean isdefault, String rule, Dependency... dependencies) {
         KieFileSystem kfs = createKieFileSystemWithKProject(ks, isdefault);
         kfs.writePomXML(pomWithMvnDeps(dependencyWithScope(releaseId.getGroupId(), releaseId.getArtifactId(), releaseId.getVersion(), ""), dependencies));

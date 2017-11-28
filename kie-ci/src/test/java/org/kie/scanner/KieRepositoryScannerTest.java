@@ -156,7 +156,77 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         KieContainer kieContainer2 = ks.newKieContainer( releaseIdWithDep );
         System.out.println("done in " + (System.nanoTime() - start));
     }
-    
+
+    @Test @Ignore("avoid use external dependency")
+    public void testKScannerWithTransitiveInclusion() throws Exception {
+        String pom = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+                "         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd\">\n" +
+                "  <modelVersion>4.0.0</modelVersion>\n" +
+                "\n" +
+                "  <groupId>org.kie</groupId>\n" +
+                "  <artifactId>test-with-inc</artifactId>\n" +
+                "  <version>1.0-SNAPSHOT</version>\n" +
+                "  \n" +
+                "        <dependencies>\n" +
+                "            <dependency>\n" +
+                "                <groupId>io.swagger</groupId>\n" +
+                "                <artifactId>swagger-jaxrs</artifactId>\n" +
+                "                <version>1.5.0</version>\n" +
+                "            </dependency>\n" +
+                "        </dependencies>\n" +
+                "</project>";
+
+        KieServices ks = KieServices.Factory.get();
+        ReleaseId releaseIdWithExc = ks.newReleaseId( "org.kie", "test-with-inc", "1.0-SNAPSHOT" );
+        InternalKieModule kJar = createKieJarWithPom( ks, releaseIdWithExc, false, "rule1", pom);
+        KieContainer kieContainer = ks.newKieContainer( releaseIdWithExc );
+
+        try {
+            Class.forName("com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider", true, kieContainer.getClassLoader());
+        } catch (ClassNotFoundException e) {
+            fail("the transitive dependency class should be present");
+        }
+    }
+
+    @Test @Ignore("avoid use external dependency")
+    public void testKScannerWithExclusion() throws Exception {
+        String pom = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+                "         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd\">\n" +
+                "  <modelVersion>4.0.0</modelVersion>\n" +
+                "\n" +
+                "  <groupId>org.kie</groupId>\n" +
+                "  <artifactId>test-with-exc</artifactId>\n" +
+                "  <version>1.0-SNAPSHOT</version>\n" +
+                "  \n" +
+                "        <dependencies>\n" +
+                "            <dependency>\n" +
+                "                <groupId>io.swagger</groupId>\n" +
+                "                <artifactId>swagger-jaxrs</artifactId>\n" +
+                "                <version>1.5.0</version>\n" +
+                "                <exclusions>\n" +
+                "                    <exclusion>\n" +
+                "                        <groupId>com.fasterxml.jackson.jaxrs</groupId>\n" +
+                "                        <artifactId>*</artifactId>\n" +
+                "                    </exclusion>\n" +
+                "                </exclusions>\n" +
+                "            </dependency>\n" +
+                "        </dependencies>\n" +
+                "</project>";
+
+        KieServices ks = KieServices.Factory.get();
+        ReleaseId releaseIdWithExc = ks.newReleaseId( "org.kie", "test-with-exc", "1.0-SNAPSHOT" );
+        InternalKieModule kJar = createKieJarWithPom( ks, releaseIdWithExc, false, "rule1", pom);
+        KieContainer kieContainer = ks.newKieContainer( releaseIdWithExc );
+
+        try {
+            Class.forName("com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider", true, kieContainer.getClassLoader());
+            fail("the excluded class shouldn't be present");
+        } catch (ClassNotFoundException e) {
+        }
+    }
+
     @Test
     public void testKieScannerScopesNotRequired() throws Exception {
         MavenRepository repository = getMavenRepository();
