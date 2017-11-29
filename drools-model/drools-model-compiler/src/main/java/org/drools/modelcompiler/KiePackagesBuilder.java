@@ -88,8 +88,10 @@ import org.drools.model.WindowReference;
 import org.drools.model.consequences.ConditionalNamedConsequenceImpl;
 import org.drools.model.consequences.NamedConsequenceImpl;
 import org.drools.model.constraints.SingleConstraint1;
+import org.drools.model.functions.Function1;
 import org.drools.model.functions.Predicate1;
 import org.drools.model.impl.DeclarationImpl;
+import org.drools.model.patterns.CompositePatterns;
 import org.drools.model.patterns.QueryCallPattern;
 import org.drools.modelcompiler.consequence.LambdaConsequence;
 import org.drools.modelcompiler.consequence.MVELConsequence;
@@ -337,9 +339,20 @@ public class KiePackagesBuilder {
                 return buildPattern( ctx, condition );
             }
             case ACCUMULATE: {
-                Pattern source = buildPattern( ctx, condition );
+                final AccumulatePattern accumulatePattern = (AccumulatePattern) condition;
+                RuleConditionElement source;
+                if(accumulatePattern.getCompositePatterns().isPresent()) {
+                    CompositePatterns compositePatterns = (CompositePatterns) accumulatePattern.getCompositePatterns().get();
+                    GroupElement ge = new GroupElement(conditionToGroupElementType( compositePatterns.getType() ));
+                    for(Condition c : compositePatterns.getSubConditions()) {
+                        ge.addChild(buildPattern(ctx, c));
+                    }
+                    source = ge;
+                } else {
+                    source = buildPattern(ctx, condition );
+                }
                 Pattern pattern = new Pattern( 0, getObjectType( Object.class ) );
-                pattern.setSource( buildAccumulate( ctx, (AccumulatePattern) condition, source, pattern ) );
+                pattern.setSource(buildAccumulate(ctx, accumulatePattern, source, pattern ) );
                 return pattern;
             }
             case OOPATH: {
@@ -453,7 +466,7 @@ public class KiePackagesBuilder {
         for (Binding binding : modelPattern.getBindings()) {
             Declaration declaration = new Declaration(binding.getBoundVariable().getName(),
                                                       new LambdaReadAccessor(binding.getBoundVariable().getType().asClass(),
-                                                                             binding.getBindingFunction()),
+                                                                             new Function1.Impl<>(binding.getBindingFunction())),
                                                       pattern,
                                                       true);
             pattern.addDeclaration( declaration );
@@ -473,7 +486,7 @@ public class KiePackagesBuilder {
         return pattern;
     }
 
-    private Accumulate buildAccumulate( RuleContext ctx, AccumulatePattern accPattern, Pattern source, Pattern pattern ) {
+    private Accumulate buildAccumulate( RuleContext ctx, AccumulatePattern accPattern, RuleConditionElement source, Pattern pattern ) {
         AccumulateFunction<?, ?, ?>[] accFunctions = accPattern.getFunctions();
 
         if (accFunctions.length == 1) {

@@ -2,7 +2,6 @@ package org.drools.model.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -11,6 +10,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -35,7 +35,6 @@ import org.drools.model.constraints.SingleConstraint1;
 import org.drools.model.constraints.SingleConstraint2;
 import org.drools.model.constraints.SingleConstraint3;
 import org.drools.model.constraints.TemporalConstraint;
-import org.drools.model.patterns.AccumulateCompositePatternsImpl;
 import org.drools.model.patterns.AccumulatePatternImpl;
 import org.drools.model.patterns.CompositePatterns;
 import org.drools.model.patterns.ExistentialPatternImpl;
@@ -268,22 +267,9 @@ public class ViewBuilder {
 
             final Condition newCondition = viewItem2Condition(acc.getExpr(), condition, usedVars, inputs);
             if (newCondition instanceof Pattern) {
-                return new AccumulatePatternImpl((Pattern) newCondition, acc.getFunctions());
+                return new AccumulatePatternImpl((Pattern) newCondition, Optional.empty(), acc.getFunctions());
             } else if (newCondition instanceof CompositePatterns) {
-                CompositePatterns cp = (CompositePatterns) newCondition;
-                List<Condition> accumulatePatterns = new ArrayList<>();
-                Set<Variable<?>> usedVariables = new HashSet<>();
-                for(Condition p : cp.getSubConditions()) {
-                    if(p instanceof Pattern) {
-                        AccumulatePatternImpl newPattern = new AccumulatePatternImpl((Pattern)p, acc.getFunctions());
-                        accumulatePatterns.add(newPattern);
-                        for(Variable<?> v : ((Pattern) p).getInputVariables()) {
-                            usedVariables.add(v);
-                        }
-                    }
-                }
-                CompositePatterns newPc = new CompositePatterns(cp.getType(), accumulatePatterns, usedVariables, new HashMap<>());
-                return newPc;
+                return new AccumulatePatternImpl(null, Optional.of(newCondition), acc.getFunctions());
             } else {
                 throw new RuntimeException("Unknown pattern");
             }

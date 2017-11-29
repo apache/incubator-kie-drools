@@ -1032,7 +1032,7 @@ public class ModelGenerator {
         }
 
         exprDSL = buildExpression(context, drlxParseResult, exprDSL );
-        exprDSL = buildIndexedBy(context, drlxParseResult, exprDSL);
+//        exprDSL = buildIndexedBy(context, drlxParseResult, exprDSL);
         exprDSL = buildReactOn( drlxParseResult, exprDSL );
         return exprDSL;
     }

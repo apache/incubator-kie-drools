@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.reteoo.SubnetworkTuple;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Accumulator;
 import org.drools.core.spi.Tuple;
@@ -46,7 +47,17 @@ public class LambdaAccumulator implements Accumulator {
                     .orElseThrow(() -> new RuntimeException("Cannot find declaration with name" + source.getName()));
 
             return decl.getValue((InternalWorkingMemory) workingMemory, handle.getObject());
-        }).orElseGet(handle::getObject);
+        }).orElseGet(() -> {
+            final Object accumulateObject = handle.getObject();
+            if(accumulateObject instanceof SubnetworkTuple) {
+                Object val1 = innerDeclarations[0].getValue((InternalWorkingMemory) workingMemory, ((SubnetworkTuple) accumulateObject).getObject(innerDeclarations[0]) );
+                Object val2 =  innerDeclarations[1].getValue((InternalWorkingMemory) workingMemory, ((SubnetworkTuple) accumulateObject).getObject(innerDeclarations[1]) );
+                System.out.println("val = " + val1);
+                System.out.println("val = " + val2);
+                return val1;
+            }
+            return accumulateObject;
+        });
         accumulateFunction.action((Serializable)context, object);
     }
 
