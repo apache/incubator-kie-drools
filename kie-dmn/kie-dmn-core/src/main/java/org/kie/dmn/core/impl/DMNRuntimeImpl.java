@@ -26,10 +26,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.drools.core.ClockType;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.kie.api.internal.io.ResourceTypePackage;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieRuntime;
+import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNDecisionResult;
 import org.kie.dmn.api.core.DMNMessage;
@@ -48,7 +50,9 @@ import org.kie.dmn.core.ast.BusinessKnowledgeModelNodeImpl;
 import org.kie.dmn.core.ast.DMNBaseNode;
 import org.kie.dmn.core.ast.DecisionNodeImpl;
 import org.kie.dmn.core.ast.InputDataNodeImpl;
+import org.kie.dmn.core.compiler.DMNOption;
 import org.kie.dmn.core.compiler.DMNProfile;
+import org.kie.dmn.core.compiler.RuntimeTypeCheckOption;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.runtime.FEELFunction;
@@ -61,6 +65,8 @@ public class DMNRuntimeImpl
 
     private KieRuntime                         runtime;
     private DMNRuntimeEventManagerImpl         eventManager;
+
+    private boolean overrideRuntimeTypeCheck = false;
 
     public DMNRuntimeImpl(KieRuntime runtime) {
         this.runtime = runtime;
@@ -92,49 +98,22 @@ public class DMNRuntimeImpl
 
     @Override
     public DMNResult evaluateAll(DMNModel model, DMNContext context) {
+        boolean performRuntimeTypeCheck = performRuntimeTypeCheck(model);
         DMNResultImpl result = createResult( model, context );
         for( DecisionNode decision : model.getDecisions() ) {
-            evaluateDecision( context, result, decision );
+            evaluateDecision(context, result, decision, performRuntimeTypeCheck);
         }
         return result;
     }
 
     @Override
     public DMNResult evaluateDecisionByName(DMNModel model, String decisionName, DMNContext context) {
-        DMNResultImpl result = createResult( model, context );
-        DecisionNode decision = model.getDecisionByName( decisionName );
-        if( decision != null ) {
-            evaluateDecision( context, result, decision );
-        } else {
-            MsgUtil.reportMessage( logger,
-                                   DMNMessage.Severity.ERROR,
-                                   null,
-                                   result,
-                                   null,
-                                   null,
-                                   Msg.DECISION_NOT_FOUND_FOR_NAME,
-                                   decisionName );
-        }
-        return result;
+        return evaluateByName(model, context, decisionName);
     }
 
     @Override
     public DMNResult evaluateDecisionById(DMNModel model, String decisionId, DMNContext context) {
-        DMNResultImpl result = createResult( model, context );
-        DecisionNode decision = model.getDecisionById( decisionId );
-        if( decision != null ) {
-            evaluateDecision( context, result, decision );
-        } else {
-            MsgUtil.reportMessage( logger,
-                                   DMNMessage.Severity.ERROR,
-                                   null,
-                                   result,
-                                   null,
-                                   null,
-                                   Msg.DECISION_NOT_FOUND_FOR_ID,
-                                   decisionId );
-        }
-        return result;
+        return evaluateById(model, context, decisionId);
     }
 
     @Override
@@ -147,9 +126,10 @@ public class DMNRuntimeImpl
     }
 
     private void evaluateByNameInternal( DMNModel model, DMNContext context, DMNResultImpl result, String name ) {
+        boolean performRuntimeTypeCheck = performRuntimeTypeCheck(model);
         DecisionNode decision = model.getDecisionByName( name );
         if ( decision != null ) {
-            evaluateDecision( context, result, decision );
+            evaluateDecision(context, result, decision, performRuntimeTypeCheck);
         } else {
             MsgUtil.reportMessage( logger,
                                    DMNMessage.Severity.ERROR,
@@ -172,9 +152,10 @@ public class DMNRuntimeImpl
     }
 
     private void evaluateByIdInternal( DMNModel model, DMNContext context, DMNResultImpl result, String id ) {
+        boolean performRuntimeTypeCheck = performRuntimeTypeCheck(model);
         DecisionNode decision = model.getDecisionById( id );
         if ( decision != null ) {
-            evaluateDecision( context, result, decision );
+            evaluateDecision(context, result, decision, performRuntimeTypeCheck);
         } else {
             MsgUtil.reportMessage( logger,
                                    DMNMessage.Severity.ERROR,
@@ -212,13 +193,7 @@ public class DMNRuntimeImpl
         return result;
     }
 
-    private void evaluateAllBKM(DMNModel model, DMNContext context, DMNResultImpl result) {
-        for( BusinessKnowledgeModelNode bkm : model.getBusinessKnowledgeModels() ) {
-            evaluateBKM( context, result, bkm );
-        }
-    }
-
-    private void evaluateBKM(DMNContext context, DMNResultImpl result, BusinessKnowledgeModelNode b) {
+    private void evaluateBKM(DMNContext context, DMNResultImpl result, BusinessKnowledgeModelNode b, boolean typeCheck) {
         BusinessKnowledgeModelNodeImpl bkm = (BusinessKnowledgeModelNodeImpl) b;
         if( result.getContext().isDefined( bkm.getName() ) ) {
             // already resolved
@@ -240,7 +215,7 @@ public class DMNRuntimeImpl
         try {
             DMNRuntimeEventManagerUtils.fireBeforeEvaluateBKM( eventManager, bkm, result );
             for( DMNNode dep : bkm.getDependencies().values() ) {
-                if ( !checkDependencyValueIsValid(dep, result ) ) {
+                if (typeCheck && !checkDependencyValueIsValid(dep, result)) {
                     MsgUtil.reportMessage( logger,
                                            DMNMessage.Severity.ERROR,
                                            ((DMNBaseNode) dep).getSource(),
@@ -257,7 +232,7 @@ public class DMNRuntimeImpl
                 }
                 if( ! result.getContext().isDefined( dep.getName() ) ) {
                     if( dep instanceof BusinessKnowledgeModelNode ) {
-                        evaluateBKM( context, result, (BusinessKnowledgeModelNode) dep );
+                        evaluateBKM(context, result, (BusinessKnowledgeModelNode) dep, typeCheck);
                     } else {
                         MsgUtil.reportMessage( logger,
                                                DMNMessage.Severity.ERROR,
@@ -295,7 +270,7 @@ public class DMNRuntimeImpl
         }
     }
 
-    private boolean evaluateDecision(DMNContext context, DMNResultImpl result, DecisionNode d) {
+    private boolean evaluateDecision(DMNContext context, DMNResultImpl result, DecisionNode d, boolean typeCheck) {
         DecisionNodeImpl decision = (DecisionNodeImpl) d;
         if( result.getContext().isDefined( decision.getName() ) ) {
             // already resolved
@@ -314,7 +289,7 @@ public class DMNRuntimeImpl
             dr.setEvaluationStatus(DMNDecisionResult.DecisionEvaluationStatus.EVALUATING);
             for( DMNNode dep : decision.getDependencies().values() ) {
                 try {
-                    if ( !checkDependencyValueIsValid(dep, result ) ) {
+                    if (typeCheck && !checkDependencyValueIsValid(dep, result)) {
                         missingInput = true;
                         DMNMessage message = MsgUtil.reportMessage( logger,
                                 DMNMessage.Severity.ERROR,
@@ -343,7 +318,7 @@ public class DMNRuntimeImpl
                 }
                 if( ! result.getContext().isDefined( dep.getName() ) ) {
                     if( dep instanceof DecisionNode ) {
-                        if( ! evaluateDecision( context, result, (DecisionNode) dep ) ) {
+                        if (!evaluateDecision(context, result, (DecisionNode) dep, typeCheck)) {
                             missingInput = true;
                             DMNMessage message = MsgUtil.reportMessage( logger,
                                                                         DMNMessage.Severity.ERROR,
@@ -357,7 +332,7 @@ public class DMNRuntimeImpl
                             reportFailure( dr, message, DMNDecisionResult.DecisionEvaluationStatus.SKIPPED );
                         }
                     } else if( dep instanceof BusinessKnowledgeModelNode ) {
-                        evaluateBKM( context, result, (BusinessKnowledgeModelNode) dep );
+                        evaluateBKM(context, result, (BusinessKnowledgeModelNode) dep, typeCheck);
                     } else {
                         missingInput = true;
                         DMNMessage message = MsgUtil.reportMessage( logger,
@@ -402,7 +377,7 @@ public class DMNRuntimeImpl
                     }
 
                     try {
-                        if ( !d.getResultType().isAssignableValue(value) ) {
+                        if (typeCheck && !d.getResultType().isAssignableValue(value)) {
                             DMNMessage message = MsgUtil.reportMessage( logger,
                                     DMNMessage.Severity.ERROR,
                                     decision.getSource(),
@@ -467,6 +442,16 @@ public class DMNRuntimeImpl
 
     private String getIdentifier(DMNNode node) {
         return node.getName() != null ? node.getName() : node.getId();
+    }
+
+    private boolean performRuntimeTypeCheck(DMNModel model) {
+        return overrideRuntimeTypeCheck || ((DMNModelImpl) model).isRuntimeTypeCheck();
+    }
+
+    public final <T extends DMNOption> void setOption(T option) {
+        if (option instanceof RuntimeTypeCheckOption) {
+            this.overrideRuntimeTypeCheck = ((RuntimeTypeCheckOption) option).isRuntimeTypeCheck();
+        }
     }
 
     private void reportFailure(DMNDecisionResultImpl dr, DMNMessage message, DMNDecisionResult.DecisionEvaluationStatus status) {
