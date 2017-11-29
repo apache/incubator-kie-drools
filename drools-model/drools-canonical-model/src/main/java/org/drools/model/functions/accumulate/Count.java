@@ -9,7 +9,7 @@ import org.drools.model.impl.ModelComponent;
 public class Count<T> extends AbstractAccumulateFunction<T,Count.Context<T>,Integer> implements ModelComponent {
 
    public Count(Optional<Variable<T>> source) {
-       super(source);
+       super(source, Optional.empty());
    }
 
    @Override

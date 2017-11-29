@@ -12,8 +12,8 @@ public class Reduce<T, R extends Serializable> extends AbstractAccumulateFunctio
     private final R zero;
     private final Function2<R, T, R> reducingFunction;
 
-    public Reduce(Optional<Variable<T>> source, R zero, Function2<R, T, R> reducingFunction) {
-        super(source);
+    public Reduce(Optional<Variable<T>> source, R zero, Function2<R, T, R> reducingFunction, Optional<String> paramName) {
+        super(source, paramName);
         this.zero = zero;
         this.reducingFunction = reducingFunction;
     }

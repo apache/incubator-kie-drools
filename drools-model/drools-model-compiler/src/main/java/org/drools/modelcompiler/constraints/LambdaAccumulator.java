@@ -41,24 +41,28 @@ public class LambdaAccumulator implements Accumulator {
     public void accumulate(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle, Declaration[] declarations, Declaration[] innerDeclarations, WorkingMemory workingMemory) throws Exception {
         final Optional<Variable<?>> optSource = accumulateFunction.getOptSource();
         final Object object  = optSource.map((Variable<?> source) -> {
-            final Declaration decl = Arrays.stream(innerDeclarations)
-                    .filter(d -> d.getIdentifier().equals(source.getName()))
-                    .findFirst()
-                    .orElseThrow(() -> new RuntimeException("Cannot find declaration with name" + source.getName()));
+            final Declaration decl = declarationWithName(innerDeclarations, source.getName());
 
             return decl.getValue((InternalWorkingMemory) workingMemory, handle.getObject());
         }).orElseGet(() -> {
             final Object accumulateObject = handle.getObject();
             if(accumulateObject instanceof SubnetworkTuple) {
-                Object val1 = innerDeclarations[0].getValue((InternalWorkingMemory) workingMemory, ((SubnetworkTuple) accumulateObject).getObject(innerDeclarations[0]) );
-                Object val2 =  innerDeclarations[1].getValue((InternalWorkingMemory) workingMemory, ((SubnetworkTuple) accumulateObject).getObject(innerDeclarations[1]) );
-                System.out.println("val = " + val1);
-                System.out.println("val = " + val2);
-                return val1;
+                final Optional<String> paramName = accumulateFunction.getParamName();
+                final String variableName = paramName.orElseThrow(() -> new RuntimeException("Param name unknown"));
+                final Declaration declaration = declarationWithName(innerDeclarations, variableName);
+                return declaration.getValue((InternalWorkingMemory) workingMemory, ((SubnetworkTuple) accumulateObject).getObject(declaration) );
+            } else {
+                return accumulateObject;
             }
-            return accumulateObject;
         });
         accumulateFunction.action((Serializable)context, object);
+    }
+
+    private Declaration declarationWithName(Declaration[] innerDeclarations, String variableName) {
+        return Arrays.stream(innerDeclarations)
+                .filter(d -> d.getIdentifier().equals(variableName))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Cannot find declaration with name" + variableName));
     }
 
     @Override

@@ -361,40 +361,40 @@ public class DSL {
 
     // -- Accumulate Functions --
 
-    public static <T, N extends Number> Sum<T, N> sum(Function1<T, N> mapper) {
-        return new Sum(Optional.empty(), new Function1.Impl<>(mapper));
+    public static <T, N extends Number> Sum<T, N> sum(Function1<T, N> mapper, String paramName) {
+        return new Sum(Optional.empty(), new Function1.Impl<>(mapper), Optional.of(paramName));
     }
 
-    public static <T, N extends Number> Sum<T, N> sum(Variable<T> source, Function1<T, N> mapper) {
-        return new Sum(Optional.of(source), new Function1.Impl<>(mapper));
+    public static <T, N extends Number> Sum<T, N> sum(Variable<T> source, Function1<T, N> mapper, String paramName) {
+        return new Sum(Optional.of(source), new Function1.Impl<>(mapper), Optional.of(paramName));
     }
 
     public static <N extends Number> Sum<N, N> sum(Variable<N> source) {
-        return new Sum<N, N>(Optional.of(source), x -> x);
+        return new Sum<N, N>(Optional.of(source), x -> x, Optional.empty());
     }
 
     public static <T> Count<T> count(Variable<T> source) {
         return new Count<>(Optional.of(source));
     }
 
-    public static <T> Average<T> average(Function1<T, ? extends Number> mapper) {
-        return new Average<T>(Optional.empty(), mapper);
+    public static <T> Average<T> average(Function1<T, ? extends Number> mapper, String paramName) {
+        return new Average<T>(Optional.empty(), mapper, Optional.of(paramName));
     }
 
     public static <T extends Number>  Min<T> min(Variable<T> source) {
-        return new Min<T>(Optional.of(source), x -> x.doubleValue());
+        return new Min<T>(Optional.of(source), x -> x.doubleValue(), Optional.empty());
     }
 
     public static <T extends Number>  Max<T> max(Variable<T> source) {
-        return new Max<T>(Optional.of(source), x -> x.doubleValue());
+        return new Max<T>(Optional.of(source), x -> x.doubleValue(), Optional.empty());
     }
 
     public static <N extends Number> Average<N> average(Variable<N> source) {
-        return new Average<N>(Optional.of(source), x -> x);
+        return new Average<N>(Optional.of(source), x -> x, Optional.empty());
     }
 
-    public static <T, R extends Serializable> Reduce<T, R> reduce(R zero, Function2<R, T, R> reducingFunction) {
-        return new Reduce(Optional.empty(), zero, new Function2.Impl<>(reducingFunction));
+    public static <T, R extends Serializable> Reduce<T, R> reduce(R zero, Function2<R, T, R> reducingFunction, String paramName) {
+        return new Reduce(Optional.empty(), zero, new Function2.Impl<>(reducingFunction), Optional.of(paramName));
     }
 
     // -- Conditional Named Consequnce --

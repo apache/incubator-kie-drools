@@ -13,6 +13,7 @@ import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.LambdaExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
+import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.javaparser.ast.stmt.ExpressionStmt;
 import org.drools.javaparser.ast.type.TypeParameter;
 import org.drools.modelcompiler.builder.PackageModel;
@@ -75,16 +76,18 @@ public class AccumulateVisitor {
             final MethodCallExpr methodCallExpr = (MethodCallExpr) expr;
 
             final NameExpr scope = (NameExpr) methodCallExpr.getScope().orElseThrow(UnsupportedOperationException::new);
-            final Class clazz = context.getDeclarationById(scope.getName().asString())
+            final String variableName = scope.getName().asString();
+            final Class clazz = context.getDeclarationById(variableName)
                     .map(DeclarationSpec::getDeclarationClass)
                     .orElseThrow(RuntimeException::new);
 
             LambdaExpr lambdaExpr = new LambdaExpr(
-                    NodeList.nodeList(new Parameter(new TypeParameter(clazz.getName()), scope.getName().asString()))
+                    NodeList.nodeList(new Parameter(new TypeParameter(clazz.getName()), variableName))
                     , new ExpressionStmt(methodCallExpr)
                     , true);
 
             functionDSL.addArgument(lambdaExpr);
+            functionDSL.addArgument(new StringLiteralExpr(variableName));
 
             Class<?> declClass = getReturnTypeForAggregateFunction(functionDSL.getName().asString(), clazz, methodCallExpr);
             context.addDeclaration(new DeclarationSpec(bindingId, declClass));

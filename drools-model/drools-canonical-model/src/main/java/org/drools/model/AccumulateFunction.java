@@ -7,6 +7,8 @@ public interface AccumulateFunction<T, A extends Serializable, R> {
 
     Optional<Variable<T>> getOptSource();
 
+    Optional<String> getParamName();
+
     A init();
 
     void action(A acc, T obj);

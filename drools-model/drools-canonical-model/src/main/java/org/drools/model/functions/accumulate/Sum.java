@@ -11,8 +11,8 @@ public class Sum<T, N extends Number> extends AbstractAccumulateFunction<T, Sum.
 
     private final Function1<T, N> mapper;
 
-    public Sum(Optional<Variable<T>> source, Function1<T, N> mapper) {
-        super(source);
+    public Sum(Optional<Variable<T>> source, Function1<T, N> mapper, Optional<String> paramNames) {
+        super(source, paramNames);
         this.mapper = mapper;
     }
 
