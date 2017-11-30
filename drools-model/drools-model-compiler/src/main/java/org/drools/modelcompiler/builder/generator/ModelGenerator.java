@@ -989,8 +989,9 @@ public class ModelGenerator {
             this.patternBinding = patternBinding;
         }
 
-        public void setExprBinding(String exprBinding) {
+        public DrlxParseResult setExprBinding(String exprBinding) {
             this.exprBinding = exprBinding;
+            return this;
         }
 
         public boolean hasUnificationVariable() {
