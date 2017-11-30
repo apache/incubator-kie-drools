@@ -855,7 +855,6 @@ public class CompilerTest extends BaseModelTest {
 
 
     @Test
-    @Ignore("fix the indexedBy problem")
     public void testAgeWithSum() {
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +
@@ -877,6 +876,33 @@ public class CompilerTest extends BaseModelTest {
         Collection<Result> results = getObjectsIntoList( ksession, Result.class );
         assertEquals( 1, results.size() );
         assertEquals( "Mark", results.iterator().next().getValue() );
+    }
+
+    @Test
+    @Ignore("When building the rete it creates one spurious JoinNode more, because it does not reckon the decl is coming frm the same")
+    public void testAgeWithSumUsing2DeclarationInBeta() {
+        String str =
+                "import " + Result.class.getCanonicalName() + ";" +
+                     "import " + Person.class.getCanonicalName() + ";" +
+                     "rule R when\n" +
+                     "  $p : Person( personAge : age )\n" +
+                     "  $plusTwo : Person(age == personAge + 2 + $p.age - $p.age )\n" +
+                     "then\n" +
+                     "  insert(new Result($plusTwo.getName()));\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+        ReteDumper.dumpRete(ksession);
+
+        ksession.insert(new Person("Mario", 40));
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Edson", 35));
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        System.out.println(results);
+        assertEquals(1, results.size());
+        assertEquals("Mark", results.iterator().next().getValue());
     }
 
 
