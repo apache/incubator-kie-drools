@@ -23,13 +23,13 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.SortedSet;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -94,7 +94,6 @@ import org.drools.model.Rule;
 import org.drools.model.Variable;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.RuleContext.RuleDialect;
-import org.drools.modelcompiler.util.InsertionOrderSet;
 import org.kie.api.definition.type.Position;
 
 import static java.util.stream.Collectors.toList;
@@ -888,7 +887,7 @@ public class ModelGenerator {
         private String exprBinding;
 
         ConstraintType decodeConstraintType;
-        SortedSet<String> usedDeclarations = new InsertionOrderSet<>();
+        Collection<String> usedDeclarations = new LinkedHashSet<>();
         Set<String> reactOnProperties = Collections.emptySet();
         String[] watchedProperties;
 
@@ -910,7 +909,7 @@ public class ModelGenerator {
         }
 
         public DrlxParseResult setUsedDeclarations( List<String> usedDeclarations ) {
-            this.usedDeclarations = new InsertionOrderSet<>(usedDeclarations);
+            this.usedDeclarations = new LinkedHashSet<>(usedDeclarations);
             return this;
         }
 
@@ -1062,7 +1061,7 @@ public class ModelGenerator {
             indexedByDSL.addArgument( "" + indexIdGenerator.getFieldId( drlxParseResult.patternType, left.getFieldName() ) );
             indexedByDSL.addArgument( indexedBy_leftOperandExtractor );
 
-            Set<String> usedDeclarations = drlxParseResult.usedDeclarations;
+            Collection<String> usedDeclarations = drlxParseResult.usedDeclarations;
             if ( usedDeclarations.isEmpty() ) {
                 indexedByDSL.addArgument( right.getExpression() );
             } else if (usedDeclarations.size() == 1) {
