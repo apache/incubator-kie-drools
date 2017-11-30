@@ -879,7 +879,6 @@ public class CompilerTest extends BaseModelTest {
     }
 
     @Test
-    @Ignore("When building the rete it creates one spurious JoinNode more, because it does not reckon the decl is coming frm the same")
     public void testAgeWithSumUsing2DeclarationInBeta() {
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +
@@ -904,7 +903,6 @@ public class CompilerTest extends BaseModelTest {
         assertEquals(1, results.size());
         assertEquals("Mark", results.iterator().next().getValue());
     }
-
 
     @Test
     public void testFunction() {
