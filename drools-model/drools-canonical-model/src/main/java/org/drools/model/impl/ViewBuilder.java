@@ -160,6 +160,7 @@ public class ViewBuilder {
                     condition = new PatternImpl( patterVariable, SingleConstraint.EMPTY, getDataSourceDefinition( inputs, patterVariable ) );
                     conditions.add( condition );
                     conditionMap.put( patterVariable, condition );
+                    inputs.putIfAbsent( patterVariable, (InputViewItemImpl) input( patterVariable ) );
                 }
             } else {
                 condition = new PatternImpl( patterVariable, SingleConstraint.EMPTY, getDataSourceDefinition( inputs, patterVariable ) );
@@ -170,7 +171,7 @@ public class ViewBuilder {
 
             if ( viewItem instanceof AbstractExprViewItem && !( (AbstractExprViewItem) viewItem ).isQueryExpression() ) {
                 for (Variable var : viewItem.getVariables()) {
-                    if (var.isFact()) {
+                    if (var.isFact() && !conditionMap.containsKey( var )) {
                         inputs.putIfAbsent( var, (InputViewItemImpl) input( var ) );
                     }
                 }
