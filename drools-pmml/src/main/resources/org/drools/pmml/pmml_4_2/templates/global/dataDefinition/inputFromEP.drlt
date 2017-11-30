@@ -38,7 +38,7 @@ rule "Extract ParameterInfo @{name}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience 101
 when
-   $rd: PMMLRequestData( requestParams != null )
+   $rd: PMMLRequestData( correlationId != null, requestParams != null )
    $pi: ParameterInfo( capitalizedName == "@{name}", $name: name, $value: value ) from $rd.requestParams
    not ParameterInfo( name == $name, value == $value )
 then
@@ -49,11 +49,11 @@ rule "Input_PMMLData_@{name} from ParameterInfo"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience 100
 when
-   $pi: ParameterInfo( capitalizedName == "@{name}", $value: value )
+   $pi: ParameterInfo( $cid: correlationId != null, capitalizedName == "@{name}", $value: value )
    not PMML4Data( name == $pi.name, value == $value, context == null )
 then
    PMML4DataFactory factory = PMML4DataFactory.get();
-   PMML4DataType input = factory.newPMML4Data($pi,@{notRestricted},false);
+   PMML4DataType input = factory.newPMML4Data($cid,$pi,@{notRestricted},false);
    insert( input );
 end
 

@@ -31,12 +31,6 @@ import org.drools.pmml.pmml_4_2.model.PMMLRequestData;
 import org.drools.pmml.pmml_4_2.model.ScoreCard;
 import org.junit.After;
 import org.junit.Test;
-import org.kie.api.KieServices;
-import org.kie.api.event.rule.ObjectDeletedEvent;
-import org.kie.api.event.rule.ObjectInsertedEvent;
-import org.kie.api.event.rule.ObjectUpdatedEvent;
-import org.kie.api.event.rule.RuleRuntimeEventListener;
-import org.kie.api.logger.KieRuntimeLogger;
 import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.KieSession;
 

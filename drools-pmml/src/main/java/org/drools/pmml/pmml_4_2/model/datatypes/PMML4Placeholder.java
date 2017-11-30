@@ -19,8 +19,8 @@ import java.util.Date;
 
 public class PMML4Placeholder extends PMML4Data<Object> {
 
-	PMML4Placeholder(String name, String context) {
-		super(name, context, true);
+	PMML4Placeholder(String correlationId, String name, String context) {
+		super(correlationId, name, context, true);
 		setMissing(true);
 		setValue(new Integer(0));
 	}

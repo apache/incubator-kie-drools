@@ -31,8 +31,8 @@ rule "Eval Tree Node @{context} - @{id} - Default Child"
 salience 3
 when
     $node : TreeNode( context == "@{context}", $id : id == "@{id}", $def : defaultChld != "null" && != null )
-    $tok  : @{context}TreeToken( context == "@{context}", current == "@{id}", visitMode == "DEFAULT_CHILD", downward == true,
-                                 results.keySet not contains "@{id}", $conf : confidence,
+    $tok  : @{context}TreeToken( context == "@{context}", current == "@{id}", visitMode == "DEFAULT_CHILD", 
+                                 downward == true, results.keySet not contains "@{id}", $conf : confidence,
                                  @{missings} )
 then
 //    System.out.println( "UNKNOWN found at @{id} !!!!, JUMPING TO Default Child " + $def );
@@ -49,8 +49,8 @@ salience 5
 no-loop
 when
     $node : TreeNode( context == "@{context}", $id : id == "@{id}", $def : defaultChld != "null" && != null )
-    $tok  : @{context}TreeToken( context == "@{context}", current == "@{id}", visitMode == "DEFAULT_CHILD", downward == false, $conf : confidence,
-                                 @{missings} )
+    $tok  : @{context}TreeToken( context == "@{context}", current == "@{id}", visitMode == "DEFAULT_CHILD", 
+                                 downward == false, $conf : confidence, @{missings} )
 then
 //    System.out.println( "UNKNOWN found at @{id} !!!!, UNDOING JUMP penalty " + $def );
     modify ( $tok ) {

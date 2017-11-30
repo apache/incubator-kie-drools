@@ -27,6 +27,7 @@ import org.drools.pmml.pmml_4_2.model.datatypes.*;
 @code{ int salienceValue; }
 
 
+
 rule "Start Mining - @{miningModel.modelId}"
 agenda-group "MiningSegmentation"
 salience 1000
@@ -73,22 +74,33 @@ then
    }
 end
 
-@foreach{ resultMapping: resultMappings }
-rule "propagate results for segmentation @{resultMapping.segmentationId}- @{resultMapping.fromSegmentId} to @{resultMapping.toSegmentId}"
-agenda-group "MiningSegmentation"
-salience 200
-when
-   $segExec: SegmentExecution( $corrId: correlationId, $segmId: segmentationId == "@{resultMapping.segmentationId}", 
-                               $segId: segmentId, state == SegmentExecutionState.COMPLETE, result != null )
-   $rslt: PMML4Result( ) from $segExec.result
-then
-   System.out.println("Do the mappings, Jim!");
-end
-@end{}
 
 @foreach{ childSegment: childSegments }
 @code{ salienceValue = 100 - childSegment.segmentIndex; }
 @code{ internalModel = childSegment.model; }
+
+rule "Add previous segment results - Segment @{childSegment.segmentId}"
+agenda-group "MiningSegmentation"
+salience 100
+no-loop
+when
+   segEx: SegmentExecution( $cid: correlationId, $segmId: segmentationId, $segId: segmentId == @{childSegment.segmentId},
+                            $segIndex: segmentIndex,
+                            state == SegmentExecutionState.WAITING, requestData != null )
+   rqst: PMMLRequestData() from segEx.requestData
+   prior: SegmentExecution( correlationId == $cid, segmentationId == $segmId, segmentIndex < $segIndex, state == SegmentExecutionState.COMPLETE )
+then
+   System.out.println("doing the mapping!!");
+   PMMLRequestData data = segEx.getRequestData();
+   PMML4Result result = prior.getResult();
+   @foreach{ field: childSegment.model.miningFields }
+   @if{ !field.inDictionary }
+   rqst.addRequestParam( "@{field.name}", result.getResultValue("@{field.compactUpperCaseName}","value") );
+   @end{}
+   @end{}
+   update(segEx);
+   System.out.println(rqst.getMappedRequestParams());
+end
 
 rule "Check Segment Can Fire - Segment @{childSegment.segmentId}"
 agenda-group "MiningSegmentation"
@@ -98,12 +110,14 @@ when
    model: @{miningModel.miningPojoClassName}( $corrId: correlationId, @{childSegment.predicateText} )
    @else{}
    model: @{miningModel.miningPojoClassName}( $corrId: correlationId )
-   @end{}
+   @end{} 
 then
    PMMLRequestData rqstData = new PMMLRequestData(model.getCorrelationId(),"@{childSegment.model.modelId}");
    rqstData.setSource("@{childSegment.owner.segmentationId}:@{childSegment.segmentId}");
    @foreach{ field: childSegment.model.miningFields }
+   @if{ field.inDictionary }
    rqstData.addRequestParam( "@{field.name}",model.getV@{field.compactUpperCaseName}() );
+   @end{}
    @end{}
    SegmentExecution segEx = new SegmentExecution( model.getCorrelationId(),
                                                   "@{childSegment.owner.segmentationId}",

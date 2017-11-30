@@ -22,6 +22,7 @@ import org.kie.api.definition.type.Role.Type;
 public abstract class PMML4Data<T> implements PMML4DataType {
 	private T value;
 	private String name;
+	private String correlationId;
 	private boolean valid = false;
 	private boolean missing = false;
 	private boolean placeholder = false;
@@ -29,20 +30,23 @@ public abstract class PMML4Data<T> implements PMML4DataType {
 	private String displayName;
 	private Double weight = 1.0;
 	
-	protected PMML4Data(String name, String context, boolean placeholder) {
+	protected PMML4Data(String correlationId, String name, String context, boolean placeholder) {
+		this.correlationId = correlationId;
 		this.name = name;
 		this.context = context;
 		this.placeholder = placeholder;
 	}
 	
-	protected PMML4Data(String name, String context, String displayName, T value) {
+	protected PMML4Data(String correlationId, String name, String context, String displayName, T value) {
+		this.correlationId = correlationId;
 		this.name = name;
 		this.context = context;
 		this.displayName = displayName;
 		this.value = value;
 	}
 	
-	protected PMML4Data(String name, String context, String displayName, T value, Double weight) {
+	protected PMML4Data(String correlationId, String name, String context, String displayName, T value, Double weight) {
+		this.correlationId = correlationId;
 		this.name = name;
 		this.context = context;
 		this.displayName = displayName;
@@ -50,7 +54,8 @@ public abstract class PMML4Data<T> implements PMML4DataType {
 		this.weight = weight;
 	}
 	
-	protected PMML4Data(String name, String context, String displayName, T value, Double weight, Boolean valid, Boolean missing) {
+	protected PMML4Data(String correlationId, String name, String context, String displayName, T value, Double weight, Boolean valid, Boolean missing) {
+		this.correlationId = correlationId;
 		this.name = name;
 		this.context = context;
 		this.displayName = displayName;
@@ -113,6 +118,14 @@ public abstract class PMML4Data<T> implements PMML4DataType {
 	}
 	public void setPlaceholder(Boolean placeholder) {
 		this.placeholder = placeholder;
+	}
+
+	public String getCorrelationId() {
+		return correlationId;
+	}
+
+	public void setCorrelationId(String correlationId) {
+		this.correlationId = correlationId;
 	}
 
 	@Override

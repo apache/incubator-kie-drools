@@ -38,8 +38,6 @@ public interface PMML4Model {
     public List<OutputField> getRawOutputFields();
     public List<PMMLMiningField> getMiningFields();
     public List<PMMLOutputField> getOutputFields();
-    public String getMiningPojo();
-    public String getOutputPojo();
     public Map.Entry<String, String> getMappedMiningPojo();
     public Map.Entry<String, String> getMappedOutputPojo();
     public String getMiningPojoClassName();

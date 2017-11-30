@@ -16,11 +16,13 @@
 package org.drools.pmml.pmml_4_2.model;
 
 public class ParameterInfo<T> {
+	private String correlationId;
     private String name;
     private Class<T> type;
     private T value;
 
-    public ParameterInfo(String name, Class<T> type, T value) {
+    public ParameterInfo(String correlationId, String name, Class<T> type, T value) {
+    	this.correlationId = correlationId;
         this.name = name;
         this.type = type;
         this.value = value;
@@ -54,9 +56,66 @@ public class ParameterInfo<T> {
         this.value = value;
     }
 
-    @Override
+    public String getCorrelationId() {
+		return correlationId;
+	}
+
+	public void setCorrelationId(String correlationId) {
+		this.correlationId = correlationId;
+	}
+
+	
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((correlationId == null) ? 0 : correlationId.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((value == null) ? 0 : value.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		ParameterInfo other = (ParameterInfo) obj;
+		if (correlationId == null) {
+			if (other.correlationId != null) {
+				return false;
+			}
+		} else if (!correlationId.equals(other.correlationId)) {
+			return false;
+		}
+		if (name == null) {
+			if (other.name != null) {
+				return false;
+			}
+		} else if (!name.equals(other.name)) {
+			return false;
+		}
+		if (value == null) {
+			if (other.value != null) {
+				return false;
+			}
+		} else if (!value.equals(other.value)) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder("ParameterInfo( ");
+        stringBuilder.append("correlationId=").append(correlationId).append(", ");
         stringBuilder.append("name=").append(name).append(", ");
         stringBuilder.append("type=").append(type.getName()).append(", ");
         if (type.getName().equals(String.class.getName())) {

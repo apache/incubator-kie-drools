@@ -31,7 +31,7 @@ public class TreeNode {
 
 	
 	
-	public TreeNode(String context, String id, String parent, List children, String outcome, int recordCount,
+	public TreeNode(String correlationId, String context, String id, String parent, List children, String outcome, int recordCount,
 			Map counts, Map confidence, String defaultChld) {
 		this.context = context;
 		this.id = id;
@@ -97,6 +97,7 @@ public class TreeNode {
 	public void setDefaultChld(String defaultChld) {
 		this.defaultChld = defaultChld;
 	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

@@ -80,7 +80,7 @@ public class PMMLRequestData {
     		return false;
     	}
         Class<?> clazz = value.getClass();
-        ParameterInfo parameter = new ParameterInfo(paramName, clazz, value);
+        ParameterInfo parameter = new ParameterInfo(this.correlationId, paramName, clazz, value);
         return this.addRequestParam(parameter);
     }
     
@@ -103,12 +103,67 @@ public class PMMLRequestData {
 	public void setSource(String source) {
 		this.source = source;
 	}
+	
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((correlationId == null) ? 0 : correlationId.hashCode());
+		result = prime * result + ((modelName == null) ? 0 : modelName.hashCode());
+		result = prime * result + ((requestParams == null) ? 0 : requestParams.hashCode());
+		result = prime * result + ((source == null) ? 0 : source.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		PMMLRequestData other = (PMMLRequestData) obj;
+		if (correlationId == null) {
+			if (other.correlationId != null) {
+				return false;
+			}
+		} else if (!correlationId.equals(other.correlationId)) {
+			return false;
+		}
+		if (modelName == null) {
+			if (other.modelName != null) {
+				return false;
+			}
+		} else if (!modelName.equals(other.modelName)) {
+			return false;
+		}
+		if (requestParams == null) {
+			if (other.requestParams != null) {
+				return false;
+			}
+		} else if (!requestParams.equals(other.requestParams)) {
+			return false;
+		}
+		if (source == null) {
+			if (other.source != null) {
+				return false;
+			}
+		} else if (!source.equals(other.source)) {
+			return false;
+		}
+		return true;
+	}
 
 	@Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder("PMMLRequestData( ");
         stringBuilder.append("correlationId=").append(correlationId).append(", ");
-        stringBuilder.append("modelName=").append(modelName);
+        stringBuilder.append("modelName=").append(modelName).append(", ");
         stringBuilder.append("source=").append(source).append(", requestParams=[");
         Iterator<ParameterInfo> iter = requestParams.iterator();
         boolean firstParam = true;

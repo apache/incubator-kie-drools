@@ -48,8 +48,9 @@ public class PMML4DataFactory {
 		registerDataType(Double.class.getName(), PMML4Double.class);
 	}
 	
-	public PMML4DataType newPMML4Data(ParameterInfo parameterInfo) {
-		return newPMML4Data( parameterInfo.getName(), 
+	public PMML4DataType newPMML4Data(String correlationId, ParameterInfo parameterInfo) {
+		return newPMML4Data( correlationId, 
+				parameterInfo.getName(), 
 				null, 
 				parameterInfo.getName(), 
 				parameterInfo.getType(), 
@@ -59,8 +60,9 @@ public class PMML4DataFactory {
 				missingFlag );
 	}
 	
-	public PMML4DataType newPMML4Data(ParameterInfo parameterInfo, Double weight) {
-		return newPMML4Data( parameterInfo.getName(), 
+	public PMML4DataType newPMML4Data(String correlationId, ParameterInfo parameterInfo, Double weight) {
+		return newPMML4Data( correlationId, 
+				parameterInfo.getName(), 
 				null, 
 				parameterInfo.getName(), 
 				parameterInfo.getType(), 
@@ -70,8 +72,9 @@ public class PMML4DataFactory {
 				missingFlag );
 	}
 	
-	public PMML4DataType newPMML4Data(ParameterInfo parameterInfo, Boolean valid, Boolean missing) {
-		return newPMML4Data( parameterInfo.getName(),
+	public PMML4DataType newPMML4Data(String correlationId, ParameterInfo parameterInfo, Boolean valid, Boolean missing) {
+		return newPMML4Data( correlationId, 
+				parameterInfo.getName(),
 				null,
 				parameterInfo.getName(),
 				parameterInfo.getType(),
@@ -81,8 +84,9 @@ public class PMML4DataFactory {
 				missing );
 	}
 	
-	public PMML4DataType newPMML4Data(ParameterInfo parameterInfo, Double weight, Boolean valid, Boolean missing) {
-		return newPMML4Data( parameterInfo.getName(),
+	public PMML4DataType newPMML4Data(String correlationId, ParameterInfo parameterInfo, Double weight, Boolean valid, Boolean missing) {
+		return newPMML4Data( correlationId, 
+				parameterInfo.getName(),
 				null,
 				parameterInfo.getName(),
 				parameterInfo.getType(),
@@ -92,7 +96,7 @@ public class PMML4DataFactory {
 				missing );
 	}
 	
-	public <T> PMML4DataType newPMML4Data(String name, 
+	public <T> PMML4DataType newPMML4Data(String correlationId, String name, 
 			String context, 
 			String displayName, 
 			Class<T> clazz, 
@@ -113,8 +117,8 @@ public class PMML4DataFactory {
 		Class<? extends PMML4Data> pmmlDataClass = mapOfKnownTypes.get(parmTypeName);
 		if (pmmlDataClass != null) {
 			try {
-				data = pmmlDataClass.getDeclaredConstructor(String.class, String.class, String.class, clazz, Double.class, Boolean.class, Boolean.class)
-						.newInstance(name,context,name,value,weight,valid,missing);
+				data = pmmlDataClass.getDeclaredConstructor(String.class, String.class, String.class, String.class, clazz, Double.class, Boolean.class, Boolean.class)
+						.newInstance(correlationId, name,context,name,value,weight,valid,missing);
 			} catch (Exception rx) {
 				String errMsg = "PMML4DataFactory::Unable create data object from ParameterInfo::Parameter: "+name;
 				throw new RuntimeException(errMsg,rx);
@@ -138,8 +142,8 @@ public class PMML4DataFactory {
 		Class<? extends PMML4Data> pmmlDataClass = mapOfKnownTypes.get(className);
 		if (pmmlDataClass != null) {
 			try {
-				data = pmmlDataClass.getDeclaredConstructor(String.class, String.class, String.class, srcValueClass, Double.class, Boolean.class, Boolean.class)
-						.newInstance(source.getName(), source.getContext(), source.getDisplayValue(), source.getValue(), source.getWeight(), source.isValid(), source.isMissing());
+				data = pmmlDataClass.getDeclaredConstructor(String.class, String.class, String.class, String.class, srcValueClass, Double.class, Boolean.class, Boolean.class)
+						.newInstance(source.getCorrelationId(), source.getName(), source.getContext(), source.getDisplayValue(), source.getValue(), source.getWeight(), source.isValid(), source.isMissing());
 			} catch (Exception rx) {
 				String errMsg = "PMML4DataFactory::Copying - Unable to create copy from source "+source.getName();
 				throw new RuntimeException(errMsg, rx);
@@ -148,8 +152,8 @@ public class PMML4DataFactory {
 		return data;
 	}
 	
-	public PMML4Placeholder getPlaceholder(String name, String context) {
-		return new PMML4Placeholder(name, context);
+	public PMML4Placeholder getPlaceholder(String correlationId, String name, String context) {
+		return new PMML4Placeholder(correlationId, name, context);
 	}
 	
 	public Boolean getValidFlag() {

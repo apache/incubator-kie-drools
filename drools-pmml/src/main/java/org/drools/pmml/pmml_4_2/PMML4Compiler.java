@@ -600,7 +600,10 @@ public class PMML4Compiler implements PMMLCompiler {
     	resource.setKieBaseModel(kbModel);
     	resource.addRules(segment.getModel().getModelId(), rules);
     	resource.addPojoDefinition(segment.getModel().getMappedMiningPojo());
-    	
+//    	Map.Entry<String, String> outputPojo = segment.getModel().getMappedOutputPojo();
+//    	if (outputPojo != null) {
+//    		resource.addPojoDefinition(outputPojo);
+//    	}
     	return resource;
     }
     

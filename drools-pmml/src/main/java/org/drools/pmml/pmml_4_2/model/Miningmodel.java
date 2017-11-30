@@ -66,6 +66,45 @@ public class Miningmodel extends AbstractModel<MiningModel> {
 		}
 		
 	}
+	
+	private PMMLOutputField getChildOutputField(PMML4Model parentModel, String fieldName) {
+		PMMLOutputField output = null;
+		for (Iterator<PMML4Model> childIter = parentModel.getChildModels().values().iterator(); childIter.hasNext() && output == null;) {
+			PMML4Model child = childIter.next();
+			List<PMMLOutputField> fields = child.getOutputFields();
+			if (fields != null && !fields.isEmpty()) {
+				for (Iterator<PMMLOutputField> fieldIter = fields.iterator(); fieldIter.hasNext() && output == null;) {
+					PMMLOutputField fld = fieldIter.next();
+					if (fieldName.equals(fld.getName())) {
+						output = fld;
+					}
+				}
+			}
+			if (child instanceof Miningmodel && output == null) {
+				output = getChildOutputField(child,fieldName);
+			}
+		}
+		return output;
+	}
+	
+	
+	
+	@Override
+	public PMMLOutputField findOutputField(String fieldName) {
+		return getChildOutputField(this,fieldName);
+	}
+	
+	@Override
+	public List<PMMLMiningField> getMiningFields() {
+		List<PMMLMiningField> fields = super.getMiningFields();
+		for (PMMLMiningField field : fields) {
+			String type = field.getType();
+			if (type == null || type.trim().isEmpty()) {
+				fields.remove(field);
+			}
+		}
+		return fields;
+	}
 
 
 	@Override

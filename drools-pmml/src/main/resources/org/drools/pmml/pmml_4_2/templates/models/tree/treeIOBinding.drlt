@@ -42,7 +42,7 @@ then
     @foreach{ inputField: fields.keySet() }
     inputMap.put( "@{inputField}", @{inputField} );
     @end{}
-    @{context}TreeToken tok = new @{context}TreeToken( rqst.getCorrelationId(),"@{context}",
+    @{context}TreeToken tok = new @{context}TreeToken( "","@{context}",
                                                        "@{rootId}",
                                                        null,
                                                        "@{visitMode}",

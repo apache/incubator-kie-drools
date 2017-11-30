@@ -162,7 +162,7 @@ public class MiningSegmentation {
 			case MODEL_CHAIN:
 				List<MiningSegmentTransfer> segmentTransfers = new ArrayList<>();
 				MiningSegmentTransfer mst = new MiningSegmentTransfer(this.getSegmentationId(), "1","2");
-				mst.addResultToRequestMapping("calculatedScore", "previousScore");
+				mst.addResultToRequestMapping("calculatedScore","calculatedScore");
 				segmentTransfers.add(mst);
 				templateVars.put("miningModel", this.getOwner());
 				templateVars.put("childSegments", this.getMiningSegments());

@@ -46,7 +46,7 @@ when
    ModelMarker( modelName == "@{model}", enabled == true )
    not PMML4Data( capitalizedName == "@{name}", context == null )
 then
-   PMML4DataType data = PMML4DataFactory.get().getPlaceholder("@{name}","@{model}");
+   PMML4DataType data = PMML4DataFactory.get().getPlaceholder("","@{name}","@{model}");
    insertLogical( data );
 end
 

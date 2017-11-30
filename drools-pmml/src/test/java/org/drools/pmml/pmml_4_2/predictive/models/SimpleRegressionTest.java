@@ -20,12 +20,9 @@ package org.drools.pmml.pmml_4_2.predictive.models;
 import org.drools.pmml.pmml_4_2.DroolsAbstractPMMLTest;
 import org.drools.pmml.pmml_4_2.PMML4Compiler;
 import org.drools.pmml.pmml_4_2.model.PMMLRequestData;
-import org.drools.pmml.pmml_4_2.model.ParameterInfo;
 import org.junit.After;
 import org.junit.Test;
-import org.kie.api.KieServices;
 import org.kie.api.definition.type.FactType;
-import org.kie.api.logger.KieRuntimeLogger;
 import org.kie.api.runtime.KieSession;
 
 public class SimpleRegressionTest extends DroolsAbstractPMMLTest {

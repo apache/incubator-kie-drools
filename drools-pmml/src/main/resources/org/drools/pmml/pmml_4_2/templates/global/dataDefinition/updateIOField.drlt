@@ -37,8 +37,8 @@ rule "update_@{name}_@{context}"
 salience 2000
 
 when
-   $new: PMML4Data( capitalizedName == "@{name}", $ctx : context == @if{context != null} @{format("string",context)} @else{} null @end{} )
-   $old: PMML4Data( name == $new.name, context == $ctx, this before $new )
+   $new: PMML4Data( $cid: correlationId != null, capitalizedName == "@{name}", $ctx : context == @if{context != null} @{format("string",context)} @else{} null @end{} )
+   $old: PMML4Data( correlationId == $cid, name == $new.name, context == $ctx, this before $new )
 //    $new : @{name}( $ctx : context == @if{context != null} @{format("string",context)} @else{} null @end{} )
 //    $old : @{name}( context == $ctx, this before $new )
 then

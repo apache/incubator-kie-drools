@@ -24,6 +24,7 @@
 
 @declare{'treeInit'}
 
+
 rule " Create tree @{context}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
@@ -39,7 +40,7 @@ then
         confs = new java.util.HashMap();
             @foreach{ val : confs[ node.id ].keySet() } confs.put( @{format( tgtType, val ) }, @{ confs[ node.id ][ val ] } ); @end{}
 
-        node = new TreeNode( "@{context}",
+        node = new TreeNode( "","@{context}",
                              "@{node.id}",
                              "@{parents[ node.id ]}",
                              java.util.Arrays.asList( @foreach{ child : node.nodes } "@{ child.id }" @end{','} ),

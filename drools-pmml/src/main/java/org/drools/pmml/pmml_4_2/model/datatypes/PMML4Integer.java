@@ -17,17 +17,17 @@ package org.drools.pmml.pmml_4_2.model.datatypes;
 
 public class PMML4Integer extends PMML4Data<Integer> {
 
-	PMML4Integer(String name, String context, String displayName, Integer value) {
-		super(name, context, displayName, value);
+	PMML4Integer(String correlationId, String name, String context, String displayName, Integer value) {
+		super(correlationId, name, context, displayName, value);
 	}
 
-	PMML4Integer(String name, String context, String displayName, Integer value, Double weight, Boolean valid,
+	PMML4Integer(String correlationId, String name, String context, String displayName, Integer value, Double weight, Boolean valid,
 			Boolean missing) {
-		super(name, context, displayName, value, weight, valid, missing);
+		super(correlationId, name, context, displayName, value, weight, valid, missing);
 	}
 	
-	PMML4Integer(String name, String context, String displayName, Integer value, Double weight) {
-		super(name, context, displayName, value, weight);
+	PMML4Integer(String correlationId, String name, String context, String displayName, Integer value, Double weight) {
+		super(correlationId, name, context, displayName, value, weight);
 	}
 	
 	@Override

@@ -19,17 +19,17 @@ import java.util.Date;
 
 public class PMML4Date extends PMML4Data<Date> {
 
-	PMML4Date(String name, String context, String displayName, Date value) {
-		super(name, context, displayName, value);
+	PMML4Date(String correlationId, String name, String context, String displayName, Date value) {
+		super(correlationId, name, context, displayName, value);
 	}
 
 
-	PMML4Date(String name, String context, String displayName, Date value, Double weight, Boolean valid, Boolean missing) {
-		super(name, context, displayName, value, weight, valid, missing);
+	PMML4Date(String correlationId, String name, String context, String displayName, Date value, Double weight, Boolean valid, Boolean missing) {
+		super(correlationId, name, context, displayName, value, weight, valid, missing);
 	}
 	
-	PMML4Date(String name, String context, String displayName, Date value, Double weight) {
-		super(name, context, displayName, value, weight);
+	PMML4Date(String correlationId, String name, String context, String displayName, Date value, Double weight) {
+		super(correlationId, name, context, displayName, value, weight);
 	}
 	
 	@Override

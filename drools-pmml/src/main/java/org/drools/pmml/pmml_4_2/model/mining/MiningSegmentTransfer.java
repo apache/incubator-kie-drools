@@ -68,6 +68,7 @@ public class MiningSegmentTransfer {
 	public PMMLRequestData getOutboundRequest() {
 		if (outboundRequest == null) {
 			outboundRequest = new PMMLRequestData(this.correlationId);
+			outboundRequest.setSource("MiningSegmentTransfer:"+this.fromSegmentId+"-"+this.toSegmentId);
 			for (String requestField: requestFromResultMap.keySet()) {
 				String resultFieldName = requestFromResultMap.get(requestField);
 				Object resultFieldValue = getValueFromResult(resultFieldName);
@@ -77,6 +78,10 @@ public class MiningSegmentTransfer {
 			}
 		}
 		return outboundRequest;
+	}
+	
+	public Map<String,String> getRequestFromResultMap() {
+		return new HashMap<>(this.requestFromResultMap);
 	}
 
 	
