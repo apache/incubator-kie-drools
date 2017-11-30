@@ -1,6 +1,6 @@
 package org.drools.modelcompiler.builder.generator;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.drools.compiler.lang.descr.AndDescr;
@@ -68,7 +68,7 @@ public class NamedConsequenceVisitor {
             when.addArgument(new StringLiteralExpr(context.getConditionId(patternType, condition)));
             when.addArgument(new NameExpr(toVar(patternRelated.getIdentifier())));
             ModelGenerator.DrlxParseResult parseResult = drlxParse(context, packageModel, patternType, patternRelated.getIdentifier(), condition);
-            when.addArgument(generateLambdaWithoutParameters(new ArrayList<>(), parseResult.expr));
+            when.addArgument(generateLambdaWithoutParameters(Collections.emptySortedSet(), parseResult.expr));
         }
 
         MethodCallExpr then = new MethodCallExpr(when, THEN_CALL);
