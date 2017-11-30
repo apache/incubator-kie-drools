@@ -32,6 +32,7 @@ import org.drools.model.consequences.ConditionalNamedConsequenceImpl;
 import org.drools.model.consequences.NamedConsequenceImpl;
 import org.drools.model.constraints.SingleConstraint1;
 import org.drools.model.constraints.SingleConstraint2;
+import org.drools.model.constraints.SingleConstraint3;
 import org.drools.model.constraints.TemporalConstraint;
 import org.drools.model.patterns.AccumulatePatternImpl;
 import org.drools.model.patterns.CompositePatterns;
@@ -46,6 +47,7 @@ import org.drools.model.view.CombinedExprViewItem;
 import org.drools.model.view.ExistentialExprViewItem;
 import org.drools.model.view.Expr1ViewItemImpl;
 import org.drools.model.view.Expr2ViewItemImpl;
+import org.drools.model.view.Expr3ViewItemImpl;
 import org.drools.model.view.InputViewItemImpl;
 import org.drools.model.view.OOPathViewItem;
 import org.drools.model.view.OOPathViewItem.OOPathChunk;
@@ -54,7 +56,6 @@ import org.drools.model.view.TemporalExprViewItem;
 import org.drools.model.view.ViewItem;
 
 import static java.util.stream.Collectors.toList;
-
 import static org.drools.model.DSL.input;
 import static org.drools.model.constraints.AbstractSingleConstraint.fromExpr;
 import static org.drools.model.impl.NamesGenerator.generateName;
@@ -241,6 +242,12 @@ public class ViewBuilder {
         if ( viewItem instanceof Expr2ViewItemImpl ) {
             Expr2ViewItemImpl expr = (Expr2ViewItemImpl)viewItem;
             ( (PatternImpl) condition ).addConstraint( new SingleConstraint2( expr ) );
+            return condition;
+        }
+
+        if (viewItem instanceof Expr3ViewItemImpl) {
+            Expr3ViewItemImpl expr = (Expr3ViewItemImpl) viewItem;
+            ((PatternImpl) condition).addConstraint(new SingleConstraint3(expr));
             return condition;
         }
 

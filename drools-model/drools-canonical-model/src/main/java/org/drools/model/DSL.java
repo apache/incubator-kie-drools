@@ -16,6 +16,7 @@ import org.drools.model.functions.Function1;
 import org.drools.model.functions.Function2;
 import org.drools.model.functions.Predicate1;
 import org.drools.model.functions.Predicate2;
+import org.drools.model.functions.Predicate3;
 import org.drools.model.functions.accumulate.Average;
 import org.drools.model.functions.accumulate.Count;
 import org.drools.model.functions.accumulate.Max;
@@ -52,6 +53,7 @@ import org.drools.model.view.Expr1ViewItem;
 import org.drools.model.view.Expr1ViewItemImpl;
 import org.drools.model.view.Expr2ViewItem;
 import org.drools.model.view.Expr2ViewItemImpl;
+import org.drools.model.view.Expr3ViewItemImpl;
 import org.drools.model.view.ExprViewItem;
 import org.drools.model.view.InputViewItem;
 import org.drools.model.view.InputViewItemImpl;
@@ -205,12 +207,20 @@ public class DSL {
         return new Expr2ViewItemImpl<T, U>( var1, var2, new Predicate2.Impl<T, U>(predicate) );
     }
 
+    public static <T, U, X> ExprViewItem<T> expr(Variable<T> var1, Variable<U> var2, Variable<X> var3, Predicate3<T, U, X> predicate) {
+        return new Expr3ViewItemImpl<T, U, X>(var1, var2, var3, new Predicate3.Impl<T, U, X>(predicate));
+    }
+
     public static <T> Expr1ViewItem<T> expr(String exprId, Variable<T> var, Predicate1<T> predicate) {
         return new Expr1ViewItemImpl<T>( exprId, var, new Predicate1.Impl<T>(predicate));
     }
 
     public static <T, U> Expr2ViewItem<T, U> expr( String exprId, Variable<T> var1, Variable<U> var2, Predicate2<T, U> predicate ) {
         return new Expr2ViewItemImpl<T, U>( exprId, var1, var2, new Predicate2.Impl<T, U>(predicate));
+    }
+
+    public static <T, U, X> ExprViewItem<T> expr(String exprId, Variable<T> var1, Variable<U> var2, Variable<X> var3, Predicate3<T, U, X> predicate) {
+        return new Expr3ViewItemImpl<T, U, X>(exprId, var1, var2, var3, new Predicate3.Impl<T, U, X>(predicate));
     }
 
     public static <T> OOPathChunkBuilder<T, T> from( Source<T> source ) {
