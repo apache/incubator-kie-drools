@@ -1,6 +1,7 @@
 package org.drools.modelcompiler.builder.generator;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,8 +49,8 @@ public class OOPathExprVisitor {
             }
 
             final String bindingId = context.getOOPathId(fieldType, fieldName);
-            final Expression accessorLambda = generateLambdaWithoutParameters(new ArrayList<>(),
-                                                                    prepend(new NameExpr("_this"), callExpr.getExpression()));
+            final Expression accessorLambda = generateLambdaWithoutParameters(Collections.emptySortedSet(),
+                                                                              prepend(new NameExpr("_this"), callExpr.getExpression()));
 
             final MethodCallExpr reactiveFrom = new MethodCallExpr(null, "reactiveFrom");
             reactiveFrom.addArgument(new NameExpr(toVar(previousBind)));

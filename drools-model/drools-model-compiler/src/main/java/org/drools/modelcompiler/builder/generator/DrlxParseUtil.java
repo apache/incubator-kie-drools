@@ -19,6 +19,7 @@ package org.drools.modelcompiler.builder.generator;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
@@ -362,7 +363,7 @@ public class DrlxParseUtil {
         return JavaParser.parseBlock(String.format("{\n%s\n}", ruleConsequenceAsBlock)); // if the RHS is composed only of a line of comment like `//do nothing.` then JavaParser would fail to recognize the ending }
     }
 
-    public static Expression generateLambdaWithoutParameters(List<String> usedDeclarations, Expression expr) {
+    public static Expression generateLambdaWithoutParameters(Collection<String> usedDeclarations, Expression expr) {
         LambdaExpr lambdaExpr = new LambdaExpr();
         lambdaExpr.setEnclosingParameters( true );
         lambdaExpr.addParameter( new Parameter(new UnknownType(), "_this" ) );

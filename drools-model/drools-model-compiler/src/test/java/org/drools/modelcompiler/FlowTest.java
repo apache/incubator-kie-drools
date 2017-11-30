@@ -26,7 +26,6 @@ import org.assertj.core.api.Assertions;
 import org.drools.core.ClockType;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.reteoo.AlphaNode;
-import org.drools.model.DSL;
 import org.drools.model.Global;
 import org.drools.model.Index.ConstraintType;
 import org.drools.model.Model;
@@ -92,6 +91,28 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 public class FlowTest {
+
+    /** Rule name: R */
+    private org.drools.model.Rule rule_R() {
+        final org.drools.model.Variable<org.drools.modelcompiler.domain.Person> var_$p = declarationOf(type(org.drools.modelcompiler.domain.Person.class),
+                                                                                                       "$p");
+        final org.drools.model.Variable<Integer> var_personAge = declarationOf(type(Integer.class),
+                                                                               "personAge");
+        final org.drools.model.Variable<org.drools.modelcompiler.domain.Person> var_$plusTwo = declarationOf(type(org.drools.modelcompiler.domain.Person.class),
+                                                                                                             "$plusTwo");
+        org.drools.model.Rule rule = rule("R").build(bind(var_personAge).as(var_$p,
+                                                                            (_this) -> _this.getAge())
+                                                                        .reactOn("age"),
+                                                     expr("$expr$2$",
+                                                          var_$plusTwo,
+                                                          var_personAge,
+                                                          var_$p,
+                                                          (_this, personAge, $p) -> _this.getAge() == personAge + 2 + $p.getAge() - $p.getAge()).reactOn("age"),
+                                                     on(var_$plusTwo).execute((drools, $plusTwo) -> {
+                                                         drools.insert(new Result($plusTwo.getName()));
+                                                     }));
+        return rule;
+    }
 
     @Test
     public void testBeta() {
