@@ -81,8 +81,11 @@ import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.SimpleName;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
+import org.drools.javaparser.ast.expr.ThisExpr;
 import org.drools.javaparser.ast.expr.UnaryExpr;
 import org.drools.javaparser.ast.expr.VariableDeclarationExpr;
+import org.drools.javaparser.ast.nodeTypes.NodeWithArguments;
+import org.drools.javaparser.ast.nodeTypes.NodeWithOptionalScope;
 import org.drools.javaparser.ast.stmt.BlockStmt;
 import org.drools.javaparser.ast.stmt.ExpressionStmt;
 import org.drools.javaparser.ast.stmt.ReturnStmt;
@@ -785,14 +788,23 @@ public class ModelGenerator {
 
         if (drlxExpr instanceof MethodCallExpr) {
             MethodCallExpr methodCallExpr = (MethodCallExpr) drlxExpr;
-
+            
+            // when the methodCallExpr will be placed in the model/DSL, any parameter being a "this" need to be implemented as _this by convention.
+            List<ThisExpr> rewriteThisExprs = recurseCollectArguments(methodCallExpr).stream()
+                                                                                     .filter(ThisExpr.class::isInstance)
+                                                                                     .map(ThisExpr.class::cast)
+                                                                                     .collect(Collectors.toList());
+            for (ThisExpr t : rewriteThisExprs) {
+                methodCallExpr.replace(t, new NameExpr("_this"));
+            }
+            
             Optional<MethodDeclaration> functionCall = packageModel.getFunctions().stream().filter(m -> m.getName().equals(methodCallExpr.getName())).findFirst();
             if(functionCall.isPresent()) {
                 Class<?> returnType = DrlxParseUtil.getClassFromContext(context.getPkg().getTypeResolver(), functionCall.get().getType().asString());
                 NodeList<Expression> arguments = methodCallExpr.getArguments();
                 List<String> usedDeclarations = new ArrayList<>();
                 for(Expression arg : arguments) {
-                    if(arg instanceof NameExpr) {
+                    if (arg instanceof NameExpr && !arg.toString().equals("_this")) {
                         usedDeclarations.add(arg.toString());
                     }
                 }
@@ -828,6 +840,21 @@ public class ModelGenerator {
         }
 
         throw new UnsupportedOperationException("Unknown expression: " + toDrlx(drlxExpr)); // TODO
+    }
+
+    private static List<Expression> recurseCollectArguments(NodeWithArguments<?> methodCallExpr) {
+        List<Expression> res = new ArrayList<>();
+        res.addAll(methodCallExpr.getArguments());
+        if ( methodCallExpr instanceof NodeWithOptionalScope ) {
+            NodeWithOptionalScope<?> nodeWithOptionalScope = (NodeWithOptionalScope) methodCallExpr;
+            if ( nodeWithOptionalScope.getScope().isPresent() ) {
+                Object scope = nodeWithOptionalScope.getScope().get();
+                if (scope instanceof NodeWithArguments) {
+                    res.addAll(recurseCollectArguments((NodeWithArguments<?>) scope));
+                }
+            }
+        }
+        return res;
     }
 
     private interface CustomOperatorSpec {
