@@ -961,7 +961,6 @@ public class CompilerTest extends BaseModelTest {
     }
 
     @Test
-    @Ignore
     public void testFunction3() {
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +
