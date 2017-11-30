@@ -396,11 +396,13 @@ public class FlowTest {
         Result result = new Result();
         Variable<Person> person = declarationOf( type( Person.class), "$p");
         Variable<Integer> resultSum = declarationOf( type( Integer.class ) );
+        Variable<Integer> age = declarationOf( type( Integer.class ) );
 
         Rule rule = rule("accumulate")
                 .build(
+                        bind(age).as(person, Person::getAge),
                         accumulate(expr(person, p -> p.getName().startsWith("M")),
-                                   sum( Person::getAge, "$p").as(resultSum)),
+                                   sum(age).as(resultSum)),
                         on(resultSum).execute(sum -> result.setValue( "total = " + sum) )
                       );
 
@@ -424,11 +426,13 @@ public class FlowTest {
         Variable<Person> person = declarationOf( type( Person.class ), "$p" );
         Variable<Integer> resultSum = declarationOf( type( Integer.class ) );
         Variable<Double> resultAvg = declarationOf( type( Double.class ) );
+        Variable<Integer> age = declarationOf( type( Integer.class ) );
 
         Rule rule = rule("accumulate")
                 .build(
+                        bind(age).as(person, Person::getAge),
                         accumulate(expr(person, p -> p.getName().startsWith("M")),
-                                   sum(Person::getAge, "$p").as(resultSum),
+                                   sum(age).as(resultSum),
                                    average(Person::getAge, "$p").as(resultAvg)),
                         on(resultSum, resultAvg)
                                 .execute((sum, avg) -> result.setValue( "total = " + sum + "; average = " + avg ))
@@ -458,10 +462,9 @@ public class FlowTest {
                                                                           "$sum");
 
         final Variable<Integer> var_$age = declarationOf(type(Integer.class), "$age");
-        AbstractAccumulateFunction<Person, Sum.Context<Integer>, Integer> sumExpr = sum((Person $p) -> $p.getAge(), "$p").as(var_$sum);
 
         org.drools.model.Rule rule = rule("X").build(
-                                                    bind(var_$age).as(var_$p, p -> p.getAge()),
+                                                    bind(var_$age).as(var_$p, Person::getAge),
                                                     accumulate(expr("$expr$1$",
                                                                      var_$p,
                                                                      (_this) -> _this.getAge() > 36),

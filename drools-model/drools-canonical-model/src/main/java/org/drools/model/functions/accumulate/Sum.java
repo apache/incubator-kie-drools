@@ -4,16 +4,12 @@ import java.io.Serializable;
 import java.util.Optional;
 
 import org.drools.model.Variable;
-import org.drools.model.functions.Function1;
 import org.drools.model.impl.ModelComponent;
 
-public class Sum<T, N extends Number> extends AbstractAccumulateFunction<T, Sum.Context<N>, N> implements ModelComponent {
+public class Sum<N extends Number> extends AbstractAccumulateFunction<N, Sum.Context<N>, N> implements ModelComponent {
 
-    private final Function1<T, N> mapper;
-
-    public Sum(Optional<Variable<T>> source, Function1<T, N> mapper, Optional<String> paramNames) {
+    public Sum(Optional<Variable<N>> source, Optional<String> paramNames) {
         super(source, paramNames);
-        this.mapper = mapper;
     }
 
     @Override
@@ -22,13 +18,13 @@ public class Sum<T, N extends Number> extends AbstractAccumulateFunction<T, Sum.
     }
 
     @Override
-    public void action(Context<N> acc, T obj) {
-        acc.add(mapper.apply(obj));
+    public void action(Context<N> acc, N obj) {
+        acc.add(obj);
     }
 
     @Override
-    public void reverse(Context<N> acc, T obj) {
-        acc.subtract(mapper.apply(obj));
+    public void reverse(Context<N> acc, N obj) {
+        acc.subtract(obj);
     }
 
     @Override
@@ -37,7 +33,7 @@ public class Sum<T, N extends Number> extends AbstractAccumulateFunction<T, Sum.
     }
 
     @Override
-    public Optional<Variable<T>> getOptSource() {
+    public Optional<Variable<N>> getOptSource() {
         return optSource;
     }
 
@@ -46,10 +42,9 @@ public class Sum<T, N extends Number> extends AbstractAccumulateFunction<T, Sum.
         if ( this == o ) return true;
         if ( !(o instanceof Sum) ) return false;
 
-        Sum<?, ?> that = ( Sum<?, ?> ) o;
+        Sum<?> that = ( Sum<?> ) o;
 
-        if ( !ModelComponent.areEqualInModel( getVariable(), that.getVariable() ) ) return false;
-        return mapper.equals( that.mapper );
+        return (!ModelComponent.areEqualInModel( getVariable(), that.getVariable() ) );
     }
 
     public static class Context<N extends Number> implements Serializable {

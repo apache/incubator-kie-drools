@@ -361,16 +361,8 @@ public class DSL {
 
     // -- Accumulate Functions --
 
-    public static <T, N extends Number> Sum<T, N> sum(Function1<T, N> mapper, String paramName) {
-        return new Sum(Optional.empty(), new Function1.Impl<>(mapper), Optional.of(paramName));
-    }
-
-    public static <T, N extends Number> Sum<T, N> sum(Variable<T> source, Function1<T, N> mapper, String paramName) {
-        return new Sum(Optional.of(source), new Function1.Impl<>(mapper), Optional.of(paramName));
-    }
-
-    public static <N extends Number> Sum<N, N> sum(Variable<N> source) {
-        return new Sum<N, N>(Optional.of(source), x -> x, Optional.empty());
+    public static <N extends Number> Sum<N> sum(Variable<N> source) {
+        return new Sum<>(Optional.of(source), Optional.empty());
     }
 
     public static <T> Count<T> count(Variable<T> source) {
