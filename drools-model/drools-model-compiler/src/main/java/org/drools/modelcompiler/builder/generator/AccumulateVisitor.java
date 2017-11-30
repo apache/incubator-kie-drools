@@ -52,15 +52,14 @@ public class AccumulateVisitor {
                 .filter(a -> a.toString().startsWith("bind"))
                 .collect(Collectors.toList());
 
-
-        for(Node bindExpr : bindExprs) {
+        for (Node bindExpr : bindExprs) {
             accumulateDSL.remove(bindExpr);
         }
 
         context.popExprPointer();
 
-        for(Node bindExpr : bindExprs) {
-            context.expressions.add(0, (MethodCallExpr)bindExpr);
+        for (Node bindExpr : bindExprs) {
+            context.expressions.add(0, (MethodCallExpr) bindExpr);
         }
     }
 
@@ -70,9 +69,11 @@ public class AccumulateVisitor {
 
         final MethodCallExpr functionDSL = new MethodCallExpr(null, function.getFunction());
 
-        final Expression expr = DrlxParser.parseExpression(function.getParams()[0]).getExpr();
+        final String expression = function.getParams()[0];
+        final Expression expr = DrlxParser.parseExpression(expression).getExpr();
         final String bindingId = Optional.ofNullable(function.getBind()).orElse(context.getExprId(Number.class, function.getFunction()));
         if (expr instanceof MethodCallExpr) {
+
             final MethodCallExpr methodCallExpr = (MethodCallExpr) expr;
 
             final NameExpr scope = (NameExpr) methodCallExpr.getScope().orElseThrow(UnsupportedOperationException::new);
@@ -86,12 +87,15 @@ public class AccumulateVisitor {
                     , new ExpressionStmt(methodCallExpr)
                     , true);
 
-            functionDSL.addArgument(lambdaExpr);
-            functionDSL.addArgument(new StringLiteralExpr(variableName));
+//            functionDSL.addArgument(lambdaExpr);
+            final String newBindVariable = context.getExprId(Object.class, lambdaExpr.toString());
+            final DeclarationSpec declaration = new DeclarationSpec(newBindVariable, clazz);
+            context.addDeclaration(declaration);
+            functionDSL.addArgument(new NameExpr(toVar(newBindVariable)));
 
             Class<?> declClass = getReturnTypeForAggregateFunction(functionDSL.getName().asString(), clazz, methodCallExpr);
             context.addDeclaration(new DeclarationSpec(bindingId, declClass));
-        } else if (expr instanceof NameExpr){
+        } else if (expr instanceof NameExpr) {
             functionDSL.addArgument(new NameExpr(toVar(((NameExpr) expr).getName().asString())));
             final Optional<DeclarationSpec> declarationById = context.getDeclarationById(expr.toString());
             final Class bindClass = getReturnTypeForAggregateFunction(functionDSL.getName().asString(), declarationById.map(a -> a.declarationClass));
