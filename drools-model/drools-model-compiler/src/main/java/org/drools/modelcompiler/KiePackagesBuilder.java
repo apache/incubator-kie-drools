@@ -519,11 +519,11 @@ public class KiePackagesBuilder {
         return new MultiAccumulate( source, new Declaration[0], accumulators);
     }
 
-    private void addSourceDeclaration(RuleContext ctx, Pattern pattern, Optional<? extends Variable<?>> functionSource) {
-        functionSource.ifPresent(fs -> {
-            final Declaration variableDeclaration = ctx.getDeclaration(fs);
-            final InternalReadAccessor accessor = variableDeclaration.getExtractor();
-            pattern.addDeclaration(new Declaration(fs.getName(), accessor, pattern, true));
+    private void addSourceDeclaration(RuleContext ctx, Pattern pattern, Optional<? extends Variable<?>> sourceVariable) {
+        sourceVariable.ifPresent(fs -> {
+            final Declaration decl = new Declaration(fs.getName(), pattern);
+            ctx.addInnerDeclaration(fs, decl);
+            pattern.addDeclaration(decl);
         });
     }
 

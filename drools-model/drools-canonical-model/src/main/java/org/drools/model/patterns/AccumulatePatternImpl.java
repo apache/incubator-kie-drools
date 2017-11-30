@@ -51,6 +51,9 @@ public class AccumulatePatternImpl<T> extends AbstractSinglePattern implements A
 
     @Override
     public Variable<T> getPatternVariable() {
+        if(pattern == null) {
+            return null;
+        }
         return pattern.getPatternVariable();
     }
 

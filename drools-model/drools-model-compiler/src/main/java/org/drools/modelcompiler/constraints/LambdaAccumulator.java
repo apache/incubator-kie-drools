@@ -62,7 +62,7 @@ public class LambdaAccumulator implements Accumulator {
         return Arrays.stream(innerDeclarations)
                 .filter(d -> d.getIdentifier().equals(variableName))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Cannot find declaration with name" + variableName));
+                .orElseThrow(() -> new RuntimeException("Cannot find declaration with name: " + variableName));
     }
 
     @Override
