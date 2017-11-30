@@ -17,15 +17,20 @@
 
 package org.kie.dmn.core.compiler;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.kie.api.conf.Option;
 import org.kie.dmn.api.core.DMNCompilerConfiguration;
 import org.kie.dmn.api.marshalling.v1_1.DMNExtensionRegister;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class DMNCompilerConfigurationImpl implements DMNCompilerConfiguration {
 
     private List<DMNExtensionRegister> registeredExtensions = new ArrayList<>();
+    private Map<String, String> properties = new HashMap<>();
 
     public void addExtensions(List<DMNExtensionRegister> extensionRegisters) {
         this.registeredExtensions.addAll(extensionRegisters);
@@ -39,4 +44,18 @@ public class DMNCompilerConfigurationImpl implements DMNCompilerConfiguration {
         return this.registeredExtensions;
     }
 
+    public void setProperties(Map<String, String> dmnPrefs) {
+        this.properties.putAll(dmnPrefs);
+    }
+
+    public Map<String, String> getProperties() {
+        return Collections.unmodifiableMap(this.properties);
+    }
+
+    public final <T extends Option> T getOption(Class<T> option) {
+        if (RuntimeTypeCheckOption.class.equals(option)) {
+            return (T) new RuntimeTypeCheckOption(properties.get(RuntimeTypeCheckOption.PROPERTY_NAME));
+        }
+        return null;
+    }
 }

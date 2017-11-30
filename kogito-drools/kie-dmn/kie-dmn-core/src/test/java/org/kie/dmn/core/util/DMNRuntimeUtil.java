@@ -35,16 +35,21 @@ import org.kie.dmn.api.core.event.BeforeEvaluateDecisionEvent;
 import org.kie.dmn.api.core.event.BeforeEvaluateDecisionTableEvent;
 import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
 import org.kie.dmn.core.api.event.DefaultDMNRuntimeEventListener;
+import org.kie.dmn.core.compiler.RuntimeTypeCheckOption;
+import org.kie.dmn.core.impl.DMNRuntimeImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A type-check safe runtime creation helper.
+ */
 public final class DMNRuntimeUtil {
 
     public static DMNRuntime createRuntime(final Class testClass) {
         final KieServices ks = KieServices.Factory.get();
         final KieContainer kieContainer = KieHelper.getKieContainer(
         ks.newReleaseId("org.kie", "dmn-test-"+UUID.randomUUID(), "1.0"));
-        final DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
+        final DMNRuntime runtime = typeSafeGetKieRuntime(kieContainer);
         Assert.assertNotNull(runtime);
         return runtime;
     }
@@ -55,7 +60,7 @@ public final class DMNRuntimeUtil {
                 ks.newReleaseId("org.kie", "dmn-test-"+UUID.randomUUID(), "1.0"),
                 ks.getResources().newClassPathResource(resourceName, testClass));
 
-        final DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
+        final DMNRuntime runtime = typeSafeGetKieRuntime(kieContainer);
         Assert.assertNotNull(runtime);
         return runtime;
     }
@@ -72,11 +77,17 @@ public final class DMNRuntimeUtil {
                 ks.newReleaseId("org.kie", "dmn-test-"+UUID.randomUUID(), "1.0"),
                 totalResources.toArray(new Resource[] {}));
 
-        final DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
+        final DMNRuntime runtime = typeSafeGetKieRuntime(kieContainer);
         Assert.assertNotNull(runtime);
         return runtime;
     }
 
+    private static DMNRuntime typeSafeGetKieRuntime(final KieContainer kieContainer) {
+        DMNRuntime dmnRuntime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
+        ((DMNRuntimeImpl) dmnRuntime).setOption(new RuntimeTypeCheckOption(true));
+        return dmnRuntime;
+    }
+    
     public static DMNRuntimeEventListener createListener() {
         return new DefaultDMNRuntimeEventListener() {
             private final Logger logger = LoggerFactory.getLogger(DMNRuntimeEventListener.class);
