@@ -89,14 +89,14 @@ public class AccumulateVisitor {
             Expression withThis = DrlxParseUtil.prepend(_this, typedExpression.getExpression());
 
             Class<?> aggregateFunctionType = getReturnTypeForAggregateFunction(functionDSL.getName().asString(), clazz, methodCallExpr);
-            final String newBindVariable = context.getExprId(Object.class, typedExpression.toString());
+            final String newBindVariable = context.getExprId(aggregateFunctionType, typedExpression.toString());
             ModelGenerator.DrlxParseResult result = new ModelGenerator.DrlxParseResult(clazz, "", variableName, withThis, typedExpression.getType())
                     .setLeft(typedExpression)
                     .setExprBinding(newBindVariable);
             final MethodCallExpr bind = ModelGenerator.buildBinding(result);
             context.addExpression(bind);
 
-            final DeclarationSpec declaration = new DeclarationSpec(newBindVariable, aggregateFunctionType);
+            final DeclarationSpec declaration = new DeclarationSpec(newBindVariable, typedExpression.getType());
             context.addDeclaration(declaration);
             functionDSL.addArgument(new NameExpr(toVar(newBindVariable)));
 
