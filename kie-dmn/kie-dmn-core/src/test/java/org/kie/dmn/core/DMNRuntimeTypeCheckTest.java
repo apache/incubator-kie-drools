@@ -63,6 +63,17 @@ public class DMNRuntimeTypeCheckTest {
     }
 
     @Test
+    public void testAskTypeCheckWithGlobalEnvVariable() {
+        System.setProperty(RuntimeTypeCheckOption.PROPERTY_NAME, "true");
+        // do NOT use the DMNRuntimeUtil as that enables typeSafe check override for runtime.
+        final KieContainer kieContainer = KieHelper.getKieContainer(ks.newReleaseId("org.kie", "dmn-test-" + UUID.randomUUID(), "1.0"),
+                                                                    ks.getResources().newClassPathResource("forTypeCheckTest.dmn", this.getClass()));
+        DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
+        assertPerformTypeCheck(runtime);
+        System.clearProperty(RuntimeTypeCheckOption.PROPERTY_NAME);
+    }
+
+    @Test
     public void testExplicitDisableTypeCheckInKModule() {
         DMNRuntime runtime = getRuntimeWithTypeCheckOption("false", ks.getResources().newClassPathResource("forTypeCheckTest.dmn", this.getClass()));
         assertNoTypeCheck(runtime);
