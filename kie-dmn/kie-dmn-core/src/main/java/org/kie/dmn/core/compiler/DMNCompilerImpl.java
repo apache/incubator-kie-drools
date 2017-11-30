@@ -42,6 +42,7 @@ import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.api.core.ast.InputDataNode;
 import org.kie.dmn.api.marshalling.v1_1.DMNExtensionRegister;
 import org.kie.dmn.backend.marshalling.v1_1.DMNMarshallerFactory;
+import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.ast.BusinessKnowledgeModelNodeImpl;
 import org.kie.dmn.core.ast.DMNBaseNode;
 import org.kie.dmn.core.ast.DecisionNodeImpl;
@@ -85,8 +86,7 @@ public class DMNCompilerImpl
     }
 
     public DMNCompilerImpl() {
-        this.feel = new DMNFEELHelper();
-        this.evaluatorCompiler = new DMNEvaluatorCompiler( this, feel );
+        this(DMNFactory.newCompilerConfiguration());
     }
 
     public DMNCompilerImpl(DMNCompilerConfiguration dmnCompilerConfig) {
@@ -147,6 +147,7 @@ public class DMNCompilerImpl
         DMNModelImpl model = null;
         if ( dmndefs != null ) {
             model = new DMNModelImpl( dmndefs );
+            model.setRuntimeTypeCheck( ((DMNCompilerConfigurationImpl) dmnCompilerConfig).getOption(RuntimeTypeCheckOption.class).isRuntimeTypeCheck() );
             DMNCompilerContext ctx = new DMNCompilerContext();
 
             processItemDefinitions( ctx, feel, model, dmndefs );

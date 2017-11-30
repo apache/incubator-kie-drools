@@ -72,6 +72,10 @@ public class DMNModelImpl
     private DMNMessageManager messages = new DefaultDMNMessagesManager();
 
     private DMNTypeRegistry types = new DMNTypeRegistry();
+    /**
+     * a compile-time preference to indicate if type-check should be performed during runtime evaluation. 
+     */
+    private boolean runtimeTypeCheck = false;
 
     public DMNModelImpl() {
     }
@@ -303,6 +307,17 @@ public class DMNModelImpl
         return resource;
     }
     
+    /**
+     * @return a compile-time preference to indicate if type-check should be performed during runtime evaluation.
+     */
+    public boolean isRuntimeTypeCheck() {
+        return runtimeTypeCheck;
+    }
+
+    public void setRuntimeTypeCheck(boolean runtimeTypeCheck) {
+        this.runtimeTypeCheck = runtimeTypeCheck;
+    }
+
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject(serializedAs);
@@ -348,6 +363,7 @@ public class DMNModelImpl
         this.itemDefs  = compiledModel.itemDefs  ;
         this.messages  = compiledModel.messages  ;
         this.types     = compiledModel.types     ;
+        this.runtimeTypeCheck = compiledModel.runtimeTypeCheck;
     }
 
 }
