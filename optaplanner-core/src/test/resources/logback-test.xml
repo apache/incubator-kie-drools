@@ -3,7 +3,7 @@
 
   <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
-      <!-- %L lowers performance, %C and %c break indentation and therefor reduce readability, normal %t is verbose -->
+      <!-- %L lowers performance, %C and %c break indentation and therefore reduce readability, normal %t is verbose -->
       <pattern>%d{HH:mm:ss.SSS} [%-12.12t] %-5p %m%n</pattern>
     </encoder>
   </appender>

@@ -633,7 +633,7 @@ picking the first improving move (which also resets the iterator back to the fir
 [NOTE]
 ====
 Despite that VND has a name that ends with _descent_ (from the research papers),
-the implementation will ascent to a higher score (which is a better score).
+the implementation will ascend to a higher score (which is a better score).
 ====
 
 
