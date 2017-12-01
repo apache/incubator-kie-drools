@@ -183,27 +183,33 @@ public class ViewBuilder {
             conditions.set( conditions.indexOf( condition ), modifiedPattern );
             if(modifiedPattern instanceof AccumulatePattern) {
                 final Iterator<Condition> iterator = conditions.iterator();
-                while(iterator.hasNext()) {
-                    final Condition c = iterator.next();
-                    final Optional<CompositePatterns> compositePatterns = ((AccumulatePattern) modifiedPattern).getCompositePatterns();
-                    if(compositePatterns.isPresent()) {
-                        final List<Condition> subConditions = compositePatterns.get().getSubConditions();
-                        for(Condition patternCondition : subConditions) {
-                            if(patternCondition instanceof PatternImpl) {
-                                if(((PatternImpl)patternCondition).getPatternVariable().equals(((PatternImpl)c).getPatternVariable())) {
-                                    conditions.remove(c);
-                                }
-                            }
-                        }
-
-                    }
-                }
-                System.out.println("modifiedPattern = " + modifiedPattern);
+//                while(iterator.hasNext()) {
+//                    final Condition c = iterator.next();
+//                    final Optional<CompositePatterns> compositePatterns = ((AccumulatePattern) modifiedPattern).getCompositePatterns();
+//                    if(compositePatterns.isPresent()) {
+//                        final List<Condition> subConditions = compositePatterns.get().getSubConditions();
+//                        for(Condition patternCondition : subConditions) {
+//                            if(patternCondition instanceof PatternImpl) {
+//                                if(((PatternImpl)patternCondition).getPatternVariable().equals(((PatternImpl)c).getPatternVariable())) {
+//                                    conditions.remove(c);
+//                                }
+//                            }
+//                        }
+//
+//                    }
+//                }
+//                System.out.println("modifiedPattern = " + modifiedPattern);
             }
 
             if (type == Type.AND) {
                 conditionMap.put( patterVariable, modifiedPattern );
             }
+        }
+
+        if(conditions.size() == 3) {
+            final Pattern c = (Pattern) conditions.remove(0);
+            AccumulatePatternImpl condition = (AccumulatePatternImpl) conditions.get(0);
+            condition.setPattern(c);
         }
 
         Collections.sort( conditions, ConditionComparator.INSTANCE );

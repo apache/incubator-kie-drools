@@ -14,7 +14,7 @@ import org.drools.model.impl.ModelComponent;
 
 public class AccumulatePatternImpl<T> extends AbstractSinglePattern implements AccumulatePattern<T>, ModelComponent {
 
-    private final Pattern<T> pattern;
+    private Pattern<T> pattern;
     private final Optional<CompositePatterns> compositePatterns;
     private final AccumulateFunction<T, ?, ?>[] functions;
     private final Variable[] boundVariables;
@@ -29,6 +29,10 @@ public class AccumulatePatternImpl<T> extends AbstractSinglePattern implements A
         }
     }
 
+    public void setPattern(Pattern<T> pattern) {
+        this.pattern = pattern;
+    }
+
     @Override
     public AccumulateFunction<T, ?, ?>[] getFunctions() {
         return functions;
@@ -37,6 +41,11 @@ public class AccumulatePatternImpl<T> extends AbstractSinglePattern implements A
     @Override
     public Optional<CompositePatterns> getCompositePatterns() {
         return compositePatterns;
+    }
+
+    @Override
+    public Pattern getPattern() {
+        return pattern;
     }
 
     @Override

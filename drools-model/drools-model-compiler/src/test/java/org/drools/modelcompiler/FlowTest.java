@@ -1186,4 +1186,33 @@ public class FlowTest {
                                                      }));
         return rule;
     }
+
+    /** Rule name: R */
+    private org.drools.model.Rule rule_R4() {
+        final org.drools.model.Variable<java.lang.Object> var_$pattern_Object$1$ = declarationOf(type(java.lang.Object.class),
+                                                                                                 "$pattern_Object$1$");
+        final org.drools.model.Variable<org.drools.modelcompiler.domain.Child> var_$c = declarationOf(type(org.drools.modelcompiler.domain.Child.class),
+                                                                                                      "$c");
+        final org.drools.model.Variable<org.drools.modelcompiler.domain.Adult> var_$a = declarationOf(type(org.drools.modelcompiler.domain.Adult.class),
+                                                                                                      "$a");
+        final org.drools.model.Variable<Integer> var_$expr$4$ = declarationOf(type(Integer.class),
+                                                                              "$expr$4$");
+        final org.drools.model.Variable<Integer> var_$parentAge = declarationOf(type(Integer.class),
+                                                                                "$parentAge");
+        org.drools.model.Rule rule = rule("R").build(bind(var_$expr$4$).as(var_$a,
+                                                                           (_this) -> _this.getAge()),
+                                                     accumulate(and(expr("$expr$1$",
+                                                                         var_$c,
+                                                                         (_this) -> _this.getAge() < 10).reactOn("age"),
+                                                                    expr("$expr$2$",
+                                                                         var_$a,
+                                                                         var_$c,
+                                                                         (_this, $c) -> _this.getName()
+                                                                                 .equals($c.getParent())).reactOn("name")),
+                                                                sum(var_$expr$4$).as(var_$parentAge)),
+                                                     on(var_$parentAge).execute((drools, $parentAge) -> {
+                                                         drools.insert(new Result($parentAge));
+                                                     }));
+        return rule;
+    }
 }

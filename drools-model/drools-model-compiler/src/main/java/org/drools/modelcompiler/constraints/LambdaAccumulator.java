@@ -12,14 +12,18 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Accumulator;
 import org.drools.core.spi.Tuple;
 import org.drools.model.AccumulateFunction;
+import org.drools.model.Binding;
+import org.drools.model.Pattern;
 import org.drools.model.Variable;
 
 public class LambdaAccumulator implements Accumulator {
 
     private final AccumulateFunction accumulateFunction;
+    private final Pattern sourcePattern;
 
-    public LambdaAccumulator( AccumulateFunction accumulateFunction ) {
+    public LambdaAccumulator(AccumulateFunction accumulateFunction, Pattern sourcePattern) {
         this.accumulateFunction = accumulateFunction;
+        this.sourcePattern = sourcePattern;
     }
 
     @Override
@@ -39,23 +43,20 @@ public class LambdaAccumulator implements Accumulator {
 
     @Override
     public void accumulate(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle, Declaration[] declarations, Declaration[] innerDeclarations, WorkingMemory workingMemory) throws Exception {
-        final Optional<Variable<?>> optSource = accumulateFunction.getOptSource();
-        final Object object  = optSource.map((Variable<?> source) -> {
-            final Declaration decl = declarationWithName(innerDeclarations, source.getName());
-
-            return decl.getValue((InternalWorkingMemory) workingMemory, handle.getObject());
-        }).orElseGet(() -> {
-            final Object accumulateObject = handle.getObject();
-            if(accumulateObject instanceof SubnetworkTuple) {
-                final Optional<String> paramName = accumulateFunction.getParamName();
-                final String variableName = paramName.orElseThrow(() -> new RuntimeException("Param name unknown"));
-                final Declaration declaration = declarationWithName(innerDeclarations, variableName);
-                return declaration.getValue((InternalWorkingMemory) workingMemory, ((SubnetworkTuple) accumulateObject).getObject(declaration) );
-            } else {
-                return accumulateObject;
-            }
-        });
-        accumulateFunction.action((Serializable)context, object);
+        final Object accumulateObject = handle.getObject();
+        final Object returnObject;
+        if (accumulateObject instanceof SubnetworkTuple) {
+            Declaration declaration = Arrays.stream(innerDeclarations).filter(d -> d.getIdentifier().equals(sourcePattern.getPatternVariable().getName())).findFirst().orElseThrow(RuntimeException::new);
+            Binding b = (Binding)sourcePattern.getBindings().iterator().next();
+            Object object = ((SubnetworkTuple) accumulateObject).getObject(declaration);
+            Object result = b.getBindingFunction().apply(object);
+            returnObject = result;
+        } else {
+            Binding b = (Binding)sourcePattern.getBindings().iterator().next();
+            Object result = b.getBindingFunction().apply(accumulateObject);
+            returnObject = result;
+        }
+        accumulateFunction.action((Serializable)context, returnObject);
     }
 
     private Declaration declarationWithName(Declaration[] innerDeclarations, String variableName) {

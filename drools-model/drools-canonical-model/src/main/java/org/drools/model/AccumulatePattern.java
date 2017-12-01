@@ -9,4 +9,6 @@ public interface AccumulatePattern<T> extends Pattern<T> {
     AccumulateFunction<T, ?, ?>[] getFunctions();
 
     Optional<CompositePatterns> getCompositePatterns();
+
+    Pattern getPattern();
 }

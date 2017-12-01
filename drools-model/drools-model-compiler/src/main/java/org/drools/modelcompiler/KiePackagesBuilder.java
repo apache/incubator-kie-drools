@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -351,8 +350,9 @@ public class KiePackagesBuilder {
                 } else {
                     source = buildPattern(ctx, condition );
                 }
-                Pattern pattern = new Pattern( 0, getObjectType( Object.class ) );
-                pattern.setSource(buildAccumulate(ctx, accumulatePattern, source, pattern ) );
+                org.drools.model.Pattern sourcePattern = accumulatePattern.getPattern();
+                Pattern pattern = new Pattern( 0,  getObjectType( Object.class ) );
+                pattern.setSource(buildAccumulate(ctx, accumulatePattern, source, pattern, sourcePattern) );
                 return pattern;
             }
             case OOPATH: {
@@ -486,13 +486,11 @@ public class KiePackagesBuilder {
         return pattern;
     }
 
-    private Accumulate buildAccumulate( RuleContext ctx, AccumulatePattern accPattern, RuleConditionElement source, Pattern pattern ) {
+    private Accumulate buildAccumulate( RuleContext ctx, AccumulatePattern accPattern, RuleConditionElement source, Pattern pattern, org.drools.model.Pattern condition) {
         AccumulateFunction<?, ?, ?>[] accFunctions = accPattern.getFunctions();
 
         if (accFunctions.length == 1) {
             final AccumulateFunction<?, ?, ?> accFunction = accFunctions[0];
-
-            addSourceDeclaration(ctx, pattern, accFunction.getOptSource());
 
             final Declaration declaration = new Declaration(accPattern.getBoundVariables()[0].getName(),
                                                             getReadAcessor(getObjectType(Object.class)),
@@ -500,31 +498,21 @@ public class KiePackagesBuilder {
                                                             true);
             pattern.addDeclaration(declaration);
 
-            return new SingleAccumulate(source, new Declaration[0], new LambdaAccumulator(accFunction));
+            return new SingleAccumulate(source, new Declaration[0], new LambdaAccumulator(accFunction, condition));
         }
 
         InternalReadAccessor reader = new SelfReferenceClassFieldReader( Object[].class );
         Accumulator[] accumulators = new Accumulator[accFunctions.length];
         for (int i = 0; i < accPattern.getFunctions().length; i++) {
 
-            addSourceDeclaration(ctx, pattern, accFunctions[i].getOptSource());
-
             Variable accVar = accPattern.getBoundVariables()[i];
             pattern.addDeclaration( new Declaration(accVar.getName(),
                                                     new ArrayElementReader( reader, i, accVar.getType().asClass()),
                                                     pattern,
                                                     true) );
-            accumulators[i] = new LambdaAccumulator( accFunctions[i] );
+            accumulators[i] = new LambdaAccumulator(accFunctions[i], condition);
         }
         return new MultiAccumulate( source, new Declaration[0], accumulators);
-    }
-
-    private void addSourceDeclaration(RuleContext ctx, Pattern pattern, Optional<? extends Variable<?>> sourceVariable) {
-        sourceVariable.ifPresent(fs -> {
-            final Declaration decl = new Declaration(fs.getName(), pattern);
-            ctx.addInnerDeclaration(fs, decl);
-            pattern.addDeclaration(decl);
-        });
     }
 
     private Pattern addPatternForVariable( RuleContext ctx, Variable patternVariable ) {
