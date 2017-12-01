@@ -44,7 +44,6 @@ import org.drools.modelcompiler.builder.KieBaseBuilder;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
-import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.internal.builder.ChangeType;
 import org.kie.internal.builder.ResourceChange;
@@ -56,7 +55,7 @@ public class CanonicalKieModule extends ZipKieModule {
 
     public static final String MODEL_FILE = "META-INF/kie/drools-model";
 
-    private final Collection<String> ruleClassesNames;
+    private Collection<String> ruleClassesNames;
 
     private final Map<String, CanonicalKiePackages> pkgsInKbase = new HashMap<>();
 
@@ -84,24 +83,21 @@ public class CanonicalKieModule extends ZipKieModule {
 
     @Override
     public InternalKnowledgeBase createKieBase( KieBaseModelImpl kBaseModel, KieProject kieProject, ResultsImpl messages, KieBaseConfiguration conf ) {
-        ClassLoader kieProjectCL = kieProject.getClassLoader();
-        KieBaseConfiguration kBaseConf = getKieBaseConfiguration( kBaseModel, kieProjectCL, conf );
-        CanonicalKiePackages kpkgs = pkgsInKbase.computeIfAbsent( kBaseModel.getName(), k -> createKiePackages(kBaseConf, kieProjectCL) );
-        return new KieBaseBuilder( kBaseModel, kieProjectCL, kBaseConf ).createKieBase(kpkgs);
+        this.moduleClassLoader = (( ProjectClassLoader ) kieProject.getClassLoader());
+        KieBaseConfiguration kBaseConf = getKieBaseConfiguration( kBaseModel, moduleClassLoader, conf );
+        CanonicalKiePackages kpkgs = pkgsInKbase.computeIfAbsent( kBaseModel.getName(), k -> createKiePackages(kBaseConf) );
+        return new KieBaseBuilder( kBaseModel, kBaseConf ).createKieBase(kpkgs);
     }
 
-    private CanonicalKiePackages createKiePackages( KieBaseConfiguration conf, ClassLoader kieProjectCL ) {
-        return new KiePackagesBuilder(conf, getModels(kieProjectCL).values()).build();
+    private CanonicalKiePackages createKiePackages( KieBaseConfiguration conf ) {
+        return new KiePackagesBuilder(conf, getModels().values()).build();
     }
 
     public CanonicalKiePackages getKiePackages( KieBaseModelImpl kBaseModel ) {
-        return pkgsInKbase.computeIfAbsent( kBaseModel.getName(), k ->  {
-            ProjectClassLoader kieProjectCL = getModuleClassLoader();
-            return createKiePackages(getKnowledgeBaseConfiguration(kBaseModel, kieProjectCL), kieProjectCL);
-        });
+        return pkgsInKbase.computeIfAbsent( kBaseModel.getName(), k -> createKiePackages(getKnowledgeBaseConfiguration(kBaseModel, getModuleClassLoader())) );
     }
 
-    private ProjectClassLoader getModuleClassLoader() {
+    public ProjectClassLoader getModuleClassLoader() {
         if (moduleClassLoader == null) {
             moduleClassLoader = createModuleClassLoader( null );
             moduleClassLoader.storeClasses( getClassesMap( true ) );
@@ -109,15 +105,19 @@ public class CanonicalKieModule extends ZipKieModule {
         return moduleClassLoader;
     }
 
-    private Map<String, Model> getModels() {
-        return getModels( getModuleClassLoader() );
+    public void setModuleClassLoader(ProjectClassLoader moduleClassLoader) {
+        pkgsInKbase.clear();
+        this.moduleClassLoader = moduleClassLoader;
     }
 
-    private Map<String, Model> getModels(ClassLoader kieProjectCL) {
-        Collection<String> rulesFiles = ruleClassesNames != null ? ruleClassesNames : findRuleClassesNames( kieProjectCL );
+    private Map<String, Model> getModels() {
+        if (ruleClassesNames == null) {
+            ruleClassesNames = findRuleClassesNames( getModuleClassLoader() );
+        }
         Map<String, Model> models = new HashMap<>();
-        for (String rulesFile : rulesFiles) {
-            models.put( rulesFile, createInstance( kieProjectCL, rulesFile ) );
+        for (String rulesFile : ruleClassesNames) {
+            Model model = createInstance( getModuleClassLoader(), rulesFile );
+            models.put( model.getName(), model );
         }
         return models;
     }
@@ -229,12 +229,6 @@ public class CanonicalKieModule extends ZipKieModule {
         }
 
         return result;
-    }
-
-    @Override
-    public boolean isFileInKBase( KieBaseModel kieBase, String fileName ) {
-        // TODO
-        return true;
     }
 
     @Override

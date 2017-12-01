@@ -89,4 +89,9 @@ public class RuleImpl implements Rule, ModelComponent {
         if ( !ModelComponent.areEqualInModel( consequences, rule.consequences ) ) return false;
         return attributes != null ? attributes.equals( rule.attributes ) : rule.attributes == null;
     }
+
+    @Override
+    public String toString() {
+        return "Rule: " +  pkg + "." + name;
+    }
 }
