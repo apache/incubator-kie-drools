@@ -38,7 +38,9 @@ public class CanonicalKieBaseUpdater implements Runnable {
 
     @Override
     public void run() {
-        CanonicalKiePackages newPkgs = (( CanonicalKieModule ) ctx.newKM).getKiePackages( ctx.newKieBaseModel );
+        CanonicalKieModule newKM = ( CanonicalKieModule ) ctx.newKM;
+        newKM.setModuleClassLoader( (( CanonicalKieModule ) ctx.currentKM).getModuleClassLoader() );
+        CanonicalKiePackages newPkgs = newKM.getKiePackages( ctx.newKieBaseModel );
 
         List<RuleImpl> rulesToBeRemoved = new ArrayList<>();
         List<RuleImpl> rulesToBeAdded = new ArrayList<>();

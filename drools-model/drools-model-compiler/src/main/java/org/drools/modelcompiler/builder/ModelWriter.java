@@ -10,6 +10,7 @@ import org.drools.javaparser.ast.CompilationUnit;
 import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.drools.javaparser.printer.PrettyPrinter;
 
+import static org.drools.core.util.StringUtils.generateUUID;
 import static org.drools.modelcompiler.CanonicalKieModule.MODEL_FILE;
 import static org.drools.modelcompiler.builder.JavaParserCompiler.getPrettyPrinter;
 
@@ -35,16 +36,21 @@ public class ModelWriter {
                 sourceFiles.add( pojoSourceName );
             }
 
-            String rulesSourceName = "src/main/java/" + folderName + "/" + RULES_FILE_NAME + ".java";
-            String rulesSource = pkgModel.getRulesSource( prettyPrinter );
+            String rulesFileName = generateRulesFileName();
+            String rulesSourceName = "src/main/java/" + folderName + "/" + rulesFileName + ".java";
+            String rulesSource = pkgModel.getRulesSource( prettyPrinter, rulesFileName, pkgName );
             pkgModel.print( rulesSource );
             byte[] rulesBytes = rulesSource.getBytes();
             srcMfs.write( rulesSourceName, rulesBytes );
-            modelFiles.add( pkgName + "." + RULES_FILE_NAME );
+            modelFiles.add( pkgName + "." + rulesFileName );
             sourceFiles.add( rulesSourceName );
         }
 
         return new Result(sourceFiles, modelFiles);
+    }
+
+    private String generateRulesFileName() {
+        return RULES_FILE_NAME + generateUUID();
     }
 
     private String toPojoSource(String packageName, PrettyPrinter prettyPrinter, ClassOrInterfaceDeclaration pojo ) {

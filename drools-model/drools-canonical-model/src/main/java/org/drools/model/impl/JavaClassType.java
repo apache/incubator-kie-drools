@@ -31,7 +31,7 @@ public class JavaClassType<T> implements Type<T> {
 
         JavaClassType<?> that = ( JavaClassType<?> ) o;
 
-        return type.equals( that.type );
+        return type.getName().equals( that.type.getName() );
     }
 
     @Override

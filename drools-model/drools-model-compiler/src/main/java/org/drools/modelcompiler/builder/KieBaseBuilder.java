@@ -32,14 +32,14 @@ public class KieBaseBuilder {
     private final KieBaseConfiguration conf;
 
     public KieBaseBuilder() {
-        this(null, KieBaseBuilder.class.getClassLoader(), null);
+        this(null, null);
     }
 
     public KieBaseBuilder(KieBaseConfiguration conf) {
-        this(null, KieBaseBuilder.class.getClassLoader(), conf);
+        this(null, conf);
     }
 
-    public KieBaseBuilder(KieBaseModelImpl kBaseModel, ClassLoader cl, KieBaseConfiguration conf) {
+    public KieBaseBuilder(KieBaseModelImpl kBaseModel, KieBaseConfiguration conf) {
         this.conf = conf;
         this.kBaseName = kBaseModel != null ? kBaseModel.getName() : "defaultkiebase";
     }
