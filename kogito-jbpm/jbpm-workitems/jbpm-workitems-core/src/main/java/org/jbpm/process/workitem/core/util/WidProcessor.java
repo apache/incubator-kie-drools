@@ -90,7 +90,8 @@ public class WidProcessor extends AbstractProcessor {
             "<body>\n" +
             "<div class=\"container\">\n" +
             "$widInfo:{k|\n" +
-            "<h2>Workitem Info</h2>\n" +
+            "<div class=\"well\">\n" +
+            "<h2>$i$. Workitem Info - $widInfo.(k).name$</h2>\n" +
             "<table class=\"table table-hover\">\n" +
             "    <thead>\n" +
             "    <tr>\n" +
@@ -174,10 +175,57 @@ public class WidProcessor extends AbstractProcessor {
             "</table>\n" +
             "<br/>\n" +
             "$endif$\n" +
+            "</div>\n" +
             "}$\n" +
             "</div>\n" +
             "</body>\n" +
             "</html>";
+
+    public static final String JSON_ST_TEMPLATE = "[\n" +
+            "$widInfo:{k|\n" +
+            "$openbracket$\n" +
+            "    \"name\" : \"$widInfo.(k).name$\",\n" +
+            "    \"displayName\" : \"$widInfo.(k).displayName$\",\n" +
+            "    \"category\" : \"$widInfo.(k).category$\",\n" +
+            "    \"description\" : \"$widInfo.(k).description$\",\n" +
+            "    \"defaultHandler\" : \"$widInfo.(k).defaultHandler$\",\n" +
+            "\n" +
+            "    $if(widInfo.(k).parameters)$\n" +
+            "    \"parameters\" : [\n" +
+            "        $widInfo.(k).parameters:{k1|\n" +
+            "           $openbracket$\n" +
+            "               \"name\" : \"$k1$\",\n" +
+            "               \"type\" : \"new $widInfo.(k).parameters.(k1).type$()\"\n" +
+            "           $closebracket$\n" +
+            "        }; separator=\",\"$\n" +
+            "    ],\n" +
+            "    $endif$\n" +
+            "    $if(widInfo.(k).results)$\n" +
+            "    \"results\" : [\n" +
+            "        $widInfo.(k).results:{k1|\n" +
+            "           $openbracket$\n" +
+            "               \"name\" : \"$k1$\",\n" +
+            "               \"type\" : \"new $widInfo.(k).results.(k1).type$()\"\n" +
+            "           $closebracket$\n" +
+            "        }; separator=\",\"$\n" +
+            "    ],\n" +
+            "    $endif$\n" +
+            "    $if(widInfo.(k).mavenDepends)$\n" +
+            "    \"mavenDependencies\" : [\n" +
+            "        $widInfo.(k).mavenDepends:{k1|\n" +
+            "           $openbracket$\n" +
+            "               \"groupId\" : \"$widInfo.(k).mavenDepends.(k1).group$\",\n" +
+            "               \"artifactId\" : \"$widInfo.(k).mavenDepends.(k1).artifact$\",\n" +
+            "               \"version\" : \"$widInfo.(k).mavenDepends.(k1).version$\"\n" +
+            "           $closebracket$\n" +
+            "        }; separator=\",\"$\n" +
+            "    ],\n" +
+            "    $endif$\n" +
+            "    \"icon\" : \"$widInfo.(k).icon$\"\n" +
+            "\n" +
+            "$closebracket$\n" +
+            "}; separator=\",\"$\n" +
+            "]";
 
     public boolean process(final Set<? extends TypeElement> annotations,
                            final RoundEnvironment roundEnv) {
@@ -226,7 +274,7 @@ public class WidProcessor extends AbstractProcessor {
                                    new WidInfo(processingResults.get(key)));
             }
 
-            String widName = "WorkDefinitions.wid";
+            String widName = "WorkDefinitions";
             if (processingEnv.getOptions().containsKey("widName")) {
                 widName = processingEnv.getOptions().get("widName");
             } else {
@@ -235,13 +283,18 @@ public class WidProcessor extends AbstractProcessor {
             }
 
             writeStream(getFileObject("",
-                                      widName),
+                                      widName + ".wid"),
                         getTemplateData(WID_ST_TEMPLATE,
                                         wrappedResults));
             writeStream(getFileObject("",
                                       "index.html"),
                         getTemplateData(INDEX_ST_TEMPLATE,
                                         wrappedResults));
+            writeStream(getFileObject("",
+                                      widName + ".json"),
+                        getTemplateData(JSON_ST_TEMPLATE,
+                                        wrappedResults));
+
         } catch (Exception e) {
             processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
                                                      MessageFormat.format("Error post-processing workitem annotations: {0}.",
@@ -258,6 +311,8 @@ public class WidProcessor extends AbstractProcessor {
 
         stTemplate.add("widInfo",
                        widInfoMap);
+        stTemplate.add("openbracket", "{");
+        stTemplate.add("closebracket", "}");
 
         return stTemplate.render().getBytes();
     }

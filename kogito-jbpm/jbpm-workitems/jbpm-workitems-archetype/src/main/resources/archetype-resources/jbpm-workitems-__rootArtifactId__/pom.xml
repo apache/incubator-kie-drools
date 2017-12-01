@@ -66,7 +66,7 @@
             <annotationProcessor>org.jbpm.process.workitem.core.util.WidProcessor</annotationProcessor>
           </annotationProcessors>
           <compilerArgs>
-            <arg>-AwidName=${classPrefix}.wid</arg>
+            <arg>-AwidName=${classPrefix}</arg>
           </compilerArgs>
         </configuration>
       </plugin>
