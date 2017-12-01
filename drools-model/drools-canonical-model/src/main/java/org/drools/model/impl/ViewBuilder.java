@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import org.drools.model.AccumulateFunction;
+import org.drools.model.AccumulatePattern;
 import org.drools.model.Argument;
 import org.drools.model.Condition;
 import org.drools.model.Condition.Type;
@@ -180,6 +181,26 @@ public class ViewBuilder {
 
             Condition modifiedPattern = viewItem2Condition( viewItem, condition, usedVars, inputs );
             conditions.set( conditions.indexOf( condition ), modifiedPattern );
+            if(modifiedPattern instanceof AccumulatePattern) {
+                final Iterator<Condition> iterator = conditions.iterator();
+                while(iterator.hasNext()) {
+                    final Condition c = iterator.next();
+                    final Optional<CompositePatterns> compositePatterns = ((AccumulatePattern) modifiedPattern).getCompositePatterns();
+                    if(compositePatterns.isPresent()) {
+                        final List<Condition> subConditions = compositePatterns.get().getSubConditions();
+                        for(Condition patternCondition : subConditions) {
+                            if(patternCondition instanceof PatternImpl) {
+                                if(((PatternImpl)patternCondition).getPatternVariable().equals(((PatternImpl)c).getPatternVariable())) {
+                                    conditions.remove(c);
+                                }
+                            }
+                        }
+
+                    }
+                }
+                System.out.println("modifiedPattern = " + modifiedPattern);
+            }
+
             if (type == Type.AND) {
                 conditionMap.put( patterVariable, modifiedPattern );
             }
