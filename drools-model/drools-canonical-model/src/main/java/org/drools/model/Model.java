@@ -20,6 +20,8 @@ import java.util.List;
 
 public interface Model {
 
+    String getName();
+
     List<Global> getGlobals();
 
     List<Rule> getRules();
