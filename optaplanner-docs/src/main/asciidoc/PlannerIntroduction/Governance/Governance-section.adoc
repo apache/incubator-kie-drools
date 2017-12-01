@@ -12,7 +12,7 @@ OptaPlanner is stable, reliable and scaleable. It has been heavily tested with u
 [[releaseNotes]]
 == Release Notes
 
-We release a `Beta` or `CR` version every few weeks and a `Final` version every few months. https://www.optaplanner.org/download/releaseNotes/[Read the release notes of each release on our website.]
+We release every month. https://www.optaplanner.org/download/releaseNotes/[Read the release notes of each release on our website.]
 
 
 [[backwardsCompatibility]]
@@ -35,15 +35,17 @@ Those documented `impl` classes are reliable and safe to use (unless explicitly 
 [[communityAndSupport]]
 == Community and Support
 
-For news and articles, check https://www.optaplanner.org/blog/[our blog], Google+ (https://plus.google.com/+OptaPlannerOrg[OptaPlanner], https://plus.google.com/+GeoffreyDeSmet[Geoffrey De Smet]) and twitter (https://twitter.com/OptaPlanner[OptaPlanner], https://twitter.com/GeoffreyDeSmet[Geoffrey De Smet]).
-*If OptaPlanner helps you, help us by blogging or tweeting about it!*
+For news and articles, check https://www.optaplanner.org/blog/[our blog],
+https://twitter.com/OptaPlanner[twitter] (including https://twitter.com/GeoffreyDeSmet[Geoffrey's twitter])
+and https://www.facebook.com/OptaPlanner[facebook]. +
+*If you're happy with OptaPlanner, make us happy by posting a tweet or blog article about it.*
 
-Public questions are welcome on https://www.optaplanner.org/community/getHelp.html[our community forum].
+Public questions are welcome on https://www.optaplanner.org/community/getHelp.html[here].
 Bugs and feature requests are welcome in https://issues.jboss.org/browse/PLANNER[our issue tracker].
 Pull requests are very welcome on GitHub and get priority treatment! By open sourcing your improvements, you 'll benefit from our peer review and from our improvements made on top of your improvements.
 
 Red Hat sponsors OptaPlanner development by employing the core team.
-For enterprise support and consulting, take a look at https://www.optaplanner.org/product/services.html[the BRMS and BPM Suite products] (which contain OptaPlanner) or https://www.redhat.com/en/about/contact/sales[contact Red Hat].
+For enterprise support and consulting, take a look at https://www.optaplanner.org/product/services.html[these services].
 
 
 [[relationshipWithKie]]
