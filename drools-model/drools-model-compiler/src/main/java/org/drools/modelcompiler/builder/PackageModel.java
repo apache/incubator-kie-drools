@@ -171,9 +171,7 @@ public class PackageModel {
         return functions;
     }
 
-    public String getRulesSource(PrettyPrinter prettyPrinter) {
-//        if (true) return getRuleModelSource();
-
+    public String getRulesSource(PrettyPrinter prettyPrinter, String className, String modelName) {
         CompilationUnit cu = new CompilationUnit();
         cu.setPackageDeclaration( name );
 
@@ -195,12 +193,20 @@ public class PackageModel {
             cu.addImport(JavaParser.parseImport("import "+i+";"));
         }
         
-        ClassOrInterfaceDeclaration rulesClass = cu.addClass("Rules");
+        ClassOrInterfaceDeclaration rulesClass = cu.addClass(className);
         rulesClass.addImplementedType(Model.class);
 
         BodyDeclaration<?> dateFormatter = JavaParser.parseBodyDeclaration(
                 "private final static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DateUtils.getDateFormatMask());\n");
         rulesClass.addMember(dateFormatter);
+
+        BodyDeclaration<?> getNameMethod = JavaParser.parseBodyDeclaration(
+                "    @Override\n" +
+                "        public String getName() {\n" +
+                "        return \"" + modelName + "\";\n" +
+                "    }\n"
+                );
+        rulesClass.addMember(getNameMethod);
 
         BodyDeclaration<?> getRulesMethod = JavaParser.parseBodyDeclaration(
                 "    @Override\n" +
@@ -209,6 +215,7 @@ public class PackageModel {
                 "    }\n"
                 );
         rulesClass.addMember(getRulesMethod);
+
         StringBuilder sb = new StringBuilder("\n");
         sb.append("With the following expression ID:\n");
         sb.append(exprIdGenerator.toString());
