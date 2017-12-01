@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
@@ -16,7 +15,7 @@
 
   <name>jBPM :: BPMN2</name>
   <description>jBPM BPMN2</description>
-  
+
   <properties>
     <java.module.name>org.jbpm.bpmn2</java.module.name>
     <maven.jdbc.url>jdbc:h2:tcp://localhost/target/jbpm-bpmn-db;MVCC=TRUE</maven.jdbc.url>
@@ -65,8 +64,8 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
- 
-    
+
+
     <!-- Test -->
     <dependency>
       <groupId>org.jbpm</groupId>
@@ -93,8 +92,8 @@
       <artifactId>assertj-core</artifactId>
       <scope>test</scope>
     </dependency>
-    
-    <!-- test persistence -->  
+
+    <!-- test persistence -->
     <dependency>
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-persistence-jpa</artifactId>
@@ -131,7 +130,7 @@
       <artifactId>narayana-jta</artifactId>
       <scope>test</scope>
     </dependency>
-    
+
     <!-- test other -->
     <dependency>
       <groupId>org.jbpm</groupId>
@@ -154,9 +153,24 @@
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-impl</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.activation</groupId>
+      <artifactId>activation</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
-    
+
   <build>
     <resources>
       <resource>
@@ -199,8 +213,8 @@
         </configuration>
       </plugin>
       <plugin>
-        <!--  ensure that db files are deleted before _any_ run
-              otherwise we get tests failing because of leftover db's -->
+        <!-- ensure that db files are deleted before _any_ run otherwise 
+          we get tests failing because of leftover db's -->
         <artifactId>maven-clean-plugin</artifactId>
         <configuration>
           <filesets>
@@ -213,7 +227,7 @@
             </fileset>
           </filesets>
         </configuration>
-      </plugin>      
+      </plugin>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>

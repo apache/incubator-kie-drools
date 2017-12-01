@@ -138,6 +138,16 @@
       <artifactId>jbpm-workitems-webservice</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.jboss.spec.javax.xml.ws</groupId>
+      <artifactId>jboss-jaxws-api_2.2_spec</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.xml.soap</groupId>
+      <artifactId>javax.xml.soap-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-workitems-bpmn2</artifactId>
     </dependency>

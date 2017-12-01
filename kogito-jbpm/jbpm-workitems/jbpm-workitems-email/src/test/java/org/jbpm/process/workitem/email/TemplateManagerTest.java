@@ -16,7 +16,7 @@
 
 package org.jbpm.process.workitem.email;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
@@ -24,8 +24,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 
 import org.junit.After;
@@ -150,8 +152,8 @@ public class TemplateManagerTest {
         private CountDownLatch loadTemplate;
         private CountDownLatch removeTemplate;
         
-        private List<String> createdOrUpdated = new ArrayList<>();
-        private List<String> removed = new ArrayList<>();
+        private Set<String> createdOrUpdated = new LinkedHashSet<>();
+        private Set<String> removed = new LinkedHashSet<>();
         
         public TrackingTemplateManager(CountDownLatch loadTemplate, CountDownLatch removeTemplate) {
             super();
@@ -180,11 +182,11 @@ public class TemplateManagerTest {
         }
 
         
-        protected List<String> getCreatedOrUpdated() {
+        protected Set<String> getCreatedOrUpdated() {
             return createdOrUpdated;
         }
 
-        protected List<String> getRemoved() {
+        protected Set<String> getRemoved() {
             return removed;
         }        
     }

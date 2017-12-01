@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <project
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-    xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+  xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.jbpm</groupId>
@@ -41,7 +41,8 @@
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-databinding-jaxb</artifactId>
     </dependency>
-    <!-- Needed by the cxf-rt-databinding-jaxb as that one only depends on jaxb-impl and we need jaxb-core as well. -->
+    <!-- Needed by the cxf-rt-databinding-jaxb as that one only depends on 
+      jaxb-impl and we need jaxb-core as well. -->
     <dependency>
       <groupId>com.sun.xml.bind</groupId>
       <artifactId>jaxb-core</artifactId>
@@ -86,6 +87,21 @@
       <artifactId>jboss-servlet-api_3.1_spec</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.jboss.spec.javax.xml.ws</groupId>
+      <artifactId>jboss-jaxws-api_2.2_spec</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.jws</groupId>
+      <artifactId>jsr181-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.xml.soap</groupId>
+      <artifactId>javax.xml.soap-api</artifactId>
+      <scope>test</scope>
+    </dependency>
 
     <dependency>
       <groupId>org.kie</groupId>
@@ -114,7 +130,21 @@
       <artifactId>jbpm-workitems-webservice</artifactId>
       <scope>test</scope>
     </dependency>
-
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-impl</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-xjc</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
 </project>

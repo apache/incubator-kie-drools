@@ -520,6 +520,25 @@
         </pluginManagement>
       </build>
     </profile>
+    <profile>
+      <!-- Integration tests are skipped on jdk9 due to problem with jboss-marshalling that accesses sun.reflect.... -->
+      <id>skipITs-on-jdk9</id>
+      <activation>
+        <jdk>9</jdk>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <artifactId>maven-failsafe-plugin</artifactId>
+              <configuration>
+                <skipITs>true</skipITs>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
   </profiles>
 
 </project>

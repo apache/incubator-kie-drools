@@ -59,7 +59,7 @@ public class SubprocessesTest extends JbpmTestCase {
     private static final String HELLO_WORLD_PROCESS = "org/jbpm/test/functional/common/HelloWorldProcess1.bpmn";
     private static final String HELLO_WORLD_PROCESS_ID = "org.jbpm.test.functional.common.HelloWorldProcess1";
 
-    private static final boolean JAVA8 = System.getProperty("java.version").contains("1.8");
+    private static final boolean JAVA8_9 = System.getProperty("java.version").contains("1.8") || System.getProperty("java.version").startsWith("9.");
 
     private KieSession ksession;
 
@@ -122,7 +122,7 @@ public class SubprocessesTest extends JbpmTestCase {
         assertTriggered(process, "parameter mapping");
 
         // subprocess is started
-        if (JAVA8) {
+        if (JAVA8_9) {
             assertChangedVariable(process, "variable", null, "parameters");
             assertChangedVariable(process, "undefined", null, "parameters");
         } else {
@@ -172,7 +172,7 @@ public class SubprocessesTest extends JbpmTestCase {
         assertTriggered(process, "parameter mapping");
 
         // subprocess is started
-        if (JAVA8) {
+        if (JAVA8_9) {
             assertChangedVariable(process, "variable", null, "parameters");
             assertChangedVariable(process, "undefined", null, "parameters");
         } else {
@@ -601,7 +601,7 @@ public class SubprocessesTest extends JbpmTestCase {
         assertTriggered(process, "parameter mapping");
 
         // subprocess is started
-        if (JAVA8) {
+        if (JAVA8_9) {
             assertChangedVariable(process, "variable", null, "parameters");
             assertChangedVariable(process, "undefined", null, "parameters");
         } else {
