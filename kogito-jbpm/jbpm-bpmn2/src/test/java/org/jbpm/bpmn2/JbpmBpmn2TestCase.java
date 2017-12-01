@@ -246,7 +246,7 @@ public abstract class JbpmBpmn2TestCase extends AbstractBaseTest {
             Assume.assumeTrue(false);
         }
     }
-   
+
     @After
     public void clear() {
         clearHistory();
@@ -500,9 +500,9 @@ public abstract class JbpmBpmn2TestCase extends AbstractBaseTest {
             }
             KieSessionConfiguration config = ksession.getSessionConfiguration();
             config.setOption(ForceEagerActivationOption.YES);
+            ksession.dispose();
             StatefulKnowledgeSession result = JPAKnowledgeService.loadStatefulKnowledgeSession(id, kbase, config, env);
             AuditLoggerFactory.newInstance(Type.JPA, result, null);
-            ksession.dispose();
             return result;
         } else {
             return ksession;
@@ -737,7 +737,9 @@ public abstract class JbpmBpmn2TestCase extends AbstractBaseTest {
     protected void clearHistory() {
         if (sessionPersistence) {
             try {
-                logService.clear();
+                if (logService != null) {
+                    logService.clear();
+                }
             } catch(Exception e) {
                 log.error("History could not be deleted.", e);
             }

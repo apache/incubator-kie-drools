@@ -8,7 +8,7 @@
     <bpmn2:startEvent id="_8708FB26-380E-4145-BAB2-60334A1DFCFA" drools:bgcolor="#9acd32" drools:selectable="true" name="StartTimer">
       <bpmn2:outgoing>_6A58FA12-285D-4E9F-AAD7-952D83843E68</bpmn2:outgoing>
       <bpmn2:timerEventDefinition id="_tUAN0ZQIEeOXD5k8BOeZLg">
-        <bpmn2:timeCycle xsi:type="tFormalExpression" id="_FormalExpression_2">1000</bpmn2:timeCycle>
+        <bpmn2:timeCycle xsi:type="tFormalExpression" id="_FormalExpression_2">R2/PT1S</bpmn2:timeCycle>
       </bpmn2:timerEventDefinition>
     </bpmn2:startEvent>
     <bpmn2:startEvent id="_047F9B3A-799E-447E-B02B-75DCCAB03360" drools:bgcolor="#9acd32" drools:selectable="true" name="StartSignal">

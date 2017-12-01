@@ -16,7 +16,7 @@
     <!-- nodes -->
     <startEvent id="_1" name="StartProcess" >
       <timerEventDefinition>
-        <timeCycle xsi:type="tFormalExpression">2s###500ms</timeCycle>
+        <timeCycle xsi:type="tFormalExpression">2s###1000ms</timeCycle>
       </timerEventDefinition>
     </startEvent>
     <scriptTask id="_2" name="Hello" >

@@ -16,7 +16,7 @@
     <!-- nodes -->
     <startEvent id="_1" name="StartProcess" >
       <timerEventDefinition>
-        <timeCycle xsi:type="tFormalExpression" language="cron">0/1 * * * * ?</timeCycle>
+        <timeCycle xsi:type="tFormalExpression" language="cron">0/2 * * * * ?</timeCycle>
       </timerEventDefinition>
     </startEvent>
     <scriptTask id="_2" name="Hello" >
