@@ -143,7 +143,8 @@ public final class PartitionChangeMove<Solution_> extends AbstractMove<Solution_
 
     @Override
     public String toString() {
-        return "partIndex=" + partIndex;
+        int changeCount = changeMap.values().stream().mapToInt(List::size).sum();
+        return "part-" + partIndex + " {" + changeCount + " variables changed}";
     }
 
 }
