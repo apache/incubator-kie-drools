@@ -38,7 +38,7 @@ Those documented `impl` classes are reliable and safe to use (unless explicitly 
 For news and articles, check https://www.optaplanner.org/blog/[our blog], Google+ (https://plus.google.com/+OptaPlannerOrg[OptaPlanner], https://plus.google.com/+GeoffreyDeSmet[Geoffrey De Smet]) and twitter (https://twitter.com/OptaPlanner[OptaPlanner], https://twitter.com/GeoffreyDeSmet[Geoffrey De Smet]).
 *If OptaPlanner helps you, help us by blogging or tweeting about it!*
 
-Public questions are welcome on https://www.optaplanner.org/community/questions.html[our community forum].
+Public questions are welcome on https://www.optaplanner.org/community/getHelp.html[our community forum].
 Bugs and feature requests are welcome in https://issues.jboss.org/browse/PLANNER[our issue tracker].
 Pull requests are very welcome on GitHub and get priority treatment! By open sourcing your improvements, you 'll benefit from our peer review and from our improvements made on top of your improvements.
 
