@@ -118,9 +118,10 @@ Each of these algorithm families have multiple optimization algorithms:
 |    <<simulatedAnnealing,Simulated Annealing>> |5/5 |4/5 |2/5 |5/5 |Yes
 |    <<lateAcceptance,Late Acceptance>> |5/5 |4/5 |3/5 |5/5 |Yes
 |    <<stepCountingHillClimbing,Step Counting Hill Climbing>> |5/5 |4/5 |3/5 |5/5 |Yes
+|    <<variableNeighborhoodDescent,Variable Neighborhood Descent>> |3/5 |3/5 |2/5 |5/5 |Yes
 6+|  Evolutionary Algorithms (EA)
-|    <<evolutionaryStrategies,Evolutionary Strategies>> |4/5 |3/5 |2/5 |5/5 |Yes
-|    <<geneticAlgorithms,Genetic Algorithms>> |4/5 |3/5 |2/5 |5/5|Yes
+|    <<evolutionaryStrategies,Evolutionary Strategies>> |3/5 |3/5 |2/5 |5/5 |Yes
+|    <<geneticAlgorithms,Genetic Algorithms>> |3/5 |3/5 |2/5 |5/5|Yes
 |===
 
 To learn more about metaheuristics, see  http://www.cs.gmu.edu/~sean/book/metaheuristics/[Essentials of Metaheuristics] or http://www.cleveralgorithms.com/[Clever Algorithms].

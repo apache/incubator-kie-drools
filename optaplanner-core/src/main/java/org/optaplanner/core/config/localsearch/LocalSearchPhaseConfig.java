@@ -161,6 +161,7 @@ public class LocalSearchPhaseConfig extends PhaseConfig<LocalSearchPhaseConfig> 
             acceptorConfig_ = new AcceptorConfig();
             switch (localSearchType_) {
                 case HILL_CLIMBING:
+                case VARIABLE_NEIGHBORHOOD_DESCENT:
                     acceptorConfig_.setAcceptorTypeList(Collections.singletonList(AcceptorType.HILL_CLIMBING));
                     break;
                 case TABU_SEARCH:
@@ -171,9 +172,6 @@ public class LocalSearchPhaseConfig extends PhaseConfig<LocalSearchPhaseConfig> 
                     break;
                 case LATE_ACCEPTANCE:
                     acceptorConfig_.setAcceptorTypeList(Collections.singletonList(AcceptorType.LATE_ACCEPTANCE));
-                    break;
-                case VARIABLE_NEIGHBORHOOD_DESCENT:
-                    acceptorConfig_.setAcceptorTypeList(Collections.singletonList(AcceptorType.HILL_CLIMBING));
                     break;
                 default:
                     throw new IllegalStateException("The localSearchType (" + localSearchType_

@@ -619,8 +619,6 @@ The following ``finalistPodiumType``s are supported:
 * ``STRATEGIC_OSCILLATION_BY_LEVEL_ON_BEST_SCORE``: Like ``STRATEGIC_OSCILLATION_BY_LEVEL``, but define improving as better than the best score (instead of the last completed step score).
 
 
-
-
 [[variableNeighborhoodDescent]]
 == Variable Neighborhood Descent
 
@@ -629,8 +627,14 @@ The following ``finalistPodiumType``s are supported:
 === Algorithm Description
 
 Variable Neighborhood Descent iteratively tries multiple move selectors
-in original order (depleting each one entirely before trying the next one),
-accepting the first improving move (which also resets the move selector).
+in original order (depleting each selector entirely before trying the next one),
+picking the first improving move (which also resets the iterator back to the first move selector).
+
+[NOTE]
+====
+Despite that VND has a name that ends with _descent_ (from the research papers),
+the implementation will ascent to a higher score (which is a better score).
+====
 
 
 [[variableNeighborhoodDescentConfiguration]]
@@ -683,7 +687,6 @@ It's not possible to inject a ``Termination``, ... instance directly (to avoid e
 * A `SolverFactory` can build multiple `Solver` instances, which each require a distinct ``Termination``, ... instance.
 * A solver configuration needs to be serializable to and from XML. This makes benchmarking with `PlannerBenchmark` particularly easy because you can configure different `Solver` variants in XML.
 * A `Config` class is often easier and clearer to configure. For example: `TerminationConfig` translates `minutesSpentLimit` and `secondsSpentLimit` into ``timeMillisSpentLimit``.
-
 ====
 
 If you build a better implementation that's not domain specific, consider contributing it back as a pull request on github: we'll optimize it and take it along in future refactorings.
