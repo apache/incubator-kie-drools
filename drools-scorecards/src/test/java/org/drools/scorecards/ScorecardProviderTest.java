@@ -22,7 +22,6 @@ import org.drools.compiler.compiler.ScoreCardProvider;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.io.ResourceType;
@@ -40,7 +39,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertEquals;
 
-@Ignore
+
 public class ScorecardProviderTest {
     private static String drl;
     private ScoreCardProvider scoreCardProvider;

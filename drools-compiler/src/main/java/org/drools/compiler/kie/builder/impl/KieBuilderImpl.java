@@ -15,6 +15,7 @@
 
 package org.drools.compiler.kie.builder.impl;
 
+import static org.drools.compiler.kproject.ReleaseIdImpl.adapt;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -25,10 +26,12 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import java.util.zip.ZipEntry;
@@ -66,6 +69,7 @@ import org.kie.api.builder.Results;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.builder.model.KieSessionModel;
+import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
@@ -74,8 +78,7 @@ import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.internal.builder.KieBuilderSet;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.io.ResourceFactory;
-
-import static org.drools.compiler.kproject.ReleaseIdImpl.adapt;
+import org.kie.internal.io.ResourceTypeImpl;
 
 public class KieBuilderImpl
         implements
@@ -236,29 +239,38 @@ public class KieBuilderImpl
     /**
      * Pre-compiles (actually transforms) PMML files into DRL files and accompanying POJO source files
      * @param pmmlFileNames List of file names for resources that contain PMML
+     * @return List of PMMLResource objects
      */
-    private void precompilePmml(List<String> pmmlFileNames) {
+    private List<PMMLResource> precompilePmml(List<String> pmmlFileNames) {
+    	PMMLCompiler compiler = getPmmlCompiler();
     	if (pmmlFileNames != null && !pmmlFileNames.isEmpty()) {
-        	PMMLCompiler compiler = getPmmlCompiler();
-        	if (compiler == null) {
-        		throw new RuntimeException("Found PMML resources, but the PMML compiler is not on the classpath");
-        	}
-        	if (pmmlResources == null) {
-        		pmmlResources = new ArrayList<>();
-        	}
     		for (String fileName : pmmlFileNames) {
     			List<PMMLResource> resources = compiler.precompile(fileName, classLoader, null);
     			if (resources != null && !resources.isEmpty()) {
-    				pmmlResources.addAll(resources);
+    				addResourcesToPmmlResources(resources);
     			}
     		}
-        	List<KnowledgeBuilderResult> results = compiler.getResults();
-        	if (!results.isEmpty()) {
-        		pmmlResources.clear();
-        	}
     	}
+    	List<KnowledgeBuilderResult> results = compiler.getResults();
+    	if (!results.isEmpty()) {
+    		System.out.println(results);
+    		return Collections.emptyList();
+    	}
+    	return pmmlResources;
     }
     
+    /**
+     * Adds a List of PMMLResource objects to the instance pmmlResources list
+     * @param resources List of PMMLResource objects to be added
+     */
+    private void addResourcesToPmmlResources(List<PMMLResource> resources) {
+    	if (pmmlResources == null) {
+    		pmmlResources = new ArrayList<>();
+    	}
+    	if (resources != null && !resources.isEmpty()) {
+    		pmmlResources.addAll(resources);
+    	}
+    }
 
     @Override
     public KieBuilder setDependencies( KieModule... dependencies ) {

@@ -16,7 +16,6 @@
 package org.drools.scorecards;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -27,7 +26,6 @@ import org.kie.api.runtime.KieSession;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-@Ignore
 public class ScorecardsKModuleTest {
 
     @Before

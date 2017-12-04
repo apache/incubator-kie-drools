@@ -22,7 +22,6 @@ import org.dmg.pmml.pmml_4_2.descr.PMML;
 import org.dmg.pmml.pmml_4_2.descr.Scorecard;
 import org.drools.pmml.pmml_4_2.PMML4Helper;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -46,7 +45,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-@Ignore
 public class ScorecardReasonCodeTest {
 
     @Test
