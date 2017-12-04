@@ -7,10 +7,10 @@ import org.drools.model.Variable;
 
 public class AccumulateExprViewItem<T> extends AbstractExprViewItem<T> {
 
-    private final ExprViewItem<T> expr;
+    private final ViewItem<T> expr;
     private final AccumulateFunction<T, ?, ?>[] functions;
 
-    public AccumulateExprViewItem(ExprViewItem<T> expr, AccumulateFunction<T, ?, ?>... functions) {
+    public AccumulateExprViewItem(ViewItem<T> expr, AccumulateFunction<T, ?, ?>... functions) {
         super(expr.getFirstVariable());
         this.expr = expr;
         this.functions = functions;
@@ -26,7 +26,7 @@ public class AccumulateExprViewItem<T> extends AbstractExprViewItem<T> {
         return expr.getVariables();
     }
 
-    public ExprViewItem<T> getExpr() {
+    public ViewItem<T> getExpr() {
         return expr;
     }
 
