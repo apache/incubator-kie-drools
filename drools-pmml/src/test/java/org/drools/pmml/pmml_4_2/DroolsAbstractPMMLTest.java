@@ -141,18 +141,6 @@ public abstract class DroolsAbstractPMMLTest {
 
         KieContainer kContainer = ks.newKieContainer( kr.getDefaultReleaseId() );
         
-        InternalKieModule module = (InternalKieModule)kr.getKieModule(kContainer.getReleaseId());
-        FileOutputStream fos = null;
-        try {
-	        fos = new FileOutputStream("/home/lleveric/tmp/module.kjar");
-	        fos.write(module.getBytes());
-        } catch (IOException iox) {
-        	iox.printStackTrace();
-        } finally {
-        	if (fos != null) {
-        		try { fos.close(); }catch(Exception e){}
-        	}
-        }
 
 //        KieBase kieBase = kContainer.getKieBase("SampleMine_SampleMineSegmentation_SEGMENT_1");
         KieBase kieBase = kContainer.getKieBase();

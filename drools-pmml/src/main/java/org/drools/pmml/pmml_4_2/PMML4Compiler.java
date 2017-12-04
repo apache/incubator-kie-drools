@@ -550,37 +550,9 @@ public class PMML4Compiler implements PMMLCompiler {
 	    		resources.add(resource);
     		}
     	}
-    	dumpResourceContents(resources);
     	return resources;
     }
 
-    private void dumpResourceContents(List<PMMLResource> resources) {
-    	for (PMMLResource resource : resources) {
-    		Map<String,String> rules = resource.getRules();
-    		for (String key: rules.keySet()) {
-    			FileOutputStream fos;
-				try {
-					fos = new FileOutputStream("/home/lleveric/tmp/"+key+".txt");
-	    			fos.write(rules.get(key).getBytes());
-	    			fos.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-    		}
-    		Map<String,String> src = resource.getPojoDefinitions();
-    		for (String key: src.keySet()) {
-    			FileOutputStream fos;
-				try {
-					fos = new FileOutputStream("/home/lleveric/tmp/"+key+".java");
-	    			fos.write(src.get(key).getBytes());
-	    			fos.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-    		}
-    	}
-    }
-    
     protected PMMLResource buildResourceFromSegment(PMML pmml_origin, MiningSegment segment, ClassLoader classLoader, KieModuleModel module) {
     	PMML pmml = new PMML();
     	DataDictionary dd = pmml_origin.getDataDictionary();
