@@ -203,7 +203,7 @@ public class ViewBuilder {
     }
 
     private static Optional<PatternImpl> findPatternImplSource(AccumulatePatternImpl accumulatePattern, List<Condition> conditions) {
-        final Variable source = (Variable) accumulatePattern.getFunctions()[0].getOptSource().get();
+        final Variable source = accumulatePattern.getFunctions()[0].getSource();
 
         for (Condition subCondition : conditions) {
             if (subCondition instanceof PatternImpl) {

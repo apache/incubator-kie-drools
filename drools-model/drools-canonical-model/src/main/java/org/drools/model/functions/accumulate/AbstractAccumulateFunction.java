@@ -8,11 +8,11 @@ import org.drools.model.Variable;
 
 public abstract class AbstractAccumulateFunction<T, A extends Serializable, R> implements AccumulateFunction<T, A, R> {
     private Variable<R> var;
-    protected final Optional<Variable<T>> optSource;
+    protected final Variable<T> source;
     private final Optional<String> paramName;
 
-    public AbstractAccumulateFunction(Optional<Variable<T>> optSource, Optional<String> paramName) {
-        this.optSource = optSource;
+    public AbstractAccumulateFunction(Variable<T> source, Optional<String> paramName) {
+        this.source = source;
         this.paramName = paramName;
     }
 

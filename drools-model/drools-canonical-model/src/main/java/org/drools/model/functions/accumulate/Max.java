@@ -11,7 +11,7 @@ public class Max<T> extends AbstractAccumulateFunction<T, Max.Context, Double> i
 
    private final Function1<T, ? extends Number> mapper;
 
-   public Max(Optional<Variable<T>> source, Function1<T, Double> mapper, Optional<String> paramName) {
+   public Max(Variable<T> source, Function1<T, Double> mapper, Optional<String> paramName) {
        super(source, paramName);
        this.mapper = mapper;
    }
@@ -38,8 +38,8 @@ public class Max<T> extends AbstractAccumulateFunction<T, Max.Context, Double> i
    }
 
    @Override
-   public Optional<Variable<T>> getOptSource() {
-       return optSource;
+   public Variable<T> getSource() {
+       return source;
    }
 
    public static class Context implements Serializable {
