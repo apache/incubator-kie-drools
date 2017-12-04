@@ -283,11 +283,11 @@ public class MeetingSchedulingGenerator extends LoggingMain {
     }
 
     private void createRoomList(MeetingSchedule meetingSchedule, int roomListSize) {
+        final int roomsPerFloor = 20;
         List<Room> roomList = new ArrayList<>(roomListSize);
         for (int i = 0; i < roomListSize; i++) {
             Room room = new Room();
             room.setId((long) i);
-            int roomsPerFloor = 20;
             String name = "R " + ((i / roomsPerFloor * 100) + (i % roomsPerFloor) + 1);
             room.setName(name);
             int capacityOptionsSubsetSize = personsPerMeetingOptions.length * 3 / 4;
