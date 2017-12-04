@@ -1,0 +1,31 @@
+<PMML version="4.2" xsi:schemaLocation="http://www.dmg.org/PMML-4_2 http://www.dmg.org/v4-1/pmml-4-2.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.dmg.org/PMML-4_2">
+  <Header copyright="JBoss"/>
+  <DataDictionary numberOfFields="6">
+    <DataField dataType="double" name="Intervalled" optype="continuous">
+      <Interval closure="closedClosed" leftMargin="0" rightMargin="1"/>
+      <Interval closure="closedOpen" leftMargin="2" rightMargin="3"/>
+      <Interval closure="openClosed" leftMargin="4" rightMargin="5"/>
+      <Interval closure="openOpen" leftMargin="10" rightMargin="20"/>
+    </DataField>
+    <DataField dataType="integer" name="Vallued" optype="continuous">
+      <Value property="valid" value="1"/>
+      <Value property="valid" value="2"/>
+      <Value property="missing" value="0"/>
+      <Value property="invalid" value="-1"/>
+    </DataField>
+    <DataField dataType="integer" name="DefaultValid" optype="continuous">
+      <Value property="missing" value="0"/>
+    </DataField>
+    <DataField dataType="integer" name="DefaultInvalid" optype="continuous">
+      <Value property="valid" value="0"/>
+    </DataField>
+    <DataField dataType="string" name="Cat" optype="categorical">
+      <Value value="aa"/>
+      <Value value="bb"/>
+    </DataField>
+    <DataField dataType="integer" name="Sort" optype="ordinal">
+      <Value value="1"/>
+      <Value value="3"/>
+    </DataField>
+  </DataDictionary>
+</PMML>
