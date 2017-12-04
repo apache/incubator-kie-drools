@@ -26,6 +26,21 @@
 
 
 @declare{'miningFieldInvalidRule'}
+rule "miningFieldInvalid_PMML4Data_@{model}_@{name}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
+salience 999
+when
+   $x: PMML4Data( capitalizedName == "@{name}", $m : missing, $v : valid == false, placeholder == false,
+                  context == @{format("string",model)} )
+then
+   delete( $x );
+   $x.setValue( @{ replacement != null ? format( mapDatatype( type ), replacement ) : zeroForDatatype( type ) } );
+   $x.setMissing( @{replacement == null} );
+   $x.setValid( true );
+   insert( $x );
+end
+
+
 rule "miningFieldInvalid_@{model}_@{name}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience 999

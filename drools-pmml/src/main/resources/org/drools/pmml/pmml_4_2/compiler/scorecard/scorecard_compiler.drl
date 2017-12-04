@@ -16,6 +16,8 @@
 package org.drools.pmml.pmml_4_2.compiler;
 
 import org.dmg.pmml.pmml_4_2.descr.*;
+import org.drools.pmml.pmml_4_2.model.*;
+import org.drools.pmml.pmml_4_2.model.scorecard.*;
 import java.util.*;
 
 dialect "mvel"

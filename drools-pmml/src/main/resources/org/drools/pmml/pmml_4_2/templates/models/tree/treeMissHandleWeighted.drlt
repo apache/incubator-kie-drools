@@ -30,9 +30,9 @@ rule "Handle weighted missing values on my way back @{context}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience 5
 when
-    $node : @{ pmmlPackageName }.TreeNode( context == "@{context}", $id : id,
+    $node : TreeNode( context == "@{context}", $id : id,
                       $out : outcome, $children : children, $count : recordCount, $confs : confidence )
-    $tok  : @{ pmmlPackageName }.@{context}TreeToken( context == "@{context}", current == $id, visitMode == "WEIGHTED_CONFIDENCE", $res : results )
+    $tok  : @{context}TreeToken( context == "@{context}", current == $id, visitMode == "WEIGHTED_CONFIDENCE", $res : results )
 
     not @{name}( context == "@{context}" )
 
