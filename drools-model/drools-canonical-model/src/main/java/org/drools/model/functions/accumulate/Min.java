@@ -11,8 +11,8 @@ public class Min<T> extends AbstractAccumulateFunction<T, Min.Context, Double> i
 
    private final Function1<T, ? extends Number> mapper;
 
-   public Min(Variable<T> source, Function1<T, Double> mapper, Optional<String> paramName) {
-       super(source, paramName);
+   public Min(Variable<T> source, Function1<T, Double> mapper) {
+       super(source);
        this.mapper = mapper;
    }
 

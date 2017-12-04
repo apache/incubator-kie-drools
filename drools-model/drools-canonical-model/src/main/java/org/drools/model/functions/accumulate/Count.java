@@ -1,7 +1,6 @@
 package org.drools.model.functions.accumulate;
 
 import java.io.Serializable;
-import java.util.Optional;
 
 import org.drools.model.Variable;
 import org.drools.model.impl.ModelComponent;
@@ -9,7 +8,7 @@ import org.drools.model.impl.ModelComponent;
 public class Count<T> extends AbstractAccumulateFunction<T,Count.Context<T>,Integer> implements ModelComponent {
 
    public Count(Variable<T> source) {
-       super(source, Optional.empty());
+       super(source);
    }
 
    @Override

@@ -1,7 +1,5 @@
 package org.drools.model;
 
-import java.io.Serializable;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import org.drools.model.consequences.ConditionalConsequenceBuilder;
@@ -13,7 +11,6 @@ import org.drools.model.datasources.impl.SetDataStore;
 import org.drools.model.functions.Block0;
 import org.drools.model.functions.Block1;
 import org.drools.model.functions.Function1;
-import org.drools.model.functions.Function2;
 import org.drools.model.functions.Predicate1;
 import org.drools.model.functions.Predicate2;
 import org.drools.model.functions.Predicate3;
@@ -21,7 +18,6 @@ import org.drools.model.functions.accumulate.Average;
 import org.drools.model.functions.accumulate.Count;
 import org.drools.model.functions.accumulate.Max;
 import org.drools.model.functions.accumulate.Min;
-import org.drools.model.functions.accumulate.Reduce;
 import org.drools.model.functions.accumulate.Sum;
 import org.drools.model.functions.temporal.AfterPredicate;
 import org.drools.model.functions.temporal.BeforePredicate;
@@ -362,7 +358,7 @@ public class DSL {
     // -- Accumulate Functions --
 
     public static <N extends Number> Sum<N> sum(Variable<N> source) {
-        return new Sum<>(source, Optional.empty());
+        return new Sum<>(source);
     }
 
     public static <T> Count<T> count(Variable<T> source) {
@@ -370,15 +366,15 @@ public class DSL {
     }
 
     public static <T extends Number>  Min<T> min(Variable<T> source) {
-        return new Min<T>(source, x -> x.doubleValue(), Optional.empty());
+        return new Min<T>(source, x -> x.doubleValue());
     }
 
     public static <T extends Number>  Max<T> max(Variable<T> source) {
-        return new Max<T>(source, x -> x.doubleValue(), Optional.empty());
+        return new Max<T>(source, x -> x.doubleValue());
     }
 
     public static <N extends Number> Average<N> average(Variable<N> source) {
-        return new Average<N>(source, x -> x, Optional.empty());
+        return new Average<N>(source, x -> x);
     }
 
     // -- Conditional Named Consequnce --

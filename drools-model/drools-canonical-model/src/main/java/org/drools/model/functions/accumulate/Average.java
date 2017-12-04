@@ -11,8 +11,8 @@ public class Average<T> extends AbstractAccumulateFunction<T, Average.Context, D
 
     private final Function1<T, ? extends Number> mapper;
 
-    public Average(Variable<T> source, Function1<T, ? extends Number> mapper, Optional<String> paramName) {
-        super(source, paramName);
+    public Average(Variable<T> source, Function1<T, ? extends Number> mapper) {
+        super(source);
         this.mapper = mapper;
     }
 

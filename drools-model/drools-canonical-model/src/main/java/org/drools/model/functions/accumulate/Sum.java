@@ -8,8 +8,8 @@ import org.drools.model.impl.ModelComponent;
 
 public class Sum<N extends Number> extends AbstractAccumulateFunction<N, Sum.Context<N>, N> implements ModelComponent {
 
-    public Sum(Variable<N> source, Optional<String> paramNames) {
-        super(source, paramNames);
+    public Sum(Variable<N> source) {
+        super(source);
     }
 
     @Override
