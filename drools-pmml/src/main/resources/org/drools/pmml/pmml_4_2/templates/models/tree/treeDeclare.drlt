@@ -24,32 +24,6 @@
 
 @declare{'treeDeclare'}
 
-declare @{ pmmlPackageName }.TreeToken
-@propertyReactive
-    context     : String
-    current     : String
-    marker      : String
-    visitMode   : String
-    downward    : boolean
-    trail       : java.util.List
-    results     : java.util.Map
-    confidence  : double
-    totalCount  : double
-end
-
-declare @{ pmmlPackageName }.TreeNode
-@propertyReactive
-    context     : String            @key
-    id          : String            @key
-    parent      : String
-    children    : java.util.List
-    outcome     : String
-    recordCount : int
-    counts      : java.util.Map
-    confidence  : java.util.Map
-    defaultChld : String
-end
-
 @end{}
 
 

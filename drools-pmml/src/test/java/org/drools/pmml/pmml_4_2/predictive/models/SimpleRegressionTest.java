@@ -18,6 +18,8 @@ package org.drools.pmml.pmml_4_2.predictive.models;
 
 
 import org.drools.pmml.pmml_4_2.DroolsAbstractPMMLTest;
+import org.drools.pmml.pmml_4_2.PMML4Compiler;
+import org.drools.pmml.pmml_4_2.model.PMMLRequestData;
 import org.junit.After;
 import org.junit.Test;
 import org.kie.api.definition.type.FactType;
@@ -27,8 +29,8 @@ public class SimpleRegressionTest extends DroolsAbstractPMMLTest {
 
 
     private static final boolean VERBOSE = true;
-    private static final String source1 = "org/drools/pmml/pmml_4_2/test_regression.xml";
-    private static final String source2 = "org/drools/pmml/pmml_4_2/test_regression_clax.xml";
+    private static final String source1 = "org/drools/pmml/pmml_4_2/test_regression.pmml";
+    private static final String source2 = "org/drools/pmml/pmml_4_2/test_regression_clax.pmml";
     private static final String packageName = "org.drools.pmml.pmml_4_2.test";
 
 
@@ -45,13 +47,16 @@ public class SimpleRegressionTest extends DroolsAbstractPMMLTest {
         KieSession kSession = getKSession();
 
         kSession.fireAllRules();  //init model
+        PMMLRequestData request = new PMMLRequestData("123","LinReg");
+        request.addRequestParam("Fld1",0.9);
+        request.addRequestParam("Fld2", 0.3);
+        request.addRequestParam("Fld3", "x");
+        kSession.insert(request);
 
-        FactType tgt = kSession.getKieBase().getFactType( packageName, "Fld4" );
-
-        kSession.getEntryPoint( "in_Fld1" ).insert( 0.9 );
-        kSession.getEntryPoint( "in_Fld2" ).insert( 0.3 );
-        kSession.getEntryPoint( "in_Fld3" ).insert( "x" );
         kSession.fireAllRules();
+        String pkgName = PMML4Compiler.PMML_DROOLS+"."+request.getModelName();
+
+        FactType tgt = kSession.getKieBase().getFactType( pkgName, "Fld4" );
 
         double x = 0.5
                    + 5 * 0.9 * 0.9
@@ -77,16 +82,20 @@ public class SimpleRegressionTest extends DroolsAbstractPMMLTest {
 
         FactType tgt = kSession.getKieBase().getFactType( packageName, "Fld4" );
 
-        kSession.getEntryPoint( "in_Fld1" ).insert( 1.0 );
-        kSession.getEntryPoint( "in_Fld2" ).insert( 1.0 );
-        kSession.getEntryPoint( "in_Fld3" ).insert( "x" );
+        PMMLRequestData request = new PMMLRequestData("123","LinReg");
+        request.addRequestParam("Fld1", 1.0);
+        request.addRequestParam("Fld2", 1.0);
+        request.addRequestParam("Fld3", "x");
+        kSession.insert(request);
+        
         kSession.fireAllRules();
+        String pkgName = PMML4Compiler.PMML_DROOLS+"."+request.getModelName();
 
-        checkFirstDataFieldOfTypeStatus( kSession.getKieBase().getFactType( packageName, "RegOut" ),
+        checkFirstDataFieldOfTypeStatus( kSession.getKieBase().getFactType( pkgName, "RegOut" ),
                                             true, false, "LinReg", "catC" );
-        checkFirstDataFieldOfTypeStatus( kSession.getKieBase().getFactType( packageName, "RegProb" ),
+        checkFirstDataFieldOfTypeStatus( kSession.getKieBase().getFactType( pkgName, "RegProb" ),
                                             true, false, "LinReg", 0.709228 );
-        checkFirstDataFieldOfTypeStatus( kSession.getKieBase().getFactType( packageName, "RegProbA" ),
+        checkFirstDataFieldOfTypeStatus( kSession.getKieBase().getFactType( pkgName, "RegProbA" ),
                                             true, false, "LinReg", 0.010635 );
 
 

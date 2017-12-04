@@ -27,7 +27,7 @@
 rule "Regression Model Classification Reconciliation @{context} : @{target} "
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
-    $winner : @{ pmmlPackageName }.RegTargetBit( context == "@{context}",
+    $winner : RegTargetBit( context == "@{context}",
                             target == "@{target}",
                             $winCat : value,
                             $winWgt : weight,
@@ -51,6 +51,18 @@ then
             x.setValue( $winCat );
             x.setWeight( $winWgt );
     insertLogical(x);
+end
+
+
+rule "Update PMML4Result with Classification @{context} : @{target}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
+when
+   $tgt: @{target}( context == "@{context}" )
+   $reslt: PMML4Result( resultVariables == null || "@{target}" not memberOf resultVariables.keySet() )
+then
+   $reslt.setResultCode("OK");
+   $reslt.addResultVariable("@{target}",$tgt);
+   update($reslt);
 end
 
 @end{}

@@ -24,36 +24,6 @@
 
 @declare{'regDeclare'}
 
-declare @{ pmmlPackageName }.RegTable
-@propertyReactive
-    context         : String        @key
-    target          : String
-    category        : String
-    numCoeffs       : double[]
-    numExps         : double[]
-    catCoeffs       : double[]
-    trmCoeffs       : double[]
-    intercept       : double
-    index           : int           @key
-end
-
-declare @{ pmmlPackageName }.RegTargetBit
-@propertyReactive
-    context         : String        @key
-    target          : String
-    value           : String
-    weight          : double
-    normalized      : boolean       = false
-    cumulative      : boolean       = false
-    index           : int           @key
-end
-
-declare @{ pmmlPackageName }.RegNormalizationFactor
-@propertyReactive
-    context         : String        @key
-    target          : String        @key
-    den             : double
-end
 
 
 @end{}

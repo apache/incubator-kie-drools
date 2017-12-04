@@ -27,6 +27,22 @@
 
 
 @declare{'miningFieldOutlierAsExtremeUppRule'}
+rule "miningFieldOutlierAsExtremeUpp_PMML4Data_@{model}_@{name}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
+salience 999
+when
+    $x : PMML4Data( capitalizedName == "@{name}", $m : missing == false, $v : valid == true, placeholder == false,
+               context == @{format("string",model)},
+               value > @{upp} )
+then
+    delete( $x );
+    $x.setValue( @{upp} );
+    $x.setMissing( false );
+    $x.setValid( true );
+    insert( $x );
+end
+
+
 rule "miningFieldOutlierAsExtremeUpp_@{model}_@{name}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience 999

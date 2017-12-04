@@ -17,11 +17,17 @@ package org.drools.compiler.kie.builder.impl;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import java.util.zip.ZipEntry;
@@ -39,6 +45,9 @@ import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
 import org.drools.compiler.commons.jci.problems.CompilationProblem;
 import org.drools.compiler.commons.jci.readers.DiskResourceReader;
 import org.drools.compiler.commons.jci.readers.ResourceReader;
+import org.drools.compiler.compiler.PMMLCompiler;
+import org.drools.compiler.compiler.PMMLCompilerFactory;
+import org.drools.compiler.compiler.PMMLResource;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
@@ -62,6 +71,8 @@ import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.internal.builder.KieBuilderSet;
+import org.kie.internal.builder.KnowledgeBuilderResult;
+import org.kie.internal.io.ResourceFactory;
 
 import static org.drools.compiler.kproject.ReleaseIdImpl.adapt;
 
@@ -70,6 +81,8 @@ public class KieBuilderImpl
         InternalKieBuilder {
 
     static final String RESOURCES_ROOT = "src/main/resources/";
+    static final String RESOURCES_TEST_ROOT = "src/test/resources";
+    static final String PMML_POJO_ROOT = "org/drools/pmml/pmml_4_2/model/";
     static final String JAVA_ROOT = "src/main/java/";
     static final String JAVA_TEST_ROOT = "src/test/java/";
 
@@ -99,20 +112,152 @@ public class KieBuilderImpl
 
     private PomModel pomModel;
 
+    private PMMLCompiler pmmlCompiler;
+    
+    private List<PMMLResource> pmmlResources;
+    
     public KieBuilderImpl( File file ) {
-        this.srcMfs = new DiskResourceReader( file );
+    	ResourceReader reader = null;
+    	if (file.isDirectory()) {
+        	List<String> pmmlFileNames = getPmmlFileNames(file);
+        	if (pmmlFileNames != null && !pmmlFileNames.isEmpty()) {
+	        	precompilePmml(pmmlFileNames);
+	        	DiskResourceReader drr = new DiskResourceReader(file);
+	        	Collection<String> existingFiles = drr.getFileNames();
+	        	KieFileSystem kfs = KieServices.Factory.get().newKieFileSystem();
+	        	for (String fn : existingFiles) {
+	        		kfs.write(fn,drr.getBytes(fn));
+	        	}
+	        	addPrecompiledResources(kfs);
+	        	reader = ((KieFileSystemImpl)kfs).asMemoryFileSystem();
+        	}
+    	}
+    	if (reader == null) {
+    		reader = new DiskResourceReader( file );
+    	}
+    	this.srcMfs = reader;
     }
 
     public KieBuilderImpl( KieFileSystem kieFileSystem ) {
         this( kieFileSystem, null );
     }
+    
 
     public KieBuilderImpl( KieFileSystem kieFileSystem,
                            ClassLoader classLoader ) {
         this.classLoader = classLoader;
+        List<String> pmmlFileNames = getPmmlFileNames(kieFileSystem);
+        precompilePmml(pmmlFileNames);
+        addPrecompiledResources(kieFileSystem);
         srcMfs = ( (KieFileSystemImpl) kieFileSystem ).asMemoryFileSystem();
     }
+    
+    /**
+     * Adds pre-compiled PMML resources back into a KieFileSystem
+     * @param kieFileSystem The target KieFileSystem
+     */
+    private void addPrecompiledResources(KieFileSystem kieFileSystem) {
+    	if (pmmlResources == null || pmmlResources.isEmpty()) return;
+    	for (PMMLResource res: pmmlResources) {
+    		if (res.getKieBaseModel() != null) {
+        		String packageName = res.getPackageName();
+        		String packageDir = packageName.replaceAll("\\.", "/");
+        		Map<String,String> rules = res.getRules();
+        		for (String key: rules.keySet()) {
+        			Resource ruleResource = ResourceFactory.newByteArrayResource(rules.get(key).getBytes())
+        					.setResourceType(ResourceType.DRL);
+        			StringBuilder bldr = new StringBuilder();
+        			bldr.append(packageDir).append("/").append(key).append(".drl");
+        			ruleResource.setSourcePath(bldr.toString());
+        			kieFileSystem.write(ruleResource);
+        		}
+    		}
+    	}
+    }
+    
+    private String removeResourceRootPrefix(String fn) {
+    	if (fn.startsWith(RESOURCES_ROOT)) {
+    		return fn.substring(RESOURCES_ROOT.length()+1);
+    	} else if (fn.startsWith(RESOURCES_TEST_ROOT)) {
+    		return fn.substring(RESOURCES_TEST_ROOT.length()+1);
+    	}
+    	return fn;
+    }
+    
+    private List<String> getPmmlFileNames(File file) {
+    	List<String> pmmlFileNames = new ArrayList<>();
+    	if (file.isDirectory()) {
+    		DirectoryStream.Filter<Path> fileFilter = new DirectoryStream.Filter<Path>() {
 
+				@Override
+				public boolean accept(Path entry) throws IOException {
+					return entry.toString().endsWith(ResourceType.PMML.getDefaultExtension());
+				}
+			};
+    		try (DirectoryStream<Path> dirStream = Files.newDirectoryStream(file.toPath(), fileFilter) ) {
+    			Iterator<Path> pathIter = dirStream.iterator();
+    			while (pathIter.hasNext()) {
+    				pmmlFileNames.add( removeResourceRootPrefix(pathIter.next().toString()) );
+    			}
+    		} catch (IOException e) {
+				e.printStackTrace();
+			}
+    	} else {
+    		String fn = file.getName();
+    		String fileName = (fn.startsWith(RESOURCES_ROOT)) ? fn.substring(RESOURCES_ROOT.length()) : fn;
+    		if (fileName.endsWith(ResourceType.PMML.getDefaultExtension())) {
+    			pmmlFileNames.add( removeResourceRootPrefix(fileName) );
+    		}
+    	}
+    	
+    	return pmmlFileNames;
+    }
+    /**
+     * Gets a list of file names that represent PMML resources from a KieFileSystem
+     * @param kieFileSystem The source file system
+     * @return List of strings that are the file names
+     */
+    private List<String> getPmmlFileNames(KieFileSystem kieFileSystem) {
+    	List<String> pmmlFileNames = new ArrayList<>();
+        ResourceReader tmpSrc = ((KieFileSystemImpl)kieFileSystem).asMemoryFileSystem();
+        Collection<String> fileNames = tmpSrc.getFileNames();
+        if (fileNames != null && !fileNames.isEmpty()) {
+        	for (String fn : fileNames) {
+        		String fileName = (fn.startsWith(RESOURCES_ROOT)) ? fn.substring(RESOURCES_ROOT.length()) : fn;
+        		if (fileName.endsWith(ResourceType.PMML.getDefaultExtension())) {
+        			pmmlFileNames.add(fileName);
+        		}
+        	}
+        }
+        return pmmlFileNames;
+    }
+    
+    /**
+     * Pre-compiles (actually transforms) PMML files into DRL files and accompanying POJO source files
+     * @param pmmlFileNames List of file names for resources that contain PMML
+     */
+    private void precompilePmml(List<String> pmmlFileNames) {
+        if ( pmmlFileNames != null && !pmmlFileNames.isEmpty() ) {
+            PMMLCompiler compiler = getPmmlCompiler();
+            if (compiler == null) {
+                throw new RuntimeException( "Found PMML resources, but the PMML compiler is not on the classpath" );
+            }
+            if ( pmmlResources == null ) {
+                pmmlResources = new ArrayList<>();
+            }
+            for (String fileName : pmmlFileNames) {
+                List<PMMLResource> resources = compiler.precompile( fileName, classLoader, null );
+                if ( resources != null && !resources.isEmpty() ) {
+                    pmmlResources.addAll(resources);
+                }
+            }
+            List<KnowledgeBuilderResult> results = compiler.getResults();
+            if ( !results.isEmpty() ) {
+                pmmlResources.clear();
+            }
+        }
+    }
+    
     @Override
     public KieBuilder setDependencies( KieModule... dependencies ) {
         this.kieDependencies = Arrays.asList( dependencies );
@@ -212,12 +357,60 @@ public class KieBuilderImpl
             for ( ReleaseId unresolvedDep : kModule.getUnresolvedDependencies() ) {
                 results.addMessage( Level.ERROR, "pom.xml", "Unresolved dependency " + unresolvedDep );
             }
-
+            
+            
+            if (pmmlResources != null) {
+            	for (PMMLResource resource: pmmlResources) {
+            		buildPMMLPojos(kProject);
+            	}
+            }
             compileJavaClasses( kProject.getClassLoader(), classFilter );
 
             buildKieProject( kModule, results, kProject, trgMfs );
         }
         return this;
+    }
+    
+    
+
+    
+    private void buildPMMLPojos(KieProject kProject) {
+    	if (pmmlResources != null) {
+    		KieFileSystem javaSource = KieServices.Factory.get().newKieFileSystem();
+    		for (PMMLResource resource: pmmlResources) {
+    			Map<String,String> pojos = resource.getPojoDefinitions();
+    			for (String key: pojos.keySet()) {
+    				String javaCode = pojos.get(key);
+    				if (javaCode != null && !javaCode.trim().isEmpty()) {
+	    				Resource res = ResourceFactory.newByteArrayResource(javaCode.getBytes()).setResourceType(ResourceType.JAVA);
+	    				StringBuilder bldr = new StringBuilder(PMML_POJO_ROOT);
+	    				bldr.append(key.substring(0, 1).toUpperCase()+key.substring(1)).append(".java");
+	    				res.setSourcePath(bldr.toString());
+	    				javaSource.write(res);
+    				}
+    			}
+    		}
+    		
+    		ResourceReader src = ((KieFileSystemImpl)javaSource).asMemoryFileSystem();
+            List<String> javaFileNames = getJavaFileNames(src);
+            if (javaFileNames != null && !javaFileNames.isEmpty()) {
+                ClassLoader classLoader = kProject.getClassLoader();
+                KnowledgeBuilderConfigurationImpl kconf = new KnowledgeBuilderConfigurationImpl( classLoader );
+                JavaDialectConfiguration javaConf = (JavaDialectConfiguration) kconf.getDialectConfiguration( "java" );
+            	compileJavaClasses(javaConf, classLoader, javaFileNames, JAVA_ROOT, src);
+            }
+    	}
+    }
+    
+    
+    private List<String> getJavaFileNames(ResourceReader src) {
+    	List<String> javaFileNames = new ArrayList<>();
+        for (String fname: src.getFileNames()) {
+            if (fname.endsWith(".java")) {
+                javaFileNames.add(fname);
+            }
+        }
+    	return javaFileNames;
     }
 
     void markSource() {
@@ -446,6 +639,14 @@ public class KieBuilderImpl
             // There's no kmodule.xml, create a default one
             kModuleModel = KieServices.Factory.get().newKieModuleModel();
         }
+        
+        if (pmmlResources != null && !pmmlResources.isEmpty()) {
+        	for (PMMLResource resource : pmmlResources) {
+        		if (resource.getKieBaseModel() != null) {
+        			((KieModuleModelImpl)kModuleModel).getRawKieBaseModels().put(resource.getKieBaseModel().getName(), resource.getKieBaseModel());
+        		}
+        	}
+        }
 
         if ( setDefaultsforEmptyKieModule( kModuleModel ) ) {
             kModuleModelXml = kModuleModel.toXML().getBytes( IoUtils.UTF8_CHARSET );
@@ -638,6 +839,25 @@ public class KieBuilderImpl
     private void compileJavaClasses( JavaDialectConfiguration javaConf,
                                      ClassLoader classLoader,
                                      List<String> javaFiles,
+                                     String rootFolder,
+                                     ResourceReader source) {
+        if (!javaFiles.isEmpty()) {
+            String[] sourceFiles = javaFiles.toArray(new String[ javaFiles.size() ]);
+            JavaCompiler javaCompiler = createCompiler( javaConf, rootFolder );
+            CompilationResult res = javaCompiler.compile(sourceFiles, source, trgMfs, classLoader);
+
+            for ( CompilationProblem problem : res.getErrors() ) {
+                results.addMessage( problem );
+            }
+            for ( CompilationProblem problem : res.getWarnings() ) {
+                results.addMessage( problem );
+            }
+        }
+    }
+
+    private void compileJavaClasses( JavaDialectConfiguration javaConf,
+                                     ClassLoader classLoader,
+                                     List<String> javaFiles,
                                      String rootFolder ) {
         if ( !javaFiles.isEmpty() ) {
             String[] sourceFiles = javaFiles.toArray( new String[ javaFiles.size() ] );
@@ -664,6 +884,13 @@ public class KieBuilderImpl
             ( (EclipseJavaCompiler) javaCompiler ).setPrefix( prefix );
         }
         return javaCompiler;
+    }
+    
+    private PMMLCompiler getPmmlCompiler() {
+    	if (this.pmmlCompiler == null) {
+    		this.pmmlCompiler = PMMLCompilerFactory.getPMMLCompiler();
+    	}
+    	return this.pmmlCompiler;
     }
 
     public static String findPomProperties( ZipFile zipFile ) {

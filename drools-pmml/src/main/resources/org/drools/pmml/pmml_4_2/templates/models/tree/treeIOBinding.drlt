@@ -24,15 +24,25 @@
 
 @declare{'treeIOBinding'}
 
-rule "Tree Input Link @{context}"
+rule "Tree Input Linker @{context}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
-    @foreach{ inputField : fields.keySet() }
-        @{inputField}( context == "@{context}", @{inputField} : value, m@{inputField} : missing, valid == true || ( valid == false && missing == true && value != null ) )
-    @end{}
+   rqst: PMMLRequestData( modelName == "@{context}" )
+   @foreach{ inputField: fields.keySet() }
+   @{inputField} : PMML4Data( context == "@{context}", capitalizedName == "@{inputField}", placeholder == false, 
+              valid == true || ( valid == false && missing == true && value != null ) )
+   @end{}
+   $map: java.util.Map() from accumulate( $d: PMML4Data( context == "@{context}" ),
+                                          init( java.util.Map map = new java.util.HashMap(); ),
+                                          action( map.put($d.getCapitalizedName(),$d); ),
+                                          result( map ) 
+   )
 then
-//    System.out.println( "Creating the tree token" );
-    @{ pmmlPackageName }.@{context}TreeToken tok = new @{ pmmlPackageName }.@{context}TreeToken( "@{context}",
+    java.util.Map inputMap = new java.util.HashMap();
+    @foreach{ inputField: fields.keySet() }
+    inputMap.put( "@{inputField}", @{inputField} );
+    @end{}
+    @{context}TreeToken tok = new @{context}TreeToken( "","@{context}",
                                                        "@{rootId}",
                                                        null,
                                                        "@{visitMode}",
@@ -41,17 +51,28 @@ then
                                                        new java.util.HashMap(),
                                                        1.0,
                                                        0.0,
-                                                       @foreach{ inputField : fields.keySet() } @{inputField}, m@{inputField} @end{','},
-                                                       null
-                                                       );
-    insertLogical( tok );
+                                                       inputMap);
+    insertLogical(tok);
 end
+
+rule "Update PMML4Result"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
+salience -2
+when
+   $tgtFld: @{targetField}()
+   $reslt: PMML4Result( resultVariables == null || "@{targetField}" not memberOf resultVariables.keySet() )
+then
+   $reslt.setResultCode("OK");
+   $reslt.addResultVariable("@{targetField}",$tgtFld);
+   update($reslt);
+end
+
 
 rule "Result @{context}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience -2
 when
-    $tok  : @{ pmmlPackageName }.@{context}TreeToken( context == "@{context}", current == "null", $out : outcome != null, $conf : confidence )
+    $tok  : @{context}TreeToken( context == "@{context}", current == "null", $out : outcome != null, $conf : confidence )
 then
 //    System.out.println( "EVENTUALLY GENERATE THE SOLUTION ");
     @{targetField} x = new @{targetField}();

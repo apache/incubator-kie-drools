@@ -24,6 +24,22 @@
       */
 }
 @declare{'valuesOnDomainRestrictionInvalidRule'}
+rule "Invalid_PMML4Data_Values_@{name}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
+dialect "mvel"
+no-loop
+salience 99
+when
+   $in : PMML4Data( capitalizedName == "@{name}", $val: value, valid == true, placeholder == false,
+         @if{ context != null } context == @{format("string",context)}, @end{}
+         @foreach{ v : vals } value == @{v} @end{' || '}
+         )
+then
+   modify( $in ) {
+       setValid( false );
+   }
+end
+
 rule "Invalid_Values_@{name}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 dialect "mvel"

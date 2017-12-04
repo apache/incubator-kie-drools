@@ -89,9 +89,9 @@ public class PMML4Helper {
     }
 
     public String getPmmlPackageName() {
-        return PMML4Helper.pmmlDefaultPackageName();
+        return pmmlDefaultPackageName();
     }
-
+    
     public String getContext() {
         return context;
     }

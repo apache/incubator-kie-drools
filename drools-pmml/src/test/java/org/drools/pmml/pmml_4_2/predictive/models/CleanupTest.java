@@ -18,6 +18,7 @@ package org.drools.pmml.pmml_4_2.predictive.models;
 
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.drools.pmml.pmml_4_2.DroolsAbstractPMMLTest;
 import org.drools.pmml.pmml_4_2.ModelMarker;
 import org.junit.Test;
@@ -30,7 +31,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-
+@Ignore
 public class CleanupTest extends DroolsAbstractPMMLTest {
 
 

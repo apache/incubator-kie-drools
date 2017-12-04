@@ -17,27 +17,29 @@
 package org.drools.pmml.pmml_4_2.predictive.models;
 
 
-import org.drools.pmml.pmml_4_2.DroolsAbstractPMMLTest;
-import org.drools.pmml.pmml_4_2.PMML4Helper;
-import org.junit.After;
-import org.junit.Test;
-import org.kie.api.definition.type.FactType;
-import org.kie.api.runtime.ClassObjectFilter;
-import org.kie.api.runtime.KieSession;
-
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+
+import org.drools.pmml.pmml_4_2.DroolsAbstractPMMLTest;
+import org.drools.pmml.pmml_4_2.PMML4Compiler;
+import org.drools.pmml.pmml_4_2.model.PMMLRequestData;
+import org.drools.pmml.pmml_4_2.model.ScoreCard;
+import org.junit.After;
+import org.junit.Test;
+import org.kie.api.runtime.ClassObjectFilter;
+import org.kie.api.runtime.KieSession;
 
 public class ScorecardTest extends DroolsAbstractPMMLTest {
 
 
     private static final boolean VERBOSE = true;
-    private static final String source1 = "org/drools/pmml/pmml_4_2/test_scorecard.xml";
-    private static final String source2 = "org/drools/pmml/pmml_4_2/test_scorecardOut.xml";
+    private static final String source1 = "org/drools/pmml/pmml_4_2/test_scorecard.pmml";
+    private static final String source2 = "org/drools/pmml/pmml_4_2/test_scorecardOut.pmml";
     private static final String packageName = "org.drools.pmml.pmml_4_2.test";
 
 
@@ -54,26 +56,26 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
 
         kSession.fireAllRules();  //init model
 
-        kSession.getEntryPoint( "in_Age" ).insert( 33.0 );
-        kSession.getEntryPoint( "in_Occupation" ).insert( "SKYDIVER" );
-        kSession.getEntryPoint( "in_ResidenceState" ).insert( "KN" );
-        kSession.getEntryPoint( "in_ValidLicense" ).insert( true );
+        PMMLRequestData requestData = new PMMLRequestData("123","Sample Score");
+        requestData.addRequestParam("age",33.0);
+        requestData.addRequestParam("occupation", "SKYDIVER");
+        requestData.addRequestParam("residenceState","KN");
+        requestData.addRequestParam("validLicense", true);
+        kSession.insert(requestData);
+
 
         kSession.fireAllRules();  //init model
-
-        FactType scoreCardType = getKbase().getFactType( PMML4Helper.pmmlDefaultPackageName(), "ScoreCard" );
-        assertNotNull( scoreCardType );
-
-        assertEquals( 1, kSession.getObjects( new ClassObjectFilter( scoreCardType.getFactClass() ) ).size() );
-        Object scoreCard = kSession.getObjects( new ClassObjectFilter( scoreCardType.getFactClass() ) ).iterator().next();
+        
+        Collection<ScoreCard> scoreCards = (Collection<ScoreCard>)kSession.getObjects(new ClassObjectFilter(ScoreCard.class));
+        assertNotNull(scoreCards);
+        assertEquals(1, scoreCards.size());
+        
+        ScoreCard scoreCard = scoreCards.iterator().next();
+        Object x = scoreCard.getRanking();
+        assertTrue( x instanceof LinkedHashMap );
 
         System.out.print(  reportWMObjects( kSession )
         );
-        assertEquals( "SampleScore", scoreCardType.get( scoreCard, "modelName" ) );
-        assertEquals( 41.345, scoreCardType.get( scoreCard, "score" ) );
-
-        Object x = scoreCardType.get( scoreCard, "ranking" );
-        assertTrue( x instanceof LinkedHashMap );
         LinkedHashMap map = (LinkedHashMap) x;
         assertTrue( map.containsKey( "LX00") );
         assertTrue( map.containsKey( "RES") );
@@ -95,20 +97,23 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
         setKSession( getModelSession( source2, VERBOSE ) );
         setKbase( getKSession().getKieBase() );
         KieSession kSession = getKSession();
-
+        
         kSession.fireAllRules();  //init model
 
-        kSession.getEntryPoint( "in_Cage" ).insert( "engineering" );
-        kSession.getEntryPoint( "in_Age" ).insert( 25 );
-        kSession.getEntryPoint( "in_Wage" ).insert( 500.0 );
+        PMMLRequestData requestData = new PMMLRequestData("123","SampleScorecard");
+        requestData.addRequestParam("cage","engineering");
+        requestData.addRequestParam("age",25);
+        requestData.addRequestParam("wage",500.0);
+        kSession.insert(requestData);
+
 
         kSession.fireAllRules();  //init model
-
-        checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName,"OutRC1"),
+        String pkgName = PMML4Compiler.PMML_DROOLS+"."+requestData.getModelName();
+        checkFirstDataFieldOfTypeStatus(getKbase().getFactType(pkgName,"OutRC1"),
                         true, false,"SampleScorecard", "RC2" );
-        checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName,"OutRC2"),
+        checkFirstDataFieldOfTypeStatus(getKbase().getFactType(pkgName,"OutRC2"),
                         true, false,"SampleScorecard", "RC1" );
-        checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName,"OutRC3"),
+        checkFirstDataFieldOfTypeStatus(getKbase().getFactType(pkgName,"OutRC3"),
                         true, false,"SampleScorecard", "RC1" );
 
         checkGeneratedRules();
