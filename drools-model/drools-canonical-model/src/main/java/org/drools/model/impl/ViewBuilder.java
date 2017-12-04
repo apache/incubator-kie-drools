@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -179,14 +180,46 @@ public class ViewBuilder {
 
             Condition modifiedPattern = viewItem2Condition( viewItem, condition, usedVars, inputs );
             conditions.set( conditions.indexOf( condition ), modifiedPattern );
+
             if (type == Type.AND) {
                 conditionMap.put( patterVariable, modifiedPattern );
             }
         }
 
+
+        Optional<PatternImpl> patternImpl = Optional.empty();
+        for(Condition c : conditions) {
+            if(c instanceof AccumulatePatternImpl) {
+                final AccumulatePatternImpl accumulatePattern = (AccumulatePatternImpl) c;
+                patternImpl = findPatternImplSource(accumulatePattern, conditions);
+                patternImpl.ifPresent(accumulatePattern::setPattern);
+            }
+        }
+        patternImpl.ifPresent(conditions::remove);
+
         Collections.sort( conditions, ConditionComparator.INSTANCE );
 
         return new CompositePatterns( type, conditions, usedVars, consequences );
+    }
+
+    private static Optional<PatternImpl> findPatternImplSource(AccumulatePatternImpl accumulatePattern, List<Condition> conditions) {
+        final Variable source = accumulatePattern.getFunctions()[0].getSource();
+
+        for (Condition subCondition : conditions) {
+            if (subCondition instanceof PatternImpl) {
+                PatternImpl patternImpl = (PatternImpl) subCondition;
+
+                boolean isSource =  patternImpl
+                        .getBindings()
+                        .stream()
+                        .anyMatch(b -> (b instanceof BindViewItem) && ((BindViewItem) b).getBoundVariable().equals(source));
+                if(isSource) {
+                    return Optional.of(patternImpl);
+                }
+
+            }
+        }
+        return Optional.empty();
     }
 
     private static void addInputFromVariableSource( Map<Variable<?>, InputViewItemImpl<?>> inputs, Variable<?> patterVariable ) {
@@ -263,7 +296,16 @@ public class ViewBuilder {
             for ( AccumulateFunction accFunc : acc.getFunctions()) {
                 usedVars.add(accFunc.getVariable());
             }
-            return new AccumulatePatternImpl( (Pattern) viewItem2Condition( acc.getExpr(), condition, usedVars, inputs ), acc.getFunctions() );
+
+            final Condition newCondition = viewItem2Condition(acc.getExpr(), condition, usedVars, inputs);
+            if (newCondition instanceof Pattern) {
+                return new AccumulatePatternImpl((Pattern) newCondition, Optional.empty(), acc.getFunctions());
+            } else if (newCondition instanceof CompositePatterns) {
+                return new AccumulatePatternImpl(null, Optional.of(newCondition), acc.getFunctions());
+            } else {
+                throw new RuntimeException("Unknown pattern");
+            }
+
         }
 
         if ( viewItem instanceof OOPathViewItem) {

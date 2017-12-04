@@ -12,15 +12,15 @@ public class Reduce<T, R extends Serializable> extends AbstractAccumulateFunctio
     private final R zero;
     private final Function2<R, T, R> reducingFunction;
 
-    public Reduce(Optional<Variable<T>> source, R zero, Function2<R, T, R> reducingFunction) {
+    public Reduce(Variable<T> source, R zero, Function2<R, T, R> reducingFunction) {
         super(source);
         this.zero = zero;
         this.reducingFunction = reducingFunction;
     }
 
     @Override
-    public Optional<Variable<T>> getOptSource() {
-        return Optional.empty();
+    public Variable<T> getSource() {
+        return source;
     }
 
     @Override

@@ -505,7 +505,7 @@ public class ModelGenerator {
         return mce.getScope().map( s -> s instanceof NameExpr && (( NameExpr ) s).getNameAsString().equals( scope ) ).orElse( false );
     }
 
-    private static void visit(RuleContext context, PackageModel packageModel, BaseDescr descr) {
+    public static void visit(RuleContext context, PackageModel packageModel, BaseDescr descr) {
         if ( descr instanceof AndDescr) {
             visit(context, packageModel, ( (AndDescr) descr ));
         } else if ( descr instanceof OrDescr) {
@@ -989,8 +989,9 @@ public class ModelGenerator {
             this.patternBinding = patternBinding;
         }
 
-        public void setExprBinding(String exprBinding) {
+        public DrlxParseResult setExprBinding(String exprBinding) {
             this.exprBinding = exprBinding;
+            return this;
         }
 
         public boolean hasUnificationVariable() {
