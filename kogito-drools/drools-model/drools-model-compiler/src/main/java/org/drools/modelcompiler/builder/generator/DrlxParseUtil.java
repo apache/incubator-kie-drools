@@ -342,7 +342,7 @@ public class DrlxParseUtil {
         return expr;
     }
 
-    private static Optional<Expression> findRootNode(Expression expr) {
+    public static Optional<Expression> findRootNode(Expression expr) {
 
         if (expr instanceof NodeWithOptionalScope) {
             final NodeWithOptionalScope<?> exprWithScope = (NodeWithOptionalScope) expr;
@@ -353,6 +353,21 @@ public class DrlxParseUtil {
         }
 
         return Optional.empty();
+    }
+
+    public static Expression removeRootNode(Expression expr) {
+        Optional<Expression> rootNode = findRootNode(expr);
+
+        if(rootNode.isPresent()) {
+            Expression root = rootNode.get();
+            Optional<Node> parent = root.getParentNode();
+
+            parent.ifPresent(p -> p.remove(root));
+
+            return (Expression) parent.orElse(expr);
+        }
+        return expr;
+
     }
 
     public static String toVar(String key) {
@@ -371,6 +386,7 @@ public class DrlxParseUtil {
         lambdaExpr.setBody( new ExpressionStmt(expr ) );
         return lambdaExpr;
     }
+
 
 
     public static TypedExpression toMethodCallWithClassCheck(Expression expr, Class<?> clazz, TypeResolver typeResolver) {

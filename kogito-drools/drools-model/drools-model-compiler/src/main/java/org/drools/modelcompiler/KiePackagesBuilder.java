@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -88,8 +87,10 @@ import org.drools.model.WindowReference;
 import org.drools.model.consequences.ConditionalNamedConsequenceImpl;
 import org.drools.model.consequences.NamedConsequenceImpl;
 import org.drools.model.constraints.SingleConstraint1;
+import org.drools.model.functions.Function1;
 import org.drools.model.functions.Predicate1;
 import org.drools.model.impl.DeclarationImpl;
+import org.drools.model.patterns.CompositePatterns;
 import org.drools.model.patterns.QueryCallPattern;
 import org.drools.modelcompiler.consequence.LambdaConsequence;
 import org.drools.modelcompiler.consequence.MVELConsequence;
@@ -337,9 +338,21 @@ public class KiePackagesBuilder {
                 return buildPattern( ctx, condition );
             }
             case ACCUMULATE: {
-                Pattern source = buildPattern( ctx, condition );
-                Pattern pattern = new Pattern( 0, getObjectType( Object.class ) );
-                pattern.setSource( buildAccumulate( ctx, (AccumulatePattern) condition, source, pattern ) );
+                final AccumulatePattern accumulatePattern = (AccumulatePattern) condition;
+                RuleConditionElement source;
+                if(accumulatePattern.getCompositePatterns().isPresent()) {
+                    CompositePatterns compositePatterns = (CompositePatterns) accumulatePattern.getCompositePatterns().get();
+                    GroupElement ge = new GroupElement(conditionToGroupElementType( compositePatterns.getType() ));
+                    for(Condition c : compositePatterns.getSubConditions()) {
+                        ge.addChild(buildPattern(ctx, c));
+                    }
+                    source = ge;
+                } else {
+                    source = buildPattern(ctx, condition );
+                }
+                org.drools.model.Pattern sourcePattern = accumulatePattern.getPattern();
+                Pattern pattern = new Pattern( 0,  getObjectType( Object.class ) );
+                pattern.setSource(buildAccumulate(ctx, accumulatePattern, source, pattern, sourcePattern) );
                 return pattern;
             }
             case OOPATH: {
@@ -453,7 +466,7 @@ public class KiePackagesBuilder {
         for (Binding binding : modelPattern.getBindings()) {
             Declaration declaration = new Declaration(binding.getBoundVariable().getName(),
                                                       new LambdaReadAccessor(binding.getBoundVariable().getType().asClass(),
-                                                                             binding.getBindingFunction()),
+                                                                             new Function1.Impl<>(binding.getBindingFunction())),
                                                       pattern,
                                                       true);
             pattern.addDeclaration( declaration );
@@ -473,13 +486,11 @@ public class KiePackagesBuilder {
         return pattern;
     }
 
-    private Accumulate buildAccumulate( RuleContext ctx, AccumulatePattern accPattern, Pattern source, Pattern pattern ) {
+    private Accumulate buildAccumulate( RuleContext ctx, AccumulatePattern accPattern, RuleConditionElement source, Pattern pattern, org.drools.model.Pattern condition) {
         AccumulateFunction<?, ?, ?>[] accFunctions = accPattern.getFunctions();
 
         if (accFunctions.length == 1) {
             final AccumulateFunction<?, ?, ?> accFunction = accFunctions[0];
-
-            addSourceDeclaration(ctx, pattern, accFunction.getOptSource());
 
             final Declaration declaration = new Declaration(accPattern.getBoundVariables()[0].getName(),
                                                             getReadAcessor(getObjectType(Object.class)),
@@ -487,31 +498,21 @@ public class KiePackagesBuilder {
                                                             true);
             pattern.addDeclaration(declaration);
 
-            return new SingleAccumulate(source, new Declaration[0], new LambdaAccumulator(accFunction));
+            return new SingleAccumulate(source, new Declaration[0], new LambdaAccumulator(accFunction, condition));
         }
 
         InternalReadAccessor reader = new SelfReferenceClassFieldReader( Object[].class );
         Accumulator[] accumulators = new Accumulator[accFunctions.length];
         for (int i = 0; i < accPattern.getFunctions().length; i++) {
 
-            addSourceDeclaration(ctx, pattern, accFunctions[i].getOptSource());
-
             Variable accVar = accPattern.getBoundVariables()[i];
             pattern.addDeclaration( new Declaration(accVar.getName(),
                                                     new ArrayElementReader( reader, i, accVar.getType().asClass()),
                                                     pattern,
                                                     true) );
-            accumulators[i] = new LambdaAccumulator( accFunctions[i] );
+            accumulators[i] = new LambdaAccumulator(accFunctions[i], condition);
         }
         return new MultiAccumulate( source, new Declaration[0], accumulators);
-    }
-
-    private void addSourceDeclaration(RuleContext ctx, Pattern pattern, Optional<? extends Variable<?>> functionSource) {
-        functionSource.ifPresent(fs -> {
-            final Declaration variableDeclaration = ctx.getDeclaration(fs);
-            final InternalReadAccessor accessor = variableDeclaration.getExtractor();
-            pattern.addDeclaration(new Declaration(fs.getName(), accessor, pattern, true));
-        });
     }
 
     private Pattern addPatternForVariable( RuleContext ctx, Variable patternVariable ) {

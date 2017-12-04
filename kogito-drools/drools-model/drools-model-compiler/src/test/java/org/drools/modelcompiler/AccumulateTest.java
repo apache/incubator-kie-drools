@@ -145,7 +145,6 @@ public class AccumulateTest extends BaseModelTest {
     }
 
     @Test
-    @Ignore("fix accumulate with and")
     public void testAccumulateWithAnd() {
         String str =
                 "import " + Adult.class.getCanonicalName() + ";\n" +

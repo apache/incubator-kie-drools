@@ -7,18 +7,23 @@ import java.util.Optional;
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.reteoo.SubnetworkTuple;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Accumulator;
 import org.drools.core.spi.Tuple;
 import org.drools.model.AccumulateFunction;
+import org.drools.model.Binding;
+import org.drools.model.Pattern;
 import org.drools.model.Variable;
 
 public class LambdaAccumulator implements Accumulator {
 
     private final AccumulateFunction accumulateFunction;
+    private final Pattern sourcePattern;
 
-    public LambdaAccumulator( AccumulateFunction accumulateFunction ) {
+    public LambdaAccumulator(AccumulateFunction accumulateFunction, Pattern sourcePattern) {
         this.accumulateFunction = accumulateFunction;
+        this.sourcePattern = sourcePattern;
     }
 
     @Override
@@ -38,16 +43,27 @@ public class LambdaAccumulator implements Accumulator {
 
     @Override
     public void accumulate(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle, Declaration[] declarations, Declaration[] innerDeclarations, WorkingMemory workingMemory) throws Exception {
-        final Optional<Variable<?>> optSource = accumulateFunction.getOptSource();
-        final Object object  = optSource.map((Variable<?> source) -> {
-            final Declaration decl = Arrays.stream(innerDeclarations)
-                    .filter(d -> d.getIdentifier().equals(source.getName()))
-                    .findFirst()
-                    .orElseThrow(() -> new RuntimeException("Cannot find declaration with name" + source.getName()));
+        final Object accumulateObject = handle.getObject();
+        final Object returnObject;
+        if (accumulateObject instanceof SubnetworkTuple) {
+            Declaration declaration = Arrays.stream(innerDeclarations).filter(d -> d.getIdentifier().equals(sourcePattern.getPatternVariable().getName())).findFirst().orElseThrow(RuntimeException::new);
+            Binding b = (Binding)sourcePattern.getBindings().iterator().next();
+            Object object = ((SubnetworkTuple) accumulateObject).getObject(declaration);
+            Object result = b.getBindingFunction().apply(object);
+            returnObject = result;
+        } else {
+            Binding b = (Binding)sourcePattern.getBindings().iterator().next();
+            Object result = b.getBindingFunction().apply(accumulateObject);
+            returnObject = result;
+        }
+        accumulateFunction.action((Serializable)context, returnObject);
+    }
 
-            return decl.getValue((InternalWorkingMemory) workingMemory, handle.getObject());
-        }).orElseGet(handle::getObject);
-        accumulateFunction.action((Serializable)context, object);
+    private Declaration declarationWithName(Declaration[] innerDeclarations, String variableName) {
+        return Arrays.stream(innerDeclarations)
+                .filter(d -> d.getIdentifier().equals(variableName))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Cannot find declaration with name: " + variableName));
     }
 
     @Override

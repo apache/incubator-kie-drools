@@ -1,14 +1,13 @@
 package org.drools.model.functions.accumulate;
 
 import java.io.Serializable;
-import java.util.Optional;
 
 import org.drools.model.Variable;
 import org.drools.model.impl.ModelComponent;
 
 public class Count<T> extends AbstractAccumulateFunction<T,Count.Context<T>,Integer> implements ModelComponent {
 
-   public Count(Optional<Variable<T>> source) {
+   public Count(Variable<T> source) {
        super(source);
    }
 
@@ -33,8 +32,8 @@ public class Count<T> extends AbstractAccumulateFunction<T,Count.Context<T>,Inte
    }
 
    @Override
-   public Optional<Variable<T>> getOptSource() {
-       return optSource;
+   public Variable<T> getSource() {
+       return source;
    }
 
    public static class Context<Int> implements Serializable {
