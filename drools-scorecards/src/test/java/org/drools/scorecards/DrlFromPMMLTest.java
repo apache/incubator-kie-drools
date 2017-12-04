@@ -18,6 +18,7 @@ package org.drools.scorecards;
 import org.dmg.pmml.pmml_4_2.descr.PMML;
 import org.drools.pmml.pmml_4_2.PMML4Compiler;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -35,7 +36,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.drools.scorecards.ScorecardCompiler.DrlType.INTERNAL_DECLARED_TYPES;
-
+@Ignore
 public class DrlFromPMMLTest {
 
     private static String drl;

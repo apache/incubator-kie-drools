@@ -19,6 +19,7 @@ package org.drools.scorecards;
 import org.drools.compiler.compiler.ScoreCardFactory;
 import org.drools.compiler.compiler.ScoreCardProvider;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -37,7 +38,7 @@ import java.io.InputStream;
 import static org.junit.Assert.*;
 import static org.kie.internal.builder.ScoreCardConfiguration.SCORECARD_INPUT_TYPE;
 
-
+@Ignore
 public class ScorecardProviderPMMLTest {
     private static String drl;
     private ScoreCardProvider scoreCardProvider;

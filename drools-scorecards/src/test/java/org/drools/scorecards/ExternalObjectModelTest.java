@@ -27,6 +27,7 @@ import org.drools.scorecards.example.Applicant;
 import org.drools.scorecards.pmml.ScorecardPMMLUtils;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -50,7 +51,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.drools.scorecards.ScorecardCompiler.DrlType.EXTERNAL_OBJECT_MODEL;
-
+@Ignore
 public class ExternalObjectModelTest {
     private static ScorecardCompiler scorecardCompiler;
 

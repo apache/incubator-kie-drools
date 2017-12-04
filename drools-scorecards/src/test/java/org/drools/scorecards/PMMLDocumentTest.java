@@ -20,11 +20,12 @@ import org.dmg.pmml.pmml_4_2.descr.*;
 import org.drools.pmml.pmml_4_2.extensions.PMMLExtensionNames;
 import org.drools.scorecards.pmml.ScorecardPMMLUtils;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 import static org.drools.scorecards.ScorecardCompiler.DrlType.INTERNAL_DECLARED_TYPES;
-
+@Ignore
 public class PMMLDocumentTest {
 
     private static PMML pmmlDocument;

@@ -22,6 +22,7 @@ import org.drools.pmml.pmml_4_2.extensions.AggregationStrategy;
 import org.drools.scorecards.pmml.ScorecardPMMLExtensionNames;
 import org.drools.scorecards.pmml.ScorecardPMMLUtils;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -39,6 +40,7 @@ import java.io.InputStream;
 import static org.junit.Assert.*;
 import static org.drools.scorecards.ScorecardCompiler.DrlType.INTERNAL_DECLARED_TYPES;
 
+@Ignore
 public class ScoringStrategiesTest {
 
 
