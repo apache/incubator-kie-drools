@@ -433,7 +433,7 @@ public class FlowTest {
                         bind(age).as(person, Person::getAge),
                         accumulate(expr(person, p -> p.getName().startsWith("M")),
                                    sum(age).as(resultSum),
-                                   average(Person::getAge, "$p").as(resultAvg)),
+                                   average(age).as(resultAvg)),
                         on(resultSum, resultAvg)
                                 .execute((sum, avg) -> result.setValue( "total = " + sum + "; average = " + avg ))
                      );
