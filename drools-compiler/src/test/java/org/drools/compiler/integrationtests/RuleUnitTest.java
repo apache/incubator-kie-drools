@@ -17,7 +17,10 @@
 package org.drools.compiler.integrationtests;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Semaphore;
 
 import org.drools.compiler.LongAddress;
@@ -46,6 +49,7 @@ import static org.drools.core.util.ClassUtils.getCanonicalSimpleName;
 import static org.junit.Assert.*;
 
 public class RuleUnitTest {
+	
 
     @Test
     public void testWithDataSource() throws Exception {
@@ -765,6 +769,258 @@ public class RuleUnitTest {
             return adultAge;
         }
     }
+    
+    @Test
+    public void testCoordination() throws Exception {
+    	String drl1 = 
+    			"package org.drools.compiler.integrationtests\n" +
+    	        "unit " + getCanonicalSimpleName( MasterModelUnit.class ) + ";\n" +
+    		    "import " + MasterModel.class.getCanonicalName() + "\n" +
+    	        "import " + ApplicableModel.class.getCanonicalName() + "\n" +
+    	        "import " + ApplyMathModel.class.getCanonicalName() + "\n" +
+    	        "import " + ApplyStringModel.class.getCanonicalName() + "\n" +
+    		    "import " + ScheduledModelApplicationUnit.class.getCanonicalName() + "\n" +
+    		    "\n" +
+    	        "rule FindModelToApply \n" +
+    		    "when\n" +
+    	        "   $mm: MasterModel( subModels != null ) from models\n" +
+    		    "   $am: ApplicableModel( applied == false, $idx: index ) from $mm.subModels\n" +
+    	        "   not ApplicableModel( applied == false, index < $idx ) from $mm.subModels\n" +
+    	        "then\n" +
+    	        "   applicableModels.insert($am);\n" +
+    	        "   drools.run(new ScheduledModelApplicationUnit(models,applicableModels));\n" +
+    		    "end\n" +
+    		    "";
+    	String drl2 = 
+    			"package org.drools.compiler.integrationtests\n" +
+    			"unit " + getCanonicalSimpleName( ScheduledModelApplicationUnit.class ) + ";\n" +
+    	    	"import " + MasterModel.class.getCanonicalName() + "\n" +
+    	    	"import " + ApplicableModel.class.getCanonicalName() + "\n" +
+    	    	"import " + ApplyMathModel.class.getCanonicalName() + "\n" +
+    	    	"import " + ApplyStringModel.class.getCanonicalName() + "\n" +
+    	    	"\n" +
+    			"rule Apply_ApplyMathModel_Addition \n" +
+    	    	"when\n" +
+    			"    $amm: ApplyMathModel( applied == false, inputValue1 != null, "+
+    	    	"                          inputValue2 != null, operation == \"add\" ) from applicableModels\n" +
+    	    	"    $v1: Integer() from $amm.inputValue1 \n" +
+    			"    $v2: Integer() from $amm.inputValue2 \n" +
+    			"then\n" +
+    			"    modify($amm) { \n" +
+    			"       setResult($v1.intValue() + $v2.intValue()), \n" +
+    			"       setApplied(true) \n" +
+    			"    };\n" +
+    			"    System.out.println(\"Result = \"+$amm.getResult());\n" +
+    	    	"end\n" +
+    			"\n" +
+    	    	"rule Apply_ApplyStringModel_Concat \n" +
+    			"when\n" +
+    	    	"    $asm: ApplyStringModel( applied == false, inputString1 != null, " +
+    			"                            inputString2 != null, operation == \"concat\" ) from applicableModels \n" +
+    	    	"    $v1: String() from $asm.inputString1 \n" +
+    			"    $v2: String() from $asm.inputString2 \n" +
+    	    	"then\n" +
+    			"    String result = $v1+\" \"+$v2; \n" +
+    	    	"    modify($asm) {\n" +
+    			"       setResult(result)\n" +
+    	    	"    };\n" +
+    			"end\n" +
+    	        "";
+    	
+    	MasterModel master = new MasterModel("TestMaster");
+    	ApplyMathModel mathModel = new ApplyMathModel(1, "Math1", "add", 10, 10);
+    	ApplyStringModel stringModel = new ApplyStringModel(2, "String1", "concat", "hello", "world");
+    	master.addSubModel(mathModel);
+    	master.addSubModel(stringModel);
+        KieBase kbase = new KieHelper().addContent( drl1, ResourceType.DRL )
+        		.addContent(drl2, ResourceType.DRL)
+                .build();
+        RuleUnitExecutor executor = RuleUnitExecutor.create().bind( kbase );
+
+    	DataSource<MasterModel> masterModels = executor.newDataSource("models", master);
+    	DataSource<ApplicableModel> applicableModels = executor.newDataSource("applicableModel");
+    	int x = executor.run(new MasterModelUnit(masterModels,applicableModels));
+    	System.out.println(x);
+    	for (Iterator<ApplicableModel> iter = applicableModels.iterator(); iter.hasNext();) {
+    		ApplicableModel model = iter.next();
+    		System.out.println(model.getName()+" : "+model.getResult());
+    	}
+    }
+    
+    public static class BasicModel {
+    	private int index;
+    	private String name;
+    	private String operation;
+    	
+		public BasicModel(int index, String name, String operation) {
+			this.index = index;
+			this.name = name;
+			this.operation = operation;
+		}
+
+		public int getIndex() {
+			return index;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public String getOperation() {
+			return operation;
+		}
+    	
+    }
+    
+    public static class MasterModel extends BasicModel {
+    	private List<ApplicableModel> subModels;
+    	
+    	public MasterModel(String name) {
+    		super(0,name,"master");
+    		subModels = new ArrayList<>();
+    	}
+    	
+    	public List<ApplicableModel> getSubModels() {
+    		return subModels;
+    	}
+    	
+    	public boolean addSubModel(ApplicableModel subModel) {
+    		return subModels.add(subModel);
+    	}
+    }
+    
+    public abstract static class ApplicableModel extends BasicModel {
+    	private boolean applied;
+    	
+    	public ApplicableModel(int index, String name, String operation) {
+    		super(index,name,operation);
+    		this.applied = false;
+    	}
+    	
+    	public ApplicableModel(int index, String name, String operation, boolean applied) {
+    		super(index,name,operation);
+    		this.applied = applied; 
+    	}
+    	
+    	public boolean isApplied() {
+    		return applied;
+    	}
+    	
+    	public void setApplied(boolean applied) {
+    		this.applied = applied;
+    	}
+    	
+    	public abstract Object getResult();
+    }
+    
+    public static class ApplyMathModel extends ApplicableModel {
+		private Integer inputValue1;
+    	private Integer inputValue2;
+    	private Integer result;
+    	
+    	public ApplyMathModel(int index, String name, String operation, Integer inputValue1, Integer inputValue2) {
+			super(index, name, operation);
+			this.inputValue1 = inputValue1;
+			this.inputValue2 = inputValue2;
+		}
+
+		public Integer getInputValue1() {
+			return inputValue1;
+		}
+
+		public void setInputValue1(Integer inputValue1) {
+			this.inputValue1 = inputValue1;
+		}
+
+		public Integer getInputValue2() {
+			return inputValue2;
+		}
+
+		public void setInputValue2(Integer inputValue2) {
+			this.inputValue2 = inputValue2;
+		}
+
+		public Integer getResult() {
+			return result;
+		}
+
+		public void setResult(Integer result) {
+			this.result = result;
+		}
+    }
+    
+    public static class ApplyStringModel extends ApplicableModel {
+    	private String inputString1;
+    	private String inputString2;
+    	private String result;
+    	
+    	public ApplyStringModel(int index, String name, String operation, String inputString1, String inputString2) {
+    		super(index,name,operation);
+    		this.inputString1 = inputString1;
+    		this.inputString2 = inputString2;
+    	}
+
+		public String getInputString1() {
+			return inputString1;
+		}
+
+		public void setInputString1(String inputString1) {
+			this.inputString1 = inputString1;
+		}
+
+		public String getInputString2() {
+			return inputString2;
+		}
+
+		public void setInputString2(String inputString2) {
+			this.inputString2 = inputString2;
+		}
+
+		public String getResult() {
+			return result;
+		}
+
+		public void setResult(String result) {
+			this.result = result;
+		}
+		
+    }
+    
+    public static class MasterModelUnit implements RuleUnit {
+    	private DataSource<MasterModel> models;
+    	private DataSource<ApplicableModel> applicableModels;
+    	
+    	public MasterModelUnit(DataSource<MasterModel> models, DataSource<ApplicableModel> applicableModels) {
+    		this.models = models;
+    		this.applicableModels = applicableModels;
+    	}
+    	
+    	public DataSource<MasterModel> getModels() {
+    		return models;
+    	}
+    	
+    	public DataSource<ApplicableModel> getApplicableModels() {
+    		return applicableModels;
+    	}
+    }
+    
+    public static class ScheduledModelApplicationUnit implements RuleUnit {
+    	private DataSource<MasterModel> models;
+    	private DataSource<ApplicableModel> applicableModels;
+    	
+    	public ScheduledModelApplicationUnit(DataSource<MasterModel> models, DataSource<ApplicableModel> applicableModels) {
+    		this.models = models;
+    		this.applicableModels = applicableModels;
+    	}
+    	
+    	public DataSource<MasterModel> getModels() {
+    		return models;
+    	}
+    	
+    	public DataSource<ApplicableModel> getApplicableModels() {
+    		return applicableModels;
+    	}
+    }
 
     @Test
     public void testGuardedUnit() throws Exception {
@@ -772,53 +1028,85 @@ public class RuleUnitTest {
                 "package org.drools.compiler.integrationtests\n" +
                 "unit " + getCanonicalSimpleName( BoxOfficeUnit.class ) + ";\n" +
                 "import " + BoxOffice.class.getCanonicalName() + "\n" +
-                "import " + TicketIssuerUnit.class.getCanonicalName() + "\n" +
+                "import " + AdultTicketIssuerUnit.class.getCanonicalName() + "\n" +
+                "import " + ChildTicketIssuerUnit.class.getCanonicalName() + "\n" +
                 "\n" +
                 "rule BoxOfficeIsOpen when\n" +
                 "    $box: /boxOffices[ open ]\n" +
                 "then\n" +
-                "    drools.guard( TicketIssuerUnit.class );" +
-                "end";
+                "    drools.guard( AdultTicketIssuerUnit.class ); \n" +
+                "end \n" +
+                "\n" +
+                "rule ChildBoxOfficeIsOpen \n" +
+                "when \n" +
+                "    $box: BoxOffice( open == true, serveMinors == true ) from boxOffices \n" +
+                "then \n" +
+                "    drools.guard( AdultTicketIssuerUnit.class ); \n" +
+                "    drools.guard( ChildTicketIssuerUnit.class ); \n" +
+                "end \n";
 
         String drl2 =
                 "package org.drools.compiler.integrationtests\n" +
-                "unit " + getCanonicalSimpleName( TicketIssuerUnit.class ) + ";\n" +
+                "unit " + getCanonicalSimpleName( AdultTicketIssuerUnit.class ) + ";\n" +
                 "import " + Person.class.getCanonicalName() + "\n" +
                 "import " + AdultTicket.class.getCanonicalName() + "\n" +
                 "rule IssueAdultTicket when\n" +
                 "    $p: /persons[ age >= 18 ]\n" +
                 "then\n" +
-                "    tickets.insert(new AdultTicket($p));\n" +
+                "    adultTickets.insert(new AdultTicket($p));\n" +
+                "    ticketsIssued += 1; \n" +
                 "end\n" +
                 "rule RegisterAdultTicket when\n" +
-                "    $t: /tickets\n" +
+                "    $t: /adultTickets\n" +
+                "then\n" +
+                "    results.add( $t.getPerson().getName() );\n" +
+                "end";
+        String drl3 = 
+                "package org.drools.compiler.integrationtests\n" +
+                "unit " + getCanonicalSimpleName( ChildTicketIssuerUnit.class ) + ";\n" +
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "import " + ChildTicket.class.getCanonicalName() + "\n" +
+                "rule IssueChildTicket when\n" +
+                "    $p: /persons[ age < 18 ]\n" +
+                "then\n" +
+                "    childTickets.insert(new ChildTicket($p));\n" +
+                "    ticketsIssued += 1; \n" +
+                "end\n" +
+                "rule RegisterChildTicket when\n" +
+                "    $t: /childTickets\n" +
                 "then\n" +
                 "    results.add( $t.getPerson().getName() );\n" +
                 "end";
 
         KieBase kbase = new KieHelper().addContent( drl1, ResourceType.DRL )
                                        .addContent( drl2, ResourceType.DRL )
+                                       .addContent( drl3, ResourceType.DRL )
                                        .build();
         RuleUnitExecutor executor = RuleUnitExecutor.create().bind( kbase );
 
         DataSource<Person> persons = executor.newDataSource( "persons" );
         DataSource<BoxOffice> boxOffices = executor.newDataSource( "boxOffices" );
-        DataSource<AdultTicket> tickets = executor.newDataSource( "tickets" );
+        DataSource<AdultTicket> adultTickets = executor.newDataSource( "adultTickets" );
+        DataSource<ChildTicket> childTickets = executor.newDataSource( "childTickets" );
 
         List<String> list = new ArrayList<>();
+        Integer adultTicketsIssued = new Integer(0);
         executor.bindVariable( "results", list );
+        executor.bindVariable( "ticketsIssued", adultTicketsIssued);
 
         // two open box offices
-        BoxOffice office1 = new BoxOffice(true);
+        BoxOffice office1 = new BoxOffice(true,true);
         FactHandle officeFH1 = boxOffices.insert( office1 );
         BoxOffice office2 = new BoxOffice(true);
         FactHandle officeFH2 = boxOffices.insert( office2 );
 
         persons.insert(new Person("Mario", 40));
+        persons.insert(new Person("Mary", 16));
         executor.run(BoxOfficeUnit.class); // fire BoxOfficeIsOpen -> run TicketIssuerUnit -> fire RegisterAdultTicket
 
-        assertEquals( 1, list.size() );
-        assertEquals( "Mario", list.get(0) );
+        assertEquals( 2, list.size() );
+        assertTrue( list.contains("Mario") );
+        assertTrue( list.contains("Mary") );
         list.clear();
 
         persons.insert(new Person("Matteo", 30));
@@ -832,9 +1120,10 @@ public class RuleUnitTest {
         office1.setOpen(false);
         boxOffices.update(officeFH1, office1);
         persons.insert(new Person("Mark", 35));
+        persons.insert(new Person("Sue", 12));
         executor.run(BoxOfficeUnit.class);
 
-        assertEquals( 1, list.size() );
+        assertEquals( 1, list.size() ); // closed boxOffice1 is the only box office to serve persons < 18
         assertEquals( "Mark", list.get(0) );
         list.clear();
 
@@ -843,15 +1132,44 @@ public class RuleUnitTest {
         boxOffices.update(officeFH2, office2); // guarding rule no longer true
         persons.insert(new Person("Edson", 35));
         executor.run(BoxOfficeUnit.class); // no fire
-
+        
         assertEquals( 0, list.size() );
+        
+        // reopen all box offices
+        office1.setOpen(true);
+        office2.setOpen(true);
+        boxOffices.update(officeFH1, office1);
+        boxOffices.update(officeFH2, office2);
+        
+        persons.insert(new Person("Alec", 15));
+        executor.run(BoxOfficeUnit.class);
+
+        assertEquals( 3, list.size() ); // box office1 issues previously registered tickets as well as the new ticket
+        assertTrue( list.contains("Edson") );
+        assertTrue( list.contains("Sue") );
+        assertTrue( list.contains("Alec") );
+
+        adultTickets.forEach(t -> {
+        	System.out.printf("Adult ticket: %s (%d)%n",t.getPerson().getName(),t.getPerson().getAge());
+        });
+        childTickets.forEach(t -> {
+        	System.out.printf("Child ticket: %s (%d)%n",t.getPerson().getName(),t.getPerson().getAge());
+        });
     }
+    
 
     public static class BoxOffice {
         private boolean open;
+        private boolean serveMinors;
 
         public BoxOffice( boolean open ) {
             this.open = open;
+            this.serveMinors = false;
+        }
+        
+        public BoxOffice( boolean open, boolean serveMinors) {
+        	this.open = open;
+        	this.serveMinors = serveMinors;
         }
 
         public boolean isOpen() {
@@ -861,6 +1179,15 @@ public class RuleUnitTest {
         public void setOpen( boolean open ) {
             this.open = open;
         }
+
+		public boolean isServeMinors() {
+			return serveMinors;
+		}
+
+		public void setServeMinors(boolean serveMinors) {
+			this.serveMinors = serveMinors;
+		}
+        
     }
 
     public static class AdultTicket {
@@ -874,6 +1201,18 @@ public class RuleUnitTest {
             return person;
         }
     }
+    
+    public static class ChildTicket {
+    	private final Person person;
+    	
+    	public ChildTicket( Person person ) {
+    		this.person = person;
+    	}
+    	
+    	public Person getPerson() {
+    		return person;
+    	}
+    }
 
     public static class BoxOfficeUnit implements RuleUnit {
         private DataSource<BoxOffice> boxOffices;
@@ -883,31 +1222,70 @@ public class RuleUnitTest {
         }
     }
 
-    public static class TicketIssuerUnit implements RuleUnit {
+    public static class AdultTicketIssuerUnit implements RuleUnit {
         private DataSource<Person> persons;
-        private DataSource<AdultTicket> tickets;
+        private DataSource<AdultTicket> adultTickets;
+        private int ticketsIssued;
 
         private List<String> results;
 
-        public TicketIssuerUnit() { }
+        public AdultTicketIssuerUnit() { }
 
-        public TicketIssuerUnit( DataSource<Person> persons, DataSource<AdultTicket> tickets ) {
+        public AdultTicketIssuerUnit( DataSource<Person> persons, DataSource<AdultTicket> tickets ) {
             this.persons = persons;
-            this.tickets = tickets;
+            this.adultTickets = tickets;
+            this.ticketsIssued = 0;
         }
 
         public DataSource<Person> getPersons() {
             return persons;
         }
 
-        public DataSource<AdultTicket> getTickets() {
-            return tickets;
+        public DataSource<AdultTicket> getAdultTickets() {
+            return adultTickets;
         }
 
         public List<String> getResults() {
             return results;
         }
+        
+        public int getTicketsIssued() {
+        	return ticketsIssued;
+        }
     }
+    
+    public static class ChildTicketIssuerUnit implements RuleUnit {
+    	private DataSource<Person> persons;
+    	private DataSource<ChildTicket> childTickets;
+    	private int ticketsIssued;
+    	
+    	private List<String> results;
+    	
+    	public ChildTicketIssuerUnit() { }
+    	
+    	public ChildTicketIssuerUnit( DataSource<Person> persons, DataSource<ChildTicket> tickets ) {
+    		this.persons = persons;
+    		this.childTickets = tickets;
+    		this.ticketsIssued = 0;
+    	}
+    	
+    	public DataSource<Person> getPersons() {
+    		return persons;
+    	}
+    	
+    	public DataSource<ChildTicket> getChildTickets() {
+    		return childTickets;
+    	}
+    	
+    	public List<String> getResults() {
+    		return results;
+    	}
+    	
+    	public int getTicketsIssued() {
+    		return ticketsIssued;
+    	}
+    }
+    
 
     @Test
     public void testMultiLevelGuards() throws Exception {
