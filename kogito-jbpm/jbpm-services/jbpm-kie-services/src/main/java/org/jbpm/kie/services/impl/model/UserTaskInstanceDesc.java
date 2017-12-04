@@ -69,7 +69,27 @@ public class UserTaskInstanceDesc implements org.jbpm.services.api.model.UserTas
         this.dueDate = dueDate;
         this.formName = formName;
     }
-
+    
+    public UserTaskInstanceDesc(Long taskId, String status, String actualOwner, 
+            String name, Integer priority, String createdBy, String processId, 
+            Long processInstanceId, Date createdOn, String formName, 
+            String deploymentId, Date dueDate) {
+        super();
+        this.taskId = taskId;
+        this.status = status;
+        this.name = name;
+        this.priority = priority;
+        this.actualOwner = actualOwner;
+        this.createdBy = createdBy;
+        this.deploymentId = deploymentId;
+        this.processId = processId;
+        this.processInstanceId = processInstanceId;
+        this.createdOn = createdOn;
+        this.formName = formName;
+        this.deploymentId = deploymentId;
+        this.dueDate = dueDate;
+    }
+    
 	@Override
 	public Long getTaskId() {
 		

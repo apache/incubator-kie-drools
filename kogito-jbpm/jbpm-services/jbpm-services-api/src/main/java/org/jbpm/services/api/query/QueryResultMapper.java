@@ -79,6 +79,7 @@ public interface QueryResultMapper<T> extends Serializable {
     public static final String COLUMN_VAR_NAME = "VARIABLEID";
     public static final String COLUMN_VAR_VALUE = "VALUE";
     
+    
     // task related
     public static final String COLUMN_ACTIVATIONTIME = "ACTIVATIONTIME";
     public static final String COLUMN_ACTUALOWNER = "ACTUALOWNER";
@@ -98,6 +99,15 @@ public interface QueryResultMapper<T> extends Serializable {
     public static final String COLUMN_WORKITEMID = "WORKITEMID";
     public static final String COLUMN_ORGANIZATIONAL_ENTITY = "ID";
     public static final String COLUMN_EXCLUDED_OWNER = "ENTITY_ID";
+    public static final String COLUMN_EXPIRATIONTIME = "EXPIRATIONDATE";
+    public static final String COLUMN_POTOWNER = "POTOWNER";
+    public static final String COLUMN_TASK_TYPE = "TASKTYPE";
+    public static final String COLUMN_FORM_NAME = "FORMNAME";
+    
+    
+    //task event related
+    public static final String COLUMN_LASTMODIFICATION_USER = "LASTMODIFICATIONUSER";
+    public static final String COLUMN_LASTMODIFICATION_DATE = "LASTMODIFICATIONDATE";
 
     // task variables related
     public static final String COLUMN_TASK_VAR_NAME = "TVNAME";
