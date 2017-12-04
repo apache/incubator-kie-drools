@@ -11,7 +11,7 @@ public class Min<T> extends AbstractAccumulateFunction<T, Min.Context, Double> i
 
    private final Function1<T, ? extends Number> mapper;
 
-   public Min(Optional<Variable<T>> source, Function1<T, Double> mapper) {
+   public Min(Variable<T> source, Function1<T, Double> mapper) {
        super(source);
        this.mapper = mapper;
    }
@@ -38,8 +38,8 @@ public class Min<T> extends AbstractAccumulateFunction<T, Min.Context, Double> i
    }
 
    @Override
-   public Optional<Variable<T>> getOptSource() {
-       return optSource;
+   public Variable<T> getSource() {
+       return source;
    }
 
    public static class Context implements Serializable {

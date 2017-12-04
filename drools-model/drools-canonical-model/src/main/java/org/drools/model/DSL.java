@@ -1,7 +1,5 @@
 package org.drools.model;
 
-import java.io.Serializable;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import org.drools.model.consequences.ConditionalConsequenceBuilder;
@@ -13,7 +11,6 @@ import org.drools.model.datasources.impl.SetDataStore;
 import org.drools.model.functions.Block0;
 import org.drools.model.functions.Block1;
 import org.drools.model.functions.Function1;
-import org.drools.model.functions.Function2;
 import org.drools.model.functions.Predicate1;
 import org.drools.model.functions.Predicate2;
 import org.drools.model.functions.Predicate3;
@@ -21,7 +18,6 @@ import org.drools.model.functions.accumulate.Average;
 import org.drools.model.functions.accumulate.Count;
 import org.drools.model.functions.accumulate.Max;
 import org.drools.model.functions.accumulate.Min;
-import org.drools.model.functions.accumulate.Reduce;
 import org.drools.model.functions.accumulate.Sum;
 import org.drools.model.functions.temporal.AfterPredicate;
 import org.drools.model.functions.temporal.BeforePredicate;
@@ -271,8 +267,8 @@ public class DSL {
         return new ExistentialExprViewItem( Condition.Type.FORALL, and( expression, expressions) );
     }
 
-    public static <T> ExprViewItem<T> accumulate(ExprViewItem<T> expr, AccumulateFunction<?, ?, ?>... functions) {
-        return new AccumulateExprViewItem(expr, functions);
+    public static <T> ExprViewItem<T> accumulate(ViewItem<?> viewItem, AccumulateFunction<?, ?, ?>... functions) {
+        return new AccumulateExprViewItem(viewItem, functions);
     }
 
     public static ViewItem or(ViewItemBuilder<?> expression, ViewItemBuilder<?>... expressions) {
@@ -361,40 +357,24 @@ public class DSL {
 
     // -- Accumulate Functions --
 
-    public static <T, N extends Number> Sum<T, N> sum(Function1<T, N> mapper) {
-        return new Sum(Optional.empty(), new Function1.Impl<>(mapper));
-    }
-
-    public static <T, N extends Number> Sum<T, N> sum(Variable<T> source, Function1<T, N> mapper) {
-        return new Sum(Optional.of(source), new Function1.Impl<>(mapper));
-    }
-
-    public static <N extends Number> Sum<N, N> sum(Variable<N> source) {
-        return new Sum<N, N>(Optional.of(source), x -> x);
+    public static <N extends Number> Sum<N> sum(Variable<N> source) {
+        return new Sum<>(source);
     }
 
     public static <T> Count<T> count(Variable<T> source) {
-        return new Count<>(Optional.of(source));
-    }
-
-    public static <T> Average<T> average(Function1<T, ? extends Number> mapper) {
-        return new Average<T>(Optional.empty(), mapper);
+        return new Count<>(source);
     }
 
     public static <T extends Number>  Min<T> min(Variable<T> source) {
-        return new Min<T>(Optional.of(source), x -> x.doubleValue());
+        return new Min<T>(source, x -> x.doubleValue());
     }
 
     public static <T extends Number>  Max<T> max(Variable<T> source) {
-        return new Max<T>(Optional.of(source), x -> x.doubleValue());
+        return new Max<T>(source, x -> x.doubleValue());
     }
 
     public static <N extends Number> Average<N> average(Variable<N> source) {
-        return new Average<N>(Optional.of(source), x -> x);
-    }
-
-    public static <T, R extends Serializable> Reduce<T, R> reduce(R zero, Function2<R, T, R> reducingFunction) {
-        return new Reduce(Optional.empty(), zero, new Function2.Impl<>(reducingFunction));
+        return new Average<N>(source, x -> x);
     }
 
     // -- Conditional Named Consequnce --

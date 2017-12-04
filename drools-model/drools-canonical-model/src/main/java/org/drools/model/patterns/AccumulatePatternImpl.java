@@ -1,6 +1,7 @@
 package org.drools.model.patterns;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import org.drools.model.AccumulateFunction;
 import org.drools.model.AccumulatePattern;
@@ -13,12 +14,14 @@ import org.drools.model.impl.ModelComponent;
 
 public class AccumulatePatternImpl<T> extends AbstractSinglePattern implements AccumulatePattern<T>, ModelComponent {
 
-    private final Pattern<T> pattern;
+    private Pattern<T> pattern;
+    private final Optional<CompositePatterns> compositePatterns;
     private final AccumulateFunction<T, ?, ?>[] functions;
     private final Variable[] boundVariables;
 
-    public AccumulatePatternImpl(Pattern<T> pattern, AccumulateFunction<T, ?, ?>... functions) {
+    public AccumulatePatternImpl(Pattern<T> pattern, Optional<CompositePatterns> compositePatterns, AccumulateFunction<T, ?, ?>... functions) {
         this.pattern = pattern;
+        this.compositePatterns = compositePatterns;
         this.functions = functions;
         boundVariables = new Variable[functions.length];
         for (int i = 0; i < functions.length; i++) {
@@ -26,9 +29,23 @@ public class AccumulatePatternImpl<T> extends AbstractSinglePattern implements A
         }
     }
 
+    public void setPattern(Pattern<T> pattern) {
+        this.pattern = pattern;
+    }
+
     @Override
     public AccumulateFunction<T, ?, ?>[] getFunctions() {
         return functions;
+    }
+
+    @Override
+    public Optional<CompositePatterns> getCompositePatterns() {
+        return compositePatterns;
+    }
+
+    @Override
+    public Pattern getPattern() {
+        return pattern;
     }
 
     @Override
@@ -43,6 +60,9 @@ public class AccumulatePatternImpl<T> extends AbstractSinglePattern implements A
 
     @Override
     public Variable<T> getPatternVariable() {
+        if(pattern == null) {
+            return null;
+        }
         return pattern.getPatternVariable();
     }
 

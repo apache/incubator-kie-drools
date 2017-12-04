@@ -394,13 +394,15 @@ public class FlowTest {
     @Test
     public void testAccumulate1() {
         Result result = new Result();
-        Variable<Person> person = declarationOf( type( Person.class ) );
+        Variable<Person> person = declarationOf( type( Person.class));
         Variable<Integer> resultSum = declarationOf( type( Integer.class ) );
+        Variable<Integer> age = declarationOf( type( Integer.class ) );
 
         Rule rule = rule("accumulate")
                 .build(
+                        bind(age).as(person, Person::getAge),
                         accumulate(expr(person, p -> p.getName().startsWith("M")),
-                                   sum( Person::getAge ).as(resultSum)),
+                                   sum(age).as(resultSum)),
                         on(resultSum).execute(sum -> result.setValue( "total = " + sum) )
                       );
 
@@ -424,12 +426,14 @@ public class FlowTest {
         Variable<Person> person = declarationOf( type( Person.class ) );
         Variable<Integer> resultSum = declarationOf( type( Integer.class ) );
         Variable<Double> resultAvg = declarationOf( type( Double.class ) );
+        Variable<Integer> age = declarationOf( type( Integer.class ) );
 
         Rule rule = rule("accumulate")
                 .build(
+                        bind(age).as(person, Person::getAge),
                         accumulate(expr(person, p -> p.getName().startsWith("M")),
-                                   sum(Person::getAge).as(resultSum),
-                                   average(Person::getAge).as(resultAvg)),
+                                   sum(age).as(resultSum),
+                                   average(age).as(resultAvg)),
                         on(resultSum, resultAvg)
                                 .execute((sum, avg) -> result.setValue( "total = " + sum + "; average = " + avg ))
                      );
@@ -447,43 +451,6 @@ public class FlowTest {
         assertEquals("total = 77; average = 38.5", result.getValue());
     }
 
-    @Test
-    public void testAccumulate3() {
-
-        final org.drools.model.Variable<java.lang.Object> var_$pattern_Object$1$ = declarationOf(type(java.lang.Object.class),
-                                                                                                 "$pattern_Object$1$");
-        final org.drools.model.Variable<org.drools.modelcompiler.domain.Person> var_$p = declarationOf(type(org.drools.modelcompiler.domain.Person.class),
-                                                                                                       "$p");
-        final org.drools.model.Variable<Integer> var_$sum = declarationOf(type(Integer.class),
-                                                                          "$sum");
-
-        final Variable<Integer> var_$age = declarationOf(type(Integer.class), "$age");
-        AbstractAccumulateFunction<Person, Sum.Context<Integer>, Integer> sumExpr = sum((Person $p) -> $p.getAge()).as(var_$sum);
-
-        org.drools.model.Rule rule = rule("X").build(
-                                                    bind(var_$age).as(var_$p, p -> p.getAge()),
-                                                    accumulate(expr("$expr$1$",
-                                                                     var_$p,
-                                                                     (_this) -> _this.getAge() > 36),
-                                                               sum(var_$age).as(var_$sum)
-                                                     ),
-                                                     on(var_$sum).execute((drools, $sum) -> {
-                                                         drools.insert(new Result($sum));
-                                                     }));
-
-        Model model = new ModelImpl().addRule( rule );
-        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
-
-        KieSession ksession = kieBase.newKieSession();
-
-        ksession.insert(new Person("Mark", 37));
-        ksession.insert(new Person("Edson", 35));
-        ksession.insert(new Person("Mario", 40));
-
-        ksession.fireAllRules();
-        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
-        assertThat(results, hasItem(new Result(77)));
-    }
 
     @Test
     public void testGlobalInConsequence() {
