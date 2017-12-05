@@ -18,7 +18,6 @@ package org.drools.compiler.compiler;
 
 import java.io.InputStream;
 import java.util.List;
-import java.util.Map;
 
 import org.kie.api.Service;
 import org.kie.api.builder.model.KieBaseModel;
@@ -33,6 +32,9 @@ public interface PMMLCompiler extends Service {
     List<PMMLResource> precompile( String fileName, ClassLoader classLoader, KieBaseModel rootModel);
 
     List<KnowledgeBuilderResult> getResults();
+    
+    String getCompilerVersion();
+    
 
     void clearResults();
 }

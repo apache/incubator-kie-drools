@@ -23,23 +23,6 @@
       */
 }
 @declare{'valuesOnDomainRestrictionRule'}
-rule "Valid_PMML4Data_Values_@{name}"
-@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
-dialect 'mvel'
-no-loop
-salience 9999
-when
-   $in : PMML4Data( capitalizedName == "@{name}", $val : value, valid == false, placeholder == false,
-          @if{ context != null } context == @{format("string",context)}, @end{}
-          @foreach{ v : vals } value == @{v} @end{' || '}
-          )
-then
-   modify($in) {
-      setValid( true );
-   }
-end
-
-
 rule "Valid_Values_@{name}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 dialect 'mvel'

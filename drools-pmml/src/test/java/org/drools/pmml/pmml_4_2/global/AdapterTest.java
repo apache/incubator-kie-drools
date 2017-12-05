@@ -18,7 +18,6 @@ package org.drools.pmml.pmml_4_2.global;
 
 import org.drools.pmml.pmml_4_2.DroolsAbstractPMMLTest;
 import org.drools.pmml.pmml_4_2.PMML4Helper;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -34,7 +33,7 @@ import java.io.File;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-@Ignore
+
 public class AdapterTest extends DroolsAbstractPMMLTest {
 
 

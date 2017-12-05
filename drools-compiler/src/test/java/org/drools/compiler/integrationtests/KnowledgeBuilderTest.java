@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import org.drools.compiler.compiler.PMMLCompiler;
 import org.drools.compiler.compiler.PMMLResource;
@@ -454,6 +453,7 @@ public class KnowledgeBuilderTest {
     }
 
 
+    @Ignore
     @Test
     public void testResourceMapping() throws Exception {
         ServiceRegistryImpl serviceRegistry = (ServiceRegistryImpl) ServiceRegistry.getInstance();
@@ -464,10 +464,10 @@ public class KnowledgeBuilderTest {
                                                           public String compile(InputStream stream, ClassLoader cl) {
                                                               return "rule R2 when then end";
                                                           }
-                                                          
+
                                                           @Override
                                                           public List<KnowledgeBuilderResult> getResults() {
-                                                             return Collections.emptyList();
+                                                              return Collections.emptyList();
                                                           }
 
                                                           @Override
@@ -477,6 +477,10 @@ public class KnowledgeBuilderTest {
 
                                                           public Resource[] transform( Resource input, ClassLoader classLoader ) {
                                                               return new Resource[ 0 ];
+                                                          }
+                                                          
+                                                          public String getCompilerVersion() {
+                                                        	  return "KnowledgeBuilderTest";
                                                           }
 
 														@Override
@@ -515,11 +519,6 @@ public class KnowledgeBuilderTest {
         Resource res2 = ResourceFactory.newByteArrayResource( pmml.getBytes() );
         KnowledgeBuilder kbuilder2 = KnowledgeBuilderFactory.newKnowledgeBuilder();
         
-        /*
-         * The following code is commented out until the adding of a PMML
-         * resource is fixed
-         * 
-         * 
         kbuilder2.add( res2, ResourceType.PMML );
         assertFalse( kbuilder2.getErrors().toString(), kbuilder2.hasErrors() );
 
@@ -527,7 +526,6 @@ public class KnowledgeBuilderTest {
         assertEquals( 1, kp2.getRules().size() );
         Rule r2 = kp2.getRules().iterator().next();
         assertEquals( res2, ((RuleImpl) r2).getResource() );
-         */
 
     }
 

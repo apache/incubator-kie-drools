@@ -29,7 +29,7 @@ rule "Scorecard @{context} rank code @{index}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience -5
 when
-    ScoreCard( modelName == "@{context}", $ranks : ranking, $keys : ranking.keySet() ) @watch( ranking )
+    @{ pmmlPackageName }.ScoreCard( modelName == "@{context}", $ranks : ranking, $keys : ranking.keySet() ) @watch( ranking )
 then
     String code = null;
 
@@ -49,18 +49,6 @@ then
         x.setMissing( false );
         x.setValue( code );
     insertLogical( x );
-end
-
-
-rule "Update PMMLResult with Scorecard output @{context} rank code @{index}"
-@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
-when
-   $tgt: @{target}()
-   $reslt: PMML4Result( resultVariables == null || "@{target}" not memberOf resultVariables.keySet() )
-then
-   $reslt.setResultCode("OK");
-   $reslt.addResultVariable("@{target}",$tgt);
-   update($reslt);
 end
 @end{}
 

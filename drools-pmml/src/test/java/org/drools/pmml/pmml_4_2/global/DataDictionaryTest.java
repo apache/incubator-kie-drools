@@ -18,7 +18,6 @@ package org.drools.pmml.pmml_4_2.global;
 
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.drools.pmml.pmml_4_2.DroolsAbstractPMMLTest;
 import org.junit.After;
 import org.junit.Test;
@@ -28,7 +27,7 @@ import org.kie.api.runtime.rule.EntryPoint;
 
 import static org.junit.Assert.assertEquals;
 
-@Ignore
+
 public class DataDictionaryTest extends DroolsAbstractPMMLTest {
 
     private static final boolean VERBOSE = false;

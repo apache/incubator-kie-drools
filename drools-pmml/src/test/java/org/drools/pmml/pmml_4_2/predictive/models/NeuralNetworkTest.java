@@ -18,7 +18,6 @@ package org.drools.pmml.pmml_4_2.predictive.models;
 
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.drools.pmml.pmml_4_2.DroolsAbstractPMMLTest;
 import org.drools.pmml.pmml_4_2.PMML4Helper;
 import org.junit.After;
@@ -28,7 +27,7 @@ import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.rule.Variable;
 
 import static org.junit.Assert.assertEquals;
-@Ignore
+
 public class NeuralNetworkTest extends DroolsAbstractPMMLTest {
 
 

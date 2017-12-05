@@ -31,9 +31,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Ignore;
-
-@Ignore
 public class PMMLErrorTest {
 
     String pmlm = "<PMML version=\"4.2\" xsi:schemaLocation=\"http://www.dmg.org/PMML-4_2 http://www.dmg.org/v4-1/pmml-4-2.xsd\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.dmg.org/PMML-4_2\">\n" +

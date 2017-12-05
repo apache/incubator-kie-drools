@@ -32,20 +32,20 @@
         <SimplePredicate field="fld4" operator="equal" value="optA"/>
         <Node score="tgtX">
           <CompoundPredicate booleanOperator="surrogate">
-            <SimplePredicate field="fld1" operator="lessThan" value="30.0"/>
-            <SimplePredicate field="fld2" operator="greaterThan" value="20.0"/>
+            <SimplePredicate field="fld1" operator="lessThan" value="30"/>
+            <SimplePredicate field="fld2" operator="greaterThan" value="20"/>
           </CompoundPredicate>
           <Node score="tgtX">
-            <SimplePredicate field="fld2" operator="lessThan" value="40.0"/>
+            <SimplePredicate field="fld2" operator="lessThan" value="40"/>
           </Node>
           <Node score="tgtZ">
-            <SimplePredicate field="fld2" operator="greaterOrEqual" value="10.0"/>
+            <SimplePredicate field="fld2" operator="greaterOrEqual" value="10"/>
           </Node>
         </Node>
         <Node score="tgtZ">
           <CompoundPredicate booleanOperator="or">
-            <SimplePredicate field="fld1" operator="greaterOrEqual" value="60.0"/>
-            <SimplePredicate field="fld1" operator="lessOrEqual" value="70.0"/>
+            <SimplePredicate field="fld1" operator="greaterOrEqual" value="60"/>
+            <SimplePredicate field="fld1" operator="lessOrEqual" value="70"/>
           </CompoundPredicate>
           <Node score="tgtZ">
             <SimpleSetPredicate booleanOperator="isNotIn" field="fld4">
@@ -61,17 +61,17 @@
         </CompoundPredicate>
         <Node score="tgtY">
           <CompoundPredicate booleanOperator="and">
-            <SimplePredicate field="fld1" operator="greaterThan" value="10.0"/>
-            <SimplePredicate field="fld1" operator="lessThan" value="50.0"/>
+            <SimplePredicate field="fld1" operator="greaterThan" value="10"/>
+            <SimplePredicate field="fld1" operator="lessThan" value="50"/>
             <SimplePredicate field="fld4" operator="equal" value="optA"/>
-            <SimplePredicate field="fld2" operator="lessThan" value="100.0"/>
+            <SimplePredicate field="fld2" operator="lessThan" value="100"/>
             <SimplePredicate field="fld3" operator="equal" value="false"/>
           </CompoundPredicate>
         </Node>
         <Node score="tgtZ">
           <CompoundPredicate booleanOperator="and">
             <SimplePredicate field="fld4" operator="equal" value="optC"/>
-            <SimplePredicate field="fld2" operator="lessThan" value="30.0"/>
+            <SimplePredicate field="fld2" operator="lessThan" value="30"/>
           </CompoundPredicate>
         </Node>
       </Node>

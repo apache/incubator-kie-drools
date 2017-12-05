@@ -20,11 +20,10 @@ package org.drools.pmml.pmml_4_2.transformations;
 import org.drools.pmml.pmml_4_2.DroolsAbstractPMMLTest;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
-@Ignore
+
 public class FunctionsWithNestedTest extends DroolsAbstractPMMLTest {
 
     private static final boolean VERBOSE = true;

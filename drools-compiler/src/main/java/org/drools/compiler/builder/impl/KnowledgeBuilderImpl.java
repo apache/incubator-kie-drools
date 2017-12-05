@@ -801,57 +801,38 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     public void addPackageFromPMML(Resource resource,
                                    ResourceType type,
                                    ResourceConfiguration configuration) throws Exception {
-    	/** 
-    	 * The following is no longer necessary as the actions for compiling a PMML
-    	 * resource are now done in a "pre-compile" step
-    	 */
-//        PMMLCompiler compiler = getPMMLCompiler();
-//        if (compiler != null) {
-//            if (compiler.getResults().isEmpty()) {
-//                this.resource = resource;
-//                List<PackageDescr> descrs = pmmlModelToPackageDescr(compiler,resource);
-//                if (descrs != null && !descrs.isEmpty()) {
-//                	for (PackageDescr pkgDescr: descrs) {
-//                		addPackage(pkgDescr);
-//                	}
-//                }
-                /*
+        PMMLCompiler compiler = getPMMLCompiler();
+        if (compiler != null) {
+            if (compiler.getResults().isEmpty()) {
+                this.resource = resource;
                 PackageDescr descr = pmmlModelToPackageDescr(compiler, resource);
                 if (descr != null) {
                     addPackage(descr);
                 }
-                */
-//                this.resource = null;
-//            } else {
-//                this.results.addAll(compiler.getResults());
-//            }
-//            compiler.clearResults();
-//        } else {
-//            addPackageForExternalType(resource, type, configuration);
-//        }
+                this.resource = null;
+            } else {
+                this.results.addAll(compiler.getResults());
+            }
+            compiler.clearResults();
+        } else {
+            addPackageForExternalType(resource, type, configuration);
+        }
     }
-/*
-    List<PackageDescr> pmmlModelToPackageDescr(PMMLCompiler compiler,
+
+    PackageDescr pmmlModelToPackageDescr(PMMLCompiler compiler,
                                          Resource resource) throws DroolsParserException,
             IOException {
-    	List<PackageDescr> packageDescrs = new ArrayList<>();
-    	Map<String,String> theories = compiler.compileWithMining(resource.getInputStream(), rootClassLoader);
+        String theory = compiler.compile(resource.getInputStream(),
+                                         rootClassLoader);
+
         if (!compiler.getResults().isEmpty()) {
             this.results.addAll(compiler.getResults());
             return null;
         }
-    	if (theories != null && !theories.isEmpty()) {
-    		for (String theory: theories.values()) {
-    			PackageDescr descr = generatedDrlToPackageDescr(resource,theory);
-    			if (descr != null) {
-    				packageDescrs.add(descr);
-    			}
-    		}
-    	}
 
-        return packageDescrs;
+        return generatedDrlToPackageDescr(resource, theory);
     }
-*/
+
     void addPackageFromXSD(Resource resource,
                            JaxbConfigurationImpl configuration) throws IOException {
         if (configuration != null) {

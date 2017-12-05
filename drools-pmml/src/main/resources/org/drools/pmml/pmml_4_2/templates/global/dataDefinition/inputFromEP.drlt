@@ -33,42 +33,35 @@
     */
 }
 @declare{'inputFromEPRule'}
-
-rule "Extract ParameterInfo @{name}"
+rule "Input_@{name}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
-salience 101
 when
-   $rd: PMMLRequestData( correlationId != null, requestParams != null )
-   $pi: ParameterInfo( capitalizedName == "@{name}", $name: name, $value: value ) from $rd.requestParams
-   not ParameterInfo( name == $name, value == $value )
+    $in : @{box(type)}() from entry-point "in_@{name}"
+    not @{name}( value == $in, context == null )
 then
-   insert( $pi );
+    // @{box(type)}
+    @{name} input = new @{name}();
+        input.setValue( $in );
+        input.setName(@{format("string",name)});
+        input.setMissing(false);
+        input.setValid(@{notRestricted});
+        input.setContext(null);
+    //System.out.println("Rule " + drools.getRule().getName() + " for input " + $in + " : will insert  " + input.toString());
+    retract( $in );
+    insert( input );
 end
 
-rule "Input_PMMLData_@{name} from ParameterInfo"
-@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
-salience 100
-when
-   $pi: ParameterInfo( $cid: correlationId != null, capitalizedName == "@{name}", $value: value )
-   not PMML4Data( name == $pi.name, value == $value, context == null )
-then
-   PMML4DataFactory factory = PMML4DataFactory.get();
-   PMML4DataType input = factory.newPMML4Data($cid,$pi,@{notRestricted},false);
-   insert( input );
-end
 
-rule "OverrideValue_@{name}"
+rule "OverrideInput_@{name}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience 2
 when
-   $new: PMML4Data( capitalizedName == "@{name}", $value: value )
-   $old: PMML4Data( name == $new.name, value != $value, this before $new )
+    $new: @{box(type)}() from entry-point "in_@{name}"
+    $old: @{name}( value != $new )
 then
-   retract($old);
+    //System.out.println(" Overriding previous values " + $old + " because of " + $new );
+    retract( $old );
 end
-   
-
-
 @end{}
 
 

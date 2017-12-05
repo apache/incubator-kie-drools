@@ -18,27 +18,19 @@ package org.drools.pmml.pmml_4_2;
 
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.PriorityQueue;
 
-import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EventFactHandle;
-import org.drools.pmml.pmml_4_2.model.PMML4ModelType;
-import org.drools.pmml.pmml_4_2.model.PMML4UnitImpl;
-import org.drools.pmml.pmml_4_2.model.ScorecardModel;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -59,7 +51,6 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.Variable;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.utils.KieHelper;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -88,30 +79,6 @@ public abstract class DroolsAbstractPMMLTest {
     protected KieSession getModelSession(String pmmlSource, boolean verbose) {
         return getModelSession(new String[] {pmmlSource}, verbose);
     }
-    
-    protected KieSession getModelSession(File fileName) {
-        KieServices ks = KieServices.Factory.get();
-        KieRepository kr = ks.getRepository();
-        KieFileSystem kfs = ks.newKieFileSystem();
-
-        KieModuleModel model = ks.newKieModuleModel();
-        model.setConfigurationProperty( "drools.propertySpecific", "ALLOWED" );
-        KieBaseModel kbModel = model.newKieBaseModel( DEFAULT_KIEBASE )
-                .addPackage( BASE_PACK )
-                .setEventProcessingMode( EventProcessingOption.CLOUD )
-                ;
-        
-        KieBuilder kb = ks.newKieBuilder(fileName);
-        kb.buildAll();
-        if (kb.getResults().hasMessages(Message.Level.ERROR)) {
-            throw new RuntimeException( "Build Errors:\n" + kb.getResults().toString() );
-        }
-        KieContainer kContainer = ks.newKieContainer( kr.getDefaultReleaseId() );
-        KieBase kieBase = kContainer.getKieBase();
-
-        setKbase( kieBase );
-        return kieBase.newKieSession();
-    }
 
     protected KieSession getModelSession( String[] pmmlSources, boolean verbose ) {
         KieServices ks = KieServices.Factory.get();
@@ -126,8 +93,9 @@ public abstract class DroolsAbstractPMMLTest {
         KieModuleModel model = ks.newKieModuleModel();
         model.setConfigurationProperty( "drools.propertySpecific", "ALLOWED" );
         KieBaseModel kbModel = model.newKieBaseModel( DEFAULT_KIEBASE )
+                .setDefault( true )
                 .addPackage( BASE_PACK )
-                .setEventProcessingMode( EventProcessingOption.CLOUD )
+                .setEventProcessingMode( EventProcessingOption.STREAM )
                 ;
 
         kfs.writeKModuleXML( model.toXML() );
@@ -140,9 +108,7 @@ public abstract class DroolsAbstractPMMLTest {
         }
 
         KieContainer kContainer = ks.newKieContainer( kr.getDefaultReleaseId() );
-        
 
-//        KieBase kieBase = kContainer.getKieBase("SampleMine_SampleMineSegmentation_SEGMENT_1");
         KieBase kieBase = kContainer.getKieBase();
 
         setKbase( kieBase );
@@ -354,70 +320,4 @@ public abstract class DroolsAbstractPMMLTest {
         }
     }
 
-    
-	protected String getGetterMethodName(Object wrapper, String fieldName, String prefix) {
-		String capFieldName = fieldName.substring(0,1).toUpperCase() + fieldName.substring(1);
-		return prefix + capFieldName;
-	}
-	
-	protected Object getResultValue(PMML4Result source, String objName, String objField, Object...params) {
-		Object value = null;
-		if (source != null && source.getResultVariables() != null && !source.getResultVariables().isEmpty()) {
-			Object holder = source.getResultVariables().get(objName);
-			if (holder != null) {
-				if (objField != null && !objField.trim().isEmpty()) {
-					String defFldRetriever = getGetterMethodName(holder,objField,"get");
-					try {
-						Class[] paramTypes = null;
-						Method m = null;
-						boolean retry = true;
-						if (params != null && params.length > 0) {
-							paramTypes = new Class[params.length];
-							for (int x = 0; x < params.length;x++) {
-								paramTypes[x] = params[x].getClass();
-							}
-							do {
-								try {
-									m = holder.getClass().getMethod(defFldRetriever, paramTypes);
-								} catch (NoSuchMethodException nsmx) {
-									if (m == null && defFldRetriever.startsWith("get")) {
-										defFldRetriever = getGetterMethodName(holder,objField,"is");
-									} else {
-										retry = false;
-									}
-								}
-							} while (m == null && retry);
-						} else {
-							do {
-								try {
-									m = holder.getClass().getMethod(defFldRetriever);
-								} catch (NoSuchMethodException nsmx) {
-									if (m == null && defFldRetriever.startsWith("get")) {
-										defFldRetriever = getGetterMethodName(holder,objField,"is");
-									} else {
-										retry = false;
-									}
-								}
-							} while (m == null && retry);
-						}
-						if (m != null) {
-							if (params != null && params.length > 0) {
-								value = m.invoke(holder, params);
-							} else {
-								value = m.invoke(holder);
-							}
-						}
-					} catch (SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {
-						e1.printStackTrace();
-					}
-				} else {
-					value = holder;
-				}
-				
-			}
-		}
-		return value;
-	}
-	
-    
 }

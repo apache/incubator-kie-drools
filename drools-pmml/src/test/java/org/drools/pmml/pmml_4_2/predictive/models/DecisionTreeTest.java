@@ -17,31 +17,30 @@
 package org.drools.pmml.pmml_4_2.predictive.models;
 
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-import java.util.Collection;
-import java.util.Iterator;
-
+import org.dmg.pmml.pmml_4_2.descr.MISSINGVALUESTRATEGY;
+import org.dmg.pmml.pmml_4_2.descr.PMML;
+import org.dmg.pmml.pmml_4_2.descr.TreeModel;
 import org.drools.pmml.pmml_4_2.DroolsAbstractPMMLTest;
 import org.drools.pmml.pmml_4_2.PMML4Compiler;
-import org.drools.pmml.pmml_4_2.model.AbstractModel;
-import org.drools.pmml.pmml_4_2.model.PMMLRequestData;
-import org.drools.pmml.pmml_4_2.model.ParameterInfo;
-import org.drools.pmml.pmml_4_2.model.tree.AbstractTreeToken;
+import org.drools.pmml.pmml_4_2.PMML4Helper;
 import org.junit.After;
 import org.junit.Test;
 import org.kie.api.definition.type.FactType;
+import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.ObjectFilter;
+import org.kie.internal.io.ResourceFactory;
+
+import java.util.Collection;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class DecisionTreeTest extends DroolsAbstractPMMLTest {
 
 
     private static final boolean VERBOSE = false;
-    private static final String source1 = "org/drools/pmml/pmml_4_2/test_tree_simple.pmml";
-    private static final String source2 = "org/drools/pmml/pmml_4_2/test_tree_missing.pmml";
-    private static final String source3 = "org/drools/pmml/pmml_4_2/test_tree_handwritten.pmml";
+    private static final String source1 = "org/drools/pmml/pmml_4_2/test_tree_simple.xml";
+    private static final String source2 = "org/drools/pmml/pmml_4_2/test_tree_missing.xml";
     private static final String packageName = "org.drools.pmml.pmml_4_2.test";
 
 
@@ -50,7 +49,6 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
     public void tearDown() {
         getKSession().dispose();
     }
-    
 
     @Test
     public void testSimpleTree() throws Exception {
@@ -58,21 +56,18 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
         setKbase( getKSession().getKieBase() );
         KieSession kSession = getKSession();
 
+//        kSession.addEventListener( new org.drools.event.rule.DebugAgendaEventListener() );
+
         kSession.fireAllRules();  //init model
 
+        FactType tgt = kSession.getKieBase().getFactType( packageName, "Fld5" );
         
-        PMMLRequestData request = new PMMLRequestData("123","TreeTest");
-        request.addRequestParam("Fld1", 30.0);
-        request.addRequestParam("Fld2", 60.0);
-        request.addRequestParam("Fld3", "false");
-        request.addRequestParam("Fld4", "optA");
-        kSession.insert(request);
-        
-        kSession.fireAllRules();
+        kSession.getEntryPoint( "in_Fld1" ).insert( 30.0 );
+        kSession.getEntryPoint( "in_Fld2" ).insert( 60.0 );
+        kSession.getEntryPoint( "in_Fld3" ).insert( "false" );
+        kSession.getEntryPoint( "in_Fld4" ).insert( "optA" );
 
-        String pkgName = PMML4Compiler.PMML_DROOLS+"."+request.getModelName();
-        FactType tgt = kSession.getKieBase().getFactType( pkgName, "Fld5" );
-//        System.out.print(  reportWMObjects( kSession ));
+        kSession.fireAllRules();
 
         checkFirstDataFieldOfTypeStatus( tgt, true, false, "Missing", "tgtY" );
 
@@ -81,21 +76,13 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
     
     
     
-    protected Object getToken( KieSession kSession, String treeModelName ) {
-        String className = AbstractModel.PMML_JAVA_PACKAGE_NAME + "." + treeModelName + "TreeToken";
-        Collection objects = kSession.getObjects(new ObjectFilter() {
-            
-            @Override
-            public boolean accept(Object object) {
-                
-                return object.getClass().getName().equals(className);
-            }
-        });
-        assertNotNull(objects);
-        assertEquals( 1, objects.size());
-        Iterator iter = objects.iterator();
-        assert(iter.hasNext());
-        return iter.next();
+    protected Object getToken( KieSession kSession ) {
+        FactType tok = kSession.getKieBase().getFactType( PMML4Helper.pmmlDefaultPackageName(), "TreeToken" );
+        assertNotNull( tok );
+        Collection c = kSession.getObjects( new ClassObjectFilter( tok.getFactClass() ) );
+        assertEquals( 1, c.size() );
+        return c.iterator().next();
+
     }
 
 
@@ -104,30 +91,27 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
         setKSession( getModelSession( source2, VERBOSE ) );
         setKbase( getKSession().getKieBase() );
         KieSession kSession = getKSession();
-        
+
         kSession.fireAllRules();  //init model
 
-        PMMLRequestData requestData = new PMMLRequestData("123","Missing");
-        requestData.addRequestParam(new ParameterInfo<>("123","Fld1", Double.class, 45.0));
-        requestData.addRequestParam(new ParameterInfo<>("123","Fld2",Double.class,60.0));
-        requestData.addRequestParam(new ParameterInfo<>("123","Fld3",String.class,"optA"));
-        kSession.insert(requestData);
+        FactType tgt = kSession.getKieBase().getFactType( packageName, "Fld9" );
+        FactType tok = kSession.getKieBase().getFactType( PMML4Helper.pmmlDefaultPackageName(), "TreeToken" );
+
+        kSession.getEntryPoint( "in_Fld1" ).insert( 45.0 );
+        kSession.getEntryPoint( "in_Fld2" ).insert( 60.0 );
+        kSession.getEntryPoint( "in_Fld3" ).insert( "optA" );
 
         kSession.fireAllRules();
-//        System.out.print(  reportWMObjects( kSession ));
 
-        String pkgName = PMML4Compiler.PMML_DROOLS+"."+requestData.getModelName();
-        FactType tgt = kSession.getKieBase().getFactType( pkgName, "Fld9" );
-
-        AbstractTreeToken token = (AbstractTreeToken)getToken(kSession,"Missing");
-        assertEquals(0.6, token.getConfidence().doubleValue(),0.0);
-        assertEquals("null", token.getCurrent());
-        
+        Object token = getToken( kSession );
+        assertEquals( 0.6, tok.get( token, "confidence" ) );
+        assertEquals( "null", tok.get( token, "current" ) );
 
         checkFirstDataFieldOfTypeStatus( tgt, true, false, "Missing", "tgtZ" );
 
         checkGeneratedRules();
     }
+
 
 
     @Test
@@ -138,29 +122,25 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
 
         kSession.fireAllRules();  //init model
 
+        FactType tgt = kSession.getKieBase().getFactType( packageName, "Fld9" );
+        FactType tok = kSession.getKieBase().getFactType( PMML4Helper.pmmlDefaultPackageName(), "TreeToken" );
 
-        PMMLRequestData data = new PMMLRequestData("123","Missing");
-        data.addRequestParam(new ParameterInfo<>("123","Fld1", Double.class, -1.0));
-        data.addRequestParam(new ParameterInfo<>("123","Fld2", Double.class, -1.0));
-        data.addRequestParam(new ParameterInfo<>("123","Fld3", String.class, "optA"));
-        kSession.insert(data);
+        kSession.getEntryPoint( "in_Fld1" ).insert( -1.0 );
+        kSession.getEntryPoint( "in_Fld2" ).insert( -1.0 );
+        kSession.getEntryPoint( "in_Fld3" ).insert( "optA" );
 
         kSession.fireAllRules();
 
-        String pkgName = PMML4Compiler.PMML_DROOLS+"."+data.getModelName();
-        FactType tgt = kSession.getKieBase().getFactType( pkgName, "Fld9" );
-
-//        System.out.print(  reportWMObjects( kSession ));
-
-        AbstractTreeToken token = (AbstractTreeToken)getToken( kSession, "Missing" );
-        assertEquals( 0.8, token.getConfidence(), 0.0 );
-        assertEquals( "null", token.getCurrent() );
-        assertEquals( 50.0, token.getTotalCount(), 0.0 );
+        Object token = getToken( kSession );
+        assertEquals( 0.8, tok.get( token, "confidence" ) );
+        assertEquals( "null", tok.get( token, "current" ) );
+        assertEquals( 50.0, tok.get( token, "totalCount" ) );
 
         checkFirstDataFieldOfTypeStatus(tgt, true, false, "Missing", "tgtX" );
 
         checkGeneratedRules();
     }
+
 
 
 
@@ -172,23 +152,19 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
 
         kSession.fireAllRules();  //init model
 
-        PMMLRequestData data = new PMMLRequestData("123","Missing");
-        data.addRequestParam(new ParameterInfo<>("123","Fld1", Double.class, -1.0));
-        data.addRequestParam(new ParameterInfo<>("123","Fld2", Double.class, -1.0));
-        data.addRequestParam(new ParameterInfo<>("123","Fld3", String.class, "miss"));
-        kSession.insert(data);
+        FactType tgt = kSession.getKieBase().getFactType( packageName, "Fld9" );
+        FactType tok = kSession.getKieBase().getFactType( PMML4Helper.pmmlDefaultPackageName(), "TreeToken" );
+
+        kSession.getEntryPoint( "in_Fld1" ).insert( -1.0 );
+        kSession.getEntryPoint( "in_Fld2" ).insert( -1.0 );
+        kSession.getEntryPoint( "in_Fld3" ).insert( "miss" );
 
         kSession.fireAllRules();
-//      System.out.print(  reportWMObjects( kSession ));
 
-        String pkgName = PMML4Compiler.PMML_DROOLS+"."+data.getModelName();
-        FactType tgt = kSession.getKieBase().getFactType( pkgName, "Fld9" );
-
-
-        AbstractTreeToken token = (AbstractTreeToken)getToken( kSession, "Missing" );
-        assertEquals( 0.6, token.getConfidence(), 0.0 );
-        assertEquals( "null", token.getCurrent() );
-        assertEquals( 100.0, token.getTotalCount(), 0.0 );
+        Object token = getToken( kSession );
+        assertEquals( 0.6, tok.get( token, "confidence" ) );
+        assertEquals( "null", tok.get( token, "current" ) );
+        assertEquals( 100.0, tok.get( token, "totalCount" ) );
 
         checkFirstDataFieldOfTypeStatus(tgt, true, false, "Missing", "tgtX" );
 
@@ -196,7 +172,6 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
     }
 
 
-/*
 
 
     @Test
@@ -497,5 +472,5 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
 
         checkGeneratedRules();
     }
-*/
+
 }

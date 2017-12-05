@@ -49,18 +49,6 @@ then
     insertLogical( x );
 end
 
-rule "Update PMML4Result with output named feature @{name}_@{feature}"
-@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
-salience -115
-when
-   $tgt: @{name}()
-   $reslt: PMML4Result( resultVariables == null || "@{name}" not memberOf resultVariables.keySet() )
-then
-   $reslt.setResultCode("OK");
-   $reslt.addResultVariable("@{name}",$tgt);
-   update($reslt);
-end
-
 @end{}
 
 @includeNamed{'addOutputFeatureRule'}

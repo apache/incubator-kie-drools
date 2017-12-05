@@ -19,7 +19,6 @@ package org.drools.pmml.pmml_4_2.predictive.models;
 
 import org.drools.pmml.pmml_4_2.DroolsAbstractPMMLTest;
 import org.drools.pmml.pmml_4_2.ModelMarker;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -35,7 +34,7 @@ import org.kie.internal.io.ResourceFactory;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
-@Ignore
+
 public class MultipleModelTest extends DroolsAbstractPMMLTest {
 
 

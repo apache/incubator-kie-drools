@@ -24,6 +24,13 @@
 
 @declare{'treeInputDeclare'}
 
+declare @{ pmmlPackageName }.@{context}TreeToken extends TreeToken
+    @foreach{ inputField : fields.keySet() }
+        v@{inputField}   : @{mapDatatype(fields[inputField])}
+        m@{inputField}   : boolean
+    @end{}
+    outcome              : @{ box( mapDatatype( targetType ) ) }
+end
 
 @end{}
 

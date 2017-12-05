@@ -705,5 +705,11 @@ public class PMML4Compiler implements PMMLCompiler {
         }
 
     }
+    
+    
+    @Override
+    public String getCompilerVersion() {
+    	return "KIE PMML v2";
+    }
 
 }

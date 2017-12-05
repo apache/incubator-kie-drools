@@ -31,16 +31,13 @@
 }
 @declare{'updateIOFieldRule'}
 
-
 rule "update_@{name}_@{context}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience 2000
 
 when
-   $new: PMML4Data( $cid: correlationId != null, capitalizedName == "@{name}", $ctx : context == @if{context != null} @{format("string",context)} @else{} null @end{} )
-   $old: PMML4Data( correlationId == $cid, name == $new.name, context == $ctx, this before $new )
-//    $new : @{name}( $ctx : context == @if{context != null} @{format("string",context)} @else{} null @end{} )
-//    $old : @{name}( context == $ctx, this before $new )
+    $new : @{name}( $ctx : context == @if{context != null} @{format("string",context)} @else{} null @end{} )
+    $old : @{name}( context == $ctx, this before $new )
 then
     retract( $old );
 end

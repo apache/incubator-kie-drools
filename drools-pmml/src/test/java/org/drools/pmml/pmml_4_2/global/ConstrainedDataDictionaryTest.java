@@ -21,7 +21,6 @@ import org.drools.core.common.EventFactHandle;
 import org.drools.pmml.pmml_4_2.DroolsAbstractPMMLTest;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.ClassObjectFilter;
@@ -31,7 +30,7 @@ import java.util.Collection;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-@Ignore
+
 public class ConstrainedDataDictionaryTest extends DroolsAbstractPMMLTest {
 
     private static final boolean VERBOSE = false;

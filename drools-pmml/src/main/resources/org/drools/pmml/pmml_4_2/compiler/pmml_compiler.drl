@@ -1764,7 +1764,6 @@ when
         result( map )
     )
 then
-    System.out.println("Creating output structures!");
     HashMap map = utils.container;
         map.put( "context", utils.context );
         map.put( "fields", $outFields );

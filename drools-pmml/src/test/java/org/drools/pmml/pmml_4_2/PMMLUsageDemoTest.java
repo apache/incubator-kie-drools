@@ -16,7 +16,6 @@
 package org.drools.pmml.pmml_4_2;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
@@ -31,7 +30,7 @@ import org.kie.internal.io.ResourceFactory;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
-@Ignore
+
 public class PMMLUsageDemoTest extends DroolsAbstractPMMLTest {
 
 

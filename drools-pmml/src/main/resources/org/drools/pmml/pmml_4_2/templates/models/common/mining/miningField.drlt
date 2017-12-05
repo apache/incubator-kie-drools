@@ -27,37 +27,42 @@
 
 
 @declare{'miningFieldRule'}
-
-rule miningPmml4Data_@{model}_@{name}
+rule "miningField_@{model}_@{name}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
-   $src: PMML4Data( capitalizedName == "@{name}", $m : missing, $v : valid, $x : value, context == null, placeholder == false )
+    $src : @{name}( $m : missing, $v : valid, $x : value, context == null )
 then
-   PMML4Data data = (PMML4Data)PMML4DataFactory.get().copy($src);
-   data.setContext(@{format("string",model)});
-   insertLogical(data);
-end;
-
-
-rule "InitAsMissing_PMML4Data_@{model}_@{name}"
-@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
-salience 1000
-when
-   ModelMarker( modelName == "@{model}", enabled == true )
-   not PMML4Data( capitalizedName == "@{name}", context == null )
-then
-   PMML4DataType data = PMML4DataFactory.get().getPlaceholder("","@{name}","@{model}");
-   insertLogical( data );
+  @{name} x = new @{name}();
+    x.setValue($x);
+    x.setMissing($m);
+    x.setValid($v);
+    x.setName(@{format("string",name)});
+    x.setContext(@{format("string",model)});
+  insertLogical(x);
 end
 
 
-
-rule "RemoveMissing_PMML4Data_@{model}_@{name}"
+rule "InitAsMissing_@{model}_@{name}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience 1000
 when
-    $val : PMML4Data( capitalizedName == "@{name}", context == "@{model}", missing == false )
-    $mis : PMML4Data( capitalizedName == "@{name}", context == "@{model}", missing == true )
+    ModelMarker( modelName == "@{model}", enabled == true )
+    not @{name}( context == null )
+then
+    @{name} input = new @{name}();
+        input.setName(@{format("string",name)});
+        input.setMissing(true);
+        input.setValid(false);
+        input.setContext( "@{model}" );
+    insertLogical( input );
+end
+
+rule "RemoveMissing_@{model}_@{name}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
+salience 1000
+when
+    $val : @{name}( context == "@{model}", missing == false )
+    $mis : @{name}( context == "@{model}", missing == true )
 then
     delete( $mis );
 end

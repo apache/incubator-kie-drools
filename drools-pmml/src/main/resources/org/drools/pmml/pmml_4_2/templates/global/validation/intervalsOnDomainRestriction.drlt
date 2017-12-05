@@ -26,28 +26,6 @@
 }
 
 @declare{'intervalsOnDomainRestrictionRule'}
-rule "Valid_ContinuousInterval_PMML4Data_@{name}"
-@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
-dialect "mvel"
-no-loop
-salience 100
-when
-   $in : PMML4Data( capitalizedName == "@{name}", $val : value, placeholder == false,
-         @foreach{ intv : ivals }
-            ( value
-                @if{intv.closure.startsWith("closed")} >= @else{} > @end{}
-                    @{intv.leftMargin}
-              && value
-                @if{intv.closure.endsWith("Closed")} <= @else{} < @end{}
-                    @{intv.rightMargin})
-         @end{' || '}
-           )
-then
-   modify( $in ) {
-      setValid( true );
-   }
-end
-
 rule "Valid_ContinuousIntervals_@{name}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 dialect "mvel"
