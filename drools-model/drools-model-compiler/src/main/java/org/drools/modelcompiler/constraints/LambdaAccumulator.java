@@ -12,37 +12,22 @@ import org.drools.core.reteoo.SubnetworkTuple;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Accumulator;
 import org.drools.core.spi.Tuple;
-import org.drools.model.AccumulateFunction;
 import org.drools.model.Binding;
 import org.drools.model.Pattern;
-import org.drools.model.functions.accumulate.Sum;
-import org.drools.model.functions.accumulate.UserDefinedAccumulateFunction;
+import org.drools.model.functions.accumulate.AccumulateFunction;
 
 public class LambdaAccumulator implements Accumulator {
 
-    private AccumulateFunction accumulateFunction;
-    private final AbstractAccumulateFunction originalAccumulateFunction;
-    private UserDefinedAccumulateFunction userDefinedAccumulateFunction;
+    private final AbstractAccumulateFunction accumulateFunction;
     private final Pattern sourcePattern;
 
     public LambdaAccumulator(AccumulateFunction accumulateFunction, Pattern sourcePattern) {
-        this.accumulateFunction = accumulateFunction;
-        if (accumulateFunction instanceof Sum) {
-            originalAccumulateFunction = new IntegerSumAccumulateFunction();
+        if (accumulateFunction.getFunctionName().equals("sum")) {
+            this.accumulateFunction = new IntegerSumAccumulateFunction();
+        } else if (accumulateFunction.getFunctionName().equals("average")) {
+            this.accumulateFunction = new AverageAccumulateFunction();
         } else {
-            originalAccumulateFunction = null;
-        }
-        this.sourcePattern = sourcePattern;
-    }
-
-    public LambdaAccumulator(UserDefinedAccumulateFunction userDefinedAccumulateFunction, Pattern sourcePattern) {
-        this.userDefinedAccumulateFunction = userDefinedAccumulateFunction;
-        if (userDefinedAccumulateFunction.getFunctionName().equals("sum")) {
-            originalAccumulateFunction = new IntegerSumAccumulateFunction();
-        } else if (userDefinedAccumulateFunction.getFunctionName().equals("average")) {
-            originalAccumulateFunction = new AverageAccumulateFunction();
-        } else {
-            originalAccumulateFunction = null;
+            this.accumulateFunction = null;
         }
         this.sourcePattern = sourcePattern;
     }
@@ -55,20 +40,13 @@ public class LambdaAccumulator implements Accumulator {
 
     @Override
     public Serializable createContext() {
-        if (originalAccumulateFunction != null) {
-            try {
-                final Serializable originalContext = originalAccumulateFunction.createContext();
-                originalAccumulateFunction.init(originalContext);
-                return originalContext;
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+        try {
+            final Serializable originalContext = accumulateFunction.createContext();
+            accumulateFunction.init(originalContext);
+            return originalContext;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        if (accumulateFunction != null) {
-            final Serializable init = accumulateFunction.init();
-            return init;
-        }
-        return null;
     }
 
     @Override
@@ -90,17 +68,12 @@ public class LambdaAccumulator implements Accumulator {
             Object result = b.getBindingFunction().apply(accumulateObject);
             returnObject = result;
         }
-        if (originalAccumulateFunction != null) {
-//            accumulateFunction.action((Serializable)context, returnObject);
-            originalAccumulateFunction.accumulate((Serializable) context, returnObject);
-        } else {
-            accumulateFunction.action((Serializable) context, returnObject);
-        }
+        accumulateFunction.accumulate((Serializable) context, returnObject);
     }
 
     @Override
     public boolean supportsReverse() {
-        return true;
+        return accumulateFunction.supportsReverse();
     }
 
     @Override
@@ -110,9 +83,6 @@ public class LambdaAccumulator implements Accumulator {
 
     @Override
     public Object getResult(Object workingMemoryContext, Object context, Tuple leftTuple, Declaration[] declarations, WorkingMemory workingMemory) throws Exception {
-        if (originalAccumulateFunction != null) {
-            return originalAccumulateFunction.getResult((Serializable) context);
-        }
-        return accumulateFunction.result((Serializable) context);
+        return accumulateFunction.getResult((Serializable) context);
     }
 }

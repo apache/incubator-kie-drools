@@ -62,7 +62,6 @@ import org.drools.core.spi.Accumulator;
 import org.drools.core.spi.DataProvider;
 import org.drools.core.spi.EvalExpression;
 import org.drools.core.spi.InternalReadAccessor;
-import org.drools.model.AccumulateFunction;
 import org.drools.model.AccumulatePattern;
 import org.drools.model.Argument;
 import org.drools.model.Binding;
@@ -89,7 +88,7 @@ import org.drools.model.consequences.NamedConsequenceImpl;
 import org.drools.model.constraints.SingleConstraint1;
 import org.drools.model.functions.Function1;
 import org.drools.model.functions.Predicate1;
-import org.drools.model.functions.accumulate.UserDefinedAccumulateFunction;
+import org.drools.model.functions.accumulate.AccumulateFunction;
 import org.drools.model.impl.DeclarationImpl;
 import org.drools.model.patterns.CompositePatterns;
 import org.drools.model.patterns.QueryCallPattern;
@@ -488,24 +487,11 @@ public class KiePackagesBuilder {
     }
 
     private Accumulate buildAccumulate( RuleContext ctx, AccumulatePattern accPattern, RuleConditionElement source, Pattern pattern, org.drools.model.Pattern condition) {
-        AccumulateFunction<?, ?, ?>[] accFunctions = accPattern.getFunctions();
+
+        AccumulateFunction[] accFunctions = accPattern.getAccumulateFunctions();
 
         if (accFunctions.length == 1) {
-            final AccumulateFunction<?, ?, ?> accFunction = accFunctions[0];
-
-            final Declaration declaration = new Declaration(accPattern.getBoundVariables()[0].getName(),
-                                                            getReadAcessor(getObjectType(Object.class)),
-                                                            pattern,
-                                                            true);
-            pattern.addDeclaration(declaration);
-
-            return new SingleAccumulate(source, new Declaration[0], new LambdaAccumulator(accFunction, condition));
-        }
-
-        UserDefinedAccumulateFunction[] accFunctions2 = accPattern.getUserDefinedAccumulateFunctions();
-
-        if (accFunctions2.length == 1) {
-            final UserDefinedAccumulateFunction accFunction = accFunctions2[0];
+            final AccumulateFunction accFunction = accFunctions[0];
 
             final Declaration declaration = new Declaration(accPattern.getBoundVariables()[0].getName(),
                                                             getReadAcessor(getObjectType(Object.class)),
@@ -518,7 +504,7 @@ public class KiePackagesBuilder {
 
         InternalReadAccessor reader = new SelfReferenceClassFieldReader( Object[].class );
         Accumulator[] accumulators = new Accumulator[accFunctions.length];
-        for (int i = 0; i < accPattern.getFunctions().length; i++) {
+        for (int i = 0; i < accFunctions.length; i++) {
 
             Variable accVar = accPattern.getBoundVariables()[i];
             pattern.addDeclaration( new Declaration(accVar.getName(),
@@ -528,22 +514,7 @@ public class KiePackagesBuilder {
             accumulators[i] = new LambdaAccumulator(accFunctions[i], condition);
         }
 
-        InternalReadAccessor reader2 = new SelfReferenceClassFieldReader( Object[].class );
-        Accumulator[] accumulators2 = new Accumulator[accFunctions2.length];
-        for (int i = 0; i < accFunctions2.length; i++) {
-
-            Variable accVar = accPattern.getBoundVariables()[i];
-            pattern.addDeclaration( new Declaration(accVar.getName(),
-                                                    new ArrayElementReader( reader2, i, accVar.getType().asClass()),
-                                                    pattern,
-                                                    true) );
-            accumulators2[i] = new LambdaAccumulator(accFunctions2[i], condition);
-        }
-
-        final ArrayList<Accumulator> allAccumulators = new ArrayList<>();
-        allAccumulators.addAll(Arrays.asList(accumulators));
-        allAccumulators.addAll(Arrays.asList(accumulators2));
-        return new MultiAccumulate( source, new Declaration[0], allAccumulators.toArray(new Accumulator[allAccumulators.size()]));
+        return new MultiAccumulate( source, new Declaration[0], accumulators);
     }
 
     private Pattern addPatternForVariable( RuleContext ctx, Variable patternVariable ) {

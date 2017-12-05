@@ -2,12 +2,12 @@ package org.drools.model.functions.accumulate;
 
 import org.drools.model.Variable;
 
-public class UserDefinedAccumulateFunction {
+public class AccumulateFunction {
     private Variable var;
     protected final Variable source;
     protected final String functionName;
 
-    public UserDefinedAccumulateFunction(Variable source, String functionName) {
+    public AccumulateFunction(Variable source, String functionName) {
         this.source = source;
         this.functionName = functionName;
     }
@@ -24,7 +24,7 @@ public class UserDefinedAccumulateFunction {
         return var;
     }
 
-    public UserDefinedAccumulateFunction as(Variable var) {
+    public AccumulateFunction as(Variable var) {
         this.var = var;
         return this;
     }

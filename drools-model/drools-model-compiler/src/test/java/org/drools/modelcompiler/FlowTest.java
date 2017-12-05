@@ -34,8 +34,6 @@ import org.drools.model.Query1Def;
 import org.drools.model.Query2Def;
 import org.drools.model.Rule;
 import org.drools.model.Variable;
-import org.drools.model.functions.accumulate.AbstractAccumulateFunction;
-import org.drools.model.functions.accumulate.Sum;
 import org.drools.model.impl.ModelImpl;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
 import org.drools.modelcompiler.domain.Adult;
@@ -60,9 +58,9 @@ import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.time.SessionPseudoClock;
 
 import static java.util.Arrays.asList;
+import static org.drools.model.DSL.accFunction;
 import static org.drools.model.DSL.accumulate;
 import static org.drools.model.DSL.and;
-import static org.drools.model.DSL.average;
 import static org.drools.model.DSL.bind;
 import static org.drools.model.DSL.declarationOf;
 import static org.drools.model.DSL.execute;
@@ -77,7 +75,6 @@ import static org.drools.model.DSL.on;
 import static org.drools.model.DSL.or;
 import static org.drools.model.DSL.query;
 import static org.drools.model.DSL.rule;
-import static org.drools.model.DSL.sum;
 import static org.drools.model.DSL.type;
 import static org.drools.model.DSL.valueOf;
 import static org.drools.model.DSL.when;
@@ -402,7 +399,7 @@ public class FlowTest {
                 .build(
                         bind(age).as(person, Person::getAge),
                         accumulate(expr(person, p -> p.getName().startsWith("M")),
-                                   sum(age).as(resultSum)),
+                                   accFunction("sum", age).as(resultSum)),
                         on(resultSum).execute(sum -> result.setValue( "total = " + sum) )
                       );
 
@@ -432,8 +429,8 @@ public class FlowTest {
                 .build(
                         bind(age).as(person, Person::getAge),
                         accumulate(expr(person, p -> p.getName().startsWith("M")),
-                                   sum(age).as(resultSum),
-                                   average(age).as(resultAvg)),
+                                   accFunction("sum", age).as(resultSum),
+                                   accFunction("average", age).as(resultAvg)),
                         on(resultSum, resultAvg)
                                 .execute((sum, avg) -> result.setValue( "total = " + sum + "; average = " + avg ))
                      );

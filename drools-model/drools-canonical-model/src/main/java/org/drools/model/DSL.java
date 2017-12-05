@@ -14,12 +14,7 @@ import org.drools.model.functions.Function1;
 import org.drools.model.functions.Predicate1;
 import org.drools.model.functions.Predicate2;
 import org.drools.model.functions.Predicate3;
-import org.drools.model.functions.accumulate.Average;
-import org.drools.model.functions.accumulate.Count;
-import org.drools.model.functions.accumulate.Max;
-import org.drools.model.functions.accumulate.Min;
-import org.drools.model.functions.accumulate.Sum;
-import org.drools.model.functions.accumulate.UserDefinedAccumulateFunction;
+import org.drools.model.functions.accumulate.AccumulateFunction;
 import org.drools.model.functions.temporal.AfterPredicate;
 import org.drools.model.functions.temporal.BeforePredicate;
 import org.drools.model.functions.temporal.Interval;
@@ -268,11 +263,7 @@ public class DSL {
         return new ExistentialExprViewItem( Condition.Type.FORALL, and( expression, expressions) );
     }
 
-    public static <T> ExprViewItem<T> accumulate(ViewItem<?> viewItem, AccumulateFunction<?, ?, ?>... functions) {
-        return new AccumulateExprViewItem(viewItem, functions);
-    }
-
-    public static <T> ExprViewItem<T> accumulate2(ViewItem<?> viewItem, UserDefinedAccumulateFunction... functions) {
+    public static <T> ExprViewItem<T> accumulate(ViewItem<?> viewItem, AccumulateFunction... functions) {
         return new AccumulateExprViewItem(viewItem, functions);
     }
 
@@ -362,28 +353,8 @@ public class DSL {
 
     // -- Accumulate Functions --
 
-    public static UserDefinedAccumulateFunction accFunc(String functionName, Variable source) {
-        return new UserDefinedAccumulateFunction(source, functionName);
-    }
-
-    public static <N extends Number> Sum<N> sum(Variable<N> source) {
-        return new Sum<>(source);
-    }
-
-    public static <T> Count<T> count(Variable<T> source) {
-        return new Count<>(source);
-    }
-
-    public static <T extends Number>  Min<T> min(Variable<T> source) {
-        return new Min<T>(source, x -> x.doubleValue());
-    }
-
-    public static <T extends Number>  Max<T> max(Variable<T> source) {
-        return new Max<T>(source, x -> x.doubleValue());
-    }
-
-    public static <N extends Number> Average<N> average(Variable<N> source) {
-        return new Average<N>(source, x -> x);
+    public static AccumulateFunction accFunction(String functionName, Variable source) {
+        return new AccumulateFunction(source, functionName);
     }
 
     // -- Conditional Named Consequnce --
