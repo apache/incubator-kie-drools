@@ -1951,6 +1951,7 @@ public class CepEspTest extends CommonTestMethodBase {
         ksession1.fireAllRules();
         verify( ael1,
                 times( 2 ) ).afterMatchFired(aafe1.capture());
+        events1 = aafe1.getAllValues();
         assertThat( events1.get( 1 ).getMatch().getDeclarationValue( "$avg" ),
                     is( (Object) 15 ) );
         ksession1.insert( new Sensor( 30,
@@ -1982,6 +1983,7 @@ public class CepEspTest extends CommonTestMethodBase {
         ksession2.fireAllRules();
         verify( ael2,
                 times( 2 ) ).afterMatchFired(aafe2.capture());
+        events2 = aafe2.getAllValues();
         assertThat( events2.get( 1 ).getMatch().getDeclarationValue( "$avg" ),
                     is( (Object) 15 ) );
 
