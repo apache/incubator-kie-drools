@@ -4432,4 +4432,46 @@ public class RuleModelDRLPersistenceTest extends BaseRuleModelTest {
         assertEquals(dslActionDrl, ((DSLSentence) m.rhs[0]).getDrl());
         assertEquals("01-01-2067", ((DSLSentence) m.rhs[0]).getValues().get(0).getValue());
     }
+
+    @Test
+    public void testRHSDateInsertActionWithoutSystemProperty() {
+
+        // RHBRMS-3034
+        String oldValue = System.getProperty("drools.dateformat");
+        try {
+
+            System.clearProperty("drools.dateformat");
+
+            RuleModel m = new RuleModel();
+            m.name = "RHS Date";
+
+            FactPattern p = new FactPattern("Person");
+            SingleFieldConstraint con = new SingleFieldConstraint();
+            con.setFieldType(DataType.TYPE_DATE);
+            con.setFieldName("dateOfBirth");
+            con.setOperator("==");
+            con.setValue("31-Jan-2000");
+            con.setConstraintValueType(SingleFieldConstraint.TYPE_LITERAL);
+            p.addConstraint(con);
+
+            m.addLhsItem(p);
+
+            ActionInsertFact ai = new ActionInsertFact("Birthday");
+            ai.addFieldValue(new ActionFieldValue("dob", "31-Jan-2000", DataType.TYPE_DATE));
+            m.addRhsItem(ai);
+
+            String result = RuleModelDRLPersistenceImpl.getInstance().marshal(m);
+
+            assertTrue("result DRL : " + result, result.indexOf("java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(\"dd-MMM-yyyy\");") != -1);
+            assertTrue(result.indexOf("fact0.setDob( sdf.parse(\"31-Jan-2000\"") != -1);
+
+            checkMarshalling(null, m);
+        } finally {
+            if (oldValue == null) {
+                System.clearProperty("drools.dateformat");
+            } else {
+                System.setProperty("drools.dateformat", oldValue);
+            }
+        }
+    }
 }
