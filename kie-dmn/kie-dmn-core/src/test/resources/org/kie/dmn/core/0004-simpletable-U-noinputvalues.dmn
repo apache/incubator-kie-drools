@@ -22,7 +22,7 @@
              xsi:schemaLocation="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
              expressionLanguage="http://www.omg.org/spec/FEEL/20140401"
              typeLanguage="http://www.omg.org/spec/FEEL/20140401">
-  <decision id="_0004-simpletable-U-noinputvalues" name="0004-simpletable-U-noinputvalues">
+  <decision id="_0004-simpletable-U-noinputvalues" name="_0004-simpletable-U-noinputvalues">
     <variable name="Approval Status" typeRef="feel:string"/>
     <informationRequirement>
       <requiredInput href="#_Age"/>
