@@ -25,11 +25,13 @@ import org.dmg.pmml.pmml_4_2.descr.Scorecard;
 import org.dmg.pmml.pmml_4_2.descr.SupportVectorMachineModel;
 import org.dmg.pmml.pmml_4_2.descr.TreeModel;
 import org.drools.compiler.compiler.PMMLCompiler;
+import org.drools.compiler.compiler.PMMLResource;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.io.impl.ClassPathResource;
 import org.drools.core.util.IoUtils;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
+import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
@@ -299,7 +301,7 @@ public class PMML4Compiler implements PMMLCompiler {
 
         //System.out.println( modelEvaluatingRules );
         return modelEvaluatingRules;
-	}
+    }
 
 
     
@@ -480,6 +482,16 @@ public class PMML4Compiler implements PMMLCompiler {
     }
 
 
+    public List<PMMLResource> precompile( String fileName, ClassLoader classLoader, KieBaseModel rootKieBaseModel) {
+      // Placeholder for the new PMML's precompile method
+      return null;
+    }
+
+    public List<PMMLResource> precompile( InputStream stream, ClassLoader classLoader, KieBaseModel rootKieBaseModel) {
+      // Placeholder for the new PMML's precompile method
+      return null;
+    }
+
     public String compile( InputStream source, ClassLoader classLoader ) {
         this.results = new ArrayList<KnowledgeBuilderResult>();
         PMML pmml = loadModel( PMML, source );
@@ -504,56 +516,56 @@ public class PMML4Compiler implements PMMLCompiler {
 
 
     public void dump( String s, OutputStream ostream ) {
-		// write to outstream
-		Writer writer = null;
-		try {
-			writer = new OutputStreamWriter( ostream, "UTF-8" );
-			writer.write(s);
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		finally {
-			try {
+        // write to outstream
+        Writer writer = null;
+        try {
+            writer = new OutputStreamWriter( ostream, "UTF-8" );
+            writer.write(s);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        finally {
+            try {
                 if (writer != null) {
                     writer.flush();
                 }
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
 
 
 
 
 
-	/**
-	 * Imports a PMML source file, returning a Java descriptor
-	 * @param model			the PMML package name (classes derived from a specific schema)
-	 * @param source		the name of the PMML resource storing the predictive model
-	 * @return				the Java Descriptor of the PMML resource
-	 */
-	public PMML loadModel( String model, InputStream source ) {
-		try {
+    /**
+     * Imports a PMML source file, returning a Java descriptor
+     * @param model            the PMML package name (classes derived from a specific schema)
+     * @param source        the name of the PMML resource storing the predictive model
+     * @return                the Java Descriptor of the PMML resource
+     */
+    public PMML loadModel( String model, InputStream source ) {
+        try {
             if ( schema == null ) {
                 visitorBuildResults.add( new PMMLWarning( ResourceFactory.newInputStreamResource( source ), "Could not validate PMML document, schema not available" ) );
             }
             JAXBContext jc = JAXBContext.newInstance( model );
-			Unmarshaller unmarshaller = jc.createUnmarshaller();
+            Unmarshaller unmarshaller = jc.createUnmarshaller();
             if ( schema != null ) {
                 unmarshaller.setSchema( schema );
             }
 
-			return (PMML) unmarshaller.unmarshal( source );
-		} catch ( JAXBException e ) {
-			this.results.add( new PMMLError( e.toString() ) );
-			return null;
-		}
+            return (PMML) unmarshaller.unmarshal( source );
+        } catch ( JAXBException e ) {
+            this.results.add( new PMMLError( e.toString() ) );
+            return null;
+        }
 
-	}
+    }
 
     public static void dumpModel( PMML model, OutputStream target ) {
         try {
@@ -569,8 +581,10 @@ public class PMML4Compiler implements PMMLCompiler {
     }
 
 
-
-
+    @Override
+    public String getCompilerVersion() {
+    	return "Drools PMML v1";
+    }
 
 
 

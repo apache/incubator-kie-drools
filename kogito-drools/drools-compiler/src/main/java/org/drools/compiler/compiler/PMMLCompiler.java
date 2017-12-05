@@ -20,13 +20,21 @@ import java.io.InputStream;
 import java.util.List;
 
 import org.kie.api.Service;
+import org.kie.api.builder.model.KieBaseModel;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 
 public interface PMMLCompiler extends Service {
 
     String compile( InputStream stream, ClassLoader classLoader );
+    
+    List<PMMLResource> precompile( InputStream stream, ClassLoader classLoader, KieBaseModel rootModel);
+    
+    List<PMMLResource> precompile( String fileName, ClassLoader classLoader, KieBaseModel rootModel);
 
     List<KnowledgeBuilderResult> getResults();
+    
+    String getCompilerVersion();
+    
 
     void clearResults();
 }

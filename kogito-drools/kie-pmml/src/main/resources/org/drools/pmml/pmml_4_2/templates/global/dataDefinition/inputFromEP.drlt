@@ -1,0 +1,85 @@
+
+@comment{
+
+  Copyright 2011 Red Hat, Inc. and/or its affiliates.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+}
+
+@comment{
+
+    Rule that converts a raw data from an entry-point
+    into a "managed" datafield event bean.
+
+    /**
+    * @param name        - common name of the class
+    * @param type        - type (int, string, double, ...)
+    * @param continuous  - flag for cont. datatypes
+    * @param ordinal     - flag for ordinal datatypes
+    * @param cyclic      - flag for cyclic datatypes
+    * @param categorical - flag for categorical datatypes
+    * @notRestricted     - true if there is no restriction on the field
+    *                      A restriction is the exclusion of some values from the domain
+    */
+}
+@declare{'inputFromEPRule'}
+
+rule "Extract ParameterInfo @{name}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
+salience 101
+when
+   $rd: PMMLRequestData( correlationId != null, requestParams != null )
+   $pi: ParameterInfo( capitalizedName == "@{name}", $name: name, $value: value ) from $rd.requestParams
+   not ParameterInfo( name == $name, value == $value )
+then
+   insert( $pi );
+end
+
+rule "Input_PMMLData_@{name} from ParameterInfo"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
+salience 100
+when
+   $pi: ParameterInfo( $cid: correlationId != null, capitalizedName == "@{name}", $value: value )
+   not PMML4Data( name == $pi.name, value == $value, context == null )
+then
+   PMML4DataFactory factory = PMML4DataFactory.get();
+   PMML4DataType input = factory.newPMML4Data($cid,$pi,@{notRestricted},false);
+   insert( input );
+end
+
+rule "OverrideValue_@{name}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
+salience 2
+when
+   $new: PMML4Data( capitalizedName == "@{name}", $value: value )
+   $old: PMML4Data( name == $new.name, value != $value, this before $new )
+then
+   retract($old);
+end
+   
+
+
+@end{}
+
+
+
+
+
+@comment{
+*******************************************************************************************************
+        1.2.1) Generation rules
+*******************************************************************************************************
+}
+
+
+@includeNamed{'inputFromEPRule'}

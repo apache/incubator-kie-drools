@@ -1,0 +1,99 @@
+@comment{
+
+  Copyright 2011 Red Hat, Inc. and/or its affiliates.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+}
+
+
+
+
+@comment{
+
+}
+
+@declare{'regEval'}
+
+rule "Regress Model Output @{context} : @{target} - @{category}"
+@code{ int k = 0; }
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
+when
+    RegTable( context == "@{context}",
+              target == "@{target}",
+              category == null || == "@{category}",
+              $c0 : intercept,
+              $numC : numCoeffs, $numE : numExps,
+              $catC : catCoeffs,
+              $trmC : trmCoeffs,
+              $ix   : index )
+    @foreach{ fld : inputFields }
+    x@{k} : PMML4Data( capitalizedName == "@{compactUpperCase(fld.name)}", context == "@{context}", valid == true, valx@{compactUpperCase(fld.name)} : value )
+    @code{ k++; }
+    @end{}
+then
+    double x = $c0;
+    @code{k=0;} @foreach{ numP : numPredictors }
+        x += $numC[ @{k} ] * Math.pow( (double)valx@{compactUpperCase( numP.name )}, $numE[ @{k} ]  ); @code{k++;}
+    @end{}
+    @code{k=0;} @foreach{ catP : catPredictors }
+        x += $catC[ @{k} ] * ( "@{catP.value}".equals( valx@{compactUpperCase( catP.name )} ) ? 1.0 : 0.0 ); @code{k++;}
+    @end{}
+
+    @code{k=0;} @foreach{ trmP : trmPredictors }
+        x += $trmC[ @{k} ] * @foreach{ ref : trmP.fieldReves } (double)valx@{ compactUpperCase( ref.field ) } @end{' * '}; @code{k++;}
+    @end{}
+
+
+
+    @if{ isRegression }
+        @if{ normalization != null }
+            x = @{ mapRegModelRegressionNormalization( normalization.value(), "x" ) };
+        @end{}
+        @{ target } out = new @{ target }();
+            out.setContext( "@{context}" );
+            out.setValid( true );
+            out.setMissing( false );
+            out.setValue( x );
+        insertLogical( out );
+    @else{}
+        @if{ normalization != null }
+            x = @{ mapRegModelClassificationNormalization( normalization.value(), "x" ) };
+        @end{}
+        RegTargetBit bit = new RegTargetBit(
+            "@{context}",
+            "@{target}",
+            "@{category}",
+            x,
+            @{ normalization == null || ! normalization.value.equals( "softmax" ) },
+            @{ ! isCategorical },
+            $ix );
+        insertLogical( bit );
+    @end{}
+end 
+
+
+rule "Update PMML4Result with target - @{context} : @{target} - @{category}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
+when
+   $tgt: @{target}( context == "@{context}" )
+   $reslt: PMML4Result( resultVariables == null || "@{target}" not memberOf resultVariables.keySet() )
+then
+   $reslt.setResultCode("OK");
+   $reslt.addResultVariable("@{target}",$tgt);
+   update($reslt);
+end
+
+@end{}
+
+
+@includeNamed{'regEval'}

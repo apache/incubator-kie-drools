@@ -1,0 +1,67 @@
+<PMML version="4.2" xsi:schemaLocation="http://www.dmg.org/PMML-4_2 http://www.dmg.org/v4-1/pmml-4-2.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.dmg.org/PMML-4_2">
+  <Header copyright="JBoss"/>
+  <DataDictionary numberOfFields="4">
+    <DataField dataType="double" name="fld1" optype="continuous">
+      <Value property="missing" value="-1.0"/>
+    </DataField>
+    <DataField dataType="double" name="fld2" optype="continuous">
+      <Value property="missing" value="-1.0"/>
+    </DataField>
+    <DataField dataType="string" name="fld3" optype="categorical">
+      <Value value="optA"/>
+      <Value value="optB"/>
+      <Value value="optC"/>
+      <Value property="missing" value="miss"/>
+    </DataField>
+    <DataField dataType="string" name="fld9" optype="categorical">
+      <Value value="tgtX"/>
+      <Value value="tgtY"/>
+      <Value value="tgtZ"/>
+    </DataField>
+  </DataDictionary>
+  <TreeModel functionName="classification" missingValuePenalty="0.8" missingValueStrategy="weightedConfidence" modelName="Missing" noTrueChildStrategy="returnLastPrediction">
+    <MiningSchema>
+      <MiningField name="fld1"/>
+      <MiningField name="fld2"/>
+      <MiningField name="fld3"/>
+      <MiningField name="fld9" usageType="predicted"/>
+    </MiningSchema>
+    <Output>
+      <OutputField name="outClass" targetField="fld9" />
+      <OutputField name="outProb" targetField="fld9" feature="probability"/>
+    </Output>
+    <Node defaultChild="2" id="1">
+      <True/>
+      <Node defaultChild="3" id="2">
+        <SimplePredicate field="fld3" operator="equal" value="optA"/>
+        <Node id="3" recordCount="40" score="tgtX">
+          <CompoundPredicate booleanOperator="surrogate">
+            <SimplePredicate field="fld1" operator="greaterOrEqual" value="50"/>
+            <SimplePredicate field="fld2" operator="lessThan" value="80"/>
+          </CompoundPredicate>
+          <ScoreDistribution confidence="0.9" recordCount="36" value="tgtX"/>
+          <ScoreDistribution confidence="0.05" recordCount="2" value="tgtY"/>
+          <ScoreDistribution confidence="0.05" recordCount="2" value="tgtZ"/>
+        </Node>
+        <Node id="4" recordCount="10" score="tgtZ">
+          <CompoundPredicate booleanOperator="surrogate">
+            <SimplePredicate field="fld1" operator="lessThan" value="50"/>
+            <SimplePredicate field="fld2" operator="greaterOrEqual" value="80"/>
+          </CompoundPredicate>
+          <ScoreDistribution confidence="0.4" recordCount="4" value="tgtX"/>
+          <ScoreDistribution confidence="0.0" recordCount="0" value="tgtY"/>
+          <ScoreDistribution confidence="0.6" recordCount="6" value="tgtZ"/>
+        </Node>
+      </Node>
+      <Node id="5" recordCount="50" score="tgtY">
+        <CompoundPredicate booleanOperator="or">
+          <SimplePredicate field="fld3" operator="equal" value="optB"/>
+          <SimplePredicate field="fld3" operator="equal" value="optC"/>
+        </CompoundPredicate>
+        <ScoreDistribution confidence="0.4" recordCount="20" value="tgtX"/>
+        <ScoreDistribution confidence="0.56" recordCount="28" value="tgtY"/>
+        <ScoreDistribution confidence="0.04" recordCount="2" value="tgtZ"/>
+      </Node>
+    </Node>
+  </TreeModel>
+</PMML>

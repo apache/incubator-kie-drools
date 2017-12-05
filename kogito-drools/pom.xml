@@ -64,6 +64,7 @@
     <module>kie-ci</module>
     <module>kie-ci-osgi</module>
     <module>kie-dmn</module>
+    <module>kie-pmml</module>
     <module>drools-examples-api</module>
     <module>drools-examples-cdi</module>
     <module>drools-workbench-models</module>

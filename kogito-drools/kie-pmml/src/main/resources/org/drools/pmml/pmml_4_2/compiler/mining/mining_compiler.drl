@@ -1,0 +1,36 @@
+//created on: Oct 19, 2017
+package org.drools.pmml.pmml_4_2.compiler
+
+//list any import classes here.
+import org.dmg.pmml.pmml_4_2.descr.*;
+import org.drools.pmml.pmml_4_2.*;
+import org.drools.pmml.pmml_4_2.model.*;
+import org.drools.pmml.pmml_4_2.model.mining.*;
+
+
+//declare any global variables here
+
+declare SegmentRule
+@propertyReactive
+   segment		: MiningSegment @key
+   agendaGrp	: String
+   activationGrp: String
+   predicate	: PredicateRuleProducer
+end
+   
+
+
+rule "Segmentation Rules - Select First"
+when
+    msegm: MiningSegmentation( miningSegments != null, multipleModelMethod == MULTIPLEMODELMETHOD.SELECT_FIRST )
+    ms: MiningSegment( owner == msegm, model != null, predicateRuleProducer != null ) from msegm.miningSegments
+    not SegmentRule( segment == ms )
+then
+	SegmentRule sr = new SegmentRule(ms);
+	sr.setAgendaGrp(ms.getOwner().getSegmentationId());
+	sr.setPredicate(ms.getPredicateRuleProducer());
+	insert(sr);
+end
+
+
+

@@ -1,0 +1,40 @@
+<?xml version="1.0" ?>
+<PMML version="4.2" xmlns="http://www.dmg.org/PMML-4_2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<Header>
+	    <Extension name="modelPackage" value="org.foo.test"/>
+	</Header>
+	<DataDictionary numberOfFields="5">
+		<DataField dataType="double" name="neg_K" optype="continuous"/>
+		<DataField dataType="double" name="oth_K" optype="continuous"/>
+		<DataField dataType="double" name="pos_K" optype="continuous"/>
+		<DataField dataType="double" name="may_K" optype="continuous"/>
+		<DataField dataType="string" name="did_K" optype="categorical">
+			<Value value="0"/>
+			<Value value="1"/>
+		</DataField>
+	</DataDictionary>
+	<RegressionModel algorithmName="logisticRegression"
+	                 functionName="classification"
+	                 modelName="logreg_test"
+	                 normalizationMethod="softmax"
+	                 targetFieldName="did_K">
+		<MiningSchema>
+			<MiningField invalidValueTreatment="asMissing" missingValueReplacement="0" name="neg_K"/>
+			<MiningField invalidValueTreatment="asMissing" missingValueReplacement="0" name="oth_K"/>
+			<MiningField invalidValueTreatment="asMissing" missingValueReplacement="0" name="pos_K"/>
+			<MiningField invalidValueTreatment="asMissing" missingValueReplacement="0" name="may_K"/>
+			<MiningField name="did_K" usageType="predicted"/>
+		</MiningSchema>
+		<Output>
+			<OutputField dataType="double" feature="probability" name="Prob_0" optype="continuous" value="0"/>
+			<OutputField dataType="double" feature="probability" name="Prob_1" optype="continuous" value="1"/>
+		</Output>
+		<RegressionTable intercept="-5" targetCategory="1">
+			<NumericPredictor coefficient="0.0" exponent="1" name="may_K"/>
+			<NumericPredictor coefficient="0.0" exponent="1" name="neg_K"/>
+			<NumericPredictor coefficient="3.0" exponent="1" name="oth_K"/>
+			<NumericPredictor coefficient="0.0" exponent="1" name="pos_K"/>
+		</RegressionTable>
+		<RegressionTable intercept="0.0" targetCategory="0"/>
+	</RegressionModel>
+</PMML>
