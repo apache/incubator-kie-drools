@@ -1,0 +1,103 @@
+@comment{
+
+  Copyright 2017 Red Hat, Inc. and/or its affiliates.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+}
+
+package @{packageName}
+
+import org.kie.pmml.pmml_4_2.*;
+import org.kie.pmml.pmml_4_2.model.*;
+import org.kie.pmml.pmml_4_2.model.mining.*;
+import org.kie.pmml.pmml_4_2.model.datatypes.*;
+
+
+
+@code{ int salienceValue; }
+@code{ String nextSegmentId; }
+
+
+rule "Start Mining - @{miningModel.modelId}"
+agenda-group "MiningSegmentation"
+salience 1000
+auto-focus
+when
+   rqst: PMMLRequestData( correlationId != null, modelName == "@{miningModel.modelId}", rqstInf: requestParams != null )
+   not @{miningModel.miningPojoClassName}()
+then
+   @{miningModel.miningPojoClassName} modelData = new @{miningModel.miningPojoClassName}(rqst);
+   insert(modelData);
+end
+
+
+rule "Execute Next Segment"
+agenda-group "MiningSegmentation"
+when
+   $segExec: SegmentExecution( $corrId: correlationId, $segmId: segmentationId, state == SegmentExecutionState.WAITING, $segIdx: segmentIndex ) 
+   not SegmentExecution( correlationId == $corrId, segmentationId == $segmId, state == SegmentExecutionState.EXECUTING,  segmentIndex < $segIdx )
+then
+   $segExec.applySegmentModel($segExec.getRequestData(),kcontext);
+end
+
+rule "Segment Complete"
+agenda-group "MiningSegmentation"
+when
+   $segExec: SegmentExecution( $corrId: correlationId, $segmId: segmentationId, $segId: segmentId, state == SegmentExecutionState.EXECUTING )
+   PMML4Result( correlationId == $corrId, segmentationId == $segmId, $segId == segmentId, resultCode == "OK" )
+then
+   modify($segExec) {
+      setState(SegmentExecutionState.COMPLETE);
+   }
+end
+
+
+rule "Segment Complete with Error"
+agenda-group "MiningSegmentation"
+when
+   $segExec: SegmentExecution( $corrId: correlationId, $segmId: segmentationId, $segId: segmentId, state == SegmentExecutionState.EXECUTING )
+   PMML4Result( correlationId == $corrId, segmentationId == $segmId, $segId == segmentId, resultCode != null && resultCode != "OK" )
+then
+   System.out.println("Segment "+$segExec.getSegmentId()+" completed with error");
+   modify($segExec) {
+      setState(SegmentExecutionState.ERROR);
+   }
+end
+
+
+
+@foreach{ childSegment: childSegments }
+@code{ salienceValue = 100 - childSegment.segmentIndex; }
+@code{ internalModel = childSegment.model; }
+
+rule "Check Segment Can Fire - Segment @{childSegment.segmentId}"
+agenda-group "MiningSegmentation"
+salience @{salienceValue}
+when
+   model: @{miningModel.miningPojoClassName}( @{childSegment.predicateText} )
+then
+   PMMLRequestData rqstData = new PMMLRequestData(model.getCorrelationId(),"@{childSegment.model.modelId}");
+   @foreach{ field: childSegment.model.miningFields }
+   rqstData.addRequestParam( "@{field.name}",model.getV@{field.compactUpperCaseName}() );
+   @end{}
+   SegmentExecution segEx = new SegmentExecution( model.getCorrelationId(),
+                                                  "@{childSegment.owner.segmentationId}",
+                                                  "@{childSegment.segmentId}",
+                                                   @{childSegment.segmentIndex},
+                                                  "@{childSegment.segmentAgendaId}" );
+   segEx.setRequestData(rqstData);
+   insertLogical(segEx);
+end
+
+@end{}
+
