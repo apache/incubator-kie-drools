@@ -1,0 +1,30 @@
+<PMML version="4.2" xsi:schemaLocation="http://www.dmg.org/PMML-4_2 http://www.dmg.org/v4-1/pmml-4-2.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.dmg.org/PMML-4_2">
+  <Header copyright="JBoss"/>
+  <DataDictionary numberOfFields="4">
+    <DataField dataType="double" name="fld1" optype="continuous"/>
+    <DataField dataType="double" name="fld2" optype="continuous"/>
+    <DataField dataType="string" name="fld3" optype="categorical">
+      <Value value="x"/>
+      <Value value="y"/>
+    </DataField>
+    <DataField dataType="double" name="fld4" optype="continuous"/>
+  </DataDictionary>
+  <RegressionModel algorithmName="linearRegression" functionName="regression" modelName="LinReg" normalizationMethod="logit" targetFieldName="fld4">
+    <MiningSchema>
+      <MiningField name="fld1"/>
+      <MiningField name="fld2"/>
+      <MiningField name="fld3"/>
+      <MiningField name="fld4" usageType="predicted"/>
+    </MiningSchema>
+    <RegressionTable intercept="0.5">
+      <NumericPredictor coefficient="5" exponent="2" name="fld1"/>
+      <NumericPredictor coefficient="2" exponent="1" name="fld2"/>
+      <CategoricalPredictor coefficient="-3" name="fld3" value="x"/>
+      <CategoricalPredictor coefficient="3" name="fld3" value="y"/>
+      <PredictorTerm coefficient="0.4">
+        <FieldRef field="fld1"/>
+        <FieldRef field="fld2"/>
+      </PredictorTerm>
+    </RegressionTable>
+  </RegressionModel>
+</PMML>

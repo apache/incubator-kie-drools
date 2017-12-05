@@ -1,0 +1,42 @@
+<PMML version="4.2" xsi:schemaLocation="http://www.dmg.org/PMML-4_2 http://www.dmg.org/v4-1/pmml-4-2.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.dmg.org/PMML-4_2">
+  <Header copyright="JBoss"/>
+  <DataDictionary>
+    <DataField dataType="double" name="Age" optype="continuous">
+      <Value property="missing" value="-1"/>
+    </DataField>
+  </DataDictionary>
+  <TransformationDictionary>
+    <!--"*"-->
+    <DefineFunction dataType="double" name="myProd" optype="continuous">
+      <ParameterField dataType="double" name="A"/>
+      <ParameterField dataType="double" name="B"/>
+      <Apply function="*">
+        <FieldRef field="A"/>
+        <FieldRef field="B"/>
+      </Apply>
+    </DefineFunction>
+
+    <!--"+"-->
+    <DefineFunction dataType="double" name="mySum" optype="continuous">
+      <ParameterField dataType="double" name="A"/>
+      <ParameterField dataType="double" name="B"/>
+      <Apply function="+">
+        <FieldRef field="A"/>
+        <FieldRef field="B"/>
+      </Apply>
+    </DefineFunction>
+    <!--"+"-->
+
+
+    <DerivedField dataType="double" name="UserAge" optype="continuous">
+      <Apply function="myProd">
+        <Constant dataType="double">10.0</Constant>
+        <Apply function="mySum">
+          <FieldRef field="Age"/>
+          <Constant dataType="double">3.0</Constant>
+        </Apply>
+      </Apply>
+    </DerivedField>
+
+  </TransformationDictionary>
+</PMML>

@@ -1,0 +1,117 @@
+<PMML version="4.2" xsi:schemaLocation="http://www.dmg.org/PMML-4_2 http://www.dmg.org/v4-1/pmml-4-2.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.dmg.org/PMML-4_2">
+  <Header copyright="JBoss"/>
+  <DataDictionary numberOfFields="5">
+    <DataField dataType="integer" displayName="Number of Petals" name="petal num" optype="continuous">
+      <Value value="101"/>
+      <Value value="102"/>
+      <Value value="103"/>
+      <Value value="104"/>
+      <Value value="1"/>
+      <Value value="2"/>
+      <Value value="3"/>
+      <Value value="40"/>
+    </DataField>
+    <DataField dataType="integer" displayName="Width of Petals" name="petal wid" optype="continuous">
+      <Value value="1"/>
+      <Value value="2"/>
+      <Value value="3"/>
+    </DataField>
+    <DataField dataType="integer" displayName="Width of Sepals" name="sepal wid" optype="continuous">
+      <Value value="10"/>
+      <Value value="20"/>
+      <Value value="30"/>
+    </DataField>
+    <DataField dataType="string" displayName="Species" name="species" optype="categorical">
+      <Value value="setosa"/>
+      <Value value="versicolor"/>
+      <Value value="virginica"/>
+    </DataField>
+    <DataField dataType="integer" displayName="Length of Sepals" name="sepal len" optype="continuous">
+      <Value value="24"/>
+      <Value value="25"/>
+      <Value value="150"/>
+      <Value value="151"/>
+      <Value value="152"/>
+    </DataField>
+  </DataDictionary>
+  <NeuralNetwork activationFunction="logistic" algorithmName="neuralNetwork" functionName="regression" modelName="neuiris">
+    <Extension>
+      <Surveyable/>
+    </Extension>
+    <MiningSchema>
+      <MiningField name="petal num"/>
+      <MiningField name="petal wid"/>
+      <MiningField name="sepal wid"/>
+      <MiningField name="species"/>
+      <MiningField name="sepal len" usageType="predicted"/>
+    </MiningSchema>
+    <Output>
+      <OutputField name="OutSepLen" targetField="sepal len"/>
+    </Output>
+    <NeuralInputs>
+      <NeuralInput id="0">
+        <DerivedField dataType="double" optype="continuous">
+          <NormContinuous field="petal num">
+            <LinearNorm norm="0" orig="100"/>
+            <LinearNorm norm="0.5" orig="101"/>
+            <LinearNorm norm="1" orig="102"/>
+          </NormContinuous>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="1">
+        <DerivedField dataType="double" optype="continuous">
+          <NormContinuous field="petal wid">
+            <LinearNorm norm="0" orig="1"/>
+            <LinearNorm norm="0.5" orig="2"/>
+            <LinearNorm norm="1" orig="3"/>
+          </NormContinuous>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="2">
+        <DerivedField dataType="double" optype="continuous">
+          <NormContinuous field="sepal wid">
+            <LinearNorm norm="0" orig="10"/>
+            <LinearNorm norm="0.5" orig="15"/>
+            <LinearNorm norm="1" orig="25"/>
+          </NormContinuous>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="3">
+        <DerivedField dataType="double" optype="continuous">
+          <NormDiscrete field="species" value="virginica"/>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="4">
+        <DerivedField dataType="double" optype="continuous">
+          <NormDiscrete field="species" value="versicolor"/>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="5">
+        <DerivedField dataType="double" optype="continuous">
+          <NormDiscrete field="species" value="setosa"/>
+        </DerivedField>
+      </NeuralInput>
+    </NeuralInputs>
+    <NeuralLayer>
+      <Neuron bias="-1.09891" id="6">
+        <Con from="0" weight="-2.72"/>
+        <Con from="1" weight="0.43"/>
+        <Con from="2" weight="1.25"/>
+        <Con from="3" weight="-0.33"/>
+        <Con from="4" weight="-0.40"/>
+        <Con from="5" weight="1.98"/>
+      </Neuron>
+    </NeuralLayer>
+    <NeuralOutputs>
+      <NeuralOutput outputNeuron="6">
+        <DerivedField dataType="double" optype="continuous">
+          <NormContinuous field="sepal len">
+            <LinearNorm norm="0.1" orig="20"/>
+            <LinearNorm norm="0.5" orig="30"/>
+            <LinearNorm norm="0.9" orig="40"/>
+          </NormContinuous>
+        </DerivedField>
+      </NeuralOutput>
+    </NeuralOutputs>
+  </NeuralNetwork>
+</PMML>
