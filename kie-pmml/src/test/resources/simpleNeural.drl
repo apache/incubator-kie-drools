@@ -13,10 +13,10 @@
  * limitations under the License.
 */
 
-package org.drools.pmml.pmml_4_2.test;
+package org.kie.pmml.pmml_4_2.test;
 
-import org.drools.pmml.pmml_4_2.ModelMarker;
-import org.drools.pmml.pmml_4_2.PMML4AbstractField;
+import org.kie.pmml.pmml_4_2.ModelMarker;
+import org.kie.pmml.pmml_4_2.PMML4AbstractField;
 
 
  declare ColdRisk
