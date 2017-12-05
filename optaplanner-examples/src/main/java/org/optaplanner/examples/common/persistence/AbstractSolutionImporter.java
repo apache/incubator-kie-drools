@@ -50,6 +50,10 @@ public abstract class AbstractSolutionImporter<Solution_> extends LoggingMain {
     public static abstract class InputBuilder extends LoggingMain {
 
         public static BigInteger factorial(int base) {
+            if (base > 100000) {
+                // Calculation takes too long
+                return null;
+            }
             BigInteger value = BigInteger.ONE;
             for (int i = 1; i <= base; i++) {
                 value = value.multiply(BigInteger.valueOf(base));
@@ -60,6 +64,9 @@ public abstract class AbstractSolutionImporter<Solution_> extends LoggingMain {
     }
 
     public static String getFlooredPossibleSolutionSize(BigInteger possibleSolutionSize) {
+        if (possibleSolutionSize == null) {
+            return null;
+        }
         if (possibleSolutionSize.compareTo(BigInteger.valueOf(1000L)) < 0) {
             return possibleSolutionSize.toString();
         }
