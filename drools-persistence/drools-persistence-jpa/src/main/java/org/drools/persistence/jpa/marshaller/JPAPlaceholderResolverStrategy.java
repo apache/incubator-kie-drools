@@ -172,7 +172,10 @@ public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy
 
         DroolsObjectInputStream is = new DroolsObjectInputStream( new ByteArrayInputStream( object ), clToUse );
         String canonicalName = is.readUTF();
-        Object id = is.readObject();
+        if(canonicalName.contains("_$$_jvst")){
+		canonicalName = canonicalName.substring(0, canonicalName.indexOf("_$$_jvst"));
+	}	
+	Object id = is.readObject();
 
         EntityManager em = getEntityManager();
         return em.find(Class.forName(canonicalName, true, (clToUse==null?this.getClass().getClassLoader():clToUse)), id);
