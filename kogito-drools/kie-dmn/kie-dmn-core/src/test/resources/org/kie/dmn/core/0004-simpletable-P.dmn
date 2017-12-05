@@ -38,7 +38,7 @@
              xsi:schemaLocation="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
              expressionLanguage="http://www.omg.org/spec/FEEL/20140401"
              typeLanguage="http://www.omg.org/spec/FEEL/20140401">
-  <decision id="_0004-simpletable-P" name="0004-simpletable-P">
+  <decision id="_0004-simpletable-P" name="_0004-simpletable-P">
     <variable name="Approval Status" typeRef="feel:string"/>
     <informationRequirement>
       <requiredInput href="#_Age"/>
