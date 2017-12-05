@@ -23,6 +23,8 @@ import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
 import org.optaplanner.examples.common.persistence.AbstractPngSolutionImporter;
+import org.optaplanner.examples.common.persistence.SolutionConverter;
+import org.optaplanner.examples.tsp.app.TspApp;
 import org.optaplanner.examples.tsp.domain.Domicile;
 import org.optaplanner.examples.tsp.domain.TspSolution;
 import org.optaplanner.examples.tsp.domain.Visit;
@@ -35,15 +37,9 @@ public class TspImageStipplerImporter extends AbstractPngSolutionImporter<TspSol
     private static final double GRAY_MAXIMUM = 256.0 * 3.0;
 
     public static void main(String[] args) {
-        new TspImageStipplerImporter().convertAll();
-    }
-
-    public TspImageStipplerImporter() {
-        super(new TspDao());
-    }
-
-    public TspImageStipplerImporter(boolean withoutDao) {
-        super(withoutDao);
+        SolutionConverter<TspSolution> converter = SolutionConverter.createImportConverter(
+                TspApp.DATA_DIR_NAME, new TspImageStipplerImporter(), TspSolution.class);
+        converter.convertAll();
     }
 
     @Override

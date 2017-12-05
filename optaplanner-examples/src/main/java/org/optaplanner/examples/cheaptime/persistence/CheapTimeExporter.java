@@ -22,25 +22,21 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.optaplanner.examples.cheaptime.app.CheapTimeApp;
 import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
 import org.optaplanner.examples.cheaptime.domain.Machine;
 import org.optaplanner.examples.cheaptime.domain.PeriodPowerPrice;
 import org.optaplanner.examples.cheaptime.domain.TaskAssignment;
 import org.optaplanner.examples.cheaptime.solver.CheapTimeCostCalculator;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionExporter;
+import org.optaplanner.examples.common.persistence.SolutionConverter;
 
 public class CheapTimeExporter extends AbstractTxtSolutionExporter<CheapTimeSolution> {
 
     public static void main(String[] args) {
-        new CheapTimeExporter().convertAll();
-    }
-
-    public CheapTimeExporter() {
-        super(new CheapTimeDao());
-    }
-
-    public CheapTimeExporter(boolean withoutDao) {
-        super(withoutDao);
+        SolutionConverter<CheapTimeSolution> converter = SolutionConverter.createExportConverter(
+                CheapTimeApp.DATA_DIR_NAME, CheapTimeSolution.class, new CheapTimeExporter());
+        converter.convertAll();
     }
 
     @Override

@@ -21,14 +21,17 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.LoggingMain;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
-import org.optaplanner.examples.common.persistence.SolutionDao;
+import org.optaplanner.examples.tennis.app.TennisApp;
 import org.optaplanner.examples.tennis.domain.Day;
 import org.optaplanner.examples.tennis.domain.Team;
 import org.optaplanner.examples.tennis.domain.TeamAssignment;
 import org.optaplanner.examples.tennis.domain.TennisSolution;
 import org.optaplanner.examples.tennis.domain.UnavailabilityPenalty;
+import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
+import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
 public class TennisGenerator extends LoggingMain {
 
@@ -36,18 +39,19 @@ public class TennisGenerator extends LoggingMain {
         new TennisGenerator().generate();
     }
 
-    protected final SolutionDao solutionDao;
+    protected final SolutionFileIO<TennisSolution> solutionFileIO;
     protected final File outputDir;
 
     public TennisGenerator() {
-        solutionDao = new TennisDao();
-        outputDir = new File(solutionDao.getDataDir(), "unsolved");
+        solutionFileIO = new XStreamSolutionFileIO<>(TennisSolution.class);
+        outputDir = new File(CommonApp.determineDataDir(TennisApp.DATA_DIR_NAME), "unsolved");
     }
 
     public void generate() {
         File outputFile = new File(outputDir, "munich-7teams.xml");
         TennisSolution tennisSolution = createTennisSolution();
-        solutionDao.writeSolution(tennisSolution, outputFile);
+        solutionFileIO.write(tennisSolution, outputFile);
+        logger.info("Saved: {}", outputFile);
     }
 
     public TennisSolution createTennisSolution() {

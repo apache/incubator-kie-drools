@@ -25,6 +25,8 @@ import java.util.Map;
 
 import org.apache.commons.io.FilenameUtils;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
+import org.optaplanner.examples.common.persistence.SolutionConverter;
+import org.optaplanner.examples.vehiclerouting.app.VehicleRoutingApp;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
 import org.optaplanner.examples.vehiclerouting.domain.Depot;
 import org.optaplanner.examples.vehiclerouting.domain.Vehicle;
@@ -42,23 +44,16 @@ import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedV
 public class VehicleRoutingImporter extends AbstractTxtSolutionImporter<VehicleRoutingSolution> {
 
     public static void main(String[] args) {
-        VehicleRoutingImporter importer = new VehicleRoutingImporter();
-        importer.convert("vrpweb/basic/air/A-n33-k6.vrp", "cvrp-32customers.xml");
-        importer.convert("vrpweb/basic/air/A-n55-k9.vrp", "cvrp-54customers.xml");
-        importer.convert("vrpweb/basic/air/F-n72-k4.vrp", "cvrp-72customers.xml");
-        importer.convert("vrpweb/timewindowed/air/Solomon_025_C101.vrp", "cvrptw-25customers.xml");
-        importer.convert("vrpweb/timewindowed/air/Solomon_100_R101.vrp", "cvrptw-100customers-A.xml");
-        importer.convert("vrpweb/timewindowed/air/Solomon_100_R201.vrp", "cvrptw-100customers-B.xml");
-        importer.convert("vrpweb/timewindowed/air/Homberger_0400_R1_4_1.vrp", "cvrptw-400customers.xml");
-        importer.convert("vrpweb/basic/road-unknown/bays-n29-k5.vrp", "road-cvrp-29customers.xml");
-    }
-
-    public VehicleRoutingImporter() {
-        super(new VehicleRoutingDao());
-    }
-
-    public VehicleRoutingImporter(boolean withoutDao) {
-        super(withoutDao);
+        SolutionConverter<VehicleRoutingSolution> converter = SolutionConverter.createImportConverter(
+                VehicleRoutingApp.DATA_DIR_NAME, new VehicleRoutingImporter(), VehicleRoutingSolution.class);
+        converter.convert("vrpweb/basic/air/A-n33-k6.vrp", "cvrp-32customers.xml");
+        converter.convert("vrpweb/basic/air/A-n55-k9.vrp", "cvrp-54customers.xml");
+        converter.convert("vrpweb/basic/air/F-n72-k4.vrp", "cvrp-72customers.xml");
+        converter.convert("vrpweb/timewindowed/air/Solomon_025_C101.vrp", "cvrptw-25customers.xml");
+        converter.convert("vrpweb/timewindowed/air/Solomon_100_R101.vrp", "cvrptw-100customers-A.xml");
+        converter.convert("vrpweb/timewindowed/air/Solomon_100_R201.vrp", "cvrptw-100customers-B.xml");
+        converter.convert("vrpweb/timewindowed/air/Homberger_0400_R1_4_1.vrp", "cvrptw-400customers.xml");
+        converter.convert("vrpweb/basic/road-unknown/bays-n29-k5.vrp", "road-cvrp-29customers.xml");
     }
 
     @Override

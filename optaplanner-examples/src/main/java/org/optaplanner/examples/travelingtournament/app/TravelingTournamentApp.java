@@ -19,12 +19,12 @@ package org.optaplanner.examples.travelingtournament.app;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.AbstractSolutionExporter;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
-import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.travelingtournament.domain.TravelingTournament;
-import org.optaplanner.examples.travelingtournament.persistence.TravelingTournamentDao;
 import org.optaplanner.examples.travelingtournament.persistence.TravelingTournamentExporter;
 import org.optaplanner.examples.travelingtournament.persistence.TravelingTournamentImporter;
 import org.optaplanner.examples.travelingtournament.swingui.TravelingTournamentPanel;
+import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
+import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
 /**
  * WARNING: This is an old, complex, tailored example. You're probably better off with one of the other examples.
@@ -33,6 +33,8 @@ public class TravelingTournamentApp extends CommonApp<TravelingTournament> {
 
     public static final String SOLVER_CONFIG
             = "org/optaplanner/examples/travelingtournament/solver/travelingTournamentSolverConfig.xml";
+
+    public static final String DATA_DIR_NAME = "travelingtournament";
 
     public static void main(String[] args) {
         prepareSwingEnvironment();
@@ -43,7 +45,7 @@ public class TravelingTournamentApp extends CommonApp<TravelingTournament> {
         super("Traveling tournament",
                 "Official competition name: TTP - Traveling tournament problem\n\n" +
                         "Assign sport matches to days. Minimize the distance travelled.",
-                SOLVER_CONFIG,
+                SOLVER_CONFIG, DATA_DIR_NAME,
                 TravelingTournamentPanel.LOGO_PATH);
     }
 
@@ -53,8 +55,8 @@ public class TravelingTournamentApp extends CommonApp<TravelingTournament> {
     }
 
     @Override
-    protected SolutionDao createSolutionDao() {
-        return new TravelingTournamentDao();
+    public SolutionFileIO<TravelingTournament> createSolutionFileIO() {
+        return new XStreamSolutionFileIO<>(TravelingTournament.class);
     }
 
     @Override

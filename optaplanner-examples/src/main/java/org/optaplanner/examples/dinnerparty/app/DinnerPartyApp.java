@@ -18,16 +18,18 @@ package org.optaplanner.examples.dinnerparty.app;
 
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
-import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.dinnerparty.domain.DinnerParty;
-import org.optaplanner.examples.dinnerparty.persistence.DinnerPartyDao;
 import org.optaplanner.examples.dinnerparty.persistence.DinnerPartyImporter;
 import org.optaplanner.examples.dinnerparty.swingui.DinnerPartyPanel;
+import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
+import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
 public class DinnerPartyApp extends CommonApp<DinnerParty> {
 
     public static final String SOLVER_CONFIG
             = "org/optaplanner/examples/dinnerparty/solver/dinnerPartySolverConfig.xml";
+
+    public static final String DATA_DIR_NAME = "dinnerparty";
 
     public static void main(String[] args) {
         prepareSwingEnvironment();
@@ -38,7 +40,7 @@ public class DinnerPartyApp extends CommonApp<DinnerParty> {
         super("Dinner party",
                 "Decide the seating at a big fancy dinner party with round tables.\n" +
                         "Assign guests to seats at tables.",
-                SOLVER_CONFIG,
+                SOLVER_CONFIG, DATA_DIR_NAME,
                 DinnerPartyPanel.LOGO_PATH);
     }
 
@@ -48,8 +50,8 @@ public class DinnerPartyApp extends CommonApp<DinnerParty> {
     }
 
     @Override
-    protected SolutionDao createSolutionDao() {
-        return new DinnerPartyDao();
+    public SolutionFileIO<DinnerParty> createSolutionFileIO() {
+        return new XStreamSolutionFileIO<>(DinnerParty.class);
     }
 
     @Override

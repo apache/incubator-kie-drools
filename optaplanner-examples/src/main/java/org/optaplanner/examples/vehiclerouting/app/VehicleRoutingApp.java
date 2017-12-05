@@ -18,16 +18,18 @@ package org.optaplanner.examples.vehiclerouting.app;
 
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
-import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
-import org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingDao;
 import org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingImporter;
 import org.optaplanner.examples.vehiclerouting.swingui.VehicleRoutingPanel;
+import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
+import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
 public class VehicleRoutingApp extends CommonApp<VehicleRoutingSolution> {
 
     public static final String SOLVER_CONFIG
             = "org/optaplanner/examples/vehiclerouting/solver/vehicleRoutingSolverConfig.xml";
+
+    public static final String DATA_DIR_NAME = "vehiclerouting";
 
     public static void main(String[] args) {
         prepareSwingEnvironment();
@@ -42,7 +44,7 @@ public class VehicleRoutingApp extends CommonApp<VehicleRoutingSolution> {
                         "Find the shortest route possible.\n" +
                         "Do not overload the capacity of the vehicles.\n" +
                         "Arrive within the time window of each customer.",
-                SOLVER_CONFIG,
+                SOLVER_CONFIG, DATA_DIR_NAME,
                 VehicleRoutingPanel.LOGO_PATH);
     }
 
@@ -52,8 +54,8 @@ public class VehicleRoutingApp extends CommonApp<VehicleRoutingSolution> {
     }
 
     @Override
-    protected SolutionDao createSolutionDao() {
-        return new VehicleRoutingDao();
+    public SolutionFileIO<VehicleRoutingSolution> createSolutionFileIO() {
+        return new XStreamSolutionFileIO<>(VehicleRoutingSolution.class);
     }
 
     @Override

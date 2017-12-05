@@ -27,7 +27,7 @@ import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
-import org.optaplanner.examples.common.persistence.SolutionDao;
+import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
 import static org.junit.Assert.*;
 
@@ -43,16 +43,17 @@ import static org.junit.Assert.*;
  */
 public abstract class SolverPerformanceTest<Solution_> extends LoggingTest {
 
-    protected SolutionDao<Solution_> solutionDao;
+    protected SolutionFileIO<Solution_> solutionFileIO;
+    protected String solverConfig;
 
     @Before
     public void setUp() {
-        solutionDao = createSolutionDao();
+        CommonApp<Solution_> commonApp = createCommonApp();
+        solutionFileIO = commonApp.createSolutionFileIO();
+        solverConfig = commonApp.getSolverConfig();
     }
 
-    protected abstract String createSolverConfigResource();
-
-    protected abstract SolutionDao<Solution_> createSolutionDao();
+    protected abstract CommonApp<Solution_> createCommonApp();
 
     protected void runSpeedTest(File unsolvedDataFile, String bestScoreLimitString) {
         runSpeedTest(unsolvedDataFile, bestScoreLimitString, EnvironmentMode.REPRODUCIBLE);
@@ -60,14 +61,15 @@ public abstract class SolverPerformanceTest<Solution_> extends LoggingTest {
 
     protected void runSpeedTest(File unsolvedDataFile, String bestScoreLimitString, EnvironmentMode environmentMode) {
         SolverFactory<Solution_> solverFactory = buildSolverFactory(bestScoreLimitString, environmentMode);
-        Solution_ problem = solutionDao.readSolution(unsolvedDataFile);
+        Solution_ problem = solutionFileIO.read(unsolvedDataFile);
+        logger.info("Opened: {}", unsolvedDataFile);
         Solver<Solution_> solver = solverFactory.buildSolver();
         Solution_ bestSolution = solver.solve(problem);
         assertBestSolution(solver, bestSolution, bestScoreLimitString);
     }
 
     protected SolverFactory<Solution_> buildSolverFactory(String bestScoreLimitString, EnvironmentMode environmentMode) {
-        SolverFactory<Solution_> solverFactory = SolverFactory.createFromXmlResource(createSolverConfigResource());
+        SolverFactory<Solution_> solverFactory = SolverFactory.createFromXmlResource(solverConfig);
         solverFactory.getSolverConfig().setEnvironmentMode(environmentMode);
         solverFactory.getSolverConfig().setTerminationConfig(
                 new TerminationConfig().withBestScoreLimit(bestScoreLimitString));

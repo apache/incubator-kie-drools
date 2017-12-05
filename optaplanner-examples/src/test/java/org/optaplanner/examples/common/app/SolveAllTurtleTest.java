@@ -34,7 +34,11 @@ import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 @RunWith(Parameterized.class)
 public abstract class SolveAllTurtleTest<Solution_> extends AbstractTurtleTest {
 
-    protected abstract String createSolverConfigResource();
+    private final String solverConfig;
+
+    public SolveAllTurtleTest(String solverConfig) {
+        this.solverConfig = solverConfig;
+    }
 
     protected abstract Solution_ readProblem();
 
@@ -74,7 +78,7 @@ public abstract class SolveAllTurtleTest<Solution_> extends AbstractTurtleTest {
     }
 
     protected SolverFactory<Solution_> buildSolverFactory() {
-        SolverFactory<Solution_> solverFactory = SolverFactory.createFromXmlResource(createSolverConfigResource());
+        SolverFactory<Solution_> solverFactory = SolverFactory.createFromXmlResource(solverConfig);
         // buildAndSolve() fills in minutesSpentLimit
         solverFactory.getSolverConfig().setTerminationConfig(new TerminationConfig());
         return solverFactory;

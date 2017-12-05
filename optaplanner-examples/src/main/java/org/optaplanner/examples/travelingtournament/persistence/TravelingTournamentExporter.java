@@ -19,6 +19,8 @@ package org.optaplanner.examples.travelingtournament.persistence;
 import java.io.IOException;
 
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionExporter;
+import org.optaplanner.examples.common.persistence.SolutionConverter;
+import org.optaplanner.examples.travelingtournament.app.TravelingTournamentApp;
 import org.optaplanner.examples.travelingtournament.domain.Day;
 import org.optaplanner.examples.travelingtournament.domain.Match;
 import org.optaplanner.examples.travelingtournament.domain.Team;
@@ -29,11 +31,9 @@ public class TravelingTournamentExporter extends AbstractTxtSolutionExporter<Tra
     private static final String OUTPUT_FILE_SUFFIX = "trick.txt";
 
     public static void main(String[] args) {
-        new TravelingTournamentExporter().convertAll();
-    }
-
-    public TravelingTournamentExporter() {
-        super(new TravelingTournamentDao());
+        SolutionConverter<TravelingTournament> converter = SolutionConverter.createExportConverter(
+                TravelingTournamentApp.DATA_DIR_NAME, TravelingTournament.class, new TravelingTournamentExporter());
+        converter.convertAll();
     }
 
     @Override

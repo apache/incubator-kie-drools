@@ -20,20 +20,15 @@ import java.io.File;
 
 import org.junit.Test;
 import org.optaplanner.core.config.solver.EnvironmentMode;
-import org.optaplanner.examples.cheaptime.persistence.CheapTimeDao;
+import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
+import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
-import org.optaplanner.examples.common.persistence.SolutionDao;
 
-public class CheapTimePerformanceTest extends SolverPerformanceTest {
-
-    @Override
-    protected String createSolverConfigResource() {
-        return CheapTimeApp.SOLVER_CONFIG;
-    }
+public class CheapTimePerformanceTest extends SolverPerformanceTest<CheapTimeSolution> {
 
     @Override
-    protected SolutionDao createSolutionDao() {
-        return new CheapTimeDao();
+    protected CheapTimeApp createCommonApp() {
+        return new CheapTimeApp();
     }
 
     // ************************************************************************

@@ -22,34 +22,23 @@ import java.util.Collection;
 import org.junit.runners.Parameterized;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 import org.optaplanner.examples.common.app.UnsolvedDirSolveAllTurtleTest;
-import org.optaplanner.examples.common.persistence.SolutionDao;
-import org.optaplanner.examples.tsp.persistence.TspDao;
+import org.optaplanner.examples.tsp.domain.TspSolution;
 import org.optaplanner.examples.tsp.solver.score.TspEasyScoreCalculator;
 
-public class TspSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest {
+public class TspSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<TspSolution> {
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getUnsolvedDirFilesAsParameters(new TspDao());
+        return getUnsolvedDirFilesAsParameters(new TspApp());
     }
 
     public TspSolveAllTurtleTest(File unsolvedDataFile) {
-        super(unsolvedDataFile);
-    }
-
-    @Override
-    protected String createSolverConfigResource() {
-        return TspApp.SOLVER_CONFIG;
+        super(new TspApp(), unsolvedDataFile);
     }
 
     @Override
     protected Class<? extends EasyScoreCalculator> overwritingEasyScoreCalculatorClass() {
         return TspEasyScoreCalculator.class;
-    }
-
-    @Override
-    protected SolutionDao createSolutionDao() {
-        return new TspDao();
     }
 
 }

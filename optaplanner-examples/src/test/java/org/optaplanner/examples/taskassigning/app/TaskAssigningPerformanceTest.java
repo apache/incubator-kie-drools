@@ -21,19 +21,13 @@ import java.io.File;
 import org.junit.Test;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
-import org.optaplanner.examples.common.persistence.SolutionDao;
-import org.optaplanner.examples.taskassigning.persistence.TaskAssigningDao;
+import org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution;
 
-public class TaskAssigningPerformanceTest extends SolverPerformanceTest {
-
-    @Override
-    protected String createSolverConfigResource() {
-        return TaskAssigningApp.SOLVER_CONFIG;
-    }
+public class TaskAssigningPerformanceTest extends SolverPerformanceTest<TaskAssigningSolution> {
 
     @Override
-    protected SolutionDao createSolutionDao() {
-        return new TaskAssigningDao();
+    protected TaskAssigningApp createCommonApp() {
+        return new TaskAssigningApp();
     }
 
     // ************************************************************************

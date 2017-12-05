@@ -36,14 +36,6 @@ public abstract class AbstractXlsxSolutionImporter<Solution_> extends AbstractSo
 
     private static final String DEFAULT_INPUT_FILE_SUFFIX = "xlsx";
 
-    protected AbstractXlsxSolutionImporter(SolutionDao<Solution_> solutionDao) {
-        super(solutionDao);
-    }
-
-    protected AbstractXlsxSolutionImporter(boolean withoutDao) {
-        super(withoutDao);
-    }
-
     @Override
     public String getInputFileSuffix() {
         return DEFAULT_INPUT_FILE_SUFFIX;

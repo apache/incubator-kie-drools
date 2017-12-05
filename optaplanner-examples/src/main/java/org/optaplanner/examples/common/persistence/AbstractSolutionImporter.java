@@ -25,85 +25,12 @@ import com.google.common.math.BigIntegerMath;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.examples.common.app.LoggingMain;
 import org.optaplanner.examples.common.business.ProblemFileComparator;
+import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public abstract class AbstractSolutionImporter<Solution_> extends LoggingMain {
-
-    protected static final String DEFAULT_OUTPUT_FILE_SUFFIX = "xml";
-
-    protected final SolutionDao<Solution_> solutionDao;
-    protected final File inputDir;
-    protected final File outputDir;
-
-    public AbstractSolutionImporter(SolutionDao<Solution_> solutionDao) {
-        this.solutionDao = solutionDao;
-        inputDir = new File(solutionDao.getDataDir(), "import");
-        if (!inputDir.exists()) {
-            throw new IllegalStateException("The directory inputDir (" + inputDir.getAbsolutePath()
-                    + ") does not exist.");
-        }
-        outputDir = new File(solutionDao.getDataDir(), "unsolved");
-    }
-
-    public AbstractSolutionImporter(boolean withoutDao) {
-        if (!withoutDao) {
-            throw new IllegalArgumentException("The parameter withoutDao (" + withoutDao + ") must be true.");
-        }
-        solutionDao = null;
-        inputDir = null;
-        outputDir = null;
-    }
-
-    public File getInputDir() {
-        return inputDir;
-    }
-
-    public File getOutputDir() {
-        return outputDir;
-    }
-
-    public boolean isInputFileDirectory() {
-        return false;
-    }
-
-    public abstract String getInputFileSuffix();
-
-    protected String getOutputFileSuffix() {
-        return DEFAULT_OUTPUT_FILE_SUFFIX;
-    }
-
-    public void convertAll() {
-        File[] inputFiles = inputDir.listFiles();
-        Arrays.sort(inputFiles, new ProblemFileComparator());
-        for (File inputFile : inputFiles) {
-            if (acceptInputFile(inputFile) && acceptInputFileDuringBulkConvert(inputFile)) {
-                String inputFileName = inputFile.getName();
-                String outputFileName = inputFileName.substring(0,
-                        inputFileName.length() - getInputFileSuffix().length())
-                        + getOutputFileSuffix();
-                File outputFile = new File(outputDir, outputFileName);
-                convert(inputFile, outputFile);
-            }
-        }
-    }
-
-    public void convert(String inputFileName, String outputFileName) {
-        File inputFile = new File(inputDir, inputFileName);
-        if (!inputFile.exists()) {
-            throw new IllegalStateException("The file inputFile (" + inputFile.getAbsolutePath()
-                    + ") does not exist.");
-        }
-        File outputFile = new File(outputDir, outputFileName);
-        outputFile.getParentFile().mkdirs();
-        convert(inputFile, outputFile);
-    }
-
-    protected void convert(File inputFile, File outputFile) {
-        Solution_ solution = readSolution(inputFile);
-        solutionDao.writeSolution(solution, outputFile);
-    }
 
     public boolean acceptInputFile(File inputFile) {
         if (isInputFileDirectory()) {
@@ -112,14 +39,11 @@ public abstract class AbstractSolutionImporter<Solution_> extends LoggingMain {
         return inputFile.getName().endsWith("." + getInputFileSuffix());
     }
 
-    /**
-     * Some files are too big to be serialized to XML or take too long.
-     * @param inputFile never null
-     * @return true if accepted
-     */
-    public boolean acceptInputFileDuringBulkConvert(File inputFile) {
-        return true;
+    public boolean isInputFileDirectory() {
+        return false;
     }
+
+    public abstract String getInputFileSuffix();
 
     public abstract Solution_ readSolution(File inputFile);
 

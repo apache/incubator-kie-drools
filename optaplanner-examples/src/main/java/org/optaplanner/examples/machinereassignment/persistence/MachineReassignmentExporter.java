@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.util.List;
 
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionExporter;
+import org.optaplanner.examples.common.persistence.SolutionConverter;
+import org.optaplanner.examples.machinereassignment.app.MachineReassignmentApp;
 import org.optaplanner.examples.machinereassignment.domain.MachineReassignment;
 import org.optaplanner.examples.machinereassignment.domain.MrMachine;
 import org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment;
@@ -27,11 +29,9 @@ import org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment;
 public class MachineReassignmentExporter extends AbstractTxtSolutionExporter<MachineReassignment> {
 
     public static void main(String[] args) {
-        new MachineReassignmentExporter().convertAll();
-    }
-
-    public MachineReassignmentExporter() {
-        super(new MachineReassignmentDao());
+        SolutionConverter<MachineReassignment> converter = SolutionConverter.createExportConverter(
+                MachineReassignmentApp.DATA_DIR_NAME, MachineReassignment.class, new MachineReassignmentExporter());
+        converter.convertAll();
     }
 
     @Override

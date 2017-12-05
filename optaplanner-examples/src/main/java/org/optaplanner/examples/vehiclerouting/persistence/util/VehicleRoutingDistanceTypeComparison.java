@@ -25,13 +25,15 @@ import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
+import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.LoggingMain;
 import org.optaplanner.examples.vehiclerouting.app.VehicleRoutingApp;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
 import org.optaplanner.examples.vehiclerouting.domain.Standstill;
 import org.optaplanner.examples.vehiclerouting.domain.Vehicle;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
-import org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingDao;
+import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
+import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
 public class VehicleRoutingDistanceTypeComparison extends LoggingMain {
 
@@ -44,10 +46,12 @@ public class VehicleRoutingDistanceTypeComparison extends LoggingMain {
                 "solved/tmp-p-belgium-road-time-n50-k10.xml");
     }
 
-    protected final VehicleRoutingDao vehicleRoutingDao;
+    protected final File dataDir;
+    protected final SolutionFileIO<VehicleRoutingSolution> solutionFileIO;
 
     public VehicleRoutingDistanceTypeComparison() {
-        vehicleRoutingDao = new VehicleRoutingDao();
+        dataDir = CommonApp.determineDataDir(VehicleRoutingApp.DATA_DIR_NAME);
+        solutionFileIO = new XStreamSolutionFileIO<>(VehicleRoutingSolution.class);
         SolverFactory<VehicleRoutingSolution> solverFactory = SolverFactory.createFromXmlResource(VehicleRoutingApp.SOLVER_CONFIG);
         scoreDirectorFactory = solverFactory.buildSolver().getScoreDirectorFactory();
     }
@@ -55,7 +59,7 @@ public class VehicleRoutingDistanceTypeComparison extends LoggingMain {
     public void compare(String... filePaths) {
         File[] files = new File[filePaths.length];
         for (int i = 0; i < filePaths.length; i++) {
-            File file = new File(vehicleRoutingDao.getDataDir(), filePaths[i]);
+            File file = new File(dataDir, filePaths[i]);
             if (!file.exists()) {
                 throw new IllegalArgumentException("The file (" + file + ") does not exist.");
             }
@@ -64,13 +68,13 @@ public class VehicleRoutingDistanceTypeComparison extends LoggingMain {
         for (File varFile : files) {
             logger.info("  Results for {}:", varFile.getName());
             // Intentionally create a new instance instead of reusing the older one.
-            VehicleRoutingSolution variablesSolution = (VehicleRoutingSolution) vehicleRoutingDao.readSolution(varFile);
+            VehicleRoutingSolution variablesSolution = (VehicleRoutingSolution) solutionFileIO.read(varFile);
             for (File inputFile : files) {
                 HardSoftLongScore score;
                 if (inputFile == varFile) {
                     score = variablesSolution.getScore();
                 } else {
-                    VehicleRoutingSolution inputSolution = (VehicleRoutingSolution) vehicleRoutingDao.readSolution(inputFile);
+                    VehicleRoutingSolution inputSolution = (VehicleRoutingSolution) solutionFileIO.read(inputFile);
                     applyVariables(inputSolution, variablesSolution);
                     score = inputSolution.getScore();
                 }

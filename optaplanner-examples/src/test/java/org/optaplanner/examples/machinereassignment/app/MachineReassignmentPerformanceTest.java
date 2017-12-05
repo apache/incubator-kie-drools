@@ -21,19 +21,13 @@ import java.io.File;
 import org.junit.Test;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
-import org.optaplanner.examples.common.persistence.SolutionDao;
-import org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentDao;
+import org.optaplanner.examples.machinereassignment.domain.MachineReassignment;
 
-public class MachineReassignmentPerformanceTest extends SolverPerformanceTest {
-
-    @Override
-    protected String createSolverConfigResource() {
-        return MachineReassignmentApp.SOLVER_CONFIG;
-    }
+public class MachineReassignmentPerformanceTest extends SolverPerformanceTest<MachineReassignment> {
 
     @Override
-    protected SolutionDao createSolutionDao() {
-        return new MachineReassignmentDao();
+    protected MachineReassignmentApp createCommonApp() {
+        return new MachineReassignmentApp();
     }
 
     // ************************************************************************

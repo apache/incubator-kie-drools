@@ -19,17 +19,19 @@ package org.optaplanner.examples.curriculumcourse.app;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.AbstractSolutionExporter;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
-import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.curriculumcourse.domain.CourseSchedule;
-import org.optaplanner.examples.curriculumcourse.persistence.CurriculumCourseDao;
 import org.optaplanner.examples.curriculumcourse.persistence.CurriculumCourseExporter;
 import org.optaplanner.examples.curriculumcourse.persistence.CurriculumCourseImporter;
 import org.optaplanner.examples.curriculumcourse.swingui.CurriculumCoursePanel;
+import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
+import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
 public class CurriculumCourseApp extends CommonApp<CourseSchedule> {
 
     public static final String SOLVER_CONFIG
             = "org/optaplanner/examples/curriculumcourse/solver/curriculumCourseSolverConfig.xml";
+
+    public static final String DATA_DIR_NAME = "curriculumcourse";
 
     public static void main(String[] args) {
         prepareSwingEnvironment();
@@ -40,7 +42,7 @@ public class CurriculumCourseApp extends CommonApp<CourseSchedule> {
         super("Course timetabling",
                 "Official competition name: ITC 2007 track3 - Curriculum course scheduling\n\n" +
                         "Assign lectures to periods and rooms.",
-                SOLVER_CONFIG,
+                SOLVER_CONFIG, DATA_DIR_NAME,
                 CurriculumCoursePanel.LOGO_PATH);
     }
 
@@ -50,8 +52,8 @@ public class CurriculumCourseApp extends CommonApp<CourseSchedule> {
     }
 
     @Override
-    protected SolutionDao createSolutionDao() {
-        return new CurriculumCourseDao();
+    public SolutionFileIO<CourseSchedule> createSolutionFileIO() {
+        return new XStreamSolutionFileIO<>(CourseSchedule.class);
     }
 
     @Override

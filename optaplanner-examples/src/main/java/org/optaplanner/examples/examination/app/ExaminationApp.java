@@ -19,13 +19,13 @@ package org.optaplanner.examples.examination.app;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.AbstractSolutionExporter;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
-import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.curriculumcourse.app.CurriculumCourseApp;
 import org.optaplanner.examples.examination.domain.Examination;
-import org.optaplanner.examples.examination.persistence.ExaminationDao;
 import org.optaplanner.examples.examination.persistence.ExaminationExporter;
 import org.optaplanner.examples.examination.persistence.ExaminationImporter;
 import org.optaplanner.examples.examination.swingui.ExaminationPanel;
+import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
+import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
 /**
  * Examination is super optimized and a bit complex.
@@ -36,6 +36,8 @@ public class ExaminationApp extends CommonApp<Examination> {
     public static final String SOLVER_CONFIG
             = "org/optaplanner/examples/examination/solver/examinationSolverConfig.xml";
 
+    public static final String DATA_DIR_NAME = "examination";
+
     public static void main(String[] args) {
         prepareSwingEnvironment();
         new ExaminationApp().init();
@@ -45,7 +47,7 @@ public class ExaminationApp extends CommonApp<Examination> {
         super("Exam timetabling",
                 "Official competition name: ITC 2007 track1 - Examination timetabling\n\n" +
                         "Assign exams to timeslots and rooms.",
-                SOLVER_CONFIG,
+                SOLVER_CONFIG, DATA_DIR_NAME,
                 ExaminationPanel.LOGO_PATH);
     }
 
@@ -55,8 +57,8 @@ public class ExaminationApp extends CommonApp<Examination> {
     }
 
     @Override
-    protected SolutionDao createSolutionDao() {
-        return new ExaminationDao();
+    public SolutionFileIO<Examination> createSolutionFileIO() {
+        return new XStreamSolutionFileIO<>(Examination.class);
     }
 
     @Override

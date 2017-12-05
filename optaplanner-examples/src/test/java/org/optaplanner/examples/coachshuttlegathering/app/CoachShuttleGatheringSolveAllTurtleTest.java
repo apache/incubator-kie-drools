@@ -21,35 +21,24 @@ import java.util.Collection;
 
 import org.junit.runners.Parameterized;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
-import org.optaplanner.examples.coachshuttlegathering.persistence.CoachShuttleGatheringDao;
+import org.optaplanner.examples.coachshuttlegathering.domain.CoachShuttleGatheringSolution;
 import org.optaplanner.examples.coachshuttlegathering.solver.CoachShuttleGatheringEasyScoreCalculator;
 import org.optaplanner.examples.common.app.UnsolvedDirSolveAllTurtleTest;
-import org.optaplanner.examples.common.persistence.SolutionDao;
 
-public class CoachShuttleGatheringSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest {
+public class CoachShuttleGatheringSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<CoachShuttleGatheringSolution> {
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getUnsolvedDirFilesAsParameters(new CoachShuttleGatheringDao());
+        return getUnsolvedDirFilesAsParameters(new CoachShuttleGatheringApp());
     }
 
     public CoachShuttleGatheringSolveAllTurtleTest(File unsolvedDataFile) {
-        super(unsolvedDataFile);
-    }
-
-    @Override
-    protected String createSolverConfigResource() {
-        return CoachShuttleGatheringApp.SOLVER_CONFIG;
+        super(new CoachShuttleGatheringApp(), unsolvedDataFile);
     }
 
     @Override
     protected Class<? extends EasyScoreCalculator> overwritingEasyScoreCalculatorClass() {
         return CoachShuttleGatheringEasyScoreCalculator.class;
-    }
-
-    @Override
-    protected SolutionDao createSolutionDao() {
-        return new CoachShuttleGatheringDao();
     }
 
 }

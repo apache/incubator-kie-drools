@@ -28,7 +28,7 @@ import org.junit.runners.Parameterized;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
-import org.optaplanner.examples.common.persistence.SolutionDao;
+import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
 import static org.junit.Assert.*;
 
@@ -39,9 +39,9 @@ import static org.junit.Assert.*;
 public abstract class AbstractPhaseTest<Solution_> extends LoggingTest {
 
     protected static <Solution_, Enum_ extends Enum> Collection<Object[]> buildParameters(
-            SolutionDao<Solution_> solutionDao, Enum_[] types, String... unsolvedFileNames) {
+            CommonApp<Solution_> commonApp, Enum_[] types, String... unsolvedFileNames) {
         List<Object[]> filesAsParameters = new ArrayList<>(unsolvedFileNames.length * types.length);
-        File dataDir = solutionDao.getDataDir();
+        File dataDir = CommonApp.determineDataDir(commonApp.getDataDirName());
         File unsolvedDataDir = new File(dataDir, "unsolved");
         for (String unsolvedFileName : unsolvedFileNames) {
             File unsolvedFile = new File(unsolvedDataDir, unsolvedFileName);
@@ -56,19 +56,20 @@ public abstract class AbstractPhaseTest<Solution_> extends LoggingTest {
         return filesAsParameters;
     }
 
-    protected SolutionDao<Solution_> solutionDao;
-    protected File dataFile;
+    protected final CommonApp<Solution_> commonApp;
+    protected final File dataFile;
 
-    protected AbstractPhaseTest(File dataFile) {
+    protected SolutionFileIO<Solution_> solutionFileIO;
+
+    protected AbstractPhaseTest(CommonApp<Solution_> commonApp, File dataFile) {
+        this.commonApp = commonApp;
         this.dataFile = dataFile;
     }
 
     @Before
     public void setUp() {
-        solutionDao = createSolutionDao();
+        solutionFileIO = commonApp.createSolutionFileIO();
     }
-
-    protected abstract SolutionDao<Solution_> createSolutionDao();
 
     @Test(timeout = 600000)
     public void runPhase() {
@@ -87,10 +88,10 @@ public abstract class AbstractPhaseTest<Solution_> extends LoggingTest {
 
     protected abstract SolverFactory<Solution_> buildSolverFactory();
 
-    protected abstract String createSolverConfigResource();
-
     protected Solution_ readProblem() {
-        return solutionDao.readSolution(dataFile);
+        Solution_ problem = solutionFileIO.read(dataFile);
+        logger.info("Opened: {}", dataFile);
+        return problem;
     }
 
 }

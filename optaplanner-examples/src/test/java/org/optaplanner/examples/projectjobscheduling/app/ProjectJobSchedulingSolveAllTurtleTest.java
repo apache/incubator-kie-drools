@@ -21,28 +21,17 @@ import java.util.Collection;
 
 import org.junit.runners.Parameterized;
 import org.optaplanner.examples.common.app.UnsolvedDirSolveAllTurtleTest;
-import org.optaplanner.examples.common.persistence.SolutionDao;
-import org.optaplanner.examples.projectjobscheduling.persistence.ProjectJobSchedulingDao;
+import org.optaplanner.examples.projectjobscheduling.domain.Schedule;
 
-public class ProjectJobSchedulingSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest {
+public class ProjectJobSchedulingSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<Schedule> {
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getUnsolvedDirFilesAsParameters(new ProjectJobSchedulingDao());
+        return getUnsolvedDirFilesAsParameters(new ProjectJobSchedulingApp());
     }
 
     public ProjectJobSchedulingSolveAllTurtleTest(File unsolvedDataFile) {
-        super(unsolvedDataFile);
-    }
-
-    @Override
-    protected String createSolverConfigResource() {
-        return ProjectJobSchedulingApp.SOLVER_CONFIG;
-    }
-
-    @Override
-    protected SolutionDao createSolutionDao() {
-        return new ProjectJobSchedulingDao();
+        super(new ProjectJobSchedulingApp(), unsolvedDataFile);
     }
 
 }

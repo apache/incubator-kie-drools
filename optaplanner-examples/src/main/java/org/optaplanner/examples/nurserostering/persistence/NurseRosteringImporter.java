@@ -33,6 +33,8 @@ import org.jdom.DataConversionException;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.optaplanner.examples.common.persistence.AbstractXmlSolutionImporter;
+import org.optaplanner.examples.common.persistence.SolutionConverter;
+import org.optaplanner.examples.nurserostering.app.NurseRosteringApp;
 import org.optaplanner.examples.nurserostering.domain.Employee;
 import org.optaplanner.examples.nurserostering.domain.NurseRoster;
 import org.optaplanner.examples.nurserostering.domain.NurseRosterParametrization;
@@ -65,11 +67,9 @@ import static java.time.temporal.ChronoUnit.*;
 public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRoster> {
 
     public static void main(String[] args) {
-        new NurseRosteringImporter().convertAll();
-    }
-
-    public NurseRosteringImporter() {
-        super(new NurseRosteringDao());
+        SolutionConverter<NurseRoster> converter = SolutionConverter.createImportConverter(
+                NurseRosteringApp.DATA_DIR_NAME, new NurseRosteringImporter(), NurseRoster.class);
+        converter.convertAll();
     }
 
     @Override

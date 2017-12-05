@@ -28,17 +28,16 @@ import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPh
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicType;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
-import org.optaplanner.examples.common.persistence.SolutionDao;
-import org.optaplanner.examples.curriculumcourse.persistence.CurriculumCourseDao;
+import org.optaplanner.examples.curriculumcourse.app.CurriculumCourseApp;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public abstract class AbstractConstructionHeuristicTest<Solution_> extends AbstractPhaseTest<Solution_> {
 
-    protected static <Solution_> Collection<Object[]> buildParameters(SolutionDao<Solution_> solutionDao,
+    protected static <Solution_> Collection<Object[]> buildParameters(CommonApp<Solution_> commonApp,
             String... unsolvedFileNames) {
-        if (solutionDao instanceof CurriculumCourseDao) {
+        if (commonApp instanceof CurriculumCourseApp) {
             /*
              * TODO Delete this temporary workaround to ignore ALLOCATE_TO_VALUE_FROM_QUEUE,
              * see https://issues.jboss.org/browse/PLANNER-486
@@ -49,22 +48,22 @@ public abstract class AbstractConstructionHeuristicTest<Solution_> extends Abstr
                     typeList.add(type);
                 }
             }
-            return buildParameters(solutionDao, typeList.toArray(new ConstructionHeuristicType[0]), unsolvedFileNames);
+            return buildParameters(commonApp, typeList.toArray(new ConstructionHeuristicType[0]), unsolvedFileNames);
         }
-        return buildParameters(solutionDao, ConstructionHeuristicType.values(), unsolvedFileNames);
+        return buildParameters(commonApp, ConstructionHeuristicType.values(), unsolvedFileNames);
     }
 
     protected ConstructionHeuristicType constructionHeuristicType;
 
-    protected AbstractConstructionHeuristicTest(File dataFile,
+    protected AbstractConstructionHeuristicTest(CommonApp<Solution_> commonApp, File dataFile,
             ConstructionHeuristicType constructionHeuristicType) {
-        super(dataFile);
+        super(commonApp, dataFile);
         this.constructionHeuristicType = constructionHeuristicType;
     }
 
     @Override
     protected SolverFactory<Solution_> buildSolverFactory() {
-        SolverFactory<Solution_> solverFactory = SolverFactory.createFromXmlResource(createSolverConfigResource());
+        SolverFactory<Solution_> solverFactory = SolverFactory.createFromXmlResource(commonApp.getSolverConfig());
         SolverConfig solverConfig = solverFactory.getSolverConfig();
         solverConfig.setTerminationConfig(new TerminationConfig());
         ConstructionHeuristicPhaseConfig constructionHeuristicPhaseConfig = new ConstructionHeuristicPhaseConfig();

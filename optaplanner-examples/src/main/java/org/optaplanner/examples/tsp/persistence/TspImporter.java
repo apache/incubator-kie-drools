@@ -26,6 +26,8 @@ import java.util.Map;
 
 import org.apache.commons.io.FilenameUtils;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
+import org.optaplanner.examples.common.persistence.SolutionConverter;
+import org.optaplanner.examples.tsp.app.TspApp;
 import org.optaplanner.examples.tsp.domain.Domicile;
 import org.optaplanner.examples.tsp.domain.Standstill;
 import org.optaplanner.examples.tsp.domain.TspSolution;
@@ -40,18 +42,11 @@ public class TspImporter extends AbstractTxtSolutionImporter<TspSolution> {
     public static final String INPUT_FILE_SUFFIX = "tsp";
 
     public static void main(String[] args) {
-        TspImporter importer = new TspImporter();
-        importer.convert("other/air/europe40.tsp", "europe40.xml");
-        importer.convert("cook/air/dj38.tsp", "dj38.xml");
-        importer.convert("cook/air/lu980.tsp", "lu980.xml");
-    }
-
-    public TspImporter() {
-        super(new TspDao());
-    }
-
-    public TspImporter(boolean withoutDao) {
-        super(withoutDao);
+        SolutionConverter<TspSolution> converter = SolutionConverter.createImportConverter(
+                TspApp.DATA_DIR_NAME, new TspImporter(), TspSolution.class);
+        converter.convert("other/air/europe40.tsp", "europe40.xml");
+        converter.convert("cook/air/dj38.tsp", "dj38.xml");
+        converter.convert("cook/air/lu980.tsp", "lu980.xml");
     }
 
     @Override

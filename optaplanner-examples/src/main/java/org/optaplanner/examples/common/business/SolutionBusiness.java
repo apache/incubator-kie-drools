@@ -48,8 +48,8 @@ import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.AbstractSolutionExporter;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
-import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.swingui.SolverAndPersistenceFrame;
+import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,7 +63,8 @@ public class SolutionBusiness<Solution_> {
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     private final CommonApp app;
-    private SolutionDao<Solution_> solutionDao;
+    private File dataDir;
+    private SolutionFileIO<Solution_> solutionFileIO;
 
     private AbstractSolutionImporter<Solution_>[] importers;
     private AbstractSolutionExporter<Solution_> exporter;
@@ -96,8 +97,20 @@ public class SolutionBusiness<Solution_> {
         return app.getIconResource();
     }
 
-    public void setSolutionDao(SolutionDao<Solution_> solutionDao) {
-        this.solutionDao = solutionDao;
+    public File getDataDir() {
+        return dataDir;
+    }
+
+    public void setDataDir(File dataDir) {
+        this.dataDir = dataDir;
+    }
+
+    public SolutionFileIO<Solution_> getSolutionFileIO() {
+        return solutionFileIO;
+    }
+
+    public void setSolutionFileIO(SolutionFileIO<Solution_> solutionFileIO) {
+        this.solutionFileIO = solutionFileIO;
     }
 
     public AbstractSolutionImporter<Solution_>[] getImporters() {
@@ -112,10 +125,6 @@ public class SolutionBusiness<Solution_> {
         this.exporter = exporter;
     }
 
-    public String getDirName() {
-        return solutionDao.getDirName();
-    }
-
     public boolean hasImporter() {
         return importers.length > 0;
     }
@@ -125,7 +134,6 @@ public class SolutionBusiness<Solution_> {
     }
 
     public void updateDataDirs() {
-        File dataDir = solutionDao.getDataDir();
         if (hasImporter()) {
             importDataDir = new File(dataDir, "import");
             if (!importDataDir.exists()) {
@@ -180,14 +188,14 @@ public class SolutionBusiness<Solution_> {
 
     public List<File> getUnsolvedFileList() {
         List<File> fileList = new ArrayList<>(
-                FileUtils.listFiles(unsolvedDataDir, new String[]{solutionDao.getFileExtension()}, true));
+                FileUtils.listFiles(unsolvedDataDir, new String[]{solutionFileIO.getInputFileExtension()}, true));
         Collections.sort(fileList, FILE_COMPARATOR);
         return fileList;
     }
 
     public List<File> getSolvedFileList() {
         List<File> fileList = new ArrayList<>(
-                FileUtils.listFiles(solvedDataDir, new String[]{solutionDao.getFileExtension()}, true));
+                FileUtils.listFiles(solvedDataDir, new String[]{solutionFileIO.getOutputFileExtension()}, true));
         Collections.sort(fileList, FILE_COMPARATOR);
         return fileList;
     }
@@ -270,14 +278,16 @@ public class SolutionBusiness<Solution_> {
     }
 
     public void openSolution(File file) {
-        Solution_ solution = solutionDao.readSolution(file);
+        Solution_ solution = solutionFileIO.read(file);
+        logger.info("Opened: {}", file);
         solutionFileName = file.getName();
         guiScoreDirector.setWorkingSolution(solution);
     }
 
     public void saveSolution(File file) {
         Solution_ solution = guiScoreDirector.getWorkingSolution();
-        solutionDao.writeSolution(solution, file);
+        solutionFileIO.write(solution, file);
+        logger.info("Saved: {}", file);
     }
 
     public void exportSolution(File file) {

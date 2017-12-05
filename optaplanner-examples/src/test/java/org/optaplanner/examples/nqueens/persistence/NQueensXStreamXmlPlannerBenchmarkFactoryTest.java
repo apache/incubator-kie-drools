@@ -73,4 +73,5 @@ public class NQueensXStreamXmlPlannerBenchmarkFactoryTest {
         plannerBenchmarkFactory.getPlannerBenchmarkConfig().buildPlannerBenchmark();
         compareOutputToOriginal(plannerBenchmarkFactory, plannerBenchmarkConfigResource);
     }
+
 }

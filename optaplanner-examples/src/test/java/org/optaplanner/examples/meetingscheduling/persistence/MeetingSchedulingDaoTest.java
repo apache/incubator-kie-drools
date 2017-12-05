@@ -20,23 +20,18 @@ import java.io.File;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
-import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.persistence.SolutionDaoTest;
+import org.optaplanner.examples.meetingscheduling.app.MeetingSchedulingApp;
 
 public class MeetingSchedulingDaoTest extends SolutionDaoTest {
 
-    @Override
-    protected SolutionDao createSolutionDao() {
-        return new MeetingSchedulingDao();
-    }
-
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getSolutionFilesAsParameters(new MeetingSchedulingDao());
+        return getSolutionFilesAsParameters(new MeetingSchedulingApp());
     }
 
     public MeetingSchedulingDaoTest(File solutionFile) {
-        super(solutionFile);
+        super(new MeetingSchedulingApp(), solutionFile);
     }
 
 }

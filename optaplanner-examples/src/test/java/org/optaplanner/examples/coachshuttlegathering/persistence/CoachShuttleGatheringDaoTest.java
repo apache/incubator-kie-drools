@@ -20,23 +20,19 @@ import java.io.File;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
-import org.optaplanner.examples.common.persistence.SolutionDao;
+import org.optaplanner.examples.coachshuttlegathering.app.CoachShuttleGatheringApp;
+import org.optaplanner.examples.coachshuttlegathering.domain.CoachShuttleGatheringSolution;
 import org.optaplanner.examples.common.persistence.SolutionDaoTest;
 
-public class CoachShuttleGatheringDaoTest extends SolutionDaoTest {
-
-    @Override
-    protected SolutionDao createSolutionDao() {
-        return new CoachShuttleGatheringDao();
-    }
+public class CoachShuttleGatheringDaoTest extends SolutionDaoTest<CoachShuttleGatheringSolution> {
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getSolutionFilesAsParameters(new CoachShuttleGatheringDao());
+        return getSolutionFilesAsParameters(new CoachShuttleGatheringApp());
     }
 
     public CoachShuttleGatheringDaoTest(File solutionFile) {
-        super(solutionFile);
+        super(new CoachShuttleGatheringApp(), solutionFile);
     }
 
 }

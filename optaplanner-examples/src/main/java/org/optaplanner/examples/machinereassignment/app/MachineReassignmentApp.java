@@ -19,17 +19,19 @@ package org.optaplanner.examples.machinereassignment.app;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.AbstractSolutionExporter;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
-import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.machinereassignment.domain.MachineReassignment;
-import org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentDao;
 import org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentExporter;
 import org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentImporter;
 import org.optaplanner.examples.machinereassignment.swingui.MachineReassignmentPanel;
+import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
+import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
 public class MachineReassignmentApp extends CommonApp<MachineReassignment> {
 
     public static final String SOLVER_CONFIG
             = "org/optaplanner/examples/machinereassignment/solver/machineReassignmentSolverConfig.xml";
+
+    public static final String DATA_DIR_NAME = "machinereassignment";
 
     public static void main(String[] args) {
         prepareSwingEnvironment();
@@ -40,7 +42,7 @@ public class MachineReassignmentApp extends CommonApp<MachineReassignment> {
         super("Machine reassignment",
                 "Official competition name: Google ROADEF 2012 - Machine reassignment\n\n" +
                         "Reassign processes to machines.",
-                SOLVER_CONFIG,
+                SOLVER_CONFIG, DATA_DIR_NAME,
                 MachineReassignmentPanel.LOGO_PATH);
     }
 
@@ -50,8 +52,8 @@ public class MachineReassignmentApp extends CommonApp<MachineReassignment> {
     }
 
     @Override
-    protected SolutionDao createSolutionDao() {
-        return new MachineReassignmentDao();
+    public SolutionFileIO<MachineReassignment> createSolutionFileIO() {
+        return new XStreamSolutionFileIO<>(MachineReassignment.class);
     }
 
     @Override

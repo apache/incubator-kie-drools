@@ -27,6 +27,7 @@ import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -34,14 +35,6 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 public abstract class AbstractTxtSolutionImporter<Solution_> extends AbstractSolutionImporter<Solution_> {
 
     private static final String DEFAULT_INPUT_FILE_SUFFIX = "txt";
-
-    protected AbstractTxtSolutionImporter(SolutionDao<Solution_> solutionDao) {
-        super(solutionDao);
-    }
-
-    protected AbstractTxtSolutionImporter(boolean withoutDao) {
-        super(withoutDao);
-    }
 
     @Override
     public String getInputFileSuffix() {

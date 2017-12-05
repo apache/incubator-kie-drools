@@ -20,20 +20,14 @@ import java.io.File;
 
 import org.junit.Test;
 import org.optaplanner.core.config.solver.EnvironmentMode;
-import org.optaplanner.examples.cloudbalancing.persistence.CloudBalancingDao;
+import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
-import org.optaplanner.examples.common.persistence.SolutionDao;
 
-public class CloudBalancingPerformanceTest extends SolverPerformanceTest {
-
-    @Override
-    protected String createSolverConfigResource() {
-        return CloudBalancingApp.SOLVER_CONFIG;
-    }
+public class CloudBalancingPerformanceTest extends SolverPerformanceTest<CloudBalance> {
 
     @Override
-    protected SolutionDao createSolutionDao() {
-        return new CloudBalancingDao();
+    protected CloudBalancingApp createCommonApp() {
+        return new CloudBalancingApp();
     }
 
     // ************************************************************************

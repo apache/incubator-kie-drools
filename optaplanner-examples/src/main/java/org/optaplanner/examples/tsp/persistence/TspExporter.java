@@ -19,6 +19,8 @@ package org.optaplanner.examples.tsp.persistence;
 import java.io.IOException;
 
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionExporter;
+import org.optaplanner.examples.common.persistence.SolutionConverter;
+import org.optaplanner.examples.tsp.app.TspApp;
 import org.optaplanner.examples.tsp.domain.Standstill;
 import org.optaplanner.examples.tsp.domain.TspSolution;
 import org.optaplanner.examples.tsp.domain.Visit;
@@ -28,11 +30,9 @@ public class TspExporter extends AbstractTxtSolutionExporter<TspSolution> {
     public static final String OUTPUT_FILE_SUFFIX = "tour";
 
     public static void main(String[] args) {
-        new TspExporter().convertAll();
-    }
-
-    public TspExporter() {
-        super(new TspDao());
+        SolutionConverter<TspSolution> converter = SolutionConverter.createExportConverter(
+                TspApp.DATA_DIR_NAME, TspSolution.class, new TspExporter());
+        converter.convertAll();
     }
 
     @Override

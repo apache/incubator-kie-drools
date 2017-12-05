@@ -21,6 +21,8 @@ import java.util.Collections;
 
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionExporter;
+import org.optaplanner.examples.common.persistence.SolutionConverter;
+import org.optaplanner.examples.pas.app.PatientAdmissionScheduleApp;
 import org.optaplanner.examples.pas.domain.BedDesignation;
 import org.optaplanner.examples.pas.domain.Patient;
 import org.optaplanner.examples.pas.domain.PatientAdmissionSchedule;
@@ -28,11 +30,9 @@ import org.optaplanner.examples.pas.domain.PatientAdmissionSchedule;
 public class PatientAdmissionScheduleExporter extends AbstractTxtSolutionExporter<PatientAdmissionSchedule> {
 
     public static void main(String[] args) {
-        new PatientAdmissionScheduleExporter().convertAll();
-    }
-
-    public PatientAdmissionScheduleExporter() {
-        super(new PatientAdmissionScheduleDao());
+        SolutionConverter<PatientAdmissionSchedule> converter = SolutionConverter.createExportConverter(
+                PatientAdmissionScheduleApp.DATA_DIR_NAME, PatientAdmissionSchedule.class, new PatientAdmissionScheduleExporter());
+        converter.convertAll();
     }
 
     @Override

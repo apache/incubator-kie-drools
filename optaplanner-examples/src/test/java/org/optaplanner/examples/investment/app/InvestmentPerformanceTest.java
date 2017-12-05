@@ -21,19 +21,13 @@ import java.io.File;
 import org.junit.Test;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
-import org.optaplanner.examples.common.persistence.SolutionDao;
-import org.optaplanner.examples.investment.persistence.InvestmentDao;
+import org.optaplanner.examples.investment.domain.InvestmentSolution;
 
-public class InvestmentPerformanceTest extends SolverPerformanceTest {
-
-    @Override
-    protected String createSolverConfigResource() {
-        return InvestmentApp.SOLVER_CONFIG;
-    }
+public class InvestmentPerformanceTest extends SolverPerformanceTest<InvestmentSolution> {
 
     @Override
-    protected SolutionDao createSolutionDao() {
-        return new InvestmentDao();
+    protected InvestmentApp createCommonApp() {
+        return new InvestmentApp();
     }
 
     // ************************************************************************

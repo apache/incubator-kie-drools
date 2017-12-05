@@ -22,34 +22,23 @@ import java.util.Collection;
 import org.junit.runners.Parameterized;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 import org.optaplanner.examples.common.app.UnsolvedDirSolveAllTurtleTest;
-import org.optaplanner.examples.common.persistence.SolutionDao;
-import org.optaplanner.examples.nqueens.persistence.NQueensDao;
+import org.optaplanner.examples.nqueens.domain.NQueens;
 import org.optaplanner.examples.nqueens.solver.score.NQueensEasyScoreCalculator;
 
-public class NQueensSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest {
+public class NQueensSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<NQueens> {
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getUnsolvedDirFilesAsParameters(new NQueensDao());
+        return getUnsolvedDirFilesAsParameters(new NQueensApp());
     }
 
     public NQueensSolveAllTurtleTest(File unsolvedDataFile) {
-        super(unsolvedDataFile);
-    }
-
-    @Override
-    protected String createSolverConfigResource() {
-        return NQueensApp.SOLVER_CONFIG;
+        super(new NQueensApp(), unsolvedDataFile);
     }
 
     @Override
     protected Class<? extends EasyScoreCalculator> overwritingEasyScoreCalculatorClass() {
         return NQueensEasyScoreCalculator.class;
-    }
-
-    @Override
-    protected SolutionDao createSolutionDao() {
-        return new NQueensDao();
     }
 
 }

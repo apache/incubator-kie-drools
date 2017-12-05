@@ -21,6 +21,8 @@ import java.util.Collections;
 
 import org.optaplanner.examples.common.domain.PersistableIdComparator;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionExporter;
+import org.optaplanner.examples.common.persistence.SolutionConverter;
+import org.optaplanner.examples.examination.app.ExaminationApp;
 import org.optaplanner.examples.examination.domain.Exam;
 import org.optaplanner.examples.examination.domain.Examination;
 
@@ -29,11 +31,9 @@ public class ExaminationExporter extends AbstractTxtSolutionExporter<Examination
     private static final String OUTPUT_FILE_SUFFIX = "sln";
 
     public static void main(String[] args) {
-        new ExaminationExporter().convertAll();
-    }
-
-    public ExaminationExporter() {
-        super(new ExaminationDao());
+        SolutionConverter<Examination> converter = SolutionConverter.createExportConverter(
+                ExaminationApp.DATA_DIR_NAME, Examination.class, new ExaminationExporter());
+        converter.convertAll();
     }
 
     @Override

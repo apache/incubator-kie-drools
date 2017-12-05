@@ -28,6 +28,8 @@ import java.util.Map;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.optaplanner.examples.common.domain.PersistableIdComparator;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
+import org.optaplanner.examples.common.persistence.SolutionConverter;
+import org.optaplanner.examples.pas.app.PatientAdmissionScheduleApp;
 import org.optaplanner.examples.pas.domain.AdmissionPart;
 import org.optaplanner.examples.pas.domain.Bed;
 import org.optaplanner.examples.pas.domain.BedDesignation;
@@ -49,11 +51,9 @@ import org.optaplanner.examples.pas.domain.Specialism;
 public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporter<PatientAdmissionSchedule> {
 
     public static void main(String[] args) {
-        new PatientAdmissionScheduleImporter().convertAll();
-    }
-
-    public PatientAdmissionScheduleImporter() {
-        super(new PatientAdmissionScheduleDao());
+        SolutionConverter<PatientAdmissionSchedule> converter = SolutionConverter.createImportConverter(
+                PatientAdmissionScheduleApp.DATA_DIR_NAME, new PatientAdmissionScheduleImporter(), PatientAdmissionSchedule.class);
+        converter.convertAll();
     }
 
     @Override

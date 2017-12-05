@@ -21,13 +21,9 @@ import java.io.File;
 import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
 import org.optaplanner.core.api.solver.SolverFactory;
-import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.LoggingMain;
-import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.tennis.domain.TennisSolution;
-import org.optaplanner.examples.tennis.persistence.TennisDao;
 import org.optaplanner.examples.tennis.persistence.TennisGenerator;
-import org.optaplanner.examples.tennis.swingui.TennisPanel;
 
 public class TennisBenchmarkApp extends LoggingMain {
 

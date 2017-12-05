@@ -21,19 +21,13 @@ import java.io.File;
 import org.junit.Test;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
-import org.optaplanner.examples.common.persistence.SolutionDao;
-import org.optaplanner.examples.examination.persistence.ExaminationDao;
+import org.optaplanner.examples.examination.domain.Examination;
 
-public class ExaminationPerformanceTest extends SolverPerformanceTest {
-
-    @Override
-    protected String createSolverConfigResource() {
-        return ExaminationApp.SOLVER_CONFIG;
-    }
+public class ExaminationPerformanceTest extends SolverPerformanceTest<Examination> {
 
     @Override
-    protected SolutionDao createSolutionDao() {
-        return new ExaminationDao();
+    protected ExaminationApp createCommonApp() {
+        return new ExaminationApp();
     }
 
     // ************************************************************************

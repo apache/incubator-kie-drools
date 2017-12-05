@@ -17,15 +17,17 @@
 package org.optaplanner.examples.tennis.app;
 
 import org.optaplanner.examples.common.app.CommonApp;
-import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.tennis.domain.TennisSolution;
-import org.optaplanner.examples.tennis.persistence.TennisDao;
 import org.optaplanner.examples.tennis.swingui.TennisPanel;
+import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
+import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
 public class TennisApp extends CommonApp<TennisSolution> {
 
     public static final String SOLVER_CONFIG
             = "org/optaplanner/examples/tennis/solver/tennisSolverConfig.xml";
+
+    public static final String DATA_DIR_NAME = "tennis";
 
     public static void main(String[] args) {
         prepareSwingEnvironment();
@@ -37,7 +39,7 @@ public class TennisApp extends CommonApp<TennisSolution> {
                 "Assign available spots to teams.\n\n" +
                         "Each team must play an almost equal number of times.\n" +
                         "Each team must play against each other team an almost equal number of times.",
-                SOLVER_CONFIG,
+                SOLVER_CONFIG, DATA_DIR_NAME,
                 TennisPanel.LOGO_PATH);
     }
 
@@ -47,8 +49,8 @@ public class TennisApp extends CommonApp<TennisSolution> {
     }
 
     @Override
-    protected SolutionDao createSolutionDao() {
-        return new TennisDao();
+    public SolutionFileIO<TennisSolution> createSolutionFileIO() {
+        return new XStreamSolutionFileIO<>(TennisSolution.class);
     }
 
 }

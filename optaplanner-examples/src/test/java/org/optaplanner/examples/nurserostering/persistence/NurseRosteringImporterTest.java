@@ -22,17 +22,19 @@ import java.util.Collection;
 import org.junit.runners.Parameterized;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionImporterTest;
+import org.optaplanner.examples.nurserostering.app.NurseRosteringApp;
+import org.optaplanner.examples.nurserostering.domain.NurseRoster;
 
-public class NurseRosteringImporterTest extends SolutionImporterTest {
+public class NurseRosteringImporterTest extends SolutionImporterTest<NurseRoster> {
 
     @Override
-    protected AbstractSolutionImporter createSolutionImporter() {
+    protected NurseRosteringImporter createSolutionImporter() {
         return new NurseRosteringImporter();
     }
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> getInputFilesAsParameters() {
-        return getInputFilesAsParameters(new NurseRosteringImporter());
+        return getInputFilesAsParameters(NurseRosteringApp.DATA_DIR_NAME, new NurseRosteringImporter());
     }
 
     public NurseRosteringImporterTest(File solutionFile) {

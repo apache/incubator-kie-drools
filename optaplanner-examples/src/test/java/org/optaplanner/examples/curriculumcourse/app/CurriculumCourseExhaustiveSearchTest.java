@@ -22,30 +22,19 @@ import java.util.Collection;
 import org.junit.runners.Parameterized;
 import org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchType;
 import org.optaplanner.examples.common.app.AbstractExhaustiveSearchTest;
-import org.optaplanner.examples.common.persistence.SolutionDao;
-import org.optaplanner.examples.curriculumcourse.persistence.CurriculumCourseDao;
+import org.optaplanner.examples.curriculumcourse.domain.CourseSchedule;
 
-public class CurriculumCourseExhaustiveSearchTest extends AbstractExhaustiveSearchTest {
+public class CurriculumCourseExhaustiveSearchTest extends AbstractExhaustiveSearchTest<CourseSchedule> {
 
     @Parameterized.Parameters(name = "{index}: {0} - {1}")
     public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return buildParameters(new CurriculumCourseDao(),
+        return buildParameters(new CurriculumCourseApp(),
                 "toy01.xml");
     }
 
     public CurriculumCourseExhaustiveSearchTest(File unsolvedDataFile,
             ExhaustiveSearchType exhaustiveSearchType) {
-        super(unsolvedDataFile, exhaustiveSearchType);
-    }
-
-    @Override
-    protected String createSolverConfigResource() {
-        return CurriculumCourseApp.SOLVER_CONFIG;
-    }
-
-    @Override
-    protected SolutionDao createSolutionDao() {
-        return new CurriculumCourseDao();
+        super(new CurriculumCourseApp(), unsolvedDataFile, exhaustiveSearchType);
     }
 
 }

@@ -30,14 +30,19 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.LoggingTest;
 import org.optaplanner.examples.common.business.ProblemFileComparator;
 
+/**
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ */
 @RunWith(Parameterized.class)
-public abstract class SolutionImporterTest extends LoggingTest {
+public abstract class SolutionImporterTest<Solution_> extends LoggingTest {
 
-    protected static Collection<Object[]> getInputFilesAsParameters(AbstractSolutionImporter solutionImporter) {
-        File importDir = solutionImporter.getInputDir();
+    protected static <Solution_> Collection<Object[]> getInputFilesAsParameters(String dataDirName, AbstractSolutionImporter solutionImporter) {
+        File importDir = new File(CommonApp.determineDataDir(dataDirName), "import");
         List<File> fileList;
         if (solutionImporter.isInputFileDirectory()) {
             // Non recursively
@@ -48,7 +53,7 @@ public abstract class SolutionImporterTest extends LoggingTest {
             fileList = new ArrayList<>(
                     FileUtils.listFiles(importDir, new String[]{solutionImporter.getInputFileSuffix()}, true));
         }
-        Collections.sort(fileList, new ProblemFileComparator());
+        fileList.sort(new ProblemFileComparator());
         List<Object[]> filesAsParameters = new ArrayList<>();
         for (File file : fileList) {
             filesAsParameters.add(new Object[]{file});
@@ -56,9 +61,9 @@ public abstract class SolutionImporterTest extends LoggingTest {
         return filesAsParameters;
     }
 
-    protected AbstractSolutionImporter solutionImporter;
+    protected final File importFile;
 
-    protected File importFile;
+    protected AbstractSolutionImporter<Solution_> solutionImporter;
 
     protected SolutionImporterTest(File importFile) {
         this.importFile = importFile;
@@ -69,7 +74,7 @@ public abstract class SolutionImporterTest extends LoggingTest {
         solutionImporter = createSolutionImporter();
     }
 
-    protected abstract AbstractSolutionImporter createSolutionImporter();
+    protected abstract AbstractSolutionImporter<Solution_> createSolutionImporter();
 
     @Test
     public void readSolution() {

@@ -33,6 +33,8 @@ import java.util.Queue;
 import java.util.Set;
 
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
+import org.optaplanner.examples.common.persistence.SolutionConverter;
+import org.optaplanner.examples.projectjobscheduling.app.ProjectJobSchedulingApp;
 import org.optaplanner.examples.projectjobscheduling.domain.Allocation;
 import org.optaplanner.examples.projectjobscheduling.domain.ExecutionMode;
 import org.optaplanner.examples.projectjobscheduling.domain.Job;
@@ -47,11 +49,9 @@ import org.optaplanner.examples.projectjobscheduling.domain.resource.Resource;
 public class ProjectJobSchedulingImporter extends AbstractTxtSolutionImporter<Schedule> {
 
     public static void main(String[] args) {
-        new ProjectJobSchedulingImporter().convertAll();
-    }
-
-    public ProjectJobSchedulingImporter() {
-        super(new ProjectJobSchedulingDao());
+        SolutionConverter<Schedule> converter = SolutionConverter.createImportConverter(
+                ProjectJobSchedulingApp.DATA_DIR_NAME, new ProjectJobSchedulingImporter(), Schedule.class);
+        converter.convertAll();
     }
 
     @Override

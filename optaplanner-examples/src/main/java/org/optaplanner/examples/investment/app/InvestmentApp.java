@@ -18,16 +18,18 @@ package org.optaplanner.examples.investment.app;
 
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
-import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.investment.domain.InvestmentSolution;
-import org.optaplanner.examples.investment.persistence.InvestmentDao;
 import org.optaplanner.examples.investment.persistence.InvestmentImporter;
 import org.optaplanner.examples.investment.swingui.InvestmentPanel;
+import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
+import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
 public class InvestmentApp extends CommonApp<InvestmentSolution> {
 
     public static final String SOLVER_CONFIG
             = "org/optaplanner/examples/investment/solver/investmentSolverConfig.xml";
+
+    public static final String DATA_DIR_NAME = "investment";
 
     public static void main(String[] args) {
         prepareSwingEnvironment();
@@ -38,7 +40,7 @@ public class InvestmentApp extends CommonApp<InvestmentSolution> {
         super("Investment allocation",
                 "Decide the percentage of the investor's budget to invest in each asset class.\n\n"
                 + "Maximize expected return.",
-                SOLVER_CONFIG,
+                SOLVER_CONFIG, DATA_DIR_NAME,
                 InvestmentPanel.LOGO_PATH);
     }
 
@@ -48,8 +50,8 @@ public class InvestmentApp extends CommonApp<InvestmentSolution> {
     }
 
     @Override
-    protected SolutionDao createSolutionDao() {
-        return new InvestmentDao();
+    public SolutionFileIO<InvestmentSolution> createSolutionFileIO() {
+        return new XStreamSolutionFileIO<>(InvestmentSolution.class);
     }
 
     @Override

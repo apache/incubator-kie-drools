@@ -22,17 +22,19 @@ import java.util.Collection;
 import org.junit.runners.Parameterized;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionImporterTest;
+import org.optaplanner.examples.vehiclerouting.app.VehicleRoutingApp;
+import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 
-public class VehicleRoutingImporterTest extends SolutionImporterTest {
+public class VehicleRoutingImporterTest extends SolutionImporterTest<VehicleRoutingSolution> {
 
     @Override
-    protected AbstractSolutionImporter createSolutionImporter() {
+    protected VehicleRoutingImporter createSolutionImporter() {
         return new VehicleRoutingImporter();
     }
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> getInputFilesAsParameters() {
-        return getInputFilesAsParameters(new VehicleRoutingImporter());
+        return getInputFilesAsParameters(VehicleRoutingApp.DATA_DIR_NAME, new VehicleRoutingImporter());
     }
 
     public VehicleRoutingImporterTest(File solutionFile) {

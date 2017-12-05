@@ -20,23 +20,19 @@ import java.io.File;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
-import org.optaplanner.examples.common.persistence.SolutionDao;
+import org.optaplanner.examples.cloudbalancing.app.CloudBalancingApp;
+import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.common.persistence.SolutionDaoTest;
 
-public class CloudBalancingDaoTest extends SolutionDaoTest {
-
-    @Override
-    protected SolutionDao createSolutionDao() {
-        return new CloudBalancingDao();
-    }
+public class CloudBalancingDaoTest extends SolutionDaoTest<CloudBalance> {
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getSolutionFilesAsParameters(new CloudBalancingDao());
+        return getSolutionFilesAsParameters(new CloudBalancingApp());
     }
 
     public CloudBalancingDaoTest(File solutionFile) {
-        super(solutionFile);
+        super(new CloudBalancingApp(), solutionFile);
     }
 
 }

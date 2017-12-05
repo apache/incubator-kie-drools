@@ -22,17 +22,19 @@ import java.util.Collection;
 import org.junit.runners.Parameterized;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionImporterTest;
+import org.optaplanner.examples.tsp.app.TspApp;
+import org.optaplanner.examples.tsp.domain.TspSolution;
 
-public class TspImporterTest extends SolutionImporterTest {
+public class TspImporterTest extends SolutionImporterTest<TspSolution> {
 
     @Override
-    protected AbstractSolutionImporter createSolutionImporter() {
+    protected TspImporter createSolutionImporter() {
         return new TspImporter();
     }
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> getInputFilesAsParameters() {
-        return getInputFilesAsParameters(new TspImporter());
+        return getInputFilesAsParameters(TspApp.DATA_DIR_NAME, new TspImporter());
     }
 
     public TspImporterTest(File solutionFile) {

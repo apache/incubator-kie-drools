@@ -33,16 +33,18 @@ import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
  */
 public abstract class ImportDirSolveAllTurtleTest<Solution_> extends SolveAllTurtleTest<Solution_> {
 
-    protected static Collection<Object[]> getImportDirFilesAsParameters(AbstractSolutionImporter solutionImporter) {
+    protected static <Solution_> Collection<Object[]> getImportDirFilesAsParameters(CommonApp<Solution_> commonApp) {
         List<Object[]> filesAsParameters = new ArrayList<>();
-        File importDataDir = solutionImporter.getInputDir();
+        File dataDir = CommonApp.determineDataDir(commonApp.getDataDirName());
+        File importDataDir = new File(dataDir, "import");
         if (!importDataDir.exists()) {
             throw new IllegalStateException("The directory importDataDir (" + importDataDir.getAbsolutePath()
                     + ") does not exist.");
         } else {
+            String inputFileSuffix = createSolutionImporter(commonApp).getInputFileSuffix();
             List<File> fileList = new ArrayList<>(
-                    FileUtils.listFiles(importDataDir, new String[]{solutionImporter.getInputFileSuffix()}, true));
-            Collections.sort(fileList, new ProblemFileComparator());
+                    FileUtils.listFiles(importDataDir, new String[]{inputFileSuffix}, true));
+            fileList.sort(new ProblemFileComparator());
             for (File file : fileList) {
                 filesAsParameters.add(new Object[]{file});
             }
@@ -50,19 +52,29 @@ public abstract class ImportDirSolveAllTurtleTest<Solution_> extends SolveAllTur
         return filesAsParameters;
     }
 
-    protected File dataFile;
+    protected static <Solution_> AbstractSolutionImporter<Solution_> createSolutionImporter(CommonApp<Solution_> commonApp) {
+        AbstractSolutionImporter[] importers = commonApp.createSolutionImporters();
+        if (importers.length != 1) {
+            throw new IllegalStateException("The importers size (" + importers.length + ") should be 1.");
+        }
+        return importers[0];
+    }
+
+    protected final CommonApp<Solution_> commonApp;
+    protected final File dataFile;
+
     protected AbstractSolutionImporter<Solution_> solutionImporter;
 
-    protected ImportDirSolveAllTurtleTest(File dataFile) {
+    protected ImportDirSolveAllTurtleTest(CommonApp<Solution_> commonApp, File dataFile) {
+        super(commonApp.getSolverConfig());
+        this.commonApp = commonApp;
         this.dataFile = dataFile;
     }
 
     @Before
     public void setUp() {
-        solutionImporter = createSolutionImporter();
+        solutionImporter = createSolutionImporter(commonApp);
     }
-
-    protected abstract AbstractSolutionImporter<Solution_> createSolutionImporter();
 
     @Override
     protected Solution_ readProblem() {

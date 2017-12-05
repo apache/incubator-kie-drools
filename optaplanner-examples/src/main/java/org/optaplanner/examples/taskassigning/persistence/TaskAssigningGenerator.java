@@ -27,10 +27,11 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
+import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.LoggingMain;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
-import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.persistence.StringDataGenerator;
+import org.optaplanner.examples.taskassigning.app.TaskAssigningApp;
 import org.optaplanner.examples.taskassigning.domain.Affinity;
 import org.optaplanner.examples.taskassigning.domain.Customer;
 import org.optaplanner.examples.taskassigning.domain.Employee;
@@ -39,6 +40,8 @@ import org.optaplanner.examples.taskassigning.domain.Skill;
 import org.optaplanner.examples.taskassigning.domain.Task;
 import org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution;
 import org.optaplanner.examples.taskassigning.domain.TaskType;
+import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
+import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
 public class TaskAssigningGenerator extends LoggingMain {
 
@@ -117,13 +120,14 @@ public class TaskAssigningGenerator extends LoggingMain {
     private final StringDataGenerator customerNameGenerator = StringDataGenerator.buildCompanyNames();
     private final StringDataGenerator employeeNameGenerator = StringDataGenerator.buildFullNames();
 
-    protected final SolutionDao solutionDao;
+    protected final SolutionFileIO<TaskAssigningSolution> solutionFileIO;
     protected final File outputDir;
+
     protected Random random;
 
     public TaskAssigningGenerator() {
-        solutionDao = new TaskAssigningDao();
-        outputDir = new File(solutionDao.getDataDir(), "unsolved");
+        solutionFileIO = new XStreamSolutionFileIO<>(TaskAssigningSolution.class);
+        outputDir = new File(CommonApp.determineDataDir(TaskAssigningApp.DATA_DIR_NAME), "unsolved");
     }
 
     private void writeTaskAssigningSolution(int taskListSize, int employeeListSize) {
@@ -134,7 +138,8 @@ public class TaskAssigningGenerator extends LoggingMain {
         File outputFile = new File(outputDir, fileName + ".xml");
         TaskAssigningSolution solution = createTaskAssigningSolution(fileName,
                 taskListSize, skillListSize, employeeListSize, taskTypeListSize, customerListSize);
-        solutionDao.writeSolution(solution, outputFile);
+        solutionFileIO.write(solution, outputFile);
+        logger.info("Saved: {}", outputFile);
     }
 
     private String determineFileName(int taskListSize, int employeeListSize) {

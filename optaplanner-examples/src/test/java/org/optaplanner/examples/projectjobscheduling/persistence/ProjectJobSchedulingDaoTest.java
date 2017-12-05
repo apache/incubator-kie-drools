@@ -20,23 +20,19 @@ import java.io.File;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
-import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.persistence.SolutionDaoTest;
+import org.optaplanner.examples.projectjobscheduling.app.ProjectJobSchedulingApp;
+import org.optaplanner.examples.projectjobscheduling.domain.Schedule;
 
-public class ProjectJobSchedulingDaoTest extends SolutionDaoTest {
-
-    @Override
-    protected SolutionDao createSolutionDao() {
-        return new ProjectJobSchedulingDao();
-    }
+public class ProjectJobSchedulingDaoTest extends SolutionDaoTest<Schedule> {
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getSolutionFilesAsParameters(new ProjectJobSchedulingDao());
+        return getSolutionFilesAsParameters(new ProjectJobSchedulingApp());
     }
 
     public ProjectJobSchedulingDaoTest(File solutionFile) {
-        super(solutionFile);
+        super(new ProjectJobSchedulingApp(), solutionFile);
     }
 
 }

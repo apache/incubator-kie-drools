@@ -20,23 +20,19 @@ import java.io.File;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
-import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.persistence.SolutionDaoTest;
+import org.optaplanner.examples.vehiclerouting.app.VehicleRoutingApp;
+import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 
-public class VehicleRoutingDaoTest extends SolutionDaoTest {
-
-    @Override
-    protected SolutionDao createSolutionDao() {
-        return new VehicleRoutingDao();
-    }
+public class VehicleRoutingDaoTest extends SolutionDaoTest<VehicleRoutingSolution> {
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getSolutionFilesAsParameters(new VehicleRoutingDao());
+        return getSolutionFilesAsParameters(new VehicleRoutingApp());
     }
 
     public VehicleRoutingDaoTest(File solutionFile) {
-        super(solutionFile);
+        super(new VehicleRoutingApp(), solutionFile);
     }
 
 }

@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
+import org.optaplanner.examples.cheaptime.app.CheapTimeApp;
 import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
 import org.optaplanner.examples.cheaptime.domain.Machine;
 import org.optaplanner.examples.cheaptime.domain.MachineCapacity;
@@ -36,79 +37,73 @@ import org.optaplanner.examples.cheaptime.domain.TaskAssignment;
 import org.optaplanner.examples.cheaptime.domain.TaskRequirement;
 import org.optaplanner.examples.cheaptime.solver.CheapTimeCostCalculator;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
+import org.optaplanner.examples.common.persistence.SolutionConverter;
 
 public class CheapTimeImporter extends AbstractTxtSolutionImporter<CheapTimeSolution> {
 
     public static void main(String[] args) {
-        CheapTimeImporter importer = new CheapTimeImporter();
-        importer.convert("demo01", "demo01.xml");
-        importer.convert("sample01", "sample01.xml");
-//        importer.convert("sample02", "sample02.xml");
-//        importer.convert("sample03", "sample03.xml");
-//        importer.convert("sample04", "sample04.xml");
-//        importer.convert("sample05", "sample05.xml");
-//        importer.convert("sample06", "sample06.xml");
-//        importer.convert("sample07", "sample07.xml");
-//        importer.convert("sample08", "sample08.xml");
-//        importer.convert("sample09", "sample09.xml");
-        importer.convert("instance00", "instance00.xml");
-        importer.convert("instance01", "instance01.xml");
-        importer.convert("instance02", "instance02.xml");
-        importer.convert("instance03", "instance03.xml");
-//        importer.convert("instance04", "instance04.xml");
-//        importer.convert("instance05", "instance05.xml");
-//        importer.convert("instance06", "instance06.xml");
-//        importer.convert("instance07", "instance07.xml");
-//        importer.convert("instance08", "instance08.xml");
-//        importer.convert("instance09", "instance09.xml");
-//        importer.convert("instance10", "instance10.xml");
-//        importer.convert("instance11", "instance11.xml");
-//        importer.convert("instance12", "instance12.xml");
-//        importer.convert("instance13", "instance13.xml");
-//        importer.convert("instance14", "instance14.xml");
-//        importer.convert("instance15", "instance15.xml");
-//        importer.convert("instance16", "instance16.xml");
-//        importer.convert("instance17", "instance17.xml");
-//        importer.convert("instance18", "instance18.xml");
-//        importer.convert("instance19", "instance19.xml");
-//        importer.convert("instance20", "instance20.xml");
-//        importer.convert("instance21", "instance21.xml");
-//        importer.convert("instance22", "instance22.xml");
-//        importer.convert("instance23", "instance23.xml");
-//        importer.convert("instance24", "instance24.xml");
-//        importer.convert("instance25", "instance25.xml");
-//        importer.convert("instance26", "instance26.xml");
-//        importer.convert("instance27", "instance27.xml");
-//        importer.convert("instance28", "instance28.xml");
-//        importer.convert("instance29", "instance29.xml");
-//        importer.convert("instance30", "instance30.xml");
-//        importer.convert("instance31", "instance31.xml");
-//        importer.convert("instance32", "instance32.xml");
-//        importer.convert("instance33", "instance33.xml");
-//        importer.convert("instance34", "instance34.xml");
-//        importer.convert("instance35", "instance35.xml");
-//        importer.convert("instance36", "instance36.xml");
-//        importer.convert("instance37", "instance37.xml");
-//        importer.convert("instance38", "instance38.xml");
-//        importer.convert("instance39", "instance39.xml");
-//        importer.convert("instance40", "instance40.xml");
-//        importer.convert("instance41", "instance41.xml");
-//        importer.convert("instance42", "instance42.xml");
-//        importer.convert("instance43", "instance43.xml");
-//        importer.convert("instance44", "instance44.xml");
-//        importer.convert("instance45", "instance45.xml");
-//        importer.convert("instance46", "instance46.xml");
-//        importer.convert("instance47", "instance47.xml");
-//        importer.convert("instance48", "instance48.xml");
-//        importer.convert("instance49", "instance49.xml");
-    }
-
-    public CheapTimeImporter() {
-        super(new CheapTimeDao());
-    }
-
-    public CheapTimeImporter(boolean withoutDao) {
-        super(withoutDao);
+        SolutionConverter<CheapTimeSolution> converter = SolutionConverter.createImportConverter(
+                CheapTimeApp.DATA_DIR_NAME, new CheapTimeImporter(), CheapTimeSolution.class);
+        converter.convert("demo01", "demo01.xml");
+        converter.convert("sample01", "sample01.xml");
+//        converter.convert("sample02", "sample02.xml");
+//        converter.convert("sample03", "sample03.xml");
+//        converter.convert("sample04", "sample04.xml");
+//        converter.convert("sample05", "sample05.xml");
+//        converter.convert("sample06", "sample06.xml");
+//        converter.convert("sample07", "sample07.xml");
+//        converter.convert("sample08", "sample08.xml");
+//        converter.convert("sample09", "sample09.xml");
+        converter.convert("instance00", "instance00.xml");
+        converter.convert("instance01", "instance01.xml");
+        converter.convert("instance02", "instance02.xml");
+        converter.convert("instance03", "instance03.xml");
+//        converter.convert("instance04", "instance04.xml");
+//        converter.convert("instance05", "instance05.xml");
+//        converter.convert("instance06", "instance06.xml");
+//        converter.convert("instance07", "instance07.xml");
+//        converter.convert("instance08", "instance08.xml");
+//        converter.convert("instance09", "instance09.xml");
+//        converter.convert("instance10", "instance10.xml");
+//        converter.convert("instance11", "instance11.xml");
+//        converter.convert("instance12", "instance12.xml");
+//        converter.convert("instance13", "instance13.xml");
+//        converter.convert("instance14", "instance14.xml");
+//        converter.convert("instance15", "instance15.xml");
+//        converter.convert("instance16", "instance16.xml");
+//        converter.convert("instance17", "instance17.xml");
+//        converter.convert("instance18", "instance18.xml");
+//        converter.convert("instance19", "instance19.xml");
+//        converter.convert("instance20", "instance20.xml");
+//        converter.convert("instance21", "instance21.xml");
+//        converter.convert("instance22", "instance22.xml");
+//        converter.convert("instance23", "instance23.xml");
+//        converter.convert("instance24", "instance24.xml");
+//        converter.convert("instance25", "instance25.xml");
+//        converter.convert("instance26", "instance26.xml");
+//        converter.convert("instance27", "instance27.xml");
+//        converter.convert("instance28", "instance28.xml");
+//        converter.convert("instance29", "instance29.xml");
+//        converter.convert("instance30", "instance30.xml");
+//        converter.convert("instance31", "instance31.xml");
+//        converter.convert("instance32", "instance32.xml");
+//        converter.convert("instance33", "instance33.xml");
+//        converter.convert("instance34", "instance34.xml");
+//        converter.convert("instance35", "instance35.xml");
+//        converter.convert("instance36", "instance36.xml");
+//        converter.convert("instance37", "instance37.xml");
+//        converter.convert("instance38", "instance38.xml");
+//        converter.convert("instance39", "instance39.xml");
+//        converter.convert("instance40", "instance40.xml");
+//        converter.convert("instance41", "instance41.xml");
+//        converter.convert("instance42", "instance42.xml");
+//        converter.convert("instance43", "instance43.xml");
+//        converter.convert("instance44", "instance44.xml");
+//        converter.convert("instance45", "instance45.xml");
+//        converter.convert("instance46", "instance46.xml");
+//        converter.convert("instance47", "instance47.xml");
+//        converter.convert("instance48", "instance48.xml");
+//        converter.convert("instance49", "instance49.xml");
     }
 
     @Override

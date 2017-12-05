@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FilenameUtils;
+import org.optaplanner.examples.coachshuttlegathering.app.CoachShuttleGatheringApp;
 import org.optaplanner.examples.coachshuttlegathering.domain.Bus;
 import org.optaplanner.examples.coachshuttlegathering.domain.BusHub;
 import org.optaplanner.examples.coachshuttlegathering.domain.BusStop;
@@ -39,20 +40,15 @@ import org.optaplanner.examples.coachshuttlegathering.domain.Shuttle;
 import org.optaplanner.examples.coachshuttlegathering.domain.location.RoadLocation;
 import org.optaplanner.examples.coachshuttlegathering.domain.location.RoadLocationArc;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
+import org.optaplanner.examples.common.persistence.SolutionConverter;
 
 public class CoachShuttleGatheringImporter extends AbstractTxtSolutionImporter<CoachShuttleGatheringSolution> {
 
     public static void main(String[] args) {
-        CoachShuttleGatheringImporter importer = new CoachShuttleGatheringImporter();
-        importer.convert("example", "demo01.xml");
-    }
-
-    public CoachShuttleGatheringImporter() {
-        super(new CoachShuttleGatheringDao());
-    }
-
-    public CoachShuttleGatheringImporter(boolean withoutDao) {
-        super(withoutDao);
+        SolutionConverter<CoachShuttleGatheringSolution> converter = SolutionConverter.createImportConverter(
+                CoachShuttleGatheringApp.DATA_DIR_NAME, new CoachShuttleGatheringImporter(),
+                CoachShuttleGatheringSolution.class);
+       converter.convert("example", "demo01.xml");
     }
 
     @Override
@@ -77,7 +73,7 @@ public class CoachShuttleGatheringImporter extends AbstractTxtSolutionImporter<C
         return super.readSolution(instanceFile);
     }
 
-    public static class CoachShuttleGatheringInputBuilder extends TxtInputBuilder {
+    public static class CoachShuttleGatheringInputBuilder extends TxtInputBuilder<CoachShuttleGatheringSolution> {
 
         private CoachShuttleGatheringSolution solution;
 

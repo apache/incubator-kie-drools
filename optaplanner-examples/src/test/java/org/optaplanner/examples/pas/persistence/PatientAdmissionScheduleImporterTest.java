@@ -22,17 +22,19 @@ import java.util.Collection;
 import org.junit.runners.Parameterized;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionImporterTest;
+import org.optaplanner.examples.pas.app.PatientAdmissionScheduleApp;
+import org.optaplanner.examples.pas.domain.PatientAdmissionSchedule;
 
-public class PatientAdmissionScheduleImporterTest extends SolutionImporterTest {
+public class PatientAdmissionScheduleImporterTest extends SolutionImporterTest<PatientAdmissionSchedule> {
 
     @Override
-    protected AbstractSolutionImporter createSolutionImporter() {
+    protected PatientAdmissionScheduleImporter createSolutionImporter() {
         return new PatientAdmissionScheduleImporter();
     }
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> getInputFilesAsParameters() {
-        return getInputFilesAsParameters(new PatientAdmissionScheduleImporter());
+        return getInputFilesAsParameters(PatientAdmissionScheduleApp.DATA_DIR_NAME, new PatientAdmissionScheduleImporter());
     }
 
     public PatientAdmissionScheduleImporterTest(File solutionFile) {

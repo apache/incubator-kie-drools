@@ -20,19 +20,21 @@ import java.io.File;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
+import org.optaplanner.examples.cheaptime.app.CheapTimeApp;
+import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionImporterTest;
 
-public class CheapTimeImporterTest extends SolutionImporterTest {
+public class CheapTimeImporterTest extends SolutionImporterTest<CheapTimeSolution> {
 
     @Override
-    protected AbstractSolutionImporter createSolutionImporter() {
+    protected CheapTimeImporter createSolutionImporter() {
         return new CheapTimeImporter();
     }
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> getInputFilesAsParameters() {
-        return getInputFilesAsParameters(new CheapTimeImporter());
+        return getInputFilesAsParameters(CheapTimeApp.DATA_DIR_NAME, new CheapTimeImporter());
     }
 
     public CheapTimeImporterTest(File solutionFile) {

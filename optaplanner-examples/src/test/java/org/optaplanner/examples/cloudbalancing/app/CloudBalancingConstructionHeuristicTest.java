@@ -21,32 +21,21 @@ import java.util.Collection;
 
 import org.junit.runners.Parameterized;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicType;
-import org.optaplanner.examples.cloudbalancing.persistence.CloudBalancingDao;
+import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.common.app.AbstractConstructionHeuristicTest;
-import org.optaplanner.examples.common.persistence.SolutionDao;
 
-public class CloudBalancingConstructionHeuristicTest extends AbstractConstructionHeuristicTest {
+public class CloudBalancingConstructionHeuristicTest extends AbstractConstructionHeuristicTest<CloudBalance> {
 
     @Parameterized.Parameters(name = "{index}: {0} - {1}")
     public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return buildParameters(new CloudBalancingDao(),
+        return buildParameters(new CloudBalancingApp(),
                 "2computers-6processes.xml",
                 "3computers-9processes.xml");
     }
 
     public CloudBalancingConstructionHeuristicTest(File unsolvedDataFile,
             ConstructionHeuristicType constructionHeuristicType) {
-        super(unsolvedDataFile, constructionHeuristicType);
-    }
-
-    @Override
-    protected String createSolverConfigResource() {
-        return CloudBalancingApp.SOLVER_CONFIG;
-    }
-
-    @Override
-    protected SolutionDao createSolutionDao() {
-        return new CloudBalancingDao();
+        super(new CloudBalancingApp(), unsolvedDataFile, constructionHeuristicType);
     }
 
 }

@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
+import org.optaplanner.examples.common.persistence.SolutionConverter;
+import org.optaplanner.examples.travelingtournament.app.TravelingTournamentApp;
 import org.optaplanner.examples.travelingtournament.domain.Day;
 import org.optaplanner.examples.travelingtournament.domain.Match;
 import org.optaplanner.examples.travelingtournament.domain.Team;
@@ -32,11 +34,9 @@ import org.optaplanner.examples.travelingtournament.domain.TravelingTournament;
 public class TravelingTournamentImporter extends AbstractTxtSolutionImporter<TravelingTournament> {
 
     public static void main(String[] args) {
-        new TravelingTournamentImporter().convertAll();
-    }
-
-    public TravelingTournamentImporter() {
-        super(new TravelingTournamentDao());
+        SolutionConverter<TravelingTournament> converter = SolutionConverter.createImportConverter(
+                TravelingTournamentApp.DATA_DIR_NAME, new TravelingTournamentImporter(), TravelingTournament.class);
+        converter.convertAll();
     }
 
     @Override

@@ -20,23 +20,19 @@ import java.io.File;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
-import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.persistence.SolutionDaoTest;
+import org.optaplanner.examples.tsp.app.TspApp;
+import org.optaplanner.examples.tsp.domain.TspSolution;
 
-public class TspDaoTest extends SolutionDaoTest {
-
-    @Override
-    protected SolutionDao createSolutionDao() {
-        return new TspDao();
-    }
+public class TspDaoTest extends SolutionDaoTest<TspSolution> {
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getSolutionFilesAsParameters(new TspDao());
+        return getSolutionFilesAsParameters(new TspApp());
     }
 
     public TspDaoTest(File solutionFile) {
-        super(solutionFile);
+        super(new TspApp(), solutionFile);
     }
 
 }

@@ -27,28 +27,36 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.LoggingTest;
 import org.optaplanner.examples.common.business.ProblemFileComparator;
+import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
+/**
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ */
 @RunWith(Parameterized.class)
-public abstract class SolutionDaoTest extends LoggingTest {
+public abstract class SolutionDaoTest<Solution_> extends LoggingTest {
 
-    protected static Collection<Object[]> getSolutionFilesAsParameters(SolutionDao solutionDao) {
+    protected static <Solution_> Collection<Object[]> getSolutionFilesAsParameters(CommonApp<Solution_> commonApp) {
         List<File> fileList = new ArrayList<>(0);
-        File dataDir = solutionDao.getDataDir();
+        File dataDir = CommonApp.determineDataDir(commonApp.getDataDirName());
         File unsolvedDataDir = new File(dataDir, "unsolved");
         if (!unsolvedDataDir.exists()) {
             throw new IllegalStateException("The directory unsolvedDataDir (" + unsolvedDataDir.getAbsolutePath()
                     + ") does not exist.");
         }
+        String inputFileExtension = commonApp.createSolutionFileIO().getInputFileExtension();
         fileList.addAll(
-                FileUtils.listFiles(unsolvedDataDir, new String[]{solutionDao.getFileExtension()}, true));
+                FileUtils.listFiles(unsolvedDataDir, new String[]{inputFileExtension}, true));
         File solvedDataDir = new File(dataDir, "solved");
         if (solvedDataDir.exists()) {
+            String outputFileExtension = commonApp.createSolutionFileIO().getOutputFileExtension();
             fileList.addAll(
-                    FileUtils.listFiles(solvedDataDir, new String[]{solutionDao.getFileExtension()}, true));
+                    FileUtils.listFiles(solvedDataDir, new String[]{outputFileExtension}, true));
         }
-        Collections.sort(fileList, new ProblemFileComparator());
+        fileList.sort(new ProblemFileComparator());
         List<Object[]> filesAsParameters = new ArrayList<>();
         for (File file : fileList) {
             filesAsParameters.add(new Object[]{file});
@@ -56,24 +64,25 @@ public abstract class SolutionDaoTest extends LoggingTest {
         return filesAsParameters;
     }
 
-    protected SolutionDao solutionDao;
+    protected final CommonApp<Solution_> commonApp;
+    protected final File solutionFile;
 
-    protected File solutionFile;
+    protected SolutionFileIO<Solution_> solutionFileIO;
 
-    protected SolutionDaoTest(File solutionFile) {
+    protected SolutionDaoTest(CommonApp<Solution_> commonApp, File solutionFile) {
+        this.commonApp = commonApp;
         this.solutionFile = solutionFile;
     }
 
     @Before
     public void setUp() {
-        solutionDao = createSolutionDao();
+        solutionFileIO = commonApp.createSolutionFileIO();
     }
-
-    protected abstract SolutionDao createSolutionDao();
 
     @Test
     public void readSolution() {
-        solutionDao.readSolution(solutionFile);
+        solutionFileIO.read(solutionFile);
+        logger.info("Opened: {}", solutionFile);
     }
 
 }

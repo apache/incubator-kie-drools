@@ -22,9 +22,7 @@ import java.util.Collection;
 import org.junit.runners.Parameterized;
 import org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchType;
 import org.optaplanner.examples.common.app.AbstractExhaustiveSearchTest;
-import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.nqueens.domain.NQueens;
-import org.optaplanner.examples.nqueens.persistence.NQueensDao;
 
 import static org.junit.Assert.*;
 
@@ -32,21 +30,11 @@ public class NQueensExhaustiveSearchTest extends AbstractExhaustiveSearchTest<NQ
 
     @Parameterized.Parameters(name = "{index}: {0} - {1}")
     public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return buildParameters(new NQueensDao(), "4queens.xml");
+        return buildParameters(new NQueensApp(), "4queens.xml");
     }
 
     public NQueensExhaustiveSearchTest(File unsolvedDataFile, ExhaustiveSearchType exhaustiveSearchType) {
-        super(unsolvedDataFile, exhaustiveSearchType);
-    }
-
-    @Override
-    protected String createSolverConfigResource() {
-        return NQueensApp.SOLVER_CONFIG;
-    }
-
-    @Override
-    protected SolutionDao<NQueens> createSolutionDao() {
-        return new NQueensDao();
+        super(new NQueensApp(), unsolvedDataFile, exhaustiveSearchType);
     }
 
     @Override

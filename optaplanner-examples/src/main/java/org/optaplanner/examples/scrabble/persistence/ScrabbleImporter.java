@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Locale;
 
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
+import org.optaplanner.examples.common.persistence.SolutionConverter;
+import org.optaplanner.examples.scrabble.app.ScrabbleApp;
 import org.optaplanner.examples.scrabble.domain.ScrabbleCell;
 import org.optaplanner.examples.scrabble.domain.ScrabbleSolution;
 import org.optaplanner.examples.scrabble.domain.ScrabbleWordAssignment;
@@ -32,16 +34,9 @@ import org.optaplanner.examples.scrabble.domain.ScrabbleWordAssignment;
 public class ScrabbleImporter extends AbstractTxtSolutionImporter<ScrabbleSolution> {
 
     public static void main(String[] args) {
-        ScrabbleImporter importer = new ScrabbleImporter();
-        importer.convert("jbossProjects.txt", "jbossProjects.xml");
-    }
-
-    public ScrabbleImporter() {
-        super(new ScrabbleDao());
-    }
-
-    public ScrabbleImporter(boolean withoutDao) {
-        super(withoutDao);
+        SolutionConverter<ScrabbleSolution> converter = SolutionConverter.createImportConverter(
+                ScrabbleApp.DATA_DIR_NAME, new ScrabbleImporter(), ScrabbleSolution.class);
+        converter.convert("jbossProjects.txt", "jbossProjects.xml");
     }
 
     @Override

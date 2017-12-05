@@ -21,28 +21,17 @@ import java.util.Collection;
 
 import org.junit.runners.Parameterized;
 import org.optaplanner.examples.common.app.UnsolvedDirSolveAllTurtleTest;
-import org.optaplanner.examples.common.persistence.SolutionDao;
-import org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentDao;
+import org.optaplanner.examples.machinereassignment.domain.MachineReassignment;
 
-public class MachineReassignmentSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest {
+public class MachineReassignmentSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<MachineReassignment> {
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getUnsolvedDirFilesAsParameters(new MachineReassignmentDao());
+        return getUnsolvedDirFilesAsParameters(new MachineReassignmentApp());
     }
 
     public MachineReassignmentSolveAllTurtleTest(File unsolvedDataFile) {
-        super(unsolvedDataFile);
-    }
-
-    @Override
-    protected String createSolverConfigResource() {
-        return MachineReassignmentApp.SOLVER_CONFIG;
-    }
-
-    @Override
-    protected SolutionDao createSolutionDao() {
-        return new MachineReassignmentDao();
+        super(new MachineReassignmentApp(), unsolvedDataFile);
     }
 
 }

@@ -21,32 +21,21 @@ import java.util.Collection;
 
 import org.junit.runners.Parameterized;
 import org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchType;
-import org.optaplanner.examples.cloudbalancing.persistence.CloudBalancingDao;
+import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.common.app.AbstractExhaustiveSearchTest;
-import org.optaplanner.examples.common.persistence.SolutionDao;
 
-public class CloudBalancingExhaustiveSearchTest extends AbstractExhaustiveSearchTest {
+public class CloudBalancingExhaustiveSearchTest extends AbstractExhaustiveSearchTest<CloudBalance> {
 
     @Parameterized.Parameters(name = "{index}: {0} - {1}")
     public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return buildParameters(new CloudBalancingDao(),
+        return buildParameters(new CloudBalancingApp(),
                 "2computers-6processes.xml",
                 "3computers-9processes.xml");
     }
 
     public CloudBalancingExhaustiveSearchTest(File unsolvedDataFile,
             ExhaustiveSearchType exhaustiveSearchType) {
-        super(unsolvedDataFile, exhaustiveSearchType);
-    }
-
-    @Override
-    protected String createSolverConfigResource() {
-        return CloudBalancingApp.SOLVER_CONFIG;
-    }
-
-    @Override
-    protected SolutionDao createSolutionDao() {
-        return new CloudBalancingDao();
+        super(new CloudBalancingApp(), unsolvedDataFile, exhaustiveSearchType);
     }
 
 }

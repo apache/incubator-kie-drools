@@ -21,19 +21,13 @@ import java.io.File;
 import org.junit.Test;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
-import org.optaplanner.examples.common.persistence.SolutionDao;
-import org.optaplanner.examples.travelingtournament.persistence.TravelingTournamentDao;
+import org.optaplanner.examples.travelingtournament.domain.TravelingTournament;
 
-public class TravelingTournamentPerformanceTest extends SolverPerformanceTest {
-
-    @Override
-    protected String createSolverConfigResource() {
-        return TravelingTournamentApp.SOLVER_CONFIG;
-    }
+public class TravelingTournamentPerformanceTest extends SolverPerformanceTest<TravelingTournament> {
 
     @Override
-    protected SolutionDao createSolutionDao() {
-        return new TravelingTournamentDao();
+    protected TravelingTournamentApp createCommonApp() {
+        return new TravelingTournamentApp();
     }
 
     // ************************************************************************

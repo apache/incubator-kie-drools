@@ -26,9 +26,10 @@ import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.LoggingMain;
-import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.persistence.StringDataGenerator;
+import org.optaplanner.examples.curriculumcourse.app.CurriculumCourseApp;
 import org.optaplanner.examples.curriculumcourse.domain.Course;
 import org.optaplanner.examples.curriculumcourse.domain.CourseSchedule;
 import org.optaplanner.examples.curriculumcourse.domain.Curriculum;
@@ -39,6 +40,8 @@ import org.optaplanner.examples.curriculumcourse.domain.Room;
 import org.optaplanner.examples.curriculumcourse.domain.Teacher;
 import org.optaplanner.examples.curriculumcourse.domain.Timeslot;
 import org.optaplanner.examples.curriculumcourse.domain.UnavailablePeriodPenalty;
+import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
+import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
 import static org.optaplanner.examples.common.persistence.AbstractSolutionImporter.*;
 
@@ -82,13 +85,14 @@ public class CurriculumCourseGenerator extends LoggingMain {
 
     private final StringDataGenerator teacherNameGenerator = StringDataGenerator.buildFullNames();
 
-    protected final SolutionDao solutionDao;
+    protected final SolutionFileIO<CourseSchedule> solutionFileIO;
     protected final File outputDir;
+
     protected Random random;
 
     public CurriculumCourseGenerator() {
-        solutionDao = new CurriculumCourseDao();
-        outputDir = new File(solutionDao.getDataDir(), "unsolved");
+        solutionFileIO = new XStreamSolutionFileIO<>(CourseSchedule.class);
+        outputDir = new File(CommonApp.determineDataDir(CurriculumCourseApp.DATA_DIR_NAME), "unsolved");
     }
 
     private void writeCourseSchedule(int lectureListSize, int curriculumListSize) {
@@ -98,7 +102,8 @@ public class CurriculumCourseGenerator extends LoggingMain {
         String fileName = determineFileName(lectureListSize, PERIOD_LIST_SIZE, roomListSize);
         File outputFile = new File(outputDir, fileName + ".xml");
         CourseSchedule schedule = createCourseSchedule(fileName, teacherListSize, curriculumListSize, courseListSize, lectureListSize, roomListSize);
-        solutionDao.writeSolution(schedule, outputFile);
+        solutionFileIO.write(schedule, outputFile);
+        logger.info("Saved: {}", outputFile);
     }
 
     private String determineFileName(int lectureListSize, int periodListSize, int roomListSize) {

@@ -17,15 +17,17 @@
 package org.optaplanner.examples.scrabble.app;
 
 import org.optaplanner.examples.common.app.CommonApp;
-import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.scrabble.domain.ScrabbleSolution;
-import org.optaplanner.examples.scrabble.persistence.ScrabbleDao;
 import org.optaplanner.examples.scrabble.swingui.ScrabblePanel;
+import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
+import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
 public class ScrabbleApp extends CommonApp<ScrabbleSolution> {
 
     public static final String SOLVER_CONFIG
             = "org/optaplanner/examples/scrabble/solver/scrabbleSolverConfig.xml";
+
+    public static final String DATA_DIR_NAME = "scrabble";
 
     public static void main(String[] args) {
         prepareSwingEnvironment();
@@ -35,7 +37,7 @@ public class ScrabbleApp extends CommonApp<ScrabbleSolution> {
     public ScrabbleApp() {
         super("Scrabble compacter",
                 "Assign words to a scrabble board as compact as possible.",
-                SOLVER_CONFIG,
+                SOLVER_CONFIG, DATA_DIR_NAME,
                 ScrabblePanel.LOGO_PATH);
     }
 
@@ -45,8 +47,8 @@ public class ScrabbleApp extends CommonApp<ScrabbleSolution> {
     }
 
     @Override
-    protected SolutionDao createSolutionDao() {
-        return new ScrabbleDao();
+    public SolutionFileIO<ScrabbleSolution> createSolutionFileIO() {
+        return new XStreamSolutionFileIO<>(ScrabbleSolution.class);
     }
 
 }

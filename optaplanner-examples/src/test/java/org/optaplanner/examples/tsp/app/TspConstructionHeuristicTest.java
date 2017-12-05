@@ -22,30 +22,19 @@ import java.util.Collection;
 import org.junit.runners.Parameterized;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicType;
 import org.optaplanner.examples.common.app.AbstractConstructionHeuristicTest;
-import org.optaplanner.examples.common.persistence.SolutionDao;
-import org.optaplanner.examples.tsp.persistence.TspDao;
+import org.optaplanner.examples.tsp.domain.TspSolution;
 
-public class TspConstructionHeuristicTest extends AbstractConstructionHeuristicTest {
+public class TspConstructionHeuristicTest extends AbstractConstructionHeuristicTest<TspSolution> {
 
     @Parameterized.Parameters(name = "{index}: {0} - {1}")
     public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return buildParameters(new TspDao(),
+        return buildParameters(new TspApp(),
                 "europe40.xml");
     }
 
     public TspConstructionHeuristicTest(File unsolvedDataFile,
             ConstructionHeuristicType constructionHeuristicType) {
-        super(unsolvedDataFile, constructionHeuristicType);
-    }
-
-    @Override
-    protected String createSolverConfigResource() {
-        return TspApp.SOLVER_CONFIG;
-    }
-
-    @Override
-    protected SolutionDao createSolutionDao() {
-        return new TspDao();
+        super(new TspApp(), unsolvedDataFile, constructionHeuristicType);
     }
 
 }

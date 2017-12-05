@@ -21,19 +21,13 @@ import java.io.File;
 import org.junit.Test;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
-import org.optaplanner.examples.common.persistence.SolutionDao;
-import org.optaplanner.examples.meetingscheduling.persistence.MeetingSchedulingDao;
+import org.optaplanner.examples.meetingscheduling.domain.MeetingSchedule;
 
-public class MeetingSchedulingPerformanceTest extends SolverPerformanceTest {
-
-    @Override
-    protected String createSolverConfigResource() {
-        return MeetingSchedulingApp.SOLVER_CONFIG;
-    }
+public class MeetingSchedulingPerformanceTest extends SolverPerformanceTest<MeetingSchedule> {
 
     @Override
-    protected SolutionDao createSolutionDao() {
-        return new MeetingSchedulingDao();
+    protected MeetingSchedulingApp createCommonApp() {
+        return new MeetingSchedulingApp();
     }
 
     // ************************************************************************

@@ -28,6 +28,8 @@ import java.util.Map;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.optaplanner.examples.common.persistence.AbstractXlsxSolutionImporter;
+import org.optaplanner.examples.common.persistence.SolutionConverter;
+import org.optaplanner.examples.investment.app.InvestmentApp;
 import org.optaplanner.examples.investment.domain.AssetClass;
 import org.optaplanner.examples.investment.domain.AssetClassAllocation;
 import org.optaplanner.examples.investment.domain.InvestmentParametrization;
@@ -39,17 +41,10 @@ import org.optaplanner.examples.investment.domain.util.InvestmentNumericUtil;
 public class InvestmentImporter extends AbstractXlsxSolutionImporter<InvestmentSolution> {
 
     public static void main(String[] args) {
-        InvestmentImporter importer = new InvestmentImporter();
-        importer.convert("irrinki_1.xlsx", "irrinki_1.xml");
-        importer.convert("de_smet_1.xlsx", "de_smet_1.xml");
-    }
-
-    public InvestmentImporter() {
-        super(new InvestmentDao());
-    }
-
-    public InvestmentImporter(boolean withoutDao) {
-        super(withoutDao);
+        SolutionConverter<InvestmentSolution> converter = SolutionConverter.createImportConverter(
+                InvestmentApp.DATA_DIR_NAME, new InvestmentImporter(), InvestmentSolution.class);
+        converter.convert("irrinki_1.xlsx", "irrinki_1.xml");
+        converter.convert("de_smet_1.xlsx", "de_smet_1.xml");
     }
 
     @Override

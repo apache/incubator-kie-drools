@@ -20,19 +20,21 @@ import java.io.File;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
+import org.optaplanner.examples.coachshuttlegathering.app.CoachShuttleGatheringApp;
+import org.optaplanner.examples.coachshuttlegathering.domain.CoachShuttleGatheringSolution;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionImporterTest;
 
-public class CoachShuttleGatheringImporterTest extends SolutionImporterTest {
+public class CoachShuttleGatheringImporterTest extends SolutionImporterTest<CoachShuttleGatheringSolution> {
 
     @Override
-    protected AbstractSolutionImporter createSolutionImporter() {
+    protected CoachShuttleGatheringImporter createSolutionImporter() {
         return new CoachShuttleGatheringImporter();
     }
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> getInputFilesAsParameters() {
-        return getInputFilesAsParameters(new CoachShuttleGatheringImporter());
+        return getInputFilesAsParameters(CoachShuttleGatheringApp.DATA_DIR_NAME, new CoachShuttleGatheringImporter());
     }
 
     public CoachShuttleGatheringImporterTest(File solutionFile) {

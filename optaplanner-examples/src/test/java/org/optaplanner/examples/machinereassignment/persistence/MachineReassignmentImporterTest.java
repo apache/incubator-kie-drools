@@ -23,24 +23,22 @@ import java.util.Iterator;
 import org.junit.runners.Parameterized;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionImporterTest;
+import org.optaplanner.examples.machinereassignment.app.MachineReassignmentApp;
+import org.optaplanner.examples.machinereassignment.domain.MachineReassignment;
 
-public class MachineReassignmentImporterTest extends SolutionImporterTest {
+public class MachineReassignmentImporterTest extends SolutionImporterTest<MachineReassignment> {
 
     @Override
-    protected AbstractSolutionImporter createSolutionImporter() {
+    protected MachineReassignmentImporter createSolutionImporter() {
         return new MachineReassignmentImporter();
     }
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> getInputFilesAsParameters() {
-        Collection<Object[]> inputFilesAsParameters = getInputFilesAsParameters(new MachineReassignmentImporter());
-        for (Iterator<Object[]> it = inputFilesAsParameters.iterator(); it.hasNext(); ) {
-            Object[] inputFilesAsParameter = it.next();
-            // The dataset B10 requires more than 1GB heap space on JDK 6 to load (not on JDK 7)
-            if (((File) inputFilesAsParameter[0]).getName().equals("model_b_10.txt")) {
-                it.remove();
-            }
-        }
+        Collection<Object[]> inputFilesAsParameters = getInputFilesAsParameters(MachineReassignmentApp.DATA_DIR_NAME, new MachineReassignmentImporter());
+        // The dataset B10 requires more than 1GB heap space on JDK 6 to load (not on JDK 7)
+        inputFilesAsParameters.removeIf(
+                inputFilesAsParameter -> ((File) inputFilesAsParameter[0]).getName().equals("model_b_10.txt"));
         return inputFilesAsParameters;
     }
 

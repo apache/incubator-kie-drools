@@ -19,31 +19,31 @@ package org.optaplanner.examples.common.app;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.examples.common.business.ProblemFileComparator;
-import org.optaplanner.examples.common.persistence.SolutionDao;
+import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public abstract class UnsolvedDirSolveAllTurtleTest<Solution_> extends SolveAllTurtleTest<Solution_> {
 
-    protected static <Solution_> Collection<Object[]> getUnsolvedDirFilesAsParameters(SolutionDao<Solution_> solutionDao) {
+    protected static <Solution_> Collection<Object[]> getUnsolvedDirFilesAsParameters(CommonApp<Solution_> commonApp) {
         List<Object[]> filesAsParameters = new ArrayList<>();
-        File dataDir = solutionDao.getDataDir();
+        File dataDir = CommonApp.determineDataDir(commonApp.getDataDirName());
         File unsolvedDataDir = new File(dataDir, "unsolved");
         if (!unsolvedDataDir.exists()) {
             throw new IllegalStateException("The directory unsolvedDataDir (" + unsolvedDataDir.getAbsolutePath()
                     + ") does not exist.");
         } else {
+            String inputFileExtension = commonApp.createSolutionFileIO().getInputFileExtension();
             List<File> fileList = new ArrayList<>(
-                    FileUtils.listFiles(unsolvedDataDir, new String[]{solutionDao.getFileExtension()}, true));
-            Collections.sort(fileList, new ProblemFileComparator());
+                    FileUtils.listFiles(unsolvedDataDir, new String[]{inputFileExtension}, true));
+            fileList.sort(new ProblemFileComparator());
             for (File file : fileList) {
                 filesAsParameters.add(new Object[]{file});
             }
@@ -51,23 +51,27 @@ public abstract class UnsolvedDirSolveAllTurtleTest<Solution_> extends SolveAllT
         return filesAsParameters;
     }
 
-    protected File dataFile;
-    protected SolutionDao<Solution_> solutionDao;
+    protected final CommonApp<Solution_> commonApp;
+    protected final File dataFile;
 
-    protected UnsolvedDirSolveAllTurtleTest(File dataFile) {
+    protected SolutionFileIO<Solution_> solutionFileIO;
+
+    protected UnsolvedDirSolveAllTurtleTest(CommonApp<Solution_> commonApp, File dataFile) {
+        super(commonApp.getSolverConfig());
+        this.commonApp = commonApp;
         this.dataFile = dataFile;
     }
 
     @Before
     public void setUp() {
-        solutionDao = createSolutionDao();
+        solutionFileIO = commonApp.createSolutionFileIO();
     }
-
-    protected abstract SolutionDao<Solution_> createSolutionDao();
 
     @Override
     protected Solution_ readProblem() {
-        return solutionDao.readSolution(dataFile);
+        Solution_ problem = solutionFileIO.read(dataFile);
+        logger.info("Opened: {}", dataFile);
+        return problem;
     }
 
 }

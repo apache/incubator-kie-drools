@@ -21,19 +21,13 @@ import java.io.File;
 import org.junit.Test;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
-import org.optaplanner.examples.common.persistence.SolutionDao;
-import org.optaplanner.examples.dinnerparty.persistence.DinnerPartyDao;
+import org.optaplanner.examples.dinnerparty.domain.DinnerParty;
 
-public class DinnerPartyPerformanceTest extends SolverPerformanceTest {
-
-    @Override
-    protected String createSolverConfigResource() {
-        return DinnerPartyApp.SOLVER_CONFIG;
-    }
+public class DinnerPartyPerformanceTest extends SolverPerformanceTest<DinnerParty> {
 
     @Override
-    protected SolutionDao createSolutionDao() {
-        return new DinnerPartyDao();
+    protected DinnerPartyApp createCommonApp() {
+        return new DinnerPartyApp();
     }
 
     // ************************************************************************

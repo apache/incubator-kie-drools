@@ -21,28 +21,17 @@ import java.util.Collection;
 
 import org.junit.runners.Parameterized;
 import org.optaplanner.examples.common.app.UnsolvedDirSolveAllTurtleTest;
-import org.optaplanner.examples.common.persistence.SolutionDao;
-import org.optaplanner.examples.nurserostering.persistence.NurseRosteringDao;
+import org.optaplanner.examples.nurserostering.domain.NurseRoster;
 
-public class NurseRosteringSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest {
+public class NurseRosteringSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<NurseRoster> {
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getUnsolvedDirFilesAsParameters(new NurseRosteringDao());
+        return getUnsolvedDirFilesAsParameters(new NurseRosteringApp());
     }
 
     public NurseRosteringSolveAllTurtleTest(File unsolvedDataFile) {
-        super(unsolvedDataFile);
-    }
-
-    @Override
-    protected String createSolverConfigResource() {
-        return NurseRosteringApp.SOLVER_CONFIG;
-    }
-
-    @Override
-    protected SolutionDao createSolutionDao() {
-        return new NurseRosteringDao();
+        super(new NurseRosteringApp(), unsolvedDataFile);
     }
 
 }

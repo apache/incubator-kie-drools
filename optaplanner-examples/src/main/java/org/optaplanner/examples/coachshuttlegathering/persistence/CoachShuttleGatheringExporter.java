@@ -18,6 +18,7 @@ package org.optaplanner.examples.coachshuttlegathering.persistence;
 
 import java.io.IOException;
 
+import org.optaplanner.examples.coachshuttlegathering.app.CoachShuttleGatheringApp;
 import org.optaplanner.examples.coachshuttlegathering.domain.Bus;
 import org.optaplanner.examples.coachshuttlegathering.domain.BusHub;
 import org.optaplanner.examples.coachshuttlegathering.domain.BusStop;
@@ -25,17 +26,16 @@ import org.optaplanner.examples.coachshuttlegathering.domain.Coach;
 import org.optaplanner.examples.coachshuttlegathering.domain.CoachShuttleGatheringSolution;
 import org.optaplanner.examples.coachshuttlegathering.domain.StopOrHub;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionExporter;
+import org.optaplanner.examples.common.persistence.SolutionConverter;
 
 public class CoachShuttleGatheringExporter extends AbstractTxtSolutionExporter<CoachShuttleGatheringSolution> {
 
     public static final String OUTPUT_FILE_SUFFIX = "csv";
 
     public static void main(String[] args) {
-        new CoachShuttleGatheringExporter().convertAll();
-    }
-
-    public CoachShuttleGatheringExporter() {
-        super(new CoachShuttleGatheringDao());
+        SolutionConverter<CoachShuttleGatheringSolution> converter = SolutionConverter.createExportConverter(
+                CoachShuttleGatheringApp.DATA_DIR_NAME, CoachShuttleGatheringSolution.class, new CoachShuttleGatheringExporter());
+        converter.convertAll();
     }
 
     @Override

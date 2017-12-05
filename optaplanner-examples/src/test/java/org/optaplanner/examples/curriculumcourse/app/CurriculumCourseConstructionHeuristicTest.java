@@ -23,28 +23,17 @@ import org.junit.runners.Parameterized;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicType;
 import org.optaplanner.examples.common.app.AbstractConstructionHeuristicTest;
 import org.optaplanner.examples.curriculumcourse.domain.CourseSchedule;
-import org.optaplanner.examples.curriculumcourse.persistence.CurriculumCourseDao;
 
 public class CurriculumCourseConstructionHeuristicTest extends AbstractConstructionHeuristicTest<CourseSchedule> {
 
     @Parameterized.Parameters(name = "{index}: {0} - {1}")
     public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return buildParameters(new CurriculumCourseDao(), "toy01.xml");
+        return buildParameters(new CurriculumCourseApp(), "toy01.xml");
     }
 
     public CurriculumCourseConstructionHeuristicTest(File unsolvedDataFile,
             ConstructionHeuristicType constructionHeuristicType) {
-        super(unsolvedDataFile, constructionHeuristicType);
-    }
-
-    @Override
-    protected String createSolverConfigResource() {
-        return CurriculumCourseApp.SOLVER_CONFIG;
-    }
-
-    @Override
-    protected CurriculumCourseDao createSolutionDao() {
-        return new CurriculumCourseDao();
+        super(new CurriculumCourseApp(), unsolvedDataFile, constructionHeuristicType);
     }
 
 }

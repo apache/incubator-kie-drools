@@ -22,17 +22,19 @@ import java.util.Collection;
 import org.junit.runners.Parameterized;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionImporterTest;
+import org.optaplanner.examples.projectjobscheduling.app.ProjectJobSchedulingApp;
+import org.optaplanner.examples.projectjobscheduling.domain.Schedule;
 
-public class ProjectJobSchedulingImporterTest extends SolutionImporterTest {
+public class ProjectJobSchedulingImporterTest extends SolutionImporterTest<Schedule> {
 
     @Override
-    protected AbstractSolutionImporter createSolutionImporter() {
+    protected ProjectJobSchedulingImporter createSolutionImporter() {
         return new ProjectJobSchedulingImporter();
     }
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> getInputFilesAsParameters() {
-        return getInputFilesAsParameters(new ProjectJobSchedulingImporter());
+        return getInputFilesAsParameters(ProjectJobSchedulingApp.DATA_DIR_NAME, new ProjectJobSchedulingImporter());
     }
 
     public ProjectJobSchedulingImporterTest(File solutionFile) {

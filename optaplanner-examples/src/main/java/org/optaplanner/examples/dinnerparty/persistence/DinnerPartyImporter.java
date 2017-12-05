@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
+import org.optaplanner.examples.common.persistence.SolutionConverter;
+import org.optaplanner.examples.dinnerparty.app.DinnerPartyApp;
 import org.optaplanner.examples.dinnerparty.domain.DinnerParty;
 import org.optaplanner.examples.dinnerparty.domain.Gender;
 import org.optaplanner.examples.dinnerparty.domain.Guest;
@@ -38,11 +40,9 @@ import org.optaplanner.examples.dinnerparty.domain.Table;
 public class DinnerPartyImporter extends AbstractTxtSolutionImporter<DinnerParty> {
 
     public static void main(String[] args) {
-        new DinnerPartyImporter().convertAll();
-    }
-
-    public DinnerPartyImporter() {
-        super(new DinnerPartyDao());
+        SolutionConverter<DinnerParty> converter = SolutionConverter.createImportConverter(
+                DinnerPartyApp.DATA_DIR_NAME, new DinnerPartyImporter(), DinnerParty.class);
+        converter.convertAll();
     }
 
     @Override

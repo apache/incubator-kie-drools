@@ -20,20 +20,14 @@ import java.io.File;
 
 import org.junit.Test;
 import org.optaplanner.core.config.solver.EnvironmentMode;
-import org.optaplanner.examples.coachshuttlegathering.persistence.CoachShuttleGatheringDao;
+import org.optaplanner.examples.coachshuttlegathering.domain.CoachShuttleGatheringSolution;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
-import org.optaplanner.examples.common.persistence.SolutionDao;
 
-public class CoachShuttleGatheringPerformanceTest extends SolverPerformanceTest {
-
-    @Override
-    protected String createSolverConfigResource() {
-        return CoachShuttleGatheringApp.SOLVER_CONFIG;
-    }
+public class CoachShuttleGatheringPerformanceTest extends SolverPerformanceTest<CoachShuttleGatheringSolution> {
 
     @Override
-    protected SolutionDao createSolutionDao() {
-        return new CoachShuttleGatheringDao();
+    protected CoachShuttleGatheringApp createCommonApp() {
+        return new CoachShuttleGatheringApp();
     }
 
     // ************************************************************************

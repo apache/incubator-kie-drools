@@ -36,14 +36,6 @@ public abstract class AbstractXmlSolutionImporter<Solution_> extends AbstractSol
 
     private static final String DEFAULT_INPUT_FILE_SUFFIX = "xml";
 
-    protected AbstractXmlSolutionImporter(SolutionDao<Solution_> solutionDao) {
-        super(solutionDao);
-    }
-
-    protected AbstractXmlSolutionImporter(boolean withoutDao) {
-        super(withoutDao);
-    }
-
     @Override
     public String getInputFileSuffix() {
         return DEFAULT_INPUT_FILE_SUFFIX;

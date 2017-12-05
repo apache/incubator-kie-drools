@@ -21,19 +21,13 @@ import java.io.File;
 import org.junit.Test;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
-import org.optaplanner.examples.common.persistence.SolutionDao;
-import org.optaplanner.examples.pas.persistence.PatientAdmissionScheduleDao;
+import org.optaplanner.examples.pas.domain.PatientAdmissionSchedule;
 
-public class PatientAdmissionSchedulePerformanceTest extends SolverPerformanceTest {
-
-    @Override
-    protected String createSolverConfigResource() {
-        return PatientAdmissionScheduleApp.SOLVER_CONFIG;
-    }
+public class PatientAdmissionSchedulePerformanceTest extends SolverPerformanceTest<PatientAdmissionSchedule> {
 
     @Override
-    protected SolutionDao createSolutionDao() {
-        return new PatientAdmissionScheduleDao();
+    protected PatientAdmissionScheduleApp createCommonApp() {
+        return new PatientAdmissionScheduleApp();
     }
 
     // ************************************************************************

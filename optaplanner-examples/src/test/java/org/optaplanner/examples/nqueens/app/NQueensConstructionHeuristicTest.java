@@ -22,31 +22,20 @@ import java.util.Collection;
 import org.junit.runners.Parameterized;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicType;
 import org.optaplanner.examples.common.app.AbstractConstructionHeuristicTest;
-import org.optaplanner.examples.common.persistence.SolutionDao;
-import org.optaplanner.examples.nqueens.persistence.NQueensDao;
+import org.optaplanner.examples.nqueens.domain.NQueens;
 
-public class NQueensConstructionHeuristicTest extends AbstractConstructionHeuristicTest {
+public class NQueensConstructionHeuristicTest extends AbstractConstructionHeuristicTest<NQueens> {
 
     @Parameterized.Parameters(name = "{index}: {0} - {1}")
     public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return buildParameters(new NQueensDao(),
+        return buildParameters(new NQueensApp(),
                 "4queens.xml",
                 "8queens.xml");
     }
 
     public NQueensConstructionHeuristicTest(File unsolvedDataFile,
             ConstructionHeuristicType constructionHeuristicType) {
-        super(unsolvedDataFile, constructionHeuristicType);
-    }
-
-    @Override
-    protected String createSolverConfigResource() {
-        return NQueensApp.SOLVER_CONFIG;
-    }
-
-    @Override
-    protected SolutionDao createSolutionDao() {
-        return new NQueensDao();
+        super(new NQueensApp(), unsolvedDataFile, constructionHeuristicType);
     }
 
 }

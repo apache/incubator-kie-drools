@@ -38,6 +38,8 @@ import java.util.Set;
 
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
+import org.optaplanner.examples.common.persistence.SolutionConverter;
+import org.optaplanner.examples.examination.app.ExaminationApp;
 import org.optaplanner.examples.examination.domain.Exam;
 import org.optaplanner.examples.examination.domain.Examination;
 import org.optaplanner.examples.examination.domain.FollowingExam;
@@ -58,11 +60,9 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter<Examination
     private static final String SPLIT_REGEX = "\\,\\ ?";
 
     public static void main(String[] args) {
-        new ExaminationImporter().convertAll();
-    }
-
-    public ExaminationImporter() {
-        super(new ExaminationDao());
+        SolutionConverter<Examination> converter = SolutionConverter.createImportConverter(
+                ExaminationApp.DATA_DIR_NAME, new ExaminationImporter(), Examination.class);
+        converter.convertAll();
     }
 
     @Override

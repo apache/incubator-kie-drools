@@ -21,28 +21,17 @@ import java.util.Collection;
 
 import org.junit.runners.Parameterized;
 import org.optaplanner.examples.common.app.UnsolvedDirSolveAllTurtleTest;
-import org.optaplanner.examples.common.persistence.SolutionDao;
-import org.optaplanner.examples.examination.persistence.ExaminationDao;
+import org.optaplanner.examples.examination.domain.Examination;
 
-public class ExaminationSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest {
+public class ExaminationSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<Examination> {
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getUnsolvedDirFilesAsParameters(new ExaminationDao());
+        return getUnsolvedDirFilesAsParameters(new ExaminationApp());
     }
 
     public ExaminationSolveAllTurtleTest(File unsolvedDataFile) {
-        super(unsolvedDataFile);
-    }
-
-    @Override
-    protected String createSolverConfigResource() {
-        return ExaminationApp.SOLVER_CONFIG;
-    }
-
-    @Override
-    protected SolutionDao createSolutionDao() {
-        return new ExaminationDao();
+        super(new ExaminationApp(), unsolvedDataFile);
     }
 
 }

@@ -21,67 +21,71 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.LoggingMain;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
-import org.optaplanner.examples.common.persistence.SolutionDao;
+import org.optaplanner.examples.nqueens.app.NQueensApp;
 import org.optaplanner.examples.nqueens.domain.Column;
 import org.optaplanner.examples.nqueens.domain.NQueens;
 import org.optaplanner.examples.nqueens.domain.Queen;
 import org.optaplanner.examples.nqueens.domain.Row;
+import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
+import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
 public class NQueensGenerator extends LoggingMain {
 
-    private static final File outputDir = new File("data/nqueens/unsolved/");
-
-    protected SolutionDao solutionDao;
-
     public static void main(String[] args) {
-        new NQueensGenerator().generate();
+        NQueensGenerator generator = new NQueensGenerator();
+        generator.writeNQueens(4);
+//        generator.writeNQueens(5);
+//        generator.writeNQueens(6);
+//        generator.writeNQueens(7);
+        generator.writeNQueens(8);
+//        generator.writeNQueens(9);
+//        generator.writeNQueens(10);
+//        generator.writeNQueens(11);
+//        generator.writeNQueens(12);
+//        generator.writeNQueens(13);
+//        generator.writeNQueens(14);
+//        generator.writeNQueens(15);
+        generator.writeNQueens(16);
+//        generator.writeNQueens(17);
+//        generator.writeNQueens(18);
+//        generator.writeNQueens(19);
+//        generator.writeNQueens(20);
+//        generator.writeNQueens(21);
+//        generator.writeNQueens(22);
+//        generator.writeNQueens(23);
+//        generator.writeNQueens(24);
+//        generator.writeNQueens(25);
+//        generator.writeNQueens(26);
+//        generator.writeNQueens(27);
+//        generator.writeNQueens(28);
+//        generator.writeNQueens(29);
+//        generator.writeNQueens(30);
+//        generator.writeNQueens(31);
+        generator.writeNQueens(32);
+        generator.writeNQueens(64);
+        generator.writeNQueens(256);
+//        generator.writeNQueens(10000);
+//        generator.writeNQueens(100000);
+//        generator.writeNQueens(1000000);
     }
 
-    public void generate() {
-        solutionDao = new NQueensDao();
-        writeNQueens(4);
-//        writeNQueens(5);
-//        writeNQueens(6);
-//        writeNQueens(7);
-        writeNQueens(8);
-//        writeNQueens(9);
-//        writeNQueens(10);
-//        writeNQueens(11);
-//        writeNQueens(12);
-//        writeNQueens(13);
-//        writeNQueens(14);
-//        writeNQueens(15);
-        writeNQueens(16);
-//        writeNQueens(17);
-//        writeNQueens(18);
-//        writeNQueens(19);
-//        writeNQueens(20);
-//        writeNQueens(21);
-//        writeNQueens(22);
-//        writeNQueens(23);
-//        writeNQueens(24);
-//        writeNQueens(25);
-//        writeNQueens(26);
-//        writeNQueens(27);
-//        writeNQueens(28);
-//        writeNQueens(29);
-//        writeNQueens(30);
-//        writeNQueens(31);
-        writeNQueens(32);
-        writeNQueens(64);
-        writeNQueens(256);
-//        writeNQueens(10000);
-//        writeNQueens(100000);
-//        writeNQueens(1000000);
+    protected final SolutionFileIO<NQueens> solutionFileIO;
+    protected final File outputDir;
+
+    public NQueensGenerator() {
+        solutionFileIO = new XStreamSolutionFileIO<>(NQueens.class);
+        outputDir = new File(CommonApp.determineDataDir(NQueensApp.DATA_DIR_NAME), "unsolved");
     }
 
     private void writeNQueens(int n) {
         String outputFileName = n + "queens.xml";
         File outputFile = new File(outputDir, outputFileName);
         NQueens nQueens = createNQueens(n);
-        solutionDao.writeSolution(nQueens, outputFile);
+        solutionFileIO.write(nQueens, outputFile);
+        logger.info("Saved: {}", outputFile);
     }
 
     public NQueens createNQueens(int n) {

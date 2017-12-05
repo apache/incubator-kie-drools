@@ -22,17 +22,19 @@ import java.util.Collection;
 import org.junit.runners.Parameterized;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionImporterTest;
+import org.optaplanner.examples.examination.app.ExaminationApp;
+import org.optaplanner.examples.examination.domain.Examination;
 
-public class ExaminationImporterTest extends SolutionImporterTest {
+public class ExaminationImporterTest extends SolutionImporterTest<Examination> {
 
     @Override
-    protected AbstractSolutionImporter createSolutionImporter() {
+    protected ExaminationImporter createSolutionImporter() {
         return new ExaminationImporter();
     }
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> getInputFilesAsParameters() {
-        return getInputFilesAsParameters(new ExaminationImporter());
+        return getInputFilesAsParameters(ExaminationApp.DATA_DIR_NAME, new ExaminationImporter());
     }
 
     public ExaminationImporterTest(File solutionFile) {

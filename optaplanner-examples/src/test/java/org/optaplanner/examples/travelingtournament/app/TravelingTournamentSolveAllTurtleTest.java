@@ -21,28 +21,17 @@ import java.util.Collection;
 
 import org.junit.runners.Parameterized;
 import org.optaplanner.examples.common.app.UnsolvedDirSolveAllTurtleTest;
-import org.optaplanner.examples.common.persistence.SolutionDao;
-import org.optaplanner.examples.travelingtournament.persistence.TravelingTournamentDao;
+import org.optaplanner.examples.travelingtournament.domain.TravelingTournament;
 
-public class TravelingTournamentSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest {
+public class TravelingTournamentSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<TravelingTournament> {
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getUnsolvedDirFilesAsParameters(new TravelingTournamentDao());
+        return getUnsolvedDirFilesAsParameters(new TravelingTournamentApp());
     }
 
     public TravelingTournamentSolveAllTurtleTest(File unsolvedDataFile) {
-        super(unsolvedDataFile);
-    }
-
-    @Override
-    protected String createSolverConfigResource() {
-        return TravelingTournamentApp.SOLVER_CONFIG;
-    }
-
-    @Override
-    protected SolutionDao createSolutionDao() {
-        return new TravelingTournamentDao();
+        super(new TravelingTournamentApp(), unsolvedDataFile);
     }
 
 }

@@ -21,19 +21,13 @@ import java.io.File;
 import org.junit.Test;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
-import org.optaplanner.examples.common.persistence.SolutionDao;
-import org.optaplanner.examples.tsp.persistence.TspDao;
+import org.optaplanner.examples.tsp.domain.TspSolution;
 
-public class TspPerformanceTest extends SolverPerformanceTest {
-
-    @Override
-    protected String createSolverConfigResource() {
-        return TspApp.SOLVER_CONFIG;
-    }
+public class TspPerformanceTest extends SolverPerformanceTest<TspSolution> {
 
     @Override
-    protected SolutionDao createSolutionDao() {
-        return new TspDao();
+    protected TspApp createCommonApp() {
+        return new TspApp();
     }
 
     // ************************************************************************

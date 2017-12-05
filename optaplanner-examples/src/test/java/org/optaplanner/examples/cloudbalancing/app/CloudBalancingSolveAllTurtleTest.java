@@ -21,35 +21,24 @@ import java.util.Collection;
 
 import org.junit.runners.Parameterized;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
+import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.cloudbalancing.optional.score.CloudBalancingMapBasedEasyScoreCalculator;
-import org.optaplanner.examples.cloudbalancing.persistence.CloudBalancingDao;
 import org.optaplanner.examples.common.app.UnsolvedDirSolveAllTurtleTest;
-import org.optaplanner.examples.common.persistence.SolutionDao;
 
-public class CloudBalancingSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest {
+public class CloudBalancingSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<CloudBalance> {
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getUnsolvedDirFilesAsParameters(new CloudBalancingDao());
+        return getUnsolvedDirFilesAsParameters(new CloudBalancingApp());
     }
 
     public CloudBalancingSolveAllTurtleTest(File unsolvedDataFile) {
-        super(unsolvedDataFile);
-    }
-
-    @Override
-    protected String createSolverConfigResource() {
-        return CloudBalancingApp.SOLVER_CONFIG;
+        super(new CloudBalancingApp(), unsolvedDataFile);
     }
 
     @Override
     protected Class<? extends EasyScoreCalculator> overwritingEasyScoreCalculatorClass() {
         return CloudBalancingMapBasedEasyScoreCalculator.class;
-    }
-
-    @Override
-    protected SolutionDao createSolutionDao() {
-        return new CloudBalancingDao();
     }
 
 }

@@ -20,23 +20,19 @@ import java.io.File;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
-import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.persistence.SolutionDaoTest;
+import org.optaplanner.examples.taskassigning.app.TaskAssigningApp;
+import org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution;
 
-public class TaskAssigningDaoTest extends SolutionDaoTest {
-
-    @Override
-    protected SolutionDao createSolutionDao() {
-        return new TaskAssigningDao();
-    }
+public class TaskAssigningDaoTest extends SolutionDaoTest<TaskAssigningSolution> {
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getSolutionFilesAsParameters(new TaskAssigningDao());
+        return getSolutionFilesAsParameters(new TaskAssigningApp());
     }
 
     public TaskAssigningDaoTest(File solutionFile) {
-        super(solutionFile);
+        super(new TaskAssigningApp(), solutionFile);
     }
 
 }

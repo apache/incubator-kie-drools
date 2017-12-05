@@ -23,28 +23,19 @@ import org.junit.runners.Parameterized;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 import org.optaplanner.examples.common.app.ImportDirSolveAllTurtleTest;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
+import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 import org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingImporter;
 import org.optaplanner.examples.vehiclerouting.solver.score.VehicleRoutingEasyScoreCalculator;
 
-public class VehicleRoutingSolveAllTurtleTest extends ImportDirSolveAllTurtleTest {
+public class VehicleRoutingSolveAllTurtleTest extends ImportDirSolveAllTurtleTest<VehicleRoutingSolution> {
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getImportDirFilesAsParameters(new VehicleRoutingImporter());
+        return getImportDirFilesAsParameters(new VehicleRoutingApp());
     }
 
     public VehicleRoutingSolveAllTurtleTest(File dataFile) {
-        super(dataFile);
-    }
-
-    @Override
-    protected String createSolverConfigResource() {
-        return VehicleRoutingApp.SOLVER_CONFIG;
-    }
-
-    @Override
-    protected AbstractSolutionImporter createSolutionImporter() {
-        return new VehicleRoutingImporter();
+        super(new VehicleRoutingApp(), dataFile);
     }
 
     @Override

@@ -17,19 +17,21 @@
 package org.optaplanner.examples.cheaptime.app;
 
 import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
-import org.optaplanner.examples.cheaptime.persistence.CheapTimeDao;
 import org.optaplanner.examples.cheaptime.persistence.CheapTimeExporter;
 import org.optaplanner.examples.cheaptime.persistence.CheapTimeImporter;
 import org.optaplanner.examples.cheaptime.swingui.CheapTimePanel;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.AbstractSolutionExporter;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
-import org.optaplanner.examples.common.persistence.SolutionDao;
+import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
+import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
 public class CheapTimeApp extends CommonApp<CheapTimeSolution> {
 
     public static final String SOLVER_CONFIG
             = "org/optaplanner/examples/cheaptime/solver/cheapTimeSolverConfig.xml";
+
+    public static final String DATA_DIR_NAME = "cheaptime";
 
     public static void main(String[] args) {
         prepareSwingEnvironment();
@@ -43,7 +45,7 @@ public class CheapTimeApp extends CommonApp<CheapTimeSolution> {
                 "Each machine must have enough hardware to run all of its tasks.\n" +
                 "Each task and machine consumes power. The power price differs over time.\n" +
                 "Minimize the power cost.",
-                SOLVER_CONFIG,
+                SOLVER_CONFIG, DATA_DIR_NAME,
                 CheapTimePanel.LOGO_PATH);
     }
 
@@ -53,8 +55,8 @@ public class CheapTimeApp extends CommonApp<CheapTimeSolution> {
     }
 
     @Override
-    protected SolutionDao createSolutionDao() {
-        return new CheapTimeDao();
+    public SolutionFileIO<CheapTimeSolution> createSolutionFileIO() {
+        return new XStreamSolutionFileIO<>(CheapTimeSolution.class);
     }
 
     @Override

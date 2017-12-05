@@ -20,23 +20,19 @@ import java.io.File;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
-import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.persistence.SolutionDaoTest;
+import org.optaplanner.examples.tennis.app.TennisApp;
+import org.optaplanner.examples.tennis.domain.TennisSolution;
 
-public class TennisDaoTest extends SolutionDaoTest {
-
-    @Override
-    protected SolutionDao createSolutionDao() {
-        return new TennisDao();
-    }
+public class TennisDaoTest extends SolutionDaoTest<TennisSolution> {
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getSolutionFilesAsParameters(new TennisDao());
+        return getSolutionFilesAsParameters(new TennisApp());
     }
 
     public TennisDaoTest(File solutionFile) {
-        super(solutionFile);
+        super(new TennisApp(), solutionFile);
     }
 
 }

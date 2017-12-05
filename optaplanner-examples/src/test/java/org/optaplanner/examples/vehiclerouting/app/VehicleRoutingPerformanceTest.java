@@ -21,19 +21,13 @@ import java.io.File;
 import org.junit.Test;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
-import org.optaplanner.examples.common.persistence.SolutionDao;
-import org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingDao;
+import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 
-public class VehicleRoutingPerformanceTest extends SolverPerformanceTest {
-
-    @Override
-    protected String createSolverConfigResource() {
-        return VehicleRoutingApp.SOLVER_CONFIG;
-    }
+public class VehicleRoutingPerformanceTest extends SolverPerformanceTest<VehicleRoutingSolution> {
 
     @Override
-    protected SolutionDao createSolutionDao() {
-        return new VehicleRoutingDao();
+    protected VehicleRoutingApp createCommonApp() {
+        return new VehicleRoutingApp();
     }
 
     // ************************************************************************

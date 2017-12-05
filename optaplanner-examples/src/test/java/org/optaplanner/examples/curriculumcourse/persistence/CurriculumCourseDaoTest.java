@@ -20,23 +20,19 @@ import java.io.File;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
-import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.persistence.SolutionDaoTest;
+import org.optaplanner.examples.curriculumcourse.app.CurriculumCourseApp;
+import org.optaplanner.examples.curriculumcourse.domain.CourseSchedule;
 
-public class CurriculumCourseDaoTest extends SolutionDaoTest {
-
-    @Override
-    protected SolutionDao createSolutionDao() {
-        return new CurriculumCourseDao();
-    }
+public class CurriculumCourseDaoTest extends SolutionDaoTest<CourseSchedule> {
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getSolutionFilesAsParameters(new CurriculumCourseDao());
+        return getSolutionFilesAsParameters(new CurriculumCourseApp());
     }
 
     public CurriculumCourseDaoTest(File solutionFile) {
-        super(solutionFile);
+        super(new CurriculumCourseApp(), solutionFile);
     }
 
 }

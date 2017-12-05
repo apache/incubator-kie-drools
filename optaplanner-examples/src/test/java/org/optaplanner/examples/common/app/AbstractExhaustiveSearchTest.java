@@ -28,7 +28,6 @@ import org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchPhaseConfig;
 import org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchType;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
-import org.optaplanner.examples.common.persistence.SolutionDao;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -36,23 +35,23 @@ import org.optaplanner.examples.common.persistence.SolutionDao;
 @RunWith(Parameterized.class)
 public abstract class AbstractExhaustiveSearchTest<Solution_> extends AbstractPhaseTest<Solution_> {
 
-    protected static <Solution_> Collection<Object[]> buildParameters(SolutionDao<Solution_> solutionDao,
+    protected static <Solution_> Collection<Object[]> buildParameters(CommonApp<Solution_> commonApp,
             String... unsolvedFileNames) {
-        return buildParameters(solutionDao, ExhaustiveSearchType.values(),
+        return buildParameters(commonApp, ExhaustiveSearchType.values(),
                 unsolvedFileNames);
     }
 
     protected ExhaustiveSearchType exhaustiveSearchType;
 
-    protected AbstractExhaustiveSearchTest(File dataFile,
+    protected AbstractExhaustiveSearchTest(CommonApp<Solution_> commonApp, File dataFile,
             ExhaustiveSearchType exhaustiveSearchType) {
-        super(dataFile);
+        super(commonApp, dataFile);
         this.exhaustiveSearchType = exhaustiveSearchType;
     }
 
     @Override
     protected SolverFactory<Solution_> buildSolverFactory() {
-        SolverFactory<Solution_> solverFactory = SolverFactory.createFromXmlResource(createSolverConfigResource());
+        SolverFactory<Solution_> solverFactory = SolverFactory.createFromXmlResource(commonApp.getSolverConfig());
         SolverConfig solverConfig = solverFactory.getSolverConfig();
         solverConfig.setTerminationConfig(new TerminationConfig());
         ExhaustiveSearchPhaseConfig exhaustiveSearchPhaseConfig = new ExhaustiveSearchPhaseConfig();
