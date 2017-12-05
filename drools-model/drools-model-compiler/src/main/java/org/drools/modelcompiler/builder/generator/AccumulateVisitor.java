@@ -13,6 +13,7 @@ import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.LambdaExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
+import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.javaparser.ast.stmt.ExpressionStmt;
 import org.drools.javaparser.ast.type.TypeParameter;
 import org.drools.modelcompiler.builder.PackageModel;
@@ -35,7 +36,7 @@ public class AccumulateVisitor {
     }
 
     public void visit(AccumulateDescr descr) {
-        final MethodCallExpr accumulateDSL = new MethodCallExpr(null, "accumulate");
+        final MethodCallExpr accumulateDSL = new MethodCallExpr(null, "accumulate2");
         context.addExpression(accumulateDSL);
         context.pushExprPointer(accumulateDSL::addArgument);
         ModelGenerator.visit(context, packageModel, descr.getInputPattern() == null ? descr.getInput() : descr.getInputPattern());
@@ -66,7 +67,9 @@ public class AccumulateVisitor {
 
         context.pushExprPointer(accumulateDSL::addArgument);
 
-        final MethodCallExpr functionDSL = new MethodCallExpr(null, function.getFunction());
+
+        final MethodCallExpr functionDSL = new MethodCallExpr(null, "accFunc");
+        functionDSL.addArgument(new StringLiteralExpr(function.getFunction()));
 
         final String expression = function.getParams()[0];
         final Expression expr = DrlxParser.parseExpression(expression).getExpr();
@@ -88,23 +91,25 @@ public class AccumulateVisitor {
             NameExpr _this = new NameExpr("_this");
             Expression withThis = DrlxParseUtil.prepend(_this, typedExpression.getExpression());
 
+            final Class<?> type = typedExpression.getType();
             Class<?> aggregateFunctionType = getReturnTypeForAggregateFunction(functionDSL.getName().asString(), clazz, methodCallExpr);
             final String newBindVariable = context.getExprId(aggregateFunctionType, typedExpression.toString());
-            ModelGenerator.DrlxParseResult result = new ModelGenerator.DrlxParseResult(clazz, "", variableName, withThis, typedExpression.getType())
+            ModelGenerator.DrlxParseResult result = new ModelGenerator.DrlxParseResult(clazz, "", variableName, withThis, type)
                     .setLeft(typedExpression)
                     .setExprBinding(newBindVariable);
             final MethodCallExpr bind = ModelGenerator.buildBinding(result);
             context.addExpression(bind);
 
+            final Class bindClass = getReturnTypeForAggregateFunction(function.getFunction(), Optional.of(type));
             final DeclarationSpec declaration = new DeclarationSpec(newBindVariable, typedExpression.getType());
             context.addDeclaration(declaration);
             functionDSL.addArgument(new NameExpr(toVar(newBindVariable)));
 
-            context.addDeclaration(new DeclarationSpec(bindingId, aggregateFunctionType));
+            context.addDeclaration(new DeclarationSpec(bindingId, bindClass));
         } else if (expr instanceof NameExpr) {
             functionDSL.addArgument(new NameExpr(toVar(((NameExpr) expr).getName().asString())));
             final Optional<DeclarationSpec> declarationById = context.getDeclarationById(expr.toString());
-            final Class bindClass = getReturnTypeForAggregateFunction(functionDSL.getName().asString(), declarationById.map(a -> a.declarationClass));
+            final Class bindClass = getReturnTypeForAggregateFunction(function.getFunction(), declarationById.map(a -> a.declarationClass));
             context.addDeclaration(new DeclarationSpec(bindingId, bindClass));
         }
 

@@ -19,6 +19,7 @@ import org.drools.model.functions.accumulate.Count;
 import org.drools.model.functions.accumulate.Max;
 import org.drools.model.functions.accumulate.Min;
 import org.drools.model.functions.accumulate.Sum;
+import org.drools.model.functions.accumulate.UserDefinedAccumulateFunction;
 import org.drools.model.functions.temporal.AfterPredicate;
 import org.drools.model.functions.temporal.BeforePredicate;
 import org.drools.model.functions.temporal.Interval;
@@ -271,6 +272,10 @@ public class DSL {
         return new AccumulateExprViewItem(viewItem, functions);
     }
 
+    public static <T> ExprViewItem<T> accumulate2(ViewItem<?> viewItem, UserDefinedAccumulateFunction... functions) {
+        return new AccumulateExprViewItem(viewItem, functions);
+    }
+
     public static ViewItem or(ViewItemBuilder<?> expression, ViewItemBuilder<?>... expressions) {
         if (expressions == null || expressions.length == 0) {
             return expression.get();
@@ -356,6 +361,10 @@ public class DSL {
     }
 
     // -- Accumulate Functions --
+
+    public static UserDefinedAccumulateFunction accFunc(String functionName, Variable source) {
+        return new UserDefinedAccumulateFunction(source, functionName);
+    }
 
     public static <N extends Number> Sum<N> sum(Variable<N> source) {
         return new Sum<>(source);

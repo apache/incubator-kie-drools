@@ -10,13 +10,15 @@ import org.drools.model.Constraint;
 import org.drools.model.DataSourceDefinition;
 import org.drools.model.Pattern;
 import org.drools.model.Variable;
+import org.drools.model.functions.accumulate.UserDefinedAccumulateFunction;
 import org.drools.model.impl.ModelComponent;
 
 public class AccumulatePatternImpl<T> extends AbstractSinglePattern implements AccumulatePattern<T>, ModelComponent {
 
     private Pattern<T> pattern;
     private final Optional<CompositePatterns> compositePatterns;
-    private final AccumulateFunction<T, ?, ?>[] functions;
+    private AccumulateFunction<T, ?, ?>[] functions = new AccumulateFunction[0];
+    private UserDefinedAccumulateFunction[] userDefinedAccumulateFunctions = new UserDefinedAccumulateFunction[0];
     private final Variable[] boundVariables;
 
     public AccumulatePatternImpl(Pattern<T> pattern, Optional<CompositePatterns> compositePatterns, AccumulateFunction<T, ?, ?>... functions) {
@@ -29,6 +31,16 @@ public class AccumulatePatternImpl<T> extends AbstractSinglePattern implements A
         }
     }
 
+    public AccumulatePatternImpl(Pattern<T> pattern, Optional<CompositePatterns> compositePatterns, UserDefinedAccumulateFunction... userDefinedAccumulateFunctions) {
+        this.pattern = pattern;
+        this.compositePatterns = compositePatterns;
+        this.userDefinedAccumulateFunctions = userDefinedAccumulateFunctions;
+        boundVariables = new Variable[userDefinedAccumulateFunctions.length];
+        for (int i = 0; i < userDefinedAccumulateFunctions.length; i++) {
+            boundVariables[i] = userDefinedAccumulateFunctions[i].getVariable();
+        }
+    }
+
     public void setPattern(Pattern<T> pattern) {
         this.pattern = pattern;
     }
@@ -36,6 +48,11 @@ public class AccumulatePatternImpl<T> extends AbstractSinglePattern implements A
     @Override
     public AccumulateFunction<T, ?, ?>[] getFunctions() {
         return functions;
+    }
+
+    @Override
+    public UserDefinedAccumulateFunction[] getUserDefinedAccumulateFunctions() {
+        return userDefinedAccumulateFunctions;
     }
 
     @Override

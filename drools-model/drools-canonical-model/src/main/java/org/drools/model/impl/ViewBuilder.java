@@ -35,6 +35,7 @@ import org.drools.model.constraints.SingleConstraint1;
 import org.drools.model.constraints.SingleConstraint2;
 import org.drools.model.constraints.SingleConstraint3;
 import org.drools.model.constraints.TemporalConstraint;
+import org.drools.model.functions.accumulate.UserDefinedAccumulateFunction;
 import org.drools.model.patterns.AccumulatePatternImpl;
 import org.drools.model.patterns.CompositePatterns;
 import org.drools.model.patterns.ExistentialPatternImpl;
@@ -203,7 +204,12 @@ public class ViewBuilder {
     }
 
     private static Optional<PatternImpl> findPatternImplSource(AccumulatePatternImpl accumulatePattern, List<Condition> conditions) {
-        final Variable source = accumulatePattern.getFunctions()[0].getSource();
+        final Variable source;
+        if(accumulatePattern.getFunctions().length > 0) {
+            source = accumulatePattern.getFunctions()[0].getSource();
+        } else {
+            source = accumulatePattern.getUserDefinedAccumulateFunctions()[0].getSource();
+        }
 
         for (Condition subCondition : conditions) {
             if (subCondition instanceof PatternImpl) {
@@ -297,11 +303,24 @@ public class ViewBuilder {
                 usedVars.add(accFunc.getVariable());
             }
 
+            for ( UserDefinedAccumulateFunction accFunc : acc.getUserDefinedAccumulateFunctions()) {
+                usedVars.add(accFunc.getVariable());
+            }
+
             final Condition newCondition = viewItem2Condition(acc.getExpr(), condition, usedVars, inputs);
             if (newCondition instanceof Pattern) {
-                return new AccumulatePatternImpl((Pattern) newCondition, Optional.empty(), acc.getFunctions());
+                if(acc.getFunctions().length > 0) {
+                    return new AccumulatePatternImpl((Pattern) newCondition, Optional.empty(), acc.getFunctions());
+                } else {
+                    return new AccumulatePatternImpl((Pattern) newCondition, Optional.empty(), acc.getUserDefinedAccumulateFunctions());
+                }
+
             } else if (newCondition instanceof CompositePatterns) {
-                return new AccumulatePatternImpl(null, Optional.of(newCondition), acc.getFunctions());
+                if(acc.getFunctions().length > 0) {
+                    return new AccumulatePatternImpl(null, Optional.of(newCondition), acc.getFunctions());
+                } else {
+                    return new AccumulatePatternImpl(null, Optional.of(newCondition), acc.getUserDefinedAccumulateFunctions());
+                }
             } else {
                 throw new RuntimeException("Unknown pattern");
             }
