@@ -1,0 +1,190 @@
+@comment{
+
+  Copyright 2017 Red Hat, Inc. and/or its affiliates.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+}
+package @{pmmlPackageName};
+
+import java.util.List;
+import java.util.Map;
+
+import org.kie.pmml.pmml_4_2.model.tree.AbstractTreeToken;
+import org.kie.pmml.pmml_4_2.model.datatypes.PMML4Data;
+import org.kie.api.definition.type.PropertyReactive;
+
+@comment{
+   The class that is generated from this MVEL template is meant to
+   act as a POJO representing the MiningSchema found in a Tree model,
+   which is itself contained in a PMML document.
+   For each element in the MiningSchema, two properties are generated:
+   1) The element name, prefixed with an 'm' is used to indicate whether the data is considered "missing"
+   2) The element name, prefixed with a 'v' is used to hold the value
+}
+@PropertyReactive
+public class @{className} extends AbstractTreeToken {
+@code{ String fldUsage; }
+    @foreach{dataField: dataFields}
+    @code{ fldUsage = dataField.fieldUsageType.value; }
+    @if{ fldUsage != "predicted" && fldUsage != "target" }
+    private boolean m@{dataField.compactUpperCaseName} = true;
+    private @{dataField.type} v@{dataField.compactUpperCaseName};
+    @elseif{ fldUsage == "predicted" || fldUsage == "target" }
+    private @{dataField.type} outcome;
+    @end{}
+    @end{}
+
+
+    public @{className}() {
+       super();
+    }
+
+    public @{className}( String correlationId, String modelName ) {
+       super(correlationId, modelName);
+       @foreach{dataField: dataFields}
+       @if{ dataField.type=="Double" }v@{dataField.compactUpperCaseName} = 0.0; @elseif{ dataField.type=="Integer" }v@{dataField.compactUpperCaseName} = 0; @end{}
+       @end{}
+    }
+
+    public @{className}(String correlationId, String context, String current, String marker, String visitMode, boolean downward,
+                        List trail, Map results, Double confidence, Double totalCount) {
+       super(correlationId, context,current,marker,visitMode,downward,trail,results,confidence,totalCount);
+    }
+
+    
+    public @{className}( String correlationId, String context, String current, String marker, String visitMode, boolean downward,
+                        List trail, Map results, Double confidence, Double totalCount, Map<String, PMML4Data> fields) {
+       super(correlationId,context,current,marker,visitMode,downward,trail,results,confidence,totalCount);
+       String fldName;
+       @foreach{dataField: dataFields}
+       @code{ fldUsage = dataField.fieldUsageType.value; }
+       @if{ fldUsage != "predicted" && fldUsage != "target" }
+       fldName = "@{dataField.compactUpperCaseName}";
+       try {
+          this.m@{dataField.compactUpperCaseName} = getMappedPMML4DataMissing( fields, "@{dataField.compactUpperCaseName}" );
+          this.v@{dataField.compactUpperCaseName} = getMappedPMML4DataValue( fields, "@{dataField.compactUpperCaseName}" );
+       } catch (ClassCastException ccx) {
+          System.out.println("Error trying to cast class for "+fldName);
+       }
+       @end{}
+       @end{}
+    }
+
+    public @{className}( PMMLRequestData requestData ) {
+       super( requestData.getCorrelationId(), requestData.getModelName() );
+       Map<String, ParameterInfo> mappedFields = requestData.getMappedRequestParams();
+       @foreach{dataField: dataFields}
+       @code{ fldUsage = dataField.fieldUsageType.value; }
+       @if{ fldUsage != "predicted" && fldUsage != "target" }
+       @{dataField.type} val@{dataField.compactUpperCaseName} = getMappedParameterValue( mappedFields, "@{dataField.name}" );
+       if ( val@{dataField.compactUpperCaseName} != null ) {
+          this.m@{dataField.compactUpperCaseName} = false;
+          this.v@{dataField.compactUpperCaseName} = val@{dataField.compactUpperCaseName};
+       } else {
+          this.m@{dataField.compactUpperCaseName} = true;
+          this.v@{dataField.compactUpperCaseName} = null;
+       }
+       @end{}
+       @end{}
+    }
+    
+    private boolean getMappedPMML4DataMissing(Map<String, PMML4Data> map, String fieldName) {
+       if (map.containsKey( fieldName )) {
+          PMML4Data data = map.get( fieldName );
+          if ( data != null && !data.isPlaceholder() ) {
+             return data.isMissing();
+          }
+       }
+       return true;
+    }
+    
+    private <T> T getMappedPMML4DataValue(Map<String, PMML4Data> map, String fieldName) {
+       T value = null;
+       if (map.containsKey( fieldName )) {
+          PMML4Data data = map.get( fieldName );
+          if ( data != null && !data.isPlaceholder() ) {
+             value = (T)data.getValue();
+          }
+       } else {
+          System.out.println("PMML4Data map does not contain field: "+fieldName);
+       }
+       return value;
+    }
+
+    private <T> T getMappedParameterValue(Map<String, ParameterInfo> map, String fieldName) {
+       T value = null;
+       if ( map.containsKey( fieldName ) ) {
+          ParameterInfo pinfo = map.get( fieldName );
+          if ( pinfo != null ) {
+             value = (T)pinfo.getValue();
+          }
+       }
+       return value;
+    }
+
+    @foreach{dataField: dataFields}
+    @code{ fldUsage = dataField.fieldUsageType.value; }
+    @if{ fldUsage != "predicted" && fldUsage != "target" }
+    public @{dataField.type} getV@{dataField.compactUpperCaseName}() {
+       return this.v@{dataField.compactUpperCaseName};
+    }
+
+    public void setV@{dataField.compactUpperCaseName}( @{dataField.type} @{dataField.name} ) {
+       this.v@{dataField.compactUpperCaseName} = @{dataField.name};
+    }
+
+    public boolean getM@{dataField.compactUpperCaseName}() {
+       return this.m@{dataField.compactUpperCaseName};
+    }
+
+    public void setM@{dataField.compactUpperCaseName}( boolean m@{dataField.compactUpperCaseName} ) {
+       this.m@{dataField.compactUpperCaseName} = m@{dataField.compactUpperCaseName};
+    }
+    @elseif{ fldUsage == "predicted" || fldUsage == "target" }
+    public @{dataField.type} getOutcome() {
+       return this.outcome;
+    }
+    
+    public void setOutcome( @{dataField.type} outcome ) {
+       this.outcome = outcome;
+    }
+    @end{}
+    @end{}
+
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public String toString() {
+       StringBuilder builder = new StringBuilder();
+       builder.append("@{className}( modelName=@{modelName}, ");
+       builder.append(super.toString());
+       @foreach{dataField: dataFields}
+       @code{ fldUsage = dataField.fieldUsageType.value; }
+       @if{ fldUsage != "predicted" && fldUsage != "target" }
+       builder.append(" m@{dataField.compactUpperCaseName}=").append(m@{dataField.compactUpperCaseName}).append(", ");
+       builder.append(" v@{dataField.compactUpperCaseName}=").append(v@{dataField.compactUpperCaseName}).append(", ");
+       @elseif{ fldUsage == "predicted" || fldUsage == "target" }
+       builder.append(" outcome=").append(this.outcome);
+       @end{}
+       @end{}
+       builder.append(")");
+       return builder.toString();
+    }
+
+}
