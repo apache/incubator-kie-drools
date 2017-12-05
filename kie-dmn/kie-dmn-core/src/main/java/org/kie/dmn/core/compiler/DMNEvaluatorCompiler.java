@@ -174,15 +174,14 @@ public class DMNEvaluatorCompiler {
                     String entryName = ce.getVariable().getName();
                     DMNCompilerHelper.checkVariableName( model, node.getSource(), entryName );
                     DMNType entryType = compiler.resolveTypeRef( model, node, ce.getVariable(), ce.getVariable(), ce.getVariable().getTypeRef() );
+                    // add context entry to the list of available variables for the following entries
+                    ctx.setVariable( entryName, entryType );
                     DMNExpressionEvaluator evaluator = compileExpression( ctx, model, node, entryName, ce.getExpression() );
                     ctxEval.addEntry(
                             entryName,
                             entryType,
                             evaluator,
                             ce );
-
-                    // add context entry to the list of available variables for the following entries
-                    ctx.setVariable( entryName, entryType );
                 } else {
                     // if the variable is not defined, then it should be the last
                     // entry in the context and the result of this context evaluation is the
