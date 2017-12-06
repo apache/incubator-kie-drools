@@ -38,7 +38,7 @@ import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.util.IoUtils;
 import org.drools.model.Model;
-import org.drools.model.Rule;
+import org.drools.model.NamedModelItem;
 import org.drools.modelcompiler.builder.CanonicalKieBaseUpdater;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
 import org.kie.api.KieBaseConfiguration;
@@ -155,80 +155,87 @@ public class CanonicalKieModule extends ZipKieModule {
             }
 
             Model oldModel = entry.getValue();
-            List<Rule> oldRules = oldModel.getRules();
-            List<Rule> newRules = newModel.getRules();
-
-            if ( oldRules.isEmpty() ) {
-                if ( !newRules.isEmpty() ) {
-                    ResourceChangeSet changeSet = new ResourceChangeSet( newRules.get( 0 ).getPackage(), ChangeType.UPDATED );
-                    for (Rule newRule : newRules) {
-                        changeSet.getChanges().add( new ResourceChange( ChangeType.ADDED, ResourceChange.Type.RULE, newRule.getName() ) );
-                    }
-                }
-                continue;
-            } else if ( newRules.isEmpty() ) {
-                ResourceChangeSet changeSet = new ResourceChangeSet( oldRules.get( 0 ).getPackage(), ChangeType.UPDATED );
-                for (Rule oldRule : oldRules) {
-                    changeSet.getChanges().add( new ResourceChange( ChangeType.REMOVED, ResourceChange.Type.RULE, oldRule.getName() ) );
-                }
+            ResourceChangeSet changeSet = calculateResourceChangeSet( oldModel, newModel );
+            if ( !changeSet.getChanges().isEmpty() ) {
+                result.registerChanges( entry.getKey(), changeSet );
             }
-
-            oldRules.sort( Comparator.comparing( Rule::getName ) );
-            newRules.sort( Comparator.comparing( Rule::getName ) );
-
-            ResourceChangeSet changeSet = new ResourceChangeSet( oldRules.get( 0 ).getPackage(), ChangeType.UPDATED );
-
-            Iterator<Rule> oldRulesIterator = oldRules.iterator();
-            Iterator<Rule> newRulesIterator = newRules.iterator();
-
-            Rule currentOld = oldRulesIterator.next();
-            Rule currentNew = newRulesIterator.next();
-
-            while (true) {
-                int compare = currentOld.getName().compareTo( currentNew.getName() );
-                if ( compare == 0 ) {
-                    if ( !areEqualInModel( currentOld, currentNew ) ) {
-                        changeSet.getChanges().add( new ResourceChange( ChangeType.UPDATED, ResourceChange.Type.RULE, currentOld.getName() ) );
-                    }
-                    if ( oldRulesIterator.hasNext() ) {
-                        currentOld = oldRulesIterator.next();
-                    } else {
-                        break;
-                    }
-                    if ( newRulesIterator.hasNext() ) {
-                        currentNew = newRulesIterator.next();
-                    } else {
-                        break;
-                    }
-                } else if ( compare < 0 ) {
-                    changeSet.getChanges().add( new ResourceChange( ChangeType.REMOVED, ResourceChange.Type.RULE, currentOld.getName() ) );
-                    if ( oldRulesIterator.hasNext() ) {
-                        currentOld = oldRulesIterator.next();
-                    } else {
-                        break;
-                    }
-                } else {
-                    changeSet.getChanges().add( new ResourceChange( ChangeType.ADDED, ResourceChange.Type.RULE, currentNew.getName() ) );
-                    if ( newRulesIterator.hasNext() ) {
-                        currentNew = newRulesIterator.next();
-                    } else {
-                        break;
-                    }
-                }
-            }
-
-            while (oldRulesIterator.hasNext()) {
-                changeSet.getChanges().add( new ResourceChange( ChangeType.REMOVED, ResourceChange.Type.RULE, oldRulesIterator.next().getName() ) );
-            }
-
-            while (newRulesIterator.hasNext()) {
-                changeSet.getChanges().add( new ResourceChange( ChangeType.ADDED, ResourceChange.Type.RULE, newRulesIterator.next().getName() ) );
-            }
-
-            result.registerChanges( entry.getKey(), changeSet );
         }
 
         return result;
+    }
+
+    private ResourceChangeSet calculateResourceChangeSet( Model oldModel, Model newModel ) {
+        ResourceChangeSet changeSet = new ResourceChangeSet( oldModel.getName(), ChangeType.UPDATED );
+        addModifiedItemsToChangeSet( changeSet, ResourceChange.Type.RULE, oldModel.getRules(), newModel.getRules() );
+        addModifiedItemsToChangeSet( changeSet, ResourceChange.Type.RULE, oldModel.getQueries(), newModel.getQueries() );
+        addModifiedItemsToChangeSet( changeSet, ResourceChange.Type.GLOBAL, oldModel.getGlobals(), newModel.getGlobals() );
+        return changeSet;
+    }
+
+    private void addModifiedItemsToChangeSet( ResourceChangeSet changeSet, ResourceChange.Type type, List<? extends NamedModelItem> oldItems, List<? extends NamedModelItem> newItems ) {
+        if ( oldItems.isEmpty() ) {
+            if ( !newItems.isEmpty() ) {
+                for (NamedModelItem newItem : newItems) {
+                    changeSet.getChanges().add( new ResourceChange( ChangeType.ADDED, type, newItem.getName() ) );
+                }
+            }
+            return;
+        } else if ( newItems.isEmpty() ) {
+            for (NamedModelItem oldItem : oldItems) {
+                changeSet.getChanges().add( new ResourceChange( ChangeType.REMOVED, type, oldItem.getName() ) );
+            }
+            return;
+        }
+
+        oldItems.sort( Comparator.comparing( NamedModelItem::getName ) );
+        newItems.sort( Comparator.comparing( NamedModelItem::getName ) );
+
+        Iterator<? extends NamedModelItem> oldRulesIterator = oldItems.iterator();
+        Iterator<? extends NamedModelItem> newRulesIterator = newItems.iterator();
+
+        NamedModelItem currentOld = oldRulesIterator.next();
+        NamedModelItem currentNew = newRulesIterator.next();
+
+        while (true) {
+            int compare = currentOld.getName().compareTo( currentNew.getName() );
+            if ( compare == 0 ) {
+                if ( !areEqualInModel( currentOld, currentNew ) ) {
+                    changeSet.getChanges().add( new ResourceChange( ChangeType.UPDATED, type, currentOld.getName() ) );
+                }
+                if ( oldRulesIterator.hasNext() ) {
+                    currentOld = oldRulesIterator.next();
+                } else {
+                    break;
+                }
+                if ( newRulesIterator.hasNext() ) {
+                    currentNew = newRulesIterator.next();
+                } else {
+                    break;
+                }
+            } else if ( compare < 0 ) {
+                changeSet.getChanges().add( new ResourceChange( ChangeType.REMOVED, type, currentOld.getName() ) );
+                if ( oldRulesIterator.hasNext() ) {
+                    currentOld = oldRulesIterator.next();
+                } else {
+                    break;
+                }
+            } else {
+                changeSet.getChanges().add( new ResourceChange( ChangeType.ADDED, type, currentNew.getName() ) );
+                if ( newRulesIterator.hasNext() ) {
+                    currentNew = newRulesIterator.next();
+                } else {
+                    break;
+                }
+            }
+        }
+
+        while (oldRulesIterator.hasNext()) {
+            changeSet.getChanges().add( new ResourceChange( ChangeType.REMOVED, type, oldRulesIterator.next().getName() ) );
+        }
+
+        while (newRulesIterator.hasNext()) {
+            changeSet.getChanges().add( new ResourceChange( ChangeType.ADDED, type, newRulesIterator.next().getName() ) );
+        }
     }
 
     @Override
