@@ -868,6 +868,7 @@ public class RuleImpl implements Externalizable,
 
     public void setRuleUnitClassName( String ruleUnitClassName ) {
         this.ruleUnitClassName = ruleUnitClassName;
+        setAgendaGroup( ruleUnitClassName );
     }
 
     public boolean hasRuleUnit() {
