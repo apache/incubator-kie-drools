@@ -91,7 +91,9 @@ public class CoachShuttleGatheringImporter extends AbstractTxtSolutionImporter<C
 
             int busListSize = solution.getCoachList().size() + solution.getShuttleList().size();
             int base = solution.getStopList().size() + solution.getShuttleList().size();
-            BigInteger possibleSolutionSize = factorial(base + busListSize - 1).divide(factorial(busListSize - 1));
+            BigInteger a = factorial(base + busListSize - 1);
+            BigInteger b = factorial(busListSize - 1);
+            BigInteger possibleSolutionSize = (a == null || b == null) ? null : a.divide(b);
             logger.info("CoachShuttleGathering {} has {} road locations, {} coaches, {} shuttles and {} bus stops"
                          + " with a search space of {}.",
                     getInputId(),

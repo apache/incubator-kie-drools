@@ -35,10 +35,10 @@ Soft level 3 constraints:
 
 [source,options="nowrap"]
 ----
-24tasks-8employees   has  24 tasks, 6 skills,  8 employees,   4 task types and  4 customers with a search space of   10^40.
-50tasks-5employees   has  50 tasks, 5 skills,  5 employees,  10 task types and 10 customers with a search space of   10^91.
-100tasks-5employees  has 100 tasks, 5 skills,  5 employees,  20 task types and 15 customers with a search space of  10^207.
-500tasks-20employees has 500 tasks, 6 skills, 20 employees, 100 task types and 60 customers with a search space of 10^1384.
+24tasks-8employees   has  24 tasks, 6 skills,  8 employees,   4 task types and  4 customers with a search space of   10^30.
+50tasks-5employees   has  50 tasks, 5 skills,  5 employees,  10 task types and 10 customers with a search space of   10^69.
+100tasks-5employees  has 100 tasks, 5 skills,  5 employees,  20 task types and 15 customers with a search space of  10^164.
+500tasks-20employees has 500 tasks, 6 skills, 20 employees, 100 task types and 60 customers with a search space of 10^1168.
 ----
 
 

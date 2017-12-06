@@ -103,8 +103,9 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter<VehicleR
                 solution.setName(firstLine);
                 readTimeWindowedFormat();
             }
-            BigInteger possibleSolutionSize
-                    = factorial(customerListSize + vehicleListSize - 1).divide(factorial(vehicleListSize - 1));
+            BigInteger a = factorial(customerListSize + vehicleListSize - 1);
+            BigInteger b = factorial(vehicleListSize - 1);
+            BigInteger possibleSolutionSize = (a == null || b == null) ? null : a.divide(b);
             logger.info("VehicleRoutingSolution {} has {} depots, {} vehicles and {} customers with a search space of {}.",
                     getInputId(),
                     solution.getDepotList().size(),

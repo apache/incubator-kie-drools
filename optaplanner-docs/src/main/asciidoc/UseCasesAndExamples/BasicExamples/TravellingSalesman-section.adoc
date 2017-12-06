@@ -17,11 +17,11 @@ Yet, in the real world, it is often only part of a planning problem, along with 
 
 [source,options="nowrap"]
 ----
-dj38     has  38 cities with a search space of   10^58.
-europe40 has  40 cities with a search space of   10^62.
-st70     has  70 cities with a search space of  10^126.
-pcb442   has 442 cities with a search space of 10^1166.
-lu980    has 980 cities with a search space of 10^2927.
+dj38     has  38 cities with a search space of   10^43.
+europe40 has  40 cities with a search space of   10^46.
+st70     has  70 cities with a search space of   10^98.
+pcb442   has 442 cities with a search space of  10^976.
+lu980    has 980 cities with a search space of 10^2504.
 ----
 
 

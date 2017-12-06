@@ -25,7 +25,7 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 |* 1 entity class
 * 1 variable
 |* Entity <= `256`
-* Value <= 256
+* Value <= `256`
 * Search space <= `10^616`
 |* Pointless (http://en.wikipedia.org/wiki/Eight_queens_puzzle#Explicit_solutions[cheatable])
 |None
@@ -34,7 +34,7 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 |* 1 entity class
 * 1 variable
 |* Entity <= `2400`
-* Value <= 800
+* Value <= `800`
 * Search space <= `10^6967`
 |* No
 * Defined by us
@@ -44,8 +44,8 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 |* 1 entity class
 * 1 chained variable
 |* Entity <= `980`
-* Value <= 980
-* Search space <= `10^2927`
+* Value <= `980`
+* Search space <= `10^2504`
 |* Unrealistic
 * http://www.math.uwaterloo.ca/tsp/[TSP web]
 |* <<realTimePlanning,Real-time planning>>
@@ -54,7 +54,7 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 |* 1 entity class
 * 1 variable
 |* Entity <= `144`
-* Value <= 72
+* Value <= `72`
 * Search space <= `10^310`
 |* Unrealistic
 |* Decision Table spreadsheet (XLS) for score constraints
@@ -63,7 +63,7 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 |* 1 entity class
 * 1 variable
 |* Entity <= `72`
-* Value <= 7
+* Value <= `7`
 * Search space <= `10^60`
 |* No
 * Defined by us
@@ -74,7 +74,7 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 |* 1 entity class
 * 2 variables
 |* Entity <= `10`
-* Value <= 320 and <= `5`
+* Value <= `320` and <= `5`
 * Search space <= `10^320`
 |* No
 * Defined by us
@@ -84,7 +84,7 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 |* 1 entity class
 * 2 variables
 |* Entity <= `434`
-* Value <= 25 and <= `20`
+* Value <= `25` and <= `20`
 * Search space <= `10^1171`
 |* Realistic
 * http://www.cs.qub.ac.uk/itc2007/curriculmcourse/course_curriculm_index.htm[ITC 2007 track 3]
@@ -94,7 +94,7 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 |* 1 entity class
 * 1 variable
 |* Entity <= `50000`
-* Value <= 5000
+* Value <= `5000`
 * Search space <= `10^184948`
 |* Nearly realistic
 * http://challenge.roadef.org/2012/en/[ROADEF 2012]
@@ -105,9 +105,9 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 * 1 chained variable
 * 1 shadow entity class
 * 1 automatic shadow variable
-|* Entity <= `134`
-* Value <= 141
-* Search space <= `10^285`
+|* Entity <= `2740`
+* Value <= `2795`
+* Search space <= `10^8380`
 |* Unrealistic
 * http://neo.lcc.uma.es/vrp/[VRP web]
 |* <<shadowVariable,Shadow variable>>
@@ -118,9 +118,9 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 |<<vehicleRouting,Vehicle routing>> with time windows
 |* All of Vehicle routing
 * 1 shadow variable
-|* Entity <= `1000`
-* Value <= 1250
-* Search space <= `10^3000`
+|* Entity <= `2740`
+* Value <= `2795`
+* Search space <= `10^8380`
 |* Unrealistic
 * http://neo.lcc.uma.es/vrp/[VRP web]
 |* All of Vehicle routing
@@ -131,7 +131,7 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 * 2 variables
 * 1 shadow variable
 |* Entity <= `640`
-* Value <= ? and <= `?`
+* Value <= `?` and <= `?`
 * Search space <= `?`
 |* Nearly realistic
 * http://gent.cs.kuleuven.be/mista2013challenge/[MISTA 2013]
@@ -143,7 +143,7 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 |* 1 entity class
 * 1 nullable variable
 |* Entity <= `2750`
-* Value <= 471
+* Value <= `471`
 * Search space <= `10^6851`
 |* Unrealistic
 * https://people.cs.kuleuven.be/~wim.vancroonenburg/pas/[Kaho PAS]
@@ -156,8 +156,8 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 * 1 automatic shadow variable
 * 1 shadow variable
 |* Entity <= `500`
-* Value <= 520
-* Search space <= `10^1384`
+* Value <= `520`
+* Search space <= `10^1168`
 |* No
 * Defined by us
 |* <<bendableScore,Bendable score>>
@@ -170,7 +170,7 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 |* 2 entity classes (same hierarchy)
 * 2 variables
 |* Entity <= `1096`
-* Value <= 80 and <= `49`
+* Value <= `80` and <= `49`
 * Search space <= `10^3374`
 |* Realistic
 * http://www.cs.qub.ac.uk/itc2007/examtrack/exam_track_index.htm[ITC 2007 track 1]
@@ -180,7 +180,7 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 |* 1 entity class
 * 1 variable
 |* Entity <= `752`
-* Value <= 50
+* Value <= `50`
 * Search space <= `10^1277`
 |* Realistic
 * http://www.kuleuven-kortrijk.be/nrpcompetition[INRC 2010]
@@ -191,8 +191,8 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 |* 1 entity class
 * 1 variable
 |* Entity <= `1560`
-* Value <= 78
-* Search space <= `10^2951`
+* Value <= `78`
+* Search space <= `10^2301`
 |* Unrealistic
 * http://mat.gsia.cmu.edu/TOURN/[TTP]
 |* Custom <<moveListFactory,MoveListFactory>>
@@ -201,7 +201,7 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 |* 1 entity class
 * 2 variables
 |* Entity <= `500`
-* Value <= 100 and <= `288`
+* Value <= `100` and <= `288`
 * Search space <= `10^20078`
 |* Nearly realistic
 * http://iconchallenge.insight-centre.org/challenge-energy[ICON Energy]
@@ -212,7 +212,7 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 |* 1 entity class
 * 1 variable
 |* Entity <= `11`
-* Value = 1000
+* Value = `1000`
 * Search space <= `10^4`
 |* No
 * Defined by us

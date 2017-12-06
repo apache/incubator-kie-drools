@@ -158,9 +158,9 @@ public class TaskAssigningGenerator extends LoggingMain {
         createTaskTypeList(solution, taskTypeListSize);
         createTaskList(solution, taskListSize);
 
-        BigInteger possibleSolutionSize
-                = AbstractSolutionImporter.InputBuilder.factorial(taskListSize + employeeListSize - 1)
-                .divide(AbstractSolutionImporter.InputBuilder.factorial(employeeListSize - 1));
+        BigInteger a = AbstractSolutionImporter.InputBuilder.factorial(taskListSize + employeeListSize - 1);
+        BigInteger b = AbstractSolutionImporter.InputBuilder.factorial(employeeListSize - 1);
+        BigInteger possibleSolutionSize = (a == null || b == null) ? null : a.divide(b);
         logger.info("TaskAssigningSolution {} has {} tasks, {} skills, {} employees, {} task types and {} customers with a search space of {}.",
                 fileName,
                 taskListSize,

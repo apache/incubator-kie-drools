@@ -56,7 +56,7 @@ public abstract class AbstractSolutionImporter<Solution_> extends LoggingMain {
             }
             BigInteger value = BigInteger.ONE;
             for (int i = 1; i <= base; i++) {
-                value = value.multiply(BigInteger.valueOf(base));
+                value = value.multiply(BigInteger.valueOf(i));
             }
             return value;
         }
