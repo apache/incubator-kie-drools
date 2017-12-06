@@ -90,7 +90,7 @@ public class CanonicalKieModule extends ZipKieModule {
     }
 
     private CanonicalKiePackages createKiePackages( KieBaseConfiguration conf ) {
-        return new KiePackagesBuilder(conf, getModels().values()).build();
+        return new KiePackagesBuilder(conf, getModels().values(), this.moduleClassLoader).build();
     }
 
     public CanonicalKiePackages getKiePackages( KieBaseModelImpl kBaseModel ) {

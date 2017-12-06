@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import org.drools.compiler.rule.builder.util.AccumulateUtil;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassObjectType;
@@ -34,6 +35,7 @@ import org.drools.core.base.EnabledBoolean;
 import org.drools.core.base.SalienceInteger;
 import org.drools.core.base.extractors.ArrayElementReader;
 import org.drools.core.base.extractors.SelfReferenceClassFieldReader;
+import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.Accumulate;
@@ -62,7 +64,6 @@ import org.drools.core.spi.Accumulator;
 import org.drools.core.spi.DataProvider;
 import org.drools.core.spi.EvalExpression;
 import org.drools.core.spi.InternalReadAccessor;
-import org.drools.model.AccumulateFunction;
 import org.drools.model.AccumulatePattern;
 import org.drools.model.Argument;
 import org.drools.model.Binding;
@@ -89,6 +90,7 @@ import org.drools.model.consequences.NamedConsequenceImpl;
 import org.drools.model.constraints.SingleConstraint1;
 import org.drools.model.functions.Function1;
 import org.drools.model.functions.Predicate1;
+import org.drools.model.functions.accumulate.AccumulateFunction;
 import org.drools.model.impl.DeclarationImpl;
 import org.drools.model.patterns.CompositePatterns;
 import org.drools.model.patterns.QueryCallPattern;
@@ -105,6 +107,8 @@ import org.drools.modelcompiler.constraints.UnificationConstraint;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.type.Role;
+import org.kie.internal.builder.conf.AccumulateFunctionOption;
+import org.kie.internal.utils.ChainedProperties;
 import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
@@ -128,14 +132,19 @@ public class KiePackagesBuilder {
     private final Map<Class<?>, ClassObjectType> objectTypeCache = new HashMap<>();
 
     private final Collection<Model> models;
+    private final ChainedProperties chainedProperties;
+    private HashMap<String, org.kie.api.runtime.rule.AccumulateFunction> accumulateFunctions = new HashMap<>();
+    private ClassLoader typesClassLoader;
 
-    public KiePackagesBuilder( KieBaseConfiguration conf ) {
-        this(conf, new ArrayList<>());
+    public KiePackagesBuilder(KieBaseConfiguration conf, ProjectClassLoader moduleClassLoader) {
+        this(conf, new ArrayList<>(), moduleClassLoader);
     }
 
-    public KiePackagesBuilder( KieBaseConfiguration conf, Collection<Model> models ) {
-        this.configuration = ( (RuleBaseConfiguration) conf );
+    public KiePackagesBuilder(KieBaseConfiguration conf, Collection<Model> models, ProjectClassLoader moduleClassLoader) {
+        this.configuration = ((RuleBaseConfiguration) conf);
         this.models = models;
+        typesClassLoader = moduleClassLoader.getTypesClassLoader();
+        this.chainedProperties = ChainedProperties.getChainedProperties(typesClassLoader);
     }
 
     public void addModel( Model model ) {
@@ -143,6 +152,7 @@ public class KiePackagesBuilder {
     }
 
     public CanonicalKiePackages build() {
+        this.accumulateFunctions.putAll(AccumulateUtil.buildAccumulateFunctionsMap(this.chainedProperties, this.typesClassLoader));
         for (Model model : models) {
             for (TypeMetaData metaType : model.getTypeMetaDatas()) {
                 KnowledgePackageImpl pkg = ( KnowledgePackageImpl ) packages.computeIfAbsent( metaType.getPackage(), this::createKiePackage );
@@ -486,11 +496,15 @@ public class KiePackagesBuilder {
         return pattern;
     }
 
-    private Accumulate buildAccumulate( RuleContext ctx, AccumulatePattern accPattern, RuleConditionElement source, Pattern pattern, org.drools.model.Pattern condition) {
-        AccumulateFunction<?, ?, ?>[] accFunctions = accPattern.getFunctions();
+    private Accumulate buildAccumulate( RuleContext ctx,
+                                        AccumulatePattern accPattern,
+                                        RuleConditionElement source, Pattern pattern,
+                                        org.drools.model.Pattern condition) {
+
+        AccumulateFunction[] accFunctions = accPattern.getAccumulateFunctions();
 
         if (accFunctions.length == 1) {
-            final AccumulateFunction<?, ?, ?> accFunction = accFunctions[0];
+            final org.kie.api.runtime.rule.AccumulateFunction accFunction = accumulateFunctions.get(accFunctions[0].getFunctionName());
 
             final Declaration declaration = new Declaration(accPattern.getBoundVariables()[0].getName(),
                                                             getReadAcessor(getObjectType(Object.class)),
@@ -503,15 +517,17 @@ public class KiePackagesBuilder {
 
         InternalReadAccessor reader = new SelfReferenceClassFieldReader( Object[].class );
         Accumulator[] accumulators = new Accumulator[accFunctions.length];
-        for (int i = 0; i < accPattern.getFunctions().length; i++) {
+        for (int i = 0; i < accFunctions.length; i++) {
+            final org.kie.api.runtime.rule.AccumulateFunction accFunction = accumulateFunctions.get(accFunctions[i].getFunctionName());
 
             Variable accVar = accPattern.getBoundVariables()[i];
             pattern.addDeclaration( new Declaration(accVar.getName(),
                                                     new ArrayElementReader( reader, i, accVar.getType().asClass()),
                                                     pattern,
                                                     true) );
-            accumulators[i] = new LambdaAccumulator(accFunctions[i], condition);
+            accumulators[i] = new LambdaAccumulator(accFunction, condition);
         }
+
         return new MultiAccumulate( source, new Declaration[0], accumulators);
     }
 

@@ -1,19 +1,19 @@
 package org.drools.model.view;
 
-import org.drools.model.AccumulateFunction;
 import org.drools.model.Condition;
 import org.drools.model.Condition.Type;
 import org.drools.model.Variable;
+import org.drools.model.functions.accumulate.AccumulateFunction;
 
 public class AccumulateExprViewItem<T> extends AbstractExprViewItem<T> {
 
     private final ViewItem<T> expr;
-    private final AccumulateFunction<T, ?, ?>[] functions;
+    private final AccumulateFunction[] accumulateFunctions;
 
-    public AccumulateExprViewItem(ViewItem<T> expr, AccumulateFunction<T, ?, ?>... functions) {
+    public AccumulateExprViewItem(ViewItem<T> expr, AccumulateFunction... accumulateFunctions) {
         super(expr.getFirstVariable());
         this.expr = expr;
-        this.functions = functions;
+        this.accumulateFunctions = accumulateFunctions;
     }
 
     @Override
@@ -30,7 +30,7 @@ public class AccumulateExprViewItem<T> extends AbstractExprViewItem<T> {
         return expr;
     }
 
-    public AccumulateFunction<T, ?, ?>[] getFunctions() {
-        return functions;
+    public AccumulateFunction[] getAccumulateFunctions() {
+        return accumulateFunctions;
     }
 }

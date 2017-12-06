@@ -41,6 +41,7 @@ import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.RuleConditionBuilder;
 import org.drools.compiler.rule.builder.dialect.java.parser.JavaLocalDeclarationDescr;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELExprAnalyzer;
+import org.drools.compiler.rule.builder.util.AccumulateUtil;
 import org.drools.compiler.rule.builder.util.PackageBuilderUtil;
 import org.drools.core.base.accumulators.JavaAccumulatorFunctionExecutor;
 import org.drools.core.base.extractors.ArrayElementReader;
@@ -229,7 +230,7 @@ public class JavaAccumulateBuilder
                                                      AccumulateFunctionCallDescr fc,
                                                      RuleConditionElement source,
                                                      Map<String, Class< ? >> declCls) {
-        String functionName = getFunctionName( context, fc, source, declCls );
+        String functionName = AccumulateUtil.getFunctionName(() -> MVELExprAnalyzer.getExpressionType(context, declCls, source, fc.getParams()[0]), fc.getFunction());
 
         // find the corresponding function
         AccumulateFunction function = context.getConfiguration().getAccumulateFunction( functionName );
@@ -244,28 +245,6 @@ public class JavaAccumulateBuilder
                                                    "Unknown accumulate function: '" + functionName + "' on rule '" + context.getRuleDescr().getName() + "'. All accumulate functions must be registered before building a resource." ) );
         }
         return function;
-    }
-
-    private String getFunctionName( RuleBuildContext context, AccumulateFunctionCallDescr fc, RuleConditionElement source, Map<String, Class<?>> declCls ) {
-        String functionName = fc.getFunction();
-        if (functionName.equals( "sum" )) {
-            Class<?> exprClass = MVELExprAnalyzer.getExpressionType( context, declCls, source, fc.getParams()[0] );
-            if (exprClass == int.class || exprClass == Integer.class) {
-                functionName = "sumI";
-            } else if (exprClass == long.class || exprClass == Long.class) {
-                functionName = "sumL";
-            } else if (exprClass == BigInteger.class) {
-                functionName = "sumBI";
-            } else if (exprClass == BigDecimal.class) {
-                functionName = "sumBD";
-            }
-        } else if (functionName.equals( "average" )) {
-            Class<?> exprClass = MVELExprAnalyzer.getExpressionType( context, declCls, source, fc.getParams()[0] );
-            if (exprClass == BigDecimal.class) {
-                functionName = "averageBD";
-            }
-        }
-        return functionName;
     }
 
     private Accumulator buildAccumulator(RuleBuildContext context, AccumulateDescr accumDescr, Map<String, Declaration> declsInScope, Map<String, Class<?>> declCls, boolean readLocalsFromTuple, Declaration[] sourceDeclArr, Set<Declaration> requiredDecl, AccumulateFunctionCallDescr fc, AccumulateFunction function) {

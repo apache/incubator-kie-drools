@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.CompilationUnit;
 import org.drools.javaparser.ast.Modifier;
@@ -51,6 +52,7 @@ import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.QueryGenerator;
 import org.drools.modelcompiler.builder.generator.QueryParameter;
+import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 
@@ -80,9 +82,16 @@ public class PackageModel {
 
     private DRLIdGenerator exprIdGenerator;
 
-    public PackageModel( String name ) {
+    private KnowledgeBuilderConfigurationImpl configuration;
+
+    public PackageModel(String name, KnowledgeBuilderConfigurationImpl configuration) {
         this.name = name;
+        this.configuration = configuration;
         exprIdGenerator = new DRLIdGenerator();
+    }
+
+    public KnowledgeBuilderConfigurationImpl getConfiguration() {
+        return configuration;
     }
 
     public String getName() {
