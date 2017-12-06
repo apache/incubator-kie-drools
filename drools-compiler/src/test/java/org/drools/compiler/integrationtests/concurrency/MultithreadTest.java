@@ -1,22 +1,20 @@
 /*
- * Copyright 2008 Red Hat, Inc. and/or its affiliates.
- * 
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Created on Feb 5, 2008
  */
 
-package org.drools.compiler.integrationtests;
+package org.drools.compiler.integrationtests.concurrency;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,7 +26,6 @@ import java.util.concurrent.CompletionService;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
@@ -36,9 +33,9 @@ import java.util.concurrent.TimeUnit;
 
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.StockTick;
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.core.RuleBaseConfiguration;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -71,243 +68,11 @@ import static org.junit.Assert.fail;
 public class MultithreadTest extends CommonTestMethodBase {
     private static final Logger LOG = LoggerFactory.getLogger(MultithreadTest.class);
 
-    @Test(timeout = 10000)
-    public void testConcurrentInsertionsFewObjectsManyThreads() throws InterruptedException {
-        final String drl = "import org.drools.compiler.integrationtests.MultithreadTest.Bean\n" +
-                "\n" +
-                "rule \"R\"\n" +
-                "when\n" +
-                "    $a : Bean( seed != 1 )\n" +
-                "then\n" +
-                "end";
-        testConcurrentInsertions(drl, 1, 1000, false, false);
-    }
-
-    @Test(timeout = 10000)
-    public void testConcurrentInsertionsManyObjectsFewThreads() throws InterruptedException {
-        final String drl = "import org.drools.compiler.integrationtests.MultithreadTest.Bean\n" +
-                "\n" +
-                "rule \"R\"\n" +
-                "when\n" +
-                "    $a : Bean( seed != 1 )\n" +
-                "then\n" +
-                "end";
-        testConcurrentInsertions(drl, 1000, 4, false, false);
-    }
-
-    @Test(timeout = 10000)
-    public void testConcurrentInsertionsNewSessionEachThreadObjectTypeNode() throws InterruptedException {
-        final String drl = "import org.drools.compiler.integrationtests.MultithreadTest.Bean\n" +
-                " query existsBeanSeed5More() \n" +
-                "     Bean( seed > 5 ) \n" +
-                " end \n" +
-                "\n" +
-                "rule \"R\"\n" +
-                "when\n" +
-                "    $a: Bean( seed != 1 )\n" +
-                "    existsBeanSeed5More() \n" +
-                "then\n" +
-                "end \n" +
-                "rule \"R2\"\n" +
-                "when\n" +
-                "    $a: Bean( seed != 1 )\n" +
-                "then\n" +
-                "end\n";
-        testConcurrentInsertions(drl, 10, 1000, true, true);
-    }
-
-    @Test(timeout = 10000)
-    public void testConcurrentInsertionsNewSessionEachThread() throws InterruptedException {
-        final String drl = "import org.drools.compiler.integrationtests.MultithreadTest.Bean\n" +
-                " query existsBeanSeed5More() \n" +
-                "     Bean( seed > 5 ) \n" +
-                " end \n" +
-                "\n" +
-                "rule \"R\"\n" +
-                "when\n" +
-                "    $a: Bean( seed != 1 )\n" +
-                "    $b: Bean( seed != 2 )\n" +
-                "    existsBeanSeed5More() \n" +
-                "then\n" +
-                "end \n" +
-                "rule \"R2\"\n" +
-                "when\n" +
-                "    $a: Bean( seed != 1 )\n" +
-                "    $b: Bean( seed != 2 )\n" +
-                "then\n" +
-                "end\n" +
-                "rule \"R3\"\n" +
-                "when\n" +
-                "    $a: Bean( seed != 3 )\n" +
-                "    $b: Bean( seed != 4 )\n" +
-                "    $c: Bean( seed != 5 )\n" +
-                "    $d: Bean( seed != 6 )\n" +
-                "    $e: Bean( seed != 7 )\n" +
-                "then\n" +
-                "end";
-        testConcurrentInsertions(drl, 10, 1000, true, false);
-    }
-
-    private void testConcurrentInsertions(final String drl, final int objectCount, final int threadCount,
-            final boolean newSessionForEachThread, final boolean updateFacts) throws InterruptedException {
-
-        final KieBase kieBase = new KieHelper().addContent(drl, ResourceType.DRL).build();
-
-        ExecutorService executor = Executors.newCachedThreadPool(new ThreadFactory() {
-            public Thread newThread(Runnable r) {
-                Thread t = new Thread(r);
-                t.setDaemon(true);
-                return t;
-            }
-        });
-
-        KieSession ksession = null;
-        try {
-            Callable<Boolean>[] tasks = new Callable[threadCount];
-            if (newSessionForEachThread) {
-                for (int i = 0; i < threadCount; i++) {
-                    tasks[i] = getTask(objectCount, kieBase, updateFacts);
-                }
-            } else {
-                ksession = kieBase.newKieSession();
-                for (int i = 0; i < threadCount; i++) {
-                    tasks[i] = getTask(objectCount, ksession, false, updateFacts);
-                }
-            }
-
-            CompletionService<Boolean> ecs = new ExecutorCompletionService<Boolean>(executor);
-            for (Callable<Boolean> task : tasks) {
-                ecs.submit(task);
-            }
-
-            int successCounter = 0;
-            for (int i = 0; i < threadCount; i++) {
-                try {
-                    if (ecs.take().get()) {
-                        successCounter++;
-                    }
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            }
-
-            assertEquals(threadCount, successCounter);
-            if (ksession != null) {
-                ksession.dispose();
-            }
-        } finally {
-            executor.shutdown();
-            if (!executor.awaitTermination(5, TimeUnit.SECONDS)) {
-                executor.shutdownNow();
-            }
-        }
-    }
-
-    private Callable<Boolean> getTask( final int objectCount, final KieBase kieBase, final boolean updateFacts) {
-        return getTask(objectCount, kieBase.newKieSession(), true, updateFacts);
-    }
-
-    private Callable<Boolean> getTask(
-            final int objectCount,
-            final KieSession ksession,
-            final boolean disposeSession,
-            final boolean updateFacts) {
-        return new Callable<Boolean>() {
-            public Boolean call() throws Exception {
-                try {
-                    for (int j = 0; j < 10; j++) {
-                        FactHandle[] facts = new FactHandle[objectCount];
-                        for (int i = 0; i < objectCount; i++) {
-                            facts[i] = ksession.insert(new Bean(i));
-                        }
-                        if (updateFacts) {
-                            for (int i = 0; i < objectCount; i++) {
-                                ksession.update(facts[i], new Bean(-i));
-                            }
-                        }
-                        for (FactHandle fact : facts) {
-                            ksession.delete(fact);
-                        }
-                        ksession.fireAllRules();
-                    }
-                    return true;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    return false;
-                } finally {
-                    if (disposeSession) {
-                        ksession.dispose();
-                    }
-                }
-            }
-        };
-    }
-
-    public static class Bean {
-
-        private final int seed;
-        private final String threadName;
-
-        public Bean(int seed) {
-            this.seed = seed;
-            threadName = Thread.currentThread().getName();
-        }
-
-        public int getSeed() {
-            return seed;
-        }
-
-        @Override
-        public boolean equals(Object other) {
-            if (!(other instanceof Bean)) return false;
-            return seed == ((Bean)other).seed && threadName.equals( ((Bean)other).threadName );
-        }
-
-        @Override
-        public int hashCode() {
-            return 29 * seed + 31 * threadName.hashCode();
-        }
-
-        @Override
-        public String toString() {
-            return "Bean #" + seed + " created by " + threadName;
-        }
-    }
-/*/
-    public static class Bean {
-
-        private final int seed;
-
-        public Bean(int seed) {
-            this.seed = seed;
-        }
-
-        public int getSeed() {
-            return seed;
-        }
-
-        @Override
-        public boolean equals(Object other) {
-            if (!(other instanceof Bean)) return false;
-            return seed == ((Bean)other).seed;
-        }
-
-        @Override
-        public int hashCode() {
-            return seed;
-        }
-
-        @Override
-        public String toString() {
-            return "Bean #" + seed;
-        }
-    }
-*/
     @Test(timeout = 1000000)
     public void testSlidingTimeWindows() {
         String str = "package org.drools\n" +
                      "global java.util.List list; \n" +
-                     "import org.drools.compiler.StockTick; \n" +
+                     "import " + StockTick.class.getCanonicalName() + "; \n" +
                      "" +
                      "declare StockTick @role(event) end\n" +
                      "" +
@@ -477,8 +242,8 @@ public class MultithreadTest extends CommonTestMethodBase {
 
         String drl = "package org.drools.integrationtests;\n" +
                      "" +
-                     "import org.drools.compiler.integrationtests.MultithreadTest.IntEvent; \n" +
-                     "import org.drools.compiler.integrationtests.MultithreadTest.Server; \n" +
+                     "import " + Server.class.getCanonicalName() + ";\n" +
+                     "import " + IntEvent.class.getCanonicalName() + ";\n" +
                      "" +
                      "declare IntEvent\n" +
                      "  @role ( event )\n" +
@@ -559,7 +324,7 @@ public class MultithreadTest extends CommonTestMethodBase {
 
         String drl = "package it.intext.drools.fusion.bug;\n" +
                      "\n" +
-                     "import org.drools.compiler.integrationtests.MultithreadTest.MyFact;\n" +
+                     "import " + MyFact.class.getCanonicalName() + ";\n " +
                      " global java.util.List list; \n" +
                      "\n" +
                      "declare MyFact\n" +
