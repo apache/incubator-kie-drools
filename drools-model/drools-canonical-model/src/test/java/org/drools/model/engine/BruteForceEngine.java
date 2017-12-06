@@ -1,6 +1,5 @@
 package org.drools.model.engine;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,8 +7,6 @@ import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import org.drools.model.AccumulateFunction;
-import org.drools.model.AccumulatePattern;
 import org.drools.model.Condition;
 import org.drools.model.Constraint;
 import org.drools.model.Pattern;
@@ -94,9 +91,6 @@ public class BruteForceEngine {
     }
 
     private Bindings evaluateSinglePattern(Pattern pattern, Bindings bindings) {
-        if (pattern instanceof AccumulatePattern) {
-            return evaluateAccumulate((AccumulatePattern) pattern, bindings);
-        }
         Stream<Object> objects = getObjectsOfType(getPatternDataStore(pattern), pattern.getPatternVariable().getType());
         List<BoundTuple> tuples =
                 objects.flatMap(obj -> generateMatches(pattern, bindings, obj))
@@ -118,42 +112,6 @@ public class BruteForceEngine {
                     .filter(existentialPredicate)
                     .collect(toList());
         return new Bindings(tuples);
-    }
-
-    private Bindings evaluateAccumulate(AccumulatePattern pattern, Bindings bindings) {
-        List<Object> objects = getObjectsOfType(getPatternDataStore(pattern), pattern.getPatternVariable().getType()).collect(toList());
-        List<BoundTuple> tuples =
-                bindings.tuples.parallelStream()
-                        .map(tuple -> objects.stream()
-                                             .filter(obj -> match(pattern.getConstraint(), tuple.bind(pattern.getPatternVariable(), obj)))
-                                             .reduce(new AccumulateReducer(pattern), AccumulateReducer::accumulate, (a1, a2) -> null)
-                                             .bindAllResults(tuple))
-                        .collect(toList());
-        return new Bindings(tuples);
-    }
-
-    private static class AccumulateReducer {
-        private final AccumulateFunction[] functions;
-        private final Serializable[] accumulators;
-
-        private AccumulateReducer(AccumulatePattern pattern) {
-            this.functions = pattern.getFunctions();
-            this.accumulators = stream(functions).map(AccumulateFunction::init).toArray(Serializable[]::new);
-        }
-
-        public AccumulateReducer accumulate(Object obj) {
-            for (int i = 0; i < functions.length; i++) {
-                functions[i].action(accumulators[i], obj);
-            }
-            return this;
-        }
-
-        public BoundTuple bindAllResults(BoundTuple tuple) {
-            for (int i = 0; i < functions.length; i++) {
-                tuple = tuple.bind(functions[i].getVariable(), functions[i].result(accumulators[i]));
-            }
-            return tuple;
-        }
     }
 
     private Stream<Object> getObjectsOfType(DataStore dataStore, Type type) {

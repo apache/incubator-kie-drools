@@ -76,6 +76,8 @@ import static org.drools.modelcompiler.util.ClassUtil.findMethod;
 
 public class DrlxParseUtil {
 
+    public static final NameExpr _THIS_EXPR = new NameExpr("_this");
+
     public static IndexUtil.ConstraintType toConstraintType(Operator operator) {
         switch (operator) {
             case EQUALS:
@@ -355,7 +357,7 @@ public class DrlxParseUtil {
         return Optional.empty();
     }
 
-    public static Expression removeRootNode(Expression expr) {
+    public static RemoveRootNodeResult removeRootNode(Expression expr) {
         Optional<Expression> rootNode = findRootNode(expr);
 
         if(rootNode.isPresent()) {
@@ -364,10 +366,19 @@ public class DrlxParseUtil {
 
             parent.ifPresent(p -> p.remove(root));
 
-            return (Expression) parent.orElse(expr);
+            return new RemoveRootNodeResult( rootNode, (Expression) parent.orElse(expr));
         }
-        return expr;
+        return new RemoveRootNodeResult(rootNode, expr);
+    }
 
+    public static class RemoveRootNodeResult {
+        Optional<Expression> rootNode;
+        Expression withoutRootNode;
+
+        public RemoveRootNodeResult(Optional<Expression> rootNode, Expression withoutRootNode) {
+            this.rootNode = rootNode;
+            this.withoutRootNode = withoutRootNode;
+        }
     }
 
     public static String toVar(String key) {
