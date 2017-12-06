@@ -60,7 +60,6 @@ public class AccumulateVisitor {
         context.pushExprPointer(accumulateDSL::addArgument);
 
         final MethodCallExpr functionDSL = new MethodCallExpr(null, "accFunction");
-        functionDSL.addArgument(new StringLiteralExpr(function.getFunction()));
 
         final String expression = function.getParams()[0];
         final Expression expr = DrlxParser.parseExpression(expression).getExpr();
@@ -78,6 +77,7 @@ public class AccumulateVisitor {
             final String accumulateFunctionName = AccumulateUtil.getFunctionName(methodCallExprType, function.getFunction());
             final AccumulateFunction accumulateFunction = packageModel.getConfiguration().getAccumulateFunction(accumulateFunctionName);
             final Class accumulateFunctionResultType = accumulateFunction.getResultType();
+            functionDSL.addArgument(new StringLiteralExpr(accumulateFunctionName));
 
             // Every expression in an accumulate function gets transformed in a bind expression with a generated id
             // Then the accumulate function will have that binding expression as a source
@@ -88,17 +88,17 @@ public class AccumulateVisitor {
 
             context.addDeclaration(new DeclarationSpec(bindingId, accumulateFunctionResultType));
         } else if (expr instanceof NameExpr) {
-            functionDSL.addArgument(new NameExpr(toVar(((NameExpr) expr).getName().asString())));
             final Class<?> declarationClass = context
                     .getDeclarationById(expr.toString())
                     .orElseThrow(RuntimeException::new)
                     .declarationClass;
-            final String functionName = AccumulateUtil.getFunctionName(declarationClass, function.getFunction());
-            final AccumulateFunction accumulateFunction = packageModel.getConfiguration().getAccumulateFunction(functionName);
+            final String accumulateFunctionName = AccumulateUtil.getFunctionName(declarationClass, function.getFunction());
+            final AccumulateFunction accumulateFunction = packageModel.getConfiguration().getAccumulateFunction(accumulateFunctionName);
+            functionDSL.addArgument(new StringLiteralExpr(accumulateFunctionName));
+            functionDSL.addArgument(new NameExpr(toVar(((NameExpr) expr).getName().asString())));
 
-            final Class bindClass = accumulateFunction.getResultType();
-
-            context.addDeclaration(new DeclarationSpec(bindingId, bindClass));
+            final Class accumulateFunctionResultType = accumulateFunction.getResultType();
+            context.addDeclaration(new DeclarationSpec(bindingId, accumulateFunctionResultType));
         }
 
         final MethodCallExpr asDSL = new MethodCallExpr(functionDSL, "as");

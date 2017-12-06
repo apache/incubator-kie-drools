@@ -399,7 +399,7 @@ public class FlowTest {
                 .build(
                         bind(age).as(person, Person::getAge),
                         accumulate(expr(person, p -> p.getName().startsWith("M")),
-                                   accFunction("sum", age).as(resultSum)),
+                                   accFunction("sumI", age).as(resultSum)),
                         on(resultSum).execute(sum -> result.setValue( "total = " + sum) )
                       );
 
@@ -429,7 +429,7 @@ public class FlowTest {
                 .build(
                         bind(age).as(person, Person::getAge),
                         accumulate(expr(person, p -> p.getName().startsWith("M")),
-                                   accFunction("sum", age).as(resultSum),
+                                   accFunction("sumI", age).as(resultSum),
                                    accFunction("average", age).as(resultAvg)),
                         on(resultSum, resultAvg)
                                 .execute((sum, avg) -> result.setValue( "total = " + sum + "; average = " + avg ))
