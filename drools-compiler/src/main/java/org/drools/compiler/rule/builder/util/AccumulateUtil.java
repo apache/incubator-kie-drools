@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.internal.builder.conf.AccumulateFunctionOption;
@@ -11,8 +12,9 @@ import org.kie.internal.utils.ChainedProperties;
 
 public class AccumulateUtil {
 
-    public static String getFunctionName(Class<?> exprClass, String functionName) {
+    public static String getFunctionName(Supplier<Class<?>> exprClassSupplier, String functionName) {
         if (functionName.equals("sum")) {
+            final Class<?> exprClass = exprClassSupplier.get();
             if (exprClass == int.class || exprClass == Integer.class) {
                 functionName = "sumI";
             } else if (exprClass == long.class || exprClass == Long.class) {
@@ -23,6 +25,7 @@ public class AccumulateUtil {
                 functionName = "sumBD";
             }
         } else if (functionName.equals("average")) {
+            final Class<?> exprClass = exprClassSupplier.get();
             if (exprClass == BigDecimal.class) {
                 functionName = "averageBD";
             }

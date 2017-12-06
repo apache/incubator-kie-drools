@@ -74,7 +74,7 @@ public class AccumulateVisitor {
             final TypedExpression typedExpression = parseMethodCallType(context, rootNodeName, methodCallWithoutRootNode.withoutRootNode);
             final Class<?> methodCallExprType = typedExpression.getType();
 
-            final String accumulateFunctionName = AccumulateUtil.getFunctionName(methodCallExprType, function.getFunction());
+            final String accumulateFunctionName = AccumulateUtil.getFunctionName(() -> methodCallExprType, function.getFunction());
             final AccumulateFunction accumulateFunction = packageModel.getConfiguration().getAccumulateFunction(accumulateFunctionName);
             final Class accumulateFunctionResultType = accumulateFunction.getResultType();
             functionDSL.addArgument(new StringLiteralExpr(accumulateFunctionName));
@@ -92,7 +92,7 @@ public class AccumulateVisitor {
                     .getDeclarationById(expr.toString())
                     .orElseThrow(RuntimeException::new)
                     .declarationClass;
-            final String accumulateFunctionName = AccumulateUtil.getFunctionName(declarationClass, function.getFunction());
+            final String accumulateFunctionName = AccumulateUtil.getFunctionName(() -> declarationClass, function.getFunction());
             final AccumulateFunction accumulateFunction = packageModel.getConfiguration().getAccumulateFunction(accumulateFunctionName);
             functionDSL.addArgument(new StringLiteralExpr(accumulateFunctionName));
             functionDSL.addArgument(new NameExpr(toVar(((NameExpr) expr).getName().asString())));

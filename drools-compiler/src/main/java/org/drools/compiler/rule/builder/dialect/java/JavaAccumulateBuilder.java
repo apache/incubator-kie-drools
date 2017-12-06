@@ -230,7 +230,7 @@ public class JavaAccumulateBuilder
                                                      AccumulateFunctionCallDescr fc,
                                                      RuleConditionElement source,
                                                      Map<String, Class< ? >> declCls) {
-        String functionName = AccumulateUtil.getFunctionName(MVELExprAnalyzer.getExpressionType(context, declCls, source, fc.getParams()[0]), fc.getFunction());
+        String functionName = AccumulateUtil.getFunctionName(() -> MVELExprAnalyzer.getExpressionType(context, declCls, source, fc.getParams()[0]), fc.getFunction());
 
         // find the corresponding function
         AccumulateFunction function = context.getConfiguration().getAccumulateFunction( functionName );
