@@ -24,7 +24,7 @@ public class LambdaAccumulator implements Accumulator {
 
     public LambdaAccumulator(AccumulateFunction accumulateFunction, Pattern sourcePattern) {
         if (accumulateFunction.getFunctionName().equals("sum")) {
-            this.accumulateFunction = new SumAccumulateFunction();
+            this.accumulateFunction = new IntegerSumAccumulateFunction();
         } else if (accumulateFunction.getFunctionName().equals("average")) {
             this.accumulateFunction = new AverageAccumulateFunction();
         } else {

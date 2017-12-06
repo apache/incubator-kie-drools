@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.drools.compiler.lang.descr.AccumulateDescr;
+import org.drools.compiler.rule.builder.util.AccumulateUtil;
 import org.drools.drlx.DrlxParser;
 import org.drools.javaparser.ast.Node;
 import org.drools.javaparser.ast.NodeList;
@@ -75,8 +76,6 @@ public class AccumulateVisitor {
         final String expression = function.getParams()[0];
         final Expression expr = DrlxParser.parseExpression(expression).getExpr();
         final String bindingId = Optional.ofNullable(function.getBind()).orElse(context.getExprId(Number.class, function.getFunction()));
-        final AccumulateFunction accumulateFunction = packageModel.getConfiguration().getAccumulateFunction(function.getFunction());
-        final Class bindClass = accumulateFunction.getResultType();
 
         if (expr instanceof MethodCallExpr) {
 
@@ -96,6 +95,8 @@ public class AccumulateVisitor {
             Expression withThis = DrlxParseUtil.prepend(_this, typedExpression.getExpression());
 
             final Class<?> type = typedExpression.getType();
+
+
             Class<?> aggregateFunctionType = getReturnTypeForAggregateFunction(functionDSL.getName().asString(), clazz, methodCallExpr);
             final String newBindVariable = context.getExprId(aggregateFunctionType, typedExpression.toString());
             ModelGenerator.DrlxParseResult result = new ModelGenerator.DrlxParseResult(clazz, "", variableName, withThis, type)
@@ -104,6 +105,10 @@ public class AccumulateVisitor {
             final MethodCallExpr bind = ModelGenerator.buildBinding(result);
             context.addExpression(bind);
 
+            final String functionName = AccumulateUtil.getFunctionName(type, function.getFunction());
+
+            final AccumulateFunction accumulateFunction = packageModel.getConfiguration().getAccumulateFunction(functionName);
+            final Class bindClass = accumulateFunction.getResultType();
 
             final DeclarationSpec declaration = new DeclarationSpec(newBindVariable, typedExpression.getType());
             context.addDeclaration(declaration);
@@ -112,6 +117,15 @@ public class AccumulateVisitor {
             context.addDeclaration(new DeclarationSpec(bindingId, bindClass));
         } else if (expr instanceof NameExpr) {
             functionDSL.addArgument(new NameExpr(toVar(((NameExpr) expr).getName().asString())));
+            final Class<?> declarationClass = context
+                    .getDeclarationById(expr.toString())
+                    .orElseThrow(RuntimeException::new)
+                    .declarationClass;
+            final String functionName = AccumulateUtil.getFunctionName(declarationClass, function.getFunction());
+            final AccumulateFunction accumulateFunction = packageModel.getConfiguration().getAccumulateFunction(functionName);
+
+            final Class bindClass = accumulateFunction.getResultType();
+
             context.addDeclaration(new DeclarationSpec(bindingId, bindClass));
         }
 
