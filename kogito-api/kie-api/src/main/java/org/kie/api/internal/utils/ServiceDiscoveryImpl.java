@@ -124,14 +124,17 @@ public class ServiceDiscoveryImpl {
     private void processKieConf(ClassLoader classLoader, Properties props) {
         props.forEach( (k, v) -> {
             String key = k.toString();
-            boolean optional = key.startsWith( "?" );
-            try {
-                processKieService( classLoader, optional ? key.substring( 1 ) : key, v.toString() );
-            } catch (RuntimeException e) {
-                if (optional) {
-                    log.info("Cannot load service: " + key.substring( 1 ));
-                } else {
-                    throw e;
+            String value = v.toString();
+            if (!(value.isEmpty() || value.contains("["))) { // DROOLS-2122: parsing with Properties.load a Drools version 6 kie.conf, hence skipping this entry
+                boolean optional = key.startsWith( "?" );
+                try {
+                    processKieService( classLoader, optional ? key.substring( 1 ) : key, value );
+                } catch (RuntimeException e) {
+                    if (optional) {
+                        log.info("Cannot load service: " + key.substring( 1 ));
+                    } else {
+                        throw e;
+                    }
                 }
             }
         });
