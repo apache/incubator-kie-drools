@@ -50,16 +50,27 @@ public class CanonicalKieBaseUpdater implements Runnable {
             InternalKnowledgePackage kpkg = ( InternalKnowledgePackage ) newPkgs.getKiePackage( changeSet.getResourceName() );
 
             for (ResourceChange change : changeSet.getChanges()) {
-                String changedRuleName = change.getName();
+                String changedItemName = change.getName();
                 if (change.getChangeType() == ChangeType.UPDATED || change.getChangeType() == ChangeType.REMOVED) {
-                    rulesToBeRemoved.add( oldKpkg.getRule( changedRuleName ) );
+                    if (change.getType() == ResourceChange.Type.GLOBAL) {
+                        ctx.kBase.removeGlobal( changedItemName );
+                    } else {
+                        rulesToBeRemoved.add( oldKpkg.getRule( changedItemName ) );
+                    }
                 }
                 if (change.getChangeType() == ChangeType.UPDATED || change.getChangeType() == ChangeType.ADDED) {
-                    rulesToBeAdded.add( kpkg.getRule( changedRuleName ) );
+                    if (change.getType() == ResourceChange.Type.GLOBAL) {
+                        try {
+                            ctx.kBase.addGlobal( changedItemName, kpkg.getTypeResolver().resolveType( kpkg.getGlobals().get(changedItemName) ) );
+                        } catch (ClassNotFoundException e) {
+                            throw new RuntimeException( e );
+                        }
+                    } else {
+                        rulesToBeAdded.add( kpkg.getRule( changedItemName ) );
+                    }
                 }
             }
         }
-
 
         ctx.kBase.removeRules( rulesToBeRemoved );
         ctx.kBase.addRules( rulesToBeAdded );

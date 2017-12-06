@@ -38,9 +38,13 @@ public class GlobalImpl<T> extends VariableImpl<T> implements Global<T>, ModelCo
     }
 
     @Override
-    public boolean isEqualTo( ModelComponent var ) {
-        if ( !super.isEqualTo( var ) ) return false;
-        GlobalImpl<?> global = ( GlobalImpl<?> ) var;
+    public boolean isEqualTo( ModelComponent o ) {
+        if ( this == o ) return true;
+        if ( o == null || getClass() != o.getClass() ) return false;
+
+        GlobalImpl global = ( GlobalImpl ) o;
+        if (!getType().equals( global.getType() )) return false;
+        if (!getName().equals( global.getName() )) return false;
         return pkg != null ? pkg.equals( global.pkg ) : global.pkg == null;
     }
 }

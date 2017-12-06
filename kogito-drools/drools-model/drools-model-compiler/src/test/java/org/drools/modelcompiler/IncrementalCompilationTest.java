@@ -17,6 +17,8 @@
 package org.drools.modelcompiler;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.junit.Test;
@@ -123,6 +125,14 @@ public class IncrementalCompilationTest extends BaseModelTest {
                 "then\n" +
                 "end\n";
 
+        String drl2_3 = "package org.drools.incremental\n" +
+                "global java.util.List list;\n" +
+                "rule R2 when\n" +
+                "   $m : Message( value == \"Hello World\" )\n" +
+                "then\n" +
+                "   list.add($m.getValue());\n" +
+                "end\n";
+
         KieServices ks = KieServices.Factory.get();
 
         // Create an in-memory jar for version 1.0.0
@@ -147,6 +157,19 @@ public class IncrementalCompilationTest extends BaseModelTest {
         // try with a new session
         KieSession ksession2 = kc.newKieSession();
         assertEquals( 3, ksession2.fireAllRules() );
+
+        // Create a new jar for version 1.2.0
+        ReleaseId releaseId3 = ks.newReleaseId( "org.kie", "test-upgrade", "1.2.0" );
+        createAndDeployJar( ks, releaseId3, drl1, drl2_3 );
+
+        // try to update the container to version 1.2.0
+        kc.updateToVersion( releaseId3 );
+
+        List<String> list = new ArrayList<>();
+        ksession2.setGlobal( "list", list );
+        ksession2.fireAllRules();
+        assertEquals( 1, list.size() );
+        assertEquals( "Hello World", list.get(0) );
     }
 
     private void createAndDeployJar( KieServices ks, ReleaseId releaseId, String... drls ) {

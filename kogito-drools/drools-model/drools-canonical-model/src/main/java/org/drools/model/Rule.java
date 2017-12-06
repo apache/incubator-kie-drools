@@ -3,7 +3,7 @@ package org.drools.model;
 import java.util.Calendar;
 import java.util.Map;
 
-public interface Rule {
+public interface Rule extends NamedModelItem {
 
     interface Attribute<T> {
         T getDefaultValue();
@@ -31,7 +31,5 @@ public interface Rule {
 
     <T> T getAttribute(Attribute<T> attribute);
 
-    String getName();
-    String getPackage();
     String getUnit();
 }
