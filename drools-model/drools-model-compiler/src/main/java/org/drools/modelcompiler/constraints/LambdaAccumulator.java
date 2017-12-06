@@ -7,6 +7,7 @@ import org.drools.core.WorkingMemory;
 import org.drools.core.base.accumulators.AbstractAccumulateFunction;
 import org.drools.core.base.accumulators.AverageAccumulateFunction;
 import org.drools.core.base.accumulators.IntegerSumAccumulateFunction;
+import org.drools.core.base.accumulators.SumAccumulateFunction;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.reteoo.SubnetworkTuple;
 import org.drools.core.rule.Declaration;
@@ -23,7 +24,7 @@ public class LambdaAccumulator implements Accumulator {
 
     public LambdaAccumulator(AccumulateFunction accumulateFunction, Pattern sourcePattern) {
         if (accumulateFunction.getFunctionName().equals("sum")) {
-            this.accumulateFunction = new IntegerSumAccumulateFunction();
+            this.accumulateFunction = new SumAccumulateFunction();
         } else if (accumulateFunction.getFunctionName().equals("average")) {
             this.accumulateFunction = new AverageAccumulateFunction();
         } else {

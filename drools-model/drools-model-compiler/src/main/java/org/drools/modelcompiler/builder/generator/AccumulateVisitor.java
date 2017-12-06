@@ -17,6 +17,7 @@ import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.javaparser.ast.stmt.ExpressionStmt;
 import org.drools.javaparser.ast.type.TypeParameter;
 import org.drools.modelcompiler.builder.PackageModel;
+import org.kie.api.runtime.rule.AccumulateFunction;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 
@@ -74,6 +75,9 @@ public class AccumulateVisitor {
         final String expression = function.getParams()[0];
         final Expression expr = DrlxParser.parseExpression(expression).getExpr();
         final String bindingId = Optional.ofNullable(function.getBind()).orElse(context.getExprId(Number.class, function.getFunction()));
+        final AccumulateFunction accumulateFunction = packageModel.getConfiguration().getAccumulateFunction(function.getFunction());
+        final Class bindClass = accumulateFunction.getResultType();
+
         if (expr instanceof MethodCallExpr) {
 
             final MethodCallExpr methodCallExpr = (MethodCallExpr) expr;
@@ -100,7 +104,7 @@ public class AccumulateVisitor {
             final MethodCallExpr bind = ModelGenerator.buildBinding(result);
             context.addExpression(bind);
 
-            final Class bindClass = getReturnTypeForAggregateFunction(function.getFunction(), Optional.of(type));
+
             final DeclarationSpec declaration = new DeclarationSpec(newBindVariable, typedExpression.getType());
             context.addDeclaration(declaration);
             functionDSL.addArgument(new NameExpr(toVar(newBindVariable)));
@@ -108,8 +112,6 @@ public class AccumulateVisitor {
             context.addDeclaration(new DeclarationSpec(bindingId, bindClass));
         } else if (expr instanceof NameExpr) {
             functionDSL.addArgument(new NameExpr(toVar(((NameExpr) expr).getName().asString())));
-            final Optional<DeclarationSpec> declarationById = context.getDeclarationById(expr.toString());
-            final Class bindClass = getReturnTypeForAggregateFunction(function.getFunction(), declarationById.map(a -> a.declarationClass));
             context.addDeclaration(new DeclarationSpec(bindingId, bindClass));
         }
 
@@ -146,4 +148,6 @@ public class AccumulateVisitor {
             return orElse.orElse(Number.class);
         }
     }
+
+
 }

@@ -22,13 +22,11 @@ import org.drools.modelcompiler.domain.Adult;
 import org.drools.modelcompiler.domain.Child;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
 import static org.hamcrest.CoreMatchers.hasItem;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 public class AccumulateTest extends BaseModelTest {
 
@@ -59,7 +57,7 @@ public class AccumulateTest extends BaseModelTest {
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
         assertEquals(1, results.size());
-        assertEquals(77, results.iterator().next().getValue());
+        assertEquals(77d, results.iterator().next().getValue());
     }
 
     @Test
@@ -85,7 +83,7 @@ public class AccumulateTest extends BaseModelTest {
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
         assertEquals(1, results.size());
-        assertEquals(77, results.iterator().next().getValue());
+        assertEquals(77d, results.iterator().next().getValue());
     }
 
     @Test
@@ -113,7 +111,7 @@ public class AccumulateTest extends BaseModelTest {
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
         assertThat(results, hasItem(new Result(38.5)));
-        assertThat(results, hasItem(new Result(77)));
+        assertThat(results, hasItem(new Result(77d)));
     }
 
     @Test
@@ -140,8 +138,8 @@ public class AccumulateTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
-        assertThat(results, hasItem(new Result(38.5)));
-        assertThat(results, hasItem(new Result(77)));
+        assertThat(results, hasItem(new Result(38.5d)));
+        assertThat(results, hasItem(new Result(77d)));
     }
 
     @Test
@@ -166,6 +164,6 @@ public class AccumulateTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
-        assertThat(results, hasItem(new Result(43)));
+        assertThat(results, hasItem(new Result(43d)));
     }
 }
