@@ -4,10 +4,6 @@ import java.io.Serializable;
 import java.util.Arrays;
 
 import org.drools.core.WorkingMemory;
-import org.drools.core.base.accumulators.AbstractAccumulateFunction;
-import org.drools.core.base.accumulators.AverageAccumulateFunction;
-import org.drools.core.base.accumulators.IntegerSumAccumulateFunction;
-import org.drools.core.base.accumulators.SumAccumulateFunction;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.reteoo.SubnetworkTuple;
 import org.drools.core.rule.Declaration;
@@ -15,21 +11,14 @@ import org.drools.core.spi.Accumulator;
 import org.drools.core.spi.Tuple;
 import org.drools.model.Binding;
 import org.drools.model.Pattern;
-import org.drools.model.functions.accumulate.AccumulateFunction;
 
 public class LambdaAccumulator implements Accumulator {
 
-    private final AbstractAccumulateFunction accumulateFunction;
+    private final org.kie.api.runtime.rule.AccumulateFunction accumulateFunction;
     private final Pattern sourcePattern;
 
-    public LambdaAccumulator(AccumulateFunction accumulateFunction, Pattern sourcePattern) {
-        if (accumulateFunction.getFunctionName().equals("sumI")) {
-            this.accumulateFunction = new IntegerSumAccumulateFunction();
-        } else if (accumulateFunction.getFunctionName().equals("average")) {
-            this.accumulateFunction = new AverageAccumulateFunction();
-        } else {
-            this.accumulateFunction = null;
-        }
+    public LambdaAccumulator(org.kie.api.runtime.rule.AccumulateFunction accumulateFunction, Pattern sourcePattern) {
+        this.accumulateFunction = accumulateFunction;
         this.sourcePattern = sourcePattern;
     }
 

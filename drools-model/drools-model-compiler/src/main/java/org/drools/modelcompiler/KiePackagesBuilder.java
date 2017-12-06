@@ -32,8 +32,10 @@ import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.base.EnabledBoolean;
 import org.drools.core.base.SalienceInteger;
+import org.drools.core.base.accumulators.AbstractAccumulateFunction;
 import org.drools.core.base.extractors.ArrayElementReader;
 import org.drools.core.base.extractors.SelfReferenceClassFieldReader;
+import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.Accumulate;
@@ -105,6 +107,8 @@ import org.drools.modelcompiler.constraints.UnificationConstraint;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.type.Role;
+import org.kie.internal.builder.conf.AccumulateFunctionOption;
+import org.kie.internal.utils.ChainedProperties;
 import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
@@ -128,21 +132,59 @@ public class KiePackagesBuilder {
     private final Map<Class<?>, ClassObjectType> objectTypeCache = new HashMap<>();
 
     private final Collection<Model> models;
+    private final ChainedProperties chainedProperties;
+    private HashMap<String, org.kie.api.runtime.rule.AccumulateFunction> accumulateFunctions;
+    private ClassLoader typesClassLoader;
 
-    public KiePackagesBuilder( KieBaseConfiguration conf ) {
-        this(conf, new ArrayList<>());
+    public KiePackagesBuilder(KieBaseConfiguration conf, ProjectClassLoader moduleClassLoader) {
+        this(conf, new ArrayList<>(), moduleClassLoader);
     }
 
-    public KiePackagesBuilder( KieBaseConfiguration conf, Collection<Model> models ) {
-        this.configuration = ( (RuleBaseConfiguration) conf );
+    public KiePackagesBuilder(KieBaseConfiguration conf, Collection<Model> models, ProjectClassLoader moduleClassLoader) {
+        this.configuration = ((RuleBaseConfiguration) conf);
         this.models = models;
+        typesClassLoader = moduleClassLoader.getTypesClassLoader();
+        this.chainedProperties = ChainedProperties.getChainedProperties(typesClassLoader);
     }
 
     public void addModel( Model model ) {
         models.add(model);
     }
 
+    private void buildAccumulateFunctionsMap() {
+        this.accumulateFunctions = new HashMap<String, org.kie.api.runtime.rule.AccumulateFunction>();
+        Map<String, String> temp = new HashMap<String, String>();
+        this.chainedProperties.mapStartsWith(temp,
+                                             AccumulateFunctionOption.PROPERTY_NAME,
+                                             true);
+        int index = AccumulateFunctionOption.PROPERTY_NAME.length();
+        for (Map.Entry<String, String> entry : temp.entrySet()) {
+            String identifier = entry.getKey().trim().substring(index);
+            this.accumulateFunctions.put(identifier,
+                                         loadAccumulateFunction(identifier,
+                                                                entry.getValue()));
+        }
+    }
+
+    private org.kie.api.runtime.rule.AccumulateFunction loadAccumulateFunction(String identifier,
+                                                                               String className) {
+        try {
+            Class<? extends org.kie.api.runtime.rule.AccumulateFunction> clazz = (Class<? extends org.kie.api.runtime.rule.AccumulateFunction>) typesClassLoader.loadClass(className);
+            return clazz.newInstance();
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("Error loading accumulate function for identifier " + identifier + ". Class " + className + " not found",
+                                       e);
+        } catch (InstantiationException e) {
+            throw new RuntimeException("Error loading accumulate function for identifier " + identifier + ". Instantiation failed for class " + className,
+                                       e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException("Error loading accumulate function for identifier " + identifier + ". Illegal access to class " + className,
+                                       e);
+        }
+    }
+
     public CanonicalKiePackages build() {
+        buildAccumulateFunctionsMap();
         for (Model model : models) {
             for (TypeMetaData metaType : model.getTypeMetaDatas()) {
                 KnowledgePackageImpl pkg = ( KnowledgePackageImpl ) packages.computeIfAbsent( metaType.getPackage(), this::createKiePackage );
@@ -486,12 +528,15 @@ public class KiePackagesBuilder {
         return pattern;
     }
 
-    private Accumulate buildAccumulate( RuleContext ctx, AccumulatePattern accPattern, RuleConditionElement source, Pattern pattern, org.drools.model.Pattern condition) {
+    private Accumulate buildAccumulate( RuleContext ctx,
+                                        AccumulatePattern accPattern,
+                                        RuleConditionElement source, Pattern pattern,
+                                        org.drools.model.Pattern condition) {
 
         AccumulateFunction[] accFunctions = accPattern.getAccumulateFunctions();
 
         if (accFunctions.length == 1) {
-            final AccumulateFunction accFunction = accFunctions[0];
+            final org.kie.api.runtime.rule.AccumulateFunction accFunction = accumulateFunctions.get(accFunctions[0].getFunctionName());
 
             final Declaration declaration = new Declaration(accPattern.getBoundVariables()[0].getName(),
                                                             getReadAcessor(getObjectType(Object.class)),
@@ -505,13 +550,14 @@ public class KiePackagesBuilder {
         InternalReadAccessor reader = new SelfReferenceClassFieldReader( Object[].class );
         Accumulator[] accumulators = new Accumulator[accFunctions.length];
         for (int i = 0; i < accFunctions.length; i++) {
+            final org.kie.api.runtime.rule.AccumulateFunction accFunction = accumulateFunctions.get(accFunctions[i].getFunctionName());
 
             Variable accVar = accPattern.getBoundVariables()[i];
             pattern.addDeclaration( new Declaration(accVar.getName(),
                                                     new ArrayElementReader( reader, i, accVar.getType().asClass()),
                                                     pattern,
                                                     true) );
-            accumulators[i] = new LambdaAccumulator(accFunctions[i], condition);
+            accumulators[i] = new LambdaAccumulator(accFunction, condition);
         }
 
         return new MultiAccumulate( source, new Declaration[0], accumulators);
