@@ -17,12 +17,15 @@
 package org.drools.core.impl;
 
 import java.util.Collection;
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.drools.core.SessionConfiguration;
 import org.drools.core.SessionConfigurationImpl;
 import org.drools.core.common.DynamicEntryPoint;
 import org.drools.core.common.InternalAgenda;
+import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.datasources.CursoredDataSource;
 import org.drools.core.datasources.InternalDataSource;
 import org.drools.core.event.AgendaEventSupport;
@@ -52,6 +55,8 @@ public class RuleUnitExecutorSession implements InternalRuleUnitExecutor {
     private RuleUnit currentRuleUnit;
 
     private AtomicBoolean suspended = new AtomicBoolean( false );
+
+    private Deque<RuleUnit> unitsStack = new LinkedList<>();
 
     public RuleUnitExecutorSession() {
         session = new StatefulKnowledgeSessionImpl();
@@ -122,7 +127,11 @@ public class RuleUnitExecutorSession implements InternalRuleUnitExecutor {
     }
 
     private int internalRun( RuleUnit ruleUnit ) {
-        return internalExecuteUnit( ruleUnit ) + ruleUnitGuardSystem.fireActiveUnits(ruleUnit);
+        int fired = 0;
+        for (RuleUnit evaluatedUnit = ruleUnit; evaluatedUnit != null; evaluatedUnit = unitsStack.poll()) {
+            fired += internalExecuteUnit( ruleUnit ) + ruleUnitGuardSystem.fireActiveUnits(ruleUnit);
+        }
+        return fired;
     }
 
     public int internalExecuteUnit( RuleUnit ruleUnit ) {
@@ -160,6 +169,11 @@ public class RuleUnitExecutorSession implements InternalRuleUnitExecutor {
             currentRuleUnit.onYield( ruleUnit );
         }
         session.getPropagationList().flush();
+
+        InternalAgenda agenda = session.getAgenda();
+        agenda.getStackList().remove(agenda.getAgendaGroup(currentRuleUnit.getClass().getName()));
+        unitsStack.push( currentRuleUnit );
+
         return bindRuleUnit( ruleUnit );
     }
 
@@ -188,6 +202,11 @@ public class RuleUnitExecutorSession implements InternalRuleUnitExecutor {
         RuleUnitDescr ruDescr = session.kBase.getRuleUnitRegistry().getRuleUnitDescr( ruleUnit );
         ruDescr.bindDataSources( session, ruleUnit );
         ( (Globals) session.getGlobalResolver() ).setDelegate( new RuleUnitGlobals( ruDescr, ruleUnit ) );
+
+        InternalAgendaGroup unitGroup = (InternalAgendaGroup)session.getAgenda().getAgendaGroup(ruleUnit.getClass().getName());
+        unitGroup.setAutoDeactivate( false );
+        unitGroup.setFocus();
+
         return ruDescr;
     }
 

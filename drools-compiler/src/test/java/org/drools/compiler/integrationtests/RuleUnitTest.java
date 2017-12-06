@@ -253,7 +253,52 @@ public class RuleUnitTest {
         List<String> expectedLogs = asList("org.drools.compiler.integrationtests.RuleUnitTest$NotAdultUnit started.",
                                            "org.drools.compiler.integrationtests.RuleUnitTest$NotAdultUnit yielded to org.drools.compiler.integrationtests.RuleUnitTest$AdultUnit",
                                            "org.drools.compiler.integrationtests.RuleUnitTest$AdultUnit started.",
-                                           "org.drools.compiler.integrationtests.RuleUnitTest$AdultUnit ended.");
+                                           "org.drools.compiler.integrationtests.RuleUnitTest$AdultUnit ended.",
+                                           "org.drools.compiler.integrationtests.RuleUnitTest$NotAdultUnit started.",
+                                           "org.drools.compiler.integrationtests.RuleUnitTest$NotAdultUnit ended.");
+        assertEquals( expectedLogs, log );
+    }
+
+    @Test
+    public void testStackedRuleUnitInvocationFromConsequence() throws Exception {
+        String drl1 =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "import " + AdultUnit.class.getCanonicalName() + "\n" +
+                "import " + NotAdultUnit.class.getCanonicalName() + "\n" +
+                "rule NotAdult @Unit( NotAdultUnit.class ) when\n" +
+                "    $p : Person(age < 18, $name : name) from persons\n" +
+                "then\n" +
+                "    System.out.println($name + \" is NOT adult\");\n" +
+                "    modify($p) { setAge(18); }\n" +
+                "    drools.run( AdultUnit.class );" +
+                "end\n" +
+                "rule Adult @Unit( AdultUnit.class ) when\n" +
+                "    Person(age >= 18, $name : name) from persons\n" +
+                "then\n" +
+                "    System.out.println($name + \" is adult\");\n" +
+                "end\n";
+
+        KieBase kbase = new KieHelper().addContent( drl1, ResourceType.DRL ).build();
+        RuleUnitExecutor executor = RuleUnitExecutor.create().bind( kbase );
+
+        DataSource<Person> persons = executor.newDataSource( "persons",
+                                                             new Person( "Mario", 2 ),
+                                                             new Person( "Sofia", 6 ) );
+        List<String> log = new ArrayList<>();
+        executor.bindVariable( "log", log );
+
+        assertEquals(4, executor.run( NotAdultUnit.class ) );
+
+        List<String> expectedLogs = asList("org.drools.compiler.integrationtests.RuleUnitTest$NotAdultUnit started.",
+                                           "org.drools.compiler.integrationtests.RuleUnitTest$NotAdultUnit yielded to org.drools.compiler.integrationtests.RuleUnitTest$AdultUnit",
+                                           "org.drools.compiler.integrationtests.RuleUnitTest$AdultUnit started.",
+                                           "org.drools.compiler.integrationtests.RuleUnitTest$AdultUnit ended.",
+                                           "org.drools.compiler.integrationtests.RuleUnitTest$NotAdultUnit started.",
+                                           "org.drools.compiler.integrationtests.RuleUnitTest$NotAdultUnit yielded to org.drools.compiler.integrationtests.RuleUnitTest$AdultUnit",
+                                           "org.drools.compiler.integrationtests.RuleUnitTest$AdultUnit started.",
+                                           "org.drools.compiler.integrationtests.RuleUnitTest$AdultUnit ended.",
+                                           "org.drools.compiler.integrationtests.RuleUnitTest$NotAdultUnit started.",
+                                           "org.drools.compiler.integrationtests.RuleUnitTest$NotAdultUnit ended.");
         assertEquals( expectedLogs, log );
     }
 
@@ -724,7 +769,9 @@ public class RuleUnitTest {
         List<String> expectedLogs = asList("org.drools.compiler.integrationtests.RuleUnitTest$NotAdultUnit started.",
                                            "org.drools.compiler.integrationtests.RuleUnitTest$NotAdultUnit yielded to org.drools.compiler.integrationtests.RuleUnitTest$AdultUnit",
                                            "org.drools.compiler.integrationtests.RuleUnitTest$AdultUnit started.",
-                                           "org.drools.compiler.integrationtests.RuleUnitTest$AdultUnit ended.");
+                                           "org.drools.compiler.integrationtests.RuleUnitTest$AdultUnit ended.",
+                                           "org.drools.compiler.integrationtests.RuleUnitTest$NotAdultUnit started.",
+                                           "org.drools.compiler.integrationtests.RuleUnitTest$NotAdultUnit ended.");
         assertEquals( expectedLogs, log );
     }
 
