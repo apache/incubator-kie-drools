@@ -16,9 +16,7 @@
 
 package org.drools.model;
 
-public interface Query {
-    String getPackage();
-    String getName();
+public interface Query extends NamedModelItem {
 
     View getView();
 
