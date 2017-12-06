@@ -28,6 +28,7 @@ import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.ItemDefNode;
+import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
@@ -110,5 +111,13 @@ public class DMNCompilerTest {
         } catch (IllegalStateException ex) {
             assertThat(ex.getMessage(), Matchers.containsString("Unable to compile DMN model for the resource"));
         }
+    }
+
+    @Test
+    public void testRecursiveFunctions() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "Recursive.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/kie-dmn", "Recursive" );
+        assertThat( dmnModel, notNullValue() );
+        assertFalse( runtime.evaluateAll( dmnModel, DMNFactory.newContext() ).hasErrors() );
     }
 }
