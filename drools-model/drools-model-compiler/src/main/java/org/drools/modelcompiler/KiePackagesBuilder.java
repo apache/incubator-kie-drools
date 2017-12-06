@@ -26,13 +26,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import org.drools.compiler.rule.builder.util.AccumulateUtil;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.base.EnabledBoolean;
 import org.drools.core.base.SalienceInteger;
-import org.drools.core.base.accumulators.AbstractAccumulateFunction;
 import org.drools.core.base.extractors.ArrayElementReader;
 import org.drools.core.base.extractors.SelfReferenceClassFieldReader;
 import org.drools.core.common.ProjectClassLoader;
@@ -133,7 +133,7 @@ public class KiePackagesBuilder {
 
     private final Collection<Model> models;
     private final ChainedProperties chainedProperties;
-    private HashMap<String, org.kie.api.runtime.rule.AccumulateFunction> accumulateFunctions;
+    private HashMap<String, org.kie.api.runtime.rule.AccumulateFunction> accumulateFunctions = new HashMap<>();
     private ClassLoader typesClassLoader;
 
     public KiePackagesBuilder(KieBaseConfiguration conf, ProjectClassLoader moduleClassLoader) {
@@ -151,40 +151,8 @@ public class KiePackagesBuilder {
         models.add(model);
     }
 
-    private void buildAccumulateFunctionsMap() {
-        this.accumulateFunctions = new HashMap<String, org.kie.api.runtime.rule.AccumulateFunction>();
-        Map<String, String> temp = new HashMap<String, String>();
-        this.chainedProperties.mapStartsWith(temp,
-                                             AccumulateFunctionOption.PROPERTY_NAME,
-                                             true);
-        int index = AccumulateFunctionOption.PROPERTY_NAME.length();
-        for (Map.Entry<String, String> entry : temp.entrySet()) {
-            String identifier = entry.getKey().trim().substring(index);
-            this.accumulateFunctions.put(identifier,
-                                         loadAccumulateFunction(identifier,
-                                                                entry.getValue()));
-        }
-    }
-
-    private org.kie.api.runtime.rule.AccumulateFunction loadAccumulateFunction(String identifier,
-                                                                               String className) {
-        try {
-            Class<? extends org.kie.api.runtime.rule.AccumulateFunction> clazz = (Class<? extends org.kie.api.runtime.rule.AccumulateFunction>) typesClassLoader.loadClass(className);
-            return clazz.newInstance();
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException("Error loading accumulate function for identifier " + identifier + ". Class " + className + " not found",
-                                       e);
-        } catch (InstantiationException e) {
-            throw new RuntimeException("Error loading accumulate function for identifier " + identifier + ". Instantiation failed for class " + className,
-                                       e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException("Error loading accumulate function for identifier " + identifier + ". Illegal access to class " + className,
-                                       e);
-        }
-    }
-
     public CanonicalKiePackages build() {
-        buildAccumulateFunctionsMap();
+        this.accumulateFunctions.putAll(AccumulateUtil.buildAccumulateFunctionsMap(this.chainedProperties, this.typesClassLoader));
         for (Model model : models) {
             for (TypeMetaData metaType : model.getTypeMetaDatas()) {
                 KnowledgePackageImpl pkg = ( KnowledgePackageImpl ) packages.computeIfAbsent( metaType.getPackage(), this::createKiePackage );
