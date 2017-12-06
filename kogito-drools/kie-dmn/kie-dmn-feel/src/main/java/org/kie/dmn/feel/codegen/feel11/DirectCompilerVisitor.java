@@ -170,17 +170,20 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
     }
     
     @Override
-    public DirectCompilerResult visitSignedUnaryExpression(FEEL_1_1Parser.SignedUnaryExpressionContext ctx) {
-        DirectCompilerResult unaryExpr = visit(ctx.unaryExpressionNotPlusMinus());
+    public DirectCompilerResult visitSignedUnaryExpressionMinus(FEEL_1_1Parser.SignedUnaryExpressionMinusContext ctx) {
+        DirectCompilerResult unaryExpr = visit(ctx.unaryExpression());
         if ( unaryExpr.resultType != BuiltInType.NUMBER ) {
             throw new IllegalArgumentException("signedunary should be only over a FEEL NUMBER (bigdecimal).");
-        }
-        if ( !ctx.start.getText().equals("-") ) {
-            throw new IllegalArgumentException("FEEL spec Table 50: Semantics of negative numbers defines only -e.");
         }
         // therefore, unaryExpr is a bigdecimal and operator is `-`.
         MethodCallExpr result = new MethodCallExpr(unaryExpr.getExpression(), "negate");
         return DirectCompilerResult.of(result, unaryExpr.resultType, unaryExpr.getFieldDeclarations() );
+    }
+
+    @Override
+    public DirectCompilerResult visitSignedUnaryExpressionPlus(FEEL_1_1Parser.SignedUnaryExpressionPlusContext ctx) {
+        DirectCompilerResult unaryExpr = visit(ctx.unaryExpressionNotPlusMinus());
+        return unaryExpr;
     }
 
     @Override

@@ -66,6 +66,14 @@ public class DirectCompilerTest {
     }
     
     @Test
+    public void test_FEEL_DROOLS_2143() {
+        // DROOLS-2143: Allow ''--1' expression as per FEEL grammar rule 26 
+        assertThat(parseCompileEvaluate("--10"), is(BigDecimal.valueOf(10)));
+        assertThat(parseCompileEvaluate("---10"), is(BigDecimal.valueOf(-10)));
+        assertThat(parseCompileEvaluate("+10"), is(BigDecimal.valueOf(10)));
+    }
+
+    @Test
     public void test_FEEL_boolean() {
         assertThat(parseCompileEvaluate("false"), is( false ));
         assertThat(parseCompileEvaluate("true"), is( true ));
