@@ -163,7 +163,7 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
         if (releaseId != null) {
             addArtifact(artifactResolver.resolveArtifact(releaseId));
         }
-        if ( kieModule != null ) {
+        if ( kieModule != null && kieModule.getPomModel() != null ) {
             for ( AFReleaseId releaseId : kieModule.getPomModel().getDependencies(dependencyFilter) ) {
                 addArtifact( artifactResolver.resolveArtifact( releaseId ) );
             }
