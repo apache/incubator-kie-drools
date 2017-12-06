@@ -8,26 +8,16 @@ import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.rule.builder.util.AccumulateUtil;
 import org.drools.drlx.DrlxParser;
 import org.drools.javaparser.ast.Node;
-import org.drools.javaparser.ast.NodeList;
-import org.drools.javaparser.ast.body.Parameter;
 import org.drools.javaparser.ast.expr.Expression;
-import org.drools.javaparser.ast.expr.LambdaExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
-import org.drools.javaparser.ast.stmt.ExpressionStmt;
-import org.drools.javaparser.ast.type.TypeParameter;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.kie.api.runtime.rule.AccumulateFunction;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 
 public class AccumulateVisitor {
-
-    public static final String AVERAGE = "average";
-    public static final String COUNT = "count";
-    public static final String MIN = "min";
-    public static final String MAX = "max";
 
     final RuleContext context;
     final PackageModel packageModel;
@@ -69,7 +59,6 @@ public class AccumulateVisitor {
 
         context.pushExprPointer(accumulateDSL::addArgument);
 
-
         final MethodCallExpr functionDSL = new MethodCallExpr(null, "accFunction");
         functionDSL.addArgument(new StringLiteralExpr(function.getFunction()));
 
@@ -79,42 +68,25 @@ public class AccumulateVisitor {
 
         if (expr instanceof MethodCallExpr) {
 
-            final MethodCallExpr methodCallExpr = (MethodCallExpr) expr;
+            final DrlxParseUtil.RemoveRootNodeResult methodCallWithoutRootNode = DrlxParseUtil.removeRootNode(expr);
 
-            final NameExpr scope = (NameExpr) methodCallExpr.getScope().orElseThrow(UnsupportedOperationException::new);
-            final String variableName = scope.getName().asString();
-            final Class clazz = context.getDeclarationById(variableName)
-                    .map(DeclarationSpec::getDeclarationClass)
-                    .orElseThrow(RuntimeException::new);
+            final String rootNodeName = getRootNodeName(methodCallWithoutRootNode);
 
+            final TypedExpression typedExpression = parseMethodCallType(context, rootNodeName, methodCallWithoutRootNode.withoutRootNode);
+            final Class<?> methodCallExprType = typedExpression.getType();
 
-            final Expression e = DrlxParseUtil.removeRootNode(expr);
-            final TypedExpression typedExpression = DrlxParseUtil.toMethodCallWithClassCheck(e, clazz, context.getPkg().getTypeResolver());
+            final String accumulateFunctionName = AccumulateUtil.getFunctionName(methodCallExprType, function.getFunction());
+            final AccumulateFunction accumulateFunction = packageModel.getConfiguration().getAccumulateFunction(accumulateFunctionName);
+            final Class accumulateFunctionResultType = accumulateFunction.getResultType();
 
-            NameExpr _this = new NameExpr("_this");
-            Expression withThis = DrlxParseUtil.prepend(_this, typedExpression.getExpression());
+            // Every expression in an accumulate function gets transformed in a bind expression with a generated id
+            // Then the accumulate function will have that binding expression as a source
+            final String bindExpressionVariable = context.getExprId(accumulateFunctionResultType, typedExpression.toString());
+            context.addExpression(generateBindExpression(rootNodeName, typedExpression, accumulateFunctionResultType, bindExpressionVariable));
+            context.addDeclaration(new DeclarationSpec(bindExpressionVariable, methodCallExprType));
+            functionDSL.addArgument(new NameExpr(toVar(bindExpressionVariable)));
 
-            final Class<?> type = typedExpression.getType();
-
-
-            Class<?> aggregateFunctionType = getReturnTypeForAggregateFunction(functionDSL.getName().asString(), clazz, methodCallExpr);
-            final String newBindVariable = context.getExprId(aggregateFunctionType, typedExpression.toString());
-            ModelGenerator.DrlxParseResult result = new ModelGenerator.DrlxParseResult(clazz, "", variableName, withThis, type)
-                    .setLeft(typedExpression)
-                    .setExprBinding(newBindVariable);
-            final MethodCallExpr bind = ModelGenerator.buildBinding(result);
-            context.addExpression(bind);
-
-            final String functionName = AccumulateUtil.getFunctionName(type, function.getFunction());
-
-            final AccumulateFunction accumulateFunction = packageModel.getConfiguration().getAccumulateFunction(functionName);
-            final Class bindClass = accumulateFunction.getResultType();
-
-            final DeclarationSpec declaration = new DeclarationSpec(newBindVariable, typedExpression.getType());
-            context.addDeclaration(declaration);
-            functionDSL.addArgument(new NameExpr(toVar(newBindVariable)));
-
-            context.addDeclaration(new DeclarationSpec(bindingId, bindClass));
+            context.addDeclaration(new DeclarationSpec(bindingId, accumulateFunctionResultType));
         } else if (expr instanceof NameExpr) {
             functionDSL.addArgument(new NameExpr(toVar(((NameExpr) expr).getName().asString())));
             final Class<?> declarationClass = context
@@ -131,37 +103,37 @@ public class AccumulateVisitor {
 
         final MethodCallExpr asDSL = new MethodCallExpr(functionDSL, "as");
         asDSL.addArgument(new NameExpr(toVar(bindingId)));
-
         accumulateDSL.addArgument(asDSL);
 
         context.popExprPointer();
     }
 
-    private Class<?> getReturnTypeForAggregateFunction(String functionName, Class<?> clazz, MethodCallExpr field) {
-        if (AVERAGE.equals(functionName)) {
-            return Double.class;
+    private String getRootNodeName(DrlxParseUtil.RemoveRootNodeResult methodCallWithoutRootNode) {
+        final Expression rootNode = methodCallWithoutRootNode
+                .rootNode.orElseThrow(UnsupportedOperationException::new);
+
+        final String rootNodeName;
+        if(rootNode instanceof NameExpr) {
+            rootNodeName = ((NameExpr)rootNode).getName().asString();
         } else {
-            try {
-                return clazz.getMethod(field.getName().asString()).getReturnType();
-            } catch (NoSuchMethodException e) {
-                throw new UnsupportedOperationException("Aggregate function result type", e);
-            }
+            throw new RuntimeException("Root node of expression should be a declaration");
         }
+        return rootNodeName;
     }
 
-    private Class<?> getReturnTypeForAggregateFunction(String functionName, Optional<Class> orElse) {
-        if (AVERAGE.equals(functionName)) {
-            return Double.class;
-        } else if (COUNT.equals(functionName)) {
-            return Integer.class;
-        } else if (MIN.equals(functionName)) {
-            return Double.class;
-        } else if (MAX.equals(functionName)) {
-            return Double.class;
-        } else {
-            return orElse.orElse(Number.class);
-        }
+    private MethodCallExpr generateBindExpression(String variableName, TypedExpression typedExpression, Class<?> type, String newBindVariable) {
+        Expression withThis = DrlxParseUtil.prepend(DrlxParseUtil._THIS_EXPR, typedExpression.getExpression());
+        ModelGenerator.DrlxParseResult result = new ModelGenerator.DrlxParseResult(type, "", variableName, withThis, type)
+                .setLeft(typedExpression)
+                .setExprBinding(newBindVariable);
+        return ModelGenerator.buildBinding(result);
     }
 
+    private TypedExpression parseMethodCallType(RuleContext context, String variableName, Expression methodCallWithoutRoot) {
+        final Class clazz = context.getDeclarationById(variableName)
+                .map(DeclarationSpec::getDeclarationClass)
+                .orElseThrow(RuntimeException::new);
 
+        return DrlxParseUtil.toMethodCallWithClassCheck(methodCallWithoutRoot, clazz, context.getPkg().getTypeResolver());
+    }
 }
