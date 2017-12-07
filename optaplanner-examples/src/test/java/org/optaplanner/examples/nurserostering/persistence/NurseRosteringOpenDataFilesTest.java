@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.tennis.persistence;
+package org.optaplanner.examples.nurserostering.persistence;
 
 import java.io.File;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
-import org.optaplanner.examples.common.persistence.SolutionDaoTest;
-import org.optaplanner.examples.tennis.app.TennisApp;
-import org.optaplanner.examples.tennis.domain.TennisSolution;
+import org.optaplanner.examples.common.persistence.OpenDataFilesTest;
+import org.optaplanner.examples.nurserostering.app.NurseRosteringApp;
+import org.optaplanner.examples.nurserostering.domain.NurseRoster;
 
-public class TennisDaoTest extends SolutionDaoTest<TennisSolution> {
+public class NurseRosteringOpenDataFilesTest extends OpenDataFilesTest<NurseRoster> {
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getSolutionFilesAsParameters(new TennisApp());
+        return getSolutionFilesAsParameters(new NurseRosteringApp());
     }
 
-    public TennisDaoTest(File solutionFile) {
-        super(new TennisApp(), solutionFile);
+    public NurseRosteringOpenDataFilesTest(File solutionFile) {
+        super(new NurseRosteringApp(), solutionFile);
     }
 
 }

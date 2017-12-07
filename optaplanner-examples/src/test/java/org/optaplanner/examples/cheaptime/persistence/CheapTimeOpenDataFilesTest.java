@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2014 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.cloudbalancing.persistence;
+package org.optaplanner.examples.cheaptime.persistence;
 
 import java.io.File;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
-import org.optaplanner.examples.cloudbalancing.app.CloudBalancingApp;
-import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
-import org.optaplanner.examples.common.persistence.SolutionDaoTest;
+import org.optaplanner.examples.cheaptime.app.CheapTimeApp;
+import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
+import org.optaplanner.examples.common.persistence.OpenDataFilesTest;
 
-public class CloudBalancingDaoTest extends SolutionDaoTest<CloudBalance> {
+public class CheapTimeOpenDataFilesTest extends OpenDataFilesTest<CheapTimeSolution> {
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getSolutionFilesAsParameters(new CloudBalancingApp());
+        return getSolutionFilesAsParameters(new CheapTimeApp());
     }
 
-    public CloudBalancingDaoTest(File solutionFile) {
-        super(new CloudBalancingApp(), solutionFile);
+    public CheapTimeOpenDataFilesTest(File solutionFile) {
+        super(new CheapTimeApp(), solutionFile);
     }
 
 }

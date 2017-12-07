@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2015 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.nurserostering.persistence;
+package org.optaplanner.examples.coachshuttlegathering.persistence;
 
 import java.io.File;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
-import org.optaplanner.examples.common.persistence.SolutionDaoTest;
-import org.optaplanner.examples.nurserostering.app.NurseRosteringApp;
-import org.optaplanner.examples.nurserostering.domain.NurseRoster;
+import org.optaplanner.examples.coachshuttlegathering.app.CoachShuttleGatheringApp;
+import org.optaplanner.examples.coachshuttlegathering.domain.CoachShuttleGatheringSolution;
+import org.optaplanner.examples.common.persistence.OpenDataFilesTest;
 
-public class NurseRosteringDaoTest extends SolutionDaoTest<NurseRoster> {
+public class CoachShuttleGatheringOpenDataFilesTest extends OpenDataFilesTest<CoachShuttleGatheringSolution> {
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getSolutionFilesAsParameters(new NurseRosteringApp());
+        return getSolutionFilesAsParameters(new CoachShuttleGatheringApp());
     }
 
-    public NurseRosteringDaoTest(File solutionFile) {
-        super(new NurseRosteringApp(), solutionFile);
+    public CoachShuttleGatheringOpenDataFilesTest(File solutionFile) {
+        super(new CoachShuttleGatheringApp(), solutionFile);
     }
 
 }

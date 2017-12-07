@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.travelingtournament.persistence;
+package org.optaplanner.examples.machinereassignment.persistence;
 
 import java.io.File;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
-import org.optaplanner.examples.common.persistence.SolutionDaoTest;
-import org.optaplanner.examples.travelingtournament.app.TravelingTournamentApp;
-import org.optaplanner.examples.travelingtournament.domain.TravelingTournament;
+import org.optaplanner.examples.common.persistence.OpenDataFilesTest;
+import org.optaplanner.examples.machinereassignment.app.MachineReassignmentApp;
+import org.optaplanner.examples.machinereassignment.domain.MachineReassignment;
 
-public class TravelingTournamentDaoTest extends SolutionDaoTest<TravelingTournament> {
+public class MachineReassignmentOpenDataFilesTest extends OpenDataFilesTest<MachineReassignment> {
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getSolutionFilesAsParameters(new TravelingTournamentApp());
+        return getSolutionFilesAsParameters(new MachineReassignmentApp());
     }
 
-    public TravelingTournamentDaoTest(File solutionFile) {
-        super(new TravelingTournamentApp(), solutionFile);
+    public MachineReassignmentOpenDataFilesTest(File solutionFile) {
+        super(new MachineReassignmentApp(), solutionFile);
     }
 
 }

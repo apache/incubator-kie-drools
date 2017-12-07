@@ -20,12 +20,11 @@ import java.io.File;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
-import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
-import org.optaplanner.examples.common.persistence.SolutionImporterTest;
+import org.optaplanner.examples.common.persistence.ImportDataFilesTest;
 import org.optaplanner.examples.tsp.app.TspApp;
 import org.optaplanner.examples.tsp.domain.TspSolution;
 
-public class TspImporterTest extends SolutionImporterTest<TspSolution> {
+public class TspImporterTest extends ImportDataFilesTest<TspSolution> {
 
     @Override
     protected TspImporter createSolutionImporter() {

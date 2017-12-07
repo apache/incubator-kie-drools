@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2015 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.taskassigning.persistence;
+package org.optaplanner.examples.investment.persistence;
 
 import java.io.File;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
-import org.optaplanner.examples.common.persistence.SolutionDaoTest;
-import org.optaplanner.examples.taskassigning.app.TaskAssigningApp;
-import org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution;
+import org.optaplanner.examples.common.persistence.OpenDataFilesTest;
+import org.optaplanner.examples.investment.app.InvestmentApp;
+import org.optaplanner.examples.investment.domain.InvestmentSolution;
 
-public class TaskAssigningDaoTest extends SolutionDaoTest<TaskAssigningSolution> {
+public class InvestmentOpenDataFilesTest extends OpenDataFilesTest<InvestmentSolution> {
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getSolutionFilesAsParameters(new TaskAssigningApp());
+        return getSolutionFilesAsParameters(new InvestmentApp());
     }
 
-    public TaskAssigningDaoTest(File solutionFile) {
-        super(new TaskAssigningApp(), solutionFile);
+    public InvestmentOpenDataFilesTest(File solutionFile) {
+        super(new InvestmentApp(), solutionFile);
     }
 
 }

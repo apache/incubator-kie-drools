@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2013 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.investment.persistence;
+package org.optaplanner.examples.pas.persistence;
 
 import java.io.File;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
-import org.optaplanner.examples.common.persistence.SolutionDaoTest;
-import org.optaplanner.examples.investment.app.InvestmentApp;
-import org.optaplanner.examples.investment.domain.InvestmentSolution;
+import org.optaplanner.examples.common.persistence.OpenDataFilesTest;
+import org.optaplanner.examples.pas.app.PatientAdmissionScheduleApp;
+import org.optaplanner.examples.pas.domain.PatientAdmissionSchedule;
 
-public class InvestmentDaoTest extends SolutionDaoTest<InvestmentSolution> {
+public class PatientAdmissionScheduleOpenDataFilesTest extends OpenDataFilesTest<PatientAdmissionSchedule> {
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getSolutionFilesAsParameters(new InvestmentApp());
+        return getSolutionFilesAsParameters(new PatientAdmissionScheduleApp());
     }
 
-    public InvestmentDaoTest(File solutionFile) {
-        super(new InvestmentApp(), solutionFile);
+    public PatientAdmissionScheduleOpenDataFilesTest(File solutionFile) {
+        super(new PatientAdmissionScheduleApp(), solutionFile);
     }
 
 }

@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.examination.persistence;
+package org.optaplanner.examples.tennis.persistence;
 
 import java.io.File;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
-import org.optaplanner.examples.common.persistence.SolutionDaoTest;
-import org.optaplanner.examples.examination.app.ExaminationApp;
-import org.optaplanner.examples.examination.domain.Examination;
+import org.optaplanner.examples.common.persistence.OpenDataFilesTest;
+import org.optaplanner.examples.tennis.app.TennisApp;
+import org.optaplanner.examples.tennis.domain.TennisSolution;
 
-public class ExaminationDaoTest extends SolutionDaoTest<Examination> {
+public class TennisOpenDataFilesTest extends OpenDataFilesTest<TennisSolution> {
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getSolutionFilesAsParameters(new ExaminationApp());
+        return getSolutionFilesAsParameters(new TennisApp());
     }
 
-    public ExaminationDaoTest(File solutionFile) {
-        super(new ExaminationApp(), solutionFile);
+    public TennisOpenDataFilesTest(File solutionFile) {
+        super(new TennisApp(), solutionFile);
     }
 
 }

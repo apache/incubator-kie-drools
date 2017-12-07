@@ -22,10 +22,9 @@ import java.util.Collection;
 import org.junit.runners.Parameterized;
 import org.optaplanner.examples.coachshuttlegathering.app.CoachShuttleGatheringApp;
 import org.optaplanner.examples.coachshuttlegathering.domain.CoachShuttleGatheringSolution;
-import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
-import org.optaplanner.examples.common.persistence.SolutionImporterTest;
+import org.optaplanner.examples.common.persistence.ImportDataFilesTest;
 
-public class CoachShuttleGatheringImporterTest extends SolutionImporterTest<CoachShuttleGatheringSolution> {
+public class CoachShuttleGatheringImporterTest extends ImportDataFilesTest<CoachShuttleGatheringSolution> {
 
     @Override
     protected CoachShuttleGatheringImporter createSolutionImporter() {

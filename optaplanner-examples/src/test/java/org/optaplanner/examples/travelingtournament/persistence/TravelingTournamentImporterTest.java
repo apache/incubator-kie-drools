@@ -20,12 +20,11 @@ import java.io.File;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
-import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
-import org.optaplanner.examples.common.persistence.SolutionImporterTest;
+import org.optaplanner.examples.common.persistence.ImportDataFilesTest;
 import org.optaplanner.examples.travelingtournament.app.TravelingTournamentApp;
 import org.optaplanner.examples.travelingtournament.domain.TravelingTournament;
 
-public class TravelingTournamentImporterTest extends SolutionImporterTest<TravelingTournament> {
+public class TravelingTournamentImporterTest extends ImportDataFilesTest<TravelingTournament> {
 
     @Override
     protected TravelingTournamentImporter createSolutionImporter() {

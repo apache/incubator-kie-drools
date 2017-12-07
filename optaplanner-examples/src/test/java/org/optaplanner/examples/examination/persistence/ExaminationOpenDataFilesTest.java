@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2013 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.cheaptime.persistence;
+package org.optaplanner.examples.examination.persistence;
 
 import java.io.File;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
-import org.optaplanner.examples.cheaptime.app.CheapTimeApp;
-import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
-import org.optaplanner.examples.common.persistence.SolutionDaoTest;
+import org.optaplanner.examples.common.persistence.OpenDataFilesTest;
+import org.optaplanner.examples.examination.app.ExaminationApp;
+import org.optaplanner.examples.examination.domain.Examination;
 
-public class CheapTimeDaoTest extends SolutionDaoTest<CheapTimeSolution> {
+public class ExaminationOpenDataFilesTest extends OpenDataFilesTest<Examination> {
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getSolutionFilesAsParameters(new CheapTimeApp());
+        return getSolutionFilesAsParameters(new ExaminationApp());
     }
 
-    public CheapTimeDaoTest(File solutionFile) {
-        super(new CheapTimeApp(), solutionFile);
+    public ExaminationOpenDataFilesTest(File solutionFile) {
+        super(new ExaminationApp(), solutionFile);
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2015 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,25 +14,24 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.projectjobscheduling.persistence;
+package org.optaplanner.examples.meetingscheduling.persistence;
 
 import java.io.File;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
-import org.optaplanner.examples.common.persistence.SolutionDaoTest;
-import org.optaplanner.examples.projectjobscheduling.app.ProjectJobSchedulingApp;
-import org.optaplanner.examples.projectjobscheduling.domain.Schedule;
+import org.optaplanner.examples.common.persistence.OpenDataFilesTest;
+import org.optaplanner.examples.meetingscheduling.app.MeetingSchedulingApp;
 
-public class ProjectJobSchedulingDaoTest extends SolutionDaoTest<Schedule> {
+public class MeetingSchedulingOpenDataFilesTest extends OpenDataFilesTest {
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getSolutionFilesAsParameters(new ProjectJobSchedulingApp());
+        return getSolutionFilesAsParameters(new MeetingSchedulingApp());
     }
 
-    public ProjectJobSchedulingDaoTest(File solutionFile) {
-        super(new ProjectJobSchedulingApp(), solutionFile);
+    public MeetingSchedulingOpenDataFilesTest(File solutionFile) {
+        super(new MeetingSchedulingApp(), solutionFile);
     }
 
 }

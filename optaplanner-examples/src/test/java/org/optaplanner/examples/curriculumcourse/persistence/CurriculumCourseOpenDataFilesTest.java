@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.nqueens.persistence;
+package org.optaplanner.examples.curriculumcourse.persistence;
 
 import java.io.File;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
-import org.optaplanner.examples.common.persistence.SolutionDaoTest;
-import org.optaplanner.examples.nqueens.app.NQueensApp;
-import org.optaplanner.examples.nqueens.domain.NQueens;
+import org.optaplanner.examples.common.persistence.OpenDataFilesTest;
+import org.optaplanner.examples.curriculumcourse.app.CurriculumCourseApp;
+import org.optaplanner.examples.curriculumcourse.domain.CourseSchedule;
 
-public class NQueensDaoTest extends SolutionDaoTest<NQueens> {
+public class CurriculumCourseOpenDataFilesTest extends OpenDataFilesTest<CourseSchedule> {
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getSolutionFilesAsParameters(new NQueensApp());
+        return getSolutionFilesAsParameters(new CurriculumCourseApp());
     }
 
-    public NQueensDaoTest(File solutionFile) {
-        super(new NQueensApp(), solutionFile);
+    public CurriculumCourseOpenDataFilesTest(File solutionFile) {
+        super(new CurriculumCourseApp(), solutionFile);
     }
 
 }

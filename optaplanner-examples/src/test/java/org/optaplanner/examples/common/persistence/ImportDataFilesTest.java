@@ -21,7 +21,6 @@ import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -39,7 +38,7 @@ import org.optaplanner.examples.common.business.ProblemFileComparator;
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 @RunWith(Parameterized.class)
-public abstract class SolutionImporterTest<Solution_> extends LoggingTest {
+public abstract class ImportDataFilesTest<Solution_> extends LoggingTest {
 
     protected static <Solution_> Collection<Object[]> getInputFilesAsParameters(String dataDirName, AbstractSolutionImporter solutionImporter) {
         File importDir = new File(CommonApp.determineDataDir(dataDirName), "import");
@@ -65,7 +64,7 @@ public abstract class SolutionImporterTest<Solution_> extends LoggingTest {
 
     protected AbstractSolutionImporter<Solution_> solutionImporter;
 
-    protected SolutionImporterTest(File importFile) {
+    protected ImportDataFilesTest(File importFile) {
         this.importFile = importFile;
     }
 

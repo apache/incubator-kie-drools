@@ -19,7 +19,6 @@ package org.optaplanner.examples.common.persistence;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -37,7 +36,7 @@ import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 @RunWith(Parameterized.class)
-public abstract class SolutionDaoTest<Solution_> extends LoggingTest {
+public abstract class OpenDataFilesTest<Solution_> extends LoggingTest {
 
     protected static <Solution_> Collection<Object[]> getSolutionFilesAsParameters(CommonApp<Solution_> commonApp) {
         List<File> fileList = new ArrayList<>(0);
@@ -69,7 +68,7 @@ public abstract class SolutionDaoTest<Solution_> extends LoggingTest {
 
     protected SolutionFileIO<Solution_> solutionFileIO;
 
-    protected SolutionDaoTest(CommonApp<Solution_> commonApp, File solutionFile) {
+    protected OpenDataFilesTest(CommonApp<Solution_> commonApp, File solutionFile) {
         this.commonApp = commonApp;
         this.solutionFile = solutionFile;
     }

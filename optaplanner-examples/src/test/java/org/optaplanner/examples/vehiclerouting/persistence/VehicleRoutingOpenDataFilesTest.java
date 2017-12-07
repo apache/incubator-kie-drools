@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2013 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.coachshuttlegathering.persistence;
+package org.optaplanner.examples.vehiclerouting.persistence;
 
 import java.io.File;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
-import org.optaplanner.examples.coachshuttlegathering.app.CoachShuttleGatheringApp;
-import org.optaplanner.examples.coachshuttlegathering.domain.CoachShuttleGatheringSolution;
-import org.optaplanner.examples.common.persistence.SolutionDaoTest;
+import org.optaplanner.examples.common.persistence.OpenDataFilesTest;
+import org.optaplanner.examples.vehiclerouting.app.VehicleRoutingApp;
+import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 
-public class CoachShuttleGatheringDaoTest extends SolutionDaoTest<CoachShuttleGatheringSolution> {
+public class VehicleRoutingOpenDataFilesTest extends OpenDataFilesTest<VehicleRoutingSolution> {
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getSolutionFilesAsParameters(new CoachShuttleGatheringApp());
+        return getSolutionFilesAsParameters(new VehicleRoutingApp());
     }
 
-    public CoachShuttleGatheringDaoTest(File solutionFile) {
-        super(new CoachShuttleGatheringApp(), solutionFile);
+    public VehicleRoutingOpenDataFilesTest(File solutionFile) {
+        super(new VehicleRoutingApp(), solutionFile);
     }
 
 }

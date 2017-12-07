@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.machinereassignment.persistence;
+package org.optaplanner.examples.tsp.persistence;
 
 import java.io.File;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
-import org.optaplanner.examples.common.persistence.SolutionDaoTest;
-import org.optaplanner.examples.machinereassignment.app.MachineReassignmentApp;
-import org.optaplanner.examples.machinereassignment.domain.MachineReassignment;
+import org.optaplanner.examples.common.persistence.OpenDataFilesTest;
+import org.optaplanner.examples.tsp.app.TspApp;
+import org.optaplanner.examples.tsp.domain.TspSolution;
 
-public class MachineReassignmentDaoTest extends SolutionDaoTest<MachineReassignment> {
+public class TspOpenDataFilesTest extends OpenDataFilesTest<TspSolution> {
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getSolutionFilesAsParameters(new MachineReassignmentApp());
+        return getSolutionFilesAsParameters(new TspApp());
     }
 
-    public MachineReassignmentDaoTest(File solutionFile) {
-        super(new MachineReassignmentApp(), solutionFile);
+    public TspOpenDataFilesTest(File solutionFile) {
+        super(new TspApp(), solutionFile);
     }
 
 }

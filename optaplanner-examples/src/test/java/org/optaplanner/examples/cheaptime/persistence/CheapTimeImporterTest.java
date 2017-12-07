@@ -22,10 +22,9 @@ import java.util.Collection;
 import org.junit.runners.Parameterized;
 import org.optaplanner.examples.cheaptime.app.CheapTimeApp;
 import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
-import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
-import org.optaplanner.examples.common.persistence.SolutionImporterTest;
+import org.optaplanner.examples.common.persistence.ImportDataFilesTest;
 
-public class CheapTimeImporterTest extends SolutionImporterTest<CheapTimeSolution> {
+public class CheapTimeImporterTest extends ImportDataFilesTest<CheapTimeSolution> {
 
     @Override
     protected CheapTimeImporter createSolutionImporter() {

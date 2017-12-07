@@ -20,12 +20,11 @@ import java.io.File;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
-import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
-import org.optaplanner.examples.common.persistence.SolutionImporterTest;
+import org.optaplanner.examples.common.persistence.ImportDataFilesTest;
 import org.optaplanner.examples.projectjobscheduling.app.ProjectJobSchedulingApp;
 import org.optaplanner.examples.projectjobscheduling.domain.Schedule;
 
-public class ProjectJobSchedulingImporterTest extends SolutionImporterTest<Schedule> {
+public class ProjectJobSchedulingImporterTest extends ImportDataFilesTest<Schedule> {
 
     @Override
     protected ProjectJobSchedulingImporter createSolutionImporter() {

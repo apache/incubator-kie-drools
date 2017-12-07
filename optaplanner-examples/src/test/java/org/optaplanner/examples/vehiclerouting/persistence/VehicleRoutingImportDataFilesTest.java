@@ -20,12 +20,11 @@ import java.io.File;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
-import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
-import org.optaplanner.examples.common.persistence.SolutionImporterTest;
+import org.optaplanner.examples.common.persistence.ImportDataFilesTest;
 import org.optaplanner.examples.vehiclerouting.app.VehicleRoutingApp;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 
-public class VehicleRoutingImporterTest extends SolutionImporterTest<VehicleRoutingSolution> {
+public class VehicleRoutingImportDataFilesTest extends ImportDataFilesTest<VehicleRoutingSolution> {
 
     @Override
     protected VehicleRoutingImporter createSolutionImporter() {
@@ -37,7 +36,7 @@ public class VehicleRoutingImporterTest extends SolutionImporterTest<VehicleRout
         return getInputFilesAsParameters(VehicleRoutingApp.DATA_DIR_NAME, new VehicleRoutingImporter());
     }
 
-    public VehicleRoutingImporterTest(File solutionFile) {
+    public VehicleRoutingImportDataFilesTest(File solutionFile) {
         super(solutionFile);
     }
 

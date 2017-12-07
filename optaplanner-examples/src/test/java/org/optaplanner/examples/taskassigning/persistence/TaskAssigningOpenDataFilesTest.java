@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.pas.persistence;
+package org.optaplanner.examples.taskassigning.persistence;
 
 import java.io.File;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
-import org.optaplanner.examples.common.persistence.SolutionDaoTest;
-import org.optaplanner.examples.pas.app.PatientAdmissionScheduleApp;
-import org.optaplanner.examples.pas.domain.PatientAdmissionSchedule;
+import org.optaplanner.examples.common.persistence.OpenDataFilesTest;
+import org.optaplanner.examples.taskassigning.app.TaskAssigningApp;
+import org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution;
 
-public class PatientAdmissionScheduleDaoTest extends SolutionDaoTest<PatientAdmissionSchedule> {
+public class TaskAssigningOpenDataFilesTest extends OpenDataFilesTest<TaskAssigningSolution> {
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getSolutionFilesAsParameters(new PatientAdmissionScheduleApp());
+        return getSolutionFilesAsParameters(new TaskAssigningApp());
     }
 
-    public PatientAdmissionScheduleDaoTest(File solutionFile) {
-        super(new PatientAdmissionScheduleApp(), solutionFile);
+    public TaskAssigningOpenDataFilesTest(File solutionFile) {
+        super(new TaskAssigningApp(), solutionFile);
     }
 
 }

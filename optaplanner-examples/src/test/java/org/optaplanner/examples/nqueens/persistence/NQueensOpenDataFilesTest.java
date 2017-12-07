@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.tsp.persistence;
+package org.optaplanner.examples.nqueens.persistence;
 
 import java.io.File;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
-import org.optaplanner.examples.common.persistence.SolutionDaoTest;
-import org.optaplanner.examples.tsp.app.TspApp;
-import org.optaplanner.examples.tsp.domain.TspSolution;
+import org.optaplanner.examples.common.persistence.OpenDataFilesTest;
+import org.optaplanner.examples.nqueens.app.NQueensApp;
+import org.optaplanner.examples.nqueens.domain.NQueens;
 
-public class TspDaoTest extends SolutionDaoTest<TspSolution> {
+public class NQueensOpenDataFilesTest extends OpenDataFilesTest<NQueens> {
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getSolutionFilesAsParameters(new TspApp());
+        return getSolutionFilesAsParameters(new NQueensApp());
     }
 
-    public TspDaoTest(File solutionFile) {
-        super(new TspApp(), solutionFile);
+    public NQueensOpenDataFilesTest(File solutionFile) {
+        super(new NQueensApp(), solutionFile);
     }
 
 }

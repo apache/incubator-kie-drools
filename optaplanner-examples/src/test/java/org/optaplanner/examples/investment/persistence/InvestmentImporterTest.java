@@ -20,12 +20,11 @@ import java.io.File;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
-import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
-import org.optaplanner.examples.common.persistence.SolutionImporterTest;
+import org.optaplanner.examples.common.persistence.ImportDataFilesTest;
 import org.optaplanner.examples.investment.app.InvestmentApp;
 import org.optaplanner.examples.investment.domain.InvestmentSolution;
 
-public class InvestmentImporterTest extends SolutionImporterTest<InvestmentSolution> {
+public class InvestmentImporterTest extends ImportDataFilesTest<InvestmentSolution> {
 
     @Override
     protected InvestmentImporter createSolutionImporter() {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2014 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.curriculumcourse.persistence;
+package org.optaplanner.examples.dinnerparty.persistence;
 
 import java.io.File;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
-import org.optaplanner.examples.common.persistence.SolutionDaoTest;
-import org.optaplanner.examples.curriculumcourse.app.CurriculumCourseApp;
-import org.optaplanner.examples.curriculumcourse.domain.CourseSchedule;
+import org.optaplanner.examples.common.persistence.OpenDataFilesTest;
+import org.optaplanner.examples.dinnerparty.app.DinnerPartyApp;
+import org.optaplanner.examples.dinnerparty.domain.DinnerParty;
 
-public class CurriculumCourseDaoTest extends SolutionDaoTest<CourseSchedule> {
+public class DinnerPartyOpenDataFilesTest extends OpenDataFilesTest<DinnerParty> {
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getSolutionFilesAsParameters(new CurriculumCourseApp());
+        return getSolutionFilesAsParameters(new DinnerPartyApp());
     }
 
-    public CurriculumCourseDaoTest(File solutionFile) {
-        super(new CurriculumCourseApp(), solutionFile);
+    public DinnerPartyOpenDataFilesTest(File solutionFile) {
+        super(new DinnerPartyApp(), solutionFile);
     }
 
 }

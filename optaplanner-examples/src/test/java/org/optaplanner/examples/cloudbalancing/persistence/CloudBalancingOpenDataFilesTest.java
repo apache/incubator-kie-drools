@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2013 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,24 +14,25 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.meetingscheduling.persistence;
+package org.optaplanner.examples.cloudbalancing.persistence;
 
 import java.io.File;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
-import org.optaplanner.examples.common.persistence.SolutionDaoTest;
-import org.optaplanner.examples.meetingscheduling.app.MeetingSchedulingApp;
+import org.optaplanner.examples.cloudbalancing.app.CloudBalancingApp;
+import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
+import org.optaplanner.examples.common.persistence.OpenDataFilesTest;
 
-public class MeetingSchedulingDaoTest extends SolutionDaoTest {
+public class CloudBalancingOpenDataFilesTest extends OpenDataFilesTest<CloudBalance> {
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getSolutionFilesAsParameters(new MeetingSchedulingApp());
+        return getSolutionFilesAsParameters(new CloudBalancingApp());
     }
 
-    public MeetingSchedulingDaoTest(File solutionFile) {
-        super(new MeetingSchedulingApp(), solutionFile);
+    public CloudBalancingOpenDataFilesTest(File solutionFile) {
+        super(new CloudBalancingApp(), solutionFile);
     }
 
 }
