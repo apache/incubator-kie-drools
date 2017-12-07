@@ -107,32 +107,30 @@ public class BasicConcurrentInsertionsTest extends AbstractConcurrentInsertionsT
             final KieSession ksession,
             final boolean disposeSession,
             final boolean updateFacts) {
-        return new Callable<Boolean>() {
-            public Boolean call() throws Exception {
-                try {
-                    for (int j = 0; j < 10; j++) {
-                        FactHandle[] facts = new FactHandle[objectCount];
+        return () -> {
+            try {
+                for (int j = 0; j < 10; j++) {
+                    FactHandle[] facts = new FactHandle[objectCount];
+                    for (int i = 0; i < objectCount; i++) {
+                        facts[i] = ksession.insert(new Bean(i));
+                    }
+                    if (updateFacts) {
                         for (int i = 0; i < objectCount; i++) {
-                            facts[i] = ksession.insert(new Bean(i));
+                            ksession.update(facts[i], new Bean(-i));
                         }
-                        if (updateFacts) {
-                            for (int i = 0; i < objectCount; i++) {
-                                ksession.update(facts[i], new Bean(-i));
-                            }
-                        }
-                        for (FactHandle fact : facts) {
-                            ksession.delete(fact);
-                        }
-                        ksession.fireAllRules();
                     }
-                    return true;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    return false;
-                } finally {
-                    if (disposeSession) {
-                        ksession.dispose();
+                    for (FactHandle fact : facts) {
+                        ksession.delete(fact);
                     }
+                    ksession.fireAllRules();
+                }
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            } finally {
+                if (disposeSession) {
+                    ksession.dispose();
                 }
             }
         };

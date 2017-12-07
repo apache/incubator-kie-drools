@@ -22,15 +22,12 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
 
+import org.assertj.core.api.Assertions;
 import org.drools.compiler.integrationtests.facts.BeanA;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.runtime.KieSession;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
 public class SharedSessionParallelTest extends AbstractConcurrentTest {
@@ -113,9 +110,9 @@ public class SharedSessionParallelTest extends AbstractConcurrentTest {
         parallelTest(threadCount, exec);
         kieSession.dispose();
 
-        assertEquals(threadCount, list.size());
+        Assertions.assertThat(list).hasSize(threadCount);
         for (int i = 0; i < threadCount; i++) {
-            assertTrue(list.contains("" + i));
+            Assertions.assertThat(list).contains("" + i);
         }
     }
 
@@ -173,12 +170,11 @@ public class SharedSessionParallelTest extends AbstractConcurrentTest {
 
         parallelTest(threadCount, exec);
         kieSession.dispose();
-        assertTrue(list.contains("" + 0));
-        assertFalse(list.contains("" + 1));
+        Assertions.assertThat(list).contains("" + 0);
+        Assertions.assertThat(list).doesNotContain("" + 1);
         final int expectedListSize = ((threadCount - 1) / 2) + 1;
-        assertEquals(expectedListSize, list.size());
+        Assertions.assertThat(list).hasSize(expectedListSize);
     }
-
 
     @Test
     public void testLongRunningRule() throws InterruptedException {
@@ -351,11 +347,11 @@ public class SharedSessionParallelTest extends AbstractConcurrentTest {
         final int list2ExpectedSize = threadCount / 2 * objectCount;
         for (int i = 0; i < threadCount; i++) {
             if (i % 2 == 1) {
-                assertTrue(list2.contains("" + i));
+                Assertions.assertThat(list2).contains("" + i);
             }
         }
-        assertEquals(listExpectedSize, list.size());
-        assertEquals(list2ExpectedSize, list2.size());
+        Assertions.assertThat(list).hasSize(listExpectedSize);
+        Assertions.assertThat(list2).hasSize(list2ExpectedSize);
     }
 
     @Test
@@ -395,7 +391,7 @@ public class SharedSessionParallelTest extends AbstractConcurrentTest {
         parallelTest(threadCount, exec);
         kieSession.dispose();
         checkList(seed, list);
-        assertEquals(0, bean.getSeed());
+        Assertions.assertThat(bean).hasFieldOrPropertyWithValue("seed", 0);
     }
 
     @Test
@@ -437,7 +433,7 @@ public class SharedSessionParallelTest extends AbstractConcurrentTest {
 
         checkList(0, seed, list, seed * threadCount);
         for (final BeanA bean : beans) {
-            assertEquals(0, bean.getSeed());
+            Assertions.assertThat(bean).hasFieldOrPropertyWithValue("seed", 0);
         }
     }
 
@@ -482,9 +478,9 @@ public class SharedSessionParallelTest extends AbstractConcurrentTest {
     }
 
     private void checkList(final int start, final int end, final List list, final int expectedSize) {
-        assertEquals(expectedSize, list.size());
+        Assertions.assertThat(list).hasSize(expectedSize);
         for (int i = start; i < end; i++) {
-            assertTrue(list.contains("" + i));
+            Assertions.assertThat(list).contains("" + i);
         }
     }
 }

@@ -30,13 +30,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import org.assertj.core.api.Assertions;
 import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.conf.ConstraintJittingThresholdOption;
 import org.kie.internal.utils.KieHelper;
-
-import static org.junit.Assert.assertEquals;
 
 public abstract class AbstractConcurrentTest {
 
@@ -122,7 +121,8 @@ public abstract class AbstractConcurrentTest {
                 throw new RuntimeException(e);
             }
         }
-        assertEquals(threadCount, successCounter);
+
+        Assertions.assertThat(successCounter).isEqualTo(threadCount);
     }
 
     private ExecutorService createExecutorService(final int threadCount) {
@@ -150,7 +150,7 @@ public abstract class AbstractConcurrentTest {
         }
     }
 
-    protected KieBase getKieBase(final String... drls) {
+    protected synchronized KieBase getKieBase(final String... drls) {
         final KieHelper kieHelper = new KieHelper();
         for (final String drl : drls) {
             kieHelper.addContent(drl, ResourceType.DRL);

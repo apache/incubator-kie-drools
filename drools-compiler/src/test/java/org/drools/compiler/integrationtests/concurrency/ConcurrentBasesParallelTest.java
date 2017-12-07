@@ -32,10 +32,10 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-//@RunWith(Parameterized.class)
+/**
+ * Test each thread having it's own separate KieBase and KieSession.
+ */
+@RunWith(Parameterized.class)
 public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
 
     @Parameterized.Parameters(name = "Enforced jitting={0}, Serialize KieBase={1}")
@@ -49,13 +49,9 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
 
     private static final Integer NUMBER_OF_THREADS = 10;
 
-//    public ConcurrentBasesParallelTest(final boolean enforcedJitting, final boolean serializeKieBase) {
-//        super(enforcedJitting, serializeKieBase, false, false);
-//    }
-
-    public ConcurrentBasesParallelTest() {
-        super(false, false, false, false);
-    }
+    public ConcurrentBasesParallelTest(final boolean enforcedJitting, final boolean serializeKieBase) {
+        super(enforcedJitting, serializeKieBase, false, false);
+    };
 
     @Test
     public void testOneOfAllFactsMatches() throws InterruptedException {
@@ -75,7 +71,8 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
                 for (int i = 0; i < numberOfObjects; i++) {
                     session.insert(new BeanA(i));
                 }
-                return session.fireAllRules() == 1;
+                Assertions.assertThat(session.fireAllRules()).isEqualTo(1);
+                return true;
             } finally {
                 session.dispose();
             }
@@ -94,38 +91,27 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
                 "then " +
                 "end";
 
-            final StringBuilder builder = new StringBuilder();
-            builder.append("COUNTER: " + counter + "\n");
-            builder.append(rule);
-            builder.append("\n");
             final KieBase base = getKieBase(rule);
             final KieSession session = base.newKieSession();
 
             try {
-                for (int i = 0; i < 2; i++) {
+                for (int i = 0; i < NUMBER_OF_THREADS; i++) {
                     if (i != counter) {
-                        builder.append("BeanA: " + i + "\n");
                         session.insert(new BeanA(i));
                     }
                 }
-                builder.append("Objects: " + session.getObjects().size() + "\n");
-                int fireCount = session.fireAllRules();
-                builder.append("kieBaseHashCode: " + base.hashCode() + "\n");
-                builder.append("sessionHashCode: " + session.hashCode() + "\n");
-                builder.append("fireCount: " + fireCount + "\n");
-                builder.append("--------------\n");
-                System.out.println(builder.toString());
-                return fireCount == 0;
+                Assertions.assertThat(session.fireAllRules()).isEqualTo(0);
+                return true;
             } finally {
                 session.dispose();
             }
         };
 
-        parallelTest(2, exec);
+        parallelTest(NUMBER_OF_THREADS, exec);
     }
 
     @Test
-    public void testDifferentRuleset3() throws InterruptedException {
+    public void testFireAndGlobalSeparation() throws InterruptedException {
         final TestExecutor exec = counter -> {
             final String rule = "import " + BeanA.class.getCanonicalName() + ";\n" +
                 "global " + AtomicInteger.class.getCanonicalName() + " result;\n" +
@@ -143,8 +129,8 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
                 session.insert(new BeanA());
                 final AtomicInteger r = new AtomicInteger(0);
                 session.setGlobal("result", r);
-                assertEquals(1, session.fireAllRules());
-                assertEquals(counter, r.get());
+                Assertions.assertThat(session.fireAllRules()).isEqualTo(1);
+                Assertions.assertThat(r.get()).isEqualTo(counter);
                 return true;
             } finally {
                 session.dispose();
@@ -155,7 +141,7 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
     }
 
     @Test
-    public void testDifferentRuleset4() throws InterruptedException {
+    public void testFireAndGlobalSeparation2() throws InterruptedException {
         final String ruleTemplate = "import " + BeanA.class.getCanonicalName() + ";\n" +
             "import " + BeanB.class.getCanonicalName() + ";\n" +
             "global java.util.List list;\n" +
@@ -181,44 +167,9 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
                 final List<String> list = new ArrayList<>();
                 session.setGlobal("list", list);
                 final int rulesFired = session.fireAllRules();
-                assertEquals(1, list.size());
-                assertEquals(className, list.get(0));
-                return rulesFired == 1;
-            } finally {
-                session.dispose();
-            }
-        };
-
-        parallelTest(NUMBER_OF_THREADS, exec);
-    }
-
-    @Test
-    public void testDifferentRuleset5() throws InterruptedException {
-        final String ruleTemplate = "import " + BeanA.class.getCanonicalName() + ";\n" +
-            "import " + BeanB.class.getCanonicalName() + ";\n" +
-            "rule ${ruleName} " +
-            "when " +
-            "${className}()" +
-            "then " +
-            "end";
-
-        final TestExecutor exec = counter -> {
-
-            final String className = (counter % 2 == 0) ? "BeanA" : "BeanB";
-            final String ruleName = "Rule_" + className + "_" + counter;
-            final String rule = ruleTemplate.replace("${ruleName}", ruleName).replace("${className}", className);
-
-            final KieBase base = getKieBase(rule);
-            final KieSession session = base.newKieSession();
-
-            try {
-                if (counter % 2 == 0) {
-                    session.insert(new BeanB());
-                } else {
-                    session.insert(new BeanA());
-                }
-                final int rulesFired = session.fireAllRules();
-                assertEquals(0, rulesFired);
+                Assertions.assertThat(list).hasSize(1);
+                Assertions.assertThat(list.get(0)).isEqualTo(className);
+                Assertions.assertThat(rulesFired).isEqualTo(1);
                 return true;
             } finally {
                 session.dispose();
@@ -229,7 +180,7 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
     }
 
     @Test
-    public void testDifferentRuleset6() throws InterruptedException {
+    public void testNonMatchingFact() throws InterruptedException {
         final String ruleTemplate = "import " + BeanA.class.getCanonicalName() + ";\n" +
             "import " + BeanB.class.getCanonicalName() + ";\n" +
             "rule ${ruleName} " +
@@ -248,12 +199,11 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
 
             try {
                 if (counter % 2 == 0) {
-                    session.insert(new BeanA());
-                } else {
                     session.insert(new BeanB());
+                } else {
+                    session.insert(new BeanA());
                 }
-                final int rulesFired = session.fireAllRules();
-                assertEquals(1, rulesFired);
+                Assertions.assertThat(session.fireAllRules()).isEqualTo(0);
                 return true;
             } finally {
                 session.dispose();
@@ -264,7 +214,41 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
     }
 
     @Test
-    public void testDifferentRulesetNot() throws InterruptedException {
+    public void testMatchingFact() throws InterruptedException {
+        final String ruleTemplate = "import " + BeanA.class.getCanonicalName() + ";\n" +
+            "import " + BeanB.class.getCanonicalName() + ";\n" +
+            "rule ${ruleName} " +
+            "when " +
+            "${className}()" +
+            "then " +
+            "end";
+
+        final TestExecutor exec = counter -> {
+            final String className = (counter % 2 == 0) ? "BeanA" : "BeanB";
+            final String ruleName = "Rule_" + className + "_" + counter;
+            final String rule = ruleTemplate.replace("${ruleName}", ruleName).replace("${className}", className);
+
+            final KieBase base = getKieBase(rule);
+            final KieSession session = base.newKieSession();
+
+            try {
+                if (counter % 2 == 0) {
+                    session.insert(new BeanA());
+                } else {
+                    session.insert(new BeanB());
+                }
+                Assertions.assertThat(session.fireAllRules()).isEqualTo(1);
+                return true;
+            } finally {
+                session.dispose();
+            }
+        };
+
+        parallelTest(NUMBER_OF_THREADS, exec);
+    }
+
+    @Test
+    public void testNot() throws InterruptedException {
         final String ruleTemplate = "import " + BeanA.class.getCanonicalName() + ";\n" +
             "import " + BeanB.class.getCanonicalName() + ";\n" +
             "rule ${ruleName} " +
@@ -288,20 +272,18 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
                 } else {
                     session.insert(new BeanB());
                 }
-                final int rulesFired = session.fireAllRules();
-                assertEquals(0, rulesFired);
+                Assertions.assertThat(session.fireAllRules()).isEqualTo(0);
                 return true;
             } finally {
                 session.dispose();
             }
-
         };
 
         parallelTest(NUMBER_OF_THREADS, exec);
     }
 
     @Test
-    public void testDifferentRulesetExists() throws InterruptedException {
+    public void testExists() throws InterruptedException {
         final String ruleTemplate = "import " + BeanA.class.getCanonicalName() + ";\n" +
             "import " + BeanB.class.getCanonicalName() + ";\n" +
             "rule ${ruleName} " +
@@ -325,8 +307,7 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
                 } else {
                     session.insert(new BeanB());
                 }
-                final int rulesFired = session.fireAllRules();
-                assertEquals(1, rulesFired);
+                Assertions.assertThat(session.fireAllRules()).isEqualTo(1);
                 return true;
             } finally {
                 session.dispose();
@@ -338,7 +319,7 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
     }
 
     @Test
-    public void testDifferentRulesetSharedSubnetwork() throws InterruptedException {
+    public void testSubnetwork() throws InterruptedException {
         final String ruleTemplate = "import " + BeanA.class.getCanonicalName() + ";\n" +
             "import " + BeanB.class.getCanonicalName() + ";\n" +
             "rule ${ruleName} " +
@@ -369,10 +350,10 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
                 session.insert("test");
                 if (counter % 2 == 0) {
                     session.insert(new BeanA());
-                    assertEquals(2, session.fireAllRules());
+                    Assertions.assertThat(session.fireAllRules()).isEqualTo(2);
                 } else {
                     session.insert(new BeanB());
-                    assertEquals(1, session.fireAllRules());
+                    Assertions.assertThat(session.fireAllRules()).isEqualTo(1);
                 }
                 return true;
             } finally {
@@ -385,7 +366,7 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
     }
 
     @Test
-    public void testSameRuleset1() throws InterruptedException {
+    public void testAccumulatesMatchOnlyBeanA() throws InterruptedException {
         final String ruleA = "import " + BeanA.class.getCanonicalName() + ";\n" +
             "rule RuleA " +
             "when " +
@@ -409,10 +390,11 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
             try {
                 if (counter % 2 == 0) {
                     session.insert(new BeanA(counter));
-                    return session.fireAllRules() == 1;
+                    Assertions.assertThat(session.fireAllRules()).isEqualTo(1);
                 } else {
-                    return session.fireAllRules() == 0;
+                    Assertions.assertThat(session.fireAllRules()).isEqualTo(0);
                 }
+                return true;
             } finally {
                 session.dispose();
             }
@@ -422,7 +404,7 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
     }
 
     @Test
-    public void testSameRuleset2() throws InterruptedException {
+    public void testAccumulatesMatchBoth() throws InterruptedException {
         final String ruleA = "import " + BeanA.class.getCanonicalName() + ";\n" +
             "rule RuleA " +
             "when " +
@@ -444,7 +426,8 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
             try {
                 session.insert(new BeanA());
                 session.insert(new BeanB());
-                return session.fireAllRules() == 2;
+                Assertions.assertThat(session.fireAllRules()).isEqualTo(2);
+                return true;
             } finally {
                 session.dispose();
             }
@@ -454,7 +437,7 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
     }
 
     @Test
-    public void testSameRuleset3() throws InterruptedException {
+    public void testAccumulatesMatchOnlyOne() throws InterruptedException {
         final String ruleA = "import " + BeanA.class.getCanonicalName() + ";\n" +
             "rule RuleA " +
             "when " +
@@ -479,7 +462,8 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
                 } else {
                     session.insert(new BeanB(counter));
                 }
-                return session.fireAllRules() == 1;
+                Assertions.assertThat(session.fireAllRules()).isEqualTo(1);
+                return true;
             } finally {
                 session.dispose();
             }
@@ -490,7 +474,7 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
     }
 
     @Test
-    public void testSameRuleset4() throws InterruptedException {
+    public void testNotsMatchOnlyOne() throws InterruptedException {
         final String ruleA = "import " + BeanA.class.getCanonicalName() + ";\n" +
             "rule RuleNotA " +
             "when " +
@@ -515,7 +499,8 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
                 } else {
                     session.insert(new BeanB(counter));
                 }
-                return session.fireAllRules() == 1;
+                Assertions.assertThat(session.fireAllRules()).isEqualTo(1);
+                return true;
             } finally {
                 session.dispose();
             }
@@ -526,7 +511,7 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
     }
 
     @Test
-    public void testSameRuleset5() throws InterruptedException {
+    public void testNotsMatchBoth() throws InterruptedException {
         final String ruleA = "import " + BeanA.class.getCanonicalName() + ";\n" +
             "rule RuleNotA " +
             "when " +
@@ -549,10 +534,11 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
                 if (counter % 2 == 0) {
                     session.insert(new BeanA(counter));
                     session.insert(new BeanB(counter));
-                    return session.fireAllRules() == 0;
+                    Assertions.assertThat(session.fireAllRules()).isEqualTo(0);
                 } else {
-                    return session.fireAllRules() == 2;
+                    Assertions.assertThat(session.fireAllRules()).isEqualTo(2);
                 }
+                return true;
             } finally {
                 session.dispose();
             }
@@ -586,9 +572,10 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
                 final List <String> list = new ArrayList<>();
                 session.setGlobal("list", list);
                 final int rulesFired = session.fireAllRules();
-                assertEquals(1, list.size());
-                assertEquals(""+counter, list.get(0));
-                return rulesFired == 1;
+                Assertions.assertThat(list).hasSize(1);
+                Assertions.assertThat(list.get(0)).isEqualTo(""+counter);
+                Assertions.assertThat(rulesFired).isEqualTo(1);
+                return true;
             } finally {
                 session.dispose();
             }
@@ -632,10 +619,12 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
                     session.insert(new BeanA(i));
                     rulesFired += session.fireAllRules();
                 }
-                assertEquals(objectCount, list.size());
-                assertTrue(list.contains(identifier));
-                assertTrue(!list.contains(otherIdentifier));
-                return rulesFired == objectCount;
+
+                Assertions.assertThat(list).hasSize(objectCount);
+                Assertions.assertThat(list).contains(identifier);
+                Assertions.assertThat(list).doesNotContain(otherIdentifier);
+                Assertions.assertThat(rulesFired).isEqualTo(objectCount);
+                return true;
             } finally {
                 session.dispose();
             }
@@ -666,9 +655,9 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
                     }
                 }
                 final QueryResults results = session.getQueryResults("Query");
-                assertEquals(1, results.size());
+                Assertions.assertThat(results).hasSize(1);
                 for (final QueryResultsRow row : results) {
-                    assertEquals(bean, row.get("bean"));
+                    Assertions.assertThat(row.get("bean")).isEqualTo(bean);
                 }
                 return true;
             } finally {
@@ -700,10 +689,10 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
                     session.insert(new BeanA(seed));
                 }
                 final QueryResults results = session.getQueryResults("Query");
-                assertEquals(numberOfObjects, results.size());
+                Assertions.assertThat(results).hasSize(numberOfObjects);
                 for (final QueryResultsRow row : results) {
                     final BeanA bean = (BeanA) row.get("bean");
-                    assertEquals(seed, bean.getSeed());
+                    Assertions.assertThat(bean.getSeed()).isEqualTo(seed);
                 }
                 return true;
             } finally {
