@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -116,8 +118,11 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
         }
 
         private void readTalkList() {
+            Map<String, Speaker> speakerMap = solution.getSpeakerList().stream().collect(
+                    Collectors.toMap(Speaker::getName, speaker -> speaker));
             nextSheet("Talks");
             nextRow();
+            readHeaderCell("Code");
             readHeaderCell("Title");
             List<Talk> talkList = new ArrayList<>(currentSheet.getLastRowNum() - 1);
             long id = 0L;
@@ -125,7 +130,16 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 nextRow();
                 Talk talk = new Talk();
                 talk.setId(id++);
+                talk.setCode(nextCell().getStringCellValue());
                 talk.setTitle(nextCell().getStringCellValue());
+                talk.setSpeakerList(Arrays.stream(nextCell().getStringCellValue().split(", ")).map(speakerName -> {
+                    Speaker speaker = speakerMap.get(speakerName);
+                    if (speaker == null) {
+                        throw new IllegalStateException("The talk with code (" + talk.getCode()
+                                + ") has a speaker (" + speakerName + ") that doesn't exist in the speaker list.");
+                    }
+                    return speaker;
+                }).collect(Collectors.toList()));
                 talkList.add(talk);
             }
             solution.setTalkList(talkList);
@@ -239,12 +253,17 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
         }
 
         private void writeTalkList() {
-            nextSheet("Talks", 1, 1);
+            nextSheet("Talks", 2, 1);
             nextRow();
+            addHeaderCell("Code");
             addHeaderCell("Title");
+            addHeaderCell("Speakers");
             for (Talk talk : solution.getTalkList()) {
                 nextRow();
+                nextCell().setCellValue(talk.getCode());
                 nextCell().setCellValue(talk.getTitle());
+                nextCell().setCellValue(talk.getSpeakerList()
+                        .stream().map(Speaker::getName).collect(Collectors.joining(", ")));
             }
             autoSizeColumnsWithHeader();
         }

@@ -211,10 +211,22 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
     private void createTalkList(ConferenceSolution solution, int talkListSize) {
         List<Talk> talkList = new ArrayList<>(talkListSize);
         talkTitleGenerator.predictMaximumSizeAndReset(talkListSize);
+        int speakerListIndex = 0;
         for (int i = 0; i < talkListSize; i++) {
             Talk talk = new Talk();
             talk.setId((long) i);
+            talk.setCode(String.format("S%0" + ((String.valueOf(talkListSize).length()) + "d"), i));
             talk.setTitle(talkTitleGenerator.generateNextValue());
+            double randomDouble = random.nextDouble();
+            int speakerCount = (randomDouble < 0.03) ? 4 :
+                    (randomDouble < 0.10) ? 3 :
+                    (randomDouble < 0.50) ? 2 : 1;
+            List<Speaker> speakerList = new ArrayList<>(speakerCount);
+            for (int j = 0; j < speakerCount; j++) {
+                speakerList.add(solution.getSpeakerList().get(speakerListIndex));
+                speakerListIndex = (speakerListIndex + 1) % solution.getSpeakerList().size();
+            }
+            talk.setSpeakerList(speakerList);
             logger.trace("Created talk with title ({}).",
                     talk.getTitle());
             talkList.add(talk);

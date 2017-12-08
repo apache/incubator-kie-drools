@@ -28,6 +28,7 @@ import org.optaplanner.examples.conferencescheduling.domain.solver.MovableTalkFi
 @PlanningEntity(movableEntitySelectionFilter = MovableTalkFilter.class)
 public class Talk extends AbstractPersistable {
 
+    private String code;
     private String title;
     private List<Speaker> speakerList;
 
@@ -38,12 +39,20 @@ public class Talk extends AbstractPersistable {
 
     @Override
     public String toString() {
-        return title;
+        return code;
     }
 
     // ************************************************************************
     // Simple getters and setters
     // ************************************************************************
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
 
     public String getTitle() {
         return title;
