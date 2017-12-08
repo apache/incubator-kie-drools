@@ -27,7 +27,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import javax.swing.AbstractAction;
@@ -367,15 +366,16 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
         public OpenAction() {
             super(NAME, new ImageIcon(SolverAndPersistenceFrame.class.getResource("openAction.png")));
             fileChooser = new JFileChooser(solutionBusiness.getSolvedDataDir());
+            final String inputFileExtension = solutionBusiness.getSolutionFileIO().getOutputFileExtension();
             fileChooser.setFileFilter(new FileFilter() {
                 @Override
                 public boolean accept(File file) {
-                    return file.isDirectory() || file.getName().endsWith(".xml");
+                    return file.isDirectory() || file.getName().endsWith("." + inputFileExtension);
                 }
 
                 @Override
                 public String getDescription() {
-                    return "Solution XStream XML files";
+                    return "Solution files (*." + inputFileExtension + ")";
                 }
             });
             fileChooser.setDialogTitle(NAME);
@@ -405,15 +405,16 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
         public SaveAction() {
             super(NAME, new ImageIcon(SolverAndPersistenceFrame.class.getResource("saveAction.png")));
             fileChooser = new JFileChooser(solutionBusiness.getSolvedDataDir());
+            final String outputFileExtension = solutionBusiness.getSolutionFileIO().getOutputFileExtension();
             fileChooser.setFileFilter(new FileFilter() {
                 @Override
                 public boolean accept(File file) {
-                    return file.isDirectory() || file.getName().endsWith(".xml");
+                    return file.isDirectory() || file.getName().endsWith("." + outputFileExtension);
                 }
 
                 @Override
                 public String getDescription() {
-                    return "Solution XStream XML files";
+                    return "Solution files (*." + outputFileExtension + ")";
                 }
             });
             fileChooser.setDialogTitle(NAME);
@@ -421,8 +422,9 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            final String outputFileExtension = solutionBusiness.getSolutionFileIO().getOutputFileExtension();
             fileChooser.setSelectedFile(new File(solutionBusiness.getSolvedDataDir(),
-                    FilenameUtils.getBaseName(solutionBusiness.getSolutionFileName()) + ".xml"));
+                    FilenameUtils.getBaseName(solutionBusiness.getSolutionFileName()) + "." + outputFileExtension));
             int approved = fileChooser.showSaveDialog(SolverAndPersistenceFrame.this);
             if (approved == JFileChooser.APPROVE_OPTION) {
                 setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
