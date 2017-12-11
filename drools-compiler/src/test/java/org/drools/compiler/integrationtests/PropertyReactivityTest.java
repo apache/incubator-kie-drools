@@ -40,6 +40,7 @@ import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.utils.KieHelper;
 
+import static org.assertj.core.api.Assertions.fail;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -1770,4 +1771,31 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
 
         assertTrue( kbuilder.getErrors().isEmpty() );
     }
+
+    @Test
+    public void testUpdateOnNonExistingProperty() {
+        // DROOLS-2170
+        final String str1 =
+                "import " + Klass.class.getCanonicalName() + "\n" +
+                "rule R when\n" +
+                "  Klass( b == 2 )\n" +
+                "then\n" +
+                "end\n";
+
+        final KieSession ksession = new KieHelper().addContent( str1, ResourceType.DRL )
+                .build()
+                .newKieSession();
+
+        final Klass bean = new Klass( 1, 2, 3, 4, 5, 6 );
+        final FactHandle fh = ksession.insert( bean );
+        ksession.fireAllRules();
+
+        try {
+            ksession.update( fh, bean, "z" );
+            fail("Trying to update not existing property must fail");
+        } catch (Exception e) {
+            assertTrue( e.getMessage().contains( Klass.class.getName() ) );
+        }
+    }
+
 }

@@ -401,9 +401,9 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
     // Slot specific
 
     @Override
-    public BitMask getListenedPropertyMask(List<String> settableProperties) {
+    public BitMask getListenedPropertyMask(Class modifiedClass, List<String> settableProperties) {
         return analyzedCondition != null ?
-                calculateMask(analyzedCondition, settableProperties) :
+                calculateMask(modifiedClass, analyzedCondition, settableProperties) :
                 calculateMaskFromExpression(settableProperties);
     }
 
@@ -455,12 +455,12 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         return propertyName;
     }
 
-    private BitMask calculateMask(Condition condition, List<String> settableProperties) {
+    private BitMask calculateMask(Class modifiedClass, Condition condition, List<String> settableProperties) {
         BitMask mask = getEmptyPropertyReactiveMask(settableProperties.size());
         for (Condition c : ((CombinedCondition)condition).getConditions()) {
             String propertyName = getFirstInvokedPropertyName(((SingleCondition) c).getLeft());
             if (propertyName != null) {
-                mask = setPropertyOnMask(mask, settableProperties, propertyName);
+                mask = setPropertyOnMask(modifiedClass, mask, settableProperties, propertyName);
             }
         }
         return mask;

@@ -252,8 +252,8 @@ public abstract class LeftTupleSource extends BaseNode
         if ( pattern != null && isPropertyReactive(context, objectClass) ) {
             Collection<String> leftListenedProperties = pattern.getListenedProperties();
             List<String> settableProperties = getAccessibleProperties( context.getKnowledgeBase(), objectClass );
-            leftDeclaredMask = calculatePositiveMask( leftListenedProperties, settableProperties );
-            leftNegativeMask = calculateNegativeMask( leftListenedProperties, settableProperties );
+            leftDeclaredMask = calculatePositiveMask( objectClass, leftListenedProperties, settableProperties );
+            leftNegativeMask = calculateNegativeMask( objectClass, leftListenedProperties, settableProperties );
             setLeftListenedProperties(leftListenedProperties);
         } else {
             // if property specific is not on, then accept all modification propagations

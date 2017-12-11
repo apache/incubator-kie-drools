@@ -153,11 +153,11 @@ public abstract class ObjectSource extends BaseNode
             declaredMask = AllSetBitMask.get();
         } else {
             List<String> settableProperties = getAccessibleProperties( context.getKnowledgeBase(), objectClass );
-            declaredMask = calculateDeclaredMask(settableProperties);
+            declaredMask = calculateDeclaredMask(objectClass, settableProperties);
         }
     }
     
-    public abstract BitMask calculateDeclaredMask(List<String> settableProperties);
+    public abstract BitMask calculateDeclaredMask(Class modifiedClass, List<String> settableProperties);
     
     public void resetInferredMask() {
         this.inferredMask = EmptyBitMask.get();
