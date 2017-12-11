@@ -353,8 +353,8 @@ public class DSL {
 
     // -- Accumulate Functions --
 
-    public static AccumulateFunction accFunction(String functionName, Variable source) {
-        return new AccumulateFunction(source, functionName);
+    public static AccumulateFunction accFunction(Class<?> accFunctionClass, Variable source) {
+        return new AccumulateFunction(source, accFunctionClass);
     }
 
     // -- Conditional Named Consequnce --

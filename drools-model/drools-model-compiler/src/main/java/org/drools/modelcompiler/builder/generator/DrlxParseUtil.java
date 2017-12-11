@@ -478,6 +478,10 @@ public class DrlxParseUtil {
                 parsedType.getElementType();
     }
 
+    public static Type toType(Class<?> declClass) {
+        return JavaParser.parseType(declClass.getCanonicalName());
+    }
+
     public static Optional<String> findBindingIdFromDotExpression(String expression) {
         int dot = expression.indexOf( '.' );
         if ( dot < 0 ) {
