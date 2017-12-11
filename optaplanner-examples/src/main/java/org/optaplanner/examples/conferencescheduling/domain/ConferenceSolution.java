@@ -18,7 +18,6 @@ package org.optaplanner.examples.conferencescheduling.domain;
 
 import java.util.List;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
@@ -27,18 +26,18 @@ import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
-@XStreamAlias("ConferenceSolution")
 @PlanningSolution
 public class ConferenceSolution extends AbstractPersistable {
 
     private String name;
 
+    @ValueRangeProvider(id = "timeslotRange")
+    @ProblemFactCollectionProperty
+    private List<Timeslot> timeslotList;
+
     @ValueRangeProvider(id = "roomRange")
     @ProblemFactCollectionProperty
     private List<Room> roomList;
-
-//    @ProblemFactCollectionProperty
-//    private List<Track> trackList;
 
     @ProblemFactCollectionProperty
     private List<Speaker> speakerList;
@@ -66,6 +65,14 @@ public class ConferenceSolution extends AbstractPersistable {
         this.name = name;
     }
 
+    public List<Timeslot> getTimeslotList() {
+        return timeslotList;
+    }
+
+    public void setTimeslotList(List<Timeslot> timeslotList) {
+        this.timeslotList = timeslotList;
+    }
+
     public List<Room> getRoomList() {
         return roomList;
     }
@@ -73,14 +80,6 @@ public class ConferenceSolution extends AbstractPersistable {
     public void setRoomList(List<Room> roomList) {
         this.roomList = roomList;
     }
-
-//    public List<Track> getTrackList() {
-//        return trackList;
-//    }
-//
-//    public void setTrackList(List<Track> trackList) {
-//        this.trackList = trackList;
-//    }
 
     public List<Speaker> getSpeakerList() {
         return speakerList;

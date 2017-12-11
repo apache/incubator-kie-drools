@@ -29,8 +29,8 @@ global HardSoftScoreHolder scoreHolder;
 
 rule "Room conflict"
     when
-        Talk(room != null, $leftId : id, $room : room)
-        Talk(room == $room, id > $leftId)
+        Talk(room != null, timeslot != null, $leftId : id, $room : room, $timeslot : timeslot)
+        Talk(room == $room, $timeslot.overlaps(timeslot), id > $leftId)
     then
         scoreHolder.addHardConstraintMatch(kcontext, -1);
 end

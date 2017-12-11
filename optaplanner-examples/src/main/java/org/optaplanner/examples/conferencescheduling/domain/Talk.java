@@ -18,13 +18,11 @@ package org.optaplanner.examples.conferencescheduling.domain;
 
 import java.util.List;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.conferencescheduling.domain.solver.MovableTalkFilter;
 
-@XStreamAlias("Talk")
 @PlanningEntity(movableEntitySelectionFilter = MovableTalkFilter.class)
 public class Talk extends AbstractPersistable {
 
@@ -33,6 +31,9 @@ public class Talk extends AbstractPersistable {
     private List<Speaker> speakerList;
 
     private boolean lockedByUser = false;
+
+    @PlanningVariable(valueRangeProviderRefs = "timeslotRange")
+    private Timeslot timeslot;
 
     @PlanningVariable(valueRangeProviderRefs = "roomRange")
     private Room room;
@@ -76,6 +77,14 @@ public class Talk extends AbstractPersistable {
 
     public void setLockedByUser(boolean lockedByUser) {
         this.lockedByUser = lockedByUser;
+    }
+
+    public Timeslot getTimeslot() {
+        return timeslot;
+    }
+
+    public void setTimeslot(Timeslot timeslot) {
+        this.timeslot = timeslot;
     }
 
     public Room getRoom() {

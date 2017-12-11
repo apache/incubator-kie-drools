@@ -16,10 +16,8 @@
 
 package org.optaplanner.examples.conferencescheduling.domain;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
-@XStreamAlias("Track")
 public class Track extends AbstractPersistable {
 
     private String name;

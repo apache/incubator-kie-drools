@@ -17,6 +17,10 @@
 package org.optaplanner.examples.conferencescheduling.persistence;
 
 import java.io.File;
+import java.math.BigInteger;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
@@ -27,23 +31,25 @@ import java.util.Set;
 import org.apache.commons.lang3.tuple.Pair;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.LoggingMain;
+import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.StringDataGenerator;
 import org.optaplanner.examples.conferencescheduling.app.ConferenceSchedulingApp;
 import org.optaplanner.examples.conferencescheduling.domain.ConferenceSolution;
 import org.optaplanner.examples.conferencescheduling.domain.Room;
 import org.optaplanner.examples.conferencescheduling.domain.Speaker;
 import org.optaplanner.examples.conferencescheduling.domain.Talk;
+import org.optaplanner.examples.conferencescheduling.domain.Timeslot;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
 public class ConferenceSchedulingGenerator extends LoggingMain {
 
     public static void main(String[] args) {
         ConferenceSchedulingGenerator generator = new ConferenceSchedulingGenerator();
-        generator.writeConferenceSolution(50, 5);
-        generator.writeConferenceSolution(100, 10);
-//        generator.writeMeetingSchedule(200, 5);
-//        generator.writeMeetingSchedule(400, 5);
-//        generator.writeMeetingSchedule(800, 5);
+        generator.writeConferenceSolution(1, 5);
+        generator.writeConferenceSolution(2, 5);
+        generator.writeConferenceSolution(2, 10);
+        generator.writeConferenceSolution(3, 10);
+        generator.writeConferenceSolution(3, 20);
     }
     private final StringDataGenerator conferenceNameGenerator = new StringDataGenerator()
             .addPart(true, 0,
@@ -59,9 +65,24 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
                     "2024",
                     "2025");
 
+    private static final String TIMESLOT_LAB_TAG = "Lab";
+
+    private final LocalDate timeslotFirstDay = LocalDate.of(2018, 10, 1);
+
+    private final List<Pair<LocalTime, LocalTime>> timeslotOptions = Arrays.asList(
+//        Pair.of(LocalTime.of(8, 30), LocalTime.of(9, 30)), // General session
+        Pair.of(LocalTime.of(10, 15), LocalTime.of(11, 0)),
+        Pair.of(LocalTime.of(11, 30), LocalTime.of(12, 15)),
+//        Pair.of(LocalTime.of(13, 45), LocalTime.of(15, 0)), // General session
+        Pair.of(LocalTime.of(15, 30), LocalTime.of(16, 15)),
+        Pair.of(LocalTime.of(16, 30), LocalTime.of(17, 15)),
+        Pair.of(LocalTime.of(10, 15), LocalTime.of(12, 15)), // Lab
+        Pair.of(LocalTime.of(13, 0), LocalTime.of(15, 0)) // Lab
+    );
+
     private final List<Pair<String, Double>> roomTagProbabilityList = Arrays.asList(
             Pair.of("Large", 0.20),
-            Pair.of("Lab", 0.10),
+            Pair.of("Power outlets", 0.10),
             Pair.of("Recorded", 0.50)
     );
 
@@ -113,13 +134,6 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
                     "out of the box",
                     "for programmers");
 
-    private final int[] durationInMinutesOptions = {
-            30, // 30 mins
-            60, // 1 hour
-            120, // 2 hours
-    };
-
-
     protected final SolutionFileIO<ConferenceSolution> solutionFileIO;
     protected final File outputDir;
     protected Random random;
@@ -129,41 +143,65 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
         outputDir = new File(CommonApp.determineDataDir(ConferenceSchedulingApp.DATA_DIR_NAME), "unsolved");
     }
 
-    private void writeConferenceSolution(int talkListSize, int roomListSize) {
+    private void writeConferenceSolution(int dayListSize, int roomListSize) {
+        int timeslotListSize = dayListSize * timeslotOptions.size();
+        int talkListSize = timeslotListSize * roomListSize;
         int speakerListSize = talkListSize * 2 / 3;
 
-        String fileName = talkListSize + "talks-" + roomListSize + "rooms";
+        String fileName = talkListSize + "talks-" + timeslotListSize + "timeslots-" + roomListSize + "rooms";
         File outputFile = new File(outputDir, fileName + "." + solutionFileIO.getOutputFileExtension());
-        ConferenceSolution solution = createConferenceSolution(fileName, roomListSize, speakerListSize, talkListSize);
+        ConferenceSolution solution = createConferenceSolution(fileName, timeslotListSize, roomListSize, speakerListSize, talkListSize);
         solutionFileIO.write(solution, outputFile);
     }
 
-    public ConferenceSolution createConferenceSolution(String fileName, int roomListSize, int speakerListSize, int talkListSize) {
+    public ConferenceSolution createConferenceSolution(String fileName, int timeslotListSize, int roomListSize, int speakerListSize, int talkListSize) {
         random = new Random(37);
         ConferenceSolution solution = new ConferenceSolution();
         solution.setId(0L);
         solution.setName(conferenceNameGenerator.generateNextValue());
 
+        createTimeslotList(solution, timeslotListSize);
         createRoomList(solution, roomListSize);
         createSpeakerList(solution, speakerListSize);
         createTalkList(solution, talkListSize);
 
 
-//        createMeetingListAndAttendanceList(solution, meetingListSize);
-//        createTimeGrainList(solution, timeGrainListSize);
-//        createPersonList(solution);
-//        linkAttendanceListToPersons(solution);
-//        createMeetingAssignmentList(solution);
-
-//        BigInteger possibleSolutionSize = BigInteger.valueOf((long) timeGrainListSize * roomListSize)
-//                .pow(solution.getMeetingAssignmentList().size());
-//        logger.info("MeetingSchedule {} has {} meetings, {} timeGrains and {} rooms with a search space of {}.",
-//                fileName,
-//                meetingListSize,
-//                timeGrainListSize,
-//                roomListSize,
-//                AbstractSolutionImporter.getFlooredPossibleSolutionSize(possibleSolutionSize));
+        BigInteger possibleSolutionSize = BigInteger.valueOf((long) timeslotListSize * roomListSize)
+                .pow(talkListSize);
+        logger.info("Conference {} has {} talks, {} timeslots and {} rooms with a search space of {}.",
+                fileName,
+                talkListSize,
+                timeslotListSize,
+                roomListSize,
+                AbstractSolutionImporter.getFlooredPossibleSolutionSize(possibleSolutionSize));
         return solution;
+    }
+
+    private void createTimeslotList(ConferenceSolution solution, int timeslotListSize) {
+        List<Timeslot> timeslotList = new ArrayList<>(timeslotListSize);
+        int timeslotOptionsIndex = 0;
+        LocalDate day = timeslotFirstDay;
+        for (int i = 0; i < timeslotListSize; i++) {
+            Timeslot timeslot = new Timeslot();
+            timeslot.setId((long) i);
+            if (timeslotOptionsIndex >= timeslotOptions.size()) {
+                timeslotOptionsIndex = 0;
+                day = day.plusDays(1);
+            }
+            Pair<LocalTime, LocalTime> pair = timeslotOptions.get(timeslotOptionsIndex);
+            timeslot.setStartDateTime(LocalDateTime.of(day, pair.getLeft()));
+            timeslot.setEndDateTime(LocalDateTime.of(day, pair.getRight()));
+            timeslotOptionsIndex++;
+            Set<String> timeslotTagSet = new LinkedHashSet<>(2);
+            if (timeslot.getDurationInMinutes() >= 120) {
+                timeslotTagSet.add(TIMESLOT_LAB_TAG);
+            }
+            timeslot.setTimeslotTagSet(timeslotTagSet);
+            logger.trace("Created timeslot ({}) with tags ({}).",
+                    timeslot, timeslotTagSet);
+            timeslotList.add(timeslot);
+        }
+        solution.setTimeslotList(timeslotList);
     }
 
     private void createRoomList(ConferenceSolution solution, int roomListSize) {

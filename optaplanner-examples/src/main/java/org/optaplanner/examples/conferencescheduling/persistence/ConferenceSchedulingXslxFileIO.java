@@ -22,10 +22,15 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -35,14 +40,22 @@ import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.optaplanner.examples.conferencescheduling.domain.ConferenceSolution;
 import org.optaplanner.examples.conferencescheduling.domain.Room;
 import org.optaplanner.examples.conferencescheduling.domain.Speaker;
 import org.optaplanner.examples.conferencescheduling.domain.Talk;
+import org.optaplanner.examples.conferencescheduling.domain.Timeslot;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
 public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<ConferenceSolution> {
+
+    public static final DateTimeFormatter DAY_FORMATTER
+            = DateTimeFormatter.ofPattern("E yyyy-MM-dd", Locale.ENGLISH);
+
+    public static final DateTimeFormatter TIME_FORMATTER
+            = DateTimeFormatter.ofPattern("HH:mm", Locale.ENGLISH);
 
     @Override
     public String getInputFileExtension() {
@@ -53,14 +66,14 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
     public ConferenceSolution read(File inputSolutionFile) {
         try (InputStream in = new BufferedInputStream(new FileInputStream(inputSolutionFile))) {
             Workbook workbook = new XSSFWorkbook(in);
-            return new ConferfenceSchedulingXslxReader(workbook).read();
+            return new ConferenceSchedulingXslxReader(workbook).read();
         } catch (IOException | RuntimeException e) {
             throw new IllegalStateException("Failed reading inputSolutionFile ("
                     + inputSolutionFile + ").", e);
         }
     }
 
-    private static class ConferfenceSchedulingXslxReader {
+    private static class ConferenceSchedulingXslxReader {
 
         protected final Workbook workbook;
 
@@ -71,23 +84,57 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
         protected int currentRowNumber;
         protected int currentColumnNumber;
 
-        public ConferfenceSchedulingXslxReader(Workbook workbook) {
+        public ConferenceSchedulingXslxReader(Workbook workbook) {
             this.workbook = workbook;
         }
 
         public ConferenceSolution read() {
             solution = new ConferenceSolution();
+            readTimeslotList();
             readRoomList();
             readSpeakerList();
             readTalkList();
             return solution;
         }
 
+        private void readTimeslotList() {
+            nextSheet("Timeslots");
+            nextRow();
+            readHeaderCell("Day");
+            readHeaderCell("Start");
+            readHeaderCell("End");
+            readHeaderCell("Tags");
+            List<Timeslot> timeslotList = new ArrayList<>(currentSheet.getLastRowNum() - 1);
+            long id = 0L;
+            while (hasNextRow()) {
+                nextRow();
+                Timeslot timeslot = new Timeslot();
+                timeslot.setId(id++);
+                LocalDate day = LocalDate.parse(nextCell().getStringCellValue(), DAY_FORMATTER);
+                LocalTime startTime = LocalTime.parse(nextCell().getStringCellValue(), TIME_FORMATTER);
+                LocalTime endTime = LocalTime.parse(nextCell().getStringCellValue(), TIME_FORMATTER);
+                if (startTime.compareTo(endTime) >= 0) {
+                    throw new IllegalStateException(currentPosition() + ": The startTime (" + startTime
+                            + ") must be less than the endTime (" + endTime + ")");
+                }
+                timeslot.setStartDateTime(LocalDateTime.of(day, startTime));
+                timeslot.setEndDateTime(LocalDateTime.of(day, endTime));
+                timeslot.setTimeslotTagSet(new LinkedHashSet<>(Arrays.asList(nextCell().getStringCellValue().split(", "))));
+                timeslotList.add(timeslot);
+            }
+            solution.setTimeslotList(timeslotList);
+        }
+
         private void readRoomList() {
             nextSheet("Rooms");
             nextRow();
+            readHeaderCell("");
+            readHeaderCell("");
+            readTimeslotDaysHeaders();
+            nextRow();
             readHeaderCell("Name");
             readHeaderCell("Tags");
+            readTimeslotHoursHeaders();
             List<Room> roomList = new ArrayList<>(currentSheet.getLastRowNum() - 1);
             long id = 0L;
             while (hasNextRow()) {
@@ -104,7 +151,11 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
         private void readSpeakerList() {
             nextSheet("Speakers");
             nextRow();
+            readHeaderCell("");
+            readTimeslotDaysHeaders();
+            nextRow();
             readHeaderCell("Name");
+            readTimeslotHoursHeaders();
             List<Speaker> roomList = new ArrayList<>(currentSheet.getLastRowNum() - 1);
             long id = 0L;
             while (hasNextRow()) {
@@ -135,7 +186,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 talk.setSpeakerList(Arrays.stream(nextCell().getStringCellValue().split(", ")).map(speakerName -> {
                     Speaker speaker = speakerMap.get(speakerName);
                     if (speaker == null) {
-                        throw new IllegalStateException("The talk with code (" + talk.getCode()
+                        throw new IllegalStateException(currentPosition() + ": The talk with code (" + talk.getCode()
                                 + ") has a speaker (" + speakerName + ") that doesn't exist in the speaker list.");
                     }
                     return speaker;
@@ -143,6 +194,31 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 talkList.add(talk);
             }
             solution.setTalkList(talkList);
+        }
+
+        private void readTimeslotDaysHeaders() {
+            LocalDate previousTimeslotDay = null;
+            for (Timeslot timeslot : solution.getTimeslotList()) {
+                LocalDate timeslotDay = timeslot.getDate();
+                if (timeslotDay.equals(previousTimeslotDay)) {
+                    readHeaderCell("");
+                } else {
+                    readHeaderCell(DAY_FORMATTER.format(timeslotDay));
+                    previousTimeslotDay = timeslotDay;
+                }
+            }
+        }
+
+        private void readTimeslotHoursHeaders() {
+            for (Timeslot timeslot : solution.getTimeslotList()) {
+                readHeaderCell(TIME_FORMATTER.format(timeslot.getStartDateTime())
+                        + "-" + TIME_FORMATTER.format(timeslot.getEndDateTime()));
+            }
+        }
+
+        protected String currentPosition() {
+            return "Sheet (" + currentSheet.getSheetName() + ") cell ("
+                    + (currentRowNumber + 1) + CellReference.convertNumToColString(currentColumnNumber) + ")";
         }
 
         protected void nextSheet(String sheetName) {
@@ -166,10 +242,9 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
 
         protected void readHeaderCell(String value) {
             Cell cell = nextCell();
-            if (cell == null) {
-                throw new IllegalStateException("The sheet (" + currentSheet.getSheetName()
-                        + ") does not contain the value (" + value
-                        + ") at cell (" + currentRowNumber + "," + currentColumnNumber + ").");
+            if (cell == null || !cell.getStringCellValue().equals(value)) {
+                throw new IllegalStateException(currentPosition() + ": The cell does not contain the expected value ("
+                        + value + ").");
             }
         }
 
@@ -213,6 +288,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
         public Workbook write() {
             workbook = new XSSFWorkbook();
             createStyles();
+            writeTimeslotList();
             writeRoomList();
             writeSpeakerList();
             writeTalkList();
@@ -226,11 +302,33 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             headerStyle.setFont(font);
         }
 
+        private void writeTimeslotList() {
+            nextSheet("Timeslots", 3, 1);
+            nextRow();
+            addHeaderCell("Day");
+            addHeaderCell("Start");
+            addHeaderCell("End");
+            addHeaderCell("Tags");
+            for (Timeslot timeslot : solution.getTimeslotList()) {
+                nextRow();
+                nextCell().setCellValue(DAY_FORMATTER.format(timeslot.getDate()));
+                nextCell().setCellValue(TIME_FORMATTER.format(timeslot.getStartDateTime()));
+                nextCell().setCellValue(TIME_FORMATTER.format(timeslot.getEndDateTime()));
+                nextCell().setCellValue(String.join(", ", timeslot.getTimeslotTagSet()));
+            }
+            autoSizeColumnsWithHeader();
+        }
+
         private void writeRoomList() {
-            nextSheet("Rooms", 1, 1);
+            nextSheet("Rooms", 1, 2);
+            nextRow();
+            addHeaderCell("");
+            addHeaderCell("");
+            writeTimeslotDaysHeaders();
             nextRow();
             addHeaderCell("Name");
             addHeaderCell("Tags");
+            writeTimeslotHoursHeaders();
             for (Room room : solution.getRoomList()) {
                 nextRow();
                 nextCell().setCellValue(room.getName());
@@ -240,14 +338,16 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
         }
 
         private void writeSpeakerList() {
-            nextSheet("Speakers", 1, 1);
+            nextSheet("Speakers", 1, 2);
+            nextRow();
+            addHeaderCell("");
+            writeTimeslotDaysHeaders();
             nextRow();
             addHeaderCell("Name");
-//            addHeaderCell("Tags");
+            writeTimeslotHoursHeaders();
             for (Speaker speaker : solution.getSpeakerList()) {
                 nextRow();
                 nextCell().setCellValue(speaker.getName());
-//                nextCell().setCellValue(String.join(", ", speaker.getRoomTagSet()));
             }
             autoSizeColumnsWithHeader();
         }
@@ -266,6 +366,26 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                         .stream().map(Speaker::getName).collect(Collectors.joining(", ")));
             }
             autoSizeColumnsWithHeader();
+        }
+
+        private void writeTimeslotDaysHeaders() {
+            LocalDate previousTimeslotDay = null;
+            for (Timeslot timeslot : solution.getTimeslotList()) {
+                LocalDate timeslotDay = timeslot.getDate();
+                if (timeslotDay.equals(previousTimeslotDay)) {
+                    addHeaderCell("");
+                } else {
+                    addHeaderCell(DAY_FORMATTER.format(timeslotDay));
+                    previousTimeslotDay = timeslotDay;
+                }
+            }
+        }
+
+        private void writeTimeslotHoursHeaders() {
+            for (Timeslot timeslot : solution.getTimeslotList()) {
+                addHeaderCell(TIME_FORMATTER.format(timeslot.getStartDateTime())
+                        + "-" + TIME_FORMATTER.format(timeslot.getEndDateTime()));
+            }
         }
 
         protected void nextSheet(String sheetName, int colSplit, int rowSplit) {
