@@ -16,7 +16,9 @@
 
 package org.drools.modelcompiler.builder;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.drools.compiler.commons.jci.compilers.CompilationResult;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
@@ -30,30 +32,35 @@ import static org.drools.modelcompiler.builder.JavaParserCompiler.getCompiler;
 
 public class CanonicalModelKieProject extends KieModuleKieProject {
 
-    private ModelBuilderImpl modelBuilder;
+    protected List<ModelBuilderImpl> modelBuilders = new ArrayList<>();
 
-    public CanonicalModelKieProject( InternalKieModule kieModule, ClassLoader classLoader ) {
-        super( kieModule, classLoader );
+    public CanonicalModelKieProject(InternalKieModule kieModule, ClassLoader classLoader) {
+        super(kieModule, classLoader);
     }
 
     @Override
-    protected KnowledgeBuilder createKnowledgeBuilder( KieBaseModelImpl kBaseModel, AbstractKieModule kModule ) {
-        modelBuilder = new ModelBuilderImpl( getBuilderConfiguration( kBaseModel, kModule ) );
+    protected KnowledgeBuilder createKnowledgeBuilder(KieBaseModelImpl kBaseModel, AbstractKieModule kModule) {
+        ModelBuilderImpl modelBuilder = new ModelBuilderImpl();
+        modelBuilders.add(modelBuilder);
         return modelBuilder;
     }
 
     @Override
     public void writeProjectOutput( MemoryFileSystem trgMfs ) {
         MemoryFileSystem srcMfs = new MemoryFileSystem();
+        ModelWriter modelWriter = new ModelWriter();
+        List<String> modelFiles = new ArrayList<>();
 
-        final ModelWriter modelWriter = new ModelWriter();
-        final ModelWriter.Result result = modelWriter.writeModel(srcMfs, modelBuilder.getPackageModels());
-        CompilationResult res = getCompiler().compile(result.getSources(), srcMfs, trgMfs, getClassLoader() );
+        for (ModelBuilderImpl modelBuilder : modelBuilders) {
+            final ModelWriter.Result result = modelWriter.writeModel( srcMfs, modelBuilder.getPackageModels() );
+            modelFiles.addAll(result.modelFiles);
+            CompilationResult res = getCompiler().compile( result.getSources(), srcMfs, trgMfs, getClassLoader() );
 
-        if ( res.getErrors().length != 0 ) {
-            throw new RuntimeException( "Compilation errors: " + Arrays.toString( res.getErrors() ) );
+            if ( res.getErrors().length != 0 ) {
+                throw new RuntimeException( "Compilation errors: " + Arrays.toString( res.getErrors() ) );
+            }
         }
 
-        modelWriter.writeModelFile(result.modelFiles, trgMfs);
+        modelWriter.writeModelFile(modelFiles, trgMfs);
     }
 }

@@ -34,9 +34,7 @@ import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
-import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
-import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
@@ -69,12 +67,19 @@ public abstract class BaseModelTest {
     }
 
     protected KieSession getKieSession(KieModuleModel model, String... stringRules) {
+        return getKieContainer( model, stringRules ).newKieSession();
+    }
+
+    protected KieContainer getKieContainer( KieModuleModel model, String... stringRules ) {
+        return getKieContainer( model, toKieFiles( stringRules ) );
+    }
+
+    protected KieContainer getKieContainer( KieModuleModel model, KieFile... stringRules ) {
         KieServices ks = KieServices.get();
         ReleaseId releaseId = ks.newReleaseId( "org.kie", "kjar-test-" + UUID.randomUUID(), "1.0" );
 
         KieBuilder kieBuilder = createKieBuilder( ks, model, releaseId, stringRules );
-
-        return getKieContainer( ks, model, releaseId, kieBuilder ).newKieSession();
+        return getKieContainer( ks, model, releaseId, kieBuilder );
     }
 
     protected KieContainer getKieContainer( KieServices ks, KieModuleModel model, ReleaseId releaseId, KieBuilder kieBuilder ) {
@@ -91,6 +96,10 @@ public abstract class BaseModelTest {
     }
 
     protected KieBuilder createKieBuilder( KieServices ks, KieModuleModel model, ReleaseId releaseId, String... stringRules ) {
+        return createKieBuilder( ks, model, releaseId, toKieFiles( stringRules ) );
+    }
+
+    protected KieBuilder createKieBuilder( KieServices ks, KieModuleModel model, ReleaseId releaseId, KieFile... stringRules ) {
         ks.getRepository().removeKieModule( releaseId );
 
         KieFileSystem kfs = ks.newKieFileSystem();
@@ -99,7 +108,7 @@ public abstract class BaseModelTest {
         }
         kfs.writePomXML( KJARUtils.getPom( releaseId ) );
         for (int i = 0; i < stringRules.length; i++) {
-            kfs.write(String.format("src/main/resources/r%d.drl", i), stringRules[i] );
+            kfs.write( stringRules[i].path, stringRules[i].content );
         }
 
         KieBuilder kieBuilder = ( testRunType == RUN_TYPE.USE_CANONICAL_MODEL ) ?
@@ -115,12 +124,34 @@ public abstract class BaseModelTest {
 
     protected KieModuleModel getDefaultKieModuleModel( KieServices ks ) {
         KieModuleModel kproj = ks.newKieModuleModel();
-        KieBaseModel kieBaseModel1 = kproj.newKieBaseModel( "kbase" ).setDefault( true );
-        KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel( "ksession" ).setDefault( true );
+        kproj.newKieBaseModel( "kbase" ).setDefault( true ).newKieSessionModel( "ksession" ).setDefault( true );
         return kproj;
     }
 
     public static <T> List<T> getObjectsIntoList(KieSession ksession, Class<T> clazz) {
         return (List<T>) ksession.getObjects(new ClassObjectFilter(clazz)).stream().collect(Collectors.toList());
+    }
+
+    public static class KieFile {
+
+        public final String path;
+        public final String content;
+
+        public KieFile( int index, String content ) {
+            this( String.format("src/main/resources/r%d.drl", index), content );
+        }
+
+        public KieFile( String path, String content ) {
+            this.path = path;
+            this.content = content;
+        }
+    }
+
+    public KieFile[] toKieFiles(String[] stringRules) {
+        KieFile[] kieFiles = new KieFile[stringRules.length];
+        for (int i = 0; i < stringRules.length; i++) {
+            kieFiles[i] = new KieFile( i, stringRules[i] );
+        }
+        return kieFiles;
     }
 }

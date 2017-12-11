@@ -18,6 +18,7 @@ package org.drools.modelcompiler;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
@@ -59,6 +60,8 @@ public class CanonicalKieModule extends ZipKieModule {
 
     private final Map<String, CanonicalKiePackages> pkgsInKbase = new HashMap<>();
 
+    private final Map<String, Model> models = new HashMap<>();
+
     private ProjectClassLoader moduleClassLoader;
 
     public CanonicalKieModule( ReleaseId releaseId, KieModuleModel kieProject, File file ) {
@@ -85,16 +88,16 @@ public class CanonicalKieModule extends ZipKieModule {
     public InternalKnowledgeBase createKieBase( KieBaseModelImpl kBaseModel, KieProject kieProject, ResultsImpl messages, KieBaseConfiguration conf ) {
         this.moduleClassLoader = (( ProjectClassLoader ) kieProject.getClassLoader());
         KieBaseConfiguration kBaseConf = getKieBaseConfiguration( kBaseModel, moduleClassLoader, conf );
-        CanonicalKiePackages kpkgs = pkgsInKbase.computeIfAbsent( kBaseModel.getName(), k -> createKiePackages(kBaseConf) );
+        CanonicalKiePackages kpkgs = pkgsInKbase.computeIfAbsent( kBaseModel.getName(), k -> createKiePackages(kBaseModel, kBaseConf) );
         return new KieBaseBuilder( kBaseModel, kBaseConf ).createKieBase(kpkgs);
     }
 
-    private CanonicalKiePackages createKiePackages( KieBaseConfiguration conf ) {
-        return new KiePackagesBuilder(conf, getModels().values(), this.moduleClassLoader).build();
+    private CanonicalKiePackages createKiePackages( KieBaseModelImpl kBaseModel, KieBaseConfiguration conf ) {
+        return new KiePackagesBuilder(conf, getModelForKBase(kBaseModel), this.moduleClassLoader).build();
     }
 
     public CanonicalKiePackages getKiePackages( KieBaseModelImpl kBaseModel ) {
-        return pkgsInKbase.computeIfAbsent( kBaseModel.getName(), k -> createKiePackages(getKnowledgeBaseConfiguration(kBaseModel, getModuleClassLoader())) );
+        return pkgsInKbase.computeIfAbsent( kBaseModel.getName(), k -> createKiePackages(kBaseModel, getKnowledgeBaseConfiguration(kBaseModel, getModuleClassLoader())) );
     }
 
     public ProjectClassLoader getModuleClassLoader() {
@@ -107,17 +110,34 @@ public class CanonicalKieModule extends ZipKieModule {
 
     public void setModuleClassLoader(ProjectClassLoader moduleClassLoader) {
         pkgsInKbase.clear();
+        models.clear();
         this.moduleClassLoader = moduleClassLoader;
     }
 
     private Map<String, Model> getModels() {
-        if (ruleClassesNames == null) {
-            ruleClassesNames = findRuleClassesNames( getModuleClassLoader() );
+        if ( models.isEmpty() ) {
+            if ( ruleClassesNames == null ) {
+                ruleClassesNames = findRuleClassesNames( getModuleClassLoader() );
+            }
+            for (String rulesFile : ruleClassesNames) {
+                Model model = createInstance( getModuleClassLoader(), rulesFile );
+                models.put( model.getName(), model );
+            }
         }
-        Map<String, Model> models = new HashMap<>();
-        for (String rulesFile : ruleClassesNames) {
-            Model model = createInstance( getModuleClassLoader(), rulesFile );
-            models.put( model.getName(), model );
+        return models;
+    }
+
+    private Collection<Model> getModelForKBase(KieBaseModelImpl kBaseModel) {
+        Map<String, Model> modelsMap = getModels();
+        if (kBaseModel.getPackages().isEmpty()) {
+            return modelsMap.values();
+        }
+        Collection<Model> models = new ArrayList<>();
+        for (String pkg : kBaseModel.getPackages()) {
+            Model model = modelsMap.get(pkg);
+            if ( model != null ) {
+                models.add( model );
+            }
         }
         return models;
     }

@@ -165,7 +165,6 @@ public class ModelGenerator {
         new WindowReferenceGenerator(packageModel, pkg).addWindowReferences(packageDescr.getWindowDeclarations());
         packageModel.addAllFunctions(packageDescr.getFunctions().stream().map(FunctionGenerator::toFunction).collect(toList()));
 
-
         for(RuleDescr descr : packageDescr.getRules()) {
             if (descr instanceof QueryDescr) {
                 QueryGenerator.processQueryDef(pkg, packageModel, (QueryDescr) descr);

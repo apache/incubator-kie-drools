@@ -21,33 +21,20 @@ import java.util.List;
 
 import org.drools.compiler.compiler.io.Folder;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.drools.compiler.kie.builder.impl.AbstractKieModule;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
-import org.drools.compiler.kie.builder.impl.KieModuleKieProject;
-import org.drools.compiler.kproject.models.KieBaseModelImpl;
-import org.kie.internal.builder.KnowledgeBuilder;
 
-public class CanonicalModelMavenPluginKieProject extends KieModuleKieProject {
-
-    private List<ModelBuilderImpl> modelBuilders = new ArrayList<>();
+public class CanonicalModelMavenPluginKieProject extends CanonicalModelKieProject {
 
     public CanonicalModelMavenPluginKieProject(InternalKieModule kieModule, ClassLoader classLoader) {
         super(kieModule, classLoader);
     }
 
     @Override
-    protected KnowledgeBuilder createKnowledgeBuilder(KieBaseModelImpl kBaseModel, AbstractKieModule kModule) {
-        ModelBuilderImpl modelBuilder = new ModelBuilderImpl();
-        modelBuilders.add(modelBuilder);
-        return modelBuilder;
-    }
-
-    @Override
     public void writeProjectOutput(MemoryFileSystem trgMfs) {
         MemoryFileSystem srcMfs = new MemoryFileSystem();
-        final List<String> modelFiles = new ArrayList<>();
-        final ModelWriter modelWriter = new ModelWriter();
-        for(ModelBuilderImpl modelBuilder: modelBuilders) {
+        List<String> modelFiles = new ArrayList<>();
+        ModelWriter modelWriter = new ModelWriter();
+        for (ModelBuilderImpl modelBuilder : modelBuilders) {
             ModelWriter.Result result = modelWriter.writeModel(srcMfs, modelBuilder.getPackageModels());
             modelFiles.addAll(result.modelFiles);
             final Folder sourceFolder = srcMfs.getFolder("src/main/java");
