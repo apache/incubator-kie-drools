@@ -18,6 +18,7 @@ package org.drools.modelcompiler;
 
 import org.junit.Test;
 import org.kie.api.KieServices;
+import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
@@ -52,33 +53,36 @@ public class MultiKieBaseTest extends BaseModelTest {
                 "then\n" +
                 "end\n";
 
-        KieContainer kieContainer = getKieContainer( createKieProjectWithPackagesAnd2KieBases(),
-                                                     new KieFile( "src/main/resources/org/pkg1/r1.drl", drl1 ),
-                                                     new KieFile( "src/main/resources/org/pkg2/r2.drl", drl2 ) );
+        KieServices ks = KieServices.Factory.get();
 
-        KieSession ksession = kieContainer.newKieSession("KSession1");
-        ksession.insert("Hello World");
-        assertEquals( 1, ksession.fireAllRules() );
+        // Create an in-memory jar for version 1.0.0
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
+        createAndDeployJar( ks, createKieProjectWithPackagesAnd2KieBases(), releaseId1,
+                new KieFile( "src/main/resources/org/pkg1/r1.drl", drl1 ),
+                new KieFile( "src/main/resources/org/pkg2/r2.drl", drl2 ) );
 
-        ksession = kieContainer.newKieSession("KSession1");
-        ksession.insert("Hi Universe");
-        assertEquals( 1, ksession.fireAllRules() );
+        // Create a session and fire rules
+        KieContainer kieContainer = ks.newKieContainer( releaseId1 );
 
-        ksession = kieContainer.newKieSession("KSession1");
-        ksession.insert("Aloha Earth");
-        assertEquals( 0, ksession.fireAllRules() );
+        KieSession ksession1 = kieContainer.newKieSession("KSession1");
+        ksession1.insert("Hello World");
+        assertEquals( 1, ksession1.fireAllRules() );
 
-        ksession = kieContainer.newKieSession("KSession2");
-        ksession.insert("Hello World");
-        assertEquals( 1, ksession.fireAllRules() );
+        ksession1.insert("Hi Universe");
+        assertEquals( 1, ksession1.fireAllRules() );
 
-        ksession = kieContainer.newKieSession("KSession2");
-        ksession.insert("Hi Universe");
-        assertEquals( 0, ksession.fireAllRules() );
+        ksession1.insert("Aloha Earth");
+        assertEquals( 0, ksession1.fireAllRules() );
 
-        ksession = kieContainer.newKieSession("KSession2");
-        ksession.insert("Aloha Earth");
-        assertEquals(1, ksession.fireAllRules());
+        KieSession ksession2 = kieContainer.newKieSession("KSession2");
+        ksession2.insert("Hello World");
+        assertEquals( 1, ksession2.fireAllRules() );
+
+        ksession2.insert("Hi Universe");
+        assertEquals( 0, ksession2.fireAllRules() );
+
+        ksession2.insert("Aloha Earth");
+        assertEquals(1, ksession2.fireAllRules());
     }
 
     private KieModuleModel createKieProjectWithPackagesAnd2KieBases() {

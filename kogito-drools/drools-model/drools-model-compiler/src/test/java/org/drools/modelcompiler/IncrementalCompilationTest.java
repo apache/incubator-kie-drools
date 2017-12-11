@@ -20,12 +20,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.junit.Test;
 import org.kie.api.KieServices;
-import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.ReleaseId;
-import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
@@ -170,21 +167,5 @@ public class IncrementalCompilationTest extends BaseModelTest {
         ksession2.fireAllRules();
         assertEquals( 1, list.size() );
         assertEquals( "Hello World", list.get(0) );
-    }
-
-    private void createAndDeployJar( KieServices ks, ReleaseId releaseId, String... drls ) {
-        createAndDeployJar( ks, null, releaseId, drls );
-    }
-
-    private void createAndDeployJar( KieServices ks, KieModuleModel model, ReleaseId releaseId, String... drls ) {
-        KieBuilder kieBuilder = createKieBuilder( ks, model, releaseId, drls );
-        InternalKieModule kieModule = (InternalKieModule) kieBuilder.getKieModule();
-
-        // Deploy jar into the repository
-        if ( testRunType == RUN_TYPE.STANDARD_FROM_DRL ) {
-            ks.getRepository().addKieModule( ks.getResources().newByteArrayResource( kieModule.getBytes() ) );
-        } else if ( testRunType == RUN_TYPE.USE_CANONICAL_MODEL ) {
-            addKieModuleFromCanonicalModel( ks, model, releaseId, kieModule );
-        }
     }
 }
