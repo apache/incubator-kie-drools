@@ -119,10 +119,10 @@
       <bpmn2:script><![CDATA[System.out.println("Script Task-3");]]></bpmn2:script>
     </bpmn2:scriptTask>
     <bpmn2:sequenceFlow id="_63160AA9-EFF4-4402-A4DA-4B6DE0B60789" drools:selectable="true" color:background-color="#000000" color:border-color="#000000" color:color="#000000" sourceRef="_5C3E4064-56A2-462B-90EB-764DDE65E963" targetRef="_70C7B0F2-6230-46C8-BCEC-1EE18CC6B1F1"/>
-    <bpmn2:endEvent id="_E790D682-2B19-427D-9E00-FD2BFF3C1A34" drools:selectable="true" color:background-color="#ff6347" color:border-color="#000000" color:color="#000000" name="">
+    <bpmn2:endEvent id="_E790D682-2B19-427D-9E00-FD2BFF3C1A34" drools:selectable="true" color:background-color="#ff6347" color:border-color="#000000" color:color="#000000" name="EndProcess">
       <bpmn2:extensionElements>
         <drools:metaData name="elementname">
-          <drools:metaValue><![CDATA[]]></drools:metaValue>
+          <drools:metaValue><![CDATA[EndProcess]]></drools:metaValue>
         </drools:metaData>
       </bpmn2:extensionElements>
       <bpmn2:incoming>_589C12B3-5AFD-4B1A-872B-0167B0773C29</bpmn2:incoming>

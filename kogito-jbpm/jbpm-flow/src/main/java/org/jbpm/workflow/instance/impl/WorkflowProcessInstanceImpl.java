@@ -41,11 +41,15 @@ import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 import org.jbpm.util.PatternConstants;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.impl.NodeImpl;
+import org.jbpm.workflow.core.node.ActionNode;
 import org.jbpm.workflow.core.node.AsyncEventNode;
+import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.EventNode;
 import org.jbpm.workflow.core.node.EventNodeInterface;
 import org.jbpm.workflow.core.node.EventSubProcessNode;
+import org.jbpm.workflow.core.node.Join;
 import org.jbpm.workflow.core.node.StartNode;
+import org.jbpm.workflow.core.node.StateBasedNode;
 import org.jbpm.workflow.instance.NodeInstance;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.node.CompositeNodeInstance;
@@ -513,7 +517,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 			                    eventNodeInstance.signalEvent(type, event);
 			                } else {
 			                    if (node instanceof EventSubProcessNode && ((resolveVariables(((EventSubProcessNode) node).getEvents()).contains(type)))) {
-    			                    EventSubProcessNodeInstance eventNodeInstance = (EventSubProcessNodeInstance) getNodeInstance(node);
+			                        EventSubProcessNodeInstance eventNodeInstance = (EventSubProcessNodeInstance) getNodeInstance(node);
     			                    eventNodeInstance.signalEvent(type, event);
 			                    } else {
     								List<NodeInstance> nodeInstances = getNodeInstances(node.getId(), currentView);
@@ -753,14 +757,15 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
     }    
 
     protected boolean useAsync(final Node node) {
-        if (node instanceof StartNode) {
-            return false;
-        }
-        boolean asyncMode = Boolean.parseBoolean((String)node.getMetaData().get("customAsync"));
-        if (asyncMode) {
-            return asyncMode;
+        if (!(node instanceof EventSubProcessNode) && (node instanceof ActionNode || node instanceof StateBasedNode || node instanceof EndNode)) {              
+            boolean asyncMode = Boolean.parseBoolean((String)node.getMetaData().get("customAsync"));
+            if (asyncMode) {
+                return asyncMode;
+            }
+            
+            return Boolean.parseBoolean((String)getKnowledgeRuntime().getEnvironment().get("AsyncMode"));
         }
         
-        return Boolean.parseBoolean((String)getKnowledgeRuntime().getEnvironment().get("AsyncMode"));
+        return false;
     }
 }

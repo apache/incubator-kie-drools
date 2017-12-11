@@ -28,12 +28,15 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.jbpm.process.instance.ProcessInstance;
+import org.jbpm.workflow.core.node.ActionNode;
 import org.jbpm.workflow.core.node.AsyncEventNode;
 import org.jbpm.workflow.core.node.CompositeNode;
+import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.EventNode;
 import org.jbpm.workflow.core.node.EventNodeInterface;
 import org.jbpm.workflow.core.node.EventSubProcessNode;
 import org.jbpm.workflow.core.node.StartNode;
+import org.jbpm.workflow.core.node.StateBasedNode;
 import org.jbpm.workflow.instance.NodeInstance;
 import org.jbpm.workflow.instance.NodeInstanceContainer;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
@@ -426,15 +429,16 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
     }
 
     protected boolean useAsync(final Node node) {
-        if (node instanceof StartNode) {
-            return false;
-        }
-        boolean asyncMode = Boolean.parseBoolean((String)node.getMetaData().get("customAsync"));
-        if (asyncMode) {
-            return asyncMode;
+        if (!(node instanceof EventSubProcessNode) && (node instanceof ActionNode || node instanceof StateBasedNode || node instanceof EndNode)) {  
+            boolean asyncMode = Boolean.parseBoolean((String)node.getMetaData().get("customAsync"));
+            if (asyncMode) {
+                return asyncMode;
+            }
+            
+            return Boolean.parseBoolean((String)getProcessInstance().getKnowledgeRuntime().getEnvironment().get("AsyncMode"));
         }
         
-        return Boolean.parseBoolean((String)getProcessInstance().getKnowledgeRuntime().getEnvironment().get("AsyncMode"));
+        return false;
     }
 
 }
