@@ -132,6 +132,30 @@ public abstract class BaseModelTest {
         return (List<T>) ksession.getObjects(new ClassObjectFilter(clazz)).stream().collect(Collectors.toList());
     }
 
+    protected void createAndDeployJar( KieServices ks, ReleaseId releaseId, String... drls ) {
+        createAndDeployJar( ks, null, releaseId, drls );
+    }
+
+    protected void createAndDeployJar( KieServices ks, ReleaseId releaseId, KieFile... ruleFiles ) {
+        createAndDeployJar( ks, null, releaseId, ruleFiles );
+    }
+
+    protected void createAndDeployJar( KieServices ks, KieModuleModel model, ReleaseId releaseId, String... drls ) {
+        createAndDeployJar( ks, model, releaseId, toKieFiles( drls ) );
+    }
+
+    protected void createAndDeployJar( KieServices ks, KieModuleModel model, ReleaseId releaseId, KieFile... ruleFiles ) {
+        KieBuilder kieBuilder = createKieBuilder( ks, model, releaseId, ruleFiles );
+        InternalKieModule kieModule = (InternalKieModule) kieBuilder.getKieModule();
+
+        // Deploy jar into the repository
+        if ( testRunType == RUN_TYPE.STANDARD_FROM_DRL ) {
+            ks.getRepository().addKieModule( ks.getResources().newByteArrayResource( kieModule.getBytes() ) );
+        } else if ( testRunType == RUN_TYPE.USE_CANONICAL_MODEL ) {
+            addKieModuleFromCanonicalModel( ks, model, releaseId, kieModule );
+        }
+    }
+
     public static class KieFile {
 
         public final String path;
