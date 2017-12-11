@@ -1,6 +1,7 @@
 package org.drools.modelcompiler.builder;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,9 +17,9 @@ import static org.drools.modelcompiler.builder.JavaParserCompiler.getPrettyPrint
 
 public class ModelWriter {
 
-    public static final String RULES_FILE_NAME = "Rules";
+    private static final String RULES_FILE_NAME = "Rules";
 
-    public Result writeModel(MemoryFileSystem srcMfs, List<PackageModel> packageModels) {
+    public Result writeModel(MemoryFileSystem srcMfs, Collection<PackageModel> packageModels) {
         List<String> sourceFiles = new ArrayList<>();
         List<String> modelFiles = new ArrayList<>();
 
