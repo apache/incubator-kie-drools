@@ -4386,4 +4386,49 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
 
         assertEquals(0, kieSession.fireAllRules());
     }
+
+    @Test
+    public void testSegmentSplitAfterMerge() throws Exception {
+        String drl1A = "package org.hightea.a\n" +
+                "rule \"RG_1\"\n" +
+                "    when\n" +
+                "        Boolean()\n" +
+                "        String()\n" +
+                "    then\n" +
+                "end" +
+                "\n" ;
+
+        String drl2A = "package org.hightea.b\n" +
+                "rule \"RG_2\"\n" +
+                "    when\n" +
+                "        Boolean()\n" +
+                "        Integer()\n" +
+                "    then\n" +
+                "end\n";
+
+        String drl2B = "package org.hightea.b\n" +
+                "rule \"RG_2\"\n" +
+                "    when\n" +
+                "        Boolean()\n" +
+                "        Integer()\n" +
+                "    then\n" +
+                "		 //Simple comment to mark the rule as modified\n" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
+        ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
+
+        createAndDeployJar( ks, releaseId1, drl1A, drl2A );
+        KieContainer kieContainer = ks.newKieContainer(releaseId1);
+        KieSession kieSession = kieContainer.newKieSession();
+
+        kieSession.insert("A Test String");
+        assertEquals(0, kieSession.fireAllRules());
+
+        createAndDeployJar( ks, releaseId2, drl1A, drl2B );
+        kieContainer.updateToVersion(releaseId2);
+
+        assertEquals(0, kieSession.fireAllRules());
+    }
 }
