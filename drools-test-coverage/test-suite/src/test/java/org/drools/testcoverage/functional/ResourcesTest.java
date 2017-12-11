@@ -60,9 +60,8 @@ public class ResourcesTest {
                 true, "aggregation.drl");
 
         // since 6.2.x java.lang is also returned as a package
-        final long numPackages = 3;
         if(!kieBaseTestConfiguration.useCanonicalModel()) {
-            Assertions.assertThat((long) kbase.getKiePackages().size()).as("Unexpected number of KiePackages").isEqualTo(numPackages);
+            Assertions.assertThat((long) kbase.getKiePackages().size()).as("Unexpected number of KiePackages").isEqualTo((long) 3);
         }
         verifyPackageWithRules(kbase, TestConstants.PACKAGE_FUNCTIONAL, 4);
         verifyPackageWithImports(kbase, TestConstants.PACKAGE_TESTCOVERAGE_MODEL);
