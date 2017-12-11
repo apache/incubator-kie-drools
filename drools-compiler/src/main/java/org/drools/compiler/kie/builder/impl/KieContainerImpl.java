@@ -15,6 +15,20 @@
 
 package org.drools.compiler.kie.builder.impl;
 
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.management.ObjectName;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.PackageBuilderErrors;
 import org.drools.compiler.kie.util.ChangeSetBuilder;
@@ -23,6 +37,7 @@ import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieSessionModelImpl;
 import org.drools.compiler.management.KieContainerMonitor;
 import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.SessionConfigurationImpl;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
@@ -64,20 +79,6 @@ import org.kie.internal.builder.ResourceChangeSet;
 import org.kie.internal.definition.KnowledgePackage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.management.ObjectName;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static org.drools.compiler.kie.builder.impl.AbstractKieModule.buildKnowledgePackages;
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.filterFileInKBase;
@@ -768,7 +769,7 @@ public class KieContainerImpl
     }
 
     private KieSessionConfiguration getKieSessionConfiguration( KieSessionModel kSessionModel ) {
-        KieSessionConfiguration ksConf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KieSessionConfiguration ksConf = new SessionConfigurationImpl( null, kProject.getClassLoader() );
         ksConf.setOption( kSessionModel.getClockType() );
         ksConf.setOption( kSessionModel.getBeliefSystem() );
         return ksConf;

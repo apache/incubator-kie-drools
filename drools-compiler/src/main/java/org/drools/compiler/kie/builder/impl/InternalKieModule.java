@@ -88,4 +88,6 @@ public interface InternalKieModule extends KieModule {
     PomModel getPomModel();
 
     KnowledgeBuilderConfiguration getBuilderConfiguration( KieBaseModel kBaseModel );
+
+    ClassLoader getModuleClassLoader();
 }
