@@ -19,6 +19,7 @@ package org.optaplanner.examples.conferencescheduling.solver;
 
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScoreHolder;
 
+import org.optaplanner.examples.conferencescheduling.domain.Speaker;
 import org.optaplanner.examples.conferencescheduling.domain.Talk;
 
 global HardSoftScoreHolder scoreHolder;
@@ -29,8 +30,25 @@ global HardSoftScoreHolder scoreHolder;
 
 rule "Room conflict"
     when
-        Talk(room != null, timeslot != null, $leftId : id, $room : room, $timeslot : timeslot)
-        Talk(room == $room, $timeslot.overlaps(timeslot), id > $leftId)
+        Talk(timeslot != null, $timeslot : timeslot,
+                room != null, $room : room,
+                $leftId : id)
+        Talk(timeslot != null, timeslot.overlaps($timeslot),
+                room == $room,
+                id > $leftId)
+    then
+        scoreHolder.addHardConstraintMatch(kcontext, -1);
+end
+
+rule "Speaker conflict"
+    when
+        $speaker : Speaker()
+        Talk(hasSpeaker($speaker),
+                timeslot != null, $timeslot : timeslot,
+                $leftId : id)
+        Talk(hasSpeaker($speaker),
+                timeslot != null, timeslot.overlaps($timeslot),
+                id > $leftId)
     then
         scoreHolder.addHardConstraintMatch(kcontext, -1);
 end

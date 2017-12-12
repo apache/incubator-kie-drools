@@ -38,6 +38,10 @@ public class Talk extends AbstractPersistable {
     @PlanningVariable(valueRangeProviderRefs = "roomRange")
     private Room room;
 
+    public boolean hasSpeaker(Speaker speaker) {
+        return speakerList.contains(speaker);
+    }
+
     @Override
     public String toString() {
         return code;
