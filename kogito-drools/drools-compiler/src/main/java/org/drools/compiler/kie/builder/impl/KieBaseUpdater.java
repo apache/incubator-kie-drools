@@ -45,7 +45,7 @@ public class KieBaseUpdater implements Runnable {
 
     private static final Logger log = LoggerFactory.getLogger( KieBaseUpdater.class );
 
-    private final KieBaseUpdateContext ctx;
+    protected final KieBaseUpdateContext ctx;
 
     public KieBaseUpdater( KieBaseUpdateContext ctx ) {
         this.ctx = ctx;
@@ -92,7 +92,7 @@ public class KieBaseUpdater implements Runnable {
         }
     }
 
-    private void clearInstancesOfModifiedClass( Class<?> cls ) {
+    protected void clearInstancesOfModifiedClass( Class<?> cls ) {
         // remove all ObjectTypeNodes for the modified classes
         ClassObjectType objectType = new ClassObjectType( cls );
         for ( EntryPointNode epn : ctx.kBase.getRete().getEntryPointNodes().values() ) {
