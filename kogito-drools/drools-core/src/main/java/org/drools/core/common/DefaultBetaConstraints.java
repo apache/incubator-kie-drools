@@ -261,10 +261,10 @@ public class DefaultBetaConstraints
         throw new UnsupportedOperationException();
     }
 
-    public BitMask getListenedPropertyMask(List<String> settableProperties) {
+    public BitMask getListenedPropertyMask(Class modifiedClass, List<String> settableProperties) {
         BitMask mask = getEmptyPropertyReactiveMask(settableProperties.size());
         for (BetaNodeFieldConstraint constraint : constraints) {
-            mask = mask.setAll(constraint.getListenedPropertyMask(settableProperties));
+            mask = mask.setAll(constraint.getListenedPropertyMask(modifiedClass, settableProperties));
         }
         return mask;
     }

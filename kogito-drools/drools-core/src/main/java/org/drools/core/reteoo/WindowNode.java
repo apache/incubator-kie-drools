@@ -323,7 +323,7 @@ public class WindowNode extends ObjectSource
     }
 
     @Override
-    public BitMask calculateDeclaredMask(List<String> settableProperties) {
+    public BitMask calculateDeclaredMask(Class modifiedClass, List<String> settableProperties) {
         throw new UnsupportedOperationException();
     }
 

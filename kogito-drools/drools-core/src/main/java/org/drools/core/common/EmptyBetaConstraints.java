@@ -153,7 +153,7 @@ public class EmptyBetaConstraints
         throw new UnsupportedOperationException();
     }
 
-    public BitMask getListenedPropertyMask(List<String> settableProperties) {
+    public BitMask getListenedPropertyMask(Class modifiedClass, List<String> settableProperties) {
         return getEmptyPropertyReactiveMask(settableProperties.size());
     }
 

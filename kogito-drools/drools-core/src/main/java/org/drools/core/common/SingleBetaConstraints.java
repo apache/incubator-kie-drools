@@ -209,8 +209,8 @@ public class SingleBetaConstraints
         throw new UnsupportedOperationException();
     }
 
-    public BitMask getListenedPropertyMask(List<String> settableProperties) {
-        return constraint.getListenedPropertyMask(settableProperties);
+    public BitMask getListenedPropertyMask(Class modifiedClass, List<String> settableProperties) {
+        return constraint.getListenedPropertyMask(modifiedClass, settableProperties);
     }
 
     public boolean isLeftUpdateOptimizationAllowed() {

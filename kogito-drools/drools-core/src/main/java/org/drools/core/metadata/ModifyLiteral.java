@@ -132,10 +132,10 @@ public abstract class ModifyLiteral<T> extends AbstractWMTask<T> implements Modi
                 extraMasks[ j ] = PropertySpecificUtil.getEmptyPropertyReactiveMask( inverseSettableProperties[ j ].size() );
             }
             for ( int j = 0; j < with.length; j++ ) {
-                task.computeModificationMasks( modificationMask, settableProperties, with, extraMasks, inverseSettableProperties );
+                task.computeModificationMasks( target.getClass(), modificationMask, settableProperties, with, extraMasks, inverseSettableProperties );
             }
         } else {
-            task.computeModificationMasks( modificationMask, settableProperties, null, null, null );
+            task.computeModificationMasks( target.getClass(), modificationMask, settableProperties, null, null, null );
         }
     }
 
@@ -259,17 +259,17 @@ public abstract class ModifyLiteral<T> extends AbstractWMTask<T> implements Modi
             }
         }
 
-        public void computeModificationMasks( BitMask mask, List<String> settableProperties, Object[] with, BitMask[] extraMasks, List<String>[] inverseSettableProperties ) {
+        public void computeModificationMasks( Class modifiedClass, BitMask mask, List<String> settableProperties, Object[] with, BitMask[] extraMasks, List<String>[] inverseSettableProperties ) {
             if ( nextTask != null ) {
-                nextTask.computeModificationMasks( mask, settableProperties, with, extraMasks, inverseSettableProperties );
+                nextTask.computeModificationMasks( modifiedClass, mask, settableProperties, with, extraMasks, inverseSettableProperties );
             }
 
-            setPropertyOnMask( mask, settableProperties, propertyLiteral.getName() );
+            setPropertyOnMask( modifiedClass, mask, settableProperties, propertyLiteral.getName() );
 
             if ( with != null ) {
                 for ( int j = 0; j < with.length; j++ ) {
                     if ( value == with[ j ] && propertyLiteral instanceof InvertibleMetaProperty ) {
-                        setPropertyOnMask( extraMasks[ j ], inverseSettableProperties[ j ], ( (InvertibleMetaProperty) propertyLiteral ).getInverse().getName() );
+                        setPropertyOnMask( modifiedClass, extraMasks[ j ], inverseSettableProperties[ j ], ( (InvertibleMetaProperty) propertyLiteral ).getInverse().getName() );
                     }
                 }
             }

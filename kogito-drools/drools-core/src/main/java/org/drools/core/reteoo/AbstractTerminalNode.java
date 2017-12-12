@@ -39,7 +39,9 @@ import org.drools.core.util.bitmask.AllSetBitMask;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.bitmask.EmptyBitMask;
 
-import static org.drools.core.reteoo.PropertySpecificUtil.*;
+import static org.drools.core.reteoo.PropertySpecificUtil.calculateNegativeMask;
+import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
+import static org.drools.core.reteoo.PropertySpecificUtil.getAccessibleProperties;
 
 public abstract class AbstractTerminalNode extends BaseNode implements TerminalNode, PathEndNode, Externalizable {
 
@@ -117,8 +119,9 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
             setDeclaredMask( AllSetBitMask.get() );
         } else  {
             List<String> settableProperties = getAccessibleProperties( context.getKnowledgeBase(), objectClass );
-            setDeclaredMask( calculatePositiveMask(pattern.getListenedProperties(), settableProperties) );
-            setNegativeMask( calculateNegativeMask(pattern.getListenedProperties(), settableProperties) );
+            Class modifiedClass = (( ClassObjectType ) pattern.getObjectType()).getClassType();
+            setDeclaredMask( calculatePositiveMask(modifiedClass, pattern.getListenedProperties(), settableProperties) );
+            setNegativeMask( calculateNegativeMask(modifiedClass, pattern.getListenedProperties(), settableProperties) );
         }
     }
 

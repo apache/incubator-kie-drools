@@ -64,15 +64,15 @@ public class PropertySpecificUtil {
         return mask instanceof AllSetButLastBitMask;
     }
 
-    public static BitMask calculatePositiveMask( Collection<String> listenedProperties, List<String> accessibleProperties ) {
-        return calculatePatternMask(listenedProperties, accessibleProperties, true);
+    public static BitMask calculatePositiveMask( Class modifiedClass, Collection<String> listenedProperties, List<String> accessibleProperties ) {
+        return calculatePatternMask(modifiedClass, listenedProperties, accessibleProperties, true);
     }
 
-    public static BitMask calculateNegativeMask(Collection<String> listenedProperties, List<String> accessibleProperties) {
-        return calculatePatternMask(listenedProperties, accessibleProperties, false);
+    public static BitMask calculateNegativeMask(Class modifiedClass, Collection<String> listenedProperties, List<String> accessibleProperties) {
+        return calculatePatternMask(modifiedClass, listenedProperties, accessibleProperties, false);
     }
 
-    private static BitMask calculatePatternMask(Collection<String> listenedProperties, List<String> accessibleProperties, boolean isPositive) {
+    private static BitMask calculatePatternMask(Class modifiedClass, Collection<String> listenedProperties, List<String> accessibleProperties, boolean isPositive) {
         if (listenedProperties == null) {
             return EmptyBitMask.get();
         }
@@ -94,15 +94,15 @@ public class PropertySpecificUtil {
                 propertyName = propertyName.substring(1);
             }
 
-            mask = setPropertyOnMask(mask, accessibleProperties, propertyName);
+            mask = setPropertyOnMask(modifiedClass, mask, accessibleProperties, propertyName);
         }
         return mask;
     }
 
-    public static BitMask setPropertyOnMask(BitMask mask, List<String> settableProperties, String propertyName) {
+    public static BitMask setPropertyOnMask(Class modifiedClass, BitMask mask, List<String> settableProperties, String propertyName) {
         int index = settableProperties.indexOf(propertyName);
         if (index < 0) {
-            throw new RuntimeException("Unknown property: " + propertyName);
+            throw new RuntimeException("Unknown property '" + propertyName + "' on " + modifiedClass);
         }
         return setPropertyOnMask(mask, index);
     }
