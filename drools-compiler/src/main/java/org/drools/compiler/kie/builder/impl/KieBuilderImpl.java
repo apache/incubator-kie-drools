@@ -547,30 +547,34 @@ public class KieBuilderImpl
                 pkgNameForFile = pkgNameForFile.substring( RESOURCES_ROOT.length() );
             }
             pkgNameForFile = pkgNameForFile.replace( '/', '.' );
-            for ( String pkgName : kieBase.getPackages() ) {
-                boolean isNegative = pkgName.startsWith( "!" );
-                if ( isNegative ) {
-                    pkgName = pkgName.substring( 1 );
-                }
-                if ( pkgName.equals( "*" ) || pkgNameForFile.equals( pkgName ) || pkgNameForFile.endsWith( "." + pkgName ) ) {
+            return isPackageInKieBase( kieBase, pkgNameForFile );
+        }
+    }
+
+    public static boolean isPackageInKieBase( KieBaseModel kieBaseModel, String pkgName ) {
+        for ( String candidatePkg : kieBaseModel.getPackages() ) {
+            boolean isNegative = candidatePkg.startsWith( "!" );
+            if ( isNegative ) {
+                candidatePkg = candidatePkg.substring( 1 );
+            }
+            if ( candidatePkg.equals( "*" ) || pkgName.equals( candidatePkg ) || pkgName.endsWith( "." + candidatePkg ) ) {
+                return !isNegative;
+            }
+            if ( candidatePkg.endsWith( ".*" ) ) {
+                String relativePkgNameForFile = getRelativePackageName( pkgName );
+                String pkgNameNoWildcard = candidatePkg.substring( 0, candidatePkg.length() - 2 );
+                if ( relativePkgNameForFile.equals( pkgNameNoWildcard ) || relativePkgNameForFile.startsWith( pkgNameNoWildcard + "." ) ) {
                     return !isNegative;
                 }
-                if ( pkgName.endsWith( ".*" ) ) {
-                    String relativePkgNameForFile = getRelativePackageName( pkgNameForFile );
-                    String pkgNameNoWildcard = pkgName.substring( 0, pkgName.length() - 2 );
+                if ( relativePkgNameForFile.startsWith( kieBaseModel.getName() + "." ) ) {
+                    relativePkgNameForFile = relativePkgNameForFile.substring( kieBaseModel.getName().length() + 1 );
                     if ( relativePkgNameForFile.equals( pkgNameNoWildcard ) || relativePkgNameForFile.startsWith( pkgNameNoWildcard + "." ) ) {
                         return !isNegative;
                     }
-                    if ( relativePkgNameForFile.startsWith( kieBase.getName() + "." ) ) {
-                        relativePkgNameForFile = relativePkgNameForFile.substring( kieBase.getName().length() + 1 );
-                        if ( relativePkgNameForFile.equals( pkgNameNoWildcard ) || relativePkgNameForFile.startsWith( pkgNameNoWildcard + "." ) ) {
-                            return !isNegative;
-                        }
-                    }
                 }
             }
-            return false;
         }
+        return false;
     }
 
     private static String getRelativePackageName( String pkgNameForFile ) {
