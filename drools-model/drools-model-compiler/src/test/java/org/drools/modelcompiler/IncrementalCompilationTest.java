@@ -168,4 +168,50 @@ public class IncrementalCompilationTest extends BaseModelTest {
         assertEquals( 1, list.size() );
         assertEquals( "Hello World", list.get(0) );
     }
+
+    @Test
+    public void testKJarUpgradeWithChangedDeclaredType() throws Exception {
+        String drl1a = "package org.drools.incremental\n" +
+                "declare Message value : String end\n" +
+                "rule Init when then insert(new Message( \"Hello World\" )); end\n" +
+                "rule R1 when\n" +
+                "   $m : Message( value.startsWith(\"H\") )\n" +
+                "then\n" +
+                "   System.out.println($m.getValue());" +
+                "end\n";
+
+        String drl1b = "package org.drools.incremental\n" +
+                "declare Message msg : String end\n" +
+                "rule Init when then insert(new Message( \"Hello World\" )); end\n" +
+                "rule R1 when\n" +
+                "   $m : Message( msg.startsWith(\"H\") )\n" +
+                "then\n" +
+                "   System.out.println($m.getMsg());" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        // Create an in-memory jar for version 1.0.0
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
+        createAndDeployJar( ks, releaseId1, drl1a );
+
+        // Create a session and fire rules
+        KieContainer kc = ks.newKieContainer( releaseId1 );
+        KieSession ksession = kc.newKieSession();
+        assertEquals( 2, ksession.fireAllRules() );
+
+        // Create a new jar for version 1.1.0
+        ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
+        createAndDeployJar( ks, releaseId2, drl1b );
+
+        // try to update the container to version 1.1.0
+        kc.updateToVersion( releaseId2 );
+
+        // continue working with the session
+        assertEquals( 2, ksession.fireAllRules() );
+
+        // try with a new session
+        KieSession ksession2 = kc.newKieSession();
+        assertEquals( 2, ksession2.fireAllRules() );
+    }
 }
