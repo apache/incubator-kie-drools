@@ -51,6 +51,7 @@ import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResourceChangeSet;
 
 import static org.drools.model.impl.ModelComponent.areEqualInModel;
+import static org.drools.modelcompiler.util.StringUtil.fileNameToClass;
 
 public class CanonicalKieModule extends ZipKieModule {
 
@@ -116,15 +117,19 @@ public class CanonicalKieModule extends ZipKieModule {
 
     private Map<String, Model> getModels() {
         if ( models.isEmpty() ) {
-            if ( ruleClassesNames == null ) {
-                ruleClassesNames = findRuleClassesNames( getModuleClassLoader() );
-            }
-            for (String rulesFile : ruleClassesNames) {
+            for (String rulesFile : getRuleClassNames()) {
                 Model model = createInstance( getModuleClassLoader(), rulesFile );
                 models.put( model.getName(), model );
             }
         }
         return models;
+    }
+
+    private Collection<String> getRuleClassNames() {
+        if ( ruleClassesNames == null ) {
+            ruleClassesNames = findRuleClassesNames( getModuleClassLoader() );
+        }
+        return ruleClassesNames;
     }
 
     private Collection<Model> getModelForKBase(KieBaseModelImpl kBaseModel) {
@@ -163,6 +168,7 @@ public class CanonicalKieModule extends ZipKieModule {
     @Override
     public KieJarChangeSet getChanges( InternalKieModule newKieModule ) {
         KieJarChangeSet result = new KieJarChangeSet();
+        findChanges(result, newKieModule);
 
         Map<String, Model> oldModels = getModels();
         Map<String, Model> newModels = (( CanonicalKieModule ) newKieModule).getModels();
@@ -182,6 +188,40 @@ public class CanonicalKieModule extends ZipKieModule {
         }
 
         return result;
+    }
+
+    private void findChanges(KieJarChangeSet result, InternalKieModule newKieModule) {
+        Collection<String> oldFiles = getFileNames();
+        Collection<String> newFiles = newKieModule.getFileNames();
+
+        ArrayList<String> removedFiles = new ArrayList<>( oldFiles );
+        removedFiles.removeAll( newFiles );
+        if( ! removedFiles.isEmpty() ) {
+            for( String file : removedFiles ) {
+                if ( isChange( file, this ) ) {
+                    result.removeFile( file );
+                }
+            }
+        }
+
+        for ( String file : newFiles ) {
+            if ( oldFiles.contains( file ) && isChange( file, this ) ) {
+                // check for modification
+                byte[] oldBytes = getBytes( file );
+                byte[] newBytes = newKieModule.getBytes( file );
+                if( ! Arrays.equals( oldBytes, newBytes ) ) {
+                    // parse the file to figure out the difference
+                    result.registerChanges( file, new ResourceChangeSet( file, ChangeType.UPDATED ) );
+                }
+            } else if (isChange( file, (( CanonicalKieModule ) newKieModule) )) {
+                // file was added
+                result.addFile( file );
+            }
+        }
+    }
+
+    private boolean isChange(String fileName, CanonicalKieModule module) {
+        return fileName.endsWith( ".class" ) && !module.getRuleClassNames().contains( fileNameToClass(fileName) );
     }
 
     private ResourceChangeSet calculateResourceChangeSet( Model oldModel, Model newModel ) {
