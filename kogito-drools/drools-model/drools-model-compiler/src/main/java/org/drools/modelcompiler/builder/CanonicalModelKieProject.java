@@ -17,14 +17,15 @@
 package org.drools.modelcompiler.builder;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.drools.compiler.commons.jci.compilers.CompilationResult;
+import org.drools.compiler.commons.jci.problems.CompilationProblem;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kie.builder.impl.AbstractKieModule;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieModuleKieProject;
+import org.drools.compiler.kie.builder.impl.ResultsImpl;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.kie.internal.builder.KnowledgeBuilder;
 
@@ -46,7 +47,7 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
     }
 
     @Override
-    public void writeProjectOutput( MemoryFileSystem trgMfs ) {
+    public void writeProjectOutput(MemoryFileSystem trgMfs, ResultsImpl messages) {
         MemoryFileSystem srcMfs = new MemoryFileSystem();
         ModelWriter modelWriter = new ModelWriter();
         List<String> modelFiles = new ArrayList<>();
@@ -56,8 +57,11 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
             modelFiles.addAll(result.modelFiles);
             CompilationResult res = getCompiler().compile( result.getSources(), srcMfs, trgMfs, getClassLoader() );
 
-            if ( res.getErrors().length != 0 ) {
-                throw new RuntimeException( "Compilation errors: " + Arrays.toString( res.getErrors() ) );
+            for (CompilationProblem problem : res.getErrors()) {
+                messages.addMessage(problem);
+            }
+            for (CompilationProblem problem : res.getWarnings()) {
+                messages.addMessage(problem);
             }
         }
 

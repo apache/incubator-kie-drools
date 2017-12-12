@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
@@ -41,7 +42,6 @@ import org.kie.api.definition.type.Role;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import static java.text.MessageFormat.format;
-
 import static org.drools.javaparser.JavaParser.parseStatement;
 import static org.drools.javaparser.ast.NodeList.nodeList;
 import static org.drools.modelcompiler.builder.JavaParserCompiler.compileAll;
@@ -73,8 +73,8 @@ public class POJOGenerator {
         }
     }
 
-    public static Map<String, Class<?>> compileType(ClassLoader packageClassLoader, String pkgName, List<GeneratedClassWithPackage> classesWithPackage) {
-        return compileAll(packageClassLoader, pkgName, classesWithPackage);
+    public static Map<String, Class<?>> compileType(KnowledgeBuilderImpl kbuilder, ClassLoader packageClassLoader, List<GeneratedClassWithPackage> classesWithPackage) {
+        return compileAll(kbuilder, packageClassLoader, classesWithPackage);
     }
 
     public static void registerType(TypeResolver typeResolver, Map<String, Class<?>> classMap) {

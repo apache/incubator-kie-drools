@@ -79,12 +79,16 @@ public class ModelBuilderImpl extends KnowledgeBuilderImpl {
         final Map<String, Class<?>> allCompiledClasses = new HashMap<>();
         for (CompositePackageDescr packageDescr : packages) {
             InternalKnowledgePackage pkg = getPackageRegistry(packageDescr.getNamespace()).getPackage();
-            allCompiledClasses.putAll(compileType(pkg.getPackageClassLoader(), pkg.getName(), allGeneratedPojos));
+            allCompiledClasses.putAll(compileType(this, pkg.getPackageClassLoader(), allGeneratedPojos));
         }
 
         for (CompositePackageDescr packageDescr : packages) {
             InternalKnowledgePackage pkg = getPackageRegistry(packageDescr.getNamespace()).getPackage();
             allGeneratedPojos.forEach(c -> registerType(pkg.getTypeResolver(), allCompiledClasses));
+        }
+
+        if (hasErrors()) { // if Error while generating pojo do not try compile rule as they very likely depends hence fail too.
+            return;
         }
 
         for (CompositePackageDescr packageDescr : packages) {

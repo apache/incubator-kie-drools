@@ -22,6 +22,7 @@ import java.util.List;
 import org.drools.compiler.compiler.io.Folder;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
+import org.drools.compiler.kie.builder.impl.ResultsImpl;
 
 public class CanonicalModelMavenPluginKieProject extends CanonicalModelKieProject {
 
@@ -30,7 +31,7 @@ public class CanonicalModelMavenPluginKieProject extends CanonicalModelKieProjec
     }
 
     @Override
-    public void writeProjectOutput(MemoryFileSystem trgMfs) {
+    public void writeProjectOutput(MemoryFileSystem trgMfs, ResultsImpl messages) {
         MemoryFileSystem srcMfs = new MemoryFileSystem();
         List<String> modelFiles = new ArrayList<>();
         ModelWriter modelWriter = new ModelWriter();
