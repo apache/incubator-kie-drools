@@ -28,18 +28,21 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.optaplanner.examples.conferencescheduling.domain.ConferenceSolution;
@@ -78,6 +81,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
         protected final Workbook workbook;
 
         protected ConferenceSolution solution;
+        private Map<String, Pair<Timeslot, Room>> talkCodeToTimeslotRoomMap;
 
         protected Sheet currentSheet;
         protected Row currentRow;
@@ -90,6 +94,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
 
         public ConferenceSolution read() {
             solution = new ConferenceSolution();
+            talkCodeToTimeslotRoomMap = new HashMap<>();
             readTimeslotList();
             readRoomList();
             readSpeakerList();
@@ -144,6 +149,13 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 room.setName(nextCell().getStringCellValue());
                 room.setRoomTagSet(new LinkedHashSet<>(Arrays.asList(nextCell().getStringCellValue().split(", "))));
                 roomList.add(room);
+                for (Timeslot timeslot : solution.getTimeslotList()) {
+                    String[] talkCodes = nextCell().getStringCellValue().split(", ");
+                    Pair<Timeslot, Room> pair = Pair.of(timeslot, room);
+                    for (String talkCode : talkCodes) {
+                        talkCodeToTimeslotRoomMap.put(talkCode, pair);
+                    }
+                }
             }
             solution.setRoomList(roomList);
         }
@@ -182,6 +194,10 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 Talk talk = new Talk();
                 talk.setId(id++);
                 talk.setCode(nextCell().getStringCellValue());
+                if (talk.getCode().contains(",")) {
+                    throw new IllegalStateException(currentPosition() + ": The talk's code (" + talk.getCode()
+                            + ") must not contain a comma (,).");
+                }
                 talk.setTitle(nextCell().getStringCellValue());
                 talk.setSpeakerList(Arrays.stream(nextCell().getStringCellValue().split(", ")).map(speakerName -> {
                     Speaker speaker = speakerMap.get(speakerName);
@@ -191,6 +207,11 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                     }
                     return speaker;
                 }).collect(Collectors.toList()));
+                Pair<Timeslot, Room> pair = talkCodeToTimeslotRoomMap.get(talk.getCode());
+                if (pair != null) {
+                    talk.setTimeslot(pair.getLeft());
+                    talk.setRoom(pair.getRight());
+                }
                 talkList.add(talk);
             }
             solution.setTalkList(talkList);
@@ -270,6 +291,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
     private static class ConferenceSchedulingXlsxWriter {
 
         protected final ConferenceSolution solution;
+        private Map<Pair<Timeslot, Room>, List<Talk>> timeslotRoomToTalkMap;
 
         protected Workbook workbook;
 
@@ -283,6 +305,8 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
 
         public ConferenceSchedulingXlsxWriter(ConferenceSolution solution) {
             this.solution = solution;
+            timeslotRoomToTalkMap = solution.getTalkList().stream().collect(Collectors.groupingBy(
+                    talk -> Pair.of(talk.getTimeslot(), talk.getRoom())));
         }
 
         public Workbook write() {
@@ -333,6 +357,11 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 nextRow();
                 nextCell().setCellValue(room.getName());
                 nextCell().setCellValue(String.join(", ", room.getRoomTagSet()));
+                for (Timeslot timeslot : solution.getTimeslotList()) {
+                    List<Talk> talkList = timeslotRoomToTalkMap.get(Pair.of(timeslot, room));
+                    nextCell().setCellValue(talkList == null ? ""
+                            : talkList.stream().map(Talk::getCode).collect(Collectors.joining(", ")));
+                }
             }
             autoSizeColumnsWithHeader();
         }
@@ -370,14 +399,22 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
 
         private void writeTimeslotDaysHeaders() {
             LocalDate previousTimeslotDay = null;
+            int mergeStart = -1;
             for (Timeslot timeslot : solution.getTimeslotList()) {
                 LocalDate timeslotDay = timeslot.getDate();
                 if (timeslotDay.equals(previousTimeslotDay)) {
                     addHeaderCell("");
                 } else {
+                    if (previousTimeslotDay != null) {
+                        currentSheet.addMergedRegion(new CellRangeAddress(currentRowNumber, currentRowNumber, mergeStart, currentColumnNumber));
+                    }
                     addHeaderCell(DAY_FORMATTER.format(timeslotDay));
                     previousTimeslotDay = timeslotDay;
+                    mergeStart = currentColumnNumber;
                 }
+            }
+            if (previousTimeslotDay != null) {
+                currentSheet.addMergedRegion(new CellRangeAddress(currentRowNumber, currentRowNumber, mergeStart, currentColumnNumber));
             }
         }
 
