@@ -33,22 +33,32 @@ public class MultiKieBaseTest extends BaseModelTest {
 
     @Test
     public void testHelloWorldWithPackagesAnd2KieBases() throws Exception {
-        String drl1 = "package org.pkg1\n" +
-                "rule R11 when\n" +
+        String drl1a = "package org.pkg1\n" +
+                "rule R1 when\n" +
                 "   $m : String( this == \"Hello World\" )\n" +
                 "then\n" +
                 "end\n" +
-                "rule R12 when\n" +
+                "rule R2 when\n" +
                 "   $m : String( this == \"Hi Universe\" )\n" +
                 "then\n" +
                 "end\n";
 
-        String drl2 = "package org.pkg2\n" +
-                "rule R21 when\n" +
+        String drl2a = "package org.pkg2\n" +
+                "rule R1 when\n" +
                 "   $m : String( this == \"Hello World\" )\n" +
                 "then\n" +
                 "end\n" +
-                "rule R22 when\n" +
+                "rule R2 when\n" +
+                "   $m : String( this == \"Aloha Earth\" )\n" +
+                "then\n" +
+                "end\n";
+
+        String drl2b = "package org.pkg2\n" +
+                "rule R1 when\n" +
+                "   $m : String( this.startsWith(\"Hello\") )\n" +
+                "then\n" +
+                "end\n" +
+                "rule R2 when\n" +
                 "   $m : String( this == \"Aloha Earth\" )\n" +
                 "then\n" +
                 "end\n";
@@ -58,8 +68,8 @@ public class MultiKieBaseTest extends BaseModelTest {
         // Create an in-memory jar for version 1.0.0
         ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
         createAndDeployJar( ks, createKieProjectWithPackagesAnd2KieBases(), releaseId1,
-                new KieFile( "src/main/resources/org/pkg1/r1.drl", drl1 ),
-                new KieFile( "src/main/resources/org/pkg2/r2.drl", drl2 ) );
+                new KieFile( "src/main/resources/org/pkg1/r1.drl", drl1a ),
+                new KieFile( "src/main/resources/org/pkg2/r2.drl", drl2a ) );
 
         // Create a session and fire rules
         KieContainer kieContainer = ks.newKieContainer( releaseId1 );
@@ -82,17 +92,28 @@ public class MultiKieBaseTest extends BaseModelTest {
         assertEquals( 0, ksession2.fireAllRules() );
 
         ksession2.insert("Aloha Earth");
-        assertEquals(1, ksession2.fireAllRules());
+        assertEquals( 1, ksession2.fireAllRules() );
+
+        ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
+        createAndDeployJar( ks, createKieProjectWithPackagesAnd2KieBases(), releaseId2,
+                new KieFile( "src/main/resources/org/pkg1/r1.drl", drl1a ),
+                new KieFile( "src/main/resources/org/pkg2/r2.drl", drl2b ) );
+
+        // try to update the container to version 1.1.0
+        kieContainer.updateToVersion( releaseId2 );
+
+        assertEquals( 0, ksession1.fireAllRules() );
+        assertEquals( 1, ksession2.fireAllRules() );
     }
 
     private KieModuleModel createKieProjectWithPackagesAnd2KieBases() {
         KieModuleModel kproj = KieServices.get().newKieModuleModel();
 
-        kproj.newKieBaseModel()
+        kproj.newKieBaseModel("KBase1")
                 .addPackage("org.pkg1")
                 .newKieSessionModel("KSession1");
 
-        kproj.newKieBaseModel()
+        kproj.newKieBaseModel("KBase2")
                 .addPackage("org.pkg2")
                 .newKieSessionModel("KSession2");
 

@@ -20,10 +20,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.compiler.kie.builder.impl.KieBaseUpdateContext;
+import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.modelcompiler.CanonicalKieModule;
 import org.drools.modelcompiler.CanonicalKiePackages;
+import org.kie.api.builder.model.KieBaseModel;
 import org.kie.internal.builder.ChangeType;
 import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResourceChangeSet;
@@ -46,6 +48,9 @@ public class CanonicalKieBaseUpdater implements Runnable {
         List<RuleImpl> rulesToBeAdded = new ArrayList<>();
 
         for (ResourceChangeSet changeSet : ctx.cs.getChanges().values()) {
+            if (!isPackageInKieBase( ctx.newKieBaseModel, changeSet.getResourceName() )) {
+                continue;
+            }
             InternalKnowledgePackage oldKpkg = ctx.kBase.getPackage( changeSet.getResourceName() );
             InternalKnowledgePackage kpkg = ( InternalKnowledgePackage ) newPkgs.getKiePackage( changeSet.getResourceName() );
 
@@ -74,5 +79,9 @@ public class CanonicalKieBaseUpdater implements Runnable {
 
         ctx.kBase.removeRules( rulesToBeRemoved );
         ctx.kBase.addRules( rulesToBeAdded );
+    }
+
+    private static boolean isPackageInKieBase( KieBaseModel kieBaseModel, String pkgName ) {
+        return kieBaseModel.getPackages().isEmpty() || KieBuilderImpl.isPackageInKieBase( kieBaseModel, pkgName );
     }
 }
