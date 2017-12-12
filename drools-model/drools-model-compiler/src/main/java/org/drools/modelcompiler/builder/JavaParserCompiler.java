@@ -17,24 +17,25 @@
 package org.drools.modelcompiler.builder;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.commons.jci.compilers.CompilationResult;
 import org.drools.compiler.commons.jci.compilers.EclipseJavaCompiler;
 import org.drools.compiler.commons.jci.compilers.JavaCompiler;
 import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
 import org.drools.compiler.commons.jci.problems.CompilationProblem;
+import org.drools.compiler.compiler.DroolsError;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.javaparser.ast.CompilationUnit;
 import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.drools.javaparser.printer.PrettyPrinter;
 import org.drools.javaparser.printer.PrettyPrinterConfiguration;
+import org.kie.internal.builder.ResultSeverity;
 
 public class JavaParserCompiler {
 
@@ -67,7 +68,7 @@ public class JavaParserCompiler {
         return PRETTY_PRINTER;
     }
 
-    public static Map<String, Class<?>> compileAll( ClassLoader classLoader, String pkgName, List<GeneratedClassWithPackage> classes ) {
+    public static Map<String, Class<?>> compileAll(KnowledgeBuilderImpl kbuilder, ClassLoader classLoader, List<GeneratedClassWithPackage> classes) {
         if (classes == null || classes.isEmpty()) {
             return Collections.emptyMap();
         }
@@ -80,7 +81,10 @@ public class JavaParserCompiler {
         CompilationProblem[] errors = resultCompilation.getErrors();
         if(errors.length != 0) {
             classes.forEach(System.out::println);
-            throw new RuntimeException("Error during compilation " + Arrays.stream(errors).map(CompilationProblem::getMessage).collect(Collectors.joining("\n")));
+            for (CompilationProblem error : errors) {
+                kbuilder.addBuilderResult(new CompilationProblemErrorResult(error));
+            }
+            return Collections.emptyMap();
         }
 
         InternalClassLoader internalClassLoader = new InternalClassLoader( classLoader, trgMfs );
@@ -141,5 +145,31 @@ public class JavaParserCompiler {
 
             return defineClass(className, bytes, 0, bytes.length);
         }
+    }
+
+    public static class CompilationProblemErrorResult extends DroolsError {
+
+        private CompilationProblem compilationProblem;
+
+        public CompilationProblemErrorResult(CompilationProblem compilationProblem) {
+            super();
+            this.compilationProblem = compilationProblem;
+        }
+
+        @Override
+        public ResultSeverity getSeverity() {
+            return ResultSeverity.ERROR;
+        }
+
+        @Override
+        public String getMessage() {
+            return compilationProblem.getMessage();
+        }
+
+        @Override
+        public int[] getLines() {
+            return new int[]{compilationProblem.getStartLine(), compilationProblem.getEndLine()};
+        }
+
     }
 }
