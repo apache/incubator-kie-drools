@@ -405,6 +405,11 @@ public class KieModuleRepoTest {
         }
 
         @Override
+        public ClassLoader getModuleClassLoader() {
+            return null;
+        }
+
+        @Override
         public ReleaseId getReleaseId() {
             return new ReleaseIdImpl("org", "deployTwiceAfterUpdateDependency", "1.0-SNAPSHOT");
         }
