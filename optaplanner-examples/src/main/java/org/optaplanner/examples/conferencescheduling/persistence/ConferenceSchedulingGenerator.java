@@ -251,10 +251,18 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
 
             speaker.setPreferredTimeslotTagSet(preferredTimeslotTagSet);
             Set<String> requiredRoomTagSet = new LinkedHashSet<>();
-
+            for (Pair<String, Double> roomTagProbability : roomTagProbabilityList) {
+                if (random.nextDouble() < roomTagProbability.getValue() / 20.0) {
+                    requiredRoomTagSet.add(roomTagProbability.getKey());
+                }
+            }
             speaker.setRequiredRoomTagSet(requiredRoomTagSet);
             Set<String> preferredRoomTagSet = new LinkedHashSet<>();
-
+            for (Pair<String, Double> roomTagProbability : roomTagProbabilityList) {
+                if (random.nextDouble() < roomTagProbability.getValue() / 10.0) {
+                    preferredRoomTagSet.add(roomTagProbability.getKey());
+                }
+            }
             speaker.setPreferredRoomTagSet(preferredRoomTagSet);
             logger.trace("Created speaker with name ({}).",
                     speaker.getName());
@@ -273,9 +281,9 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
             talk.setCode(String.format("S%0" + ((String.valueOf(talkListSize).length()) + "d"), i));
             talk.setTitle(talkTitleGenerator.generateNextValue());
             double randomDouble = random.nextDouble();
-            int speakerCount = (randomDouble < 0.03) ? 4 :
-                    (randomDouble < 0.10) ? 3 :
-                    (randomDouble < 0.50) ? 2 : 1;
+            int speakerCount = (randomDouble < 0.01) ? 4 :
+                    (randomDouble < 0.03) ? 3 :
+                    (randomDouble < 0.40) ? 2 : 1;
             List<Speaker> speakerList = new ArrayList<>(speakerCount);
             for (int j = 0; j < speakerCount; j++) {
                 speakerList.add(solution.getSpeakerList().get(speakerListIndex));

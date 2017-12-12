@@ -51,52 +51,60 @@ public class Talk extends AbstractPersistable {
         if (timeslot == null) {
             return 0;
         }
-        int count = 0;
-        for (String tag : requiredTimeslotTagSet) {
-            if (!timeslot.hasTag(tag)) {
-                count++;
-            }
-        }
-        return count;
+        return (int) requiredTimeslotTagSet.stream().filter(tag -> !timeslot.hasTag(tag)).count();
     }
 
     public int missingPreferredTimeslotTagCount() {
         if (timeslot == null) {
             return 0;
         }
-        int count = 0;
-        for (String tag : preferredTimeslotTagSet) {
-            if (!timeslot.hasTag(tag)) {
-                count++;
-            }
-        }
-        return count;
+        return (int) preferredTimeslotTagSet.stream().filter(tag -> !timeslot.hasTag(tag)).count();
     }
 
     public int missingRequiredRoomTagCount() {
         if (room == null) {
             return 0;
         }
-        int count = 0;
-        for (String tag : requiredRoomTagSet) {
-            if (!room.hasTag(tag)) {
-                count++;
-            }
-        }
-        return count;
+        return (int) requiredRoomTagSet.stream().filter(tag -> !room.hasTag(tag)).count();
     }
 
     public int missingPreferredRoomTagCount() {
         if (room == null) {
             return 0;
         }
-        int count = 0;
-        for (String tag : preferredRoomTagSet) {
-            if (!room.hasTag(tag)) {
-                count++;
-            }
+        return (int) preferredRoomTagSet.stream().filter(tag -> !room.hasTag(tag)).count();
+    }
+
+    public int missingSpeakerRequiredTimeslotTagCount() {
+        if (timeslot == null) {
+            return 0;
         }
-        return count;
+        return (int) speakerList.stream().flatMap(speaker -> speaker.getRequiredTimeslotTagSet().stream())
+                .filter(tag -> !timeslot.hasTag(tag)).count();
+    }
+
+    public int missingSpeakerPreferredTimeslotTagCount() {
+        if (timeslot == null) {
+            return 0;
+        }
+        return (int) speakerList.stream().flatMap(speaker -> speaker.getPreferredTimeslotTagSet().stream())
+                .filter(tag -> !timeslot.hasTag(tag)).count();
+    }
+
+    public int missingSpeakerRequiredRoomTagCount() {
+        if (room == null) {
+            return 0;
+        }
+        return (int) speakerList.stream().flatMap(speaker -> speaker.getRequiredRoomTagSet().stream())
+                .filter(tag -> !timeslot.hasTag(tag)).count();
+    }
+
+    public int missingSpeakerPreferredRoomTagCount() {
+        if (room == null) {
+            return 0;
+        }
+        return (int) speakerList.stream().flatMap(speaker -> speaker.getPreferredRoomTagSet().stream())
+                .filter(tag -> !timeslot.hasTag(tag)).count();
     }
 
     @Override

@@ -402,6 +402,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             writeRoomList();
             writeSpeakerList();
             writeTalkList();
+            workbook.setActiveSheet(1);
             return workbook;
         }
 

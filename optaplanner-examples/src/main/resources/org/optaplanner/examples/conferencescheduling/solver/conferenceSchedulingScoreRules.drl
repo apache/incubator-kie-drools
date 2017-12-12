@@ -67,6 +67,20 @@ rule "Talk required room tags"
         scoreHolder.addHardConstraintMatch(kcontext, - $count);
 end
 
+rule "Speaker required timeslot tags"
+    when
+        Talk($count : missingSpeakerRequiredTimeslotTagCount() > 0)
+    then
+        scoreHolder.addHardConstraintMatch(kcontext, - $count);
+end
+
+rule "Speaker required room tags"
+    when
+        Talk($count : missingSpeakerRequiredRoomTagCount() > 0)
+    then
+        scoreHolder.addHardConstraintMatch(kcontext, - $count);
+end
+
 // ############################################################################
 // Soft constraints
 // ############################################################################
@@ -81,6 +95,20 @@ end
 rule "Talk preferred room tags"
     when
         Talk($count : missingPreferredRoomTagCount() > 0)
+    then
+        scoreHolder.addSoftConstraintMatch(kcontext, - $count);
+end
+
+rule "Speaker preferred timeslot tags"
+    when
+        Talk($count : missingSpeakerPreferredTimeslotTagCount() > 0)
+    then
+        scoreHolder.addSoftConstraintMatch(kcontext, - $count);
+end
+
+rule "Speaker preferred room tags"
+    when
+        Talk($count : missingSpeakerPreferredRoomTagCount() > 0)
     then
         scoreHolder.addSoftConstraintMatch(kcontext, - $count);
 end
