@@ -8,13 +8,14 @@ import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.rule.builder.util.AccumulateUtil;
 import org.drools.drlx.DrlxParser;
 import org.drools.javaparser.ast.Node;
+import org.drools.javaparser.ast.expr.ClassExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
-import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.kie.api.runtime.rule.AccumulateFunction;
 
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 
 public class AccumulateVisitor {
@@ -75,9 +76,16 @@ public class AccumulateVisitor {
             final Class<?> methodCallExprType = typedExpression.getType();
 
             final String accumulateFunctionName = AccumulateUtil.getFunctionName(() -> methodCallExprType, function.getFunction());
-            final AccumulateFunction accumulateFunction = packageModel.getConfiguration().getAccumulateFunction(accumulateFunctionName);
+            final Optional<AccumulateFunction> bundledAccumulateFunction = Optional.ofNullable(packageModel.getConfiguration().getAccumulateFunction(accumulateFunctionName));
+            final Optional<AccumulateFunction> importedAccumulateFunction = Optional.ofNullable(packageModel.getAccumulateFunctions().get(accumulateFunctionName));
+
+            final AccumulateFunction accumulateFunction = bundledAccumulateFunction
+                    .map(Optional::of)
+                    .orElse(importedAccumulateFunction)
+                    .orElseThrow(RuntimeException::new);
+
             final Class accumulateFunctionResultType = accumulateFunction.getResultType();
-            functionDSL.addArgument(new StringLiteralExpr(accumulateFunctionName));
+            functionDSL.addArgument(new ClassExpr(toType(accumulateFunction.getClass())));
 
             // Every expression in an accumulate function gets transformed in a bind expression with a generated id
             // Then the accumulate function will have that binding expression as a source
@@ -94,7 +102,7 @@ public class AccumulateVisitor {
                     .declarationClass;
             final String accumulateFunctionName = AccumulateUtil.getFunctionName(() -> declarationClass, function.getFunction());
             final AccumulateFunction accumulateFunction = packageModel.getConfiguration().getAccumulateFunction(accumulateFunctionName);
-            functionDSL.addArgument(new StringLiteralExpr(accumulateFunctionName));
+            functionDSL.addArgument(new ClassExpr(toType(accumulateFunction.getClass())));
             functionDSL.addArgument(new NameExpr(toVar(((NameExpr) expr).getName().asString())));
 
             final Class accumulateFunctionResultType = accumulateFunction.getResultType();

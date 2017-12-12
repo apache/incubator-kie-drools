@@ -5,19 +5,19 @@ import org.drools.model.Variable;
 public class AccumulateFunction {
     private Variable var;
     protected final Variable source;
-    protected final String functionName;
+    protected final Class<?> functionClass;
 
-    public AccumulateFunction(Variable source, String functionName) {
+    public AccumulateFunction(Variable source, Class<?> functionClass) {
         this.source = source;
-        this.functionName = functionName;
+        this.functionClass = functionClass;
     }
 
     public Variable getSource() {
         return source;
     }
 
-    public String getFunctionName() {
-        return functionName;
+    public Class<?> getFunctionClass() {
+        return functionClass;
     }
 
     public Variable getVariable() {
