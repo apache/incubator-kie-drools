@@ -27,6 +27,7 @@ public class Timeslot extends AbstractPersistable {
 
     private LocalDateTime startDateTime;
     private LocalDateTime endDateTime;
+    private String talkType;
 
     private Set<String> tagSet;
 
@@ -73,6 +74,14 @@ public class Timeslot extends AbstractPersistable {
 
     public void setEndDateTime(LocalDateTime endDateTime) {
         this.endDateTime = endDateTime;
+    }
+
+    public String getTalkType() {
+        return talkType;
+    }
+
+    public void setTalkType(String talkType) {
+        this.talkType = talkType;
     }
 
     public Set<String> getTagSet() {

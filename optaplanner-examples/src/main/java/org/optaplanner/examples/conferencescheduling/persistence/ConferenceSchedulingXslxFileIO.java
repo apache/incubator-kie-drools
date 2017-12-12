@@ -88,6 +88,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
 
         protected ConferenceSolution solution;
         private Map<String, Pair<Timeslot, Room>> talkCodeToTimeslotRoomMap;
+        private Set<String> totalTalkTypeSet;
         private Set<String> totalTimeslotTagSet;
         private Set<String> totalRoomTagSet;
 
@@ -103,6 +104,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
         public ConferenceSolution read() {
             solution = new ConferenceSolution();
             talkCodeToTimeslotRoomMap = new HashMap<>();
+            totalTalkTypeSet = new HashSet<>();
             totalTimeslotTagSet = new HashSet<>();
             totalRoomTagSet = new HashSet<>();
             readTimeslotList();
@@ -118,6 +120,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             readHeaderCell("Day");
             readHeaderCell("Start");
             readHeaderCell("End");
+            readHeaderCell("Talk type");
             readHeaderCell("Tags");
             List<Timeslot> timeslotList = new ArrayList<>(currentSheet.getLastRowNum() - 1);
             long id = 0L;
@@ -130,10 +133,16 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 LocalTime endTime = LocalTime.parse(nextCell().getStringCellValue(), TIME_FORMATTER);
                 if (startTime.compareTo(endTime) >= 0) {
                     throw new IllegalStateException(currentPosition() + ": The startTime (" + startTime
-                            + ") must be less than the endTime (" + endTime + ")");
+                            + ") must be less than the endTime (" + endTime + ").");
                 }
                 timeslot.setStartDateTime(LocalDateTime.of(day, startTime));
                 timeslot.setEndDateTime(LocalDateTime.of(day, endTime));
+                timeslot.setTalkType(nextCell().getStringCellValue());
+                if (timeslot.getTalkType().isEmpty()) {
+                    throw new IllegalStateException(currentPosition() + ": The talk type (" + timeslot.getTalkType()
+                            + ") must not be empty.");
+                }
+                totalTalkTypeSet.add(timeslot.getTalkType());
                 timeslot.setTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
                         .filter(tag -> !tag.isEmpty()).collect(Collectors.toCollection(LinkedHashSet::new)));
                 for (String tag : timeslot.getTagSet()) {
@@ -235,6 +244,8 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             nextRow();
             readHeaderCell("Code");
             readHeaderCell("Title");
+            readHeaderCell("Talk type");
+            readHeaderCell("Language");
             readHeaderCell("Speakers");
             readHeaderCell("Required timeslot tags");
             readHeaderCell("Preferred timeslot tags");
@@ -252,6 +263,13 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                             + ") must match to the regular expression (" + VALID_CODE_PATTERN + ").");
                 }
                 talk.setTitle(nextCell().getStringCellValue());
+                talk.setTalkType(nextCell().getStringCellValue());
+                if (!totalTalkTypeSet.contains(talk.getTalkType())) {
+                    throw new IllegalStateException(currentPosition() + ": The talk type (" + talk.getTalkType()
+                            + ") does not exist in the talk types (" + totalTalkTypeSet
+                            + ") of the other sheet (Timeslots).");
+                }
+                talk.setLanguage(nextCell().getStringCellValue());
                 talk.setSpeakerList(Arrays.stream(nextCell().getStringCellValue().split(", "))
                         .filter(tag -> !tag.isEmpty()).map(speakerName -> {
                     Speaker speaker = speakerMap.get(speakerName);
@@ -419,12 +437,14 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             addHeaderCell("Day");
             addHeaderCell("Start");
             addHeaderCell("End");
+            addHeaderCell("Talk type");
             addHeaderCell("Tags");
             for (Timeslot timeslot : solution.getTimeslotList()) {
                 nextRow();
                 nextCell().setCellValue(DAY_FORMATTER.format(timeslot.getDate()));
                 nextCell().setCellValue(TIME_FORMATTER.format(timeslot.getStartDateTime()));
                 nextCell().setCellValue(TIME_FORMATTER.format(timeslot.getEndDateTime()));
+                nextCell().setCellValue(timeslot.getTalkType());
                 nextCell().setCellValue(String.join(", ", timeslot.getTagSet()));
             }
             autoSizeColumnsWithHeader();
@@ -485,6 +505,8 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             nextRow();
             addHeaderCell("Code");
             addHeaderCell("Title");
+            addHeaderCell("Talk type");
+            addHeaderCell("Language");
             addHeaderCell("Speakers");
             addHeaderCell("Required timeslot tags");
             addHeaderCell("Preferred timeslot tags");
@@ -494,6 +516,8 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 nextRow();
                 nextCell().setCellValue(talk.getCode());
                 nextCell().setCellValue(talk.getTitle());
+                nextCell().setCellValue(talk.getTalkType());
+                nextCell().setCellValue(talk.getLanguage());
                 nextCell().setCellValue(talk.getSpeakerList()
                         .stream().map(Speaker::getName).collect(Collectors.joining(", ")));
                 nextCell().setCellValue(String.join(", ", talk.getRequiredTimeslotTagSet()));

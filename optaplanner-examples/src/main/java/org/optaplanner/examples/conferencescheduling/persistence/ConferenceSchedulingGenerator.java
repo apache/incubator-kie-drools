@@ -66,7 +66,8 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
                     "2024",
                     "2025");
 
-    private static final String LAB_TIMESLOT_TAG = "Lab";
+    private static final String LAB_TALK_TYPE = "Lab";
+    private static final String BREAKOUT_TALK_TYPE = "Breakout";
     private static final String LAB_ROOM_TAG = "Lab_room";
 
     private final LocalDate timeslotFirstDay = LocalDate.of(2018, 10, 1);
@@ -200,11 +201,9 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
             Pair<LocalTime, LocalTime> pair = timeslotOptions.get(timeslotOptionsIndex);
             timeslot.setStartDateTime(LocalDateTime.of(day, pair.getLeft()));
             timeslot.setEndDateTime(LocalDateTime.of(day, pair.getRight()));
+            timeslot.setTalkType(timeslot.getDurationInMinutes() >= 120 ? LAB_TALK_TYPE : BREAKOUT_TALK_TYPE);
             timeslotOptionsIndex++;
             Set<String> tagSet = new LinkedHashSet<>(2);
-            if (timeslot.getDurationInMinutes() >= 120) {
-                tagSet.add(LAB_TIMESLOT_TAG);
-            }
             timeslot.setTagSet(tagSet);
             logger.trace("Created timeslot ({}) with tags ({}).",
                     timeslot, tagSet);
@@ -280,6 +279,8 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
             talk.setId((long) i);
             talk.setCode(String.format("S%0" + ((String.valueOf(talkListSize).length()) + "d"), i));
             talk.setTitle(talkTitleGenerator.generateNextValue());
+            talk.setTalkType(i < labTalkCount ? LAB_TALK_TYPE : BREAKOUT_TALK_TYPE);
+            talk.setLanguage("en");
             double randomDouble = random.nextDouble();
             int speakerCount = (randomDouble < 0.01) ? 4 :
                     (randomDouble < 0.03) ? 3 :
@@ -291,9 +292,6 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
             }
             talk.setSpeakerList(speakerList);
             Set<String> requiredTimeslotTagSet = new LinkedHashSet<>();
-            if (i < labTalkCount) {
-                requiredTimeslotTagSet.add(LAB_TIMESLOT_TAG);
-            }
             talk.setRequiredTimeslotTagSet(requiredTimeslotTagSet);
             Set<String> preferredTimeslotTagSet = new LinkedHashSet<>();
 

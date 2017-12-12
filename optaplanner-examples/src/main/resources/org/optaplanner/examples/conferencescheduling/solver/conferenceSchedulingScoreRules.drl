@@ -28,6 +28,13 @@ global HardSoftScoreHolder scoreHolder;
 // Hard constraints
 // ############################################################################
 
+rule "Timeslot talk type"
+    when
+        Talk(timeslot != null, !getTalkType().equals(getTimeslot().getTalkType()))
+    then
+        scoreHolder.addHardConstraintMatch(kcontext, -100);
+end
+
 rule "Room conflict"
     when
         Talk(timeslot != null, $timeslot : timeslot,

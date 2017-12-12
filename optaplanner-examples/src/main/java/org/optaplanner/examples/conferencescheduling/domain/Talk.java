@@ -29,6 +29,8 @@ public class Talk extends AbstractPersistable {
 
     private String code;
     private String title;
+    private String talkType;
+    private String language;
     private List<Speaker> speakerList;
     private Set<String> requiredTimeslotTagSet;
     private Set<String> preferredTimeslotTagSet;
@@ -130,6 +132,22 @@ public class Talk extends AbstractPersistable {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getTalkType() {
+        return talkType;
+    }
+
+    public void setTalkType(String talkType) {
+        this.talkType = talkType;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
     }
 
     public List<Speaker> getSpeakerList() {
