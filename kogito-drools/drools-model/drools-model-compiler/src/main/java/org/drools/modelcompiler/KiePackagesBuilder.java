@@ -26,7 +26,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import org.drools.compiler.rule.builder.util.AccumulateUtil;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassObjectType;
@@ -107,7 +106,6 @@ import org.drools.modelcompiler.constraints.UnificationConstraint;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.type.Role;
-import org.kie.internal.builder.conf.AccumulateFunctionOption;
 import org.kie.internal.utils.ChainedProperties;
 import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
@@ -133,7 +131,6 @@ public class KiePackagesBuilder {
 
     private final Collection<Model> models;
     private final ChainedProperties chainedProperties;
-    private HashMap<String, org.kie.api.runtime.rule.AccumulateFunction> accumulateFunctions = new HashMap<>();
     private ClassLoader typesClassLoader;
 
     public KiePackagesBuilder(KieBaseConfiguration conf, ProjectClassLoader moduleClassLoader) {
@@ -152,7 +149,6 @@ public class KiePackagesBuilder {
     }
 
     public CanonicalKiePackages build() {
-        this.accumulateFunctions.putAll(AccumulateUtil.buildAccumulateFunctionsMap(this.chainedProperties, this.typesClassLoader));
         for (Model model : models) {
             for (TypeMetaData metaType : model.getTypeMetaDatas()) {
                 KnowledgePackageImpl pkg = ( KnowledgePackageImpl ) packages.computeIfAbsent( metaType.getPackage(), this::createKiePackage );
@@ -504,8 +500,8 @@ public class KiePackagesBuilder {
         AccumulateFunction[] accFunctions = accPattern.getAccumulateFunctions();
 
         if (accFunctions.length == 1) {
-            final org.kie.api.runtime.rule.AccumulateFunction accFunction = accumulateFunctions.get(accFunctions[0].getFunctionName());
 
+            final org.kie.api.runtime.rule.AccumulateFunction accFunction = createRuntimeAccumulateFunction(accFunctions[0]);
             final Declaration declaration = new Declaration(accPattern.getBoundVariables()[0].getName(),
                                                             getReadAcessor(getObjectType(Object.class)),
                                                             pattern,
@@ -518,7 +514,7 @@ public class KiePackagesBuilder {
         InternalReadAccessor reader = new SelfReferenceClassFieldReader( Object[].class );
         Accumulator[] accumulators = new Accumulator[accFunctions.length];
         for (int i = 0; i < accFunctions.length; i++) {
-            final org.kie.api.runtime.rule.AccumulateFunction accFunction = accumulateFunctions.get(accFunctions[i].getFunctionName());
+            final org.kie.api.runtime.rule.AccumulateFunction accFunction = createRuntimeAccumulateFunction(accFunctions[i]);
 
             Variable accVar = accPattern.getBoundVariables()[i];
             pattern.addDeclaration( new Declaration(accVar.getName(),
@@ -529,6 +525,16 @@ public class KiePackagesBuilder {
         }
 
         return new MultiAccumulate( source, new Declaration[0], accumulators);
+    }
+
+    private org.kie.api.runtime.rule.AccumulateFunction createRuntimeAccumulateFunction(AccumulateFunction accFunction1) {
+        final org.kie.api.runtime.rule.AccumulateFunction accFunction;
+        try {
+            accFunction = (org.kie.api.runtime.rule.AccumulateFunction) accFunction1.getFunctionClass().newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+        return accFunction;
     }
 
     private Pattern addPatternForVariable( RuleContext ctx, Variable patternVariable ) {

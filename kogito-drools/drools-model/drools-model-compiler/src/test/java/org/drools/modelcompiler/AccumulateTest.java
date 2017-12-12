@@ -16,6 +16,10 @@
 
 package org.drools.modelcompiler;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Serializable;
 import java.util.Collection;
 
 import org.drools.modelcompiler.domain.Adult;
@@ -24,6 +28,9 @@ import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.rule.AccumulateFunction;
+import org.kie.internal.builder.conf.AccumulateFunctionOption;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.*;
@@ -166,4 +173,73 @@ public class AccumulateTest extends BaseModelTest {
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
         assertThat(results, hasItem(new Result(43)));
     }
+
+    @Test
+    public void testAccumulateWithCustomImport() {
+        String str =
+                "import accumulate " + TestFunction.class.getCanonicalName() + " f;\n" +
+                "import " + Adult.class.getCanonicalName() + ";\n" +
+                "import " + Child.class.getCanonicalName() + ";\n" +
+                "import " + Result.class.getCanonicalName() + ";\n" +
+                "rule R when\n" +
+                "  accumulate( $c : Child( age < 10 ) and $a : Adult( name == $c.parent ), $parentAge : f($a.getAge()) )\n" +
+                "then\n" +
+                "  insert(new Result($parentAge));\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        Adult a = new Adult( "Mario", 43 );
+        Child c = new Child( "Sofia", 6, "Mario" );
+
+        ksession.insert( a );
+        ksession.insert( c );
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertThat(results, hasItem(new Result(1)));
+    }
+
+    public static class TestFunction implements AccumulateFunction<Serializable> {
+        @Override
+        public void writeExternal( ObjectOutput out ) throws IOException {
+        }
+
+        @Override
+        public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException {
+        }
+
+        @Override
+        public Serializable createContext() {
+            return null;
+        }
+
+        @Override
+        public void init( Serializable context ) throws Exception {
+        }
+
+        @Override
+        public void accumulate(Serializable context, Object value ) {
+        }
+
+        @Override
+        public void reverse( Serializable context, Object value ) throws Exception {
+        }
+
+        @Override
+        public Object getResult( Serializable context ) throws Exception {
+            return Integer.valueOf( 1 );
+        }
+
+        @Override
+        public boolean supportsReverse() {
+            return true;
+        }
+
+        @Override
+        public Class<?> getResultType() {
+            return Number.class;
+        }
+    }
+
 }

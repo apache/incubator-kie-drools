@@ -52,7 +52,7 @@ import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.QueryGenerator;
 import org.drools.modelcompiler.builder.generator.QueryParameter;
-import org.kie.internal.builder.KnowledgeBuilderConfiguration;
+import org.kie.api.runtime.rule.AccumulateFunction;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 
@@ -83,6 +83,7 @@ public class PackageModel {
     private DRLIdGenerator exprIdGenerator;
 
     private KnowledgeBuilderConfigurationImpl configuration;
+    private Map<String, AccumulateFunction> accumulateFunctions;
 
     public PackageModel(String name, KnowledgeBuilderConfigurationImpl configuration) {
         this.name = name;
@@ -178,6 +179,10 @@ public class PackageModel {
 
     public List<MethodDeclaration> getFunctions() {
         return functions;
+    }
+
+    public Map<String, AccumulateFunction> getAccumulateFunctions() {
+        return accumulateFunctions;
     }
 
     public String getRulesSource(PrettyPrinter prettyPrinter, String className, String modelName) {
@@ -358,5 +363,9 @@ public class PackageModel {
         System.out.println("=====");
         System.out.println(source);
         System.out.println("=====");
+    }
+
+    public void addAccumulateFunctions(Map<String, AccumulateFunction> accumulateFunctions) {
+        this.accumulateFunctions = accumulateFunctions;
     }
 }
