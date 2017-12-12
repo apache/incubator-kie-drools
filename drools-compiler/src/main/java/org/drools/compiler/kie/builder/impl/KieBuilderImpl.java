@@ -437,7 +437,7 @@ public class KieBuilderImpl
         if ( messages.filterMessages( Level.ERROR ).isEmpty() ) {
             if ( trgMfs != null ) {
                 new KieMetaInfoBuilder( kModule ).writeKieModuleMetaInfo( trgMfs );
-                kProject.writeProjectOutput( trgMfs );
+                kProject.writeProjectOutput(trgMfs, messages);
             }
             KieRepository kieRepository = KieServices.Factory.get().getRepository();
             kieRepository.addKieModule( kModule );
