@@ -332,7 +332,7 @@ public class AlphaNode extends ObjectSource
         }
     }
 
-    public BitMask calculateDeclaredMask(List<String> settableProperties) {
+    public BitMask calculateDeclaredMask(Class modifiedClass, List<String> settableProperties) {
         boolean typeBit = false;
         if (constraint instanceof EvaluatorConstraint && ((EvaluatorConstraint) constraint).isSelf()) {
             Operator op = ((EvaluatorConstraint) constraint).getEvaluator().getOperator();
@@ -340,7 +340,7 @@ public class AlphaNode extends ObjectSource
                 typeBit = true;
             }
         }
-        BitMask mask = constraint.getListenedPropertyMask(settableProperties);
+        BitMask mask = constraint.getListenedPropertyMask(modifiedClass, settableProperties);
         return typeBit ? mask.set(PropertySpecificUtil.TRAITABLE_BIT) : mask;
     }
 

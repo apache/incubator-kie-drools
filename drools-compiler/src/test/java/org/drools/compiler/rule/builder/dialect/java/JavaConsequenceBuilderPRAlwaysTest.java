@@ -15,6 +15,13 @@
 
 package org.drools.compiler.rule.builder.dialect.java;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import org.antlr.runtime.RecognitionException;
 import org.drools.compiler.Cheese;
 import org.drools.compiler.Person;
@@ -24,8 +31,6 @@ import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.BindingDescr;
-import org.drools.compiler.lang.descr.CompositePackageDescr;
-import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.compiler.rule.builder.PatternBuilder;
 import org.drools.compiler.rule.builder.RuleBuildContext;
@@ -38,26 +43,21 @@ import org.drools.core.reteoo.PropertySpecificUtil;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.ImportDeclaration;
 import org.drools.core.rule.Pattern;
-import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.CompiledInvoker;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.bitmask.BitMask;
-import org.drools.core.util.bitmask.LongBitMask;
 import org.junit.Test;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import static org.drools.compiler.rule.builder.dialect.DialectUtil.fixBlockDescr;
 import static org.drools.compiler.rule.builder.dialect.DialectUtil.setContainerBlockInputs;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
 
 public class JavaConsequenceBuilderPRAlwaysTest {
 
@@ -388,8 +388,8 @@ public class JavaConsequenceBuilderPRAlwaysTest {
         String fixed = fixBlockDescr( context, analysis, context.getDeclarationResolver().getDeclarations( context.getRule() ) );
 
         List<String> cheeseAccessibleProperties = ClassUtils.getAccessibleProperties(Cheese.class);
-        BitMask priceOldPrice = PropertySpecificUtil.calculatePositiveMask(Arrays.asList("price", "oldPrice"), cheeseAccessibleProperties);
-        BitMask price = PropertySpecificUtil.calculatePositiveMask(Arrays.asList("price"), cheeseAccessibleProperties);
+        BitMask priceOldPrice = PropertySpecificUtil.calculatePositiveMask(Cheese.class, Arrays.asList("price", "oldPrice"), cheeseAccessibleProperties);
+        BitMask price = PropertySpecificUtil.calculatePositiveMask(Cheese.class, Arrays.asList("price"), cheeseAccessibleProperties);
         
         String expected = 
                 "  System.out.println(\"this is a test\");\r\n" + 
@@ -476,7 +476,7 @@ public class JavaConsequenceBuilderPRAlwaysTest {
         String fixed = fixBlockDescr( context, analysis, context.getDeclarationResolver().getDeclarations( context.getRule() ) );
         
         List<String> cheeseAccessibleProperties = ClassUtils.getAccessibleProperties(Cheese.class);
-        BitMask priceOldPrice = PropertySpecificUtil.calculatePositiveMask(Arrays.asList("price", "oldPrice"), cheeseAccessibleProperties);
+        BitMask priceOldPrice = PropertySpecificUtil.calculatePositiveMask(Cheese.class, Arrays.asList("price", "oldPrice"), cheeseAccessibleProperties);
 
         String expected = 
                 " System.out.println(\"this is a test\");\r\n" + 
@@ -550,7 +550,7 @@ public class JavaConsequenceBuilderPRAlwaysTest {
         String fixed = fixBlockDescr( context, analysis, context.getDeclarationResolver().getDeclarations( context.getRule() ) );
         
         List<String> cheeseAccessibleProperties = ClassUtils.getAccessibleProperties(Cheese.class);
-        BitMask priceOldPrice = PropertySpecificUtil.calculatePositiveMask(Arrays.asList("price", "oldPrice"), cheeseAccessibleProperties);
+        BitMask priceOldPrice = PropertySpecificUtil.calculatePositiveMask(Cheese.class, Arrays.asList("price", "oldPrice"), cheeseAccessibleProperties);
         
         String expected = 
                 " System.out.println(\"this is a test\");\r\n" + 

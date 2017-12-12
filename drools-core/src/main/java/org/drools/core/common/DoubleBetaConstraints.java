@@ -157,9 +157,9 @@ public class DoubleBetaConstraints extends MultipleBetaConstraint {
         throw new UnsupportedOperationException();
     }
 
-    public BitMask getListenedPropertyMask(List<String> settableProperties) {
-        return constraints[0].getListenedPropertyMask(settableProperties)
-                             .setAll(constraints[1].getListenedPropertyMask(settableProperties));
+    public BitMask getListenedPropertyMask(Class modifiedClass, List<String> settableProperties) {
+        return constraints[0].getListenedPropertyMask(modifiedClass, settableProperties)
+                             .setAll(constraints[1].getListenedPropertyMask(modifiedClass, settableProperties));
     }
 
     public void registerEvaluationContext(BuildContext buildContext) {

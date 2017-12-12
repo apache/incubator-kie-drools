@@ -150,9 +150,9 @@ public class DoubleNonIndexSkipBetaConstraints
         return this.constraints.isAllowedCachedRight( context, tuple );
     }
 
-    public BitMask getListenedPropertyMask(List<String> settableProperties) {
-        return constraint0.getListenedPropertyMask(settableProperties)
-                             .setAll(constraint1.getListenedPropertyMask(settableProperties));
+    public BitMask getListenedPropertyMask(Class modifiedClass, List<String> settableProperties) {
+        return constraint0.getListenedPropertyMask(modifiedClass, settableProperties)
+                             .setAll(constraint1.getListenedPropertyMask(modifiedClass, settableProperties));
     }
 
     public boolean isLeftUpdateOptimizationAllowed() {
