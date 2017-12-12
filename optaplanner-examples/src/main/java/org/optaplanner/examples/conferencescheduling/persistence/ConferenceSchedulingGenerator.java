@@ -18,6 +18,7 @@ package org.optaplanner.examples.conferencescheduling.persistence;
 
 import java.io.File;
 import java.math.BigInteger;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -65,24 +66,24 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
                     "2024",
                     "2025");
 
-    private static final String TIMESLOT_LAB_TAG = "Lab";
+    private static final String LAB_TIMESLOT_TAG = "Lab";
+    private static final String LAB_ROOM_TAG = "Lab_room";
 
     private final LocalDate timeslotFirstDay = LocalDate.of(2018, 10, 1);
 
     private final List<Pair<LocalTime, LocalTime>> timeslotOptions = Arrays.asList(
 //        Pair.of(LocalTime.of(8, 30), LocalTime.of(9, 30)), // General session
+            Pair.of(LocalTime.of(10, 15), LocalTime.of(12, 15)), // Lab
         Pair.of(LocalTime.of(10, 15), LocalTime.of(11, 0)),
         Pair.of(LocalTime.of(11, 30), LocalTime.of(12, 15)),
+            Pair.of(LocalTime.of(13, 0), LocalTime.of(15, 0)), // Lab
 //        Pair.of(LocalTime.of(13, 45), LocalTime.of(15, 0)), // General session
         Pair.of(LocalTime.of(15, 30), LocalTime.of(16, 15)),
-        Pair.of(LocalTime.of(16, 30), LocalTime.of(17, 15)),
-        Pair.of(LocalTime.of(10, 15), LocalTime.of(12, 15)), // Lab
-        Pair.of(LocalTime.of(13, 0), LocalTime.of(15, 0)) // Lab
+        Pair.of(LocalTime.of(16, 30), LocalTime.of(17, 15))
     );
 
     private final List<Pair<String, Double>> roomTagProbabilityList = Arrays.asList(
             Pair.of("Large", 0.20),
-            Pair.of("Power outlets", 0.10),
             Pair.of("Recorded", 0.50)
     );
 
@@ -136,6 +137,8 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
 
     protected final SolutionFileIO<ConferenceSolution> solutionFileIO;
     protected final File outputDir;
+
+    protected int labTalkCount;
     protected Random random;
 
     public ConferenceSchedulingGenerator() {
@@ -144,8 +147,14 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
     }
 
     private void writeConferenceSolution(int dayListSize, int roomListSize) {
+        int labTimeslotCount = (int) timeslotOptions.stream()
+                .filter(pair -> Duration.between(pair.getLeft(), pair.getRight()).toMinutes() >= 120).count();
+        int labRoomCount = roomListSize / 5;
+        labTalkCount = (dayListSize * labTimeslotCount) * labRoomCount;
+
         int timeslotListSize = dayListSize * timeslotOptions.size();
-        int talkListSize = timeslotListSize * roomListSize;
+        int talkListSize = (dayListSize * (timeslotOptions.size() - labTimeslotCount)) * (roomListSize - labRoomCount)
+                + labTalkCount;
         int speakerListSize = talkListSize * 2 / 3;
 
         String fileName = talkListSize + "talks-" + timeslotListSize + "timeslots-" + roomListSize + "rooms";
@@ -192,13 +201,13 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
             timeslot.setStartDateTime(LocalDateTime.of(day, pair.getLeft()));
             timeslot.setEndDateTime(LocalDateTime.of(day, pair.getRight()));
             timeslotOptionsIndex++;
-            Set<String> timeslotTagSet = new LinkedHashSet<>(2);
+            Set<String> tagSet = new LinkedHashSet<>(2);
             if (timeslot.getDurationInMinutes() >= 120) {
-                timeslotTagSet.add(TIMESLOT_LAB_TAG);
+                tagSet.add(LAB_TIMESLOT_TAG);
             }
-            timeslot.setTimeslotTagSet(timeslotTagSet);
+            timeslot.setTagSet(tagSet);
             logger.trace("Created timeslot ({}) with tags ({}).",
-                    timeslot, timeslotTagSet);
+                    timeslot, tagSet);
             timeslotList.add(timeslot);
         }
         solution.setTimeslotList(timeslotList);
@@ -211,15 +220,18 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
             Room room = new Room();
             room.setId((long) i);
             room.setName("R " + ((i / roomsPerFloor * 100) + (i % roomsPerFloor) + 1));
-            Set<String> roomTagSet = new LinkedHashSet<>(roomTagProbabilityList.size());
+            Set<String> tagSet = new LinkedHashSet<>(roomTagProbabilityList.size());
+            if (i % 5 == 4) {
+                tagSet.add(LAB_ROOM_TAG);
+            }
             for (Pair<String, Double> roomTagProbability : roomTagProbabilityList) {
                 if (random.nextDouble() < roomTagProbability.getValue()) {
-                    roomTagSet.add(roomTagProbability.getKey());
+                    tagSet.add(roomTagProbability.getKey());
                 }
             }
-            room.setRoomTagSet(roomTagSet);
+            room.setTagSet(tagSet);
             logger.trace("Created room with name ({}) and tags ({}).",
-                    room.getName(), roomTagSet);
+                    room.getName(), tagSet);
             roomList.add(room);
         }
         solution.setRoomList(roomList);
@@ -232,13 +244,18 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
             Speaker speaker = new Speaker();
             speaker.setId((long) i);
             speaker.setName(speakerNameGenerator.generateNextValue());
-//            Set<String> speakerTagSet = new LinkedHashSet<>(speakerTagProbabilityList.size());
-//            for (Pair<String, Double> speakerTagProbability : speakerTagProbabilityList) {
-//                if (random.nextDouble() < speakerTagProbability.getValue()) {
-//                    speakerTagSet.add(speakerTagProbability.getKey());
-//                }
-//            }
-//            speaker.setSpeakerTagSet(speakerTagSet);
+            Set<String> requiredTimeslotTagSet = new LinkedHashSet<>();
+
+            speaker.setRequiredTimeslotTagSet(requiredTimeslotTagSet);
+            Set<String> preferredTimeslotTagSet = new LinkedHashSet<>();
+
+            speaker.setPreferredTimeslotTagSet(preferredTimeslotTagSet);
+            Set<String> requiredRoomTagSet = new LinkedHashSet<>();
+
+            speaker.setRequiredRoomTagSet(requiredRoomTagSet);
+            Set<String> preferredRoomTagSet = new LinkedHashSet<>();
+
+            speaker.setPreferredRoomTagSet(preferredRoomTagSet);
             logger.trace("Created speaker with name ({}).",
                     speaker.getName());
             speakerList.add(speaker);
@@ -265,8 +282,28 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
                 speakerListIndex = (speakerListIndex + 1) % solution.getSpeakerList().size();
             }
             talk.setSpeakerList(speakerList);
-            logger.trace("Created talk with title ({}).",
-                    talk.getTitle());
+            Set<String> requiredTimeslotTagSet = new LinkedHashSet<>();
+            if (i < labTalkCount) {
+                requiredTimeslotTagSet.add(LAB_TIMESLOT_TAG);
+            }
+            talk.setRequiredTimeslotTagSet(requiredTimeslotTagSet);
+            Set<String> preferredTimeslotTagSet = new LinkedHashSet<>();
+
+
+            talk.setPreferredTimeslotTagSet(preferredTimeslotTagSet);
+            Set<String> requiredRoomTagSet = new LinkedHashSet<>();
+            if (i < labTalkCount) {
+                requiredRoomTagSet.add(LAB_ROOM_TAG);
+            }
+
+
+            talk.setRequiredRoomTagSet(requiredRoomTagSet);
+            Set<String> preferredRoomTagSet = new LinkedHashSet<>();
+
+
+            talk.setPreferredRoomTagSet(preferredRoomTagSet);
+            logger.trace("Created talk with code ({}), title ({}) and speakers ({}).",
+                    talk.getCode(), talk.getTitle(), speakerList);
             talkList.add(talk);
         }
         solution.setTalkList(talkList);

@@ -53,6 +53,34 @@ rule "Speaker conflict"
         scoreHolder.addHardConstraintMatch(kcontext, -1);
 end
 
+rule "Talk required timeslot tags"
+    when
+        Talk($count : missingRequiredTimeslotTagCount() > 0)
+    then
+        scoreHolder.addHardConstraintMatch(kcontext, - $count);
+end
+
+rule "Talk required room tags"
+    when
+        Talk($count : missingRequiredRoomTagCount() > 0)
+    then
+        scoreHolder.addHardConstraintMatch(kcontext, - $count);
+end
+
 // ############################################################################
 // Soft constraints
 // ############################################################################
+
+rule "Talk preferred timeslot tags"
+    when
+        Talk($count : missingPreferredTimeslotTagCount() > 0)
+    then
+        scoreHolder.addSoftConstraintMatch(kcontext, - $count);
+end
+
+rule "Talk preferred room tags"
+    when
+        Talk($count : missingPreferredRoomTagCount() > 0)
+    then
+        scoreHolder.addSoftConstraintMatch(kcontext, - $count);
+end

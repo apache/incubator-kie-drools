@@ -26,6 +26,8 @@ public class Speaker extends AbstractPersistable {
 
     private String name;
 
+    private Set<String> requiredTimeslotTagSet;
+    private Set<String> preferredTimeslotTagSet;
     private Set<String> requiredRoomTagSet;
     private Set<String> preferredRoomTagSet;
 
@@ -44,6 +46,22 @@ public class Speaker extends AbstractPersistable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Set<String> getRequiredTimeslotTagSet() {
+        return requiredTimeslotTagSet;
+    }
+
+    public void setRequiredTimeslotTagSet(Set<String> requiredTimeslotTagSet) {
+        this.requiredTimeslotTagSet = requiredTimeslotTagSet;
+    }
+
+    public Set<String> getPreferredTimeslotTagSet() {
+        return preferredTimeslotTagSet;
+    }
+
+    public void setPreferredTimeslotTagSet(Set<String> preferredTimeslotTagSet) {
+        this.preferredTimeslotTagSet = preferredTimeslotTagSet;
     }
 
     public Set<String> getRequiredRoomTagSet() {

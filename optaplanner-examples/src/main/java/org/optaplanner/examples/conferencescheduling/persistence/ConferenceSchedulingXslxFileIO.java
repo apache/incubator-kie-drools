@@ -29,10 +29,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -78,10 +81,15 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
 
     private static class ConferenceSchedulingXslxReader {
 
+        protected final Pattern VALID_TAG_PATTERN = Pattern.compile("(?U)^[\\w\\d _\\-\\.\\(\\)]+$");
+        protected final Pattern VALID_CODE_PATTERN = Pattern.compile("(?U)^[\\w\\d_\\-\\.\\(\\)]+$");
+
         protected final Workbook workbook;
 
         protected ConferenceSolution solution;
         private Map<String, Pair<Timeslot, Room>> talkCodeToTimeslotRoomMap;
+        private Set<String> totalTimeslotTagSet;
+        private Set<String> totalRoomTagSet;
 
         protected Sheet currentSheet;
         protected Row currentRow;
@@ -95,6 +103,8 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
         public ConferenceSolution read() {
             solution = new ConferenceSolution();
             talkCodeToTimeslotRoomMap = new HashMap<>();
+            totalTimeslotTagSet = new HashSet<>();
+            totalRoomTagSet = new HashSet<>();
             readTimeslotList();
             readRoomList();
             readSpeakerList();
@@ -124,7 +134,16 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 }
                 timeslot.setStartDateTime(LocalDateTime.of(day, startTime));
                 timeslot.setEndDateTime(LocalDateTime.of(day, endTime));
-                timeslot.setTimeslotTagSet(new LinkedHashSet<>(Arrays.asList(nextCell().getStringCellValue().split(", "))));
+                timeslot.setTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
+                        .filter(tag -> !tag.isEmpty()).collect(Collectors.toCollection(LinkedHashSet::new)));
+                for (String tag : timeslot.getTagSet()) {
+                    if (!VALID_TAG_PATTERN.matcher(tag).matches()) {
+                        throw new IllegalStateException(currentPosition()
+                                + ": The timeslot (" + timeslot + ")'s tag (" + tag
+                                + ") must match to the regular expression (" + VALID_TAG_PATTERN + ").");
+                    }
+                }
+                totalTimeslotTagSet.addAll(timeslot.getTagSet());
                 timeslotList.add(timeslot);
             }
             solution.setTimeslotList(timeslotList);
@@ -147,10 +166,19 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 Room room = new Room();
                 room.setId(id++);
                 room.setName(nextCell().getStringCellValue());
-                room.setRoomTagSet(new LinkedHashSet<>(Arrays.asList(nextCell().getStringCellValue().split(", "))));
+                room.setTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
+                        .filter(tag -> !tag.isEmpty()).collect(Collectors.toCollection(LinkedHashSet::new)));
+                for (String tag : room.getTagSet()) {
+                    if (!VALID_TAG_PATTERN.matcher(tag).matches()) {
+                        throw new IllegalStateException(currentPosition() + ": The room (" + room + ")'s tag (" + tag
+                                + ") must match to the regular expression (" + VALID_TAG_PATTERN + ").");
+                    }
+                }
+                totalRoomTagSet.addAll(room.getTagSet());
                 roomList.add(room);
                 for (Timeslot timeslot : solution.getTimeslotList()) {
-                    String[] talkCodes = nextCell().getStringCellValue().split(", ");
+                    String[] talkCodes = Arrays.stream(nextCell().getStringCellValue().split(", "))
+                            .filter(code -> !code.isEmpty()).toArray(String[]::new);
                     Pair<Timeslot, Room> pair = Pair.of(timeslot, room);
                     for (String talkCode : talkCodes) {
                         talkCodeToTimeslotRoomMap.put(talkCode, pair);
@@ -164,9 +192,17 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             nextSheet("Speakers");
             nextRow();
             readHeaderCell("");
+            readHeaderCell("");
+            readHeaderCell("");
+            readHeaderCell("");
+            readHeaderCell("");
             readTimeslotDaysHeaders();
             nextRow();
             readHeaderCell("Name");
+            readHeaderCell("Required timeslot tags");
+            readHeaderCell("Preferred timeslot tags");
+            readHeaderCell("Required room tags");
+            readHeaderCell("Preferred room tags");
             readTimeslotHoursHeaders();
             List<Speaker> roomList = new ArrayList<>(currentSheet.getLastRowNum() - 1);
             long id = 0L;
@@ -175,6 +211,18 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 Speaker speaker = new Speaker();
                 speaker.setId(id++);
                 speaker.setName(nextCell().getStringCellValue());
+                speaker.setRequiredTimeslotTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
+                        .filter(tag -> !tag.isEmpty()).collect(Collectors.toCollection(LinkedHashSet::new)));
+                verifyTimeslotTags(speaker.getRequiredTimeslotTagSet());
+                speaker.setPreferredTimeslotTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
+                        .filter(tag -> !tag.isEmpty()).collect(Collectors.toCollection(LinkedHashSet::new)));
+                verifyTimeslotTags(speaker.getPreferredTimeslotTagSet());
+                speaker.setRequiredRoomTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
+                        .filter(tag -> !tag.isEmpty()).collect(Collectors.toCollection(LinkedHashSet::new)));
+                verifyRoomTags(speaker.getRequiredRoomTagSet());
+                speaker.setPreferredRoomTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
+                        .filter(tag -> !tag.isEmpty()).collect(Collectors.toCollection(LinkedHashSet::new)));
+                verifyRoomTags(speaker.getPreferredRoomTagSet());
                 roomList.add(speaker);
             }
             solution.setSpeakerList(roomList);
@@ -187,6 +235,11 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             nextRow();
             readHeaderCell("Code");
             readHeaderCell("Title");
+            readHeaderCell("Speakers");
+            readHeaderCell("Required timeslot tags");
+            readHeaderCell("Preferred timeslot tags");
+            readHeaderCell("Required room tags");
+            readHeaderCell("Preferred room tags");
             List<Talk> talkList = new ArrayList<>(currentSheet.getLastRowNum() - 1);
             long id = 0L;
             while (hasNextRow()) {
@@ -194,12 +247,13 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 Talk talk = new Talk();
                 talk.setId(id++);
                 talk.setCode(nextCell().getStringCellValue());
-                if (talk.getCode().contains(",")) {
+                if (!VALID_CODE_PATTERN.matcher(talk.getCode()).matches()) {
                     throw new IllegalStateException(currentPosition() + ": The talk's code (" + talk.getCode()
-                            + ") must not contain a comma (,).");
+                            + ") must match to the regular expression (" + VALID_CODE_PATTERN + ").");
                 }
                 talk.setTitle(nextCell().getStringCellValue());
-                talk.setSpeakerList(Arrays.stream(nextCell().getStringCellValue().split(", ")).map(speakerName -> {
+                talk.setSpeakerList(Arrays.stream(nextCell().getStringCellValue().split(", "))
+                        .filter(tag -> !tag.isEmpty()).map(speakerName -> {
                     Speaker speaker = speakerMap.get(speakerName);
                     if (speaker == null) {
                         throw new IllegalStateException(currentPosition() + ": The talk with code (" + talk.getCode()
@@ -207,6 +261,19 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                     }
                     return speaker;
                 }).collect(Collectors.toList()));
+                talk.setRequiredTimeslotTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
+                        .filter(tag -> !tag.isEmpty()).collect(Collectors.toCollection(LinkedHashSet::new)));
+                verifyTimeslotTags(talk.getRequiredTimeslotTagSet());
+                talk.setPreferredTimeslotTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
+                        .filter(tag -> !tag.isEmpty()).collect(Collectors.toCollection(LinkedHashSet::new)));
+                verifyTimeslotTags(talk.getPreferredTimeslotTagSet());
+                talk.setRequiredRoomTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
+                        .filter(tag -> !tag.isEmpty()).collect(Collectors.toCollection(LinkedHashSet::new)));
+                verifyRoomTags(talk.getRequiredRoomTagSet());
+                talk.setPreferredRoomTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
+                        .filter(tag -> !tag.isEmpty()).collect(Collectors.toCollection(LinkedHashSet::new)));
+                verifyRoomTags(talk.getPreferredRoomTagSet());
+
                 Pair<Timeslot, Room> pair = talkCodeToTimeslotRoomMap.get(talk.getCode());
                 if (pair != null) {
                     talk.setTimeslot(pair.getLeft());
@@ -215,6 +282,25 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 talkList.add(talk);
             }
             solution.setTalkList(talkList);
+        }
+
+        private void verifyTimeslotTags(Set<String> timeslotTagSet) {
+            for (String tag : timeslotTagSet) {
+                if (!totalTimeslotTagSet.contains(tag)) {
+                    throw new IllegalStateException(currentPosition() + ": The timeslot tag (" + tag
+                            + ") does not exist in the tags (" + totalTimeslotTagSet
+                            + ") of the other sheet (Timeslots).");
+                }
+            }
+        }
+
+        private void verifyRoomTags(Set<String> roomTagSet) {
+            for (String tag : roomTagSet) {
+                if (!totalRoomTagSet.contains(tag)) {
+                    throw new IllegalStateException(currentPosition() + ": The room tag (" + tag
+                            + ") does not exist in the tags (" + totalRoomTagSet + ") of the other sheet (Rooms).");
+                }
+            }
         }
 
         private void readTimeslotDaysHeaders() {
@@ -338,7 +424,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 nextCell().setCellValue(DAY_FORMATTER.format(timeslot.getDate()));
                 nextCell().setCellValue(TIME_FORMATTER.format(timeslot.getStartDateTime()));
                 nextCell().setCellValue(TIME_FORMATTER.format(timeslot.getEndDateTime()));
-                nextCell().setCellValue(String.join(", ", timeslot.getTimeslotTagSet()));
+                nextCell().setCellValue(String.join(", ", timeslot.getTagSet()));
             }
             autoSizeColumnsWithHeader();
         }
@@ -356,7 +442,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             for (Room room : solution.getRoomList()) {
                 nextRow();
                 nextCell().setCellValue(room.getName());
-                nextCell().setCellValue(String.join(", ", room.getRoomTagSet()));
+                nextCell().setCellValue(String.join(", ", room.getTagSet()));
                 for (Timeslot timeslot : solution.getTimeslotList()) {
                     List<Talk> talkList = timeslotRoomToTalkMap.get(Pair.of(timeslot, room));
                     nextCell().setCellValue(talkList == null ? ""
@@ -370,13 +456,25 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             nextSheet("Speakers", 1, 2);
             nextRow();
             addHeaderCell("");
+            addHeaderCell("");
+            addHeaderCell("");
+            addHeaderCell("");
+            addHeaderCell("");
             writeTimeslotDaysHeaders();
             nextRow();
             addHeaderCell("Name");
+            addHeaderCell("Required timeslot tags");
+            addHeaderCell("Preferred timeslot tags");
+            addHeaderCell("Required room tags");
+            addHeaderCell("Preferred room tags");
             writeTimeslotHoursHeaders();
             for (Speaker speaker : solution.getSpeakerList()) {
                 nextRow();
                 nextCell().setCellValue(speaker.getName());
+                nextCell().setCellValue(String.join(", ", speaker.getRequiredTimeslotTagSet()));
+                nextCell().setCellValue(String.join(", ", speaker.getPreferredTimeslotTagSet()));
+                nextCell().setCellValue(String.join(", ", speaker.getRequiredRoomTagSet()));
+                nextCell().setCellValue(String.join(", ", speaker.getPreferredRoomTagSet()));
             }
             autoSizeColumnsWithHeader();
         }
@@ -387,12 +485,20 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             addHeaderCell("Code");
             addHeaderCell("Title");
             addHeaderCell("Speakers");
+            addHeaderCell("Required timeslot tags");
+            addHeaderCell("Preferred timeslot tags");
+            addHeaderCell("Required room tags");
+            addHeaderCell("Preferred room tags");
             for (Talk talk : solution.getTalkList()) {
                 nextRow();
                 nextCell().setCellValue(talk.getCode());
                 nextCell().setCellValue(talk.getTitle());
                 nextCell().setCellValue(talk.getSpeakerList()
                         .stream().map(Speaker::getName).collect(Collectors.joining(", ")));
+                nextCell().setCellValue(String.join(", ", talk.getRequiredTimeslotTagSet()));
+                nextCell().setCellValue(String.join(", ", talk.getPreferredTimeslotTagSet()));
+                nextCell().setCellValue(String.join(", ", talk.getRequiredRoomTagSet()));
+                nextCell().setCellValue(String.join(", ", talk.getPreferredRoomTagSet()));
             }
             autoSizeColumnsWithHeader();
         }

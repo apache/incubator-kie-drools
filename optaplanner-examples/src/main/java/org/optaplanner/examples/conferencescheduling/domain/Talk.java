@@ -17,6 +17,7 @@
 package org.optaplanner.examples.conferencescheduling.domain;
 
 import java.util.List;
+import java.util.Set;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
@@ -29,6 +30,10 @@ public class Talk extends AbstractPersistable {
     private String code;
     private String title;
     private List<Speaker> speakerList;
+    private Set<String> requiredTimeslotTagSet;
+    private Set<String> preferredTimeslotTagSet;
+    private Set<String> requiredRoomTagSet;
+    private Set<String> preferredRoomTagSet;
 
     private boolean lockedByUser = false;
 
@@ -40,6 +45,58 @@ public class Talk extends AbstractPersistable {
 
     public boolean hasSpeaker(Speaker speaker) {
         return speakerList.contains(speaker);
+    }
+
+    public int missingRequiredTimeslotTagCount() {
+        if (timeslot == null) {
+            return 0;
+        }
+        int count = 0;
+        for (String tag : requiredTimeslotTagSet) {
+            if (!timeslot.hasTag(tag)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public int missingPreferredTimeslotTagCount() {
+        if (timeslot == null) {
+            return 0;
+        }
+        int count = 0;
+        for (String tag : preferredTimeslotTagSet) {
+            if (!timeslot.hasTag(tag)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public int missingRequiredRoomTagCount() {
+        if (room == null) {
+            return 0;
+        }
+        int count = 0;
+        for (String tag : requiredRoomTagSet) {
+            if (!room.hasTag(tag)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public int missingPreferredRoomTagCount() {
+        if (room == null) {
+            return 0;
+        }
+        int count = 0;
+        for (String tag : preferredRoomTagSet) {
+            if (!room.hasTag(tag)) {
+                count++;
+            }
+        }
+        return count;
     }
 
     @Override
@@ -73,6 +130,38 @@ public class Talk extends AbstractPersistable {
 
     public void setSpeakerList(List<Speaker> speakerList) {
         this.speakerList = speakerList;
+    }
+
+    public Set<String> getRequiredTimeslotTagSet() {
+        return requiredTimeslotTagSet;
+    }
+
+    public void setRequiredTimeslotTagSet(Set<String> requiredTimeslotTagSet) {
+        this.requiredTimeslotTagSet = requiredTimeslotTagSet;
+    }
+
+    public Set<String> getPreferredTimeslotTagSet() {
+        return preferredTimeslotTagSet;
+    }
+
+    public void setPreferredTimeslotTagSet(Set<String> preferredTimeslotTagSet) {
+        this.preferredTimeslotTagSet = preferredTimeslotTagSet;
+    }
+
+    public Set<String> getRequiredRoomTagSet() {
+        return requiredRoomTagSet;
+    }
+
+    public void setRequiredRoomTagSet(Set<String> requiredRoomTagSet) {
+        this.requiredRoomTagSet = requiredRoomTagSet;
+    }
+
+    public Set<String> getPreferredRoomTagSet() {
+        return preferredRoomTagSet;
+    }
+
+    public void setPreferredRoomTagSet(Set<String> preferredRoomTagSet) {
+        this.preferredRoomTagSet = preferredRoomTagSet;
     }
 
     public boolean isLockedByUser() {

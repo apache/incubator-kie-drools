@@ -28,7 +28,7 @@ public class Timeslot extends AbstractPersistable {
     private LocalDateTime startDateTime;
     private LocalDateTime endDateTime;
 
-    private Set<String> timeslotTagSet;
+    private Set<String> tagSet;
 
     public LocalDate getDate() {
         return startDateTime.toLocalDate();
@@ -44,6 +44,10 @@ public class Timeslot extends AbstractPersistable {
         }
         return startDateTime.compareTo(other.endDateTime) < 0
                 && other.startDateTime.compareTo(endDateTime) < 0;
+    }
+
+    public boolean hasTag(String tag) {
+        return tagSet.contains(tag);
     }
 
     @Override
@@ -71,12 +75,12 @@ public class Timeslot extends AbstractPersistable {
         this.endDateTime = endDateTime;
     }
 
-    public Set<String> getTimeslotTagSet() {
-        return timeslotTagSet;
+    public Set<String> getTagSet() {
+        return tagSet;
     }
 
-    public void setTimeslotTagSet(Set<String> timeslotTagSet) {
-        this.timeslotTagSet = timeslotTagSet;
+    public void setTagSet(Set<String> tagSet) {
+        this.tagSet = tagSet;
     }
 
 }

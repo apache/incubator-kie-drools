@@ -24,7 +24,11 @@ public class Room extends AbstractPersistable {
 
     private String name;
 
-    private Set<String> roomTagSet;
+    private Set<String> tagSet;
+
+    public boolean hasTag(String tag) {
+        return tagSet.contains(tag);
+    }
 
     @Override
     public String toString() {
@@ -43,12 +47,12 @@ public class Room extends AbstractPersistable {
         this.name = name;
     }
 
-    public Set<String> getRoomTagSet() {
-        return roomTagSet;
+    public Set<String> getTagSet() {
+        return tagSet;
     }
 
-    public void setRoomTagSet(Set<String> roomTagSet) {
-        this.roomTagSet = roomTagSet;
+    public void setTagSet(Set<String> tagSet) {
+        this.tagSet = tagSet;
     }
 
 }
