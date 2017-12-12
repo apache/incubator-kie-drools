@@ -137,7 +137,7 @@ public class LambdaConsequence implements Consequence {
             Class modifiedClass = object.getClass();
             TypeDeclaration typeDeclaration = workingMemory.getKnowledgeBase().getOrCreateExactTypeDeclaration( modifiedClass );
             org.drools.core.util.bitmask.BitMask mask = typeDeclaration.isPropertyReactive() ?
-                    calculatePositiveMask(asList(modifiedProperties), typeDeclaration.getAccessibleProperties() ) :
+                    calculatePositiveMask(modifiedClass, asList(modifiedProperties), typeDeclaration.getAccessibleProperties() ) :
                     org.drools.core.util.bitmask.AllSetBitMask.get();
 
             knowledgeHelper.update( fhLookup.get(object), mask, modifiedClass);

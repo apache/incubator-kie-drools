@@ -69,9 +69,9 @@ public class LambdaConstraint extends MutableTypeConstraint implements Indexable
     }
 
     @Override
-    public BitMask getListenedPropertyMask( List<String> settableProperties ) {
+    public BitMask getListenedPropertyMask( Class modifiedClass, List<String> settableProperties ) {
         if (evaluator.getReactiveProps() == null) {
-            return super.getListenedPropertyMask( settableProperties );
+            return super.getListenedPropertyMask( modifiedClass, settableProperties );
         }
         BitMask mask = getEmptyPropertyReactiveMask(settableProperties.size());
         for (String prop : evaluator.getReactiveProps()) {
