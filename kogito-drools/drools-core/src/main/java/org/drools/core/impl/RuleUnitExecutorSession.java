@@ -39,6 +39,8 @@ import org.drools.core.ruleunit.RuleUnitsNodeMemories;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.FactHandleFactory;
 import org.kie.api.KieBase;
+import org.kie.api.KieServices;
+import org.kie.api.logger.KieRuntimeLogger;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.Globals;
 import org.kie.api.runtime.rule.DataSource;
@@ -116,6 +118,42 @@ public class RuleUnitExecutorSession implements InternalRuleUnitExecutor {
         }
         getRuleUnitFactory().bindVariable( name, dataSource );
         return dataSource;
+    }
+
+    @Override
+    public KieRuntimeLogger addConsoleLogger() {
+        if (this.session != null) {
+            return KieServices.Factory.get().getLoggers().newConsoleLogger(session);
+        } else {
+            throw new IllegalStateException("Cannot add logger to the rule unit when the session is not available");
+        }
+    }
+
+    @Override
+    public KieRuntimeLogger addFileLogger(String fileName) {
+        if (this.session != null) {
+            return KieServices.Factory.get().getLoggers().newFileLogger(session, fileName);
+        } else {
+            throw new IllegalStateException("Cannot add logger to the rule unit when the session is not available");
+        }
+    }
+
+    @Override
+    public KieRuntimeLogger addFileLogger(String fileName, int maxEventsInMemory) {
+        if (this.session != null) {
+            return KieServices.Factory.get().getLoggers().newFileLogger(session, fileName, maxEventsInMemory);
+        } else {
+            throw new IllegalStateException("Cannot add logger to the rule unit when the session is not available");
+        }
+    }
+
+    @Override
+    public KieRuntimeLogger addThreadedFileLogger(String fileName, int interval) {
+        if (this.session != null) {
+            return KieServices.Factory.get().getLoggers().newThreadedFileLogger(session, fileName, interval);
+        } else {
+            throw new IllegalStateException("Cannot add logger to the rule unit when the session is not available");
+        }
     }
 
     public int run( Class<? extends RuleUnit> ruleUnitClass ) {
