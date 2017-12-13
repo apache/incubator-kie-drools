@@ -23,7 +23,7 @@ public interface Block4<A, B, C, D> extends Serializable {
         }
 
         @Override
-        protected Object getLambda() {
+        public Object getLambda() {
             return block;
         }
     }

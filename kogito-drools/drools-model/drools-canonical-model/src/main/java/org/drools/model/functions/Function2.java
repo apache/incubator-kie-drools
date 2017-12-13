@@ -19,7 +19,7 @@ public interface Function2<A, B, R> extends Serializable {
         }
 
         @Override
-        protected Object getLambda() {
+        public Object getLambda() {
             return function;
         }
     }
