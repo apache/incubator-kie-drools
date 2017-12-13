@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -76,7 +77,9 @@ public abstract class ParserTest {
 
         for (File file : files) {
             set.add(new Object[] { file, KieBaseTestConfiguration.CLOUD_EQUALITY });
-            set.add(new Object[] { file, KieBaseTestConfiguration.CLOUD_EQUALITY_CANONICAL_MODEL });
+            if (TestParametersUtil.TEST_CANONICAL_MODEL) {
+                set.add(new Object[]{file, KieBaseTestConfiguration.CLOUD_EQUALITY_CANONICAL_MODEL});
+            }
         }
 
         return set;
