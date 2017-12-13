@@ -19,12 +19,12 @@ package org.drools.model.functions;
 public abstract class IntrospectableLambda {
     private String lambdaFingerprint;
 
-    protected abstract Object getLambda();
+    public abstract Object getLambda();
 
     @Override
     public String toString() {
         if(lambdaFingerprint == null) {
-            lambdaFingerprint = LambdaIntrospector.getLambdaFingerprint(getLambda());
+            lambdaFingerprint = LambdaPrinter.print(getLambda());
         }
         return lambdaFingerprint;
     }
