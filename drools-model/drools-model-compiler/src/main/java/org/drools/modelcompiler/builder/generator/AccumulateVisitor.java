@@ -8,6 +8,7 @@ import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.rule.builder.util.AccumulateUtil;
 import org.drools.drlx.DrlxParser;
 import org.drools.javaparser.ast.Node;
+import org.drools.javaparser.ast.expr.BinaryExpr;
 import org.drools.javaparser.ast.expr.ClassExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
@@ -66,7 +67,13 @@ public class AccumulateVisitor {
         final Expression expr = DrlxParser.parseExpression(expression).getExpr();
         final String bindingId = Optional.ofNullable(function.getBind()).orElse(context.getExprId(Number.class, function.getFunction()));
 
-        if (expr instanceof MethodCallExpr) {
+        if(expr instanceof BinaryExpr) {
+
+            final ModelGenerator.DrlxParseResult drlxParseResult = ModelGenerator.drlxParse(context, packageModel, null, bindingId, expression);
+
+            System.out.println("drlxParseResult = " + drlxParseResult);
+
+        } else if (expr instanceof MethodCallExpr) {
 
             final DrlxParseUtil.RemoveRootNodeResult methodCallWithoutRootNode = DrlxParseUtil.removeRootNode(expr);
 
@@ -107,6 +114,8 @@ public class AccumulateVisitor {
 
             final Class accumulateFunctionResultType = accumulateFunction.getResultType();
             context.addDeclaration(new DeclarationSpec(bindingId, accumulateFunctionResultType));
+        } else {
+            throw new UnsupportedOperationException("Unsupported expression " + expr);
         }
 
         final MethodCallExpr asDSL = new MethodCallExpr(functionDSL, "as");
