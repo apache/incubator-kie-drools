@@ -17,6 +17,7 @@
 package org.drools.modelcompiler.builder;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -109,16 +110,19 @@ public class JavaParserCompiler {
             final String folderName = pkgName.replace( '.', '/' );
             final ClassOrInterfaceDeclaration generatedClass = generatedPojo.getGeneratedClass();
             final String varsSourceName = String.format("src/main/java/%s/%s.java", folderName, generatedClass.getName());
-            srcMfs.write( varsSourceName, toPojoSource(pkgName, generatedClass).getBytes() );
+            srcMfs.write(varsSourceName, toPojoSource(pkgName, generatedPojo.getImports(), generatedClass).getBytes());
             sources.add( varsSourceName );
         }
 
         return sources.toArray( new String[sources.size()] );
     }
 
-    private static String toPojoSource(String pkgName, ClassOrInterfaceDeclaration pojo) {
+    public static String toPojoSource(String pkgName, Collection<String> imports, ClassOrInterfaceDeclaration pojo) {
         CompilationUnit cu = new CompilationUnit();
         cu.setPackageDeclaration( pkgName );
+        for (String i : imports) {
+            cu.addImport(i);
+        }
         cu.addType(pojo);
         return getPrettyPrinter().print(cu);
     }
