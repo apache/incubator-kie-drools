@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.model.functions;
+package org.drools.modelcompiler.util;
 
 import java.io.InputStream;
 import java.io.Serializable;
@@ -24,13 +24,15 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassVisitor;
-import org.objectweb.asm.Label;
-import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Opcodes;
+import org.drools.model.functions.IntrospectableLambda;
+import org.drools.model.functions.LambdaPrinter;
+import org.mvel2.asm.ClassReader;
+import org.mvel2.asm.ClassVisitor;
+import org.mvel2.asm.Label;
+import org.mvel2.asm.MethodVisitor;
+import org.mvel2.asm.Opcodes;
 
-public class LambdaIntrospector {
+public class LambdaIntrospector implements LambdaPrinter {
 
     private static final int CACHE_SIZE = 32;
 
@@ -41,8 +43,9 @@ public class LambdaIntrospector {
         }
     };
 
-    public static String getLambdaFingerprint(Object lambda) {
-        if (lambda instanceof IntrospectableLambda) {
+    @Override
+    public String getLambdaFingerprint(Object lambda) {
+        if (lambda instanceof IntrospectableLambda ) {
             lambda = (( IntrospectableLambda ) lambda).getLambda();
         }
         SerializedLambda extracted = extractLambda( (Serializable) lambda );
@@ -58,7 +61,7 @@ public class LambdaIntrospector {
         return result;
     }
 
-    public static SerializedLambda extractLambda(Serializable lambda) {
+    private static SerializedLambda extractLambda( Serializable lambda ) {
         try {
             Method method = lambda.getClass().getDeclaredMethod( "writeReplace" );
             method.setAccessible( true );
@@ -111,13 +114,10 @@ public class LambdaIntrospector {
 
     private static class LambdaClassVisitor extends ClassVisitor {
 
-        private final Object lambda;
+        private final Map<String, String> methodsMap = new HashMap<>();
 
-        private final Map<String, String> methodsMap = new HashMap<String, String>();
-
-        public LambdaClassVisitor( Object lambda ) {
+        LambdaClassVisitor( Object lambda ) {
             super( Opcodes.ASM5 );
-            this.lambda = lambda;
         }
 
         @Override
@@ -125,22 +125,22 @@ public class LambdaIntrospector {
             return name.startsWith( "lambda$" ) ? new LambdaIntrospector.LambdaMethodVisitor(this, name) : super.visitMethod(access, name, desc, signature, exceptions);
         }
 
-        public void setMethodFingerprint( String methodname, String methodFingerprint ) {
+        void setMethodFingerprint( String methodname, String methodFingerprint ) {
             methodsMap.put( methodname, methodFingerprint );
         }
 
-        public Map<String, String> getMethodsMap() {
+        Map<String, String> getMethodsMap() {
             return methodsMap;
         }
     }
 
-    public static class LambdaMethodVisitor extends MethodVisitor {
+    private static class LambdaMethodVisitor extends MethodVisitor {
 
         private final LambdaIntrospector.LambdaClassVisitor lambdaClassVisitor;
         private final String methodName;
         private final StringBuilder sb = new StringBuilder();
 
-        public LambdaMethodVisitor( LambdaIntrospector.LambdaClassVisitor lambdaClassVisitor, String methodName) {
+        LambdaMethodVisitor( LambdaIntrospector.LambdaClassVisitor lambdaClassVisitor, String methodName ) {
             super(Opcodes.ASM5);
             this.lambdaClassVisitor = lambdaClassVisitor;
             this.methodName = methodName;

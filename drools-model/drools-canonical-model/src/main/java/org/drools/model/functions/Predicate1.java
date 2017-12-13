@@ -19,7 +19,7 @@ public interface Predicate1<A> extends Serializable {
         }
 
         @Override
-        protected Object getLambda() {
+        public Object getLambda() {
             return predicate;
         }
     }
