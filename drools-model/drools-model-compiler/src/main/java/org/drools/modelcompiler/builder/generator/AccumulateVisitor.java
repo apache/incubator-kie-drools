@@ -71,7 +71,10 @@ public class AccumulateVisitor {
 
             final ModelGenerator.DrlxParseResult drlxParseResult = ModelGenerator.drlxParse(context, packageModel, null, bindingId, expression);
 
+            final AccumulateFunction accumulateFunction = getAccumulateFunction(function, drlxParseResult.exprType);
             System.out.println("drlxParseResult = " + drlxParseResult);
+
+
 
         } else if (expr instanceof MethodCallExpr) {
 
@@ -82,14 +85,7 @@ public class AccumulateVisitor {
             final TypedExpression typedExpression = parseMethodCallType(context, rootNodeName, methodCallWithoutRootNode.withoutRootNode);
             final Class<?> methodCallExprType = typedExpression.getType();
 
-            final String accumulateFunctionName = AccumulateUtil.getFunctionName(() -> methodCallExprType, function.getFunction());
-            final Optional<AccumulateFunction> bundledAccumulateFunction = Optional.ofNullable(packageModel.getConfiguration().getAccumulateFunction(accumulateFunctionName));
-            final Optional<AccumulateFunction> importedAccumulateFunction = Optional.ofNullable(packageModel.getAccumulateFunctions().get(accumulateFunctionName));
-
-            final AccumulateFunction accumulateFunction = bundledAccumulateFunction
-                    .map(Optional::of)
-                    .orElse(importedAccumulateFunction)
-                    .orElseThrow(RuntimeException::new);
+            final AccumulateFunction accumulateFunction = getAccumulateFunction(function, methodCallExprType);
 
             final Class accumulateFunctionResultType = accumulateFunction.getResultType();
             functionDSL.addArgument(new ClassExpr(toType(accumulateFunction.getClass())));
@@ -107,8 +103,7 @@ public class AccumulateVisitor {
                     .getDeclarationById(expr.toString())
                     .orElseThrow(RuntimeException::new)
                     .declarationClass;
-            final String accumulateFunctionName = AccumulateUtil.getFunctionName(() -> declarationClass, function.getFunction());
-            final AccumulateFunction accumulateFunction = packageModel.getConfiguration().getAccumulateFunction(accumulateFunctionName);
+            final AccumulateFunction accumulateFunction = getAccumulateFunction(function, declarationClass);
             functionDSL.addArgument(new ClassExpr(toType(accumulateFunction.getClass())));
             functionDSL.addArgument(new NameExpr(toVar(((NameExpr) expr).getName().asString())));
 
@@ -123,6 +118,17 @@ public class AccumulateVisitor {
         accumulateDSL.addArgument(asDSL);
 
         context.popExprPointer();
+    }
+
+    private AccumulateFunction getAccumulateFunction(AccumulateDescr.AccumulateFunctionCallDescr function, Class<?> methodCallExprType) {
+        final String accumulateFunctionName = AccumulateUtil.getFunctionName(() -> methodCallExprType, function.getFunction());
+        final Optional<AccumulateFunction> bundledAccumulateFunction = Optional.ofNullable(packageModel.getConfiguration().getAccumulateFunction(accumulateFunctionName));
+        final Optional<AccumulateFunction> importedAccumulateFunction = Optional.ofNullable(packageModel.getAccumulateFunctions().get(accumulateFunctionName));
+
+        return bundledAccumulateFunction
+                .map(Optional::of)
+                .orElse(importedAccumulateFunction)
+                .orElseThrow(RuntimeException::new);
     }
 
     private String getRootNodeName(DrlxParseUtil.RemoveRootNodeResult methodCallWithoutRootNode) {
