@@ -107,6 +107,10 @@ public class PackageModel {
         this.imports.addAll(imports);
     }
 
+    public Collection<String> getImports() {
+        return this.imports;
+    }
+
     public void addGlobals(Map<String, String> values) {
         Map<String, Class<?>> transformed;
         transformed = values

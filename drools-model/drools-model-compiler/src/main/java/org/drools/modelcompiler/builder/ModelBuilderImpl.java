@@ -71,7 +71,7 @@ public class ModelBuilderImpl extends KnowledgeBuilderImpl {
 
         List<GeneratedClassWithPackage> allGeneratedPojos =
                 packageModels.values().stream()
-                        .flatMap(p -> p.getGeneratedPOJOsSource().stream().map(c -> new GeneratedClassWithPackage(c, p.getName())))
+                             .flatMap(p -> p.getGeneratedPOJOsSource().stream().map(c -> new GeneratedClassWithPackage(c, p.getName(), p.getImports())))
                         .collect(Collectors.toList());
 
 
@@ -103,6 +103,7 @@ public class ModelBuilderImpl extends KnowledgeBuilderImpl {
         InternalKnowledgePackage pkg = pkgRegistry.getPackage();
         String pkgName = pkg.getName();
         PackageModel model = packageModels.computeIfAbsent(pkgName, s -> new PackageModel(pkgName, this.getBuilderConfiguration()));
+        model.addImports(pkg.getTypeResolver().getImports());
         generatePOJO(pkg, packageDescr, model);
     }
 
