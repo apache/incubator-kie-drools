@@ -219,7 +219,7 @@ public class DSL {
         return new OOPathBuilder<T>(source).firstChunk();
     }
 
-    public static ExprViewItem not(ExprViewItem expression, ExprViewItem... expressions) {
+    public static ExprViewItem not(ViewItemBuilder<?> expression, ViewItemBuilder<?>... expressions) {
         return new ExistentialExprViewItem( Condition.Type.NOT, and( expression, expressions) );
     }
 
@@ -239,7 +239,7 @@ public class DSL {
         return not(new Expr2ViewItemImpl<T, U>( var1, var2, new Predicate2.Impl<T, U>(predicate)) );
     }
 
-    public static ExprViewItem exists(ExprViewItem expression, ExprViewItem... expressions) {
+    public static ExprViewItem exists(ViewItemBuilder<?> expression, ViewItemBuilder<?>... expressions) {
         return new ExistentialExprViewItem( Condition.Type.EXISTS, and( expression, expressions) );
     }
 

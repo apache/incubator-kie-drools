@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.drools.javaparser.JavaParser;
-import org.drools.javaparser.ast.CompilationUnit;
 import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.drools.javaparser.printer.PrettyPrinter;
 
@@ -30,7 +28,7 @@ public class ModelWriter {
             String folderName = pkgName.replace( '.', '/' );
 
             for (ClassOrInterfaceDeclaration generatedPojo : pkgModel.getGeneratedPOJOsSource()) {
-                final String source = toPojoSource( pkgModel.getName(), prettyPrinter, generatedPojo );
+                final String source = JavaParserCompiler.toPojoSource(pkgModel.getName(), pkgModel.getImports(), generatedPojo);
                 pkgModel.print( source );
                 String pojoSourceName = "src/main/java/" + folderName + "/" + generatedPojo.getName() + ".java";
                 srcMfs.write( pojoSourceName, source.getBytes() );
@@ -52,21 +50,6 @@ public class ModelWriter {
 
     private String generateRulesFileName() {
         return RULES_FILE_NAME + generateUUID();
-    }
-
-    private String toPojoSource(String packageName, PrettyPrinter prettyPrinter, ClassOrInterfaceDeclaration pojo ) {
-        CompilationUnit cu = new CompilationUnit();
-        cu.setPackageDeclaration( packageName );
-
-        // fixed part
-        cu.addImport(JavaParser.parseImport("import java.util.*;" ) );
-        cu.addImport( JavaParser.parseImport( "import org.drools.model.*;" ) );
-        cu.addImport( JavaParser.parseImport( "import static org.drools.model.DSL.*;" ) );
-        cu.addImport( JavaParser.parseImport( "import org.drools.model.Index.ConstraintType;" ) );
-
-        cu.addType( pojo );
-
-        return prettyPrinter.print( cu );
     }
 
     public void writeModelFile( List<String> modelSources, MemoryFileSystem trgMfs) {
