@@ -610,7 +610,7 @@ public class KieBuilderImpl
         }
 
         if ( !ignoreErrors && ( getResults().hasMessages( Level.ERROR ) || kModule == null ) ) {
-            throw new RuntimeException( "Unable to get KieModule, Errors Existed" );
+            throw new RuntimeException( "Unable to get KieModule, Errors Existed: " + getResults() );
         }
         return kModule;
     }
