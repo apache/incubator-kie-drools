@@ -169,7 +169,7 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
         random = new Random(37);
         ConferenceSolution solution = new ConferenceSolution();
         solution.setId(0L);
-        solution.setName(conferenceNameGenerator.generateNextValue());
+        solution.setConferenceName(conferenceNameGenerator.generateNextValue());
 
         createTimeslotList(solution, timeslotListSize);
         createRoomList(solution, roomListSize);

@@ -29,7 +29,7 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 @PlanningSolution
 public class ConferenceSolution extends AbstractPersistable {
 
-    private String name;
+    private String conferenceName;
 
     @ValueRangeProvider(id = "timeslotRange")
     @ProblemFactCollectionProperty
@@ -50,19 +50,19 @@ public class ConferenceSolution extends AbstractPersistable {
 
     @Override
     public String toString() {
-        return name;
+        return conferenceName;
     }
 
     // ************************************************************************
     // Simple getters and setters
     // ************************************************************************
 
-    public String getName() {
-        return name;
+    public String getConferenceName() {
+        return conferenceName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setConferenceName(String conferenceName) {
+        this.conferenceName = conferenceName;
     }
 
     public List<Timeslot> getTimeslotList() {

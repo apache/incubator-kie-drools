@@ -121,6 +121,21 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             return solution;
         }
 
+        private void readConfiguration() {
+            nextSheet("Configuration");
+            nextRow();
+            readHeaderCell("Conference name");
+            solution.setConferenceName(nextCell().getStringCellValue());
+            if (!VALID_NAME_PATTERN.matcher(solution.getConferenceName()).matches()) {
+                throw new IllegalStateException(currentPosition() + ": The conference name (" + solution.getConferenceName()
+                        + ") must match to the regular expression (" + VALID_NAME_PATTERN + ").");
+            }
+            nextRow();
+            nextRow();
+            readHeaderCell("Constraint");
+            readHeaderCell("Weight");
+        }
+
         private void readTimeslotList() {
             nextSheet("Timeslots");
             nextRow();
@@ -183,7 +198,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 room.setId(id++);
                 room.setName(nextCell().getStringCellValue());
                 if (!VALID_NAME_PATTERN.matcher(room.getName()).matches()) {
-                    throw new IllegalStateException(currentPosition() + ": The speaker's name (" + room.getName()
+                    throw new IllegalStateException(currentPosition() + ": The room name (" + room.getName()
                             + ") must match to the regular expression (" + VALID_NAME_PATTERN + ").");
                 }
                 room.setTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
@@ -244,7 +259,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 speaker.setId(id++);
                 speaker.setName(nextCell().getStringCellValue());
                 if (!VALID_NAME_PATTERN.matcher(speaker.getName()).matches()) {
-                    throw new IllegalStateException(currentPosition() + ": The speaker's name (" + speaker.getName()
+                    throw new IllegalStateException(currentPosition() + ": The speaker name (" + speaker.getName()
                             + ") must match to the regular expression (" + VALID_NAME_PATTERN + ").");
                 }
                 speaker.setRequiredTimeslotTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
@@ -313,7 +328,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 talk.setId(id++);
                 talk.setCode(nextCell().getStringCellValue());
                 if (!VALID_CODE_PATTERN.matcher(talk.getCode()).matches()) {
-                    throw new IllegalStateException(currentPosition() + ": The talk's code (" + talk.getCode()
+                    throw new IllegalStateException(currentPosition() + ": The talk code (" + talk.getCode()
                             + ") must match to the regular expression (" + VALID_CODE_PATTERN + ").");
                 }
                 talk.setTitle(nextCell().getStringCellValue());
@@ -536,6 +551,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
         public Workbook write() {
             workbook = new XSSFWorkbook();
             createStyles();
+            writeConfiguration();
             writeTimeslotList();
             writeRoomList();
             writeSpeakerList();
@@ -555,6 +571,18 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             pinnedStyle = workbook.createCellStyle();
             pinnedStyle.setFillForegroundColor(PINNED_COLOR.getIndex());
             pinnedStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        }
+
+        private void writeConfiguration() {
+            nextSheet("Configuration", 1, 3);
+            nextRow();
+            addHeaderCell("Conference name");
+            nextCell().setCellValue(solution.getConferenceName());
+            nextRow();
+            nextRow();
+            addHeaderCell("Constraint");
+            addHeaderCell("Weight");
+            autoSizeColumnsWithHeader();
         }
 
         private void writeTimeslotList() {
