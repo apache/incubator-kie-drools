@@ -198,10 +198,7 @@ public class ClasspathKieProject extends AbstractKieProject {
     }
 
     public static InternalKieModule createInternalKieModule(KieModuleModel kieProject, ReleaseId releaseId, String rootPath) {
-        File file = new File( rootPath );
-        return file.isDirectory() ?
-               new FileKieModule( releaseId, kieProject, file ) :
-               new ZipKieModule( releaseId, kieProject, file );
+        return InternalKieModuleProvider.get( releaseId, kieProject, new File( rootPath ) );
     }
 
     public static String getPomProperties(String urlPathToAdd) {

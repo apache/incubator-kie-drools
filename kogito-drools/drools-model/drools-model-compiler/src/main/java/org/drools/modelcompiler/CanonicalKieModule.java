@@ -18,6 +18,7 @@ package org.drools.modelcompiler;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -27,6 +28,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.appformer.maven.support.DependencyFilter;
+import org.appformer.maven.support.PomModel;
+import org.drools.compiler.kie.builder.impl.FileKieModule;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieBaseUpdateContext;
 import org.drools.compiler.kie.builder.impl.KieProject;
@@ -36,6 +40,7 @@ import org.drools.compiler.kie.util.KieJarChangeSet;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.ProjectClassLoader;
+import org.drools.core.common.ResourceProvider;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.util.IoUtils;
 import org.drools.model.Model;
@@ -45,17 +50,27 @@ import org.drools.modelcompiler.builder.KieBaseBuilder;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.Results;
+import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.definition.KiePackage;
+import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceConfiguration;
 import org.kie.internal.builder.ChangeType;
+import org.kie.internal.builder.CompositeKnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResourceChangeSet;
 
 import static org.drools.model.impl.ModelComponent.areEqualInModel;
 import static org.drools.modelcompiler.util.StringUtil.fileNameToClass;
 
-public class CanonicalKieModule extends ZipKieModule {
+public class CanonicalKieModule implements InternalKieModule {
 
     public static final String MODEL_FILE = "META-INF/kie/drools-model";
+
+    private final InternalKieModule internalKieModule;
 
     private Collection<String> ruleClassesNames;
 
@@ -70,13 +85,21 @@ public class CanonicalKieModule extends ZipKieModule {
     }
 
     public CanonicalKieModule( ReleaseId releaseId, KieModuleModel kieProject, File file, Collection<String> ruleClassesNames ) {
-        super( releaseId, kieProject, file );
+        this( file.isDirectory() ? new FileKieModule( releaseId, kieProject, file ) : new ZipKieModule( releaseId, kieProject, file ), ruleClassesNames );
+    }
+
+    public CanonicalKieModule( InternalKieModule internalKieModule ) {
+        this( internalKieModule, null );
+    }
+
+    public CanonicalKieModule( InternalKieModule internalKieModule, Collection<String> ruleClassesNames ) {
+        this.internalKieModule = internalKieModule;
         this.ruleClassesNames = ruleClassesNames;
     }
 
     @Override
     public Map<String, byte[]> getClassesMap( boolean includeTypeDeclarations ) {
-        return super.getClassesMap( true );
+        return internalKieModule.getClassesMap( true );
     }
 
     @Override
@@ -320,5 +343,143 @@ public class CanonicalKieModule extends ZipKieModule {
             kbConf.setOption( kBaseModel.getDeclarativeAgenda() );
         }
         return kbConf;
+    }
+
+
+    // Delegate methods
+
+    @Override
+    public void cacheKnowledgeBuilderForKieBase( String kieBaseName, KnowledgeBuilder kbuilder ) {
+        internalKieModule.cacheKnowledgeBuilderForKieBase( kieBaseName, kbuilder );
+    }
+
+    @Override
+    public KnowledgeBuilder getKnowledgeBuilderForKieBase( String kieBaseName ) {
+        return internalKieModule.getKnowledgeBuilderForKieBase( kieBaseName );
+    }
+
+    @Override
+    public Collection<KiePackage> getKnowledgePackagesForKieBase( String kieBaseName ) {
+        return internalKieModule.getKnowledgePackagesForKieBase( kieBaseName );
+    }
+
+    @Override
+    public void cacheResultsForKieBase( String kieBaseName, Results results ) {
+        internalKieModule.cacheResultsForKieBase( kieBaseName, results );
+    }
+
+    @Override
+    public Map<String, Results> getKnowledgeResultsCache() {
+        return internalKieModule.getKnowledgeResultsCache();
+    }
+
+    @Override
+    public KieModuleModel getKieModuleModel() {
+        return internalKieModule.getKieModuleModel();
+    }
+
+    @Override
+    public byte[] getBytes() {
+        return internalKieModule.getBytes();
+    }
+
+    @Override
+    public boolean hasResource( String fileName ) {
+        return internalKieModule.hasResource( fileName );
+    }
+
+    @Override
+    public Resource getResource( String fileName ) {
+        return internalKieModule.getResource( fileName );
+    }
+
+    @Override
+    public ResourceConfiguration getResourceConfiguration( String fileName ) {
+        return internalKieModule.getResourceConfiguration( fileName );
+    }
+
+    @Override
+    public Map<ReleaseId, InternalKieModule> getKieDependencies() {
+        return internalKieModule.getKieDependencies();
+    }
+
+    @Override
+    public void addKieDependency( InternalKieModule dependency ) {
+        internalKieModule.addKieDependency( dependency );
+    }
+
+    @Override
+    public Collection<ReleaseId> getJarDependencies( DependencyFilter filter ) {
+        return internalKieModule.getJarDependencies( filter );
+    }
+
+    @Override
+    public Collection<ReleaseId> getUnresolvedDependencies() {
+        return internalKieModule.getUnresolvedDependencies();
+    }
+
+    @Override
+    public void setUnresolvedDependencies( Collection<ReleaseId> unresolvedDependencies ) {
+        internalKieModule.setUnresolvedDependencies( unresolvedDependencies );
+    }
+
+    @Override
+    public boolean isAvailable( String pResourceName ) {
+        return internalKieModule.isAvailable( pResourceName );
+    }
+
+    @Override
+    public byte[] getBytes( String pResourceName ) {
+        return internalKieModule.getBytes( pResourceName );
+    }
+
+    @Override
+    public Collection<String> getFileNames() {
+        return internalKieModule.getFileNames();
+    }
+
+    @Override
+    public File getFile() {
+        return internalKieModule.getFile();
+    }
+
+    @Override
+    public ResourceProvider createResourceProvider() {
+        return internalKieModule.createResourceProvider();
+    }
+
+    @Override
+    public boolean addResourceToCompiler( CompositeKnowledgeBuilder ckbuilder, KieBaseModel kieBaseModel, String fileName ) {
+        return internalKieModule.addResourceToCompiler( ckbuilder, kieBaseModel, fileName );
+    }
+
+    @Override
+    public boolean addResourceToCompiler( CompositeKnowledgeBuilder ckbuilder, KieBaseModel kieBaseModel, String fileName, ResourceChangeSet rcs ) {
+        return internalKieModule.addResourceToCompiler( ckbuilder, kieBaseModel, fileName, rcs );
+    }
+
+    @Override
+    public long getCreationTimestamp() {
+        return internalKieModule.getCreationTimestamp();
+    }
+
+    @Override
+    public InputStream getPomAsStream() {
+        return internalKieModule.getPomAsStream();
+    }
+
+    @Override
+    public PomModel getPomModel() {
+        return internalKieModule.getPomModel();
+    }
+
+    @Override
+    public KnowledgeBuilderConfiguration getBuilderConfiguration( KieBaseModel kBaseModel ) {
+        return internalKieModule.getBuilderConfiguration( kBaseModel );
+    }
+
+    @Override
+    public ReleaseId getReleaseId() {
+        return internalKieModule.getReleaseId();
     }
 }
