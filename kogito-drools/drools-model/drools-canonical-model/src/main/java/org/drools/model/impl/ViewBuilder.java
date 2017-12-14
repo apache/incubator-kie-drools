@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import org.drools.model.Argument;
+import org.drools.model.Binding;
 import org.drools.model.Condition;
 import org.drools.model.Condition.Type;
 import org.drools.model.ConditionalConsequence;
@@ -43,7 +44,6 @@ import org.drools.model.patterns.PatternImpl;
 import org.drools.model.patterns.QueryCallPattern;
 import org.drools.model.view.AbstractExprViewItem;
 import org.drools.model.view.AccumulateExprViewItem;
-import org.drools.model.view.BindViewItem;
 import org.drools.model.view.CombinedExprViewItem;
 import org.drools.model.view.ExistentialExprViewItem;
 import org.drools.model.view.Expr1ViewItemImpl;
@@ -134,16 +134,21 @@ public class ViewBuilder {
                 continue;
             }
 
-            if ( viewItem instanceof BindViewItem ) {
-                BindViewItem bindViewItem = (BindViewItem) viewItem;
+            if ( viewItem instanceof Binding) {
+                Binding bindViewItem = (Binding) viewItem;
                 PatternImpl pattern = (PatternImpl) conditionMap.get(bindViewItem.getInputVariable());
                 if (pattern == null) {
+                    // This should probably be the bindViewItem.getBoundVariable() instead of the input
+                    // as the input variables can be many
                     pattern = new PatternImpl( bindViewItem.getInputVariable() );
+                    pattern.addAllInputVariables(bindViewItem.getInputVariables());
                     conditions.add( pattern );
                     conditionMap.put( bindViewItem.getInputVariable(), pattern );
                 }
                 pattern.addBinding( bindViewItem );
-                usedVars.add( bindViewItem.getFirstVariable() );
+                if(bindViewItem instanceof ViewItem) {
+                    usedVars.add(((ViewItem) bindViewItem).getFirstVariable());
+                }
                 continue;
             }
 
@@ -212,7 +217,7 @@ public class ViewBuilder {
                 boolean isSource =  patternImpl
                         .getBindings()
                         .stream()
-                        .anyMatch(b -> (b instanceof BindViewItem) && ((BindViewItem) b).getBoundVariable().equals(source));
+                        .anyMatch(b -> (b instanceof Binding) && ((Binding) b).getBoundVariable().equals(source));
                 if(isSource) {
                     return Optional.of(patternImpl);
                 }

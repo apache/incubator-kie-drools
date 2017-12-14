@@ -22,5 +22,7 @@ public interface Binding {
     Variable getBoundVariable();
     Function1 getBindingFunction();
     Variable getInputVariable();
+    Variable[] getInputVariables();
     String getReactOn();
+    Object eval(Object... args);
 }

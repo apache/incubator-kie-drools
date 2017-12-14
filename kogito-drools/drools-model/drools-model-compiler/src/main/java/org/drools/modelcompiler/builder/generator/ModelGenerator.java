@@ -922,10 +922,10 @@ public class ModelGenerator {
         final Class<?> exprType;
 
         private String exprId;
-        private String patternBinding;
+        String patternBinding;
         boolean isPatternBindingUnification = false;
 
-        private String exprBinding;
+        String exprBinding;
 
         ConstraintType decodeConstraintType;
         Collection<String> usedDeclarations = new LinkedHashSet<>();
