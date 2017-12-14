@@ -25,7 +25,7 @@ public class MovableTalkFilter implements SelectionFilter<ConferenceSolution, Ta
 
     @Override
     public boolean accept(ScoreDirector<ConferenceSolution> scoreDirector, Talk talk) {
-        return !talk.isLockedByUser();
+        return !talk.isPinnedByUser();
     }
 
 }

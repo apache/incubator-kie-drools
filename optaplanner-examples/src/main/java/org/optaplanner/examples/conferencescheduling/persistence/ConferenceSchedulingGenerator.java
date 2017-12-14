@@ -176,7 +176,6 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
         createSpeakerList(solution, speakerListSize);
         createTalkList(solution, talkListSize);
 
-
         BigInteger possibleSolutionSize = BigInteger.valueOf((long) timeslotListSize * roomListSize)
                 .pow(talkListSize);
         logger.info("Conference {} has {} talks, {} timeslots and {} rooms with a search space of {}.",
@@ -348,136 +347,12 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
                     talk.getCode(), talk.getTitle(), speakerList);
             talkList.add(talk);
         }
+        Talk pinnedTalk = talkList.get(labTalkCount + random.nextInt(talkListSize - labTalkCount));
+        pinnedTalk.setPinnedByUser(true);
+        pinnedTalk.setTimeslot(solution.getTimeslotList().stream()
+                .filter(timeslot -> timeslot.getTalkType() == BREAKOUT_TALK_TYPE).findFirst().get());
+        pinnedTalk.setRoom(solution.getRoomList().get(0));
         solution.setTalkList(talkList);
     }
-
-//    private void createMeetingListAndAttendanceList(MeetingSchedule meetingSchedule, int meetingListSize) {
-//        List<Meeting> meetingList = new ArrayList<>(meetingListSize);
-//        List<Attendance> globalAttendanceList = new ArrayList<>();
-//        long attendanceId = 0L;
-//        talkTitleGenerator.predictMaximumSizeAndReset(meetingListSize);
-//        for (int i = 0; i < meetingListSize; i++) {
-//            Meeting meeting = new Meeting();
-//            meeting.setId((long) i);
-//            String topic = talkTitleGenerator.generateNextValue();
-//            meeting.setTopic(topic);
-//            int durationInGrains = durationInMinutesOptions[random.nextInt(durationInMinutesOptions.length)];
-//            meeting.setDurationInGrains(durationInGrains);
-//
-//            int attendanceListSize = personsPerMeetingOptions[random.nextInt(personsPerMeetingOptions.length)];
-//            int requiredAttendanceListSize = Math.max(2, random.nextInt(attendanceListSize + 1));
-//            List<RequiredAttendance> requiredAttendanceList = new ArrayList<>(requiredAttendanceListSize);
-//            for (int j = 0; j < requiredAttendanceListSize; j++) {
-//                RequiredAttendance attendance = new RequiredAttendance();
-//                attendance.setId(attendanceId);
-//                attendanceId++;
-//                attendance.setMeeting(meeting);
-//                // person is filled in later
-//                requiredAttendanceList.add(attendance);
-//                globalAttendanceList.add(attendance);
-//            }
-//            meeting.setRequiredAttendanceList(requiredAttendanceList);
-//            int preferredAttendanceListSize = attendanceListSize - requiredAttendanceListSize;
-//            List<PreferredAttendance> preferredAttendanceList = new ArrayList<>(preferredAttendanceListSize);
-//            for (int j = 0; j < preferredAttendanceListSize; j++) {
-//                PreferredAttendance attendance = new PreferredAttendance();
-//                attendance.setId(attendanceId);
-//                attendanceId++;
-//                attendance.setMeeting(meeting);
-//                // person is filled in later
-//                preferredAttendanceList.add(attendance);
-//                globalAttendanceList.add(attendance);
-//            }
-//            meeting.setPreferredAttendanceList(preferredAttendanceList);
-//
-//            logger.trace("Created meeting with topic ({}), durationInGrains ({}),"
-//                    + " requiredAttendanceListSize ({}), preferredAttendanceListSize ({}).",
-//                    topic, durationInGrains,
-//                    requiredAttendanceListSize, preferredAttendanceListSize);
-//            meetingList.add(meeting);
-//        }
-//        meetingSchedule.setMeetingList(meetingList);
-//        meetingSchedule.setAttendanceList(globalAttendanceList);
-//    }
-//
-//    private void createTimeGrainList(MeetingSchedule meetingSchedule, int timeGrainListSize) {
-//        List<Day> dayList = new ArrayList<>(timeGrainListSize);
-//        long dayId = 0;
-//        Day day = null;
-//        List<TimeGrain> timeGrainList = new ArrayList<>(timeGrainListSize);
-//        for (int i = 0; i < timeGrainListSize; i++) {
-//            TimeGrain timeGrain = new TimeGrain();
-//            timeGrain.setId((long) i);
-//            int grainIndex = i;
-//            timeGrain.setGrainIndex(grainIndex);
-//            int dayOfYear = (i / startingMinuteOfDayOptions.length) + 1;
-//            if (day == null || day.getDayOfYear() != dayOfYear) {
-//                day = new Day();
-//                day.setId(dayId);
-//                day.setDayOfYear(dayOfYear);
-//                dayId++;
-//                dayList.add(day);
-//            }
-//            timeGrain.setDay(day);
-//            int startingMinuteOfDay = startingMinuteOfDayOptions[i % startingMinuteOfDayOptions.length];
-//            timeGrain.setStartingMinuteOfDay(startingMinuteOfDay);
-//            logger.trace("Created timeGrain with grainIndex ({}), dayOfYear ({}), startingMinuteOfDay ({}).",
-//                    grainIndex, dayOfYear, startingMinuteOfDay);
-//            timeGrainList.add(timeGrain);
-//        }
-//        meetingSchedule.setDayList(dayList);
-//        meetingSchedule.setTimeGrainList(timeGrainList);
-//    }
-//
-//    private void createPersonList(MeetingSchedule meetingSchedule) {
-//        int attendanceListSize = 0;
-//        for (Meeting meeting : meetingSchedule.getMeetingList()) {
-//            attendanceListSize += meeting.getRequiredAttendanceList().size()
-//                    + meeting.getPreferredAttendanceList().size();
-//        }
-//        int personListSize = attendanceListSize * meetingSchedule.getRoomList().size() * 3
-//                / (4 * meetingSchedule.getMeetingList().size());
-//        List<Person> personList = new ArrayList<>(personListSize);
-//        fullNameGenerator.predictMaximumSizeAndReset(personListSize);
-//        for (int i = 0; i < personListSize; i++) {
-//            Person person = new Person();
-//            person.setId((long) i);
-//            String fullName = fullNameGenerator.generateNextValue();
-//            person.setFullName(fullName);
-//            logger.trace("Created person with fullName ({}).",
-//                    fullName);
-//            personList.add(person);
-//        }
-//        meetingSchedule.setPersonList(personList);
-//    }
-//
-//    private void linkAttendanceListToPersons(MeetingSchedule meetingSchedule) {
-//        for (Meeting meeting : meetingSchedule.getMeetingList()) {
-//            List<Person> availablePersonList = new ArrayList<>(meetingSchedule.getPersonList());
-//            int attendanceListSize = meeting.getRequiredAttendanceList().size() + meeting.getPreferredAttendanceList().size();
-//            if (availablePersonList.size() < attendanceListSize) {
-//                throw new IllegalStateException("The availablePersonList size (" + availablePersonList.size()
-//                        + ") is less than the attendanceListSize (" + attendanceListSize + ").");
-//            }
-//            for (RequiredAttendance requiredAttendance : meeting.getRequiredAttendanceList()) {
-//                requiredAttendance.setPerson(availablePersonList.remove(random.nextInt(availablePersonList.size())));
-//            }
-//            for (PreferredAttendance preferredAttendance : meeting.getPreferredAttendanceList()) {
-//                preferredAttendance.setPerson(availablePersonList.remove(random.nextInt(availablePersonList.size())));
-//            }
-//        }
-//    }
-//
-//    private void createMeetingAssignmentList(MeetingSchedule meetingSchedule) {
-//        List<Meeting> meetingList = meetingSchedule.getMeetingList();
-//        List<MeetingAssignment> meetingAssignmentList = new ArrayList<>(meetingList.size());
-//        for (Meeting meeting : meetingList) {
-//            MeetingAssignment meetingAssignment = new MeetingAssignment();
-//            meetingAssignment.setId(meeting.getId());
-//            meetingAssignment.setMeeting(meeting);
-//            meetingAssignmentList.add(meetingAssignment);
-//        }
-//        meetingSchedule.setMeetingAssignmentList(meetingAssignmentList);
-//    }
 
 }

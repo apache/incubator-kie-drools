@@ -37,7 +37,7 @@ public class Talk extends AbstractPersistable {
     private Set<String> requiredRoomTagSet;
     private Set<String> preferredRoomTagSet;
 
-    private boolean lockedByUser = false;
+    private boolean pinnedByUser = false;
 
     @PlanningVariable(valueRangeProviderRefs = "timeslotRange")
     private Timeslot timeslot;
@@ -209,12 +209,12 @@ public class Talk extends AbstractPersistable {
         this.preferredRoomTagSet = preferredRoomTagSet;
     }
 
-    public boolean isLockedByUser() {
-        return lockedByUser;
+    public boolean isPinnedByUser() {
+        return pinnedByUser;
     }
 
-    public void setLockedByUser(boolean lockedByUser) {
-        this.lockedByUser = lockedByUser;
+    public void setPinnedByUser(boolean pinnedByUser) {
+        this.pinnedByUser = pinnedByUser;
     }
 
     public Timeslot getTimeslot() {

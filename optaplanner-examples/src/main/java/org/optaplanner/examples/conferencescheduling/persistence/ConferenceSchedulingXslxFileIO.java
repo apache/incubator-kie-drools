@@ -69,6 +69,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             = DateTimeFormatter.ofPattern("HH:mm", Locale.ENGLISH);
 
     protected static final IndexedColors UNAVAILABLE_COLOR = IndexedColors.GREY_80_PERCENT;
+    protected static final IndexedColors PINNED_COLOR = IndexedColors.LAVENDER;
 
     @Override
     public String getInputFileExtension() {
@@ -197,7 +198,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 Set<Timeslot> unavailableTimeslotSet = new LinkedHashSet<>();
                 for (Timeslot timeslot : solution.getTimeslotList()) {
                     Cell cell = nextCell();
-                    if (extractColor(cell, UNAVAILABLE_COLOR) == UNAVAILABLE_COLOR) {
+                    if (extractColor(cell, UNAVAILABLE_COLOR, PINNED_COLOR) == UNAVAILABLE_COLOR) {
                         unavailableTimeslotSet.add(timeslot);
                     }
                     String[] talkCodes = cell.getStringCellValue().split(", ");
@@ -285,27 +286,6 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             solution.setSpeakerList(speakerList);
         }
 
-        private IndexedColors extractColor(Cell cell, IndexedColors... acceptableColors) {
-            CellStyle cellStyle = cell.getCellStyle();
-            FillPatternType fillPattern = cellStyle.getFillPatternEnum();
-            if (fillPattern == null || fillPattern == FillPatternType.NO_FILL) {
-                return null;
-            }
-            if (fillPattern != FillPatternType.SOLID_FOREGROUND) {
-                throw new IllegalStateException(currentPosition() + ": The fill pattern (" + fillPattern
-                        + ") should be either " + FillPatternType.NO_FILL
-                        + " or " + FillPatternType.SOLID_FOREGROUND + ".");
-            }
-            short colorIndex = cellStyle.getFillForegroundColor();
-            for (IndexedColors acceptableColor : acceptableColors) {
-                if (acceptableColor.getIndex() == colorIndex) {
-                    return acceptableColor;
-                }
-            }
-            throw new IllegalStateException(currentPosition() + ": The fill color (" + colorIndex
-                    + ") is not one of the acceptableColors (" + Arrays.toString(acceptableColors) + ").");
-        }
-
         private void readTalkList() {
             Map<String, Speaker> speakerMap = solution.getSpeakerList().stream().collect(
                     Collectors.toMap(Speaker::getName, speaker -> speaker));
@@ -320,6 +300,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             readHeaderCell("Preferred timeslot tags");
             readHeaderCell("Required room tags");
             readHeaderCell("Preferred room tags");
+            readHeaderCell("Pinned by user");
             readHeaderCell("Timeslot day");
             readHeaderCell("Start");
             readHeaderCell("End");
@@ -364,6 +345,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 talk.setPreferredRoomTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
                         .filter(tag -> !tag.isEmpty()).collect(Collectors.toCollection(LinkedHashSet::new)));
                 verifyRoomTags(talk.getPreferredRoomTagSet());
+                talk.setPinnedByUser(nextCell().getBooleanCellValue());
                 Pair<Timeslot, Room> timeslotRoomPair = talkCodeToTimeslotRoomMap.get(talk.getCode());
                 if (timeslotRoomPair != null) {
                     talk.setTimeslot(timeslotRoomPair.getLeft());
@@ -493,6 +475,27 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             return currentRow.getCell(currentColumnNumber);
         }
 
+        protected IndexedColors extractColor(Cell cell, IndexedColors... acceptableColors) {
+            CellStyle cellStyle = cell.getCellStyle();
+            FillPatternType fillPattern = cellStyle.getFillPatternEnum();
+            if (fillPattern == null || fillPattern == FillPatternType.NO_FILL) {
+                return null;
+            }
+            if (fillPattern != FillPatternType.SOLID_FOREGROUND) {
+                throw new IllegalStateException(currentPosition() + ": The fill pattern (" + fillPattern
+                        + ") should be either " + FillPatternType.NO_FILL
+                        + " or " + FillPatternType.SOLID_FOREGROUND + ".");
+            }
+            short colorIndex = cellStyle.getFillForegroundColor();
+            for (IndexedColors acceptableColor : acceptableColors) {
+                if (acceptableColor.getIndex() == colorIndex) {
+                    return acceptableColor;
+                }
+            }
+            throw new IllegalStateException(currentPosition() + ": The fill color (" + colorIndex
+                    + ") is not one of the acceptableColors (" + Arrays.toString(acceptableColors) + ").");
+        }
+
     }
 
 
@@ -516,6 +519,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
 
         protected CellStyle headerStyle;
         protected CellStyle unavailableStyle;
+        protected CellStyle pinnedStyle;
 
         protected Sheet currentSheet;
         protected Row currentRow;
@@ -548,6 +552,9 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             unavailableStyle = workbook.createCellStyle();
             unavailableStyle.setFillForegroundColor(UNAVAILABLE_COLOR.getIndex());
             unavailableStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+            pinnedStyle = workbook.createCellStyle();
+            pinnedStyle.setFillForegroundColor(PINNED_COLOR.getIndex());
+            pinnedStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         }
 
         private void writeTimeslotList() {
@@ -585,13 +592,9 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 nextCell().setCellValue(String.join(", ", room.getTagSet()));
                 for (Timeslot timeslot : solution.getTimeslotList()) {
                     List<Talk> talkList = timeslotRoomToTalkMap.get(Pair.of(timeslot, room));
-                    Cell cell;
-                    if (room.getUnavailableTimeslotSet().contains(timeslot)) {
-                        cell = nextCell(unavailableStyle);
-                    } else {
-                        cell = nextCell();
-                    }
-                    cell.setCellValue(talkList == null ? ""
+                    nextCell(room.getUnavailableTimeslotSet().contains(timeslot) ? unavailableStyle
+                            : (talkList != null && talkList.stream().anyMatch(Talk::isPinnedByUser)) ? pinnedStyle : null)
+                            .setCellValue(talkList == null ? ""
                             : talkList.stream().map(Talk::getCode).collect(Collectors.joining(", ")));
                 }
             }
@@ -647,6 +650,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             addHeaderCell("Preferred timeslot tags");
             addHeaderCell("Required room tags");
             addHeaderCell("Preferred room tags");
+            addHeaderCell("Pinned by user");
             addHeaderCell("Timeslot day");
             addHeaderCell("Start");
             addHeaderCell("End");
@@ -663,6 +667,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 nextCell().setCellValue(String.join(", ", talk.getPreferredTimeslotTagSet()));
                 nextCell().setCellValue(String.join(", ", talk.getRequiredRoomTagSet()));
                 nextCell().setCellValue(String.join(", ", talk.getPreferredRoomTagSet()));
+                nextCell(talk.isPinnedByUser() ? pinnedStyle : null).setCellValue(talk.isPinnedByUser());
                 nextCell().setCellValue(talk.getTimeslot() == null ? "" : DAY_FORMATTER.format(talk.getTimeslot().getDate()));
                 nextCell().setCellValue(talk.getTimeslot() == null ? "" : TIME_FORMATTER.format(talk.getTimeslot().getStartDateTime()));
                 nextCell().setCellValue(talk.getTimeslot() == null ? "" : TIME_FORMATTER.format(talk.getTimeslot().getEndDateTime()));
