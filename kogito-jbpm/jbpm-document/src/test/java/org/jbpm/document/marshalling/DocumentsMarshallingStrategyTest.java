@@ -22,9 +22,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.jbpm.document.Document;
 import org.jbpm.document.Documents;
+import org.jbpm.document.service.impl.CustomDocumentStorageServiceImpl;
 import org.jbpm.document.service.impl.DocumentImpl;
 import org.junit.Test;
 
@@ -78,6 +80,34 @@ public class DocumentsMarshallingStrategyTest {
 		assertEquals(docs.getDocuments().size(), unmarshalledDocuments.getDocuments().size());
 	}
 	
+	@Test
+    public void testSingleDocMarshallUnmarshallTracking() throws IOException, ClassNotFoundException {
+        final AtomicInteger counter = new AtomicInteger(0);
+	    DocumentMarshallingStrategy docMarshallingStrategy = new DocumentMarshallingStrategy(new CustomDocumentStorageServiceImpl(){
+
+            @Override
+            public Document saveDocument(Document document, byte[] content) {
+                counter.incrementAndGet();
+                return super.saveDocument(document, content);
+            }
+            
+        });
+        Document document = getDocument("docOne");
+        byte[] marshalledDocument = docMarshallingStrategy.marshal(null, null, document);
+        assertEquals(1, counter.get());
+        Document unmarshalledDocument = (Document) docMarshallingStrategy.unmarshal(null, null, marshalledDocument, this.getClass().getClassLoader());
+    
+        assertEquals(document.getName(), unmarshalledDocument.getName());
+        assertEquals(document.getLink(), unmarshalledDocument.getLink());
+        
+        // marhsall it again, it should not call the save on document service since document didn't change
+        marshalledDocument = docMarshallingStrategy.marshal(null, null, unmarshalledDocument);
+        assertEquals(1, counter.get());
+        
+        unmarshalledDocument.setContent("updated content".getBytes());
+        marshalledDocument = docMarshallingStrategy.marshal(null, null, unmarshalledDocument);
+        assertEquals(2, counter.get());
+    }
 	
 	private Document getDocument(String documentName) {
 		Document documentOne = new DocumentImpl();

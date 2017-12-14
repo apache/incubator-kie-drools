@@ -87,6 +87,7 @@ import org.kie.internal.runtime.manager.context.CaseContext;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.kie.internal.task.api.TaskModelFactory;
 import org.kie.internal.task.api.TaskModelProvider;
+import org.kie.internal.utils.LazyLoaded;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -658,6 +659,12 @@ public class CaseServiceImpl implements CaseService {
             Map<String, Object> filteredData = authorizationManager.filterByDataAuthorization(caseId, caseFile, caseFile.getData());
             ((CaseFileInstanceImpl)caseFile).setData(filteredData);
             
+            for (Object variable : caseFile.getData().values()) {
+                if (variable instanceof LazyLoaded<?>) {
+                    ((LazyLoaded<?>) variable).load();
+                }
+            }
+            
             return caseFile;
         } 
         logger.warn("Multiple case files found in working memory (most likely not using PER_CASE strategy), trying to filter out...");
@@ -671,7 +678,16 @@ public class CaseServiceImpl implements CaseService {
             // apply authorization
             Map<String, Object> filteredData = authorizationManager.filterByDataAuthorization(caseId, caseFile, caseFile.getData());
             ((CaseFileInstanceImpl)caseFile).setData(filteredData);
+            
+
+            for (Object variable : caseFile.getData().values()) {
+                if (variable instanceof LazyLoaded<?>) {
+                    ((LazyLoaded<?>) variable).load();
+                }
+            }
         }
+        
+        
         return caseFile;
     }
     

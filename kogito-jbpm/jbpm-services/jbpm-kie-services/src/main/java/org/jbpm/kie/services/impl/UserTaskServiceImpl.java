@@ -58,6 +58,7 @@ import org.kie.internal.task.api.model.AccessType;
 import org.kie.internal.task.api.model.InternalAttachment;
 import org.kie.internal.task.api.model.InternalComment;
 import org.kie.internal.task.api.model.InternalI18NText;
+import org.kie.internal.utils.LazyLoaded;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -705,7 +706,15 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 	            
 	            ContentMarshallerContext ctx = TaskContentRegistry.get().getMarshallerContext(task.getDeploymentId());
 	            Object unmarshall = ContentMarshallerHelper.unmarshall(contentById.getContent(), ctx.getEnvironment(), ctx.getClassloader());
-	            return (Map<String, Object>) unmarshall;
+	            Map<String, Object> data = (Map<String, Object>) unmarshall;
+	            
+	            for (Object variable : data.values()) {
+	                if (variable instanceof LazyLoaded<?>) {
+	                    ((LazyLoaded<?>) variable).load();
+	                }
+	            }
+	            
+	            return data;
 	        }
 	        return new HashMap<String, Object>();
 		} finally {
@@ -740,7 +749,15 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 	            
 	            ContentMarshallerContext ctx = TaskContentRegistry.get().getMarshallerContext(task.getDeploymentId());
 	            Object unmarshall = ContentMarshallerHelper.unmarshall(contentById.getContent(), ctx.getEnvironment(), ctx.getClassloader());
-	            return (Map<String, Object>) unmarshall;
+	            Map<String, Object> data = (Map<String, Object>) unmarshall;
+                
+                for (Object variable : data.values()) {
+                    if (variable instanceof LazyLoaded<?>) {
+                        ((LazyLoaded<?>) variable).load();
+                    }
+                }
+                
+                return data;
 	        }
 	        return new HashMap<String, Object>();
 		} finally {

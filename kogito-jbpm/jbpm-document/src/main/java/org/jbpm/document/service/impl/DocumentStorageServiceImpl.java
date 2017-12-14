@@ -104,13 +104,13 @@ public class DocumentStorageServiceImpl implements DocumentStorageService {
         if (file.exists() && !file.isFile() && !ArrayUtils.isEmpty(file.listFiles())) {
             try {
                 File destination = file.listFiles()[0];
-                Document doc = new DocumentImpl(id,
+                DocumentImpl doc = new DocumentImpl(id,
                                                 destination.getName(),
                                                 destination.length(),
                                                 new Date(destination.lastModified()));
-                doc.setContent(FileUtils.readFileToByteArray(destination));
+                doc.setLoadService(this);
                 return doc;
-            } catch (IOException e) {
+            } catch (Exception e) {
                 log.error("Error loading document '{}': {}",
                           id,
                           e);
@@ -216,5 +216,21 @@ public class DocumentStorageServiceImpl implements DocumentStorageService {
             listOfDocs.add(doc);
         }
         return listOfDocs;
+    }
+
+    @Override
+    public byte[] loadContent(String id) {
+        File file = getFileByPath(id);
+
+        if (file.exists() && !file.isFile() && !ArrayUtils.isEmpty(file.listFiles())) {
+            try {
+                File destination = file.listFiles()[0];
+                return FileUtils.readFileToByteArray(destination);
+            } catch (IOException e) {
+                log.error("Unable to laod content due to {}", e.getMessage(), e);
+            }
+        } 
+        
+        return null;
     }
 }

@@ -34,11 +34,15 @@ public class DocumentMarshallingStrategy extends AbstractDocumentMarshallingStra
     private DocumentStorageService documentStorageService;
 
     public DocumentMarshallingStrategy() {
-        documentStorageService = DocumentStorageServiceProvider.get().getStorageService();
+        this.documentStorageService = DocumentStorageServiceProvider.get().getStorageService();
     }
 
     public DocumentMarshallingStrategy(String path) {
-        documentStorageService = DocumentStorageServiceProvider.get().getStorageService();
+        this.documentStorageService = DocumentStorageServiceProvider.get().getStorageService();
+    }
+    
+    public DocumentMarshallingStrategy(DocumentStorageService documentStorageService) {
+        this.documentStorageService = documentStorageService;
     }
 
     @Override
@@ -48,40 +52,22 @@ public class DocumentMarshallingStrategy extends AbstractDocumentMarshallingStra
 
     @Override
     public void write(ObjectOutputStream os, Object object) throws IOException {
-        Document document = (Document) object;
-
-        if (document != null && document.getContent() != null) {
-            documentStorageService.saveDocument(document, document.getContent());
-        }
-        os.writeUTF(document.getIdentifier());
-        os.writeUTF(document.getClass().getCanonicalName());
-        os.writeUTF(document.getLink());
+        throw new UnsupportedOperationException("write is not supported anymore, use marshal instead");
     }
 
     public Object read(ObjectInputStream os) throws IOException, ClassNotFoundException {
-        String objectId = os.readUTF();
-        String canonicalName = os.readUTF();
-        String link = os.readUTF();
-        try {
-            Document doc = documentStorageService.getDocument(objectId);
-            Document document = (Document) Class.forName(canonicalName).newInstance();
-            document.setIdentifier(objectId);
-            document.setLink(link);
-            document.setName(doc.getName());
-            document.setSize(doc.getSize());
-            document.setLastModified(doc.getLastModified());
-            document.setAttributes(doc.getAttributes());
-            document.setContent(doc.getContent());
-            return document;
-        } catch(Exception e) {
-            throw new RuntimeException("Cannot read document", e);
-        }
+        throw new UnsupportedOperationException("read is not supported anymore, use unmarshal instead");
     }
 
     @Override
     public byte[] marshal(Context context, ObjectOutputStream objectOutputStream, Object o) throws IOException {
         Document document = (Document) o;
-        documentStorageService.saveDocument(document, document.getContent());
+        String updatedAttribute = document.getAttribute(Document.UPDATED_ATTRIBUTE);
+        if (Boolean.parseBoolean(updatedAttribute)) {
+            // store via service only when it was actually updated
+            documentStorageService.saveDocument(document, document.getContent());
+            document.addAttribute(Document.UPDATED_ATTRIBUTE, "false");
+        }
         ByteArrayOutputStream buff = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(buff);
         oos.writeUTF(document.getIdentifier());
@@ -91,6 +77,7 @@ public class DocumentMarshallingStrategy extends AbstractDocumentMarshallingStra
         return buff.toByteArray();
     }
 
+    @SuppressWarnings({"resource", "unused"})
     @Override
     public Object unmarshal(Context context, ObjectInputStream objectInputStream, byte[] object, ClassLoader classLoader) throws IOException, ClassNotFoundException {
         DroolsObjectInputStream is = new DroolsObjectInputStream(new ByteArrayInputStream(object), classLoader);
@@ -98,21 +85,16 @@ public class DocumentMarshallingStrategy extends AbstractDocumentMarshallingStra
         String objectId = is.readUTF();
         String canonicalName = is.readUTF();
         String link = is.readUTF();
-        Document document = null;
-        try {
-            document = (Document) Class.forName(canonicalName).newInstance();
-            Document storedDoc = documentStorageService.getDocument(objectId);
-            document.setIdentifier(storedDoc.getIdentifier());
-            document.setName( storedDoc.getName() );
-            document.setLink( link );
-            document.setLastModified( storedDoc.getLastModified() );
-            document.setSize( storedDoc.getSize() );
-            document.setAttributes( storedDoc.getAttributes() );
-            document.setContent(storedDoc.getContent());
+        Document storedDoc = null;
+        try {            
+            storedDoc = documentStorageService.getDocument(objectId);            
+            storedDoc.setLink( link );
+            // when loaded, mark it as not updated to avoid not needed marshalling
+            storedDoc.addAttribute(Document.UPDATED_ATTRIBUTE, "false");
         } catch (Exception e) {
             throw new RuntimeException("Cannot read document from storage service", e);
         }
-        return document;
+        return storedDoc;
     }
 
     @Override

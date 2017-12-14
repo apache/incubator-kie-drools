@@ -60,6 +60,7 @@ import org.kie.internal.runtime.manager.SessionNotFoundException;
 import org.kie.internal.runtime.manager.context.CaseContext;
 import org.kie.internal.runtime.manager.context.CorrelationKeyContext;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
+import org.kie.internal.utils.LazyLoaded;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -412,7 +413,11 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
                     if (pi == null) {
                         throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found");
                     }
-                    return pi.getVariable(variableName);
+                    Object variable = pi.getVariable(variableName);
+                    if (variable instanceof LazyLoaded<?>) {
+                        ((LazyLoaded<?>) variable).load();
+                    }
+                    return variable;
                 }
             });
         } catch(SessionNotFoundException e) {
@@ -445,7 +450,15 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
             KieSession ksession = engine.getKieSession();
             WorkflowProcessInstanceImpl pi = (WorkflowProcessInstanceImpl) ksession.getProcessInstance(processInstanceId, true);
 
-        	return pi.getVariables();
+        	Map<String, Object> variables = pi.getVariables();
+        	
+        	for (Object variable : variables.values()) {
+        	    if (variable instanceof LazyLoaded<?>) {
+                    ((LazyLoaded<?>) variable).load();
+                }
+        	}
+        	
+        	return variables;
         } catch(SessionNotFoundException e) {
             throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found", e);
         } finally {

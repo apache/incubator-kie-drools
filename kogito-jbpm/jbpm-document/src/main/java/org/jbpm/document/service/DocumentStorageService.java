@@ -51,6 +51,13 @@ public interface DocumentStorageService {
      * @return              The java.io.File identified with the id
      */
     Document getDocument(String id);
+    
+    /**
+     * Loads document content 
+     * @param id unique id of the document
+     * @return loaded document's content
+     */
+    byte[] loadContent(String id);
 
     /**
      * Deletes the File identified by the given id

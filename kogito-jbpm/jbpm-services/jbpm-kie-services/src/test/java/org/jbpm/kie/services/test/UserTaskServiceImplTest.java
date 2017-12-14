@@ -36,6 +36,7 @@ import java.util.Map;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.core.util.StringUtils;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
+import org.jbpm.kie.test.objects.Image;
 import org.jbpm.kie.test.util.AbstractKieServicesBaseTest;
 import org.jbpm.services.api.ProcessInstanceNotFoundException;
 import org.jbpm.services.api.model.DeploymentUnit;
@@ -80,6 +81,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         processes.add("repo/processes/general/EmptyHumanTask.bpmn");
         processes.add("repo/processes/general/humanTask.bpmn");
         processes.add("repo/processes/general/NoFormNameHumanTask.bpmn");
+        processes.add("repo/processes/general/BPMN2-UserTaskImageVar.bpmn2");
         
         InternalKieModule kJar1 = createKieJar(ks, releaseId, processes);
         File pom = new File("target/kmodule", "pom.xml");
@@ -778,5 +780,65 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         assertEquals("Write a Document", task.getName());
         assertEquals(9, task.getPriority().intValue()); 
         
+    }
+    
+    @Test
+    public void testProcessWithLazyLoadedVariable() {
+        
+        Image newImage = new Image("test");
+        Map<String, Object> params = new HashMap<>();
+        params.put("image", newImage);
+        processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "UserTaskImageVar", params);
+        assertNotNull(processInstanceId);
+        
+        Image processVar = (Image) processService.getProcessInstanceVariable(processInstanceId, "image");
+        assertImageVariable(processVar, "test");
+        // make sure there is no NPE when accessing not exesting variable
+        processVar = (Image) processService.getProcessInstanceVariable(processInstanceId, "imageNotExisting");
+        assertNull(processVar);
+        
+        Map<String, Object> variables = processService.getProcessInstanceVariables(processInstanceId);
+        assertEquals(1, variables.size());
+        assertTrue(variables.containsKey("image"));
+        assertImageVariable((Image) variables.get("image"), "test");
+        
+        List<Long> taskIds = runtimeDataService.getTasksByProcessInstanceId(processInstanceId);
+        assertNotNull(taskIds);
+        assertEquals(1, taskIds.size());
+                
+        Long taskId = taskIds.get(0);
+        
+        Map<String, Object> input = userTaskService.getTaskInputContentByTaskId(taskId);
+        assertNotNull(input);
+        assertEquals(3, input.size());
+        assertTrue(input.containsKey("Image"));
+        
+        Image image = (Image) input.get("Image");
+        assertImageVariable(image, "test");
+        
+        // now let's add some output data
+        Map<String, Object> values = new HashMap<String, Object>();
+        Image updatedImage = new Image("updated test");
+        values.put("UpdatedImage", updatedImage);
+        Long contentId = userTaskService.saveContent(taskId, values);
+        assertNotNull(contentId);
+        
+        // let's now validate it
+        Map<String, Object> output = userTaskService.getTaskOutputContentByTaskId(taskId);
+        assertNotNull(output);
+        assertEquals(1, output.size());
+        assertTrue(output.containsKey("UpdatedImage"));
+        
+        image = (Image) output.get("UpdatedImage");
+        assertImageVariable(image, "updated test");
+       
+    }
+    
+    protected void assertImageVariable(Image processVar, String name) {
+        assertNotNull(processVar);
+        assertNotNull(processVar.getName());
+        assertEquals(name, processVar.getName());
+        assertNotNull(processVar.getContent());
+        assertEquals(1, processVar.getContent().length);
     }
 }

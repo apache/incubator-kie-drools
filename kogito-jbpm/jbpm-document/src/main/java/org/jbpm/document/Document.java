@@ -23,6 +23,7 @@ public interface Document extends Serializable {
 
     public static final String DOCUMENT_DATE_PATTERN = "yyyy-MM-dd HH:mm:ss";
     public static final String PROPERTIES_SEPARATOR = "####";
+    public static final String UPDATED_ATTRIBUTE = "_UPDATED_";
 
     void setIdentifier(String identifier);
 
