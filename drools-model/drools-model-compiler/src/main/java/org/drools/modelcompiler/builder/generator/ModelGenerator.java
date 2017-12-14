@@ -58,6 +58,7 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.Behavior;
 import org.drools.core.time.TimeUtils;
 import org.drools.core.util.ClassUtils;
+import org.drools.core.util.StringUtils;
 import org.drools.core.util.index.IndexUtil.ConstraintType;
 import org.drools.drlx.DrlxParser;
 import org.drools.javaparser.JavaParser;
@@ -87,8 +88,10 @@ import org.drools.javaparser.ast.expr.VariableDeclarationExpr;
 import org.drools.javaparser.ast.nodeTypes.NodeWithArguments;
 import org.drools.javaparser.ast.nodeTypes.NodeWithOptionalScope;
 import org.drools.javaparser.ast.stmt.BlockStmt;
+import org.drools.javaparser.ast.stmt.EmptyStmt;
 import org.drools.javaparser.ast.stmt.ExpressionStmt;
 import org.drools.javaparser.ast.stmt.ReturnStmt;
+import org.drools.javaparser.ast.stmt.Statement;
 import org.drools.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.javaparser.ast.type.Type;
 import org.drools.javaparser.ast.type.UnknownType;
@@ -390,9 +393,8 @@ public class ModelGenerator {
         ruleBlock.addStatement(var_assign);
     }
 
-
     private static String rewriteConsequenceBlock( RuleContext context, String consequence ) {
-        int modifyPos = consequence.indexOf( "modify" );
+        int modifyPos = StringUtils.indexOfOutOfQuotes(consequence, "modify");
         if (modifyPos < 0) {
             return consequence;
         }
@@ -400,8 +402,9 @@ public class ModelGenerator {
         int lastCopiedEnd = 0;
         StringBuilder sb = new StringBuilder();
         sb.append( consequence.substring( lastCopiedEnd, modifyPos ) );
+        lastCopiedEnd = modifyPos + 1;
 
-        for (; modifyPos >= 0; modifyPos = consequence.indexOf( "modify", modifyPos+6 )) {
+        for (; modifyPos >= 0; modifyPos = StringUtils.indexOfOutOfQuotes(consequence, "modify", modifyPos + 6)) {
             int declStart = consequence.indexOf( '(', modifyPos+6 );
             int declEnd = consequence.indexOf( ')', declStart+1 );
             if (declEnd < 0) {
@@ -420,10 +423,21 @@ public class ModelGenerator {
             if (lastCopiedEnd < modifyPos) {
                 sb.append( consequence.substring( lastCopiedEnd, modifyPos ) );
             }
-            String block = consequence.substring( blockStart+1, blockEnd ).trim();
-            for (String blockStatement : block.split( ";" )) {
-                sb.append( decl ).append( "." ).append( blockStatement.trim() ).append( ";\n" );
+
+            NameExpr declAsNameExpr = new NameExpr(decl);
+            String originalBlock = consequence.substring(blockStart + 1, blockEnd).trim();
+            BlockStmt modifyBlock = JavaParser.parseBlock("{" + originalBlock + ";}");
+            List<MethodCallExpr> originalMethodCalls = modifyBlock.getChildNodesByType(MethodCallExpr.class);
+            for (MethodCallExpr mc : originalMethodCalls) {
+                Expression mcWithScope = DrlxParseUtil.prepend(declAsNameExpr, mc);
+                modifyBlock.replace(mc, mcWithScope);
             }
+            for (Statement n : modifyBlock.getStatements()) {
+                if (!(n instanceof EmptyStmt)) {
+                    sb.append(n);
+                }
+            }
+
             sb.append( "update(" ).append( decl ).append( ");\n" );
             lastCopiedEnd = blockEnd+1;
         }
