@@ -92,6 +92,7 @@ import org.drools.model.functions.Predicate1;
 import org.drools.model.functions.accumulate.AccumulateFunction;
 import org.drools.model.impl.DeclarationImpl;
 import org.drools.model.patterns.CompositePatterns;
+import org.drools.model.patterns.PatternImpl;
 import org.drools.model.patterns.QueryCallPattern;
 import org.drools.modelcompiler.consequence.LambdaConsequence;
 import org.drools.modelcompiler.consequence.MVELConsequence;
@@ -356,9 +357,15 @@ public class KiePackagesBuilder {
                 } else {
                     source = buildPattern(ctx, condition );
                 }
-                org.drools.model.Pattern sourcePattern = accumulatePattern.getPattern();
                 Pattern pattern = new Pattern( 0,  getObjectType( Object.class ) );
-                pattern.setSource(buildAccumulate(ctx, accumulatePattern, source, pattern, sourcePattern) );
+
+                PatternImpl sourcePattern = (PatternImpl) accumulatePattern.getPattern();
+                final List<String> usedVariableName = new ArrayList<>();
+                for(Variable v : sourcePattern.getAllInputVariables()) {
+                    usedVariableName.add(v.getName());
+                }
+                final Binding binding = (Binding) sourcePattern.getBindings().iterator().next();
+                pattern.setSource(buildAccumulate(accumulatePattern, source, pattern, usedVariableName, binding) );
                 return pattern;
             }
             case OOPATH: {
@@ -492,10 +499,10 @@ public class KiePackagesBuilder {
         return pattern;
     }
 
-    private Accumulate buildAccumulate( RuleContext ctx,
-                                        AccumulatePattern accPattern,
-                                        RuleConditionElement source, Pattern pattern,
-                                        org.drools.model.Pattern condition) {
+    private Accumulate buildAccumulate(AccumulatePattern accPattern,
+                                       RuleConditionElement source,
+                                       Pattern pattern,
+                                       List<String> usedVariableName, Binding binding) {
 
         AccumulateFunction[] accFunctions = accPattern.getAccumulateFunctions();
 
@@ -508,7 +515,7 @@ public class KiePackagesBuilder {
                                                             true);
             pattern.addDeclaration(declaration);
 
-            return new SingleAccumulate(source, new Declaration[0], new LambdaAccumulator(accFunction, condition));
+            return new SingleAccumulate(source, new Declaration[0], new LambdaAccumulator(accFunction, binding, usedVariableName));
         }
 
         InternalReadAccessor reader = new SelfReferenceClassFieldReader( Object[].class );
@@ -521,7 +528,8 @@ public class KiePackagesBuilder {
                                                     new ArrayElementReader( reader, i, accVar.getType().asClass()),
                                                     pattern,
                                                     true) );
-            accumulators[i] = new LambdaAccumulator(accFunction, condition);
+
+            accumulators[i] = new LambdaAccumulator(accFunction, binding, usedVariableName);
         }
 
         return new MultiAccumulate( source, new Declaration[0], accumulators);

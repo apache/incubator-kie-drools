@@ -5,14 +5,14 @@ import org.drools.model.Variable;
 import org.drools.model.functions.Function1;
 import org.drools.model.impl.ModelComponent;
 
-public class BindViewItem<T> implements ViewItem<T>, Binding, ModelComponent {
+public class BindViewItem1<T> implements ViewItem<T>, Binding, ModelComponent {
 
     private final Variable<T> boundVariable;
     private final Function1 bindingFunction;
     private final Variable inputVariable;
     private final String reactOn;
 
-    public BindViewItem( Variable<T> boundVariable, Function1 bindingFunction, Variable inputVariable, String reactOn ) {
+    public BindViewItem1(Variable<T> boundVariable, Function1 bindingFunction, Variable inputVariable, String reactOn ) {
         this.bindingFunction = bindingFunction;
         this.boundVariable = boundVariable;
         this.inputVariable = inputVariable;
@@ -45,17 +45,26 @@ public class BindViewItem<T> implements ViewItem<T>, Binding, ModelComponent {
     }
 
     @Override
+    public Variable[] getInputVariables() {
+        return new Variable[] { inputVariable} ;
+    }
+
+    @Override
     public String getReactOn() {
         return reactOn;
     }
 
+    @Override
+    public Object eval(Object... args) {
+        return bindingFunction.apply(args[0]);
+    }
 
     @Override
     public boolean isEqualTo( ModelComponent o ) {
         if ( this == o ) return true;
-        if ( !(o instanceof BindViewItem) ) return false;
+        if ( !(o instanceof BindViewItem1) ) return false;
 
-        BindViewItem<?> that = ( BindViewItem<?> ) o;
+        BindViewItem1<?> that = (BindViewItem1<?>) o;
 
         if ( !ModelComponent.areEqualInModel( boundVariable, that.boundVariable )) return false;
         if ( !ModelComponent.areEqualInModel( inputVariable, that.inputVariable )) return false;
