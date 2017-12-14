@@ -87,7 +87,7 @@ public class SingletonRuntimeManager extends AbstractRuntimeManager {
         // TODO should we proxy/wrap the ksession so we capture dispose.destroy method calls?
         String location = getLocation();
         Long knownSessionId = getPersistedSessionId(location, identifier);
-        InternalTaskService internalTaskService = (InternalTaskService) taskServiceFactory.newTaskService();
+        InternalTaskService internalTaskService = newTaskService(taskServiceFactory);
         
         boolean owner = false;
         TransactionManager tm = null;

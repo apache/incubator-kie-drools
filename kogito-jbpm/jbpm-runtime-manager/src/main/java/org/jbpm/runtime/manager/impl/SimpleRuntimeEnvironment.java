@@ -265,6 +265,7 @@ public class SimpleRuntimeEnvironment implements RuntimeEnvironment, SchedulerPr
         addIfPresent(EnvironmentName.USE_LOCAL_TRANSACTIONS, copy);
         addIfPresent(EnvironmentName.USE_PESSIMISTIC_LOCKING, copy);        
         addIfPresent(EnvironmentName.EXEC_ERROR_MANAGER, copy);
+        addIfPresent(EnvironmentName.DEPLOYMENT_ID, copy);
         
         if (usePersistence()) {
             ObjectMarshallingStrategy[] strategies = (ObjectMarshallingStrategy[]) copy.get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES);        

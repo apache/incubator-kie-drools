@@ -407,7 +407,8 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
     }
 
 	public void reconnect() {
-		super.reconnect();
+        validate();
+	    super.reconnect();
 		for (NodeInstance nodeInstance : nodeInstances) {
 			if (nodeInstance instanceof EventBasedNodeInstanceInterface) {
 				((EventBasedNodeInstanceInterface) nodeInstance)
@@ -484,15 +485,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 			if (getState() != ProcessInstance.STATE_ACTIVE) {
 				return;
 			}
-			InternalRuntimeManager manager = (InternalRuntimeManager) getKnowledgeRuntime().getEnvironment().get("RuntimeManager");
-	        if (manager != null) {
-	            // check if process instance is owned by the same manager as the one owning ksession
-	            if (hasDeploymentId() && !manager.getIdentifier().equals(getDeploymentId())) {
-	                logger.debug("Skipping signal on process instance " + getId() + " as it's owned by another deployment " +
-	                                                    getDeploymentId() + " != " + manager.getIdentifier());
-	                return;
-	            }
-	        }
+
 			List<NodeInstance> currentView = new ArrayList<NodeInstance>(this.nodeInstances);
 
 			try {
@@ -558,7 +551,18 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 		}
 	}
 
-	protected List<String> resolveVariables(List<String> events) {
+	private void validate() {
+	    InternalRuntimeManager manager = (InternalRuntimeManager) getKnowledgeRuntime().getEnvironment().get("RuntimeManager");
+        if (manager != null) {
+            // check if process instance is owned by the same manager as the one owning ksession
+            if (hasDeploymentId() && !manager.getIdentifier().equals(getDeploymentId())) {
+                throw new IllegalStateException("Process instance " + getId() + " is owned by another deployment " +
+                        getDeploymentId() + " != " + manager.getIdentifier());
+            }
+        }
+    }
+
+    protected List<String> resolveVariables(List<String> events) {
 	    return events.stream().map( event -> resolveVariable(event)).collect(Collectors.toList());
 	}
 

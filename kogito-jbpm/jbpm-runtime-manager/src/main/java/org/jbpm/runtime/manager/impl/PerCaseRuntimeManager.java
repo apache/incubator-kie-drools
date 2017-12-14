@@ -139,7 +139,7 @@ public class PerCaseRuntimeManager extends AbstractRuntimeManager {
                     ksession = factory.findKieSessionById(ksessionId);
                 }
             }
-            InternalTaskService internalTaskService = (InternalTaskService) taskServiceFactory.newTaskService();
+            InternalTaskService internalTaskService = newTaskService(taskServiceFactory);
             runtime = new RuntimeEngineImpl(ksession, internalTaskService);
             ((RuntimeEngineImpl) runtime).setManager(this);
             ((RuntimeEngineImpl) runtime).setContext(context);
@@ -706,7 +706,7 @@ public class PerCaseRuntimeManager extends AbstractRuntimeManager {
 
         @Override
         public TaskService initTaskService(Context<?> context, InternalRuntimeManager manager, RuntimeEngine engine) {
-            InternalTaskService internalTaskService = (InternalTaskService) taskServiceFactory.newTaskService();
+            InternalTaskService internalTaskService = newTaskService(taskServiceFactory);
             if (internalTaskService != null) {
                 registerDisposeCallback(engine, new DisposeSessionTransactionSynchronization(manager, engine), ((CommandBasedTaskService) internalTaskService).getEnvironment());
                 configureRuntimeOnTaskService(internalTaskService, engine);

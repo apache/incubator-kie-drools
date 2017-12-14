@@ -18,7 +18,9 @@ package org.jbpm.runtime.manager.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
+import java.util.List;
 import java.util.Properties;
 
 import javax.persistence.EntityManagerFactory;
@@ -115,7 +117,7 @@ public class SignalScopedToRuntimeManagerTest extends AbstractBaseTest {
         testSignalEventScopedToOwningRuntimeManager();
     }
 
-    public void testSignalEventScopedToOwningRuntimeManager() {
+    private void testSignalEventScopedToOwningRuntimeManager() {
         
         // start first process instance with first manager
         RuntimeEngine runtime1 = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
@@ -161,13 +163,89 @@ public class SignalScopedToRuntimeManagerTest extends AbstractBaseTest {
         manager.close();
     }
     
+    @Test
+    public void testSingletonRuntimeManagerCompleteTaskViaWrongRuntimeManager() {
+        RuntimeEnvironment environment = createEnvironment();        
+        manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment, "first");        
+        assertNotNull(manager);
+        
+        RuntimeEnvironment environment2 = createEnvironment();        
+        manager2 = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment2, "second");        
+        assertNotNull(manager2);
+        
+        testCompleteTaskViaWrongRuntimeManager();
+    }
     
+    @Test
+    public void testPerProcessInstanceRuntimeManagerCompleteTaskViaWrongRuntimeManager() {
+        RuntimeEnvironment environment = createEnvironment();        
+        manager = RuntimeManagerFactory.Factory.get().newPerProcessInstanceRuntimeManager(environment, "first");        
+        assertNotNull(manager);
+        
+        RuntimeEnvironment environment2 = createEnvironment();        
+        manager2 = RuntimeManagerFactory.Factory.get().newPerProcessInstanceRuntimeManager(environment2, "second");        
+        assertNotNull(manager2);
+        
+        testCompleteTaskViaWrongRuntimeManager();
+    }
+   
+    
+    @Test
+    public void testPerRequestRuntimeManagerCompleteTaskViaWrongRuntimeManager() {
+        RuntimeEnvironment environment = createEnvironment();        
+        manager = RuntimeManagerFactory.Factory.get().newPerRequestRuntimeManager(environment, "first");        
+        assertNotNull(manager);
+        
+        RuntimeEnvironment environment2 = createEnvironment();        
+        manager2 = RuntimeManagerFactory.Factory.get().newPerRequestRuntimeManager(environment2, "second");        
+        assertNotNull(manager2);
+        
+        testCompleteTaskViaWrongRuntimeManager();
+    }
+    
+    private void testCompleteTaskViaWrongRuntimeManager() {
+        
+        // start first process instance with first manager
+        RuntimeEngine runtime1 = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
+        KieSession ksession1 = runtime1.getKieSession();
+        assertNotNull(ksession1);                 
+        ProcessInstance processInstance = ksession1.startProcess("UserTask");
+        manager.disposeRuntimeEngine(runtime1);
+        // start another process instance of the same process just owned by another manager
+        RuntimeEngine runtime2 = manager2.getRuntimeEngine(ProcessInstanceIdContext.get());
+        KieSession ksession2 = runtime2.getKieSession();
+        assertNotNull(ksession2);         
+        ProcessInstance processInstance2 = ksession2.startProcess("UserTask");
+        manager2.disposeRuntimeEngine(runtime2);
+
+        // then complete first instance task via second manager, should throw exception
+        runtime2 = manager2.getRuntimeEngine(ProcessInstanceIdContext.get(processInstance2.getId()));
+        List<Long> tasks1 = runtime2.getTaskService().getTasksByProcessInstanceId(processInstance.getId());
+        assertEquals(1, tasks1.size());
+        
+        long task1Id = tasks1.get(0);
+        try {
+            runtime2.getTaskService().start(task1Id, "john");
+        
+            runtime2.getTaskService().complete(task1Id, "john", null);
+            fail("Should not be allowed to complete task via wrong runtime manager");
+        } catch (IllegalStateException re) {
+            assertEquals("Task instance " + task1Id + " is owned by another deployment expected first found second" , re.getMessage());
+        }
+        manager2.disposeRuntimeEngine(runtime2);        
+        
+        // close manager which will close session maintained by the manager
+        manager2.close();
+    }
+
+
     private RuntimeEnvironment createEnvironment() {
         RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
                 .newDefaultBuilder()
                 .entityManagerFactory(emf)
                 .userGroupCallback(userGroupCallback)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-IntermediateCatchEventSignalWithRef.bpmn2"), ResourceType.BPMN2)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-UserTask.bpmn2"), ResourceType.BPMN2)
                 .get();
         
         return environment;

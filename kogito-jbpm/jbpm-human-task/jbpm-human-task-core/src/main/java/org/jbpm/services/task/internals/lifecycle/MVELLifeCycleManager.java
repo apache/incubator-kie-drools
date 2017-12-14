@@ -298,6 +298,13 @@ public class MVELLifeCycleManager implements LifeCycleManager {
             	String errorMessage = "Task '" + taskId + "' not found";
                 throw new PermissionDeniedException(errorMessage);
             }
+            
+            String deploymentId = (String) context.get(EnvironmentName.DEPLOYMENT_ID);
+            if (deploymentId != null && !deploymentId.equals(task.getTaskData().getDeploymentId())) {
+                throw new IllegalStateException("Task instance " + task.getId() + " is owned by another deployment expected " +
+                        task.getTaskData().getDeploymentId() + " found " + deploymentId);
+            }
+            
             User user = persistenceContext.findUser(userId);
             OrganizationalEntity targetEntity = null;
             if (targetEntityId != null && !targetEntityId.equals("")) {

@@ -87,7 +87,7 @@ public class PerRequestRuntimeManager extends AbstractRuntimeManager {
         	return engine;
         }
     	if (engineInitEager) {
-	        InternalTaskService internalTaskService = (InternalTaskService) taskServiceFactory.newTaskService();	        
+	        InternalTaskService internalTaskService = newTaskService(taskServiceFactory);	        
 	        runtime = new RuntimeEngineImpl(factory.newKieSession(), internalTaskService);
 	        ((RuntimeEngineImpl) runtime).setManager(this);
 	        
@@ -209,7 +209,7 @@ public class PerRequestRuntimeManager extends AbstractRuntimeManager {
     public void init() {
     	TaskContentRegistry.get().addMarshallerContext(getIdentifier(), 
     			new ContentMarshallerContext(environment.getEnvironment(), environment.getClassLoader()));
-        configureRuntimeOnTaskService((InternalTaskService) taskServiceFactory.newTaskService(), null);
+        configureRuntimeOnTaskService(newTaskService(taskServiceFactory), null);
     }   
     
     private class PerRequestInitializer implements RuntimeEngineInitlializer {
@@ -232,7 +232,7 @@ public class PerRequestRuntimeManager extends AbstractRuntimeManager {
 
     	@Override    	
     	public TaskService initTaskService(Context<?> context, InternalRuntimeManager manager, RuntimeEngine engine) {
-    		InternalTaskService internalTaskService = (InternalTaskService) taskServiceFactory.newTaskService();
+    		InternalTaskService internalTaskService = newTaskService(taskServiceFactory);
             configureRuntimeOnTaskService(internalTaskService, engine);
             
     		return internalTaskService;

@@ -37,6 +37,7 @@ import org.jbpm.runtime.manager.impl.error.DefaultExecutionErrorStorage;
 import org.jbpm.runtime.manager.impl.error.ExecutionErrorManagerImpl;
 import org.jbpm.runtime.manager.impl.tx.NoOpTransactionManager;
 import org.jbpm.services.task.impl.TaskContentRegistry;
+import org.jbpm.services.task.impl.command.CommandBasedTaskService;
 import org.jbpm.services.task.wih.ExternalTaskEventListener;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
@@ -62,6 +63,7 @@ import org.kie.internal.runtime.manager.RuntimeManagerRegistry;
 import org.kie.internal.runtime.manager.SecurityManager;
 import org.kie.internal.runtime.manager.SessionFactory;
 import org.kie.internal.runtime.manager.SessionNotFoundException;
+import org.kie.internal.runtime.manager.TaskServiceFactory;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.kie.internal.task.api.EventService;
 import org.kie.internal.task.api.InternalTaskService;
@@ -109,6 +111,7 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
         if (registry.isRegistered(identifier)) {
             throw new IllegalStateException("RuntimeManager with id " + identifier + " is already active");
         }
+        ((SimpleRuntimeEnvironment)environment).getEnvironmentTemplate().set(EnvironmentName.DEPLOYMENT_ID, this.getIdentifier());
         internalSetDeploymentDescriptor();
         internalSetKieContainer();
         ((InternalRegisterableItemsFactory)environment.getRegisterableItemsFactory()).setRuntimeManager(this);
@@ -257,10 +260,19 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
         this.identifier = identifier;
     }
     
+    protected InternalTaskService newTaskService(TaskServiceFactory factory) {
+        InternalTaskService internalTaskService = (InternalTaskService) factory.newTaskService();
+        if (internalTaskService instanceof CommandBasedTaskService) {
+            ((CommandBasedTaskService) internalTaskService).getEnvironment().set(EnvironmentName.DEPLOYMENT_ID, this.getIdentifier());
+        }
+        
+        return internalTaskService;
+    }
+    
     @SuppressWarnings({ "unchecked", "rawtypes" })
     protected void configureRuntimeOnTaskService(InternalTaskService internalTaskService, RuntimeEngine engine) {
     	
-        if (internalTaskService != null) {
+        if (internalTaskService != null) {            
             
             ExternalTaskEventListener listener = new ExternalTaskEventListener();
             if (internalTaskService instanceof EventService) {

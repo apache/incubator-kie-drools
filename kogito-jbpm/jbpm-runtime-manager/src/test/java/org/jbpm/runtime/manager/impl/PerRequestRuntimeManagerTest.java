@@ -503,16 +503,15 @@ public class PerRequestRuntimeManagerTest extends AbstractBaseTest {
         Long taskId = taskList.get(0).getId();
         Task task = taskService2.getTaskById(taskId);
         assertEquals("id-1", task.getTaskData().getDeploymentId());
-
-        taskService2.start(taskId, "john");
-
         try {
+            taskService2.start(taskId, "john");
+        
             taskService2.complete(taskId, "john", null);
         } catch (NullPointerException npe) {
             fail("NullPointerException is thrown");
-        } catch (RuntimeException re) {
-            // RuntimeException with a better message
-            assertEquals("No RuntimeManager registered with identifier: id-1", re.getMessage());
+        } catch (IllegalStateException re) {
+            assertEquals("Task instance " + task.getId() + " is owned by another deployment expected " +
+                        task.getTaskData().getDeploymentId() + " found id-2" , re.getMessage());
         }
 
         manager2.disposeRuntimeEngine(runtime2);
