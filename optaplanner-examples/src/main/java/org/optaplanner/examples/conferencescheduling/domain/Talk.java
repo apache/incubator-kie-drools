@@ -127,7 +127,7 @@ public class Talk extends AbstractPersistable {
             return 0;
         }
         return (int) speakerList.stream().flatMap(speaker -> speaker.getRequiredRoomTagSet().stream())
-                .filter(tag -> !timeslot.hasTag(tag)).count();
+                .filter(tag -> !room.hasTag(tag)).count();
     }
 
     public int missingSpeakerPreferredRoomTagCount() {
@@ -135,7 +135,7 @@ public class Talk extends AbstractPersistable {
             return 0;
         }
         return (int) speakerList.stream().flatMap(speaker -> speaker.getPreferredRoomTagSet().stream())
-                .filter(tag -> !timeslot.hasTag(tag)).count();
+                .filter(tag -> !room.hasTag(tag)).count();
     }
 
     @Override

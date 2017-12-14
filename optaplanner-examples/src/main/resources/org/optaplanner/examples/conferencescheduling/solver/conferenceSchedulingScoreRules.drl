@@ -39,14 +39,7 @@ rule "Room unavailable timeslots"
     when
         Talk(hasUnavailableRoom())
     then
-        scoreHolder.addHardConstraintMatch(kcontext, -1);
-end
-
-rule "Speaker unavailable timeslots"
-    when
-        Talk(hasAnyUnavailableSpeaker())
-    then
-        scoreHolder.addHardConstraintMatch(kcontext, -1);
+        scoreHolder.addHardConstraintMatch(kcontext, -10);
 end
 
 rule "Room conflict"
@@ -57,6 +50,13 @@ rule "Room conflict"
         Talk(timeslot != null, getTimeslot().overlaps($timeslot),
                 room == $room,
                 id > $leftId)
+    then
+        scoreHolder.addHardConstraintMatch(kcontext, -10);
+end
+
+rule "Speaker unavailable timeslots"
+    when
+        Talk(hasAnyUnavailableSpeaker())
     then
         scoreHolder.addHardConstraintMatch(kcontext, -1);
 end

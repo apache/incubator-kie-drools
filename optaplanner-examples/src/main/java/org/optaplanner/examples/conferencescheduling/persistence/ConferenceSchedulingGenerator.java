@@ -252,7 +252,7 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
             }
             room.setUnavailableTimeslotSet(unavailableTimeslotSet);
             for (Pair<String, Double> roomTagProbability : roomTagProbabilityList) {
-                if (random.nextDouble() < roomTagProbability.getValue()) {
+                if (i == 0 || i == 4 || random.nextDouble() < roomTagProbability.getValue()) {
                     tagSet.add(roomTagProbability.getKey());
                 }
             }
