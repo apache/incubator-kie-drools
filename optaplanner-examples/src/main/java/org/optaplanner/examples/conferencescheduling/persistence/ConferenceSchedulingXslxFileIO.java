@@ -41,7 +41,9 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -63,6 +65,8 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
     public static final DateTimeFormatter TIME_FORMATTER
             = DateTimeFormatter.ofPattern("HH:mm", Locale.ENGLISH);
 
+    private static final IndexedColors UNAVAILABLE_COLOR = IndexedColors.GREY_80_PERCENT;
+
     @Override
     public String getInputFileExtension() {
         return "xlsx";
@@ -82,6 +86,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
     private static class ConferenceSchedulingXslxReader {
 
         protected final Pattern VALID_TAG_PATTERN = Pattern.compile("(?U)^[\\w\\d _\\-\\.\\(\\)]+$");
+        protected final Pattern VALID_NAME_PATTERN = VALID_TAG_PATTERN;
         protected final Pattern VALID_CODE_PATTERN = Pattern.compile("(?U)^[\\w\\d_\\-\\.\\(\\)]+$");
 
         protected final Workbook workbook;
@@ -213,13 +218,17 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             readHeaderCell("Required room tags");
             readHeaderCell("Preferred room tags");
             readTimeslotHoursHeaders();
-            List<Speaker> roomList = new ArrayList<>(currentSheet.getLastRowNum() - 1);
+            List<Speaker> speakerList = new ArrayList<>(currentSheet.getLastRowNum() - 1);
             long id = 0L;
             while (hasNextRow()) {
                 nextRow();
                 Speaker speaker = new Speaker();
                 speaker.setId(id++);
                 speaker.setName(nextCell().getStringCellValue());
+                if (!VALID_NAME_PATTERN.matcher(speaker.getName()).matches()) {
+                    throw new IllegalStateException(currentPosition() + ": The speaker's name (" + speaker.getName()
+                            + ") must match to the regular expression (" + VALID_NAME_PATTERN + ").");
+                }
                 speaker.setRequiredTimeslotTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
                         .filter(tag -> !tag.isEmpty()).collect(Collectors.toCollection(LinkedHashSet::new)));
                 verifyTimeslotTags(speaker.getRequiredTimeslotTagSet());
@@ -232,9 +241,42 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 speaker.setPreferredRoomTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
                         .filter(tag -> !tag.isEmpty()).collect(Collectors.toCollection(LinkedHashSet::new)));
                 verifyRoomTags(speaker.getPreferredRoomTagSet());
-                roomList.add(speaker);
+                Set<Timeslot> unavailableTimeslotSet = new LinkedHashSet<>();
+                for (Timeslot timeslot : solution.getTimeslotList()) {
+                    Cell cell = nextCell();
+                    if (extractColor(cell, UNAVAILABLE_COLOR) == UNAVAILABLE_COLOR) {
+                        unavailableTimeslotSet.add(timeslot);
+                    }
+                    if (!cell.getStringCellValue().isEmpty()) {
+                        throw new IllegalStateException(currentPosition() + ": The speaker (" + speaker.getName()
+                                + ") has a non empty timeslot cell (" + cell.getStringCellValue() + ").");
+                    }
+                }
+                speaker.setUnavailableTimeslotSet(unavailableTimeslotSet);
+                speakerList.add(speaker);
             }
-            solution.setSpeakerList(roomList);
+            solution.setSpeakerList(speakerList);
+        }
+
+        private IndexedColors extractColor(Cell cell, IndexedColors... acceptableColors) {
+            CellStyle cellStyle = cell.getCellStyle();
+            FillPatternType fillPattern = cellStyle.getFillPatternEnum();
+            if (fillPattern == null || fillPattern == FillPatternType.NO_FILL) {
+                return null;
+            }
+            if (fillPattern != FillPatternType.SOLID_FOREGROUND) {
+                throw new IllegalStateException(currentPosition() + ": The fill pattern (" + fillPattern
+                        + ") should be either " + FillPatternType.NO_FILL
+                        + " or " + FillPatternType.SOLID_FOREGROUND + ".");
+            }
+            short colorIndex = cellStyle.getFillForegroundColor();
+            for (IndexedColors acceptableColor : acceptableColors) {
+                if (acceptableColor.getIndex() == colorIndex) {
+                    return acceptableColor;
+                }
+            }
+            throw new IllegalStateException(currentPosition() + ": The fill color (" + colorIndex
+                    + ") is not one of the acceptableColors (" + Arrays.toString(acceptableColors) + ").");
         }
 
         private void readTalkList() {
@@ -400,6 +442,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
         protected Workbook workbook;
 
         protected CellStyle headerStyle;
+        protected CellStyle unavailableStyle;
 
         protected Sheet currentSheet;
         protected Row currentRow;
@@ -429,6 +472,9 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             Font font = workbook.createFont();
             font.setBold(true);
             headerStyle.setFont(font);
+            unavailableStyle = workbook.createCellStyle();
+            unavailableStyle.setFillForegroundColor(UNAVAILABLE_COLOR.getIndex());
+            unavailableStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         }
 
         private void writeTimeslotList() {
@@ -496,6 +542,13 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 nextCell().setCellValue(String.join(", ", speaker.getPreferredTimeslotTagSet()));
                 nextCell().setCellValue(String.join(", ", speaker.getRequiredRoomTagSet()));
                 nextCell().setCellValue(String.join(", ", speaker.getPreferredRoomTagSet()));
+                for (Timeslot timeslot : solution.getTimeslotList()) {
+                    if (speaker.getUnavailableTimeslotSet().contains(timeslot)) {
+                        nextCell(unavailableStyle);
+                    } else {
+                        nextCell();
+                    }
+                }
             }
             autoSizeColumnsWithHeader();
         }

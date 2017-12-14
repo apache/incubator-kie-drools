@@ -28,6 +28,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.optaplanner.examples.common.app.CommonApp;
@@ -243,6 +244,34 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
             Speaker speaker = new Speaker();
             speaker.setId((long) i);
             speaker.setName(speakerNameGenerator.generateNextValue());
+            Set<Timeslot> unavailableTimeslotSet;
+            List<Timeslot> timeslotList = solution.getTimeslotList();
+            if (random.nextDouble() < 0.10) {
+                if (random.nextDouble() < 0.25) {
+                    // No mornings
+                    unavailableTimeslotSet = timeslotList.stream()
+                            .filter(timeslot -> timeslot.getStartDateTime().toLocalTime().isBefore(LocalTime.of(12,0)))
+                            .collect(Collectors.toCollection(LinkedHashSet::new));
+                } else if (random.nextDouble() < 0.25) {
+                    // No afternoons
+                    unavailableTimeslotSet = timeslotList.stream()
+                            .filter(timeslot -> !timeslot.getStartDateTime().toLocalTime().isBefore(LocalTime.of(12,0)))
+                            .collect(Collectors.toCollection(LinkedHashSet::new));
+                } else if (random.nextDouble() < 0.25) {
+                    // Only 1 day available
+                    LocalDate availableDate = timeslotList.get(random.nextInt(timeslotList.size())).getDate();
+                    unavailableTimeslotSet = timeslotList.stream()
+                            .filter(timeslot -> !timeslot.getDate().equals(availableDate))
+                            .collect(Collectors.toCollection(LinkedHashSet::new));
+                } else {
+                    unavailableTimeslotSet = timeslotList.stream()
+                            .filter(timeslot -> random.nextDouble() < 0.10)
+                            .collect(Collectors.toCollection(LinkedHashSet::new));
+                }
+            } else {
+                unavailableTimeslotSet = new LinkedHashSet<>(timeslotList.size());
+            }
+            speaker.setUnavailableTimeslotSet(unavailableTimeslotSet);
             Set<String> requiredTimeslotTagSet = new LinkedHashSet<>();
 
             speaker.setRequiredTimeslotTagSet(requiredTimeslotTagSet);
