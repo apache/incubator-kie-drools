@@ -22,27 +22,29 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.assertj.core.api.Assertions;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.runners.Parameterized;
-import org.kie.api.time.SessionPseudoClock;
 import org.drools.testcoverage.common.model.Message;
 import org.drools.testcoverage.common.model.MessageEvent;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieSessionUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.After;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.rule.EntryPoint;
+import org.kie.api.time.SessionPseudoClock;
 
 import static org.drools.compiler.TestUtil.assertDrlHasCompilationError;
 
 /**
  * Tests usage of OOPath expressions with CEP (events, event windows, event streams).
  */
+@RunWith(Parameterized.class)
 public class OOPathCepTest {
 
     private static final String MODULE_GROUP_ID = "oopath-cep-test";
