@@ -56,7 +56,7 @@ public class CompilerTest extends BaseModelTest {
                 "rule R when\n" +
                 "  $p : Person(name == \"Mario\")\n" +
                 "then\n" +
-                "  modify($p) { setAge($p.getAge()+1) };\n" +
+                "  modify($p) { setAge($p.getAge()+1) }\n" +
                 "end";
 
         KieSession ksession = getKieSession( str );
@@ -1005,5 +1005,125 @@ public class CompilerTest extends BaseModelTest {
 
         results = getObjectsIntoList(ksession, String.class);
         assertFalse(results.contains("Hello World"));
+    }
+
+    @Test
+    public void testModifyRewriteAvoidTwiceThePreceeding() {
+        String str = "import " + Person.class.getCanonicalName() + ";" +
+                     "global java.util.List globalA \n" +
+                     "global java.util.List globalB \n" +
+                     "rule R \n" +
+                     "when\n" +
+                     "  $p : Person()" +
+                     "then\n" +
+                     "  globalA.add(\"A\");\n" +
+                     "  modify( $p ) { setAge(47); }\n" +
+                     "  globalB.add(\"B\");\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+
+        List globalA = new ArrayList<>();
+        List globalB = new ArrayList<>();
+        ksession.setGlobal("globalA", globalA);
+        ksession.setGlobal("globalB", globalB);
+
+        ksession.insert(new Person("person1"));
+        ksession.fireAllRules();
+
+        assertEquals(1, globalA.size());
+        assertEquals(1, globalB.size());
+    }
+
+    @Test
+    public void testEmptyModifyRewrite() {
+        String str = "rule R \n" +
+                     "no-loop \n" +
+                     "when\n" +
+                     "  $s : String()" +
+                     "then\n" +
+                     "  System.out.println(\"intentional empty modify on $s\" + $s);" +
+                     "  modify( $s ) { }\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert("Hello World");
+        int fired = ksession.fireAllRules();
+
+        assertEquals(1, fired);
+    }
+
+    @Test()
+    public void testModifyRewriteWithComments() {
+        String str = "import " + Person.class.getCanonicalName() + ";" +
+                     "global java.util.List globalA \n" +
+                     "global java.util.List globalB \n" +
+                     "rule R \n" +
+                     "when\n" +
+                     "  $p : Person()" +
+                     "then\n" +
+                     "  globalA.add(\"A\");\n" +
+                     "  modify( $p ) {\n" +
+                     "    // modify ; something\n" +
+                     "    /* modify ; something */\n" +
+                     "    setAge(47)\n" +
+                     "  }\n" +
+                     "  globalB.add(\"B\");\n" +
+                     "  // modify ; something\n" +
+                     "  /* modify ; something */\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+
+        List globalA = new ArrayList<>();
+        List globalB = new ArrayList<>();
+        ksession.setGlobal("globalA", globalA);
+        ksession.setGlobal("globalB", globalB);
+
+        Person person1 = new Person("person1");
+        ksession.insert(person1);
+        ksession.fireAllRules();
+
+        assertEquals(1, globalA.size());
+        assertEquals(1, globalB.size());
+        assertEquals(47, person1.getAge());
+    }
+
+    @Test()
+    @Ignore("fails for exec model, is not recognizing properly start/ends of modify block")
+    public void testModifyRewriteWithCommentsAbsurd() {
+        String str = "import " + Person.class.getCanonicalName() + ";" +
+                     "global java.util.List globalA \n" +
+                     "global java.util.List globalB \n" +
+                     "rule R \n" +
+                     "when\n" +
+                     "  $p : Person()" +
+                     "then\n" +
+                     "  globalA.add(\"A\");\n" +
+                     "  modify( $p ) {\n" +
+                     "    // modify( $p ) { setAge(1) } \n" +
+                     "    /* modify( $p ) { setAge(2) } */\n" +
+                     "    setAge(47)\n" +
+                     "  }\n" +
+                     "  globalB.add(\"B\");\n" +
+                     "  // modify( $p ) { setAge(1) }\n" +
+                     "  /* modify( $p ) { setAge(2) } */\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+
+        List globalA = new ArrayList<>();
+        List globalB = new ArrayList<>();
+        ksession.setGlobal("globalA", globalA);
+        ksession.setGlobal("globalB", globalB);
+
+        Person person1 = new Person("person1");
+        ksession.insert(person1);
+        ksession.fireAllRules();
+
+        assertEquals(1, globalA.size());
+        assertEquals(1, globalB.size());
+        assertEquals(47, person1.getAge());
     }
 }

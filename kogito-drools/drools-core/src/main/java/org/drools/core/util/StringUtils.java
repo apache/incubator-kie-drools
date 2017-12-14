@@ -1113,8 +1113,12 @@ public class StringUtils {
     }
 
     public static int indexOfOutOfQuotes(String str, String searched) {
-        for ( int i = str.indexOf(searched); i >= 0; i = str.indexOf(searched, i+1) ) {
-            if ( countQuoteOccurrences( str, 0, i ) % 2 == 0 ) {
+        return indexOfOutOfQuotes(str, searched, 0);
+    }
+
+    public static int indexOfOutOfQuotes(String str, String searched, int fromIndex) {
+        for (int i = str.indexOf(searched, fromIndex); i >= 0; i = str.indexOf(searched, i + 1)) {
+            if (countQuoteOccurrences(str, 0, i) % 2 == 0) {
                 return i;
             }
         }

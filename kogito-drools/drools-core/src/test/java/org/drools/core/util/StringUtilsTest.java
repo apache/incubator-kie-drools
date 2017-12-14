@@ -19,6 +19,9 @@ package org.drools.core.util;
 import org.junit.Assert;
 import org.junit.Test;
 
+import static org.drools.core.util.StringUtils.indexOfOutOfQuotes;
+import static org.junit.Assert.assertEquals;
+
 public class StringUtilsTest {
 
     @Test
@@ -233,5 +236,15 @@ public class StringUtilsTest {
                         "end\n"
                 )
             );
+    }
+
+    @Test
+    public void test_indexOfOutOfQuotes() {
+        assertEquals(0, indexOfOutOfQuotes("bla\"bla\"bla", "bla"));
+        assertEquals(5, indexOfOutOfQuotes("\"bla\"bla", "bla"));
+        assertEquals(-1, indexOfOutOfQuotes("\"bla\"", "bla"));
+        assertEquals(0, indexOfOutOfQuotes("bla\"bla\"bla", "bla", 0));
+        assertEquals(8, indexOfOutOfQuotes("bla\"bla\"bla", "bla", 1));
+        assertEquals(-1, indexOfOutOfQuotes("bla\"bla\"bla", "bla", 9));
     }
 }
