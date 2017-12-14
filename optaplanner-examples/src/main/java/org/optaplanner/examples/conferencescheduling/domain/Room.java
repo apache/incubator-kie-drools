@@ -24,6 +24,8 @@ public class Room extends AbstractPersistable {
 
     private String name;
 
+    private Set<Timeslot> unavailableTimeslotSet;
+
     private Set<String> tagSet;
 
     public boolean hasTag(String tag) {
@@ -45,6 +47,14 @@ public class Room extends AbstractPersistable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Set<Timeslot> getUnavailableTimeslotSet() {
+        return unavailableTimeslotSet;
+    }
+
+    public void setUnavailableTimeslotSet(Set<Timeslot> unavailableTimeslotSet) {
+        this.unavailableTimeslotSet = unavailableTimeslotSet;
     }
 
     public Set<String> getTagSet() {

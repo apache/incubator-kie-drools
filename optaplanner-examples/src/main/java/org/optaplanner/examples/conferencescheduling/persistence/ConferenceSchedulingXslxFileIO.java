@@ -59,13 +59,16 @@ import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
 public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<ConferenceSolution> {
 
-    public static final DateTimeFormatter DAY_FORMATTER
-            = DateTimeFormatter.ofPattern("E yyyy-MM-dd", Locale.ENGLISH);
+    protected static final Pattern VALID_TAG_PATTERN = Pattern.compile("(?U)^[\\w\\d _\\-\\.\\(\\)]+$");
+    protected static final Pattern VALID_NAME_PATTERN = VALID_TAG_PATTERN;
+    protected static final Pattern VALID_CODE_PATTERN = Pattern.compile("(?U)^[\\w\\d_\\-\\.\\(\\)]+$");
 
-    public static final DateTimeFormatter TIME_FORMATTER
+    protected static final DateTimeFormatter DAY_FORMATTER
+            = DateTimeFormatter.ofPattern("E yyyy-MM-dd", Locale.ENGLISH);
+    protected static final DateTimeFormatter TIME_FORMATTER
             = DateTimeFormatter.ofPattern("HH:mm", Locale.ENGLISH);
 
-    private static final IndexedColors UNAVAILABLE_COLOR = IndexedColors.GREY_80_PERCENT;
+    protected static final IndexedColors UNAVAILABLE_COLOR = IndexedColors.GREY_80_PERCENT;
 
     @Override
     public String getInputFileExtension() {
@@ -84,10 +87,6 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
     }
 
     private static class ConferenceSchedulingXslxReader {
-
-        protected final Pattern VALID_TAG_PATTERN = Pattern.compile("(?U)^[\\w\\d _\\-\\.\\(\\)]+$");
-        protected final Pattern VALID_NAME_PATTERN = VALID_TAG_PATTERN;
-        protected final Pattern VALID_CODE_PATTERN = Pattern.compile("(?U)^[\\w\\d_\\-\\.\\(\\)]+$");
 
         protected final Workbook workbook;
 
@@ -180,6 +179,10 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 Room room = new Room();
                 room.setId(id++);
                 room.setName(nextCell().getStringCellValue());
+                if (!VALID_NAME_PATTERN.matcher(room.getName()).matches()) {
+                    throw new IllegalStateException(currentPosition() + ": The speaker's name (" + room.getName()
+                            + ") must match to the regular expression (" + VALID_NAME_PATTERN + ").");
+                }
                 room.setTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
                         .filter(tag -> !tag.isEmpty()).collect(Collectors.toCollection(LinkedHashSet::new)));
                 for (String tag : room.getTagSet()) {
@@ -189,15 +192,22 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                     }
                 }
                 totalRoomTagSet.addAll(room.getTagSet());
-                roomList.add(room);
+                Set<Timeslot> unavailableTimeslotSet = new LinkedHashSet<>();
                 for (Timeslot timeslot : solution.getTimeslotList()) {
-                    String[] talkCodes = Arrays.stream(nextCell().getStringCellValue().split(", "))
-                            .filter(code -> !code.isEmpty()).toArray(String[]::new);
+                    Cell cell = nextCell();
+                    if (extractColor(cell, UNAVAILABLE_COLOR) == UNAVAILABLE_COLOR) {
+                        unavailableTimeslotSet.add(timeslot);
+                    }
+                    String[] talkCodes = cell.getStringCellValue().split(", ");
                     Pair<Timeslot, Room> pair = Pair.of(timeslot, room);
                     for (String talkCode : talkCodes) {
-                        talkCodeToTimeslotRoomMap.put(talkCode, pair);
+                        if (!talkCode.isEmpty()) {
+                            talkCodeToTimeslotRoomMap.put(talkCode, pair);
+                        }
                     }
                 }
+                room.setUnavailableTimeslotSet(unavailableTimeslotSet);
+                roomList.add(room);
             }
             solution.setRoomList(roomList);
         }
@@ -512,7 +522,13 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 nextCell().setCellValue(String.join(", ", room.getTagSet()));
                 for (Timeslot timeslot : solution.getTimeslotList()) {
                     List<Talk> talkList = timeslotRoomToTalkMap.get(Pair.of(timeslot, room));
-                    nextCell().setCellValue(talkList == null ? ""
+                    Cell cell;
+                    if (room.getUnavailableTimeslotSet().contains(timeslot)) {
+                        cell = nextCell(unavailableStyle);
+                    } else {
+                        cell = nextCell();
+                    }
+                    cell.setCellValue(talkList == null ? ""
                             : talkList.stream().map(Talk::getCode).collect(Collectors.joining(", ")));
                 }
             }

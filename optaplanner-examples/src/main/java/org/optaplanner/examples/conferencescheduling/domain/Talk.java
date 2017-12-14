@@ -49,6 +49,13 @@ public class Talk extends AbstractPersistable {
         return speakerList.contains(speaker);
     }
 
+    public boolean hasUnavailableRoom() {
+        if (timeslot == null || room == null) {
+            return false;
+        }
+        return room.getUnavailableTimeslotSet().contains(timeslot);
+    }
+
     public boolean hasAnyUnavailableSpeaker() {
         if (timeslot == null) {
             return false;

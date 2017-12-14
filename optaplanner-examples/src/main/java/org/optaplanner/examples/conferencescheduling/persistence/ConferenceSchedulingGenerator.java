@@ -220,10 +220,17 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
             Room room = new Room();
             room.setId((long) i);
             room.setName("R " + ((i / roomsPerFloor * 100) + (i % roomsPerFloor) + 1));
+            LinkedHashSet<Timeslot> unavailableTimeslotSet = new LinkedHashSet<>();
             Set<String> tagSet = new LinkedHashSet<>(roomTagProbabilityList.size());
             if (i % 5 == 4) {
                 tagSet.add(LAB_ROOM_TAG);
+                unavailableTimeslotSet.addAll(solution.getTimeslotList().stream()
+                        .filter(timeslot -> timeslot.getTalkType() != LAB_TALK_TYPE).collect(Collectors.toList()));
+            } else {
+                unavailableTimeslotSet.addAll(solution.getTimeslotList().stream()
+                        .filter(timeslot -> timeslot.getTalkType() == LAB_TALK_TYPE).collect(Collectors.toList()));
             }
+            room.setUnavailableTimeslotSet(unavailableTimeslotSet);
             for (Pair<String, Double> roomTagProbability : roomTagProbabilityList) {
                 if (random.nextDouble() < roomTagProbability.getValue()) {
                     tagSet.add(roomTagProbability.getKey());

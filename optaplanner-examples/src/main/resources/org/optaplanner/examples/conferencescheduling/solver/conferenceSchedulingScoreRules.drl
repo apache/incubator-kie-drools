@@ -35,6 +35,13 @@ rule "Talk type of timeslot"
         scoreHolder.addHardConstraintMatch(kcontext, -100);
 end
 
+rule "Room unavailable timeslots"
+    when
+        Talk(hasUnavailableRoom())
+    then
+        scoreHolder.addHardConstraintMatch(kcontext, -1);
+end
+
 rule "Speaker unavailable timeslots"
     when
         Talk(hasAnyUnavailableSpeaker())
