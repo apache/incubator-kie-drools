@@ -1,5 +1,6 @@
 package org.drools.modelcompiler.builder.generator;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -8,16 +9,22 @@ import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.rule.builder.util.AccumulateUtil;
 import org.drools.drlx.DrlxParser;
 import org.drools.javaparser.ast.Node;
+import org.drools.javaparser.ast.body.Parameter;
 import org.drools.javaparser.ast.expr.BinaryExpr;
 import org.drools.javaparser.ast.expr.ClassExpr;
 import org.drools.javaparser.ast.expr.Expression;
+import org.drools.javaparser.ast.expr.LambdaExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
+import org.drools.javaparser.ast.stmt.ExpressionStmt;
+import org.drools.javaparser.ast.type.UnknownType;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.kie.api.runtime.rule.AccumulateFunction;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
+import static org.drools.modelcompiler.builder.generator.ModelGenerator.BIND_AS_CALL;
+import static org.drools.modelcompiler.builder.generator.ModelGenerator.BIND_CALL;
 
 public class AccumulateVisitor {
 
@@ -81,7 +88,7 @@ public class AccumulateVisitor {
             context.addDeclaration(new DeclarationSpec(drlxParseResult.getPatternBinding(), drlxParseResult.exprType));
 
             functionDSL.addArgument(new ClassExpr(toType(accumulateFunction.getClass())));
-            context.addExpression(ModelGenerator.buildBinding(drlxParseResult));
+            context.addExpression(buildBinding(bindExpressionVariable, drlxParseResult.usedDeclarations, drlxParseResult.expr));
             context.addDeclaration(new DeclarationSpec(bindExpressionVariable, drlxParseResult.exprType));
             functionDSL.addArgument(new NameExpr(toVar(bindExpressionVariable)));
 
@@ -163,5 +170,22 @@ public class AccumulateVisitor {
                 .orElseThrow(RuntimeException::new);
 
         return DrlxParseUtil.toMethodCallWithClassCheck(methodCallWithoutRoot, clazz, context.getPkg().getTypeResolver());
+    }
+
+    public MethodCallExpr buildBinding(String bindingName, Collection<String> usedDeclaration, Expression expression) {
+        MethodCallExpr bindDSL = new MethodCallExpr(null, BIND_CALL);
+        bindDSL.addArgument(toVar(bindingName));
+        MethodCallExpr bindAsDSL = new MethodCallExpr(bindDSL, BIND_AS_CALL);
+        usedDeclaration.stream().map(d -> new NameExpr(toVar(d))).forEach(bindAsDSL::addArgument);
+        bindAsDSL.addArgument( buildConstraintExpression(expression, usedDeclaration) );
+        return bindAsDSL;
+    }
+
+    private Expression buildConstraintExpression(Expression expr, Collection<String> usedDeclarations) {
+        LambdaExpr lambdaExpr = new LambdaExpr();
+        lambdaExpr.setEnclosingParameters( true );
+        usedDeclarations.stream().map(s -> new Parameter(new UnknownType(), s ) ).forEach(lambdaExpr::addParameter );
+        lambdaExpr.setBody( new ExpressionStmt(expr) );
+        return lambdaExpr;
     }
 }

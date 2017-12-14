@@ -2,6 +2,7 @@ package org.drools.modelcompiler.constraints;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.List;
 
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
@@ -10,16 +11,17 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Accumulator;
 import org.drools.core.spi.Tuple;
 import org.drools.model.Binding;
-import org.drools.model.Pattern;
 
 public class LambdaAccumulator implements Accumulator {
 
     private final org.kie.api.runtime.rule.AccumulateFunction accumulateFunction;
-    private final Pattern sourcePattern;
+    private final Binding binding;
+    private final List<String> sourceVariables;
 
-    public LambdaAccumulator(org.kie.api.runtime.rule.AccumulateFunction accumulateFunction, Pattern sourcePattern) {
+    public LambdaAccumulator(org.kie.api.runtime.rule.AccumulateFunction accumulateFunction, Binding binding, List<String> sourceVariables) {
         this.accumulateFunction = accumulateFunction;
-        this.sourcePattern = sourcePattern;
+        this.binding = binding;
+        this.sourceVariables = sourceVariables;
     }
 
     @Override
@@ -48,15 +50,13 @@ public class LambdaAccumulator implements Accumulator {
         final Object accumulateObject = handle.getObject();
         final Object returnObject;
         if (accumulateObject instanceof SubnetworkTuple) {
-            Declaration declaration = Arrays.stream(innerDeclarations).filter(d -> d.getIdentifier().equals(sourcePattern.getPatternVariable().getName())).findFirst().orElseThrow(RuntimeException::new);
-            Binding b = (Binding) sourcePattern.getBindings().iterator().next();
-            Object object = ((SubnetworkTuple) accumulateObject).getObject(declaration);
-            Object result = b.getBindingFunction().apply(object);
-            returnObject = result;
+            final Object[] args = Arrays.stream(innerDeclarations)
+                    .filter(d -> sourceVariables.contains(d.getIdentifier()))
+                    .map(d -> ((SubnetworkTuple) accumulateObject).getObject(d)).toArray();
+
+            returnObject = binding.eval(args);
         } else {
-            Binding b = (Binding) sourcePattern.getBindings().iterator().next();
-            Object result = b.getBindingFunction().apply(accumulateObject);
-            returnObject = result;
+            returnObject = binding.eval(accumulateObject);
         }
         accumulateFunction.accumulate((Serializable) context, returnObject);
     }

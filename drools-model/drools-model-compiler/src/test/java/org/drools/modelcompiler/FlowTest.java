@@ -80,6 +80,7 @@ import static org.drools.model.DSL.valueOf;
 import static org.drools.model.DSL.when;
 import static org.drools.model.DSL.window;
 import static org.drools.modelcompiler.BaseModelTest.getObjectsIntoList;
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.*;
 
 public class FlowTest {
@@ -1081,5 +1082,56 @@ public class FlowTest {
 
         List<Person> results = getObjectsIntoList(ksession, Person.class);
         assertEquals(1, results.get(0).getAge());
+    }
+
+    @Test
+    @Ignore
+    public void testAccumuluateWithAnd2() {
+        final org.drools.model.Variable<java.lang.Object> var_$pattern_Object$1$ = declarationOf(type(java.lang.Object.class),
+                                                                                                 "$pattern_Object$1$");
+        final org.drools.model.Variable<org.drools.modelcompiler.domain.Child> var_$c = declarationOf(type(org.drools.modelcompiler.domain.Child.class),
+                                                                                                      "$c");
+        final org.drools.model.Variable<org.drools.modelcompiler.domain.Adult> var_$a = declarationOf(type(org.drools.modelcompiler.domain.Adult.class),
+                                                                                                      "$a");
+        final org.drools.model.Variable<Integer> var_$parentAge = declarationOf(type(Integer.class),
+                                                                                "$parentAge");
+        final org.drools.model.Variable<Integer> var_$expr$5$ = declarationOf(type(Integer.class),
+                                                                              "$expr$5$");
+        org.drools.model.Rule rule = rule("R").build(bind(var_$expr$5$).as(var_$a,
+                                                                           var_$c,
+                                                                           ($a, $c) -> $a.getAge() + $c.getAge()),
+                                                     accumulate(and(expr("$expr$1$",
+                                                                         var_$c,
+                                                                         (_this) -> _this.getAge() < 10).indexedBy(int.class,
+                                                                                                                   org.drools.model.Index.ConstraintType.LESS_THAN,
+                                                                                                                   0,
+                                                                                                                   _this -> _this.getAge(),
+                                                                                                                   10)
+                                                                            .reactOn("age"),
+                                                                    expr("$expr$2$",
+                                                                         var_$a,
+                                                                         var_$c,
+                                                                         (_this, $c) -> _this.getName()
+                                                                                 .equals($c.getParent())).reactOn("name")),
+                                                                accFunction(org.drools.core.base.accumulators.IntegerSumAccumulateFunction.class,
+                                                                            var_$expr$5$).as(var_$parentAge)),
+                                                     on(var_$parentAge).execute((drools, $parentAge) -> {
+                                                         drools.insert(new Result($parentAge));
+                                                     }));
+
+        Model model = new ModelImpl().addRule(rule);
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model);
+
+        KieSession ksession = kieBase.newKieSession();
+
+        Adult a = new Adult( "Mario", 43 );
+        Child c = new Child( "Sofia", 6, "Mario" );
+
+        ksession.insert( a );
+        ksession.insert( c );
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertThat(results, hasItem(new Result(49)));
     }
 }

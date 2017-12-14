@@ -11,6 +11,7 @@ import org.drools.model.datasources.impl.SetDataStore;
 import org.drools.model.functions.Block0;
 import org.drools.model.functions.Block1;
 import org.drools.model.functions.Function1;
+import org.drools.model.functions.Function2;
 import org.drools.model.functions.Predicate1;
 import org.drools.model.functions.Predicate2;
 import org.drools.model.functions.Predicate3;
@@ -38,7 +39,8 @@ import org.drools.model.impl.ValueImpl;
 import org.drools.model.impl.WindowImpl;
 import org.drools.model.impl.WindowReferenceImpl;
 import org.drools.model.view.AccumulateExprViewItem;
-import org.drools.model.view.BindViewItem;
+import org.drools.model.view.BindViewItem1;
+import org.drools.model.view.BindViewItem2;
 import org.drools.model.view.CombinedExprViewItem;
 import org.drools.model.view.ExistentialExprViewItem;
 import org.drools.model.view.Expr1ViewItem;
@@ -296,8 +298,10 @@ public class DSL {
 
     public static class BindViewItemBuilder<T> implements ViewItemBuilder<T> {
         private final Variable<T> boundVariable;
-        private Function1 function;
-        private Variable inputVariable;
+        private Function1 function1;
+        private Function2 function2;
+        private Variable inputVariable1;
+        private Variable inputVariable2;
         private String reactOn;
 
         private BindViewItemBuilder( Variable<T> boundVariable) {
@@ -305,8 +309,15 @@ public class DSL {
         }
 
         public <A> BindViewItemBuilder<T> as( Variable<A> var1, Function1<A, T> f) {
-            this.function = new Function1.Impl<>(f);
-            this.inputVariable = var1;
+            this.function1 = new Function1.Impl<>(f);
+            this.inputVariable1 = var1;
+            return this;
+        }
+
+        public <A, B> BindViewItemBuilder<T> as( Variable<A> var1, Variable<B> var2, Function2<A, B, T> f) {
+            this.function2 = new Function2.Impl<>(f);
+            this.inputVariable1 = var1;
+            this.inputVariable2 = var2;
             return this;
         }
 
@@ -317,7 +328,12 @@ public class DSL {
 
         @Override
         public ViewItem<T> get() {
-            return new BindViewItem<T>(boundVariable, function, inputVariable, reactOn);
+            if(function1 != null) {
+                return new BindViewItem1<T>(boundVariable, function1, inputVariable1, reactOn);
+            } else if(function2 != null) {
+                return new BindViewItem2<T>(boundVariable, function2, inputVariable1, inputVariable2, reactOn);
+            }
+            throw new UnsupportedOperationException("function1 or function2 needed");
         }
     }
 
