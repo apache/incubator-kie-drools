@@ -59,7 +59,7 @@ import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
 public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<ConferenceSolution> {
 
-    protected static final Pattern VALID_TAG_PATTERN = Pattern.compile("(?U)^[\\w\\d _\\-\\.\\(\\)]+$");
+    protected static final Pattern VALID_TAG_PATTERN = Pattern.compile("(?U)^[\\w\\d _&\\-\\.\\(\\)]+$");
     protected static final Pattern VALID_NAME_PATTERN = VALID_TAG_PATTERN;
     protected static final Pattern VALID_CODE_PATTERN = Pattern.compile("(?U)^[\\w\\d_\\-\\.\\(\\)]+$");
 
@@ -309,6 +309,8 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             readHeaderCell("Code");
             readHeaderCell("Title");
             readHeaderCell("Talk type");
+            readHeaderCell("Theme tags");
+            readHeaderCell("Sector tags");
             readHeaderCell("Language");
             readHeaderCell("Speakers");
             readHeaderCell("Required timeslot tags");
@@ -337,6 +339,22 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                     throw new IllegalStateException(currentPosition() + ": The talk type (" + talk.getTalkType()
                             + ") does not exist in the talk types (" + totalTalkTypeSet
                             + ") of the other sheet (Timeslots).");
+                }
+                talk.setThemeTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
+                        .filter(tag -> !tag.isEmpty()).collect(Collectors.toCollection(LinkedHashSet::new)));
+                for (String tag : talk.getThemeTagSet()) {
+                    if (!VALID_TAG_PATTERN.matcher(tag).matches()) {
+                        throw new IllegalStateException(currentPosition() + ": The talk (" + talk + ")'s theme tag (" + tag
+                                + ") must match to the regular expression (" + VALID_TAG_PATTERN + ").");
+                    }
+                }
+                talk.setSectorTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
+                        .filter(tag -> !tag.isEmpty()).collect(Collectors.toCollection(LinkedHashSet::new)));
+                for (String tag : talk.getSectorTagSet()) {
+                    if (!VALID_TAG_PATTERN.matcher(tag).matches()) {
+                        throw new IllegalStateException(currentPosition() + ": The talk (" + talk + ")'s sector tag (" + tag
+                                + ") must match to the regular expression (" + VALID_TAG_PATTERN + ").");
+                    }
                 }
                 talk.setLanguage(nextCell().getStringCellValue());
                 talk.setSpeakerList(Arrays.stream(nextCell().getStringCellValue().split(", "))
@@ -672,6 +690,8 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             addHeaderCell("Code");
             addHeaderCell("Title");
             addHeaderCell("Talk type");
+            addHeaderCell("Theme tags");
+            addHeaderCell("Sector tags");
             addHeaderCell("Language");
             addHeaderCell("Speakers");
             addHeaderCell("Required timeslot tags");
@@ -688,6 +708,8 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 nextCell().setCellValue(talk.getCode());
                 nextCell().setCellValue(talk.getTitle());
                 nextCell().setCellValue(talk.getTalkType());
+                nextCell().setCellValue(String.join(", ", talk.getThemeTagSet()));
+                nextCell().setCellValue(String.join(", ", talk.getSectorTagSet()));
                 nextCell().setCellValue(talk.getLanguage());
                 nextCell().setCellValue(talk.getSpeakerList()
                         .stream().map(Speaker::getName).collect(Collectors.joining(", ")));

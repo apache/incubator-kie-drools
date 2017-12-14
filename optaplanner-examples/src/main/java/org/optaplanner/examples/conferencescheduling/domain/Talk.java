@@ -30,6 +30,8 @@ public class Talk extends AbstractPersistable {
     private String code;
     private String title;
     private String talkType;
+    private Set<String> themeTagSet;
+    private Set<String> sectorTagSet;
     private String language;
     private List<Speaker> speakerList;
     private Set<String> requiredTimeslotTagSet;
@@ -45,15 +47,23 @@ public class Talk extends AbstractPersistable {
     @PlanningVariable(valueRangeProviderRefs = "roomRange")
     private Room room;
 
-    public boolean hasSpeaker(Speaker speaker) {
-        return speakerList.contains(speaker);
-    }
-
     public boolean hasUnavailableRoom() {
         if (timeslot == null || room == null) {
             return false;
         }
         return room.getUnavailableTimeslotSet().contains(timeslot);
+    }
+
+    public int overlappingThemeCount(Talk other) {
+        return (int) themeTagSet.stream().filter(tag -> other.themeTagSet.contains(tag)).count();
+    }
+
+    public int overlappingSectorCount(Talk other) {
+        return (int) sectorTagSet.stream().filter(tag -> other.sectorTagSet.contains(tag)).count();
+    }
+
+    public boolean hasSpeaker(Speaker speaker) {
+        return speakerList.contains(speaker);
     }
 
     public boolean hasAnyUnavailableSpeaker() {
@@ -159,6 +169,22 @@ public class Talk extends AbstractPersistable {
 
     public void setTalkType(String talkType) {
         this.talkType = talkType;
+    }
+
+    public Set<String> getThemeTagSet() {
+        return themeTagSet;
+    }
+
+    public void setThemeTagSet(Set<String> themeTagSet) {
+        this.themeTagSet = themeTagSet;
+    }
+
+    public Set<String> getSectorTagSet() {
+        return sectorTagSet;
+    }
+
+    public void setSectorTagSet(Set<String> sectorTagSet) {
+        this.sectorTagSet = sectorTagSet;
     }
 
     public String getLanguage() {

@@ -137,6 +137,27 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
                     "out of the box",
                     "for programmers");
 
+    private final List<String> themeTagOptions = Arrays.asList(
+            "Artificial Intelligence",
+            "Cloud",
+            "Big Data",
+            "Culture",
+            "Middleware",
+            "Mobile",
+            "IoT",
+            "Modern Web",
+            "Security"
+            );
+
+    private final List<String> sectorTagOptions = Arrays.asList(
+            "Education",
+            "Financial services",
+            "Government",
+            "Healthcare",
+            "Telecommunications",
+            "Transportation"
+            );
+
     protected final SolutionFileIO<ConferenceSolution> solutionFileIO;
     protected final File outputDir;
 
@@ -279,10 +300,8 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
             }
             speaker.setUnavailableTimeslotSet(unavailableTimeslotSet);
             Set<String> requiredTimeslotTagSet = new LinkedHashSet<>();
-
             speaker.setRequiredTimeslotTagSet(requiredTimeslotTagSet);
             Set<String> preferredTimeslotTagSet = new LinkedHashSet<>();
-
             speaker.setPreferredTimeslotTagSet(preferredTimeslotTagSet);
             Set<String> requiredRoomTagSet = new LinkedHashSet<>();
             for (Pair<String, Double> roomTagProbability : roomTagProbabilityList) {
@@ -315,6 +334,17 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
             talk.setCode(String.format("S%0" + ((String.valueOf(talkListSize).length()) + "d"), i));
             talk.setTitle(talkTitleGenerator.generateNextValue());
             talk.setTalkType(i < labTalkCount ? LAB_TALK_TYPE : BREAKOUT_TALK_TYPE);
+            Set<String> themeTagSet = new LinkedHashSet<>();
+            themeTagSet.add(themeTagOptions.get(random.nextInt(themeTagOptions.size())));
+            if (random.nextDouble() < 0.20) {
+                themeTagSet.add(themeTagOptions.get(random.nextInt(themeTagOptions.size())));
+            }
+            talk.setThemeTagSet(themeTagSet);
+            Set<String> sectorTagSet = new LinkedHashSet<>();
+            if (random.nextDouble() < 0.20) {
+                sectorTagSet.add(sectorTagOptions.get(random.nextInt(sectorTagOptions.size())));
+            }
+            talk.setSectorTagSet(sectorTagSet);
             talk.setLanguage("en");
             double randomDouble = random.nextDouble();
             int speakerCount = (randomDouble < 0.01) ? 4 :
@@ -329,19 +359,13 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
             Set<String> requiredTimeslotTagSet = new LinkedHashSet<>();
             talk.setRequiredTimeslotTagSet(requiredTimeslotTagSet);
             Set<String> preferredTimeslotTagSet = new LinkedHashSet<>();
-
-
             talk.setPreferredTimeslotTagSet(preferredTimeslotTagSet);
             Set<String> requiredRoomTagSet = new LinkedHashSet<>();
             if (i < labTalkCount) {
                 requiredRoomTagSet.add(LAB_ROOM_TAG);
             }
-
-
             talk.setRequiredRoomTagSet(requiredRoomTagSet);
             Set<String> preferredRoomTagSet = new LinkedHashSet<>();
-
-
             talk.setPreferredRoomTagSet(preferredRoomTagSet);
             logger.trace("Created talk with code ({}), title ({}) and speakers ({}).",
                     talk.getCode(), talk.getTitle(), speakerList);

@@ -106,6 +106,41 @@ end
 // Soft constraints
 // ############################################################################
 
+rule "Theme conflict"
+    when
+        $leftTalk : Talk(timeslot != null, $timeslot : timeslot,
+                $leftId : id)
+        $rightTalk : Talk(timeslot != null, getTimeslot().overlaps($timeslot),
+                overlappingThemeCount($leftTalk) > 0,
+                id > $leftId)
+    then
+        scoreHolder.addSoftConstraintMatch(kcontext, - $rightTalk.overlappingThemeCount($leftTalk));
+end
+
+rule "Sector conflict"
+    when
+        $leftTalk : Talk(timeslot != null, $timeslot : timeslot,
+                $leftId : id)
+        $rightTalk : Talk(timeslot != null, getTimeslot().overlaps($timeslot),
+                overlappingSectorCount($leftTalk) > 0,
+                id > $leftId)
+    then
+        scoreHolder.addSoftConstraintMatch(kcontext, - $rightTalk.overlappingSectorCount($leftTalk));
+end
+
+rule "Language diversity per timeslot"
+    when
+        Talk(timeslot != null, $timeslot : timeslot,
+                $language : language,
+                $leftId : id)
+        // Timeslot.overlaps() is delibertly not used
+        Talk(timeslot == $timeslot,
+                language != $language,
+                id > $leftId)
+    then
+        scoreHolder.addHardConstraintMatch(kcontext, 1);
+end
+
 rule "Talk preferred timeslot tags"
     when
         Talk($count : missingPreferredTimeslotTagCount() > 0)
@@ -132,17 +167,4 @@ rule "Speaker preferred room tags"
         Talk($count : missingSpeakerPreferredRoomTagCount() > 0)
     then
         scoreHolder.addSoftConstraintMatch(kcontext, - $count);
-end
-
-rule "Language diversity per timeslot"
-    when
-        Talk(timeslot != null, $timeslot : timeslot,
-                $language : language,
-                $leftId : id)
-        // Timeslot.overlaps() is delibertly not used
-        Talk(timeslot == $timeslot,
-                language != $language,
-                id > $leftId)
-    then
-        scoreHolder.addHardConstraintMatch(kcontext, 1);
 end
