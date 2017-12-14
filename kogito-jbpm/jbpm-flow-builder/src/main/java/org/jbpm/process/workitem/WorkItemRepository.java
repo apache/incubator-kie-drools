@@ -16,9 +16,8 @@
 
 package org.jbpm.process.workitem;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.net.URL;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -28,11 +27,12 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.core.util.ConfFileUtils;
-import org.drools.core.util.IoUtils;
+
 import org.jbpm.process.core.ParameterDefinition;
 import org.jbpm.process.core.datatype.DataType;
 import org.jbpm.process.core.impl.ParameterDefinitionImpl;
 import org.jbpm.util.WidMVELEvaluator;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -137,33 +137,12 @@ public class WorkItemRepository {
 			content = ConfFileUtils.URLContentsToString(
 				new URL(path + "/index.conf"));
 		} catch (Exception e) {
-			// get directory listings if index.conf does not exist
-			return getDirectoriesNoIndexConfig(path);
+			// directory has no index.conf - do nothing
 		}
 		if (content == null) {
 			return new String[0];
 		}
 		return content.split("\n");
-	}
-
-	private static String[] getDirectoriesNoIndexConfig(String path) {
-		List<String> dirs = new ArrayList<>();
-		try {
-			URL url = new URL(path);
-			BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream(), IoUtils.UTF8_CHARSET));
-			String line = null;
-
-			while((line = reader.readLine()) != null) {
-				if(!line.contains(".")) {
-					dirs.add(line);
-				}
-			}
-
-			reader.close();
-			return dirs.toArray(new String[0]);
-		} catch (Exception e) {
-			return new String[0];
-		}
 	}
 
 	private static List<Map<String, Object>> getWorkDefinitionsMap(String parentPath, String file) {
