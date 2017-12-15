@@ -57,6 +57,7 @@ import org.drools.javaparser.ast.drlx.expr.TemporalLiteralExpr;
 import org.drools.javaparser.ast.expr.AssignExpr;
 import org.drools.javaparser.ast.expr.BinaryExpr;
 import org.drools.javaparser.ast.expr.BinaryExpr.Operator;
+import org.drools.javaparser.ast.expr.CastExpr;
 import org.drools.javaparser.ast.expr.ClassExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.FieldAccessExpr;
@@ -374,6 +375,18 @@ public class ModelGenerator {
             declarationOfCall.addArgument( windowCall );
         }
 
+//        final Expression withDoubleCast = new CastExpr(varTypeWithGeneric, new CastExpr(variableType, declarationOfCall));
+//
+//        // When creating variables with generic types as declarationOfCall can't support types with generic we need the cast
+//        // the variable to the type
+//        final Expression withDoubleCast;
+//        if(decl.hasGenericTypes()) {
+//            withDoubleCast = new CastExpr(varTypeWithGeneric, new CastExpr(variableType, declarationOfCall));
+//        } else {
+//            withDoubleCast = declarationOfCall;
+//        }
+//
+//        AssignExpr var_assign = new AssignExpr(var_, withDoubleCast, AssignExpr.Operator.ASSIGN);
         AssignExpr var_assign = new AssignExpr(var_, declarationOfCall, AssignExpr.Operator.ASSIGN);
         ruleBlock.addStatement(var_assign);
     }
