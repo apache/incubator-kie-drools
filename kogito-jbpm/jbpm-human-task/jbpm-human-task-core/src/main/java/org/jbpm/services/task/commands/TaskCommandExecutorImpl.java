@@ -23,8 +23,10 @@ import org.drools.core.runtime.InternalLocalRunner;
 import org.jbpm.services.task.events.TaskEventSupport;
 import org.kie.api.command.Command;
 import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.Executable;
 import org.kie.api.runtime.RequestContext;
+import org.kie.internal.identity.IdentityProvider;
 
 
 public class TaskCommandExecutorImpl implements InternalLocalRunner {
@@ -73,7 +75,9 @@ public class TaskCommandExecutorImpl implements InternalLocalRunner {
 			for (Batch batch : ( (InternalExecutable) executable ).getBatches()) {
 				for (Command command : batch.getCommands()) {
 					if (command instanceof TaskCommand) {
-					    Object result = ((ExecutableCommand) command).execute( new TaskContext(context, environment, taskEventSupport) );
+					    TaskContext ctx = new TaskContext(context, environment, taskEventSupport);
+					    addUserIdToContext((TaskCommand<?>) command, ctx);
+					    Object result = ((ExecutableCommand) command).execute( ctx );
 					    context.set("Result", result);
 					} else {
 						throw new IllegalArgumentException("Task service can only execute task commands");
@@ -89,4 +93,22 @@ public class TaskCommandExecutorImpl implements InternalLocalRunner {
 		}
 	}
     
+	protected void addUserIdToContext(TaskCommand<?> command, RequestContext context) {
+	    
+	    if (context instanceof org.kie.internal.task.api.TaskContext) {
+	        org.kie.internal.task.api.TaskContext taskContext = (org.kie.internal.task.api.TaskContext) context;
+	        IdentityProvider identityProvider = (IdentityProvider) taskContext.get(EnvironmentName.IDENTITY_PROVIDER);
+	        
+	        String userId = command.getUserId();
+	        if (command instanceof CompositeCommand) {
+	            userId = ((CompositeCommand<?>) command).getMainCommand().getUserId();
+	        }
+	        if (userId == null && identityProvider != null) {
+	            userId = identityProvider.getName();
+	            command.setUserId(userId);
+	        }
+	        taskContext.setUserId(userId);
+	    }
+	    
+	}
 }

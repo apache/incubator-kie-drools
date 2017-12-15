@@ -18,13 +18,16 @@ package org.jbpm.kie.services.impl.admin.commands;
 
 import org.jbpm.services.task.commands.TaskContext;
 import org.jbpm.services.task.commands.UserGroupCallbackTaskCommand;
+import org.jbpm.services.task.events.TaskEventSupport;
 import org.jbpm.services.task.exception.PermissionDeniedException;
 import org.kie.api.runtime.Context;
+import org.kie.api.task.TaskLifeCycleEventListener.AssignmentType;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Task;
 import org.kie.internal.task.api.model.InternalPeopleAssignments;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static org.jbpm.kie.services.impl.admin.UserTaskAdminServiceImpl.*;
 
@@ -48,26 +51,38 @@ public class RemovePeopleAssignmentsCommand extends UserGroupCallbackTaskCommand
     @Override
     public Void execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
+        TaskEventSupport taskEventSupport = context.getTaskEventSupport();
         
         Task task = context.getTaskQueryService().getTaskInstanceById(taskId);       
         // security check
         if (!isBusinessAdmin(userId, task.getPeopleAssignments().getBusinessAdministrators(), context)) {
             throw new PermissionDeniedException("User " + userId + " is not business admin of task " + taskId);
         }
+        List<OrganizationalEntity> entityList = Arrays.asList(entities);
+        AssignmentType assignmentType = null;
+        
+        taskEventSupport.fireBeforeTaskUpdated(task, context);
         switch (type) {
             case POT_OWNER:
-                task.getPeopleAssignments().getPotentialOwners().removeAll(Arrays.asList(entities));
+                assignmentType = AssignmentType.POT_OWNER;
+                taskEventSupport.fireBeforeTaskAssignmentsRemovedEvent(task, context, assignmentType, entityList);
+                task.getPeopleAssignments().getPotentialOwners().removeAll(entityList);
                 break;
             case EXCL_OWNER:
-                ((InternalPeopleAssignments)task.getPeopleAssignments()).getExcludedOwners().removeAll(Arrays.asList(entities));    
+                assignmentType = AssignmentType.EXCL_OWNER;
+                taskEventSupport.fireBeforeTaskAssignmentsRemovedEvent(task, context, assignmentType, entityList);
+                ((InternalPeopleAssignments)task.getPeopleAssignments()).getExcludedOwners().removeAll(entityList);    
                 break;
             case ADMIN:
-                task.getPeopleAssignments().getBusinessAdministrators().removeAll(Arrays.asList(entities));
+                assignmentType = AssignmentType.ADMIN;
+                taskEventSupport.fireBeforeTaskAssignmentsRemovedEvent(task, context, assignmentType, entityList);
+                task.getPeopleAssignments().getBusinessAdministrators().removeAll(entityList);                
                 break;
 
             default:
                 break;
         }
+        taskEventSupport.fireAfterTaskAssignmentsRemovedEvent(task, context, assignmentType, entityList);
         return null;
     }
 

@@ -16,6 +16,8 @@
 
 package org.jbpm.kie.services.impl.admin;
 
+import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
@@ -52,11 +54,10 @@ import org.kie.internal.runtime.conf.ObjectModel;
 import org.kie.internal.task.api.TaskModelFactory;
 import org.kie.internal.task.api.TaskModelProvider;
 import org.kie.internal.task.api.model.EmailNotification;
+import org.kie.internal.task.api.model.TaskEvent;
 import org.kie.scanner.KieMavenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
 public class UserTaskAdminServiceImplTest extends AbstractKieServicesBaseTest {
 
@@ -217,6 +218,11 @@ public class UserTaskAdminServiceImplTest extends AbstractKieServicesBaseTest {
         
         userTaskAdminService.addPotentialOwners(task.getId(), false, factory.newUser("john"));
         
+        List<TaskEvent> events = runtimeDataService.getTaskEvents(task.getId(), new QueryFilter());
+        Assertions.assertThat(events).hasSize(3);
+        TaskEvent updatedEvent = events.get(2);
+        Assertions.assertThat(updatedEvent.getMessage()).isEqualTo("Potential owners [john] have been added");
+        
         tasks = runtimeDataService.getTasksAssignedAsPotentialOwner("salaboy", new QueryFilter());
         Assertions.assertThat(tasks).hasSize(1);
         tasks = runtimeDataService.getTasksAssignedAsPotentialOwner("john", new QueryFilter());
@@ -241,6 +247,10 @@ public class UserTaskAdminServiceImplTest extends AbstractKieServicesBaseTest {
         userTaskService.release(task.getId(), "salaboy");
         
         userTaskAdminService.addExcludedOwners(task.getId(), false, factory.newUser("salaboy"));
+        List<TaskEvent> events = runtimeDataService.getTaskEvents(task.getId(), new QueryFilter());
+        Assertions.assertThat(events).hasSize(3);
+        TaskEvent updatedEvent = events.get(2);
+        Assertions.assertThat(updatedEvent.getMessage()).isEqualTo("Excluded owners [salaboy] have been added");
         
         tasks = runtimeDataService.getTasksAssignedAsPotentialOwner("salaboy", new QueryFilter());
         Assertions.assertThat(tasks).hasSize(0);
@@ -269,6 +279,10 @@ public class UserTaskAdminServiceImplTest extends AbstractKieServicesBaseTest {
         Assertions.assertThat(tasks).hasSize(0);
         
         userTaskAdminService.addBusinessAdmins(task.getId(), false, factory.newUser("salaboy"));
+        List<TaskEvent> events = runtimeDataService.getTaskEvents(task.getId(), new QueryFilter());
+        Assertions.assertThat(events).hasSize(3);
+        TaskEvent updatedEvent = events.get(2);
+        Assertions.assertThat(updatedEvent.getMessage()).isEqualTo("Business administrators [salaboy] have been added");
         
         tasks = runtimeDataService.getTasksAssignedAsBusinessAdministrator("salaboy", new QueryFilter());
         Assertions.assertThat(tasks).hasSize(1);
@@ -294,6 +308,10 @@ public class UserTaskAdminServiceImplTest extends AbstractKieServicesBaseTest {
         userTaskService.release(task.getId(), "salaboy");
         
         userTaskAdminService.removePotentialOwners(task.getId(), factory.newUser("salaboy"));
+        List<TaskEvent> events = runtimeDataService.getTaskEvents(task.getId(), new QueryFilter());
+        Assertions.assertThat(events).hasSize(3);
+        TaskEvent updatedEvent = events.get(2);
+        Assertions.assertThat(updatedEvent.getMessage()).isEqualTo("Potential owners [salaboy] have been removed");
         
         tasks = runtimeDataService.getTasksAssignedAsPotentialOwner("salaboy", new QueryFilter());
         Assertions.assertThat(tasks).hasSize(0);
@@ -310,11 +328,21 @@ public class UserTaskAdminServiceImplTest extends AbstractKieServicesBaseTest {
         
         userTaskService.release(task.getId(), "salaboy");
         
-        userTaskAdminService.addExcludedOwners(task.getId(), false, factory.newUser("salaboy"));        
+        userTaskAdminService.addExcludedOwners(task.getId(), false, factory.newUser("salaboy"));
+        List<TaskEvent> events = runtimeDataService.getTaskEvents(task.getId(), new QueryFilter());
+        Assertions.assertThat(events).hasSize(3);
+        TaskEvent updatedEvent = events.get(2);
+        Assertions.assertThat(updatedEvent.getMessage()).isEqualTo("Excluded owners [salaboy] have been added");
+        
         tasks = runtimeDataService.getTasksAssignedAsPotentialOwner("salaboy", new QueryFilter());
         Assertions.assertThat(tasks).hasSize(0);
         
         userTaskAdminService.removeExcludedOwners(task.getId(), factory.newUser("salaboy"));
+        events = runtimeDataService.getTaskEvents(task.getId(), new QueryFilter());
+        Assertions.assertThat(events).hasSize(4);
+        updatedEvent = events.get(3);
+        Assertions.assertThat(updatedEvent.getMessage()).isEqualTo("Excluded owners [salaboy] have been removed");
+        
         tasks = runtimeDataService.getTasksAssignedAsPotentialOwner("salaboy", new QueryFilter());
         Assertions.assertThat(tasks).hasSize(1);
     }
@@ -329,6 +357,10 @@ public class UserTaskAdminServiceImplTest extends AbstractKieServicesBaseTest {
         TaskSummary task = tasks.get(0);
         
         userTaskAdminService.removeBusinessAdmins(task.getId(), factory.newUser("Administrator"));
+        List<TaskEvent> events = runtimeDataService.getTaskEvents(task.getId(), new QueryFilter());
+        Assertions.assertThat(events).hasSize(2);
+        TaskEvent updatedEvent = events.get(1);
+        Assertions.assertThat(updatedEvent.getMessage()).isEqualTo("Business administrators [Administrator] have been removed");
 
         List<Status> readyStatuses = Arrays.asList(new Status[]{
                 org.kie.api.task.model.Status.Ready

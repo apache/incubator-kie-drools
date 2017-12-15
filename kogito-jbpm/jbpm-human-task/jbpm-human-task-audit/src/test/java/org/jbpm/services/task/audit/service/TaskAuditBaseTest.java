@@ -51,9 +51,9 @@ import org.kie.internal.query.QueryFilter;
 import org.kie.internal.task.api.AuditTask;
 import org.kie.internal.task.api.TaskVariable;
 import org.kie.internal.task.api.TaskVariable.VariableType;
-import org.kie.internal.task.api.model.InternalTask;
 import org.kie.internal.task.api.model.InternalTaskData;
 import org.kie.internal.task.api.model.TaskEvent;
+import org.kie.internal.task.api.model.TaskEvent.TaskEventType;
 
 public abstract class TaskAuditBaseTest extends HumanTaskServicesBaseTest {
 
@@ -1084,6 +1084,34 @@ public abstract class TaskAuditBaseTest extends HumanTaskServicesBaseTest {
         assertEquals(1, allGroupAuditTasks.size());        
         assertEquals("Completed", allGroupAuditTasks.get(0).getStatus());
         assertBAMTask(taskId, "Completed");
+        
+        List<TaskEvent> taskEvents = taskAuditService.getAllTaskEvents(taskId, new QueryFilter());
+       
+        Assertions.assertThat(taskEvents).hasSize(8);
+        
+        Assertions.assertThat(taskEvents.get(0).getType()).isEqualTo(TaskEventType.ADDED);
+        Assertions.assertThat(taskEvents.get(0).getUserId()).isNull();
+       
+        Assertions.assertThat(taskEvents.get(1).getType()).isEqualTo(TaskEventType.CLAIMED);
+        Assertions.assertThat(taskEvents.get(1).getUserId()).isEqualTo("Darth Vader");
+        
+        Assertions.assertThat(taskEvents.get(2).getType()).isEqualTo(TaskEventType.RELEASED);
+        Assertions.assertThat(taskEvents.get(2).getUserId()).isEqualTo("Darth Vader");
+        
+        Assertions.assertThat(taskEvents.get(3).getType()).isEqualTo(TaskEventType.CLAIMED);
+        Assertions.assertThat(taskEvents.get(3).getUserId()).isEqualTo("Darth Vader");
+        
+        Assertions.assertThat(taskEvents.get(4).getType()).isEqualTo(TaskEventType.STARTED);
+        Assertions.assertThat(taskEvents.get(4).getUserId()).isEqualTo("Darth Vader");
+        
+        Assertions.assertThat(taskEvents.get(5).getType()).isEqualTo(TaskEventType.STOPPED);
+        Assertions.assertThat(taskEvents.get(5).getUserId()).isEqualTo("Darth Vader");
+        
+        Assertions.assertThat(taskEvents.get(6).getType()).isEqualTo(TaskEventType.STARTED);
+        Assertions.assertThat(taskEvents.get(6).getUserId()).isEqualTo("Darth Vader");
+        
+        Assertions.assertThat(taskEvents.get(7).getType()).isEqualTo(TaskEventType.COMPLETED);
+        Assertions.assertThat(taskEvents.get(7).getUserId()).isEqualTo("Darth Vader");
     }
     
     @Test
@@ -1238,12 +1266,67 @@ public abstract class TaskAuditBaseTest extends HumanTaskServicesBaseTest {
         assertBAMTask(taskId, "InProgress");
         
         taskService.fail(taskId, "Darth Vader", null);
-        
+                
         allGroupAuditTasks = taskAuditService.getAllAuditTasksByUser("Darth Vader", new QueryFilter());;
         assertEquals(1, allGroupAuditTasks.size());
         assertEquals("Failed", allGroupAuditTasks.get(0).getStatus());
         assertBAMTask(taskId, "Failed");
         
+    }
+    
+    @Test
+    public void testUpdateTaskContentEvents() {
+        Task task = new TaskFluent().setName("This is my task name")
+                .addPotentialGroup("Knights Templer")
+                .setAdminUser("Administrator")
+                .getTask();
+
+        taskService.addTask(task, new HashMap<String, Object>());
+        long taskId = task.getId();
+
+        assertAuditTaskInfoGroup("Knights Templer", "Ready", taskId);
+
+        taskService.claim(taskId, "Darth Vader");
+
+        assertAuditTaskInfo("Darth Vader", "Reserved", taskId);
+        
+        // Go straight from Ready to Inprogress
+        taskService.start(taskId, "Darth Vader");
+
+        assertAuditTaskInfo("Darth Vader", "InProgress", taskId);
+        
+        Map<String, Object> params = new HashMap<>();
+        params.put("test", "value");
+        taskService.addOutputContentFromUser(taskId, "Darth Vader", params);
+        
+        // Check is Complete
+        params.clear();
+        params.put("test", "updated");
+        taskService.complete(taskId, "Darth Vader", params);
+
+        assertAuditTaskInfo("Darth Vader", "Completed", taskId);
+        
+        List<TaskEvent> taskEvents = taskAuditService.getAllTaskEvents(taskId, new QueryFilter());
+       
+        Assertions.assertThat(taskEvents).hasSize(6);
+        
+        Assertions.assertThat(taskEvents.get(0).getType()).isEqualTo(TaskEventType.ADDED);
+        Assertions.assertThat(taskEvents.get(0).getUserId()).isNull();
+       
+        Assertions.assertThat(taskEvents.get(1).getType()).isEqualTo(TaskEventType.CLAIMED);
+        Assertions.assertThat(taskEvents.get(1).getUserId()).isEqualTo("Darth Vader");        
+        
+        Assertions.assertThat(taskEvents.get(2).getType()).isEqualTo(TaskEventType.STARTED);
+        Assertions.assertThat(taskEvents.get(2).getUserId()).isEqualTo("Darth Vader");
+        // first update of data explicitly
+        Assertions.assertThat(taskEvents.get(3).getType()).isEqualTo(TaskEventType.UPDATED);
+        Assertions.assertThat(taskEvents.get(3).getUserId()).isEqualTo("Darth Vader");
+        // next update of data through complete
+        Assertions.assertThat(taskEvents.get(4).getType()).isEqualTo(TaskEventType.UPDATED);
+        Assertions.assertThat(taskEvents.get(4).getUserId()).isEqualTo("Darth Vader");
+        
+        Assertions.assertThat(taskEvents.get(5).getType()).isEqualTo(TaskEventType.COMPLETED);
+        Assertions.assertThat(taskEvents.get(5).getUserId()).isEqualTo("Darth Vader");
     }
 
     protected Map<String, String> collectVariableNameAndValue(List<TaskVariable> variables) {
@@ -1268,6 +1351,20 @@ public abstract class TaskAuditBaseTest extends HumanTaskServicesBaseTest {
         assertEquals(expectedStatus, task.getStatus());
         
         em.close();
+    }
+    
+    protected void assertAuditTaskInfoGroup(String group, String status, Long taskId) {
+        List<AuditTask> allGroupAuditTasks = taskAuditService.getAllGroupAuditTasksByUser(group, new QueryFilter());
+        assertEquals(1, allGroupAuditTasks.size());
+        assertTrue(allGroupAuditTasks.get(0).getStatus().equals(status));
+        assertBAMTask(taskId, status);
+    }
+    
+    protected void assertAuditTaskInfo(String user, String status, Long taskId) {
+        List<AuditTask> allGroupAuditTasks = taskAuditService.getAllAuditTasksByUser(user, new QueryFilter());
+        assertEquals(1, allGroupAuditTasks.size());
+        assertTrue(allGroupAuditTasks.get(0).getStatus().equals(status));
+        assertBAMTask(taskId, status);
     }
     
     protected abstract EntityManager getEntityManager();

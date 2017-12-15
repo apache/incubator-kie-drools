@@ -18,13 +18,16 @@ package org.jbpm.kie.services.impl.admin.commands;
 
 import org.jbpm.services.task.commands.TaskContext;
 import org.jbpm.services.task.commands.UserGroupCallbackTaskCommand;
+import org.jbpm.services.task.events.TaskEventSupport;
 import org.jbpm.services.task.exception.PermissionDeniedException;
 import org.kie.api.runtime.Context;
+import org.kie.api.task.TaskLifeCycleEventListener.AssignmentType;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Task;
 import org.kie.internal.task.api.model.InternalPeopleAssignments;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static org.jbpm.kie.services.impl.admin.UserTaskAdminServiceImpl.*;
 
@@ -49,36 +52,45 @@ public class AddPeopleAssignmentsCommand extends UserGroupCallbackTaskCommand<Vo
     @Override
     public Void execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
+        TaskEventSupport taskEventSupport = context.getTaskEventSupport();
         
         Task task = context.getTaskQueryService().getTaskInstanceById(taskId);       
         // security check
         if (!isBusinessAdmin(userId, task.getPeopleAssignments().getBusinessAdministrators(), context)) {
             throw new PermissionDeniedException("User " + userId + " is not business admin of task " + taskId);
         }
+        
+        List<OrganizationalEntity> entityList = Arrays.asList(entities);
+        AssignmentType assignmentType = null;
         switch (type) {
             case POT_OWNER:
                 if (removeExisting) {
                     task.getPeopleAssignments().getPotentialOwners().clear();
                 }
-                task.getPeopleAssignments().getPotentialOwners().addAll(Arrays.asList(entities));
+                task.getPeopleAssignments().getPotentialOwners().addAll(entityList);
+                assignmentType = AssignmentType.POT_OWNER;
                 break;
             case EXCL_OWNER:
                 if (removeExisting) {
                     ((InternalPeopleAssignments)task.getPeopleAssignments()).getExcludedOwners().clear();
                 }
-                ((InternalPeopleAssignments)task.getPeopleAssignments()).getExcludedOwners().addAll(Arrays.asList(entities));    
+                ((InternalPeopleAssignments)task.getPeopleAssignments()).getExcludedOwners().addAll(entityList);
+                assignmentType = AssignmentType.EXCL_OWNER;
                 break;
             case ADMIN:
                 if (removeExisting) {
                     task.getPeopleAssignments().getBusinessAdministrators().clear();
                 }
-                task.getPeopleAssignments().getBusinessAdministrators().addAll(Arrays.asList(entities));
+                task.getPeopleAssignments().getBusinessAdministrators().addAll(entityList);
+                assignmentType = AssignmentType.ADMIN;
                 break;
 
             default:
                 break;
         }
+        taskEventSupport.fireBeforeTaskAssignmentsAddedEvent(task, context, assignmentType, entityList);
         doCallbackOperationForPeopleAssignments(((InternalPeopleAssignments)task.getPeopleAssignments()), context);
+        taskEventSupport.fireAfterTaskAssignmentsAddedEvent(task, context, assignmentType, entityList);
         return null;
     }
 

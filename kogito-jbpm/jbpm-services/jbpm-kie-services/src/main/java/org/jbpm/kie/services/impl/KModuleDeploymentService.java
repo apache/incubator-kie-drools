@@ -301,6 +301,9 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
 		if (executorService != null) {
 		    builder.addEnvironmentEntry("ExecutorService", executorService);
 		}
+		if (identityProvider != null) {
+            builder.addEnvironmentEntry(EnvironmentName.IDENTITY_PROVIDER, identityProvider);
+        }
 		// populate all assets with roles for this deployment unit
 		List<String> requiredRoles = descriptor.getRequiredRoles(DeploymentDescriptor.TYPE_VIEW);
 		if (requiredRoles != null && !requiredRoles.isEmpty()) {

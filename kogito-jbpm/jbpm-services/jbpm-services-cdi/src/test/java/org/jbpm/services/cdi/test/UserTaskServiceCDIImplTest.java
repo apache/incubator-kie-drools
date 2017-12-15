@@ -24,6 +24,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jbpm.kie.services.test.TestIdentityProvider;
 import org.jbpm.kie.services.test.UserTaskServiceImplTest;
 import org.jbpm.services.api.DefinitionService;
 import org.jbpm.services.api.DeploymentService;
@@ -33,7 +34,9 @@ import org.jbpm.services.api.UserTaskService;
 import org.jbpm.shared.services.impl.TransactionalCommandService;
 import org.jbpm.shared.services.impl.commands.UpdateStringCommand;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.runner.RunWith;
+import org.kie.internal.identity.IdentityProvider;
 
 @RunWith(Arquillian.class)
 public class UserTaskServiceCDIImplTest extends UserTaskServiceImplTest {
@@ -158,6 +161,12 @@ public class UserTaskServiceCDIImplTest extends UserTaskServiceImplTest {
 	public void setUserTaskService(UserTaskService userTaskService) {
 		
 		super.setUserTaskService(userTaskService);
+	}
+	
+	@Inject
+	public void setIdentityProvider(TestIdentityProvider identityProvider) {
+	    this.identityProvider = identityProvider;
+	    
 	}
 	
 	@After

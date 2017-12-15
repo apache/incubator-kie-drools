@@ -66,9 +66,10 @@ public class RemoveTaskDataCommand extends UserGroupCallbackTaskCommand<Void> {
         long contentId = task.getTaskData().getDocumentContentId();
         if (!input) {
             contentId = task.getTaskData().getOutputContentId();
+            
         }
         Content outputContent = persistenceContext.findContent(contentId);
-
+        Map<String, Object> initialContent = new HashMap<>();
         Map<String, Object> mergedContent = new HashMap<>();
         
         if (outputContent != null) {             
@@ -76,6 +77,8 @@ public class RemoveTaskDataCommand extends UserGroupCallbackTaskCommand<Void> {
             Object unmarshalledObject = ContentMarshallerHelper.unmarshall(outputContent.getContent(), mcontext.getEnvironment(), mcontext.getClassloader());
             if(unmarshalledObject != null && unmarshalledObject instanceof Map){                
                 mergedContent.putAll(((Map<String, Object>)unmarshalledObject));
+                // set initial content for the sake of listeners
+                initialContent.putAll(mergedContent);
                 
                 variableNames.forEach(name -> mergedContent.remove(name));
             }
@@ -84,9 +87,11 @@ public class RemoveTaskDataCommand extends UserGroupCallbackTaskCommand<Void> {
             persistenceContext.persistContent(outputContent);
         }
         if (input) {
+            taskEventSupport.fireBeforeTaskInputVariablesChanged(task, context, initialContent);
             ((InternalTaskData)task.getTaskData()).setTaskInputVariables(mergedContent);
             taskEventSupport.fireAfterTaskInputVariablesChanged(task, context, mergedContent);
         } else {
+            taskEventSupport.fireBeforeTaskOutputVariablesChanged(task, context, initialContent);
             ((InternalTaskData)task.getTaskData()).setTaskOutputVariables(mergedContent);
             taskEventSupport.fireAfterTaskOutputVariablesChanged(task, context, mergedContent);
         }

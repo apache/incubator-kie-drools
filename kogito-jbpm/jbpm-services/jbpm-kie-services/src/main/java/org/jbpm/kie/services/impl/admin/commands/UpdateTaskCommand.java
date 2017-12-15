@@ -70,6 +70,7 @@ public class UpdateTaskCommand extends UserGroupCallbackTaskCommand<Void> {
                 && !isOwner(userId, task.getPeopleAssignments().getPotentialOwners(), task.getTaskData().getActualOwner(), context)) {
             throw new PermissionDeniedException("User " + userId + " is not business admin or potential owner of task " + taskId);
         }
+        taskEventSupport.fireBeforeTaskUpdated(task, context);
         
         // process task meta data
         if (userTask.getFormName() != null) {

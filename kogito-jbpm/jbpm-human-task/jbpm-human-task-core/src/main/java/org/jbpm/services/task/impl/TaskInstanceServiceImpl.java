@@ -21,6 +21,7 @@
 package org.jbpm.services.task.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -112,6 +113,7 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
     	resolveTaskDetailsForTaskProperties(task);    	
     	
     	if (params != null) {
+    	    taskEventSupport.fireBeforeTaskInputVariablesChanged(task, context, Collections.emptyMap());
     	    resolveTaskDetails(params, task);
     	    
     	    ContentData contentData = ContentMarshallerHelper.marshal(task, params, TaskContentRegistry.get().getMarshallerContext(task).getEnvironment());
@@ -209,10 +211,20 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
     	
     	long contentId = task.getTaskData().getOutputContentId();
         Content content = persistenceContext.findContent(contentId);
+        
+        Map<String, Object> initialContent = new HashMap<>();
+        ContentMarshallerContext context = TaskContentRegistry.get().getMarshallerContext(task);
+        Object unmarshalledObject = ContentMarshallerHelper.unmarshall(content.getContent(), context.getEnvironment(), context.getClassloader());
+        if(unmarshalledObject != null && unmarshalledObject instanceof Map){
+            // set initial content before updating with this params
+            initialContent.putAll((Map<String, Object>)unmarshalledObject);
+        }
+        taskEventSupport.fireBeforeTaskOutputVariablesChanged(task, this.context, initialContent);
+        
         ContentData data = TaskModelProvider.getFactory().newContentData();
         persistenceContext.removeContent(content);
         persistenceContext.setOutputToTask(null, data, task);
-        taskEventSupport.fireAfterTaskOutputVariablesChanged(task, context, null);
+        taskEventSupport.fireAfterTaskOutputVariablesChanged(task, this.context, null);
     }
 
     public void exit(long taskId, String userId) {

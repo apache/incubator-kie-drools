@@ -27,6 +27,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
 
+import org.drools.core.impl.EnvironmentFactory;
 import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorManager;
 import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.jbpm.services.task.HumanTaskConfigurator;
@@ -34,8 +35,11 @@ import org.jbpm.services.task.HumanTaskServiceFactory;
 import org.jbpm.services.task.audit.JPATaskLifeCycleEventListener;
 import org.jbpm.services.task.impl.command.CommandBasedTaskService;
 import org.jbpm.services.task.lifecycle.listeners.BAMTaskEventListener;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.task.TaskLifeCycleEventListener;
 import org.kie.api.task.UserGroupCallback;
+import org.kie.internal.identity.IdentityProvider;
 import org.kie.internal.runtime.conf.AuditMode;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
 import org.kie.internal.task.api.InternalTaskService;
@@ -85,6 +89,9 @@ public class HumanTaskServiceProducer {
     @Inject
     @PersistenceUnit(unitName = "org.jbpm.domain")
     private EntityManagerFactory emf;
+    
+    @Inject
+    private Instance<IdentityProvider> identityProvider;
 
     // internal member to ensure only single instance of task service is produced
     private InternalTaskService taskService;
@@ -116,6 +123,7 @@ public class HumanTaskServiceProducer {
 
     protected void configureHumanTaskConfigurator(HumanTaskConfigurator configurator) {
         configurator
+                .environment(getEnvironment(identityProvider))
                 .entityManagerFactory( emf )
                 .userGroupCallback( safeGet( userGroupCallback ) )
                 .userInfo( safeGet( userInfo ) );
@@ -144,6 +152,17 @@ public class HumanTaskServiceProducer {
             }
         } catch ( Exception e ) {
             logger.debug( "Cannot add listeners to task service due to {}", e.getMessage() );
+        }
+    }
+    
+    protected Environment getEnvironment(Instance<IdentityProvider> identityProvider) {
+        Environment env = EnvironmentFactory.newEnvironment();
+        try {
+            env.set(EnvironmentName.IDENTITY_PROVIDER, identityProvider.get());
+            
+            return env;
+        } catch (Exception e) {
+            return env;
         }
     }
 

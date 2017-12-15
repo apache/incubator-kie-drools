@@ -17,10 +17,13 @@
 package org.jbpm.services.task.events;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.drools.core.event.AbstractEventSupport;
 import org.kie.api.task.TaskLifeCycleEventListener;
+import org.kie.api.task.TaskLifeCycleEventListener.AssignmentType;
+import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Task;
 import org.kie.internal.task.api.TaskContext;
 
@@ -188,6 +191,47 @@ public class TaskEventSupport extends AbstractEventSupport<TaskLifeCycleEventLis
             do{
                 TaskLifeCycleEventListener listener = iter.next();
                 listener.beforeTaskNominatedEvent(new TaskEventImpl(task, context));
+            } while (iter.hasNext());
+        }
+    }
+    
+    public void fireBeforeTaskInputVariablesChanged(final Task task, TaskContext context, Map<String, Object> variables) {
+        final Iterator<TaskLifeCycleEventListener> iter = getEventListenersIterator();
+        if (iter.hasNext()) {
+            do{
+                TaskLifeCycleEventListener listener = iter.next();
+                listener.beforeTaskInputVariableChangedEvent(new TaskEventImpl(task, context), variables);                
+            } while (iter.hasNext());
+        }
+    }
+    
+    
+    public void fireBeforeTaskOutputVariablesChanged(final Task task, TaskContext context, Map<String, Object> variables) {
+        final Iterator<TaskLifeCycleEventListener> iter = getEventListenersIterator();
+        if (iter.hasNext()) {
+            do{
+                TaskLifeCycleEventListener listener = iter.next();
+                listener.beforeTaskOutputVariableChangedEvent(new TaskEventImpl(task, context), variables);                
+            } while (iter.hasNext());
+        }
+    }
+    
+    public void fireBeforeTaskAssignmentsAddedEvent(final Task task, TaskContext context, AssignmentType type, List<OrganizationalEntity> entities) {
+        final Iterator<TaskLifeCycleEventListener> iter = getEventListenersIterator();
+        if (iter.hasNext()) {
+            do{
+                TaskLifeCycleEventListener listener = iter.next();
+                listener.beforeTaskAssignmentsAddedEvent(new TaskEventImpl(task, context), type, entities);                
+            } while (iter.hasNext());
+        }
+    }
+    
+    public void fireBeforeTaskAssignmentsRemovedEvent(final Task task, TaskContext context, AssignmentType type, List<OrganizationalEntity> entities) {
+        final Iterator<TaskLifeCycleEventListener> iter = getEventListenersIterator();
+        if (iter.hasNext()) {
+            do{
+                TaskLifeCycleEventListener listener = iter.next();
+                listener.beforeTaskAssignmentsRemovedEvent(new TaskEventImpl(task, context), type, entities);                
             } while (iter.hasNext());
         }
     }
@@ -377,6 +421,26 @@ public class TaskEventSupport extends AbstractEventSupport<TaskLifeCycleEventLis
             do{
                 TaskLifeCycleEventListener listener = iter.next();
                 listener.afterTaskOutputVariableChangedEvent(new TaskEventImpl(task, context), variables);                
+            } while (iter.hasNext());
+        }
+    }
+    
+    public void fireAfterTaskAssignmentsAddedEvent(final Task task, TaskContext context, AssignmentType type, List<OrganizationalEntity> entities) {
+        final Iterator<TaskLifeCycleEventListener> iter = getEventListenersIterator();
+        if (iter.hasNext()) {
+            do{
+                TaskLifeCycleEventListener listener = iter.next();
+                listener.afterTaskAssignmentsAddedEvent(new TaskEventImpl(task, context), type, entities);                
+            } while (iter.hasNext());
+        }
+    }
+    
+    public void fireAfterTaskAssignmentsRemovedEvent(final Task task, TaskContext context, AssignmentType type, List<OrganizationalEntity> entities) {
+        final Iterator<TaskLifeCycleEventListener> iter = getEventListenersIterator();
+        if (iter.hasNext()) {
+            do{
+                TaskLifeCycleEventListener listener = iter.next();
+                listener.afterTaskAssignmentsRemovedEvent(new TaskEventImpl(task, context), type, entities);                
             } while (iter.hasNext());
         }
     }

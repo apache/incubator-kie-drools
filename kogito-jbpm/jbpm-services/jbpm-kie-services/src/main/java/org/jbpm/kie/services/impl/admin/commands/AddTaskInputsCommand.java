@@ -16,6 +16,9 @@
 
 package org.jbpm.kie.services.impl.admin.commands;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.jbpm.services.task.commands.TaskContext;
 import org.jbpm.services.task.commands.UserGroupCallbackTaskCommand;
 import org.jbpm.services.task.events.TaskEventSupport;
@@ -30,8 +33,6 @@ import org.kie.internal.task.api.TaskPersistenceContext;
 import org.kie.internal.task.api.model.ContentData;
 import org.kie.internal.task.api.model.InternalContent;
 import org.kie.internal.task.api.model.InternalTaskData;
-
-import java.util.Map;
 
 
 public class AddTaskInputsCommand extends UserGroupCallbackTaskCommand<Void> {
@@ -63,10 +64,13 @@ public class AddTaskInputsCommand extends UserGroupCallbackTaskCommand<Void> {
         
         long inputContentId = task.getTaskData().getDocumentContentId();
         Content outputContent = persistenceContext.findContent(inputContentId);
-
+        
+          
+        Map<String, Object> initialContent = new HashMap<String, Object>();
         Map<String, Object> mergedContent = values;
         
         if (outputContent == null) { 
+            
             ContentMarshallerContext mcontext = context.getTaskContentService().getMarshallerContext(task);
             ContentData outputContentData = ContentMarshallerHelper.marshal(task, values, mcontext.getEnvironment());
             Content content = TaskModelProvider.getFactory().newContent();
@@ -78,13 +82,19 @@ public class AddTaskInputsCommand extends UserGroupCallbackTaskCommand<Void> {
             ContentMarshallerContext mcontext = context.getTaskContentService().getMarshallerContext(task);
             Object unmarshalledObject = ContentMarshallerHelper.unmarshall(outputContent.getContent(), mcontext.getEnvironment(), mcontext.getClassloader());
             if(unmarshalledObject != null && unmarshalledObject instanceof Map){
+                // set initial content with data from storage before being altered by this values
+                initialContent.putAll((Map<String, Object>)unmarshalledObject);
+                
                 ((Map<String, Object>)unmarshalledObject).putAll(values);
                 mergedContent = ((Map<String, Object>)unmarshalledObject);
             }
+            
             ContentData outputContentData = ContentMarshallerHelper.marshal(task, unmarshalledObject, mcontext.getEnvironment());
             ((InternalContent)outputContent).setContent(outputContentData.getContent());
             persistenceContext.persistContent(outputContent);
         }
+        taskEventSupport.fireBeforeTaskInputVariablesChanged(task, context, initialContent);
+        
         ((InternalTaskData)task.getTaskData()).setTaskInputVariables(mergedContent);
         taskEventSupport.fireAfterTaskInputVariablesChanged(task, context, mergedContent);       
                 

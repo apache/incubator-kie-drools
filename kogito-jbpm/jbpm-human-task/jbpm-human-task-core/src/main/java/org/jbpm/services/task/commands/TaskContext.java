@@ -61,6 +61,8 @@ public class TaskContext implements org.kie.internal.task.api.TaskContext, Reque
     
     private org.kie.internal.task.api.TaskContext delegate;
     
+    private String userId;
+    
     public TaskContext() {
     }   
     
@@ -210,5 +212,14 @@ public class TaskContext implements org.kie.internal.task.api.TaskContext, Reque
     @Override
     public Context getApplicationContext() {
         throw new UnsupportedOperationException("Not supported for this type of context.");
+    }
+
+    @Override
+    public String getUserId() {
+        return userId;
+    }
+    
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }

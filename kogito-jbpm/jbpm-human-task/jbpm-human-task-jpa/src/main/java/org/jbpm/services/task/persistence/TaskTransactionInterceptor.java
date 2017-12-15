@@ -122,7 +122,8 @@ public class TaskTransactionInterceptor extends AbstractInterceptor {
 
 	public class TransactionContext implements TaskContext, RequestContext {
 		private final TaskPersistenceContext persistenceContext;
-
+		private String userId;
+		
 		public TransactionContext( TaskPersistenceContext persistenceContext ) {
 			this.persistenceContext = persistenceContext;
 		}
@@ -204,6 +205,14 @@ public class TaskTransactionInterceptor extends AbstractInterceptor {
 
 		}
 
+	    @Override
+	    public String getUserId() {
+	        return userId;
+	    }
+	    
+	    public void setUserId(String userId) {
+	        this.userId = userId;
+	    }
 	}
 	
 	public void initTransactionManager(Environment env) {
