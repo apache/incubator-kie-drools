@@ -25,5 +25,7 @@ public interface TaskContext extends Context, org.kie.api.task.TaskContext {
     void setPersistenceContext(TaskPersistenceContext context);
 
     UserGroupCallback getUserGroupCallback();
+    
+    void setUserId(String userId);
 
 }

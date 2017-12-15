@@ -33,6 +33,15 @@
           "methodName": "newChannelModel",
           "elementKind": "method",
           "justification": "Added support to declaratively configure Channels on KIE-Session."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method java.lang.String org.kie.api.task.TaskContext::getUserId()",
+          "package": "org.kie.api.task",
+          "classSimpleName": "TaskContext",
+          "methodName": "getUserId",
+          "elementKind": "method",
+          "justification": "Allow to get user id for task operations"
         }
       ]
     }

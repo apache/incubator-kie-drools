@@ -32,4 +32,10 @@ public interface TaskContext {
      * @return returns task with variables set
      */
     Task loadTaskVariables(Task task);
+    
+    /**
+     * Returns user id who performs the operation
+     * @return user id of the caller
+     */
+    String getUserId();
 }
