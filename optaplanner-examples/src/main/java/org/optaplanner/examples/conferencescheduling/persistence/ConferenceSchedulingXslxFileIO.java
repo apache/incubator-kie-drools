@@ -732,6 +732,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
 
         private void writeThemeView() {
             nextSheet("Theme view", 1, 1);
+            currentSheet.protectSheet("ThisDataIsIgnoredOnInput");
             nextRow();
             nextHeaderCell("");
             writeTimeslotDaysHeaders();
@@ -759,6 +760,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
 
         private void writeSectorView() {
             nextSheet("Sector view", 1, 1);
+            currentSheet.protectSheet("ThisDataIsIgnoredOnInput");
             nextRow();
             nextHeaderCell("");
             writeTimeslotDaysHeaders();
