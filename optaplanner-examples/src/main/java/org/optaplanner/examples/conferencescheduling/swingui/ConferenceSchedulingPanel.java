@@ -16,14 +16,40 @@
 
 package org.optaplanner.examples.conferencescheduling.swingui;
 
+import java.awt.Desktop;
+import java.io.File;
+import java.io.IOException;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.conferencescheduling.domain.ConferenceSolution;
+import org.optaplanner.examples.conferencescheduling.persistence.ConferenceSchedulingXslxFileIO;
+import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
 public class ConferenceSchedulingPanel extends SolutionPanel<ConferenceSolution> {
 
     public static final String LOGO_PATH = "/org/optaplanner/examples/meetingscheduling/swingui/meetingSchedulingLogo.png";
 
     public ConferenceSchedulingPanel() {
+        JButton button = new JButton("Show in LibreOffice or Excel");
+        button.addActionListener(event -> {
+            SolutionFileIO<ConferenceSolution> solutionFileIO = new ConferenceSchedulingXslxFileIO();
+            File tempFile;
+            try {
+                tempFile = File.createTempFile(solutionBusiness.getSolutionFileName(), "." + solutionFileIO.getOutputFileExtension());
+            } catch (IOException e) {
+                throw new IllegalStateException("Failed to create temp file.", e);
+            }
+            solutionFileIO.write(solutionBusiness.getSolution(), tempFile);
+            try {
+                Desktop.getDesktop().open(tempFile);
+            } catch (IOException e) {
+                throw new IllegalStateException("Failed to show temp file (" + tempFile + ") in LibreOffice or Excel.", e);
+            }
+        });
+        add(button);
+        add(new JLabel("Changes to that file are ignored unless you explicitly save it there and open it here."));
     }
 
     @Override
