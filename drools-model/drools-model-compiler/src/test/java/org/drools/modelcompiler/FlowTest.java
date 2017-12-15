@@ -1169,9 +1169,8 @@ public class FlowTest {
     public void testQueryOOPathAccumulate() {
         Variable<Person> personV = declarationOf( type( Person.class ), "$p" );
 
-        final org.drools.model.Variable<java.util.List<java.lang.String>> var_$cities = (org.drools.model.Variable<java.util.List<java.lang.String>>) (org.drools.model.Variable)declarationOf(type(java.util.List.class),
-                                                                                    "$cities");
         final org.drools.model.QueryDef queryDef_listSafeCities = query("listSafeCities");
+
 
         final org.drools.model.Variable<org.drools.modelcompiler.OOPathDTablesTest.Person> var_$pattern_Person$1$ = declarationOf(type(org.drools.modelcompiler.OOPathDTablesTest.Person.class),
                                                                                                                                   "$pattern_Person$1$");
@@ -1183,10 +1182,9 @@ public class FlowTest {
                                                                                     "$city",
                                                                                     reactiveFrom(var_$ooChunk$1$,
                                                                                                  (_this) -> _this.getCity()));
-        final org.drools.model.Variable<java.util.List<java.lang.String>> var_$expr$3$ = (org.drools.model.Variable<java.util.List<java.lang.String>>) (org.drools.model.Variable) declarationOf(type(java.util.List.class),
-                                                                                                                                                                                                 "$expr$3$");
+        final org.drools.model.Variable<java.util.List> var_$expr$3$ = declarationOf(type(java.util.List.class),
+                                                                                     "$expr$3$");
         org.drools.model.Query listSafeCities_build = queryDef_listSafeCities.build(
-                bind(var_$city).as(var_$ooChunk$1$, (_this) -> _this.getCity()),
                 accumulate(expr("$expr$2$",
                                                                                                     var_$ooChunk$1$,
                                                                                                     (_this) -> _this.getState()
@@ -1196,8 +1194,8 @@ public class FlowTest {
                                                                                                                                               _this -> _this.getState(),
                                                                                                                                               "Safecountry")
                                                                                                        .reactOn("state"),
-                                                                                               accFunction(org.drools.core.base.accumulators.CollectListAccumulateFunction.class, var_$city).as(var_$cities)));
-
+                                                                                               accFunction(org.drools.core.base.accumulators.CollectListAccumulateFunction.class,
+                                                                                                           var_$city).as(var_$expr$3$)));
         Model model = new ModelImpl().addQuery( listSafeCities_build );
         KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
 

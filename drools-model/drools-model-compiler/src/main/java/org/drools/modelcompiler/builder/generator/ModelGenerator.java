@@ -342,15 +342,21 @@ public class ModelGenerator {
             kbuilder.addBuilderResult( new UnknownDeclarationError( decl.getBindingId() ) );
             return;
         }
-        Type declType = DrlxParseUtil.classToReferenceType(decl.getDeclarationClass());
+        Type declType = DrlxParseUtil.classToReferenceType( decl.getDeclarationClass() );
 
         ClassOrInterfaceType varType = JavaParser.parseClassOrInterfaceType(Variable.class.getCanonicalName());
         varType.setTypeArguments(declType);
-        VariableDeclarationExpr var_ = new VariableDeclarationExpr(varType, toVar(decl.getBindingId()), Modifier.FINAL);
+
+        Type declTypeWithGeneric = decl.getTypeWithGeneric();
+        ClassOrInterfaceType variableType = JavaParser.parseClassOrInterfaceType(Variable.class.getCanonicalName());
+        ClassOrInterfaceType varTypeWithGeneric = variableType.clone();
+        varTypeWithGeneric.setTypeArguments(declTypeWithGeneric);
+        VariableDeclarationExpr var_ = new VariableDeclarationExpr(varTypeWithGeneric, toVar(decl.getBindingId()), Modifier.FINAL);
+
 
         MethodCallExpr declarationOfCall = new MethodCallExpr(null, DECLARATION_OF_CALL);
         MethodCallExpr typeCall = new MethodCallExpr(null, TYPE_CALL);
-        typeCall.addArgument( new ClassExpr(declType ));
+        typeCall.addArgument( new ClassExpr(decl.getType() ));
 
         declarationOfCall.addArgument(typeCall);
         declarationOfCall.addArgument(new StringLiteralExpr(decl.getVariableName().orElse(decl.getBindingId())));
@@ -375,19 +381,17 @@ public class ModelGenerator {
             declarationOfCall.addArgument( windowCall );
         }
 
-//        final Expression withDoubleCast = new CastExpr(varTypeWithGeneric, new CastExpr(variableType, declarationOfCall));
-//
-//        // When creating variables with generic types as declarationOfCall can't support types with generic we need the cast
-//        // the variable to the type
-//        final Expression withDoubleCast;
-//        if(decl.hasGenericTypes()) {
-//            withDoubleCast = new CastExpr(varTypeWithGeneric, new CastExpr(variableType, declarationOfCall));
-//        } else {
-//            withDoubleCast = declarationOfCall;
-//        }
-//
-//        AssignExpr var_assign = new AssignExpr(var_, withDoubleCast, AssignExpr.Operator.ASSIGN);
-        AssignExpr var_assign = new AssignExpr(var_, declarationOfCall, AssignExpr.Operator.ASSIGN);
+
+        // When creating variables with generic types as declarationOfCall can't support types with generic we need the cast
+        // the variable to the type
+        final Expression withDoubleCast;
+        if(decl.hasGenericTypes()) {
+            withDoubleCast = new CastExpr(varTypeWithGeneric, new CastExpr(variableType, declarationOfCall));
+        } else {
+            withDoubleCast = declarationOfCall;
+        }
+
+        AssignExpr var_assign = new AssignExpr(var_, withDoubleCast, AssignExpr.Operator.ASSIGN);
         ruleBlock.addStatement(var_assign);
     }
 
