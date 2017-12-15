@@ -14,9 +14,14 @@
  * limitations under the License.
  */
 
-package org.drools.compiler.integrationtests.session;
+package org.drools.compiler.integrationtests.concurrency;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import org.assertj.core.api.Assertions;
 import org.drools.compiler.integrationtests.facts.AnEnum;
 import org.drools.compiler.integrationtests.facts.FactWithBigDecimal;
 import org.drools.compiler.integrationtests.facts.FactWithBoolean;
@@ -29,14 +34,41 @@ import org.drools.compiler.integrationtests.facts.FactWithInteger;
 import org.drools.compiler.integrationtests.facts.FactWithLong;
 import org.drools.compiler.integrationtests.facts.FactWithShort;
 import org.drools.compiler.integrationtests.facts.FactWithString;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.api.runtime.KieSession;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
-public class DataTypeEvaluationConcurrentSessionsTest extends AbstractConcurrentSessionsTest {
+@RunWith(Parameterized.class)
+public class DataTypeEvaluationConcurrentSessionsTest extends AbstractConcurrentTest {
 
-    public DataTypeEvaluationConcurrentSessionsTest(final boolean enforcedJitting, final boolean serializeKieBase) {
-        super(enforcedJitting, serializeKieBase);
+    private static final Integer NUMBER_OF_THREADS = 10;
+    private static final Integer NUMBER_OF_REPETITIONS = 1;
+
+    @Parameterized.Parameters(name = "Enforced jitting={0}, Serialize KieBase={1}, Share KieBase={2}, Share KieSession={3}")
+    public static List<Boolean[]> getTestParameters() {
+        return Arrays.asList(
+                new Boolean[]{false, false, false, false},
+                new Boolean[]{false, true, false, false},
+                new Boolean[]{true, false, false, false},
+                new Boolean[]{true, true, false, false},
+                new Boolean[]{false, false, true, false},
+                new Boolean[]{false, true, true, false},
+                new Boolean[]{true, false, true, false},
+                new Boolean[]{true, true, true, false},
+
+                new Boolean[]{false, false, false, true},
+                new Boolean[]{false, true, false, true},
+                new Boolean[]{true, false, false, true},
+                new Boolean[]{true, true, false, true},
+                new Boolean[]{false, false, true, true},
+                new Boolean[]{false, true, true, true},
+                new Boolean[]{true, false, true, true},
+                new Boolean[]{true, true, true, true});
+    }
+
+    public DataTypeEvaluationConcurrentSessionsTest(final boolean enforcedJitting, final boolean serializeKieBase,
+                                                       final boolean sharedKieBase, final boolean sharedKieSession) {
+        super(enforcedJitting, serializeKieBase, sharedKieBase, sharedKieSession);
     }
 
     @Test
@@ -135,75 +167,31 @@ public class DataTypeEvaluationConcurrentSessionsTest extends AbstractConcurrent
     }
 
     private void testFactAttributeType(final String ruleConstraint, final Object factInserted) throws InterruptedException {
-        final String drl1 =
+        final String drl =
                 " import org.drools.compiler.integrationtests.facts.*;\n" +
+                        " global " + AtomicInteger.class.getCanonicalName() + " numberOfFirings;\n" +
                         " rule R1 \n" +
                         " when \n" +
                         ruleConstraint +
                         " then \n" +
+                        " numberOfFirings.incrementAndGet(); \n" +
                         " end ";
 
-        parallelTest( 1, 10, new KieSessionExecutor() {
-            @Override
-            public boolean execute( KieSession kieSession, int counter ) {
-                kieSession.insert(factInserted);
-                return kieSession.fireAllRules() == 1;
-            }
-        }, drl1);
-    }
+        final AtomicInteger numberOfFirings = new AtomicInteger();
 
-    @Test
-    public void testEnum2() throws InterruptedException {
-        String drl1 =
-                "import " + Product.class.getCanonicalName() + ";\n" +
-                        "import " + CategoryTypeEnum.class.getCanonicalName() + ";\n" +
-                        "rule R1 when\n" +
-                        "  $s : String( this == \"odd\" )\n" +
-                        "  $p : Product( id != \"test\", categoryAsEnum == CategoryTypeEnum.ODD, firings not contains \"R1\" )\n" +
-                        "then\n" +
-                        "  $p.getFirings().add(\"R1\");\n" +
-                        "  $p.appendDescription($s);\n" +
-                        "  update($p);\n" +
-                        "end\n";
+        parallelTest(NUMBER_OF_REPETITIONS, NUMBER_OF_THREADS, (kieSession, counter) -> {
+            kieSession.insert(factInserted);
+            final int rulesFired = kieSession.fireAllRules();
+            return sharedKieSession || rulesFired == 1;
+        }, "numberOfFirings", numberOfFirings, drl);
 
-        String drl2 =
-                "import " + Product.class.getCanonicalName() + ";\n" +
-                        "import " + CategoryTypeEnum.class.getCanonicalName() + ";\n" +
-                        "rule R2 when\n" +
-                        "  $s : String( this == \"pair\" )\n" +
-                        "  $p : Product( id != \"test\", categoryAsEnum == CategoryTypeEnum.PAIR, firings not contains \"R2\" )\n" +
-                        "then\n" +
-                        "  $p.getFirings().add(\"R2\");\n" +
-                        "  $p.appendDescription($s);\n" +
-                        "  update($p);" +
-                        "end\n";
-
-        parallelTest( 10, 10, new KieSessionExecutor() {
-            @Override
-            public boolean execute( KieSession kieSession, int counter ) {
-                Product[] products = new Product[10];
-                final boolean pair = counter % 2 == 0;
-                final String pairString = pair ? "pair" : "odd";
-                for (int i = 0; i < 10; i++) {
-                    products[i] = new Product( "" + i, pairString );
-                }
-
-                kieSession.insert( pairString );
-                for (int i = 0; i < 10; i++) {
-                    kieSession.insert( products[i] );
-                }
-
-                kieSession.fireAllRules();
-
-                for (int i = 0; i < 10; i++) {
-                    if ( products[i].getCategory().equals(pairString) && !products[i].getCategory().equals( products[i].getDescription() ) ) {
-                        return false;
-                    } else if (!products[i].getCategory().equals(pairString) && !products[i].getDescription().isEmpty()) {
-                        return false;
-                    }
-                }
-                return true;
-            }
-        }, drl1, drl2 );
+        if (sharedKieSession) {
+            // This is 1 because engine doesn't insert an already existing object twice, so when sharing a session
+            // the object should be present just once in the session. When not sharing a session, there is N separate
+            // sessions, so each one should fire.
+            Assertions.assertThat(numberOfFirings.get()).isEqualTo(1);
+        } else {
+            Assertions.assertThat(numberOfFirings.get()).isEqualTo(10);
+        }
     }
 }
