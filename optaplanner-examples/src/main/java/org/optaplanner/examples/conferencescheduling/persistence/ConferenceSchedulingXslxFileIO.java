@@ -34,6 +34,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -44,12 +45,13 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellReference;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.optaplanner.examples.conferencescheduling.domain.ConferenceParametrization;
 import org.optaplanner.examples.conferencescheduling.domain.ConferenceSolution;
@@ -58,6 +60,7 @@ import org.optaplanner.examples.conferencescheduling.domain.Speaker;
 import org.optaplanner.examples.conferencescheduling.domain.Talk;
 import org.optaplanner.examples.conferencescheduling.domain.Timeslot;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
+import org.optaplanner.swing.impl.TangoColorFactory;
 
 import static java.util.stream.Collectors.*;
 
@@ -72,8 +75,8 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
     protected static final DateTimeFormatter TIME_FORMATTER
             = DateTimeFormatter.ofPattern("HH:mm", Locale.ENGLISH);
 
-    protected static final IndexedColors UNAVAILABLE_COLOR = IndexedColors.GREY_80_PERCENT;
-    protected static final IndexedColors PINNED_COLOR = IndexedColors.LAVENDER;
+    protected static final XSSFColor UNAVAILABLE_COLOR = new XSSFColor(TangoColorFactory.ALUMINIUM_5);
+    protected static final XSSFColor PINNED_COLOR = new XSSFColor(TangoColorFactory.PLUM_1);
 
     @Override
     public String getInputFileExtension() {
@@ -248,7 +251,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 Set<Timeslot> unavailableTimeslotSet = new LinkedHashSet<>();
                 for (Timeslot timeslot : solution.getTimeslotList()) {
                     Cell cell = nextCell();
-                    if (extractColor(cell, UNAVAILABLE_COLOR, PINNED_COLOR) == UNAVAILABLE_COLOR) {
+                    if (Objects.equals(extractColor(cell, UNAVAILABLE_COLOR, PINNED_COLOR), UNAVAILABLE_COLOR)) {
                         unavailableTimeslotSet.add(timeslot);
                     }
                     String[] talkCodes = cell.getStringCellValue().split(", ");
@@ -312,7 +315,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 Set<Timeslot> unavailableTimeslotSet = new LinkedHashSet<>();
                 for (Timeslot timeslot : solution.getTimeslotList()) {
                     Cell cell = nextCell();
-                    if (extractColor(cell, UNAVAILABLE_COLOR) == UNAVAILABLE_COLOR) {
+                    if (Objects.equals(extractColor(cell, UNAVAILABLE_COLOR), UNAVAILABLE_COLOR)) {
                         unavailableTimeslotSet.add(timeslot);
                     }
                     String[] talkCodes = cell.getStringCellValue().split(", ");
@@ -540,10 +543,16 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
 
         protected Cell nextCell() {
             currentColumnNumber++;
-            return currentRow.getCell(currentColumnNumber);
+            Cell cell = currentRow.getCell(currentColumnNumber);
+            // TODO HACK to workaround the fact that LibreOffice and Excel automatically remove empty trailing cells
+            if (cell == null) {
+                // Return dummy cell
+                return currentRow.createCell(currentColumnNumber);
+            }
+            return cell;
         }
 
-        protected IndexedColors extractColor(Cell cell, IndexedColors... acceptableColors) {
+        protected XSSFColor extractColor(Cell cell, XSSFColor... acceptableColors) {
             CellStyle cellStyle = cell.getCellStyle();
             FillPatternType fillPattern = cellStyle.getFillPatternEnum();
             if (fillPattern == null || fillPattern == FillPatternType.NO_FILL) {
@@ -554,13 +563,13 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                         + ") should be either " + FillPatternType.NO_FILL
                         + " or " + FillPatternType.SOLID_FOREGROUND + ".");
             }
-            short colorIndex = cellStyle.getFillForegroundColor();
-            for (IndexedColors acceptableColor : acceptableColors) {
-                if (acceptableColor.getIndex() == colorIndex) {
+            XSSFColor color = (XSSFColor) cellStyle.getFillForegroundColorColor();
+            for (XSSFColor acceptableColor : acceptableColors) {
+                if (acceptableColor.equals(color)) {
                     return acceptableColor;
                 }
             }
-            throw new IllegalStateException(currentPosition() + ": The fill color (" + colorIndex
+            throw new IllegalStateException(currentPosition() + ": The fill color (" + color
                     + ") is not one of the acceptableColors (" + Arrays.toString(acceptableColors) + ").");
         }
 
@@ -621,11 +630,11 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             font.setBold(true);
             headerStyle.setFont(font);
             unavailableStyle = workbook.createCellStyle();
-            unavailableStyle.setFillForegroundColor(UNAVAILABLE_COLOR.getIndex());
             unavailableStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+            ((XSSFCellStyle) unavailableStyle).setFillForegroundColor(UNAVAILABLE_COLOR);
             pinnedStyle = workbook.createCellStyle();
-            pinnedStyle.setFillForegroundColor(PINNED_COLOR.getIndex());
             pinnedStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+            ((XSSFCellStyle) pinnedStyle).setFillForegroundColor(PINNED_COLOR);
         }
 
         private void writeConfiguration() {
