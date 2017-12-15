@@ -123,17 +123,19 @@ end
 
 rule "Sector conflict"
     when
+        ConferenceParametrization($weight : sectorConflict != 0)
         $leftTalk : Talk(timeslot != null, $timeslot : timeslot,
                 $leftId : id)
         $rightTalk : Talk(timeslot != null, getTimeslot().overlaps($timeslot),
                 overlappingSectorCount($leftTalk) > 0,
                 id > $leftId)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, - $rightTalk.overlappingSectorCount($leftTalk));
+        scoreHolder.addSoftConstraintMatch(kcontext, - $weight * $rightTalk.overlappingSectorCount($leftTalk));
 end
 
 rule "Language diversity"
     when
+        ConferenceParametrization($weight : languageDiversity != 0)
         Talk(timeslot != null, $timeslot : timeslot,
                 $language : language,
                 $leftId : id)
@@ -142,33 +144,37 @@ rule "Language diversity"
                 language != $language,
                 id > $leftId)
     then
-        scoreHolder.addHardConstraintMatch(kcontext, 1);
+        scoreHolder.addHardConstraintMatch(kcontext, $weight);
 end
 
 rule "Speaker preferred timeslot tag"
     when
+        ConferenceParametrization($weight : speakerPreferredTimeslotTag != 0)
         Talk($count : missingSpeakerPreferredTimeslotTagCount() > 0)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, - $count);
+        scoreHolder.addSoftConstraintMatch(kcontext, - $weight * $count);
 end
 
 rule "Talk preferred timeslot tag"
     when
+        ConferenceParametrization($weight : talkPreferredTimeslotTag != 0)
         Talk($count : missingPreferredTimeslotTagCount() > 0)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, - $count);
+        scoreHolder.addSoftConstraintMatch(kcontext, - $weight * $count);
 end
 
 rule "Speaker preferred room tag"
     when
+        ConferenceParametrization($weight : speakerPreferredRoomTag != 0)
         Talk($count : missingSpeakerPreferredRoomTagCount() > 0)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, - $count);
+        scoreHolder.addSoftConstraintMatch(kcontext, - $weight * $count);
 end
 
 rule "Talk preferred room tag"
     when
+        ConferenceParametrization($weight : talkPreferredRoomTag != 0)
         Talk($count : missingPreferredRoomTagCount() > 0)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, - $count);
+        scoreHolder.addSoftConstraintMatch(kcontext, - $weight * $count);
 end

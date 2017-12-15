@@ -20,13 +20,13 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 public class ConferenceParametrization extends AbstractPersistable {
 
-    private int themeConflict = 1;
-    private int sectorConflict = 1;
-    private int languageDiversity = 1;
-    private int speakerPreferredTimeslotTag = 1;
-    private int talkPreferredTimeslotTag = 1;
-    private int speakerPreferredRoomTag = 1;
-    private int talkPreferredRoomTag = 1;
+    private int themeConflict = 10;
+    private int sectorConflict = 10;
+    private int languageDiversity = 10;
+    private int speakerPreferredTimeslotTag = 10;
+    private int talkPreferredTimeslotTag = 10;
+    private int speakerPreferredRoomTag = 10;
+    private int talkPreferredRoomTag = 10;
 
     // ************************************************************************
     // Simple getters and setters
