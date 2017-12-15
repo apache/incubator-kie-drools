@@ -19,8 +19,11 @@ package org.optaplanner.examples.conferencescheduling.solver;
 
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScoreHolder;
 
+import org.optaplanner.examples.conferencescheduling.domain.ConferenceParametrization;
+import org.optaplanner.examples.conferencescheduling.domain.Room;
 import org.optaplanner.examples.conferencescheduling.domain.Speaker;
 import org.optaplanner.examples.conferencescheduling.domain.Talk;
+import org.optaplanner.examples.conferencescheduling.domain.Timeslot;
 
 global HardSoftScoreHolder scoreHolder;
 
@@ -74,28 +77,28 @@ rule "Speaker conflict"
         scoreHolder.addHardConstraintMatch(kcontext, -1);
 end
 
-rule "Talk required timeslot tags"
+rule "Talk required timeslot tag"
     when
         Talk($count : missingRequiredTimeslotTagCount() > 0)
     then
         scoreHolder.addHardConstraintMatch(kcontext, - $count);
 end
 
-rule "Talk required room tags"
+rule "Talk required room tag"
     when
         Talk($count : missingRequiredRoomTagCount() > 0)
     then
         scoreHolder.addHardConstraintMatch(kcontext, - $count);
 end
 
-rule "Speaker required timeslot tags"
+rule "Speaker required timeslot tag"
     when
         Talk($count : missingSpeakerRequiredTimeslotTagCount() > 0)
     then
         scoreHolder.addHardConstraintMatch(kcontext, - $count);
 end
 
-rule "Speaker required room tags"
+rule "Speaker required room tag"
     when
         Talk($count : missingSpeakerRequiredRoomTagCount() > 0)
     then
@@ -108,13 +111,14 @@ end
 
 rule "Theme conflict"
     when
+        ConferenceParametrization($weight : themeConflict != 0)
         $leftTalk : Talk(timeslot != null, $timeslot : timeslot,
                 $leftId : id)
         $rightTalk : Talk(timeslot != null, getTimeslot().overlaps($timeslot),
                 overlappingThemeCount($leftTalk) > 0,
                 id > $leftId)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, - $rightTalk.overlappingThemeCount($leftTalk));
+        scoreHolder.addSoftConstraintMatch(kcontext, - $weight * $rightTalk.overlappingThemeCount($leftTalk));
 end
 
 rule "Sector conflict"
@@ -128,7 +132,7 @@ rule "Sector conflict"
         scoreHolder.addSoftConstraintMatch(kcontext, - $rightTalk.overlappingSectorCount($leftTalk));
 end
 
-rule "Language diversity per timeslot"
+rule "Language diversity"
     when
         Talk(timeslot != null, $timeslot : timeslot,
                 $language : language,
@@ -141,30 +145,30 @@ rule "Language diversity per timeslot"
         scoreHolder.addHardConstraintMatch(kcontext, 1);
 end
 
-rule "Talk preferred timeslot tags"
-    when
-        Talk($count : missingPreferredTimeslotTagCount() > 0)
-    then
-        scoreHolder.addSoftConstraintMatch(kcontext, - $count);
-end
-
-rule "Talk preferred room tags"
-    when
-        Talk($count : missingPreferredRoomTagCount() > 0)
-    then
-        scoreHolder.addSoftConstraintMatch(kcontext, - $count);
-end
-
-rule "Speaker preferred timeslot tags"
+rule "Speaker preferred timeslot tag"
     when
         Talk($count : missingSpeakerPreferredTimeslotTagCount() > 0)
     then
         scoreHolder.addSoftConstraintMatch(kcontext, - $count);
 end
 
-rule "Speaker preferred room tags"
+rule "Talk preferred timeslot tag"
+    when
+        Talk($count : missingPreferredTimeslotTagCount() > 0)
+    then
+        scoreHolder.addSoftConstraintMatch(kcontext, - $count);
+end
+
+rule "Speaker preferred room tag"
     when
         Talk($count : missingSpeakerPreferredRoomTagCount() > 0)
+    then
+        scoreHolder.addSoftConstraintMatch(kcontext, - $count);
+end
+
+rule "Talk preferred room tag"
+    when
+        Talk($count : missingPreferredRoomTagCount() > 0)
     then
         scoreHolder.addSoftConstraintMatch(kcontext, - $count);
 end

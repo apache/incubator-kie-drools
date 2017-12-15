@@ -22,6 +22,7 @@ import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.drools.ProblemFactProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
@@ -30,6 +31,8 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 public class ConferenceSolution extends AbstractPersistable {
 
     private String conferenceName;
+    @ProblemFactProperty
+    private ConferenceParametrization parametrization;
 
     @ValueRangeProvider(id = "timeslotRange")
     @ProblemFactCollectionProperty
@@ -63,6 +66,14 @@ public class ConferenceSolution extends AbstractPersistable {
 
     public void setConferenceName(String conferenceName) {
         this.conferenceName = conferenceName;
+    }
+
+    public ConferenceParametrization getParametrization() {
+        return parametrization;
+    }
+
+    public void setParametrization(ConferenceParametrization parametrization) {
+        this.parametrization = parametrization;
     }
 
     public List<Timeslot> getTimeslotList() {

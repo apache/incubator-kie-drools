@@ -35,6 +35,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -49,6 +51,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.optaplanner.examples.conferencescheduling.domain.ConferenceParametrization;
 import org.optaplanner.examples.conferencescheduling.domain.ConferenceSolution;
 import org.optaplanner.examples.conferencescheduling.domain.Room;
 import org.optaplanner.examples.conferencescheduling.domain.Speaker;
@@ -136,6 +139,36 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             nextRow();
             readHeaderCell("Constraint");
             readHeaderCell("Weight");
+            readHeaderCell("Description");
+            ConferenceParametrization parametrization = new ConferenceParametrization();
+            parametrization.setId(0L);
+            readConstraintLine("Theme conflict", parametrization::setThemeConflict,
+                    "Soft penalty per common theme of 2 talks that have an overlapping timeslot");
+            readConstraintLine("Sector conflict", parametrization::setSectorConflict,
+                    "Soft penalty per common sector of 2 talks that have an overlapping timeslot");
+            readConstraintLine("Language diversity", parametrization::setLanguageDiversity,
+                    "Soft reward per 2 talks that have the same timeslot and a different language");
+            readConstraintLine("Speaker preferred timeslot tag", parametrization::setSpeakerPreferredTimeslotTag,
+                    "Soft penalty per missing preferred tag in a talk's timeslot");
+            readConstraintLine("Talk preferred timeslot tag", parametrization::setTalkPreferredTimeslotTag,
+                    "Soft penalty per missing preferred tag in a talk's timeslot");
+            readConstraintLine("Speaker preferred room tag", parametrization::setSpeakerPreferredRoomTag,
+                    "Soft penalty per missing preferred tag in a talk's room");
+            readConstraintLine("Talk preferred room tag", parametrization::setTalkPreferredRoomTag,
+                    "Soft penalty per missing preferred tag in a talk's room");
+            solution.setParametrization(parametrization);
+        }
+
+        private void readConstraintLine(String name, Consumer<Integer> consumer, String constraintdescription) {
+            nextRow();
+            readHeaderCell(name);
+            double value = nextCell().getNumericCellValue();
+            if (((double) ((int) value)) != value) {
+                throw new IllegalArgumentException(currentPosition() + ": The value (" + value
+                        + ") for constraint (" + name + ") must be an integer.");
+            }
+            consumer.accept((int) value);
+            readHeaderCell(constraintdescription);
         }
 
         private void readTimeslotList() {
@@ -578,7 +611,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             writeTalkList();
             writeThemeView();
             writeSectorView();
-            workbook.setActiveSheet(1);
+            workbook.setActiveSheet(2);
             return workbook;
         }
 
@@ -604,7 +637,31 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             nextRow();
             nextHeaderCell("Constraint");
             nextHeaderCell("Weight");
+            nextHeaderCell("Description");
+            ConferenceParametrization parametrization = solution.getParametrization();
+
+            writeConstraintLine("Theme conflict", parametrization::getThemeConflict,
+                    "Soft penalty per common theme of 2 talks that have an overlapping timeslot");
+            writeConstraintLine("Sector conflict", parametrization::getSectorConflict,
+                    "Soft penalty per common sector of 2 talks that have an overlapping timeslot");
+            writeConstraintLine("Language diversity", parametrization::getLanguageDiversity,
+                    "Soft reward per 2 talks that have the same timeslot and a different language");
+            writeConstraintLine("Speaker preferred timeslot tag", parametrization::getSpeakerPreferredTimeslotTag,
+                    "Soft penalty per missing preferred tag in a talk's timeslot");
+            writeConstraintLine("Talk preferred timeslot tag", parametrization::getTalkPreferredTimeslotTag,
+                    "Soft penalty per missing preferred tag in a talk's timeslot");
+            writeConstraintLine("Speaker preferred room tag", parametrization::getSpeakerPreferredRoomTag,
+                    "Soft penalty per missing preferred tag in a talk's room");
+            writeConstraintLine("Talk preferred room tag", parametrization::getTalkPreferredRoomTag,
+                    "Soft penalty per missing preferred tag in a talk's room");
             autoSizeColumnsWithHeader();
+        }
+
+        private void writeConstraintLine(String name, Supplier<Integer> supplier, String constraintdescription) {
+            nextRow();
+            nextHeaderCell(name);
+            nextCell().setCellValue(supplier.get());
+            nextHeaderCell(constraintdescription);
         }
 
         private void writeTimeslotList() {
