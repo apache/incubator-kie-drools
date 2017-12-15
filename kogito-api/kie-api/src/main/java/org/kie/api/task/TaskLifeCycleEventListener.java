@@ -16,9 +16,18 @@
 package org.kie.api.task;
 
 import java.util.EventListener;
+import java.util.List;
 import java.util.Map;
 
+import org.kie.api.task.model.OrganizationalEntity;
+
 public interface TaskLifeCycleEventListener extends EventListener {
+    
+    public enum AssignmentType {
+        POT_OWNER,
+        EXCL_OWNER,
+        ADMIN;
+    }
 
     public void beforeTaskActivatedEvent(TaskEvent event);
     public void beforeTaskClaimedEvent(TaskEvent event);
@@ -35,10 +44,14 @@ public interface TaskLifeCycleEventListener extends EventListener {
     public void beforeTaskForwardedEvent(TaskEvent event);
     public void beforeTaskDelegatedEvent(TaskEvent event);
     public void beforeTaskNominatedEvent(TaskEvent event);
-    public default void beforeTaskUpdatedEvent(TaskEvent event){};            
-    public default void beforeTaskReassignedEvent(TaskEvent event){};       
+    public default void beforeTaskUpdatedEvent(TaskEvent event){};
+    public default void beforeTaskReassignedEvent(TaskEvent event){};
     public default void beforeTaskNotificationEvent(TaskEvent event){};
-
+    public default void beforeTaskInputVariableChangedEvent(TaskEvent event, Map<String, Object> variables){};
+    public default void beforeTaskOutputVariableChangedEvent(TaskEvent event, Map<String, Object> variables){};
+    public default void beforeTaskAssignmentsAddedEvent(TaskEvent event, AssignmentType type, List<OrganizationalEntity> entities){};
+    public default void beforeTaskAssignmentsRemovedEvent(TaskEvent event, AssignmentType type, List<OrganizationalEntity> entities){};
+    
     public void afterTaskActivatedEvent(TaskEvent event);
     public void afterTaskClaimedEvent(TaskEvent event);
     public void afterTaskSkippedEvent(TaskEvent event);
@@ -53,11 +66,13 @@ public interface TaskLifeCycleEventListener extends EventListener {
     public void afterTaskSuspendedEvent(TaskEvent event);
     public void afterTaskForwardedEvent(TaskEvent event);
     public void afterTaskDelegatedEvent(TaskEvent event);
-    public void afterTaskNominatedEvent(TaskEvent event);    
+    public void afterTaskNominatedEvent(TaskEvent event);
     public default void afterTaskReassignedEvent(TaskEvent event){}; 
-    public default void afterTaskUpdatedEvent(TaskEvent event){}; 
-    public default void afterTaskNotificationEvent(TaskEvent event){};    
-    public default void afterTaskInputVariableChangedEvent(TaskEvent event, Map<String, Object> variables){};    
-    public default void afterTaskOutputVariableChangedEvent(TaskEvent event, Map<String, Object> variables){}; 
+    public default void afterTaskUpdatedEvent(TaskEvent event){};
+    public default void afterTaskNotificationEvent(TaskEvent event){};
+    public default void afterTaskInputVariableChangedEvent(TaskEvent event, Map<String, Object> variables){};
+    public default void afterTaskOutputVariableChangedEvent(TaskEvent event, Map<String, Object> variables){};
+    public default void afterTaskAssignmentsAddedEvent(TaskEvent event, AssignmentType type, List<OrganizationalEntity> entities){};
+    public default void afterTaskAssignmentsRemovedEvent(TaskEvent event, AssignmentType type, List<OrganizationalEntity> entities){};
 
 }
