@@ -46,6 +46,7 @@ import org.optaplanner.examples.cloudbalancing.app.CloudBalancingApp;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.swingui.OpenBrowserAction;
 import org.optaplanner.examples.common.swingui.SolverAndPersistenceFrame;
+import org.optaplanner.examples.conferencescheduling.app.ConferenceSchedulingApp;
 import org.optaplanner.examples.curriculumcourse.app.CurriculumCourseApp;
 import org.optaplanner.examples.dinnerparty.app.DinnerPartyApp;
 import org.optaplanner.examples.examination.app.ExaminationApp;
@@ -174,6 +175,7 @@ public class OptaPlannerExamplesApp extends JFrame {
         panel.add(createExampleButton(new TravelingTournamentApp()));
         panel.add(createExampleButton(new CheapTimeApp()));
         panel.add(createExampleButton(new InvestmentApp()));
+        panel.add(createExampleButton(new ConferenceSchedulingApp()));
         return panel;
     }
 

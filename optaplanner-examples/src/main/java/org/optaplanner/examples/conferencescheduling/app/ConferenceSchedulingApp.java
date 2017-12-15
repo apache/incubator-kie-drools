@@ -35,8 +35,8 @@ public class ConferenceSchedulingApp extends CommonApp<ConferenceSolution> {
     }
 
     public ConferenceSchedulingApp() {
-        super("Meeting scheduling",
-                "Assign meetings a starting time and a room.",
+        super("Conference scheduling",
+                "Assign conference talks to a timeslot and a room.",
                 SOLVER_CONFIG, DATA_DIR_NAME,
                 ConferenceSchedulingPanel.LOGO_PATH);
     }

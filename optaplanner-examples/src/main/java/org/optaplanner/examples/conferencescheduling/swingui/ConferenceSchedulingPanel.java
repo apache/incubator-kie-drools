@@ -29,7 +29,7 @@ import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
 public class ConferenceSchedulingPanel extends SolutionPanel<ConferenceSolution> {
 
-    public static final String LOGO_PATH = "/org/optaplanner/examples/meetingscheduling/swingui/meetingSchedulingLogo.png";
+    public static final String LOGO_PATH = "/org/optaplanner/examples/conferencescheduling/swingui/conferenceSchedulingLogo.png";
 
     public ConferenceSchedulingPanel() {
         JButton button = new JButton("Show in LibreOffice or Excel");
