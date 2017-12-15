@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-package org.drools.compiler.integrationtests.session;
+package org.drools.compiler.integrationtests.concurrency;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
 import org.drools.compiler.integrationtests.facts.AnEnum;
 import org.drools.compiler.integrationtests.facts.ChildFact1;
 import org.drools.compiler.integrationtests.facts.ChildFact2;
@@ -25,12 +27,31 @@ import org.drools.compiler.integrationtests.facts.ChildFact3WithEnum;
 import org.drools.compiler.integrationtests.facts.ChildFact4WithFirings;
 import org.drools.compiler.integrationtests.facts.RootFact;
 import org.junit.Test;
-import org.kie.api.runtime.KieSession;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
-public class JoinsConcurrentSessionsTest extends AbstractConcurrentSessionsTest {
+@RunWith(Parameterized.class)
+public class JoinsConcurrentSessionsTest extends AbstractConcurrentTest {
 
-    public JoinsConcurrentSessionsTest(final boolean enforcedJitting, final boolean serializeKieBase) {
-        super(enforcedJitting, serializeKieBase);
+    private static final Integer NUMBER_OF_THREADS = 10;
+    private static final Integer NUMBER_OF_REPETITIONS = 1;
+
+    @Parameterized.Parameters(name = "Enforced jitting={0}, Serialize KieBase={1}, Share KieBase={2}")
+    public static List<Boolean[]> getTestParameters() {
+        return Arrays.asList(
+                new Boolean[]{false, false, false},
+                new Boolean[]{false, true, false},
+                new Boolean[]{true, false, false},
+                new Boolean[]{true, true, false},
+                new Boolean[]{false, false, true},
+                new Boolean[]{false, true, true},
+                new Boolean[]{true, false, true},
+                new Boolean[]{true, true, true});
+    }
+
+    public JoinsConcurrentSessionsTest(final boolean enforcedJitting, final boolean serializeKieBase,
+                                       final boolean sharedKieBase) {
+        super(enforcedJitting, serializeKieBase, sharedKieBase, false);
     }
 
     @Test
@@ -60,30 +81,27 @@ public class JoinsConcurrentSessionsTest extends AbstractConcurrentSessionsTest 
         final String drl1 = drlTemplate.replace("${ruleName}", "R1").replace("${enumValue}", "AnEnum.FIRST");
         final String drl2 = drlTemplate.replace("${ruleName}", "R2").replace("${enumValue}", "AnEnum.SECOND");
 
-        parallelTest( 10, 10, new KieSessionExecutor() {
-            @Override
-            public boolean execute( KieSession kieSession, int counter ) {
-                final List<Object> facts = getFacts();
-                for (Object fact : facts) {
-                    kieSession.insert(fact);
-                }
-                kieSession.fireAllRules();
+        parallelTest(NUMBER_OF_REPETITIONS, NUMBER_OF_THREADS, (kieSession, counter) -> {
+            final List<Object> facts = getFacts();
+            for (final Object fact : facts) {
+                kieSession.insert(fact);
+            }
+            kieSession.fireAllRules();
 
-                for (Object fact : facts) {
-                    if (fact instanceof ChildFact4WithFirings) {
-                        final ChildFact4WithFirings childFact4 = (ChildFact4WithFirings) fact;
-                        if (childFact4.getFirings().size() != 1) {
-                            return false;
-                        } else if (childFact4.getFirings().get(0).equals("R1") && !childFact4.getEvaluationName().equals(String.valueOf(AnEnum.FIRST))) {
-                            return false;
-                        } else if (childFact4.getFirings().get(0).equals("R2") && !childFact4.getEvaluationName().equals(String.valueOf(AnEnum.SECOND))) {
-                            return false;
-                        }
+            for (final Object fact : facts) {
+                if (fact instanceof ChildFact4WithFirings) {
+                    final ChildFact4WithFirings childFact4 = (ChildFact4WithFirings) fact;
+                    if (childFact4.getFirings().size() != 1) {
+                        return false;
+                    } else if (childFact4.getFirings().get(0).equals("R1") && !childFact4.getEvaluationName().equals(String.valueOf(AnEnum.FIRST))) {
+                        return false;
+                    } else if (childFact4.getFirings().get(0).equals("R2") && !childFact4.getEvaluationName().equals(String.valueOf(AnEnum.SECOND))) {
+                        return false;
                     }
                 }
-                return true;
             }
-        }, drl1, drl2 );
+            return true;
+        }, null, null, drl1, drl2 );
     }
 
     private List<Object> getFacts() {
