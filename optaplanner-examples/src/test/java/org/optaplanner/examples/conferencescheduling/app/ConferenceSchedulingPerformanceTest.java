@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.meetingscheduling.app;
+package org.optaplanner.examples.conferencescheduling.app;
 
 import java.io.File;
 
 import org.junit.Test;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
-import org.optaplanner.examples.meetingscheduling.domain.MeetingSchedule;
+import org.optaplanner.examples.conferencescheduling.domain.ConferenceSolution;
 
-public class MeetingSchedulingPerformanceTest extends SolverPerformanceTest<MeetingSchedule> {
+public class ConferenceSchedulingPerformanceTest extends SolverPerformanceTest<ConferenceSolution> {
 
     @Override
-    protected MeetingSchedulingApp createCommonApp() {
-        return new MeetingSchedulingApp();
+    protected ConferenceSchedulingApp createCommonApp() {
+        return new ConferenceSchedulingApp();
     }
 
     // ************************************************************************
@@ -36,14 +36,14 @@ public class MeetingSchedulingPerformanceTest extends SolverPerformanceTest<Meet
 
     @Test(timeout = 600000)
     public void solveModel() {
-        File unsolvedDataFile = new File("data/meetingscheduling/unsolved/50meetings-160timegrains-5rooms.xml");
-        runSpeedTest(unsolvedDataFile, "-19hard/-115medium/-4046soft");
+        File unsolvedDataFile = new File("data/conferencescheduling/unsolved/72talks-12timeslots-10rooms.xlsx");
+        runSpeedTest(unsolvedDataFile, "-1hard/-250soft");
     }
 
     @Test(timeout = 600000)
     public void solveModelFastAssert() {
-        File unsolvedDataFile = new File("data/meetingscheduling/unsolved/50meetings-160timegrains-5rooms.xml");
-        runSpeedTest(unsolvedDataFile, "-29hard/-70medium/-3399soft", EnvironmentMode.FAST_ASSERT);
+        File unsolvedDataFile = new File("data/conferencescheduling/unsolved/72talks-12timeslots-10rooms.xlsx");
+        runSpeedTest(unsolvedDataFile, "-1hard/-290soft", EnvironmentMode.FAST_ASSERT);
     }
 
 }
