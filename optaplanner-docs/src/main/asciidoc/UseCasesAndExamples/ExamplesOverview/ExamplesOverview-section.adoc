@@ -218,4 +218,14 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 * Defined by us
 |* <<valueRangeFactory,ValueRangeFactory>>
 
+|<<conferenceScheduling,Conference scheduling>>
+|* 1 entity class
+* 2 variables
+|* Entity <= `216`
+* Value <= `18` and <= `20`
+* Search space <= `10^552`
+|* No
+* Defined by us
+|
+
 |===
