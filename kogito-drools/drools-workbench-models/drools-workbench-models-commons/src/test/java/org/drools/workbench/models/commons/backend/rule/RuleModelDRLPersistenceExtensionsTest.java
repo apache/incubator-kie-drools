@@ -18,7 +18,9 @@ package org.drools.workbench.models.commons.backend.rule;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.concurrent.Callable;
 
+import org.assertj.core.api.Assertions;
 import org.drools.workbench.models.commons.backend.rule.actions.TestIAction;
 import org.drools.workbench.models.commons.backend.rule.exception.RuleModelDRLPersistenceException;
 import org.drools.workbench.models.commons.backend.rule.extensions.TestIActionPersistenceExtension;
@@ -74,13 +76,16 @@ public class RuleModelDRLPersistenceExtensionsTest {
         assertTrue(iAction instanceof TestIAction);
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void unmarshalWithAmbiguousExtensions() {
-        RuleModelDRLPersistenceImpl.getInstance().unmarshal(DRL_RULE,
-                                                            Collections.emptyList(),
-                                                            new PackageDataModelOracleImpl(),
-                                                            Arrays.asList(new TestIActionPersistenceExtension(),
-                                                                          new TestIActionPersistenceExtensionCopy()));
+        Assertions.assertThatThrownBy(() -> RuleModelDRLPersistenceImpl.getInstance().unmarshal(DRL_RULE,
+                                                                                                Collections.emptyList(),
+                                                                                                new PackageDataModelOracleImpl(),
+                                                                                                Arrays.asList(new TestIActionPersistenceExtension(),
+                                                                                                              new TestIActionPersistenceExtensionCopy())))
+                .isInstanceOf(RuntimeException.class)
+                .hasCauseExactlyInstanceOf(RuleModelDRLPersistenceException.class)
+                .hasMessageContaining("Ambiguous RuleModelIActionPersistenceExtension implementations");
     }
 
     @Test
@@ -108,12 +113,15 @@ public class RuleModelDRLPersistenceExtensionsTest {
         assertTrue(iAction instanceof TestIAction);
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void unmarshalDSLWithAmbiguousExtensions() {
-        RuleModelDRLPersistenceImpl.getInstance().unmarshalUsingDSL(DRL_RULE,
-                                                                    Collections.emptyList(),
-                                                                    new PackageDataModelOracleImpl(),
-                                                                    Arrays.asList(new TestIActionPersistenceExtension(),
-                                                                                  new TestIActionPersistenceExtensionCopy()));
+        Assertions.assertThatThrownBy(() -> RuleModelDRLPersistenceImpl.getInstance().unmarshalUsingDSL(DRL_RULE,
+                                                                                                        Collections.emptyList(),
+                                                                                                        new PackageDataModelOracleImpl(),
+                                                                                                        Arrays.asList(new TestIActionPersistenceExtension(),
+                                                                                                                      new TestIActionPersistenceExtensionCopy())))
+                .isInstanceOf(RuntimeException.class)
+                .hasCauseExactlyInstanceOf(RuleModelDRLPersistenceException.class)
+                .hasMessageContaining("Ambiguous RuleModelIActionPersistenceExtension implementations");
     }
 }

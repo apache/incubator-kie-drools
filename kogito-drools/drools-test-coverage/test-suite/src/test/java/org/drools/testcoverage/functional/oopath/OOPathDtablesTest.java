@@ -89,7 +89,7 @@ public class OOPathDtablesTest {
         final Resource resource =
                 ResourceUtil.getDecisionTableResourceFromClasspath(csvFile, getClass(), DecisionTableInputType.CSV);
 
-        return KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, true, resource).newKieSession();
+        return KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, resource).newKieSession();
     }
 
     private KieSession getKieSessionFromXls(final String xlsFile) {
@@ -103,7 +103,7 @@ public class OOPathDtablesTest {
     private KieSession getKieSessionFromExcel(final String file, final DecisionTableInputType fileType) {
         final Resource resource = ResourceUtil.getDecisionTableResourceFromClasspath(file, getClass(), fileType);
 
-        return KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, true, resource).newKieSession();
+        return KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, resource).newKieSession();
     }
 
     private void populateKieSession(final KieSession kieSession, final List<String> list) {

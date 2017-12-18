@@ -68,7 +68,7 @@ public class UnicodeTest {
         final KieServices kieServices = KieServices.Factory.get();
         final Resource resource = kieServices.getResources().newClassPathResource("unicode.drl", getClass());
         final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration,
-                true, resource);
+                resource);
         final KieSession ksession = kbase.newKieSession();
 
         final List<Command<?>> commands = new ArrayList<Command<?>>();
@@ -95,7 +95,7 @@ public class UnicodeTest {
     public void testCzech() {
         final KieServices kieServices = KieServices.Factory.get();
         final Resource resource = kieServices.getResources().newClassPathResource("unicode.drl", getClass());
-        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, true, resource);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, resource);
         final KieSession ksession = kbase.newKieSession();
 
         final List<Command<?>> commands = new ArrayList<Command<?>>();
@@ -124,7 +124,7 @@ public class UnicodeTest {
         final KieServices kieServices = KieServices.Factory.get();
         final Resource dsl = kieServices.getResources().newClassPathResource("unicode.dsl", getClass());
         final Resource dslr = kieServices.getResources().newClassPathResource("unicode.dslr", getClass());
-        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, true, dsl, dslr);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, dsl, dslr);
         final KieSession ksession = kbase.newKieSession();
 
         final List<Command<?>> commands = new ArrayList<Command<?>>();
@@ -147,7 +147,7 @@ public class UnicodeTest {
     public void testCzechXLSDecisionTable() throws FileNotFoundException {
         final KieServices kieServices = KieServices.Factory.get();
         final Resource resource = kieServices.getResources().newClassPathResource("unicode.xls", getClass());
-        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, true, resource);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, resource);
         final KieSession ksession = kbase.newKieSession();
 
         final List<Command<?>> commands = new ArrayList<Command<?>>();
@@ -173,7 +173,7 @@ public class UnicodeTest {
         final Resource decisionTable =
                 ResourceUtil.getDecisionTableResourceFromClasspath("unicode.csv", getClass(), DecisionTableInputType.CSV);
 
-        KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, true, decisionTable);
+        KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, decisionTable);
         KieSession ksession = kbase.newKieSession();
 
         List<Command<?>> commands = new ArrayList<Command<?>>();
@@ -197,7 +197,7 @@ public class UnicodeTest {
     public void testQueryCallFromJava() throws InstantiationException, IllegalAccessException {
         final KieServices kieServices = KieServices.Factory.get();
         final Resource resource = kieServices.getResources().newClassPathResource("unicode.drl", getClass());
-        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, true, resource);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, resource);
         final KieSession ksession = kbase.newKieSession();
 
         final FactType locationType = kbase.getFactType(TestConstants.PACKAGE_FUNCTIONAL, "Umístění");

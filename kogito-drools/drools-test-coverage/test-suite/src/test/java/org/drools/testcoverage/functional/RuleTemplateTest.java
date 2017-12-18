@@ -79,7 +79,7 @@ public class RuleTemplateTest {
         final Resource drlResource = kieServices.getResources().newReaderResource(new StringReader(drl));
         drlResource.setTargetPath(TestConstants.DRL_TEST_TARGET_PATH);
 
-        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, true, drlResource);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, drlResource);
         final Collection<KiePackage> pkgs = kbase.getKiePackages();
 
         Assertions.assertThat(pkgs.size()).isEqualTo(2);

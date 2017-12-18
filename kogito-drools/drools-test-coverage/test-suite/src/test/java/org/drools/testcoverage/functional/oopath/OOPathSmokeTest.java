@@ -66,12 +66,12 @@ public class OOPathSmokeTest {
     @Test
     public void testBuildKieBase() {
         final KieBase kieBase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), kieBaseTestConfiguration,
-                true, "oopath.drl");
+                "oopath.drl");
         Assertions.assertThat(kieBase).isNotNull();
     }
 
     @Test
-    public void testBuildTwoKieBases() throws Exception {
+    public void testBuildTwoKieBases() {
         final Resource drlResource = KIE_SERVICES.getResources().newUrlResource(this.getClass().getResource("oopath.drl"));
         KieBaseUtil.getKieModuleAndBuildInstallModule(RELEASE_ID, KieBaseTestConfiguration.CLOUD_IDENTITY, drlResource);
 
@@ -86,7 +86,7 @@ public class OOPathSmokeTest {
     @Test
     public void testFireRule() {
         final KieBase kieBase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), kieBaseTestConfiguration,
-                true, "oopath.drl");
+                "oopath.drl");
         this.kieSession = kieBase.newKieSession();
 
         final Person person = new Person("Bruno", 21);

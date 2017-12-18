@@ -45,7 +45,7 @@ public class RowAdapter implements Row {
         }
         Declaration declr = this.rule.getDeclaration( identifier );
         if ( declr == null ) {
-            throw new RuntimeException("The identifier '" + identifier + "' does not exist as a bound varirable for this query" );
+            throw new RuntimeException("The identifier '" + identifier + "' does not exist as a bound variable for this query" );
         }
         InternalFactHandle factHandle = getFactHandle( declr );
         return declr.getValue( null, factHandle.getObject() );
@@ -57,7 +57,7 @@ public class RowAdapter implements Row {
         }
         Declaration declr = this.rule.getDeclaration( identifier );
         if ( declr == null ) {
-            throw new RuntimeException("The identifier '" + identifier + "' does not exist as a bound varirable for this query" );
+            throw new RuntimeException("The identifier '" + identifier + "' does not exist as a bound variable for this query" );
         }
         InternalFactHandle factHandle = getFactHandle( declr );
         return factHandle;

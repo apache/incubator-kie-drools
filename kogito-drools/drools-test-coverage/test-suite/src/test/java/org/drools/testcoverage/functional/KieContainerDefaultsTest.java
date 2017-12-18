@@ -16,6 +16,8 @@
 
 package org.drools.testcoverage.functional;
 
+import java.io.IOException;
+
 import org.assertj.core.api.Assertions;
 import org.drools.core.impl.InternalKieContainer;
 import org.drools.testcoverage.common.util.TestConstants;
@@ -31,8 +33,6 @@ import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.StatelessKieSession;
-
-import java.io.IOException;
 
 /**
  * This class's purpose is to test obtaining default KieSessions and default KieBases from KieContainer. It tests
@@ -77,7 +77,7 @@ public class KieContainerDefaultsTest {
     /**
      * This test checks how KieBases behave when all are explicitly set not to be default.
      */
-    @Test(expected = RuntimeException.class)
+    @Test
     public void testTwoKieBasesNoneDefault() {
         final KieModuleModel kieModule = kieServices.newKieModuleModel();
         kieModule.newKieBaseModel("firstKBase").setDefault(false);
@@ -87,7 +87,9 @@ public class KieContainerDefaultsTest {
 
         final KieContainer kieContainer = kieServices.newKieContainer(RELEASE_ID);
 
-        kieContainer.getKieBase();
+        Assertions.assertThatThrownBy(() -> kieContainer.getKieBase())
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("Cannot find a default KieBase");
     }
 
     /**
@@ -118,7 +120,7 @@ public class KieContainerDefaultsTest {
     /**
      * This test checks how KieSessions behave when more than one is set as default.
      */
-    @Test(expected = RuntimeException.class)
+    @Test
     public void testTwoKieSessionsBothDefault() {
         final KieModuleModel kieModule = kieServices.newKieModuleModel();
         kieModule.newKieBaseModel("firstKBase").setDefault(true).newKieSessionModel("firstKSession").setDefault(true);
@@ -128,13 +130,15 @@ public class KieContainerDefaultsTest {
 
         final KieContainer kieContainer = kieServices.newKieContainer(RELEASE_ID);
 
-        kieContainer.newKieSession();
+        Assertions.assertThatThrownBy(() -> kieContainer.newKieSession())
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("Cannot find a default KieSession");
     }
 
     /**
      * This test checks how KieSessions behave when all are explicitly set not to be default.
      */
-    @Test(expected = RuntimeException.class)
+    @Test
     public void testTwoKieSessionsNoneDefault() {
         final KieModuleModel kieModule = kieServices.newKieModuleModel();
         kieModule.newKieBaseModel("firstKBase").setDefault(true).newKieSessionModel("firstKSession").setDefault(false);
@@ -144,13 +148,15 @@ public class KieContainerDefaultsTest {
 
         final KieContainer kieContainer = kieServices.newKieContainer(RELEASE_ID);
 
-        kieContainer.newKieSession();
+        Assertions.assertThatThrownBy(() -> kieContainer.newKieSession())
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("Cannot find a default KieSession");
     }
 
     /**
      * This test checks how KieSessions behave when default state isn't explicitly set.
      */
-    @Test(expected = RuntimeException.class)
+    @Test
     public void testTwoKieSessionsDefaultNotSet() {
         final KieModuleModel kieModule = kieServices.newKieModuleModel();
         kieModule.newKieBaseModel("firstKBase").setDefault(true).newKieSessionModel("firstKSession");
@@ -160,7 +166,9 @@ public class KieContainerDefaultsTest {
 
         final KieContainer kieContainer = kieServices.newKieContainer(RELEASE_ID);
 
-        kieContainer.newKieSession();
+        Assertions.assertThatThrownBy(() -> kieContainer.newKieSession())
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("Cannot find a default KieSession");
     }
 
     /**
@@ -210,7 +218,7 @@ public class KieContainerDefaultsTest {
     /**
      * This test checks how StatelessKieSessions behave when more than one is set as default.
      */
-    @Test(expected = RuntimeException.class)
+    @Test
     public void testTwoStatelessKieSessionsBothDefault() {
         final KieModuleModel kieModule = kieServices.newKieModuleModel();
         kieModule.newKieBaseModel("firstKBase").setDefault(true).newKieSessionModel("firstKSession").setType(KieSessionModel.KieSessionType.STATELESS).setDefault(true);
@@ -220,13 +228,15 @@ public class KieContainerDefaultsTest {
 
         final KieContainer kieContainer = kieServices.newKieContainer(RELEASE_ID);
 
-        kieContainer.newStatelessKieSession();
+        Assertions.assertThatThrownBy(() -> kieContainer.newStatelessKieSession())
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("Cannot find a default StatelessKieSession");
     }
 
     /**
      * This test checks how StatelessKieSessions behave when all are explicitly set not to be default.
      */
-    @Test(expected = RuntimeException.class)
+    @Test
     public void testTwoStatelessKieSessionsNoneDefault() {
         final KieModuleModel kieModule = kieServices.newKieModuleModel();
         kieModule.newKieBaseModel("firstKBase").setDefault(true).newKieSessionModel("firstKSession").setType(KieSessionModel.KieSessionType.STATELESS).setDefault(false);
@@ -236,13 +246,15 @@ public class KieContainerDefaultsTest {
 
         final KieContainer kieContainer = kieServices.newKieContainer(RELEASE_ID);
 
-        kieContainer.newStatelessKieSession();
+        Assertions.assertThatThrownBy(() -> kieContainer.newStatelessKieSession())
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("Cannot find a default StatelessKieSession");
     }
 
     /**
      * This test checks how StatelessKieSessions behave when default state isn't explicitly set.
      */
-    @Test(expected = RuntimeException.class)
+    @Test
     public void testTwoStatelessKieSessionsDefaultNotSet() {
         final KieModuleModel kieModule = kieServices.newKieModuleModel();
         kieModule.newKieBaseModel("firstKBase").setDefault(true).newKieSessionModel("firstKSession").setType(KieSessionModel.KieSessionType.STATELESS);
@@ -252,7 +264,9 @@ public class KieContainerDefaultsTest {
 
         final KieContainer kieContainer = kieServices.newKieContainer(RELEASE_ID);
 
-        kieContainer.newStatelessKieSession();
+        Assertions.assertThatThrownBy(() -> kieContainer.newStatelessKieSession())
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("Cannot find a default StatelessKieSession");
     }
 
     /**

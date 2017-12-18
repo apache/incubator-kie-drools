@@ -228,7 +228,7 @@ public class TemplatesTest {
     private void testCorrectnessCheck(final String drl) {
         final Resource drlResource = KieServices.Factory.get().getResources().newReaderResource(new StringReader(drl));
         drlResource.setTargetPath(TestConstants.DRL_TEST_TARGET_PATH);
-        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, true, drlResource);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, drlResource);
 
         final KieSession session = kbase.newKieSession();
 
@@ -261,7 +261,7 @@ public class TemplatesTest {
     private void testManyRows(final String drl, final int expectedResultListSize, final int expectedRulesCount) {
         final Resource drlResource = KieServices.Factory.get().getResources().newReaderResource(new StringReader(drl));
         drlResource.setTargetPath(TestConstants.DRL_TEST_TARGET_PATH);
-        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, true, drlResource);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, drlResource);
 
         final KieSession session = kbase.newKieSession();
 
@@ -288,7 +288,7 @@ public class TemplatesTest {
     private void testManyRules(final String drl, final int expectedRulesCount) {
         final Resource drlResource = KieServices.Factory.get().getResources().newReaderResource(new StringReader(drl));
         drlResource.setTargetPath(TestConstants.DRL_TEST_TARGET_PATH);
-        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, true, drlResource);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, drlResource);
 
         Collection<KiePackage> pkgs = kbase.getKiePackages();
         Assertions.assertThat(pkgs.size()).isEqualTo(1);

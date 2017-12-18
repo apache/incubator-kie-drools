@@ -23,6 +23,7 @@ import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -76,9 +77,10 @@ public class QueryBadResultTest {
         Assertions.assertThat(kieBuilder.getResults().getMessages(Level.ERROR).isEmpty()).isFalse();
     }
 
-    @Test(expected = RuntimeException.class)
+    @Ignore("TODO - check correct exception in this test when DROOLS-2186 is fixed.")
+    @Test
     public void testQueryCalledWithoutParamsButItHasParams() {
-        final KieBase kieBase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, true, "query.drl");
+        final KieBase kieBase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "query.drl");
         final KieSession ksession = kieBase.newKieSession();
         ksession.insert(new Person("Petr"));
 
@@ -94,7 +96,7 @@ public class QueryBadResultTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testAccessToNotExistingVariable() {
-        final KieBase kieBase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration,true, "query.drl");
+        final KieBase kieBase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration,"query.drl");
         final KieSession ksession = kieBase.newKieSession();
         ksession.insert(new Person("Petr"));
 

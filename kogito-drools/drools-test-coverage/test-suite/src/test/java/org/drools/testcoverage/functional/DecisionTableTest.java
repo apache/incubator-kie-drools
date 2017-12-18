@@ -76,7 +76,7 @@ public class DecisionTableTest {
     }
 
     private void testSimpleDecisionTable(final Resource decisionTable) {
-        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, true, decisionTable);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, decisionTable);
 
         final KieSession session = kbase.newKieSession();
 
@@ -100,7 +100,7 @@ public class DecisionTableTest {
         final Resource decisionTable =
                 ResourceUtil.getDecisionTableResourceFromClasspath("multiple_tables.xls", getClass(), DecisionTableInputType.XLS);
 
-        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, true, decisionTable);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, decisionTable);
 
         Assertions.assertThat(2).isEqualTo(kbase.getKiePackages().size());
 
@@ -140,7 +140,7 @@ public class DecisionTableTest {
         final Resource decisionTable =
                 ResourceUtil.getDecisionTableResourceFromClasspath("eval_dt.xls", getClass(), DecisionTableInputType.XLS);
 
-        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, true, decisionTable);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, decisionTable);
 
         Assertions.assertThat(2).isEqualTo(kbase.getKiePackages().size());
 
@@ -221,7 +221,7 @@ public class DecisionTableTest {
         session = kbase.newKieSession();
         session.addEventListener(rulesFired);
         rulesFired.clear();
-        final List<Sample> results = new ArrayList<Sample>();
+        final List<Sample> results = new ArrayList<>();
         session.setGlobal("results", results);
         final Sample sample = new Sample();
         session.insert(sample);
@@ -247,7 +247,7 @@ public class DecisionTableTest {
         final Resource decisionTable =
                 ResourceUtil.getDecisionTableResourceFromClasspath("advanced_dt.xls", getClass(), DecisionTableInputType.XLS);
 
-        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, true, decisionTable);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, decisionTable);
         KieSession session = kbase.newKieSession();
 
         final OrderListener listener = new OrderListener();
@@ -277,7 +277,7 @@ public class DecisionTableTest {
         final Resource decisionTable =
                 ResourceUtil.getDecisionTableResourceFromClasspath("queries.xls", getClass(), DecisionTableInputType.XLS);
 
-        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, true, decisionTable);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, decisionTable);
 
         final FactType locationType = kbase.getFactType(TestConstants.PACKAGE_FUNCTIONAL, "Location");
 
@@ -338,7 +338,7 @@ public class DecisionTableTest {
         final Resource decisionTable =
                 ResourceUtil.getDecisionTableResourceFromClasspath("queries.xls", getClass(), DecisionTableInputType.XLS);
 
-        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, true, decisionTable);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, decisionTable);
 
         final FactType locationType = kbase.getFactType(TestConstants.PACKAGE_FUNCTIONAL, "Location");
 
@@ -402,7 +402,7 @@ public class DecisionTableTest {
         final Resource decisionTable =
                 ResourceUtil.getDecisionTableResourceFromClasspath("sequential.csv", getClass(), DecisionTableInputType.CSV);
 
-        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, true, decisionTable);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, decisionTable);
 
         final KieSession ksession = kbase.newKieSession();
         final OrderListener listener = new OrderListener();
@@ -421,7 +421,7 @@ public class DecisionTableTest {
         final Resource decisionTable =
                 ResourceUtil.getDecisionTableResourceFromClasspath("agenda-group.csv", getClass(), DecisionTableInputType.CSV);
 
-        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, true, decisionTable);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, decisionTable);
         final KieSession ksession = kbase.newKieSession();
         final OrderListener listener = new OrderListener();
         ksession.addEventListener(listener);
@@ -443,7 +443,7 @@ public class DecisionTableTest {
         final Resource decisionTable =
                 ResourceUtil.getDecisionTableResourceFromClasspath("agenda-group.csv", getClass(), DecisionTableInputType.CSV);
 
-        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, true, decisionTable);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, decisionTable);
         final KieSession ksession = kbase.newKieSession();
         final OrderListener listener = new OrderListener();
         ksession.addEventListener(listener);
@@ -473,7 +473,7 @@ public class DecisionTableTest {
         final Resource decisionTable =
                 ResourceUtil.getDecisionTableResourceFromClasspath("agenda-group.csv", getClass(), DecisionTableInputType.CSV);
 
-        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, true, decisionTable);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, decisionTable);
         final KieSession ksession = kbase.newKieSession();
         final TrackingAgendaEventListener listener = new TrackingAgendaEventListener();
         ksession.addEventListener(listener);
@@ -517,9 +517,9 @@ public class DecisionTableTest {
     }
 
     private void testDecisionTableWithDateAttributes(final Resource decisionTable) {
-        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, true, decisionTable);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, decisionTable);
 
-        final ArrayList<String> names = new ArrayList<String>();
+        final ArrayList<String> names = new ArrayList<>();
         final Collection<KiePackage> pkgs = kbase.getKiePackages();
         for (KiePackage kp : pkgs) {
             names.add(kp.getName());
