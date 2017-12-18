@@ -506,11 +506,9 @@ public class NamedConsequencesTest extends CommonTestMethodBase {
                 "    if (results.size() > 10) throw new RuntimeException();\n" +
                 "end\n";
 
-        try {
-            List<String> results = executeTestWithDRL(str);
-        } catch (RuntimeException ex) {
-            Assertions.assertThat(ex).hasMessageContaining("Exception executing consequence for rule \"R1\"");
-        }
+        Assertions.assertThatThrownBy(() -> executeTestWithDRL(str))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("Exception executing consequence for rule \"R1\"");
     }
 
     @Test
@@ -603,11 +601,9 @@ public class NamedConsequencesTest extends CommonTestMethodBase {
                 "    if (results.size() > 10) throw new RuntimeException();\n" +
                 "end\n";
 
-        try {
-            List<String> results = executeTestWithDRL(str);
-        } catch (RuntimeException ex) {
-            Assertions.assertThat(ex).hasMessageContaining("Exception executing consequence for rule \"R1\"");
-        }
+        Assertions.assertThatThrownBy(() -> executeTestWithDRL(str))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("Exception executing consequence for rule \"R1\"");
     }
 
     @Test

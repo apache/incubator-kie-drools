@@ -160,15 +160,10 @@ public class KieBuilderTest extends CommonTestMethodBase {
         // Create an in-memory jar for version 1.0.0
         final ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-kie-builder", "1.0.0" );
         final Resource r1 = ResourceFactory.newByteArrayResource( drl1.getBytes() ).setResourceType( ResourceType.DRL ).setSourcePath( "kbase1/drl1.drl" );
-        try {
-            final KieModule km = createAndDeployJar(ks,
-                                                    kmodule,
-                                                    releaseId1,
-                                                    r1);
-            Assertions.fail("Test should throw a validation exception!");
-        } catch (IllegalStateException ex) {
-            Assertions.assertThat(ex).hasMessageContaining("XSD validation failed");
-        }
+
+        Assertions.assertThatThrownBy(() -> createAndDeployJar(ks, kmodule, releaseId1, r1))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("XSD validation failed");
     }
 
     @Test
@@ -239,7 +234,7 @@ public class KieBuilderTest extends CommonTestMethodBase {
     }
 
     @Test
-    public void testReportKBuilderErrorWhenUsingAJavaClassWithNoPkg() throws Exception {
+    public void testReportKBuilderErrorWhenUsingAJavaClassWithNoPkg() {
         // BZ-995018
         final String java = "public class JavaClass { }\n";
         final KieServices ks = KieServices.Factory.get();
@@ -486,17 +481,11 @@ public class KieBuilderTest extends CommonTestMethodBase {
     public void testAddMissingResourceToPackageBuilder() throws Exception {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
-        try {
-            kbuilder.add(ResourceFactory.newClassPathResource("some.rf"), ResourceType.DRL);
-            fail("adding a missing resource should fail");
-        } catch (final RuntimeException e) {
-        }
+        Assertions.assertThatThrownBy(() -> kbuilder.add(ResourceFactory.newClassPathResource("some.rf"), ResourceType.DRL))
+                .isInstanceOf(RuntimeException.class);
 
-        try {
-            kbuilder.add(ResourceFactory.newClassPathResource("some.rf"), ResourceType.DRF);
-            fail("adding a missing resource should fail");
-        } catch (final RuntimeException e) {
-        }
+        Assertions.assertThatThrownBy(() -> kbuilder.add(ResourceFactory.newClassPathResource("some.rf"), ResourceType.DRF))
+                .isInstanceOf(RuntimeException.class);
     }
     
     

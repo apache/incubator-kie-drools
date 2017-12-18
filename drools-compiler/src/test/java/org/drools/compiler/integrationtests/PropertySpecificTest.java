@@ -1370,11 +1370,9 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         c.setS("test");
         ksession.insert( c );
 
-        try {
-            ksession.fireAllRules();
-        } catch (RuntimeException ex) {
-            Assertions.assertThat(ex).hasMessageContaining("Exception executing consequence for rule \"R1\"");
-        }
+        Assertions.assertThatThrownBy(() -> ksession.fireAllRules())
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("Exception executing consequence for rule \"R1\"");
     }
 
     @Test
@@ -1408,11 +1406,9 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         factTypeB.set( factB, "on", false );
         ksession.insert( factB );
 
-        try {
-            ksession.fireAllRules();
-        } catch (RuntimeException ex) {
-            Assertions.assertThat(ex).hasMessageContaining("Exception executing consequence for rule \"R1\"");
-        }
+        Assertions.assertThatThrownBy(() -> ksession.fireAllRules())
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("Exception executing consequence for rule \"R1\"");
     }
 
     @Test(timeout = 5000)
@@ -2226,11 +2222,9 @@ public class PropertySpecificTest extends CommonTestMethodBase {
 
     @Test
     public void testBetaWith2RTNSinksExecInfiniteLoop() throws Exception {
-        try {
-            testBetaWith2RTNSinksExec(true);
-        } catch (RuntimeException ex) {
-            Assertions.assertThat(ex).hasMessageContaining("Exception executing consequence for rule \"R1\"");
-        }
+        Assertions.assertThatThrownBy(() -> testBetaWith2RTNSinksExec(true))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("Exception executing consequence for rule \"R1\"");
     }
 
     private void testBetaWith2RTNSinksExec(boolean addInfiniteLoopWatch) throws Exception {
@@ -2306,11 +2300,9 @@ public class PropertySpecificTest extends CommonTestMethodBase {
 
     @Test
     public void testBetaWith2BetaSinksExecInfiniteLoop() throws Exception {
-        try {
-            testBetaWith2BetaSinksExec(true);
-        } catch (RuntimeException ex) {
-            Assertions.assertThat(ex).hasMessageContaining("Exception executing consequence for rule \"R1\"");
-        }
+        Assertions.assertThatThrownBy(() -> testBetaWith2BetaSinksExec(true))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("Exception executing consequence for rule \"R1\"");
     }
 
     private void testBetaWith2BetaSinksExec(boolean addInfiniteLoopWatch) throws Exception {

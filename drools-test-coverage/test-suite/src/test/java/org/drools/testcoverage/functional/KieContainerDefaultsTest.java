@@ -87,11 +87,9 @@ public class KieContainerDefaultsTest {
 
         final KieContainer kieContainer = kieServices.newKieContainer(RELEASE_ID);
 
-        try {
-            kieContainer.getKieBase();
-        } catch (RuntimeException ex) {
-            Assertions.assertThat(ex).hasMessage("Cannot find a default KieBase");
-        }
+        Assertions.assertThatThrownBy(() -> kieContainer.getKieBase())
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("Cannot find a default KieBase");
     }
 
     /**
@@ -132,11 +130,9 @@ public class KieContainerDefaultsTest {
 
         final KieContainer kieContainer = kieServices.newKieContainer(RELEASE_ID);
 
-        try {
-            kieContainer.newKieSession();
-        } catch (RuntimeException ex) {
-            Assertions.assertThat(ex).hasMessage("Cannot find a default KieSession");
-        }
+        Assertions.assertThatThrownBy(() -> kieContainer.newKieSession())
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("Cannot find a default KieSession");
     }
 
     /**
@@ -152,11 +148,9 @@ public class KieContainerDefaultsTest {
 
         final KieContainer kieContainer = kieServices.newKieContainer(RELEASE_ID);
 
-        try {
-            kieContainer.newKieSession();
-        } catch (RuntimeException ex) {
-            Assertions.assertThat(ex).hasMessage("Cannot find a default KieSession");
-        }
+        Assertions.assertThatThrownBy(() -> kieContainer.newKieSession())
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("Cannot find a default KieSession");
     }
 
     /**
@@ -172,11 +166,9 @@ public class KieContainerDefaultsTest {
 
         final KieContainer kieContainer = kieServices.newKieContainer(RELEASE_ID);
 
-        try {
-            kieContainer.newKieSession();
-        } catch (RuntimeException ex) {
-            Assertions.assertThat(ex).hasMessage("Cannot find a default KieSession");
-        }
+        Assertions.assertThatThrownBy(() -> kieContainer.newKieSession())
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("Cannot find a default KieSession");
     }
 
     /**
@@ -236,11 +228,9 @@ public class KieContainerDefaultsTest {
 
         final KieContainer kieContainer = kieServices.newKieContainer(RELEASE_ID);
 
-        try {
-            kieContainer.newStatelessKieSession();
-        } catch (RuntimeException ex) {
-            Assertions.assertThat(ex).hasMessage("Cannot find a default StatelessKieSession");
-        }
+        Assertions.assertThatThrownBy(() -> kieContainer.newStatelessKieSession())
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("Cannot find a default StatelessKieSession");
     }
 
     /**
@@ -256,11 +246,9 @@ public class KieContainerDefaultsTest {
 
         final KieContainer kieContainer = kieServices.newKieContainer(RELEASE_ID);
 
-        try {
-            kieContainer.newStatelessKieSession();
-        } catch (RuntimeException ex) {
-            Assertions.assertThat(ex).hasMessage("Cannot find a default StatelessKieSession");
-        }
+        Assertions.assertThatThrownBy(() -> kieContainer.newStatelessKieSession())
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("Cannot find a default StatelessKieSession");
     }
 
     /**
@@ -276,11 +264,9 @@ public class KieContainerDefaultsTest {
 
         final KieContainer kieContainer = kieServices.newKieContainer(RELEASE_ID);
 
-        try {
-            kieContainer.newStatelessKieSession();
-        } catch (RuntimeException ex) {
-            Assertions.assertThat(ex).hasMessage("Cannot find a default StatelessKieSession");
-        }
+        Assertions.assertThatThrownBy(() -> kieContainer.newStatelessKieSession())
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("Cannot find a default StatelessKieSession");
     }
 
     /**

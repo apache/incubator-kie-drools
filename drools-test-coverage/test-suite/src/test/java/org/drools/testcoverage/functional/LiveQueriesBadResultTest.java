@@ -93,14 +93,12 @@ public class LiveQueriesBadResultTest {
 
     @Test
     public void testBadAccessToParameterWithoutType() {
-        try {
-            final KieBase kieBase = KieBaseUtil.getKieBaseFromClasspathResources(
+        Assertions.assertThatThrownBy(() -> KieBaseUtil.getKieBaseFromClasspathResources(
                     getClass(),
                     kieBaseTestConfiguration,
-                    "query-bad-parametr-access.drl");
-        } catch (AssertionError ex) {
-            Assertions.assertThat(ex).hasMessageContaining("Comparison operation requires compatible types");
-        }
+                    "query-bad-parametr-access.drl"))
+                .isInstanceOf(AssertionError.class)
+                .hasMessageContaining("Comparison operation requires compatible types");
     }
 
     @Test
@@ -129,11 +127,10 @@ public class LiveQueriesBadResultTest {
         KieSession ksession = kieBase.newKieSession();
         ksession.insert(new Person("Petr", 25));
 
-        try {
-            ksession.openLiveQuery("simple query with no parameters", new Object[]{"Petr", 26}, listener);
-        } catch (RuntimeException ex) {
-            Assertions.assertThat(ex).hasMessage("The identifier 'bad' does not exist as a bound variable for this query");
-        }
+
+        Assertions.assertThatThrownBy(() -> ksession.openLiveQuery("simple query with no parameters", new Object[]{"Petr", 26}, listener))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessage("The identifier 'bad' does not exist as a bound variable for this query");
     }
 
     @Ignore("TODO - check correct exception in this test when DROOLS-2187 is fixed.")

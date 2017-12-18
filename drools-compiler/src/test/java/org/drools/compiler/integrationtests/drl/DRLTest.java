@@ -56,11 +56,9 @@ public class DRLTest extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        try {
-            new KieHelper().addContent( drl, ResourceType.DRL ).build();
-        } catch (RuntimeException ex) {
-            Assertions.assertThat(ex).hasMessageContaining("is already defined");
-        }
+        Assertions.assertThatThrownBy(() -> new KieHelper().addContent( drl, ResourceType.DRL ).build())
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("is already defined");
     }
 
     @Test

@@ -18,6 +18,7 @@ package org.drools.workbench.models.commons.backend.rule;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.concurrent.Callable;
 
 import org.assertj.core.api.Assertions;
 import org.drools.workbench.models.commons.backend.rule.actions.TestIAction;
@@ -77,16 +78,14 @@ public class RuleModelDRLPersistenceExtensionsTest {
 
     @Test
     public void unmarshalWithAmbiguousExtensions() {
-        try {
-            RuleModelDRLPersistenceImpl.getInstance().unmarshal(DRL_RULE,
-                                                                Collections.emptyList(),
-                                                                new PackageDataModelOracleImpl(),
-                                                                Arrays.asList(new TestIActionPersistenceExtension(),
-                                                                              new TestIActionPersistenceExtensionCopy()));
-        } catch (RuntimeException ex) {
-            Assertions.assertThat(ex).hasCauseExactlyInstanceOf(RuleModelDRLPersistenceException.class);
-            Assertions.assertThat(ex).hasMessageContaining("Ambiguous RuleModelIActionPersistenceExtension implementations");
-        }
+        Assertions.assertThatThrownBy(() -> RuleModelDRLPersistenceImpl.getInstance().unmarshal(DRL_RULE,
+                                                                                                Collections.emptyList(),
+                                                                                                new PackageDataModelOracleImpl(),
+                                                                                                Arrays.asList(new TestIActionPersistenceExtension(),
+                                                                                                              new TestIActionPersistenceExtensionCopy())))
+                .isInstanceOf(RuntimeException.class)
+                .hasCauseExactlyInstanceOf(RuleModelDRLPersistenceException.class)
+                .hasMessageContaining("Ambiguous RuleModelIActionPersistenceExtension implementations");
     }
 
     @Test
@@ -116,15 +115,13 @@ public class RuleModelDRLPersistenceExtensionsTest {
 
     @Test
     public void unmarshalDSLWithAmbiguousExtensions() {
-        try {
-            RuleModelDRLPersistenceImpl.getInstance().unmarshalUsingDSL(DRL_RULE,
-                                                                        Collections.emptyList(),
-                                                                        new PackageDataModelOracleImpl(),
-                                                                        Arrays.asList(new TestIActionPersistenceExtension(),
-                                                                                      new TestIActionPersistenceExtensionCopy()));
-        } catch (RuntimeException ex) {
-            Assertions.assertThat(ex).hasCauseExactlyInstanceOf(RuleModelDRLPersistenceException.class);
-            Assertions.assertThat(ex).hasMessageContaining("Ambiguous RuleModelIActionPersistenceExtension implementations");
-        }
+        Assertions.assertThatThrownBy(() -> RuleModelDRLPersistenceImpl.getInstance().unmarshalUsingDSL(DRL_RULE,
+                                                                                                        Collections.emptyList(),
+                                                                                                        new PackageDataModelOracleImpl(),
+                                                                                                        Arrays.asList(new TestIActionPersistenceExtension(),
+                                                                                                                      new TestIActionPersistenceExtensionCopy())))
+                .isInstanceOf(RuntimeException.class)
+                .hasCauseExactlyInstanceOf(RuleModelDRLPersistenceException.class)
+                .hasMessageContaining("Ambiguous RuleModelIActionPersistenceExtension implementations");
     }
 }
