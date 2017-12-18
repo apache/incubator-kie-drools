@@ -17,11 +17,14 @@
 package org.drools.testcoverage.functional;
 
 import java.util.Collection;
+
+import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -58,7 +61,8 @@ public class LiveQueriesBadResultTest {
         deleted = new ArrayList<>();
     }
 
-    @Test(expected = RuntimeException.class)
+    @Ignore("TODO - check correct exception in this test when DROOLS-2186 is fixed.")
+    @Test
     public void testCallingLiveQueryWithoutParametersButItHasParams() {
 
         final ViewChangedEventListener listener = new ViewChangedEventListener() {
@@ -80,46 +84,24 @@ public class LiveQueriesBadResultTest {
         };
 
         final KieBase kieBase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration,
-                true, "query.drl");
+                "query.drl");
         KieSession ksession = kieBase.newKieSession();
         ksession.insert(new Person("Petr"));
 
         ksession.openLiveQuery("queryWithParams", new Object[] {}, listener);
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void testBadAccessToParameterWithoutType() {
-
-        ViewChangedEventListener listener = new ViewChangedEventListener() {
-
-            @Override
-            public void rowUpdated(Row row) {
-                updated.add(row.get("person"));
-            }
-
-            @Override
-            public void rowInserted(Row row) {
-                inserted.add(row.get("person"));
-            }
-
-            @Override
-            public void rowDeleted(Row row) {
-                deleted.add(row.get("person"));
-            }
-        };
-
-        final KieBase kieBase = KieBaseUtil.getKieBaseFromClasspathResources(
-                getClass(),
-                kieBaseTestConfiguration,
-                false,
-                "query-bad-parametr-access.drl");
-        KieSession ksession = kieBase.newKieSession();
-        ksession.insert(new Person("Petr", 25));
-
-        ksession.openLiveQuery("queryWithParamWithoutType", new Object[] { "Petr", 26 }, listener);
+        Assertions.assertThatThrownBy(() -> KieBaseUtil.getKieBaseFromClasspathResources(
+                    getClass(),
+                    kieBaseTestConfiguration,
+                    "query-bad-parametr-access.drl"))
+                .isInstanceOf(AssertionError.class)
+                .hasMessageContaining("Comparison operation requires compatible types");
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void testAccessToNotExistingVariable() {
 
         ViewChangedEventListener listener = new ViewChangedEventListener() {
@@ -141,25 +123,18 @@ public class LiveQueriesBadResultTest {
         };
 
         final KieBase kieBase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration,
-                true, "query.drl");
+                "query.drl");
         KieSession ksession = kieBase.newKieSession();
         ksession.insert(new Person("Petr", 25));
 
-        ksession.openLiveQuery("simple query with no parameters", new Object[] { "Petr", 26 }, listener);
+
+        Assertions.assertThatThrownBy(() -> ksession.openLiveQuery("simple query with no parameters", new Object[]{"Petr", 26}, listener))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessage("The identifier 'bad' does not exist as a bound variable for this query");
     }
 
-    @Test(expected = RuntimeException.class)
-    public void testOfBadListener() {
-        final KieBase kieBase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration,
-                true, "query.drl");
-        KieSession ksession = kieBase.newKieSession();
-        ksession.insert(new Person("Petr", 25));
-
-        ksession.openLiveQuery("simple query with no parameters", new Object[] { "Petr", 26 },
-                (ViewChangedEventListener) null);
-    }
-
-    @Test(expected = RuntimeException.class)
+    @Ignore("TODO - check correct exception in this test when DROOLS-2187 is fixed.")
+    @Test
     public void testOfBadParameters() {
 
         ViewChangedEventListener listener = new ViewChangedEventListener() {
@@ -181,7 +156,7 @@ public class LiveQueriesBadResultTest {
         };
 
         final KieBase kieBase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration,
-                true, "query.drl");
+                "query.drl");
         KieSession ksession = kieBase.newKieSession();
         ksession.insert(new Person("Petr", 25));
 

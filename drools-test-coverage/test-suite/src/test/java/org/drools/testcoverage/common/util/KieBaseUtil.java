@@ -48,9 +48,9 @@ public final class KieBaseUtil {
     }
 
     public static KieBase getKieBaseFromClasspathResources(final Class classLoaderFromClass,
-            final KieBaseTestConfiguration kieBaseTestConfiguration, final boolean failIfBuildError, final String... resources) {
+            final KieBaseTestConfiguration kieBaseTestConfiguration, final String... resources) {
         final KieBuilder kieBuilder = KieUtil.getKieBuilderFromClasspathResources(kieBaseTestConfiguration,
-                classLoaderFromClass, failIfBuildError, resources);
+                classLoaderFromClass, true, resources);
         if (kieBaseTestConfiguration.useCanonicalModel()) {
             generateKieModuleForCanonicalModel( kieBuilder );
         }
@@ -58,8 +58,8 @@ public final class KieBaseUtil {
     }
 
     public static KieBase getKieBaseFromResources(final KieBaseTestConfiguration kieBaseTestConfiguration,
-            final boolean failIfBuildError, final Resource... resources) {
-        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration, failIfBuildError, resources);
+            final Resource... resources) {
+        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration, true, resources);
         if (kieBaseTestConfiguration.useCanonicalModel()) {
             generateKieModuleForCanonicalModel( kieBuilder );
         }
@@ -76,9 +76,9 @@ public final class KieBaseUtil {
     }
 
     public static KieBase getKieBaseFromDRLResources(final KieBaseTestConfiguration kieBaseTestConfiguration,
-            final boolean failIfBuildError, final Resource... resources) {
+            final Resource... resources) {
         generateDRLResourceTargetPath(resources);
-        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration, failIfBuildError, resources);
+        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration, true, resources);
         return getDefaultKieBaseFromKieBuilder(kieBuilder);
     }
 

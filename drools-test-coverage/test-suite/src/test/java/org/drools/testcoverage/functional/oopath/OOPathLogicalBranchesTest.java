@@ -80,7 +80,7 @@ public class OOPathLogicalBranchesTest {
                 "end\n";
 
         final KieBase kieBase = KieBaseUtil.getKieBaseFromDRLResources(kieBaseTestConfiguration,
-                true, KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
+                KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
         this.initKieSession(kieBase);
 
         this.kieSession.fireAllRules();
@@ -102,7 +102,7 @@ public class OOPathLogicalBranchesTest {
                 "end\n";
 
         final KieBase kieBase = KieBaseUtil.getKieBaseFromDRLResources(kieBaseTestConfiguration,
-                true, KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
+                KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
         this.initKieSession(kieBase);
 
         this.kieSession.fireAllRules();
@@ -124,7 +124,7 @@ public class OOPathLogicalBranchesTest {
                 "end\n";
 
         final KieBase kieBase = KieBaseUtil.getKieBaseFromDRLResources(kieBaseTestConfiguration,
-                true, KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
+                KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
         this.initKieSession(kieBase);
 
         this.kieSession.fireAllRules();
@@ -146,7 +146,7 @@ public class OOPathLogicalBranchesTest {
                 "end\n";
 
         final KieBase kieBase = KieBaseUtil.getKieBaseFromDRLResources(kieBaseTestConfiguration,
-                true, KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
+                KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
         this.initKieSession(kieBase);
 
         this.kieSession.fireAllRules();
@@ -169,7 +169,7 @@ public class OOPathLogicalBranchesTest {
                 "end\n";
 
         final KieBase kieBase = KieBaseUtil.getKieBaseFromDRLResources(kieBaseTestConfiguration,
-                true, KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
+                KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
         this.initKieSession(kieBase);
 
         this.kieSession.fireAllRules();
@@ -194,7 +194,7 @@ public class OOPathLogicalBranchesTest {
                 "end\n";
 
         final KieBase kieBase = KieBaseUtil.getKieBaseFromDRLResources(kieBaseTestConfiguration,
-                true, KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
+                KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
         this.initKieSession(kieBase);
 
         this.kieSession.fireAllRules();
@@ -215,7 +215,7 @@ public class OOPathLogicalBranchesTest {
                 "end\n";
 
         final KieBase kieBase = KieBaseUtil.getKieBaseFromDRLResources(kieBaseTestConfiguration,
-                true, KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
+                KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
         this.initKieSession(kieBase);
 
         this.kieSession.fireAllRules();
@@ -237,7 +237,7 @@ public class OOPathLogicalBranchesTest {
                 "end\n";
 
         final KieBase kieBase = KieBaseUtil.getKieBaseFromDRLResources(kieBaseTestConfiguration,
-                true, KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
+                KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
         this.initKieSession(kieBase);
 
         this.kieSession.fireAllRules();
@@ -259,7 +259,7 @@ public class OOPathLogicalBranchesTest {
                 "end\n";
 
         final KieBase kieBase = KieBaseUtil.getKieBaseFromDRLResources(kieBaseTestConfiguration,
-                true, KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
+                KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
         this.initKieSession(kieBase);
 
         this.kieSession.fireAllRules();
@@ -282,7 +282,7 @@ public class OOPathLogicalBranchesTest {
                 "end\n";
 
         final KieBase kieBase = KieBaseUtil.getKieBaseFromDRLResources(kieBaseTestConfiguration,
-                true, KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
+                KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
         this.initKieSession(kieBase);
 
         this.kieSession.fireAllRules();
@@ -305,7 +305,7 @@ public class OOPathLogicalBranchesTest {
                 "end\n";
 
         final KieBase kieBase = KieBaseUtil.getKieBaseFromDRLResources(kieBaseTestConfiguration,
-                true, KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
+                KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
         this.createKieSession(kieBase);
 
         final Employee bruno = this.createEmployee("Bruno", new Address("Elm", 10, "Small City"));
@@ -329,7 +329,7 @@ public class OOPathLogicalBranchesTest {
 
     private void createKieSession(final KieBase kieBase) {
         this.kieSession = kieBase.newKieSession();
-        this.results = new ArrayList<String>();
+        this.results = new ArrayList<>();
         this.kieSession.setGlobal("list", results);
     }
 
