@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassFieldAccessorCache;
@@ -92,6 +93,7 @@ import org.drools.model.functions.Predicate1;
 import org.drools.model.functions.accumulate.AccumulateFunction;
 import org.drools.model.impl.DeclarationImpl;
 import org.drools.model.patterns.CompositePatterns;
+import org.drools.model.patterns.EvalImpl;
 import org.drools.model.patterns.PatternImpl;
 import org.drools.model.patterns.QueryCallPattern;
 import org.drools.modelcompiler.consequence.LambdaConsequence;
@@ -344,6 +346,9 @@ public class KiePackagesBuilder {
             case PATTERN: {
                 return buildPattern( ctx, condition );
             }
+            case EVAL: {
+                return buildEval( ctx, ( EvalImpl ) condition );
+            }
             case ACCUMULATE: {
                 final AccumulatePattern accumulatePattern = (AccumulatePattern) condition;
                 RuleConditionElement source;
@@ -401,6 +406,12 @@ public class KiePackagesBuilder {
                 }
         }
         throw new UnsupportedOperationException();
+    }
+
+    private EvalCondition buildEval(RuleContext ctx, EvalImpl eval) {
+        Declaration[] declarations = Stream.of( eval.getExpr().getVariables() ).map( ctx::getDeclaration ).toArray( Declaration[]::new );
+        EvalExpression evalExpr = new LambdaEvalExpression(declarations, eval.getExpr());
+        return new EvalCondition(evalExpr, declarations);
     }
 
     private ConditionalBranch buildConditionalConsequence(RuleContext ctx, ConditionalNamedConsequenceImpl consequence) {

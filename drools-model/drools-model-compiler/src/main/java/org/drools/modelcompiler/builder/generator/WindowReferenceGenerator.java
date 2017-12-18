@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.lang.descr.BehaviorDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.PatternSourceDescr;
@@ -51,13 +52,13 @@ public class WindowReferenceGenerator {
         }
     }
 
-    public void addWindowReferences(Set<WindowDeclarationDescr> windowReferences) {
+    public void addWindowReferences( KnowledgeBuilderImpl kbuilder, Set<WindowDeclarationDescr> windowReferences ) {
         for (WindowDeclarationDescr descr : windowReferences) {
-            addField(packageModel, descr);
+            addField(kbuilder, packageModel, descr);
         }
     }
 
-    public void addField(PackageModel packageModel, WindowDeclarationDescr descr) {
+    private void addField( KnowledgeBuilderImpl kbuilder, PackageModel packageModel, WindowDeclarationDescr descr ) {
 
         final String windowName = toVar(descr.getName());
 
@@ -83,22 +84,22 @@ public class WindowReferenceGenerator {
         final Type initType = JavaParser.parseType(initClass.getCanonicalName());
         initializer.addArgument(new ClassExpr(initType));
 
-        parseCondition(packageModel, pattern, initClass).ifPresent(initializer::addArgument);
+        parseCondition(kbuilder, packageModel, pattern, initClass).ifPresent(initializer::addArgument);
 
         packageModel.addAllWindowReferences(windowName, initializer);
     }
 
-    public Optional<Expression> parseCondition(PackageModel packageModel, PatternDescr pattern, Class<?> patternType) {
+    private Optional<Expression> parseCondition( KnowledgeBuilderImpl kbuilder, PackageModel packageModel, PatternDescr pattern, Class<?> patternType ) {
         return Optional.ofNullable(pattern.getConstraint().getDescrs().iterator().next()).map(d -> {
             String expression = d.toString();
-            RuleContext context = new RuleContext(pkg, packageModel.getExprIdGenerator(), Optional.empty());
+            RuleContext context = new RuleContext(kbuilder, pkg, packageModel.getExprIdGenerator(), Optional.empty());
             ModelGenerator.DrlxParseResult drlxParseResult = drlxParse(context, packageModel, patternType, pattern.getIdentifier(), expression);
 
             return generateLambdaWithoutParameters(drlxParseResult.usedDeclarations, drlxParseResult.expr);
         });
     }
 
-    public ParsedBehavior parseTypeFromBehavior(BehaviorDescr descr) {
+    private ParsedBehavior parseTypeFromBehavior(BehaviorDescr descr) {
         final WindowDefinition.Type windowType = Window.Type.valueOf(descr.getSubType().toUpperCase());
         final TemporalLiteralChunkExpr duration = parseDuration(descr.getParameters().get(0));
 

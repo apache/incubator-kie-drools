@@ -17,28 +17,37 @@ public class ConstraintEvaluator {
 
     private final Declaration[] declarations;
     private final Declaration[] requiredDeclarations;
-    private final Pattern pattern;
+
     private final Declaration patternDeclaration;
+    private final Pattern pattern;
+
+    public ConstraintEvaluator(Declaration[] declarations, SingleConstraint constraint) {
+        this.constraint = constraint;
+        this.declarations = declarations;
+        this.requiredDeclarations = declarations;
+        this.patternDeclaration = null;
+        this.pattern = null;
+    }
 
     public ConstraintEvaluator(Pattern pattern, SingleConstraint constraint) {
         this.constraint = constraint;
-        this.pattern = pattern;
         this.declarations = new Declaration[] { pattern.getDeclaration() };
-        this.patternDeclaration = findPatternDeclaration();
+        this.patternDeclaration = findPatternDeclaration(pattern);
         this.requiredDeclarations = new Declaration[0];
+        this.pattern = pattern;
     }
 
     public ConstraintEvaluator(Declaration[] declarations, Pattern pattern, SingleConstraint constraint) {
         this.constraint = constraint;
-        this.pattern = pattern;
         this.declarations = declarations;
-        this.patternDeclaration = findPatternDeclaration();
+        this.pattern = pattern;
+        this.patternDeclaration = findPatternDeclaration(pattern);
         this.requiredDeclarations = Stream.of( declarations )
                                           .filter( d -> !d.getIdentifier().equals( pattern.getDeclaration().getIdentifier() ) )
                                           .toArray( Declaration[]::new );
     }
 
-    private Declaration findPatternDeclaration() {
+    private Declaration findPatternDeclaration(Pattern pattern) {
         for ( Declaration declaration : declarations ) {
             if ( pattern.getDeclaration().getIdentifier().equals( declaration.getIdentifier() ) ) {
                 return declaration;
@@ -132,11 +141,10 @@ public class ConstraintEvaluator {
     }
 
     public ConstraintEvaluator clone() {
-        return new ConstraintEvaluator( Stream.of(declarations)
-                                              .map( Declaration::clone )
-                                              .toArray(Declaration[]::new),
-                                        pattern,
-                                        constraint );
+        Declaration[] clonedDeclarations = Stream.of(declarations).map( Declaration::clone ).toArray(Declaration[]::new);
+        return pattern == null ?
+                new ConstraintEvaluator( clonedDeclarations, constraint ) :
+                new ConstraintEvaluator( clonedDeclarations, pattern, constraint );
     }
 
     public boolean isTemporal() {

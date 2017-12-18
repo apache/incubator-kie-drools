@@ -113,7 +113,7 @@ public class ModelBuilderImpl extends KnowledgeBuilderImpl {
         InternalKnowledgePackage pkg = pkgRegistry.getPackage();
         String pkgName = pkg.getName();
         PackageModel model = packageModels.computeIfAbsent(pkgName, s -> new PackageModel(pkgName, this.getBuilderConfiguration()));
-        generateModel(pkg, packageDescr, model);
+        generateModel(this, pkg, packageDescr, model);
     }
 
     public List<PackageModel> getPackageModels() {

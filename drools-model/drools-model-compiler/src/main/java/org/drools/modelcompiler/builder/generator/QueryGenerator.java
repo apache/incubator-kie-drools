@@ -4,6 +4,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
 
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.ExprConstraintDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
@@ -38,8 +39,8 @@ public class QueryGenerator {
 
     public static final String QUERY_CALL = "query";
 
-    public static void processQueryDef(InternalKnowledgePackage pkg, PackageModel packageModel, QueryDescr queryDescr) {
-        RuleContext context = new RuleContext(pkg, packageModel.getExprIdGenerator(), Optional.of(queryDescr));
+    public static void processQueryDef( KnowledgeBuilderImpl kbuilder, InternalKnowledgePackage pkg, PackageModel packageModel, QueryDescr queryDescr ) {
+        RuleContext context = new RuleContext(kbuilder, pkg, packageModel.getExprIdGenerator(), Optional.of(queryDescr));
         String queryName = queryDescr.getName();
         final String queryDefVariableName = toQueryDef(queryName);
         context.queryName = Optional.of(queryDefVariableName);
@@ -83,8 +84,7 @@ public class QueryGenerator {
         }
     }
 
-
-    public static void processQuery(PackageModel packageModel, QueryDescr queryDescr) {
+    public static void processQuery(KnowledgeBuilderImpl kbuilder, PackageModel packageModel, QueryDescr queryDescr) {
         RuleContext context = packageModel.getQueryDefWithType().get(toQueryDef(queryDescr.getName())).getContext();
         final String queryDefVariableName = toQueryDef(queryDescr.getName());
 
@@ -94,7 +94,7 @@ public class QueryGenerator {
         MethodDeclaration queryMethod = new MethodDeclaration(EnumSet.of(Modifier.PRIVATE), queryType, "query_" + toId(queryDescr.getName()));
 
         BlockStmt queryBody = new BlockStmt();
-        ModelGenerator.createVariables(queryBody, packageModel, context);
+        ModelGenerator.createVariables(kbuilder, queryBody, packageModel, context);
         queryMethod.setBody(queryBody);
 
         String queryBuildVarName = queryDescr.getName() + "_build";
@@ -109,7 +109,6 @@ public class QueryGenerator {
         queryBody.addStatement(new ReturnStmt(queryBuildVarName));
         packageModel.putQueryMethod(queryMethod);
     }
-
 
     private static void parseQueryParameters(RuleContext context, PackageModel packageModel, QueryDescr descr) {
         for (int i = 0; i < descr.getParameters().length; i++) {
