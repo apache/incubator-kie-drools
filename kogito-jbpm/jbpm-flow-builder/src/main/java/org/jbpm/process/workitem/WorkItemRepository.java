@@ -41,12 +41,16 @@ public class WorkItemRepository {
     private static final Logger logger = LoggerFactory.getLogger(WorkItemRepository.class);
 
 	public static Map<String, WorkDefinitionImpl> getWorkDefinitions(String path) {
-		return getWorkDefinitions(path, null);
+		return getWorkDefinitions(path, null, null);
 	}
 
 	public static Map<String, WorkDefinitionImpl> getWorkDefinitions(String path, String[] definitionNames) {
+		return getWorkDefinitions(path, definitionNames, null);
+	}
+
+	public static Map<String, WorkDefinitionImpl> getWorkDefinitions(String path, String[] definitionNames, String widName) {
 		Map<String, WorkDefinitionImpl> workDefinitions = new HashMap<String, WorkDefinitionImpl>();
-		List<Map<String, Object>> workDefinitionsMaps = getAllWorkDefinitionsMap(path);
+		List<Map<String, Object>> workDefinitionsMaps = getAllWorkDefinitionsMap(path, widName);
 		for (Map<String, Object> workDefinitionMap : workDefinitionsMaps) {
 			if (workDefinitionMap != null) {
 				WorkDefinitionImpl workDefinition = new WorkDefinitionImpl();
@@ -111,22 +115,26 @@ public class WorkItemRepository {
 			if(definitionNames.length > 0) {
 				workDefinitions.keySet().retainAll(new HashSet(Arrays.asList(definitionNames)));
 			} else {
-				return new HashMap<String, WorkDefinitionImpl>();
+				return new HashMap<>();
 			}
 
 		}
 		return workDefinitions;
 	}
 
-	private static List<Map<String, Object>> getAllWorkDefinitionsMap(String directory) {
+	private static List<Map<String, Object>> getAllWorkDefinitionsMap(String directory, String widName) {
 		List<Map<String, Object>> workDefinitions = new ArrayList<Map<String, Object>>();
-		for (String s: getDirectories(directory)) {
-			try {
-				workDefinitions.addAll(getAllWorkDefinitionsMap(directory + "/" + s));
-			} catch (Throwable t) {
-				t.printStackTrace();
+		if(widName != null) {
+			workDefinitions.addAll(getWorkDefinitionsMapForSingleDir(directory, widName));
+		} else {
+			for (String s: getDirectories(directory)) {
+				try {
+					workDefinitions.addAll(getAllWorkDefinitionsMap(directory + "/" + s, null));
+				} catch (Throwable t) {
+					logger.error("Error retrieving work definitions: " + t.getMessage());
+				}
+				workDefinitions.addAll(getWorkDefinitionsMap(directory, s));
 			}
-			workDefinitions.addAll(getWorkDefinitionsMap(directory, s));
 		}
 		return workDefinitions;
 	}
@@ -145,8 +153,17 @@ public class WorkItemRepository {
 		return content.split("\n");
 	}
 
+	private static List<Map<String, Object>> getWorkDefinitionsMapForSingleDir(String parentPath, String widName) {
+		String path = parentPath + "/" + widName + ".wid";
+		return getWorkDefinitionsForPath(parentPath, path);
+	}
+
 	private static List<Map<String, Object>> getWorkDefinitionsMap(String parentPath, String file) {
 		String path = parentPath + "/" + file + "/" + file + ".wid";
+		return getWorkDefinitionsForPath(parentPath, path);
+	}
+
+	private static List<Map<String, Object>> getWorkDefinitionsForPath(String parentPath, String path) {
 		String content = null;
 		try {
 			content = ConfFileUtils.URLContentsToString(new URL(path));
@@ -159,8 +176,8 @@ public class WorkItemRepository {
 		try {
 			List<Map<String, Object>> result = (List<Map<String, Object>>) WidMVELEvaluator.eval(content);
 			for (Map<String, Object> wid: result) {
-				wid.put("path", parentPath + "/" + file);
-				wid.put("file", file + ".wid");
+				wid.put("path", parentPath + "/" + path);
+				wid.put("file", path + ".wid");
 				wid.put("widType", "mvel");
 			}
 			return result;
@@ -169,8 +186,8 @@ public class WorkItemRepository {
 			try {
 				List<Map<String, Object>> result = JsonWorkItemParser.parse(content);
 				for (Map<String, Object> wid: result) {
-					wid.put("path", parentPath + "/" + file);
-					wid.put("file", file + ".wid");
+					wid.put("path", parentPath + "/" + path);
+					wid.put("file", path + ".wid");
 					wid.put("widType", "json");
 				}
 				return result;

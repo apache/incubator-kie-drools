@@ -1,4 +1,3 @@
-import org.jbpm.process.core.datatype.impl.type.StringDataType;
 [
     [
         "name" : "TestServiceTwo",

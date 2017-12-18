@@ -34,6 +34,13 @@ public class WorkItemRepositoryTest extends AbstractBaseTest {
     }
 
     @Test
+    public void testGetWorkDefinitionsFromInvalidRepo() throws Exception {
+        Map<String, WorkDefinitionImpl> repoResults = WorkItemRepository.getWorkDefinitions("invlidrepo");
+        assertNotNull(repoResults);
+        assertTrue(repoResults.isEmpty());
+    }
+
+    @Test
     public void testGetWorkDefinitionsForNames() throws Exception {
         Map<String, WorkDefinitionImpl> repoResults = WorkItemRepository.getWorkDefinitions(getClass().getResource("repository").toURI().toString(),
                 new String[]{"TestServiceOne", "TestServiceTwo"});
@@ -63,5 +70,24 @@ public class WorkItemRepositoryTest extends AbstractBaseTest {
 
         assertNotNull(repoResults3);
         assertTrue(repoResults3.isEmpty());
+    }
+
+    @Test
+    public void testGetWorkDefinitionForSingleDirRepo() throws Exception {
+        Map<String, WorkDefinitionImpl> repoResults = WorkItemRepository.getWorkDefinitions(getClass().getResource("repositorysingledir").toURI().toString(),
+                                                                                            null, "repowid");
+
+        assertNotNull(repoResults);
+        assertFalse(repoResults.isEmpty());
+        assertEquals(repoResults.size(), 1);
+    }
+
+    @Test
+    public void testGetInvalidWorkDefinitionForSingleDirRepo() throws Exception {
+        Map<String, WorkDefinitionImpl> repoResults = WorkItemRepository.getWorkDefinitions(getClass().getResource("repositorysingledir").toURI().toString(),
+                                                                                            null, "invalidrepowid");
+
+        assertNotNull(repoResults);
+        assertTrue(repoResults.isEmpty());
     }
 }
