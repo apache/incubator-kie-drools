@@ -31,7 +31,7 @@
 rule miningPmml4Data_@{model}_@{name}
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
-   $src: PMML4Data( capitalizedName == "@{name}", $m : missing, $v : valid, $x : value, context == null, placeholder == false )
+   $src: PMML4Data( capitalizedName == "@{name}", $m : missing, $v : valid, $x : value, context == null, placeholder == false ) from pmmlData
 then
    PMML4Data data = (PMML4Data)PMML4DataFactory.get().copy($src);
    data.setContext(@{format("string",model)});

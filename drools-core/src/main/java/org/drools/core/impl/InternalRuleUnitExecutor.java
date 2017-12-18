@@ -16,10 +16,13 @@
 
 package org.drools.core.impl;
 
+import java.util.Collection;
+
 import org.drools.core.datasources.InternalDataSource;
 import org.drools.core.ruleunit.RuleUnitDescr;
 import org.drools.core.spi.Activation;
 import org.kie.api.logger.KieRuntimeLogger;
+import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.rule.RuleUnit;
 import org.kie.api.runtime.rule.RuleUnitExecutor;
 
@@ -42,6 +45,9 @@ public interface InternalRuleUnitExecutor extends RuleUnitExecutor {
     KieRuntimeLogger addFileLogger(String fileName);
     KieRuntimeLogger addFileLogger(String fileName, int maxEventsInMemory);
     KieRuntimeLogger addThreadedFileLogger(String fileName, int interval);
+    
+    Collection<?> getSessionObjects();
+    Collection<?> getSessionObjects(ObjectFilter filter);
 
     void bindDataSource(InternalDataSource dataSource );
 }

@@ -41,7 +41,7 @@ when
                 @if{intv.closure.endsWith("Closed")} <= @else{} < @end{}
                     @{intv.rightMargin})
          @end{' || '}
-           )
+           ) from pmmlData
 then
    modify( $in ) {
       setValid( true );

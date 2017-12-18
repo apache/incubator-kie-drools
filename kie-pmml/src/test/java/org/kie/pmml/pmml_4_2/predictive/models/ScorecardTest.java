@@ -17,22 +17,39 @@
 package org.kie.pmml.pmml_4_2.predictive.models;
 
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.InternalRuleUnitExecutor;
+import org.drools.core.ruleunit.RuleUnitDescr;
+import org.drools.core.ruleunit.RuleUnitRegistry;
 import org.junit.After;
 import org.junit.Test;
-import org.kie.api.runtime.ClassObjectFilter;
+import org.kie.api.KieBase;
+import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceType;
+import org.kie.api.logger.KieRuntimeLogger;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.DataSource;
+import org.kie.api.runtime.rule.RuleUnit;
+import org.kie.api.runtime.rule.RuleUnitExecutor;
+import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.utils.KieHelper;
 import org.kie.pmml.pmml_4_2.DroolsAbstractPMMLTest;
 import org.kie.pmml.pmml_4_2.PMML4Compiler;
+import org.kie.pmml.pmml_4_2.PMML4Result;
+import org.kie.pmml.pmml_4_2.model.PMML4UnitImpl;
 import org.kie.pmml.pmml_4_2.model.PMMLRequestData;
-import org.kie.pmml.pmml_4_2.model.ScoreCard;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import org.kie.pmml.pmml_4_2.model.datatypes.PMML4Data;
 
 public class ScorecardTest extends DroolsAbstractPMMLTest {
 
@@ -47,49 +64,76 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
     public void tearDown() {
         //getKSession().dispose();
     }
+    
+    
+    private Class<? extends RuleUnit> getStartingRuleUnit(String startingRule, InternalKnowledgeBase ikb, List<String> possiblePackages) {
+    	RuleUnitRegistry unitRegistry = ikb.getRuleUnitRegistry();
+    	Map<String,InternalKnowledgePackage> pkgs = ikb.getPackagesMap();
+    	RuleImpl ruleImpl = null;
+    	for (String pkgName: possiblePackages) {
+    		if (pkgs.containsKey(pkgName)) {
+    			InternalKnowledgePackage pkg = pkgs.get(pkgName);
+    			ruleImpl = pkg.getRule(startingRule);
+    			if (ruleImpl != null) {
+    				RuleUnitDescr descr = unitRegistry.getRuleUnitFor(ruleImpl).orElse(null);
+    				if (descr != null) {
+    					return descr.getRuleUnitClass();
+    				}
+    			}
+    		}
+    	}
+    	return null;
+    }
+    
+    private List<String> calculatePossiblePackageNames(String modelId, String...knownPackageNames) {
+    	List<String> packageNames = new ArrayList<>();
+    	String javaModelId = modelId.replaceAll("\\s","");
+    	if (knownPackageNames != null && knownPackageNames.length > 0) {
+    		for (String knownPkgName: knownPackageNames) {
+    			packageNames.add(knownPkgName + "." + javaModelId);
+    		}
+    	}
+		String basePkgName = PMML4UnitImpl.DEFAULT_ROOT_PACKAGE+"."+javaModelId;
+		packageNames.add(basePkgName);
+    	return packageNames;
+    }
 
     @Test
     public void testScorecard() throws Exception {
-        setKSession( getModelSession( source1, VERBOSE ) );
-        setKbase( getKSession().getKieBase() );
-        KieSession kSession = getKSession();
+    	final String prepend = "/home/lleveric/projects/drools/kie-pmml/src/test/resources/";
+    	String fullFileName = prepend+source1;
+		Resource res = ResourceFactory.newFileResource(fullFileName);
+    	KieBase kbase = new KieHelper().addResource(res, ResourceType.PMML).build();
+    	
+    	RuleUnitExecutor executor = RuleUnitExecutor.create().bind(kbase);
+        KieRuntimeLogger logger = ((InternalRuleUnitExecutor)executor).addFileLogger("/home/lleveric/tmp/scorecardTest");
 
-        kSession.fireAllRules();  //init model
-
-        PMMLRequestData requestData = new PMMLRequestData("123","Sample Score");
+    	PMMLRequestData requestData = new PMMLRequestData("123","Sample Score");
         requestData.addRequestParam("age",33.0);
         requestData.addRequestParam("occupation", "SKYDIVER");
         requestData.addRequestParam("residenceState","KN");
         requestData.addRequestParam("validLicense", true);
-        kSession.insert(requestData);
-
-
-        kSession.fireAllRules();  //init model
         
-        Collection<ScoreCard> scoreCards = (Collection<ScoreCard>)kSession.getObjects(new ClassObjectFilter(ScoreCard.class));
-        assertNotNull(scoreCards);
-        assertEquals(1, scoreCards.size());
+
+        DataSource<PMMLRequestData> data = executor.newDataSource("request",requestData);
+        DataSource<PMML4Result> resultData = executor.newDataSource("results");
+        DataSource<PMML4Data> pmmlData = executor.newDataSource("pmmlData");
         
-        ScoreCard scoreCard = scoreCards.iterator().next();
-        Object x = scoreCard.getRanking();
-        assertTrue( x instanceof LinkedHashMap );
+        List<String> possiblePackages = calculatePossiblePackageNames("Sample Score", "org.drools.scorecards.example");
+        Class<? extends RuleUnit> unitClass = getStartingRuleUnit("Extract Parameter Info",(InternalKnowledgeBase)kbase,possiblePackages);
 
-        System.out.print(  reportWMObjects( kSession )
-        );
-        LinkedHashMap map = (LinkedHashMap) x;
-        assertTrue( map.containsKey( "LX00") );
-        assertTrue( map.containsKey( "RES") );
-        assertTrue( map.containsKey( "CX2" ) );
-        assertEquals( -1.0, map.get( "LX00" ) );
-        assertEquals( -10.0, map.get( "RES" ) );
-        assertEquals( -30.0, map.get( "CX2" ) );
-
-        Iterator iter = map.keySet().iterator();
-        assertEquals( "LX00", iter.next() );
-        assertEquals( "RES", iter.next() );
-        assertEquals( "CX2", iter.next() );
-
-        checkGeneratedRules();
+        if (unitClass != null) {
+	        int x = executor.run(unitClass);
+	        System.out.println(x);
+	        pmmlData.forEach(pd -> {System.out.println(pd);});
+	        resultData.forEach(rd -> {System.out.println("result -> "+rd);});
+	        Collection<?> sessionObjects = ((InternalRuleUnitExecutor)executor).getSessionObjects();
+	        sessionObjects.forEach(obj -> {System.out.println(obj);});
+        } else {
+        	System.out.println("Unable to find the rule unit class");
+        }
+        logger.close();
+        
     }
 
     @Test

@@ -33,6 +33,7 @@
 
 
 @if{ pack != null }package @{pack};@end{}
+unit @{unitClassName}
 
 import org.kie.pmml.pmml_4_2.*;
 import org.kie.pmml.pmml_4_2.model.*;
@@ -41,3 +42,19 @@ import org.kie.pmml.pmml_4_2.model.regression.*;
 import org.kie.pmml.pmml_4_2.model.tree.*;
 import org.kie.pmml.pmml_4_2.model.datatypes.*;
 import org.drools.core.factmodel.traits.Traitable;
+
+rule 'Extract Parameter Info'
+@@Generated
+salience 101
+when
+   $rd: PMMLRequestData( $cid: correlationId != null, requestParams != null ) from request
+   $pi: ParameterInfo( $name: name, $value: value ) from $rd.requestParams
+   not PMML4Data( name == $name, value == $value )
+then
+   PMML4DataFactory factory = PMML4DataFactory.get();
+   PMML4Data data = factory.newPMML4Data($cid, $pi, true, false);
+   data.setPlaceholder(true);
+   pmmlData.insert(data);
+end
+
+

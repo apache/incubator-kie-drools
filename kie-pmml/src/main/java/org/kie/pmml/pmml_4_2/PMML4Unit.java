@@ -28,8 +28,10 @@ public interface PMML4Unit {
     public List<PMML4Model> getModels();
     public List<PMMLDataField> getDataDictionaryFields();
     public Map<String,PMML4Model> getRootModels();
+    public PMML4Model getRootModel();
     public Miningmodel getRootMiningModel();
     public <T extends PMML4Model> Map<String,T> getModels( PMML4ModelType modelTypeFilter, PMML4Model parent);
     public boolean containsMiningModel();
     public Map<String, PMMLDataField> getDataDictionaryMap();
+    public String getRootPackage();
 }

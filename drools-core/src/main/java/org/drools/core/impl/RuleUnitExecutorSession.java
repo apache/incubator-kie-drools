@@ -17,6 +17,7 @@
 package org.drools.core.impl;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -43,6 +44,7 @@ import org.kie.api.KieServices;
 import org.kie.api.logger.KieRuntimeLogger;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.Globals;
+import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.rule.DataSource;
 import org.kie.api.runtime.rule.RuleUnit;
 import org.kie.api.runtime.rule.RuleUnitExecutor;
@@ -118,6 +120,22 @@ public class RuleUnitExecutorSession implements InternalRuleUnitExecutor {
         }
         getRuleUnitFactory().bindVariable( name, dataSource );
         return dataSource;
+    }
+    
+    @Override
+    public Collection<?> getSessionObjects() {
+    	if (session != null) {
+    		return session.getObjects();
+    	}
+    	return Collections.emptyList();
+    }
+    
+    @Override
+    public Collection<?> getSessionObjects(ObjectFilter filter) {
+    	if (session != null) {
+    		return session.getObjects(filter);
+    	}
+    	return Collections.emptyList();
     }
 
     @Override

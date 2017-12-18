@@ -103,7 +103,7 @@ rule "Update PMMLResult with Scorecard"
 salience -16
 when
    $sc: ScoreCard( )
-   $reslt: PMML4Result( resultVariables == null || "ScoreCard" not memberOf resultVariables.keySet() )
+   $reslt: PMML4Result( resultVariables == null || "ScoreCard" not memberOf resultVariables.keySet() ) from results
 then
    $reslt.setResultCode("OK");
    $reslt.addResultVariable("ScoreCard",$sc);

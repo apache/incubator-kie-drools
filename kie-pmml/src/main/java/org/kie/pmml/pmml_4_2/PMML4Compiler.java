@@ -16,7 +16,9 @@
 
 package org.kie.pmml.pmml_4_2;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -64,11 +66,18 @@ import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.pmml.pmml_4_2.model.Miningmodel;
 import org.kie.pmml.pmml_4_2.model.PMML4UnitImpl;
+import org.kie.pmml.pmml_4_2.model.PMMLMiningField;
 import org.kie.pmml.pmml_4_2.model.mining.MiningSegment;
 import org.kie.pmml.pmml_4_2.model.mining.MiningSegmentation;
+import org.mvel2.integration.impl.MapVariableResolver;
+import org.mvel2.integration.impl.MapVariableResolverFactory;
+import org.mvel2.templates.CompiledTemplate;
 import org.mvel2.templates.SimpleTemplateRegistry;
 import org.mvel2.templates.TemplateCompiler;
+import org.mvel2.templates.TemplateError;
 import org.mvel2.templates.TemplateRegistry;
+import org.mvel2.templates.TemplateRuntime;
+import org.mvel2.templates.TemplateRuntimeError;
 import org.xml.sax.SAXException;
 
 public class PMML4Compiler implements PMMLCompiler {
@@ -284,10 +293,51 @@ public class PMML4Compiler implements PMMLCompiler {
 //    	return generateTheory(pmml,null);
 //    }
 
+    private String getUnitPackageName(PMML4Unit unit) {
+    	PMML4Model root = unit.getRootModel();
+    	return root.getModelPackageName();
+    }
+    
+    private String getRuleUnitClass(PMML4Unit unit) {
+    	PMML4Model root = unit.getRootModel();
+    	return root.getRuleUnitClassName();
+    }
+    
     public String generateTheory( PMML pmml ) {
         StringBuilder sb = new StringBuilder();
+        PMML4Unit unit = new PMML4UnitImpl(pmml);
+        
         //dumpModel( pmml, System.out );
 
+//        CompiledTemplate ct = null;
+//        Resource res = ResourceFactory.newClassPathResource("org/kie/pmml/pmml_4_2/templates/mvel/rules/inputRules.mvel");
+//        if (res != null) {
+//        	try {
+//        		InputStream stream = res.getInputStream();
+//                ct = TemplateCompiler.compileTemplate(stream);
+//        	} catch (Exception e) {
+//        		
+//        	}
+//        }
+//        if (ct != null) {
+//        	Map<String,Object> vars = new HashMap<>();
+//        	List<PMMLMiningField> dataFields = unit.getRootModel().getMiningFields();
+//        	vars.put("dataFields", dataFields);
+//        	vars.put("rulePackageName", unit.getRootModel().getModelPackageName());
+//        	vars.put("ruleUnitClassName", unit.getRootModel().getRuleUnitClassName());
+//        	vars.put("notRestricted", true);
+//        	ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//        	try {
+//        		TemplateRuntime.execute(ct, null, new MapVariableResolverFactory(vars), baos);
+//        	}catch (TemplateError te) {
+//        		this.results.add(new PMMLError(te.getMessage()));
+//        		return null;
+//        	} catch (TemplateRuntimeError tre) {
+//        		this.results.add(new PMMLError(tre.getMessage()));
+//        		return null;
+//        	}
+//        	return new String(baos.toByteArray());
+//        }
         KieBase visitor;
         try {
             visitor = checkBuildingResources( pmml );
@@ -302,6 +352,8 @@ public class PMML4Compiler implements PMMLCompiler {
         visitorSession.setGlobal( "registry", registry );
             visitorSession.setGlobal( "fld2var", new HashMap() );
             visitorSession.setGlobal( "utils", helper );
+            visitorSession.setGlobal("unitPackageName", getUnitPackageName(unit));
+            visitorSession.setGlobal("ruleUnitClassName", getRuleUnitClass(unit));
 
         visitorSession.setGlobal( "theory", sb );
 
@@ -495,22 +547,67 @@ public class PMML4Compiler implements PMMLCompiler {
         return byteArrayResource;
     }
     
+    private InputStream getInputStreamByFileName(String fileName) {
+    	InputStream is = null;
+    	Resource res = ResourceFactory.newClassPathResource(fileName);
+    	try {
+			is = res.getInputStream();
+		} catch (Exception e) {
+		}
+    	if (is == null) {
+    		res = ResourceFactory.newFileResource(fileName);
+    	}
+    	try {
+    		is = res.getInputStream();
+    	} catch (Exception e) {
+    		this.results.add(new PMMLError("Unable to retrieve file based resource: "+fileName));
+    	}
+    	return is;
+    }
+    
+    @Override
+    public Map<String,String> getJavaClasses(String fileName) {
+    	InputStream is = getInputStreamByFileName(fileName);
+    	if (is != null) {
+    		return getJavaClasses(is);
+    	}
+    	return new HashMap<>();
+    }
+    
+    @Override
+    public Map<String,String> getJavaClasses(InputStream stream) {
+    	Map<String,String> javaClasses = new HashMap<>();
+    	PMML pmml = loadModel(PMML, stream);
+    	if (pmml != null) {
+    		PMML4Unit unit = new PMML4UnitImpl(pmml);
+    		if (unit != null) {
+    			List<PMML4Model> models = unit.getModels();
+    			models.forEach(model -> {
+    				Map.Entry<String, String> inputPojo = model.getMappedMiningPojo();
+    				Map.Entry<String, String> ruleUnit = model.getMappedRuleUnit();
+    				if (inputPojo != null) javaClasses.put(inputPojo.getKey(), inputPojo.getValue());
+    				if (ruleUnit != null) javaClasses.put(ruleUnit.getKey(), ruleUnit.getValue());
+    			});
+    		}
+    	}
+    	return javaClasses;
+    }
     
     
     public List<PMMLResource> precompile( String fileName, ClassLoader classLoader, KieBaseModel rootKieBaseModel) {
-    	Resource res = new ClassPathResource(fileName);
+    	InputStream is = getInputStreamByFileName(fileName);
     	List<PMMLResource> resources = null;
-    	if (res != null) {
+    	if (is != null) {
     		try {
-    			resources = precompile(res.getInputStream(),classLoader,rootKieBaseModel);
+    			resources = precompile(is,classLoader,rootKieBaseModel);
     		} catch (Exception e) {
     			PMMLError err = new PMMLError("Unable to retrieve pre-compiled resources for PMML: "+e.getMessage());
-    			err.setResource(res);
     			this.results.add(err);
     		}
     	}
     	return (resources != null) ? resources:Collections.emptyList();
     }
+    
     
     public List<PMMLResource> precompile( InputStream stream, ClassLoader classLoader, KieBaseModel rootKieBaseModel) {
     	List<PMMLResource> resources = new ArrayList<>();
@@ -524,23 +621,52 @@ public class PMML4Compiler implements PMMLCompiler {
     		Miningmodel rootModel = unit.getRootMiningModel();
     		resources = buildResourcesFromModel(pmml,rootModel,null,classLoader,module);
     	} else {
-    		Map<String,PMML4Model> rootModels = unit.getRootModels();
-    		if (rootModels != null && !rootModels.isEmpty()) {
-	    		PMML4Model rootModel = rootModels.values().iterator().next();
-	    		helper.setPack(PMML4Helper.pmmlDefaultPackageName()+"."+rootModel.getModelId());
+    		PMML4Model rootModel = unit.getRootModel();
+    		if (rootModel != null) {
+    			helper.setPack(rootModel.getModelPackageName());
 	    		KieBaseModel kbm = module.newKieBaseModel(rootModel.getModelId());
 	    		kbm.addPackage(helper.getPack())
 	    			.setDefault(true)
 	    			.setEventProcessingMode(EventProcessingOption.CLOUD);
 	    		PMMLResource resource = new PMMLResource(helper.getPack());
 	    		resource.setKieBaseModel(kbm);
-	    		resource.addPojoDefinition(rootModel.getMappedMiningPojo());
 	    		resource.addRules(rootModel.getModelId(), this.compile(pmml, classLoader));
 	    		resources.add(resource);
     		}
+//    		Map<String,PMML4Model> rootModels = unit.getRootModels();
+//    		if (rootModels != null && !rootModels.isEmpty()) {
+//	    		PMML4Model rootModel = rootModels.values().iterator().next();
+//	    		helper.setPack(rootModel.getModelPackageName());
+//	    		resource.addPojoDefinition(rootModel.getMappedMiningPojo());
+//	    		resource.addPojoDefinition(rootModel.getMappedRuleUnit());
+//    		}
     	}
+    	dumpResourceContents(resources);
     	return resources;
     }
+
+	private void dumpResourceContents(List<PMMLResource> resources) {
+		for (PMMLResource resource : resources) {
+			Map<String, String> rules = resource.getRules();
+			for (String key : rules.keySet()) {
+				try (FileOutputStream fos = new FileOutputStream("/home/lleveric/tmp/" + key + ".drl")){
+					fos.write(rules.get(key).getBytes());
+					fos.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			Map<String, String> src = resource.getPojoDefinitions();
+			for (String key : src.keySet()) {
+				try (FileOutputStream fos = new FileOutputStream("/home/lleveric/tmp/" + key + ".java")){
+					fos.write(src.get(key).getBytes());
+					fos.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
 
     protected PMMLResource buildResourceFromSegment( PMML pmml_origin, MiningSegment segment, ClassLoader classLoader, KieModuleModel module) {
     	PMML pmml = new PMML();
