@@ -520,7 +520,7 @@ public class GuidedDecisionTableTest {
                 .map(resource -> kieResources.newClassPathResource(resource, GuidedDecisionTableTest.class))
                 .toArray(Resource[]::new);
 
-        final KieBase kBase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, true,
+        final KieBase kBase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration,
                                                                   resources);
 
         kSession = kBase.newKieSession();

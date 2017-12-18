@@ -77,7 +77,7 @@ public class SessionInsertMultiThreadingTest {
                 "sessionInsertMultithreadingTest.drl",
                 SessionInsertMultiThreadingTest.class);
 
-        kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, true, resource);
+        kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, resource);
 
         executor = Executors.newFixedThreadPool(THREADS);
     }

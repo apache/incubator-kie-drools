@@ -18,6 +18,7 @@ package org.drools.compiler.integrationtests;
 import java.util.List;
 import java.util.function.Predicate;
 
+import org.assertj.core.api.Assertions;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Message;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
@@ -139,7 +140,7 @@ public class KieBuilderTest extends CommonTestMethodBase {
         ks.newKieContainer( km.getReleaseId() );
     }
 
-    @Test(expected = RuntimeException.class) // TODO Should be a validation exception, but createAndDeployJar throws NPE
+    @Test
     public void testInvalidXsdTargetNamespace() {
         final String drl1 = "package org.drools.compiler\n" +
                 "rule R1 when\n" +
@@ -159,12 +160,15 @@ public class KieBuilderTest extends CommonTestMethodBase {
         // Create an in-memory jar for version 1.0.0
         final ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-kie-builder", "1.0.0" );
         final Resource r1 = ResourceFactory.newByteArrayResource( drl1.getBytes() ).setResourceType( ResourceType.DRL ).setSourcePath( "kbase1/drl1.drl" );
-        final KieModule km = createAndDeployJar( ks,
-                                           kmodule,
-                                           releaseId1,
-                                           r1);
-
-        ks.newKieContainer( km.getReleaseId() );
+        try {
+            final KieModule km = createAndDeployJar(ks,
+                                                    kmodule,
+                                                    releaseId1,
+                                                    r1);
+            Assertions.fail("Test should throw a validation exception!");
+        } catch (IllegalStateException ex) {
+            Assertions.assertThat(ex).hasMessageContaining("XSD validation failed");
+        }
     }
 
     @Test

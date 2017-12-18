@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.assertj.core.api.Assertions;
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
@@ -44,7 +46,7 @@ import org.kie.internal.utils.KieHelper;
 
 public class DRLTest extends CommonTestMethodBase {
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void testDuplicateRuleName() {
         final String drl = "package org.drools\n" +
                 "rule R when\n" +
@@ -54,7 +56,11 @@ public class DRLTest extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        new KieHelper().addContent( drl, ResourceType.DRL ).build();
+        try {
+            new KieHelper().addContent( drl, ResourceType.DRL ).build();
+        } catch (RuntimeException ex) {
+            Assertions.assertThat(ex).hasMessageContaining("is already defined");
+        }
     }
 
     @Test
