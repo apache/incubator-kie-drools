@@ -156,7 +156,7 @@ public class DrlxParseUtil {
                     return expression;
                 }
                 reactOnProperties.add(name);
-                Expression plusThis = prepend(new NameExpr("_this"), (MethodCallExpr) expression.getExpression());
+                Expression plusThis = prepend(new NameExpr("_this"), expression.getExpression());
                 return new TypedExpression(plusThis, expression.getType(), name);
             }
         } else if (drlxExpr instanceof FieldAccessExpr || drlxExpr instanceof MethodCallExpr) {
@@ -247,7 +247,7 @@ public class DrlxParseUtil {
                 String name = drlxExpr instanceof MethodCallExpr ? getter2property( fieldName.getIdentifier() ) : fieldName.getIdentifier();
                 reactOnProperties.add( name );
                 TypedExpression expression = nameExprToMethodCallExpr(name, typeCursor);
-                Expression plusThis = prepend(new NameExpr("_this"), (MethodCallExpr) expression.getExpression());
+                Expression plusThis = prepend(new NameExpr("_this"), expression.getExpression());
                 return new TypedExpression(plusThis, expression.getType());
             } else {
                 throw new UnsupportedOperationException("Unknown node: " + firstNode);
@@ -296,14 +296,14 @@ public class DrlxParseUtil {
         }
     }
 
-    public static Class<?> returnTypeOfMethodCallExpr(TypeResolver typeResolver, MethodCallExpr methodCallExpr, Class<?> clazz) {
+    public static Class<?> returnTypeOfMethodCallExpr(RuleContext context, TypeResolver typeResolver, MethodCallExpr methodCallExpr, Class<?> clazz) {
         final Class[] argsType = methodCallExpr.getArguments().stream()
-                .map((Expression e) -> getExpressionType(typeResolver, e))
+                .map((Expression e) -> getExpressionType(context, typeResolver, e))
                 .toArray(Class[]::new);
         return findMethod(clazz, methodCallExpr.getNameAsString(), argsType).getReturnType();
     }
 
-    public static Class<?> getExpressionType(TypeResolver typeResolver, Expression expr) {
+    public static Class<?> getExpressionType(RuleContext context, TypeResolver typeResolver, Expression expr) {
         if(expr instanceof BooleanLiteralExpr) {
             return Boolean.class;
         } else if(expr instanceof CharLiteralExpr) {
@@ -322,6 +322,12 @@ public class DrlxParseUtil {
             return getClassFromContext(typeResolver, ((ArrayCreationExpr)((ArrayAccessExpr) expr).getName()).getElementType().asString());
         } else if(expr instanceof ArrayCreationExpr) {
             return getClassFromContext(typeResolver, ((ArrayCreationExpr) expr).getElementType().asString());
+        } else if(expr instanceof NameExpr) {
+            return context.getDeclarationById( (( NameExpr ) expr).getNameAsString() ).map( DeclarationSpec::getDeclarationClass ).get();
+        } else if(expr instanceof MethodCallExpr) {
+            MethodCallExpr methodCallExpr = ( MethodCallExpr ) expr;
+            Class<?> scopeType = getExpressionType(context, typeResolver, methodCallExpr.getScope().get());
+            return returnTypeOfMethodCallExpr(context, typeResolver, methodCallExpr, scopeType);
         } else {
             throw new RuntimeException("Unknown expression type: " + expr);
         }
@@ -398,9 +404,7 @@ public class DrlxParseUtil {
         return lambdaExpr;
     }
 
-
-
-    public static TypedExpression toMethodCallWithClassCheck(Expression expr, Class<?> clazz, TypeResolver typeResolver) {
+    public static TypedExpression toMethodCallWithClassCheck(RuleContext context, Expression expr, Class<?> clazz, TypeResolver typeResolver) {
 
         final Deque<ParsedMethod> callStackLeftToRight = new LinkedList<>();
 
@@ -415,7 +419,7 @@ public class DrlxParseUtil {
                 methodCall.add(te.getExpression());
                 previousClass = returnType;
             } else if (e.expression instanceof MethodCallExpr) {
-                Class<?> returnType = returnTypeOfMethodCallExpr(typeResolver, (MethodCallExpr) e.expression, previousClass);
+                Class<?> returnType = returnTypeOfMethodCallExpr(context, typeResolver, (MethodCallExpr) e.expression, previousClass);
                 MethodCallExpr cloned = ((MethodCallExpr) e.expression.clone()).removeScope();
                 methodCall.add(cloned);
                 previousClass = returnType;
@@ -490,22 +494,42 @@ public class DrlxParseUtil {
         return Optional.of(expression.substring(0, dot));
     }
 
-    public static Optional<String> findBindingIdFromFunctionCallExpression(String expression) {
-        final Optional<Expression> parsedExpression = Optional.<DrlxExpression>ofNullable(DrlxParser.parseExpression(expression))
-                .map(DrlxExpression::getExpr);
-
-        return parsedExpression.flatMap(DrlxParseUtil::findLeafOverArgument).map(Object::toString);
+    public static Optional<String> findBindingId(String expression, Collection<String> availableBindings) {
+        DrlxExpression drlx = DrlxParser.parseExpression(expression);
+        if (drlx == null) {
+            throw new RuntimeException( "unable to parse " + expression );
+        }
+        return findBindingId( drlx.getExpr(), availableBindings );
     }
 
-    private static Optional<Expression> findLeafOverArgument(Expression expr) {
+    public static Optional<String> findBindingId(Expression expr, Collection<String> availableBindings) {
         if (expr instanceof MethodCallExpr) {
-            final Optional<Expression> optFirstArgument = ((MethodCallExpr)expr).getArguments().stream().findFirst();
-            return optFirstArgument
-                    .flatMap(DrlxParseUtil::findRootNode)
-                    .flatMap(DrlxParseUtil::findLeafOverArgument);
-        } else if (expr instanceof NameExpr) {
-            return Optional.of(expr);
+            MethodCallExpr methodCallExpr = (MethodCallExpr)expr;
+            Optional<String> scope = methodCallExpr.getScope()
+                    .flatMap( e -> findBindingId( e, availableBindings ) )
+                    .filter( availableBindings::contains );
+            if (scope.isPresent()) {
+                return scope;
+            }
+            return methodCallExpr.getArguments().stream()
+                    .map( DrlxParseUtil::findRootNode )
+                    .map( opt -> opt.flatMap(e -> findBindingId(e, availableBindings) ) )
+                    .filter( opt -> opt.map( availableBindings::contains ).orElse( false ) )
+                    .map( Optional::get )
+                    .findFirst();
         }
+
+        if (expr instanceof NameExpr) {
+            String name = (( NameExpr ) expr).getNameAsString();
+            return availableBindings.contains( name ) ? Optional.of(name) : Optional.empty();
+        }
+
+        if (expr instanceof BinaryExpr) {
+            BinaryExpr binaryExpr = (BinaryExpr)expr;
+            Optional<String> left = findBindingId(binaryExpr.getLeft(), availableBindings);
+            return left.isPresent() ? left : findBindingId(binaryExpr.getRight(), availableBindings);
+        }
+
         return Optional.empty();
     }
 

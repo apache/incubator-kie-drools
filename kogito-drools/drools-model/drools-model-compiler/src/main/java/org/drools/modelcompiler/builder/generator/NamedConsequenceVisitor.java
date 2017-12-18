@@ -91,7 +91,7 @@ public class NamedConsequenceVisitor {
     private MethodCallExpr onDSL(NamedConsequenceDescr namedConsequence) {
         String namedConsequenceString = context.namedConsequences.get(namedConsequence.getName());
         BlockStmt ruleVariablesBlock = new BlockStmt();
-        createVariables(ruleVariablesBlock, packageModel, context);
+        createVariables(context.getKbuilder(), ruleVariablesBlock, packageModel, context);
         BlockStmt ruleConsequence = rewriteConsequence(context, namedConsequenceString);
         List<String> verifiedDeclUsedInRHS = extractUsedDeclarations(packageModel, context, ruleConsequence);
 

@@ -32,6 +32,10 @@ public class LambdaEvalExpression implements EvalExpression {
         this.evaluator = evaluator;
     }
 
+    public LambdaEvalExpression(Declaration[] declarations, SingleConstraint constraint) {
+        this( new ConstraintEvaluator(declarations, constraint) );
+    }
+
     public LambdaEvalExpression(Pattern pattern, SingleConstraint constraint) {
         this( new ConstraintEvaluator(pattern, constraint) );
     }

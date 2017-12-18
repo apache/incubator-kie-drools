@@ -86,6 +86,34 @@ import static org.junit.Assert.*;
 public class FlowTest {
 
     @Test
+    public void testBindWithEval() {
+        Variable<Person> var_$p1 = declarationOf(type(Person.class), "$p1");
+        Variable<Integer> var_$a1 = declarationOf(type(Integer.class), "$a1");
+        org.drools.model.Rule rule = rule("R").build(
+                bind(var_$a1).as(var_$p1, (_this) -> _this.getAge()).reactOn("age"),
+                expr("$expr$2$",
+                     var_$a1,
+                     (_this) -> _this > 39),
+                on(var_$p1).execute((drools, $p1) -> {
+                    drools.insert(new Result($p1.getName()));
+                }));
+
+        Model model = new ModelImpl().addRule( rule );
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
+
+        KieSession ksession = kieBase.newKieSession();
+
+        ksession.insert( new Person( "Mario", 40 ) );
+        ksession.insert( new Person( "Mark", 38 ) );
+        ksession.insert( new Person( "Edson", 35 ) );
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList( ksession, Result.class );
+        assertEquals( 1, results.size() );
+        assertEquals( "Mario", results.iterator().next().getValue() );
+    }
+
+    @Test
     public void testBeta() {
         Result result = new Result();
         Variable<Person> markV = declarationOf( type( Person.class ) );
@@ -1085,7 +1113,6 @@ public class FlowTest {
     }
 
     @Test
-    @Ignore
     public void testAccumuluateWithAnd2() {
         final org.drools.model.Variable<java.lang.Object> var_$pattern_Object$1$ = declarationOf(type(java.lang.Object.class),
                                                                                                  "$pattern_Object$1$");

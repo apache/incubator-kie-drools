@@ -1,6 +1,7 @@
 package org.drools.modelcompiler.builder.generator;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -10,12 +11,17 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.javaparser.ast.expr.Expression;
+import org.kie.internal.builder.KnowledgeBuilderResult;
+
+import static java.util.stream.Collectors.toList;
 
 public class RuleContext {
+    private final KnowledgeBuilderImpl kbuilder;
     private final InternalKnowledgePackage pkg;
     private DRLIdGenerator idGenerator;
     private final Optional<RuleDescr> descr;
@@ -37,15 +43,28 @@ public class RuleContext {
 
     BaseDescr parentDesc = null;
 
-    public RuleContext(InternalKnowledgePackage pkg, DRLIdGenerator exprIdGenerator, Optional<RuleDescr> ruleDescr) {
+    public RuleContext( KnowledgeBuilderImpl kbuilder, InternalKnowledgePackage pkg, DRLIdGenerator exprIdGenerator, Optional<RuleDescr> ruleDescr) {
+        this.kbuilder = kbuilder;
         this.pkg = pkg;
         this.idGenerator = exprIdGenerator;
         this.descr = ruleDescr;
         exprPointer.push( this.expressions::add );
     }
 
+    public KnowledgeBuilderImpl getKbuilder() {
+        return kbuilder;
+    }
+
+    public void addCompilationError( KnowledgeBuilderResult error ) {
+        kbuilder.addBuilderResult( error );
+    }
+
     public Optional<DeclarationSpec> getDeclarationById(String id) {
         return declarations.stream().filter(d -> d.getBindingId().equals(id)).findFirst();
+    }
+
+    public Collection<String> getAvailableBindings() {
+        return declarations.stream().map( DeclarationSpec::getBindingId ).collect( toList() );
     }
 
     public Optional<DeclarationSpec> getOOPathDeclarationById(String id) {

@@ -34,6 +34,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.AnnotationDescr;
@@ -99,10 +100,13 @@ import org.drools.model.BitMask;
 import org.drools.model.Rule;
 import org.drools.model.Variable;
 import org.drools.modelcompiler.builder.PackageModel;
+import org.drools.modelcompiler.builder.errors.ParseExpressionErrorResult;
+import org.drools.modelcompiler.builder.errors.UnknownDeclarationError;
 import org.drools.modelcompiler.builder.generator.RuleContext.RuleDialect;
 import org.kie.api.definition.type.Position;
 
 import static java.util.stream.Collectors.toList;
+
 import static org.drools.javaparser.printer.PrintUtil.toDrlx;
 import static org.drools.model.impl.NamesGenerator.generateName;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
@@ -162,31 +166,31 @@ public class ModelGenerator {
     static final String QUERY_INVOCATION_CALL = "call";
     static final String VALUE_OF_CALL = "valueOf";
 
-    public static void generateModel(InternalKnowledgePackage pkg, PackageDescr packageDescr, PackageModel packageModel) {
+    public static void generateModel( KnowledgeBuilderImpl kbuilder, InternalKnowledgePackage pkg, PackageDescr packageDescr, PackageModel packageModel ) {
         packageModel.addImports(pkg.getTypeResolver().getImports());
         packageModel.addGlobals(pkg.getGlobals());
         packageModel.addAccumulateFunctions(pkg.getAccumulateFunctions());
-        new WindowReferenceGenerator(packageModel, pkg).addWindowReferences(packageDescr.getWindowDeclarations());
+        new WindowReferenceGenerator(packageModel, pkg).addWindowReferences(kbuilder, packageDescr.getWindowDeclarations());
         packageModel.addAllFunctions(packageDescr.getFunctions().stream().map(FunctionGenerator::toFunction).collect(toList()));
 
         for(RuleDescr descr : packageDescr.getRules()) {
             if (descr instanceof QueryDescr) {
-                QueryGenerator.processQueryDef(pkg, packageModel, (QueryDescr) descr);
+                QueryGenerator.processQueryDef( kbuilder, pkg, packageModel, (QueryDescr) descr);
             }
         }
 
         for (RuleDescr descr : packageDescr.getRules()) {
             if (descr instanceof QueryDescr) {
-                QueryGenerator.processQuery(packageModel, (QueryDescr) descr);
+                QueryGenerator.processQuery(kbuilder, packageModel, (QueryDescr) descr);
             } else {
-                processRule(pkg, packageModel, descr);
+                processRule(kbuilder, pkg, packageModel, descr);
             }
         }
     }
 
 
-    private static void processRule(InternalKnowledgePackage pkg, PackageModel packageModel, RuleDescr ruleDescr) {
-        RuleContext context = new RuleContext(pkg, packageModel.getExprIdGenerator(), Optional.of(ruleDescr));
+    private static void processRule(KnowledgeBuilderImpl kbuilder, InternalKnowledgePackage pkg, PackageModel packageModel, RuleDescr ruleDescr) {
+        RuleContext context = new RuleContext(kbuilder, pkg, packageModel.getExprIdGenerator(), Optional.of(ruleDescr));
 
         for(Entry<String, Object> kv : ruleDescr.getNamedConsequences().entrySet()) {
             context.addNamedConsequence(kv.getKey(), kv.getValue().toString());
@@ -216,7 +220,7 @@ public class ModelGenerator {
         BlockStmt ruleConsequence = rewriteConsequence(context, ruleDescr.getConsequence().toString());
 
         BlockStmt ruleVariablesBlock = new BlockStmt();
-        createVariables(ruleVariablesBlock, packageModel, context);
+        createVariables(kbuilder, ruleVariablesBlock, packageModel, context);
         ruleMethod.setBody(ruleVariablesBlock);
 
         List<String> usedDeclarationInRHS = extractUsedDeclarations(packageModel, context, ruleConsequence);
@@ -346,19 +350,22 @@ public class ModelGenerator {
         return onCall;
     }
 
-    public static void createVariables(BlockStmt block, PackageModel packageModel, RuleContext context) {
-
+    public static void createVariables(KnowledgeBuilderImpl kbuilder, BlockStmt block, PackageModel packageModel, RuleContext context) {
         for (DeclarationSpec decl : context.getDeclarations()) {
             if (!packageModel.getGlobals().containsKey(decl.getBindingId()) && !context.queryParameterWithName(p -> p.name.equals(decl.getBindingId())).isPresent()) {
-                addVariable(block, decl);
+                addVariable(kbuilder, block, decl);
             }
         }
     }
 
-    private static void addVariable(BlockStmt ruleBlock, DeclarationSpec decl) {
-        ClassOrInterfaceType varType = JavaParser.parseClassOrInterfaceType(Variable.class.getCanonicalName());
-        Type declType = DrlxParseUtil.classToReferenceType(decl.declarationClass );
+    private static void addVariable(KnowledgeBuilderImpl kbuilder, BlockStmt ruleBlock, DeclarationSpec decl) {
+        if (decl.declarationClass == null) {
+            kbuilder.addBuilderResult( new UnknownDeclarationError( decl.getBindingId() ) );
+            return;
+        }
+        Type declType = DrlxParseUtil.classToReferenceType( decl.declarationClass );
 
+        ClassOrInterfaceType varType = JavaParser.parseClassOrInterfaceType(Variable.class.getCanonicalName());
         varType.setTypeArguments(declType);
         VariableDeclarationExpr var_ = new VariableDeclarationExpr(varType, toVar(decl.getBindingId()), Modifier.FINAL);
 
@@ -559,12 +566,9 @@ public class ModelGenerator {
     }
 
     private static void visit( RuleContext context, PackageModel packageModel, EvalDescr descr ) {
-        final String expression = descr.getContent().toString();
-
-        final Optional<String> bindingIdFromFunctionCall =  DrlxParseUtil.findBindingIdFromFunctionCallExpression(expression);
-        final Optional<String> bindingIdFromDot = DrlxParseUtil.findBindingIdFromDotExpression(expression);
-        final String bindingId = bindingIdFromFunctionCall.map(Optional::of).orElse(bindingIdFromDot).orElseThrow(() -> new UnsupportedOperationException("unable to parse eval expression: " + expression));
-
+        String expression = descr.getContent().toString();
+        String bindingId = DrlxParseUtil.findBindingId(expression, context.getAvailableBindings())
+                .orElseThrow(() -> new UnsupportedOperationException("unable to parse eval expression: " + expression));
         Class<?> patternType = context.getDeclarationById(bindingId)
                 .map(DeclarationSpec::getDeclarationClass)
                 .orElseThrow(RuntimeException::new);
@@ -634,7 +638,11 @@ public class ModelGenerator {
                 if(expression.contains(":=")) {
                     expression = expression.replace(":=", "==");
                 }
+
                 DrlxParseResult drlxParseResult = drlxParse(context, packageModel, patternType, patternIdentifier, expression);
+                if (drlxParseResult == null) {
+                    return;
+                }
 
                 if(drlxParseResult.expr instanceof OOPathExpr) {
 
@@ -755,6 +763,10 @@ public class ModelGenerator {
                         combo = new UnaryExpr( combo, UnaryExpr.Operator.LOGICAL_COMPLEMENT );
                         break;
                     default:
+                        if ( left.getExpression() == null || right.getExpression() == null ) {
+                            context.addCompilationError( new ParseExpressionErrorResult(drlxExpr) );
+                            return null;
+                        }
                         combo = new BinaryExpr( left.getExpression(), right.getExpression(), operator );
                 }
             }
@@ -825,7 +837,7 @@ public class ModelGenerator {
                 return new DrlxParseResult(patternType, exprId, bindingId, methodCallExpr, returnType).setUsedDeclarations(usedDeclarations);
             } else {
                 NameExpr _this = new NameExpr("_this");
-                TypedExpression converted = DrlxParseUtil.toMethodCallWithClassCheck(methodCallExpr, patternType, context.getPkg().getTypeResolver());
+                TypedExpression converted = DrlxParseUtil.toMethodCallWithClassCheck(context, methodCallExpr, patternType, context.getPkg().getTypeResolver());
                 Expression withThis = DrlxParseUtil.prepend(_this, converted.getExpression());
                 return new DrlxParseResult(patternType, exprId, bindingId, withThis, converted.getType());
             }
@@ -836,7 +848,7 @@ public class ModelGenerator {
             NameExpr methodCallExpr = (NameExpr) drlxExpr;
 
             NameExpr _this = new NameExpr("_this");
-            TypedExpression converted = DrlxParseUtil.toMethodCallWithClassCheck(methodCallExpr, patternType, context.getPkg().getTypeResolver());
+            TypedExpression converted = DrlxParseUtil.toMethodCallWithClassCheck(context, methodCallExpr, patternType, context.getPkg().getTypeResolver());
             Expression withThis = DrlxParseUtil.prepend(_this, converted.getExpression());
 
             if (drlx.getBind() != null) {

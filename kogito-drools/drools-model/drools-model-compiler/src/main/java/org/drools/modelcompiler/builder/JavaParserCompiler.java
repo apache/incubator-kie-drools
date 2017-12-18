@@ -29,14 +29,13 @@ import org.drools.compiler.commons.jci.compilers.EclipseJavaCompiler;
 import org.drools.compiler.commons.jci.compilers.JavaCompiler;
 import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
 import org.drools.compiler.commons.jci.problems.CompilationProblem;
-import org.drools.compiler.compiler.DroolsError;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.javaparser.ast.CompilationUnit;
 import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.drools.javaparser.printer.PrettyPrinter;
 import org.drools.javaparser.printer.PrettyPrinterConfiguration;
-import org.kie.internal.builder.ResultSeverity;
+import org.drools.modelcompiler.builder.errors.CompilationProblemErrorResult;
 
 public class JavaParserCompiler {
 
@@ -149,31 +148,5 @@ public class JavaParserCompiler {
 
             return defineClass(className, bytes, 0, bytes.length);
         }
-    }
-
-    public static class CompilationProblemErrorResult extends DroolsError {
-
-        private CompilationProblem compilationProblem;
-
-        public CompilationProblemErrorResult(CompilationProblem compilationProblem) {
-            super();
-            this.compilationProblem = compilationProblem;
-        }
-
-        @Override
-        public ResultSeverity getSeverity() {
-            return ResultSeverity.ERROR;
-        }
-
-        @Override
-        public String getMessage() {
-            return compilationProblem.getMessage();
-        }
-
-        @Override
-        public int[] getLines() {
-            return new int[]{compilationProblem.getStartLine(), compilationProblem.getEndLine()};
-        }
-
     }
 }
