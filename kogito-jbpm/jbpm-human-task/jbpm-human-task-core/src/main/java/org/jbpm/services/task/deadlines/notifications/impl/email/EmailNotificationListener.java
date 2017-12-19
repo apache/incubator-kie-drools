@@ -183,7 +183,7 @@ public class EmailNotificationListener implements NotificationListener {
                     
                     msg.setSubject( subject );
                     
-                    msg.setHeader( "X-Mailer", "jbpm huamn task service" );
+                    msg.setHeader( "X-Mailer", "jbpm human task service" );
                     msg.setSentDate( new Date() );
 
                     Transport.send(msg);
