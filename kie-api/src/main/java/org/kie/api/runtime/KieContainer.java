@@ -24,6 +24,7 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieSessionModel;
+import org.kie.api.runtime.rule.RuleUnitExecutor;
 
 /**
  * A container for all the KieBases of a given KieModule
@@ -155,6 +156,32 @@ public interface KieContainer {
      * @throws RuntimeException if this KieContainer doesn't have any KieSession with the given name
      */
     KieSession newKieSession(String kSessionName, Environment environment, KieSessionConfiguration conf);
+
+    /**
+     * Creates the default RuleUnitExecutor for this KieContainer
+     * @throws RuntimeException if this KieContainer doesn't have any default RuleUnitExecutor
+     * @see org.kie.api.builder.model.KieSessionModel#setDefault(boolean)
+     */
+    RuleUnitExecutor newRuleUnitExecutor();
+
+    /**
+     * Creates the default RuleUnitExecutor for this KieContainer with the given configuration
+     * @throws RuntimeException if this KieContainer doesn't have any default RuleUnitExecutor
+     * @see org.kie.api.builder.model.KieSessionModel#setDefault(boolean)
+     */
+    RuleUnitExecutor newRuleUnitExecutor(KieSessionConfiguration conf);
+
+    /**
+     * Creates the RuleUnitExecutor with the given name for this KieContainer
+     * @throws RuntimeException if this KieContainer doesn't have any RuleUnitExecutor with the given name
+     */
+    RuleUnitExecutor newRuleUnitExecutor(String kSessionName);
+
+    /**
+     * Creates the RuleUnitExecutor with the given name for this KieContainer with the given configuration
+     * @throws RuntimeException if this KieContainer doesn't have any RuleUnitExecutor with the given name
+     */
+    RuleUnitExecutor newRuleUnitExecutor(String kSessionName, KieSessionConfiguration conf);
 
     /**
      * Creates the default StatelessKieSession for this KieContainer

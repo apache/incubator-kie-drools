@@ -17,6 +17,7 @@
 package org.kie.api.runtime.rule;
 
 import org.kie.api.KieBase;
+import org.kie.api.runtime.KieSession;
 
 /**
  * RuleUnitExecutor allows to execute different {@link RuleUnit}s.
@@ -27,6 +28,11 @@ public interface RuleUnitExecutor {
      * Bind this executor to a {@link KieBase} in order to execute the units defined in it.
      */
     RuleUnitExecutor bind( KieBase kiebase );
+
+    /**
+     * Returns the {@link KieSession} internally used by this executor.
+     */
+    KieSession getKieSession();
 
     /**
      * Runs a RuleUnit of the given class.

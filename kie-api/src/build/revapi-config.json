@@ -42,6 +42,51 @@
           "methodName": "getUserId",
           "elementKind": "method",
           "justification": "Allow to get user id for task operations"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method org.kie.api.runtime.rule.RuleUnitExecutor org.kie.api.runtime.KieContainer::newRuleUnitExecutor()",
+          "package": "org.kie.api.runtime",
+          "classSimpleName": "KieContainer",
+          "methodName": "newRuleUnitExecutor",
+          "elementKind": "method",
+          "justification": "Allow to create RuleUnitExecutor from KieContainer with a declarative configuration"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method org.kie.api.runtime.rule.RuleUnitExecutor org.kie.api.runtime.KieContainer::newRuleUnitExecutor(java.lang.String)",
+          "package": "org.kie.api.runtime",
+          "classSimpleName": "KieContainer",
+          "methodName": "newRuleUnitExecutor",
+          "elementKind": "method",
+          "justification": "Allow to create RuleUnitExecutor from KieContainer with a declarative configuration"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method org.kie.api.runtime.rule.RuleUnitExecutor org.kie.api.runtime.KieContainer::newRuleUnitExecutor(java.lang.String, org.kie.api.runtime.KieSessionConfiguration)",
+          "package": "org.kie.api.runtime",
+          "classSimpleName": "KieContainer",
+          "methodName": "newRuleUnitExecutor",
+          "elementKind": "method",
+          "justification": "Allow to create RuleUnitExecutor from KieContainer with a declarative configuration"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method org.kie.api.runtime.rule.RuleUnitExecutor org.kie.api.runtime.KieContainer::newRuleUnitExecutor(org.kie.api.runtime.KieSessionConfiguration)",
+          "package": "org.kie.api.runtime",
+          "classSimpleName": "KieContainer",
+          "methodName": "newRuleUnitExecutor",
+          "elementKind": "method",
+          "justification": "Allow to create RuleUnitExecutor from KieContainer with a declarative configuration"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method org.kie.api.runtime.KieSession org.kie.api.runtime.rule.RuleUnitExecutor::getKieSession()",
+          "package": "org.kie.api.runtime.rule",
+          "classSimpleName": "RuleUnitExecutor",
+          "methodName": "getKieSession",
+          "elementKind": "method",
+          "justification": "Allow to create RuleUnitExecutor from KieContainer with a declarative configuration"
         }
       ]
     }
