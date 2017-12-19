@@ -99,5 +99,5 @@ rule "totalMakespan"
             $maxProjectEndDate : max($endDate)
         )
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, 1, -$maxProjectEndDate);
+        scoreHolder.addSoftConstraintMatch(kcontext, 1, - (Integer) $maxProjectEndDate);
 end
