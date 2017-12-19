@@ -31,6 +31,8 @@
 
   <properties>
     <java.module.name>org.kie.dmn.tck</java.module.name>
+    <tck.repository.url>https://github.com/dmn-tck/tck</tck.repository.url>
+    <tck.repository.branch>master</tck.repository.branch>
   </properties>
 
   <profiles>
@@ -57,7 +59,9 @@
                   <goal>bootstrap</goal>
                 </goals>
                 <configuration>
-                  <connectionUrl>scm:git:https://github.com/dmn-tck/tck</connectionUrl>
+                  <connectionUrl>scm:git:${tck.repository.url}</connectionUrl>
+                  <scmVersion>${tck.repository.branch}</scmVersion>
+                  <scmVersionType>branch</scmVersionType>
                   <goals>install -Ddrools.version=${project.version}</goals>
                   <goalsDirectory>runners</goalsDirectory>
                   <profiles>drools</profiles>
