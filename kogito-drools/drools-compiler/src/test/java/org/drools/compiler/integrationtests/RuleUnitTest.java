@@ -37,6 +37,7 @@ import org.kie.api.runtime.rule.DataSource;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.RuleUnit;
 import org.kie.api.runtime.rule.RuleUnitExecutor;
+import org.kie.api.time.SessionPseudoClock;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.utils.KieHelper;
 
@@ -1428,5 +1429,42 @@ public class RuleUnitTest {
         public void insertPerson(Person person) {
             persons.insert( person );
         }
+    }
+
+    @Test
+    public void testRuleUnitFromKieContainer() {
+        String drl =
+                "package org.drools.compiler.integrationtests\n" +
+                "unit " + getCanonicalSimpleName( AdultUnitWithSingleItem.class ) + "\n" +
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "rule Adult when\n" +
+                "    $p : /person[age >= adultAge]\n" +
+                "then\n" +
+                "    System.out.println($p.getName() + \" is adult\");\n" +
+                "end";
+
+        String kmodule =
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<kmodule xmlns=\"http://jboss.org/kie/6.0.0/kmodule\">\n" +
+                "    <kbase name=\"unit\" equalsBehavior=\"equality\" eventProcessingMode=\"stream\">\n" +
+                "        <ksession name=\"unit-rules\" default=\"true\" type=\"stateful\" clockType=\"pseudo\"/>\n" +
+                "    </kbase>\n" +
+                "</kmodule>";
+
+        KieServices ks = KieServices.Factory.get();
+
+        KieFileSystem kfs = ks.newKieFileSystem()
+                .write( "src/main/resources/r1.drl", drl )
+                .writeKModuleXML(kmodule);
+        ks.newKieBuilder( kfs ).buildAll();
+
+        KieContainer kcontainer = ks.newKieContainer(ks.getRepository().getDefaultReleaseId());
+
+        RuleUnitExecutor executor = kcontainer.newRuleUnitExecutor();
+
+        assertTrue( executor.getKieSession().getSessionClock() instanceof SessionPseudoClock );
+
+        RuleUnit adultUnit = new AdultUnitWithSingleItem(new Person( "Mario", 42 ));
+        assertEquals(1, executor.run( adultUnit ) );
     }
 }

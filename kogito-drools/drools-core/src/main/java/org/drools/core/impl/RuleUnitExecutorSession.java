@@ -43,6 +43,7 @@ import org.kie.api.KieServices;
 import org.kie.api.logger.KieRuntimeLogger;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.Globals;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.DataSource;
 import org.kie.api.runtime.rule.RuleUnit;
 import org.kie.api.runtime.rule.RuleUnitExecutor;
@@ -66,6 +67,11 @@ public class RuleUnitExecutorSession implements InternalRuleUnitExecutor {
         session.agendaEventSupport = new AgendaEventSupport();
         session.ruleRuntimeEventSupport = new RuleRuntimeEventSupport();
         session.ruleEventListenerSupport = new RuleEventListenerSupport();
+    }
+
+    public RuleUnitExecutorSession(KieSession session) {
+        this.session = (( StatefulKnowledgeSessionImpl ) session);
+        bind( session.getKieBase() );
     }
 
     public RuleUnitExecutorSession( final long id,
@@ -108,6 +114,11 @@ public class RuleUnitExecutorSession implements InternalRuleUnitExecutor {
 
         this.ruleUnitGuardSystem = new RuleUnitGuardSystem( this );
         return this;
+    }
+
+    @Override
+    public KieSession getKieSession() {
+        return session;
     }
 
     @Override

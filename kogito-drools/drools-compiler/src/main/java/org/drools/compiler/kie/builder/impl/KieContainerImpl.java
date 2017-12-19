@@ -36,6 +36,7 @@ import org.drools.core.SessionConfigurationImpl;
 import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.impl.InternalKieContainer;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.RuleUnitExecutorSession;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.impl.StatelessKnowledgeSessionImpl;
 import org.drools.core.management.DroolsManagementAgent;
@@ -60,6 +61,7 @@ import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.StatelessKieSession;
+import org.kie.api.runtime.rule.RuleUnitExecutor;
 import org.kie.internal.builder.ChangeType;
 import org.kie.internal.builder.ResourceChangeSet;
 import org.slf4j.Logger;
@@ -431,6 +433,22 @@ public class KieContainerImpl
             throw new RuntimeException(stateless ? "Cannot find a default StatelessKieSession" : "Cannot find a default KieSession");
         }
         return defaultKieSessionModel;
+    }
+
+    public RuleUnitExecutor newRuleUnitExecutor() {
+        return new RuleUnitExecutorSession( newKieSession() );
+    }
+
+    public RuleUnitExecutor newRuleUnitExecutor(KieSessionConfiguration conf) {
+        return new RuleUnitExecutorSession( newKieSession( conf ) );
+    }
+
+    public RuleUnitExecutor newRuleUnitExecutor(String kSessionName) {
+        return new RuleUnitExecutorSession( newKieSession( kSessionName ) );
+    }
+
+    public RuleUnitExecutor newRuleUnitExecutor(String kSessionName, KieSessionConfiguration conf) {
+        return new RuleUnitExecutorSession( newKieSession( kSessionName, conf ) );
     }
 
     public StatelessKieSession newStatelessKieSession() {
