@@ -16,16 +16,14 @@
 
 package org.kie.dmn.backend.marshalling.v1_1.xstream;
 
-import org.kie.dmn.backend.marshalling.CustomStaxReader;
-import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_1.Expression;
-import org.kie.dmn.model.v1_1.FunctionDefinition;
-import org.kie.dmn.model.v1_1.InformationItem;
-
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
+import org.kie.dmn.model.v1_1.Expression;
+import org.kie.dmn.model.v1_1.FunctionDefinition;
+import org.kie.dmn.model.v1_1.InformationItem;
 
 public class FunctionDefinitionConverter extends ExpressionConverter {
     public static final String EXPRESSION = "expression";
@@ -47,9 +45,8 @@ public class FunctionDefinitionConverter extends ExpressionConverter {
     @Override
     protected void assignAttributes(HierarchicalStreamReader reader, Object parent) {
         super.assignAttributes(reader, parent);
-        CustomStaxReader customStaxReader = (CustomStaxReader) reader.underlyingReader();
-        String kind = customStaxReader.getAttribute( FunctionDefinition.KIND_QNAME.getNamespaceURI(), FunctionDefinition.KIND_QNAME.getLocalPart() );
-        ((FunctionDefinition) parent).getOtherAttributes().put( FunctionDefinition.KIND_QNAME, kind );
+
+        // no attributes (drools:kind is now managed fully as a generic additional attribute in DMNModelInstrumentedBase)
     }
 
     @Override
