@@ -31,13 +31,18 @@ import org.kie.dmn.model.v1_1.LiteralExpression;
 import org.kie.dmn.model.v1_1.Relation;
 
 public final class MarshallingUtils {
-    private final static Pattern QNAME_PAT = Pattern.compile( "((\\{([^\\}]*)\\})?([^:]*):)?(.*)" );
+
+    private final static Pattern QNAME_PAT = Pattern.compile("(\\{([^\\}]*)\\})?(([^:]*):)?(.*)");
 
     public static QName parseQNameString(String qns) {
         if ( qns != null ) {
             Matcher m = QNAME_PAT.matcher( qns );
-            if ( m.matches() && m.group( 4 ) != null ) {
-                return new QName( m.group( 3 ), m.group( 5 ), m.group( 4 ) );
+            if (m.matches()) {
+                if (m.group(4) != null) {
+                    return new QName(m.group(2), m.group(5), m.group(4));
+                } else {
+                    return new QName(m.group(2), m.group(5));
+                }
             } else {
                 return new QName( qns );
             }

@@ -16,14 +16,20 @@
 
 package org.kie.dmn.core.impl;
 
-import org.kie.dmn.api.core.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.kie.dmn.api.core.DMNContext;
+import org.kie.dmn.api.core.DMNDecisionResult;
+import org.kie.dmn.api.core.DMNMessage;
+import org.kie.dmn.api.core.DMNMessageType;
+import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.api.DMNMessageManager;
 import org.kie.dmn.core.util.DefaultDMNMessagesManager;
-import org.kie.dmn.model.v1_1.DMNElement;
 import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
-
-import java.util.*;
 
 public class DMNResultImpl implements DMNResult, DMNMessageManager {
     private DMNContext context;
@@ -89,7 +95,7 @@ public class DMNResultImpl implements DMNResult, DMNMessageManager {
     }
 
     public DMNDecisionResult getDecisionResultByName( String name ) {
-        return decisionResults.values().stream().filter( dr -> dr.getDecisionName().equals( name ) ).findFirst().get();
+        return decisionResults.values().stream().filter(dr -> dr.getDecisionName().equals(name)).findFirst().orElse(null);
     }
 
     public DMNDecisionResult getDecisionResultById( String id ) {

@@ -1612,5 +1612,22 @@ public class DMNRuntimeTest {
 
         assertThat(dmnResult.getMessages().stream().filter(m -> m.getMessageType() == DMNMessageType.ERROR_EVAL_NODE).anyMatch(m -> m.getMessage().contains("... [string clipped after 50 chars, total length is")), is(true));
     }
+
+    @Test
+    public void testDROOLS2192() {
+        // DROOLS-2192
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime("hardcoded_function_definition.dmn", this.getClass());
+        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_99854980-65c8-4e9b-b365-bd30ded69f40", "hardcoded_function_definition");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        DMNContext emptyContext = DMNFactory.newContext();
+
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, emptyContext);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        DMNContext resultContext = dmnResult.getContext();
+        assertThat(((BigDecimal) resultContext.get("hardcoded decision")).intValue(), is(47));
+    }
 }
 

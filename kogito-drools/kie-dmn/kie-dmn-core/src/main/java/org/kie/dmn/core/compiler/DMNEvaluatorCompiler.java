@@ -213,7 +213,7 @@ public class DMNEvaluatorCompiler {
     private DMNExpressionEvaluator compileFunctionDefinition(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String functionName, FunctionDefinition expression) {
         FunctionDefinition funcDef = expression;
 
-        String kindStr = funcDef.getOtherAttributes().get( FunctionDefinition.KIND_QNAME );
+        String kindStr = funcDef.getAdditionalAttributes().get(FunctionDefinition.KIND_QNAME);
         FunctionDefinition.Kind kind = kindStr != null ? FunctionDefinition.Kind.determineFromString( kindStr ) :FunctionDefinition.Kind.FEEL;
 
         if( kind == null ) {

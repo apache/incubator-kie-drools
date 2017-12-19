@@ -16,11 +16,7 @@
 package org.kie.dmn.model.v1_1;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import javax.xml.namespace.QName;
 
 public abstract class DMNElement extends DMNModelInstrumentedBase {
 
@@ -28,7 +24,6 @@ public abstract class DMNElement extends DMNModelInstrumentedBase {
     private DMNElement.ExtensionElements extensionElements;
     private String id;
     private String label;
-    private Map<QName, String> otherAttributes = new HashMap<>();
 
     public String getDescription() {
         return description;
@@ -60,10 +55,6 @@ public abstract class DMNElement extends DMNModelInstrumentedBase {
 
     public void setLabel( final String value ) {
         this.label = value;
-    }
-
-    public Map<QName, String> getOtherAttributes() {
-        return otherAttributes;
     }
 
     public static class ExtensionElements
