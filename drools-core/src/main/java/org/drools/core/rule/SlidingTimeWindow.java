@@ -316,13 +316,14 @@ public class SlidingTimeWindow
             SlidingTimeWindowContext slCtx = ( SlidingTimeWindowContext ) bjobCtx.behaviorContext;
 
             EventFactHandle handle = slCtx.peek();
-
-            return ProtobufMessages.Timers.Timer.newBuilder()
-                                                .setType( ProtobufMessages.Timers.TimerType.BEHAVIOR )
-                                                .setBehavior( ProtobufMessages.Timers.BehaviorTimer.newBuilder()
-                                                                                                   .setHandleId( handle.getId() )
-                                                                                                   .build() )
-                                                .build();
+			if (handle != null) {
+				return ProtobufMessages.Timers.Timer.newBuilder().setType(ProtobufMessages.Timers.TimerType.BEHAVIOR)
+						.setBehavior(
+								ProtobufMessages.Timers.BehaviorTimer.newBuilder().setHandleId(handle.getId()).build())
+						.build();
+			} else {
+				return null;
+			}
         }
     }
 
