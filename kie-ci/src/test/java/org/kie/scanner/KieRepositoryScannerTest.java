@@ -1142,4 +1142,40 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         ks.getRepository().removeKieModule(releaseId1);
         ks.getRepository().removeKieModule(releaseId2);
     }
+
+    @Test
+    public void testKScannerNewContainer() throws Exception {
+        KieServices ks = KieServices.Factory.get();
+        ReleaseId releaseId = ks.newReleaseId("org.kie", "scanner-test", "1.0-SNAPSHOT");
+
+        InternalKieModule kJar1 = createKieJar(ks, releaseId, "rule1", "rule2");
+
+        MavenRepository repository = getMavenRepository();
+        repository.installArtifact(releaseId, kJar1, createKPom(fileManager, releaseId));
+
+        ks.getRepository().removeKieModule( releaseId );
+
+        KieContainer kieContainer = ks.newKieContainer(releaseId);
+
+        // create a ksesion and check it works as expected
+        KieSession ksession = kieContainer.newKieSession("KSession1");
+        checkKSession(ksession, "rule1", "rule2");
+
+        // create a new kjar
+        InternalKieModule kJar2 = createKieJar(ks, releaseId, "rule2", "rule3");
+
+        // deploy it on maven
+        repository.installArtifact(releaseId, kJar2, createKPom(fileManager, releaseId));
+
+        ks.getRepository().removeKieModule( releaseId );
+
+        // create new KieContainer
+        KieContainer kieContainer2 = ks.newKieContainer(releaseId);
+
+        // create a ksession for the new container and check it works as expected
+        KieSession ksession2 = kieContainer2.newKieSession("KSession1");
+        checkKSession(ksession2, "rule2", "rule3");
+
+        ks.getRepository().removeKieModule(releaseId);
+    }
 }

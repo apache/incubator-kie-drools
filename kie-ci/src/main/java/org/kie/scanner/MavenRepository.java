@@ -15,6 +15,14 @@
 
 package org.kie.scanner;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.model.DeploymentRepository;
 import org.apache.maven.model.DistributionManagement;
@@ -23,6 +31,7 @@ import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
 import org.apache.maven.settings.Server;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.eclipse.aether.DefaultRepositorySystemSession;
+import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.collection.CollectRequest;
@@ -55,18 +64,12 @@ import org.kie.scanner.embedder.MavenSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-
 import static org.kie.scanner.DependencyDescriptor.isRangedVersion;
 import static org.kie.scanner.embedder.MavenProjectLoader.parseMavenPom;
 
 public class MavenRepository {
+
+    private static final String SESSION_CHECKS = "updateCheckManager.checks";
 
     private static final Logger log = LoggerFactory.getLogger( MavenRepository.class );
 
@@ -163,8 +166,18 @@ public class MavenRepository {
         for ( RemoteRepository repo : remoteRepositoriesForRequest ) {
             artifactRequest.addRepository( repo );
         }
+
+        RepositorySystemSession session = aether.getSession();
+        Object sessionChecks = null;
+        boolean isSnapshot = artifactName.endsWith( "-SNAPSHOT" );
+        if (artifactName.endsWith( "-SNAPSHOT" )) {
+            // ensure to always update snapshots
+            sessionChecks = session.getData().get( SESSION_CHECKS );
+            session.getData().set( SESSION_CHECKS, null );
+        }
+
         try {
-            ArtifactResult artifactResult = aether.getSystem().resolveArtifact( aether.getSession(), artifactRequest );
+            ArtifactResult artifactResult = aether.getSystem().resolveArtifact( session, artifactRequest );
             return artifactResult.getArtifact();
         } catch ( ArtifactResolutionException e ) {
             if ( logUnresolvedArtifact ) {
@@ -175,6 +188,10 @@ public class MavenRepository {
                 }
             }
             return null;
+        } finally {
+            if (sessionChecks != null) {
+                session.getData().set( SESSION_CHECKS, sessionChecks );
+            }
         }
     }
 
