@@ -18,6 +18,7 @@ package org.drools.compiler.integrationtests.concurrency;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
@@ -76,7 +77,7 @@ public class SharedSessionParallelTest extends AbstractConcurrentTest {
     @Test
     public void testCheckOneThreadOnly() throws InterruptedException {
         final int threadCount = 100;
-        final List<String> list = new ArrayList<>();
+        final List<String> list = Collections.synchronizedList(new ArrayList<>());
 
         final String drl = "import " + BeanA.class.getCanonicalName() + ";\n" +
             "global java.util.List list;\n" +
@@ -131,7 +132,7 @@ public class SharedSessionParallelTest extends AbstractConcurrentTest {
 
         final KieSession kieSession = getKieBase(drl).newKieSession();
 
-        final List<String> list = new ArrayList<>();
+        final List<String> list = Collections.synchronizedList(new ArrayList<>());
 
         final TestExecutor exec = counter -> {
             kieSession.setGlobal("globalList", list);
@@ -159,7 +160,7 @@ public class SharedSessionParallelTest extends AbstractConcurrentTest {
             "end";
 
         final KieSession kieSession = getKieBase(drl).newKieSession();
-        final List<String> list = new ArrayList<>();
+        final List<String> list = Collections.synchronizedList(new ArrayList<>());
 
         final TestExecutor exec = counter -> {
             kieSession.setGlobal("list", list);
@@ -203,8 +204,8 @@ public class SharedSessionParallelTest extends AbstractConcurrentTest {
         final KieSession kieSession = getKieBase(longRunningDrl, listDrl).newKieSession();
 
         final CyclicBarrier barrier = new CyclicBarrier(threadCount);
-        final List<String> list = new ArrayList<>();
-        final List<String> list2 = new ArrayList<>();
+        final List<String> list = Collections.synchronizedList(new ArrayList<>());
+        final List<String> list2 = Collections.synchronizedList(new ArrayList<>());
 
         final TestExecutor exec = counter -> {
             try {
@@ -258,7 +259,7 @@ public class SharedSessionParallelTest extends AbstractConcurrentTest {
         final KieSession kieSession = getKieBase(longRunningDrl, waitingRule).newKieSession();
 
         final CyclicBarrier barrier = new CyclicBarrier(threadCount);
-        final List<String> list = new ArrayList<>();
+        final List<String> list = Collections.synchronizedList(new ArrayList<>());
 
         final TestExecutor exec = counter -> {
             try {
@@ -312,8 +313,8 @@ public class SharedSessionParallelTest extends AbstractConcurrentTest {
         final KieSession kieSession = getKieBase(longRunningDrl, listDrl).newKieSession();
 
         final CyclicBarrier barrier = new CyclicBarrier(threadCount);
-        final List<String> list = new ArrayList<>();
-        final List<String> list2 = new ArrayList<>();
+        final List<String> list = Collections.synchronizedList(new ArrayList<>());
+        final List<String> list2 = Collections.synchronizedList(new ArrayList<>());
 
         final TestExecutor exec = counter -> {
             try {
@@ -368,7 +369,7 @@ public class SharedSessionParallelTest extends AbstractConcurrentTest {
 
         final KieSession kieSession = getKieBase(drl).newKieSession();
         final CyclicBarrier barrier = new CyclicBarrier(threadCount);
-        final List<String> list = new ArrayList<>();
+        final List<String> list = Collections.synchronizedList(new ArrayList<>());
         final BeanA bean = new BeanA(seed);
 
         final TestExecutor exec = counter -> {
@@ -407,16 +408,14 @@ public class SharedSessionParallelTest extends AbstractConcurrentTest {
             "end";
 
         final KieSession kieSession = getKieBase(drl).newKieSession();
-        final List<String> list = new ArrayList<>();
+        final List<String> list = Collections.synchronizedList(new ArrayList<>());
         final BeanA[] beans = new BeanA[threadCount];
 
         final TestExecutor exec = counter -> {
             final BeanA bean = new BeanA(seed);
             beans[counter] = bean;
             try {
-                if (counter == 0) {
-                    kieSession.setGlobal("list", list);
-                }
+                kieSession.setGlobal("list", list);
                 kieSession.insert(bean);
                 kieSession.fireAllRules();
                 return true;
@@ -451,7 +450,7 @@ public class SharedSessionParallelTest extends AbstractConcurrentTest {
         }
 
         final KieSession kieSession = getKieBase(drls).newKieSession();
-        final List<String> list = new ArrayList<>();
+        final List<String> list = Collections.synchronizedList(new ArrayList<>());
 
         final TestExecutor exec = counter -> {
             kieSession.setGlobal("list", list);
