@@ -24,6 +24,8 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.model.Dependency;
+import org.appformer.maven.integration.MavenRepository;
+import org.appformer.maven.integration.embedder.MavenEmbedderUtils;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.InternalKieScanner;
 import org.drools.compiler.kie.builder.impl.KieFileSystemImpl;
@@ -48,16 +50,20 @@ import org.kie.api.event.kiescanner.KieScannerStatusChangeEvent;
 import org.kie.api.event.kiescanner.KieScannerUpdateResultsEvent;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
-import org.appformer.maven.integration.MavenRepository;
-import org.appformer.maven.integration.embedder.MavenEmbedderUtils;
 import org.kie.scanner.event.KieScannerStatusChangeEventImpl;
 import org.kie.scanner.event.KieScannerUpdateResultsEventImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.*;
+
 import static org.appformer.maven.integration.MavenRepository.getMavenRepository;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
 
@@ -1268,5 +1274,41 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         kieContainer = ks.newKieContainer(depReleaseId);
         ksession = kieContainer.newKieSession();
         checkKSession(ksession, "rule1");
+    }
+
+    @Test
+    public void testKScannerNewContainer() throws Exception {
+        KieServices ks = KieServices.Factory.get();
+        ReleaseId releaseId = ks.newReleaseId("org.kie", "scanner-test", "1.0-SNAPSHOT");
+
+        InternalKieModule kJar1 = createKieJar(ks, releaseId, "rule1", "rule2");
+
+        KieMavenRepository repository = getKieMavenRepository();
+        repository.installArtifact(releaseId, kJar1, createKPom(fileManager, releaseId));
+
+        ks.getRepository().removeKieModule( releaseId );
+
+        KieContainer kieContainer = ks.newKieContainer(releaseId);
+
+        // create a ksesion and check it works as expected
+        KieSession ksession = kieContainer.newKieSession("KSession1");
+        checkKSession(ksession, "rule1", "rule2");
+
+        // create a new kjar
+        InternalKieModule kJar2 = createKieJar(ks, releaseId, "rule2", "rule3");
+
+        // deploy it on maven
+        repository.installArtifact(releaseId, kJar2, createKPom(fileManager, releaseId));
+
+        ks.getRepository().removeKieModule( releaseId );
+
+        // create new KieContainer
+        KieContainer kieContainer2 = ks.newKieContainer(releaseId);
+
+        // create a ksession for the new container and check it works as expected
+        KieSession ksession2 = kieContainer2.newKieSession("KSession1");
+        checkKSession(ksession2, "rule2", "rule3");
+
+        ks.getRepository().removeKieModule(releaseId);
     }
 }
