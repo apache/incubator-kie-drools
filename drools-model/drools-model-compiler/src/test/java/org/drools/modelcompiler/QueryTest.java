@@ -27,6 +27,7 @@ import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Relationship;
 import org.drools.modelcompiler.domain.Result;
 import org.drools.modelcompiler.util.TrackingAgendaEventListener;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.command.Command;
@@ -265,6 +266,7 @@ public class QueryTest extends BaseModelTest {
 
 
     @Test
+    @Ignore
     public void testQueryWithOOPath() {
         String str =
                 "import " + java.util.List.class.getCanonicalName() + ";" +
@@ -273,6 +275,34 @@ public class QueryTest extends BaseModelTest {
                 "import " + org.drools.modelcompiler.OOPathDTablesTest.InternationalAddress.class.getCanonicalName() + ";" +
                 "query listSafeCities\n" +
                    "$cities : List() from accumulate (Person ( $city: /address#InternationalAddress[state == \"Safecountry\"]/city), collectList($city))\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        org.drools.modelcompiler.OOPathDTablesTest.Person person = new org.drools.modelcompiler.OOPathDTablesTest.Person();
+        person.setAddress(new InternationalAddress("", 1, "Milan", "Safecountry"));
+        ksession.insert(person);
+
+        org.drools.modelcompiler.OOPathDTablesTest.Person person2 = new org.drools.modelcompiler.OOPathDTablesTest.Person();
+        person2.setAddress(new InternationalAddress("", 1, "Rome", "Unsafecountry"));
+        ksession.insert(person2);
+
+        QueryResults results = ksession.getQueryResults( "listSafeCities");
+
+        assertEquals("Milan", ((List) results.iterator().next().get("$cities" )).iterator().next());
+    }
+
+    @Test
+    public void testQueryWithOOPathTransformedToFrom() {
+        String str =
+                "import " + java.util.List.class.getCanonicalName() + ";" +
+                "import " + org.drools.modelcompiler.OOPathDTablesTest.Person.class.getCanonicalName() + ";" +
+                "import " + org.drools.modelcompiler.OOPathDTablesTest.Address.class.getCanonicalName() + ";" +
+                "import " + org.drools.modelcompiler.OOPathDTablesTest.InternationalAddress.class.getCanonicalName() + ";" +
+                "query listSafeCities\n" +
+                    "$p  : Person()\n" +
+                    "$a  : InternationalAddress(state == \"Safecountry\") from $p.address\n" +
+                    "$cities : List() from accumulate ($city : String() from $a.city, collectList($city))\n" +
                 "end";
 
         KieSession ksession = getKieSession( str );
