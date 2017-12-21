@@ -1032,11 +1032,7 @@ public class KnowledgeBaseImpl
     }
 
     public void registerTypeDeclaration( TypeDeclaration newDecl, InternalKnowledgePackage newPkg ) {
-        try {
-            processTypeDeclaration( newDecl, newPkg );
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException( "unable to resolve Type Declaration class '" + newDecl.getTypeClassName() + "'", e );
-        }
+        this.classTypeDeclaration.put( newDecl.getTypeClassName(), newDecl );
     }
 
     protected void processTypeDeclaration( TypeDeclaration newDecl, InternalKnowledgePackage newPkg ) throws ClassNotFoundException {
