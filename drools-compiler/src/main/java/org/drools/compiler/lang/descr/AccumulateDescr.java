@@ -289,4 +289,8 @@ public class AccumulateDescr extends PatternSourceDescr
         }
     }
 
+    public void accept(DescrVisitor visitor) {
+        visitor.visit(this);
+    }
+
 }

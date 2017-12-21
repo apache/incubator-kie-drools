@@ -67,4 +67,8 @@ public class FromDescr extends PatternSourceDescr
     public String getExpression() {
         return getDataSource().getText();
     }
+
+    public void accept(DescrVisitor visitor) {
+        visitor.visit(this);
+    }
 }

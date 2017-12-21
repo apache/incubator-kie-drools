@@ -262,4 +262,8 @@ public class PatternDescr extends AnnotatedBaseDescr
         clone.setXpathStartDeclaration( xpathStartDeclaration );
         return clone;
     }
+
+    public void accept(DescrVisitor visitor) {
+        visitor.visit(this);
+    }
 }

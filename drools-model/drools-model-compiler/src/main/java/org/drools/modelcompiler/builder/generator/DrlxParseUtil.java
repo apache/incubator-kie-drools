@@ -378,8 +378,8 @@ public class DrlxParseUtil {
     }
 
     public static class RemoveRootNodeResult {
-        Optional<Expression> rootNode;
-        Expression withoutRootNode;
+        public Optional<Expression> rootNode;
+        public Expression withoutRootNode;
 
         public RemoveRootNodeResult(Optional<Expression> rootNode, Expression withoutRootNode) {
             this.rootNode = rootNode;

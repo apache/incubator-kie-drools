@@ -1,4 +1,4 @@
-package org.drools.modelcompiler.builder.generator;
+package org.drools.modelcompiler.builder.generator.visitor;
 
 import java.util.Optional;
 
@@ -9,7 +9,10 @@ import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.modelcompiler.builder.PackageModel;
+import org.drools.modelcompiler.builder.generator.DeclarationSpec;
+import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.ModelGenerator.DrlxParseResult;
+import org.drools.modelcompiler.builder.generator.RuleContext;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;

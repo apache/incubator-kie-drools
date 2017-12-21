@@ -29,8 +29,8 @@ public class RuleContext {
     private List<DeclarationSpec> declarations = new ArrayList<>();
     private List<DeclarationSpec> ooPathDeclarations = new ArrayList<>();
     Deque<Consumer<Expression>> exprPointer = new LinkedList<>();
-    List<Expression> expressions = new ArrayList<>();
-    Map<String, String> namedConsequences = new HashMap<>();
+    public List<Expression> expressions = new ArrayList<>();
+    public Map<String, String> namedConsequences = new HashMap<>();
 
     List<QueryParameter> queryParameters = new ArrayList<>();
     Optional<String> queryName = Optional.empty();
@@ -41,7 +41,7 @@ public class RuleContext {
         MVEL;
     }
 
-    BaseDescr parentDesc = null;
+    public BaseDescr parentDesc = null;
 
     public RuleContext( KnowledgeBuilderImpl kbuilder, InternalKnowledgePackage pkg, DRLIdGenerator exprIdGenerator, Optional<RuleDescr> ruleDescr) {
         this.kbuilder = kbuilder;

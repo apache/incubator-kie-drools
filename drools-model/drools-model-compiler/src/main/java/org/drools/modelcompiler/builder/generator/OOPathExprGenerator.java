@@ -18,12 +18,12 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.prepend;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.ModelGenerator.buildExpressionWithIndexing;
 
-public class OOPathExprVisitor {
+public class OOPathExprGenerator {
 
     private final RuleContext context;
     private final PackageModel packageModel;
 
-    public OOPathExprVisitor(RuleContext context, PackageModel packageModel) {
+    public OOPathExprGenerator(RuleContext context, PackageModel packageModel) {
         this.context = context;
         this.packageModel = packageModel;
     }

@@ -16,7 +16,6 @@
 
 package org.drools.modelcompiler.builder.generator;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -35,24 +34,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.compiler.lang.descr.AccumulateDescr;
-import org.drools.compiler.lang.descr.AndDescr;
-import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.AttributeDescr;
-import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.BehaviorDescr;
-import org.drools.compiler.lang.descr.ConditionalBranchDescr;
-import org.drools.compiler.lang.descr.ConditionalElementDescr;
-import org.drools.compiler.lang.descr.EvalDescr;
-import org.drools.compiler.lang.descr.ExistsDescr;
-import org.drools.compiler.lang.descr.ExprConstraintDescr;
-import org.drools.compiler.lang.descr.ForallDescr;
-import org.drools.compiler.lang.descr.NamedConsequenceDescr;
-import org.drools.compiler.lang.descr.NotDescr;
-import org.drools.compiler.lang.descr.OrDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
-import org.drools.compiler.lang.descr.PatternDescr;
-import org.drools.compiler.lang.descr.PatternSourceDescr;
 import org.drools.compiler.lang.descr.QueryDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
@@ -103,14 +87,11 @@ import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.ParseExpressionErrorResult;
 import org.drools.modelcompiler.builder.errors.UnknownDeclarationError;
 import org.drools.modelcompiler.builder.generator.RuleContext.RuleDialect;
-import org.kie.api.definition.type.Position;
+import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
 
 import static java.util.stream.Collectors.toList;
-
 import static org.drools.javaparser.printer.PrintUtil.toDrlx;
-import static org.drools.model.impl.NamesGenerator.generateName;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassFromContext;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.parseBlock;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.util.StringUtil.toId;
@@ -151,20 +132,19 @@ public class ModelGenerator {
 
     public static final boolean GENERATE_EXPR_ID = true;
 
-    static final String BUILD_CALL = "build";
-    static final String RULE_CALL = "rule";
-    static final String EXECUTE_CALL = "execute";
-    static final String EXECUTESCRIPT_CALL = "executeScript";
-    static final String ON_CALL = "on";
-    static final String EXPR_CALL = "expr";
-    static final String INPUT_CALL = "input";
-    static final String BIND_CALL = "bind";
-    static final String BIND_AS_CALL = "as";
-    static final String ATTRIBUTE_CALL = "attribute";
-    static final String DECLARATION_OF_CALL = "declarationOf";
-    static final String TYPE_CALL = "type";
-    static final String QUERY_INVOCATION_CALL = "call";
-    static final String VALUE_OF_CALL = "valueOf";
+    public static final String BUILD_CALL = "build";
+    public static final String RULE_CALL = "rule";
+    public static final String EXECUTE_CALL = "execute";
+    public static final String EXECUTESCRIPT_CALL = "executeScript";
+    public static final String ON_CALL = "on";
+    public static final String EXPR_CALL = "expr";
+    public static final String BIND_CALL = "bind";
+    public static final String BIND_AS_CALL = "as";
+    public static final String ATTRIBUTE_CALL = "attribute";
+    public static final String DECLARATION_OF_CALL = "declarationOf";
+    public static final String TYPE_CALL = "type";
+    public static final String QUERY_INVOCATION_CALL = "call";
+    public static final String VALUE_OF_CALL = "valueOf";
 
     public static void generateModel( KnowledgeBuilderImpl kbuilder, InternalKnowledgePackage pkg, PackageDescr packageDescr, PackageModel packageModel ) {
         packageModel.addImports(pkg.getTypeResolver().getImports());
@@ -196,7 +176,7 @@ public class ModelGenerator {
             context.addNamedConsequence(kv.getKey(), kv.getValue().toString());
         }
 
-        visit(context, packageModel, ruleDescr.getLhs());
+        new ModelGeneratorVisitor(context, packageModel).visit(ruleDescr.getLhs());
         MethodDeclaration ruleMethod = new MethodDeclaration(EnumSet.of(Modifier.PRIVATE), RULE_TYPE, "rule_" + toId( ruleDescr.getName() ) );
 
         ruleMethod.setJavadocComment(" Rule name: " + ruleDescr.getName() + " ");
@@ -526,179 +506,8 @@ public class ModelGenerator {
         return mce.getScope().map( s -> s instanceof NameExpr && (( NameExpr ) s).getNameAsString().equals( scope ) ).orElse( false );
     }
 
-    public static void visit(RuleContext context, PackageModel packageModel, BaseDescr descr) {
-        if ( descr instanceof AndDescr) {
-            visit(context, packageModel, ( (AndDescr) descr ));
-        } else if ( descr instanceof OrDescr) {
-            visit( context, packageModel, ( (OrDescr) descr ), "or");
-        } else if ( descr instanceof PatternDescr && ((PatternDescr)descr).getSource() instanceof AccumulateDescr) {
-            visit(context, packageModel, (PatternDescr) descr);
-            new AccumulateVisitor(context, packageModel).visit(( (AccumulateDescr)((PatternDescr) descr).getSource() ));
-        } else if ( descr instanceof PatternDescr ) {
-            visit( context, packageModel, ( (PatternDescr) descr ));
-        } else if ( descr instanceof EvalDescr ) {
-            visit( context, packageModel, ( (EvalDescr) descr ));
-        } else if ( descr instanceof NotDescr) {
-            visit( context, packageModel, ( (NotDescr) descr ), "not");
-        } else if ( descr instanceof ExistsDescr) {
-            visit( context, packageModel, ( (ExistsDescr) descr ), "exists");
-        } else if ( descr instanceof ForallDescr) {
-            visit( context, packageModel, ( (ForallDescr) descr ), "forall");
-        } else if ( descr instanceof QueryDescr) {
-            visit( context, packageModel, ( (QueryDescr) descr ));
-        } else if ( descr instanceof NamedConsequenceDescr) {
-           new NamedConsequenceVisitor(context, packageModel).visit(((NamedConsequenceDescr) descr ));
-        } else if ( descr instanceof ConditionalBranchDescr) {
-            new NamedConsequenceVisitor(context, packageModel).visit(((ConditionalBranchDescr) descr ));
-        } else {
-            throw new UnsupportedOperationException("TODO"); // TODO
-        }
-    }
 
-    private static void visit( RuleContext context, PackageModel packageModel, ConditionalElementDescr descr, String methodName ) {
-        final MethodCallExpr ceDSL = new MethodCallExpr(null, methodName);
-        context.addExpression(ceDSL);
-        context.pushExprPointer( ceDSL::addArgument );
-        for (BaseDescr subDescr : descr.getDescrs()) {
-            visit(context, packageModel, subDescr );
-        }
-        context.popExprPointer();
-    }
-
-    private static void visit( RuleContext context, PackageModel packageModel, EvalDescr descr ) {
-        String expression = descr.getContent().toString();
-        String bindingId = DrlxParseUtil.findBindingId(expression, context.getAvailableBindings())
-                .orElseThrow(() -> new UnsupportedOperationException("unable to parse eval expression: " + expression));
-        Class<?> patternType = context.getDeclarationById(bindingId)
-                .map(DeclarationSpec::getDeclarationClass)
-                .orElseThrow(RuntimeException::new);
-        DrlxParseResult drlxParseResult = drlxParse(context, packageModel, patternType, bindingId, expression);
-        processExpression(context, drlxParseResult);
-    }
-
-    public static void visit(RuleContext context, PackageModel packageModel, AndDescr descr) {
-        // if it's the first (implied) `and` wrapping the first level of patterns, skip adding it to the DSL.
-        if ( context.getExprPointerLevel() != 1 ) {
-            final MethodCallExpr andDSL = new MethodCallExpr(null, "and");
-            context.addExpression(andDSL);
-            context.pushExprPointer( andDSL::addArgument );
-        }
-        for (BaseDescr subDescr : descr.getDescrs()) {
-            context.parentDesc = descr;
-            visit( context, packageModel, subDescr );
-        }
-        if ( context.getExprPointerLevel() != 1 ) {
-            context.popExprPointer();
-        }
-    }
-
-    public static void visit(RuleContext context, PackageModel packageModel, PatternDescr pattern ) {
-        String className = pattern.getObjectType();
-        List<? extends BaseDescr> constraintDescrs = pattern.getConstraint().getDescrs();
-
-        // Expression is a query, get bindings from query parameter type
-        if ( QueryGenerator.bindQuery( context, packageModel, pattern, constraintDescrs ) ) {
-            return;
-        }
-
-        if ( QueryGenerator.createQueryCall(packageModel, context, pattern) ) {
-            return;
-        }
-
-        Class<?> patternType = getClassFromContext(context.getPkg().getTypeResolver(), className);
-
-        if (pattern.getIdentifier() == null) {
-            pattern.setIdentifier( generateName("pattern_" + patternType.getSimpleName()) );
-        }
-
-        Optional<PatternSourceDescr> source = Optional.ofNullable(pattern.getSource());
-        Optional<Expression> declarationSourceFrom = source.flatMap(new FromVisitor(context, packageModel)::visit);
-        Optional<Expression> declarationSourceWindow = source.flatMap(new WindowReferenceGenerator(packageModel, context.getPkg())::visit);
-        Optional<Expression> declarationSource = declarationSourceFrom.isPresent() ? declarationSourceFrom : declarationSourceWindow;
-        context.addDeclaration(new DeclarationSpec(pattern.getIdentifier(), patternType, Optional.of(pattern), declarationSource));
-
-        if (constraintDescrs.isEmpty() && pattern.getSource() == null) {
-            MethodCallExpr dslExpr = new MethodCallExpr(null, INPUT_CALL);
-            dslExpr.addArgument(new NameExpr(toVar(pattern.getIdentifier())));
-            context.addExpression( dslExpr );
-        } else {
-
-            final boolean allConstraintsArePositional = !constraintDescrs.isEmpty() && constraintDescrs.stream()
-                    .allMatch(c -> c instanceof ExprConstraintDescr
-                            && ((ExprConstraintDescr) c).getType().equals(ExprConstraintDescr.Type.POSITIONAL));
-            if(allConstraintsArePositional) {
-                final MethodCallExpr andDSL = new MethodCallExpr(null, "and");
-                context.addExpression(andDSL);
-                context.pushExprPointer(andDSL::addArgument);
-            }
-
-            for (BaseDescr constraint : constraintDescrs) {
-                String expression = getConstraintExpression(patternType, constraint);
-                String patternIdentifier = pattern.getIdentifier();
-                if(expression.contains(":=")) {
-                    expression = expression.replace(":=", "==");
-                }
-
-                DrlxParseResult drlxParseResult = drlxParse(context, packageModel, patternType, patternIdentifier, expression);
-                if (drlxParseResult == null) {
-                    return;
-                }
-
-                if(drlxParseResult.expr instanceof OOPathExpr) {
-
-                    // If the  outer pattern does not have a binding we generate it
-                    if(patternIdentifier == null) {
-                        patternIdentifier = context.getExprId(patternType, expression);
-                        context.addDeclaration(new DeclarationSpec(patternIdentifier, patternType, Optional.of(pattern), Optional.empty()));
-                    }
-
-                    new OOPathExprVisitor(context, packageModel).visit(patternType, patternIdentifier, (OOPathExpr)drlxParseResult.expr);
-                } else {
-                    // need to augment the reactOn inside drlxParseResult with the look-ahead properties.
-                    Collection<String> lookAheadFieldsOfIdentifier = context.getRuleDescr()
-                        .map(ruleDescr -> ruleDescr.lookAheadFieldsOfIdentifier(pattern))
-                            .orElseGet(Collections::emptyList);
-                    drlxParseResult.reactOnProperties.addAll(lookAheadFieldsOfIdentifier);
-                    drlxParseResult.watchedProperties = getPatternListenedProperties(pattern);
-
-                    if(pattern.isUnification()) {
-                        drlxParseResult.setPatternBindingUnification(true);
-                    }
-
-                    processExpression( context, drlxParseResult );
-                }
-            }
-            if(allConstraintsArePositional) {
-                context.popExprPointer();
-            }
-        }
-    }
-
-    private static String getConstraintExpression(Class<?> patternType, BaseDescr constraint) {
-        if (constraint instanceof ExprConstraintDescr && (( ExprConstraintDescr ) constraint).getType() == ExprConstraintDescr.Type.POSITIONAL) {
-            int position = (( ExprConstraintDescr ) constraint).getPosition();
-            return getFieldAtPosition(patternType, position) + " == " + constraint.toString();
-        }
-        return constraint.toString();
-    }
-
-    private static String getFieldAtPosition(Class<?> patternType, int position) {
-        for (Field field : patternType.getDeclaredFields()) {
-            Position p = field.getAnnotation( Position.class );
-            if (p != null && p.value() == position) {
-                return field.getName();
-            }
-        }
-        throw new RuntimeException( "Cannot find field in position " + position + " for " + patternType );
-    }
-
-    private static String[] getPatternListenedProperties(PatternDescr pattern) {
-        AnnotationDescr watchAnn = pattern != null ? pattern.getAnnotation( "watch" ) : null;
-        return watchAnn == null ? new String[0] : watchAnn.getValue().toString().split(",");
-    }
-
-
-    private static void processExpression(RuleContext context, DrlxParseResult drlxParseResult) {
+    public static void processExpression(RuleContext context, DrlxParseResult drlxParseResult) {
         if (drlxParseResult.hasUnificationVariable()) {
             Expression dslExpr = buildUnificationExpression(context, drlxParseResult);
             context.addExpression(dslExpr);
@@ -927,26 +736,26 @@ public class ModelGenerator {
         }
     }
 
-    static class DrlxParseResult {
+    public static class DrlxParseResult {
 
-        final Class<?> patternType;
-        final Expression expr;
-        final Class<?> exprType;
+        public final Class<?> patternType;
+        public final Expression expr;
+        public final Class<?> exprType;
 
         private String exprId;
-        String patternBinding;
-        boolean isPatternBindingUnification = false;
+        public String patternBinding;
+        public boolean isPatternBindingUnification = false;
 
-        String exprBinding;
+        public String exprBinding;
 
-        ConstraintType decodeConstraintType;
-        Collection<String> usedDeclarations = new LinkedHashSet<>();
-        Set<String> reactOnProperties = Collections.emptySet();
-        String[] watchedProperties;
+        public ConstraintType decodeConstraintType;
+        public Collection<String> usedDeclarations = new LinkedHashSet<>();
+        public Set<String> reactOnProperties = Collections.emptySet();
+        public String[] watchedProperties;
 
-        TypedExpression left;
-        TypedExpression right;
-        boolean isStatic;
+        public TypedExpression left;
+        public TypedExpression right;
+        public boolean isStatic;
 
         public DrlxParseResult( Class<?> patternType, String exprId, String patternBinding, Expression expr, Class<?> exprType) {
             this.patternType = patternType;

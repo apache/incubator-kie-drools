@@ -76,4 +76,9 @@ public class OrDescr extends AnnotatedBaseDescr
     public String toString() {
         return "[OR "+descrs+" ]";
     }
+
+    @Override
+    public void accept(DescrVisitor visitor) {
+        visitor.visit(this);
+    }
 }

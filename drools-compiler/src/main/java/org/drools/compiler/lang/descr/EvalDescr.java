@@ -92,4 +92,8 @@ public class EvalDescr extends BaseDescr
             super("true");
         }
     }
+
+    public void accept(DescrVisitor visitor) {
+        visitor.visit(this);
+    }
 }

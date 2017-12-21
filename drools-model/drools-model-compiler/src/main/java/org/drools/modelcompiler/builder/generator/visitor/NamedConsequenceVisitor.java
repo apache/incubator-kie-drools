@@ -1,4 +1,4 @@
-package org.drools.modelcompiler.builder.generator;
+package org.drools.modelcompiler.builder.generator.visitor;
 
 import java.util.Collections;
 import java.util.List;
@@ -13,6 +13,8 @@ import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.javaparser.ast.stmt.BlockStmt;
 import org.drools.modelcompiler.builder.PackageModel;
+import org.drools.modelcompiler.builder.generator.ModelGenerator;
+import org.drools.modelcompiler.builder.generator.RuleContext;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassFromContext;

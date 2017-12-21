@@ -27,6 +27,7 @@ import org.drools.javaparser.ast.type.Type;
 import org.drools.model.Query;
 import org.drools.model.QueryDef;
 import org.drools.modelcompiler.builder.PackageModel;
+import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassFromContext;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
@@ -88,7 +89,7 @@ public class QueryGenerator {
         RuleContext context = packageModel.getQueryDefWithType().get(toQueryDef(queryDescr.getName())).getContext();
         final String queryDefVariableName = toQueryDef(queryDescr.getName());
 
-        visit(context, packageModel, queryDescr);
+        new ModelGeneratorVisitor(context, packageModel).visit(queryDescr.getLhs());
         final Type queryType = JavaParser.parseType(Query.class.getCanonicalName());
 
         MethodDeclaration queryMethod = new MethodDeclaration(EnumSet.of(Modifier.PRIVATE), queryType, "query_" + toId(queryDescr.getName()));
@@ -119,10 +120,6 @@ public class QueryGenerator {
             context.queryParameters.add(queryParameter);
             packageModel.putQueryVariable("query_" + descr.getName(), queryParameter);
         }
-    }
-
-    private static void visit(RuleContext context, PackageModel packageModel, QueryDescr descr) {
-        ModelGenerator.visit(context, packageModel, descr.getLhs());
     }
 
     private static ClassOrInterfaceType getQueryType(List<QueryParameter> queryParameters) {

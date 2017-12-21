@@ -1,4 +1,4 @@
-package org.drools.modelcompiler.builder.generator;
+package org.drools.modelcompiler.builder.generator.visitor;
 
 import java.util.Collection;
 import java.util.List;
@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.drools.compiler.lang.descr.AccumulateDescr;
+import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.rule.builder.util.AccumulateUtil;
 import org.drools.drlx.DrlxParser;
 import org.drools.javaparser.ast.Node;
@@ -19,6 +20,11 @@ import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.stmt.ExpressionStmt;
 import org.drools.javaparser.ast.type.UnknownType;
 import org.drools.modelcompiler.builder.PackageModel;
+import org.drools.modelcompiler.builder.generator.DeclarationSpec;
+import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
+import org.drools.modelcompiler.builder.generator.ModelGenerator;
+import org.drools.modelcompiler.builder.generator.RuleContext;
+import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.kie.api.runtime.rule.AccumulateFunction;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toType;
@@ -31,7 +37,10 @@ public class AccumulateVisitor {
     final RuleContext context;
     final PackageModel packageModel;
 
-    public AccumulateVisitor(RuleContext context, PackageModel packageModel) {
+    final ModelGeneratorVisitor modelGeneratorVisitor;
+
+    public AccumulateVisitor(ModelGeneratorVisitor modelGeneratorVisitor, RuleContext context, PackageModel packageModel) {
+        this.modelGeneratorVisitor = modelGeneratorVisitor;
         this.context = context;
         this.packageModel = packageModel;
     }
@@ -40,7 +49,9 @@ public class AccumulateVisitor {
         final MethodCallExpr accumulateDSL = new MethodCallExpr(null, "accumulate");
         context.addExpression(accumulateDSL);
         context.pushExprPointer(accumulateDSL::addArgument);
-        ModelGenerator.visit(context, packageModel, descr.getInputPattern() == null ? descr.getInput() : descr.getInputPattern());
+
+        BaseDescr input = descr.getInputPattern() == null ? descr.getInput() : descr.getInputPattern();
+        input.accept(modelGeneratorVisitor);
         for (AccumulateDescr.AccumulateFunctionCallDescr function : descr.getFunctions()) {
             visit(context, function, accumulateDSL);
         }
