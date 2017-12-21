@@ -1219,6 +1219,7 @@ public class FlowTest {
     }
 
     @Test
+    @Ignore
     public void testQueryOOPathAccumulateTransformed() {
         final org.drools.model.QueryDef queryDef_listSafeCities = query("listSafeCities");
 

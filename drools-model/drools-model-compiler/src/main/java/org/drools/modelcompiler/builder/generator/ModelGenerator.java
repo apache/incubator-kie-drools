@@ -346,13 +346,7 @@ public class ModelGenerator {
 
         ClassOrInterfaceType varType = JavaParser.parseClassOrInterfaceType(Variable.class.getCanonicalName());
         varType.setTypeArguments(declType);
-
-        Type declTypeWithGeneric = decl.getTypeWithGeneric();
-        ClassOrInterfaceType variableType = JavaParser.parseClassOrInterfaceType(Variable.class.getCanonicalName());
-        ClassOrInterfaceType varTypeWithGeneric = variableType.clone();
-        varTypeWithGeneric.setTypeArguments(declTypeWithGeneric);
-        VariableDeclarationExpr var_ = new VariableDeclarationExpr(varTypeWithGeneric, toVar(decl.getBindingId()), Modifier.FINAL);
-
+        VariableDeclarationExpr var_ = new VariableDeclarationExpr(varType, toVar(decl.getBindingId()), Modifier.FINAL);
 
         MethodCallExpr declarationOfCall = new MethodCallExpr(null, DECLARATION_OF_CALL);
         MethodCallExpr typeCall = new MethodCallExpr(null, TYPE_CALL);
@@ -382,16 +376,7 @@ public class ModelGenerator {
         }
 
 
-        // When creating variables with generic types as declarationOfCall can't support types with generic we need the cast
-        // the variable to the type
-        final Expression withDoubleCast;
-        if(decl.hasGenericTypes()) {
-            withDoubleCast = new CastExpr(varTypeWithGeneric, new CastExpr(variableType, declarationOfCall));
-        } else {
-            withDoubleCast = declarationOfCall;
-        }
-
-        AssignExpr var_assign = new AssignExpr(var_, withDoubleCast, AssignExpr.Operator.ASSIGN);
+        AssignExpr var_assign = new AssignExpr(var_, declarationOfCall, AssignExpr.Operator.ASSIGN);
         ruleBlock.addStatement(var_assign);
     }
 
