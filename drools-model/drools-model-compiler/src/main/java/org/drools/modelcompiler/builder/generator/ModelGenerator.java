@@ -337,11 +337,11 @@ public class ModelGenerator {
     }
 
     private static void addVariable(KnowledgeBuilderImpl kbuilder, BlockStmt ruleBlock, DeclarationSpec decl) {
-        if (decl.declarationClass == null) {
+        if (decl.getDeclarationClass() == null) {
             kbuilder.addBuilderResult( new UnknownDeclarationError( decl.getBindingId() ) );
             return;
         }
-        Type declType = DrlxParseUtil.classToReferenceType( decl.declarationClass );
+        Type declType = DrlxParseUtil.classToReferenceType(decl.getDeclarationClass());
 
         ClassOrInterfaceType varType = JavaParser.parseClassOrInterfaceType(Variable.class.getCanonicalName());
         varType.setTypeArguments(declType);
@@ -352,9 +352,9 @@ public class ModelGenerator {
         typeCall.addArgument( new ClassExpr(declType ));
 
         declarationOfCall.addArgument(typeCall);
-        declarationOfCall.addArgument(new StringLiteralExpr(decl.variableName.orElse(decl.getBindingId())));
+        declarationOfCall.addArgument(new StringLiteralExpr(decl.getVariableName().orElse(decl.getBindingId())));
 
-        decl.declarationSource.ifPresent(declarationOfCall::addArgument);
+        decl.getDeclarationSource().ifPresent(declarationOfCall::addArgument);
 
         decl.getEntryPoint().ifPresent( ep -> {
             MethodCallExpr entryPointCall = new MethodCallExpr(null, "entryPoint");

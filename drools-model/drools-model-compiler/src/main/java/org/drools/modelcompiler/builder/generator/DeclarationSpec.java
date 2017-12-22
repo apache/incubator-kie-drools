@@ -11,10 +11,10 @@ import org.drools.javaparser.ast.expr.Expression;
 
 public class DeclarationSpec {
     private final String bindingId;
-    public final Class<?> declarationClass;
-    public final Optional<PatternDescr> optPattern;
-    public final Optional<Expression> declarationSource;
-    public final Optional<String> variableName;
+    private final Class<?> declarationClass;
+    private final Optional<PatternDescr> optPattern;
+    private final Optional<Expression> declarationSource;
+    private final Optional<String> variableName;
 
     public DeclarationSpec(String bindingId, Class<?> declarationClass) {
         this.bindingId = bindingId;
@@ -74,5 +74,17 @@ public class DeclarationSpec {
 
     public Class<?> getDeclarationClass() {
         return declarationClass;
+    }
+
+    public Optional<PatternDescr> getOptPattern() {
+        return optPattern;
+    }
+
+    public Optional<Expression> getDeclarationSource() {
+        return declarationSource;
+    }
+
+    public Optional<String> getVariableName() {
+        return variableName;
     }
 }

@@ -41,7 +41,7 @@ public class FromVisitor {
 
             if (optContainsBinding.isPresent()) {
                 final DeclarationSpec declarationSpec = ruleContext.getDeclarationById(bindingId).orElseThrow(RuntimeException::new);
-                final Class<?> clazz = declarationSpec.declarationClass;
+                final Class<?> clazz = declarationSpec.getDeclarationClass();
 
                 final DrlxParseResult drlxParseResult = drlxParse(ruleContext, packageModel, clazz, bindingId, expression);
 

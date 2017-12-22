@@ -110,7 +110,7 @@ public class AccumulateVisitor {
 
             final String rootNodeName = getRootNodeName(methodCallWithoutRootNode);
 
-            final TypedExpression typedExpression = parseMethodCallType(context, rootNodeName, methodCallWithoutRootNode.withoutRootNode);
+            final TypedExpression typedExpression = parseMethodCallType(context, rootNodeName, methodCallWithoutRootNode.getWithoutRootNode());
             final Class<?> methodCallExprType = typedExpression.getType();
 
             final AccumulateFunction accumulateFunction = getAccumulateFunction(function, methodCallExprType);
@@ -134,7 +134,7 @@ public class AccumulateVisitor {
             final Class<?> declarationClass = context
                     .getDeclarationById(expr.toString())
                     .orElseThrow(RuntimeException::new)
-                    .declarationClass;
+                    .getDeclarationClass();
             final AccumulateFunction accumulateFunction = getAccumulateFunction(function, declarationClass);
             functionDSL.addArgument(new ClassExpr(toType(accumulateFunction.getClass())));
             functionDSL.addArgument(new NameExpr(toVar(((NameExpr) expr).getName().asString())));
@@ -164,8 +164,7 @@ public class AccumulateVisitor {
     }
 
     private String getRootNodeName(DrlxParseUtil.RemoveRootNodeResult methodCallWithoutRootNode) {
-        final Expression rootNode = methodCallWithoutRootNode
-                .rootNode.orElseThrow(UnsupportedOperationException::new);
+        final Expression rootNode = methodCallWithoutRootNode.getRootNode().orElseThrow(UnsupportedOperationException::new);
 
         final String rootNodeName;
         if(rootNode instanceof NameExpr) {

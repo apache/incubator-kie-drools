@@ -73,14 +73,14 @@ public class OOPathExprGenerator {
         // If the OOPath has an inner binding, it will be in the context's declarations without its type (as it's inferred from the last OOPath chunk).
         // We remove the original expression without type and use its name in the last expression
         List<DeclarationSpec> declarations = context.getDeclarations();
-        final Optional<DeclarationSpec> missingClassDeclarationFound = declarations.stream().filter(d -> d.declarationClass == null).findFirst();
+        final Optional<DeclarationSpec> missingClassDeclarationFound = declarations.stream().filter(d -> d.getDeclarationClass() == null).findFirst();
 
         missingClassDeclarationFound.ifPresent(missingClassDeclaration -> {
             final String innerBindingId = missingClassDeclaration.getBindingId();
 
             final int lastIndex = declarations.size() - 1;
             final DeclarationSpec last = declarations.get(lastIndex);
-            declarations.set(lastIndex, new DeclarationSpec(innerBindingId, last.declarationClass, last.optPattern, last.declarationSource));
+            declarations.set(lastIndex, new DeclarationSpec(innerBindingId, last.getDeclarationClass(), last.getOptPattern(), last.getDeclarationSource()));
             declarations.remove(declarations.indexOf(missingClassDeclaration));
 
             // In the meanwhile some condition could have used that binding, we need to rename that also
