@@ -815,7 +815,8 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
             assertNotNull(caseComments);
             assertEquals(0, caseComments.size());
 
-            caseService.addCaseComment(FIRST_CASE_ID, "poul", "just a tiny comment");
+            String commentId = caseService.addCaseComment(FIRST_CASE_ID, "poul", "just a tiny comment");
+            assertNotNull(commentId);
 
             caseComments = caseService.getCaseComments(FIRST_CASE_ID, new QueryContext());
             assertNotNull(caseComments);
@@ -823,6 +824,7 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
 
             CommentInstance comment = caseComments.iterator().next();
             assertComment(comment, "poul", "just a tiny comment");
+            assertEquals(commentId, comment.getId());
 
             caseService.updateCaseComment(FIRST_CASE_ID, comment.getId(), comment.getAuthor(), "Updated " + comment.getComment());
             caseComments = caseService.getCaseComments(FIRST_CASE_ID, new QueryContext());

@@ -36,7 +36,7 @@ import java.util.List;
 /**
  * Adds or removes comment to/from case
  */
-public class CaseCommentCommand extends CaseCommand<Void> {
+public class CaseCommentCommand extends CaseCommand<String> {
 
     private static final long serialVersionUID = 6345222909719335923L;
 
@@ -80,7 +80,7 @@ public class CaseCommentCommand extends CaseCommand<Void> {
     }
 
     @Override
-    public Void execute(Context context) {
+    public String execute(Context context) {
         KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
 
         Collection<? extends Object> caseFiles = ksession.getObjects(new ClassObjectFilter(CaseFileInstance.class));
@@ -92,10 +92,14 @@ public class CaseCommentCommand extends CaseCommand<Void> {
 
         CaseEventSupport caseEventSupport = getCaseEventSupport(context);
 
+        
+        String commentIdentifier = null;
         if (add) {
             CommentInstance commentInstance = new CommentInstanceImpl(author, comment, restrictedTo);
             caseEventSupport.fireBeforeCaseCommentAdded(caseFile.getCaseId(), caseFile, commentInstance);
             ((CaseFileInstanceImpl)caseFile).addComment(commentInstance);
+            
+            commentIdentifier = commentInstance.getId();
             caseEventSupport.fireAfterCaseCommentAdded(caseFile.getCaseId(), caseFile, commentInstance);
         } else if (update) {
             CommentInstance toUpdate = ((CaseFileInstanceImpl)caseFile).getComments().stream()
@@ -113,6 +117,7 @@ public class CaseCommentCommand extends CaseCommand<Void> {
             if (restrictedTo != null) {
                 ((CommentInstanceImpl)toUpdate).setRestrictedTo(restrictedTo);
             }
+            commentIdentifier = toUpdate.getId();
             caseEventSupport.fireAfterCaseCommentUpdated(caseFile.getCaseId(), caseFile, toUpdate);
         } else if (remove) {
             CommentInstance toRemove = ((CaseFileInstanceImpl)caseFile).getComments().stream()
@@ -125,11 +130,13 @@ public class CaseCommentCommand extends CaseCommand<Void> {
             
             caseEventSupport.fireBeforeCaseCommentRemoved(caseFile.getCaseId(), caseFile, toRemove);
             ((CaseFileInstanceImpl)caseFile).removeComment(toRemove);
+            
+            commentIdentifier = toRemove.getId();
             caseEventSupport.fireAfterCaseCommentRemoved(caseFile.getCaseId(), caseFile, toRemove);
         }
         ksession.update(factHandle, caseFile);
         triggerRules(ksession);
-        return null;
+        return commentIdentifier;
     }
 
 }

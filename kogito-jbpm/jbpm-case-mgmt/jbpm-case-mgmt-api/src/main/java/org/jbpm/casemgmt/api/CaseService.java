@@ -354,9 +354,10 @@ public interface CaseService {
      * @param author author of the comment
      * @param comment actual comment (text)
      * @param restrictedTo optional case roles that this data should be restricted to
+     * @return unique id of the comment that has been added
      * @throws CaseNotFoundException thrown in case case was not found with given id
      */
-    void addCaseComment(String caseId, String author, String comment, String... restrictedTo) throws CaseNotFoundException;
+    String addCaseComment(String caseId, String author, String comment, String... restrictedTo) throws CaseNotFoundException;
 
     /**
      * Updated given comment with entire text provided

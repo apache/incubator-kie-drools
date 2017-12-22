@@ -523,14 +523,14 @@ public class CaseServiceImpl implements CaseService {
     }
 
     @Override
-    public void addCaseComment(String caseId, String author, String comment, String... restrictedTo) throws CaseNotFoundException {
+    public String addCaseComment(String caseId, String author, String comment, String... restrictedTo) throws CaseNotFoundException {
         authorizationManager.checkOperationAuthorization(caseId, ProtectedOperation.MODIFY_COMMENT);
         ProcessInstanceDesc pi = verifyCaseIdExists(caseId);
         List<String> accessRestriction = null;
         if (restrictedTo != null && restrictedTo.length > 0) {
             accessRestriction = Arrays.asList(restrictedTo);
         }
-        processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new CaseCommentCommand(identityProvider, author, comment, accessRestriction));
+        return processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new CaseCommentCommand(identityProvider, author, comment, accessRestriction));
     }
     
     @Override
