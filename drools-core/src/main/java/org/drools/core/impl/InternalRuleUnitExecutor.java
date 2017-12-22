@@ -17,20 +17,22 @@
 package org.drools.core.impl;
 
 import org.drools.core.datasources.InternalDataSource;
-import org.drools.core.ruleunit.RuleUnitDescr;
 import org.drools.core.spi.Activation;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.RuleUnit;
 import org.kie.api.runtime.rule.RuleUnitExecutor;
 
 public interface InternalRuleUnitExecutor extends RuleUnitExecutor {
+
+    KieSession getKieSession();
 
     void cancelActivation( Activation activation );
 
     void onSuspend();
     void onResume();
 
-    RuleUnitDescr switchToRuleUnit( Class<? extends RuleUnit> ruleUnitClass );
-    RuleUnitDescr switchToRuleUnit( RuleUnit ruleUnit );
+    void switchToRuleUnit( Class<? extends RuleUnit> ruleUnitClass, Activation activation );
+    void switchToRuleUnit( RuleUnit ruleUnit, Activation activation );
 
     void guardRuleUnit( Class<? extends RuleUnit> ruleUnitClass, Activation activation);
     void guardRuleUnit( RuleUnit ruleUnit, Activation activation );
