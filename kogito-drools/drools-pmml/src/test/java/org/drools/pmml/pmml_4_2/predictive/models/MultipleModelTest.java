@@ -33,7 +33,6 @@ import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.internal.io.ResourceFactory;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 public class MultipleModelTest extends DroolsAbstractPMMLTest {
 
@@ -94,8 +93,8 @@ public class MultipleModelTest extends DroolsAbstractPMMLTest {
 
         kSession.fireAllRules();
 
-        assertEquals( 2, kSession.getObjects( new ClassObjectFilter( ModelMarker.class ) ).size() );
-        assertEquals( 11, kSession.getObjects( new ClassObjectFilter( kSession.getKieBase().getFactType( packageName, "Synapse" ).getFactClass() ) ).size() );
+        assertEquals( 1, kSession.getObjects( new ClassObjectFilter( ModelMarker.class ) ).size() );
+        assertEquals( 9, kSession.getObjects( new ClassObjectFilter( kSession.getKieBase().getFactType( packageName, "Synapse" ).getFactClass() ) ).size() );
 
         kSession.dispose();
 

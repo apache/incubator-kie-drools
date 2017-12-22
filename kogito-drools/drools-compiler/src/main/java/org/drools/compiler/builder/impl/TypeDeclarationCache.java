@@ -326,7 +326,7 @@ public class TypeDeclarationCache {
     }
 
 
-    void removeTypesGeneratedFromResource(Resource resource) {
+    Collection<String> removeTypesGeneratedFromResource(Resource resource) {
         if (cacheTypes != null) {
             List<String> typesToBeRemoved = new ArrayList<String>();
             for (Map.Entry<String, TypeDeclaration> type : cacheTypes.entrySet()) {
@@ -337,6 +337,8 @@ public class TypeDeclarationCache {
             for (String type : typesToBeRemoved) {
                 cacheTypes.remove(type);
             }
+            return typesToBeRemoved;
         }
+        return Collections.emptyList();
     }
 }

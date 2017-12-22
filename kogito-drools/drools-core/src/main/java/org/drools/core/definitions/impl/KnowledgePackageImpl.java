@@ -709,6 +709,9 @@ public class KnowledgePackageImpl
                     // in this case, no accessor would have been wired
                     classFieldAccessorStore.removeType(type);
                     dialect.remove(type.getTypeClassName());
+                    if (typeResolver != null) {
+                        typeResolver.registerClass( type.getTypeClassName(), null );
+                    }
                 }
                 removeTypeDeclaration(type.getTypeName());
             }

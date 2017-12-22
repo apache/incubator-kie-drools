@@ -4440,4 +4440,112 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
 
         assertEquals(0, kieSession.fireAllRules());
     }
+
+    @Test
+    public void testAddFieldToDeclaredType() throws Exception {
+        // DROOLS-2197
+        String declares1 = "declare Address\n" +
+                "   streetName : String\n" +
+                "   city : String\n" +
+                "end";
+
+        String declares2 = "declare Address\n" +
+                "   streetName : String\n" +
+                "   city : String\n" +
+                "   flg: String\n" +
+                "end";
+
+        String rules1 = "rule R when\n" +
+                "    a : Address( city == \"Antibes\" )\n" +
+                "then\n" +
+                "    a.setStreetName(\"Av. Jean Medecin\");\n" +
+                "end";
+
+        String rules2 = "rule R when\n" +
+                "    a : Address( city == \" Paris \", flg == \"yes\" )\n" +
+                "then\n" +
+                "    a.setStreetName(\" Champs Elisees \");\n" +
+                "end";
+
+        KieServices ks = KieServices.Factory.get();
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
+        ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
+
+        createAndDeployJar( ks, releaseId1, declares1, rules1 );
+        KieContainer kieContainer = ks.newKieContainer(releaseId1);
+        KieSession kieSession = kieContainer.newKieSession();
+
+        assertEquals(0, kieSession.fireAllRules());
+
+        createAndDeployJar( ks, releaseId2, declares2, rules2 );
+        kieContainer.updateToVersion(releaseId2);
+
+        assertEquals(0, kieSession.fireAllRules());
+    }
+
+    @Test
+    public void testIncremenatalCompilationAddingFieldToDeclaredType() {
+        // DROOLS-2197
+        String declares1 = "declare Address\n" +
+                "   streetName : String\n" +
+                "   city : String\n" +
+                "end";
+
+        String declares2 = "declare Address\n" +
+                "   streetName : String\n" +
+                "   city : String\n" +
+                "   flg: String\n" +
+                "end";
+
+        String rules1 = "rule R when\n" +
+                "    a : Address( city == \"Antibes\" )\n" +
+                "then\n" +
+                "    a.setStreetName(\"Av. Jean Medecin\");\n" +
+                "end";
+
+        String rules2 = "rule R when\n" +
+                "    a : Address( city == \" Paris \" )\n" +
+                "then\n" +
+                "    a.setStreetName(\" Champs Elisees \");\n" +
+                "end";
+
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem();
+        ReleaseId id = ks.newReleaseId( "org.test", "foo", "1.0-SNAPSHOT" );
+
+        KieBuilder kieBuilder = ks.newKieBuilder( kfs );
+
+        kfs.generateAndWritePomXML( id );
+        kfs.write( ks.getResources()
+                .newReaderResource( new StringReader( declares1 ) )
+                .setResourceType( ResourceType.DRL )
+                .setSourcePath( "declares.drl" ) );
+        kfs.write( ks.getResources()
+                .newReaderResource( new StringReader( rules1 ) )
+                .setResourceType( ResourceType.DRL )
+                .setSourcePath( "rules.drl" ) );
+
+        kieBuilder.buildAll();
+
+        KieContainer kc = ks.newKieContainer( id );
+        KieSession ksession = kc.newKieSession();
+        ksession.fireAllRules();
+
+        kfs.write( ks.getResources()
+                .newReaderResource( new StringReader( declares2 ) )
+                .setResourceType( ResourceType.DRL )
+                .setSourcePath( "declares.drl" ) );
+        kfs.write( ks.getResources()
+                .newReaderResource( new StringReader( rules2 ) )
+                .setResourceType( ResourceType.DRL )
+                .setSourcePath( "rules.drl" ) );
+
+        IncrementalResults results = ( (InternalKieBuilder) kieBuilder ).incrementalBuild();
+        System.out.println( results.getAddedMessages() );
+        assertEquals( 0, results.getAddedMessages().size() );
+
+        Results updateResults = kc.updateToVersion( id );
+        assertEquals( 0, updateResults.getMessages().size() );
+
+    }
 }
