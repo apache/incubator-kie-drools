@@ -72,7 +72,7 @@ public class AccumulateVisitor {
         context.popExprPointer();
 
         for (Node bindExpr : bindExprs) {
-            context.expressions.add(0, (MethodCallExpr) bindExpr);
+            context.getExpressions().add(0, (MethodCallExpr) bindExpr);
         }
     }
 

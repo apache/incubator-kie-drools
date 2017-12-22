@@ -193,7 +193,7 @@ public class ModelGenerator {
             buildCallScope = attributeExpr;
         }
 
-        MethodCallExpr buildCall = new MethodCallExpr(buildCallScope, BUILD_CALL, NodeList.nodeList(context.expressions));
+        MethodCallExpr buildCall = new MethodCallExpr(buildCallScope, BUILD_CALL, NodeList.nodeList(context.getExpressions()));
 
         BlockStmt ruleConsequence = rewriteConsequence(context, ruleDescr.getConsequence().toString());
 

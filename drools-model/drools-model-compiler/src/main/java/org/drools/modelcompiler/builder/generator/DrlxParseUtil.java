@@ -138,7 +138,7 @@ public class DrlxParseUtil {
                 // then drlxExpr is a single NameExpr referring to a binding, e.g.: "$p1".
                 usedDeclarations.add(name);
                 return new TypedExpression(drlxExpr);
-            } if (context.queryParameters.stream().anyMatch(qp -> qp.name.equals(name))) {
+            } if (context.getQueryParameters().stream().anyMatch(qp -> qp.name.equals(name))) {
                 // then drlxExpr is a single NameExpr referring to a query parameter, e.g.: "$p1".
                 usedDeclarations.add(name);
                 return new TypedExpression(drlxExpr);

@@ -92,7 +92,7 @@ public class NamedConsequenceVisitor {
     }
 
     private MethodCallExpr onDSL(NamedConsequenceDescr namedConsequence) {
-        String namedConsequenceString = context.namedConsequences.get(namedConsequence.getName());
+        String namedConsequenceString = context.getNamedConsequences().get(namedConsequence.getName());
         BlockStmt ruleVariablesBlock = new BlockStmt();
         createVariables(context.getKbuilder(), ruleVariablesBlock, packageModel, context);
         BlockStmt ruleConsequence = rewriteConsequence(context, namedConsequenceString);
