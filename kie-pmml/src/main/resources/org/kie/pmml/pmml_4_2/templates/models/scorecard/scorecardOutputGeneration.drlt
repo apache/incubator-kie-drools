@@ -43,7 +43,7 @@ rule "Update PMMLResult with Scorecard output @{context}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
    $tgt: @{target}()
-   $reslt: PMML4Result( resultVariables == null || "@{target}" not memberOf resultVariables.keySet() )
+   $reslt: PMML4Result( resultVariables == null || "@{target}" not memberOf resultVariables.keySet() ) from results
 then
    $reslt.setResultCode("OK");
    $reslt.addResultVariable("@{target}",$tgt);

@@ -32,7 +32,7 @@ when
    $in : PMML4Data( capitalizedName == "@{name}", $val : value, valid == false, placeholder == false,
           @if{ context != null } context == @{format("string",context)}, @end{}
           @foreach{ v : vals } value == @{v} @end{' || '}
-          )
+          ) from pmmlData
 then
    modify($in) {
       setValid( true );

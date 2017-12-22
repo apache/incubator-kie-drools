@@ -48,7 +48,7 @@ public class PMML4DataFactory {
 		registerDataType(Double.class.getName(), PMML4Double.class);
 	}
 	
-	public PMML4DataType newPMML4Data( String correlationId, ParameterInfo parameterInfo) {
+	public PMML4Data newPMML4Data( String correlationId, ParameterInfo parameterInfo) {
 		return newPMML4Data( correlationId, 
 				parameterInfo.getName(), 
 				null, 
@@ -60,7 +60,7 @@ public class PMML4DataFactory {
 				missingFlag );
 	}
 	
-	public PMML4DataType newPMML4Data( String correlationId, ParameterInfo parameterInfo, Double weight) {
+	public PMML4Data newPMML4Data( String correlationId, ParameterInfo parameterInfo, Double weight) {
 		return newPMML4Data( correlationId, 
 				parameterInfo.getName(), 
 				null, 
@@ -72,7 +72,7 @@ public class PMML4DataFactory {
 				missingFlag );
 	}
 	
-	public PMML4DataType newPMML4Data( String correlationId, ParameterInfo parameterInfo, Boolean valid, Boolean missing) {
+	public PMML4Data newPMML4Data( String correlationId, ParameterInfo parameterInfo, Boolean valid, Boolean missing) {
 		return newPMML4Data( correlationId, 
 				parameterInfo.getName(),
 				null,
@@ -84,7 +84,7 @@ public class PMML4DataFactory {
 				missing );
 	}
 	
-	public PMML4DataType newPMML4Data( String correlationId, ParameterInfo parameterInfo, Double weight, Boolean valid, Boolean missing) {
+	public PMML4Data newPMML4Data( String correlationId, ParameterInfo parameterInfo, Double weight, Boolean valid, Boolean missing) {
 		return newPMML4Data( correlationId, 
 				parameterInfo.getName(),
 				null,
@@ -96,7 +96,7 @@ public class PMML4DataFactory {
 				missing );
 	}
 	
-	public <T> PMML4DataType newPMML4Data( String correlationId, String name,
+	public <T> PMML4Data newPMML4Data( String correlationId, String name,
 											String context,
 											String displayName,
 											Class<T> clazz,

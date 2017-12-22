@@ -40,11 +40,15 @@ public interface PMML4Model {
     public List<PMMLOutputField> getOutputFields();
     public Map.Entry<String, String> getMappedMiningPojo();
     public Map.Entry<String, String> getMappedOutputPojo();
+    public Map.Entry<String, String> getMappedRuleUnit();
     public String getMiningPojoClassName();
     public String getOutputPojoClassName();
+    public String getRuleUnitClassName();
     public PMML4Unit getOwner();
     public MiningSchema getMiningSchema();
     public Output getOutput();
     public DataDictionary getDataDictionary();
     public Serializable getRawModel();
+    public String getModelPackageName();
+    public String getModelRuleUnitName();
 }

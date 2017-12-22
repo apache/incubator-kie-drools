@@ -40,6 +40,7 @@ import org.mvel2.templates.TemplateRegistry;
 public class Miningmodel extends AbstractModel<MiningModel> {
 	private static String MINING_POJO_TEMPLATE = "/org/kie/pmml/pmml_4_2/templates/mvel/mining/miningMiningPojo.mvel";
 	private static String OUTPUT_POJO_TEMPLATE = "/org/kie/pmml/pmml_4_2/templates/mvel/mining/miningOutputPojo.mvel";
+	private static String RULE_UNIT_TEMPLATE = "/org/kie/pmml/pmml_4_2/templates/mvel/mining/miningRuleUnit.mvel";
 	private Map<String,PMML4Model> childModels;
 	private MiningSegmentation segmentation;
 	private MININGFUNCTION functionName;
@@ -127,6 +128,11 @@ public class Miningmodel extends AbstractModel<MiningModel> {
 	public String getOutputPojoClassName() {
 		return helper.compactAsJavaId(this.getModelId().concat("MiningModelOutput"), true);
 	}
+	
+	@Override
+	public String getRuleUnitClassName() {
+		return helper.compactAsJavaId(this.getModelId().concat("MiningModelRuleUnit"),true);
+	}
 
 	@Override
 	public MiningSchema getMiningSchema() {
@@ -161,6 +167,18 @@ public class Miningmodel extends AbstractModel<MiningModel> {
 	@Override
 	protected void addOutputTemplateToRegistry(TemplateRegistry registry) {
 		InputStream inputStream = Scorecard.class.getResourceAsStream(OUTPUT_POJO_TEMPLATE);
+		if (inputStream != null) {
+			CompiledTemplate ct = TemplateCompiler.compileTemplate(inputStream);
+			if (ct != null) {
+				registry.addNamedTemplate(getOutputPojoTemplateName(), ct);
+			}
+		}
+	}
+
+	
+	@Override
+	protected void addRuleUnitTemplateToRegistry(TemplateRegistry registry) {
+		InputStream inputStream = Scorecard.class.getResourceAsStream(RULE_UNIT_TEMPLATE);
 		if (inputStream != null) {
 			CompiledTemplate ct = TemplateCompiler.compileTemplate(inputStream);
 			if (ct != null) {

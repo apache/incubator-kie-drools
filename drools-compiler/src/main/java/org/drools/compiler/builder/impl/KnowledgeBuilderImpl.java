@@ -72,13 +72,17 @@ import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.ParserError;
 import org.drools.compiler.compiler.ProcessBuilderFactory;
 import org.drools.compiler.compiler.ProcessLoadError;
+import org.drools.compiler.compiler.ProjectJavaCompiler;
 import org.drools.compiler.compiler.ResourceConversionResult;
 import org.drools.compiler.compiler.ResourceTypeDeclarationWarning;
 import org.drools.compiler.compiler.RuleBuildError;
 import org.drools.compiler.compiler.ScoreCardFactory;
 import org.drools.compiler.compiler.TypeDeclarationError;
 import org.drools.compiler.compiler.xml.XmlPackageReader;
+import org.drools.compiler.kie.builder.impl.KieFileSystemImpl;
 import org.drools.compiler.lang.ExpanderException;
+import org.drools.compiler.lang.api.PackageDescrBuilder;
+import org.drools.compiler.lang.api.impl.PackageDescrBuilderImpl;
 import org.drools.compiler.lang.descr.AbstractClassTypeDeclarationDescr;
 import org.drools.compiler.lang.descr.AccumulateImportDescr;
 import org.drools.compiler.lang.descr.AnnotatedBaseDescr;
@@ -133,6 +137,7 @@ import org.drools.core.util.StringUtils;
 import org.drools.core.xml.XmlChangeSetReader;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
+import org.kie.api.builder.KieFileSystem;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.process.Process;
 import org.kie.api.internal.assembler.KieAssemblerService;
@@ -408,6 +413,30 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         GuidedDecisionTableProvider guidedDecisionTableProvider = GuidedDecisionTableFactory.getGuidedDecisionTableProvider();
         ResourceConversionResult conversionResult = guidedDecisionTableProvider.loadFromInputStream(resource.getInputStream());
         return conversionResultToPackageDescr(resource, conversionResult);
+    }
+    
+    private List<PackageDescr> generatedResourcesToPackageDescr(Resource resource, List<PMMLResource> resources) throws DroolsParserException {
+    	List<PackageDescr> pkgDescrs = new ArrayList<>();
+    	DrlParser parser = new DrlParser(configuration.getLanguageLevel());
+    	for (PMMLResource res : resources) {
+    		for (String key: res.getRules().keySet()) {
+    			String src = res.getRules().get(key);
+    	    	PackageDescr descr = null;
+				descr = parser.parse(false, src);
+    	    	if (descr != null) {
+    				descr.setResource(resource);
+    	    		pkgDescrs.add(descr);
+    	    		try (FileOutputStream fos = new FileOutputStream("/home/lleveric/tmp/"+key+".drl")) {
+    	    			fos.write(src.getBytes());
+    	    		} catch (IOException iox) {
+    	    			
+    	    		}
+    	    	} else {
+    	            addBuilderResult(new ParserError(resource, "Parser returned a null Package", 0, 0));
+    	    	}
+    		}
+    	}
+    	return pkgDescrs;
     }
 
     private PackageDescr generatedDrlToPackageDescr(Resource resource, String generatedDrl) throws DroolsParserException {
@@ -805,10 +834,15 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         if (compiler != null) {
             if (compiler.getResults().isEmpty()) {
                 this.resource = resource;
-                PackageDescr descr = pmmlModelToPackageDescr(compiler, resource);
-                if (descr != null) {
-                    addPackage(descr);
+                List<PackageDescr> descrs = pmmlModelToPackageDescr(compiler, resource);
+                if (descrs != null && !descrs.isEmpty()) {
+                	for (PackageDescr descr: descrs) {
+                		addPackage(descr);
+                	}
                 }
+//                if (descr != null) {
+//                    addPackage(descr);
+//                }
                 this.resource = null;
             } else {
                 this.results.addAll(compiler.getResults());
@@ -819,18 +853,16 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         }
     }
 
-    PackageDescr pmmlModelToPackageDescr(PMMLCompiler compiler,
+    List<PackageDescr> pmmlModelToPackageDescr(PMMLCompiler compiler,
                                          Resource resource) throws DroolsParserException,
             IOException {
-        String theory = compiler.compile(resource.getInputStream(),
-                                         rootClassLoader);
-
-        if (!compiler.getResults().isEmpty()) {
-            this.results.addAll(compiler.getResults());
-            return null;
-        }
-
-        return generatedDrlToPackageDescr(resource, theory);
+    	List<PMMLResource> resources = compiler.precompile(resource.getInputStream(), null, null);
+    	if (resources != null && !resources.isEmpty()) {
+    		return generatedResourcesToPackageDescr(resource,resources);
+    	} else if (!compiler.getResults().isEmpty()) {
+    		this.results.addAll(compiler.getResults());
+    	}
+		return null;
     }
 
     void addPackageFromXSD(Resource resource,
