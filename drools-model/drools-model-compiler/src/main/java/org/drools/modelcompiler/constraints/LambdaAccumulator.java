@@ -49,15 +49,25 @@ public class LambdaAccumulator implements Accumulator {
     public void accumulate(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle, Declaration[] declarations, Declaration[] innerDeclarations, WorkingMemory workingMemory) throws Exception {
         final Object accumulateObject = handle.getObject();
         final Object returnObject;
-        if (accumulateObject instanceof SubnetworkTuple) {
-            final Object[] args = Arrays.stream(innerDeclarations)
-                    .filter(d -> sourceVariables.contains(d.getIdentifier()))
-                    .map(d -> ((SubnetworkTuple) accumulateObject).getObject(d)).toArray();
 
-            returnObject = binding.eval(args);
+        if(binding != null) {
+            if (accumulateObject instanceof SubnetworkTuple) {
+                final Object[] args = Arrays.stream(innerDeclarations)
+                        .filter(d -> sourceVariables.contains(d.getIdentifier()))
+                        .map(d -> ((SubnetworkTuple) accumulateObject).getObject(d)).toArray();
+
+                returnObject = binding.eval(args);
+            } else {
+                returnObject = binding.eval(accumulateObject);
+            }
         } else {
-            returnObject = binding.eval(accumulateObject);
+            if(accumulateObject instanceof  SubnetworkTuple) {
+                returnObject = (((SubnetworkTuple) accumulateObject)).getObject(innerDeclarations[0]);
+            } else {
+                returnObject = accumulateObject;
+            }
         }
+
         accumulateFunction.accumulate((Serializable) context, returnObject);
     }
 

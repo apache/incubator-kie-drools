@@ -1234,8 +1234,6 @@ public class FlowTest {
                                                                                     "$city",
                                                                                     from(var_$a,
                                                                                          (_this) -> _this.getCity()));
-        final org.drools.model.Variable<java.util.List> var_$expr$4$ = declarationOf(type(java.util.List.class),
-                                                                                     "$expr$4$");
         org.drools.model.Query listSafeCities_build = queryDef_listSafeCities.build(input(var_$p),
                                                                                     expr("$expr$2$",
                                                                                          var_$a,
@@ -1248,7 +1246,7 @@ public class FlowTest {
                                                                                             .reactOn("state"),
                                                                                     accumulate(expr(var_$city, s -> true),
                                                                                                accFunction(org.drools.core.base.accumulators.CollectListAccumulateFunction.class,
-                                                                                                           var_$city).as(var_$expr$4$)));
+                                                                                                           var_$city).as(var_$cities)));
         Model model = new ModelImpl().addQuery( listSafeCities_build );
         KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
 
