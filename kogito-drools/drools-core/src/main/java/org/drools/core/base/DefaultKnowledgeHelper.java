@@ -623,11 +623,11 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
     }
 
     public void run(RuleUnit ruleUnit ) {
-        workingMemory.switchToRuleUnit( ruleUnit );
+        workingMemory.switchToRuleUnit( ruleUnit, activation );
     }
 
     public void run(Class<? extends RuleUnit> ruleUnitClass) {
-        workingMemory.switchToRuleUnit( ruleUnitClass );
+        workingMemory.switchToRuleUnit( ruleUnitClass, activation );
     }
 
     public void guard(RuleUnit ruleUnit) {

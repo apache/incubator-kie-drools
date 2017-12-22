@@ -1467,4 +1467,47 @@ public class RuleUnitTest {
         RuleUnit adultUnit = new AdultUnitWithSingleItem(new Person( "Mario", 42 ));
         assertEquals(1, executor.run( adultUnit ) );
     }
+
+    public static class FlowUnit implements RuleUnit { }
+
+    @Test
+    public void testRunOrder() throws Exception {
+        // DROOLS-2199
+        String drl1 =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "import " + FlowUnit.class.getCanonicalName() + "\n" +
+                "import " + AdultUnit.class.getCanonicalName() + "\n" +
+                "import " + NotAdultUnit.class.getCanonicalName() + "\n" +
+                "global java.util.List list;\n" +
+                "rule Flow @Unit( FlowUnit.class ) when\n" +
+                "then\n" +
+                "    drools.run( NotAdultUnit.class );\n" +
+                "    drools.run( AdultUnit.class );\n" +
+                "end\n" +
+                "rule Adult @Unit( AdultUnit.class ) when\n" +
+                "    Person(age >= 18, $name : name) from persons\n" +
+                "then\n" +
+                "    list.add($name + \" is adult\");\n" +
+                "end\n" +
+                "rule NotAdult @Unit( NotAdultUnit.class ) when\n" +
+                "    Person(age < 18, $name : name) from persons\n" +
+                "then\n" +
+                "    list.add($name + \" is NOT adult\");\n" +
+                "end";
+
+        KieBase kbase = new KieHelper().addContent( drl1, ResourceType.DRL ).build();
+        RuleUnitExecutor executor = RuleUnitExecutor.create().bind( kbase );
+
+        List<String> list = new ArrayList<>();
+        executor.getKieSession().setGlobal( "list", list );
+
+        DataSource<Person> persons = executor.newDataSource( "persons",
+                                                                new Person( "Mario", 42 ),
+                                                                new Person( "Sofia", 4 ) );
+
+        assertEquals(3, executor.run( FlowUnit.class ) );
+        assertEquals( list, asList("Sofia is NOT adult", "Mario is adult") );
+    }
+
+
 }
