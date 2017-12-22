@@ -155,15 +155,15 @@ public class WorkItemRepository {
 
 	private static List<Map<String, Object>> getWorkDefinitionsMapForSingleDir(String parentPath, String widName) {
 		String path = parentPath + "/" + widName + ".wid";
-		return getWorkDefinitionsForPath(parentPath, path);
+		return getWorkDefinitionsForPath(parentPath, path, widName);
 	}
 
 	private static List<Map<String, Object>> getWorkDefinitionsMap(String parentPath, String file) {
 		String path = parentPath + "/" + file + "/" + file + ".wid";
-		return getWorkDefinitionsForPath(parentPath, path);
+		return getWorkDefinitionsForPath(parentPath, path, file);
 	}
 
-	private static List<Map<String, Object>> getWorkDefinitionsForPath(String parentPath, String path) {
+	private static List<Map<String, Object>> getWorkDefinitionsForPath(String parentPath, String path, String file) {
 		String content = null;
 		try {
 			content = ConfFileUtils.URLContentsToString(new URL(path));
@@ -176,8 +176,8 @@ public class WorkItemRepository {
 		try {
 			List<Map<String, Object>> result = (List<Map<String, Object>>) WidMVELEvaluator.eval(content);
 			for (Map<String, Object> wid: result) {
-				wid.put("path", parentPath + "/" + path);
-				wid.put("file", path + ".wid");
+				wid.put("path", parentPath + "/" + file);
+				wid.put("file", file + ".wid");
 				wid.put("widType", "mvel");
 			}
 			return result;
@@ -186,8 +186,8 @@ public class WorkItemRepository {
 			try {
 				List<Map<String, Object>> result = JsonWorkItemParser.parse(content);
 				for (Map<String, Object> wid: result) {
-					wid.put("path", parentPath + "/" + path);
-					wid.put("file", path + ".wid");
+					wid.put("path", parentPath + "/" + file);
+					wid.put("file", file + ".wid");
 					wid.put("widType", "json");
 				}
 				return result;

@@ -51,6 +51,23 @@ public class WorkItemRepositoryTest extends AbstractBaseTest {
     }
 
     @Test
+    public void testWorkDefinitionsPathAndFile() throws Exception {
+        Map<String, WorkDefinitionImpl> repoResults = WorkItemRepository.getWorkDefinitions(getClass().getResource("repository").toURI().toString(),
+                                                                                            new String[]{"TestServiceOne"});
+
+        assertNotNull(repoResults);
+        assertFalse(repoResults.isEmpty());
+        assertEquals(repoResults.size(), 1);
+
+        assertNotNull(repoResults.get("TestServiceOne"));
+        assertNotNull(repoResults.get("TestServiceOne").getPath());
+        assertTrue(repoResults.get("TestServiceOne").getPath().endsWith("/repository/TestServiceOne"));
+        assertNotNull(repoResults.get("TestServiceOne").getFile());
+        assertTrue(repoResults.get("TestServiceOne").getFile().equals("TestServiceOne.wid"));
+
+    }
+
+    @Test
     public void testGetWorkDefinitionsForInvalidNames() throws Exception {
         Map<String, WorkDefinitionImpl> repoResults = WorkItemRepository.getWorkDefinitions(getClass().getResource("repository").toURI().toString(),
                 new String[]{"TestServiceOne", "INVALID_NAME"});
