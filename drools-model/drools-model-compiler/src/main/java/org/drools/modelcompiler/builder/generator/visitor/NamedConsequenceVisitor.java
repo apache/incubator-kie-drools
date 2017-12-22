@@ -13,6 +13,7 @@ import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.javaparser.ast.stmt.BlockStmt;
 import org.drools.modelcompiler.builder.PackageModel;
+import org.drools.modelcompiler.builder.generator.DrlxParseResult;
 import org.drools.modelcompiler.builder.generator.ModelGenerator;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 
@@ -69,8 +70,8 @@ public class NamedConsequenceVisitor {
         if (!condition.equals("true")) { // Default case
             when.addArgument(new StringLiteralExpr(context.getConditionId(patternType, condition)));
             when.addArgument(new NameExpr(toVar(patternRelated.getIdentifier())));
-            ModelGenerator.DrlxParseResult parseResult = drlxParse(context, packageModel, patternType, patternRelated.getIdentifier(), condition);
-            when.addArgument(generateLambdaWithoutParameters(Collections.emptySortedSet(), parseResult.expr));
+            DrlxParseResult parseResult = drlxParse(context, packageModel, patternType, patternRelated.getIdentifier(), condition);
+            when.addArgument(generateLambdaWithoutParameters(Collections.emptySortedSet(), parseResult.getExpr()));
         }
 
         MethodCallExpr then = new MethodCallExpr(when, THEN_CALL);

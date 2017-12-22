@@ -21,6 +21,7 @@ import org.drools.javaparser.ast.stmt.ExpressionStmt;
 import org.drools.javaparser.ast.type.UnknownType;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
+import org.drools.modelcompiler.builder.generator.DrlxParseResult;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.ModelGenerator;
 import org.drools.modelcompiler.builder.generator.RuleContext;
@@ -87,20 +88,20 @@ public class AccumulateVisitor {
 
         if(expr instanceof BinaryExpr) {
 
-            final ModelGenerator.DrlxParseResult drlxParseResult = ModelGenerator.drlxParse(context, packageModel, Object.class, bindingId, expression);
+            final DrlxParseResult drlxParseResult = ModelGenerator.drlxParse(context, packageModel, Object.class, bindingId, expression);
 
-            final AccumulateFunction accumulateFunction = getAccumulateFunction(function, drlxParseResult.exprType);
+            final AccumulateFunction accumulateFunction = getAccumulateFunction(function, drlxParseResult.getExprType());
             System.out.println("drlxParseResult = " + drlxParseResult);
 
-            final String bindExpressionVariable = context.getExprId(accumulateFunction.getResultType(), drlxParseResult.left.toString());
+            final String bindExpressionVariable = context.getExprId(accumulateFunction.getResultType(), drlxParseResult.getLeft().toString());
 
             drlxParseResult.setExprBinding(bindExpressionVariable);
 
-            context.addDeclaration(new DeclarationSpec(drlxParseResult.getPatternBinding(), drlxParseResult.exprType));
+            context.addDeclaration(new DeclarationSpec(drlxParseResult.getPatternBinding(), drlxParseResult.getExprType()));
 
             functionDSL.addArgument(new ClassExpr(toType(accumulateFunction.getClass())));
-            context.addExpression(buildBinding(bindExpressionVariable, drlxParseResult.usedDeclarations, drlxParseResult.expr));
-            context.addDeclaration(new DeclarationSpec(bindExpressionVariable, drlxParseResult.exprType));
+            context.addExpression(buildBinding(bindExpressionVariable, drlxParseResult.getUsedDeclarations(), drlxParseResult.getExpr()));
+            context.addDeclaration(new DeclarationSpec(bindExpressionVariable, drlxParseResult.getExprType()));
             functionDSL.addArgument(new NameExpr(toVar(bindExpressionVariable)));
 
         } else if (expr instanceof MethodCallExpr) {
@@ -121,7 +122,7 @@ public class AccumulateVisitor {
             // Then the accumulate function will have that binding expression as a source
             final String bindExpressionVariable = context.getExprId(accumulateFunctionResultType, typedExpression.toString());
             Expression withThis = DrlxParseUtil.prepend(DrlxParseUtil._THIS_EXPR, typedExpression.getExpression());
-            ModelGenerator.DrlxParseResult result = new ModelGenerator.DrlxParseResult(accumulateFunctionResultType, "", rootNodeName, withThis, accumulateFunctionResultType)
+            DrlxParseResult result = new DrlxParseResult(accumulateFunctionResultType, "", rootNodeName, withThis, accumulateFunctionResultType)
                     .setLeft(typedExpression)
                     .setExprBinding(bindExpressionVariable);
             context.addExpression(ModelGenerator.buildBinding(result));

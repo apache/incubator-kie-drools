@@ -10,8 +10,8 @@ import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
+import org.drools.modelcompiler.builder.generator.DrlxParseResult;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
-import org.drools.modelcompiler.builder.generator.ModelGenerator.DrlxParseResult;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
@@ -45,8 +45,8 @@ public class FromVisitor {
 
                 final DrlxParseResult drlxParseResult = drlxParse(ruleContext, packageModel, clazz, bindingId, expression);
 
-                final Expression parsedExpression = drlxParseResult.expr;
-                final Expression exprArg = generateLambdaWithoutParameters(drlxParseResult.usedDeclarations, parsedExpression);
+                final Expression parsedExpression = drlxParseResult.getExpr();
+                final Expression exprArg = generateLambdaWithoutParameters(drlxParseResult.getUsedDeclarations(), parsedExpression);
 
                 fromCall.addArgument(exprArg);
             } else {

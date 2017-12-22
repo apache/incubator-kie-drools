@@ -3,6 +3,7 @@ package org.drools.modelcompiler.builder.generator.visitor;
 import org.drools.compiler.lang.descr.EvalDescr;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
+import org.drools.modelcompiler.builder.generator.DrlxParseResult;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.ModelGenerator;
 import org.drools.modelcompiler.builder.generator.RuleContext;
@@ -24,7 +25,7 @@ public class EvalVisitor {
         Class<?> patternType = context.getDeclarationById(bindingId)
                 .map(DeclarationSpec::getDeclarationClass)
                 .orElseThrow(RuntimeException::new);
-        ModelGenerator.DrlxParseResult drlxParseResult = ModelGenerator.drlxParse(context, packageModel, patternType, bindingId, expression);
+        DrlxParseResult drlxParseResult = ModelGenerator.drlxParse(context, packageModel, patternType, bindingId, expression);
         ModelGenerator.processExpression(context, drlxParseResult);
     }
 

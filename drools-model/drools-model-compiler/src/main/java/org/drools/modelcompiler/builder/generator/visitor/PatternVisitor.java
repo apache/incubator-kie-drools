@@ -17,6 +17,7 @@ import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
+import org.drools.modelcompiler.builder.generator.DrlxParseResult;
 import org.drools.modelcompiler.builder.generator.ModelGenerator;
 import org.drools.modelcompiler.builder.generator.OOPathExprGenerator;
 import org.drools.modelcompiler.builder.generator.QueryGenerator;
@@ -86,12 +87,12 @@ public class PatternVisitor {
                     expression = expression.replace(":=", "==");
                 }
 
-                ModelGenerator.DrlxParseResult drlxParseResult = ModelGenerator.drlxParse(context, packageModel, patternType, patternIdentifier, expression);
+                DrlxParseResult drlxParseResult = ModelGenerator.drlxParse(context, packageModel, patternType, patternIdentifier, expression);
                 if (drlxParseResult == null) {
                     return;
                 }
 
-                if(drlxParseResult.expr instanceof OOPathExpr) {
+                if(drlxParseResult.getExpr() instanceof OOPathExpr) {
 
                     // If the  outer pattern does not have a binding we generate it
                     if(patternIdentifier == null) {
@@ -99,14 +100,14 @@ public class PatternVisitor {
                         context.addDeclaration(new DeclarationSpec(patternIdentifier, patternType, Optional.of(pattern), Optional.empty()));
                     }
 
-                    new OOPathExprGenerator(context, packageModel).visit(patternType, patternIdentifier, (OOPathExpr)drlxParseResult.expr);
+                    new OOPathExprGenerator(context, packageModel).visit(patternType, patternIdentifier, (OOPathExpr)drlxParseResult.getExpr());
                 } else {
                     // need to augment the reactOn inside drlxParseResult with the look-ahead properties.
                     Collection<String> lookAheadFieldsOfIdentifier = context.getRuleDescr()
                             .map(ruleDescr -> ruleDescr.lookAheadFieldsOfIdentifier(pattern))
                             .orElseGet(Collections::emptyList);
-                    drlxParseResult.reactOnProperties.addAll(lookAheadFieldsOfIdentifier);
-                    drlxParseResult.watchedProperties = getPatternListenedProperties(pattern);
+                    drlxParseResult.getReactOnProperties().addAll(lookAheadFieldsOfIdentifier);
+                    drlxParseResult.setWatchedProperties(getPatternListenedProperties(pattern));
 
                     if(pattern.isUnification()) {
                         drlxParseResult.setPatternBindingUnification(true);

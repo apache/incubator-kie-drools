@@ -18,11 +18,9 @@ package org.drools.modelcompiler.builder.generator;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -511,11 +509,11 @@ public class ModelGenerator {
         if (drlxParseResult.hasUnificationVariable()) {
             Expression dslExpr = buildUnificationExpression(context, drlxParseResult);
             context.addExpression(dslExpr);
-        } else if (drlxParseResult.expr != null) {
+        } else if (drlxParseResult.getExpr() != null) {
             Expression dslExpr = buildExpressionWithIndexing(context, drlxParseResult);
             context.addExpression(dslExpr);
         }
-        if (drlxParseResult.exprBinding != null) {
+        if (drlxParseResult.getExprBinding() != null) {
             Expression dslExpr = buildBinding(drlxParseResult);
             context.addExpression(dslExpr);
         }
@@ -530,7 +528,7 @@ public class ModelGenerator {
         DrlxParseResult result = getDrlxParseResult( context, packageModel, patternType, bindingId, expression, drlx );
         if (drlx.getBind() != null) {
             String bindId = drlx.getBind().asString();
-            context.addDeclaration( new DeclarationSpec( bindId, result.exprType ) );
+            context.addDeclaration( new DeclarationSpec( bindId, result.getExprType() ) );
             result.setExprBinding( bindId );
         }
 
@@ -736,119 +734,6 @@ public class ModelGenerator {
         }
     }
 
-    public static class DrlxParseResult {
-
-        public final Class<?> patternType;
-        public final Expression expr;
-        public final Class<?> exprType;
-
-        private String exprId;
-        public String patternBinding;
-        public boolean isPatternBindingUnification = false;
-
-        public String exprBinding;
-
-        public ConstraintType decodeConstraintType;
-        public Collection<String> usedDeclarations = new LinkedHashSet<>();
-        public Set<String> reactOnProperties = Collections.emptySet();
-        public String[] watchedProperties;
-
-        public TypedExpression left;
-        public TypedExpression right;
-        public boolean isStatic;
-
-        public DrlxParseResult( Class<?> patternType, String exprId, String patternBinding, Expression expr, Class<?> exprType) {
-            this.patternType = patternType;
-            this.exprId = exprId;
-            this.patternBinding = patternBinding;
-            this.expr = expr;
-            this.exprType = exprType;
-        }
-
-        public DrlxParseResult setDecodeConstraintType( ConstraintType decodeConstraintType ) {
-            this.decodeConstraintType = decodeConstraintType;
-            return this;
-        }
-
-        public DrlxParseResult setUsedDeclarations( List<String> usedDeclarations ) {
-            this.usedDeclarations = new LinkedHashSet<>(usedDeclarations);
-            return this;
-        }
-
-        public DrlxParseResult setReactOnProperties( Set<String> reactOnProperties ) {
-            this.reactOnProperties = reactOnProperties;
-            return this;
-        }
-
-        public DrlxParseResult setPatternBindingUnification( Boolean unification) {
-            this.isPatternBindingUnification = unification;
-            return this;
-        }
-
-        public DrlxParseResult addReactOnProperty( String reactOnProperty ) {
-            if (reactOnProperties.isEmpty()) {
-                reactOnProperties = new HashSet<>();
-            }
-            this.reactOnProperties.add(reactOnProperty);
-            return this;
-        }
-
-        public DrlxParseResult setLeft( TypedExpression left ) {
-            this.left = left;
-            return this;
-        }
-
-        public DrlxParseResult setRight( TypedExpression right ) {
-            this.right = right;
-            return this;
-        }
-
-        public DrlxParseResult setStatic( boolean aStatic ) {
-            isStatic = aStatic;
-            return this;
-        }
-
-        public String getExprId() {
-            return exprId;
-        }
-
-        public String getPatternBinding() {
-            return patternBinding;
-        }
-
-        public void setExprId(String exprId) {
-            this.exprId = exprId;
-        }
-
-        public void setPatternBinding(String patternBinding) {
-            this.patternBinding = patternBinding;
-        }
-
-        public DrlxParseResult setExprBinding(String exprBinding) {
-            this.exprBinding = exprBinding;
-            return this;
-        }
-
-        public boolean hasUnificationVariable() {
-            return Optional.ofNullable(left).flatMap(TypedExpression::getUnificationVariable).isPresent() ||
-                    Optional.ofNullable(right).flatMap(TypedExpression::getUnificationVariable).isPresent();
-        }
-
-        public String getUnificationVariable() {
-            return left.getUnificationVariable().isPresent() ? left.getUnificationVariable().get() : right.getUnificationVariable().get();
-        }
-
-        public String getUnificationName() {
-            return left.getUnificationName().isPresent() ? left.getUnificationName().get() : right.getUnificationName().get();
-        }
-
-        public Class<?> getUnificationVariableType() {
-            return left.getUnificationVariable().isPresent() ? right.getType() : left.getType();
-        }
-    }
-
-
-
     private static void addArgumentToMethodCall( Expression expr, MethodCallExpr methodCallExpr ) {
         if (expr instanceof TemporalLiteralExpr ) {
             TemporalLiteralExpr tempExpr1 = (TemporalLiteralExpr) expr;
@@ -861,7 +746,7 @@ public class ModelGenerator {
     }
 
     public static Expression buildExpressionWithIndexing(RuleContext context, DrlxParseResult drlxParseResult) {
-        String exprId = drlxParseResult.exprId;
+        String exprId = drlxParseResult.getExprId();
         MethodCallExpr exprDSL = new MethodCallExpr(null, EXPR_CALL);
         if (exprId != null && !"".equals(exprId)) {
             exprDSL.addArgument( new StringLiteralExpr(exprId) );
@@ -884,23 +769,23 @@ public class ModelGenerator {
 
     private static MethodCallExpr buildExpression(RuleContext context, DrlxParseResult drlxParseResult, MethodCallExpr exprDSL ) {
         final List<String> usedDeclarationsWithUnification = new ArrayList<>();
-        if(!drlxParseResult.isPatternBindingUnification) {
-            exprDSL.addArgument(new NameExpr(toVar(drlxParseResult.patternBinding)));
+        if(!drlxParseResult.isPatternBindingUnification()) {
+            exprDSL.addArgument(new NameExpr(toVar(drlxParseResult.getPatternBinding())));
         } else {
-            usedDeclarationsWithUnification.add(drlxParseResult.patternBinding);
+            usedDeclarationsWithUnification.add(drlxParseResult.getPatternBinding());
         }
-        usedDeclarationsWithUnification.addAll(drlxParseResult.usedDeclarations);
+        usedDeclarationsWithUnification.addAll(drlxParseResult.getUsedDeclarations());
         usedDeclarationsWithUnification.stream()
                 .map(x -> QueryGenerator.substituteBindingWithQueryParameter(context, x))
                 .forEach(exprDSL::addArgument);
-        exprDSL.addArgument(buildConstraintExpression( drlxParseResult, drlxParseResult.expr ));
+        exprDSL.addArgument(buildConstraintExpression( drlxParseResult, drlxParseResult.getExpr() ));
         return exprDSL;
     }
 
     private static MethodCallExpr buildIndexedBy(RuleContext context, DrlxParseResult drlxParseResult, MethodCallExpr exprDSL) {
-        ConstraintType decodeConstraintType = drlxParseResult.decodeConstraintType;
-        TypedExpression left = drlxParseResult.left;
-        TypedExpression right = drlxParseResult.right;
+        ConstraintType decodeConstraintType = drlxParseResult.getDecodeConstraintType();
+        TypedExpression left = drlxParseResult.getLeft();
+        TypedExpression right = drlxParseResult.getRight();
 
         // .indexBy(..) is only added if left is not an identity expression:
         if ( decodeConstraintType != null &&
@@ -921,10 +806,10 @@ public class ModelGenerator {
             MethodCallExpr indexedByDSL = new MethodCallExpr(exprDSL, "indexedBy");
             indexedByDSL.addArgument( indexedBy_indexedClass );
             indexedByDSL.addArgument( indexedBy_constraintType );
-            indexedByDSL.addArgument( "" + indexIdGenerator.getFieldId( drlxParseResult.patternType, left.getFieldName() ) );
+            indexedByDSL.addArgument( "" + indexIdGenerator.getFieldId(drlxParseResult.getPatternType(), left.getFieldName() ) );
             indexedByDSL.addArgument( indexedBy_leftOperandExtractor );
 
-            Collection<String> usedDeclarations = drlxParseResult.usedDeclarations;
+            Collection<String> usedDeclarations = drlxParseResult.getUsedDeclarations();
             if ( usedDeclarations.isEmpty() ) {
                 indexedByDSL.addArgument( right.getExpression() );
             } else if (usedDeclarations.size() == 1) {
@@ -948,17 +833,17 @@ public class ModelGenerator {
     }
 
     private static MethodCallExpr buildReactOn( DrlxParseResult drlxParseResult, MethodCallExpr exprDSL ) {
-        if ( !drlxParseResult.reactOnProperties.isEmpty() ) {
+        if ( !drlxParseResult.getReactOnProperties().isEmpty() ) {
             exprDSL = new MethodCallExpr(exprDSL, "reactOn");
-            drlxParseResult.reactOnProperties.stream()
+            drlxParseResult.getReactOnProperties().stream()
                              .map( StringLiteralExpr::new )
                              .forEach( exprDSL::addArgument );
 
         }
 
-        if ( drlxParseResult.watchedProperties != null && drlxParseResult.watchedProperties.length > 0 ) {
+        if ( drlxParseResult.getWatchedProperties() != null && drlxParseResult.getWatchedProperties().length > 0 ) {
             exprDSL = new MethodCallExpr(exprDSL, "watch");
-            Stream.of( drlxParseResult.watchedProperties )
+            Stream.of(drlxParseResult.getWatchedProperties())
                     .map( StringLiteralExpr::new )
                     .forEach( exprDSL::addArgument );
         }
@@ -967,7 +852,7 @@ public class ModelGenerator {
     }
 
     private static Expression buildConstraintExpression( DrlxParseResult drlxParseResult, Expression expr ) {
-        return drlxParseResult.isStatic ? expr : generateLambdaWithoutParameters(drlxParseResult.usedDeclarations, expr);
+        return drlxParseResult.isStatic() ? expr : generateLambdaWithoutParameters(drlxParseResult.getUsedDeclarations(), expr);
     }
 
     public static MethodCallExpr buildBinding(DrlxParseResult drlxParseResult ) {
@@ -975,11 +860,11 @@ public class ModelGenerator {
         if(drlxParseResult.hasUnificationVariable()) {
             bindDSL.addArgument(new NameExpr(toVar(drlxParseResult.getUnificationVariable())));
         } else {
-            bindDSL.addArgument( new NameExpr(toVar(drlxParseResult.exprBinding)) );
+            bindDSL.addArgument( new NameExpr(toVar(drlxParseResult.getExprBinding())) );
         }
         MethodCallExpr bindAsDSL = new MethodCallExpr(bindDSL, BIND_AS_CALL);
-        bindAsDSL.addArgument( new NameExpr(toVar(drlxParseResult.patternBinding)) );
-        bindAsDSL.addArgument( buildConstraintExpression( drlxParseResult, drlxParseResult.left.getExpression() ) );
+        bindAsDSL.addArgument( new NameExpr(toVar(drlxParseResult.getPatternBinding())) );
+        bindAsDSL.addArgument( buildConstraintExpression(drlxParseResult, drlxParseResult.getLeft().getExpression() ) );
         return buildReactOn( drlxParseResult, bindAsDSL );
     }
 }

@@ -33,7 +33,7 @@ public class OOPathExprGenerator {
         Class<?> previousClass = originalClass;
         String previousBind = originalBind;
 
-        List<ModelGenerator.DrlxParseResult> ooPathConditionExpressions = new ArrayList<>();
+        List<DrlxParseResult> ooPathConditionExpressions = new ArrayList<>();
 
         for (OOPathChunk chunk : ooPathExpr.getChunks()) {
 
@@ -62,7 +62,7 @@ public class OOPathExprGenerator {
 
             final Expression condition = chunk.getCondition();
             if (condition != null) {
-                final ModelGenerator.DrlxParseResult drlxParseResult = ModelGenerator.drlxParse(context, packageModel, fieldType, bindingId, condition.toString());
+                final DrlxParseResult drlxParseResult = ModelGenerator.drlxParse(context, packageModel, fieldType, bindingId, condition.toString());
                 ooPathConditionExpressions.add(drlxParseResult);
             }
 
@@ -84,7 +84,7 @@ public class OOPathExprGenerator {
             declarations.remove(declarations.indexOf(missingClassDeclaration));
 
             // In the meanwhile some condition could have used that binding, we need to rename that also
-            for(ModelGenerator.DrlxParseResult r : ooPathConditionExpressions) {
+            for(DrlxParseResult r : ooPathConditionExpressions) {
                 if(r.getExprId().equals(last.getBindingId())) {
                     r.setExprId(innerBindingId);
                 } else if(r.getPatternBinding().equals(last.getBindingId())) {
