@@ -369,7 +369,11 @@ public class KiePackagesBuilder {
                 for(Variable v : sourcePattern.getAllInputVariables()) {
                     usedVariableName.add(v.getName());
                 }
-                final Binding binding = (Binding) sourcePattern.getBindings().iterator().next();
+
+                Binding binding = null;
+                if(!sourcePattern.getBindings().isEmpty()) {
+                    binding = (Binding) sourcePattern.getBindings().iterator().next();
+                }
                 pattern.setSource(buildAccumulate(accumulatePattern, source, pattern, usedVariableName, binding) );
                 return pattern;
             }

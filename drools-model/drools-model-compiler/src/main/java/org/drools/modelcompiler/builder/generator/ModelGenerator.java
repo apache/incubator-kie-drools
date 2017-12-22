@@ -57,6 +57,7 @@ import org.drools.javaparser.ast.drlx.expr.TemporalLiteralExpr;
 import org.drools.javaparser.ast.expr.AssignExpr;
 import org.drools.javaparser.ast.expr.BinaryExpr;
 import org.drools.javaparser.ast.expr.BinaryExpr.Operator;
+import org.drools.javaparser.ast.expr.CastExpr;
 import org.drools.javaparser.ast.expr.ClassExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.FieldAccessExpr;
@@ -341,7 +342,7 @@ public class ModelGenerator {
             kbuilder.addBuilderResult( new UnknownDeclarationError( decl.getBindingId() ) );
             return;
         }
-        Type declType = DrlxParseUtil.classToReferenceType(decl.getDeclarationClass());
+        Type declType = DrlxParseUtil.classToReferenceType( decl.getDeclarationClass() );
 
         ClassOrInterfaceType varType = JavaParser.parseClassOrInterfaceType(Variable.class.getCanonicalName());
         varType.setTypeArguments(declType);
@@ -349,7 +350,7 @@ public class ModelGenerator {
 
         MethodCallExpr declarationOfCall = new MethodCallExpr(null, DECLARATION_OF_CALL);
         MethodCallExpr typeCall = new MethodCallExpr(null, TYPE_CALL);
-        typeCall.addArgument( new ClassExpr(declType ));
+        typeCall.addArgument( new ClassExpr(decl.getType() ));
 
         declarationOfCall.addArgument(typeCall);
         declarationOfCall.addArgument(new StringLiteralExpr(decl.getVariableName().orElse(decl.getBindingId())));
@@ -373,6 +374,7 @@ public class ModelGenerator {
             }
             declarationOfCall.addArgument( windowCall );
         }
+
 
         AssignExpr var_assign = new AssignExpr(var_, declarationOfCall, AssignExpr.Operator.ASSIGN);
         ruleBlock.addStatement(var_assign);
