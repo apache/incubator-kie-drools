@@ -22,9 +22,9 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 /**
  * Changes shadow variables when a genuine planning variable changes.
  * <p>
- * Important: it must only change the shadow variable for which it's configured!
+ * Important: it must only change the shadow variable(s) for which it's configured!
  * It should never change a genuine variable or a problem fact.
- * It can change its shadow variable on multiple entity instances
+ * It can change its shadow variable(s) on multiple entity instances
  * (for example: an arrivalTime change affects all trailing entities too).
  * <p>
  * Each {@link ScoreDirector} has a different {@link VariableListener} instance, so it can be stateful.
