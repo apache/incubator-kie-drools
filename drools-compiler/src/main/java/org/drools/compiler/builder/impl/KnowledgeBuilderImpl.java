@@ -65,7 +65,6 @@ import org.drools.compiler.compiler.GuidedRuleTemplateProvider;
 import org.drools.compiler.compiler.GuidedScoreCardFactory;
 import org.drools.compiler.compiler.PMMLCompiler;
 import org.drools.compiler.compiler.PMMLCompilerFactory;
-import org.drools.compiler.compiler.PMMLResource;
 import org.drools.compiler.compiler.PackageBuilderErrors;
 import org.drools.compiler.compiler.PackageBuilderResults;
 import org.drools.compiler.compiler.PackageRegistry;
@@ -2152,7 +2151,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         }
     }
 
-    public boolean removeObjectsGeneratedFromResource(Resource resource) {
+    public ResourceRemovalResult removeObjectsGeneratedFromResource(Resource resource) {
         boolean modified = false;
         if (pkgRegistryMap != null) {
             for (PackageRegistry packageRegistry : pkgRegistryMap.values()) {
@@ -2185,7 +2184,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
             }
         }
 
-        typeBuilder.removeTypesGeneratedFromResource(resource);
+        Collection<String> removedTypes = typeBuilder.removeTypesGeneratedFromResource(resource);
 
         for (List<PackageDescr> pkgDescrs : packages.values()) {
             for (PackageDescr pkgDescr : pkgDescrs) {
@@ -2197,7 +2196,42 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
             modified = kBase.removeObjectsGeneratedFromResource(resource) || modified;
         }
 
-        return modified;
+        return new ResourceRemovalResult(modified, removedTypes);
+    }
+
+    public static class ResourceRemovalResult {
+        private boolean modified;
+        private Collection<String> removedTypes;
+
+        public ResourceRemovalResult(  ) {
+            this( false, Collections.emptyList() );
+        }
+
+        public ResourceRemovalResult( boolean modified, Collection<String> removedTypes ) {
+            this.modified = modified;
+            this.removedTypes = removedTypes;
+        }
+
+        public void add(ResourceRemovalResult other) {
+            mergeModified( other.modified );
+            if (this.removedTypes.isEmpty()) {
+                this.removedTypes = other.removedTypes;
+            } else {
+                this.removedTypes.addAll( other.removedTypes );
+            }
+        }
+
+        public void mergeModified( boolean otherModified ) {
+            this.modified = this.modified || otherModified;
+        }
+
+        public boolean isModified() {
+            return modified;
+        }
+
+        public Collection<String> getRemovedTypes() {
+            return removedTypes;
+        }
     }
 
     public void rewireAllClassObjectTypes() {
