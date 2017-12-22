@@ -17,7 +17,6 @@
 package org.drools.core.impl;
 
 import java.util.Collection;
-import java.util.Deque;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -59,7 +58,7 @@ public class RuleUnitExecutorSession implements InternalRuleUnitExecutor {
 
     private AtomicBoolean suspended = new AtomicBoolean( false );
 
-    private Deque<RuleUnit> unitsStack = new LinkedList<>();
+    private LinkedList<RuleUnit> unitsStack = new LinkedList<>();
 
     public RuleUnitExecutorSession() {
         session = new StatefulKnowledgeSessionImpl();
@@ -178,7 +177,7 @@ public class RuleUnitExecutorSession implements InternalRuleUnitExecutor {
     private int internalRun( RuleUnit ruleUnit ) {
         int fired = 0;
         for (RuleUnit evaluatedUnit = ruleUnit; evaluatedUnit != null; evaluatedUnit = unitsStack.poll()) {
-            fired += internalExecuteUnit( ruleUnit ) + ruleUnitGuardSystem.fireActiveUnits(ruleUnit);
+            fired += internalExecuteUnit( evaluatedUnit ) + ruleUnitGuardSystem.fireActiveUnits( evaluatedUnit );
         }
         return fired;
     }
@@ -208,22 +207,33 @@ public class RuleUnitExecutorSession implements InternalRuleUnitExecutor {
     }
 
     @Override
-    public RuleUnitDescr switchToRuleUnit( Class<? extends RuleUnit> ruleUnitClass ) {
-        return switchToRuleUnit( getRuleUnitFactory().getOrCreateRuleUnit( this, ruleUnitClass ) );
+    public void switchToRuleUnit( Class<? extends RuleUnit> ruleUnitClass, Activation activation ) {
+        switchToRuleUnit( getRuleUnitFactory().getOrCreateRuleUnit( this, ruleUnitClass ), activation );
     }
 
     @Override
-    public RuleUnitDescr switchToRuleUnit( RuleUnit ruleUnit ) {
-        if (currentRuleUnit != null) {
-            currentRuleUnit.onYield( ruleUnit );
+    public void switchToRuleUnit( RuleUnit ruleUnit, Activation activation ) {
+        String activateUnitName = activation.getRule().getRuleUnitClassName();
+        boolean isActiveUnitCurrent = currentRuleUnit != null && currentRuleUnit.getClass().getName().equals( activateUnitName );
+
+        if ( isActiveUnitCurrent ) {
+            if ( currentRuleUnit != null ) {
+                currentRuleUnit.onYield( ruleUnit );
+            }
+            session.getPropagationList().flush();
+            InternalAgenda agenda = session.getAgenda();
+            agenda.getStackList().remove(agenda.getAgendaGroup(currentRuleUnit.getClass().getName()));
+
+            unitsStack.push( currentRuleUnit );
+            bindRuleUnit( ruleUnit );
+        } else {
+            for (int i = 0; i < unitsStack.size(); i++) {
+                if (unitsStack.get(i).getClass().getName().equals( activateUnitName )) {
+                    unitsStack.add( i, ruleUnit );
+                    break;
+                }
+            }
         }
-        session.getPropagationList().flush();
-
-        InternalAgenda agenda = session.getAgenda();
-        agenda.getStackList().remove(agenda.getAgendaGroup(currentRuleUnit.getClass().getName()));
-        unitsStack.push( currentRuleUnit );
-
-        return bindRuleUnit( ruleUnit );
     }
 
     @Override

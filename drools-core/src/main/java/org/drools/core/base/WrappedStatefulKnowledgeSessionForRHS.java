@@ -766,12 +766,12 @@ public final class WrappedStatefulKnowledgeSessionForRHS
 		return delegate.getSessionClock();
 	}
 
-	public void switchToRuleUnit(RuleUnit ruleUnit) {
-        delegate.getRuleUnitExecutor().switchToRuleUnit( ruleUnit );
+	public void switchToRuleUnit(RuleUnit ruleUnit, Activation activation) {
+        delegate.getRuleUnitExecutor().switchToRuleUnit( ruleUnit, activation );
 	}
 
-	public void switchToRuleUnit(Class<? extends RuleUnit> ruleUnitClass) {
-		delegate.getRuleUnitExecutor().switchToRuleUnit( ruleUnitClass );
+	public void switchToRuleUnit(Class<? extends RuleUnit> ruleUnitClass, Activation activation) {
+		delegate.getRuleUnitExecutor().switchToRuleUnit( ruleUnitClass, activation );
 	}
 
 	public void guardRuleUnit(RuleUnit ruleUnit, Activation activation) {
