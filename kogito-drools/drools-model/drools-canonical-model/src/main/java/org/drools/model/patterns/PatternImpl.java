@@ -22,7 +22,7 @@ public class PatternImpl<T> extends AbstractSinglePattern implements Pattern<T>,
 
     private final Variable<T> variable;
     private Variable[] inputVariables;
-    private Variable[] allInputVariables;
+    private Variable[] allInputVariables = new Variable[0];
     private final DataSourceDefinition dataSourceDefinition;
     private Constraint constraint;
     private List<Binding> bindings;

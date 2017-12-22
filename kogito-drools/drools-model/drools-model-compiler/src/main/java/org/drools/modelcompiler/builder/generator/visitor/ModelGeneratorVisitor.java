@@ -45,7 +45,7 @@ public class ModelGeneratorVisitor implements DescrVisitor {
 
     @Override
     public void visit(AccumulateDescr descr) {
-        accumulateVisitor.visit((descr));
+       throw new UnsupportedOperationException("AccumulateDescr are always nested in pattern and need their context anyway");
     }
 
     @Override
@@ -97,7 +97,7 @@ public class ModelGeneratorVisitor implements DescrVisitor {
     public void visit(PatternDescr descr) {
         patternVisitor.visit(descr);
         if (descr.getSource() instanceof AccumulateDescr) {
-            visit((AccumulateDescr) descr.getSource());
+            accumulateVisitor.visit((AccumulateDescr) descr.getSource(), descr);
         }
     }
 }

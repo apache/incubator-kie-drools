@@ -87,4 +87,8 @@ public class DeclarationSpec {
     public Optional<String> getVariableName() {
         return variableName;
     }
+
+    public org.drools.javaparser.ast.type.Type getType() {
+        return DrlxParseUtil.classToReferenceType(getDeclarationClass());
+    }
 }

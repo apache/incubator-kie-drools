@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.rule.builder.util.AccumulateUtil;
 import org.drools.drlx.DrlxParser;
 import org.drools.javaparser.ast.Node;
@@ -46,15 +47,16 @@ public class AccumulateVisitor {
         this.packageModel = packageModel;
     }
 
-    public void visit(AccumulateDescr descr) {
+    public void visit(AccumulateDescr descr, PatternDescr basePattern) {
         final MethodCallExpr accumulateDSL = new MethodCallExpr(null, "accumulate");
         context.addExpression(accumulateDSL);
         context.pushExprPointer(accumulateDSL::addArgument);
 
         BaseDescr input = descr.getInputPattern() == null ? descr.getInput() : descr.getInputPattern();
+        boolean inputPatternHasConstraints = (input instanceof PatternDescr) && (!((PatternDescr)input).getConstraint().getDescrs().isEmpty());
         input.accept(modelGeneratorVisitor);
         for (AccumulateDescr.AccumulateFunctionCallDescr function : descr.getFunctions()) {
-            visit(context, function, accumulateDSL);
+            visit(context, function, accumulateDSL, basePattern, inputPatternHasConstraints);
         }
 
         // Remove eventual binding expression created in pattern
@@ -76,7 +78,7 @@ public class AccumulateVisitor {
         }
     }
 
-    private void visit(RuleContext context, AccumulateDescr.AccumulateFunctionCallDescr function, MethodCallExpr accumulateDSL) {
+    private void visit(RuleContext context, AccumulateDescr.AccumulateFunctionCallDescr function, MethodCallExpr accumulateDSL, PatternDescr basePattern, boolean inputPatternHasConstraints) {
 
         context.pushExprPointer(accumulateDSL::addArgument);
 
@@ -84,14 +86,13 @@ public class AccumulateVisitor {
 
         final String expression = function.getParams()[0];
         final Expression expr = DrlxParser.parseExpression(expression).getExpr();
-        final String bindingId = Optional.ofNullable(function.getBind()).orElse(context.getExprId(Number.class, function.getFunction()));
+        final String bindingId = Optional.ofNullable(function.getBind()).orElse(basePattern.getIdentifier());
 
         if(expr instanceof BinaryExpr) {
 
             final DrlxParseResult drlxParseResult = ModelGenerator.drlxParse(context, packageModel, Object.class, bindingId, expression);
 
             final AccumulateFunction accumulateFunction = getAccumulateFunction(function, drlxParseResult.getExprType());
-            System.out.println("drlxParseResult = " + drlxParseResult);
 
             final String bindExpressionVariable = context.getExprId(accumulateFunction.getResultType(), drlxParseResult.getLeft().toString());
 
@@ -135,12 +136,23 @@ public class AccumulateVisitor {
                     .getDeclarationById(expr.toString())
                     .orElseThrow(RuntimeException::new)
                     .getDeclarationClass();
+
+            final String nameExpr = ((NameExpr) expr).getName().asString();
+
+            // We always need an expr view here, if input pattern doesn't have constraints we have to create one
+            if(!inputPatternHasConstraints) {
+                final MethodCallExpr exprCall = new MethodCallExpr(null, ModelGenerator.EXPR_CALL);
+                exprCall.addArgument(toVar(nameExpr));
+                accumulateDSL.addArgument(exprCall);
+            }
+
             final AccumulateFunction accumulateFunction = getAccumulateFunction(function, declarationClass);
             functionDSL.addArgument(new ClassExpr(toType(accumulateFunction.getClass())));
-            functionDSL.addArgument(new NameExpr(toVar(((NameExpr) expr).getName().asString())));
+            functionDSL.addArgument(new NameExpr(toVar(nameExpr)));
 
             final Class accumulateFunctionResultType = accumulateFunction.getResultType();
             context.addDeclaration(new DeclarationSpec(bindingId, accumulateFunctionResultType));
+
         } else {
             throw new UnsupportedOperationException("Unsupported expression " + expr);
         }

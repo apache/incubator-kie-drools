@@ -75,13 +75,11 @@ public class ViewBuilder {
     }
 
     private static CompositePatterns ensureVariablesDeclarationInView(CompositePatterns view, BuildContext ctx) {
-        if ( ctx.inputs.size() > ctx.usedVars.size() ) {
-            ctx.inputs.keySet().removeAll( ctx.usedVars );
-            int i = 0;
-            for ( Map.Entry<Variable<?>, InputViewItemImpl<?>> entry : ctx.inputs.entrySet() ) {
-                view.addCondition( i++, new PatternImpl( entry.getKey(), SingleConstraint.EMPTY, entry.getValue().getDataSourceDefinition() ) );
-                ctx.usedVars.add( entry.getKey() );
-            }
+        ctx.inputs.keySet().removeAll(ctx.usedVars);
+        int i = 0;
+        for (Map.Entry<Variable<?>, InputViewItemImpl<?>> entry : ctx.inputs.entrySet()) {
+            view.addCondition(i++, new PatternImpl(entry.getKey(), SingleConstraint.EMPTY, entry.getValue().getDataSourceDefinition()));
+            ctx.usedVars.add(entry.getKey());
         }
 
         view.ensureVariablesDeclarationInView();

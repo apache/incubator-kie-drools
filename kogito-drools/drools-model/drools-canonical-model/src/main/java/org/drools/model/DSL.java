@@ -193,6 +193,10 @@ public class DSL {
         return new InputViewItemImpl<T>( var, new DataSourceDefinitionImpl( dataSourceName, true));
     }
 
+    public static <T> Expr1ViewItem<T> expr( Variable<T> var) {
+        return new Expr1ViewItemImpl<T>( var, new Predicate1.Impl<T>(t -> true) );
+    }
+
     public static <T> Expr1ViewItem<T> expr( Variable<T> var, Predicate1<T> predicate ) {
         return new Expr1ViewItemImpl<T>( var, new Predicate1.Impl<T>(predicate) );
     }
