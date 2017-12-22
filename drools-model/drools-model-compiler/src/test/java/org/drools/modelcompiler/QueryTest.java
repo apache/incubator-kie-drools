@@ -293,7 +293,6 @@ public class QueryTest extends BaseModelTest {
     }
 
     @Test
-    @Ignore
     public void testQueryWithOOPathTransformedToFrom() {
         String str =
                 "import " + java.util.List.class.getCanonicalName() + ";" +

@@ -1186,7 +1186,7 @@ public class FlowTest {
         final org.drools.model.Variable<java.util.List> var_$expr$3$ = declarationOf(type(java.util.List.class),
                                                                                      "$expr$3$");
         org.drools.model.Query listSafeCities_build = queryDef_listSafeCities.build(
-                accumulate(expr("$expr$2$",
+                                                                                    accumulate(expr("$expr$2$",
                                                                                                     var_$ooChunk$1$,
                                                                                                     (_this) -> _this.getState()
                                                                                                             .equals("Safecountry")).indexedBy(java.lang.String.class,
@@ -1219,7 +1219,6 @@ public class FlowTest {
     }
 
     @Test
-    @Ignore
     public void testQueryOOPathAccumulateTransformed() {
         final org.drools.model.QueryDef queryDef_listSafeCities = query("listSafeCities");
 
@@ -1238,15 +1237,16 @@ public class FlowTest {
         final org.drools.model.Variable<java.util.List> var_$expr$4$ = declarationOf(type(java.util.List.class),
                                                                                      "$expr$4$");
         org.drools.model.Query listSafeCities_build = queryDef_listSafeCities.build(input(var_$p),
-                                                                                    accumulate(expr("$expr$2$",
-                                                                                                    var_$a,
-                                                                                                    (_this) -> _this.getState()
-                                                                                                            .equals("Safecountry")).indexedBy(java.lang.String.class,
-                                                                                                                                              org.drools.model.Index.ConstraintType.EQUAL,
-                                                                                                                                              0,
-                                                                                                                                              _this -> _this.getState(),
-                                                                                                                                              "Safecountry")
-                                                                                                       .reactOn("state"),
+                                                                                    expr("$expr$2$",
+                                                                                         var_$a,
+                                                                                         (_this) -> _this.getState()
+                                                                                                 .equals("Safecountry")).indexedBy(java.lang.String.class,
+                                                                                                                                   org.drools.model.Index.ConstraintType.EQUAL,
+                                                                                                                                   0,
+                                                                                                                                   _this -> _this.getState(),
+                                                                                                                                   "Safecountry")
+                                                                                            .reactOn("state"),
+                                                                                    accumulate(expr(var_$city, s -> true),
                                                                                                accFunction(org.drools.core.base.accumulators.CollectListAccumulateFunction.class,
                                                                                                            var_$city).as(var_$expr$4$)));
         Model model = new ModelImpl().addQuery( listSafeCities_build );
