@@ -164,4 +164,8 @@ public class BaseDescr
     public BaseDescr replaceVariable(String oldVar, String newVar) {
         throw new UnsupportedOperationException();
     }
+
+    public void accept(DescrVisitor visitor) {
+        visitor.visit(this);
+    }
 }

@@ -110,4 +110,10 @@ public class ForallDescr extends BaseDescr
     public String toString() {
         return "forall( "+patterns+" )";
     }
+
+    @Override
+    public void accept(DescrVisitor visitor) {
+        visitor.visit(this);
+    }
+
 }

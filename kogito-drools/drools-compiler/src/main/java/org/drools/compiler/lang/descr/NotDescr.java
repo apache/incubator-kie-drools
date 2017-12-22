@@ -56,4 +56,8 @@ public class NotDescr extends AnnotatedBaseDescr
         }
     }
 
+    @Override
+    public void accept(DescrVisitor visitor) {
+        visitor.visit(this);
+    }
 }

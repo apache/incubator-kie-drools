@@ -28,12 +28,12 @@ public class RuleContext {
 
     private List<DeclarationSpec> declarations = new ArrayList<>();
     private List<DeclarationSpec> ooPathDeclarations = new ArrayList<>();
-    Deque<Consumer<Expression>> exprPointer = new LinkedList<>();
-    List<Expression> expressions = new ArrayList<>();
-    Map<String, String> namedConsequences = new HashMap<>();
+    private Deque<Consumer<Expression>> exprPointer = new LinkedList<>();
+    private List<Expression> expressions = new ArrayList<>();
+    private Map<String, String> namedConsequences = new HashMap<>();
 
-    List<QueryParameter> queryParameters = new ArrayList<>();
-    Optional<String> queryName = Optional.empty();
+    private List<QueryParameter> queryParameters = new ArrayList<>();
+    private Optional<String> queryName = Optional.empty();
 
     private RuleDialect ruleDialect = RuleDialect.JAVA; // assumed is java by default as per Drools manual.
     public static enum RuleDialect {
@@ -41,7 +41,7 @@ public class RuleContext {
         MVEL;
     }
 
-    BaseDescr parentDesc = null;
+    public BaseDescr parentDesc = null;
 
     public RuleContext( KnowledgeBuilderImpl kbuilder, InternalKnowledgePackage pkg, DRLIdGenerator exprIdGenerator, Optional<RuleDescr> ruleDescr) {
         this.kbuilder = kbuilder;
@@ -150,5 +150,24 @@ public class RuleContext {
         return queryParameters.stream().filter(predicate).findFirst();
     }
 
+    public List<QueryParameter> getQueryParameters() {
+        return queryParameters;
+    }
+
+    public List<Expression> getExpressions() {
+        return expressions;
+    }
+
+    public Optional<String> getQueryName() {
+        return queryName;
+    }
+
+    public void setQueryName(Optional<String> queryName) {
+        this.queryName = queryName;
+    }
+
+    public Map<String, String> getNamedConsequences() {
+        return namedConsequences;
+    }
 }
 

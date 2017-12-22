@@ -27,6 +27,7 @@ import org.drools.javaparser.ast.type.Type;
 import org.drools.model.Query;
 import org.drools.model.QueryDef;
 import org.drools.modelcompiler.builder.PackageModel;
+import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassFromContext;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
@@ -43,17 +44,17 @@ public class QueryGenerator {
         RuleContext context = new RuleContext(kbuilder, pkg, packageModel.getExprIdGenerator(), Optional.of(queryDescr));
         String queryName = queryDescr.getName();
         final String queryDefVariableName = toQueryDef(queryName);
-        context.queryName = Optional.of(queryDefVariableName);
+        context.setQueryName(Optional.of(queryDefVariableName));
 
         parseQueryParameters(context, packageModel, queryDescr);
-        ClassOrInterfaceType queryDefType = getQueryType(context.queryParameters);
+        ClassOrInterfaceType queryDefType = getQueryType(context.getQueryParameters());
 
         MethodCallExpr queryCall = new MethodCallExpr(null, QUERY_CALL);
         if (!queryDescr.getNamespace().isEmpty()) {
             queryCall.addArgument( new StringLiteralExpr(queryDescr.getNamespace() ) );
         }
         queryCall.addArgument(new StringLiteralExpr(queryName));
-        for (QueryParameter qp : context.queryParameters) {
+        for (QueryParameter qp : context.getQueryParameters()) {
             queryCall.addArgument(new ClassExpr(JavaParser.parseType(qp.type.getCanonicalName())));
             queryCall.addArgument(new StringLiteralExpr(qp.name));
         }
@@ -88,7 +89,7 @@ public class QueryGenerator {
         RuleContext context = packageModel.getQueryDefWithType().get(toQueryDef(queryDescr.getName())).getContext();
         final String queryDefVariableName = toQueryDef(queryDescr.getName());
 
-        visit(context, packageModel, queryDescr);
+        new ModelGeneratorVisitor(context, packageModel).visit(queryDescr.getLhs());
         final Type queryType = JavaParser.parseType(Query.class.getCanonicalName());
 
         MethodDeclaration queryMethod = new MethodDeclaration(EnumSet.of(Modifier.PRIVATE), queryType, "query_" + toId(queryDescr.getName()));
@@ -101,7 +102,7 @@ public class QueryGenerator {
         VariableDeclarationExpr queryBuildVar = new VariableDeclarationExpr(queryType, queryBuildVarName);
 
         MethodCallExpr buildCall = new MethodCallExpr(new NameExpr(queryDefVariableName), BUILD_CALL);
-        context.expressions.forEach(buildCall::addArgument);
+        context.getExpressions().forEach(buildCall::addArgument);
 
         AssignExpr queryBuildAssign = new AssignExpr(queryBuildVar, buildCall, AssignExpr.Operator.ASSIGN);
         queryBody.addStatement(queryBuildAssign);
@@ -116,13 +117,9 @@ public class QueryGenerator {
             final String type = descr.getParameterTypes()[i];
             context.addDeclaration(new DeclarationSpec(argument, getClassFromContext(context.getPkg().getTypeResolver(), type)));
             QueryParameter queryParameter = new QueryParameter(argument, getClassFromContext(context.getPkg().getTypeResolver(), type));
-            context.queryParameters.add(queryParameter);
+            context.getQueryParameters().add(queryParameter);
             packageModel.putQueryVariable("query_" + descr.getName(), queryParameter);
         }
-    }
-
-    private static void visit(RuleContext context, PackageModel packageModel, QueryDescr descr) {
-        ModelGenerator.visit(context, packageModel, descr.getLhs());
     }
 
     private static ClassOrInterfaceType getQueryType(List<QueryParameter> queryParameters) {
@@ -179,9 +176,9 @@ public class QueryGenerator {
             MethodCallExpr callMethod = new MethodCallExpr(new NameExpr(queryDef), QUERY_INVOCATION_CALL);
             callMethod.addArgument( "" + !pattern.isQuery() );
 
-            List<QueryParameter> parameters = packageModel.getQueryDefWithType().get(queryDef).getContext().queryParameters;
+            List<QueryParameter> parameters = packageModel.getQueryDefWithType().get(queryDef).getContext().getQueryParameters();
             for (int i = 0; i < parameters.size(); i++) {
-                String queryName = context.queryName.orElseThrow(RuntimeException::new);
+                String queryName = context.getQueryName().orElseThrow(RuntimeException::new);
                 ExprConstraintDescr variableName = (ExprConstraintDescr) pattern.getConstraint().getDescrs().get(i);
                 Optional<String> unificationId = context.getUnificationId(variableName.toString());
                 int queryIndex = i + 1;
@@ -200,9 +197,9 @@ public class QueryGenerator {
         Optional<QueryParameter> optQueryParameter = context.queryParameterWithName(p -> p.name.equals(x));
         return optQueryParameter.map(qp -> {
 
-            final String queryDef = context.queryName.orElseThrow(RuntimeException::new);
+            final String queryDef = context.getQueryName().orElseThrow(RuntimeException::new);
 
-            final int queryParameterIndex = context.queryParameters.indexOf(qp) + 1;
+            final int queryParameterIndex = context.getQueryParameters().indexOf(qp) + 1;
             return (Expression)new MethodCallExpr(new NameExpr(queryDef), toQueryArg(queryParameterIndex));
 
         }).orElse(new NameExpr(toVar(x)));

@@ -1,0 +1,103 @@
+package org.drools.modelcompiler.builder.generator.visitor;
+
+import org.drools.compiler.lang.descr.AccumulateDescr;
+import org.drools.compiler.lang.descr.AndDescr;
+import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.compiler.lang.descr.ConditionalBranchDescr;
+import org.drools.compiler.lang.descr.DescrVisitor;
+import org.drools.compiler.lang.descr.EvalDescr;
+import org.drools.compiler.lang.descr.ExistsDescr;
+import org.drools.compiler.lang.descr.ForallDescr;
+import org.drools.compiler.lang.descr.FromDescr;
+import org.drools.compiler.lang.descr.NamedConsequenceDescr;
+import org.drools.compiler.lang.descr.NotDescr;
+import org.drools.compiler.lang.descr.OrDescr;
+import org.drools.compiler.lang.descr.PatternDescr;
+import org.drools.modelcompiler.builder.PackageModel;
+import org.drools.modelcompiler.builder.generator.RuleContext;
+
+public class ModelGeneratorVisitor implements DescrVisitor {
+
+    private final AccumulateVisitor accumulateVisitor;
+    private final AndVisitor andVisitor;
+    private final ConditionalElementVisitor conditionalElementVisitor;
+    private final OrVisitor orVisitor;
+    private final EvalVisitor evalVisitor;
+    private final FromVisitor fromVisitor;
+    private final NamedConsequenceVisitor namedConsequenceVisitor;
+    private final PatternVisitor patternVisitor;
+
+    public ModelGeneratorVisitor(RuleContext context, PackageModel packageModel) {
+        accumulateVisitor = new AccumulateVisitor(this, context, packageModel);
+        andVisitor = new AndVisitor(this, context);
+        conditionalElementVisitor = new ConditionalElementVisitor(context, this);
+        orVisitor = new OrVisitor(this, context);
+        evalVisitor = new EvalVisitor(context, packageModel);
+        fromVisitor = new FromVisitor(context, packageModel);
+        namedConsequenceVisitor = new NamedConsequenceVisitor(context, packageModel);
+        patternVisitor = new PatternVisitor(context, packageModel);
+    }
+
+    @Override
+    public void visit(BaseDescr descr) {
+        throw new UnsupportedOperationException("Unknown descr" + descr);
+    }
+
+    @Override
+    public void visit(AccumulateDescr descr) {
+        accumulateVisitor.visit((descr));
+    }
+
+    @Override
+    public void visit(AndDescr descr) {
+        andVisitor.visit(descr);
+    }
+
+    @Override
+    public void visit(NotDescr descr) {
+        conditionalElementVisitor.visit(descr, "not");
+    }
+
+    @Override
+    public void visit(ExistsDescr descr) {
+        conditionalElementVisitor.visit(descr, "exists");
+    }
+
+    @Override
+    public void visit(ForallDescr descr) {
+        conditionalElementVisitor.visit(descr, "forall");
+    }
+
+    @Override
+    public void visit(OrDescr descr) {
+        orVisitor.visit(descr, "or");
+    }
+
+    @Override
+    public void visit(EvalDescr descr) {
+        evalVisitor.visit(descr);
+    }
+
+    @Override
+    public void visit(FromDescr descr) {
+        fromVisitor.visit(descr);
+    }
+
+    @Override
+    public void visit(NamedConsequenceDescr descr) {
+        namedConsequenceVisitor.visit(descr);
+    }
+
+    @Override
+    public void visit(ConditionalBranchDescr descr) {
+        namedConsequenceVisitor.visit(descr);
+    }
+
+    @Override
+    public void visit(PatternDescr descr) {
+        patternVisitor.visit(descr);
+        if (descr.getSource() instanceof AccumulateDescr) {
+            visit((AccumulateDescr) descr.getSource());
+        }
+    }
+}

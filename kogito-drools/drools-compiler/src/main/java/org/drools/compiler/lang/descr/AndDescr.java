@@ -96,4 +96,8 @@ public class AndDescr extends AnnotatedBaseDescr
     public String toString() {
         return "[AND "+descrs+" ]";
     }
+
+    public void accept(DescrVisitor visitor) {
+        visitor.visit(this);
+    }
 }

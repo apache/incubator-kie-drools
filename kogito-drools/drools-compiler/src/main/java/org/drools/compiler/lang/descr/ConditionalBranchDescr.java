@@ -67,4 +67,10 @@ public class ConditionalBranchDescr extends BaseDescr {
     public String toString() {
         return "if ( " + condition + " ) " + consequence + (elseBranch != null ? " else " + elseBranch : "");
     }
+
+    @Override
+    public void accept(DescrVisitor visitor) {
+        visitor.visit(this);
+    }
+
 }

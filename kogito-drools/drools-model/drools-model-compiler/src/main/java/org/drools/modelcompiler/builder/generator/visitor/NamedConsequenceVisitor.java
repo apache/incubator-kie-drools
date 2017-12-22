@@ -1,4 +1,4 @@
-package org.drools.modelcompiler.builder.generator;
+package org.drools.modelcompiler.builder.generator.visitor;
 
 import java.util.Collections;
 import java.util.List;
@@ -13,6 +13,9 @@ import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.javaparser.ast.stmt.BlockStmt;
 import org.drools.modelcompiler.builder.PackageModel;
+import org.drools.modelcompiler.builder.generator.DrlxParseResult;
+import org.drools.modelcompiler.builder.generator.ModelGenerator;
+import org.drools.modelcompiler.builder.generator.RuleContext;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassFromContext;
@@ -67,8 +70,8 @@ public class NamedConsequenceVisitor {
         if (!condition.equals("true")) { // Default case
             when.addArgument(new StringLiteralExpr(context.getConditionId(patternType, condition)));
             when.addArgument(new NameExpr(toVar(patternRelated.getIdentifier())));
-            ModelGenerator.DrlxParseResult parseResult = drlxParse(context, packageModel, patternType, patternRelated.getIdentifier(), condition);
-            when.addArgument(generateLambdaWithoutParameters(Collections.emptySortedSet(), parseResult.expr));
+            DrlxParseResult parseResult = drlxParse(context, packageModel, patternType, patternRelated.getIdentifier(), condition);
+            when.addArgument(generateLambdaWithoutParameters(Collections.emptySortedSet(), parseResult.getExpr()));
         }
 
         MethodCallExpr then = new MethodCallExpr(when, THEN_CALL);
@@ -89,7 +92,7 @@ public class NamedConsequenceVisitor {
     }
 
     private MethodCallExpr onDSL(NamedConsequenceDescr namedConsequence) {
-        String namedConsequenceString = context.namedConsequences.get(namedConsequence.getName());
+        String namedConsequenceString = context.getNamedConsequences().get(namedConsequence.getName());
         BlockStmt ruleVariablesBlock = new BlockStmt();
         createVariables(context.getKbuilder(), ruleVariablesBlock, packageModel, context);
         BlockStmt ruleConsequence = rewriteConsequence(context, namedConsequenceString);
