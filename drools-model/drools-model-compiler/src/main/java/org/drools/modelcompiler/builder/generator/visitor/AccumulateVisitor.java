@@ -86,7 +86,7 @@ public class AccumulateVisitor {
 
         final String expression = function.getParams()[0];
         final Expression expr = DrlxParser.parseExpression(expression).getExpr();
-        String bindingId = Optional.ofNullable(function.getBind()).orElse(basePattern.getIdentifier());
+        final String bindingId = Optional.ofNullable(function.getBind()).orElse(basePattern.getIdentifier());
 
         if(expr instanceof BinaryExpr) {
 
