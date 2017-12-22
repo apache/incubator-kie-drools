@@ -1032,11 +1032,7 @@ public class KnowledgeBaseImpl
     }
 
     public void registerTypeDeclaration( TypeDeclaration newDecl, InternalKnowledgePackage newPkg ) {
-        try {
-            processTypeDeclaration( newDecl, newPkg );
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException( "unable to resolve Type Declaration class '" + newDecl.getTypeClassName() + "'", e );
-        }
+        this.classTypeDeclaration.put( newDecl.getTypeClassName(), newDecl );
     }
 
     protected void processTypeDeclaration( TypeDeclaration newDecl, InternalKnowledgePackage newPkg ) throws ClassNotFoundException {
@@ -1046,7 +1042,7 @@ public class KnowledgeBaseImpl
         if ( typeDeclaration == null ) {
             String className = newDecl.getTypeClassName();
 
-            byte [] def = runtime.getClassDefinition(convertClassToResourcePath(className));
+            byte [] def = runtime != null ? runtime.getClassDefinition(convertClassToResourcePath(className)) : null;
             Class<?> definedKlass = registerAndLoadTypeDefinition( className, def );
 
             if ( definedKlass == null && newDecl.isNovel() ) {

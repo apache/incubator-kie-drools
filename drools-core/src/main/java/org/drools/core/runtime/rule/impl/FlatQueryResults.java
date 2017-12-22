@@ -18,13 +18,11 @@ package org.drools.core.runtime.rule.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -33,15 +31,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 import org.drools.core.QueryResultsImpl;
 import org.drools.core.QueryResultsRowImpl;
 import org.drools.core.common.DisconnectedFactHandle;
 import org.drools.core.rule.Declaration;
 import org.drools.core.xml.jaxb.util.JaxbListAdapter;
 import org.drools.core.xml.jaxb.util.JaxbListWrapper;
-import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
-import org.drools.core.xml.jaxb.util.JaxbObjectObjectPair;
 import org.drools.core.xml.jaxb.util.JaxbStringObjectPair;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
@@ -114,15 +109,17 @@ public class FlatQueryResults implements QueryResults {
             for( i = 0; i < length; ++i ) {
                 String id = declrs[i].getIdentifier();
                 FactHandle factHandle = resultImpl.getFactHandle(id);
-                Object obj = null;
-                if( ! id.equals("") ) {
-                    // no result value "" because "abducibl/retrieved facts are hidden
-                    obj = resultImpl.get(id);
-                }
-                factHandle = DisconnectedFactHandle.newFrom(factHandle);
+                if (factHandle != null) {
+                    Object obj = null;
+                    if ( !id.equals( "" ) ) {
+                        // no result value "" because "abducibl/retrieved facts are hidden
+                        obj = resultImpl.get( id );
+                    }
+                    factHandle = DisconnectedFactHandle.newFrom( factHandle );
 
-                idFactHandleMap.put(id, factHandle);
-                idResultMap.put(id, obj);
+                    idFactHandleMap.put( id, factHandle );
+                    idResultMap.put( id, obj );
+                }
             }
             idFactHandleMaps.add(idFactHandleMap);
             idResultMaps.add(idResultMap);

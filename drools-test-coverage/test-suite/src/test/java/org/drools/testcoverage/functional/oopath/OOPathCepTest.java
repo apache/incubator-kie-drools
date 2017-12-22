@@ -17,29 +17,34 @@
 package org.drools.testcoverage.functional.oopath;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.assertj.core.api.Assertions;
-import org.kie.api.time.SessionPseudoClock;
 import org.drools.testcoverage.common.model.Message;
 import org.drools.testcoverage.common.model.MessageEvent;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieSessionUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.After;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.rule.EntryPoint;
+import org.kie.api.time.SessionPseudoClock;
 
 import static org.drools.compiler.TestUtil.assertDrlHasCompilationError;
 
 /**
  * Tests usage of OOPath expressions with CEP (events, event windows, event streams).
  */
+@RunWith(Parameterized.class)
 public class OOPathCepTest {
 
     private static final String MODULE_GROUP_ID = "oopath-cep-test";
@@ -50,6 +55,17 @@ public class OOPathCepTest {
     private KieSession kieSession;
     private List<MessageEvent> events;
     private List<Message> messages;
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public OOPathCepTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseStreamConfigurations();
+    }
 
     @After
     public void disposeKieSession() {
@@ -79,7 +95,7 @@ public class OOPathCepTest {
                 "  messages.add( $message );\n" +
                 "end\n";
 
-        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_IDENTITY, drl);
+        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, kieBaseTestConfiguration, drl);
         this.initKieSession(kieBase);
         this.populateAndVerifyEventCase(this.kieSession);
     }
@@ -101,7 +117,7 @@ public class OOPathCepTest {
                 "  messages.add( $message );\n" +
                 "end\n";
 
-        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_IDENTITY, drl);
+        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, kieBaseTestConfiguration, drl);
         this.initKieSession(kieBase);
         this.populateAndVerifyEventCase(this.kieSession.getEntryPoint(ENTRY_POINT_NAME));
     }
@@ -136,7 +152,7 @@ public class OOPathCepTest {
                 "  messages.add( $message );\n" +
                 "end\n";
 
-        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_IDENTITY, drl);
+        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, kieBaseTestConfiguration, drl);
         final SessionPseudoClock clock = this.initKieSessionWithPseudoClock(kieBase);
 
         this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Pong")), clock, 1);
@@ -169,7 +185,7 @@ public class OOPathCepTest {
                 "  messages.add( $message );\n" +
                 "end\n";
 
-        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_IDENTITY, drl);
+        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, kieBaseTestConfiguration, drl);
         final SessionPseudoClock clock = this.initKieSessionWithPseudoClock(kieBase);
 
         this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Ping")), clock, 1);
@@ -202,7 +218,7 @@ public class OOPathCepTest {
                 "  messages.add( $message );\n" +
                 "end\n";
 
-        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_IDENTITY, drl);
+        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, kieBaseTestConfiguration, drl);
         final SessionPseudoClock clock = this.initKieSessionWithPseudoClock(kieBase);
 
         this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Pong")), clock, 2);
@@ -236,7 +252,7 @@ public class OOPathCepTest {
                 "  messages.add( $message );\n" +
                 "end\n";
 
-        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_IDENTITY, drl);
+        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, kieBaseTestConfiguration, drl);
         final SessionPseudoClock clock = this.initKieSessionWithPseudoClock(kieBase);
 
         this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Ping"), DEFAULT_DURATION_IN_SECS));
@@ -270,7 +286,7 @@ public class OOPathCepTest {
                 "  messages.add( $message );\n" +
                 "end\n";
 
-        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_IDENTITY, drl);
+        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, kieBaseTestConfiguration, drl);
         final SessionPseudoClock clock = this.initKieSessionWithPseudoClock(kieBase);
 
         this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION_IN_SECS), clock, 1);
@@ -304,7 +320,7 @@ public class OOPathCepTest {
                 "  messages.add( $message );\n" +
                 "end\n";
 
-        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_IDENTITY, drl);
+        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, kieBaseTestConfiguration, drl);
         final SessionPseudoClock clock = this.initKieSessionWithPseudoClock(kieBase);
 
         this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Ping"), DEFAULT_DURATION_IN_SECS), clock, 1);
@@ -338,7 +354,7 @@ public class OOPathCepTest {
                 "  messages.add( $message );\n" +
                 "end\n";
 
-        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_IDENTITY, drl);
+        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, kieBaseTestConfiguration, drl);
         final SessionPseudoClock clock = this.initKieSessionWithPseudoClock(kieBase);
 
         final Message pongMessage = this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION_IN_SECS), clock, 1);
@@ -371,7 +387,7 @@ public class OOPathCepTest {
                 "  messages.add( $message );\n" +
                 "end\n";
 
-        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_IDENTITY, drl);
+        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, kieBaseTestConfiguration, drl);
         final SessionPseudoClock clock = this.initKieSessionWithPseudoClock(kieBase);
 
         this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Pong")), clock, 2);
@@ -404,7 +420,7 @@ public class OOPathCepTest {
                 "  messages.add( $message );\n" +
                 "end\n";
 
-        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_IDENTITY, drl);
+        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, kieBaseTestConfiguration, drl);
         final SessionPseudoClock clock = this.initKieSessionWithPseudoClock(kieBase);
 
         this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Pong")), clock, 2);
@@ -438,7 +454,7 @@ public class OOPathCepTest {
                 "  messages.add( $message );\n" +
                 "end\n";
 
-        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_IDENTITY, drl);
+        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, kieBaseTestConfiguration, drl);
         final SessionPseudoClock clock = this.initKieSessionWithPseudoClock(kieBase);
 
         this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), 1), clock, 2);
@@ -473,7 +489,7 @@ public class OOPathCepTest {
                 "  messages.add( $message );\n" +
                 "end\n";
 
-        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_IDENTITY, drl);
+        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, kieBaseTestConfiguration, drl);
         final SessionPseudoClock clock = this.initKieSessionWithPseudoClock(kieBase);
 
         this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION_IN_SECS), clock, 1);
@@ -507,7 +523,7 @@ public class OOPathCepTest {
                 "  messages.add( $message );\n" +
                 "end\n";
 
-        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_IDENTITY, drl);
+        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, kieBaseTestConfiguration, drl);
         this.initKieSessionWithPseudoClock(kieBase);
 
         this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION_IN_SECS));
@@ -541,7 +557,7 @@ public class OOPathCepTest {
                 "  messages.add( $message );\n" +
                 "end\n";
 
-        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_IDENTITY, drl);
+        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, kieBaseTestConfiguration, drl);
         this.initKieSessionWithPseudoClock(kieBase);
 
         this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION_IN_SECS));
@@ -573,7 +589,7 @@ public class OOPathCepTest {
                 "  events.add( $messageEvent );\n" +
                 "end\n";
 
-        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_EQUALITY, drl);
+        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, kieBaseTestConfiguration, drl);
         this.populateAndVerifyLengthWindowCase(kieBase);
     }
 
@@ -598,7 +614,7 @@ public class OOPathCepTest {
                 "  events.add( $messageEvent );\n" +
                 "end\n";
 
-        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_EQUALITY, drl);
+        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, kieBaseTestConfiguration, drl);
         this.populateAndVerifyLengthWindowCase(kieBase);
     }
 
@@ -669,7 +685,7 @@ public class OOPathCepTest {
                 "  events.add( $messageEvent );\n" +
                 "end\n";
 
-        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_IDENTITY, drl);
+        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, kieBaseTestConfiguration, drl);
         this.populateAndVerifyTimeWindowCase(kieBase);
     }
 
@@ -694,7 +710,7 @@ public class OOPathCepTest {
                 "  events.add( $messageEvent );\n" +
                 "end\n";
 
-        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_IDENTITY, drl);
+        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, kieBaseTestConfiguration, drl);
         this.populateAndVerifyTimeWindowCase(kieBase);
     }
 
@@ -750,7 +766,7 @@ public class OOPathCepTest {
                 "  messages.add( $message );\n" +
                 "end\n";
 
-        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_IDENTITY, drl);
+        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, kieBaseTestConfiguration, drl);
         final SessionPseudoClock clock = this.initKieSessionWithPseudoClock(kieBase);
 
         this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Ping")), clock, 3);

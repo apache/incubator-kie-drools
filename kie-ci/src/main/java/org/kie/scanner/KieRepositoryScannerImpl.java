@@ -27,14 +27,18 @@ import java.util.TimerTask;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.drools.core.impl.InternalKieContainer;
+import org.appformer.maven.integration.ArtifactResolver;
+import org.appformer.maven.integration.DependencyDescriptor;
+import org.appformer.maven.support.DependencyFilter;
+import org.appformer.maven.support.PomModel;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.InternalKieScanner;
 import org.drools.compiler.kie.builder.impl.MemoryKieModule;
 import org.drools.compiler.kie.builder.impl.ResultsImpl;
-import org.drools.compiler.kie.builder.impl.ZipKieModule;
+import org.drools.compiler.kie.builder.impl.InternalKieModuleProvider;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
+import org.drools.core.impl.InternalKieContainer;
 import org.eclipse.aether.artifact.Artifact;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieModule;
@@ -45,10 +49,6 @@ import org.kie.api.builder.Results;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.event.kiescanner.KieScannerEventListener;
 import org.kie.api.runtime.KieContainer;
-import org.appformer.maven.integration.ArtifactResolver;
-import org.appformer.maven.integration.DependencyDescriptor;
-import org.appformer.maven.support.DependencyFilter;
-import org.appformer.maven.support.PomModel;
 import org.kie.scanner.event.KieScannerEventSupport;
 import org.kie.scanner.management.KieScannerMBean;
 import org.kie.scanner.management.KieScannerMBeanImpl;
@@ -56,7 +56,6 @@ import org.kie.scanner.management.MBeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.buildKieModule;
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsforEmptyKieModule;
 import static org.drools.compiler.kproject.ReleaseIdImpl.adapt;
 
@@ -182,7 +181,7 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
 
         MemoryKieModule kieModule = new MemoryKieModule(releaseId);
         addDependencies(kieModule, resolver, resolver.getPomDirectDependencies( DependencyFilter.COMPILE_FILTER ));
-        build(kieModule);
+        kieModule.build();
         return kieModule;
     }
 
@@ -192,10 +191,10 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
         if (releaseId.isSnapshot()) {
             ((ReleaseIdImpl)releaseId).setSnapshotVersion(artifact.getVersion());
         }
-        ZipKieModule kieModule = createZipKieModule(releaseId, artifact.getFile());
+        InternalKieModule kieModule = createKieModule(releaseId, artifact.getFile());
         if (kieModule != null) {
             addDependencies(kieModule, resolver, resolver.getArtifactDependecies(dependencyDescriptor.toString()));
-            build(kieModule);
+            kieModule.build();
         }
         return kieModule;
     }
@@ -209,7 +208,7 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
                 Artifact depArtifact = resolver.resolveArtifact(dep.getReleaseId());
                 if (depArtifact != null && isKJar(depArtifact.getFile())) {
                     ReleaseId depReleaseId = adapt( new DependencyDescriptor(depArtifact).getReleaseId() );
-                    ZipKieModule zipKieModule = createZipKieModule(depReleaseId, depArtifact.getFile());
+                    InternalKieModule zipKieModule = createKieModule(depReleaseId, depArtifact.getFile());
                     if (zipKieModule != null) {
                         kieModule.addKieDependency(zipKieModule);
                     }
@@ -218,9 +217,9 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
         }
     }
 
-    private static ZipKieModule createZipKieModule( org.appformer.maven.support.AFReleaseId releaseId, File jar ) {
+    private static InternalKieModule createKieModule( org.appformer.maven.support.AFReleaseId releaseId, File jar ) {
         KieModuleModel kieModuleModel = getKieModuleModelFromJar(jar);
-        return kieModuleModel != null ? new ZipKieModule(adapt( releaseId ), kieModuleModel, jar) : null;
+        return kieModuleModel != null ? InternalKieModuleProvider.get(adapt( releaseId ), kieModuleModel, jar) : null;
     }
 
     private static KieModuleModel getKieModuleModelFromJar(File jar) {
@@ -241,12 +240,6 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
 			}
         }
         return null;
-    }
-
-    private ResultsImpl build(InternalKieModule kieModule) {
-        ResultsImpl messages = new ResultsImpl();
-        buildKieModule(kieModule, messages);
-        return messages;
     }
 
     public synchronized void start(long pollingInterval) {
@@ -349,10 +342,10 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
 
     private boolean updateKieModule(DependencyDescriptor oldDependency, Artifact artifact) {
         org.appformer.maven.support.AFReleaseId newReleaseId = new DependencyDescriptor( artifact).getReleaseId();
-        ZipKieModule kieModule = createZipKieModule(newReleaseId, artifact.getFile());
+        InternalKieModule kieModule = createKieModule(newReleaseId, artifact.getFile());
         if (kieModule != null) {
             addDependencies(kieModule, artifactResolver, artifactResolver.getArtifactDependecies(newReleaseId.toString()));
-            ResultsImpl messages = build(kieModule);
+            ResultsImpl messages = kieModule.build();
             if ( messages.filterMessages(Message.Level.ERROR).isEmpty()) {
                 Results updateMessages = kieContainer.updateDependencyToVersion(adapt( oldDependency.getArtifactReleaseId() ), adapt( newReleaseId ));
                 oldDependency.setArtifactVersion(artifact.getVersion());

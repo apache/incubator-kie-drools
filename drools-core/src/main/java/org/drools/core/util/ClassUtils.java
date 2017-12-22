@@ -25,6 +25,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.security.AccessController;
@@ -462,6 +463,24 @@ public final class ClassUtils {
                 }
             }
         }
+    }
+
+    public static Class extractGenericType(Class<?> clazz, final String methodName) {
+        Method method  = ClassUtils.getAccessor(clazz, methodName);
+        if(method == null) {
+            throw new RuntimeException(String.format("Unknown accessor %s on %s", methodName, clazz));
+        }
+
+        java.lang.reflect.Type returnType = method.getGenericReturnType();
+
+        if(returnType instanceof ParameterizedType){
+            ParameterizedType type = (ParameterizedType) returnType;
+            java.lang.reflect.Type[] typeArguments = type.getActualTypeArguments();
+            for(java.lang.reflect.Type typeArgument : typeArguments){
+                return (Class) typeArgument;
+            }
+        }
+        throw new RuntimeException("No generic type");
     }
 
     private static void processModifiesAnnotation( Class<?> clazz, Set<PropertyInClass> props, Method m ) {

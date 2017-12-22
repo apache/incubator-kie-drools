@@ -33,6 +33,7 @@ import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.xml.RulesSemanticModule;
 import org.drools.compiler.kie.builder.impl.AbstractKieModule.CompilationCache;
 import org.drools.compiler.rule.builder.DroolsCompilerComponentFactory;
+import org.drools.compiler.rule.builder.util.AccumulateUtil;
 import org.drools.core.base.evaluators.EvaluatorDefinition;
 import org.drools.core.base.evaluators.EvaluatorRegistry;
 import org.drools.core.common.ProjectClassLoader;
@@ -212,7 +213,7 @@ public class KnowledgeBuilderConfigurationImpl
 
         buildDialectConfigurationMap();
 
-        buildAccumulateFunctionsMap();
+        this.accumulateFunctions = AccumulateUtil.buildAccumulateFunctionsMap(chainedProperties, getClassLoader());
 
         buildEvaluatorRegistry();
 
@@ -507,25 +508,10 @@ public class KnowledgeBuilderConfigurationImpl
         this.semanticModules.addSemanticModule(module);
     }
 
-    private void buildAccumulateFunctionsMap() {
-        this.accumulateFunctions = new HashMap<String, AccumulateFunction>();
-        Map<String, String> temp = new HashMap<String, String>();
-        this.chainedProperties.mapStartsWith(temp,
-                AccumulateFunctionOption.PROPERTY_NAME,
-                true);
-        int index = AccumulateFunctionOption.PROPERTY_NAME.length();
-        for (Map.Entry<String, String> entry : temp.entrySet()) {
-            String identifier = entry.getKey().trim().substring(index);
-            this.accumulateFunctions.put(identifier,
-                    loadAccumulateFunction(identifier,
-                            entry.getValue()));
-        }
-    }
-
     public void addAccumulateFunction(String identifier,
             String className) {
         this.accumulateFunctions.put(identifier,
-                loadAccumulateFunction(identifier,
+                                     AccumulateUtil.loadAccumulateFunction(getClassLoader(), identifier,
                         className));
     }
 
@@ -550,24 +536,6 @@ public class KnowledgeBuilderConfigurationImpl
     // Used by droolsjbpm-tools
     public Collection<String> getAccumulateFunctionNames() {
         return this.accumulateFunctions.keySet();
-    }
-
-    @SuppressWarnings("unchecked")
-    private AccumulateFunction loadAccumulateFunction(String identifier,
-            String className) {
-        try {
-            Class<? extends AccumulateFunction> clazz = (Class<? extends AccumulateFunction>) getClassLoader().loadClass(className);
-            return clazz.newInstance();
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException("Error loading accumulate function for identifier " + identifier + ". Class " + className + " not found",
-                    e);
-        } catch (InstantiationException e) {
-            throw new RuntimeException("Error loading accumulate function for identifier " + identifier + ". Instantiation failed for class " + className,
-                    e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException("Error loading accumulate function for identifier " + identifier + ". Illegal access to class " + className,
-                    e);
-        }
     }
 
     private void buildEvaluatorRegistry() {

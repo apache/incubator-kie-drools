@@ -15,6 +15,7 @@
 
 package org.drools.compiler.integrationtests;
 
+import org.assertj.core.api.Assertions;
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
@@ -487,7 +488,7 @@ public class NamedConsequencesTest extends CommonTestMethodBase {
         assertTrue( results.contains( "stilton" ) );
     }
 
-    @Test(expected=RuntimeException.class)
+    @Test
     public void testEndlessIfWithModify() {
         String str = "import org.drools.compiler.Cheese;\n " +
                 "global java.util.List results;\n" +
@@ -505,7 +506,9 @@ public class NamedConsequencesTest extends CommonTestMethodBase {
                 "    if (results.size() > 10) throw new RuntimeException();\n" +
                 "end\n";
 
-        List<String> results = executeTestWithDRL(str);
+        Assertions.assertThatThrownBy(() -> executeTestWithDRL(str))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("Exception executing consequence for rule \"R1\"");
     }
 
     @Test
@@ -572,17 +575,13 @@ public class NamedConsequencesTest extends CommonTestMethodBase {
                 "    results.add( $a.getType().toUpperCase() );\n" +
                 "end\n";
 
-//        Cheese stilton = new Cheese( "stilton", 5 );
-//        Cheese cheddar = new Cheese( "cheddar", 7 );
-//        Cheese brie = new Cheese( "brie", 5 );
-
         List<String> results = executeTestWithDRL(str);
 
         assertEquals( 2, results.size() );
         assertTrue( results.contains( "STILTON" ) );
     }
 
-    @Test(expected=RuntimeException.class)
+    @Test
     public void testEndlessIfElseWithModify() {
         String str = "import org.drools.compiler.Cheese;\n " +
                 "global java.util.List results;\n" +
@@ -602,7 +601,9 @@ public class NamedConsequencesTest extends CommonTestMethodBase {
                 "    if (results.size() > 10) throw new RuntimeException();\n" +
                 "end\n";
 
-        List<String> results = executeTestWithDRL(str);
+        Assertions.assertThatThrownBy(() -> executeTestWithDRL(str))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("Exception executing consequence for rule \"R1\"");
     }
 
     @Test
@@ -635,6 +636,32 @@ public class NamedConsequencesTest extends CommonTestMethodBase {
 
         assertTrue(results.contains("stilton"));
         assertTrue(results.contains("cheddar"));
+    }
+
+    @Test
+    public void testMultipleIfAfterEval() {
+        String str = "import org.drools.compiler.Cheese;\n " +
+                "global java.util.List results;\n" +
+                "\n" +
+                "rule R1 when\n" +
+                "    $a: Cheese ( )\n" +
+                "    eval( $a.getType().equals(\"stilton\") )\n" +
+                "    if ( $a.getPrice() > 10 ) do[t1]\n" +
+                "    if ( $a.getPrice() < 10 ) do[t2]\n" +
+                "    $b: Cheese ( type == \"cheddar\" )\n" +
+                "then\n" +
+                "    results.add( $b.getType() );\n" +
+                "then[t1]\n" +
+                "    results.add( $a.getType().toUpperCase() );\n" +
+                "then[t2]\n" +
+                "    results.add( $a.getType() );\n" +
+                "end\n";
+
+        List<String> results = executeTestWithDRL(str);
+
+        assertEquals( 2, results.size() );
+        assertTrue( results.contains( "cheddar" ) );
+        assertTrue( results.contains( "stilton" ) );
     }
 
     @Test
@@ -832,6 +859,50 @@ public class NamedConsequencesTest extends CommonTestMethodBase {
     }
 
     @Test
+    public void testMVELBreak() {
+        String str = "import org.drools.compiler.Cheese;\n " +
+                "global java.util.List results;\n" +
+                "\n" +
+                "rule R1 dialect \"mvel\" when\n" +
+                "    $a: Cheese ( type == \"stilton\" )\n" +
+                "    $b: Cheese ( type == \"cheddar\" )\n" +
+                "    if ( 200 < 400 ) break[t1]\n" +
+                "then\n" +
+                "    results.add( $b.type );\n" +
+                "then[t1]\n" +
+                "    results.add( $a.type.toUpperCase() );\n" +
+                "end\n";
+
+        List<String> results = executeTestWithDRL(str);
+
+        System.out.println( results );
+        assertEquals( 1, results.size() );
+        assertTrue( results.contains( "STILTON" ) );
+    }
+
+    @Test
+    public void testMVELNoBreak() {
+        String str = "import org.drools.compiler.Cheese;\n " +
+                "global java.util.List results;\n" +
+                "\n" +
+                "rule R1 dialect \"mvel\" when\n" +
+                "    $a: Cheese ( type == \"stilton\" )\n" +
+                "    $b: Cheese ( type == \"cheddar\" )\n" +
+                "    if ( 200 > 400 ) break[t1]\n" +
+                "then\n" +
+                "    results.add( $b.type );\n" +
+                "then[t1]\n" +
+                "    results.add( $a.type.toUpperCase() );\n" +
+                "end\n";
+
+        List<String> results = executeTestWithDRL(str);
+
+        System.out.println( results );
+        assertEquals( 1, results.size() );
+        assertTrue( results.contains( "cheddar" ) );
+    }
+
+    @Test
     public void testMvelInsertWithNamedConsequence() {
         // DROOLS-726
         String drl2 =
@@ -941,6 +1012,57 @@ public class NamedConsequencesTest extends CommonTestMethodBase {
         ksession.fireAllRules();
 
         assertEquals( "ok", list.get(1) );
+    }
+
+    @Test
+    public void testInheritance() {
+        String str = "dialect \"mvel\"\n" +
+                "import org.drools.compiler.Cheese;\n " +
+                "global java.util.List results;\n" +
+                "\n" +
+                "rule R0 when\n" +
+                "    $a: Cheese ( )\n" +
+                "then\n" +
+                "end\n" +
+                "\n" +
+                "rule R1 extends R0 when\n" +
+                "    eval( $a.getType().equals(\"stilton\") )\n" +
+                "    if ( $a.getPrice() > 10 ) do[t1]\n" +
+                "    if ( $a.getPrice() < 10 ) do[t2]\n" +
+                "    $b: Cheese ( type == \"cheddar\" )\n" +
+                "then\n" +
+                "    results.add( $b.type );\n" +
+                "then[t1]\n" +
+                "    results.add( $a.type.toUpperCase() );\n" +
+                "then[t2]\n" +
+                "    results.add( $a.type );\n" +
+                "end\n";
+
+        List<String> results = executeTestWithDRL(str);
+
+        assertEquals( 2, results.size() );
+        assertTrue( results.contains( "cheddar" ) );
+        assertTrue( results.contains( "stilton" ) );
+    }
+
+    @Test
+    public void testWrongConsequenceName() {
+        String str = "import org.drools.compiler.Cheese;\n " +
+                "global java.util.List results;\n" +
+                "\n" +
+                "rule R1 dialect \"mvel\" when\n" +
+                "    $a: Cheese ( type == \"stilton\" )\n" +
+                "    $b: Cheese ( type == \"cheddar\" )\n" +
+                "    if ( 200 < 400 ) break[t2]\n" +
+                "then\n" +
+                "    results.add( $b.getType() );\n" +
+                "then[t1]\n" +
+                "    results.add( $a.getType().toUpperCase() );\n" +
+                "end\n";
+
+        KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        builder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL);
+        assertTrue ( builder.hasErrors() );
     }
 
     public static class ListHolder {

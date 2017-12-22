@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.assertj.core.api.Assertions;
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
@@ -1345,7 +1346,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         ksession.dispose();
     }
 
-    @Test(expected=RuntimeException.class)
+    @Test
     public void testInfiniteLoop() throws Exception {
         String rule = "package org.drools.compiler.integrationtests\n" +
                 "import " + PropertySpecificTest.C.class.getCanonicalName() + "\n" +
@@ -1369,15 +1370,12 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         c.setS("test");
         ksession.insert( c );
 
-        try {
-            ksession.fireAllRules();
-        } finally {
-            assertTrue(counter.get() >= 10);
-            ksession.dispose();
-        }
+        Assertions.assertThatThrownBy(() -> ksession.fireAllRules())
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("Exception executing consequence for rule \"R1\"");
     }
 
-    @Test(expected=RuntimeException.class)
+    @Test
     public void testClassReactive() throws Exception {
         String rule = "package org.drools.compiler.integrationtests\n" +
                 "global java.util.concurrent.atomic.AtomicInteger counter\n" +
@@ -1408,13 +1406,9 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         factTypeB.set( factB, "on", false );
         ksession.insert( factB );
 
-        try {
-            ksession.fireAllRules();
-        } finally {
-            assertTrue((Boolean)factTypeB.get(factB, "on"));
-            assertTrue(counter.get() >= 10);
-            ksession.dispose();
-        }
+        Assertions.assertThatThrownBy(() -> ksession.fireAllRules())
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("Exception executing consequence for rule \"R1\"");
     }
 
     @Test(timeout = 5000)
@@ -2226,9 +2220,11 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         testBetaWith2RTNSinksExec(false);
     }
 
-    @Test(expected=RuntimeException.class)
+    @Test
     public void testBetaWith2RTNSinksExecInfiniteLoop() throws Exception {
-        testBetaWith2RTNSinksExec(true);
+        Assertions.assertThatThrownBy(() -> testBetaWith2RTNSinksExec(true))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("Exception executing consequence for rule \"R1\"");
     }
 
     private void testBetaWith2RTNSinksExec(boolean addInfiniteLoopWatch) throws Exception {
@@ -2302,9 +2298,11 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         testBetaWith2BetaSinksExec(false);
     }
 
-    @Test(expected=RuntimeException.class)
+    @Test
     public void testBetaWith2BetaSinksExecInfiniteLoop() throws Exception {
-        testBetaWith2BetaSinksExec(true);
+        Assertions.assertThatThrownBy(() -> testBetaWith2BetaSinksExec(true))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("Exception executing consequence for rule \"R1\"");
     }
 
     private void testBetaWith2BetaSinksExec(boolean addInfiniteLoopWatch) throws Exception {

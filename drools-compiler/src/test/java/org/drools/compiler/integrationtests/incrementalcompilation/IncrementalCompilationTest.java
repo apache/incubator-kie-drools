@@ -2523,7 +2523,7 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
 
     @Test
     public void testGetFactTypeOnIncrementalUpdate() throws Exception {
-        // DROOLS-980
+        // DROOLS-980 - DROOLS-2195
         String drl1 =
                 "package org.mytest\n" +
                 "declare Person\n" +
@@ -2551,18 +2551,27 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         KieContainer kc = ks.newKieContainer(km.getReleaseId());
         KieBase kbase = kc.getKieBase();
 
-        FactType fact = kbase.getFactType("org.mytest", "Person");
-        assertNotNull( fact.getField( "name" ) );
-        assertNotNull( fact.getField( "age" ) );
+        FactType ftype = kbase.getFactType("org.mytest", "Person");
+        assertNotNull( ftype.getField( "name" ) );
+        assertNotNull( ftype.getField( "age" ) );
+
+        Object fact = ftype.newInstance();
+        ftype.set(fact, "name", "me");
+        ftype.set(fact, "age", 42);
 
         ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.2");
         km = createAndDeployJar( ks, releaseId2, drl2 );
         kc.updateToVersion(releaseId2);
 
-        fact = kbase.getFactType("org.mytest", "Person");
-        assertNotNull( fact.getField( "name" ) );
-        assertNotNull( fact.getField( "age" ) );
-        assertNotNull( fact.getField( "address" ) );
+        ftype = kbase.getFactType("org.mytest", "Person");
+        assertNotNull( ftype.getField( "name" ) );
+        assertNotNull( ftype.getField( "age" ) );
+        assertNotNull( ftype.getField( "address" ) );
+
+        fact = ftype.newInstance();
+        ftype.set(fact, "name", "me again");
+        ftype.set(fact, "age", 43);
+        ftype.set(fact, "address", "World");
     }
 
     @Test
