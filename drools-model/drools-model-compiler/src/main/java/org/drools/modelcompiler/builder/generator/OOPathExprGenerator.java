@@ -18,12 +18,12 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.prepend;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.ModelGenerator.buildExpressionWithIndexing;
 
-public class OOPathExprVisitor {
+public class OOPathExprGenerator {
 
     private final RuleContext context;
     private final PackageModel packageModel;
 
-    public OOPathExprVisitor(RuleContext context, PackageModel packageModel) {
+    public OOPathExprGenerator(RuleContext context, PackageModel packageModel) {
         this.context = context;
         this.packageModel = packageModel;
     }
@@ -33,7 +33,7 @@ public class OOPathExprVisitor {
         Class<?> previousClass = originalClass;
         String previousBind = originalBind;
 
-        List<ModelGenerator.DrlxParseResult> ooPathConditionExpressions = new ArrayList<>();
+        List<DrlxParseResult> ooPathConditionExpressions = new ArrayList<>();
 
         for (OOPathChunk chunk : ooPathExpr.getChunks()) {
 
@@ -62,7 +62,7 @@ public class OOPathExprVisitor {
 
             final Expression condition = chunk.getCondition();
             if (condition != null) {
-                final ModelGenerator.DrlxParseResult drlxParseResult = ModelGenerator.drlxParse(context, packageModel, fieldType, bindingId, condition.toString());
+                final DrlxParseResult drlxParseResult = ModelGenerator.drlxParse(context, packageModel, fieldType, bindingId, condition.toString());
                 ooPathConditionExpressions.add(drlxParseResult);
             }
 
@@ -73,18 +73,18 @@ public class OOPathExprVisitor {
         // If the OOPath has an inner binding, it will be in the context's declarations without its type (as it's inferred from the last OOPath chunk).
         // We remove the original expression without type and use its name in the last expression
         List<DeclarationSpec> declarations = context.getDeclarations();
-        final Optional<DeclarationSpec> missingClassDeclarationFound = declarations.stream().filter(d -> d.declarationClass == null).findFirst();
+        final Optional<DeclarationSpec> missingClassDeclarationFound = declarations.stream().filter(d -> d.getDeclarationClass() == null).findFirst();
 
         missingClassDeclarationFound.ifPresent(missingClassDeclaration -> {
             final String innerBindingId = missingClassDeclaration.getBindingId();
 
             final int lastIndex = declarations.size() - 1;
             final DeclarationSpec last = declarations.get(lastIndex);
-            declarations.set(lastIndex, new DeclarationSpec(innerBindingId, last.declarationClass, last.optPattern, last.declarationSource));
+            declarations.set(lastIndex, new DeclarationSpec(innerBindingId, last.getDeclarationClass(), last.getOptPattern(), last.getDeclarationSource()));
             declarations.remove(declarations.indexOf(missingClassDeclaration));
 
             // In the meanwhile some condition could have used that binding, we need to rename that also
-            for(ModelGenerator.DrlxParseResult r : ooPathConditionExpressions) {
+            for(DrlxParseResult r : ooPathConditionExpressions) {
                 if(r.getExprId().equals(last.getBindingId())) {
                     r.setExprId(innerBindingId);
                 } else if(r.getPatternBinding().equals(last.getBindingId())) {

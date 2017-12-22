@@ -1,4 +1,4 @@
-package org.drools.modelcompiler.builder.generator;
+package org.drools.modelcompiler.builder.generator.visitor;
 
 import java.util.Optional;
 
@@ -9,7 +9,10 @@ import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.modelcompiler.builder.PackageModel;
-import org.drools.modelcompiler.builder.generator.ModelGenerator.DrlxParseResult;
+import org.drools.modelcompiler.builder.generator.DeclarationSpec;
+import org.drools.modelcompiler.builder.generator.DrlxParseResult;
+import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
+import org.drools.modelcompiler.builder.generator.RuleContext;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
@@ -38,12 +41,12 @@ public class FromVisitor {
 
             if (optContainsBinding.isPresent()) {
                 final DeclarationSpec declarationSpec = ruleContext.getDeclarationById(bindingId).orElseThrow(RuntimeException::new);
-                final Class<?> clazz = declarationSpec.declarationClass;
+                final Class<?> clazz = declarationSpec.getDeclarationClass();
 
                 final DrlxParseResult drlxParseResult = drlxParse(ruleContext, packageModel, clazz, bindingId, expression);
 
-                final Expression parsedExpression = drlxParseResult.expr;
-                final Expression exprArg = generateLambdaWithoutParameters(drlxParseResult.usedDeclarations, parsedExpression);
+                final Expression parsedExpression = drlxParseResult.getExpr();
+                final Expression exprArg = generateLambdaWithoutParameters(drlxParseResult.getUsedDeclarations(), parsedExpression);
 
                 fromCall.addArgument(exprArg);
             } else {

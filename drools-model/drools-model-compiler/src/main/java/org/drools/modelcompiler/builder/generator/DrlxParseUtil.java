@@ -138,7 +138,7 @@ public class DrlxParseUtil {
                 // then drlxExpr is a single NameExpr referring to a binding, e.g.: "$p1".
                 usedDeclarations.add(name);
                 return new TypedExpression(drlxExpr);
-            } if (context.queryParameters.stream().anyMatch(qp -> qp.name.equals(name))) {
+            } if (context.getQueryParameters().stream().anyMatch(qp -> qp.name.equals(name))) {
                 // then drlxExpr is a single NameExpr referring to a query parameter, e.g.: "$p1".
                 usedDeclarations.add(name);
                 return new TypedExpression(drlxExpr);
@@ -185,7 +185,7 @@ public class DrlxParseUtil {
                     // because reactOnProperties is referring only to the properties of the type of the pattern, not other declarations properites.
                     usedDeclarations.add(firstName);
                     if (!isInLineCast) {
-                        typeCursor = declarationById.get().declarationClass;
+                        typeCursor = declarationById.get().getDeclarationClass();
                     }
                     previous = new NameExpr(firstName);
                 } else {
@@ -196,7 +196,7 @@ public class DrlxParseUtil {
                     if(firstNodeName.getBackReferencesCount()  > 0) {
                         List<DeclarationSpec> ooPathDeclarations = context.getOOPathDeclarations();
                         DeclarationSpec backReferenceDeclaration = ooPathDeclarations.get(ooPathDeclarations.size() - 1 - firstNodeName.getBackReferencesCount());
-                        typeCursor = backReferenceDeclaration.declarationClass;
+                        typeCursor = backReferenceDeclaration.getDeclarationClass();
                         backReference = Optional.of(backReferenceDeclaration);
                         usedDeclarations.add(backReferenceDeclaration.getBindingId());
                     }
@@ -378,12 +378,20 @@ public class DrlxParseUtil {
     }
 
     public static class RemoveRootNodeResult {
-        Optional<Expression> rootNode;
-        Expression withoutRootNode;
+        private Optional<Expression> rootNode;
+        private Expression withoutRootNode;
 
         public RemoveRootNodeResult(Optional<Expression> rootNode, Expression withoutRootNode) {
             this.rootNode = rootNode;
             this.withoutRootNode = withoutRootNode;
+        }
+
+        public Optional<Expression> getRootNode() {
+            return rootNode;
+        }
+
+        public Expression getWithoutRootNode() {
+            return withoutRootNode;
         }
     }
 
