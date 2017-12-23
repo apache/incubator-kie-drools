@@ -50,7 +50,7 @@ salience 3
 no-loop
 when
    $tok: @{context}TreeToken( context == "@{context}", current == "null", totalCount > 0, confidence != null )
-   $reslt: PMML4Result( resultVariables == null || "@{context}TreeToken" not memberOf resultVariables.keySet() )
+   $reslt: PMML4Result( resultVariables == null || "@{context}TreeToken" not memberOf resultVariables.keySet() ) from results
 then
    $reslt.setResultCode("OK");
    $reslt.addResultVariable("@{context}TreeToken",$tok);

@@ -51,9 +51,9 @@ then
     insertLogical( x );
 end
 
-
-rule "Update PMMLResult with Scorecard output @{context} rank code @{index}"
+rule "Add Scorecard output @{context} rank code @{index} to PMMLResult"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
+dialect "java"
 when
    $tgt: @{target}()
    $reslt: PMML4Result( resultVariables == null || "@{target}" not memberOf resultVariables.keySet() ) from results
@@ -62,6 +62,22 @@ then
    $reslt.addResultVariable("@{target}",$tgt);
    update($reslt);
 end
+
+
+rule "Update PMMLResult with Scorecard output @{context} rank code @{index}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
+dialect "java"
+salience -10
+when
+   $reslt: PMML4Result( "@{target}" memberOf resultVariables.keySet() ) from results
+   $old: @{target}( ) from $reslt.resultVariables["@{target}"]
+   $new: @{target}( this after $old)
+then
+//   $reslt.updateResultVariable("@{target}",$new);
+//   update($reslt);
+end
+
+
 @end{}
 
 

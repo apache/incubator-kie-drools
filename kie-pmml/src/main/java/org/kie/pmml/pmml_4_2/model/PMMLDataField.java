@@ -15,8 +15,12 @@
  */
 package org.kie.pmml.pmml_4_2.model;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.dmg.pmml.pmml_4_2.descr.DATATYPE;
 import org.dmg.pmml.pmml_4_2.descr.DataField;
+import org.dmg.pmml.pmml_4_2.descr.Interval;
 import org.dmg.pmml.pmml_4_2.descr.MiningField;
 import org.dmg.pmml.pmml_4_2.descr.OutputField;
 import org.kie.pmml.pmml_4_2.PMML4Helper;
@@ -76,7 +80,12 @@ public class PMMLDataField {
         return helper.compactUpperCase(name);
     }
     
-    
+    public List<Interval> getIntervals() {
+    	if (dataDictionaryField != null) {
+    		return dataDictionaryField.getIntervals();
+    	}
+    	return Collections.emptyList();
+    }
 
     public DataField getRawDataField() {
 		return dataDictionaryField;

@@ -19,17 +19,31 @@ package org.kie.pmml.pmml_4_2.predictive.models;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.InternalRuleUnitExecutor;
 import org.junit.After;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.definition.type.FactType;
+import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceType;
+import org.kie.api.logger.KieRuntimeLogger;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.ObjectFilter;
+import org.kie.api.runtime.rule.DataSource;
+import org.kie.api.runtime.rule.RuleUnit;
+import org.kie.api.runtime.rule.RuleUnitExecutor;
+import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.utils.KieHelper;
 import org.kie.pmml.pmml_4_2.DroolsAbstractPMMLTest;
 import org.kie.pmml.pmml_4_2.PMML4Compiler;
+import org.kie.pmml.pmml_4_2.PMML4Result;
 import org.kie.pmml.pmml_4_2.model.AbstractModel;
 import org.kie.pmml.pmml_4_2.model.PMMLRequestData;
 import org.kie.pmml.pmml_4_2.model.ParameterInfo;
+import org.kie.pmml.pmml_4_2.model.datatypes.PMML4Data;
 import org.kie.pmml.pmml_4_2.model.tree.AbstractTreeToken;
 
 import static org.junit.Assert.assertEquals;
@@ -48,35 +62,54 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
 
     @After
     public void tearDown() {
-        getKSession().dispose();
+//        getKSession().dispose();
     }
     
 
     @Test
     public void testSimpleTree() throws Exception {
-        setKSession( getModelSession( source1, VERBOSE ) );
-        setKbase( getKSession().getKieBase() );
-        KieSession kSession = getKSession();
-
-        kSession.fireAllRules();  //init model
+    	Resource res = ResourceFactory.newClassPathResource(source1);
+    	KieBase kbase = new KieHelper().addResource(res, ResourceType.PMML).build();
+    	
+    	RuleUnitExecutor executor = RuleUnitExecutor.create().bind(kbase);
 
         
         PMMLRequestData request = new PMMLRequestData("123","TreeTest");
-        request.addRequestParam("Fld1", 30.0);
-        request.addRequestParam("Fld2", 60.0);
-        request.addRequestParam("Fld3", "false");
-        request.addRequestParam("Fld4", "optA");
-        kSession.insert(request);
-        
-        kSession.fireAllRules();
+        request.addRequestParam("fld1", 30.0);
+        request.addRequestParam("fld2", 60.0);
+        request.addRequestParam("fld3", "false");
+        request.addRequestParam("fld4", "optA");
 
-        String pkgName = PMML4Compiler.PMML_DROOLS+"."+request.getModelName();
-        FactType tgt = kSession.getKieBase().getFactType( pkgName, "Fld5" );
+        PMML4Result resultHolder = new PMML4Result();
+        DataSource<PMMLRequestData> data = executor.newDataSource("request", request);
+        DataSource<PMML4Result> results = executor.newDataSource("results", resultHolder);
+        DataSource<PMML4Data> pmmlData = executor.newDataSource("pmmlData");
+        
+        List<String> possiblePackages = calculatePossiblePackageNames("TreeTest");
+        Class<? extends RuleUnit> unitClass = getStartingRuleUnit("RuleUnitIndicator",(InternalKnowledgeBase)kbase,possiblePackages);
+        assertNotNull(unitClass);
+        
+        int x = executor.run(unitClass);
+        System.out.println(resultHolder);
+        Collection<?> objs = ((InternalRuleUnitExecutor)executor).getSessionObjects();
+        if (objs != null) {
+        	objs.forEach(o -> {System.out.println(o.toString());});
+        } else {
+        	System.out.println("No objects found!");
+        }
+        pmmlData.forEach(pd -> {System.out.println(pd);});
+        
+//        kSession.insert(request);
+//        
+//        kSession.fireAllRules();
+//
+//        String pkgName = PMML4Compiler.PMML_DROOLS+"."+request.getModelName();
+//        FactType tgt = kSession.getKieBase().getFactType( pkgName, "Fld5" );
 //        System.out.print(  reportWMObjects( kSession ));
 
-        checkFirstDataFieldOfTypeStatus( tgt, true, false, "Missing", "tgtY" );
-
-        checkGeneratedRules();
+//        checkFirstDataFieldOfTypeStatus( tgt, true, false, "Missing", "tgtY" );
+//
+//        checkGeneratedRules();
     }
     
     

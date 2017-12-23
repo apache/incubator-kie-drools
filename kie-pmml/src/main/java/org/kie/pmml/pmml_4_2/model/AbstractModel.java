@@ -202,6 +202,9 @@ public abstract class AbstractModel<T> implements PMML4Model {
     	vars.put("pmmlPackageName", this.getModelPackageName());
     	vars.put("className", className);
     	vars.put("pojoInputClassName", PMMLRequestData.class.getName());
+    	if (this instanceof Miningmodel) {
+    		vars.put("miningPojoClassName", this.getMiningPojoClassName());
+    	}
     	ByteArrayOutputStream baos = new ByteArrayOutputStream();
     	try {
     		TemplateRuntime.execute( templateRegistry.getNamedTemplate(this.getRuleUnitTemplateName()),

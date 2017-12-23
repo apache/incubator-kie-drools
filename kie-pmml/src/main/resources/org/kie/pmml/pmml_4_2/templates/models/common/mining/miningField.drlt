@@ -35,7 +35,7 @@ when
 then
    PMML4Data data = (PMML4Data)PMML4DataFactory.get().copy($src);
    data.setContext(@{format("string",model)});
-   insertLogical(data);
+   pmmlData.insert(data);
 end;
 
 
@@ -46,8 +46,11 @@ when
    ModelMarker( modelName == "@{model}", enabled == true )
    not PMML4Data( capitalizedName == "@{name}", context == null )
 then
+   System.out.println("Init as missing @{model} @{name}");
    PMML4DataType data = PMML4DataFactory.get().getPlaceholder("","@{name}","@{model}");
-   insertLogical( data );
+   System.out.println("data created");
+   pmmlData.insert( data );
+   System.out.println("data inserted");
 end
 
 
@@ -56,8 +59,8 @@ rule "RemoveMissing_PMML4Data_@{model}_@{name}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience 1000
 when
-    $val : PMML4Data( capitalizedName == "@{name}", context == "@{model}", missing == false )
-    $mis : PMML4Data( capitalizedName == "@{name}", context == "@{model}", missing == true )
+    $val : PMML4Data( capitalizedName == "@{name}", context == "@{model}", missing == false ) from pmmlData
+    $mis : PMML4Data( capitalizedName == "@{name}", context == "@{model}", missing == true ) from pmmlData
 then
     delete( $mis );
 end

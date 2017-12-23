@@ -33,7 +33,9 @@ public class @{className} implements RuleUnit {
    private DataSource<PMML4Data> pmmlData;
    private DataSource<PMML4Result> results;
    private DataSource<SegmentExecution> childModelSegments;
+   private DataSource<PMMLRequestData> childModelRequest;
    private DataSource<PMML4Result> childModelResults;
+   private DataSource<@{miningPojoClassName}> miningModelPojo;
    
    public @{className}() {
    }
@@ -42,12 +44,16 @@ public class @{className} implements RuleUnit {
                        DataSource<PMML4Data> pmmlData, 
                        DataSource<PMML4Result> results,
                        DataSource<SegmentExecution> childModelSegments,
-                       DataSource<PMML4Result> childModelResults) {
+                       DataSource<PMMLRequestData> childModelRequest,
+                       DataSource<PMML4Result> childModelResults,
+                       DataSource<@{miningPojoClassName}> miningModelPojo) {
       this.request = request;
       this.pmmlData = pmmlData;
       this.results = results;
       this.childModelSegments = childModelSegments;
+      this.childModelRequest = childModelRequest;
       this.childModelResults = childModelResults;
+      this.miningModelPojo = miningModelPojo;
    }
    
    public DataSource<PMMLRequestData> getRequest() {
@@ -66,8 +72,16 @@ public class @{className} implements RuleUnit {
       return childModelSegments;
    }
    
+   public DataSource<PMMLRequestData> getChildModelRequest() {
+      return childModelRequest;
+   }
+   
    public DataSource<PMML4Result> getChildModelResults() {
       return childModelResults;
+   }
+   
+   public DataSource<@{miningPojoClassName}> getMiningModelPojo() {
+      return miningModelPojo;
    }
    
    @Override
@@ -78,5 +92,10 @@ public class @{className} implements RuleUnit {
    @Override
    public void onEnd() {
       System.out.println("Ending - "+getUnitName(this));
+   }
+   
+   @Override
+   public void onYield(RuleUnit other) {
+      System.out.println(getUnitName(this)+" yielding to "+getUnitName(other));
    }
 }

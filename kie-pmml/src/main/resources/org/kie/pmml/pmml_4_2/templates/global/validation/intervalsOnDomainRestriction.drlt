@@ -28,7 +28,7 @@
 @declare{'intervalsOnDomainRestrictionRule'}
 rule "Valid_ContinuousInterval_PMML4Data_@{name}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
-dialect "mvel"
+dialect "java"
 no-loop
 salience 100
 when
@@ -47,7 +47,7 @@ then
       setValid( true );
    }
 end
-
+/*
 rule "Valid_ContinuousIntervals_@{name}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 dialect "mvel"
@@ -69,6 +69,7 @@ then
         setValid( true );
     }
 end
+*/
 @end{}
 
 

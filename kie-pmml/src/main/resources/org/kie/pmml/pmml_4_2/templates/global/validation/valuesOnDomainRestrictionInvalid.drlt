@@ -26,7 +26,7 @@
 @declare{'valuesOnDomainRestrictionInvalidRule'}
 rule "Invalid_PMML4Data_Values_@{name}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
-dialect "mvel"
+dialect "java"
 no-loop
 salience 99
 when
@@ -39,7 +39,7 @@ then
        setValid( false );
    }
 end
-
+/*
 rule "Invalid_Values_@{name}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 dialect "mvel"
@@ -56,6 +56,7 @@ then
         setValid( false );
     }
 end
+*/
 @end{}
 
 @includeNamed{'valuesOnDomainRestrictionInvalidRule'}

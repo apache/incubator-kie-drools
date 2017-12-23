@@ -33,7 +33,7 @@ when
    $x: PMML4Data( capitalizedName == "@{name}", $m : missing, $v : valid == false, placeholder == false,
                   context == @{format("string",model)} ) from pmmlData
 then
-   pmmlData.delete( $x );
+   delete( $x );
    $x.setValue( @{ replacement != null ? format( mapDatatype( type ), replacement ) : zeroForDatatype( type ) } );
    $x.setMissing( @{replacement == null} );
    $x.setValid( true );

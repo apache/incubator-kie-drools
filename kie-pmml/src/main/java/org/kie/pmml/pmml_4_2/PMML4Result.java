@@ -82,6 +82,13 @@ public class PMML4Result {
 		}
 		return resultVariables;
 	}
+	
+	public void updateResultVariable(String objName, Object obj) {
+		if (this.resultVariables == null) {
+			this.resultVariables = new HashMap<>();
+		}
+		resultVariables.put(objName,obj);
+	}
 
 	public void setResultVariables(Map<String, Object> resultVariables) {
 		this.resultVariables = resultVariables;

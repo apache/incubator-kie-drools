@@ -62,6 +62,6 @@ public class @{className} implements RuleUnit {
    
    @Override
    public void onEnd() {
-//      System.out.println("Ending - "+getUnitName(this));
+      System.out.println("Ending - "+getUnitName(this));
    }
 }

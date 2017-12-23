@@ -325,12 +325,6 @@ public class KieBuilderImpl
     			String sourcePath = key.replaceAll("\\.", "/")+".java";
     			res.setSourcePath(sourcePath);
     			javaSource.write(res);
-    			try (FileOutputStream fos = new FileOutputStream("/home/lleveric/tmp/"+sourcePath.replaceAll("/", "."))) {
-					fos.write(javaCode.getBytes());
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} 
     		}
     	}
     		
@@ -342,6 +336,15 @@ public class KieBuilderImpl
             JavaDialectConfiguration javaConf = (JavaDialectConfiguration) kconf.getDialectConfiguration( "java" );
         	compileJavaClasses(javaConf, classLoader, javaFileNames, JAVA_ROOT, src);
         }
+    }
+
+    private void dumpJavaCode(String outputPath, String javaCode) {
+        try (FileOutputStream fos = new FileOutputStream(outputPath)) {
+            fos.write(javaCode.getBytes());
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } 
     }
     
     

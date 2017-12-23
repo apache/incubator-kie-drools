@@ -51,7 +51,7 @@ public class PMML4DataFactory {
 	public PMML4Data newPMML4Data( String correlationId, ParameterInfo parameterInfo) {
 		return newPMML4Data( correlationId, 
 				parameterInfo.getName(), 
-				null, 
+				parameterInfo.getCorrelationId(), 
 				parameterInfo.getName(), 
 				parameterInfo.getType(), 
 				parameterInfo.getValue(), 
@@ -63,7 +63,8 @@ public class PMML4DataFactory {
 	public PMML4Data newPMML4Data( String correlationId, ParameterInfo parameterInfo, Double weight) {
 		return newPMML4Data( correlationId, 
 				parameterInfo.getName(), 
-				null, 
+				parameterInfo.getCorrelationId(), 
+//				null, 
 				parameterInfo.getName(), 
 				parameterInfo.getType(), 
 				parameterInfo.getValue(), 
@@ -75,7 +76,8 @@ public class PMML4DataFactory {
 	public PMML4Data newPMML4Data( String correlationId, ParameterInfo parameterInfo, Boolean valid, Boolean missing) {
 		return newPMML4Data( correlationId, 
 				parameterInfo.getName(),
-				null,
+				parameterInfo.getCorrelationId(), 
+//				null,
 				parameterInfo.getName(),
 				parameterInfo.getType(),
 				parameterInfo.getValue(),
@@ -87,7 +89,8 @@ public class PMML4DataFactory {
 	public PMML4Data newPMML4Data( String correlationId, ParameterInfo parameterInfo, Double weight, Boolean valid, Boolean missing) {
 		return newPMML4Data( correlationId, 
 				parameterInfo.getName(),
-				null,
+				parameterInfo.getCorrelationId(), 
+//				null,
 				parameterInfo.getName(),
 				parameterInfo.getType(),
 				parameterInfo.getValue(),

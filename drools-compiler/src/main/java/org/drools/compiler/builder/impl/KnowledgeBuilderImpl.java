@@ -16,6 +16,7 @@
 package org.drools.compiler.builder.impl;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -426,17 +427,20 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     	    	if (descr != null) {
     				descr.setResource(resource);
     	    		pkgDescrs.add(descr);
-    	    		try (FileOutputStream fos = new FileOutputStream("/home/lleveric/tmp/"+key+".drl")) {
-    	    			fos.write(src.getBytes());
-    	    		} catch (IOException iox) {
-    	    			
-    	    		}
     	    	} else {
     	            addBuilderResult(new ParserError(resource, "Parser returned a null Package", 0, 0));
     	    	}
     		}
     	}
     	return pkgDescrs;
+    }
+
+    private void dumpGeneratedRule(String outputPath, String src) {
+        try (FileOutputStream fos = new FileOutputStream(outputPath)) {
+            fos.write(src.getBytes());
+        } catch (IOException iox) {
+            
+        }
     }
 
     private PackageDescr generatedDrlToPackageDescr(Resource resource, String generatedDrl) throws DroolsParserException {
@@ -840,9 +844,6 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
                 		addPackage(descr);
                 	}
                 }
-//                if (descr != null) {
-//                    addPackage(descr);
-//                }
                 this.resource = null;
             } else {
                 this.results.addAll(compiler.getResults());

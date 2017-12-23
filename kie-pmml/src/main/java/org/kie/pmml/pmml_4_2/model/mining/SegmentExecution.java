@@ -15,7 +15,11 @@
  */
 package org.kie.pmml.pmml_4_2.model.mining;
 
+
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.ruleunit.RuleUnitDescr;
+import org.drools.core.ruleunit.RuleUnitRegistry;
 import org.kie.api.KieBase;
 import org.kie.api.definition.type.PropertyReactive;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
@@ -26,9 +30,13 @@ import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieContext;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.DataSource;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.RuleUnit;
+import org.kie.api.runtime.rule.RuleUnitExecutor;
 import org.kie.pmml.pmml_4_2.PMML4Result;
 import org.kie.pmml.pmml_4_2.model.PMMLRequestData;
+import org.kie.pmml.pmml_4_2.model.datatypes.PMML4Data;
 
 @PropertyReactive
 public class SegmentExecution implements Comparable<SegmentExecution> {
@@ -37,9 +45,11 @@ public class SegmentExecution implements Comparable<SegmentExecution> {
 	private String segmentId;
 	private int segmentIndex;
 	private SegmentExecutionState state;
-	private String agendaId;
+	private String ruleUnitClassName;
 	private PMMLRequestData requestData;
 	private PMML4Result result;
+	private DataSource<SegmentExecution> segmentExecutions;
+	private DataSource<PMML4Result> childSegmentResults;
 	
 	
 	public SegmentExecution() {
@@ -47,24 +57,41 @@ public class SegmentExecution implements Comparable<SegmentExecution> {
 	
 	
 
-	public SegmentExecution(String correlationId, String segmentationId, String segmentId, int segmentIndex, String agendaId) {
+	public SegmentExecution(String correlationId, 
+			String segmentationId, 
+			String segmentId, 
+			int segmentIndex, 
+			String ruleUnitClassName, 
+			DataSource<SegmentExecution> segmentExecutions,
+			DataSource<PMML4Result> childSegmentResults) {
 		this.correlationId = correlationId;
 		this.segmentationId = segmentationId;
 		this.segmentId = segmentId;
 		this.segmentIndex = segmentIndex;
 		this.state = SegmentExecutionState.WAITING;
-		this.agendaId = agendaId;
+		this.ruleUnitClassName = ruleUnitClassName;
+		this.segmentExecutions = segmentExecutions;
+		this.childSegmentResults = childSegmentResults;
 	}
 
 
 
-	public SegmentExecution(String correlationId, String segmentationId, String segmentId, int segmentIndex, String state, String agendaId) {
+	public SegmentExecution(String correlationId, 
+			String segmentationId, 
+			String segmentId, 
+			int segmentIndex, 
+			String state, 
+			String ruleUnitClassName,
+			DataSource<SegmentExecution> segmentExecutions,
+			DataSource<PMML4Result> childSegmentResults) {
 		this.correlationId = correlationId;
 		this.segmentationId = segmentationId;
 		this.segmentId = segmentId;
 		this.segmentIndex = segmentIndex;
 		this.state = SegmentExecutionState.valueOf(state);
-		this.agendaId = agendaId;
+		this.ruleUnitClassName = ruleUnitClassName;
+		this.segmentExecutions = segmentExecutions;
+		this.childSegmentResults = childSegmentResults;
 	}
 	
 	
@@ -117,12 +144,12 @@ public class SegmentExecution implements Comparable<SegmentExecution> {
 		this.state = state;
 	}
 
-	public String getAgendaId() {
-		return agendaId;
+	public String getRuleUnitClassName() {
+		return ruleUnitClassName;
 	}
 
-	public void setAgendaId(String agendaId) {
-		this.agendaId = agendaId;
+	public void setRuleUnitClassName(String ruleUnitClassName) {
+		this.ruleUnitClassName = ruleUnitClassName;
 	}
 	
 	
@@ -148,31 +175,38 @@ public class SegmentExecution implements Comparable<SegmentExecution> {
 		this.result = result;
 	}
 	
-	public void applySegmentModel(PMMLRequestData requestData, KieContext ctx) {
-		KieBase kb = ctx.getKieRuntime().getKieBase();
-		KnowledgeBaseImpl kbi = (KnowledgeBaseImpl)kb;
-		KieContainer container = kbi.getKieContainer();
-		
-		KieSession segmentSession = container.newKieSession("SEGMENT_"+this.segmentId);
+	public void applySegmentModel(PMMLRequestData requestData, KieContext ctx) throws IllegalStateException {
+		if (ruleUnitClassName == null || ruleUnitClassName.trim().isEmpty()) {
+			throw new IllegalStateException("Unable to apply segment model: No rule unit class name is available");
+		}
+		Class<? extends RuleUnit> ruleUnitClass = null;
+		RuleUnitRegistry rur = ((KnowledgeBaseImpl)ctx.getKieRuntime().getKieBase()).getRuleUnitRegistry();
+		RuleUnitDescr rud = rur.getNamedRuleUnit(ruleUnitClassName).orElse(null);
+		if (rud != null) {
+			ruleUnitClass = rud.getRuleUnitClass();
+		} else {
+			throw new IllegalStateException("Unable to apply segment model: Unable to find rule unit");
+		}
+			
+			
+		if (ruleUnitClass != null) {
+			RuleUnitExecutor executor = RuleUnitExecutor.create().bind(ctx.getKieRuntime().getKieBase());
+			PMML4Result result = new PMML4Result(this);
+			DataSource<PMMLRequestData> data = executor.newDataSource("request", requestData);
+			DataSource<PMML4Result> results = executor.newDataSource("results", result);
+			DataSource<PMML4Data> pmmlData = executor.newDataSource("pmmlData");
+			
+			// Update the state and let the Mining session know
+			this.state = SegmentExecutionState.EXECUTING;
+			FactHandle handle = ctx.getKieRuntime().getFactHandle(this);
+			segmentExecutions.update(handle, this);
 
-		// Update the state and let the Mining session know
-		this.state = SegmentExecutionState.EXECUTING;
-		FactHandle handle = ctx.getKieRuntime().getFactHandle(this);
-		ctx.getKieRuntime().update(handle, this);
-		
-		// Insert the request and a target result holder
-		// into the segment session and fire the rules
-		segmentSession.insert(requestData);
-		PMML4Result result = new PMML4Result(this);
-		segmentSession.insert(result);
-		segmentSession.fireAllRules();
-		
-		// Update my result and insert the result
-		// into the Mining session
-		this.result = result;
-		segmentSession.dispose();
-		
-		ctx.getKieRuntime().insert(result);
+			int activationsCount = executor.run(ruleUnitClass);
+//			if (activationsCount > 0) {
+//				childSegmentResults.insert(result);
+//			}
+			executor.dispose();
+		}
 	}
 	
 	public class SegmentEventListener extends DefaultAgendaEventListener {
