@@ -41,7 +41,6 @@ import org.drools.core.common.TripleBetaConstraints;
 import org.drools.core.common.TripleNonIndexSkipBetaConstraints;
 import org.drools.core.common.TupleSets;
 import org.drools.core.common.UpdateContext;
-import org.drools.core.phreak.SegmentUtilities;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.IndexableConstraint;
@@ -59,7 +58,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.drools.core.phreak.AddRemoveRule.flushLeftTupleIfNecessary;
-import static org.drools.core.reteoo.PropertySpecificUtil.*;
+import static org.drools.core.reteoo.PropertySpecificUtil.calculateNegativeMask;
+import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
+import static org.drools.core.reteoo.PropertySpecificUtil.getAccessibleProperties;
+import static org.drools.core.reteoo.PropertySpecificUtil.isPropertyReactive;
 import static org.drools.core.util.ClassUtils.areNullSafeEquals;
 
 public abstract class BetaNode extends LeftTupleSource
@@ -304,13 +306,13 @@ public abstract class BetaNode extends LeftTupleSource
             if ( stagedInsertWasEmpty ) {
                 memory.setNodeDirtyWithoutNotify();
             }
-            shouldFlush = memory.linkNode(wm, !rightInputIsPassive) | shouldFlush;
+            shouldFlush = memory.linkNode( this, wm, !rightInputIsPassive ) | shouldFlush;
         } else if ( stagedInsertWasEmpty ) {
-            shouldFlush = memory.setNodeDirty( wm, !rightInputIsPassive ) | shouldFlush;
+            shouldFlush = memory.setNodeDirty( this, wm, !rightInputIsPassive ) | shouldFlush;
         }
 
         if (shouldFlush) {
-            flushLeftTupleIfNecessary( wm, memory.getSegmentMemory(), isStreamMode() );
+            flushLeftTupleIfNecessary( wm, memory.getOrCreateSegmentMemory( this, wm ), isStreamMode() );
         }
     }
 
@@ -366,11 +368,11 @@ public abstract class BetaNode extends LeftTupleSource
             shouldFlush = memory.unlinkNode(wm) | shouldFlush;
         } else if ( stagedDeleteWasEmpty ) {
             // nothing staged before, notify rule, so it can evaluate network
-            shouldFlush = memory.setNodeDirty( wm ) | shouldFlush;
+            shouldFlush = memory.setNodeDirty( this, wm ) | shouldFlush;
         }
 
         if (shouldFlush) {
-            flushLeftTupleIfNecessary( wm, memory.getSegmentMemory(), isStreamMode() );
+            flushLeftTupleIfNecessary( wm, memory.getOrCreateSegmentMemory( this, wm ), isStreamMode() );
         }
     }
 
@@ -383,11 +385,11 @@ public abstract class BetaNode extends LeftTupleSource
 
         boolean shouldFlush = isStreamMode();
         if ( stagedUpdateWasEmpty  ) {
-            shouldFlush = memory.setNodeDirty( wm ) | shouldFlush;
+            shouldFlush = memory.setNodeDirty( this, wm ) | shouldFlush;
         }
 
         if (shouldFlush) {
-            flushLeftTupleIfNecessary( wm, memory.getSegmentMemory(), isStreamMode() );
+            flushLeftTupleIfNecessary( wm, memory.getOrCreateSegmentMemory( this, wm ), isStreamMode() );
         }
     }
 
@@ -681,14 +683,9 @@ public abstract class BetaNode extends LeftTupleSource
     }
     
     public static BetaMemory getBetaMemoryFromRightInput( final BetaNode betaNode, final InternalWorkingMemory workingMemory ) {
-        BetaMemory memory = NodeTypeEnums.AccumulateNode == betaNode.getType() ?
+        return NodeTypeEnums.AccumulateNode == betaNode.getType() ?
                             ((AccumulateMemory)workingMemory.getNodeMemory( betaNode )).getBetaMemory() :
                             (BetaMemory) workingMemory.getNodeMemory( betaNode );
-
-        if ( memory.getSegmentMemory() == null ) {
-            SegmentUtilities.createSegmentMemory( betaNode, workingMemory ); // initialises for all nodes in segment, including this one
-        }
-        return memory;
     }
     
     public BitMask getRightDeclaredMask() {

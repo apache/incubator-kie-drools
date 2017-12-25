@@ -994,7 +994,7 @@ public class AddRemoveRule {
             } else if (insert) {
                 BetaMemory bm = (BetaMemory) wm.getNodeMemory( (BetaNode) sink );
                 prevLt = rian.createPeer( prevLt );
-                bm.linkNode( wm );
+                bm.linkNode( (BetaNode) sink, wm );
                 bm.getStagedRightTuples().addInsert((RightTuple)prevLt);
             }
         }

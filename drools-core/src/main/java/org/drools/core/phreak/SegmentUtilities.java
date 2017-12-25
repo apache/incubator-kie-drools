@@ -59,13 +59,15 @@ public class SegmentUtilities {
     /**
      * Initialises the NodeSegment memory for all nodes in the segment.
      */
-    public static SegmentMemory createSegmentMemory(LeftTupleSource tupleSource,
-                                                    final InternalWorkingMemory wm) {
-        SegmentMemory smem = wm.getNodeMemory((MemoryFactory) tupleSource).getSegmentMemory();
-        if ( smem != null ) {
-            return smem; // this can happen when multiple threads are trying to initialize the segment
+    public static void createSegmentMemory(LeftTupleSource tupleSource, InternalWorkingMemory wm) {
+        Memory mem = wm.getNodeMemory((MemoryFactory) tupleSource);
+        SegmentMemory smem = mem.getSegmentMemory();
+        if ( smem == null ) {
+            createSegmentMemory(tupleSource, mem, wm);
         }
+    }
 
+    public static SegmentMemory createSegmentMemory(LeftTupleSource tupleSource, Memory mem, InternalWorkingMemory wm) {
         // find segment root
         while (!SegmentUtilities.isRootNode(tupleSource, null)) {
             tupleSource = tupleSource.getLeftTupleSource();
@@ -74,7 +76,7 @@ public class SegmentUtilities {
         LeftTupleSource segmentRoot = tupleSource;
         int nodeTypesInSegment = 0;
 
-        smem = restoreSegmentFromPrototype(wm, segmentRoot, nodeTypesInSegment);
+        SegmentMemory smem = restoreSegmentFromPrototype(wm, segmentRoot, nodeTypesInSegment);
         if ( smem != null ) {
             if (NodeTypeEnums.isBetaNode(segmentRoot) && ( (BetaNode) segmentRoot ).isRightInputIsRiaNode()) {
                 createRiaSegmentMemory( (BetaNode) segmentRoot, wm );
@@ -181,10 +183,6 @@ public class SegmentUtilities {
     private static SegmentMemory restoreSegmentFromPrototype(InternalWorkingMemory wm, LeftTupleSource segmentRoot, int nodeTypesInSegment) {
         SegmentMemory smem = wm.getKnowledgeBase().createSegmentFromPrototype(wm, segmentRoot);
         if ( smem != null ) {
-            // there is a prototype for this segment memory
-            for (NetworkNode node : smem.getNodesInSegment()) {
-                wm.getNodeMemory((MemoryFactory) node).setSegmentMemory(smem);
-            }
             nodeTypesInSegment = updateRiaAndTerminalMemory(segmentRoot, segmentRoot, smem, wm, true, nodeTypesInSegment);
         }
         return smem;
@@ -205,7 +203,7 @@ public class SegmentUtilities {
         LiaNodeMemory liam = wm.getNodeMemory(liaNode);
         SegmentMemory querySmem = liam.getSegmentMemory();
         if (querySmem == null) {
-            querySmem = createSegmentMemory(liaNode, wm);
+            querySmem = createSegmentMemory(liaNode, liam, wm);
         }
         return querySmem;
     }
@@ -288,7 +286,7 @@ public class SegmentUtilities {
         SegmentMemory subNetworkSegmentMemory = rootSubNetwokrMem.getSegmentMemory();
         if (subNetworkSegmentMemory == null) {
             // we need to stop recursion here
-            createSegmentMemory(subnetworkLts, wm);
+            createSegmentMemory(subnetworkLts, rootSubNetwokrMem, wm);
         }
         return riaNode;
     }
@@ -319,7 +317,7 @@ public class SegmentUtilities {
                 // RTNS and RiaNode's have their own segment, if they are the child of a split.
                 createChildSegmentForTerminalNode( node, memory );
             } else {
-                createSegmentMemory((LeftTupleSource) node, wm);
+                createSegmentMemory((LeftTupleSource) node, memory, wm);
             }
         }
         return memory.getSegmentMemory();
@@ -433,14 +431,13 @@ public class SegmentUtilities {
         return updateNodeTypesMask(lt, nodeTypesInSegment);
     }
 
-    public static SegmentMemory checkEagerSegmentCreation(LeftTupleSource lt, InternalWorkingMemory wm, int nodeTypesInSegment) {
+    public static void checkEagerSegmentCreation(LeftTupleSource lt, InternalWorkingMemory wm, int nodeTypesInSegment) {
         // A Not node has to be eagerly initialized unless in its segment there is at least a join node
         if ( isSet(nodeTypesInSegment, NOT_NODE_BIT) &&
              !isSet(nodeTypesInSegment, JOIN_NODE_BIT) &&
              !isSet(nodeTypesInSegment, REACTIVE_EXISTS_NODE_BIT) ) {
-            return createSegmentMemory(lt, wm);
+            createSegmentMemory(lt, wm);
         }
-        return null;
     }
 
     /**

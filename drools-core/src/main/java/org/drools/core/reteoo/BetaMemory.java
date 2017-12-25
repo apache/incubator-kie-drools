@@ -84,11 +84,14 @@ public class BetaMemory extends AbstractBaseLinkedListNode<Memory>
         return context;
     }
 
-    public boolean linkNode(InternalWorkingMemory wm) {
-        return linkNode(wm, true);
+    public boolean linkNode(LeftTupleSource tupleSource, InternalWorkingMemory wm) {
+        return linkNode(tupleSource, wm, true);
     }
 
-    public boolean linkNode(InternalWorkingMemory wm, boolean notify) {
+    public boolean linkNode(LeftTupleSource tupleSource, InternalWorkingMemory wm, boolean notify) {
+        if (segmentMemory == null) {
+            segmentMemory = getOrCreateSegmentMemory( tupleSource, wm );
+        }
         return notify ?
                segmentMemory.linkNode(nodePosMaskBit, wm) :
                segmentMemory.linkNodeWithoutRuleNotify(nodePosMaskBit);
@@ -134,22 +137,29 @@ public class BetaMemory extends AbstractBaseLinkedListNode<Memory>
         return counter--;
     }
 
-    public boolean setNodeDirty(InternalWorkingMemory wm) {
-        return setNodeDirty(wm, true);
+    public boolean setNodeDirty(LeftTupleSource tupleSource, InternalWorkingMemory wm) {
+        return setNodeDirty(tupleSource, wm, true);
     }
 
-    public boolean setNodeDirty(InternalWorkingMemory wm, boolean notify) {
+    public boolean setNodeDirty(LeftTupleSource tupleSource, InternalWorkingMemory wm, boolean notify) {
+        if (segmentMemory == null) {
+            segmentMemory = getOrCreateSegmentMemory( tupleSource, wm );
+        }
         return notify ?
                segmentMemory.notifyRuleLinkSegment(wm, nodePosMaskBit) :
                segmentMemory.linkSegmentWithoutRuleNotify(wm, nodePosMaskBit);
     }
 
     public void setNodeDirtyWithoutNotify() {
-        segmentMemory.updateDirtyNodeMask( nodePosMaskBit );
+        if (segmentMemory != null) {
+            segmentMemory.updateDirtyNodeMask( nodePosMaskBit );
+        }
     }
 
     public void setNodeCleanWithoutNotify() {
-        segmentMemory.updateCleanNodeMask( nodePosMaskBit );
+        if (segmentMemory != null) {
+            segmentMemory.updateCleanNodeMask( nodePosMaskBit );
+        }
     }
 
     public void reset() {

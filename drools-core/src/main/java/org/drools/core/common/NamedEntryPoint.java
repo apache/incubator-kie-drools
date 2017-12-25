@@ -510,7 +510,7 @@ public class NamedEntryPoint
 
         final ObjectTypeConf typeConf = this.typeConfReg.getObjectTypeConf( this.entryPoint, object );
 
-        if( typeConf.isSupportsPropertyChangeListeners() ) {
+        if( typeConf.isDynamic() ) {
             removePropertyChangeListener( handle, true );
         }
 
@@ -747,7 +747,7 @@ public class NamedEntryPoint
         for( ObjectTypeConf conf : this.typeConfReg.values() ) {
             // then, we check if any of the object types were configured using the
             // @propertyChangeSupport annotation, and clean them up
-            if( conf.isDynamic() && conf.isSupportsPropertyChangeListeners() ) {
+            if( conf.isDynamic() ) {
                 // it is enough to iterate the facts on the concrete object type nodes
                 // only, as the facts will always be in their concrete object type nodes
                 // even if they were also asserted into higher level OTNs as well
