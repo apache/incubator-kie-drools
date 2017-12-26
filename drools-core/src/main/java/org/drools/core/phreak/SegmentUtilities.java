@@ -163,12 +163,13 @@ public class SegmentUtilities {
         int ruleSegmentPosMask = 1;
         int counter = 0;
         while (pathRoot.getType() != NodeTypeEnums.LeftInputAdapterNode) {
-            if (SegmentUtilities.isRootNode(pathRoot, null)) {
+            LeftTupleSource leftTupleSource = pathRoot.getLeftTupleSource();
+            if (SegmentUtilities.isNonTerminalTipNode(leftTupleSource, null)) {
                 // for each new found segment, increase the mask bit position
                 ruleSegmentPosMask = ruleSegmentPosMask << 1;
                 counter++;
             }
-            pathRoot = pathRoot.getLeftTupleSource();
+            pathRoot = leftTupleSource;
         }
         smem.setSegmentPosMaskBit(ruleSegmentPosMask);
         smem.setPos(counter);
@@ -466,7 +467,7 @@ public class SegmentUtilities {
         return NodeTypeEnums.isEndNode(node) || isNonTerminalTipNode( node, removingTN );
     }
 
-    private static boolean isNonTerminalTipNode( LeftTupleNode node, TerminalNode removingTN ) {
+    public static boolean isNonTerminalTipNode( LeftTupleNode node, TerminalNode removingTN ) {
         LeftTupleSinkPropagator sinkPropagator = node.getSinkPropagator();
 
         if (removingTN == null) {

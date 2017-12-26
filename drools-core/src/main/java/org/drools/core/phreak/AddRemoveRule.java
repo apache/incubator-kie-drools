@@ -689,7 +689,9 @@ public class AddRemoveRule {
                 RightInputAdapterNode rian = (RightInputAdapterNode) pmem.getPathEndNode();
                 startRianLts = rian.getStartTupleSource();
             }
-            AbstractTerminalNode.initPathMemory(pmem, startRianLts, wm, removingTN); // re-initialise the PathMemory
+            PathEndNode pathEndNode = pmem.getPathEndNode();
+            pathEndNode.resetPathMemSpec(removingTN); // re-initialise the PathMemory
+            AbstractTerminalNode.initPathMemory(pathEndNode, pmem);
         }
         return previousSmems;
     }
