@@ -16,15 +16,15 @@
 
 package org.drools.core.reteoo;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.spi.PropagationContext;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 
 public class SingleObjectSinkAdapter implements ObjectSinkPropagator {
 
@@ -108,9 +108,9 @@ public class SingleObjectSinkAdapter implements ObjectSinkPropagator {
 
         if ( bm.getStagedRightTuples().isEmpty() ) {
             if ( bm.getRightTupleMemory().size() == 0 ) {
-                bm.linkNode(wm);
+                bm.linkNode( ( BetaNode ) sink, wm );
             } else {
-                bm.setNodeDirty(wm);
+                bm.setNodeDirty( ( BetaNode ) sink, wm );
             }
         }
     }
@@ -133,7 +133,7 @@ public class SingleObjectSinkAdapter implements ObjectSinkPropagator {
         }
 
         if (sink.getType() == NodeTypeEnums.NotNode) {
-            bm.linkNode(wm);
+            bm.linkNode( ( BetaNode ) sink, wm );
         } else {
             bm.unlinkNode(wm);
         }

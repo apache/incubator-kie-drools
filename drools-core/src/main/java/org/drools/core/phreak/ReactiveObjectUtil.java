@@ -16,6 +16,8 @@
 
 package org.drools.core.phreak;
 
+import java.util.Collection;
+
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -28,9 +30,9 @@ import org.drools.core.rule.ContextEntry;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
 
-import java.util.Collection;
-
-import static org.drools.core.phreak.PhreakFromNode.*;
+import static org.drools.core.phreak.PhreakFromNode.deleteChildLeftTuple;
+import static org.drools.core.phreak.PhreakFromNode.isAllowed;
+import static org.drools.core.phreak.PhreakFromNode.propagate;
 
 public class ReactiveObjectUtil {
 
@@ -116,7 +118,7 @@ public class ReactiveObjectUtil {
                 }
             }
 
-            mem.getBetaMemory().setNodeDirty(wm);
+            mem.getBetaMemory().setNodeDirty(node, wm);
         }
     }
 }

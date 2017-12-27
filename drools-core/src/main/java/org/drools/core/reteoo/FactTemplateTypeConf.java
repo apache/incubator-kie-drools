@@ -136,10 +136,6 @@ public class FactTemplateTypeConf
         return this.entryPoint;
     }
 
-    public boolean isSupportsPropertyChangeListeners() {
-        return false;
-    }
-    
     @Override
     public String getTypeName() {
     	return factTemplate.getName();
