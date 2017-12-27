@@ -147,13 +147,13 @@ public class NotNode extends BetaNode {
                 memory.setNodeDirtyWithoutNotify();
             }
             // NotNodes can only be unlinked, if they have no variable constraints
-            memory.linkNode( wm );
+            memory.linkNode( this, wm );
         } else if ( stagedInsertWasEmpty ) {
             // nothing staged before, notify rule, so it can evaluate network
-            memory.setNodeDirty(wm);
+            memory.setNodeDirty(this, wm);
         }
 
-        flushLeftTupleIfNecessary( wm, memory.getSegmentMemory(), isStreamMode() );
+        flushLeftTupleIfNecessary( wm, memory.getOrCreateSegmentMemory( this, wm ), isStreamMode() );
     }
 
     public void retractRightTuple(final RightTuple rightTuple,
@@ -177,13 +177,13 @@ public class NotNode extends BetaNode {
                 memory.setNodeDirtyWithoutNotify();
             }
             // NotNodes can only be unlinked, if they have no variable constraints
-            memory.linkNode( wm );
+            memory.linkNode( this, wm );
         }  else if ( stagedDeleteWasEmpty ) {
             // nothing staged before, notify rule, so it can evaluate network
-            memory.setNodeDirty( wm );
+            memory.setNodeDirty( this, wm );
         }
 
-        flushLeftTupleIfNecessary( wm, memory.getSegmentMemory(), isStreamMode() );
+        flushLeftTupleIfNecessary( wm, memory.getOrCreateSegmentMemory( this, wm ), isStreamMode() );
     }
 
     @Override

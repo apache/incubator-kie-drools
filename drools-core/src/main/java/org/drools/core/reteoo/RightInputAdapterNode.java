@@ -60,6 +60,8 @@ public class RightInputAdapterNode extends ObjectSource
 
     private PathEndNode[] pathEndNodes;
 
+    private PathMemSpec pathMemSpec;
+
     public RightInputAdapterNode() {
     }
 
@@ -107,6 +109,19 @@ public class RightInputAdapterNode extends ObjectSource
     }
 
     @Override
+    public PathMemSpec getPathMemSpec() {
+        if (pathMemSpec == null) {
+            pathMemSpec = calculatePathMemSpec( startTupleSource );
+        }
+        return pathMemSpec;
+    }
+
+    @Override
+    public void resetPathMemSpec(TerminalNode removingTN) {
+        pathMemSpec = calculatePathMemSpec( startTupleSource, removingTN );
+    }
+
+    @Override
     public void setPathEndNodes(PathEndNode[] pathEndNodes) {
         this.pathEndNodes = pathEndNodes;
     }
@@ -131,7 +146,9 @@ public class RightInputAdapterNode extends ObjectSource
         RiaNodeMemory rianMem = new RiaNodeMemory();
 
         RiaPathMemory pmem = new RiaPathMemory(this, wm);
-        AbstractTerminalNode.initPathMemory(pmem, getStartTupleSource(), wm, null);
+        PathMemSpec pathMemSpec = getPathMemSpec();
+        pmem.setAllLinkedMaskTest( pathMemSpec.allLinkedTestMask );
+        pmem.setSegmentMemories( new SegmentMemory[pathMemSpec.smemCount] );
         rianMem.setRiaPathMemory(pmem);
         
         return rianMem;
