@@ -15,8 +15,10 @@
 
 package org.drools.core.common;
 
-import org.drools.core.util.LinkedListNode;
+import org.drools.core.phreak.SegmentUtilities;
+import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.SegmentMemory;
+import org.drools.core.util.LinkedListNode;
 
 /**
  * A super interface for node memories
@@ -26,6 +28,14 @@ public interface Memory extends LinkedListNode<Memory> {
     short getNodeType();
     
     SegmentMemory getSegmentMemory();
+
+    default SegmentMemory getOrCreateSegmentMemory( LeftTupleSource tupleSource, InternalWorkingMemory wm ) {
+        SegmentMemory smem = getSegmentMemory();
+        if (smem == null) {
+            smem = SegmentUtilities.createSegmentMemory( tupleSource, this, wm );
+        }
+        return smem;
+    }
 
     void setSegmentMemory(SegmentMemory segmentMemory);
 

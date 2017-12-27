@@ -65,8 +65,6 @@ public class ClassObjectTypeConf
     private boolean                    tmsEnabled;
     private boolean                    traitTmsEnabled;
     
-    private boolean                    supportsPropertyListeners;
-
     private boolean                    isEvent;
 
     private long                       expirationOffset = -1;
@@ -107,8 +105,6 @@ public class ClassObjectTypeConf
 
         this.concreteObjectTypeNode = kBase.getRete().getObjectTypeNodes( entryPoint ).get( objectType );
 
-        this.supportsPropertyListeners = checkPropertyListenerSupport( clazz );
-
         Traitable ttbl = cls.getAnnotation( Traitable.class );
         this.traitTmsEnabled = ttbl != null && ttbl.logical();
     }
@@ -123,7 +119,6 @@ public class ClassObjectTypeConf
         entryPoint = (EntryPointId) stream.readObject();
         tmsEnabled = stream.readBoolean();
         traitTmsEnabled = stream.readBoolean();
-        supportsPropertyListeners = stream.readBoolean();
         isEvent = stream.readBoolean();
         isTrait = stream.readBoolean();
         expirationOffset = stream.readLong();
@@ -138,7 +133,6 @@ public class ClassObjectTypeConf
         stream.writeObject( entryPoint );
         stream.writeBoolean( tmsEnabled );
         stream.writeBoolean( traitTmsEnabled );
-        stream.writeBoolean( supportsPropertyListeners );
         stream.writeBoolean( isEvent );
         stream.writeBoolean(isTrait);
         stream.writeLong(expirationOffset);
@@ -161,16 +155,6 @@ public class ClassObjectTypeConf
             concreteObjectTypeNode = kBase.getRete().getObjectTypeNodes( entryPoint ).get( objectType );
         }
         return concreteObjectTypeNode;
-    }
-
-    private boolean checkPropertyListenerSupport( Class<?> clazz ) {
-        for (Method method : clazz.getMethods()) {
-            if ("addPropertyChangeListener".equals(method.getName()) &&
-                    Arrays.deepEquals(ADD_REMOVE_PROPERTY_CHANGE_LISTENER_ARG_TYPES, method.getParameterTypes())){
-                return true;
-            }
-        }
-        return false;
     }
 
     /**
@@ -277,12 +261,7 @@ public class ClassObjectTypeConf
         return entryPoint;
     }
 
-    
-    public boolean isSupportsPropertyChangeListeners() {
-        return supportsPropertyListeners;
-    }
-    
-    public String getClassName() { 
+    public String getClassName() {
     	return this.cls != null ? this.cls.getName() : "";
     }
     

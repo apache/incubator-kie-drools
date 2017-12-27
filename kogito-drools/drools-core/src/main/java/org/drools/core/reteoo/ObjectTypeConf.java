@@ -51,6 +51,4 @@ public interface ObjectTypeConf {
     void enableTMS();
     
     EntryPointId getEntryPoint();
-    
-    boolean isSupportsPropertyChangeListeners();
 }

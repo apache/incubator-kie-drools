@@ -31,6 +31,7 @@ import org.drools.core.common.BaseNode;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ObjectTypeConfigurationRegistry;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -78,6 +79,8 @@ public class EntryPointNode extends ObjectSource
 
     private ObjectTypeNode activationNode;
 
+    private ObjectTypeConfigurationRegistry typeConfReg;
+
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -109,11 +112,16 @@ public class EntryPointNode extends ObjectSource
         this.objectTypeNodes = new ConcurrentHashMap<ObjectType, ObjectTypeNode>();
 
         hashcode = calculateHashCode();
+        typeConfReg = new ObjectTypeConfigurationRegistry( (( Rete ) objectSource).getKnowledgeBase() );
     }
 
     // ------------------------------------------------------------
     // Instance methods
     // ------------------------------------------------------------
+
+    public ObjectTypeConfigurationRegistry getTypeConfReg() {
+        return typeConfReg;
+    }
 
     @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException,
@@ -121,12 +129,14 @@ public class EntryPointNode extends ObjectSource
         super.readExternal( in );
         entryPoint = (EntryPointId) in.readObject();
         objectTypeNodes = (Map<ObjectType, ObjectTypeNode>) in.readObject();
+        typeConfReg = (ObjectTypeConfigurationRegistry) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal(out);
         out.writeObject( entryPoint );
         out.writeObject( objectTypeNodes );
+        out.writeObject( typeConfReg );
     }
 
     public short getType() {

@@ -163,10 +163,6 @@ public class LeftInputAdapterNode extends LeftTupleSource
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
         LiaNodeMemory lm = workingMemory.getNodeMemory( this );
-        if ( lm.getSegmentMemory() == null ) {
-            SegmentUtilities.createSegmentMemory(this, workingMemory);
-        }
-
         doInsertObject( factHandle, context, this, workingMemory,
                         lm, true, // queries are handled directly, and not through here
                         true );
@@ -179,7 +175,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
                                       final LiaNodeMemory lm,
                                       boolean linkOrNotify,
                                       boolean useLeftMemory) {
-        SegmentMemory sm = lm.getSegmentMemory();
+        SegmentMemory sm = lm.getOrCreateSegmentMemory( liaNode, wm );
         if ( sm.getTipNode() == liaNode) {
             // liaNode in it's own segment and child segments not yet created
             if ( sm.isEmpty() ) {
@@ -375,11 +371,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
         ObjectTypeNode.Id otnId = this.sink.getFirstLeftTupleSink().getLeftInputOtnId();
 
         LeftTuple leftTuple = processDeletesFromModify(modifyPreviousTuples, context, workingMemory, otnId);
-
         LiaNodeMemory lm = workingMemory.getNodeMemory( this );
-        if ( lm.getSegmentMemory() == null ) {
-            SegmentUtilities.createSegmentMemory( this, workingMemory );
-        }
 
         if ( leftTuple != null && leftTuple.getInputOtnId().equals( otnId ) ) {
             modifyPreviousTuples.removeLeftTuple(partitionId);
@@ -387,7 +379,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
             LeftTupleSink sink = getSinkPropagator().getFirstLeftTupleSink();
             BitMask mask = sink.getLeftInferredMask();
             if ( context.getModificationMask().intersects( mask) ) {
-                doUpdateObject( leftTuple, context, workingMemory, (LeftInputAdapterNode) leftTuple.getTupleSource(), true, lm, lm.getSegmentMemory() );
+                doUpdateObject( leftTuple, context, workingMemory, (LeftInputAdapterNode) leftTuple.getTupleSource(), true, lm, lm.getOrCreateSegmentMemory( this, workingMemory ) );
                 if (leftTuple instanceof Activation) {
                     ((Activation)leftTuple).setActive(true);
                 }

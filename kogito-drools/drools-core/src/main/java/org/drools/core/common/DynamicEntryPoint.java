@@ -49,7 +49,6 @@ public class DynamicEntryPoint extends NamedEntryPoint {
         this.kBase = kBase;
         this.pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
         this.entryPointNode = this.kBase.getRete().getEntryPointNode( entryPoint );
-        this.typeConfReg = new ObjectTypeConfigurationRegistry( this.kBase );
         boundUnits.clear();
         propagateAll();
     }
@@ -67,7 +66,7 @@ public class DynamicEntryPoint extends NamedEntryPoint {
     }
 
     private void propagateInsert( InternalFactHandle handle ) {
-        ObjectTypeConf typeConf = this.typeConfReg.getObjectTypeConf( this.entryPointNode.getEntryPoint(), handle.getObject() );
+        ObjectTypeConf typeConf = getObjectTypeConfigurationRegistry().getObjectTypeConf( this.entryPointNode.getEntryPoint(), handle.getObject() );
 
         PropagationContext pctx = pctxFactory.createPropagationContext( this.wm.getNextPropagationIdCounter(),
                                                                         PropagationContext.Type.INSERTION,

@@ -76,8 +76,6 @@ public class NamedEntryPoint
     protected EntryPointId     entryPoint;
     protected EntryPointNode entryPointNode;
 
-    protected ObjectTypeConfigurationRegistry typeConfReg;
-
     protected final StatefulKnowledgeSessionImpl wm;
 
     protected FactHandleFactory         handleFactory;
@@ -107,7 +105,6 @@ public class NamedEntryPoint
         this.wm = wm;
         this.kBase = this.wm.getKnowledgeBase();
         this.lock = lock;
-        this.typeConfReg = new ObjectTypeConfigurationRegistry(this.kBase);
         this.handleFactory = this.wm.getFactHandleFactory();
         this.pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
         this.objectStore = new ClassAwareObjectStore(this.kBase.getConfiguration(), this.lock);
@@ -127,7 +124,7 @@ public class NamedEntryPoint
         this.traitHelper = new TraitHelper( wm, this );
     }
 
-    public void lock() {
+     public void lock() {
         lock.lock();
     }
 
@@ -178,8 +175,7 @@ public class NamedEntryPoint
         try {
             this.wm.startOperation();
 
-            ObjectTypeConf typeConf = this.typeConfReg.getObjectTypeConf( this.entryPoint,
-                                                                          object );
+            ObjectTypeConf typeConf = getObjectTypeConfigurationRegistry().getObjectTypeConf( this.entryPoint, object );
 
             final PropagationContext propagationContext = this.pctxFactory.createPropagationContext(this.wm.getNextPropagationIdCounter(),
                                                                                                     PropagationContext.Type.INSERTION,
@@ -295,7 +291,7 @@ public class NamedEntryPoint
     }
 
     public FactHandle insertAsync(Object object) {
-        ObjectTypeConf typeConf = this.typeConfReg.getObjectTypeConf( this.entryPoint, object );
+        ObjectTypeConf typeConf = getObjectTypeConfigurationRegistry().getObjectTypeConf( this.entryPoint, object );
 
         PropagationContext pctx = this.pctxFactory.createPropagationContext(this.wm.getNextPropagationIdCounter(),
                                                                             PropagationContext.Type.INSERTION,
@@ -360,8 +356,7 @@ public class NamedEntryPoint
                 throw new IllegalArgumentException( "Invalid Entry Point. You updated the FactHandle on entry point '" + handle.getEntryPoint().getEntryPointId() + "' instead of '" + getEntryPointId() + "'" );
             }
 
-            final ObjectTypeConf typeConf = this.typeConfReg.getObjectTypeConf( this.entryPoint,
-                                                                                object );
+            final ObjectTypeConf typeConf = getObjectTypeConfigurationRegistry().getObjectTypeConf( this.entryPoint, object );
 
 
             if ( handle.getId() == -1 || object == null || handle.isExpired() ) {
@@ -508,9 +503,9 @@ public class NamedEntryPoint
 
         final Object object = handle.getObject();
 
-        final ObjectTypeConf typeConf = this.typeConfReg.getObjectTypeConf( this.entryPoint, object );
+        final ObjectTypeConf typeConf = getObjectTypeConfigurationRegistry().getObjectTypeConf( this.entryPoint, object );
 
-        if( typeConf.isSupportsPropertyChangeListeners() ) {
+        if( typeConf.isDynamic() ) {
             removePropertyChangeListener( handle, true );
         }
 
@@ -579,7 +574,7 @@ public class NamedEntryPoint
 
     public void removeFromObjectStore(InternalFactHandle handle) {
         this.objectStore.removeHandle( handle );
-        ObjectTypeConf typeConf = this.typeConfReg.getObjectTypeConf( this.entryPoint, handle.getObject() );
+        ObjectTypeConf typeConf = getObjectTypeConfigurationRegistry().getObjectTypeConf( this.entryPoint, handle.getObject() );
         deleteFromTMS( handle, handle.getEqualityKey(), typeConf, null );
     }
 
@@ -654,7 +649,7 @@ public class NamedEntryPoint
     }
 
     public ObjectTypeConfigurationRegistry getObjectTypeConfigurationRegistry() {
-        return this.typeConfReg;
+        return entryPointNode.getTypeConfReg();
     }
 
     public InternalKnowledgeBase getKnowledgeBase() {
@@ -744,10 +739,10 @@ public class NamedEntryPoint
             }
             dynamicFacts = null;
         }
-        for( ObjectTypeConf conf : this.typeConfReg.values() ) {
+        for( ObjectTypeConf conf : getObjectTypeConfigurationRegistry().values() ) {
             // then, we check if any of the object types were configured using the
             // @propertyChangeSupport annotation, and clean them up
-            if( conf.isDynamic() && conf.isSupportsPropertyChangeListeners() ) {
+            if( conf.isDynamic() ) {
                 // it is enough to iterate the facts on the concrete object type nodes
                 // only, as the facts will always be in their concrete object type nodes
                 // even if they were also asserted into higher level OTNs as well
