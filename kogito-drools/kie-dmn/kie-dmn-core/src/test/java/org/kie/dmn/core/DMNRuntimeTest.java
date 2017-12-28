@@ -1629,5 +1629,24 @@ public class DMNRuntimeTest {
         DMNContext resultContext = dmnResult.getContext();
         assertThat(((BigDecimal) resultContext.get("hardcoded decision")).intValue(), is(47));
     }
+
+    @Test
+    public void testDROOLS2200() {
+        // DROOLS-2200
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime("will_be_null_if_negative.dmn", this.getClass());
+        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_c5889555-7ae5-4a67-a872-3a9492caf6e7", "will be null if negative");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        DMNContext context = DMNFactory.newContext();
+        context.set("a number", -1);
+
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        DMNContext resultContext = dmnResult.getContext();
+        assertThat(((Map) resultContext.get("will be null if negative")).get("s1"), nullValue());
+        assertThat(((Map) resultContext.get("will be null if negative")).get("s2"), is("negative"));
+    }
 }
 

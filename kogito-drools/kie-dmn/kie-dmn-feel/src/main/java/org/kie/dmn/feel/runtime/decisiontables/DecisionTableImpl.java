@@ -20,6 +20,7 @@ import static java.util.stream.Collectors.toMap;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -277,9 +278,11 @@ public class DecisionTableImpl {
             Object value = feel.evaluate( outputEntries.get( 0 ), values );
             return value;
         } else {
-            // zip outputEntries with its name:
-            return IntStream.range( 0, outputs.size() ).boxed()
-                    .collect( toMap( i -> outputs.get( i ).getName(), i -> feel.evaluate( outputEntries.get( i ), values ) ) );
+            Map<String, Object> output = new HashMap<>();
+            for (int i = 0; i < outputs.size(); i++) {
+                output.put(outputs.get(i).getName(), feel.evaluate(outputEntries.get(i), values));
+            }
+            return output;
         }
     }
 
