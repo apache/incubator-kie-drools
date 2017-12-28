@@ -25,6 +25,7 @@ import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNDecisionResult;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
+import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.api.DMNMessageManager;
@@ -35,8 +36,10 @@ public class DMNResultImpl implements DMNResult, DMNMessageManager {
     private DMNContext context;
     private DMNMessageManager messages;
     private Map<String, DMNDecisionResult> decisionResults;
+    private final DMNModel model;
 
-    public DMNResultImpl() {
+    public DMNResultImpl(DMNModel model) {
+        this.model = model;
         messages = new DefaultDMNMessagesManager();
         decisionResults = new HashMap<>(  );
     }
@@ -112,6 +115,13 @@ public class DMNResultImpl implements DMNResult, DMNMessageManager {
                "context=" + context +
                ", messages=" + messages +
                '}';
+    }
+
+    /**
+     * Returns the model this DMNResult belongs to.
+     */
+    public DMNModel getModel() {
+        return model;
     }
 
 }
