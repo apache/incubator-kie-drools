@@ -32,6 +32,7 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.events.DecisionTableRulesMatchedEvent;
 import org.kie.dmn.feel.runtime.events.FEELEventBase;
@@ -139,7 +140,7 @@ public class DecisionTableImpl {
     }
 
     private void checkOneResult(EvaluationContext ctx, DTDecisionRule rule, Map<Integer, String> msgs, DTOutputClause dtOutputClause, Object result) {
-        if( ! dtOutputClause.getType().isAssignableValue( result ) ) {
+        if (((EvaluationContextImpl) ctx).isPerformRuntimeTypeCheck() && !dtOutputClause.getType().isAssignableValue(result)) {
             // invalid type
             int index = outputs.indexOf( dtOutputClause ) + 1;
             msgs.put( index,

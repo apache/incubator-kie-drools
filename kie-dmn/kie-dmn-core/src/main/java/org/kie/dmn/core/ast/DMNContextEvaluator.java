@@ -16,26 +16,30 @@
 
 package org.kie.dmn.core.ast;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNType;
+import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.core.api.EvaluatorResult.ResultType;
-import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.core.impl.DMNContextImpl;
 import org.kie.dmn.core.impl.DMNResultImpl;
+import org.kie.dmn.core.impl.DMNRuntimeImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.model.v1_1.Context;
 import org.kie.dmn.model.v1_1.ContextEntry;
 import org.kie.dmn.model.v1_1.FunctionDefinition;
-import org.kie.dmn.model.v1_1.LiteralExpression;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.*;
 
 public class DMNContextEvaluator
         implements DMNExpressionEvaluator {
@@ -83,24 +87,26 @@ public class DMNContextEvaluator
                             value = ((Collection)value).toArray()[0];
                         }
                         
-                        if ( ! (ed.getContextEntry().getExpression() instanceof FunctionDefinition) ) {
-                            // checking directly the result type...
-                            if ( ed.getType() != null && !ed.getType().isAssignableValue(value) ) {
-                                MsgUtil.reportMessage( logger,
-                                        DMNMessage.Severity.ERROR,
-                                        contextDef,
-                                        result,
-                                        null,
-                                        null,
-                                        Msg.ERROR_EVAL_NODE_RESULT_WRONG_TYPE,
-                                        ed.getName(),
-                                        ed.getType(),
-                                        value);
-                                return new EvaluatorResultImpl( results, ResultType.FAILURE );
+                        if (((DMNRuntimeImpl) eventManager.getRuntime()).performRuntimeTypeCheck(result.getModel())) {
+                            if (!(ed.getContextEntry().getExpression() instanceof FunctionDefinition)) {
+                                // checking directly the result type...
+                                if (ed.getType() != null && !ed.getType().isAssignableValue(value)) {
+                                    MsgUtil.reportMessage(logger,
+                                                          DMNMessage.Severity.ERROR,
+                                                          contextDef,
+                                                          result,
+                                                          null,
+                                                          null,
+                                                          Msg.ERROR_EVAL_NODE_RESULT_WRONG_TYPE,
+                                                          ed.getName(),
+                                                          ed.getType(),
+                                                          value);
+                                    return new EvaluatorResultImpl(results, ResultType.FAILURE);
+                                }
+                            } else {
+                                // TODO ...will need calculation/inference of function return type.
                             }
-                        } else {
-                            // TODO ...will need calculation/inference of function return type.
-                        } 
+                        }
                         
                         results.put( ed.getName(), value );
                         dmnContext.set( ed.getName(), value );
