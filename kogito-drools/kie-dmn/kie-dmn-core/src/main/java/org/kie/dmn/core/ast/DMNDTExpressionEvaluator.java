@@ -30,8 +30,8 @@ import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.core.api.EvaluatorResult.ResultType;
 import org.kie.dmn.core.impl.DMNResultImpl;
-import org.kie.dmn.core.impl.DMNRuntimeEventManagerImpl;
 import org.kie.dmn.core.impl.DMNRuntimeEventManagerUtils;
+import org.kie.dmn.core.impl.DMNRuntimeImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.FEEL;
@@ -75,6 +75,7 @@ public class DMNDTExpressionEvaluator
             FEELEventListenersManager listenerMgr = new FEELEventListenersManager();
             listenerMgr.addListener(events::add);
             EvaluationContextImpl ctx = new EvaluationContextImpl( listenerMgr );
+            ctx.setPerformRuntimeTypeCheck(((DMNRuntimeImpl) dmrem.getRuntime()).performRuntimeTypeCheck(result.getModel()));
 
             ctx.enterFrame();
             // need to set the values for in context variables...

@@ -16,25 +16,25 @@
 
 package org.kie.dmn.feel.lang.impl;
 
+import java.util.ArrayDeque;
+import java.util.Collection;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Supplier;
+
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.util.EvalHelper;
 
-import java.util.ArrayDeque;
-import java.util.Collection;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Stack;
-import java.util.function.Supplier;
-
 public class EvaluationContextImpl implements EvaluationContext {
 
     private final FEELEventListenersManager eventsManager;
     private ArrayDeque<ExecutionFrame> stack;
     private DMNRuntime dmnRuntime;
+    private boolean performRuntimeTypeCheck = false;
 
     public EvaluationContextImpl(FEELEventListenersManager eventsManager) {
         this.eventsManager = eventsManager;
@@ -156,6 +156,14 @@ public class EvaluationContextImpl implements EvaluationContext {
 
     public DMNRuntime getDMNRuntime() {
         return dmnRuntime;
+    }
+
+    public void setPerformRuntimeTypeCheck(boolean performRuntimeTypeCheck) {
+        this.performRuntimeTypeCheck = performRuntimeTypeCheck;
+    }
+
+    public boolean isPerformRuntimeTypeCheck() {
+        return performRuntimeTypeCheck;
     }
 
 }

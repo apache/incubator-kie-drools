@@ -26,12 +26,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.core.ClockType;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.kie.api.internal.io.ResourceTypePackage;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieRuntime;
-import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNDecisionResult;
 import org.kie.dmn.api.core.DMNMessage;
@@ -184,7 +182,7 @@ public class DMNRuntimeImpl
     }
 
     private DMNResultImpl createResult(DMNModel model, DMNContext context) {
-        DMNResultImpl result = new DMNResultImpl();
+        DMNResultImpl result = new DMNResultImpl(model);
         result.setContext( context.clone() );
 
         for( DecisionNode decision : model.getDecisions() ) {
@@ -444,7 +442,7 @@ public class DMNRuntimeImpl
         return node.getName() != null ? node.getName() : node.getId();
     }
 
-    private boolean performRuntimeTypeCheck(DMNModel model) {
+    public boolean performRuntimeTypeCheck(DMNModel model) {
         return overrideRuntimeTypeCheck || ((DMNModelImpl) model).isRuntimeTypeCheck();
     }
 
