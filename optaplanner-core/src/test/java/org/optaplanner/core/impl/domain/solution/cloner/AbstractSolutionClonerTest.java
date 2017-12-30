@@ -38,6 +38,8 @@ import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedAnchor;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedObject;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution;
+import org.optaplanner.core.impl.testdata.domain.collection.TestdataArrayBasedEntity;
+import org.optaplanner.core.impl.testdata.domain.collection.TestdataArrayBasedSolution;
 import org.optaplanner.core.impl.testdata.domain.collection.TestdataEntityCollectionPropertyEntity;
 import org.optaplanner.core.impl.testdata.domain.collection.TestdataEntityCollectionPropertySolution;
 import org.optaplanner.core.impl.testdata.domain.collection.TestdataSetBasedEntity;
@@ -468,7 +470,7 @@ public abstract class AbstractSolutionClonerTest {
         a.setStringToEntityListMap(new HashMap<>());
         a.getStringToEntityListMap().put("bc", Arrays.asList(b, c));
 
-        b.setEntityList(Collections.<TestdataEntityCollectionPropertyEntity>emptyList());
+        b.setEntityList(Collections.emptyList());
         b.setEntitySet(new HashSet<>());
         b.setStringToEntityMap(new HashMap<>());
         b.setEntityToStringMap(null);
@@ -546,6 +548,66 @@ public abstract class AbstractSolutionClonerTest {
 
     private void assertEntityCollectionPropertyEntityClone(TestdataEntityCollectionPropertyEntity originalEntity,
             TestdataEntityCollectionPropertyEntity cloneEntity, String entityCode, String valueCode) {
+        assertNotSame(originalEntity, cloneEntity);
+        assertCode(entityCode, originalEntity);
+        assertCode(entityCode, cloneEntity);
+        assertCode(valueCode, cloneEntity.getValue());
+    }
+
+    @Test
+    public void cloneEntityArrayPropertySolution() {
+        SolutionDescriptor solutionDescriptor = TestdataArrayBasedSolution.buildSolutionDescriptor();
+        SolutionCloner<TestdataArrayBasedSolution> cloner = createSolutionCloner(solutionDescriptor);
+
+        TestdataValue val1 = new TestdataValue("1");
+        TestdataValue val2 = new TestdataValue("2");
+        TestdataValue val3 = new TestdataValue("3");
+        TestdataArrayBasedEntity a = new TestdataArrayBasedEntity("a", val1);
+        TestdataArrayBasedEntity b = new TestdataArrayBasedEntity("b", val1);
+        TestdataArrayBasedEntity c = new TestdataArrayBasedEntity("c", val3);
+        a.setEntities(new TestdataArrayBasedEntity[] {b, c});
+
+        b.setEntities(new TestdataArrayBasedEntity[] {});
+
+        c.setEntities(new TestdataArrayBasedEntity[] {a, c});
+
+        TestdataArrayBasedSolution original = new TestdataArrayBasedSolution("solution");
+        TestdataValue[] values = new TestdataValue[]{val1, val2, val3};
+        original.setValues(values);
+        TestdataArrayBasedEntity[] originalEntities = new TestdataArrayBasedEntity[]{a, b, c};
+        original.setEntities(originalEntities);
+
+        TestdataArrayBasedSolution clone = cloner.cloneSolution(original);
+
+        assertNotSame(original, clone);
+        assertCode("solution", clone);
+        assertSame(values, clone.getValues());
+        assertEquals(original.getScore(), clone.getScore());
+
+        TestdataArrayBasedEntity[] cloneEntities = clone.getEntities();
+        assertNotSame(originalEntities, cloneEntities);
+        assertEquals(3, cloneEntities.length);
+        TestdataArrayBasedEntity cloneA = cloneEntities[0];
+        TestdataArrayBasedEntity cloneB = cloneEntities[1];
+        TestdataArrayBasedEntity cloneC = cloneEntities[2];
+
+        assertEntityArrayPropertyEntityClone(a, cloneA, "a", "1");
+        assertNotSame(a.getEntities(), cloneA.getEntities());
+        assertEquals(2, cloneA.getEntities().length);
+        assertSame(cloneB, cloneA.getEntities()[0]);
+        assertSame(cloneC, cloneA.getEntities()[1]);
+
+        assertEntityArrayPropertyEntityClone(b, cloneB, "b", "1");
+        assertEquals(0, cloneB.getEntities().length);
+
+        assertEntityArrayPropertyEntityClone(c, cloneC, "c", "3");
+        assertEquals(2, cloneC.getEntities().length);
+        assertSame(cloneA, cloneC.getEntities()[0]);
+        assertSame(cloneC, cloneC.getEntities()[1]);
+    }
+
+    private void assertEntityArrayPropertyEntityClone(TestdataArrayBasedEntity originalEntity,
+            TestdataArrayBasedEntity cloneEntity, String entityCode, String valueCode) {
         assertNotSame(originalEntity, cloneEntity);
         assertCode(entityCode, originalEntity);
         assertCode(entityCode, cloneEntity);

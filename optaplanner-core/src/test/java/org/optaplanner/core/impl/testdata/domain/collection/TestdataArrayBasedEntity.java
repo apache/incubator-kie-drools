@@ -31,6 +31,8 @@ public class TestdataArrayBasedEntity extends TestdataObject {
         return solutionDescriptor.findEntityDescriptorOrFail(TestdataArrayBasedEntity.class);
     }
 
+    private TestdataArrayBasedEntity[] entities;
+
     private TestdataValue value;
 
     public TestdataArrayBasedEntity() {
@@ -43,6 +45,14 @@ public class TestdataArrayBasedEntity extends TestdataObject {
     public TestdataArrayBasedEntity(String code, TestdataValue value) {
         this(code);
         this.value = value;
+    }
+
+    public TestdataArrayBasedEntity[] getEntities() {
+        return entities;
+    }
+
+    public void setEntities(TestdataArrayBasedEntity[] entities) {
+        this.entities = entities;
     }
 
     @PlanningVariable(valueRangeProviderRefs = "valueRange")

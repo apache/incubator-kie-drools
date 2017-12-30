@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.domain.solution.cloner;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -165,6 +166,10 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
             if (isTypeArgumentDeepCloned(field.getGenericType())) {
                 return true;
             }
+        } else if (type.isArray()) {
+            if (isClassDeepCloned(type.getComponentType())) {
+                return true;
+            }
         }
         return false;
     }
@@ -292,10 +297,28 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
                 cloneValue = cloneCollection(unprocessed.field.getType(), (Collection<?>) unprocessed.originalValue);
             } else if (unprocessed.originalValue instanceof Map) {
                 cloneValue = cloneMap(unprocessed.field.getType(), (Map<?, ?>) unprocessed.originalValue);
+            } else if (unprocessed.originalValue.getClass().isArray()) {
+                cloneValue = cloneArray(unprocessed.field.getType(), unprocessed.originalValue);
             } else {
                 cloneValue = clone(unprocessed.originalValue);
             }
             setFieldValue(unprocessed.bean, unprocessed.field, cloneValue);
+        }
+
+        protected Object cloneArray(Class<?> expectedType, Object originalArray) {
+            int arrayLength = Array.getLength(originalArray);
+            Object cloneArray = Array.newInstance(originalArray.getClass().getComponentType(), arrayLength);
+            if (!expectedType.isInstance(cloneArray)) {
+                throw new IllegalStateException("The cloneArrayClass (" + cloneArray.getClass()
+                        + ") created for originalArrayClass (" + originalArray.getClass()
+                        + ") is not assignable to the field's type (" + expectedType + ").\n"
+                        + "Maybe consider replacing the default " + SolutionCloner.class.getSimpleName() + ".");
+            }
+            for (int i = 0; i < arrayLength; i++) {
+                Object cloneElement = cloneCollectionsElementIfNeeded(Array.get(originalArray, i));
+                Array.set(cloneArray, i, cloneElement);
+            }
+            return cloneArray;
         }
 
         protected <E> Collection<E> cloneCollection(Class<?> expectedType, Collection<E> originalCollection) {
@@ -381,6 +404,8 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
                 return (C) cloneCollection(Collection.class, (Collection) original);
             } else if (original instanceof Map) {
                 return (C) cloneMap(Map.class, (Map) original);
+            } else if (original.getClass().isArray()) {
+                return (C) cloneArray(original.getClass(), original);
             }
             if (retrieveDeepCloneDecisionForActualValueClass(original.getClass())) {
                 return clone(original);
