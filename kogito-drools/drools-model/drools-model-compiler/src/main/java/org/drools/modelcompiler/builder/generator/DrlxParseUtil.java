@@ -223,11 +223,7 @@ public class DrlxParseUtil {
                         fieldName = ( SimpleName ) childNodes.get( 1 );
                     }
                     if (fieldName != null) {
-                        if (drlxExpr instanceof MethodCallExpr) {
-                            reactOnProperties.add( getter2property( fieldName.getIdentifier() ) );
-                        } else {
-                            reactOnProperties.add( fieldName.getIdentifier() );
-                        }
+                        reactOnProperties.add( getFieldName( drlxExpr, fieldName ) );
                     }
                 }
             } else if (firstNode instanceof FieldAccessExpr && ((FieldAccessExpr) firstNode).getScope() instanceof ThisExpr) {
@@ -244,7 +240,7 @@ public class DrlxParseUtil {
             } else if (firstNode instanceof SimpleName) {
                 previous = new NameExpr("_this");
                 SimpleName fieldName = ( SimpleName ) firstNode;
-                String name = drlxExpr instanceof MethodCallExpr ? getter2property( fieldName.getIdentifier() ) : fieldName.getIdentifier();
+                String name = getFieldName( drlxExpr, fieldName );
                 reactOnProperties.add( name );
                 TypedExpression expression = nameExprToMethodCallExpr(name, typeCursor);
                 Expression plusThis = prepend(new NameExpr("_this"), expression.getExpression());
@@ -279,6 +275,16 @@ public class DrlxParseUtil {
         }
 
         throw new UnsupportedOperationException();
+    }
+
+    private static String getFieldName( Expression drlxExpr, SimpleName fieldName ) {
+        if ( drlxExpr instanceof MethodCallExpr ) {
+            String name = getter2property( fieldName.getIdentifier() );
+            if ( name != null ) {
+                return name;
+            }
+        }
+        return fieldName.getIdentifier();
     }
 
     public static TypedExpression nameExprToMethodCallExpr(String name, Class<?> clazz) {
@@ -551,4 +557,11 @@ public class DrlxParseUtil {
         return patternType;
     }
 
+    public static boolean isPrimitiveExpression(Expression expr) {
+        if (!(expr instanceof LiteralExpr)) {
+            return false;
+        }
+        return expr instanceof NullLiteralExpr || expr instanceof IntegerLiteralExpr || expr instanceof DoubleLiteralExpr ||
+                expr instanceof BooleanLiteralExpr || expr instanceof LongLiteralExpr;
+    }
 }

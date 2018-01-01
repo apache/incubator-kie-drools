@@ -57,7 +57,6 @@ import org.drools.javaparser.ast.drlx.expr.TemporalLiteralExpr;
 import org.drools.javaparser.ast.expr.AssignExpr;
 import org.drools.javaparser.ast.expr.BinaryExpr;
 import org.drools.javaparser.ast.expr.BinaryExpr.Operator;
-import org.drools.javaparser.ast.expr.CastExpr;
 import org.drools.javaparser.ast.expr.ClassExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.FieldAccessExpr;
@@ -89,8 +88,10 @@ import org.drools.modelcompiler.builder.generator.RuleContext.RuleDialect;
 import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
 
 import static java.util.stream.Collectors.toList;
+
 import static org.drools.javaparser.printer.PrintUtil.toDrlx;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isPrimitiveExpression;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.parseBlock;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.util.StringUtil.toId;
@@ -561,15 +562,8 @@ public class ModelGenerator {
             } else {
                 switch ( operator ) {
                     case EQUALS:
-                        MethodCallExpr methodCallExpr = new MethodCallExpr( left.getExpression(), "equals" );
-                        methodCallExpr.addArgument( right.getExpression() ); // don't create NodeList with static method because missing "parent for child" would null and NPE
-                        combo = methodCallExpr;
-                        break;
                     case NOT_EQUALS:
-                        MethodCallExpr methodCallExpr2 = new MethodCallExpr( left.getExpression(), "equals" );
-                        methodCallExpr2.addArgument( right.getExpression() );
-                        combo = methodCallExpr2;
-                        combo = new UnaryExpr( combo, UnaryExpr.Operator.LOGICAL_COMPLEMENT );
+                        combo = getEqualityExpression( left, right, operator );
                         break;
                     default:
                         if ( left.getExpression() == null || right.getExpression() == null ) {
@@ -675,6 +669,15 @@ public class ModelGenerator {
         }
 
         throw new UnsupportedOperationException("Unknown expression: " + toDrlx(drlxExpr)); // TODO
+    }
+
+    private static Expression getEqualityExpression( TypedExpression left, TypedExpression right, Operator operator ) {
+        if (isPrimitiveExpression(right.getExpression())) {
+            return new BinaryExpr( left.getExpression(), right.getExpression(), operator == Operator.EQUALS ? BinaryExpr.Operator.EQUALS : Operator.NOT_EQUALS );
+        }
+        MethodCallExpr methodCallExpr = new MethodCallExpr( left.getExpression(), "equals" );
+        methodCallExpr.addArgument( right.getExpression() ); // don't create NodeList with static method because missing "parent for child" would null and NPE
+        return operator == Operator.EQUALS ? methodCallExpr : new UnaryExpr( methodCallExpr, UnaryExpr.Operator.LOGICAL_COMPLEMENT );
     }
 
     private static List<Expression> recurseCollectArguments(NodeWithArguments<?> methodCallExpr) {
