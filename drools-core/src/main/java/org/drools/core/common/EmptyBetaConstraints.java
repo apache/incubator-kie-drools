@@ -16,6 +16,11 @@
 
 package org.drools.core.common;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.List;
+
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -24,11 +29,6 @@ import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.index.TupleList;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.List;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.getEmptyPropertyReactiveMask;
 
@@ -109,12 +109,10 @@ public class EmptyBetaConstraints
 
     public BetaMemory createBetaMemory(final RuleBaseConfiguration config,
                                        final short nodeType) {
-        final BetaMemory memory = new BetaMemory( config.isSequential() ? null : new TupleList(),
-                                                  new TupleList(),
-                                                  this.createContext(),
-                                                  nodeType );
-
-        return memory;
+        return new BetaMemory( config.isSequential() ? null : new TupleList(),
+                               new TupleList(),
+                               EMPTY,
+                               nodeType );
     }
 
     public int hashCode() {

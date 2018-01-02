@@ -138,7 +138,7 @@ public class DrlxParseUtil {
                 // then drlxExpr is a single NameExpr referring to a binding, e.g.: "$p1".
                 usedDeclarations.add(name);
                 return new TypedExpression(drlxExpr);
-            } if (context.queryParameters.stream().anyMatch(qp -> qp.name.equals(name))) {
+            } if (context.getQueryParameters().stream().anyMatch(qp -> qp.name.equals(name))) {
                 // then drlxExpr is a single NameExpr referring to a query parameter, e.g.: "$p1".
                 usedDeclarations.add(name);
                 return new TypedExpression(drlxExpr);
@@ -185,7 +185,7 @@ public class DrlxParseUtil {
                     // because reactOnProperties is referring only to the properties of the type of the pattern, not other declarations properites.
                     usedDeclarations.add(firstName);
                     if (!isInLineCast) {
-                        typeCursor = declarationById.get().declarationClass;
+                        typeCursor = declarationById.get().getDeclarationClass();
                     }
                     previous = new NameExpr(firstName);
                 } else {
@@ -196,7 +196,7 @@ public class DrlxParseUtil {
                     if(firstNodeName.getBackReferencesCount()  > 0) {
                         List<DeclarationSpec> ooPathDeclarations = context.getOOPathDeclarations();
                         DeclarationSpec backReferenceDeclaration = ooPathDeclarations.get(ooPathDeclarations.size() - 1 - firstNodeName.getBackReferencesCount());
-                        typeCursor = backReferenceDeclaration.declarationClass;
+                        typeCursor = backReferenceDeclaration.getDeclarationClass();
                         backReference = Optional.of(backReferenceDeclaration);
                         usedDeclarations.add(backReferenceDeclaration.getBindingId());
                     }
@@ -223,11 +223,7 @@ public class DrlxParseUtil {
                         fieldName = ( SimpleName ) childNodes.get( 1 );
                     }
                     if (fieldName != null) {
-                        if (drlxExpr instanceof MethodCallExpr) {
-                            reactOnProperties.add( getter2property( fieldName.getIdentifier() ) );
-                        } else {
-                            reactOnProperties.add( fieldName.getIdentifier() );
-                        }
+                        reactOnProperties.add( getFieldName( drlxExpr, fieldName ) );
                     }
                 }
             } else if (firstNode instanceof FieldAccessExpr && ((FieldAccessExpr) firstNode).getScope() instanceof ThisExpr) {
@@ -244,7 +240,7 @@ public class DrlxParseUtil {
             } else if (firstNode instanceof SimpleName) {
                 previous = new NameExpr("_this");
                 SimpleName fieldName = ( SimpleName ) firstNode;
-                String name = drlxExpr instanceof MethodCallExpr ? getter2property( fieldName.getIdentifier() ) : fieldName.getIdentifier();
+                String name = getFieldName( drlxExpr, fieldName );
                 reactOnProperties.add( name );
                 TypedExpression expression = nameExprToMethodCallExpr(name, typeCursor);
                 Expression plusThis = prepend(new NameExpr("_this"), expression.getExpression());
@@ -279,6 +275,16 @@ public class DrlxParseUtil {
         }
 
         throw new UnsupportedOperationException();
+    }
+
+    private static String getFieldName( Expression drlxExpr, SimpleName fieldName ) {
+        if ( drlxExpr instanceof MethodCallExpr ) {
+            String name = getter2property( fieldName.getIdentifier() );
+            if ( name != null ) {
+                return name;
+            }
+        }
+        return fieldName.getIdentifier();
     }
 
     public static TypedExpression nameExprToMethodCallExpr(String name, Class<?> clazz) {
@@ -378,12 +384,20 @@ public class DrlxParseUtil {
     }
 
     public static class RemoveRootNodeResult {
-        Optional<Expression> rootNode;
-        Expression withoutRootNode;
+        private Optional<Expression> rootNode;
+        private Expression withoutRootNode;
 
         public RemoveRootNodeResult(Optional<Expression> rootNode, Expression withoutRootNode) {
             this.rootNode = rootNode;
             this.withoutRootNode = withoutRootNode;
+        }
+
+        public Optional<Expression> getRootNode() {
+            return rootNode;
+        }
+
+        public Expression getWithoutRootNode() {
+            return withoutRootNode;
         }
     }
 
@@ -543,4 +557,11 @@ public class DrlxParseUtil {
         return patternType;
     }
 
+    public static boolean isPrimitiveExpression(Expression expr) {
+        if (!(expr instanceof LiteralExpr)) {
+            return false;
+        }
+        return expr instanceof NullLiteralExpr || expr instanceof IntegerLiteralExpr || expr instanceof DoubleLiteralExpr ||
+                expr instanceof BooleanLiteralExpr || expr instanceof LongLiteralExpr;
+    }
 }

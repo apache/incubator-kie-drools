@@ -20,6 +20,7 @@ import static java.util.stream.Collectors.toMap;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -31,6 +32,7 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.events.DecisionTableRulesMatchedEvent;
 import org.kie.dmn.feel.runtime.events.FEELEventBase;
@@ -138,7 +140,7 @@ public class DecisionTableImpl {
     }
 
     private void checkOneResult(EvaluationContext ctx, DTDecisionRule rule, Map<Integer, String> msgs, DTOutputClause dtOutputClause, Object result) {
-        if( ! dtOutputClause.getType().isAssignableValue( result ) ) {
+        if (((EvaluationContextImpl) ctx).isPerformRuntimeTypeCheck() && !dtOutputClause.getType().isAssignableValue(result)) {
             // invalid type
             int index = outputs.indexOf( dtOutputClause ) + 1;
             msgs.put( index,
@@ -277,9 +279,11 @@ public class DecisionTableImpl {
             Object value = feel.evaluate( outputEntries.get( 0 ), values );
             return value;
         } else {
-            // zip outputEntries with its name:
-            return IntStream.range( 0, outputs.size() ).boxed()
-                    .collect( toMap( i -> outputs.get( i ).getName(), i -> feel.evaluate( outputEntries.get( i ), values ) ) );
+            Map<String, Object> output = new HashMap<>();
+            for (int i = 0; i < outputs.size(); i++) {
+                output.put(outputs.get(i).getName(), feel.evaluate(outputEntries.get(i), values));
+            }
+            return output;
         }
     }
 

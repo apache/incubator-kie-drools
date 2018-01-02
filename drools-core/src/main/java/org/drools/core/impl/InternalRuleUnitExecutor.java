@@ -19,7 +19,6 @@ package org.drools.core.impl;
 import java.util.Collection;
 
 import org.drools.core.datasources.InternalDataSource;
-import org.drools.core.ruleunit.RuleUnitDescr;
 import org.drools.core.spi.Activation;
 import org.kie.api.logger.KieRuntimeLogger;
 import org.kie.api.runtime.ObjectFilter;
@@ -33,8 +32,8 @@ public interface InternalRuleUnitExecutor extends RuleUnitExecutor {
     void onSuspend();
     void onResume();
 
-    RuleUnitDescr switchToRuleUnit( Class<? extends RuleUnit> ruleUnitClass );
-    RuleUnitDescr switchToRuleUnit( RuleUnit ruleUnit );
+    void switchToRuleUnit( Class<? extends RuleUnit> ruleUnitClass, Activation activation );
+    void switchToRuleUnit( RuleUnit ruleUnit, Activation activation );
 
     void guardRuleUnit( Class<? extends RuleUnit> ruleUnitClass, Activation activation);
     void guardRuleUnit( RuleUnit ruleUnit, Activation activation );

@@ -60,4 +60,8 @@ public class NamedConsequenceDescr extends BaseDescr {
     public String toString() {
         return (isBreaking() ? " break" : "do") + "[" + getName() + "]";
     }
+
+    public void accept(DescrVisitor visitor) {
+        visitor.visit(this);
+    }
 }

@@ -50,10 +50,13 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.KieServices;
+import org.kie.api.runtime.KieContainer;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNDecisionResult;
 import org.kie.dmn.api.core.DMNMessage;
@@ -70,6 +73,7 @@ import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.ast.DecisionNodeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
+import org.kie.dmn.core.util.KieHelper;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.marshaller.FEELStringMarshaller;
 import org.kie.dmn.feel.util.EvalHelper;
@@ -1628,6 +1632,71 @@ public class DMNRuntimeTest {
 
         DMNContext resultContext = dmnResult.getContext();
         assertThat(((BigDecimal) resultContext.get("hardcoded decision")).intValue(), is(47));
+    }
+
+    @Test
+    public void testDROOLS2200() {
+        // DROOLS-2200
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime("will_be_null_if_negative.dmn", this.getClass());
+        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_c5889555-7ae5-4a67-a872-3a9492caf6e7", "will be null if negative");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        DMNContext context = DMNFactory.newContext();
+        context.set("a number", -1);
+
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        DMNContext resultContext = dmnResult.getContext();
+        assertThat(((Map) resultContext.get("will be null if negative")).get("s1"), nullValue());
+        assertThat(((Map) resultContext.get("will be null if negative")).get("s2"), is("negative"));
+    }
+
+    @Test
+    public void testDROOLS2201() {
+        // DROOLS-2201
+        // do NOT use the DMNRuntimeUtil as that enables typeSafe check override for runtime.
+        KieServices ks = KieServices.Factory.get();
+        final KieContainer kieContainer = KieHelper.getKieContainer(ks.newReleaseId("org.kie", "dmn-test-" + UUID.randomUUID(), "1.0"),
+                                                                    ks.getResources().newClassPathResource("typecheck_in_context_result.dmn", this.getClass()));
+        DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
+
+        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_42bf043d-df86-48bd-9045-dfc08aa8ba0d", "typecheck in context result");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        DMNContext emptyContext = DMNFactory.newContext();
+
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, emptyContext);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        DMNContext resultContext = dmnResult.getContext();
+        assertThat(((Map<String, Object>) resultContext.get("an hardcoded person")).keySet(), contains("name", "age"));
+        assertThat(((Map<String, Object>) resultContext.get("an hardcoded person with no name")).keySet(), contains("age"));
+    }
+
+    @Test
+    public void testDROOLS2201b() {
+        // DROOLS-2201
+        // do NOT use the DMNRuntimeUtil as that enables typeSafe check override for runtime.
+        KieServices ks = KieServices.Factory.get();
+        final KieContainer kieContainer = KieHelper.getKieContainer(ks.newReleaseId("org.kie", "dmn-test-" + UUID.randomUUID(), "1.0"),
+                                                                    ks.getResources().newClassPathResource("typecheck_in_DT.dmn", this.getClass()));
+        DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
+
+        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_99ccd4df-41ac-43c3-a563-d58f43149829", "typecheck in DT");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        DMNContext context = DMNFactory.newContext();
+        context.set("a number", 0);
+
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        DMNContext resultContext = dmnResult.getContext();
+        assertThat(((BigDecimal) resultContext.get("an odd decision")).intValue(), is(47));
     }
 }
 
