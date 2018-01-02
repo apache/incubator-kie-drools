@@ -18,10 +18,8 @@ package org.optaplanner.examples.conferencescheduling.domain;
 
 import java.util.Set;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
-@XStreamAlias("Speaker")
 public class Speaker extends AbstractPersistable {
 
     private String name;
