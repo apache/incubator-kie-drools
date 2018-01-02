@@ -80,7 +80,6 @@ import org.jbpm.query.jpa.data.QueryWhere.QueryCriteriaType;
 import org.jbpm.query.jpa.impl.QueryAndParameterAppender;
 import org.jbpm.query.jpa.impl.QueryCriteriaUtil;
 import org.kie.api.runtime.Environment;
-import org.kie.api.runtime.EnvironmentName;
 import org.kie.internal.runtime.manager.audit.query.NodeInstanceLogDeleteBuilder;
 import org.kie.internal.runtime.manager.audit.query.NodeInstanceLogQueryBuilder;
 import org.kie.internal.runtime.manager.audit.query.ProcessInstanceLogDeleteBuilder;

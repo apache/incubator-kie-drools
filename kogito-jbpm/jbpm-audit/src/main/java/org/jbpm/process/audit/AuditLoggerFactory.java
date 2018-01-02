@@ -22,7 +22,6 @@ import javax.jms.ConnectionFactory;
 import javax.jms.Queue;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.persistence.EntityManagerFactory;
 
 import org.jbpm.process.audit.jms.AsyncAuditLogProducer;
 import org.kie.api.runtime.Environment;
@@ -120,10 +119,9 @@ public class AuditLoggerFactory {
     }
     
     /**
-     * Creates new instance of JPA audit logger with given EntityManagerFactory
+     * Creates new instance of JPA audit logger with given Environment
      * NOTE: this will build the logger but it is not registered directly on a session: once received, 
      * it will need to be registered as an event listener
-     * @param emf EntityManagerFactory used to provide JPA entity manager instances on demand.
      * @param env Environment instance to be used
      * @return new instance of JPA audit logger
      */

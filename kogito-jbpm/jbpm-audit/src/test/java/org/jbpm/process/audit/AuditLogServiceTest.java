@@ -25,7 +25,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 
-import org.jbpm.process.audit.AuditLoggerFactory.Type;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -68,11 +67,12 @@ public class AuditLogServiceTest extends AbstractAuditLogServiceTest {
         }
        
         // working memory logger
-        AbstractAuditLogger dblogger = AuditLoggerFactory.newInstance(Type.JPA, session, null);
+        AbstractAuditLogger dblogger = AuditLoggerFactory.newJPAInstance(session.getEnvironment());
         assertNotNull(dblogger);
         assertTrue(dblogger instanceof JPAWorkingMemoryDbLogger);
         
         auditLogService = new JPAAuditLogService(env);
+        session.addEventListener(dblogger);
     }
 
     @After
