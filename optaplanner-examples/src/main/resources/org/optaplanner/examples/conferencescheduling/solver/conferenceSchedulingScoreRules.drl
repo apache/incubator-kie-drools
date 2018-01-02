@@ -139,7 +139,7 @@ rule "Language diversity"
         Talk(timeslot != null, $timeslot : timeslot,
                 $language : language,
                 $leftId : id)
-        // Timeslot.overlaps() is delibertly not used
+        // Timeslot.overlaps() is deliberately not used
         Talk(timeslot == $timeslot,
                 language != $language,
                 id > $leftId)
