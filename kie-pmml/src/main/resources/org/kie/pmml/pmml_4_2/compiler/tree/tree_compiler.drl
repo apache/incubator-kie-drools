@@ -138,7 +138,8 @@ when
             TypeOfField( $n : name == $name, $type : dataType )
          ,
         init( java.util.Map map = new java.util.LinkedHashMap(); ),
-        action( map.put( utils.compactUpperCase( $n ), $type ); ),
+        //action( map.put( utils.compactUpperCase( $n ), $type ); ),
+        action( map.put( $n, $type); ),
         result( map )
     )
     $root : Node( $rid : id, this memberOf $info)

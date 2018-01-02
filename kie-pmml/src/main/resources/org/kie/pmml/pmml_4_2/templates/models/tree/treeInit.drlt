@@ -27,6 +27,7 @@
 
 rule " Create tree @{context}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
+salience 9
 when
     ModelMarker( "@{context}" ; enabled == true )
 then
@@ -50,7 +51,8 @@ then
                              confs,
                              "@{node.defaultChild}"
                              );
-        insertLogical( node );
+//        insertLogical( node );
+        insert(node);
     @end{}
 end
 

@@ -605,14 +605,15 @@ public class PMML4Compiler implements PMMLCompiler {
 	    		resources.add(resource);
     		}
     	}
+    	dumpResourceContents("/home/lleveric/tmp/",resources);
     	return resources;
     }
-
-	private void dumpResourceContents(List<PMMLResource> resources) {
+    
+    private void dumpResourceContents(String path, List<PMMLResource> resources) {
 		for (PMMLResource resource : resources) {
 			Map<String, String> rules = resource.getRules();
 			for (String key : rules.keySet()) {
-				try (FileOutputStream fos = new FileOutputStream("/tmp/" + key + ".drl")){
+				try (FileOutputStream fos = new FileOutputStream(path + key + ".drl")){
 					fos.write(rules.get(key).getBytes());
 					fos.close();
 				} catch (IOException e) {
@@ -621,7 +622,7 @@ public class PMML4Compiler implements PMMLCompiler {
 			}
 			Map<String, String> src = resource.getPojoDefinitions();
 			for (String key : src.keySet()) {
-				try (FileOutputStream fos = new FileOutputStream("/tmp/" + key + ".java")){
+				try (FileOutputStream fos = new FileOutputStream(path + key + ".java")){
 					fos.write(src.get(key).getBytes());
 					fos.close();
 				} catch (IOException e) {
@@ -629,6 +630,10 @@ public class PMML4Compiler implements PMMLCompiler {
 				}
 			}
 		}
+    }
+
+	private void dumpResourceContents(List<PMMLResource> resources) {
+		dumpResourceContents("/tmp/",resources);
 	}
 
     protected PMMLResource buildResourceFromSegment( PMML pmml_origin, MiningSegment segment, ClassLoader classLoader, KieModuleModel module) {

@@ -72,7 +72,7 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
     	KieBase kbase = new KieHelper().addResource(res, ResourceType.PMML).build();
     	
     	RuleUnitExecutor executor = RuleUnitExecutor.create().bind(kbase);
-
+    	KieRuntimeLogger logger = ((InternalRuleUnitExecutor)executor).addFileLogger("/tmp/decisionTree");
         
         PMMLRequestData request = new PMMLRequestData("123","TreeTest");
         request.addRequestParam("fld1", 30.0);
@@ -90,6 +90,7 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
         assertNotNull(unitClass);
         
         int x = executor.run(unitClass);
+        logger.close();
         System.out.println(resultHolder);
         Collection<?> objs = ((InternalRuleUnitExecutor)executor).getSessionObjects();
         if (objs != null) {

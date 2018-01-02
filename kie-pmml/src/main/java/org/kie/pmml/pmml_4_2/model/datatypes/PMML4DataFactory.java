@@ -73,10 +73,11 @@ public class PMML4DataFactory {
 				missingFlag );
 	}
 	
-	public PMML4Data newPMML4Data( String correlationId, ParameterInfo parameterInfo, Boolean valid, Boolean missing) {
+	public PMML4Data newPMML4Data( String correlationId, String modelName, ParameterInfo parameterInfo, Boolean valid, Boolean missing) {
 		return newPMML4Data( correlationId, 
 				parameterInfo.getName(),
-				parameterInfo.getCorrelationId(), 
+				modelName,
+//				parameterInfo.getCorrelationId(), 
 //				null,
 				parameterInfo.getName(),
 				parameterInfo.getType(),

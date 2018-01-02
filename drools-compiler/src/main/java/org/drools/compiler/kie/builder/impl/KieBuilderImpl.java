@@ -325,6 +325,7 @@ public class KieBuilderImpl
     			String sourcePath = key.replaceAll("\\.", "/")+".java";
     			res.setSourcePath(sourcePath);
     			javaSource.write(res);
+    			dumpJavaCode("/home/lleveric/tmp/"+key+".java",javaCode);
     		}
     	}
     		

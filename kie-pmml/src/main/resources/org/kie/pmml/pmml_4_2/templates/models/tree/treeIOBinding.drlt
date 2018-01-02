@@ -26,23 +26,30 @@
 
 rule "Tree Input Linker @{context}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
+salience 3
 when
-   rqst: PMMLRequestData( modelName == "@{context}" )
+   rqst: PMMLRequestData( modelName == "@{context}" ) from request
+@comment{
    @foreach{ inputField: fields.keySet() }
-   @{inputField} : PMML4Data( context == "@{context}", capitalizedName == "@{inputField}", placeholder == false, 
-              valid == true || ( valid == false && missing == true && value != null ) )
+   @{inputField} : PMML4Data( context == "@{context}", name == "@{inputField}", placeholder == false, 
+              valid == true || ( valid == false && missing == true && value != null ) ) from pmmlData
    @end{}
-   $map: java.util.Map() from accumulate( $d: PMML4Data( context == "@{context}" ),
+}
+   $map: java.util.Map() from accumulate( eval(true) && $d: PMML4Data( context == "@{context}", placeholder == false, 
+              valid == true || ( valid == false && missing == true && value != null ) ) from pmmlData,
                                           init( java.util.Map map = new java.util.HashMap(); ),
                                           action( map.put($d.getCapitalizedName(),$d); ),
                                           result( map ) 
    )
+
 then
+@comment{
     java.util.Map inputMap = new java.util.HashMap();
     @foreach{ inputField: fields.keySet() }
     inputMap.put( "@{inputField}", @{inputField} );
     @end{}
-    @{context}TreeToken tok = new @{context}TreeToken( "","@{context}",
+}
+    @{context}TreeToken tok = new @{context}TreeToken( rqst.getCorrelationId(),"@{context}",
                                                        "@{rootId}",
                                                        null,
                                                        "@{visitMode}",
@@ -51,8 +58,9 @@ then
                                                        new java.util.HashMap(),
                                                        1.0,
                                                        0.0,
-                                                       inputMap);
-    insertLogical(tok);
+                                                       $map);
+    //insertLogical(tok);
+    insert(tok);
 end
 
 rule "Update PMML4Result"

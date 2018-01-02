@@ -1381,6 +1381,7 @@ then
     //System.err.println("Found Mined Field " + $fld.name );
     HashMap map = utils.container;
         map.put( "name", utils.compactUpperCase( $fld.name ) );
+        map.put( "rawName", $fld.name );
         map.put( "model", utils.context );
     utils.applyTemplate( "miningField.drlt", utils, registry, map, theory );
 end

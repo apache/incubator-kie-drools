@@ -40,38 +40,15 @@ rule 'Extract Parameter Info - @{rawName}'
 salience 101
 no-loop
 when
-   $rd: PMMLRequestData( $cid: correlationId != null, "@{rawName}" memberOf mappedRequestParams.keySet() ) from request
+   $rd: PMMLRequestData( $cid: correlationId != null, $mn: modelName, "@{rawName}" memberOf mappedRequestParams.keySet() ) from request
    $pi: ParameterInfo( $name: name, $value: value ) from $rd.mappedRequestParams["@{rawName}"]
 then
    PMML4DataFactory factory = PMML4DataFactory.get();
-   PMML4Data data = factory.newPMML4Data($cid, $pi, @{notRestricted}, false);
+   PMML4Data data = factory.newPMML4Data($cid, $mn, $pi, @{notRestricted}, false);
    pmmlData.insert(data);
+   System.out.println("Inserted "+data);
 end
 
-/*
-rule "Extract ParameterInfo @{name}"
-@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
-salience 101
-when
-   $rd: PMMLRequestData( correlationId != null, requestParams != null ) from request
-   $pi: ParameterInfo( capitalizedName == "@{name}", $name: name, $value: value ) from $rd.requestParams
-   not ParameterInfo( name == $name, value == $value )
-then
-   insert( $pi );
-end
-
-rule "Input_PMMLData_@{name} from ParameterInfo"
-@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
-salience 100
-when
-   $pi: ParameterInfo( $cid: correlationId != null, capitalizedName == "@{name}", $value: value )
-   not PMML4Data( name == $pi.name, value == $value, context == null )
-then
-   PMML4DataFactory factory = PMML4DataFactory.get();
-   PMML4DataType input = factory.newPMML4Data($cid,$pi,@{notRestricted},false);
-   insert( input );
-end
-*/
 
 rule "OverrideValue_@{name}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }

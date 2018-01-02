@@ -31,7 +31,7 @@
 rule miningPmml4Data_@{model}_@{name}
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
-   $src: PMML4Data( capitalizedName == "@{name}", $m : missing, $v : valid, $x : value, context == null, placeholder == false ) from pmmlData
+   $src: PMML4Data( name == "@{rawName}", $m : missing, $v : valid, $x : value, context == null, placeholder == false ) from pmmlData
 then
    PMML4Data data = (PMML4Data)PMML4DataFactory.get().copy($src);
    data.setContext(@{format("string",model)});
@@ -44,13 +44,10 @@ rule "InitAsMissing_PMML4Data_@{model}_@{name}"
 salience 1000
 when
    ModelMarker( modelName == "@{model}", enabled == true )
-   not PMML4Data( capitalizedName == "@{name}", context == null )
+   not PMML4Data( capitalizedName == "@{name}", context == null ) from pmmlData
 then
-   System.out.println("Init as missing @{model} @{name}");
    PMML4DataType data = PMML4DataFactory.get().getPlaceholder("","@{name}","@{model}");
-   System.out.println("data created");
    pmmlData.insert( data );
-   System.out.println("data inserted");
 end
 
 

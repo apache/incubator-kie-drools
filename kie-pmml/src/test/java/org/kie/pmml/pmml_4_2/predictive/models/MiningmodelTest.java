@@ -41,6 +41,7 @@ import org.kie.pmml.pmml_4_2.model.AbstractPMMLData;
 import org.kie.pmml.pmml_4_2.model.PMMLRequestData;
 import org.kie.pmml.pmml_4_2.model.ParameterInfo;
 import org.kie.pmml.pmml_4_2.model.ScoreCard;
+import org.kie.pmml.pmml_4_2.model.datatypes.PMML4Data;
 import org.kie.pmml.pmml_4_2.model.mining.SegmentExecution;
 import org.kie.pmml.pmml_4_2.model.tree.AbstractTreeToken;
 
@@ -78,12 +79,15 @@ public class MiningmodelTest extends DroolsAbstractPMMLTest {
 		DataSource<PMML4Result> childModelResults = executor.newDataSource("childModelResults");
 		DataSource<SegmentExecution> childModelSegments = executor.newDataSource("childModelSegments");
 		DataSource<? extends AbstractPMMLData> miningModelPojo = executor.newDataSource("miningModelPojo");
+		DataSource<PMML4Data> pmmlData = executor.newDataSource("pmmlData");
 
 		List<String> possiblePackages = this.calculatePossiblePackageNames("SampleMine");
 		Class<? extends RuleUnit> ruleUnitClass = this.getStartingRuleUnit("Start Mining - SampleMine",(InternalKnowledgeBase)kbase,possiblePackages);
 		assertNotNull(ruleUnitClass);
 		int x = executor.run(ruleUnitClass);
 		System.out.println(x);
+		System.out.println("Reuslts ---");
+		resultHolder.forEach(re -> { System.out.println(re);});
 		// setKSession( getModelSession( source1, VERBOSE ) );
 		// setKbase( getKSession().getKieBase() );
 		// KieSession kSession = getKSession();
