@@ -42,7 +42,7 @@ public class LookUpStrategyImmutableTest {
         this.externalObject = externalObject;
     }
 
-    @Parameterized.Parameters
+    @Parameterized.Parameters(name = "{index}: {0}")
     public static Object[] data() {
         return new Object[][]{
             {true, new Boolean(true)},
@@ -54,7 +54,7 @@ public class LookUpStrategyImmutableTest {
             {0.1d, new Double(0.1d)},
             {BigInteger.ONE, new BigInteger("1")},
             {BigDecimal.ONE, new BigDecimal("1")},
-            {'\n', new Character((char) 10)},
+            {'!', new Character((char) 33)},
             {"", new String()},
             {LocalDate.of(1, 2, 3), LocalDate.of(1, 2, 3)},
             {LocalTime.of(1, 2), LocalTime.of(1, 2)},
