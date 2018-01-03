@@ -89,7 +89,8 @@ then
             x.setMissing( false );
             x.setValue( $out );
             x.setWeight( $conf );
-    insertLogical( x );
+      insert(x);
+//    insertLogical( x );
 end
 
 

@@ -27,8 +27,7 @@
 
 rule "Eval Tree Node @{context} - @{id} - Down"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
-salience $children.size() - $children.indexOf( $child )
-dialect "mvel"
+salience 5
 when
     $node : TreeNode( context == "@{context}", $id : id == "@{id}", $children : children, children.size > 0 )
     $tok  : @{context}TreeToken( context == "@{context}", current == "@{id}", $trail : trail,

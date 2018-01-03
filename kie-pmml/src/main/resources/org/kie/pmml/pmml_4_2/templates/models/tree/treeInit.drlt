@@ -86,11 +86,17 @@ when
         result( mapc )
     )
 then
-    modify ( $node ) {
-        getCounts().putAll( $map ),
-        getConfidence().putAll( $mpc ),
-        setRecordCount( $tot.intValue() );
-    }
+    org.kie.api.runtime.rule.FactHandle handle = kcontext.getKieRuntime().getFactHandle($node);
+    System.out.println(handle);
+    $node.getCounts().putAll( $map );
+    $node.getConfidence().putAll( $mpc );
+    $node.setRecordCount( $tot.intValue() );
+    update(handle,$node);
+//    modify ( $node ) {
+//        getCounts().putAll( $map ),
+//        getConfidence().putAll( $mpc ),
+//        setRecordCount( $tot.intValue() )
+//    };
 end
 
 
@@ -105,9 +111,13 @@ when
     java.util.Map.Entry( $best : key, value == $maxConf ) from $conf.entrySet()
 
 then
-    modify ( $node ) {
-        setOutcome( (@{mapDatatype( tgtType )}) $best );
-    }
+    org.kie.api.runtime.rule.FactHandle handle = kcontext.getKieRuntime().getFactHandle($node);
+    System.out.println(handle);
+    $node.setOutcome( (@{mapDatatype( tgtType )}) $best );
+    update(handle,$node);
+//    modify ( $node ) {
+//        setOutcome( (@{mapDatatype( tgtType )}) $best )
+//    };
 end
 
 @end{}
