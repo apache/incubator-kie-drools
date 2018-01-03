@@ -16,7 +16,9 @@
 
 package org.kie.dmn.backend.marshalling.v1_1;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -36,7 +38,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.dmn.api.marshalling.v1_1.DMNMarshaller;
 import org.kie.dmn.backend.marshalling.v1_1.extensions.MyTestRegister;
-import org.kie.dmn.backend.marshalling.v1_1.xstream.XStreamMarshaller;
 import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
 import org.kie.dmn.model.v1_1.Definitions;
 import org.slf4j.Logger;
@@ -116,6 +117,11 @@ public class UnmarshalMarshalTest {
         testRoundTrip("", "test20161014.xml");
     }
     
+    @Test
+    public void testQNameSerialization() throws Exception {
+        testRoundTrip("", "hardcoded_function_definition.dmn");
+    }
+
     @Ignore("A problem with the StaxDriver has still to be resolved.")
     @Test
     public void testFAILforMissingNamespaces() {
