@@ -177,36 +177,6 @@ public class RuleUnitTest {
     }
     
     @Test
-    public void testRuleUnitWithAccumulate() throws Exception {
-    	String drl1 = 
-                "import " + Person.class.getCanonicalName() + "\n" +
-                "import " + AdultUnit.class.getCanonicalName() + "\n" +
-                "rule AccumulateAdults @Unit( AdultUnit.class ) when\n" +
-                "   eval( true) \n" + 
-                "   l: java.util.List( size > 0 ) from accumulate( $p: Person( age >= 18 ) from persons, \n"
-                + "                    init( java.util.List $plist = new java.util.ArrayList(); ),\n"
-                + "                    action( $plist.add($p); ),\n"
-                + "                    result($plist) )\n"
-                + "then\n"
-                + "   System.out.println(l); \n"
-                + "end\n"
-                + "";
-        KieBase kbase = new KieHelper().addContent( drl1, ResourceType.DRL ).build();
-        RuleUnitExecutor executor = RuleUnitExecutor.create().bind( kbase );
-        
-        DataSource<Person> persons = executor.newDataSource("persons",
-		                new Person( "Mario", 42 ),
-		                new Person( "Marilena", 44 ),
-		                new Person( "Sofia", 4 ) );
-        DataSource<String> strings = executor.newDataSource("strings", "Test");
-		List<String> log = new ArrayList<>();
-		executor.bindVariable( "log", log );
-		
-		assertEquals(4, executor.run( AdultUnit.class ) );
-        		
-    }
-
-    @Test
     public void testRunUnexistingUnit() throws Exception {
         String drl1 =
                 "import " + Person.class.getCanonicalName() + "\n" +
