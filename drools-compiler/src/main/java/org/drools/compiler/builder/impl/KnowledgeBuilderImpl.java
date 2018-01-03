@@ -2205,7 +2205,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         private Collection<String> removedTypes;
 
         public ResourceRemovalResult(  ) {
-            this( false, Collections.emptyList() );
+            this( false, new ArrayList<String>() );
         }
 
         public ResourceRemovalResult( boolean modified, Collection<String> removedTypes ) {
