@@ -195,7 +195,7 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
         pmmlData.forEach(pd -> { System.out.println(pd);});
         
         Object missingTreeToken = resultHolder.getResultValue("MissingTreeToken", null);
-//        assertNotNull(missingTreeToken);
+        assertNotNull(missingTreeToken);
         
 //        kSession.insert(data);
 //

@@ -104,6 +104,7 @@ public class PMML4Compiler implements PMMLCompiler {
             "global/manipulation/propagateMissingValues.drlt",
 
             "global/validation/intervalsOnDomainRestriction.drlt",
+            "global/validation/valuesNoRestriction.drlt",
             "global/validation/valuesOnDomainRestriction.drlt",
             "global/validation/valuesOnDomainRestrictionMissing.drlt",
             "global/validation/valuesOnDomainRestrictionInvalid.drlt",
