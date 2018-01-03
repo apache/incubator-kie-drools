@@ -372,4 +372,8 @@ public class PackageModel {
     public void addAccumulateFunctions(Map<String, AccumulateFunction> accumulateFunctions) {
         this.accumulateFunctions = accumulateFunctions;
     }
+
+    public boolean hasDeclaration(String id) {
+        return globals.get(id) != null;
+    }
 }
