@@ -1074,7 +1074,7 @@ public class DefaultAgenda
                     group = null; // set the group to null in case the fire limit has been reached
                 }
 
-                if ( returnedFireCount == 0 && head == null && ( group == null || !group.isAutoDeactivate() ) && !flushExpirations() ) {
+                if ( returnedFireCount == 0 && head == null && ( group == null || ( group.isEmpty() && !group.isAutoDeactivate() ) ) && !flushExpirations() ) {
                     // if true, the engine is now considered potentially at rest
                     head = restHandler.handleRest( this, isInternalFire );
                     if (!isInternalFire && head == null) {
