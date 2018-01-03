@@ -21,6 +21,7 @@ import org.drools.compiler.lang.descr.EntryPointDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.WindowReferenceDescr;
 import org.drools.compiler.rule.builder.RuleBuildContext;
+import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.QueryElement;
 import org.drools.core.rule.RuleConditionElement;
@@ -51,11 +52,22 @@ public class PackageBuilderUtil {
             return true;
         }
 
-        return (  (source instanceof Pattern && ((Pattern) source).hasXPath() ) ||
-                  inputPattern.getSource() != null &&
-                  !( inputPattern.getSource() instanceof WindowReferenceDescr ) &&
-                  !( inputPattern.getSource() instanceof EntryPointDescr ) ) ||
-                  source instanceof QueryElement ||
-                  ( source.getNestedElements().size() == 1 && source.getNestedElements().get( 0 ) instanceof QueryElement );
+        if (source instanceof Pattern) {
+            if ( ((Pattern) source).hasXPath() ) {
+                return true;
+            }
+            if ( ((Pattern) source).getSource() instanceof EntryPointId ) {
+                return false;
+            }
+        }
+
+        if ( inputPattern.getSource() != null &&
+                !( inputPattern.getSource() instanceof WindowReferenceDescr ) &&
+                !( inputPattern.getSource() instanceof EntryPointDescr ) ) {
+            return true;
+        }
+
+        return source instanceof QueryElement ||
+               ( source.getNestedElements().size() == 1 && source.getNestedElements().get( 0 ) instanceof QueryElement );
     }
 }
