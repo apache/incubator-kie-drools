@@ -88,7 +88,9 @@ followed by a non-partitioned Local Search phase:
 
     <constructionHeuristic/>
     <localSearch>
-      <secondsSpentLimit>60</secondsSpentLimit>
+      <termination>
+        <secondsSpentLimit>60</secondsSpentLimit>
+      </termination>
     </localSearch>
   </partitionedSearch>
   <localSearch/>
