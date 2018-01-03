@@ -16,9 +16,7 @@
 
 package org.kie.pmml.pmml_4_2;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -38,6 +36,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
+
 import org.dmg.pmml.pmml_4_2.descr.ClusteringModel;
 import org.dmg.pmml.pmml_4_2.descr.DataDictionary;
 import org.dmg.pmml.pmml_4_2.descr.NaiveBayesModel;
@@ -66,18 +65,11 @@ import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.pmml.pmml_4_2.model.Miningmodel;
 import org.kie.pmml.pmml_4_2.model.PMML4UnitImpl;
-import org.kie.pmml.pmml_4_2.model.PMMLMiningField;
 import org.kie.pmml.pmml_4_2.model.mining.MiningSegment;
 import org.kie.pmml.pmml_4_2.model.mining.MiningSegmentation;
-import org.mvel2.integration.impl.MapVariableResolver;
-import org.mvel2.integration.impl.MapVariableResolverFactory;
-import org.mvel2.templates.CompiledTemplate;
 import org.mvel2.templates.SimpleTemplateRegistry;
 import org.mvel2.templates.TemplateCompiler;
-import org.mvel2.templates.TemplateError;
 import org.mvel2.templates.TemplateRegistry;
-import org.mvel2.templates.TemplateRuntime;
-import org.mvel2.templates.TemplateRuntimeError;
 import org.xml.sax.SAXException;
 
 public class PMML4Compiler implements PMMLCompiler {
@@ -289,14 +281,6 @@ public class PMML4Compiler implements PMMLCompiler {
         return helper;
     }
     
-//    public String generateTheory(PMML pmml) {
-//    	return generateTheory(pmml,null);
-//    }
-
-    private String getUnitPackageName(PMML4Unit unit) {
-    	PMML4Model root = unit.getRootModel();
-    	return root.getModelPackageName();
-    }
     
     private String getRuleUnitClass(PMML4Unit unit) {
     	PMML4Model root = unit.getRootModel();
@@ -307,7 +291,6 @@ public class PMML4Compiler implements PMMLCompiler {
         StringBuilder sb = new StringBuilder();
         PMML4Unit unit = new PMML4UnitImpl(pmml);
         
-        //dumpModel( pmml, System.out );
 
         KieBase visitor;
         try {
@@ -336,7 +319,6 @@ public class PMML4Compiler implements PMMLCompiler {
 
         visitorSession.dispose();
 
-//        System.out.println( modelEvaluatingRules );
         return modelEvaluatingRules;
 	}
 
@@ -605,37 +587,9 @@ public class PMML4Compiler implements PMMLCompiler {
 	    		resources.add(resource);
     		}
     	}
-    	dumpResourceContents("/home/lleveric/tmp/",resources);
     	return resources;
     }
     
-    private void dumpResourceContents(String path, List<PMMLResource> resources) {
-		for (PMMLResource resource : resources) {
-			Map<String, String> rules = resource.getRules();
-			for (String key : rules.keySet()) {
-				try (FileOutputStream fos = new FileOutputStream(path + key + ".drl")){
-					fos.write(rules.get(key).getBytes());
-					fos.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-			Map<String, String> src = resource.getPojoDefinitions();
-			for (String key : src.keySet()) {
-				try (FileOutputStream fos = new FileOutputStream(path + key + ".java")){
-					fos.write(src.get(key).getBytes());
-					fos.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-    }
-
-	private void dumpResourceContents(List<PMMLResource> resources) {
-		dumpResourceContents("/tmp/",resources);
-	}
-
     protected PMMLResource buildResourceFromSegment( PMML pmml_origin, MiningSegment segment, ClassLoader classLoader, KieModuleModel module) {
     	PMML pmml = new PMML();
     	DataDictionary dd = pmml_origin.getDataDictionary();
@@ -654,11 +608,6 @@ public class PMML4Compiler implements PMMLCompiler {
     	PMMLResource resource = new PMMLResource(helper.getPack());
     	resource.setKieBaseModel(kbModel);
     	resource.addRules(segment.getModel().getModelId(), rules);
-//    	resource.addPojoDefinition(segment.getModel().getMappedMiningPojo());
-//    	Map.Entry<String, String> outputPojo = segment.getModel().getMappedOutputPojo();
-//    	if (outputPojo != null) {
-//    		resource.addPojoDefinition(outputPojo);
-//    	}
     	return resource;
     }
     
@@ -673,7 +622,6 @@ public class PMML4Compiler implements PMMLCompiler {
 		rootKieBaseModel.addPackage(resource.getPackageName());
 		rootKieBaseModel.setDefault(true);
     	resource.setKieBaseModel(rootKieBaseModel);
-//    	resource.addPojoDefinition(miningModel.getMappedMiningPojo());
     	resource.addRules(miningModel.getModelId(), miningModel.generateRules());
     	resourcesList.add(resource);
     	getChildResources(pmml,miningModel, resourcesList, classLoader, module);

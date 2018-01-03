@@ -14,14 +14,12 @@
 */
 
 package org.drools.compiler.kie.builder.impl;
+import static org.drools.compiler.kproject.ReleaseIdImpl.adapt;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -72,10 +70,7 @@ import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.internal.builder.KieBuilderSet;
-import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.io.ResourceFactory;
-
-import static org.drools.compiler.kproject.ReleaseIdImpl.adapt;
 
 public class KieBuilderImpl
         implements
@@ -150,27 +145,9 @@ public class KieBuilderImpl
     public KieBuilderImpl( KieFileSystem kieFileSystem,
                            ClassLoader classLoader ) {
         this.classLoader = classLoader;
-//        PMMLCompiler compiler = PMMLCompilerFactory.getPMMLCompiler();
-//        if (isKiePMMLCompiler(compiler)) {
-//            List<String> pmmlFileNames = getPmmlFileNames(kieFileSystem);
-//            precompilePmml(compiler, pmmlFileNames);
-//            addPrecompiledResources(kieFileSystem);
-//        }
         srcMfs = ( (KieFileSystemImpl) kieFileSystem ).asMemoryFileSystem();
     }
 
-    private boolean isKiePMMLCompiler(PMMLCompiler compiler) {
-        return compiler != null && KIE_PMML_COMPILER_VERSION.equals(compiler.getCompilerVersion());
-    }
-    
-    private String removeResourceRootPrefix(String fn) {
-    	if (fn.startsWith(RESOURCES_ROOT)) {
-    		return fn.substring(RESOURCES_ROOT.length()+1);
-    	} else if (fn.startsWith(RESOURCES_TEST_ROOT)) {
-    		return fn.substring(RESOURCES_TEST_ROOT.length()+1);
-    	}
-    	return fn;
-    }
     
     /**
      * Gets a list of file names that represent PMML resources from a KieFileSystem
@@ -325,7 +302,6 @@ public class KieBuilderImpl
     			String sourcePath = key.replaceAll("\\.", "/")+".java";
     			res.setSourcePath(sourcePath);
     			javaSource.write(res);
-    			dumpJavaCode("/home/lleveric/tmp/"+key+".java",javaCode);
     		}
     	}
     		
@@ -337,15 +313,6 @@ public class KieBuilderImpl
             JavaDialectConfiguration javaConf = (JavaDialectConfiguration) kconf.getDialectConfiguration( "java" );
         	compileJavaClasses(javaConf, classLoader, javaFileNames, JAVA_ROOT, src);
         }
-    }
-
-    private void dumpJavaCode(String outputPath, String javaCode) {
-        try (FileOutputStream fos = new FileOutputStream(outputPath)) {
-            fos.write(javaCode.getBytes());
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } 
     }
     
     
@@ -793,6 +760,28 @@ public class KieBuilderImpl
                                      ResourceReader source) {
         if (!javaFiles.isEmpty()) {
             String[] sourceFiles = javaFiles.toArray(new String[ javaFiles.size() ]);
+            File dumpDir = javaConf.getPackageBuilderConfiguration().getDumpDir();
+            if (dumpDir != null) {
+            	String dumpDirName;
+				try {
+					dumpDirName = dumpDir.getCanonicalPath().endsWith("/") ? dumpDir.getCanonicalPath() : dumpDir.getCanonicalPath() + "/";
+	            	for (String srcFile: sourceFiles) {
+	            		String baseName = (srcFile.startsWith(JAVA_ROOT) ? srcFile.substring(JAVA_ROOT.length()) : srcFile)
+	            				.replaceAll("/", ".");
+	            		
+	            		String fname = dumpDirName + baseName + ".java";
+	            		byte[] srcData = source.getBytes(srcFile);
+	            		try (FileOutputStream fos = new FileOutputStream(fname)) {
+	            			fos.write(srcData);
+	            		} catch (IOException iox) {
+	            			results.addMessage(Level.WARNING, fname, "Unable to 'dump' the generated Java class: "+fname);
+	            		}
+	            	}
+				} catch (IOException e) {
+					results.addMessage(Level.WARNING, "", "Unable to get the 'dump directory for the generated Java classes");
+				}
+            	
+            }
             JavaCompiler javaCompiler = createCompiler( javaConf, rootFolder );
             CompilationResult res = javaCompiler.compile(sourceFiles, source, trgMfs, classLoader);
 

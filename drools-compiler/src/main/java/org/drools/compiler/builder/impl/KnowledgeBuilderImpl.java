@@ -48,6 +48,7 @@ import org.drools.compiler.compiler.ConfigurableSeverityResult;
 import org.drools.compiler.compiler.DecisionTableFactory;
 import org.drools.compiler.compiler.DeprecatedResourceTypeWarning;
 import org.drools.compiler.compiler.DescrBuildError;
+import org.drools.compiler.compiler.DescrBuildWarning;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.DrlParser;
@@ -427,6 +428,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     	    	if (descr != null) {
     				descr.setResource(resource);
     	    		pkgDescrs.add(descr);
+    	    		dumpGeneratedRule(descr,key,src);
     	    	} else {
     	            addBuilderResult(new ParserError(resource, "Parser returned a null Package", 0, 0));
     	    	}
@@ -435,12 +437,21 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     	return pkgDescrs;
     }
 
-    private void dumpGeneratedRule(String outputPath, String src) {
-        try (FileOutputStream fos = new FileOutputStream(outputPath)) {
-            fos.write(src.getBytes());
-        } catch (IOException iox) {
-            
-        }
+    private void dumpGeneratedRule(PackageDescr descr, String resName, String src) {
+    	File dumpDir = this.configuration.getDumpDir();
+    	if (dumpDir != null) {
+    		try {
+				String dirName = dumpDir.getCanonicalPath().endsWith("/") ? dumpDir.getCanonicalPath() : dumpDir.getCanonicalPath() + "/";
+				String outputPath = dirName + resName + ".drl";
+		        try (FileOutputStream fos = new FileOutputStream(outputPath)) {
+		            fos.write(src.getBytes());
+		        } catch (IOException iox) {
+					this.addBuilderResult(new DescrBuildWarning(null, descr, descr.getResource(), "Unable to write generated rules the dump directory: "+outputPath));
+		        }
+			} catch (IOException e) {
+				this.addBuilderResult(new DescrBuildWarning(null, descr, descr.getResource(), "Unable to access the dump directory"));
+			}
+    	}
     }
 
     private PackageDescr generatedDrlToPackageDescr(Resource resource, String generatedDrl) throws DroolsParserException {
@@ -2232,6 +2243,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
         return new ResourceRemovalResult(modified, removedTypes);
     }
+    
 
     public static class ResourceRemovalResult {
         private boolean modified;

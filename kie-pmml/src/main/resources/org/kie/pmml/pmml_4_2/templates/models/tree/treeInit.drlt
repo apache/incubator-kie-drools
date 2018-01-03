@@ -51,7 +51,6 @@ then
                              confs,
                              "@{node.defaultChild}"
                              );
-//        insertLogical( node );
         insert(node);
     @end{}
 end
@@ -86,17 +85,12 @@ when
         result( mapc )
     )
 then
-    org.kie.api.runtime.rule.FactHandle handle = kcontext.getKieRuntime().getFactHandle($node);
+    FactHandle handle = kcontext.getKieRuntime().getFactHandle($node);
     System.out.println(handle);
     $node.getCounts().putAll( $map );
     $node.getConfidence().putAll( $mpc );
     $node.setRecordCount( $tot.intValue() );
     update(handle,$node);
-//    modify ( $node ) {
-//        getCounts().putAll( $map ),
-//        getConfidence().putAll( $mpc ),
-//        setRecordCount( $tot.intValue() )
-//    };
 end
 
 
@@ -111,13 +105,10 @@ when
     java.util.Map.Entry( $best : key, value == $maxConf ) from $conf.entrySet()
 
 then
-    org.kie.api.runtime.rule.FactHandle handle = kcontext.getKieRuntime().getFactHandle($node);
+    FactHandle handle = kcontext.getKieRuntime().getFactHandle($node);
     System.out.println(handle);
     $node.setOutcome( (@{mapDatatype( tgtType )}) $best );
     update(handle,$node);
-//    modify ( $node ) {
-//        setOutcome( (@{mapDatatype( tgtType )}) $best )
-//    };
 end
 
 @end{}

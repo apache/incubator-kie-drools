@@ -73,8 +73,8 @@ when
    $old: @{target}( ) from $reslt.resultVariables["@{target}"]
    $new: @{target}( this after $old)
 then
-//   $reslt.updateResultVariable("@{target}",$new);
-//   update($reslt);
+   $reslt.updateResultVariable("@{target}",$new);
+   update($reslt);
 end
 
 

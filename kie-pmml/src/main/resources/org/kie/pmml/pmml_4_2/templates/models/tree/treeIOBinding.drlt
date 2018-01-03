@@ -43,12 +43,6 @@ when
    )
 
 then
-@comment{
-    java.util.Map inputMap = new java.util.HashMap();
-    @foreach{ inputField: fields.keySet() }
-    inputMap.put( "@{inputField}", @{inputField} );
-    @end{}
-}
     @{context}TreeToken tok = new @{context}TreeToken( rqst.getCorrelationId(),"@{context}",
                                                        "@{rootId}",
                                                        null,
@@ -59,7 +53,6 @@ then
                                                        1.0,
                                                        0.0,
                                                        $map);
-    //insertLogical(tok);
     insert(tok);
 end
 
@@ -70,9 +63,10 @@ when
    $tgtFld: @{targetField}()
    $reslt: PMML4Result( resultVariables == null || "@{targetField}" not memberOf resultVariables.keySet() ) from results
 then
+   FactHandle fh = kcontext.getKieRuntime().getFactHandle($reslt);
    $reslt.setResultCode("OK");
    $reslt.addResultVariable("@{targetField}",$tgtFld);
-   update($reslt);
+   results.update(fh,$reslt);
 end
 
 
@@ -90,7 +84,6 @@ then
             x.setValue( $out );
             x.setWeight( $conf );
       insert(x);
-//    insertLogical( x );
 end
 
 

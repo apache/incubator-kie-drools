@@ -21,6 +21,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -52,18 +53,10 @@ import org.kie.pmml.pmml_4_2.model.datatypes.PMML4Data;
 public class ScorecardTest extends DroolsAbstractPMMLTest {
 
 
-    private static final boolean VERBOSE = true;
     private static final String source1 = "org/kie/pmml/pmml_4_2/test_scorecard.pmml";
     private static final String source2 = "org/kie/pmml/pmml_4_2/test_scorecardOut.pmml";
-    private static final String packageName = "org.kie.pmml.pmml_4_2.test";
 
 
-    @After
-    public void tearDown() {
-        //getKSession().dispose();
-    }
-    
-    
     @Test
     public void testScorecard() throws Exception {
 		Resource res = ResourceFactory.newClassPathResource(source1);
@@ -89,7 +82,7 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
         assertNotNull(unitClass);
         executor.run(unitClass);
 
-        assertEquals(2, resultHolder.getResultVariables().size());
+        assertEquals(3, resultHolder.getResultVariables().size());
         Object scorecard = resultHolder.getResultValue("ScoreCard", null);
         assertNotNull(scorecard);
         
@@ -111,7 +104,6 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
         assertEquals( "CX2", iter.next() );
 
         
-        System.out.println(resultHolder);
     }
 
     @Test
@@ -140,25 +132,15 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
 
         assertNotNull(unitClass);
         executor.run(unitClass);
-        System.out.println(resultHolder);
         
         assertEquals("OK",resultHolder.getResultCode());
-        assertEquals(5,resultHolder.getResultVariables().size());
+        assertEquals(6,resultHolder.getResultVariables().size());
         assertNotNull(resultHolder.getResultValue("OutRC1", null));
         assertNotNull(resultHolder.getResultValue("OutRC2", null));
         assertNotNull(resultHolder.getResultValue("OutRC3", null));
-        System.out.println("OutRC1 = "+resultHolder.getResultValue("OutRC1", "value"));
-        System.out.println("OutRC2 = "+resultHolder.getResultValue("OutRC2", "value"));
-        System.out.println("OutRC3 = "+resultHolder.getResultValue("OutRC3", "value"));
+        assertEquals("RC2",resultHolder.getResultValue("OutRC1", "value"));
+        assertEquals("RC1",resultHolder.getResultValue("OutRC2", "value"));
+        assertEquals("RC1",resultHolder.getResultValue("OutRC3", "value"));
         
-//        String pkgName = PMML4Compiler.PMML_DROOLS+"."+requestData.getModelName();
-//        checkFirstDataFieldOfTypeStatus(getKbase().getFactType(pkgName,"OutRC1"),
-//                        true, false,"SampleScorecard", "RC2" );
-//        checkFirstDataFieldOfTypeStatus(getKbase().getFactType(pkgName,"OutRC2"),
-//                        true, false,"SampleScorecard", "RC1" );
-//        checkFirstDataFieldOfTypeStatus(getKbase().getFactType(pkgName,"OutRC3"),
-//                        true, false,"SampleScorecard", "RC1" );
-//
-//        checkGeneratedRules();
     }
 }
