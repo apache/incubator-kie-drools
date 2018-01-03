@@ -33,9 +33,7 @@
     */
 }
 @declare{'inputFromEPRule'}
-
-
-rule 'Extract Parameter Info - @{rawName}'
+@comment{ rule 'Extract Parameter Info - @{rawName}'
 @@Generated
 salience 101
 no-loop
@@ -60,20 +58,6 @@ when
 then
    retract($old);
 end
-  
-
-
-@end{}
-
-
-
-
-
-@comment{
-*******************************************************************************************************
-        1.2.1) Generation rules
-*******************************************************************************************************
 }
-
-
+@end{}
 @includeNamed{'inputFromEPRule'}

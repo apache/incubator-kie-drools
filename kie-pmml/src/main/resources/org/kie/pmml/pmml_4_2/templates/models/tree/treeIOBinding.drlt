@@ -29,13 +29,7 @@ rule "Tree Input Linker @{context}"
 salience 3
 when
    rqst: PMMLRequestData( modelName == "@{context}" ) from request
-@comment{
-   @foreach{ inputField: fields.keySet() }
-   @{inputField} : PMML4Data( context == "@{context}", name == "@{inputField}", placeholder == false, 
-              valid == true || ( valid == false && missing == true && value != null ) ) from pmmlData
-   @end{}
-}
-   $map: java.util.Map() from accumulate( eval(true) && $d: PMML4Data( context == "@{context}", placeholder == false, 
+   $map: java.util.Map() from accumulate( eval(true) && $d: PMML4Data( context == "@{context}", placeholder == false,
               valid == true || ( valid == false && missing == true && value != null ) ) from pmmlData,
                                           init( java.util.Map map = new java.util.HashMap(); ),
                                           action( map.put($d.getCapitalizedName(),$d); ),
@@ -85,9 +79,5 @@ then
             x.setWeight( $conf );
       insert(x);
 end
-
-
 @end{}
-
-
 @includeNamed{'treeIOBinding'}

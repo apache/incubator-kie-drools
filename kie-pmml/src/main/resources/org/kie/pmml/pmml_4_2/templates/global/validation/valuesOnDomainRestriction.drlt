@@ -34,13 +34,13 @@ when
           value in (@foreach{ v : vals } @{v}@end{', '} )
           ) from pmmlData
 then
-   System.out.println("Validating "+$in);
    modify($in) {
       setValid( true );
    }
+   System.out.println("Validated "+$in);
 end
 
-/*
+@comment{/*
 rule "Valid_Values_@{name}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 dialect 'mvel'
@@ -57,8 +57,6 @@ then
         setValid( true );
     }
 end
-*/
+*/}
 @end{}
-
-
 @includeNamed{'valuesOnDomainRestrictionRule'}

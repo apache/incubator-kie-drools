@@ -280,6 +280,16 @@ then
     utils.applyTemplate( "valuesOnDomainRestriction.drlt", utils, registry, map, theory );
 end
 
+rule "processDataField_noRestrictions"
+when
+    $fld    : DataField( values.isEmpty() )
+then
+    HashMap map = utils.container;
+        map.put( "context", utils.context );
+        map.put( "name", utils.compactUpperCase( $fld.name ) );
+        map.put( "field", $fld );
+    utils.applyTemplate( "valuesNoRestriction.drlt", utils, registry, map, theory );
+end
 
 rule "processDataField_valueValidation_missing"
 when
