@@ -42,9 +42,13 @@ import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.utils.KieHelper;
 
 import static java.util.Arrays.asList;
+
 import static org.drools.core.ruleunit.RuleUnitUtil.getUnitName;
 import static org.drools.core.util.ClassUtils.getCanonicalSimpleName;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class RuleUnitTest {
 
@@ -1509,5 +1513,34 @@ public class RuleUnitTest {
         assertEquals( list, asList("Sofia is NOT adult", "Mario is adult") );
     }
 
+    @Test
+    public void testRuleUnitWithAccumulate() throws Exception {
+        // DROOLS-2209
+        String drl1 =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "import " + AdultUnit.class.getCanonicalName() + "\n" +
+                "global java.util.List list;\n" +
+                "rule AccumulateAdults @Unit( AdultUnit.class ) when\n" +
+                "   accumulate( $p: Person( $age: age >= 18 ) from persons, \n" +
+                "               $sum : sum( $age ) )\n" +
+                "then\n" +
+                "   list.add($sum); \n" +
+                "end\n";
+
+        KieBase kbase = new KieHelper().addContent( drl1, ResourceType.DRL ).build();
+        RuleUnitExecutor executor = RuleUnitExecutor.create().bind( kbase );
+
+        List<Integer> list = new ArrayList<>();
+        executor.getKieSession().setGlobal( "list", list );
+
+        DataSource<Person> persons = executor.newDataSource("persons",
+                                                            new Person( "Mario", 42 ),
+                                                            new Person( "Marilena", 44 ),
+                                                            new Person( "Sofia", 4 ) );
+
+        assertEquals(1, executor.run( AdultUnit.class ) );
+        assertEquals(1, list.size() );
+        assertEquals(86, (int) list.get(0) );
+    }
 
 }

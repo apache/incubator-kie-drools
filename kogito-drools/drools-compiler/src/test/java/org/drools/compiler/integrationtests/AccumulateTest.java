@@ -22,6 +22,7 @@ import java.io.Serializable;
 import java.io.StringReader;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -79,6 +80,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import static java.util.Arrays.asList;
+
 import static org.drools.compiler.TestUtil.assertDrlHasCompilationError;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
@@ -3652,5 +3654,61 @@ public class AccumulateTest extends CommonTestMethodBase {
                      "end";
 
         assertDrlHasCompilationError( drl, -1 );
+    }
+
+    @Test
+    public void testAccumulateWithFrom() throws Exception {
+        String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "global java.util.List persons;\n" +
+                "global java.util.List list;\n" +
+                "rule AccumulateAdults when\n" +
+                "   accumulate( $p: Person( $age: age >= 18 ) from persons, \n" +
+                "               $sum : sum( $age ) )\n" +
+                "then\n" +
+                "   list.add($sum); \n" +
+                "end\n";
+
+        KieBase kieBase = new KieHelper().addContent(drl, ResourceType.DRL).build();
+        KieSession kieSession = kieBase.newKieSession();
+
+        List<Integer> list = new ArrayList<>();
+        kieSession.setGlobal( "list", list );
+
+        List<Person> persons = Arrays.asList( new Person( "Mario", 42 ), new Person( "Marilena", 44 ), new Person( "Sofia", 4 ) );
+        kieSession.setGlobal( "persons", persons );
+
+        assertEquals(1, kieSession.fireAllRules() );
+        assertEquals(1, list.size() );
+        assertEquals(86, (int) list.get(0) );
+    }
+
+    @Test
+    public void testAccumulateWith2EntryPoints() throws Exception {
+        String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "global java.util.List list;\n" +
+                "rule AccumulateAdults when\n" +
+                "   String() from entry-point strings" +
+                "   accumulate( $p: Person( $age: age >= 18 ) from entry-point persons, \n" +
+                "               $sum : sum( $age ) )\n" +
+                "then\n" +
+                "   list.add($sum); \n" +
+                "end\n";
+
+        KieBase kieBase = new KieHelper().addContent(drl, ResourceType.DRL).build();
+        KieSession kieSession = kieBase.newKieSession();
+
+        List<Integer> list = new ArrayList<>();
+        kieSession.setGlobal( "list", list );
+
+        kieSession.getEntryPoint( "strings" ).insert( "test" );
+        kieSession.getEntryPoint( "persons" ).insert( new Person( "Mario", 42 ) );
+        kieSession.getEntryPoint( "persons" ).insert( new Person( "Marilena", 44 ) );
+        kieSession.getEntryPoint( "persons" ).insert( new Person( "Sofia", 4 ) );
+
+        assertEquals(1, kieSession.fireAllRules() );
+        assertEquals(1, list.size() );
+        assertEquals(86, (int) list.get(0) );
     }
 }
