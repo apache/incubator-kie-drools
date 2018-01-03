@@ -32,6 +32,7 @@ import org.drools.model.Model;
 import org.drools.model.Query;
 import org.drools.model.Query1Def;
 import org.drools.model.Query2Def;
+import org.drools.model.QueryDef;
 import org.drools.model.Rule;
 import org.drools.model.Variable;
 import org.drools.model.impl.ModelImpl;
@@ -1300,5 +1301,254 @@ public class FlowTest {
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
         assertEquals(1, results.size());
         assertEquals(77, results.iterator().next().getValue());
+    }
+
+
+    @Test
+    @Ignore("fix Impl generation from DSL")
+    public void testQueryOOPathAccumulateTransformedInsideAccumulator() {
+        final org.drools.model.QueryDef queryDef_listSafeCities = query("listSafeCities");
+
+        final org.drools.model.Variable<org.drools.modelcompiler.OOPathDTablesTest.Person> var_$p = declarationOf(type(org.drools.modelcompiler.OOPathDTablesTest.Person.class),
+                                                                                                                  "$p");
+        final org.drools.model.Variable<org.drools.modelcompiler.OOPathDTablesTest.InternationalAddress> var_$a = declarationOf(type(org.drools.modelcompiler.OOPathDTablesTest.InternationalAddress.class),
+                                                                                                                                "$a",
+                                                                                                                                from(var_$p,
+                                                                                                                                     (_this) -> _this.getAddress()));
+        final org.drools.model.Variable<java.util.List> var_$cities = declarationOf(type(java.util.List.class),
+                                                                                    "$cities");
+        final org.drools.model.Variable<java.lang.String> var_$city = declarationOf(type(java.lang.String.class),
+                                                                                    "$city",
+                                                                                    from(var_$a,
+                                                                                         (_this) -> _this.getCity()));
+
+
+            org.drools.model.Query listSafeCities_build = queryDef_listSafeCities.build(accumulate(and(input(var_$p),
+                                                                                                       input(var_$city),
+                                                                                                       expr("$expr$2$",
+                                                                                                            var_$a,
+                                                                                                            (_this) -> _this.getState()
+                                                                                                                    .equals("Safecountry")).indexedBy(java.lang.String.class,
+                                                                                                                                                      org.drools.model.Index.ConstraintType.EQUAL,
+                                                                                                                                                      0,
+                                                                                                                                                      _this -> _this.getState(),
+                                                                                                                                                      "Safecountry")
+                                                                                                               .reactOn("state")),
+                                                                                                   accFunction(org.drools.core.base.accumulators.CollectListAccumulateFunction.class,
+                                                                                                               var_$city).as(var_$cities)));
+
+        Model model = new ModelImpl().addQuery( listSafeCities_build );
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
+
+        KieSession ksession = kieBase.newKieSession();
+
+
+        org.drools.modelcompiler.OOPathDTablesTest.Person person = new org.drools.modelcompiler.OOPathDTablesTest.Person();
+        person.setAddress(new InternationalAddress("", 1, "Milan", "Safecountry"));
+        ksession.insert(person);
+
+        org.drools.modelcompiler.OOPathDTablesTest.Person person2 = new org.drools.modelcompiler.OOPathDTablesTest.Person();
+        person2.setAddress(new InternationalAddress("", 1, "Rome", "Unsafecountry"));
+        ksession.insert(person2);
+
+        QueryResults results = ksession.getQueryResults( "listSafeCities");
+
+        assertEquals("Milan", ((List) results.iterator().next().get("$cities" )).iterator().next());
+
+
+    }
+
+    @Test
+    @Ignore
+    public void testQueryOOPathAccumulateDSL() {
+        Variable<org.drools.modelcompiler.OOPathDTablesTest.Person> personV = declarationOf(type(org.drools.modelcompiler.OOPathDTablesTest.Person.class), "$p");
+
+        final QueryDef queryDef_listSafeCities = query("listSafeCities");
+
+        final Variable<org.drools.modelcompiler.OOPathDTablesTest.Person> var_$pattern_Person$1$ = declarationOf(type(org.drools.modelcompiler.OOPathDTablesTest.Person.class),
+                                                                                                                 "$pattern_Person$1$");
+        final Variable<InternationalAddress> var_$ooChunk$1$ = declarationOf(type(InternationalAddress.class),
+                                                                             "$ooChunk$1$",
+                                                                             reactiveFrom(var_$pattern_Person$1$,
+                                                                                          (_this) -> _this.getAddress()));
+        final Variable<java.lang.String> var_$city = declarationOf(type(java.lang.String.class),
+                                                                   "$city",
+                                                                   reactiveFrom(var_$ooChunk$1$,
+                                                                                (_this) -> _this.getCity()));
+        final Variable<java.util.List> var_$expr$3$ = declarationOf(type(java.util.List.class),
+                                                                    "$expr$3$");
+        Query listSafeCities_build = queryDef_listSafeCities.build(
+                accumulate(expr("$expr$2$",
+                                var_$ooChunk$1$,
+                                (_this) -> _this.getState()
+                                        .equals("Safecountry")).indexedBy(java.lang.String.class,
+                                                                          org.drools.model.Index.ConstraintType.EQUAL,
+                                                                          0,
+                                                                          _this -> _this.getState(),
+                                                                          "Safecountry")
+                                   .reactOn("state"),
+                           accFunction(org.drools.core.base.accumulators.CollectListAccumulateFunction.class,
+                                       var_$city).as(var_$expr$3$)));
+        Model model = new ModelImpl().addQuery(listSafeCities_build);
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model);
+
+        KieSession ksession = kieBase.newKieSession();
+
+        org.drools.modelcompiler.OOPathDTablesTest.Person person = new org.drools.modelcompiler.OOPathDTablesTest.Person();
+        person.setAddress(new InternationalAddress("", 1, "Milan", "Safecountry"));
+        ksession.insert(person);
+
+        org.drools.modelcompiler.OOPathDTablesTest.Person person2 = new org.drools.modelcompiler.OOPathDTablesTest.Person();
+        person2.setAddress(new InternationalAddress("", 1, "Rome", "Unsafecountry"));
+        ksession.insert(person2);
+
+        QueryResults results = ksession.getQueryResults("listSafeCities");
+
+        assertEquals("Milan", ((List) results.iterator().next().get("$cities")).iterator().next());
+    }
+
+
+    @Test
+    public void testQueryWithOOPathTransformedToFromDSL() {
+        final QueryDef queryDef_listSafeCities = query("listSafeCities");
+
+        final Variable<org.drools.modelcompiler.OOPathDTablesTest.Person> var_$p = declarationOf(type(org.drools.modelcompiler.OOPathDTablesTest.Person.class),
+                                                                                                 "$p");
+        final Variable<InternationalAddress> var_$a = declarationOf(type(InternationalAddress.class),
+                                                                    "$a",
+                                                                    from(var_$p,
+                                                                         (_this) -> _this.getAddress()));
+        final Variable<java.util.List> var_$cities = declarationOf(type(java.util.List.class),
+                                                                   "$cities");
+        final Variable<java.lang.String> var_$city = declarationOf(type(java.lang.String.class),
+                                                                   "$city",
+                                                                   from(var_$a,
+                                                                        (_this) -> _this.getCity()));
+        Query listSafeCities_build = queryDef_listSafeCities.build(input(var_$p),
+                                                                   expr("$expr$2$",
+                                                                        var_$a,
+                                                                        (_this) -> _this.getState()
+                                                                                .equals("Safecountry")).indexedBy(java.lang.String.class,
+                                                                                                                  org.drools.model.Index.ConstraintType.EQUAL,
+                                                                                                                  0,
+                                                                                                                  _this -> _this.getState(),
+                                                                                                                  "Safecountry")
+                                                                           .reactOn("state"),
+                                                                   accumulate(expr(var_$city, s -> true),
+                                                                              accFunction(org.drools.core.base.accumulators.CollectListAccumulateFunction.class,
+                                                                                          var_$city).as(var_$cities)));
+        Model model = new ModelImpl().addQuery(listSafeCities_build);
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model);
+
+        KieSession ksession = kieBase.newKieSession();
+
+        org.drools.modelcompiler.OOPathDTablesTest.Person person = new org.drools.modelcompiler.OOPathDTablesTest.Person();
+        person.setAddress(new InternationalAddress("", 1, "Milan", "Safecountry"));
+        ksession.insert(person);
+
+        org.drools.modelcompiler.OOPathDTablesTest.Person person2 = new org.drools.modelcompiler.OOPathDTablesTest.Person();
+        person2.setAddress(new InternationalAddress("", 1, "Rome", "Unsafecountry"));
+        ksession.insert(person2);
+
+        QueryResults results = ksession.getQueryResults("listSafeCities");
+
+        assertEquals("Milan", ((List) results.iterator().next().get("$cities")).iterator().next());
+    }
+
+
+    @Test
+    public void testQueryWithOOPathTransformedToFromInsideAccumulateDSL() {
+        final QueryDef queryDef_listSafeCities = query("listSafeCities");
+
+        final Variable<org.drools.modelcompiler.OOPathDTablesTest.Person> var_$p = declarationOf(type(org.drools.modelcompiler.OOPathDTablesTest.Person.class),
+                                                                                                 "$p");
+        final Variable<InternationalAddress> var_$a = declarationOf(type(InternationalAddress.class),
+                                                                    "$a",
+                                                                    from(var_$p,
+                                                                         (_this) -> _this.getAddress()));
+        final Variable<java.util.List> var_$cities = declarationOf(type(java.util.List.class),
+                                                                   "$cities");
+        final Variable<java.lang.String> var_$city = declarationOf(type(java.lang.String.class),
+                                                                   "$city",
+                                                                   from(var_$a,
+                                                                        (_this) -> _this.getCity()));
+
+        Query listSafeCities_build = queryDef_listSafeCities.build(accumulate(and(input(var_$p),
+                                                                                  input(var_$a),
+                                                                                  input(var_$city),
+                                                                                  expr("$expr$2$",
+                                                                                       var_$a,
+                                                                                       (_this) -> _this.getState()
+                                                                                               .equals("Safecountry")).indexedBy(java.lang.String.class,
+                                                                                                                                 org.drools.model.Index.ConstraintType.EQUAL,
+                                                                                                                                 0,
+                                                                                                                                 _this -> _this.getState(),
+                                                                                                                                 "Safecountry")
+                                                                                          .reactOn("state")),
+                                                                              accFunction(org.drools.core.base.accumulators.CollectListAccumulateFunction.class,
+                                                                                          var_$city).as(var_$cities)));
+
+        Model model = new ModelImpl().addQuery(listSafeCities_build);
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model);
+
+        KieSession ksession = kieBase.newKieSession();
+
+        org.drools.modelcompiler.OOPathDTablesTest.Person person = new org.drools.modelcompiler.OOPathDTablesTest.Person();
+        person.setAddress(new InternationalAddress("", 1, "Milan", "Safecountry"));
+        ksession.insert(person);
+
+        org.drools.modelcompiler.OOPathDTablesTest.Person person2 = new org.drools.modelcompiler.OOPathDTablesTest.Person();
+        person2.setAddress(new InternationalAddress("", 1, "Rome", "Unsafecountry"));
+        ksession.insert(person2);
+
+        QueryResults results = ksession.getQueryResults("listSafeCities");
+
+        assertEquals("Milan", ((List) results.iterator().next().get("$cities")).iterator().next());
+    }
+
+    @Test
+    public void testQueryWithOOPathTransformedToFromInsideAccumulateDSL2() {
+        final QueryDef queryDef_listSafeCities = query("listSafeCities");
+
+        final Variable<org.drools.modelcompiler.OOPathDTablesTest.Person> var_$p = declarationOf(type(org.drools.modelcompiler.OOPathDTablesTest.Person.class),
+                                                                                                 "$p");
+        final Variable<InternationalAddress> var_$a = declarationOf(type(InternationalAddress.class),
+                                                                    "$a",
+                                                                    from(var_$p,
+                                                                         (_this) -> _this.getAddress()));
+        final Variable<java.lang.String> var_$city = declarationOf(type(java.lang.String.class),
+                                                                   "$city",
+                                                                   from(var_$a,
+                                                                        (_this) -> _this.getCity()));
+
+        org.drools.model.Query listSafeCities_build = queryDef_listSafeCities.build(input(var_$p),
+                                                                                    input(var_$city),
+                                                                                    expr("$expr$2$",
+                                                                                         var_$a,
+                                                                                         (_this) -> _this.getState()
+                                                                                                 .equals("Safecountry")).indexedBy(java.lang.String.class,
+                                                                                                                                   org.drools.model.Index.ConstraintType.EQUAL,
+                                                                                                                                   0,
+                                                                                                                                   _this -> _this.getState(),
+                                                                                                                                   "Safecountry")
+                                                                                            .reactOn("state")
+        );
+
+        Model model = new ModelImpl().addQuery(listSafeCities_build);
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model);
+
+        KieSession ksession = kieBase.newKieSession();
+
+        org.drools.modelcompiler.OOPathDTablesTest.Person person = new org.drools.modelcompiler.OOPathDTablesTest.Person();
+        person.setAddress(new InternationalAddress("", 1, "Milan", "Safecountry"));
+        ksession.insert(person);
+
+        org.drools.modelcompiler.OOPathDTablesTest.Person person2 = new org.drools.modelcompiler.OOPathDTablesTest.Person();
+        person2.setAddress(new InternationalAddress("", 1, "Rome", "Unsafecountry"));
+        ksession.insert(person2);
+
+        QueryResults results = ksession.getQueryResults("listSafeCities");
+
+        assertEquals("Milan", ((List) results.iterator().next().get("$city")).iterator().next());
     }
 }
