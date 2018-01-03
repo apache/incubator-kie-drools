@@ -77,8 +77,10 @@ public class TypeDeclarationBuilder {
         return classDeclarationExtractor.getTypeDeclaration( cls );
     }
 
-    public void removeTypesGeneratedFromResource( Resource resource ) {
-        classDeclarationExtractor.removeTypesGeneratedFromResource( resource );
+    public Collection<String> removeTypesGeneratedFromResource( Resource resource ) {
+        Collection<String> removedTypes = classDeclarationExtractor.removeTypesGeneratedFromResource( resource );
+        generatedTypes.removeAll( removedTypes );
+        return removedTypes;
     }
 
     void registerGeneratedType(AbstractClassTypeDeclarationDescr typeDescr) {
