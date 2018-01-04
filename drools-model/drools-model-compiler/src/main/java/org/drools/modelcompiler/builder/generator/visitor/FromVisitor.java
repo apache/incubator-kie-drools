@@ -4,20 +4,16 @@ import java.util.Optional;
 
 import org.drools.compiler.lang.descr.FromDescr;
 import org.drools.compiler.lang.descr.PatternSourceDescr;
-import org.drools.core.ruleunit.RuleUnitDescr;
-import org.drools.javaparser.ast.expr.ClassExpr;
+import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
-import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.DrlxParseResult;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
-import org.drools.modelcompiler.builder.generator.ModelGenerator;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.classToReferenceType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.ModelGenerator.drlxParse;
@@ -27,8 +23,7 @@ public class FromVisitor {
     final RuleContext ruleContext;
     final PackageModel packageModel;
 
-    private final String FROM_CALL = "from";
-    private final String UNIT_DATA_CALL = "unitData";
+    private static final String FROM_CALL = "from";
 
     public FromVisitor(RuleContext context, PackageModel packageModel) {
         this.ruleContext = context;
@@ -41,7 +36,7 @@ public class FromVisitor {
             Optional<String> optContainsBinding = DrlxParseUtil.findBindingIdFromDotExpression(expression);
             final String bindingId = optContainsBinding.orElse(expression);
 
-            MethodCallExpr fromCall = ruleContext.hasDeclaration( bindingId ) || packageModel.hasDeclaration( bindingId ) ?
+            Expression fromCall = ruleContext.hasDeclaration( bindingId ) || packageModel.hasDeclaration( bindingId ) ?
                     createFromCall( expression, optContainsBinding, bindingId ) :
                     createUnitDataCall( expression, optContainsBinding, bindingId );
 
@@ -51,7 +46,7 @@ public class FromVisitor {
         }
     }
 
-    private MethodCallExpr createFromCall( String expression, Optional<String> optContainsBinding, String bindingId ) {
+    private Expression createFromCall( String expression, Optional<String> optContainsBinding, String bindingId ) {
         MethodCallExpr fromCall = new MethodCallExpr(null, FROM_CALL);
         fromCall.addArgument(new NameExpr(toVar(bindingId)));
 
@@ -69,29 +64,7 @@ public class FromVisitor {
         return fromCall;
     }
 
-    private MethodCallExpr createUnitDataCall( String expression, Optional<String> optContainsBinding, String bindingId ) {
-        RuleUnitDescr ruleUnitDescr = ruleContext.getRuleUnitDescr();
-        if ( ruleUnitDescr == null ) {
-            throw new IllegalArgumentException("Unknown binding name: " + bindingId);
-        }
-
-        Optional<Class<?>> varType = ruleUnitDescr.getVarType( bindingId );
-        if ( !varType.isPresent() ) {
-            throw new IllegalArgumentException("Unknown binding name: " + bindingId);
-        }
-
-        MethodCallExpr unitDataCall = new MethodCallExpr(null, UNIT_DATA_CALL);
-
-        MethodCallExpr typeCall = new MethodCallExpr(null, ModelGenerator.TYPE_CALL);
-        typeCall.addArgument( new ClassExpr( classToReferenceType(varType.get()) ));
-        unitDataCall.addArgument(typeCall);
-
-        unitDataCall.addArgument(new StringLiteralExpr(bindingId));
-
-        if (optContainsBinding.isPresent()) {
-            throw new UnsupportedOperationException();
-        }
-
-        return unitDataCall;
+    private Expression createUnitDataCall( String expression, Optional<String> optContainsBinding, String bindingId ) {
+        return JavaParser.parseExpression(toVar(bindingId));
     }
 }
