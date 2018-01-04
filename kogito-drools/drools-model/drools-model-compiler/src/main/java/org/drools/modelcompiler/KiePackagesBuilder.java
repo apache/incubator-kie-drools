@@ -75,10 +75,10 @@ import org.drools.model.From;
 import org.drools.model.Global;
 import org.drools.model.Index;
 import org.drools.model.Model;
-import org.drools.model.OOPath;
 import org.drools.model.Query;
 import org.drools.model.Rule;
 import org.drools.model.SingleConstraint;
+import org.drools.model.UnitData;
 import org.drools.model.TypeMetaData;
 import org.drools.model.Value;
 import org.drools.model.Variable;
@@ -377,12 +377,6 @@ public class KiePackagesBuilder {
                 pattern.setSource(buildAccumulate(accumulatePattern, source, pattern, usedVariableName, binding) );
                 return pattern;
             }
-            case OOPATH: {
-                OOPath ooPath = (OOPath) condition;
-                Pattern pattern = buildPattern( ctx, ooPath.getFirstCondition() );
-                pattern.setSource( new EntryPointId( ctx.getRule().getRuleUnitClassName() + "." + ooPath.getSource().getName() ) );
-                return pattern;
-            }
             case QUERY:
                 return buildQueryPattern( ctx, ( (QueryCallPattern) condition ) );
             case NOT:
@@ -586,6 +580,9 @@ public class KiePackagesBuilder {
                     org.drools.core.rule.From fromSource = new org.drools.core.rule.From(provider);
                     fromSource.setResultPattern( pattern );
                     pattern.setSource( fromSource );
+                } else if ( decl.getSource() instanceof UnitData ) {
+                    UnitData unitData = (UnitData ) decl.getSource();
+                    pattern.setSource( new EntryPointId( ctx.getRule().getRuleUnitClassName() + "." + unitData.getName() ) );
                 } else {
                     throw new UnsupportedOperationException( "Unknown source: " + decl.getSource() );
                 }

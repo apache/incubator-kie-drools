@@ -33,7 +33,7 @@ import org.drools.model.impl.Query2DefImpl;
 import org.drools.model.impl.Query3DefImpl;
 import org.drools.model.impl.Query4DefImpl;
 import org.drools.model.impl.RuleBuilder;
-import org.drools.model.impl.SourceImpl;
+import org.drools.model.impl.UnitDataImpl;
 import org.drools.model.impl.TypeMetaDataImpl;
 import org.drools.model.impl.ValueImpl;
 import org.drools.model.impl.WindowImpl;
@@ -51,8 +51,6 @@ import org.drools.model.view.Expr3ViewItemImpl;
 import org.drools.model.view.ExprViewItem;
 import org.drools.model.view.InputViewItem;
 import org.drools.model.view.InputViewItemImpl;
-import org.drools.model.view.OOPathBuilder;
-import org.drools.model.view.OOPathBuilder.OOPathChunkBuilder;
 import org.drools.model.view.TemporalExprViewItem;
 import org.drools.model.view.ViewItem;
 import org.drools.model.view.ViewItemBuilder;
@@ -131,10 +129,6 @@ public class DSL {
         return new GlobalImpl<T>( type, pkg, name );
     }
 
-    public static <T> Source<T> sourceOf( String name, Type<T> type ) {
-        return new SourceImpl<T>( name, type);
-    }
-
     public static <T> Type<T> type( Class<T> type ) {
         return new JavaClassType<T>(type);
     }
@@ -165,6 +159,18 @@ public class DSL {
             ps[i] = new Predicate1.Impl<T>( predicates[i] );
         }
         return new WindowReferenceImpl( type, value, timeUnit, patternType, ps );
+    }
+
+    public static UnitData<?> unitData( String name ) {
+        return new UnitDataImpl( name );
+    }
+
+    public static <T> UnitData<T> unitData( Type<T> type, String name ) {
+        return new UnitDataImpl( type, name );
+    }
+
+    public static <T> From<T> from( Variable<T> variable ) {
+        return new FromImpl<>( variable );
     }
 
     public static <T> From<T> from( Variable<T> variable, Function1<T, ?> provider ) {
@@ -219,10 +225,6 @@ public class DSL {
 
     public static <T, U, X> ExprViewItem<T> expr(String exprId, Variable<T> var1, Variable<U> var2, Variable<X> var3, Predicate3<T, U, X> predicate) {
         return new Expr3ViewItemImpl<T, U, X>(exprId, var1, var2, var3, new Predicate3.Impl<T, U, X>(predicate));
-    }
-
-    public static <T> OOPathChunkBuilder<T, T> from( Source<T> source ) {
-        return new OOPathBuilder<T>(source).firstChunk();
     }
 
     public static ExprViewItem not(ViewItemBuilder<?> expression, ViewItemBuilder<?>... expressions) {

@@ -2,7 +2,6 @@ package org.drools.modelcompiler.builder.generator.visitor;
 
 import java.lang.reflect.Field;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -103,13 +102,11 @@ public class PatternVisitor {
                     new OOPathExprGenerator(context, packageModel).visit(patternType, patternIdentifier, (OOPathExpr)drlxParseResult.getExpr());
                 } else {
                     // need to augment the reactOn inside drlxParseResult with the look-ahead properties.
-                    Collection<String> lookAheadFieldsOfIdentifier = context.getRuleDescr()
-                            .map(ruleDescr -> ruleDescr.lookAheadFieldsOfIdentifier(pattern))
-                            .orElseGet(Collections::emptyList);
+                    Collection<String> lookAheadFieldsOfIdentifier = context.getRuleDescr().lookAheadFieldsOfIdentifier(pattern);
                     drlxParseResult.getReactOnProperties().addAll(lookAheadFieldsOfIdentifier);
                     drlxParseResult.setWatchedProperties(getPatternListenedProperties(pattern));
 
-                    if(pattern.isUnification()) {
+                    if (pattern.isUnification()) {
                         drlxParseResult.setPatternBindingUnification(true);
                     }
 

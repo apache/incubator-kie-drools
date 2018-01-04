@@ -22,6 +22,8 @@ import org.drools.model.impl.ModelComponent;
 
 public class NamedConsequenceImpl implements Condition, ModelComponent {
 
+    private static final Variable<?>[] BOUND_VARIABLES = new Variable<?>[0];
+
     private final String name;
     private final boolean breaking;
 
@@ -45,7 +47,7 @@ public class NamedConsequenceImpl implements Condition, ModelComponent {
 
     @Override
     public Variable<?>[] getBoundVariables() {
-        throw new UnsupportedOperationException();
+        return BOUND_VARIABLES;
     }
 
     @Override

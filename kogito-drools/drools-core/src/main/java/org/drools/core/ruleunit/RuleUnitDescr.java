@@ -69,7 +69,7 @@ public class RuleUnitDescr {
     }
 
     public Optional<Class<?>> getVarType( String name ) {
-        return Optional.ofNullable( varAccessors.get( name ) ).map( m -> m.getReturnType() );
+        return Optional.ofNullable( varAccessors.get( name ) ).map( Method::getReturnType );
     }
 
     public boolean hasVar( String name ) {

@@ -88,12 +88,15 @@ import org.drools.modelcompiler.builder.generator.RuleContext.RuleDialect;
 import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
 
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 import static org.drools.javaparser.printer.PrintUtil.toDrlx;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.classToReferenceType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isPrimitiveExpression;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.parseBlock;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
+import static org.drools.modelcompiler.builder.generator.visitor.NamedConsequenceVisitor.BREAKING_CALL;
 import static org.drools.modelcompiler.util.StringUtil.toId;
 
 public class ModelGenerator {
@@ -134,6 +137,7 @@ public class ModelGenerator {
 
     public static final String BUILD_CALL = "build";
     public static final String RULE_CALL = "rule";
+    public static final String UNIT_CALL = "unit";
     public static final String EXECUTE_CALL = "execute";
     public static final String EXECUTESCRIPT_CALL = "executeScript";
     public static final String ON_CALL = "on";
@@ -170,7 +174,7 @@ public class ModelGenerator {
 
 
     private static void processRule(KnowledgeBuilderImpl kbuilder, InternalKnowledgePackage pkg, PackageModel packageModel, RuleDescr ruleDescr) {
-        RuleContext context = new RuleContext(kbuilder, pkg, packageModel.getExprIdGenerator(), Optional.of(ruleDescr));
+        RuleContext context = new RuleContext(kbuilder, pkg, packageModel.getExprIdGenerator(), ruleDescr);
 
         for(Entry<String, Object> kv : ruleDescr.getNamedConsequences().entrySet()) {
             context.addNamedConsequence(kv.getKey(), kv.getValue().toString());
@@ -189,7 +193,10 @@ public class ModelGenerator {
         }
         ruleCall.addArgument( new StringLiteralExpr( ruleDescr.getName() ) );
 
-        MethodCallExpr buildCallScope = ruleCall;
+        MethodCallExpr buildCallScope = context.getRuleUnitDescr() != null ?
+                new MethodCallExpr(ruleCall, UNIT_CALL).addArgument( new ClassExpr( classToReferenceType(context.getRuleUnitDescr().getRuleUnitClass()) ) ) :
+                ruleCall;
+
         for (MethodCallExpr attributeExpr : ruleAttributes(context, ruleDescr)) {
             attributeExpr.setScope( buildCallScope );
             buildCallScope = attributeExpr;
@@ -197,21 +204,12 @@ public class ModelGenerator {
 
         MethodCallExpr buildCall = new MethodCallExpr(buildCallScope, BUILD_CALL, NodeList.nodeList(context.getExpressions()));
 
-        BlockStmt ruleConsequence = rewriteConsequence(context, ruleDescr.getConsequence().toString());
 
         BlockStmt ruleVariablesBlock = new BlockStmt();
         createVariables(kbuilder, ruleVariablesBlock, packageModel, context);
         ruleMethod.setBody(ruleVariablesBlock);
 
-        List<String> usedDeclarationInRHS = extractUsedDeclarations(packageModel, context, ruleConsequence);
-        MethodCallExpr onCall = onCall(usedDeclarationInRHS);
-        MethodCallExpr executeCall = null;
-        if (context.getRuleDialect() == RuleDialect.JAVA) {
-            executeCall = executeCall(context, ruleVariablesBlock, ruleConsequence, usedDeclarationInRHS, onCall);
-        } else if (context.getRuleDialect() == RuleDialect.MVEL) {
-            executeCall = executeScriptCall(ruleDescr, onCall);
-        }
-
+        MethodCallExpr executeCall = createConsequenceCall( packageModel, ruleDescr, context, ruleDescr.getConsequence().toString(), ruleVariablesBlock, false );
         buildCall.addArgument( executeCall );
 
         ruleVariablesBlock.addStatement(new AssignExpr(ruleVar, buildCall, AssignExpr.Operator.ASSIGN));
@@ -275,7 +273,23 @@ public class ModelGenerator {
         return ruleAttributes;
     }
 
-    public static BlockStmt rewriteConsequence(RuleContext context, String consequence ) {
+    public static MethodCallExpr createConsequenceCall( PackageModel packageModel, RuleDescr ruleDescr, RuleContext context, String consequenceString, BlockStmt ruleVariablesBlock, boolean isBreaking ) {
+        BlockStmt ruleConsequence = rewriteConsequence(context, consequenceString);
+        List<String> usedDeclarationInRHS = extractUsedDeclarations(packageModel, context, ruleConsequence);
+        MethodCallExpr onCall = onCall(usedDeclarationInRHS);
+        if (isBreaking) {
+            onCall = new MethodCallExpr( onCall, BREAKING_CALL );
+        }
+        MethodCallExpr executeCall = null;
+        if (context.getRuleDialect() == RuleDialect.JAVA) {
+            executeCall = executeCall(context, ruleVariablesBlock, ruleConsequence, usedDeclarationInRHS, onCall);
+        } else if (context.getRuleDialect() == RuleDialect.MVEL) {
+            executeCall = executeScriptCall(ruleDescr, onCall);
+        }
+        return executeCall;
+    }
+
+    private static BlockStmt rewriteConsequence(RuleContext context, String consequence ) {
         if (context.getRuleDialect() == RuleDialect.MVEL) {
             // anyhow the consequence will be used as a ScriptBlock.
             return null;
@@ -284,12 +298,12 @@ public class ModelGenerator {
         return parseBlock(ruleConsequenceAsBlock);
     }
 
-    public static List<String> extractUsedDeclarations(PackageModel packageModel, RuleContext context, BlockStmt ruleConsequence) {
+    private static List<String> extractUsedDeclarations(PackageModel packageModel, RuleContext context, BlockStmt ruleConsequence) {
         Set<String> existingDecls = new HashSet<>();
         existingDecls.addAll(context.getDeclarations().stream().map(DeclarationSpec::getBindingId).collect(toList()));
         existingDecls.addAll(packageModel.getGlobals().keySet());
         if (context.getRuleDialect() == RuleDialect.JAVA) {
-            List<String> declUsedInRHS = ruleConsequence.getChildNodesByType(NameExpr.class).stream().map(NameExpr::getNameAsString).collect(toList());
+            Set<String> declUsedInRHS = ruleConsequence.getChildNodesByType(NameExpr.class).stream().map(NameExpr::getNameAsString).collect(toSet());
             return existingDecls.stream().filter(declUsedInRHS::contains).collect(toList());
         } else {
             // if dialect is MVEL then avoid optimization, and just return them all.
@@ -297,7 +311,7 @@ public class ModelGenerator {
         }
     }
 
-    public static MethodCallExpr executeCall(RuleContext context, BlockStmt ruleVariablesBlock, BlockStmt ruleConsequence, List<String> verifiedDeclUsedInRHS, MethodCallExpr onCall) {
+    private static MethodCallExpr executeCall(RuleContext context, BlockStmt ruleVariablesBlock, BlockStmt ruleConsequence, List<String> verifiedDeclUsedInRHS, MethodCallExpr onCall) {
         boolean requireDrools = rewriteRHS(context, ruleVariablesBlock, ruleConsequence);
         MethodCallExpr executeCall = new MethodCallExpr(onCall, EXECUTE_CALL);
         LambdaExpr executeLambda = new LambdaExpr();
@@ -320,7 +334,7 @@ public class ModelGenerator {
         return executeCall;
     }
 
-    public static MethodCallExpr onCall(List<String> usedArguments) {
+    private static MethodCallExpr onCall(List<String> usedArguments) {
         MethodCallExpr onCall = null;
 
         if (!usedArguments.isEmpty()) {
@@ -343,7 +357,7 @@ public class ModelGenerator {
             kbuilder.addBuilderResult( new UnknownDeclarationError( decl.getBindingId() ) );
             return;
         }
-        Type declType = DrlxParseUtil.classToReferenceType( decl.getDeclarationClass() );
+        Type declType = classToReferenceType( decl.getDeclarationClass() );
 
         ClassOrInterfaceType varType = JavaParser.parseClassOrInterfaceType(Variable.class.getCanonicalName());
         varType.setTypeArguments(declType);

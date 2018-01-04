@@ -1,7 +1,6 @@
 package org.drools.modelcompiler.builder.generator.visitor;
 
 import java.util.Collections;
-import java.util.List;
 
 import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
@@ -22,10 +21,6 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassF
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.ModelGenerator.createVariables;
 import static org.drools.modelcompiler.builder.generator.ModelGenerator.drlxParse;
-import static org.drools.modelcompiler.builder.generator.ModelGenerator.executeCall;
-import static org.drools.modelcompiler.builder.generator.ModelGenerator.extractUsedDeclarations;
-import static org.drools.modelcompiler.builder.generator.ModelGenerator.onCall;
-import static org.drools.modelcompiler.builder.generator.ModelGenerator.rewriteConsequence;
 
 public class NamedConsequenceVisitor {
 
@@ -95,13 +90,6 @@ public class NamedConsequenceVisitor {
         String namedConsequenceString = context.getNamedConsequences().get(namedConsequence.getName());
         BlockStmt ruleVariablesBlock = new BlockStmt();
         createVariables(context.getKbuilder(), ruleVariablesBlock, packageModel, context);
-        BlockStmt ruleConsequence = rewriteConsequence(context, namedConsequenceString);
-        List<String> verifiedDeclUsedInRHS = extractUsedDeclarations(packageModel, context, ruleConsequence);
-
-        MethodCallExpr onCall = onCall(verifiedDeclUsedInRHS);
-        if (namedConsequence.isBreaking()) {
-            onCall = new MethodCallExpr( onCall, BREAKING_CALL );
-        }
-        return executeCall(context, ruleVariablesBlock, ruleConsequence, verifiedDeclUsedInRHS, onCall);
+        return ModelGenerator.createConsequenceCall( packageModel, null, context, namedConsequenceString, ruleVariablesBlock, namedConsequence.isBreaking() );
     }
 }

@@ -16,9 +16,11 @@
 
 package org.drools.modelcompiler;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.model.Model;
 import org.drools.model.Rule;
-import org.drools.model.Source;
 import org.drools.model.Variable;
 import org.drools.model.impl.ModelImpl;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
@@ -29,16 +31,20 @@ import org.kie.api.runtime.rule.DataSource;
 import org.kie.api.runtime.rule.RuleUnit;
 import org.kie.api.runtime.rule.RuleUnitExecutor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static java.util.Arrays.asList;
-import static org.drools.model.DSL.*;
+
+import static org.drools.model.DSL.declarationOf;
+import static org.drools.model.DSL.expr;
+import static org.drools.model.DSL.on;
+import static org.drools.model.DSL.rule;
+import static org.drools.model.DSL.type;
+import static org.drools.model.DSL.unitData;
 import static org.junit.Assert.assertTrue;
 
 public class RuleUnitTest {
+
     public static class AdultUnit implements RuleUnit {
-        private List<String> result = new ArrayList<String>();
+        private List<String> results = new ArrayList<String>();
         private int adultAge = 18;
         private DataSource<Person> persons;
 
@@ -56,8 +62,8 @@ public class RuleUnitTest {
             return adultAge;
         }
 
-        public List<String> getResult() {
-            return result;
+        public List<String> getResults() {
+            return results;
         }
     }
 
@@ -65,17 +71,16 @@ public class RuleUnitTest {
     public void testRuleUnit() {
         List<String> result = new ArrayList<>();
 
-        Variable<Person> adult = declarationOf( type( Person.class ) );
-        Source<Person> persons = sourceOf( "persons", type( Person.class ) );
+        Variable<Person> adult = declarationOf( type( Person.class ), unitData( "persons" ) );
 
         Rule rule = rule( "org.drools.retebuilder", "Adult" ).unit( AdultUnit.class )
-                     .view(
-                             from( persons ).filter( adult, p -> p.getAge() > 18 )
-                          )
-                     .then(on(adult).execute(p -> {
-                         System.out.println( p.getName() );
-                         result.add( p.getName() );
-                     }));
+                .build(
+                        expr("$expr$1$", adult, p -> p.getAge() > 18),
+                        on(adult).execute(p -> {
+                            System.out.println( p.getName() );
+                            result.add( p.getName() );
+                        })
+                );
 
         Model model = new ModelImpl().addRule( rule );
         KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
@@ -83,9 +88,9 @@ public class RuleUnitTest {
         RuleUnitExecutor executor = RuleUnitExecutor.create().bind( kieBase );
 
         executor.newDataSource( "persons",
-                                new Person( "Mario", 43 ),
-                                new Person( "Marilena", 44 ),
-                                new Person( "Sofia", 5 ) );
+                new Person( "Mario", 43 ),
+                new Person( "Marilena", 44 ),
+                new Person( "Sofia", 5 ) );
 
         executor.run( AdultUnit.class );
 
@@ -95,17 +100,16 @@ public class RuleUnitTest {
     @Test
     public void testRuleUnitWithVarBinding() {
         Variable<AdultUnit> unit = declarationOf( type( AdultUnit.class ) );
-        Variable<Person> adult = declarationOf( type( Person.class ) );
-        Source<Person> persons = sourceOf( "persons", type( Person.class ) );
+        Variable<Person> adult = declarationOf( type( Person.class ), unitData( "persons" ) );
 
-        Rule rule = rule( "org.drools.retebuilder", "Adult" ).unit( AdultUnit.class )
-                     .view(
-                             from( persons ).filter( adult, unit, (p, u) -> p.getAge() > u.getAdultAge() )
-                          )
-                     .then(on(adult, unit).execute((p, u) -> {
-                         System.out.println( p.getName() );
-                         u.getResult().add( p.getName() );
-                     }));
+        Rule rule = rule( "org.drools.retebuilder", "Adult" ).unit( RuleUnitTest.AdultUnit.class )
+                .build(
+                        expr("$expr$1$", adult, unit, (p, u) -> p.getAge() > u.getAdultAge()),
+                        on(adult, unitData(type(List.class), "results")).execute((p, r) -> {
+                            System.out.println( p.getName() );
+                            r.add( p.getName() );
+                        })
+                );
 
         Model model = new ModelImpl().addRule( rule );
         KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
@@ -113,13 +117,13 @@ public class RuleUnitTest {
         RuleUnitExecutor executor = RuleUnitExecutor.create().bind( kieBase );
 
         executor.newDataSource( "persons",
-                                new Person( "Mario", 43 ),
-                                new Person( "Marilena", 44 ),
-                                new Person( "Sofia", 5 ) );
+                new Person( "Mario", 43 ),
+                new Person( "Marilena", 44 ),
+                new Person( "Sofia", 5 ) );
 
         AdultUnit ruleUnit = new AdultUnit();
         executor.run( ruleUnit );
 
-        assertTrue( ruleUnit.getResult().containsAll( asList("Mario", "Marilena") ) );
+        assertTrue( ruleUnit.getResults().containsAll( asList("Mario", "Marilena") ) );
     }
 }

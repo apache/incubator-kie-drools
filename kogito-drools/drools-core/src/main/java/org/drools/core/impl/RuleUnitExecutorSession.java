@@ -70,6 +70,7 @@ public class RuleUnitExecutorSession implements InternalRuleUnitExecutor {
 
     public RuleUnitExecutorSession(KieSession session) {
         this.session = (( StatefulKnowledgeSessionImpl ) session);
+        this.session.ruleUnitExecutor = this;
         bind( session.getKieBase() );
     }
 
