@@ -68,6 +68,28 @@ public class CompilerTest extends BaseModelTest {
         assertEquals( 41, me.getAge() );
     }
 
+    @Test(timeout = 5000)
+    public void testOrWithFixedLeftOperand() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "rule R when\n" +
+                "  $p : Person(name == \"Mario\" || == \"Luca\")\n" +
+                "then\n" +
+                "  modify($p) { setAge($p.getAge()+1) }\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        Person mario = new Person( "Mario", 40);
+        Person luca = new Person( "Mario", 33 );
+        ksession.insert( mario );
+        ksession.insert( luca );
+        ksession.fireAllRules();
+
+        assertEquals( 41, mario.getAge() );
+        assertEquals( 34, luca.getAge() );
+    }
+
     @Test
     public void testBeta() {
         String str =
