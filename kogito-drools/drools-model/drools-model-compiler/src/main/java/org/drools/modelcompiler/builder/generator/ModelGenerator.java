@@ -16,17 +16,6 @@
 
 package org.drools.modelcompiler.builder.generator;
 
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
-import static org.drools.javaparser.printer.PrintUtil.toDrlx;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.classToReferenceType;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isPrimitiveExpression;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.parseBlock;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
-import static org.drools.modelcompiler.builder.generator.visitor.NamedConsequenceVisitor.BREAKING_CALL;
-import static org.drools.modelcompiler.util.StringUtil.toId;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
@@ -50,6 +39,7 @@ import org.drools.compiler.lang.descr.QueryDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.Behavior;
+import org.drools.core.ruleunit.RuleUnitDescr;
 import org.drools.core.time.TimeUtils;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.StringUtils;
@@ -92,12 +82,25 @@ import org.drools.javaparser.ast.type.Type;
 import org.drools.javaparser.ast.type.UnknownType;
 import org.drools.model.BitMask;
 import org.drools.model.Rule;
+import org.drools.model.UnitData;
 import org.drools.model.Variable;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.ParseExpressionErrorResult;
 import org.drools.modelcompiler.builder.errors.UnknownDeclarationError;
 import org.drools.modelcompiler.builder.generator.RuleContext.RuleDialect;
 import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
+
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
+
+import static org.drools.javaparser.printer.PrintUtil.toDrlx;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.classToReferenceType;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isPrimitiveExpression;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.parseBlock;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
+import static org.drools.modelcompiler.builder.generator.visitor.NamedConsequenceVisitor.BREAKING_CALL;
+import static org.drools.modelcompiler.util.StringUtil.toId;
 
 public class ModelGenerator {
 
@@ -149,6 +152,7 @@ public class ModelGenerator {
     public static final String TYPE_CALL = "type";
     public static final String QUERY_INVOCATION_CALL = "call";
     public static final String VALUE_OF_CALL = "valueOf";
+    public static final String UNIT_DATA_CALL = "unitData";
 
     public static void generateModel( KnowledgeBuilderImpl kbuilder, InternalKnowledgePackage pkg, PackageDescr packageDescr, PackageModel packageModel ) {
         packageModel.addImports(pkg.getTypeResolver().getImports());
@@ -193,8 +197,10 @@ public class ModelGenerator {
         }
         ruleCall.addArgument( new StringLiteralExpr( ruleDescr.getName() ) );
 
-        MethodCallExpr buildCallScope = context.getRuleUnitDescr() != null ?
-                new MethodCallExpr(ruleCall, UNIT_CALL).addArgument( new ClassExpr( classToReferenceType(context.getRuleUnitDescr().getRuleUnitClass()) ) ) :
+        RuleUnitDescr ruleUnitDescr = context.getRuleUnitDescr();
+
+        MethodCallExpr buildCallScope = ruleUnitDescr != null ?
+                new MethodCallExpr(ruleCall, UNIT_CALL).addArgument( new ClassExpr( classToReferenceType(ruleUnitDescr.getRuleUnitClass()) ) ) :
                 ruleCall;
 
         for (MethodCallExpr attributeExpr : ruleAttributes(context, ruleDescr)) {
@@ -204,8 +210,8 @@ public class ModelGenerator {
 
         MethodCallExpr buildCall = new MethodCallExpr(buildCallScope, BUILD_CALL, NodeList.nodeList(context.getExpressions()));
 
-
         BlockStmt ruleVariablesBlock = new BlockStmt();
+        createUnitData( ruleUnitDescr, ruleVariablesBlock );
         createVariables(kbuilder, ruleVariablesBlock, packageModel, context);
         ruleMethod.setBody(ruleVariablesBlock);
 
@@ -275,7 +281,7 @@ public class ModelGenerator {
 
     public static MethodCallExpr createConsequenceCall( PackageModel packageModel, RuleDescr ruleDescr, RuleContext context, String consequenceString, BlockStmt ruleVariablesBlock, boolean isBreaking ) {
         BlockStmt ruleConsequence = rewriteConsequence(context, consequenceString);
-        List<String> usedDeclarationInRHS = extractUsedDeclarations(packageModel, context, ruleConsequence);
+        Collection<String> usedDeclarationInRHS = extractUsedDeclarations(packageModel, context, ruleConsequence);
         MethodCallExpr onCall = onCall(usedDeclarationInRHS);
         if (isBreaking) {
             onCall = new MethodCallExpr( onCall, BREAKING_CALL );
@@ -298,20 +304,24 @@ public class ModelGenerator {
         return parseBlock(ruleConsequenceAsBlock);
     }
 
-    private static List<String> extractUsedDeclarations(PackageModel packageModel, RuleContext context, BlockStmt ruleConsequence) {
+    private static Collection<String> extractUsedDeclarations(PackageModel packageModel, RuleContext context, BlockStmt ruleConsequence) {
         Set<String> existingDecls = new HashSet<>();
         existingDecls.addAll(context.getDeclarations().stream().map(DeclarationSpec::getBindingId).collect(toList()));
         existingDecls.addAll(packageModel.getGlobals().keySet());
-        if (context.getRuleDialect() == RuleDialect.JAVA) {
-            Set<String> declUsedInRHS = ruleConsequence.getChildNodesByType(NameExpr.class).stream().map(NameExpr::getNameAsString).collect(toSet());
-            return existingDecls.stream().filter(declUsedInRHS::contains).collect(toList());
-        } else {
-            // if dialect is MVEL then avoid optimization, and just return them all.
-            return existingDecls.stream().collect(Collectors.toList());
+        if (context.getRuleUnitDescr() != null) {
+            existingDecls.addAll(context.getRuleUnitDescr().getUnitVars());
         }
+
+        if (context.getRuleDialect() == RuleDialect.MVEL) {
+            // if dialect is MVEL then avoid optimization, and just return them all.
+            return existingDecls;
+        }
+
+        Set<String> declUsedInRHS = ruleConsequence.getChildNodesByType(NameExpr.class).stream().map(NameExpr::getNameAsString).collect(toSet());
+        return existingDecls.stream().filter(declUsedInRHS::contains).collect(toList());
     }
 
-    private static MethodCallExpr executeCall(RuleContext context, BlockStmt ruleVariablesBlock, BlockStmt ruleConsequence, List<String> verifiedDeclUsedInRHS, MethodCallExpr onCall) {
+    private static MethodCallExpr executeCall(RuleContext context, BlockStmt ruleVariablesBlock, BlockStmt ruleConsequence, Collection<String> verifiedDeclUsedInRHS, MethodCallExpr onCall) {
         boolean requireDrools = rewriteRHS(context, ruleVariablesBlock, ruleConsequence);
         MethodCallExpr executeCall = new MethodCallExpr(onCall, EXECUTE_CALL);
         LambdaExpr executeLambda = new LambdaExpr();
@@ -358,7 +368,7 @@ public class ModelGenerator {
         return executeCall;
     }
 
-    private static MethodCallExpr onCall(List<String> usedArguments) {
+    private static MethodCallExpr onCall(Collection<String> usedArguments) {
         MethodCallExpr onCall = null;
 
         if (!usedArguments.isEmpty()) {
@@ -366,6 +376,33 @@ public class ModelGenerator {
             usedArguments.stream().map(DrlxParseUtil::toVar).forEach(onCall::addArgument );
         }
         return onCall;
+    }
+
+    private static void createUnitData( RuleUnitDescr ruleUnitDescr, BlockStmt ruleVariablesBlock ) {
+        if (ruleUnitDescr != null) {
+            for (String unitVar : ruleUnitDescr.getUnitVars()) {
+                addUnitData(unitVar, ruleUnitDescr.getVarType( unitVar ).get(), ruleVariablesBlock);
+            }
+        }
+    }
+
+    private static void addUnitData(String unitVar, Class<?> type, BlockStmt ruleBlock) {
+        Type declType = classToReferenceType( type );
+
+        ClassOrInterfaceType varType = JavaParser.parseClassOrInterfaceType(UnitData.class.getCanonicalName());
+        varType.setTypeArguments(declType);
+        VariableDeclarationExpr var_ = new VariableDeclarationExpr(varType, toVar(unitVar), Modifier.FINAL);
+
+        MethodCallExpr unitDataCall = new MethodCallExpr(null, UNIT_DATA_CALL);
+
+        MethodCallExpr typeCall = new MethodCallExpr(null, ModelGenerator.TYPE_CALL);
+        typeCall.addArgument( new ClassExpr( declType ));
+        unitDataCall.addArgument(typeCall);
+
+        unitDataCall.addArgument(new StringLiteralExpr(unitVar));
+
+        AssignExpr var_assign = new AssignExpr(var_, unitDataCall, AssignExpr.Operator.ASSIGN);
+        ruleBlock.addStatement(var_assign);
     }
 
     public static void createVariables(KnowledgeBuilderImpl kbuilder, BlockStmt block, PackageModel packageModel, RuleContext context) {
@@ -413,7 +450,6 @@ public class ModelGenerator {
             }
             declarationOfCall.addArgument( windowCall );
         }
-
 
         AssignExpr var_assign = new AssignExpr(var_, declarationOfCall, AssignExpr.Operator.ASSIGN);
         ruleBlock.addStatement(var_assign);

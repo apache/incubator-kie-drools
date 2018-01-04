@@ -34,7 +34,6 @@ import static org.drools.core.util.ClassUtils.getCanonicalSimpleName;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-@Ignore
 public class RuleUnitCompilerTest extends BaseModelTest {
 
     public RuleUnitCompilerTest( RUN_TYPE testRunType ) {
@@ -131,7 +130,7 @@ public class RuleUnitCompilerTest extends BaseModelTest {
         }
     }
 
-    @Test
+    @Test @Ignore
     public void testWith2Rules() {
         String str = "package " + this.getClass().getPackage().getName() + ";\n" +
                 "unit " + getCanonicalSimpleName(PositiveNegativeDTUnit.class) + ";\n" +
