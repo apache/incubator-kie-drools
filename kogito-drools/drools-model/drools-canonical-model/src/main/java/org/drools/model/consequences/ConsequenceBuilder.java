@@ -1,5 +1,7 @@
 package org.drools.model.consequences;
 
+import static org.drools.model.functions.FunctionUtils.toFunctionN;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,10 +18,9 @@ import org.drools.model.functions.BlockN;
 import org.drools.model.functions.Function0;
 import org.drools.model.functions.Function1;
 import org.drools.model.functions.Function2;
+import org.drools.model.functions.Function3;
 import org.drools.model.functions.FunctionN;
 import org.drools.model.functions.ScriptBlock;
-
-import static org.drools.model.functions.FunctionUtils.toFunctionN;
 
 public class ConsequenceBuilder {
 
@@ -193,8 +194,27 @@ public class ConsequenceBuilder {
             return this;
         }
 
-        public <R> _3 insert(final Function2<A, B, R> f) {
+        public <R> _3 insert(final Function3<A, B, C, R> f) {
             addInsert(toFunctionN(f));
+            return this;
+        }
+    }
+
+    public static class _N extends AbstractValidBuilder<_N> {
+
+        public _N(Variable... declarations) {
+            super(declarations);
+        }
+
+        public _N executeScript(String language, String script) {
+            this.usingDrools = true;
+            this.language = language;
+            this.block = new ScriptBlock(script);
+            return this;
+        }
+
+        public <R> _N insert(final FunctionN<R> f) {
+            addInsert(f);
             return this;
         }
     }

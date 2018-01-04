@@ -1,5 +1,7 @@
 package org.drools.model;
 
+import static org.drools.model.impl.ViewBuilder.viewItems2Patterns;
+
 import java.util.concurrent.TimeUnit;
 
 import org.drools.model.consequences.ConditionalConsequenceBuilder;
@@ -33,8 +35,8 @@ import org.drools.model.impl.Query2DefImpl;
 import org.drools.model.impl.Query3DefImpl;
 import org.drools.model.impl.Query4DefImpl;
 import org.drools.model.impl.RuleBuilder;
-import org.drools.model.impl.UnitDataImpl;
 import org.drools.model.impl.TypeMetaDataImpl;
+import org.drools.model.impl.UnitDataImpl;
 import org.drools.model.impl.ValueImpl;
 import org.drools.model.impl.WindowImpl;
 import org.drools.model.impl.WindowReferenceImpl;
@@ -54,8 +56,6 @@ import org.drools.model.view.InputViewItemImpl;
 import org.drools.model.view.TemporalExprViewItem;
 import org.drools.model.view.ViewItem;
 import org.drools.model.view.ViewItemBuilder;
-
-import static org.drools.model.impl.ViewBuilder.viewItems2Patterns;
 
 public class DSL {
 
@@ -425,6 +425,10 @@ public class DSL {
 
     public static <A, B, C> ConsequenceBuilder._3<A, B, C> on(Variable<A> decl1, Variable<B> decl2, Variable<C> decl3) {
         return new ConsequenceBuilder._3(decl1, decl2, decl3);
+    }
+
+    public static ConsequenceBuilder._N on(Variable... declarations) {
+        return new ConsequenceBuilder._N(declarations);
     }
 
     // -- rule --

@@ -15,4 +15,8 @@ public final class FunctionUtils {
     public static <A, B, R> FunctionN<R> toFunctionN(final Function2<A, B, R> f) {
         return objs -> f.apply( (A)objs[0], (B)objs[1] );
     }
+
+    public static <A, B, C, R> FunctionN<R> toFunctionN(final Function3<A, B, C, R> f) {
+        return objs -> f.apply((A) objs[0], (B) objs[1], (C) objs[2]);
+    }
 }
