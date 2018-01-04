@@ -1543,4 +1543,43 @@ public class RuleUnitTest {
         assertEquals(86, (int) list.get(0) );
     }
 
+    @Test
+    public void testModifyGlobalFact() throws Exception {
+        String drl1 =
+                "package org.drools.compiler.integrationtests\n" +
+                "unit " + getCanonicalSimpleName( AdultUnit.class ) + "\n" +
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "rule Adult when\n" +
+                "    $p : Person(age < 18, $name : name)\n" +
+                "then\n" +
+                "    System.out.println($name + \" is NOT adult\");\n" +
+                "    modify($p) { setAge(18) }\n" +
+                "end";
+
+        KieBase kbase = new KieHelper().addContent( drl1, ResourceType.DRL ).build();
+        RuleUnitExecutor executor = RuleUnitExecutor.create().bind( kbase );
+
+        executor.getKieSession().insert( new Person( "Sofia", 4 ) );
+        assertEquals(1, executor.run( AdultUnit.class ) );
+    }
+
+    @Test
+    public void testModifyGlobalFactWithMvelDialect() throws Exception {
+        String drl1 =
+                "package org.drools.compiler.integrationtests\n" +
+                "unit " + getCanonicalSimpleName( AdultUnit.class ) + "\n" +
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "rule Adult dialect \"mvel\" when\n" +
+                "    $p : Person(age < 18, $name : name)\n" +
+                "then\n" +
+                "    System.out.println($name + \" is NOT adult\");\n" +
+                "    modify($p) { setAge(18) }\n" +
+                "end";
+
+        KieBase kbase = new KieHelper().addContent( drl1, ResourceType.DRL ).build();
+        RuleUnitExecutor executor = RuleUnitExecutor.create().bind( kbase );
+
+        executor.getKieSession().insert( new Person( "Sofia", 4 ) );
+        assertEquals(1, executor.run( AdultUnit.class ) );
+    }
 }
