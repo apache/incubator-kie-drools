@@ -28,29 +28,25 @@ import org.kie.api.runtime.KieContainer;
 public class RulesWithInTest {
 
     @Test
-    public void testRecreateSameKieBaseNewContainer() throws IOException {
+    public void testRecreateKieBaseNewContainer() throws IOException {
         final KieServices kieServices = KieServices.get();
-
-        final String drl = "package org.drools.testcoverage.functional; \n"
-                + "rule \"testRule\" \n"
-                + "when \n"
-                + "    String(this == \"test\") \n"
-                + "then \n"
-                + "end\n";
-        final Resource drlResource = kieServices.getResources().newByteArrayResource(drl.getBytes());
-        drlResource.setResourceType(ResourceType.DRL);
-        drlResource.setTargetPath("org/drools/testcoverage/functional/model/testFile.drl");
-
-        final ReleaseId releaseId = BuildtimeUtil.createKJarFromResources(true, drlResource);
+        final ReleaseId releaseId = createKJar(kieServices);
 
         kieServices.newKieContainer(releaseId).newKieBase(kieServices.newKieBaseConfiguration());
         kieServices.newKieContainer(releaseId).newKieBase(kieServices.newKieBaseConfiguration());
     }
 
     @Test
-    public void testRecreateSameKieBaseReuseContainer() throws IOException {
+    public void testRecreateKieBaseReuseContainer() throws IOException {
         final KieServices kieServices = KieServices.get();
+        final ReleaseId releaseId = createKJar(kieServices);
 
+        final KieContainer kieContainer = kieServices.newKieContainer(releaseId);
+        kieContainer.newKieBase(kieServices.newKieBaseConfiguration());
+        kieContainer.newKieBase(kieServices.newKieBaseConfiguration());
+    }
+
+    private ReleaseId createKJar(final KieServices kieServices) throws IOException {
         final String drl = "package org.drools.testcoverage.functional; \n"
                 + "rule \"testRule\" \n"
                 + "when \n"
@@ -61,10 +57,6 @@ public class RulesWithInTest {
         drlResource.setResourceType(ResourceType.DRL);
         drlResource.setTargetPath("org/drools/testcoverage/functional/model/testFile.drl");
 
-        final ReleaseId releaseId = BuildtimeUtil.createKJarFromResources(true, drlResource);
-
-        final KieContainer kieContainer = kieServices.newKieContainer(releaseId);
-        kieContainer.newKieBase(kieServices.newKieBaseConfiguration());
-        kieContainer.newKieBase(kieServices.newKieBaseConfiguration());
+        return BuildtimeUtil.createKJarFromResources(true, drlResource);
     }
 }
