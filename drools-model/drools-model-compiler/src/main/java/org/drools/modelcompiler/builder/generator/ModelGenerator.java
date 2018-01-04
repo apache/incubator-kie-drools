@@ -16,6 +16,17 @@
 
 package org.drools.modelcompiler.builder.generator;
 
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
+import static org.drools.javaparser.printer.PrintUtil.toDrlx;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.classToReferenceType;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isPrimitiveExpression;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.parseBlock;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
+import static org.drools.modelcompiler.builder.generator.visitor.NamedConsequenceVisitor.BREAKING_CALL;
+import static org.drools.modelcompiler.util.StringUtil.toId;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
@@ -63,6 +74,7 @@ import org.drools.javaparser.ast.expr.FieldAccessExpr;
 import org.drools.javaparser.ast.expr.LambdaExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
+import org.drools.javaparser.ast.expr.ObjectCreationExpr;
 import org.drools.javaparser.ast.expr.SimpleName;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.javaparser.ast.expr.ThisExpr;
@@ -86,18 +98,6 @@ import org.drools.modelcompiler.builder.errors.ParseExpressionErrorResult;
 import org.drools.modelcompiler.builder.errors.UnknownDeclarationError;
 import org.drools.modelcompiler.builder.generator.RuleContext.RuleDialect;
 import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
-
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
-
-import static org.drools.javaparser.printer.PrintUtil.toDrlx;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.classToReferenceType;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isPrimitiveExpression;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.parseBlock;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
-import static org.drools.modelcompiler.builder.generator.visitor.NamedConsequenceVisitor.BREAKING_CALL;
-import static org.drools.modelcompiler.util.StringUtil.toId;
 
 public class ModelGenerator {
 
@@ -284,7 +284,7 @@ public class ModelGenerator {
         if (context.getRuleDialect() == RuleDialect.JAVA) {
             executeCall = executeCall(context, ruleVariablesBlock, ruleConsequence, usedDeclarationInRHS, onCall);
         } else if (context.getRuleDialect() == RuleDialect.MVEL) {
-            executeCall = executeScriptCall(ruleDescr, onCall);
+            executeCall = executeScriptCall(packageModel, ruleDescr, onCall);
         }
         return executeCall;
     }
@@ -325,12 +325,36 @@ public class ModelGenerator {
         return executeCall;
     }
 
-    private static MethodCallExpr executeScriptCall(RuleDescr ruleDescr, MethodCallExpr onCall) {
+    private static MethodCallExpr executeScriptCall(PackageModel packageModel, RuleDescr ruleDescr, MethodCallExpr onCall) {
         MethodCallExpr executeCall = new MethodCallExpr(onCall, EXECUTESCRIPT_CALL);
         executeCall.addArgument(new StringLiteralExpr("mvel"));
-        StringLiteralExpr scriptText = new StringLiteralExpr();
-        scriptText.setString(ruleDescr.getConsequence().toString()); // use the setter method in order for the string literal be properly escaped.
-        executeCall.addArgument(scriptText);
+
+        ObjectCreationExpr objectCreationExpr = new ObjectCreationExpr();
+        objectCreationExpr.setType(StringBuilder.class.getCanonicalName());
+        Expression mvelSB = objectCreationExpr;
+
+        for (String i : packageModel.getImports()) {
+            if (i.equals(packageModel.getName() + ".*")) {
+                continue; // skip same-package star import.
+            }
+            MethodCallExpr appendCall = new MethodCallExpr(mvelSB, "append");
+            StringLiteralExpr importAsStringLiteral = new StringLiteralExpr();
+            importAsStringLiteral.setString("import " + i + ";\n"); // use the setter method in order for the string literal be properly escaped.
+            appendCall.addArgument(importAsStringLiteral);
+            mvelSB = appendCall;
+        }
+
+        StringLiteralExpr mvelScriptBodyStringLiteral = new StringLiteralExpr();
+        mvelScriptBodyStringLiteral.setString(ruleDescr.getConsequence().toString()); // use the setter method in order for the string literal be properly escaped.
+
+        MethodCallExpr appendCall = new MethodCallExpr(mvelSB, "append");
+        appendCall.addArgument(mvelScriptBodyStringLiteral);
+        mvelSB = appendCall;
+
+        MethodCallExpr toStringCall = new MethodCallExpr(mvelSB, "toString");
+        mvelSB = toStringCall;
+
+        executeCall.addArgument(mvelSB);
         return executeCall;
     }
 
