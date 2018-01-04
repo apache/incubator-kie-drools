@@ -12,10 +12,13 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.ruleunit.RuleUnitDescr;
 import org.drools.javaparser.ast.expr.Expression;
+import org.kie.api.runtime.rule.RuleUnit;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 
 import static java.util.stream.Collectors.toList;
@@ -24,7 +27,7 @@ public class RuleContext {
     private final KnowledgeBuilderImpl kbuilder;
     private final InternalKnowledgePackage pkg;
     private DRLIdGenerator idGenerator;
-    private final Optional<RuleDescr> descr;
+    private final RuleDescr descr;
 
     private List<DeclarationSpec> declarations = new ArrayList<>();
     private List<DeclarationSpec> ooPathDeclarations = new ArrayList<>();
@@ -35,6 +38,8 @@ public class RuleContext {
     private List<QueryParameter> queryParameters = new ArrayList<>();
     private Optional<String> queryName = Optional.empty();
 
+    private RuleUnitDescr ruleUnitDescr;
+
     private RuleDialect ruleDialect = RuleDialect.JAVA; // assumed is java by default as per Drools manual.
     public static enum RuleDialect {
         JAVA,
@@ -43,12 +48,31 @@ public class RuleContext {
 
     public BaseDescr parentDesc = null;
 
-    public RuleContext( KnowledgeBuilderImpl kbuilder, InternalKnowledgePackage pkg, DRLIdGenerator exprIdGenerator, Optional<RuleDescr> ruleDescr) {
+    public RuleContext( KnowledgeBuilderImpl kbuilder, InternalKnowledgePackage pkg, DRLIdGenerator exprIdGenerator, RuleDescr ruleDescr) {
         this.kbuilder = kbuilder;
         this.pkg = pkg;
         this.idGenerator = exprIdGenerator;
         this.descr = ruleDescr;
         exprPointer.push( this.expressions::add );
+        findUnitClass();
+    }
+
+    private void findUnitClass() {
+        AnnotationDescr unitAnn = descr != null ? descr.getAnnotation( "Unit" ) : null;
+        if (unitAnn != null) {
+            String unitName = ( String ) unitAnn.getValue();
+            unitName = unitName.substring( 0, unitName.length() - ".class".length() );
+            try {
+                Class<? extends RuleUnit> unitClass = (Class<? extends RuleUnit>) pkg.getTypeResolver().resolveType( unitName );
+                ruleUnitDescr = new RuleUnitDescr(unitClass);
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException( e );
+            }
+        }
+    }
+
+    public RuleUnitDescr getRuleUnitDescr() {
+        return ruleUnitDescr;
     }
 
     public KnowledgeBuilderImpl getKbuilder() {
@@ -61,6 +85,10 @@ public class RuleContext {
 
     public Optional<DeclarationSpec> getDeclarationById(String id) {
         return declarations.stream().filter(d -> d.getBindingId().equals(id)).findFirst();
+    }
+
+    public boolean hasDeclaration(String id) {
+        return getDeclarationById(id).isPresent();
     }
 
     public Collection<String> getAvailableBindings() {
@@ -134,7 +162,7 @@ public class RuleContext {
         namedConsequences.put(key, value);
     }
 
-    public Optional<RuleDescr> getRuleDescr() {
+    public RuleDescr getRuleDescr() {
         return descr;
     }
 

@@ -53,8 +53,10 @@ public class LambdaDataProvider implements DataProvider {
 
     @Override
     public Iterator getResults( Tuple tuple, InternalWorkingMemory wm, PropagationContext ctx, Object providerContext ) {
-        Object obj = declaration.getExtractor().isGlobal() ? declaration.getExtractor().getValue(wm, declaration.getIdentifier()) : tuple.get(declaration).getObject();
-        Object result = providerFunction.apply( obj );
+        Object result = declaration.getExtractor().isGlobal() ? declaration.getExtractor().getValue(wm, declaration.getIdentifier()) : tuple.get(declaration).getObject();
+        if (providerFunction != null) {
+            result = providerFunction.apply( result );
+        }
 
         if (isReactive()) {
             if ( result instanceof ReactiveObject ) {
@@ -69,8 +71,8 @@ public class LambdaDataProvider implements DataProvider {
             }
         }
 
-        if(obj instanceof Object[]) {
-            return Arrays.asList( (Object[]) obj ).iterator();
+        if ( result instanceof Object[] ) {
+            return Arrays.asList( (Object[]) result ).iterator();
         }
         if ( result instanceof Iterator ) {
             return (( Iterator ) result);

@@ -92,7 +92,7 @@ public class WindowReferenceGenerator {
     private Optional<Expression> parseCondition( KnowledgeBuilderImpl kbuilder, PackageModel packageModel, PatternDescr pattern, Class<?> patternType ) {
         return Optional.ofNullable(pattern.getConstraint().getDescrs().iterator().next()).map(d -> {
             String expression = d.toString();
-            RuleContext context = new RuleContext(kbuilder, pkg, packageModel.getExprIdGenerator(), Optional.empty());
+            RuleContext context = new RuleContext(kbuilder, pkg, packageModel.getExprIdGenerator(), null);
             DrlxParseResult drlxParseResult = drlxParse(context, packageModel, patternType, pattern.getIdentifier(), expression);
 
             return generateLambdaWithoutParameters(drlxParseResult.getUsedDeclarations(), drlxParseResult.getExpr());

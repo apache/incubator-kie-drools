@@ -150,66 +150,6 @@ public class CompilerTest extends BaseModelTest {
         assertEquals("Edson is older than Mark", result.getValue());
     }
 
-
-    @Test
-    public void testGlobalInConsequence() {
-        String str =
-                "package org.mypkg;" +
-                "import " + Person.class.getCanonicalName() + ";" +
-                "import " + Result.class.getCanonicalName() + ";" +
-                "global Result globalResult;" +
-                "rule X when\n" +
-                "  $p1 : Person(name == \"Mark\")\n" +
-                "then\n" +
-                " globalResult.setValue($p1.getName() + \" is \" + $p1.getAge());\n" +
-                "end";
-
-        KieSession ksession = getKieSession( str );
-
-        Result result = new Result();
-        ksession.setGlobal("globalResult", result);
-
-        ksession.insert(new Person("Mark", 37));
-        ksession.insert(new Person("Edson", 35));
-        ksession.insert(new Person("Mario", 40));
-
-        ksession.fireAllRules();
-
-        assertEquals( "Mark is 37", result.getValue() );
-
-    }
-
-    @Test
-    public void testGlobalInConstraint() {
-        String str =
-                "package org.mypkg;" +
-                "import " + Person.class.getCanonicalName() + ";" +
-                "import " + Result.class.getCanonicalName() + ";" +
-                "global java.lang.String nameG;" +
-                "global Result resultG;" +
-                "rule X when\n" +
-                "  $p1 : Person(nameG == name)\n" +
-                "then\n" +
-                " resultG.setValue($p1.getName() + \" is \" + $p1.getAge());\n" +
-                "end";
-
-        KieSession ksession = getKieSession( str );
-
-        ksession.setGlobal("nameG", "Mark");
-
-        Result result = new Result();
-        ksession.setGlobal("resultG", result);
-
-        ksession.insert(new Person("Mark", 37));
-        ksession.insert(new Person("Edson", 35));
-        ksession.insert(new Person("Mario", 40));
-
-        ksession.fireAllRules();
-
-        assertEquals( "Mark is 37", result.getValue() );
-
-    }
-
     @Test
     public void testShareAlpha() {
         String str =

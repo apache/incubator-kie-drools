@@ -40,7 +40,6 @@ import org.drools.model.patterns.AccumulatePatternImpl;
 import org.drools.model.patterns.CompositePatterns;
 import org.drools.model.patterns.EvalImpl;
 import org.drools.model.patterns.ExistentialPatternImpl;
-import org.drools.model.patterns.OOPathImpl;
 import org.drools.model.patterns.PatternImpl;
 import org.drools.model.patterns.QueryCallPattern;
 import org.drools.model.view.AbstractExprViewItem;
@@ -53,8 +52,6 @@ import org.drools.model.view.Expr2ViewItemImpl;
 import org.drools.model.view.Expr3ViewItemImpl;
 import org.drools.model.view.ExprViewItem;
 import org.drools.model.view.InputViewItemImpl;
-import org.drools.model.view.OOPathViewItem;
-import org.drools.model.view.OOPathViewItem.OOPathChunk;
 import org.drools.model.view.QueryCallViewItem;
 import org.drools.model.view.TemporalExprViewItem;
 import org.drools.model.view.ViewItem;
@@ -62,7 +59,6 @@ import org.drools.model.view.ViewItem;
 import static java.util.stream.Collectors.toList;
 
 import static org.drools.model.DSL.input;
-import static org.drools.model.constraints.AbstractSingleConstraint.fromExpr;
 import static org.drools.model.impl.NamesGenerator.generateName;
 
 public class ViewBuilder {
@@ -356,21 +352,6 @@ public class ViewBuilder {
                 throw new RuntimeException("Unknown pattern");
             }
 
-        }
-
-        if ( viewItem instanceof OOPathViewItem) {
-            OOPathViewItem<?,?> oopath = ( (OOPathViewItem) viewItem );
-            if (oopath.getChunks().size() > 1) {
-                throw new UnsupportedOperationException();
-            }
-            OOPathChunk chunk = oopath.getChunks().get( 0 );
-            for (Variable var : chunk.getExpr().getVariables()) {
-                ctx.usedVars.add(var);
-            }
-            ( (PatternImpl) condition ).addConstraint( fromExpr( chunk.getExpr() ) );
-            OOPathImpl oopathPattern = new OOPathImpl( oopath.getSource(), oopath.getChunks() );
-            oopathPattern.setFirstCondition( condition );
-            return oopathPattern;
         }
 
         if ( viewItem instanceof ExistentialExprViewItem) {
