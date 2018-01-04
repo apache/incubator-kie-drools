@@ -22,7 +22,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.drools.core.SessionConfiguration;
 import org.drools.core.SessionConfigurationImpl;
-import org.drools.core.common.DynamicEntryPoint;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.datasources.CursoredDataSource;
@@ -30,7 +29,6 @@ import org.drools.core.datasources.InternalDataSource;
 import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.event.RuleEventListenerSupport;
 import org.drools.core.event.RuleRuntimeEventSupport;
-import org.drools.core.rule.EntryPointId;
 import org.drools.core.ruleunit.RuleUnitDescr;
 import org.drools.core.ruleunit.RuleUnitFactory;
 import org.drools.core.ruleunit.RuleUnitGuardSystem;
@@ -105,12 +103,8 @@ public class RuleUnitExecutorSession implements InternalRuleUnitExecutor {
         }
 
         session.handleFactory = kbase.newFactHandleFactory();
-        session.bindRuleBase( kbase, null, false, false );
+        session.bindRuleBase( kbase, null, false );
         session.nodeMemories = new RuleUnitsNodeMemories(kbase);
-
-        DynamicEntryPoint defaultEp = new DynamicEntryPoint( EntryPointId.DEFAULT, session );
-        session.defaultEntryPoint = defaultEp;
-        defaultEp.bindRuleBase( kbase );
 
         this.ruleUnitGuardSystem = new RuleUnitGuardSystem( this );
         return this;

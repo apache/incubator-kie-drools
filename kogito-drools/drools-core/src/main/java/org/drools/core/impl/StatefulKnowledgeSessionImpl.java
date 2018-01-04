@@ -328,7 +328,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         init( config, environment, propagationContext );
         if (kBase != null) {
             this.nodeMemories = new ConcurrentNodeMemories(kBase, DEFAULT_RULE_UNIT);
-            bindRuleBase( kBase, agenda, initInitFactHandle, true );
+            bindRuleBase( kBase, agenda, initInitFactHandle );
         }
     }
 
@@ -369,7 +369,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         }
     }
 
-    protected void bindRuleBase( InternalKnowledgeBase kBase, InternalAgenda agenda, boolean initInitFactHandle, boolean initDefaultEntryPoint ) {
+    protected void bindRuleBase( InternalKnowledgeBase kBase, InternalAgenda agenda, boolean initInitFactHandle ) {
         this.kBase = kBase;
         this.pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
 
@@ -383,9 +383,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         RuleBaseConfiguration conf = kBase.getConfiguration();
         this.sequential = conf.isSequential();
 
-        if (initDefaultEntryPoint) {
-            initDefaultEntryPoint();
-        }
+        initDefaultEntryPoint();
         updateEntryPointsCache();
         if (initInitFactHandle) {
             this.initialFactHandle = initInitialFact(kBase, null);
