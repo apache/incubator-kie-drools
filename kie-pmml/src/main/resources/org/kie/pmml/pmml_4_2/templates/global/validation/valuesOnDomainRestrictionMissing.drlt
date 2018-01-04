@@ -34,9 +34,9 @@ when
           @foreach{ v : vals } value == @{v} @end{' || '}
           ) from pmmlData
 then
-   delete( $in );
-   $in.setMissing( true );
-   pmmlData.insert( $in );
+   modify($in) {
+      setMissing( true )
+   };
 end
 
 /*

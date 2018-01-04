@@ -280,7 +280,7 @@ then
     utils.applyTemplate( "valuesOnDomainRestriction.drlt", utils, registry, map, theory );
 end
 
-rule "processDataField_noRestrictions"
+rule "processDataField_noRestrictions_emptyValues"
 when
     $fld    : DataField( values.isEmpty() )
 then
@@ -290,6 +290,19 @@ then
         map.put( "field", $fld );
     utils.applyTemplate( "valuesNoRestriction.drlt", utils, registry, map, theory );
 end
+
+rule "processDataField_noRestrictions_onlyMissingOrInvalid"
+when
+    $fld : DataField( $vals : values, values.size() > 0 )
+    forall ( Value( property == "missing" || property == "invalid" ) from $vals )
+then
+    System.out.println("Creating valuesNoRestriction because values are only missing or invalid");
+    HashMap map = utils.container;
+        map.put( "context", utils.context );
+        map.put( "name", utils.compactUpperCase( $fld.name ) );
+        map.put( "field", $fld );
+    utils.applyTemplate( "valuesNoRestriction.drlt", utils, registry, map, theory );
+end    
 
 rule "processDataField_valueValidation_missing"
 when

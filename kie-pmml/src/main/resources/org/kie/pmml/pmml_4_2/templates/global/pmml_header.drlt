@@ -52,7 +52,7 @@ end
 
 rule 'Extract Parameter Info'
 @@Generated
-salience 10000
+salience 10
 no-loop
 when
    $rd: PMMLRequestData( $cid: correlationId != null, $mn: modelName ) from request
