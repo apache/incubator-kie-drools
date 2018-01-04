@@ -26,6 +26,10 @@ public class FromImpl<T> implements From<T>, ModelComponent {
     private final Function1<T, ?> provider;
     private final boolean reactive;
 
+    public FromImpl( Variable<T> variable ) {
+        this(variable, null, false);
+    }
+
     public FromImpl( Variable<T> variable, Function1<T, ?> provider ) {
         this(variable, provider, false);
     }

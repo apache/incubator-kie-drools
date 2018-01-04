@@ -14,7 +14,7 @@ public interface Condition {
     Variable<?>[] getBoundVariables();
 
     enum Type {
-        PATTERN( false ), EVAL( false ), QUERY( false ), ACCUMULATE( false ), TEMPORAL( false ), OOPATH( false ),
+        PATTERN( false ), EVAL( false ), QUERY( false ), ACCUMULATE( false ), TEMPORAL( false ),
         OR( true ), AND( true ), NOT( false ), EXISTS( false ), FORALL( false ), CONSEQUENCE( false );
 
         private final boolean composite;
