@@ -278,10 +278,14 @@ public class DrlxParseUtil {
             }
 
             for (Node part : childNodes) {
-                String field = part.toString();
-                TypedExpression expression = nameExprToMethodCallExpr(field, typeCursor, previous);
-                typeCursor = expression.getType();
-                previous = expression.getExpression();
+                if(typeCursor.isEnum()) {
+                    previous = drlxExpr;
+                } else {
+                    String field = part.toString();
+                    TypedExpression expression = nameExprToMethodCallExpr(field, typeCursor, previous);
+                    typeCursor = expression.getType();
+                    previous = expression.getExpression();
+                }
             }
 
             return typedExpression.setExpression(previous).setType(typeCursor);
