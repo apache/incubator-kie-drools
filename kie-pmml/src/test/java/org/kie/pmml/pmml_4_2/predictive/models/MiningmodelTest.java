@@ -24,11 +24,13 @@ import java.util.Map;
 
 import org.drools.core.ClassObjectFilter;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.InternalRuleUnitExecutor;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
+import org.kie.api.logger.KieRuntimeLogger;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.DataSource;
 import org.kie.api.runtime.rule.RuleUnit;
@@ -61,33 +63,47 @@ public class MiningmodelTest extends DroolsAbstractPMMLTest {
 
 	@Test
 	public void testSelectFirstSegmentFirst() {
-		Resource res = ResourceFactory.newClassPathResource(source1);
-		KieBase kbase = new KieHelper().addResource(res, ResourceType.PMML).build();
-
-		assertNotNull(kbase);
-		RuleUnitExecutor executor = RuleUnitExecutor.create().bind(kbase);
+//		Resource res = ResourceFactory.newClassPathResource(source1);
+//		KieBase kbase = new KieHelper().addResource(res, ResourceType.PMML).build();
+//
+//		assertNotNull(kbase);
+		RuleUnitExecutor executor = createExecutor(source1);
+		KieRuntimeLogger console = ((InternalRuleUnitExecutor)executor).addConsoleLogger();
 
 		PMMLRequestData request = new PMMLRequestData("1234", "SampleMine");
 		request.addRequestParam("fld1", 30.0);
 		request.addRequestParam("fld2", 60.0);
 		request.addRequestParam("fld3", "false");
 		request.addRequestParam("fld4", "optA");
+		
+		PMML4Result resultHolder = new PMML4Result();
 
-		DataSource<PMMLRequestData> data = executor.newDataSource("request",request);
-		DataSource<PMML4Result> resultHolder = executor.newDataSource("results", new PMML4Result());
+//		DataSource<PMMLRequestData> data = executor.newDataSource("request",request);
+//		DataSource<PMML4Result> resultHolder = executor.newDataSource("results", new PMML4Result());
 		DataSource<PMMLRequestData> childModelRequest = executor.newDataSource("childModelRequest");
 		DataSource<PMML4Result> childModelResults = executor.newDataSource("childModelResults");
 		DataSource<SegmentExecution> childModelSegments = executor.newDataSource("childModelSegments");
 		DataSource<? extends AbstractPMMLData> miningModelPojo = executor.newDataSource("miningModelPojo");
-		DataSource<PMML4Data> pmmlData = executor.newDataSource("pmmlData");
+//		DataSource<PMML4Data> pmmlData = executor.newDataSource("pmmlData");
 
 		List<String> possiblePackages = this.calculatePossiblePackageNames("SampleMine");
 		Class<? extends RuleUnit> ruleUnitClass = this.getStartingRuleUnit("Start Mining - SampleMine",(InternalKnowledgeBase)kbase,possiblePackages);
+		
 		assertNotNull(ruleUnitClass);
-		int x = executor.run(ruleUnitClass);
-		System.out.println(x);
-		System.out.println("Reuslts ---");
-		resultHolder.forEach(re -> { System.out.println(re);});
+//		int x = executor.run(ruleUnitClass);
+		
+		data.insert(request);
+		resultData.insert(resultHolder);
+		
+		executor.run(ruleUnitClass);
+		console.close();
+		Collection<?> objects = ((InternalRuleUnitExecutor)executor).getSessionObjects();
+		objects.forEach(o -> {System.out.println(o);});
+		miningModelPojo.forEach(mmp -> {System.out.println(mmp);});
+//		System.out.println(x);
+//		System.out.println("Reuslts ---");
+//		resultData.forEach(re -> { System.out.println(re);});
+//		miningModelPojo.forEach(mmp -> { System.out.println(mmp);});
 		// setKSession( getModelSession( source1, VERBOSE ) );
 		// setKbase( getKSession().getKieBase() );
 		// KieSession kSession = getKSession();

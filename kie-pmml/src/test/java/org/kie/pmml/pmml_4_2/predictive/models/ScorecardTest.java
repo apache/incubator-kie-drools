@@ -59,10 +59,7 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
 
     @Test
     public void testScorecard() throws Exception {
-		Resource res = ResourceFactory.newClassPathResource(source1);
-    	KieBase kbase = new KieHelper().addResource(res, ResourceType.PMML).build();
-    	
-    	RuleUnitExecutor executor = RuleUnitExecutor.create().bind(kbase);
+    	RuleUnitExecutor executor = createExecutor(source1);
 
     	PMMLRequestData requestData = new PMMLRequestData("123","Sample Score");
         requestData.addRequestParam("age",33.0);
@@ -72,21 +69,21 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
         
         PMML4Result resultHolder = new PMML4Result();
 
-        DataSource<PMMLRequestData> data = executor.newDataSource("request",requestData);
-        DataSource<PMML4Result> resultData = executor.newDataSource("results",resultHolder);
-        DataSource<PMML4Data> pmmlData = executor.newDataSource("pmmlData");
-        
         List<String> possiblePackages = calculatePossiblePackageNames("Sample Score", "org.drools.scorecards.example");
         Class<? extends RuleUnit> unitClass = getStartingRuleUnit("RuleUnitIndicator",(InternalKnowledgeBase)kbase,possiblePackages);
 
         assertNotNull(unitClass);
+        executor.run(unitClass);
+        
+        data.insert(requestData);
+        resultData.insert(resultHolder);
         executor.run(unitClass);
 
         assertEquals(3, resultHolder.getResultVariables().size());
         Object scorecard = resultHolder.getResultValue("ScoreCard", null);
         assertNotNull(scorecard);
         
-        Double score = (Double)resultHolder.getResultValue("ScoreCard", "score");
+        Double score = resultHolder.getResultValue("ScoreCard", "score", Double.class).orElse(null);
         assertEquals(41.345,score,0.000);
         Object ranking = resultHolder.getResultValue("ScoreCard", "ranking");
         assertNotNull(ranking);
@@ -108,12 +105,7 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
 
     @Test
     public void testScorecardOutputs() throws Exception {
-    	Resource res = ResourceFactory.newClassPathResource(source2);
-    	KieBase kbase = new KieHelper().addResource(res, ResourceType.PMML).build();
-    	
-    	assertNotNull(kbase);
-    	
-    	RuleUnitExecutor executor = RuleUnitExecutor.create().bind(kbase);
+    	RuleUnitExecutor executor = createExecutor(source2);//RuleUnitExecutor.create().bind(kbase);
 
 
         PMMLRequestData requestData = new PMMLRequestData("123","SampleScorecard");
@@ -122,15 +114,16 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
         requestData.addRequestParam("wage",500.0);
         
         PMML4Result resultHolder = new PMML4Result();
-        DataSource<PMMLRequestData> data = executor.newDataSource("request",requestData);
-        DataSource<PMML4Result> resultData = executor.newDataSource("results",resultHolder);
-        DataSource<PMML4Data> pmmlData = executor.newDataSource("pmmlData");
         
         List<String> possiblePackages = calculatePossiblePackageNames("SampleScorecard");
         Class<? extends RuleUnit> unitClass = getStartingRuleUnit("RuleUnitIndicator",(InternalKnowledgeBase)kbase,possiblePackages);
 
 
         assertNotNull(unitClass);
+        executor.run(unitClass);
+        
+        data.insert(requestData);
+        resultData.insert(resultHolder);
         executor.run(unitClass);
         
         assertEquals("OK",resultHolder.getResultCode());

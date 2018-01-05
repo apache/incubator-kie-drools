@@ -42,7 +42,7 @@ then
    miningModelPojo.insert(modelData);
 end
 
-/*
+
 rule "Execute First Segment"
 when
    $segExec: SegmentExecution( $corrId: correlationId,
@@ -56,7 +56,7 @@ then
    System.out.println("about to apply model "+$segIndex);
    $segExec.applySegmentModel($segExec.getRequestData(),kcontext);
 end
-*/
+
 
 rule "Update the SegmentExecution State - Complete"
 dialect "java"
@@ -86,7 +86,7 @@ end
 @code{ salienceValue = 1000 - childSegment.segmentIndex; }
 @code{ internalModel = childSegment.model; }
 
-
+@comment{
 rule "Execute Segment @{childSegment.owner.segmentationId}-@{childSegment.segmentId}"
 when
    $seg: SegmentExecution( $corrId: correlationId,
@@ -102,7 +102,7 @@ then
    drools.run(@{childSegment.segmentRuleUnit}.class);
    System.out.println("Segement execution done!");
 end
-
+}
 
 rule "Check Segment Can Fire - Segment @{childSegment.segmentId}"
 salience @{salienceValue}

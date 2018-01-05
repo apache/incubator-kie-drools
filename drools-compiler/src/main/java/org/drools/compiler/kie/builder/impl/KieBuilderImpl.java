@@ -769,7 +769,7 @@ public class KieBuilderImpl
 	            		String baseName = (srcFile.startsWith(JAVA_ROOT) ? srcFile.substring(JAVA_ROOT.length()) : srcFile)
 	            				.replaceAll("/", ".");
 	            		
-	            		String fname = dumpDirName + baseName + ".java";
+	            		String fname = dumpDirName + baseName;
 	            		byte[] srcData = source.getBytes(srcFile);
 	            		try (FileOutputStream fos = new FileOutputStream(fname)) {
 	            			fos.write(srcData);

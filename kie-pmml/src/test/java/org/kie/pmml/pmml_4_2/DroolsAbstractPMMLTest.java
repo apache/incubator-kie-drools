@@ -57,14 +57,20 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.DataSource;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.RuleUnit;
+import org.kie.api.runtime.rule.RuleUnitExecutor;
 import org.kie.api.runtime.rule.Variable;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.utils.KieHelper;
 import org.kie.pmml.pmml_4_2.model.PMML4UnitImpl;
+import org.kie.pmml.pmml_4_2.model.PMMLRequestData;
+import org.kie.pmml.pmml_4_2.model.datatypes.PMML4Data;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 
@@ -77,8 +83,12 @@ public abstract class DroolsAbstractPMMLTest {
     public static final String RESOURCE_PATH = "src/main/resources/" + BASE_PACK.replace('.','/') + "/";
     public static final String DEFAULT_KIEBASE = "PMML_Test";
 
+    protected DataSource<PMMLRequestData> data;
+    protected DataSource<PMML4Result> resultData;
+    protected DataSource<PMML4Data> pmmlData;
+    
     private KieSession kSession;
-    private KieBase kbase;
+    protected KieBase kbase;
 
     public DroolsAbstractPMMLTest() {
         super();
@@ -420,6 +430,20 @@ public abstract class DroolsAbstractPMMLTest {
 			}
 		}
 		return value;
+	}
+	
+	protected RuleUnitExecutor createExecutor(String sourceName) {
+    	Resource res = ResourceFactory.newClassPathResource(sourceName);
+    	kbase = new KieHelper().addResource(res, ResourceType.PMML).build();
+    	
+    	assertNotNull(kbase);
+    	
+    	RuleUnitExecutor executor = RuleUnitExecutor.create().bind(kbase);
+        data = executor.newDataSource("request");
+        resultData = executor.newDataSource("results");
+        pmmlData = executor.newDataSource("pmmlData");
+
+		return executor;
 	}
 	
     protected Class<? extends RuleUnit> getStartingRuleUnit(String startingRule, InternalKnowledgeBase ikb, List<String> possiblePackages) {

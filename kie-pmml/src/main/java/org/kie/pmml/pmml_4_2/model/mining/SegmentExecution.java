@@ -191,20 +191,26 @@ public class SegmentExecution implements Comparable<SegmentExecution> {
 			
 		if (ruleUnitClass != null) {
 			RuleUnitExecutor executor = RuleUnitExecutor.create().bind(ctx.getKieRuntime().getKieBase());
-			PMML4Result result = new PMML4Result(this);
-			DataSource<PMMLRequestData> data = executor.newDataSource("request", requestData);
-			DataSource<PMML4Result> results = executor.newDataSource("results", result);
-			DataSource<PMML4Data> pmmlData = executor.newDataSource("pmmlData");
 			
+			
+			PMML4Result result = new PMML4Result(this);
+			DataSource<PMMLRequestData> data = executor.newDataSource("request");
+			DataSource<PMML4Result> results = executor.newDataSource("results");
+			DataSource<PMML4Data> pmmlData = executor.newDataSource("pmmlData");
+			executor.run(ruleUnitClass);
+			
+			data.insert(this.requestData);
+			results.insert(new PMML4Result(this));
+			
+			executor.run(ruleUnitClass);
 			// Update the state and let the Mining session know
 			this.state = SegmentExecutionState.EXECUTING;
 			FactHandle handle = ctx.getKieRuntime().getFactHandle(this);
 			segmentExecutions.update(handle, this);
 
 			int activationsCount = executor.run(ruleUnitClass);
-//			if (activationsCount > 0) {
-//				childSegmentResults.insert(result);
-//			}
+			System.out.println("Sub-Model Results");
+			results.forEach(r -> {System.out.println(r);});
 			executor.dispose();
 		}
 	}

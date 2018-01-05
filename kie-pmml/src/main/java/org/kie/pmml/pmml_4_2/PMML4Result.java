@@ -19,6 +19,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.kie.api.definition.type.PropertyReactive;
 import org.kie.pmml.pmml_4_2.model.mining.SegmentExecution;
@@ -104,6 +105,15 @@ public class PMML4Result {
 	private String getGetterMethodName(Object wrapper, String fieldName, String prefix) {
 		String capFieldName = fieldName.substring(0,1).toUpperCase() + fieldName.substring(1);
 		return prefix + capFieldName;
+	}
+	
+	public <T> Optional<T> getResultValue(String objName, String objField, Class<T> clazz, Object...params) {
+		T value = null;
+		Object obj = getResultValue(objName, objField, params);
+		if (clazz.isAssignableFrom(obj.getClass())) {
+			value = (T)obj;
+		}
+		return value != null ? Optional.of(value) : Optional.empty();
 	}
 	
 	public Object getResultValue(String objName, String objField, Object...params) {

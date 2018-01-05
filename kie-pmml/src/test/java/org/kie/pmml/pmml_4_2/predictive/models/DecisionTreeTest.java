@@ -68,10 +68,7 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
 
     @Test
     public void testSimpleTree() throws Exception {
-    	Resource res = ResourceFactory.newClassPathResource(source1);
-    	KieBase kbase = new KieHelper().addResource(res, ResourceType.PMML).build();
-    	
-    	RuleUnitExecutor executor = RuleUnitExecutor.create().bind(kbase);
+    	RuleUnitExecutor executor = createExecutor(source1);
         
         PMMLRequestData request = new PMMLRequestData("123","TreeTest");
         request.addRequestParam("fld1", 30.0);
@@ -80,9 +77,6 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
         request.addRequestParam("fld4", "optA");
 
         PMML4Result resultHolder = new PMML4Result();
-        DataSource<PMMLRequestData> data = executor.newDataSource("request", request);
-        DataSource<PMML4Result> results = executor.newDataSource("results", resultHolder);
-        DataSource<PMML4Data> pmmlData = executor.newDataSource("pmmlData");
         
         List<String> possiblePackages = calculatePossiblePackageNames("TreeTest");
         Class<? extends RuleUnit> unitClass = getStartingRuleUnit("RuleUnitIndicator",(InternalKnowledgeBase)kbase,possiblePackages);
@@ -90,11 +84,16 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
         
         int x = executor.run(unitClass);
         
+        data.insert(request);
+        resultData.insert(resultHolder);
+        
+        executor.run(unitClass);
+        
         assertEquals("OK",resultHolder.getResultCode());
         Object obj = resultHolder.getResultValue("Fld5", null);
         assertNotNull(obj);
         
-        String targetValue = (String)resultHolder.getResultValue("Fld5", "value");
+        String targetValue = resultHolder.getResultValue("Fld5", "value", String.class).orElse(null);
         assertEquals("tgtY",targetValue);
     }
     
@@ -120,43 +119,41 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
 
     @Test
     public void testMissingTree() throws Exception {
-    	Resource res = ResourceFactory.newClassPathResource(source2);
-    	KieBase kbase = new KieHelper().addResource(res, ResourceType.PMML).build();
-    	
-    	RuleUnitExecutor executor = RuleUnitExecutor.create().bind(kbase);
-    	KieRuntimeLogger console = ((InternalRuleUnitExecutor)executor).addConsoleLogger();
+    	RuleUnitExecutor executor = createExecutor(source2);
 
         PMMLRequestData requestData = new PMMLRequestData("123","Missing");
         requestData.addRequestParam(new ParameterInfo<>("123","fld1", Double.class, 45.0));
         requestData.addRequestParam(new ParameterInfo<>("123","fld2",Double.class,60.0));
         requestData.addRequestParam(new ParameterInfo<>("123","fld3",String.class,"optA"));
-        
+
         PMML4Result resultHolder = new PMML4Result();
-        DataSource<PMMLRequestData> data = executor.newDataSource("request", requestData);
-        DataSource<PMML4Result> results = executor.newDataSource("results", resultHolder);
-        DataSource<PMML4Data> pmmlData = executor.newDataSource("pmmlData");
         
         List<String> possiblePackages = calculatePossiblePackageNames("Missing");
         Class<? extends RuleUnit> unitClass = getStartingRuleUnit("RuleUnitIndicator",(InternalKnowledgeBase)kbase,possiblePackages);
         assertNotNull(unitClass);
         
-        int x = executor.run(unitClass);
-        console.close();
-        Object missingTreeToken = resultHolder.getResultValue("MissingTreeToken", null);
+        int x = executor.run(unitClass); // initializes the model
+        
+        data.insert(requestData);
+        resultData.insert(resultHolder);
+        
+        executor.run(unitClass);
+        
+        AbstractTreeToken missingTreeToken = resultHolder.getResultValue("MissingTreeToken", null,AbstractTreeToken.class).orElse(null);
         assertNotNull(missingTreeToken);
         
-        Double tokVal = (Double)resultHolder.getResultValue("MissingTreeToken", "confidence");
+        Double tokVal = resultHolder.getResultValue("MissingTreeToken", "confidence",Double.class).orElse(null);
         assertNotNull(tokVal);
         assertEquals(0.6,tokVal,0.0);
         
-        String current = (String)resultHolder.getResultValue("MissingTreeToken", "current");
+        String current = resultHolder.getResultValue("MissingTreeToken", "current", String.class).orElse(null);
         assertNotNull(current);
         assertEquals("null",current);
         
         Object fld9 = resultHolder.getResultValue("Fld9", null);
         assertNotNull(fld9);
         
-        String fld9Val = (String)resultHolder.getResultValue("Fld9", "value");
+        String fld9Val = resultHolder.getResultValue("Fld9", "value", String.class).orElse(null);
         assertNotNull(fld9Val);
         assertEquals("tgtZ",fld9Val);
         
@@ -201,26 +198,18 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
         objects.forEach(o -> {System.out.println(o);});
         pmmlData.forEach(pd -> { System.out.println(pd);});
         
-        Object missingTreeToken = resultHolder.getResultValue("MissingTreeToken", null);
-        assertNotNull(missingTreeToken);
+		AbstractTreeToken missingTreeToken = (AbstractTreeToken) resultHolder.getResultValue("MissingTreeToken", null);
+		assertNotNull(missingTreeToken);
+		assertEquals(0.8, missingTreeToken.getConfidence(), 0.0);
+		assertEquals("null", missingTreeToken.getCurrent());
+		assertEquals(50.0, missingTreeToken.getTotalCount(), 0.0);
         
-//        kSession.insert(data);
-//
-//        kSession.fireAllRules();
-//
-//        String pkgName = PMML4Compiler.PMML_DROOLS+"."+data.getModelName();
-//        FactType tgt = kSession.getKieBase().getFactType( pkgName, "Fld9" );
-//
-////        System.out.print(  reportWMObjects( kSession ));
-//
-//        AbstractTreeToken token = (AbstractTreeToken)getToken( kSession, "Missing" );
-//        assertEquals( 0.8, token.getConfidence(), 0.0 );
-//        assertEquals( "null", token.getCurrent() );
-//        assertEquals( 50.0, token.getTotalCount(), 0.0 );
-//
-//        checkFirstDataFieldOfTypeStatus(tgt, true, false, "Missing", "tgtX" );
-//
-//        checkGeneratedRules();
+        Object fld9 = resultHolder.getResultValue("Fld9", null);
+        assertNotNull(fld9);
+        String value = (String)resultHolder.getResultValue("Fld9", "value");
+        assertNotNull(value);
+        assertEquals("tgtX",value);
+        
     }
 
 
@@ -240,18 +229,39 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
         requestData.addRequestParam(new ParameterInfo<>("123","fld2", Double.class, -1.0));
         requestData.addRequestParam(new ParameterInfo<>("123","fld3", String.class, "miss"));
         PMML4Result resultHolder = new PMML4Result();
-        DataSource<PMMLRequestData> data = executor.newDataSource("request", requestData);
-        DataSource<PMML4Result> results = executor.newDataSource("results", resultHolder);
+        DataSource<PMMLRequestData> data = executor.newDataSource("request");
+        DataSource<PMML4Result> results = executor.newDataSource("results");
         DataSource<PMML4Data> pmmlData = executor.newDataSource("pmmlData");
 
         List<String> possiblePackages = calculatePossiblePackageNames("Missing");
         Class<? extends RuleUnit> unitClass = getStartingRuleUnit("RuleUnitIndicator",(InternalKnowledgeBase)kbase,possiblePackages);
         assertNotNull(unitClass);
-        
         int x = executor.run(unitClass);
+        
+        data.insert(requestData);
+        results.insert(resultHolder);
+        
+        
+        
+        executor.run(unitClass);
         logger.close();
         console.close();
         System.out.println(resultHolder);
+        Collection<?> objects = ((InternalRuleUnitExecutor)executor).getSessionObjects();
+        objects.forEach(o -> {System.out.println(o);});
+        pmmlData.forEach(pd -> { System.out.println(pd);});
+
+        AbstractTreeToken token = (AbstractTreeToken)resultHolder.getResultValue("MissingTreeToken", null);
+        assertNotNull(token);
+		assertEquals(0.6, token.getConfidence(), 0.0);
+		assertEquals("null", token.getCurrent());
+		assertEquals(100.0, token.getTotalCount(), 0.0);
+        
+        Object fld9 = resultHolder.getResultValue("Fld9", null);
+        assertNotNull(fld9);
+        String value = (String)resultHolder.getResultValue("Fld9", "value");
+        assertNotNull(value);
+        assertEquals("tgtX",value);
 //        kSession.insert(data);
 //
 //        kSession.fireAllRules();
