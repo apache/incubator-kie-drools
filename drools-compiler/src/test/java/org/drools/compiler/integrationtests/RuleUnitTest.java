@@ -1498,4 +1498,36 @@ public class RuleUnitTest {
 
         assertEquals(2, executor.run( AdultUnit.class ) );
     }
+
+    public static class FlowUnit implements RuleUnit { }
+
+    @Test
+    public void testMixingGlobalDataAndDataSource() throws Exception {
+        String drl1 =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                        "import " + FlowUnit.class.getCanonicalName() + "\n" +
+                        "import " + AdultUnit.class.getCanonicalName() + "\n" +
+                        "import " + NotAdultUnit.class.getCanonicalName() + "\n" +
+                        "rule Flow @Unit( FlowUnit.class ) when\n" +
+                        "then\n" +
+                        "    insert(18);\n" +
+                        "    drools.run( AdultUnit.class );\n" +
+                        "end\n" +
+                        "rule Adult @Unit( AdultUnit.class ) when\n" +
+                        "    $i : Integer()\n" +
+                        "    Person(age >= $i, $name : name) from persons\n" +
+                        "then\n" +
+                        "    System.out.println($name + \" is adult\");\n" +
+                        "end";
+
+        KieBase kbase = new KieHelper().addContent( drl1, ResourceType.DRL ).build();
+        RuleUnitExecutor executor = RuleUnitExecutor.create().bind( kbase );
+
+        DataSource<Person> persons = executor.newDataSource( "persons",
+                new Person( "Mario", 42 ),
+                new Person( "Marilena", 44 ),
+                new Person( "Sofia", 4 ) );
+
+        assertEquals( 3, executor.run( FlowUnit.class ) );
+    }
 }
