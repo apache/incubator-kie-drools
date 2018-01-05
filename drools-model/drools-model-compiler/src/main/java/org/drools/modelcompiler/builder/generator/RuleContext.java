@@ -24,6 +24,9 @@ import org.kie.internal.builder.KnowledgeBuilderResult;
 import static java.util.stream.Collectors.toList;
 
 public class RuleContext {
+
+    private static final Map<Class<? extends RuleUnit>, RuleUnitDescr> ruleUnitDescrCache = new HashMap<>();
+
     private final KnowledgeBuilderImpl kbuilder;
     private final InternalKnowledgePackage pkg;
     private DRLIdGenerator idGenerator;
@@ -58,13 +61,23 @@ public class RuleContext {
     }
 
     private void findUnitClass() {
-        AnnotationDescr unitAnn = descr != null ? descr.getAnnotation( "Unit" ) : null;
+        if (descr == null) {
+            return;
+        }
+
+        String unitName = null;
+        AnnotationDescr unitAnn = descr.getAnnotation( "Unit" );
         if (unitAnn != null) {
-            String unitName = ( String ) unitAnn.getValue();
+            unitName = ( String ) unitAnn.getValue();
             unitName = unitName.substring( 0, unitName.length() - ".class".length() );
+        } else if (descr.getUnit() != null) {
+            unitName = descr.getUnit().getTarget();
+        }
+
+        if (unitName != null) {
             try {
-                Class<? extends RuleUnit> unitClass = (Class<? extends RuleUnit>) pkg.getTypeResolver().resolveType( unitName );
-                ruleUnitDescr = new RuleUnitDescr(unitClass);
+                Class<? extends RuleUnit> unitClass = ( Class<? extends RuleUnit> ) pkg.getTypeResolver().resolveType( unitName );
+                ruleUnitDescr = ruleUnitDescrCache.computeIfAbsent( unitClass, RuleUnitDescr::new );
             } catch (ClassNotFoundException e) {
                 throw new RuntimeException( e );
             }
