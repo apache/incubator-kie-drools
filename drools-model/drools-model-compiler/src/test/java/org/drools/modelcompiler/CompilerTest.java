@@ -73,7 +73,7 @@ public class CompilerTest extends BaseModelTest {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "rule R when\n" +
-                "  $p : Person(name == \"Mario\" || == \"Luca\")\n" +
+                "  $p : Person(name == \"Mario\" || == \"Luca\" || == \"Edoardo\")\n" +
                 "then\n" +
                 "  modify($p) { setAge($p.getAge()+1) }\n" +
                 "end";
@@ -82,12 +82,15 @@ public class CompilerTest extends BaseModelTest {
 
         Person mario = new Person( "Mario", 40);
         Person luca = new Person( "Mario", 33 );
+        Person edoardo = new Person( "Edoardo", 31 );
         ksession.insert( mario );
         ksession.insert( luca );
+        ksession.insert( edoardo );
         ksession.fireAllRules();
 
         assertEquals( 41, mario.getAge() );
         assertEquals( 34, luca.getAge() );
+        assertEquals( 32, edoardo.getAge() );
     }
 
     @Test
