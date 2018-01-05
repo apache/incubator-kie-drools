@@ -21,7 +21,6 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Collection;
 
-import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.ObjectSource;
@@ -113,9 +112,7 @@ public abstract class BaseNode
 
     protected void initMemoryId( BuildContext context ) {
         if (context != null && this instanceof MemoryFactory) {
-            RuleImpl rule = context.getRule();
-            String unit = rule != null && rule.getRuleUnitClassName() != null ? rule.getRuleUnitClassName() : DEFAULT_RULE_UNIT;
-            memoryId = context.getNextId( unit );
+            memoryId = context.getNextId( DEFAULT_RULE_UNIT );
         }
     }
 

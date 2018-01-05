@@ -386,8 +386,7 @@ public class ReteooBuilder
         public synchronized void releaseId( RuleImpl rule, NetworkNode node ) {
             generators.get( DEFAULT_TOPIC ).releaseId( node.getId() );
             if (node instanceof MemoryFactory) {
-                String unit = rule != null && rule.getRuleUnitClassName() != null ? rule.getRuleUnitClassName() : DEFAULT_RULE_UNIT;
-                generators.get( unit ).releaseId( ( (MemoryFactory) node ).getMemoryId() );
+                generators.get( DEFAULT_RULE_UNIT ).releaseId( ( (MemoryFactory) node ).getMemoryId() );
             }
         }
 
