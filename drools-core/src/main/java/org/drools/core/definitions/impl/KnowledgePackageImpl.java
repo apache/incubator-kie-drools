@@ -801,8 +801,17 @@ public class KnowledgePackageImpl
             return this;
         }
 
-        if (classLoader instanceof ProjectClassLoader) {
-            ClassLoader originalClassLoader = ((JavaDialectRuntimeData) dialectRuntimeRegistry.getDialectData("java")).getRootClassLoader();
+        if (classLoader instanceof ProjectClassLoader ) {
+            JavaDialectRuntimeData javaDialectRuntimeData = (JavaDialectRuntimeData) dialectRuntimeRegistry.getDialectData("java");
+            if (javaDialectRuntimeData == null) {
+                // using the canonical model there's no runtime registry and no need for any clone
+                return this;
+            }
+            ClassLoader originalClassLoader = javaDialectRuntimeData.getRootClassLoader();
+            if (classLoader == originalClassLoader) {
+                // if the classloader isn't changed there's no need for a clone
+                return this;
+            }
             if (originalClassLoader instanceof ProjectClassLoader) {
                 ((ProjectClassLoader) classLoader).initFrom((ProjectClassLoader) originalClassLoader);
             }

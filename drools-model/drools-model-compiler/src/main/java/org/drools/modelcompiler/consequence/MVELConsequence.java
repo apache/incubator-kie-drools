@@ -97,7 +97,9 @@ public class MVELConsequence implements Consequence {
         String[] default_inputIdentifiers = new String[]{"this", "drools", "kcontext", "rule"};
         String[] inputIdentifiers = Stream.concat(Arrays.asList(default_inputIdentifiers).stream(), facts.entrySet().stream().map(kv -> kv.getKey().getName())).collect(Collectors.toList()).toArray(new String[]{});
         String[] default_inputTypes = new String[]{"org.drools.core.spi.KnowledgeHelper", "org.drools.core.spi.KnowledgeHelper", "org.drools.core.spi.KnowledgeHelper", "org.kie.api.definition.rule.Rule"};
-        String[] inputTypes = Stream.concat(Arrays.asList(default_inputTypes).stream(), facts.entrySet().stream().map(kv -> kv.getKey().getType().asClass().getCanonicalName())).collect(Collectors.toList()).toArray(new String[]{});
+        String[] inputTypes = Stream.concat(Arrays.asList(default_inputTypes).stream(), facts.entrySet().stream().map(kv -> kv.getKey().getType().asClass().getName())).collect(Collectors.toList()).toArray(new String[]{});
+        // ^^ please notice about inputTypes, it is to use the Class.getName(), because is later used by the Classloader internally in MVEL to load the class,
+        //    do NOT replace with getCanonicalName() otherwise inner classes will not be loaded correctly.
         int languageLevel = 4;
         boolean strictMode = true;
         boolean readLocalsFromTuple = false;
@@ -158,4 +160,5 @@ public class MVELConsequence implements Consequence {
 
         MVEL.executeExpression(compiledExpression, knowledgeHelper, cachingFactory);
     }
+
 }
