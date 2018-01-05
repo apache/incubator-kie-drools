@@ -627,8 +627,8 @@ public class ModelGenerator {
             ConstraintType decodeConstraintType = DrlxParseUtil.toConstraintType( operator );
             List<String> usedDeclarations = new ArrayList<>();
             Set<String> reactOnProperties = new HashSet<>();
-            TypedExpression left = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, binaryExpr.getLeft(), usedDeclarations, reactOnProperties );
-            TypedExpression right = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, binaryExpr.getRight(), usedDeclarations, reactOnProperties );
+            TypedExpression left = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, binaryExpr.getLeft(), usedDeclarations, reactOnProperties, binaryExpr);
+            TypedExpression right = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, binaryExpr.getRight(), usedDeclarations, reactOnProperties, binaryExpr);
 
             Expression combo;
             if ( left.isPrimitive() ) {
@@ -662,7 +662,7 @@ public class ModelGenerator {
 
             List<String> usedDeclarations = new ArrayList<>();
             Set<String> reactOnProperties = new HashSet<>();
-            TypedExpression left = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, unaryExpr, usedDeclarations, reactOnProperties );
+            TypedExpression left = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, unaryExpr, usedDeclarations, reactOnProperties, unaryExpr);
 
             return new DrlxParseResult(patternType, exprId, bindingId, left.getExpression(), left.getType())
                     .setUsedDeclarations( usedDeclarations ).setReactOnProperties( reactOnProperties ).setLeft( left );
@@ -673,9 +673,9 @@ public class ModelGenerator {
 
             List<String> usedDeclarations = new ArrayList<>();
             Set<String> reactOnProperties = new HashSet<>();
-            TypedExpression left = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, pointFreeExpr.getLeft(), usedDeclarations, reactOnProperties );
+            TypedExpression left = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, pointFreeExpr.getLeft(), usedDeclarations, reactOnProperties, pointFreeExpr);
             for (Expression rightExpr : pointFreeExpr.getRight()) {
-                DrlxParseUtil.toTypedExpression( context, packageModel, patternType, rightExpr, usedDeclarations, reactOnProperties );
+                DrlxParseUtil.toTypedExpression( context, packageModel, patternType, rightExpr, usedDeclarations, reactOnProperties, pointFreeExpr);
             }
 
             String operator = pointFreeExpr.getOperator().asString();
@@ -943,7 +943,8 @@ public class ModelGenerator {
         }
         MethodCallExpr bindAsDSL = new MethodCallExpr(bindDSL, BIND_AS_CALL);
         bindAsDSL.addArgument( new NameExpr(toVar(drlxParseResult.getPatternBinding())) );
-        bindAsDSL.addArgument( buildConstraintExpression(drlxParseResult, drlxParseResult.getLeft().getExpression() ) );
+        final Expression constraintExpression = buildConstraintExpression(drlxParseResult, DrlxParseUtil.findLeftLeafOfMethodCall(drlxParseResult.getLeft().getExpression())  );
+        bindAsDSL.addArgument(constraintExpression);
         return buildReactOn( drlxParseResult, bindAsDSL );
     }
 }

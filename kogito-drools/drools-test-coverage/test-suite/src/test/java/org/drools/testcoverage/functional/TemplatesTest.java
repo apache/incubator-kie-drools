@@ -211,7 +211,7 @@ public class TemplatesTest {
         testManyRules(drl, 500);
     }
 
-    @Test
+    @Test(timeout = 100000l)
     public void TenTemplatesManyRules() throws IOException {
         final KieServices kieServices = KieServices.Factory.get();
         final ObjectDataCompiler converter = new ObjectDataCompiler();
