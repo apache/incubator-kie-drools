@@ -19,7 +19,9 @@ package org.drools.core.impl;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.drools.core.SessionConfiguration;
@@ -34,7 +36,6 @@ import org.drools.core.event.RuleRuntimeEventSupport;
 import org.drools.core.ruleunit.RuleUnitDescr;
 import org.drools.core.ruleunit.RuleUnitFactory;
 import org.drools.core.ruleunit.RuleUnitGuardSystem;
-import org.drools.core.ruleunit.RuleUnitsNodeMemories;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.FactHandleFactory;
 import org.kie.api.KieBase;
@@ -45,12 +46,17 @@ import org.kie.api.runtime.Globals;
 import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.DataSource;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.RuleUnit;
 import org.kie.api.runtime.rule.RuleUnitExecutor;
+
+import static org.drools.core.ruleunit.RuleUnitUtil.RULE_UNIT_ENTRY_POINT;
 
 public class RuleUnitExecutorSession implements InternalRuleUnitExecutor {
 
     private final StatefulKnowledgeSessionImpl session;
+
+    private final Map<Class<?>, FactHandle> factHandlesMap = new HashMap<>();
 
     private RuleUnitGuardSystem ruleUnitGuardSystem;
 
@@ -107,7 +113,6 @@ public class RuleUnitExecutorSession implements InternalRuleUnitExecutor {
 
         session.handleFactory = kbase.newFactHandleFactory();
         session.bindRuleBase( kbase, null, false );
-        session.nodeMemories = new RuleUnitsNodeMemories(kbase);
 
         this.ruleUnitGuardSystem = new RuleUnitGuardSystem( this );
         return this;
@@ -270,7 +275,7 @@ public class RuleUnitExecutorSession implements InternalRuleUnitExecutor {
         currentRuleUnit = ruleUnit;
         currentRuleUnit.onStart();
 
-        getNodeMemories().bindRuleUnit( session, ruleUnit );
+        factHandlesMap.computeIfAbsent( ruleUnit.getClass(), x -> session.getEntryPoint( RULE_UNIT_ENTRY_POINT ).insert( ruleUnit ) );
 
         RuleUnitDescr ruDescr = session.kBase.getRuleUnitRegistry().getRuleUnitDescr( ruleUnit );
         ruDescr.bindDataSources( session, ruleUnit );
@@ -284,17 +289,11 @@ public class RuleUnitExecutorSession implements InternalRuleUnitExecutor {
     }
 
     private void unbindRuleUnit( RuleUnitDescr ruDescr ) {
-        getNodeMemories().unbindRuleUnit();
-
         ruDescr.unbindDataSources( session, currentRuleUnit );
         ( (Globals) session.getGlobalResolver() ).setDelegate( null );
         currentRuleUnit.onEnd();
         currentRuleUnit = null;
         suspended.set( true );
-    }
-
-    private RuleUnitsNodeMemories getNodeMemories() {
-        return ( (RuleUnitsNodeMemories) session.nodeMemories );
     }
 
     public RuleUnit getCurrentRuleUnit() {
