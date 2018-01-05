@@ -38,10 +38,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class CompilerTest extends BaseModelTest {
 
@@ -66,6 +63,37 @@ public class CompilerTest extends BaseModelTest {
         ksession.fireAllRules();
 
         assertEquals( 41, me.getAge() );
+    }
+
+    @Test
+    public void testOrWithFixedLeftOperand() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "import " + Result.class.getCanonicalName() + ";" +
+                "rule R when\n" +
+                "  $p : Person(name == \"Mario\" || == \"Luca\" || == \"Edoardo\")\n" +
+                "then\n" +
+                "  insert(new Result($p));\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        final Person mario = new Person("Mario", 40);
+        final Person luca = new Person("Luca", 33);
+        final Person edoardo = new Person("Edoardo", 31);
+        final Person matteo = new Person("Matteo", 36);
+
+        ksession.insert(mario);
+        ksession.insert(luca);
+        ksession.insert(edoardo);
+        ksession.insert(matteo);
+
+        ksession.fireAllRules();
+
+
+        Collection<Result> results = getObjectsIntoList( ksession, Result.class );
+        assertEquals( 3, results.size() );
+        Assertions.assertThat(results.stream().map(r -> r.getValue())).containsExactlyInAnyOrder(mario, luca, edoardo);
     }
 
     @Test
