@@ -1582,4 +1582,41 @@ public class RuleUnitTest {
         executor.getKieSession().insert( new Person( "Sofia", 4 ) );
         assertEquals(1, executor.run( AdultUnit.class ) );
     }
+
+    @Test
+    public void testMixingGlobalDataAndDataSource() throws Exception {
+        String drl1 =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                        "import " + FlowUnit.class.getCanonicalName() + "\n" +
+                        "import " + AdultUnit.class.getCanonicalName() + "\n" +
+                        "import " + NotAdultUnit.class.getCanonicalName() + "\n" +
+                        "rule Flow @Unit( FlowUnit.class ) when\n" +
+                        "then\n" +
+                        "    insert(18);\n" +
+                        "    drools.run( NotAdultUnit.class );\n" +
+                        "    drools.run( AdultUnit.class );\n" +
+                        "end\n" +
+                        "rule Adult @Unit( AdultUnit.class ) when\n" +
+                        "    $i : Integer()\n" +
+                        "    Person(age >= $i, $name : name) from persons\n" +
+                        "then\n" +
+                        "    System.out.println($name + \" is adult\");\n" +
+                        "end\n" +
+                        "rule NotAdult @Unit( NotAdultUnit.class ) when\n" +
+                        "    Person($age : age < 18, $name : name) from persons\n" +
+                        "    $i : Integer(this >= $age)\n" +
+                        "then\n" +
+                        "    System.out.println($name + \" is NOT adult\");\n" +
+                        "end";
+
+        KieBase kbase = new KieHelper().addContent( drl1, ResourceType.DRL ).build();
+        RuleUnitExecutor executor = RuleUnitExecutor.create().bind( kbase );
+
+        DataSource<Person> persons = executor.newDataSource( "persons",
+                new Person( "Mario", 42 ),
+                new Person( "Marilena", 44 ),
+                new Person( "Sofia", 4 ) );
+
+        assertEquals( 4, executor.run( FlowUnit.class ) );
+    }
 }

@@ -327,7 +327,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         this.propagationIdCounter = new AtomicLong(propagationContext);
         init( config, environment, propagationContext );
         if (kBase != null) {
-            this.nodeMemories = new ConcurrentNodeMemories(kBase, DEFAULT_RULE_UNIT);
             bindRuleBase( kBase, agenda, initInitFactHandle );
         }
     }
@@ -371,6 +370,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     protected void bindRuleBase( InternalKnowledgeBase kBase, InternalAgenda agenda, boolean initInitFactHandle ) {
         this.kBase = kBase;
+        this.nodeMemories = new ConcurrentNodeMemories(kBase, DEFAULT_RULE_UNIT);
         this.pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
 
         if (agenda == null) {
