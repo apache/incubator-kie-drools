@@ -126,7 +126,7 @@ public class DrlxParseUtil {
         } else if (drlxExpr instanceof HalfBinaryExpr) {
             HalfBinaryExpr halfBinaryExpr = (HalfBinaryExpr) drlxExpr;
 
-            Expression parentLeft = findLeftLeaf(parentExpression);
+            Expression parentLeft = findLeftLeafOfNameExpr(parentExpression);
             Operator operator = toBinaryExprOperator(halfBinaryExpr.getOperator());
 
             TypedExpression left = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, parentLeft, usedDeclarations, reactOnProperties, halfBinaryExpr);
@@ -287,11 +287,22 @@ public class DrlxParseUtil {
         throw new UnsupportedOperationException();
     }
 
-    private static Expression findLeftLeaf(Expression expression) {
+    private static Expression findLeftLeafOfNameExpr(Expression expression) {
         if(expression instanceof BinaryExpr) {
             BinaryExpr be = (BinaryExpr)expression;
-            return findLeftLeaf(be.getLeft());
+            return findLeftLeafOfNameExpr(be.getLeft());
         } else if(expression instanceof NameExpr) {
+            return expression;
+        } else {
+            throw new UnsupportedOperationException("Unknown expression: " + expression);
+        }
+    }
+
+    public static Expression findLeftLeafOfMethodCall(Expression expression) {
+        if(expression instanceof BinaryExpr) {
+            BinaryExpr be = (BinaryExpr)expression;
+            return findLeftLeafOfMethodCall(be.getLeft());
+        } else if(expression instanceof MethodCallExpr) {
             return expression;
         } else {
             throw new UnsupportedOperationException("Unknown expression: " + expression);
