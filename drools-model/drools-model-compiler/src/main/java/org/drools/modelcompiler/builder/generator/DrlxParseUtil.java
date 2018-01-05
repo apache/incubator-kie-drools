@@ -216,7 +216,10 @@ public class DrlxParseUtil {
 
                     Method firstAccessor = ClassUtils.getAccessor(typeCursor, firstName);
                     if (firstAccessor != null) {
-                        reactOnProperties.add(firstName);
+                        // Hack to review - if a property is upper case it's probably not a react on property
+                        if(!"".equals(firstName) && Character.isLowerCase(firstName.charAt(0))) {
+                            reactOnProperties.add(firstName);
+                        }
                         typeCursor = firstAccessor.getReturnType();
                         NameExpr thisAccessor = new NameExpr("_this");
                         final NameExpr scope = backReference.map(d -> new NameExpr(d.getBindingId())).orElse(thisAccessor);

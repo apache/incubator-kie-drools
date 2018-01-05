@@ -943,8 +943,7 @@ public class ModelGenerator {
         }
         MethodCallExpr bindAsDSL = new MethodCallExpr(bindDSL, BIND_AS_CALL);
         bindAsDSL.addArgument( new NameExpr(toVar(drlxParseResult.getPatternBinding())) );
-        final Expression methodCall = DrlxParseUtil.findLeftLeafOfMethodCall(drlxParseResult.getLeft().getExpression());
-        final Expression constraintExpression = buildConstraintExpression(drlxParseResult, methodCall);
+        final Expression constraintExpression = buildConstraintExpression(drlxParseResult, DrlxParseUtil.findLeftLeafOfMethodCall(drlxParseResult.getLeft().getExpression())  );
         bindAsDSL.addArgument(constraintExpression);
         return buildReactOn( drlxParseResult, bindAsDSL );
     }
