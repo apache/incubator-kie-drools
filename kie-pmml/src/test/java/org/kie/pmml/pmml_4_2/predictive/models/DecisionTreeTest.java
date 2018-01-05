@@ -48,6 +48,7 @@ import org.kie.pmml.pmml_4_2.model.tree.AbstractTreeToken;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class DecisionTreeTest extends DroolsAbstractPMMLTest {
 
@@ -65,6 +66,36 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
 //        getKSession().dispose();
     }
     
+    @Test
+    public void testTreeFromMiningModel() throws Exception {
+    	RuleUnitExecutor executor = createExecutor("org/kie/pmml/pmml_4_2/test_tree_from_mm.pmml");
+		PMMLRequestData request = new PMMLRequestData("1234", "SampleMineTree1");
+		request.addRequestParam("fld1", 30.0);
+		request.addRequestParam("fld2", 60.0);
+		request.addRequestParam("fld3", "false");
+		request.addRequestParam("fld4", "optA");
+		
+		PMML4Result resultHolder = new PMML4Result();
+        List<String> possiblePackages = calculatePossiblePackageNames("SampleMineTree1");
+        Class<? extends RuleUnit> unitClass = getStartingRuleUnit("RuleUnitIndicator",(InternalKnowledgeBase)kbase,possiblePackages);
+        assertNotNull(unitClass);
+        
+        int x = executor.run(unitClass);
+        assertTrue( x > 0);
+        
+        data.insert(request);
+        resultData.insert(resultHolder);
+        
+        executor.run(unitClass);
+        assertEquals("OK",resultHolder.getResultCode());
+        assertNotNull(resultHolder.getResultVariables());
+        
+        assertNotNull(resultHolder.getResultValue("Fld5", null));
+        String value = resultHolder.getResultValue("Fld5", "value", String.class).orElse(null);
+        assertEquals("tgtY",value);
+        
+        System.out.println(resultHolder);
+    }
 
     @Test
     public void testSimpleTree() throws Exception {

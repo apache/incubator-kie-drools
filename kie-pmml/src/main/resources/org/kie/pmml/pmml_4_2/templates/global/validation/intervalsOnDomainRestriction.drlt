@@ -26,13 +26,13 @@
 }
 
 @declare{'intervalsOnDomainRestrictionRule'}
-rule "Valid_ContinuousInterval_PMML4Data_@{name}"
+rule "Valid_ContinuousInterval_PMML4Data_@{name} - @{context}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 dialect "java"
 no-loop
 salience 100
 when
-   $in : PMML4Data( capitalizedName == "@{name}", $val : value, placeholder == false,
+   $in : PMML4Data( capitalizedName == "@{name}", $val : value, placeholder == false, context == "@{context}",
          @foreach{ intv : ivals }
             ( value
                 @if{intv.closure.startsWith("closed")} >= @else{} > @end{}
@@ -47,7 +47,7 @@ then
       setValid( true );
    }
 end
-/*
+@comment{
 rule "Valid_ContinuousIntervals_@{name}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 dialect "mvel"
@@ -69,7 +69,7 @@ then
         setValid( true );
     }
 end
-*/
+}
 @end{}
 
 

@@ -20,7 +20,7 @@
     The rule sets fields without restrictions as valid
 }
 @declare{'valuesNoRestrictionRule'}
-rule "Valid_PMML4DataUnrestricted_Values_@{name}"
+rule "Valid_PMML4DataUnrestricted_Values_@{name}-@{context}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 dialect 'java'
 no-loop

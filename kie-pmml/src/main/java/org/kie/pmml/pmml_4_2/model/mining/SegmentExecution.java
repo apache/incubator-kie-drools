@@ -16,24 +16,28 @@
 package org.kie.pmml.pmml_4_2.model.mining;
 
 
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.base.WrappedStatefulKnowledgeSessionForRHS;
+import org.drools.core.datasources.InternalDataSource;
+import org.drools.core.impl.InternalRuleUnitExecutor;
 import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.impl.RuleUnitExecutorSession;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.ruleunit.RuleUnitDescr;
 import org.drools.core.ruleunit.RuleUnitRegistry;
-import org.kie.api.KieBase;
+import org.drools.core.spi.KnowledgeHelper;
 import org.kie.api.definition.type.PropertyReactive;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.BeforeMatchFiredEvent;
 import org.kie.api.event.rule.DefaultAgendaEventListener;
 import org.kie.api.event.rule.MatchCancelledEvent;
 import org.kie.api.event.rule.MatchCreatedEvent;
-import org.kie.api.runtime.KieContainer;
+import org.kie.api.logger.KieRuntimeLogger;
 import org.kie.api.runtime.KieContext;
-import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.DataSource;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.RuleUnit;
 import org.kie.api.runtime.rule.RuleUnitExecutor;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.pmml.pmml_4_2.PMML4Result;
 import org.kie.pmml.pmml_4_2.model.PMMLRequestData;
 import org.kie.pmml.pmml_4_2.model.datatypes.PMML4Data;
@@ -48,8 +52,6 @@ public class SegmentExecution implements Comparable<SegmentExecution> {
 	private String ruleUnitClassName;
 	private PMMLRequestData requestData;
 	private PMML4Result result;
-	private DataSource<SegmentExecution> segmentExecutions;
-	private DataSource<PMML4Result> childSegmentResults;
 	
 	
 	public SegmentExecution() {
@@ -61,17 +63,13 @@ public class SegmentExecution implements Comparable<SegmentExecution> {
 			String segmentationId, 
 			String segmentId, 
 			int segmentIndex, 
-			String ruleUnitClassName, 
-			DataSource<SegmentExecution> segmentExecutions,
-			DataSource<PMML4Result> childSegmentResults) {
+			String ruleUnitClassName) {
 		this.correlationId = correlationId;
 		this.segmentationId = segmentationId;
 		this.segmentId = segmentId;
 		this.segmentIndex = segmentIndex;
 		this.state = SegmentExecutionState.WAITING;
 		this.ruleUnitClassName = ruleUnitClassName;
-		this.segmentExecutions = segmentExecutions;
-		this.childSegmentResults = childSegmentResults;
 	}
 
 
@@ -81,17 +79,13 @@ public class SegmentExecution implements Comparable<SegmentExecution> {
 			String segmentId, 
 			int segmentIndex, 
 			String state, 
-			String ruleUnitClassName,
-			DataSource<SegmentExecution> segmentExecutions,
-			DataSource<PMML4Result> childSegmentResults) {
+			String ruleUnitClassName) {
 		this.correlationId = correlationId;
 		this.segmentationId = segmentationId;
 		this.segmentId = segmentId;
 		this.segmentIndex = segmentIndex;
 		this.state = SegmentExecutionState.valueOf(state);
 		this.ruleUnitClassName = ruleUnitClassName;
-		this.segmentExecutions = segmentExecutions;
-		this.childSegmentResults = childSegmentResults;
 	}
 	
 	
@@ -175,12 +169,18 @@ public class SegmentExecution implements Comparable<SegmentExecution> {
 		this.result = result;
 	}
 	
-	public void applySegmentModel(PMMLRequestData requestData, KieContext ctx) throws IllegalStateException {
+	public void applySegmentModel(PMMLRequestData requestData, 
+			DataSource<PMMLRequestData> data,
+			DataSource<PMML4Result> results, 
+			DataSource<SegmentExecution> segmentExecutions,
+			KnowledgeHelper helper) throws IllegalStateException {
+		
 		if (ruleUnitClassName == null || ruleUnitClassName.trim().isEmpty()) {
 			throw new IllegalStateException("Unable to apply segment model: No rule unit class name is available");
 		}
 		Class<? extends RuleUnit> ruleUnitClass = null;
-		RuleUnitRegistry rur = ((KnowledgeBaseImpl)ctx.getKieRuntime().getKieBase()).getRuleUnitRegistry();
+		RuleUnitRegistry rur = ((KnowledgeBaseImpl)helper.getKieRuntime().getKieBase()).getRuleUnitRegistry();
+		RuleUnit ruOld = ((WrappedStatefulKnowledgeSessionForRHS)helper.getKieRuntime()).getRuleUnitExecutor().getCurrentRuleUnit();
 		RuleUnitDescr rud = rur.getNamedRuleUnit(ruleUnitClassName).orElse(null);
 		if (rud != null) {
 			ruleUnitClass = rud.getRuleUnitClass();
@@ -190,28 +190,24 @@ public class SegmentExecution implements Comparable<SegmentExecution> {
 			
 			
 		if (ruleUnitClass != null) {
-			RuleUnitExecutor executor = RuleUnitExecutor.create().bind(ctx.getKieRuntime().getKieBase());
-			
-			
+			helper.run(ruleUnitClass);
 			PMML4Result result = new PMML4Result(this);
-			DataSource<PMMLRequestData> data = executor.newDataSource("request");
-			DataSource<PMML4Result> results = executor.newDataSource("results");
-			DataSource<PMML4Data> pmmlData = executor.newDataSource("pmmlData");
-			executor.run(ruleUnitClass);
+			FactHandle requestFH = data.insert(this.requestData);
+			FactHandle resultsFH = results.insert(result);
 			
-			data.insert(this.requestData);
-			results.insert(new PMML4Result(this));
+			helper.run(ruleUnitClass);
+			RuleUnit ruNew = ((WrappedStatefulKnowledgeSessionForRHS)helper.getKieRuntime()).getRuleUnitExecutor().getCurrentRuleUnit();
+			System.out.println("** Result **");
+			System.out.println(result);
 			
-			executor.run(ruleUnitClass);
 			// Update the state and let the Mining session know
 			this.state = SegmentExecutionState.EXECUTING;
-			FactHandle handle = ctx.getKieRuntime().getFactHandle(this);
+			FactHandle handle = ((InternalDataSource)segmentExecutions).getFactHandleForObject(this);
 			segmentExecutions.update(handle, this);
 
-			int activationsCount = executor.run(ruleUnitClass);
+			helper.run(ruleUnitClass);
 			System.out.println("Sub-Model Results");
 			results.forEach(r -> {System.out.println(r);});
-			executor.dispose();
 		}
 	}
 	

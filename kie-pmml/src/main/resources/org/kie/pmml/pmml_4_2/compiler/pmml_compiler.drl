@@ -296,7 +296,6 @@ when
     $fld : DataField( $vals : values, values.size() > 0 )
     forall ( Value( property == "missing" || property == "invalid" ) from $vals )
 then
-    System.out.println("Creating valuesNoRestriction because values are only missing or invalid");
     HashMap map = utils.container;
         map.put( "context", utils.context );
         map.put( "name", utils.compactUpperCase( $fld.name ) );

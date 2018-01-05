@@ -23,7 +23,7 @@
       */
 }
 @declare{'valuesOnDomainRestrictionRule'}
-rule "Valid_PMML4Data_Values_@{name}"
+rule "Valid_PMML4Data_Values_@{name} - @{context}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 dialect 'java'
 no-loop
@@ -40,7 +40,7 @@ then
    System.out.println("Validated "+$in);
 end
 
-@comment{/*
+@comment{
 rule "Valid_Values_@{name}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 dialect 'mvel'
@@ -57,6 +57,6 @@ then
         setValid( true );
     }
 end
-*/}
+}
 @end{}
 @includeNamed{'valuesOnDomainRestrictionRule'}

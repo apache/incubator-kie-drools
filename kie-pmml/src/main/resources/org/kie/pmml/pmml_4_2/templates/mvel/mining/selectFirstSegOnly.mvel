@@ -42,7 +42,7 @@ then
    miningModelPojo.insert(modelData);
 end
 
-
+@comment{
 rule "Execute First Segment"
 when
    $segExec: SegmentExecution( $corrId: correlationId,
@@ -54,9 +54,9 @@ when
       || (state == SegmentExecutionState.WAITING && segmentIndex < $segIndex) ) from childModelSegments
 then
    System.out.println("about to apply model "+$segIndex);
-   $segExec.applySegmentModel($segExec.getRequestData(),kcontext);
+   $segExec.applySegmentModel($segExec.getRequestData(),request,results,childModelSegments,drools);
 end
-
+}
 
 rule "Update the SegmentExecution State - Complete"
 dialect "java"
@@ -86,7 +86,7 @@ end
 @code{ salienceValue = 1000 - childSegment.segmentIndex; }
 @code{ internalModel = childSegment.model; }
 
-@comment{
+
 rule "Execute Segment @{childSegment.owner.segmentationId}-@{childSegment.segmentId}"
 when
    $seg: SegmentExecution( $corrId: correlationId,
@@ -98,11 +98,12 @@ when
       state in (SegmentExecutionState.COMPLETE, SegmentExecutionState.ERROR, SegmentExecutionState.EXECUTING)
       || (state == SegmentExecutionState.WAITING && segmentIndex < $segIndex) ) from childModelSegments
 then
-   childModelRequest.insert($seg.getRequestData());
+   request.insert($seg.getRequestData());
+   results.insert(new PMML4Result($seg));
    drools.run(@{childSegment.segmentRuleUnit}.class);
    System.out.println("Segement execution done!");
 end
-}
+
 
 rule "Check Segment Can Fire - Segment @{childSegment.segmentId}"
 salience @{salienceValue}
@@ -117,9 +118,7 @@ then
                                                   "@{childSegment.owner.segmentationId}",
                                                   "@{childSegment.segmentId}",
                                                    @{childSegment.segmentIndex},
-                                                  "@{childSegment.segmentRuleUnit}",
-                                                  childModelSegments,
-                                                  childModelResults );
+                                                  "@{childSegment.segmentRuleUnit}");
    segEx.setRequestData(rqstData);
    childModelSegments.insert(segEx);
 end
