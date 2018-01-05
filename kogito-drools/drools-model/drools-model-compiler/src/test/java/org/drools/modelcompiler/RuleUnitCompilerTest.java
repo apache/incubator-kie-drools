@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.modelcompiler.domain.Person;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.rule.DataSource;
@@ -130,7 +129,7 @@ public class RuleUnitCompilerTest extends BaseModelTest {
         }
     }
 
-    @Test @Ignore
+    @Test
     public void testWith2Rules() {
         String str = "package " + this.getClass().getPackage().getName() + ";\n" +
                 "unit " + getCanonicalSimpleName(PositiveNegativeDTUnit.class) + ";\n" +
