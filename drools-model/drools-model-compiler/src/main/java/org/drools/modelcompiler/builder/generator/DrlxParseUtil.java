@@ -162,7 +162,7 @@ public class DrlxParseUtil {
             } else {
                 TypedExpression expression;
                 try {
-                    expression = nameExprToMethodCallExpr(name, typeCursor);
+                    expression = nameExprToMethodCallExpr(name, typeCursor, null);
                 } catch (IllegalArgumentException e) {
                     String unificationVariable = context.getOrCreateUnificationId(name);
                     expression = new TypedExpression(unificationVariable, typeCursor, name);
@@ -255,7 +255,7 @@ public class DrlxParseUtil {
                 SimpleName fieldName = ( SimpleName ) firstNode;
                 String name = getFieldName( drlxExpr, fieldName );
                 reactOnProperties.add( name );
-                TypedExpression expression = nameExprToMethodCallExpr(name, typeCursor);
+                TypedExpression expression = nameExprToMethodCallExpr(name, typeCursor, null);
                 Expression plusThis = prepend(new NameExpr("_this"), expression.getExpression());
                 return new TypedExpression(plusThis, expression.getType());
             } else {
@@ -276,12 +276,9 @@ public class DrlxParseUtil {
 
             for (Node part : childNodes) {
                 String field = part.toString();
-                Method accessor = ClassUtils.getAccessor(typeCursor, field);
-                if (accessor == null) {
-                    throw new IllegalStateException("Unknown field '" + field + "' on type " + typeCursor);
-                }
-                typeCursor = accessor.getReturnType();
-                previous = new MethodCallExpr(previous, accessor.getName());
+                TypedExpression expression = nameExprToMethodCallExpr(field, typeCursor, previous);
+                typeCursor = expression.getType();
+                previous = expression.getExpression();
             }
 
             return typedExpression.setExpression(previous).setType(typeCursor);
@@ -315,15 +312,15 @@ public class DrlxParseUtil {
         return fieldName.getIdentifier();
     }
 
-    public static TypedExpression nameExprToMethodCallExpr(String name, Class<?> clazz) {
+    public static TypedExpression nameExprToMethodCallExpr(String name, Class<?> clazz, Expression scope) {
         Method accessor = ClassUtils.getAccessor(clazz, name);
         if (accessor != null) {
-            MethodCallExpr body = new MethodCallExpr( null, accessor.getName() );
+            MethodCallExpr body = new MethodCallExpr( scope, accessor.getName() );
             return new TypedExpression( body, accessor.getReturnType() );
         }
         try {
             Field field = clazz.getField( name );
-            FieldAccessExpr expr = new FieldAccessExpr( null, name );
+            FieldAccessExpr expr = new FieldAccessExpr( scope, name );
             return new TypedExpression( expr, field.getType() );
         } catch (NoSuchFieldException e) {
             throw new IllegalArgumentException( "Unknown field " + name + " on " + clazz );
@@ -456,7 +453,7 @@ public class DrlxParseUtil {
         Class<?> previousClass = clazz;
         for (ParsedMethod e : callStackLeftToRight) {
             if (e.expression instanceof NameExpr || e.expression instanceof FieldAccessExpr) {
-                TypedExpression te = nameExprToMethodCallExpr(e.fieldToResolve, previousClass);
+                TypedExpression te = nameExprToMethodCallExpr(e.fieldToResolve, previousClass, null);
                 Class<?> returnType = te.getType();
                 methodCall.add(te.getExpression());
                 previousClass = returnType;
