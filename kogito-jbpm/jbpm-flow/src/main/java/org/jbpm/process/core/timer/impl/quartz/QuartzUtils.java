@@ -20,35 +20,40 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.kie.internal.runtime.manager.RuntimeManagerRegistry;
+import org.quartz.Trigger;
 import org.quartz.impl.jdbcjobstore.StdJDBCConstants;
 
 public class QuartzUtils implements StdJDBCConstants {
 
     // next trigger query extension
-    String SELECT_NEXT_TRIGGER_TO_ACQUIRE = "SELECT "
+   String SELECT_NEXT_TRIGGER_TO_ACQUIRE = "SELECT "
             + COL_TRIGGER_NAME + ", " + COL_TRIGGER_GROUP + ", "
             + COL_NEXT_FIRE_TIME + ", " + COL_PRIORITY + " FROM "
             + TABLE_PREFIX_SUBST + TABLE_TRIGGERS + " WHERE "
-            + COL_TRIGGER_STATE + " = ? AND " + COL_NEXT_FIRE_TIME + " < ? " 
-            + "AND (" + COL_NEXT_FIRE_TIME + " >= ?) ";
+            + COL_SCHEDULER_NAME + " = " + SCHED_NAME_SUBST
+            + " AND " + COL_TRIGGER_STATE + " = ? AND " + COL_NEXT_FIRE_TIME + " <= ? " 
+            + "AND (" + COL_MISFIRE_INSTRUCTION + " = -1 OR (" +COL_MISFIRE_INSTRUCTION+ " != -1 AND "+ COL_NEXT_FIRE_TIME + " >= ?)) ";           
             
     String ORDER_BY = "ORDER BY "+ COL_NEXT_FIRE_TIME + " ASC, " + COL_PRIORITY + " DESC";
     
-    // count misfired triggers query extension
-    String COUNT_MISFIRED_TRIGGERS_IN_STATES = "SELECT COUNT("
+    // count misfired triggers query extension    
+    String COUNT_MISFIRED_TRIGGERS_IN_STATE = "SELECT COUNT("
             + COL_TRIGGER_NAME + ") FROM "
             + TABLE_PREFIX_SUBST + TABLE_TRIGGERS + " WHERE "
+            + COL_SCHEDULER_NAME + " = " + SCHED_NAME_SUBST + " AND NOT ("
+            + COL_MISFIRE_INSTRUCTION + " = " + Trigger.MISFIRE_INSTRUCTION_IGNORE_MISFIRE_POLICY + ") AND " 
             + COL_NEXT_FIRE_TIME + " < ? " 
-            + "AND ((" + COL_TRIGGER_STATE + " = ?) OR (" + COL_TRIGGER_STATE + " = ?)) ";
+            + "AND " + COL_TRIGGER_STATE + " = ? ";
 
     // misfired triggers query extension
-    String SELECT_MISFIRED_TRIGGERS_IN_STATES = "SELECT "
+    String SELECT_MISFIRED_TRIGGERS_IN_STATE = "SELECT "
             + COL_TRIGGER_NAME + ", " + COL_TRIGGER_GROUP + " FROM "
             + TABLE_PREFIX_SUBST + TABLE_TRIGGERS + " WHERE "
-            + COL_NEXT_FIRE_TIME + " < ? " 
-            + "AND ((" + COL_TRIGGER_STATE + " = ?) OR (" + COL_TRIGGER_STATE + " = ?)) ";
+            + COL_SCHEDULER_NAME + " = " + SCHED_NAME_SUBST + " AND NOT ("
+            + COL_MISFIRE_INSTRUCTION + " = " + Trigger.MISFIRE_INSTRUCTION_IGNORE_MISFIRE_POLICY + ") AND " 
+            + COL_NEXT_FIRE_TIME + " < ? AND " + COL_TRIGGER_STATE + " = ? ";
             
-    String MISFIRED_ORDER_BY = "ORDER BY " + COL_NEXT_FIRE_TIME + " ASC";
+    String MISFIRED_ORDER_BY = "ORDER BY " + COL_NEXT_FIRE_TIME + " ASC, " + COL_PRIORITY + " DESC";
     
     public List<String> getDeployments() {
         List<String> deploymentIds = new ArrayList<>(RuntimeManagerRegistry.get().getRegisteredIdentifiers());
@@ -67,14 +72,14 @@ public class QuartzUtils implements StdJDBCConstants {
     
     public String countMisfiredTriggersQuery(List<String> deploymentIds) {
         
-        String query = COUNT_MISFIRED_TRIGGERS_IN_STATES + buildGroupFilter(deploymentIds);
+        String query = COUNT_MISFIRED_TRIGGERS_IN_STATE + buildGroupFilter(deploymentIds);
         
         return query;
     }
     
     public String misfiredTriggersQuery(List<String> deploymentIds) {
         
-        String query = SELECT_MISFIRED_TRIGGERS_IN_STATES + buildGroupFilter(deploymentIds) + MISFIRED_ORDER_BY;
+        String query = SELECT_MISFIRED_TRIGGERS_IN_STATE + buildGroupFilter(deploymentIds) + MISFIRED_ORDER_BY;
         
         return query;
     }

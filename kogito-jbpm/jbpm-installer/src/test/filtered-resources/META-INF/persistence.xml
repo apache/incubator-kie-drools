@@ -273,6 +273,7 @@
     <class>org.jbpm.persistence.scripts.quartzmockentities.QrtzSimpleTriggers</class>
     <class>org.jbpm.persistence.scripts.quartzmockentities.QrtzTriggerListeners</class>
     <class>org.jbpm.persistence.scripts.quartzmockentities.QrtzTriggers</class>
+    <class>org.jbpm.persistence.scripts.quartzmockentities.QrtzSimpropTriggers</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
       <property name="hibernate.max_fetch_depth" value="3"/>

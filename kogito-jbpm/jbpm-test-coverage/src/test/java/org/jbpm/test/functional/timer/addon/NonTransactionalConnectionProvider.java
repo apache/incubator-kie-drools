@@ -90,4 +90,10 @@ public class NonTransactionalConnectionProvider implements ConnectionProvider {
         this.password = password;
     }
 
+    @Override
+    public void initialize() throws SQLException {
+        // TODO Auto-generated method stub
+        
+    }
+
 }
