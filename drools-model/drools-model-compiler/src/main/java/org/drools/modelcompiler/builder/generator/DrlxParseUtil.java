@@ -47,6 +47,7 @@ import org.drools.javaparser.ast.expr.DoubleLiteralExpr;
 import org.drools.javaparser.ast.expr.EnclosedExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.FieldAccessExpr;
+import org.drools.javaparser.ast.expr.HalfBinaryExpr;
 import org.drools.javaparser.ast.expr.InstanceOfExpr;
 import org.drools.javaparser.ast.expr.IntegerLiteralExpr;
 import org.drools.javaparser.ast.expr.LambdaExpr;
@@ -98,7 +99,7 @@ public class DrlxParseUtil {
     }
 
     public static TypedExpression toTypedExpression(RuleContext context, PackageModel packageModel, Class<?> patternType, Expression drlxExpr,
-                                                    List<String> usedDeclarations, Set<String> reactOnProperties) {
+                                                    List<String> usedDeclarations, Set<String> reactOnProperties, Expression parentExpression) {
 
         Class<?> typeCursor = patternType;
 
@@ -108,7 +109,7 @@ public class DrlxParseUtil {
 
         if (drlxExpr instanceof UnaryExpr) {
             UnaryExpr unaryExpr = (UnaryExpr) drlxExpr;
-            TypedExpression typedExpr = toTypedExpression( context, packageModel, patternType, unaryExpr.getExpression(), usedDeclarations, reactOnProperties );
+            TypedExpression typedExpr = toTypedExpression( context, packageModel, patternType, unaryExpr.getExpression(), usedDeclarations, reactOnProperties, unaryExpr );
             return new TypedExpression( new UnaryExpr( typedExpr.getExpression(), unaryExpr.getOperator() ), typedExpr.getType() );
 
         } else if (drlxExpr instanceof BinaryExpr) {
@@ -116,8 +117,20 @@ public class DrlxParseUtil {
 
             Operator operator = binaryExpr.getOperator();
 
-            TypedExpression left = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, binaryExpr.getLeft(), usedDeclarations, reactOnProperties );
-            TypedExpression right = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, binaryExpr.getRight(), usedDeclarations, reactOnProperties );
+            TypedExpression left = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, binaryExpr.getLeft(), usedDeclarations, reactOnProperties, binaryExpr);
+            TypedExpression right = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, binaryExpr.getRight(), usedDeclarations, reactOnProperties, binaryExpr);
+
+            BinaryExpr combo = new BinaryExpr( left.getExpression(), right.getExpression(), operator );
+            return new TypedExpression( combo, left.getType() );
+
+        } else if (drlxExpr instanceof HalfBinaryExpr) {
+            HalfBinaryExpr halfBinaryExpr = (HalfBinaryExpr) drlxExpr;
+
+            Expression parentLeft = findLeftLeaf(parentExpression);
+            Operator operator = toBinaryExprOperator(halfBinaryExpr.getOperator());
+
+            TypedExpression left = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, parentLeft, usedDeclarations, reactOnProperties, halfBinaryExpr);
+            TypedExpression right = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, halfBinaryExpr.getRight(), usedDeclarations, reactOnProperties, halfBinaryExpr);
 
             BinaryExpr combo = new BinaryExpr( left.getExpression(), right.getExpression(), operator );
             return new TypedExpression( combo, left.getType() );
@@ -275,6 +288,21 @@ public class DrlxParseUtil {
         }
 
         throw new UnsupportedOperationException();
+    }
+
+    private static Expression findLeftLeaf(Expression expression) {
+        if(expression instanceof BinaryExpr) {
+            BinaryExpr be = (BinaryExpr)expression;
+            return findLeftLeaf(be.getLeft());
+        } else if(expression instanceof NameExpr) {
+            return expression;
+        } else {
+            throw new UnsupportedOperationException("Unknown expression: " + expression);
+        }
+    }
+
+    private static Operator toBinaryExprOperator(HalfBinaryExpr.Operator operator) {
+        return Operator.valueOf(operator.name());
     }
 
     private static String getFieldName( Expression drlxExpr, SimpleName fieldName ) {
