@@ -27,13 +27,20 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.PriorityQueue;
 
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EventFactHandle;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.ruleunit.RuleUnitDescr;
+import org.drools.core.ruleunit.RuleUnitRegistry;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -50,12 +57,20 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.DataSource;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
+import org.kie.api.runtime.rule.RuleUnit;
+import org.kie.api.runtime.rule.RuleUnitExecutor;
 import org.kie.api.runtime.rule.Variable;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.utils.KieHelper;
+import org.kie.pmml.pmml_4_2.model.PMML4UnitImpl;
+import org.kie.pmml.pmml_4_2.model.PMMLRequestData;
+import org.kie.pmml.pmml_4_2.model.datatypes.PMML4Data;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 
@@ -68,8 +83,12 @@ public abstract class DroolsAbstractPMMLTest {
     public static final String RESOURCE_PATH = "src/main/resources/" + BASE_PACK.replace('.','/') + "/";
     public static final String DEFAULT_KIEBASE = "PMML_Test";
 
+    protected DataSource<PMMLRequestData> data;
+    protected DataSource<PMML4Result> resultData;
+    protected DataSource<PMML4Data> pmmlData;
+    
     private KieSession kSession;
-    private KieBase kbase;
+    protected KieBase kbase;
 
     public DroolsAbstractPMMLTest() {
         super();
@@ -412,6 +431,53 @@ public abstract class DroolsAbstractPMMLTest {
 		}
 		return value;
 	}
+	
+	protected RuleUnitExecutor createExecutor(String sourceName) {
+    	Resource res = ResourceFactory.newClassPathResource(sourceName);
+    	kbase = new KieHelper().addResource(res, ResourceType.PMML).build();
+    	
+    	assertNotNull(kbase);
+    	
+    	RuleUnitExecutor executor = RuleUnitExecutor.create().bind(kbase);
+        data = executor.newDataSource("request");
+        resultData = executor.newDataSource("results");
+        pmmlData = executor.newDataSource("pmmlData");
+
+		return executor;
+	}
+	
+    protected Class<? extends RuleUnit> getStartingRuleUnit(String startingRule, InternalKnowledgeBase ikb, List<String> possiblePackages) {
+    	RuleUnitRegistry unitRegistry = ikb.getRuleUnitRegistry();
+    	Map<String,InternalKnowledgePackage> pkgs = ikb.getPackagesMap();
+    	RuleImpl ruleImpl = null;
+    	for (String pkgName: possiblePackages) {
+    		if (pkgs.containsKey(pkgName)) {
+    			InternalKnowledgePackage pkg = pkgs.get(pkgName);
+    			ruleImpl = pkg.getRule(startingRule);
+    			if (ruleImpl != null) {
+    				RuleUnitDescr descr = unitRegistry.getRuleUnitFor(ruleImpl).orElse(null);
+    				if (descr != null) {
+    					return descr.getRuleUnitClass();
+    				}
+    			}
+    		}
+    	}
+    	return null;
+    }
+    
+    protected List<String> calculatePossiblePackageNames(String modelId, String...knownPackageNames) {
+    	List<String> packageNames = new ArrayList<>();
+    	String javaModelId = modelId.replaceAll("\\s","");
+    	if (knownPackageNames != null && knownPackageNames.length > 0) {
+    		for (String knownPkgName: knownPackageNames) {
+    			packageNames.add(knownPkgName + "." + javaModelId);
+    		}
+    	}
+		String basePkgName = PMML4UnitImpl.DEFAULT_ROOT_PACKAGE+"."+javaModelId;
+		packageNames.add(basePkgName);
+    	return packageNames;
+    }
+
 	
     
 }

@@ -87,6 +87,14 @@ public class CursoredDataSource<T> implements InternalDataSource<T> {
     }
 
     @Override
+    public FactHandle getFactHandleForObject(Object object) {
+    	if (objectStore != null) {
+    		return (FactHandle)((ClassAwareObjectStore)objectStore).getHandleForObject(object);
+    	}
+    	return null;
+    }
+    
+    @Override
     public FactHandle insert( T object ) {
         if (workingMemory != null) {
             return insertIntoWm( object );

@@ -27,4 +27,8 @@ public interface InternalDataSource<T> extends DataSource<T>, BindableDataProvid
     void update( FactHandle fh, Object obj, BitMask mask, Class<?> modifiedClass, Activation activation );
 
     void setWorkingMemory( InternalWorkingMemory workingMemory );
+    
+    default FactHandle getFactHandleForObject(Object object) {
+    	return null;
+    }
 }

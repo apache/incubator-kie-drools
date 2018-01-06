@@ -32,13 +32,13 @@ rule "miningFieldMissing_PMML4Data_@{model}_@{name}"
 salience 999
 when
    $x : PMML4Data( capitalizedName == "@{name}", $m : missing == true, placeholder == false,
-                   context == @{format("string",model)} )
+                   context == @{format("string",model)} ) from pmmlData
 then
    delete( $x );
    $x.setValue( @{replacement} );
    $x.setMissing( false );
    $x.setValid( true );
-   insert( $x );
+   pmmlData.insert( $x );
 end
 
 rule "miningFieldMissing_@{model}_@{name}"

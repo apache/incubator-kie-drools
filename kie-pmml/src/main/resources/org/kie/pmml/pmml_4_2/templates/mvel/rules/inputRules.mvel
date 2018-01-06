@@ -1,0 +1,49 @@
+@declare{'inputRules'}
+
+package @{rulePackageName}
+unit @{ruleUnitClassName}
+
+import org.kie.pmml.pmml_4_2.*;
+import org.kie.pmml.pmml_4_2.model.*;
+import org.kie.pmml.pmml_4_2.model.scorecard.*;
+import org.kie.pmml.pmml_4_2.model.regression.*;
+import org.kie.pmml.pmml_4_2.model.tree.*;
+import org.kie.pmml.pmml_4_2.model.datatypes.*;
+import org.drools.core.factmodel.traits.Traitable;
+
+rule 'RuleUnitIndicator'
+when
+then
+   System.out.println("Rules execution available for @{ruleUnitClassName}");
+end
+
+
+rule 'Extract Parameter Info'
+@@Generated
+salience 101
+when
+   $rd: PMMLRequestData( $cid: correlationId != null, requestParams != null ) from request
+   $pi: ParameterInfo( $name: name, $value: value ) from $rd.requestParams
+   not PMML4Data( name == $name, value == $value )
+then
+   PMML4DataFactory factory = PMML4DataFactory.get();
+   PMML4Data data = factory.newPMML4Data($cid, $pi, @{notRestricted}, false);
+   data.setPlaceholder(true);
+   pmmlData.insert(data);
+end
+
+
+rule 'Did PMMLData get inserted'
+@@Generated
+when
+   $pmmlData: PMML4Data( placeholder == true  ) from pmmlData
+then
+   System.out.printf("Data field: %s with value %s %n",$pmmlData.getName(),$pmmlData.getValue());
+   modify($pmmlData) {
+      setPlaceholder(Boolean.FALSE)
+   };
+end
+
+
+@end{}
+@includeNamed{'inputRules'}

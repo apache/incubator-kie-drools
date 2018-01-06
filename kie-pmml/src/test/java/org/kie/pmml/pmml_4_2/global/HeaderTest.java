@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.runtime.KieSession;
@@ -33,7 +34,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-
+@Ignore
 public class HeaderTest extends DroolsAbstractPMMLTest {
 
 

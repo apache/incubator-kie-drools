@@ -23,23 +23,24 @@
       */
 }
 @declare{'valuesOnDomainRestrictionRule'}
-rule "Valid_PMML4Data_Values_@{name}"
+rule "Valid_PMML4Data_Values_@{name} - @{context}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
-dialect 'mvel'
+dialect 'java'
 no-loop
 salience 9999
 when
    $in : PMML4Data( capitalizedName == "@{name}", $val : value, valid == false, placeholder == false,
           @if{ context != null } context == @{format("string",context)}, @end{}
-          @foreach{ v : vals } value == @{v} @end{' || '}
-          )
+          value in (@foreach{ v : vals } @{v}@end{', '} )
+          ) from pmmlData
 then
    modify($in) {
       setValid( true );
    }
+   System.out.println("Validated "+$in);
 end
 
-
+@comment{
 rule "Valid_Values_@{name}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 dialect 'mvel'
@@ -51,12 +52,11 @@ when
           @foreach{ v : vals } value == @{v} @end{' || '}
           )
 then
-//    System.out.println("--- Invalid -> valid " + $in);
+    System.out.println("--- Invalid -> valid " + $in);
     modify ( $in ) {
         setValid( true );
     }
 end
+}
 @end{}
-
-
 @includeNamed{'valuesOnDomainRestrictionRule'}
