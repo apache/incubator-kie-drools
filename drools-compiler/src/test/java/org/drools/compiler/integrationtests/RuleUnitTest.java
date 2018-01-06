@@ -970,7 +970,7 @@ public class RuleUnitTest {
     	request.addParameter("likesBeets",false,Boolean.class);
     	
     	DataSource<RequestData> requestData = executor.newDataSource("requestData",request);
-    	assertEquals(4, executor.run(ComplexDataUnit.class));
+    	assertEquals(5, executor.run(ComplexDataUnit.class));
     	
     }
     

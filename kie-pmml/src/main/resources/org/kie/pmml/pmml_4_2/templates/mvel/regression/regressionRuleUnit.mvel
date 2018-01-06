@@ -22,6 +22,7 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.RuleUnit;
 import org.kie.pmml.pmml_4_2.PMML4Result;
 import org.kie.pmml.pmml_4_2.model.*;
+import org.kie.pmml.pmml_4_2.model.mining.SegmentExecution;
 import org.kie.pmml.pmml_4_2.model.datatypes.*;
 import java.util.Map;
 import java.util.List;
@@ -31,16 +32,28 @@ public class @{className} implements RuleUnit {
    private DataSource<PMMLRequestData> request;
    private DataSource<PMML4Data> pmmlData;
    private DataSource<PMML4Result> results;
+   private DataSource<SegmentExecution> childModelSegments;
+   private DataSource<PMMLRequestData> childModelRequest;
+   private DataSource<PMML4Result> childModelResults;
+   private DataSource<Object> miningModelPojo;
    
    public @{className}() {
    }
    
    public @{className}(DataSource<PMMLRequestData> request, 
                        DataSource<PMML4Data> pmmlData, 
-                       DataSource<PMML4Result> results) {
+                       DataSource<PMML4Result> results,
+                       DataSource<SegmentExecution> childModelSegments,
+                       DataSource<PMMLRequestData> childModelRequest,
+                       DataSource<PMML4Result> childModelResults,
+                       DataSource<Object> miningModelPojo) {
       this.request = request;
       this.pmmlData = pmmlData;
       this.results = results;
+      this.childModelSegments = childModelSegments;
+      this.childModelRequest = childModelRequest;
+      this.childModelResults = childModelResults;
+      this.miningModelPojo = miningModelPojo;
    }
    
    public DataSource<PMMLRequestData> getRequest() {
@@ -53,6 +66,22 @@ public class @{className} implements RuleUnit {
    
    public DataSource<PMML4Result> getResults() {
       return results;
+   }
+   
+   public DataSource<SegmentExecution> getChildModelSegments() {
+      return childModelSegments;
+   }
+   
+   public DataSource<PMMLRequestData> getChildModelRequest() {
+      return childModelRequest;
+   }
+   
+   public DataSource<PMML4Result> getChildModelResults() {
+      return childModelResults;
+   }
+   
+   public DataSource<Object> getMiningModelPojo() {
+      return miningModelPojo;
    }
    
    @Override

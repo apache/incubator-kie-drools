@@ -45,6 +45,7 @@ import org.kie.pmml.pmml_4_2.model.ParameterInfo;
 import org.kie.pmml.pmml_4_2.model.ScoreCard;
 import org.kie.pmml.pmml_4_2.model.datatypes.PMML4Data;
 import org.kie.pmml.pmml_4_2.model.mining.SegmentExecution;
+import org.kie.pmml.pmml_4_2.model.mining.SegmentExecutionState;
 import org.kie.pmml.pmml_4_2.model.tree.AbstractTreeToken;
 
 import static org.junit.Assert.assertEquals;
@@ -63,12 +64,8 @@ public class MiningmodelTest extends DroolsAbstractPMMLTest {
 
 	@Test
 	public void testSelectFirstSegmentFirst() {
-//		Resource res = ResourceFactory.newClassPathResource(source1);
-//		KieBase kbase = new KieHelper().addResource(res, ResourceType.PMML).build();
-//
-//		assertNotNull(kbase);
 		RuleUnitExecutor executor = createExecutor(source1);
-		KieRuntimeLogger console = ((InternalRuleUnitExecutor)executor).addConsoleLogger();
+//		KieRuntimeLogger console = ((InternalRuleUnitExecutor)executor).addConsoleLogger();
 
 		PMMLRequestData request = new PMMLRequestData("1234", "SampleMine");
 		request.addRequestParam("fld1", 30.0);
@@ -77,254 +74,245 @@ public class MiningmodelTest extends DroolsAbstractPMMLTest {
 		request.addRequestParam("fld4", "optA");
 		
 		PMML4Result resultHolder = new PMML4Result();
+		resultHolder.setCorrelationId(request.getCorrelationId());
 
-//		DataSource<PMMLRequestData> data = executor.newDataSource("request",request);
-//		DataSource<PMML4Result> resultHolder = executor.newDataSource("results", new PMML4Result());
 		DataSource<PMMLRequestData> childModelRequest = executor.newDataSource("childModelRequest");
 		DataSource<PMML4Result> childModelResults = executor.newDataSource("childModelResults");
 		DataSource<SegmentExecution> childModelSegments = executor.newDataSource("childModelSegments");
 		DataSource<? extends AbstractPMMLData> miningModelPojo = executor.newDataSource("miningModelPojo");
-//		DataSource<PMML4Data> pmmlData = executor.newDataSource("pmmlData");
 
 		List<String> possiblePackages = this.calculatePossiblePackageNames("SampleMine");
 		Class<? extends RuleUnit> ruleUnitClass = this.getStartingRuleUnit("Start Mining - SampleMine",(InternalKnowledgeBase)kbase,possiblePackages);
 		
 		assertNotNull(ruleUnitClass);
-//		int x = executor.run(ruleUnitClass);
 		
 		data.insert(request);
 		resultData.insert(resultHolder);
 		
 		executor.run(ruleUnitClass);
-		console.close();
+//		console.close();
 		Collection<?> objects = ((InternalRuleUnitExecutor)executor).getSessionObjects();
 		objects.forEach(o -> {System.out.println(o);});
 		miningModelPojo.forEach(mmp -> {System.out.println(mmp);});
-//		System.out.println(x);
-//		System.out.println("Reuslts ---");
-//		resultData.forEach(re -> { System.out.println(re);});
-//		miningModelPojo.forEach(mmp -> { System.out.println(mmp);});
-		// setKSession( getModelSession( source1, VERBOSE ) );
-		// setKbase( getKSession().getKieBase() );
-		// KieSession kSession = getKSession();
-		//
-		// kSession.fireAllRules(); //init model
-		//
-		// PMMLRequestData request = new PMMLRequestData("1234","SampleMine");
-		// request.addRequestParam("fld1", 30.0);
-		// request.addRequestParam("fld2", 60.0);
-		// request.addRequestParam("fld3", "false");
-		// request.addRequestParam("fld4", "optA");
-		// kSession.insert(request);
-
-		// kSession.fireAllRules();
-		// System.out.print(reportWMObjects( kSession ));
-
-		// Collection<PMML4Result> objs =
-		// (Collection<PMML4Result>)kSession.getObjects(new
-		// ClassObjectFilter(PMML4Result.class));
-		// assertEquals(1,objs.size());
-		//
-		// PMML4Result result = objs.iterator().next();
-		// assertNotNull(result);
-		// assertEquals("OK",result.getResultCode());
-		// assertNotNull(result.getResultVariables());
-		//
-		// Map<String,Object> resultVars = result.getResultVariables();
-		// assertEquals(1,resultVars.size());
-		// Object fldFive = getResultValue(result,"Fld5",null);
-		// assertNotNull(fldFive);
-		//
-		// Object fldFiveMissing = getResultValue(result,"Fld5","missing");
-		// assertNotNull(fldFiveMissing);
-		// assertTrue(fldFiveMissing.equals(Boolean.FALSE));
-		//
-		// Object fldFiveValue = getResultValue(result,"Fld5","value");
-		// assertNotNull(fldFiveValue);
-		// assertEquals("tgtY",fldFiveValue);
-
+		resultData.iterator().forEachRemaining(rd -> {
+			assertEquals(request.getCorrelationId(),rd.getCorrelationId());
+			if (rd.getSegmentationId() == null) {
+				assertEquals("OK",rd.getResultCode());
+				assertNotNull(rd.getResultValue("Fld5", null));
+				String value = rd.getResultValue("Fld5", "value", String.class).orElse(null);
+				assertEquals("tgtY",value);
+			}
+		});
 	}
 
 	@Test
 	public void testSelectSecondSegmentFirst() {
-		setKSession(getModelSession(source1, VERBOSE));
-		setKbase(getKSession().getKieBase());
-		KieSession kSession = getKSession();
-		kSession.fireAllRules(); // init model
+		RuleUnitExecutor executor = createExecutor(source1);
+//		KieRuntimeLogger console = ((InternalRuleUnitExecutor)executor).addConsoleLogger();
 
-		PMMLRequestData requestData = new PMMLRequestData("1234", "SampleMine");
-		requestData.addRequestParam(new ParameterInfo<>("1234", "fld1", Double.class, 45.0));
-		requestData.addRequestParam(new ParameterInfo<>("1234", "fld2", Double.class, 60.0));
-		requestData.addRequestParam(new ParameterInfo<>("1234", "fld6", String.class, "optA"));
-		kSession.insert(requestData);
 
-		kSession.fireAllRules();
-		// System.out.print( reportWMObjects( kSession ));
-		Collection<PMML4Result> objs = (Collection<PMML4Result>) kSession
-				.getObjects(new ClassObjectFilter(PMML4Result.class));
-		assertEquals(1, objs.size());
+		PMMLRequestData request = new PMMLRequestData("1234", "SampleMine");
+		request.addRequestParam(new ParameterInfo<>("1234", "fld1", Double.class, 45.0));
+		request.addRequestParam(new ParameterInfo<>("1234", "fld2", Double.class, 60.0));
+		request.addRequestParam(new ParameterInfo<>("1234", "fld6", String.class, "optA"));
+		PMML4Result resultHolder = new PMML4Result();
+		resultHolder.setCorrelationId(request.getCorrelationId());
 
-		PMML4Result result = objs.iterator().next();
-		assertNotNull(result);
-		assertEquals("OK", result.getResultCode());
-		assertNotNull(result.getResultVariables());
+		DataSource<PMMLRequestData> childModelRequest = executor.newDataSource("childModelRequest");
+		DataSource<PMML4Result> childModelResults = executor.newDataSource("childModelResults");
+		DataSource<SegmentExecution> childModelSegments = executor.newDataSource("childModelSegments");
+		DataSource<? extends AbstractPMMLData> miningModelPojo = executor.newDataSource("miningModelPojo");
+		
 
-		Map<String, Object> resultVars = result.getResultVariables();
-
-		Object fldFive = getResultValue(result, "Fld5", null);
-		assertNotNull(fldFive);
-		Object fldFiveMissing = getResultValue(result, "Fld5", "missing");
-		assertNotNull(fldFiveMissing);
-		assertFalse((Boolean) fldFiveMissing);
-		Object fldFiveValid = getResultValue(result, "Fld5", "valid");
-		assertNotNull(fldFiveValid);
-		assertTrue((Boolean) fldFiveValid);
-		Object fldFiveValue = getResultValue(result, "Fld5", "value");
-		assertNotNull(fldFiveValue);
-		assertEquals("tgtZ", fldFiveValue);
-
-		Object token = getResultValue(result, "MissingTreeToken", null);
-		assertNotNull(token);
-		AbstractTreeToken att = (AbstractTreeToken) token;
-		assertEquals(0.6, att.getConfidence().doubleValue(), 0.0);
-		assertEquals("null", att.getCurrent());
-
-		Collection<SegmentExecution> segmentExecs = (Collection<SegmentExecution>) kSession
-				.getObjects(new ClassObjectFilter(SegmentExecution.class));
-		assertNotNull(segmentExecs);
-		assertEquals(1, segmentExecs.size());
-		SegmentExecution segEx = segmentExecs.iterator().next();
-
+		List<String> possiblePackages = this.calculatePossiblePackageNames("SampleMine");
+		Class<? extends RuleUnit> ruleUnitClass = this.getStartingRuleUnit("Start Mining - SampleMine",(InternalKnowledgeBase)kbase,possiblePackages);
+		
+		assertNotNull(ruleUnitClass);
+		
+		data.insert(request);
+		resultData.insert(resultHolder);
+		
+		executor.run(ruleUnitClass);
+//		console.close();
+		resultData.forEach(rd -> {
+			assertEquals(request.getCorrelationId(),rd.getCorrelationId());
+			assertEquals("OK",rd.getResultCode());
+			if (rd.getSegmentationId() == null) {
+				assertNotNull(rd.getResultValue("Fld5", null));
+				String value = rd.getResultValue("Fld5", "value", String.class).orElse(null);
+				assertEquals("tgtZ",value);
+				AbstractTreeToken token = rd.getResultValue("MissingTreeToken", null, AbstractTreeToken.class).orElse(null);
+				assertNotNull(token);
+				assertEquals(0.6, token.getConfidence().doubleValue(),0.0);
+				assertEquals("null",token.getCurrent());
+			}
+		});
+		int segmentsExecuted = 0;
+		for (Iterator<SegmentExecution> iter = childModelSegments.iterator(); iter.hasNext(); ) {
+			SegmentExecution cms = iter.next();
+			assertEquals(request.getCorrelationId(), cms.getCorrelationId());
+			if (cms.getState() == SegmentExecutionState.COMPLETE) segmentsExecuted++;
+		}
+		assertEquals(1,segmentsExecuted);
+		
 	}
 
 	@Test
 	public void testWithScorecard() {
-		setKSession(getModelSession(source2, VERBOSE));
-		setKbase(getKSession().getKieBase());
-		KieSession kSession = getKSession();
-		kSession.fireAllRules(); // init model
+		RuleUnitExecutor executor = createExecutor(source2);
+//		KieRuntimeLogger console = ((InternalRuleUnitExecutor)executor).addConsoleLogger();
 
-		PMMLRequestData requestData = new PMMLRequestData("1234", "SampleScorecardMine");
-		requestData.addRequestParam("age", 33.0);
-		requestData.addRequestParam("occupation", "SKYDIVER");
-		requestData.addRequestParam("residenceState", "KN");
-		requestData.addRequestParam("validLicense", true);
-		kSession.insert(requestData);
+		PMMLRequestData request = new PMMLRequestData("1234", "SampleScorecardMine");
+		request.addRequestParam("age", 33.0);
+		request.addRequestParam("occupation", "SKYDIVER");
+		request.addRequestParam("residenceState", "KN");
+		request.addRequestParam("validLicense", true);
+		PMML4Result resultHolder = new PMML4Result();
+		resultHolder.setCorrelationId(request.getCorrelationId());
 
-		kSession.fireAllRules(); // init model
-		// System.out.print( reportWMObjects( kSession ));
-		Collection<PMML4Result> objs = (Collection<PMML4Result>) kSession
-				.getObjects(new ClassObjectFilter(PMML4Result.class));
-		assertEquals(1, objs.size());
+		DataSource<PMMLRequestData> childModelRequest = executor.newDataSource("childModelRequest");
+		DataSource<PMML4Result> childModelResults = executor.newDataSource("childModelResults");
+		DataSource<SegmentExecution> childModelSegments = executor.newDataSource("childModelSegments");
+		DataSource<? extends AbstractPMMLData> miningModelPojo = executor.newDataSource("miningModelPojo");
+		
 
-		PMML4Result result = objs.iterator().next();
-		assertNotNull(result);
+		List<String> possiblePackages = this.calculatePossiblePackageNames("SampleScorecardMine");
+		Class<? extends RuleUnit> ruleUnitClass = this.getStartingRuleUnit("Start Mining - SampleScorecardMine",(InternalKnowledgeBase)kbase,possiblePackages);
+		
+		assertNotNull(ruleUnitClass);
+		
+		data.insert(request);
+		resultData.insert(resultHolder);
+		
+		executor.run(ruleUnitClass);
+//		console.close();
+		resultData.forEach(rd -> {
+			assertEquals(request.getCorrelationId(),rd.getCorrelationId());
+			assertEquals("OK",rd.getResultCode());
+			if (rd.getSegmentationId() == null) {
+				ScoreCard sc = rd.getResultValue("ScoreCard", null, ScoreCard.class).orElse(null);
+				assertNotNull(sc);
+				Map map = sc.getRanking();
+				assertNotNull(map);
+				assertTrue(map instanceof LinkedHashMap);
+				
+				LinkedHashMap ranking = (LinkedHashMap) map;
 
-		Object sc = getResultValue(result, "ScoreCard", null);
-		assertNotNull(sc);
-		assertTrue(sc instanceof ScoreCard);
-		ScoreCard scorecard = (ScoreCard) sc;
+				assertTrue(ranking.containsKey("LX00"));
+				assertTrue(ranking.containsKey("RES"));
+				assertTrue(ranking.containsKey("CX2"));
+				assertEquals(-1.0, ranking.get("LX00"));
+				assertEquals(-10.0, ranking.get("RES"));
+				assertEquals(-30.0, ranking.get("CX2"));
 
-		Map map = scorecard.getRanking();
-		assertNotNull(map);
-		assertTrue(map instanceof LinkedHashMap);
-		LinkedHashMap ranking = (LinkedHashMap) map;
-
-		assertTrue(ranking.containsKey("LX00"));
-		assertTrue(ranking.containsKey("RES"));
-		assertTrue(ranking.containsKey("CX2"));
-		assertEquals(-1.0, ranking.get("LX00"));
-		assertEquals(-10.0, ranking.get("RES"));
-		assertEquals(-30.0, ranking.get("CX2"));
-
-		Iterator iter = ranking.keySet().iterator();
-		assertEquals("LX00", iter.next());
-		assertEquals("RES", iter.next());
-		assertEquals("CX2", iter.next());
-
+				Iterator iter = ranking.keySet().iterator();
+				assertEquals("LX00", iter.next());
+				assertEquals("RES", iter.next());
+				assertEquals("CX2", iter.next());
+			}
+		});
+		int segmentsExecuted = 0;
+		for (Iterator<SegmentExecution> iter = childModelSegments.iterator(); iter.hasNext(); ) {
+			SegmentExecution cms = iter.next();
+			assertEquals(request.getCorrelationId(), cms.getCorrelationId());
+			if (cms.getState() == SegmentExecutionState.COMPLETE) segmentsExecuted++;
+		}
+		assertEquals(1,segmentsExecuted);
 	}
 
 	@Test
 	public void testWithRegression() {
-		setKSession(getModelSession(source2, VERBOSE));
-		setKbase(getKSession().getKieBase());
-		KieSession kSession = getKSession();
-		kSession.fireAllRules(); // init model
+		RuleUnitExecutor executor = createExecutor(source2);
+//		KieRuntimeLogger console = ((InternalRuleUnitExecutor)executor).addConsoleLogger();
 
 		PMMLRequestData request = new PMMLRequestData("123", "SampleScorecardMine");
 		request.addRequestParam("fld1r", 1.0);
 		request.addRequestParam("fld2r", 1.0);
 		request.addRequestParam("fld3r", "x");
-		kSession.insert(request);
+		
+		PMML4Result resultHolder = new PMML4Result();
+		resultHolder.setCorrelationId(request.getCorrelationId());
 
-		kSession.fireAllRules();
-		// System.out.print( reportWMObjects( kSession ));
-		Collection<PMML4Result> objs = (Collection<PMML4Result>) kSession
-				.getObjects(new ClassObjectFilter(PMML4Result.class));
-		assertNotNull(objs);
-		assertEquals(1, objs.size());
+		DataSource<PMMLRequestData> childModelRequest = executor.newDataSource("childModelRequest");
+		DataSource<PMML4Result> childModelResults = executor.newDataSource("childModelResults");
+		DataSource<SegmentExecution> childModelSegments = executor.newDataSource("childModelSegments");
+		DataSource<? extends AbstractPMMLData> miningModelPojo = executor.newDataSource("miningModelPojo");
+		
 
-		PMML4Result result = objs.iterator().next();
-		assertNotNull(result);
-
-		Object regOutValue = getResultValue(result, "RegOut", "value");
-		assertNotNull(regOutValue);
-		assertTrue(regOutValue instanceof String);
-		assertEquals("catC", regOutValue);
-
-		Object regProbValue = getResultValue(result, "RegProb", "value");
-		assertNotNull(regProbValue);
-		assertEquals((Double) 0.709228, (Double) regProbValue, 1e-6);
-
-		Object regProbAValue = getResultValue(result, "RegProbA", "value");
-		assertNotNull(regProbAValue);
-		assertEquals((Double) 0.010635, (Double) regProbAValue, 1e-6);
-
+		List<String> possiblePackages = this.calculatePossiblePackageNames("SampleScorecardMine");
+		Class<? extends RuleUnit> ruleUnitClass = this.getStartingRuleUnit("Start Mining - SampleScorecardMine",(InternalKnowledgeBase)kbase,possiblePackages);
+		
+		assertNotNull(ruleUnitClass);
+		
+		data.insert(request);
+		resultData.insert(resultHolder);
+		
+		executor.run(ruleUnitClass);
+//		console.close();
+		resultData.forEach(rd -> {
+			assertEquals(request.getCorrelationId(),rd.getCorrelationId());
+			assertEquals("OK",rd.getResultCode());
+			if (rd.getSegmentationId() == null) {
+				System.out.println(rd);
+				assertNotNull(rd.getResultValue("RegOut", null));
+				String regOutValue = rd.getResultValue("RegOut", "value", String.class).orElse(null);
+				assertEquals("catC",regOutValue);
+				assertNotNull(rd.getResultValue("RegProb", null));
+				Double regProbValue = rd.getResultValue("RegProb", "value", Double.class).orElse(null);
+				assertEquals(0.709228,regProbValue,1e-6);
+				assertNotNull(rd.getResultValue("RegProbA", null));
+				Double regProbValueA = rd.getResultValue("RegProbA", "value", Double.class).orElse(null);
+				assertEquals(0.010635,regProbValueA,1e-6);
+			}
+		});
+		int segmentsExecuted = 0;
+		for (Iterator<SegmentExecution> iter = childModelSegments.iterator(); iter.hasNext(); ) {
+			SegmentExecution cms = iter.next();
+			assertEquals(request.getCorrelationId(), cms.getCorrelationId());
+			if (cms.getState() == SegmentExecutionState.COMPLETE) segmentsExecuted++;
+		}
+		assertEquals(1,segmentsExecuted);
+		
 	}
 
 	@Test
 	public void testSelectAll() {
-		setKSession(getModelSession(source4, VERBOSE));
-		setKbase(getKSession().getKieBase());
-		KieSession kSession = getKSession();
+		RuleUnitExecutor executor = createExecutor(source4);
+//		KieRuntimeLogger console = ((InternalRuleUnitExecutor)executor).addConsoleLogger();
 
-		kSession.fireAllRules(); // init model
-		PMMLRequestData requestData = new PMMLRequestData("1234", "SampleSelectAllMine");
-		requestData.addRequestParam("age", 33.0);
-		requestData.addRequestParam("occupation", "SKYDIVER");
-		requestData.addRequestParam("residenceState", "KN");
-		requestData.addRequestParam("validLicense", true);
-		kSession.insert(requestData);
+		PMMLRequestData request = new PMMLRequestData("1234", "SampleSelectAllMine");
+		request.addRequestParam("age", 33.0);
+		request.addRequestParam("occupation", "SKYDIVER");
+		request.addRequestParam("residenceState", "KN");
+		request.addRequestParam("validLicense", true);
+		PMML4Result resultHolder = new PMML4Result();
+		resultHolder.setCorrelationId(request.getCorrelationId());
 
-		kSession.fireAllRules(); // init model
-		// System.out.print( reportWMObjects( kSession ));
-		Collection<PMML4Result> objs = (Collection<PMML4Result>) kSession
-				.getObjects(new ClassObjectFilter(PMML4Result.class));
-		assertEquals(2, objs.size());
+		DataSource<PMMLRequestData> childModelRequest = executor.newDataSource("childModelRequest");
+		DataSource<PMML4Result> childModelResults = executor.newDataSource("childModelResults");
+		DataSource<SegmentExecution> childModelSegments = executor.newDataSource("childModelSegments");
+		DataSource<? extends AbstractPMMLData> miningModelPojo = executor.newDataSource("miningModelPojo");
+		
 
-		PMML4Result results[] = objs.toArray(new PMML4Result[objs.size()]);
-		assertNotNull(results[0]);
-		assertEquals("OK", results[0].getResultCode());
-		assertEquals("1234", results[0].getCorrelationId());
-
-		assertNotNull(results[1]);
-		assertEquals("OK", results[1].getResultCode());
-		assertEquals("1234", results[1].getCorrelationId());
-
-		Object sc[] = new Object[2];
-		ScoreCard scorecard[] = new ScoreCard[2];
-		Map map[] = new Map[2];
-
-		for (int cnt = 0; cnt < 2; cnt++) {
-			sc[cnt] = getResultValue(results[cnt], "ScoreCard", null);
-			assertNotNull(sc[cnt]);
-			assertTrue(sc[cnt] instanceof ScoreCard);
-			scorecard[cnt] = (ScoreCard) sc[cnt];
-			map[cnt] = scorecard[cnt].getRanking();
-			assertNotNull(map[cnt]);
-			assertTrue(map[cnt] instanceof LinkedHashMap);
-			LinkedHashMap ranking = (LinkedHashMap) map[cnt];
-
+		List<String> possiblePackages = this.calculatePossiblePackageNames("SampleSelectAllMine");
+		Class<? extends RuleUnit> ruleUnitClass = this.getStartingRuleUnit("Start Mining - SampleSelectAllMine",(InternalKnowledgeBase)kbase,possiblePackages);
+		
+		assertNotNull(ruleUnitClass);
+		
+		data.insert(request);
+		resultData.insert(resultHolder);
+		
+		executor.run(ruleUnitClass);
+//		console.close();
+		resultData.forEach(rd -> {
+			assertEquals("OK",rd.getResultCode());
+			assertEquals(request.getCorrelationId(),rd.getCorrelationId());
+			ScoreCard sc = rd.getResultValue("ScoreCard", null, ScoreCard.class).orElse(null);
+			assertNotNull(sc);
+			Map map = sc.getRanking();
+			assertNotNull(map);
+			assertTrue(map instanceof LinkedHashMap);
+			LinkedHashMap ranking = (LinkedHashMap)map;
 			assertTrue(ranking.containsKey("LX00") || ranking.containsKey("LC00"));
 			if (ranking.containsKey("LX00")) {
 				assertTrue(ranking.containsKey("RES"));
@@ -337,7 +325,7 @@ public class MiningmodelTest extends DroolsAbstractPMMLTest {
 				assertEquals("LX00", iter.next());
 				assertEquals("RES", iter.next());
 				assertEquals("CX2", iter.next());
-				assertEquals(41.345, scorecard[cnt].getScore(), 1e-6);
+				assertEquals(41.345, sc.getScore(), 1e-6);
 			} else {
 				assertTrue(ranking.containsKey("RST"));
 				assertTrue(ranking.containsKey("DX2"));
@@ -349,84 +337,20 @@ public class MiningmodelTest extends DroolsAbstractPMMLTest {
 				assertEquals("RST", iter.next());
 				assertEquals("LC00", iter.next());
 				assertEquals("DX2", iter.next());
-				assertEquals(21.345, scorecard[cnt].getScore(), 1e-6);
+				assertEquals(21.345, sc.getScore(), 1e-6);
 			}
+			
+		});
+		int segmentsExecuted = 0;
+		for (Iterator<SegmentExecution> iter = childModelSegments.iterator(); iter.hasNext(); ) {
+			SegmentExecution cms = iter.next();
+			assertEquals(request.getCorrelationId(), cms.getCorrelationId());
+			if (cms.getState() == SegmentExecutionState.COMPLETE) segmentsExecuted++;
 		}
+		assertEquals(2,segmentsExecuted);
 
+		
 	}
 
-	@Test
-	public void testFolderBased() {
-		String filename = RESOURCES_TEST_ROOT + source3;
-		File file = new File(filename);
-		setKSession(getModelSession(file));
-		setKbase(getKSession().getKieBase());
-		KieSession kSession = getKSession();
-
-		assertNotNull(kSession);
-		kSession.fireAllRules(); // init model
-
-		PMMLRequestData request = new PMMLRequestData("1234", "SampleMine");
-		request.addRequestParam("fld1", 30.0);
-		request.addRequestParam("fld2", 60.0);
-		request.addRequestParam("fld3", "false");
-		request.addRequestParam("fld4", "optA");
-		kSession.insert(request);
-
-		kSession.fireAllRules();
-
-		// Check for a PMML4Result in WorkingMemory
-		Collection<PMML4Result> objs = (Collection<PMML4Result>) kSession
-				.getObjects(new ClassObjectFilter(PMML4Result.class));
-		assertEquals(1, objs.size());
-
-		PMML4Result result = objs.iterator().next();
-		assertNotNull(result);
-		assertEquals("OK", result.getResultCode());
-		assertNotNull(result.getResultVariables());
-
-		Map<String, Object> resultVars = result.getResultVariables();
-		assertEquals(1, resultVars.size());
-		Object fldFive = getResultValue(result, "Fld5", null);
-		assertNotNull(fldFive);
-
-		Object fldFiveMissing = getResultValue(result, "Fld5", "missing");
-		assertNotNull(fldFiveMissing);
-		assertTrue(fldFiveMissing.equals(Boolean.FALSE));
-
-		Object fldFiveValue = getResultValue(result, "Fld5", "value");
-		assertNotNull(fldFiveValue);
-		assertEquals("tgtY", fldFiveValue);
-
-	}
-
-	@Ignore
-	@Test
-	public void testModelChain() {
-		setKSession(getModelSession(source5, VERBOSE));
-		setKbase(getKSession().getKieBase());
-		KieSession kSession = getKSession();
-
-		kSession.fireAllRules(); // init model
-		PMMLRequestData requestData = new PMMLRequestData("1234", "SampleModelChainMine");
-		requestData.addRequestParam("age", 33.0);
-		requestData.addRequestParam("occupation", "SKYDIVER");
-		requestData.addRequestParam("residenceState", "KN");
-		requestData.addRequestParam("validLicense", true);
-		kSession.insert(requestData);
-
-		kSession.fireAllRules(); // init model
-		Collection<PMML4Result> objs = (Collection<PMML4Result>) kSession
-				.getObjects(new ClassObjectFilter(PMML4Result.class));
-		assertEquals(2, objs.size());
-
-		for (Iterator<PMML4Result> iter = objs.iterator(); iter.hasNext();) {
-			PMML4Result result = iter.next();
-			System.out.println(result.toString());
-
-			assertEquals("OK", result.getResultCode());
-
-		}
-	}
 
 }

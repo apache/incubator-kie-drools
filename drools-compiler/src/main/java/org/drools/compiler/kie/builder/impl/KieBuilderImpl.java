@@ -154,7 +154,7 @@ public class KieBuilderImpl
      * @param kieFileSystem The source file system
      * @return List of strings that are the file names
      */
-    private List<String> getPmmlFileNames(MemoryFileSystem mfs) {
+    private List<String> getPmmlFileNames(ResourceReader mfs) {
     	List<String> pmmlFileNames = new ArrayList<>();
         Collection<String> fileNames = mfs.getFileNames();
         if (fileNames != null && !fileNames.isEmpty()) {
@@ -270,7 +270,7 @@ public class KieBuilderImpl
                 results.addMessage( Level.ERROR, "pom.xml", "Unresolved dependency " + unresolvedDep );
             }
             
-        	List<String> pmmlFileNames = getPmmlFileNames((MemoryFileSystem)srcMfs);
+        	List<String> pmmlFileNames = getPmmlFileNames(srcMfs);
             
             if (pmmlFileNames != null && !pmmlFileNames.isEmpty()) {
                 buildPMMLPojos(pmmlFileNames,kProject);

@@ -841,15 +841,55 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
             throw new RuntimeException("Unknown resource type: " + type);
         }
     }
-
     public void addPackageFromPMML(Resource resource,
+            ResourceType type,
+            ResourceConfiguration configuration) throws Exception {
+        PMMLCompiler compiler = getPMMLCompiler();
+        if ("KIE PMML v2".equals(compiler.getCompilerVersion())) {
+        	addPackageFromKiePMML(compiler,resource,type,configuration);
+        } else {
+        	addPackageFromDroolsPMML(compiler,resource,type,configuration);
+        }
+    }
+
+	private void addPackageFromDroolsPMML(PMMLCompiler compiler, Resource resource, 
+						ResourceType type, ResourceConfiguration configuration) throws Exception {
+		if (compiler != null) {
+			if (compiler.getResults().isEmpty()) {
+				this.resource = resource;
+				PackageDescr descr = pmmlModelToPackageDescr(compiler, resource);
+				if (descr != null) {
+					addPackage(descr);
+				}
+				this.resource = null;
+			} else {
+				this.results.addAll(compiler.getResults());
+			}
+			compiler.clearResults();
+		} else {
+			addPackageForExternalType(resource, type, configuration);
+		}
+	}
+
+	PackageDescr pmmlModelToPackageDescr(PMMLCompiler compiler, Resource resource)
+			throws DroolsParserException, IOException {
+		String theory = compiler.compile(resource.getInputStream(), rootClassLoader);
+
+		if (!compiler.getResults().isEmpty()) {
+			this.results.addAll(compiler.getResults());
+			return null;
+		}
+
+		return generatedDrlToPackageDescr(resource, theory);
+	}    
+    
+    private void addPackageFromKiePMML(PMMLCompiler compiler, Resource resource,
                                    ResourceType type,
                                    ResourceConfiguration configuration) throws Exception {
-        PMMLCompiler compiler = getPMMLCompiler();
         if (compiler != null) {
             if (compiler.getResults().isEmpty()) {
                 this.resource = resource;
-                List<PackageDescr> descrs = pmmlModelToPackageDescr(compiler, resource);
+                List<PackageDescr> descrs = pmmlModelToKiePackageDescr(compiler, resource);
                 if (descrs != null && !descrs.isEmpty()) {
                 	for (PackageDescr descr: descrs) {
                 		addPackage(descr);
@@ -865,7 +905,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         }
     }
 
-    List<PackageDescr> pmmlModelToPackageDescr(PMMLCompiler compiler,
+    List<PackageDescr> pmmlModelToKiePackageDescr(PMMLCompiler compiler,
                                          Resource resource) throws DroolsParserException,
             IOException {
     	List<PMMLResource> resources = compiler.precompile(resource.getInputStream(), null, null);

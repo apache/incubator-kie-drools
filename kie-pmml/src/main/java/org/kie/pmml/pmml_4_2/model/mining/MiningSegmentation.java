@@ -188,6 +188,7 @@ public class MiningSegmentation {
 				builder.append(new String(baos.toByteArray()));
 				break;
 			case SELECT_ALL:
+				templateVars.put("ruleUnitClassName", this.getOwner().getRuleUnitClassName());
 				templateVars.put("miningModel", this.getOwner());
 				templateVars.put("childSegments", this.getMiningSegments());
 				templateVars.put("packageName", pkgName);

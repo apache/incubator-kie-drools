@@ -34,7 +34,7 @@ rule "Start Mining - @{miningModel.modelId}"
 salience 1000
 when
    rqst: PMMLRequestData( correlationId != null, modelName == "@{miningModel.modelId}", rqstInf: requestParams != null ) from request
-   not @{miningModel.miningPojoClassName}()
+   not @{miningModel.miningPojoClassName}() from miningModelPojo
 then
    System.out.println("Starting mining");
    @{miningModel.miningPojoClassName} modelData = new @{miningModel.miningPojoClassName}(rqst);
@@ -42,28 +42,13 @@ then
    miningModelPojo.insert(modelData);
 end
 
-@comment{
-rule "Execute First Segment"
-when
-   $segExec: SegmentExecution( $corrId: correlationId,
-                               $segmId: segmentationId, state == SegmentExecutionState.WAITING, 
-                               $segIndex: segmentIndex ) from childModelSegments
-    
-   not SegmentExecution( correlationId == $corrId, segmentationId == $segmId, 
-      state in (SegmentExecutionState.COMPLETE, SegmentExecutionState.ERROR, SegmentExecutionState.EXECUTING)
-      || (state == SegmentExecutionState.WAITING && segmentIndex < $segIndex) ) from childModelSegments
-then
-   System.out.println("about to apply model "+$segIndex);
-   $segExec.applySegmentModel($segExec.getRequestData(),request,results,childModelSegments,drools);
-end
-}
 
 rule "Update the SegmentExecution State - Complete"
 dialect "java"
 when
    $segExec: SegmentExecution( $corrId: correlationId, $segmId: segmentationId, 
                                $segId: segmentId, state == SegmentExecutionState.EXECUTING, $res: result != null ) from childModelSegments
-   $reslt: PMML4Result( this == $res, resultCode == "OK" ) from childModelResults
+   $reslt: PMML4Result( this == $res, resultCode == "OK" ) from results
 then
    modify($segExec) {
       setState(SegmentExecutionState.COMPLETE);
@@ -75,7 +60,7 @@ dialect "java"
 when
    $segExec: SegmentExecution( $corrId: correlationId, $segmId: segmentationId, 
                                $segId: segmentId, state == SegmentExecutionState.EXECUTING, $res: result != null ) from childModelSegments
-   $reslt: PMML4Result( this == $res, resultCode != "OK" ) from childModelResults
+   $reslt: PMML4Result( this == $res, resultCode != null && resultCode != "OK" ) from results
 then
    modify($segExec) {
       setState(SegmentExecutionState.ERROR);
@@ -98,10 +83,14 @@ when
       state in (SegmentExecutionState.COMPLETE, SegmentExecutionState.ERROR, SegmentExecutionState.EXECUTING)
       || (state == SegmentExecutionState.WAITING && segmentIndex < $segIndex) ) from childModelSegments
 then
+   PMML4Result rslt = new PMML4Result($seg);
    request.insert($seg.getRequestData());
-   results.insert(new PMML4Result($seg));
+   results.insert(rslt);
+   modify( $seg ) {
+      setState(SegmentExecutionState.EXECUTING),
+      setResult(rslt)
+   };
    drools.run(@{childSegment.segmentRuleUnit}.class);
-   System.out.println("Segement execution done!");
 end
 
 
