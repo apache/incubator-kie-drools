@@ -33,6 +33,7 @@
 
 
 @if{ pack != null }package @{pack};@end{}
+unit @{unitClassName}
 
 import org.kie.pmml.pmml_4_2.*;
 import org.kie.pmml.pmml_4_2.model.*;
@@ -41,3 +42,35 @@ import org.kie.pmml.pmml_4_2.model.regression.*;
 import org.kie.pmml.pmml_4_2.model.tree.*;
 import org.kie.pmml.pmml_4_2.model.datatypes.*;
 import org.drools.core.factmodel.traits.Traitable;
+import org.kie.api.runtime.rule.FactHandle;
+
+rule 'RuleUnitIndicator'
+when
+then
+   System.out.println("Rules execution available for @{unitClassName}");
+end
+
+rule 'Extract Parameter Info'
+@@Generated
+salience 10
+no-loop
+when
+   $rd: PMMLRequestData( $cid: correlationId != null, $mn: modelName ) from request
+   $pi: ParameterInfo( $name: name, $value: value ) from $rd.mappedRequestParams.values()
+then
+   PMML4DataFactory factory = PMML4DataFactory.get();
+   PMML4Data data = factory.newPMML4Data($cid, $mn, $pi, false, false);
+   pmmlData.insert(data);
+   System.out.println("Inserted "+data);
+end
+
+rule "Override Value"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
+salience 2
+when
+   $new: PMML4Data( $value: value ) from pmmlData
+   $old: PMML4Data( name == $new.name, value != $value, this before $new ) from pmmlData
+then
+   retract($old);
+end
+

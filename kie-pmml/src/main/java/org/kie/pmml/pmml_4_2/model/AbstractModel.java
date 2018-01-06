@@ -51,11 +51,13 @@ public abstract class AbstractModel<T> implements PMML4Model {
     protected static PMML4Helper helper = new PMML4Helper();
 	protected final static String MINING_TEMPLATE_NAME = "MiningSchemaPOJOTemplate";
 	protected final static String OUTPUT_TEMPLATE_NAME = "OutputPOJOTemplate";
+	protected final static String RULE_UNIT_TEMPLATE_NAME = "RuleUnitTemplate";
 	protected static TemplateRegistry templateRegistry;
     public final static String PMML_JAVA_PACKAGE_NAME = "org.kie.pmml.pmml_4_2.model";
 
     protected abstract void addMiningTemplateToRegistry(TemplateRegistry registry);
     protected abstract void addOutputTemplateToRegistry(TemplateRegistry registry);
+    protected abstract void addRuleUnitTemplateToRegistry(TemplateRegistry registry);
 
     static {
     	generatedModelIds = new HashMap<>();
@@ -118,6 +120,20 @@ public abstract class AbstractModel<T> implements PMML4Model {
     	return this.modelType.toString()+"_"+OUTPUT_TEMPLATE_NAME;
     }
     
+    protected String getRuleUnitTemplateName() {
+    	return this.modelType.toString()+"_"+RULE_UNIT_TEMPLATE_NAME;
+    }
+    
+    public String getModelPackageName() {
+    	String pkgName = "";
+    	if (this.getParentModel() != null) {
+    		pkgName = this.getParentModel().getModelPackageName();
+    	} else {
+    		pkgName = this.getOwner().getRootPackage();
+    	}
+    	return pkgName.concat("."+this.getModelId());
+    }
+    
     public Map.Entry<String, String> getMappedMiningPojo() {
     	Map<String,String> result = new HashMap<>();
     	if (!templateRegistry.contains(getMiningPojoTemplateName())) {
@@ -141,7 +157,7 @@ public abstract class AbstractModel<T> implements PMML4Model {
         	// need to figure out logging here
         	return null;
         }
-        result.put(className, new String(baos.toByteArray()));
+        result.put(PMML_JAVA_PACKAGE_NAME+"."+className, new String(baos.toByteArray()));
         return result.entrySet().iterator().next();
     }
 
@@ -174,6 +190,39 @@ public abstract class AbstractModel<T> implements PMML4Model {
     	result.put(className, new String(baos.toByteArray()));
     	return result.entrySet().iterator().next();
     }
+
+    @Override
+    public Map.Entry<String, String> getMappedRuleUnit() {
+    	Map<String,String> result = new HashMap<>();
+    	if (!templateRegistry.contains(this.getRuleUnitTemplateName())) {
+    		this.addRuleUnitTemplateToRegistry(templateRegistry);
+    	}
+    	Map<String, Object> vars = new HashMap<>();
+    	String className = this.getRuleUnitClassName();
+    	vars.put("pmmlPackageName", this.getModelPackageName());
+    	vars.put("className", className);
+    	vars.put("pojoInputClassName", PMMLRequestData.class.getName());
+    	if (this instanceof Miningmodel) {
+    		vars.put("miningPojoClassName", this.getMiningPojoClassName());
+    	}
+    	ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    	try {
+    		TemplateRuntime.execute( templateRegistry.getNamedTemplate(this.getRuleUnitTemplateName()),
+    								 null,
+    								 new MapVariableResolverFactory(vars),
+    								 baos);
+    	} catch (TemplateError te) {
+    		return null;
+    	} catch (TemplateRuntimeError tre) {
+    		// need to figure out logging here
+    		return null;
+    	}
+    	result.put(this.getModelPackageName()+"."+className, new String(baos.toByteArray()));
+    	
+    	return result.isEmpty() ? null : result.entrySet().iterator().next();
+    }
+    
+    
     
     
     @Override
@@ -231,6 +280,7 @@ public abstract class AbstractModel<T> implements PMML4Model {
     	}
     	return fields;
     }
+    
 
     @Override
     public PMML4ModelType getModelType() {
@@ -242,7 +292,7 @@ public abstract class AbstractModel<T> implements PMML4Model {
     	if (this.modelId == null) {
     		this.modelId = generateModelId();
     	}
-        return this.modelId;
+        return helper.compactAsJavaId(this.modelId,true);
     }
 
     @Override
@@ -334,6 +384,11 @@ public abstract class AbstractModel<T> implements PMML4Model {
     	mid.append(lastId);
     	generatedModelIds.put(mt, lastId);
     	return mid.toString();
+    }
+    
+    @Override
+    public String getModelRuleUnitName() {
+    	return this.getModelPackageName()+"."+this.getRuleUnitClassName();
     }
     
     public DataDictionary getDataDictionary() {

@@ -15,6 +15,32 @@
 
 package org.drools.compiler.builder.impl;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.io.StringReader;
+import java.lang.reflect.Array;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Stack;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
+import java.util.function.Supplier;
+
 import org.drools.compiler.compiler.AnnotationDeclarationError;
 import org.drools.compiler.compiler.BPMN2ProcessFactory;
 import org.drools.compiler.compiler.BaseKnowledgeBuilderResultImpl;
@@ -22,6 +48,7 @@ import org.drools.compiler.compiler.ConfigurableSeverityResult;
 import org.drools.compiler.compiler.DecisionTableFactory;
 import org.drools.compiler.compiler.DeprecatedResourceTypeWarning;
 import org.drools.compiler.compiler.DescrBuildError;
+import org.drools.compiler.compiler.DescrBuildWarning;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.DrlParser;
@@ -40,6 +67,7 @@ import org.drools.compiler.compiler.GuidedRuleTemplateProvider;
 import org.drools.compiler.compiler.GuidedScoreCardFactory;
 import org.drools.compiler.compiler.PMMLCompiler;
 import org.drools.compiler.compiler.PMMLCompilerFactory;
+import org.drools.compiler.compiler.PMMLResource;
 import org.drools.compiler.compiler.PackageBuilderErrors;
 import org.drools.compiler.compiler.PackageBuilderResults;
 import org.drools.compiler.compiler.PackageRegistry;
@@ -131,31 +159,6 @@ import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.io.StringReader;
-import java.lang.reflect.Array;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Stack;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
-import java.util.function.Supplier;
 
 import static org.drools.core.impl.KnowledgeBaseImpl.registerFunctionClassAndInnerClasses;
 import static org.drools.core.util.StringUtils.isEmpty;
@@ -407,6 +410,43 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         GuidedDecisionTableProvider guidedDecisionTableProvider = GuidedDecisionTableFactory.getGuidedDecisionTableProvider();
         ResourceConversionResult conversionResult = guidedDecisionTableProvider.loadFromInputStream(resource.getInputStream());
         return conversionResultToPackageDescr(resource, conversionResult);
+    }
+    
+    private List<PackageDescr> generatedResourcesToPackageDescr(Resource resource, List<PMMLResource> resources) throws DroolsParserException {
+    	List<PackageDescr> pkgDescrs = new ArrayList<>();
+    	DrlParser parser = new DrlParser(configuration.getLanguageLevel());
+    	for (PMMLResource res : resources) {
+    		for (String key: res.getRules().keySet()) {
+    			String src = res.getRules().get(key);
+    	    	PackageDescr descr = null;
+				descr = parser.parse(false, src);
+    	    	if (descr != null) {
+    				descr.setResource(resource);
+    	    		pkgDescrs.add(descr);
+    	    		dumpGeneratedRule(descr,key,src);
+    	    	} else {
+    	            addBuilderResult(new ParserError(resource, "Parser returned a null Package", 0, 0));
+    	    	}
+    		}
+    	}
+    	return pkgDescrs;
+    }
+
+    private void dumpGeneratedRule(PackageDescr descr, String resName, String src) {
+    	File dumpDir = this.configuration.getDumpDir();
+    	if (dumpDir != null) {
+    		try {
+				String dirName = dumpDir.getCanonicalPath().endsWith("/") ? dumpDir.getCanonicalPath() : dumpDir.getCanonicalPath() + "/";
+				String outputPath = dirName + resName + ".drl";
+		        try (FileOutputStream fos = new FileOutputStream(outputPath)) {
+		            fos.write(src.getBytes());
+		        } catch (IOException iox) {
+					this.addBuilderResult(new DescrBuildWarning(null, descr, descr.getResource(), "Unable to write generated rules the dump directory: "+outputPath));
+		        }
+			} catch (IOException e) {
+				this.addBuilderResult(new DescrBuildWarning(null, descr, descr.getResource(), "Unable to access the dump directory"));
+			}
+    	}
     }
 
     private PackageDescr generatedDrlToPackageDescr(Resource resource, String generatedDrl) throws DroolsParserException {
@@ -796,17 +836,59 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
             throw new RuntimeException("Unknown resource type: " + type);
         }
     }
-
     public void addPackageFromPMML(Resource resource,
+            ResourceType type,
+            ResourceConfiguration configuration) throws Exception {
+        PMMLCompiler compiler = getPMMLCompiler();
+        if ("KIE PMML v2".equals(compiler.getCompilerVersion())) {
+        	addPackageFromKiePMML(compiler,resource,type,configuration);
+        } else {
+        	addPackageFromDroolsPMML(compiler,resource,type,configuration);
+        }
+    }
+
+	private void addPackageFromDroolsPMML(PMMLCompiler compiler, Resource resource, 
+						ResourceType type, ResourceConfiguration configuration) throws Exception {
+		if (compiler != null) {
+			if (compiler.getResults().isEmpty()) {
+				this.resource = resource;
+				PackageDescr descr = pmmlModelToPackageDescr(compiler, resource);
+				if (descr != null) {
+					addPackage(descr);
+				}
+				this.resource = null;
+			} else {
+				this.results.addAll(compiler.getResults());
+			}
+			compiler.clearResults();
+		} else {
+			addPackageForExternalType(resource, type, configuration);
+		}
+	}
+
+	PackageDescr pmmlModelToPackageDescr(PMMLCompiler compiler, Resource resource)
+			throws DroolsParserException, IOException {
+		String theory = compiler.compile(resource.getInputStream(), rootClassLoader);
+
+		if (!compiler.getResults().isEmpty()) {
+			this.results.addAll(compiler.getResults());
+			return null;
+		}
+
+		return generatedDrlToPackageDescr(resource, theory);
+	}    
+    
+    private void addPackageFromKiePMML(PMMLCompiler compiler, Resource resource,
                                    ResourceType type,
                                    ResourceConfiguration configuration) throws Exception {
-        PMMLCompiler compiler = getPMMLCompiler();
         if (compiler != null) {
             if (compiler.getResults().isEmpty()) {
                 this.resource = resource;
-                PackageDescr descr = pmmlModelToPackageDescr(compiler, resource);
-                if (descr != null) {
-                    addPackage(descr);
+                List<PackageDescr> descrs = pmmlModelToKiePackageDescr(compiler, resource);
+                if (descrs != null && !descrs.isEmpty()) {
+                	for (PackageDescr descr: descrs) {
+                		addPackage(descr);
+                	}
                 }
                 this.resource = null;
             } else {
@@ -818,18 +900,16 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         }
     }
 
-    PackageDescr pmmlModelToPackageDescr(PMMLCompiler compiler,
+    List<PackageDescr> pmmlModelToKiePackageDescr(PMMLCompiler compiler,
                                          Resource resource) throws DroolsParserException,
             IOException {
-        String theory = compiler.compile(resource.getInputStream(),
-                                         rootClassLoader);
-
-        if (!compiler.getResults().isEmpty()) {
-            this.results.addAll(compiler.getResults());
-            return null;
-        }
-
-        return generatedDrlToPackageDescr(resource, theory);
+    	List<PMMLResource> resources = compiler.precompile(resource.getInputStream(), null, null);
+    	if (resources != null && !resources.isEmpty()) {
+    		return generatedResourcesToPackageDescr(resource,resources);
+    	} else if (!compiler.getResults().isEmpty()) {
+    		this.results.addAll(compiler.getResults());
+    	}
+		return null;
     }
 
     void addPackageFromXSD(Resource resource,
@@ -2198,6 +2278,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
         return new ResourceRemovalResult(modified, removedTypes);
     }
+    
 
     public static class ResourceRemovalResult {
         private boolean modified;

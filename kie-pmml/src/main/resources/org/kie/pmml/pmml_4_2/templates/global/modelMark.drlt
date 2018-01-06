@@ -18,17 +18,18 @@
 @declare{'modelMarkRule'}
 
 rule "Mark_@{name}"
-salience 9999
+salience 10000
 no-loop
 when
 //    not ModelMarker( "@{name}" ; )
 then
 //    System.out.println( "Marking @{name}" );
     ModelMarker mark = new ModelMarker( "@{name}", "@{type}" );
-    insertLogical( mark );
+    insert( mark );
 end
 
 rule "Enable/Disable Model_@{name}"
+salience 10000
 when
     $flag : Boolean() from entry-point "enable_@{name}"
     $mark : ModelMarker( modelName == "@{name}", enabled != $flag )
@@ -40,14 +41,12 @@ then
 end
 
 rule "Cleanup data_@{name}"
+salience -10000
 when
     $mark : ModelMarker( modelName == "@{name}", enabled == false )
     $data : DataField( context == "@{name}" )
 then
     delete( $data );
 end
-
 @end{}
-
-
 @includeNamed{'modelMarkRule'}

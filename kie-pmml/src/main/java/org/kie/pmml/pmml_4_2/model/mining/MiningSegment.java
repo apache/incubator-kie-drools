@@ -42,7 +42,7 @@ public class MiningSegment implements Comparable<MiningSegment> {
 	private PredicateRuleProducer predicateRuleProducer;
 	private boolean alwaysTrue;
 	private PMML4Model internalModel;
-	private String segmentAgendaId;
+	private String segmentRuleUnit;
 	private int segmentIndex;
 	private static CompiledTemplate launchTemplate;
 	private static final String segmentPackageRootName = "org.kie.pmml.pmml_4_2";
@@ -164,11 +164,11 @@ public class MiningSegment implements Comparable<MiningSegment> {
 		return builder.toString();
 	}
 	
-	public String getSegmentAgendaId() {
-		if (this.segmentAgendaId == null || this.segmentAgendaId.trim().isEmpty()) {
-			this.segmentAgendaId = this.getOwner().getSegmentationAgendaId().concat("_SEGMENT_"+this.getSegmentId());
+	public String getSegmentRuleUnit() {
+		if (this.segmentRuleUnit == null || this.segmentRuleUnit.trim().isEmpty()) {
+			this.segmentRuleUnit = this.getModel().getModelPackageName()+"."+this.getModel().getRuleUnitClassName();
 		}
-		return this.segmentAgendaId;
+		return this.segmentRuleUnit;
 	}
 	
 	public int getSegmentIndex() {

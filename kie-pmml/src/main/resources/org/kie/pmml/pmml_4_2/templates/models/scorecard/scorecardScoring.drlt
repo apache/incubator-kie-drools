@@ -91,22 +91,39 @@ salience -15
 when
     $s : ScoreCard( enableRC == true )
     $x : ScoreRank( scoreCard == $s, $map : rank )
+   $reslt: PMML4Result( resultVariables == null || "ScoreCard" not memberOf resultVariables.keySet() ) from results
 then
     retract( $x );
     modify ( $s ) {
         setRanking( $map );
     }
+   $reslt.setResultCode("OK");
+   $reslt.addResultVariable("ScoreCard",$s);
+   update($reslt);
 end
-
-rule "Update PMMLResult with Scorecard"
+/*
+rule "Add Scorecard to PMMLResult"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience -16
 when
    $sc: ScoreCard( )
-   $reslt: PMML4Result( resultVariables == null || "ScoreCard" not memberOf resultVariables.keySet() )
+   $reslt: PMML4Result( resultVariables == null || "ScoreCard" not memberOf resultVariables.keySet() ) from results
 then
+   System.out.println("Adding Scorecard to PMMLResult");
    $reslt.setResultCode("OK");
    $reslt.addResultVariable("ScoreCard",$sc);
+   update($reslt);
+end
+*/
+rule "Update Scorecard in PMMLResult"
+salience -16
+no-loop
+when
+   $reslt: PMML4Result( "Scorecard" memberOf resultVariables.keySet() ) from results
+   $scold: ScoreCard() from $reslt.resultVariables["ScoreCard"]
+   $sc: ScoreCard()
+then
+   $reslt.updateResultVariable("ScoreCard",$sc);
    update($reslt);
 end
 

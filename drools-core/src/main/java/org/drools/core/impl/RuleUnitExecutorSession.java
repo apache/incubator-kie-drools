@@ -17,6 +17,7 @@
 package org.drools.core.impl;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -37,9 +38,12 @@ import org.drools.core.ruleunit.RuleUnitGuardSystem;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.FactHandleFactory;
 import org.kie.api.KieBase;
+import org.kie.api.KieServices;
+import org.kie.api.logger.KieRuntimeLogger;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.Globals;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.rule.DataSource;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.RuleUnit;
@@ -119,6 +123,58 @@ public class RuleUnitExecutorSession implements InternalRuleUnitExecutor {
         }
         getRuleUnitFactory().bindVariable( name, dataSource );
         return dataSource;
+    }
+    
+    @Override
+    public Collection<?> getSessionObjects() {
+    	if (session != null) {
+    		return session.getObjects();
+    	}
+    	return Collections.emptyList();
+    }
+    
+    @Override
+    public Collection<?> getSessionObjects(ObjectFilter filter) {
+    	if (session != null) {
+    		return session.getObjects(filter);
+    	}
+    	return Collections.emptyList();
+    }
+
+    @Override
+    public KieRuntimeLogger addConsoleLogger() {
+        if (this.session != null) {
+            return KieServices.Factory.get().getLoggers().newConsoleLogger(session);
+        } else {
+            throw new IllegalStateException("Cannot add logger to the rule unit when the session is not available");
+        }
+    }
+
+    @Override
+    public KieRuntimeLogger addFileLogger(String fileName) {
+        if (this.session != null) {
+            return KieServices.Factory.get().getLoggers().newFileLogger(session, fileName);
+        } else {
+            throw new IllegalStateException("Cannot add logger to the rule unit when the session is not available");
+        }
+    }
+
+    @Override
+    public KieRuntimeLogger addFileLogger(String fileName, int maxEventsInMemory) {
+        if (this.session != null) {
+            return KieServices.Factory.get().getLoggers().newFileLogger(session, fileName, maxEventsInMemory);
+        } else {
+            throw new IllegalStateException("Cannot add logger to the rule unit when the session is not available");
+        }
+    }
+
+    @Override
+    public KieRuntimeLogger addThreadedFileLogger(String fileName, int interval) {
+        if (this.session != null) {
+            return KieServices.Factory.get().getLoggers().newThreadedFileLogger(session, fileName, interval);
+        } else {
+            throw new IllegalStateException("Cannot add logger to the rule unit when the session is not available");
+        }
     }
 
     public int run( Class<? extends RuleUnit> ruleUnitClass ) {

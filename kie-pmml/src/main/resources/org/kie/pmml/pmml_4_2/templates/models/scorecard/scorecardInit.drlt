@@ -30,15 +30,28 @@
 rule "Init ScoreCard @{name}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
-    ModelMarker( "@{context}" ; enabled == true )
+//    ModelMarker( "@{context}" ; enabled == true )
+    $rqst: PMMLRequestData( correlationId != null, requestParams != null ) from request
 then
-    AbstractPMMLData data = new @{name}ScoreCardData("@{context}" );
+    AbstractPMMLData data = new @{name}ScoreCardData($rqst);
 //    @{ pmmlPackageName }.ScoreCardData data = new @{name}ScoreCardData ( "@{context}" );
     ScoreCard card = new ScoreCard( "@{context}", 0.0, data, @{useRC}, @{pointsBelow}, new java.util.LinkedHashMap() );
     insert( data );
     insert( card );
 
     @if{ zero != null } insertLogical( new InitialScore( "@{context}", @{ zero } ) ); @end{}
+end
+
+rule "Scoring Complete"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
+salience -200
+when
+   $tgt: ScoreCard()
+   $reslt: PMML4Result( resultVariables == null || "ScoreCard" not memberOf resultVariables.keySet() ) from results
+then
+   $reslt.setResultCode("OK");
+   $reslt.addResultVariable("ScoreCard",$tgt);
+   update($reslt);
 end
 
 

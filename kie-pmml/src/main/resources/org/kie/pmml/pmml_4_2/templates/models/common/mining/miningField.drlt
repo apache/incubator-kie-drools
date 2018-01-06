@@ -31,11 +31,11 @@
 rule miningPmml4Data_@{model}_@{name}
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
-   $src: PMML4Data( capitalizedName == "@{name}", $m : missing, $v : valid, $x : value, context == null, placeholder == false )
+   $src: PMML4Data( name == "@{rawName}", $m : missing, $v : valid, $x : value, context == null, placeholder == false ) from pmmlData
 then
    PMML4Data data = (PMML4Data)PMML4DataFactory.get().copy($src);
    data.setContext(@{format("string",model)});
-   insertLogical(data);
+   pmmlData.insert(data);
 end;
 
 
@@ -44,10 +44,10 @@ rule "InitAsMissing_PMML4Data_@{model}_@{name}"
 salience 1000
 when
    ModelMarker( modelName == "@{model}", enabled == true )
-   not PMML4Data( capitalizedName == "@{name}", context == null )
+   not PMML4Data( capitalizedName == "@{name}", context == null ) from pmmlData
 then
    PMML4DataType data = PMML4DataFactory.get().getPlaceholder("","@{name}","@{model}");
-   insertLogical( data );
+   pmmlData.insert( data );
 end
 
 
@@ -56,8 +56,8 @@ rule "RemoveMissing_PMML4Data_@{model}_@{name}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience 1000
 when
-    $val : PMML4Data( capitalizedName == "@{name}", context == "@{model}", missing == false )
-    $mis : PMML4Data( capitalizedName == "@{name}", context == "@{model}", missing == true )
+    $val : PMML4Data( capitalizedName == "@{name}", context == "@{model}", missing == false ) from pmmlData
+    $mis : PMML4Data( capitalizedName == "@{name}", context == "@{model}", missing == true ) from pmmlData
 then
     delete( $mis );
 end
