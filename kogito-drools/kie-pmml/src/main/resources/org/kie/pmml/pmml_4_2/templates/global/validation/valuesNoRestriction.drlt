@@ -1,0 +1,37 @@
+@comment{
+
+  Copyright 2011 Red Hat, Inc. and/or its affiliates.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+}
+
+
+@comment{
+    The rule sets fields without restrictions as valid
+}
+@declare{'valuesNoRestrictionRule'}
+rule "Valid_PMML4DataUnrestricted_Values_@{name}-@{context}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
+dialect 'java'
+no-loop
+salience 9999
+when
+   $in : PMML4Data( capitalizedName == "@{name}", valid == false, placeholder == false @if{ context != null }, context == @{format("string",context)}@end{} ) from pmmlData
+then
+   modify($in) {
+      setValid( true );
+   }
+   System.out.println("Validated "+$in);
+end
+@end{}
+@includeNamed{'valuesNoRestrictionRule'}

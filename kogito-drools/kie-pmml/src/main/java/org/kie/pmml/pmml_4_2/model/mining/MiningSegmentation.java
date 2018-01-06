@@ -162,7 +162,7 @@ public class MiningSegmentation {
 		StringBuilder builder = new StringBuilder();
 		loadTemplates(this.multipleModelMethod);
 		Map<String, Object> templateVars = new HashMap<>();
-		String pkgName = "org.kie.pmml.pmml_4_2."+this.getSegmentationId();
+		String pkgName = this.getOwner().getModelPackageName();//"org.kie.pmml.pmml_4_2."+this.getSegmentationId();
 		CompiledTemplate ct = null;
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		switch (this.multipleModelMethod) {
@@ -188,6 +188,7 @@ public class MiningSegmentation {
 				builder.append(new String(baos.toByteArray()));
 				break;
 			case SELECT_ALL:
+				templateVars.put("ruleUnitClassName", this.getOwner().getRuleUnitClassName());
 				templateVars.put("miningModel", this.getOwner());
 				templateVars.put("childSegments", this.getMiningSegments());
 				templateVars.put("packageName", pkgName);
@@ -196,6 +197,7 @@ public class MiningSegmentation {
 				builder.append(new String(baos.toByteArray()));
 				break;
 			case SELECT_FIRST:
+				templateVars.put("ruleUnitClassName", this.getOwner().getRuleUnitClassName());
 				templateVars.put("miningModel", this.getOwner());
 				templateVars.put("childSegments", this.getMiningSegments());
 				templateVars.put("packageName", pkgName);

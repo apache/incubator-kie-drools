@@ -30,6 +30,7 @@ import org.mvel2.templates.TemplateRegistry;
 public class ScorecardModel extends AbstractModel<Scorecard> {
     private static String SCORECARD_MINING_POJO_TEMPLATE = "/org/kie/pmml/pmml_4_2/templates/mvel/scorecard/scorecardDataClass.mvel";
     private static String SCORECARD_OUTPUT_POJO_TEMPLATE = "/org/kie/pmml/pmml_4_2/templates/mvel/scorecard/scorecardOutputClass.mvel";
+    private static String SCORECARD_RULE_UNIT_TEMPLATE = "/org/kie/pmml/pmml_4_2/templates/mvel/scorecard/scorecardRuleUnit.mvel";
 
     public ScorecardModel( String modelId, Scorecard rawModel, PMML4Model parentModel, PMML4Unit owner) {
         super(modelId, PMML4ModelType.SCORECARD, owner, parentModel, rawModel);
@@ -84,6 +85,11 @@ public class ScorecardModel extends AbstractModel<Scorecard> {
     public String getOutputPojoClassName() {
     	return helper.compactAsJavaId(this.getModelId().concat("ScoreCardOutput"),true);
     }
+    
+    @Override
+    public String getRuleUnitClassName() {
+    	return helper.compactAsJavaId(this.getModelId().concat("ScorecardRuleUnit"), true);
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -120,6 +126,17 @@ public class ScorecardModel extends AbstractModel<Scorecard> {
 			CompiledTemplate ct = TemplateCompiler.compileTemplate(inputStream);
 			if (ct != null) {
 				registry.addNamedTemplate(getOutputPojoTemplateName(), ct);
+			}
+		}
+	}
+	
+	@Override
+	protected void addRuleUnitTemplateToRegistry(TemplateRegistry registry) {
+		InputStream inputStream = Scorecard.class.getResourceAsStream(SCORECARD_RULE_UNIT_TEMPLATE);
+		if (inputStream != null) {
+			CompiledTemplate ct = TemplateCompiler.compileTemplate(inputStream);
+			if (ct != null) {
+				registry.addNamedTemplate(getRuleUnitTemplateName(), ct);
 			}
 		}
 	}

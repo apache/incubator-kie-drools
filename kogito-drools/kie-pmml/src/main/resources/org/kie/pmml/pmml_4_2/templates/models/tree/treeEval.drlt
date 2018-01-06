@@ -28,7 +28,6 @@
 rule "Eval Tree Node @{context} - @{id} - Down"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience $children.size() - $children.indexOf( $child )
-dialect "mvel"
 when
     $node : TreeNode( context == "@{context}", $id : id == "@{id}", $children : children, children.size > 0 )
     $tok  : @{context}TreeToken( context == "@{context}", current == "@{id}", $trail : trail,
@@ -50,7 +49,7 @@ salience 3
 no-loop
 when
    $tok: @{context}TreeToken( context == "@{context}", current == "null", totalCount > 0, confidence != null )
-   $reslt: PMML4Result( resultVariables == null || "@{context}TreeToken" not memberOf resultVariables.keySet() )
+   $reslt: PMML4Result( resultVariables == null || "@{context}TreeToken" not memberOf resultVariables.keySet() ) from results
 then
    $reslt.setResultCode("OK");
    $reslt.addResultVariable("@{context}TreeToken",$tok);

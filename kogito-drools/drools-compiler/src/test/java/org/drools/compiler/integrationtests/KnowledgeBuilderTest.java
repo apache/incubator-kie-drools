@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.compiler.compiler.PMMLCompiler;
 import org.drools.compiler.compiler.PMMLResource;
@@ -493,6 +494,16 @@ public class KnowledgeBuilderTest {
 														public List<PMMLResource> precompile(String fileName,
 																ClassLoader classLoader, KieBaseModel rootModel) {
 															return Collections.emptyList();
+														}
+
+														@Override
+														public Map<String, String> getJavaClasses(InputStream stream) {
+															return Collections.emptyMap();
+														}
+
+														@Override
+														public Map<String, String> getJavaClasses(String fileName) {
+															return Collections.emptyMap();
 														}
                                                       } );
 

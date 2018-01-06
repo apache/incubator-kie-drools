@@ -33,13 +33,13 @@ salience 999
 when
     $x : PMML4Data( capitalizedName == "@{name}", $m : missing == false, $v : valid == true, placeholder == false,
                context == @{format("string",model)},
-               value > @{upp} )
+               value > @{upp} ) from pmmlData
 then
     delete( $x );
     $x.setValue( @{upp} );
     $x.setMissing( false );
     $x.setValid( true );
-    insert( $x );
+    pmmlData.insert( $x );
 end
 
 

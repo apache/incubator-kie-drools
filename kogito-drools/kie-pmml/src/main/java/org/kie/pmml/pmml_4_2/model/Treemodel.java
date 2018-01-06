@@ -33,6 +33,7 @@ import org.mvel2.templates.TemplateRegistry;
 public class Treemodel extends AbstractModel<TreeModel> {
 	private static final String MINING_POJO_TEMPLATE="/org/kie/pmml/pmml_4_2/templates/mvel/tree/treeMiningPojo.mvel";
 	private static final String OUTPUT_POJO_TEMPLATE="/org/kie/pmml/pmml_4_2/templates/mvel/tree/treeOutputPojo.mvel";
+	private static final String RULE_UNIT_TEMPLATE="/org/kie/pmml/pmml_4_2/templates/mvel/tree/treeRuleUnit.mvel";
 
 	public Treemodel( String modelId, TreeModel rawModel, PMML4Model parentModel, PMML4Unit owner) {
 		super(modelId, PMML4ModelType.TREE, owner, parentModel, rawModel);
@@ -52,6 +53,11 @@ public class Treemodel extends AbstractModel<TreeModel> {
 	@Override
 	public String getOutputPojoClassName() {
 		return helper.compactAsJavaId(this.getModelId().concat("TreeOutput"), true);
+	}
+	
+	@Override
+	public String getRuleUnitClassName() {
+		return helper.compactAsJavaId(this.getModelId().concat("TreeRuleUnit"),true);
 	}
 
 	@Override
@@ -90,6 +96,17 @@ public class Treemodel extends AbstractModel<TreeModel> {
 			CompiledTemplate ct = TemplateCompiler.compileTemplate(inputStream);
 			if (ct != null) {
 				registry.addNamedTemplate(getOutputPojoTemplateName(), ct);
+			}
+		}
+	}
+	
+	@Override
+	protected void addRuleUnitTemplateToRegistry(TemplateRegistry registry) {
+		InputStream inputStream = Scorecard.class.getResourceAsStream(RULE_UNIT_TEMPLATE);
+		if (inputStream != null) {
+			CompiledTemplate ct = TemplateCompiler.compileTemplate(inputStream);
+			if (ct != null) {
+				registry.addNamedTemplate(getRuleUnitTemplateName(), ct);
 			}
 		}
 	}

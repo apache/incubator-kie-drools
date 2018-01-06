@@ -15,9 +15,11 @@
  */
 package org.kie.pmml.pmml_4_2.model.datatypes;
 
+import org.kie.api.definition.type.PropertyReactive;
 import org.kie.api.definition.type.Role;
 import org.kie.api.definition.type.Role.Type;
 
+@PropertyReactive
 @Role(Type.EVENT)
 public abstract class PMML4Data<T> implements PMML4DataType {
 	private T value;

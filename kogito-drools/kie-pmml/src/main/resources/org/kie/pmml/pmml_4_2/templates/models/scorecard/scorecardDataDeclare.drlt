@@ -32,7 +32,7 @@ rule "Bind_Scorecard_PMML4Data_@{name}_@{fieldName}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
    $in : PMML4Data( capitalizedName == "@{ compactUpperCase(fieldName) }", context == "@{name}", 
-                    placeholder == false, missing == true || valid == true, $m : missing, $v : value )
+                    placeholder == false, missing == true || valid == true, $m : missing, $v : value ) from pmmlData
    $sc : @{name}ScoreCardData( ( m@{ compactUpperCase( fieldName ) } == true && != $m )
                                || v@{ compactUpperCase( fieldName ) } != $v )
 then

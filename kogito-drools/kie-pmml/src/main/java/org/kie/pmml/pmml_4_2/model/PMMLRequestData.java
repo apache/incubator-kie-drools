@@ -31,7 +31,7 @@ public class PMMLRequestData {
 	private String correlationId;
     private String modelName;
     private String source;
-    private List<ParameterInfo> requestParams;
+    private List<ParameterInfo<?>> requestParams;
 
     public PMMLRequestData(String correlationId) {
     	this.correlationId = correlationId;
@@ -49,12 +49,8 @@ public class PMMLRequestData {
     }
 
     public String getCompactCapitalizedModelName() {
-        String[] tokens = modelName.split(" ");
-        StringBuilder builder = new StringBuilder();
-        for (String part: tokens) {
-            builder.append(part.substring(0,1).toUpperCase()).append(part.substring(1));
-        }
-        return builder.toString();
+    	String compactName = modelName.replaceAll("\\s", "");
+    	return compactName.substring(0,1).toUpperCase()+compactName.substring(1);
     }
 
     public synchronized Map<String, ParameterInfo> getMappedRequestParams() {
@@ -163,7 +159,7 @@ public class PMMLRequestData {
         stringBuilder.append("correlationId=").append(correlationId).append(", ");
         stringBuilder.append("modelName=").append(modelName).append(", ");
         stringBuilder.append("source=").append(source).append(", requestParams=[");
-        Iterator<ParameterInfo> iter = requestParams.iterator();
+        Iterator<ParameterInfo<?>> iter = requestParams.iterator();
         boolean firstParam = true;
         while (iter.hasNext()) {
             if (!firstParam) {
@@ -171,7 +167,7 @@ public class PMMLRequestData {
             } else {
                 firstParam = false;
             }
-            ParameterInfo pi = iter.next();
+            ParameterInfo<?> pi = iter.next();
             stringBuilder.append(pi.toString());
         }
         stringBuilder.append("] )");

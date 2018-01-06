@@ -182,5 +182,13 @@ public class RegTable {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return "RegTable [context=" + context + ", target=" + target + ", category=" + category + ", numCoeffs="
+				+ Arrays.toString(numCoeffs) + ", numExps=" + Arrays.toString(numExps) + ", catCoeffs="
+				+ Arrays.toString(catCoeffs) + ", trmCoeffs=" + Arrays.toString(trmCoeffs) + ", intercept=" + intercept
+				+ ", index=" + index + "]";
+	}
+
 	
 }

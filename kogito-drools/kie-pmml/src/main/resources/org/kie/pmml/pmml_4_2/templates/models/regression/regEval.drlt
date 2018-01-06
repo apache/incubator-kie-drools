@@ -27,6 +27,7 @@
 rule "Regress Model Output @{context} : @{target} - @{category}"
 @code{ int k = 0; }
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
+dialect "java"
 when
     RegTable( context == "@{context}",
               target == "@{target}",
@@ -37,7 +38,7 @@ when
               $trmC : trmCoeffs,
               $ix   : index )
     @foreach{ fld : inputFields }
-    x@{k} : PMML4Data( capitalizedName == "@{compactUpperCase(fld.name)}", context == "@{context}", valid == true, valx@{compactUpperCase(fld.name)} : value )
+    x@{k} : PMML4Data( name == "@{fld.name}", context == "@{context}", valid == true, valx@{compactUpperCase(fld.name)} : value ) from pmmlData
     @code{ k++; }
     @end{}
 then
@@ -84,9 +85,10 @@ end
 
 rule "Update PMML4Result with target - @{context} : @{target} - @{category}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
+dialect "java"
 when
    $tgt: @{target}( context == "@{context}" )
-   $reslt: PMML4Result( resultVariables == null || "@{target}" not memberOf resultVariables.keySet() )
+   $reslt: PMML4Result( resultVariables == null || "@{target}" not memberOf resultVariables.keySet() ) from results
 then
    $reslt.setResultCode("OK");
    $reslt.addResultVariable("@{target}",$tgt);

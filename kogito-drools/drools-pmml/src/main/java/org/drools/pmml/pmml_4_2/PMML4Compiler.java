@@ -60,6 +60,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PMML4Compiler implements PMMLCompiler {
 
@@ -586,6 +587,23 @@ public class PMML4Compiler implements PMMLCompiler {
     	return "Drools PMML v1";
     }
 
+    /**
+     * The following method is added for interface compatibility
+     * and does nothing in this implementation
+     */
+    @Override
+    public Map<String,String> getJavaClasses(String fileName) {
+       return null;
+    }
+
+    /**
+     * The following method is added for interface compatibility
+     * and does nothing in this implementation
+     */
+    @Override
+    public Map<String,String> getJavaClasses(InputStream stream) {
+       return null;
+    }
 
 
 }

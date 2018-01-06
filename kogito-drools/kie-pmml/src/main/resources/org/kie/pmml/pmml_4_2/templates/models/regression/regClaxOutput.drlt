@@ -56,9 +56,10 @@ end
 
 rule "Update PMML4Result with Classification @{context} : @{target}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
+dialect "java"
 when
    $tgt: @{target}( context == "@{context}" )
-   $reslt: PMML4Result( resultVariables == null || "@{target}" not memberOf resultVariables.keySet() )
+   $reslt: PMML4Result( resultVariables == null || "@{target}" not memberOf resultVariables.keySet() ) from results
 then
    $reslt.setResultCode("OK");
    $reslt.addResultVariable("@{target}",$tgt);

@@ -31,13 +31,13 @@ rule "miningFieldInvalid_PMML4Data_@{model}_@{name}"
 salience 999
 when
    $x: PMML4Data( capitalizedName == "@{name}", $m : missing, $v : valid == false, placeholder == false,
-                  context == @{format("string",model)} )
+                  context == @{format("string",model)} ) from pmmlData
 then
    delete( $x );
    $x.setValue( @{ replacement != null ? format( mapDatatype( type ), replacement ) : zeroForDatatype( type ) } );
    $x.setMissing( @{replacement == null} );
    $x.setValid( true );
-   insert( $x );
+   pmmlData.insert( $x );
 end
 
 

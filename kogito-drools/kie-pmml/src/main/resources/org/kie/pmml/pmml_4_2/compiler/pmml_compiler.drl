@@ -27,6 +27,8 @@ global StringBuilder theory;
 global org.mvel2.templates.TemplateRegistry registry;
 global java.util.Map fld2var;
 global org.kie.pmml.pmml_4_2.PMML4Helper utils;
+global String unitPackageName;
+global String ruleUnitClassName;
 
 dialect "mvel"
 
@@ -112,7 +114,8 @@ when
     Extension( name == PMMLExtensionNames.MODEL_PACKAGE, $val : value ) from $xt
 then
     HashMap map = utils.container;
-        map.put( "pack", $val );
+        map.put( "pack", unitPackageName );
+        map.put( "unitClassName", ruleUnitClassName );
     utils.applyTemplate( "pmml_header.drlt", $h, registry, map, theory );
 end
 
@@ -133,7 +136,8 @@ when
     not Extension( name == PMMLExtensionNames.MODEL_PACKAGE ) from $xt
 then
     HashMap map = utils.container;
-        map.put( "pack", utils.getPack() );
+        map.put( "pack", unitPackageName );
+        map.put( "unitClassName", ruleUnitClassName );
     utils.applyTemplate( "pmml_header.drlt", $h, registry, map, theory );
 end
 
@@ -214,6 +218,7 @@ then
         map.put( "context", utils.context );
         map.put( "fullName", $fld.displayName );
         map.put( "name", utils.compactUpperCase( $fld.name ) );
+        map.put( "rawName", $fld.name );
         map.put( "type", utils.mapDatatype( $fld.dataType ) );
         map.put( "cyclic", ( "1".equals( $fld.isCyclic ) ) );
         map.put( "notRestricted", ( $isize.size() == 0 && $vsize == 0 ) );
@@ -275,6 +280,28 @@ then
     utils.applyTemplate( "valuesOnDomainRestriction.drlt", utils, registry, map, theory );
 end
 
+rule "processDataField_noRestrictions_emptyValues"
+when
+    $fld    : DataField( values.isEmpty() )
+then
+    HashMap map = utils.container;
+        map.put( "context", utils.context );
+        map.put( "name", utils.compactUpperCase( $fld.name ) );
+        map.put( "field", $fld );
+    utils.applyTemplate( "valuesNoRestriction.drlt", utils, registry, map, theory );
+end
+
+rule "processDataField_noRestrictions_onlyMissingOrInvalid"
+when
+    $fld : DataField( $vals : values, values.size() > 0 )
+    forall ( Value( property == "missing" || property == "invalid" ) from $vals )
+then
+    HashMap map = utils.container;
+        map.put( "context", utils.context );
+        map.put( "name", utils.compactUpperCase( $fld.name ) );
+        map.put( "field", $fld );
+    utils.applyTemplate( "valuesNoRestriction.drlt", utils, registry, map, theory );
+end    
 
 rule "processDataField_valueValidation_missing"
 when
@@ -1376,6 +1403,7 @@ then
     //System.err.println("Found Mined Field " + $fld.name );
     HashMap map = utils.container;
         map.put( "name", utils.compactUpperCase( $fld.name ) );
+        map.put( "rawName", $fld.name );
         map.put( "model", utils.context );
     utils.applyTemplate( "miningField.drlt", utils, registry, map, theory );
 end

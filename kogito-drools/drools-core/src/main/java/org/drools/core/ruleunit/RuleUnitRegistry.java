@@ -94,6 +94,10 @@ public class RuleUnitRegistry {
         return Optional.ofNullable(unitClassName)
                 .map(name -> ruleUnits.computeIfAbsent(name, this::findRuleUnitDescr));
     }
+    
+    public Optional<RuleUnitDescr> getNamedRuleUnit(String ruleUnitName) {
+    	return ruleUnits != null ? Optional.of(ruleUnits.get(ruleUnitName)) : Optional.empty();
+    }
 
     private RuleUnitDescr findRuleUnitDescr(String ruleUnit) {
         if (nonExistingUnits.contains(ruleUnit)) {

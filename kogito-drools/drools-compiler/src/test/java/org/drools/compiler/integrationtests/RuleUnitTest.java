@@ -175,7 +175,7 @@ public class RuleUnitTest {
             // expected
         }
     }
-
+    
     @Test
     public void testRunUnexistingUnit() throws Exception {
         String drl1 =
@@ -897,6 +897,360 @@ public class RuleUnitTest {
         executor.run(BoxOfficeUnit.class); // no fire
 
         assertEquals( 0, list.size() );
+    }
+    
+    @Test
+    public void testComplexData() {
+    	String drl1 = 
+			"package org.drools.compiler.integrationtests\n" +
+			"unit "+getCanonicalSimpleName(ComplexDataUnit.class)+"\n" +
+			"import "+RequestData.class.getCanonicalName()+"\n" +
+			"import "+ParameterHolder.class.getCanonicalName()+"\n" +
+			"import "+InternalData.class.getCanonicalName()+"\n" +
+			"import "+InternalDataFactory.class.getCanonicalName()+"\n" +
+			"import "+Person.class.getCanonicalName()+"\n" +
+			"\n" +
+			"\n" +
+			"rule 'Extract Named Parameter out of Request - Name'\n" +
+			"when\n" +
+			"   $request: RequestData( $id: requestId != null, modelId != null, $parameters: parameters != null ) from requestData\n" +
+			"   $param: ParameterHolder( capitalizedName == \"Name\" ) from $parameters\n" +
+			"then\n" +
+			"   System.out.printf(\"Parameter found: %s with value of %s%n\",$param.getCapitalizedName(),$param.getValue());\n" +
+			"   InternalData d = InternalDataFactory.get().createInternalData($param);\n" +
+			"   insert(d); \n" +
+			"end\n" +
+			"\n" +
+			"\n" +
+			"rule 'Extract Named Parameter out of Request - LikesBeets'\n" +
+			"when\n" +
+			"   $request: RequestData( $id: requestId != null, modelId != null, $parameters: parameters != null ) from requestData\n" +
+			"   $param: ParameterHolder( capitalizedName == \"LikesBeets\" ) from $parameters\n" +
+			"then\n" +
+			"   System.out.printf(\"Parameter found: %s with value of %s%n\",$param.getCapitalizedName(),$param.getValue());\n" +
+			"   InternalData d = InternalDataFactory.get().createInternalData($param);\n" +
+			"   insert(d); \n" +
+			"end\n" +
+			"\n" +
+			"\n" +
+			"rule 'Extract Named Parameter out of Request - HairColor'\n" +
+			"when\n" +
+			"   $request: RequestData( $id: requestId != null, modelId != null, $parameters: parameters != null ) from requestData\n" +
+			"   $param: ParameterHolder( capitalizedName == \"HairColor\" ) from $parameters\n" +
+			"then\n" +
+			"   System.out.printf(\"Parameter found: %s with value of %s%n\",$param.getCapitalizedName(),$param.getValue());\n" +
+			"   InternalData d = InternalDataFactory.get().createInternalData($param);\n" +
+			"   insert(d); \n" +
+			"end\n" +
+			"\n" +
+			"rule 'Extract Named Parameter out of Request - Age'\n" +
+			"when\n" +
+			"   $request: RequestData( $id: requestId != null, modelId != null, $parameters: parameters != null ) from requestData\n" +
+			"   $param: ParameterHolder( capitalizedName == \"Age\" ) from $parameters\n" +
+			"then\n" +
+			"   System.out.printf(\"Parameter found: %s with value of %f%n\",$param.getCapitalizedName(),$param.getValue());\n" +
+			"   InternalData d = InternalDataFactory.get().createInternalData($param);\n" +
+			"   insert(d); \n" +
+			"end\n" +
+			"\n" +
+			"rule 'Check InternalData is inserted - Age' \n" +
+			"when\n" +
+			"   $i: InternalData( capitalizedName == \"Age\" )\n" +
+			"then\n" +
+			"   System.out.printf(\"Actual Age: %f   Factored Age: %f%n\",$i.getValue(),$i.getTransformed()); \n" +
+			"end\n" +
+			"";
+    	KieBase kbase = new KieHelper().addContent(drl1, ResourceType.DRL).build();
+    	RuleUnitExecutor executor = RuleUnitExecutor.create().bind(kbase);
+    	
+    	RequestData request = new RequestData("123", "simple");
+    	request.addParameter("name", "Lance", String.class);
+    	request.addParameter("age", 54.5, Double.class);
+    	request.addParameter("hairColor","bald", String.class);
+    	request.addParameter("likesBeets",false,Boolean.class);
+    	
+    	DataSource<RequestData> requestData = executor.newDataSource("requestData",request);
+    	assertEquals(5, executor.run(ComplexDataUnit.class));
+    	
+    }
+    
+    public static class InternalData<T> {
+    	private String requestId;
+    	private String name;
+    	private T value;
+    	private Class<T> type;
+    	
+    	protected InternalData(String requestId, String name, T value, Class<T> type) {
+    		this.requestId = requestId;
+    		this.name = name;
+    		this.value = value;
+    		this.type = type;
+    	}
+
+		public String getRequestId() {
+			return requestId;
+		}
+
+		public void setRequestId(String requestId) {
+			this.requestId = requestId;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public void setName(String name) {
+			this.name = name;
+		}
+
+		public T getValue() {
+			return value;
+		}
+
+		public void setValue(T value) {
+			this.value = value;
+		}
+
+		public Class<T> getType() {
+			return type;
+		}
+
+		public void setType(Class<T> type) {
+			this.type = type;
+		}
+		
+		public String getCapitalizedName() {
+			return name.substring(0, 1).toUpperCase()+name.substring(1);
+		}
+    	
+		public  T getTransformed() { return null; }
+    }
+    
+    public static class InternalDataFactory {
+    	private static final InternalDataFactory instance = new InternalDataFactory();
+    	
+    	public static InternalDataFactory get() {
+    		return instance;
+    	}
+    	
+    	public InternalData createInternalData(ParameterHolder ph) {
+    		if (String.class.isAssignableFrom(ph.getType())) return new StringData(ph.getRequestId(),ph.getParmName(),(String)ph.getValue());
+    	    if (Double.class.isAssignableFrom(ph.getType())) return new DoubleData(ph.getRequestId(),ph.getParmName(),(Double)ph.getValue());
+    	    if (Boolean.class.isAssignableFrom(ph.getType())) return new BooleanData(ph.getRequestId(),ph.getParmName(),(Boolean)ph.getValue());
+    	    return null;
+    	}
+    }
+    public static class StringData extends InternalData<String> {
+    	public StringData(String requestId, String name, String value) {
+    		super(requestId,name,value,String.class);
+    	}
+
+    	@Override
+		public String getTransformed() {
+			return getValue().toUpperCase();
+		}
+
+    	
+    }
+    
+    public static class DoubleData extends InternalData<Double> {
+    	private Double factor = 1.5;
+    	
+    	public DoubleData(String requestId, String name, Double value) {
+    		super(requestId,name,value,Double.class);
+    	}
+    	
+    	public Double getFactor() {
+    		return factor;
+    	}
+    	
+    	public void setFactor(Double factor) {
+    		this.factor = factor;
+    	}
+    	
+    	@Override
+    	public Double getTransformed() {
+    		return getValue() * factor;
+    	}
+    }
+    
+    public static class BooleanData extends InternalData<Boolean> {
+    	public BooleanData(String requestId, String name, Boolean value) {
+    		super(requestId, name, value, Boolean.class);
+    	}
+    	
+    	@Override
+    	public Boolean getTransformed() {
+    		return !getValue();
+    	}
+    }
+    
+    public static class ParameterHolder<T> {
+    	private String requestId;
+    	private String parmName;
+    	private T value;
+    	private Class<T> type;
+    	
+    	public ParameterHolder(String requestId, String parmName, T value, Class<T> type) {
+    		this.requestId = requestId;
+    		this.parmName = parmName;
+    		this.value = value;
+    		this.type = type;
+    	}
+
+		public String getRequestId() {
+			return requestId;
+		}
+
+		public void setRequestId(String requestId) {
+			this.requestId = requestId;
+		}
+
+		public String getParmName() {
+			return parmName;
+		}
+
+		public void setParmName(String parmName) {
+			this.parmName = parmName;
+		}
+
+		public T getValue() {
+			return value;
+		}
+
+		public void setValue(T value) {
+			this.value = value;
+		}
+
+		public Class<T> getType() {
+			return type;
+		}
+
+		public void setType(Class<T> type) {
+			this.type = type;
+		}
+		
+		public String getCapitalizedName() {
+			return parmName.substring(0, 1).toUpperCase()+parmName.substring(1);
+		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + ((parmName == null) ? 0 : parmName.hashCode());
+			result = prime * result + ((requestId == null) ? 0 : requestId.hashCode());
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			ParameterHolder other = (ParameterHolder) obj;
+			if (parmName == null) {
+				if (other.parmName != null)
+					return false;
+			} else if (!parmName.equals(other.parmName))
+				return false;
+			if (requestId == null) {
+				if (other.requestId != null)
+					return false;
+			} else if (!requestId.equals(other.requestId))
+				return false;
+			return true;
+		}
+    }
+    
+    public static class RequestData {
+    	private String requestId;
+        private String modelId;
+        private List<ParameterHolder<?>> parameters;
+        
+		public RequestData(String requestId, String modelId) {
+			super();
+			this.requestId = requestId;
+			this.modelId = modelId;
+			this.parameters = new ArrayList<>();
+		}
+
+		public String getRequestId() {
+			return requestId;
+		}
+
+		public void setRequestId(String requestId) {
+			this.requestId = requestId;
+		}
+
+		public String getModelId() {
+			return modelId;
+		}
+
+		public void setModelId(String modelId) {
+			this.modelId = modelId;
+		}
+
+		public List<ParameterHolder<?>> getParameters() {
+			return parameters;
+		}
+        
+        public <T> boolean addParameter(ParameterHolder<T> parameter) {
+        	return parameters.add(parameter);
+        }
+        
+        public <T> boolean addParameter(String parameterName, T value, Class<T> type) {
+        	ParameterHolder<T> parameter = new ParameterHolder<>(this.requestId, parameterName, value, type);
+        	return addParameter(parameter);
+        }
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + ((modelId == null) ? 0 : modelId.hashCode());
+			result = prime * result + ((requestId == null) ? 0 : requestId.hashCode());
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			RequestData other = (RequestData) obj;
+			if (modelId == null) {
+				if (other.modelId != null)
+					return false;
+			} else if (!modelId.equals(other.modelId))
+				return false;
+			if (requestId == null) {
+				if (other.requestId != null)
+					return false;
+			} else if (!requestId.equals(other.requestId))
+				return false;
+			return true;
+		}
+    }
+    
+    public static class ComplexDataUnit implements RuleUnit {
+    	private DataSource<RequestData> requestData;
+    	
+    	public ComplexDataUnit() {}
+    	
+    	public ComplexDataUnit(DataSource<RequestData> requestData) {
+    		this.requestData = requestData;
+    	}
+    	
+    	public DataSource<RequestData> getRequestData() {
+    		return requestData;
+    	}
     }
 
     public static class BoxOffice {

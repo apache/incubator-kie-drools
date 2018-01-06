@@ -18,12 +18,14 @@ package org.kie.pmml.pmml_4_2.model;
 public class ParameterInfo<T> {
 	private String correlationId;
     private String name;
+    private String capitalizedName;
     private Class<T> type;
     private T value;
 
     public ParameterInfo(String correlationId, String name, Class<T> type, T value) {
     	this.correlationId = correlationId;
         this.name = name;
+        this.capitalizedName = name.substring(0, 1).toUpperCase()+name.substring(1);
         this.type = type;
         this.value = value;
     }
@@ -33,11 +35,12 @@ public class ParameterInfo<T> {
     }
 
     public String getCapitalizedName() {
-        return name.substring(0,1).toUpperCase()+name.substring(1);
+        return capitalizedName;
     }
 
     public void setName(String name) {
         this.name = name;
+        this.capitalizedName = name.substring(0, 1).toUpperCase()+name.substring(1);
     }
 
     public Class<T> getType() {

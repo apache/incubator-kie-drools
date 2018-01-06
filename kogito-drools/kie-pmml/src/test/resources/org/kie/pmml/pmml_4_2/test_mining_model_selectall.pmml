@@ -31,7 +31,7 @@
       <Segmentation multipleModelMethod="selectAll">
          <Segment id="1">
             <True />
-            <Scorecard modelName="Sample Score" useReasonCodes="true" isScorable="true" functionName="regression"
+            <Scorecard modelName="Sample Score 1" useReasonCodes="true" isScorable="true" functionName="regression"
                baselineScore="0.0" initialScore="0.345">
                <MiningSchema>
                   <MiningField name="age" usageType="active" invalidValueTreatment="asMissing" />
@@ -121,7 +121,7 @@
          </Segment>
          <Segment id="2">
             <True />
-            <Scorecard modelName="Sample Score" useReasonCodes="true" isScorable="true" functionName="regression"
+            <Scorecard modelName="Sample Score 2" useReasonCodes="true" isScorable="true" functionName="regression"
                baselineScore="0.0" initialScore="0.345">
                <MiningSchema>
                   <MiningField name="age" usageType="active" invalidValueTreatment="asMissing" />

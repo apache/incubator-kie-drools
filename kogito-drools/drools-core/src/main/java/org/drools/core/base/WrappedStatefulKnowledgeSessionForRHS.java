@@ -35,6 +35,7 @@ import org.drools.core.event.RuleRuntimeEventSupport;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.InternalRuleUnitExecutor;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.phreak.PropagationEntry;
@@ -72,6 +73,7 @@ import org.kie.api.runtime.rule.FactHandle.State;
 import org.kie.api.runtime.rule.LiveQuery;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.RuleUnit;
+import org.kie.api.runtime.rule.RuleUnitExecutor;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.api.time.SessionClock;
 import org.kie.internal.event.rule.RuleEventListener;
@@ -103,8 +105,12 @@ public final class WrappedStatefulKnowledgeSessionForRHS
 	public QueryResults getQueryResults(String queryName, Object... arguments) {
 		return delegate.getQueryResultsFromRHS(queryName, arguments);
 	}
-	
+
 	// -- then just delegate
+	
+    public InternalRuleUnitExecutor getRuleUnitExecutor() {
+        return delegate.getRuleUnitExecutor();
+    }
 	
 	public KieRuntimeLogger getLogger() {
 		return delegate.getLogger();

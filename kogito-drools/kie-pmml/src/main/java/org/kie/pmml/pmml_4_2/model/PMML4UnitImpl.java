@@ -27,13 +27,16 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import org.dmg.pmml.pmml_4_2.descr.DataDictionary;
 import org.dmg.pmml.pmml_4_2.descr.DataField;
+import org.dmg.pmml.pmml_4_2.descr.Extension;
 import org.dmg.pmml.pmml_4_2.descr.MiningField;
 import org.dmg.pmml.pmml_4_2.descr.PMML;
 import org.drools.core.io.impl.ClassPathResource;
 import org.kie.pmml.pmml_4_2.PMML4Model;
 import org.kie.pmml.pmml_4_2.PMML4Unit;
+import org.kie.pmml.pmml_4_2.extensions.PMMLExtensionNames;
 
 public class PMML4UnitImpl implements PMML4Unit {
+	public static String DEFAULT_ROOT_PACKAGE = "org.kie.pmml.pmml_4_2";
     private static PMML4ModelFactory modelFactory = PMML4ModelFactory.getInstance();
     private PMML rawPmml;
     private Map<String,PMML4Model> modelsMap;
@@ -219,6 +222,16 @@ public class PMML4UnitImpl implements PMML4Unit {
     }
     
     @Override
+    public PMML4Model getRootModel() {
+    	for (PMML4Model model : this.modelsMap.values()) {
+    		if (model.getParentModel() == null) {
+    			return model;
+    		}
+    	}
+    	return null;
+    }
+    
+    @Override
     public boolean containsMiningModel() {
     	for (PMML4Model model : this.modelsMap.values()) {
     		if (model.getModelType() == PMML4ModelType.MINING) {
@@ -244,4 +257,29 @@ public class PMML4UnitImpl implements PMML4Unit {
     	return new HashMap<>(dataDictionaryMap);
     }
     
+    private String packageFromRawPmml() {
+    	if (rawPmml.getHeader() != null && rawPmml.getHeader().getExtensions() != null) {
+    		for (Extension ext: rawPmml.getHeader().getExtensions()) {
+    			if (PMMLExtensionNames.MODEL_PACKAGE.equals(ext.getName())) {
+    				return ext.getValue();
+    			}
+    		}
+    	}
+    	return null;
+    }
+    
+    @Override
+    public String getRootPackage() {
+    	return packageFromRawPmml() != null ? packageFromRawPmml() : PMML4UnitImpl.DEFAULT_ROOT_PACKAGE;
+    }
+    
+    public Map<String,String> getModelPackageNames() {
+    	Map<String,String> packageNames = new HashMap<>();
+    	packageNames.put("root",getRootPackage());
+    	for (PMML4Model model : this.getModels()) {
+    		packageNames.put(model.getModelId(),model.getModelPackageName());
+    	}
+    	
+    	return packageNames;
+    }
 }

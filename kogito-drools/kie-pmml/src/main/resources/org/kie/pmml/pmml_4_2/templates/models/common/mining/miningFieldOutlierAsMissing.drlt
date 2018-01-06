@@ -37,13 +37,13 @@ when
                @if{ low != null } , value < @{low} @end{}
                @if{ low != null && upp != null } || @else{} , @end{}
                @if{ upp != null } value > @{upp} @end{}
-                )
+                ) from pmmlData
 then
     delete( $x );
     $x.setValue( null );
     $x.setMissing( true );
     $x.setValid( false );
-    insert( $x );
+    pmmlData.insert( $x );
 end
 
 

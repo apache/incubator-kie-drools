@@ -54,7 +54,7 @@ rule "Update PMML4Result with output named feature @{name}_@{feature}"
 salience -115
 when
    $tgt: @{name}()
-   $reslt: PMML4Result( resultVariables == null || "@{name}" not memberOf resultVariables.keySet() )
+   $reslt: PMML4Result( resultVariables == null || "@{name}" not memberOf resultVariables.keySet() ) from results
 then
    $reslt.setResultCode("OK");
    $reslt.addResultVariable("@{name}",$tgt);

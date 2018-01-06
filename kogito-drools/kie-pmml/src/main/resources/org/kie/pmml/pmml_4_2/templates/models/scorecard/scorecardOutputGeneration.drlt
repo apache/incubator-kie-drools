@@ -39,16 +39,31 @@ then
     insertLogical( x );
 end
 
-rule "Update PMMLResult with Scorecard output @{context}"
+rule "Add PMMLResult with Scorecard output @{context}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
+dialect "java"
 when
    $tgt: @{target}()
-   $reslt: PMML4Result( resultVariables == null || "@{target}" not memberOf resultVariables.keySet() )
+   $reslt: PMML4Result( resultVariables == null || "@{target}" not memberOf resultVariables.keySet() ) from results
 then
    $reslt.setResultCode("OK");
    $reslt.addResultVariable("@{target}",$tgt);
    update($reslt);
 end
+
+
+rule "Update PMMLResult containing Scorecard output @{context}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
+no-loop
+when
+   $reslt: PMML4Result( "@{target}" memberOf resultVariables.keySet() ) from results
+   $told: @{target}( $v: value ) from $reslt.resultVariables["@{target}"]
+   $tgt: @{target}( value != null )
+then
+   $reslt.updateResultVariable("@{target}",$tgt);
+   update($reslt);
+end
+
 
 @end{}
 

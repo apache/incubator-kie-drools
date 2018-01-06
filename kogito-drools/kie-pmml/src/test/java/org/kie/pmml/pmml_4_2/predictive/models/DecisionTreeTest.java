@@ -19,21 +19,36 @@ package org.kie.pmml.pmml_4_2.predictive.models;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.InternalRuleUnitExecutor;
 import org.junit.After;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.definition.type.FactType;
+import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceType;
+import org.kie.api.logger.KieRuntimeLogger;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.ObjectFilter;
+import org.kie.api.runtime.rule.DataSource;
+import org.kie.api.runtime.rule.RuleUnit;
+import org.kie.api.runtime.rule.RuleUnitExecutor;
+import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.utils.KieHelper;
 import org.kie.pmml.pmml_4_2.DroolsAbstractPMMLTest;
 import org.kie.pmml.pmml_4_2.PMML4Compiler;
+import org.kie.pmml.pmml_4_2.PMML4Result;
 import org.kie.pmml.pmml_4_2.model.AbstractModel;
 import org.kie.pmml.pmml_4_2.model.PMMLRequestData;
 import org.kie.pmml.pmml_4_2.model.ParameterInfo;
+import org.kie.pmml.pmml_4_2.model.datatypes.PMML4Data;
 import org.kie.pmml.pmml_4_2.model.tree.AbstractTreeToken;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class DecisionTreeTest extends DroolsAbstractPMMLTest {
 
@@ -48,35 +63,69 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
 
     @After
     public void tearDown() {
-        getKSession().dispose();
+//        getKSession().dispose();
     }
     
+    @Test
+    public void testTreeFromMiningModel() throws Exception {
+    	RuleUnitExecutor executor = createExecutor("org/kie/pmml/pmml_4_2/test_tree_from_mm.pmml");
+		PMMLRequestData request = new PMMLRequestData("1234", "SampleMineTree1");
+		request.addRequestParam("fld1", 30.0);
+		request.addRequestParam("fld2", 60.0);
+		request.addRequestParam("fld3", "false");
+		request.addRequestParam("fld4", "optA");
+		
+		PMML4Result resultHolder = new PMML4Result();
+        List<String> possiblePackages = calculatePossiblePackageNames("SampleMineTree1");
+        Class<? extends RuleUnit> unitClass = getStartingRuleUnit("RuleUnitIndicator",(InternalKnowledgeBase)kbase,possiblePackages);
+        assertNotNull(unitClass);
+        
+        int x = executor.run(unitClass);
+        assertTrue( x > 0);
+        
+        data.insert(request);
+        resultData.insert(resultHolder);
+        
+        executor.run(unitClass);
+        assertEquals("OK",resultHolder.getResultCode());
+        assertNotNull(resultHolder.getResultVariables());
+        
+        assertNotNull(resultHolder.getResultValue("Fld5", null));
+        String value = resultHolder.getResultValue("Fld5", "value", String.class).orElse(null);
+        assertEquals("tgtY",value);
+        
+        System.out.println(resultHolder);
+    }
 
     @Test
     public void testSimpleTree() throws Exception {
-        setKSession( getModelSession( source1, VERBOSE ) );
-        setKbase( getKSession().getKieBase() );
-        KieSession kSession = getKSession();
-
-        kSession.fireAllRules();  //init model
-
+    	RuleUnitExecutor executor = createExecutor(source1);
         
         PMMLRequestData request = new PMMLRequestData("123","TreeTest");
-        request.addRequestParam("Fld1", 30.0);
-        request.addRequestParam("Fld2", 60.0);
-        request.addRequestParam("Fld3", "false");
-        request.addRequestParam("Fld4", "optA");
-        kSession.insert(request);
+        request.addRequestParam("fld1", 30.0);
+        request.addRequestParam("fld2", 60.0);
+        request.addRequestParam("fld3", "false");
+        request.addRequestParam("fld4", "optA");
+
+        PMML4Result resultHolder = new PMML4Result();
         
-        kSession.fireAllRules();
-
-        String pkgName = PMML4Compiler.PMML_DROOLS+"."+request.getModelName();
-        FactType tgt = kSession.getKieBase().getFactType( pkgName, "Fld5" );
-//        System.out.print(  reportWMObjects( kSession ));
-
-        checkFirstDataFieldOfTypeStatus( tgt, true, false, "Missing", "tgtY" );
-
-        checkGeneratedRules();
+        List<String> possiblePackages = calculatePossiblePackageNames("TreeTest");
+        Class<? extends RuleUnit> unitClass = getStartingRuleUnit("RuleUnitIndicator",(InternalKnowledgeBase)kbase,possiblePackages);
+        assertNotNull(unitClass);
+        
+        int x = executor.run(unitClass);
+        
+        data.insert(request);
+        resultData.insert(resultHolder);
+        
+        executor.run(unitClass);
+        
+        assertEquals("OK",resultHolder.getResultCode());
+        Object obj = resultHolder.getResultValue("Fld5", null);
+        assertNotNull(obj);
+        
+        String targetValue = resultHolder.getResultValue("Fld5", "value", String.class).orElse(null);
+        assertEquals("tgtY",targetValue);
     }
     
     
@@ -101,98 +150,166 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
 
     @Test
     public void testMissingTree() throws Exception {
-        setKSession( getModelSession( source2, VERBOSE ) );
-        setKbase( getKSession().getKieBase() );
-        KieSession kSession = getKSession();
-        
-        kSession.fireAllRules();  //init model
+    	RuleUnitExecutor executor = createExecutor(source2);
 
         PMMLRequestData requestData = new PMMLRequestData("123","Missing");
-        requestData.addRequestParam(new ParameterInfo<>("123","Fld1", Double.class, 45.0));
-        requestData.addRequestParam(new ParameterInfo<>("123","Fld2",Double.class,60.0));
-        requestData.addRequestParam(new ParameterInfo<>("123","Fld3",String.class,"optA"));
-        kSession.insert(requestData);
+        requestData.addRequestParam(new ParameterInfo<>("123","fld1", Double.class, 45.0));
+        requestData.addRequestParam(new ParameterInfo<>("123","fld2",Double.class,60.0));
+        requestData.addRequestParam(new ParameterInfo<>("123","fld3",String.class,"optA"));
 
-        kSession.fireAllRules();
-//        System.out.print(  reportWMObjects( kSession ));
-
-        String pkgName = PMML4Compiler.PMML_DROOLS+"."+requestData.getModelName();
-        FactType tgt = kSession.getKieBase().getFactType( pkgName, "Fld9" );
-
-        AbstractTreeToken token = (AbstractTreeToken)getToken(kSession,"Missing");
-        assertEquals(0.6, token.getConfidence().doubleValue(),0.0);
-        assertEquals("null", token.getCurrent());
+        PMML4Result resultHolder = new PMML4Result();
         
-
-        checkFirstDataFieldOfTypeStatus( tgt, true, false, "Missing", "tgtZ" );
-
-        checkGeneratedRules();
+        List<String> possiblePackages = calculatePossiblePackageNames("Missing");
+        Class<? extends RuleUnit> unitClass = getStartingRuleUnit("RuleUnitIndicator",(InternalKnowledgeBase)kbase,possiblePackages);
+        assertNotNull(unitClass);
+        
+        int x = executor.run(unitClass); // initializes the model
+        
+        data.insert(requestData);
+        resultData.insert(resultHolder);
+        
+        executor.run(unitClass);
+        
+        AbstractTreeToken missingTreeToken = resultHolder.getResultValue("MissingTreeToken", null,AbstractTreeToken.class).orElse(null);
+        assertNotNull(missingTreeToken);
+        
+        Double tokVal = resultHolder.getResultValue("MissingTreeToken", "confidence",Double.class).orElse(null);
+        assertNotNull(tokVal);
+        assertEquals(0.6,tokVal,0.0);
+        
+        String current = resultHolder.getResultValue("MissingTreeToken", "current", String.class).orElse(null);
+        assertNotNull(current);
+        assertEquals("null",current);
+        
+        Object fld9 = resultHolder.getResultValue("Fld9", null);
+        assertNotNull(fld9);
+        
+        String fld9Val = resultHolder.getResultValue("Fld9", "value", String.class).orElse(null);
+        assertNotNull(fld9Val);
+        assertEquals("tgtZ",fld9Val);
+        
     }
 
 
     @Test
     public void testMissingTreeWeighted1() throws Exception {
-        setKSession( getModelSession( source2, VERBOSE ) );
-        setKbase( getKSession().getKieBase() );
-        KieSession kSession = getKSession();
+    	Resource res = ResourceFactory.newClassPathResource(source2);
+    	KieBase kbase = new KieHelper().addResource(res, ResourceType.PMML).build();
+    	
+    	RuleUnitExecutor executor = RuleUnitExecutor.create().bind(kbase);
+    	KieRuntimeLogger logger = ((InternalRuleUnitExecutor)executor).addFileLogger("/tmp/decisionTree");
+    	KieRuntimeLogger console = ((InternalRuleUnitExecutor)executor).addConsoleLogger();
 
-        kSession.fireAllRules();  //init model
 
+        PMMLRequestData requestData = new PMMLRequestData("123","Missing");
+        requestData.addRequestParam(new ParameterInfo<>("123","fld1", Double.class, -1.0));
+        requestData.addRequestParam(new ParameterInfo<>("123","fld2", Double.class, -1.0));
+        requestData.addRequestParam(new ParameterInfo<>("123","fld3", String.class, "optA"));
+        
+        PMML4Result resultHolder = new PMML4Result();
+        DataSource<PMMLRequestData> data = executor.newDataSource("request");//, requestData);
+        DataSource<PMML4Result> results = executor.newDataSource("results");//, resultHolder);
+        DataSource<PMML4Data> pmmlData = executor.newDataSource("pmmlData");
 
-        PMMLRequestData data = new PMMLRequestData("123","Missing");
-        data.addRequestParam(new ParameterInfo<>("123","Fld1", Double.class, -1.0));
-        data.addRequestParam(new ParameterInfo<>("123","Fld2", Double.class, -1.0));
-        data.addRequestParam(new ParameterInfo<>("123","Fld3", String.class, "optA"));
-        kSession.insert(data);
-
-        kSession.fireAllRules();
-
-        String pkgName = PMML4Compiler.PMML_DROOLS+"."+data.getModelName();
-        FactType tgt = kSession.getKieBase().getFactType( pkgName, "Fld9" );
-
-//        System.out.print(  reportWMObjects( kSession ));
-
-        AbstractTreeToken token = (AbstractTreeToken)getToken( kSession, "Missing" );
-        assertEquals( 0.8, token.getConfidence(), 0.0 );
-        assertEquals( "null", token.getCurrent() );
-        assertEquals( 50.0, token.getTotalCount(), 0.0 );
-
-        checkFirstDataFieldOfTypeStatus(tgt, true, false, "Missing", "tgtX" );
-
-        checkGeneratedRules();
+        List<String> possiblePackages = calculatePossiblePackageNames("Missing");
+        Class<? extends RuleUnit> unitClass = getStartingRuleUnit("RuleUnitIndicator",(InternalKnowledgeBase)kbase,possiblePackages);
+        assertNotNull(unitClass);
+        
+        int x = executor.run(unitClass);
+        
+        data.insert(requestData);
+        results.insert(resultHolder);
+        
+        int y = executor.run(unitClass);
+        
+        logger.close();
+        console.close();
+        System.out.println(resultHolder);
+        Collection<?> objects = ((InternalRuleUnitExecutor)executor).getSessionObjects();
+        objects.forEach(o -> {System.out.println(o);});
+        pmmlData.forEach(pd -> { System.out.println(pd);});
+        
+		AbstractTreeToken missingTreeToken = (AbstractTreeToken) resultHolder.getResultValue("MissingTreeToken", null);
+		assertNotNull(missingTreeToken);
+		assertEquals(0.8, missingTreeToken.getConfidence(), 0.0);
+		assertEquals("null", missingTreeToken.getCurrent());
+		assertEquals(50.0, missingTreeToken.getTotalCount(), 0.0);
+        
+        Object fld9 = resultHolder.getResultValue("Fld9", null);
+        assertNotNull(fld9);
+        String value = (String)resultHolder.getResultValue("Fld9", "value");
+        assertNotNull(value);
+        assertEquals("tgtX",value);
+        
     }
 
 
 
     @Test
     public void testMissingTreeWeighted2() throws Exception {
-        setKSession( getModelSession( source2, VERBOSE ) );
-        setKbase( getKSession().getKieBase() );
-        KieSession kSession = getKSession();
+    	Resource res = ResourceFactory.newClassPathResource(source2);
+    	KieBase kbase = new KieHelper().addResource(res, ResourceType.PMML).build();
+    	
+    	RuleUnitExecutor executor = RuleUnitExecutor.create().bind(kbase);
+    	KieRuntimeLogger logger = ((InternalRuleUnitExecutor)executor).addFileLogger("/tmp/decisionTree");
+    	KieRuntimeLogger console = ((InternalRuleUnitExecutor)executor).addConsoleLogger();
 
-        kSession.fireAllRules();  //init model
 
-        PMMLRequestData data = new PMMLRequestData("123","Missing");
-        data.addRequestParam(new ParameterInfo<>("123","Fld1", Double.class, -1.0));
-        data.addRequestParam(new ParameterInfo<>("123","Fld2", Double.class, -1.0));
-        data.addRequestParam(new ParameterInfo<>("123","Fld3", String.class, "miss"));
-        kSession.insert(data);
+        PMMLRequestData requestData = new PMMLRequestData("123","Missing");
+        requestData.addRequestParam(new ParameterInfo<>("123","fld1", Double.class, -1.0));
+        requestData.addRequestParam(new ParameterInfo<>("123","fld2", Double.class, -1.0));
+        requestData.addRequestParam(new ParameterInfo<>("123","fld3", String.class, "miss"));
+        PMML4Result resultHolder = new PMML4Result();
+        DataSource<PMMLRequestData> data = executor.newDataSource("request");
+        DataSource<PMML4Result> results = executor.newDataSource("results");
+        DataSource<PMML4Data> pmmlData = executor.newDataSource("pmmlData");
 
-        kSession.fireAllRules();
+        List<String> possiblePackages = calculatePossiblePackageNames("Missing");
+        Class<? extends RuleUnit> unitClass = getStartingRuleUnit("RuleUnitIndicator",(InternalKnowledgeBase)kbase,possiblePackages);
+        assertNotNull(unitClass);
+        int x = executor.run(unitClass);
+        
+        data.insert(requestData);
+        results.insert(resultHolder);
+        
+        
+        
+        executor.run(unitClass);
+        logger.close();
+        console.close();
+        System.out.println(resultHolder);
+        Collection<?> objects = ((InternalRuleUnitExecutor)executor).getSessionObjects();
+        objects.forEach(o -> {System.out.println(o);});
+        pmmlData.forEach(pd -> { System.out.println(pd);});
+
+        AbstractTreeToken token = (AbstractTreeToken)resultHolder.getResultValue("MissingTreeToken", null);
+        assertNotNull(token);
+		assertEquals(0.6, token.getConfidence(), 0.0);
+		assertEquals("null", token.getCurrent());
+		assertEquals(100.0, token.getTotalCount(), 0.0);
+        
+        Object fld9 = resultHolder.getResultValue("Fld9", null);
+        assertNotNull(fld9);
+        String value = (String)resultHolder.getResultValue("Fld9", "value");
+        assertNotNull(value);
+        assertEquals("tgtX",value);
+//        kSession.insert(data);
+//
+//        kSession.fireAllRules();
 //      System.out.print(  reportWMObjects( kSession ));
 
-        String pkgName = PMML4Compiler.PMML_DROOLS+"."+data.getModelName();
-        FactType tgt = kSession.getKieBase().getFactType( pkgName, "Fld9" );
-
-
-        AbstractTreeToken token = (AbstractTreeToken)getToken( kSession, "Missing" );
-        assertEquals( 0.6, token.getConfidence(), 0.0 );
-        assertEquals( "null", token.getCurrent() );
-        assertEquals( 100.0, token.getTotalCount(), 0.0 );
-
-        checkFirstDataFieldOfTypeStatus(tgt, true, false, "Missing", "tgtX" );
-
-        checkGeneratedRules();
+//        String pkgName = PMML4Compiler.PMML_DROOLS+"."+data.getModelName();
+//        FactType tgt = kSession.getKieBase().getFactType( pkgName, "Fld9" );
+//
+//
+//        AbstractTreeToken token = (AbstractTreeToken)getToken( kSession, "Missing" );
+//        assertEquals( 0.6, token.getConfidence(), 0.0 );
+//        assertEquals( "null", token.getCurrent() );
+//        assertEquals( 100.0, token.getTotalCount(), 0.0 );
+//
+//        checkFirstDataFieldOfTypeStatus(tgt, true, false, "Missing", "tgtX" );
+//
+//        checkGeneratedRules();
     }
 
 

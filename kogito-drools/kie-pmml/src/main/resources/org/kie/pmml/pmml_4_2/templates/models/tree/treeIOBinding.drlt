@@ -26,23 +26,18 @@
 
 rule "Tree Input Linker @{context}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
+salience 3
 when
-   rqst: PMMLRequestData( modelName == "@{context}" )
-   @foreach{ inputField: fields.keySet() }
-   @{inputField} : PMML4Data( context == "@{context}", capitalizedName == "@{inputField}", placeholder == false, 
-              valid == true || ( valid == false && missing == true && value != null ) )
-   @end{}
-   $map: java.util.Map() from accumulate( $d: PMML4Data( context == "@{context}" ),
+   rqst: PMMLRequestData( modelName == "@{context}" ) from request
+   $map: java.util.Map() from accumulate( $d: PMML4Data( context == "@{context}", placeholder == false,
+              valid == true || ( valid == false && missing == true && value != null ) ) from pmmlData,
                                           init( java.util.Map map = new java.util.HashMap(); ),
                                           action( map.put($d.getCapitalizedName(),$d); ),
                                           result( map ) 
    )
+
 then
-    java.util.Map inputMap = new java.util.HashMap();
-    @foreach{ inputField: fields.keySet() }
-    inputMap.put( "@{inputField}", @{inputField} );
-    @end{}
-    @{context}TreeToken tok = new @{context}TreeToken( "","@{context}",
+    @{context}TreeToken tok = new @{context}TreeToken( rqst.getCorrelationId(),"@{context}",
                                                        "@{rootId}",
                                                        null,
                                                        "@{visitMode}",
@@ -51,8 +46,8 @@ then
                                                        new java.util.HashMap(),
                                                        1.0,
                                                        0.0,
-                                                       inputMap);
-    insertLogical(tok);
+                                                       $map);
+    insert(tok);
 end
 
 rule "Update PMML4Result"
@@ -60,11 +55,12 @@ rule "Update PMML4Result"
 salience -2
 when
    $tgtFld: @{targetField}()
-   $reslt: PMML4Result( resultVariables == null || "@{targetField}" not memberOf resultVariables.keySet() )
+   $reslt: PMML4Result( resultVariables == null || "@{targetField}" not memberOf resultVariables.keySet() ) from results
 then
+   FactHandle fh = ((org.drools.core.datasources.InternalDataSource)results).getFactHandleForObject($reslt);
    $reslt.setResultCode("OK");
    $reslt.addResultVariable("@{targetField}",$tgtFld);
-   update($reslt);
+   results.update(fh,$reslt);
 end
 
 
@@ -81,11 +77,7 @@ then
             x.setMissing( false );
             x.setValue( $out );
             x.setWeight( $conf );
-    insertLogical( x );
+      insert(x);
 end
-
-
 @end{}
-
-
 @includeNamed{'treeIOBinding'}
