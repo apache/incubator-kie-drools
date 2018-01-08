@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.testdata.domain.entityproviding;
+package org.optaplanner.core.impl.testdata.domain.valuerange.entityproviding;
 
 import java.util.List;
 
