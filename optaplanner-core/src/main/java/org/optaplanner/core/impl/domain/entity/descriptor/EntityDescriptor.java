@@ -37,6 +37,7 @@ import org.optaplanner.core.config.heuristic.selector.common.decorator.Selection
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
+import org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.anchor.AnchorShadowVariableDescriptor;
@@ -53,7 +54,7 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSo
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.WeightFactorySelectionSorter;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
-import static org.optaplanner.core.config.util.ConfigUtils.MemberAccessorType.*;
+import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.*;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -158,7 +159,7 @@ public class EntityDescriptor<Solution_> {
         List<Member> memberList = ConfigUtils.getDeclaredMembers(entityClass);
         for (Member member : memberList) {
             if (((AnnotatedElement) member).isAnnotationPresent(ValueRangeProvider.class)) {
-                MemberAccessor memberAccessor = ConfigUtils.buildMemberAccessor(
+                MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(
                         member, FIELD_OR_READ_METHOD, ValueRangeProvider.class);
                 descriptorPolicy.addFromEntityValueRangeProvider(
                         memberAccessor);
@@ -177,7 +178,7 @@ public class EntityDescriptor<Solution_> {
                     member, VARIABLE_ANNOTATION_CLASSES);
             if (variableAnnotationClass != null) {
                 noVariableAnnotation = false;
-                MemberAccessor memberAccessor = ConfigUtils.buildMemberAccessor(
+                MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(
                         member, FIELD_OR_GETTER_METHOD_WITH_SETTER, variableAnnotationClass);
                 registerVariableAccessor(descriptorPolicy, variableAnnotationClass, memberAccessor);
             }

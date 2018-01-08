@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.drools.ProblemFactProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
@@ -30,30 +31,11 @@ import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
 @PlanningSolution
-public class TestdataAccessModifierSolution extends TestdataObject {
-
-    private static final String STATIC_FINAL_FIELD = "staticFinalFieldValue";
-
-    private static Object staticField;
-
-    public static String getStaticFinalField() {
-        return STATIC_FINAL_FIELD;
-    }
-
-    public static Object getStaticField() {
-        return staticField;
-    }
-
-    public static void setStaticField(Object staticField) {
-        TestdataAccessModifierSolution.staticField = staticField;
-    }
+public class TestdataVisibilityModifierSolution extends TestdataObject {
 
     public static SolutionDescriptor buildSolutionDescriptor() {
-        return SolutionDescriptor.buildSolutionDescriptor(TestdataAccessModifierSolution.class, TestdataEntity.class);
+        return SolutionDescriptor.buildSolutionDescriptor(TestdataVisibilityModifierSolution.class, TestdataEntity.class);
     }
-
-    private final String finalField;
-    private String readWriteOnlyField;
 
     private String privateField;
     public String publicField;
@@ -65,33 +47,26 @@ public class TestdataAccessModifierSolution extends TestdataObject {
     private List<TestdataValue> valueList;
     private List<TestdataEntity> entityList;
 
-    @PlanningScore
     private SimpleScore score;
 
-    private TestdataAccessModifierSolution() {
-        finalField = "No-argument constructor";
-    }
+    private TestdataVisibilityModifierSolution() {}
 
-    public TestdataAccessModifierSolution(String code) {
+    public TestdataVisibilityModifierSolution(String code) {
         super(code);
-        finalField = "Constructor with argument code (" + code + ")";
     }
 
-    public String getFinalField() {
-        return finalField;
+    public TestdataVisibilityModifierSolution(String code, String privateField, String publicField,
+            String privateProperty, String friendlyProperty, String protectedProperty, String publicProperty) {
+        super(code);
+        this.privateField = privateField;
+        this.publicField = publicField;
+        this.privatePropertyField = privateProperty;
+        this.friendlyPropertyField = friendlyProperty;
+        this.protectedPropertyField = protectedProperty;
+        this.publicPropertyField = publicProperty;
     }
 
-    public String getReadOnlyField() {
-        return "read" + readWriteOnlyField;
-    }
-
-    public void setWriteOnlyField(String writeOnlyField) {
-        if (!writeOnlyField.startsWith("write")) {
-            throw new IllegalArgumentException("The writeOnlyField (" + writeOnlyField + ") should start with write.");
-        }
-        readWriteOnlyField = writeOnlyField.substring("write".length());
-    }
-
+    @ProblemFactProperty
     private String getPrivateProperty() {
         return privatePropertyField;
     }
@@ -100,6 +75,7 @@ public class TestdataAccessModifierSolution extends TestdataObject {
         this.privatePropertyField = privateProperty;
     }
 
+    @ProblemFactProperty
     String getFriendlyProperty() {
         return friendlyPropertyField;
     }
@@ -108,6 +84,7 @@ public class TestdataAccessModifierSolution extends TestdataObject {
         this.friendlyPropertyField = friendlyProperty;
     }
 
+    @ProblemFactProperty
     protected String getProtectedProperty() {
         return protectedPropertyField;
     }
@@ -116,6 +93,7 @@ public class TestdataAccessModifierSolution extends TestdataObject {
         this.protectedPropertyField = protectedProperty;
     }
 
+    @ProblemFactProperty
     public String getPublicProperty() {
         return publicPropertyField;
     }
@@ -143,6 +121,7 @@ public class TestdataAccessModifierSolution extends TestdataObject {
         this.entityList = entityList;
     }
 
+    @PlanningScore
     public SimpleScore getScore() {
         return score;
     }

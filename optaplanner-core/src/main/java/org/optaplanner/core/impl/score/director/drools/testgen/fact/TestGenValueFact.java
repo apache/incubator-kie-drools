@@ -28,7 +28,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
-import org.optaplanner.core.impl.domain.common.accessor.BeanPropertyMemberAccessor;
+import org.optaplanner.core.impl.domain.common.accessor.ReflectionBeanPropertyMemberAccessor;
 
 public class TestGenValueFact implements TestGenFact {
 
@@ -62,7 +62,7 @@ public class TestGenValueFact implements TestGenFact {
         Method setter = ReflectionHelper.getSetterMethod(instance.getClass(), field.getType(), fieldName);
         Method getter = ReflectionHelper.getGetterMethod(instance.getClass(), fieldName);
         if (setter != null && getter != null) {
-            BeanPropertyMemberAccessor accessor = new BeanPropertyMemberAccessor(getter);
+            ReflectionBeanPropertyMemberAccessor accessor = new ReflectionBeanPropertyMemberAccessor(getter);
             Object value = accessor.executeGetter(instance);
             if (value != null) {
                 if (field.getType().equals(String.class)) {

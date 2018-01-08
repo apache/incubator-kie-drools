@@ -18,17 +18,17 @@ package org.optaplanner.core.impl.domain.common;
 
 import org.junit.Test;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.core.impl.domain.common.accessor.BeanPropertyMemberAccessor;
+import org.optaplanner.core.impl.domain.common.accessor.ReflectionBeanPropertyMemberAccessor;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
 import static org.junit.Assert.*;
 
-public class BeanPropertyMemberAccessorTest {
+public class ReflectionBeanPropertyMemberAccessorTest {
 
     @Test
     public void methodAnnotatedEntity() throws NoSuchMethodException {
-        BeanPropertyMemberAccessor memberAccessor = new BeanPropertyMemberAccessor(
+        ReflectionBeanPropertyMemberAccessor memberAccessor = new ReflectionBeanPropertyMemberAccessor(
                 TestdataEntity.class.getMethod("getValue"));
         assertEquals("value", memberAccessor.getName());
         assertEquals(TestdataValue.class, memberAccessor.getType());

@@ -67,9 +67,10 @@ import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.ConcurrentMemoization;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
-import org.optaplanner.core.impl.domain.common.accessor.BeanPropertyMemberAccessor;
-import org.optaplanner.core.impl.domain.common.accessor.FieldMemberAccessor;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
+import org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory;
+import org.optaplanner.core.impl.domain.common.accessor.ReflectionBeanPropertyMemberAccessor;
+import org.optaplanner.core.impl.domain.common.accessor.ReflectionFieldMemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.lookup.LookUpStrategyResolver;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
@@ -96,7 +97,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.optaplanner.core.config.util.ConfigUtils.MemberAccessorType.*;
+import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.*;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -251,7 +252,7 @@ public class SolutionDescriptor<Solution_> {
         }
         try {
             Method getProblemFactsMethod = solutionClass.getMethod("getProblemFacts");
-            MemberAccessor problemFactsMemberAccessor = new BeanPropertyMemberAccessor(getProblemFactsMethod);
+            MemberAccessor problemFactsMemberAccessor = new ReflectionBeanPropertyMemberAccessor(getProblemFactsMethod);
             problemFactCollectionMemberAccessorMap.put(
                     problemFactsMemberAccessor.getName(), problemFactsMemberAccessor);
         } catch (NoSuchMethodException e) {
@@ -268,7 +269,7 @@ public class SolutionDescriptor<Solution_> {
         }
         try {
             Method getScoreMethod = solutionClass.getMethod("getScore");
-            scoreMemberAccessor = new BeanPropertyMemberAccessor(getScoreMethod);
+            scoreMemberAccessor = new ReflectionBeanPropertyMemberAccessor(getScoreMethod);
         } catch (NoSuchMethodException e) {
             throw new IllegalStateException("Impossible situation: the solutionClass (" + solutionClass
                     + ") which implements the legacy interface " + Solution.class.getSimpleName()
@@ -326,7 +327,7 @@ public class SolutionDescriptor<Solution_> {
 
     private void processValueRangeProviderAnnotation(DescriptorPolicy descriptorPolicy, Member member) {
         if (((AnnotatedElement) member).isAnnotationPresent(ValueRangeProvider.class)) {
-            MemberAccessor memberAccessor = ConfigUtils.buildMemberAccessor(
+            MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(
                     member, FIELD_OR_READ_METHOD, ValueRangeProvider.class);
             descriptorPolicy.addFromSolutionValueRangeProvider(memberAccessor);
         }
@@ -407,7 +408,7 @@ public class SolutionDescriptor<Solution_> {
 
     private void processProblemFactPropertyAnnotation(DescriptorPolicy descriptorPolicy, Member member,
             Class<? extends Annotation> annotationClass) {
-        MemberAccessor memberAccessor = ConfigUtils.buildMemberAccessor(
+        MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(
                 member, FIELD_OR_READ_METHOD, annotationClass);
         assertUnexistingProblemFactOrPlanningEntityProperty(memberAccessor, annotationClass);
         if (annotationClass == ProblemFactProperty.class) {
@@ -428,7 +429,7 @@ public class SolutionDescriptor<Solution_> {
 
     private void processPlanningEntityPropertyAnnotation(DescriptorPolicy descriptorPolicy, Member member,
             Class<? extends Annotation> annotationClass) {
-        MemberAccessor memberAccessor = ConfigUtils.buildMemberAccessor(
+        MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(
                 member, FIELD_OR_GETTER_METHOD, annotationClass);
         assertUnexistingProblemFactOrPlanningEntityProperty(memberAccessor, annotationClass);
         if (annotationClass == PlanningEntityProperty.class) {
@@ -479,7 +480,7 @@ public class SolutionDescriptor<Solution_> {
 
     private void processScoreAnnotation(DescriptorPolicy descriptorPolicy, Member member,
             Class<? extends Annotation> annotationClass, ScoreDefinition deprecatedScoreDefinition) {
-        MemberAccessor memberAccessor = ConfigUtils.buildMemberAccessor(
+        MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(
                 member, FIELD_OR_GETTER_METHOD_WITH_SETTER, PlanningScore.class);
         if (deprecatedScoreDefinition != null) {
             throw new IllegalStateException("The solutionClass (" + solutionClass
@@ -664,13 +665,15 @@ public class SolutionDescriptor<Solution_> {
         }
         determineGlobalShadowOrder();
         if (logger.isTraceEnabled()) {
-            logger.trace("    Model annotations parsed for Solution {}:", solutionClass.getSimpleName());
+            logger.trace("    Model annotations parsed for solution {}:", solutionClass.getSimpleName());
             for (Map.Entry<Class<?>, EntityDescriptor<Solution_>> entry : entityDescriptorMap.entrySet()) {
                 EntityDescriptor<Solution_> entityDescriptor = entry.getValue();
                 logger.trace("        Entity {}:", entityDescriptor.getEntityClass().getSimpleName());
                 for (VariableDescriptor<Solution_> variableDescriptor : entityDescriptor.getDeclaredVariableDescriptors()) {
-                    logger.trace("            Variable {} ({})", variableDescriptor.getVariableName(),
-                            variableDescriptor instanceof GenuineVariableDescriptor ? "genuine" : "shadow");
+                    logger.trace("            {} variable {} ({})",
+                            variableDescriptor instanceof GenuineVariableDescriptor ? "Genuine" : "Shadow",
+                            variableDescriptor.getVariableName(),
+                            variableDescriptor.getMemberAccessorSpeedNote());
                 }
             }
         }
@@ -1051,7 +1054,7 @@ public class SolutionDescriptor<Solution_> {
             throw new IllegalArgumentException("The solutionClass (" + solutionClass
                     + ")'s " + (isFact ? "factCollectionProperty" : "entityCollectionProperty") + " ("
                     + memberAccessor + ") should never return null.\n"
-                    + (memberAccessor instanceof FieldMemberAccessor ? ""
+                    + (memberAccessor instanceof ReflectionFieldMemberAccessor ? ""
                     : "Maybe the getter/method always returns null instead of the actual data.\n")
                     + "Maybe the value is null instead of an empty collection/array.");
         }

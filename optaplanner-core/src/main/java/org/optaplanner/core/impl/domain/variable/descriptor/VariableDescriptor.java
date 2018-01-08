@@ -112,6 +112,10 @@ public abstract class VariableDescriptor<Solution_> {
         variableMemberAccessor.executeSetter(entity, value);
     }
 
+    public String getMemberAccessorSpeedNote() {
+        return variableMemberAccessor.getSpeedNote();
+    }
+
     public abstract boolean isGenuineAndUninitialized(Object entity);
 
 }

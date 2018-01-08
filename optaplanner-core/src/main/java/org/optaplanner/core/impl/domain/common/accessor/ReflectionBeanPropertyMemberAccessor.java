@@ -26,14 +26,14 @@ import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 /**
  * A {@link MemberAccessor} based on a getter and optionally a setter.
  */
-public final class BeanPropertyMemberAccessor implements MemberAccessor {
+public final class ReflectionBeanPropertyMemberAccessor implements MemberAccessor {
 
     private final Class<?> propertyType;
     private final String propertyName;
     private final Method getterMethod;
     private final Method setterMethod;
 
-    public BeanPropertyMemberAccessor(Method getterMethod) {
+    public ReflectionBeanPropertyMemberAccessor(Method getterMethod) {
         this.getterMethod = getterMethod;
         getterMethod.setAccessible(true); // Performance hack by avoiding security checks
         Class<?> declaringClass = getterMethod.getDeclaringClass();
@@ -97,6 +97,11 @@ public final class BeanPropertyMemberAccessor implements MemberAccessor {
                     + ") throws an exception for value (" + value + ").",
                     e.getCause());
         }
+    }
+
+    @Override
+    public String getSpeedNote() {
+        return "slow access with reflection";
     }
 
     // ************************************************************************

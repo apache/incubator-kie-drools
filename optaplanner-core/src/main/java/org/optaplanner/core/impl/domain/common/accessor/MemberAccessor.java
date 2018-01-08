@@ -25,9 +25,9 @@ import java.lang.reflect.Type;
 /**
  * Fast and easy access to a {@link Member} of a bean,
  * which is a property (with a getter and optional setter {@link Method}) or a {@link Field}.
- * @see BeanPropertyMemberAccessor
- * @see FieldMemberAccessor
- * @see MethodMemberAccessor
+ * @see ReflectionBeanPropertyMemberAccessor
+ * @see ReflectionFieldMemberAccessor
+ * @see ReflectionMethodMemberAccessor
  */
 public interface MemberAccessor extends AnnotatedElement {
 
@@ -46,5 +46,7 @@ public interface MemberAccessor extends AnnotatedElement {
     boolean supportSetter();
 
     void executeSetter(Object bean, Object value);
+
+    String getSpeedNote();
 
 }

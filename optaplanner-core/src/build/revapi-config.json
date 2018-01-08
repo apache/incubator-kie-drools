@@ -107,6 +107,14 @@
           "methodName": "addConstraintMatch",
           "elementKind": "method",
           "justification": "After fixing PLANNER-965, this method can only return true or fail fast, so keeping the contract would only trade a compile time error for a runtime exception."
+        },
+        {
+          "code": "java.class.removed",
+          "old": "enum org.optaplanner.core.config.util.ConfigUtils.MemberAccessorType",
+          "package": "org.optaplanner.core.config.util",
+          "classSimpleName": "MemberAccessorType",
+          "elementKind": "enum",
+          "justification": "Internal utility enum moved to MemberAccessorFactory"
         }
       ]
     }

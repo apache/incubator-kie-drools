@@ -162,7 +162,7 @@ public final class ReflectionHelper {
         String setterName = PROPERTY_MUTATOR_PREFIX
                 + (propertyName.isEmpty() ? "" : propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1));
         try {
-            return containingClass.getMethod(setterName, propertyType);
+            return containingClass.getDeclaredMethod(setterName, propertyType);
         } catch (NoSuchMethodException e) {
             return null;
         }

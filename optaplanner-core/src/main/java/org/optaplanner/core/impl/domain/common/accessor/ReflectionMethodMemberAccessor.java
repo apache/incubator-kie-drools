@@ -24,15 +24,15 @@ import java.util.Arrays;
 
 /**
  * A {@link MemberAccessor} based on a single read {@link Method}.
- * Do not confuse with {@link BeanPropertyMemberAccessor} which is richer.
+ * Do not confuse with {@link ReflectionBeanPropertyMemberAccessor} which is richer.
  */
-public final class MethodMemberAccessor implements MemberAccessor {
+public final class ReflectionMethodMemberAccessor implements MemberAccessor {
 
     private final Class<?> returnType;
     private final String methodName;
     private final Method readMethod;
 
-    public MethodMemberAccessor(Method readMethod) {
+    public ReflectionMethodMemberAccessor(Method readMethod) {
         this.readMethod = readMethod;
         readMethod.setAccessible(true); // Performance hack by avoiding security checks
         returnType = readMethod.getReturnType();
@@ -75,6 +75,11 @@ public final class MethodMemberAccessor implements MemberAccessor {
                     + ") throws an exception.",
                     e.getCause());
         }
+    }
+
+    @Override
+    public String getSpeedNote() {
+        return "slow access with reflection";
     }
 
     @Override

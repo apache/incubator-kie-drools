@@ -20,7 +20,7 @@ import java.lang.reflect.Method;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
-import org.optaplanner.core.impl.domain.common.accessor.BeanPropertyMemberAccessor;
+import org.optaplanner.core.impl.domain.common.accessor.ReflectionBeanPropertyMemberAccessor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.score.director.drools.testgen.fact.TestGenFact;
 import org.optaplanner.core.impl.score.director.drools.testgen.fact.TestGenNullFact;
@@ -33,7 +33,7 @@ public class TestGenKieSessionUpdate implements TestGenKieSessionOperation {
     private final int id;
     private final TestGenFact entity;
     private final String variableName;
-    private final BeanPropertyMemberAccessor accessor;
+    private final ReflectionBeanPropertyMemberAccessor accessor;
     private final String setterName;
     private final TestGenFact value;
 
@@ -51,7 +51,7 @@ public class TestGenKieSessionUpdate implements TestGenKieSessionOperation {
                 variableDescriptor.getVariableName());
         setterName = ReflectionHelper.getSetterMethod(
                 getter.getDeclaringClass(), getter.getReturnType(), variableDescriptor.getVariableName()).getName();
-        accessor = new BeanPropertyMemberAccessor(getter);
+        accessor = new ReflectionBeanPropertyMemberAccessor(getter);
     }
 
     /**

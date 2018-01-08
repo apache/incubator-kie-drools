@@ -23,11 +23,11 @@ import java.lang.reflect.Type;
 /**
  * A {@link MemberAccessor} based on a field.
  */
-public final class FieldMemberAccessor implements MemberAccessor {
+public final class ReflectionFieldMemberAccessor implements MemberAccessor {
 
     private final Field field;
 
-    public FieldMemberAccessor(Field field) {
+    public ReflectionFieldMemberAccessor(Field field) {
         this.field = field;
         // Performance hack by avoiding security checks
         field.setAccessible(true);
@@ -71,6 +71,11 @@ public final class FieldMemberAccessor implements MemberAccessor {
             throw new IllegalStateException("Cannot set the field (" + field.getName()
                     + ") on bean of class (" + bean.getClass() + ").", e);
         }
+    }
+
+    @Override
+    public String getSpeedNote() {
+        return "slow access with reflection";
     }
 
     // ************************************************************************

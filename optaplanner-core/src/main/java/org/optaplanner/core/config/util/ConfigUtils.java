@@ -43,12 +43,10 @@ import org.optaplanner.core.api.domain.lookup.PlanningId;
 import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.impl.domain.common.AlphabeticMemberComparator;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
-import org.optaplanner.core.impl.domain.common.accessor.BeanPropertyMemberAccessor;
-import org.optaplanner.core.impl.domain.common.accessor.FieldMemberAccessor;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
-import org.optaplanner.core.impl.domain.common.accessor.MethodMemberAccessor;
+import org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory;
 
-import static org.optaplanner.core.config.util.ConfigUtils.MemberAccessorType.*;
+import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.*;
 
 public class ConfigUtils {
 
@@ -384,45 +382,6 @@ public class ConfigUtils {
         return ((Class) typeArgument);
     }
 
-    public static MemberAccessor buildMemberAccessor(Member member, MemberAccessorType memberAccessorType, Class<? extends Annotation> annotationClass) {
-        if (member instanceof Field) {
-            Field field = (Field) member;
-            return new FieldMemberAccessor(field);
-        } else if (member instanceof Method) {
-            Method method = (Method) member;
-            MemberAccessor memberAccessor;
-            switch (memberAccessorType) {
-                case FIELD_OR_READ_METHOD:
-                    if (ReflectionHelper.isGetterMethod(method)) {
-                        memberAccessor = new BeanPropertyMemberAccessor(method);
-                    } else {
-                        ReflectionHelper.assertReadMethod(method, annotationClass);
-                        memberAccessor = new MethodMemberAccessor(method);
-                    }
-                    break;
-                case FIELD_OR_GETTER_METHOD:
-                case FIELD_OR_GETTER_METHOD_WITH_SETTER:
-                    ReflectionHelper.assertGetterMethod(method, annotationClass);
-                    memberAccessor = new BeanPropertyMemberAccessor(method);
-                    break;
-                default:
-                    throw new IllegalStateException("The memberAccessorType (" + memberAccessorType
-                            + ") is not implemented.");
-            }
-            if (memberAccessorType == MemberAccessorType.FIELD_OR_GETTER_METHOD_WITH_SETTER
-                    && !memberAccessor.supportSetter()) {
-                throw new IllegalStateException("The class (" + method.getDeclaringClass()
-                        + ") has a " + annotationClass.getSimpleName()
-                        + " annotated getter method (" + method
-                        + "), but lacks a setter for that property (" + memberAccessor.getName() + ").");
-            }
-            return memberAccessor;
-        } else {
-            throw new IllegalStateException("Impossible state: the member (" + member + ")'s type is not a "
-                    + Field.class.getSimpleName() + " or a " + Method.class.getSimpleName() + ".");
-        }
-    }
-
     public static <C> MemberAccessor findPlanningIdMemberAccessor(Class<C> clazz) {
         List<Member> memberList = getAllMembers(clazz, PlanningId.class);
         if (memberList.isEmpty()) {
@@ -434,7 +393,7 @@ public class ConfigUtils {
                     + PlanningId.class.getSimpleName() + " annotation.");
         }
         Member member = memberList.get(0);
-        MemberAccessor memberAccessor = buildMemberAccessor(member, FIELD_OR_READ_METHOD, PlanningId.class);
+        MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(member, FIELD_OR_READ_METHOD, PlanningId.class);
         if (!Comparable.class.isAssignableFrom(memberAccessor.getType())) {
             throw new IllegalArgumentException("The class (" + clazz
                     + ") has a member (" + member + ") with a " + PlanningId.class.getSimpleName()
@@ -444,12 +403,6 @@ public class ConfigUtils {
                     + " or " + String.class.getSimpleName() + " type instead.");
         }
         return memberAccessor;
-    }
-
-    public enum MemberAccessorType {
-        FIELD_OR_READ_METHOD,
-        FIELD_OR_GETTER_METHOD,
-        FIELD_OR_GETTER_METHOD_WITH_SETTER
     }
 
     // ************************************************************************
