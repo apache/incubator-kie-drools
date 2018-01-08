@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.drools.javaparser.ast.drlx.OOPathChunk;
 import org.drools.javaparser.ast.drlx.OOPathExpr;
@@ -72,19 +71,26 @@ public class OOPathExprGenerator {
         }
 
         // If the OOPath has an inner binding, it will be in the context's declarations without its type (as it's inferred from the last OOPath chunk).
-        // We set the declaration type to the last declaration with a class and we put that declaration as the last
+        // We remove the original expression without type and use its name in the last expression
         List<DeclarationSpec> declarations = context.getDeclarations();
         final Optional<DeclarationSpec> missingClassDeclarationFound = declarations.stream().filter(d -> d.getDeclarationClass() == null).findFirst();
 
         missingClassDeclarationFound.ifPresent(missingClassDeclaration -> {
-            final List<DeclarationSpec> declarationsWithType = declarations.stream().filter(d -> d.getDeclarationClass() != null).collect(Collectors.toList());
-            final DeclarationSpec last = declarationsWithType.get(declarationsWithType.size() - 1);
+            declarations.remove(declarations.indexOf(missingClassDeclaration));
 
-            final int missingClassDeclarationIndex = declarations.indexOf(missingClassDeclaration);
             final String innerBindingId = missingClassDeclaration.getBindingId();
+            final int lastIndex = declarations.size() - 1;
+            final DeclarationSpec last = declarations.get(lastIndex);
+            declarations.set(lastIndex, new DeclarationSpec(innerBindingId, last.getDeclarationClass(), last.getOptPattern(), last.getDeclarationSource()));
 
-            declarations.remove(missingClassDeclarationIndex);
-            declarations.add(new DeclarationSpec(innerBindingId, last.getDeclarationClass(), last.getOptPattern(), last.getDeclarationSource()));
+            // In the meanwhile some condition could have used that binding, we need to rename that also
+            for(DrlxParseResult r : ooPathConditionExpressions) {
+                if(r.getExprId().equals(last.getBindingId())) {
+                    r.setExprId(innerBindingId);
+                } else if(r.getPatternBinding().equals(last.getBindingId())) {
+                    r.setPatternBinding(innerBindingId);
+                }
+            }
         });
 
         ooPathConditionExpressions.forEach(d -> context.addExpression(buildExpressionWithIndexing(context, d)));
