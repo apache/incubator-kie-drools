@@ -312,9 +312,12 @@ public class ModelGenerator {
             existingDecls.addAll(context.getRuleUnitDescr().getUnitVars());
         }
 
-        return context.getRuleDialect() == RuleDialect.MVEL ?
-                existingDecls.stream().filter(consequenceString::contains).collect(toSet()) :
-                ruleConsequence.getChildNodesByType(NameExpr.class).stream().map(NameExpr::getNameAsString).collect(toSet());
+        if (context.getRuleDialect() == RuleDialect.MVEL) {
+            return existingDecls.stream().filter(consequenceString::contains).collect(toSet());
+        }
+
+        Set<String> declUsedInRHS = ruleConsequence.getChildNodesByType(NameExpr.class).stream().map(NameExpr::getNameAsString).collect(toSet());
+        return existingDecls.stream().filter(declUsedInRHS::contains).collect(toSet());
     }
 
     private static MethodCallExpr executeCall(RuleContext context, BlockStmt ruleVariablesBlock, BlockStmt ruleConsequence, Collection<String> verifiedDeclUsedInRHS, MethodCallExpr onCall) {
