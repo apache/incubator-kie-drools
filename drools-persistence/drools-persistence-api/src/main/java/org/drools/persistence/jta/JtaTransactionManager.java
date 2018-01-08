@@ -221,8 +221,6 @@ public class JtaTransactionManager
                     this.ut = findUserTransaction();
                     this.tm = findTransactionManager(this.ut);
                     this.tsr = findTransactionSynchronizationRegistry(this.ut, this.tm);
-
-
                     try {
                         this.ut.begin();
                         result =  true;
@@ -231,20 +229,19 @@ public class JtaTransactionManager
                         throw new RuntimeException( "Unable to begin transaction",  e );
                     }
                 } else {
-
                     logger.warn( "Unable to begin transaction", e);
                     throw new RuntimeException( "Unable to begin transaction", e );
                 }
             }finally{
                 if( result ){
-	            	if( transactionResources.get() != null && transactionResources.get().size() > 0 ){
-	                	logger.warn( "Found transaction resources not properly cleared, clearing them!" );
-	                	Map<Object,Object> map = transactionResources.get();
-	                	for( Object key : map.keySet() ){
-	                		logger.warn( "Item[" + key + "]:" + map.get(key) );
-	                	}
-	                	transactionResources.get().clear();
+	            if( transactionResources.get() != null && transactionResources.get().size() > 0 ){
+	                logger.warn( "Found transaction resources not properly cleared, clearing them!" );
+	                Map<Object,Object> map = transactionResources.get();
+	                for( Object key : map.keySet() ){
+		           logger.warn( "Item[" + key + "]:" + map.get(key) );
 	                }
+	                transactionResources.get().clear();
+	            }
             	}
             }
         } 
