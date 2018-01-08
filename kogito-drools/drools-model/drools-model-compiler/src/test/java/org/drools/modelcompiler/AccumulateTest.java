@@ -26,6 +26,7 @@ import org.drools.modelcompiler.domain.Adult;
 import org.drools.modelcompiler.domain.Child;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.AccumulateFunction;
@@ -266,4 +267,29 @@ public class AccumulateTest extends BaseModelTest {
         }
     }
 
+    @Test @Ignore
+    public void testFromAccumulate() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "import " + Result.class.getCanonicalName() + ";" +
+                "rule X when\n" +
+                "  $sum : Number( intValue() > 0 ) from accumulate ( $p: Person ( getName().startsWith(\"M\")); \n" +
+                "                sum($p.getAge())  \n" +
+                "              )\n" +
+                "then\n" +
+                "  insert(new Result($sum));\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Edson", 35));
+        ksession.insert(new Person("Mario", 40));
+
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(1, results.size());
+        assertEquals(77, results.iterator().next().getValue());
+    }
 }

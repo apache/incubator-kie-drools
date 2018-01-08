@@ -585,7 +585,8 @@ public class ModelGenerator {
         if (drlxParseResult.hasUnificationVariable()) {
             Expression dslExpr = buildUnificationExpression(context, drlxParseResult);
             context.addExpression(dslExpr);
-        } else if (drlxParseResult.getExpr() != null) {
+        } else if ( drlxParseResult.getExpr() != null && (
+                drlxParseResult.getRight() != null || drlxParseResult.getExprType() == Boolean.class || drlxParseResult.getExprType() == boolean.class ) ) {
             Expression dslExpr = buildExpressionWithIndexing(context, drlxParseResult);
             context.addExpression(dslExpr);
         }
@@ -684,7 +685,7 @@ public class ModelGenerator {
             }
             MethodCallExpr methodCallExpr = opSpec.getMethodCallExpr( pointFreeExpr, left );
 
-            return new DrlxParseResult(patternType, exprId, bindingId, methodCallExpr, left.getType() )
+            return new DrlxParseResult(patternType, exprId, bindingId, methodCallExpr, boolean.class )
                     .setUsedDeclarations( usedDeclarations ).setReactOnProperties( reactOnProperties ).setLeft( left ).setStatic( opSpec.isStatic() );
         }
 
@@ -715,9 +716,17 @@ public class ModelGenerator {
                 NameExpr _this = new NameExpr("_this");
                 TypedExpression converted = DrlxParseUtil.toMethodCallWithClassCheck(context, methodCallExpr, patternType, context.getPkg().getTypeResolver());
                 Expression withThis = DrlxParseUtil.prepend(_this, converted.getExpression());
-                return new DrlxParseResult(patternType, exprId, bindingId, withThis, converted.getType());
+                return new DrlxParseResult(patternType, exprId, bindingId, withThis, converted.getType()).setLeft( converted );
             }
+        }
 
+        if (drlxExpr instanceof FieldAccessExpr) {
+            FieldAccessExpr fieldCallExpr = (FieldAccessExpr) drlxExpr;
+
+            NameExpr _this = new NameExpr("_this");
+            TypedExpression converted = DrlxParseUtil.toMethodCallWithClassCheck(context, fieldCallExpr, patternType, context.getPkg().getTypeResolver());
+            Expression withThis = DrlxParseUtil.prepend(_this, converted.getExpression());
+            return new DrlxParseResult(patternType, exprId, bindingId, withThis, converted.getType()).setLeft( converted );
         }
 
         if (drlxExpr instanceof NameExpr) {

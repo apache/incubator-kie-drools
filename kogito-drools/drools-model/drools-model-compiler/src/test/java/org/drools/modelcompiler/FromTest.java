@@ -16,9 +16,14 @@
 
 package org.drools.modelcompiler;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.assertj.core.api.Assertions;
+import org.drools.modelcompiler.domain.Child;
+import org.drools.modelcompiler.domain.Man;
+import org.drools.modelcompiler.domain.Woman;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
@@ -55,4 +60,69 @@ public class FromTest extends BaseModelTest {
         assertFalse(results.contains("xyz"));
     }
 
+    @Test
+    public void testFromVariable() {
+        final String str =
+                "import org.drools.modelcompiler.domain.*;\n" +
+                "global java.util.List list\n" +
+                "\n" +
+                "rule R when\n" +
+                " Man( $children : wife.children )\n" +
+                " $child: Child( age > 10 ) from $children\n" +
+                "then\n" +
+                "  list.add( $child.getName() );\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        final List<String> list = new ArrayList<>();
+        ksession.setGlobal( "list", list );
+
+        final Woman alice = new Woman( "Alice", 38 );
+        final Man bob = new Man( "Bob", 40 );
+        bob.setWife( alice );
+
+        final Child charlie = new Child( "Charles", 12 );
+        final Child debbie = new Child( "Debbie", 10 );
+        alice.addChild( charlie );
+        alice.addChild( debbie );
+
+        ksession.insert( bob );
+        ksession.fireAllRules();
+
+        Assertions.assertThat(list).containsExactlyInAnyOrder("Charles");
+    }
+
+    @Test
+    public void testFromExpression() {
+        final String str =
+                "import org.drools.modelcompiler.domain.*;\n" +
+                "global java.util.List list\n" +
+                "\n" +
+                "rule R when\n" +
+                " Man( $wife : wife )\n" +
+                " $child: Child( age > 10 ) from $wife.children\n" +
+                "then\n" +
+                "  list.add( $child.getName() );\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        final List<String> list = new ArrayList<>();
+        ksession.setGlobal( "list", list );
+
+        final Woman alice = new Woman( "Alice", 38 );
+        final Man bob = new Man( "Bob", 40 );
+        bob.setWife( alice );
+
+        final Child charlie = new Child( "Charles", 12 );
+        final Child debbie = new Child( "Debbie", 10 );
+        alice.addChild( charlie );
+        alice.addChild( debbie );
+
+        ksession.insert( bob );
+        ksession.fireAllRules();
+
+        Assertions.assertThat(list).containsExactlyInAnyOrder("Charles");
+    }
 }
