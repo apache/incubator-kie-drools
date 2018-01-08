@@ -758,14 +758,14 @@ Scales better, at the cost of solution quality. The order of the planning variab
 
 The second way scales better, so it can be worth to switch to it.
 For example, in a course scheduling example with 200 rooms and 40 periods,
-a cartesian product selects 8000 moves per entity (1 step per entity).
+a cartesian product selects 8{nbsp}000 moves per entity (1 step per entity).
 On the other hand, a sequential approach only selects 240 moves per entity (2 steps per entity),
 ending the Construction Heuristic 3 times faster.
 Especially for three or more planning variables, the scaling difference is huge.
-For example, with three variables of 1000 values each,
-a cartesian product selects 1000000000 moves per entity (1 step per entity).
-A sequential approach only selects 240 moves per entity (3 steps per entity),
-ending the Construction Heuristic 300 000 times faster.
+For example, with three variables of 1{nbsp}000 values each,
+a cartesian product selects 1{nbsp}000{nbsp}000{nbsp}000 moves per entity (1 step per entity).
+A sequential approach only selects 3{nbsp}000 moves per entity (3 steps per entity),
+ending the Construction Heuristic 300{nbsp}000 times faster.
 
 image::ConstructionHeuristics/multiVariableConstructionHeuristics.png[align="center"]
 
