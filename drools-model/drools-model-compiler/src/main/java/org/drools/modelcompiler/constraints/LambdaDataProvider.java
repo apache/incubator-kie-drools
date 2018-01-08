@@ -53,7 +53,9 @@ public class LambdaDataProvider implements DataProvider {
 
     @Override
     public Iterator getResults( Tuple tuple, InternalWorkingMemory wm, PropagationContext ctx, Object providerContext ) {
-        Object result = declaration.getExtractor().isGlobal() ? declaration.getExtractor().getValue(wm, declaration.getIdentifier()) : tuple.get(declaration).getObject();
+        Object result = declaration.getExtractor().isGlobal() ?
+                declaration.getExtractor().getValue(wm, declaration.getIdentifier()) :
+                declaration.getValue( wm, tuple.get(declaration).getObject() );
         if (providerFunction != null) {
             result = providerFunction.apply( result );
         }
