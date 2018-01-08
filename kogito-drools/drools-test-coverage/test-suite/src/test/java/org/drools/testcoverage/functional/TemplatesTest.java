@@ -16,6 +16,15 @@
 
 package org.drools.testcoverage.functional;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.assertj.core.api.Assertions;
 import org.drools.decisiontable.ExternalSpreadsheetCompiler;
 import org.drools.template.DataProviderCompiler;
@@ -35,10 +44,6 @@ import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.*;
 
 /**
  * Tests templates - providers, generating rules, performance.
@@ -165,7 +170,7 @@ public class TemplatesTest {
         testCorrectnessCheck(drl);
     }
 
-    @Test
+    @Test(timeout = 30000L)
     public void OneRuleManyRows() throws IOException {
         final KieServices kieServices = KieServices.Factory.get();
         final Collection<ParamSet> cfl = new ArrayList<ParamSet>();
@@ -182,7 +187,7 @@ public class TemplatesTest {
         testManyRows(drl, 0, 1);
     }
 
-    @Test
+    @Test(timeout = 30000L)
     public void TenRulesManyRows() throws IOException {
         final KieServices kieServices = KieServices.Factory.get();
         final ObjectDataCompiler converter = new ObjectDataCompiler();
@@ -196,7 +201,7 @@ public class TemplatesTest {
         testManyRows(drl, 500, 10);
     }
 
-    @Test
+    @Test(timeout = 30000L)
     public void OneTemplateManyRules() throws IOException {
         final KieServices kieServices = KieServices.Factory.get();
         final ObjectDataCompiler converter = new ObjectDataCompiler();
@@ -211,7 +216,7 @@ public class TemplatesTest {
         testManyRules(drl, 500);
     }
 
-    @Test(timeout = 100000l)
+    @Test(timeout = 30000L)
     public void TenTemplatesManyRules() throws IOException {
         final KieServices kieServices = KieServices.Factory.get();
         final ObjectDataCompiler converter = new ObjectDataCompiler();
