@@ -57,9 +57,9 @@ public class MemberAccessorFactoryTest {
         TestdataVisibilityModifierSolution s1 = new TestdataVisibilityModifierSolution("s1",
                 "firstValue", "n/a",
                 "n/a", "n/a", "n/a", "n/a");
-        assertSame("firstValue", memberAccessor.executeGetter(s1));
+        assertEquals("firstValue", memberAccessor.executeGetter(s1));
         memberAccessor.executeSetter(s1, "secondValue");
-        assertSame("secondValue", memberAccessor.executeGetter(s1));
+        assertEquals("secondValue", memberAccessor.executeGetter(s1));
     }
 
     @Test
@@ -73,9 +73,9 @@ public class MemberAccessorFactoryTest {
         TestdataVisibilityModifierSolution s1 = new TestdataVisibilityModifierSolution("s1",
                 "n/a", "firstValue",
                 "n/a", "n/a", "n/a", "n/a");
-        assertSame("firstValue", memberAccessor.executeGetter(s1));
+        assertEquals("firstValue", memberAccessor.executeGetter(s1));
         memberAccessor.executeSetter(s1, "secondValue");
-        assertSame("secondValue", memberAccessor.executeGetter(s1));
+        assertEquals("secondValue", memberAccessor.executeGetter(s1));
     }
 
     @Test
@@ -89,9 +89,9 @@ public class MemberAccessorFactoryTest {
         TestdataVisibilityModifierSolution s1 = new TestdataVisibilityModifierSolution("s1",
                 "n/a", "n/a",
                 "firstValue", "n/a", "n/a", "n/a");
-        assertSame("firstValue", memberAccessor.executeGetter(s1));
+        assertEquals("firstValue", memberAccessor.executeGetter(s1));
         memberAccessor.executeSetter(s1, "secondValue");
-        assertSame("secondValue", memberAccessor.executeGetter(s1));
+        assertEquals("secondValue", memberAccessor.executeGetter(s1));
     }
 
     @Test
@@ -105,9 +105,9 @@ public class MemberAccessorFactoryTest {
         TestdataVisibilityModifierSolution s1 = new TestdataVisibilityModifierSolution("s1",
                 "n/a", "n/a",
                 "n/a", "firstValue", "n/a", "n/a");
-        assertSame("firstValue", memberAccessor.executeGetter(s1));
+        assertEquals("firstValue", memberAccessor.executeGetter(s1));
         memberAccessor.executeSetter(s1, "secondValue");
-        assertSame("secondValue", memberAccessor.executeGetter(s1));
+        assertEquals("secondValue", memberAccessor.executeGetter(s1));
     }
 
     @Test
@@ -121,9 +121,9 @@ public class MemberAccessorFactoryTest {
         TestdataVisibilityModifierSolution s1 = new TestdataVisibilityModifierSolution("s1",
                 "n/a", "n/a",
                 "n/a", "n/a", "firstValue", "n/a");
-        assertSame("firstValue", memberAccessor.executeGetter(s1));
+        assertEquals("firstValue", memberAccessor.executeGetter(s1));
         memberAccessor.executeSetter(s1, "secondValue");
-        assertSame("secondValue", memberAccessor.executeGetter(s1));
+        assertEquals("secondValue", memberAccessor.executeGetter(s1));
     }
 
     @Test
@@ -138,9 +138,9 @@ public class MemberAccessorFactoryTest {
         TestdataVisibilityModifierSolution s1 = new TestdataVisibilityModifierSolution("s1",
                 "n/a", "n/a",
                 "n/a", "n/a", "n/a", "firstValue");
-        assertSame("firstValue", memberAccessor.executeGetter(s1));
+        assertEquals("firstValue", memberAccessor.executeGetter(s1));
         memberAccessor.executeSetter(s1, "secondValue");
-        assertSame("secondValue", memberAccessor.executeGetter(s1));
+        assertEquals("secondValue", memberAccessor.executeGetter(s1));
     }
 
 }

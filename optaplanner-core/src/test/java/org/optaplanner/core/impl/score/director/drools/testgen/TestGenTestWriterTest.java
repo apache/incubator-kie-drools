@@ -47,7 +47,7 @@ public class TestGenTestWriterTest {
     private static final String DRL_FILE_PLACEHOLDER = "SCORE_DRL_ABSOLUTE_PATH";
     private static final String DRL_FILE_PATH = "/x/y.drl";
 
-    @Test
+    @Test(timeout = 600000)
     public void fullJournalOutput() throws IOException, URISyntaxException {
         TestGenKieSessionJournal journal = new TestGenKieSessionJournal();
         TestdataEntity entity = new TestdataEntity("E");
