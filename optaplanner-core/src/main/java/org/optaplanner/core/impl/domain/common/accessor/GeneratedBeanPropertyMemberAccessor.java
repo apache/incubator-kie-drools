@@ -53,7 +53,7 @@ public abstract class GeneratedBeanPropertyMemberAccessor implements MemberAcces
                 + "    }\n"
                 + "    public void executeSetter(Object bean, Object value) {\n"
                 + ((setterMethod == null) ? "        throw new UnsupportedOperationException();"
-                : "        ((" + declaringClass.getName() + ") bean)." + setterMethod.getName() + "((" + propertyType.getName() + ") value);\n")
+                : "        ((" + declaringClass.getName() + ") bean)." + setterMethod.getName() + "((" + arraySafeClassName(propertyType) + ") value);\n")
                 + "    }\n"
                 + "}";
         StringGeneratedJavaCompilerFacade compilerFacade = new StringGeneratedJavaCompilerFacade(
@@ -66,6 +66,13 @@ public abstract class GeneratedBeanPropertyMemberAccessor implements MemberAcces
         } catch (NoSuchMethodException | InstantiationException | InvocationTargetException | IllegalAccessException e) {
             throw new IllegalStateException("The generated class (" + fullClassName + ") failed to instantiate.", e);
         }
+    }
+
+    private static String arraySafeClassName(Class<?> propertyType) {
+        if (propertyType.isArray()) {
+            return arraySafeClassName(propertyType.getComponentType()) + "[]";
+        }
+        return propertyType.getName();
     }
 
     protected final Class<?> propertyType;
