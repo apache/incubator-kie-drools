@@ -669,48 +669,6 @@ public class FlowTest {
     }
 
     @Test
-    @Ignore
-    public void testWithBinaryExpressionFailingBecauseOfIndexedBy() {
-
-        final org.drools.model.Variable<org.drools.modelcompiler.domain.Person> var_$p = declarationOf(type(org.drools.modelcompiler.domain.Person.class),
-                                                                                                       "$p");
-        final org.drools.model.Variable<Integer> var_personAge = declarationOf(type(Integer.class),
-                                                                               "personAge");
-        final org.drools.model.Variable<org.drools.modelcompiler.domain.Person> var_$plusTwo = declarationOf(type(org.drools.modelcompiler.domain.Person.class),
-                                                                                                             "$plusTwo");
-        org.drools.model.Rule rule = rule("R").build(bind(var_personAge).as(var_$p,
-                                                                            (_this) -> _this.getAge())
-                                                             .reactOn("age"),
-                                                     expr("$expr$2$",
-                                                          var_$plusTwo,
-                                                          var_personAge,
-                                                          (_this, personAge) -> _this.getAge() == personAge + 2).indexedBy(int.class,
-                                                                                                                           org.drools.model.Index.ConstraintType.EQUAL,
-                                                                                                                           0,
-                                                                                                                           _this -> _this.getAge(),
-                                                                                                                           personAge -> personAge + 2)
-                                                             .reactOn("age"),
-                                                     on(var_$plusTwo).execute((drools, $plusTwo) -> {
-                                                         drools.insert(new Result($plusTwo.getName()));
-                                                     }));
-
-        Model model = new ModelImpl().addRule( rule );
-        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
-
-        KieSession ksession = kieBase.newKieSession();
-
-        ksession.insert( new Person( "Mark", 39 ) );
-        ksession.insert( new Person( "Mario", 41 ) );
-
-        ksession.fireAllRules();
-
-        Collection<Result> results = (Collection<Result>) ksession.getObjects( new ClassObjectFilter( Result.class ) );
-        assertEquals( 1, results.size() );
-        assertEquals( "Mario", results.iterator().next().getValue() );
-    }
-
-
-    @Test
     public void testPositionalRecursiveQueryWithUnification() {
         Variable<Relationship> var_$pattern_Relationship$1$ = declarationOf( type( Relationship.class ) );
         Variable<Relationship> var_$pattern_Relationship$2$ = declarationOf( type( Relationship.class ) );

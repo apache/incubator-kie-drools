@@ -281,7 +281,7 @@ public class ModelGenerator {
 
     public static MethodCallExpr createConsequenceCall( PackageModel packageModel, RuleDescr ruleDescr, RuleContext context, String consequenceString, BlockStmt ruleVariablesBlock, boolean isBreaking ) {
         BlockStmt ruleConsequence = rewriteConsequence(context, consequenceString);
-        Collection<String> usedDeclarationInRHS = extractUsedDeclarations(packageModel, context, ruleConsequence);
+        Collection<String> usedDeclarationInRHS = extractUsedDeclarations(packageModel, context, ruleConsequence, consequenceString);
         MethodCallExpr onCall = onCall(usedDeclarationInRHS);
         if (isBreaking) {
             onCall = new MethodCallExpr( onCall, BREAKING_CALL );
@@ -304,7 +304,7 @@ public class ModelGenerator {
         return parseBlock(ruleConsequenceAsBlock);
     }
 
-    private static Collection<String> extractUsedDeclarations(PackageModel packageModel, RuleContext context, BlockStmt ruleConsequence) {
+    private static Collection<String> extractUsedDeclarations(PackageModel packageModel, RuleContext context, BlockStmt ruleConsequence, String consequenceString) {
         Set<String> existingDecls = new HashSet<>();
         existingDecls.addAll(context.getDeclarations().stream().map(DeclarationSpec::getBindingId).collect(toList()));
         existingDecls.addAll(packageModel.getGlobals().keySet());
@@ -312,13 +312,9 @@ public class ModelGenerator {
             existingDecls.addAll(context.getRuleUnitDescr().getUnitVars());
         }
 
-        if (context.getRuleDialect() == RuleDialect.MVEL) {
-            // if dialect is MVEL then avoid optimization, and just return them all.
-            return existingDecls;
-        }
-
-        Set<String> declUsedInRHS = ruleConsequence.getChildNodesByType(NameExpr.class).stream().map(NameExpr::getNameAsString).collect(toSet());
-        return existingDecls.stream().filter(declUsedInRHS::contains).collect(toList());
+        return context.getRuleDialect() == RuleDialect.MVEL ?
+                existingDecls.stream().filter(consequenceString::contains).collect(toSet()) :
+                ruleConsequence.getChildNodesByType(NameExpr.class).stream().map(NameExpr::getNameAsString).collect(toSet());
     }
 
     private static MethodCallExpr executeCall(RuleContext context, BlockStmt ruleVariablesBlock, BlockStmt ruleConsequence, Collection<String> verifiedDeclUsedInRHS, MethodCallExpr onCall) {
