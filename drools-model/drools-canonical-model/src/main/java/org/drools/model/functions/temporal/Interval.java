@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
 import static org.drools.model.functions.temporal.TimeUtil.unitToLong;
 
 public class Interval {
-    public static final long MIN = Long.MIN_VALUE;
+    public static final long MIN = 0;
     public static final long MAX = Long.MAX_VALUE;
 
     private final long lowerBound;
