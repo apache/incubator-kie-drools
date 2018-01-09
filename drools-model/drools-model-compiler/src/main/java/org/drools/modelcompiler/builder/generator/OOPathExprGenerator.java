@@ -81,7 +81,7 @@ public class OOPathExprGenerator {
             final String innerBindingId = missingClassDeclaration.getBindingId();
             final int lastIndex = declarations.size() - 1;
             final DeclarationSpec last = declarations.get(lastIndex);
-            declarations.set(lastIndex, new DeclarationSpec(innerBindingId, last.getDeclarationClass(), last.getOptPattern(), last.getDeclarationSource()));
+            declarations.add(new DeclarationSpec(innerBindingId, last.getDeclarationClass(), last.getOptPattern(), last.getDeclarationSource()));
 
             // In the meanwhile some condition could have used that binding, we need to rename that also
             for(DrlxParseResult r : ooPathConditionExpressions) {
