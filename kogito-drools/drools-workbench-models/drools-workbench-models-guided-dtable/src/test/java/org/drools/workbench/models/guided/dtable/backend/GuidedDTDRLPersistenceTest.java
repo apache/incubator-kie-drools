@@ -19,6 +19,7 @@ package org.drools.workbench.models.guided.dtable.backend;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.assertj.core.api.Assertions;
 import org.drools.workbench.models.commons.backend.rule.RuleModelDRLPersistenceImpl;
 import org.drools.workbench.models.datamodel.rule.ActionExecuteWorkItem;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
@@ -5265,12 +5266,6 @@ public class GuidedDTDRLPersistenceTest {
 
     private void assertEqualsIgnoreWhitespace(final String expected,
                                               final String actual) {
-        final String cleanExpected = expected.replaceAll("\\s+",
-                                                         "");
-        final String cleanActual = actual.replaceAll("\\s+",
-                                                     "");
-
-        assertEquals(cleanExpected,
-                     cleanActual);
+        Assertions.assertThat(expected).isEqualToIgnoringWhitespace(actual);
     }
 }

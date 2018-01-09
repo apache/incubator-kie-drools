@@ -16,6 +16,7 @@
 
 package org.drools.workbench.models.guided.template.backend;
 
+import org.assertj.core.api.Assertions;
 import org.drools.workbench.models.commons.backend.rule.RuleModelPersistence;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
 import org.drools.workbench.models.datamodel.rule.ActionInsertFact;
@@ -36,7 +37,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.soup.project.datamodel.oracle.DataType;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 public class RuleTemplateModelDRLPersistenceTest {
 
@@ -4618,11 +4619,6 @@ public class RuleTemplateModelDRLPersistenceTest {
 
     private void assertEqualsIgnoreWhitespace(final String expected,
                                               final String actual) {
-        final String cleanExpected = expected.replaceAll("\\s+",
-                                                         "");
-        final String cleanActual = actual.replaceAll("\\s+",
-                                                     "");
-
-        assertEquals(cleanExpected, cleanActual);
+        Assertions.assertThat(expected).isEqualToIgnoringWhitespace(actual);
     }
 }

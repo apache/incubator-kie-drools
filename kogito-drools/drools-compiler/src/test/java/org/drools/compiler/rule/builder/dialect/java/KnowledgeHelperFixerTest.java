@@ -16,13 +16,16 @@
 
 package org.drools.compiler.rule.builder.dialect.java;
 
-import static org.junit.Assert.assertEquals;
-
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
 public class KnowledgeHelperFixerTest {
 
     private static final KnowledgeHelperFixer fixer = new KnowledgeHelperFixer();
+
+    private void assertEqualsIgnoreWhitespace(final String expected, final String actual) {
+        Assertions.assertThat(expected).isEqualToIgnoringWhitespace(actual);
+    }
 
     @Test
     public void testAdd__Handle__Simple() {
@@ -169,20 +172,5 @@ public class KnowledgeHelperFixerTest {
         final String raw = "System.out.println(\"some text\");retract(object);";
         assertEqualsIgnoreWhitespace( "System.out.println(\"some text\");drools.retract(object);",
                                       KnowledgeHelperFixerTest.fixer.fix( raw ) );
-    }
-    
-    private void assertEqualsIgnoreWhitespace(final String expected,
-                                              final String actual) {
-        if ( expected == null || actual == null ) {
-            assertEquals(expected, actual);
-            return;
-        }
-        final String cleanExpected = expected.replaceAll( "\\s+",
-                                                          "" );
-        final String cleanActual = actual.replaceAll( "\\s+",
-                                                      "" );
-
-        assertEquals( cleanExpected,
-                      cleanActual );
     }
 }

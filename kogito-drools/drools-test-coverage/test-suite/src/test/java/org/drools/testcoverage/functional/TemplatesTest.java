@@ -445,11 +445,7 @@ public class TemplatesTest {
     }
 
     private static void assertEqualsIgnoreWhitespace(final String expected, final String actual) {
-        final String cleanExpected = expected.replaceAll("\\s+", "");
-        final String cleanActual = actual.replaceAll("\\s+", "");
-        // System.out.println(cleanExpected);
-        // System.out.println(cleanActual);
-        Assertions.assertThat(cleanExpected).isEqualTo(cleanActual);
+        Assertions.assertThat(expected).isEqualToIgnoringWhitespace(actual);
     }
 
 }

@@ -20,6 +20,7 @@ import static org.junit.Assert.assertNull;
 
 import java.io.StringReader;
 
+import org.assertj.core.api.Assertions;
 import org.drools.compiler.lang.Expander;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
@@ -27,7 +28,6 @@ import org.drools.compiler.lang.dsl.DSLMappingFile;
 import org.drools.compiler.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.compiler.lang.dsl.DefaultExpander;
 import org.drools.compiler.lang.dsl.DefaultExpanderResolver;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderErrors;
@@ -47,7 +47,8 @@ public class DrlParserTest {
         
         DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
         String result = parser.getExpandedDRL( drl, new StringReader(dsl));
-        assertEqualsIgnoreWhitespace( "rule 'foo' " + NL + " when " + NL + " Something() " + NL + " then " + NL + " another(); " + NL + "end", result );
+        Assertions.assertThat("rule 'foo' " + NL + " when " + NL + " Something() " + NL + " then " + NL + " another(); " + NL + "end")
+                  .isEqualToIgnoringWhitespace(result);
     }
     
     @Test
@@ -70,18 +71,8 @@ public class DrlParserTest {
 
         DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
         String result = parser.getExpandedDRL( drl, resolver);
-        assertEqualsIgnoreWhitespace( "rule 'foo' " + NL + " when " + NL + " Something() " + NL + " then " + NL + " another(); " + NL + "end", result );
-    }
-
-    private void assertEqualsIgnoreWhitespace(final String expected,
-                                              final String actual) {
-        final String cleanExpected = expected.replaceAll( "\\s+",
-                                                          "" );
-        final String cleanActual = actual.replaceAll( "\\s+",
-                                                      "" );
-
-        assertEquals( cleanExpected,
-                      cleanActual );
+        Assertions.assertThat("rule 'foo' " + NL + " when " + NL + " Something() " + NL + " then " + NL + " another(); " + NL + "end")
+                  .isEqualToIgnoringWhitespace(result);
     }
     
     @Test

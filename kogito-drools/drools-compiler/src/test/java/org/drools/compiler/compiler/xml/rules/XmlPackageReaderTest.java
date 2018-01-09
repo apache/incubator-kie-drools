@@ -18,6 +18,7 @@ package org.drools.compiler.compiler.xml.rules;
 import java.io.InputStreamReader;
 import java.util.List;
 
+import org.assertj.core.api.Assertions;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.compiler.xml.XmlPackageReader;
@@ -213,7 +214,7 @@ public class XmlPackageReaderTest extends CommonTestMethodBase {
         String expectedWithoutHeader = removeLicenseHeader( expected );
         String actual = new DrlDumper().dump( packageDescr );
         
-        DumperTestHelper.assertEqualsIgnoreWhitespace( expectedWithoutHeader, actual );
+        Assertions.assertThat(expectedWithoutHeader).isEqualToIgnoringWhitespace(actual);
     }
 
     @Test
@@ -341,7 +342,7 @@ public class XmlPackageReaderTest extends CommonTestMethodBase {
         System.out.println(expectedWithoutHeader);
         String actual = new DrlDumper().dump( packageDescr );
         
-        DumperTestHelper.assertEqualsIgnoreWhitespace( expectedWithoutHeader, actual );
+        Assertions.assertThat(expectedWithoutHeader).isEqualToIgnoringWhitespace(actual);
     }
 
     @Test
@@ -436,8 +437,8 @@ public class XmlPackageReaderTest extends CommonTestMethodBase {
         String expected = StringUtils.readFileAsString( new InputStreamReader( getClass().getResourceAsStream( "test_ParseLhs.drl" ) ) );
         String expectedWithoutHeader = removeLicenseHeader( expected );
         String actual = new DrlDumper().dump( packageDescr );
-        
-        DumperTestHelper.assertEqualsIgnoreWhitespace( expectedWithoutHeader, actual );
+
+        Assertions.assertThat(expectedWithoutHeader).isEqualToIgnoringWhitespace(actual);
     }
 
     @Test

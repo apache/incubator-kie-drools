@@ -15,10 +15,9 @@
 
 package org.drools.compiler.lang.descr;
 
-import org.drools.compiler.lang.descr.ConnectiveDescr;
+import org.assertj.core.api.Assertions;
 import org.drools.compiler.lang.descr.ConnectiveDescr.RestrictionConnectiveType;
 import org.junit.Test;
-import static org.drools.compiler.compiler.xml.rules.DumperTestHelper.assertEqualsIgnoreWhitespace;
 
 public class ConnectiveDescrTest {
 
@@ -31,14 +30,14 @@ public class ConnectiveDescrTest {
         
         StringBuilder sb = new StringBuilder();
         descr1.buildExpression( sb );
-        assertEqualsIgnoreWhitespace("name == 'darth' || == 'bobba'", sb.toString());
+        Assertions.assertThat("name == 'darth' || == 'bobba'").isEqualToIgnoringWhitespace(sb.toString());
         
         ConnectiveDescr descr2 = new ConnectiveDescr(RestrictionConnectiveType.AND);
         descr2.setPrefix( "name" );
         descr2.add( "!= 'luke'" );
         sb = new StringBuilder();
         descr2.buildExpression( sb );
-        assertEqualsIgnoreWhitespace("name != 'luke'", sb.toString());        
+        Assertions.assertThat("name != 'luke'").isEqualToIgnoringWhitespace(sb.toString());
         descr2.add( "!= 'yoda'" );        
         
         ConnectiveDescr descr3 = new ConnectiveDescr(RestrictionConnectiveType.AND);
@@ -47,7 +46,7 @@ public class ConnectiveDescrTest {
         
         sb = new StringBuilder();
         descr3.buildExpression( sb );
-        assertEqualsIgnoreWhitespace("(name == 'darth' || == 'bobba') && (name != 'luke' && != 'yoda')", sb.toString());        
+        Assertions.assertThat("(name == 'darth' || == 'bobba') && (name != 'luke' && != 'yoda')").isEqualToIgnoringWhitespace(sb.toString());
         
         ConnectiveDescr descr4 = new ConnectiveDescr(RestrictionConnectiveType.AND);
         descr4.setPrefix( "age" );
@@ -60,7 +59,7 @@ public class ConnectiveDescrTest {
         
         sb = new StringBuilder();
         descr5.buildExpression( sb );
-        assertEqualsIgnoreWhitespace("((name == 'darth' || == 'bobba') && (name != 'luke' && != 'yoda')) || (age != 33 && != 34)", sb.toString());        
+        Assertions.assertThat("((name == 'darth' || == 'bobba') && (name != 'luke' && != 'yoda')) || (age != 33 && != 34)").isEqualToIgnoringWhitespace(sb.toString());
        
     }    
 }

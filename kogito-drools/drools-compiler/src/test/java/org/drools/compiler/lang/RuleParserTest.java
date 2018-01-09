@@ -19,6 +19,7 @@ package org.drools.compiler.lang;
 import junit.framework.TestCase;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CharStream;
+import org.assertj.core.api.Assertions;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.AccumulateDescr.AccumulateFunctionCallDescr;
@@ -4299,13 +4300,7 @@ public class RuleParserTest extends TestCase {
 
     private void assertEqualsIgnoreWhitespace( final String expected,
                                                final String actual ) {
-        final String cleanExpected = expected.replaceAll( "\\s+",
-                                                          "" );
-        final String cleanActual = actual.replaceAll( "\\s+",
-                                                      "" );
-
-        assertEquals( cleanExpected,
-                      cleanActual );
+        Assertions.assertThat(expected).isEqualToIgnoringWhitespace(actual);
     }
 
     private Reader getReader( final String name ) throws Exception {
