@@ -133,6 +133,17 @@ public class ModelGenerator {
         customOperators.put("before", TemporalOperatorSpec.INSTANCE);
         customOperators.put("after", TemporalOperatorSpec.INSTANCE);
         customOperators.put("in", InOperatorSpec.INSTANCE);
+        customOperators.put("coincides", InOperatorSpec.INSTANCE);
+        customOperators.put("metby", InOperatorSpec.INSTANCE);
+        customOperators.put("finishedby", InOperatorSpec.INSTANCE);
+        customOperators.put("overlaps", InOperatorSpec.INSTANCE);
+        customOperators.put("meets", InOperatorSpec.INSTANCE);
+        customOperators.put("during", InOperatorSpec.INSTANCE);
+        customOperators.put("finishes", InOperatorSpec.INSTANCE);
+        customOperators.put("startedby", InOperatorSpec.INSTANCE);
+        customOperators.put("overlappedby", InOperatorSpec.INSTANCE);
+        customOperators.put("includes", InOperatorSpec.INSTANCE);
+        customOperators.put("starts", InOperatorSpec.INSTANCE);
     }
 
     public static final boolean GENERATE_EXPR_ID = true;
