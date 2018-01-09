@@ -21,9 +21,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -94,7 +92,9 @@ public class ClassObjectTypeConf
                 isEvent = role.value() == Type.EVENT;
                 if (isEvent) {
                     Expires expires = clazz.getAnnotation(Expires.class);
-                    expirationOffset = TimeIntervalParser.parseSingle( expires.value() );
+                    if (expires != null) {
+                        expirationOffset = TimeIntervalParser.parseSingle( expires.value() );
+                    }
                 }
             }
         }
