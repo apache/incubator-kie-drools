@@ -6915,4 +6915,17 @@ public class CepEspTest extends CommonTestMethodBase {
 
         assertDrlHasCompilationError( str, 1 );
     }
+
+    @Role(Role.Type.EVENT)
+    public static class ExpiringEventD { }
+
+    @Test
+    public void testInsertLogicalNoExpires() {
+        // DROOLS-2182
+        String drl = "import " + ExpiringEventD.class.getCanonicalName() + "\n" +
+                "rule Insert when then " +
+                "   insertLogical( new ExpiringEventD() ); end ";
+
+        new KieHelper().addContent( drl, ResourceType.DRL ).build(  ).newKieSession().fireAllRules();
+    }
 }
