@@ -26,7 +26,6 @@ import org.drools.modelcompiler.domain.Adult;
 import org.drools.modelcompiler.domain.Child;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.AccumulateFunction;
@@ -267,13 +266,13 @@ public class AccumulateTest extends BaseModelTest {
         }
     }
 
-    @Test @Ignore
+    @Test
     public void testFromAccumulate() {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "import " + Result.class.getCanonicalName() + ";" +
                 "rule X when\n" +
-                "  $sum : Number( intValue() > 0 ) from accumulate ( $p: Person ( getName().startsWith(\"M\")); \n" +
+                "  $sum : Number( intValue() > 0 ) from accumulate ( $p: Person ( getName().startsWith(\"M\") ); \n" +
                 "                sum($p.getAge())  \n" +
                 "              )\n" +
                 "then\n" +

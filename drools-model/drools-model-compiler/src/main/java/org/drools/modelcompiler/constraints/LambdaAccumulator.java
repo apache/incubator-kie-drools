@@ -61,7 +61,7 @@ public class LambdaAccumulator implements Accumulator {
                 returnObject = binding.eval(accumulateObject);
             }
         } else {
-            if(accumulateObject instanceof  SubnetworkTuple) {
+            if (accumulateObject instanceof SubnetworkTuple) {
                 returnObject = (((SubnetworkTuple) accumulateObject)).getObject(innerDeclarations[0]);
             } else {
                 returnObject = accumulateObject;

@@ -25,6 +25,7 @@ import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
+import org.drools.core.rule.SingleAccumulate;
 import org.drools.core.spi.GlobalExtractor;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.model.Global;
@@ -39,6 +40,7 @@ public class RuleContext {
 
     private final Map<Variable, Declaration> queryDeclaration = new HashMap<>();
     private final Map<Variable, Declaration> innerDeclaration = new HashMap<>();
+    private final Map<Variable, SingleAccumulate> accumulateSource = new HashMap<>();
 
     private final Map<Variable, Pattern> patterns = new HashMap<>();
 
@@ -106,6 +108,14 @@ public class RuleContext {
 
     void addInnerDeclaration(Variable variable, Declaration declaration) {
         innerDeclaration.put( variable, declaration );
+    }
+
+    void addAccumulateSource(Variable variable, SingleAccumulate accumulate) {
+        accumulateSource.put( variable, accumulate );
+    }
+
+    SingleAccumulate getAccumulateSource(Variable variable) {
+        return accumulateSource.get( variable );
     }
 
     public Object getBoundFact( Variable variable, Object[] objs ) {

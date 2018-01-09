@@ -78,8 +78,8 @@ import org.drools.model.Model;
 import org.drools.model.Query;
 import org.drools.model.Rule;
 import org.drools.model.SingleConstraint;
-import org.drools.model.UnitData;
 import org.drools.model.TypeMetaData;
+import org.drools.model.UnitData;
 import org.drools.model.Value;
 import org.drools.model.Variable;
 import org.drools.model.View;
@@ -307,7 +307,7 @@ public class KiePackagesBuilder {
     private void populateLHS( RuleContext ctx, KnowledgePackageImpl pkg, View view ) {
         GroupElement lhs = ctx.getRule().getLhs();
         if (ctx.getRule().getRuleUnitClassName() != null) {
-            lhs.addChild( addPatternForVariable( ctx, getUnitVariable( ctx, pkg, view ) ) );
+            lhs.addChild( addPatternForVariable( ctx, lhs, getUnitVariable( ctx, pkg, view ) ) );
         }
         addSubConditions( ctx, lhs, view.getSubConditions());
         if (requiresLeftActivation(lhs)) {
@@ -337,14 +337,14 @@ public class KiePackagesBuilder {
         }
     }
 
-    private RuleConditionElement conditionToElement( RuleContext ctx, Condition condition ) {
+    private RuleConditionElement conditionToElement( RuleContext ctx, GroupElement group, Condition condition ) {
         if (condition.getType().isComposite()) {
             return addSubConditions( ctx, new GroupElement( conditionToGroupElementType( condition.getType() ) ), condition.getSubConditions() );
         }
 
         switch (condition.getType()) {
             case PATTERN: {
-                return buildPattern( ctx, condition );
+                return buildPattern( ctx, group, condition );
             }
             case EVAL: {
                 return buildEval( ctx, ( EvalImpl ) condition );
@@ -356,13 +356,13 @@ public class KiePackagesBuilder {
                     CompositePatterns compositePatterns = (CompositePatterns) accumulatePattern.getCompositePatterns().get();
                     GroupElement ge = new GroupElement(conditionToGroupElementType( compositePatterns.getType() ));
                     for(Condition c : compositePatterns.getSubConditions()) {
-                        ge.addChild(buildPattern(ctx, c));
+                        ge.addChild(buildPattern(ctx, group, c));
                     }
                     source = ge;
                 } else {
-                    source = buildPattern(ctx, condition );
+                    source = buildPattern(ctx, group, condition );
                 }
-                Pattern pattern = new Pattern( 0,  getObjectType( Object.class ) );
+                Pattern pattern = new Pattern( 0, getObjectType( Object.class ) );
 
                 PatternImpl sourcePattern = (PatternImpl) accumulatePattern.getPattern();
                 final List<String> usedVariableName = new ArrayList<>();
@@ -374,7 +374,7 @@ public class KiePackagesBuilder {
                 if(!sourcePattern.getBindings().isEmpty()) {
                     binding = (Binding) sourcePattern.getBindings().iterator().next();
                 }
-                pattern.setSource(buildAccumulate(accumulatePattern, source, pattern, usedVariableName, binding) );
+                pattern.setSource(buildAccumulate(ctx, accumulatePattern, source, pattern, usedVariableName, binding) );
                 return pattern;
             }
             case QUERY:
@@ -383,15 +383,15 @@ public class KiePackagesBuilder {
             case EXISTS: {
                 GroupElement ge = new GroupElement( conditionToGroupElementType( condition.getType() ) );
                 // existential pattern can have only one subcondition
-                ge.addChild( conditionToElement( ctx, condition.getSubConditions().get(0) ) );
+                ge.addChild( conditionToElement( ctx, group, condition.getSubConditions().get(0) ) );
                 return ge;
             }
             case FORALL: {
                 Condition innerCondition = condition.getSubConditions().get(0);
-                Pattern basePattern = (Pattern) conditionToElement( ctx, innerCondition.getSubConditions().get(0) );
+                Pattern basePattern = (Pattern) conditionToElement( ctx, group, innerCondition.getSubConditions().get(0) );
                 List<Pattern> remainingPatterns = new ArrayList<>();
                 for (int i = 1; i < innerCondition.getSubConditions().size(); i++) {
-                    remainingPatterns.add( (Pattern) conditionToElement( ctx, innerCondition.getSubConditions().get(i) ) );
+                    remainingPatterns.add( (Pattern) conditionToElement( ctx, group, innerCondition.getSubConditions().get(i) ) );
                 }
                 return new Forall(basePattern, remainingPatterns);
             }
@@ -428,7 +428,7 @@ public class KiePackagesBuilder {
 
     private RuleConditionElement addSubConditions( RuleContext ctx, GroupElement ge, List<Condition> subconditions) {
         for (Condition subCondition : subconditions) {
-            RuleConditionElement element = conditionToElement( ctx, subCondition );
+            RuleConditionElement element = conditionToElement( ctx, ge, subCondition );
             if (element != null) {
                 ge.addChild( element );
             }
@@ -481,9 +481,9 @@ public class KiePackagesBuilder {
                                  false ); // TODO: query.isAbductive() );
     }
 
-    private Pattern buildPattern( RuleContext ctx, Condition condition ) {
+    private Pattern buildPattern( RuleContext ctx, GroupElement group, Condition condition ) {
         org.drools.model.Pattern<Object> modelPattern = (org.drools.model.Pattern) condition;
-        Pattern pattern = addPatternForVariable( ctx, modelPattern.getPatternVariable() );
+        Pattern pattern = addPatternForVariable( ctx, group, modelPattern.getPatternVariable() );
 
         for (Binding binding : modelPattern.getBindings()) {
             Declaration declaration = new Declaration(binding.getBoundVariable().getName(),
@@ -508,9 +508,8 @@ public class KiePackagesBuilder {
         return pattern;
     }
 
-    private Accumulate buildAccumulate(AccumulatePattern accPattern,
-                                       RuleConditionElement source,
-                                       Pattern pattern,
+    private Accumulate buildAccumulate(RuleContext ctx, AccumulatePattern accPattern,
+                                       RuleConditionElement source, Pattern pattern,
                                        List<String> usedVariableName, Binding binding) {
 
         AccumulateFunction[] accFunctions = accPattern.getAccumulateFunctions();
@@ -518,13 +517,16 @@ public class KiePackagesBuilder {
         if (accFunctions.length == 1) {
 
             final org.kie.api.runtime.rule.AccumulateFunction accFunction = createRuntimeAccumulateFunction(accFunctions[0]);
-            final Declaration declaration = new Declaration(accPattern.getBoundVariables()[0].getName(),
+            final Variable boundVar = accPattern.getBoundVariables()[0];
+            final Declaration declaration = new Declaration(boundVar.getName(),
                                                             getReadAcessor(getObjectType(Object.class)),
                                                             pattern,
                                                             true);
             pattern.addDeclaration(declaration);
 
-            return new SingleAccumulate(source, new Declaration[0], new LambdaAccumulator(accFunction, binding, usedVariableName));
+            SingleAccumulate accumulate = new SingleAccumulate(source, new Declaration[0], new LambdaAccumulator(accFunction, binding, usedVariableName));
+            ctx.addAccumulateSource( boundVar, accumulate );
+            return accumulate;
         }
 
         InternalReadAccessor reader = new SelfReferenceClassFieldReader( Object[].class );
@@ -554,7 +556,7 @@ public class KiePackagesBuilder {
         return accFunction;
     }
 
-    private Pattern addPatternForVariable( RuleContext ctx, Variable patternVariable ) {
+    private Pattern addPatternForVariable( RuleContext ctx, GroupElement group, Variable patternVariable ) {
         Class<?> patternClass = patternVariable.getType().asClass();
         patternClasses.add( patternClass );
         Pattern pattern = new Pattern( ctx.getNextPatternIndex(),
@@ -585,6 +587,17 @@ public class KiePackagesBuilder {
                     pattern.setSource( new EntryPointId( ctx.getRule().getRuleUnitClassName() + "." + unitData.getName() ) );
                 } else {
                     throw new UnsupportedOperationException( "Unknown source: " + decl.getSource() );
+                }
+            } else {
+                SingleAccumulate accSource = ctx.getAccumulateSource( patternVariable );
+                if (accSource != null) {
+                    for (RuleConditionElement element : group.getChildren()) {
+                        if (element instanceof Pattern && (( Pattern ) element).getSource() == accSource) {
+                            group.getChildren().remove( element );
+                            break;
+                        }
+                    }
+                    pattern.setSource( accSource );
                 }
             }
             if ( decl.getWindow() != null ) {
