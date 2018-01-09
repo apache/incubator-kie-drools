@@ -1222,7 +1222,85 @@ public class FlowTest {
         QueryResults results = ksession.getQueryResults( "listSafeCities");
 
         assertEquals("Milan", ((List) results.iterator().next().get("$cities" )).iterator().next());
+    }
 
+    @Test
+    public void testFromAccumulate() {
+        final org.drools.model.Variable<Number> var_$sum = declarationOf(type(Number.class), "$sum");
+        final org.drools.model.Variable<Person> var_$p = declarationOf(type(Person.class), "$p");
+        final org.drools.model.Variable<Integer> var_$expr$3$ = declarationOf(type(Integer.class), "$expr$3$");
 
+        org.drools.model.Rule rule = rule("X").build(
+                bind(var_$expr$3$).as(var_$p, (_this) -> _this.getAge()),
+                expr("$expr$1$",
+                        var_$sum,
+                        (_this) -> _this.intValue() > 0).reactOn("intValue"),
+                accumulate(expr("$expr$2$",
+                        var_$p,
+                        (_this) -> _this.getName().startsWith("M")),
+                        accFunction(org.drools.core.base.accumulators.IntegerSumAccumulateFunction.class,
+                                var_$expr$3$).as(var_$sum)),
+                on(var_$sum).execute((drools, $sum) -> {
+                    drools.insert(new Result($sum));
+                }));
+
+        Model model = new ModelImpl().addRule( rule );
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
+
+        KieSession ksession = kieBase.newKieSession();
+
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Edson", 35));
+        ksession.insert(new Person("Mario", 40));
+
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(1, results.size());
+        assertEquals(77, results.iterator().next().getValue());
+    }
+
+    @Test @Ignore
+    public void testAccumulateAnd() {
+        final org.drools.model.Variable<java.lang.Number> var_$sum = declarationOf(type(java.lang.Number.class),
+                "$sum");
+        final org.drools.model.Variable<org.drools.modelcompiler.domain.Person> var_$p = declarationOf(type(org.drools.modelcompiler.domain.Person.class),
+                "$p");
+        final org.drools.model.Variable<Integer> var_$expr$3$ = declarationOf(type(Integer.class),
+                "$expr$3$");
+        org.drools.model.Rule rule = rule("X").build(bind(var_$expr$3$).as(var_$p,
+                (_this) -> _this.getAge()),
+                accumulate(and(expr("$expr$1$",
+                        var_$p,
+                        (_this) -> _this.getAge() > 10).indexedBy(int.class,
+                        org.drools.model.Index.ConstraintType.GREATER_THAN,
+                        0,
+                        _this -> _this.getAge(),
+                        10)
+                                .reactOn("age"),
+                        expr("$expr$2$",
+                                var_$p,
+                                (_this) -> _this.getName()
+                                        .startsWith("M"))),
+                        accFunction(org.drools.core.base.accumulators.IntegerSumAccumulateFunction.class,
+                                var_$expr$3$).as(var_$sum)),
+                on(var_$sum).execute((drools, $sum) -> {
+                    drools.insert(new Result($sum));
+                }));
+
+        Model model = new ModelImpl().addRule( rule );
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
+
+        KieSession ksession = kieBase.newKieSession();
+
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Edson", 35));
+        ksession.insert(new Person("Mario", 40));
+
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(1, results.size());
+        assertEquals(77, results.iterator().next().getValue());
     }
 }
