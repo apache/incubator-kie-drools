@@ -50,6 +50,8 @@ import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFac
 
 public class ConfigUtils {
 
+    private static final AlphabeticMemberComparator alphabeticMemberComparator = new AlphabeticMemberComparator();
+
     public static <T> T newInstance(Object bean, String propertyName, Class<T> clazz) {
         try {
             return clazz.newInstance();
@@ -295,11 +297,14 @@ public class ConfigUtils {
      */
     public static List<Member> getDeclaredMembers(Class<?> baseClass) {
         Stream<Field> fieldStream = Stream.of(baseClass.getDeclaredFields())
-                .sorted(new AlphabeticMemberComparator());
+                .sorted(alphabeticMemberComparator);
         Stream<Method> methodStream = Stream.of(baseClass.getDeclaredMethods())
-                .sorted(new AlphabeticMemberComparator());
+                // A bridge method is a generic variant that duplicates a concrete method
+                // Example: "Score getScore()" that duplicates "HardSoftScore getScore()"
+                .filter(method -> !method.isBridge())
+                .sorted(alphabeticMemberComparator);
         return Stream.<Member>concat(fieldStream, methodStream)
-            .collect(Collectors.toList());
+                .collect(Collectors.toList());
     }
 
     /**
@@ -313,10 +318,10 @@ public class ConfigUtils {
         while (clazz != null) {
             Stream<Field> fieldStream = Stream.of(clazz.getDeclaredFields())
                     .filter(field -> field.isAnnotationPresent(annotationClass))
-                    .sorted(new AlphabeticMemberComparator());
+                    .sorted(alphabeticMemberComparator);
             Stream<Method> methodStream = Stream.of(clazz.getDeclaredMethods())
                     .filter(method -> method.isAnnotationPresent(annotationClass))
-                    .sorted(new AlphabeticMemberComparator());
+                    .sorted(alphabeticMemberComparator);
             memberStream = Stream.concat(memberStream, Stream.concat(fieldStream, methodStream));
             clazz = clazz.getSuperclass();
         }
