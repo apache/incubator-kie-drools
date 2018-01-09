@@ -119,7 +119,7 @@ public class DRLIdGenerator {
         }
         @Override
         public String toString() {
-            return "" + patternType.getName() + "( " + drlConstraint + " )";
+            return "" + ((patternType != null) ? patternType.getName() : "<no patternType>") + "( " + drlConstraint + " )";
         }
         
     }

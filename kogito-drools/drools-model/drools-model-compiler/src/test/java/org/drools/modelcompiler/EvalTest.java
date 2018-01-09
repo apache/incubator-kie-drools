@@ -18,6 +18,7 @@ package org.drools.modelcompiler;
 
 import java.util.Collection;
 
+import org.drools.modelcompiler.domain.Overloaded;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
 import org.junit.Test;
@@ -184,4 +185,48 @@ public class EvalTest extends BaseModelTest {
         assertEquals( 1, results.size() );
         assertEquals( "Mario", results.iterator().next().getValue() );
     }
+
+    @Test
+    public void testEvalWithBinary() {
+        String str = "import " + Result.class.getCanonicalName() + ";" +
+                     "import " + Person.class.getCanonicalName() + ";" +
+                     "rule R when\n" +
+                     "  $p : Person()\n" +
+                     "  eval( $p.getAge() + 27 == 67 )\n" +
+                     "then\n" +
+                     "  insert(new Result($p.getName()));\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert(new Person("Mario", 40));
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Edson", 35));
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(1, results.size());
+        assertEquals("Mario", results.iterator().next().getValue());
+    }
+
+    @Test
+    public void testEvalInvokingMethod() {
+        String str = "import " + Overloaded.class.getCanonicalName() + ";" +
+                     "rule OverloadedMethods\n" +
+                     "when\n" +
+                     "  o : Overloaded()\n" +
+                     "  eval (o.method(5, 9, \"x\") == 15)\n" +
+                     "then\n" +
+                     "  insert(\"matched\");\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert(new Overloaded());
+        ksession.fireAllRules();
+
+        Collection<String> results = getObjectsIntoList(ksession, String.class);
+        assertEquals(1, results.size());
+    }
+
 }

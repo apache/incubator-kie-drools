@@ -14,7 +14,7 @@ import org.drools.javaparser.ast.expr.Expression;
 public class DrlxParseResult {
 
     private final Class<?> patternType;
-    private final Expression expr;
+    private Expression expr;
     private final Class<?> exprType;
 
     private String exprId;
@@ -93,6 +93,10 @@ public class DrlxParseResult {
 
     public void setExprId(String exprId) {
         this.exprId = exprId;
+    }
+
+    public void setExpr(Expression expr) {
+        this.expr = expr;
     }
 
     public void setPatternBinding(String patternBinding) {

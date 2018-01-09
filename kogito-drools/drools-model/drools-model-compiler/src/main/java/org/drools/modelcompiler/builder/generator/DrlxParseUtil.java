@@ -173,7 +173,7 @@ public class DrlxParseUtil {
                 return new TypedExpression(plusThis, expression.getType(), name);
             }
         } else if (drlxExpr instanceof FieldAccessExpr || drlxExpr instanceof MethodCallExpr) {
-            List<Node> childNodes = drlxExpr.getChildNodes();
+            List<Node> childNodes = flattenScope(drlxExpr);
             Node firstNode = childNodes.get(0);
 
             boolean isInLineCast = firstNode instanceof InlineCastExpr;
@@ -260,12 +260,21 @@ public class DrlxParseUtil {
                 reactOnProperties.add( name );
                 TypedExpression expression = nameExprToMethodCallExpr(name, typeCursor, null);
                 Expression plusThis = prepend(new NameExpr("_this"), expression.getExpression());
+                if (childNodes.size() != 1) {
+                    throw new UnsupportedOperationException("then the below should not be a return");
+                }
                 return new TypedExpression(plusThis, expression.getType());
+            } else if (firstNode instanceof MethodCallExpr) {
+                MethodCallExpr methodCallExpr = (MethodCallExpr) firstNode;
+                previous = new NameExpr("_this");
+                methodCallExpr.setScope(previous);
+                typeCursor = returnTypeOfMethodCallExpr(context, context.getPkg().getTypeResolver(), methodCallExpr, typeCursor);
+                previous = methodCallExpr;
             } else {
                 throw new UnsupportedOperationException("Unknown node: " + firstNode);
             }
 
-            childNodes = drlxExpr.getChildNodes().subList(1, drlxExpr.getChildNodes().size());
+            childNodes = childNodes.subList(1, childNodes.size());
 
             TypedExpression typedExpression = new TypedExpression();
             if (isInLineCast) {
@@ -280,11 +289,18 @@ public class DrlxParseUtil {
             for (Node part : childNodes) {
                 if(typeCursor.isEnum()) {
                     previous = drlxExpr;
-                } else {
+                } else if (part instanceof SimpleName) {
                     String field = part.toString();
                     TypedExpression expression = nameExprToMethodCallExpr(field, typeCursor, previous);
                     typeCursor = expression.getType();
                     previous = expression.getExpression();
+                } else if (part instanceof MethodCallExpr) {
+                    MethodCallExpr methodCallExprPart = (MethodCallExpr) part;
+                    typeCursor = returnTypeOfMethodCallExpr(context, context.getPkg().getTypeResolver(), (MethodCallExpr) part, typeCursor);
+                    methodCallExprPart.setScope(previous);
+                    previous = methodCallExprPart;
+                } else {
+                    throw new UnsupportedOperationException();
                 }
             }
 
@@ -318,6 +334,23 @@ public class DrlxParseUtil {
 
     private static Operator toBinaryExprOperator(HalfBinaryExpr.Operator operator) {
         return Operator.valueOf(operator.name());
+    }
+    private static List<Node> flattenScope(Expression expressionWithScope) {
+        List<Node> res = new ArrayList<>();
+        if (expressionWithScope instanceof FieldAccessExpr) {
+            FieldAccessExpr fieldAccessExpr = (FieldAccessExpr) expressionWithScope;
+            res.addAll(flattenScope(fieldAccessExpr.getScope()));
+            res.add(fieldAccessExpr.getName());
+        } else if (expressionWithScope instanceof MethodCallExpr) {
+            MethodCallExpr methodCallExpr = (MethodCallExpr) expressionWithScope;
+            if (methodCallExpr.getScope().isPresent()) {
+                res.addAll(flattenScope(methodCallExpr.getScope().get()));
+            }
+            res.add(methodCallExpr.setScope(null));
+        } else {
+            res.add(expressionWithScope);
+        }
+        return res;
     }
 
     private static String getFieldName( Expression drlxExpr, SimpleName fieldName ) {
@@ -453,9 +486,15 @@ public class DrlxParseUtil {
     }
 
     public static Expression generateLambdaWithoutParameters(Collection<String> usedDeclarations, Expression expr) {
+        return generateLambdaWithoutParameters(usedDeclarations, expr, false);
+    }
+
+    public static Expression generateLambdaWithoutParameters(Collection<String> usedDeclarations, Expression expr, boolean skipFirstParamAsThis) {
         LambdaExpr lambdaExpr = new LambdaExpr();
         lambdaExpr.setEnclosingParameters( true );
-        lambdaExpr.addParameter( new Parameter(new UnknownType(), "_this" ) );
+        if (!skipFirstParamAsThis) {
+            lambdaExpr.addParameter(new Parameter(new UnknownType(), "_this"));
+        }
         usedDeclarations.stream().map( s -> new Parameter( new UnknownType(), s ) ).forEach( lambdaExpr::addParameter );
         lambdaExpr.setBody( new ExpressionStmt(expr ) );
         return lambdaExpr;
