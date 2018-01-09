@@ -48,7 +48,7 @@ public class OOPathExprGenerator {
                 fieldType = extractGenericType(previousClass, ((MethodCallExpr) callExpr.getExpression()).getName().toString());
             }
 
-            final String bindingId = context.getOOPathId(fieldType, fieldName);
+            final String bindingId = context.getOOPathId(fieldType, originalBind + fieldName);
             final Expression accessorLambda = generateLambdaWithoutParameters(Collections.emptySortedSet(),
                                                                               prepend(new NameExpr("_this"), callExpr.getExpression()));
 
