@@ -28,6 +28,7 @@ import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Adult;
 import org.drools.modelcompiler.domain.Child;
 import org.drools.modelcompiler.domain.Man;
+import org.drools.modelcompiler.domain.Overloaded;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
 import org.drools.modelcompiler.domain.Toy;
@@ -1014,5 +1015,91 @@ public class CompilerTest extends BaseModelTest {
         assertEquals(1, globalA.size());
         assertEquals(1, globalB.size());
         assertEquals(47, person1.getAge());
+    }
+
+    @Test
+    public void testConstraintContainingAMethodCallWithParams() {
+        String str = "import " + Overloaded.class.getCanonicalName() + ";" +
+                     "rule OverloadedMethods\n" +
+                     "when\n" +
+                     "  o : Overloaded( method(5, 9, \"x\") == 15 )\n" +
+                     "then\n" +
+                     "  insert(\"matched\");\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert(new Overloaded());
+        ksession.fireAllRules();
+
+        Collection<String> results = getObjectsIntoList(ksession, String.class);
+        assertEquals(1, results.size());
+    }
+
+    @Test
+    public void testSimpleModifyUsingNameRefFollowedByMethodCall() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                     "rule R when\n" +
+                     "  $p : Person( name.length() == 4 )\n" +
+                     "then\n" +
+                     "  modify($p) { setAge($p.getAge()+1) }\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+
+        Person mark = new Person("Mark", 37);
+        Person mario = new Person("Mario", 40);
+
+        ksession.insert(mark);
+        ksession.insert(mario);
+        ksession.fireAllRules();
+
+        assertEquals(38, mark.getAge());
+        assertEquals(40, mario.getAge());
+    }
+
+    @Test
+    public void testChainOfMethodCallInConstraint() {
+        String str = "import " + Person.class.getCanonicalName() + ";" +
+                     "rule R when\n" +
+                     "  $p : Person( getAddress().getAddressName().length() == 5 )\n" +
+                     "then\n" +
+                     "  insert(\"matched\");\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+
+        Person john = new Person("John", 47);
+        Address a = new Address("Italy");
+        john.setAddress(a);
+
+        ksession.insert(john);
+        ksession.fireAllRules();
+
+        Collection<String> results = getObjectsIntoList(ksession, String.class);
+        assertEquals(1, results.size());
+    }
+
+    @Test
+    public void testChainFieldAccessorsAndMethodCall() {
+        String str = "import " + Person.class.getCanonicalName() + ";" +
+                     "rule R when\n" +
+                     "  $p : Person( address.getAddressName().length == 5 )\n" +
+                     "then\n" +
+                     "  insert(\"matched\");\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+
+        Person john = new Person("John", 47);
+        Address a = new Address("Italy");
+        john.setAddress(a);
+
+        ksession.insert(john);
+        ksession.fireAllRules();
+
+        Collection<String> results = getObjectsIntoList(ksession, String.class);
+        assertEquals(1, results.size());
     }
 }
