@@ -18,6 +18,7 @@ package org.drools.workbench.models.guided.dtable.backend;
 import java.util.Arrays;
 import java.util.Collections;
 
+import org.assertj.core.api.Assertions;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
 import org.drools.workbench.models.datamodel.rule.ActionInsertFact;
 import org.drools.workbench.models.datamodel.rule.ActionSetField;
@@ -1779,12 +1780,6 @@ public class BRLRuleModelTest {
 
     private void assertEqualsIgnoreWhitespace(final String expected,
                                               final String actual) {
-        final String cleanExpected = expected.replaceAll("\\s+",
-                                                         "");
-        final String cleanActual = actual.replaceAll("\\s+",
-                                                     "");
-
-        assertEquals(cleanExpected,
-                     cleanActual);
+        Assertions.assertThat(expected).isEqualToIgnoringWhitespace(actual);
     }
 }

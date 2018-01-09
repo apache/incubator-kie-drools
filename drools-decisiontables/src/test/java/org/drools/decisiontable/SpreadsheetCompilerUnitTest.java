@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.assertj.core.api.Assertions;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.decisiontable.parser.DefaultRuleSheetListener;
@@ -42,7 +43,6 @@ import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderErrors;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import static org.junit.Assert.*;
 
@@ -455,8 +455,7 @@ public class SpreadsheetCompilerUnitTest {
                 "end";
         //No Pattern generated when all constraints have empty values
 
-        assertEqualsIgnoreWhitespace( expected,
-                                      drl );
+        Assertions.assertThat(expected).isEqualToIgnoringWhitespace(drl);
     }
 
     @Test
@@ -504,8 +503,7 @@ public class SpreadsheetCompilerUnitTest {
                 "end";
         //No Pattern generated when all constraints have empty values
 
-        assertEqualsIgnoreWhitespace( expected,
-                                      drl );
+        Assertions.assertThat(expected).isEqualToIgnoringWhitespace(drl);
     }
 
     @Test
@@ -572,8 +570,7 @@ public class SpreadsheetCompilerUnitTest {
                 "  then\n" +
                 "end";
 
-        assertEqualsIgnoreWhitespace( expected,
-                                      drl );
+        Assertions.assertThat(expected).isEqualToIgnoringWhitespace(drl);
     }
 
     @Test
@@ -631,8 +628,7 @@ public class SpreadsheetCompilerUnitTest {
                 "    System.out.println(false);\n" +
                 "end\n";
 
-        assertEqualsIgnoreWhitespace( expected,
-                                      drl );
+        Assertions.assertThat(expected).isEqualToIgnoringWhitespace(drl);
     }
 
     public static class IntHolder {
@@ -673,17 +669,6 @@ public class SpreadsheetCompilerUnitTest {
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages(kbuilder.getKnowledgePackages());
         return kbase;
-    }
-
-    private void assertEqualsIgnoreWhitespace( final String expected,
-                                               final String actual ) {
-        final String cleanExpected = expected.replaceAll( "\\s+",
-                                                          "" );
-        final String cleanActual = actual.replaceAll( "\\s+",
-                                                      "" );
-
-        assertEquals( cleanExpected,
-                      cleanActual );
     }
 
     @Test
@@ -754,8 +739,7 @@ public class SpreadsheetCompilerUnitTest {
                 "    System.out.println(m.getMessage());\n" +
                 "end\n";
 
-        assertEqualsIgnoreWhitespace( expected,
-                                      drl );
+        Assertions.assertThat(expected).isEqualToIgnoringWhitespace(drl);
     }
 
 }
