@@ -1,8 +1,8 @@
 package org.drools.modelcompiler.builder.generator.visitor;
 
 import org.drools.compiler.lang.descr.EvalDescr;
+import org.drools.javaparser.ast.expr.Expression;
 import org.drools.modelcompiler.builder.PackageModel;
-import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.DrlxParseResult;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.ModelGenerator;
@@ -20,12 +20,10 @@ public class EvalVisitor {
 
     public void visit(EvalDescr descr) {
         String expression = descr.getContent().toString();
-        String bindingId = DrlxParseUtil.findBindingId(expression, context.getAvailableBindings())
-                .orElseThrow(() -> new UnsupportedOperationException("unable to parse eval expression: " + expression));
-        Class<?> patternType = context.getDeclarationById(bindingId)
-                .map(DeclarationSpec::getDeclarationClass)
-                .orElseThrow(RuntimeException::new);
-        DrlxParseResult drlxParseResult = ModelGenerator.drlxParse(context, packageModel, patternType, bindingId, expression);
+        DrlxParseResult drlxParseResult = ModelGenerator.drlxParse(context, packageModel, null, null, expression);
+        Expression rewriteExprAsLambdaWithoutThisParam = DrlxParseUtil.generateLambdaWithoutParameters(drlxParseResult.getUsedDeclarations(), drlxParseResult.getExpr(), true);
+        drlxParseResult.setExpr(rewriteExprAsLambdaWithoutThisParam); // rewrites the DrlxParserResult expr as directly the lambda to use
+        drlxParseResult.setStatic(true);
         ModelGenerator.processExpression(context, drlxParseResult);
     }
 

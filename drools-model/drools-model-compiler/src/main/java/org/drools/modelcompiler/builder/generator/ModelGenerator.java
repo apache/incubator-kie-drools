@@ -92,7 +92,6 @@ import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
-
 import static org.drools.javaparser.printer.PrintUtil.toDrlx;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.classToReferenceType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
@@ -857,7 +856,9 @@ public class ModelGenerator {
     private static MethodCallExpr buildExpression(RuleContext context, DrlxParseResult drlxParseResult, MethodCallExpr exprDSL ) {
         final List<String> usedDeclarationsWithUnification = new ArrayList<>();
         if(!drlxParseResult.isPatternBindingUnification()) {
-            exprDSL.addArgument(new NameExpr(toVar(drlxParseResult.getPatternBinding())));
+            if (drlxParseResult.getPatternBinding() != null) {
+                exprDSL.addArgument(new NameExpr(toVar(drlxParseResult.getPatternBinding())));
+            }
         } else {
             usedDeclarationsWithUnification.add(drlxParseResult.getPatternBinding());
         }
