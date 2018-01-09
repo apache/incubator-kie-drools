@@ -45,7 +45,7 @@ public class AccessorKey
         int result = 1;
         result = PRIME * result + className.hashCode();
         result = PRIME * result + ( (fieldName == null) ? 0 : fieldName.hashCode() );
-        result = PRIME * result + type.hashCode();
+        result = PRIME * result + type.name().hashCode();
         this.hashCode = result;
     }
 
