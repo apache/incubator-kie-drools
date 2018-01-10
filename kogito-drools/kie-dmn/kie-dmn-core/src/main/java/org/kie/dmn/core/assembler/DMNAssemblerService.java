@@ -17,7 +17,6 @@
 package org.kie.dmn.core.assembler;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,9 +38,11 @@ import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.compiler.DMNCompilerConfigurationImpl;
 import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.compiler.DMNProfile;
+import org.kie.dmn.core.compiler.profiles.ExtendedDMNProfile;
 import org.kie.dmn.core.impl.DMNKnowledgeBuilderError;
 import org.kie.dmn.core.impl.DMNPackageImpl;
 import org.kie.internal.builder.ResultSeverity;
+import org.kie.internal.utils.ChainedProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -97,9 +98,12 @@ public class DMNAssemblerService implements KieAssemblerService {
     private List<DMNProfile> getDMNProfiles(KnowledgeBuilderImpl kbuilderImpl) {
         Map<String, String> dmnProfileProperties = new HashMap<>();
         kbuilderImpl.getBuilderConfiguration().getChainedProperties().mapStartsWith(dmnProfileProperties, DMN_PROFILE_PREFIX, false);
+        List<DMNProfile> dmnProfiles = new ArrayList<>();
+        if (!isStrictMode(kbuilderImpl.getBuilderConfiguration().getChainedProperties())) {
+            dmnProfiles.add(new ExtendedDMNProfile());
+        }
         if (!dmnProfileProperties.isEmpty()) {
             try {
-                List<DMNProfile> dmnProfiles = new ArrayList<>();
                 for (Map.Entry<String, String> dmnProfileProperty : dmnProfileProperties.entrySet()) {
                     DMNProfile dmnProfile = (DMNProfile) kbuilderImpl.getRootClassLoader()
                                                                      .loadClass(dmnProfileProperty.getValue()).newInstance();
@@ -113,7 +117,15 @@ public class DMNAssemblerService implements KieAssemblerService {
                 logger.warn("DMN Compiler configuration contained errors, will fall-back using empty-configuration compiler.");
             }
         }
-        return Collections.emptyList();
+        return dmnProfiles;
+    }
+
+    private static boolean isStrictMode(ChainedProperties properties) {
+        String val = System.getProperty("org.kie.dmn.strictConformance");
+        if (val == null) {
+            return Boolean.parseBoolean(properties.getProperty("org.kie.dmn.strictConformance", "false"));
+        }
+        return "".equals(val) || Boolean.parseBoolean(val);
     }
 
     private DMNCompiler getCompiler(KnowledgeBuilderImpl kbuilderImpl) {

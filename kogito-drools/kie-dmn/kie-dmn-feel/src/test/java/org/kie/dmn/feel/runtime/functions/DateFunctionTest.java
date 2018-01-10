@@ -62,11 +62,6 @@ public class DateFunctionTest {
     }
 
     @Test
-    public void invokeParamStringDateTime() {
-        FunctionTestUtil.assertResult(dateFunction.invoke("2017-09-07T10:20:30"), LocalDate.of(2017, 9, 7));
-    }
-
-    @Test
     public void invokeParamYearMonthDayNulls() {
         FunctionTestUtil.assertResultError(dateFunction.invoke(null, null, null), InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(dateFunction.invoke(10, null, null), InvalidParametersEvent.class);

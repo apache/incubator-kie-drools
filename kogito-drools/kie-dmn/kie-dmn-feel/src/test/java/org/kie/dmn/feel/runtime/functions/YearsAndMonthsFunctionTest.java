@@ -82,19 +82,19 @@ public class YearsAndMonthsFunctionTest {
     }
 
     @Test
-    public void invokeLocalDateLocalDate() {
+    public void testYearsAndMonthsFunction_invokeLocalDateTime() {
         FunctionTestUtil.assertResult(
                 yamFunction.invoke(
-                        LocalDate.of(2017, 6, 12),
+                        LocalDateTime.of(2017, 6, 12, 12, 43),
                         LocalDate.of(2020, 7, 13)),
                 Period.of(3, 1, 0));
     }
 
     @Test
-    public void invokeLocalDateTime() {
+    public void invokeLocalDateLocalDate() {
         FunctionTestUtil.assertResult(
                 yamFunction.invoke(
-                        LocalDateTime.of(2017, 6, 12, 12, 43),
+                        LocalDate.of(2017, 6, 12),
                         LocalDate.of(2020, 7, 13)),
                 Period.of(3, 1, 0));
     }

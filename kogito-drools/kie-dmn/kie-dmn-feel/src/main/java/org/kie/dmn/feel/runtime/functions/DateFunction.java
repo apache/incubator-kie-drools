@@ -60,12 +60,7 @@ public class DateFunction
         try {
             return FEELFnResult.ofResult(LocalDate.from(FEEL_DATE.parse(val)));
         } catch (DateTimeException e) {
-            // try to parse it as a date time and extract the date component
-            // NOTE: this is an extension to the standard
-            return BuiltInFunctions.getFunction( DateAndTimeFunction.class ).invoke( val )
-                .cata( overrideLeft -> FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "date-parsing exception", e)),
-                       r -> invoke( r )
-                       );   
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "date", e));
         }
     }
 
@@ -98,7 +93,4 @@ public class DateFunction
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "date-parsing exception", e));
         }
     }
-
-
-
 }

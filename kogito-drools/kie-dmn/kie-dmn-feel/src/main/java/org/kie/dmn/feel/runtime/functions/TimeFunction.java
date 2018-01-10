@@ -25,9 +25,11 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalQueries;
 
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
@@ -72,12 +74,7 @@ public class TimeFunction
 
             return FEELFnResult.ofResult(parsed);
         } catch (DateTimeException e) {
-            // try to parse it as a date time and extract the date component
-            // NOTE: this is an extension to the standard
-            return BuiltInFunctions.getFunction( DateAndTimeFunction.class ).invoke( val )
-                .cata( overrideLeft -> FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "time-parsing exception", e)),
-                       r -> invoke( r )
-                       );
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", e));
         }
     }
 
@@ -122,7 +119,13 @@ public class TimeFunction
         }
         
         try {
-            if( date.query( TemporalQueries.offset() ) == null ) {
+            // If the temporal accessor type doesn't support time, try to parse it as a date with UTC midnight.
+            if (!date.isSupported(ChronoField.HOUR_OF_DAY)) {
+                return BuiltInFunctions.getFunction( DateAndTimeFunction.class ).invoke( date, OffsetTime.of(0, 0, 0, 0, ZoneOffset.UTC) )
+                        .cata( overrideLeft -> FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "from", "time-parsing exception")),
+                                this::invoke
+                        );
+            } else if( date.query( TemporalQueries.offset() ) == null ) {
                 return FEELFnResult.ofResult( LocalTime.from( date ) );
             } else {
                 ZoneId zone = date.query(TemporalQueries.zoneId());
