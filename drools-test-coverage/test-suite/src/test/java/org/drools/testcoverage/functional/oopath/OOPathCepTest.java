@@ -214,6 +214,7 @@ public class OOPathCepTest {
                 "rule R when\n" +
                 "  ev1: MessageEvent( /msg[ message == 'Ping' ] )\n" +
                 "  ev2: MessageEvent( $message: /msg[ message == 'Pong' ], this coincides[1s] ev1 )\n" +
+                "  ev2: MessageEvent( $message: /msg[ message == 'Pong' ], this coincides[1s] ev1 )\n" +
                 "then\n" +
                 "  messages.add( $message );\n" +
                 "end\n";

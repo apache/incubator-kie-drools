@@ -20,6 +20,7 @@ import org.drools.model.functions.Predicate3;
 import org.drools.model.functions.accumulate.AccumulateFunction;
 import org.drools.model.functions.temporal.AfterPredicate;
 import org.drools.model.functions.temporal.BeforePredicate;
+import org.drools.model.functions.temporal.CoincidesPredicate;
 import org.drools.model.functions.temporal.Interval;
 import org.drools.model.functions.temporal.TemporalPredicate;
 import org.drools.model.impl.AnnotationValueImpl;
@@ -371,6 +372,10 @@ public class DSL {
 
     public static TemporalPredicate before( long lowerBound, TimeUnit lowerUnit, long upperBound, TimeUnit upperUnit ) {
         return new BeforePredicate( new Interval( lowerBound, lowerUnit, upperBound, upperUnit ) );
+    }
+
+    public static TemporalPredicate coincides( long lowerBound, TimeUnit lowerUnit) {
+        return new CoincidesPredicate(new Interval(lowerBound, lowerUnit) );
     }
 
     // -- Accumulate Functions --
