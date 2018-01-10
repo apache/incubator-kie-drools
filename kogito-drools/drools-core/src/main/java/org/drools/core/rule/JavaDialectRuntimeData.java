@@ -69,7 +69,7 @@ public class JavaDialectRuntimeData
 
     private static final ProtectionDomain  PROTECTION_DOMAIN;
 
-    private final Map<String, Object>      invokerLookups = new ConcurrentHashMap<>();
+    private final Map<String, Wireable>    invokerLookups = new ConcurrentHashMap<>();
 
     private final Map<String, byte[]>      classLookups = new ConcurrentHashMap<>();
 
@@ -127,7 +127,7 @@ public class JavaDialectRuntimeData
         }
 
         stream.writeInt( this.invokerLookups.size() );
-        for (Entry<String, Object> entry : this.invokerLookups.entrySet()) {
+        for (Entry<String, Wireable> entry : this.invokerLookups.entrySet()) {
             stream.writeObject(entry.getKey());
             stream.writeObject(entry.getValue());
         }
@@ -192,7 +192,7 @@ public class JavaDialectRuntimeData
 
         for (int i = 0, length = stream.readInt(); i < length; i++) {
             this.invokerLookups.put( (String) stream.readObject(),
-                                     stream.readObject() );
+                                     (Wireable) stream.readObject() );
         }
 
         for (int i = 0, length = stream.readInt(); i < length; i++) {
@@ -275,7 +275,7 @@ public class JavaDialectRuntimeData
         }
     }
 
-    private static void wireAll(ClassLoader classLoader, Map<String, Object> invokerLookups, List<String> wireList) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+    private static void wireAll(ClassLoader classLoader, Map<String, Wireable> invokerLookups, List<String> wireList) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
         for (String resourceName : wireList) {
             wire( classLoader, invokerLookups, convertResourceToClassName( resourceName ) );
         }
@@ -283,10 +283,10 @@ public class JavaDialectRuntimeData
 
     private static class WiringExecutor implements Callable<Boolean> {
         private final ClassLoader classLoader;
-        private final Map<String, Object> invokerLookups;
+        private final Map<String, Wireable> invokerLookups;
         private final List<String> wireList;
 
-        private WiringExecutor(ClassLoader classLoader, Map<String, Object> invokerLookups, List<String> wireList) {
+        private WiringExecutor(ClassLoader classLoader, Map<String, Wireable> invokerLookups, List<String> wireList) {
             this.classLoader = classLoader;
             this.invokerLookups = invokerLookups;
             this.wireList = wireList;
@@ -444,25 +444,21 @@ public class JavaDialectRuntimeData
         }
     }
 
-    public void wire( final String className ) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
-        wire(className, invokerLookups.get(className));
+    private static void wire( ClassLoader classLoader, Map<String, Wireable> invokerLookups, String className ) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+        Wireable invoker = invokerLookups.get(className);
+        if (invoker != null) {
+            wire( classLoader, className, invoker, false );
+        }
     }
 
-    private static void wire( ClassLoader classLoader, Map<String, Object> invokerLookups, String className ) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
-        wire( classLoader, className, invokerLookups.get(className) );
-    }
+    private static void wire( ClassLoader classLoader, String className, Wireable invoker, boolean reload ) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+        if (reload && invoker instanceof Wireable.Immutable && (( Wireable.Immutable ) invoker).isInitialized()) {
+            return;
+        }
 
-    public void wire( final String className, final Object invoker ) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
-        wire( classLoader, className, invoker );
-    }
-
-    private static void wire( ClassLoader classLoader, String className, Object invoker ) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
         final Class clazz = classLoader.loadClass( className );
-
         if (clazz != null) {
-            if (invoker instanceof Wireable) {
-                ( (Wireable) invoker ).wire( clazz.newInstance() );
-            }
+            invoker.wire( clazz.newInstance() );
         } else {
             throw new ClassNotFoundException( className );
         }
@@ -489,10 +485,8 @@ public class JavaDialectRuntimeData
 
         // Wire up invokers
         try {
-            for (final Object object : invokerLookups.entrySet()) {
-                Entry entry = (Entry) object;
-                wire( (String) entry.getKey(),
-                      entry.getValue() );
+            for (Entry<String, Wireable> entry : invokerLookups.entrySet()) {
+                wire( classLoader, entry.getKey(), entry.getValue(), true );
             }
         } catch (final ClassNotFoundException e) {
             throw new RuntimeException( e );
@@ -517,12 +511,11 @@ public class JavaDialectRuntimeData
         return this.getClass().getName() + getStore().toString();
     }
 
-    public void putInvoker( final String className,
-            final Object invoker ) {
+    public void putInvoker( String className, Wireable invoker ) {
         invokerLookups.put(className, invoker);
     }
 
-    public void putAllInvokers( final Map<String, Object> invokers ) {
+    public void putAllInvokers( final Map<String, Wireable> invokers ) {
         invokerLookups.putAll( invokers );
     }
 
