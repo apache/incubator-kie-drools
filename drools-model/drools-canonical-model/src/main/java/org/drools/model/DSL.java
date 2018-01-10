@@ -27,6 +27,7 @@ import org.drools.model.functions.temporal.Interval;
 import org.drools.model.functions.temporal.MeetsPredicate;
 import org.drools.model.functions.temporal.MetbyPredicate;
 import org.drools.model.functions.temporal.OverlapsPredicate;
+import org.drools.model.functions.temporal.StartedbyPredicate;
 import org.drools.model.functions.temporal.TemporalPredicate;
 import org.drools.model.impl.AnnotationValueImpl;
 import org.drools.model.impl.DataSourceDefinitionImpl;
@@ -405,6 +406,10 @@ public class DSL {
 
     public static TemporalPredicate during() {
         return new DuringPredicate();
+    }
+
+    public static TemporalPredicate startedby( long dev, TimeUnit devUnit) {
+        return new StartedbyPredicate(dev, devUnit);
     }
 
     // -- Accumulate Functions --
