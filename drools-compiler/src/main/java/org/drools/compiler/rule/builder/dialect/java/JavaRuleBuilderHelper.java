@@ -35,6 +35,7 @@ import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.core.spi.AcceptsClassObjectType;
 import org.drools.core.spi.DeclarationScopeResolver;
 import org.drools.core.spi.KnowledgeHelper;
+import org.drools.core.spi.Wireable;
 import org.drools.core.util.StringUtils;
 import org.mvel2.integration.impl.MapVariableResolverFactory;
 import org.mvel2.templates.SimpleTemplateRegistry;
@@ -280,6 +281,6 @@ public final class JavaRuleBuilderHelper {
 
         JavaDialectRuntimeData data = (JavaDialectRuntimeData)context.getPkg().getDialectRuntimeRegistry().getDialectData("java");
         data.write(resourceName, bytecode);
-        data.putInvoker(className, invokerLookup);
+        data.putInvoker(className, (Wireable) invokerLookup);
     }
 }

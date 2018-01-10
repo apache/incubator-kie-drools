@@ -17,5 +17,9 @@
 package org.drools.core.spi;
 
 public interface Wireable {
-    public void wire(Object object);
+    void wire(Object object);
+
+    interface Immutable extends Wireable {
+        boolean isInitialized();
+    }
 }
