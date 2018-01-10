@@ -374,8 +374,8 @@ public class DSL {
         return new BeforePredicate( new Interval( lowerBound, lowerUnit, upperBound, upperUnit ) );
     }
 
-    public static TemporalPredicate coincides( long lowerBound, TimeUnit lowerUnit) {
-        return new CoincidesPredicate(new Interval(lowerBound, lowerUnit) );
+    public static TemporalPredicate coincides( long dev, TimeUnit devUnit) {
+        return new CoincidesPredicate(dev, devUnit );
     }
 
     // -- Accumulate Functions --
