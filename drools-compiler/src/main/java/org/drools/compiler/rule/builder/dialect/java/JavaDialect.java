@@ -100,6 +100,7 @@ import org.drools.core.io.internal.InternalResource;
 import org.drools.core.rule.Function;
 import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.core.rule.LineMappings;
+import org.drools.core.spi.Wireable;
 import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
 import org.kie.api.io.Resource;
@@ -509,9 +510,8 @@ public class JavaDialect
             // Check if an invoker - returnvalue, predicate, eval or consequence has been associated
             // If so we add it to the PackageCompilationData as it will get wired up on compilation
             final Object invoker = context.getInvokerLookup(className);
-            if (invoker != null) {
-                data.putInvoker(className,
-                                invoker);
+            if (invoker instanceof Wireable) {
+                data.putInvoker(className, (Wireable)invoker);
             }
             final String text = invokers.getValue();
 
