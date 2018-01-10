@@ -23,6 +23,7 @@ import org.drools.model.functions.temporal.BeforePredicate;
 import org.drools.model.functions.temporal.CoincidesPredicate;
 import org.drools.model.functions.temporal.DuringPredicate;
 import org.drools.model.functions.temporal.FinishedbyPredicate;
+import org.drools.model.functions.temporal.IncludesPredicate;
 import org.drools.model.functions.temporal.Interval;
 import org.drools.model.functions.temporal.MeetsPredicate;
 import org.drools.model.functions.temporal.MetbyPredicate;
@@ -415,6 +416,10 @@ public class DSL {
 
     public static TemporalPredicate overlappedby( long dev, TimeUnit devUnit) {
         return new OverlappedbyPredicate(dev, devUnit);
+    }
+
+    public static TemporalPredicate includes() {
+        return new IncludesPredicate();
     }
 
     // -- Accumulate Functions --
