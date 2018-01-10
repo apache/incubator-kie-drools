@@ -130,20 +130,21 @@ public class ModelGenerator {
         consequenceMethods.put("getKnowledgeRuntime", JavaParser.parseExpression("drools.getRuntime(org.kie.api.runtime.KieRuntime.class)"));
         consequenceMethods.put("getKieRuntime", JavaParser.parseExpression("drools.getRuntime(org.kie.api.runtime.KieRuntime.class)"));
 
+        customOperators.put("in", InOperatorSpec.INSTANCE);
+
         customOperators.put("before", TemporalOperatorSpec.INSTANCE);
         customOperators.put("after", TemporalOperatorSpec.INSTANCE);
-        customOperators.put("in", InOperatorSpec.INSTANCE);
-        customOperators.put("coincides", InOperatorSpec.INSTANCE);
-        customOperators.put("metby", InOperatorSpec.INSTANCE);
-        customOperators.put("finishedby", InOperatorSpec.INSTANCE);
-        customOperators.put("overlaps", InOperatorSpec.INSTANCE);
-        customOperators.put("meets", InOperatorSpec.INSTANCE);
-        customOperators.put("during", InOperatorSpec.INSTANCE);
-        customOperators.put("finishes", InOperatorSpec.INSTANCE);
-        customOperators.put("startedby", InOperatorSpec.INSTANCE);
-        customOperators.put("overlappedby", InOperatorSpec.INSTANCE);
-        customOperators.put("includes", InOperatorSpec.INSTANCE);
-        customOperators.put("starts", InOperatorSpec.INSTANCE);
+        customOperators.put("coincides", TemporalOperatorSpec.INSTANCE);
+        customOperators.put("metby", TemporalOperatorSpec.INSTANCE);
+        customOperators.put("finishedby", TemporalOperatorSpec.INSTANCE);
+        customOperators.put("overlaps", TemporalOperatorSpec.INSTANCE);
+        customOperators.put("meets", TemporalOperatorSpec.INSTANCE);
+        customOperators.put("during", TemporalOperatorSpec.INSTANCE);
+        customOperators.put("finishes", TemporalOperatorSpec.INSTANCE);
+        customOperators.put("startedby", TemporalOperatorSpec.INSTANCE);
+        customOperators.put("overlappedby", TemporalOperatorSpec.INSTANCE);
+        customOperators.put("includes", TemporalOperatorSpec.INSTANCE);
+        customOperators.put("starts", TemporalOperatorSpec.INSTANCE);
     }
 
     public static final boolean GENERATE_EXPR_ID = true;
