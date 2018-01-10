@@ -22,6 +22,7 @@ import org.drools.model.functions.temporal.AfterPredicate;
 import org.drools.model.functions.temporal.BeforePredicate;
 import org.drools.model.functions.temporal.CoincidesPredicate;
 import org.drools.model.functions.temporal.Interval;
+import org.drools.model.functions.temporal.MetbyPredicate;
 import org.drools.model.functions.temporal.OverlapsPredicate;
 import org.drools.model.functions.temporal.TemporalPredicate;
 import org.drools.model.impl.AnnotationValueImpl;
@@ -381,6 +382,10 @@ public class DSL {
 
     public static TemporalPredicate overlaps( long dev, TimeUnit devUnit) {
         return new OverlapsPredicate(dev, devUnit );
+    }
+
+    public static TemporalPredicate metby( long dev, TimeUnit devUnit) {
+        return new MetbyPredicate(dev, devUnit );
     }
 
     // -- Accumulate Functions --

@@ -45,7 +45,7 @@ public class OverlapsPredicate extends AbstractTemporalPredicate {
 
     @Override
     public String toString() {
-        return "before" + interval;
+        return "overlaps" + interval;
     }
 
     @Override
