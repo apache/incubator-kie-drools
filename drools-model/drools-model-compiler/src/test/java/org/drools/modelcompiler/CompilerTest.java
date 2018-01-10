@@ -27,6 +27,7 @@ import org.drools.core.reteoo.AlphaNode;
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Adult;
 import org.drools.modelcompiler.domain.Child;
+import org.drools.modelcompiler.domain.InternationalAddress;
 import org.drools.modelcompiler.domain.Man;
 import org.drools.modelcompiler.domain.Overloaded;
 import org.drools.modelcompiler.domain.Person;
@@ -39,7 +40,10 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class CompilerTest extends BaseModelTest {
 
@@ -1094,6 +1098,52 @@ public class CompilerTest extends BaseModelTest {
 
         Person john = new Person("John", 47);
         Address a = new Address("Italy");
+        john.setAddress(a);
+
+        ksession.insert(john);
+        ksession.fireAllRules();
+
+        Collection<String> results = getObjectsIntoList(ksession, String.class);
+        assertEquals(1, results.size());
+    }
+
+    @Test
+    public void testInlineCastForAField() {
+        String str = "import " + Person.class.getCanonicalName() + ";" +
+                     "import " + InternationalAddress.class.getCanonicalName() + ";" +
+                     "rule R when\n" +
+                     "  $p : Person( address#InternationalAddress.state.length == 5 )\n" +
+                     "then\n" +
+                     "  insert(\"matched\");\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+
+        Person john = new Person("John", 47);
+        InternationalAddress a = new InternationalAddress("address", "Italy");
+        john.setAddress(a);
+
+        ksession.insert(john);
+        ksession.fireAllRules();
+
+        Collection<String> results = getObjectsIntoList(ksession, String.class);
+        assertEquals(1, results.size());
+    }
+
+    @Test
+    public void testInlineCastForAFieldAndMixMethodCall() {
+        String str = "import " + Person.class.getCanonicalName() + ";" +
+                     "import " + InternationalAddress.class.getCanonicalName() + ";" +
+                     "rule R when\n" +
+                     "  $p : Person( address#InternationalAddress.getState().length == 5 )\n" +
+                     "then\n" +
+                     "  insert(\"matched\");\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+
+        Person john = new Person("John", 47);
+        InternationalAddress a = new InternationalAddress("address", "Italy");
         john.setAddress(a);
 
         ksession.insert(john);
