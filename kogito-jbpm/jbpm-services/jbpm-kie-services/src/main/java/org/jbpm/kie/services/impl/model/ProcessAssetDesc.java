@@ -47,10 +47,10 @@ public class ProcessAssetDesc implements ProcessDefinition {
     private Collection<String> globals = Collections.emptyList();
     private Collection<String> rules = Collections.emptyList();
 
-    private Map<String, Collection<String>> associatedEntities;
-    private Map<String, String> serviceTasks;
-    private Map<String, String> processVariables;
-    private Collection<String> reusableSubProcesses;
+    private Map<String, Collection<String>> associatedEntities = new HashMap<String, Collection<String>>();
+    private Map<String, String> serviceTasks = new HashMap<String, String>();
+    private Map<String, String> processVariables = new HashMap<String, String>();
+    private Collection<String> reusableSubProcesses = new ArrayList<String>();
     private boolean dynamic = true;
     
     private boolean active = true;
@@ -408,5 +408,26 @@ public class ProcessAssetDesc implements ProcessDefinition {
         return true;
     }
 
+    public ProcessAssetDesc copy() {
+        ProcessAssetDesc copied = new ProcessAssetDesc(id, name, version, packageName, type, knowledgeType, namespace, deploymentId, dynamic);
+  
+        copied.originalPath = this.originalPath;
+        
+        copied.encodedProcessSource = this.encodedProcessSource;
+        copied.forms = new HashMap<String, String>(this.forms);
+        copied.roles = new ArrayList<String>(this.roles);
+        copied.signals = new ArrayList<String>(this.signals);
+        copied.globals = new ArrayList<String>(this.globals);
+        copied.rules = new ArrayList<String>(this.rules);
+
+        copied.associatedEntities = new HashMap<String, Collection<String>>(this.associatedEntities);
+        copied.serviceTasks = new HashMap<String, String>(this.serviceTasks);
+        copied.processVariables = new HashMap<String, String>(this.processVariables);
+        copied.reusableSubProcesses = new ArrayList<String>(this.reusableSubProcesses);
+        copied.active = this.active;
+        
+        return copied;
+        
+    }
 
 }

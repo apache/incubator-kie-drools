@@ -15,6 +15,12 @@
  */
 package org.jbpm.kie.services.test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -26,7 +32,6 @@ import java.util.Map;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
-import org.jbpm.kie.services.impl.model.ProcessAssetDesc;
 import org.jbpm.kie.test.util.AbstractKieServicesBaseTest;
 import org.jbpm.services.api.DeploymentNotFoundException;
 import org.jbpm.services.api.ProcessDefinitionNotFoundException;
@@ -39,9 +44,6 @@ import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.scanner.KieMavenRepository;
-
-import static org.junit.Assert.*;
-import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
 
 public class BPMN2DataServicesTest extends AbstractKieServicesBaseTest {
@@ -112,7 +114,6 @@ public class BPMN2DataServicesTest extends AbstractKieServicesBaseTest {
         assertEquals(procDef.getPackageName(), "defaultPackage");
         assertEquals(procDef.getType(), "RuleFlow");
         assertEquals(procDef.getVersion(), "3");
-        assertNotNull(((ProcessAssetDesc)procDef).getEncodedProcessSource());
         
         Map<String, String> processData = bpmn2Service.getProcessVariables(deploymentUnit.getIdentifier(), processId);
         assertEquals("String", processData.get("approval_document"));

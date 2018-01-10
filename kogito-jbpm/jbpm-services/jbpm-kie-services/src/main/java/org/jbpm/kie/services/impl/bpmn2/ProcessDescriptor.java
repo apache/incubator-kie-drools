@@ -195,5 +195,30 @@ public class ProcessDescriptor implements Serializable {
         referencedClasses.clear();
         referencedRules.clear();
     }
+    
+    public ProcessDescriptor clone() {
+        
+        ProcessDescriptor cloned = new ProcessDescriptor();
+        
+        cloned.process = this.process.copy();
+        cloned.tasks = new HashMap<String, UserTaskDefinition>(this.tasks);
+        cloned.taskInputMappings = new HashMap<String, Map<String, String>>(this.taskInputMappings);
+        cloned.taskOutputMappings = new HashMap<String, Map<String, String>>(this.taskOutputMappings);
+        cloned.inputs = new HashMap<String, String>(this.inputs);
+        cloned.taskAssignments = new HashMap<String, Collection<String>>(this.taskAssignments);
+        cloned.reusableSubProcesses = new HashSet<String>(this.reusableSubProcesses);
+        cloned.itemDefinitions = new HashMap<String, String>(this.itemDefinitions);
+        cloned.serviceTasks = new HashMap<String, String>(this.serviceTasks);
+        cloned.globalItemDefinitions = new HashMap<String, String>(this.globalItemDefinitions);
+        cloned.referencedClasses = new HashSet<String>(this.referencedClasses);
+        cloned.referencedRules = new HashSet<String>(this.referencedRules);        
+        cloned.unqualifiedClasses = new HashSet<String>(this.unqualifiedClasses);
+        cloned.signals = new HashSet<String>(this.signals);
+        cloned.globals = new HashSet<String>(this.globals);
+
+        cloned.unresolvedReusableSubProcessNames = new ArrayDeque<String>(this.unresolvedReusableSubProcessNames);
+        
+        return cloned;
+    }
 
 }

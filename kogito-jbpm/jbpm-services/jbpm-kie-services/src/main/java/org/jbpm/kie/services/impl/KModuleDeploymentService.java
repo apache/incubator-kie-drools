@@ -161,7 +161,7 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
             KieBase kbase = kieContainer.getKieBase(kbaseName);
             Map<String, ProcessDescriptor> processDescriptors = new HashMap<String, ProcessDescriptor>();
             for (org.kie.api.definition.process.Process process : kbase.getProcesses()) {
-                processDescriptors.put(process.getId(), (ProcessDescriptor) process.getMetaData().get("ProcessDescriptor"));
+                processDescriptors.put(process.getId(), ((ProcessDescriptor) process.getMetaData().get("ProcessDescriptor")).clone());
             }
 
             // TODO: add forms data?
