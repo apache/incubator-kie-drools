@@ -20,25 +20,30 @@ import java.util.concurrent.TimeUnit;
 
 import static org.drools.model.functions.temporal.TimeUtil.unitToLong;
 
-public class StartsPredicate extends AbstractTemporalPredicate {
+public class FinishesPredicate extends AbstractTemporalPredicate {
 
-    private final long startDev;
+    private final long endDev;
 
-    public StartsPredicate(long startDev, TimeUnit startDevLongUnit) {
-        super(new Interval(0, 0));
-        this.startDev = unitToLong(startDev, startDevLongUnit);
+    public FinishesPredicate() {
+        super(new Interval(0, Interval.MAX));
+        this.endDev = 0;
+    }
+
+    public FinishesPredicate(long endDev, TimeUnit endDevLongUnit) {
+        super(new Interval(0, Interval.MAX));
+        this.endDev = unitToLong(endDev, endDevLongUnit);
     }
 
     @Override
     public String toString() {
-        return "starts" + interval;
+        return "finishes" + interval;
     }
 
     @Override
     public boolean evaluate(long start1, long duration1, long end1, long start2, long duration2, long end2) {
 
-        long distStart = Math.abs( start1 - start2 );
-        long distEnd = end2 - end1;
-        return (distStart <= this.startDev && distEnd > 0 );
+        long distStart = start1 - start2;
+        long distEnd = Math.abs( end2 - end1 );
+        return (distStart > 0 && distEnd <= this.endDev);
     }
 }

@@ -23,6 +23,7 @@ import org.drools.model.functions.temporal.BeforePredicate;
 import org.drools.model.functions.temporal.CoincidesPredicate;
 import org.drools.model.functions.temporal.DuringPredicate;
 import org.drools.model.functions.temporal.FinishedbyPredicate;
+import org.drools.model.functions.temporal.FinishesPredicate;
 import org.drools.model.functions.temporal.IncludesPredicate;
 import org.drools.model.functions.temporal.Interval;
 import org.drools.model.functions.temporal.MeetsPredicate;
@@ -425,6 +426,14 @@ public class DSL {
 
     public static TemporalPredicate starts( long dev, TimeUnit devUnit) {
         return new StartsPredicate(dev, devUnit);
+    }
+
+    public static TemporalPredicate finishes() {
+        return new FinishesPredicate();
+    }
+
+    public static TemporalPredicate finishes( long dev, TimeUnit devUnit) {
+        return new FinishesPredicate(dev, devUnit);
     }
 
     // -- Accumulate Functions --
