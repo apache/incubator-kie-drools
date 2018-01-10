@@ -16,6 +16,7 @@
 
 package org.drools.compiler.rule.builder;
 
+import java.io.File;
 import java.util.Optional;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
@@ -180,11 +181,11 @@ public class RuleBuildContext extends PackageBuildContext {
 
         if (ruleUnitClassName == null && rule.getResource() != null && rule.getResource().getSourcePath() != null) {
             String drlPath = rule.getResource().getSourcePath();
-            int lastSep = drlPath.lastIndexOf('/');
+            int lastSep = drlPath.lastIndexOf( File.separatorChar );
             if (lastSep >= 0) {
                 drlPath = drlPath.substring(lastSep + 1);
             }
-            ruleUnitClassName = rule.getPackage() + "." + drlPath.substring(0, drlPath.lastIndexOf('.')).replace('/', '.');
+            ruleUnitClassName = rule.getPackage() + "." + drlPath.substring(0, drlPath.lastIndexOf('.')).replace(File.separatorChar, '.');
             nameInferredFromResource = true;
         }
 
