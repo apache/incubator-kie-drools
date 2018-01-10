@@ -16,6 +16,7 @@
 
 package org.kie.dmn.core.compiler.extensions;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -46,6 +47,7 @@ import static org.junit.Assert.assertNull;
 public class DMNExtensionRegisterTest {
     private static final Logger LOG = LoggerFactory.getLogger(DMNExtensionRegisterTest.class);
 
+    @Ignore
     @Test
     public void testUsingSystemProperty() {
         try {
@@ -86,7 +88,8 @@ public class DMNExtensionRegisterTest {
             assertNull(System.getProperty("org.kie.dmn.marshaller.extension.lastname"));
         }
     }
-    
+
+    @Ignore
     @Test
     public void testUsingKModuleProperty() {
         final KieServices ks = KieServices.Factory.get();
@@ -132,7 +135,8 @@ public class DMNExtensionRegisterTest {
         LastNameDescription lastNameDescription = (LastNameDescription) id2elements.getAny().get(0);
         assertTrue(lastNameDescription.getContent().equals("Last name in latin characters"));
     }
-    
+
+    @Ignore
     @Test
     public void testUsingKModuleProperty_WrongClasses() {
         final KieServices ks = KieServices.Factory.get();
