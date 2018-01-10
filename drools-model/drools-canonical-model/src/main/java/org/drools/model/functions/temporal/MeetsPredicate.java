@@ -40,8 +40,8 @@ public class MeetsPredicate extends AbstractTemporalPredicate {
     }
 
     @Override
-    public boolean evaluate(long start1, long duration1, long start2, long duration2) {
-        long dist = Math.abs( start2 - (start1 + duration1) );
+    public boolean evaluate(long start1, long duration1, long end1, long start2, long duration2, long end2) {
+        long dist = Math.abs( start2 - end1 );
         return (dist <= this.finalRange);
     }
 }

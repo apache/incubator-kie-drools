@@ -40,9 +40,9 @@ public class FinishedbyPredicate extends AbstractTemporalPredicate {
     }
 
     @Override
-    public boolean evaluate(long start1, long duration1, long start2, long duration2) {
+    public boolean evaluate(long start1, long duration1, long end1, long start2, long duration2, long end2) {
         long distStart = start2 - start1;
-        long distEnd = Math.abs( (start2 + duration2) - (start1 + duration1) );
+        long distEnd = Math.abs(end2 - end1);
         return (distStart > 0 && distEnd <= this.endDev);
     }
 }

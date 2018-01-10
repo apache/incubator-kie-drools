@@ -49,12 +49,10 @@ public class OverlapsPredicate extends AbstractTemporalPredicate {
     }
 
     @Override
-    public boolean evaluate(long start1, long duration1, long end1, long duration2) {
-        long startTS = end1;
-        long endTS = start1 + duration1;
-        long dist = endTS - startTS;
-        return ( start1 < startTS &&
-                endTS < (end1 + duration2) &&
+    public boolean evaluate(long start1, long duration1, long end1, long start2, long duration2, long end2) {
+        long dist = end1 - start2;
+        return ( start1 < start2 &&
+                end1 < end2 &&
                 dist >= this.minDev && dist <= this.maxDev );
     }
 }

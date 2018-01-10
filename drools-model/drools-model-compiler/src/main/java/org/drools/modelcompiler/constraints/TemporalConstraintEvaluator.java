@@ -46,9 +46,11 @@ public class TemporalConstraintEvaluator extends ConstraintEvaluator {
         InternalFactHandle[] fhs = getBetaInvocationFactHandles( handle, tuple );
         long start1 = ( (EventFactHandle) fhs[0] ).getStartTimestamp();
         long duration1 = ( (EventFactHandle) fhs[0] ).getDuration();
+        long end1 = start1 + duration1;
         long start2 = ( (EventFactHandle) fhs[1] ).getStartTimestamp();
         long duration2 = ( (EventFactHandle) fhs[1] ).getDuration();
-        return getTemporalPredicate().evaluate( start1, duration1, start2, duration2 );
+        long end2 = start2 + duration2;
+        return getTemporalPredicate().evaluate( start1, duration1, end1, start2, duration2, end2);
     }
 
     @Override
