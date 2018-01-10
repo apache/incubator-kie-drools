@@ -26,7 +26,7 @@ public class CoincidesPredicate extends AbstractTemporalPredicate {
     private final long endDevLong;
 
     public CoincidesPredicate(long dev, TimeUnit devUnit) {
-        super(new Interval());
+        super(new Interval(Interval.MIN, Interval.MAX));
         this.startDevLong = unitToLong(dev, devUnit);
         this.endDevLong = unitToLong(dev, devUnit);
     }
