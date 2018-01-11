@@ -15,7 +15,12 @@
 
 package org.drools.compiler.compiler.xml.rules;
 
+import org.assertj.core.api.Assertions;
+import org.drools.compiler.compiler.DrlParser;
+import org.drools.compiler.lang.DrlDumper;
+import org.drools.compiler.lang.descr.PackageDescr;
 import org.junit.Test;
+import org.kie.internal.builder.conf.LanguageLevelOption;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -139,5 +144,27 @@ public class DumperTest {
         assertTrue( out.contains( "$sum : count( $s1 )" ) );
         assertFalse( out.contains("null : count( $s2 )") );
         assertTrue( out.contains("count( $s2 )") );
+    }
+
+    @Test
+    public void testRoundTripDRLAccumulate() throws Exception {
+        // RHDM-254
+        String drl =
+                "package org.test\n" +
+                "\n" +
+                "rule \"last flown date\"\n" +
+                "when\n" +
+                "    $customer : Profile( $ceid : id )\n" +
+                "    accumulate(\n" +
+                "    Flight( status == \"Flown\", $dptDate: departureDate.time ) from $customer.flights,\n" +
+                "        $cnt : count( $dptDate );\n" +
+                "        $cnt > 0 )\n" +
+                "then\n" +
+                "end";
+        DrlParser parser = new DrlParser( LanguageLevelOption.DRL6);
+        final PackageDescr pkgOriginal = parser.parse( false, drl );
+        final DrlDumper dumper = new DrlDumper();
+        String out = dumper.dump( pkgOriginal );
+        Assertions.assertThat(drl).isEqualToIgnoringWhitespace(out);
     }
 }
