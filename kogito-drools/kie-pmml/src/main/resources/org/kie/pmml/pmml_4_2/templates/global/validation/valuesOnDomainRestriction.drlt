@@ -37,7 +37,6 @@ then
    modify($in) {
       setValid( true );
    }
-   System.out.println("Validated "+$in);
 end
 
 @comment{
@@ -52,7 +51,7 @@ when
           @foreach{ v : vals } value == @{v} @end{' || '}
           )
 then
-    System.out.println("--- Invalid -> valid " + $in);
+//    System.out.println("--- Invalid -> valid " + $in);
     modify ( $in ) {
         setValid( true );
     }

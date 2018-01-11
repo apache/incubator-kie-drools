@@ -44,7 +44,6 @@ then
    PMML4DataFactory factory = PMML4DataFactory.get();
    PMML4Data data = factory.newPMML4Data($cid, $mn, $pi, @{notRestricted}, false);
    pmmlData.insert(data);
-   System.out.println("Inserted "+data);
 end
 
 

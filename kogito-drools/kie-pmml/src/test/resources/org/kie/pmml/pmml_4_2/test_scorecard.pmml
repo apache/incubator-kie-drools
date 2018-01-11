@@ -59,7 +59,7 @@
           <SimplePredicate field="age" operator="greaterOrEqual" value="45"/>
         </Attribute>
       </Characteristic>
-      <Characteristic name="OccupationScore" baselineScore="0.0">
+      <Characteristic name="OccupationScore" baselineScore="0.0" reasonCode="OCC">
         <Extension name="cellRef" value="$B$16"/>
         <Attribute partialScore="-10.0" reasonCode="CX2">
           <Extension name="description" value="skydiving is a risky occupation"/>
@@ -76,7 +76,9 @@
         </Attribute>
         <Attribute partialScore="5.0">
           <Extension name="cellRef" value="$C$20"/>
-          <SimplePredicate field="occupation" operator="equal" value="PROGRAMMER"/>
+          <SimpleSetPredicate field="occupation" booleanOperator="isIn">
+            <Array n="2" type="string">PROGRAMMER STUDENT</Array>
+          </SimpleSetPredicate>
         </Attribute>
       </Characteristic>
       <Characteristic name="ResidenceStateScore" baselineScore="0.0" reasonCode="RES">
