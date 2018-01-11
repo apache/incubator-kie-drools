@@ -34,13 +34,11 @@ public class CoincidesPredicate extends AbstractTemporalPredicate {
 
     @Override
     public String toString() {
-        return "coincides " + interval;
+        return "coincides" + interval;
     }
 
     @Override
     public boolean evaluate(long start1, long duration1, long end1, long start2, long duration2, long end2) {
-
-
         long distStart = Math.abs( start2 - start1 );
         long distEnd = Math.abs( end2 - end1 );
         return (distStart <= this.startDevLong && distEnd <= this.endDevLong);
