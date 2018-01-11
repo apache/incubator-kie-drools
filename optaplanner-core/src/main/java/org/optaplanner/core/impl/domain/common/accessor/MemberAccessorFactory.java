@@ -21,13 +21,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import javax.tools.ToolProvider;
 
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 
 public class MemberAccessorFactory {
-
-    private static final boolean codeGenerationEnabled = (ToolProvider.getSystemJavaCompiler() != null);
 
     public static MemberAccessor buildMemberAccessor(Member member, MemberAccessorType memberAccessorType,
             Class<? extends Annotation> annotationClass) {
@@ -47,7 +44,7 @@ public class MemberAccessorFactory {
                 case FIELD_OR_GETTER_METHOD:
                 case FIELD_OR_GETTER_METHOD_WITH_SETTER:
                     ReflectionHelper.assertGetterMethod(method, annotationClass);
-                    if (codeGenerationEnabled && Modifier.isPublic(method.getModifiers())) {
+                    if (Modifier.isPublic(method.getModifiers())) {
                         memberAccessor = new LamdbaBeanPropertyMemberAccessor(method);
                     } else {
                         memberAccessor = new ReflectionBeanPropertyMemberAccessor(method);
