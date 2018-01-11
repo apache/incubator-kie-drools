@@ -22,6 +22,7 @@ import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.ProcessDescr;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
 import org.drools.core.rule.JavaDialectRuntimeData;
+import org.drools.core.spi.Wireable;
 import org.jbpm.process.builder.ActionBuilder;
 import org.jbpm.process.builder.AssignmentBuilder;
 import org.jbpm.process.builder.ProcessBuildContext;
@@ -69,8 +70,8 @@ public class JavaProcessDialect implements ProcessDialect {
 			// If so we add it to the PackageCompilationData as it will get
 			// wired up on compilation
 			final Object invoker = context.getInvokerLookup(className);
-			if (invoker != null) {
-				data.putInvoker(className, invoker);
+			if (invoker != null && invoker instanceof Wireable) {
+				data.putInvoker(className, (Wireable) invoker);
 			}
 			final String text = (String) context.getInvokers().get(className);
 
