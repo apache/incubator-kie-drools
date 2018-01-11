@@ -1,7 +1,5 @@
 package net.tarilabs.experiment.retediagram;
 
-import static java.util.stream.Collectors.*;
-
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.text.SimpleDateFormat;
@@ -36,9 +34,14 @@ import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.Sink;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.ObjectType;
+import org.kie.api.KieBase;
+import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.runtime.KnowledgeRuntime;
+
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 public class ReteDiagram {
     
@@ -87,6 +90,7 @@ public class ReteDiagram {
     private String browserCommand;
     private boolean openSVG;
     private boolean openPNG;
+    private boolean printDebugVerticalCluster = false;
     
 
     private ReteDiagram() { }
@@ -111,6 +115,11 @@ public class ReteDiagram {
         return this;
     }
     
+    public ReteDiagram configPrintDebugVerticalCluster(boolean printDebugVerticalCluster) {
+        this.printDebugVerticalCluster = printDebugVerticalCluster;
+        return this;
+    }
+
     public ReteDiagram configFilenameScheme(String outputPath, boolean prefixTimestamp) {
         this.outputPath = outputPath;
         this.prefixTimestamp = prefixTimestamp;
@@ -140,11 +149,11 @@ public class ReteDiagram {
         return configOpenFileWithBrowser(browserCommand.getCommand(), openSVG, openPNG);
     }
     
-    public void diagramRete(KnowledgeBase kbase) {
+    public void diagramRete(KieBase kbase) {
         diagramRete((InternalKnowledgeBase) kbase);
     }
 
-    public void diagramRete(KnowledgeRuntime session) {
+    public void diagramRete(KieRuntime session) {
         diagramRete((InternalKnowledgeBase)session.getKieBase());
     }
 
@@ -345,7 +354,7 @@ public class ReteDiagram {
         printLevelMapLevel("l5", l5, out);
         
         out.println(
-//                " edge[style=invis];\n" + 
+                    ((this.printDebugVerticalCluster) ? "" : " edge[style=invis];\n") +
                 " l1->l2->l3->lriaSources->lria->lsubbeta->l4->l5;");
     }
 
@@ -377,12 +386,12 @@ public class ReteDiagram {
             nodeIds.append(printNodeId(n)+"; ");
         }
         if (layout == Layout.PARTITION) { 
-            String level = String.format(" subgraph %1$s{%1$s[shape=point, xlabel=\"%1$s\"]; %2$s}",
+            String level = String.format(" subgraph %1$s{%1$s[" + ((this.printDebugVerticalCluster) ? "shape=point, xlabel=\"%1$s\"" : "shape=none, label=\"\"") +  "]; %2$s}",
                     levelId,
                     nodeIds.toString());
             out.println(level);
         } else {
-            String level = String.format(" {rank=same; %1$s[shape=point, xlabel=\"%1$s\"]; %2$s}",
+            String level = String.format(" {rank=same; %1$s[" + ((this.printDebugVerticalCluster) ? "shape=point, xlabel=\"%1$s\"" : "shape=none, label=\"\"") + "]; %2$s}",
                     levelId,
                     nodeIds.toString());
             out.println(level);
