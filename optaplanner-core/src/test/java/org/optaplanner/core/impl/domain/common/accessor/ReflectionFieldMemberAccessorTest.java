@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,29 +14,27 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.domain.common;
+package org.optaplanner.core.impl.domain.common.accessor;
 
 import org.junit.Test;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.core.impl.domain.common.accessor.ReflectionBeanPropertyMemberAccessor;
-import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
+import org.optaplanner.core.impl.testdata.domain.reflect.field.TestdataFieldAnnotatedEntity;
 
 import static org.junit.Assert.*;
 
-public class ReflectionBeanPropertyMemberAccessorTest {
+public class ReflectionFieldMemberAccessorTest {
 
     @Test
-    public void methodAnnotatedEntity() throws NoSuchMethodException {
-        ReflectionBeanPropertyMemberAccessor memberAccessor = new ReflectionBeanPropertyMemberAccessor(
-                TestdataEntity.class.getMethod("getValue"));
+    public void fieldAnnotatedEntity() throws NoSuchFieldException {
+        ReflectionFieldMemberAccessor memberAccessor = new ReflectionFieldMemberAccessor(TestdataFieldAnnotatedEntity.class.getDeclaredField("value"));
         assertEquals("value", memberAccessor.getName());
         assertEquals(TestdataValue.class, memberAccessor.getType());
         assertEquals(true, memberAccessor.isAnnotationPresent(PlanningVariable.class));
 
         TestdataValue v1 = new TestdataValue("v1");
         TestdataValue v2 = new TestdataValue("v2");
-        TestdataEntity e1 = new TestdataEntity("e1", v1);
+        TestdataFieldAnnotatedEntity e1 = new TestdataFieldAnnotatedEntity("e1", v1);
         assertSame(v1, memberAccessor.executeGetter(e1));
         memberAccessor.executeSetter(e1, v2);
         assertSame(v2, e1.getValue());

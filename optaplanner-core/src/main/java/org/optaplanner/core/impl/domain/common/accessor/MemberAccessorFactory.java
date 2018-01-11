@@ -48,7 +48,7 @@ public class MemberAccessorFactory {
                 case FIELD_OR_GETTER_METHOD_WITH_SETTER:
                     ReflectionHelper.assertGetterMethod(method, annotationClass);
                     if (codeGenerationEnabled && Modifier.isPublic(method.getModifiers())) {
-                        memberAccessor = GeneratedBeanPropertyMemberAccessor.generateBeanPropertyMemberAccessor(method);
+                        memberAccessor = new LamdbaBeanPropertyMemberAccessor(method);
                     } else {
                         memberAccessor = new ReflectionBeanPropertyMemberAccessor(method);
                     }
