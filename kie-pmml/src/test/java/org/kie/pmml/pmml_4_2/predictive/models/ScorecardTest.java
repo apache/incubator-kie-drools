@@ -56,17 +56,108 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
     private static final String source1 = "org/kie/pmml/pmml_4_2/test_scorecard.pmml";
     private static final String source2 = "org/kie/pmml/pmml_4_2/test_scorecardOut.pmml";
 
+    @Test
+    public void testMultipleInputData() throws Exception {
+        RuleUnitExecutor executor[] = new RuleUnitExecutor[3];
+        PMMLRequestData requestData[] = new PMMLRequestData[3];
+        PMML4Result resultHolder[] = new PMML4Result[3];
+        Resource res = ResourceFactory.newClassPathResource(source1);
+        kbase = new KieHelper().addResource(res, ResourceType.PMML).build();
+        
+        executor[0] = RuleUnitExecutor.create().bind(kbase);
+        executor[1] = RuleUnitExecutor.create().bind(kbase);
+        executor[2] = RuleUnitExecutor.create().bind(kbase);
+        
+        DataSource<PMMLRequestData> requests[] = new DataSource[3];
+        DataSource<PMML4Result> results[] = new DataSource[3];
+        DataSource<PMML4Data> pmmlDatas[] = new DataSource[3];
+        
+        Double expectedScores[] = new Double[3];
+        expectedScores[0] = 41.345;
+        expectedScores[1] = 26.345;
+        expectedScores[2] = 39.345;
+        
+        LinkedHashMap<String,Double> expectedResults[] = new LinkedHashMap[3];
+        expectedResults[0] = new LinkedHashMap<>();
+        expectedResults[0].put("LX00", -1.0);
+        expectedResults[0].put("RES", -10.0);
+        expectedResults[0].put("CX2", -30.0);
+        
+        expectedResults[1] = new LinkedHashMap<>();
+        expectedResults[1].put("RES", 10.0);
+        expectedResults[1].put("LX00", -1.0);
+        expectedResults[1].put("OCC", -10.0);
+        expectedResults[1].put("ABZ", -25.0);
+
+        expectedResults[2] = new LinkedHashMap<>();
+        expectedResults[2].put("LX00", 1.0);
+        expectedResults[2].put("OCC", -5.0);
+        expectedResults[2].put("RES", -5.0);
+        expectedResults[2].put("CX1", -30.0);
+
+        requestData[0] = createRequest("123","Sample Score", 33.0, "SKYDIVER", "KN", true);
+        requestData[1] = createRequest("124","Sample Score", 50.0, "TEACHER", "AP", true);
+        requestData[2] = createRequest("125","Sample Score", 10.0, "STUDENT", "TN", false);
+
+        for (int x = 0; x < 3; x++) {
+            requests[x] = executor[x].newDataSource("request");
+            results[x] = executor[x].newDataSource("results");
+            pmmlDatas[x] = executor[x].newDataSource("pmmlData");
+            resultHolder[x] = new PMML4Result(requestData[x].getCorrelationId());
+        }
+        List<String> possiblePackages = calculatePossiblePackageNames("Sample Score", "org.drools.scorecards.example");
+        Class<? extends RuleUnit> unitClass = getStartingRuleUnit("RuleUnitIndicator",(InternalKnowledgeBase)kbase,possiblePackages);
+
+        assertNotNull(unitClass);
+        for (int x = 0; x < 3; x++) {
+            executor[x].run(unitClass);
+        }
+        
+        for (int y = 0; y < 3; y++) {
+            requests[y].insert(requestData[y]);
+            results[y].insert(resultHolder[y]);
+        }
+        
+        for (int z = 0; z < 3; z++) {
+            executor[z].run(unitClass);
+        }
+        
+        for (int p = 0; p < 3; p++) {
+            checkResult(resultHolder[p],expectedScores[p],expectedResults[p]);
+            results[p].forEach(r -> { System.out.println(r);});
+        }
+        
+    }
+    
+    private void checkResult(PMML4Result result, Double score, LinkedHashMap<String, Double> expectedResults) {
+        assertEquals("OK",result.getResultCode());
+        assertTrue(result.getResultVariables().containsKey("ScoreCard"));
+        assertNotNull(result.getResultValue("ScoreCard", null));
+        Double scoreFromCard = result.getResultValue("ScoreCard", "score", Double.class).orElse(null);
+        assertEquals(score,scoreFromCard,1e-3);
+        
+        Object ranks = result.getResultValue("ScoreCard", "ranking");
+        assertNotNull(ranks);
+        assertTrue(ranks instanceof LinkedHashMap);
+        LinkedHashMap<String,Double> rankingMap = (LinkedHashMap<String,Double>)ranks;
+        Iterator<String> expectedKeys = expectedResults.keySet().iterator();
+        Iterator<String> actualKeys = rankingMap.keySet().iterator();
+        assertEquals(expectedResults.keySet().size(), rankingMap.keySet().size());
+        while (expectedKeys.hasNext()) {
+            String expectedKey = expectedKeys.next();
+            String actualKey = actualKeys.next();
+            Double expectedValue = expectedResults.get(expectedKey);
+            Double actualValue = rankingMap.get(actualKey);
+            assertEquals(expectedKey,actualKey);
+            assertEquals(expectedValue,actualValue,1e-3);
+        }
+    }
 
     @Test
     public void testScorecard() throws Exception {
-    	RuleUnitExecutor executor = createExecutor(source1);
+        RuleUnitExecutor executor = createExecutor(source1);
 
-    	PMMLRequestData requestData = new PMMLRequestData("123","Sample Score");
-        requestData.addRequestParam("age",33.0);
-        requestData.addRequestParam("occupation", "SKYDIVER");
-        requestData.addRequestParam("residenceState","KN");
-        requestData.addRequestParam("validLicense", true);
-        
+        PMMLRequestData requestData = createRequest("123","Sample Score",33.0,"SKYDIVER","KN",true);
         PMML4Result resultHolder = new PMML4Result();
 
         List<String> possiblePackages = calculatePossiblePackageNames("Sample Score", "org.drools.scorecards.example");
@@ -78,7 +169,7 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
         data.insert(requestData);
         resultData.insert(resultHolder);
         executor.run(unitClass);
-
+System.out.println(resultHolder);
         assertEquals(3, resultHolder.getResultVariables().size());
         Object scorecard = resultHolder.getResultValue("ScoreCard", null);
         assertNotNull(scorecard);
@@ -105,7 +196,7 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
 
     @Test
     public void testScorecardOutputs() throws Exception {
-    	RuleUnitExecutor executor = createExecutor(source2);//RuleUnitExecutor.create().bind(kbase);
+        RuleUnitExecutor executor = createExecutor(source2);//RuleUnitExecutor.create().bind(kbase);
 
 
         PMMLRequestData requestData = new PMMLRequestData("123","SampleScorecard");
@@ -135,5 +226,19 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
         assertEquals("RC1",resultHolder.getResultValue("OutRC2", "value"));
         assertEquals("RC1",resultHolder.getResultValue("OutRC3", "value"));
         
+    }
+    
+    protected PMMLRequestData createRequest(String correlationId, 
+            String model, 
+            Double age, 
+            String occupation, 
+            String residenceState, 
+            boolean validLicense) {
+        PMMLRequestData data = new PMMLRequestData(correlationId,model);
+        data.addRequestParam("age", age);
+        data.addRequestParam("occupation", occupation);
+        data.addRequestParam("residenceState", residenceState);
+        data.addRequestParam("validLicense", validLicense);
+        return data;
     }
 }
