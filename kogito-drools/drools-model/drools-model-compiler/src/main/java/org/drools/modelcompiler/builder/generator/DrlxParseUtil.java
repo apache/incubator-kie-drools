@@ -214,13 +214,15 @@ public class DrlxParseUtil {
                         usedDeclarations.add(backReferenceDeclaration.getBindingId());
                     }
 
-                    Method firstAccessor = ClassUtils.getAccessor(typeCursor, firstName);
+                    Method firstAccessor = ClassUtils.getAccessor((!isInLineCast) ? typeCursor : patternType, firstName);
                     if (firstAccessor != null) {
                         // Hack to review - if a property is upper case it's probably not a react on property
                         if(!"".equals(firstName) && Character.isLowerCase(firstName.charAt(0))) {
                             reactOnProperties.add(firstName);
                         }
-                        typeCursor = firstAccessor.getReturnType();
+                        if (!isInLineCast) {
+                            typeCursor = firstAccessor.getReturnType();
+                        }
                         NameExpr thisAccessor = new NameExpr("_this");
                         final NameExpr scope = backReference.map(d -> new NameExpr(d.getBindingId())).orElse(thisAccessor);
                         previous = new MethodCallExpr(scope, firstAccessor.getName());
