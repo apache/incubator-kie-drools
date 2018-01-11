@@ -31,7 +31,7 @@ public class DuringPredicate extends AbstractTemporalPredicate {
 
     @Override
     public String toString() {
-        return "during " + interval;
+        return "during" + interval;
     }
 
     @Override
