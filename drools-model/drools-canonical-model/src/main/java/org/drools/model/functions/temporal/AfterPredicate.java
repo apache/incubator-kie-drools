@@ -19,7 +19,7 @@ package org.drools.model.functions.temporal;
 public class AfterPredicate extends AbstractTemporalPredicate {
 
     public AfterPredicate() {
-        this( new Interval(0, Interval.MAX) );
+        this( new Interval(1, Interval.MAX) );
     }
 
     public AfterPredicate( Interval interval ) {
