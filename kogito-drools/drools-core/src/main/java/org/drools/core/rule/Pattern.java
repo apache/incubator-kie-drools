@@ -20,7 +20,6 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -46,9 +45,11 @@ import org.drools.core.spi.SelfDateExtractor;
 import org.drools.core.spi.SelfNumberExtractor;
 
 import static org.drools.core.util.ClassUtils.convertFromPrimitiveType;
-import static org.drools.core.util.ClassUtils.isIterable;
 import static org.drools.core.util.ClassUtils.isFinal;
-import static org.drools.core.util.ClassUtils.isInterface;;
+import static org.drools.core.util.ClassUtils.isInterface;
+import static org.drools.core.util.ClassUtils.isIterable;
+
+;
 
 public class Pattern
     implements
@@ -221,7 +222,7 @@ public class Pattern
         if ( this.getSource() != null ) {
             clone.setSource( (PatternSource) this.getSource().clone() );
             if ( source instanceof From ) {
-                ((From)clone.getSource()).setResultPattern( this );
+                ((From)clone.getSource()).setResultPattern( clone );
             }
         }
 

@@ -6971,4 +6971,29 @@ public class CepEspTest extends CommonTestMethodBase {
 
         assertEquals( 1, ksession.fireAllRules( 10 ) );
     }
+
+    @Test
+    public void testNPERiaPathMemWithEvent() {
+        // DROOLS-2241
+        String drl =
+                "package org.drools  " +
+                "declare  Reading  " +
+                "    @role( event ) " +
+                "    value : Double  @key " +
+                "end " +
+                "rule Init when then insert( new Reading( 14.5) ); end " +
+                "rule Test " +
+                "when " +
+                "    $trigger : Reading( $value;  )   " +
+                "    not(  " +
+                "       Number( doubleValue > 10.0 ) from $value  ) " +
+                "    do[viol]   " +
+                "then " +
+                "then[viol] " +
+                "end ";
+
+        KieBase kieBase = new KieHelper().addContent(drl, ResourceType.DRL).build(EventProcessingOption.STREAM);
+        KieSession ksession = kieBase.newKieSession();
+        assertEquals( 1, ksession.fireAllRules() );
+    }
 }
