@@ -48,7 +48,7 @@ public class OOPathExprGenerator {
                 fieldType = extractGenericType(previousClass, ((MethodCallExpr) callExpr.getExpression()).getName().toString());
             }
 
-            final String bindingId = context.getOOPathId(fieldType, fieldName);
+            final String bindingId = context.getOOPathId(fieldType, originalBind + fieldName);
             final Expression accessorLambda = generateLambdaWithoutParameters(Collections.emptySortedSet(),
                                                                               prepend(new NameExpr("_this"), callExpr.getExpression()));
 
@@ -76,12 +76,12 @@ public class OOPathExprGenerator {
         final Optional<DeclarationSpec> missingClassDeclarationFound = declarations.stream().filter(d -> d.getDeclarationClass() == null).findFirst();
 
         missingClassDeclarationFound.ifPresent(missingClassDeclaration -> {
-            final String innerBindingId = missingClassDeclaration.getBindingId();
+            declarations.remove(declarations.indexOf(missingClassDeclaration));
 
+            final String innerBindingId = missingClassDeclaration.getBindingId();
             final int lastIndex = declarations.size() - 1;
             final DeclarationSpec last = declarations.get(lastIndex);
-            declarations.set(lastIndex, new DeclarationSpec(innerBindingId, last.getDeclarationClass(), last.getOptPattern(), last.getDeclarationSource()));
-            declarations.remove(declarations.indexOf(missingClassDeclaration));
+            declarations.add(new DeclarationSpec(innerBindingId, last.getDeclarationClass(), last.getOptPattern(), last.getDeclarationSource()));
 
             // In the meanwhile some condition could have used that binding, we need to rename that also
             for(DrlxParseResult r : ooPathConditionExpressions) {

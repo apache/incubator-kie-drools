@@ -53,8 +53,6 @@ import org.drools.javaparser.ast.body.Parameter;
 import org.drools.javaparser.ast.drlx.OOPathExpr;
 import org.drools.javaparser.ast.drlx.expr.DrlxExpression;
 import org.drools.javaparser.ast.drlx.expr.PointFreeExpr;
-import org.drools.javaparser.ast.drlx.expr.TemporalLiteralChunkExpr;
-import org.drools.javaparser.ast.drlx.expr.TemporalLiteralExpr;
 import org.drools.javaparser.ast.expr.AssignExpr;
 import org.drools.javaparser.ast.expr.BinaryExpr;
 import org.drools.javaparser.ast.expr.BinaryExpr.Operator;
@@ -88,6 +86,9 @@ import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.ParseExpressionErrorResult;
 import org.drools.modelcompiler.builder.errors.UnknownDeclarationError;
 import org.drools.modelcompiler.builder.generator.RuleContext.RuleDialect;
+import org.drools.modelcompiler.builder.generator.operatorspec.CustomOperatorSpec;
+import org.drools.modelcompiler.builder.generator.operatorspec.InOperatorSpec;
+import org.drools.modelcompiler.builder.generator.operatorspec.TemporalOperatorSpec;
 import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
 
 import static java.util.stream.Collectors.toList;
@@ -130,9 +131,21 @@ public class ModelGenerator {
         consequenceMethods.put("getKnowledgeRuntime", JavaParser.parseExpression("drools.getRuntime(org.kie.api.runtime.KieRuntime.class)"));
         consequenceMethods.put("getKieRuntime", JavaParser.parseExpression("drools.getRuntime(org.kie.api.runtime.KieRuntime.class)"));
 
+        customOperators.put("in", InOperatorSpec.INSTANCE);
+
         customOperators.put("before", TemporalOperatorSpec.INSTANCE);
         customOperators.put("after", TemporalOperatorSpec.INSTANCE);
-        customOperators.put("in", InOperatorSpec.INSTANCE);
+        customOperators.put("coincides", TemporalOperatorSpec.INSTANCE);
+        customOperators.put("metby", TemporalOperatorSpec.INSTANCE);
+        customOperators.put("finishedby", TemporalOperatorSpec.INSTANCE);
+        customOperators.put("overlaps", TemporalOperatorSpec.INSTANCE);
+        customOperators.put("meets", TemporalOperatorSpec.INSTANCE);
+        customOperators.put("during", TemporalOperatorSpec.INSTANCE);
+        customOperators.put("finishes", TemporalOperatorSpec.INSTANCE);
+        customOperators.put("startedby", TemporalOperatorSpec.INSTANCE);
+        customOperators.put("overlappedby", TemporalOperatorSpec.INSTANCE);
+        customOperators.put("includes", TemporalOperatorSpec.INSTANCE);
+        customOperators.put("starts", TemporalOperatorSpec.INSTANCE);
     }
 
     public static final boolean GENERATE_EXPR_ID = true;
@@ -774,61 +787,6 @@ public class ModelGenerator {
             }
         }
         return res;
-    }
-
-    private interface CustomOperatorSpec {
-        MethodCallExpr getMethodCallExpr( PointFreeExpr pointFreeExpr, TypedExpression left );
-        boolean isStatic();
-    }
-
-    private static class TemporalOperatorSpec implements CustomOperatorSpec {
-        static final TemporalOperatorSpec INSTANCE = new TemporalOperatorSpec();
-
-        public MethodCallExpr getMethodCallExpr( PointFreeExpr pointFreeExpr, TypedExpression left ) {
-            MethodCallExpr methodCallExpr = new MethodCallExpr( null, pointFreeExpr.getOperator().asString() );
-            if (pointFreeExpr.getArg1() != null) {
-                addArgumentToMethodCall( pointFreeExpr.getArg1(), methodCallExpr );
-                if (pointFreeExpr.getArg2() != null) {
-                    addArgumentToMethodCall( pointFreeExpr.getArg2(), methodCallExpr );
-                }
-            }
-            return methodCallExpr;
-        }
-
-        @Override
-        public boolean isStatic() {
-            return true;
-        }
-    }
-
-    private static class InOperatorSpec implements CustomOperatorSpec {
-        static final InOperatorSpec INSTANCE = new InOperatorSpec();
-
-        public MethodCallExpr getMethodCallExpr( PointFreeExpr pointFreeExpr, TypedExpression left ) {
-            MethodCallExpr asList = new MethodCallExpr( new NameExpr("java.util.Arrays"), "asList" );
-            for (Expression rightExpr : pointFreeExpr.getRight()) {
-                asList.addArgument( rightExpr );
-            }
-            MethodCallExpr methodCallExpr = new MethodCallExpr( asList, "contains" );
-            methodCallExpr.addArgument( left.getExpression() );
-            return methodCallExpr;
-        }
-
-        @Override
-        public boolean isStatic() {
-            return false;
-        }
-    }
-
-    private static void addArgumentToMethodCall( Expression expr, MethodCallExpr methodCallExpr ) {
-        if (expr instanceof TemporalLiteralExpr ) {
-            TemporalLiteralExpr tempExpr1 = (TemporalLiteralExpr) expr;
-            final TemporalLiteralChunkExpr firstTemporalExpression = tempExpr1.getChunks().iterator().next();
-            methodCallExpr.addArgument("" + firstTemporalExpression.getValue() );
-            methodCallExpr.addArgument( "java.util.concurrent.TimeUnit." + firstTemporalExpression.getTimeUnit() );
-        } else {
-            methodCallExpr.addArgument( expr );
-        }
     }
 
     public static Expression buildExpressionWithIndexing(RuleContext context, DrlxParseResult drlxParseResult) {

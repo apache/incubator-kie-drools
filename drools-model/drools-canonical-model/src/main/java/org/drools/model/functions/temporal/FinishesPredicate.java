@@ -20,33 +20,30 @@ import java.util.concurrent.TimeUnit;
 
 import static org.drools.model.functions.temporal.TimeUtil.unitToLong;
 
-public class Interval {
-    public static final long MIN = Long.MIN_VALUE;
-    public static final long MAX = Long.MAX_VALUE;
+public class FinishesPredicate extends AbstractTemporalPredicate {
 
-    private final long lowerBound;
-    private final long upperBound;
+    private final long endDev;
 
-    public Interval( long lowerBound, long upperBound ) {
-        this.lowerBound = lowerBound;
-        this.upperBound = upperBound;
+    public FinishesPredicate() {
+        super(new Interval(0, Interval.MAX));
+        this.endDev = 0;
     }
 
-    public Interval( long lowerBound, TimeUnit lowerUnit, long upperBound, TimeUnit upperUnit ) {
-        this( unitToLong( lowerBound, lowerUnit), unitToLong( upperBound, upperUnit) );
-    }
-
-
-    public long getLowerBound() {
-        return lowerBound;
-    }
-
-    public long getUpperBound() {
-        return upperBound;
+    public FinishesPredicate(long endDev, TimeUnit endDevLongUnit) {
+        super(new Interval(0, Interval.MAX));
+        this.endDev = unitToLong(endDev, endDevLongUnit);
     }
 
     @Override
     public String toString() {
-        return "[" + lowerBound + "," + upperBound + "]";
+        return "finishes" + interval;
+    }
+
+    @Override
+    public boolean evaluate(long start1, long duration1, long end1, long start2, long duration2, long end2) {
+
+        long distStart = start1 - start2;
+        long distEnd = Math.abs( end2 - end1 );
+        return (distStart > 0 && distEnd <= this.endDev);
     }
 }

@@ -20,7 +20,18 @@ import org.drools.model.functions.Predicate3;
 import org.drools.model.functions.accumulate.AccumulateFunction;
 import org.drools.model.functions.temporal.AfterPredicate;
 import org.drools.model.functions.temporal.BeforePredicate;
+import org.drools.model.functions.temporal.CoincidesPredicate;
+import org.drools.model.functions.temporal.DuringPredicate;
+import org.drools.model.functions.temporal.FinishedbyPredicate;
+import org.drools.model.functions.temporal.FinishesPredicate;
+import org.drools.model.functions.temporal.IncludesPredicate;
 import org.drools.model.functions.temporal.Interval;
+import org.drools.model.functions.temporal.MeetsPredicate;
+import org.drools.model.functions.temporal.MetbyPredicate;
+import org.drools.model.functions.temporal.OverlappedbyPredicate;
+import org.drools.model.functions.temporal.OverlapsPredicate;
+import org.drools.model.functions.temporal.StartsPredicate;
+import org.drools.model.functions.temporal.StartedbyPredicate;
 import org.drools.model.functions.temporal.TemporalPredicate;
 import org.drools.model.impl.AnnotationValueImpl;
 import org.drools.model.impl.DataSourceDefinitionImpl;
@@ -371,6 +382,58 @@ public class DSL {
 
     public static TemporalPredicate before( long lowerBound, TimeUnit lowerUnit, long upperBound, TimeUnit upperUnit ) {
         return new BeforePredicate( new Interval( lowerBound, lowerUnit, upperBound, upperUnit ) );
+    }
+
+    public static TemporalPredicate coincides( long dev, TimeUnit devUnit) {
+        return new CoincidesPredicate(dev, devUnit );
+    }
+
+    public static TemporalPredicate overlaps( long dev, TimeUnit devUnit) {
+        return new OverlapsPredicate(dev, devUnit );
+    }
+
+    public static TemporalPredicate metby( long dev, TimeUnit devUnit) {
+        return new MetbyPredicate(dev, devUnit );
+    }
+
+    public static TemporalPredicate finishedby() {
+        return new FinishedbyPredicate();
+    }
+
+    public static TemporalPredicate finishedby( long dev, TimeUnit devUnit) {
+        return new FinishedbyPredicate(dev, devUnit );
+    }
+
+    public static TemporalPredicate meets( long dev, TimeUnit devUnit) {
+        return new MeetsPredicate(dev, devUnit );
+    }
+
+    public static TemporalPredicate during() {
+        return new DuringPredicate();
+    }
+
+    public static TemporalPredicate startedby( long dev, TimeUnit devUnit) {
+        return new StartedbyPredicate(dev, devUnit);
+    }
+
+    public static TemporalPredicate overlappedby( long dev, TimeUnit devUnit) {
+        return new OverlappedbyPredicate(dev, devUnit);
+    }
+
+    public static TemporalPredicate includes() {
+        return new IncludesPredicate();
+    }
+
+    public static TemporalPredicate starts( long dev, TimeUnit devUnit) {
+        return new StartsPredicate(dev, devUnit);
+    }
+
+    public static TemporalPredicate finishes() {
+        return new FinishesPredicate();
+    }
+
+    public static TemporalPredicate finishes( long dev, TimeUnit devUnit) {
+        return new FinishesPredicate(dev, devUnit);
     }
 
     // -- Accumulate Functions --

@@ -20,33 +20,27 @@ import java.util.concurrent.TimeUnit;
 
 import static org.drools.model.functions.temporal.TimeUtil.unitToLong;
 
-public class Interval {
-    public static final long MIN = Long.MIN_VALUE;
-    public static final long MAX = Long.MAX_VALUE;
+public class CoincidesPredicate extends AbstractTemporalPredicate {
 
-    private final long lowerBound;
-    private final long upperBound;
+    private final long startDevLong;
+    private final long endDevLong;
 
-    public Interval( long lowerBound, long upperBound ) {
-        this.lowerBound = lowerBound;
-        this.upperBound = upperBound;
+    public CoincidesPredicate(long dev, TimeUnit devUnit) {
+        super(new Interval(Interval.MIN, Interval.MAX));
+        this.startDevLong = unitToLong(dev, devUnit);
+        this.endDevLong = unitToLong(dev, devUnit);
     }
 
-    public Interval( long lowerBound, TimeUnit lowerUnit, long upperBound, TimeUnit upperUnit ) {
-        this( unitToLong( lowerBound, lowerUnit), unitToLong( upperBound, upperUnit) );
-    }
-
-
-    public long getLowerBound() {
-        return lowerBound;
-    }
-
-    public long getUpperBound() {
-        return upperBound;
-    }
 
     @Override
     public String toString() {
-        return "[" + lowerBound + "," + upperBound + "]";
+        return "coincides" + interval;
+    }
+
+    @Override
+    public boolean evaluate(long start1, long duration1, long end1, long start2, long duration2, long end2) {
+        long distStart = Math.abs( start2 - start1 );
+        long distEnd = Math.abs( end2 - end1 );
+        return (distStart <= this.startDevLong && distEnd <= this.endDevLong);
     }
 }
