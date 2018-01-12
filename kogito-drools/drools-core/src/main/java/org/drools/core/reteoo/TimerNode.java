@@ -29,6 +29,7 @@ import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Declaration;
+import org.drools.core.rule.Pattern;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.time.impl.Timer;
 import org.drools.core.util.AbstractBaseLinkedListNode;
@@ -107,6 +108,11 @@ public class TimerNode extends LeftTupleSource
 
     public Declaration[][] getDeclarations() {
         return this.declarations;
+    }
+
+    @Override
+    protected Pattern getLeftInputPattern( BuildContext context ) {
+        return context.getLastBuiltPatterns()[0];
     }
 
     /**
