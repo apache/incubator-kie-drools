@@ -87,6 +87,15 @@
           "methodName": "getKieSession",
           "elementKind": "method",
           "justification": "Allow to create RuleUnitExecutor from KieContainer with a declarative configuration"
+        },
+        {
+           "code": "java.method.addedToInterface",
+           "new": "method void org.kie.api.runtime.rule.DataSource<T>::delete(java.lang.Object)",
+           "package": "org.kie.api.runtime.rule",
+           "classSimpleName": "DataSource",
+           "methodName": "delete",
+           "elementKind": "method",
+           "justification": "Allow to delete a fact from a datasource from inside a consequence"
         }
       ]
     }
