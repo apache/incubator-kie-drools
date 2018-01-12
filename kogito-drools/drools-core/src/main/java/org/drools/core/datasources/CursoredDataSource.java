@@ -150,6 +150,10 @@ public class CursoredDataSource<T> implements InternalDataSource<T> {
         propagate( () -> new Delete( dsFh, null ) );
     }
 
+    public void delete(Object obj) {
+        delete( objectStore.getHandleForObject( obj ) );
+    }
+
     @Override
     public void bind(RuleUnit unit, WorkingMemoryEntryPoint ep) {
         setWorkingMemory( ep.getInternalWorkingMemory() );
