@@ -44,7 +44,6 @@ import org.optaplanner.benchmark.impl.report.ReportHelper;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
 import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -433,7 +432,7 @@ public class ProblemBenchmarkResult<Solution_> {
     }
 
     /**
-     * Used by {@link ProblemBenchmarksConfig#buildProblemBenchmarkList(SolverConfigContext, SolverBenchmarkResult, Solution_[])}.
+     * Used by {@link ProblemBenchmarksConfig#buildProblemBenchmarkList}.
      * @param o sometimes null
      * @return true if equal
      */
