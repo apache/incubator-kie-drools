@@ -50,6 +50,13 @@ public interface DataSource<T> extends Iterable<T> {
     void delete(FactHandle handle);
 
     /**
+     * Deletes the given object from this DataSource
+     *
+     * @param object the object to be deleted.
+     */
+    void delete(Object object);
+
+    /**
      * Creates a DataSource, optionally containing some items
      *
      * @param items the items contained in the DataSource.
