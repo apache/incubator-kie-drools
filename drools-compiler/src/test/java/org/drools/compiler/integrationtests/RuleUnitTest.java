@@ -1941,27 +1941,27 @@ public class RuleUnitTest {
     public void testMixingGlobalDataAndDataSource() throws Exception {
         String drl1 =
                 "import " + Person.class.getCanonicalName() + "\n" +
-                        "import " + FlowUnit.class.getCanonicalName() + "\n" +
-                        "import " + AdultUnit.class.getCanonicalName() + "\n" +
-                        "import " + NotAdultUnit.class.getCanonicalName() + "\n" +
-                        "rule Flow @Unit( FlowUnit.class ) when\n" +
-                        "then\n" +
-                        "    insert(18);\n" +
-                        "    drools.run( NotAdultUnit.class );\n" +
-                        "    drools.run( AdultUnit.class );\n" +
-                        "end\n" +
-                        "rule Adult @Unit( AdultUnit.class ) when\n" +
-                        "    $i : Integer()\n" +
-                        "    Person(age >= $i, $name : name) from persons\n" +
-                        "then\n" +
-                        "    System.out.println($name + \" is adult\");\n" +
-                        "end\n" +
-                        "rule NotAdult @Unit( NotAdultUnit.class ) when\n" +
-                        "    Person($age : age < 18, $name : name) from persons\n" +
-                        "    $i : Integer(this >= $age)\n" +
-                        "then\n" +
-                        "    System.out.println($name + \" is NOT adult\");\n" +
-                        "end";
+                "import " + FlowUnit.class.getCanonicalName() + "\n" +
+                "import " + AdultUnit.class.getCanonicalName() + "\n" +
+                "import " + NotAdultUnit.class.getCanonicalName() + "\n" +
+                "rule Flow @Unit( FlowUnit.class ) when\n" +
+                "then\n" +
+                "    insert(18);\n" +
+                "    drools.run( NotAdultUnit.class );\n" +
+                "    drools.run( AdultUnit.class );\n" +
+                "end\n" +
+                "rule Adult @Unit( AdultUnit.class ) when\n" +
+                "    $i : Integer()\n" +
+                "    Person(age >= $i, $name : name) from persons\n" +
+                "then\n" +
+                "    System.out.println($name + \" is adult\");\n" +
+                "end\n" +
+                "rule NotAdult @Unit( NotAdultUnit.class ) when\n" +
+                "    Person($age : age < 18, $name : name) from persons\n" +
+                "    $i : Integer(this >= $age)\n" +
+                "then\n" +
+                "    System.out.println($name + \" is NOT adult\");\n" +
+                "end";
 
         KieBase kbase = new KieHelper().addContent( drl1, ResourceType.DRL ).build();
         RuleUnitExecutor executor = RuleUnitExecutor.create().bind( kbase );
@@ -1972,5 +1972,58 @@ public class RuleUnitTest {
                 new Person( "Sofia", 4 ) );
 
         assertEquals( 4, executor.run( FlowUnit.class ) );
+    }
+
+    @Test
+    public void testDeleteFromDataSource() throws Exception {
+        String drl1 =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "import " + FlowUnit.class.getCanonicalName() + "\n" +
+                "import " + AdultUnit.class.getCanonicalName() + "\n" +
+                "import " + FilterUnit.class.getCanonicalName() + "\n" +
+                "rule Flow @Unit( FlowUnit.class ) when\n" +
+                "then\n" +
+                "    drools.run( FilterUnit.class );\n" +
+                "    drools.run( AdultUnit.class );\n" +
+                "end\n" +
+                "rule filter @Unit( FilterUnit.class ) when\n" +
+                "    $p:Person(name str[startsWith] \"D\") from persons\n" +
+                "then\n" +
+                "    System.out.println(\"Deleting person: \" + $p.getName() + \". Sorry man, your name starts with a 'D' ....\");\n" +
+                "    persons.delete( $p );\n" +
+                "end\n" +
+                "rule AdultUnit @Unit( AdultUnit.class ) when\n" +
+                "    Person($age : age > 18, $name : name) from persons\n" +
+                "then\n" +
+                "    results.add($name);\n" +
+                "end";
+
+        KieBase kbase = new KieHelper().addContent( drl1, ResourceType.DRL ).build();
+        RuleUnitExecutor executor = RuleUnitExecutor.create().bind( kbase );
+
+        DataSource<Person> persons = executor.newDataSource( "persons",
+                new Person( "Mario", 43 ),
+                new Person( "Duncan", 34 ),
+                new Person( "Sofia", 6 ) );
+
+        List<String> results = new ArrayList<>();
+        executor.bindVariable( "results", results );
+
+        assertEquals(3, executor.run( FlowUnit.class ) );
+        assertEquals(1, results.size());
+        assertEquals("Mario", results.get(0));
+    }
+
+    public static class FilterUnit implements RuleUnit {
+
+        private DataSource<Person> persons;
+
+        public DataSource<Person> getPersons() {
+            return persons;
+        }
+
+        public void setPersons(DataSource<Person> persons) {
+            this.persons = persons;
+        }
     }
 }
