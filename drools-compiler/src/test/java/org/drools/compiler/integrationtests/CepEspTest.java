@@ -6928,4 +6928,47 @@ public class CepEspTest extends CommonTestMethodBase {
 
         new KieHelper().addContent( drl, ResourceType.DRL ).build(  ).newKieSession().fireAllRules();
     }
+
+    @Test
+    public void testPropertyReactiveWithDurationOnRule() {
+        // DROOLS-2238
+        String drl = "package org.drools.test " +
+                " " +
+                "declare Bean " +
+                "   @PropertyReactive " +
+                "   label : String " +
+                "   active : boolean " +
+                "end " +
+                " " +
+                " " +
+                "rule Init "+
+                "when " +
+                "then " +
+                "   insert( new Bean( \"aaa\", true ) ); " +
+                "end " +
+                " " +
+                "rule Close " +
+                "  duration (100) " +
+                "when " +
+                "    $b : Bean( label == \"aaa\" )   " +
+                "then " +
+                "    modify( $b ) {  " +
+                "       setActive( false ); " +
+                "    }  " +
+                "end" +
+                " " ;
+
+        KieBase kieBase = new KieHelper().addContent(drl, ResourceType.DRL).build(EventProcessingOption.STREAM);
+
+        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption(ClockTypeOption.get("pseudo"));
+
+        KieSession ksession = kieBase.newKieSession(sessionConfig, null);
+
+        assertEquals( 1, ksession.fireAllRules( ) );
+
+        ((SessionPseudoClock ) ksession.getSessionClock() ).advanceTime( 200, TimeUnit.MILLISECONDS );
+
+        assertEquals( 1, ksession.fireAllRules( 10 ) );
+    }
 }
