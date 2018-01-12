@@ -208,7 +208,7 @@ Custom `MoveListFactory` and `MoveIteratorFactory` implementations must ensure t
 
 Replanning an existing plan can be very disruptive. If the plan affects humans (such as employees, drivers, ...), very disruptive changes are often undesirable. In such cases, nonvolatile replanning helps by restricting planning freedom: the gain of changing a plan must be higher than the disruption it causes. This is usually implemented by taxing all planning entities that change.
 
-image::nonDisruptiveReplanning.png[align="center"]
+image::RepeatedPlanning/nonDisruptiveReplanning.png[align="center"]
 
 In the machine reassignment example, the entity has both the planning variable `machine` and its original value ``originalMachine``:
 
