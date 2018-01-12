@@ -237,7 +237,7 @@ public abstract class LeftTupleSource extends BaseNode
             return;
         }
 
-        Pattern pattern = context.getLastBuiltPatterns()[1]; // left input pattern
+        Pattern pattern = getLeftInputPattern( context ); // left input pattern
 
         ObjectType objectType = getObjectTypeForPropertyReactivity( (LeftInputAdapterNode) leftInput, pattern );
 
@@ -259,6 +259,10 @@ public abstract class LeftTupleSource extends BaseNode
             // if property specific is not on, then accept all modification propagations
             leftDeclaredMask = AllSetBitMask.get();
         }
+    }
+
+    protected Pattern getLeftInputPattern( BuildContext context ) {
+        return context.getLastBuiltPatterns()[1];
     }
 
     protected ObjectType getObjectTypeForPropertyReactivity( LeftInputAdapterNode leftInput, Pattern pattern ) {
