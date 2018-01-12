@@ -16,24 +16,28 @@
 
 package org.drools.model.functions.temporal;
 
-public class AfterPredicate extends AbstractTemporalPredicate {
+public class DuringPredicate extends AbstractTemporalPredicate {
 
-    public AfterPredicate() {
-        this( new Interval(1, Interval.MAX) );
-    }
+    private final long startMinDev, startMaxDev;
+    private final long endMinDev, endMaxDev;
 
-    public AfterPredicate( Interval interval ) {
-        super( interval );
+    public DuringPredicate() {
+        super(new Interval(1, Interval.MAX));
+        this.startMinDev = 1;
+        this.startMaxDev = Long.MAX_VALUE;
+        this.endMinDev = 1;
+        this.endMaxDev = Long.MAX_VALUE;
     }
 
     @Override
     public String toString() {
-        return "after" + interval;
+        return "during" + interval;
     }
 
     @Override
     public boolean evaluate(long start1, long duration1, long end1, long start2, long duration2, long end2) {
-        long diff = start1 - end2;
-        return diff >= interval.getLowerBound() && diff <= interval.getUpperBound();
+        long distStart = start1 - start2;
+        long distEnd = end2 - end1;
+        return (distStart >= this.startMinDev && distStart <= this.startMaxDev && distEnd >= this.endMinDev && distEnd <= this.endMaxDev);
     }
 }

@@ -19,7 +19,7 @@ package org.drools.model.functions.temporal;
 public class BeforePredicate extends AbstractTemporalPredicate {
 
     public BeforePredicate() {
-        this( new Interval() );
+        this( new Interval(0, Interval.MAX) );
     }
 
     public BeforePredicate( Interval interval ) {
@@ -32,8 +32,7 @@ public class BeforePredicate extends AbstractTemporalPredicate {
     }
 
     @Override
-    public boolean evaluate(long start1, long duration1, long start2, long duration2) {
-        long end1 = start1 + duration1;
+    public boolean evaluate(long start1, long duration1, long end1, long start2, long duration2, long end2) {
         long diff = start2 - end1;
         return diff >= interval.getLowerBound() && diff <= interval.getUpperBound();
     }
