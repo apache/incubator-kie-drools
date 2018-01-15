@@ -173,15 +173,7 @@ public class DrlxParseUtil {
                 return new TypedExpression(plusThis, expression.getType(), name);
             }
         } else if (drlxExpr instanceof FieldAccessExpr || drlxExpr instanceof MethodCallExpr) {
-            System.out.println("--------------------------------------------------------------------------------------------------------");
-            String drxExprToString = drlxExpr.toString();
-            System.out.println("input Expression = " + drxExprToString + " " + drlxExpr.getClass() + " " + " patternType: " + patternType);
-
-            TypedExpression typedExpression = toTypedExpressionFromMethodCallOrField(context, patternType, drlxExpr, usedDeclarations, reactOnProperties, context.getPkg().getTypeResolver());
-            System.out.println("result = " + typedExpression);
-            System.out.println("--------------------------------------------------------------------------------------------------------");
-
-            return typedExpression;
+            return toTypedExpressionFromMethodCallOrField(context, patternType, drlxExpr, usedDeclarations, reactOnProperties, context.getPkg().getTypeResolver());
         }
 
         throw new UnsupportedOperationException();

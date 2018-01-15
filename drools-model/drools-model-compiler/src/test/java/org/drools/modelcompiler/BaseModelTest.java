@@ -25,10 +25,6 @@ import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
 import org.drools.modelcompiler.builder.CanonicalModelKieProject;
 import org.drools.modelcompiler.util.TestFileUtils;
-import org.junit.Rule;
-import org.junit.rules.TestRule;
-import org.junit.rules.TestWatcher;
-import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -52,13 +48,6 @@ public abstract class BaseModelTest {
         STANDARD_FROM_DRL;
     }
 
-    @Rule
-    public TestRule watcher = new TestWatcher() {
-        protected void starting(Description description) {
-            System.out.println("Starting test: " + description.getMethodName());
-        }
-    };
-
     @Parameters(name = "{0}")
     public static Object[] params() {
         return new Object[]{
@@ -71,7 +60,6 @@ public abstract class BaseModelTest {
 
     public BaseModelTest( CompilerTest.RUN_TYPE testRunType ) {
         this.testRunType = testRunType;
-
     }
 
     protected KieSession getKieSession( String... rules ) {
