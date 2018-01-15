@@ -272,7 +272,7 @@ public class AccumulateTest extends BaseModelTest {
                 "import " + Person.class.getCanonicalName() + ";" +
                 "import " + Result.class.getCanonicalName() + ";" +
                 "rule X when\n" +
-                "  $sum : Number( intValue() > 0 ) from accumulate ( $p: Person ( getName().startsWith(\"M\") ); \n" +
+                "  $sum : Number( intValue() > 0 ) from accumulate ( $p: Person ( age > 10, name.startsWith(\"M\") ); \n" +
                 "                sum($p.getAge())  \n" +
                 "              )\n" +
                 "then\n" +

@@ -1260,14 +1260,12 @@ public class FlowTest {
         assertEquals(77, results.iterator().next().getValue());
     }
 
-    @Test @Ignore
+    @Test
     public void testAccumulateAnd() {
-        final org.drools.model.Variable<java.lang.Number> var_$sum = declarationOf(type(java.lang.Number.class),
-                "$sum");
-        final org.drools.model.Variable<org.drools.modelcompiler.domain.Person> var_$p = declarationOf(type(org.drools.modelcompiler.domain.Person.class),
-                "$p");
-        final org.drools.model.Variable<Integer> var_$expr$3$ = declarationOf(type(Integer.class),
-                "$expr$3$");
+        Variable<java.lang.Number> var_$sum = declarationOf(type(Number.class), "$sum");
+        Variable<org.drools.modelcompiler.domain.Person> var_$p = declarationOf(type(Person.class), "$p");
+        Variable<Integer> var_$expr$3$ = declarationOf(type(Integer.class), "$expr$3$");
+
         org.drools.model.Rule rule = rule("X").build(bind(var_$expr$3$).as(var_$p,
                 (_this) -> _this.getAge()),
                 accumulate(and(expr("$expr$1$",

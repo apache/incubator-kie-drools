@@ -36,10 +36,10 @@ import static org.drools.modelcompiler.builder.generator.ModelGenerator.BIND_CAL
 
 public class AccumulateVisitor {
 
-    final RuleContext context;
-    final PackageModel packageModel;
+    private final RuleContext context;
+    private final PackageModel packageModel;
 
-    final ModelGeneratorVisitor modelGeneratorVisitor;
+    private final ModelGeneratorVisitor modelGeneratorVisitor;
 
     public AccumulateVisitor(ModelGeneratorVisitor modelGeneratorVisitor, RuleContext context, PackageModel packageModel) {
         this.modelGeneratorVisitor = modelGeneratorVisitor;
@@ -50,11 +50,20 @@ public class AccumulateVisitor {
     public void visit(AccumulateDescr descr, PatternDescr basePattern) {
         final MethodCallExpr accumulateDSL = new MethodCallExpr(null, "accumulate");
         context.addExpression(accumulateDSL);
-        context.pushExprPointer(accumulateDSL::addArgument);
+        final MethodCallExpr accumulateExprs = new MethodCallExpr(null, "and");
+        accumulateDSL.addArgument( accumulateExprs );
+        context.pushExprPointer(accumulateExprs::addArgument);
 
         BaseDescr input = descr.getInputPattern() == null ? descr.getInput() : descr.getInputPattern();
         boolean inputPatternHasConstraints = (input instanceof PatternDescr) && (!((PatternDescr)input).getConstraint().getDescrs().isEmpty());
         input.accept(modelGeneratorVisitor);
+
+        if (accumulateExprs.getArguments().isEmpty()) {
+            accumulateDSL.remove( accumulateExprs );
+        } else if (accumulateExprs.getArguments().size() == 1) {
+            accumulateDSL.setArgument( 0, accumulateExprs.getArguments().get(0) );
+        }
+
         for (AccumulateDescr.AccumulateFunctionCallDescr function : descr.getFunctions()) {
             visit(context, function, accumulateDSL, basePattern, inputPatternHasConstraints);
         }
@@ -195,7 +204,7 @@ public class AccumulateVisitor {
         return DrlxParseUtil.toMethodCallWithClassCheck(context, methodCallWithoutRoot, clazz, context.getPkg().getTypeResolver());
     }
 
-    public MethodCallExpr buildBinding(String bindingName, Collection<String> usedDeclaration, Expression expression) {
+    private MethodCallExpr buildBinding(String bindingName, Collection<String> usedDeclaration, Expression expression) {
         MethodCallExpr bindDSL = new MethodCallExpr(null, BIND_CALL);
         bindDSL.addArgument(toVar(bindingName));
         MethodCallExpr bindAsDSL = new MethodCallExpr(bindDSL, BIND_AS_CALL);
