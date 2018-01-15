@@ -17,6 +17,7 @@
 package org.drools.testcoverage.functional;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -102,15 +103,16 @@ public class TemplatesTest {
         cfl.add(new ParamSet("carrot", "weight", 0, 1000, 2, EnumSet.of(Taste.HORRIBLE)));
 
         final ObjectDataCompiler converter = new ObjectDataCompiler();
-        final String drl = converter.compile(cfl, kieServices.getResources().newClassPathResource("template_1.drl", getClass())
-                .getInputStream());
+        try (InputStream resourceStream = kieServices.getResources().newClassPathResource("template_1.drl", getClass()).getInputStream()) {
+            final String drl = converter.compile(cfl, resourceStream);
 
-        // prints rules generated from template
-        LOGGER.debug(drl);
+            // prints rules generated from template
+            LOGGER.debug(drl);
 
-        assertEqualsIgnoreWhitespace(EXPECTED_RULES.toString(), drl);
+            assertEqualsIgnoreWhitespace(EXPECTED_RULES.toString(), drl);
 
-        testCorrectnessCheck(drl);
+            testCorrectnessCheck(drl);
+        }
     }
 
     @Test
@@ -118,16 +120,16 @@ public class TemplatesTest {
         final KieServices kieServices = KieServices.Factory.get();
 
         final ObjectDataCompiler converter = new ObjectDataCompiler();
-        final String drl = converter.compile(
-                getMapsParam(),
-                kieServices.getResources().newClassPathResource("template_1.drl", getClass()).getInputStream());
+        try (InputStream resourceStream = kieServices.getResources().newClassPathResource("template_1.drl", getClass()).getInputStream()) {
+            final String drl = converter.compile(getMapsParam(), resourceStream);
 
-        // prints rules generated from template
-        LOGGER.debug(drl);
+            // prints rules generated from template
+            LOGGER.debug(drl);
 
-        assertEqualsIgnoreWhitespace(EXPECTED_RULES.toString(), drl);
+            assertEqualsIgnoreWhitespace(EXPECTED_RULES.toString(), drl);
 
-        testCorrectnessCheck(drl);
+            testCorrectnessCheck(drl);
+        }
     }
 
     @Test
@@ -140,16 +142,16 @@ public class TemplatesTest {
         final ArrayDataProvider adp = new ArrayDataProvider(rows);
 
         final DataProviderCompiler converter = new DataProviderCompiler();
-        final String drl = converter.compile(
-                adp,
-                KieServices.Factory.get().getResources().newClassPathResource("template_1.drl", getClass()).getInputStream());
+        try (InputStream resourceStream = KieServices.Factory.get().getResources().newClassPathResource("template_1.drl", getClass()).getInputStream()) {
+            final String drl = converter.compile(adp, resourceStream);
 
-        // prints rules generated from template
-        LOGGER.debug(drl);
+            // prints rules generated from template
+            LOGGER.debug(drl);
 
-        assertEqualsIgnoreWhitespace(EXPECTED_RULES.toString(), drl);
+            assertEqualsIgnoreWhitespace(EXPECTED_RULES.toString(), drl);
 
-        testCorrectnessCheck(drl);
+            testCorrectnessCheck(drl);
+        }
     }
 
     @Test
@@ -158,16 +160,18 @@ public class TemplatesTest {
 
         final KieServices kieServices = KieServices.Factory.get();
         // the data we are interested in starts at row 1, column 1 (e.g. A1)
-        final String drl = converter.compile(
-                kieServices.getResources().newClassPathResource("template1_spreadsheet.xls", getClass()).getInputStream(),
-                kieServices.getResources().newClassPathResource("template_1.drl", getClass()).getInputStream(), 1, 1);
+        try (InputStream spreadSheetStream = kieServices.getResources().newClassPathResource("template1_spreadsheet.xls", getClass()).getInputStream();
+             InputStream templateStream = kieServices.getResources().newClassPathResource("template_1.drl", getClass()).getInputStream()) {
 
-        // prints rules generated from template
-        LOGGER.debug(drl);
+            final String drl = converter.compile(spreadSheetStream, templateStream, 1, 1);
 
-        assertEqualsIgnoreWhitespace(EXPECTED_RULES.toString(), drl);
+            // prints rules generated from template
+            LOGGER.debug(drl);
 
-        testCorrectnessCheck(drl);
+            assertEqualsIgnoreWhitespace(EXPECTED_RULES.toString(), drl);
+
+            testCorrectnessCheck(drl);
+        }
     }
 
     @Test(timeout = 30000L)
@@ -177,57 +181,60 @@ public class TemplatesTest {
         cfl.add(new ParamSet("tomato", "weight", 200, 1000, 6, EnumSet.of(Taste.GOOD, Taste.EXCELENT)));
 
         final ObjectDataCompiler converter = new ObjectDataCompiler();
-        final String drl = converter.compile(
-                cfl,
-                kieServices.getResources().newClassPathResource("template_1.drl", getClass()).getInputStream());
+        try (InputStream resourceStream = kieServices.getResources().newClassPathResource("template_1.drl", getClass()).getInputStream()) {
+            final String drl = converter.compile(cfl, resourceStream);
 
-        // prints rules generated from template
-        LOGGER.debug(drl);
+            // prints rules generated from template
+            LOGGER.debug(drl);
 
-        testManyRows(drl, 0, 1);
+            testManyRows(drl, 0, 1);
+        }
     }
 
     @Test(timeout = 30000L)
     public void TenRulesManyRows() throws IOException {
         final KieServices kieServices = KieServices.Factory.get();
         final ObjectDataCompiler converter = new ObjectDataCompiler();
-        final String drl = converter.compile(
-                generateParamSetCollection(1),
-                kieServices.getResources().newClassPathResource("template_1.drl", getClass()).getInputStream());
 
-        // prints rules generated from template
-        LOGGER.debug(drl);
+        try (InputStream resourceStream = kieServices.getResources().newClassPathResource("template_1.drl", getClass()).getInputStream()) {
+            final String drl = converter.compile(generateParamSetCollection(1), resourceStream);
 
-        testManyRows(drl, 500, 10);
+            // prints rules generated from template
+            LOGGER.debug(drl);
+
+            testManyRows(drl, 500, 10);
+        }
     }
 
     @Test(timeout = 30000L)
     public void OneTemplateManyRules() throws IOException {
         final KieServices kieServices = KieServices.Factory.get();
         final ObjectDataCompiler converter = new ObjectDataCompiler();
-        final String drl = converter.compile(
-                generateParamSetCollection(50),
-                kieServices.getResources().newClassPathResource("template_1.drl", getClass())
-                .getInputStream());
 
-        // prints rules generated from template
-        LOGGER.debug(drl);
+        try (InputStream resourceStream = kieServices.getResources().newClassPathResource("template_1.drl", getClass()).getInputStream()) {
+            final String drl = converter.compile(generateParamSetCollection(5), resourceStream);
 
-        testManyRules(drl, 500);
+            // prints rules generated from template
+            LOGGER.debug(drl);
+
+            testManyRules(drl, 50);
+        }
     }
 
     @Test(timeout = 30000L)
     public void TenTemplatesManyRules() throws IOException {
         final KieServices kieServices = KieServices.Factory.get();
         final ObjectDataCompiler converter = new ObjectDataCompiler();
-        final String drl = converter.compile(
-                generateParamSetCollection(50),
-                kieServices.getResources().newClassPathResource("template_2.drl", getClass()).getInputStream());
+        try (InputStream resourceStream = kieServices.getResources().newClassPathResource("template_2.drl", getClass()).getInputStream()) {
+            final String drl = converter.compile(
+                    generateParamSetCollection(5),
+                    resourceStream);
 
-        // prints rules generated from template
-        LOGGER.debug(drl);
+            // prints rules generated from template
+            LOGGER.debug(drl);
 
-        testManyRules(drl, 5000);
+            testManyRules(drl, 500);
+        }
     }
 
     private void testCorrectnessCheck(final String drl) {
