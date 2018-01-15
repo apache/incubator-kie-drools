@@ -33,9 +33,14 @@ public class PatternImpl<T> extends AbstractSinglePattern implements Pattern<T>,
     }
 
     public PatternImpl(Variable<T> variable, Constraint constraint, DataSourceDefinition dataSourceDefinition) {
+        this(variable, constraint, dataSourceDefinition, null);
+    }
+
+    public PatternImpl(Variable<T> variable, Constraint constraint, DataSourceDefinition dataSourceDefinition, List<Binding> bindings) {
         this.variable = variable;
         this.constraint = constraint;
         this.dataSourceDefinition = dataSourceDefinition;
+        this.bindings = bindings;
     }
 
     @Override

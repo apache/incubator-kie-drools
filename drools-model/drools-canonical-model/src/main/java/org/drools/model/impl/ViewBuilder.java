@@ -153,7 +153,7 @@ public class ViewBuilder {
                 if(bindViewItem instanceof ViewItem) {
                     ctx.usedVars.add(viewItem.getFirstVariable());
                 }
-                ctx.bindingVars.add(bindViewItem.getBoundVariable());
+                ctx.addBinding(bindViewItem);
                 continue;
             }
 
@@ -163,7 +163,7 @@ public class ViewBuilder {
                 continue;
             }
 
-            if ( ruleItem instanceof ExprViewItem && ctx.bindingVars.contains( patterVariable ) ) {
+            if ( ruleItem instanceof ExprViewItem && ctx.boundVars.contains( patterVariable ) ) {
                 conditions.add( new EvalImpl( createConstraint( (ExprViewItem) ruleItem ) ) );
                 continue;
             }
@@ -173,7 +173,7 @@ public class ViewBuilder {
             if ( type == Type.AND ) {
                 condition = conditionMap.get( patterVariable );
                 if ( condition == null ) {
-                    condition = new PatternImpl( patterVariable, SingleConstraint.EMPTY, getDataSourceDefinition( scopedInputs, patterVariable ) );
+                    condition = new PatternImpl( patterVariable, SingleConstraint.EMPTY, getDataSourceDefinition( scopedInputs, patterVariable ), ctx.bindings.get(patterVariable) );
                     conditions.add( condition );
                     conditionMap.put( patterVariable, condition );
                     scopedInputs.putIfAbsent( patterVariable, (InputViewItemImpl) input( patterVariable ) );
@@ -403,29 +403,38 @@ public class ViewBuilder {
         final List<RuleItem> ruleItems;
         final Map<Variable<?>, InputViewItemImpl<?>> inputs;
         final Set<Variable<?>> usedVars;
-        final Set<Variable<?>> bindingVars;
+        final Set<Variable<?>> boundVars;
+        final Map<Variable<?>, List<Binding>> bindings;
 
         BuildContext( RuleItemBuilder[] viewItemBuilders ) {
-            this( Stream.of( viewItemBuilders ).map( RuleItemBuilder::get ).collect( toList() ), new LinkedHashMap<>(), new HashSet<>(), new HashSet<>() );
+            this( Stream.of( viewItemBuilders ).map( RuleItemBuilder::get ).collect( toList() ), new LinkedHashMap<>(),
+                    new HashSet<>(), new HashSet<>(), new HashMap<>() );
         }
 
         BuildContext( BuildContext orignalContext, ViewItem[] view ) {
-            this( Arrays.asList( view ), orignalContext.inputs, orignalContext.usedVars, orignalContext.bindingVars );
+            this( Arrays.asList( view ), orignalContext.inputs, orignalContext.usedVars, orignalContext.boundVars, orignalContext.bindings );
         }
 
         BuildContext( BuildContext orignalContext, Map<Variable<?>, InputViewItemImpl<?>> inputs ) {
-            this( orignalContext.ruleItems, inputs, orignalContext.usedVars, orignalContext.bindingVars );
+            this( orignalContext.ruleItems, inputs, orignalContext.usedVars, orignalContext.boundVars, orignalContext.bindings );
         }
 
         BuildContext( BuildContext orignalContext, ViewItem[] view, Map<Variable<?>, InputViewItemImpl<?>> inputs ) {
-            this( Arrays.asList( view ), inputs, orignalContext.usedVars, orignalContext.bindingVars );
+            this( Arrays.asList( view ), inputs, orignalContext.usedVars, orignalContext.boundVars, orignalContext.bindings );
         }
 
-        BuildContext( List<RuleItem> ruleItems, Map<Variable<?>, InputViewItemImpl<?>> inputs, Set<Variable<?>> usedVars, Set<Variable<?>> bindingVars ) {
+        BuildContext( List<RuleItem> ruleItems, Map<Variable<?>, InputViewItemImpl<?>> inputs, Set<Variable<?>> usedVars,
+                      Set<Variable<?>> boundVars, Map<Variable<?>, List<Binding>> bindings ) {
             this.ruleItems = ruleItems;
             this.inputs = inputs;
             this.usedVars = usedVars;
-            this.bindingVars = bindingVars;
+            this.boundVars = boundVars;
+            this.bindings = bindings;
+        }
+
+        void addBinding(Binding bindViewItem) {
+            boundVars.add(bindViewItem.getBoundVariable());
+            bindings.computeIfAbsent( bindViewItem.getInputVariable(), v -> new ArrayList<>() ).add( bindViewItem );
         }
     }
 }
