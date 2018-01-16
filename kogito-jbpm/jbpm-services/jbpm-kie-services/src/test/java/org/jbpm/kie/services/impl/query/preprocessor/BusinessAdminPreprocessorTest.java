@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import org.dashbuilder.dataset.DataSetLookup;
+import org.dashbuilder.dataset.DataSetMetadata;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,6 +35,9 @@ public class BusinessAdminPreprocessorTest {
 
     @Mock
     IdentityProvider identityProvider;
+    
+    @Mock
+    DataSetMetadata metaData;
 
     DataSetLookup dataSetLookup;
 
@@ -45,7 +49,7 @@ public class BusinessAdminPreprocessorTest {
                            "admins");
         System.setProperty("org.jbpm.ht.admin.user",
                            "admin");
-        businessAdminPreprocessor = new BusinessAdminPreprocessor(identityProvider);
+        businessAdminPreprocessor = new BusinessAdminPreprocessor(identityProvider, metaData);
     }
 
     @Test

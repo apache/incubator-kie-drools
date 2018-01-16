@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import org.dashbuilder.dataset.DataSetLookup;
+import org.dashbuilder.dataset.DataSetMetadata;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,6 +37,9 @@ public class PotOwnerTasksPreprocessorTest {
 
     @Mock
     IdentityProvider identityProvider;
+    
+    @Mock
+    DataSetMetadata metaData;
 
     DataSetLookup dataSetLookup;
 

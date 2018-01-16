@@ -164,21 +164,21 @@ public class QueryServiceImpl implements QueryService, DeploymentEventListener {
             DataSetDef sqlDef = builder.buildDef();
             try {
                 dataSetDefRegistry.registerDataSetDef(sqlDef);
-    
+                DataSetMetadata metadata = dataSetManager.getDataSetMetadata(sqlDef.getUUID());
                 if (queryDefinition.getTarget().equals(Target.BA_TASK)) {
-                    dataSetDefRegistry.registerPreprocessor(sqlDef.getUUID(), new BusinessAdminTasksPreprocessor(identityProvider));
+                    dataSetDefRegistry.registerPreprocessor(sqlDef.getUUID(), new BusinessAdminTasksPreprocessor(identityProvider, metadata));
                 } else if (queryDefinition.getTarget().equals(Target.PO_TASK)) {
-                    dataSetDefRegistry.registerPreprocessor(sqlDef.getUUID(), new PotOwnerTasksPreprocessor(identityProvider));
+                    dataSetDefRegistry.registerPreprocessor(sqlDef.getUUID(), new PotOwnerTasksPreprocessor(identityProvider, metadata));
                 } else if (queryDefinition.getTarget().equals(Target.FILTERED_PROCESS)) {
                     dataSetDefRegistry.registerPreprocessor(sqlDef.getUUID(), new DeploymentIdsPreprocessor(deploymentRolesManager, identityProvider, COLUMN_EXTERNALID));
                 } else if (queryDefinition.getTarget().equals(Target.FILTERED_BA_TASK)) {
-                    dataSetDefRegistry.registerPreprocessor(sqlDef.getUUID(), new BusinessAdminPreprocessor(identityProvider));
+                    dataSetDefRegistry.registerPreprocessor(sqlDef.getUUID(), new BusinessAdminPreprocessor(identityProvider, metadata));
                     dataSetDefRegistry.registerPreprocessor(sqlDef.getUUID(), new DeploymentIdsPreprocessor(deploymentRolesManager, identityProvider, COLUMN_DEPLOYMENTID));
                 } else if (queryDefinition.getTarget().equals(Target.FILTERED_PO_TASK)) {
-                    dataSetDefRegistry.registerPreprocessor(sqlDef.getUUID(), new PotOwnerTasksPreprocessor(identityProvider));
+                    dataSetDefRegistry.registerPreprocessor(sqlDef.getUUID(), new PotOwnerTasksPreprocessor(identityProvider, metadata));
                     dataSetDefRegistry.registerPreprocessor(sqlDef.getUUID(), new DeploymentIdsPreprocessor(deploymentRolesManager, identityProvider, COLUMN_DEPLOYMENTID));
                 }
-                DataSetMetadata metadata = dataSetManager.getDataSetMetadata(sqlDef.getUUID());
+                
                 for (String columnId : metadata.getColumnIds()) {
                     sqlDef.addColumn(columnId, metadata.getColumnType(columnId));
                 }

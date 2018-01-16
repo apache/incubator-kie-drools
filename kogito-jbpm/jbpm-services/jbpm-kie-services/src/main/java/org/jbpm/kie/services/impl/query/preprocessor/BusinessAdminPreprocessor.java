@@ -16,31 +16,32 @@
 
 package org.jbpm.kie.services.impl.query.preprocessor;
 
+import static org.dashbuilder.dataset.filter.FilterFactory.equalsTo;
+import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_TASKID;
+
 import org.dashbuilder.dataset.DataSetLookup;
-import org.dashbuilder.dataset.def.DataSetPreprocessor;
+import org.dashbuilder.dataset.DataSetMetadata;
 import org.dashbuilder.dataset.filter.ColumnFilter;
 import org.dashbuilder.dataset.filter.DataSetFilter;
 import org.kie.internal.identity.IdentityProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.dashbuilder.dataset.filter.FilterFactory.equalsTo;
-import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_TASKID;
-
-public class BusinessAdminPreprocessor implements DataSetPreprocessor {
+public class BusinessAdminPreprocessor extends UserTasksPreprocessor {
 
     public static final String ADMIN_USER = System.getProperty("org.jbpm.ht.admin.user",
                                                                "Administrator");
     public static final String ADMIN_GROUP = System.getProperty("org.jbpm.ht.admin.group",
                                                                 "Administrators");
+    
     private static final Logger LOGGER = LoggerFactory.getLogger(BusinessAdminPreprocessor.class);
     private IdentityProvider identityProvider;
 
-    public BusinessAdminPreprocessor(IdentityProvider identityProvider) {
+    public BusinessAdminPreprocessor(IdentityProvider identityProvider, DataSetMetadata metadata) {
+        super(metadata);
         this.identityProvider = identityProvider;
     }
 
-    @SuppressWarnings("rawtypes")
     @Override
     public void preprocess(DataSetLookup lookup) {
 
@@ -65,5 +66,7 @@ public class BusinessAdminPreprocessor implements DataSetPreprocessor {
             filter.addFilterColumn(columnFilter);
             lookup.addOperation(filter);
         }
+        
+        super.preprocess(lookup);
     }
 }

@@ -16,6 +16,10 @@
 
 package org.jbpm.kie.services.impl.admin;
 
+import static org.jbpm.services.api.query.QueryResultMapper.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
 import java.io.File;
@@ -31,6 +35,10 @@ import java.util.Map;
 import org.assertj.core.api.Assertions;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
+import org.jbpm.kie.services.impl.query.SqlQueryDefinition;
+import org.jbpm.kie.services.impl.query.mapper.RawListQueryMapper;
+import org.jbpm.kie.services.impl.query.mapper.TaskSummaryQueryMapper;
+import org.jbpm.kie.services.impl.query.mapper.UserTaskInstanceQueryMapper;
 import org.jbpm.kie.services.test.KModuleDeploymentServiceTest;
 import org.jbpm.kie.test.util.AbstractKieServicesBaseTest;
 import org.jbpm.kie.test.util.CountDownListenerFactory;
@@ -39,6 +47,10 @@ import org.jbpm.services.api.admin.TaskNotification;
 import org.jbpm.services.api.admin.TaskReassignment;
 import org.jbpm.services.api.admin.UserTaskAdminService;
 import org.jbpm.services.api.model.DeploymentUnit;
+import org.jbpm.services.api.model.UserTaskInstanceDesc;
+import org.jbpm.services.api.query.model.QueryDefinition;
+import org.jbpm.services.api.query.model.QueryParam;
+import org.jbpm.services.api.query.model.QueryDefinition.Target;
 import org.jbpm.shared.services.impl.TransactionalCommandService;
 import org.junit.After;
 import org.junit.Before;
@@ -46,6 +58,7 @@ import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.query.QueryContext;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
@@ -710,6 +723,84 @@ public class UserTaskAdminServiceImplTest extends AbstractKieServicesBaseTest {
         reassignments = userTaskAdminService.getTaskReassignments(task.getId(), true);
         Assertions.assertThat(reassignments).isNotNull();
         Assertions.assertThat(reassignments).hasSize(0);
+    }
+    
+    @Test
+    public void testGetTaskInstancesAsPotOwners() {
+
+        String PO_TASK_QUERY = "select ti.taskId, ti.activationTime, ti.actualOwner, ti.createdBy, ti.createdOn, ti.deploymentId, " + "ti.description, ti.dueDate, ti.name, ti.parentId, ti.priority, ti.processId, ti.processInstanceId, " + "ti.processSessionId, ti.status, ti.workItemId, oe.id, eo.entity_id " + "from AuditTaskImpl ti " + "left join PeopleAssignments_PotOwners po on ti.taskId = po.task_id " + "left join OrganizationalEntity oe on po.entity_id = oe.id " + " left join PeopleAssignments_ExclOwners eo on ti.taskId = eo.task_id ";
+        SqlQueryDefinition query = new SqlQueryDefinition("getMyTaskInstances", "jdbc/testDS1", Target.PO_TASK);
+        query.setExpression(PO_TASK_QUERY);
+
+        queryService.registerQuery(query);
+
+        List<QueryDefinition> queries = queryService.getQueries(new QueryContext());
+        assertNotNull(queries);
+        assertEquals(1, queries.size());
+
+        QueryDefinition registeredQuery = queries.get(0);
+        assertNotNull(registeredQuery);
+        assertEquals(query.getName(), registeredQuery.getName());
+        assertEquals(query.getSource(), registeredQuery.getSource());
+        assertEquals(query.getExpression(), registeredQuery.getExpression());
+        assertEquals(query.getTarget(), registeredQuery.getTarget());
+
+        registeredQuery = queryService.getQuery(query.getName());
+
+        assertNotNull(registeredQuery);
+        assertEquals(query.getName(), registeredQuery.getName());
+        assertEquals(query.getSource(), registeredQuery.getSource());
+        assertEquals(query.getExpression(), registeredQuery.getExpression());
+        assertEquals(query.getTarget(), registeredQuery.getTarget());
+
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("approval_document", "initial content");
+
+        processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument", params);
+        assertNotNull(processInstanceId);
+        identityProvider.setName("notvalid");
+
+        List<UserTaskInstanceDesc> taskInstanceLogs = queryService.query(query.getName(), UserTaskInstanceQueryMapper.get(), new QueryContext());
+        assertNotNull(taskInstanceLogs);
+        assertEquals(0, taskInstanceLogs.size());
+
+        identityProvider.setName("salaboy");
+
+        taskInstanceLogs = queryService.query(query.getName(), UserTaskInstanceQueryMapper.get(), new QueryContext());
+        assertNotNull(taskInstanceLogs);
+        assertEquals(1, taskInstanceLogs.size());
+
+        List<TaskSummary> taskSummaries = queryService.query(query.getName(), TaskSummaryQueryMapper.get(), new QueryContext());
+        assertNotNull(taskSummaries);
+        assertEquals(1, taskSummaries.size());
+        
+        identityProvider.setName("Administrator");
+        userTaskAdminService.addPotentialOwners(taskSummaries.get(0).getId(), false, factory.newUser("john"));
+        identityProvider.setName("salaboy");
+        
+        taskInstanceLogs = queryService.query(query.getName(), UserTaskInstanceQueryMapper.get(), new QueryContext());
+        assertNotNull(taskInstanceLogs);
+        assertEquals(1, taskInstanceLogs.size());
+
+        taskSummaries = queryService.query(query.getName(), TaskSummaryQueryMapper.get(), new QueryContext());
+        assertNotNull(taskSummaries);
+        assertEquals(1, taskSummaries.size());
+        
+        QueryParam[] parameters = QueryParam.getBuilder().append(QueryParam.groupBy(COLUMN_NAME)).append(QueryParam.count(COLUMN_TASKID)).get();
+
+        Collection<List<Object>> instances = queryService.query(query.getName(), RawListQueryMapper.get(), new QueryContext(), parameters);
+        assertNotNull(instances);
+        assertEquals(1, instances.size());
+        
+        List<Object> result = instances.iterator().next();
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        // here we have count set to 2 because group by is on name and thus it returns duplicates
+        assertTrue(result.get(1) instanceof Number);
+        assertEquals(2, ((Number) result.get(1)).intValue());
+
+        processService.abortProcessInstance(processInstanceId);
+        processInstanceId = null;
     }
     
     /*

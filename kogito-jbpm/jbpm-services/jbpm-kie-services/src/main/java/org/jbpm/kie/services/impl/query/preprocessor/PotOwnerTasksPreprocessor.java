@@ -16,30 +16,35 @@
 
 package org.jbpm.kie.services.impl.query.preprocessor;
 
-import static org.dashbuilder.dataset.filter.FilterFactory.*;
+import static org.dashbuilder.dataset.filter.FilterFactory.AND;
+import static org.dashbuilder.dataset.filter.FilterFactory.OR;
+import static org.dashbuilder.dataset.filter.FilterFactory.equalsTo;
+import static org.dashbuilder.dataset.filter.FilterFactory.isNull;
+import static org.dashbuilder.dataset.filter.FilterFactory.notEqualsTo;
 import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_ACTUALOWNER;
-import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_ORGANIZATIONAL_ENTITY;
 import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_EXCLUDED_OWNER;
+import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_ORGANIZATIONAL_ENTITY;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.dashbuilder.dataset.DataSetLookup;
-import org.dashbuilder.dataset.def.DataSetPreprocessor;
+import org.dashbuilder.dataset.DataSetMetadata;
 import org.dashbuilder.dataset.filter.ColumnFilter;
 import org.dashbuilder.dataset.filter.DataSetFilter;
 import org.kie.internal.identity.IdentityProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PotOwnerTasksPreprocessor implements DataSetPreprocessor {
+public class PotOwnerTasksPreprocessor extends UserTasksPreprocessor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PotOwnerTasksPreprocessor.class);
-
+    
     private IdentityProvider identityProvider;
-
-    public PotOwnerTasksPreprocessor(IdentityProvider identityProvider) {
-        this.identityProvider = identityProvider;
+    
+    public PotOwnerTasksPreprocessor(IdentityProvider identityProvider, DataSetMetadata metadata) {
+        super(metadata);
+        this.identityProvider = identityProvider;        
     }
 
     @SuppressWarnings("rawtypes")
@@ -69,7 +74,8 @@ public class PotOwnerTasksPreprocessor implements DataSetPreprocessor {
             filter.addFilterColumn(columnFilter);
             lookup.addOperation(filter);
         }
-
+        
+        super.preprocess(lookup);       
     }
 
 }

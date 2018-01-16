@@ -23,20 +23,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.dashbuilder.dataset.DataSetLookup;
-import org.dashbuilder.dataset.def.DataSetPreprocessor;
+import org.dashbuilder.dataset.DataSetMetadata;
 import org.dashbuilder.dataset.filter.ColumnFilter;
 import org.dashbuilder.dataset.filter.DataSetFilter;
 import org.kie.internal.identity.IdentityProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class BusinessAdminTasksPreprocessor implements DataSetPreprocessor {
+public class BusinessAdminTasksPreprocessor extends UserTasksPreprocessor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BusinessAdminTasksPreprocessor.class);
 
-    private IdentityProvider identityProvider;
+    private IdentityProvider identityProvider;    
 
-    public BusinessAdminTasksPreprocessor(IdentityProvider identityProvider) {
+    public BusinessAdminTasksPreprocessor(IdentityProvider identityProvider, DataSetMetadata metadata) {
+        super(metadata);
         this.identityProvider = identityProvider;
     }
 
@@ -60,7 +61,8 @@ public class BusinessAdminTasksPreprocessor implements DataSetPreprocessor {
             filter.addFilterColumn(columnFilter);
             lookup.addOperation(filter);
         }
-
+        
+        super.preprocess(lookup);
     }
 
 }
