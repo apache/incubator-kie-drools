@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -128,13 +127,10 @@ public class KiePackagesBuilder {
 
     private final Map<String, KiePackage> packages = new HashMap<>();
 
-    private final Set<Class<?>> patternClasses = new HashSet<>();
-
     private final Map<Class<?>, ClassObjectType> objectTypeCache = new HashMap<>();
 
     private final Collection<Model> models;
     private final ChainedProperties chainedProperties;
-    private ClassLoader typesClassLoader;
 
     public KiePackagesBuilder(KieBaseConfiguration conf, ProjectClassLoader moduleClassLoader) {
         this(conf, new ArrayList<>(), moduleClassLoader);
@@ -143,8 +139,7 @@ public class KiePackagesBuilder {
     public KiePackagesBuilder(KieBaseConfiguration conf, Collection<Model> models, ProjectClassLoader moduleClassLoader) {
         this.configuration = ((RuleBaseConfiguration) conf);
         this.models = models;
-        typesClassLoader = moduleClassLoader.getTypesClassLoader();
-        this.chainedProperties = ChainedProperties.getChainedProperties(typesClassLoader);
+        this.chainedProperties = ChainedProperties.getChainedProperties( moduleClassLoader.getTypesClassLoader() );
     }
 
     public void addModel( Model model ) {
@@ -558,7 +553,6 @@ public class KiePackagesBuilder {
 
     private Pattern addPatternForVariable( RuleContext ctx, GroupElement group, Variable patternVariable ) {
         Class<?> patternClass = patternVariable.getType().asClass();
-        patternClasses.add( patternClass );
         Pattern pattern = new Pattern( ctx.getNextPatternIndex(),
                                        0, // offset will be set by ReteooBuilder
                                        getObjectType( patternClass ),

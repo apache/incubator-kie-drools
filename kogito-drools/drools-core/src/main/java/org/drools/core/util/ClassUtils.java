@@ -449,6 +449,14 @@ public final class ClassUtils {
         return accessibleProperties;
     }
 
+    public static Field getField(Class<?> clazz, String field) {
+        try {
+            return clazz.getDeclaredField( field );
+        } catch (NoSuchFieldException e) {
+            return clazz.getSuperclass() != null ? getField(clazz.getSuperclass(), field) : null;
+        }
+    }
+
     public static Method getAccessor(Class<?> clazz, String field) {
         try {
             return clazz.getMethod("get" + ucFirst(field));

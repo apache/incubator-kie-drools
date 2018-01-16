@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.core.phreak.Reactive;
+import org.drools.core.util.ClassUtils;
 import org.kie.api.definition.type.Annotation;
 import org.kie.api.definition.type.FactField;
 import org.kie.api.definition.type.FactType;
@@ -256,11 +257,15 @@ public class ClassDefinition
         if (fieldDefinition != null) {
             return fieldDefinition.getFieldAccessor().getValue( bean );
         }
-        try {
-            java.lang.reflect.Field f = definedClass.getDeclaredField( field );
+        java.lang.reflect.Field f = ClassUtils.getField( definedClass, field );
+        if (f != null) {
             f.setAccessible( true );
-            return f.get( bean );
-        } catch (IllegalAccessException | NoSuchFieldException e) { }
+            try {
+                return f.get( bean );
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException( e );
+            }
+        }
         return null;
     }
 
@@ -271,11 +276,15 @@ public class ClassDefinition
         if (fieldDefinition != null) {
             fieldDefinition.getFieldAccessor().setValue( bean, value );
         } else {
-            try {
-                java.lang.reflect.Field f = definedClass.getDeclaredField( field );
+            java.lang.reflect.Field f = ClassUtils.getField( definedClass, field );
+            if (f != null) {
                 f.setAccessible( true );
-                f.set( bean, value );
-            } catch (IllegalAccessException | NoSuchFieldException e) { }
+                try {
+                    f.set( bean, value );
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException( e );
+                }
+            }
         }
     }
 

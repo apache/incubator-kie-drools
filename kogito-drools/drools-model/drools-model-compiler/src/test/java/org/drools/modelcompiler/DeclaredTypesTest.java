@@ -384,4 +384,36 @@ public class DeclaredTypesTest extends BaseModelTest {
         assertEquals( 1, results.size() );
         assertEquals( "Mario", results.iterator().next() );
     }
+
+    @Test
+    public void testFactTypeNotUsedInRule() throws Exception {
+        String str =
+                "package org.test;\n" +
+                "import " + Person.class.getCanonicalName() + ";" +
+                "declare Name\n" +
+                "    value : String\n" +
+                "end\n" +
+                "declare ExtendedName extends Name\n" +
+                "end\n" +
+                "rule R when\n" +
+                "    Name($v : value == \"Mario\")\n" +
+                "then\n" +
+                "    insert($v);" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        FactType nameType = ksession.getKieBase().getFactType("org.test", "ExtendedName");
+        Object name = nameType.newInstance();
+        nameType.set(name, "value", "Mario");
+
+        ksession.insert(name);
+        ksession.fireAllRules();
+
+        assertEquals( "Mario", nameType.get( name, "value" ) );
+
+        Collection<String> results = getObjectsIntoList(ksession, String.class);
+        assertEquals( 1, results.size() );
+        assertEquals( "Mario", results.iterator().next() );
+    }
 }

@@ -69,6 +69,7 @@ public class POJOGenerator {
                 processType( packageModel, typeDescr, typeResolver.resolveType( typeDescr.getTypeName() ));
             } catch (ClassNotFoundException e) {
                 packageModel.addGeneratedPOJO(POJOGenerator.toClassDeclaration(typeDescr));
+                packageModel.addTypeMetaDataExpressions( registerTypeMetaData( packageModel, pkg.getName(), typeDescr.getTypeName() ) );
             }
         }
     }
@@ -85,9 +86,7 @@ public class POJOGenerator {
     }
 
     private static void processType(PackageModel packageModel, TypeDeclarationDescr typeDescr, Class<?> type) {
-        MethodCallExpr typeMetaDataCall = new MethodCallExpr(null, TYPE_META_DATA_CALL);
-        typeMetaDataCall.addArgument( new StringLiteralExpr(type.getPackage().getName()) );
-        typeMetaDataCall.addArgument( new StringLiteralExpr(type.getSimpleName()) );
+        MethodCallExpr typeMetaDataCall = registerTypeMetaData( packageModel, type.getPackage().getName(), type.getSimpleName() );
 
         for (AnnotationDescr ann : typeDescr.getAnnotations()) {
             typeMetaDataCall = new MethodCallExpr(typeMetaDataCall, "addAnnotation");
@@ -99,7 +98,15 @@ public class POJOGenerator {
                 typeMetaDataCall.addArgument( annotationValueCall );
             }
         }
+
         packageModel.addTypeMetaDataExpressions(typeMetaDataCall);
+    }
+
+    private static MethodCallExpr registerTypeMetaData( PackageModel packageModel, String pkg, String name ) {
+        MethodCallExpr typeMetaDataCall = new MethodCallExpr(null, TYPE_META_DATA_CALL);
+        typeMetaDataCall.addArgument( new StringLiteralExpr(pkg) );
+        typeMetaDataCall.addArgument( new StringLiteralExpr(name) );
+        return typeMetaDataCall;
     }
 
     /**
@@ -110,6 +117,10 @@ public class POJOGenerator {
         String generatedClassName = typeDeclaration.getTypeName();
         ClassOrInterfaceDeclaration generatedClass = new ClassOrInterfaceDeclaration(classModifiers, false, generatedClassName);
         generatedClass.addImplementedType( GeneratedFact.class.getName() );
+
+        if (typeDeclaration.getSuperTypeName() != null) {
+            generatedClass.addExtendedType( typeDeclaration.getSuperTypeName() );
+        }
 
         List<AnnotationDescr> softAnnotations = new ArrayList<>();
         for (AnnotationDescr ann : typeDeclaration.getAnnotations()) {
