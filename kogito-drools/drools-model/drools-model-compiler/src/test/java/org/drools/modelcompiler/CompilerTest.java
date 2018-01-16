@@ -71,6 +71,32 @@ public class CompilerTest extends BaseModelTest {
     }
 
     @Test
+    public void testEqualityCheckOnNull() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "import " + Result.class.getCanonicalName() + ";" +
+                "rule R when\n" +
+                "  Person($name : name == \"Mario\")\n" +
+                "then\n" +
+                "  insert(new Result($name));\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        final Person mario = new Person("Mario", 40);
+        final Person luca = new Person(null, 33);
+
+        ksession.insert(mario);
+        ksession.insert(luca);
+
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList( ksession, Result.class );
+        assertEquals( 1, results.size() );
+        assertEquals( "Mario", results.iterator().next().getValue() );
+    }
+
+    @Test
     public void testOrWithFixedLeftOperand() {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -94,7 +120,6 @@ public class CompilerTest extends BaseModelTest {
         ksession.insert(matteo);
 
         ksession.fireAllRules();
-
 
         Collection<Result> results = getObjectsIntoList( ksession, Result.class );
         assertEquals( 3, results.size() );
