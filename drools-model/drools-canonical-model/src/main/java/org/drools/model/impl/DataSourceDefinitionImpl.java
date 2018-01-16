@@ -1,8 +1,9 @@
 package org.drools.model.impl;
 
 import org.drools.model.DataSourceDefinition;
+import org.drools.model.DeclarationSource;
 
-public class DataSourceDefinitionImpl implements DataSourceDefinition {
+public class DataSourceDefinitionImpl implements DeclarationSource, DataSourceDefinition {
 
     public static final DataSourceDefinition DEFAULT = new DataSourceDefinitionImpl("DEFAULT", false);
 

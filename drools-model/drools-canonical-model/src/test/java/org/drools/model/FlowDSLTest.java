@@ -1,13 +1,22 @@
 package org.drools.model;
 
-import org.drools.model.datasources.DataSource;
-import org.drools.model.engine.BruteForceEngine;
-import org.junit.Test;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.drools.model.DSL.*;
+import org.drools.model.datasources.DataSource;
+import org.drools.model.engine.BruteForceEngine;
+import org.drools.model.impl.DataSourceDefinitionImpl;
+import org.junit.Test;
+
+import static org.drools.model.DSL.declarationOf;
+import static org.drools.model.DSL.expr;
+import static org.drools.model.DSL.not;
+import static org.drools.model.DSL.on;
+import static org.drools.model.DSL.or;
+import static org.drools.model.DSL.rule;
+import static org.drools.model.DSL.storeOf;
+import static org.drools.model.DSL.type;
+import static org.drools.model.DSL.view;
 import static org.junit.Assert.assertEquals;
 
 public class FlowDSLTest {
@@ -24,15 +33,13 @@ public class FlowDSLTest {
         // $older: Person(name != "Mark" && age > $mark.age) in entry-point "persons"
 
         List<String> list = new ArrayList<>();
-        Variable<Person> markV = any(Person.class);
-        Variable<Person> olderV = any(Person.class);
+        Variable<Person> markV = declarationOf( type( Person.class ), new DataSourceDefinitionImpl( "persons", false) );
+        Variable<Person> olderV = declarationOf( type( Person.class ), new DataSourceDefinitionImpl( "persons", false) );
 
         Rule rule = rule("join")
                 .attribute(Rule.Attribute.SALIENCE, 10)
                 .attribute(Rule.Attribute.AGENDA_GROUP, "myGroup")
                 .view(
-                        input(markV, "persons"),
-                        input(olderV, "persons"),
                         expr(markV, mark -> mark.getName().equals("Mark")),
                         expr(olderV, older -> !older.getName().equals("Mark")),
                         expr(olderV, markV, (older, mark) -> older.getAge() > mark.getAge())
@@ -61,13 +68,11 @@ public class FlowDSLTest {
         // $mark: Person(name == "Mark") in entry-point "persons"
         // $older: Person(name != "Mark" && age > $mark.age) in entry-point "persons"
 
-        Variable<Person> markV = any(Person.class);
-        Variable<Person> olderV = any(Person.class);
+        Variable<Person> markV = declarationOf( type( Person.class ), new DataSourceDefinitionImpl( "persons", false) );
+        Variable<Person> olderV = declarationOf( type( Person.class ), new DataSourceDefinitionImpl( "persons", false) );
 
         View view = view(
-            input(olderV, "persons"),
             expr(olderV, older -> !older.getName().equals("Mark")),
-            input(markV, "persons"),
             expr(markV, mark -> mark.getName().equals("Mark")),
             expr(markV, olderV, (mark, older) -> mark.getAge() < older.getAge())
         );
@@ -86,12 +91,10 @@ public class FlowDSLTest {
                                               new Person("Mario", 40),
                                               new Person("Sofia", 3));
 
-        Variable<Person> markV = any(Person.class);
-        Variable<Person> otherV = any(Person.class);
+        Variable<Person> markV = declarationOf( type( Person.class ), new DataSourceDefinitionImpl( "persons", false) );
+        Variable<Person> otherV = declarationOf( type( Person.class ), new DataSourceDefinitionImpl( "persons", false) );
 
         View view = view(
-                input(markV, "persons"),
-                input(otherV, "persons"),
                 expr(markV, mark -> mark.getName().equals("Mark")),
                 or( expr(otherV, markV, (other, mark) -> other.getAge() > mark.getAge()),
                     expr(otherV, markV, (other, mark) -> other.getName().compareToIgnoreCase(mark.getName()) > 0)
@@ -120,12 +123,10 @@ public class FlowDSLTest {
         // $oldest: Person()
         // not( Person(age > $oldest.age) )
 
-        Variable<Person> oldestV = any(Person.class);
-        Variable<Person> otherV = any(Person.class);
+        Variable<Person> oldestV = declarationOf( type( Person.class ), new DataSourceDefinitionImpl( "persons", false) );
+        Variable<Person> otherV = declarationOf( type( Person.class ), new DataSourceDefinitionImpl( "persons", false) );
 
         View view = view(
-                input(oldestV, "persons"),
-                input(otherV, "persons"),
                 not(otherV, oldestV, (p1, p2) -> p1.getAge() > p2.getAge())
         );
 

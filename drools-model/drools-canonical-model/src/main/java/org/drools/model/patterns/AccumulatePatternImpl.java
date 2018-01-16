@@ -54,11 +54,6 @@ public class AccumulatePatternImpl<T> extends AbstractSinglePattern implements A
     }
 
     @Override
-    public DataSourceDefinition getDataSourceDefinition() {
-        return pattern.getDataSourceDefinition();
-    }
-
-    @Override
     public Variable<T> getPatternVariable() {
         if(pattern == null) {
             return null;

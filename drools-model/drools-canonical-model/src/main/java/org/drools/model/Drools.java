@@ -1,15 +1,10 @@
 package org.drools.model;
 
-public interface Drools {
-    void insert(Object object);
+public interface Drools extends DroolsEntryPoint {
 
     void insertLogical(Object object);
 
-    void update(Object object, String... modifiedProperties);
-
-    void update(Object object, BitMask modifiedProperties);
-
-    void delete(Object object);
-
     <T> T getRuntime(Class<T> runtimeClass);
+
+    DroolsEntryPoint getEntryPoint(String name);
 }

@@ -9,6 +9,9 @@ import java.util.stream.Stream;
 
 import org.drools.model.Condition;
 import org.drools.model.Constraint;
+import org.drools.model.DataSourceDefinition;
+import org.drools.model.Declaration;
+import org.drools.model.DeclarationSource;
 import org.drools.model.Pattern;
 import org.drools.model.Rule;
 import org.drools.model.SingleConstraint;
@@ -62,9 +65,11 @@ public class BruteForceEngine {
     }
 
     private DataStore getPatternDataStore( Pattern pattern ) {
-        DataStore dataStore = (DataStore) dataSources.get(pattern.getDataSourceDefinition().getName());
+        DeclarationSource source = (( Declaration ) pattern.getPatternVariable()).getSource();
+        String sourceName = (( DataSourceDefinition ) source).getName();
+        DataStore dataStore = (DataStore) dataSources.get(sourceName);
         if (dataStore == null) {
-            throw new RuntimeException("Unknonw DataSource: " + pattern.getDataSourceDefinition().getName());
+            throw new RuntimeException("Unknonw DataSource: " + sourceName);
         }
         return dataStore;
     }

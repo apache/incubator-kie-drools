@@ -20,6 +20,7 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 
 import org.drools.core.WorkingMemory;
+import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -31,6 +32,7 @@ import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.Tuple;
 import org.drools.model.BitMask;
 import org.drools.model.Drools;
+import org.drools.model.DroolsEntryPoint;
 import org.drools.model.Variable;
 import org.drools.model.bitmask.AllSetBitMask;
 import org.drools.model.bitmask.AllSetButLastBitMask;
@@ -40,8 +42,10 @@ import org.drools.model.bitmask.LongBitMask;
 import org.drools.model.bitmask.OpenBitSet;
 import org.drools.model.functions.FunctionN;
 import org.drools.modelcompiler.RuleContext;
+import org.kie.api.runtime.rule.EntryPoint;
 
 import static java.util.Arrays.asList;
+
 import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
 
 public class LambdaConsequence implements Consequence {
@@ -161,6 +165,43 @@ public class LambdaConsequence implements Consequence {
         @Override
         public <T> T getRuntime(Class<T> runtimeClass) {
             return (T)knowledgeHelper.getKieRuntime();
+        }
+
+        @Override
+        public DroolsEntryPoint getEntryPoint(String name) {
+            return new DroolsEntryPointImpl( knowledgeHelper.getEntryPoint( name ), fhLookup );
+        }
+    }
+
+    public static class DroolsEntryPointImpl implements DroolsEntryPoint {
+
+        private final EntryPoint entryPoint;
+        private final Map<Object, InternalFactHandle> fhLookup;
+
+        public DroolsEntryPointImpl( EntryPoint entryPoint, Map<Object, InternalFactHandle> fhLookup ) {
+            this.entryPoint = entryPoint;
+            this.fhLookup = fhLookup;
+        }
+
+        @Override
+        public void insert( Object object ) {
+            entryPoint.insert( object );
+        }
+
+        @Override
+        public void update( Object object, String... modifiedProperties ) {
+            entryPoint.update( fhLookup.get(object), object, modifiedProperties );
+        }
+
+        @Override
+        public void update( Object object, BitMask modifiedProperties ) {
+            Class<?> modifiedClass = modifiedProperties.getPatternClass();
+            (( WorkingMemoryEntryPoint ) entryPoint).update( fhLookup.get(object), object, adaptBitMask(modifiedProperties), modifiedClass, null);
+        }
+
+        @Override
+        public void delete( Object object ) {
+            entryPoint.delete( fhLookup.get(object) );
         }
     }
 

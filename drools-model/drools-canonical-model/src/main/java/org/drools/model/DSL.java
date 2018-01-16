@@ -1,7 +1,5 @@
 package org.drools.model;
 
-import static org.drools.model.impl.ViewBuilder.viewItems2Patterns;
-
 import java.util.concurrent.TimeUnit;
 
 import org.drools.model.consequences.ConditionalConsequenceBuilder;
@@ -30,11 +28,10 @@ import org.drools.model.functions.temporal.MeetsPredicate;
 import org.drools.model.functions.temporal.MetbyPredicate;
 import org.drools.model.functions.temporal.OverlappedbyPredicate;
 import org.drools.model.functions.temporal.OverlapsPredicate;
-import org.drools.model.functions.temporal.StartsPredicate;
 import org.drools.model.functions.temporal.StartedbyPredicate;
+import org.drools.model.functions.temporal.StartsPredicate;
 import org.drools.model.functions.temporal.TemporalPredicate;
 import org.drools.model.impl.AnnotationValueImpl;
-import org.drools.model.impl.DataSourceDefinitionImpl;
 import org.drools.model.impl.DeclarationImpl;
 import org.drools.model.impl.EntryPointImpl;
 import org.drools.model.impl.FromImpl;
@@ -67,6 +64,8 @@ import org.drools.model.view.InputViewItemImpl;
 import org.drools.model.view.TemporalExprViewItem;
 import org.drools.model.view.ViewItem;
 import org.drools.model.view.ViewItemBuilder;
+
+import static org.drools.model.impl.ViewBuilder.viewItems2Patterns;
 
 public class DSL {
 
@@ -199,15 +198,7 @@ public class DSL {
     }
 
     public static <T> InputViewItem<T> input( Variable<T> var ) {
-        return new InputViewItemImpl<T>( var, DataSourceDefinitionImpl.DEFAULT);
-    }
-
-    public static <T> InputViewItem<T> input(Variable<T> var, String dataSourceName) {
-        return new InputViewItemImpl<T>( var, new DataSourceDefinitionImpl( dataSourceName, false));
-    }
-
-    public static <T> ViewItem<T> subscribe(Variable<T> var, String dataSourceName) {
-        return new InputViewItemImpl<T>( var, new DataSourceDefinitionImpl( dataSourceName, true));
+        return new InputViewItemImpl<T>( var );
     }
 
     public static <T> Expr1ViewItem<T> expr( Variable<T> var) {

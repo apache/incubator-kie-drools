@@ -1,15 +1,12 @@
 package org.drools.model.view;
 
-import org.drools.model.DataSourceDefinition;
 import org.drools.model.Variable;
 
 public class InputViewItemImpl<T> implements InputViewItem<T> {
     private final Variable<T> var;
-    private final DataSourceDefinition dataSourceDefinition;
 
-    public InputViewItemImpl( Variable<T> var, DataSourceDefinition dataSourceDefinition ) {
+    public InputViewItemImpl( Variable<T> var ) {
         this.var = var;
-        this.dataSourceDefinition = dataSourceDefinition;
     }
 
     @Override
@@ -20,9 +17,5 @@ public class InputViewItemImpl<T> implements InputViewItem<T> {
     @Override
     public Variable<?>[] getVariables() {
         return new Variable[] { var };
-    }
-
-    public DataSourceDefinition getDataSourceDefinition() {
-        return dataSourceDefinition;
     }
 }
