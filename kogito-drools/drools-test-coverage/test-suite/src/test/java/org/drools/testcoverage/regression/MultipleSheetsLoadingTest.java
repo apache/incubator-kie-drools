@@ -16,6 +16,10 @@
 
 package org.drools.testcoverage.regression;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.assertj.core.api.Assertions;
 import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
@@ -37,10 +41,6 @@ import org.kie.internal.builder.DecisionTableConfiguration;
 import org.kie.internal.builder.DecisionTableInputType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Tests loading decision tables from several worksheets in a XLS file.
@@ -78,7 +78,7 @@ public class MultipleSheetsLoadingTest {
         }
         Assertions.assertThat(results).as("Some errors/warnings found").isEmpty();
 
-        final KieBase kbase = KieBaseUtil.getDefaultKieBaseFromKieBuilder(kbuilder);
+        final KieBase kbase = KieBaseUtil.getDefaultKieBaseFromKieBuilder(kieBaseTestConfiguration, kbuilder);
         final StatelessKieSession ksession = kbase.newStatelessKieSession();
 
         final Set<String> resultSet = new HashSet<String>();
