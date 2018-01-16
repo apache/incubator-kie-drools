@@ -25,7 +25,6 @@ import org.jbpm.test.JbpmTestCase;
 import org.jbpm.test.wih.FirstErrorWorkItemHandler;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessCompletedEvent;
@@ -55,7 +54,6 @@ public class AsyncIntermediateCatchSignalTest extends JbpmTestCase {
         executorService = ExecutorServiceFactory.newExecutorService(getEmf());
         executorService.setInterval(1);
         executorService.setThreadPoolSize(3);
-        executorService.init();
         addEnvironmentEntry("ExecutorService", executorService);
         addWorkItemHandler("SyncError", new FirstErrorWorkItemHandler());
         addProcessEventListener(new DefaultProcessEventListener() {
@@ -64,6 +62,7 @@ public class AsyncIntermediateCatchSignalTest extends JbpmTestCase {
                 latch.countDown();
             }
         });
+        executorService.init();
     }
 
     @After
@@ -92,20 +91,20 @@ public class AsyncIntermediateCatchSignalTest extends JbpmTestCase {
         latch.await();
     }
 
-    @Ignore("JBPM-6720 Possible jBPM bug, test fails randomly. Ignored till resolved.")
+    
     @Test(timeout = 20000)
     public void testCorrectProcessStateAfterExceptionSignalCommandMulti() throws InterruptedException {
         latch = new CountDownLatch(5);
         RuntimeManager runtimeManager = createRuntimeManager(BPMN_AICS);
         KieSession ksession = getRuntimeEngine().getKieSession();
         long[] pid = new long[5];
-        for (int i = 0; i < 5; ++i) {
+        for (int i = 0; i < 5; i++) {
             ProcessInstance pi = ksession.startProcess(PROCESS_AICS, null);
             pid[i] = pi.getId();
 
             CommandContext ctx = new CommandContext();
             ctx.setData("DeploymentId", runtimeManager.getIdentifier());
-            ctx.setData("ProcessInstanceId", pid[i]);
+            ctx.setData("ProcessInstanceId", pi.getId());
             ctx.setData("Signal", "MySignal");
             ctx.setData("Event", null);
 
