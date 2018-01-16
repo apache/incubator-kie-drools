@@ -16,6 +16,7 @@
 
 package org.drools.modelcompiler.builder.generator;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import org.drools.javaparser.ast.expr.Expression;
@@ -97,5 +98,40 @@ public class TypedExpression {
 
     public Optional<String> getUnificationName() {
         return unificationName;
+    }
+
+    @Override
+    public String toString() {
+        return "TypedExpression{" +
+                "expression=" + expression +
+                ", type=" + type +
+                ", fieldName='" + fieldName + '\'' +
+                ", prefixExpression=" + prefixExpression +
+                ", unificationVariable=" + unificationVariable +
+                ", unificationName=" + unificationName +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        TypedExpression that = (TypedExpression) o;
+        return Objects.equals(expression.toString(), that.expression.toString()) &&
+                Objects.equals(type, that.type) &&
+                Objects.equals(fieldName, that.fieldName) &&
+                Objects.equals(prefixExpression, that.prefixExpression) &&
+                Objects.equals(unificationVariable, that.unificationVariable) &&
+                Objects.equals(unificationName, that.unificationName);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(expression, type, fieldName, prefixExpression, unificationVariable, unificationName);
     }
 }
