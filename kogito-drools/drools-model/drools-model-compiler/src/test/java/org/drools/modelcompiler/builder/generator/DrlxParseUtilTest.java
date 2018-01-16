@@ -1,7 +1,9 @@
 package org.drools.modelcompiler.builder.generator;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 
+import org.drools.drlx.DrlxParser;
 import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.expr.BooleanLiteralExpr;
 import org.drools.javaparser.ast.expr.CharLiteralExpr;
