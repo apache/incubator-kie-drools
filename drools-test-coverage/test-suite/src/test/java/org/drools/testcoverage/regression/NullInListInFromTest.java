@@ -16,7 +16,11 @@
 
 package org.drools.testcoverage.regression;
 
+import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
@@ -30,10 +34,6 @@ import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieSession;
-
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Tests handling a null value in a list used in FROM (BZ 1093174).
@@ -67,7 +67,7 @@ public class NullInListInFromTest {
         resource.setTargetPath(TestConstants.DRL_TEST_TARGET_PATH);
         final KieBuilder kbuilder = KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration, true, resource);
 
-        final KieBase kbase = KieBaseUtil.getDefaultKieBaseFromKieBuilder(kbuilder);
+        final KieBase kbase = KieBaseUtil.getDefaultKieBaseFromKieBuilder(kieBaseTestConfiguration, kbuilder);
         final KieSession ksession = kbase.newKieSession();
 
         final List<Integer> list = new ArrayList<Integer>();

@@ -35,7 +35,10 @@ import org.kie.api.runtime.KieContainer;
  */
 public final class KieBaseUtil {
 
-    public static KieBase getDefaultKieBaseFromKieBuilder(final KieBuilder kbuilder) {
+    public static KieBase getDefaultKieBaseFromKieBuilder(KieBaseTestConfiguration kieBaseTestConfiguration, KieBuilder kbuilder) {
+        if (kieBaseTestConfiguration.useCanonicalModel()) {
+            generateKieModuleForCanonicalModel( kbuilder );
+        }
         return getDefaultKieBaseFromKieModule(kbuilder.getKieModule());
     }
 
@@ -51,10 +54,7 @@ public final class KieBaseUtil {
             final KieBaseTestConfiguration kieBaseTestConfiguration, final String... resources) {
         final KieBuilder kieBuilder = KieUtil.getKieBuilderFromClasspathResources(kieBaseTestConfiguration,
                 classLoaderFromClass, true, resources);
-        if (kieBaseTestConfiguration.useCanonicalModel()) {
-            generateKieModuleForCanonicalModel( kieBuilder );
-        }
-        return getDefaultKieBaseFromKieBuilder(kieBuilder);
+        return getDefaultKieBaseFromKieBuilder(kieBaseTestConfiguration, kieBuilder);
     }
 
     public static KieBase getKieBaseFromResources(final KieBaseTestConfiguration kieBaseTestConfiguration,
@@ -63,7 +63,7 @@ public final class KieBaseUtil {
         if (kieBaseTestConfiguration.useCanonicalModel()) {
             generateKieModuleForCanonicalModel( kieBuilder );
         }
-        return getDefaultKieBaseFromKieBuilder(kieBuilder);
+        return getDefaultKieBaseFromKieBuilder(kieBaseTestConfiguration, kieBuilder);
     }
 
     private static void generateKieModuleForCanonicalModel( KieBuilder kieBuilder ) {
@@ -79,7 +79,7 @@ public final class KieBaseUtil {
             final Resource... resources) {
         generateDRLResourceTargetPath(resources);
         final KieBuilder kieBuilder = KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration, true, resources);
-        return getDefaultKieBaseFromKieBuilder(kieBuilder);
+        return getDefaultKieBaseFromKieBuilder(kieBaseTestConfiguration, kieBuilder);
     }
 
     private static void generateDRLResourceTargetPath(final Resource[] resources) {
