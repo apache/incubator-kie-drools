@@ -10,12 +10,10 @@ import java.util.Set;
 
 import org.drools.model.Binding;
 import org.drools.model.Constraint;
-import org.drools.model.DataSourceDefinition;
 import org.drools.model.Pattern;
 import org.drools.model.SingleConstraint;
 import org.drools.model.Variable;
 import org.drools.model.constraints.AbstractConstraint;
-import org.drools.model.impl.DataSourceDefinitionImpl;
 import org.drools.model.impl.ModelComponent;
 
 public class PatternImpl<T> extends AbstractSinglePattern implements Pattern<T>, ModelComponent {
@@ -23,29 +21,22 @@ public class PatternImpl<T> extends AbstractSinglePattern implements Pattern<T>,
     private final Variable<T> variable;
     private Variable[] inputVariables;
     private Variable[] allInputVariables = new Variable[0];
-    private final DataSourceDefinition dataSourceDefinition;
     private Constraint constraint;
     private List<Binding> bindings;
     private Collection<String> watchedProps;
 
     public PatternImpl(Variable<T> variable) {
-        this(variable, SingleConstraint.EMPTY, DataSourceDefinitionImpl.DEFAULT);
+        this(variable, SingleConstraint.EMPTY);
     }
 
-    public PatternImpl(Variable<T> variable, Constraint constraint, DataSourceDefinition dataSourceDefinition) {
-        this(variable, constraint, dataSourceDefinition, null);
+    public PatternImpl(Variable<T> variable, Constraint constraint) {
+        this(variable, constraint, null);
     }
 
-    public PatternImpl(Variable<T> variable, Constraint constraint, DataSourceDefinition dataSourceDefinition, List<Binding> bindings) {
+    public PatternImpl(Variable<T> variable, Constraint constraint, List<Binding> bindings) {
         this.variable = variable;
         this.constraint = constraint;
-        this.dataSourceDefinition = dataSourceDefinition;
         this.bindings = bindings;
-    }
-
-    @Override
-    public DataSourceDefinition getDataSourceDefinition() {
-        return dataSourceDefinition;
     }
 
     @Override
@@ -137,8 +128,6 @@ public class PatternImpl<T> extends AbstractSinglePattern implements Pattern<T>,
 
         if ( !ModelComponent.areEqualInModel( variable, pattern.variable ) ) return false;
         if ( !ModelComponent.areEqualInModel( inputVariables, pattern.inputVariables ) ) return false;
-        if ( dataSourceDefinition != null ? !dataSourceDefinition.equals( pattern.dataSourceDefinition ) : pattern.dataSourceDefinition != null )
-            return false;
         if ( !ModelComponent.areEqualInModel( constraint, pattern.constraint ) ) return false;
         if ( !ModelComponent.areEqualInModel( bindings, pattern.bindings ) ) return false;
         return watchedProps != null ? watchedProps.equals( pattern.watchedProps ) : pattern.watchedProps == null;

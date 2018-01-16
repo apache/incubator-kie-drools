@@ -4,8 +4,6 @@ import java.util.Collection;
 
 public interface Pattern<T> extends Condition {
 
-    DataSourceDefinition getDataSourceDefinition();
-
     Variable<T> getPatternVariable();
 
     Variable[] getInputVariables();

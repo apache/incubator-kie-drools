@@ -80,7 +80,7 @@ public class PatternBuilder {
 
         @Override
         public Pattern<T> get() {
-            return new PatternImpl(variable, SingleConstraint.EMPTY, dataSourceDefinition);
+            return new PatternImpl(variable, SingleConstraint.EMPTY);
         }
     }
 
@@ -182,7 +182,7 @@ public class PatternBuilder {
 
         @Override
         public Pattern<T> get() {
-            return new PatternImpl(variable, constraint, dataSourceDefinition);
+            return new PatternImpl(variable, constraint);
         }
     }
 }
