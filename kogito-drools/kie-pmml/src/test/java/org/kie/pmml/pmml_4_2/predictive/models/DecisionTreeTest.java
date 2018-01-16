@@ -16,7 +16,7 @@
 
 package org.kie.pmml.pmml_4_2.predictive.models;
 
-
+import java.io.File;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -26,7 +26,6 @@ import org.drools.core.impl.InternalRuleUnitExecutor;
 import org.junit.After;
 import org.junit.Test;
 import org.kie.api.KieBase;
-import org.kie.api.definition.type.FactType;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.logger.KieRuntimeLogger;
@@ -38,7 +37,6 @@ import org.kie.api.runtime.rule.RuleUnitExecutor;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.utils.KieHelper;
 import org.kie.pmml.pmml_4_2.DroolsAbstractPMMLTest;
-import org.kie.pmml.pmml_4_2.PMML4Compiler;
 import org.kie.pmml.pmml_4_2.PMML4Result;
 import org.kie.pmml.pmml_4_2.model.AbstractModel;
 import org.kie.pmml.pmml_4_2.model.PMMLRequestData;
@@ -197,7 +195,7 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
     	KieBase kbase = new KieHelper().addResource(res, ResourceType.PMML).build();
     	
     	RuleUnitExecutor executor = RuleUnitExecutor.create().bind(kbase);
-    	KieRuntimeLogger logger = ((InternalRuleUnitExecutor)executor).addFileLogger("/tmp/decisionTree");
+    	KieRuntimeLogger logger = ((InternalRuleUnitExecutor)executor).addFileLogger(File.createTempFile("decisionTree", "test1").getAbsolutePath());
     	KieRuntimeLogger console = ((InternalRuleUnitExecutor)executor).addConsoleLogger();
 
 
@@ -251,7 +249,7 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
     	KieBase kbase = new KieHelper().addResource(res, ResourceType.PMML).build();
     	
     	RuleUnitExecutor executor = RuleUnitExecutor.create().bind(kbase);
-    	KieRuntimeLogger logger = ((InternalRuleUnitExecutor)executor).addFileLogger("/tmp/decisionTree");
+    	KieRuntimeLogger logger = ((InternalRuleUnitExecutor)executor).addFileLogger(File.createTempFile("decisionTree", "test2").getAbsolutePath());
     	KieRuntimeLogger console = ((InternalRuleUnitExecutor)executor).addConsoleLogger();
 
 
