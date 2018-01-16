@@ -60,6 +60,7 @@ import org.drools.javaparser.ast.expr.ClassExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.FieldAccessExpr;
 import org.drools.javaparser.ast.expr.LambdaExpr;
+import org.drools.javaparser.ast.expr.LiteralExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.ObjectCreationExpr;
@@ -767,12 +768,18 @@ public class ModelGenerator {
     }
 
     private static Expression getEqualityExpression( TypedExpression left, TypedExpression right, Operator operator ) {
+        Expression rightOperand = right.getExpression();
         if (isPrimitiveExpression(right.getExpression())) {
-            return new BinaryExpr( left.getExpression(), right.getExpression(), operator == Operator.EQUALS ? BinaryExpr.Operator.EQUALS : Operator.NOT_EQUALS );
+            if (left.getType() != String.class) {
+                return new BinaryExpr( left.getExpression(), rightOperand, operator == Operator.EQUALS ? BinaryExpr.Operator.EQUALS : Operator.NOT_EQUALS );
+            } else if ( rightOperand instanceof LiteralExpr ) {
+                rightOperand = new StringLiteralExpr( rightOperand.toString() );
+            }
         }
+
         MethodCallExpr methodCallExpr = new MethodCallExpr( null, "org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals" );
         methodCallExpr.addArgument( left.getExpression() );
-        methodCallExpr.addArgument( right.getExpression() ); // don't create NodeList with static method because missing "parent for child" would null and NPE
+        methodCallExpr.addArgument( rightOperand ); // don't create NodeList with static method because missing "parent for child" would null and NPE
         return operator == Operator.EQUALS ? methodCallExpr : new UnaryExpr( methodCallExpr, UnaryExpr.Operator.LOGICAL_COMPLEMENT );
     }
 
