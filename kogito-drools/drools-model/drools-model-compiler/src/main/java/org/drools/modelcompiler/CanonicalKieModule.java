@@ -162,6 +162,9 @@ public class CanonicalKieModule implements InternalKieModule {
         }
         Collection<Model> models = new ArrayList<>();
         for (String pkg : kBaseModel.getPackages()) {
+            if (pkg.equals( "*" )) {
+                return modelsMap.values();
+            }
             Model model = modelsMap.get(pkg);
             if ( model != null ) {
                 models.add( model );
