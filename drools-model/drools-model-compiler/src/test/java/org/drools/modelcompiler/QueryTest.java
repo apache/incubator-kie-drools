@@ -264,7 +264,7 @@ public class QueryTest extends BaseModelTest {
 
     }
 
-    @Test @Ignore
+    @Test
     public void testQueryWithOOPath() {
         String str =
                 "import " + java.util.List.class.getCanonicalName() + ";" +
