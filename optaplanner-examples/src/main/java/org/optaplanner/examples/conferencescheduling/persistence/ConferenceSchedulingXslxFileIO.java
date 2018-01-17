@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
@@ -106,6 +107,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
         private Set<String> totalRoomTagSet;
 
         protected Sheet currentSheet;
+        protected Iterator<Row> currentRowIterator;
         protected Row currentRow;
         protected int currentRowNumber;
         protected int currentColumnNumber;
@@ -138,8 +140,8 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 throw new IllegalStateException(currentPosition() + ": The conference name (" + solution.getConferenceName()
                         + ") must match to the regular expression (" + VALID_NAME_PATTERN + ").");
             }
-            nextRow();
-            nextRow();
+            nextRow(false);
+            nextRow(false);
             readHeaderCell("Constraint");
             readHeaderCell("Weight");
             readHeaderCell("Description");
@@ -176,7 +178,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
 
         private void readTimeslotList() {
             nextSheet("Timeslots");
-            nextRow();
+            nextRow(false);
             readHeaderCell("Day");
             readHeaderCell("Start");
             readHeaderCell("End");
@@ -184,8 +186,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             readHeaderCell("Tags");
             List<Timeslot> timeslotList = new ArrayList<>(currentSheet.getLastRowNum() - 1);
             long id = 0L;
-            while (hasNextRow()) {
-                nextRow();
+            while (nextRow()) {
                 Timeslot timeslot = new Timeslot();
                 timeslot.setId(id++);
                 LocalDate day = LocalDate.parse(nextCell().getStringCellValue(), DAY_FORMATTER);
@@ -220,18 +221,17 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
 
         private void readRoomList() {
             nextSheet("Rooms");
-            nextRow();
+            nextRow(false);
             readHeaderCell("");
             readHeaderCell("");
             readTimeslotDaysHeaders();
-            nextRow();
+            nextRow(false);
             readHeaderCell("Name");
             readHeaderCell("Tags");
             readTimeslotHoursHeaders();
             List<Room> roomList = new ArrayList<>(currentSheet.getLastRowNum() - 1);
             long id = 0L;
-            while (hasNextRow()) {
-                nextRow();
+            while (nextRow()) {
                 Room room = new Room();
                 room.setId(id++);
                 room.setName(nextCell().getStringCellValue());
@@ -275,14 +275,14 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
 
         private void readSpeakerList() {
             nextSheet("Speakers");
-            nextRow();
+            nextRow(false);
             readHeaderCell("");
             readHeaderCell("");
             readHeaderCell("");
             readHeaderCell("");
             readHeaderCell("");
             readTimeslotDaysHeaders();
-            nextRow();
+            nextRow(false);
             readHeaderCell("Name");
             readHeaderCell("Required timeslot tags");
             readHeaderCell("Preferred timeslot tags");
@@ -291,8 +291,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             readTimeslotHoursHeaders();
             List<Speaker> speakerList = new ArrayList<>(currentSheet.getLastRowNum() - 1);
             long id = 0L;
-            while (hasNextRow()) {
-                nextRow();
+            while (nextRow()) {
                 Speaker speaker = new Speaker();
                 speaker.setId(id++);
                 speaker.setName(nextCell().getStringCellValue());
@@ -343,7 +342,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             Map<String, Speaker> speakerMap = solution.getSpeakerList().stream().collect(
                     toMap(Speaker::getName, speaker -> speaker));
             nextSheet("Talks");
-            nextRow();
+            nextRow(false);
             readHeaderCell("Code");
             readHeaderCell("Title");
             readHeaderCell("Talk type");
@@ -362,8 +361,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             readHeaderCell("Room");
             List<Talk> talkList = new ArrayList<>(currentSheet.getLastRowNum() - 1);
             long id = 0L;
-            while (hasNextRow()) {
-                nextRow();
+            while (nextRow()) {
                 Talk talk = new Talk();
                 talk.setId(id++);
                 talk.setCode(nextCell().getStringCellValue());
@@ -520,24 +518,45 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 throw new IllegalStateException("The workbook does not contain a sheet with name ("
                         + sheetName + ").");
             }
+            currentRowIterator = currentSheet.rowIterator();
+            if (currentRowIterator == null) {
+                throw new IllegalStateException(currentPosition() + ": The sheet has no rows.");
+            }
             currentRowNumber = -1;
         }
 
-        protected void nextRow() {
-            currentRowNumber++;
-            currentRow = currentSheet.getRow(currentRowNumber);
-            currentColumnNumber = -1;
-            if (currentRow == null) {
-                throw new IllegalStateException(currentPosition() + ": The expected row didn't exist.");
-            }
+        protected boolean nextRow() {
+            return nextRow(true);
         }
 
-        protected boolean hasNextRow() {
-            return currentRowNumber < currentSheet.getLastRowNum();
+        protected boolean nextRow(boolean skipEmptyRows) {
+            currentRowNumber++;
+            currentColumnNumber = -1;
+            if (!currentRowIterator.hasNext()) {
+                currentRow = null;
+                return false;
+            }
+            currentRow = currentRowIterator.next();
+            while (skipEmptyRows && currentRow.getPhysicalNumberOfCells() == 0) {
+                if (!currentRowIterator.hasNext()) {
+                    currentRow = null;
+                    return false;
+                }
+                currentRow = currentRowIterator.next();
+            }
+            if (currentRow.getRowNum() != currentRowNumber) {
+                if (currentRow.getRowNum() == currentRowNumber + 1) {
+                    currentRowNumber++;
+                } else {
+                    throw new IllegalStateException(currentPosition() + ": The next row (" + currentRow.getRowNum()
+                            + ") has a gap of more than 1 empty line with the previous.");
+                }
+            }
+            return true;
         }
 
         protected void readHeaderCell(String value) {
-            Cell cell = nextCell();
+            Cell cell = currentRow == null ? null : nextCell();
             if (cell == null || !cell.getStringCellValue().equals(value)) {
                 throw new IllegalStateException(currentPosition() + ": The cell does not contain the expected value ("
                         + value + ").");
