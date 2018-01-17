@@ -527,6 +527,9 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             currentRowNumber++;
             currentRow = currentSheet.getRow(currentRowNumber);
             currentColumnNumber = -1;
+            if (currentRow == null) {
+                throw new IllegalStateException(currentPosition() + ": The expected row didn't exist.");
+            }
         }
 
         protected boolean hasNextRow() {
