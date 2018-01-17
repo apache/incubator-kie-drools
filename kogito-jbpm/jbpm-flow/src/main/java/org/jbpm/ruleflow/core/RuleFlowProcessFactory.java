@@ -55,6 +55,11 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory {
         return this;
     }
 
+    public RuleFlowProcessFactory dynamic(boolean dynamic) {
+        getRuleFlowProcess().setDynamic(dynamic);
+        return this;
+    }
+
     public RuleFlowProcessFactory version(String version) {
     	getRuleFlowProcess().setVersion(version);
         return this;

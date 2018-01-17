@@ -24,13 +24,14 @@ import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.node.ActionNode;
 
-/**
- *
- */
 public class ActionNodeFactory extends NodeFactory {
 
-    public ActionNodeFactory(RuleFlowNodeContainerFactory nodeContainerFactory, NodeContainer nodeContainer, long id) {
-        super(nodeContainerFactory, nodeContainer, id);
+    public ActionNodeFactory(RuleFlowNodeContainerFactory nodeContainerFactory,
+                             NodeContainer nodeContainer,
+                             long id) {
+        super(nodeContainerFactory,
+              nodeContainer,
+              id);
     }
 
     protected Node createNode() {
@@ -46,19 +47,18 @@ public class ActionNodeFactory extends NodeFactory {
         return this;
     }
 
-    public ActionNodeFactory action(String dialect, String action) {
-        getActionNode().setAction(new DroolsConsequenceAction(dialect, action));
+    public ActionNodeFactory action(String dialect,
+                                    String action) {
+        getActionNode().setAction(new DroolsConsequenceAction(dialect,
+                                                              action));
         return this;
     }
-    
-    //
-    // Allow the creation of programmatic actions that implement org.jbpm.process.instance.impl.Action interface.
-    // I just want to write simple classes to execute arbitrary logic without having to use a file.
-    //
+
     public ActionNodeFactory action(Action action) {
-      DroolsAction droolsAction = new DroolsAction();
-      droolsAction.setMetaData("Action",action);
-      getActionNode().setAction(droolsAction);
-      return this;
-  }    
+        DroolsAction droolsAction = new DroolsAction();
+        droolsAction.setMetaData("Action",
+                                 action);
+        getActionNode().setAction(droolsAction);
+        return this;
+    }
 }
