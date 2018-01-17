@@ -74,7 +74,7 @@ class RuleModelPersistenceHelper {
 
     static String getSimpleFactType(final String className,
                                     final PackageDataModelOracle dmo) {
-        for (String type : dmo.getProjectModelFields().keySet()) {
+        for (String type : dmo.getModuleModelFields().keySet()) {
             if (type.equals(className)) {
                 return type.substring(type.lastIndexOf(".") + 1);
             }
@@ -225,20 +225,20 @@ class RuleModelPersistenceHelper {
     static ModelField[] findFields(final RuleModel m,
                                    final PackageDataModelOracle dmo,
                                    final String type) {
-        ModelField[] fields = dmo.getProjectModelFields().get(type);
+        ModelField[] fields = dmo.getModuleModelFields().get(type);
         if (fields != null) {
             return fields;
         }
         for (String i : m.getImports().getImportStrings()) {
             if (i.endsWith("." + type)) {
-                fields = dmo.getProjectModelFields().get(i);
+                fields = dmo.getModuleModelFields().get(i);
                 if (fields != null) {
                     return fields;
                 }
             }
         }
 
-        return dmo.getProjectModelFields().get(m.getPackageName() + "." + type);
+        return dmo.getModuleModelFields().get(m.getPackageName() + "." + type);
     }
 
     static ModelField findField(final ModelField[] typeFields,
@@ -305,19 +305,19 @@ class RuleModelPersistenceHelper {
         }
 
         //Lookup without package prefix or imports
-        ModelField[] modelFields = dmo.getProjectModelFields().get(factType);
+        ModelField[] modelFields = dmo.getModuleModelFields().get(factType);
 
         //Lookup with package prefix
         if (modelFields == null) {
             String fqcn = dmo.getPackageName() + "." + factType;
-            modelFields = dmo.getProjectModelFields().get(fqcn);
+            modelFields = dmo.getModuleModelFields().get(fqcn);
         }
 
         //Lookup from imports
         if (modelFields == null) {
             for (Import item : imports.getImports()) {
                 if (item.getType().endsWith(factType)) {
-                    modelFields = dmo.getProjectModelFields().get(item.getType());
+                    modelFields = dmo.getModuleModelFields().get(item.getType());
                     if (modelFields != null) {
                         break;
                     }
@@ -427,9 +427,9 @@ class RuleModelPersistenceHelper {
                                                             factType,
                                                             dmo);
         final String key = fullyQualifiedFactType + "#" + fieldName;
-        final Map<String, String[]> projectJavaEnumDefinitions = dmo.getProjectJavaEnumDefinitions();
+        final Map<String, String[]> moduleJavaEnumDefinitions = dmo.getModuleJavaEnumDefinitions();
 
-        return projectJavaEnumDefinitions.containsKey(key);
+        return moduleJavaEnumDefinitions.containsKey(key);
     }
 
     static String inferDataTypeFromAction(final ActionFieldList action,
@@ -524,11 +524,11 @@ class RuleModelPersistenceHelper {
     static List<MethodInfo> getMethodInfosForType(final RuleModel model,
                                                   final PackageDataModelOracle dmo,
                                                   final String variableType) {
-        List<MethodInfo> methods = dmo.getProjectMethodInformation().get(variableType);
+        List<MethodInfo> methods = dmo.getModuleMethodInformation().get(variableType);
         if (methods == null) {
             for (String imp : model.getImports().getImportStrings()) {
                 if (imp.endsWith("." + variableType)) {
-                    methods = dmo.getProjectMethodInformation().get(imp);
+                    methods = dmo.getModuleMethodInformation().get(imp);
                     if (methods != null) {
                         break;
                     }
@@ -562,7 +562,7 @@ class RuleModelPersistenceHelper {
     static String getFQFactType(final RuleModel ruleModel,
                                 final String factType,
                                 final PackageDataModelOracle dmo) {
-        Set<String> factTypes = dmo.getProjectModelFields().keySet();
+        Set<String> factTypes = dmo.getModuleModelFields().keySet();
 
         if (factTypes.contains(ruleModel.getPackageName() + "." + factType)) {
             return ruleModel.getPackageName() + "." + factType;
