@@ -98,7 +98,6 @@ import org.drools.model.patterns.QueryCallPattern;
 import org.drools.modelcompiler.consequence.LambdaConsequence;
 import org.drools.modelcompiler.consequence.MVELConsequence;
 import org.drools.modelcompiler.constraints.ConstraintEvaluator;
-import org.drools.modelcompiler.constraints.LambdaAccumulator;
 import org.drools.modelcompiler.constraints.LambdaConstraint;
 import org.drools.modelcompiler.constraints.LambdaDataProvider;
 import org.drools.modelcompiler.constraints.LambdaEvalExpression;
@@ -119,6 +118,7 @@ import static org.drools.model.DSL.entryPoint;
 import static org.drools.model.DSL.type;
 import static org.drools.model.impl.NamesGenerator.generateName;
 import static org.drools.modelcompiler.ModelCompilerUtil.conditionToGroupElementType;
+import static org.drools.modelcompiler.constraints.LambdaAccumulator.createLambdaAccumulator;
 import static org.drools.modelcompiler.util.TypeDeclarationUtil.createTypeDeclaration;
 
 public class KiePackagesBuilder {
@@ -360,15 +360,19 @@ public class KiePackagesBuilder {
                 Pattern pattern = new Pattern( 0, getObjectType( Object.class ) );
 
                 PatternImpl sourcePattern = (PatternImpl) accumulatePattern.getPattern();
-                final List<String> usedVariableName = new ArrayList<>();
-                for(Variable v : sourcePattern.getAllInputVariables()) {
-                    usedVariableName.add(v.getName());
+                List<String> usedVariableName = new ArrayList<>();
+                Binding binding = null;
+
+                if (sourcePattern != null) {
+                    for (Variable v : sourcePattern.getAllInputVariables()) {
+                        usedVariableName.add( v.getName() );
+                    }
+
+                    if ( !sourcePattern.getBindings().isEmpty() ) {
+                        binding = ( Binding ) sourcePattern.getBindings().iterator().next();
+                    }
                 }
 
-                Binding binding = null;
-                if(!sourcePattern.getBindings().isEmpty()) {
-                    binding = (Binding) sourcePattern.getBindings().iterator().next();
-                }
                 pattern.setSource(buildAccumulate(ctx, accumulatePattern, source, pattern, usedVariableName, binding) );
                 return pattern;
             }
@@ -519,7 +523,8 @@ public class KiePackagesBuilder {
                                                             true);
             pattern.addDeclaration(declaration);
 
-            SingleAccumulate accumulate = new SingleAccumulate(source, new Declaration[0], new LambdaAccumulator(accFunction, binding, usedVariableName));
+            Declaration[] bindingDeclaration = binding != null ? new Declaration[0] : new Declaration[] { ctx.getPattern( accFunctions[0].getSource() ).getDeclaration() };
+            SingleAccumulate accumulate = new SingleAccumulate(source, bindingDeclaration, createLambdaAccumulator(accFunction, usedVariableName, binding));
             ctx.addAccumulateSource( boundVar, accumulate );
             return accumulate;
         }
@@ -535,7 +540,7 @@ public class KiePackagesBuilder {
                                                     pattern,
                                                     true) );
 
-            accumulators[i] = new LambdaAccumulator(accFunction, binding, usedVariableName);
+            accumulators[i] = createLambdaAccumulator(accFunction, usedVariableName, binding);
         }
 
         return new MultiAccumulate( source, new Declaration[0], accumulators);

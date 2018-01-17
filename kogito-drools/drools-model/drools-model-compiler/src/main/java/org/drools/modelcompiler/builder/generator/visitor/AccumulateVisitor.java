@@ -152,7 +152,7 @@ public class AccumulateVisitor {
             if(!inputPatternHasConstraints) {
                 final MethodCallExpr exprCall = new MethodCallExpr(null, ModelGenerator.EXPR_CALL);
                 exprCall.addArgument(toVar(nameExpr));
-                accumulateDSL.addArgument(exprCall);
+                getExprsMethod( accumulateDSL ).addArgument( exprCall );
             }
 
             final AccumulateFunction accumulateFunction = getAccumulateFunction(function, declarationClass);
@@ -171,6 +171,16 @@ public class AccumulateVisitor {
         accumulateDSL.addArgument(asDSL);
 
         context.popExprPointer();
+    }
+
+    private MethodCallExpr getExprsMethod(MethodCallExpr accumulateDSL) {
+        if (!accumulateDSL.getArguments().isEmpty()) {
+            Expression firstArg = accumulateDSL.getArgument(0);
+            if ( firstArg instanceof MethodCallExpr && (( MethodCallExpr ) firstArg).getNameAsString().equals( "and" )) {
+                return (( MethodCallExpr ) firstArg);
+            }
+        }
+        return accumulateDSL;
     }
 
     private AccumulateFunction getAccumulateFunction(AccumulateDescr.AccumulateFunctionCallDescr function, Class<?> methodCallExprType) {
