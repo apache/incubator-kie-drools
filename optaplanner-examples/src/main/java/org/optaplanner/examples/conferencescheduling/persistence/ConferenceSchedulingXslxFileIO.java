@@ -40,6 +40,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.poi.ss.usermodel.Cell;
@@ -54,6 +55,13 @@ import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.api.score.constraint.Indictment;
+import org.optaplanner.core.api.solver.SolverFactory;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
+import org.optaplanner.examples.conferencescheduling.app.ConferenceSchedulingApp;
 import org.optaplanner.examples.conferencescheduling.domain.ConferenceParametrization;
 import org.optaplanner.examples.conferencescheduling.domain.ConferenceSolution;
 import org.optaplanner.examples.conferencescheduling.domain.Room;
@@ -78,6 +86,8 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
 
     protected static final XSSFColor UNAVAILABLE_COLOR = new XSSFColor(TangoColorFactory.ALUMINIUM_5);
     protected static final XSSFColor PINNED_COLOR = new XSSFColor(TangoColorFactory.PLUM_1);
+    protected static final XSSFColor HARD_PENALTY_COLOR = new XSSFColor(TangoColorFactory.SCARLET_1);
+    protected static final XSSFColor SOFT_PENALTY_COLOR = new XSSFColor(TangoColorFactory.ORANGE_1);
 
     @Override
     public String getInputFileExtension() {
@@ -656,13 +666,16 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
     private static class ConferenceSchedulingXlsxWriter {
 
         protected final ConferenceSolution solution;
-        private Map<Pair<Timeslot, Room>, List<Talk>> timeslotRoomToTalkMap;
+        protected final Map<Object, Indictment> indictmentMap;
+        protected final Map<Pair<Timeslot, Room>, List<Talk>> timeslotRoomToTalkMap;
 
         protected Workbook workbook;
 
         protected CellStyle headerStyle;
         protected CellStyle unavailableStyle;
         protected CellStyle pinnedStyle;
+        protected CellStyle hardPenaltyStyle;
+        protected CellStyle softPenaltyStyle;
 
         protected Sheet currentSheet;
         protected Row currentRow;
@@ -672,6 +685,14 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
 
         public ConferenceSchedulingXlsxWriter(ConferenceSolution solution) {
             this.solution = solution;
+            ScoreDirectorFactory<ConferenceSolution> scoreDirectorFactory
+                    = SolverFactory.<ConferenceSolution>createFromXmlResource(ConferenceSchedulingApp.SOLVER_CONFIG)
+                    .buildSolver().getScoreDirectorFactory();
+            try (ScoreDirector<ConferenceSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector()) {
+                scoreDirector.setWorkingSolution(solution);
+                scoreDirector.calculateScore();
+                indictmentMap = scoreDirector.getIndictmentMap();
+            }
             timeslotRoomToTalkMap = solution.getTalkList().stream().collect(groupingBy(
                     talk -> Pair.of(talk.getTimeslot(), talk.getRoom())));
         }
@@ -686,6 +707,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             writeTalkList();
             writeThemeView();
             writeSectorView();
+            writeSpeakerView();
             workbook.setActiveSheet(2);
             return workbook;
         }
@@ -695,12 +717,17 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             Font font = workbook.createFont();
             font.setBold(true);
             headerStyle.setFont(font);
-            unavailableStyle = workbook.createCellStyle();
-            unavailableStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-            ((XSSFCellStyle) unavailableStyle).setFillForegroundColor(UNAVAILABLE_COLOR);
-            pinnedStyle = workbook.createCellStyle();
-            pinnedStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-            ((XSSFCellStyle) pinnedStyle).setFillForegroundColor(PINNED_COLOR);
+            unavailableStyle = createStyle(UNAVAILABLE_COLOR);
+            pinnedStyle = createStyle(PINNED_COLOR);
+            hardPenaltyStyle = createStyle(HARD_PENALTY_COLOR);
+            softPenaltyStyle = createStyle(SOFT_PENALTY_COLOR);
+        }
+
+        private CellStyle createStyle(XSSFColor color) {
+            CellStyle style = workbook.createCellStyle();
+            style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+            ((XSSFCellStyle) style).setFillForegroundColor(color);
+            return style;
         }
 
         private void writeConfiguration() {
@@ -911,8 +938,13 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 Map<Timeslot, List<Talk>> timeslotToTalkListMap = entry.getValue();
                 for (Timeslot timeslot : solution.getTimeslotList()) {
                     List<Talk> talkList = timeslotToTalkListMap.get(timeslot);
-                    nextCell().setCellValue(talkList == null ? ""
-                            : talkList.stream().map(Talk::getCode).collect(joining(", ")));
+                    if (talkList == null) {
+                        nextCell();
+                    } else {
+                        HardSoftScore score = (HardSoftScore) talkList.stream().map(indictmentMap::get).filter(Objects::nonNull)
+                                .map(Indictment::getScoreTotal).reduce(Score::add).orElse(HardSoftScore.ZERO);
+                        nextCellWithScore(score).setCellValue(talkList.stream().map(Talk::getCode).collect(joining(", ")));
+                    }
                 }
             }
             autoSizeColumnsWithHeader();
@@ -939,8 +971,40 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 Map<Timeslot, List<Talk>> timeslotToTalkListMap = entry.getValue();
                 for (Timeslot timeslot : solution.getTimeslotList()) {
                     List<Talk> talkList = timeslotToTalkListMap.get(timeslot);
-                    nextCell().setCellValue(talkList == null ? ""
-                            : talkList.stream().map(Talk::getCode).collect(joining(", ")));
+                    if (talkList == null) {
+                        nextCell();
+                    } else {
+                        HardSoftScore score = (HardSoftScore) talkList.stream().map(indictmentMap::get).filter(Objects::nonNull)
+                                .map(Indictment::getScoreTotal).reduce(Score::add).orElse(HardSoftScore.ZERO);
+                        nextCellWithScore(score).setCellValue(talkList.stream().map(Talk::getCode).collect(joining(", ")));
+                    }
+                }
+            }
+            autoSizeColumnsWithHeader();
+        }
+
+        private void writeSpeakerView() {
+            nextSheet("Speaker view", 1, 1);
+            currentSheet.protectSheet("ThisDataIsIgnoredOnInput");
+            nextRow();
+            nextHeaderCell("");
+            writeTimeslotDaysHeaders();
+            nextRow();
+            nextHeaderCell("Speaker");
+            writeTimeslotHoursHeaders();
+            for (Speaker speaker : solution.getSpeakerList()) {
+                nextRow();
+                nextCell().setCellValue(speaker.getName());
+                List<Talk> talkList = solution.getTalkList().stream()
+                        .filter(talk -> talk.getSpeakerList().contains(speaker))
+                        .collect(toList());
+                for (Timeslot timeslot : solution.getTimeslotList()) {
+                    List<Talk> filteredTalkList = talkList.stream().filter(talk -> talk.getTimeslot() == timeslot)
+                            .collect(toList());
+                    HardSoftScore score = (HardSoftScore) filteredTalkList.stream().map(indictmentMap::get).filter(Objects::nonNull)
+                            .map(Indictment::getScoreTotal).reduce(Score::add).orElse(HardSoftScore.ZERO);
+                    nextCellWithScore(score, speaker.getUnavailableTimeslotSet().contains(timeslot) ? unavailableStyle : null)
+                            .setCellValue(filteredTalkList.stream().map(Talk::getCode).collect(joining(", ")));
                 }
             }
             autoSizeColumnsWithHeader();
@@ -994,6 +1058,20 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
 
         protected Cell nextCell() {
             return nextCell(null);
+        }
+
+        protected Cell nextCellWithScore(HardSoftScore score) {
+            return nextCellWithScore(score, null);
+        }
+
+        protected Cell nextCellWithScore(HardSoftScore score, CellStyle cellStyle) {
+            if (!score.isFeasible()) {
+                return nextCell(hardPenaltyStyle);
+            } else if (score.getSoftScore() < 0) {
+                return nextCell(softPenaltyStyle);
+            } else {
+                return nextCell(cellStyle);
+            }
         }
 
         protected Cell nextCell(CellStyle cellStyle) {
