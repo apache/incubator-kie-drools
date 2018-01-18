@@ -25,6 +25,7 @@ import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
+import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 
 @XStreamAlias("solverBenchmark")
 public class SolverBenchmarkConfig<Solution_> extends AbstractConfig<SolverBenchmarkConfig> {
@@ -86,8 +87,17 @@ public class SolverBenchmarkConfig<Solution_> extends AbstractConfig<SolverBench
         solverBenchmarkResult.setName(name);
         solverBenchmarkResult.setSubSingleCount(ConfigUtils.inheritOverwritableProperty(subSingleCount, 1));
         solverBenchmarkResult.setSolverConfig(solverConfig);
+        SolutionDescriptor<Object> solutionDescriptor = solverConfig.buildSolutionDescriptor(solverConfigContext);
+        for (Solution_ extraProblem : extraProblems) {
+            if (!solutionDescriptor.getSolutionClass().isInstance(extraProblem)) {
+                throw new IllegalArgumentException("The solverBenchmark name (" + name
+                        + ") for solution class (" + solutionDescriptor.getSolutionClass()
+                        + ") cannot solve a problem (" + extraProblem
+                        + ") of class (" + (extraProblem == null ? null : extraProblem.getClass()) + ").");
+            }
+        }
         solverBenchmarkResult.setScoreDefinition(
-                solverConfig.buildSolutionDescriptor(solverConfigContext).getScoreDefinition());
+                solutionDescriptor.getScoreDefinition());
         solverBenchmarkResult.setSingleBenchmarkResultList(new ArrayList<>());
         ProblemBenchmarksConfig problemBenchmarksConfig_
                 = problemBenchmarksConfig == null ? new ProblemBenchmarksConfig()

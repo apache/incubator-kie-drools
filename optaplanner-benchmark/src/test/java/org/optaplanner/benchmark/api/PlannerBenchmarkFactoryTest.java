@@ -18,14 +18,21 @@ package org.optaplanner.benchmark.api;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.optaplanner.benchmark.config.SolverBenchmarkConfig;
 import org.optaplanner.core.api.solver.DivertingClassLoader;
+import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.phase.custom.CustomPhaseConfig;
 import org.optaplanner.core.impl.phase.custom.NoChangeCustomPhaseCommand;
+import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
+import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
+import org.optaplanner.core.impl.testdata.domain.TestdataValue;
+import org.optaplanner.core.impl.testdata.domain.customcloner.TestdataCorrectlyClonedSolution;
+import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 import static org.junit.Assert.*;
 
@@ -37,6 +44,40 @@ public class PlannerBenchmarkFactoryTest {
         benchmarkTestDir.mkdirs();
         new File(benchmarkTestDir, "input.xml").createNewFile();
         new File(benchmarkTestDir, "output/").mkdir();
+    }
+
+    @Test
+    public void createFromSolverFactory() {
+        SolverFactory<TestdataSolution> solverFactory = PlannerTestUtils.buildSolverFactory(
+                TestdataSolution.class, TestdataEntity.class);
+        PlannerBenchmarkFactory benchmarkFactory = PlannerBenchmarkFactory.createFromSolverFactory(
+                solverFactory);
+        TestdataSolution solution = new TestdataSolution("s1");
+        solution.setEntityList(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3")));
+        solution.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
+        PlannerBenchmark benchmark = benchmarkFactory.buildPlannerBenchmark(solution);
+        benchmark.benchmark();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void problemIsNotASolutionInstance() {
+        SolverFactory<TestdataSolution> solverFactory = PlannerTestUtils.buildSolverFactory(
+                TestdataSolution.class, TestdataEntity.class);
+        PlannerBenchmarkFactory benchmarkFactory = PlannerBenchmarkFactory.createFromSolverFactory(
+                solverFactory);
+        benchmarkFactory.buildPlannerBenchmark("This is not a solution instance.");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void problemIsNull() {
+        SolverFactory<TestdataSolution> solverFactory = PlannerTestUtils.buildSolverFactory(
+                TestdataSolution.class, TestdataEntity.class);
+        PlannerBenchmarkFactory benchmarkFactory = PlannerBenchmarkFactory.createFromSolverFactory(
+                solverFactory);
+        TestdataSolution solution = new TestdataSolution("s1");
+        solution.setEntityList(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3")));
+        solution.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
+        benchmarkFactory.buildPlannerBenchmark(solution, null);
     }
 
     @Test
