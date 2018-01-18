@@ -279,7 +279,6 @@ public class RuleModelDRLPersistenceImpl
 
     /**
      * Marshal model attributes
-     *
      * @param buf
      * @param model
      */
@@ -310,7 +309,6 @@ public class RuleModelDRLPersistenceImpl
 
     /**
      * Marshal model metadata
-     *
      * @param buf
      * @param model
      */
@@ -325,7 +323,6 @@ public class RuleModelDRLPersistenceImpl
 
     /**
      * Marshal LHS patterns
-     *
      * @param buf
      * @param model
      */
@@ -692,7 +689,7 @@ public class RuleModelDRLPersistenceImpl
                 buf.append(" from ");
                 renderExpression(pattern.getExpression());
                 if (!isSubPattern) {
-                   buf.append(")");
+                    buf.append(")");
                 }
                 buf.append("\n");
             }
@@ -796,19 +793,34 @@ public class RuleModelDRLPersistenceImpl
                 buf.append(",\n");
 
                 if (pattern.useFunctionOrCode().equals(FromAccumulateCompositeFactPattern.USE_FUNCTION)) {
+                    if (isDSLEnhanced) {
+                        buf.append(">");
+                    }
                     buf.append(indentation + "\t");
                     buf.append(pattern.getFunction());
                 } else {
+                    if (isDSLEnhanced) {
+                        buf.append(">");
+                    }
                     buf.append(indentation + "\tinit( ");
                     buf.append(pattern.getInitCode());
                     buf.append(" ),\n");
+                    if (isDSLEnhanced) {
+                        buf.append(">");
+                    }
                     buf.append(indentation + "\taction( ");
                     buf.append(pattern.getActionCode());
                     buf.append(" ),\n");
                     if (pattern.getReverseCode() != null && !pattern.getReverseCode().trim().equals("")) {
+                        if (isDSLEnhanced) {
+                            buf.append(">");
+                        }
                         buf.append(indentation + "\treverse( ");
                         buf.append(pattern.getReverseCode());
                         buf.append(" ),\n");
+                    }
+                    if (isDSLEnhanced) {
+                        buf.append(">");
                     }
                     buf.append(indentation + "\tresult( ");
                     buf.append(pattern.getResultCode());
