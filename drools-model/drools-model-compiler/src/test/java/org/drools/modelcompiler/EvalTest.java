@@ -229,4 +229,23 @@ public class EvalTest extends BaseModelTest {
         assertEquals(1, results.size());
     }
 
+    @Test
+    public void testEvalInvokingMethod2() {
+        String str = "import " + Overloaded.class.getCanonicalName() + ";" +
+                     "rule OverloadedMethods\n" +
+                     "when\n" +
+                     "  o : Overloaded()\n" +
+                     "  eval (\"helloworld150.32\".equals(o.method2(\"hello\", \"world\", 15L, 0.32)))\n" +
+                     "then\n" +
+                     "  insert(\"matched\");\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert(new Overloaded());
+        ksession.fireAllRules();
+
+        Collection<String> results = getObjectsIntoList(ksession, String.class);
+        assertEquals(1, results.size());
+    }
 }

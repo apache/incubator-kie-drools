@@ -716,7 +716,7 @@ public class ModelGenerator {
             }
             
             Optional<MethodDeclaration> functionCall = packageModel.getFunctions().stream().filter(m -> m.getName().equals(methodCallExpr.getName())).findFirst();
-            if(functionCall.isPresent()) {
+            if (functionCall.isPresent()) {
                 Class<?> returnType = DrlxParseUtil.getClassFromContext(context.getPkg().getTypeResolver(), functionCall.get().getType().asString());
                 NodeList<Expression> arguments = methodCallExpr.getArguments();
                 List<String> usedDeclarations = new ArrayList<>();
@@ -726,6 +726,10 @@ public class ModelGenerator {
                     }
                 }
                 return new DrlxParseResult(patternType, exprId, bindingId, methodCallExpr, returnType).setUsedDeclarations(usedDeclarations);
+            } else if (methodCallExpr.getScope().isPresent() && methodCallExpr.getScope().get() instanceof StringLiteralExpr) {
+                List<String> usedDeclarations = new ArrayList<>();
+                TypedExpression converted = DrlxParseUtil.toTypedExpressionFromMethodCallOrField(context, String.class, methodCallExpr, usedDeclarations, new HashSet<>(), context.getPkg().getTypeResolver());
+                return new DrlxParseResult(String.class, exprId, bindingId, converted.getExpression(), converted.getType()).setLeft( converted ).setUsedDeclarations( usedDeclarations );
             } else {
                 NameExpr _this = new NameExpr("_this");
                 TypedExpression converted = DrlxParseUtil.toMethodCallWithClassCheck(context, methodCallExpr, patternType, context.getPkg().getTypeResolver());
