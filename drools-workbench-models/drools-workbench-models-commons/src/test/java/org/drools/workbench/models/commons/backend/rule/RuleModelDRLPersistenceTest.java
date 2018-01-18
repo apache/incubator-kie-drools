@@ -168,7 +168,54 @@ public class RuleModelDRLPersistenceTest extends BaseRuleModelTest {
         assertTrue(newModel.lhs[0] instanceof FactPattern);
         assertTrue(newModel.lhs[1] instanceof FromCollectCompositeFactPattern);
 
-        final String[] rows = newDrl.split("\n");
+        assertDSLEscaping(newDrl);
+    }
+
+    @Test
+    public void testDSLWithFromAccumulate() {
+        final RuleModel m = new RuleModel();
+        m.name = "testDSLWithFromAccumulate";
+        m.lhs = new IPattern[2];
+        m.rhs = new IAction[0];
+
+        final FromAccumulateCompositeFactPattern from = new FromAccumulateCompositeFactPattern();
+
+        final FactPattern person = new FactPattern("Person");
+        person.setBoundName("$p");
+
+        m.lhs[0] = person;
+
+        from.setFactPattern(new FactPattern("java.lang.Number"));
+        from.setSourcePattern(person);
+        from.setFunction("count($p)");
+
+        m.lhs[1] = from;
+
+        final RuleModel modelSpy = spy(m);
+        doReturn(true).when(modelSpy).hasDSLSentences();
+
+        final String drl = ruleModelPersistence.marshal(modelSpy);
+        final RuleModel tempModel = spy(ruleModelPersistence.unmarshalUsingDSL(drl,
+                                                                               null,
+                                                                               dmo,
+                                                                               ""));
+        doReturn(true).when(tempModel).hasDSLSentences();
+
+        final String newDrl = ruleModelPersistence.marshal(tempModel);
+
+        final RuleModel newModel = ruleModelPersistence.unmarshalUsingDSL(newDrl,
+                                                                          null,
+                                                                          dmo,
+                                                                          "");
+
+        assertTrue(newModel.lhs[0] instanceof FactPattern);
+        assertTrue(newModel.lhs[1] instanceof FromAccumulateCompositeFactPattern);
+
+        assertDSLEscaping(newDrl);
+    }
+
+    private void assertDSLEscaping(final String drl) {
+        final String[] rows = drl.split("\n");
         boolean foundWhen = false;
         for (final String row : rows) {
 
