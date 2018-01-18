@@ -59,11 +59,6 @@
       <artifactId>drools-workbench-models-guided-dtable</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-verifier</artifactId>
-      <scope>test</scope>
-    </dependency>
 
     <dependency>
       <groupId>org.kie</groupId>
