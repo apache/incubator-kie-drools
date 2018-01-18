@@ -53,7 +53,12 @@ public class ModelWriter {
     }
 
     public void writeModelFile( List<String> modelSources, MemoryFileSystem trgMfs) {
-        final String pkgNames = modelSources.stream().collect(Collectors.joining("\n"));
+        final String pkgNames;
+        if(!modelSources.isEmpty()) {
+            pkgNames = modelSources.stream().collect(Collectors.joining("\n"));
+        } else {
+            pkgNames = "\n"; // hack: if there are no rules the file needs to contains something otherwise it won't be written
+        }
         trgMfs.write( MODEL_FILE, pkgNames.getBytes() );
     }
 

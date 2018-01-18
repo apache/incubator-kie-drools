@@ -55,13 +55,16 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
         for (ModelBuilderImpl modelBuilder : modelBuilders) {
             final ModelWriter.Result result = modelWriter.writeModel( srcMfs, modelBuilder.getPackageModels() );
             modelFiles.addAll(result.modelFiles);
-            CompilationResult res = getCompiler().compile( result.getSources(), srcMfs, trgMfs, getClassLoader() );
+            final String[] sources = result.getSources();
+            if(sources.length != 0) {
+                CompilationResult res = getCompiler().compile(sources, srcMfs, trgMfs, getClassLoader());
 
-            for (CompilationProblem problem : res.getErrors()) {
-                messages.addMessage(problem);
-            }
-            for (CompilationProblem problem : res.getWarnings()) {
-                messages.addMessage(problem);
+                for (CompilationProblem problem : res.getErrors()) {
+                    messages.addMessage(problem);
+                }
+                for (CompilationProblem problem : res.getWarnings()) {
+                    messages.addMessage(problem);
+                }
             }
         }
 
