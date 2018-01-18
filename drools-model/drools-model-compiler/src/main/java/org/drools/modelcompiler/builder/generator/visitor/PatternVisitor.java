@@ -65,9 +65,7 @@ public class PatternVisitor {
         context.addDeclaration(new DeclarationSpec(pattern.getIdentifier(), patternType, Optional.of(pattern), declarationSource));
 
         if (constraintDescrs.isEmpty() && pattern.getSource() == null) {
-            MethodCallExpr dslExpr = new MethodCallExpr(null, INPUT_CALL);
-            dslExpr.addArgument(new NameExpr(toVar(pattern.getIdentifier())));
-            context.addExpression( dslExpr );
+            context.addExpression(createInputExpression(pattern));
         } else {
 
             final boolean allConstraintsArePositional = !constraintDescrs.isEmpty() && constraintDescrs.stream()
@@ -99,7 +97,11 @@ public class PatternVisitor {
                         context.addDeclaration(new DeclarationSpec(patternIdentifier, patternType, Optional.of(pattern), Optional.empty()));
                     }
 
+                    context.addExpression(createInputExpression(pattern));
+
                     new OOPathExprGenerator(context, packageModel).visit(patternType, patternIdentifier, (OOPathExpr)drlxParseResult.getExpr());
+
+
                 } else {
                     // need to augment the reactOn inside drlxParseResult with the look-ahead properties.
                     Collection<String> lookAheadFieldsOfIdentifier = context.getRuleDescr().lookAheadFieldsOfIdentifier(pattern);
@@ -117,6 +119,12 @@ public class PatternVisitor {
                 context.popExprPointer();
             }
         }
+    }
+
+    private MethodCallExpr createInputExpression(PatternDescr pattern) {
+        MethodCallExpr dslExpr = new MethodCallExpr(null, INPUT_CALL);
+        dslExpr.addArgument(new NameExpr(toVar(pattern.getIdentifier())));
+        return dslExpr;
     }
 
     private static String getConstraintExpression(Class<?> patternType, BaseDescr constraint) {

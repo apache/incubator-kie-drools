@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import org.drools.javaparser.ast.drlx.OOPathChunk;
 import org.drools.javaparser.ast.drlx.OOPathExpr;
+import org.drools.javaparser.ast.expr.BooleanLiteralExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
@@ -63,6 +64,9 @@ public class OOPathExprGenerator {
             final Expression condition = chunk.getCondition();
             if (condition != null) {
                 final DrlxParseResult drlxParseResult = ModelGenerator.drlxParse(context, packageModel, fieldType, bindingId, condition.toString());
+                ooPathConditionExpressions.add(drlxParseResult);
+            } else {
+                final DrlxParseResult drlxParseResult = new DrlxParseResult(fieldType, "", bindingId, new BooleanLiteralExpr(true), fieldType);
                 ooPathConditionExpressions.add(drlxParseResult);
             }
 
