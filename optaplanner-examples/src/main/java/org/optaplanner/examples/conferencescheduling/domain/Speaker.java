@@ -28,8 +28,12 @@ public class Speaker extends AbstractPersistable {
 
     private Set<String> requiredTimeslotTagSet;
     private Set<String> preferredTimeslotTagSet;
+    private Set<String> prohibitedTimeslotTagSet;
+    private Set<String> undesiredTimeslotTagSet;
     private Set<String> requiredRoomTagSet;
     private Set<String> preferredRoomTagSet;
+    private Set<String> prohibitedRoomTagSet;
+    private Set<String> undesiredRoomTagSet;
 
     @Override
     public String toString() {
@@ -72,6 +76,22 @@ public class Speaker extends AbstractPersistable {
         this.preferredTimeslotTagSet = preferredTimeslotTagSet;
     }
 
+    public Set<String> getProhibitedTimeslotTagSet() {
+        return prohibitedTimeslotTagSet;
+    }
+
+    public void setProhibitedTimeslotTagSet(Set<String> prohibitedTimeslotTagSet) {
+        this.prohibitedTimeslotTagSet = prohibitedTimeslotTagSet;
+    }
+
+    public Set<String> getUndesiredTimeslotTagSet() {
+        return undesiredTimeslotTagSet;
+    }
+
+    public void setUndesiredTimeslotTagSet(Set<String> undesiredTimeslotTagSet) {
+        this.undesiredTimeslotTagSet = undesiredTimeslotTagSet;
+    }
+
     public Set<String> getRequiredRoomTagSet() {
         return requiredRoomTagSet;
     }
@@ -86,6 +106,22 @@ public class Speaker extends AbstractPersistable {
 
     public void setPreferredRoomTagSet(Set<String> preferredRoomTagSet) {
         this.preferredRoomTagSet = preferredRoomTagSet;
+    }
+
+    public Set<String> getProhibitedRoomTagSet() {
+        return prohibitedRoomTagSet;
+    }
+
+    public void setProhibitedRoomTagSet(Set<String> prohibitedRoomTagSet) {
+        this.prohibitedRoomTagSet = prohibitedRoomTagSet;
+    }
+
+    public Set<String> getUndesiredRoomTagSet() {
+        return undesiredRoomTagSet;
+    }
+
+    public void setUndesiredRoomTagSet(Set<String> undesiredRoomTagSet) {
+        this.undesiredRoomTagSet = undesiredRoomTagSet;
     }
 
 }

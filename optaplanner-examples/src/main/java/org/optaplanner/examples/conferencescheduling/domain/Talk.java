@@ -36,8 +36,12 @@ public class Talk extends AbstractPersistable {
     private List<Speaker> speakerList;
     private Set<String> requiredTimeslotTagSet;
     private Set<String> preferredTimeslotTagSet;
+    private Set<String> prohibitedTimeslotTagSet;
+    private Set<String> undesiredTimeslotTagSet;
     private Set<String> requiredRoomTagSet;
     private Set<String> preferredRoomTagSet;
+    private Set<String> prohibitedRoomTagSet;
+    private Set<String> undesiredRoomTagSet;
 
     private boolean pinnedByUser = false;
 
@@ -92,6 +96,20 @@ public class Talk extends AbstractPersistable {
         return (int) preferredTimeslotTagSet.stream().filter(tag -> !timeslot.hasTag(tag)).count();
     }
 
+    public int prevailingProhibitedTimeslotTagCount() {
+        if (timeslot == null) {
+            return 0;
+        }
+        return (int) prohibitedTimeslotTagSet.stream().filter(tag -> timeslot.hasTag(tag)).count();
+    }
+
+    public int prevailingUndesiredTimeslotTagCount() {
+        if (timeslot == null) {
+            return 0;
+        }
+        return (int) undesiredTimeslotTagSet.stream().filter(tag -> timeslot.hasTag(tag)).count();
+    }
+
     public int missingRequiredRoomTagCount() {
         if (room == null) {
             return 0;
@@ -104,6 +122,20 @@ public class Talk extends AbstractPersistable {
             return 0;
         }
         return (int) preferredRoomTagSet.stream().filter(tag -> !room.hasTag(tag)).count();
+    }
+
+    public int prevailingProhibitedRoomTagCount() {
+        if (room == null) {
+            return 0;
+        }
+        return (int) prohibitedRoomTagSet.stream().filter(tag -> room.hasTag(tag)).count();
+    }
+
+    public int prevailingUndesiredRoomTagCount() {
+        if (room == null) {
+            return 0;
+        }
+        return (int) undesiredRoomTagSet.stream().filter(tag -> room.hasTag(tag)).count();
     }
 
     public int missingSpeakerRequiredTimeslotTagCount() {
@@ -122,6 +154,22 @@ public class Talk extends AbstractPersistable {
                 .filter(tag -> !timeslot.hasTag(tag)).count();
     }
 
+    public int prevailingSpeakerProhibitedTimeslotTagCount() {
+        if (timeslot == null) {
+            return 0;
+        }
+        return (int) speakerList.stream().flatMap(speaker -> speaker.getProhibitedTimeslotTagSet().stream())
+                .filter(tag -> timeslot.hasTag(tag)).count();
+    }
+
+    public int prevailingSpeakerUndesiredTimeslotTagCount() {
+        if (timeslot == null) {
+            return 0;
+        }
+        return (int) speakerList.stream().flatMap(speaker -> speaker.getUndesiredTimeslotTagSet().stream())
+                .filter(tag -> timeslot.hasTag(tag)).count();
+    }
+
     public int missingSpeakerRequiredRoomTagCount() {
         if (room == null) {
             return 0;
@@ -136,6 +184,22 @@ public class Talk extends AbstractPersistable {
         }
         return (int) speakerList.stream().flatMap(speaker -> speaker.getPreferredRoomTagSet().stream())
                 .filter(tag -> !room.hasTag(tag)).count();
+    }
+
+    public int prevailingSpeakerProhibitedRoomTagCount() {
+        if (room == null) {
+            return 0;
+        }
+        return (int) speakerList.stream().flatMap(speaker -> speaker.getProhibitedRoomTagSet().stream())
+                .filter(tag -> room.hasTag(tag)).count();
+    }
+
+    public int prevailingSpeakerUndesiredRoomTagCount() {
+        if (room == null) {
+            return 0;
+        }
+        return (int) speakerList.stream().flatMap(speaker -> speaker.getUndesiredRoomTagSet().stream())
+                .filter(tag -> room.hasTag(tag)).count();
     }
 
     @Override
@@ -219,6 +283,22 @@ public class Talk extends AbstractPersistable {
         this.preferredTimeslotTagSet = preferredTimeslotTagSet;
     }
 
+    public Set<String> getProhibitedTimeslotTagSet() {
+        return prohibitedTimeslotTagSet;
+    }
+
+    public void setProhibitedTimeslotTagSet(Set<String> prohibitedTimeslotTagSet) {
+        this.prohibitedTimeslotTagSet = prohibitedTimeslotTagSet;
+    }
+
+    public Set<String> getUndesiredTimeslotTagSet() {
+        return undesiredTimeslotTagSet;
+    }
+
+    public void setUndesiredTimeslotTagSet(Set<String> undesiredTimeslotTagSet) {
+        this.undesiredTimeslotTagSet = undesiredTimeslotTagSet;
+    }
+
     public Set<String> getRequiredRoomTagSet() {
         return requiredRoomTagSet;
     }
@@ -233,6 +313,22 @@ public class Talk extends AbstractPersistable {
 
     public void setPreferredRoomTagSet(Set<String> preferredRoomTagSet) {
         this.preferredRoomTagSet = preferredRoomTagSet;
+    }
+
+    public Set<String> getProhibitedRoomTagSet() {
+        return prohibitedRoomTagSet;
+    }
+
+    public void setProhibitedRoomTagSet(Set<String> prohibitedRoomTagSet) {
+        this.prohibitedRoomTagSet = prohibitedRoomTagSet;
+    }
+
+    public Set<String> getUndesiredRoomTagSet() {
+        return undesiredRoomTagSet;
+    }
+
+    public void setUndesiredRoomTagSet(Set<String> undesiredRoomTagSet) {
+        this.undesiredRoomTagSet = undesiredRoomTagSet;
     }
 
     public boolean isPinnedByUser() {

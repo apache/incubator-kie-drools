@@ -305,10 +305,10 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
                 unavailableTimeslotSet = new LinkedHashSet<>(timeslotList.size());
             }
             speaker.setUnavailableTimeslotSet(unavailableTimeslotSet);
-            Set<String> requiredTimeslotTagSet = new LinkedHashSet<>();
-            speaker.setRequiredTimeslotTagSet(requiredTimeslotTagSet);
-            Set<String> preferredTimeslotTagSet = new LinkedHashSet<>();
-            speaker.setPreferredTimeslotTagSet(preferredTimeslotTagSet);
+            speaker.setRequiredTimeslotTagSet(new LinkedHashSet<>());
+            speaker.setPreferredTimeslotTagSet(new LinkedHashSet<>());
+            speaker.setProhibitedTimeslotTagSet(new LinkedHashSet<>());
+            speaker.setUndesiredTimeslotTagSet(new LinkedHashSet<>());
             Set<String> requiredRoomTagSet = new LinkedHashSet<>();
             for (Pair<String, Double> roomTagProbability : roomTagProbabilityList) {
                 if (random.nextDouble() < roomTagProbability.getValue() / 20.0) {
@@ -323,6 +323,8 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
                 }
             }
             speaker.setPreferredRoomTagSet(preferredRoomTagSet);
+            speaker.setProhibitedRoomTagSet(new LinkedHashSet<>());
+            speaker.setUndesiredRoomTagSet(new LinkedHashSet<>());
             logger.trace("Created speaker with name ({}).",
                     speaker.getName());
             speakerList.add(speaker);
@@ -362,17 +364,18 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
                 speakerListIndex = (speakerListIndex + 1) % solution.getSpeakerList().size();
             }
             talk.setSpeakerList(speakerList);
-            Set<String> requiredTimeslotTagSet = new LinkedHashSet<>();
-            talk.setRequiredTimeslotTagSet(requiredTimeslotTagSet);
-            Set<String> preferredTimeslotTagSet = new LinkedHashSet<>();
-            talk.setPreferredTimeslotTagSet(preferredTimeslotTagSet);
+            talk.setRequiredTimeslotTagSet(new LinkedHashSet<>());
+            talk.setPreferredTimeslotTagSet(new LinkedHashSet<>());
+            talk.setProhibitedTimeslotTagSet(new LinkedHashSet<>());
+            talk.setUndesiredTimeslotTagSet(new LinkedHashSet<>());
             Set<String> requiredRoomTagSet = new LinkedHashSet<>();
             if (i < labTalkCount) {
                 requiredRoomTagSet.add(LAB_ROOM_TAG);
             }
             talk.setRequiredRoomTagSet(requiredRoomTagSet);
-            Set<String> preferredRoomTagSet = new LinkedHashSet<>();
-            talk.setPreferredRoomTagSet(preferredRoomTagSet);
+            talk.setPreferredRoomTagSet(new LinkedHashSet<>());
+            talk.setProhibitedRoomTagSet(new LinkedHashSet<>());
+            talk.setUndesiredRoomTagSet(new LinkedHashSet<>());
             logger.trace("Created talk with code ({}), title ({}) and speakers ({}).",
                     talk.getCode(), talk.getTitle(), speakerList);
             talkList.add(talk);

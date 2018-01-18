@@ -24,9 +24,13 @@ public class ConferenceParametrization extends AbstractPersistable {
     private int sectorConflict = 10;
     private int languageDiversity = 10;
     private int speakerPreferredTimeslotTag = 10;
+    private int speakerUndesiredTimeslotTag = 10;
     private int talkPreferredTimeslotTag = 10;
+    private int talkUndesiredTimeslotTag = 10;
     private int speakerPreferredRoomTag = 10;
+    private int speakerUndesiredRoomTag = 10;
     private int talkPreferredRoomTag = 10;
+    private int talkUndesiredRoomTag = 10;
 
     // ************************************************************************
     // Simple getters and setters
@@ -64,12 +68,28 @@ public class ConferenceParametrization extends AbstractPersistable {
         this.speakerPreferredTimeslotTag = speakerPreferredTimeslotTag;
     }
 
+    public int getSpeakerUndesiredTimeslotTag() {
+        return speakerUndesiredTimeslotTag;
+    }
+
+    public void setSpeakerUndesiredTimeslotTag(int speakerUndesiredTimeslotTag) {
+        this.speakerUndesiredTimeslotTag = speakerUndesiredTimeslotTag;
+    }
+
     public int getTalkPreferredTimeslotTag() {
         return talkPreferredTimeslotTag;
     }
 
     public void setTalkPreferredTimeslotTag(int talkPreferredTimeslotTag) {
         this.talkPreferredTimeslotTag = talkPreferredTimeslotTag;
+    }
+
+    public int getTalkUndesiredTimeslotTag() {
+        return talkUndesiredTimeslotTag;
+    }
+
+    public void setTalkUndesiredTimeslotTag(int talkUndesiredTimeslotTag) {
+        this.talkUndesiredTimeslotTag = talkUndesiredTimeslotTag;
     }
 
     public int getSpeakerPreferredRoomTag() {
@@ -80,12 +100,28 @@ public class ConferenceParametrization extends AbstractPersistable {
         this.speakerPreferredRoomTag = speakerPreferredRoomTag;
     }
 
+    public int getSpeakerUndesiredRoomTag() {
+        return speakerUndesiredRoomTag;
+    }
+
+    public void setSpeakerUndesiredRoomTag(int speakerUndesiredRoomTag) {
+        this.speakerUndesiredRoomTag = speakerUndesiredRoomTag;
+    }
+
     public int getTalkPreferredRoomTag() {
         return talkPreferredRoomTag;
     }
 
     public void setTalkPreferredRoomTag(int talkPreferredRoomTag) {
         this.talkPreferredRoomTag = talkPreferredRoomTag;
+    }
+
+    public int getTalkUndesiredRoomTag() {
+        return talkUndesiredRoomTag;
+    }
+
+    public void setTalkUndesiredRoomTag(int talkUndesiredRoomTag) {
+        this.talkUndesiredRoomTag = talkUndesiredRoomTag;
     }
 
 }

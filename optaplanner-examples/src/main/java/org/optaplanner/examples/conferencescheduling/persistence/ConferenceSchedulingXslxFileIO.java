@@ -155,12 +155,20 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                     "Soft reward per 2 talks that have the same timeslot and a different language");
             readConstraintLine("Speaker preferred timeslot tag", parametrization::setSpeakerPreferredTimeslotTag,
                     "Soft penalty per missing preferred tag in a talk's timeslot");
+            readConstraintLine("Speaker undesired timeslot tag", parametrization::setSpeakerUndesiredTimeslotTag,
+                    "Soft penalty per undesired tag in a talk's timeslot");
             readConstraintLine("Talk preferred timeslot tag", parametrization::setTalkPreferredTimeslotTag,
                     "Soft penalty per missing preferred tag in a talk's timeslot");
+            readConstraintLine("Talk undesired timeslot tag", parametrization::setTalkUndesiredTimeslotTag,
+                    "Soft penalty per undesired tag in a talk's timeslot");
             readConstraintLine("Speaker preferred room tag", parametrization::setSpeakerPreferredRoomTag,
                     "Soft penalty per missing preferred tag in a talk's room");
+            readConstraintLine("Speaker undesired room tag", parametrization::setSpeakerUndesiredRoomTag,
+                    "Soft penalty per undesired tag in a talk's room");
             readConstraintLine("Talk preferred room tag", parametrization::setTalkPreferredRoomTag,
                     "Soft penalty per missing preferred tag in a talk's room");
+            readConstraintLine("Talk undesired room tag", parametrization::setTalkUndesiredRoomTag,
+                    "Soft penalty per undesired tag in a talk's room");
             solution.setParametrization(parametrization);
         }
 
@@ -281,13 +289,21 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             readHeaderCell("");
             readHeaderCell("");
             readHeaderCell("");
+            readHeaderCell("");
+            readHeaderCell("");
+            readHeaderCell("");
+            readHeaderCell("");
             readTimeslotDaysHeaders();
             nextRow(false);
             readHeaderCell("Name");
             readHeaderCell("Required timeslot tags");
             readHeaderCell("Preferred timeslot tags");
+            readHeaderCell("Prohibited timeslot tags");
+            readHeaderCell("Undesired timeslot tags");
             readHeaderCell("Required room tags");
             readHeaderCell("Preferred room tags");
+            readHeaderCell("Prohibited room tags");
+            readHeaderCell("Undesired room tags");
             readTimeslotHoursHeaders();
             List<Speaker> speakerList = new ArrayList<>(currentSheet.getLastRowNum() - 1);
             long id = 0L;
@@ -305,12 +321,24 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 speaker.setPreferredTimeslotTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
                         .filter(tag -> !tag.isEmpty()).collect(toCollection(LinkedHashSet::new)));
                 verifyTimeslotTags(speaker.getPreferredTimeslotTagSet());
+                speaker.setProhibitedTimeslotTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
+                        .filter(tag -> !tag.isEmpty()).collect(toCollection(LinkedHashSet::new)));
+                verifyTimeslotTags(speaker.getProhibitedTimeslotTagSet());
+                speaker.setUndesiredTimeslotTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
+                        .filter(tag -> !tag.isEmpty()).collect(toCollection(LinkedHashSet::new)));
+                verifyTimeslotTags(speaker.getUndesiredTimeslotTagSet());
                 speaker.setRequiredRoomTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
                         .filter(tag -> !tag.isEmpty()).collect(toCollection(LinkedHashSet::new)));
                 verifyRoomTags(speaker.getRequiredRoomTagSet());
                 speaker.setPreferredRoomTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
                         .filter(tag -> !tag.isEmpty()).collect(toCollection(LinkedHashSet::new)));
                 verifyRoomTags(speaker.getPreferredRoomTagSet());
+                speaker.setProhibitedRoomTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
+                        .filter(tag -> !tag.isEmpty()).collect(toCollection(LinkedHashSet::new)));
+                verifyRoomTags(speaker.getProhibitedRoomTagSet());
+                speaker.setUndesiredRoomTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
+                        .filter(tag -> !tag.isEmpty()).collect(toCollection(LinkedHashSet::new)));
+                verifyRoomTags(speaker.getUndesiredRoomTagSet());
                 Set<Timeslot> unavailableTimeslotSet = new LinkedHashSet<>();
                 for (Timeslot timeslot : solution.getTimeslotList()) {
                     Cell cell = nextCell();
@@ -352,8 +380,12 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             readHeaderCell("Speakers");
             readHeaderCell("Required timeslot tags");
             readHeaderCell("Preferred timeslot tags");
+            readHeaderCell("Prohibited timeslot tags");
+            readHeaderCell("Undesired timeslot tags");
             readHeaderCell("Required room tags");
             readHeaderCell("Preferred room tags");
+            readHeaderCell("Prohibited room tags");
+            readHeaderCell("Undesired room tags");
             readHeaderCell("Pinned by user");
             readHeaderCell("Timeslot day");
             readHeaderCell("Start");
@@ -408,12 +440,24 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 talk.setPreferredTimeslotTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
                         .filter(tag -> !tag.isEmpty()).collect(toCollection(LinkedHashSet::new)));
                 verifyTimeslotTags(talk.getPreferredTimeslotTagSet());
+                talk.setProhibitedTimeslotTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
+                        .filter(tag -> !tag.isEmpty()).collect(toCollection(LinkedHashSet::new)));
+                verifyTimeslotTags(talk.getProhibitedTimeslotTagSet());
+                talk.setUndesiredTimeslotTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
+                        .filter(tag -> !tag.isEmpty()).collect(toCollection(LinkedHashSet::new)));
+                verifyTimeslotTags(talk.getUndesiredTimeslotTagSet());
                 talk.setRequiredRoomTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
                         .filter(tag -> !tag.isEmpty()).collect(toCollection(LinkedHashSet::new)));
                 verifyRoomTags(talk.getRequiredRoomTagSet());
                 talk.setPreferredRoomTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
                         .filter(tag -> !tag.isEmpty()).collect(toCollection(LinkedHashSet::new)));
                 verifyRoomTags(talk.getPreferredRoomTagSet());
+                talk.setProhibitedRoomTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
+                        .filter(tag -> !tag.isEmpty()).collect(toCollection(LinkedHashSet::new)));
+                verifyRoomTags(talk.getProhibitedRoomTagSet());
+                talk.setUndesiredRoomTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
+                        .filter(tag -> !tag.isEmpty()).collect(toCollection(LinkedHashSet::new)));
+                verifyRoomTags(talk.getUndesiredRoomTagSet());
                 talk.setPinnedByUser(nextCell().getBooleanCellValue());
                 Pair<Timeslot, Room> timeslotRoomPair = talkCodeToTimeslotRoomMap.get(talk.getCode());
                 if (timeslotRoomPair != null) {
@@ -679,12 +723,20 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                     "Soft reward per 2 talks that have the same timeslot and a different language");
             writeConstraintLine("Speaker preferred timeslot tag", parametrization::getSpeakerPreferredTimeslotTag,
                     "Soft penalty per missing preferred tag in a talk's timeslot");
+            writeConstraintLine("Speaker undesired timeslot tag", parametrization::getSpeakerUndesiredTimeslotTag,
+                    "Soft penalty per undesired tag in a talk's timeslot");
             writeConstraintLine("Talk preferred timeslot tag", parametrization::getTalkPreferredTimeslotTag,
                     "Soft penalty per missing preferred tag in a talk's timeslot");
+            writeConstraintLine("Talk undesired timeslot tag", parametrization::getTalkUndesiredTimeslotTag,
+                    "Soft penalty per undesired tag in a talk's timeslot");
             writeConstraintLine("Speaker preferred room tag", parametrization::getSpeakerPreferredRoomTag,
                     "Soft penalty per missing preferred tag in a talk's room");
+            writeConstraintLine("Speaker undesired room tag", parametrization::getSpeakerUndesiredRoomTag,
+                    "Soft penalty per undesired tag in a talk's room");
             writeConstraintLine("Talk preferred room tag", parametrization::getTalkPreferredRoomTag,
                     "Soft penalty per missing preferred tag in a talk's room");
+            writeConstraintLine("Talk undesired room tag", parametrization::getTalkUndesiredRoomTag,
+                    "Soft penalty per undesired tag in a talk's room");
             autoSizeColumnsWithHeader();
         }
 
@@ -747,21 +799,33 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             nextHeaderCell("");
             nextHeaderCell("");
             nextHeaderCell("");
+            nextHeaderCell("");
+            nextHeaderCell("");
+            nextHeaderCell("");
+            nextHeaderCell("");
             writeTimeslotDaysHeaders();
             nextRow();
             nextHeaderCell("Name");
             nextHeaderCell("Required timeslot tags");
             nextHeaderCell("Preferred timeslot tags");
+            nextHeaderCell("Prohibited timeslot tags");
+            nextHeaderCell("Undesired timeslot tags");
             nextHeaderCell("Required room tags");
             nextHeaderCell("Preferred room tags");
+            nextHeaderCell("Prohibited room tags");
+            nextHeaderCell("Undesired room tags");
             writeTimeslotHoursHeaders();
             for (Speaker speaker : solution.getSpeakerList()) {
                 nextRow();
                 nextCell().setCellValue(speaker.getName());
                 nextCell().setCellValue(String.join(", ", speaker.getRequiredTimeslotTagSet()));
                 nextCell().setCellValue(String.join(", ", speaker.getPreferredTimeslotTagSet()));
+                nextCell().setCellValue(String.join(", ", speaker.getProhibitedTimeslotTagSet()));
+                nextCell().setCellValue(String.join(", ", speaker.getUndesiredTimeslotTagSet()));
                 nextCell().setCellValue(String.join(", ", speaker.getRequiredRoomTagSet()));
                 nextCell().setCellValue(String.join(", ", speaker.getPreferredRoomTagSet()));
+                nextCell().setCellValue(String.join(", ", speaker.getProhibitedRoomTagSet()));
+                nextCell().setCellValue(String.join(", ", speaker.getUndesiredRoomTagSet()));
                 List<Talk> talkList = solution.getTalkList().stream()
                         .filter(talk -> talk.getSpeakerList().contains(speaker))
                         .collect(toList());
@@ -788,8 +852,12 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             nextHeaderCell("Speakers");
             nextHeaderCell("Required timeslot tags");
             nextHeaderCell("Preferred timeslot tags");
+            nextHeaderCell("Prohibited timeslot tags");
+            nextHeaderCell("Undesired timeslot tags");
             nextHeaderCell("Required room tags");
             nextHeaderCell("Preferred room tags");
+            nextHeaderCell("Prohibited room tags");
+            nextHeaderCell("Undesired room tags");
             nextHeaderCell("Pinned by user");
             nextHeaderCell("Timeslot day");
             nextHeaderCell("Start");
@@ -807,8 +875,12 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                         .stream().map(Speaker::getName).collect(joining(", ")));
                 nextCell().setCellValue(String.join(", ", talk.getRequiredTimeslotTagSet()));
                 nextCell().setCellValue(String.join(", ", talk.getPreferredTimeslotTagSet()));
+                nextCell().setCellValue(String.join(", ", talk.getProhibitedTimeslotTagSet()));
+                nextCell().setCellValue(String.join(", ", talk.getUndesiredTimeslotTagSet()));
                 nextCell().setCellValue(String.join(", ", talk.getRequiredRoomTagSet()));
                 nextCell().setCellValue(String.join(", ", talk.getPreferredRoomTagSet()));
+                nextCell().setCellValue(String.join(", ", talk.getProhibitedRoomTagSet()));
+                nextCell().setCellValue(String.join(", ", talk.getUndesiredRoomTagSet()));
                 nextCell(talk.isPinnedByUser() ? pinnedStyle : null).setCellValue(talk.isPinnedByUser());
                 nextCell().setCellValue(talk.getTimeslot() == null ? "" : DAY_FORMATTER.format(talk.getTimeslot().getDate()));
                 nextCell().setCellValue(talk.getTimeslot() == null ? "" : TIME_FORMATTER.format(talk.getTimeslot().getStartDateTime()));
