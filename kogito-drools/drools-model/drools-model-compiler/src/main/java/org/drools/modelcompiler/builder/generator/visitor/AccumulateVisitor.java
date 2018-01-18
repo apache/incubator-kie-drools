@@ -52,6 +52,7 @@ public class AccumulateVisitor {
         context.addExpression(accumulateDSL);
         final MethodCallExpr accumulateExprs = new MethodCallExpr(null, "and");
         accumulateDSL.addArgument( accumulateExprs );
+
         context.pushExprPointer(accumulateExprs::addArgument);
 
         BaseDescr input = descr.getInputPattern() == null ? descr.getInput() : descr.getInputPattern();
