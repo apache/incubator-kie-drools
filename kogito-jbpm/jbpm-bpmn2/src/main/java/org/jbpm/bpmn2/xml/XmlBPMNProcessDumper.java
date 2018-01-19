@@ -27,8 +27,6 @@ import java.util.Set;
 
 import org.drools.compiler.compiler.xml.XmlDumper;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
-import org.jbpm.process.core.Work;
-import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.core.xml.Handler;
 import org.drools.core.xml.SemanticModule;
 import org.drools.core.xml.SemanticModules;
@@ -39,10 +37,12 @@ import org.jbpm.bpmn2.core.Error;
 import org.jbpm.bpmn2.core.ItemDefinition;
 import org.jbpm.compiler.xml.XmlProcessReader;
 import org.jbpm.process.core.ContextContainer;
+import org.jbpm.process.core.Work;
 import org.jbpm.process.core.context.swimlane.Swimlane;
 import org.jbpm.process.core.context.swimlane.SwimlaneContext;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.process.core.event.EventFilter;
 import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.process.core.impl.ProcessImpl;
@@ -69,6 +69,8 @@ import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.NodeContainer;
 import org.kie.api.definition.process.Process;
 import org.kie.api.definition.process.WorkflowProcess;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class XmlBPMNProcessDumper implements XmlProcessDumper {
 
@@ -83,6 +85,8 @@ public class XmlBPMNProcessDumper implements XmlProcessDumper {
     public static final int META_DATA_USING_DI = 2;
 
 	public static final XmlBPMNProcessDumper INSTANCE = new XmlBPMNProcessDumper();
+
+    private static final Logger logger = LoggerFactory.getLogger(XmlBPMNProcessDumper.class);
 
     private final static String EOL = System.getProperty( "line.separator" );
 
@@ -566,19 +570,23 @@ public class XmlBPMNProcessDumper implements XmlProcessDumper {
                 }
             } else if (node instanceof ActionNode) {
             	ActionNode actionNode = (ActionNode) node;
-            	DroolsConsequenceAction action = (DroolsConsequenceAction) actionNode.getAction();
-        		if (action != null) {
-        		    String s = action.getConsequence();
-	            	if (s.startsWith("org.drools.core.process.instance.context.exception.ExceptionScopeInstance scopeInstance = (org.drools.core.process.instance.context.exception.ExceptionScopeInstance) ((org.drools.workflow.instance.NodeInstance) kcontext.getNodeInstance()).resolveContextInstance(org.drools.core.process.core.context.exception.ExceptionScope.EXCEPTION_SCOPE, \"")) {
-	            		s = s.substring(327);
-	                    String type = s.substring(0, s.indexOf("\""));
-	            		if (!escalations.contains(type)) {
-	            			escalations.add(type);
-		                    xmlDump.append(
-	                            "  <escalation id=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(type) + "\" escalationCode=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(type) + "\" />" + EOL);
-	            		}
-	            	}
-        		}
+            	if(actionNode.getAction() instanceof DroolsConsequenceAction) {
+                    DroolsConsequenceAction action = (DroolsConsequenceAction) actionNode.getAction();
+                    if (action != null) {
+                        String s = action.getConsequence();
+                        if (s.startsWith("org.drools.core.process.instance.context.exception.ExceptionScopeInstance scopeInstance = (org.drools.core.process.instance.context.exception.ExceptionScopeInstance) ((org.drools.workflow.instance.NodeInstance) kcontext.getNodeInstance()).resolveContextInstance(org.drools.core.process.core.context.exception.ExceptionScope.EXCEPTION_SCOPE, \"")) {
+                            s = s.substring(327);
+                            String type = s.substring(0, s.indexOf("\""));
+                            if (!escalations.contains(type)) {
+                                escalations.add(type);
+                                xmlDump.append(
+                                        "  <escalation id=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(type) + "\" escalationCode=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(type) + "\" />" + EOL);
+                            }
+                        }
+                    }
+                } else {
+            	    logger.warn("Cannot serialize custom implementation of the Action interface to XML");
+                }
             } else if (node instanceof EventNode) {
             	EventNode eventNode = (EventNode) node;
             	String type = (String) eventNode.getMetaData("EscalationEvent");

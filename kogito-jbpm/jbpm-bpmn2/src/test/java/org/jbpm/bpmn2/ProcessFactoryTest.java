@@ -31,7 +31,9 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class ProcessFactoryTest extends JbpmBpmn2TestCase {
 
@@ -253,6 +255,38 @@ public class ProcessFactoryTest extends JbpmBpmn2TestCase {
 
         pi.signalEvent("testEvent",
                        null);
+
+        assertEquals(ProcessInstance.STATE_COMPLETED,
+                     pi.getState());
+
+        ksession.dispose();
+    }
+
+    @Test(timeout = 10000)
+    public void testActionNodeIsDroolsAction() throws Exception {
+        RuleFlowProcessFactory factory = RuleFlowProcessFactory.createProcess("org.jbpm.process");
+        factory
+                .name("ActionNodeActionProcess").version("1")
+                .startNode(1).name("Start").done()
+                .endNode(3).name("End").done()
+                .actionNode(2).name("printTextActionNode").action("java",
+                                                                  "System.out.println(\"test print\");",
+                                                                  true).done()
+                .connection(1,
+                            2)
+                .connection(2,
+                            3);
+        RuleFlowProcess process = factory.validate().getProcess();
+
+        assertNotNull(process);
+
+        Resource res = ResourceFactory.newByteArrayResource(XmlBPMNProcessDumper.INSTANCE.dump(process).getBytes());
+        res.setSourcePath("/tmp/processFactory.bpmn2");
+        KieBase kbase = createKnowledgeBaseFromResources(res);
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ProcessInstance pi = ksession.startProcess("org.jbpm.process");
+
+        assertNotNull(pi);
 
         assertEquals(ProcessInstance.STATE_COMPLETED,
                      pi.getState());

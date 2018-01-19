@@ -49,8 +49,21 @@ public class ActionNodeFactory extends NodeFactory {
 
     public ActionNodeFactory action(String dialect,
                                     String action) {
-        getActionNode().setAction(new DroolsConsequenceAction(dialect,
-                                                              action));
+        return action(dialect, action, false);
+    }
+
+    public ActionNodeFactory action(String dialect,
+                                    String action,
+                                    boolean isDroolsAction) {
+        if(isDroolsAction) {
+            DroolsAction droolsAction = new DroolsAction();
+            droolsAction.setMetaData("Action",
+                                     action);
+            getActionNode().setAction(droolsAction);
+        } else {
+            getActionNode().setAction(new DroolsConsequenceAction(dialect,
+                                                                  action));
+        }
         return this;
     }
 
