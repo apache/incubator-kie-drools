@@ -799,7 +799,7 @@ public class BenchmarkReport {
         WebsiteResourceUtils.copyResourcesTo(benchmarkReportDirectory);
 
         htmlOverviewFile = new File(benchmarkReportDirectory, "index.html");
-        Configuration freemarkerCfg = new Configuration();
+        Configuration freemarkerCfg = new Configuration(Configuration.DEFAULT_INCOMPATIBLE_IMPROVEMENTS);
         freemarkerCfg.setDefaultEncoding("UTF-8");
         freemarkerCfg.setLocale(locale);
         freemarkerCfg.setClassForTemplateLoading(BenchmarkReport.class, "");
