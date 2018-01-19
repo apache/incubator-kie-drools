@@ -32,6 +32,13 @@ public class ConferenceParametrization extends AbstractPersistable {
     private int talkPreferredRoomTag = 10;
     private int talkUndesiredRoomTag = 10;
 
+    public ConferenceParametrization() {
+    }
+
+    public ConferenceParametrization(long id) {
+        super(id);
+    }
+
     // ************************************************************************
     // Simple getters and setters
     // ************************************************************************
@@ -123,5 +130,4 @@ public class ConferenceParametrization extends AbstractPersistable {
     public void setTalkUndesiredRoomTag(int talkUndesiredRoomTag) {
         this.talkUndesiredRoomTag = talkUndesiredRoomTag;
     }
-
 }

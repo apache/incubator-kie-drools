@@ -51,6 +51,13 @@ public class ConferenceSolution extends AbstractPersistable {
     @PlanningScore
     private HardSoftScore score = null;
 
+    public ConferenceSolution() {
+    }
+
+    public ConferenceSolution(long id) {
+        super(id);
+    }
+
     @Override
     public String toString() {
         return conferenceName;
@@ -114,6 +121,35 @@ public class ConferenceSolution extends AbstractPersistable {
 
     public void setScore(HardSoftScore score) {
         this.score = score;
+    }
+
+    // ************************************************************************
+    // With methods
+    // ************************************************************************
+
+    public ConferenceSolution withTalkList(List<Talk> talkList) {
+        this.talkList = talkList;
+        return this;
+    }
+
+    public ConferenceSolution withTimeslotList(List<Timeslot> timeslotList) {
+        this.timeslotList = timeslotList;
+        return this;
+    }
+
+    public ConferenceSolution withRoomList(List<Room> roomList) {
+        this.roomList = roomList;
+        return this;
+    }
+
+    public ConferenceSolution withSpeakerList(List<Speaker> speakerList) {
+        this.speakerList = speakerList;
+        return this;
+    }
+
+    public ConferenceSolution withParametrization(ConferenceParametrization parametrization) {
+        this.parametrization = parametrization;
+        return this;
     }
 
 }

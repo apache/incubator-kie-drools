@@ -31,6 +31,13 @@ public class Timeslot extends AbstractPersistable {
 
     private Set<String> tagSet;
 
+    public Timeslot() {
+    }
+
+    public Timeslot(long id) {
+        super(id);
+    }
+
     public LocalDate getDate() {
         return startDateTime.toLocalDate();
     }
@@ -90,6 +97,25 @@ public class Timeslot extends AbstractPersistable {
 
     public void setTagSet(Set<String> tagSet) {
         this.tagSet = tagSet;
+    }
+
+    // ************************************************************************
+    // With methods
+    // ************************************************************************
+
+    public Timeslot withTalkType(String talkType) {
+        this.talkType = talkType;
+        return this;
+    }
+
+    public Timeslot withStartDateTime(LocalDateTime startDateTime) {
+        this.startDateTime = startDateTime;
+        return this;
+    }
+
+    public Timeslot withEndDateTime(LocalDateTime endDateTime) {
+        this.endDateTime = endDateTime;
+        return this;
     }
 
 }

@@ -51,6 +51,13 @@ public class Talk extends AbstractPersistable {
     @PlanningVariable(valueRangeProviderRefs = "roomRange")
     private Room room;
 
+    public Talk() {
+    }
+
+    public Talk(long id) {
+        super(id);
+    }
+
     public boolean hasUnavailableRoom() {
         if (timeslot == null || room == null) {
             return false;
@@ -353,6 +360,85 @@ public class Talk extends AbstractPersistable {
 
     public void setRoom(Room room) {
         this.room = room;
+    }
+
+    // ************************************************************************
+    // With methods
+    // ************************************************************************
+
+    public Talk withTalkType(String talkType) {
+        this.talkType = talkType;
+        return this;
+    }
+
+    public Talk withTimeslot(Timeslot timeSlot) {
+        this.timeslot = timeSlot;
+        return this;
+    }
+
+    public Talk withRoom(Room room) {
+        this.room = room;
+        return this;
+    }
+
+    public Talk withLanguage(String language) {
+        this.language = language;
+        return this;
+    }
+
+    public Talk withSpeakerList(List<Speaker> speakerList) {
+        this.speakerList = speakerList;
+        return this;
+    }
+
+    public Talk withRequiredRoomTagSet(Set<String> requiredRoomTagSet) {
+        this.requiredRoomTagSet = requiredRoomTagSet;
+        return this;
+    }
+
+    public Talk withPreferredRoomTagSet(Set<String> preferredRoomTagSet) {
+        this.preferredRoomTagSet = preferredRoomTagSet;
+        return this;
+    }
+
+    public Talk withProhibitedRoomTagSet(Set<String> prohibitedRoomTagSet) {
+        this.prohibitedRoomTagSet = prohibitedRoomTagSet;
+        return this;
+    }
+
+    public Talk withUndesiredRoomTagSet(Set<String> undesiredRoomTagSet) {
+        this.undesiredRoomTagSet = undesiredRoomTagSet;
+        return this;
+    }
+
+    public Talk withRequiredTimeslotTagSet(Set<String> requiredTimeslotTagSet) {
+        this.requiredTimeslotTagSet = requiredTimeslotTagSet;
+        return this;
+    }
+
+    public Talk withProhibitedTimeslotTagSet(Set<String> prohibitedTimeslotTagSet) {
+        this.prohibitedTimeslotTagSet = prohibitedTimeslotTagSet;
+        return this;
+    }
+
+    public Talk withPreferredTimeslotTagSet(Set<String> preferredTimslotTagSet) {
+        this.preferredTimeslotTagSet = preferredTimslotTagSet;
+        return this;
+    }
+
+    public Talk withUndesiredTimeslotTagSet(Set<String> undesiredTimeslotTagSet) {
+        this.undesiredTimeslotTagSet = undesiredTimeslotTagSet;
+        return this;
+    }
+
+    public Talk withThemeTagSet(Set<String> themeTagSet) {
+        this.themeTagSet = themeTagSet;
+        return this;
+    }
+
+    public Talk withSectorTagSet(Set<String> sectorTagSet) {
+        this.sectorTagSet = sectorTagSet;
+        return this;
     }
 
 }

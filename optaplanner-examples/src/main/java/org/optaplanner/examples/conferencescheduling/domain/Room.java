@@ -28,6 +28,13 @@ public class Room extends AbstractPersistable {
 
     private Set<String> tagSet;
 
+    public Room() {
+    }
+
+    public Room(long id) {
+        super(id);
+    }
+
     public boolean hasTag(String tag) {
         return tagSet.contains(tag);
     }
@@ -63,6 +70,15 @@ public class Room extends AbstractPersistable {
 
     public void setTagSet(Set<String> tagSet) {
         this.tagSet = tagSet;
+    }
+
+    // ************************************************************************
+    // With methods
+    // ************************************************************************
+
+    public Room withUnavailableTimeslotSet(Set<Timeslot> unavailableTimeslotTest) {
+        this.unavailableTimeslotSet = unavailableTimeslotTest;
+        return this;
     }
 
 }
