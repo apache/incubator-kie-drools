@@ -593,7 +593,7 @@ public class BenchmarkAggregatorFrame extends JFrame {
                         desktop.browse(reportFile.getAbsoluteFile().toURI());
                     } catch (IOException e) {
                         throw new IllegalStateException("Failed showing reportFile (" + reportFile
-                                + ") in browser.", e);
+                                + ") in the default browser.", e);
                     }
                     finishDialog();
                 }
@@ -608,7 +608,7 @@ public class BenchmarkAggregatorFrame extends JFrame {
                         desktop.open(reportFile.getParentFile());
                     } catch (IOException e) {
                         throw new IllegalStateException("Failed showing reportFile (" + reportFile
-                                + ") in file explorer.", e);
+                                + ") in the file explorer.", e);
                     }
                     finishDialog();
                 }

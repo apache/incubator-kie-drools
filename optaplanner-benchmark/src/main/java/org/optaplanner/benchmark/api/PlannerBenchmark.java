@@ -24,8 +24,14 @@ package org.optaplanner.benchmark.api;
 public interface PlannerBenchmark {
 
     /**
-     * Run all the single benchmarks and create a report.
+     * Run all the single benchmarks and create an overview report.
      */
     void benchmark();
+
+    /**
+     * Run all the single benchmarks, create an overview report
+     * and show it in the default browser.
+     */
+    void benchmarkAndShowReportInBrowser();
 
 }

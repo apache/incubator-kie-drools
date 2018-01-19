@@ -27,12 +27,8 @@ public class CloudBalancingBenchmarkHelloWorld {
                 "org/optaplanner/examples/cloudbalancing/optional/benchmark/cloudBalancingBenchmarkConfig.xml");
         PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
 
-        // Benchmark the problem
-        plannerBenchmark.benchmark();
-
-        // Show the benchmark report
-        System.out.println("\nPlease open the benchmark report in:  \n"
-                + plannerBenchmarkFactory.getPlannerBenchmarkConfig().getBenchmarkDirectory().getAbsolutePath());
+        // Benchmark the problem and show it
+        plannerBenchmark.benchmarkAndShowReportInBrowser();
     }
 
 }

@@ -62,10 +62,11 @@ load a few datasets and benchmark them. For example, with 3 datasets:
         CloudBalance dataset2 = ...;
         CloudBalance dataset3 = ...;
         PlannerBenchmark plannerBenchmark = benchmarkFactory.buildPlannerBenchmark(dataset1, dataset2, dataset3);
-        plannerBenchmark.benchmark();
+        plannerBenchmark.benchmarkAndShowReportInBrowser();
 ----
 
-This will generate a benchmark report in `local/benchmarkReport`. Take a look.
+This generates a benchmark report in `local/benchmarkReport` and shows it in your browser when it's finished.
+The `SolverFactory`'s solver configuration needs a termination to limit how long each dataset runs.
 To configure a different benchmark directory, pass a `File` parameter to `createFromSolverFactory()`.
 
 The generated benchmark report already contains interesting information,

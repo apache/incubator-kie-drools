@@ -16,7 +16,9 @@
 
 package org.optaplanner.benchmark.impl;
 
+import java.awt.Desktop;
 import java.io.File;
+import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.HashMap;
@@ -395,6 +397,27 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
                 }
             }
             return warmUpConfigBackupMap;
+        }
+    }
+
+    @Override
+    public void benchmarkAndShowReportInBrowser() {
+        benchmark();
+        showReportInBrowser();
+    }
+
+    private void showReportInBrowser() {
+        File htmlOverviewFile = benchmarkReport.getHtmlOverviewFile();
+        Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
+        if (desktop == null || !desktop.isSupported(Desktop.Action.BROWSE)) {
+            logger.warn("The default browser can't be opened to show htmlOverviewFile ({}).", htmlOverviewFile);
+            return;
+        }
+        try {
+            desktop.browse(htmlOverviewFile.getAbsoluteFile().toURI());
+        } catch (IOException e) {
+            throw new IllegalStateException("Failed showing htmlOverviewFile (" + htmlOverviewFile
+                    + ") in the default browser.", e);
         }
     }
 

@@ -49,7 +49,7 @@ public class OpenBrowserAction extends AbstractAction {
         try {
             desktop.browse(uri);
         } catch (IOException e) {
-            throw new IllegalStateException("Failed showing uri (" + uri + ") in browser.", e);
+            throw new IllegalStateException("Failed showing uri (" + uri + ") in the default browser.", e);
         }
     }
 

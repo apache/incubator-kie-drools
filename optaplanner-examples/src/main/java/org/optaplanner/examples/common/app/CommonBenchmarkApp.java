@@ -66,7 +66,7 @@ public abstract class CommonBenchmarkApp extends LoggingMain {
         PlannerBenchmarkFactory plannerBenchmarkFactory = argOption.buildPlannerBenchmarkFactory();
         if (!aggregator) {
             PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
-            plannerBenchmark.benchmark();
+            plannerBenchmark.benchmarkAndShowReportInBrowser();
         } else {
             BenchmarkAggregatorFrame.createAndDisplay(plannerBenchmarkFactory);
         }

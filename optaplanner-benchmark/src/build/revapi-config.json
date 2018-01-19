@@ -44,6 +44,15 @@
           "methodName": "buildPlannerBenchmark",
           "elementKind": "method",
           "justification": "New method to create benchmark with problem instances directly."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method void org.optaplanner.benchmark.api.PlannerBenchmark::benchmarkAndShowReportInBrowser()",
+          "package": "org.optaplanner.benchmark.api",
+          "classSimpleName": "PlannerBenchmark",
+          "methodName": "benchmarkAndShowReportInBrowser",
+          "elementKind": "method",
+          "justification": "New method to open the benchmark report immediately."
         }
       ]
     }
