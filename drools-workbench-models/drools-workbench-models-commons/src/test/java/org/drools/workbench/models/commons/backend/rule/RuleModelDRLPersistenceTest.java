@@ -212,6 +212,10 @@ public class RuleModelDRLPersistenceTest extends BaseRuleModelTest {
         assertTrue(newModel.lhs[1] instanceof FromAccumulateCompositeFactPattern);
 
         assertDSLEscaping(newDrl);
+
+        Assertions.assertThat(newDrl)
+                  .contains(">java.lang.Number( ) from accumulate ( $p : Person( ),\n")
+                  .contains(">\t\t\tcount($p))");
     }
 
     private void assertDSLEscaping(final String drl) {
