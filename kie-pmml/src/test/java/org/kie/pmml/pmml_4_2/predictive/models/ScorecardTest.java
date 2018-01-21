@@ -40,15 +40,16 @@ import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.logger.KieRuntimeLogger;
 import org.kie.api.runtime.rule.DataSource;
+import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.RuleUnit;
 import org.kie.api.runtime.rule.RuleUnitExecutor;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.utils.KieHelper;
 import org.kie.pmml.pmml_4_2.DroolsAbstractPMMLTest;
-import org.kie.pmml.pmml_4_2.PMML4Result;
+import org.kie.api.pmml.PMML4Result;
+import org.kie.api.pmml.PMMLRequestData;
+import org.kie.api.pmml.PMML4Data;
 import org.kie.pmml.pmml_4_2.model.PMML4UnitImpl;
-import org.kie.pmml.pmml_4_2.model.PMMLRequestData;
-import org.kie.pmml.pmml_4_2.model.datatypes.PMML4Data;
 
 public class ScorecardTest extends DroolsAbstractPMMLTest {
 
@@ -165,11 +166,13 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
 
         assertNotNull(unitClass);
         executor.run(unitClass);
+        Collection<? extends EntryPoint> eps = ((InternalRuleUnitExecutor)executor).getKieSession().getEntryPoints();
+        eps.forEach(ep -> {System.out.println(ep);});
         
         data.insert(requestData);
         resultData.insert(resultHolder);
         executor.run(unitClass);
-System.out.println(resultHolder);
+
         assertEquals(3, resultHolder.getResultVariables().size());
         Object scorecard = resultHolder.getResultValue("ScoreCard", null);
         assertNotNull(scorecard);

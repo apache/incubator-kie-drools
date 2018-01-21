@@ -22,6 +22,9 @@ import org.kie.pmml.pmml_4_2.*;
 import org.kie.pmml.pmml_4_2.model.*;
 import org.kie.pmml.pmml_4_2.model.mining.*;
 import org.kie.pmml.pmml_4_2.model.datatypes.*;
+import org.kie.api.pmml.PMMLRequestData;
+import org.kie.api.pmml.ParameterInfo;
+import org.kie.api.pmml.PMML4Result;
 
 
 
@@ -79,7 +82,11 @@ when
    not SegmentExecution( correlationId == $corrId, segmentationId == $segmId, 
       (state == SegmentExecutionState.WAITING && segmentIndex < $segIndex) ) from childModelSegments
 then
-   PMML4Result rslt = new PMML4Result($seg);
+   PMML4Result rslt = new PMML4Result();
+   rslt.setCorrelationId($seg.getCorrelationId());
+   rslt.setSegmentationId($seg.getSegmentationId());
+   rslt.setSegmentId($seg.getSegmentId());
+   rslt.setSegmentIndex($seg.getSegmentIndex());
    request.insert($seg.getRequestData());
    results.insert(rslt);
    modify( $seg ) {
