@@ -63,7 +63,7 @@ public final class KieUtil {
         KieModule kieModule = builder.getKieModule();
         if (kieBaseTestConfiguration.useCanonicalModel()) {
             final File kjarFile = FileUtil.bytesToTempKJARFile(releaseId, ((InternalKieModule) kieModule).getBytes(), ".jar" );
-            kieModule = new CanonicalKieModule(releaseId, getDefaultKieModuleModel(kieServices), kjarFile );
+            kieModule = new CanonicalKieModule(releaseId, kieModuleModel, kjarFile );
         }
         kieServices.getRepository().addKieModule(kieModule);
 

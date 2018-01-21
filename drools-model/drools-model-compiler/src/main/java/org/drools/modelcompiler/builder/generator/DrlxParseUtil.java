@@ -179,7 +179,7 @@ public class DrlxParseUtil {
         throw new UnsupportedOperationException();
     }
 
-    public static TypedExpression toTypedExpressionFromMethodCallOrField(RuleContext context, Class<?> patternType, Expression drlxExpr, List<String> usedDeclarations, Set<String> reactOnProperties, TypeResolver typeResolver) {
+    public static TypedExpression toTypedExpressionFromMethodCallOrField(RuleContext context, Class<?> patternType, Expression drlxExpr, Collection<String> usedDeclarations, Set<String> reactOnProperties, TypeResolver typeResolver) {
         Class<?> typeCursor = patternType;
 
         List<Node> childNodes = flattenScope(drlxExpr);
@@ -279,8 +279,11 @@ public class DrlxParseUtil {
             MethodCallExpr methodCallExpr = (MethodCallExpr) firstNode;
             previous = new NameExpr("_this");
             methodCallExpr.setScope(previous);
-            typeCursor = returnTypeOfMethodCallExpr(context, typeResolver, methodCallExpr, typeCursor);
+            typeCursor = returnTypeOfMethodCallExpr(context, typeResolver, methodCallExpr, typeCursor, usedDeclarations);
             previous = methodCallExpr;
+        } else if (firstNode instanceof StringLiteralExpr) {
+            typeCursor = String.class;
+            previous = (( StringLiteralExpr ) firstNode);
         } else {
             throw new UnsupportedOperationException("Unknown node: " + firstNode);
         }
@@ -307,7 +310,7 @@ public class DrlxParseUtil {
                 previous = expression.getExpression();
             } else if (part instanceof MethodCallExpr) {
                 MethodCallExpr methodCallExprPart = (MethodCallExpr) part;
-                typeCursor = returnTypeOfMethodCallExpr(context, typeResolver, (MethodCallExpr) part, typeCursor);
+                typeCursor = returnTypeOfMethodCallExpr(context, typeResolver, (MethodCallExpr) part, typeCursor, usedDeclarations);
                 methodCallExprPart.setScope(previous);
                 previous = methodCallExprPart;
             } else {
@@ -386,14 +389,14 @@ public class DrlxParseUtil {
         }
     }
 
-    public static Class<?> returnTypeOfMethodCallExpr(RuleContext context, TypeResolver typeResolver, MethodCallExpr methodCallExpr, Class<?> clazz) {
+    public static Class<?> returnTypeOfMethodCallExpr(RuleContext context, TypeResolver typeResolver, MethodCallExpr methodCallExpr, Class<?> clazz, Collection<String> usedDeclarations) {
         final Class[] argsType = methodCallExpr.getArguments().stream()
-                .map((Expression e) -> getExpressionType(context, typeResolver, e))
+                .map((Expression e) -> getExpressionType(context, typeResolver, e, usedDeclarations))
                 .toArray(Class[]::new);
         return findMethod(clazz, methodCallExpr.getNameAsString(), argsType).getReturnType();
     }
 
-    public static Class<?> getExpressionType(RuleContext context, TypeResolver typeResolver, Expression expr) {
+    public static Class<?> getExpressionType(RuleContext context, TypeResolver typeResolver, Expression expr, Collection<String> usedDeclarations) {
         if(expr instanceof BooleanLiteralExpr) {
             return Boolean.class;
         } else if(expr instanceof CharLiteralExpr) {
@@ -413,11 +416,15 @@ public class DrlxParseUtil {
         } else if(expr instanceof ArrayCreationExpr) {
             return getClassFromContext(typeResolver, ((ArrayCreationExpr) expr).getElementType().asString());
         } else if(expr instanceof NameExpr) {
-            return context.getDeclarationById( (( NameExpr ) expr).getNameAsString() ).map( DeclarationSpec::getDeclarationClass ).get();
+            String name = (( NameExpr ) expr).getNameAsString();
+            if (usedDeclarations != null) {
+                usedDeclarations.add(name);
+            }
+            return context.getDeclarationById( name ).map( DeclarationSpec::getDeclarationClass ).get();
         } else if(expr instanceof MethodCallExpr) {
             MethodCallExpr methodCallExpr = ( MethodCallExpr ) expr;
-            Class<?> scopeType = getExpressionType(context, typeResolver, methodCallExpr.getScope().get());
-            return returnTypeOfMethodCallExpr(context, typeResolver, methodCallExpr, scopeType);
+            Class<?> scopeType = getExpressionType(context, typeResolver, methodCallExpr.getScope().get(), usedDeclarations);
+            return returnTypeOfMethodCallExpr(context, typeResolver, methodCallExpr, scopeType, usedDeclarations);
         } else {
             throw new RuntimeException("Unknown expression type: " + expr);
         }
@@ -523,7 +530,7 @@ public class DrlxParseUtil {
                 methodCall.add(te.getExpression());
                 previousClass = returnType;
             } else if (e.expression instanceof MethodCallExpr) {
-                Class<?> returnType = returnTypeOfMethodCallExpr(context, typeResolver, (MethodCallExpr) e.expression, previousClass);
+                Class<?> returnType = returnTypeOfMethodCallExpr(context, typeResolver, (MethodCallExpr) e.expression, previousClass, null);
                 MethodCallExpr cloned = ((MethodCallExpr) e.expression.clone()).removeScope();
                 methodCall.add(cloned);
                 previousClass = returnType;

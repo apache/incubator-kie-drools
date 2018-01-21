@@ -16,7 +16,7 @@
 
 package org.kie.pmml.pmml_4_2.predictive.models;
 
-
+import java.io.File;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -26,7 +26,6 @@ import org.drools.core.impl.InternalRuleUnitExecutor;
 import org.junit.After;
 import org.junit.Test;
 import org.kie.api.KieBase;
-import org.kie.api.definition.type.FactType;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.logger.KieRuntimeLogger;

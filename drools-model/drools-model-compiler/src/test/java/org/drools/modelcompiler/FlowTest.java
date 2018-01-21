@@ -35,7 +35,6 @@ import org.drools.model.Query2Def;
 import org.drools.model.Rule;
 import org.drools.model.Variable;
 import org.drools.model.impl.ModelImpl;
-import org.drools.modelcompiler.OOPathDTablesTest.InternationalAddress;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
 import org.drools.modelcompiler.domain.Adult;
 import org.drools.modelcompiler.domain.Child;
@@ -46,7 +45,7 @@ import org.drools.modelcompiler.domain.Result;
 import org.drools.modelcompiler.domain.StockTick;
 import org.drools.modelcompiler.domain.Toy;
 import org.drools.modelcompiler.domain.Woman;
-import org.junit.Ignore;
+import org.drools.modelcompiler.oopathdtables.InternationalAddress;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.conf.EventProcessingOption;
@@ -59,6 +58,7 @@ import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.time.SessionPseudoClock;
 
 import static java.util.Arrays.asList;
+
 import static org.drools.model.DSL.accFunction;
 import static org.drools.model.DSL.accumulate;
 import static org.drools.model.DSL.and;
@@ -75,7 +75,6 @@ import static org.drools.model.DSL.not;
 import static org.drools.model.DSL.on;
 import static org.drools.model.DSL.or;
 import static org.drools.model.DSL.query;
-import static org.drools.model.DSL.reactiveFrom;
 import static org.drools.model.DSL.rule;
 import static org.drools.model.DSL.type;
 import static org.drools.model.DSL.valueOf;
@@ -83,7 +82,11 @@ import static org.drools.model.DSL.when;
 import static org.drools.model.DSL.window;
 import static org.drools.modelcompiler.BaseModelTest.getObjectsIntoList;
 import static org.hamcrest.CoreMatchers.hasItem;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public class FlowTest {
 
@@ -1122,67 +1125,13 @@ public class FlowTest {
         assertThat(results, hasItem(new Result(49)));
     }
 
-
-    @Test
-    @Ignore
-    public void testQueryOOPathAccumulate() {
-        Variable<Person> personV = declarationOf( type( Person.class ), "$p" );
-
-        final org.drools.model.QueryDef queryDef_listSafeCities = query("listSafeCities");
-
-
-        final org.drools.model.Variable<org.drools.modelcompiler.OOPathDTablesTest.Person> var_$pattern_Person$1$ = declarationOf(type(org.drools.modelcompiler.OOPathDTablesTest.Person.class),
-                                                                                                                                  "$pattern_Person$1$");
-        final org.drools.model.Variable<org.drools.modelcompiler.OOPathDTablesTest.InternationalAddress> var_$ooChunk$1$ = declarationOf(type(org.drools.modelcompiler.OOPathDTablesTest.InternationalAddress.class),
-                                                                                                                                         "$ooChunk$1$",
-                                                                                                                                         reactiveFrom(var_$pattern_Person$1$,
-                                                                                                                                                      (_this) -> _this.getAddress()));
-        final org.drools.model.Variable<java.lang.String> var_$city = declarationOf(type(java.lang.String.class),
-                                                                                    "$city",
-                                                                                    reactiveFrom(var_$ooChunk$1$,
-                                                                                                 (_this) -> _this.getCity()));
-        final org.drools.model.Variable<java.util.List> var_$expr$3$ = declarationOf(type(java.util.List.class),
-                                                                                     "$expr$3$");
-        org.drools.model.Query listSafeCities_build = queryDef_listSafeCities.build(
-                                                                                    accumulate(expr("$expr$2$",
-                                                                                                    var_$ooChunk$1$,
-                                                                                                    (_this) -> _this.getState()
-                                                                                                            .equals("Safecountry")).indexedBy(java.lang.String.class,
-                                                                                                                                              org.drools.model.Index.ConstraintType.EQUAL,
-                                                                                                                                              0,
-                                                                                                                                              _this -> _this.getState(),
-                                                                                                                                              "Safecountry")
-                                                                                                       .reactOn("state"),
-                                                                                               accFunction(org.drools.core.base.accumulators.CollectListAccumulateFunction.class,
-                                                                                                           var_$city).as(var_$expr$3$)));
-        Model model = new ModelImpl().addQuery( listSafeCities_build );
-        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
-
-        KieSession ksession = kieBase.newKieSession();
-
-
-        org.drools.modelcompiler.OOPathDTablesTest.Person person = new org.drools.modelcompiler.OOPathDTablesTest.Person();
-        person.setAddress(new InternationalAddress("", 1, "Milan", "Safecountry"));
-        ksession.insert(person);
-
-        org.drools.modelcompiler.OOPathDTablesTest.Person person2 = new org.drools.modelcompiler.OOPathDTablesTest.Person();
-        person2.setAddress(new InternationalAddress("", 1, "Rome", "Unsafecountry"));
-        ksession.insert(person2);
-
-        QueryResults results = ksession.getQueryResults( "listSafeCities");
-
-        assertEquals("Milan", ((List) results.iterator().next().get("$cities" )).iterator().next());
-
-
-    }
-
     @Test
     public void testQueryOOPathAccumulateTransformed() {
         final org.drools.model.QueryDef queryDef_listSafeCities = query("listSafeCities");
 
-        final org.drools.model.Variable<org.drools.modelcompiler.OOPathDTablesTest.Person> var_$p = declarationOf(type(org.drools.modelcompiler.OOPathDTablesTest.Person.class),
+        final org.drools.model.Variable<org.drools.modelcompiler.oopathdtables.Person> var_$p = declarationOf(type(org.drools.modelcompiler.oopathdtables.Person.class),
                                                                                                                   "$p");
-        final org.drools.model.Variable<org.drools.modelcompiler.OOPathDTablesTest.InternationalAddress> var_$a = declarationOf(type(org.drools.modelcompiler.OOPathDTablesTest.InternationalAddress.class),
+        final org.drools.model.Variable<org.drools.modelcompiler.oopathdtables.InternationalAddress> var_$a = declarationOf(type(org.drools.modelcompiler.oopathdtables.InternationalAddress.class),
                                                                                                                                 "$a",
                                                                                                                                 from(var_$p,
                                                                                                                                      (_this) -> _this.getAddress()));
@@ -1211,11 +1160,11 @@ public class FlowTest {
         KieSession ksession = kieBase.newKieSession();
 
 
-        org.drools.modelcompiler.OOPathDTablesTest.Person person = new org.drools.modelcompiler.OOPathDTablesTest.Person();
+        org.drools.modelcompiler.oopathdtables.Person person = new org.drools.modelcompiler.oopathdtables.Person();
         person.setAddress(new InternationalAddress("", 1, "Milan", "Safecountry"));
         ksession.insert(person);
 
-        org.drools.modelcompiler.OOPathDTablesTest.Person person2 = new org.drools.modelcompiler.OOPathDTablesTest.Person();
+        org.drools.modelcompiler.oopathdtables.Person person2 = new org.drools.modelcompiler.oopathdtables.Person();
         person2.setAddress(new InternationalAddress("", 1, "Rome", "Unsafecountry"));
         ksession.insert(person2);
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.modelcompiler.OOPathDTablesTest;
+package org.drools.modelcompiler.oopathdtables;
 
 import java.io.Serializable;
 

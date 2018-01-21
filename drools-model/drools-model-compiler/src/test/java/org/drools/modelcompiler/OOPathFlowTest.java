@@ -22,6 +22,7 @@ import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.drools.model.Global;
 import org.drools.model.Model;
+import org.drools.model.QueryDef;
 import org.drools.model.Rule;
 import org.drools.model.Variable;
 import org.drools.model.impl.ModelImpl;
@@ -34,14 +35,22 @@ import org.drools.modelcompiler.domain.Woman;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.QueryResults;
 
+import static org.drools.model.DSL.accFunction;
+import static org.drools.model.DSL.accumulate;
+import static org.drools.model.DSL.and;
 import static org.drools.model.DSL.declarationOf;
 import static org.drools.model.DSL.expr;
+import static org.drools.model.DSL.from;
 import static org.drools.model.DSL.globalOf;
+import static org.drools.model.DSL.input;
 import static org.drools.model.DSL.on;
+import static org.drools.model.DSL.query;
 import static org.drools.model.DSL.reactiveFrom;
 import static org.drools.model.DSL.rule;
 import static org.drools.model.DSL.type;
+import static org.junit.Assert.assertEquals;
 
 public class OOPathFlowTest {
 
@@ -198,4 +207,51 @@ public class OOPathFlowTest {
 
     }
 
+    @Test
+    public void testQueryOOPathAccumulate() {
+        QueryDef queryDef_listSafeCities = query("listSafeCities");
+        final org.drools.model.Variable<java.util.List> var_$cities = declarationOf(type(java.util.List.class), "$cities");
+        final org.drools.model.Variable<org.drools.modelcompiler.oopathdtables.Person> var_$p = declarationOf(type(org.drools.modelcompiler.oopathdtables.Person.class),
+                "$p");
+        final org.drools.model.Variable<org.drools.modelcompiler.oopathdtables.InternationalAddress> var_$a = declarationOf(type(org.drools.modelcompiler.oopathdtables.InternationalAddress.class),
+                "$a",
+                from(var_$p,
+                        (_this) -> _this.getAddress()));
+        final org.drools.model.Variable<java.lang.String> var_$city = declarationOf(type(java.lang.String.class),
+                "$city",
+                from(var_$a,
+                        (_this) -> _this.getCity()));
+        org.drools.model.Query listSafeCities_build = queryDef_listSafeCities.build(accumulate(and(input(var_$p),
+                expr("$expr$2$",
+                        var_$a,
+                        (_this) -> org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getState(),
+                                "Safecountry")).indexedBy(java.lang.String.class,
+                        org.drools.model.Index.ConstraintType.EQUAL,
+                        0,
+                        _this -> _this.getState(),
+                        "Safecountry")
+                        .reactOn("state"),
+                expr(var_$city)),
+                accFunction(org.drools.core.base.accumulators.CollectListAccumulateFunction.class,
+                        var_$city).as(var_$cities)));
+
+        Model model = new ModelImpl().addQuery( listSafeCities_build );
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
+
+        KieSession ksession = kieBase.newKieSession();
+
+        org.drools.modelcompiler.oopathdtables.Person person = new org.drools.modelcompiler.oopathdtables.Person();
+        person.setAddress(new org.drools.modelcompiler.oopathdtables.InternationalAddress("", 1, "Milan", "Safecountry"));
+        ksession.insert(person);
+
+        org.drools.modelcompiler.oopathdtables.Person person2 = new org.drools.modelcompiler.oopathdtables.Person();
+        person2.setAddress(new org.drools.modelcompiler.oopathdtables.InternationalAddress("", 1, "Rome", "Unsafecountry"));
+        ksession.insert(person2);
+
+        QueryResults results = ksession.getQueryResults( "listSafeCities");
+
+        List cities = (List) results.iterator().next().get("$cities");
+        assertEquals(1, cities.size());
+        assertEquals("Milan", cities.get(0));
+    }
 }
