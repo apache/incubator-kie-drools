@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.assertj.core.api.Assertions;
 import org.drools.workbench.models.datamodel.rule.ActionCallMethod;
 import org.drools.workbench.models.datamodel.rule.ActionExecuteWorkItem;
 import org.drools.workbench.models.datamodel.rule.ActionFieldFunction;
@@ -205,6 +206,10 @@ public class RuleModelDRLPersistenceTest extends BaseRuleModelTest {
         assertTrue(newModel.lhs[1] instanceof FromAccumulateCompositeFactPattern);
 
         assertDSLEscaping(newDrl);
+
+        Assertions.assertThat(newDrl)
+                  .contains(">java.lang.Number( ) from accumulate ( $p : Person( ),\n")
+                  .contains(">\t\t\tcount($p))");
     }
 
     private void assertDSLEscaping(final String drl) {
