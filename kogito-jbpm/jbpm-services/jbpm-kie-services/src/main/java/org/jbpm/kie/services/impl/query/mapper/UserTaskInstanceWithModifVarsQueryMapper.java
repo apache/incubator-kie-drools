@@ -109,6 +109,7 @@ public class UserTaskInstanceWithModifVarsQueryMapper extends AbstractQueryMappe
             getColumnStringValue(dataSetResult, COLUMN_CREATEDBY, index),//createdBy,
             getColumnDateValue(dataSetResult, COLUMN_EXPIRATIONTIME, index),//expirationtime,
             getColumnDateValue(dataSetResult, COLUMN_LASTMODIFICATION_DATE, index),//lastmodificationdate,
+            getColumnStringValue(dataSetResult, COLUMN_LASTMODIFICATION_USER, index),//lastmodificationUser,
             getColumnIntValue(dataSetResult, COLUMN_PRIORITY, index),//priority,
             getColumnStringValue(dataSetResult, COLUMN_TASK_STATUS, index),//status,
             getColumnLongValue(dataSetResult, COLUMN_TASK_PROCESSINSTANCEID, index),//processInstanceId,

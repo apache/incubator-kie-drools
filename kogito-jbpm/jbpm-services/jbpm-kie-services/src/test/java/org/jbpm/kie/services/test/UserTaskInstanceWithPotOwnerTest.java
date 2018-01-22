@@ -267,14 +267,17 @@ public class UserTaskInstanceWithPotOwnerTest extends AbstractKieServicesBaseTes
     @Test
     public void testSearchTaskWithModifVarsMapper() {
         query = new SqlQueryDefinition("jbpmGetTaskWithPO", dataSourceJNDIname);
-        query.setExpression("select t.id as TASKID, t.name as NAME,  t.FORMNAME AS FORMNAME, t.subject as SUBJECT, t.actualowner_id as actualowner, " +
-                "po.entity_id as POTOWNER, ck.name as CORRELATIONKEY, t.CREATEDON as CREATEDON, t.CREATEDBY_ID as CREATEDBY, t.EXPIRATIONTIME as EXPIRATIONTIME, " +
-                "d.modificationdate as LASTMODIFICATIONDATE, t.priority as PRIORITY, t.STATUS as STATUS, t.PROCESSINSTANCEID as PROCESSINSTANCEID, " +
-                "t.PROCESSID as PROCESSID, t.deploymentid as DEPLOYMENTID, d.name as TVNAME, d.type as TVTYPE, d.value as TVVALUE " +
-                "from TASK t inner join PEOPLEASSIGNMENTS_POTOWNERS po on t.id=po.task_id " +
+        query.setExpression("select t.id as TASKID, t.name as NAME,  t.FORMNAME AS FORMNAME, t.subject as SUBJECT, " +
+                "t.actualowner_id as ACTUALOWNER, po.entity_id as POTOWNER, ck.name as CORRELATIONKEY, t.CREATEDON as CREATEDON, " +
+                "t.CREATEDBY_ID as CREATEDBY, t.EXPIRATIONTIME as EXPIRATIONTIME, " +
+                "(select max(logtime) from taskevent where processinstanceid = t.processinstanceid and taskid = t.id) as lastmodificationdate, " +
+                "(select userid from taskevent where logtime = (select max(logtime) from taskevent where processinstanceid = t.processinstanceid and taskid = t.id)) as lastmodificationuser, " +
+                "t.priority as PRIORITY, t.STATUS as STATUS, t.PROCESSINSTANCEID as PROCESSINSTANCEID, t.PROCESSID as PROCESSID, " +
+                "t.deploymentid as DEPLOYMENTID, d.name as TVNAME, d.type as TVTYPE, d.value as TVVALUE " +
+                "from TASK t " +
+                "inner join PEOPLEASSIGNMENTS_POTOWNERS po on t.id=po.task_id " +
                 "inner join CORRELATIONKEYINFO ck on t.processinstanceid = ck.processinstanceid " +
-                "inner join TASKEVENT te on t.id = te.taskid " +
-                "inner join TASKVARIABLEIMPL d on t.id=d.taskid ");
+                "inner join TASKVARIABLEIMPL d on t.id=d.taskid");
 
         queryService.registerQuery(query);
 
@@ -296,6 +299,8 @@ public class UserTaskInstanceWithPotOwnerTest extends AbstractKieServicesBaseTes
         assertNotNull(taskInstanceLogs);
         assertEquals(1, taskInstanceLogs.size());
 
+        taskInstanceLogs = queryService.query(query.getName(), UserTaskInstanceWithModifVarsQueryMapper.get(), new QueryContext(),QueryParam.equalsTo(COLUMN_POTOWNER, correctUser));
+        assertNotNull(taskInstanceLogs.get(0).getLastModificationUser());
 
         processService.abortProcessInstance(processInstanceId);
         processInstanceId = null;

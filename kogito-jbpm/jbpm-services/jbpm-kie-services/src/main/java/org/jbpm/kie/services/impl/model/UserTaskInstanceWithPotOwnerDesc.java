@@ -39,13 +39,14 @@ public class UserTaskInstanceWithPotOwnerDesc extends UserTaskInstanceDesc imple
     public UserTaskInstanceWithPotOwnerDesc(Long taskId, String name, String formName, 
                                             String subject, String actualOwner, String potOwner, 
                                             String correlationKey, Date createdOn, String createdBy, 
-                                            Date expirationDate, Date lastModificationDate, 
+                                            Date expirationDate, Date lastModificationDate, String lastModificationUser,
                                             Integer priority, String status, Long processInstanceId, 
                                             String processId, String deploymentId) {
         super(taskId, status, actualOwner, name, priority, createdBy, processId, processInstanceId, createdOn, formName, deploymentId,expirationDate);
         this.potentialOwners.add(potOwner);
         this.correlationKey = correlationKey;
         this.lastModificationDate = lastModificationDate;
+        this.lastModificationUser = lastModificationUser;
         this.subject = subject;
     }
     
