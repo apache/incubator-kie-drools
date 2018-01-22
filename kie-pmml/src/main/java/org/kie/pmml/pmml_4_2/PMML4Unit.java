@@ -18,7 +18,7 @@ package org.kie.pmml.pmml_4_2;
 import java.util.List;
 import java.util.Map;
 
-import org.dmg.pmml.pmml_4_2.descr.PMML;
+import org.kie.dmg.pmml.pmml_4_2.descr.PMML;
 import org.kie.pmml.pmml_4_2.model.Miningmodel;
 import org.kie.pmml.pmml_4_2.model.PMML4ModelType;
 import org.kie.pmml.pmml_4_2.model.PMMLDataField;
