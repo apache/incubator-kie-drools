@@ -117,7 +117,7 @@ rule "calculateIdleCost"
         )
         $idlePeriodPowerPriceList : ArrayList() from collect (
             PeriodPowerPrice(
-                period > $lastActivePeriod,
+                period > (Integer) $lastActivePeriod,
                 period < $period)
         )
     then
