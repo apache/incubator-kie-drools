@@ -45,7 +45,6 @@ import org.drools.modelcompiler.RuleContext;
 import org.kie.api.runtime.rule.EntryPoint;
 
 import static java.util.Arrays.asList;
-
 import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
 
 public class LambdaConsequence implements Consequence {
@@ -132,6 +131,11 @@ public class LambdaConsequence implements Consequence {
         }
 
         @Override
+        public void insert(Object object, boolean dynamic) {
+            workingMemory.insert(object, dynamic);
+        }
+
+        @Override
         public void insertLogical(Object object) {
             knowledgeHelper.insertLogical(object);
         }
@@ -186,6 +190,11 @@ public class LambdaConsequence implements Consequence {
         @Override
         public void insert( Object object ) {
             entryPoint.insert( object );
+        }
+
+        @Override
+        public void insert(Object object, boolean dynamic) {
+            ((WorkingMemoryEntryPoint) entryPoint).insert(object, dynamic);
         }
 
         @Override
