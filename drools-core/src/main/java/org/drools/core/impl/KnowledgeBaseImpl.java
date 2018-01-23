@@ -1336,6 +1336,13 @@ public class KnowledgeBaseImpl
     }
 
     public void removeGlobal(String identifier) {
+        // check if there is still at least a package containing the global
+        for (InternalKnowledgePackage pkg : pkgs.values()) {
+            if ( pkg.getGlobals().get( identifier ) != null) {
+                return;
+            }
+        }
+
         this.globals.remove( identifier );
         for ( InternalWorkingMemory wm : getWorkingMemories() ) {
             wm.removeGlobal(identifier);

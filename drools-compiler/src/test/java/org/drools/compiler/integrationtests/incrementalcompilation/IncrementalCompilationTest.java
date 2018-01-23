@@ -4590,4 +4590,65 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         ksession.insert("2");
         ksession.fireAllRules();
     }
+
+    @Test
+    public void testGlobalRemovedFromOneDrl() throws Exception {
+        // RHDM-311
+        String drlAWithGlobal = "package org.x.a\nglobal Boolean globalBool\n";
+        String drlANoGlobal = "package org.x.a\n";
+        String drlBWithGlobal = "package org.x.b\nglobal Boolean globalBool\n";
+        String drlBNoGlobal = "package org.x.b\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
+        KieModule km = createAndDeployJar( ks, releaseId1, drlAWithGlobal, drlBWithGlobal );
+
+        KieContainer kc = ks.newKieContainer( releaseId1 );
+        KieSession ksession = kc.newKieSession();
+
+        ksession.setGlobal( "globalBool", Boolean.FALSE );
+
+        ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
+        createAndDeployJar( ks, releaseId2, drlANoGlobal, drlBWithGlobal );
+        kc.updateToVersion( releaseId2 );
+
+        ksession.setGlobal( "globalBool", Boolean.TRUE );
+
+        ReleaseId releaseId3 = ks.newReleaseId( "org.kie", "test-upgrade", "1.2.0" );
+        createAndDeployJar( ks, releaseId3, drlANoGlobal, drlBNoGlobal );
+        kc.updateToVersion( releaseId3 );
+
+        try {
+            ksession.setGlobal( "globalBool", Boolean.TRUE );
+            fail( "the global should be no longer present" );
+        } catch (Exception e) {
+            // expected
+        }
+    }
+
+    @Test
+    public void testGlobalRemovedAndAdded() throws Exception {
+        // RHDM-311
+        String drlAWithGlobal = "package org.x.a\nglobal Boolean globalBool\n";
+        String drlANoGlobal = "package org.x.a\n";
+        String drlBWithGlobal = "package org.x.b\nglobal Boolean globalBool\n";
+        String drlBNoGlobal = "package org.x.b\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
+        KieModule km = createAndDeployJar( ks, releaseId1, drlAWithGlobal, drlBNoGlobal );
+
+        KieContainer kc = ks.newKieContainer( releaseId1 );
+        KieSession ksession = kc.newKieSession();
+
+        ksession.setGlobal( "globalBool", Boolean.FALSE );
+
+        ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
+        createAndDeployJar( ks, releaseId2, drlANoGlobal, drlBWithGlobal );
+        kc.updateToVersion( releaseId2 );
+
+        ksession.setGlobal( "globalBool", Boolean.TRUE );
+    }
 }
