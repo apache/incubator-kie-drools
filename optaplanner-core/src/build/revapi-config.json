@@ -95,6 +95,18 @@
           "classSimpleName": "Indictment",
           "elementKind": "class",
           "justification": "This should have been a final class originally because extending classes are likely to cause equals and compareTo issues."
+        },
+        {
+          "code": "java.method.returnTypeChanged",
+          "old": "method boolean org.optaplanner.core.api.score.constraint.Indictment::addConstraintMatch(org.optaplanner.core.api.score.constraint.ConstraintMatch)",
+          "new": "method void org.optaplanner.core.api.score.constraint.Indictment::addConstraintMatch(org.optaplanner.core.api.score.constraint.ConstraintMatch)",
+          "oldType": "boolean",
+          "newType": "void",
+          "package": "org.optaplanner.core.api.score.constraint",
+          "classSimpleName": "Indictment",
+          "methodName": "addConstraintMatch",
+          "elementKind": "method",
+          "justification": "After fixing PLANNER-965, this method can only return true or fail fast, so keeping the contract would only trade a compile time error for a runtime exception."
         }
       ]
     }

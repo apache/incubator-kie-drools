@@ -18,11 +18,37 @@ package org.optaplanner.core.api.score.constraint;
 
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 
+import static java.util.Arrays.*;
 import static org.junit.Assert.*;
 
 public class ConstraintMatchTotalTest {
+
+    @Test
+    public void getScoreTotal() {
+        TestdataEntity e1 = new TestdataEntity("e1");
+        TestdataEntity e2 = new TestdataEntity("e2");
+        TestdataEntity e3 = new TestdataEntity("e3");
+        ConstraintMatchTotal constraintMatchTotal = new ConstraintMatchTotal("package1", "constraint1", SimpleScore.ZERO);
+        assertEquals(SimpleScore.ZERO, constraintMatchTotal.getScoreTotal());
+
+        ConstraintMatch match1 = constraintMatchTotal.addConstraintMatch(asList(e1, e2), SimpleScore.valueOf(-1));
+        assertEquals(SimpleScore.valueOf(-1), constraintMatchTotal.getScoreTotal());
+        ConstraintMatch match2 = constraintMatchTotal.addConstraintMatch(asList(e1, e3), SimpleScore.valueOf(-20));
+        assertEquals(SimpleScore.valueOf(-21), constraintMatchTotal.getScoreTotal());
+        // Almost duplicate, but e2 and e1 are in reverse order, so different justification
+        ConstraintMatch match3 = constraintMatchTotal.addConstraintMatch(asList(e2, e1), SimpleScore.valueOf(-300));
+        assertEquals(SimpleScore.valueOf(-321), constraintMatchTotal.getScoreTotal());
+
+        constraintMatchTotal.removeConstraintMatch(match2);
+        assertEquals(SimpleScore.valueOf(-301), constraintMatchTotal.getScoreTotal());
+        constraintMatchTotal.removeConstraintMatch(match1);
+        assertEquals(SimpleScore.valueOf(-300), constraintMatchTotal.getScoreTotal());
+        constraintMatchTotal.removeConstraintMatch(match3);
+        assertEquals(SimpleScore.ZERO, constraintMatchTotal.getScoreTotal());
+    }
 
     @Test
     public void equalsAndHashCode() {

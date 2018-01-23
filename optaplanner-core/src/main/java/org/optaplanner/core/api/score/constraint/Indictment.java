@@ -20,7 +20,6 @@ import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
@@ -76,15 +75,18 @@ public final class Indictment implements Serializable, Comparable<Indictment> {
     // Worker methods
     // ************************************************************************
 
-    public boolean addConstraintMatch(ConstraintMatch constraintMatch) {
+    public void addConstraintMatch(ConstraintMatch constraintMatch) {
+        scoreTotal = scoreTotal.add(constraintMatch.getScore());
         boolean added = constraintMatchSet.add(constraintMatch);
-        if (added) {
-            scoreTotal = scoreTotal.add(constraintMatch.getScore());
+        if (!added) {
+            throw new IllegalStateException("The indictment (" + this
+                    + ") could not add constraintMatch (" + constraintMatch
+                    + ") to its constraintMatchSet (" + constraintMatchSet + ").");
         }
-        return added;
     }
 
     public void removeConstraintMatch(ConstraintMatch constraintMatch) {
+        scoreTotal = scoreTotal.subtract(constraintMatch.getScore());
         boolean removed = constraintMatchSet.remove(constraintMatch);
         if (!removed) {
             throw new IllegalStateException("The indictment (" + this

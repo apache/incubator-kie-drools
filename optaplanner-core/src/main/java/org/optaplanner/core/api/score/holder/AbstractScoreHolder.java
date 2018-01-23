@@ -17,12 +17,12 @@
 package org.optaplanner.core.api.score.holder;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import org.drools.core.common.AgendaItem;
 import org.kie.api.definition.rule.Rule;
@@ -90,15 +90,14 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
             constraintActivationUnMatchListener.constraintMatchTotal = findConstraintMatchTotal(kcontext);
             ConstraintMatch constraintMatch = constraintActivationUnMatchListener.constraintMatchTotal
                     .addConstraintMatch(justificationList, scoreSupplier.get());
-            List<Indictment> indictmentList = new ArrayList<>(justificationList.size());
-            for (Object justification : justificationList) {
-                Indictment indictment = indictmentMap.computeIfAbsent(justification,
-                        k -> new Indictment(justification, zeroScore));
-                boolean added = indictment.addConstraintMatch(constraintMatch);
-                if (added) {
-                    indictmentList.add(indictment);
-                }
-            }
+            List<Indictment> indictmentList = justificationList.stream()
+                    .distinct() // One match might have the same justification twice
+                    .map(justification -> {
+                        Indictment indictment = indictmentMap.computeIfAbsent(justification,
+                                k -> new Indictment(justification, zeroScore));
+                        indictment.addConstraintMatch(constraintMatch);
+                        return indictment;
+                    }).collect(Collectors.toList());
             constraintActivationUnMatchListener.constraintMatch = constraintMatch;
             constraintActivationUnMatchListener.indictmentList = indictmentList;
         }

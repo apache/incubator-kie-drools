@@ -18,11 +18,43 @@ package org.optaplanner.core.api.score.constraint;
 
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 
+import static java.util.Arrays.*;
 import static org.junit.Assert.*;
 
 public class IndictmentTest {
+
+    @Test
+    public void getScoreTotal() {
+        TestdataEntity e1 = new TestdataEntity("e1");
+        TestdataEntity e2 = new TestdataEntity("e2");
+        TestdataEntity e3 = new TestdataEntity("e3");
+        Indictment indictment = new Indictment(e1, SimpleScore.ZERO);
+        assertEquals(SimpleScore.ZERO, indictment.getScoreTotal());
+
+        ConstraintMatch match1 = new ConstraintMatch("package1", "constraint1", asList(e1), SimpleScore.valueOf(-1));
+        indictment.addConstraintMatch(match1);
+        assertEquals(SimpleScore.valueOf(-1), indictment.getScoreTotal());
+        // Different constraintName
+        ConstraintMatch match2 = new ConstraintMatch("package1", "constraint2", asList(e1), SimpleScore.valueOf(-20));
+        indictment.addConstraintMatch(match2);
+        assertEquals(SimpleScore.valueOf(-21), indictment.getScoreTotal());
+        indictment.addConstraintMatch(new ConstraintMatch("package1", "constraint3", asList(e1, e2), SimpleScore.valueOf(-300)));
+        assertEquals(SimpleScore.valueOf(-321), indictment.getScoreTotal());
+        // Different justification
+        indictment.addConstraintMatch(new ConstraintMatch("package1", "constraint3", asList(e1, e3), SimpleScore.valueOf(-4000)));
+        assertEquals(SimpleScore.valueOf(-4321), indictment.getScoreTotal());
+        // Almost duplicate, but e2 and e1 are in reverse order, so different justification
+        indictment.addConstraintMatch(new ConstraintMatch("package1", "constraint3", asList(e2, e1), SimpleScore.valueOf(-50000)));
+        assertEquals(SimpleScore.valueOf(-54321), indictment.getScoreTotal());
+
+        indictment.removeConstraintMatch(match2);
+        assertEquals(SimpleScore.valueOf(-54301), indictment.getScoreTotal());
+        indictment.removeConstraintMatch(match1);
+        assertEquals(SimpleScore.valueOf(-54300), indictment.getScoreTotal());
+    }
 
     @Test
     public void equalsAndHashCode() {
