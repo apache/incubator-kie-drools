@@ -20,8 +20,7 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
-import org.kie.dmn.feel.runtime.functions.BuiltInFunctions;
-import org.kie.dmn.feel.runtime.functions.DateFunction;
+import org.kie.dmn.feel.runtime.functions.extended.DateFunction;
 import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 import org.kie.dmn.feel.runtime.functions.ParameterName;
 import org.kie.dmn.feel.util.EvalHelper;
@@ -45,7 +44,7 @@ public class YearFunction
         }
 
         try {
-            Object r = BuiltInFunctions.getFunction( DateFunction.class ).invoke( val ).cata( BuiltInType.justNull(), Function.identity() );
+            Object r = DateFunction.INSTANCE.invoke( val ).cata( BuiltInType.justNull(), Function.identity() );
             if ( r != null && r instanceof TemporalAccessor ) {
                 return invoke( (TemporalAccessor) r );
             } else {

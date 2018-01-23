@@ -39,7 +39,11 @@ public class DurationFunction
         if ( val == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "cannot be null"));
         }
-        
+
+        if ( val.indexOf("-") > 0) {
+            return FEELFnResult.ofError( new InvalidParametersEvent(Severity.ERROR, "from", "negative values for units are not allowed.") );
+        }
+
         try {
             // try to parse as days/hours/minute/seconds
             return FEELFnResult.ofResult( Duration.parse( val ) );
