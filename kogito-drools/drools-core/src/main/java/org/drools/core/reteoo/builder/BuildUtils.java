@@ -31,6 +31,7 @@ import org.drools.core.common.QuadroupleBetaConstraints;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.common.SingleBetaConstraints;
 import org.drools.core.common.TripleBetaConstraints;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.EntryPointNode;
@@ -50,6 +51,7 @@ import org.drools.core.spi.ObjectType;
 import org.drools.core.time.Interval;
 import org.drools.core.time.TemporalDependencyMatrix;
 import org.drools.core.time.TimeUtils;
+import org.kie.api.definition.rule.Rule;
 
 /**
  * Utility functions for reteoo build
@@ -123,6 +125,10 @@ public class BuildUtils {
             }
         }
 
+        if ( node != null && !areNodesCompatibleForSharing(context, node, candidate) ) {
+            node = null;
+        }
+
         if ( node == null ) {
             // only attach() if it is a new node
             node = candidate;
@@ -176,14 +182,26 @@ public class BuildUtils {
     /**
      * Utility function to check if sharing is enabled for nodes of the given class
      */
-    private boolean isSharingEnabledForNode(final BuildContext context,
-                                            final BaseNode node) {
+    private boolean isSharingEnabledForNode(BuildContext context, BaseNode node) {
         if ( NodeTypeEnums.isLeftTupleSource( node )) {
             return context.getKnowledgeBase().getConfiguration().isShareBetaNodes();
         } else if ( NodeTypeEnums.isObjectSource( node ) ) {
             return context.getKnowledgeBase().getConfiguration().isShareAlphaNodes();
         }
         return false;
+    }
+
+    private boolean areNodesCompatibleForSharing(BuildContext context, BaseNode node, BaseNode candidate) {
+        if ( node.getType() == NodeTypeEnums.RightInputAdaterNode ) {
+            // avoid subnetworks sharing when they belong to 2 different agenda-groups
+            String agendaGroup = context.getRule().getAgendaGroup();
+            for (Rule associatedRule : node.getAssociatedRules()) {
+                if (!agendaGroup.equals( (( RuleImpl ) associatedRule).getAgendaGroup() )) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     /**
