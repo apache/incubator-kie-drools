@@ -16,6 +16,11 @@
 
 package org.drools.core.common;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Collection;
+
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.ObjectSource;
@@ -26,11 +31,6 @@ import org.drools.core.reteoo.Sink;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.util.Bag;
 import org.kie.api.definition.rule.Rule;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Collection;
 
 /**
  * The base class for all Rete nodes.
@@ -180,6 +180,10 @@ public abstract class BaseNode
 
     public int getAssociationsSize() {
         return this.associations.size();
+    }
+
+    public Rule[] getAssociatedRules() {
+        return this.associations.toArray( new Rule[this.associations.getKeySize()] );
     }
 
     public int getAssociatedRuleSize() {
