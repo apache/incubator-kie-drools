@@ -17,16 +17,20 @@
 package org.optaplanner.examples.common.app;
 
 import java.io.File;
+import java.util.Collection;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
+import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
 import static org.junit.Assert.*;
@@ -62,7 +66,7 @@ public abstract class SolverPerformanceTest<Solution_> extends LoggingTest {
         logger.info("Opened: {}", unsolvedDataFile);
         Solver<Solution_> solver = solverFactory.buildSolver();
         Solution_ bestSolution = solver.solve(problem);
-        assertBestSolution(solver, bestSolution, bestScoreLimitString);
+        assertScoreAndConstraintMatches(solver, bestSolution, bestScoreLimitString);
     }
 
     protected SolverFactory<Solution_> buildSolverFactory(String bestScoreLimitString, EnvironmentMode environmentMode) {
@@ -73,14 +77,29 @@ public abstract class SolverPerformanceTest<Solution_> extends LoggingTest {
         return solverFactory;
     }
 
-    private void assertBestSolution(Solver<Solution_> solver, Solution_ bestSolution, String bestScoreLimitString) {
+    private void assertScoreAndConstraintMatches(Solver<Solution_> solver, Solution_ bestSolution, String bestScoreLimitString) {
         assertNotNull(bestSolution);
         InnerScoreDirectorFactory<Solution_> scoreDirectorFactory
                 = (InnerScoreDirectorFactory<Solution_>) solver.getScoreDirectorFactory();
         Score bestScore = scoreDirectorFactory.getSolutionDescriptor().getScore(bestSolution);
-        Score bestScoreLimit = scoreDirectorFactory.getScoreDefinition().parseScore(bestScoreLimitString);
+        ScoreDefinition scoreDefinition = scoreDirectorFactory.getScoreDefinition();
+        Score bestScoreLimit = scoreDefinition.parseScore(bestScoreLimitString);
         assertTrue("The bestScore (" + bestScore + ") must be at least the bestScoreLimit (" + bestScoreLimit + ").",
                 bestScore.compareTo(bestScoreLimit) >= 0);
+
+        try (ScoreDirector<Solution_> scoreDirector = scoreDirectorFactory.buildScoreDirector()) {
+            scoreDirector.setWorkingSolution(bestSolution);
+            Score score = scoreDirector.calculateScore();
+            assertEquals(score, bestScore);
+            if (scoreDirector.isConstraintMatchEnabled()) {
+                Collection<ConstraintMatchTotal> constraintMatchTotals = scoreDirector.getConstraintMatchTotals();
+                assertNotNull(constraintMatchTotals);
+                assertEquals(score, constraintMatchTotals.stream()
+                        .map(ConstraintMatchTotal::getScoreTotal)
+                        .reduce(Score::add).orElse(scoreDefinition.getZeroScore()));
+                assertNotNull(scoreDirector.getIndictmentMap());
+            }
+        }
     }
 
 }
