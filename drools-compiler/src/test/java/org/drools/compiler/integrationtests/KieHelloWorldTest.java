@@ -15,6 +15,11 @@
 
 package org.drools.compiler.integrationtests;
 
+import java.io.ByteArrayInputStream;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Message;
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
@@ -37,11 +42,6 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
-
-import java.io.ByteArrayInputStream;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -519,5 +519,25 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
 
         assertEquals( 1, results.size() );
         assertEquals( "ok", results.get(0) );
+    }
+
+    @Test
+    public void testErrorReportingWithWrongKmodule() throws Exception {
+        // RHDM-69
+        String kmodule =
+                "<kmodule xmlns=\"http://jboss.org/kie/6.0.0/kmodule\">\n" +
+                "  <kbase name=\"ABC\" default=\"false\" eventProcessingMode=\"stream\" equalsBehavior=\"identity\"/>\n" +
+                "  <kbase name=\"ABC\" default=\"false\" eventProcessingMode=\"stream\" equalsBehavior=\"identity\"/>\n" +
+                "</kmodule>\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", createDrl( "R1" ) );
+        kfs.writeKModuleXML(kmodule);
+
+        KieBuilder kb = ks.newKieBuilder( kfs ).buildAll();
+
+        assertEquals( 1, kb.getResults().getMessages().size() );
+        assertTrue( kb.getResults().getMessages().get(0).toString().contains( "ABC" ) );
     }
 }
