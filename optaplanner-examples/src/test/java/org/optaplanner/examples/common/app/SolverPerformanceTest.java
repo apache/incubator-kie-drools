@@ -34,11 +34,8 @@ import static org.junit.Assert.*;
 /**
  * Runs an example {@link Solver}.
  * <p>
- * Always use a {@link Test#timeout()} value on {@link Test}.
- * The timeout should be the triple of the timeout on a normal 3 year old desktop computer,
- * because some of the Jenkins machines are old.
- * For example, on a normal 3 year old desktop computer it always finishes in less than 1 minute,
- * then specify a timeout of 3 minutes.
+ * A test should run in less than 10 seconds on a 3 year old desktop computer, choose the bestScoreLimit accordingly.
+ * Always use a {@link Test#timeout()} on {@link Test}, preferably 10 minutes because some of the Jenkins machines are old.
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public abstract class SolverPerformanceTest<Solution_> extends LoggingTest {
