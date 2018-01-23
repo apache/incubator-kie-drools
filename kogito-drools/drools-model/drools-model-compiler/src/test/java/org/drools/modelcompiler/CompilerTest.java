@@ -1058,4 +1058,183 @@ public class CompilerTest extends BaseModelTest {
         Collection<String> results = getObjectsIntoList(ksession, String.class);
         assertEquals(1, results.size());
     }
+
+    public static abstract class ICAbstractA {
+    }
+
+    public static class ICA extends ICAbstractA {
+
+        private ICAbstractB someB;
+
+        public ICAbstractB getSomeB() {
+            return someB;
+        }
+
+        public void setSomeB(ICAbstractB someB) {
+            this.someB = someB;
+        }
+
+    }
+
+    public static abstract class ICAbstractB {
+    }
+
+    public static class ICB extends ICAbstractB {
+
+        private ICAbstractC someC;
+
+        public ICAbstractC getSomeC() {
+            return someC;
+        }
+
+        public void setSomeC(ICAbstractC someC) {
+            this.someC = someC;
+        }
+    }
+
+    public static abstract class ICAbstractC {
+    }
+
+    public static class ICC extends ICAbstractC {
+
+        public String onlyConcrete() {
+            return "Hello";
+        }
+    }
+
+    @Test
+    @Ignore("the codegen does not support it yet")
+    public void testInlineCastMultiple() {
+        String str = "import " + ICAbstractA.class.getCanonicalName() + ";" +
+                     "import " + ICAbstractB.class.getCanonicalName() + ";" +
+                     "import " + ICAbstractC.class.getCanonicalName() + ";" +
+                     "import " + ICA.class.getCanonicalName() + ";" +
+                     "import " + ICB.class.getCanonicalName() + ";" +
+                     "import " + ICC.class.getCanonicalName() + ";" +
+                     "rule R when\n" +
+                     "  $a : ICA( someB#ICB.someC#ICC.onlyConcrete() == \"Hello\" )\n" + // Notice this is chaining MVEL field accessors, because inlinecast chaining methodcalls does not work even on DRL: getSomeB()#ICB.getSomeC()#ICC.onlyConcrete()
+                     "then\n" +
+                     "  insert(\"matched\");\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+
+        ICA a = new ICA();
+        ICB b = new ICB();
+        ICC c = new ICC();
+        b.setSomeC(c);
+        a.setSomeB(b);
+
+        ksession.insert(a);
+        ksession.fireAllRules();
+
+        Collection<String> results = getObjectsIntoList(ksession, String.class);
+        assertEquals(1, results.size());
+    }
+
+    public static class NullUnsafeA {
+
+        private NullUnsafeB someB;
+
+        public NullUnsafeB getSomeB() {
+            return someB;
+        }
+
+        public void setSomeB(NullUnsafeB someB) {
+            this.someB = someB;
+        }
+    }
+
+    public static class NullUnsafeB {
+
+        private NullUnsafeC someC;
+
+        public NullUnsafeC getSomeC() {
+            return someC;
+        }
+
+        public void setSomeC(NullUnsafeC someC) {
+            this.someC = someC;
+        }
+
+    }
+
+    public static class NullUnsafeC {
+
+        private String something;
+
+        public String getSomething() {
+            return something;
+        }
+
+        public void setSomething(String something) {
+            this.something = something;
+        }
+    }
+
+    @Test
+    @Ignore("the codegen does not support it yet")
+    public void testNullSafeMultiple() {
+        String str = "import " + NullUnsafeA.class.getCanonicalName() + ";" +
+                     "import " + NullUnsafeB.class.getCanonicalName() + ";" +
+                     "import " + NullUnsafeC.class.getCanonicalName() + ";" +
+                     "rule R when\n" +
+                     "  $a : NullUnsafeA( someB!.someC!.something == \"Hello\" )\n" +
+                     "then\n" +
+                     "  insert(\"matched\");\n" +
+                     "end";
+
+        for (int i = 0; i <= 3; i++) {
+            KieSession ksession = getKieSession(str);
+
+            NullUnsafeA a = new NullUnsafeA();
+            NullUnsafeB b = new NullUnsafeB();
+            NullUnsafeC c = new NullUnsafeC();
+            // trap #0
+            if (i != 0) {
+                c.setSomething("Hello");
+            }
+            // trap #1
+            if (i != 1) {
+                b.setSomeC(c);
+            }
+            // trap #2
+            if (i != 2) {
+                a.setSomeB(b);
+            }
+            ksession.insert(a);
+            ksession.fireAllRules();
+
+            Collection<String> results = getObjectsIntoList(ksession, String.class);
+            if (i < 3) {
+                assertEquals(0, results.size());
+            } else if (i == 3) {
+                // iteration #3 has no null-traps
+                assertEquals(1, results.size());
+            }
+        }
+    }
+
+    @Test
+    @Ignore("the codegen does not support it yet")
+    public void testNullSafeDereferncing2() {
+        String str = "import " + Result.class.getCanonicalName() + ";" +
+                     "import " + Person.class.getCanonicalName() + ";" +
+                     "rule R when\n" +
+                     "  $p : Person( address!.addressName.startsWith(\"M\") )\n" +
+                     "then\n" +
+                     "  Result r = new Result($p.getName());" +
+                     "  insert(r);\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert(new Person("John1", 41, null));
+        ksession.insert(new Person("John2", 42, new Address("Milan")));
+        ksession.fireAllRules();
+
+        List<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(1, results.size());
+        assertEquals("John2", results.get(0).getValue());
+    }
 }
