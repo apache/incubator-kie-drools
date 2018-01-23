@@ -24,7 +24,7 @@ import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.pmml.pmml_4_2.DroolsAbstractPMMLTest;
-import org.kie.pmml.pmml_4_2.model.PMMLRequestData;
+import org.kie.api.pmml.PMMLRequestData;
 
 import static org.junit.Assert.assertEquals;
 

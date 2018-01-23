@@ -21,8 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.dmg.pmml.pmml_4_2.descr.PMML;
-import org.dmg.pmml.pmml_4_2.descr.Segment;
+import org.kie.dmg.pmml.pmml_4_2.descr.PMML;
+import org.kie.dmg.pmml.pmml_4_2.descr.Segment;
 import org.kie.api.definition.type.PropertyReactive;
 import org.kie.api.io.Resource;
 import org.kie.internal.io.ResourceFactory;

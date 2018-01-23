@@ -17,7 +17,7 @@
 package org.kie.pmml.pmml_4_2;
 
 
-import org.dmg.pmml.pmml_4_2.descr.*;
+import org.kie.dmg.pmml.pmml_4_2.descr.*;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;

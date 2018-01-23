@@ -19,11 +19,11 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.util.List;
 
-import org.dmg.pmml.pmml_4_2.descr.MiningSchema;
-import org.dmg.pmml.pmml_4_2.descr.Output;
-import org.dmg.pmml.pmml_4_2.descr.OutputField;
-import org.dmg.pmml.pmml_4_2.descr.Scorecard;
-import org.dmg.pmml.pmml_4_2.descr.TreeModel;
+import org.kie.dmg.pmml.pmml_4_2.descr.MiningSchema;
+import org.kie.dmg.pmml.pmml_4_2.descr.Output;
+import org.kie.dmg.pmml.pmml_4_2.descr.OutputField;
+import org.kie.dmg.pmml.pmml_4_2.descr.Scorecard;
+import org.kie.dmg.pmml.pmml_4_2.descr.TreeModel;
 import org.kie.pmml.pmml_4_2.PMML4Model;
 import org.kie.pmml.pmml_4_2.PMML4Unit;
 import org.mvel2.templates.CompiledTemplate;

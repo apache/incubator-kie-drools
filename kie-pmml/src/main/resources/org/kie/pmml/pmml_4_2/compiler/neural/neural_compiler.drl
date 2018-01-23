@@ -15,7 +15,7 @@
 
 package org.kie.pmml.pmml_4_2.compiler;
 
-import org.dmg.pmml.pmml_4_2.descr.*;
+import org.kie.dmg.pmml.pmml_4_2.descr.*;
 import java.util.*;
 dialect "mvel"
 

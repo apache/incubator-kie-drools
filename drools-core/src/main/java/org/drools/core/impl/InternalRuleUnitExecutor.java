@@ -20,15 +20,13 @@ import java.util.Collection;
 
 import org.drools.core.datasources.InternalDataSource;
 import org.drools.core.spi.Activation;
-import org.kie.api.runtime.KieSession;
 import org.kie.api.logger.KieRuntimeLogger;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.rule.RuleUnit;
 import org.kie.api.runtime.rule.RuleUnitExecutor;
 
 public interface InternalRuleUnitExecutor extends RuleUnitExecutor {
-
-    KieSession getKieSession();
 
     void cancelActivation( Activation activation );
 
@@ -51,5 +49,7 @@ public interface InternalRuleUnitExecutor extends RuleUnitExecutor {
     Collection<?> getSessionObjects();
     Collection<?> getSessionObjects(ObjectFilter filter);
 
+    KieSession getKieSession();
+    
     void bindDataSource(InternalDataSource dataSource );
 }
