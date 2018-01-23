@@ -100,47 +100,85 @@ public class UserTaskAdminServiceImpl implements UserTaskAdminService {
     
     @Override
     public void addPotentialOwners(long taskId, boolean removeExisting, OrganizationalEntity... orgEntities) throws TaskNotFoundException {
-        addPeopleAssignment(taskId, removeExisting, POT_OWNER, orgEntities);
+        addPotentialOwners(null, taskId, removeExisting, orgEntities);
+    }
+    
+    @Override
+    public void addPotentialOwners(String deploymentId, long taskId, boolean removeExisting, OrganizationalEntity... orgEntities) throws TaskNotFoundException {
+        addPeopleAssignment(deploymentId, taskId, removeExisting, POT_OWNER, orgEntities);
     }
 
     @Override
     public void addExcludedOwners(long taskId, boolean removeExisting, OrganizationalEntity... orgEntities) throws TaskNotFoundException {
-        addPeopleAssignment(taskId, removeExisting, EXCL_OWNER, orgEntities);
+        addExcludedOwners(null, taskId, removeExisting, orgEntities);
     }
-
+    
+    @Override
+    public void addExcludedOwners(String deploymentId, long taskId, boolean removeExisting, OrganizationalEntity... orgEntities) throws TaskNotFoundException {
+        addPeopleAssignment(deploymentId, taskId, removeExisting, EXCL_OWNER, orgEntities);
+    }
+    
     @Override
     public void addBusinessAdmins(long taskId, boolean removeExisting, OrganizationalEntity... orgEntities) throws TaskNotFoundException {
-        addPeopleAssignment(taskId, removeExisting, ADMIN, orgEntities);
+        addBusinessAdmins(null, taskId, removeExisting, orgEntities);
     }
 
+    @Override
+    public void addBusinessAdmins(String deploymentId, long taskId, boolean removeExisting, OrganizationalEntity... orgEntities) throws TaskNotFoundException {
+        addPeopleAssignment(deploymentId, taskId, removeExisting, ADMIN, orgEntities);
+    }
+    
     @Override
     public void removePotentialOwners(long taskId, OrganizationalEntity... orgEntities) throws TaskNotFoundException {
-        removePeopleAssignment(taskId, POT_OWNER, orgEntities);
+        removePotentialOwners(null, taskId, orgEntities);
     }
 
     @Override
+    public void removePotentialOwners(String deploymentId, long taskId, OrganizationalEntity... orgEntities) throws TaskNotFoundException {
+        removePeopleAssignment(deploymentId, taskId, POT_OWNER, orgEntities);
+    }
+    
+    @Override
     public void removeExcludedOwners(long taskId, OrganizationalEntity... orgEntities) throws TaskNotFoundException {
-        removePeopleAssignment(taskId, EXCL_OWNER, orgEntities);
+        removeExcludedOwners(null, taskId, orgEntities);
+    }
+
+    @Override
+    public void removeExcludedOwners(String deploymentId, long taskId, OrganizationalEntity... orgEntities) throws TaskNotFoundException {
+        removePeopleAssignment(deploymentId, taskId, EXCL_OWNER, orgEntities);
     }
 
     @Override
     public void removeBusinessAdmins(long taskId, OrganizationalEntity... orgEntities) throws TaskNotFoundException, IllegalStateException {
-        removePeopleAssignment(taskId, ADMIN, orgEntities);
+        removeBusinessAdmins(null, taskId, orgEntities);
     }
-
+    
+    @Override
+    public void removeBusinessAdmins(String deploymentId, long taskId, OrganizationalEntity... orgEntities) throws TaskNotFoundException, IllegalStateException {
+        removePeopleAssignment(deploymentId, taskId, ADMIN, orgEntities);
+    }
+    
     @Override
     public void addTaskInput(long taskId, String name, Object value) throws TaskNotFoundException {
-        Map<String, Object> data = new HashMap<>();
-        data.put(name, value);
-        addTaskInputs(taskId, data);
+        addTaskInput(null, taskId, name, value);
     }
 
     @Override
+    public void addTaskInput(String deploymentId, long taskId, String name, Object value) throws TaskNotFoundException {
+        Map<String, Object> data = new HashMap<>();
+        data.put(name, value);
+        addTaskInputs(deploymentId, taskId, data);
+    }
+    
+    @Override
     public void addTaskInputs(long taskId, Map<String, Object> data) throws TaskNotFoundException {
+        addTaskInputs(null, taskId, data);
+    }
+
+    @Override
+    public void addTaskInputs(String deploymentId, long taskId, Map<String, Object> data) throws TaskNotFoundException {
         UserTaskInstanceDesc task = runtimeDataService.getTaskById(taskId);
-        if (task == null) {
-            throw new TaskNotFoundException("Task with id " + taskId + " not found");
-        }
+        validateTask(deploymentId, taskId, task);
 
         userTaskService.execute(task.getDeploymentId(), ProcessInstanceIdContext.get(task.getProcessInstanceId()), 
                 new AddTaskInputsCommand(identityProvider.getName(), taskId, data));
@@ -148,10 +186,13 @@ public class UserTaskAdminServiceImpl implements UserTaskAdminService {
 
     @Override
     public void removeTaskInputs(long taskId, String... name) throws TaskNotFoundException {
+        removeTaskInputs(null, taskId, name);
+    }
+    
+    @Override
+    public void removeTaskInputs(String deploymentId, long taskId, String... name) throws TaskNotFoundException {
         UserTaskInstanceDesc task = runtimeDataService.getTaskById(taskId);
-        if (task == null) {
-            throw new TaskNotFoundException("Task with id " + taskId + " not found");
-        }
+        validateTask(deploymentId, taskId, task);
 
         userTaskService.execute(task.getDeploymentId(), ProcessInstanceIdContext.get(task.getProcessInstanceId()), 
                 new RemoveTaskDataCommand(identityProvider.getName(), taskId, Arrays.asList(name), true));
@@ -160,45 +201,71 @@ public class UserTaskAdminServiceImpl implements UserTaskAdminService {
     
     @Override
     public void removeTaskOutputs(long taskId, String... name) throws TaskNotFoundException {
+        removeTaskOutputs(null, taskId, name);
+    }
+    
+    @Override
+    public void removeTaskOutputs(String deploymentId, long taskId, String... name) throws TaskNotFoundException {
         UserTaskInstanceDesc task = runtimeDataService.getTaskById(taskId);
-        if (task == null) {
-            throw new TaskNotFoundException("Task with id " + taskId + " not found");
-        }
+        validateTask(deploymentId, taskId, task);
 
         userTaskService.execute(task.getDeploymentId(), ProcessInstanceIdContext.get(task.getProcessInstanceId()), 
                 new RemoveTaskDataCommand(identityProvider.getName(), taskId, Arrays.asList(name), false));
 
     }
-
+    
     @Override
     public Long reassignWhenNotStarted(long taskId, String timeExpression, OrganizationalEntity... orgEntities) throws TaskNotFoundException {
-        return reassign(taskId, timeExpression, DeadlineType.START, orgEntities);
+        return reassignWhenNotStarted(null, taskId, timeExpression, orgEntities);
+    }
+
+    @Override
+    public Long reassignWhenNotStarted(String deploymentId, long taskId, String timeExpression, OrganizationalEntity... orgEntities) throws TaskNotFoundException {
+        return reassign(deploymentId, taskId, timeExpression, DeadlineType.START, orgEntities);
     }
 
     @Override
     public Long reassignWhenNotCompleted(long taskId, String timeExpression, OrganizationalEntity... orgEntities) throws TaskNotFoundException {
-        return reassign(taskId, timeExpression, DeadlineType.END, orgEntities);
+        return reassignWhenNotCompleted(null, taskId, timeExpression, orgEntities);
+    }
+    
+    @Override
+    public Long reassignWhenNotCompleted(String deploymentId, long taskId, String timeExpression, OrganizationalEntity... orgEntities) throws TaskNotFoundException {
+        return reassign(deploymentId, taskId, timeExpression, DeadlineType.END, orgEntities);
 
     }
 
     @Override
     public Long notifyWhenNotStarted(long taskId, String timeExpression, Notification notification) throws TaskNotFoundException {
-        return notify(taskId, timeExpression, DeadlineType.START, notification);
+        return notifyWhenNotStarted(null, taskId, timeExpression, notification);
+    }
+    
+    @Override
+    public Long notifyWhenNotStarted(String deploymentId, long taskId, String timeExpression, Notification notification) throws TaskNotFoundException {
+        return notify(deploymentId, taskId, timeExpression, DeadlineType.START, notification);
 
+    }
+    
+    @Override
+    public Long notifyWhenNotCompleted(long taskId, String timeExpression, Notification notification) throws TaskNotFoundException {
+        return notifyWhenNotCompleted(null, taskId, timeExpression, notification);
     }
 
     @Override
-    public Long notifyWhenNotCompleted(long taskId, String timeExpression, Notification notification) throws TaskNotFoundException {
-        return notify(taskId, timeExpression, DeadlineType.END, notification);
+    public Long notifyWhenNotCompleted(String deploymentId, long taskId, String timeExpression, Notification notification) throws TaskNotFoundException {
+        return notify(deploymentId, taskId, timeExpression, DeadlineType.END, notification);
 
     }
     
     @Override
     public Collection<TaskReassignment> getTaskReassignments(long taskId, boolean activeOnly) throws TaskNotFoundException {
+        return getTaskReassignments(null, taskId, activeOnly);
+    }
+    
+    @Override
+    public Collection<TaskReassignment> getTaskReassignments(String deploymentId, long taskId, boolean activeOnly) throws TaskNotFoundException {
         UserTaskInstanceDesc task = runtimeDataService.getTaskById(taskId);
-        if (task == null) {
-            throw new TaskNotFoundException("Task with id " + taskId + " not found");
-        }
+        validateTask(deploymentId, taskId, task);
 
         return userTaskService.execute(task.getDeploymentId(), ProcessInstanceIdContext.get(task.getProcessInstanceId()), 
                 new ListTaskReassignmentsCommand(identityProvider.getName(), taskId, activeOnly));
@@ -206,21 +273,27 @@ public class UserTaskAdminServiceImpl implements UserTaskAdminService {
 
     @Override
     public Collection<TaskNotification> getTaskNotifications(long taskId, boolean activeOnly) throws TaskNotFoundException {
+        return getTaskNotifications(null, taskId, activeOnly);
+    }
+    
+    @Override
+    public Collection<TaskNotification> getTaskNotifications(String deploymentId, long taskId, boolean activeOnly) throws TaskNotFoundException {
         UserTaskInstanceDesc task = runtimeDataService.getTaskById(taskId);
-        if (task == null) {
-            throw new TaskNotFoundException("Task with id " + taskId + " not found");
-        }
+        validateTask(deploymentId, taskId, task);
 
         return userTaskService.execute(task.getDeploymentId(), ProcessInstanceIdContext.get(task.getProcessInstanceId()), 
                 new ListTaskNotificationsCommand(identityProvider.getName(), taskId, activeOnly));
     }
-
+    
     @Override
     public void cancelNotification(long taskId, long notificationId) throws TaskNotFoundException {
+        cancelNotification(null, taskId, notificationId);
+    }
+
+    @Override
+    public void cancelNotification(String deploymentId, long taskId, long notificationId) throws TaskNotFoundException {
         UserTaskInstanceDesc task = runtimeDataService.getTaskById(taskId);
-        if (task == null) {
-            throw new TaskNotFoundException("Task with id " + taskId + " not found");
-        }
+        validateTask(deploymentId, taskId, task);
 
         userTaskService.execute(task.getDeploymentId(), ProcessInstanceIdContext.get(task.getProcessInstanceId()), 
                 new CancelTaskDeadlineCommand(identityProvider.getName(), taskId, notificationId));
@@ -228,10 +301,13 @@ public class UserTaskAdminServiceImpl implements UserTaskAdminService {
 
     @Override
     public void cancelReassignment(long taskId, long reassignmentId) throws TaskNotFoundException {
+        cancelReassignment(null, taskId, reassignmentId);
+    }
+    
+    @Override
+    public void cancelReassignment(String deploymentId, long taskId, long reassignmentId) throws TaskNotFoundException {
         UserTaskInstanceDesc task = runtimeDataService.getTaskById(taskId);
-        if (task == null) {
-            throw new TaskNotFoundException("Task with id " + taskId + " not found");
-        }
+        validateTask(deploymentId, taskId, task);
 
         userTaskService.execute(task.getDeploymentId(), ProcessInstanceIdContext.get(task.getProcessInstanceId()), 
                 new CancelTaskDeadlineCommand(identityProvider.getName(), taskId, reassignmentId));
@@ -377,31 +453,25 @@ public class UserTaskAdminServiceImpl implements UserTaskAdminService {
      */
     
     
-    protected void addPeopleAssignment(long taskId, boolean removeExisting, int type, OrganizationalEntity... orgEntities) throws TaskNotFoundException {
+    protected void addPeopleAssignment(String deploymentId, long taskId, boolean removeExisting, int type, OrganizationalEntity... orgEntities) throws TaskNotFoundException {
         UserTaskInstanceDesc task = runtimeDataService.getTaskById(taskId);
-        if (task == null) {
-            throw new TaskNotFoundException("Task with id " + taskId + " not found");
-        }
+        validateTask(deploymentId, taskId, task);
 
         userTaskService.execute(task.getDeploymentId(), ProcessInstanceIdContext.get(task.getProcessInstanceId()), 
                 new AddPeopleAssignmentsCommand(identityProvider.getName(), taskId, type, orgEntities, removeExisting));
     }
     
-    protected void removePeopleAssignment(long taskId, int type, OrganizationalEntity... orgEntities) throws TaskNotFoundException {
+    protected void removePeopleAssignment(String deploymentId, long taskId, int type, OrganizationalEntity... orgEntities) throws TaskNotFoundException {
         UserTaskInstanceDesc task = runtimeDataService.getTaskById(taskId);
-        if (task == null) {
-            throw new TaskNotFoundException("Task with id " + taskId + " not found");
-        }
+        validateTask(deploymentId, taskId, task);
 
         userTaskService.execute(task.getDeploymentId(), ProcessInstanceIdContext.get(task.getProcessInstanceId()), 
                 new RemovePeopleAssignmentsCommand(identityProvider.getName(), taskId, type, orgEntities));
     }
     
-    protected Long reassign(long taskId, String timeExpression, DeadlineType type, OrganizationalEntity... orgEntities) throws TaskNotFoundException {
+    protected Long reassign(String deploymentId, long taskId, String timeExpression, DeadlineType type, OrganizationalEntity... orgEntities) throws TaskNotFoundException {
         UserTaskInstanceDesc task = runtimeDataService.getTaskById(taskId);
-        if (task == null) {
-            throw new TaskNotFoundException("Task with id " + taskId + " not found");
-        }
+        validateTask(deploymentId, taskId, task);
 
         if(timeExpression == null || timeExpression.isEmpty()) {
             throw new IllegalArgumentException("Invalid time expression");
@@ -431,11 +501,10 @@ public class UserTaskAdminServiceImpl implements UserTaskAdminService {
                 new ScheduleTaskDeadlineCommand(identityProvider.getName(), taskId, type, taskDeadline, timeExpression));
     }
     
-    protected Long notify(long taskId, String timeExpression, DeadlineType type, Notification notification) throws TaskNotFoundException {
+    protected Long notify(String deploymentId, long taskId, String timeExpression, DeadlineType type, Notification notification) throws TaskNotFoundException {
         UserTaskInstanceDesc task = runtimeDataService.getTaskById(taskId);
-        if (task == null) {
-            throw new TaskNotFoundException("Task with id " + taskId + " not found");
-        }
+        validateTask(deploymentId, taskId, task);
+        
         List<Escalation> escalations = new ArrayList<Escalation>();
         Deadline taskDeadline = TaskModelProvider.getFactory().newDeadline();                
         taskDeadline.setEscalations(escalations);        
@@ -478,5 +547,15 @@ public class UserTaskAdminServiceImpl implements UserTaskAdminService {
         }
         
         return ackMode;
+    }
+    
+    protected void validateTask(String deploymentId, Long taskId, UserTaskInstanceDesc task) {
+        if (task == null) {
+            throw new TaskNotFoundException("Task with id " + taskId + " was not found");
+        }
+        
+        if (deploymentId != null && !task.getDeploymentId().equals(deploymentId)) {
+            throw new TaskNotFoundException("Task with id " + taskId + " is not associated with " + deploymentId);
+        }
     }
 }

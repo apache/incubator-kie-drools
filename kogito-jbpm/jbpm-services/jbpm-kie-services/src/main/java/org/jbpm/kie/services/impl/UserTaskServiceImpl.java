@@ -129,13 +129,26 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 		
 		return manager;
 	}
+	
+	protected void validateTask(String deploymentId, Long taskId, UserTaskInstanceDesc task) {
+	    if (task == null) {
+            throw new TaskNotFoundException("Task with id " + taskId + " was not found");
+        }
+	    
+	    if (deploymentId != null && !task.getDeploymentId().equals(deploymentId)) {
+	        throw new TaskNotFoundException("Task with id " + taskId + " is not associated with " + deploymentId);
+	    }
+	}
+	
+	@Override
+    public void activate(Long taskId, String userId) {
+	    activate(null, taskId, userId);
+	}
 
 	@Override
-	public void activate(Long taskId, String userId) {
+	public void activate(String deploymentId, Long taskId, String userId) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
-		if (task == null) {
-			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
-		}
+		validateTask(deploymentId, taskId, task);
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -153,13 +166,16 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 			disposeRuntimeEngine(manager, engine);
 		}
 	}
+	
+	@Override
+    public void claim(Long taskId, String userId) {
+	    claim(null, taskId, userId);
+	}
 
 	@Override
-	public void claim(Long taskId, String userId) {
+	public void claim(String deploymentId, Long taskId, String userId) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
-		if (task == null) {
-			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
-		}
+		validateTask(deploymentId, taskId, task);
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -179,12 +195,15 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 
 	}
 
-    @Override
+	@Override
     public void complete(Long taskId, String userId, Map<String, Object> params) {
+	    complete(null, taskId, userId, params);
+	}
+	
+    @Override
+    public void complete(String deploymentId, Long taskId, String userId, Map<String, Object> params) {
         UserTaskInstanceDesc task = dataService.getTaskById(taskId);
-        if (task == null) {
-            throw new TaskNotFoundException("Task with id " + taskId + " was not found");
-        }
+        validateTask(deploymentId, taskId, task);
 
         RuntimeManager manager = getRuntimeManager(task);
         if (manager == null) {
@@ -206,13 +225,16 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
         }
 
     }
-
+    
     @Override
     public void completeAutoProgress(Long taskId, String userId, Map<String, Object> params) {
+        completeAutoProgress(null, taskId, userId, params);
+    }
+
+    @Override
+    public void completeAutoProgress(String deploymentId, Long taskId, String userId, Map<String, Object> params) {
         UserTaskInstanceDesc task = dataService.getTaskById(taskId);
-        if (task == null) {
-            throw new TaskNotFoundException("Task with id " + taskId + " was not found");
-        }
+        validateTask(deploymentId, taskId, task);
 
         RuntimeManager manager = getRuntimeManager(task);
         if (manager == null) {
@@ -241,13 +263,16 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
         }
 
     }
+    
+    @Override
+    public void delegate(Long taskId, String userId, String targetUserId) {
+        delegate(null, taskId, userId, targetUserId);
+    }
 
 	@Override
-	public void delegate(Long taskId, String userId, String targetUserId) {
+	public void delegate(String deploymentId, Long taskId, String userId, String targetUserId) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
-		if (task == null) {
-			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
-		}
+		validateTask(deploymentId, taskId, task);
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -265,13 +290,16 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 			disposeRuntimeEngine(manager, engine);
 		}
 	}
+	
+	@Override
+    public void exit(Long taskId, String userId) {
+	    exit(null, taskId, userId);
+	}
 
 	@Override
-	public void exit(Long taskId, String userId) {
+	public void exit(String deploymentId, Long taskId, String userId) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
-		if (task == null) {
-			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
-		}
+		validateTask(deploymentId, taskId, task);
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -291,11 +319,14 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 	}
 
 	@Override
-	public void fail(Long taskId, String userId, Map<String, Object> faultData) {
+    public void fail(Long taskId, String userId, Map<String, Object> faultData) {
+	    fail(null, taskId, userId, faultData);
+	}
+	
+	@Override
+	public void fail(String deploymentId, Long taskId, String userId, Map<String, Object> faultData) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
-		if (task == null) {
-			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
-		}
+		validateTask(deploymentId, taskId, task);
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -316,13 +347,16 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 			disposeRuntimeEngine(manager, engine);
 		}
 	}
+	
+	@Override
+    public void forward(Long taskId, String userId, String targetEntityId) {
+	    forward(null, taskId, userId, targetEntityId);
+	}
 
 	@Override
-	public void forward(Long taskId, String userId, String targetEntityId) {
+	public void forward(String deploymentId, Long taskId, String userId, String targetEntityId) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
-		if (task == null) {
-			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
-		}
+		validateTask(deploymentId, taskId, task);
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -340,13 +374,16 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 			disposeRuntimeEngine(manager, engine);
 		}
 	}
+	
+	@Override
+    public void release(Long taskId, String userId) {
+	    release(null, taskId, userId);
+	}
 
 	@Override
-	public void release(Long taskId, String userId) {
+	public void release(String deploymentId, Long taskId, String userId) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
-		if (task == null) {
-			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
-		}
+		validateTask(deploymentId, taskId, task);
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -366,11 +403,14 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 	}
 
 	@Override
-	public void resume(Long taskId, String userId) {
+    public void resume(Long taskId, String userId) {
+	    resume(null, taskId, userId);
+	}
+	
+	@Override
+	public void resume(String deploymentId, Long taskId, String userId) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
-		if (task == null) {
-			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
-		}
+		validateTask(deploymentId, taskId, task);
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -390,11 +430,14 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 	}
 
 	@Override
-	public void skip(Long taskId, String userId) {
+    public void skip(Long taskId, String userId) {
+	    skip(null, taskId, userId);
+	}
+	
+	@Override
+	public void skip(String deploymentId, Long taskId, String userId) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
-		if (task == null) {
-			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
-		}
+		validateTask(deploymentId, taskId, task);
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -412,13 +455,16 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 			disposeRuntimeEngine(manager, engine);
 		}
 	}
+	
+	@Override
+    public void start(Long taskId, String userId) {
+	    start(null, taskId, userId);
+	}
 
 	@Override
-	public void start(Long taskId, String userId) {
+	public void start(String deploymentId, Long taskId, String userId) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
-		if (task == null) {
-			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
-		}
+		validateTask(deploymentId, taskId, task);
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -436,13 +482,16 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 			disposeRuntimeEngine(manager, engine);
 		}
 	}
+	
+	@Override
+    public void stop(Long taskId, String userId) {
+	    stop(null, taskId, userId);
+	}
 
 	@Override
-	public void stop(Long taskId, String userId) {
+	public void stop(String deploymentId, Long taskId, String userId) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
-		if (task == null) {
-			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
-		}
+		validateTask(deploymentId, taskId, task);
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -460,13 +509,16 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 			disposeRuntimeEngine(manager, engine);
 		}
 	}
+	
+	@Override
+    public void suspend(Long taskId, String userId) {
+	    suspend(null, taskId, userId);
+	}
 
 	@Override
-	public void suspend(Long taskId, String userId) {
+	public void suspend(String deploymentId, Long taskId, String userId) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
-		if (task == null) {
-			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
-		}
+		validateTask(deploymentId, taskId, task);
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -484,13 +536,16 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 			disposeRuntimeEngine(manager, engine);
 		}
 	}
+	
+	@Override
+    public void nominate(Long taskId, String userId, List<OrganizationalEntity> potentialOwners) {
+	    nominate(null, taskId, userId, potentialOwners);
+	}
 
 	@Override
-	public void nominate(Long taskId, String userId, List<OrganizationalEntity> potentialOwners) {
+	public void nominate(String deploymentId, Long taskId, String userId, List<OrganizationalEntity> potentialOwners) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
-		if (task == null) {
-			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
-		}
+		validateTask(deploymentId, taskId, task);
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -508,13 +563,16 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 			disposeRuntimeEngine(manager, engine);
 		}
 	}
+	
+	@Override
+    public void setPriority(Long taskId, int priority) {
+	    setPriority(null, taskId, priority);
+	}
 
 	@Override
-	public void setPriority(Long taskId, int priority) {
+	public void setPriority(String deploymentId, Long taskId, int priority) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
-		if (task == null) {
-			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
-		}
+		validateTask(deploymentId, taskId, task);
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -530,13 +588,16 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 			disposeRuntimeEngine(manager, engine);
 		}
 	}
+	
+	@Override
+    public void setExpirationDate(Long taskId, Date date) {
+	    setExpirationDate(null, taskId, date);
+	}
 
 	@Override
-	public void setExpirationDate(Long taskId, Date date) {
+	public void setExpirationDate(String deploymentId, Long taskId, Date date) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
-		if (task == null) {
-			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
-		}
+		validateTask(deploymentId, taskId, task);
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -552,13 +613,16 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 			disposeRuntimeEngine(manager, engine);
 		}
 	}
+	
+	@Override
+    public void setSkipable(Long taskId, boolean skipable) {
+	    setSkipable(null, taskId, skipable);
+	}
 
 	@Override
-	public void setSkipable(Long taskId, boolean skipable) {
+	public void setSkipable(String deploymentId, Long taskId, boolean skipable) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
-		if (task == null) {
-			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
-		}
+		validateTask(deploymentId, taskId, task);
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -576,11 +640,14 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 	}
 	
 	@Override
-	public void setName(Long taskId, String name) {
+    public void setName(Long taskId, String name) {
+	    setName(null, taskId, name);
+	}
+	
+	@Override
+	public void setName(String deploymentId, Long taskId, String name) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
-		if (task == null) {
-			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
-		}
+		validateTask(deploymentId, taskId, task);
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -603,13 +670,16 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 		}
 		
 	}
+	
+	@Override
+    public void setDescription(Long taskId, String description) {
+	    setDescription(null, taskId, description);
+	}
 
 	@Override
-	public void setDescription(Long taskId, String description) {
+	public void setDescription(String deploymentId, Long taskId, String description) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
-		if (task == null) {
-			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
-		}
+		validateTask(deploymentId, taskId, task);
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -631,13 +701,16 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 			disposeRuntimeEngine(manager, engine);
 		}
 	}
+	
+	@Override
+    public Long saveContent(Long taskId, Map<String, Object> values) {
+	    return saveContent(null, taskId, values);
+	}
 
 	@Override
-	public Long saveContent(Long taskId, Map<String, Object> values) {
+	public Long saveContent(String deploymentId, Long taskId, Map<String, Object> values) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
-		if (task == null) {
-			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
-		}
+		validateTask(deploymentId, taskId, task);
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -658,11 +731,14 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 	}
 	
 	@Override
-	public void deleteContent(Long taskId, Long contentId) {
+    public void deleteContent(Long taskId, Long contentId) {
+	    deleteContent(null, taskId, contentId);
+	}
+	
+	@Override
+	public void deleteContent(String deploymentId, Long taskId, Long contentId) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
-		if (task == null) {
-			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
-		}
+		validateTask(deploymentId, taskId, task);
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -678,14 +754,17 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 			disposeRuntimeEngine(manager, engine);
 		}
 	}
+	
+	@Override
+    public Map<String, Object> getTaskOutputContentByTaskId(Long taskId) {
+	    return getTaskOutputContentByTaskId(null, taskId);
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Map<String, Object> getTaskOutputContentByTaskId(Long taskId) {
+	public Map<String, Object> getTaskOutputContentByTaskId(String deploymentId, Long taskId) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
-		if (task == null) {
-			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
-		}
+		validateTask(deploymentId, taskId, task);
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -721,14 +800,17 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 			disposeRuntimeEngine(manager, engine);
 		}
 	}
+	
+	@Override
+    public Map<String, Object> getTaskInputContentByTaskId(Long taskId) {
+	    return getTaskInputContentByTaskId(null, taskId);
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Map<String, Object> getTaskInputContentByTaskId(Long taskId) {
+	public Map<String, Object> getTaskInputContentByTaskId(String deploymentId, Long taskId) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
-		if (task == null) {
-			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
-		}
+		validateTask(deploymentId, taskId, task);
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -764,13 +846,16 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 			disposeRuntimeEngine(manager, engine);
 		}
 	}
+	
+	@Override
+    public Long addComment(Long taskId, String text, String addedBy, Date addedOn) {
+	    return addComment(null, taskId, text, addedBy, addedOn);
+	}
 
 	@Override
-	public Long addComment(Long taskId, String text, String addedBy, Date addedOn) {
+	public Long addComment(String deploymentId, Long taskId, String text, String addedBy, Date addedOn) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
-		if (task == null) {
-			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
-		}
+		validateTask(deploymentId, taskId, task);
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -790,13 +875,16 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 			disposeRuntimeEngine(manager, engine);
 		}
 	}
+	
+	@Override
+    public void deleteComment(Long taskId, Long commentId) {
+	    deleteComment(null, taskId, commentId);
+	}
 
 	@Override
-	public void deleteComment(Long taskId, Long commentId) {
+	public void deleteComment(String deploymentId, Long taskId, Long commentId) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
-		if (task == null) {
-			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
-		}
+		validateTask(deploymentId, taskId, task);
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -812,13 +900,16 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 			disposeRuntimeEngine(manager, engine);
 		}
 	}
+	
+	@Override
+    public List<Comment> getCommentsByTaskId(Long taskId) {
+	    return getCommentsByTaskId(null, taskId);
+	}
 
 	@Override
-	public List<Comment> getCommentsByTaskId(Long taskId) {
+	public List<Comment> getCommentsByTaskId(String deploymentId, Long taskId) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
-		if (task == null) {
-			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
-		}
+		validateTask(deploymentId, taskId, task);
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -834,13 +925,16 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 			disposeRuntimeEngine(manager, engine);
 		}
 	}
+	
+	@Override
+    public Comment getCommentById(Long taskId, Long commentId) {
+	    return getCommentById(null, taskId, commentId);
+	}
 
 	@Override
-	public Comment getCommentById(Long taskId, Long commentId) {
+	public Comment getCommentById(String deploymentId, Long taskId, Long commentId) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
-		if (task == null) {
-			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
-		}
+		validateTask(deploymentId, taskId, task);
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -856,13 +950,16 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 			disposeRuntimeEngine(manager, engine);
 		}
 	}
+	
+	@Override
+    public Long addAttachment(Long taskId, String userId, String name, Object attachment) {
+	    return addAttachment(null, taskId, userId, name, attachment);
+	}
 
 	@Override
-	public Long addAttachment(Long taskId, String userId, String name, Object attachment) {
+	public Long addAttachment(String deploymentId, Long taskId, String userId, String name, Object attachment) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
-		if (task == null) {
-			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
-		}
+		validateTask(deploymentId, taskId, task);
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -889,13 +986,16 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 			disposeRuntimeEngine(manager, engine);
 		}
 	}
+	
+	@Override
+    public void deleteAttachment(Long taskId, Long attachmentId) {
+	    deleteAttachment(null, taskId, attachmentId);
+	}
 
 	@Override
-	public void deleteAttachment(Long taskId, Long attachmentId) {
+	public void deleteAttachment(String deploymentId, Long taskId, Long attachmentId) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
-		if (task == null) {
-			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
-		}
+		validateTask(deploymentId, taskId, task);
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -911,13 +1011,16 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 			disposeRuntimeEngine(manager, engine);
 		}
 	}
+	
+	@Override
+    public Attachment getAttachmentById(Long taskId, Long attachmentId) {
+	    return getAttachmentById(null, taskId, attachmentId);
+	}
 
 	@Override
-	public Attachment getAttachmentById(Long taskId, Long attachmentId) {
+	public Attachment getAttachmentById(String deploymentId, Long taskId, Long attachmentId) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
-		if (task == null) {
-			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
-		}
+		validateTask(deploymentId, taskId, task);
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -934,13 +1037,15 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 		}
 	}
 	
+	@Override
+    public Object getAttachmentContentById(Long taskId, Long attachmentId) {
+	    return getAttachmentContentById(null, taskId, attachmentId);
+	}
 
 	@Override
-	public Object getAttachmentContentById(Long taskId, Long attachmentId) {
+	public Object getAttachmentContentById(String deploymentId, Long taskId, Long attachmentId) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
-		if (task == null) {
-			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
-		}
+		validateTask(deploymentId, taskId, task);
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -970,13 +1075,15 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 		}
 	}
 
+	@Override
+    public List<Attachment> getAttachmentsByTaskId(Long taskId) {
+	    return getAttachmentsByTaskId(null, taskId);
+	}
 
 	@Override
-	public List<Attachment> getAttachmentsByTaskId(Long taskId) {
+	public List<Attachment> getAttachmentsByTaskId(String deploymentId, Long taskId) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
-		if (task == null) {
-			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
-		}
+		validateTask(deploymentId, taskId, task);
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -1022,13 +1129,16 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 			disposeRuntimeEngine(manager, engine);
 		}
 	}
+	
+	@Override
+    public Task getTask(Long taskId) {
+	    return getTask(null, taskId);
+	}
 
 	@Override
-	public Task getTask(Long taskId) {
+	public Task getTask(String deploymentId, Long taskId) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
-		if (task == null) {
-			return null;
-		}
+		validateTask(deploymentId, taskId, task);
 
 		RuntimeManager manager = getRuntimeManager(task);
 		if (manager == null) {
@@ -1045,13 +1155,16 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 		}
 	}
 	
+	@Override
+    public void updateTask(Long taskId, String userId, UserTaskInstanceDesc userTask, Map<String, Object> inputData, Map<String, Object> outputData) {
+	    updateTask(null, taskId, userId, userTask, inputData, outputData);
+	}
 
     @Override
-    public void updateTask(Long taskId, String userId, UserTaskInstanceDesc userTask, Map<String, Object> inputData, Map<String, Object> outputData) {
+    public void updateTask(String deploymentId, Long taskId, String userId, UserTaskInstanceDesc userTask, Map<String, Object> inputData, Map<String, Object> outputData) {
         UserTaskInstanceDesc task = dataService.getTaskById(taskId);
-        if (task == null) {
-            throw new TaskNotFoundException("Task with id " + userTask.getTaskId() + " does not exist");
-        }
+        validateTask(deploymentId, taskId, task);
+        
         UpdateTaskCommand command = new UpdateTaskCommand(taskId, userId, userTask, inputData, outputData);
         execute(task.getDeploymentId(), ProcessInstanceIdContext.get(task.getProcessInstanceId()), command);
     }

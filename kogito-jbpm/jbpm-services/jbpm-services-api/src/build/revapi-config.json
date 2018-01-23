@@ -316,6 +316,483 @@
 		   "methodName": "signalProcessInstances",
 		   "elementKind": "method",
 		   "justification": "Allow to use given deployment id to avoid additional db look up"
+		 }, 
+		 {
+		 "code": "java.method.addedToInterface",
+		 "new": "method void org.jbpm.services.api.UserTaskService::activate(java.lang.String, java.lang.Long, java.lang.String)",
+		 "package": "org.jbpm.services.api",
+		 "classSimpleName": "UserTaskService",
+		 "methodName": "activate",
+		 "elementKind": "method",
+		 "justification": "added deploymentid for task operations to allow security enforcement to use always correct deployment id for a task"
+		 },
+		 {
+		 "code": "java.method.addedToInterface",
+		 "new": "method java.lang.Long org.jbpm.services.api.UserTaskService::addAttachment(java.lang.String, java.lang.Long, java.lang.String, java.lang.String, java.lang.Object)",
+		 "package": "org.jbpm.services.api",
+		 "classSimpleName": "UserTaskService",
+		 "methodName": "addAttachment",
+		 "elementKind": "method",
+		 "justification": "added deploymentid for task operations to allow security enforcement to use always correct deployment id for a task"
+		 },
+		 {
+		 "code": "java.method.addedToInterface",
+		 "new": "method java.lang.Long org.jbpm.services.api.UserTaskService::addComment(java.lang.String, java.lang.Long, java.lang.String, java.lang.String, java.util.Date)",
+		 "package": "org.jbpm.services.api",
+		 "classSimpleName": "UserTaskService",
+		 "methodName": "addComment",
+		 "elementKind": "method",
+		 "justification": "added deploymentid for task operations to allow security enforcement to use always correct deployment id for a task"
+		 },
+		 {
+		 "code": "java.method.addedToInterface",
+		 "new": "method void org.jbpm.services.api.UserTaskService::claim(java.lang.String, java.lang.Long, java.lang.String)",
+		 "package": "org.jbpm.services.api",
+		 "classSimpleName": "UserTaskService",
+		 "methodName": "claim",
+		 "elementKind": "method",
+		 "justification": "added deploymentid for task operations to allow security enforcement to use always correct deployment id for a task"
+		 },
+		 {
+		 "code": "java.method.addedToInterface",
+		 "new": "method void org.jbpm.services.api.UserTaskService::complete(java.lang.String, java.lang.Long, java.lang.String, java.util.Map<java.lang.String, java.lang.Object>)",
+		 "package": "org.jbpm.services.api",
+		 "classSimpleName": "UserTaskService",
+		 "methodName": "complete",
+		 "elementKind": "method",
+		 "justification": "added deploymentid for task operations to allow security enforcement to use always correct deployment id for a task"
+		 },
+		 {
+		 "code": "java.method.addedToInterface",
+		 "new": "method void org.jbpm.services.api.UserTaskService::completeAutoProgress(java.lang.String, java.lang.Long, java.lang.String, java.util.Map<java.lang.String, java.lang.Object>)",
+		 "package": "org.jbpm.services.api",
+		 "classSimpleName": "UserTaskService",
+		 "methodName": "completeAutoProgress",
+		 "elementKind": "method",
+		 "justification": "added deploymentid for task operations to allow security enforcement to use always correct deployment id for a task"
+		 },
+		 {
+		 "code": "java.method.addedToInterface",
+		 "new": "method void org.jbpm.services.api.UserTaskService::delegate(java.lang.String, java.lang.Long, java.lang.String, java.lang.String)",
+		 "package": "org.jbpm.services.api",
+		 "classSimpleName": "UserTaskService",
+		 "methodName": "delegate",
+		 "elementKind": "method",
+		 "justification": "added deploymentid for task operations to allow security enforcement to use always correct deployment id for a task"
+		 },
+		 {
+		 "code": "java.method.addedToInterface",
+		 "new": "method void org.jbpm.services.api.UserTaskService::deleteAttachment(java.lang.String, java.lang.Long, java.lang.Long)",
+		 "package": "org.jbpm.services.api",
+		 "classSimpleName": "UserTaskService",
+		 "methodName": "deleteAttachment",
+		 "elementKind": "method",
+		 "justification": "added deploymentid for task operations to allow security enforcement to use always correct deployment id for a task"
+		 },
+		 {
+		 "code": "java.method.addedToInterface",
+		 "new": "method void org.jbpm.services.api.UserTaskService::deleteComment(java.lang.String, java.lang.Long, java.lang.Long)",
+		 "package": "org.jbpm.services.api",
+		 "classSimpleName": "UserTaskService",
+		 "methodName": "deleteComment",
+		 "elementKind": "method",
+		 "justification": "added deploymentid for task operations to allow security enforcement to use always correct deployment id for a task"
+		 },
+		 {
+		 "code": "java.method.addedToInterface",
+		 "new": "method void org.jbpm.services.api.UserTaskService::deleteContent(java.lang.String, java.lang.Long, java.lang.Long)",
+		 "package": "org.jbpm.services.api",
+		 "classSimpleName": "UserTaskService",
+		 "methodName": "deleteContent",
+		 "elementKind": "method",
+		 "justification": "added deploymentid for task operations to allow security enforcement to use always correct deployment id for a task"
+		 },
+		 {
+		 "code": "java.method.addedToInterface",
+		 "new": "method void org.jbpm.services.api.UserTaskService::exit(java.lang.String, java.lang.Long, java.lang.String)",
+		 "package": "org.jbpm.services.api",
+		 "classSimpleName": "UserTaskService",
+		 "methodName": "exit",
+		 "elementKind": "method",
+		 "justification": "added deploymentid for task operations to allow security enforcement to use always correct deployment id for a task"
+		 },
+		 {
+		 "code": "java.method.addedToInterface",
+		 "new": "method void org.jbpm.services.api.UserTaskService::fail(java.lang.String, java.lang.Long, java.lang.String, java.util.Map<java.lang.String, java.lang.Object>)",
+		 "package": "org.jbpm.services.api",
+		 "classSimpleName": "UserTaskService",
+		 "methodName": "fail",
+		 "elementKind": "method",
+		 "justification": "added deploymentid for task operations to allow security enforcement to use always correct deployment id for a task"
+		 },
+		 {
+		 "code": "java.method.addedToInterface",
+		 "new": "method void org.jbpm.services.api.UserTaskService::forward(java.lang.String, java.lang.Long, java.lang.String, java.lang.String)",
+		 "package": "org.jbpm.services.api",
+		 "classSimpleName": "UserTaskService",
+		 "methodName": "forward",
+		 "elementKind": "method",
+		 "justification": "added deploymentid for task operations to allow security enforcement to use always correct deployment id for a task"
+		 },
+		 {
+		 "code": "java.method.addedToInterface",
+		 "new": "method org.kie.api.task.model.Attachment org.jbpm.services.api.UserTaskService::getAttachmentById(java.lang.String, java.lang.Long, java.lang.Long)",
+		 "package": "org.jbpm.services.api",
+		 "classSimpleName": "UserTaskService",
+		 "methodName": "getAttachmentById",
+		 "elementKind": "method",
+		 "justification": "added deploymentid for task operations to allow security enforcement to use always correct deployment id for a task"
+		 },
+		 {
+		 "code": "java.method.addedToInterface",
+		 "new": "method java.lang.Object org.jbpm.services.api.UserTaskService::getAttachmentContentById(java.lang.String, java.lang.Long, java.lang.Long)",
+		 "package": "org.jbpm.services.api",
+		 "classSimpleName": "UserTaskService",
+		 "methodName": "getAttachmentContentById",
+		 "elementKind": "method",
+		 "justification": "added deploymentid for task operations to allow security enforcement to use always correct deployment id for a task"
+		 },
+		 {
+		 "code": "java.method.addedToInterface",
+		 "new": "method java.util.List<org.kie.api.task.model.Attachment> org.jbpm.services.api.UserTaskService::getAttachmentsByTaskId(java.lang.String, java.lang.Long)",
+		 "package": "org.jbpm.services.api",
+		 "classSimpleName": "UserTaskService",
+		 "methodName": "getAttachmentsByTaskId",
+		 "elementKind": "method",
+		 "justification": "added deploymentid for task operations to allow security enforcement to use always correct deployment id for a task"
+		 },
+		 {
+		 "code": "java.method.addedToInterface",
+		 "new": "method org.kie.api.task.model.Comment org.jbpm.services.api.UserTaskService::getCommentById(java.lang.String, java.lang.Long, java.lang.Long)",
+		 "package": "org.jbpm.services.api",
+		 "classSimpleName": "UserTaskService",
+		 "methodName": "getCommentById",
+		 "elementKind": "method",
+		 "justification": "added deploymentid for task operations to allow security enforcement to use always correct deployment id for a task"
+		 },
+		 {
+		 "code": "java.method.addedToInterface",
+		 "new": "method java.util.List<org.kie.api.task.model.Comment> org.jbpm.services.api.UserTaskService::getCommentsByTaskId(java.lang.String, java.lang.Long)",
+		 "package": "org.jbpm.services.api",
+		 "classSimpleName": "UserTaskService",
+		 "methodName": "getCommentsByTaskId",
+		 "elementKind": "method",
+		 "justification": "added deploymentid for task operations to allow security enforcement to use always correct deployment id for a task"
+		 },
+		 {
+		 "code": "java.method.addedToInterface",
+		 "new": "method org.kie.api.task.model.Task org.jbpm.services.api.UserTaskService::getTask(java.lang.String, java.lang.Long)",
+		 "package": "org.jbpm.services.api",
+		 "classSimpleName": "UserTaskService",
+		 "methodName": "getTask",
+		 "elementKind": "method",
+		 "justification": "added deploymentid for task operations to allow security enforcement to use always correct deployment id for a task"
+		 },
+		 {
+		 "code": "java.method.addedToInterface",
+		 "new": "method java.util.Map<java.lang.String, java.lang.Object> org.jbpm.services.api.UserTaskService::getTaskInputContentByTaskId(java.lang.String, java.lang.Long)",
+		 "package": "org.jbpm.services.api",
+		 "classSimpleName": "UserTaskService",
+		 "methodName": "getTaskInputContentByTaskId",
+		 "elementKind": "method",
+		 "justification": "added deploymentid for task operations to allow security enforcement to use always correct deployment id for a task"
+		 },
+		 {
+		 "code": "java.method.addedToInterface",
+		 "new": "method java.util.Map<java.lang.String, java.lang.Object> org.jbpm.services.api.UserTaskService::getTaskOutputContentByTaskId(java.lang.String, java.lang.Long)",
+		 "package": "org.jbpm.services.api",
+		 "classSimpleName": "UserTaskService",
+		 "methodName": "getTaskOutputContentByTaskId",
+		 "elementKind": "method",
+		 "justification": "added deploymentid for task operations to allow security enforcement to use always correct deployment id for a task"
+		 },
+		 {
+		 "code": "java.method.addedToInterface",
+		 "new": "method void org.jbpm.services.api.UserTaskService::nominate(java.lang.String, java.lang.Long, java.lang.String, java.util.List<org.kie.api.task.model.OrganizationalEntity>)",
+		 "package": "org.jbpm.services.api",
+		 "classSimpleName": "UserTaskService",
+		 "methodName": "nominate",
+		 "elementKind": "method",
+		 "justification": "added deploymentid for task operations to allow security enforcement to use always correct deployment id for a task"
+		 },
+		 {
+		 "code": "java.method.addedToInterface",
+		 "new": "method void org.jbpm.services.api.UserTaskService::release(java.lang.String, java.lang.Long, java.lang.String)",
+		 "package": "org.jbpm.services.api",
+		 "classSimpleName": "UserTaskService",
+		 "methodName": "release",
+		 "elementKind": "method",
+		 "justification": "added deploymentid for task operations to allow security enforcement to use always correct deployment id for a task"
+		 },
+		 {
+		 "code": "java.method.addedToInterface",
+		 "new": "method void org.jbpm.services.api.UserTaskService::resume(java.lang.String, java.lang.Long, java.lang.String)",
+		 "package": "org.jbpm.services.api",
+		 "classSimpleName": "UserTaskService",
+		 "methodName": "resume",
+		 "elementKind": "method",
+		 "justification": "added deploymentid for task operations to allow security enforcement to use always correct deployment id for a task"
+		 },
+		 {
+		 "code": "java.method.addedToInterface",
+		 "new": "method java.lang.Long org.jbpm.services.api.UserTaskService::saveContent(java.lang.String, java.lang.Long, java.util.Map<java.lang.String, java.lang.Object>)",
+		 "package": "org.jbpm.services.api",
+		 "classSimpleName": "UserTaskService",
+		 "methodName": "saveContent",
+		 "elementKind": "method",
+		 "justification": "added deploymentid for task operations to allow security enforcement to use always correct deployment id for a task"
+		 },
+		 {
+		 "code": "java.method.addedToInterface",
+		 "new": "method void org.jbpm.services.api.UserTaskService::setDescription(java.lang.String, java.lang.Long, java.lang.String)",
+		 "package": "org.jbpm.services.api",
+		 "classSimpleName": "UserTaskService",
+		 "methodName": "setDescription",
+		 "elementKind": "method",
+		 "justification": "added deploymentid for task operations to allow security enforcement to use always correct deployment id for a task"
+		 },
+		 {
+		 "code": "java.method.addedToInterface",
+		 "new": "method void org.jbpm.services.api.UserTaskService::setExpirationDate(java.lang.String, java.lang.Long, java.util.Date)",
+		 "package": "org.jbpm.services.api",
+		 "classSimpleName": "UserTaskService",
+		 "methodName": "setExpirationDate",
+		 "elementKind": "method",
+		 "justification": "added deploymentid for task operations to allow security enforcement to use always correct deployment id for a task"
+		 },
+		 {
+		 "code": "java.method.addedToInterface",
+		 "new": "method void org.jbpm.services.api.UserTaskService::setName(java.lang.String, java.lang.Long, java.lang.String)",
+		 "package": "org.jbpm.services.api",
+		 "classSimpleName": "UserTaskService",
+		 "methodName": "setName",
+		 "elementKind": "method",
+		 "justification": "added deploymentid for task operations to allow security enforcement to use always correct deployment id for a task"
+		 },
+		 {
+		 "code": "java.method.addedToInterface",
+		 "new": "method void org.jbpm.services.api.UserTaskService::setPriority(java.lang.String, java.lang.Long, int)",
+		 "package": "org.jbpm.services.api",
+		 "classSimpleName": "UserTaskService",
+		 "methodName": "setPriority",
+		 "elementKind": "method",
+		 "justification": "added deploymentid for task operations to allow security enforcement to use always correct deployment id for a task"
+		 },
+		 {
+		 "code": "java.method.addedToInterface",
+		 "new": "method void org.jbpm.services.api.UserTaskService::setSkipable(java.lang.String, java.lang.Long, boolean)",
+		 "package": "org.jbpm.services.api",
+		 "classSimpleName": "UserTaskService",
+		 "methodName": "setSkipable",
+		 "elementKind": "method",
+		 "justification": "added deploymentid for task operations to allow security enforcement to use always correct deployment id for a task"
+		 },
+		 {
+		 "code": "java.method.addedToInterface",
+		 "new": "method void org.jbpm.services.api.UserTaskService::skip(java.lang.String, java.lang.Long, java.lang.String)",
+		 "package": "org.jbpm.services.api",
+		 "classSimpleName": "UserTaskService",
+		 "methodName": "skip",
+		 "elementKind": "method",
+		 "justification": "added deploymentid for task operations to allow security enforcement to use always correct deployment id for a task"
+		 },
+		 {
+		 "code": "java.method.addedToInterface",
+		 "new": "method void org.jbpm.services.api.UserTaskService::start(java.lang.String, java.lang.Long, java.lang.String)",
+		 "package": "org.jbpm.services.api",
+		 "classSimpleName": "UserTaskService",
+		 "methodName": "start",
+		 "elementKind": "method",
+		 "justification": "added deploymentid for task operations to allow security enforcement to use always correct deployment id for a task"
+		 },
+		 {
+		 "code": "java.method.addedToInterface",
+		 "new": "method void org.jbpm.services.api.UserTaskService::stop(java.lang.String, java.lang.Long, java.lang.String)",
+		 "package": "org.jbpm.services.api",
+		 "classSimpleName": "UserTaskService",
+		 "methodName": "stop",
+		 "elementKind": "method",
+		 "justification": "added deploymentid for task operations to allow security enforcement to use always correct deployment id for a task"
+		 },
+		 {
+		 "code": "java.method.addedToInterface",
+		 "new": "method void org.jbpm.services.api.UserTaskService::suspend(java.lang.String, java.lang.Long, java.lang.String)",
+		 "package": "org.jbpm.services.api",
+		 "classSimpleName": "UserTaskService",
+		 "methodName": "suspend",
+		 "elementKind": "method",
+		 "justification": "added deploymentid for task operations to allow security enforcement to use always correct deployment id for a task"
+		 },
+		 {
+		 "code": "java.method.addedToInterface",
+		 "new": "method void org.jbpm.services.api.UserTaskService::updateTask(java.lang.String, java.lang.Long, java.lang.String, org.jbpm.services.api.model.UserTaskInstanceDesc, java.util.Map<java.lang.String, java.lang.Object>, java.util.Map<java.lang.String, java.lang.Object>)",
+		 "package": "org.jbpm.services.api",
+		 "classSimpleName": "UserTaskService",
+		 "methodName": "updateTask",
+		 "elementKind": "method",
+		 "justification": "added deploymentid for task operations to allow security enforcement to use always correct deployment id for a task"
+		 },
+		 {
+		 "code": "java.method.addedToInterface",
+		 "new": "method void org.jbpm.services.api.admin.UserTaskAdminService::addBusinessAdmins(java.lang.String, long, boolean, org.kie.api.task.model.OrganizationalEntity[]) throws org.jbpm.services.api.TaskNotFoundException",
+		 "package": "org.jbpm.services.api.admin",
+		 "classSimpleName": "UserTaskAdminService",
+		 "methodName": "addBusinessAdmins",
+		 "elementKind": "method",
+		 "justification": "added deploymentid for task operations to allow security enforcement to use always correct deployment id for a task"
+		 },
+		 {
+		 "code": "java.method.addedToInterface",
+		 "new": "method void org.jbpm.services.api.admin.UserTaskAdminService::addExcludedOwners(java.lang.String, long, boolean, org.kie.api.task.model.OrganizationalEntity[]) throws org.jbpm.services.api.TaskNotFoundException",
+		 "package": "org.jbpm.services.api.admin",
+		 "classSimpleName": "UserTaskAdminService",
+		 "methodName": "addExcludedOwners",
+		 "elementKind": "method",
+		 "justification": "added deploymentid for task operations to allow security enforcement to use always correct deployment id for a task"
+		 },
+		 {
+		 "code": "java.method.addedToInterface",
+		 "new": "method void org.jbpm.services.api.admin.UserTaskAdminService::addPotentialOwners(java.lang.String, long, boolean, org.kie.api.task.model.OrganizationalEntity[]) throws org.jbpm.services.api.TaskNotFoundException",
+		 "package": "org.jbpm.services.api.admin",
+		 "classSimpleName": "UserTaskAdminService",
+		 "methodName": "addPotentialOwners",
+		 "elementKind": "method",
+		 "justification": "added deploymentid for task operations to allow security enforcement to use always correct deployment id for a task"
+		 },
+		 {
+		 "code": "java.method.addedToInterface",
+		 "new": "method void org.jbpm.services.api.admin.UserTaskAdminService::addTaskInput(java.lang.String, long, java.lang.String, java.lang.Object) throws org.jbpm.services.api.TaskNotFoundException",
+		 "package": "org.jbpm.services.api.admin",
+		 "classSimpleName": "UserTaskAdminService",
+		 "methodName": "addTaskInput",
+		 "elementKind": "method",
+		 "justification": "added deploymentid for task operations to allow security enforcement to use always correct deployment id for a task"
+		 },
+		 {
+		 "code": "java.method.addedToInterface",
+		 "new": "method void org.jbpm.services.api.admin.UserTaskAdminService::addTaskInputs(java.lang.String, long, java.util.Map<java.lang.String, java.lang.Object>) throws org.jbpm.services.api.TaskNotFoundException",
+		 "package": "org.jbpm.services.api.admin",
+		 "classSimpleName": "UserTaskAdminService",
+		 "methodName": "addTaskInputs",
+		 "elementKind": "method",
+		 "justification": "added deploymentid for task operations to allow security enforcement to use always correct deployment id for a task"
+		 },
+		 {
+		 "code": "java.method.addedToInterface",
+		 "new": "method void org.jbpm.services.api.admin.UserTaskAdminService::cancelNotification(java.lang.String, long, long) throws org.jbpm.services.api.TaskNotFoundException",
+		 "package": "org.jbpm.services.api.admin",
+		 "classSimpleName": "UserTaskAdminService",
+		 "methodName": "cancelNotification",
+		 "elementKind": "method",
+		 "justification": "added deploymentid for task operations to allow security enforcement to use always correct deployment id for a task"
+		 },
+		 {
+		 "code": "java.method.addedToInterface",
+		 "new": "method void org.jbpm.services.api.admin.UserTaskAdminService::cancelReassignment(java.lang.String, long, long) throws org.jbpm.services.api.TaskNotFoundException",
+		 "package": "org.jbpm.services.api.admin",
+		 "classSimpleName": "UserTaskAdminService",
+		 "methodName": "cancelReassignment",
+		 "elementKind": "method",
+		 "justification": "added deploymentid for task operations to allow security enforcement to use always correct deployment id for a task"
+		 },
+		 {
+		 "code": "java.method.addedToInterface",
+		 "new": "method java.util.Collection<org.jbpm.services.api.admin.TaskNotification> org.jbpm.services.api.admin.UserTaskAdminService::getTaskNotifications(java.lang.String, long, boolean) throws org.jbpm.services.api.TaskNotFoundException",
+		 "package": "org.jbpm.services.api.admin",
+		 "classSimpleName": "UserTaskAdminService",
+		 "methodName": "getTaskNotifications",
+		 "elementKind": "method",
+		 "justification": "added deploymentid for task operations to allow security enforcement to use always correct deployment id for a task"
+		 },
+		 {
+		 "code": "java.method.addedToInterface",
+		 "new": "method java.util.Collection<org.jbpm.services.api.admin.TaskReassignment> org.jbpm.services.api.admin.UserTaskAdminService::getTaskReassignments(java.lang.String, long, boolean) throws org.jbpm.services.api.TaskNotFoundException",
+		 "package": "org.jbpm.services.api.admin",
+		 "classSimpleName": "UserTaskAdminService",
+		 "methodName": "getTaskReassignments",
+		 "elementKind": "method",
+		 "justification": "added deploymentid for task operations to allow security enforcement to use always correct deployment id for a task"
+		 },
+		 {
+		 "code": "java.method.addedToInterface",
+		 "new": "method java.lang.Long org.jbpm.services.api.admin.UserTaskAdminService::notifyWhenNotCompleted(java.lang.String, long, java.lang.String, org.kie.internal.task.api.model.Notification) throws org.jbpm.services.api.TaskNotFoundException",
+		 "package": "org.jbpm.services.api.admin",
+		 "classSimpleName": "UserTaskAdminService",
+		 "methodName": "notifyWhenNotCompleted",
+		 "elementKind": "method",
+		 "justification": "added deploymentid for task operations to allow security enforcement to use always correct deployment id for a task"
+		 },
+		 {
+		 "code": "java.method.addedToInterface",
+		 "new": "method java.lang.Long org.jbpm.services.api.admin.UserTaskAdminService::notifyWhenNotStarted(java.lang.String, long, java.lang.String, org.kie.internal.task.api.model.Notification) throws org.jbpm.services.api.TaskNotFoundException",
+		 "package": "org.jbpm.services.api.admin",
+		 "classSimpleName": "UserTaskAdminService",
+		 "methodName": "notifyWhenNotStarted",
+		 "elementKind": "method",
+		 "justification": "added deploymentid for task operations to allow security enforcement to use always correct deployment id for a task"
+		 },
+		 {
+		 "code": "java.method.addedToInterface",
+		 "new": "method java.lang.Long org.jbpm.services.api.admin.UserTaskAdminService::reassignWhenNotCompleted(java.lang.String, long, java.lang.String, org.kie.api.task.model.OrganizationalEntity[]) throws org.jbpm.services.api.TaskNotFoundException",
+		 "package": "org.jbpm.services.api.admin",
+		 "classSimpleName": "UserTaskAdminService",
+		 "methodName": "reassignWhenNotCompleted",
+		 "elementKind": "method",
+		 "justification": "added deploymentid for task operations to allow security enforcement to use always correct deployment id for a task"
+		 },
+		 {
+		 "code": "java.method.addedToInterface",
+		 "new": "method java.lang.Long org.jbpm.services.api.admin.UserTaskAdminService::reassignWhenNotStarted(java.lang.String, long, java.lang.String, org.kie.api.task.model.OrganizationalEntity[]) throws org.jbpm.services.api.TaskNotFoundException",
+		 "package": "org.jbpm.services.api.admin",
+		 "classSimpleName": "UserTaskAdminService",
+		 "methodName": "reassignWhenNotStarted",
+		 "elementKind": "method",
+		 "justification": "added deploymentid for task operations to allow security enforcement to use always correct deployment id for a task"
+		 },
+		 {
+		 "code": "java.method.addedToInterface",
+		 "new": "method void org.jbpm.services.api.admin.UserTaskAdminService::removeBusinessAdmins(java.lang.String, long, org.kie.api.task.model.OrganizationalEntity[]) throws org.jbpm.services.api.TaskNotFoundException, java.lang.IllegalStateException",
+		 "package": "org.jbpm.services.api.admin",
+		 "classSimpleName": "UserTaskAdminService",
+		 "methodName": "removeBusinessAdmins",
+		 "elementKind": "method",
+		 "justification": "added deploymentid for task operations to allow security enforcement to use always correct deployment id for a task"
+		 },
+		 {
+		 "code": "java.method.addedToInterface",
+		 "new": "method void org.jbpm.services.api.admin.UserTaskAdminService::removeExcludedOwners(java.lang.String, long, org.kie.api.task.model.OrganizationalEntity[]) throws org.jbpm.services.api.TaskNotFoundException",
+		 "package": "org.jbpm.services.api.admin",
+		 "classSimpleName": "UserTaskAdminService",
+		 "methodName": "removeExcludedOwners",
+		 "elementKind": "method",
+		 "justification": "added deploymentid for task operations to allow security enforcement to use always correct deployment id for a task"
+		 },
+		 {
+		 "code": "java.method.addedToInterface",
+		 "new": "method void org.jbpm.services.api.admin.UserTaskAdminService::removePotentialOwners(java.lang.String, long, org.kie.api.task.model.OrganizationalEntity[]) throws org.jbpm.services.api.TaskNotFoundException",
+		 "package": "org.jbpm.services.api.admin",
+		 "classSimpleName": "UserTaskAdminService",
+		 "methodName": "removePotentialOwners",
+		 "elementKind": "method",
+		 "justification": "added deploymentid for task operations to allow security enforcement to use always correct deployment id for a task"
+		 },
+		 {
+		 "code": "java.method.addedToInterface",
+		 "new": "method void org.jbpm.services.api.admin.UserTaskAdminService::removeTaskInputs(java.lang.String, long, java.lang.String[]) throws org.jbpm.services.api.TaskNotFoundException",
+		 "package": "org.jbpm.services.api.admin",
+		 "classSimpleName": "UserTaskAdminService",
+		 "methodName": "removeTaskInputs",
+		 "elementKind": "method",
+		 "justification": "added deploymentid for task operations to allow security enforcement to use always correct deployment id for a task"
+		 },
+		 {
+		 "code": "java.method.addedToInterface",
+		 "new": "method void org.jbpm.services.api.admin.UserTaskAdminService::removeTaskOutputs(java.lang.String, long, java.lang.String[]) throws org.jbpm.services.api.TaskNotFoundException",
+		 "package": "org.jbpm.services.api.admin",
+		 "classSimpleName": "UserTaskAdminService",
+		 "methodName": "removeTaskOutputs",
+		 "elementKind": "method",
+		 "justification": "added deploymentid for task operations to allow security enforcement to use always correct deployment id for a task"
 		 }
       ]
     }

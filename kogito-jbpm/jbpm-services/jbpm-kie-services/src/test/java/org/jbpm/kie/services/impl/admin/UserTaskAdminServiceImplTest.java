@@ -43,6 +43,7 @@ import org.jbpm.kie.services.test.KModuleDeploymentServiceTest;
 import org.jbpm.kie.test.util.AbstractKieServicesBaseTest;
 import org.jbpm.kie.test.util.CountDownListenerFactory;
 import org.jbpm.services.api.ProcessInstanceNotFoundException;
+import org.jbpm.services.api.TaskNotFoundException;
 import org.jbpm.services.api.admin.TaskNotification;
 import org.jbpm.services.api.admin.TaskReassignment;
 import org.jbpm.services.api.admin.UserTaskAdminService;
@@ -71,6 +72,8 @@ import org.kie.internal.task.api.model.TaskEvent;
 import org.kie.scanner.KieMavenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 public class UserTaskAdminServiceImplTest extends AbstractKieServicesBaseTest {
 
@@ -188,7 +191,7 @@ public class UserTaskAdminServiceImplTest extends AbstractKieServicesBaseTest {
         userTaskService.release(task.getId(), "salaboy");
         Assertions.assertThatThrownBy(
                 () -> userTaskAdminService.addPotentialOwners(15456, false, factory.newUser("john")))
-                .hasMessageContaining("Task with id 15456 not found");
+                .hasMessageContaining("Task with id 15456 was not found");
     }
 
     @Test
@@ -246,6 +249,25 @@ public class UserTaskAdminServiceImplTest extends AbstractKieServicesBaseTest {
         Assertions.assertThat(tasks).hasSize(0);
         tasks = runtimeDataService.getTasksAssignedAsPotentialOwner("john", new QueryFilter());
         Assertions.assertThat(tasks).hasSize(1);
+    }
+    
+    @Test
+    public void testAddPotentialOwnersWrongDeploymentId() {
+        processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
+        Assertions.assertThat(processInstanceId).isNotNull();
+        
+        List<TaskSummary> tasks = runtimeDataService.getTasksAssignedAsPotentialOwner("salaboy", new QueryFilter());
+        Assertions.assertThat(tasks).hasSize(1);
+        TaskSummary task = tasks.get(0);
+        
+        userTaskService.release(task.getId(), "salaboy");
+        
+        assertThatExceptionOfType(TaskNotFoundException.class).isThrownBy(() -> { 
+            userTaskAdminService.addPotentialOwners("wrong-one", task.getId(), false, factory.newUser("john")); })
+        .withMessageContaining("Task with id " + task.getId() + " is not associated with wrong-one");
+        
+        tasks = runtimeDataService.getTasksAssignedAsPotentialOwner("john", new QueryFilter());
+        Assertions.assertThat(tasks).hasSize(0);
     }
    
     @Test

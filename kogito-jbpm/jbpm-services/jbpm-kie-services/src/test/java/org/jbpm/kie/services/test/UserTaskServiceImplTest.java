@@ -22,6 +22,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
 import java.io.File;
@@ -39,6 +40,7 @@ import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.jbpm.kie.test.objects.Image;
 import org.jbpm.kie.test.util.AbstractKieServicesBaseTest;
 import org.jbpm.services.api.ProcessInstanceNotFoundException;
+import org.jbpm.services.api.TaskNotFoundException;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.api.model.UserTaskInstanceDesc;
 import org.jbpm.services.task.commands.GetTaskCommand;
@@ -843,13 +845,12 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     
         ProcessInstance instance = processService.getProcessInstance(processInstanceId);
         assertNotNull(instance);
-        
+
         List<Long> taskIds = runtimeDataService.getTasksByProcessInstanceId(processInstanceId);
         assertNotNull(taskIds);
         assertEquals(1, taskIds.size());
         
         Long taskId = taskIds.get(0);
-       
     
         userTaskService.start(taskId, "salaboy");
     
@@ -902,6 +903,27 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         assertEquals(name, processVar.getName());
         assertNotNull(processVar.getContent());
         assertEquals(1, processVar.getContent().length);
+    }
 
+    @Test
+    public void testCompleteAutoProgressWrongDeploymentId() {
+        processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
+        assertNotNull(processInstanceId);
+        List<Long> taskIds = runtimeDataService.getTasksByProcessInstanceId(processInstanceId);
+        assertNotNull(taskIds);
+        assertEquals(1, taskIds.size());
+        
+        Long taskId = taskIds.get(0);
+        userTaskService.release(taskId, "salaboy");
+        
+        Map<String, Object> results = new HashMap<String, Object>();
+        results.put("Result", "some document data");
+        assertThatExceptionOfType(TaskNotFoundException.class).isThrownBy(() -> { 
+            userTaskService.completeAutoProgress("wrong-one", taskId, "salaboy", results); })
+        .withMessageContaining("Task with id " + taskId + " is not associated with wrong-one");
+               
+        UserTaskInstanceDesc task = runtimeDataService.getTaskById(taskId);
+        assertNotNull(task);
+        assertEquals(Status.Ready.toString(), task.getStatus());
     }
 }

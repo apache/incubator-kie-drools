@@ -45,6 +45,19 @@ public interface UserTaskAdminService {
     void addPotentialOwners(long taskId, boolean removeExisting, OrganizationalEntity ...orgEntities) throws TaskNotFoundException;
     
     /**
+     * Adds new potential owners for a given task. Can be instructed to remove existing potential owners
+     * which means that the task will be released in case it was claimed already. 
+     * Task must be in active state.
+     * 
+     * @param deploymentId
+     * @param taskId unique task id
+     * @param removeExisting specifies if existing potential owners should be removed 
+     * @param orgEntities one or more potential owner to be added to a task
+     * @throws TaskNotFoundException thrown when there is no task with given id or is not associated with given deployment id
+     */
+    void addPotentialOwners(String deploymentId, long taskId, boolean removeExisting, OrganizationalEntity ...orgEntities) throws TaskNotFoundException;
+    
+    /**
      * Adds new excluded owners for a given task. Can be instructed to remove existing excluded owners. 
      * Task must be in active state.
      * @param taskId unique task id
@@ -53,6 +66,18 @@ public interface UserTaskAdminService {
      * @throws TaskNotFoundException thrown when there is no task with given id
      */
     void addExcludedOwners(long taskId,  boolean removeExisting, OrganizationalEntity ...orgEntities) throws TaskNotFoundException;
+    
+    /**
+     * Adds new excluded owners for a given task. Can be instructed to remove existing excluded owners. 
+     * Task must be in active state.
+     * 
+     * @param deploymentId
+     * @param taskId unique task id
+     * @param removeExisting specifies if existing excluded owners should be removed 
+     * @param orgEntities one or more excluded owner to be added to a task
+     * @throws TaskNotFoundException thrown when there is no task with given id or is not associated with given deployment id
+     */
+    void addExcludedOwners(String deploymentId, long taskId,  boolean removeExisting, OrganizationalEntity ...orgEntities) throws TaskNotFoundException;
     
     /**
      * Adds new business admin for a given task. Can be instructed to remove existing business admins. 
@@ -65,6 +90,18 @@ public interface UserTaskAdminService {
     void addBusinessAdmins(long taskId,  boolean removeExisting, OrganizationalEntity ...orgEntities) throws TaskNotFoundException;
     
     /**
+     * Adds new business admin for a given task. Can be instructed to remove existing business admins. 
+     * Task must be in active state.
+     * 
+     * @param deploymentId
+     * @param taskId unique task id
+     * @param removeExisting specifies if existing business admins should be removed 
+     * @param orgEntities one or more business admin to be added to a task
+     * @throws TaskNotFoundException thrown when there is no task with given id or is not associated with given deployment id
+     */
+    void addBusinessAdmins(String deploymentId, long taskId,  boolean removeExisting, OrganizationalEntity ...orgEntities) throws TaskNotFoundException;
+    
+    /**
      * Remove existing potential owners from given task. Task must be in active state.
      * @param taskId unique task id
      * @param orgEntities one or more potential owner to be removed from a task
@@ -73,12 +110,32 @@ public interface UserTaskAdminService {
     void removePotentialOwners(long taskId, OrganizationalEntity ...orgEntities) throws TaskNotFoundException;
     
     /**
+     * Remove existing potential owners from given task. Task must be in active state.
+     * 
+     * @param deploymentId
+     * @param taskId unique task id
+     * @param orgEntities one or more potential owner to be removed from a task
+     * @throws TaskNotFoundException thrown when there is no task with given id or is not associated with given deployment id
+     */
+    void removePotentialOwners(String deploymentId, long taskId, OrganizationalEntity ...orgEntities) throws TaskNotFoundException;
+    
+    /**
      * Remove existing excluded owners from given task. Task must be in active state.
      * @param taskId unique task id
      * @param orgEntities one or more excluded owner to be removed from a task
      * @throws TaskNotFoundException thrown when there is no task with given id
      */
     void removeExcludedOwners(long taskId, OrganizationalEntity ...orgEntities) throws TaskNotFoundException;
+    
+    /**
+     * Remove existing excluded owners from given task. Task must be in active state.
+     * 
+     * @param deploymentId
+     * @param taskId unique task id
+     * @param orgEntities one or more excluded owner to be removed from a task
+     * @throws TaskNotFoundException thrown when there is no task with given id or is not associated with given deployment id
+     */
+    void removeExcludedOwners(String deploymentId, long taskId, OrganizationalEntity ...orgEntities) throws TaskNotFoundException;
     
     /**
      * Remove existing business admin from given task. Task must be in active state.
@@ -90,6 +147,17 @@ public interface UserTaskAdminService {
     void removeBusinessAdmins(long taskId, OrganizationalEntity ...orgEntities) throws TaskNotFoundException, IllegalStateException;
     
     /**
+     * Remove existing business admin from given task. Task must be in active state.
+     * 
+     * @param deploymentId
+     * @param taskId unique task id
+     * @param orgEntities one or more business admin to be removed from a task
+     * @throws TaskNotFoundException thrown when there is no task with given id or is not associated with given deployment id
+     * @throws IllegalStateException in case there are no business admins left on a task - there must be at least one business admin
+     */
+    void removeBusinessAdmins(String deploymentId, long taskId, OrganizationalEntity ...orgEntities) throws TaskNotFoundException, IllegalStateException;
+    
+    /**
      * Adds new item to task input variables.
      * @param taskId unique task id
      * @param name name of the input variable to be added
@@ -97,6 +165,17 @@ public interface UserTaskAdminService {
      * @throws TaskNotFoundException thrown when there is no task with given id
      */
     void addTaskInput(long taskId, String name, Object value) throws TaskNotFoundException;
+    
+    /**
+     * Adds new item to task input variables.
+     * 
+     * @param deploymentId
+     * @param taskId unique task id
+     * @param name name of the input variable to be added
+     * @param value value of the input variable
+     * @throws TaskNotFoundException thrown when there is no task with given id or is not associated with given deployment id
+     */
+    void addTaskInput(String deploymentId, long taskId, String name, Object value) throws TaskNotFoundException;
     
     /**
      * Adds new items to task input variables.
@@ -107,6 +186,16 @@ public interface UserTaskAdminService {
     void addTaskInputs(long taskId, Map<String, Object> data) throws TaskNotFoundException;
     
     /**
+     * Adds new items to task input variables.
+     * 
+     * @param deploymentId
+     * @param taskId unique task id
+     * @param data map of key (name of the variable) and value (value of the variable)
+     * @throws TaskNotFoundException thrown when there is no task with given id or is not associated with given deployment id
+     */
+    void addTaskInputs(String deploymentId, long taskId, Map<String, Object> data) throws TaskNotFoundException;
+    
+    /**
      * Removes one or more input variables from a task.
      * @param taskId unique task id
      * @param name name(s) of the input variables to be removed
@@ -115,12 +204,32 @@ public interface UserTaskAdminService {
     void removeTaskInputs(long taskId, String ...name) throws TaskNotFoundException;
     
     /**
+     * Removes one or more input variables from a task.
+     * 
+     * @param deploymentId
+     * @param taskId unique task id
+     * @param name name(s) of the input variables to be removed
+     * @throws TaskNotFoundException thrown when there is no task with given id or is not associated with given deployment id
+     */
+    void removeTaskInputs(String deploymentId, long taskId, String ...name) throws TaskNotFoundException;
+    
+    /**
      * Removes one or more output variables from a task.
      * @param taskId unique task id
      * @param name name(s) of the output variables to be removed
      * @throws TaskNotFoundException thrown when there is no task with given id
      */
     void removeTaskOutputs(long taskId, String... name) throws TaskNotFoundException;
+    
+    /**
+     * Removes one or more output variables from a task.
+     * 
+     * @param deploymentId
+     * @param taskId unique task id
+     * @param name name(s) of the output variables to be removed
+     * @throws TaskNotFoundException thrown when there is no task with given id or is not associated with given deployment id
+     */
+    void removeTaskOutputs(String deploymentId, long taskId, String... name) throws TaskNotFoundException;
     
     /**
      * Reassign automatically a task in case it was not started before time given as timeExpression elapses.
@@ -132,6 +241,17 @@ public interface UserTaskAdminService {
     Long reassignWhenNotStarted(long taskId, String timeExpression, OrganizationalEntity ...orgEntities) throws TaskNotFoundException;
     
     /**
+     * Reassign automatically a task in case it was not started before time given as timeExpression elapses.
+     * 
+     * @param deploymentId
+     * @param taskId unique task id
+     * @param timeExpression time expression in duration format as 2s, 5h, 7d
+     * @param orgEntities users/groups that will be reassigned to after conditions are met
+     * @throws TaskNotFoundException thrown when there is no task with given id or is not associated with given deployment id
+     */
+    Long reassignWhenNotStarted(String deploymentId, long taskId, String timeExpression, OrganizationalEntity ...orgEntities) throws TaskNotFoundException;
+    
+    /**
      * Reassign automatically a task in case it was not completed before time given as timeExpression elapses.
      * @param taskId unique task id
      * @param timeExpression time expression in duration format as 2s, 5h, 7d
@@ -139,6 +259,17 @@ public interface UserTaskAdminService {
      * @throws TaskNotFoundException thrown when there is no task with given id
      */
     Long reassignWhenNotCompleted(long taskId, String timeExpression, OrganizationalEntity ...orgEntities) throws TaskNotFoundException;
+    
+    /**
+     * Reassign automatically a task in case it was not completed before time given as timeExpression elapses.
+     * 
+     * @param deploymentId
+     * @param taskId unique task id
+     * @param timeExpression time expression in duration format as 2s, 5h, 7d
+     * @param orgEntities users/groups that will be reassigned to after conditions are met
+     * @throws TaskNotFoundException thrown when there is no task with given id or is not associated with given deployment id
+     */
+    Long reassignWhenNotCompleted(String deploymentId, long taskId, String timeExpression, OrganizationalEntity ...orgEntities) throws TaskNotFoundException;
     
     /**
      * Sends notification (of notification type) to given recipients in case task was not started 
@@ -151,6 +282,18 @@ public interface UserTaskAdminService {
     Long notifyWhenNotStarted(long taskId, String timeExpression, Notification notification) throws TaskNotFoundException;
     
     /**
+     * Sends notification (of notification type) to given recipients in case task was not started 
+     * before time given as timeExpression elapses.
+     * 
+     * @param deploymentId
+     * @param taskId unique task id
+     * @param timeExpression time expression in duration format as 2s, 5h, 7d
+     * @param notification actual notification to be sent
+     * @throws TaskNotFoundException thrown when there is no task with given id or is not associated with given deployment id
+     */
+    Long notifyWhenNotStarted(String deploymentId, long taskId, String timeExpression, Notification notification) throws TaskNotFoundException;
+    
+    /**
      * Sends notification (of notification type) to given recipients in case task was not completed 
      * before time given as timeExpression elapses.
      * @param taskId unique task id
@@ -159,6 +302,18 @@ public interface UserTaskAdminService {
      * @throws TaskNotFoundException thrown when there is no task with given id
      */
     Long notifyWhenNotCompleted(long taskId, String timeExpression, Notification notification) throws TaskNotFoundException;
+    
+    /**
+     * Sends notification (of notification type) to given recipients in case task was not completed 
+     * before time given as timeExpression elapses.
+     * 
+     * @param deploymentId
+     * @param taskId unique task id
+     * @param timeExpression time expression in duration format as 2s, 5h, 7d
+     * @param notification actual notification to be sent
+     * @throws TaskNotFoundException thrown when there is no task with given id or is not associated with given deployment id
+     */
+    Long notifyWhenNotCompleted(String deploymentId, long taskId, String timeExpression, Notification notification) throws TaskNotFoundException;
     
     /**
      * Builds email notification based on given parameters that can be used as argument for notifyWhenNotStarted and notifyWhenNotCompleted methods
@@ -181,6 +336,17 @@ public interface UserTaskAdminService {
     Collection<TaskReassignment> getTaskReassignments(long taskId, boolean activeOnly) throws TaskNotFoundException;
     
     /**
+     * Returns task reassignments scheduled for given task
+     * 
+     * @param deploymentId
+     * @param taskId unique task id
+     * @param activeOnly determines if only active (not yet fired) should be returned
+     * @return returns list of task reassignments for given task
+     * @throws TaskNotFoundException thrown when there is no task with given id or is not associated with given deployment id
+     */
+    Collection<TaskReassignment> getTaskReassignments(String deploymentId, long taskId, boolean activeOnly) throws TaskNotFoundException;
+    
+    /**
      * Returns task notifications scheduled for given task
      * @param taskId unique task id
      * @param activeOnly determines if only active (not yet fired) should be returned
@@ -188,6 +354,17 @@ public interface UserTaskAdminService {
      * @throws TaskNotFoundException thrown when there is no task with given id
      */
     Collection<TaskNotification> getTaskNotifications(long taskId, boolean activeOnly) throws TaskNotFoundException;
+    
+    /**
+     * Returns task notifications scheduled for given task
+     * 
+     * @param deploymentId
+     * @param taskId unique task id
+     * @param activeOnly determines if only active (not yet fired) should be returned
+     * @return returns list of task notifications for given task
+     * @throws TaskNotFoundException thrown when there is no task with given id or is not associated with given deployment id
+     */
+    Collection<TaskNotification> getTaskNotifications(String deploymentId, long taskId, boolean activeOnly) throws TaskNotFoundException;
     
     /**
      * Cancels given notification on a task
@@ -198,12 +375,32 @@ public interface UserTaskAdminService {
     void cancelNotification(long taskId, long notificationId) throws TaskNotFoundException;
     
     /**
+     * Cancels given notification on a task
+     * 
+     * @param deploymentId
+     * @param taskId unique task id
+     * @param notificationId unique notification id
+     * @throws TaskNotFoundException thrown when there is no task with given id or is not associated with given deployment id
+     */
+    void cancelNotification(String deploymentId, long taskId, long notificationId) throws TaskNotFoundException;
+    
+    /**
      * Cancels given reassignment on a task
      * @param taskId unique task id
      * @param reassignmentId unique reassignment id
      * @throws TaskNotFoundException thrown when there is no task with given id
      */
     void cancelReassignment(long taskId, long reassignmentId) throws TaskNotFoundException;
+    
+    /**
+     * Cancels given reassignment on a task
+     * 
+     * @param deploymentId
+     * @param taskId unique task id
+     * @param reassignmentId unique reassignment id
+     * @throws TaskNotFoundException thrown when there is no task with given id or is not associated with given deployment id
+     */
+    void cancelReassignment(String deploymentId, long taskId, long reassignmentId) throws TaskNotFoundException;
     
     /**
      * Returns execution errors for given task id
