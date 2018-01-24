@@ -32,16 +32,19 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.AttributeDescr;
 import org.drools.compiler.lang.descr.BehaviorDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.QueryDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.factmodel.AnnotationDefinition;
 import org.drools.core.rule.Behavior;
 import org.drools.core.ruleunit.RuleUnitDescr;
 import org.drools.core.time.TimeUtils;
 import org.drools.core.util.ClassUtils;
+import org.drools.core.util.MVELSafeHelper;
 import org.drools.core.util.StringUtils;
 import org.drools.core.util.index.IndexUtil.ConstraintType;
 import org.drools.drlx.DrlxParser;
@@ -63,6 +66,7 @@ import org.drools.javaparser.ast.expr.LambdaExpr;
 import org.drools.javaparser.ast.expr.LiteralExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
+import org.drools.javaparser.ast.expr.NullLiteralExpr;
 import org.drools.javaparser.ast.expr.ObjectCreationExpr;
 import org.drools.javaparser.ast.expr.SimpleName;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
@@ -94,7 +98,6 @@ import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
-
 import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.GREATER;
 import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.GREATER_EQUALS;
 import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.LESS;
@@ -166,6 +169,7 @@ public class ModelGenerator {
     public static final String BIND_CALL = "bind";
     public static final String BIND_AS_CALL = "as";
     public static final String ATTRIBUTE_CALL = "attribute";
+    public static final String METADATA_CALL = "metadata";
     public static final String DECLARATION_OF_CALL = "declarationOf";
     public static final String TYPE_CALL = "type";
     public static final String QUERY_INVOCATION_CALL = "call";
@@ -224,6 +228,11 @@ public class ModelGenerator {
         for (MethodCallExpr attributeExpr : ruleAttributes(context, ruleDescr)) {
             attributeExpr.setScope( buildCallScope );
             buildCallScope = attributeExpr;
+        }
+
+        for (MethodCallExpr metaAttributeExpr : ruleMetaAttributes(context, ruleDescr)) {
+            metaAttributeExpr.setScope(buildCallScope);
+            buildCallScope = metaAttributeExpr;
         }
 
         MethodCallExpr buildCall = new MethodCallExpr(buildCallScope, BUILD_CALL, NodeList.nodeList(context.getExpressions()));
@@ -295,6 +304,84 @@ public class ModelGenerator {
             ruleAttributes.add(attributeCall);
         }
         return ruleAttributes;
+    }
+
+    /**
+     * Build a list of method calls, representing each needed {@link org.drools.model.impl.RuleBuilder#metadata(String, Object)}
+     * starting from a drools-compiler {@link RuleDescr}.
+     * This is adapted code from {@link org.drools.compiler.rule.builder.RuleBuilderImpl#buildMetaAttributes(org.drools.compiler.rule.builder.RuleBuildContext)}
+     */
+    private static List<MethodCallExpr> ruleMetaAttributes(RuleContext context, RuleDescr ruleDescr) {
+        List<MethodCallExpr> ruleMetaAttributes = new ArrayList<>();
+        for (String metaAttr : ruleDescr.getAnnotationNames()) {
+            MethodCallExpr metaAttributeCall = new MethodCallExpr(METADATA_CALL);
+            metaAttributeCall.addArgument(new StringLiteralExpr(metaAttr));
+            AnnotationDescr ad = ruleDescr.getAnnotation( metaAttr );
+            String adFqn = ad.getFullyQualifiedName();
+            if (adFqn != null) {
+                AnnotationDefinition annotationDefinition;
+                try {
+                    annotationDefinition = AnnotationDefinition.build(context.getPkg().getTypeResolver().resolveType(adFqn),
+                                                                      ad.getValueMap(),
+                                                                      context.getPkg().getTypeResolver());
+                } catch (NoSuchMethodException e) {
+                    throw new RuntimeException( e );
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException( e );
+                }
+                if ( annotationDefinition.getValues().size() == 1 && annotationDefinition.getValues().containsKey( AnnotationDescr.VALUE ) ) {
+                    Object annValue = annotationDefinition.getPropertyValue(AnnotationDescr.VALUE);
+                    metaAttributeCall.addArgument(objectAsJPExpression(annValue));
+                } else {
+                    Map<String, Object> map = new HashMap<String, Object>( annotationDefinition.getValues().size() );
+                    for ( String key : annotationDefinition.getValues().keySet() ) {
+                        map.put( key, annotationDefinition.getPropertyValue( key ) );
+                    }
+                    metaAttributeCall.addArgument(objectAsJPExpression(map));
+                }
+            } else {
+                if ( ad.hasValue() ) {
+                    if ( ad.getValues().size() == 1 ) {
+                        metaAttributeCall.addArgument(objectAsJPExpression(resolveValue(ad.getSingleValueAsString())));
+                    } else {
+                        metaAttributeCall.addArgument(objectAsJPExpression(ad.getValueMap()));
+                    }
+                } else {
+                    metaAttributeCall.addArgument(new NullLiteralExpr());
+                }
+            }
+            ruleMetaAttributes.add(metaAttributeCall);
+        }
+        return ruleMetaAttributes;
+    }
+
+    private static Expression objectAsJPExpression(Object annValue) {
+        if (annValue instanceof String) {
+            StringLiteralExpr aStringLiteral = new StringLiteralExpr();
+            aStringLiteral.setString(annValue.toString()); // use the setter method in order for the string literal be properly escaped.
+            return aStringLiteral;
+        } else if (annValue instanceof Number) {
+            return JavaParser.parseExpression(annValue.toString());
+        } else if (annValue instanceof Map) {
+            throw new UnsupportedOperationException("cannot define a canonical representation for a java.util.Map yet.");
+        } else {
+            throw new UnsupportedOperationException("I was unable to define a canonical String representation to give to JP yet about: " + annValue);
+        }
+    }
+
+    /**
+     * This is legacy code from {@link org.drools.compiler.rule.builder.RuleBuilderImpl#resolveValue(String)}
+     */
+    private static Object resolveValue(String value) {
+        // for backward compatibility, if something is not an expression, we return an string as is
+        Object result = value;
+        // try to resolve as an expression:
+        try {
+            result = MVELSafeHelper.getEvaluator().eval(value);
+        } catch (Exception e) {
+            // do nothing
+        }
+        return result;
     }
 
     public static MethodCallExpr createConsequenceCall( PackageModel packageModel, RuleDescr ruleDescr, RuleContext context, String consequenceString, BlockStmt ruleVariablesBlock, boolean isBreaking ) {

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.Person;
@@ -321,5 +322,27 @@ public class RuleAttributesTest extends BaseModelTest {
         public String get(final int index) {
             return rulesFired.get(index);
         }
+    }
+
+    @Test
+    public void testMetadataBasics() {
+        final String PACKAGE_NAME = "org.asd";
+        final String RULE_NAME = "hello world";
+        final String RULE_KEY = "output";
+        final String RULE_VALUE = "Hello world!";
+        final String rule = " package " + PACKAGE_NAME + ";\n" + 
+                            " rule \"" + RULE_NAME + "\"\n" +
+                            " @" + RULE_KEY + "(\"\\\"" + RULE_VALUE + "\\\"\")\n" +
+                            " when\n" +
+                            " then\n" +
+                            "     System.out.println(\"Hello world!\");\n" +
+                            " end";
+
+        KieSession ksession = getKieSession(rule);
+
+        final Map<String, Object> metadata = ksession.getKieBase().getRule(PACKAGE_NAME, RULE_NAME).getMetaData();
+
+        Assertions.assertThat(metadata.containsKey(RULE_KEY)).isTrue();
+        Assertions.assertThat(metadata.get(RULE_KEY)).isEqualTo("\"" + RULE_VALUE + "\"");
     }
 }

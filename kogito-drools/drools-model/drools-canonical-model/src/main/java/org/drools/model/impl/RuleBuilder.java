@@ -1,5 +1,9 @@
 package org.drools.model.impl;
 
+import java.util.HashMap;
+import java.util.IdentityHashMap;
+import java.util.Map;
+
 import org.drools.model.Consequence;
 import org.drools.model.Rule;
 import org.drools.model.RuleItemBuilder;
@@ -7,9 +11,6 @@ import org.drools.model.consequences.ConsequenceBuilder;
 import org.drools.model.functions.Function1;
 import org.drools.model.patterns.CompositePatterns;
 import org.drools.model.view.ViewItemBuilder;
-
-import java.util.IdentityHashMap;
-import java.util.Map;
 
 import static org.drools.model.impl.ViewBuilder.viewItems2Patterns;
 
@@ -23,6 +24,7 @@ public class RuleBuilder {
     private String unit;
 
     private final Map<Rule.Attribute, Object> attributes = new IdentityHashMap<>();
+    private Map<String, Object> metaAttributes = new HashMap<String, Object>();
 
     public RuleBuilder(String name) {
         this(DEFAULT_PACKAGE, name);
@@ -55,12 +57,17 @@ public class RuleBuilder {
         return this;
     }
 
+    public <T> RuleBuilder metadata(String key, Object value) {
+        this.metaAttributes.put(key, value);
+        return this;
+    }
+
     public RuleBuilderWithLHS view( ViewItemBuilder... viewItemBuilders ) {
         return new RuleBuilderWithLHS(viewItems2Patterns( viewItemBuilders ));
     }
 
     public Rule build( RuleItemBuilder... viewItemBuilders ) {
-        return new RuleImpl(pkg, name, unit, viewItems2Patterns( viewItemBuilders ), attributes);
+        return new RuleImpl(pkg, name, unit, viewItems2Patterns(viewItemBuilders), attributes, metaAttributes);
     }
 
     public class RuleBuilderWithLHS {
@@ -77,7 +84,8 @@ public class RuleBuilder {
         public Rule then(ConsequenceBuilder.ValidBuilder builder) {
             Consequence consequence = builder.get();
             view.ensureVariablesDeclarationInView( RuleImpl.DEFAULT_CONSEQUENCE_NAME, consequence );
-            return new RuleImpl(pkg, name, unit, view, consequence, attributes);
+            return new RuleImpl(pkg, name, unit, view, consequence, attributes, metaAttributes);
         }
     }
+
 }

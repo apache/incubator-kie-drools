@@ -30,6 +30,9 @@ public interface Rule extends NamedModelItem {
     Map<String, Consequence> getConsequences();
 
     <T> T getAttribute(Attribute<T> attribute);
+    Map<String, Object> getMetaData();
+    Object getMetaData(String name);
 
     String getUnit();
+
 }

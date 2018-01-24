@@ -1,5 +1,6 @@
 package org.drools.model.impl;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,8 +20,9 @@ public class RuleImpl implements Rule, ModelComponent {
     private final Map<String, Consequence> consequences;
 
     private Map<Attribute, Object> attributes;
+    private Map<String, Object> metaAttributes;
 
-    public RuleImpl(String pkg, String name, String unit, View view, Consequence consequence, Map<Attribute, Object> attributes) {
+    public RuleImpl(String pkg, String name, String unit, View view, Consequence consequence, Map<Attribute, Object> attributes, Map<String, Object> metaAttributes) {
         this.pkg = pkg;
         this.name = name;
         this.unit = unit;
@@ -28,15 +30,17 @@ public class RuleImpl implements Rule, ModelComponent {
         this.consequences = new HashMap<>();
         this.consequences.put( DEFAULT_CONSEQUENCE_NAME, consequence );
         this.attributes = attributes;
+        this.metaAttributes = metaAttributes;
     }
 
-    public RuleImpl( String pkg, String name, String unit, CompositePatterns view, Map<Attribute, Object> attributes) {
+    public RuleImpl(String pkg, String name, String unit, CompositePatterns view, Map<Attribute, Object> attributes, Map<String, Object> metaAttributes) {
         this.pkg = pkg;
         this.name = name;
         this.unit = unit;
         this.view = view;
         this.consequences = view.getConsequences();
         this.attributes = attributes;
+        this.metaAttributes = metaAttributes;
     }
 
     @Override
@@ -58,6 +62,16 @@ public class RuleImpl implements Rule, ModelComponent {
     public <T> T getAttribute(Attribute<T> attribute) {
         T value = attributes != null ? (T) attributes.get(attribute) : null;
         return value != null ? value : attribute.getDefaultValue();
+    }
+
+    @Override
+    public Map<String, Object> getMetaData() {
+        return Collections.unmodifiableMap(metaAttributes);
+    }
+
+    @Override
+    public Object getMetaData(String name) {
+        return metaAttributes.get(name);
     }
 
     @Override
