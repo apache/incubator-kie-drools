@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.assertj.core.api.Assertions;
@@ -58,7 +59,6 @@ import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.time.SessionPseudoClock;
 
 import static java.util.Arrays.asList;
-
 import static org.drools.model.DSL.accFunction;
 import static org.drools.model.DSL.accumulate;
 import static org.drools.model.DSL.and;
@@ -990,6 +990,29 @@ public class FlowTest {
         ksession.fireAllRules();
 
         assertEquals( 41, me.getAge() );
+    }
+
+    @Test
+    public void testMetadataBasics() {
+        final String PACKAGE_NAME = "org.asd";
+        final String RULE_NAME = "hello world";
+        final String RULE_KEY = "output";
+        final String RULE_VALUE = "Hello world!";
+
+        org.drools.model.Rule rule = rule(PACKAGE_NAME,
+                                          RULE_NAME).metadata(RULE_KEY, "\"" + RULE_VALUE + "\"") // equivalent of DRL form:  @output("\"Hello world!\"")
+                                                    .build(execute(() -> {
+                                                        System.out.println("Hello world!");
+                                                    }));
+
+        Model model = new ModelImpl().addRule(rule);
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model);
+        KieSession ksession = kieBase.newKieSession();
+
+        final Map<String, Object> metadata = ksession.getKieBase().getRule(PACKAGE_NAME, RULE_NAME).getMetaData();
+
+        Assertions.assertThat(metadata.containsKey(RULE_KEY)).isTrue();
+        Assertions.assertThat(metadata.get(RULE_KEY)).isEqualTo("\"" + RULE_VALUE + "\""); // testing of the DRL form:  @output("\"Hello world!\"")
     }
 
 

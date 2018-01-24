@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -189,6 +190,7 @@ public class KiePackagesBuilder {
         RuleImpl ruleImpl = new RuleImpl( rule.getName() );
         ruleImpl.setPackage( pkg.getName() );
         setRuleAttributes( rule, ruleImpl );
+        setRuleMetaAttributes(rule, ruleImpl);
         ruleImpl.setPackage( rule.getPackage() );
         if (rule.getUnit() != null) {
             ruleImpl.setRuleUnitClassName( rule.getUnit() );
@@ -232,6 +234,12 @@ public class KiePackagesBuilder {
             return value;
         }
         return null;
+    }
+
+    private void setRuleMetaAttributes(Rule rule, RuleImpl ruleImpl) {
+        for (Entry<String, Object> kv : rule.getMetaData().entrySet()) {
+            ruleImpl.addMetaAttribute(kv.getKey(), kv.getValue());
+        }
     }
 
     private org.drools.core.time.impl.Timer parseTimer( String s ) {
