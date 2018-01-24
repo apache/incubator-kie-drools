@@ -95,6 +95,10 @@ import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
+import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.GREATER;
+import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.GREATER_EQUALS;
+import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.LESS;
+import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.LESS_EQUALS;
 import static org.drools.javaparser.printer.PrintUtil.toDrlx;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.classToReferenceType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
@@ -666,7 +670,7 @@ public class ModelGenerator {
                             context.addCompilationError( new ParseExpressionErrorResult(drlxExpr) );
                             return null;
                         }
-                        combo = new BinaryExpr( left.getExpression(), right.getExpression(), operator );
+                        combo = getBinaryExpression( operator, left, right );
                 }
             }
 
@@ -793,6 +797,23 @@ public class ModelGenerator {
         methodCallExpr.addArgument( left.getExpression() );
         methodCallExpr.addArgument( rightOperand ); // don't create NodeList with static method because missing "parent for child" would null and NPE
         return operator == Operator.EQUALS ? methodCallExpr : new UnaryExpr( methodCallExpr, UnaryExpr.Operator.LOGICAL_COMPLEMENT );
+    }
+
+    private static Expression getBinaryExpression( Operator operator, TypedExpression left, TypedExpression right ) {
+        if ( left.getType() == String.class && right.getType() == String.class && isComparisonOperator( operator ) ) {
+            MethodCallExpr methodCallExpr = new MethodCallExpr( null, "org.drools.modelcompiler.util.EvaluationUtil.compareStringsAsNumbers" );
+            methodCallExpr.addArgument( left.getExpression() );
+            methodCallExpr.addArgument( right.getExpression() );
+            methodCallExpr.addArgument( new StringLiteralExpr( operator.asString() ) );
+            return methodCallExpr;
+        }
+
+        return new BinaryExpr( left.getExpression(), right.getExpression(), operator );
+    }
+
+    private static boolean isComparisonOperator( Operator op ) {
+        return op == LESS || op == GREATER || op == LESS_EQUALS || op == GREATER_EQUALS;
+
     }
 
     private static List<Expression> recurseCollectArguments(NodeWithArguments<?> methodCallExpr) {

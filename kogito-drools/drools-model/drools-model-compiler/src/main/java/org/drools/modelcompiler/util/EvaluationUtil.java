@@ -16,9 +16,22 @@
 
 package org.drools.modelcompiler.util;
 
+import java.math.BigDecimal;
+
 public class EvaluationUtil {
 
     public static boolean areNullSafeEquals(Object obj1, Object obj2) {
         return obj1 != null ? obj1.equals( obj2 ) : obj2 == null;
+    }
+
+    public static boolean compareStringsAsNumbers(String s1, String s2, String op) {
+        int result = new BigDecimal(s1).compareTo( new BigDecimal( s2 ) );
+        switch (op) {
+            case "<" : return result < 0;
+            case "<=" : return result <= 0;
+            case ">" : return result > 0;
+            case ">=" : return result >= 0;
+        }
+        throw new RuntimeException( "unknown operator: " + op );
     }
 }
