@@ -95,11 +95,17 @@ public abstract class BaseModelTest {
         ks.getRepository().addKieModule( zipKieModule );
     }
 
-    protected KieBuilder createKieBuilder( KieServices ks, KieModuleModel model, ReleaseId releaseId, String... stringRules ) {
-        return createKieBuilder( ks, model, releaseId, toKieFiles( stringRules ) );
+    protected KieBuilder createKieBuilder( String... stringRules ) {
+        KieServices ks = KieServices.get();
+        ReleaseId releaseId = ks.newReleaseId( "org.kie", "kjar-test-" + UUID.randomUUID(), "1.0" );
+        return createKieBuilder( ks, null, releaseId, false, toKieFiles( stringRules ) );
     }
 
     protected KieBuilder createKieBuilder( KieServices ks, KieModuleModel model, ReleaseId releaseId, KieFile... stringRules ) {
+        return createKieBuilder( ks, model, releaseId, true, stringRules );
+    }
+
+    protected KieBuilder createKieBuilder( KieServices ks, KieModuleModel model, ReleaseId releaseId, boolean failIfBuildError, KieFile... stringRules ) {
         ks.getRepository().removeKieModule( releaseId );
 
         KieFileSystem kfs = ks.newKieFileSystem();
@@ -115,10 +121,13 @@ public abstract class BaseModelTest {
                 ( (KieBuilderImpl ) ks.newKieBuilder( kfs ) ).buildAll( CanonicalModelKieProject::new ) :
                 ks.newKieBuilder( kfs ).buildAll();
 
-        List<Message> messages = kieBuilder.getResults().getMessages();
-        if ( !messages.isEmpty() ) {
-            fail( messages.toString() );
+        if ( failIfBuildError ) {
+            List<Message> messages = kieBuilder.getResults().getMessages();
+            if ( !messages.isEmpty() ) {
+                fail( messages.toString() );
+            }
         }
+
         return kieBuilder;
     }
 

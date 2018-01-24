@@ -99,7 +99,7 @@ public class DrlxParseUtil {
     }
 
     public static TypedExpression toTypedExpression(RuleContext context, PackageModel packageModel, Class<?> patternType, Expression drlxExpr,
-                                                    List<String> usedDeclarations, Set<String> reactOnProperties, Expression parentExpression) {
+                                                    List<String> usedDeclarations, Set<String> reactOnProperties, Expression parentExpression, boolean isPositional) {
 
         Class<?> typeCursor = patternType;
 
@@ -109,7 +109,7 @@ public class DrlxParseUtil {
 
         if (drlxExpr instanceof UnaryExpr) {
             UnaryExpr unaryExpr = (UnaryExpr) drlxExpr;
-            TypedExpression typedExpr = toTypedExpression( context, packageModel, patternType, unaryExpr.getExpression(), usedDeclarations, reactOnProperties, unaryExpr );
+            TypedExpression typedExpr = toTypedExpression( context, packageModel, patternType, unaryExpr.getExpression(), usedDeclarations, reactOnProperties, unaryExpr, isPositional );
             return new TypedExpression( new UnaryExpr( typedExpr.getExpression(), unaryExpr.getOperator() ), typedExpr.getType() );
 
         } else if (drlxExpr instanceof BinaryExpr) {
@@ -117,8 +117,8 @@ public class DrlxParseUtil {
 
             Operator operator = binaryExpr.getOperator();
 
-            TypedExpression left = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, binaryExpr.getLeft(), usedDeclarations, reactOnProperties, binaryExpr);
-            TypedExpression right = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, binaryExpr.getRight(), usedDeclarations, reactOnProperties, binaryExpr);
+            TypedExpression left = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, binaryExpr.getLeft(), usedDeclarations, reactOnProperties, binaryExpr, isPositional);
+            TypedExpression right = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, binaryExpr.getRight(), usedDeclarations, reactOnProperties, binaryExpr, isPositional);
 
             BinaryExpr combo = new BinaryExpr( left.getExpression(), right.getExpression(), operator );
             return new TypedExpression( combo, left.getType() );
@@ -129,8 +129,8 @@ public class DrlxParseUtil {
             Expression parentLeft = findLeftLeafOfNameExpr(parentExpression);
             Operator operator = toBinaryExprOperator(halfBinaryExpr.getOperator());
 
-            TypedExpression left = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, parentLeft, usedDeclarations, reactOnProperties, halfBinaryExpr);
-            TypedExpression right = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, halfBinaryExpr.getRight(), usedDeclarations, reactOnProperties, halfBinaryExpr);
+            TypedExpression left = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, parentLeft, usedDeclarations, reactOnProperties, halfBinaryExpr, isPositional);
+            TypedExpression right = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, halfBinaryExpr.getRight(), usedDeclarations, reactOnProperties, halfBinaryExpr, isPositional);
 
             BinaryExpr combo = new BinaryExpr( left.getExpression(), right.getExpression(), operator );
             return new TypedExpression( combo, left.getType() );
@@ -165,9 +165,12 @@ public class DrlxParseUtil {
                 try {
                     expression = nameExprToMethodCallExpr(name, typeCursor, null);
                 } catch (IllegalArgumentException e) {
-                    String unificationVariable = context.getOrCreateUnificationId(name);
-                    expression = new TypedExpression(unificationVariable, typeCursor, name);
-                    return expression;
+                    if (isPositional || context.getQueryName().isPresent()) {
+                        String unificationVariable = context.getOrCreateUnificationId(name);
+                        expression = new TypedExpression(unificationVariable, typeCursor, name);
+                        return expression;
+                    }
+                    return null;
                 }
                 reactOnProperties.add(name);
                 Expression plusThis = prepend(new NameExpr("_this"), expression.getExpression());
