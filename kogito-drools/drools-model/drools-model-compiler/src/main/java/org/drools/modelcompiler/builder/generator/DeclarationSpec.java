@@ -17,43 +17,27 @@ public class DeclarationSpec {
     private final Optional<String> variableName;
 
     public DeclarationSpec(String bindingId, Class<?> declarationClass) {
-        this.bindingId = bindingId;
-        this.declarationClass = declarationClass;
-        this.optPattern = Optional.empty();
-        this.declarationSource = Optional.empty();
-        this.variableName = Optional.empty();
+        this(bindingId, declarationClass, Optional.empty(), Optional.empty(), Optional.empty());
     }
 
     public DeclarationSpec(String bindingId, Class<?> declarationClass, String variableName) {
-        this.bindingId = bindingId;
-        this.declarationClass = declarationClass;
-        this.optPattern = Optional.empty();
-        this.declarationSource = Optional.empty();
-        this.variableName = Optional.of(variableName);
+        this(bindingId, declarationClass, Optional.empty(), Optional.empty(), Optional.of(variableName));
     }
 
     public DeclarationSpec(String bindingId, Class<?> declarationClass, Expression declarationSource) {
-        this.bindingId = bindingId;
-        this.declarationClass = declarationClass;
-        this.optPattern = Optional.empty();
-        this.declarationSource = Optional.of(declarationSource);
-        this.variableName = Optional.empty();
-    }
-
-    public DeclarationSpec(String bindingId, Class<?> declarationClass, PatternDescr pattern) {
-        this.bindingId = bindingId;
-        this.declarationClass = declarationClass;
-        this.optPattern = Optional.of(pattern);
-        this.declarationSource = Optional.empty();
-        this.variableName = Optional.empty();
+        this(bindingId, declarationClass, Optional.empty(), Optional.of(declarationSource), Optional.empty());
     }
 
     public DeclarationSpec(String bindingId, Class<?> declarationClass, Optional<PatternDescr> pattern, Optional<Expression> declarationSource) {
+        this(bindingId, declarationClass, pattern, declarationSource, Optional.empty());
+    }
+
+    public DeclarationSpec(String bindingId, Class<?> declarationClass, Optional<PatternDescr> pattern, Optional<Expression> declarationSource, Optional<String> variableName) {
         this.bindingId = bindingId;
         this.declarationClass = declarationClass;
         this.optPattern = pattern;
         this.declarationSource = declarationSource;
-        this.variableName = Optional.empty();
+        this.variableName = variableName;
     }
 
     Optional<String> getEntryPoint() {
