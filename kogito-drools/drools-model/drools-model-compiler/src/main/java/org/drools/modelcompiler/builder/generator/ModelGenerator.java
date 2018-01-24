@@ -610,12 +610,16 @@ public class ModelGenerator {
     }
 
     public static DrlxParseResult drlxParse(RuleContext context, PackageModel packageModel, Class<?> patternType, String bindingId, String expression) {
+        return drlxParse(context, packageModel, patternType, bindingId, expression, false);
+    }
+
+    public static DrlxParseResult drlxParse(RuleContext context, PackageModel packageModel, Class<?> patternType, String bindingId, String expression, boolean isPositional) {
         if ( expression.startsWith( bindingId + "." ) ) {
             expression = expression.substring( bindingId.length()+1 );
         }
 
         DrlxExpression drlx = DrlxParser.parseExpression( expression );
-        DrlxParseResult result = getDrlxParseResult( context, packageModel, patternType, bindingId, expression, drlx );
+        DrlxParseResult result = getDrlxParseResult( context, packageModel, patternType, bindingId, expression, drlx, isPositional );
         if (drlx.getBind() != null) {
             String bindId = drlx.getBind().asString();
             context.addDeclaration( new DeclarationSpec( bindId, result.getExprType() ) );
@@ -625,7 +629,8 @@ public class ModelGenerator {
         return result;
     }
 
-    private static DrlxParseResult getDrlxParseResult( RuleContext context, PackageModel packageModel, Class<?> patternType, String bindingId, String expression, DrlxExpression drlx ) {
+    private static DrlxParseResult getDrlxParseResult( RuleContext context, PackageModel packageModel, Class<?> patternType,
+                                                       String bindingId, String expression, DrlxExpression drlx, boolean isPositional ) {
         Expression drlxExpr = drlx.getExpr();
 
         String exprId;
@@ -640,13 +645,17 @@ public class ModelGenerator {
             ConstraintType decodeConstraintType = DrlxParseUtil.toConstraintType( operator );
             List<String> usedDeclarations = new ArrayList<>();
             Set<String> reactOnProperties = new HashSet<>();
-            TypedExpression left = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, binaryExpr.getLeft(), usedDeclarations, reactOnProperties, binaryExpr);
-            TypedExpression right = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, binaryExpr.getRight(), usedDeclarations, reactOnProperties, binaryExpr);
+            TypedExpression left = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, binaryExpr.getLeft(), usedDeclarations, reactOnProperties, binaryExpr, isPositional);
+            TypedExpression right = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, binaryExpr.getRight(), usedDeclarations, reactOnProperties, binaryExpr, isPositional);
 
             Expression combo;
             if ( left.isPrimitive() ) {
                 combo = new BinaryExpr( left.getExpression(), right.getExpression(), operator );
             } else {
+                if ( left == null || right == null ) {
+                    context.addCompilationError( new ParseExpressionErrorResult(drlxExpr) );
+                    return null;
+                }
                 switch ( operator ) {
                     case EQUALS:
                     case NOT_EQUALS:
@@ -675,7 +684,7 @@ public class ModelGenerator {
 
             List<String> usedDeclarations = new ArrayList<>();
             Set<String> reactOnProperties = new HashSet<>();
-            TypedExpression left = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, unaryExpr, usedDeclarations, reactOnProperties, unaryExpr);
+            TypedExpression left = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, unaryExpr, usedDeclarations, reactOnProperties, unaryExpr, isPositional);
 
             return new DrlxParseResult(patternType, exprId, bindingId, left.getExpression(), left.getType())
                     .setUsedDeclarations( usedDeclarations ).setReactOnProperties( reactOnProperties ).setLeft( left );
@@ -686,9 +695,9 @@ public class ModelGenerator {
 
             List<String> usedDeclarations = new ArrayList<>();
             Set<String> reactOnProperties = new HashSet<>();
-            TypedExpression left = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, pointFreeExpr.getLeft(), usedDeclarations, reactOnProperties, pointFreeExpr);
+            TypedExpression left = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, pointFreeExpr.getLeft(), usedDeclarations, reactOnProperties, pointFreeExpr, isPositional);
             for (Expression rightExpr : pointFreeExpr.getRight()) {
-                DrlxParseUtil.toTypedExpression( context, packageModel, patternType, rightExpr, usedDeclarations, reactOnProperties, pointFreeExpr);
+                DrlxParseUtil.toTypedExpression( context, packageModel, patternType, rightExpr, usedDeclarations, reactOnProperties, pointFreeExpr, isPositional);
             }
 
             String operator = pointFreeExpr.getOperator().asString();

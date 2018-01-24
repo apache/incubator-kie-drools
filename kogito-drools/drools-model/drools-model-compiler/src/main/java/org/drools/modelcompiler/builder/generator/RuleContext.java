@@ -12,6 +12,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.compiler.BaseKnowledgeBuilderResultImpl;
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
@@ -93,6 +94,9 @@ public class RuleContext {
     }
 
     public void addCompilationError( KnowledgeBuilderResult error ) {
+        if ( error instanceof BaseKnowledgeBuilderResultImpl ) {
+            (( BaseKnowledgeBuilderResultImpl ) error).setResource( descr.getResource() );
+        }
         kbuilder.addBuilderResult( error );
     }
 

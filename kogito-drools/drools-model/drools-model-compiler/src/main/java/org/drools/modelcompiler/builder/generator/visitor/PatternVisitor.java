@@ -78,13 +78,14 @@ public class PatternVisitor {
             }
 
             for (BaseDescr constraint : constraintDescrs) {
-                String expression = getConstraintExpression(patternType, constraint);
+                boolean isPositional = isPositional( constraint );
+                String expression = getConstraintExpression(patternType, constraint, isPositional);
                 String patternIdentifier = pattern.getIdentifier();
                 if(expression.contains(":=")) {
                     expression = expression.replace(":=", "==");
                 }
 
-                DrlxParseResult drlxParseResult = ModelGenerator.drlxParse(context, packageModel, patternType, patternIdentifier, expression);
+                DrlxParseResult drlxParseResult = ModelGenerator.drlxParse(context, packageModel, patternType, patternIdentifier, expression, isPositional);
                 if (drlxParseResult == null) {
                     return;
                 }
@@ -127,14 +128,17 @@ public class PatternVisitor {
         return dslExpr;
     }
 
-    private static String getConstraintExpression(Class<?> patternType, BaseDescr constraint) {
-        if (constraint instanceof ExprConstraintDescr && (( ExprConstraintDescr ) constraint).getType() == ExprConstraintDescr.Type.POSITIONAL) {
+    private static String getConstraintExpression(Class<?> patternType, BaseDescr constraint, boolean isPositional) {
+        if ( isPositional ) {
             int position = (( ExprConstraintDescr ) constraint).getPosition();
             return getFieldAtPosition(patternType, position) + " == " + constraint.toString();
         }
         return constraint.toString();
     }
 
+    private static boolean isPositional( BaseDescr constraint ) {
+        return constraint instanceof ExprConstraintDescr && (( ExprConstraintDescr ) constraint).getType() == ExprConstraintDescr.Type.POSITIONAL;
+    }
 
     private static String getFieldAtPosition(Class<?> patternType, int position) {
         for (Field field : patternType.getDeclaredFields()) {
