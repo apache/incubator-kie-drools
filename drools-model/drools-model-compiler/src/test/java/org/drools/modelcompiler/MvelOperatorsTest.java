@@ -16,6 +16,10 @@
 
 package org.drools.modelcompiler;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.drools.modelcompiler.domain.Person;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
@@ -40,5 +44,29 @@ public class MvelOperatorsTest extends BaseModelTest {
         ksession.insert( "b" );
         ksession.insert( "b" );
         assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testBinding() {
+        String str =
+            "import " + Person.class.getCanonicalName() + "\n" +
+            "global java.util.List list\n" +
+            "rule R when\n" +
+            "    Person( $name : name in (\"Mario\", \"Mark\"))" +
+            "then\n" +
+            "    list.add($name);" +
+            "end ";
+
+        KieSession ksession = getKieSession(str);
+
+        List<String> list = new ArrayList<>();
+        ksession.setGlobal( "list", list );
+
+        Person person1 = new Person("Mario");
+        ksession.insert(person1);
+        ksession.fireAllRules();
+
+        assertEquals(1, list.size());
+        assertEquals("Mario", list.get(0));
     }
 }

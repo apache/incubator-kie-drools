@@ -599,8 +599,7 @@ public class ModelGenerator {
         if (drlxParseResult.hasUnificationVariable()) {
             Expression dslExpr = buildUnificationExpression(context, drlxParseResult);
             context.addExpression(dslExpr);
-        } else if ( drlxParseResult.getExpr() != null && (
-                drlxParseResult.getRight() != null || drlxParseResult.getExprType() == Boolean.class || drlxParseResult.getExprType() == boolean.class ) ) {
+        } else if ( drlxParseResult.isValidExpression() ) {
             Expression dslExpr = buildExpressionWithIndexing(context, drlxParseResult);
             context.addExpression(dslExpr);
         }
@@ -699,8 +698,8 @@ public class ModelGenerator {
             }
             MethodCallExpr methodCallExpr = opSpec.getMethodCallExpr( pointFreeExpr, left );
 
-            return new DrlxParseResult(patternType, exprId, bindingId, methodCallExpr, boolean.class )
-                    .setUsedDeclarations( usedDeclarations ).setReactOnProperties( reactOnProperties ).setLeft( left ).setStatic( opSpec.isStatic() );
+            return new DrlxParseResult(patternType, exprId, bindingId, methodCallExpr, left.getType() )
+                    .setUsedDeclarations( usedDeclarations ).setReactOnProperties( reactOnProperties ).setLeft( left ).setStatic( opSpec.isStatic() ).setValidExpression( true );
         }
 
         if (drlxExpr instanceof MethodCallExpr) {

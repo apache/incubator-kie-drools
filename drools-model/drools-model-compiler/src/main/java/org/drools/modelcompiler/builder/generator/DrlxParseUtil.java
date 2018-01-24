@@ -139,7 +139,7 @@ public class DrlxParseUtil {
             return new TypedExpression(drlxExpr);
 
         } else if (drlxExpr instanceof ThisExpr) {
-            return new TypedExpression(new NameExpr("_this"));
+            return new TypedExpression(new NameExpr("_this"), patternType);
 
         } else if (drlxExpr instanceof CastExpr) {
             CastExpr castExpr = (CastExpr)drlxExpr;
@@ -147,10 +147,11 @@ public class DrlxParseUtil {
 
         } else if (drlxExpr instanceof NameExpr) {
             String name = drlxExpr.toString();
-            if (context.getDeclarationById(name).isPresent()) {
+            Optional<DeclarationSpec> decl = context.getDeclarationById(name);
+            if (decl.isPresent()) {
                 // then drlxExpr is a single NameExpr referring to a binding, e.g.: "$p1".
                 usedDeclarations.add(name);
-                return new TypedExpression(drlxExpr);
+                return new TypedExpression(drlxExpr, decl.get().getDeclarationClass());
             } if (context.getQueryParameters().stream().anyMatch(qp -> qp.name.equals(name))) {
                 // then drlxExpr is a single NameExpr referring to a query parameter, e.g.: "$p1".
                 usedDeclarations.add(name);

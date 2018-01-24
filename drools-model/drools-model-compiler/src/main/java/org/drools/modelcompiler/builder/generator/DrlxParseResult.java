@@ -31,6 +31,7 @@ public class DrlxParseResult {
     private TypedExpression left;
     private TypedExpression right;
     private boolean isStatic;
+    private boolean isValidExpression;
 
     public DrlxParseResult( Class<?> patternType, String exprId, String patternBinding, Expression expr, Class<?> exprType) {
         this.patternType = patternType;
@@ -175,5 +176,14 @@ public class DrlxParseResult {
 
     public boolean isStatic() {
         return isStatic;
+    }
+
+    public boolean isValidExpression( ) {
+        return this.isValidExpression || ( expr != null && ( right != null || getExprType() == Boolean.class || getExprType() == boolean.class ) );
+    }
+
+    public DrlxParseResult setValidExpression( boolean validExpression ) {
+        this.isValidExpression = validExpression;
+        return this;
     }
 }
