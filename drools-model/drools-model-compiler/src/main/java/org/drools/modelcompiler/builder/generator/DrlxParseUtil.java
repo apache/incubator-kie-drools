@@ -136,7 +136,7 @@ public class DrlxParseUtil {
             return new TypedExpression( combo, left.getType() );
 
         } else if (drlxExpr instanceof LiteralExpr) {
-            return new TypedExpression(drlxExpr);
+            return new TypedExpression(drlxExpr, getLiteralExpressionType( ( LiteralExpr ) drlxExpr ));
 
         } else if (drlxExpr instanceof ThisExpr) {
             return new TypedExpression(new NameExpr("_this"), patternType);
@@ -401,21 +401,11 @@ public class DrlxParseUtil {
     }
 
     public static Class<?> getExpressionType(RuleContext context, TypeResolver typeResolver, Expression expr, Collection<String> usedDeclarations) {
-        if(expr instanceof BooleanLiteralExpr) {
-            return Boolean.class;
-        } else if(expr instanceof CharLiteralExpr) {
-            return Character.class;
-        } else if(expr instanceof DoubleLiteralExpr) {
-            return Double.class;
-        } else if(expr instanceof IntegerLiteralExpr) {
-            return Integer.class;
-        } else if(expr instanceof LongLiteralExpr) {
-            return Long.class;
-        } else if(expr instanceof NullLiteralExpr) {
-            return ClassUtil.NullType.class;
-        } else if(expr instanceof StringLiteralExpr) {
-            return String.class;
-        } else if(expr instanceof ArrayAccessExpr) {
+        if (expr instanceof LiteralExpr) {
+            return getLiteralExpressionType( ( LiteralExpr ) expr );
+        }
+
+        if(expr instanceof ArrayAccessExpr) {
             return getClassFromContext(typeResolver, ((ArrayCreationExpr)((ArrayAccessExpr) expr).getName()).getElementType().asString());
         } else if(expr instanceof ArrayCreationExpr) {
             return getClassFromContext(typeResolver, ((ArrayCreationExpr) expr).getElementType().asString());
@@ -432,6 +422,25 @@ public class DrlxParseUtil {
         } else {
             throw new RuntimeException("Unknown expression type: " + expr);
         }
+    }
+
+    public static Class<?> getLiteralExpressionType( LiteralExpr expr ) {
+        if (expr instanceof BooleanLiteralExpr) {
+            return Boolean.class;
+        } else if (expr instanceof CharLiteralExpr) {
+            return Character.class;
+        } else if (expr instanceof DoubleLiteralExpr) {
+            return Double.class;
+        } else if (expr instanceof IntegerLiteralExpr) {
+            return Integer.class;
+        } else if (expr instanceof LongLiteralExpr) {
+            return Long.class;
+        } else if (expr instanceof NullLiteralExpr) {
+            return ClassUtil.NullType.class;
+        } else if (expr instanceof StringLiteralExpr) {
+            return String.class;
+        }
+        throw new RuntimeException("Unknown literal: " + expr);
     }
 
     public static Expression prepend(Expression scope, Expression expr) {
