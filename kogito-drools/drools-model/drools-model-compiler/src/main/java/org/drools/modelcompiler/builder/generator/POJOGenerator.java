@@ -1,9 +1,11 @@
 package org.drools.modelcompiler.builder.generator;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -68,7 +70,7 @@ public class POJOGenerator {
             try {
                 processType( packageModel, typeDescr, typeResolver.resolveType( typeDescr.getTypeName() ));
             } catch (ClassNotFoundException e) {
-                packageModel.addGeneratedPOJO(POJOGenerator.toClassDeclaration(typeDescr));
+                packageModel.addGeneratedPOJO(POJOGenerator.toClassDeclaration(typeDescr, packageDescr));
                 packageModel.addTypeMetaDataExpressions( registerTypeMetaData( packageModel, pkg.getName(), typeDescr.getTypeName() ) );
             }
         }
@@ -110,13 +112,15 @@ public class POJOGenerator {
     }
 
     /**
+     * @param packageDescr 
      * 
      */
-    public static ClassOrInterfaceDeclaration toClassDeclaration(TypeDeclarationDescr typeDeclaration) {
+    public static ClassOrInterfaceDeclaration toClassDeclaration(TypeDeclarationDescr typeDeclaration, PackageDescr packageDescr) {
         EnumSet<Modifier> classModifiers = EnumSet.of(Modifier.PUBLIC);
         String generatedClassName = typeDeclaration.getTypeName();
         ClassOrInterfaceDeclaration generatedClass = new ClassOrInterfaceDeclaration(classModifiers, false, generatedClassName);
         generatedClass.addImplementedType( GeneratedFact.class.getName() );
+        generatedClass.addImplementedType(Serializable.class.getName()); // Ref: {@link org.drools.core.factmodel.DefaultBeanClassBuilder} by default always receive is Serializable.
 
         if (typeDeclaration.getSuperTypeName() != null) {
             generatedClass.addExtendedType( typeDeclaration.getSuperTypeName() );
@@ -146,10 +150,11 @@ public class POJOGenerator {
         List<String> toStringFieldStatement = new ArrayList<>();
         NodeList<Statement> ctorFieldStatement = NodeList.nodeList();
 
-        if (!typeDeclaration.getFields().isEmpty()) {
+        Map<String, TypeFieldDescr> fields = recurseInheritedDeclaredFields(typeDeclaration, packageDescr);
+        if (!fields.isEmpty()) {
             final ConstructorDeclaration fullArgumentsCtor = generatedClass.addConstructor( Modifier.PUBLIC );
             int position = 0;
-            for (TypeFieldDescr kv : typeDeclaration.getFields().values()) {
+            for (TypeFieldDescr kv : fields.values()) {
                 final String fieldName = kv.getFieldName();
                 final String typeName = kv.getPattern().getObjectType();
 
@@ -175,6 +180,19 @@ public class POJOGenerator {
         generatedClass.addMember(generateToStringMethod(generatedClassName, toStringFieldStatement));
 
         return generatedClass;
+    }
+
+    private static Map<String, TypeFieldDescr> recurseInheritedDeclaredFields(TypeDeclarationDescr typeDeclaration, PackageDescr packageDescr) {
+        Map<String, TypeFieldDescr> fields = new LinkedHashMap<>(); // preserve ordering.
+        if (typeDeclaration.getSuperTypeName() != null) {
+            final String superTypeName = typeDeclaration.getSuperTypeName();
+            Optional<TypeDeclarationDescr> supertType = packageDescr.getTypeDeclarations().stream().filter(td -> td.getTypeName().equals(superTypeName)).findFirst();
+            if (supertType.isPresent()) {
+                fields.putAll(recurseInheritedDeclaredFields(supertType.get(), packageDescr));
+            }
+        }
+        fields.putAll(typeDeclaration.getFields()); // this class definition fields comes after.
+        return fields;
     }
 
     private static final Statement referenceEquals = parseStatement("if (this == o) { return true; }");
