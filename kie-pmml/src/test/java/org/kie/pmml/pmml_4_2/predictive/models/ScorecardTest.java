@@ -27,6 +27,7 @@ import java.util.Map;
 
 import org.assertj.core.api.Assertions;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.io.Resource;
@@ -300,6 +301,7 @@ System.out.println(resultHolder);
     }
 
     @Test
+    @Ignore
     public void testScorecardWithSimpleSetPredicateWithSpaceValue() {
         KieBase kieBase = PMMLKieBaseUtil.createKieBaseWithPMML(SOURCE_SIMPLE_SET_SPACE_VALUE_SCORECARD);
         PMMLExecutor executor = new PMMLExecutor(kieBase);
@@ -313,6 +315,7 @@ System.out.println(resultHolder);
     }
 
     @Test
+    @Ignore
     public void testScorecardWithComplexPartialScore() {
         KieBase kieBase = PMMLKieBaseUtil.createKieBaseWithPMML(SOURCE_COMPLEX_PARTIAL_SCORE_SCORECARD);
         PMMLExecutor executor = new PMMLExecutor(kieBase);
