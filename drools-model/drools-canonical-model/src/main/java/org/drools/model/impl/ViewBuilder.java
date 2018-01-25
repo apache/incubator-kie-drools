@@ -188,7 +188,9 @@ public class ViewBuilder {
                 if ( condition == null ) {
                     condition = new PatternImpl( patterVariable, SingleConstraint.EMPTY, ctx.bindings.get(patterVariable) );
                     conditions.add( condition );
-                    conditionMap.put( patterVariable, condition );
+                    if (!(viewItem instanceof AccumulateExprViewItem)) {
+                        conditionMap.put( patterVariable, condition );
+                    }
                     scopedInputs.putIfAbsent( patterVariable, (InputViewItemImpl) input( patterVariable ) );
                 }
             } else {
@@ -202,7 +204,7 @@ public class ViewBuilder {
             Condition modifiedPattern = viewItem2Condition( viewItem, condition, new BuildContext( ctx, scopedInputs ) );
             conditions.set( conditions.indexOf( condition ), modifiedPattern );
 
-            if (type == Type.AND) {
+            if ( type == Type.AND && !(viewItem instanceof AccumulateExprViewItem) ) {
                 conditionMap.put( patterVariable, modifiedPattern );
             }
         }
