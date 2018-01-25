@@ -111,7 +111,6 @@ public class EvalTest extends BaseModelTest {
         assertEquals( "Mario", results.iterator().next().getValue() );
     }
 
-
     @Test
     public void testEvalWith2Bindings() {
         String str =
@@ -129,6 +128,31 @@ public class EvalTest extends BaseModelTest {
 
         ksession.insert( new Person( "Mario", 40 ) );
         ksession.insert( new Person( "Mark", 38 ) );
+        ksession.insert( new Person( "Edson", 35 ) );
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList( ksession, Result.class );
+        assertEquals( 1, results.size() );
+        assertEquals( "Mario", results.iterator().next().getValue() );
+    }
+
+    @Test
+    public void testEvalWith2BindingsInvokingMethod() {
+        String str =
+                "import " + Result.class.getCanonicalName() + ";" +
+                "import " + Person.class.getCanonicalName() + ";" +
+                "rule R when\n" +
+                "  $p1 : Person( age == 40 )\n" +
+                "  $p2 : Person( age == 38 )\n" +
+                "  eval( $p1.getName().equals( $p2.getName() ) )\n" +
+                "then\n" +
+                "  insert(new Result($p1.getName()));\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( new Person( "Mario", 40 ) );
+        ksession.insert( new Person( "Mario", 38 ) );
         ksession.insert( new Person( "Edson", 35 ) );
         ksession.fireAllRules();
 
@@ -243,6 +267,29 @@ public class EvalTest extends BaseModelTest {
         KieSession ksession = getKieSession(str);
 
         ksession.insert(new Overloaded());
+        ksession.fireAllRules();
+
+        Collection<String> results = getObjectsIntoList(ksession, String.class);
+        assertEquals(1, results.size());
+    }
+
+
+    @Test
+    public void testEvalInvokingFunction() {
+        String str =
+                "function boolean isPositive(int i){\n" +
+                "  return i > 0;\n" +
+                "}" +
+                "rule OverloadedMethods\n when\n" +
+                "  $i : Integer()\n" +
+                "  eval (isPositive($i.intValue()))\n" +
+                "then\n" +
+                "  insert(\"matched\");\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert(42);
         ksession.fireAllRules();
 
         Collection<String> results = getObjectsIntoList(ksession, String.class);

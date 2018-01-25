@@ -78,4 +78,28 @@ public class TypeCoercionTest extends BaseModelTest {
         assertEquals(1, list.size());
         assertEquals("40", list.get(0));
     }
+
+    @Test
+    public void testComparisonCoercion2() {
+        String str =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "global java.util.List list\n" +
+                "rule R when\n" +
+                "    Person( $name : name, age < \"50\" )" +
+                "then\n" +
+                "    list.add($name);" +
+                "end ";
+
+        KieSession ksession = getKieSession(str);
+
+        List<String> list = new ArrayList<>();
+        ksession.setGlobal( "list", list );
+
+        Person person1 = new Person("Mario", 40);
+        ksession.insert(person1);
+        ksession.fireAllRules();
+
+        assertEquals(1, list.size());
+        assertEquals("Mario", list.get(0));
+    }
 }
