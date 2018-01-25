@@ -92,12 +92,13 @@ import org.drools.modelcompiler.builder.errors.ParseExpressionErrorResult;
 import org.drools.modelcompiler.builder.errors.UnknownDeclarationError;
 import org.drools.modelcompiler.builder.generator.RuleContext.RuleDialect;
 import org.drools.modelcompiler.builder.generator.operatorspec.CustomOperatorSpec;
-import org.drools.modelcompiler.builder.generator.operatorspec.InOperatorSpec;
+import org.drools.modelcompiler.builder.generator.operatorspec.OperatorSpec;
 import org.drools.modelcompiler.builder.generator.operatorspec.TemporalOperatorSpec;
 import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
+
 import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.GREATER;
 import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.GREATER_EQUALS;
 import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.LESS;
@@ -118,7 +119,8 @@ public class ModelGenerator {
 
     private static final Map<String, Expression> attributesMap = new HashMap<>();
     private static final Map<String, Expression> consequenceMethods = new HashMap<>();
-    private static final Map<String, CustomOperatorSpec> customOperators = new HashMap<>();
+
+    private static final Set<String> temporalOperators = new HashSet<>();
 
     private static final IndexIdGenerator indexIdGenerator = new IndexIdGenerator();
 
@@ -140,21 +142,19 @@ public class ModelGenerator {
         consequenceMethods.put("getKnowledgeRuntime", JavaParser.parseExpression("drools.getRuntime(org.kie.api.runtime.KieRuntime.class)"));
         consequenceMethods.put("getKieRuntime", JavaParser.parseExpression("drools.getRuntime(org.kie.api.runtime.KieRuntime.class)"));
 
-        customOperators.put("in", InOperatorSpec.INSTANCE);
-
-        customOperators.put("before", TemporalOperatorSpec.INSTANCE);
-        customOperators.put("after", TemporalOperatorSpec.INSTANCE);
-        customOperators.put("coincides", TemporalOperatorSpec.INSTANCE);
-        customOperators.put("metby", TemporalOperatorSpec.INSTANCE);
-        customOperators.put("finishedby", TemporalOperatorSpec.INSTANCE);
-        customOperators.put("overlaps", TemporalOperatorSpec.INSTANCE);
-        customOperators.put("meets", TemporalOperatorSpec.INSTANCE);
-        customOperators.put("during", TemporalOperatorSpec.INSTANCE);
-        customOperators.put("finishes", TemporalOperatorSpec.INSTANCE);
-        customOperators.put("startedby", TemporalOperatorSpec.INSTANCE);
-        customOperators.put("overlappedby", TemporalOperatorSpec.INSTANCE);
-        customOperators.put("includes", TemporalOperatorSpec.INSTANCE);
-        customOperators.put("starts", TemporalOperatorSpec.INSTANCE);
+        temporalOperators.add("before");
+        temporalOperators.add("after");
+        temporalOperators.add("coincides");
+        temporalOperators.add("metby");
+        temporalOperators.add("finishedby");
+        temporalOperators.add("overlaps");
+        temporalOperators.add("meets");
+        temporalOperators.add("during");
+        temporalOperators.add("finishes");
+        temporalOperators.add("startedby");
+        temporalOperators.add("overlappedby");
+        temporalOperators.add("includes");
+        temporalOperators.add("starts");
     }
 
     public static final boolean GENERATE_EXPR_ID = true;
@@ -309,7 +309,6 @@ public class ModelGenerator {
     /**
      * Build a list of method calls, representing each needed {@link org.drools.model.impl.RuleBuilder#metadata(String, Object)}
      * starting from a drools-compiler {@link RuleDescr}.
-     * This is adapted code from {@link org.drools.compiler.rule.builder.RuleBuilderImpl#buildMetaAttributes(org.drools.compiler.rule.builder.RuleBuildContext)}
      */
     private static List<MethodCallExpr> ruleMetaAttributes(RuleContext context, RuleDescr ruleDescr) {
         List<MethodCallExpr> ruleMetaAttributes = new ArrayList<>();
@@ -369,9 +368,6 @@ public class ModelGenerator {
         }
     }
 
-    /**
-     * This is legacy code from {@link org.drools.compiler.rule.builder.RuleBuilderImpl#resolveValue(String)}
-     */
     private static Object resolveValue(String value) {
         // for backward compatibility, if something is not an expression, we return an string as is
         Object result = value;
@@ -792,11 +788,16 @@ public class ModelGenerator {
             }
 
             String operator = pointFreeExpr.getOperator().asString();
-            CustomOperatorSpec opSpec = customOperators.get( operator );
+            OperatorSpec opSpec = null;
+            if (temporalOperators.contains( operator )) {
+                opSpec = TemporalOperatorSpec.INSTANCE;
+            } else if ( org.drools.model.functions.Operator.Register.hasOperator( operator ) ) {
+                opSpec = CustomOperatorSpec.INSTANCE;
+            }
             if (opSpec == null) {
                 throw new UnsupportedOperationException("Unknown operator '" + operator + "' in expression: " + toDrlx(drlxExpr));
             }
-            MethodCallExpr methodCallExpr = opSpec.getMethodCallExpr( pointFreeExpr, left );
+            Expression methodCallExpr = opSpec.getExpression( pointFreeExpr, left );
 
             return new DrlxParseResult(patternType, exprId, bindingId, methodCallExpr, left.getType() )
                     .setUsedDeclarations( usedDeclarations ).setReactOnProperties( reactOnProperties ).setLeft( left ).setStatic( opSpec.isStatic() ).setValidExpression( true );
