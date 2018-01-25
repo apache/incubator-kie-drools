@@ -60,6 +60,7 @@ import org.drools.workbench.models.commons.backend.rule.context.LHSGeneratorCont
 import org.drools.workbench.models.commons.backend.rule.context.LHSGeneratorContextFactory;
 import org.drools.workbench.models.commons.backend.rule.context.RHSGeneratorContext;
 import org.drools.workbench.models.commons.backend.rule.context.RHSGeneratorContextFactory;
+import org.drools.workbench.models.datamodel.util.ListSplitter;
 import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.imports.Imports;
 import org.drools.workbench.models.datamodel.oracle.DataType;
@@ -1286,17 +1287,11 @@ public class RuleModelDRLPersistenceImpl
                 workingValue = workingValue.substring(0,
                                                       workingValue.length() - 1);
             }
-            final String[] values = workingValue.split(",");
+
+            final String[] values = ListSplitter.split("\"", true, workingValue);
             buf.append(" ( ");
             for (String v : values) {
                 v = v.trim();
-                if (v.startsWith("\"")) {
-                    v = v.substring(1);
-                }
-                if (v.endsWith("\"")) {
-                    v = v.substring(0,
-                                    v.length() - 1);
-                }
                 constraintValueBuilder.buildLHSFieldValue(buf,
                                                           type,
                                                           fieldType,
