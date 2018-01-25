@@ -36,6 +36,7 @@ import org.drools.model.Query2Def;
 import org.drools.model.Rule;
 import org.drools.model.Variable;
 import org.drools.model.impl.ModelImpl;
+import org.drools.model.operators.InOperator;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
 import org.drools.modelcompiler.domain.Adult;
 import org.drools.modelcompiler.domain.Child;
@@ -64,6 +65,7 @@ import static org.drools.model.DSL.accumulate;
 import static org.drools.model.DSL.and;
 import static org.drools.model.DSL.bind;
 import static org.drools.model.DSL.declarationOf;
+import static org.drools.model.DSL.eval;
 import static org.drools.model.DSL.execute;
 import static org.drools.model.DSL.executeScript;
 import static org.drools.model.DSL.expr;
@@ -1272,5 +1274,23 @@ public class FlowTest {
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
         assertEquals(1, results.size());
         assertEquals(77, results.iterator().next().getValue());
+    }
+
+    @Test
+    public void testIn() {
+        final org.drools.model.Variable<java.lang.String> var_$pattern_String$1$ = declarationOf(type(java.lang.String.class),
+                "$pattern_String$1$");
+        org.drools.model.Rule rule = rule("R").build(expr("$expr$1$",
+                var_$pattern_String$1$,
+                (_this) -> eval( InOperator.INSTANCE, _this, "a", "b") ),
+                execute(() -> {
+                }));
+
+        Model model = new ModelImpl().addRule( rule );
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
+
+        KieSession ksession = kieBase.newKieSession();
+        ksession.insert( "b" );
+        assertEquals(1, ksession.fireAllRules());
     }
 }
