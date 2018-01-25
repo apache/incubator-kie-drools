@@ -62,6 +62,7 @@ import org.drools.javaparser.ast.expr.BinaryExpr.Operator;
 import org.drools.javaparser.ast.expr.ClassExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.FieldAccessExpr;
+import org.drools.javaparser.ast.expr.IntegerLiteralExpr;
 import org.drools.javaparser.ast.expr.LambdaExpr;
 import org.drools.javaparser.ast.expr.LiteralExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
@@ -737,7 +738,10 @@ public class ModelGenerator {
 
             Expression combo;
             if ( left.isPrimitive() ) {
-                combo = new BinaryExpr( left.getExpression(), right.getExpression(), operator );
+                Expression rightExpr = right.getExpression() instanceof StringLiteralExpr ?
+                        new IntegerLiteralExpr( (( StringLiteralExpr ) right.getExpression()).asString() ) :
+                        right.getExpression();
+                combo = new BinaryExpr( left.getExpression(), rightExpr, operator );
             } else {
                 if ( left == null || right == null ) {
                     context.addCompilationError( new ParseExpressionErrorResult(drlxExpr) );
@@ -820,9 +824,11 @@ public class ModelGenerator {
                 Class<?> returnType = DrlxParseUtil.getClassFromContext(context.getPkg().getTypeResolver(), functionCall.get().getType().asString());
                 NodeList<Expression> arguments = methodCallExpr.getArguments();
                 List<String> usedDeclarations = new ArrayList<>();
-                for(Expression arg : arguments) {
+                for (Expression arg : arguments) {
                     if (arg instanceof NameExpr && !arg.toString().equals("_this")) {
                         usedDeclarations.add(arg.toString());
+                    } else if (arg instanceof MethodCallExpr) {
+                        DrlxParseUtil.toTypedExpressionFromMethodCallOrField(context, null, ( MethodCallExpr ) arg, usedDeclarations, new HashSet<>(), context.getPkg().getTypeResolver());
                     }
                 }
                 return new DrlxParseResult(patternType, exprId, bindingId, methodCallExpr, returnType).setUsedDeclarations(usedDeclarations);
@@ -830,11 +836,13 @@ public class ModelGenerator {
                 List<String> usedDeclarations = new ArrayList<>();
                 TypedExpression converted = DrlxParseUtil.toTypedExpressionFromMethodCallOrField(context, String.class, methodCallExpr, usedDeclarations, new HashSet<>(), context.getPkg().getTypeResolver());
                 return new DrlxParseResult(String.class, exprId, bindingId, converted.getExpression(), converted.getType()).setLeft( converted ).setUsedDeclarations( usedDeclarations );
-            } else {
+            } else if (patternType != null) {
                 NameExpr _this = new NameExpr("_this");
                 TypedExpression converted = DrlxParseUtil.toMethodCallWithClassCheck(context, methodCallExpr, patternType, context.getPkg().getTypeResolver());
                 Expression withThis = DrlxParseUtil.prepend(_this, converted.getExpression());
                 return new DrlxParseResult(patternType, exprId, bindingId, withThis, converted.getType()).setLeft( converted );
+            } else {
+                return new DrlxParseResult(patternType, exprId, bindingId, methodCallExpr, null);
             }
         }
 
