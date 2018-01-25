@@ -36,7 +36,7 @@ import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirectorFactory;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 public class KieContainerSolverFactoryTest extends CommonTestMethodBase {
 
@@ -140,9 +140,9 @@ public class KieContainerSolverFactoryTest extends CommonTestMethodBase {
                 "buildSolverWithDefaultKsessionKmodule",
                 "org/optaplanner/core/api/solver/kieContainerDefaultKsessionKmodule.xml",
                 "org/optaplanner/core/api/solver/kieContainerDefaultKsessionTestdataSolverConfig.xml");
-        SolverFactory<TestdataSolution> solverFactory = SolverFactory.createFromKieContainerXmlResource(
+        SolverFactory<?> solverFactory = SolverFactory.createFromKieContainerXmlResource(
                 releaseId, "testdata/kjar/solverConfig.solver");
-        Solver<TestdataSolution> solver = solverFactory.buildSolver();
+        Solver<?> solver = solverFactory.buildSolver();
         assertNotNull(solver);
         assertNewKieSessionSucceeds(solver);
     }
@@ -153,9 +153,9 @@ public class KieContainerSolverFactoryTest extends CommonTestMethodBase {
                 "buildSolverWithEmptyKmodule",
                 "org/optaplanner/core/api/solver/kieContainerEmptyKmodule.xml",
                 "org/optaplanner/core/api/solver/kieContainerDefaultKsessionTestdataSolverConfig.xml");
-        SolverFactory<TestdataSolution> solverFactory = SolverFactory.createFromKieContainerXmlResource(
+        SolverFactory<?> solverFactory = SolverFactory.createFromKieContainerXmlResource(
                 releaseId, "testdata/kjar/solverConfig.solver");
-        Solver<TestdataSolution> solver = solverFactory.buildSolver();
+        Solver<?> solver = solverFactory.buildSolver();
         assertNotNull(solver);
         assertNewKieSessionSucceeds(solver);
     }
@@ -166,7 +166,7 @@ public class KieContainerSolverFactoryTest extends CommonTestMethodBase {
                 "buildSolverWithReleaseId",
                 "org/optaplanner/core/api/solver/kieContainerNamedKsessionKmodule.xml", null);
         KieContainer kieContainer = kieServices.newKieContainer(releaseId);
-        SolverFactory<TestdataSolution> solverFactory = SolverFactory.createEmptyFromKieContainer(kieContainer);
+        SolverFactory<?> solverFactory = SolverFactory.createEmptyFromKieContainer(kieContainer);
         SolverConfig solverConfig = solverFactory.getSolverConfig();
         solverConfig.setSolutionClass(
                 kieContainer.getClassLoader().loadClass("testdata.kjar.ClassloadedTestdataSolution"));
@@ -175,13 +175,13 @@ public class KieContainerSolverFactoryTest extends CommonTestMethodBase {
         ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
         scoreDirectorFactoryConfig.setKsessionName("testdataKsession");
         solverConfig.setScoreDirectorFactoryConfig(scoreDirectorFactoryConfig);
-        Solver<TestdataSolution> solver = solverFactory.buildSolver();
+        Solver<?> solver = solverFactory.buildSolver();
         assertNotNull(solver);
         assertNewKieSessionSucceeds(solver);
     }
 
-    private void assertNewKieSessionSucceeds(Solver<TestdataSolution> solver) {
-        DroolsScoreDirectorFactory scoreDirectorFactory = (DroolsScoreDirectorFactory<TestdataSolution>) solver.getScoreDirectorFactory();
+    private void assertNewKieSessionSucceeds(Solver<?> solver) {
+        DroolsScoreDirectorFactory scoreDirectorFactory = (DroolsScoreDirectorFactory<?>) solver.getScoreDirectorFactory();
         scoreDirectorFactory.newKieSession();
     }
 
