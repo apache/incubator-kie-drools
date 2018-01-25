@@ -47,7 +47,7 @@ public class MemberAccessorFactory {
                     if (Modifier.isPublic(method.getModifiers())
                             // HACK The lambda approach doesn't support classes from another classloader (such as loaded by KieContainer) currently
                             && method.getDeclaringClass().getClassLoader().equals(MemberAccessor.class.getClassLoader())) {
-                        memberAccessor = new LamdbaBeanPropertyMemberAccessor(method);
+                        memberAccessor = new LambdaBeanPropertyMemberAccessor(method);
                     } else {
                         memberAccessor = new ReflectionBeanPropertyMemberAccessor(method);
                     }

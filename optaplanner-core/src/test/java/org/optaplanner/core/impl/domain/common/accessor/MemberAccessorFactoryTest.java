@@ -132,7 +132,7 @@ public class MemberAccessorFactoryTest {
         MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(
                 TestdataVisibilityModifierSolution.class.getDeclaredMethod("getPublicProperty"),
                 MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD_WITH_SETTER, ProblemFactProperty.class);
-        assertInstanceOf(LamdbaBeanPropertyMemberAccessor.class, memberAccessor);
+        assertInstanceOf(LambdaBeanPropertyMemberAccessor.class, memberAccessor);
         assertEquals("publicProperty", memberAccessor.getName());
         assertEquals(String.class, memberAccessor.getType());
 

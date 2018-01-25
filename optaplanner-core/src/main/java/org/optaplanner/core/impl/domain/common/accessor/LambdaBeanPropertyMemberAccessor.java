@@ -32,7 +32,7 @@ import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 /**
  * A {@link MemberAccessor} based on a getter and optionally a setter.
  */
-public final class LamdbaBeanPropertyMemberAccessor implements MemberAccessor {
+public final class LambdaBeanPropertyMemberAccessor implements MemberAccessor {
 
     private final Class<?> propertyType;
     private final String propertyName;
@@ -41,7 +41,7 @@ public final class LamdbaBeanPropertyMemberAccessor implements MemberAccessor {
     private final Method setterMethod;
     private final BiConsumer setterFunction;
 
-    public LamdbaBeanPropertyMemberAccessor(Method getterMethod) {
+    public LambdaBeanPropertyMemberAccessor(Method getterMethod) {
         this.getterMethod = getterMethod;
         Class<?> declaringClass = getterMethod.getDeclaringClass();
         if (!ReflectionHelper.isGetterMethod(getterMethod)) {
