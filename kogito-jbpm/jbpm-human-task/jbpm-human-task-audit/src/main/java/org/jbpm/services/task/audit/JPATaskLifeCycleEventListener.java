@@ -79,7 +79,7 @@ public class JPATaskLifeCycleEventListener extends PersistableEventListener impl
             }
             auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
             auditTaskImpl.setActualOwner(getActualOwner(ti));
-            updateLastModifiedDate(auditTaskImpl);
+            auditTaskImpl.setLastModificationDate(event.getEventDate());
             persistenceContext.merge(auditTaskImpl);
         } finally {
             cleanup(persistenceContext);
@@ -102,7 +102,7 @@ public class JPATaskLifeCycleEventListener extends PersistableEventListener impl
             auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
             auditTaskImpl.setActualOwner(getActualOwner(ti));
             auditTaskImpl.setDescription(ti.getDescription());    
-            updateLastModifiedDate(auditTaskImpl);
+            auditTaskImpl.setLastModificationDate(event.getEventDate());
             persistenceContext.merge(auditTaskImpl);
         } finally {
             cleanup(persistenceContext);
@@ -125,7 +125,7 @@ public class JPATaskLifeCycleEventListener extends PersistableEventListener impl
             auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
             auditTaskImpl.setActualOwner(getActualOwner(ti));
             auditTaskImpl.setDescription(ti.getDescription());
-            updateLastModifiedDate(auditTaskImpl);
+            auditTaskImpl.setLastModificationDate(event.getEventDate());
             persistenceContext.merge(auditTaskImpl);
         } finally {
             cleanup(persistenceContext);
@@ -148,7 +148,7 @@ public class JPATaskLifeCycleEventListener extends PersistableEventListener impl
             auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
             auditTaskImpl.setActualOwner(getActualOwner(ti));
             auditTaskImpl.setDescription(ti.getDescription());
-            updateLastModifiedDate(auditTaskImpl);
+            auditTaskImpl.setLastModificationDate(event.getEventDate());
             persistenceContext.merge(auditTaskImpl);
             
         } finally {
@@ -173,7 +173,7 @@ public class JPATaskLifeCycleEventListener extends PersistableEventListener impl
             auditTaskImpl.setDescription(ti.getDescription());
             auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
             auditTaskImpl.setActualOwner(getActualOwner(ti));
-            updateLastModifiedDate(auditTaskImpl);
+            auditTaskImpl.setLastModificationDate(event.getEventDate());
             persistenceContext.merge(auditTaskImpl);
         } finally {
             cleanup(persistenceContext);
@@ -196,7 +196,7 @@ public class JPATaskLifeCycleEventListener extends PersistableEventListener impl
             }
             auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
             auditTaskImpl.setActualOwner(getActualOwner(ti));
-            updateLastModifiedDate(auditTaskImpl);
+            auditTaskImpl.setLastModificationDate(event.getEventDate());
             persistenceContext.merge(auditTaskImpl);
         } finally {
             cleanup(persistenceContext);
@@ -218,7 +218,7 @@ public class JPATaskLifeCycleEventListener extends PersistableEventListener impl
             }
             auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
             auditTaskImpl.setActualOwner(getActualOwner(ti));
-            updateLastModifiedDate(auditTaskImpl);
+            auditTaskImpl.setLastModificationDate(event.getEventDate());
             persistenceContext.merge(auditTaskImpl);
         } finally {
             cleanup(persistenceContext);
@@ -280,7 +280,7 @@ public class JPATaskLifeCycleEventListener extends PersistableEventListener impl
             auditTaskImpl.setDueDate(ti.getTaskData().getExpirationTime());
             auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
             auditTaskImpl.setActualOwner(getActualOwner(ti));
-            updateLastModifiedDate(auditTaskImpl);
+            auditTaskImpl.setLastModificationDate(event.getEventDate());
             persistenceContext.merge(auditTaskImpl);
         } finally {
             cleanup(persistenceContext);
@@ -308,7 +308,7 @@ public class JPATaskLifeCycleEventListener extends PersistableEventListener impl
             auditTaskImpl.setDueDate(ti.getTaskData().getExpirationTime());
             auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
             auditTaskImpl.setActualOwner(getActualOwner(ti));
-            updateLastModifiedDate(auditTaskImpl);
+            auditTaskImpl.setLastModificationDate(event.getEventDate());
             persistenceContext.merge(auditTaskImpl);
         } finally {
             cleanup(persistenceContext);
@@ -337,7 +337,7 @@ public class JPATaskLifeCycleEventListener extends PersistableEventListener impl
             auditTaskImpl.setDueDate(ti.getTaskData().getExpirationTime());
             auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
             auditTaskImpl.setActualOwner(getActualOwner(ti));
-            updateLastModifiedDate(auditTaskImpl);
+            auditTaskImpl.setLastModificationDate(event.getEventDate());
             persistenceContext.merge(auditTaskImpl);
         } finally {
             cleanup(persistenceContext);
@@ -365,7 +365,7 @@ public class JPATaskLifeCycleEventListener extends PersistableEventListener impl
             auditTaskImpl.setDueDate(ti.getTaskData().getExpirationTime());
             auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
             auditTaskImpl.setActualOwner(getActualOwner(ti));
-            updateLastModifiedDate(auditTaskImpl);
+            auditTaskImpl.setLastModificationDate(event.getEventDate());
             persistenceContext.merge(auditTaskImpl);
         } finally {
             cleanup(persistenceContext);
@@ -393,7 +393,7 @@ public class JPATaskLifeCycleEventListener extends PersistableEventListener impl
             auditTaskImpl.setDueDate(ti.getTaskData().getExpirationTime());
             auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
             auditTaskImpl.setActualOwner(getActualOwner(ti));
-            updateLastModifiedDate(auditTaskImpl);
+            auditTaskImpl.setLastModificationDate(event.getEventDate());
             persistenceContext.merge(auditTaskImpl);
         } finally {
             cleanup(persistenceContext);
@@ -421,7 +421,7 @@ public class JPATaskLifeCycleEventListener extends PersistableEventListener impl
             auditTaskImpl.setDueDate(ti.getTaskData().getExpirationTime());
             auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
             auditTaskImpl.setActualOwner(getActualOwner(ti));
-            updateLastModifiedDate(auditTaskImpl);
+            auditTaskImpl.setLastModificationDate(event.getEventDate());
             persistenceContext.merge(auditTaskImpl);
         } finally {
             cleanup(persistenceContext);
@@ -448,7 +448,7 @@ public class JPATaskLifeCycleEventListener extends PersistableEventListener impl
             auditTaskImpl.setDueDate(ti.getTaskData().getExpirationTime());
             auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
             auditTaskImpl.setActualOwner(getActualOwner(ti));
-            updateLastModifiedDate(auditTaskImpl);
+            auditTaskImpl.setLastModificationDate(event.getEventDate());
             persistenceContext.merge(auditTaskImpl);
         } finally {
             cleanup(persistenceContext);
@@ -636,7 +636,7 @@ public class JPATaskLifeCycleEventListener extends PersistableEventListener impl
             auditTaskImpl.setName(ti.getName());
             auditTaskImpl.setPriority(ti.getPriority());
             auditTaskImpl.setDueDate(ti.getTaskData().getExpirationTime());
-            updateLastModifiedDate(auditTaskImpl);
+            auditTaskImpl.setLastModificationDate(event.getEventDate());
             persistenceContext.merge(auditTaskImpl);
             
         } catch(Exception e){
@@ -676,7 +676,7 @@ public class JPATaskLifeCycleEventListener extends PersistableEventListener impl
             auditTaskImpl.setDueDate(ti.getTaskData().getExpirationTime());
             auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
             auditTaskImpl.setActualOwner(getActualOwner(ti));
-            updateLastModifiedDate(auditTaskImpl);
+            auditTaskImpl.setLastModificationDate(event.getEventDate());
             persistenceContext.merge(auditTaskImpl);
         } finally {
             cleanup(persistenceContext);
@@ -721,7 +721,7 @@ public class JPATaskLifeCycleEventListener extends PersistableEventListener impl
             logger.warn("Unable find audit task entry for task id {} '{}', skipping audit task update", task.getId(), task.getName());
             return;
         }
-        updateLastModifiedDate(auditTaskImpl);
+        auditTaskImpl.setLastModificationDate(event.getEventDate());
         persistenceContext.merge(auditTaskImpl);
     }
 
@@ -798,9 +798,6 @@ public class JPATaskLifeCycleEventListener extends PersistableEventListener impl
                                                      userId, message.toString()));
     }
 
-    private void updateLastModifiedDate(AuditTaskImpl auditTaskImpl){
-        auditTaskImpl.setLastModificationDate(new Date());
-    }
     
     protected String getActualOwner(Task ti) {
         String userId = "";

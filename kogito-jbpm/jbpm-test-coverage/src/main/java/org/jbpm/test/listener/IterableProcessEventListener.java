@@ -16,6 +16,7 @@
 
 package org.jbpm.test.listener;
 
+import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -212,10 +213,12 @@ public class IterableProcessEventListener implements ProcessEventListener, Itera
     private static class NoopProcessEvent implements ProcessEvent {
         protected final String processId;
         protected final long processInstanceId;
+        protected final Date eventDate;
 
         public NoopProcessEvent(ProcessEvent event) {
             processId = event.getProcessInstance().getProcessId();
             processInstanceId = event.getProcessInstance().getId();
+            eventDate = new Date();
         }
 
         @Override
@@ -234,6 +237,11 @@ public class IterableProcessEventListener implements ProcessEventListener, Itera
 
         public long getProcessInstanceId() {
             return processInstanceId;
+        }
+
+        @Override
+        public Date getEventDate() {
+            return eventDate;
         }
     }
 

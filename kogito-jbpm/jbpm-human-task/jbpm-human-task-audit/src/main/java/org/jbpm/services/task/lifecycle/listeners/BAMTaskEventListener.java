@@ -80,13 +80,13 @@ public class BAMTaskEventListener extends PersistableEventListener  {
     	updateTask(event, new BAMTaskWorker() {
             @Override
             public BAMTaskSummaryImpl createTask(BAMTaskSummaryImpl bamTask, Task task) {
-                bamTask.setStartDate(new Date());
+                bamTask.setStartDate(event.getEventDate());
                 return bamTask;
             }
 
             @Override
             public BAMTaskSummaryImpl updateTask(BAMTaskSummaryImpl bamTask, Task task) {
-                bamTask.setStartDate(new Date());
+                bamTask.setStartDate(event.getEventDate());
                 return bamTask;
             }
         });
@@ -110,7 +110,7 @@ public class BAMTaskEventListener extends PersistableEventListener  {
 
             @Override
             public BAMTaskSummaryImpl updateTask(BAMTaskSummaryImpl bamTask, Task task) {
-                Date completedDate = new Date();
+                Date completedDate = event.getEventDate();
                 bamTask.setEndDate(completedDate);
                 bamTask.setDuration(completedDate.getTime() - bamTask.getStartDate().getTime());
                 return bamTask;
@@ -232,7 +232,7 @@ public class BAMTaskEventListener extends PersistableEventListener  {
 	            actualOwner = ti.getTaskData().getActualOwner().getId();
 	        }
 	
-	        result = new BAMTaskSummaryImpl(ti.getId(), ti.getName(), status.toString(), new Date(), actualOwner, ti.getTaskData().getProcessInstanceId());
+	        result = new BAMTaskSummaryImpl(ti.getId(), ti.getName(), status.toString(), event.getEventDate(), actualOwner, ti.getTaskData().getProcessInstanceId());
 	        if (worker != null) worker.createTask(result, ti);
 	        persistenceContext.persist(result);
 	    

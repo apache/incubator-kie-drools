@@ -16,8 +16,6 @@
 
 package org.jbpm.process.audit.event;
 
-import java.util.Date;
-
 import org.jbpm.process.audit.NodeInstanceLog;
 import org.jbpm.process.audit.ProcessInstanceLog;
 import org.jbpm.process.audit.VariableInstanceLog;
@@ -73,7 +71,7 @@ public class DefaultAuditEventBuilderImpl implements AuditEventBuilder {
         }
         logEvent.setOutcome(pi.getOutcome());
         logEvent.setStatus(pi.getState());
-        logEvent.setEnd(new Date());
+        logEvent.setEnd(pce.getEventDate());
         logEvent.setDuration(logEvent.getEnd().getTime() - logEvent.getStart().getTime());
         logEvent.setProcessInstanceDescription( pi.getDescription() );
         return logEvent;
