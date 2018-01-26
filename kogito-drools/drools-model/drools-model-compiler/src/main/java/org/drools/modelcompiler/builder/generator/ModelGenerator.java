@@ -121,7 +121,7 @@ public class ModelGenerator {
     private static final Map<String, Expression> attributesMap = new HashMap<>();
     private static final Map<String, Expression> consequenceMethods = new HashMap<>();
 
-    private static final Set<String> temporalOperators = new HashSet<>();
+    public static final Set<String> temporalOperators = new HashSet<>();
 
     private static final IndexIdGenerator indexIdGenerator = new IndexIdGenerator();
 
@@ -706,7 +706,7 @@ public class ModelGenerator {
             expression = expression.substring( bindingId.length()+1 );
         }
 
-        DrlxExpression drlx = DrlxParser.parseExpression( expression );
+        DrlxExpression drlx = DrlxParseUtil.parseExpression( expression );
         DrlxParseResult result = getDrlxParseResult( context, packageModel, patternType, bindingId, expression, drlx, isPositional );
         if (drlx.getBind() != null) {
             String bindId = drlx.getBind().asString();

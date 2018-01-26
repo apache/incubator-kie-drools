@@ -39,7 +39,7 @@ public class ToTypedExpressionTest {
         assertEquals(typedResult("_this.getAddress().getAddressName().length()", int.class), toTypedExpression("address.getAddressName().length", Person.class));
 
         TypedExpression inlineCastResult = typedResult("((org.drools.modelcompiler.domain.Person) _this).getName()", String.class)
-                .setPrefixExpression(DrlxParser.parseExpression("_this instanceof org.drools.modelcompiler.domain.Person").getExpr());
+                .setPrefixExpression(DrlxParseUtil.parseExpression("_this instanceof org.drools.modelcompiler.domain.Person").getExpr());
         assertEquals(inlineCastResult, toTypedExpression("this#Person.name", Object.class));
 
     }
@@ -50,7 +50,7 @@ public class ToTypedExpressionTest {
         for(DeclarationSpec d : declarations) {
             ruleContext.addDeclaration(d);
         }
-        Expression expression = DrlxParser.parseExpression(inputExpression).getExpr();
+        Expression expression = DrlxParseUtil.parseExpression(inputExpression).getExpr();
         return DrlxParseUtil.toTypedExpressionFromMethodCallOrField(ruleContext, patternType, expression, new ArrayList<>(), reactOnProperties, typeResolver);
     }
 
@@ -59,7 +59,7 @@ public class ToTypedExpressionTest {
     }
 
     private TypedExpression typedResult(String expressionResult, Class<?> classResult) {
-        Expression resultExpression = DrlxParser.parseExpression(expressionResult).getExpr();
+        Expression resultExpression = DrlxParseUtil.parseExpression(expressionResult).getExpr();
         return new TypedExpression(resultExpression, classResult);
     }
 

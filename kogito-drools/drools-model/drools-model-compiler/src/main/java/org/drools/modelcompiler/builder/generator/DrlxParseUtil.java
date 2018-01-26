@@ -19,8 +19,10 @@ package org.drools.modelcompiler.builder.generator;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Deque;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -31,6 +33,7 @@ import org.drools.core.util.index.IndexUtil;
 import org.drools.core.util.index.IndexUtil.ConstraintType;
 import org.drools.drlx.DrlxParser;
 import org.drools.javaparser.JavaParser;
+import org.drools.javaparser.ParseStart;
 import org.drools.javaparser.ast.Node;
 import org.drools.javaparser.ast.body.Parameter;
 import org.drools.javaparser.ast.drlx.expr.DrlxExpression;
@@ -47,7 +50,7 @@ import org.drools.javaparser.ast.expr.DoubleLiteralExpr;
 import org.drools.javaparser.ast.expr.EnclosedExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.FieldAccessExpr;
-import org.drools.javaparser.ast.expr.HalfBinaryExpr;
+import org.drools.javaparser.ast.drlx.expr.HalfBinaryExpr;
 import org.drools.javaparser.ast.expr.InstanceOfExpr;
 import org.drools.javaparser.ast.expr.IntegerLiteralExpr;
 import org.drools.javaparser.ast.expr.LambdaExpr;
@@ -78,6 +81,13 @@ import static org.drools.modelcompiler.util.ClassUtil.findMethod;
 public class DrlxParseUtil {
 
     public static final NameExpr _THIS_EXPR = new NameExpr("_this");
+
+    private static final Collection<String> operators = new HashSet<>();
+    {
+        operators.addAll(ModelGenerator.temporalOperators);
+    }
+
+    private static final ParseStart<DrlxExpression> parser = DrlxParser.buildDrlxParserWithArguments(operators);
 
     public static IndexUtil.ConstraintType toConstraintType(Operator operator) {
         switch (operator) {
@@ -619,11 +629,15 @@ public class DrlxParseUtil {
     }
 
     public static Optional<String> findBindingId(String expression, Collection<String> availableBindings) {
-        DrlxExpression drlx = DrlxParser.parseExpression(expression);
+        DrlxExpression drlx = parseExpression(expression);
         if (drlx == null) {
             throw new RuntimeException( "unable to parse " + expression );
         }
         return findBindingId( drlx.getExpr(), availableBindings );
+    }
+
+    public static DrlxExpression parseExpression(String expression) {
+        return DrlxParser.parseExpression(parser, expression);
     }
 
     public static Optional<String> findBindingId(Expression expr, Collection<String> availableBindings) {
