@@ -201,6 +201,13 @@
       <artifactId>arquillian-core-api</artifactId>
       <scope>test</scope>
     </dependency>
+    <!-- test: assertj -->
+    <!-- CDI tests extend tests in jbpm-kie-services -->
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
