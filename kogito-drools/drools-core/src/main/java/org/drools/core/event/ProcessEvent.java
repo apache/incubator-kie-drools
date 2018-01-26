@@ -16,6 +16,7 @@
 
 package org.drools.core.event;
 
+import java.util.Date;
 import java.util.EventObject;
 
 import org.kie.api.runtime.KieRuntime;
@@ -26,10 +27,12 @@ public class ProcessEvent extends EventObject {
     private static final long serialVersionUID = 510l;
     
     private KieRuntime kruntime;
+    private final Date eventDate;
 
     public ProcessEvent(final ProcessInstance instance, KieRuntime kruntime) {
         super( instance );
         this.kruntime = kruntime;
+        this.eventDate = new Date();
     }
 
     public ProcessInstance getProcessInstance() {
@@ -38,6 +41,10 @@ public class ProcessEvent extends EventObject {
     
     public KieRuntime getKieRuntime() {
         return kruntime;
+    }
+    
+    public Date getEventDate() {
+        return this.eventDate;
     }
 
 }
