@@ -720,10 +720,11 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             writeRoomList();
             writeSpeakerList();
             writeTalkList();
+            writeRoomView();
+            writeSpeakerView();
             writeThemeView();
             writeSectorView();
-            writeSpeakerView();
-            workbook.setActiveSheet(2);
+            writeContentView();
             return workbook;
         }
 
@@ -936,8 +937,62 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             autoSizeColumnsWithHeader();
         }
 
+        private void writeRoomView() {
+            nextSheet("Room view", 1, 2);
+            currentSheet.protectSheet("ThisDataIsIgnoredOnInput");
+            nextRow();
+            nextHeaderCell("");
+            writeTimeslotDaysHeaders();
+            nextRow();
+            nextHeaderCell("Room");
+            writeTimeslotHoursHeaders();
+            for (Room room : solution.getRoomList()) {
+                nextRow();
+                nextCell().setCellValue(room.getName());
+                List<Talk> talkList = solution.getTalkList().stream()
+                        .filter(talk -> talk.getRoom() == room)
+                        .collect(toList());
+                for (Timeslot timeslot : solution.getTimeslotList()) {
+                    List<Talk> filteredTalkList = talkList.stream().filter(talk -> talk.getTimeslot() == timeslot)
+                            .collect(toList());
+                    HardSoftScore score = (HardSoftScore) filteredTalkList.stream().map(indictmentMap::get).filter(Objects::nonNull)
+                            .map(Indictment::getScoreTotal).reduce(Score::add).orElse(HardSoftScore.ZERO);
+                    nextCellWithScore(score, room.getUnavailableTimeslotSet().contains(timeslot) ? unavailableStyle : null)
+                            .setCellValue(filteredTalkList.stream().map(Talk::getCode).collect(joining(", ")));
+                }
+            }
+            autoSizeColumnsWithHeader();
+        }
+
+        private void writeSpeakerView() {
+            nextSheet("Speaker view", 1, 2);
+            currentSheet.protectSheet("ThisDataIsIgnoredOnInput");
+            nextRow();
+            nextHeaderCell("");
+            writeTimeslotDaysHeaders();
+            nextRow();
+            nextHeaderCell("Speaker");
+            writeTimeslotHoursHeaders();
+            for (Speaker speaker : solution.getSpeakerList()) {
+                nextRow();
+                nextCell().setCellValue(speaker.getName());
+                List<Talk> talkList = solution.getTalkList().stream()
+                        .filter(talk -> talk.getSpeakerList().contains(speaker))
+                        .collect(toList());
+                for (Timeslot timeslot : solution.getTimeslotList()) {
+                    List<Talk> filteredTalkList = talkList.stream().filter(talk -> talk.getTimeslot() == timeslot)
+                            .collect(toList());
+                    HardSoftScore score = (HardSoftScore) filteredTalkList.stream().map(indictmentMap::get).filter(Objects::nonNull)
+                            .map(Indictment::getScoreTotal).reduce(Score::add).orElse(HardSoftScore.ZERO);
+                    nextCellWithScore(score, speaker.getUnavailableTimeslotSet().contains(timeslot) ? unavailableStyle : null)
+                            .setCellValue(filteredTalkList.stream().map(Talk::getCode).collect(joining(", ")));
+                }
+            }
+            autoSizeColumnsWithHeader();
+        }
+
         private void writeThemeView() {
-            nextSheet("Theme view", 1, 1);
+            nextSheet("Theme view", 1, 2);
             currentSheet.protectSheet("ThisDataIsIgnoredOnInput");
             nextRow();
             nextHeaderCell("");
@@ -970,7 +1025,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
         }
 
         private void writeSectorView() {
-            nextSheet("Sector view", 1, 1);
+            nextSheet("Sector view", 1, 2);
             currentSheet.protectSheet("ThisDataIsIgnoredOnInput");
             nextRow();
             nextHeaderCell("");
@@ -1002,28 +1057,35 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             autoSizeColumnsWithHeader();
         }
 
-        private void writeSpeakerView() {
-            nextSheet("Speaker view", 1, 1);
+        private void writeContentView() {
+            nextSheet("Content view", 1, 2);
             currentSheet.protectSheet("ThisDataIsIgnoredOnInput");
             nextRow();
             nextHeaderCell("");
             writeTimeslotDaysHeaders();
             nextRow();
-            nextHeaderCell("Speaker");
+            nextHeaderCell("Content tag");
             writeTimeslotHoursHeaders();
-            for (Speaker speaker : solution.getSpeakerList()) {
+
+            Map<String, Map<Timeslot, List<Talk>>> tagToTimeslotToTalkListMap = solution.getTalkList().stream()
+                    .filter(talk -> talk.getTimeslot() != null)
+                    .flatMap(talk -> talk.getContentTagSet().stream()
+                            .map(tag -> Pair.of(tag, Pair.of(talk.getTimeslot(), talk))))
+                    .collect(groupingBy(Pair::getLeft, groupingBy(o -> o.getRight().getLeft(), mapping(o -> o.getRight().getRight(), toList()))));
+            for (Map.Entry<String, Map<Timeslot, List<Talk>>> entry : tagToTimeslotToTalkListMap.entrySet()) {
                 nextRow();
-                nextCell().setCellValue(speaker.getName());
-                List<Talk> talkList = solution.getTalkList().stream()
-                        .filter(talk -> talk.getSpeakerList().contains(speaker))
-                        .collect(toList());
+                nextHeaderCell(entry.getKey());
+                Map<Timeslot, List<Talk>> timeslotToTalkListMap = entry.getValue();
                 for (Timeslot timeslot : solution.getTimeslotList()) {
-                    List<Talk> filteredTalkList = talkList.stream().filter(talk -> talk.getTimeslot() == timeslot)
-                            .collect(toList());
-                    HardSoftScore score = (HardSoftScore) filteredTalkList.stream().map(indictmentMap::get).filter(Objects::nonNull)
-                            .map(Indictment::getScoreTotal).reduce(Score::add).orElse(HardSoftScore.ZERO);
-                    nextCellWithScore(score, speaker.getUnavailableTimeslotSet().contains(timeslot) ? unavailableStyle : null)
-                            .setCellValue(filteredTalkList.stream().map(Talk::getCode).collect(joining(", ")));
+                    List<Talk> talkList = timeslotToTalkListMap.get(timeslot);
+                    if (talkList == null) {
+                        nextCell();
+                    } else {
+                        HardSoftScore score = (HardSoftScore) talkList.stream().map(indictmentMap::get).filter(Objects::nonNull)
+                                .map(Indictment::getScoreTotal).reduce(Score::add).orElse(HardSoftScore.ZERO);
+                        nextCellWithScore(score).setCellValue(talkList.stream()
+                                .map(talk -> "(" + talk.getAudienceLevel() + ") " + talk.getCode()).collect(joining(", ")));
+                    }
                 }
             }
             autoSizeColumnsWithHeader();
