@@ -15,6 +15,8 @@
  */
 package org.kie.api.task;
 
+import java.util.Date;
+
 import org.kie.api.task.model.Task;
 
 public interface TaskEvent {
@@ -22,4 +24,6 @@ public interface TaskEvent {
     Task getTask();
 
     TaskContext getTaskContext();
+    
+    Date getEventDate();
 }
