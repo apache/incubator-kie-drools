@@ -40,7 +40,6 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.poi.ss.usermodel.Cell;
@@ -384,10 +383,12 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             readHeaderCell("Code");
             readHeaderCell("Title");
             readHeaderCell("Talk type");
+            readHeaderCell("Speakers");
             readHeaderCell("Theme tags");
             readHeaderCell("Sector tags");
+            readHeaderCell("Audience level");
+            readHeaderCell("Content tags");
             readHeaderCell("Language");
-            readHeaderCell("Speakers");
             readHeaderCell("Required timeslot tags");
             readHeaderCell("Preferred timeslot tags");
             readHeaderCell("Prohibited timeslot tags");
@@ -418,6 +419,15 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                             + ") does not exist in the talk types (" + totalTalkTypeSet
                             + ") of the other sheet (Timeslots).");
                 }
+                talk.setSpeakerList(Arrays.stream(nextCell().getStringCellValue().split(", "))
+                        .filter(tag -> !tag.isEmpty()).map(speakerName -> {
+                            Speaker speaker = speakerMap.get(speakerName);
+                            if (speaker == null) {
+                                throw new IllegalStateException(currentPosition() + ": The talk with code (" + talk.getCode()
+                                        + ") has a speaker (" + speakerName + ") that doesn't exist in the speaker list.");
+                            }
+                            return speaker;
+                        }).collect(toList()));
                 talk.setThemeTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
                         .filter(tag -> !tag.isEmpty()).collect(toCollection(LinkedHashSet::new)));
                 for (String tag : talk.getThemeTagSet()) {
@@ -434,16 +444,21 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                                 + ") must match to the regular expression (" + VALID_TAG_PATTERN + ").");
                     }
                 }
-                talk.setLanguage(nextCell().getStringCellValue());
-                talk.setSpeakerList(Arrays.stream(nextCell().getStringCellValue().split(", "))
-                        .filter(tag -> !tag.isEmpty()).map(speakerName -> {
-                    Speaker speaker = speakerMap.get(speakerName);
-                    if (speaker == null) {
-                        throw new IllegalStateException(currentPosition() + ": The talk with code (" + talk.getCode()
-                                + ") has a speaker (" + speakerName + ") that doesn't exist in the speaker list.");
+                double audienceLevelDouble = nextCell().getNumericCellValue();
+                if (audienceLevelDouble <= 0 || audienceLevelDouble != Math.floor(audienceLevelDouble)) {
+                    throw new IllegalStateException(currentPosition() + ": The talk with code (" + talk.getCode()
+                            + ")'s has an audience level (" + audienceLevelDouble + ") that isn't a strictly positive integer number.");
+                }
+                talk.setAudienceLevel((int) audienceLevelDouble);
+                talk.setContentTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
+                        .filter(tag -> !tag.isEmpty()).collect(toCollection(LinkedHashSet::new)));
+                for (String tag : talk.getContentTagSet()) {
+                    if (!VALID_TAG_PATTERN.matcher(tag).matches()) {
+                        throw new IllegalStateException(currentPosition() + ": The talk (" + talk + ")'s content tag (" + tag
+                                + ") must match to the regular expression (" + VALID_TAG_PATTERN + ").");
                     }
-                    return speaker;
-                }).collect(toList()));
+                }
+                talk.setLanguage(nextCell().getStringCellValue());
                 talk.setRequiredTimeslotTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
                         .filter(tag -> !tag.isEmpty()).collect(toCollection(LinkedHashSet::new)));
                 verifyTimeslotTags(talk.getRequiredTimeslotTagSet());
@@ -873,10 +888,12 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             nextHeaderCell("Code");
             nextHeaderCell("Title");
             nextHeaderCell("Talk type");
+            nextHeaderCell("Speakers");
             nextHeaderCell("Theme tags");
             nextHeaderCell("Sector tags");
+            nextHeaderCell("Audience level");
+            nextHeaderCell("Content tags");
             nextHeaderCell("Language");
-            nextHeaderCell("Speakers");
             nextHeaderCell("Required timeslot tags");
             nextHeaderCell("Preferred timeslot tags");
             nextHeaderCell("Prohibited timeslot tags");
@@ -895,11 +912,13 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 nextCell().setCellValue(talk.getCode());
                 nextCell().setCellValue(talk.getTitle());
                 nextCell().setCellValue(talk.getTalkType());
-                nextCell().setCellValue(String.join(", ", talk.getThemeTagSet()));
-                nextCell().setCellValue(String.join(", ", talk.getSectorTagSet()));
-                nextCell().setCellValue(talk.getLanguage());
                 nextCell().setCellValue(talk.getSpeakerList()
                         .stream().map(Speaker::getName).collect(joining(", ")));
+                nextCell().setCellValue(String.join(", ", talk.getThemeTagSet()));
+                nextCell().setCellValue(String.join(", ", talk.getSectorTagSet()));
+                nextCell().setCellValue(talk.getAudienceLevel());
+                nextCell().setCellValue(String.join(", ", talk.getContentTagSet()));
+                nextCell().setCellValue(talk.getLanguage());
                 nextCell().setCellValue(String.join(", ", talk.getRequiredTimeslotTagSet()));
                 nextCell().setCellValue(String.join(", ", talk.getPreferredTimeslotTagSet()));
                 nextCell().setCellValue(String.join(", ", talk.getProhibitedTimeslotTagSet()));

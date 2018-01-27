@@ -92,6 +92,28 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
 
     private final StringDataGenerator speakerNameGenerator = StringDataGenerator.buildFullNames();
 
+    private final String[] contentTagOptions = {
+        "OpenShift",
+        "WildFly",
+        "Spring",
+        "Drools",
+        "OptaPlanner",
+        "jBPM",
+        "Camel",
+        "XStream",
+        "Docker",
+        "Hibernate",
+        "GWT",
+        "Errai",
+        "Angular",
+        "Weld",
+        "RestEasy",
+        "Android",
+        "Tensorflow",
+        "VertX",
+        "JUnit",
+        "Keycloak"
+    };
     private final StringDataGenerator talkTitleGenerator = new StringDataGenerator()
             .addPart(true, 0,
                     "Hands on",
@@ -103,7 +125,17 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
                     "Tuning",
                     "Building",
                     "Securing",
-                    "Debug")
+                    "Debug",
+                    "Prepare for",
+                    "Understand",
+                    "Applying",
+                    "Grok",
+                    "Troubleshooting",
+                    "Using",
+                    "Deliver",
+                    "Implement",
+                    "Program",
+                    "Hack")
             .addPart(true, 0,
                     "real-time",
                     "containerized",
@@ -114,18 +146,19 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
                     "IOT-driven",
                     "deep learning",
                     "scalable",
-                    "enterprise")
+                    "enterprise",
+                    "streaming",
+                    "mobile",
+                    "modern",
+                    "distributed",
+                    "reliable",
+                    "secure",
+                    "stable",
+                    "platform-independent",
+                    "flexible",
+                    "modularized")
             .addPart(true, 1,
-                    "OpenShift",
-                    "WildFly",
-                    "Spring",
-                    "Drools",
-                    "OptaPlanner",
-                    "jBPM",
-                    "Camel",
-                    "XStream",
-                    "Docker",
-                    "JUnit")
+                    contentTagOptions)
             .addPart(false, 3,
                     "in a nutshell",
                     "in practice",
@@ -136,7 +169,17 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
                     "for decision makers",
                     "on the whiteboard",
                     "out of the box",
-                    "for programmers");
+                    "for programmers",
+                    "for managers",
+                    "for QA engineers",
+                    "in Java",
+                    "in Scala",
+                    "in Kotlin",
+                    "in Lisp",
+                    "in C++",
+                    "in Assembly",
+                    "with style",
+                    "like a pro");
 
     private final List<String> themeTagOptions = Arrays.asList(
             "Artificial Intelligence",
@@ -341,7 +384,17 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
             talk.setId((long) i);
             talk.setCode(String.format("S%0" + ((String.valueOf(talkListSize).length()) + "d"), i));
             talk.setTitle(talkTitleGenerator.generateNextValue());
+            double speakerRandomDouble = random.nextDouble();
             talk.setTalkType(i < labTalkCount ? LAB_TALK_TYPE : BREAKOUT_TALK_TYPE);
+            int speakerCount = (speakerRandomDouble < 0.01) ? 4 :
+                    (speakerRandomDouble < 0.03) ? 3 :
+                            (speakerRandomDouble < 0.40) ? 2 : 1;
+            List<Speaker> speakerList = new ArrayList<>(speakerCount);
+            for (int j = 0; j < speakerCount; j++) {
+                speakerList.add(solution.getSpeakerList().get(speakerListIndex));
+                speakerListIndex = (speakerListIndex + 1) % solution.getSpeakerList().size();
+            }
+            talk.setSpeakerList(speakerList);
             Set<String> themeTagSet = new LinkedHashSet<>();
             themeTagSet.add(themeTagOptions.get(random.nextInt(themeTagOptions.size())));
             if (random.nextDouble() < 0.20) {
@@ -352,18 +405,21 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
             if (random.nextDouble() < 0.20) {
                 sectorTagSet.add(sectorTagOptions.get(random.nextInt(sectorTagOptions.size())));
             }
+            talk.setAudienceLevel(1 + random.nextInt(3));
+            Set<String> contentTagSet = new LinkedHashSet<>();
+            for (String contentTagOption : contentTagOptions) {
+                if (talk.getTitle().contains(contentTagOption)) {
+                    contentTagSet.add(contentTagOption);
+                    if ((contentTagOption.equalsIgnoreCase("OpenShift") || contentTagOption.equalsIgnoreCase("Docker"))
+                            && random.nextDouble() < 0.40) {
+                        contentTagSet.add("Kubernetes");
+                    }
+                    break;
+                }
+            }
+            talk.setContentTagSet(contentTagSet);
             talk.setSectorTagSet(sectorTagSet);
             talk.setLanguage("en");
-            double randomDouble = random.nextDouble();
-            int speakerCount = (randomDouble < 0.01) ? 4 :
-                    (randomDouble < 0.03) ? 3 :
-                    (randomDouble < 0.40) ? 2 : 1;
-            List<Speaker> speakerList = new ArrayList<>(speakerCount);
-            for (int j = 0; j < speakerCount; j++) {
-                speakerList.add(solution.getSpeakerList().get(speakerListIndex));
-                speakerListIndex = (speakerListIndex + 1) % solution.getSpeakerList().size();
-            }
-            talk.setSpeakerList(speakerList);
             talk.setRequiredTimeslotTagSet(new LinkedHashSet<>());
             talk.setPreferredTimeslotTagSet(new LinkedHashSet<>());
             talk.setProhibitedTimeslotTagSet(new LinkedHashSet<>());

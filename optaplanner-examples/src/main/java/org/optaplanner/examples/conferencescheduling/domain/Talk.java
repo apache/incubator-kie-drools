@@ -30,10 +30,12 @@ public class Talk extends AbstractPersistable {
     private String code;
     private String title;
     private String talkType;
+    private List<Speaker> speakerList;
     private Set<String> themeTagSet;
     private Set<String> sectorTagSet;
+    private int audienceLevel;
+    private Set<String> contentTagSet;
     private String language;
-    private List<Speaker> speakerList;
     private Set<String> requiredTimeslotTagSet;
     private Set<String> preferredTimeslotTagSet;
     private Set<String> prohibitedTimeslotTagSet;
@@ -242,6 +244,14 @@ public class Talk extends AbstractPersistable {
         this.talkType = talkType;
     }
 
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
+    public List<Speaker> getSpeakerList() {
+        return speakerList;
+    }
+
     public Set<String> getThemeTagSet() {
         return themeTagSet;
     }
@@ -258,16 +268,24 @@ public class Talk extends AbstractPersistable {
         this.sectorTagSet = sectorTagSet;
     }
 
+    public int getAudienceLevel() {
+        return audienceLevel;
+    }
+
+    public void setAudienceLevel(int audienceLevel) {
+        this.audienceLevel = audienceLevel;
+    }
+
+    public Set<String> getContentTagSet() {
+        return contentTagSet;
+    }
+
+    public void setContentTagSet(Set<String> contentTagSet) {
+        this.contentTagSet = contentTagSet;
+    }
+
     public String getLanguage() {
         return language;
-    }
-
-    public void setLanguage(String language) {
-        this.language = language;
-    }
-
-    public List<Speaker> getSpeakerList() {
-        return speakerList;
     }
 
     public void setSpeakerList(List<Speaker> speakerList) {
@@ -371,23 +389,33 @@ public class Talk extends AbstractPersistable {
         return this;
     }
 
-    public Talk withTimeslot(Timeslot timeSlot) {
-        this.timeslot = timeSlot;
+    public Talk withSpeakerList(List<Speaker> speakerList) {
+        this.speakerList = speakerList;
         return this;
     }
 
-    public Talk withRoom(Room room) {
-        this.room = room;
+    public Talk withThemeTagSet(Set<String> themeTagSet) {
+        this.themeTagSet = themeTagSet;
+        return this;
+    }
+
+    public Talk withSectorTagSet(Set<String> sectorTagSet) {
+        this.sectorTagSet = sectorTagSet;
+        return this;
+    }
+
+    public Talk withAudienceLevel(int audienceLevel) {
+        this.audienceLevel = audienceLevel;
+        return this;
+    }
+
+    public Talk withContentTagSet(Set<String> contentTagSet) {
+        this.contentTagSet = contentTagSet;
         return this;
     }
 
     public Talk withLanguage(String language) {
         this.language = language;
-        return this;
-    }
-
-    public Talk withSpeakerList(List<Speaker> speakerList) {
-        this.speakerList = speakerList;
         return this;
     }
 
@@ -431,13 +459,13 @@ public class Talk extends AbstractPersistable {
         return this;
     }
 
-    public Talk withThemeTagSet(Set<String> themeTagSet) {
-        this.themeTagSet = themeTagSet;
+    public Talk withTimeslot(Timeslot timeSlot) {
+        this.timeslot = timeSlot;
         return this;
     }
 
-    public Talk withSectorTagSet(Set<String> sectorTagSet) {
-        this.sectorTagSet = sectorTagSet;
+    public Talk withRoom(Room room) {
+        this.room = room;
         return this;
     }
 
