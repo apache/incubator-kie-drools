@@ -55,7 +55,7 @@ public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy
     private boolean closeEmf = false;
     private String name = JPAPlaceholderResolverStrategy.class.getName();
     
-    private static final ThreadLocal<EntityManager> persister = new ThreadLocal<EntityManager>();
+    private static final ThreadLocal<EntityPersister> persister = new ThreadLocal<EntityPersister>();
     
     public JPAPlaceholderResolverStrategy(Environment env) {
         this( (EntityManagerFactory) env.get(EnvironmentName.ENTITY_MANAGER_FACTORY) );
@@ -137,21 +137,25 @@ public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy
                           Object object) throws IOException {
         Object id = getClassIdValue(object);
         String entityType = object.getClass().getCanonicalName();
+        
+        EntityPersister entityPersister = persister.get();
 
-        EntityManager em = getEntityManager();
-        if (id == null) {
-            em.persist(object);
-            id = getClassIdValue(object);
-        } else {
+        if (!entityPersister.isPersited(object)) {
+            EntityManager em = getEntityManager();
+            if (id == null) {
+                em.persist(object);
+                id = getClassIdValue(object);
+            }
+            addMapping(id, entityType, object, os, em);
             em.merge(object);
+            
+            entityPersister.processed(object);
+            
+            // since this is invoked by marshaller it's safe to call flush
+            // and it's important to be flushed so subsequent unmarshall operations
+            // will get update content especially when merged
+            em.flush();
         }
-        addMapping(id, entityType, object, os, em);
-        em.merge(object);
-        // since this is invoked by marshaller it's safe to call flush
-        // and it's important to be flushed so subsequent unmarshall operations
-        // will get update content especially when merged
-        em.flush();
-
         ByteArrayOutputStream buff = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream( buff );
         oos.writeUTF(entityType);
@@ -201,13 +205,13 @@ public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy
     public void onStart(TransactionManager txm) {
         if (persister.get() == null) {
             EntityManager em = emf.createEntityManager();
-            persister.set(em);
+            persister.set(new EntityPersister(em));
         }
     }
 
     @Override
     public void onEnd(TransactionManager txm) {
-        EntityManager em = persister.get();
+        EntityPersister em = persister.get();
         if (em != null) {
             em.close();
             persister.set(null);
@@ -215,9 +219,9 @@ public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy
     }
 
     protected EntityManager getEntityManager() {
-        EntityManager em = persister.get();
-        if (em != null) {
-            return em;
+        EntityPersister em = persister.get();
+        if (em != null && em.getEntityManager() != null) {
+            return em.getEntityManager();
         }
         return emf.createEntityManager();
     }
