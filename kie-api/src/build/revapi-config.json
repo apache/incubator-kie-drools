@@ -96,7 +96,25 @@
            "methodName": "delete",
            "elementKind": "method",
            "justification": "Allow to delete a fact from a datasource from inside a consequence"
-        }
+        },
+        {
+           "code": "java.method.addedToInterface",
+           "new": "method java.util.Date org.kie.api.event.process.ProcessEvent::getEventDate()",
+           "package": "org.kie.api.event.process",
+           "classSimpleName": "ProcessEvent",
+           "methodName": "getEventDate",
+           "elementKind": "method",
+           "justification": "Exposed date when event was created"
+         },
+         {
+           "code": "java.method.addedToInterface",
+           "new": "method java.util.Date org.kie.api.task.TaskEvent::getEventDate()",
+           "package": "org.kie.api.task",
+           "classSimpleName": "TaskEvent",
+           "methodName": "getEventDate",
+           "elementKind": "method",
+           "justification": "Exposed date when event was created"
+         }
       ]
     }
   }
