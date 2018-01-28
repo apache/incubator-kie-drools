@@ -142,8 +142,9 @@ rule "Theme conflict"
         ConferenceParametrization($weight : themeConflict != 0)
         $leftTalk : Talk(timeslot != null, $timeslot : timeslot,
                 $leftId : id)
-        $rightTalk : Talk(timeslot != null, getTimeslot().overlaps($timeslot),
+        $rightTalk : Talk(timeslot != null,
                 overlappingThemeCount($leftTalk) > 0,
+                getTimeslot().overlaps($timeslot),
                 id > $leftId)
     then
         scoreHolder.addSoftConstraintMatch(kcontext, - $weight * $rightTalk.overlappingThemeCount($leftTalk));
@@ -154,11 +155,25 @@ rule "Sector conflict"
         ConferenceParametrization($weight : sectorConflict != 0)
         $leftTalk : Talk(timeslot != null, $timeslot : timeslot,
                 $leftId : id)
-        $rightTalk : Talk(timeslot != null, getTimeslot().overlaps($timeslot),
+        $rightTalk : Talk(timeslot != null,
                 overlappingSectorCount($leftTalk) > 0,
+                getTimeslot().overlaps($timeslot),
                 id > $leftId)
     then
         scoreHolder.addSoftConstraintMatch(kcontext, - $weight * $rightTalk.overlappingSectorCount($leftTalk));
+end
+
+rule "Content audience level flow violation"
+    when
+        ConferenceParametrization($weight : contentAudienceLevelFlowViolation != 0)
+        $leftTalk : Talk(timeslot != null, $timeslot : timeslot,
+                $audienceLevel : audienceLevel)
+        $rightTalk : Talk(timeslot != null,
+                overlappingContentCount($leftTalk) > 0,
+                audienceLevel < $audienceLevel,
+                !timeslot.endsBefore($timeslot))
+    then
+        scoreHolder.addSoftConstraintMatch(kcontext, - $weight * $rightTalk.overlappingContentCount($leftTalk));
 end
 
 rule "Language diversity"

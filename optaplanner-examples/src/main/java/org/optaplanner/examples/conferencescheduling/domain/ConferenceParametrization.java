@@ -22,6 +22,7 @@ public class ConferenceParametrization extends AbstractPersistable {
 
     private int themeConflict = 10;
     private int sectorConflict = 10;
+    private int contentAudienceLevelFlowViolation = 10;
     private int languageDiversity = 10;
     private int speakerPreferredTimeslotTag = 10;
     private int speakerUndesiredTimeslotTag = 10;
@@ -57,6 +58,14 @@ public class ConferenceParametrization extends AbstractPersistable {
 
     public void setSectorConflict(int sectorConflict) {
         this.sectorConflict = sectorConflict;
+    }
+
+    public int getContentAudienceLevelFlowViolation() {
+        return contentAudienceLevelFlowViolation;
+    }
+
+    public void setContentAudienceLevelFlowViolation(int contentAudienceLevelFlowViolation) {
+        this.contentAudienceLevelFlowViolation = contentAudienceLevelFlowViolation;
     }
 
     public int getLanguageDiversity() {

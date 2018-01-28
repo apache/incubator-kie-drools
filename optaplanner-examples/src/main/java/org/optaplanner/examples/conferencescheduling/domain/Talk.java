@@ -60,21 +60,6 @@ public class Talk extends AbstractPersistable {
         super(id);
     }
 
-    public boolean hasUnavailableRoom() {
-        if (timeslot == null || room == null) {
-            return false;
-        }
-        return room.getUnavailableTimeslotSet().contains(timeslot);
-    }
-
-    public int overlappingThemeCount(Talk other) {
-        return (int) themeTagSet.stream().filter(tag -> other.themeTagSet.contains(tag)).count();
-    }
-
-    public int overlappingSectorCount(Talk other) {
-        return (int) sectorTagSet.stream().filter(tag -> other.sectorTagSet.contains(tag)).count();
-    }
-
     public boolean hasSpeaker(Speaker speaker) {
         return speakerList.contains(speaker);
     }
@@ -89,6 +74,18 @@ public class Talk extends AbstractPersistable {
             }
         }
         return false;
+    }
+
+    public int overlappingThemeCount(Talk other) {
+        return (int) themeTagSet.stream().filter(tag -> other.themeTagSet.contains(tag)).count();
+    }
+
+    public int overlappingSectorCount(Talk other) {
+        return (int) sectorTagSet.stream().filter(tag -> other.sectorTagSet.contains(tag)).count();
+    }
+
+    public int overlappingContentCount(Talk other) {
+        return (int) contentTagSet.stream().filter(tag -> other.contentTagSet.contains(tag)).count();
     }
 
     public int missingRequiredTimeslotTagCount() {
@@ -209,6 +206,13 @@ public class Talk extends AbstractPersistable {
         }
         return (int) speakerList.stream().flatMap(speaker -> speaker.getUndesiredRoomTagSet().stream())
                 .filter(tag -> room.hasTag(tag)).count();
+    }
+
+    public boolean hasUnavailableRoom() {
+        if (timeslot == null || room == null) {
+            return false;
+        }
+        return room.getUnavailableTimeslotSet().contains(timeslot);
     }
 
     @Override

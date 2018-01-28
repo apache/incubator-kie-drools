@@ -40,10 +40,15 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.ClientAnchor;
+import org.apache.poi.ss.usermodel.Comment;
+import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.Drawing;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Row;
@@ -160,6 +165,8 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                     "Soft penalty per common theme of 2 talks that have an overlapping timeslot");
             readConstraintLine("Sector conflict", parametrization::setSectorConflict,
                     "Soft penalty per common sector of 2 talks that have an overlapping timeslot");
+            readConstraintLine("Content audience level flow violation", parametrization::setContentAudienceLevelFlowViolation,
+                    "Soft penalty per common content of 2 talks with a different audience level for which the easier talk isn't scheduled earlier than the other talk.");
             readConstraintLine("Language diversity", parametrization::setLanguageDiversity,
                     "Soft reward per 2 talks that have the same timeslot and a different language");
             readConstraintLine("Speaker preferred timeslot tag", parametrization::setSpeakerPreferredTimeslotTag,
@@ -685,6 +692,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
         protected final Map<Pair<Timeslot, Room>, List<Talk>> timeslotRoomToTalkMap;
 
         protected Workbook workbook;
+        protected CreationHelper creationHelper;
 
         protected CellStyle headerStyle;
         protected CellStyle unavailableStyle;
@@ -693,6 +701,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
         protected CellStyle softPenaltyStyle;
 
         protected Sheet currentSheet;
+        protected Drawing currentDrawing;
         protected Row currentRow;
         protected int currentRowNumber;
         protected int currentColumnNumber;
@@ -714,6 +723,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
 
         public Workbook write() {
             workbook = new XSSFWorkbook();
+            creationHelper = workbook.getCreationHelper();
             createStyles();
             writeConfiguration();
             writeTimeslotList();
@@ -762,6 +772,8 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                     "Soft penalty per common theme of 2 talks that have an overlapping timeslot");
             writeConstraintLine("Sector conflict", parametrization::getSectorConflict,
                     "Soft penalty per common sector of 2 talks that have an overlapping timeslot");
+            writeConstraintLine("Content audience level flow violation", parametrization::getContentAudienceLevelFlowViolation,
+                    "Soft penalty per common content of 2 talks with a different audience level for which the easier talk isn't scheduled earlier than the other talk.");
             writeConstraintLine("Language diversity", parametrization::getLanguageDiversity,
                     "Soft reward per 2 talks that have the same timeslot and a different language");
             writeConstraintLine("Speaker preferred timeslot tag", parametrization::getSpeakerPreferredTimeslotTag,
@@ -939,7 +951,6 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
 
         private void writeRoomView() {
             nextSheet("Room view", 1, 2);
-            currentSheet.protectSheet("ThisDataIsIgnoredOnInput");
             nextRow();
             nextHeaderCell("");
             writeTimeslotDaysHeaders();
@@ -966,7 +977,6 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
 
         private void writeSpeakerView() {
             nextSheet("Speaker view", 1, 2);
-            currentSheet.protectSheet("ThisDataIsIgnoredOnInput");
             nextRow();
             nextHeaderCell("");
             writeTimeslotDaysHeaders();
@@ -993,7 +1003,6 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
 
         private void writeThemeView() {
             nextSheet("Theme view", 1, 2);
-            currentSheet.protectSheet("ThisDataIsIgnoredOnInput");
             nextRow();
             nextHeaderCell("");
             writeTimeslotDaysHeaders();
@@ -1015,9 +1024,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                     if (talkList == null) {
                         nextCell();
                     } else {
-                        HardSoftScore score = (HardSoftScore) talkList.stream().map(indictmentMap::get).filter(Objects::nonNull)
-                                .map(Indictment::getScoreTotal).reduce(Score::add).orElse(HardSoftScore.ZERO);
-                        nextCellWithScore(score).setCellValue(talkList.stream().map(Talk::getCode).collect(joining(", ")));
+                        nextCellWithIndictmentComment(talkList).setCellValue(talkList.stream().map(Talk::getCode).collect(joining(", ")));
                     }
                 }
             }
@@ -1026,7 +1033,6 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
 
         private void writeSectorView() {
             nextSheet("Sector view", 1, 2);
-            currentSheet.protectSheet("ThisDataIsIgnoredOnInput");
             nextRow();
             nextHeaderCell("");
             writeTimeslotDaysHeaders();
@@ -1048,9 +1054,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                     if (talkList == null) {
                         nextCell();
                     } else {
-                        HardSoftScore score = (HardSoftScore) talkList.stream().map(indictmentMap::get).filter(Objects::nonNull)
-                                .map(Indictment::getScoreTotal).reduce(Score::add).orElse(HardSoftScore.ZERO);
-                        nextCellWithScore(score).setCellValue(talkList.stream().map(Talk::getCode).collect(joining(", ")));
+                        nextCellWithIndictmentComment(talkList).setCellValue(talkList.stream().map(Talk::getCode).collect(joining(", ")));
                     }
                 }
             }
@@ -1059,7 +1063,6 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
 
         private void writeContentView() {
             nextSheet("Content view", 1, 2);
-            currentSheet.protectSheet("ThisDataIsIgnoredOnInput");
             nextRow();
             nextHeaderCell("");
             writeTimeslotDaysHeaders();
@@ -1081,9 +1084,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                     if (talkList == null) {
                         nextCell();
                     } else {
-                        HardSoftScore score = (HardSoftScore) talkList.stream().map(indictmentMap::get).filter(Objects::nonNull)
-                                .map(Indictment::getScoreTotal).reduce(Score::add).orElse(HardSoftScore.ZERO);
-                        nextCellWithScore(score).setCellValue(talkList.stream()
+                        nextCellWithIndictmentComment(talkList).setCellValue(talkList.stream()
                                 .map(talk -> "(" + talk.getAudienceLevel() + ") " + talk.getCode()).collect(joining(", ")));
                     }
                 }
@@ -1121,6 +1122,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
 
         protected void nextSheet(String sheetName, int colSplit, int rowSplit) {
             currentSheet = workbook.createSheet(sheetName);
+            currentDrawing = currentSheet.createDrawingPatriarch();
             currentSheet.createFreezePane(colSplit, rowSplit);
             currentRowNumber = -1;
             headerCellCount = 0;
@@ -1145,6 +1147,31 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             return nextCellWithScore(score, null);
         }
 
+        protected Cell nextCellWithIndictmentComment(List<Talk> talkList) {
+            List<Indictment> indictmentList = talkList.stream().map(indictmentMap::get).filter(Objects::nonNull).collect(Collectors.toList());
+            HardSoftScore score = (HardSoftScore) indictmentList.stream().map(Indictment::getScoreTotal)
+                    .reduce(Score::add).orElse(HardSoftScore.ZERO);
+            Cell cell = nextCellWithScore(score);
+            if (!indictmentList.isEmpty()) {
+                ClientAnchor anchor = creationHelper.createClientAnchor();
+                anchor.setCol1(cell.getColumnIndex());
+                anchor.setCol2(cell.getColumnIndex() + 5);
+                anchor.setRow1(currentRow.getRowNum());
+                anchor.setRow2(currentRow.getRowNum() + 5);
+                Comment comment = currentDrawing.createCellComment(anchor);
+                comment.setString(creationHelper.createRichTextString(indictmentList.stream()
+                        .flatMap(indictment -> indictment.getConstraintMatchSet().stream())
+                        .map(constraintMatch -> constraintMatch.getConstraintName() + " ("
+                                + constraintMatch.getJustificationList().stream()
+                                .filter(o -> o instanceof Talk).map(o -> ((Talk) o).getCode())
+                                .collect(joining(", "))
+                                + "): " + constraintMatch.getScore().toShortString())
+                        .collect(joining("\n"))));
+                comment.setAuthor("OptaPlanner");
+                cell.setCellComment(comment);
+            }
+            return cell;
+        }
         protected Cell nextCellWithScore(HardSoftScore score, CellStyle cellStyle) {
             if (!score.isFeasible()) {
                 return nextCell(hardPenaltyStyle);

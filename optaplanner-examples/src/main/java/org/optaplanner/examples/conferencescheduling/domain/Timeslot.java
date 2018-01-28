@@ -54,6 +54,14 @@ public class Timeslot extends AbstractPersistable {
                 && other.startDateTime.compareTo(endDateTime) < 0;
     }
 
+    public boolean startsAfter(Timeslot other) {
+        return other.endDateTime.compareTo(startDateTime) <= 0;
+    }
+
+    public boolean endsBefore(Timeslot other) {
+        return endDateTime.compareTo(other.startDateTime) <= 0;
+    }
+
     public boolean hasTag(String tag) {
         return tagSet.contains(tag);
     }
