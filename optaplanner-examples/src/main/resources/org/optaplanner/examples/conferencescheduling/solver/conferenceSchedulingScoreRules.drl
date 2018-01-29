@@ -176,6 +176,20 @@ rule "Content audience level flow violation"
         scoreHolder.addSoftConstraintMatch(kcontext, - $weight * $rightTalk.overlappingContentCount($leftTalk));
 end
 
+rule "Audience level diversity"
+    when
+        ConferenceParametrization($weight : audienceLevelDiversity != 0)
+        Talk(timeslot != null, $timeslot : timeslot,
+                $audienceLevel : audienceLevel,
+                $leftId : id)
+        // Timeslot.overlaps() is deliberately not used
+        Talk(timeslot == $timeslot,
+                audienceLevel != $audienceLevel,
+                id > $leftId)
+    then
+        scoreHolder.addSoftConstraintMatch(kcontext, $weight);
+end
+
 rule "Language diversity"
     when
         ConferenceParametrization($weight : languageDiversity != 0)

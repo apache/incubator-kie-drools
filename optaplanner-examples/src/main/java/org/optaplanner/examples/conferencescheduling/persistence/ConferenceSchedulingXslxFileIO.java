@@ -163,7 +163,9 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             readConstraintLine("Sector conflict", parametrization::setSectorConflict,
                     "Soft penalty per common sector of 2 talks that have an overlapping timeslot");
             readConstraintLine("Content audience level flow violation", parametrization::setContentAudienceLevelFlowViolation,
-                    "Soft penalty per common content of 2 talks with a different audience level for which the easier talk isn't scheduled earlier than the other talk.");
+                    "Soft penalty per common content of 2 talks with a different audience level for which the easier talk isn't scheduled earlier than the other talk");
+            readConstraintLine("Audience level diversity", parametrization::setAudienceLevelDiversity,
+                    "Soft reward per 2 talks that have the same timeslot and a different audience level");
             readConstraintLine("Language diversity", parametrization::setLanguageDiversity,
                     "Soft reward per 2 talks that have the same timeslot and a different language");
             readConstraintLine("Speaker preferred timeslot tag", parametrization::setSpeakerPreferredTimeslotTag,
@@ -742,7 +744,9 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             writeConstraintLine("Sector conflict", parametrization::getSectorConflict,
                     "Soft penalty per common sector of 2 talks that have an overlapping timeslot");
             writeConstraintLine("Content audience level flow violation", parametrization::getContentAudienceLevelFlowViolation,
-                    "Soft penalty per common content of 2 talks with a different audience level for which the easier talk isn't scheduled earlier than the other talk.");
+                    "Soft penalty per common content of 2 talks with a different audience level for which the easier talk isn't scheduled earlier than the other talk");
+            writeConstraintLine("Audience level diversity", parametrization::getAudienceLevelDiversity,
+                    "Soft reward per 2 talks that have the same timeslot and a different audience level");
             writeConstraintLine("Language diversity", parametrization::getLanguageDiversity,
                     "Soft reward per 2 talks that have the same timeslot and a different language");
             writeConstraintLine("Speaker preferred timeslot tag", parametrization::getSpeakerPreferredTimeslotTag,
