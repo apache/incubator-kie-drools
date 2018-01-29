@@ -44,8 +44,6 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.ClientAnchor;
 import org.apache.poi.ss.usermodel.Comment;
 import org.apache.poi.ss.usermodel.CreationHelper;
@@ -53,12 +51,15 @@ import org.apache.poi.ss.usermodel.Drawing;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellReference;
+import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFColor;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
@@ -103,7 +104,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
     @Override
     public ConferenceSolution read(File inputSolutionFile) {
         try (InputStream in = new BufferedInputStream(new FileInputStream(inputSolutionFile))) {
-            Workbook workbook = new XSSFWorkbook(in);
+            XSSFWorkbook workbook = new XSSFWorkbook(in);
             return new ConferenceSchedulingXslxReader(workbook).read();
         } catch (IOException | RuntimeException e) {
             throw new IllegalStateException("Failed reading inputSolutionFile ("
@@ -113,20 +114,20 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
 
     private static class ConferenceSchedulingXslxReader {
 
-        protected final Workbook workbook;
+        protected final XSSFWorkbook workbook;
 
         protected ConferenceSolution solution;
         private Set<String> totalTalkTypeSet;
         private Set<String> totalTimeslotTagSet;
         private Set<String> totalRoomTagSet;
 
-        protected Sheet currentSheet;
+        protected XSSFSheet currentSheet;
         protected Iterator<Row> currentRowIterator;
-        protected Row currentRow;
+        protected XSSFRow currentRow;
         protected int currentRowNumber;
         protected int currentColumnNumber;
 
-        public ConferenceSchedulingXslxReader(Workbook workbook) {
+        public ConferenceSchedulingXslxReader(XSSFWorkbook workbook) {
             this.workbook = workbook;
         }
 
@@ -274,7 +275,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 totalRoomTagSet.addAll(room.getTagSet());
                 Set<Timeslot> unavailableTimeslotSet = new LinkedHashSet<>();
                 for (Timeslot timeslot : solution.getTimeslotList()) {
-                    Cell cell = nextCell();
+                    XSSFCell cell = nextCell();
                     if (Objects.equals(extractColor(cell, UNAVAILABLE_COLOR), UNAVAILABLE_COLOR)) {
                         unavailableTimeslotSet.add(timeslot);
                     }
@@ -349,7 +350,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 verifyRoomTags(speaker.getUndesiredRoomTagSet());
                 Set<Timeslot> unavailableTimeslotSet = new LinkedHashSet<>();
                 for (Timeslot timeslot : solution.getTimeslotList()) {
-                    Cell cell = nextCell();
+                    XSSFCell cell = nextCell();
                     if (Objects.equals(extractColor(cell, UNAVAILABLE_COLOR), UNAVAILABLE_COLOR)) {
                         unavailableTimeslotSet.add(timeslot);
                     }
@@ -587,13 +588,13 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 currentRow = null;
                 return false;
             }
-            currentRow = currentRowIterator.next();
+            currentRow = (XSSFRow) currentRowIterator.next();
             while (skipEmptyRows && currentRow.getPhysicalNumberOfCells() == 0) {
                 if (!currentRowIterator.hasNext()) {
                     currentRow = null;
                     return false;
                 }
-                currentRow = currentRowIterator.next();
+                currentRow = (XSSFRow) currentRowIterator.next();
             }
             if (currentRow.getRowNum() != currentRowNumber) {
                 if (currentRow.getRowNum() == currentRowNumber + 1) {
@@ -607,16 +608,16 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
         }
 
         protected void readHeaderCell(String value) {
-            Cell cell = currentRow == null ? null : nextCell();
+            XSSFCell cell = currentRow == null ? null : nextCell();
             if (cell == null || !cell.getStringCellValue().equals(value)) {
                 throw new IllegalStateException(currentPosition() + ": The cell does not contain the expected value ("
                         + value + ").");
             }
         }
 
-        protected Cell nextCell() {
+        protected XSSFCell nextCell() {
             currentColumnNumber++;
-            Cell cell = currentRow.getCell(currentColumnNumber);
+            XSSFCell cell = currentRow.getCell(currentColumnNumber);
             // TODO HACK to workaround the fact that LibreOffice and Excel automatically remove empty trailing cells
             if (cell == null) {
                 // Return dummy cell
@@ -625,8 +626,8 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             return cell;
         }
 
-        protected XSSFColor extractColor(Cell cell, XSSFColor... acceptableColors) {
-            CellStyle cellStyle = cell.getCellStyle();
+        protected XSSFColor extractColor(XSSFCell cell, XSSFColor... acceptableColors) {
+            XSSFCellStyle cellStyle = cell.getCellStyle();
             FillPatternType fillPattern = cellStyle.getFillPatternEnum();
             if (fillPattern == null || fillPattern == FillPatternType.NO_FILL) {
                 return null;
@@ -636,7 +637,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                         + ") should be either " + FillPatternType.NO_FILL
                         + " or " + FillPatternType.SOLID_FOREGROUND + ".");
             }
-            XSSFColor color = (XSSFColor) cellStyle.getFillForegroundColorColor();
+            XSSFColor color = cellStyle.getFillForegroundColorColor();
             for (XSSFColor acceptableColor : acceptableColors) {
                 if (acceptableColor.equals(color)) {
                     return acceptableColor;
@@ -665,18 +666,20 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
         protected final ConferenceSolution solution;
         protected final Map<Object, Indictment> indictmentMap;
 
-        protected Workbook workbook;
+        protected XSSFWorkbook workbook;
         protected CreationHelper creationHelper;
 
-        protected CellStyle headerStyle;
-        protected CellStyle unavailableStyle;
-        protected CellStyle pinnedStyle;
-        protected CellStyle hardPenaltyStyle;
-        protected CellStyle softPenaltyStyle;
+        protected XSSFCellStyle headerStyle;
+        protected XSSFCellStyle defaultStyle;
+        protected XSSFCellStyle unavailableStyle;
+        protected XSSFCellStyle pinnedStyle;
+        protected XSSFCellStyle hardPenaltyStyle;
+        protected XSSFCellStyle softPenaltyStyle;
+        protected XSSFCellStyle wrappedStyle;
 
-        protected Sheet currentSheet;
+        protected XSSFSheet currentSheet;
         protected Drawing currentDrawing;
-        protected Row currentRow;
+        protected XSSFRow currentRow;
         protected int currentRowNumber;
         protected int currentColumnNumber;
         protected int headerCellCount;
@@ -711,20 +714,26 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
         }
 
         public void createStyles() {
-            headerStyle = workbook.createCellStyle();
+            headerStyle = createStyle(null);
             Font font = workbook.createFont();
             font.setBold(true);
             headerStyle.setFont(font);
+            defaultStyle = createStyle(null);
             unavailableStyle = createStyle(UNAVAILABLE_COLOR);
             pinnedStyle = createStyle(PINNED_COLOR);
             hardPenaltyStyle = createStyle(HARD_PENALTY_COLOR);
             softPenaltyStyle = createStyle(SOFT_PENALTY_COLOR);
+            wrappedStyle = createStyle(null);
         }
 
-        private CellStyle createStyle(XSSFColor color) {
-            CellStyle style = workbook.createCellStyle();
-            style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-            ((XSSFCellStyle) style).setFillForegroundColor(color);
+        private XSSFCellStyle createStyle(XSSFColor color) {
+            XSSFCellStyle style = workbook.createCellStyle();
+            if (color != null) {
+                style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+                style.setFillForegroundColor(color);
+            }
+            style.setWrapText(true);
+            style.setVerticalAlignment(VerticalAlignment.CENTER);
             return style;
         }
 
@@ -810,7 +819,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 nextCell().setCellValue(room.getName());
                 nextCell().setCellValue(String.join(", ", room.getTagSet()));
                 for (Timeslot timeslot : solution.getTimeslotList()) {
-                    nextCell(room.getUnavailableTimeslotSet().contains(timeslot) ? unavailableStyle : null)
+                    nextCell(room.getUnavailableTimeslotSet().contains(timeslot) ? unavailableStyle : defaultStyle)
                             .setCellValue("");
                 }
             }
@@ -853,7 +862,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 nextCell().setCellValue(String.join(", ", speaker.getProhibitedRoomTagSet()));
                 nextCell().setCellValue(String.join(", ", speaker.getUndesiredRoomTagSet()));
                 for (Timeslot timeslot : solution.getTimeslotList()) {
-                    nextCell(speaker.getUnavailableTimeslotSet().contains(timeslot) ? unavailableStyle : null)
+                    nextCell(speaker.getUnavailableTimeslotSet().contains(timeslot) ? unavailableStyle : defaultStyle)
                             .setCellValue("");
 
                 }
@@ -906,7 +915,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 nextCell().setCellValue(String.join(", ", talk.getPreferredRoomTagSet()));
                 nextCell().setCellValue(String.join(", ", talk.getProhibitedRoomTagSet()));
                 nextCell().setCellValue(String.join(", ", talk.getUndesiredRoomTagSet()));
-                nextCell(talk.isPinnedByUser() ? pinnedStyle : null).setCellValue(talk.isPinnedByUser());
+                nextCell(talk.isPinnedByUser() ? pinnedStyle : defaultStyle).setCellValue(talk.isPinnedByUser());
                 nextCell().setCellValue(talk.getTimeslot() == null ? "" : DAY_FORMATTER.format(talk.getTimeslot().getDate()));
                 nextCell().setCellValue(talk.getTimeslot() == null ? "" : TIME_FORMATTER.format(talk.getTimeslot().getStartDateTime()));
                 nextCell().setCellValue(talk.getTimeslot() == null ? "" : TIME_FORMATTER.format(talk.getTimeslot().getEndDateTime()));
@@ -925,6 +934,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             writeTimeslotHoursHeaders();
             for (Room room : solution.getRoomList()) {
                 nextRow();
+                currentRow.setHeightInPoints(2 * currentSheet.getDefaultRowHeightInPoints());
                 nextCell().setCellValue(room.getName());
                 List<Talk> roomTalkList = solution.getTalkList().stream()
                         .filter(talk -> talk.getRoom() == room)
@@ -932,11 +942,14 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 for (Timeslot timeslot : solution.getTimeslotList()) {
                     List<Talk> talkList = roomTalkList.stream()
                             .filter(talk -> talk.getTimeslot() == timeslot).collect(toList());
-                    nextTalkListCell(talkList,
-                            room.getUnavailableTimeslotSet().contains(timeslot) ? unavailableStyle : null);
+                    boolean unavailable = room.getUnavailableTimeslotSet().contains(timeslot);
+                    nextTalkListCell(unavailable, talkList, talk -> talk.getCode() + ": " + talk.getTitle());
                 }
             }
-            autoSizeColumnsWithHeader();
+            currentSheet.autoSizeColumn(0);
+            for (int i = 1; i < headerCellCount; i++) {
+                currentSheet.setColumnWidth(i, 20 * 256);
+            }
         }
 
         private void writeSpeakersView() {
@@ -956,8 +969,8 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 for (Timeslot timeslot : solution.getTimeslotList()) {
                     List<Talk> talkList = timeslotTalkList.stream()
                             .filter(talk -> talk.getTimeslot() == timeslot).collect(toList());
-                    nextTalkListCell(talkList,
-                            speaker.getUnavailableTimeslotSet().contains(timeslot) ? unavailableStyle : null);
+                    boolean unavailable = speaker.getUnavailableTimeslotSet().contains(timeslot);
+                    nextTalkListCell(unavailable, talkList);
                 }
             }
             autoSizeColumnsWithHeader();
@@ -983,11 +996,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 Map<Timeslot, List<Talk>> timeslotToTalkListMap = entry.getValue();
                 for (Timeslot timeslot : solution.getTimeslotList()) {
                     List<Talk> talkList = timeslotToTalkListMap.get(timeslot);
-                    if (talkList == null) {
-                        nextCell();
-                    } else {
-                        nextTalkListCell(talkList);
-                    }
+                    nextTalkListCell(talkList);
                 }
             }
             autoSizeColumnsWithHeader();
@@ -1013,11 +1022,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 Map<Timeslot, List<Talk>> timeslotToTalkListMap = entry.getValue();
                 for (Timeslot timeslot : solution.getTimeslotList()) {
                     List<Talk> talkList = timeslotToTalkListMap.get(timeslot);
-                    if (talkList == null) {
-                        nextCell();
-                    } else {
-                        nextTalkListCell(talkList);
-                    }
+                    nextTalkListCell(talkList);
                 }
             }
             autoSizeColumnsWithHeader();
@@ -1043,12 +1048,8 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 Map<Timeslot, List<Talk>> timeslotToTalkListMap = entry.getValue();
                 for (Timeslot timeslot : solution.getTimeslotList()) {
                     List<Talk> talkList = timeslotToTalkListMap.get(timeslot);
-                    if (talkList == null) {
-                        nextCell();
-                    } else {
-                        nextTalkListCell(talkList,
-                                talk -> "(" + talk.getAudienceLevel() + ") " + talk.getCode());
-                    }
+                    nextTalkListCell(talkList,
+                            talk -> talk.getCode() + " (level " + talk.getAudienceLevel() + ")");
                 }
             }
             autoSizeColumnsWithHeader();
@@ -1102,32 +1103,36 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
         }
 
         protected void nextTalkListCell(List<Talk> talkList) {
-            nextTalkListCell(talkList, Talk::getCode, null);
+            nextTalkListCell(false, talkList, Talk::getCode);
         }
 
-        protected void nextTalkListCell(List<Talk> talkList, CellStyle cellStyle) {
-            nextTalkListCell(talkList, Talk::getCode, cellStyle);
+        protected void nextTalkListCell(boolean unavailable, List<Talk> talkList) {
+            nextTalkListCell(unavailable, talkList, Talk::getCode);
         }
 
         protected void nextTalkListCell(List<Talk> talkList, Function<Talk, String> stringFunction) {
-            nextTalkListCell(talkList, stringFunction, null);
+            nextTalkListCell(false, talkList, stringFunction);
         }
 
-        protected void nextTalkListCell(List<Talk> talkList, Function<Talk, String> stringFunction, CellStyle cellStyle) {
+        protected void nextTalkListCell(boolean unavailable, List<Talk> talkList, Function<Talk, String> stringFunction) {
+            if (talkList == null) {
+                nextCell();
+                return;
+            }
             List<Indictment> indictmentList = talkList.stream().map(indictmentMap::get).filter(Objects::nonNull).collect(Collectors.toList());
             HardSoftScore score = (HardSoftScore) indictmentList.stream().map(Indictment::getScoreTotal)
                     .reduce(Score::add).orElse(HardSoftScore.ZERO);
-            Cell cell;
+            XSSFCell cell;
             if (talkList.stream().anyMatch(Talk::isPinnedByUser)) {
                 cell = nextCell(pinnedStyle);
             } else if (!score.isFeasible()) {
                 cell = nextCell(hardPenaltyStyle);
-            } else if (cellStyle != null) {
-                cell = nextCell(cellStyle);
+            } else if (unavailable) {
+                cell = nextCell(unavailableStyle);
             } else if (score.getSoftScore() < 0) {
                 cell = nextCell(softPenaltyStyle);
             } else {
-                cell = nextCell();
+                cell = nextCell(wrappedStyle);
             }
             if (!indictmentList.isEmpty()) {
                 ClientAnchor anchor = creationHelper.createClientAnchor();
@@ -1148,19 +1153,18 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 comment.setAuthor("OptaPlanner");
                 cell.setCellComment(comment);
             }
-            cell.setCellValue(talkList.stream().map(stringFunction).collect(joining(", ")));
+            cell.setCellValue(talkList.stream().map(stringFunction).collect(joining("\n")));
+            currentRow.setHeightInPoints(Math.max(currentRow.getHeightInPoints(), talkList.size() * currentSheet.getDefaultRowHeightInPoints()));
         }
 
-        protected Cell nextCell() {
-            return nextCell(null);
+        protected XSSFCell nextCell() {
+            return nextCell(defaultStyle);
         }
 
-        protected Cell nextCell(CellStyle cellStyle) {
+        protected XSSFCell nextCell(XSSFCellStyle cellStyle) {
             currentColumnNumber++;
-            Cell cell = currentRow.createCell(currentColumnNumber);
-            if (cellStyle != null) {
-                cell.setCellStyle(cellStyle);
-            }
+            XSSFCell cell = currentRow.createCell(currentColumnNumber);
+            cell.setCellStyle(cellStyle);
             return cell;
         }
 
