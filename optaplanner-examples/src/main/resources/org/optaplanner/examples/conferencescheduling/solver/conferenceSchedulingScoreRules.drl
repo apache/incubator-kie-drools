@@ -187,7 +187,7 @@ rule "Language diversity"
                 language != $language,
                 id > $leftId)
     then
-        scoreHolder.addHardConstraintMatch(kcontext, $weight);
+        scoreHolder.addSoftConstraintMatch(kcontext, $weight);
 end
 
 rule "Speaker preferred timeslot tag"
