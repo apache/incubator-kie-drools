@@ -31,7 +31,7 @@ public class Talk extends AbstractPersistable {
     private String title;
     private String talkType;
     private List<Speaker> speakerList;
-    private Set<String> themeTagSet;
+    private Set<String> themeTrackTagSet;
     private Set<String> sectorTagSet;
     private int audienceLevel;
     private Set<String> contentTagSet;
@@ -76,8 +76,8 @@ public class Talk extends AbstractPersistable {
         return false;
     }
 
-    public int overlappingThemeCount(Talk other) {
-        return (int) themeTagSet.stream().filter(tag -> other.themeTagSet.contains(tag)).count();
+    public int overlappingThemeTrackCount(Talk other) {
+        return (int) themeTrackTagSet.stream().filter(tag -> other.themeTrackTagSet.contains(tag)).count();
     }
 
     public int overlappingSectorCount(Talk other) {
@@ -256,12 +256,12 @@ public class Talk extends AbstractPersistable {
         return speakerList;
     }
 
-    public Set<String> getThemeTagSet() {
-        return themeTagSet;
+    public Set<String> getThemeTrackTagSet() {
+        return themeTrackTagSet;
     }
 
-    public void setThemeTagSet(Set<String> themeTagSet) {
-        this.themeTagSet = themeTagSet;
+    public void setThemeTrackTagSet(Set<String> themeTrackTagSet) {
+        this.themeTrackTagSet = themeTrackTagSet;
     }
 
     public Set<String> getSectorTagSet() {
@@ -398,8 +398,8 @@ public class Talk extends AbstractPersistable {
         return this;
     }
 
-    public Talk withThemeTagSet(Set<String> themeTagSet) {
-        this.themeTagSet = themeTagSet;
+    public Talk withThemeTrackTagSet(Set<String> themeTrackTagSet) {
+        this.themeTrackTagSet = themeTrackTagSet;
         return this;
     }
 

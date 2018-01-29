@@ -69,20 +69,20 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
                 .withTimeslotList(Arrays.asList(slot1, slot2, slot3))
                 .withRoomList(Collections.emptyList())
                 .withSpeakerList(Collections.emptyList());
-        parametrization.setThemeConflict(1);
+        parametrization.setThemeTrackConflict(1);
         scoreVerifier.assertSoftWeight("Theme conflict", 0, solution);
         // talks with overlapping time slots without theme conflict
-        talk1.withTimeslot(slot1).withThemeTagSet(new HashSet<>(Arrays.asList(theme1, theme2)));
-        talk2.withTimeslot(slot2).withThemeTagSet(new HashSet<>(Arrays.asList(theme3, theme4)));
+        talk1.withTimeslot(slot1).withThemeTrackTagSet(new HashSet<>(Arrays.asList(theme1, theme2)));
+        talk2.withTimeslot(slot2).withThemeTrackTagSet(new HashSet<>(Arrays.asList(theme3, theme4)));
         scoreVerifier.assertSoftWeight("Theme conflict", 0, solution);
         // talks with overlapping time slots with 1 theme conflict
-        talk2.withThemeTagSet(new HashSet<>(Arrays.asList(theme1, theme3, theme4)));
+        talk2.withThemeTrackTagSet(new HashSet<>(Arrays.asList(theme1, theme3, theme4)));
         scoreVerifier.assertSoftWeight("Theme conflict", -1, solution);
         // talks with overlapping time slots with 2 theme conflicts
-        talk1.withTimeslot(slot1).withThemeTagSet(new HashSet<>(Arrays.asList(theme1, theme2, theme3)));
+        talk1.withTimeslot(slot1).withThemeTrackTagSet(new HashSet<>(Arrays.asList(theme1, theme2, theme3)));
         scoreVerifier.assertSoftWeight("Theme conflict", -2, solution);
         // talks with overlapping time slots with 2 theme conflicts and theme conflict weight 2
-        parametrization.setThemeConflict(2);
+        parametrization.setThemeTrackConflict(2);
         scoreVerifier.assertSoftWeight("Theme conflict", -4, solution);
         // talks with non overlapping time slots and theme conflicts
         talk2.setTimeslot(slot3);
@@ -104,7 +104,7 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
                 .withPreferredTimeslotTagSet(Collections.emptySet())
                 .withProhibitedTimeslotTagSet(Collections.emptySet())
                 .withUndesiredTimeslotTagSet(Collections.emptySet())
-                .withThemeTagSet(Collections.emptySet())
+                .withThemeTrackTagSet(Collections.emptySet())
                 .withSectorTagSet(Collections.emptySet());
         Talk talk2 = new Talk(2L)
                 .withTalkType(talkType)
@@ -113,7 +113,7 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
                 .withPreferredTimeslotTagSet(Collections.emptySet())
                 .withProhibitedTimeslotTagSet(Collections.emptySet())
                 .withUndesiredTimeslotTagSet(Collections.emptySet())
-                .withThemeTagSet(Collections.emptySet())
+                .withThemeTrackTagSet(Collections.emptySet())
                 .withSectorTagSet(Collections.emptySet());
         LocalDateTime start1 = LocalDateTime.of(2018, 1, 1, 9, 0);
         LocalDateTime end1 = LocalDateTime.of(2018, 1, 1, 10, 0);

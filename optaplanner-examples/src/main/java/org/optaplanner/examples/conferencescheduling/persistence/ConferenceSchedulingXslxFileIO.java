@@ -26,9 +26,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -38,6 +38,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -114,8 +115,6 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
         protected final Workbook workbook;
 
         protected ConferenceSolution solution;
-        private Map<String, Pair<Timeslot, Room>> talkCodeToTimeslotRoomMap;
-        private Map<String, List<Speaker>> talkCodeToSpeakerListMap;
         private Set<String> totalTalkTypeSet;
         private Set<String> totalTimeslotTagSet;
         private Set<String> totalRoomTagSet;
@@ -132,8 +131,6 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
 
         public ConferenceSolution read() {
             solution = new ConferenceSolution();
-            talkCodeToTimeslotRoomMap = new HashMap<>();
-            talkCodeToSpeakerListMap = new HashMap<>();
             totalTalkTypeSet = new HashSet<>();
             totalTimeslotTagSet = new HashSet<>();
             totalRoomTagSet = new HashSet<>();
@@ -161,8 +158,8 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             readHeaderCell("Description");
             ConferenceParametrization parametrization = new ConferenceParametrization();
             parametrization.setId(0L);
-            readConstraintLine("Theme conflict", parametrization::setThemeConflict,
-                    "Soft penalty per common theme of 2 talks that have an overlapping timeslot");
+            readConstraintLine("Theme track conflict", parametrization::setThemeTrackConflict,
+                    "Soft penalty per common theme track of 2 talks that have an overlapping timeslot");
             readConstraintLine("Sector conflict", parametrization::setSectorConflict,
                     "Soft penalty per common sector of 2 talks that have an overlapping timeslot");
             readConstraintLine("Content audience level flow violation", parametrization::setContentAudienceLevelFlowViolation,
@@ -275,20 +272,12 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 Set<Timeslot> unavailableTimeslotSet = new LinkedHashSet<>();
                 for (Timeslot timeslot : solution.getTimeslotList()) {
                     Cell cell = nextCell();
-                    if (Objects.equals(extractColor(cell, UNAVAILABLE_COLOR, PINNED_COLOR), UNAVAILABLE_COLOR)) {
+                    if (Objects.equals(extractColor(cell, UNAVAILABLE_COLOR), UNAVAILABLE_COLOR)) {
                         unavailableTimeslotSet.add(timeslot);
                     }
-                    String[] talkCodes = cell.getStringCellValue().split(", ");
-                    Pair<Timeslot, Room> pair = Pair.of(timeslot, room);
-                    for (String talkCode : talkCodes) {
-                        if (!talkCode.isEmpty()) {
-                            Pair<Timeslot, Room> old = talkCodeToTimeslotRoomMap.put(talkCode, pair);
-                            if (old != null) {
-                                throw new IllegalStateException(currentPosition() + ": The talk (" + talkCode
-                                        + ") occurs both in room (" + room + ") on timeslot (" + timeslot
-                                        + ") and in room (" + old.getRight() + ") on timeslot (" + old.getLeft() + ").");
-                            }
-                        }
+                    if (!cell.getStringCellValue().isEmpty()) {
+                        throw new IllegalStateException(currentPosition() + ": The cell (" + cell.getStringCellValue()
+                                + ") should be empty. Use the talks sheet pre-assign rooms and timeslots.");
                     }
                 }
                 room.setUnavailableTimeslotSet(unavailableTimeslotSet);
@@ -361,19 +350,9 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                     if (Objects.equals(extractColor(cell, UNAVAILABLE_COLOR), UNAVAILABLE_COLOR)) {
                         unavailableTimeslotSet.add(timeslot);
                     }
-                    String[] talkCodes = cell.getStringCellValue().split(", ");
-                    for (String talkCode : talkCodes) {
-                        if (!talkCode.isEmpty()) {
-                            talkCodeToSpeakerListMap.computeIfAbsent(talkCode, o -> new ArrayList<>()).add(speaker);
-                            Pair<Timeslot, Room> pair = talkCodeToTimeslotRoomMap.get(talkCode);
-                            Timeslot otherTimeslot = pair == null ? null : pair.getLeft();
-                            if (timeslot != otherTimeslot) {
-                                throw new IllegalStateException(currentPosition() + ": The talk with code (" + talkCode
-                                        + ")'s is on timeslot (" + timeslot
-                                        + ") in the Speakers sheet, but on a different timeslot (" + otherTimeslot
-                                        + ") in the Rooms sheet.");
-                            }
-                        }
+                    if (!cell.getStringCellValue().isEmpty()) {
+                        throw new IllegalStateException(currentPosition() + ": The cell (" + cell.getStringCellValue()
+                                + ") should be empty. Use the talks sheet pre-assign rooms and timeslots.");
                     }
                 }
                 speaker.setUnavailableTimeslotSet(unavailableTimeslotSet);
@@ -391,7 +370,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             readHeaderCell("Title");
             readHeaderCell("Talk type");
             readHeaderCell("Speakers");
-            readHeaderCell("Theme tags");
+            readHeaderCell("Theme track tags");
             readHeaderCell("Sector tags");
             readHeaderCell("Audience level");
             readHeaderCell("Content tags");
@@ -411,6 +390,11 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             readHeaderCell("Room");
             List<Talk> talkList = new ArrayList<>(currentSheet.getLastRowNum() - 1);
             long id = 0L;
+            Map<Pair<LocalDateTime, LocalDateTime>, Timeslot> timeslotMap = solution.getTimeslotList().stream().collect(
+                    Collectors.toMap(timeslot -> Pair.of(timeslot.getStartDateTime(), timeslot.getEndDateTime()),
+                            Function.identity()));
+            Map<String, Room> roomMap = solution.getRoomList().stream().collect(
+                    Collectors.toMap(Room::getName, Function.identity()));
             while (nextRow()) {
                 Talk talk = new Talk();
                 talk.setId(id++);
@@ -435,9 +419,9 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                             }
                             return speaker;
                         }).collect(toList()));
-                talk.setThemeTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
+                talk.setThemeTrackTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
                         .filter(tag -> !tag.isEmpty()).collect(toCollection(LinkedHashSet::new)));
-                for (String tag : talk.getThemeTagSet()) {
+                for (String tag : talk.getThemeTrackTagSet()) {
                     if (!VALID_TAG_PATTERN.matcher(tag).matches()) {
                         throw new IllegalStateException(currentPosition() + ": The talk (" + talk + ")'s theme tag (" + tag
                                 + ") must match to the regular expression (" + VALID_TAG_PATTERN + ").");
@@ -491,54 +475,42 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                         .filter(tag -> !tag.isEmpty()).collect(toCollection(LinkedHashSet::new)));
                 verifyRoomTags(talk.getUndesiredRoomTagSet());
                 talk.setPinnedByUser(nextCell().getBooleanCellValue());
-                Pair<Timeslot, Room> timeslotRoomPair = talkCodeToTimeslotRoomMap.get(talk.getCode());
-                if (timeslotRoomPair != null) {
-                    talk.setTimeslot(timeslotRoomPair.getLeft());
-                    talk.setRoom(timeslotRoomPair.getRight());
-                }
-                List<Speaker> otherSpeakerList = talkCodeToSpeakerListMap.get(talk.getCode());
-                if (otherSpeakerList != null) {
-                    for (Speaker otherSpeaker : otherSpeakerList) {
-                        if (!talk.getSpeakerList().contains(otherSpeaker)) {
-                            throw new IllegalStateException(currentPosition() + ": The talk with code (" + talk.getCode()
-                                    + ")'s speakerList (" + talk.getSpeakerList() + ") does contain the speaker (" + otherSpeaker
-                                    + ") despite that the Speaker sheet does have that talk for that speaker.");
-                        }
-                    }
-                }
                 String dateString = nextCell().getStringCellValue();
-                String otherDateString = talk.getTimeslot() == null ? "" : talk.getTimeslot().getDate().format(DAY_FORMATTER);
-                if (!dateString.equals(otherDateString)) {
-                    throw new IllegalStateException(currentPosition() + ": The talk with code (" + talk.getCode()
-                            + ") has a timeslot day (" + dateString
-                            + ") that is inconsistent with the grid in the Rooms sheet's timeslot day (" + otherDateString + ").\n"
-                            + "Maybe a talk was manually assigned, but not in every required sheet.");
-                }
                 String startTimeString = nextCell().getStringCellValue();
-                String otherStartTimeString = talk.getTimeslot() == null ? "" : talk.getTimeslot().getStartDateTime().format(TIME_FORMATTER);
-                if (!startTimeString.equals(otherStartTimeString)) {
-                    throw new IllegalStateException(currentPosition() + ": The talk with code (" + talk.getCode()
-                            + ") has a timeslot start (" + startTimeString
-                            + ") that is inconsistent with the grid in the Rooms sheet's timeslot start (" + otherStartTimeString + ").\n"
-                            + "Maybe a talk was manually assigned, but not in every required sheet.");
-                }
                 String endTimeString = nextCell().getStringCellValue();
-                String otherEndTimeString = talk.getTimeslot() == null ? "" : talk.getTimeslot().getEndDateTime().format(TIME_FORMATTER);
-                if (!endTimeString.equals(otherEndTimeString)) {
-                    throw new IllegalStateException(currentPosition() + ": The talk with code (" + talk.getCode()
-                            + ") has a timeslot end (" + endTimeString
-                            + ") that is inconsistent with the grid in the Rooms sheet's timeslot end (" + otherEndTimeString + ").\n"
-                            + "Maybe a talk was manually assigned, but not in every required sheet.");
+                if (!dateString.isEmpty() || !startTimeString.isEmpty() || !endTimeString.isEmpty()) {
+                    LocalDateTime startDateTime;
+                    LocalDateTime endDateTime;
+                    try {
+                        startDateTime = LocalDateTime.of(LocalDate.parse(dateString, DAY_FORMATTER),
+                                LocalTime.parse(startTimeString, TIME_FORMATTER));
+                        endDateTime = LocalDateTime.of(LocalDate.parse(dateString, DAY_FORMATTER),
+                                LocalTime.parse(endTimeString, TIME_FORMATTER));
+                    } catch (DateTimeParseException e) {
+                        throw new IllegalStateException(currentPosition() + ": The talk with code (" + talk.getCode()
+                                + ") has a timeslot date (" + dateString
+                                + "), startTime (" + startTimeString + ") and endTime (" + endTimeString
+                                + ") that doesn't parse as a date or time.", e);
+                    }
+                    Timeslot timeslot = timeslotMap.get(Pair.of(startDateTime, endDateTime));
+                    if (timeslot == null) {
+                        throw new IllegalStateException(currentPosition() + ": The talk with code (" + talk.getCode()
+                                + ") has a timeslot date (" + dateString
+                                + "), startTime (" + startTimeString + ") and endTime (" + endTimeString
+                                + ") that doesn't exist in the other sheet (Timeslots).");
+                    }
+                    talk.setTimeslot(timeslot);
                 }
                 String roomName = nextCell().getStringCellValue();
-                String otherRoomName = talk.getRoom() == null ? "" : talk.getRoom().getName();
-                if (!roomName.equals(otherRoomName)) {
-                    throw new IllegalStateException(currentPosition() + ": The talk with code (" + talk.getCode()
-                            + ") has a roomName (" + roomName
-                            + ") that is inconsistent with the grid in the Rooms sheet's room (" + otherRoomName + ").\n"
-                            + "Maybe a talk was manually assigned, but not in every required sheet.");
+                if (!roomName.isEmpty()) {
+                    Room room = roomMap.get(roomName);
+                    if (room == null) {
+                        throw new IllegalStateException(currentPosition() + ": The talk with code (" + talk.getCode()
+                                + ") has a roomName (" + roomName
+                                + ") that doesn't exist in the other sheet (Rooms).");
+                    }
+                    talk.setRoom(room);
                 }
-
                 talkList.add(talk);
             }
             solution.setTalkList(talkList);
@@ -689,7 +661,6 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
 
         protected final ConferenceSolution solution;
         protected final Map<Object, Indictment> indictmentMap;
-        protected final Map<Pair<Timeslot, Room>, List<Talk>> timeslotRoomToTalkMap;
 
         protected Workbook workbook;
         protected CreationHelper creationHelper;
@@ -717,8 +688,6 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 scoreDirector.calculateScore();
                 indictmentMap = scoreDirector.getIndictmentMap();
             }
-            timeslotRoomToTalkMap = solution.getTalkList().stream().collect(groupingBy(
-                    talk -> Pair.of(talk.getTimeslot(), talk.getRoom())));
         }
 
         public Workbook write() {
@@ -730,11 +699,11 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             writeRoomList();
             writeSpeakerList();
             writeTalkList();
-            writeRoomView();
-            writeSpeakerView();
-            writeThemeView();
-            writeSectorView();
-            writeContentView();
+            writeRoomsView();
+            writeSpeakersView();
+            writeThemeTracksView();
+            writeSectorsView();
+            writeContentsView();
             return workbook;
         }
 
@@ -768,8 +737,8 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             nextHeaderCell("Description");
             ConferenceParametrization parametrization = solution.getParametrization();
 
-            writeConstraintLine("Theme conflict", parametrization::getThemeConflict,
-                    "Soft penalty per common theme of 2 talks that have an overlapping timeslot");
+            writeConstraintLine("Theme track conflict", parametrization::getThemeTrackConflict,
+                    "Soft penalty per common theme track of 2 talks that have an overlapping timeslot");
             writeConstraintLine("Sector conflict", parametrization::getSectorConflict,
                     "Soft penalty per common sector of 2 talks that have an overlapping timeslot");
             writeConstraintLine("Content audience level flow violation", parametrization::getContentAudienceLevelFlowViolation,
@@ -836,11 +805,8 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 nextCell().setCellValue(room.getName());
                 nextCell().setCellValue(String.join(", ", room.getTagSet()));
                 for (Timeslot timeslot : solution.getTimeslotList()) {
-                    List<Talk> talkList = timeslotRoomToTalkMap.get(Pair.of(timeslot, room));
-                    nextCell(room.getUnavailableTimeslotSet().contains(timeslot) ? unavailableStyle
-                            : (talkList != null && talkList.stream().anyMatch(Talk::isPinnedByUser)) ? pinnedStyle : null)
-                            .setCellValue(talkList == null ? ""
-                            : talkList.stream().map(Talk::getCode).collect(joining(", ")));
+                    nextCell(room.getUnavailableTimeslotSet().contains(timeslot) ? unavailableStyle : null)
+                            .setCellValue("");
                 }
             }
             autoSizeColumnsWithHeader();
@@ -881,14 +847,9 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 nextCell().setCellValue(String.join(", ", speaker.getPreferredRoomTagSet()));
                 nextCell().setCellValue(String.join(", ", speaker.getProhibitedRoomTagSet()));
                 nextCell().setCellValue(String.join(", ", speaker.getUndesiredRoomTagSet()));
-                List<Talk> talkList = solution.getTalkList().stream()
-                        .filter(talk -> talk.getSpeakerList().contains(speaker))
-                        .collect(toList());
                 for (Timeslot timeslot : solution.getTimeslotList()) {
                     nextCell(speaker.getUnavailableTimeslotSet().contains(timeslot) ? unavailableStyle : null)
-                            .setCellValue(talkList.stream()
-                            .filter(talk -> talk.getTimeslot() == timeslot)
-                            .map(Talk::getCode).collect(joining(", ")));
+                            .setCellValue("");
 
                 }
             }
@@ -902,7 +863,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             nextHeaderCell("Title");
             nextHeaderCell("Talk type");
             nextHeaderCell("Speakers");
-            nextHeaderCell("Theme tags");
+            nextHeaderCell("Theme track tags");
             nextHeaderCell("Sector tags");
             nextHeaderCell("Audience level");
             nextHeaderCell("Content tags");
@@ -927,7 +888,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 nextCell().setCellValue(talk.getTalkType());
                 nextCell().setCellValue(talk.getSpeakerList()
                         .stream().map(Speaker::getName).collect(joining(", ")));
-                nextCell().setCellValue(String.join(", ", talk.getThemeTagSet()));
+                nextCell().setCellValue(String.join(", ", talk.getThemeTrackTagSet()));
                 nextCell().setCellValue(String.join(", ", talk.getSectorTagSet()));
                 nextCell().setCellValue(talk.getAudienceLevel());
                 nextCell().setCellValue(String.join(", ", talk.getContentTagSet()));
@@ -949,8 +910,8 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             autoSizeColumnsWithHeader();
         }
 
-        private void writeRoomView() {
-            nextSheet("Room view", 1, 2);
+        private void writeRoomsView() {
+            nextSheet("Rooms view", 1, 2);
             nextRow();
             nextHeaderCell("");
             writeTimeslotDaysHeaders();
@@ -960,23 +921,25 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             for (Room room : solution.getRoomList()) {
                 nextRow();
                 nextCell().setCellValue(room.getName());
-                List<Talk> talkList = solution.getTalkList().stream()
+                List<Talk> roomTalkList = solution.getTalkList().stream()
                         .filter(talk -> talk.getRoom() == room)
                         .collect(toList());
                 for (Timeslot timeslot : solution.getTimeslotList()) {
-                    List<Talk> filteredTalkList = talkList.stream().filter(talk -> talk.getTimeslot() == timeslot)
+                    List<Talk> talkList = roomTalkList.stream().filter(talk -> talk.getTimeslot() == timeslot)
                             .collect(toList());
-                    HardSoftScore score = (HardSoftScore) filteredTalkList.stream().map(indictmentMap::get).filter(Objects::nonNull)
+                    boolean pinnedByUser = talkList.stream().anyMatch(Talk::isPinnedByUser);
+                    HardSoftScore score = (HardSoftScore) talkList.stream().map(indictmentMap::get).filter(Objects::nonNull)
                             .map(Indictment::getScoreTotal).reduce(Score::add).orElse(HardSoftScore.ZERO);
-                    nextCellWithScore(score, room.getUnavailableTimeslotSet().contains(timeslot) ? unavailableStyle : null)
-                            .setCellValue(filteredTalkList.stream().map(Talk::getCode).collect(joining(", ")));
+                    CellStyle style = pinnedByUser ? pinnedStyle
+                            : room.getUnavailableTimeslotSet().contains(timeslot) ? unavailableStyle : null;
+                    nextCellWithScore(score, style).setCellValue(talkList.stream().map(Talk::getCode).collect(joining(", ")));
                 }
             }
             autoSizeColumnsWithHeader();
         }
 
-        private void writeSpeakerView() {
-            nextSheet("Speaker view", 1, 2);
+        private void writeSpeakersView() {
+            nextSheet("Speakers view", 1, 2);
             nextRow();
             nextHeaderCell("");
             writeTimeslotDaysHeaders();
@@ -1001,18 +964,18 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             autoSizeColumnsWithHeader();
         }
 
-        private void writeThemeView() {
-            nextSheet("Theme view", 1, 2);
+        private void writeThemeTracksView() {
+            nextSheet("Theme tracks view", 1, 2);
             nextRow();
             nextHeaderCell("");
             writeTimeslotDaysHeaders();
             nextRow();
-            nextHeaderCell("Theme tag");
+            nextHeaderCell("Theme track tag");
             writeTimeslotHoursHeaders();
 
             Map<String, Map<Timeslot, List<Talk>>> tagToTimeslotToTalkListMap = solution.getTalkList().stream()
                     .filter(talk -> talk.getTimeslot() != null)
-                    .flatMap(talk -> talk.getThemeTagSet().stream()
+                    .flatMap(talk -> talk.getThemeTrackTagSet().stream()
                             .map(tag -> Pair.of(tag, Pair.of(talk.getTimeslot(), talk))))
                     .collect(groupingBy(Pair::getLeft, groupingBy(o -> o.getRight().getLeft(), mapping(o -> o.getRight().getRight(), toList()))));
             for (Map.Entry<String, Map<Timeslot, List<Talk>>> entry : tagToTimeslotToTalkListMap.entrySet()) {
@@ -1031,8 +994,8 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             autoSizeColumnsWithHeader();
         }
 
-        private void writeSectorView() {
-            nextSheet("Sector view", 1, 2);
+        private void writeSectorsView() {
+            nextSheet("Sectors view", 1, 2);
             nextRow();
             nextHeaderCell("");
             writeTimeslotDaysHeaders();
@@ -1061,8 +1024,8 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             autoSizeColumnsWithHeader();
         }
 
-        private void writeContentView() {
-            nextSheet("Content view", 1, 2);
+        private void writeContentsView() {
+            nextSheet("Contents view", 1, 2);
             nextRow();
             nextHeaderCell("");
             writeTimeslotDaysHeaders();

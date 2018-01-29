@@ -20,7 +20,7 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 public class ConferenceParametrization extends AbstractPersistable {
 
-    private int themeConflict = 10;
+    private int themeTrackConflict = 10;
     private int sectorConflict = 10;
     private int contentAudienceLevelFlowViolation = 10;
     private int languageDiversity = 10;
@@ -44,12 +44,12 @@ public class ConferenceParametrization extends AbstractPersistable {
     // Simple getters and setters
     // ************************************************************************
 
-    public int getThemeConflict() {
-        return themeConflict;
+    public int getThemeTrackConflict() {
+        return themeTrackConflict;
     }
 
-    public void setThemeConflict(int themeConflict) {
-        this.themeConflict = themeConflict;
+    public void setThemeTrackConflict(int themeTrackConflict) {
+        this.themeTrackConflict = themeTrackConflict;
     }
 
     public int getSectorConflict() {

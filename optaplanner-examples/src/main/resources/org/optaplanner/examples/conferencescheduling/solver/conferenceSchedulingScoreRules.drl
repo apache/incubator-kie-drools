@@ -137,17 +137,17 @@ end
 // Soft constraints
 // ############################################################################
 
-rule "Theme conflict"
+rule "Theme track conflict"
     when
-        ConferenceParametrization($weight : themeConflict != 0)
+        ConferenceParametrization($weight : themeTrackConflict != 0)
         $leftTalk : Talk(timeslot != null, $timeslot : timeslot,
                 $leftId : id)
         $rightTalk : Talk(timeslot != null,
-                overlappingThemeCount($leftTalk) > 0,
+                overlappingThemeTrackCount($leftTalk) > 0,
                 getTimeslot().overlaps($timeslot),
                 id > $leftId)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, - $weight * $rightTalk.overlappingThemeCount($leftTalk));
+        scoreHolder.addSoftConstraintMatch(kcontext, - $weight * $rightTalk.overlappingThemeTrackCount($leftTalk));
 end
 
 rule "Sector conflict"

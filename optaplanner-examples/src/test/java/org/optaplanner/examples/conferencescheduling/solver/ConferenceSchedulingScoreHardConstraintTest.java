@@ -836,7 +836,7 @@ public class ConferenceSchedulingScoreHardConstraintTest {
                 .withUndesiredTimeslotTagSet(Collections.emptySet())
                 .withPreferredRoomTagSet(Collections.emptySet())
                 .withRequiredRoomTagSet(Collections.emptySet())
-                .withThemeTagSet(Collections.emptySet())
+                .withThemeTrackTagSet(Collections.emptySet())
                 .withSectorTagSet(Collections.emptySet());
         Talk talk2 = new Talk(2L)
                 .withTalkType(talkType)
@@ -847,7 +847,7 @@ public class ConferenceSchedulingScoreHardConstraintTest {
                 .withUndesiredTimeslotTagSet(Collections.emptySet())
                 .withPreferredRoomTagSet(Collections.emptySet())
                 .withRequiredRoomTagSet(Collections.emptySet())
-                .withThemeTagSet(Collections.emptySet())
+                .withThemeTrackTagSet(Collections.emptySet())
                 .withSectorTagSet(Collections.emptySet());
         ConferenceSolution solution = new ConferenceSolution(1L)
                 .withParametrization(parametrization)

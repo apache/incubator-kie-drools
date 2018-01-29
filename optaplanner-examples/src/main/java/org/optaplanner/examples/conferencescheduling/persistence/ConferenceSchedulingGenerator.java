@@ -400,7 +400,7 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
             if (random.nextDouble() < 0.20) {
                 themeTagSet.add(themeTagOptions.get(random.nextInt(themeTagOptions.size())));
             }
-            talk.setThemeTagSet(themeTagSet);
+            talk.setThemeTrackTagSet(themeTagSet);
             Set<String> sectorTagSet = new LinkedHashSet<>();
             if (random.nextDouble() < 0.20) {
                 sectorTagSet.add(sectorTagOptions.get(random.nextInt(sectorTagOptions.size())));
