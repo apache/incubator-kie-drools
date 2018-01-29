@@ -15,10 +15,14 @@
 
 package org.drools.core.definitions;
 
+import java.io.Externalizable;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.TypeResolver;
-import org.kie.internal.io.ResourceTypePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.factmodel.traits.TraitRegistry;
 import org.drools.core.facttemplates.FactTemplate;
@@ -33,11 +37,7 @@ import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.internal.definition.KnowledgePackage;
-
-import java.io.Externalizable;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import org.kie.internal.io.ResourceTypePackage;
 
 public interface InternalKnowledgePackage extends KnowledgePackage, Externalizable {
 
@@ -83,6 +83,8 @@ public interface InternalKnowledgePackage extends KnowledgePackage, Externalizab
 
     boolean removeObjectsGeneratedFromResource(Resource resource);
     List<TypeDeclaration> removeTypesGeneratedFromResource(Resource resource);
+
+    List<RuleImpl> getRulesGeneratedFromResource(Resource resource);
     List<RuleImpl> removeRulesGeneratedFromResource(Resource resource);
     List<Function> removeFunctionsGeneratedFromResource(Resource resource);
     List<Process> removeProcessesGeneratedFromResource(Resource resource);
