@@ -86,8 +86,8 @@ public class QueryGenerator {
     }
 
     public static void processQuery(KnowledgeBuilderImpl kbuilder, PackageModel packageModel, QueryDescr queryDescr) {
-        RuleContext context = packageModel.getQueryDefWithType().get(toQueryDef(queryDescr.getName())).getContext();
-        final String queryDefVariableName = toQueryDef(queryDescr.getName());
+        String queryDefVariableName = toQueryDef(queryDescr.getName());
+        RuleContext context = packageModel.getQueryDefWithType().get(queryDefVariableName).getContext();
 
         new ModelGeneratorVisitor(context, packageModel).visit(queryDescr.getLhs());
         final Type queryType = JavaParser.parseType(Query.class.getCanonicalName());
@@ -98,7 +98,7 @@ public class QueryGenerator {
         ModelGenerator.createVariables(kbuilder, queryBody, packageModel, context);
         queryMethod.setBody(queryBody);
 
-        String queryBuildVarName = queryDescr.getName() + "_build";
+        String queryBuildVarName = toId( queryDescr.getName() ) + "_build";
         VariableDeclarationExpr queryBuildVar = new VariableDeclarationExpr(queryType, queryBuildVarName);
 
         MethodCallExpr buildCall = new MethodCallExpr(new NameExpr(queryDefVariableName), BUILD_CALL);
@@ -118,7 +118,7 @@ public class QueryGenerator {
             context.addDeclaration(new DeclarationSpec(argument, getClassFromContext(context.getPkg().getTypeResolver(), type)));
             QueryParameter queryParameter = new QueryParameter(argument, getClassFromContext(context.getPkg().getTypeResolver(), type));
             context.getQueryParameters().add(queryParameter);
-            packageModel.putQueryVariable("query_" + descr.getName(), queryParameter);
+            packageModel.putQueryVariable("query_" + toId( descr.getName() ), queryParameter);
         }
     }
 
@@ -207,7 +207,7 @@ public class QueryGenerator {
 
 
     public static String toQueryDef(String queryName) {
-        return "queryDef_" + queryName;
+        return "queryDef_" + toId( queryName );
     }
 
     private static String toQueryArg(int queryParameterIndex) {
