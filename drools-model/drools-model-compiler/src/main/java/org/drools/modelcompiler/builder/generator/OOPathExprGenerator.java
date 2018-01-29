@@ -65,7 +65,7 @@ public class OOPathExprGenerator {
             context.addDeclaration(newDeclaration);
             context.addOOPathDeclaration(newDeclaration);
 
-            final List<Expression> conditions = chunk.getCondition();
+            final List<Expression> conditions = chunk.getConditions();
             if (!conditions.isEmpty()) {
                 Class<?> finalFieldType = fieldType;
                 final List<DrlxParseResult> conditionParseResult = conditions.stream().map((Expression c) -> {
