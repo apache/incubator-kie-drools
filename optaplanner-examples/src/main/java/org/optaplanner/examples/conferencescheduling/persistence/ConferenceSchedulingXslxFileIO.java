@@ -929,14 +929,10 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                         .filter(talk -> talk.getRoom() == room)
                         .collect(toList());
                 for (Timeslot timeslot : solution.getTimeslotList()) {
-                    List<Talk> talkList = roomTalkList.stream().filter(talk -> talk.getTimeslot() == timeslot)
-                            .collect(toList());
-                    boolean pinnedByUser = talkList.stream().anyMatch(Talk::isPinnedByUser);
-                    HardSoftScore score = (HardSoftScore) talkList.stream().map(indictmentMap::get).filter(Objects::nonNull)
-                            .map(Indictment::getScoreTotal).reduce(Score::add).orElse(HardSoftScore.ZERO);
-                    CellStyle style = pinnedByUser ? pinnedStyle
-                            : room.getUnavailableTimeslotSet().contains(timeslot) ? unavailableStyle : null;
-                    nextCellWithScore(score, style).setCellValue(talkList.stream().map(Talk::getCode).collect(joining(", ")));
+                    List<Talk> talkList = roomTalkList.stream()
+                            .filter(talk -> talk.getTimeslot() == timeslot).collect(toList());
+                    nextTalkListCell(talkList,
+                            room.getUnavailableTimeslotSet().contains(timeslot) ? unavailableStyle : null);
                 }
             }
             autoSizeColumnsWithHeader();
@@ -953,16 +949,14 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             for (Speaker speaker : solution.getSpeakerList()) {
                 nextRow();
                 nextCell().setCellValue(speaker.getName());
-                List<Talk> talkList = solution.getTalkList().stream()
+                List<Talk> timeslotTalkList = solution.getTalkList().stream()
                         .filter(talk -> talk.getSpeakerList().contains(speaker))
                         .collect(toList());
                 for (Timeslot timeslot : solution.getTimeslotList()) {
-                    List<Talk> filteredTalkList = talkList.stream().filter(talk -> talk.getTimeslot() == timeslot)
-                            .collect(toList());
-                    HardSoftScore score = (HardSoftScore) filteredTalkList.stream().map(indictmentMap::get).filter(Objects::nonNull)
-                            .map(Indictment::getScoreTotal).reduce(Score::add).orElse(HardSoftScore.ZERO);
-                    nextCellWithScore(score, speaker.getUnavailableTimeslotSet().contains(timeslot) ? unavailableStyle : null)
-                            .setCellValue(filteredTalkList.stream().map(Talk::getCode).collect(joining(", ")));
+                    List<Talk> talkList = timeslotTalkList.stream()
+                            .filter(talk -> talk.getTimeslot() == timeslot).collect(toList());
+                    nextTalkListCell(talkList,
+                            speaker.getUnavailableTimeslotSet().contains(timeslot) ? unavailableStyle : null);
                 }
             }
             autoSizeColumnsWithHeader();
@@ -991,7 +985,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                     if (talkList == null) {
                         nextCell();
                     } else {
-                        nextCellWithIndictmentComment(talkList).setCellValue(talkList.stream().map(Talk::getCode).collect(joining(", ")));
+                        nextTalkListCell(talkList);
                     }
                 }
             }
@@ -1021,7 +1015,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                     if (talkList == null) {
                         nextCell();
                     } else {
-                        nextCellWithIndictmentComment(talkList).setCellValue(talkList.stream().map(Talk::getCode).collect(joining(", ")));
+                        nextTalkListCell(talkList);
                     }
                 }
             }
@@ -1051,8 +1045,8 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                     if (talkList == null) {
                         nextCell();
                     } else {
-                        nextCellWithIndictmentComment(talkList).setCellValue(talkList.stream()
-                                .map(talk -> "(" + talk.getAudienceLevel() + ") " + talk.getCode()).collect(joining(", ")));
+                        nextTalkListCell(talkList,
+                                talk -> "(" + talk.getAudienceLevel() + ") " + talk.getCode());
                     }
                 }
             }
@@ -1106,19 +1100,34 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             headerCellCount++;
         }
 
-        protected Cell nextCell() {
-            return nextCell(null);
+        protected void nextTalkListCell(List<Talk> talkList) {
+            nextTalkListCell(talkList, Talk::getCode, null);
         }
 
-        protected Cell nextCellWithScore(HardSoftScore score) {
-            return nextCellWithScore(score, null);
+        protected void nextTalkListCell(List<Talk> talkList, CellStyle cellStyle) {
+            nextTalkListCell(talkList, Talk::getCode, cellStyle);
         }
 
-        protected Cell nextCellWithIndictmentComment(List<Talk> talkList) {
+        protected void nextTalkListCell(List<Talk> talkList, Function<Talk, String> stringFunction) {
+            nextTalkListCell(talkList, stringFunction, null);
+        }
+
+        protected void nextTalkListCell(List<Talk> talkList, Function<Talk, String> stringFunction, CellStyle cellStyle) {
             List<Indictment> indictmentList = talkList.stream().map(indictmentMap::get).filter(Objects::nonNull).collect(Collectors.toList());
             HardSoftScore score = (HardSoftScore) indictmentList.stream().map(Indictment::getScoreTotal)
                     .reduce(Score::add).orElse(HardSoftScore.ZERO);
-            Cell cell = nextCellWithScore(score);
+            Cell cell;
+            if (talkList.stream().anyMatch(Talk::isPinnedByUser)) {
+                cell = nextCell(pinnedStyle);
+            } else if (!score.isFeasible()) {
+                cell = nextCell(hardPenaltyStyle);
+            } else if (cellStyle != null) {
+                cell = nextCell(cellStyle);
+            } else if (score.getSoftScore() < 0) {
+                cell = nextCell(softPenaltyStyle);
+            } else {
+                cell = nextCell();
+            }
             if (!indictmentList.isEmpty()) {
                 ClientAnchor anchor = creationHelper.createClientAnchor();
                 anchor.setCol1(cell.getColumnIndex());
@@ -1126,27 +1135,23 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 anchor.setRow1(currentRow.getRowNum());
                 anchor.setRow2(currentRow.getRowNum() + 5);
                 Comment comment = currentDrawing.createCellComment(anchor);
-                comment.setString(creationHelper.createRichTextString(indictmentList.stream()
-                        .flatMap(indictment -> indictment.getConstraintMatchSet().stream())
+                comment.setString(creationHelper.createRichTextString(
+                        "Constraint matches:\n  "
+                        + indictmentList.stream().flatMap(indictment -> indictment.getConstraintMatchSet().stream())
                         .map(constraintMatch -> constraintMatch.getConstraintName() + " ("
                                 + constraintMatch.getJustificationList().stream()
                                 .filter(o -> o instanceof Talk).map(o -> ((Talk) o).getCode())
                                 .collect(joining(", "))
                                 + "): " + constraintMatch.getScore().toShortString())
-                        .collect(joining("\n"))));
+                        .collect(joining("\n  "))));
                 comment.setAuthor("OptaPlanner");
                 cell.setCellComment(comment);
             }
-            return cell;
+            cell.setCellValue(talkList.stream().map(stringFunction).collect(joining(", ")));
         }
-        protected Cell nextCellWithScore(HardSoftScore score, CellStyle cellStyle) {
-            if (!score.isFeasible()) {
-                return nextCell(hardPenaltyStyle);
-            } else if (score.getSoftScore() < 0) {
-                return nextCell(softPenaltyStyle);
-            } else {
-                return nextCell(cellStyle);
-            }
+
+        protected Cell nextCell() {
+            return nextCell(null);
         }
 
         protected Cell nextCell(CellStyle cellStyle) {
