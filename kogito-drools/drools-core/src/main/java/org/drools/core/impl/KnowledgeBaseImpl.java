@@ -1735,9 +1735,14 @@ public class KnowledgeBaseImpl
     public boolean removeObjectsGeneratedFromResource(Resource resource) {
         boolean modified = false;
         for (InternalKnowledgePackage pkg : pkgs.values()) {
-            List<RuleImpl> rulesToBeRemoved = pkg.removeRulesGeneratedFromResource(resource);
+            List<RuleImpl> rulesToBeRemoved = pkg.getRulesGeneratedFromResource(resource);
             if (!rulesToBeRemoved.isEmpty()) {
                 this.reteooBuilder.removeRules( rulesToBeRemoved );
+                // removal of rule from package has to be delayed after the rule has been removed from the phreak network
+                // in order to allow the correct flushing of all outstanding staged tuples
+                for (RuleImpl rule : rulesToBeRemoved) {
+                    pkg.removeRule(rule);
+                }
             }
 
             List<Function> functionsToBeRemoved = pkg.removeFunctionsGeneratedFromResource(resource);
