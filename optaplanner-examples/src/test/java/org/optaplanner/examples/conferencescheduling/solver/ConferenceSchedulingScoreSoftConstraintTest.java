@@ -161,6 +161,72 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
     }
 
     @Test
+    public void languageDiversity() {
+        ConferenceParametrization parametrization = new ConferenceParametrization(1L);
+        String talkType = "talktype";
+        String language1 = "language1";
+        String language2 = "language2";
+        LocalDateTime start1 = LocalDateTime.of(2018, 1, 1, 9, 0);
+        LocalDateTime end1 = LocalDateTime.of(2018, 1, 1, 10, 0);
+        LocalDateTime start2 = LocalDateTime.of(2018, 1, 1, 9, 30);
+        LocalDateTime end2 = LocalDateTime.of(2018, 1, 1, 10, 30);
+        Timeslot slot1 = new Timeslot(1L)
+                .withTalkType(talkType)
+                .withStartDateTime(start1)
+                .withEndDateTime(end1);
+        Timeslot slot2 = new Timeslot(2L)
+                .withTalkType(talkType)
+                .withStartDateTime(start2)
+                .withEndDateTime(end2);
+        Talk talk1 = new Talk(1L)
+                .withTalkType(talkType)
+                .withSpeakerList(Collections.emptyList())
+                .withPreferredTimeslotTagSet(Collections.emptySet())
+                .withRequiredTimeslotTagSet(Collections.emptySet())
+                .withProhibitedTimeslotTagSet(Collections.emptySet())
+                .withUndesiredTimeslotTagSet(Collections.emptySet())
+                .withPreferredRoomTagSet(Collections.emptySet())
+                .withRequiredRoomTagSet(Collections.emptySet())
+                .withThemeTrackTagSet(Collections.emptySet())
+                .withSectorTagSet(Collections.emptySet());
+        Talk talk2 = new Talk(2L)
+                .withTalkType(talkType)
+                .withSpeakerList(Collections.emptyList())
+                .withPreferredTimeslotTagSet(Collections.emptySet())
+                .withRequiredTimeslotTagSet(Collections.emptySet())
+                .withProhibitedTimeslotTagSet(Collections.emptySet())
+                .withUndesiredTimeslotTagSet(Collections.emptySet())
+                .withPreferredRoomTagSet(Collections.emptySet())
+                .withRequiredRoomTagSet(Collections.emptySet())
+                .withThemeTrackTagSet(Collections.emptySet())
+                .withSectorTagSet(Collections.emptySet());
+        ConferenceSolution solution = new ConferenceSolution(1L)
+                .withParametrization(parametrization)
+                .withTalkList(Arrays.asList(talk1, talk2))
+                .withTimeslotList(Collections.emptyList())
+                .withRoomList(Collections.emptyList())
+                .withSpeakerList(Collections.emptyList());
+        scoreVerifier.assertSoftWeight("Language diversity", 0, solution);
+        // 2 talks with the same language and the same time slot
+        parametrization.setLanguageDiversity(1);
+        talk1.withTimeslot(slot1).withLanguage(language1);
+        talk2.withTimeslot(slot1).withLanguage(language1);
+        scoreVerifier.assertSoftWeight("Language diversity", 0, solution);
+        // 2 talks with the same time slot with different languages
+        talk2.withLanguage(language2);
+        scoreVerifier.assertSoftWeight("Language diversity", 1, solution);
+        // 2 talks with the same time slot with different languages and language diversity weight = 2
+        parametrization.setLanguageDiversity(2);
+        scoreVerifier.assertSoftWeight("Language diversity", 2, solution);
+        // 2 talks with different time slots with different languages
+        talk2.withTimeslot(slot2);
+        scoreVerifier.assertSoftWeight("Language diversity", 0, solution);
+        // 2 talks with different time slot with the same language
+        talk2.withLanguage(language1);
+        scoreVerifier.assertSoftWeight("Language diversity", 0, solution);
+    }
+
+    @Test
     public void speakerPreferredTimeslot() {
         ConferenceParametrization parametrization = new ConferenceParametrization(1L);
         String tag1 = "tag1";
