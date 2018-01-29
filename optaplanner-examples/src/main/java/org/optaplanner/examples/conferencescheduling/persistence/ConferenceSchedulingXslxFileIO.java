@@ -156,8 +156,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 throw new IllegalStateException(currentPosition() + ": The conference name (" + solution.getConferenceName()
                         + ") must match to the regular expression (" + VALID_NAME_PATTERN + ").");
             }
-            nextRow(false);
-            nextRow(false);
+            nextRow(true);
             readHeaderCell("Constraint");
             readHeaderCell("Weight");
             readHeaderCell("Description");
@@ -1127,8 +1126,9 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             List<Indictment> indictmentList = talkList.stream()
                     .map(indictmentMap::get).filter(Objects::nonNull).collect(Collectors.toList());
             HardSoftScore score = indictmentList.stream()
-                    .map(indictment -> (HardSoftScore) indictment.getScoreTotal())
-                    // Filter out score rewards
+                    .flatMap(indictment -> indictment.getConstraintMatchSet().stream())
+                    .map(tConstraintMatch -> (HardSoftScore) tConstraintMatch.getScore())
+                    // Filter out positive constraints
                     .filter(indictmentScore -> !(indictmentScore.getHardScore() >= 0 && indictmentScore.getSoftScore() >= 0))
                     .reduce(Score::add).orElse(HardSoftScore.ZERO);
             XSSFCell cell;
