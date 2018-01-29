@@ -16,18 +16,6 @@
 
 package org.drools.core.reteoo;
 
-import org.drools.core.common.BaseNode;
-import org.drools.core.common.DroolsObjectInputStream;
-import org.drools.core.common.DroolsObjectOutputStream;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.MemoryFactory;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.phreak.AddRemoveRule;
-import org.drools.core.rule.InvalidPatternException;
-import org.drools.core.rule.WindowDeclaration;
-import org.kie.api.definition.rule.Rule;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Externalizable;
@@ -42,6 +30,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
+
+import org.drools.core.common.BaseNode;
+import org.drools.core.common.DroolsObjectInputStream;
+import org.drools.core.common.DroolsObjectOutputStream;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.MemoryFactory;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.phreak.AddRemoveRule;
+import org.drools.core.rule.InvalidPatternException;
+import org.drools.core.rule.WindowDeclaration;
+import org.kie.api.definition.rule.Rule;
 
 /**
  * Builds the Rete-OO network for a <code>Package</code>.
@@ -161,12 +161,16 @@ public class ReteooBuilder
         final RuleRemovalContext context = new RuleRemovalContext( rule );
         context.setKnowledgeBase(kBase);
 
-        for (BaseNode node : rules.remove( rule.getFullyQualifiedName() )) {
-            removeTerminalNode(context, (TerminalNode) node, workingMemories);
-        }
+        BaseNode[] rulesTerminalNodes = rules.remove( rule.getFullyQualifiedName() );
+        if (rulesTerminalNodes != null) {
+            // there couldn't be any rule to be removed if it comes from a broken drl
+            for (BaseNode node : rulesTerminalNodes) {
+                removeTerminalNode( context, ( TerminalNode ) node, workingMemories );
+            }
 
-        if (rule.isQuery()) {
-            this.queries.remove( rule.getName() );
+            if ( rule.isQuery() ) {
+                this.queries.remove( rule.getName() );
+            }
         }
     }
 
