@@ -4651,4 +4651,62 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
 
         ksession.setGlobal( "globalBool", Boolean.TRUE );
     }
+
+    @Test
+    public void testRuleRemovalAndEval() throws Exception {
+        // DROOLS-2276
+        String drl1 = "package org.drools.compiler\n" +
+                "rule R1 when\n" +
+                "   $m : Message()\n" +
+                "   eval($m != null)\n" +
+                "then\n" +
+                "   System.out.println( \"Hello R1\" );\n" +
+                "end\n";
+
+        String drl2 = "package org.drools.compiler\n" +
+                "rule R2 when\n" +
+                "   $m : Message()\n" +
+                "   eval($m != null)\n" +
+                "then\n" +
+                "   System.out.println( \"Hello R2\" );\n" +
+                "end\n";
+
+        String drl3 = "package org.drools.compiler\n" +
+                "rule R3 when\n" +
+                "   $m : Message()\n" +
+                "   eval($m != null)\n" +
+                "then\n" +
+                "   System.out.println( \"Hello R3\" );\n" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        KieFileSystem kfs1 = ks.newKieFileSystem();
+        kfs1.write("src/main/resources/rules/Sample1.drl", drl1);
+        ReleaseId releaseId1 = ks.newReleaseId("com.sample", "my-sample-a", "1.0.0");
+        kfs1.generateAndWritePomXML(releaseId1);
+        ks.newKieBuilder( kfs1 ).buildAll();
+
+        KieFileSystem kfs2 = ks.newKieFileSystem();
+        kfs2.write("src/main/resources/rules/Sample2.drl", drl2);
+        ReleaseId releaseId2 = ks.newReleaseId("com.sample", "my-sample-a", "2.0.0");
+        kfs2.generateAndWritePomXML(releaseId2);
+        ks.newKieBuilder( kfs2 ).buildAll();
+
+        KieFileSystem kfs3 = ks.newKieFileSystem();
+        kfs3.write("src/main/resources/rules/Sample3.drl", drl3);
+        ReleaseId releaseId3 = ks.newReleaseId("com.sample", "my-sample-a", "3.0.0");
+        kfs3.generateAndWritePomXML(releaseId3);
+        ks.newKieBuilder( kfs3 ).buildAll();
+
+        // Create a session and fire rules
+        KieContainer kc = ks.newKieContainer( releaseId1 );
+        KieSession ksession = kc.newKieSession();
+        ksession.insert( new Message( "Hello World" ) );
+        assertEquals( 1, ksession.fireAllRules() );
+
+        kc.updateToVersion( releaseId2 );
+        kc.updateToVersion( releaseId3 );
+        assertEquals( 1, ksession.fireAllRules() );
+    }
 }
