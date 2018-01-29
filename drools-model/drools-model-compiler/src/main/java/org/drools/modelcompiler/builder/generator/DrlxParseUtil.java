@@ -153,6 +153,7 @@ public class DrlxParseUtil {
 
         } else if (drlxExpr instanceof CastExpr) {
             CastExpr castExpr = (CastExpr)drlxExpr;
+            toTypedExpression( context, packageModel, patternType, castExpr.getExpression(), usedDeclarations, reactOnProperties, castExpr, isPositional );
             return new TypedExpression(castExpr, getClassFromContext(context.getPkg().getTypeResolver(), castExpr.getType().asString()));
 
         } else if (drlxExpr instanceof NameExpr) {

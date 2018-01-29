@@ -27,7 +27,6 @@ import org.drools.modelcompiler.domain.Relationship;
 import org.drools.modelcompiler.domain.Result;
 import org.drools.modelcompiler.oopathdtables.InternationalAddress;
 import org.drools.modelcompiler.util.TrackingAgendaEventListener;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.command.Command;
@@ -53,7 +52,7 @@ public class QueryTest extends BaseModelTest {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "global java.lang.Integer ageG;" +
-                "query olderThan\n" +
+                "query \"older than\"\n" +
                 "    $p : Person(age > ageG)\n" +
                 "end ";
 
@@ -64,7 +63,7 @@ public class QueryTest extends BaseModelTest {
         ksession.insert(new Person("Mark", 39));
         ksession.insert(new Person("Mario", 41));
 
-        QueryResults results = ksession.getQueryResults("olderThan", 40);
+        QueryResults results = ksession.getQueryResults("older than", 40);
 
         assertEquals(1, results.size());
         QueryResultsRow res = results.iterator().next();
@@ -79,6 +78,26 @@ public class QueryTest extends BaseModelTest {
                 "import " + Person.class.getCanonicalName() + ";" +
                 "query olderThan( int $age )\n" +
                 "    $p : Person(age > $age)\n" +
+                "end ";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( new Person( "Mark", 39 ) );
+        ksession.insert( new Person( "Mario", 41 ) );
+
+        QueryResults results = ksession.getQueryResults( "olderThan", 40 );
+
+        assertEquals( 1, results.size() );
+        Person p = (Person) results.iterator().next().get( "$p" );
+        assertEquals( "Mario", p.getName() );
+    }
+
+    @Test
+    public void testQueryOneArgumentWithoutType() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "query olderThan( $age )\n" +
+                "    $p : Person(age > (Integer)$age)\n" +
                 "end ";
 
         KieSession ksession = getKieSession( str );
