@@ -29,6 +29,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -1116,11 +1117,14 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
 
         protected void nextTalkListCell(boolean unavailable, List<Talk> talkList, Function<Talk, String> stringFunction) {
             if (talkList == null) {
-                nextCell();
-                return;
+                talkList = Collections.emptyList();
             }
-            List<Indictment> indictmentList = talkList.stream().map(indictmentMap::get).filter(Objects::nonNull).collect(Collectors.toList());
-            HardSoftScore score = (HardSoftScore) indictmentList.stream().map(Indictment::getScoreTotal)
+            List<Indictment> indictmentList = talkList.stream()
+                    .map(indictmentMap::get).filter(Objects::nonNull).collect(Collectors.toList());
+            HardSoftScore score = indictmentList.stream()
+                    .map(indictment -> (HardSoftScore) indictment.getScoreTotal())
+                    // Filter out score rewards
+                    .filter(indictmentScore -> !(indictmentScore.getHardScore() >= 0 && indictmentScore.getSoftScore() >= 0))
                     .reduce(Score::add).orElse(HardSoftScore.ZERO);
             XSSFCell cell;
             if (talkList.stream().anyMatch(Talk::isPinnedByUser)) {
@@ -1134,23 +1138,30 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             } else {
                 cell = nextCell(wrappedStyle);
             }
-            if (!indictmentList.isEmpty()) {
+            if (!talkList.isEmpty()) {
                 ClientAnchor anchor = creationHelper.createClientAnchor();
                 anchor.setCol1(cell.getColumnIndex());
                 anchor.setCol2(cell.getColumnIndex() + 5);
                 anchor.setRow1(currentRow.getRowNum());
                 anchor.setRow2(currentRow.getRowNum() + 5);
                 Comment comment = currentDrawing.createCellComment(anchor);
-                comment.setString(creationHelper.createRichTextString(
-                        "Constraint matches:\n  "
-                        + indictmentList.stream().flatMap(indictment -> indictment.getConstraintMatchSet().stream())
-                        .map(constraintMatch -> constraintMatch.getConstraintName() + " ("
-                                + constraintMatch.getJustificationList().stream()
-                                .filter(o -> o instanceof Talk).map(o -> ((Talk) o).getCode())
-                                .collect(joining(", "))
-                                + "): " + constraintMatch.getScore().toShortString())
-                        .collect(joining("\n  "))));
-                comment.setAuthor("OptaPlanner");
+                String commentString = talkList.stream()
+                        .map(talk -> talk.getCode() + ": "
+                                + talk.getTitle() + "\n  "
+                                + talk.getSpeakerList().stream().map(Speaker::getName).collect(joining(", "))
+                                + (talk.isPinnedByUser() ? "\n  PINNED BY USER" : "")
+                        ).collect(joining("\n\n"));
+                if (!indictmentList.isEmpty()) {
+                    commentString += "\n\nConstraint matches:\n  "
+                            + indictmentList.stream().flatMap(indictment -> indictment.getConstraintMatchSet().stream())
+                            .map(constraintMatch -> constraintMatch.getConstraintName() + " ("
+                                    + constraintMatch.getJustificationList().stream()
+                                    .filter(o -> o instanceof Talk).map(o -> ((Talk) o).getCode())
+                                    .collect(joining(", "))
+                                    + "): " + constraintMatch.getScore().toShortString())
+                            .collect(joining("\n  "));
+                }
+                comment.setString(creationHelper.createRichTextString(commentString));
                 cell.setCellComment(comment);
             }
             cell.setCellValue(talkList.stream().map(stringFunction).collect(joining("\n")));
