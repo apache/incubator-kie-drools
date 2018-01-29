@@ -728,7 +728,7 @@ public class KnowledgePackageImpl
         return rulesToBeRemoved;
     }
 
-    private List<RuleImpl> getRulesGeneratedFromResource(Resource resource) {
+    public List<RuleImpl> getRulesGeneratedFromResource(Resource resource) {
         List<RuleImpl> rulesFromResource = new ArrayList<RuleImpl>();
         for (RuleImpl rule : rules.values()) {
             if (resource.equals(rule.getResource())) {
