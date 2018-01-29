@@ -109,6 +109,7 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.classToRe
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isPrimitiveExpression;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.parseBlock;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toTypedExpression;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.visitor.NamedConsequenceVisitor.BREAKING_CALL;
 import static org.drools.modelcompiler.util.StringUtil.toId;
@@ -786,25 +787,17 @@ public class ModelGenerator {
 
             List<String> usedDeclarations = new ArrayList<>();
             Set<String> reactOnProperties = new HashSet<>();
-            TypedExpression left = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, pointFreeExpr.getLeft(), usedDeclarations, reactOnProperties, pointFreeExpr, isPositional);
-            for (Expression rightExpr : pointFreeExpr.getRight()) {
-                DrlxParseUtil.toTypedExpression( context, packageModel, patternType, rightExpr, usedDeclarations, reactOnProperties, pointFreeExpr, isPositional);
-            }
 
-            String operator = pointFreeExpr.getOperator().asString();
-            OperatorSpec opSpec = null;
-            if (temporalOperators.contains( operator )) {
-                opSpec = TemporalOperatorSpec.INSTANCE;
-            } else if ( org.drools.model.functions.Operator.Register.hasOperator( operator ) ) {
-                opSpec = CustomOperatorSpec.INSTANCE;
-            }
-            if (opSpec == null) {
-                throw new UnsupportedOperationException("Unknown operator '" + operator + "' in expression: " + toDrlx(drlxExpr));
-            }
-            Expression methodCallExpr = opSpec.getExpression( pointFreeExpr, left );
+            final TypedExpression typedExpression = toTypedExpression(context, packageModel, patternType, pointFreeExpr, usedDeclarations, reactOnProperties, null, isPositional);
+            final Expression returnExpression = typedExpression.getExpression();
+            final Class<?> returnType = typedExpression.getType();
 
-            return new DrlxParseResult(patternType, exprId, bindingId, methodCallExpr, left.getType() )
-                    .setUsedDeclarations( usedDeclarations ).setReactOnProperties( reactOnProperties ).setLeft( left ).setStatic( opSpec.isStatic() ).setValidExpression( true );
+            return new DrlxParseResult(patternType, exprId, bindingId, returnExpression, returnType)
+                    .setUsedDeclarations(usedDeclarations)
+                    .setReactOnProperties(reactOnProperties)
+                    .setLeft(typedExpression.getLeft())
+                    .setStatic(typedExpression.isStatic())
+                    .setValidExpression(true);
         }
 
         if (drlxExpr instanceof MethodCallExpr) {

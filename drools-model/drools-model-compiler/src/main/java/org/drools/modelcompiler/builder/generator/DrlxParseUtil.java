@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Deque;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -35,10 +34,13 @@ import org.drools.drlx.DrlxParser;
 import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ParseStart;
 import org.drools.javaparser.ast.Node;
+import org.drools.javaparser.ast.NodeList;
 import org.drools.javaparser.ast.body.Parameter;
 import org.drools.javaparser.ast.drlx.expr.DrlxExpression;
+import org.drools.javaparser.ast.drlx.expr.HalfPointFreeExpr;
 import org.drools.javaparser.ast.drlx.expr.InlineCastExpr;
 import org.drools.javaparser.ast.drlx.expr.NullSafeFieldAccessExpr;
+import org.drools.javaparser.ast.drlx.expr.PointFreeExpr;
 import org.drools.javaparser.ast.expr.ArrayAccessExpr;
 import org.drools.javaparser.ast.expr.ArrayCreationExpr;
 import org.drools.javaparser.ast.expr.BinaryExpr;
@@ -72,22 +74,20 @@ import org.drools.javaparser.ast.type.ReferenceType;
 import org.drools.javaparser.ast.type.Type;
 import org.drools.javaparser.ast.type.UnknownType;
 import org.drools.modelcompiler.builder.PackageModel;
+import org.drools.modelcompiler.builder.generator.operatorspec.CustomOperatorSpec;
+import org.drools.modelcompiler.builder.generator.operatorspec.OperatorSpec;
+import org.drools.modelcompiler.builder.generator.operatorspec.TemporalOperatorSpec;
 import org.drools.modelcompiler.util.ClassUtil;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import static org.drools.core.util.ClassUtils.getter2property;
+import static org.drools.javaparser.printer.PrintUtil.toDrlx;
 import static org.drools.modelcompiler.util.ClassUtil.findMethod;
 
 public class DrlxParseUtil {
 
     public static final NameExpr _THIS_EXPR = new NameExpr("_this");
 
-    private static final Collection<String> operators = new HashSet<>();
-    {
-        operators.addAll(ModelGenerator.temporalOperators);
-    }
-
-    private static final ParseStart<DrlxExpression> parser = DrlxParser.buildDrlxParserWithArguments(operators);
 
     public static IndexUtil.ConstraintType toConstraintType(Operator operator) {
         switch (operator) {
@@ -189,9 +189,59 @@ public class DrlxParseUtil {
             }
         } else if (drlxExpr instanceof FieldAccessExpr || drlxExpr instanceof MethodCallExpr) {
             return toTypedExpressionFromMethodCallOrField(context, patternType, drlxExpr, usedDeclarations, reactOnProperties, context.getPkg().getTypeResolver());
+        } else if (drlxExpr instanceof PointFreeExpr) {
+
+            final PointFreeExpr pointFreeExpr = (PointFreeExpr)drlxExpr;
+
+            TypedExpression left = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, pointFreeExpr.getLeft(), usedDeclarations, reactOnProperties, pointFreeExpr, isPositional);
+            OperatorSpec opSpec = getOperatorSpec(context, packageModel, patternType, drlxExpr, usedDeclarations, reactOnProperties, isPositional, pointFreeExpr, pointFreeExpr.getRight(), pointFreeExpr.getOperator());
+            return new TypedExpression(opSpec.getExpression( pointFreeExpr, left ), left.getType())
+                    .setStatic(opSpec.isStatic())
+                    .setLeft(left);
+        } else if (drlxExpr instanceof HalfPointFreeExpr) {
+
+            final HalfPointFreeExpr halfPointFreeExpr = (HalfPointFreeExpr)drlxExpr;
+            Expression parentLeft = findLeftLeafOfNameExpr(parentExpression);
+
+            TypedExpression left = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, parentLeft, usedDeclarations, reactOnProperties, halfPointFreeExpr, isPositional);
+            OperatorSpec opSpec = getOperatorSpec(context, packageModel, patternType, drlxExpr, usedDeclarations, reactOnProperties, isPositional, halfPointFreeExpr, halfPointFreeExpr.getRight(), halfPointFreeExpr.getOperator());
+
+            final PointFreeExpr transformedToPointFree =
+                    new PointFreeExpr(halfPointFreeExpr.getTokenRange().get(),
+                                      parentLeft,
+                                      halfPointFreeExpr.getRight(),
+                                      halfPointFreeExpr.getOperator(),
+                                      halfPointFreeExpr.isNegated(),
+                                      halfPointFreeExpr.getArg1(),
+                                      halfPointFreeExpr.getArg2(),
+                                      halfPointFreeExpr.getArg3(),
+                                      halfPointFreeExpr.getArg4()
+                                      );
+
+            return new TypedExpression(opSpec.getExpression( transformedToPointFree, left ), left.getType())
+                    .setStatic(opSpec.isStatic())
+                    .setLeft(left);
         }
 
         throw new UnsupportedOperationException();
+    }
+
+    private static OperatorSpec getOperatorSpec(RuleContext context, PackageModel packageModel, Class<?> patternType, Expression drlxExpr, List<String> usedDeclarations, Set<String> reactOnProperties, boolean isPositional, Expression pointFreeExpr, NodeList<Expression> rightExpressions, SimpleName expressionOperator) {
+        for (Expression rightExpr : rightExpressions) {
+            DrlxParseUtil.toTypedExpression(context, packageModel, patternType, rightExpr, usedDeclarations, reactOnProperties, pointFreeExpr, isPositional);
+        }
+
+        String operator = expressionOperator.asString();
+        OperatorSpec opSpec = null;
+        if (ModelGenerator.temporalOperators.contains(operator )) {
+            opSpec = TemporalOperatorSpec.INSTANCE;
+        } else if ( org.drools.model.functions.Operator.Register.hasOperator( operator ) ) {
+            opSpec = CustomOperatorSpec.INSTANCE;
+        }
+        if (opSpec == null) {
+            throw new UnsupportedOperationException("Unknown operator '" + operator + "' in expression: " + toDrlx(drlxExpr));
+        }
+        return opSpec;
     }
 
     public static TypedExpression toTypedExpressionFromMethodCallOrField(RuleContext context, Class<?> patternType, Expression drlxExpr, Collection<String> usedDeclarations, Set<String> reactOnProperties, TypeResolver typeResolver) {
@@ -342,6 +392,8 @@ public class DrlxParseUtil {
             return findLeftLeafOfNameExpr(be.getLeft());
         } else if(expression instanceof NameExpr) {
             return expression;
+        } else if(expression instanceof PointFreeExpr) {
+            return findLeftLeafOfNameExpr(((PointFreeExpr) expression).getLeft());
         } else {
             throw new UnsupportedOperationException("Unknown expression: " + expression);
         }
@@ -638,6 +690,13 @@ public class DrlxParseUtil {
     }
 
     public static DrlxExpression parseExpression(String expression) {
+        // TOOD: this should be taken from the runtime
+
+        final Collection<String> operators = new ArrayList<>();
+        operators.addAll(Arrays.asList("contains", "in", "matches", "memberOf", "soundslike"));
+        operators.addAll(ModelGenerator.temporalOperators);
+        final ParseStart<DrlxExpression> parser = DrlxParser.buildDrlxParserWithArguments(operators);
+
         return DrlxParser.parseExpression(parser, expression);
     }
 
