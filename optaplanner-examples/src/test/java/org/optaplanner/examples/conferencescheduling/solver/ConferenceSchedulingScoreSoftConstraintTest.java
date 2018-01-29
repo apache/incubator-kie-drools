@@ -70,23 +70,23 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
                 .withRoomList(Collections.emptyList())
                 .withSpeakerList(Collections.emptyList());
         parametrization.setThemeTrackConflict(1);
-        scoreVerifier.assertSoftWeight("Theme conflict", 0, solution);
-        // talks with overlapping time slots without theme conflict
+        scoreVerifier.assertSoftWeight("Theme track conflict", 0, solution);
+        // talks with overlapping time slots without theme track conflict
         talk1.withTimeslot(slot1).withThemeTrackTagSet(new HashSet<>(Arrays.asList(theme1, theme2)));
         talk2.withTimeslot(slot2).withThemeTrackTagSet(new HashSet<>(Arrays.asList(theme3, theme4)));
-        scoreVerifier.assertSoftWeight("Theme conflict", 0, solution);
-        // talks with overlapping time slots with 1 theme conflict
+        scoreVerifier.assertSoftWeight("Theme track conflict", 0, solution);
+        // talks with overlapping time slots with 1 theme track conflict
         talk2.withThemeTrackTagSet(new HashSet<>(Arrays.asList(theme1, theme3, theme4)));
-        scoreVerifier.assertSoftWeight("Theme conflict", -1, solution);
-        // talks with overlapping time slots with 2 theme conflicts
+        scoreVerifier.assertSoftWeight("Theme track conflict", -1, solution);
+        // talks with overlapping time slots with 2 theme track conflicts
         talk1.withTimeslot(slot1).withThemeTrackTagSet(new HashSet<>(Arrays.asList(theme1, theme2, theme3)));
-        scoreVerifier.assertSoftWeight("Theme conflict", -2, solution);
-        // talks with overlapping time slots with 2 theme conflicts and theme conflict weight 2
+        scoreVerifier.assertSoftWeight("Theme track conflict", -2, solution);
+        // talks with overlapping time slots with 2 theme track conflicts and theme conflict weight 2
         parametrization.setThemeTrackConflict(2);
-        scoreVerifier.assertSoftWeight("Theme conflict", -4, solution);
-        // talks with non overlapping time slots and theme conflicts
+        scoreVerifier.assertSoftWeight("Theme track conflict", -4, solution);
+        // talks with non overlapping time slots and theme track conflicts
         talk2.setTimeslot(slot3);
-        scoreVerifier.assertSoftWeight("Theme conflict", 0, solution);
+        scoreVerifier.assertSoftWeight("Theme track conflict", 0, solution);
     }
 
     @Test
