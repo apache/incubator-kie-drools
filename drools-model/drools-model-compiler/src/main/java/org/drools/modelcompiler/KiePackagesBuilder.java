@@ -353,7 +353,7 @@ public class KiePackagesBuilder {
                 return buildEval( ctx, ( EvalImpl ) condition );
             }
             case ACCUMULATE: {
-                final AccumulatePattern accumulatePattern = (AccumulatePattern) condition;
+                AccumulatePattern accumulatePattern = (AccumulatePattern) condition;
                 RuleConditionElement source;
                 if(accumulatePattern.getCompositePatterns().isPresent()) {
                     CompositePatterns compositePatterns = (CompositePatterns) accumulatePattern.getCompositePatterns().get();
@@ -365,7 +365,14 @@ public class KiePackagesBuilder {
                 } else {
                     source = buildPattern(ctx, group, condition );
                 }
-                Pattern pattern = new Pattern( 0, getObjectType( Object.class ) );
+
+                Pattern pattern = null;
+                if (accumulatePattern.getAccumulateFunctions().length == 1) {
+                    pattern = ctx.getPattern( accumulatePattern.getAccumulateFunctions()[0].getVariable() );
+                }
+                if (pattern == null) {
+                    pattern = new Pattern( 0, getObjectType( Object.class ) );
+                }
 
                 PatternImpl sourcePattern = (PatternImpl) accumulatePattern.getPattern();
                 List<String> usedVariableName = new ArrayList<>();
