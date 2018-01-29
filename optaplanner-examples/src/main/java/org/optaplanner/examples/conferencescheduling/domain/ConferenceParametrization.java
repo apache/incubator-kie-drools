@@ -20,6 +20,20 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 public class ConferenceParametrization extends AbstractPersistable {
 
+    public static final String THEME_TRACK_CONFLICT = "Theme track conflict";
+    public static final String SECTOR_CONFLICT = "Sector conflict";
+    public static final String CONTENT_AUDIENCE_LEVEL_FLOW_VIOLATION = "Content audience level flow violation";
+    public static final String AUDIENCE_LEVEL_DIVERSITY = "Audience level diversity";
+    public static final String LANGUAGE_DIVERSITY = "Language diversity";
+    public static final String SPEAKER_PREFERRED_TIMESLOT_TAG = "Speaker preferred timeslot tag";
+    public static final String SPEAKER_UNDESIRED_TIMESLOT_TAG = "Speaker undesired timeslot tag";
+    public static final String TALK_PREFERRED_TIMESLOT_TAG = "Talk preferred timeslot tag";
+    public static final String TALK_UNDESIRED_TIMESLOT_TAG = "Talk undesired timeslot tag";
+    public static final String SPEAKER_PREFERRED_ROOM_TAG = "Speaker preferred room tag";
+    public static final String SPEAKER_UNDESIRED_ROOM_TAG = "Speaker undesired room tag";
+    public static final String TALK_PREFERRED_ROOM_TAG = "Talk preferred room tag";
+    public static final String TALK_UNDESIRED_ROOM_TAG = "Talk undesired room tag";
+
     private int themeTrackConflict = 10;
     private int sectorConflict = 10;
     private int contentAudienceLevelFlowViolation = 10;

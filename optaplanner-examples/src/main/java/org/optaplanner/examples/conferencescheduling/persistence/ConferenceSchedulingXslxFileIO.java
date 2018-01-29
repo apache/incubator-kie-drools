@@ -77,6 +77,7 @@ import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 import org.optaplanner.swing.impl.TangoColorFactory;
 
 import static java.util.stream.Collectors.*;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceParametrization.*;
 
 public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<ConferenceSolution> {
 
@@ -158,31 +159,31 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             readHeaderCell("Description");
             ConferenceParametrization parametrization = new ConferenceParametrization();
             parametrization.setId(0L);
-            readConstraintLine("Theme track conflict", parametrization::setThemeTrackConflict,
+            readConstraintLine(THEME_TRACK_CONFLICT, parametrization::setThemeTrackConflict,
                     "Soft penalty per common theme track of 2 talks that have an overlapping timeslot");
-            readConstraintLine("Sector conflict", parametrization::setSectorConflict,
+            readConstraintLine(SECTOR_CONFLICT, parametrization::setSectorConflict,
                     "Soft penalty per common sector of 2 talks that have an overlapping timeslot");
-            readConstraintLine("Content audience level flow violation", parametrization::setContentAudienceLevelFlowViolation,
+            readConstraintLine(CONTENT_AUDIENCE_LEVEL_FLOW_VIOLATION, parametrization::setContentAudienceLevelFlowViolation,
                     "Soft penalty per common content of 2 talks with a different audience level for which the easier talk isn't scheduled earlier than the other talk");
-            readConstraintLine("Audience level diversity", parametrization::setAudienceLevelDiversity,
+            readConstraintLine(AUDIENCE_LEVEL_DIVERSITY, parametrization::setAudienceLevelDiversity,
                     "Soft reward per 2 talks that have the same timeslot and a different audience level");
-            readConstraintLine("Language diversity", parametrization::setLanguageDiversity,
+            readConstraintLine(LANGUAGE_DIVERSITY, parametrization::setLanguageDiversity,
                     "Soft reward per 2 talks that have the same timeslot and a different language");
-            readConstraintLine("Speaker preferred timeslot tag", parametrization::setSpeakerPreferredTimeslotTag,
+            readConstraintLine(SPEAKER_PREFERRED_TIMESLOT_TAG, parametrization::setSpeakerPreferredTimeslotTag,
                     "Soft penalty per missing preferred tag in a talk's timeslot");
-            readConstraintLine("Speaker undesired timeslot tag", parametrization::setSpeakerUndesiredTimeslotTag,
+            readConstraintLine(SPEAKER_UNDESIRED_TIMESLOT_TAG, parametrization::setSpeakerUndesiredTimeslotTag,
                     "Soft penalty per undesired tag in a talk's timeslot");
-            readConstraintLine("Talk preferred timeslot tag", parametrization::setTalkPreferredTimeslotTag,
+            readConstraintLine(TALK_PREFERRED_TIMESLOT_TAG, parametrization::setTalkPreferredTimeslotTag,
                     "Soft penalty per missing preferred tag in a talk's timeslot");
-            readConstraintLine("Talk undesired timeslot tag", parametrization::setTalkUndesiredTimeslotTag,
+            readConstraintLine(TALK_UNDESIRED_TIMESLOT_TAG, parametrization::setTalkUndesiredTimeslotTag,
                     "Soft penalty per undesired tag in a talk's timeslot");
-            readConstraintLine("Speaker preferred room tag", parametrization::setSpeakerPreferredRoomTag,
+            readConstraintLine(SPEAKER_PREFERRED_ROOM_TAG, parametrization::setSpeakerPreferredRoomTag,
                     "Soft penalty per missing preferred tag in a talk's room");
-            readConstraintLine("Speaker undesired room tag", parametrization::setSpeakerUndesiredRoomTag,
+            readConstraintLine(SPEAKER_UNDESIRED_ROOM_TAG, parametrization::setSpeakerUndesiredRoomTag,
                     "Soft penalty per undesired tag in a talk's room");
-            readConstraintLine("Talk preferred room tag", parametrization::setTalkPreferredRoomTag,
+            readConstraintLine(TALK_PREFERRED_ROOM_TAG, parametrization::setTalkPreferredRoomTag,
                     "Soft penalty per missing preferred tag in a talk's room");
-            readConstraintLine("Talk undesired room tag", parametrization::setTalkUndesiredRoomTag,
+            readConstraintLine(TALK_UNDESIRED_ROOM_TAG, parametrization::setTalkUndesiredRoomTag,
                     "Soft penalty per undesired tag in a talk's room");
             solution.setParametrization(parametrization);
         }
@@ -739,31 +740,31 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             nextHeaderCell("Description");
             ConferenceParametrization parametrization = solution.getParametrization();
 
-            writeConstraintLine("Theme track conflict", parametrization::getThemeTrackConflict,
+            writeConstraintLine(THEME_TRACK_CONFLICT, parametrization::getThemeTrackConflict,
                     "Soft penalty per common theme track of 2 talks that have an overlapping timeslot");
-            writeConstraintLine("Sector conflict", parametrization::getSectorConflict,
+            writeConstraintLine(SECTOR_CONFLICT, parametrization::getSectorConflict,
                     "Soft penalty per common sector of 2 talks that have an overlapping timeslot");
-            writeConstraintLine("Content audience level flow violation", parametrization::getContentAudienceLevelFlowViolation,
+            writeConstraintLine(CONTENT_AUDIENCE_LEVEL_FLOW_VIOLATION, parametrization::getContentAudienceLevelFlowViolation,
                     "Soft penalty per common content of 2 talks with a different audience level for which the easier talk isn't scheduled earlier than the other talk");
-            writeConstraintLine("Audience level diversity", parametrization::getAudienceLevelDiversity,
+            writeConstraintLine(AUDIENCE_LEVEL_DIVERSITY, parametrization::getAudienceLevelDiversity,
                     "Soft reward per 2 talks that have the same timeslot and a different audience level");
-            writeConstraintLine("Language diversity", parametrization::getLanguageDiversity,
+            writeConstraintLine(LANGUAGE_DIVERSITY, parametrization::getLanguageDiversity,
                     "Soft reward per 2 talks that have the same timeslot and a different language");
-            writeConstraintLine("Speaker preferred timeslot tag", parametrization::getSpeakerPreferredTimeslotTag,
+            writeConstraintLine(SPEAKER_PREFERRED_TIMESLOT_TAG, parametrization::getSpeakerPreferredTimeslotTag,
                     "Soft penalty per missing preferred tag in a talk's timeslot");
-            writeConstraintLine("Speaker undesired timeslot tag", parametrization::getSpeakerUndesiredTimeslotTag,
+            writeConstraintLine(SPEAKER_UNDESIRED_TIMESLOT_TAG, parametrization::getSpeakerUndesiredTimeslotTag,
                     "Soft penalty per undesired tag in a talk's timeslot");
-            writeConstraintLine("Talk preferred timeslot tag", parametrization::getTalkPreferredTimeslotTag,
+            writeConstraintLine(TALK_PREFERRED_TIMESLOT_TAG, parametrization::getTalkPreferredTimeslotTag,
                     "Soft penalty per missing preferred tag in a talk's timeslot");
-            writeConstraintLine("Talk undesired timeslot tag", parametrization::getTalkUndesiredTimeslotTag,
+            writeConstraintLine(TALK_UNDESIRED_TIMESLOT_TAG, parametrization::getTalkUndesiredTimeslotTag,
                     "Soft penalty per undesired tag in a talk's timeslot");
-            writeConstraintLine("Speaker preferred room tag", parametrization::getSpeakerPreferredRoomTag,
+            writeConstraintLine(SPEAKER_PREFERRED_ROOM_TAG, parametrization::getSpeakerPreferredRoomTag,
                     "Soft penalty per missing preferred tag in a talk's room");
-            writeConstraintLine("Speaker undesired room tag", parametrization::getSpeakerUndesiredRoomTag,
+            writeConstraintLine(SPEAKER_UNDESIRED_ROOM_TAG, parametrization::getSpeakerUndesiredRoomTag,
                     "Soft penalty per undesired tag in a talk's room");
-            writeConstraintLine("Talk preferred room tag", parametrization::getTalkPreferredRoomTag,
+            writeConstraintLine(TALK_PREFERRED_ROOM_TAG, parametrization::getTalkPreferredRoomTag,
                     "Soft penalty per missing preferred tag in a talk's room");
-            writeConstraintLine("Talk undesired room tag", parametrization::getTalkUndesiredRoomTag,
+            writeConstraintLine(TALK_UNDESIRED_ROOM_TAG, parametrization::getTalkUndesiredRoomTag,
                     "Soft penalty per undesired tag in a talk's room");
             autoSizeColumnsWithHeader();
         }
