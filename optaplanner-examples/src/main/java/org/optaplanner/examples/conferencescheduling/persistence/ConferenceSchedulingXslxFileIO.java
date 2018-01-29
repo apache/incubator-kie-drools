@@ -92,6 +92,8 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
     protected static final DateTimeFormatter TIME_FORMATTER
             = DateTimeFormatter.ofPattern("HH:mm", Locale.ENGLISH);
 
+    protected static final XSSFColor VIEW_TAB_COLOR = new XSSFColor(TangoColorFactory.BUTTER_1);
+
     protected static final XSSFColor UNAVAILABLE_COLOR = new XSSFColor(TangoColorFactory.ALUMINIUM_5);
     protected static final XSSFColor PINNED_COLOR = new XSSFColor(TangoColorFactory.PLUM_1);
     protected static final XSSFColor HARD_PENALTY_COLOR = new XSSFColor(TangoColorFactory.SCARLET_1);
@@ -739,7 +741,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
         }
 
         private void writeConfiguration() {
-            nextSheet("Configuration", 1, 3);
+            nextSheet("Configuration", 1, 3, false);
             nextRow();
             nextHeaderCell("Conference name");
             nextCell().setCellValue(solution.getConferenceName());
@@ -787,7 +789,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
         }
 
         private void writeTimeslotList() {
-            nextSheet("Timeslots", 3, 1);
+            nextSheet("Timeslots", 3, 1, false);
             nextRow();
             nextHeaderCell("Day");
             nextHeaderCell("Start");
@@ -806,7 +808,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
         }
 
         private void writeRoomList() {
-            nextSheet("Rooms", 1, 2);
+            nextSheet("Rooms", 1, 2, false);
             nextRow();
             nextHeaderCell("");
             nextHeaderCell("");
@@ -828,7 +830,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
         }
 
         private void writeSpeakerList() {
-            nextSheet("Speakers", 1, 2);
+            nextSheet("Speakers", 1, 2, false);
             nextRow();
             nextHeaderCell("");
             nextHeaderCell("");
@@ -872,7 +874,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
         }
 
         private void writeTalkList() {
-            nextSheet("Talks", 2, 1);
+            nextSheet("Talks", 2, 1, false);
             nextRow();
             nextHeaderCell("Code");
             nextHeaderCell("Title");
@@ -926,7 +928,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
         }
 
         private void writeRoomsView() {
-            nextSheet("Rooms view", 1, 2);
+            nextSheet("Rooms view", 1, 2, true);
             nextRow();
             nextHeaderCell("");
             writeTimeslotDaysHeaders();
@@ -954,7 +956,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
         }
 
         private void writeSpeakersView() {
-            nextSheet("Speakers view", 1, 2);
+            nextSheet("Speakers view", 1, 2, true);
             nextRow();
             nextHeaderCell("");
             writeTimeslotDaysHeaders();
@@ -978,7 +980,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
         }
 
         private void writeThemeTracksView() {
-            nextSheet("Theme tracks view", 1, 2);
+            nextSheet("Theme tracks view", 1, 2, true);
             nextRow();
             nextHeaderCell("");
             writeTimeslotDaysHeaders();
@@ -1004,7 +1006,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
         }
 
         private void writeSectorsView() {
-            nextSheet("Sectors view", 1, 2);
+            nextSheet("Sectors view", 1, 2, true);
             nextRow();
             nextHeaderCell("");
             writeTimeslotDaysHeaders();
@@ -1030,7 +1032,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
         }
 
         private void writeContentsView() {
-            nextSheet("Contents view", 1, 2);
+            nextSheet("Contents view", 1, 2, true);
             nextRow();
             nextHeaderCell("");
             writeTimeslotDaysHeaders();
@@ -1084,12 +1086,15 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             }
         }
 
-        protected void nextSheet(String sheetName, int colSplit, int rowSplit) {
+        protected void nextSheet(String sheetName, int colSplit, int rowSplit, boolean view) {
             currentSheet = workbook.createSheet(sheetName);
             currentDrawing = currentSheet.createDrawingPatriarch();
             currentSheet.createFreezePane(colSplit, rowSplit);
             currentRowNumber = -1;
             headerCellCount = 0;
+            if (view) {
+                currentSheet.setTabColor(VIEW_TAB_COLOR);
+            }
         }
 
         protected void nextRow() {
