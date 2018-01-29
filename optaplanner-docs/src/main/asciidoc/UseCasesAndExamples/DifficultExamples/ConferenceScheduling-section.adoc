@@ -22,13 +22,19 @@ Hard constraints:
 
 Soft constraints:
 
-* Theme conflict: Minimize the number of talks that share a same theme tag during overlapping timeslots.
+* Theme track conflict: Minimize the number of talks that share a same theme tag during overlapping timeslots.
 * Sector conflict: Minimize the number of talks that share a same sector tag during overlapping timeslots.
-* Language diversity: For every timeslot, maximize the number of talks with different languages.
+* Content audience level flow violation: For every content tag, schedule the introductory talks before the advanced talks.
+* Audience level diversity: For every timeslot, maximize the number of talks with a different audience level.
+* Language diversity: For every timeslot, maximize the number of talks with a different language.
 * Speaker preferred timeslot tag: If a speaker has a preferred timeslot tag, then all his/her talks should be assigned to a timeslot with that tag.
+* Speaker undesired timeslot tag: If a speaker has a undesired timeslot tag, then all his/her talks should not be assigned to a timeslot with that tag.
 * Talk preferred timeslot tag: If a talk has a preferred timeslot tag, then it should be assigned to a timeslot with that tag.
+* Talk undesired timeslot tag: If a talk has a undesired timeslot tag, then it should not be assigned to a timeslot with that tag.
 * Speaker preferred room tag: If a speaker has a preferred room tag, then all his/her talks should be assigned to a room with that tag.
+* Speaker undesired room tag: If a speaker has a undesired room tag, then all his/her talks should not be assigned to a room with that tag.
 * Talk preferred room tag: If a talk has a preferred room tag, then it should be assigned to a room with that tag.
+* Talk undesired room tag: If a talk has a undesired room tag, then it should not be assigned to a room with that tag.
 
 
 [[conferenceSchedulingProblemSize]]
