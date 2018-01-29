@@ -20,7 +20,6 @@ import java.util.Objects;
 import java.util.Optional;
 
 import org.drools.javaparser.ast.expr.Expression;
-import org.drools.javaparser.ast.expr.MethodCallExpr;
 
 public class TypedExpression {
 
@@ -30,6 +29,8 @@ public class TypedExpression {
     private Expression prefixExpression;
     private Optional<String> unificationVariable = Optional.empty();
     private Optional<String> unificationName = Optional.empty();
+    private Boolean staticExpr;
+    private TypedExpression left;
 
     public TypedExpression() { }
 
@@ -98,6 +99,24 @@ public class TypedExpression {
 
     public Optional<String> getUnificationName() {
         return unificationName;
+    }
+
+    public TypedExpression setStatic(Boolean aStatic) {
+        staticExpr = aStatic;
+        return this;
+    }
+
+    public Boolean isStatic() {
+        return staticExpr;
+    }
+
+    public TypedExpression setLeft(TypedExpression left) {
+        this.left = left;
+        return this;
+    }
+
+    public TypedExpression getLeft() {
+        return left;
     }
 
     @Override
