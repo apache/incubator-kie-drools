@@ -47,14 +47,11 @@ import static org.junit.Assert.assertNull;
 public class DMNExtensionRegisterTest {
     private static final Logger LOG = LoggerFactory.getLogger(DMNExtensionRegisterTest.class);
 
-    @Ignore
     @Test
     public void testUsingSystemProperty() {
         try {
-            System.setProperty("org.kie.dmn.marshaller.extension.firstname", "org.kie.dmn.core.compiler.extensions.FirstNameDescriptionRegister");
-            System.setProperty("org.kie.dmn.marshaller.extension.lastname", "org.kie.dmn.core.compiler.extensions.LastNameDescriptionRegister");   
-            assertEquals("org.kie.dmn.core.compiler.extensions.FirstNameDescriptionRegister", System.getProperty("org.kie.dmn.marshaller.extension.firstname"));
-            assertEquals("org.kie.dmn.core.compiler.extensions.LastNameDescriptionRegister", System.getProperty("org.kie.dmn.marshaller.extension.lastname"));
+            System.setProperty("org.kie.dmn.profiles.FirstNameLastNameProfile", FirstNameLastNameProfile.class.getCanonicalName());
+            assertEquals(FirstNameLastNameProfile.class.getCanonicalName(), System.getProperty("org.kie.dmn.profiles.FirstNameLastNameProfile"));
             
             DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0001-input-data-string-with-extensions.dmn", this.getClass() );
             DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/kie-dmn", "0001-input-data-string" );
@@ -82,22 +79,18 @@ public class DMNExtensionRegisterTest {
             LOG.error("{}", e.getLocalizedMessage(), e);
             throw e;
         } finally {
-            System.clearProperty("org.kie.dmn.marshaller.extension.firstname");
-            System.clearProperty("org.kie.dmn.marshaller.extension.lastname");
-            assertNull(System.getProperty("org.kie.dmn.marshaller.extension.firstname"));
-            assertNull(System.getProperty("org.kie.dmn.marshaller.extension.lastname"));
+            System.clearProperty("org.kie.dmn.profiles.FirstNameLastNameProfile");
+            assertNull(System.getProperty("org.kie.dmn.profiles.FirstNameLastNameProfile"));
         }
     }
 
-    @Ignore
     @Test
     public void testUsingKModuleProperty() {
         final KieServices ks = KieServices.Factory.get();
         final KieFileSystem kfs = ks.newKieFileSystem();
         
         KieModuleModel kmm = ks.newKieModuleModel();
-        kmm.setConfigurationProperty("org.kie.dmn.marshaller.extension.firstname", "org.kie.dmn.core.compiler.extensions.FirstNameDescriptionRegister");
-        kmm.setConfigurationProperty("org.kie.dmn.marshaller.extension.lastname", "org.kie.dmn.core.compiler.extensions.LastNameDescriptionRegister");  
+        kmm.setConfigurationProperty("org.kie.dmn.profiles.FirstNameLastNameProfile", FirstNameLastNameProfile.class.getCanonicalName());
         
         kfs.writeKModuleXML(kmm.toXML());
         
@@ -136,15 +129,13 @@ public class DMNExtensionRegisterTest {
         assertTrue(lastNameDescription.getContent().equals("Last name in latin characters"));
     }
 
-    @Ignore
     @Test
     public void testUsingKModuleProperty_WrongClasses() {
         final KieServices ks = KieServices.Factory.get();
         final KieFileSystem kfs = ks.newKieFileSystem();
         
         KieModuleModel kmm = ks.newKieModuleModel();
-        kmm.setConfigurationProperty("org.kie.dmn.marshaller.extension.firstname", "foo");
-        kmm.setConfigurationProperty("org.kie.dmn.marshaller.extension.lastname", "bar");  
+        kmm.setConfigurationProperty("org.kie.dmn.profiles.FirstNameLastNameProfile", "foo");
         
         kfs.writeKModuleXML(kmm.toXML());
         

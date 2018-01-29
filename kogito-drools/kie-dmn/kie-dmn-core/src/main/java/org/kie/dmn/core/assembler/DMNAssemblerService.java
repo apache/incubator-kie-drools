@@ -33,7 +33,6 @@ import org.kie.api.io.ResourceType;
 import org.kie.dmn.api.core.DMNCompiler;
 import org.kie.dmn.api.core.DMNCompilerConfiguration;
 import org.kie.dmn.api.core.DMNModel;
-import org.kie.dmn.api.marshalling.v1_1.DMNExtensionRegister;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.compiler.DMNCompilerConfigurationImpl;
 import org.kie.dmn.core.compiler.DMNCompilerImpl;
@@ -52,7 +51,6 @@ public class DMNAssemblerService implements KieAssemblerService {
     private static final Logger logger = LoggerFactory.getLogger( DMNAssemblerService.class );
     public static final String ORG_KIE_DMN_PREFIX = "org.kie.dmn";
     public static final String DMN_PROFILE_PREFIX = ORG_KIE_DMN_PREFIX + ".profiles.";
-    public static final String DMN_EXTENSION_REGISTER_PREFIX = ORG_KIE_DMN_PREFIX + ".marshaller.extension.";
     public static final String DMN_COMPILER_CACHE_KEY = "DMN_COMPILER_CACHE_KEY";
     public static final String DMN_PROFILES_CACHE_KEY = "DMN_PROFILES_CACHE_KEY";
 
@@ -146,28 +144,6 @@ public class DMNAssemblerService implements KieAssemblerService {
             }
 
             return compiler;
-        }
-
-        Map<String, String> extensionProperties = new HashMap<>();
-        kbuilderImpl.getBuilderConfiguration().getChainedProperties()
-                .mapStartsWith(extensionProperties, DMN_EXTENSION_REGISTER_PREFIX, false);
-        if( !extensionProperties.isEmpty() ) {
-            List<DMNExtensionRegister> extensionRegisters = new ArrayList<>();
-            try {
-                for (Map.Entry<String, String> extensionProperty : extensionProperties.entrySet()) {
-                    String extRegClassName = extensionProperty.getValue();
-                    DMNExtensionRegister extRegister = (DMNExtensionRegister) kbuilderImpl.getRootClassLoader()
-                            .loadClass(extRegClassName).newInstance();
-                    extensionRegisters.add(extRegister);
-                }
-                compilerConfig.addExtensions(extensionRegisters);
-                return DMNFactory.newCompiler(compilerConfig);
-            } catch(Exception e) {
-                kbuilderImpl.addBuilderResult(new DMNKnowledgeBuilderError(ResultSeverity.WARNING, "Trying to load a non-existing extension element register "+e.getLocalizedMessage()));
-                logger.error( "Trying to load a non-existing extension element register {}", e.getLocalizedMessage(), e);
-                kbuilderImpl.addBuilderResult(new DMNKnowledgeBuilderError(ResultSeverity.WARNING, "DMN Compiler configuration contained errors, fall-back using empty-configuration compiler."));
-                logger.warn( "DMN Compiler configuration contained errors, fall-back using empty-configuration compiler." );
-            }
         }
 
         return DMNFactory.newCompiler(compilerConfig);
