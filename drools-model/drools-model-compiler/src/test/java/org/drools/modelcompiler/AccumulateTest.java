@@ -298,7 +298,7 @@ public class AccumulateTest extends BaseModelTest {
         assertEquals(77, results.iterator().next().getValue());
     }
 
-    @Test @Ignore
+    @Test
     public void testFromCollect() {
 
         String str=
