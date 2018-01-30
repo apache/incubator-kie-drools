@@ -304,6 +304,8 @@ public class GuidedDTDRLPersistenceTest {
     @Test
     public void testCellCSV() {
         GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
+        assertEquals( "(\"Helsinki, Finland\", \"Boston\")",
+                      p.makeInList( "\"Helsinki, Finland\",Boston" ) );
         assertEquals("(\"Michael\", \"Mark\", \"Peter\")",
                      p.makeInList("Michael, Mark, Peter"));
         assertEquals("(\"Michael\")",
