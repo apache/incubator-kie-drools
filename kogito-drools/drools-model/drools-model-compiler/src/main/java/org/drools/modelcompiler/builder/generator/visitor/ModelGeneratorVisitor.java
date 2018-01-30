@@ -3,6 +3,7 @@ package org.drools.modelcompiler.builder.generator.visitor;
 import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.compiler.lang.descr.CollectDescr;
 import org.drools.compiler.lang.descr.ConditionalBranchDescr;
 import org.drools.compiler.lang.descr.DescrVisitor;
 import org.drools.compiler.lang.descr.EvalDescr;
@@ -13,6 +14,7 @@ import org.drools.compiler.lang.descr.NamedConsequenceDescr;
 import org.drools.compiler.lang.descr.NotDescr;
 import org.drools.compiler.lang.descr.OrDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
+import org.drools.compiler.lang.descr.PatternSourceDescr;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 
@@ -26,6 +28,7 @@ public class ModelGeneratorVisitor implements DescrVisitor {
     private final FromVisitor fromVisitor;
     private final NamedConsequenceVisitor namedConsequenceVisitor;
     private final PatternVisitor patternVisitor;
+    private final FromCollectVisitor fromCollectVisitor;
 
     public ModelGeneratorVisitor(RuleContext context, PackageModel packageModel) {
         accumulateVisitor = new AccumulateVisitor(this, context, packageModel);
@@ -36,6 +39,7 @@ public class ModelGeneratorVisitor implements DescrVisitor {
         fromVisitor = new FromVisitor(context, packageModel);
         namedConsequenceVisitor = new NamedConsequenceVisitor(context, packageModel);
         patternVisitor = new PatternVisitor(context, packageModel);
+        fromCollectVisitor = new FromCollectVisitor(this);
     }
 
     @Override
@@ -95,9 +99,14 @@ public class ModelGeneratorVisitor implements DescrVisitor {
 
     @Override
     public void visit(PatternDescr descr) {
-        patternVisitor.visit(descr);
-        if (descr.getSource() instanceof AccumulateDescr) {
-            accumulateVisitor.visit((AccumulateDescr) descr.getSource(), descr);
+        final PatternSourceDescr patternSource = descr.getSource();
+        if (patternSource != null && patternSource instanceof CollectDescr) {
+            fromCollectVisitor.trasformFromCollectToCollectList(descr, (CollectDescr) patternSource);
+        } else {
+            patternVisitor.visit(descr);
+            if (descr.getSource() instanceof AccumulateDescr) {
+                accumulateVisitor.visit((AccumulateDescr) descr.getSource(), descr);
+            }
         }
     }
 }
