@@ -188,18 +188,28 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                     "Soft penalty per missing preferred tag in a talk's room");
             readConstraintLine(TALK_UNDESIRED_ROOM_TAG, parametrization::setTalkUndesiredRoomTag,
                     "Soft penalty per undesired tag in a talk's room");
+            // TODO Read hard constraints too, not done for now for backwards compatibility of xlsx file
             solution.setParametrization(parametrization);
         }
 
         private void readConstraintLine(String name, Consumer<Integer> consumer, String constraintdescription) {
             nextRow();
             readHeaderCell(name);
-            double value = nextCell().getNumericCellValue();
-            if (((double) ((int) value)) != value) {
-                throw new IllegalArgumentException(currentPosition() + ": The value (" + value
-                        + ") for constraint (" + name + ") must be an integer.");
+            XSSFCell weightCell = nextCell();
+            if (consumer != null) {
+                double value = weightCell.getNumericCellValue();
+                if (((double) ((int) value)) != value) {
+                    throw new IllegalArgumentException(currentPosition() + ": The value (" + value
+                            + ") for constraint (" + name + ") must be an integer.");
+                }
+                consumer.accept((int) value);
+            } else {
+                if (!weightCell.getStringCellValue().equals("n/a")) {
+                    throw new IllegalArgumentException(currentPosition() + ": The value ("
+                            + weightCell.getStringCellValue()
+                            + ") for constraint (" + name + ") must be an n/a.");
+                }
             }
-            consumer.accept((int) value);
             readHeaderCell(constraintdescription);
         }
 
@@ -777,13 +787,45 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                     "Soft penalty per missing preferred tag in a talk's room");
             writeConstraintLine(TALK_UNDESIRED_ROOM_TAG, parametrization::getTalkUndesiredRoomTag,
                     "Soft penalty per undesired tag in a talk's room");
+            nextRow();
+            writeConstraintLine(TALK_TYPE_OF_TIMESLOT, null,
+                    "Hard penalty per talk in a timeslot with an other talk type");
+            writeConstraintLine(ROOM_UNAVAILABLE_TIMESLOT, null,
+                    "Hard penalty per talk with an unavailable room at its timeslot");
+            writeConstraintLine(ROOM_CONFLICT, null,
+                    "Hard penalty per pair of talks in the same room in overlapping timeslots");
+            writeConstraintLine(SPEAKER_UNAVAILABLE_TIMESLOT, null,
+                    "Hard penalty per talk with an unavailable speaker at its timeslot");
+            writeConstraintLine(SPEAKER_CONFLICT, null,
+                    "Hard penalty per pair of talks with the same speaker in overlapping timeslots");
+            writeConstraintLine(SPEAKER_REQUIRED_TIMESLOT_TAG, null,
+                    "Hard penalty per missing required tag in a talk's timeslot");
+            writeConstraintLine(SPEAKER_PROHIBITED_TIMESLOT_TAG, null,
+                    "Hard penalty per prohibited tag in a talk's timeslot");
+            writeConstraintLine(TALK_REQUIRED_TIMESLOT_TAG, null,
+                    "Hard penalty per missing required tag in a talk's timeslot");
+            writeConstraintLine(TALK_PROHIBITED_TIMESLOT_TAG, null,
+                    "Hard penalty per prohibited tag in a talk's timeslot");
+            writeConstraintLine(SPEAKER_REQUIRED_ROOM_TAG, null,
+                    "Hard penalty per missing required tag in a talk's room");
+            writeConstraintLine(SPEAKER_PROHIBITED_ROOM_TAG, null,
+                    "Hard penalty per prohibited tag in a talk's room");
+            writeConstraintLine(TALK_REQUIRED_ROOM_TAG, null,
+                    "Hard penalty per missing required tag in a talk's room");
+            writeConstraintLine(TALK_PROHIBITED_ROOM_TAG, null,
+                    "Hard penalty per prohibited tag in a talk's room");
             autoSizeColumnsWithHeader();
         }
 
         private void writeConstraintLine(String name, Supplier<Integer> supplier, String constraintdescription) {
             nextRow();
             nextHeaderCell(name);
-            nextCell().setCellValue(supplier.get());
+            XSSFCell weightCell = nextCell();
+            if (supplier != null) {
+                weightCell.setCellValue(supplier.get());
+            } else {
+                weightCell.setCellValue("n/a");
+            }
             nextHeaderCell(constraintdescription);
         }
 

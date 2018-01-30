@@ -20,6 +20,20 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 public class ConferenceParametrization extends AbstractPersistable {
 
+    public static final String TALK_TYPE_OF_TIMESLOT = "Talk type of timeslot";
+    public static final String ROOM_UNAVAILABLE_TIMESLOT = "Room unavailable timeslot";
+    public static final String ROOM_CONFLICT = "Room conflict";
+    public static final String SPEAKER_UNAVAILABLE_TIMESLOT = "Speaker unavailable timeslot";
+    public static final String SPEAKER_CONFLICT = "Speaker conflict";
+    public static final String SPEAKER_REQUIRED_TIMESLOT_TAG = "Speaker required timeslot tag";
+    public static final String SPEAKER_PROHIBITED_TIMESLOT_TAG = "Speaker prohibited timeslot tag";
+    public static final String TALK_REQUIRED_TIMESLOT_TAG = "Talk required timeslot tag";
+    public static final String TALK_PROHIBITED_TIMESLOT_TAG = "Talk prohibited timeslot tag";
+    public static final String SPEAKER_REQUIRED_ROOM_TAG = "Speaker required room tag";
+    public static final String SPEAKER_PROHIBITED_ROOM_TAG = "Speaker prohibited room tag";
+    public static final String TALK_REQUIRED_ROOM_TAG = "Talk required room tag";
+    public static final String TALK_PROHIBITED_ROOM_TAG = "Talk prohibited room tag";
+
     public static final String THEME_TRACK_CONFLICT = "Theme track conflict";
     public static final String SECTOR_CONFLICT = "Sector conflict";
     public static final String CONTENT_AUDIENCE_LEVEL_FLOW_VIOLATION = "Content audience level flow violation";

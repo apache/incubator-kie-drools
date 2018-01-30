@@ -38,7 +38,7 @@ rule "Talk type of timeslot"
         scoreHolder.addHardConstraintMatch(kcontext, -100);
 end
 
-rule "Room unavailable timeslots"
+rule "Room unavailable timeslot"
     when
         Talk(hasUnavailableRoom())
     then
@@ -57,7 +57,7 @@ rule "Room conflict"
         scoreHolder.addHardConstraintMatch(kcontext, -10);
 end
 
-rule "Speaker unavailable timeslots"
+rule "Speaker unavailable timeslot"
     when
         Talk(hasAnyUnavailableSpeaker())
     then
@@ -84,16 +84,16 @@ rule "Speaker required timeslot tag"
         scoreHolder.addHardConstraintMatch(kcontext, - $count);
 end
 
-rule "Talk required timeslot tag"
+rule "Speaker prohibited timeslot tag"
     when
-        Talk($count : missingRequiredTimeslotTagCount() > 0)
+        Talk($count : prevailingSpeakerProhibitedTimeslotTagCount() > 0)
     then
         scoreHolder.addHardConstraintMatch(kcontext, - $count);
 end
 
-rule "Speaker prohibited timeslot tag"
+rule "Talk required timeslot tag"
     when
-        Talk($count : prevailingSpeakerProhibitedTimeslotTagCount() > 0)
+        Talk($count : missingRequiredTimeslotTagCount() > 0)
     then
         scoreHolder.addHardConstraintMatch(kcontext, - $count);
 end
@@ -112,16 +112,16 @@ rule "Speaker required room tag"
         scoreHolder.addHardConstraintMatch(kcontext, - $count);
 end
 
-rule "Talk required room tag"
+rule "Speaker prohibited room tag"
     when
-        Talk($count : missingRequiredRoomTagCount() > 0)
+        Talk($count : prevailingSpeakerProhibitedRoomTagCount() > 0)
     then
         scoreHolder.addHardConstraintMatch(kcontext, - $count);
 end
 
-rule "Speaker prohibited room tag"
+rule "Talk required room tag"
     when
-        Talk($count : prevailingSpeakerProhibitedRoomTagCount() > 0)
+        Talk($count : missingRequiredRoomTagCount() > 0)
     then
         scoreHolder.addHardConstraintMatch(kcontext, - $count);
 end
