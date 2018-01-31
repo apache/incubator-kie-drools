@@ -19,8 +19,7 @@ package org.kie.dmn.feel.lang.ast;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
+
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.EvaluationContext;
@@ -103,16 +102,12 @@ public class FilterExpressionNode
         try {
             ctx.enterFrame();
             // handle it as a predicate
+            // Have the "item" variable set first, so to respect the DMN spec: The expression in square brackets can reference a list
+            // element using the name item, unless the list element is a context that contains the key "item".
             ctx.setValue( "item", v );
-            // if it is a Map, need to add all string keys as variables in the context
-            if( v instanceof Map ) {
-                Set<Map.Entry> set = ((Map) v).entrySet();
-                for( Map.Entry ce : set ) {
-                    if( ce.getKey() instanceof String ) {
-                        ctx.setValue( (String) ce.getKey(), ce.getValue() );
-                    }
-                }
-            }
+
+            // using Root object logic to avoid having to eagerly inspect all attributes.
+            ctx.setRootObject(v);
 
             Object r = this.filter.evaluate( ctx );
             if( r instanceof Boolean && ((Boolean)r) == Boolean.TRUE ) {
