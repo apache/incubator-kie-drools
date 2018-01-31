@@ -4,7 +4,7 @@ import org.drools.model.Condition.Type;
 import org.drools.model.Variable;
 import org.drools.model.functions.Predicate4;
 
-public class Expr4ViewItemImpl<A, B, C, D> extends AbstractExprViewItem<A> implements ExprViewItem<A> {
+public class Expr4ViewItemImpl<A, B, C, D> extends AbstractExprViewItem<A> implements ExprNViewItem<A> {
 
     private final Variable<B> var2;
     private final Variable<C> var3;

@@ -49,6 +49,7 @@ import org.drools.model.view.Expr1ViewItem;
 import org.drools.model.view.Expr1ViewItemImpl;
 import org.drools.model.view.Expr2ViewItemImpl;
 import org.drools.model.view.Expr3ViewItemImpl;
+import org.drools.model.view.ExprNViewItem;
 import org.drools.model.view.ExprViewItem;
 import org.drools.model.view.InputViewItemImpl;
 import org.drools.model.view.QueryCallViewItem;
@@ -170,7 +171,7 @@ public class ViewBuilder {
 
             if ( viewItem instanceof ExistentialExprViewItem ) {
                 ExistentialExprViewItem existential = ( (ExistentialExprViewItem) viewItem );
-                if (patterVariable != null) {
+                if (patterVariable != null && !existential.isQueryExpression()) {
                     registerInputsFromViewItem( existential.getExpression(), conditionMap, scopedInputs, patterVariable );
                 }
                 Condition condition = new PatternImpl( patterVariable, SingleConstraint.EMPTY, ctx.bindings.get(patterVariable) );
@@ -331,15 +332,8 @@ public class ViewBuilder {
             return condition;
         }
 
-        if ( viewItem instanceof Expr2ViewItemImpl ) {
-            Expr2ViewItemImpl expr = (Expr2ViewItemImpl)viewItem;
-            ( (PatternImpl) condition ).addConstraint( new SingleConstraint2( expr ) );
-            return condition;
-        }
-
-        if (viewItem instanceof Expr3ViewItemImpl) {
-            Expr3ViewItemImpl expr = (Expr3ViewItemImpl) viewItem;
-            ((PatternImpl) condition).addConstraint(new SingleConstraint3(expr));
+        if ( viewItem instanceof ExprNViewItem ) {
+            ( (PatternImpl) condition ).addConstraint( SingleConstraint.createConstraint( ( ExprNViewItem ) viewItem ) );
             return condition;
         }
 
