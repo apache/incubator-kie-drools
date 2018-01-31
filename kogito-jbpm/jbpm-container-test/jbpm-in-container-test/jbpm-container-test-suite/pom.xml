@@ -33,6 +33,9 @@
     <configurations.dir>${project.build.directory}/configurations</configurations.dir>
     <container.profile.dir>${configurations.dir}/cargo-profile</container.profile.dir>
     <container.log.file>${container.profile.dir}/profile-log.txt</container.log.file>
+
+    <!-- Overridden until jboss-integration-platform-parent is upgraded -->
+    <version.org.jboss.shrinkwrap.resolver>3.1.0</version.org.jboss.shrinkwrap.resolver>
   </properties>
 
   <dependencyManagement>
@@ -312,6 +315,38 @@
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-kie-services</artifactId>
       <scope>test</scope>
+      <!-- Exclude Aether since it collides with Maven Artifact Resolver (formerly Aether)
+           brought by ShrinkWrap Resolver on a client classpath -->
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.maven</groupId>
+          <artifactId>maven-aether-provider</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.eclipse.aether</groupId>
+          <artifactId>aether-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.eclipse.aether</groupId>
+          <artifactId>aether-util</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.eclipse.aether</groupId>
+          <artifactId>aether-impl</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.eclipse.aether</groupId>
+          <artifactId>aether-spi</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.eclipse.aether</groupId>
+          <artifactId>aether-transport-wagon</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.eclipse.aether</groupId>
+          <artifactId>aether-connector-basic</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
   </dependencies>
