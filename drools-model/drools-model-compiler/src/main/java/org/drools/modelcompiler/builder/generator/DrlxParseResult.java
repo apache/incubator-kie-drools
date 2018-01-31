@@ -32,6 +32,7 @@ public class DrlxParseResult {
     private TypedExpression right;
     private boolean isStatic;
     private boolean isValidExpression;
+    private boolean skipThisAsParam;
 
     public DrlxParseResult( Class<?> patternType, String exprId, String patternBinding, Expression expr, Class<?> exprType) {
         this.patternType = patternType;
@@ -79,8 +80,13 @@ public class DrlxParseResult {
         return this;
     }
 
-    public DrlxParseResult setStatic( boolean aStatic ) {
-        isStatic = aStatic;
+    public DrlxParseResult setStatic( boolean isStatic ) {
+        this.isStatic = isStatic;
+        return this;
+    }
+
+    public DrlxParseResult setSkipThisAsParam( boolean skipThisAsParam ) {
+        this.skipThisAsParam = skipThisAsParam;
         return this;
     }
 
@@ -180,6 +186,10 @@ public class DrlxParseResult {
 
     public boolean isValidExpression( ) {
         return this.isValidExpression || ( expr != null && ( right != null || getExprType() == Boolean.class || getExprType() == boolean.class ) );
+    }
+
+    public boolean isSkipThisAsParam() {
+        return skipThisAsParam;
     }
 
     public DrlxParseResult setValidExpression( boolean validExpression ) {

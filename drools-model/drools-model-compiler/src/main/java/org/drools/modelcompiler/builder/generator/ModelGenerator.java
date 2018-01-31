@@ -1030,7 +1030,7 @@ public class ModelGenerator {
     }
 
     private static Expression buildConstraintExpression( DrlxParseResult drlxParseResult, Expression expr ) {
-        return drlxParseResult.isStatic() ? expr : generateLambdaWithoutParameters(drlxParseResult.getUsedDeclarations(), expr);
+        return drlxParseResult.isStatic() ? expr : generateLambdaWithoutParameters(drlxParseResult.getUsedDeclarations(), expr, drlxParseResult.isSkipThisAsParam());
     }
 
     public static MethodCallExpr buildBinding(DrlxParseResult drlxParseResult ) {

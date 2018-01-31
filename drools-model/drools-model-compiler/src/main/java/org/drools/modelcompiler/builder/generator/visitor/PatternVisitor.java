@@ -8,7 +8,6 @@ import java.util.Optional;
 import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
-import org.drools.compiler.lang.descr.CollectDescr;
 import org.drools.compiler.lang.descr.ExprConstraintDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.PatternSourceDescr;
@@ -57,6 +56,10 @@ public class PatternVisitor {
         Class<?> patternType = getClassFromContext(context.getPkg().getTypeResolver(), className);
 
         if (pattern.getIdentifier() == null) {
+            if (pattern.getObjectType().equals( "Object" ) && pattern.getSource() instanceof AccumulateDescr) {
+                buildConstraintsForAccumulate(pattern, (( AccumulateDescr ) pattern.getSource()), constraintDescrs);
+                return;
+            }
             pattern.setIdentifier( generateName("pattern_" + patternType.getSimpleName()) );
         }
 
@@ -67,6 +70,14 @@ public class PatternVisitor {
             context.addExpression(createInputExpression(pattern));
         } else {
             buildConstraints(pattern, constraintDescrs, patternType);
+        }
+    }
+
+    private void buildConstraintsForAccumulate(PatternDescr pattern, AccumulateDescr acc, List<? extends BaseDescr> constraintDescrs) {
+        for (BaseDescr constraint : constraintDescrs) {
+            String expression = constraint.toString();
+            DrlxParseResult drlxParseResult = ModelGenerator.drlxParse(context, packageModel, null, null, expression, false).setSkipThisAsParam( true );
+            ModelGenerator.processExpression( context, drlxParseResult );
         }
     }
 

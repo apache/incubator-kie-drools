@@ -9,7 +9,6 @@ import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.rule.builder.util.AccumulateUtil;
-import org.drools.drlx.DrlxParser;
 import org.drools.javaparser.ast.Node;
 import org.drools.javaparser.ast.body.Parameter;
 import org.drools.javaparser.ast.expr.BinaryExpr;
