@@ -2789,7 +2789,7 @@ public class GuidedDTDRLPersistenceTest {
         p1.getChildColumns().add(cc2);
 
         dt.setData(DataUtilities.makeDataLists(new Object[][]{
-                new Object[]{1l, "desc", "Pupa, Brains", "55, 66"},
+                new Object[]{1l, "desc", "Pupa, Brains, \"John, Snow\"", "55, 66"},
                 new Object[]{2l, "desc", "", ""}
         }));
 
@@ -2797,7 +2797,7 @@ public class GuidedDTDRLPersistenceTest {
         String drl = p.marshal(dt);
 
         int index = -1;
-        index = drl.indexOf("Smurf( name in ( \"Pupa\", \"Brains\" ) , age in ( 55, 66 ) )");
+        index = drl.indexOf("Smurf( name in ( \"Pupa\", \"Brains\", \"John, Snow\" ) , age in ( 55, 66 ) )");
         assertTrue(index > -1);
 
         index = drl.indexOf("Smurf( )",
