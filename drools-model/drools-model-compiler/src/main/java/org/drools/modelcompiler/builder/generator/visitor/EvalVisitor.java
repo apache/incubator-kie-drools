@@ -3,10 +3,11 @@ package org.drools.modelcompiler.builder.generator.visitor;
 import org.drools.compiler.lang.descr.EvalDescr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.modelcompiler.builder.PackageModel;
-import org.drools.modelcompiler.builder.generator.DrlxParseResult;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.ModelGenerator;
 import org.drools.modelcompiler.builder.generator.RuleContext;
+import org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser;
+import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
 
 public class EvalVisitor {
 
@@ -20,11 +21,15 @@ public class EvalVisitor {
 
     public void visit(EvalDescr descr) {
         String expression = descr.getContent().toString();
-        DrlxParseResult drlxParseResult = ModelGenerator.drlxParse(context, packageModel, null, null, expression);
-        Expression rewriteExprAsLambdaWithoutThisParam = DrlxParseUtil.generateLambdaWithoutParameters(drlxParseResult.getUsedDeclarations(), drlxParseResult.getExpr(), true);
-        drlxParseResult.setExpr(rewriteExprAsLambdaWithoutThisParam); // rewrites the DrlxParserResult expr as directly the lambda to use
-        drlxParseResult.setStatic(true);
-        ModelGenerator.processExpression(context, drlxParseResult);
+        DrlxParseResult drlxParseResult = new ConstraintParser(context, packageModel).drlxParse(null, null, expression);
+
+        drlxParseResult.accept(drlxParseSuccess -> {
+            Expression rewriteExprAsLambdaWithoutThisParam = DrlxParseUtil.generateLambdaWithoutParameters(drlxParseSuccess.getUsedDeclarations(), drlxParseSuccess.getExpr(), true);
+            drlxParseSuccess.setExpr(rewriteExprAsLambdaWithoutThisParam); // rewrites the DrlxParserResult expr as directly the lambda to use
+            drlxParseSuccess.setStatic(true);
+            ModelGenerator.processExpression(context, drlxParseSuccess);
+        });
+
     }
 
 

@@ -12,7 +12,8 @@ import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.javaparser.ast.stmt.BlockStmt;
 import org.drools.modelcompiler.builder.PackageModel;
-import org.drools.modelcompiler.builder.generator.DrlxParseResult;
+import org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser;
+import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
 import org.drools.modelcompiler.builder.generator.ModelGenerator;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 
@@ -20,7 +21,6 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateL
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassFromContext;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.ModelGenerator.createVariables;
-import static org.drools.modelcompiler.builder.generator.ModelGenerator.drlxParse;
 
 public class NamedConsequenceVisitor {
 
@@ -65,8 +65,10 @@ public class NamedConsequenceVisitor {
         if (!condition.equals("true")) { // Default case
             when.addArgument(new StringLiteralExpr(context.getConditionId(patternType, condition)));
             when.addArgument(new NameExpr(toVar(patternRelated.getIdentifier())));
-            DrlxParseResult parseResult = drlxParse(context, packageModel, patternType, patternRelated.getIdentifier(), condition);
-            when.addArgument(generateLambdaWithoutParameters(Collections.emptySortedSet(), parseResult.getExpr()));
+
+            DrlxParseResult parseResult = new ConstraintParser(context, packageModel).drlxParse(patternType, patternRelated.getIdentifier(), condition);
+            parseResult.accept(parseSuccess -> when.addArgument(generateLambdaWithoutParameters(Collections.emptySortedSet(), parseSuccess.getExpr())));
+
         }
 
         MethodCallExpr then = new MethodCallExpr(when, THEN_CALL);

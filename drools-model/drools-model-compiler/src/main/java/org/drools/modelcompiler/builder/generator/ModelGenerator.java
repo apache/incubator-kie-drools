@@ -16,7 +16,6 @@
 
 package org.drools.modelcompiler.builder.generator;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
@@ -26,10 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
@@ -53,30 +50,18 @@ import org.drools.javaparser.ast.Modifier;
 import org.drools.javaparser.ast.NodeList;
 import org.drools.javaparser.ast.body.MethodDeclaration;
 import org.drools.javaparser.ast.body.Parameter;
-import org.drools.javaparser.ast.drlx.OOPathExpr;
-import org.drools.javaparser.ast.drlx.expr.DrlxExpression;
-import org.drools.javaparser.ast.drlx.expr.PointFreeExpr;
 import org.drools.javaparser.ast.expr.AssignExpr;
-import org.drools.javaparser.ast.expr.BinaryExpr;
-import org.drools.javaparser.ast.expr.BinaryExpr.Operator;
 import org.drools.javaparser.ast.expr.ClassExpr;
-import org.drools.javaparser.ast.expr.EnclosedExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.FieldAccessExpr;
-import org.drools.javaparser.ast.expr.IntegerLiteralExpr;
 import org.drools.javaparser.ast.expr.LambdaExpr;
-import org.drools.javaparser.ast.expr.LiteralExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.NullLiteralExpr;
 import org.drools.javaparser.ast.expr.ObjectCreationExpr;
 import org.drools.javaparser.ast.expr.SimpleName;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
-import org.drools.javaparser.ast.expr.ThisExpr;
-import org.drools.javaparser.ast.expr.UnaryExpr;
 import org.drools.javaparser.ast.expr.VariableDeclarationExpr;
-import org.drools.javaparser.ast.nodeTypes.NodeWithArguments;
-import org.drools.javaparser.ast.nodeTypes.NodeWithOptionalScope;
 import org.drools.javaparser.ast.stmt.BlockStmt;
 import org.drools.javaparser.ast.stmt.EmptyStmt;
 import org.drools.javaparser.ast.stmt.ExpressionStmt;
@@ -90,24 +75,17 @@ import org.drools.model.Rule;
 import org.drools.model.UnitData;
 import org.drools.model.Variable;
 import org.drools.modelcompiler.builder.PackageModel;
-import org.drools.modelcompiler.builder.errors.ParseExpressionErrorResult;
 import org.drools.modelcompiler.builder.errors.UnknownDeclarationError;
 import org.drools.modelcompiler.builder.generator.RuleContext.RuleDialect;
+import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
-import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.GREATER;
-import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.GREATER_EQUALS;
-import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.LESS;
-import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.LESS_EQUALS;
-import static org.drools.javaparser.printer.PrintUtil.toDrlx;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.classToReferenceType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isPrimitiveExpression;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.parseBlock;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toTypedExpression;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.visitor.NamedConsequenceVisitor.BREAKING_CALL;
 import static org.drools.modelcompiler.util.StringUtil.toId;
@@ -682,7 +660,7 @@ public class ModelGenerator {
     }
 
 
-    public static void processExpression(RuleContext context, DrlxParseResult drlxParseResult) {
+    public static void processExpression(RuleContext context, DrlxParseSuccess drlxParseResult) {
         if (drlxParseResult.hasUnificationVariable()) {
             Expression dslExpr = buildUnificationExpression(context, drlxParseResult);
             context.addExpression(dslExpr);
@@ -696,264 +674,7 @@ public class ModelGenerator {
         }
     }
 
-    public static DrlxParseResult drlxParse(RuleContext context, PackageModel packageModel, Class<?> patternType, String bindingId, String expression) {
-        return drlxParse(context, packageModel, patternType, bindingId, expression, false);
-    }
-
-    public static DrlxParseResult drlxParse(RuleContext context, PackageModel packageModel, Class<?> patternType, String bindingId, String expression, boolean isPositional) {
-        if ( expression.startsWith( bindingId + "." ) ) {
-            expression = expression.substring( bindingId.length()+1 );
-        }
-
-        DrlxExpression drlx = DrlxParseUtil.parseExpression( expression );
-        DrlxParseResult result = getDrlxParseResult( context, packageModel, patternType, bindingId, expression, drlx, isPositional );
-        if (drlx.getBind() != null) {
-            String bindId = drlx.getBind().asString();
-            context.addDeclaration( new DeclarationSpec( bindId, result.getExprType() ) );
-            result.setExprBinding( bindId );
-        }
-
-        return result;
-    }
-
-    private static DrlxParseResult getDrlxParseResult( RuleContext context, PackageModel packageModel, Class<?> patternType,
-                                                       String bindingId, String expression, DrlxExpression drlx, boolean isPositional ) {
-        Expression drlxExpr = drlx.getExpr();
-
-        while (drlxExpr instanceof EnclosedExpr ) {
-            drlxExpr = (( EnclosedExpr ) drlxExpr).getInner();
-        }
-
-        String exprId;
-        if ( GENERATE_EXPR_ID ) {
-            exprId = context.getExprId( patternType, expression );
-        }
-
-        if ( drlxExpr instanceof BinaryExpr ) {
-            BinaryExpr binaryExpr = (BinaryExpr) drlxExpr;
-            Operator operator = binaryExpr.getOperator();
-
-            ConstraintType decodeConstraintType = DrlxParseUtil.toConstraintType( operator );
-            List<String> usedDeclarations = new ArrayList<>();
-            Set<String> reactOnProperties = new HashSet<>();
-            TypedExpression left = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, binaryExpr.getLeft(), usedDeclarations, reactOnProperties, binaryExpr, isPositional);
-            TypedExpression right = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, binaryExpr.getRight(), usedDeclarations, reactOnProperties, binaryExpr, isPositional);
-
-            Expression combo;
-            if ( left.isPrimitive() ) {
-                Expression rightExpr = right.getExpression() instanceof StringLiteralExpr ?
-                        new IntegerLiteralExpr( (( StringLiteralExpr ) right.getExpression()).asString() ) :
-                        right.getExpression();
-                combo = new BinaryExpr( left.getExpression(), rightExpr, operator );
-            } else {
-                if ( left == null || right == null ) {
-                    context.addCompilationError( new ParseExpressionErrorResult(drlxExpr) );
-                    return null;
-                }
-                switch ( operator ) {
-                    case EQUALS:
-                    case NOT_EQUALS:
-                        combo = getEqualityExpression( left, right, operator );
-                        break;
-                    default:
-                        if ( left.getExpression() == null || right.getExpression() == null ) {
-                            context.addCompilationError( new ParseExpressionErrorResult(drlxExpr) );
-                            return null;
-                        }
-                        combo = handleSpecialComparisonCases(operator, left, right );
-                }
-            }
-
-            if ( left.getPrefixExpression() != null ) {
-                combo = new BinaryExpr( left.getPrefixExpression(), combo, Operator.AND );
-            }
-
-            return new DrlxParseResult(patternType, exprId, bindingId, combo, left.getType())
-                    .setDecodeConstraintType( decodeConstraintType ).setUsedDeclarations( usedDeclarations )
-                    .setReactOnProperties( reactOnProperties ).setLeft( left ).setRight( right );
-        }
-
-        if ( drlxExpr instanceof UnaryExpr ) {
-            UnaryExpr unaryExpr = (UnaryExpr) drlxExpr;
-
-            List<String> usedDeclarations = new ArrayList<>();
-            Set<String> reactOnProperties = new HashSet<>();
-            TypedExpression left = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, unaryExpr, usedDeclarations, reactOnProperties, unaryExpr, isPositional);
-
-            return new DrlxParseResult(patternType, exprId, bindingId, left.getExpression(), left.getType())
-                    .setUsedDeclarations( usedDeclarations ).setReactOnProperties( reactOnProperties ).setLeft( left );
-        }
-
-        if ( drlxExpr instanceof PointFreeExpr ) {
-            PointFreeExpr pointFreeExpr = (PointFreeExpr) drlxExpr;
-
-            List<String> usedDeclarations = new ArrayList<>();
-            Set<String> reactOnProperties = new HashSet<>();
-
-            final TypedExpression typedExpression = toTypedExpression(context, packageModel, patternType, pointFreeExpr, usedDeclarations, reactOnProperties, null, isPositional);
-            final Expression returnExpression = typedExpression.getExpression();
-            final Class<?> returnType = typedExpression.getType();
-
-            return new DrlxParseResult(patternType, exprId, bindingId, returnExpression, returnType)
-                    .setUsedDeclarations(usedDeclarations)
-                    .setReactOnProperties(reactOnProperties)
-                    .setLeft(typedExpression.getLeft())
-                    .setStatic(typedExpression.isStatic())
-                    .setValidExpression(true);
-        }
-
-        if (drlxExpr instanceof MethodCallExpr) {
-            MethodCallExpr methodCallExpr = (MethodCallExpr) drlxExpr;
-            
-            // when the methodCallExpr will be placed in the model/DSL, any parameter being a "this" need to be implemented as _this by convention.
-            List<ThisExpr> rewriteThisExprs = recurseCollectArguments(methodCallExpr).stream()
-                                                                                     .filter(ThisExpr.class::isInstance)
-                                                                                     .map(ThisExpr.class::cast)
-                                                                                     .collect(Collectors.toList());
-            for (ThisExpr t : rewriteThisExprs) {
-                methodCallExpr.replace(t, new NameExpr("_this"));
-            }
-            
-            Optional<MethodDeclaration> functionCall = packageModel.getFunctions().stream().filter(m -> m.getName().equals(methodCallExpr.getName())).findFirst();
-            if (functionCall.isPresent()) {
-                Class<?> returnType = DrlxParseUtil.getClassFromContext(context.getPkg().getTypeResolver(), functionCall.get().getType().asString());
-                NodeList<Expression> arguments = methodCallExpr.getArguments();
-                List<String> usedDeclarations = new ArrayList<>();
-                for (Expression arg : arguments) {
-                    if (arg instanceof NameExpr && !arg.toString().equals("_this")) {
-                        usedDeclarations.add(arg.toString());
-                    } else if (arg instanceof MethodCallExpr) {
-                        DrlxParseUtil.toTypedExpressionFromMethodCallOrField(context, null, ( MethodCallExpr ) arg, usedDeclarations, new HashSet<>(), context.getPkg().getTypeResolver());
-                    }
-                }
-                return new DrlxParseResult(patternType, exprId, bindingId, methodCallExpr, returnType).setUsedDeclarations(usedDeclarations);
-            } else if (methodCallExpr.getScope().isPresent() && methodCallExpr.getScope().get() instanceof StringLiteralExpr) {
-                List<String> usedDeclarations = new ArrayList<>();
-                TypedExpression converted = DrlxParseUtil.toTypedExpressionFromMethodCallOrField(context, String.class, methodCallExpr, usedDeclarations, new HashSet<>(), context.getPkg().getTypeResolver());
-                return new DrlxParseResult(String.class, exprId, bindingId, converted.getExpression(), converted.getType()).setLeft( converted ).setUsedDeclarations( usedDeclarations );
-            } else if (patternType != null) {
-                NameExpr _this = new NameExpr("_this");
-                TypedExpression converted = DrlxParseUtil.toMethodCallWithClassCheck(context, methodCallExpr, patternType, context.getPkg().getTypeResolver());
-                Expression withThis = DrlxParseUtil.prepend(_this, converted.getExpression());
-                return new DrlxParseResult(patternType, exprId, bindingId, withThis, converted.getType()).setLeft( converted );
-            } else {
-                return new DrlxParseResult(patternType, exprId, bindingId, methodCallExpr, null);
-            }
-        }
-
-        if (drlxExpr instanceof FieldAccessExpr) {
-            FieldAccessExpr fieldCallExpr = (FieldAccessExpr) drlxExpr;
-
-            NameExpr _this = new NameExpr("_this");
-            TypedExpression converted = DrlxParseUtil.toMethodCallWithClassCheck(context, fieldCallExpr, patternType, context.getPkg().getTypeResolver());
-            Expression withThis = DrlxParseUtil.prepend(_this, converted.getExpression());
-            return new DrlxParseResult(patternType, exprId, bindingId, withThis, converted.getType()).setLeft( converted );
-        }
-
-        if (drlxExpr instanceof NameExpr) {
-            NameExpr methodCallExpr = (NameExpr) drlxExpr;
-
-            NameExpr _this = new NameExpr("_this");
-            TypedExpression converted = DrlxParseUtil.toMethodCallWithClassCheck(context, methodCallExpr, patternType, context.getPkg().getTypeResolver());
-            Expression withThis = DrlxParseUtil.prepend(_this, converted.getExpression());
-
-            if (drlx.getBind() != null) {
-                return new DrlxParseResult( patternType, exprId, bindingId, null, converted.getType() )
-                        .setLeft( new TypedExpression( withThis, converted.getType() ) )
-                        .addReactOnProperty( methodCallExpr.getNameAsString() );
-            } else {
-                return new DrlxParseResult( patternType, exprId, bindingId, withThis, converted.getType() )
-                        .addReactOnProperty( methodCallExpr.getNameAsString() );
-            }
-        }
-
-        if (drlxExpr instanceof OOPathExpr ) {
-            return new DrlxParseResult(patternType, exprId, bindingId, drlxExpr, null);
-        }
-
-        throw new UnsupportedOperationException("Unknown expression: " + toDrlx(drlxExpr)); // TODO
-    }
-
-    private static Expression getEqualityExpression( TypedExpression left, TypedExpression right, Operator operator ) {
-        if(isAnyOperandBigDecimal(left, right)) {
-            return compareBigDecimal(operator, left, right);
-        }
-
-        Expression rightOperand = right.getExpression();
-        if (isPrimitiveExpression(right.getExpression())) {
-            if (left.getType() != String.class) {
-                return new BinaryExpr( left.getExpression(), rightOperand, operator == Operator.EQUALS ? BinaryExpr.Operator.EQUALS : Operator.NOT_EQUALS );
-            } else if ( rightOperand instanceof LiteralExpr ) {
-                rightOperand = new StringLiteralExpr( rightOperand.toString() );
-            }
-        }
-
-        MethodCallExpr methodCallExpr = new MethodCallExpr( null, "org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals" );
-        methodCallExpr.addArgument( left.getExpression() );
-        methodCallExpr.addArgument( rightOperand ); // don't create NodeList with static method because missing "parent for child" would null and NPE
-        return operator == Operator.EQUALS ? methodCallExpr : new UnaryExpr( methodCallExpr, UnaryExpr.Operator.LOGICAL_COMPLEMENT );
-    }
-
-    private static Expression handleSpecialComparisonCases(Operator operator, TypedExpression left, TypedExpression right ) {
-        if ( left.getType() == String.class && right.getType() == String.class && isComparisonOperator( operator ) ) {
-            MethodCallExpr methodCallExpr = new MethodCallExpr( null, "org.drools.modelcompiler.util.EvaluationUtil.compareStringsAsNumbers" );
-            methodCallExpr.addArgument( left.getExpression() );
-            methodCallExpr.addArgument( right.getExpression() );
-            methodCallExpr.addArgument( new StringLiteralExpr( operator.asString() ) );
-            return methodCallExpr;
-        }
-
-        if (isAnyOperandBigDecimal(left, right) && (isComparisonOperator(operator))) {
-            return compareBigDecimal(operator, left, right);
-        }
-
-        return new BinaryExpr( left.getExpression(), right.getExpression(), operator );
-    }
-
-    private static boolean isAnyOperandBigDecimal(TypedExpression left, TypedExpression right) {
-        return left.getType() == BigDecimal.class || right.getType() == BigDecimal.class;
-    }
-
-    public static Expression compareBigDecimal(Operator operator, TypedExpression left, TypedExpression right) {
-        final Expression leftBigDecimal = convertExpressionToBigDecimal(left);
-        final Expression rightBigDecimal = convertExpressionToBigDecimal(right);
-        final MethodCallExpr methodCallExpr = new MethodCallExpr(leftBigDecimal, "compareTo");
-        methodCallExpr.addArgument(rightBigDecimal);
-        return new BinaryExpr(methodCallExpr, new IntegerLiteralExpr(0), operator);
-    }
-
-    private static Expression convertExpressionToBigDecimal(TypedExpression left) {
-        final Expression ret;
-        if(left.getType() != BigDecimal.class) {
-            ret = new MethodCallExpr(new NameExpr(BigDecimal.class.getCanonicalName()), "valueOf")
-                    .addArgument(left.getExpression());
-        } else {
-            ret = left.getExpression();
-        }
-        return ret;
-    }
-
-    private static boolean isComparisonOperator( Operator op ) {
-        return op == LESS || op == GREATER || op == LESS_EQUALS || op == GREATER_EQUALS;
-
-    }
-
-    private static List<Expression> recurseCollectArguments(NodeWithArguments<?> methodCallExpr) {
-        List<Expression> res = new ArrayList<>();
-        res.addAll(methodCallExpr.getArguments());
-        if ( methodCallExpr instanceof NodeWithOptionalScope ) {
-            NodeWithOptionalScope<?> nodeWithOptionalScope = (NodeWithOptionalScope) methodCallExpr;
-            if ( nodeWithOptionalScope.getScope().isPresent() ) {
-                Object scope = nodeWithOptionalScope.getScope().get();
-                if (scope instanceof NodeWithArguments) {
-                    res.addAll(recurseCollectArguments((NodeWithArguments<?>) scope));
-                }
-            }
-        }
-        return res;
-    }
-
-    public static Expression buildExpressionWithIndexing(RuleContext context, DrlxParseResult drlxParseResult) {
+    public static Expression buildExpressionWithIndexing(RuleContext context, DrlxParseSuccess drlxParseResult) {
         String exprId = drlxParseResult.getExprId();
         MethodCallExpr exprDSL = new MethodCallExpr(null, EXPR_CALL);
         if (exprId != null && !"".equals(exprId)) {
@@ -966,7 +687,7 @@ public class ModelGenerator {
         return exprDSL;
     }
 
-    public static Expression buildUnificationExpression(RuleContext context, DrlxParseResult drlxParseResult) {
+    public static Expression buildUnificationExpression(RuleContext context, DrlxParseSuccess drlxParseResult) {
         MethodCallExpr exprDSL = buildBinding(drlxParseResult);
         context.addDeclaration(new DeclarationSpec(drlxParseResult.getUnificationVariable(),
                                                    drlxParseResult.getUnificationVariableType(),
@@ -975,7 +696,7 @@ public class ModelGenerator {
         return exprDSL;
     }
 
-    private static MethodCallExpr buildExpression(RuleContext context, DrlxParseResult drlxParseResult, MethodCallExpr exprDSL ) {
+    private static MethodCallExpr buildExpression(RuleContext context, DrlxParseSuccess drlxParseResult, MethodCallExpr exprDSL ) {
         final List<String> usedDeclarationsWithUnification = new ArrayList<>();
         if(!drlxParseResult.isPatternBindingUnification()) {
             if (drlxParseResult.getPatternBinding() != null) {
@@ -992,7 +713,7 @@ public class ModelGenerator {
         return exprDSL;
     }
 
-    private static MethodCallExpr buildIndexedBy(RuleContext context, DrlxParseResult drlxParseResult, MethodCallExpr exprDSL) {
+    private static MethodCallExpr buildIndexedBy(RuleContext context, DrlxParseSuccess drlxParseResult, MethodCallExpr exprDSL) {
         ConstraintType decodeConstraintType = drlxParseResult.getDecodeConstraintType();
         TypedExpression left = drlxParseResult.getLeft();
         TypedExpression right = drlxParseResult.getRight();
@@ -1042,7 +763,7 @@ public class ModelGenerator {
         return exprDSL;
     }
 
-    private static MethodCallExpr buildReactOn( DrlxParseResult drlxParseResult, MethodCallExpr exprDSL ) {
+    private static MethodCallExpr buildReactOn(DrlxParseSuccess drlxParseResult, MethodCallExpr exprDSL ) {
         if ( !drlxParseResult.getReactOnProperties().isEmpty() ) {
             exprDSL = new MethodCallExpr(exprDSL, "reactOn");
             drlxParseResult.getReactOnProperties().stream()
@@ -1061,11 +782,11 @@ public class ModelGenerator {
         return exprDSL;
     }
 
-    private static Expression buildConstraintExpression( DrlxParseResult drlxParseResult, Expression expr ) {
+    private static Expression buildConstraintExpression(DrlxParseSuccess drlxParseResult, Expression expr ) {
         return drlxParseResult.isStatic() ? expr : generateLambdaWithoutParameters(drlxParseResult.getUsedDeclarations(), expr, drlxParseResult.isSkipThisAsParam());
     }
 
-    public static MethodCallExpr buildBinding(DrlxParseResult drlxParseResult ) {
+    public static MethodCallExpr buildBinding(DrlxParseSuccess drlxParseResult ) {
         MethodCallExpr bindDSL = new MethodCallExpr(null, BIND_CALL);
         if(drlxParseResult.hasUnificationVariable()) {
             bindDSL.addArgument(new NameExpr(toVar(drlxParseResult.getUnificationVariable())));
