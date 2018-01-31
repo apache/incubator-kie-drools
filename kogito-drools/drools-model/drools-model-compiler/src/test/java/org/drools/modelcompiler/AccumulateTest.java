@@ -73,6 +73,58 @@ public class AccumulateTest extends BaseModelTest {
     }
 
     @Test
+    public void testAccumulateConstrainingValue() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "import " + Result.class.getCanonicalName() + ";" +
+                        "rule X when\n" +
+                        "  accumulate ( $p: Person ( getName().startsWith(\"M\")); \n" +
+                        "                $sum : sum($p.getAge()); $sum > 50  \n" +
+                        "              )                          \n" +
+                        "then\n" +
+                        "  insert(new Result($sum));\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Edson", 35));
+        ksession.insert(new Person("Mario", 40));
+
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(1, results.size());
+        assertEquals(77, results.iterator().next().getValue());
+    }
+
+    @Test
+    public void testAccumulateConstrainingValueInPattern() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "import " + Result.class.getCanonicalName() + ";" +
+                        "rule X when\n" +
+                        "  $sum : Integer( this > 50 ) from accumulate ( $p: Person ( getName().startsWith(\"M\")); \n" +
+                        "                sum($p.getAge())  \n" +
+                        "              )                          \n" +
+                        "then\n" +
+                        "  insert(new Result($sum));\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Edson", 35));
+        ksession.insert(new Person("Mario", 40));
+
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(1, results.size());
+        assertEquals(77, results.iterator().next().getValue());
+    }
+
+    @Test
     public void testAccumulateWithProperty() {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -127,7 +179,7 @@ public class AccumulateTest extends BaseModelTest {
     }
 
     @Test
-    public void testAccumulate3() {
+    public void testAccumulateMultipleFunctions() {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                         "import " + Result.class.getCanonicalName() + ";" +
@@ -135,6 +187,35 @@ public class AccumulateTest extends BaseModelTest {
                         "  accumulate ( Person ( $age : age > 36); \n" +
                         "                $sum : sum($age),  \n" +
                         "                $average : average($age)  \n" +
+                        "              )                          \n" +
+                        "then\n" +
+                        "  insert(new Result($sum));\n" +
+                        "  insert(new Result($average));\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Edson", 35));
+        ksession.insert(new Person("Mario", 40));
+
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertThat(results, hasItem(new Result(38.5d)));
+        assertThat(results, hasItem(new Result(77)));
+    }
+
+    @Test @Ignore
+    public void testAccumulateMultipleFunctionsConstrainingValues() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "import " + Result.class.getCanonicalName() + ";" +
+                        "rule X when\n" +
+                        "  accumulate ( Person ( $age : age > 36); \n" +
+                        "                $sum : sum($age),  \n" +
+                        "                $average : average($age)  \n" +
+                        "                ; $sum > 50, $average > 30\n" +
                         "              )                          \n" +
                         "then\n" +
                         "  insert(new Result($sum));\n" +
