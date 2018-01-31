@@ -68,7 +68,7 @@ public class CompositePatterns implements Condition, View, ModelComponent {
 
     private int getConsequencePosition(String name) {
         if ( RuleImpl.DEFAULT_CONSEQUENCE_NAME.equals( name ) ) {
-            return patterns.size();
+            return patterns.size()-1;
         }
         int result = 0;
         for (Condition condition : patterns) {

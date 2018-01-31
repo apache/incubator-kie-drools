@@ -18,10 +18,13 @@ public class OrVisitor {
     public void visit(ConditionalElementDescr descr, String methodName) {
         final MethodCallExpr ceDSL = new MethodCallExpr(null, methodName);
         context.addExpression(ceDSL);
-        context.pushExprPointer(ceDSL::addArgument);
+
         for (BaseDescr subDescr : descr.getDescrs()) {
+            final MethodCallExpr andDSL = new MethodCallExpr(null, "and");
+            context.pushExprPointer(andDSL::addArgument);
             subDescr.accept(modelGeneratorVisitor);
+            context.popExprPointer();
+            ceDSL.addArgument( andDSL );
         }
-        context.popExprPointer();
     }
 }

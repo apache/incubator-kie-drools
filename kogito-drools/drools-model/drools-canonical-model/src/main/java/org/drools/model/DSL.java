@@ -16,6 +16,8 @@ import org.drools.model.functions.Operator;
 import org.drools.model.functions.Predicate1;
 import org.drools.model.functions.Predicate2;
 import org.drools.model.functions.Predicate3;
+import org.drools.model.functions.Predicate4;
+import org.drools.model.functions.Predicate5;
 import org.drools.model.functions.accumulate.AccumulateFunction;
 import org.drools.model.functions.temporal.AfterPredicate;
 import org.drools.model.functions.temporal.BeforePredicate;
@@ -59,6 +61,8 @@ import org.drools.model.view.Expr1ViewItemImpl;
 import org.drools.model.view.Expr2ViewItem;
 import org.drools.model.view.Expr2ViewItemImpl;
 import org.drools.model.view.Expr3ViewItemImpl;
+import org.drools.model.view.Expr4ViewItemImpl;
+import org.drools.model.view.Expr5ViewItemImpl;
 import org.drools.model.view.ExprViewItem;
 import org.drools.model.view.InputViewItem;
 import org.drools.model.view.InputViewItemImpl;
@@ -228,6 +232,22 @@ public class DSL {
 
     public static <T, U, X> ExprViewItem<T> expr(String exprId, Variable<T> var1, Variable<U> var2, Variable<X> var3, Predicate3<T, U, X> predicate) {
         return new Expr3ViewItemImpl<T, U, X>(exprId, var1, var2, var3, new Predicate3.Impl<T, U, X>(predicate));
+    }
+
+    public static <A, B, C, D> ExprViewItem<A> expr(Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Predicate4<A, B, C, D> predicate) {
+        return new Expr4ViewItemImpl<A, B, C, D>(var1, var2, var3, var4, new Predicate4.Impl<A, B, C, D>(predicate));
+    }
+
+    public static <A, B, C, D> ExprViewItem<A> expr(String exprId, Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Predicate4<A, B, C, D> predicate) {
+        return new Expr4ViewItemImpl<A, B, C, D>(exprId, var1, var2, var3, var4, new Predicate4.Impl<A, B, C, D>(predicate));
+    }
+
+    public static <A, B, C, D, E> ExprViewItem<A> expr(Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Variable<E> var5, Predicate5<A, B, C, D, E> predicate) {
+        return new Expr5ViewItemImpl<A, B, C, D, E>(var1, var2, var3, var4, var5, new Predicate5.Impl<A, B, C, D, E>(predicate));
+    }
+
+    public static <A, B, C, D, E> ExprViewItem<A> expr(String exprId, Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Variable<E> var5, Predicate5<A, B, C, D, E> predicate) {
+        return new Expr5ViewItemImpl<A, B, C, D, E>(exprId, var1, var2, var3, var4, var5, new Predicate5.Impl<A, B, C, D, E>(predicate));
     }
 
     public static boolean eval( String op, Object obj, Object... args ) {

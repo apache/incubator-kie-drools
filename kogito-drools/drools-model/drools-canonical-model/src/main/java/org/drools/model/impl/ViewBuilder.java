@@ -78,6 +78,7 @@ public class ViewBuilder {
         }
 
         view.ensureVariablesDeclarationInView();
+        Collections.sort( view.getSubConditions(), ConditionComparator.INSTANCE );
         return view;
     }
 
@@ -160,9 +161,10 @@ public class ViewBuilder {
 
             if ( viewItem instanceof InputViewItemImpl ) {
                 scopedInputs.put( patterVariable, (InputViewItemImpl) viewItem );
-                if (!topLevel) {
-                    conditions.add( new PatternImpl( patterVariable, SingleConstraint.EMPTY ) );
-                }
+                Condition condition = new PatternImpl( patterVariable, SingleConstraint.EMPTY );
+                conditions.add( condition );
+                conditionMap.put( patterVariable, condition );
+                ctx.usedVars.add( patterVariable );
                 continue;
             }
 
@@ -219,8 +221,6 @@ public class ViewBuilder {
             }
         }
         patternImpl.ifPresent(conditions::remove);
-
-        Collections.sort( conditions, ConditionComparator.INSTANCE );
 
         return new CompositePatterns( type, conditions, ctx.usedVars, consequences );
     }

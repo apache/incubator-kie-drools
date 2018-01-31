@@ -155,7 +155,7 @@ public class QueryGenerator {
                 } else {
                     QueryParameter qp = packageModel.queryVariables(queryName).get(i);
                     context.addDeclaration(new DeclarationSpec(itemText, qp.type));
-                    callCall.addArgument(new NameExpr(toVar(itemText)));
+                    callCall.addArgument(substituteBindingWithQueryParameter(context, itemText));
                 }
             }
 

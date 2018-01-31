@@ -42,9 +42,11 @@ import org.drools.model.Variable;
 import org.drools.model.impl.ModelImpl;
 import org.drools.model.operators.InOperator;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
+import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Adult;
 import org.drools.modelcompiler.domain.Child;
 import org.drools.modelcompiler.domain.Customer;
+import org.drools.modelcompiler.domain.Employee;
 import org.drools.modelcompiler.domain.Man;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Relationship;
@@ -85,12 +87,14 @@ import static org.drools.model.DSL.not;
 import static org.drools.model.DSL.on;
 import static org.drools.model.DSL.or;
 import static org.drools.model.DSL.query;
+import static org.drools.model.DSL.reactiveFrom;
 import static org.drools.model.DSL.rule;
 import static org.drools.model.DSL.type;
 import static org.drools.model.DSL.valueOf;
 import static org.drools.model.DSL.when;
 import static org.drools.model.DSL.window;
 import static org.drools.modelcompiler.BaseModelTest.getObjectsIntoList;
+import static org.drools.modelcompiler.domain.Employee.createEmployee;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -1461,5 +1465,63 @@ public class FlowTest {
         public Class<?> getResultType() {
             return ArrayList.class;
         }
+    }
+
+    @Test
+    public void testOrConditional() {
+        final org.drools.model.Global<java.util.List> var_list = globalOf(type(java.util.List.class),
+                "defaultpkg",
+                "list");
+
+        final org.drools.model.Variable<org.drools.modelcompiler.domain.Employee> var_$pattern_Employee$1$ = declarationOf(type(org.drools.modelcompiler.domain.Employee.class),
+                "$pattern_Employee$1$");
+        final org.drools.model.Variable<org.drools.modelcompiler.domain.Address> var_$address = declarationOf(type(org.drools.modelcompiler.domain.Address.class),
+                "$address",
+                reactiveFrom(var_$pattern_Employee$1$,
+                        (_this) -> _this.getAddress()));
+
+        org.drools.model.Rule rule = rule("R").build(or(and(input(var_$pattern_Employee$1$),
+                expr("$expr$2$",
+                        var_$address,
+                        (_this) -> org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getCity(),
+                                "Big City")).indexedBy(java.lang.String.class,
+                        org.drools.model.Index.ConstraintType.EQUAL,
+                        0,
+                        _this -> _this.getCity(),
+                        "Big City")
+                        .reactOn("city")),
+                and(input(var_$pattern_Employee$1$),
+                        expr("$expr$4$",
+                                var_$address,
+                                (_this) -> org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getCity(),
+                                        "Small City")).indexedBy(java.lang.String.class,
+                                org.drools.model.Index.ConstraintType.EQUAL,
+                                0,
+                                _this -> _this.getCity(),
+                                "Small City")
+                                .reactOn("city"))),
+                on(var_$address,
+                        var_list).execute(($address, list) -> {
+                    list.add($address.getCity());
+                }));
+
+
+        Model model = new ModelImpl().addRule( rule ).addGlobal( var_list );
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
+
+        KieSession kieSession = kieBase.newKieSession();
+
+        List<String> results = new ArrayList<>();
+        kieSession.setGlobal("list", results);
+
+        final Employee bruno = createEmployee("Bruno", new Address("Elm", 10, "Small City"));
+        kieSession.insert(bruno);
+
+        final Employee alice = createEmployee("Alice", new Address("Elm", 10, "Big City"));
+        kieSession.insert(alice);
+
+        kieSession.fireAllRules();
+
+        Assertions.assertThat(results).containsExactlyInAnyOrder("Big City", "Small City");
     }
 }
