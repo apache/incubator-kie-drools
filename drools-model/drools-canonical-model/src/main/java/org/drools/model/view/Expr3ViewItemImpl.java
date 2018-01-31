@@ -5,37 +5,37 @@ import org.drools.model.Condition.Type;
 import org.drools.model.Variable;
 import org.drools.model.functions.Predicate3;
 
-public class Expr3ViewItemImpl<T, U, X> extends AbstractExprViewItem<T> implements ExprViewItem<T> {
+public class Expr3ViewItemImpl<A, B, C> extends AbstractExprViewItem<A> implements ExprViewItem<A> {
 
-    private final Variable<U> var2;
-    private final Variable<X> var3;
-    private final Predicate3<T, U, X> predicate;
+    private final Variable<B> var2;
+    private final Variable<C> var3;
+    private final Predicate3<A, B, C> predicate;
 
     // with 3 elements we don't implement INDEXes
 
-    public Expr3ViewItemImpl(Variable<T> var1, Variable<U> var2, Variable<X> var3, Predicate3<T, U, X> predicate) {
+    public Expr3ViewItemImpl(Variable<A> var1, Variable<B> var2, Variable<C> var3, Predicate3<A, B, C> predicate) {
         super(predicate.toString(), var1);
         this.var2 = var2;
         this.var3 = var3;
         this.predicate = predicate;
     }
 
-    public Expr3ViewItemImpl(String exprId, Variable<T> var1, Variable<U> var2, Variable<X> var3, Predicate3<T, U, X> predicate) {
+    public Expr3ViewItemImpl(String exprId, Variable<A> var1, Variable<B> var2, Variable<C> var3, Predicate3<A, B, C> predicate) {
         super(exprId, var1);
         this.var2 = var2;
         this.var3 = var3;
         this.predicate = predicate;
     }
 
-    public Predicate3<T, U, X> getPredicate() {
+    public Predicate3<A, B, C> getPredicate() {
         return predicate;
     }
 
-    public Variable<U> getSecondVariable() {
+    public Variable<B> getSecondVariable() {
         return var2;
     }
 
-    public Variable<X> getThirdVariable() {
+    public Variable<C> getThirdVariable() {
         return var3;
     }
 

@@ -68,10 +68,9 @@ public class OOPathExprGenerator {
             final List<Expression> conditions = chunk.getConditions();
             if (!conditions.isEmpty()) {
                 Class<?> finalFieldType = fieldType;
-                final List<DrlxParseResult> conditionParseResult = conditions.stream().map((Expression c) -> {
-                    return ModelGenerator
-                            .drlxParse(context, packageModel, finalFieldType, bindingId, c.toString());
-                }).collect(Collectors.toList());
+                final List<DrlxParseResult> conditionParseResult = conditions.stream().map((Expression c) ->
+                    ModelGenerator.drlxParse(context, packageModel, finalFieldType, bindingId, c.toString())
+                ).collect(Collectors.toList());
                 ooPathConditionExpressions.put(chunkKey, conditionParseResult);
             } else {
                 final DrlxParseResult drlxParseResult = new DrlxParseResult(fieldType, "", bindingId, new BooleanLiteralExpr(true), fieldType);

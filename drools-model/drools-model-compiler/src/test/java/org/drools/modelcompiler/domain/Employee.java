@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.modelcompiler.oopathlogicalbranchestest;
+package org.drools.modelcompiler.domain;
 
 import java.io.Serializable;
 
@@ -36,16 +36,7 @@ public class Employee extends Person implements Serializable {
         super(name, age);
     }
 
-    public Employee(final String name, final String likes, final int age) {
-        super(name, likes, age);
-    }
-
-    public Employee(final String name, final String likes, final int age, final String position) {
-        super(name, likes, age);
-        this.position = position;
-    }
-
-    public String getPosition() {
+     public String getPosition() {
         return this.position;
     }
 
@@ -75,5 +66,11 @@ public class Employee extends Person implements Serializable {
         int result = super.hashCode();
         result = 31 * result + (position != null ? position.hashCode() : 0);
         return result;
+    }
+
+    public static Employee createEmployee(final String name, final Address address) {
+        final Employee employee = new Employee(name);
+        employee.setAddress(address);
+        return employee;
     }
 }

@@ -267,29 +267,6 @@ public class CompilerTest extends BaseModelTest {
     }
 
     @Test
-    public void testOr() {
-        String str =
-                "import " + Person.class.getCanonicalName() + ";" +
-                "rule R when\n" +
-                "  $p : Person(name == \"Mark\") or\n" +
-                "  ( $mark : Person(name == \"Mark\")\n" +
-                "    and\n" +
-                "    $p : Person(age > $mark.age) )\n" +
-                "  $s: String(this == $p.name)\n" +
-                "then\n" +
-                "  System.out.println(\"Found: \" + $s);\n" +
-                "end";
-
-        KieSession ksession = getKieSession( str );
-
-        ksession.insert( "Mario" );
-        ksession.insert( new Person( "Mark", 37 ) );
-        ksession.insert( new Person( "Edson", 35 ) );
-        ksession.insert( new Person( "Mario", 40 ) );
-        ksession.fireAllRules();
-    }
-
-    @Test
     public void testInlineCast() {
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +
@@ -368,7 +345,7 @@ public class CompilerTest extends BaseModelTest {
                 "import " + Result.class.getCanonicalName() + ";" +
                 "import " + Person.class.getCanonicalName() + ";" +
                 "rule R when\n" +
-                "  $p : Person( address.addressName.startsWith(\"M\"))\n" +
+                "  $p : Person( address.city.startsWith(\"M\"))\n" +
                 "then\n" +
                 "  Result r = new Result($p.getName());" +
                 "  insert(r);\n" +
@@ -665,6 +642,15 @@ public class CompilerTest extends BaseModelTest {
 
     @Test
     public void testConcatenatedFrom() {
+        checkConcatenatedFrom(true);
+    }
+
+    @Test
+    public void testConcatenatedFromWithCondition() {
+        checkConcatenatedFrom(false);
+    }
+
+    private void checkConcatenatedFrom(boolean withCondition) {
         String str =
                 "import " + Result.class.getCanonicalName() + ";\n" +
                 "import " + Man.class.getCanonicalName() + ";\n" +
@@ -673,7 +659,7 @@ public class CompilerTest extends BaseModelTest {
                 "import " + Toy.class.getCanonicalName() + ";\n" +
                 "global java.util.List list;\n" +
                 "rule R when\n" +
-                "  $m : Man()\n" +
+                "  $m : Man(" + (withCondition ? "age > 0" : "") + ")\n" +
                 "  $w : Woman() from $m.wife\n" +
                 "  $c : Child( age > 10 ) from $w.children\n" +
                 "  $t : Toy() from $c.toys\n" +
@@ -973,7 +959,7 @@ public class CompilerTest extends BaseModelTest {
     public void testChainOfMethodCallInConstraint() {
         String str = "import " + Person.class.getCanonicalName() + ";" +
                      "rule R when\n" +
-                     "  $p : Person( getAddress().getAddressName().length() == 5 )\n" +
+                     "  $p : Person( getAddress().getCity().length() == 5 )\n" +
                      "then\n" +
                      "  insert(\"matched\");\n" +
                      "end";
@@ -995,7 +981,7 @@ public class CompilerTest extends BaseModelTest {
     public void testChainFieldAccessorsAndMethodCall() {
         String str = "import " + Person.class.getCanonicalName() + ";" +
                      "rule R when\n" +
-                     "  $p : Person( address.getAddressName().length == 5 )\n" +
+                     "  $p : Person( address.getCity().length == 5 )\n" +
                      "then\n" +
                      "  insert(\"matched\");\n" +
                      "end";
@@ -1221,7 +1207,7 @@ public class CompilerTest extends BaseModelTest {
         String str = "import " + Result.class.getCanonicalName() + ";" +
                      "import " + Person.class.getCanonicalName() + ";" +
                      "rule R when\n" +
-                     "  $p : Person( address!.addressName.startsWith(\"M\") )\n" +
+                     "  $p : Person( address!.city.startsWith(\"M\") )\n" +
                      "then\n" +
                      "  Result r = new Result($p.getName());" +
                      "  insert(r);\n" +

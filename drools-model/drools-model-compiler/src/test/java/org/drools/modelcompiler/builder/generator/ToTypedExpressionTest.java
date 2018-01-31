@@ -43,7 +43,7 @@ public class ToTypedExpressionTest {
         Assert.assertThat(reactOnProperties, hasItem("name"));
 
         assertEquals(typedResult("_this.method(5,9,\"x\")", int.class), toTypedExpression("method(5,9,\"x\")", Overloaded.class));
-        assertEquals(typedResult("_this.getAddress().getAddressName().length()", int.class), toTypedExpression("address.getAddressName().length", Person.class));
+        assertEquals(typedResult("_this.getAddress().getCity().length()", int.class), toTypedExpression("address.getCity().length", Person.class));
 
         TypedExpression inlineCastResult = typedResult("((org.drools.modelcompiler.domain.Person) _this).getName()", String.class)
                 .setPrefixExpression(DrlxParseUtil.parseExpression("_this instanceof org.drools.modelcompiler.domain.Person").getExpr());
