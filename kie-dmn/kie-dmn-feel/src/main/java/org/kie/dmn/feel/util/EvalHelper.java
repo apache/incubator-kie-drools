@@ -34,6 +34,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiPredicate;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
+
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELProperty;
 import org.kie.dmn.feel.runtime.Range;
@@ -159,82 +160,139 @@ public class EvalHelper {
         return text;
     }
 
-    public static Object getValue(Object current, String property)
-            throws IllegalAccessException, InvocationTargetException {
+    public static class PropertyValueResult {
+
+        private final boolean defined;
+        private final Either<Exception, Object> valueResult;
+
+        private PropertyValueResult(boolean isDefined, Either<Exception, Object> value) {
+            this.defined = isDefined;
+            this.valueResult = value;
+        }
+
+        public static PropertyValueResult notDefined() {
+            return new PropertyValueResult(false, Either.ofLeft(new UnsupportedOperationException("Property was not defined.")));
+        }
+
+        public static PropertyValueResult of(Either<Exception, Object> valueResult) {
+            return new PropertyValueResult(true, valueResult);
+        }
+
+        public static PropertyValueResult ofValue(Object value) {
+            return new PropertyValueResult(true, Either.ofRight(value));
+        }
+
+        public boolean isDefined() {
+            return defined;
+        }
+
+        public Either<Exception, Object> getValueResult() {
+            return valueResult;
+        }
+
+    }
+
+    public static PropertyValueResult getDefinedValue(final Object current, final String property) {
+        Object result;
         if ( current == null ) {
-            return null;
+            return PropertyValueResult.notDefined();
         } else if ( current instanceof Map ) {
-            current = ((Map) current).get( property );
+            result = ((Map) current).get(property);
+            if (result == null) {
+                // most cases "result" will be defined, so checking here only in case null was to signify missing key altogether.
+                if (!((Map) current).containsKey(property)) {
+                    return PropertyValueResult.notDefined();
+                }
+            }
         } else if ( current instanceof Period ) {
             switch ( property ) {
                 case "years":
-                    current = ((Period) current).getYears();
+                    result = ((Period) current).getYears();
                     break;
                 case "months":
-                    current = ((Period) current).getMonths()%12;
+                    result = ((Period) current).getMonths() % 12;
                     break;
                 case "days":
-                    current = ((Period) current).getDays()%30;
+                    result = ((Period) current).getDays() % 30;
                     break;
                 default:
-                    return null;
+                    return PropertyValueResult.notDefined();
             }
         } else if ( current instanceof Duration ) {
             switch ( property ) {
                 case "days":
-                    current = ((Duration) current).toDays();
+                    result = ((Duration) current).toDays();
                     break;
                 case "hours":
-                    current = ((Duration) current).toHours()%24;
+                    result = ((Duration) current).toHours() % 24;
                     break;
                 case "minutes":
-                    current = ((Duration) current).toMinutes()%60;
+                    result = ((Duration) current).toMinutes() % 60;
                     break;
                 case "seconds":
-                    current = ((Duration) current).getSeconds()%60;
+                    result = ((Duration) current).getSeconds() % 60;
                     break;
                 default:
-                    return null;
+                    return PropertyValueResult.notDefined();
             }
         } else if ( current instanceof Temporal ) {
             switch ( property ) {
                 case "year":
-                    current = ((Temporal) current).get( ChronoField.YEAR );
+                    result = ((Temporal) current).get(ChronoField.YEAR);
                     break;
                 case "month":
-                    current = ((Temporal) current).get( ChronoField.MONTH_OF_YEAR );
+                    result = ((Temporal) current).get(ChronoField.MONTH_OF_YEAR);
                     break;
                 case "day":
-                    current = ((Temporal) current).get( ChronoField.DAY_OF_MONTH );
+                    result = ((Temporal) current).get(ChronoField.DAY_OF_MONTH);
                     break;
                 case "hour":
-                    current = ((Temporal) current).get( ChronoField.HOUR_OF_DAY );
+                    result = ((Temporal) current).get(ChronoField.HOUR_OF_DAY);
                     break;
                 case "minute":
-                    current = ((Temporal) current).get( ChronoField.MINUTE_OF_HOUR );
+                    result = ((Temporal) current).get(ChronoField.MINUTE_OF_HOUR);
                     break;
                 case "second":
-                    current = ((Temporal) current).get( ChronoField.SECOND_OF_MINUTE );
+                    result = ((Temporal) current).get(ChronoField.SECOND_OF_MINUTE);
                     break;
                 case "time offset":
                 case "timezone":
-                    current = Duration.ofSeconds( ((Temporal) current).get( ChronoField.OFFSET_SECONDS ) );
+                    result = Duration.ofSeconds(((Temporal) current).get(ChronoField.OFFSET_SECONDS));
                     break;
                 case "weekday":
-                    current = ((Temporal) current).get( ChronoField.DAY_OF_WEEK );
+                    result = ((Temporal) current).get(ChronoField.DAY_OF_WEEK);
                     break;
                 default:
-                    return null;
+                    return PropertyValueResult.notDefined();
             }
         } else {
             Method getter = getGenericAccessor( current.getClass(), property );
             if ( getter != null ) {
-                current = getter.invoke( current );
+                try {
+                    result = getter.invoke(current);
+                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                    e.printStackTrace();
+                    return PropertyValueResult.of(Either.ofLeft(e));
+                }
             } else {
-                return null;
+                // WORST-CASE: if code reached here, means that "property" is not defined on the "current" object at all.
+                return PropertyValueResult.notDefined();
             }
         }
-        return coerceNumber( current );
+
+        // before returning, coerce "result" into number.
+        result = coerceNumber(result);
+
+        return PropertyValueResult.ofValue(result);
+    }
+
+    /**
+     * {@link #getDefinedValue(Object, String)} method instead.
+     * @deprecated this method cannot distinguish null because: 1. property undefined for current, 2. an error, 3. a properly defined property value valorized to null. 
+     * 
+     */
+    public static Object getValue(final Object current, final String property) {
+        return getDefinedValue(current, property).getValueResult().getOrElse(null);
     }
 
     /**
