@@ -1,12 +1,12 @@
 /*
  * Copyright 2006 Red Hat, Inc. and/or its affiliates.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,7 +16,6 @@
 
 package org.drools.compiler.rule.builder;
 
-import java.io.File;
 import java.util.Optional;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
@@ -180,12 +179,9 @@ public class RuleBuildContext extends PackageBuildContext {
         boolean nameInferredFromResource = false;
 
         if (ruleUnitClassName == null && rule.getResource() != null && rule.getResource().getSourcePath() != null) {
-            String drlPath = rule.getResource().getSourcePath();
-            int lastSep = drlPath.lastIndexOf( File.separatorChar );
-            if (lastSep >= 0) {
-                drlPath = drlPath.substring(lastSep + 1);
-            }
-            ruleUnitClassName = rule.getPackage() + "." + drlPath.substring(0, drlPath.lastIndexOf('.')).replace(File.separatorChar, '.');
+            // We cannot depend on splitting based on File.separator, because e.g. MemoryFileSystem is "/" based
+            // also on Windows => We need to parse the classname based on Java classname allowed characters.
+            ruleUnitClassName = extractClassNameFromSourcePath();
             nameInferredFromResource = true;
         }
 
@@ -209,5 +205,30 @@ public class RuleBuildContext extends PackageBuildContext {
 
     public Optional<EntryPointId> getEntryPointId(String name) {
         return getPkg().getRuleUnitRegistry().getRuleUnitFor(getRule()).flatMap(ruDescr -> ruDescr.getEntryPointId(name));
+    }
+
+    private String extractClassNameFromSourcePath() {
+        String drlPath = rule.getResource().getSourcePath();
+        final int fileTypeDotIndex = drlPath.lastIndexOf('.');
+        // If '.' is the first character, it may be a path like ./somepath/something/etc,
+        // otherwise, if found somewhere, remove it with file type suffix
+        if (fileTypeDotIndex > 0) {
+            drlPath = drlPath.substring(0, fileTypeDotIndex);
+        }
+
+        StringBuilder classNameBuilder = new StringBuilder();
+        int actualIndex = drlPath.length() - 1;
+        char actualChar = drlPath.charAt(actualIndex);
+        while (Character.isJavaIdentifierPart(actualChar) || Character.isJavaIdentifierStart(actualChar)) {
+            classNameBuilder.append(actualChar);
+            actualIndex--;
+            if (actualIndex >= 0) {
+                actualChar = drlPath.charAt(actualIndex);
+            } else {
+                break;
+            }
+        }
+
+        return rule.getPackage() + "." + classNameBuilder.reverse().toString();
     }
 }
