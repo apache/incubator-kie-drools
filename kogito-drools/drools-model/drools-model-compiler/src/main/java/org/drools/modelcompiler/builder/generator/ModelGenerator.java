@@ -47,7 +47,6 @@ import org.drools.core.util.ClassUtils;
 import org.drools.core.util.MVELSafeHelper;
 import org.drools.core.util.StringUtils;
 import org.drools.core.util.index.IndexUtil.ConstraintType;
-import org.drools.drlx.DrlxParser;
 import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.Modifier;
 import org.drools.javaparser.ast.NodeList;
@@ -60,6 +59,7 @@ import org.drools.javaparser.ast.expr.AssignExpr;
 import org.drools.javaparser.ast.expr.BinaryExpr;
 import org.drools.javaparser.ast.expr.BinaryExpr.Operator;
 import org.drools.javaparser.ast.expr.ClassExpr;
+import org.drools.javaparser.ast.expr.EnclosedExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.FieldAccessExpr;
 import org.drools.javaparser.ast.expr.IntegerLiteralExpr;
@@ -92,9 +92,6 @@ import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.ParseExpressionErrorResult;
 import org.drools.modelcompiler.builder.errors.UnknownDeclarationError;
 import org.drools.modelcompiler.builder.generator.RuleContext.RuleDialect;
-import org.drools.modelcompiler.builder.generator.operatorspec.CustomOperatorSpec;
-import org.drools.modelcompiler.builder.generator.operatorspec.OperatorSpec;
-import org.drools.modelcompiler.builder.generator.operatorspec.TemporalOperatorSpec;
 import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
 
 import static java.util.stream.Collectors.toList;
@@ -721,6 +718,10 @@ public class ModelGenerator {
     private static DrlxParseResult getDrlxParseResult( RuleContext context, PackageModel packageModel, Class<?> patternType,
                                                        String bindingId, String expression, DrlxExpression drlx, boolean isPositional ) {
         Expression drlxExpr = drlx.getExpr();
+
+        while (drlxExpr instanceof EnclosedExpr ) {
+            drlxExpr = (( EnclosedExpr ) drlxExpr).getInner();
+        }
 
         String exprId;
         if ( GENERATE_EXPR_ID ) {

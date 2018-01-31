@@ -23,7 +23,6 @@ import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Employee;
 import org.drools.modelcompiler.domain.Person;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
@@ -89,7 +88,7 @@ public class OrTest extends BaseModelTest {
         Assertions.assertThat(results).containsExactlyInAnyOrder("Big City", "Small City");
     }
 
-    @Test @Ignore
+    @Test
     public void testOrConstraint() {
         final String drl =
                 "import " + Employee.class.getCanonicalName() + ";" +
