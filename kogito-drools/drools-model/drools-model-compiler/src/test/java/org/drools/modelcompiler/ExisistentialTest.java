@@ -22,6 +22,7 @@ import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.QueryResults;
 
 import static org.drools.modelcompiler.CepTest.getCepKieModuleModel;
 import static org.junit.Assert.assertEquals;
@@ -106,13 +107,13 @@ public class ExisistentialTest extends BaseModelTest {
     public void testForall() {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
-                        "import " + Result.class.getCanonicalName() + ";" +
-                        "rule R when\n" +
-                        "  forall( $p : Person( name.length == 5 ) " +
-                        "       Person( this == $p, age > 40 ) )\n" +
-                        "then\n" +
-                        "  insert(new Result(\"ok\"));\n" +
-                        "end";
+                "import " + Result.class.getCanonicalName() + ";" +
+                "rule R when\n" +
+                "  forall( $p : Person( name.length == 5 ) " +
+                "       Person( this == $p, age > 40 ) )\n" +
+                "then\n" +
+                "  insert(new Result(\"ok\"));\n" +
+                "end";
 
         KieSession ksession = getKieSession( str );
 
@@ -127,15 +128,36 @@ public class ExisistentialTest extends BaseModelTest {
     }
 
     @Test
+    public void testForallInQuery() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "query ifAllPersonsAreOlderReturnThem (int pAge)\n" +
+                "    forall ( Person(age > pAge) )\n" +
+                "    $person : Person()\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( new Person( "Mario", 41 ) );
+        ksession.insert( new Person( "Mark", 39 ) );
+        ksession.insert( new Person( "Edson", 42 ) );
+        ksession.fireAllRules();
+
+        QueryResults results = ksession.getQueryResults( "ifAllPersonsAreOlderReturnThem", 30 );
+
+        assertEquals( 3, results.size() );
+    }
+
+    @Test
     public void testExistsEmptyPredicate() {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
-                        "import " + Result.class.getCanonicalName() + ";" +
-                        "rule R when\n" +
-                        "  exists( Person() )\n" +
-                        "then\n" +
-                        "  insert(new Result(\"ok\"));\n" +
-                        "end";
+                "import " + Result.class.getCanonicalName() + ";" +
+                "rule R when\n" +
+                "  exists( Person() )\n" +
+                "then\n" +
+                "  insert(new Result(\"ok\"));\n" +
+                "end";
 
         KieSession ksession = getKieSession( str );
 

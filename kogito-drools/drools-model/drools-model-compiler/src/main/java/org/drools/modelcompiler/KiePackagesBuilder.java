@@ -112,6 +112,7 @@ import org.kie.internal.utils.ChainedProperties;
 import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
+import static org.drools.compiler.lang.descr.ForallDescr.BASE_IDENTIFIER;
 import static org.drools.core.rule.GroupElement.AND;
 import static org.drools.core.rule.Pattern.getReadAcessor;
 import static org.drools.model.DSL.declarationOf;
@@ -402,10 +403,20 @@ public class KiePackagesBuilder {
             }
             case FORALL: {
                 Condition innerCondition = condition.getSubConditions().get(0);
-                Pattern basePattern = (Pattern) conditionToElement( ctx, group, innerCondition.getSubConditions().get(0) );
+                Pattern basePattern;
                 List<Pattern> remainingPatterns = new ArrayList<>();
-                for (int i = 1; i < innerCondition.getSubConditions().size(); i++) {
-                    remainingPatterns.add( (Pattern) conditionToElement( ctx, group, innerCondition.getSubConditions().get(i) ) );
+                if (innerCondition instanceof PatternImpl) {
+                    basePattern = new Pattern( ctx.getNextPatternIndex(),
+                                               0, // offset will be set by ReteooBuilder
+                                               getObjectType( (( PatternImpl ) innerCondition).getPatternVariable().getType().asClass() ),
+                                               BASE_IDENTIFIER,
+                                               true );
+                    remainingPatterns.add( (Pattern) conditionToElement( ctx, group, innerCondition ) );
+                } else {
+                    basePattern = ( Pattern ) conditionToElement( ctx, group, innerCondition.getSubConditions().get( 0 ) );
+                    for (int i = 1; i < innerCondition.getSubConditions().size(); i++) {
+                        remainingPatterns.add( ( Pattern ) conditionToElement( ctx, group, innerCondition.getSubConditions().get( i ) ) );
+                    }
                 }
                 return new Forall(basePattern, remainingPatterns);
             }
@@ -696,7 +707,7 @@ public class KiePackagesBuilder {
     ClassObjectType getObjectType( Class<?> patternClass ) {
         return objectTypeCache.computeIfAbsent( patternClass, c -> {
             boolean isEvent = false;
-            if (!patternClass.getName().startsWith( "java." )) {
+            if (!patternClass.getName().startsWith( "java." ) && !patternClass.isPrimitive()) {
                 KnowledgePackageImpl pkg = (KnowledgePackageImpl) packages.computeIfAbsent( patternClass.getPackage().getName(), this::createKiePackage );
                 TypeDeclaration typeDeclaration = pkg.getTypeDeclaration( patternClass );
                 if ( typeDeclaration == null ) {
