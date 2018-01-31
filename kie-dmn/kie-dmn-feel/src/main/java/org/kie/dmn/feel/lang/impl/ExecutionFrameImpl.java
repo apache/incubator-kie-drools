@@ -16,10 +16,11 @@
 
 package org.kie.dmn.feel.lang.impl;
 
-import org.kie.dmn.feel.util.EvalHelper;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import org.kie.dmn.feel.util.EvalHelper;
+import org.kie.dmn.feel.util.EvalHelper.PropertyValueResult;
 
 public class ExecutionFrameImpl
         implements ExecutionFrame {
@@ -27,6 +28,7 @@ public class ExecutionFrameImpl
     private ExecutionFrame parentFrame;
 
     private Map<String, Object> variables = new HashMap<>();
+    private Object rootObject;
 
     public ExecutionFrameImpl(ExecutionFrame parentFrame) {
         this.parentFrame = parentFrame;
@@ -43,6 +45,12 @@ public class ExecutionFrameImpl
     @Override
     public Object getValue(String symbol) {
         symbol = EvalHelper.normalizeVariableName( symbol );
+        if (rootObject != null) {
+            PropertyValueResult dv = EvalHelper.getDefinedValue(rootObject, symbol);
+            if (dv.isDefined()) {
+                return dv.getValueResult().getOrElse(null);
+            }
+        }
         if ( variables.containsKey( symbol ) ) {
             return variables.get( symbol );
         }
@@ -55,6 +63,13 @@ public class ExecutionFrameImpl
     @Override
     public boolean isDefined(String symbol) {
         symbol = EvalHelper.normalizeVariableName( symbol );
+        if (rootObject != null) {
+            if (EvalHelper.getDefinedValue(rootObject, symbol).isDefined()) {
+                return true;
+            } else {
+                // do nothing! it might be shaded at this level for "item" or being in the parent frame.
+            }
+        }
         if ( variables.containsKey( symbol ) ) {
             return true;
         }
@@ -72,5 +87,15 @@ public class ExecutionFrameImpl
     @Override
     public Map<String, Object> getAllValues() {
         return this.variables;
+    }
+
+    @Override
+    public void setRootObject(Object v) {
+        this.rootObject = v;
+    }
+
+    @Override
+    public Object getRootObject() {
+        return rootObject;
     }
 }
