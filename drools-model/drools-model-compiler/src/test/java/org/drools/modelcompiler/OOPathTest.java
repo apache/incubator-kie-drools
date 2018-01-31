@@ -318,7 +318,7 @@ public class OOPathTest extends BaseModelTest {
         Assertions.assertThat(results).containsExactlyInAnyOrder("Bruno", "Alice");
     }
 
-    @Test @Ignore
+    @Test
     public void testOrConditionalElement() {
         final String drl =
                 "import " + Employee.class.getCanonicalName() + ";" +

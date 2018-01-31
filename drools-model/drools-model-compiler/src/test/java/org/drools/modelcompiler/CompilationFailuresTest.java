@@ -20,7 +20,7 @@ import org.junit.Test;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.Results;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class CompilationFailuresTest extends BaseModelTest {
 
@@ -40,7 +40,7 @@ public class CompilationFailuresTest extends BaseModelTest {
                 "end\n";
 
         Results results = getCompilationResults(drl);
-        assertEquals(1, results.getMessages( Message.Level.ERROR).size());
+        assertFalse(results.getMessages( Message.Level.ERROR).isEmpty());
     }
 
     private Results getCompilationResults( String drl ) {
