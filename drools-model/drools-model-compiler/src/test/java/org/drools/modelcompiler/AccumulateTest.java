@@ -35,6 +35,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.AccumulateFunction;
+import org.kie.api.runtime.rule.FactHandle;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.assertEquals;
@@ -416,7 +417,7 @@ public class AccumulateTest extends BaseModelTest {
         checkCollect( str );
     }
 
-    @Test @Ignore
+    @Test 
     public void testFromCollectWithExpandedAccumulate() {
         String str =
                 "import " + Customer.class.getCanonicalName() + ";\n" +
@@ -468,4 +469,45 @@ public class AccumulateTest extends BaseModelTest {
         assertEquals(1, filtered);
     }
 
+    @Test
+    public void testFromCollectWithExpandedAccumulate2() {
+        testFromCollectWithExpandedAccumulate2(false);
+    }
+
+    @Test
+    @Ignore("failing for reverse case as the accumulate function is being passed the Person instead of the $age.")
+    public void testFromCollectWithExpandedAccumulate2WithReverse() {
+        testFromCollectWithExpandedAccumulate2(true);
+    }
+
+    public void testFromCollectWithExpandedAccumulate2(boolean performReverse) {
+        String str = "import " + Person.class.getCanonicalName() + ";\n" +
+                     "rule R when\n" +
+                     "  $sum : Integer() from accumulate (\n" +
+                     "            Person( age > 18, $age : age ), init( int sum = 0; ), action( sum += $age; ), reverse( sum -= $age; ), result( sum )\n" +
+                     "         )" +
+                     "then\n" +
+                     "  insert($sum);\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+
+        FactHandle fh_Mark = ksession.insert(new Person("Mark", 37));
+        FactHandle fh_Edson = ksession.insert(new Person("Edson", 35));
+        FactHandle fh_Mario = ksession.insert(new Person("Mario", 40));
+        ksession.fireAllRules();
+
+        List<Integer> results = getObjectsIntoList(ksession, Integer.class);
+        assertEquals(1, results.size());
+        assertThat(results, hasItem(112));
+
+        if (performReverse) {
+            ksession.delete(fh_Mario);
+            ksession.fireAllRules();
+
+            results = getObjectsIntoList(ksession, Integer.class);
+            assertEquals(2, results.size());
+            assertThat(results, hasItem(72));
+        }
+    }
 }
