@@ -27,6 +27,7 @@ import org.drools.modelcompiler.domain.InternationalAddress;
 import org.drools.modelcompiler.domain.Man;
 import org.drools.modelcompiler.domain.Toy;
 import org.drools.modelcompiler.domain.Woman;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
@@ -349,6 +350,7 @@ public class OOPathTest extends BaseModelTest {
     }
 
     @Test
+    @Ignore
     public void testOrConstraintNoBinding() {
         final String drl =
                 "import " + Employee.class.getCanonicalName() + ";" +
@@ -379,6 +381,7 @@ public class OOPathTest extends BaseModelTest {
     }
 
     @Test
+    @Ignore
     public void testOrConstraintWithJoin() {
         final String drl =
                 "import " + Employee.class.getCanonicalName() + ";" +
@@ -409,6 +412,7 @@ public class OOPathTest extends BaseModelTest {
     }
 
     @Test
+    @Ignore
     public void testOrConstraint() {
         final String drl =
                 "import " + Employee.class.getCanonicalName() + ";" +
