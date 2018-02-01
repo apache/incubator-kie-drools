@@ -44,6 +44,8 @@ public class RuleContext {
 
     private RuleUnitDescr ruleUnitDescr;
 
+    private Map<String, String> aggregatePatternMap = new HashMap<>();
+
     private RuleDialect ruleDialect = RuleDialect.JAVA; // assumed is java by default as per Drools manual.
     public static enum RuleDialect {
         JAVA,
@@ -103,6 +105,12 @@ public class RuleContext {
     public Optional<DeclarationSpec> getDeclarationById(String id) {
         return declarations.stream().filter(d -> d.getBindingId().equals(id)).findFirst();
     }
+
+    public void removeDeclarationById(String id) {
+        final Optional<DeclarationSpec> declarationById = getDeclarationById(id);
+        declarationById.map(declarations::remove).orElseThrow(() -> new RuntimeException("Cannot find id: " + id));
+    }
+
 
     public boolean hasDeclaration(String id) {
         return getDeclarationById(id).isPresent();
@@ -213,6 +221,10 @@ public class RuleContext {
 
     public Map<String, String> getNamedConsequences() {
         return namedConsequences;
+    }
+
+    public Map<String, String> getAggregatePatternMap() {
+        return aggregatePatternMap;
     }
 }
 

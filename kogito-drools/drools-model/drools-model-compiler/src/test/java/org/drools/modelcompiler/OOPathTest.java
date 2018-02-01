@@ -318,7 +318,7 @@ public class OOPathTest extends BaseModelTest {
         Assertions.assertThat(results).containsExactlyInAnyOrder("Bruno", "Alice");
     }
 
-    @Test @Ignore
+    @Test
     public void testOrConditionalElement() {
         final String drl =
                 "import " + Employee.class.getCanonicalName() + ";" +
@@ -348,4 +348,97 @@ public class OOPathTest extends BaseModelTest {
 
         Assertions.assertThat(results).containsExactlyInAnyOrder("Big City", "Small City");
     }
+
+    @Test
+    @Ignore
+    public void testOrConstraintNoBinding() {
+        final String drl =
+                "import " + Employee.class.getCanonicalName() + ";" +
+                        "import " + Address.class.getCanonicalName() + ";" +
+                        "global java.util.List list\n" +
+                        "\n" +
+                        "rule R when\n" +
+                        "  $emp: Employee( /address[ street == 'Elm' || city == 'Big City' ] )\n" +
+                        "        Employee( this != $emp, /address[ street == 'Elm' || city == 'Big City' ] )\n" +
+                        "then\n" +
+                        "  list.add( $emp.getName() );\n" +
+                        "end\n";
+
+        KieSession kieSession = getKieSession(drl);
+
+        List<String> results = new ArrayList<>();
+        kieSession.setGlobal("list", results);
+
+        final Employee bruno = createEmployee("Bruno", new Address("Elm", 10, "Small City"));
+        kieSession.insert(bruno);
+
+        final Employee alice = createEmployee("Alice", new Address("Elm", 10, "Big City"));
+        kieSession.insert(alice);
+
+        kieSession.fireAllRules();
+
+        Assertions.assertThat(results).containsExactlyInAnyOrder("Bruno", "Alice");
+    }
+
+    @Test
+    @Ignore
+    public void testOrConstraintWithJoin() {
+        final String drl =
+                "import " + Employee.class.getCanonicalName() + ";" +
+                        "import " + Address.class.getCanonicalName() + ";" +
+                        "global java.util.List list\n" +
+                        "\n" +
+                        "rule R when\n" +
+                        "  $emp: Employee( $address: /address[ street == 'Elm' || city == 'Big City' ] )\n" +
+                        "        Employee( this != $emp, /address[ street == $address.street || city == 'Big City' ] )\n" +
+                        "then\n" +
+                        "  list.add( $address.getCity() );\n" +
+                        "end\n";
+
+        KieSession kieSession = getKieSession(drl);
+
+        List<String> results = new ArrayList<>();
+        kieSession.setGlobal("list", results);
+
+        final Employee bruno = createEmployee("Bruno", new Address("Elm", 10, "Small City"));
+        kieSession.insert(bruno);
+
+        final Employee alice = createEmployee("Alice", new Address("Elm", 10, "Big City"));
+        kieSession.insert(alice);
+
+        kieSession.fireAllRules();
+
+        Assertions.assertThat(results).containsExactlyInAnyOrder("Big City", "Small City");
+    }
+
+    @Test
+    @Ignore
+    public void testOrConstraint() {
+        final String drl =
+                "import " + Employee.class.getCanonicalName() + ";" +
+                        "import " + Address.class.getCanonicalName() + ";" +
+                        "global java.util.List list\n" +
+                        "\n" +
+                        "rule R when\n" +
+                        "  $emp: Employee( $address: /address[ street == 'Elm' || city == 'Big City' ] )\n" +
+                        "        Employee( this != $emp, /address[ street == 'Elm' || city == 'Big City' ] )\n" +
+                        "then\n" +
+                        "  list.add( $address.getCity() );\n" +
+                        "end\n";
+
+        KieSession kieSession = getKieSession(drl);
+
+        List<String> results = new ArrayList<>();
+        kieSession.setGlobal("list", results);
+
+        final Employee bruno = createEmployee("Bruno", new Address("Elm", 10, "Small City"));
+        kieSession.insert(bruno);
+
+        final Employee alice = createEmployee("Alice", new Address("Elm", 10, "Big City"));
+        kieSession.insert(alice);
+
+        kieSession.fireAllRules();
+        Assertions.assertThat(results).containsExactlyInAnyOrder("Big City", "Small City");
+    }
+
 }
