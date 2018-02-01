@@ -471,6 +471,16 @@ public class AccumulateTest extends BaseModelTest {
 
     @Test
     public void testFromCollectWithExpandedAccumulate2() {
+        testFromCollectWithExpandedAccumulate2(false);
+    }
+
+    @Test
+    @Ignore("failing for reverse case as the accumulate function is being passed the Person instead of the $age.")
+    public void testFromCollectWithExpandedAccumulate2WithReverse() {
+        testFromCollectWithExpandedAccumulate2(true);
+    }
+
+    public void testFromCollectWithExpandedAccumulate2(boolean performReverse) {
         String str = "import " + Person.class.getCanonicalName() + ";\n" +
                      "rule R when\n" +
                      "  $sum : Integer() from accumulate (\n" +
@@ -491,11 +501,13 @@ public class AccumulateTest extends BaseModelTest {
         assertEquals(1, results.size());
         assertThat(results, hasItem(112));
 
-        //        ksession.delete(fh_Mario);
-        //        ksession.fireAllRules();
-        //
-        //        results = getObjectsIntoList(ksession, Integer.class);
-        //        assertEquals(2, results.size());
-        //        assertThat(results, hasItem(72));
+        if (performReverse) {
+            ksession.delete(fh_Mario);
+            ksession.fireAllRules();
+
+            results = getObjectsIntoList(ksession, Integer.class);
+            assertEquals(2, results.size());
+            assertThat(results, hasItem(72));
+        }
     }
 }

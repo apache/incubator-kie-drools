@@ -105,7 +105,7 @@ public class ModelGeneratorVisitor implements DescrVisitor {
         } else {
             if (patternSource instanceof AccumulateDescr) {
                 AccumulateDescr accSource = (AccumulateDescr) patternSource;
-                if (accSource.getFunctions().get(0).getBind() == null) {
+                if (accSource.getFunctions().isEmpty() || accSource.getFunctions().get(0).getBind() == null) {
                     patternVisitor.visit(descr);
                     accumulateVisitor.visit( accSource, descr );
                 } else {
