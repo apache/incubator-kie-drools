@@ -538,9 +538,9 @@ public class KiePackagesBuilder {
                                        List<String> usedVariableName, Binding binding) {
 
         AccumulateFunction[] accFunctions = accPattern.getAccumulateFunctions();
+        Accumulate accumulate;
 
         if (accFunctions.length == 1) {
-
             final org.kie.api.runtime.rule.AccumulateFunction accFunction = createRuntimeAccumulateFunction(accFunctions[0]);
             final Variable boundVar = accPattern.getBoundVariables()[0];
             final Declaration declaration = new Declaration(boundVar.getName(),
@@ -550,26 +550,31 @@ public class KiePackagesBuilder {
             pattern.addDeclaration(declaration);
 
             Declaration[] bindingDeclaration = binding != null ? new Declaration[0] : new Declaration[] { ctx.getPattern( accFunctions[0].getSource() ).getDeclaration() };
-            SingleAccumulate accumulate = new SingleAccumulate(source, bindingDeclaration, createLambdaAccumulator(accFunction, usedVariableName, binding));
+            accumulate = new SingleAccumulate(source, bindingDeclaration, createLambdaAccumulator(accFunction, usedVariableName, binding));
+
+        } else {
+            InternalReadAccessor reader = new SelfReferenceClassFieldReader( Object[].class );
+            Accumulator[] accumulators = new Accumulator[accFunctions.length];
+            for (int i = 0; i < accFunctions.length; i++) {
+                final org.kie.api.runtime.rule.AccumulateFunction accFunction = createRuntimeAccumulateFunction( accFunctions[i] );
+
+                Variable boundVar = accPattern.getBoundVariables()[i];
+                pattern.addDeclaration( new Declaration( boundVar.getName(),
+                                        new ArrayElementReader( reader, i, boundVar.getType().asClass() ),
+                                        pattern,
+                                        true ) );
+
+                accumulators[i] = createLambdaAccumulator( accFunction, usedVariableName, binding );
+            }
+
+            accumulate = new MultiAccumulate( source, new Declaration[0], accumulators );
+        }
+
+        for (Variable boundVar : accPattern.getBoundVariables()) {
             ctx.addAccumulateSource( boundVar, accumulate );
-            return accumulate;
         }
 
-        InternalReadAccessor reader = new SelfReferenceClassFieldReader( Object[].class );
-        Accumulator[] accumulators = new Accumulator[accFunctions.length];
-        for (int i = 0; i < accFunctions.length; i++) {
-            final org.kie.api.runtime.rule.AccumulateFunction accFunction = createRuntimeAccumulateFunction(accFunctions[i]);
-
-            Variable accVar = accPattern.getBoundVariables()[i];
-            pattern.addDeclaration( new Declaration(accVar.getName(),
-                                                    new ArrayElementReader( reader, i, accVar.getType().asClass()),
-                                                    pattern,
-                                                    true) );
-
-            accumulators[i] = createLambdaAccumulator(accFunction, usedVariableName, binding);
-        }
-
-        return new MultiAccumulate( source, new Declaration[0], accumulators);
+        return accumulate;
     }
 
     private org.kie.api.runtime.rule.AccumulateFunction createRuntimeAccumulateFunction(AccumulateFunction accFunction1) {
@@ -614,10 +619,17 @@ public class KiePackagesBuilder {
                     throw new UnsupportedOperationException( "Unknown source: " + decl.getSource() );
                 }
             } else {
-                SingleAccumulate accSource = ctx.getAccumulateSource( patternVariable );
+                Accumulate accSource = ctx.getAccumulateSource( patternVariable );
                 if (accSource != null) {
                     for (RuleConditionElement element : group.getChildren()) {
                         if (element instanceof Pattern && (( Pattern ) element).getSource() == accSource) {
+                            if (accSource instanceof MultiAccumulate ) {
+                                (( Pattern ) element).getConstraints().forEach( pattern::addConstraint );
+                                (( Pattern ) element).getDeclarations().values().forEach( d -> {
+                                    pattern.addDeclaration(d);
+                                    d.setPattern( pattern );
+                                } );
+                            }
                             group.getChildren().remove( element );
                             break;
                         }
@@ -670,6 +682,11 @@ public class KiePackagesBuilder {
                     declarations[i] = ctx.getDeclaration( vars[i] );
                     if ( isEqual && (( ClassObjectType ) declarations[i].getPattern().getObjectType()).getClassType() == DroolsQuery.class ) {
                         unificationDeclaration = declarations[i];
+                    } else if ( pattern.getSource() instanceof MultiAccumulate) {
+                        Declaration accDeclaration = pattern.getDeclarations().get( declarations[i].getBindingName() );
+                        if (accDeclaration != null) {
+                            declarations[i].setReadAccessor( accDeclaration.getExtractor() );
+                        }
                     }
                 }
 

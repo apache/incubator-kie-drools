@@ -58,8 +58,12 @@ public class ConstraintEvaluator {
 
     public boolean evaluate( InternalFactHandle handle, InternalWorkingMemory workingMemory ) {
         return constraint.getPredicate().test( declarations.length == 1 ?
-                                               new Object[] { handle.getObject() } :
+                                               getSingleArg( handle, workingMemory ) :
                                                getAlphaInvocationArgs( handle, workingMemory ) );
+    }
+
+    private Object[] getSingleArg( InternalFactHandle handle, InternalWorkingMemory workingMemory ) {
+        return declarations[0].isInternalFact() ? new Object[] { declarations[0].getValue( workingMemory, handle.getObject() ) } : new Object[] { handle.getObject() };
     }
 
     public Object[] getAlphaInvocationArgs( InternalFactHandle handle, InternalWorkingMemory workingMemory ) {

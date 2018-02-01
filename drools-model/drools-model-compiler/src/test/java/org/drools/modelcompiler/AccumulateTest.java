@@ -207,7 +207,7 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(results, hasItem(new Result(77)));
     }
 
-    @Test @Ignore
+    @Test
     public void testAccumulateMultipleFunctionsConstrainingValues() {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
