@@ -1,6 +1,8 @@
 package org.drools.modelcompiler.builder.generator;
 
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.function.Function;
 
 import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.expr.BooleanLiteralExpr;
@@ -73,5 +75,28 @@ public class DrlxParseUtilTest {
         assertEquals(Long.class, getExpressionType(null, typeResolver, new LongLiteralExpr(2l), null));
         assertEquals(ClassUtil.NullType.class, getExpressionType(null, typeResolver, new NullLiteralExpr(), null));
         assertEquals(String.class, getExpressionType(null, typeResolver, new StringLiteralExpr(""), null));
+    }
+
+    @Test
+    public void test_forceCastForName() {
+        Function<String, String> c = (String input) -> {
+            Expression expr = JavaParser.parseExpression(input);
+            DrlxParseUtil.forceCastForName("$my", JavaParser.parseType("Integer"), expr);
+            return expr.toString();
+        };
+        assertEquals("ciao += (Integer) $my", c.apply("ciao += $my"));
+        assertEquals("ciao.add((Integer) $my)", c.apply("ciao.add($my)"));
+        assertEquals("ciao.asd.add((Integer) $my)", c.apply("ciao.asd.add($my)"));
+    }
+
+    @Test
+    public void test_rescopeNamesToNewScope() {
+        Function<String, String> c = (String input) -> {
+            Expression expr = JavaParser.parseExpression(input);
+            DrlxParseUtil.rescopeNamesToNewScope(new NameExpr("nscope"), Arrays.asList("name", "surname"), expr);
+            return expr.toString();
+        };
+        assertEquals("nscope.name = \"John\"", c.apply("name = \"John\" "));
+        assertEquals("nscope.name = nscope.surname", c.apply("name = surname"));
     }
 }

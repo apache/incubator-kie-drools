@@ -37,12 +37,14 @@ import org.drools.javaparser.ast.Node;
 import org.drools.javaparser.ast.NodeList;
 import org.drools.javaparser.ast.body.Parameter;
 import org.drools.javaparser.ast.drlx.expr.DrlxExpression;
+import org.drools.javaparser.ast.drlx.expr.HalfBinaryExpr;
 import org.drools.javaparser.ast.drlx.expr.HalfPointFreeExpr;
 import org.drools.javaparser.ast.drlx.expr.InlineCastExpr;
 import org.drools.javaparser.ast.drlx.expr.NullSafeFieldAccessExpr;
 import org.drools.javaparser.ast.drlx.expr.PointFreeExpr;
 import org.drools.javaparser.ast.expr.ArrayAccessExpr;
 import org.drools.javaparser.ast.expr.ArrayCreationExpr;
+import org.drools.javaparser.ast.expr.AssignExpr;
 import org.drools.javaparser.ast.expr.BinaryExpr;
 import org.drools.javaparser.ast.expr.BinaryExpr.Operator;
 import org.drools.javaparser.ast.expr.BooleanLiteralExpr;
@@ -52,7 +54,6 @@ import org.drools.javaparser.ast.expr.DoubleLiteralExpr;
 import org.drools.javaparser.ast.expr.EnclosedExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.FieldAccessExpr;
-import org.drools.javaparser.ast.drlx.expr.HalfBinaryExpr;
 import org.drools.javaparser.ast.expr.InstanceOfExpr;
 import org.drools.javaparser.ast.expr.IntegerLiteralExpr;
 import org.drools.javaparser.ast.expr.LambdaExpr;
@@ -67,6 +68,7 @@ import org.drools.javaparser.ast.expr.ThisExpr;
 import org.drools.javaparser.ast.expr.UnaryExpr;
 import org.drools.javaparser.ast.nodeTypes.NodeWithOptionalScope;
 import org.drools.javaparser.ast.nodeTypes.NodeWithSimpleName;
+import org.drools.javaparser.ast.nodeTypes.NodeWithTraversableScope;
 import org.drools.javaparser.ast.stmt.BlockStmt;
 import org.drools.javaparser.ast.stmt.ExpressionStmt;
 import org.drools.javaparser.ast.type.PrimitiveType;
@@ -525,10 +527,10 @@ public class DrlxParseUtil {
 
     public static Optional<Expression> findRootNode(Expression expr) {
 
-        if (expr instanceof NodeWithOptionalScope) {
-            final NodeWithOptionalScope<?> exprWithScope = (NodeWithOptionalScope) expr;
+        if (expr instanceof NodeWithTraversableScope) {
+            final NodeWithTraversableScope exprWithScope = (NodeWithTraversableScope) expr;
 
-            return exprWithScope.getScope().map(DrlxParseUtil::findRootNode).orElse(Optional.of(expr));
+            return exprWithScope.traverseScope().map(DrlxParseUtil::findRootNode).orElse(Optional.of(expr));
         } else if(expr instanceof NameExpr) {
             return Optional.of(expr);
         }
@@ -747,5 +749,46 @@ public class DrlxParseUtil {
         }
         return expr instanceof NullLiteralExpr || expr instanceof IntegerLiteralExpr || expr instanceof DoubleLiteralExpr ||
                 expr instanceof BooleanLiteralExpr || expr instanceof LongLiteralExpr;
+    }
+
+    /**
+     * Mutates expression
+     * such that, if it contains a <pre>nameRef</pre>, it is replaced and forcibly casted with <pre>(type) nameRef</pre>.
+     * 
+     * @param expression a mutated expression
+     */
+    public static void forceCastForName(String nameRef, Type type, Expression expression) {
+        List<NameExpr> allNameExprForName = expression.findAll(NameExpr.class, n -> n.getNameAsString().equals(nameRef));
+        for (NameExpr n : allNameExprForName) {
+            expression.replace(n, new CastExpr(type, n));
+        }
+    }
+
+    /**
+     * Mutates expression
+     * such that, if it contains a NameExpr for any of the <code>names</code>,
+     * it is replaced with a FieldAccessExpr having <code>newScope</code> as the scope.
+     * 
+     * @param expression a mutated expression
+     */
+    public static void rescopeNamesToNewScope(Expression newScope, List<String> names, Expression e) {
+        if (e instanceof AssignExpr) {
+            AssignExpr assignExpr = (AssignExpr) e;
+            rescopeNamesToNewScope(newScope, names, assignExpr.getTarget());
+            rescopeNamesToNewScope(newScope, names, assignExpr.getValue());
+        } else {
+            Optional<Expression> rootNode = DrlxParseUtil.findRootNode(e);
+            if (rootNode.isPresent() && rootNode.get() instanceof NameExpr) {
+                NameExpr nameExpr = (NameExpr) rootNode.get();
+                if (names.contains(nameExpr.getNameAsString())) {
+                    Expression prepend = new FieldAccessExpr(newScope, nameExpr.getNameAsString());
+                    if (e instanceof NameExpr) {
+                        e.getParentNode().get().replace(nameExpr, prepend); // actually `e` was not composite, it was already the NameExpr node I was looking to replace.
+                    } else {
+                        e.replace(nameExpr, prepend);
+                    }
+                }
+            }
+        }
     }
 }
