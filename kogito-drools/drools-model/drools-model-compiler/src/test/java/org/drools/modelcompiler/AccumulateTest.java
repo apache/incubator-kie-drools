@@ -215,12 +215,12 @@ public class AccumulateTest extends BaseModelTest {
                         "rule X when\n" +
                         "  accumulate ( Person ( $age : age > 36); \n" +
                         "                $sum : sum($age),  \n" +
-                        "                $average : average($age)  \n" +
-                        "                ; $sum > 50, $average > 30\n" +
+                        "                $min : min($age)  \n" +
+                        "                ; $sum > 50, $min > 30\n" +
                         "              )                          \n" +
                         "then\n" +
                         "  insert(new Result($sum));\n" +
-                        "  insert(new Result($average));\n" +
+                        "  insert(new Result($min));\n" +
                         "end";
 
         KieSession ksession = getKieSession( str );
@@ -232,7 +232,7 @@ public class AccumulateTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
-        assertThat(results, hasItem(new Result(38.5d)));
+        assertThat(results, hasItem(new Result(37)));
         assertThat(results, hasItem(new Result(77)));
     }
 
