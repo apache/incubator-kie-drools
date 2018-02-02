@@ -15,6 +15,8 @@
 
 package org.drools.compiler.integrationtests.incrementalcompilation;
 
+import java.io.ByteArrayOutputStream;
+import java.io.Serializable;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -68,9 +70,12 @@ import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
+import org.kie.api.definition.type.Role;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.io.ResourceType;
 import org.kie.api.logger.KieRuntimeLogger;
+import org.kie.api.marshalling.KieMarshallers;
+import org.kie.api.marshalling.Marshaller;
 import org.kie.api.runtime.Globals;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
@@ -4708,5 +4713,63 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         kc.updateToVersion( releaseId2 );
         kc.updateToVersion( releaseId3 );
         assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    @Role(Role.Type.EVENT)
+    public static class BooleanEvent implements Serializable {
+        private boolean enabled = false;
+
+        public boolean isEnabled() {
+            return enabled;
+        }
+
+        public void setEnabled( boolean enabled ) {
+            this.enabled = enabled;
+        }
+    }
+
+    @Test
+    public void testAddRuleWithSlidingWindows() throws Exception {
+        // DROOLS-2292
+        String drl1 = "package org.drools.compiler\n" +
+                "import " + List.class.getCanonicalName() + "\n" +
+                "import " + BooleanEvent.class.getCanonicalName() + "\n" +
+                "rule R1 when\n" +
+                "    $e : BooleanEvent(!enabled)\n" +
+                "    List(size >= 1) from collect ( BooleanEvent(!enabled) over window:time(1) )\n" +
+                "    $toEdit : List() from collect( BooleanEvent(!enabled) over window:time(2) )\n" +
+                "then\n" +
+                "    modify( (BooleanEvent)$toEdit.get(0) ){ setEnabled( true ) }\n" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        KieModuleModel kproj = ks.newKieModuleModel();
+        KieBaseModel kieBaseModel1 = kproj.newKieBaseModel( "KBase1" ).setDefault( true )
+                .setEventProcessingMode( EventProcessingOption.STREAM );
+        KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel( "KSession1" ).setDefault( true )
+                .setType( KieSessionModel.KieSessionType.STATEFUL )
+                .setClockType( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
+        deployJar( ks, createKJar( ks, kproj, releaseId1, null ) );
+        ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "2.0.0" );
+        deployJar( ks, createKJar( ks, kproj, releaseId2, null, drl1 ) );
+
+        KieContainer kc = ks.newKieContainer( releaseId1 );
+        KieSession kieSession = kc.newKieSession();
+
+        kieSession.insert(new BooleanEvent());
+        kieSession.fireAllRules();
+
+        kc.updateToVersion( releaseId2 );
+
+        kieSession.fireAllRules();
+
+        KieMarshallers marshallers = ks.getMarshallers();
+        Marshaller marshaller = marshallers.newMarshaller(kieSession.getKieBase());
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        marshaller.marshall(outputStream, kieSession);
     }
 }
