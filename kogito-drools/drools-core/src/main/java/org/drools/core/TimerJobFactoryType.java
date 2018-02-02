@@ -15,6 +15,7 @@
 
 package org.drools.core;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,7 +24,7 @@ import org.drools.core.time.impl.ThreadSafeTrackableTimeJobFactoryManager;
 import org.drools.core.time.impl.TimerJobFactoryManager;
 import org.drools.core.time.impl.TrackableTimeJobFactoryManager;
 
-public abstract class TimerJobFactoryType {
+public abstract class TimerJobFactoryType implements Serializable {
 
     public static final TimerJobFactoryType DEFAULT = new TimerJobFactoryType("default") {
         public TimerJobFactoryManager createInstance() {
