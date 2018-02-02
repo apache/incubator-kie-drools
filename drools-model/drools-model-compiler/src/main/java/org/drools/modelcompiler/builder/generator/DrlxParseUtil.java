@@ -62,6 +62,7 @@ import org.drools.javaparser.ast.expr.LongLiteralExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.NullLiteralExpr;
+import org.drools.javaparser.ast.expr.ObjectCreationExpr;
 import org.drools.javaparser.ast.expr.SimpleName;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.javaparser.ast.expr.ThisExpr;
@@ -71,6 +72,7 @@ import org.drools.javaparser.ast.nodeTypes.NodeWithSimpleName;
 import org.drools.javaparser.ast.nodeTypes.NodeWithTraversableScope;
 import org.drools.javaparser.ast.stmt.BlockStmt;
 import org.drools.javaparser.ast.stmt.ExpressionStmt;
+import org.drools.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.javaparser.ast.type.PrimitiveType;
 import org.drools.javaparser.ast.type.ReferenceType;
 import org.drools.javaparser.ast.type.Type;
@@ -484,7 +486,10 @@ public class DrlxParseUtil {
             MethodCallExpr methodCallExpr = ( MethodCallExpr ) expr;
             Class<?> scopeType = getExpressionType(context, typeResolver, methodCallExpr.getScope().get(), usedDeclarations);
             return returnTypeOfMethodCallExpr(context, typeResolver, methodCallExpr, scopeType, usedDeclarations);
-        } else {
+        } else if(expr instanceof ObjectCreationExpr){
+            final ClassOrInterfaceType type = ((ObjectCreationExpr) expr).getType();
+            return getClassFromContext (typeResolver, type.asString());
+        }else {
             throw new RuntimeException("Unknown expression type: " + expr);
         }
     }
