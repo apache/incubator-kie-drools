@@ -190,7 +190,10 @@ public class AccumulateVisitor {
             functionDSL.addArgument(new ClassExpr(toType(accumulateFunction.getClass())));
             functionDSL.addArgument(new NameExpr(toVar(nameExpr)));
 
-            final Class accumulateFunctionResultType = accumulateFunction.getResultType();
+            Class accumulateFunctionResultType = accumulateFunction.getResultType();
+            if ( accumulateFunctionResultType == Comparable.class && (Comparable.class.isAssignableFrom( declarationClass ) || declarationClass.isPrimitive()) ) {
+                accumulateFunctionResultType = declarationClass;
+            }
             context.addDeclaration(new DeclarationSpec(bindingId, accumulateFunctionResultType));
 
         } else {

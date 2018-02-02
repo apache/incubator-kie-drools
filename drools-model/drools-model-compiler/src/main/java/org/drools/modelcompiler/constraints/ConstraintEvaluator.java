@@ -78,12 +78,8 @@ public class ConstraintEvaluator {
         if (declaration == patternDeclaration) {
             return handle.getObject();
         } else {
-            if (tuple != null) {
-                final Object object = tuple.getObject(declaration.getPattern().getOffset());
-                return declaration.getValue(workingMemory, object);
-            } else {
-                return declaration.getValue(workingMemory, handle.getObject());
-            }
+            Object object = tuple != null ? tuple.getObject(declaration.getPattern().getOffset()) : handle.getObject();
+            return declaration.getValue(workingMemory, object);
         }
     }
 
