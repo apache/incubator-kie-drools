@@ -42,22 +42,22 @@ public abstract class AbstractGuidedDecisionTreeDRLPersistenceUnmarshallingTest 
 
     protected PackageDataModelOracle dmo;
     protected Map<String, ModelField[]> packageModelFields = new HashMap<String, ModelField[]>();
-    protected Map<String, String[]> projectJavaEnumDefinitions = new HashMap<String, String[]>();
-    protected Map<String, List<MethodInfo>> projectMethodInformation = new HashMap<String, List<MethodInfo>>();
+    protected Map<String, String[]> moduleJavaEnumDefinitions = new HashMap<String, String[]>();
+    protected Map<String, List<MethodInfo>> moduleMethodInformation = new HashMap<String, List<MethodInfo>>();
 
     @Before
     public void setUp() throws Exception {
         dmo = mock(PackageDataModelOracle.class);
-        when(dmo.getProjectModelFields()).thenReturn(packageModelFields);
-        when(dmo.getProjectJavaEnumDefinitions()).thenReturn(projectJavaEnumDefinitions);
-        when(dmo.getProjectMethodInformation()).thenReturn(projectMethodInformation);
+        when(dmo.getModuleModelFields()).thenReturn(packageModelFields);
+        when(dmo.getModuleJavaEnumDefinitions()).thenReturn(moduleJavaEnumDefinitions);
+        when(dmo.getModuleMethodInformation()).thenReturn(moduleMethodInformation);
     }
 
     @After
     public void cleanUp() throws Exception {
         packageModelFields.clear();
-        projectJavaEnumDefinitions.clear();
-        projectMethodInformation.clear();
+        moduleJavaEnumDefinitions.clear();
+        moduleMethodInformation.clear();
     }
 
     protected void addModelField(final String factName,
@@ -84,8 +84,8 @@ public abstract class AbstractGuidedDecisionTreeDRLPersistenceUnmarshallingTest 
                                          final String fieldName,
                                          final String[] values) {
         final String key = factName + "#" + fieldName;
-        projectJavaEnumDefinitions.put(key,
-                                       values);
+        moduleJavaEnumDefinitions.put(key,
+                                      values);
     }
 
     protected GuidedDecisionTree getAndTestUnmarshalledModel(final String drl,

@@ -499,7 +499,7 @@ public class GuidedDecisionTreeModelUnmarshallingVisitor {
                 fqcn = i.getType();
             }
         }
-        for (Map.Entry<String, ModelField[]> e : dmo.getProjectModelFields().entrySet()) {
+        for (Map.Entry<String, ModelField[]> e : dmo.getModuleModelFields().entrySet()) {
             if (e.getKey().equals(fqcn)) {
                 for (ModelField mf : e.getValue()) {
                     if (mf.getName().equals(fieldName)) {
