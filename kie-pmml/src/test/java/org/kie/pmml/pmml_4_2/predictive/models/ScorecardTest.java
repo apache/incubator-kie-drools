@@ -20,25 +20,18 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.assertj.core.api.Assertions;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.InternalRuleUnitExecutor;
-import org.drools.core.ruleunit.RuleUnitDescr;
-import org.drools.core.ruleunit.RuleUnitRegistry;
-import org.junit.After;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
-import org.kie.api.logger.KieRuntimeLogger;
 import org.kie.api.runtime.rule.DataSource;
 import org.kie.api.runtime.rule.RuleUnit;
 import org.kie.api.runtime.rule.RuleUnitExecutor;
@@ -46,15 +39,26 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.utils.KieHelper;
 import org.kie.pmml.pmml_4_2.DroolsAbstractPMMLTest;
 import org.kie.pmml.pmml_4_2.PMML4Result;
-import org.kie.pmml.pmml_4_2.model.PMML4UnitImpl;
+import org.kie.pmml.pmml_4_2.PMMLExecutor;
+import org.kie.pmml.pmml_4_2.PMMLKieBaseUtil;
 import org.kie.pmml.pmml_4_2.model.PMMLRequestData;
 import org.kie.pmml.pmml_4_2.model.datatypes.PMML4Data;
 
 public class ScorecardTest extends DroolsAbstractPMMLTest {
 
+    private static final String SCORECARDS_FOLDER = "org/kie/pmml/pmml_4_2/";
+    private static final String source1 = SCORECARDS_FOLDER + "test_scorecard.pmml";
+    private static final String source2 = SCORECARDS_FOLDER + "test_scorecardOut.pmml";
 
-    private static final String source1 = "org/kie/pmml/pmml_4_2/test_scorecard.pmml";
-    private static final String source2 = "org/kie/pmml/pmml_4_2/test_scorecardOut.pmml";
+    private static final String SOURCE_SIMPLE_SCORECARD = SCORECARDS_FOLDER + "test_scorecard_simple.pmml";
+    private static final String SOURCE_COMPOUND_PREDICATE_SCORECARD = SCORECARDS_FOLDER + "test_scorecard_compound_predicate.pmml";
+    private static final String SOURCE_SIMPLE_SET_SCORECARD =
+            SCORECARDS_FOLDER + "test_scorecard_simple_set_predicate.pmml";
+    private static final String SOURCE_SIMPLE_SET_SPACE_VALUE_SCORECARD =
+            SCORECARDS_FOLDER + "test_scorecard_simple_set_predicate_with_space_value.pmml";
+    private static final String SOURCE_COMPLEX_PARTIAL_SCORE_SCORECARD =
+            SCORECARDS_FOLDER + "test_scorecard_complex_partial_score.pmml";
+
 
     @Test
     public void testMultipleInputData() throws Exception {
@@ -192,6 +196,143 @@ System.out.println(resultHolder);
         assertEquals( "CX2", iter.next() );
 
         
+    }
+
+    @Test
+    public void testSimpleScorecard() {
+
+        KieBase kieBase = PMMLKieBaseUtil.createKieBaseWithPMML(SOURCE_SIMPLE_SCORECARD);
+        PMMLExecutor executor = new PMMLExecutor(kieBase);
+
+        PMMLRequestData requestData = new PMMLRequestData("123", "SimpleScorecard");
+        requestData.addRequestParam("param1", 10.0);
+        requestData.addRequestParam("param2", 15.0);
+        PMML4Result resultHolder = executor.run(requestData);
+        double score = resultHolder.getResultValue("ScoreCard", "score", Double.class).get();
+        Assertions.assertThat(score).isEqualTo(40.8);
+        Map<String,Double> rankingMap = (Map<String, Double>) resultHolder.getResultValue("ScoreCard", "ranking");
+        Assertions.assertThat(rankingMap.get("reasonCh1")).isEqualTo(5);
+        Assertions.assertThat(rankingMap.get("reasonCh2")).isEqualTo(-6);
+
+        requestData = new PMMLRequestData("123", "SimpleScorecard");
+        requestData.addRequestParam("param1", 51.0);
+        requestData.addRequestParam("param2", 12.0);
+        resultHolder = executor.run(requestData);
+        score = resultHolder.getResultValue("ScoreCard", "score", Double.class).get();
+        Assertions.assertThat(score).isEqualTo(120.8);
+        rankingMap = (Map<String, Double>) resultHolder.getResultValue("ScoreCard", "ranking");
+        Assertions.assertThat(rankingMap.get("reasonCh1")).isEqualTo(-75);
+        Assertions.assertThat(rankingMap.get("reasonCh2")).isEqualTo(-6);
+    }
+
+    @Test
+    public void testScorecardWithCompoundPredicate() {
+        KieBase kieBase = PMMLKieBaseUtil.createKieBaseWithPMML(SOURCE_COMPOUND_PREDICATE_SCORECARD);
+        PMMLExecutor executor = new PMMLExecutor(kieBase);
+
+        PMMLRequestData requestData = new PMMLRequestData("123", "ScorecardCompoundPredicate");
+        requestData.addRequestParam("param1", 41.0);
+        requestData.addRequestParam("param2", 21.0);
+        PMML4Result resultHolder = executor.run(requestData);
+        double score = resultHolder.getResultValue("ScoreCard", "score", Double.class).get();
+        Assertions.assertThat(score).isEqualTo(120.8);
+        Map<String,Double> rankingMap = (Map<String, Double>) resultHolder.getResultValue("ScoreCard", "ranking");
+        Assertions.assertThat(rankingMap.get("reasonCh1")).isEqualTo(50);
+        Assertions.assertThat(rankingMap.get("reasonCh2")).isEqualTo(5);
+
+        requestData = new PMMLRequestData("123", "ScorecardCompoundPredicate");
+        requestData.addRequestParam("param1", 40.0);
+        requestData.addRequestParam("param2", 25.0);
+        resultHolder = executor.run(requestData);
+        score = resultHolder.getResultValue("ScoreCard", "score", Double.class).get();
+        Assertions.assertThat(score).isEqualTo(120.8);
+
+        requestData = new PMMLRequestData("123", "ScorecardCompoundPredicate");
+        requestData.addRequestParam("param1", 40.0);
+        requestData.addRequestParam("param2", 55.0);
+        resultHolder = executor.run(requestData);
+        score = resultHolder.getResultValue("ScoreCard", "score", Double.class).get();
+        Assertions.assertThat(score).isEqualTo(210.8);
+
+        requestData = new PMMLRequestData("123", "ScorecardCompoundPredicate");
+        requestData.addRequestParam("param1", 4.0);
+        requestData.addRequestParam("param2", -25.0);
+        resultHolder = executor.run(requestData);
+        score = resultHolder.getResultValue("ScoreCard", "score", Double.class).get();
+        Assertions.assertThat(score).isEqualTo(30.8);
+    }
+
+    @Test
+    public void testScorecardWithSimpleSetPredicate() {
+        KieBase kieBase = PMMLKieBaseUtil.createKieBaseWithPMML(SOURCE_SIMPLE_SET_SCORECARD);
+        PMMLExecutor executor = new PMMLExecutor(kieBase);
+
+        PMMLRequestData requestData = new PMMLRequestData("123", "SimpleSetScorecard");
+        requestData.addRequestParam("param1", 4);
+        requestData.addRequestParam("param2", "optA");
+        PMML4Result resultHolder = executor.run(requestData);
+        Assertions.assertThat(resultHolder).isNotNull();
+        double score = resultHolder.getResultValue("ScoreCard", "score", Double.class).get();
+        Assertions.assertThat(score).isEqualTo(113);
+
+        requestData = new PMMLRequestData("123", "SimpleSetScorecard");
+        requestData.addRequestParam("param1", 5);
+        requestData.addRequestParam("param2", "optA");
+        resultHolder = executor.run(requestData);
+        Assertions.assertThat(resultHolder).isNotNull();
+        score = resultHolder.getResultValue("ScoreCard", "score", Double.class).get();
+        Assertions.assertThat(score).isEqualTo(33);
+
+        requestData = new PMMLRequestData("123", "SimpleSetScorecard");
+        requestData.addRequestParam("param1", -5);
+        requestData.addRequestParam("param2", "optC");
+        resultHolder = executor.run(requestData);
+        Assertions.assertThat(resultHolder).isNotNull();
+        score = resultHolder.getResultValue("ScoreCard", "score", Double.class).get();
+        Assertions.assertThat(score).isEqualTo(123);
+
+        requestData = new PMMLRequestData("123", "SimpleSetScorecard");
+        requestData.addRequestParam("param1", -5);
+        requestData.addRequestParam("param2", "optA");
+        resultHolder = executor.run(requestData);
+        Assertions.assertThat(resultHolder).isNotNull();
+        score = resultHolder.getResultValue("ScoreCard", "score", Double.class).get();
+        Assertions.assertThat(score).isEqualTo(113);
+    }
+
+    @Test
+    @Ignore("RHDM-317")
+    public void testScorecardWithSimpleSetPredicateWithSpaceValue() {
+        KieBase kieBase = PMMLKieBaseUtil.createKieBaseWithPMML(SOURCE_SIMPLE_SET_SPACE_VALUE_SCORECARD);
+        PMMLExecutor executor = new PMMLExecutor(kieBase);
+
+        PMMLRequestData requestData = new PMMLRequestData("123", "SimpleSetScorecardWithSpaceValue");
+        requestData.addRequestParam("param", "optA");
+        PMML4Result resultHolder = executor.run(requestData);
+        Assertions.assertThat(resultHolder).isNotNull();
+        double score = resultHolder.getResultValue("ScoreCard", "score", Double.class).get();
+        Assertions.assertThat(score).isEqualTo(13);
+    }
+
+    @Test
+    @Ignore("RHDM-316")
+    public void testScorecardWithComplexPartialScore() {
+        KieBase kieBase = PMMLKieBaseUtil.createKieBaseWithPMML(SOURCE_COMPLEX_PARTIAL_SCORE_SCORECARD);
+        PMMLExecutor executor = new PMMLExecutor(kieBase);
+
+        PMMLRequestData requestData = new PMMLRequestData("123", "ComplexPartialScoreScorecard");
+        requestData.addRequestParam("param", 5.0);
+        PMML4Result resultHolder = executor.run(requestData);
+        Assertions.assertThat(resultHolder).isNotNull();
+        double score = resultHolder.getResultValue("ScoreCard", "score", Double.class).get();
+        Assertions.assertThat(score).isEqualTo(20);
+
+        requestData = new PMMLRequestData("123", "ComplexPartialScoreScorecard");
+        requestData.addRequestParam("param", 100.0);
+        resultHolder = executor.run(requestData);
+        Assertions.assertThat(resultHolder).isNotNull();
+        score = resultHolder.getResultValue("ScoreCard", "score", Double.class).get();
+        Assertions.assertThat(score).isEqualTo(300);
     }
 
     @Test
