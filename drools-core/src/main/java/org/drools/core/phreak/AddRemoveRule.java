@@ -751,9 +751,9 @@ public class AddRemoveRule {
 
         for ( PathEndNode endNode : endNodes.subjectEndNodes ) {
             LeftTupleNode[]  nodes = endNode.getPathNodes();
-            for ( int i = nodes.length-1; i >= 0 && nodes[i].getAssociationsSize() == 1; i-- ) {
+            for ( int i = 0; i < nodes.length; i++ ) {
                 LeftTupleNode node = nodes[i];
-                if  ( NodeTypeEnums.isBetaNode(node)  ) {
+                if  ( NodeTypeEnums.isBetaNode(node) && node.getAssociationsSize() == 1 ) {
                     if (!visited.add( node )) {
                         continue;// this is to avoid rentering a path, and processing nodes twice. This can happen for nested subnetworks.
                     }
