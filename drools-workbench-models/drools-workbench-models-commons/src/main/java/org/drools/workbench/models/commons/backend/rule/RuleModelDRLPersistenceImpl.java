@@ -2611,7 +2611,7 @@ public class RuleModelDRLPersistenceImpl
                     }
                     if (modelField == null) {
                         final String previousClassName = expression.getClassType();
-                        final List<MethodInfo> mis = dmo.getProjectMethodInformation().get(previousClassName);
+                        final List<MethodInfo> mis = dmo.getModuleMethodInformation().get(previousClassName);
                         boolean isMethod = false;
                         if (mis != null) {
                             for (MethodInfo mi : mis) {
@@ -3878,7 +3878,7 @@ public class RuleModelDRLPersistenceImpl
                                                               factType,
                                                               DataType.TYPE_THIS));
                 } else if (isBoundParam) {
-                    ModelField currentFact = findFact(dmo.getProjectModelFields(),
+                    ModelField currentFact = findFact(dmo.getModuleModelFields(),
                                                       factType);
 
                     expression.appendPart(getExpressionPart(expressionPart,
@@ -3969,7 +3969,7 @@ public class RuleModelDRLPersistenceImpl
                 expression.appendPart(new ExpressionCollection(expressionPart,
                                                                currentField.getClassName(),
                                                                currentField.getType(),
-                                                               dmo.getProjectFieldParametersType().get(factType + "#" + expressionPart))
+                                                               dmo.getModuleFieldParametersType().get(factType + "#" + expressionPart))
                 );
             } else {
                 expression.appendPart(new ExpressionField(expressionPart,
