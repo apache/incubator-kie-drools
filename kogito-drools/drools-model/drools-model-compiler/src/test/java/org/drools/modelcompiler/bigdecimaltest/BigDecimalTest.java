@@ -16,7 +16,6 @@ public class BigDecimalTest extends BaseModelTest {
     }
 
     @Test
-    @Ignore
     public void testBigDecimalGreaterThan() {
         String str =
                 "package org.drools.modelcompiler.bigdecimals\n" +
@@ -50,7 +49,6 @@ public class BigDecimalTest extends BaseModelTest {
     }
 
     @Test
-    @Ignore
     public void testBigDecimalCompare() {
         String str =
                 "package org.drools.modelcompiler.bigdecimals\n" +

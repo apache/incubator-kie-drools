@@ -16,6 +16,7 @@
 
 package org.drools.modelcompiler.builder.generator;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
@@ -759,7 +760,7 @@ public class ModelGenerator {
                             context.addCompilationError( new ParseExpressionErrorResult(drlxExpr) );
                             return null;
                         }
-                        combo = getBinaryExpression( operator, left, right );
+                        combo = handleSpecialComparisonCases(operator, left, right );
                 }
             }
 
@@ -874,6 +875,10 @@ public class ModelGenerator {
     }
 
     private static Expression getEqualityExpression( TypedExpression left, TypedExpression right, Operator operator ) {
+        if(isAnyOperandBigDecimal(left, right)) {
+            return compareBigDecimal(operator, left, right);
+        }
+
         Expression rightOperand = right.getExpression();
         if (isPrimitiveExpression(right.getExpression())) {
             if (left.getType() != String.class) {
@@ -889,7 +894,7 @@ public class ModelGenerator {
         return operator == Operator.EQUALS ? methodCallExpr : new UnaryExpr( methodCallExpr, UnaryExpr.Operator.LOGICAL_COMPLEMENT );
     }
 
-    private static Expression getBinaryExpression( Operator operator, TypedExpression left, TypedExpression right ) {
+    private static Expression handleSpecialComparisonCases(Operator operator, TypedExpression left, TypedExpression right ) {
         if ( left.getType() == String.class && right.getType() == String.class && isComparisonOperator( operator ) ) {
             MethodCallExpr methodCallExpr = new MethodCallExpr( null, "org.drools.modelcompiler.util.EvaluationUtil.compareStringsAsNumbers" );
             methodCallExpr.addArgument( left.getExpression() );
@@ -898,7 +903,34 @@ public class ModelGenerator {
             return methodCallExpr;
         }
 
+        if (isAnyOperandBigDecimal(left, right) && (isComparisonOperator(operator))) {
+            return compareBigDecimal(operator, left, right);
+        }
+
         return new BinaryExpr( left.getExpression(), right.getExpression(), operator );
+    }
+
+    private static boolean isAnyOperandBigDecimal(TypedExpression left, TypedExpression right) {
+        return left.getType() == BigDecimal.class || right.getType() == BigDecimal.class;
+    }
+
+    public static Expression compareBigDecimal(Operator operator, TypedExpression left, TypedExpression right) {
+        final Expression leftBigDecimal = convertExpressionToBigDecimal(left);
+        final Expression rightBigDecimal = convertExpressionToBigDecimal(right);
+        final MethodCallExpr methodCallExpr = new MethodCallExpr(leftBigDecimal, "compareTo");
+        methodCallExpr.addArgument(rightBigDecimal);
+        return new BinaryExpr(methodCallExpr, new IntegerLiteralExpr(0), operator);
+    }
+
+    private static Expression convertExpressionToBigDecimal(TypedExpression left) {
+        final Expression ret;
+        if(left.getType() != BigDecimal.class) {
+            ret = new MethodCallExpr(new NameExpr(BigDecimal.class.getCanonicalName()), "valueOf")
+                    .addArgument(left.getExpression());
+        } else {
+            ret = left.getExpression();
+        }
+        return ret;
     }
 
     private static boolean isComparisonOperator( Operator op ) {

@@ -75,9 +75,16 @@ public class ConstraintEvaluator {
     }
 
     private Object getArgument( InternalFactHandle handle, InternalWorkingMemory workingMemory, Declaration declaration, Tuple tuple ) {
-        return declaration == patternDeclaration ?
-                    handle.getObject() :
-                    declaration.getValue( workingMemory, tuple != null ? tuple.getObject(declaration.getPattern().getOffset()) : null );
+        if (declaration == patternDeclaration) {
+            return handle.getObject();
+        } else {
+            if (tuple != null) {
+                final Object object = tuple.getObject(declaration.getPattern().getOffset());
+                return declaration.getValue(workingMemory, object);
+            } else {
+                return declaration.getValue(workingMemory, handle.getObject());
+            }
+        }
     }
 
     public boolean evaluate(InternalFactHandle handle, Tuple tuple, InternalWorkingMemory workingMemory) {
