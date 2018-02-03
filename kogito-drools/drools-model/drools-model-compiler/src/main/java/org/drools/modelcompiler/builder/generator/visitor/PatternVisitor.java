@@ -19,7 +19,9 @@ import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
-import org.drools.modelcompiler.builder.generator.DrlxParseResult;
+import org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser;
+import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
+import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.ModelGenerator;
 import org.drools.modelcompiler.builder.generator.OOPathExprGenerator;
 import org.drools.modelcompiler.builder.generator.QueryGenerator;
@@ -91,16 +93,22 @@ public class PatternVisitor {
     private void buildConstraintsForAccumulate(PatternDescr pattern, AccumulateDescr acc, List<? extends BaseDescr> constraintDescrs) {
         for (BaseDescr constraint : constraintDescrs) {
             String expression = constraint.toString();
-            DrlxParseResult drlxParseResult = ModelGenerator.drlxParse(context, packageModel, null, null, expression, false).setSkipThisAsParam( true );
-            ModelGenerator.processExpression( context, drlxParseResult );
+            final DrlxParseResult drlxParseResult = new ConstraintParser(context, packageModel)
+                    .drlxParse(null, null, expression, false);
+
+            drlxParseResult.accept(success -> {
+                success.setSkipThisAsParam(true);
+                ModelGenerator.processExpression( context, success );
+            });
         }
     }
 
     private Optional<String> findInnerBindingName(List<ConstraintParseResult> firstParsedConstraints) {
         return firstParsedConstraints.stream()
                 .map(c -> c.drlxParseResult)
-                .filter(Objects::nonNull)
-                .map(DrlxParseResult::getExprBinding)
+                .filter(o -> o instanceof DrlxParseSuccess)
+                .map(d -> (DrlxParseSuccess)d)
+                .map(DrlxParseSuccess::getExprBinding)
                 .filter(Objects::nonNull)
                 .findFirst();
     }
@@ -123,7 +131,7 @@ public class PatternVisitor {
             expression = expression.replace(":=", "==");
         }
 
-        final DrlxParseResult drlxParseResult = ModelGenerator.drlxParse(context, packageModel, patternType, patternIdentifier, expression, isPositional);
+        final DrlxParseResult drlxParseResult = new ConstraintParser(context, packageModel).drlxParse(patternType, patternIdentifier, expression, isPositional);
         return new ConstraintParseResult(expression, patternIdentifier, drlxParseResult);
     }
 
@@ -143,21 +151,24 @@ public class PatternVisitor {
     }
 
     private void buildConstraint(PatternDescr pattern, Class<?> patternType, ConstraintParseResult constraintParseResult) {
-        DrlxParseResult drlxParseResult = constraintParseResult.getDrlxParseResult();
-        String patternIdentifier = constraintParseResult.getPatternIdentifier();
+        DrlxParseResult drlxParseResult1 = constraintParseResult.getDrlxParseResult();
         String expression = constraintParseResult.getExpression();
-        if (drlxParseResult != null) {
+
+        drlxParseResult1.accept(drlxParseResult -> {
             if (drlxParseResult.getExpr() instanceof OOPathExpr) {
 
+                final String patternIdentifierGenerated;
                 // If the  outer pattern does not have a binding we generate it
-                if (patternIdentifier == null) {
-                    patternIdentifier = context.getExprId(patternType, expression);
-                    context.addDeclaration(new DeclarationSpec(patternIdentifier, patternType, Optional.of(pattern), Optional.empty()));
+                if (constraintParseResult.getPatternIdentifier() != null) {
+                    patternIdentifierGenerated = constraintParseResult.getPatternIdentifier();
+                } else {
+                    patternIdentifierGenerated = context.getExprId(patternType, expression);
+                    context.addDeclaration(new DeclarationSpec(patternIdentifierGenerated, patternType, Optional.of(pattern), Optional.empty()));
                 }
 
                 context.addExpression(createInputExpression(pattern));
 
-                new OOPathExprGenerator(context, packageModel).visit(patternType, patternIdentifier, drlxParseResult);
+                new OOPathExprGenerator(context, packageModel).visit(patternType, patternIdentifierGenerated, drlxParseResult);
             } else {
                 // need to augment the reactOn inside drlxParseResult with the look-ahead properties.
                 Collection<String> lookAheadFieldsOfIdentifier = context.getRuleDescr().lookAheadFieldsOfIdentifier(pattern);
@@ -170,7 +181,7 @@ public class PatternVisitor {
 
                 ModelGenerator.processExpression(context, drlxParseResult);
             }
-        }
+        });
     }
 
     private boolean areAllConstraintsPositional(List<? extends BaseDescr> constraintDescrs) {

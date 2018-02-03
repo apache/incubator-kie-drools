@@ -38,11 +38,13 @@ import org.drools.javaparser.ast.type.Type;
 import org.drools.javaparser.ast.type.UnknownType;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
-import org.drools.modelcompiler.builder.generator.DrlxParseResult;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.ModelGenerator;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
+import org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser;
+import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
+import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 import org.drools.modelcompiler.util.StringUtil;
 import org.kie.api.runtime.rule.AccumulateFunction;
 
@@ -130,20 +132,23 @@ public class AccumulateVisitor {
 
         if(expr instanceof BinaryExpr) {
 
-            final DrlxParseResult drlxParseResult = ModelGenerator.drlxParse(context, packageModel, Object.class, bindingId, expression);
+            final DrlxParseResult parseResult = new ConstraintParser(context, packageModel).drlxParse(Object.class, bindingId, expression);
 
-            final AccumulateFunction accumulateFunction = getAccumulateFunction(function, drlxParseResult.getExprType());
+            parseResult.accept(drlxParseResult -> {
+                final AccumulateFunction accumulateFunction = getAccumulateFunction(function, drlxParseResult.getExprType());
 
-            final String bindExpressionVariable = context.getExprId(accumulateFunction.getResultType(), drlxParseResult.getLeft().toString());
+                final String bindExpressionVariable = context.getExprId(accumulateFunction.getResultType(), drlxParseResult.getLeft().toString());
 
-            drlxParseResult.setExprBinding(bindExpressionVariable);
+                drlxParseResult.setExprBinding(bindExpressionVariable);
 
-            context.addDeclaration(new DeclarationSpec(drlxParseResult.getPatternBinding(), drlxParseResult.getExprType()));
+                context.addDeclaration(new DeclarationSpec(drlxParseResult.getPatternBinding(), drlxParseResult.getExprType()));
 
-            functionDSL.addArgument(new ClassExpr(toType(accumulateFunction.getClass())));
-            context.addExpression(buildBinding(bindExpressionVariable, drlxParseResult.getUsedDeclarations(), drlxParseResult.getExpr()));
-            context.addDeclaration(new DeclarationSpec(bindExpressionVariable, drlxParseResult.getExprType()));
-            functionDSL.addArgument(new NameExpr(toVar(bindExpressionVariable)));
+                functionDSL.addArgument(new ClassExpr(toType(accumulateFunction.getClass())));
+                context.addExpression(buildBinding(bindExpressionVariable, drlxParseResult.getUsedDeclarations(), drlxParseResult.getExpr()));
+                context.addDeclaration(new DeclarationSpec(bindExpressionVariable, drlxParseResult.getExprType()));
+                functionDSL.addArgument(new NameExpr(toVar(bindExpressionVariable)));
+            });
+
 
         } else if (expr instanceof MethodCallExpr) {
 
@@ -163,7 +168,7 @@ public class AccumulateVisitor {
             // Then the accumulate function will have that binding expression as a source
             final String bindExpressionVariable = context.getExprId(accumulateFunctionResultType, typedExpression.toString());
             Expression withThis = DrlxParseUtil.prepend(DrlxParseUtil._THIS_EXPR, typedExpression.getExpression());
-            DrlxParseResult result = new DrlxParseResult(accumulateFunctionResultType, "", rootNodeName, withThis, accumulateFunctionResultType)
+            DrlxParseSuccess result = new DrlxParseSuccess(accumulateFunctionResultType, "", rootNodeName, withThis, accumulateFunctionResultType)
                     .setLeft(typedExpression)
                     .setExprBinding(bindExpressionVariable);
             context.addExpression(ModelGenerator.buildBinding(result));

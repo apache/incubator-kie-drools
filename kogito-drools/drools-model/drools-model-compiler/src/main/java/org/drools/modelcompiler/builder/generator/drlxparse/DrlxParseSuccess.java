@@ -1,4 +1,4 @@
-package org.drools.modelcompiler.builder.generator;
+package org.drools.modelcompiler.builder.generator.drlxparse;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -10,8 +10,9 @@ import java.util.Set;
 
 import org.drools.core.util.index.IndexUtil;
 import org.drools.javaparser.ast.expr.Expression;
+import org.drools.modelcompiler.builder.generator.TypedExpression;
 
-public class DrlxParseResult {
+public class DrlxParseSuccess implements DrlxParseResult {
 
     private final Class<?> patternType;
     private Expression expr;
@@ -34,7 +35,7 @@ public class DrlxParseResult {
     private boolean isValidExpression;
     private boolean skipThisAsParam;
 
-    public DrlxParseResult( Class<?> patternType, String exprId, String patternBinding, Expression expr, Class<?> exprType) {
+    public DrlxParseSuccess(Class<?> patternType, String exprId, String patternBinding, Expression expr, Class<?> exprType) {
         this.patternType = patternType;
         this.exprId = exprId;
         this.patternBinding = patternBinding;
@@ -42,27 +43,27 @@ public class DrlxParseResult {
         this.exprType = exprType;
     }
 
-    public DrlxParseResult setDecodeConstraintType( IndexUtil.ConstraintType decodeConstraintType ) {
+    public DrlxParseSuccess setDecodeConstraintType(IndexUtil.ConstraintType decodeConstraintType ) {
         this.decodeConstraintType = decodeConstraintType;
         return this;
     }
 
-    public DrlxParseResult setUsedDeclarations( List<String> usedDeclarations ) {
+    public DrlxParseSuccess setUsedDeclarations(List<String> usedDeclarations ) {
         this.usedDeclarations = new LinkedHashSet<>(usedDeclarations);
         return this;
     }
 
-    public DrlxParseResult setReactOnProperties( Set<String> reactOnProperties ) {
+    public DrlxParseSuccess setReactOnProperties(Set<String> reactOnProperties ) {
         this.reactOnProperties = reactOnProperties;
         return this;
     }
 
-    public DrlxParseResult setPatternBindingUnification( Boolean unification) {
+    public DrlxParseSuccess setPatternBindingUnification(Boolean unification) {
         this.isPatternBindingUnification = unification;
         return this;
     }
 
-    public DrlxParseResult addReactOnProperty( String reactOnProperty ) {
+    public DrlxParseSuccess addReactOnProperty(String reactOnProperty ) {
         if (reactOnProperties.isEmpty()) {
             reactOnProperties = new HashSet<>();
         }
@@ -70,22 +71,22 @@ public class DrlxParseResult {
         return this;
     }
 
-    public DrlxParseResult setLeft( TypedExpression left ) {
+    public DrlxParseSuccess setLeft(TypedExpression left ) {
         this.left = left;
         return this;
     }
 
-    public DrlxParseResult setRight( TypedExpression right ) {
+    public DrlxParseSuccess setRight(TypedExpression right ) {
         this.right = right;
         return this;
     }
 
-    public DrlxParseResult setStatic( boolean isStatic ) {
+    public DrlxParseSuccess setStatic(boolean isStatic ) {
         this.isStatic = isStatic;
         return this;
     }
 
-    public DrlxParseResult setSkipThisAsParam( boolean skipThisAsParam ) {
+    public DrlxParseSuccess setSkipThisAsParam(boolean skipThisAsParam ) {
         this.skipThisAsParam = skipThisAsParam;
         return this;
     }
@@ -110,7 +111,7 @@ public class DrlxParseResult {
         this.patternBinding = patternBinding;
     }
 
-    public DrlxParseResult setExprBinding(String exprBinding) {
+    public DrlxParseSuccess setExprBinding(String exprBinding) {
         this.exprBinding = exprBinding;
         return this;
     }
@@ -192,8 +193,18 @@ public class DrlxParseResult {
         return skipThisAsParam;
     }
 
-    public DrlxParseResult setValidExpression( boolean validExpression ) {
+    public DrlxParseSuccess setValidExpression(boolean validExpression ) {
         this.isValidExpression = validExpression;
         return this;
+    }
+
+    @Override
+    public void accept(ParseResultVoidVisitor parseVisitor) {
+        parseVisitor.onSuccess(this);
+    }
+
+    @Override
+    public <T> T acceptWithReturnValue(ParseResultVisitor<T> visitor) {
+        return visitor.onSuccess(this);
     }
 }

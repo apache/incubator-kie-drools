@@ -10,13 +10,14 @@ import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
-import org.drools.modelcompiler.builder.generator.DrlxParseResult;
+import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
+import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.RuleContext;
+import org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
-import static org.drools.modelcompiler.builder.generator.ModelGenerator.drlxParse;
 
 public class FromVisitor {
 
@@ -54,12 +55,14 @@ public class FromVisitor {
             DeclarationSpec declarationSpec = ruleContext.getDeclarationById(bindingId).orElseThrow(RuntimeException::new);
             Class<?> clazz = declarationSpec.getDeclarationClass();
 
-            DrlxParseResult drlxParseResult = drlxParse(ruleContext, packageModel, clazz, bindingId, expression);
+            DrlxParseResult drlxParseResult = new ConstraintParser(ruleContext, packageModel).drlxParse(clazz, bindingId, expression);
 
-            Expression parsedExpression = drlxParseResult.getExpr();
-            Expression exprArg = generateLambdaWithoutParameters(drlxParseResult.getUsedDeclarations(), parsedExpression);
+            drlxParseResult.accept(drlxParseSuccess -> {
+                Expression parsedExpression = drlxParseSuccess.getExpr();
+                Expression exprArg = generateLambdaWithoutParameters(drlxParseSuccess.getUsedDeclarations(), parsedExpression);
 
-            fromCall.addArgument(exprArg);
+                fromCall.addArgument(exprArg);
+            });
         }
         return fromCall;
     }

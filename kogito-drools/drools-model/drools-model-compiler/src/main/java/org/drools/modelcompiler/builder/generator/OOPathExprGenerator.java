@@ -14,6 +14,9 @@ import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.modelcompiler.builder.PackageModel;
+import org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser;
+import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
+import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 
 import static org.drools.core.util.ClassUtils.extractGenericType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
@@ -31,7 +34,7 @@ public class OOPathExprGenerator {
         this.packageModel = packageModel;
     }
 
-    public void visit(Class<?> originalClass, String originalBind, DrlxParseResult patternParseResult) {
+    public void visit(Class<?> originalClass, String originalBind, DrlxParseSuccess patternParseResult) {
 
         final OOPathExpr ooPathExpr = (OOPathExpr) patternParseResult.getExpr();
 
@@ -77,11 +80,11 @@ public class OOPathExprGenerator {
             if (!conditions.isEmpty()) {
                 Class<?> finalFieldType = fieldType;
                 final List<DrlxParseResult> conditionParseResult = conditions.stream().map((Expression c) ->
-                                                                                                   ModelGenerator.drlxParse(context, packageModel, finalFieldType, bindingId, c.toString())
+                                                                                                   new ConstraintParser(context, packageModel).drlxParse(finalFieldType, bindingId, c.toString())
                 ).collect(Collectors.toList());
                 ooPathConditionExpressions.put(chunkKey, conditionParseResult);
             } else {
-                final DrlxParseResult drlxParseResult = new DrlxParseResult(fieldType, "", bindingId, new BooleanLiteralExpr(true), fieldType);
+                final DrlxParseSuccess drlxParseResult = new DrlxParseSuccess(fieldType, "", bindingId, new BooleanLiteralExpr(true), fieldType);
                 ooPathConditionExpressions.put(chunkKey, Collections.singletonList(drlxParseResult));
             }
 
@@ -98,7 +101,11 @@ public class OOPathExprGenerator {
         // Condition with same key were defined as , and need to be put in an AND expression
         return ooPathConditionExpressions.entrySet().stream()
                 .map((Map.Entry<String, List<DrlxParseResult>> kv) -> {
-                    final List<DrlxParseResult> value = kv.getValue();
+                    final List<DrlxParseSuccess> value = kv.getValue()
+                            .stream()
+                            .filter(r -> r instanceof DrlxParseSuccess)
+                            .map(x -> (DrlxParseSuccess)x)
+                            .collect(Collectors.toList());
                     if (value.size() == 1) {
                         return buildExpressionWithIndexing(context, value.get(0));
                     } else {
