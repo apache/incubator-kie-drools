@@ -49,8 +49,7 @@ public abstract class LambdaAccumulator implements Accumulator {
 
     @Override
     public void accumulate(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle, Declaration[] declarations, Declaration[] innerDeclarations, WorkingMemory workingMemory) throws Exception {
-        Object returnObject = getAccumulatedObject( declarations, innerDeclarations, handle.getObject() );
-        accumulateFunction.accumulate((Serializable) context, returnObject);
+        accumulateFunction.accumulate((Serializable) context, getAccumulatedObject( declarations, innerDeclarations, handle.getObject() ));
     }
 
     protected abstract Object getAccumulatedObject( Declaration[] declarations, Declaration[] innerDeclarations, Object accumulateObject );
@@ -62,7 +61,7 @@ public abstract class LambdaAccumulator implements Accumulator {
 
     @Override
     public void reverse(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle, Declaration[] declarations, Declaration[] innerDeclarations, WorkingMemory workingMemory) throws Exception {
-        accumulateFunction.reverse((Serializable) context, handle.getObject());
+        accumulateFunction.reverse((Serializable) context, getAccumulatedObject( declarations, innerDeclarations, handle.getObject() ));
     }
 
     @Override

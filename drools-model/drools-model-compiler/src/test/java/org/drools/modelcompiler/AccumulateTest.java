@@ -31,7 +31,6 @@ import org.drools.modelcompiler.domain.Customer;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
 import org.drools.modelcompiler.domain.TargetPolicy;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.AccumulateFunction;
@@ -475,7 +474,6 @@ public class AccumulateTest extends BaseModelTest {
     }
 
     @Test
-    @Ignore("failing for reverse case as the accumulate function is being passed the Person instead of the $age.")
     public void testFromCollectWithExpandedAccumulate2WithReverse() {
         testFromCollectWithExpandedAccumulate2(true);
     }
