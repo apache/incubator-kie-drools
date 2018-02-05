@@ -378,4 +378,37 @@ public class CepTest extends BaseModelTest {
         ksession.fireAllRules();
         assertEquals(0, ksession.getObjects().size());
     }
+
+    @Test
+    public void testNoEvent() {
+        String str =
+                "declare BaseEvent\n" +
+                "  @role(event)\n" +
+                "end\n" +
+                "\n" +
+                "declare Event extends BaseEvent\n" +
+                "  @role(event)\n" +
+                "  property : String\n" +
+                "end\n" +
+                "\n" +
+                "declare NotEvent extends BaseEvent\n" +
+                "  @role(event)\n" +
+                "  property : String\n" +
+                "end\n" +
+                "\n" +
+                "rule \"not equal\" when\n" +
+                "    not (\n" +
+                "      ( and\n" +
+                "          $e : BaseEvent( ) over window:length(3) from entry-point entryPoint\n" +
+                "          NotEvent( this == $e, property == \"value\" ) from entry-point entryPoint\n" +
+                "      )\n" +
+                "    )\n" +
+                "then\n" +
+                "\n" +
+                "end";
+
+        KieSession ksession = getKieSession(getCepKieModuleModel(), str);
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
 }

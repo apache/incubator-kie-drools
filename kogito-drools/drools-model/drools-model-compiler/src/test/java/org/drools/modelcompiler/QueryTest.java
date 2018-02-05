@@ -27,6 +27,7 @@ import org.drools.modelcompiler.domain.Relationship;
 import org.drools.modelcompiler.domain.Result;
 import org.drools.modelcompiler.oopathdtables.InternationalAddress;
 import org.drools.modelcompiler.util.TrackingAgendaEventListener;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.command.Command;
@@ -341,7 +342,7 @@ public class QueryTest extends BaseModelTest {
         assertEquals("Milan", cities.get(0));
     }
 
-    @Test
+    @Test @Ignore
     public void testQueryWithOOPathTransformedToFromInsideAcc() {
         String str =
                 "import " + java.util.List.class.getCanonicalName() + ";" +
