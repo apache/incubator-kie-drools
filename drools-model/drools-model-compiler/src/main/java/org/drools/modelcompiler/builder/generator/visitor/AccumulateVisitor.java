@@ -120,6 +120,12 @@ public class AccumulateVisitor {
         }
     }
 
+    /*
+        Since accumulate are always relative to the Pattern, it may happen that the declaration inside the accumulate
+        was already set in the relative Pattern.
+        Here though the type is more precise as it checks the result type Accumulate Function, so we use
+        addDeclarationReplacing instead of addDeclaration to overwrite the previous declaration.
+     */
     private void visit(RuleContext context, AccumulateDescr.AccumulateFunctionCallDescr function, MethodCallExpr accumulateDSL, PatternDescr basePattern, boolean inputPatternHasConstraints) {
 
         context.pushExprPointer(accumulateDSL::addArgument);
@@ -141,11 +147,11 @@ public class AccumulateVisitor {
 
                 drlxParseResult.setExprBinding(bindExpressionVariable);
 
-                context.addDeclaration(new DeclarationSpec(drlxParseResult.getPatternBinding(), drlxParseResult.getExprType()));
+                context.addDeclarationReplacing(new DeclarationSpec(drlxParseResult.getPatternBinding(), drlxParseResult.getExprType()));
 
                 functionDSL.addArgument(new ClassExpr(toType(accumulateFunction.getClass())));
                 context.addExpression(buildBinding(bindExpressionVariable, drlxParseResult.getUsedDeclarations(), drlxParseResult.getExpr()));
-                context.addDeclaration(new DeclarationSpec(bindExpressionVariable, drlxParseResult.getExprType()));
+                context.addDeclarationReplacing(new DeclarationSpec(bindExpressionVariable, drlxParseResult.getExprType()));
                 functionDSL.addArgument(new NameExpr(toVar(bindExpressionVariable)));
             });
 
@@ -172,10 +178,10 @@ public class AccumulateVisitor {
                     .setLeft(typedExpression)
                     .setExprBinding(bindExpressionVariable);
             context.addExpression(ModelGenerator.buildBinding(result));
-            context.addDeclaration(new DeclarationSpec(bindExpressionVariable, methodCallExprType));
+            context.addDeclarationReplacing(new DeclarationSpec(bindExpressionVariable, methodCallExprType));
             functionDSL.addArgument(new NameExpr(toVar(bindExpressionVariable)));
 
-            context.addDeclaration(new DeclarationSpec(bindingId, accumulateFunctionResultType));
+            context.addDeclarationReplacing(new DeclarationSpec(bindingId, accumulateFunctionResultType));
         } else if (expr instanceof NameExpr) {
             final Class<?> declarationClass = context
                     .getDeclarationById(expr.toString())
@@ -199,7 +205,7 @@ public class AccumulateVisitor {
             if ( accumulateFunctionResultType == Comparable.class && (Comparable.class.isAssignableFrom( declarationClass ) || declarationClass.isPrimitive()) ) {
                 accumulateFunctionResultType = declarationClass;
             }
-            context.addDeclaration(new DeclarationSpec(bindingId, accumulateFunctionResultType));
+            context.addDeclarationReplacing(new DeclarationSpec(bindingId, accumulateFunctionResultType));
 
         } else {
             throw new UnsupportedOperationException("Unsupported expression " + expr);
