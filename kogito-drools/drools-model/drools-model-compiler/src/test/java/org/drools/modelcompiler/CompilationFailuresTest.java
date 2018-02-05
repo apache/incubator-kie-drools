@@ -16,11 +16,12 @@
 
 package org.drools.modelcompiler;
 
+import org.drools.modelcompiler.domain.Person;
 import org.junit.Test;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.Results;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
 
 public class CompilationFailuresTest extends BaseModelTest {
 
@@ -84,4 +85,17 @@ public class CompilationFailuresTest extends BaseModelTest {
             return value.getClass().getName();
         }
     }
+
+    @Test
+    public void testBadQueryArg() {
+        String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "query queryWithParamWithoutType( tname , tage)\n" +
+                "    person : Person(name == tname, age < tage )\n" +
+                "end\n";
+
+        Results results = getCompilationResults(drl);
+        assertFalse(results.getMessages( Message.Level.ERROR).isEmpty());
+    }
+
 }

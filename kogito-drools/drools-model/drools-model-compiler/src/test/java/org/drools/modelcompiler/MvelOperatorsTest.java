@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.drools.modelcompiler.domain.Person;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
@@ -43,6 +44,20 @@ public class MvelOperatorsTest extends BaseModelTest {
         KieSession ksession = getKieSession(str);
 
         ksession.insert( "b" );
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test @Ignore
+    public void testStr() {
+        String str =
+            "rule R when\n" +
+            "    String(this str[startsWith] \"M\")" +
+            "then\n" +
+            "end ";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert( "Mario" );
         assertEquals(1, ksession.fireAllRules());
     }
 
