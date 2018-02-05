@@ -42,9 +42,8 @@ import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
+import java.util.concurrent.ConcurrentMap;
 import org.apache.commons.lang3.tuple.Pair;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.cloner.DeepPlanningClone;
@@ -52,6 +51,7 @@ import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.domain.solution.util.ConcurrentCache;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -60,10 +60,10 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
 
     protected final SolutionDescriptor<Solution_> solutionDescriptor;
 
-    protected final ConcurrentMap<Class<?>, Constructor<?>> constructorCache = new ConcurrentHashMap<>();
-    protected final ConcurrentMap<Class<?>, List<Field>> fieldListCache = new ConcurrentHashMap<>();
-    protected final ConcurrentMap<Pair<Field, Class<?>>, Boolean> deepCloneDecisionFieldCache = new ConcurrentHashMap<>();
-    protected final ConcurrentMap<Class<?>, Boolean> deepCloneDecisionActualValueClassCache = new ConcurrentHashMap<>();
+    protected final ConcurrentMap<Class<?>, Constructor<?>> constructorCache = new ConcurrentCache<>();
+    protected final ConcurrentMap<Class<?>, List<Field>> fieldListCache = new ConcurrentCache<>();
+    protected final ConcurrentMap<Pair<Field, Class<?>>, Boolean> deepCloneDecisionFieldCache = new ConcurrentCache<>();
+    protected final ConcurrentMap<Class<?>, Boolean> deepCloneDecisionActualValueClassCache = new ConcurrentCache<>();
 
     public FieldAccessingSolutionCloner(SolutionDescriptor<Solution_> solutionDescriptor) {
         this.solutionDescriptor = solutionDescriptor;
