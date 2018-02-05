@@ -380,7 +380,6 @@ public class OOPathTest extends BaseModelTest {
     }
 
     @Test
-    @Ignore
     public void testOrConstraintWithJoin() {
         final String drl =
                 "import " + Employee.class.getCanonicalName() + ";" +
@@ -411,7 +410,6 @@ public class OOPathTest extends BaseModelTest {
     }
 
     @Test
-    @Ignore
     public void testOrConstraint() {
         final String drl =
                 "import " + Employee.class.getCanonicalName() + ";" +
