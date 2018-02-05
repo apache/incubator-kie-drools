@@ -24,11 +24,19 @@ public class IterationContextNode
 
     private NameDefNode name;
     private BaseNode    expression;
+    private BaseNode    rangeEndExpr = null;
 
     public IterationContextNode(ParserRuleContext ctx, NameDefNode name, BaseNode expression) {
         super( ctx );
         this.name = name;
         this.expression = expression;
+    }
+
+    public IterationContextNode(ParserRuleContext ctx, NameDefNode name, BaseNode expression, BaseNode rangeEndExpr) {
+        super(ctx);
+        this.name = name;
+        this.expression = expression;
+        this.rangeEndExpr = rangeEndExpr;
     }
 
     public NameDefNode getName() {
@@ -54,5 +62,9 @@ public class IterationContextNode
     @Override
     public Object evaluate(EvaluationContext ctx) {
         return expression != null ? expression.evaluate( ctx ) : null;
+    }
+
+    public Object evaluateRangeEnd(EvaluationContext ctx) {
+        return rangeEndExpr != null ? rangeEndExpr.evaluate(ctx) : null;
     }
 }
