@@ -98,7 +98,12 @@ public class ConstraintParser {
             IndexUtil.ConstraintType decodeConstraintType = DrlxParseUtil.toConstraintType(operator );
             List<String> usedDeclarations = new ArrayList<>();
             Set<String> reactOnProperties = new HashSet<>();
+
             TypedExpression left = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, binaryExpr.getLeft(), usedDeclarations, reactOnProperties, binaryExpr, isPositional);
+            if ( left == null ) {
+                return new DrlxParseFail();
+            }
+
             TypedExpression right = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, binaryExpr.getRight(), usedDeclarations, reactOnProperties, binaryExpr, isPositional);
 
             Expression combo;

@@ -21,6 +21,7 @@ import org.drools.core.ruleunit.RuleUnitDescr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.kie.api.runtime.rule.RuleUnit;
 import org.kie.internal.builder.KnowledgeBuilderResult;
+import org.kie.internal.builder.ResultSeverity;
 
 import static java.util.stream.Collectors.toList;
 
@@ -100,6 +101,10 @@ public class RuleContext {
             (( BaseKnowledgeBuilderResultImpl ) error).setResource( descr.getResource() );
         }
         kbuilder.addBuilderResult( error );
+    }
+
+    public boolean hasErrors() {
+        return kbuilder.hasResults( ResultSeverity.ERROR );
     }
 
     public Optional<DeclarationSpec> getDeclarationById(String id) {
