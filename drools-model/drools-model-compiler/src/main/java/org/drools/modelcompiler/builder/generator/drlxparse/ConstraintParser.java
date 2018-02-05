@@ -28,6 +28,7 @@ import org.drools.javaparser.ast.expr.UnaryExpr;
 import org.drools.javaparser.ast.nodeTypes.NodeWithArguments;
 import org.drools.javaparser.ast.nodeTypes.NodeWithOptionalScope;
 import org.drools.modelcompiler.builder.PackageModel;
+import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.errors.ParseExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
@@ -108,6 +109,14 @@ public class ConstraintParser {
 
             Expression combo;
             if ( left.isPrimitive() ) {
+                if ( right == null ) {
+                    context.addCompilationError( new ParseExpressionErrorResult(drlxExpr) );
+                    return new DrlxParseFail();
+                } else if (!right.getType().isPrimitive() && !Number.class.isAssignableFrom( right.getType() ) &&
+                        !Boolean.class.isAssignableFrom( right.getType() ) && !String.class.isAssignableFrom( right.getType() )) {
+                    context.addCompilationError( new InvalidExpressionErrorResult("Comparison operation requires compatible types. Found " + left.getType() + " and " + right.getType()) );
+                    return new DrlxParseFail();
+                }
                 Expression rightExpr = right.getExpression() instanceof StringLiteralExpr ?
                         new IntegerLiteralExpr( (( StringLiteralExpr ) right.getExpression()).asString() ) :
                         right.getExpression();
