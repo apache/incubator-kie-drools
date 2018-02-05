@@ -16,15 +16,18 @@
 
 package org.kie.dmn.feel.lang.ast;
 
-import org.antlr.v4.runtime.ParserRuleContext;
-import org.kie.dmn.feel.lang.EvaluationContext;
-import org.kie.dmn.feel.lang.Type;
-import org.kie.dmn.feel.lang.types.BuiltInType;
-
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Supplier;
+
+import org.antlr.v4.runtime.ParserRuleContext;
+import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.lang.types.BuiltInType;
 
 public class ForExpressionNode
         extends BaseNode {
@@ -110,26 +113,42 @@ public class ForExpressionNode
     }
 
     private ForIteration createQuantifiedExpressionIterationContext(EvaluationContext ctx, IterationContextNode icn) {
+        ForIteration fi = null;
         String name = icn.evaluateName( ctx );
         Object result = icn.evaluate( ctx );
-        Iterable values = result instanceof Iterable ? (Iterable) result : Collections.singletonList( result );
-        ForIteration fi = new ForIteration( name, values );
+        Object rangeEnd = icn.evaluateRangeEnd(ctx);
+        if (rangeEnd == null) {
+            Iterable values = result instanceof Iterable ? (Iterable) result : Collections.singletonList(result);
+            fi = new ForIteration(name, values);
+        } else {
+            BigDecimal start = (BigDecimal) result;
+            BigDecimal end = (BigDecimal) rangeEnd;
+            fi = new ForIteration(name, start, end);
+        }
         return fi;
     }
 
     private static class ForIteration {
         private String   name;
         private Iterable values;
+
+        private Supplier<Iterator> iteratorGenerator;
         private Iterator iterator;
 
         public ForIteration(String name, Iterable values) {
             this.name = name;
             this.values = values;
+            this.iteratorGenerator = () -> this.values.iterator();
+        }
+
+        public ForIteration(String name, final BigDecimal start, final BigDecimal end) {
+            this.name = name;
+            this.iteratorGenerator = () -> new BigDecimalRangeIterator(start, end);
         }
 
         public boolean hasNextValue() {
             if( iterator == null ) {
-                iterator = values.iterator();
+                iterator = iteratorGenerator.get();
             }
             boolean hasValue = this.iterator.hasNext();
             if( ! hasValue ) {
@@ -147,6 +166,51 @@ public class ForExpressionNode
         }
     }
 
+    public static class BigDecimalRangeIterator implements Iterator<BigDecimal> {
 
+        private enum Direction {
+            ASCENDANT,
+            DESCENDANT;
+        }
+
+        private final BigDecimal start;
+        private final BigDecimal end;
+
+        private BigDecimal cursor;
+        private final Direction direction;
+        private final BigDecimal increment;
+
+        public BigDecimalRangeIterator(BigDecimal start, BigDecimal end) {
+            this.start = start;
+            this.end = end;
+            this.direction = (start.compareTo(end) <= 0) ? Direction.ASCENDANT : Direction.DESCENDANT;
+            this.increment = (direction == Direction.ASCENDANT) ? new BigDecimal(1, MathContext.DECIMAL128) : new BigDecimal(-1, MathContext.DECIMAL128);
+        }
+
+        @Override
+        public boolean hasNext() {
+            if (cursor == null) {
+                return true;
+            } else {
+                BigDecimal lookAhead = next();
+                if (direction == Direction.ASCENDANT) {
+                    return lookAhead.compareTo(end) <= 0;
+                } else {
+                    return lookAhead.compareTo(end) >= 0;
+                }
+            }
+        }
+
+        @Override
+        public BigDecimal next() {
+            if (cursor == null) {
+                cursor = start;
+            } else {
+                cursor = cursor.add(increment);
+            }
+            return cursor;
+        }
+
+    }
 
 }

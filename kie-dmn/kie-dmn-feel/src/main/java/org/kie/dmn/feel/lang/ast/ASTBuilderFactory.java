@@ -16,11 +16,11 @@
 
 package org.kie.dmn.feel.lang.ast;
 
-import org.antlr.v4.runtime.ParserRuleContext;
-import org.kie.dmn.feel.lang.Type;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.antlr.v4.runtime.ParserRuleContext;
+import org.kie.dmn.feel.lang.Type;
 
 public class ASTBuilderFactory {
 
@@ -90,6 +90,10 @@ public class ASTBuilderFactory {
 
     public static IterationContextNode newIterationContextNode(ParserRuleContext ctx, NameDefNode name, BaseNode expr) {
         return new IterationContextNode( ctx, name, expr );
+    }
+
+    public static IterationContextNode newIterationContextNode(ParserRuleContext ctx, NameDefNode name, BaseNode expr, BaseNode rangeEndExpr) {
+        return new IterationContextNode(ctx, name, expr, rangeEndExpr);
     }
 
     public static ForExpressionNode newForExpression(ParserRuleContext ctx, ListNode list, BaseNode expr) {

@@ -16,15 +16,6 @@
 
 package org.kie.dmn.feel.parser.feel11;
 
-import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.Token;
-import org.kie.dmn.feel.lang.CompositeType;
-import org.kie.dmn.feel.lang.Type;
-import org.kie.dmn.feel.lang.ast.*;
-import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser.RelExpressionValueContext;
-import org.kie.dmn.feel.lang.impl.MapBackedType;
-import org.kie.dmn.feel.lang.types.BuiltInType;
-
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,6 +26,30 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.Token;
+import org.kie.dmn.feel.lang.CompositeType;
+import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.lang.ast.ASTBuilderFactory;
+import org.kie.dmn.feel.lang.ast.BaseNode;
+import org.kie.dmn.feel.lang.ast.BetweenNode;
+import org.kie.dmn.feel.lang.ast.BooleanNode;
+import org.kie.dmn.feel.lang.ast.ContextEntryNode;
+import org.kie.dmn.feel.lang.ast.DashNode;
+import org.kie.dmn.feel.lang.ast.InNode;
+import org.kie.dmn.feel.lang.ast.InfixOpNode;
+import org.kie.dmn.feel.lang.ast.InstanceOfNode;
+import org.kie.dmn.feel.lang.ast.ListNode;
+import org.kie.dmn.feel.lang.ast.NameDefNode;
+import org.kie.dmn.feel.lang.ast.NameRefNode;
+import org.kie.dmn.feel.lang.ast.QualifiedNameNode;
+import org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode;
+import org.kie.dmn.feel.lang.ast.RangeNode;
+import org.kie.dmn.feel.lang.ast.TypeNode;
+import org.kie.dmn.feel.lang.ast.UnaryTestNode;
+import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser.RelExpressionValueContext;
 
 public class ASTBuilderVisitor
         extends FEEL_1_1BaseVisitor<BaseNode> {
@@ -335,8 +350,13 @@ public class ASTBuilderVisitor
     @Override
     public BaseNode visitIterationContext(FEEL_1_1Parser.IterationContextContext ctx) {
         NameDefNode name = (NameDefNode) visit( ctx.nameDefinition() );
-        BaseNode expr = visit( ctx.expression() );
-        return ASTBuilderFactory.newIterationContextNode( ctx, name, expr );
+        BaseNode expr = visit(ctx.expression().get(0));
+        if (ctx.expression().size() == 1) {
+            return ASTBuilderFactory.newIterationContextNode(ctx, name, expr);
+        } else {
+            BaseNode rangeEndExpr = visit(ctx.expression().get(1));
+            return ASTBuilderFactory.newIterationContextNode(ctx, name, expr, rangeEndExpr);
+        }
     }
 
     @Override
