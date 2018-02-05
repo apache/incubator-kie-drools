@@ -63,7 +63,7 @@ public class LocalHTWorkItemHandler extends AbstractHTWorkItemHandler {
         Map<String, Object> content = createTaskDataBasedOnWorkItemParams(ksessionById, workItem);
         try {
             long taskId = ((InternalTaskService) runtime.getTaskService()).addTask(task, content);
-            if (isAutoClaim(workItem, task)) {
+            if (isAutoClaim(ksessionById, workItem, task)) {
             	try {
             		runtime.getTaskService().claim(taskId, (String) workItem.getParameter("SwimlaneActorId"));
             	} catch (PermissionDeniedException e) {

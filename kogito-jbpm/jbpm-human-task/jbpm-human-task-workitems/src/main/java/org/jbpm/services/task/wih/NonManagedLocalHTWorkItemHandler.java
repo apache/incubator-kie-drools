@@ -100,7 +100,7 @@ public class NonManagedLocalHTWorkItemHandler extends AbstractHTWorkItemHandler 
         ContentData content = createTaskContentBasedOnWorkItemParams(ksession, workItem);
         try {
             long taskId = ((InternalTaskService) taskService).addTask(task, content);
-            if (isAutoClaim(workItem, task)) {
+            if (isAutoClaim(ksession, workItem, task)) {
                 taskService.claim(taskId, (String) workItem.getParameter("SwimlaneActorId"));
             }
         } catch (Exception e) {

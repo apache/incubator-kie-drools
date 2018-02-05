@@ -224,12 +224,17 @@ public abstract class AbstractHTWorkItemHandler implements WorkItemHandler {
         return data;
     }
     
-    protected boolean isAutoClaim(WorkItem workItem, Task task) {
-        String swimlaneUser = (String) workItem.getParameter("SwimlaneActorId");
-        if (swimlaneUser != null  && !"".equals(swimlaneUser) && task.getTaskData().getStatus() == Status.Ready) {
-            return true;
-        }
+    protected boolean isAutoClaim(KieSession session, WorkItem workItem, Task task) {
+        String autoclaim = (String) session.getEnvironment().get("Autoclaim");
         
+        if(autoclaim != null && !Boolean.parseBoolean(autoclaim.trim())) {
+            return false; 
+        } else {
+             String swimlaneUser = (String) workItem.getParameter("SwimlaneActorId");
+             if (swimlaneUser != null  && !"".equals(swimlaneUser) && task.getTaskData().getStatus() == Status.Ready) {
+                 return true;
+             }
+        }
         return false;
     }
 

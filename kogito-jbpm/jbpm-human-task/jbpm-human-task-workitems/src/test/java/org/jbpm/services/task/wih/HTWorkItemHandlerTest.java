@@ -39,7 +39,8 @@ public class HTWorkItemHandlerTest extends HTWorkItemHandlerBaseTest {
     	pds = setupPoolingDataSource();
         emf = Persistence.createEntityManagerFactory("org.jbpm.services.task");
         ksession = new TestStatefulKnowledgeSession();
-        ksession.setEnvironment(EnvironmentFactory.newEnvironment());
+        env = EnvironmentFactory.newEnvironment();
+        ksession.setEnvironment(env);
         this.taskService = (InternalTaskService) HumanTaskServiceFactory.newTaskServiceConfigurator()
 				.entityManagerFactory(emf)
 				.getTaskService();
