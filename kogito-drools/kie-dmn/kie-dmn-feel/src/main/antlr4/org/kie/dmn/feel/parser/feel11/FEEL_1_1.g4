@@ -15,6 +15,8 @@ grammar FEEL_1_1;
 
 @parser::members {
     private ParserHelper helper = null;
+    
+    private boolean featDMN12EnhancedForLoopEnabled = true;
 
     public void setHelper( ParserHelper helper ) {
         this.helper = helper;
@@ -91,9 +93,10 @@ iterationContexts
     ;
 
 iterationContext
-    : nameDefinition in_key expression
+    : {featDMN12EnhancedForLoopEnabled}? nameDefinition in_key expression '..' expression
+    | nameDefinition in_key expression
     ;
-
+    
 // #47
 ifExpression
     : if_key c=expression then_key t=expression else_key e=expression
