@@ -43,7 +43,8 @@ public class UnaryTestNode
         NE( "!=" ),
         EQ( "=" ),
         NOT( "not" ),
-        IN( "in" );
+        IN( "in" ),
+        NOP("");
 
         public final String symbol;
 
@@ -109,6 +110,8 @@ public class UnaryTestNode
                 return new UnaryTestImpl( createInUnaryTest() , value.getText() );
             case NOT:
                 return new UnaryTestImpl( createNotUnaryTest() , value.getText() );
+            case NOP:
+                return new UnaryTestImpl((context, left) -> (Boolean) value.evaluate(context), value.getText());
         }
         ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.NULL_OR_UNKNOWN_OPERATOR)));
         return null;
@@ -138,6 +141,9 @@ public class UnaryTestNode
     private UnaryTest createIsEqualUnaryTest( ) {
         return (context, left) -> {
             Object right = value.evaluate( context );
+            if (right instanceof Boolean) {
+                return (Boolean) right;
+            }
             return utEqualSemantic(left, right, context);
         };
     }
