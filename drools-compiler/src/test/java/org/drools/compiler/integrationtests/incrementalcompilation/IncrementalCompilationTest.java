@@ -4010,6 +4010,7 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
 
     public static class BooleanEvent implements Serializable {
         private boolean enabled = false;
+        private boolean valid = false;
 
         public boolean isEnabled() {
             return enabled;
@@ -4017,6 +4018,14 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
 
         public void setEnabled( boolean enabled ) {
             this.enabled = enabled;
+        }
+
+        public boolean isValid() {
+            return valid;
+        }
+
+        public void setValid( boolean valid ) {
+            this.valid = valid;
         }
     }
 
@@ -4038,6 +4047,68 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
                 "    $toEdit : List() from collect( BooleanEvent(!enabled) over window:time(2) )\n" +
                 "then\n" +
                 "    modify( (BooleanEvent)$toEdit.get(0) ){ setEnabled( true ) }\n" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        KieModuleModel kproj = ks.newKieModuleModel();
+        KieBaseModel kieBaseModel1 = kproj.newKieBaseModel( "KBase1" ).setDefault( true )
+                .setEventProcessingMode( EventProcessingOption.STREAM );
+        KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel( "KSession1" ).setDefault( true )
+                .setType( KieSessionModel.KieSessionType.STATEFUL )
+                .setClockType( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
+        deployJar( ks, createKJar( ks, kproj, releaseId1, null, drl1 ) );
+        ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "2.0.0" );
+        deployJar( ks, createKJar( ks, kproj, releaseId2, null, drl2 ) );
+
+        KieContainer kc = ks.newKieContainer( releaseId1 );
+        KieSession kieSession = kc.newKieSession();
+
+        kieSession.insert(new BooleanEvent());
+        kieSession.fireAllRules();
+
+        kc.updateToVersion( releaseId2 );
+
+        kieSession.fireAllRules();
+
+        KieMarshallers marshallers = ks.getMarshallers();
+        Marshaller marshaller = marshallers.newMarshaller(kieSession.getKieBase());
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        marshaller.marshall(outputStream, kieSession);
+    }
+
+    @Test
+    public void testAddRuleWithSlidingWindows2() throws Exception {
+        // DROOLS-2292
+        String drl1 = "package org.drools.compiler\n" +
+                "import " + List.class.getCanonicalName() + "\n" +
+                "import " + BooleanEvent.class.getCanonicalName() + "\n" +
+                "declare BooleanEvent @role( event ) end\n" +
+                "rule R1 when\n" +
+                "    $e : BooleanEvent(!valid)\n" +
+                "    $toEdit : List() from collect( BooleanEvent(!valid) over window:time(2) )\n" +
+                "then\n" +
+                "    modify( (BooleanEvent)$toEdit.get(0) ){ setValid( true ) }\n" +
+                "end\n";
+
+        String drl2 = "package org.drools.compiler\n" +
+                "import " + List.class.getCanonicalName() + "\n" +
+                "import " + BooleanEvent.class.getCanonicalName() + "\n" +
+                "declare BooleanEvent @role( event ) end\n" +
+                "rule R1 when\n" +
+                "    $e : BooleanEvent(!valid)\n" +
+                "    $toEdit : List() from collect( BooleanEvent(!valid) over window:time(2) )\n" +
+                "then\n" +
+                "    modify( (BooleanEvent)$toEdit.get(0) ){ setValid( true ) }\n" +
+                "end\n" +
+                "rule R2 when\n" +
+                "    $e : BooleanEvent(!enabled) over window:length( 1 )\n" +
+                "    $b : BooleanEvent(!enabled)\n" +
+                "then\n" +
+                "    modify( $b ){ setEnabled( true ) }\n" +
                 "end\n";
 
         KieServices ks = KieServices.Factory.get();
