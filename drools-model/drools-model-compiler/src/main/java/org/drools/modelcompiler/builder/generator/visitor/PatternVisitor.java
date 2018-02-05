@@ -3,10 +3,10 @@ package org.drools.modelcompiler.builder.generator.visitor;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.AnnotationDescr;
@@ -20,14 +20,16 @@ import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
-import org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser;
-import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
-import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.ModelGenerator;
 import org.drools.modelcompiler.builder.generator.OOPathExprGenerator;
 import org.drools.modelcompiler.builder.generator.QueryGenerator;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.WindowReferenceGenerator;
+import org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser;
+import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseFail;
+import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
+import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
+import org.drools.modelcompiler.builder.generator.drlxparse.ParseResultVisitor;
 import org.kie.api.definition.type.Position;
 
 import static org.drools.model.impl.NamesGenerator.generateName;
@@ -86,8 +88,13 @@ public class PatternVisitor {
         if (constraintDescrs.isEmpty() && pattern.getSource() == null) {
             context.addExpression(createInputExpression(pattern));
         } else {
-            final List<ConstraintParseResult> constraintParseResults = context.hasErrors() ? Collections.emptyList() : findAllConstraint(pattern, constraintDescrs, patternType);
-            buildConstraints(pattern, patternType, constraintParseResults, allConstraintsPositional);
+            if (!context.hasErrors()) {
+                final List<ConstraintParseResult> constraintParseResults = findAllConstraint(pattern, constraintDescrs, patternType);
+                if(shouldAddInputPattern(constraintParseResults)) {
+                    context.addExpression(createInputExpression(pattern));
+                }
+                buildConstraints(pattern, patternType, constraintParseResults, allConstraintsPositional);
+            }
         }
     }
 
@@ -122,6 +129,27 @@ public class PatternVisitor {
         }
         return constraintParseResults;
     }
+
+    private boolean shouldAddInputPattern(List<ConstraintParseResult> parseResults) {
+        final Predicate<? super ConstraintParseResult> hasOneOOPathExpr = (Predicate<ConstraintParseResult>) constraintParseResult -> {
+            return constraintParseResult.getDrlxParseResult().acceptWithReturnValue(new ParseResultVisitor<Boolean>() {
+                @Override
+                public Boolean onSuccess(DrlxParseSuccess drlxParseResult) {
+                    return drlxParseResult.getExpr() instanceof OOPathExpr;
+                }
+
+                @Override
+                public Boolean onFail(DrlxParseFail failure) {
+                    return false;
+                }
+            });
+        };
+
+        return parseResults
+                .stream()
+                .anyMatch(hasOneOOPathExpr);
+    }
+
 
     private ConstraintParseResult parseConstraint(PatternDescr pattern, Class<?> patternType, BaseDescr constraint) {
         final boolean isPositional = isPositional(constraint);
@@ -166,8 +194,6 @@ public class PatternVisitor {
                     patternIdentifierGenerated = context.getExprId(patternType, expression);
                     context.addDeclaration(new DeclarationSpec(patternIdentifierGenerated, patternType, Optional.of(pattern), Optional.empty()));
                 }
-
-                context.addExpression(createInputExpression(pattern));
 
                 new OOPathExprGenerator(context, packageModel).visit(patternType, patternIdentifierGenerated, drlxParseResult);
             } else {

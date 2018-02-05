@@ -350,7 +350,6 @@ public class OOPathTest extends BaseModelTest {
     }
 
     @Test
-    @Ignore
     public void testOrConstraintNoBinding() {
         final String drl =
                 "import " + Employee.class.getCanonicalName() + ";" +
