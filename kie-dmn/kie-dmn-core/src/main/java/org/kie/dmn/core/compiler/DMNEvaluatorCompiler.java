@@ -428,12 +428,14 @@ public class DMNEvaluatorCompiler {
 
     private DMNExpressionEvaluator compileDecisionTable(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String dtName, DecisionTable dt) {
         java.util.List<DTInputClause> inputs = new ArrayList<>();
+        List<DMNType> inputTypes = new ArrayList<>();
         int index = 0;
         for ( InputClause ic : dt.getInput() ) {
             index++;
             String inputExpressionText = ic.getInputExpression().getText();
             String inputValuesText =  Optional.ofNullable( ic.getInputValues() ).map( UnaryTests::getText).orElse( null);
             java.util.List<UnaryTest> inputValues = null;
+            DMNType inputType = DMNTypeRegistry.UNKNOWN;
             if ( inputValuesText != null ) {
                 inputValues = textToUnaryTestList( ctx,
                                                    inputValuesText,
@@ -446,6 +448,7 @@ public class DMNEvaluatorCompiler {
             } else if ( ic.getInputExpression().getTypeRef() != null ) {
                 QName inputExpressionTypeRef = ic.getInputExpression().getTypeRef();
                 BaseDMNTypeImpl typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().resolveType(resolveNamespaceForTypeRef(inputExpressionTypeRef, ic.getInputExpression()), inputExpressionTypeRef.getLocalPart());
+                inputType = typeRef;
                 inputValues = typeRef.getAllowedValuesFEEL();
             }
             CompiledExpression compiledInput = feel.compileFeelExpression(
@@ -458,6 +461,7 @@ public class DMNEvaluatorCompiler {
                     dtName,
                     index );
             inputs.add( new DTInputClause(inputExpressionText, inputValuesText, inputValues, compiledInput ) );
+            inputTypes.add(inputType);
         }
         java.util.List<DTOutputClause> outputs = new ArrayList<>();
         index = 0;
@@ -518,7 +522,8 @@ public class DMNEvaluatorCompiler {
         index = 0;
         for ( DecisionRule dr : dt.getRule() ) {
             DTDecisionRule rule = new DTDecisionRule( index );
-            for( UnaryTests ut : dr.getInputEntry() ) {
+            for ( int i = 0; i < dr.getInputEntry().size(); i++ ) {
+                UnaryTests ut = dr.getInputEntry().get(i);
                 final java.util.List<UnaryTest> tests;
                 if( ut == null || ut.getText() == null || ut.getText().isEmpty() ) {
                     tests = Collections.emptyList();
@@ -533,18 +538,24 @@ public class DMNEvaluatorCompiler {
                                            dr.getInputEntry().indexOf( ut ) + 1,
                                            dt.getParentDRDElement().getIdentifierString() );
                 } else {
-                    tests = textToUnaryTestList( ctx,
-                            ut.getText(),
-                            model,
-                            dr,
-                            Msg.ERR_COMPILING_FEEL_EXPR_ON_DT_RULE_IDX,
-                            ut.getText(),
-                            node.getIdentifierString(),
-                            index+1 );
+                    ctx.enterFrame();
+                    try {
+                        ctx.setVariable("?", inputTypes.get(i));
+                        tests = textToUnaryTestList(ctx,
+                                ut.getText(),
+                                model,
+                                dr,
+                                Msg.ERR_COMPILING_FEEL_EXPR_ON_DT_RULE_IDX,
+                                ut.getText(),
+                                node.getIdentifierString(),
+                                index + 1);
+                    } finally {
+                        ctx.exitFrame();
+                    }
                 }
                 rule.getInputEntry().add( (c, x) -> tests.stream().anyMatch( t -> {
                     Boolean result = t.apply( c, x );
-                    return result != null && result == true;
+                    return result != null && result;
                 } ) );
             }
             for ( LiteralExpression le : dr.getOutputEntry() ) {

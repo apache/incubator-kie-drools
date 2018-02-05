@@ -34,11 +34,7 @@ import org.kie.dmn.feel.lang.CompilerContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELProfile;
 import org.kie.dmn.feel.lang.Type;
-import org.kie.dmn.feel.lang.ast.BaseNode;
-import org.kie.dmn.feel.lang.ast.DashNode;
-import org.kie.dmn.feel.lang.ast.ListNode;
-import org.kie.dmn.feel.lang.ast.RangeNode;
-import org.kie.dmn.feel.lang.ast.UnaryTestNode;
+import org.kie.dmn.feel.lang.ast.*;
 import org.kie.dmn.feel.parser.feel11.ASTBuilderVisitor;
 import org.kie.dmn.feel.parser.feel11.FEELParser;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser;
@@ -208,7 +204,9 @@ public class FEELImpl
                 } else if ( o instanceof UnaryTestNode || o instanceof DashNode ) {
                     tests.add( o );
                 } else if (o instanceof RangeNode || o instanceof ListNode) {
-                    tests.add( new UnaryTestNode( "in", o ) );
+                    tests.add(new UnaryTestNode("in", o));
+                } else if (o instanceof InfixOpNode) {
+                    tests.add(new UnaryTestNode("", o));
                 } else {
                     tests.add( new UnaryTestNode( "=", o ) );
                 }
