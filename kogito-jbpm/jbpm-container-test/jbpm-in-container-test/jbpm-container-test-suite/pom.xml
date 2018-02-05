@@ -882,6 +882,27 @@
             <groupId>org.jboss.arquillian.container</groupId>
             <artifactId>arquillian-wls-remote-12.1.x</artifactId>
             <version>1.0.1.Final</version>
+            <exclusions>
+              <!--
+                   Following artifacts are from wls-common module which is a parent of the arquillian-wls-remote-12.1.x
+                   adapter. However, these dependencies are only needed by REST-based wls adapters. Therefore, they
+                   are excluded so they don't cause issues with certain artifacts on a wls side like org.glassfish.hk2
+                   which would be loaded twice - once from wlclient.jar and once as transitive dependencies of these
+                   artifacts
+              -->
+              <exclusion>
+                <groupId>org.glassfish.jersey.core</groupId>
+                <artifactId>jersey-client</artifactId>
+              </exclusion>
+              <exclusion>
+                <groupId>org.glassfish.jersey.media</groupId>
+                <artifactId>jersey-media-json-processing</artifactId>
+              </exclusion>
+              <exclusion>
+                <groupId>org.glassfish.jersey.media</groupId>
+                <artifactId>jersey-media-multipart</artifactId>
+              </exclusion>
+            </exclusions>
           </dependency>
         </dependencies>
       </dependencyManagement>
