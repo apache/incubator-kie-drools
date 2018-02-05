@@ -37,12 +37,12 @@ public class ExisistentialTest extends BaseModelTest {
     public void testNot() {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
-                        "import " + Result.class.getCanonicalName() + ";" +
-                        "rule R when\n" +
-                        "  not( Person( name.length == 4 ) )\n" +
-                        "then\n" +
-                        "  insert(new Result(\"ok\"));\n" +
-                        "end";
+                "import " + Result.class.getCanonicalName() + ";" +
+                "rule R when\n" +
+                "  not( Person( name.length == 4 ) )\n" +
+                "then\n" +
+                "  insert(new Result(\"ok\"));\n" +
+                "end";
 
         KieSession ksession = getKieSession( str );
 
@@ -60,12 +60,12 @@ public class ExisistentialTest extends BaseModelTest {
     public void testNotEmptyPredicate() {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
-                        "import " + Result.class.getCanonicalName() + ";" +
-                        "rule R when\n" +
-                        "  not( Person( ) )\n" +
-                        "then\n" +
-                        "  insert(new Result(\"ok\"));\n" +
-                        "end";
+                "import " + Result.class.getCanonicalName() + ";" +
+                "rule R when\n" +
+                "  not( Person( ) )\n" +
+                "then\n" +
+                "  insert(new Result(\"ok\"));\n" +
+                "end";
 
         KieSession ksession = getKieSession( str );
 

@@ -85,7 +85,7 @@ public class PatternVisitor {
         final Optional<Expression> declarationSource = buildFromDeclaration(pattern);
         context.addDeclaration(new DeclarationSpec(pattern.getIdentifier(), patternType, Optional.of(pattern), declarationSource));
 
-        if (constraintDescrs.isEmpty() && pattern.getSource() == null) {
+        if (constraintDescrs.isEmpty() && !(pattern.getSource() instanceof AccumulateDescr)) {
             context.addExpression(createInputExpression(pattern));
         } else {
             if (!context.hasErrors()) {

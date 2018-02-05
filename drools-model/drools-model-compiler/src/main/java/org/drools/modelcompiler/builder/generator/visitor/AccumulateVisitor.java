@@ -194,7 +194,12 @@ public class AccumulateVisitor {
             if(!inputPatternHasConstraints) {
                 final MethodCallExpr exprCall = new MethodCallExpr(null, ModelGenerator.EXPR_CALL);
                 exprCall.addArgument(toVar(nameExpr));
-                getExprsMethod( accumulateDSL ).addArgument( exprCall );
+                MethodCallExpr accMethod = getExprsMethod( accumulateDSL );
+                if (accMethod.getArguments().isEmpty()) {
+                    accMethod.addArgument( exprCall );
+                } else {
+                    accMethod.setArgument( 0, exprCall );
+                }
             }
 
             final AccumulateFunction accumulateFunction = getAccumulateFunction(function, declarationClass);
