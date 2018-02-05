@@ -53,7 +53,7 @@ public class QueryTest extends BaseModelTest {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "global java.lang.Integer ageG;" +
-                "query olderThan\n" +
+                "query \"older than\"\n" +
                 "    $p : Person(age > ageG)\n" +
                 "end ";
 
@@ -64,7 +64,7 @@ public class QueryTest extends BaseModelTest {
         ksession.insert(new Person("Mark", 39));
         ksession.insert(new Person("Mario", 41));
 
-        QueryResults results = ksession.getQueryResults("olderThan", 40);
+        QueryResults results = ksession.getQueryResults("older than", 40);
 
         assertEquals(1, results.size());
         QueryResultsRow res = results.iterator().next();
@@ -79,6 +79,26 @@ public class QueryTest extends BaseModelTest {
                 "import " + Person.class.getCanonicalName() + ";" +
                 "query olderThan( int $age )\n" +
                 "    $p : Person(age > $age)\n" +
+                "end ";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( new Person( "Mark", 39 ) );
+        ksession.insert( new Person( "Mario", 41 ) );
+
+        QueryResults results = ksession.getQueryResults( "olderThan", 40 );
+
+        assertEquals( 1, results.size() );
+        Person p = (Person) results.iterator().next().get( "$p" );
+        assertEquals( "Mario", p.getName() );
+    }
+
+    @Test
+    public void testQueryOneArgumentWithoutType() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "query olderThan( $age )\n" +
+                "    $p : Person(age > (Integer)$age)\n" +
                 "end ";
 
         KieSession ksession = getKieSession( str );
@@ -322,7 +342,7 @@ public class QueryTest extends BaseModelTest {
         assertEquals("Milan", cities.get(0));
     }
 
-    @Test
+    @Test @Ignore
     public void testQueryWithOOPathTransformedToFromInsideAcc() {
         String str =
                 "import " + java.util.List.class.getCanonicalName() + ";" +
@@ -578,5 +598,34 @@ public class QueryTest extends BaseModelTest {
 
         KieSession ksession = getKieSession( str );
         ksession.fireAllRules();
+    }
+
+    @Test
+    public void testQueryCalling2Queries() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "query isPersonOlderThan(Person p, int ageFrom)\n" +
+                "    Person(this == p, age > ageFrom)\n" +
+                "end\n" +
+                "\n" +
+                "query isPersonYoungerThan(Person p, int ageTo)\n" +
+                "    Person(this == p, age < ageTo)\n" +
+                "end\n" +
+                "query getPersonsBetween(int ageFrom, int ageTo) \n" +
+                "    p : Person()\n" +
+                "    isPersonOlderThan(p, ageFrom;) and isPersonYoungerThan(p, ageTo;)\n" +
+                "end\n" +
+                "\n";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( new Person( "Mark", 39 ) );
+        ksession.insert( new Person( "Mario", 41 ) );
+
+        QueryResults results = ksession.getQueryResults( "getPersonsBetween", 40, 50 );
+
+        assertEquals( 1, results.size() );
+        Person p = (Person) results.iterator().next().get( "p" );
+        assertEquals( "Mario", p.getName() );
     }
 }

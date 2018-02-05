@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -111,6 +112,7 @@ import org.kie.internal.utils.ChainedProperties;
 import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
+import static org.drools.compiler.lang.descr.ForallDescr.BASE_IDENTIFIER;
 import static org.drools.core.rule.GroupElement.AND;
 import static org.drools.core.rule.Pattern.getReadAcessor;
 import static org.drools.model.DSL.declarationOf;
@@ -189,6 +191,7 @@ public class KiePackagesBuilder {
         RuleImpl ruleImpl = new RuleImpl( rule.getName() );
         ruleImpl.setPackage( pkg.getName() );
         setRuleAttributes( rule, ruleImpl );
+        setRuleMetaAttributes(rule, ruleImpl);
         ruleImpl.setPackage( rule.getPackage() );
         if (rule.getUnit() != null) {
             ruleImpl.setRuleUnitClassName( rule.getUnit() );
@@ -232,6 +235,12 @@ public class KiePackagesBuilder {
             return value;
         }
         return null;
+    }
+
+    private void setRuleMetaAttributes(Rule rule, RuleImpl ruleImpl) {
+        for (Entry<String, Object> kv : rule.getMetaData().entrySet()) {
+            ruleImpl.addMetaAttribute(kv.getKey(), kv.getValue());
+        }
     }
 
     private org.drools.core.time.impl.Timer parseTimer( String s ) {
@@ -345,7 +354,7 @@ public class KiePackagesBuilder {
                 return buildEval( ctx, ( EvalImpl ) condition );
             }
             case ACCUMULATE: {
-                final AccumulatePattern accumulatePattern = (AccumulatePattern) condition;
+                AccumulatePattern accumulatePattern = (AccumulatePattern) condition;
                 RuleConditionElement source;
                 if(accumulatePattern.getCompositePatterns().isPresent()) {
                     CompositePatterns compositePatterns = (CompositePatterns) accumulatePattern.getCompositePatterns().get();
@@ -357,7 +366,14 @@ public class KiePackagesBuilder {
                 } else {
                     source = buildPattern(ctx, group, condition );
                 }
-                Pattern pattern = new Pattern( 0, getObjectType( Object.class ) );
+
+                Pattern pattern = null;
+                if (accumulatePattern.getAccumulateFunctions().length == 1) {
+                    pattern = ctx.getPattern( accumulatePattern.getAccumulateFunctions()[0].getVariable() );
+                }
+                if (pattern == null) {
+                    pattern = new Pattern( 0, getObjectType( Object.class ) );
+                }
 
                 PatternImpl sourcePattern = (PatternImpl) accumulatePattern.getPattern();
                 List<String> usedVariableName = new ArrayList<>();
@@ -387,10 +403,20 @@ public class KiePackagesBuilder {
             }
             case FORALL: {
                 Condition innerCondition = condition.getSubConditions().get(0);
-                Pattern basePattern = (Pattern) conditionToElement( ctx, group, innerCondition.getSubConditions().get(0) );
+                Pattern basePattern;
                 List<Pattern> remainingPatterns = new ArrayList<>();
-                for (int i = 1; i < innerCondition.getSubConditions().size(); i++) {
-                    remainingPatterns.add( (Pattern) conditionToElement( ctx, group, innerCondition.getSubConditions().get(i) ) );
+                if (innerCondition instanceof PatternImpl) {
+                    basePattern = new Pattern( ctx.getNextPatternIndex(),
+                                               0, // offset will be set by ReteooBuilder
+                                               getObjectType( (( PatternImpl ) innerCondition).getPatternVariable().getType().asClass() ),
+                                               BASE_IDENTIFIER,
+                                               true );
+                    remainingPatterns.add( (Pattern) conditionToElement( ctx, group, innerCondition ) );
+                } else {
+                    basePattern = ( Pattern ) conditionToElement( ctx, group, innerCondition.getSubConditions().get( 0 ) );
+                    for (int i = 1; i < innerCondition.getSubConditions().size(); i++) {
+                        remainingPatterns.add( ( Pattern ) conditionToElement( ctx, group, innerCondition.getSubConditions().get( i ) ) );
+                    }
                 }
                 return new Forall(basePattern, remainingPatterns);
             }
@@ -512,9 +538,9 @@ public class KiePackagesBuilder {
                                        List<String> usedVariableName, Binding binding) {
 
         AccumulateFunction[] accFunctions = accPattern.getAccumulateFunctions();
+        Accumulate accumulate;
 
         if (accFunctions.length == 1) {
-
             final org.kie.api.runtime.rule.AccumulateFunction accFunction = createRuntimeAccumulateFunction(accFunctions[0]);
             final Variable boundVar = accPattern.getBoundVariables()[0];
             final Declaration declaration = new Declaration(boundVar.getName(),
@@ -524,26 +550,31 @@ public class KiePackagesBuilder {
             pattern.addDeclaration(declaration);
 
             Declaration[] bindingDeclaration = binding != null ? new Declaration[0] : new Declaration[] { ctx.getPattern( accFunctions[0].getSource() ).getDeclaration() };
-            SingleAccumulate accumulate = new SingleAccumulate(source, bindingDeclaration, createLambdaAccumulator(accFunction, usedVariableName, binding));
+            accumulate = new SingleAccumulate(source, bindingDeclaration, createLambdaAccumulator(accFunction, usedVariableName, binding));
+
+        } else {
+            InternalReadAccessor reader = new SelfReferenceClassFieldReader( Object[].class );
+            Accumulator[] accumulators = new Accumulator[accFunctions.length];
+            for (int i = 0; i < accFunctions.length; i++) {
+                final org.kie.api.runtime.rule.AccumulateFunction accFunction = createRuntimeAccumulateFunction( accFunctions[i] );
+
+                Variable boundVar = accPattern.getBoundVariables()[i];
+                pattern.addDeclaration( new Declaration( boundVar.getName(),
+                                        new ArrayElementReader( reader, i, boundVar.getType().asClass() ),
+                                        pattern,
+                                        true ) );
+
+                accumulators[i] = createLambdaAccumulator( accFunction, usedVariableName, binding );
+            }
+
+            accumulate = new MultiAccumulate( source, new Declaration[0], accumulators );
+        }
+
+        for (Variable boundVar : accPattern.getBoundVariables()) {
             ctx.addAccumulateSource( boundVar, accumulate );
-            return accumulate;
         }
 
-        InternalReadAccessor reader = new SelfReferenceClassFieldReader( Object[].class );
-        Accumulator[] accumulators = new Accumulator[accFunctions.length];
-        for (int i = 0; i < accFunctions.length; i++) {
-            final org.kie.api.runtime.rule.AccumulateFunction accFunction = createRuntimeAccumulateFunction(accFunctions[i]);
-
-            Variable accVar = accPattern.getBoundVariables()[i];
-            pattern.addDeclaration( new Declaration(accVar.getName(),
-                                                    new ArrayElementReader( reader, i, accVar.getType().asClass()),
-                                                    pattern,
-                                                    true) );
-
-            accumulators[i] = createLambdaAccumulator(accFunction, usedVariableName, binding);
-        }
-
-        return new MultiAccumulate( source, new Declaration[0], accumulators);
+        return accumulate;
     }
 
     private org.kie.api.runtime.rule.AccumulateFunction createRuntimeAccumulateFunction(AccumulateFunction accFunction1) {
@@ -588,10 +619,17 @@ public class KiePackagesBuilder {
                     throw new UnsupportedOperationException( "Unknown source: " + decl.getSource() );
                 }
             } else {
-                SingleAccumulate accSource = ctx.getAccumulateSource( patternVariable );
+                Accumulate accSource = ctx.getAccumulateSource( patternVariable );
                 if (accSource != null) {
                     for (RuleConditionElement element : group.getChildren()) {
                         if (element instanceof Pattern && (( Pattern ) element).getSource() == accSource) {
+                            if (accSource instanceof MultiAccumulate ) {
+                                (( Pattern ) element).getConstraints().forEach( pattern::addConstraint );
+                                (( Pattern ) element).getDeclarations().values().forEach( d -> {
+                                    pattern.addDeclaration(d);
+                                    d.setPattern( pattern );
+                                } );
+                            }
                             group.getChildren().remove( element );
                             break;
                         }
@@ -644,6 +682,11 @@ public class KiePackagesBuilder {
                     declarations[i] = ctx.getDeclaration( vars[i] );
                     if ( isEqual && (( ClassObjectType ) declarations[i].getPattern().getObjectType()).getClassType() == DroolsQuery.class ) {
                         unificationDeclaration = declarations[i];
+                    } else if ( pattern.getSource() instanceof MultiAccumulate) {
+                        Declaration accDeclaration = pattern.getDeclarations().get( declarations[i].getBindingName() );
+                        if (accDeclaration != null) {
+                            declarations[i].setReadAccessor( accDeclaration.getExtractor() );
+                        }
                     }
                 }
 
@@ -681,7 +724,7 @@ public class KiePackagesBuilder {
     ClassObjectType getObjectType( Class<?> patternClass ) {
         return objectTypeCache.computeIfAbsent( patternClass, c -> {
             boolean isEvent = false;
-            if (!patternClass.getName().startsWith( "java." )) {
+            if (!patternClass.getName().startsWith( "java." ) && !patternClass.isPrimitive()) {
                 KnowledgePackageImpl pkg = (KnowledgePackageImpl) packages.computeIfAbsent( patternClass.getPackage().getName(), this::createKiePackage );
                 TypeDeclaration typeDeclaration = pkg.getTypeDeclaration( patternClass );
                 if ( typeDeclaration == null ) {

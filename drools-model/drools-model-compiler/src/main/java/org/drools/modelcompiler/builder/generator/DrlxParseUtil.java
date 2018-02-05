@@ -19,6 +19,7 @@ package org.drools.modelcompiler.builder.generator;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.LinkedList;
@@ -31,13 +32,19 @@ import org.drools.core.util.index.IndexUtil;
 import org.drools.core.util.index.IndexUtil.ConstraintType;
 import org.drools.drlx.DrlxParser;
 import org.drools.javaparser.JavaParser;
+import org.drools.javaparser.ParseStart;
 import org.drools.javaparser.ast.Node;
+import org.drools.javaparser.ast.NodeList;
 import org.drools.javaparser.ast.body.Parameter;
 import org.drools.javaparser.ast.drlx.expr.DrlxExpression;
+import org.drools.javaparser.ast.drlx.expr.HalfBinaryExpr;
+import org.drools.javaparser.ast.drlx.expr.HalfPointFreeExpr;
 import org.drools.javaparser.ast.drlx.expr.InlineCastExpr;
 import org.drools.javaparser.ast.drlx.expr.NullSafeFieldAccessExpr;
+import org.drools.javaparser.ast.drlx.expr.PointFreeExpr;
 import org.drools.javaparser.ast.expr.ArrayAccessExpr;
 import org.drools.javaparser.ast.expr.ArrayCreationExpr;
+import org.drools.javaparser.ast.expr.AssignExpr;
 import org.drools.javaparser.ast.expr.BinaryExpr;
 import org.drools.javaparser.ast.expr.BinaryExpr.Operator;
 import org.drools.javaparser.ast.expr.BooleanLiteralExpr;
@@ -47,7 +54,6 @@ import org.drools.javaparser.ast.expr.DoubleLiteralExpr;
 import org.drools.javaparser.ast.expr.EnclosedExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.FieldAccessExpr;
-import org.drools.javaparser.ast.expr.HalfBinaryExpr;
 import org.drools.javaparser.ast.expr.InstanceOfExpr;
 import org.drools.javaparser.ast.expr.IntegerLiteralExpr;
 import org.drools.javaparser.ast.expr.LambdaExpr;
@@ -56,28 +62,37 @@ import org.drools.javaparser.ast.expr.LongLiteralExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.NullLiteralExpr;
+import org.drools.javaparser.ast.expr.ObjectCreationExpr;
 import org.drools.javaparser.ast.expr.SimpleName;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.javaparser.ast.expr.ThisExpr;
 import org.drools.javaparser.ast.expr.UnaryExpr;
 import org.drools.javaparser.ast.nodeTypes.NodeWithOptionalScope;
 import org.drools.javaparser.ast.nodeTypes.NodeWithSimpleName;
+import org.drools.javaparser.ast.nodeTypes.NodeWithTraversableScope;
 import org.drools.javaparser.ast.stmt.BlockStmt;
 import org.drools.javaparser.ast.stmt.ExpressionStmt;
+import org.drools.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.javaparser.ast.type.PrimitiveType;
 import org.drools.javaparser.ast.type.ReferenceType;
 import org.drools.javaparser.ast.type.Type;
 import org.drools.javaparser.ast.type.UnknownType;
 import org.drools.modelcompiler.builder.PackageModel;
+import org.drools.modelcompiler.builder.errors.UnknownDeclarationError;
+import org.drools.modelcompiler.builder.generator.operatorspec.CustomOperatorSpec;
+import org.drools.modelcompiler.builder.generator.operatorspec.OperatorSpec;
+import org.drools.modelcompiler.builder.generator.operatorspec.TemporalOperatorSpec;
 import org.drools.modelcompiler.util.ClassUtil;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import static org.drools.core.util.ClassUtils.getter2property;
+import static org.drools.javaparser.printer.PrintUtil.toDrlx;
 import static org.drools.modelcompiler.util.ClassUtil.findMethod;
 
 public class DrlxParseUtil {
 
     public static final NameExpr _THIS_EXPR = new NameExpr("_this");
+
 
     public static IndexUtil.ConstraintType toConstraintType(Operator operator) {
         switch (operator) {
@@ -99,7 +114,7 @@ public class DrlxParseUtil {
     }
 
     public static TypedExpression toTypedExpression(RuleContext context, PackageModel packageModel, Class<?> patternType, Expression drlxExpr,
-                                                    List<String> usedDeclarations, Set<String> reactOnProperties, Expression parentExpression) {
+                                                    List<String> usedDeclarations, Set<String> reactOnProperties, Expression parentExpression, boolean isPositional) {
 
         Class<?> typeCursor = patternType;
 
@@ -109,7 +124,7 @@ public class DrlxParseUtil {
 
         if (drlxExpr instanceof UnaryExpr) {
             UnaryExpr unaryExpr = (UnaryExpr) drlxExpr;
-            TypedExpression typedExpr = toTypedExpression( context, packageModel, patternType, unaryExpr.getExpression(), usedDeclarations, reactOnProperties, unaryExpr );
+            TypedExpression typedExpr = toTypedExpression( context, packageModel, patternType, unaryExpr.getExpression(), usedDeclarations, reactOnProperties, unaryExpr, isPositional );
             return new TypedExpression( new UnaryExpr( typedExpr.getExpression(), unaryExpr.getOperator() ), typedExpr.getType() );
 
         } else if (drlxExpr instanceof BinaryExpr) {
@@ -117,8 +132,13 @@ public class DrlxParseUtil {
 
             Operator operator = binaryExpr.getOperator();
 
-            TypedExpression left = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, binaryExpr.getLeft(), usedDeclarations, reactOnProperties, binaryExpr);
-            TypedExpression right = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, binaryExpr.getRight(), usedDeclarations, reactOnProperties, binaryExpr);
+            TypedExpression left = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, binaryExpr.getLeft(), usedDeclarations, reactOnProperties, binaryExpr, isPositional);
+            TypedExpression right = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, binaryExpr.getRight(), usedDeclarations, reactOnProperties, binaryExpr, isPositional);
+
+            if ( left == null || right == null ) {
+                // An compilation error has occurred during expression parsing and has been propagated through the context
+                return null;
+            }
 
             BinaryExpr combo = new BinaryExpr( left.getExpression(), right.getExpression(), operator );
             return new TypedExpression( combo, left.getType() );
@@ -129,28 +149,39 @@ public class DrlxParseUtil {
             Expression parentLeft = findLeftLeafOfNameExpr(parentExpression);
             Operator operator = toBinaryExprOperator(halfBinaryExpr.getOperator());
 
-            TypedExpression left = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, parentLeft, usedDeclarations, reactOnProperties, halfBinaryExpr);
-            TypedExpression right = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, halfBinaryExpr.getRight(), usedDeclarations, reactOnProperties, halfBinaryExpr);
+            TypedExpression left = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, parentLeft, usedDeclarations, reactOnProperties, halfBinaryExpr, isPositional);
+            if ( left == null ) {
+                // An compilation error has occurred during expression parsing and has been propagated through the context
+                return null;
+            }
+
+            TypedExpression right = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, halfBinaryExpr.getRight(), usedDeclarations, reactOnProperties, halfBinaryExpr, isPositional);
+            if ( right == null ) {
+                // An compilation error has occurred during expression parsing and has been propagated through the context
+                return null;
+            }
 
             BinaryExpr combo = new BinaryExpr( left.getExpression(), right.getExpression(), operator );
             return new TypedExpression( combo, left.getType() );
 
         } else if (drlxExpr instanceof LiteralExpr) {
-            return new TypedExpression(drlxExpr);
+            return new TypedExpression(drlxExpr, getLiteralExpressionType( ( LiteralExpr ) drlxExpr ));
 
         } else if (drlxExpr instanceof ThisExpr) {
-            return new TypedExpression(new NameExpr("_this"));
+            return new TypedExpression(new NameExpr("_this"), patternType);
 
         } else if (drlxExpr instanceof CastExpr) {
             CastExpr castExpr = (CastExpr)drlxExpr;
+            toTypedExpression( context, packageModel, patternType, castExpr.getExpression(), usedDeclarations, reactOnProperties, castExpr, isPositional );
             return new TypedExpression(castExpr, getClassFromContext(context.getPkg().getTypeResolver(), castExpr.getType().asString()));
 
         } else if (drlxExpr instanceof NameExpr) {
             String name = drlxExpr.toString();
-            if (context.getDeclarationById(name).isPresent()) {
+            Optional<DeclarationSpec> decl = context.getDeclarationById(name);
+            if (decl.isPresent()) {
                 // then drlxExpr is a single NameExpr referring to a binding, e.g.: "$p1".
                 usedDeclarations.add(name);
-                return new TypedExpression(drlxExpr);
+                return new TypedExpression(drlxExpr, decl.get().getDeclarationClass());
             } if (context.getQueryParameters().stream().anyMatch(qp -> qp.name.equals(name))) {
                 // then drlxExpr is a single NameExpr referring to a query parameter, e.g.: "$p1".
                 usedDeclarations.add(name);
@@ -164,9 +195,12 @@ public class DrlxParseUtil {
                 try {
                     expression = nameExprToMethodCallExpr(name, typeCursor, null);
                 } catch (IllegalArgumentException e) {
-                    String unificationVariable = context.getOrCreateUnificationId(name);
-                    expression = new TypedExpression(unificationVariable, typeCursor, name);
-                    return expression;
+                    if (isPositional || context.getQueryName().isPresent()) {
+                        String unificationVariable = context.getOrCreateUnificationId(name);
+                        expression = new TypedExpression(unificationVariable, typeCursor, name);
+                        return expression;
+                    }
+                    return null;
                 }
                 reactOnProperties.add(name);
                 Expression plusThis = prepend(new NameExpr("_this"), expression.getExpression());
@@ -174,9 +208,59 @@ public class DrlxParseUtil {
             }
         } else if (drlxExpr instanceof FieldAccessExpr || drlxExpr instanceof MethodCallExpr) {
             return toTypedExpressionFromMethodCallOrField(context, patternType, drlxExpr, usedDeclarations, reactOnProperties, context.getPkg().getTypeResolver());
+        } else if (drlxExpr instanceof PointFreeExpr) {
+
+            final PointFreeExpr pointFreeExpr = (PointFreeExpr)drlxExpr;
+
+            TypedExpression left = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, pointFreeExpr.getLeft(), usedDeclarations, reactOnProperties, pointFreeExpr, isPositional);
+            OperatorSpec opSpec = getOperatorSpec(context, packageModel, patternType, drlxExpr, usedDeclarations, reactOnProperties, isPositional, pointFreeExpr, pointFreeExpr.getRight(), pointFreeExpr.getOperator());
+            return new TypedExpression(opSpec.getExpression( pointFreeExpr, left ), left.getType())
+                    .setStatic(opSpec.isStatic())
+                    .setLeft(left);
+        } else if (drlxExpr instanceof HalfPointFreeExpr) {
+
+            final HalfPointFreeExpr halfPointFreeExpr = (HalfPointFreeExpr)drlxExpr;
+            Expression parentLeft = findLeftLeafOfNameExpr(parentExpression);
+
+            TypedExpression left = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, parentLeft, usedDeclarations, reactOnProperties, halfPointFreeExpr, isPositional);
+            OperatorSpec opSpec = getOperatorSpec(context, packageModel, patternType, drlxExpr, usedDeclarations, reactOnProperties, isPositional, halfPointFreeExpr, halfPointFreeExpr.getRight(), halfPointFreeExpr.getOperator());
+
+            final PointFreeExpr transformedToPointFree =
+                    new PointFreeExpr(halfPointFreeExpr.getTokenRange().get(),
+                                      parentLeft,
+                                      halfPointFreeExpr.getRight(),
+                                      halfPointFreeExpr.getOperator(),
+                                      halfPointFreeExpr.isNegated(),
+                                      halfPointFreeExpr.getArg1(),
+                                      halfPointFreeExpr.getArg2(),
+                                      halfPointFreeExpr.getArg3(),
+                                      halfPointFreeExpr.getArg4()
+                                      );
+
+            return new TypedExpression(opSpec.getExpression( transformedToPointFree, left ), left.getType())
+                    .setStatic(opSpec.isStatic())
+                    .setLeft(left);
         }
 
         throw new UnsupportedOperationException();
+    }
+
+    private static OperatorSpec getOperatorSpec(RuleContext context, PackageModel packageModel, Class<?> patternType, Expression drlxExpr, List<String> usedDeclarations, Set<String> reactOnProperties, boolean isPositional, Expression pointFreeExpr, NodeList<Expression> rightExpressions, SimpleName expressionOperator) {
+        for (Expression rightExpr : rightExpressions) {
+            DrlxParseUtil.toTypedExpression(context, packageModel, patternType, rightExpr, usedDeclarations, reactOnProperties, pointFreeExpr, isPositional);
+        }
+
+        String operator = expressionOperator.asString();
+        OperatorSpec opSpec = null;
+        if (ModelGenerator.temporalOperators.contains(operator )) {
+            opSpec = TemporalOperatorSpec.INSTANCE;
+        } else if ( org.drools.model.functions.Operator.Register.hasOperator( operator ) ) {
+            opSpec = CustomOperatorSpec.INSTANCE;
+        }
+        if (opSpec == null) {
+            throw new UnsupportedOperationException("Unknown operator '" + operator + "' in expression: " + toDrlx(drlxExpr));
+        }
+        return opSpec;
     }
 
     public static TypedExpression toTypedExpressionFromMethodCallOrField(RuleContext context, Class<?> patternType, Expression drlxExpr, Collection<String> usedDeclarations, Set<String> reactOnProperties, TypeResolver typeResolver) {
@@ -236,8 +320,8 @@ public class DrlxParseUtil {
                     final NameExpr scope = backReference.map(d -> new NameExpr(d.getBindingId())).orElse(thisAccessor);
                     previous = new MethodCallExpr(scope, firstAccessor.getName());
                 } else {
-                    throw new UnsupportedOperationException("firstNode I don't know about");
-                    // TODO would it be fine to assume is a global if it's not in the declarations and not the first accesssor in a chain?
+                    context.addCompilationError( new UnknownDeclarationError(firstNode.toString()) );
+                    return null;
                 }
             }
         } else if (firstNode instanceof ThisExpr) {
@@ -327,6 +411,8 @@ public class DrlxParseUtil {
             return findLeftLeafOfNameExpr(be.getLeft());
         } else if(expression instanceof NameExpr) {
             return expression;
+        } else if(expression instanceof PointFreeExpr) {
+            return findLeftLeafOfNameExpr(((PointFreeExpr) expression).getLeft());
         } else {
             throw new UnsupportedOperationException("Unknown expression: " + expression);
         }
@@ -397,21 +483,11 @@ public class DrlxParseUtil {
     }
 
     public static Class<?> getExpressionType(RuleContext context, TypeResolver typeResolver, Expression expr, Collection<String> usedDeclarations) {
-        if(expr instanceof BooleanLiteralExpr) {
-            return Boolean.class;
-        } else if(expr instanceof CharLiteralExpr) {
-            return Character.class;
-        } else if(expr instanceof DoubleLiteralExpr) {
-            return Double.class;
-        } else if(expr instanceof IntegerLiteralExpr) {
-            return Integer.class;
-        } else if(expr instanceof LongLiteralExpr) {
-            return Long.class;
-        } else if(expr instanceof NullLiteralExpr) {
-            return ClassUtil.NullType.class;
-        } else if(expr instanceof StringLiteralExpr) {
-            return String.class;
-        } else if(expr instanceof ArrayAccessExpr) {
+        if (expr instanceof LiteralExpr) {
+            return getLiteralExpressionType( ( LiteralExpr ) expr );
+        }
+
+        if(expr instanceof ArrayAccessExpr) {
             return getClassFromContext(typeResolver, ((ArrayCreationExpr)((ArrayAccessExpr) expr).getName()).getElementType().asString());
         } else if(expr instanceof ArrayCreationExpr) {
             return getClassFromContext(typeResolver, ((ArrayCreationExpr) expr).getElementType().asString());
@@ -425,9 +501,31 @@ public class DrlxParseUtil {
             MethodCallExpr methodCallExpr = ( MethodCallExpr ) expr;
             Class<?> scopeType = getExpressionType(context, typeResolver, methodCallExpr.getScope().get(), usedDeclarations);
             return returnTypeOfMethodCallExpr(context, typeResolver, methodCallExpr, scopeType, usedDeclarations);
-        } else {
+        } else if(expr instanceof ObjectCreationExpr){
+            final ClassOrInterfaceType type = ((ObjectCreationExpr) expr).getType();
+            return getClassFromContext (typeResolver, type.asString());
+        }else {
             throw new RuntimeException("Unknown expression type: " + expr);
         }
+    }
+
+    public static Class<?> getLiteralExpressionType( LiteralExpr expr ) {
+        if (expr instanceof BooleanLiteralExpr) {
+            return Boolean.class;
+        } else if (expr instanceof CharLiteralExpr) {
+            return Character.class;
+        } else if (expr instanceof DoubleLiteralExpr) {
+            return Double.class;
+        } else if (expr instanceof IntegerLiteralExpr) {
+            return Integer.class;
+        } else if (expr instanceof LongLiteralExpr) {
+            return Long.class;
+        } else if (expr instanceof NullLiteralExpr) {
+            return ClassUtil.NullType.class;
+        } else if (expr instanceof StringLiteralExpr) {
+            return String.class;
+        }
+        throw new RuntimeException("Unknown literal: " + expr);
     }
 
     public static Expression prepend(Expression scope, Expression expr) {
@@ -449,10 +547,10 @@ public class DrlxParseUtil {
 
     public static Optional<Expression> findRootNode(Expression expr) {
 
-        if (expr instanceof NodeWithOptionalScope) {
-            final NodeWithOptionalScope<?> exprWithScope = (NodeWithOptionalScope) expr;
+        if (expr instanceof NodeWithTraversableScope) {
+            final NodeWithTraversableScope exprWithScope = (NodeWithTraversableScope) expr;
 
-            return exprWithScope.getScope().map(DrlxParseUtil::findRootNode).orElse(Optional.of(expr));
+            return exprWithScope.traverseScope().map(DrlxParseUtil::findRootNode).orElse(Optional.of(expr));
         } else if(expr instanceof NameExpr) {
             return Optional.of(expr);
         }
@@ -606,11 +704,22 @@ public class DrlxParseUtil {
     }
 
     public static Optional<String> findBindingId(String expression, Collection<String> availableBindings) {
-        DrlxExpression drlx = DrlxParser.parseExpression(expression);
+        DrlxExpression drlx = parseExpression(expression);
         if (drlx == null) {
             throw new RuntimeException( "unable to parse " + expression );
         }
         return findBindingId( drlx.getExpr(), availableBindings );
+    }
+
+    public static DrlxExpression parseExpression(String expression) {
+        // TOOD: this should be taken from the runtime
+
+        final Collection<String> operators = new ArrayList<>();
+        operators.addAll(Arrays.asList("contains", "in", "matches", "memberOf", "soundslike"));
+        operators.addAll(ModelGenerator.temporalOperators);
+        final ParseStart<DrlxExpression> parser = DrlxParser.buildDrlxParserWithArguments(operators);
+
+        return DrlxParser.parseExpression(parser, expression);
     }
 
     public static Optional<String> findBindingId(Expression expr, Collection<String> availableBindings) {
@@ -660,5 +769,44 @@ public class DrlxParseUtil {
         }
         return expr instanceof NullLiteralExpr || expr instanceof IntegerLiteralExpr || expr instanceof DoubleLiteralExpr ||
                 expr instanceof BooleanLiteralExpr || expr instanceof LongLiteralExpr;
+    }
+
+    /**
+     * Mutates expression
+     * such that, if it contains a <pre>nameRef</pre>, it is replaced and forcibly casted with <pre>(type) nameRef</pre>.
+     * 
+     * @param expression a mutated expression
+     */
+    public static void forceCastForName(String nameRef, Type type, Expression expression) {
+        List<NameExpr> allNameExprForName = expression.findAll(NameExpr.class, n -> n.getNameAsString().equals(nameRef));
+        for (NameExpr n : allNameExprForName) {
+            expression.replace(n, new CastExpr(type, n));
+        }
+    }
+
+    /**
+     * Mutates expression
+     * such that, if it contains a NameExpr for any of the <code>names</code>,
+     * it is replaced with a FieldAccessExpr having <code>newScope</code> as the scope.
+     */
+    public static void rescopeNamesToNewScope(Expression newScope, List<String> names, Expression e) {
+        if (e instanceof AssignExpr) {
+            AssignExpr assignExpr = (AssignExpr) e;
+            rescopeNamesToNewScope(newScope, names, assignExpr.getTarget());
+            rescopeNamesToNewScope(newScope, names, assignExpr.getValue());
+        } else {
+            Optional<Expression> rootNode = DrlxParseUtil.findRootNode(e);
+            if (rootNode.isPresent() && rootNode.get() instanceof NameExpr) {
+                NameExpr nameExpr = (NameExpr) rootNode.get();
+                if (names.contains(nameExpr.getNameAsString())) {
+                    Expression prepend = new FieldAccessExpr(newScope, nameExpr.getNameAsString());
+                    if (e instanceof NameExpr) {
+                        e.getParentNode().get().replace(nameExpr, prepend); // actually `e` was not composite, it was already the NameExpr node I was looking to replace.
+                    } else {
+                        e.replace(nameExpr, prepend);
+                    }
+                }
+            }
+        }
     }
 }

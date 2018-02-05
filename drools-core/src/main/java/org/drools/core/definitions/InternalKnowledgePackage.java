@@ -15,6 +15,11 @@
 
 package org.drools.core.definitions;
 
+import java.io.Externalizable;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -34,11 +39,6 @@ import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
-
-import java.io.Externalizable;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public interface InternalKnowledgePackage extends KiePackage,
                                                   Externalizable {
@@ -109,6 +109,7 @@ public interface InternalKnowledgePackage extends KiePackage,
 
     List<TypeDeclaration> removeTypesGeneratedFromResource(Resource resource);
 
+    List<RuleImpl> getRulesGeneratedFromResource(Resource resource);
     List<RuleImpl> removeRulesGeneratedFromResource(Resource resource);
 
     List<Function> removeFunctionsGeneratedFromResource(Resource resource);

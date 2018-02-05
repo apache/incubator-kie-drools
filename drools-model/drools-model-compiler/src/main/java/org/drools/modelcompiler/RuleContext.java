@@ -23,9 +23,9 @@ import java.util.Map;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
-import org.drools.core.rule.SingleAccumulate;
 import org.drools.core.spi.GlobalExtractor;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.model.Global;
@@ -40,7 +40,7 @@ public class RuleContext {
 
     private final Map<Variable, Declaration> queryDeclaration = new HashMap<>();
     private final Map<Variable, Declaration> innerDeclaration = new HashMap<>();
-    private final Map<Variable, SingleAccumulate> accumulateSource = new HashMap<>();
+    private final Map<Variable, Accumulate> accumulateSource = new HashMap<>();
 
     private final Map<Variable, Pattern> patterns = new HashMap<>();
 
@@ -110,11 +110,11 @@ public class RuleContext {
         innerDeclaration.put( variable, declaration );
     }
 
-    void addAccumulateSource(Variable variable, SingleAccumulate accumulate) {
+    void addAccumulateSource(Variable variable, Accumulate accumulate) {
         accumulateSource.put( variable, accumulate );
     }
 
-    SingleAccumulate getAccumulateSource(Variable variable) {
+    Accumulate getAccumulateSource( Variable variable) {
         return accumulateSource.get( variable );
     }
 

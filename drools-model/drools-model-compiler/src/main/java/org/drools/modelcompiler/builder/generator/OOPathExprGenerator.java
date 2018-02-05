@@ -1,9 +1,11 @@
 package org.drools.modelcompiler.builder.generator;
 
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.drools.javaparser.ast.drlx.OOPathChunk;
 import org.drools.javaparser.ast.drlx.OOPathExpr;
@@ -12,6 +14,9 @@ import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.modelcompiler.builder.PackageModel;
+import org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser;
+import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
+import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 
 import static org.drools.core.util.ClassUtils.extractGenericType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
@@ -29,14 +34,17 @@ public class OOPathExprGenerator {
         this.packageModel = packageModel;
     }
 
-    public void visit(Class<?> originalClass, String originalBind, OOPathExpr ooPathExpr) {
+    public void visit(Class<?> originalClass, String originalBind, DrlxParseSuccess patternParseResult) {
+
+        final OOPathExpr ooPathExpr = (OOPathExpr) patternParseResult.getExpr();
 
         Class<?> previousClass = originalClass;
         String previousBind = originalBind;
 
-        List<DrlxParseResult> ooPathConditionExpressions = new ArrayList<>();
+        Map<String, List<DrlxParseResult>> ooPathConditionExpressions = new LinkedHashMap<>();
 
-        for (OOPathChunk chunk : ooPathExpr.getChunks()) {
+        for (Iterator<OOPathChunk> iterator = ooPathExpr.getChunks().iterator(); iterator.hasNext(); ) {
+            OOPathChunk chunk = iterator.next();
 
             final String fieldName = chunk.getField().toString();
 
@@ -49,7 +57,14 @@ public class OOPathExprGenerator {
                 fieldType = extractGenericType(previousClass, ((MethodCallExpr) callExpr.getExpression()).getName().toString());
             }
 
-            final String bindingId = context.getOOPathId(fieldType, originalBind + fieldName);
+            final String chunkKey = originalBind + fieldName;
+            final String bindingId;
+            if (!iterator.hasNext() && patternParseResult.getExprBinding() != null) {
+                bindingId = patternParseResult.getExprBinding();
+                context.removeDeclarationById(bindingId);
+            } else {
+                bindingId = context.getOOPathId(fieldType, chunkKey);
+            }
             final Expression accessorLambda = generateLambdaWithoutParameters(Collections.emptySortedSet(),
                                                                               prepend(new NameExpr("_this"), callExpr.getExpression()));
 
@@ -61,44 +76,46 @@ public class OOPathExprGenerator {
             context.addDeclaration(newDeclaration);
             context.addOOPathDeclaration(newDeclaration);
 
-            final Expression condition = chunk.getCondition();
-            if (condition != null) {
-                final DrlxParseResult drlxParseResult = ModelGenerator.drlxParse(context, packageModel, fieldType, bindingId, condition.toString());
-                ooPathConditionExpressions.add(drlxParseResult);
+            final List<Expression> conditions = chunk.getConditions();
+            if (!conditions.isEmpty()) {
+                Class<?> finalFieldType = fieldType;
+                final List<DrlxParseResult> conditionParseResult = conditions.stream().map((Expression c) ->
+                                                                                                   new ConstraintParser(context, packageModel).drlxParse(finalFieldType, bindingId, c.toString())
+                ).collect(Collectors.toList());
+                ooPathConditionExpressions.put(chunkKey, conditionParseResult);
             } else {
-                final DrlxParseResult drlxParseResult = new DrlxParseResult(fieldType, "", bindingId, new BooleanLiteralExpr(true), fieldType);
-                ooPathConditionExpressions.add(drlxParseResult);
+                final DrlxParseSuccess drlxParseResult = new DrlxParseSuccess(fieldType, "", bindingId, new BooleanLiteralExpr(true), fieldType);
+                ooPathConditionExpressions.put(chunkKey, Collections.singletonList(drlxParseResult));
             }
 
             previousBind = bindingId;
             previousClass = fieldType;
         }
 
-        // If the OOPath has an inner binding, it will be in the context's declarations without its type (as it's inferred from the last OOPath chunk).
-        // We remove the original expression without type and use its name in the last expression
-        List<DeclarationSpec> declarations = context.getDeclarations();
-        final Optional<DeclarationSpec> missingClassDeclarationFound = declarations.stream().filter(d -> d.getDeclarationClass() == null).findFirst();
+        final List<Expression> collect = buildExpressions(ooPathConditionExpressions);
 
-        missingClassDeclarationFound.ifPresent(missingClassDeclaration -> {
-            declarations.remove(declarations.indexOf(missingClassDeclaration));
+        collect.forEach(context::addExpression);
+    }
 
-            final String innerBindingId = missingClassDeclaration.getBindingId();
-            final int lastIndex = declarations.size() - 1;
-            final DeclarationSpec last = declarations.get(lastIndex);
-            declarations.add(new DeclarationSpec(innerBindingId, last.getDeclarationClass(), last.getOptPattern(), last.getDeclarationSource()));
-
-            // In the meanwhile some condition could have used that binding, we need to rename that also
-            for(DrlxParseResult r : ooPathConditionExpressions) {
-                if(r.getExprId().equals(last.getBindingId())) {
-                    r.setExprId(innerBindingId);
-                } else if(r.getPatternBinding().equals(last.getBindingId())) {
-                    r.setPatternBinding(innerBindingId);
-                }
-            }
-        });
-
-        ooPathConditionExpressions.forEach(d -> context.addExpression(buildExpressionWithIndexing(context, d)));
-
-
+    private List<Expression> buildExpressions(Map<String, List<DrlxParseResult>> ooPathConditionExpressions) {
+        // Condition with same key were defined as , and need to be put in an AND expression
+        return ooPathConditionExpressions.entrySet().stream()
+                .map((Map.Entry<String, List<DrlxParseResult>> kv) -> {
+                    final List<DrlxParseSuccess> value = kv.getValue()
+                            .stream()
+                            .filter(r -> r instanceof DrlxParseSuccess)
+                            .map(x -> (DrlxParseSuccess)x)
+                            .collect(Collectors.toList());
+                    if (value.size() == 1) {
+                        return buildExpressionWithIndexing(context, value.get(0));
+                    } else {
+                        final MethodCallExpr andDSL = new MethodCallExpr(null, "and");
+                        value.forEach(e -> {
+                            final Expression expression = buildExpressionWithIndexing(context, e);
+                            andDSL.addArgument(expression);
+                        });
+                        return andDSL;
+                    }
+                }).collect(Collectors.toList());
     }
 }

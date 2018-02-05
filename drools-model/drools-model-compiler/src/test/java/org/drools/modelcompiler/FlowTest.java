@@ -16,10 +16,15 @@
 
 package org.drools.modelcompiler;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.assertj.core.api.Assertions;
@@ -35,14 +40,19 @@ import org.drools.model.Query2Def;
 import org.drools.model.Rule;
 import org.drools.model.Variable;
 import org.drools.model.impl.ModelImpl;
+import org.drools.model.operators.InOperator;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
+import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Adult;
 import org.drools.modelcompiler.domain.Child;
+import org.drools.modelcompiler.domain.Customer;
+import org.drools.modelcompiler.domain.Employee;
 import org.drools.modelcompiler.domain.Man;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Relationship;
 import org.drools.modelcompiler.domain.Result;
 import org.drools.modelcompiler.domain.StockTick;
+import org.drools.modelcompiler.domain.TargetPolicy;
 import org.drools.modelcompiler.domain.Toy;
 import org.drools.modelcompiler.domain.Woman;
 import org.drools.modelcompiler.oopathdtables.InternationalAddress;
@@ -53,6 +63,7 @@ import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
+import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.time.SessionPseudoClock;
@@ -64,6 +75,7 @@ import static org.drools.model.DSL.accumulate;
 import static org.drools.model.DSL.and;
 import static org.drools.model.DSL.bind;
 import static org.drools.model.DSL.declarationOf;
+import static org.drools.model.DSL.eval;
 import static org.drools.model.DSL.execute;
 import static org.drools.model.DSL.executeScript;
 import static org.drools.model.DSL.expr;
@@ -75,12 +87,14 @@ import static org.drools.model.DSL.not;
 import static org.drools.model.DSL.on;
 import static org.drools.model.DSL.or;
 import static org.drools.model.DSL.query;
+import static org.drools.model.DSL.reactiveFrom;
 import static org.drools.model.DSL.rule;
 import static org.drools.model.DSL.type;
 import static org.drools.model.DSL.valueOf;
 import static org.drools.model.DSL.when;
 import static org.drools.model.DSL.window;
 import static org.drools.modelcompiler.BaseModelTest.getObjectsIntoList;
+import static org.drools.modelcompiler.domain.Employee.createEmployee;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -992,6 +1006,29 @@ public class FlowTest {
         assertEquals( 41, me.getAge() );
     }
 
+    @Test
+    public void testMetadataBasics() {
+        final String PACKAGE_NAME = "org.asd";
+        final String RULE_NAME = "hello world";
+        final String RULE_KEY = "output";
+        final String RULE_VALUE = "Hello world!";
+
+        org.drools.model.Rule rule = rule(PACKAGE_NAME,
+                                          RULE_NAME).metadata(RULE_KEY, "\"" + RULE_VALUE + "\"") // equivalent of DRL form:  @output("\"Hello world!\"")
+                                                    .build(execute(() -> {
+                                                        System.out.println("Hello world!");
+                                                    }));
+
+        Model model = new ModelImpl().addRule(rule);
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model);
+        KieSession ksession = kieBase.newKieSession();
+
+        final Map<String, Object> metadata = ksession.getKieBase().getRule(PACKAGE_NAME, RULE_NAME).getMetaData();
+
+        Assertions.assertThat(metadata.containsKey(RULE_KEY)).isTrue();
+        Assertions.assertThat(metadata.get(RULE_KEY)).isEqualTo("\"" + RULE_VALUE + "\""); // testing of the DRL form:  @output("\"Hello world!\"")
+    }
+
 
     @Test
     public void testDeclaredSlidingWindow() {
@@ -1249,5 +1286,242 @@ public class FlowTest {
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
         assertEquals(1, results.size());
         assertEquals(77, results.iterator().next().getValue());
+    }
+
+    @Test
+    public void testIn() {
+        final org.drools.model.Variable<java.lang.String> var_$pattern_String$1$ = declarationOf(type(java.lang.String.class),
+                "$pattern_String$1$");
+        org.drools.model.Rule rule = rule("R").build(expr("$expr$1$",
+                var_$pattern_String$1$,
+                (_this) -> eval( InOperator.INSTANCE, _this, "a", "b") ),
+                execute(() -> {
+                }));
+
+        Model model = new ModelImpl().addRule( rule );
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
+
+        KieSession ksession = kieBase.newKieSession();
+        ksession.insert( "b" );
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testCustomAccumulate() {
+        final org.drools.model.Variable<org.drools.modelcompiler.domain.Customer> var_$customer = declarationOf(type(org.drools.modelcompiler.domain.Customer.class),
+                "$customer");
+        final org.drools.model.Variable<java.lang.String> var_$code = declarationOf(type(java.lang.String.class),
+                "$code");
+        final org.drools.model.Variable<org.drools.modelcompiler.domain.TargetPolicy> var_$target = declarationOf(type(org.drools.modelcompiler.domain.TargetPolicy.class),
+                "$target");
+        final org.drools.model.Variable<java.util.List> var_$pattern_List$1$ = declarationOf(type(java.util.List.class),
+                "$pattern_List$1$");
+        final org.drools.model.Variable<org.drools.modelcompiler.domain.TargetPolicy> var_$tp = declarationOf(type(org.drools.modelcompiler.domain.TargetPolicy.class),
+                "$tp");
+        final org.drools.model.BitMask mask_$target = org.drools.model.BitMask.getPatternMask(org.drools.modelcompiler.domain.TargetPolicy.class,
+                "coefficient");
+        org.drools.model.Rule rule = rule("Customer can only have one Target Policy for Product p1 with coefficient 1").build(bind(var_$code).as(var_$customer,
+                (_this) -> _this.getCode())
+                        .reactOn("code"),
+                expr("$expr$2$",
+                        var_$target,
+                        var_$code,
+                        (_this, $code) -> org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getCustomerCode(),
+                                $code)).indexedBy(java.lang.String.class,
+                        org.drools.model.Index.ConstraintType.EQUAL,
+                        0,
+                        _this -> _this.getCustomerCode(),
+                        $code -> $code)
+                        .reactOn("customerCode"),
+                expr("$expr$3$",
+                        var_$target,
+                        (_this) -> org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getProductCode(),
+                                "p1")).indexedBy(java.lang.String.class,
+                        org.drools.model.Index.ConstraintType.EQUAL,
+                        1,
+                        _this -> _this.getProductCode(),
+                        "p1")
+                        .reactOn("productCode"),
+                expr("$expr$4$",
+                        var_$target,
+                        (_this) -> _this.getCoefficient() == 1).indexedBy(int.class,
+                        org.drools.model.Index.ConstraintType.EQUAL,
+                        2,
+                        _this -> _this.getCoefficient(),
+                        1)
+                        .reactOn("coefficient"),
+                expr("$expr$5$",
+                        var_$pattern_List$1$,
+                        (_this) -> _this.size() > 1).indexedBy(int.class,
+                        org.drools.model.Index.ConstraintType.GREATER_THAN,
+                        0,
+                        _this -> _this.size(),
+                        1)
+                        .reactOn("size"),
+                accumulate(and(expr("$expr$2$",
+                        var_$tp,
+                        var_$code,
+                        (_this, $code) -> org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getCustomerCode(),
+                                $code)).indexedBy(java.lang.String.class,
+                        org.drools.model.Index.ConstraintType.EQUAL,
+                        0,
+                        _this -> _this.getCustomerCode(),
+                        $code -> $code)
+                                .reactOn("customerCode"),
+                        expr("$expr$3$",
+                                var_$tp,
+                                (_this) -> org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getProductCode(),
+                                        "p1")).indexedBy(java.lang.String.class,
+                                org.drools.model.Index.ConstraintType.EQUAL,
+                                1,
+                                _this -> _this.getProductCode(),
+                                "p1")
+                                .reactOn("productCode"),
+                        expr("$expr$4$",
+                                var_$tp,
+                                (_this) -> _this.getCoefficient() == 1).indexedBy(int.class,
+                                org.drools.model.Index.ConstraintType.EQUAL,
+                                2,
+                                _this -> _this.getCoefficient(),
+                                1)
+                                .reactOn("coefficient")),
+                        accFunction( MyAccumulateFunction.class,
+                                var_$tp ).as(var_$pattern_List$1$)),
+                on(var_$target).execute((drools, $target) -> {
+                    $target.setCoefficient(0);
+                    drools.update($target,
+                            mask_$target);
+                }));
+
+        Model model = new ModelImpl().addRule( rule );
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
+
+        KieSession ksession = kieBase.newKieSession();
+
+        Customer customer = new Customer();
+        customer.setCode("code1");
+        TargetPolicy target1 = new TargetPolicy();
+        target1.setCustomerCode("code1");
+        target1.setProductCode("p1");
+        target1.setCoefficient(1);
+        TargetPolicy target2 = new TargetPolicy();
+        target2.setCustomerCode("code1");
+        target2.setProductCode("p1");
+        target2.setCoefficient(1);
+        TargetPolicy target3 = new TargetPolicy();
+        target3.setCustomerCode("code1");
+        target3.setProductCode("p1");
+        target3.setCoefficient(1);
+
+        ksession.insert(customer);
+        ksession.insert(target1);
+        ksession.insert(target2);
+        ksession.insert(target3);
+        ksession.fireAllRules();
+
+        List<TargetPolicy> targetPolicyList = Arrays.asList(target1, target2, target3);
+        long filtered = targetPolicyList.stream().filter(c -> c.getCoefficient() == 1).count();
+        assertEquals(1, filtered);
+    }
+
+    public static class MyAccumulateFunction implements AccumulateFunction<MyAccumulateFunction.MyData> {
+
+        public static class MyData implements Serializable {
+            public ArrayList myList;
+        }
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            // functions are stateless, so nothing to serialize
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            // functions are stateless, so nothing to serialize
+        }
+
+        public MyData createContext() {
+            return new MyData();
+        }
+
+        public void init( MyData data) {
+            data.myList = new ArrayList<Object>();
+        }
+
+        public void accumulate( MyData data, Object $tp) {
+            data.myList.add( $tp );
+        }
+
+        public void reverse( MyData data, Object $tp) {
+            data.myList.remove( $tp );
+        }
+
+        public Object getResult(MyData data) {
+            return data.myList;
+        }
+
+        public boolean supportsReverse() {
+            return true;
+        }
+
+        public Class<?> getResultType() {
+            return ArrayList.class;
+        }
+    }
+
+    @Test
+    public void testOrConditional() {
+        final org.drools.model.Global<java.util.List> var_list = globalOf(type(java.util.List.class),
+                "defaultpkg",
+                "list");
+
+        final org.drools.model.Variable<org.drools.modelcompiler.domain.Employee> var_$pattern_Employee$1$ = declarationOf(type(org.drools.modelcompiler.domain.Employee.class),
+                "$pattern_Employee$1$");
+        final org.drools.model.Variable<org.drools.modelcompiler.domain.Address> var_$address = declarationOf(type(org.drools.modelcompiler.domain.Address.class),
+                "$address",
+                reactiveFrom(var_$pattern_Employee$1$,
+                        (_this) -> _this.getAddress()));
+
+        org.drools.model.Rule rule = rule("R").build(or(and(input(var_$pattern_Employee$1$),
+                expr("$expr$2$",
+                        var_$address,
+                        (_this) -> org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getCity(),
+                                "Big City")).indexedBy(java.lang.String.class,
+                        org.drools.model.Index.ConstraintType.EQUAL,
+                        0,
+                        _this -> _this.getCity(),
+                        "Big City")
+                        .reactOn("city")),
+                and(input(var_$pattern_Employee$1$),
+                        expr("$expr$4$",
+                                var_$address,
+                                (_this) -> org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getCity(),
+                                        "Small City")).indexedBy(java.lang.String.class,
+                                org.drools.model.Index.ConstraintType.EQUAL,
+                                0,
+                                _this -> _this.getCity(),
+                                "Small City")
+                                .reactOn("city"))),
+                on(var_$address,
+                        var_list).execute(($address, list) -> {
+                    list.add($address.getCity());
+                }));
+
+
+        Model model = new ModelImpl().addRule( rule ).addGlobal( var_list );
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
+
+        KieSession kieSession = kieBase.newKieSession();
+
+        List<String> results = new ArrayList<>();
+        kieSession.setGlobal("list", results);
+
+        final Employee bruno = createEmployee("Bruno", new Address("Elm", 10, "Small City"));
+        kieSession.insert(bruno);
+
+        final Employee alice = createEmployee("Alice", new Address("Elm", 10, "Big City"));
+        kieSession.insert(alice);
+
+        kieSession.fireAllRules();
+
+        Assertions.assertThat(results).containsExactlyInAnyOrder("Big City", "Small City");
     }
 }

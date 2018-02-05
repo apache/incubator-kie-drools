@@ -17,7 +17,6 @@
 package org.kie.dmn.core.assembler;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,14 +33,15 @@ import org.kie.api.io.ResourceType;
 import org.kie.dmn.api.core.DMNCompiler;
 import org.kie.dmn.api.core.DMNCompilerConfiguration;
 import org.kie.dmn.api.core.DMNModel;
-import org.kie.dmn.api.marshalling.v1_1.DMNExtensionRegister;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.compiler.DMNCompilerConfigurationImpl;
 import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.compiler.DMNProfile;
+import org.kie.dmn.core.compiler.profiles.ExtendedDMNProfile;
 import org.kie.dmn.core.impl.DMNKnowledgeBuilderError;
 import org.kie.dmn.core.impl.DMNPackageImpl;
 import org.kie.internal.builder.ResultSeverity;
+import org.kie.internal.utils.ChainedProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,7 +51,6 @@ public class DMNAssemblerService implements KieAssemblerService {
     private static final Logger logger = LoggerFactory.getLogger( DMNAssemblerService.class );
     public static final String ORG_KIE_DMN_PREFIX = "org.kie.dmn";
     public static final String DMN_PROFILE_PREFIX = ORG_KIE_DMN_PREFIX + ".profiles.";
-    public static final String DMN_EXTENSION_REGISTER_PREFIX = ORG_KIE_DMN_PREFIX + ".marshaller.extension.";
     public static final String DMN_COMPILER_CACHE_KEY = "DMN_COMPILER_CACHE_KEY";
     public static final String DMN_PROFILES_CACHE_KEY = "DMN_PROFILES_CACHE_KEY";
 
@@ -97,9 +96,12 @@ public class DMNAssemblerService implements KieAssemblerService {
     private List<DMNProfile> getDMNProfiles(KnowledgeBuilderImpl kbuilderImpl) {
         Map<String, String> dmnProfileProperties = new HashMap<>();
         kbuilderImpl.getBuilderConfiguration().getChainedProperties().mapStartsWith(dmnProfileProperties, DMN_PROFILE_PREFIX, false);
+        List<DMNProfile> dmnProfiles = new ArrayList<>();
+        if (!isStrictMode(kbuilderImpl.getBuilderConfiguration().getChainedProperties())) {
+            dmnProfiles.add(new ExtendedDMNProfile());
+        }
         if (!dmnProfileProperties.isEmpty()) {
             try {
-                List<DMNProfile> dmnProfiles = new ArrayList<>();
                 for (Map.Entry<String, String> dmnProfileProperty : dmnProfileProperties.entrySet()) {
                     DMNProfile dmnProfile = (DMNProfile) kbuilderImpl.getRootClassLoader()
                                                                      .loadClass(dmnProfileProperty.getValue()).newInstance();
@@ -113,7 +115,15 @@ public class DMNAssemblerService implements KieAssemblerService {
                 logger.warn("DMN Compiler configuration contained errors, will fall-back using empty-configuration compiler.");
             }
         }
-        return Collections.emptyList();
+        return dmnProfiles;
+    }
+
+    private static boolean isStrictMode(ChainedProperties properties) {
+        String val = System.getProperty("org.kie.dmn.strictConformance");
+        if (val == null) {
+            return Boolean.parseBoolean(properties.getProperty("org.kie.dmn.strictConformance", "false"));
+        }
+        return "".equals(val) || Boolean.parseBoolean(val);
     }
 
     private DMNCompiler getCompiler(KnowledgeBuilderImpl kbuilderImpl) {
@@ -134,28 +144,6 @@ public class DMNAssemblerService implements KieAssemblerService {
             }
 
             return compiler;
-        }
-
-        Map<String, String> extensionProperties = new HashMap<>();
-        kbuilderImpl.getBuilderConfiguration().getChainedProperties()
-                .mapStartsWith(extensionProperties, DMN_EXTENSION_REGISTER_PREFIX, false);
-        if( !extensionProperties.isEmpty() ) {
-            List<DMNExtensionRegister> extensionRegisters = new ArrayList<>();
-            try {
-                for (Map.Entry<String, String> extensionProperty : extensionProperties.entrySet()) {
-                    String extRegClassName = extensionProperty.getValue();
-                    DMNExtensionRegister extRegister = (DMNExtensionRegister) kbuilderImpl.getRootClassLoader()
-                            .loadClass(extRegClassName).newInstance();
-                    extensionRegisters.add(extRegister);
-                }
-                compilerConfig.addExtensions(extensionRegisters);
-                return DMNFactory.newCompiler(compilerConfig);
-            } catch(Exception e) {
-                kbuilderImpl.addBuilderResult(new DMNKnowledgeBuilderError(ResultSeverity.WARNING, "Trying to load a non-existing extension element register "+e.getLocalizedMessage()));
-                logger.error( "Trying to load a non-existing extension element register {}", e.getLocalizedMessage(), e);
-                kbuilderImpl.addBuilderResult(new DMNKnowledgeBuilderError(ResultSeverity.WARNING, "DMN Compiler configuration contained errors, fall-back using empty-configuration compiler."));
-                logger.warn( "DMN Compiler configuration contained errors, fall-back using empty-configuration compiler." );
-            }
         }
 
         return DMNFactory.newCompiler(compilerConfig);

@@ -20,18 +20,25 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import org.drools.modelcompiler.domain.Adult;
 import org.drools.modelcompiler.domain.Child;
+import org.drools.modelcompiler.domain.Customer;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
+import org.drools.modelcompiler.domain.TargetPolicy;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.AccumulateFunction;
+import org.kie.api.runtime.rule.FactHandle;
 
 import static org.hamcrest.CoreMatchers.hasItem;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 public class AccumulateTest extends BaseModelTest {
 
@@ -47,6 +54,58 @@ public class AccumulateTest extends BaseModelTest {
                         "rule X when\n" +
                         "  accumulate ( $p: Person ( getName().startsWith(\"M\")); \n" +
                         "                $sum : sum($p.getAge())  \n" +
+                        "              )                          \n" +
+                        "then\n" +
+                        "  insert(new Result($sum));\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Edson", 35));
+        ksession.insert(new Person("Mario", 40));
+
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(1, results.size());
+        assertEquals(77, results.iterator().next().getValue());
+    }
+
+    @Test
+    public void testAccumulateConstrainingValue() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "import " + Result.class.getCanonicalName() + ";" +
+                        "rule X when\n" +
+                        "  accumulate ( $p: Person ( getName().startsWith(\"M\")); \n" +
+                        "                $sum : sum($p.getAge()); $sum > 50  \n" +
+                        "              )                          \n" +
+                        "then\n" +
+                        "  insert(new Result($sum));\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Edson", 35));
+        ksession.insert(new Person("Mario", 40));
+
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(1, results.size());
+        assertEquals(77, results.iterator().next().getValue());
+    }
+
+    @Test
+    public void testAccumulateConstrainingValueInPattern() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "import " + Result.class.getCanonicalName() + ";" +
+                        "rule X when\n" +
+                        "  $sum : Integer( this > 50 ) from accumulate ( $p: Person ( getName().startsWith(\"M\")); \n" +
+                        "                sum($p.getAge())  \n" +
                         "              )                          \n" +
                         "then\n" +
                         "  insert(new Result($sum));\n" +
@@ -120,7 +179,7 @@ public class AccumulateTest extends BaseModelTest {
     }
 
     @Test
-    public void testAccumulate3() {
+    public void testAccumulateMultipleFunctions() {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                         "import " + Result.class.getCanonicalName() + ";" +
@@ -144,6 +203,35 @@ public class AccumulateTest extends BaseModelTest {
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
         assertThat(results, hasItem(new Result(38.5d)));
+        assertThat(results, hasItem(new Result(77)));
+    }
+
+    @Test
+    public void testAccumulateMultipleFunctionsConstrainingValues() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "import " + Result.class.getCanonicalName() + ";" +
+                        "rule X when\n" +
+                        "  accumulate ( Person ( $age : age > 36); \n" +
+                        "                $sum : sum($age),  \n" +
+                        "                $min : min($age)  \n" +
+                        "                ; $sum > 50, $min > 30\n" +
+                        "              )                          \n" +
+                        "then\n" +
+                        "  insert(new Result($sum));\n" +
+                        "  insert(new Result($min));\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Edson", 35));
+        ksession.insert(new Person("Mario", 40));
+
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertThat(results, hasItem(new Result(37)));
         assertThat(results, hasItem(new Result(77)));
     }
 
@@ -290,5 +378,134 @@ public class AccumulateTest extends BaseModelTest {
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
         assertEquals(1, results.size());
         assertEquals(77, results.iterator().next().getValue());
+    }
+
+    @Test
+    public void testFromCollect() {
+        String str =
+                "import " + Customer.class.getCanonicalName() + ";\n" +
+                "import " + TargetPolicy.class.getCanonicalName() + ";\n" +
+                "import " + List.class.getCanonicalName() + ";\n" +
+                "rule \"Customer can only have one Target Policy for Product p1 with coefficient 1\" when\n" +
+                "  $customer : Customer( $code : code )\n" +
+                "  $target : TargetPolicy( customerCode == $code, productCode == \"p1\", coefficient == 1 )\n" +
+                "  List(size > 1) from collect ( TargetPolicy( customerCode == $code, productCode == \"p1\", coefficient == 1) )\n" +
+                "then\n" +
+                "  $target.setCoefficient(0);\n" +
+                "  update($target);\n" +
+                "end";
+
+        checkCollect( str );
+    }
+
+    @Test
+    public void testFromCollectWithAccumulate() {
+        String str =
+                "import " + Customer.class.getCanonicalName() + ";\n" +
+                "import " + TargetPolicy.class.getCanonicalName() + ";\n" +
+                "import " + List.class.getCanonicalName() + ";\n" +
+                "rule \"Customer can only have one Target Policy for Product p1 with coefficient 1\" when\n" +
+                "  $customer : Customer( $code : code )\n" +
+                "  $target : TargetPolicy( customerCode == $code, productCode == \"p1\", coefficient == 1 )\n" +
+                "  List(size > 1) from accumulate ( $tp: TargetPolicy( customerCode == $code, productCode == \"p1\", coefficient == 1); collectList( $tp ) )\n" +
+                "then\n" +
+                "  $target.setCoefficient(0);\n" +
+                "  update($target);\n" +
+                "end";
+
+        checkCollect( str );
+    }
+
+    @Test 
+    public void testFromCollectWithExpandedAccumulate() {
+        String str =
+                "import " + Customer.class.getCanonicalName() + ";\n" +
+                "import " + TargetPolicy.class.getCanonicalName() + ";\n" +
+                "import " + List.class.getCanonicalName() + ";\n" +
+                "import " + ArrayList.class.getCanonicalName() + ";\n" +
+                "rule \"Customer can only have one Target Policy for Product p1 with coefficient 1\" when\n" +
+                "  $customer : Customer( $code : code )\n" +
+                "  $target : TargetPolicy( customerCode == $code, productCode == \"p1\", coefficient == 1 )\n" +
+                "  List(size > 1) from accumulate ( $tp: TargetPolicy( customerCode == $code, productCode == \"p1\", coefficient == 1); " +
+                "            init( ArrayList myList = new ArrayList(); ),\n" +
+                "            action( myList.add($tp); ),\n" +
+                "            reverse( myList.remove($tp); ),\n" +
+                "            result( myList ) )\n" +
+                "then\n" +
+                "  $target.setCoefficient(0);\n" +
+                "  update($target);\n" +
+                "end";
+
+        checkCollect( str );
+    }
+
+    private void checkCollect( String str ) {
+        KieSession ksession = getKieSession(str);
+
+        Customer customer = new Customer();
+        customer.setCode("code1");
+        TargetPolicy target1 = new TargetPolicy();
+        target1.setCustomerCode("code1");
+        target1.setProductCode("p1");
+        target1.setCoefficient(1);
+        TargetPolicy target2 = new TargetPolicy();
+        target2.setCustomerCode("code1");
+        target2.setProductCode("p1");
+        target2.setCoefficient(1);
+        TargetPolicy target3 = new TargetPolicy();
+        target3.setCustomerCode("code1");
+        target3.setProductCode("p1");
+        target3.setCoefficient(1);
+
+        ksession.insert(customer);
+        ksession.insert(target1);
+        ksession.insert(target2);
+        ksession.insert(target3);
+        ksession.fireAllRules();
+
+        List<TargetPolicy> targetPolicyList = Arrays.asList(target1, target2, target3);
+        long filtered = targetPolicyList.stream().filter(c -> c.getCoefficient() == 1).count();
+        assertEquals(1, filtered);
+    }
+
+    @Test
+    public void testFromCollectWithExpandedAccumulate2() {
+        testFromCollectWithExpandedAccumulate2(false);
+    }
+
+    @Test
+    public void testFromCollectWithExpandedAccumulate2WithReverse() {
+        testFromCollectWithExpandedAccumulate2(true);
+    }
+
+    public void testFromCollectWithExpandedAccumulate2(boolean performReverse) {
+        String str = "import " + Person.class.getCanonicalName() + ";\n" +
+                     "rule R when\n" +
+                     "  $sum : Integer() from accumulate (\n" +
+                     "            Person( age > 18, $age : age ), init( int sum = 0; ), action( sum += $age; ), reverse( sum -= $age; ), result( sum )\n" +
+                     "         )" +
+                     "then\n" +
+                     "  insert($sum);\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+
+        FactHandle fh_Mark = ksession.insert(new Person("Mark", 37));
+        FactHandle fh_Edson = ksession.insert(new Person("Edson", 35));
+        FactHandle fh_Mario = ksession.insert(new Person("Mario", 40));
+        ksession.fireAllRules();
+
+        List<Integer> results = getObjectsIntoList(ksession, Integer.class);
+        assertEquals(1, results.size());
+        assertThat(results, hasItem(112));
+
+        if (performReverse) {
+            ksession.delete(fh_Mario);
+            ksession.fireAllRules();
+
+            results = getObjectsIntoList(ksession, Integer.class);
+            assertEquals(2, results.size());
+            assertThat(results, hasItem(72));
+        }
     }
 }

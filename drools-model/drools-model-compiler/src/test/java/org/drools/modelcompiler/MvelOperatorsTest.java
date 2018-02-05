@@ -16,6 +16,12 @@
 
 package org.drools.modelcompiler;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.drools.modelcompiler.domain.Person;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
@@ -38,7 +44,91 @@ public class MvelOperatorsTest extends BaseModelTest {
         KieSession ksession = getKieSession(str);
 
         ksession.insert( "b" );
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test @Ignore
+    public void testStr() {
+        String str =
+            "rule R when\n" +
+            "    String(this str[startsWith] \"M\")" +
+            "then\n" +
+            "end ";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert( "Mario" );
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testBinding() {
+        String str =
+            "import " + Person.class.getCanonicalName() + "\n" +
+            "global java.util.List list\n" +
+            "rule R when\n" +
+            "    Person( $name : name in (\"Mario\", \"Mark\"))" +
+            "then\n" +
+            "    list.add($name);" +
+            "end ";
+
+        KieSession ksession = getKieSession(str);
+
+        List<String> list = new ArrayList<>();
+        ksession.setGlobal( "list", list );
+
+        Person person1 = new Person("Mario");
+        ksession.insert(person1);
+        ksession.fireAllRules();
+
+        assertEquals(1, list.size());
+        assertEquals("Mario", list.get(0));
+    }
+
+    @Test
+    public void testMatches() {
+        String str =
+                "rule R when\n" +
+                "    String(this matches \"\\\\w\")" +
+                "then\n" +
+                "end ";
+
+        KieSession ksession = getKieSession(str);
+
         ksession.insert( "b" );
         assertEquals(1, ksession.fireAllRules());
     }
+
+    @Test
+    public void testExcludes() {
+        String str =
+                "import java.util.List\n" +
+                "rule R when\n" +
+                "    List(this excludes \"test\")" +
+                "then\n" +
+                "end ";
+
+        KieSession ksession = getKieSession(str);
+        ksession.insert( Arrays.asList("ciao", "test") );
+        assertEquals(0, ksession.fireAllRules());
+        ksession.insert( Arrays.asList("hello", "world") );
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testNotContains() {
+        String str =
+                "import java.util.List\n" +
+                "rule R when\n" +
+                "    List(this not contains \"test\")" +
+                "then\n" +
+                "end ";
+
+        KieSession ksession = getKieSession(str);
+        ksession.insert( Arrays.asList("ciao", "test") );
+        assertEquals(0, ksession.fireAllRules());
+        ksession.insert( Arrays.asList("hello", "world") );
+        assertEquals(1, ksession.fireAllRules());
+    }
+
 }

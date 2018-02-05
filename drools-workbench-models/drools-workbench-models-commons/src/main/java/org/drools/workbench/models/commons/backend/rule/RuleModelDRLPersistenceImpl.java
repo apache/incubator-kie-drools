@@ -115,6 +115,7 @@ import org.drools.workbench.models.datamodel.workitems.PortableObjectParameterDe
 import org.drools.workbench.models.datamodel.workitems.PortableParameterDefinition;
 import org.drools.workbench.models.datamodel.workitems.PortableStringParameterDefinition;
 import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
+import org.kie.soup.commons.util.ListSplitter;
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.soup.project.datamodel.commons.imports.ImportsParser;
 import org.kie.soup.project.datamodel.commons.imports.ImportsWriter;
@@ -1314,17 +1315,11 @@ public class RuleModelDRLPersistenceImpl
                 workingValue = workingValue.substring(0,
                                                       workingValue.length() - 1);
             }
-            final String[] values = workingValue.split(",");
+
+            final String[] values = ListSplitter.split("\"", true, workingValue);
             buf.append(" ( ");
             for (String v : values) {
                 v = v.trim();
-                if (v.startsWith("\"")) {
-                    v = v.substring(1);
-                }
-                if (v.endsWith("\"")) {
-                    v = v.substring(0,
-                                    v.length() - 1);
-                }
                 constraintValueBuilder.buildLHSFieldValue(buf,
                                                           type,
                                                           fieldType,
@@ -2616,7 +2611,7 @@ public class RuleModelDRLPersistenceImpl
                     }
                     if (modelField == null) {
                         final String previousClassName = expression.getClassType();
-                        final List<MethodInfo> mis = dmo.getProjectMethodInformation().get(previousClassName);
+                        final List<MethodInfo> mis = dmo.getModuleMethodInformation().get(previousClassName);
                         boolean isMethod = false;
                         if (mis != null) {
                             for (MethodInfo mi : mis) {
@@ -3883,7 +3878,7 @@ public class RuleModelDRLPersistenceImpl
                                                               factType,
                                                               DataType.TYPE_THIS));
                 } else if (isBoundParam) {
-                    ModelField currentFact = findFact(dmo.getProjectModelFields(),
+                    ModelField currentFact = findFact(dmo.getModuleModelFields(),
                                                       factType);
 
                     expression.appendPart(getExpressionPart(expressionPart,
@@ -3974,7 +3969,7 @@ public class RuleModelDRLPersistenceImpl
                 expression.appendPart(new ExpressionCollection(expressionPart,
                                                                currentField.getClassName(),
                                                                currentField.getType(),
-                                                               dmo.getProjectFieldParametersType().get(factType + "#" + expressionPart))
+                                                               dmo.getModuleFieldParametersType().get(factType + "#" + expressionPart))
                 );
             } else {
                 expression.appendPart(new ExpressionField(expressionPart,

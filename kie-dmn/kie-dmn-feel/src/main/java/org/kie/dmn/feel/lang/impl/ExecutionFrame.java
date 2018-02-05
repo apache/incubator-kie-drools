@@ -15,4 +15,8 @@ public interface ExecutionFrame {
     void setValue(String symbol, Object value);
 
     Map<String, Object> getAllValues();
+
+    void setRootObject(Object v);
+
+    Object getRootObject();
 }

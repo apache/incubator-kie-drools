@@ -17,7 +17,9 @@
 package org.drools.workbench.models.guided.dtable.backend;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -74,6 +76,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryBRLCon
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryCol;
 import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
+import org.kie.soup.commons.util.ListSplitter;
 import org.kie.soup.project.datamodel.commons.imports.ImportsWriter;
 import org.kie.soup.project.datamodel.commons.packages.PackageNameWriter;
 import org.kie.soup.project.datamodel.oracle.DataType;
@@ -742,25 +745,30 @@ public class GuidedDTDRLPersistence {
     /**
      * take a CSV list and turn it into DRL syntax
      */
-    String makeInList(String cell) {
+    String makeInList(final String cell) {
         if (cell.startsWith("(")) {
             return cell;
         }
-        String res = "";
-        StringTokenizer st = new StringTokenizer(cell,
-                                                 ",");
-        while (st.hasMoreTokens()) {
-            String t = st.nextToken().trim();
-            if (t.startsWith("\"")) {
-                res += t;
+
+        String result = "";
+        Iterator<String> iterator = Arrays.asList(ListSplitter.split("\"",
+                                                                     true,
+                                                                     cell)).iterator();
+        while (iterator.hasNext()) {
+
+            final String item = iterator.next();
+
+            if (item.startsWith("\"")) {
+                result += item;
             } else {
-                res += "\"" + t + "\"";
+                result += "\"" + item + "\"";
             }
-            if (st.hasMoreTokens()) {
-                res += ", ";
+            if (iterator.hasNext()) {
+                result += ", ";
             }
         }
-        return "(" + res + ")";
+
+        return "(" + result + ")";
     }
 
     private boolean no(String operator) {

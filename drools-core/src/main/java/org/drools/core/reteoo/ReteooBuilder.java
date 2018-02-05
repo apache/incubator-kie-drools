@@ -167,7 +167,13 @@ public class ReteooBuilder
             final RuleRemovalContext context = new RuleRemovalContext( rule );
             context.setKnowledgeBase( kBase );
 
-            for ( BaseNode node : rules.remove( rule.getFullyQualifiedName() ) ) {
+            BaseNode[] rulesTerminalNodes = rules.remove( rule.getFullyQualifiedName() );
+            if (rulesTerminalNodes == null) {
+                // there couldn't be any rule to be removed if it comes from a broken drl
+                continue;
+            }
+
+            for ( BaseNode node : rulesTerminalNodes ) {
                 removeTerminalNode( context, (TerminalNode) node, workingMemories );
             }
 

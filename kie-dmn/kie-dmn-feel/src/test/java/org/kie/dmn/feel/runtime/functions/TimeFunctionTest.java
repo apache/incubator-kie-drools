@@ -54,12 +54,6 @@ public class TimeFunctionTest {
     }
 
     @Test
-    public void invokeStringParamDate() {
-        FunctionTestUtil.assertResult(timeFunction.invoke("2017-10-09"), LocalTime.of(0,0,0));
-        FunctionTestUtil.assertResult(timeFunction.invoke("2017-10-09T10:15:06"), LocalTime.of(10,15,6));
-    }
-
-    @Test
     public void invokeStringParamTimeWrongFormat() {
         FunctionTestUtil.assertResultError(timeFunction.invoke("10-15:06"), InvalidParametersEvent.class);
     }
@@ -106,7 +100,7 @@ public class TimeFunctionTest {
 
     @Test
     public void invokeTemporalAccessorParamDate() {
-        FunctionTestUtil.assertResultError(timeFunction.invoke(LocalDate.of(2017, 6, 12)), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResult(timeFunction.invoke(LocalDate.of(2017, 6, 12)), OffsetTime.of(0, 0, 0, 0, ZoneOffset.UTC));
     }
 
     @Test

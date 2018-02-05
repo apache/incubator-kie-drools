@@ -12,6 +12,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.compiler.BaseKnowledgeBuilderResultImpl;
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
@@ -20,6 +21,7 @@ import org.drools.core.ruleunit.RuleUnitDescr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.kie.api.runtime.rule.RuleUnit;
 import org.kie.internal.builder.KnowledgeBuilderResult;
+import org.kie.internal.builder.ResultSeverity;
 
 import static java.util.stream.Collectors.toList;
 
@@ -42,6 +44,8 @@ public class RuleContext {
     private Optional<String> queryName = Optional.empty();
 
     private RuleUnitDescr ruleUnitDescr;
+
+    private Map<String, String> aggregatePatternMap = new HashMap<>();
 
     private RuleDialect ruleDialect = RuleDialect.JAVA; // assumed is java by default as per Drools manual.
     public static enum RuleDialect {
@@ -93,12 +97,25 @@ public class RuleContext {
     }
 
     public void addCompilationError( KnowledgeBuilderResult error ) {
+        if ( error instanceof BaseKnowledgeBuilderResultImpl ) {
+            (( BaseKnowledgeBuilderResultImpl ) error).setResource( descr.getResource() );
+        }
         kbuilder.addBuilderResult( error );
+    }
+
+    public boolean hasErrors() {
+        return kbuilder.hasResults( ResultSeverity.ERROR );
     }
 
     public Optional<DeclarationSpec> getDeclarationById(String id) {
         return declarations.stream().filter(d -> d.getBindingId().equals(id)).findFirst();
     }
+
+    public void removeDeclarationById(String id) {
+        final Optional<DeclarationSpec> declarationById = getDeclarationById(id);
+        declarationById.map(declarations::remove).orElseThrow(() -> new RuntimeException("Cannot find id: " + id));
+    }
+
 
     public boolean hasDeclaration(String id) {
         return getDeclarationById(id).isPresent();
@@ -118,6 +135,17 @@ public class RuleContext {
         if(!getDeclarationById(d.getBindingId()).isPresent()) {
             this.declarations.add(d);
         }
+    }
+
+    public void addDeclarationReplacing(DeclarationSpec d) {
+        // It would be probably be better to avoid putting the same declaration multiple times
+        // instead of using Set semantic here
+        final String bindingId = d.getBindingId();
+        final Optional<DeclarationSpec> declarationById = getDeclarationById(bindingId);
+        if(declarationById.isPresent()) {
+            removeDeclarationById(bindingId);
+        }
+        this.declarations.add(d);
     }
 
     public void addOOPathDeclaration(DeclarationSpec d) {
@@ -209,6 +237,10 @@ public class RuleContext {
 
     public Map<String, String> getNamedConsequences() {
         return namedConsequences;
+    }
+
+    public Map<String, String> getAggregatePatternMap() {
+        return aggregatePatternMap;
     }
 }
 
