@@ -3,6 +3,7 @@ package org.drools.modelcompiler.builder.generator.visitor;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -85,7 +86,7 @@ public class PatternVisitor {
         if (constraintDescrs.isEmpty() && pattern.getSource() == null) {
             context.addExpression(createInputExpression(pattern));
         } else {
-            final List<ConstraintParseResult> constraintParseResults = findAllConstraint(pattern, constraintDescrs, patternType);
+            final List<ConstraintParseResult> constraintParseResults = context.hasErrors() ? Collections.emptyList() : findAllConstraint(pattern, constraintDescrs, patternType);
             buildConstraints(pattern, patternType, constraintParseResults, allConstraintsPositional);
         }
     }

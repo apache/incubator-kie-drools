@@ -78,6 +78,7 @@ import org.drools.javaparser.ast.type.ReferenceType;
 import org.drools.javaparser.ast.type.Type;
 import org.drools.javaparser.ast.type.UnknownType;
 import org.drools.modelcompiler.builder.PackageModel;
+import org.drools.modelcompiler.builder.errors.UnknownDeclarationError;
 import org.drools.modelcompiler.builder.generator.operatorspec.CustomOperatorSpec;
 import org.drools.modelcompiler.builder.generator.operatorspec.OperatorSpec;
 import org.drools.modelcompiler.builder.generator.operatorspec.TemporalOperatorSpec;
@@ -134,6 +135,11 @@ public class DrlxParseUtil {
             TypedExpression left = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, binaryExpr.getLeft(), usedDeclarations, reactOnProperties, binaryExpr, isPositional);
             TypedExpression right = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, binaryExpr.getRight(), usedDeclarations, reactOnProperties, binaryExpr, isPositional);
 
+            if ( left == null || right == null ) {
+                // An compilation error has occurred during expression parsing and has been propagated through the context
+                return null;
+            }
+
             BinaryExpr combo = new BinaryExpr( left.getExpression(), right.getExpression(), operator );
             return new TypedExpression( combo, left.getType() );
 
@@ -144,7 +150,16 @@ public class DrlxParseUtil {
             Operator operator = toBinaryExprOperator(halfBinaryExpr.getOperator());
 
             TypedExpression left = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, parentLeft, usedDeclarations, reactOnProperties, halfBinaryExpr, isPositional);
+            if ( left == null ) {
+                // An compilation error has occurred during expression parsing and has been propagated through the context
+                return null;
+            }
+
             TypedExpression right = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, halfBinaryExpr.getRight(), usedDeclarations, reactOnProperties, halfBinaryExpr, isPositional);
+            if ( right == null ) {
+                // An compilation error has occurred during expression parsing and has been propagated through the context
+                return null;
+            }
 
             BinaryExpr combo = new BinaryExpr( left.getExpression(), right.getExpression(), operator );
             return new TypedExpression( combo, left.getType() );
@@ -305,8 +320,8 @@ public class DrlxParseUtil {
                     final NameExpr scope = backReference.map(d -> new NameExpr(d.getBindingId())).orElse(thisAccessor);
                     previous = new MethodCallExpr(scope, firstAccessor.getName());
                 } else {
-                    throw new UnsupportedOperationException("firstNode I don't know about");
-                    // TODO would it be fine to assume is a global if it's not in the declarations and not the first accesssor in a chain?
+                    context.addCompilationError( new UnknownDeclarationError(firstNode.toString()) );
+                    return null;
                 }
             }
         } else if (firstNode instanceof ThisExpr) {
@@ -773,8 +788,6 @@ public class DrlxParseUtil {
      * Mutates expression
      * such that, if it contains a NameExpr for any of the <code>names</code>,
      * it is replaced with a FieldAccessExpr having <code>newScope</code> as the scope.
-     * 
-     * @param expression a mutated expression
      */
     public static void rescopeNamesToNewScope(Expression newScope, List<String> names, Expression e) {
         if (e instanceof AssignExpr) {

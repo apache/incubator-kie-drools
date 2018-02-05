@@ -43,7 +43,45 @@ public class CompilationFailuresTest extends BaseModelTest {
         assertFalse(results.getMessages( Message.Level.ERROR).isEmpty());
     }
 
+    @Test
+    public void testUseNotExistingEnum() {
+        String drl =
+                "import " + NumberRestriction.class.getCanonicalName() + "\n" +
+                "rule R when\n" +
+                "    NumberRestriction( valueType == Field.INT || == Field.DOUBLE )\n" +
+                "then\n" +
+                "end\n";
+
+        Results results = getCompilationResults(drl);
+        assertFalse(results.getMessages( Message.Level.ERROR).isEmpty());
+    }
+
     private Results getCompilationResults( String drl ) {
         return createKieBuilder( drl ).getResults();
+    }
+
+    public static class NumberRestriction {
+
+        private Number value;
+
+        public void setValue(Number number) {
+            this.value = number;
+        }
+
+        public boolean isInt() {
+            return value instanceof Integer;
+        }
+
+        public Number getValue() {
+            return value;
+        }
+
+        public String getValueAsString() {
+            return value.toString();
+        }
+
+        public String getValueType() {
+            return value.getClass().getName();
+        }
     }
 }
