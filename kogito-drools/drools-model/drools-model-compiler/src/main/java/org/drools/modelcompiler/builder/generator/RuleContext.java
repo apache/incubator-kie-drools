@@ -132,6 +132,17 @@ public class RuleContext {
         }
     }
 
+    public void addDeclarationReplacing(DeclarationSpec d) {
+        // It would be probably be better to avoid putting the same declaration multiple times
+        // instead of using Set semantic here
+        final String bindingId = d.getBindingId();
+        final Optional<DeclarationSpec> declarationById = getDeclarationById(bindingId);
+        if(declarationById.isPresent()) {
+            removeDeclarationById(bindingId);
+        }
+        this.declarations.add(d);
+    }
+
     public void addOOPathDeclaration(DeclarationSpec d) {
         if(!getOOPathDeclarationById(d.getBindingId()).isPresent()) {
             this.ooPathDeclarations.add(d);
