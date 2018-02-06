@@ -94,7 +94,7 @@ public abstract class BasicExecutorBaseTest {
         List<RequestInfo> executedRequests = executorService.getCompletedRequests(new QueryContext());
         assertEquals(1, executedRequests.size());
 
-
+        assertEquals(1, executedRequests.get(0).getExecutions());
     }
 
     @Test
@@ -183,6 +183,8 @@ public abstract class BasicExecutorBaseTest {
         List<RequestInfo> inErrorRequests = executorService.getInErrorRequests(new QueryContext());
         assertEquals(1, inErrorRequests.size());
         logger.info("Error: {}", inErrorRequests.get(0));
+        
+        assertEquals(1, inErrorRequests.get(0).getExecutions());
 
         List<ErrorInfo> errors = executorService.getAllErrors(new QueryContext());
         logger.info("Errors: {}", errors);
