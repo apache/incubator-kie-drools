@@ -25,6 +25,9 @@ import org.drools.model.operators.InOperator;
 import org.drools.model.operators.MatchesOperator;
 import org.drools.model.operators.MemberOfOperator;
 import org.drools.model.operators.SoundsLikeOperator;
+import org.drools.model.operators.StringEndsWithOperator;
+import org.drools.model.operators.StringLengthWithOperator;
+import org.drools.model.operators.StringStartsWithOperator;
 
 public interface Operator<A, B> extends Predicate2<A, B[]> {
 
@@ -56,6 +59,9 @@ public interface Operator<A, B> extends Predicate2<A, B[]> {
             register( ExcludesOperator.INSTANCE );
             register( MemberOfOperator.INSTANCE );
             register( SoundsLikeOperator.INSTANCE );
+            register( StringStartsWithOperator.INSTANCE );
+            register( StringEndsWithOperator.INSTANCE );
+            register( StringLengthWithOperator.INSTANCE );
         }
 
         public static void register(Operator operator) {
