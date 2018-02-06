@@ -16,26 +16,29 @@
 
 package org.kie.dmn.feel.runtime.functions;
 
-import org.kie.dmn.api.feel.runtime.events.FEELEvent;
-import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
-import org.kie.dmn.feel.FEEL;
-import org.kie.dmn.feel.lang.CompiledExpression;
-import org.kie.dmn.feel.lang.EvaluationContext;
-import org.kie.dmn.feel.lang.ast.BaseNode;
-import org.kie.dmn.feel.runtime.Range;
-import org.kie.dmn.feel.runtime.UnaryTest;
-import org.kie.dmn.feel.runtime.decisiontables.*;
-import org.kie.dmn.feel.runtime.events.FEELEventBase;
-import org.kie.dmn.feel.util.Msg;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
+import org.kie.dmn.feel.FEEL;
+import org.kie.dmn.feel.lang.CompiledExpression;
+import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.runtime.Range;
+import org.kie.dmn.feel.runtime.UnaryTest;
+import org.kie.dmn.feel.runtime.decisiontables.DTDecisionRule;
+import org.kie.dmn.feel.runtime.decisiontables.DTInputClause;
+import org.kie.dmn.feel.runtime.decisiontables.DTOutputClause;
+import org.kie.dmn.feel.runtime.decisiontables.DecisionTableImpl;
+import org.kie.dmn.feel.runtime.decisiontables.HitPolicy;
+import org.kie.dmn.feel.runtime.events.FEELEventBase;
+import org.kie.dmn.feel.util.Msg;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DecisionTableFunction
         extends BaseFEELFunction {
@@ -114,7 +117,8 @@ public class DecisionTableFunction
                 .collect( Collectors.toList() );
 
         // TODO is there a way to avoid UUID and get from _evaluation_ ctx the name of the wrapping context? 
-        DecisionTableImpl dti = new DecisionTableImpl( UUID.randomUUID().toString(), inputExpressions, inputs, outputClauses, decisionRules, HitPolicy.fromString( hitPolicy ) );
+        // TODO also in this case it is using an ad-hoc created FEEL instance instead of the "hosted" one.
+        DecisionTableImpl dti = new DecisionTableImpl(UUID.randomUUID().toString(), inputExpressions, inputs, outputClauses, decisionRules, HitPolicy.fromString(hitPolicy), FEEL.newInstance());
         return new DTInvokerFunction( dti );
     }
 

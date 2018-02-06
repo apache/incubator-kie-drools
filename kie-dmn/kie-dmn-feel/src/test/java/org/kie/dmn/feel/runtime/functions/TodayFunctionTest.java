@@ -17,8 +17,10 @@
 package org.kie.dmn.feel.runtime.functions;
 
 import java.time.LocalDate;
+
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.dmn.feel.runtime.functions.extended.TodayFunction;
 
 public class TodayFunctionTest {
 

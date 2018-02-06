@@ -21,20 +21,13 @@ import java.util.List;
 
 import org.kie.dmn.feel.lang.FEELProfile;
 import org.kie.dmn.feel.runtime.FEELFunction;
-import org.kie.dmn.feel.runtime.functions.extended.DateFunction;
-import org.kie.dmn.feel.runtime.functions.extended.DurationFunction;
-import org.kie.dmn.feel.runtime.functions.extended.TimeFunction;
+import org.kie.dmn.feel.runtime.functions.extended.KieExtendedDMNFunctions;
 
 public class KieExtendedFEELProfile implements FEELProfile {
 
     @Override
     public List<FEELFunction> getFEELFunctions() {
-        return Arrays.asList(FUNCTIONS);
+        return Arrays.asList(KieExtendedDMNFunctions.getFunctions());
     }
 
-    private static final FEELFunction[] FUNCTIONS = new FEELFunction[]{
-                                                                       TimeFunction.INSTANCE,
-                                                                       DateFunction.INSTANCE,
-                                                                       DurationFunction.INSTANCE
-    };
 }

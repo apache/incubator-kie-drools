@@ -65,17 +65,6 @@ public class BuiltInFunctions {
             new DecisionTableFunction(),
             new NotFunction(),
             new SortFunction(),
-
-            // additional functions not part of the spec version 1.1
-            new NowFunction(),
-            new TodayFunction(),
-            new AbsFunction(),
-            new ModuloFunction(),
-            new ProductFunction(),
-            new CodeFunction(),
-            new InvokeFunction(),
-            new SplitFunction()
-
             };
 
     public static FEELFunction[] getFunctions() {

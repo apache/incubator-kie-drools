@@ -37,7 +37,6 @@ import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
-import org.kie.dmn.feel.lang.impl.FEELImpl;
 import org.kie.dmn.feel.runtime.events.DecisionTableRulesMatchedEvent;
 import org.kie.dmn.feel.runtime.events.DecisionTableRulesSelectedEvent;
 import org.kie.dmn.feel.runtime.functions.DTInvokerFunction;
@@ -53,12 +52,12 @@ public class DMNDTExpressionEvaluator
 
     private final DMNNode           node;
     private       DTInvokerFunction dt;
-    private       FEELImpl          feel;
+    private       FEEL              feel;
 
-    public DMNDTExpressionEvaluator(DMNNode node, DTInvokerFunction dt) {
+    public DMNDTExpressionEvaluator(DMNNode node, FEEL feel, DTInvokerFunction dt) {
         this.node = node;
         this.dt = dt;
-        feel = (FEELImpl) FEEL.newInstance();
+        this.feel = feel;
     }
 
     @Override

@@ -1762,5 +1762,40 @@ public class DMNRuntimeTest {
         assertEquals(2, resultObject.size());
     }
 
+    @Test
+    public void testMatteo() {
+        // DROOLS-
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime("just_now.dmn", this.getClass());
+        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_56fd6445-ff6a-4c28-8206-71fce7f80436", "just now");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        DMNContext emptyContext = DMNFactory.newContext();
+
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, emptyContext);
+
+        System.out.println(dmnResult);
+
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+    }
+
+    @Test
+    public void testMatteo2() {
+        // DROOLS-
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime("just_today.dmn", this.getClass());
+        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_56fd6445-ff6a-4c28-8206-71fce7f80436", "just today");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        DMNContext emptyContext = DMNFactory.newContext();
+
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, emptyContext);
+
+        System.out.println(dmnResult);
+
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+    }
 }
 

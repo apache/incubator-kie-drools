@@ -18,10 +18,12 @@ package org.kie.dmn.feel.runtime.functions;
 
 import java.time.ZonedDateTime;
 import java.time.temporal.TemporalAccessor;
+
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.dmn.feel.runtime.functions.extended.NowFunction;
 
 public class NowFunctionTest {
 

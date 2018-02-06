@@ -139,9 +139,7 @@ public class DMNAssemblerService implements KieAssemblerService {
             for (DMNProfile dmnProfile : dmnProfiles) {
                 compiler.addDRGElementCompilers(dmnProfile.getDRGElementCompilers());
             }
-            for (DMNProfile dmnProfile : dmnProfiles) {
-                compiler.registerFEELFunctions(dmnProfile.getFEELFunctions());
-            }
+            compiler.registerFEELProfiles((List) dmnProfiles);
 
             return compiler;
         }

@@ -16,8 +16,6 @@
 
 package org.kie.dmn.feel.runtime.decisiontables;
 
-import static java.util.stream.Collectors.toMap;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -43,6 +41,8 @@ import org.kie.dmn.feel.util.Either;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static java.util.stream.Collectors.toMap;
+
 public class DecisionTableImpl {
     private static final Logger logger = LoggerFactory.getLogger( DecisionTableImpl.class );
 
@@ -54,12 +54,15 @@ public class DecisionTableImpl {
     private HitPolicy            hitPolicy;
     private boolean              hasDefaultValues;
 
+    private FEEL feel;
+
     public DecisionTableImpl(String name,
                              List<String> parameterNames,
                              List<DTInputClause> inputs,
                              List<DTOutputClause> outputs,
                              List<DTDecisionRule> decisionRules,
-                             HitPolicy hitPolicy) {
+                             HitPolicy hitPolicy,
+                             FEEL feel) {
         this.name = name;
         this.parameterNames = parameterNames;
         this.inputs = inputs;
@@ -67,6 +70,7 @@ public class DecisionTableImpl {
         this.decisionRules = decisionRules;
         this.hitPolicy = hitPolicy;
         this.hasDefaultValues = outputs.stream().allMatch( o -> o.getDefaultValue() != null );
+        this.feel = feel;
     }
 
     /**
@@ -81,7 +85,6 @@ public class DecisionTableImpl {
             return FEELFnResult.ofError(new FEELEventBase(Severity.WARN, "Decision table is empty", null));
         }
         
-        FEEL feel = FEEL.newInstance();
         Object[] actualInputs = resolveActualInputs( ctx, feel );
 
         Either<FEELEvent, Object> actualInputMatch = actualInputsMatchInputValues( ctx, actualInputs );

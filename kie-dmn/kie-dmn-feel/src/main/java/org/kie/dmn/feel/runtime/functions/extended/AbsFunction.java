@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.feel.runtime.functions;
+package org.kie.dmn.feel.runtime.functions.extended;
+
+import java.math.BigDecimal;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-
-import java.math.BigDecimal;
+import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
+import org.kie.dmn.feel.runtime.functions.FEELFnResult;
+import org.kie.dmn.feel.runtime.functions.ParameterName;
 
 public class AbsFunction
         extends BaseFEELFunction {

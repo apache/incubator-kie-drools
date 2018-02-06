@@ -52,8 +52,8 @@ import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
+import org.kie.dmn.feel.lang.FEELProfile;
 import org.kie.dmn.feel.lang.types.BuiltInType;
-import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.model.v1_1.DMNElementReference;
 import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
@@ -105,8 +105,8 @@ public class DMNCompilerImpl
         }
     }
 
-    public void registerFEELFunctions(Collection<FEELFunction> feelFunctions) {
-        this.feel.registerFEELFunctions(feelFunctions);
+    public void registerFEELProfiles(Collection<FEELProfile> feelProfiles) {
+        this.feel.registerFEELProfiles(feelProfiles);
     }
 
     @Override
@@ -445,7 +445,7 @@ public class DMNCompilerImpl
         return localElement.getNamespaceURI( prefix );
     }
 
-    private DMNCompilerConfiguration getDmnCompilerConfig() {
+    public DMNCompilerConfiguration getDmnCompilerConfig() {
         return this.dmnCompilerConfig;
     }
 
