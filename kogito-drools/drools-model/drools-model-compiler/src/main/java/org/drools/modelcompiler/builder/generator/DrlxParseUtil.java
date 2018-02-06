@@ -411,6 +411,8 @@ public class DrlxParseUtil {
             return findLeftLeafOfNameExpr(be.getLeft());
         } else if(expression instanceof NameExpr) {
             return expression;
+        } else if(expression instanceof ThisExpr) {
+            return expression;
         } else if(expression instanceof PointFreeExpr) {
             return findLeftLeafOfNameExpr(((PointFreeExpr) expression).getLeft());
         } else {
