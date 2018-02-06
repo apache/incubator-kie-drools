@@ -200,7 +200,8 @@ public class ModelGenerator {
         }
 
         new ModelGeneratorVisitor(context, packageModel).visit(ruleDescr.getLhs());
-        MethodDeclaration ruleMethod = new MethodDeclaration(EnumSet.of(Modifier.PRIVATE), RULE_TYPE, "rule_" + toId( ruleDescr.getName() ) );
+        final String ruleMethodName = "rule_" + toId(ruleDescr.getName());
+        MethodDeclaration ruleMethod = new MethodDeclaration(EnumSet.of(Modifier.PUBLIC, Modifier.STATIC), RULE_TYPE, ruleMethodName);
 
         ruleMethod.setJavadocComment(" Rule name: " + ruleDescr.getName() + " ");
 
@@ -241,7 +242,7 @@ public class ModelGenerator {
         ruleVariablesBlock.addStatement(new AssignExpr(ruleVar, buildCall, AssignExpr.Operator.ASSIGN));
 
         ruleVariablesBlock.addStatement( new ReturnStmt(RULE_CALL) );
-        packageModel.putRuleMethod("rule_" + toId( ruleDescr.getName() ), ruleMethod);
+        packageModel.putRuleMethod(ruleMethodName, ruleMethod);
     }
 
     /**
@@ -377,7 +378,7 @@ public class ModelGenerator {
         consequenceString = consequenceString.replaceAll( "kcontext", "drools" );
         BlockStmt ruleConsequence = rewriteConsequence(context, consequenceString);
         Collection<String> usedDeclarationInRHS = extractUsedDeclarations(packageModel, context, ruleConsequence, consequenceString);
-        MethodCallExpr onCall = onCall(packageModel, usedDeclarationInRHS);
+        MethodCallExpr onCall = onCall(usedDeclarationInRHS);
         if (isBreaking) {
             onCall = new MethodCallExpr( onCall, BREAKING_CALL );
         }
@@ -462,18 +463,12 @@ public class ModelGenerator {
         return executeCall;
     }
 
-    private static MethodCallExpr onCall(PackageModel packageModel, Collection<String> usedArguments) {
+    private static MethodCallExpr onCall(Collection<String> usedArguments) {
         MethodCallExpr onCall = null;
 
         if (!usedArguments.isEmpty()) {
             onCall = new MethodCallExpr(null, ON_CALL);
-            for (String a : usedArguments) {
-                Expression aVar = JavaParser.parseExpression(DrlxParseUtil.toVar(a));
-                if (packageModel.getGlobals().containsKey(a)) {
-                    aVar = new FieldAccessExpr(new NameExpr(packageModel.getRulesFileName()), DrlxParseUtil.toVar(a));
-                }
-                onCall.addArgument(aVar);
-            }
+            usedArguments.stream().map(DrlxParseUtil::toVar).forEach(onCall::addArgument );
         }
         return onCall;
     }

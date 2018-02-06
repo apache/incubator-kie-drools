@@ -290,7 +290,7 @@ public class PackageModel {
 
 
         for(Map.Entry<String, MethodCallExpr> windowReference : windowReferences.entrySet()) {
-            FieldDeclaration f =  rulesClass.addField(WINDOW_REFERENCE_TYPE, windowReference.getKey());
+            FieldDeclaration f = rulesClass.addField(WINDOW_REFERENCE_TYPE, windowReference.getKey(), Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL);
             f.getVariables().get(0).setInitializer(windowReference.getValue());
         }
 
@@ -299,7 +299,7 @@ public class PackageModel {
         }
 
         for(Map.Entry<String, QueryGenerator.QueryDefWithType> queryDef: queryDefWithType.entrySet()) {
-            FieldDeclaration field = rulesClass.addField(queryDef.getValue().getQueryType(), queryDef.getKey(), Modifier.FINAL);
+            FieldDeclaration field = rulesClass.addField(queryDef.getValue().getQueryType(), queryDef.getKey(), Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL);
             field.getVariables().get(0).setInitializer(queryDef.getValue().getMethodCallExpr());
         }
 
@@ -377,7 +377,7 @@ public class PackageModel {
         field.getVariables().get(0).setInitializer(declarationOfCall);
     }
 
-    public void print(String source) {
+    public void sysout(String source) {
         System.out.println("=====");
         System.out.println(source);
         System.out.println("=====");

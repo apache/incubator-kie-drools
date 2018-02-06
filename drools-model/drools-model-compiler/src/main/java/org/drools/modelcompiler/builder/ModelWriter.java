@@ -26,7 +26,7 @@ public class ModelWriter {
 
             for (ClassOrInterfaceDeclaration generatedPojo : pkgModel.getGeneratedPOJOsSource()) {
                 final String source = JavaParserCompiler.toPojoSource(pkgModel.getName(), pkgModel.getImports(), generatedPojo);
-                pkgModel.print( source );
+                pkgModel.sysout(source);
                 String pojoSourceName = "src/main/java/" + folderName + "/" + generatedPojo.getName() + ".java";
                 srcMfs.write( pojoSourceName, source.getBytes() );
                 sourceFiles.add( pojoSourceName );
@@ -35,7 +35,7 @@ public class ModelWriter {
             String rulesFileName = pkgModel.getRulesFileName();
             String rulesSourceName = "src/main/java/" + folderName + "/" + rulesFileName + ".java";
             String rulesSource = pkgModel.getRulesSource( prettyPrinter, rulesFileName, pkgName );
-            pkgModel.print( rulesSource );
+            pkgModel.sysout(rulesSource);
             byte[] rulesBytes = rulesSource.getBytes();
             srcMfs.write( rulesSourceName, rulesBytes );
             modelFiles.add( pkgName + "." + rulesFileName );
