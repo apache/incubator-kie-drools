@@ -122,7 +122,8 @@ public class POJOGenerator {
         generatedClass.addImplementedType( GeneratedFact.class.getName() );
         generatedClass.addImplementedType(Serializable.class.getName()); // Ref: {@link org.drools.core.factmodel.DefaultBeanClassBuilder} by default always receive is Serializable.
 
-        if (typeDeclaration.getSuperTypeName() != null) {
+        boolean hasSuper = typeDeclaration.getSuperTypeName() != null;
+        if (hasSuper) {
             generatedClass.addExtendedType( typeDeclaration.getSuperTypeName() );
         }
 
@@ -175,8 +176,10 @@ public class POJOGenerator {
             fullArgumentsCtor.setBody( new BlockStmt( ctorFieldStatement ) );
         }
 
-        generatedClass.addMember(generateEqualsMethod(generatedClassName, equalsFieldStatement));
-        generatedClass.addMember(generateHashCodeMethod(hashCodeFieldStatement));
+        if (hasSuper || !fields.isEmpty()) {
+            generatedClass.addMember( generateEqualsMethod( generatedClassName, equalsFieldStatement, hasSuper ) );
+            generatedClass.addMember( generateHashCodeMethod( hashCodeFieldStatement, hasSuper ) );
+        }
         generatedClass.addMember(generateToStringMethod(generatedClassName, toStringFieldStatement));
 
         return generatedClass;
@@ -198,9 +201,12 @@ public class POJOGenerator {
     private static final Statement referenceEquals = parseStatement("if (this == o) { return true; }");
     private static final Statement classCheckEquals = parseStatement("if (o == null || getClass() != o.getClass()) { return false; }");
 
-    private static MethodDeclaration generateEqualsMethod(String generatedClassName, List<Statement> equalsFieldStatement) {
+    private static MethodDeclaration generateEqualsMethod(String generatedClassName, List<Statement> equalsFieldStatement, boolean hasSuper) {
         NodeList<Statement> equalsStatements = nodeList(referenceEquals, classCheckEquals);
         equalsStatements.add(classCastStatement(generatedClassName));
+        if (hasSuper) {
+            equalsStatements.add( parseStatement("if ( !super.equals( o ) ) return false;") );
+        }
         equalsStatements.addAll(equalsFieldStatement);
         equalsStatements.add(parseStatement("return true;"));
 
@@ -247,8 +253,8 @@ public class POJOGenerator {
         return statement;
     }
 
-    private static MethodDeclaration generateHashCodeMethod(List<Statement> hashCodeFieldStatement) {
-        final Statement header = parseStatement("int result = 17;");
+    private static MethodDeclaration generateHashCodeMethod(List<Statement> hashCodeFieldStatement, boolean hasSuper) {
+        final Statement header = parseStatement(hasSuper ? "int result = super.hashCode();" : "int result = 17;");
         NodeList<Statement> hashCodeStatements = nodeList(header);
         hashCodeStatements.addAll(hashCodeFieldStatement);
         hashCodeStatements.add(parseStatement("return result;"));
