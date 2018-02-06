@@ -47,7 +47,7 @@ public class MvelOperatorsTest extends BaseModelTest {
         assertEquals(1, ksession.fireAllRules());
     }
 
-    @Test @Ignore
+    @Test
     public void testStr() {
         String str =
             "rule R when\n" +
@@ -59,6 +59,39 @@ public class MvelOperatorsTest extends BaseModelTest {
 
         ksession.insert( "Mario" );
         assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testStrNot() {
+        String str =
+            "rule R when\n" +
+            "    String(this not str[startsWith] \"M\")" +
+            "then\n" +
+            "end ";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert( "Mario" );
+        ksession.insert( "Luca" );
+        ksession.insert( "Edoardo" );
+        assertEquals(2, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testStrHalf() {
+        String str =
+            "rule R when\n" +
+            "    String(this str[startsWith] \"M\" || str[endsWith] \"a\" || str[length] 10)"+
+            "then\n" +
+            "end ";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert( "Mario" );
+        ksession.insert( "Luca" );
+        ksession.insert( "Edoardo" );
+        ksession.insert( "Valentina" );
+        assertEquals(3, ksession.fireAllRules());
     }
 
     @Test
