@@ -54,11 +54,15 @@ import org.drools.modelcompiler.builder.generator.QueryGenerator;
 import org.drools.modelcompiler.builder.generator.QueryParameter;
 import org.kie.api.runtime.rule.AccumulateFunction;
 
+import static org.drools.core.util.StringUtils.generateUUID;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 
 public class PackageModel {
 
+    private static final String RULES_FILE_NAME = "Rules";
+
     private final String name;
+    private final String rulesFileName;
     
     private Set<String> imports = new HashSet<>();
 
@@ -85,10 +89,20 @@ public class PackageModel {
     private KnowledgeBuilderConfigurationImpl configuration;
     private Map<String, AccumulateFunction> accumulateFunctions;
 
+
     public PackageModel(String name, KnowledgeBuilderConfigurationImpl configuration) {
         this.name = name;
+        this.rulesFileName = generateRulesFileName();
         this.configuration = configuration;
         exprIdGenerator = new DRLIdGenerator();
+    }
+
+    public String getRulesFileName() {
+        return rulesFileName;
+    }
+
+    private String generateRulesFileName() {
+        return RULES_FILE_NAME + generateUUID();
     }
 
     public KnowledgeBuilderConfigurationImpl getConfiguration() {
@@ -358,7 +372,7 @@ public class PackageModel {
         declarationOfCall.addArgument(new StringLiteralExpr(packageName));
         declarationOfCall.addArgument(new StringLiteralExpr(globalName));
 
-        FieldDeclaration field = classDeclaration.addField(varType, toVar(globalName), Modifier.FINAL);
+        FieldDeclaration field = classDeclaration.addField(varType, toVar(globalName), Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL);
 
         field.getVariables().get(0).setInitializer(declarationOfCall);
     }

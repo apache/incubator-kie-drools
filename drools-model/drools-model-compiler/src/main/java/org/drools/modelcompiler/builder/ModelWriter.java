@@ -9,13 +9,10 @@ import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.drools.javaparser.printer.PrettyPrinter;
 
-import static org.drools.core.util.StringUtils.generateUUID;
 import static org.drools.modelcompiler.CanonicalKieModule.MODEL_FILE;
 import static org.drools.modelcompiler.builder.JavaParserCompiler.getPrettyPrinter;
 
 public class ModelWriter {
-
-    private static final String RULES_FILE_NAME = "Rules";
 
     public Result writeModel(MemoryFileSystem srcMfs, Collection<PackageModel> packageModels) {
         List<String> sourceFiles = new ArrayList<>();
@@ -35,7 +32,7 @@ public class ModelWriter {
                 sourceFiles.add( pojoSourceName );
             }
 
-            String rulesFileName = generateRulesFileName();
+            String rulesFileName = pkgModel.getRulesFileName();
             String rulesSourceName = "src/main/java/" + folderName + "/" + rulesFileName + ".java";
             String rulesSource = pkgModel.getRulesSource( prettyPrinter, rulesFileName, pkgName );
             pkgModel.print( rulesSource );
@@ -46,10 +43,6 @@ public class ModelWriter {
         }
 
         return new Result(sourceFiles, modelFiles);
-    }
-
-    private String generateRulesFileName() {
-        return RULES_FILE_NAME + generateUUID();
     }
 
     public void writeModelFile( List<String> modelSources, MemoryFileSystem trgMfs) {

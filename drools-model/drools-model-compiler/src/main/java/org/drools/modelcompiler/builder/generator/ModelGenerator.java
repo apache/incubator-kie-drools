@@ -83,7 +83,6 @@ import org.drools.modelcompiler.consequence.DroolsImpl;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
-
 import static org.drools.javaparser.JavaParser.parseExpression;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.classToReferenceType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
@@ -378,7 +377,7 @@ public class ModelGenerator {
         consequenceString = consequenceString.replaceAll( "kcontext", "drools" );
         BlockStmt ruleConsequence = rewriteConsequence(context, consequenceString);
         Collection<String> usedDeclarationInRHS = extractUsedDeclarations(packageModel, context, ruleConsequence, consequenceString);
-        MethodCallExpr onCall = onCall(usedDeclarationInRHS);
+        MethodCallExpr onCall = onCall(packageModel, usedDeclarationInRHS);
         if (isBreaking) {
             onCall = new MethodCallExpr( onCall, BREAKING_CALL );
         }
@@ -463,12 +462,18 @@ public class ModelGenerator {
         return executeCall;
     }
 
-    private static MethodCallExpr onCall(Collection<String> usedArguments) {
+    private static MethodCallExpr onCall(PackageModel packageModel, Collection<String> usedArguments) {
         MethodCallExpr onCall = null;
 
         if (!usedArguments.isEmpty()) {
             onCall = new MethodCallExpr(null, ON_CALL);
-            usedArguments.stream().map( org.drools.modelcompiler.builder.generator.DrlxParseUtil::toVar).forEach(onCall::addArgument );
+            for (String a : usedArguments) {
+                Expression aVar = JavaParser.parseExpression(DrlxParseUtil.toVar(a));
+                if (packageModel.getGlobals().containsKey(a)) {
+                    aVar = new FieldAccessExpr(new NameExpr(packageModel.getRulesFileName()), DrlxParseUtil.toVar(a));
+                }
+                onCall.addArgument(aVar);
+            }
         }
         return onCall;
     }
