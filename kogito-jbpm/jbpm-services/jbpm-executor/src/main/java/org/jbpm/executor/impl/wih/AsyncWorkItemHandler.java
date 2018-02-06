@@ -29,6 +29,7 @@ import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.api.runtime.query.QueryContext;
+import org.kie.internal.runtime.Cacheable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,7 +54,7 @@ import org.slf4j.LoggerFactory;
  * 
  * In case work item shall be aborted handler will attempt to cancel active requests based on business key (process instance id and work item id)
  */
-public class AsyncWorkItemHandler implements WorkItemHandler {
+public class AsyncWorkItemHandler implements WorkItemHandler, Cacheable {
     
     private static final Logger logger = LoggerFactory.getLogger(AsyncWorkItemHandler.class);
     
@@ -143,7 +144,7 @@ public class AsyncWorkItemHandler implements WorkItemHandler {
         if (requests != null) {
             for (RequestInfo request : requests) {
                 if (request.getStatus() != STATUS.CANCELLED && request.getStatus() != STATUS.DONE
-                        && request.getStatus() != STATUS.ERROR) {
+                        && request.getStatus() != STATUS.ERROR && request.getStatus() != STATUS.RUNNING) {
                     logger.info("About to cancel request with id {} and business key {} request state {}",
                             request.getId(), businessKey, request.getStatus());
                     executorService.cancelRequest(request.getId());
@@ -167,6 +168,11 @@ public class AsyncWorkItemHandler implements WorkItemHandler {
     
     protected long getProcessInstanceId(WorkItem workItem) {
         return ((WorkItemImpl) workItem).getProcessInstanceId();
+    }
+
+    @Override
+    public void close() {
+        //no-op
     }
     
     

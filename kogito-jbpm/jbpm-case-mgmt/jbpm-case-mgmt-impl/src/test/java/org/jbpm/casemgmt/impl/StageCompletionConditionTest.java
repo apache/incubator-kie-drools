@@ -16,12 +16,17 @@
 package org.jbpm.casemgmt.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jbpm.casemgmt.api.AdHocFragmentNotFoundException;
+import org.jbpm.casemgmt.api.StageNotFoundException;
 import org.jbpm.casemgmt.api.dynamic.TaskSpecification;
+import org.jbpm.casemgmt.api.model.CaseDefinition;
+import org.jbpm.casemgmt.api.model.CaseStage;
 import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
 import org.jbpm.casemgmt.api.model.instance.CaseInstance;
 import org.jbpm.casemgmt.impl.model.instance.CaseInstanceImpl;
@@ -390,6 +395,85 @@ public class StageCompletionConditionTest extends AbstractCaseServicesBaseTest {
         assertCaseInstanceActive(caseId);
 
         caseService.addDataToCaseFile(caseId, "continue", true);
+        assertCaseInstanceNotActive(caseId);
+    }
+    
+    @Test
+    public void testAutoCompleteNoAutoStartTaskAdHocInStage() {
+        String caseId = caseService.startCase(deploymentUnit.getIdentifier(), STAGE_WITH_TASK_NO_AUTOSTART);
+        assertThat(caseId).isNotNull().isEqualTo(FIRST_CASE_ID);
+        assertCaseInstanceActive(caseId);
+
+        List<TaskSummary> tasks = runtimeDataService.getTasksAssignedAsPotentialOwner(USER, new QueryFilter());
+        assertThat(tasks).isEmpty();
+
+        CaseDefinition caseDef = caseRuntimeDataService.getCase(deploymentUnit.getIdentifier(), STAGE_WITH_TASK_NO_AUTOSTART);
+        Collection<CaseStage> stages = caseDef.getCaseStages();
+        assertThat(stages).hasSize(1);
+        
+        
+        String stageId = stages.iterator().next().getId();
+        caseService.triggerAdHocFragment(caseId, stageId, INSIDE_TASK, null);
+        assertCaseInstanceActive(caseId);
+
+        tasks = runtimeDataService.getTasksAssignedAsPotentialOwner(USER, new QueryFilter());
+        assertThat(tasks).hasSize(1);
+        TaskSummary insideTask = tasks.get(0);
+        assertThat(insideTask.getName()).isEqualTo(INSIDE_TASK);
+
+        userTaskService.completeAutoProgress(insideTask.getId(), USER, null);
+        assertCaseInstanceNotActive(caseId);
+    }
+    
+    @Test
+    public void testAutoCompleteNoAutoStartTaskAdHocInNotExistingStage() {
+        String caseId = caseService.startCase(deploymentUnit.getIdentifier(), STAGE_WITH_TASK_NO_AUTOSTART);
+        assertThat(caseId).isNotNull().isEqualTo(FIRST_CASE_ID);
+        assertCaseInstanceActive(caseId);
+
+        List<TaskSummary> tasks = runtimeDataService.getTasksAssignedAsPotentialOwner(USER, new QueryFilter());
+        assertThat(tasks).isEmpty();
+
+        String stageId = "not existing";
+        
+        assertThatExceptionOfType(StageNotFoundException.class).isThrownBy(() -> { 
+            caseService.triggerAdHocFragment(caseId, stageId, INSIDE_TASK, null);})
+        .withMessageContaining("No stage found with id " + stageId);
+        
+        
+        assertCaseInstanceActive(caseId);
+
+        tasks = runtimeDataService.getTasksAssignedAsPotentialOwner(USER, new QueryFilter());
+        assertThat(tasks).hasSize(0);
+        caseService.cancelCase(caseId);
+        assertCaseInstanceNotActive(caseId);
+    }
+    
+    @Test
+    public void testAutoCompleteNoAutoStartTaskNotExistingAdHocInStage() {
+        String caseId = caseService.startCase(deploymentUnit.getIdentifier(), STAGE_WITH_TASK_NO_AUTOSTART);
+        assertThat(caseId).isNotNull().isEqualTo(FIRST_CASE_ID);
+        assertCaseInstanceActive(caseId);
+
+        List<TaskSummary> tasks = runtimeDataService.getTasksAssignedAsPotentialOwner(USER, new QueryFilter());
+        assertThat(tasks).isEmpty();
+        
+        CaseDefinition caseDef = caseRuntimeDataService.getCase(deploymentUnit.getIdentifier(), STAGE_WITH_TASK_NO_AUTOSTART);
+        Collection<CaseStage> stages = caseDef.getCaseStages();
+        assertThat(stages).hasSize(1);        
+        
+        String stageId = stages.iterator().next().getId();
+        
+        assertThatExceptionOfType(AdHocFragmentNotFoundException.class).isThrownBy(() -> { 
+            caseService.triggerAdHocFragment(caseId, stageId, "not existing", null);})
+        .withMessageContaining("AdHoc fragment 'not existing' not found in case " + caseId + " and stage " + stageId);
+        
+        
+        assertCaseInstanceActive(caseId);
+
+        tasks = runtimeDataService.getTasksAssignedAsPotentialOwner(USER, new QueryFilter());
+        assertThat(tasks).hasSize(0);
+        caseService.cancelCase(caseId);
         assertCaseInstanceNotActive(caseId);
     }
 }

@@ -14,6 +14,10 @@
     <mapping-file>META-INF/Servicesorm.xml</mapping-file>
     <mapping-file>META-INF/TaskAuditorm.xml</mapping-file>
     <mapping-file>META-INF/CaseMgmtorm.xml</mapping-file>
+    <mapping-file>META-INF/Executor-orm.xml</mapping-file>
+    
+    <class>org.jbpm.executor.entities.ErrorInfo</class>
+    <class>org.jbpm.executor.entities.RequestInfo</class>
 
     <class>org.jbpm.services.task.impl.model.AttachmentImpl</class>
     <class>org.jbpm.services.task.impl.model.ContentImpl</class>
@@ -82,7 +86,7 @@
       <property name="hibernate.show_sql" value="false" />
 
     
-      <property name="hibernate.transaction.manager_lookup_class" value="org.hibernate.transaction.BTMTransactionManagerLookup" />
+      <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.JBossStandAloneJtaPlatform" />
 
       <!-- BZ 841786: AS7/EAP 6/Hib 4 uses new (sequence) generators which seem to cause problems -->      
       <property name="hibernate.id.new_generator_mappings" value="false" />

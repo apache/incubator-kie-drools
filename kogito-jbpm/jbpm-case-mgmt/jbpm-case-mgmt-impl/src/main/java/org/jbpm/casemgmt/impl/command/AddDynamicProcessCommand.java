@@ -27,6 +27,7 @@ import org.jbpm.workflow.instance.node.DynamicUtils;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.identity.IdentityProvider;
 
 /**
@@ -69,7 +70,7 @@ public class AddDynamicProcessCommand extends CaseCommand<Long> {
         try {
             
             CaseFileInstance caseFile = getCaseFile(ksession, caseId);  
-            
+            FactHandle factHandle = ksession.getFactHandle(caseFile);
             CaseEventSupport caseEventSupport = getCaseEventSupport(context);
             caseEventSupport.fireBeforeDynamicProcessAdded(caseId,
                                                            caseFile,
@@ -81,6 +82,8 @@ public class AddDynamicProcessCommand extends CaseCommand<Long> {
                                                                           ksession,
                                                                           processId,
                                                                           parameters);
+            ksession.update(factHandle, caseFile);
+            triggerRules(ksession);
             caseEventSupport.fireAfterDynamicProcessAdded(caseId,
                                                           caseFile,
                                                           processInstanceId,

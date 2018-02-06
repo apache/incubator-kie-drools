@@ -39,6 +39,7 @@ import org.jbpm.casemgmt.api.dynamic.TaskSpecification;
 import org.jbpm.casemgmt.api.generator.CaseIdGenerator;
 import org.jbpm.casemgmt.api.model.AdHocFragment;
 import org.jbpm.casemgmt.api.model.CaseDefinition;
+import org.jbpm.casemgmt.api.model.CaseStage;
 import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
 import org.jbpm.casemgmt.api.model.instance.CaseInstance;
 import org.jbpm.casemgmt.api.model.instance.CaseMilestoneInstance;
@@ -58,6 +59,7 @@ import org.jbpm.casemgmt.impl.command.ModifyRoleAssignmentCommand;
 import org.jbpm.casemgmt.impl.command.RemoveDataCaseFileInstanceCommand;
 import org.jbpm.casemgmt.impl.command.ReopenCaseCommand;
 import org.jbpm.casemgmt.impl.command.StartCaseCommand;
+import org.jbpm.casemgmt.impl.command.TriggerAdHocNodeInStageCommand;
 import org.jbpm.casemgmt.impl.dynamic.HumanTaskSpecification;
 import org.jbpm.casemgmt.impl.dynamic.WorkItemTaskSpecification;
 import org.jbpm.casemgmt.impl.event.CaseEventSupport;
@@ -82,6 +84,8 @@ import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.User;
 import org.kie.internal.KieInternalServices;
 import org.kie.internal.identity.IdentityProvider;
+import org.kie.internal.jaxb.CorrelationKeyXmlAdapter;
+import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.process.CorrelationKeyFactory;
 import org.kie.internal.runtime.manager.context.CaseContext;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
@@ -379,7 +383,6 @@ public class CaseServiceImpl implements CaseService {
     
     @Override
     public void triggerAdHocFragment(String caseId, String fragmentName, Object data) throws CaseNotFoundException {
-        authorizationManager.checkAuthorization(caseId);
         ProcessInstanceDesc pi = verifyCaseIdExists(caseId);
         
         triggerAdHocFragment(pi.getId(), fragmentName, data);
@@ -389,6 +392,39 @@ public class CaseServiceImpl implements CaseService {
     public void triggerAdHocFragment(Long processInstanceId, String fragmentName, Object data) throws CaseNotFoundException {
         ProcessInstanceDesc pi = runtimeDataService.getProcessInstanceById(processInstanceId);
         internalTriggerAdHocFragment(pi, fragmentName, data);
+    }
+    
+    @Override
+    public void triggerAdHocFragment(String caseId, String stageId, String fragmentName, Object data) throws CaseNotFoundException {
+        ProcessInstanceDesc pi = verifyCaseIdExists(caseId);
+        
+        triggerAdHocFragment(pi.getId(), stageId, fragmentName, data);
+    }
+
+    @Override
+    public void triggerAdHocFragment(Long processInstanceId, String stageId, String fragmentName, Object data) throws CaseNotFoundException {
+        ProcessInstanceDesc pi = runtimeDataService.getProcessInstanceById(processInstanceId);
+        if (pi == null || !pi.getState().equals(ProcessInstance.STATE_ACTIVE)) {
+            throw new ProcessInstanceNotFoundException("No process instance found with id " + processInstanceId + " or it's not active anymore");
+        }
+
+        CaseDefinition caseDef = caseRuntimeDataService.getCase(pi.getDeploymentId(), pi.getProcessId());
+        
+        CorrelationKey key = CorrelationKeyXmlAdapter.unmarshalCorrelationKey(pi.getCorrelationKey());
+        String caseId = (String) key.getProperties().get(0).getValue();
+        authorizationManager.checkAuthorization(caseId);
+      
+        CaseStage caseStage = caseDef.getCaseStages()
+            .stream()
+            .filter(stage -> stage.getId().equals(stageId))
+            .findFirst()
+            .orElseThrow(() -> new StageNotFoundException("No stage found with id " + stageId));
+        
+        if (!caseStage.getAdHocFragments().stream().anyMatch(fragment -> fragment.getName().equals(fragmentName))) {
+            throw new AdHocFragmentNotFoundException("AdHoc fragment '" + fragmentName + "' not found in case " + pi.getCorrelationKey() + " and stage " + stageId);
+        }
+                
+        processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(processInstanceId), new TriggerAdHocNodeInStageCommand(identityProvider, pi.getId(), stageId, fragmentName, data));
     }
    
 
@@ -692,6 +728,10 @@ public class CaseServiceImpl implements CaseService {
     }
     
     protected void internalTriggerAdHocFragment(ProcessInstanceDesc pi, String fragmentName, Object data) throws CaseNotFoundException {
+        
+        CorrelationKey key = CorrelationKeyXmlAdapter.unmarshalCorrelationKey(pi.getCorrelationKey());
+        String caseId = (String) key.getProperties().get(0).getValue();
+        authorizationManager.checkAuthorization(caseId);
         
         CaseDefinition caseDef = caseRuntimeDataService.getCase(pi.getDeploymentId(), pi.getProcessId());
         List<AdHocFragment> allFragments = new ArrayList<>();

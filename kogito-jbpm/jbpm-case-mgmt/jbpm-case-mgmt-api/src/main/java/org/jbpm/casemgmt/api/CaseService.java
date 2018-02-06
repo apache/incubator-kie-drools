@@ -257,6 +257,27 @@ public interface CaseService {
      */
     void triggerAdHocFragment(Long processInstanceId, String fragmentName, Object data) throws CaseNotFoundException;
     
+    /**
+     * Triggers given by fragmentName adhoc element (such as task, milestone) within given case and stage.  Should be used when fragment should be triggered
+     * on the main process instance of the case. If there are more process instances for given case and fragment should be triggered on specific process
+     * instance {@link #triggerAdHocFragment(Long, String, String, Object)} method should be used instead
+     * @param caseId unique case id in the format PREFIX-GENERATED_ID as described on startCase method
+     * @param stageId id of the stage there the task should be added
+     * @param fragmentName name of the element that can be triggered
+     * @param data optional data to be given when triggering the node
+     */
+    void triggerAdHocFragment(String caseId, String stageId, String fragmentName, Object data) throws CaseNotFoundException;
+
+    /**
+     * Triggers given by fragmentName adhoc element (such as task, milestone) within given process instance and stage
+     * @param processInstanceId unique process instance id
+     * @param stageId id of the stage there the task should be added
+     * @param fragmentName name of the element that can be triggered
+     * @param data optional data to be given when triggering the node
+     * @throws CaseNotFoundException thrown in case case was not found with given id
+     */
+    void triggerAdHocFragment(Long processInstanceId, String stageId, String fragmentName, Object data) throws CaseNotFoundException;
+    
     /*
      * Case file section
      */

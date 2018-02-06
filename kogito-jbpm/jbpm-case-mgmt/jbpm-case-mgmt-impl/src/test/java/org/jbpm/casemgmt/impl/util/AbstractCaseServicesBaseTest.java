@@ -389,6 +389,11 @@ public abstract class AbstractCaseServicesBaseTest {
         getProcessListeners().forEach(
                 listener -> ddBuilder.addEventListener(listener)
         );
+        
+        getWorkItemHandlers().forEach(
+               listener -> ddBuilder.addWorkItemHandler(listener)
+        );
+
 
         return customDescriptor;
     }
@@ -510,6 +515,10 @@ public abstract class AbstractCaseServicesBaseTest {
     }
 
     protected List<ObjectModel> getProcessListeners() {
+        return new ArrayList<>();
+    }
+    
+    protected List<NamedObjectModel> getWorkItemHandlers() {
         return new ArrayList<>();
     }
 

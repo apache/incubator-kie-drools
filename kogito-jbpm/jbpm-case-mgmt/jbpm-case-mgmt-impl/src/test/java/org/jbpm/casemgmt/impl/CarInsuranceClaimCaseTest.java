@@ -36,22 +36,28 @@ import org.jbpm.casemgmt.api.model.instance.CaseStageInstance;
 import org.jbpm.casemgmt.api.model.instance.CommentInstance;
 import org.jbpm.casemgmt.demo.insurance.ClaimReport;
 import org.jbpm.casemgmt.demo.insurance.PropertyDamageReport;
+import org.jbpm.casemgmt.impl.objects.AsyncCloseCaseCommand;
 import org.jbpm.casemgmt.impl.util.AbstractCaseServicesBaseTest;
 import org.jbpm.casemgmt.impl.util.CountDownListenerFactory;
 import org.jbpm.document.Document;
 import org.jbpm.document.service.impl.DocumentImpl;
+import org.jbpm.executor.ExecutorServiceFactory;
+import org.jbpm.executor.impl.ExecutorServiceImpl;
+import org.jbpm.executor.test.CountDownAsyncJobListener;
 import org.jbpm.services.api.model.ProcessInstanceDesc;
 import org.jbpm.services.task.impl.model.UserImpl;
 import org.junit.After;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
+import org.kie.api.executor.ExecutorService;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.query.QueryContext;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.query.QueryFilter;
+import org.kie.internal.runtime.conf.NamedObjectModel;
 import org.kie.internal.runtime.conf.ObjectModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,17 +70,23 @@ public class CarInsuranceClaimCaseTest extends AbstractCaseServicesBaseTest {
     private static final String CAR_INSURANCE_CLAIM_PROC_ID = "insurance-claims.CarInsuranceClaimCase";
 
     protected static final String CAR_INS_CASE_ID = "CAR_INS-0000000001";
+    
+    private ExecutorService executorService;
 
     @Override
     protected List<String> getProcessDefinitionFiles() {
         List<String> processes = new ArrayList<String>();
         processes.add("org/jbpm/casemgmt/demo/insurance/CarInsuranceClaimCase.bpmn2");
         processes.add("org/jbpm/casemgmt/demo/insurance/insurance-rules.drl");
+        processes.add("processes/DataVerificationProcess.bpmn2");
         return processes;
     }
 
     @After
     public void tearDown() {
+        if (executorService != null && executorService.isActive()) {
+            executorService.destroy();
+        }
         super.tearDown();
         CountDownListenerFactory.clear();
     }
@@ -349,6 +361,203 @@ public class CarInsuranceClaimCaseTest extends AbstractCaseServicesBaseTest {
         }
     }
     
+    @Test
+    public void testCarInsuranceClaimCaseCloseCaseFromRules() {
+        // let's assign users to roles so they can be participants in the case
+        String caseId = startAndAssertCaseInstance(deploymentUnit.getIdentifier(), "john", "mary");
+        try {
+            // let's verify case is created
+            assertCaseInstance(deploymentUnit.getIdentifier(), CAR_INS_CASE_ID);
+            // let's look at what stages are active
+            assertBuildClaimReportStage();
+            // since the first task assigned to insured is with auto start it should be already active            
+            // the same task can be claimed by insuranceRepresentative in case claim is reported over phone
+            long taskId = assertBuildClaimReportAvailableForBothRoles();
+            // let's provide claim report with initial data            
+            // claim report should be stored in case file data
+            provideAndAssertClaimReport(taskId);
+            // now we have another task for insured to provide property damage report
+            taskId = assertPropertyDamageReportAvailableForBothRoles();
+            // let's provide the property damage report
+            provideAndAssertPropertyDamageReport(taskId);
+            // let's complete the stage by explicitly stating that claimReport is done          
+            caseService.addDataToCaseFile(CAR_INS_CASE_ID, "claimReportDone", true);            
+            // we should be in another stage - Claim assessment
+            assertClaimAssesmentStage();                      
+            
+            
+            // let's close case as part of rules evaluation
+            caseService.addDataToCaseFile(CAR_INS_CASE_ID, "CaseAction", "Close");
+           
+            
+            
+            // there should be no process instances for the case
+            Collection<ProcessInstanceDesc> caseProcesInstances = caseRuntimeDataService.getProcessInstancesForCase(CAR_INS_CASE_ID, Arrays.asList(ProcessInstance.STATE_ACTIVE), new QueryContext());
+            assertEquals(0, caseProcesInstances.size());
+            
+            CaseInstance cInstance = caseRuntimeDataService.getCaseInstanceById(caseId);
+            assertNotNull(cInstance);
+            assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
+            assertEquals("Closing case from rules", cInstance.getCompletionMessage());
+            caseId = null;
+        } catch (Exception e) {
+            logger.error("Unexpected error {}", e.getMessage(), e);
+            fail("Unexpected exception " + e.getMessage());
+        } finally {
+            if (caseId != null) {
+                caseService.cancelCase(caseId);
+            }
+        }
+    }
+    
+    @Test
+    public void testCarInsuranceClaimCaseCloseCaseFromRulesViaProcess() {
+        // let's assign users to roles so they can be participants in the case
+        String caseId = startAndAssertCaseInstance(deploymentUnit.getIdentifier(), "john", "mary");
+        try {
+            // let's verify case is created
+            assertCaseInstance(deploymentUnit.getIdentifier(), CAR_INS_CASE_ID);
+            // let's look at what stages are active
+            assertBuildClaimReportStage();
+            // since the first task assigned to insured is with auto start it should be already active            
+            // the same task can be claimed by insuranceRepresentative in case claim is reported over phone
+            long taskId = assertBuildClaimReportAvailableForBothRoles();
+            // let's provide claim report with initial data            
+            // claim report should be stored in case file data
+            provideAndAssertClaimReport(taskId);
+            // now we have another task for insured to provide property damage report
+            taskId = assertPropertyDamageReportAvailableForBothRoles();
+            // let's provide the property damage report
+            provideAndAssertPropertyDamageReport(taskId);
+            // let's complete the stage by explicitly stating that claimReport is done          
+            caseService.addDataToCaseFile(CAR_INS_CASE_ID, "claimReportDone", true);            
+            // we should be in another stage - Claim assessment
+            assertClaimAssesmentStage();                      
+                       
+            Map<String, Object> parameters = new HashMap<>();
+            parameters.put("caseFile_CaseAction", "Close");
+            caseService.addDynamicSubprocess(CAR_INS_CASE_ID, SUBPROCESS_P_ID, parameters);
+            
+            // there should be no process instances for the case
+            Collection<ProcessInstanceDesc> caseProcesInstances = caseRuntimeDataService.getProcessInstancesForCase(CAR_INS_CASE_ID, Arrays.asList(ProcessInstance.STATE_ACTIVE), new QueryContext());
+            assertEquals(0, caseProcesInstances.size());
+            
+            CaseInstance cInstance = caseRuntimeDataService.getCaseInstanceById(caseId);
+            assertNotNull(cInstance);
+            assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
+            assertEquals("Closing case from rules", cInstance.getCompletionMessage());
+            caseId = null;
+        } catch (Exception e) {
+            logger.error("Unexpected error {}", e.getMessage(), e);
+            fail("Unexpected exception " + e.getMessage());
+        } finally {
+            if (caseId != null) {
+                caseService.cancelCase(caseId);
+            }
+        }
+    }
+    
+    @Test
+    public void testCarInsuranceClaimCaseCloseCaseFromRulesViaBusinessTask() {
+        // let's assign users to roles so they can be participants in the case
+        String caseId = startAndAssertCaseInstance(deploymentUnit.getIdentifier(), "john", "mary");
+        try {
+            // let's verify case is created
+            assertCaseInstance(deploymentUnit.getIdentifier(), CAR_INS_CASE_ID);
+            // let's look at what stages are active
+            assertBuildClaimReportStage();
+            // since the first task assigned to insured is with auto start it should be already active            
+            // the same task can be claimed by insuranceRepresentative in case claim is reported over phone
+            long taskId = assertBuildClaimReportAvailableForBothRoles();
+            // let's provide claim report with initial data            
+            // claim report should be stored in case file data
+            
+            ClaimReport claimReport = new ClaimReport();
+            claimReport.setName("John Doe");
+            claimReport.setAddress("Main street, NY");
+            claimReport.setAccidentDescription(null);
+            claimReport.setAccidentDate(new Date());            
+            
+            Map<String, Object> params = new HashMap<>();
+            params.put("claimReport_", claimReport);
+            userTaskService.completeAutoProgress(taskId, "john", params);
+                                  
+            // let's complete the stage by explicitly stating that claimReport is done          
+            caseService.addDataToCaseFile(CAR_INS_CASE_ID, "claimReportDone", true);            
+             
+            // there should be no process instances for the case
+            Collection<ProcessInstanceDesc> caseProcesInstances = caseRuntimeDataService.getProcessInstancesForCase(CAR_INS_CASE_ID, Arrays.asList(ProcessInstance.STATE_ACTIVE), new QueryContext());
+            assertEquals(0, caseProcesInstances.size());
+            
+            CaseInstance cInstance = caseRuntimeDataService.getCaseInstanceById(caseId);
+            assertNotNull(cInstance);
+            assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
+            assertEquals("Invalid case data", cInstance.getCompletionMessage());
+            caseId = null;
+        } catch (Exception e) {
+            logger.error("Unexpected error {}", e.getMessage(), e);
+            fail("Unexpected exception " + e.getMessage());
+        } finally {
+            if (caseId != null) {
+                caseService.cancelCase(caseId);
+            }
+        }
+    }
+    
+    @Test(timeout=20000)
+    public void testCarInsuranceClaimCaseCloseCaseFromAsyncCommand() {
+        executorService = ExecutorServiceFactory.newExecutorService(emf);
+        executorService.init();
+        CountDownAsyncJobListener countDownListener = new CountDownAsyncJobListener(1);
+        ((ExecutorServiceImpl) executorService).addAsyncJobListener(countDownListener);
+        // let's assign users to roles so they can be participants in the case
+        String caseId = startAndAssertCaseInstance(deploymentUnit.getIdentifier(), "john", "mary");
+        try {
+            // let's verify case is created
+            assertCaseInstance(deploymentUnit.getIdentifier(), CAR_INS_CASE_ID);
+            // let's look at what stages are active
+            assertBuildClaimReportStage();
+            // since the first task assigned to insured is with auto start it should be already active            
+            // the same task can be claimed by insuranceRepresentative in case claim is reported over phone
+            long taskId = assertBuildClaimReportAvailableForBothRoles();
+            // let's provide claim report with initial data            
+            // claim report should be stored in case file data
+            provideAndAssertClaimReport(taskId);
+            // now we have another task for insured to provide property damage report
+            taskId = assertPropertyDamageReportAvailableForBothRoles();
+            // let's provide the property damage report
+            provideAndAssertPropertyDamageReport(taskId);
+            // let's complete the stage by explicitly stating that claimReport is done          
+            caseService.addDataToCaseFile(CAR_INS_CASE_ID, "claimReportDone", true);            
+            // we should be in another stage - Claim assessment
+            assertClaimAssesmentStage();                      
+            
+            
+            Map<String, Object> parameters = new HashMap<>();
+            parameters.put("CaseId", CAR_INS_CASE_ID);
+            parameters.put("CommandClass", AsyncCloseCaseCommand.class.getName());
+            caseService.addDynamicTask(CAR_INS_CASE_ID, caseService.newTaskSpec("async", "CloseCaseAsync", parameters));
+           
+            countDownListener.waitTillCompleted();
+            
+            // there should be no process instances for the case
+            Collection<ProcessInstanceDesc> caseProcesInstances = caseRuntimeDataService.getProcessInstancesForCase(CAR_INS_CASE_ID, Arrays.asList(ProcessInstance.STATE_ACTIVE), new QueryContext());
+            assertEquals(0, caseProcesInstances.size());
+            
+            CaseInstance cInstance = caseRuntimeDataService.getCaseInstanceById(caseId);
+            assertNotNull(cInstance);
+            assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
+            assertEquals("Closing case from async command", cInstance.getCompletionMessage());
+            caseId = null;
+        } catch (Exception e) {
+            logger.error("Unexpected error {}", e.getMessage(), e);
+            fail("Unexpected exception " + e.getMessage());
+        } finally {
+            if (caseId != null) {
+                caseService.cancelCase(caseId);
+            }
+        }
+    }
     
     /*
      * Helper methods
@@ -606,5 +815,15 @@ public class CarInsuranceClaimCaseTest extends AbstractCaseServicesBaseTest {
         listeners.add(new ObjectModel("mvel", "org.jbpm.casemgmt.impl.util.CountDownListenerFactory.get(\"carInsuranceCase\", \"wait before callback\", 1)"));
 
         return listeners;
+    }
+    
+    @Override
+    protected List<NamedObjectModel> getWorkItemHandlers() {
+        List<NamedObjectModel> handlers = super.getWorkItemHandlers();
+
+        handlers.add(new NamedObjectModel("mvel", "async",
+                "new org.jbpm.executor.impl.wih.AsyncWorkItemHandler(org.jbpm.executor.ExecutorServiceFactory.newExecutorService(),\"org.jbpm.executor.commands.PrintOutCommand\")"));
+
+        return handlers;
     }
 }

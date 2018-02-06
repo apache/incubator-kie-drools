@@ -11,9 +11,20 @@ rule "classify-claim" ruleflow-group "claims"
 
 when 
     $caseData : CaseFileInstance()
-    $claim : ClaimReport( ) from $caseData.getData("claimReport")      
+    $claim : ClaimReport( accidentDescription != null) from $caseData.getData("claimReport")      
 then 
     System.out.println("Classified claim " + $claim);
+end
+
+rule "classify-claim-invalid" ruleflow-group "claims"
+
+when 
+    $caseData : CaseFileInstance()
+    $claim : ClaimReport( accidentDescription == null ) from $caseData.getData("claimReport")      
+then 
+    System.out.println("About to close case  " + $caseData.getCaseId() + " because it's invalid");
+    CaseService caseService = (CaseService) ServiceRegistry.get().service(ServiceRegistry.CASE_SERVICE);   
+    caseService.closeCase($caseData.getCaseId(), "Invalid case data");
 end
 
 
@@ -30,5 +41,19 @@ then
     Map<String, Object> parameters = new HashMap<>();
     parameters.put("reason", "How did it happen?");
     caseService.addDynamicTask($caseData.getCaseId(), caseService.newHumanTaskSpec("Please provide additional details", "Action", "insured", null, parameters));
+    
+end
+
+rule "Close case via case action"
+
+when 
+    $caseData : CaseFileInstance()
+    String(this == "Close") from $caseData.getData("CaseAction")
+          
+then 
+    
+    System.out.println("About to close case  " + $caseData.getCaseId());
+    CaseService caseService = (CaseService) ServiceRegistry.get().service(ServiceRegistry.CASE_SERVICE);   
+    caseService.closeCase($caseData.getCaseId(), "Closing case from rules");
     
 end
