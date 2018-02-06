@@ -1223,4 +1223,27 @@ public class CompilerTest extends BaseModelTest {
         assertEquals(1, results.size());
         assertEquals("John2", results.get(0).getValue());
     }
+
+    @Test
+    public void testInnerBindingWithOr() {
+        String str =
+                "global java.util.List list\n" +
+                "\n" +
+                "rule R when\n" +
+                " s: String( s.toString() == \"x\" || s.toString() == \"y\" )\n" +
+                "then\n" +
+                " list.add(s);\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal("list", list);
+
+        ksession.insert("y");
+        ksession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+        assertEquals( "y", list.get(0) );
+    }
 }

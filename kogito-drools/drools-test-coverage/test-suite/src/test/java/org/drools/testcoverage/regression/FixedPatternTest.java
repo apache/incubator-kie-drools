@@ -16,12 +16,14 @@
 
 package org.drools.testcoverage.regression;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+
 import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestConstants;
 import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.After;
 import org.junit.Test;
@@ -30,11 +32,7 @@ import org.junit.runners.Parameterized;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.io.Resource;
-import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Test for BZ 1150308.
@@ -71,8 +69,7 @@ public class FixedPatternTest {
         final Resource resource = KieServices.Factory.get().getResources().newClassPathResource("fixedPattern.xls", getClass());
         final KieBuilder kbuilder = KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration, true, resource);
 
-        final KieContainer kcontainer = KieServices.Factory.get().newKieContainer(kbuilder.getKieModule().getReleaseId());
-        ksession = kcontainer.newKieSession();
+        final KieSession ksession = KieBaseUtil.getDefaultKieBaseFromKieBuilder(kieBaseTestConfiguration, kbuilder).newKieSession();
 
         final List<Long> list = new ArrayList<Long>();
         ksession.setGlobal("list", list);

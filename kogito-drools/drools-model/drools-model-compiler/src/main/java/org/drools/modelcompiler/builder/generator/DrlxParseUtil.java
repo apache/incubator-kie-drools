@@ -113,7 +113,7 @@ public class DrlxParseUtil {
         }
     }
 
-    public static TypedExpression toTypedExpression(RuleContext context, PackageModel packageModel, Class<?> patternType, Expression drlxExpr,
+    public static TypedExpression toTypedExpression(RuleContext context, PackageModel packageModel, Class<?> patternType, Expression drlxExpr, String bindingId,
                                                     List<String> usedDeclarations, Set<String> reactOnProperties, Expression parentExpression, boolean isPositional) {
 
         Class<?> typeCursor = patternType;
@@ -124,7 +124,7 @@ public class DrlxParseUtil {
 
         if (drlxExpr instanceof UnaryExpr) {
             UnaryExpr unaryExpr = (UnaryExpr) drlxExpr;
-            TypedExpression typedExpr = toTypedExpression( context, packageModel, patternType, unaryExpr.getExpression(), usedDeclarations, reactOnProperties, unaryExpr, isPositional );
+            TypedExpression typedExpr = toTypedExpression( context, packageModel, patternType, unaryExpr.getExpression(), bindingId,usedDeclarations, reactOnProperties, unaryExpr, isPositional );
             return new TypedExpression( new UnaryExpr( typedExpr.getExpression(), unaryExpr.getOperator() ), typedExpr.getType() );
 
         } else if (drlxExpr instanceof BinaryExpr) {
@@ -132,8 +132,8 @@ public class DrlxParseUtil {
 
             Operator operator = binaryExpr.getOperator();
 
-            TypedExpression left = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, binaryExpr.getLeft(), usedDeclarations, reactOnProperties, binaryExpr, isPositional);
-            TypedExpression right = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, binaryExpr.getRight(), usedDeclarations, reactOnProperties, binaryExpr, isPositional);
+            TypedExpression left = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, binaryExpr.getLeft(), bindingId, usedDeclarations, reactOnProperties, binaryExpr, isPositional);
+            TypedExpression right = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, binaryExpr.getRight(), bindingId, usedDeclarations, reactOnProperties, binaryExpr, isPositional);
 
             if ( left == null || right == null ) {
                 // An compilation error has occurred during expression parsing and has been propagated through the context
@@ -149,13 +149,13 @@ public class DrlxParseUtil {
             Expression parentLeft = findLeftLeafOfNameExpr(parentExpression);
             Operator operator = toBinaryExprOperator(halfBinaryExpr.getOperator());
 
-            TypedExpression left = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, parentLeft, usedDeclarations, reactOnProperties, halfBinaryExpr, isPositional);
+            TypedExpression left = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, parentLeft, bindingId, usedDeclarations, reactOnProperties, halfBinaryExpr, isPositional);
             if ( left == null ) {
                 // An compilation error has occurred during expression parsing and has been propagated through the context
                 return null;
             }
 
-            TypedExpression right = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, halfBinaryExpr.getRight(), usedDeclarations, reactOnProperties, halfBinaryExpr, isPositional);
+            TypedExpression right = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, halfBinaryExpr.getRight(), bindingId, usedDeclarations, reactOnProperties, halfBinaryExpr, isPositional);
             if ( right == null ) {
                 // An compilation error has occurred during expression parsing and has been propagated through the context
                 return null;
@@ -172,7 +172,7 @@ public class DrlxParseUtil {
 
         } else if (drlxExpr instanceof CastExpr) {
             CastExpr castExpr = (CastExpr)drlxExpr;
-            toTypedExpression( context, packageModel, patternType, castExpr.getExpression(), usedDeclarations, reactOnProperties, castExpr, isPositional );
+            toTypedExpression( context, packageModel, patternType, castExpr.getExpression(), bindingId, usedDeclarations, reactOnProperties, castExpr, isPositional );
             return new TypedExpression(castExpr, getClassFromContext(context.getPkg().getTypeResolver(), castExpr.getType().asString()));
 
         } else if (drlxExpr instanceof NameExpr) {
@@ -207,13 +207,13 @@ public class DrlxParseUtil {
                 return new TypedExpression(plusThis, expression.getType(), name);
             }
         } else if (drlxExpr instanceof FieldAccessExpr || drlxExpr instanceof MethodCallExpr) {
-            return toTypedExpressionFromMethodCallOrField(context, patternType, drlxExpr, usedDeclarations, reactOnProperties, context.getPkg().getTypeResolver());
+            return toTypedExpressionFromMethodCallOrField(context, patternType, drlxExpr, bindingId, usedDeclarations, reactOnProperties, context.getPkg().getTypeResolver());
         } else if (drlxExpr instanceof PointFreeExpr) {
 
             final PointFreeExpr pointFreeExpr = (PointFreeExpr)drlxExpr;
 
-            TypedExpression left = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, pointFreeExpr.getLeft(), usedDeclarations, reactOnProperties, pointFreeExpr, isPositional);
-            OperatorSpec opSpec = getOperatorSpec(context, packageModel, patternType, drlxExpr, usedDeclarations, reactOnProperties, isPositional, pointFreeExpr, pointFreeExpr.getRight(), pointFreeExpr.getOperator());
+            TypedExpression left = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, pointFreeExpr.getLeft(), bindingId, usedDeclarations, reactOnProperties, pointFreeExpr, isPositional);
+            OperatorSpec opSpec = getOperatorSpec(context, packageModel, patternType, drlxExpr, bindingId, usedDeclarations, reactOnProperties, isPositional, pointFreeExpr, pointFreeExpr.getRight(), pointFreeExpr.getOperator());
             return new TypedExpression(opSpec.getExpression( pointFreeExpr, left ), left.getType())
                     .setStatic(opSpec.isStatic())
                     .setLeft(left);
@@ -222,8 +222,8 @@ public class DrlxParseUtil {
             final HalfPointFreeExpr halfPointFreeExpr = (HalfPointFreeExpr)drlxExpr;
             Expression parentLeft = findLeftLeafOfNameExpr(parentExpression);
 
-            TypedExpression left = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, parentLeft, usedDeclarations, reactOnProperties, halfPointFreeExpr, isPositional);
-            OperatorSpec opSpec = getOperatorSpec(context, packageModel, patternType, drlxExpr, usedDeclarations, reactOnProperties, isPositional, halfPointFreeExpr, halfPointFreeExpr.getRight(), halfPointFreeExpr.getOperator());
+            TypedExpression left = DrlxParseUtil.toTypedExpression( context, packageModel, patternType, parentLeft, bindingId, usedDeclarations, reactOnProperties, halfPointFreeExpr, isPositional);
+            OperatorSpec opSpec = getOperatorSpec(context, packageModel, patternType, drlxExpr, bindingId, usedDeclarations, reactOnProperties, isPositional, halfPointFreeExpr, halfPointFreeExpr.getRight(), halfPointFreeExpr.getOperator());
 
             final PointFreeExpr transformedToPointFree =
                     new PointFreeExpr(halfPointFreeExpr.getTokenRange().get(),
@@ -245,9 +245,9 @@ public class DrlxParseUtil {
         throw new UnsupportedOperationException();
     }
 
-    private static OperatorSpec getOperatorSpec(RuleContext context, PackageModel packageModel, Class<?> patternType, Expression drlxExpr, List<String> usedDeclarations, Set<String> reactOnProperties, boolean isPositional, Expression pointFreeExpr, NodeList<Expression> rightExpressions, SimpleName expressionOperator) {
+    private static OperatorSpec getOperatorSpec(RuleContext context, PackageModel packageModel, Class<?> patternType, Expression drlxExpr, String bindingId, List<String> usedDeclarations, Set<String> reactOnProperties, boolean isPositional, Expression pointFreeExpr, NodeList<Expression> rightExpressions, SimpleName expressionOperator) {
         for (Expression rightExpr : rightExpressions) {
-            DrlxParseUtil.toTypedExpression(context, packageModel, patternType, rightExpr, usedDeclarations, reactOnProperties, pointFreeExpr, isPositional);
+            DrlxParseUtil.toTypedExpression(context, packageModel, patternType, rightExpr, bindingId, usedDeclarations, reactOnProperties, pointFreeExpr, isPositional);
         }
 
         String operator = expressionOperator.asString();
@@ -263,7 +263,7 @@ public class DrlxParseUtil {
         return opSpec;
     }
 
-    public static TypedExpression toTypedExpressionFromMethodCallOrField(RuleContext context, Class<?> patternType, Expression drlxExpr, Collection<String> usedDeclarations, Set<String> reactOnProperties, TypeResolver typeResolver) {
+    public static TypedExpression toTypedExpressionFromMethodCallOrField(RuleContext context, Class<?> patternType, Expression drlxExpr, String bindingId, Collection<String> usedDeclarations, Set<String> reactOnProperties, TypeResolver typeResolver) {
         Class<?> typeCursor = patternType;
 
         List<Node> childNodes = flattenScope(drlxExpr);
@@ -282,7 +282,20 @@ public class DrlxParseUtil {
 
         Expression previous;
 
-        if (firstNode instanceof NameExpr) {
+        if (firstNode instanceof ThisExpr || (firstNode instanceof NameExpr && firstNode.toString().equals( bindingId ))) {
+            previous = new NameExpr("_this");
+            if (childNodes.size() > 1 && !isInLineCast) {
+                SimpleName fieldName = null;
+                if (childNodes.get(1) instanceof NameExpr) {
+                    fieldName = (( NameExpr ) childNodes.get( 1 )).getName();
+                } else if (childNodes.get(1) instanceof SimpleName) {
+                    fieldName = ( SimpleName ) childNodes.get( 1 );
+                }
+                if (fieldName != null) {
+                    reactOnProperties.add( getFieldName( drlxExpr, fieldName ) );
+                }
+            }
+        } else if (firstNode instanceof NameExpr) {
             NameExpr firstNodeName = (NameExpr) firstNode;
             String firstName = firstNodeName.getName().getIdentifier();
             Optional<DeclarationSpec> declarationById = context.getDeclarationById(firstName);
@@ -322,19 +335,6 @@ public class DrlxParseUtil {
                 } else {
                     context.addCompilationError( new UnknownDeclarationError(firstNode.toString()) );
                     return null;
-                }
-            }
-        } else if (firstNode instanceof ThisExpr) {
-            previous = new NameExpr("_this");
-            if (childNodes.size() > 1 && !isInLineCast) {
-                SimpleName fieldName = null;
-                if (childNodes.get(1) instanceof NameExpr) {
-                    fieldName = (( NameExpr ) childNodes.get( 1 )).getName();
-                } else if (childNodes.get(1) instanceof SimpleName) {
-                    fieldName = ( SimpleName ) childNodes.get( 1 );
-                }
-                if (fieldName != null) {
-                    reactOnProperties.add( getFieldName( drlxExpr, fieldName ) );
                 }
             }
         } else if (firstNode instanceof FieldAccessExpr && ((FieldAccessExpr) firstNode).getScope() instanceof ThisExpr) {
@@ -613,7 +613,7 @@ public class DrlxParseUtil {
         return lambdaExpr;
     }
 
-    public static TypedExpression toMethodCallWithClassCheck(RuleContext context, Expression expr, Class<?> clazz, TypeResolver typeResolver) {
+    public static TypedExpression toMethodCallWithClassCheck(RuleContext context, Expression expr, String bindingId, Class<?> clazz, TypeResolver typeResolver) {
 
         final Deque<ParsedMethod> callStackLeftToRight = new LinkedList<>();
 
@@ -623,6 +623,9 @@ public class DrlxParseUtil {
         Class<?> previousClass = clazz;
         for (ParsedMethod e : callStackLeftToRight) {
             if (e.expression instanceof NameExpr || e.expression instanceof FieldAccessExpr) {
+                if (e.fieldToResolve.equals( bindingId )) {
+                    continue;
+                }
                 TypedExpression te = nameExprToMethodCallExpr(e.fieldToResolve, previousClass, null);
                 Class<?> returnType = te.getType();
                 methodCall.add(te.getExpression());
