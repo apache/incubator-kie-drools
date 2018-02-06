@@ -261,7 +261,7 @@ public class AccumulateVisitor {
                 .map(DeclarationSpec::getDeclarationClass)
                 .orElseThrow(RuntimeException::new);
 
-        return DrlxParseUtil.toMethodCallWithClassCheck(context, methodCallWithoutRoot, clazz, context.getPkg().getTypeResolver());
+        return DrlxParseUtil.toMethodCallWithClassCheck(context, methodCallWithoutRoot, null, clazz, context.getPkg().getTypeResolver());
     }
 
     private MethodCallExpr buildBinding(String bindingName, Collection<String> usedDeclaration, Expression expression) {

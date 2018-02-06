@@ -54,7 +54,7 @@ public class ToTypedExpressionTest {
     @Test
     public void pointFreeTest() {
         final PointFreeExpr expression = new PointFreeExpr(null, new NameExpr("name"), NodeList.nodeList(new StringLiteralExpr("[A-Z]")), new SimpleName("matches"), false, null, null, null, null);
-        final TypedExpression actual = DrlxParseUtil.toTypedExpression(ruleContext, packageModel, Person.class,expression, new ArrayList<>(), new HashSet<>(), null, true);
+        final TypedExpression actual = DrlxParseUtil.toTypedExpression(ruleContext, packageModel, Person.class, expression, null, new ArrayList<>(), new HashSet<>(), null, true);
         final TypedExpression expected = typedResult("eval(org.drools.model.operators.MatchesOperator.INSTANCE, _this.getName(), \"[A-Z]\")", String.class);
         assertEquals(expected, actual);
     }
@@ -65,7 +65,7 @@ public class ToTypedExpressionTest {
             ruleContext.addDeclaration(d);
         }
         Expression expression = DrlxParseUtil.parseExpression(inputExpression).getExpr();
-        return DrlxParseUtil.toTypedExpressionFromMethodCallOrField(ruleContext, patternType, expression, new ArrayList<>(), reactOnProperties, typeResolver);
+        return DrlxParseUtil.toTypedExpressionFromMethodCallOrField(ruleContext, patternType, expression, null, new ArrayList<>(), reactOnProperties, typeResolver);
     }
 
     private TypedExpression toTypedExpression(String inputExpression, Class<?> patternType, DeclarationSpec... declarations) {

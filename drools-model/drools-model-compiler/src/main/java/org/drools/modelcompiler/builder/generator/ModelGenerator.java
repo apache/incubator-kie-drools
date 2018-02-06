@@ -451,7 +451,7 @@ public class ModelGenerator {
 
         if (!usedArguments.isEmpty()) {
             onCall = new MethodCallExpr(null, ON_CALL);
-            usedArguments.stream().map(DrlxParseUtil::toVar).forEach(onCall::addArgument );
+            usedArguments.stream().map( org.drools.modelcompiler.builder.generator.DrlxParseUtil::toVar).forEach(onCall::addArgument );
         }
         return onCall;
     }
@@ -569,7 +569,7 @@ public class ModelGenerator {
             BlockStmt modifyBlock = JavaParser.parseBlock("{" + originalBlock + ";}");
             List<MethodCallExpr> originalMethodCalls = modifyBlock.getChildNodesByType(MethodCallExpr.class);
             for (MethodCallExpr mc : originalMethodCalls) {
-                Expression mcWithScope = DrlxParseUtil.prepend(declAsNameExpr, mc);
+                Expression mcWithScope = org.drools.modelcompiler.builder.generator.DrlxParseUtil.prepend(declAsNameExpr, mc);
                 modifyBlock.replace(mc, mcWithScope);
             }
             for (Statement n : modifyBlock.getStatements()) {
@@ -699,7 +699,7 @@ public class ModelGenerator {
     private static MethodCallExpr buildExpression(RuleContext context, DrlxParseSuccess drlxParseResult, MethodCallExpr exprDSL ) {
         final List<String> usedDeclarationsWithUnification = new ArrayList<>();
         if(!drlxParseResult.isPatternBindingUnification()) {
-            if (drlxParseResult.getPatternBinding() != null) {
+            if (drlxParseResult.getPatternBinding() != null && !drlxParseResult.getUsedDeclarations().contains( drlxParseResult.getPatternBinding() )) {
                 exprDSL.addArgument(new NameExpr(toVar(drlxParseResult.getPatternBinding())));
             }
         } else {
@@ -795,7 +795,7 @@ public class ModelGenerator {
         }
         MethodCallExpr bindAsDSL = new MethodCallExpr(bindDSL, BIND_AS_CALL);
         bindAsDSL.addArgument( new NameExpr(toVar(drlxParseResult.getPatternBinding())) );
-        final Expression constraintExpression = buildConstraintExpression(drlxParseResult, DrlxParseUtil.findLeftLeafOfMethodCall(drlxParseResult.getLeft().getExpression())  );
+        final Expression constraintExpression = buildConstraintExpression(drlxParseResult, org.drools.modelcompiler.builder.generator.DrlxParseUtil.findLeftLeafOfMethodCall(drlxParseResult.getLeft().getExpression())  );
         bindAsDSL.addArgument(constraintExpression);
         return buildReactOn( drlxParseResult, bindAsDSL );
     }
