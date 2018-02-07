@@ -34,8 +34,10 @@ import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.feel.lang.FEELProfile;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
+import org.kie.dmn.feel.parser.feel11.profiles.KieExtendedFEELProfile;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
 import org.kie.dmn.feel.util.Msg;
@@ -48,7 +50,7 @@ public class FEELParser {
     );
     private static final Pattern DIGITS_PATTERN = Pattern.compile( "[0-9]*" );
 
-    public static FEEL_1_1Parser parse(FEELEventListenersManager eventsManager, String source, Map<String, Type> inputVariableTypes, Map<String, Object> inputVariables, Collection<FEELFunction> additionalFunctions) {
+    public static FEEL_1_1Parser parse(FEELEventListenersManager eventsManager, String source, Map<String, Type> inputVariableTypes, Map<String, Object> inputVariables, Collection<FEELFunction> additionalFunctions, List<FEELProfile> profiles) {
         ANTLRInputStream input = new ANTLRInputStream(source);
         FEEL_1_1Lexer lexer = new FEEL_1_1Lexer( input );
         CommonTokenStream tokens = new CommonTokenStream( lexer );
@@ -56,6 +58,7 @@ public class FEELParser {
 
         ParserHelper parserHelper = new ParserHelper(eventsManager);
         additionalFunctions.forEach(f -> parserHelper.getSymbolTable().getBuiltInScope().define(f.getSymbol()));
+        profiles.stream().filter(KieExtendedFEELProfile.class::isInstance).forEach(dc -> parserHelper.setFeatDMN12EnhancedForLoopEnabled(true));
 
         parser.setHelper(parserHelper);
         parser.setErrorHandler( new FEELErrorHandler() );
