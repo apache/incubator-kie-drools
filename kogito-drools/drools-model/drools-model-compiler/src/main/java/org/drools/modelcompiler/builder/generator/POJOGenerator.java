@@ -3,9 +3,9 @@ package org.drools.modelcompiler.builder.generator;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -32,6 +32,7 @@ import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.NormalAnnotationExpr;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.javaparser.ast.stmt.BlockStmt;
+import org.drools.javaparser.ast.stmt.ExpressionStmt;
 import org.drools.javaparser.ast.stmt.Statement;
 import org.drools.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.javaparser.ast.type.PrimitiveType;
@@ -44,6 +45,7 @@ import org.kie.api.definition.type.Role;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import static java.text.MessageFormat.format;
+
 import static org.drools.javaparser.JavaParser.parseStatement;
 import static org.drools.javaparser.ast.NodeList.nodeList;
 import static org.drools.modelcompiler.builder.JavaParserCompiler.compileAll;
@@ -149,53 +151,99 @@ public class POJOGenerator {
         List<Statement> equalsFieldStatement = new ArrayList<>();
         List<Statement> hashCodeFieldStatement = new ArrayList<>();
         List<String> toStringFieldStatement = new ArrayList<>();
-        NodeList<Statement> ctorFieldStatement = NodeList.nodeList();
+        List<TypeFieldDescr> keyFields = new ArrayList<>();
 
-        Map<String, TypeFieldDescr> fields = recurseInheritedDeclaredFields(typeDeclaration, packageDescr);
-        if (!fields.isEmpty()) {
-            final ConstructorDeclaration fullArgumentsCtor = generatedClass.addConstructor( Modifier.PUBLIC );
-            int position = 0;
-            for (TypeFieldDescr kv : fields.values()) {
-                final String fieldName = kv.getFieldName();
-                final String typeName = kv.getPattern().getObjectType();
+        Collection<TypeFieldDescr> inheritedFields = findInheritedDeclaredFields(typeDeclaration, packageDescr);
+        Collection<TypeFieldDescr> typeFields = typeDeclaration.getFields().values();
 
-                Type returnType = JavaParser.parseType( typeName );
+        if (!inheritedFields.isEmpty() || !typeDeclaration.getFields().isEmpty()) {
+            ConstructorDeclaration fullArgumentsCtor = generatedClass.addConstructor( Modifier.PUBLIC );
+            NodeList<Statement> ctorFieldStatement = NodeList.nodeList();
+
+            MethodCallExpr superCall = new MethodCallExpr( null, "super" );
+            for (TypeFieldDescr typeFieldDescr : inheritedFields) {
+                String fieldName = typeFieldDescr.getFieldName();
+                addCtorArg( fullArgumentsCtor, typeFieldDescr.getPattern().getObjectType(), fieldName );
+                superCall.addArgument( fieldName );
+                if ( typeFieldDescr.getAnnotation( "key" ) != null ) {
+                    keyFields.add(typeFieldDescr);
+                }
+            }
+            ctorFieldStatement.add( new ExpressionStmt(superCall) );
+
+            int position = inheritedFields.size();
+            for (TypeFieldDescr typeFieldDescr : typeFields) {
+                String fieldName = typeFieldDescr.getFieldName();
+                Type returnType = addCtorArg( fullArgumentsCtor, typeFieldDescr.getPattern().getObjectType(), fieldName );
 
                 FieldDeclaration field = generatedClass.addField( returnType, fieldName, Modifier.PRIVATE );
                 field.createSetter();
                 field.addAndGetAnnotation( Position.class.getName() ).addPair( "value", "" + position++ );
                 MethodDeclaration getter = field.createGetter();
-
-                ctorFieldStatement.add( replaceFieldName( parseStatement( "this.__fieldName = __fieldName;" ), fieldName ) );
-                fullArgumentsCtor.addParameter( returnType, fieldName );
-
                 equalsFieldStatement.add( generateEqualsForField( getter, fieldName ) );
                 hashCodeFieldStatement.addAll(generateHashCodeForField(getter, fieldName));
+
+                ctorFieldStatement.add( replaceFieldName( parseStatement( "this.__fieldName = __fieldName;" ), fieldName ) );
+
                 toStringFieldStatement.add( format( "+ {0}+{1}", quote( fieldName + "=" ), fieldName ) );
+                if ( typeFieldDescr.getAnnotation( "key" ) != null ) {
+                    keyFields.add(typeFieldDescr);
+                }
             }
             fullArgumentsCtor.setBody( new BlockStmt( ctorFieldStatement ) );
+
+            if (!keyFields.isEmpty() && keyFields.size() != inheritedFields.size() + typeFields.size()) {
+                ConstructorDeclaration keyArgumentsCtor = generatedClass.addConstructor( Modifier.PUBLIC );
+                NodeList<Statement> ctorKeyFieldStatement = NodeList.nodeList();
+                MethodCallExpr keySuperCall = new MethodCallExpr( null, "super" );
+                ctorKeyFieldStatement.add( new ExpressionStmt(keySuperCall) );
+
+                for (TypeFieldDescr typeFieldDescr : keyFields) {
+                    String fieldName = typeFieldDescr.getFieldName();
+                    addCtorArg( keyArgumentsCtor, typeFieldDescr.getPattern().getObjectType(), fieldName );
+                    if ( typeDeclaration.getFields().get( fieldName ) != null ) {
+                        ctorKeyFieldStatement.add( replaceFieldName( parseStatement( "this.__fieldName = __fieldName;" ), fieldName ) );
+                    } else {
+                        keySuperCall.addArgument( fieldName );
+                    }
+                }
+
+                keyArgumentsCtor.setBody( new BlockStmt( ctorKeyFieldStatement ) );
+            }
+
+            if (hasSuper) {
+                generatedClass.addMember( generateEqualsMethod( generatedClassName, equalsFieldStatement, hasSuper ) );
+                generatedClass.addMember( generateHashCodeMethod( hashCodeFieldStatement, hasSuper ) );
+            }
         }
 
-        if (hasSuper || !fields.isEmpty()) {
-            generatedClass.addMember( generateEqualsMethod( generatedClassName, equalsFieldStatement, hasSuper ) );
-            generatedClass.addMember( generateHashCodeMethod( hashCodeFieldStatement, hasSuper ) );
-        }
         generatedClass.addMember(generateToStringMethod(generatedClassName, toStringFieldStatement));
 
         return generatedClass;
     }
 
-    private static Map<String, TypeFieldDescr> recurseInheritedDeclaredFields(TypeDeclarationDescr typeDeclaration, PackageDescr packageDescr) {
-        Map<String, TypeFieldDescr> fields = new LinkedHashMap<>(); // preserve ordering.
-        if (typeDeclaration.getSuperTypeName() != null) {
-            final String superTypeName = typeDeclaration.getSuperTypeName();
-            Optional<TypeDeclarationDescr> supertType = packageDescr.getTypeDeclarations().stream().filter(td -> td.getTypeName().equals(superTypeName)).findFirst();
-            if (supertType.isPresent()) {
-                fields.putAll(recurseInheritedDeclaredFields(supertType.get(), packageDescr));
-            }
-        }
-        fields.putAll(typeDeclaration.getFields()); // this class definition fields comes after.
+    private static Type addCtorArg( ConstructorDeclaration fullArgumentsCtor, String typeName, String fieldName ) {
+        Type returnType = JavaParser.parseType( typeName );
+        fullArgumentsCtor.addParameter( returnType, fieldName );
+        return returnType;
+    }
+
+    private static List<TypeFieldDescr> findInheritedDeclaredFields(TypeDeclarationDescr typeDeclaration, PackageDescr packageDescr) {
+        return findInheritedDeclaredFields(new ArrayList<>(), getSuperType(typeDeclaration, packageDescr), packageDescr);
+    }
+
+    private static List<TypeFieldDescr> findInheritedDeclaredFields(List<TypeFieldDescr> fields, Optional<TypeDeclarationDescr> supertType, PackageDescr packageDescr) {
+        supertType.ifPresent( st -> {
+            findInheritedDeclaredFields(fields, getSuperType(st, packageDescr), packageDescr);
+            fields.addAll( st.getFields().values() );
+        } );
         return fields;
+    }
+
+    private static Optional<TypeDeclarationDescr> getSuperType(TypeDeclarationDescr typeDeclaration, PackageDescr packageDescr) {
+        return typeDeclaration.getSuperTypeName() != null ?
+                packageDescr.getTypeDeclarations().stream().filter( td -> td.getTypeName().equals( typeDeclaration.getSuperTypeName() ) ).findFirst() :
+                Optional.empty();
     }
 
     private static final Statement referenceEquals = parseStatement("if (this == o) { return true; }");
