@@ -65,6 +65,7 @@ public class ForExpressionNode
         try {
             ctx.enterFrame();
             List results = new ArrayList(  );
+            ctx.setValue("partial", results);
             ForIteration[] ictx = initializeContexts( ctx, iterationContexts);
 
             while ( nextIteration( ctx, ictx ) ) {

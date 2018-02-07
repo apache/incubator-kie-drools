@@ -16,30 +16,6 @@
 
 package org.kie.dmn.feel.parser.feel11;
 
-import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.Token;
-import org.antlr.v4.runtime.misc.Interval;
-import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.TerminalNode;
-import org.kie.dmn.api.feel.runtime.events.FEELEvent;
-import org.kie.dmn.feel.lang.CompositeType;
-import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
-import org.kie.dmn.feel.lang.impl.JavaBackedType;
-import org.kie.dmn.feel.lang.Scope;
-import org.kie.dmn.feel.lang.SimpleType;
-import org.kie.dmn.feel.lang.Symbol;
-import org.kie.dmn.feel.lang.Type;
-import org.kie.dmn.feel.lang.types.BuiltInType;
-import org.kie.dmn.feel.lang.types.ScopeImpl;
-import org.kie.dmn.feel.lang.types.SymbolTable;
-import org.kie.dmn.feel.lang.types.VariableSymbol;
-import org.kie.dmn.feel.runtime.FEELFunction;
-import org.kie.dmn.feel.runtime.Range;
-import org.kie.dmn.feel.runtime.UnaryTest;
-import org.kie.dmn.feel.runtime.events.UnknownVariableErrorEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -53,6 +29,29 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.stream.Collectors;
 
+import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.misc.Interval;
+import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.TerminalNode;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.feel.lang.CompositeType;
+import org.kie.dmn.feel.lang.Scope;
+import org.kie.dmn.feel.lang.Symbol;
+import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
+import org.kie.dmn.feel.lang.impl.JavaBackedType;
+import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.feel.lang.types.ScopeImpl;
+import org.kie.dmn.feel.lang.types.SymbolTable;
+import org.kie.dmn.feel.lang.types.VariableSymbol;
+import org.kie.dmn.feel.runtime.FEELFunction;
+import org.kie.dmn.feel.runtime.Range;
+import org.kie.dmn.feel.runtime.UnaryTest;
+import org.kie.dmn.feel.runtime.events.UnknownVariableErrorEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class ParserHelper {
     public static final Logger LOG = LoggerFactory.getLogger(ParserHelper.class);
 
@@ -61,6 +60,7 @@ public class ParserHelper {
     private Scope         currentScope = symbols.getGlobalScope();
     private Stack<String> currentName  = new Stack<>();
     private int dynamicResolution = 0;
+    private boolean featDMN12EnhancedForLoopEnabled = true; // DROOLS-2307 DMN enhanced for loop
 
     public ParserHelper() {
         this( null );
@@ -292,4 +292,11 @@ public class ParserHelper {
         return JavaBackedType.of( clazz ); 
     }
 
+    public boolean isFeatDMN12EnhancedForLoopEnabled() {
+        return featDMN12EnhancedForLoopEnabled;
+    }
+
+    public void setFeatDMN12EnhancedForLoopEnabled(boolean featDMN12EnhancedForLoopEnabled) {
+        this.featDMN12EnhancedForLoopEnabled = featDMN12EnhancedForLoopEnabled;
+    }
 }
