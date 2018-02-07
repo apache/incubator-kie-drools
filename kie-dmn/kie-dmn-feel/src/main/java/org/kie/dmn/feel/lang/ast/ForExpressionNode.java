@@ -192,7 +192,7 @@ public class ForExpressionNode
             if (cursor == null) {
                 return true;
             } else {
-                BigDecimal lookAhead = next();
+                BigDecimal lookAhead = cursor.add(increment);
                 if (direction == Direction.ASCENDANT) {
                     return lookAhead.compareTo(end) <= 0;
                 } else {
