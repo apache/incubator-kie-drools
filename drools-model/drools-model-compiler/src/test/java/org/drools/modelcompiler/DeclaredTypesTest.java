@@ -416,4 +416,30 @@ public class DeclaredTypesTest extends BaseModelTest {
         assertEquals( 1, results.size() );
         assertEquals( "Mario", results.iterator().next() );
     }
+
+    @Test
+    public void testTypeDeclarationsInheritance() throws Exception {
+        String str =
+                "declare Person\n" +
+                "    id : int @key\n" +
+                "    name : String\n" +
+                "end\n" +
+                "declare Employee extends Person\n" +
+                "    salary : double\n" +
+                "end\n" +
+                "rule \"TestConstructors\" when\n" +
+                "    then\n" +
+                "        Person p1 = new Person();\n" +
+                "        Person p2 = new Person(9);\n" +
+                "        Person p3 = new Person(99, \"myname\");\n" +
+                "\n" +
+                "        Employee e1 = new Employee();\n" +
+                "        Employee e2 = new Employee(9);\n" +
+                "        Employee e3 = new Employee(99, \"myname\", 100.00);\n" +
+                "\n" +
+                "        Person pe = new Employee();\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+    }
 }
