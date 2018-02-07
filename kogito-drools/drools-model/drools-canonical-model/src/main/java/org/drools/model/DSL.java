@@ -64,6 +64,7 @@ import org.drools.model.view.Expr3ViewItemImpl;
 import org.drools.model.view.Expr4ViewItemImpl;
 import org.drools.model.view.Expr5ViewItemImpl;
 import org.drools.model.view.ExprViewItem;
+import org.drools.model.view.FixedValueItem;
 import org.drools.model.view.InputViewItem;
 import org.drools.model.view.InputViewItemImpl;
 import org.drools.model.view.TemporalExprViewItem;
@@ -204,6 +205,14 @@ public class DSL {
 
     public static <T> InputViewItem<T> input( Variable<T> var ) {
         return new InputViewItemImpl<T>( var );
+    }
+
+    public static FixedValueItem expr( boolean value ) {
+        return new FixedValueItem( null, value );
+    }
+
+    public static FixedValueItem expr( String exprId, boolean value ) {
+        return new FixedValueItem( exprId, value );
     }
 
     public static <T> Expr1ViewItem<T> expr( Variable<T> var) {

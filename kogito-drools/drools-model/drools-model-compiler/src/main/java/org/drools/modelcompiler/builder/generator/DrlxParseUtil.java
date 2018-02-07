@@ -510,15 +510,15 @@ public class DrlxParseUtil {
 
     public static Class<?> getLiteralExpressionType( LiteralExpr expr ) {
         if (expr instanceof BooleanLiteralExpr) {
-            return Boolean.class;
+            return boolean.class;
         } else if (expr instanceof CharLiteralExpr) {
-            return Character.class;
+            return char.class;
         } else if (expr instanceof DoubleLiteralExpr) {
-            return Double.class;
+            return double.class;
         } else if (expr instanceof IntegerLiteralExpr) {
-            return Integer.class;
+            return int.class;
         } else if (expr instanceof LongLiteralExpr) {
-            return Long.class;
+            return long.class;
         } else if (expr instanceof NullLiteralExpr) {
             return ClassUtil.NullType.class;
         } else if (expr instanceof StringLiteralExpr) {
@@ -602,6 +602,9 @@ public class DrlxParseUtil {
     }
 
     public static Expression generateLambdaWithoutParameters(Collection<String> usedDeclarations, Expression expr, boolean skipFirstParamAsThis) {
+        if (skipFirstParamAsThis && usedDeclarations.isEmpty()) {
+            return expr;
+        }
         LambdaExpr lambdaExpr = new LambdaExpr();
         lambdaExpr.setEnclosingParameters( true );
         if (!skipFirstParamAsThis) {

@@ -36,7 +36,7 @@ public interface SingleConstraint extends Constraint {
         return Type.SINGLE;
     }
 
-    SingleConstraint EMPTY = new AbstractSingleConstraint("EMPTY") {
+    SingleConstraint TRUE = new AbstractSingleConstraint("TRUE") {
         @Override
         public Variable[] getVariables() {
             return new Variable[0];
@@ -45,6 +45,28 @@ public interface SingleConstraint extends Constraint {
         @Override
         public PredicateN getPredicate() {
             return PredicateN.True;
+        }
+
+        @Override
+        public AndConstraints and(Constraint constraint ) {
+            return new AndConstraints(constraint);
+        }
+
+        @Override
+        public boolean isEqualTo( ModelComponent other ) {
+            return this == other;
+        }
+    };
+
+    SingleConstraint FALSE = new AbstractSingleConstraint("FALSE") {
+        @Override
+        public Variable[] getVariables() {
+            return new Variable[0];
+        }
+
+        @Override
+        public PredicateN getPredicate() {
+            return PredicateN.False;
         }
 
         @Override

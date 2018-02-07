@@ -68,11 +68,11 @@ public class DrlxParseUtilTest {
     public void getExpressionTypeTest() {
         assertEquals(Double.class, getExpressionType(null, typeResolver, JavaParser.parseExpression("new Double[]{2.0d, 3.0d}[1]"), null));
         assertEquals(Float.class, getExpressionType(null, typeResolver, JavaParser.parseExpression("new Float[]{2.0d, 3.0d}"), null));
-        assertEquals(Boolean.class, getExpressionType(null, typeResolver, new BooleanLiteralExpr(true), null));
-        assertEquals(Character.class, getExpressionType(null, typeResolver, new CharLiteralExpr('a'), null));
-        assertEquals(Double.class, getExpressionType(null, typeResolver, new DoubleLiteralExpr(2.0d), null));
-        assertEquals(Integer.class, getExpressionType(null, typeResolver, new IntegerLiteralExpr(2), null));
-        assertEquals(Long.class, getExpressionType(null, typeResolver, new LongLiteralExpr(2l), null));
+        assertEquals(boolean.class, getExpressionType(null, typeResolver, new BooleanLiteralExpr(true), null));
+        assertEquals(char.class, getExpressionType(null, typeResolver, new CharLiteralExpr('a'), null));
+        assertEquals(double.class, getExpressionType(null, typeResolver, new DoubleLiteralExpr(2.0d), null));
+        assertEquals(int.class, getExpressionType(null, typeResolver, new IntegerLiteralExpr(2), null));
+        assertEquals(long.class, getExpressionType(null, typeResolver, new LongLiteralExpr(2l), null));
         assertEquals(ClassUtil.NullType.class, getExpressionType(null, typeResolver, new NullLiteralExpr(), null));
         assertEquals(String.class, getExpressionType(null, typeResolver, new StringLiteralExpr(""), null));
     }

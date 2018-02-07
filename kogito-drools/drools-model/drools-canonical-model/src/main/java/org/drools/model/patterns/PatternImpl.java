@@ -26,7 +26,7 @@ public class PatternImpl<T> extends AbstractSinglePattern implements Pattern<T>,
     private Collection<String> watchedProps;
 
     public PatternImpl(Variable<T> variable) {
-        this(variable, SingleConstraint.EMPTY);
+        this(variable, SingleConstraint.TRUE );
     }
 
     public PatternImpl(Variable<T> variable, Constraint constraint) {

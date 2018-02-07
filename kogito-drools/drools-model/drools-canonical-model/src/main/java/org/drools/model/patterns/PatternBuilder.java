@@ -80,7 +80,7 @@ public class PatternBuilder {
 
         @Override
         public Pattern<T> get() {
-            return new PatternImpl(variable, SingleConstraint.EMPTY);
+            return new PatternImpl(variable, SingleConstraint.TRUE );
         }
     }
 
