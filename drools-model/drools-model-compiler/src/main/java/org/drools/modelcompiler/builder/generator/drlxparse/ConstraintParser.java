@@ -99,7 +99,6 @@ public class ConstraintParser {
 
             Optional<TypedExpression> optLeft = DrlxParseUtil.toTypedExpression(context, packageModel, patternType, binaryExpr.getLeft(), bindingId, usedDeclarations, reactOnProperties, binaryExpr, isPositional);
             if ( !optLeft.isPresent() ) {
-                context.addCompilationError( new ParseExpressionErrorResult(drlxExpr) );
                 return new DrlxParseFail();
             }
 
