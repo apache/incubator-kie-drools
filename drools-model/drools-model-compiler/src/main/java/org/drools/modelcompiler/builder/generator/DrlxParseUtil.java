@@ -78,7 +78,7 @@ import org.drools.javaparser.ast.type.ReferenceType;
 import org.drools.javaparser.ast.type.Type;
 import org.drools.javaparser.ast.type.UnknownType;
 import org.drools.modelcompiler.builder.PackageModel;
-import org.drools.modelcompiler.builder.errors.UnknownDeclarationError;
+import org.drools.modelcompiler.builder.errors.ParseExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.operatorspec.CustomOperatorSpec;
 import org.drools.modelcompiler.builder.generator.operatorspec.OperatorSpec;
 import org.drools.modelcompiler.builder.generator.operatorspec.TemporalOperatorSpec;
@@ -141,20 +141,9 @@ public class DrlxParseUtil {
                 return of(new TypedExpression(combo, left.getType()));
             }));
 
-
         } else if (drlxExpr instanceof HalfBinaryExpr) {
-            HalfBinaryExpr halfBinaryExpr = (HalfBinaryExpr) drlxExpr;
-
-            Expression parentLeft = findLeftLeafOfNameExpr(parentExpression);
-            Operator operator = toBinaryExprOperator(halfBinaryExpr.getOperator());
-
-            Optional<TypedExpression> optLeft = DrlxParseUtil.toTypedExpression(context, packageModel, patternType, parentLeft, bindingId, usedDeclarations, reactOnProperties, halfBinaryExpr, isPositional);
-            Optional<TypedExpression> optRight = DrlxParseUtil.toTypedExpression(context, packageModel, patternType, halfBinaryExpr.getRight(), bindingId, usedDeclarations, reactOnProperties, halfBinaryExpr, isPositional);
-
-            return optLeft.flatMap(left -> optRight.flatMap(right -> {
-                final BinaryExpr combo = new BinaryExpr(left.getExpression(), right.getExpression(), operator);
-                return of(new TypedExpression(combo, left.getType()));
-            }));
+            final Expression binaryExpr = trasformHalfBinaryToBinary(drlxExpr);
+            return toTypedExpression(context, packageModel, patternType, binaryExpr, bindingId, usedDeclarations, reactOnProperties, parentExpression, isPositional);
 
         } else if (drlxExpr instanceof LiteralExpr) {
             return of(new TypedExpression(drlxExpr, getLiteralExpressionType( ( LiteralExpr ) drlxExpr )));
@@ -330,7 +319,12 @@ public class DrlxParseUtil {
                     final NameExpr scope = backReference.map(d -> new NameExpr(d.getBindingId())).orElse(thisAccessor);
                     previous = new MethodCallExpr(scope, firstAccessor.getName());
                 } else {
-                    context.addCompilationError( new UnknownDeclarationError(firstNode.toString()) );
+                    final Optional<Node> rootNode = findRootNodeViaParent(drlxExpr);
+                    rootNode.ifPresent(n -> {
+                        // In the error messages HalfBinary are transformed to Binary
+                        Node withHalfBinaryReplaced = replaceAllHalfBinaryChildren(n);
+                        context.addCompilationError(new ParseExpressionErrorResult((Expression) withHalfBinaryReplaced));
+                    });
                     return Optional.empty();
                 }
             }
@@ -528,7 +522,7 @@ public class DrlxParseUtil {
     }
 
     public static Expression prepend(Expression scope, Expression expr) {
-        final Optional<Expression> rootNode = findRootNode(expr);
+        final Optional<Expression> rootNode = findRootNodeViaScope(expr);
 
         if (!rootNode.isPresent()) {
             throw new UnsupportedOperationException("No root found");
@@ -544,12 +538,40 @@ public class DrlxParseUtil {
         return expr;
     }
 
-    public static Optional<Expression> findRootNode(Expression expr) {
+    public static Optional<Node> findRootNodeViaParent(Node expr) {
+        final Optional<Node> parentNode = expr.getParentNode();
+        if(parentNode.isPresent()) {
+            return findRootNodeViaParent(parentNode.get());
+        } else {
+            return Optional.of(expr);
+        }
+    }
+
+    public static Node replaceAllHalfBinaryChildren(Node parent) {
+        parent.getChildNodesByType(HalfBinaryExpr.class)
+                .forEach(n -> n.replace(trasformHalfBinaryToBinary(n)));
+        return parent;
+    }
+
+    public static Expression trasformHalfBinaryToBinary(Expression drlxExpr) {
+        final Optional<Node> parent = drlxExpr.getParentNode();
+        if(drlxExpr instanceof HalfBinaryExpr && parent.isPresent()) {
+
+            HalfBinaryExpr halfBinaryExpr = (HalfBinaryExpr) drlxExpr;
+
+            Expression parentLeft = findLeftLeafOfNameExpr((Expression) parent.get());
+            Operator operator = toBinaryExprOperator(halfBinaryExpr.getOperator());
+            return new BinaryExpr(parentLeft, halfBinaryExpr.getRight(), operator);
+        }
+        return drlxExpr;
+    }
+
+    public static Optional<Expression> findRootNodeViaScope(Expression expr) {
 
         if (expr instanceof NodeWithTraversableScope) {
             final NodeWithTraversableScope exprWithScope = (NodeWithTraversableScope) expr;
 
-            return exprWithScope.traverseScope().map(DrlxParseUtil::findRootNode).orElse(of(expr));
+            return exprWithScope.traverseScope().map(DrlxParseUtil::findRootNodeViaScope).orElse(of(expr));
         } else if(expr instanceof NameExpr) {
             return of(expr);
         }
@@ -558,7 +580,7 @@ public class DrlxParseUtil {
     }
 
     public static RemoveRootNodeResult removeRootNode(Expression expr) {
-        Optional<Expression> rootNode = findRootNode(expr);
+        Optional<Expression> rootNode = findRootNodeViaScope(expr);
 
         if(rootNode.isPresent()) {
             Expression root = rootNode.get();
@@ -737,7 +759,7 @@ public class DrlxParseUtil {
                 return scope;
             }
             return methodCallExpr.getArguments().stream()
-                    .map( DrlxParseUtil::findRootNode )
+                    .map( DrlxParseUtil::findRootNodeViaScope)
                     .map( opt -> opt.flatMap(e -> findBindingId(e, availableBindings) ) )
                     .filter( opt -> opt.map( availableBindings::contains ).orElse( false ) )
                     .map( Optional::get )
@@ -800,7 +822,7 @@ public class DrlxParseUtil {
             rescopeNamesToNewScope(newScope, names, assignExpr.getTarget());
             rescopeNamesToNewScope(newScope, names, assignExpr.getValue());
         } else {
-            Optional<Expression> rootNode = DrlxParseUtil.findRootNode(e);
+            Optional<Expression> rootNode = DrlxParseUtil.findRootNodeViaScope(e);
             if (rootNode.isPresent() && rootNode.get() instanceof NameExpr) {
                 NameExpr nameExpr = (NameExpr) rootNode.get();
                 if (names.contains(nameExpr.getNameAsString())) {
