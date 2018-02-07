@@ -18,6 +18,7 @@ package org.drools.modelcompiler.builder.errors;
 
 import org.drools.compiler.compiler.DroolsError;
 import org.drools.javaparser.ast.expr.Expression;
+import org.drools.javaparser.printer.PrintUtil;
 import org.kie.internal.builder.ResultSeverity;
 
 public class ParseExpressionErrorResult extends DroolsError {
@@ -36,7 +37,7 @@ public class ParseExpressionErrorResult extends DroolsError {
 
     @Override
     public String getMessage() {
-        return "Unable to parse: " + expr;
+        return "Unable to Analyse Expression " + PrintUtil.toDrlx(expr) + ":";
     }
 
     @Override

@@ -347,7 +347,7 @@ public class AccumulateVisitor {
         MethodDeclaration resultMethod = templateClass.getMethodsByName("getResult").get(0);
         Type returnExpressionType = JavaParser.parseType("java.lang.Object");
         Expression returnExpression = JavaParser.parseExpression(descr.getResultCode());
-        Optional<Expression> returnExpressionRootNode = DrlxParseUtil.findRootNode(returnExpression);
+        Optional<Expression> returnExpressionRootNode = DrlxParseUtil.findRootNodeViaScope(returnExpression);
         if (returnExpressionRootNode.isPresent() && returnExpressionRootNode.get() instanceof NameExpr) {
             NameExpr nameExpr = (NameExpr) returnExpressionRootNode.get();
             if (contextFieldNames.contains(nameExpr.getNameAsString())) {
