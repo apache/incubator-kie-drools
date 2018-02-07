@@ -78,8 +78,6 @@ public class LambdaConstraint extends MutableTypeConstraint implements Indexable
             int pos = settableProperties.indexOf(prop);
             if (pos >= 0) { // Ignore not settable properties
                 mask = mask.set( pos + PropertySpecificUtil.CUSTOM_BITS_OFFSET );
-            } else {
-                throw new RuntimeException( "Unknown property: " + prop );
             }
         }
         return mask;

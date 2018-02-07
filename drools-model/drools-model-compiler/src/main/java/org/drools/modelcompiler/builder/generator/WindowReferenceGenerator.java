@@ -1,10 +1,13 @@
 package org.drools.modelcompiler.builder.generator;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.BehaviorDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.PatternSourceDescr;
@@ -24,11 +27,13 @@ import org.drools.javaparser.ast.type.Type;
 import org.drools.model.Window;
 import org.drools.model.WindowDefinition;
 import org.drools.modelcompiler.builder.PackageModel;
+import org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseFail;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
-import org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser;
 import org.drools.modelcompiler.builder.generator.drlxparse.ParseResultVisitor;
+
+import static java.util.stream.Collectors.toList;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
@@ -88,29 +93,36 @@ public class WindowReferenceGenerator {
         final Type initType = JavaParser.parseType(initClass.getCanonicalName());
         initializer.addArgument(new ClassExpr(initType));
 
-        parseCondition(kbuilder, packageModel, pattern, initClass).ifPresent(initializer::addArgument);
+        parseConditions(kbuilder, packageModel, pattern, initClass).forEach(initializer::addArgument);
 
         packageModel.addAllWindowReferences(windowName, initializer);
     }
 
-    private Optional<Expression> parseCondition( KnowledgeBuilderImpl kbuilder, PackageModel packageModel, PatternDescr pattern, Class<?> patternType ) {
-        return Optional.ofNullable(pattern.getConstraint().getDescrs().iterator().next()).flatMap(d -> {
-            String expression = d.toString();
-            RuleContext context = new RuleContext(kbuilder, pkg, packageModel.getExprIdGenerator(), null);
-            final DrlxParseResult drlxParseResult = new ConstraintParser(context, packageModel).drlxParse(patternType, pattern.getIdentifier(), expression);
+    private List<Expression> parseConditions( KnowledgeBuilderImpl kbuilder, PackageModel packageModel, PatternDescr pattern, Class<?> patternType ) {
+        List<? extends BaseDescr> descrs = pattern.getConstraint().getDescrs();
+        if (descrs == null) {
+            return Collections.emptyList();
+        }
+        return descrs.stream()
+                .map( descr -> {
+                    String expression = descr.toString();
+                    RuleContext context = new RuleContext(kbuilder, pkg, packageModel.getExprIdGenerator(), null);
+                    DrlxParseResult drlxParseResult = new ConstraintParser(context, packageModel).drlxParse(patternType, pattern.getIdentifier(), expression);
+                    return drlxParseResult.acceptWithReturnValue(new ParseResultVisitor<Optional<Expression>>() {
+                        @Override
+                        public Optional<Expression> onSuccess(DrlxParseSuccess drlxParseResult) {
+                            return Optional.of(generateLambdaWithoutParameters(drlxParseResult.getUsedDeclarations(), drlxParseResult.getExpr()));
+                        }
 
-            return drlxParseResult.acceptWithReturnValue(new ParseResultVisitor<Optional<Expression>>() {
-                @Override
-                public Optional<Expression> onSuccess(DrlxParseSuccess drlxParseResult) {
-                    return Optional.of(generateLambdaWithoutParameters(drlxParseResult.getUsedDeclarations(), drlxParseResult.getExpr()));
-                }
-
-                @Override
-                public Optional<Expression> onFail(DrlxParseFail failure) {
-                    return Optional.empty();
-                }
-            });
-        });
+                        @Override
+                        public Optional<Expression> onFail(DrlxParseFail failure) {
+                            return Optional.empty();
+                        }
+                    });
+                } )
+                .filter( Optional::isPresent )
+                .map( Optional::get )
+                .collect( toList() );
     }
 
     private ParsedBehavior parseTypeFromBehavior(BehaviorDescr descr) {
