@@ -17,6 +17,7 @@ import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.PatternSourceDescr;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.RuleContext;
+import org.drools.modelcompiler.builder.generator.visitor.pattern.PatternVisitor;
 
 public class ModelGeneratorVisitor implements DescrVisitor {
 
@@ -106,14 +107,14 @@ public class ModelGeneratorVisitor implements DescrVisitor {
             if (patternSource instanceof AccumulateDescr) {
                 AccumulateDescr accSource = (AccumulateDescr) patternSource;
                 if (accSource.getFunctions().isEmpty() || accSource.getFunctions().get(0).getBind() == null) {
-                    patternVisitor.visit(descr);
+                    patternVisitor.visit(descr).buildPattern();
                     accumulateVisitor.visit( accSource, descr );
                 } else {
                     accumulateVisitor.visit( accSource, descr );
-                    patternVisitor.visit(descr);
+                    patternVisitor.visit(descr).buildPattern();
                 }
             } else {
-                patternVisitor.visit(descr);
+                patternVisitor.visit(descr).buildPattern();
             }
         }
     }
