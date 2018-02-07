@@ -40,6 +40,7 @@ import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.GREATER_EQUALS;
 import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.LESS;
 import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.LESS_EQUALS;
 import static org.drools.javaparser.printer.PrintUtil.toDrlx;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getLiteralExpressionType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isPrimitiveExpression;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toTypedExpression;
 
@@ -257,7 +258,11 @@ public class ConstraintParser {
         }
 
         if (drlxExpr instanceof OOPathExpr ) {
-            return new DrlxParseSuccess(patternType, exprId, bindingId, drlxExpr, null);
+            return new DrlxParseSuccess( patternType, exprId, bindingId, drlxExpr, null );
+        }
+
+        if (drlxExpr instanceof LiteralExpr ) {
+            return new DrlxParseSuccess( patternType, exprId, bindingId, drlxExpr, getLiteralExpressionType( (( LiteralExpr ) drlxExpr) ) );
         }
 
         throw new UnsupportedOperationException("Unknown expression: " + toDrlx(drlxExpr)); // TODO

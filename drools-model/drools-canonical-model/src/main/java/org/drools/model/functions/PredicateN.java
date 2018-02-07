@@ -6,4 +6,5 @@ public interface PredicateN extends Serializable {
     boolean test(Object... objs);
 
     PredicateN True = objs -> true;
+    PredicateN False = objs -> false;
 }

@@ -14,37 +14,30 @@
  * limitations under the License.
  */
 
-package org.drools.model.patterns;
+package org.drools.model.view;
 
-import org.drools.model.Condition;
-import org.drools.model.SingleConstraint;
 import org.drools.model.Variable;
 
-import static org.drools.model.Condition.Type.EVAL;
+public class FixedValueItem implements ViewItem {
+    private final String exprId;
+    private final boolean value;
 
-public class EvalImpl implements Condition {
-
-    private final SingleConstraint expr;
-
-    public EvalImpl( boolean value ) {
-        this( value ? SingleConstraint.TRUE : SingleConstraint.FALSE );
+    public FixedValueItem( String exprId, boolean value ) {
+        this.exprId = exprId;
+        this.value = value;
     }
 
-    public EvalImpl( SingleConstraint expr ) {
-        this.expr = expr;
-    }
-
-    public SingleConstraint getExpr() {
-        return expr;
+    public boolean isValue() {
+        return value;
     }
 
     @Override
-    public Type getType() {
-        return EVAL;
+    public Variable getFirstVariable() {
+        return null;
     }
 
     @Override
-    public Variable<?>[] getBoundVariables() {
+    public Variable<?>[] getVariables() {
         throw new UnsupportedOperationException();
     }
 }

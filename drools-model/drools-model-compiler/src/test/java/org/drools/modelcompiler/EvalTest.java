@@ -56,6 +56,53 @@ public class EvalTest extends BaseModelTest {
         assertEquals( "Mario", results.iterator().next().getValue() );
     }
 
+    @Test
+    public void testEvalTrue() {
+        String str =
+                "rule R when\n" +
+                "  eval( true )\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testEvalFalse() {
+        String str =
+                "rule R when\n" +
+                "  eval( false )\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+        assertEquals( 0, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testEvalOr() {
+        String str =
+                "rule R when\n" +
+                "  eval( true ) or eval( false )\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testEvalIdentity() {
+        String str =
+                "rule R when\n" +
+                        "  eval( 1 == 1 )\n" +
+                        "then\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+        assertEquals( 1, ksession.fireAllRules() );
+    }
 
     @Test
     public void testFunction() {
