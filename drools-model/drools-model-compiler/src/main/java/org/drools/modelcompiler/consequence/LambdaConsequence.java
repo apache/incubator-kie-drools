@@ -16,23 +16,16 @@
 
 package org.drools.modelcompiler.consequence;
 
-import java.util.IdentityHashMap;
-import java.util.Map;
-
 import org.drools.core.WorkingMemory;
-import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.rule.Declaration;
-import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.Tuple;
 import org.drools.model.BitMask;
-import org.drools.model.Drools;
-import org.drools.model.DroolsEntryPoint;
 import org.drools.model.Variable;
 import org.drools.model.bitmask.AllSetBitMask;
 import org.drools.model.bitmask.AllSetButLastBitMask;
@@ -42,10 +35,6 @@ import org.drools.model.bitmask.LongBitMask;
 import org.drools.model.bitmask.OpenBitSet;
 import org.drools.model.functions.FunctionN;
 import org.drools.modelcompiler.RuleContext;
-import org.kie.api.runtime.rule.EntryPoint;
-
-import static java.util.Arrays.asList;
-import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
 
 public class LambdaConsequence implements Consequence {
 
@@ -114,107 +103,7 @@ public class LambdaConsequence implements Consequence {
         }
     }
 
-    public static class DroolsImpl implements Drools {
-        private final KnowledgeHelper knowledgeHelper;
-        private final WorkingMemory workingMemory;
-
-        private final Map<Object, InternalFactHandle> fhLookup = new IdentityHashMap<>();
-
-        DroolsImpl(KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory) {
-            this.workingMemory = workingMemory;
-            this.knowledgeHelper = knowledgeHelper;
-        }
-
-        @Override
-        public void insert(Object object) {
-            workingMemory.insert(object);
-        }
-
-        @Override
-        public void insert(Object object, boolean dynamic) {
-            workingMemory.insert(object, dynamic);
-        }
-
-        @Override
-        public void insertLogical(Object object) {
-            knowledgeHelper.insertLogical(object);
-        }
-
-        @Override
-        public void update(Object object, String... modifiedProperties) {
-            Class modifiedClass = object.getClass();
-            TypeDeclaration typeDeclaration = workingMemory.getKnowledgeBase().getOrCreateExactTypeDeclaration( modifiedClass );
-            org.drools.core.util.bitmask.BitMask mask = typeDeclaration.isPropertyReactive() ?
-                    calculatePositiveMask(modifiedClass, asList(modifiedProperties), typeDeclaration.getAccessibleProperties() ) :
-                    org.drools.core.util.bitmask.AllSetBitMask.get();
-
-            knowledgeHelper.update( fhLookup.get(object), mask, modifiedClass);
-        }
-
-        @Override
-        public void update(Object object, BitMask modifiedProperties ) {
-            Class<?> modifiedClass = modifiedProperties.getPatternClass();
-            knowledgeHelper.update( fhLookup.get(object), adaptBitMask(modifiedProperties), modifiedClass);
-        }
-
-        @Override
-        public void delete(Object object) {
-            workingMemory.delete( fhLookup.get(object) );
-        }
-
-        void registerFactHandle(InternalFactHandle fh) {
-            fhLookup.put( fh.getObject(), fh );
-        }
-
-        @Override
-        public <T> T getRuntime(Class<T> runtimeClass) {
-            return (T)knowledgeHelper.getKieRuntime();
-        }
-
-        @Override
-        public DroolsEntryPoint getEntryPoint(String name) {
-            return new DroolsEntryPointImpl( knowledgeHelper.getEntryPoint( name ), fhLookup );
-        }
-    }
-
-    public static class DroolsEntryPointImpl implements DroolsEntryPoint {
-
-        private final EntryPoint entryPoint;
-        private final Map<Object, InternalFactHandle> fhLookup;
-
-        public DroolsEntryPointImpl( EntryPoint entryPoint, Map<Object, InternalFactHandle> fhLookup ) {
-            this.entryPoint = entryPoint;
-            this.fhLookup = fhLookup;
-        }
-
-        @Override
-        public void insert( Object object ) {
-            entryPoint.insert( object );
-        }
-
-        @Override
-        public void insert(Object object, boolean dynamic) {
-            ((WorkingMemoryEntryPoint) entryPoint).insert(object, dynamic);
-        }
-
-        @Override
-        public void update( Object object, String... modifiedProperties ) {
-            entryPoint.update( fhLookup.get(object), object, modifiedProperties );
-        }
-
-        @Override
-        public void update( Object object, BitMask modifiedProperties ) {
-            Class<?> modifiedClass = modifiedProperties.getPatternClass();
-            (( WorkingMemoryEntryPoint ) entryPoint).update( fhLookup.get(object), object, adaptBitMask(modifiedProperties), modifiedClass, null);
-        }
-
-        @Override
-        public void delete( Object object ) {
-            entryPoint.delete( fhLookup.get(object) );
-        }
-    }
-
-    private static org.drools.core.util.bitmask.BitMask adaptBitMask(BitMask mask) {
+    static org.drools.core.util.bitmask.BitMask adaptBitMask(BitMask mask) {
         if (mask instanceof LongBitMask) {
             return new org.drools.core.util.bitmask.LongBitMask( ( (LongBitMask) mask ).asLong() );
         }

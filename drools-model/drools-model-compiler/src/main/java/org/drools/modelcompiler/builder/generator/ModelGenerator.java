@@ -79,10 +79,12 @@ import org.drools.modelcompiler.builder.errors.UnknownDeclarationError;
 import org.drools.modelcompiler.builder.generator.RuleContext.RuleDialect;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
+import org.drools.modelcompiler.consequence.DroolsImpl;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
+import static org.drools.javaparser.JavaParser.parseExpression;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.classToReferenceType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.parseBlock;
@@ -96,29 +98,30 @@ public class ModelGenerator {
     private static final ClassOrInterfaceType BITMASK_TYPE = JavaParser.parseClassOrInterfaceType( BitMask.class.getCanonicalName() );
 
     private static final Map<String, Expression> attributesMap = new HashMap<>();
-    private static final Map<String, Expression> consequenceMethods = new HashMap<>();
+
+    public static final Set<String> implicitDroolsMethods = new HashSet<>();
+    public static final Set<String> knowledgeHelperMethods = new HashSet<>();
 
     public static final Set<String> temporalOperators = new HashSet<>();
 
     private static final IndexIdGenerator indexIdGenerator = new IndexIdGenerator();
 
-    static {
-        attributesMap.put("no-loop", JavaParser.parseExpression("Rule.Attribute.NO_LOOP"));
-        attributesMap.put("salience", JavaParser.parseExpression("Rule.Attribute.SALIENCE"));
-        attributesMap.put("enabled", JavaParser.parseExpression("Rule.Attribute.ENABLED"));
-        attributesMap.put("auto-focus", JavaParser.parseExpression("Rule.Attribute.AUTO_FOCUS"));
-        attributesMap.put("lock-on-active", JavaParser.parseExpression("Rule.Attribute.LOCK_ON_ACTIVE"));
-        attributesMap.put("agenda-group", JavaParser.parseExpression("Rule.Attribute.AGENDA_GROUP"));
-        attributesMap.put("activation-group", JavaParser.parseExpression("Rule.Attribute.ACTIVATION_GROUP"));
-        attributesMap.put("ruleflow-group", JavaParser.parseExpression("Rule.Attribute.RULEFLOW_GROUP"));
-        attributesMap.put("duration", JavaParser.parseExpression("Rule.Attribute.DURATION"));
-        attributesMap.put("timer", JavaParser.parseExpression("Rule.Attribute.TIMER"));
-        attributesMap.put("calendars", JavaParser.parseExpression("Rule.Attribute.CALENDARS"));
-        attributesMap.put("date-effective", JavaParser.parseExpression("Rule.Attribute.DATE_EFFECTIVE"));
-        attributesMap.put("date-expires", JavaParser.parseExpression("Rule.Attribute.DATE_EXPIRES"));
+    private static final Expression asKnoledgeHelperExpression = parseExpression("((" + DroolsImpl.class.getCanonicalName() + ") drools).asKnowledgeHelper()");
 
-        consequenceMethods.put("getKnowledgeRuntime", JavaParser.parseExpression("drools.getRuntime(org.kie.api.runtime.KieRuntime.class)"));
-        consequenceMethods.put("getKieRuntime", JavaParser.parseExpression("drools.getRuntime(org.kie.api.runtime.KieRuntime.class)"));
+    static {
+        attributesMap.put("no-loop", parseExpression("Rule.Attribute.NO_LOOP"));
+        attributesMap.put("salience", parseExpression("Rule.Attribute.SALIENCE"));
+        attributesMap.put("enabled", parseExpression("Rule.Attribute.ENABLED"));
+        attributesMap.put("auto-focus", parseExpression("Rule.Attribute.AUTO_FOCUS"));
+        attributesMap.put("lock-on-active", parseExpression("Rule.Attribute.LOCK_ON_ACTIVE"));
+        attributesMap.put("agenda-group", parseExpression("Rule.Attribute.AGENDA_GROUP"));
+        attributesMap.put("activation-group", parseExpression("Rule.Attribute.ACTIVATION_GROUP"));
+        attributesMap.put("ruleflow-group", parseExpression("Rule.Attribute.RULEFLOW_GROUP"));
+        attributesMap.put("duration", parseExpression("Rule.Attribute.DURATION"));
+        attributesMap.put("timer", parseExpression("Rule.Attribute.TIMER"));
+        attributesMap.put("calendars", parseExpression("Rule.Attribute.CALENDARS"));
+        attributesMap.put("date-effective", parseExpression("Rule.Attribute.DATE_EFFECTIVE"));
+        attributesMap.put("date-expires", parseExpression("Rule.Attribute.DATE_EXPIRES"));
 
         temporalOperators.add("before");
         temporalOperators.add("after");
@@ -133,6 +136,19 @@ public class ModelGenerator {
         temporalOperators.add("overlappedby");
         temporalOperators.add("includes");
         temporalOperators.add("starts");
+
+        implicitDroolsMethods.add("insert");
+        implicitDroolsMethods.add("insertLogical");
+        implicitDroolsMethods.add("delete");
+        implicitDroolsMethods.add("retract");
+        implicitDroolsMethods.add("update");
+
+        knowledgeHelperMethods.add("getWorkingMemory");
+        knowledgeHelperMethods.add("getRule");
+        knowledgeHelperMethods.add("getTuple");
+        knowledgeHelperMethods.add("getKnowledgeRuntime");
+        knowledgeHelperMethods.add("getKieRuntime");
+        knowledgeHelperMethods.add("insertLogical");
     }
 
     public static final boolean GENERATE_EXPR_ID = true;
@@ -255,7 +271,7 @@ public class ModelGenerator {
                 case "enabled":
                 case "auto-focus":
                 case "lock-on-active":
-                    attributeCall.addArgument(JavaParser.parseExpression(as.getValue().getValue()));
+                    attributeCall.addArgument( parseExpression(as.getValue().getValue()));
                     break;
                 case "agenda-group":
                 case "activation-group":
@@ -269,12 +285,12 @@ public class ModelGenerator {
                     if (value.startsWith( "[" )) {
                         value = value.substring( 1, value.length()-1 ).trim();
                     }
-                    Expression arrayExpr = JavaParser.parseExpression("new String[] { " + value + " }");
+                    Expression arrayExpr = parseExpression("new String[] { " + value + " }");
                     attributeCall.addArgument( arrayExpr );
                     break;
                 case "date-effective":
                 case "date-expires":
-                    attributeCall.addArgument(JavaParser.parseExpression(String.format("GregorianCalendar.from(LocalDate.parse(\"%s\", dateTimeFormatter).atStartOfDay(ZoneId.systemDefault()))", as.getValue().getValue())));
+                    attributeCall.addArgument( parseExpression(String.format("GregorianCalendar.from(LocalDate.parse(\"%s\", dateTimeFormatter).atStartOfDay(ZoneId.systemDefault()))", as.getValue().getValue())));
                     break;
                 default:
                     throw new UnsupportedOperationException("Unhandled case for rule attribute: " + as.getKey());
@@ -338,7 +354,7 @@ public class ModelGenerator {
             aStringLiteral.setString(annValue.toString()); // use the setter method in order for the string literal be properly escaped.
             return aStringLiteral;
         } else if (annValue instanceof Number) {
-            return JavaParser.parseExpression(annValue.toString());
+            return parseExpression(annValue.toString());
         } else if (annValue instanceof Map) {
             throw new UnsupportedOperationException("cannot define a canonical representation for a java.util.Map yet.");
         } else {
@@ -359,6 +375,7 @@ public class ModelGenerator {
     }
 
     public static MethodCallExpr createConsequenceCall( PackageModel packageModel, RuleDescr ruleDescr, RuleContext context, String consequenceString, BlockStmt ruleVariablesBlock, boolean isBreaking ) {
+        consequenceString = consequenceString.replaceAll( "kcontext", "drools" );
         BlockStmt ruleConsequence = rewriteConsequence(context, consequenceString);
         Collection<String> usedDeclarationInRHS = extractUsedDeclarations(packageModel, context, ruleConsequence, consequenceString);
         MethodCallExpr onCall = onCall(usedDeclarationInRHS);
@@ -594,27 +611,19 @@ public class ModelGenerator {
         List<MethodCallExpr> methodCallExprs = rhs.getChildNodesByType(MethodCallExpr.class);
         List<MethodCallExpr> updateExprs = new ArrayList<>();
 
-        for (MethodCallExpr methodCallExpr : methodCallExprs) {
+        for ( MethodCallExpr methodCallExpr : methodCallExprs ) {
             if ( isDroolsMethod( methodCallExpr ) ) {
-                if (!methodCallExpr.getScope().isPresent()) {
-                    methodCallExpr.setScope(new NameExpr("drools"));
+                if ( !methodCallExpr.getScope().isPresent() ) {
+                    methodCallExpr.setScope( new NameExpr( "drools" ) );
                 }
-                if (methodCallExpr.getNameAsString().equals("update")) {
-                    updateExprs.add(methodCallExpr);
-                } else if (methodCallExpr.getNameAsString().equals("retract")) {
+                if ( knowledgeHelperMethods.contains( methodCallExpr.getNameAsString() ) ) {
+                    methodCallExpr.setScope( asKnoledgeHelperExpression );
+                } else if ( methodCallExpr.getNameAsString().equals( "update" ) ) {
+                    updateExprs.add( methodCallExpr );
+                } else if ( methodCallExpr.getNameAsString().equals( "retract" ) ) {
                     methodCallExpr.setName( new SimpleName( "delete" ) );
                 }
                 requireDrools.set( true );
-            } else {
-                methodCallExpr.getScope().ifPresent( scope -> {
-                    if (scope instanceof MethodCallExpr && hasScope( (( MethodCallExpr ) scope), "drools" )) {
-                        Expression newScope = consequenceMethods.get( (( MethodCallExpr ) scope).getNameAsString() );
-                        if (newScope != null) {
-                            methodCallExpr.setScope( newScope );
-                        }
-                        requireDrools.set( true );
-                    }
-                } );
             }
         }
 
@@ -646,13 +655,8 @@ public class ModelGenerator {
     }
 
     private static boolean isDroolsMethod( MethodCallExpr mce ) {
-        return hasScope( mce, "drools" ) || (
-                !mce.getScope().isPresent() && (
-                mce.getNameAsString().equals("insert") ||
-                mce.getNameAsString().equals("insertLogical") ||
-                mce.getNameAsString().equals("delete") ||
-                mce.getNameAsString().equals("retract") ||
-                mce.getNameAsString().equals("update") ) );
+        return hasScope( mce, "drools" ) ||
+               ( !mce.getScope().isPresent() && implicitDroolsMethods.contains( mce.getNameAsString() ) );
     }
 
     private static boolean hasScope( MethodCallExpr mce, String scope ) {
