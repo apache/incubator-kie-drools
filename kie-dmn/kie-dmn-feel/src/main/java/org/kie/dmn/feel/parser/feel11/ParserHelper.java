@@ -60,7 +60,7 @@ public class ParserHelper {
     private Scope         currentScope = symbols.getGlobalScope();
     private Stack<String> currentName  = new Stack<>();
     private int dynamicResolution = 0;
-    private boolean featDMN12EnhancedForLoopEnabled = true; // DROOLS-2307 DMN enhanced for loop
+    private boolean featDMN12EnhancedForLoopEnabled = false; // DROOLS-2307 DMN enhanced for loop
 
     public ParserHelper() {
         this( null );
