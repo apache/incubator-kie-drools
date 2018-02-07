@@ -17,11 +17,17 @@
 package org.kie.dmn.feel.runtime;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.junit.runners.Parameterized;
+import org.kie.dmn.feel.util.EvalHelper;
+
+import static org.kie.dmn.feel.util.DynamicTypeUtils.entry;
+import static org.kie.dmn.feel.util.DynamicTypeUtils.mapOf;
 
 public class FEELConditionsAndLoopsTest extends BaseFEELTest {
 
@@ -43,8 +49,12 @@ public class FEELConditionsAndLoopsTest extends BaseFEELTest {
                                                 //                 null },
                                                 //                {"count( for x in [1, 2, 3] return x+1 )", BigDecimal.valueOf( 3 ), null},
                 {"for x in 1..3 return x+1", Arrays.asList( 1, 2, 3 ).stream().map( x -> BigDecimal.valueOf( x + 1 ) ).collect( Collectors.toList() ), null},
+                {"for x in 3..1 return x+1", Arrays.asList( 3, 2, 1 ).stream().map( x -> BigDecimal.valueOf( x + 1 ) ).collect( Collectors.toList() ), null},
+                {"for x in 1..1 return x+1", Arrays.asList( 1 ).stream().map( x -> BigDecimal.valueOf( x + 1 ) ).collect( Collectors.toList() ), null},
+                {"for x in 1..3, y in 4..6 return [x+1, y-1]", l(l(2, 3), l(2, 4), l(2, 5), l(3, 3), l(3, 4), l(3, 5), l(4, 3), l(4, 4), l(4, 5)), null},
+                {"{ a: 1, b : 3, c : for x in a..b return x+1}", mapOf(entry("a", BigDecimal.valueOf(1)), entry("b", BigDecimal.valueOf(3)),  entry("c", Arrays.asList( 1, 2, 3 ).stream().map( x -> BigDecimal.valueOf( x + 1 ) ).collect( Collectors.toList() )) ), null},
+                {"{ a: 1, b : 3, c : for x in a+2..b-2 return x+1}", mapOf(entry("a", BigDecimal.valueOf(1)), entry("b", BigDecimal.valueOf(3)),  entry("c", Arrays.asList( 3, 2, 1 ).stream().map( x -> BigDecimal.valueOf( x + 1 ) ).collect( Collectors.toList() )) ), null},
                 {"for x in [1, 2, 3] return x+1", Arrays.asList( 1, 2, 3 ).stream().map( x -> BigDecimal.valueOf( x + 1 ) ).collect( Collectors.toList() ), null},
-                {"for x in 1..3 return x+1", Arrays.asList( 1, 2, 3 ).stream().map( x -> BigDecimal.valueOf( x + 1 ) ).collect( Collectors.toList() ), null},
 
                 // quantified
                 {"if every x in [ 1, 2, 3 ] satisfies x < 5 then \"foo\" else \"bar\"", "foo", null}
@@ -52,4 +62,13 @@ public class FEELConditionsAndLoopsTest extends BaseFEELTest {
         };
         return Arrays.asList( cases );
     }
+
+    private static List<Object> l(Object... args) {
+        List<Object> coerced = new ArrayList<>();
+        for ( Object a : args ) {
+            coerced.add(EvalHelper.coerceNumber(a));
+        }
+        return coerced;
+    }
+
 }
