@@ -34,9 +34,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentMap;
 
 import com.google.common.collect.Iterators;
-import java.util.concurrent.ConcurrentMap;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.optaplanner.core.api.domain.autodiscover.AutoDiscoverMemberType;
@@ -65,6 +65,7 @@ import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalS
 import org.optaplanner.core.api.score.buildin.simpledouble.SimpleDoubleScore;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.config.util.ConfigUtils;
+import org.optaplanner.core.impl.domain.common.ConcurrentMemoization;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 import org.optaplanner.core.impl.domain.common.accessor.BeanPropertyMemberAccessor;
 import org.optaplanner.core.impl.domain.common.accessor.FieldMemberAccessor;
@@ -74,7 +75,6 @@ import org.optaplanner.core.impl.domain.lookup.LookUpStrategyResolver;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.solution.AbstractSolution;
 import org.optaplanner.core.impl.domain.solution.cloner.FieldAccessingSolutionCloner;
-import org.optaplanner.core.impl.domain.solution.util.ConcurrentCache;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
@@ -161,7 +161,7 @@ public class SolutionDescriptor<Solution_> {
     private final Map<Class<?>, EntityDescriptor<Solution_>> entityDescriptorMap;
     private final List<Class<?>> reversedEntityClassList;
 
-    private final ConcurrentMap<Class<?>, EntityDescriptor<Solution_>> lowestEntityDescriptorCache = new ConcurrentCache<>();
+    private final ConcurrentMap<Class<?>, EntityDescriptor<Solution_>> lowestEntityDescriptorMemoization = new ConcurrentMemoization<>();
     private LookUpStrategyResolver lookUpStrategyResolver = null;
 
     // ************************************************************************
@@ -189,7 +189,7 @@ public class SolutionDescriptor<Solution_> {
         }
         entityDescriptorMap.put(entityClass, entityDescriptor);
         reversedEntityClassList.add(0, entityClass);
-        lowestEntityDescriptorCache.put(entityClass, entityDescriptor);
+        lowestEntityDescriptorMemoization.put(entityClass, entityDescriptor);
     }
 
     public void processAnnotations(DescriptorPolicy descriptorPolicy, ScoreDefinition deprecatedScoreDefinition, List<Class<?>> entityClassList) {
@@ -822,7 +822,7 @@ public class SolutionDescriptor<Solution_> {
     }
 
     public EntityDescriptor<Solution_> findEntityDescriptor(Class<?> entitySubclass) {
-        return lowestEntityDescriptorCache.computeIfAbsent(entitySubclass, key -> {
+        return lowestEntityDescriptorMemoization.computeIfAbsent(entitySubclass, key -> {
             // Reverse order to find the nearest ancestor
             for (Class<?> entityClass : reversedEntityClassList) {
                 if (entityClass.isAssignableFrom(entitySubclass)) {
