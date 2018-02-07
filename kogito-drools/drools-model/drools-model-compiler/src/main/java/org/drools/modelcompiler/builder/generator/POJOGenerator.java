@@ -58,6 +58,9 @@ public class POJOGenerator {
 
     private static final String TYPE_META_DATA_CALL = "typeMetaData";
 
+    private static final Statement referenceEquals = parseStatement("if (this == o) { return true; }");
+    private static final Statement classCheckEquals = parseStatement("if (o == null || getClass() != o.getClass()) { return false; }");
+
     public static final Map<String, Class<?>> predefinedClassLevelAnnotation = new HashMap<>();
     static {
         predefinedClassLevelAnnotation.put("role", Role.class);
@@ -245,9 +248,6 @@ public class POJOGenerator {
                 packageDescr.getTypeDeclarations().stream().filter( td -> td.getTypeName().equals( typeDeclaration.getSuperTypeName() ) ).findFirst() :
                 Optional.empty();
     }
-
-    private static final Statement referenceEquals = parseStatement("if (this == o) { return true; }");
-    private static final Statement classCheckEquals = parseStatement("if (o == null || getClass() != o.getClass()) { return false; }");
 
     private static MethodDeclaration generateEqualsMethod(String generatedClassName, List<Statement> equalsFieldStatement, boolean hasSuper) {
         NodeList<Statement> equalsStatements = nodeList(referenceEquals, classCheckEquals);

@@ -1264,4 +1264,22 @@ public class CompilerTest extends BaseModelTest {
         assertEquals( 1, list.size() );
         assertEquals( "y", list.get(0) );
     }
+
+    @Test
+    public void testRHS() {
+        String str =
+                "rule R when\n" +
+                "        //conditions\n" +
+                "    then\n" +
+                "        drools.halt();\n" +
+                "        drools.getWorkingMemory();\n" +
+                "        drools.setFocus(\"agenda-group\");\n" +
+                "        drools.getRule();\n" +
+                "        drools.getTuple();\n" +
+                "        System.out.println(kcontext);\n" +
+                "        kcontext.getKnowledgeRuntime();\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+    }
 }
