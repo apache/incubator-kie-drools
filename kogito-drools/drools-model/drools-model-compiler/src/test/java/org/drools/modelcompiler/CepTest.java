@@ -163,21 +163,6 @@ public class CepTest extends BaseModelTest {
 
     @Test
     public void testDeclaredSlidingWindow() throws Exception {
-//        WindowReference w = window(
-//                Window.Type.TIME,
-//                5,
-//                TimeUnit.SECONDS,
-//                StockTick.class,
-//              s -> s.getCompany().equals( "DROO" )
-// );
-//        Variable<StockTick> drooV = declarationOf( type( StockTick.class ), window );
-//
-//        Rule rule = rule( "window" )
-//                .build(
-//                        input(drooV),
-//                        on(drooV).execute(s -> System.out.println(s.getCompany()))
-//                      );
-
         String str =
                 "import " + StockTick.class.getCanonicalName() + ";\n" +
                 "declare window DeclaredWindow\n" +
@@ -202,6 +187,54 @@ public class CepTest extends BaseModelTest {
         ksession.insert( new StockTick("DROO") );
 
         assertEquals(2, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testDeclaredSlidingWindowOnEventInTypeDeclaration() throws Exception {
+        String str =
+                "declare String\n" +
+                "  @role( event )\n" +
+                "end\n" +
+                "declare window DeclaredWindow\n" +
+                "    String( ) over window:time( 5s )\n" +
+                "end\n" +
+                "rule R when\n" +
+                "    $a : String( this == \"DROO\" ) from window DeclaredWindow\n" +
+                "then\n" +
+                "  System.out.println($a);\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession(getCepKieModuleModel(), str);
+        SessionPseudoClock clock = ksession.getSessionClock();
+
+        ksession.insert( "ACME" );
+        ksession.insert( "DROO" );
+
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testDeclaredSlidingWindowWith2Arguments() throws Exception {
+        String str =
+                "declare String\n" +
+                "  @role( event )\n" +
+                "end\n" +
+                "declare window DeclaredWindow\n" +
+                "    String( length == 4, this.startsWith(\"D\") ) over window:time( 5s )\n" +
+                "end\n" +
+                "rule R when\n" +
+                "    $a : String() from window DeclaredWindow\n" +
+                "then\n" +
+                "  System.out.println($a);\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession(getCepKieModuleModel(), str);
+        SessionPseudoClock clock = ksession.getSessionClock();
+
+        ksession.insert( "ACME" );
+        ksession.insert( "DROO" );
+
+        assertEquals(1, ksession.fireAllRules());
     }
 
     @Test

@@ -15,6 +15,13 @@
 
 package org.drools.compiler.builder.impl;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.TypeDeclarationError;
 import org.drools.compiler.lang.descr.AbstractClassTypeDeclarationDescr;
@@ -29,13 +36,6 @@ import org.kie.api.definition.type.FactField;
 import org.kie.api.definition.type.PropertyChangeSupport;
 import org.kie.api.definition.type.Role;
 import org.kie.api.definition.type.TypeSafe;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class TypeDeclarationFactory {
 
@@ -68,27 +68,30 @@ public class TypeDeclarationFactory {
 
     private void processTypeAnnotations( AbstractClassTypeDeclarationDescr typeDescr, TypeDeclaration type ) {
         try {
-            Role role = typeDescr.getTypedAnnotation(Role.class);
-            if (role != null) {
-                type.setRole(role.value());
-            }
-
-            TypeSafe typeSafe = typeDescr.getTypedAnnotation(TypeSafe.class);
-            if (typeSafe != null) {
-                type.setTypesafe(typeSafe.value());
-            }
-
-            if (typeDescr instanceof EnumDeclarationDescr ) {
-                type.setKind(TypeDeclaration.Kind.ENUM);
-            } else if (typeDescr instanceof TypeDeclarationDescr && ((TypeDeclarationDescr)typeDescr).isTrait()) {
-                type.setKind(TypeDeclaration.Kind.TRAIT);
-            }
-
-            type.setDynamic( typeDescr.hasAnnotation(PropertyChangeSupport.class) );
+            processAnnotations( typeDescr, type );
         } catch (Exception e) {
             kbuilder.addBuilderResult(new TypeDeclarationError(typeDescr, e.getMessage() ) );
         }
+    }
 
+    public static void processAnnotations( AbstractClassTypeDeclarationDescr typeDescr, TypeDeclaration type ) {
+        Role role = typeDescr.getTypedAnnotation(Role.class);
+        if (role != null) {
+            type.setRole(role.value());
+        }
+
+        TypeSafe typeSafe = typeDescr.getTypedAnnotation(TypeSafe.class);
+        if (typeSafe != null) {
+            type.setTypesafe(typeSafe.value());
+        }
+
+        if (typeDescr instanceof EnumDeclarationDescr ) {
+            type.setKind(TypeDeclaration.Kind.ENUM);
+        } else if (typeDescr instanceof TypeDeclarationDescr && ((TypeDeclarationDescr)typeDescr).isTrait()) {
+            type.setKind(TypeDeclaration.Kind.TRAIT);
+        }
+
+        type.setDynamic( typeDescr.hasAnnotation(PropertyChangeSupport.class) );
     }
 
     protected void checkRedeclaration( AbstractClassTypeDeclarationDescr typeDescr, TypeDeclaration type, PackageRegistry pkgRegistry ) {

@@ -25,11 +25,14 @@ import java.util.stream.Collectors;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.builder.impl.TypeDeclarationFactory;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.rule.TypeDeclaration;
 
 import static org.drools.modelcompiler.builder.generator.ModelGenerator.generateModel;
 import static org.drools.modelcompiler.builder.generator.POJOGenerator.compileType;
@@ -59,8 +62,29 @@ public class ModelBuilderImpl extends KnowledgeBuilderImpl {
     @Override
     public void buildPackages(Collection<CompositePackageDescr> packages) {
         initPackageRegistries(packages);
+        registerTypeDeclarations( packages );
         buildOtherDeclarations(packages);
+        deregisterTypeDeclarations( packages );
         buildRules(packages);
+    }
+
+    private void registerTypeDeclarations( Collection<CompositePackageDescr> packages ) {
+        for (CompositePackageDescr packageDescr : packages) {
+            InternalKnowledgePackage pkg = getOrCreatePackageRegistry(packageDescr).getPackage();
+            for (TypeDeclarationDescr typeDescr : packageDescr.getTypeDeclarations()) {
+                normalizeAnnotations(typeDescr, pkg.getTypeResolver(), false);
+                TypeDeclaration type = new TypeDeclaration( typeDescr.getTypeName() );
+                type.setResource( typeDescr.getResource() );
+                TypeDeclarationFactory.processAnnotations(typeDescr, type);
+                pkg.addTypeDeclaration( type );
+            }
+        }
+    }
+
+    private void deregisterTypeDeclarations( Collection<CompositePackageDescr> packages ) {
+        for (CompositePackageDescr packageDescr : packages) {
+            getOrCreatePackageRegistry(packageDescr).getPackage().getTypeDeclarations().clear();
+        }
     }
 
     protected void buildRules(Collection<CompositePackageDescr> packages) {
