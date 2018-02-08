@@ -16,24 +16,62 @@
 
 package org.drools.model.functions.temporal;
 
+import java.util.concurrent.TimeUnit;
+
+import static org.drools.model.functions.temporal.TimeUtil.unitToLong;
+
 public class BeforePredicate extends AbstractTemporalPredicate {
 
+    private final long initRange;
+    private final long finalRange;
+
     public BeforePredicate() {
-        this( new Interval(0, Interval.MAX) );
+        this( 0, Long.MAX_VALUE );
     }
 
-    public BeforePredicate( Interval interval ) {
-        super( interval );
+    public BeforePredicate(long dev, TimeUnit devUnit) {
+        this( unitToLong(dev, devUnit), Long.MAX_VALUE );
+    }
+
+    public BeforePredicate(long startDev, TimeUnit startDevUnit, long endDev, TimeUnit endDevUnit) {
+        this( unitToLong(startDev, startDevUnit), unitToLong(endDev, endDevUnit) );
+    }
+
+    private BeforePredicate(long initRange, long finalRange) {
+        this.initRange = initRange;
+        this.finalRange = finalRange;
     }
 
     @Override
     public String toString() {
-        return "before" + interval;
+        return (negated ? "not " : "") + "before[" + initRange + ", " + finalRange + "]";
     }
 
     @Override
     public boolean evaluate(long start1, long duration1, long end1, long start2, long duration2, long end2) {
         long diff = start2 - end1;
-        return diff >= interval.getLowerBound() && diff <= interval.getUpperBound();
+        return negated ^ (diff >= initRange && diff <= finalRange);
+    }
+
+    @Override
+    public Interval getInterval() {
+        long init = (this.finalRange == Interval.MAX) ? Interval.MIN : -this.finalRange;
+        long end = (this.initRange == Interval.MIN) ? Interval.MAX : -this.initRange;
+        if ( negated ) {
+            if ( init == Interval.MIN && end != Interval.MAX ) {
+                init = finalRange + 1;
+                end = Interval.MAX;
+            } else if ( init != Interval.MIN && end == Interval.MAX ) {
+                init = Interval.MIN;
+                end = initRange - 1;
+            } else if ( init == Interval.MIN ) {
+                init = 0;
+                end = -1;
+            } else {
+                init = Interval.MIN;
+                end = Interval.MAX;
+            }
+        }
+        return new Interval( init, end );
     }
 }

@@ -25,18 +25,25 @@ public class FinishesPredicate extends AbstractTemporalPredicate {
     private final long endDev;
 
     public FinishesPredicate() {
-        super(new Interval(0, Interval.MAX));
-        this.endDev = 0;
+        this(0);
     }
 
-    public FinishesPredicate(long endDev, TimeUnit endDevLongUnit) {
-        super(new Interval(0, Interval.MAX));
-        this.endDev = unitToLong(endDev, endDevLongUnit);
+    public FinishesPredicate(long endDev, TimeUnit endDevTimeUnit) {
+        this( unitToLong(endDev, endDevTimeUnit) );
+    }
+
+    private FinishesPredicate(long endDev) {
+        this.endDev = endDev;
     }
 
     @Override
     public String toString() {
-        return "finishes" + interval;
+        return (negated ? "not " : "") + "finishes[" + endDev + "]";
+    }
+
+    @Override
+    public Interval getInterval() {
+        return negated ? new Interval( Interval.MIN, Interval.MAX ) : new Interval( 0, Interval.MAX );
     }
 
     @Override
@@ -44,6 +51,6 @@ public class FinishesPredicate extends AbstractTemporalPredicate {
 
         long distStart = start1 - start2;
         long distEnd = Math.abs( end2 - end1 );
-        return (distStart > 0 && distEnd <= this.endDev);
+        return negated ^ (distStart > 0 && distEnd <= this.endDev);
     }
 }

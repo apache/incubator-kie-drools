@@ -16,6 +16,7 @@
 
 package org.drools.model.functions;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -74,6 +75,10 @@ public interface Operator<A, B> extends Predicate2<A, B[]> {
 
         public static Operator getOperator(String opName) {
             return opMap.get( opName );
+        }
+
+        public static Collection<String> getOperators() {
+            return opMap.keySet();
         }
     }
 }

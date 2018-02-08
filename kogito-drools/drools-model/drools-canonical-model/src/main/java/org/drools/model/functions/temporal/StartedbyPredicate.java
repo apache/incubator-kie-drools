@@ -22,16 +22,28 @@ import static org.drools.model.functions.temporal.TimeUtil.unitToLong;
 
 public class StartedbyPredicate extends AbstractTemporalPredicate {
 
-    private final long startDevLong;
+    private final long startDev;
 
-    public StartedbyPredicate(long startDev, TimeUnit startDevLongUnit) {
-        super(new Interval(0, 0));
-        this.startDevLong = unitToLong(startDev, startDevLongUnit);
+    public StartedbyPredicate() {
+        this(0);
+    }
+
+    public StartedbyPredicate(long endDev, TimeUnit endDevTimeUnit) {
+        this( unitToLong(endDev, endDevTimeUnit) );
+    }
+
+    private StartedbyPredicate(long startDev) {
+        this.startDev = startDev;
     }
 
     @Override
     public String toString() {
-        return "startedby " + interval;
+        return (negated ? "not " : "") + "startedby[" + startDev + "]";
+    }
+
+    @Override
+    public Interval getInterval() {
+        return negated ? new Interval( Interval.MIN, Interval.MAX ) : new Interval( 0, 0 );
     }
 
     @Override
@@ -39,6 +51,6 @@ public class StartedbyPredicate extends AbstractTemporalPredicate {
 
         long distStart = Math.abs(start1 - start2);
         long distEnd = end1 - end2;
-        return (distStart <= this.startDevLong && distEnd > 0);
+        return negated ^ (distStart <= this.startDev && distEnd > 0);
     }
 }

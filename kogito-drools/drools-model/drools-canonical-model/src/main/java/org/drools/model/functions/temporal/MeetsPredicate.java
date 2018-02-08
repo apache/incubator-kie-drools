@@ -22,26 +22,33 @@ import static org.drools.model.functions.temporal.TimeUtil.unitToLong;
 
 public class MeetsPredicate extends AbstractTemporalPredicate {
 
-    long finalRange;
+    private final long finalRange;
 
     public MeetsPredicate() {
-        super(new Interval(Interval.MIN, 0));
-        this.finalRange = 0;
+        this(0);
     }
 
     public MeetsPredicate(long finalRange, TimeUnit finalRangeTimeUnit) {
-        super(new Interval(Interval.MIN, 0));
-        this.finalRange = unitToLong(finalRange, finalRangeTimeUnit);
+        this( unitToLong(finalRange, finalRangeTimeUnit) );
+    }
+
+    private MeetsPredicate(long finalRange) {
+        this.finalRange = finalRange;
     }
 
     @Override
     public String toString() {
-        return "Meets" + interval;
+        return (negated ? "not " : "") + "meets[" + finalRange + "]";
+    }
+
+    @Override
+    public Interval getInterval() {
+        return negated ? new Interval( Interval.MIN, Interval.MAX ) : new Interval( 0, Interval.MAX );
     }
 
     @Override
     public boolean evaluate(long start1, long duration1, long end1, long start2, long duration2, long end2) {
         long dist = Math.abs( start2 - end1 );
-        return (dist <= this.finalRange);
+        return negated ^ (dist <= this.finalRange);
     }
 }

@@ -22,26 +22,33 @@ import static org.drools.model.functions.temporal.TimeUtil.unitToLong;
 
 public class MetbyPredicate extends AbstractTemporalPredicate {
 
-    long finalRange;
+    private final long finalRange;
 
     public MetbyPredicate() {
-        super(new Interval(Interval.MIN, 0));
-        this.finalRange = Long.MAX_VALUE;
+        this(0);
     }
 
-    public MetbyPredicate(long finalRange, TimeUnit maxDevTimeUnit) {
-        super(new Interval(Interval.MIN, 0));
-        this.finalRange = unitToLong(finalRange, maxDevTimeUnit);
+    public MetbyPredicate(long finalRange, TimeUnit finalRangeTimeUnit) {
+        this( unitToLong(finalRange, finalRangeTimeUnit) );
+    }
+
+    private MetbyPredicate(long finalRange) {
+        this.finalRange = finalRange;
     }
 
     @Override
     public String toString() {
-        return "metBy" + interval;
+        return (negated ? "not " : "") + "metBy[" + finalRange + "]";
+    }
+
+    @Override
+    public Interval getInterval() {
+        return negated ? new Interval( Interval.MIN, Interval.MAX ) : new Interval( Interval.MIN, 0 );
     }
 
     @Override
     public boolean evaluate(long start1, long duration1, long end1, long start2, long duration2, long end2) {
         long dist = Math.abs( start1 - end2 );
-        return ( dist <= this.finalRange );
+        return negated ^ ( dist <= this.finalRange );
     }
 }

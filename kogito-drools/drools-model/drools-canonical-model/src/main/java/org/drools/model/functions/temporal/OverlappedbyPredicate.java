@@ -22,30 +22,34 @@ import static org.drools.model.functions.temporal.TimeUtil.unitToLong;
 
 public class OverlappedbyPredicate extends AbstractTemporalPredicate {
 
-    long minDev;
-    long maxDev;
+    private final long minDev;
+    private final long maxDev;
 
     public OverlappedbyPredicate() {
-        super(new Interval(0, Interval.MAX));
-        this.minDev = 1;
-        this.maxDev = Long.MAX_VALUE;
+        this(1, Long.MAX_VALUE);
     }
 
     public OverlappedbyPredicate(long maxDev, TimeUnit maxDevTimeUnit) {
-        super(new Interval(0, Interval.MAX));
-        this.minDev = 1;
-        this.maxDev = unitToLong(maxDev, maxDevTimeUnit);
+        this(1, unitToLong(maxDev, maxDevTimeUnit));
     }
 
     public OverlappedbyPredicate(long minDev, TimeUnit minDevTimeUnit, long maxDev, TimeUnit maxDevTimeUnit) {
-        super(new Interval(0, Interval.MAX));
-        this.minDev = unitToLong(minDev, minDevTimeUnit);
-        this.maxDev = unitToLong(maxDev, maxDevTimeUnit);
+        this( unitToLong(minDev, minDevTimeUnit), unitToLong(maxDev, maxDevTimeUnit) );
+    }
+
+    private OverlappedbyPredicate(long minDev, long maxDev) {
+        this.minDev = minDev;
+        this.maxDev = maxDev;
     }
 
     @Override
     public String toString() {
-        return "overlappedby" + interval;
+        return (negated ? "not " : "") + "overlappedby[" + minDev + ", " + maxDev + "]";
+    }
+
+    @Override
+    public Interval getInterval() {
+        return negated ? new Interval( Interval.MIN, Interval.MAX ) : new Interval( 0, Interval.MAX );
     }
 
     @Override
@@ -54,8 +58,6 @@ public class OverlappedbyPredicate extends AbstractTemporalPredicate {
         long startTS = start1;
         long endTS = end2;
         long dist = endTS - startTS;
-        return  ( start2 < startTS &&
-                endTS < end1 &&
-                dist >= this.minDev && dist <= this.maxDev );
+        return negated ^ ( start2 < startTS && endTS < end1 && dist >= this.minDev && dist <= this.maxDev );
     }
 }
