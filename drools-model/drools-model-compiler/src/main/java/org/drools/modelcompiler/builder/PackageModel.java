@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -360,24 +361,31 @@ public class PackageModel {
         RuleSourceResult results = new RuleSourceResult(cu);
 
         // each method per Drlx parser result
-        for (int i = 0; i < 1; i++) {
-            CompilationUnit cuRulesMethod = new CompilationUnit();
-            cuRulesMethod.setPackageDeclaration(name);
-            manageImportForCompilationUnit(cuRulesMethod);
-            cuRulesMethod.addImport(JavaParser.parseImport("import static " + name + "." + rulesFileName + ".*;"));
-            String currentRulesMethodClassName = rulesFileName + "RuleMethods" + i;
-            ClassOrInterfaceDeclaration rulesMethodClass = cuRulesMethod.addClass(currentRulesMethodClassName);
-            ruleMethods.values().forEach(rulesMethodClass::addMember);
+        int count = 0; // I count which method it is.
+        int index = 0; // I decide which classIndex goes into.
+        Map<Integer, ClassOrInterfaceDeclaration> splitted = new LinkedHashMap<>();
+        for (Entry<String, MethodDeclaration> ruleMethodKV : ruleMethods.entrySet()) {
+            count++;
+            if (count % 10 == 0) {
+                index++;
+            }
+            ClassOrInterfaceDeclaration rulesMethodClass = splitted.computeIfAbsent(index, i -> {
+                CompilationUnit cuRulesMethod = new CompilationUnit();
+                results.with(cuRulesMethod);
+                cuRulesMethod.setPackageDeclaration(name);
+                manageImportForCompilationUnit(cuRulesMethod);
+                cuRulesMethod.addImport(JavaParser.parseImport("import static " + name + "." + rulesFileName + ".*;"));
+                String currentRulesMethodClassName = rulesFileName + "RuleMethods" + i;
+                ClassOrInterfaceDeclaration r = cuRulesMethod.addClass(currentRulesMethodClassName);
+                return r;
+            });
+            rulesMethodClass.addMember(ruleMethodKV.getValue());
 
             // manage in main class init block:
-            for (String methodName : ruleMethods.keySet()) {
-                NameExpr rulesFieldName = new NameExpr("rules");
-                MethodCallExpr add = new MethodCallExpr(rulesFieldName, "add");
-                add.addArgument(new MethodCallExpr(new NameExpr(currentRulesMethodClassName), methodName));
-                rulesListInitializerBody.addStatement(add);
-            }
-
-            results.with(cuRulesMethod);
+            NameExpr rulesFieldName = new NameExpr("rules");
+            MethodCallExpr add = new MethodCallExpr(rulesFieldName, "add");
+            add.addArgument(new MethodCallExpr(new NameExpr(rulesMethodClass.getNameAsString()), ruleMethodKV.getKey()));
+            rulesListInitializerBody.addStatement(add);
         }
 
         queryMethods.values().forEach(rulesClass::addMember);
