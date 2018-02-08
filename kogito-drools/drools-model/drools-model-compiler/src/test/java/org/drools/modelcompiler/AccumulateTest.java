@@ -508,4 +508,62 @@ public class AccumulateTest extends BaseModelTest {
             assertThat(results, hasItem(72));
         }
     }
+
+    @Test
+    public void testExpandedAccumulateWith2Args() {
+        String str = "import " + Person.class.getCanonicalName() + ";\n" +
+                "rule R when\n" +
+                "  $avg : Integer() from accumulate (\n" +
+                "            Person( age > 18, $age : age ), init( int count = 0; int sum = 0; ), " +
+                "                                            action( count++; sum += $age; ), " +
+                "                                            reverse( count--; sum -= $age; ), " +
+                "                                            result( sum / count )\n" +
+                "         )" +
+                "then\n" +
+                "  insert($avg);\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+
+        FactHandle fh_Mark = ksession.insert(new Person("Mark", 37));
+        FactHandle fh_Edson = ksession.insert(new Person("Edson", 35));
+        FactHandle fh_Mario = ksession.insert(new Person("Mario", 42));
+        ksession.fireAllRules();
+
+        List<Integer> results = getObjectsIntoList(ksession, Integer.class);
+        assertEquals(1, results.size());
+        assertThat(results, hasItem(38));
+
+        ksession.delete(fh_Mario);
+        ksession.fireAllRules();
+
+        results = getObjectsIntoList(ksession, Integer.class);
+        assertEquals(2, results.size());
+        assertThat(results, hasItem(36));
+    }
+
+    @Test
+    public void testExpandedAccumulateWith3Args() {
+        String str =
+                "rule \"TestAccumulate2\" when\n" +
+                "    $dx : Number () from accumulate ( $d : Double (),\n" +
+                "                init   ( double ex = 0; double ex2 = 0; int count = 0; ),\n" +
+                "                action ( count++; ex += $d; ex2 += $d * $d; ),\n" +
+                "                reverse( count--; ex -= $d; ex2 -= $d * $d; ),\n" +
+                "                result ( (ex / count) * (ex / count) + (ex2 / count) ) )\n" +
+                "then\n" +
+                "   insert($dx.intValue());\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert(1.0);
+        ksession.insert(2.0);
+        ksession.insert(3.0);
+        ksession.fireAllRules();
+
+        List<Integer> results = getObjectsIntoList(ksession, Integer.class);
+        assertEquals(1, results.size());
+        assertThat(results, hasItem(8));
+    }
 }

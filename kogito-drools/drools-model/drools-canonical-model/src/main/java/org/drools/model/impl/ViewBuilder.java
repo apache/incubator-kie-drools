@@ -52,6 +52,7 @@ import org.drools.model.view.Expr3ViewItemImpl;
 import org.drools.model.view.ExprNViewItem;
 import org.drools.model.view.ExprViewItem;
 import org.drools.model.view.FixedValueItem;
+import org.drools.model.view.InputViewItem;
 import org.drools.model.view.InputViewItemImpl;
 import org.drools.model.view.QueryCallViewItem;
 import org.drools.model.view.TemporalExprViewItem;
@@ -356,7 +357,7 @@ public class ViewBuilder {
                 ctx.usedVars.add(accFunc.getVariable());
             }
 
-            final Condition newCondition = viewItem2Condition(acc.getExpr(), condition, ctx);
+            final Condition newCondition = acc.getExpr() instanceof InputViewItem ? condition : viewItem2Condition(acc.getExpr(), condition, ctx);
             if (newCondition instanceof Pattern) {
                 return new AccumulatePatternImpl((Pattern) newCondition, Optional.empty(), acc.getAccumulateFunctions());
             } else if (newCondition instanceof CompositePatterns) {

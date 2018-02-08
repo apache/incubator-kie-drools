@@ -24,7 +24,7 @@ import java.util.Collection;
  */
 public final class TestParametersUtil {
 
-    public static boolean TEST_CANONICAL_MODEL = false;
+    public static boolean TEST_CANONICAL_MODEL = true;
 
     /**
      * Prepares collection of KieBaseTestConfiguration.

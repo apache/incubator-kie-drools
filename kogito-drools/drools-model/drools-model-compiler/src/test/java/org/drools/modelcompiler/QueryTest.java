@@ -398,15 +398,34 @@ public class QueryTest extends BaseModelTest {
     }
 
     @Test
-    public void testRecursiveQuery() throws Exception {
-        String str =
-                "package org.test;\n" +
-                "import " + Person.class.getCanonicalName() + ";" +
+    public void testPositionalRecursiveQuery() throws Exception {
+        String query =
                 "query isContainedIn(String x, String y)\n" +
                 "    Location (x, y;)\n" +
                 "    or\n" +
                 "    ( Location (z, y;) and ?isContainedIn(x, z;))\n" +
-                "end\n" +
+                "end\n";
+
+        checkRecursiveQuery( query );
+    }
+
+    @Test
+    public void testUnificationRecursiveQuery() throws Exception {
+        String query =
+                "query isContainedIn(String x, String y)\n" +
+                "    Location( x := thing, y := location)\n" +
+                "    or \n" +
+                "    ( Location(z := thing, y := location) and ?isContainedIn( x := x, z := y ) )\n" +
+                "end\n";
+
+        checkRecursiveQuery( query );
+    }
+
+    private void checkRecursiveQuery( String query ) throws InstantiationException, IllegalAccessException {
+        String str =
+                "package org.test;\n" +
+                "import " + Person.class.getCanonicalName() + ";" +
+                query +
                 "declare Location\n" +
                 "    thing : String\n" +
                 "    location : String\n" +

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
@@ -24,6 +23,7 @@ import org.drools.javaparser.ast.expr.AssignExpr;
 import org.drools.javaparser.ast.expr.AssignExpr.Operator;
 import org.drools.javaparser.ast.expr.BinaryExpr;
 import org.drools.javaparser.ast.expr.ClassExpr;
+import org.drools.javaparser.ast.expr.EnclosedExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.FieldAccessExpr;
 import org.drools.javaparser.ast.expr.LambdaExpr;
@@ -47,6 +47,8 @@ import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 import org.drools.modelcompiler.util.StringUtil;
 import org.kie.api.runtime.rule.AccumulateFunction;
+
+import static java.util.stream.Collectors.toList;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.forceCastForName;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.rescopeNamesToNewScope;
@@ -107,7 +109,7 @@ public class AccumulateVisitor {
                 .getChildNodes()
                 .stream()
                 .filter(a -> a.toString().startsWith("bind"))
-                .collect(Collectors.toList());
+                .collect( toList());
 
         for (Node bindExpr : bindExprs) {
             accumulateDSL.remove(bindExpr);
@@ -326,50 +328,25 @@ public class AccumulateVisitor {
 
         MethodDeclaration accumulateMethod = templateClass.getMethodsByName("accumulate").get(0);
         BlockStmt actionBlock = JavaParser.parseBlock("{" + descr.getActionCode() + "}");
-        List<NameExpr> allNameExprInActionBlock = actionBlock.findAll(NameExpr.class, n -> context2.getAvailableBindings().contains(n.getNameAsString()));
-        if (allNameExprInActionBlock.size() == 1) {
-            accumulateMethod.getParameter(1).setName(allNameExprInActionBlock.get(0).getNameAsString());
-            singleAccumulateType = context2.getDeclarationById(allNameExprInActionBlock.get(0).getNameAsString()).get().getType();
-        } else if (allNameExprInActionBlock.size() == 1) {
-            // do nothing.
+        Collection<String> allNamesInActionBlock = collectNamesInBlock( context2, actionBlock );
+        if (allNamesInActionBlock.size() == 1) {
+            String nameExpr = allNamesInActionBlock.iterator().next();
+            accumulateMethod.getParameter(1).setName(nameExpr);
+            singleAccumulateType = context2.getDeclarationById(nameExpr).get().getType();
         } else {
             throw new UnsupportedOperationException("By design this legacy accumulate (with inline custome code) visitor supports only with 1-and-only binding");
         }
-        for (Statement stmt : actionBlock.getStatements() ) {
-            for ( ExpressionStmt eStmt : stmt.findAll(ExpressionStmt.class) ) {
-                forceCastForName(accumulateMethod.getParameter(1).getNameAsString(), singleAccumulateType, eStmt.getExpression());
-                rescopeNamesToNewScope(new NameExpr("data"), contextFieldNames, eStmt.getExpression());
-            }
-            accumulateMethod.getBody().get().addStatement(stmt);
-        }
+
+        writeAccumulateMethod( contextFieldNames, singleAccumulateType, accumulateMethod, actionBlock );
 
         // <result expression>: this is a semantic expression in the selected dialect that is executed after all source objects are iterated.
         MethodDeclaration resultMethod = templateClass.getMethodsByName("getResult").get(0);
         Type returnExpressionType = JavaParser.parseType("java.lang.Object");
         Expression returnExpression = JavaParser.parseExpression(descr.getResultCode());
-        Optional<Expression> returnExpressionRootNode = DrlxParseUtil.findRootNodeViaScope(returnExpression);
-        if (returnExpressionRootNode.isPresent() && returnExpressionRootNode.get() instanceof NameExpr) {
-            NameExpr nameExpr = (NameExpr) returnExpressionRootNode.get();
-            if (contextFieldNames.contains(nameExpr.getNameAsString())) {
-                // identify type of the returnExpression:
-                VariableDeclarator vdOfName = templateContextClass.getFieldByName(nameExpr.getNameAsString())
-                                                                  .orElseThrow(() -> new RuntimeException("unable to find field of name."))
-                                                                  .getVariables()
-                                                                  .stream()
-                                                                  .filter(vd -> vd.getNameAsString().equals(nameExpr.getNameAsString()))
-                                                                  .findFirst()
-                                                                  .orElseThrow(() -> new RuntimeException("unable to find variabledeclarator of name."));
-                returnExpressionType = vdOfName.getType();
-
-                // proceed to implement method:
-                Expression prepend = new FieldAccessExpr(new NameExpr("data"), nameExpr.getNameAsString());
-                if (returnExpression instanceof NameExpr) {
-                    returnExpression = prepend; // if the returnExpr is simply the NameExpr already, does not substitute in the child, but itself.
-                } else {
-                    returnExpression.replace(nameExpr, prepend);
-                }
-            }
+        if (returnExpression instanceof NameExpr) {
+            returnExpression = new EnclosedExpr( returnExpression );
         }
+        rescopeNamesToNewScope(new NameExpr("data"), contextFieldNames, returnExpression);
         resultMethod.getBody().get().addStatement(new ReturnStmt(returnExpression));
         MethodDeclaration getResultTypeMethod = templateClass.getMethodsByName("getResultType").get(0);
         getResultTypeMethod.getBody().get().addStatement(new ReturnStmt(new ClassExpr(returnExpressionType)));
@@ -380,21 +357,14 @@ public class AccumulateVisitor {
 
             MethodDeclaration reverseMethod = templateClass.getMethodsByName("reverse").get(0);
             BlockStmt reverseBlock = JavaParser.parseBlock("{" + descr.getReverseCode() + "}");
-            List<NameExpr> allNameExprInReverseBlock = reverseBlock.findAll(NameExpr.class, n -> context2.getAvailableBindings().contains(n.getNameAsString()));
-            if (allNameExprInReverseBlock.size() == 1) {
-                reverseMethod.getParameter(1).setName(allNameExprInReverseBlock.get(0).getNameAsString());
-            } else if (allNameExprInReverseBlock.size() == 1) {
-                // do nothing.
+            Collection<String> allNamesInReverseBlock = collectNamesInBlock( context2, reverseBlock );
+            if (allNamesInReverseBlock.size() == 1) {
+                reverseMethod.getParameter(1).setName(allNamesInReverseBlock.iterator().next());
             } else {
                 throw new UnsupportedOperationException("By design this legacy accumulate (with inline custome code) visitor supports only with 1-and-only binding");
             }
-            for (Statement stmt : reverseBlock.getStatements()) {
-                for (ExpressionStmt eStmt : stmt.findAll(ExpressionStmt.class)) {
-                    forceCastForName(reverseMethod.getParameter(1).getNameAsString(), singleAccumulateType, eStmt.getExpression());
-                    rescopeNamesToNewScope(new NameExpr("data"), contextFieldNames, eStmt.getExpression());
-                }
-                reverseMethod.getBody().get().addStatement(stmt);
-            }
+            writeAccumulateMethod( contextFieldNames, singleAccumulateType, reverseMethod, reverseBlock );
+
         } else {
             MethodDeclaration supportsReverseMethod = templateClass.getMethodsByName("supportsReverse").get(0);
             supportsReverseMethod.getBody().get().addStatement(JavaParser.parseStatement("return false;"));
@@ -414,6 +384,20 @@ public class AccumulateVisitor {
         accumulateDSL.addArgument(asDSL);
 
         context.popExprPointer();
+    }
+
+    private void writeAccumulateMethod( List<String> contextFieldNames, Type singleAccumulateType, MethodDeclaration accumulateMethod, BlockStmt actionBlock ) {
+        for (Statement stmt : actionBlock.getStatements() ) {
+            for ( ExpressionStmt eStmt : stmt.findAll(ExpressionStmt.class) ) {
+                forceCastForName(accumulateMethod.getParameter(1).getNameAsString(), singleAccumulateType, eStmt.getExpression());
+                rescopeNamesToNewScope(new NameExpr("data"), contextFieldNames, eStmt.getExpression());
+            }
+            accumulateMethod.getBody().get().addStatement(stmt);
+        }
+    }
+
+    private List<String> collectNamesInBlock( RuleContext context2, BlockStmt block ) {
+        return block.findAll(NameExpr.class, n -> context2.getAvailableBindings().contains(n.getNameAsString())).stream().map( NameExpr::getNameAsString ).distinct().collect(toList());
     }
 
 }
