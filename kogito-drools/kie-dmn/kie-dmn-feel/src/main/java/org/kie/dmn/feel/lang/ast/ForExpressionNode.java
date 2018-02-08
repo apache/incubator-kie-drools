@@ -25,9 +25,11 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.feel.util.Msg;
 
 public class ForExpressionNode
         extends BaseNode {
@@ -73,6 +75,9 @@ public class ForExpressionNode
                 results.add( result );
             }
             return results;
+        } catch (EndpointOfRangeNotOfNumberException e) {
+            // ast error already reported
+            return null;
         } finally {
             ctx.exitFrame();
         }
@@ -113,6 +118,10 @@ public class ForExpressionNode
         return ictx;
     }
 
+    private static class EndpointOfRangeNotOfNumberException extends RuntimeException {
+        private static final long serialVersionUID = 1L;
+    }
+
     private ForIteration createQuantifiedExpressionIterationContext(EvaluationContext ctx, IterationContextNode icn) {
         ForIteration fi = null;
         String name = icn.evaluateName( ctx );
@@ -122,11 +131,20 @@ public class ForExpressionNode
             Iterable values = result instanceof Iterable ? (Iterable) result : Collections.singletonList(result);
             fi = new ForIteration(name, values);
         } else {
+            valueMustBeANumber(ctx, result);
             BigDecimal start = (BigDecimal) result;
+            valueMustBeANumber(ctx, rangeEnd);
             BigDecimal end = (BigDecimal) rangeEnd;
             fi = new ForIteration(name, start, end);
         }
         return fi;
+    }
+
+    private void valueMustBeANumber(EvaluationContext ctx, Object value) {
+        if (!(value instanceof BigDecimal)) {
+            ctx.notifyEvt(astEvent(Severity.ERROR, Msg.createMessage(Msg.VALUE_X_NOT_A_VALID_ENDPOINT_FOR_RANGE_BECAUSE_NOT_A_NUMBER, value), null));
+            throw new EndpointOfRangeNotOfNumberException();
+        }
     }
 
     private static class ForIteration {
