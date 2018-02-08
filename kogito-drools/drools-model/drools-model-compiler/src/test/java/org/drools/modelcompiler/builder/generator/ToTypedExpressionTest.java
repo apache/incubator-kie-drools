@@ -24,7 +24,7 @@ import static org.junit.Assert.*;
 public class ToTypedExpressionTest {
 
     private final HashSet<String> imports = new HashSet<>();
-    private final RuleContext ruleContext = new RuleContext(null, null, null, null);
+    private final RuleContext ruleContext = new RuleContext(null, null, null, null, null);
     private final PackageModel packageModel = new PackageModel("", null);
 
     {
@@ -45,8 +45,7 @@ public class ToTypedExpressionTest {
         assertEquals(typedResult("_this.method(5,9,\"x\")", int.class), toTypedExpression("method(5,9,\"x\")", Overloaded.class));
         assertEquals(typedResult("_this.getAddress().getCity().length()", int.class), toTypedExpression("address.getCity().length", Person.class));
 
-        TypedExpression inlineCastResult = typedResult("((org.drools.modelcompiler.domain.Person) _this).getName()", String.class)
-                .setPrefixExpression(DrlxParseUtil.parseExpression("_this instanceof org.drools.modelcompiler.domain.Person").getExpr());
+        TypedExpression inlineCastResult = typedResult("((org.drools.modelcompiler.domain.Person) _this).getName()", String.class);
         assertEquals(inlineCastResult, toTypedExpression("this#Person.name", Object.class));
 
     }
@@ -54,7 +53,7 @@ public class ToTypedExpressionTest {
     @Test
     public void pointFreeTest() {
         final PointFreeExpr expression = new PointFreeExpr(null, new NameExpr("name"), NodeList.nodeList(new StringLiteralExpr("[A-Z]")), new SimpleName("matches"), false, null, null, null, null);
-        final TypedExpression actual = DrlxParseUtil.toTypedExpression(ruleContext, packageModel, Person.class, expression, null, new ArrayList<>(), new HashSet<>(), null, true).get();
+        final TypedExpression actual = DrlxParseUtil.toTypedExpression(ruleContext, packageModel, Person.class, expression, null, new ArrayList<>(), new HashSet<>(), null, true, new ArrayList<>()).get();
         final TypedExpression expected = typedResult("eval(org.drools.model.operators.MatchesOperator.INSTANCE, _this.getName(), \"[A-Z]\")", String.class);
         assertEquals(expected, actual);
     }
@@ -65,7 +64,7 @@ public class ToTypedExpressionTest {
             ruleContext.addDeclaration(d);
         }
         Expression expression = DrlxParseUtil.parseExpression(inputExpression).getExpr();
-        return DrlxParseUtil.toTypedExpressionFromMethodCallOrField(ruleContext, patternType, expression, null, new ArrayList<>(), reactOnProperties, typeResolver).get();
+        return DrlxParseUtil.toTypedExpressionFromMethodCallOrField(ruleContext, patternType, expression, null, new ArrayList<>(), reactOnProperties, typeResolver, new ArrayList<>()).get();
     }
 
     private TypedExpression toTypedExpression(String inputExpression, Class<?> patternType, DeclarationSpec... declarations) {

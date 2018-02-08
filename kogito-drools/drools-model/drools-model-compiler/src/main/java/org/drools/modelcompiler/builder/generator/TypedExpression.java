@@ -26,7 +26,6 @@ public class TypedExpression {
     private Expression expression;
     private Class<?> type;
     private String fieldName;
-    private Expression prefixExpression;
     private Optional<String> unificationVariable = Optional.empty();
     private Optional<String> unificationName = Optional.empty();
     private Boolean staticExpr;
@@ -69,15 +68,6 @@ public class TypedExpression {
 
     public TypedExpression setType( Class<?> type ) {
         this.type = type;
-        return this;
-    }
-
-    public Expression getPrefixExpression() {
-        return prefixExpression;
-    }
-
-    public TypedExpression setPrefixExpression( Expression prefixExpression ) {
-        this.prefixExpression = prefixExpression;
         return this;
     }
 
@@ -125,7 +115,6 @@ public class TypedExpression {
                 "expression=" + expression +
                 ", type=" + type +
                 ", fieldName='" + fieldName + '\'' +
-                ", prefixExpression=" + prefixExpression +
                 ", unificationVariable=" + unificationVariable +
                 ", unificationName=" + unificationName +
                 '}';
@@ -143,7 +132,6 @@ public class TypedExpression {
         return Objects.equals(expression.toString(), that.expression.toString()) &&
                 Objects.equals(type, that.type) &&
                 Objects.equals(fieldName, that.fieldName) &&
-                Objects.equals(prefixExpression, that.prefixExpression) &&
                 Objects.equals(unificationVariable, that.unificationVariable) &&
                 Objects.equals(unificationName, that.unificationName);
     }
@@ -151,6 +139,6 @@ public class TypedExpression {
     @Override
     public int hashCode() {
 
-        return Objects.hash(expression, type, fieldName, prefixExpression, unificationVariable, unificationName);
+        return Objects.hash(expression, type, fieldName, unificationVariable, unificationName);
     }
 }

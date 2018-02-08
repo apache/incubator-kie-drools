@@ -19,6 +19,7 @@ import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.ruleunit.RuleUnitDescr;
 import org.drools.javaparser.ast.expr.Expression;
+import org.drools.modelcompiler.builder.PackageModel;
 import org.kie.api.runtime.rule.RuleUnit;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.ResultSeverity;
@@ -31,6 +32,7 @@ public class RuleContext {
 
     private final KnowledgeBuilderImpl kbuilder;
     private final InternalKnowledgePackage pkg;
+    private final PackageModel packageModel;
     private DRLIdGenerator idGenerator;
     private final RuleDescr descr;
 
@@ -55,9 +57,10 @@ public class RuleContext {
 
     public BaseDescr parentDesc = null;
 
-    public RuleContext( KnowledgeBuilderImpl kbuilder, InternalKnowledgePackage pkg, DRLIdGenerator exprIdGenerator, RuleDescr ruleDescr) {
+    public RuleContext(KnowledgeBuilderImpl kbuilder, InternalKnowledgePackage pkg, PackageModel packageModel, DRLIdGenerator exprIdGenerator, RuleDescr ruleDescr) {
         this.kbuilder = kbuilder;
         this.pkg = pkg;
+        this.packageModel = packageModel;
         this.idGenerator = exprIdGenerator;
         this.descr = ruleDescr;
         exprPointer.push( this.expressions::add );
@@ -241,6 +244,10 @@ public class RuleContext {
 
     public Map<String, String> getAggregatePatternMap() {
         return aggregatePatternMap;
+    }
+
+    public PackageModel getPackageModel() {
+        return packageModel;
     }
 }
 
