@@ -1212,7 +1212,7 @@ image::ScoreCalculation/fairnessScoreConstraintPitfall.png[align="center"]
 
 [NOTE]
 ====
-Instead of the __squared workload__, it is also possible to use the http://en.wikipedia.org/wiki/Variance[variance] (squared difference to the average) or the http://en.wikipedia.org/wiki/Standard_deviation[standard deviation] (square root of the variance). This has no effect on the score comparison, because the average will not change during planning.
+Instead of the __squared workload__, it is also possible to use the https://en.wikipedia.org/wiki/Variance[variance] (squared difference to the average) or the http://en.wikipedia.org/wiki/Standard_deviation[standard deviation] (square root of the variance). This has no effect on the score comparison, because the average will not change during planning.
 It is just more work to implement (because the average needs to be known) and trivially slower (because the calculation is a bit longer).
 ====
 

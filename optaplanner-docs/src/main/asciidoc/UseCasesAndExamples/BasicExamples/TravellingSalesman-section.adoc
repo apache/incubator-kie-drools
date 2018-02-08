@@ -7,7 +7,7 @@
 
 Given a list of cities, find the shortest tour for a salesman that visits each city exactly once.
 
-The problem is defined by http://en.wikipedia.org/wiki/Travelling_salesman_problem[Wikipedia].
+The problem is defined by https://en.wikipedia.org/wiki/Travelling_salesman_problem[Wikipedia].
 It is http://www.math.uwaterloo.ca/tsp/[one of the most intensively studied problems] in computational mathematics.
 Yet, in the real world, it is often only part of a planning problem, along with other constraints, such as employee shift rostering constraints.
 

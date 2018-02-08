@@ -27,7 +27,7 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 |* Entity <= `256`
 * Value <= `256`
 * Search space <= `10^616`
-|* Pointless (http://en.wikipedia.org/wiki/Eight_queens_puzzle#Explicit_solutions[cheatable])
+|* Pointless (https://en.wikipedia.org/wiki/Eight_queens_puzzle#Explicit_solutions[cheatable])
 |None
 
 |<<cloudBalancing,Cloud balancing>>

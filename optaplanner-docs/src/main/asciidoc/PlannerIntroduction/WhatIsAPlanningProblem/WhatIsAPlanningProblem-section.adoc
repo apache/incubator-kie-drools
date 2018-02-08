@@ -37,7 +37,7 @@ which means in layman's terms:
 (*) At least, none of the smartest computer scientists in the world have found such a silver bullet yet.
 But if they find one for 1 NP-complete problem, it will work for every NP-complete problem.
 
-In fact, there's a $ 1,000,000 reward for anyone that proves if http://en.wikipedia.org/wiki/P_%3D_NP_problem[such a silver bullet actually exists or not].
+In fact, there's a $ 1,000,000 reward for anyone that proves if https://en.wikipedia.org/wiki/P_%3D_NP_problem[such a silver bullet actually exists or not].
 ====
 
 The implication of this is pretty dire: solving your problem is probably harder than you anticipated, because the two common techniques won't suffice:
