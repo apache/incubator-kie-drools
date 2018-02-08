@@ -1,0 +1,43 @@
+<PMML version="4.2" xsi:schemaLocation="http://www.dmg.org/PMML-4_2 http://www.dmg.org/v4-1/pmml-4-2.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.dmg.org/PMML-4_2">
+  <Header/>
+  <DataDictionary numberOfFields="3">
+    <DataField dataType="double" name="fld1" optype="continuous"/>
+    <DataField dataType="double" name="fld2" optype="continuous"/>
+    <DataField dataType="string" name="fld3" optype="categorical">
+      <Value value="tgtA"/>
+      <Value value="tgtX"/>
+      <Value value="tgtY"/>
+      <Value value="tgtZ"/>
+    </DataField>
+  </DataDictionary>
+
+  <TreeModel functionName="classification" modelName="TreeTest" missingValueStrategy="nullPrediction">
+    <MiningSchema>
+      <MiningField name="fld1"/>
+      <MiningField name="fld2"/>
+      <MiningField name="fld3" usageType="predicted"/>
+    </MiningSchema>
+
+    <Node id="N1" score="tgtX">
+      <True/>
+      <Node id="T1" score="tgtY" defaultChild="T4">
+        <SimplePredicate field="fld1" operator="lessThan" value="40.0"/>
+      </Node>
+      <Node id="N2" score="tgtA" defaultChild="T4">
+        <SimplePredicate field="fld1" operator="greaterOrEqual" value="40.0"/>
+        <Node id="T2" score="tgtX" defaultChild="T4">
+          <SimplePredicate field="fld2" operator="lessThan" value="5.0"/>
+        </Node>
+        <Node id="T3" score="tgtY" defaultChild="T4">
+          <SimplePredicate field="fld2" operator="greaterOrEqual" value="5.0"/>
+        </Node>
+      </Node>
+      <Node id="N3">
+        <False/>
+        <Node id="T4" score="tgtZ">
+          <True/>
+        </Node>
+      </Node>
+    </Node>
+  </TreeModel>
+</PMML>
