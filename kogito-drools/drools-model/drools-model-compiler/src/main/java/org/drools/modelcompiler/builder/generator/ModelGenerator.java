@@ -83,7 +83,6 @@ import org.drools.modelcompiler.consequence.DroolsImpl;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
-
 import static org.drools.javaparser.JavaParser.parseExpression;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.classToReferenceType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
@@ -201,7 +200,8 @@ public class ModelGenerator {
         }
 
         new ModelGeneratorVisitor(context, packageModel).visit(ruleDescr.getLhs());
-        MethodDeclaration ruleMethod = new MethodDeclaration(EnumSet.of(Modifier.PRIVATE), RULE_TYPE, "rule_" + toId( ruleDescr.getName() ) );
+        final String ruleMethodName = "rule_" + toId(ruleDescr.getName());
+        MethodDeclaration ruleMethod = new MethodDeclaration(EnumSet.of(Modifier.PUBLIC, Modifier.STATIC), RULE_TYPE, ruleMethodName);
 
         ruleMethod.setJavadocComment(" Rule name: " + ruleDescr.getName() + " ");
 
@@ -242,7 +242,7 @@ public class ModelGenerator {
         ruleVariablesBlock.addStatement(new AssignExpr(ruleVar, buildCall, AssignExpr.Operator.ASSIGN));
 
         ruleVariablesBlock.addStatement( new ReturnStmt(RULE_CALL) );
-        packageModel.putRuleMethod("rule_" + toId( ruleDescr.getName() ), ruleMethod);
+        packageModel.putRuleMethod(ruleMethodName, ruleMethod);
     }
 
     /**
@@ -468,7 +468,7 @@ public class ModelGenerator {
 
         if (!usedArguments.isEmpty()) {
             onCall = new MethodCallExpr(null, ON_CALL);
-            usedArguments.stream().map( org.drools.modelcompiler.builder.generator.DrlxParseUtil::toVar).forEach(onCall::addArgument );
+            usedArguments.stream().map(DrlxParseUtil::toVar).forEach(onCall::addArgument );
         }
         return onCall;
     }
