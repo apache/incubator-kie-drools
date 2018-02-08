@@ -18,7 +18,8 @@ public class TemporalOperatorSpec implements OperatorSpec {
                 addArgumentToMethodCall( pointFreeExpr.getArg2(), methodCallExpr );
             }
         }
-        return methodCallExpr;
+
+        return pointFreeExpr.isNegated() ? new MethodCallExpr( null, "not" ).addArgument( methodCallExpr ) : methodCallExpr;
     }
 
     @Override

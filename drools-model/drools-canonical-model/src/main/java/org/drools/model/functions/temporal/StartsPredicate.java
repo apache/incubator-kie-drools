@@ -24,14 +24,26 @@ public class StartsPredicate extends AbstractTemporalPredicate {
 
     private final long startDev;
 
-    public StartsPredicate(long startDev, TimeUnit startDevLongUnit) {
-        super(new Interval(0, 0));
-        this.startDev = unitToLong(startDev, startDevLongUnit);
+    public StartsPredicate() {
+        this(0);
+    }
+
+    public StartsPredicate(long endDev, TimeUnit endDevTimeUnit) {
+        this( unitToLong(endDev, endDevTimeUnit) );
+    }
+
+    private StartsPredicate(long startDev) {
+        this.startDev = startDev;
     }
 
     @Override
     public String toString() {
-        return "starts" + interval;
+        return (negated ? "not " : "") + "starts[" + startDev + "]";
+    }
+
+    @Override
+    public Interval getInterval() {
+        return negated ? new Interval( Interval.MIN, Interval.MAX ) : new Interval( 0, 0 );
     }
 
     @Override
@@ -39,6 +51,6 @@ public class StartsPredicate extends AbstractTemporalPredicate {
 
         long distStart = Math.abs( start1 - start2 );
         long distEnd = end2 - end1;
-        return (distStart <= this.startDev && distEnd > 0 );
+        return negated ^ (distStart <= this.startDev && distEnd > 0 );
     }
 }

@@ -18,14 +18,15 @@ package org.drools.model.functions.temporal;
 
 public abstract class AbstractTemporalPredicate implements TemporalPredicate {
 
-    protected final Interval interval;
+    protected boolean negated = false;
 
-    public AbstractTemporalPredicate( Interval interval ) {
-        this.interval = interval;
+    public TemporalPredicate setNegated( boolean negated ) {
+        this.negated = negated;
+        return this;
     }
 
     @Override
-    public Interval getInterval() {
-        return interval;
+    public boolean isNegated() {
+        return negated;
     }
 }

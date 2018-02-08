@@ -19,6 +19,7 @@ import org.drools.model.functions.Predicate3;
 import org.drools.model.functions.Predicate4;
 import org.drools.model.functions.Predicate5;
 import org.drools.model.functions.accumulate.AccumulateFunction;
+import org.drools.model.functions.temporal.AbstractTemporalPredicate;
 import org.drools.model.functions.temporal.AfterPredicate;
 import org.drools.model.functions.temporal.BeforePredicate;
 import org.drools.model.functions.temporal.CoincidesPredicate;
@@ -26,7 +27,6 @@ import org.drools.model.functions.temporal.DuringPredicate;
 import org.drools.model.functions.temporal.FinishedbyPredicate;
 import org.drools.model.functions.temporal.FinishesPredicate;
 import org.drools.model.functions.temporal.IncludesPredicate;
-import org.drools.model.functions.temporal.Interval;
 import org.drools.model.functions.temporal.MeetsPredicate;
 import org.drools.model.functions.temporal.MetbyPredicate;
 import org.drools.model.functions.temporal.OverlappedbyPredicate;
@@ -389,16 +389,20 @@ public class DSL {
         return new TemporalExprViewItem<T>( exprId, var1, var2, temporalPredicate);
     }
 
+    public static TemporalPredicate not(TemporalPredicate predicate) {
+        return (( AbstractTemporalPredicate ) predicate).setNegated( true );
+    }
+
     public static TemporalPredicate after() {
         return new AfterPredicate();
     }
 
     public static TemporalPredicate after( long lowerBound, long upperBound ) {
-        return new AfterPredicate( new Interval( lowerBound, upperBound ) );
+        return after(lowerBound, TimeUnit.MILLISECONDS, upperBound, TimeUnit.MILLISECONDS);
     }
 
     public static TemporalPredicate after( long lowerBound, TimeUnit lowerUnit, long upperBound, TimeUnit upperUnit ) {
-        return new AfterPredicate( new Interval( lowerBound, lowerUnit, upperBound, upperUnit ) );
+        return new AfterPredicate( lowerBound, lowerUnit, upperBound, upperUnit );
     }
 
     public static TemporalPredicate before() {
@@ -406,23 +410,31 @@ public class DSL {
     }
 
     public static TemporalPredicate before(long lowerBound, long upperBound) {
-        return new BeforePredicate( new Interval( lowerBound, upperBound ) );
+        return before(lowerBound, TimeUnit.MILLISECONDS, upperBound, TimeUnit.MILLISECONDS);
     }
 
     public static TemporalPredicate before( long lowerBound, TimeUnit lowerUnit, long upperBound, TimeUnit upperUnit ) {
-        return new BeforePredicate( new Interval( lowerBound, lowerUnit, upperBound, upperUnit ) );
+        return new BeforePredicate( lowerBound, lowerUnit, upperBound, upperUnit );
     }
 
-    public static TemporalPredicate coincides( long dev, TimeUnit devUnit) {
-        return new CoincidesPredicate(dev, devUnit );
+    public static TemporalPredicate coincides( long dev, TimeUnit devUnit ) {
+        return new CoincidesPredicate( dev, devUnit );
     }
 
-    public static TemporalPredicate overlaps( long dev, TimeUnit devUnit) {
-        return new OverlapsPredicate(dev, devUnit );
+    public static TemporalPredicate coincides( long startDev, TimeUnit startDevUnit, long endDev, TimeUnit endDevUnit ) {
+        return new CoincidesPredicate( startDev, startDevUnit, endDev, endDevUnit );
     }
 
-    public static TemporalPredicate metby( long dev, TimeUnit devUnit) {
-        return new MetbyPredicate(dev, devUnit );
+    public static TemporalPredicate during() {
+        return new DuringPredicate();
+    }
+
+    public static TemporalPredicate during(long max, TimeUnit maxUnit) {
+        return new DuringPredicate(max, maxUnit);
+    }
+
+    public static TemporalPredicate during(long min, TimeUnit minUnit, long max, TimeUnit maxUnit) {
+        return new DuringPredicate(min, minUnit, max, maxUnit);
     }
 
     public static TemporalPredicate finishedby() {
@@ -433,36 +445,80 @@ public class DSL {
         return new FinishedbyPredicate(dev, devUnit );
     }
 
-    public static TemporalPredicate meets( long dev, TimeUnit devUnit) {
-        return new MeetsPredicate(dev, devUnit );
-    }
-
-    public static TemporalPredicate during() {
-        return new DuringPredicate();
-    }
-
-    public static TemporalPredicate startedby( long dev, TimeUnit devUnit) {
-        return new StartedbyPredicate(dev, devUnit);
-    }
-
-    public static TemporalPredicate overlappedby( long dev, TimeUnit devUnit) {
-        return new OverlappedbyPredicate(dev, devUnit);
-    }
-
-    public static TemporalPredicate includes() {
-        return new IncludesPredicate();
-    }
-
-    public static TemporalPredicate starts( long dev, TimeUnit devUnit) {
-        return new StartsPredicate(dev, devUnit);
-    }
-
     public static TemporalPredicate finishes() {
         return new FinishesPredicate();
     }
 
     public static TemporalPredicate finishes( long dev, TimeUnit devUnit) {
         return new FinishesPredicate(dev, devUnit);
+    }
+
+    public static TemporalPredicate includes() {
+        return new IncludesPredicate();
+    }
+
+    public static TemporalPredicate includes(long max, TimeUnit maxUnit) {
+        return new IncludesPredicate(max, maxUnit);
+    }
+
+    public static TemporalPredicate includes(long min, TimeUnit minUnit, long max, TimeUnit maxUnit) {
+        return new IncludesPredicate(min, minUnit, max, maxUnit);
+    }
+
+    public static TemporalPredicate metby() {
+        return new MetbyPredicate();
+    }
+
+    public static TemporalPredicate metby( long dev, TimeUnit devUnit ) {
+        return new MetbyPredicate(dev, devUnit );
+    }
+
+    public static TemporalPredicate meets() {
+        return new MeetsPredicate();
+    }
+
+    public static TemporalPredicate meets( long dev, TimeUnit devUnit ) {
+        return new MeetsPredicate(dev, devUnit );
+    }
+
+    public static TemporalPredicate overlappedby() {
+        return new OverlappedbyPredicate();
+    }
+
+    public static TemporalPredicate overlappedby( long dev, TimeUnit devUnit ) {
+        return new OverlappedbyPredicate(dev, devUnit);
+    }
+
+    public static TemporalPredicate overlappedby( long minDev, TimeUnit minDevTimeUnit, long maxDev, TimeUnit maxDevTimeUnit ) {
+        return new OverlappedbyPredicate(minDev, minDevTimeUnit, maxDev, maxDevTimeUnit);
+    }
+
+    public static TemporalPredicate overlaps() {
+        return new OverlapsPredicate();
+    }
+
+    public static TemporalPredicate overlaps( long maxDev, TimeUnit maxDevTimeUnit ) {
+        return new OverlapsPredicate(maxDev, maxDevTimeUnit);
+    }
+
+    public static TemporalPredicate overlaps( long minDev, TimeUnit minDevTimeUnit, long maxDev, TimeUnit maxDevTimeUnit ) {
+        return new OverlapsPredicate(minDev, minDevTimeUnit, maxDev, maxDevTimeUnit);
+    }
+
+    public static TemporalPredicate startedby() {
+        return new StartedbyPredicate();
+    }
+
+    public static TemporalPredicate startedby( long dev, TimeUnit devUnit) {
+        return new StartedbyPredicate(dev, devUnit);
+    }
+
+    public static TemporalPredicate starts() {
+        return new StartsPredicate();
+    }
+
+    public static TemporalPredicate starts( long dev, TimeUnit devUnit) {
+        return new StartsPredicate(dev, devUnit);
     }
 
     // -- Accumulate Functions --

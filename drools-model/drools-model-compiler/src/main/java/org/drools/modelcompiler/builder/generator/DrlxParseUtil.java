@@ -19,7 +19,6 @@ package org.drools.modelcompiler.builder.generator;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.LinkedList;
@@ -32,7 +31,6 @@ import org.drools.core.util.index.IndexUtil;
 import org.drools.core.util.index.IndexUtil.ConstraintType;
 import org.drools.drlx.DrlxParser;
 import org.drools.javaparser.JavaParser;
-import org.drools.javaparser.ParseStart;
 import org.drools.javaparser.ast.Node;
 import org.drools.javaparser.ast.NodeList;
 import org.drools.javaparser.ast.body.Parameter;
@@ -86,6 +84,7 @@ import org.drools.modelcompiler.util.ClassUtil;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import static java.util.Optional.of;
+
 import static org.drools.core.util.ClassUtils.getter2property;
 import static org.drools.javaparser.printer.PrintUtil.toDrlx;
 import static org.drools.modelcompiler.util.ClassUtil.findMethod;
@@ -708,7 +707,6 @@ public class DrlxParseUtil {
                     ", fieldToResolve='" + fieldToResolve + '\'' +
                     '}';
         }
-
     }
 
     public static Type classToReferenceType(Class<?> declClass) {
@@ -730,54 +728,8 @@ public class DrlxParseUtil {
         return of(expression.substring(0, dot));
     }
 
-    public static Optional<String> findBindingId(String expression, Collection<String> availableBindings) {
-        DrlxExpression drlx = parseExpression(expression);
-        if (drlx == null) {
-            throw new RuntimeException( "unable to parse " + expression );
-        }
-        return findBindingId( drlx.getExpr(), availableBindings );
-    }
-
     public static DrlxExpression parseExpression(String expression) {
-        // TOOD: this should be taken from the runtime
-
-        final Collection<String> operators = new ArrayList<>();
-        operators.addAll(Arrays.asList("contains", "in", "matches", "memberOf", "soundslike"));
-        operators.addAll(ModelGenerator.temporalOperators);
-        final ParseStart<DrlxExpression> parser = DrlxParser.buildDrlxParserWithArguments(operators);
-
-        return DrlxParser.parseExpression(parser, expression);
-    }
-
-    public static Optional<String> findBindingId(Expression expr, Collection<String> availableBindings) {
-        if (expr instanceof MethodCallExpr) {
-            MethodCallExpr methodCallExpr = (MethodCallExpr)expr;
-            Optional<String> scope = methodCallExpr.getScope()
-                    .flatMap( e -> findBindingId( e, availableBindings ) )
-                    .filter( availableBindings::contains );
-            if (scope.isPresent()) {
-                return scope;
-            }
-            return methodCallExpr.getArguments().stream()
-                    .map( DrlxParseUtil::findRootNodeViaScope)
-                    .map( opt -> opt.flatMap(e -> findBindingId(e, availableBindings) ) )
-                    .filter( opt -> opt.map( availableBindings::contains ).orElse( false ) )
-                    .map( Optional::get )
-                    .findFirst();
-        }
-
-        if (expr instanceof NameExpr) {
-            String name = (( NameExpr ) expr).getNameAsString();
-            return availableBindings.contains( name ) ? of(name) : Optional.empty();
-        }
-
-        if (expr instanceof BinaryExpr) {
-            BinaryExpr binaryExpr = (BinaryExpr)expr;
-            Optional<String> left = findBindingId(binaryExpr.getLeft(), availableBindings);
-            return left.isPresent() ? left : findBindingId(binaryExpr.getRight(), availableBindings);
-        }
-
-        return Optional.empty();
+        return DrlxParser.parseExpression(DrlxParser.buildDrlxParserWithArguments(OperatorsHolder.operators), expression);
     }
 
     public static Class<?> getClassFromContext(TypeResolver typeResolver, String className) {
@@ -834,6 +786,17 @@ public class DrlxParseUtil {
                     }
                 }
             }
+        }
+    }
+
+    static class OperatorsHolder {
+        static final Collection<String> operators = getOperators();
+
+        private static Collection<String> getOperators() {
+            Collection<String> operators = new ArrayList<>();
+            operators.addAll(org.drools.model.functions.Operator.Register.getOperators());
+            operators.addAll(ModelGenerator.temporalOperators);
+            return operators;
         }
     }
 }
