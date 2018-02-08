@@ -156,8 +156,9 @@ public class PatternVisitor {
         final String patternIdentifier = pattern.getIdentifier();
 
         String expression = getConstraintExpression(patternType, constraint, isPositional);
-        if (expression.contains(":=")) {
-            expression = expression.replace(":=", "==");
+        int unifPos = expression.indexOf( ":=" );
+        if (unifPos > 0) {
+            expression = expression.substring( unifPos+2 ).trim() + " == " + expression.substring( 0, unifPos ).trim();
         }
 
         final DrlxParseResult drlxParseResult = new ConstraintParser(context, packageModel).drlxParse(patternType, patternIdentifier, expression, isPositional);

@@ -770,7 +770,7 @@ public class DrlxParseUtil {
     public static void forceCastForName(String nameRef, Type type, Expression expression) {
         List<NameExpr> allNameExprForName = expression.findAll(NameExpr.class, n -> n.getNameAsString().equals(nameRef));
         for (NameExpr n : allNameExprForName) {
-            expression.replace(n, new CastExpr(type, n));
+            n.getParentNode().get().replace(n, new CastExpr(type, n));
         }
     }
 
@@ -784,6 +784,13 @@ public class DrlxParseUtil {
             AssignExpr assignExpr = (AssignExpr) e;
             rescopeNamesToNewScope(newScope, names, assignExpr.getTarget());
             rescopeNamesToNewScope(newScope, names, assignExpr.getValue());
+        } else if (e instanceof BinaryExpr) {
+            rescopeNamesToNewScope(newScope, names, (( BinaryExpr ) e).getLeft());
+            rescopeNamesToNewScope(newScope, names, (( BinaryExpr ) e).getRight());
+        } else if (e instanceof UnaryExpr) {
+            rescopeNamesToNewScope(newScope, names, (( UnaryExpr ) e).getExpression());
+        } else if (e instanceof EnclosedExpr) {
+            rescopeNamesToNewScope(newScope, names, (( EnclosedExpr ) e).getInner());
         } else {
             Optional<Expression> rootNode = DrlxParseUtil.findRootNodeViaScope(e);
             if (rootNode.isPresent() && rootNode.get() instanceof NameExpr) {

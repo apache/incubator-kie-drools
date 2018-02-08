@@ -179,8 +179,13 @@ public class QueryGenerator {
             List<QueryParameter> parameters = packageModel.getQueryDefWithType().get(queryDef).getContext().getQueryParameters();
             for (int i = 0; i < parameters.size(); i++) {
                 String queryName = context.getQueryName().orElseThrow(RuntimeException::new);
-                ExprConstraintDescr variableName = (ExprConstraintDescr) pattern.getConstraint().getDescrs().get(i);
-                Optional<String> unificationId = context.getUnificationId(variableName.toString());
+                ExprConstraintDescr variableExpr = (ExprConstraintDescr) pattern.getConstraint().getDescrs().get(i);
+                String variableName = variableExpr.toString();
+                int unifPos = variableName.indexOf( ":=" );
+                if (unifPos > 0) {
+                    variableName = variableName.substring( 0, unifPos ).trim();
+                }
+                Optional<String> unificationId = context.getUnificationId(variableName);
                 int queryIndex = i + 1;
                 Expression parameterCall = unificationId.map(name -> (Expression)new NameExpr(toVar(name)))
                         .orElseGet(() -> new MethodCallExpr(new NameExpr(queryName), toQueryArg(queryIndex)));
