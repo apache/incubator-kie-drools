@@ -46,6 +46,10 @@ public class WidProcessorTest {
                     "                @WidParameter(name=\"sampleParam\"),\n" +
                     "                @WidParameter(name=\"sampleParamTwo\")\n" +
                     "        },\n" +
+                    "        parameterValues={\n" +
+                    "                @WidParameterValues(parameterName=\"sampleParam\", values=\"a,b,c,d,e\"),\n" +
+                    "                @WidParameterValues(parameterName=\"sampleParamTwo\", values=\"1,2,3,4,5\")\n" +
+                    "        },\n" +
                     "        mavenDepends={\n" +
                     "                @WidMavenDepends(group=\"org.jboss\", artifact=\"myworitem\", version=\"1.0\")\n" +
                     "        })\n" +
@@ -66,6 +70,10 @@ public class WidProcessorTest {
                     "        parameters = {\n" +
                     "                @WidParameter(name = \"sampleParamThree\"),\n" +
                     "                @WidParameter(name = \"sampleParamFour\")\n" +
+                    "        },\n" +
+                    "        parameterValues={\n" +
+                    "                @WidParameterValues(parameterName=\"sampleParamThree\", values=\"a,b,c,d,e\"),\n" +
+                    "                @WidParameterValues(parameterName=\"sampleParamFour\", values=\"1,2,3,4,5\")\n" +
                     "        },\n" +
                     "        mavenDepends = {\n" +
                     "                @WidMavenDepends(group = \"org.jboss\", artifact = \"myworitem\", version = \"2.0\"),\n" +
@@ -88,6 +96,10 @@ public class WidProcessorTest {
                     "        parameters = {\n" +
                     "                @WidParameter(name = \"sampleParam\"),\n" +
                     "                @WidParameter(name = \"sampleParamTwo\")\n" +
+                    "        },\n" +
+                    "        parameterValues={\n" +
+                    "                @WidParameterValues(parameterName=\"sampleParam\", values=\"a,b,c,d,e\"),\n" +
+                    "                @WidParameterValues(parameterName=\"sampleParamTwo\", values=\"1,2,3,4,5\")\n" +
                     "        },\n" +
                     "        mavenDepends = {\n" +
                     "                @WidMavenDepends(group = \"org.jboss\", artifact = \"myworitem\", version = \"1.0\")\n" +
@@ -139,6 +151,18 @@ public class WidProcessorTest {
                      widParameters[1].name());
         assertEquals("StringDataType",
                      widParameters[1].type());
+
+        WidParameterValues[] widParameterValues = widInfo.parameterValues();
+        assertEquals(2,
+                     widParameterValues.length);
+        assertEquals("sampleParam",
+                     widParameterValues[0].parameterName());
+        assertEquals("a,b,c,d,e",
+                     widParameterValues[0].values());
+        assertEquals("sampleParamTwo",
+                     widParameterValues[1].parameterName());
+        assertEquals("1,2,3,4,5",
+                     widParameterValues[1].values());
 
         WidMavenDepends[] widMavenDepends = widInfo.mavenDepends();
         assertEquals(1,
@@ -226,6 +250,9 @@ public class WidProcessorTest {
         // make sure parameters from interface and class got put together
         assertEquals(4,
                      widInfo.getParameters().size());
+        // make sure parameter values from interface and class got put together
+        assertEquals(4,
+                     widInfo.getParameterValues().size());
         // make sure one of the maven depends was overwritten by the class @Wid
         assertNotNull(widInfo.getMavenDepends());
         assertEquals(2,

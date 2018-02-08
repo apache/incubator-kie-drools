@@ -29,11 +29,13 @@ public class WidInfo {
     private String description;
     private String defaultHandler;
     private Map<String, InternalWidParamsAndResults> parameters;
+    private Map<String, InternalWidParameterValues> parameterValues;
     private Map<String, InternalWidParamsAndResults> results;
     private Map<String, InternalWidMavenDependencies> mavenDepends;
 
     public WidInfo(List<Wid> wids) {
         this.parameters = new HashMap<>();
+        this.parameterValues = new HashMap<>();
         this.results = new HashMap<>();
         this.mavenDepends = new HashMap<>();
 
@@ -59,6 +61,14 @@ public class WidInfo {
                     this.parameters.put(widParam.name(),
                                         new InternalWidParamsAndResults(widParam.name(),
                                                                         widParam.type()));
+                }
+            }
+
+            if (wid.parameterValues().length > 0) {
+                for (WidParameterValues widParamValues : wid.parameterValues()) {
+                    this.parameterValues.put(widParamValues.parameterName(),
+                                             new InternalWidParameterValues(widParamValues.parameterName(),
+                                                                            widParamValues.values()));
                 }
             }
 
@@ -115,6 +125,34 @@ public class WidInfo {
 
         public void setType(String type) {
             this.type = type;
+        }
+    }
+
+    private class InternalWidParameterValues {
+
+        private String parameterName;
+        private String values;
+
+        public InternalWidParameterValues(String parameterName,
+                                          String values) {
+            this.parameterName = parameterName;
+            this.values = values;
+        }
+
+        public String getParameterName() {
+            return parameterName;
+        }
+
+        public void setParameterName(String parameterName) {
+            this.parameterName = parameterName;
+        }
+
+        public String getValues() {
+            return values;
+        }
+
+        public void setValues(String values) {
+            this.values = values;
         }
     }
 
@@ -219,6 +257,14 @@ public class WidInfo {
 
     public void setParameters(Map<String, InternalWidParamsAndResults> parameters) {
         this.parameters = parameters;
+    }
+
+    public Map<String, InternalWidParameterValues> getParameterValues() {
+        return parameterValues;
+    }
+
+    public void setParameterValues(Map<String, InternalWidParameterValues> parameterValues) {
+        this.parameterValues = parameterValues;
     }
 
     public Map<String, InternalWidParamsAndResults> getResults() {

@@ -61,6 +61,13 @@ public class WidProcessor extends AbstractProcessor {
             "        }; separator=\",\"$\n" +
             "    ],\n" +
             "    $endif$\n" +
+            "    $if(widInfo.(k).parameterValues)$\n" +
+            "    \"parameterValues\" : [\n" +
+            "        $widInfo.(k).parameterValues:{k1|\n" +
+            "            \"$k1$\" : \"$widInfo.(k).parameterValues.(k1).values$\"\n" +
+            "        }; separator=\",\"$\n" +
+            "    ],\n" +
+            "    $endif$\n" +
             "    $if(widInfo.(k).results)$\n" +
             "    \"results\" : [\n" +
             "        $widInfo.(k).results:{k1|\n" +
@@ -133,6 +140,26 @@ public class WidProcessor extends AbstractProcessor {
             "</table>\n" +
             "<br/>\n" +
             "$endif$\n" +
+            "$if(widInfo.(k).parameterValues)$\n" +
+            "<h2>Parameter Values</h2>\n" +
+            "<table class=\"table table-hover\">\n" +
+            "    <thead>\n" +
+            "    <tr>\n" +
+            "        <th>Parameter Name</th>\n" +
+            "        <th>Values</th>\n" +
+            "    </tr>\n" +
+            "    </thead>\n" +
+            "    <tbody>\n" +
+            "    $widInfo.(k).parameterValues:{k1|\n" +
+            "    <tr>\n" +
+            "        <td>$k1$</td>\n" +
+            "        <td>$widInfo.(k).parameterValues.(k1).values$</td>\n" +
+            "    </tr>\n" +
+            "    }$\n" +
+            "    </tbody>\n" +
+            "</table>\n" +
+            "<br/>\n" +
+            "$endif$\n" +
             "$if(widInfo.(k).results)$\n" +
             "<h2>Results</h2>\n" +
             "<table class=\"table table-hover\">\n" +
@@ -196,6 +223,16 @@ public class WidProcessor extends AbstractProcessor {
             "           $openbracket$\n" +
             "               \"name\" : \"$k1$\",\n" +
             "               \"type\" : \"new $widInfo.(k).parameters.(k1).type$()\"\n" +
+            "           $closebracket$\n" +
+            "        }; separator=\",\"$\n" +
+            "    ],\n" +
+            "    $endif$\n" +
+            "    $if(widInfo.(k).parameterValues)$\n" +
+            "    \"parameterValues\" : [\n" +
+            "        $widInfo.(k).parameterValues:{k1|\n" +
+            "           $openbracket$\n" +
+            "               \"name\" : \"$k1$\",\n" +
+            "               \"type\" : \"$widInfo.(k).parameterValues.(k1).values$\"\n" +
             "           $closebracket$\n" +
             "        }; separator=\",\"$\n" +
             "    ],\n" +
