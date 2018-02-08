@@ -138,64 +138,9 @@ public class QueryGenerator {
         return queryType;
     }
 
-    public static boolean bindQuery( RuleContext context, PackageModel packageModel, PatternDescr pattern, List<? extends BaseDescr> descriptors ) {
-        String queryName = "query_" + pattern.getObjectType();
-        MethodDeclaration queryMethod = packageModel.getQueryMethod(queryName);
-        if (queryMethod != null) {
-            NameExpr queryCall = new NameExpr(toQueryDef(pattern.getObjectType()));
-            MethodCallExpr callCall = new MethodCallExpr(queryCall, QUERY_INVOCATION_CALL);
-            callCall.addArgument( "" + !pattern.isQuery() );
-
-            for (int i = 0; i < descriptors.size(); i++) {
-                String itemText = descriptors.get(i).getText();
-                if(isLiteral(itemText)) {
-                    MethodCallExpr valueOfMethod = new MethodCallExpr(null, VALUE_OF_CALL);
-                    valueOfMethod.addArgument(new NameExpr(itemText));
-                    callCall.addArgument(valueOfMethod);
-                } else {
-                    QueryParameter qp = packageModel.queryVariables(queryName).get(i);
-                    context.addDeclaration(new DeclarationSpec(itemText, qp.type));
-                    callCall.addArgument(substituteBindingWithQueryParameter(context, itemText));
-                }
-            }
-
-            context.addExpression(callCall);
-            return true;
-        }
-        return false;
-    }
-
     public static boolean isLiteral(String value) {
         return value != null && value.length() > 0 &&
                 ( Character.isDigit(value.charAt(0)) || value.charAt(0) == '"' || "true".equals(value) || "false".equals(value) || "null".equals(value) );
-    }
-
-    public static boolean createQueryCall(PackageModel packageModel, RuleContext context, PatternDescr pattern) {
-        String queryDef = toQueryDef(pattern.getObjectType());
-        if (packageModel.getQueryDefWithType().containsKey(queryDef)) {
-            MethodCallExpr callMethod = new MethodCallExpr(new NameExpr(queryDef), QUERY_INVOCATION_CALL);
-            callMethod.addArgument( "" + !pattern.isQuery() );
-
-            List<QueryParameter> parameters = packageModel.getQueryDefWithType().get(queryDef).getContext().getQueryParameters();
-            for (int i = 0; i < parameters.size(); i++) {
-                String queryName = context.getQueryName().orElseThrow(RuntimeException::new);
-                ExprConstraintDescr variableExpr = (ExprConstraintDescr) pattern.getConstraint().getDescrs().get(i);
-                String variableName = variableExpr.toString();
-                int unifPos = variableName.indexOf( ":=" );
-                if (unifPos > 0) {
-                    variableName = variableName.substring( 0, unifPos ).trim();
-                }
-                Optional<String> unificationId = context.getUnificationId(variableName);
-                int queryIndex = i + 1;
-                Expression parameterCall = unificationId.map(name -> (Expression)new NameExpr(toVar(name)))
-                        .orElseGet(() -> new MethodCallExpr(new NameExpr(queryName), toQueryArg(queryIndex)));
-                callMethod.addArgument(parameterCall);
-            }
-
-            context.addExpression(callMethod);
-            return true;
-        }
-        return false;
     }
 
     public static Expression substituteBindingWithQueryParameter(RuleContext context, String x) {
@@ -215,7 +160,7 @@ public class QueryGenerator {
         return "queryDef_" + toId( queryName );
     }
 
-    private static String toQueryArg(int queryParameterIndex) {
+    public static String toQueryArg(int queryParameterIndex) {
         return "getArg"+ queryParameterIndex;
     }
 
