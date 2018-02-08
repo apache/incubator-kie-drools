@@ -193,7 +193,7 @@ public class ModelGenerator {
 
 
     private static void processRule(KnowledgeBuilderImpl kbuilder, InternalKnowledgePackage pkg, PackageModel packageModel, RuleDescr ruleDescr) {
-        RuleContext context = new RuleContext(kbuilder, pkg, packageModel.getExprIdGenerator(), ruleDescr);
+        RuleContext context = new RuleContext(kbuilder, pkg, packageModel, packageModel.getExprIdGenerator(), ruleDescr);
 
         for(Entry<String, Object> kv : ruleDescr.getNamedConsequences().entrySet()) {
             context.addNamedConsequence(kv.getKey(), kv.getValue().toString());

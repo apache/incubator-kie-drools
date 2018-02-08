@@ -97,12 +97,13 @@ public class ConstraintParser {
             List<String> usedDeclarations = new ArrayList<>();
             Set<String> reactOnProperties = new HashSet<>();
 
-            Optional<TypedExpression> optLeft = DrlxParseUtil.toTypedExpression(context, packageModel, patternType, binaryExpr.getLeft(), bindingId, usedDeclarations, reactOnProperties, binaryExpr, isPositional);
+            final ArrayList<Expression> prefixExpressions = new ArrayList<>();
+            Optional<TypedExpression> optLeft = DrlxParseUtil.toTypedExpression(context, packageModel, patternType, binaryExpr.getLeft(), bindingId, usedDeclarations, reactOnProperties, binaryExpr, isPositional, prefixExpressions);
             if ( !optLeft.isPresent() ) {
                 return new DrlxParseFail();
             }
 
-            Optional<TypedExpression> optRight = DrlxParseUtil.toTypedExpression(context, packageModel, patternType, binaryExpr.getRight(), bindingId, usedDeclarations, reactOnProperties, binaryExpr, isPositional);
+            Optional<TypedExpression> optRight = DrlxParseUtil.toTypedExpression(context, packageModel, patternType, binaryExpr.getRight(), bindingId, usedDeclarations, reactOnProperties, binaryExpr, isPositional, new ArrayList<>());
             if( !optRight.isPresent()) {
                 context.addCompilationError( new ParseExpressionErrorResult(drlxExpr) );
                 return new DrlxParseFail();
@@ -137,8 +138,8 @@ public class ConstraintParser {
                 }
             }
 
-            if ( left.getPrefixExpression() != null ) {
-                combo = new BinaryExpr(left.getPrefixExpression(), combo, BinaryExpr.Operator.AND );
+            for(Expression e : prefixExpressions) {
+                combo = new BinaryExpr(e, combo, BinaryExpr.Operator.AND );
             }
 
             return new DrlxParseSuccess(patternType, exprId, bindingId, combo, left.getType())
@@ -151,7 +152,7 @@ public class ConstraintParser {
 
             List<String> usedDeclarations = new ArrayList<>();
             Set<String> reactOnProperties = new HashSet<>();
-            Optional<TypedExpression> optLeft = DrlxParseUtil.toTypedExpression(context, packageModel, patternType, unaryExpr, bindingId, usedDeclarations, reactOnProperties, unaryExpr, isPositional);
+            Optional<TypedExpression> optLeft = DrlxParseUtil.toTypedExpression(context, packageModel, patternType, unaryExpr, bindingId, usedDeclarations, reactOnProperties, unaryExpr, isPositional, new ArrayList<>());
 
 
             return optLeft.<DrlxParseResult>map(left -> {
@@ -168,7 +169,7 @@ public class ConstraintParser {
             List<String> usedDeclarations = new ArrayList<>();
             Set<String> reactOnProperties = new HashSet<>();
 
-            final Optional<TypedExpression> optTypedExpression = toTypedExpression(context, packageModel, patternType, pointFreeExpr, bindingId, usedDeclarations, reactOnProperties, null, isPositional);
+            final Optional<TypedExpression> optTypedExpression = toTypedExpression(context, packageModel, patternType, pointFreeExpr, bindingId, usedDeclarations, reactOnProperties, null, isPositional, new ArrayList<>());
 
             return optTypedExpression.<DrlxParseResult>map(typedExpression -> {
                 final Expression returnExpression = typedExpression.getExpression();
@@ -205,13 +206,13 @@ public class ConstraintParser {
                     if (arg instanceof NameExpr && !arg.toString().equals("_this")) {
                         usedDeclarations.add(arg.toString());
                     } else if (arg instanceof MethodCallExpr) {
-                        DrlxParseUtil.toTypedExpressionFromMethodCallOrField(context, null, ( MethodCallExpr ) arg, bindingId, usedDeclarations, new HashSet<>(), context.getPkg().getTypeResolver());
+                        DrlxParseUtil.toTypedExpressionFromMethodCallOrField(context, null, ( MethodCallExpr ) arg, bindingId, usedDeclarations, new HashSet<>(), context.getPkg().getTypeResolver(), new ArrayList<>());
                     }
                 }
                 return new DrlxParseSuccess(patternType, exprId, bindingId, methodCallExpr, returnType).setUsedDeclarations(usedDeclarations);
             } else if (methodCallExpr.getScope().isPresent() && methodCallExpr.getScope().get() instanceof StringLiteralExpr) {
                 List<String> usedDeclarations = new ArrayList<>();
-                Optional<TypedExpression> optConverted = DrlxParseUtil.toTypedExpressionFromMethodCallOrField(context, String.class, methodCallExpr, bindingId, usedDeclarations, new HashSet<>(), context.getPkg().getTypeResolver());
+                Optional<TypedExpression> optConverted = DrlxParseUtil.toTypedExpressionFromMethodCallOrField(context, String.class, methodCallExpr, bindingId, usedDeclarations, new HashSet<>(), context.getPkg().getTypeResolver(), new ArrayList<>());
 
                 return optConverted.<DrlxParseResult>map(converted -> {
                     return new DrlxParseSuccess(String.class, exprId, bindingId, converted.getExpression(), converted.getType())
