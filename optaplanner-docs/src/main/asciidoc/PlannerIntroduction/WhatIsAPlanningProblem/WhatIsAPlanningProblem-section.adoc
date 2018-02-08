@@ -25,8 +25,8 @@ OptaPlanner helps Java^TM^ programmers solve constraint satisfaction problems ef
 [[aPlanningProblemIsNPCompleteOrNPHard]]
 == A Planning Problem is NP-complete or NP-hard
 
-All the use cases above are _probably_ http://en.wikipedia.org/wiki/NP-complete[NP-complete] or harder.
-In layman's terms, NP-complete means:
+All the use cases above are _probably_ https://en.wikipedia.org/wiki/NP-completeness[NP-complete/NP-hard],
+which means in layman's terms:
 
 * It's easy to verify a given solution to a problem in reasonable time.
 * There is no silver bullet to find the optimal solution of a problem in reasonable time (*).
