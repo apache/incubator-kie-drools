@@ -1116,7 +1116,7 @@ public class CompilerTest extends BaseModelTest {
                      "import " + ICB.class.getCanonicalName() + ";" +
                      "import " + ICC.class.getCanonicalName() + ";" +
                      "rule R when\n" +
-                     "  $a : ICA( someB#ICB.someC#ICC.onlyConcrete() == \"Hello\" )\n" + // Notice this is chaining MVEL field accessors, because inlinecast chaining methodcalls does not work even on DRL: getSomeB()#ICB.getSomeC()#ICC.onlyConcrete()
+                     "  $a : ICA( someB#ICB.someD#ICC.onlyConcrete() == \"Hello\" )\n" + // Notice this is chaining MVEL field accessors, because inlinecast chaining methodcalls does not work even on DRL: getSomeB()#ICB.getSomeD()#ICC.onlyConcrete()
                      "then\n" +
                      "  insert(\"matched\");\n" +
                      "end";
@@ -1160,10 +1160,23 @@ public class CompilerTest extends BaseModelTest {
         public void setSomeC(NullUnsafeC someC) {
             this.someC = someC;
         }
-
     }
 
     public static class NullUnsafeC {
+
+        private NullUnsafeD someD;
+
+        public NullUnsafeD getSomeD() {
+            return someD;
+        }
+
+        public void setSomeD(NullUnsafeD someD) {
+            this.someD = someD;
+        }
+
+    }
+
+    public static class NullUnsafeD {
 
         private String something;
 
@@ -1177,42 +1190,46 @@ public class CompilerTest extends BaseModelTest {
     }
 
     @Test
-    @Ignore("the codegen does not support it yet")
     public void testNullSafeMultiple() {
         String str = "import " + NullUnsafeA.class.getCanonicalName() + ";" +
                      "import " + NullUnsafeB.class.getCanonicalName() + ";" +
-                     "import " + NullUnsafeC.class.getCanonicalName() + ";" +
+                     "import " + NullUnsafeD.class.getCanonicalName() + ";" +
                      "rule R when\n" +
-                     "  $a : NullUnsafeA( someB!.someC!.something == \"Hello\" )\n" +
+                     "  $a : NullUnsafeA( someB!.someC!.someD!.something == \"Hello\" )\n" +
                      "then\n" +
                      "  insert(\"matched\");\n" +
                      "end";
 
-        for (int i = 0; i <= 3; i++) {
+        for (int i = 0; i <= 4; i++) {
             KieSession ksession = getKieSession(str);
 
             NullUnsafeA a = new NullUnsafeA();
             NullUnsafeB b = new NullUnsafeB();
-            NullUnsafeC c = new NullUnsafeC();
+            NullUnsafeC x = new NullUnsafeC();
+            NullUnsafeD c = new NullUnsafeD();
             // trap #0
             if (i != 0) {
                 c.setSomething("Hello");
             }
             // trap #1
             if (i != 1) {
-                b.setSomeC(c);
+                b.setSomeC(x);
             }
             // trap #2
             if (i != 2) {
+                x.setSomeD(c);
+            }
+            // trap #3
+            if (i != 3) {
                 a.setSomeB(b);
             }
             ksession.insert(a);
             ksession.fireAllRules();
 
             Collection<String> results = getObjectsIntoList(ksession, String.class);
-            if (i < 3) {
+            if (i < 4) {
                 assertEquals(0, results.size());
-            } else if (i == 3) {
+            } else if (i == 4) {
                 // iteration #3 has no null-traps
                 assertEquals(1, results.size());
             }
