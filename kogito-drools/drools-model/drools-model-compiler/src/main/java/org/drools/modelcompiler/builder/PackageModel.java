@@ -62,6 +62,8 @@ public class PackageModel {
 
     private static final String RULES_FILE_NAME = "Rules";
 
+    private static final int RULES_PER_CLASS = 20;
+
     private final String name;
     private final String rulesFileName;
     
@@ -361,15 +363,10 @@ public class PackageModel {
         RuleSourceResult results = new RuleSourceResult(cu);
 
         // each method per Drlx parser result
-        int count = 0; // I count which method it is.
-        int index = 0; // I decide which classIndex goes into.
+        int count = -1;
         Map<Integer, ClassOrInterfaceDeclaration> splitted = new LinkedHashMap<>();
         for (Entry<String, MethodDeclaration> ruleMethodKV : ruleMethods.entrySet()) {
-            count++;
-            if (count % 10 == 0) {
-                index++;
-            }
-            ClassOrInterfaceDeclaration rulesMethodClass = splitted.computeIfAbsent(index, i -> {
+            ClassOrInterfaceDeclaration rulesMethodClass = splitted.computeIfAbsent(++count / RULES_PER_CLASS, i -> {
                 CompilationUnit cuRulesMethod = new CompilationUnit();
                 results.with(cuRulesMethod);
                 cuRulesMethod.setPackageDeclaration(name);
