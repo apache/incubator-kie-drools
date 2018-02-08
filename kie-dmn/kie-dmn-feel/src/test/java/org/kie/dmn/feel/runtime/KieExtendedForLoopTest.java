@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.junit.runners.Parameterized;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.util.EvalHelper;
 
 import static org.kie.dmn.feel.util.DynamicTypeUtils.entry;
@@ -39,11 +40,13 @@ public class KieExtendedForLoopTest extends KieExtendedBaseFEELTest {
             
             //extended:
             {"for x in 1..3 return x+1", Arrays.asList( 1, 2, 3 ).stream().map( x -> BigDecimal.valueOf( x + 1 ) ).collect( Collectors.toList() ), null},
+            {"for x in 1..\"ciao\" return x+1", null, FEELEvent.Severity.ERROR},
             {"for x in 3..1 return x+1", Arrays.asList( 3, 2, 1 ).stream().map( x -> BigDecimal.valueOf( x + 1 ) ).collect( Collectors.toList() ), null},
             {"for x in 1..1 return x+1", Arrays.asList( 1 ).stream().map( x -> BigDecimal.valueOf( x + 1 ) ).collect( Collectors.toList() ), null},
             {"for x in 1..3, y in 4..6 return [x+1, y-1]", l(l(2, 3), l(2, 4), l(2, 5), l(3, 3), l(3, 4), l(3, 5), l(4, 3), l(4, 4), l(4, 5)), null},
             {"{ a: 1, b : 3, c : for x in a..b return x+1}", mapOf(entry("a", BigDecimal.valueOf(1)), entry("b", BigDecimal.valueOf(3)),  entry("c", Arrays.asList( 1, 2, 3 ).stream().map( x -> BigDecimal.valueOf( x + 1 ) ).collect( Collectors.toList() )) ), null},
             {"{ a: 1, b : 3, c : for x in a+2..b-2 return x+1}", mapOf(entry("a", BigDecimal.valueOf(1)), entry("b", BigDecimal.valueOf(3)),  entry("c", Arrays.asList( 3, 2, 1 ).stream().map( x -> BigDecimal.valueOf( x + 1 ) ).collect( Collectors.toList() )) ), null},
+            {"{ a: \"ciao\", b : 3, c : for x in a..b return x+1}", mapOf(entry("a", "ciao"), entry("b", BigDecimal.valueOf(3)),  entry("c", null)), FEELEvent.Severity.ERROR},
             {"for i in 0..10 return if i = 0 then 1 else i * partial[-1]", Arrays.asList( 1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800 ).stream().map( x -> BigDecimal.valueOf( x ) ).collect( Collectors.toList() ), null},
 
         };
