@@ -17,8 +17,8 @@ package org.kie.pmml.pmml_4_2.model.mining;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.pmml.pmml_4_2.PMML4Result;
-import org.kie.pmml.pmml_4_2.model.PMMLRequestData;
+import org.kie.api.pmml.PMML4Result;
+import org.kie.api.pmml.PMMLRequestData;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

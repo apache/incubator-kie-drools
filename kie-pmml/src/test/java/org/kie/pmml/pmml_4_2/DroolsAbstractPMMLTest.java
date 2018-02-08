@@ -19,6 +19,8 @@ package org.kie.pmml.pmml_4_2;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -34,19 +36,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 
+import org.drools.compiler.kie.builder.impl.InternalKieModule;
+import org.drools.compiler.kie.builder.impl.KieRepositoryImpl;
+import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.InternalRuleUnitExecutor;
+import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.ruleunit.RuleUnitDescr;
 import org.drools.core.ruleunit.RuleUnitRegistry;
 import org.kie.api.KieBase;
+import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieRepository;
 import org.kie.api.builder.Message;
+import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.conf.EventProcessingOption;
@@ -54,6 +63,8 @@ import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
+import org.kie.api.pmml.PMMLRequestData;
+import org.kie.api.pmml.PMML4Result;
 import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
@@ -66,8 +77,7 @@ import org.kie.api.runtime.rule.Variable;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.utils.KieHelper;
 import org.kie.pmml.pmml_4_2.model.PMML4UnitImpl;
-import org.kie.pmml.pmml_4_2.model.PMMLRequestData;
-import org.kie.pmml.pmml_4_2.model.datatypes.PMML4Data;
+import org.kie.api.pmml.PMML4Data;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -433,12 +443,29 @@ public abstract class DroolsAbstractPMMLTest {
 	}
 	
 	protected RuleUnitExecutor createExecutor(String sourceName) {
+		KieServices ks = KieServices.Factory.get();
+		KieRepository kr = ks.getRepository();
+		ReleaseId releaseId = new ReleaseIdImpl("org.kie:pmmlTest:1.0-SNAPSHOT");
+		((KieRepositoryImpl)kr).setDefaultGAV(releaseId);
     	Resource res = ResourceFactory.newClassPathResource(sourceName);
+    	
     	kbase = new KieHelper().addResource(res, ResourceType.PMML).build();
     	
     	assertNotNull(kbase);
     	
     	RuleUnitExecutor executor = RuleUnitExecutor.create().bind(kbase);
+    	KieContainer kc = ((KnowledgeBaseImpl)((InternalRuleUnitExecutor)executor).getKieSession().getKieBase()).getKieContainer();
+    	InternalKieModule ikm = (InternalKieModule)kr.getKieModule(releaseId);
+    	try (FileOutputStream fos = new FileOutputStream("/tmp/outputModule.jar")) {
+    		fos.write(ikm.getBytes());
+    	} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	kc.getKieBaseNames().forEach(n -> {System.out.println(n);});
         data = executor.newDataSource("request");
         resultData = executor.newDataSource("results");
         pmmlData = executor.newDataSource("pmmlData");

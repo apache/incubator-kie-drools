@@ -19,8 +19,8 @@ import static org.junit.Assert.*;
 
 import java.math.BigInteger;
 
-import org.dmg.pmml.pmml_4_2.descr.Array;
-import org.dmg.pmml.pmml_4_2.descr.SimpleSetPredicate;
+import org.kie.dmg.pmml.pmml_4_2.descr.Array;
+import org.kie.dmg.pmml.pmml_4_2.descr.SimpleSetPredicate;
 import org.junit.Before;
 import org.junit.Test;
 

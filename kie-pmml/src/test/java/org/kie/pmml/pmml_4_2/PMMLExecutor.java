@@ -31,8 +31,9 @@ import org.kie.api.runtime.rule.DataSource;
 import org.kie.api.runtime.rule.RuleUnit;
 import org.kie.api.runtime.rule.RuleUnitExecutor;
 import org.kie.pmml.pmml_4_2.model.PMML4UnitImpl;
-import org.kie.pmml.pmml_4_2.model.PMMLRequestData;
-import org.kie.pmml.pmml_4_2.model.datatypes.PMML4Data;
+import org.kie.api.pmml.PMMLRequestData;
+import org.kie.api.pmml.PMML4Data;
+import org.kie.api.pmml.PMML4Result;
 
 public class PMMLExecutor {
     private KieBase kieBase;
