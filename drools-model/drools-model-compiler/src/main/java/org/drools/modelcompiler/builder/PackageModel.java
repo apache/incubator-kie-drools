@@ -18,6 +18,7 @@ package org.drools.modelcompiler.builder;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -44,7 +45,6 @@ import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.javaparser.ast.stmt.BlockStmt;
 import org.drools.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.javaparser.ast.type.Type;
-import org.drools.javaparser.printer.PrettyPrinter;
 import org.drools.model.Global;
 import org.drools.model.Model;
 import org.drools.model.WindowReference;
@@ -203,39 +203,51 @@ public class PackageModel {
         return accumulateFunctions;
     }
 
-    public String getRulesSource(PrettyPrinter prettyPrinter, String className, String modelName) {
+    public static class RuleSourceResult {
+
+        private final CompilationUnit mainRuleClass;
+        private Collection<CompilationUnit> splitted = new ArrayList<>();
+
+        public RuleSourceResult(CompilationUnit mainRuleClass) {
+            this.mainRuleClass = mainRuleClass;
+        }
+
+        public CompilationUnit getMainRuleClass() {
+            return mainRuleClass;
+        }
+
+        /**
+         * Append additional class to source results.
+         * @param additionalCU 
+         */
+        public RuleSourceResult with(CompilationUnit additionalCU) {
+            splitted.add(additionalCU);
+            return this;
+        }
+
+        public Collection<CompilationUnit> getSplitted() {
+            return Collections.unmodifiableCollection(splitted);
+        }
+
+    }
+
+    public RuleSourceResult getRulesSource() {
         CompilationUnit cu = new CompilationUnit();
         cu.setPackageDeclaration( name );
 
-        // fixed part
-        cu.addImport(JavaParser.parseImport("import java.util.*;"                          ));
-        cu.addImport(JavaParser.parseImport("import org.drools.model.*;"                   ));
-        cu.addImport(JavaParser.parseImport("import static org.drools.model.DSL.*;"        ));
-        cu.addImport(JavaParser.parseImport("import org.drools.model.Index.ConstraintType;"));
-        cu.addImport(JavaParser.parseImport("import java.time.*;"));
-        cu.addImport(JavaParser.parseImport("import java.time.format.*;"));
-        cu.addImport(JavaParser.parseImport("import java.text.*;"));
-        cu.addImport(JavaParser.parseImport("import org.drools.core.util.*;"));
-
-        // imports from DRL:
-        for ( String i : imports ) {
-            if ( i.equals(name+".*") ) {
-                continue; // skip same-package star import.
-            }
-            cu.addImport(JavaParser.parseImport("import "+i+";"));
-        }
+        manageImportForCompilationUnit(cu);
         
-        ClassOrInterfaceDeclaration rulesClass = cu.addClass(className);
+        ClassOrInterfaceDeclaration rulesClass = cu.addClass(rulesFileName);
         rulesClass.addImplementedType(Model.class);
 
         BodyDeclaration<?> dateFormatter = JavaParser.parseBodyDeclaration(
-                "private final static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DateUtils.getDateFormatMask());\n");
+                "public final static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DateUtils.getDateFormatMask());\n");
         rulesClass.addMember(dateFormatter);
 
         BodyDeclaration<?> getNameMethod = JavaParser.parseBodyDeclaration(
                 "    @Override\n" +
                 "        public String getName() {\n" +
-                "        return \"" + modelName + "\";\n" +
+                "        return \"" + name + "\";\n" +
                 "    }\n"
                 );
         rulesClass.addMember(getNameMethod);
@@ -314,12 +326,6 @@ public class PackageModel {
         rulesClass.addMember(rulesListInitializer);
         BlockStmt rulesListInitializerBody = new BlockStmt();
         rulesListInitializer.setBody(rulesListInitializerBody);
-        for ( String methodName : ruleMethods.keySet() ) {
-            NameExpr rulesFieldName = new NameExpr( "rules" );
-            MethodCallExpr add = new MethodCallExpr(rulesFieldName, "add");
-            add.addArgument( new MethodCallExpr(null, methodName) );
-            rulesListInitializerBody.addStatement( add );
-        }
 
         for ( String methodName : queryMethods.keySet() ) {
             NameExpr rulesFieldName = new NameExpr( "queries" );
@@ -351,13 +357,53 @@ public class PackageModel {
 
         functions.forEach(rulesClass::addMember);
 
+        RuleSourceResult results = new RuleSourceResult(cu);
+
         // each method per Drlx parser result
-        ruleMethods.values().forEach( rulesClass::addMember );
+        for (int i = 0; i < 1; i++) {
+            CompilationUnit cuRulesMethod = new CompilationUnit();
+            cuRulesMethod.setPackageDeclaration(name);
+            manageImportForCompilationUnit(cuRulesMethod);
+            cuRulesMethod.addImport(JavaParser.parseImport("import static " + name + "." + rulesFileName + ".*;"));
+            String currentRulesMethodClassName = rulesFileName + "RuleMethods" + i;
+            ClassOrInterfaceDeclaration rulesMethodClass = cuRulesMethod.addClass(currentRulesMethodClassName);
+            ruleMethods.values().forEach(rulesMethodClass::addMember);
+
+            // manage in main class init block:
+            for (String methodName : ruleMethods.keySet()) {
+                NameExpr rulesFieldName = new NameExpr("rules");
+                MethodCallExpr add = new MethodCallExpr(rulesFieldName, "add");
+                add.addArgument(new MethodCallExpr(new NameExpr(currentRulesMethodClassName), methodName));
+                rulesListInitializerBody.addStatement(add);
+            }
+
+            results.with(cuRulesMethod);
+        }
+
         queryMethods.values().forEach(rulesClass::addMember);
         
 
-//        config.setColumnAlignFirstMethodChain(true);
-        return prettyPrinter.print(cu);
+        return results;
+    }
+
+    private void manageImportForCompilationUnit(CompilationUnit cu) {
+        // fixed part
+        cu.addImport(JavaParser.parseImport("import java.util.*;"                          ));
+        cu.addImport(JavaParser.parseImport("import org.drools.model.*;"                   ));
+        cu.addImport(JavaParser.parseImport("import static org.drools.model.DSL.*;"        ));
+        cu.addImport(JavaParser.parseImport("import org.drools.model.Index.ConstraintType;"));
+        cu.addImport(JavaParser.parseImport("import java.time.*;"));
+        cu.addImport(JavaParser.parseImport("import java.time.format.*;"));
+        cu.addImport(JavaParser.parseImport("import java.text.*;"));
+        cu.addImport(JavaParser.parseImport("import org.drools.core.util.*;"));
+
+        // imports from DRL:
+        for ( String i : imports ) {
+            if ( i.equals(name+".*") ) {
+                continue; // skip same-package star import.
+            }
+            cu.addImport(JavaParser.parseImport("import "+i+";"));
+        }
     }
 
     private static void addGlobalField(ClassOrInterfaceDeclaration classDeclaration, String packageName, String globalName, Class<?> globalClass) {

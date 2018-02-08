@@ -6,8 +6,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
+import org.drools.javaparser.ast.CompilationUnit;
 import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.drools.javaparser.printer.PrettyPrinter;
+import org.drools.modelcompiler.builder.PackageModel.RuleSourceResult;
 
 import static org.drools.modelcompiler.CanonicalKieModule.MODEL_FILE;
 import static org.drools.modelcompiler.builder.JavaParserCompiler.getPrettyPrinter;
@@ -32,14 +34,26 @@ public class ModelWriter {
                 sourceFiles.add( pojoSourceName );
             }
 
+            RuleSourceResult rulesSourceResult = pkgModel.getRulesSource();
+            // main rules file:
             String rulesFileName = pkgModel.getRulesFileName();
             String rulesSourceName = "src/main/java/" + folderName + "/" + rulesFileName + ".java";
-            String rulesSource = pkgModel.getRulesSource( prettyPrinter, rulesFileName, pkgName );
+            String rulesSource = prettyPrinter.print(rulesSourceResult.getMainRuleClass());
             pkgModel.sysout(rulesSource);
             byte[] rulesBytes = rulesSource.getBytes();
             srcMfs.write( rulesSourceName, rulesBytes );
             modelFiles.add( pkgName + "." + rulesFileName );
             sourceFiles.add( rulesSourceName );
+            // manage additional classes, please notice to not add to modelFiles.
+            for (CompilationUnit cu : rulesSourceResult.getSplitted()) {
+                String addFileName = cu.findFirst(ClassOrInterfaceDeclaration.class).get().getNameAsString();
+                String addSourceName = "src/main/java/" + folderName + "/" + addFileName + ".java";
+                String addSource = prettyPrinter.print(cu);
+                pkgModel.sysout(addSource);
+                byte[] addBytes = addSource.getBytes();
+                srcMfs.write(addSourceName, addBytes);
+                sourceFiles.add(addSourceName);
+            }
         }
 
         return new Result(sourceFiles, modelFiles);
