@@ -342,7 +342,7 @@ public class QueryTest extends BaseModelTest {
         assertEquals("Milan", cities.get(0));
     }
 
-    @Test @Ignore
+    @Test
     public void testQueryWithOOPathTransformedToFromInsideAcc() {
         String str =
                 "import " + java.util.List.class.getCanonicalName() + ";" +
@@ -358,13 +358,14 @@ public class QueryTest extends BaseModelTest {
 
         KieSession ksession = getKieSession( str );
 
+        org.drools.modelcompiler.oopathdtables.Person person2 = new org.drools.modelcompiler.oopathdtables.Person();
+        person2.setAddress(new InternationalAddress("", 1, "Rome", "Unsafecountry"));
+        ksession.insert(person2);
+
         org.drools.modelcompiler.oopathdtables.Person person = new org.drools.modelcompiler.oopathdtables.Person();
         person.setAddress(new InternationalAddress("", 1, "Milan", "Safecountry"));
         ksession.insert(person);
 
-        org.drools.modelcompiler.oopathdtables.Person person2 = new org.drools.modelcompiler.oopathdtables.Person();
-        person2.setAddress(new InternationalAddress("", 1, "Rome", "Unsafecountry"));
-        ksession.insert(person2);
 
         QueryResults results = ksession.getQueryResults( "listSafeCities");
 
