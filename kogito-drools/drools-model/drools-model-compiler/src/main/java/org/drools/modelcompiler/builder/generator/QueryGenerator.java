@@ -36,7 +36,7 @@ public class QueryGenerator {
     public static final String QUERY_CALL = "query";
 
     public static void processQueryDef( KnowledgeBuilderImpl kbuilder, TypeResolver typeResolver, PackageModel packageModel, QueryDescr queryDescr ) {
-        RuleContext context = new RuleContext(kbuilder, typeResolver, packageModel, queryDescr);
+        RuleContext context = new RuleContext(kbuilder, packageModel, queryDescr, typeResolver);
         String queryName = queryDescr.getName();
         final String queryDefVariableName = toQueryDef(queryName);
         context.setQueryName(Optional.of(queryDefVariableName));
