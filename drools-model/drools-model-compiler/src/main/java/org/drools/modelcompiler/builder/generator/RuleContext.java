@@ -16,6 +16,7 @@ import org.drools.compiler.compiler.BaseKnowledgeBuilderResultImpl;
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.ruleunit.RuleUnitDescr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.modelcompiler.builder.PackageModel;
@@ -31,8 +32,8 @@ public class RuleContext {
     private static final Map<Class<? extends RuleUnit>, RuleUnitDescr> ruleUnitDescrCache = new HashMap<>();
 
     private final KnowledgeBuilderImpl kbuilder;
-    private final TypeResolver typeResolver;
     private final PackageModel packageModel;
+    private final TypeResolver typeResolver;
     private DRLIdGenerator idGenerator;
     private final RuleDescr descr;
 
@@ -49,6 +50,7 @@ public class RuleContext {
 
     private Map<String, String> aggregatePatternMap = new HashMap<>();
 
+
     private RuleDialect ruleDialect = RuleDialect.JAVA; // assumed is java by default as per Drools manual.
     public static enum RuleDialect {
         JAVA,
@@ -57,13 +59,13 @@ public class RuleContext {
 
     public BaseDescr parentDesc = null;
 
-    public RuleContext( KnowledgeBuilderImpl kbuilder, TypeResolver typeResolver, PackageModel packageModel, RuleDescr ruleDescr) {
+    public RuleContext(KnowledgeBuilderImpl kbuilder, PackageModel packageModel, RuleDescr ruleDescr, TypeResolver typeResolver) {
         this.kbuilder = kbuilder;
-        this.typeResolver = typeResolver;
         this.packageModel = packageModel;
         this.idGenerator = packageModel.getExprIdGenerator();
         this.descr = ruleDescr;
         exprPointer.push( this.expressions::add );
+        this.typeResolver = typeResolver;
         findUnitClass();
     }
 
@@ -83,7 +85,7 @@ public class RuleContext {
 
         if (unitName != null) {
             try {
-                Class<? extends RuleUnit> unitClass = ( Class<? extends RuleUnit> ) typeResolver.resolveType( unitName );
+                Class<? extends RuleUnit> unitClass = ( Class<? extends RuleUnit> ) getTypeResolver().resolveType( unitName );
                 ruleUnitDescr = ruleUnitDescrCache.computeIfAbsent( unitClass, RuleUnitDescr::new );
             } catch (ClassNotFoundException e) {
                 throw new RuntimeException( e );
@@ -178,11 +180,7 @@ public class RuleContext {
         return exprPointer.size();
     }
 
-    public TypeResolver getTypeResolver() {
-        return typeResolver;
-    }
-
-    public String getExprId( Class<?> patternType, String drlConstraint) {
+    public String getExprId(Class<?> patternType, String drlConstraint) {
         return idGenerator.getExprId(patternType, drlConstraint);
     }
 
@@ -248,6 +246,10 @@ public class RuleContext {
 
     public PackageModel getPackageModel() {
         return packageModel;
+    }
+
+    public TypeResolver getTypeResolver() {
+        return typeResolver;
     }
 }
 
