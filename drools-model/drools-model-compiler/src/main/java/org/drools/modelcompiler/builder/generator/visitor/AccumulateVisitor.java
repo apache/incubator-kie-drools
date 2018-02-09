@@ -199,8 +199,6 @@ public class AccumulateVisitor {
                 MethodCallExpr accMethod = getExprsMethod( accumulateDSL );
                 if (accMethod.getArguments().isEmpty()) {
                     accMethod.addArgument( exprCall );
-                } else {
-                    accMethod.setArgument( 0, exprCall );
                 }
             }
 
