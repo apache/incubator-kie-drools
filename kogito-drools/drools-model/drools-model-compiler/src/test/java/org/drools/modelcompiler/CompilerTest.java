@@ -186,6 +186,41 @@ public class CompilerTest extends BaseModelTest {
     }
 
     @Test
+    public void testRuleExtends() {
+        String str =
+                "import " + Result.class.getCanonicalName() + ";" +
+                "import " + Person.class.getCanonicalName() + ";" +
+                "rule R1 when\n" +
+                "  $r : Result()\n" +
+                "then\n" +
+                "end\n" +
+                "rule R2 extends R1 when\n" +
+                "  $p1 : Person(name == \"Mark\")\n" +
+                "then\n" +
+                "end\n" +
+                "rule R3 extends R2 when\n" +
+                "  $p2 : Person(name != \"Mark\", age > $p1.age)\n" +
+                "then\n" +
+                "  $r.setValue($p2.getName() + \" is older than \" + $p1.getName());\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        Result result = new Result();
+        ksession.insert( result );
+        assertEquals( 1, ksession.fireAllRules() );
+
+        ksession.insert(new Person("Edson", 35));
+        ksession.insert(new Person("Mario", 40));
+        assertEquals( 0, ksession.fireAllRules() );
+
+        ksession.insert(new Person("Mark", 37));
+        assertEquals( 2, ksession.fireAllRules() );
+
+        assertEquals("Mario is older than Mark", result.getValue());
+    }
+
+    @Test
     public void testBetaWithDeclaration() {
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +

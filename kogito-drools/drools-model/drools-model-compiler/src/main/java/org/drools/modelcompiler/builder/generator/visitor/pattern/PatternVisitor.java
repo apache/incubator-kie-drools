@@ -46,7 +46,7 @@ public class PatternVisitor {
         }
 
         final boolean allConstraintsPositional = areAllConstraintsPositional(constraintDescrs);
-        final Class<?> patternType = getClassFromContext(context.getPkg().getTypeResolver(), className);
+        final Class<?> patternType = getClassFromContext(context.getTypeResolver(), className);
         return new SimplePattern(context, packageModel, pattern, constraintDescrs, patternType, allConstraintsPositional);
     }
 

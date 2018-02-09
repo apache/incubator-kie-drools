@@ -5,11 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.compiler.lang.descr.BaseDescr;
-import org.drools.compiler.lang.descr.ExprConstraintDescr;
-import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.QueryDescr;
-import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.Modifier;
 import org.drools.javaparser.ast.body.MethodDeclaration;
@@ -28,20 +24,19 @@ import org.drools.model.Query;
 import org.drools.model.QueryDef;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
+import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassFromContext;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.ModelGenerator.BUILD_CALL;
-import static org.drools.modelcompiler.builder.generator.ModelGenerator.QUERY_INVOCATION_CALL;
-import static org.drools.modelcompiler.builder.generator.ModelGenerator.VALUE_OF_CALL;
 import static org.drools.modelcompiler.util.StringUtil.toId;
 
 public class QueryGenerator {
 
     public static final String QUERY_CALL = "query";
 
-    public static void processQueryDef( KnowledgeBuilderImpl kbuilder, InternalKnowledgePackage pkg, PackageModel packageModel, QueryDescr queryDescr ) {
-        RuleContext context = new RuleContext(kbuilder, pkg, packageModel, packageModel.getExprIdGenerator(), queryDescr);
+    public static void processQueryDef( KnowledgeBuilderImpl kbuilder, TypeResolver typeResolver, PackageModel packageModel, QueryDescr queryDescr ) {
+        RuleContext context = new RuleContext(kbuilder, typeResolver, packageModel, queryDescr);
         String queryName = queryDescr.getName();
         final String queryDefVariableName = toQueryDef(queryName);
         context.setQueryName(Optional.of(queryDefVariableName));
@@ -115,8 +110,8 @@ public class QueryGenerator {
         for (int i = 0; i < descr.getParameters().length; i++) {
             final String argument = descr.getParameters()[i];
             final String type = descr.getParameterTypes()[i];
-            context.addDeclaration(new DeclarationSpec(argument, getClassFromContext(context.getPkg().getTypeResolver(), type)));
-            QueryParameter queryParameter = new QueryParameter(argument, getClassFromContext(context.getPkg().getTypeResolver(), type));
+            context.addDeclaration(new DeclarationSpec(argument, getClassFromContext(context.getTypeResolver(), type)));
+            QueryParameter queryParameter = new QueryParameter(argument, getClassFromContext(context.getTypeResolver(), type));
             context.getQueryParameters().add(queryParameter);
             packageModel.putQueryVariable("query_" + toId( descr.getName() ), queryParameter);
         }

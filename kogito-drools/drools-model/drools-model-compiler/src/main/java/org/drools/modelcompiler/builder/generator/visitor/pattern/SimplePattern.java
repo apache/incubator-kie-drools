@@ -117,7 +117,7 @@ class SimplePattern implements DSLNode {
     private Optional<Expression> buildFromDeclaration(PatternDescr pattern) {
         Optional<PatternSourceDescr> source = Optional.ofNullable(pattern.getSource());
         Optional<Expression> declarationSourceFrom = source.flatMap(new FromVisitor(context, packageModel)::visit);
-        Optional<Expression> declarationSourceWindow = source.flatMap(new WindowReferenceGenerator(packageModel, context.getPkg())::visit);
+        Optional<Expression> declarationSourceWindow = source.flatMap(new WindowReferenceGenerator(packageModel, context.getTypeResolver())::visit);
         return declarationSourceFrom.isPresent() ? declarationSourceFrom : declarationSourceWindow;
     }
 

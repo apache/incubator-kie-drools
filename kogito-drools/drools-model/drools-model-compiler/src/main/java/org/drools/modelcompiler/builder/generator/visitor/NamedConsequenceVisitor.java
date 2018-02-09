@@ -45,7 +45,7 @@ public class NamedConsequenceVisitor {
 
     public void visit(ConditionalBranchDescr desc) {
         PatternDescr patternRelated = (PatternDescr) getReferringPatternDescr(desc, (AndDescr) context.parentDesc);
-        Class<?> patternRelatedClass = getClassFromContext(context.getPkg().getTypeResolver(), patternRelated.getObjectType());
+        Class<?> patternRelatedClass = getClassFromContext(context.getTypeResolver(), patternRelated.getObjectType());
         MethodCallExpr whenBlock = whenThenDSL(desc, patternRelated, patternRelatedClass, WHEN_CALL, null);
         recurseAmongElseBranch(patternRelatedClass, patternRelated, whenBlock, desc.getElseBranch());
     }

@@ -13,7 +13,6 @@ import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.PatternSourceDescr;
 import org.drools.compiler.lang.descr.WindowDeclarationDescr;
 import org.drools.compiler.lang.descr.WindowReferenceDescr;
-import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.drlx.DrlxParser;
 import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.drlx.expr.TemporalLiteralChunkExpr;
@@ -32,6 +31,7 @@ import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseFail;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.drlxparse.ParseResultVisitor;
+import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import static java.util.stream.Collectors.toList;
 
@@ -41,11 +41,11 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 public class WindowReferenceGenerator {
 
     final PackageModel packageModel;
-    final InternalKnowledgePackage pkg;
+    final TypeResolver typeResolver;
 
-    public WindowReferenceGenerator(PackageModel packageModel, InternalKnowledgePackage pkg) {
+    public WindowReferenceGenerator(PackageModel packageModel, TypeResolver typeResolver) {
         this.packageModel = packageModel;
-        this.pkg = pkg;
+        this.typeResolver = typeResolver;
     }
 
     public Optional<Expression> visit(PatternSourceDescr sourceDescr) {
@@ -88,7 +88,7 @@ public class WindowReferenceGenerator {
         final TimeUnit timeUnit = behavior.duration.getTimeUnit();
         initializer.addArgument(new NameExpr(timeUnit.getDeclaringClass().getCanonicalName() + "." + timeUnit.name()));
 
-        final Class<?> initClass = DrlxParseUtil.getClassFromContext(pkg.getTypeResolver(), pattern.getObjectType());
+        final Class<?> initClass = DrlxParseUtil.getClassFromContext(typeResolver, pattern.getObjectType());
 
         final Type initType = JavaParser.parseType(initClass.getCanonicalName());
         initializer.addArgument(new ClassExpr(initType));
@@ -106,7 +106,7 @@ public class WindowReferenceGenerator {
         return descrs.stream()
                 .map( descr -> {
                     String expression = descr.toString();
-                    RuleContext context = new RuleContext(kbuilder, pkg, packageModel, packageModel.getExprIdGenerator(), null);
+                    RuleContext context = new RuleContext(kbuilder, typeResolver, packageModel, null);
                     DrlxParseResult drlxParseResult = new ConstraintParser(context, packageModel).drlxParse(patternType, pattern.getIdentifier(), expression);
                     return drlxParseResult.acceptWithReturnValue(new ParseResultVisitor<Optional<Expression>>() {
                         @Override
