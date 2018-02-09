@@ -16,13 +16,13 @@ import org.drools.compiler.compiler.BaseKnowledgeBuilderResultImpl;
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
-import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.ruleunit.RuleUnitDescr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.kie.api.runtime.rule.RuleUnit;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.ResultSeverity;
+import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import static java.util.stream.Collectors.toList;
 
@@ -31,7 +31,7 @@ public class RuleContext {
     private static final Map<Class<? extends RuleUnit>, RuleUnitDescr> ruleUnitDescrCache = new HashMap<>();
 
     private final KnowledgeBuilderImpl kbuilder;
-    private final InternalKnowledgePackage pkg;
+    private final TypeResolver typeResolver;
     private final PackageModel packageModel;
     private DRLIdGenerator idGenerator;
     private final RuleDescr descr;
@@ -57,11 +57,11 @@ public class RuleContext {
 
     public BaseDescr parentDesc = null;
 
-    public RuleContext(KnowledgeBuilderImpl kbuilder, InternalKnowledgePackage pkg, PackageModel packageModel, DRLIdGenerator exprIdGenerator, RuleDescr ruleDescr) {
+    public RuleContext( KnowledgeBuilderImpl kbuilder, TypeResolver typeResolver, PackageModel packageModel, RuleDescr ruleDescr) {
         this.kbuilder = kbuilder;
-        this.pkg = pkg;
+        this.typeResolver = typeResolver;
         this.packageModel = packageModel;
-        this.idGenerator = exprIdGenerator;
+        this.idGenerator = packageModel.getExprIdGenerator();
         this.descr = ruleDescr;
         exprPointer.push( this.expressions::add );
         findUnitClass();
@@ -83,7 +83,7 @@ public class RuleContext {
 
         if (unitName != null) {
             try {
-                Class<? extends RuleUnit> unitClass = ( Class<? extends RuleUnit> ) pkg.getTypeResolver().resolveType( unitName );
+                Class<? extends RuleUnit> unitClass = ( Class<? extends RuleUnit> ) typeResolver.resolveType( unitName );
                 ruleUnitDescr = ruleUnitDescrCache.computeIfAbsent( unitClass, RuleUnitDescr::new );
             } catch (ClassNotFoundException e) {
                 throw new RuntimeException( e );
@@ -178,11 +178,11 @@ public class RuleContext {
         return exprPointer.size();
     }
 
-    public InternalKnowledgePackage getPkg() {
-        return pkg;
+    public TypeResolver getTypeResolver() {
+        return typeResolver;
     }
 
-    public String getExprId(Class<?> patternType, String drlConstraint) {
+    public String getExprId( Class<?> patternType, String drlConstraint) {
         return idGenerator.getExprId(patternType, drlConstraint);
     }
 

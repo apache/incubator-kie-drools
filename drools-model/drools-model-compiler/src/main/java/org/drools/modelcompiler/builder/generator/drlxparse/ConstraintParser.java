@@ -199,20 +199,20 @@ public class ConstraintParser {
 
             Optional<MethodDeclaration> functionCall = packageModel.getFunctions().stream().filter(m -> m.getName().equals(methodCallExpr.getName())).findFirst();
             if (functionCall.isPresent()) {
-                Class<?> returnType = DrlxParseUtil.getClassFromContext(context.getPkg().getTypeResolver(), functionCall.get().getType().asString());
+                Class<?> returnType = DrlxParseUtil.getClassFromContext(context.getTypeResolver(), functionCall.get().getType().asString());
                 NodeList<Expression> arguments = methodCallExpr.getArguments();
                 List<String> usedDeclarations = new ArrayList<>();
                 for (Expression arg : arguments) {
                     if (arg instanceof NameExpr && !arg.toString().equals("_this")) {
                         usedDeclarations.add(arg.toString());
                     } else if (arg instanceof MethodCallExpr) {
-                        DrlxParseUtil.toTypedExpressionFromMethodCallOrField(context, null, ( MethodCallExpr ) arg, bindingId, usedDeclarations, new HashSet<>(), context.getPkg().getTypeResolver(), new ArrayList<>());
+                        DrlxParseUtil.toTypedExpressionFromMethodCallOrField(context, null, ( MethodCallExpr ) arg, bindingId, usedDeclarations, new HashSet<>(), context.getTypeResolver(), new ArrayList<>());
                     }
                 }
                 return new DrlxParseSuccess(patternType, exprId, bindingId, methodCallExpr, returnType).setUsedDeclarations(usedDeclarations);
             } else if (methodCallExpr.getScope().isPresent() && methodCallExpr.getScope().get() instanceof StringLiteralExpr) {
                 List<String> usedDeclarations = new ArrayList<>();
-                Optional<TypedExpression> optConverted = DrlxParseUtil.toTypedExpressionFromMethodCallOrField(context, String.class, methodCallExpr, bindingId, usedDeclarations, new HashSet<>(), context.getPkg().getTypeResolver(), new ArrayList<>());
+                Optional<TypedExpression> optConverted = DrlxParseUtil.toTypedExpressionFromMethodCallOrField(context, String.class, methodCallExpr, bindingId, usedDeclarations, new HashSet<>(), context.getTypeResolver(), new ArrayList<>());
 
                 return optConverted.<DrlxParseResult>map(converted -> {
                     return new DrlxParseSuccess(String.class, exprId, bindingId, converted.getExpression(), converted.getType())
@@ -223,7 +223,7 @@ public class ConstraintParser {
 
             } else if (patternType != null) {
                 NameExpr _this = new NameExpr("_this");
-                TypedExpression converted = DrlxParseUtil.toMethodCallWithClassCheck(context, methodCallExpr, bindingId, patternType, context.getPkg().getTypeResolver());
+                TypedExpression converted = DrlxParseUtil.toMethodCallWithClassCheck(context, methodCallExpr, bindingId, patternType, context.getTypeResolver());
                 Expression withThis = DrlxParseUtil.prepend(_this, converted.getExpression());
                 return new DrlxParseSuccess(patternType, exprId, bindingId, withThis, converted.getType()).setLeft(converted );
             } else {
@@ -235,7 +235,7 @@ public class ConstraintParser {
             FieldAccessExpr fieldCallExpr = (FieldAccessExpr) drlxExpr;
 
             NameExpr _this = new NameExpr("_this");
-            TypedExpression converted = DrlxParseUtil.toMethodCallWithClassCheck(context, fieldCallExpr, bindingId, patternType, context.getPkg().getTypeResolver());
+            TypedExpression converted = DrlxParseUtil.toMethodCallWithClassCheck(context, fieldCallExpr, bindingId, patternType, context.getTypeResolver());
             Expression withThis = DrlxParseUtil.prepend(_this, converted.getExpression());
             return new DrlxParseSuccess(patternType, exprId, bindingId, withThis, converted.getType()).setLeft(converted );
         }
@@ -244,7 +244,7 @@ public class ConstraintParser {
             NameExpr methodCallExpr = (NameExpr) drlxExpr;
 
             NameExpr _this = new NameExpr("_this");
-            TypedExpression converted = DrlxParseUtil.toMethodCallWithClassCheck(context, methodCallExpr, bindingId, patternType, context.getPkg().getTypeResolver());
+            TypedExpression converted = DrlxParseUtil.toMethodCallWithClassCheck(context, methodCallExpr, bindingId, patternType, context.getTypeResolver());
             Expression withThis = DrlxParseUtil.prepend(_this, converted.getExpression());
 
             if (drlx.getBind() != null) {

@@ -24,8 +24,8 @@ import static org.junit.Assert.*;
 public class ToTypedExpressionTest {
 
     private final HashSet<String> imports = new HashSet<>();
-    private final RuleContext ruleContext = new RuleContext(null, null, null, null, null);
     private final PackageModel packageModel = new PackageModel("", null);
+    private final RuleContext ruleContext = new RuleContext(null, null, packageModel, null);
 
     {
         imports.add("org.drools.modelcompiler.domain.Person");

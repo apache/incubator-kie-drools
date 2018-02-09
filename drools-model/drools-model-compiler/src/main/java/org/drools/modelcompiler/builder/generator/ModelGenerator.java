@@ -30,6 +30,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.AttributeDescr;
 import org.drools.compiler.lang.descr.BehaviorDescr;
@@ -80,9 +81,11 @@ import org.drools.modelcompiler.builder.generator.RuleContext.RuleDialect;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
 import org.drools.modelcompiler.consequence.DroolsImpl;
+import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
+
 import static org.drools.javaparser.JavaParser.parseExpression;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.classToReferenceType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
@@ -170,15 +173,16 @@ public class ModelGenerator {
     public static final String UNIT_DATA_CALL = "unitData";
 
     public static void generateModel( KnowledgeBuilderImpl kbuilder, InternalKnowledgePackage pkg, PackageDescr packageDescr, PackageModel packageModel ) {
+        TypeResolver typeResolver = pkg.getTypeResolver();
         packageModel.addImports(pkg.getTypeResolver().getImports());
         packageModel.addGlobals(pkg.getGlobals());
         packageModel.addAccumulateFunctions(pkg.getAccumulateFunctions());
-        new WindowReferenceGenerator(packageModel, pkg).addWindowReferences(kbuilder, packageDescr.getWindowDeclarations());
+        new WindowReferenceGenerator(packageModel, typeResolver).addWindowReferences(kbuilder, packageDescr.getWindowDeclarations());
         packageModel.addAllFunctions(packageDescr.getFunctions().stream().map(FunctionGenerator::toFunction).collect(toList()));
 
         for(RuleDescr descr : packageDescr.getRules()) {
             if (descr instanceof QueryDescr) {
-                QueryGenerator.processQueryDef( kbuilder, pkg, packageModel, (QueryDescr) descr);
+                QueryGenerator.processQueryDef( kbuilder, typeResolver, packageModel, (QueryDescr) descr);
             }
         }
 
@@ -186,20 +190,20 @@ public class ModelGenerator {
             if (descr instanceof QueryDescr) {
                 QueryGenerator.processQuery(kbuilder, packageModel, (QueryDescr) descr);
             } else {
-                processRule(kbuilder, pkg, packageModel, descr);
+                processRule(kbuilder, typeResolver, packageModel, packageDescr, descr);
             }
         }
     }
 
 
-    private static void processRule(KnowledgeBuilderImpl kbuilder, InternalKnowledgePackage pkg, PackageModel packageModel, RuleDescr ruleDescr) {
-        RuleContext context = new RuleContext(kbuilder, pkg, packageModel, packageModel.getExprIdGenerator(), ruleDescr);
+    private static void processRule( KnowledgeBuilderImpl kbuilder, TypeResolver typeResolver, PackageModel packageModel, PackageDescr packageDescr, RuleDescr ruleDescr) {
+        RuleContext context = new RuleContext(kbuilder, typeResolver, packageModel, ruleDescr);
 
         for(Entry<String, Object> kv : ruleDescr.getNamedConsequences().entrySet()) {
             context.addNamedConsequence(kv.getKey(), kv.getValue().toString());
         }
 
-        new ModelGeneratorVisitor(context, packageModel).visit(ruleDescr.getLhs());
+        new ModelGeneratorVisitor(context, packageModel).visit(getExtendedLhs(packageDescr, ruleDescr));
         final String ruleMethodName = "rule_" + toId(ruleDescr.getName());
         MethodDeclaration ruleMethod = new MethodDeclaration(EnumSet.of(Modifier.PUBLIC, Modifier.STATIC), RULE_TYPE, ruleMethodName);
 
@@ -243,6 +247,19 @@ public class ModelGenerator {
 
         ruleVariablesBlock.addStatement( new ReturnStmt(RULE_CALL) );
         packageModel.putRuleMethod(ruleMethodName, ruleMethod);
+    }
+
+    private static AndDescr getExtendedLhs(PackageDescr packageDescr, RuleDescr ruleDescr) {
+        if (ruleDescr.getParentName() == null) {
+            return ruleDescr.getLhs();
+        }
+        RuleDescr parent = packageDescr.getRules().stream()
+                .filter( r -> r.getName().equals( ruleDescr.getParentName() ) ).findFirst()
+                .orElseThrow( () -> new RuntimeException( "Rule " + ruleDescr.getName() + " extends an unknown rule " + ruleDescr.getParentName() ) );
+        AndDescr extendedLhs = new AndDescr();
+        getExtendedLhs(packageDescr, parent).getDescrs().forEach( extendedLhs::addDescr );
+        ruleDescr.getLhs().getDescrs().forEach( extendedLhs::addDescr );
+        return extendedLhs;
     }
 
     /**
@@ -314,9 +331,9 @@ public class ModelGenerator {
             if (adFqn != null) {
                 AnnotationDefinition annotationDefinition;
                 try {
-                    annotationDefinition = AnnotationDefinition.build(context.getPkg().getTypeResolver().resolveType(adFqn),
+                    annotationDefinition = AnnotationDefinition.build(context.getTypeResolver().resolveType(adFqn),
                                                                       ad.getValueMap(),
-                                                                      context.getPkg().getTypeResolver());
+                                                                      context.getTypeResolver());
                 } catch (NoSuchMethodException e) {
                     throw new RuntimeException( e );
                 } catch (ClassNotFoundException e) {

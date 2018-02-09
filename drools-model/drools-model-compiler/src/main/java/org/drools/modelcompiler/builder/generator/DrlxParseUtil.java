@@ -153,7 +153,7 @@ public class DrlxParseUtil {
         } else if (drlxExpr instanceof CastExpr) {
             CastExpr castExpr = (CastExpr)drlxExpr;
             toTypedExpression( context, packageModel, patternType, castExpr.getExpression(), bindingId, usedDeclarations, reactOnProperties, castExpr, isPositional, prefixExpresssions);
-            return of(new TypedExpression(castExpr, getClassFromContext(context.getPkg().getTypeResolver(), castExpr.getType().asString())));
+            return of(new TypedExpression(castExpr, getClassFromContext(context.getTypeResolver(), castExpr.getType().asString())));
 
         } else if (drlxExpr instanceof NameExpr) {
             String name = drlxExpr.toString();
@@ -187,7 +187,7 @@ public class DrlxParseUtil {
                 return of(new TypedExpression(plusThis, expression.getType(), name));
             }
         } else if (drlxExpr instanceof FieldAccessExpr || drlxExpr instanceof MethodCallExpr) {
-            return toTypedExpressionFromMethodCallOrField(context, patternType, drlxExpr, bindingId, usedDeclarations, reactOnProperties, context.getPkg().getTypeResolver(), prefixExpresssions);
+            return toTypedExpressionFromMethodCallOrField(context, patternType, drlxExpr, bindingId, usedDeclarations, reactOnProperties, context.getTypeResolver(), prefixExpresssions);
         } else if (drlxExpr instanceof PointFreeExpr) {
 
             final PointFreeExpr pointFreeExpr = (PointFreeExpr)drlxExpr;
