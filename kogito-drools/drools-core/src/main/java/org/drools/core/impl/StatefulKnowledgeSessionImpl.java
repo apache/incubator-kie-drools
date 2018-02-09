@@ -689,29 +689,19 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         }
 
         public Object[] toArray() {
-            if ( type == FACT_HANDLE ) {
-                return toArray( new InternalFactHandle[size()] );
-            } else {
-                return toArray( new Object[size()] );
-            }
-
+            return asList().toArray();
         }
 
         public Object[] toArray(Object[] array) {
-            if ( array == null || array.length != size() ) {
-                if ( type == FACT_HANDLE ) {
-                    array = new InternalFactHandle[size()];
-                } else {
-                    array = new Object[size()];
-                }
-            }
+            return asList().toArray(array);
+        }
 
-            int i = 0;
+        private List asList() {
+            List list = new ArrayList();
             for (Object o : this) {
-                array[i++] = o;
+                list.add(o);
             }
-
-            return array;
+            return list;
         }
     }
 
