@@ -24,7 +24,7 @@ public class PatternBuilder {
         return this;
     }
 
-    public <T> BoundPatternBuilder<T> filter(Type<T> type) {
+    public <T> BoundPatternBuilder<T> filter(Class<T> type) {
         return filter((Variable<T>) declarationOf( type ) );
     }
 

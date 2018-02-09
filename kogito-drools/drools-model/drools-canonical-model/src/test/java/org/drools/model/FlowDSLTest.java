@@ -15,7 +15,6 @@ import static org.drools.model.DSL.on;
 import static org.drools.model.DSL.or;
 import static org.drools.model.DSL.rule;
 import static org.drools.model.DSL.storeOf;
-import static org.drools.model.DSL.type;
 import static org.drools.model.DSL.view;
 import static org.junit.Assert.assertEquals;
 
@@ -33,8 +32,8 @@ public class FlowDSLTest {
         // $older: Person(name != "Mark" && age > $mark.age) in entry-point "persons"
 
         List<String> list = new ArrayList<>();
-        Variable<Person> markV = declarationOf( type( Person.class ), new DataSourceDefinitionImpl( "persons", false) );
-        Variable<Person> olderV = declarationOf( type( Person.class ), new DataSourceDefinitionImpl( "persons", false) );
+        Variable<Person> markV = declarationOf( Person.class, new DataSourceDefinitionImpl( "persons", false) );
+        Variable<Person> olderV = declarationOf( Person.class, new DataSourceDefinitionImpl( "persons", false) );
 
         Rule rule = rule("join")
                 .attribute(Rule.Attribute.SALIENCE, 10)
@@ -68,8 +67,8 @@ public class FlowDSLTest {
         // $mark: Person(name == "Mark") in entry-point "persons"
         // $older: Person(name != "Mark" && age > $mark.age) in entry-point "persons"
 
-        Variable<Person> markV = declarationOf( type( Person.class ), new DataSourceDefinitionImpl( "persons", false) );
-        Variable<Person> olderV = declarationOf( type( Person.class ), new DataSourceDefinitionImpl( "persons", false) );
+        Variable<Person> markV = declarationOf( Person.class, new DataSourceDefinitionImpl( "persons", false) );
+        Variable<Person> olderV = declarationOf( Person.class, new DataSourceDefinitionImpl( "persons", false) );
 
         View view = view(
             expr(olderV, older -> !older.getName().equals("Mark")),
@@ -91,8 +90,8 @@ public class FlowDSLTest {
                                               new Person("Mario", 40),
                                               new Person("Sofia", 3));
 
-        Variable<Person> markV = declarationOf( type( Person.class ), new DataSourceDefinitionImpl( "persons", false) );
-        Variable<Person> otherV = declarationOf( type( Person.class ), new DataSourceDefinitionImpl( "persons", false) );
+        Variable<Person> markV = declarationOf( Person.class, new DataSourceDefinitionImpl( "persons", false) );
+        Variable<Person> otherV = declarationOf( Person.class, new DataSourceDefinitionImpl( "persons", false) );
 
         View view = view(
                 expr(markV, mark -> mark.getName().equals("Mark")),
@@ -123,8 +122,8 @@ public class FlowDSLTest {
         // $oldest: Person()
         // not( Person(age > $oldest.age) )
 
-        Variable<Person> oldestV = declarationOf( type( Person.class ), new DataSourceDefinitionImpl( "persons", false) );
-        Variable<Person> otherV = declarationOf( type( Person.class ), new DataSourceDefinitionImpl( "persons", false) );
+        Variable<Person> oldestV = declarationOf( Person.class, new DataSourceDefinitionImpl( "persons", false) );
+        Variable<Person> otherV = declarationOf( Person.class, new DataSourceDefinitionImpl( "persons", false) );
 
         View view = view(
                 not(otherV, oldestV, (p1, p2) -> p1.getAge() > p2.getAge())

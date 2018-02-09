@@ -23,7 +23,6 @@ import org.drools.model.view.QueryCallViewItem;
 import org.drools.model.view.QueryCallViewItemImpl;
 
 import static org.drools.model.DSL.declarationOf;
-import static org.drools.model.DSL.type;
 import static org.drools.model.impl.RuleBuilder.DEFAULT_PACKAGE;
 
 public class Query3DefImpl<A, B, C> extends QueryDefImpl implements Query3Def<A, B, C> {
@@ -37,9 +36,9 @@ public class Query3DefImpl<A, B, C> extends QueryDefImpl implements Query3Def<A,
 
     public Query3DefImpl(String pkg, String name, Class<A> type1, Class<B> type2, Class<C> type3  ) {
         super( pkg, name );
-        this.arg1 = declarationOf( type(type1) );
-        this.arg2 = declarationOf( type(type2) );
-        this.arg3 = declarationOf( type(type3) );
+        this.arg1 = declarationOf( type1 );
+        this.arg2 = declarationOf( type2 );
+        this.arg3 = declarationOf( type3 );
     }
 
     public Query3DefImpl(String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name, Class<C> type3, String arg3name ) {
@@ -48,9 +47,9 @@ public class Query3DefImpl<A, B, C> extends QueryDefImpl implements Query3Def<A,
 
     public Query3DefImpl(String pkg, String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name, Class<C> type3, String arg3name  ) {
         super( pkg, name );
-        this.arg1 = declarationOf( type(type1), arg1name);
-        this.arg2 = declarationOf( type(type2), arg2name );
-        this.arg3 = declarationOf( type(type3), arg3name);
+        this.arg1 = declarationOf( type1, arg1name);
+        this.arg2 = declarationOf( type2, arg2name );
+        this.arg3 = declarationOf( type3, arg3name);
     }
 
     @Override

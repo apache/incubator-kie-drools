@@ -82,7 +82,7 @@ public abstract class LambdaAccumulator implements Accumulator {
             if (accumulateObject instanceof SubnetworkTuple ) {
                 final Object[] args = Arrays.stream(innerDeclarations)
                         .filter(d -> sourceVariables.contains(d.getIdentifier()))
-                        .map(d -> ((SubnetworkTuple) accumulateObject).getObject(d)).toArray();
+                        .map( (( SubnetworkTuple ) accumulateObject)::getObject ).toArray();
                 return binding.eval(args);
             } else {
                 return binding.eval(accumulateObject);

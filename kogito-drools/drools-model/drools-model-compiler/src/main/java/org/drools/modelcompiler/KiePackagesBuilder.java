@@ -117,7 +117,6 @@ import static org.drools.core.rule.GroupElement.AND;
 import static org.drools.core.rule.Pattern.getReadAcessor;
 import static org.drools.model.DSL.declarationOf;
 import static org.drools.model.DSL.entryPoint;
-import static org.drools.model.DSL.type;
 import static org.drools.model.impl.NamesGenerator.generateName;
 import static org.drools.modelcompiler.ModelCompilerUtil.conditionToGroupElementType;
 import static org.drools.modelcompiler.constraints.LambdaAccumulator.createLambdaAccumulator;
@@ -157,7 +156,7 @@ public class KiePackagesBuilder {
 
             for (Global global : model.getGlobals()) {
                 KnowledgePackageImpl pkg = ( KnowledgePackageImpl ) packages.computeIfAbsent( global.getPackage(), this::createKiePackage );
-                pkg.addGlobal( global.getName(), global.getType().asClass() );
+                pkg.addGlobal( global.getName(), global.getType() );
             }
 
             for (Query query : model.getQueries()) {
@@ -271,7 +270,7 @@ public class KiePackagesBuilder {
         Declaration[] declarations = new Declaration[args.length];
         for (int i = 0; i < args.length; i++) {
             int index = i;
-            LambdaReadAccessor accessor = new LambdaReadAccessor(index, args[index].getType().asClass(), obj -> ( (DroolsQuery) obj ).getElements()[index] );
+            LambdaReadAccessor accessor = new LambdaReadAccessor(index, args[index].getType(), obj -> ( (DroolsQuery) obj ).getElements()[index] );
             declarations[i] = new Declaration( args[i].getName(), accessor, pattern, true );
             pattern.addDeclaration( declarations[i] );
             ctx.addQueryDeclaration( args[i], declarations[i] );
@@ -330,12 +329,12 @@ public class KiePackagesBuilder {
     private Variable getUnitVariable( RuleContext ctx, KnowledgePackageImpl pkg, View view ) {
         String unitClassName = ctx.getRule().getRuleUnitClassName();
         for (Variable<?> var : view.getBoundVariables()) {
-            if ( var instanceof DeclarationImpl && var.getType().asClass().getName().equals( unitClassName ) ) {
+            if ( var instanceof DeclarationImpl && var.getType().getName().equals( unitClassName ) ) {
                 return ( (DeclarationImpl) var ).setSource( entryPoint( RuleUnitUtil.RULE_UNIT_ENTRY_POINT ) );
             }
         }
         try {
-            return declarationOf( type( pkg.getTypeResolver().resolveType( unitClassName ) ), entryPoint( RuleUnitUtil.RULE_UNIT_ENTRY_POINT ) );
+            return declarationOf( pkg.getTypeResolver().resolveType( unitClassName ), entryPoint( RuleUnitUtil.RULE_UNIT_ENTRY_POINT ) );
         } catch (ClassNotFoundException e) {
             throw new RuntimeException( e );
         }
@@ -408,7 +407,7 @@ public class KiePackagesBuilder {
                 if (innerCondition instanceof PatternImpl) {
                     basePattern = new Pattern( ctx.getNextPatternIndex(),
                                                0, // offset will be set by ReteooBuilder
-                                               getObjectType( (( PatternImpl ) innerCondition).getPatternVariable().getType().asClass() ),
+                                               getObjectType( (( PatternImpl ) innerCondition).getPatternVariable().getType() ),
                                                BASE_IDENTIFIER,
                                                true );
                     remainingPatterns.add( (Pattern) conditionToElement( ctx, group, innerCondition ) );
@@ -486,7 +485,7 @@ public class KiePackagesBuilder {
                 } else {
                     ArrayElementReader reader = new ArrayElementReader( arrayReader,
                                                                         i,
-                                                                        arg.getType().asClass() );
+                                                                        arg.getType() );
                     pattern.addDeclaration( var.getName() ).setReadAccessor( reader );
                     arguments[i] = QueryArgument.VAR;
                     varIndexList.add( i );
@@ -512,7 +511,7 @@ public class KiePackagesBuilder {
 
         for (Binding binding : modelPattern.getBindings()) {
             Declaration declaration = new Declaration(binding.getBoundVariable().getName(),
-                                                      new LambdaReadAccessor(binding.getBoundVariable().getType().asClass(),
+                                                      new LambdaReadAccessor(binding.getBoundVariable().getType(),
                                                                              new Function1.Impl<>(binding.getBindingFunction())),
                                                       pattern,
                                                       true);
@@ -560,7 +559,7 @@ public class KiePackagesBuilder {
 
                 Variable boundVar = accPattern.getBoundVariables()[i];
                 pattern.addDeclaration( new Declaration( boundVar.getName(),
-                                        new ArrayElementReader( reader, i, boundVar.getType().asClass() ),
+                                        new ArrayElementReader( reader, i, boundVar.getType() ),
                                         pattern,
                                         true ) );
 
@@ -588,7 +587,7 @@ public class KiePackagesBuilder {
     }
 
     private Pattern addPatternForVariable( RuleContext ctx, GroupElement group, Variable patternVariable ) {
-        Class<?> patternClass = patternVariable.getType().asClass();
+        Class<?> patternClass = patternVariable.getType();
         Pattern pattern = new Pattern( ctx.getNextPatternIndex(),
                                        0, // offset will be set by ReteooBuilder
                                        getObjectType( patternClass ),
@@ -647,7 +646,7 @@ public class KiePackagesBuilder {
 
     private <T> void createWindowReference( RuleContext ctx, WindowReference<T> window ) {
         WindowDeclaration windowDeclaration = new WindowDeclaration( window.getName(), ctx.getPkg().getName() );
-        Variable<T> variable = declarationOf( type( window.getPatternType() ) );
+        Variable<T> variable = declarationOf( window.getPatternType() );
         Pattern windowPattern = new Pattern(0, getObjectType( window.getPatternType() ), variable.getName() );
         windowDeclaration.setPattern( windowPattern );
         for ( Predicate1<T> predicate : window.getPredicates()) {
@@ -728,7 +727,7 @@ public class KiePackagesBuilder {
                 KnowledgePackageImpl pkg = (KnowledgePackageImpl) packages.computeIfAbsent( patternClass.getPackage().getName(), this::createKiePackage );
                 TypeDeclaration typeDeclaration = pkg.getTypeDeclaration( patternClass );
                 if ( typeDeclaration == null ) {
-                    typeDeclaration = createTypeDeclaration( pkg, patternClass );
+                    typeDeclaration = createTypeDeclaration( patternClass );
                     pkg.addTypeDeclaration( typeDeclaration );
                 }
                 isEvent = typeDeclaration.getRole() == Role.Type.EVENT;

@@ -133,7 +133,7 @@ public class PackageModel {
         transformed = values
                 .entrySet()
                 .stream()
-                .collect(Collectors.toMap(e -> e.getKey(), e -> {
+                .collect(Collectors.toMap( Entry::getKey, e -> {
                     try {
                         return Class.forName(e.getValue());
                     } catch (ClassNotFoundException e1) {
@@ -373,8 +373,7 @@ public class PackageModel {
                 manageImportForCompilationUnit(cuRulesMethod);
                 cuRulesMethod.addImport(JavaParser.parseImport("import static " + name + "." + rulesFileName + ".*;"));
                 String currentRulesMethodClassName = rulesFileName + "RuleMethods" + i;
-                ClassOrInterfaceDeclaration r = cuRulesMethod.addClass(currentRulesMethodClassName);
-                return r;
+                return cuRulesMethod.addClass(currentRulesMethodClassName);
             });
             rulesMethodClass.addMember(ruleMethodKV.getValue());
 
@@ -417,9 +416,7 @@ public class PackageModel {
         Type declType = DrlxParseUtil.classToReferenceType(globalClass);
 
         MethodCallExpr declarationOfCall = new MethodCallExpr(null, "globalOf");
-        MethodCallExpr typeCall = new MethodCallExpr(null, "type");
-        typeCall.addArgument( new ClassExpr(declType ));
-        declarationOfCall.addArgument(typeCall);
+        declarationOfCall.addArgument(new ClassExpr(declType ));
         declarationOfCall.addArgument(new StringLiteralExpr(packageName));
         declarationOfCall.addArgument(new StringLiteralExpr(globalName));
 

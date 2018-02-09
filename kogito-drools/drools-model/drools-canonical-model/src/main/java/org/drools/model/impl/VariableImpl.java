@@ -1,26 +1,25 @@
 package org.drools.model.impl;
 
-import org.drools.model.Type;
 import org.drools.model.Variable;
 
 import static org.drools.model.impl.NamesGenerator.generateName;
 
 public abstract class VariableImpl<T> implements Variable<T>, ModelComponent {
 
-    private final Type<T> type;
+    private final Class<T> type;
     private final String name;
 
-    public VariableImpl(Type<T> type) {
+    public VariableImpl(Class<T> type) {
         this(type, generateName("var"));
     }
 
-    public VariableImpl(Type<T> type, String name) {
+    public VariableImpl(Class<T> type, String name) {
         this.type = type;
         this.name = name;
     }
 
     @Override
-    public Type<T> getType() {
+    public Class<T> getType() {
         return type;
     }
 
@@ -40,6 +39,6 @@ public abstract class VariableImpl<T> implements Variable<T>, ModelComponent {
         if ( o == null || getClass() != o.getClass() ) return false;
 
         Variable var = ( Variable ) o;
-        return type.equals( var.getType() );
+        return type.getName().equals( var.getType().getName() );
     }
 }

@@ -49,17 +49,16 @@ import static org.drools.model.DSL.on;
 import static org.drools.model.DSL.query;
 import static org.drools.model.DSL.reactiveFrom;
 import static org.drools.model.DSL.rule;
-import static org.drools.model.DSL.type;
 import static org.junit.Assert.assertEquals;
 
 public class OOPathFlowTest {
 
     @Test
     public void testOOPath() {
-        Global<List> listG = globalOf(type(List.class), "defaultpkg", "list");
-        Variable<Man> manV = declarationOf( type( Man.class ) );
-        Variable<Woman> wifeV = declarationOf( type( Woman.class ), reactiveFrom( manV, Man::getWife ) );
-        Variable<Child> childV = declarationOf( type( Child.class ), reactiveFrom( wifeV, Woman::getChildren ) );
+        Global<List> listG = globalOf(List.class, "defaultpkg", "list");
+        Variable<Man> manV = declarationOf( Man.class );
+        Variable<Woman> wifeV = declarationOf( Woman.class, reactiveFrom( manV, Man::getWife ) );
+        Variable<Child> childV = declarationOf( Child.class, reactiveFrom( wifeV, Woman::getChildren ) );
 
         Rule rule = rule( "oopath" )
                 .build(
@@ -94,11 +93,11 @@ public class OOPathFlowTest {
 
     @Test
     public void testReactiveOOPath() {
-        Global<List> listG = globalOf(type(List.class), "defaultpkg", "list");
-        Variable<Man> manV = declarationOf( type( Man.class ) );
-        Variable<Woman> wifeV = declarationOf( type( Woman.class ), reactiveFrom( manV, Man::getWife ) );
-        Variable<Child> childV = declarationOf( type( Child.class ), reactiveFrom( wifeV, Woman::getChildren ) );
-        Variable<Toy> toyV = declarationOf( type( Toy.class ), reactiveFrom( childV, Child::getToys ) );
+        Global<List> listG = globalOf(List.class, "defaultpkg", "list");
+        Variable<Man> manV = declarationOf( Man.class );
+        Variable<Woman> wifeV = declarationOf( Woman.class, reactiveFrom( manV, Man::getWife ) );
+        Variable<Child> childV = declarationOf( Child.class, reactiveFrom( wifeV, Woman::getChildren ) );
+        Variable<Toy> toyV = declarationOf( Toy.class, reactiveFrom( childV, Child::getToys ) );
 
         Rule rule = rule( "oopath" )
                 .build(
@@ -140,11 +139,11 @@ public class OOPathFlowTest {
 
     @Test
     public void testBackReferenceConstraint() {
-        Global<List> listG = globalOf(type(List.class), "defaultpkg", "list");
-        Variable<Man> manV = declarationOf( type( Man.class ) );
-        Variable<Woman> wifeV = declarationOf( type( Woman.class ), reactiveFrom( manV, Man::getWife ) );
-        Variable<Child> childV = declarationOf( type( Child.class ), reactiveFrom( wifeV, Woman::getChildren ) );
-        Variable<Toy> toyV = declarationOf( type( Toy.class ), reactiveFrom( childV, Child::getToys ) );
+        Global<List> listG = globalOf(List.class, "defaultpkg", "list");
+        Variable<Man> manV = declarationOf( Man.class );
+        Variable<Woman> wifeV = declarationOf( Woman.class, reactiveFrom( manV, Man::getWife ) );
+        Variable<Child> childV = declarationOf( Child.class, reactiveFrom( wifeV, Woman::getChildren ) );
+        Variable<Toy> toyV = declarationOf( Toy.class, reactiveFrom( childV, Child::getToys ) );
 
         Rule rule = rule( "oopath" )
                 .build(
@@ -181,10 +180,10 @@ public class OOPathFlowTest {
 
     @Test
     public void testOOPathCast() {
-        Global<List> listG = globalOf(type(List.class), "defaultpkg", "list");
-        Variable<Man> manV = declarationOf(type(Man.class), "$man");
+        Global<List> listG = globalOf(List.class, "defaultpkg", "list");
+        Variable<Man> manV = declarationOf(Man.class, "$man");
         // Drools doc: In this way subsequent constraints can also safely access to properties declared only in that subclass 
-        Variable<InternationalAddress> addressV = declarationOf(type(InternationalAddress.class), "$italy", reactiveFrom(manV, Man::getAddress));
+        Variable<InternationalAddress> addressV = declarationOf(InternationalAddress.class, "$italy", reactiveFrom(manV, Man::getAddress));
 
         Rule rule = rule("oopath")
                                   .build(
@@ -210,15 +209,14 @@ public class OOPathFlowTest {
     @Test
     public void testQueryOOPathAccumulate() {
         QueryDef queryDef_listSafeCities = query("listSafeCities");
-        final org.drools.model.Variable<java.util.List> var_$cities = declarationOf(type(java.util.List.class), "$cities");
-        final org.drools.model.Variable<org.drools.modelcompiler.oopathdtables.Person> var_$p = declarationOf(type(org.drools.modelcompiler.oopathdtables.Person.class),
+        Variable<java.util.List> var_$cities = declarationOf(java.util.List.class, "$cities");
+        Variable<org.drools.modelcompiler.oopathdtables.Person> var_$p = declarationOf(org.drools.modelcompiler.oopathdtables.Person.class,
                 "$p");
-        final org.drools.model.Variable<org.drools.modelcompiler.oopathdtables.InternationalAddress> var_$a = declarationOf(type(org.drools.modelcompiler.oopathdtables.InternationalAddress.class),
+        Variable<org.drools.modelcompiler.oopathdtables.InternationalAddress> var_$a = declarationOf(org.drools.modelcompiler.oopathdtables.InternationalAddress.class,
                 "$a",
                 from(var_$p,
                         (_this) -> _this.getAddress()));
-        final org.drools.model.Variable<java.lang.String> var_$city = declarationOf(type(java.lang.String.class),
-                "$city",
+        Variable<String> var_$city = declarationOf(String.class, "$city",
                 from(var_$a,
                         (_this) -> _this.getCity()));
         org.drools.model.Query listSafeCities_build = queryDef_listSafeCities.build(accumulate(and(input(var_$p),

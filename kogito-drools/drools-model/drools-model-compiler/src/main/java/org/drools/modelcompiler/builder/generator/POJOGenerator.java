@@ -2,8 +2,8 @@ package org.drools.modelcompiler.builder.generator;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
@@ -76,7 +76,7 @@ public class POJOGenerator {
                 processType( packageModel, typeDescr, typeResolver.resolveType( typeDescr.getTypeName() ));
             } catch (ClassNotFoundException e) {
                 packageModel.addGeneratedPOJO(POJOGenerator.toClassDeclaration(typeDescr, packageDescr));
-                packageModel.addTypeMetaDataExpressions( registerTypeMetaData( packageModel, pkg.getName(), typeDescr.getTypeName() ) );
+                packageModel.addTypeMetaDataExpressions( registerTypeMetaData( pkg.getName(), typeDescr.getTypeName() ) );
             }
         }
     }
@@ -93,7 +93,7 @@ public class POJOGenerator {
     }
 
     private static void processType(PackageModel packageModel, TypeDeclarationDescr typeDescr, Class<?> type) {
-        MethodCallExpr typeMetaDataCall = registerTypeMetaData( packageModel, type.getPackage().getName(), type.getSimpleName() );
+        MethodCallExpr typeMetaDataCall = registerTypeMetaData( type.getPackage().getName(), type.getSimpleName() );
 
         for (AnnotationDescr ann : typeDescr.getAnnotations()) {
             typeMetaDataCall = new MethodCallExpr(typeMetaDataCall, "addAnnotation");
@@ -109,7 +109,7 @@ public class POJOGenerator {
         packageModel.addTypeMetaDataExpressions(typeMetaDataCall);
     }
 
-    private static MethodCallExpr registerTypeMetaData( PackageModel packageModel, String pkg, String name ) {
+    private static MethodCallExpr registerTypeMetaData( String pkg, String name ) {
         MethodCallExpr typeMetaDataCall = new MethodCallExpr(null, TYPE_META_DATA_CALL);
         typeMetaDataCall.addArgument( new StringLiteralExpr(pkg) );
         typeMetaDataCall.addArgument( new StringLiteralExpr(name) );
@@ -215,8 +215,8 @@ public class POJOGenerator {
             }
 
             if (hasSuper) {
-                generatedClass.addMember( generateEqualsMethod( generatedClassName, equalsFieldStatement, hasSuper ) );
-                generatedClass.addMember( generateHashCodeMethod( hashCodeFieldStatement, hasSuper ) );
+                generatedClass.addMember( generateEqualsMethod( generatedClassName, equalsFieldStatement ) );
+                generatedClass.addMember( generateHashCodeMethod( hashCodeFieldStatement ) );
             }
         }
 
@@ -249,12 +249,10 @@ public class POJOGenerator {
                 Optional.empty();
     }
 
-    private static MethodDeclaration generateEqualsMethod(String generatedClassName, List<Statement> equalsFieldStatement, boolean hasSuper) {
+    private static MethodDeclaration generateEqualsMethod(String generatedClassName, List<Statement> equalsFieldStatement) {
         NodeList<Statement> equalsStatements = nodeList(referenceEquals, classCheckEquals);
         equalsStatements.add(classCastStatement(generatedClassName));
-        if (hasSuper) {
-            equalsStatements.add( parseStatement("if ( !super.equals( o ) ) return false;") );
-        }
+        equalsStatements.add( parseStatement("if ( !super.equals( o ) ) return false;") );
         equalsStatements.addAll(equalsFieldStatement);
         equalsStatements.add(parseStatement("return true;"));
 
@@ -268,7 +266,7 @@ public class POJOGenerator {
 
     private static Statement classCastStatement(String className) {
         Statement statement = parseStatement("__className that = (__className) o;");
-        statement.getChildNodesByType(ClassOrInterfaceType.class)
+        statement.findAll(ClassOrInterfaceType.class)
                 .stream()
                 .filter(n1 -> n1.getName().toString().equals("__className"))
                 .forEach(n -> n.replace(JavaParser.parseClassOrInterfaceType(className)));
@@ -290,19 +288,19 @@ public class POJOGenerator {
     }
 
     private static Statement replaceFieldName(Statement statement, String fieldName) {
-        statement.getChildNodesByType(NameExpr.class)
+        statement.findAll(NameExpr.class)
                 .stream()
                 .filter(n -> n.getName().toString().equals("__fieldName"))
                 .forEach(n -> n.replace(new NameExpr(fieldName)));
-        statement.getChildNodesByType(FieldAccessExpr.class)
+        statement.findAll(FieldAccessExpr.class)
                 .stream()
                 .filter(n -> n.getName().toString().equals("__fieldName"))
                 .forEach(n -> n.replace(new FieldAccessExpr(n.getScope(), fieldName)));
         return statement;
     }
 
-    private static MethodDeclaration generateHashCodeMethod(List<Statement> hashCodeFieldStatement, boolean hasSuper) {
-        final Statement header = parseStatement(hasSuper ? "int result = super.hashCode();" : "int result = 17;");
+    private static MethodDeclaration generateHashCodeMethod(List<Statement> hashCodeFieldStatement) {
+        final Statement header = parseStatement("int result = super.hashCode();");
         NodeList<Statement> hashCodeStatements = nodeList(header);
         hashCodeStatements.addAll(hashCodeFieldStatement);
         hashCodeStatements.add(parseStatement("return result;"));
@@ -317,7 +315,7 @@ public class POJOGenerator {
     private static List<Statement> generateHashCodeForField(MethodDeclaration getter, String fieldName) {
         Type type = getter.getType();
         if (type instanceof ClassOrInterfaceType) {
-            return Arrays.asList(parseStatement(format("result = 31 * result + ({0} != null ? {0}.hashCode() : 0);", fieldName)));
+            return Collections.singletonList( parseStatement( format( "result = 31 * result + ({0} != null ? {0}.hashCode() : 0);", fieldName ) ) );
         } else if (type instanceof PrimitiveType) {
             List<Statement> result = new ArrayList<>();
             String primitiveToInt = fieldName;

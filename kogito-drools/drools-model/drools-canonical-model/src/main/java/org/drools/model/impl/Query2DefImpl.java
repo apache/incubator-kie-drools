@@ -23,7 +23,6 @@ import org.drools.model.view.QueryCallViewItem;
 import org.drools.model.view.QueryCallViewItemImpl;
 
 import static org.drools.model.DSL.declarationOf;
-import static org.drools.model.DSL.type;
 import static org.drools.model.impl.RuleBuilder.DEFAULT_PACKAGE;
 
 public class Query2DefImpl<A, B> extends QueryDefImpl implements Query2Def<A, B> {
@@ -36,8 +35,8 @@ public class Query2DefImpl<A, B> extends QueryDefImpl implements Query2Def<A, B>
 
     public Query2DefImpl( String pkg, String name, Class<A> type1, Class<B> type2 ) {
         super( pkg, name );
-        this.arg1 = declarationOf( type(type1) );
-        this.arg2 = declarationOf( type(type2) );
+        this.arg1 = declarationOf( type1 );
+        this.arg2 = declarationOf( type2 );
     }
 
     public Query2DefImpl( String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name ) {
@@ -46,8 +45,8 @@ public class Query2DefImpl<A, B> extends QueryDefImpl implements Query2Def<A, B>
 
     public Query2DefImpl( String pkg, String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name ) {
         super( pkg, name );
-        this.arg1 = declarationOf( type(type1) , arg1name);
-        this.arg2 = declarationOf( type(type2) , arg2name);
+        this.arg1 = declarationOf( type1, arg1name);
+        this.arg2 = declarationOf( type2, arg2name);
     }
 
     @Override

@@ -1,6 +1,5 @@
 package org.drools.model.impl;
 
-import org.drools.model.Type;
 import org.drools.model.UnitData;
 
 public class UnitDataImpl<T> extends GlobalImpl<T> implements UnitData<T> {
@@ -9,7 +8,7 @@ public class UnitDataImpl<T> extends GlobalImpl<T> implements UnitData<T> {
         this(null, name);
     }
 
-    public UnitDataImpl( Type<T> type, String name ) {
+    public UnitDataImpl( Class<T> type, String name ) {
         super(type, null, name);
     }
 

@@ -17,6 +17,7 @@
 package org.drools.modelcompiler.drlx;
 
 import java.lang.reflect.Constructor;
+import java.util.Collections;
 import java.util.List;
 
 import org.drools.core.impl.InternalRuleUnitExecutor;
@@ -26,8 +27,6 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.rule.RuleUnit;
 import org.kie.api.runtime.rule.RuleUnitExecutor;
 
-import static java.util.Arrays.asList;
-
 public class CompiledUnit {
 
     private final List<String> unitNames;
@@ -35,7 +34,7 @@ public class CompiledUnit {
     private InternalRuleUnitExecutor executor;
 
     public CompiledUnit( KieContainer kieContainer, String unitName ) {
-        this(kieContainer, asList(unitName));
+        this(kieContainer, Collections.singletonList( unitName ) );
     }
 
     public CompiledUnit( KieContainer kieContainer, List<String> unitNames ) {

@@ -10,11 +10,10 @@ import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
-import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
-import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser;
+import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
@@ -39,7 +38,7 @@ public class FromVisitor {
 
             Expression fromCall = ruleContext.hasDeclaration( bindingId ) || packageModel.hasDeclaration( bindingId ) ?
                     createFromCall( expression, optContainsBinding, bindingId ) :
-                    createUnitDataCall( expression, optContainsBinding, bindingId );
+                    createUnitDataCall( optContainsBinding, bindingId );
 
             return Optional.of(fromCall);
         } else {
@@ -67,7 +66,7 @@ public class FromVisitor {
         return fromCall;
     }
 
-    private Expression createUnitDataCall( String expression, Optional<String> optContainsBinding, String bindingId ) {
+    private Expression createUnitDataCall( Optional<String> optContainsBinding, String bindingId ) {
         return JavaParser.parseExpression(toVar(bindingId));
     }
 }

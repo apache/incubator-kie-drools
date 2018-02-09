@@ -37,7 +37,7 @@ public class TemporalConstraintEvaluator extends ConstraintEvaluator {
         this.interval = new Interval( temporalPredicate.getInterval().getLowerBound(), temporalPredicate.getInterval().getUpperBound() );
     }
 
-    public TemporalPredicate getTemporalPredicate() {
+    private TemporalPredicate getTemporalPredicate() {
         return ((TemporalConstraint) constraint).getTemporalPredicate();
     }
 

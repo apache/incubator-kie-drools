@@ -39,7 +39,6 @@ import org.drools.model.impl.DeclarationImpl;
 import org.drools.model.impl.EntryPointImpl;
 import org.drools.model.impl.FromImpl;
 import org.drools.model.impl.GlobalImpl;
-import org.drools.model.impl.JavaClassType;
 import org.drools.model.impl.Query0DefImpl;
 import org.drools.model.impl.Query1DefImpl;
 import org.drools.model.impl.Query2DefImpl;
@@ -102,51 +101,47 @@ public class DSL {
     // -- Variable --
 
     public static <T> Variable<T> any(Class<T> type) {
-        return declarationOf( type( type ) );
+        return declarationOf( type );
     }
 
-    public static <T> Declaration<T> declarationOf( Type<T> type ) {
+    public static <T> Declaration<T> declarationOf( Class<T> type ) {
         return new DeclarationImpl<T>( type );
     }
 
-    public static <T> Declaration<T> declarationOf( Type<T> type, String name ) {
+    public static <T> Declaration<T> declarationOf( Class<T> type, String name ) {
         return new DeclarationImpl<T>( type, name );
     }
 
-    public static <T> Declaration<T> declarationOf( Type<T> type, DeclarationSource source ) {
+    public static <T> Declaration<T> declarationOf( Class<T> type, DeclarationSource source ) {
         return new DeclarationImpl<T>( type ).setSource( source );
     }
 
-    public static <T> Declaration<T> declarationOf( Type<T> type, String name, DeclarationSource source ) {
+    public static <T> Declaration<T> declarationOf( Class<T> type, String name, DeclarationSource source ) {
         return new DeclarationImpl<T>( type, name ).setSource( source );
     }
 
-    public static <T> Declaration<T> declarationOf( Type<T> type, Window window ) {
+    public static <T> Declaration<T> declarationOf( Class<T> type, Window window ) {
         return new DeclarationImpl<T>( type ).setWindow( window );
     }
 
-    public static <T> Declaration<T> declarationOf( Type<T> type, String name, Window window ) {
+    public static <T> Declaration<T> declarationOf( Class<T> type, String name, Window window ) {
         return new DeclarationImpl<T>( type, name ).setWindow( window );
     }
 
-    public static <T> Declaration<T> declarationOf( Type<T> type, DeclarationSource source, Window window ) {
+    public static <T> Declaration<T> declarationOf( Class<T> type, DeclarationSource source, Window window ) {
         return new DeclarationImpl<T>( type ).setSource( source ).setWindow( window );
     }
 
-    public static <T> Declaration<T> declarationOf( Type<T> type, String name, DeclarationSource source, Window window ) {
+    public static <T> Declaration<T> declarationOf( Class<T> type, String name, DeclarationSource source, Window window ) {
         return new DeclarationImpl<T>( type, name ).setSource( source ).setWindow( window );
     }
 
-    public static <T> Global<T> globalOf( Type<T> type, String pkg ) {
+    public static <T> Global<T> globalOf( Class<T> type, String pkg ) {
         return new GlobalImpl<T>( type, pkg );
     }
 
-    public static <T> Global<T> globalOf( Type<T> type, String pkg, String name ) {
+    public static <T> Global<T> globalOf( Class<T> type, String pkg, String name ) {
         return new GlobalImpl<T>( type, pkg, name );
-    }
-
-    public static <T> Type<T> type( Class<T> type ) {
-        return new JavaClassType<T>(type);
     }
 
     public static EntryPoint entryPoint( String name ) {
@@ -181,7 +176,7 @@ public class DSL {
         return new UnitDataImpl( name );
     }
 
-    public static <T> UnitData<T> unitData( Type<T> type, String name ) {
+    public static <T> UnitData<T> unitData( Class<T> type, String name ) {
         return new UnitDataImpl( type, name );
     }
 

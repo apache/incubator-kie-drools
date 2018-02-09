@@ -166,11 +166,9 @@ public class ExpressionTyper {
             Optional<TypedExpression> optLeft = toTypedExpressionRec(pointFreeExpr.getLeft());
             OperatorSpec opSpec = getOperatorSpec(drlxExpr, pointFreeExpr.getRight(), pointFreeExpr.getOperator());
 
-            return optLeft.map(left -> {
-                return new TypedExpression(opSpec.getExpression( pointFreeExpr, left ), left.getType())
-                        .setStatic(opSpec.isStatic())
-                        .setLeft(left);
-            });
+            return optLeft.map(left -> new TypedExpression(opSpec.getExpression( pointFreeExpr, left ), left.getType())
+                    .setStatic(opSpec.isStatic())
+                    .setLeft(left) );
 
         } else if (drlxExpr instanceof HalfPointFreeExpr) {
 
@@ -310,7 +308,6 @@ public class ExpressionTyper {
                 // TODO would it be fine to assume is a global if it's not in the declarations and not the first accesssor in a chain?
             }
         } else if (firstNode instanceof SimpleName) {
-            previous = new NameExpr("_this");
             SimpleName fieldName = ( SimpleName ) firstNode;
             String name = getFieldName( drlxExpr, fieldName );
             reactOnProperties.add( name );

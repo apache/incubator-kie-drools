@@ -78,7 +78,7 @@ public class LambdaIntrospector implements LambdaPrinter {
         Map<String, String> fingerprints = methodFingerprintsMap.get( id );
 
         if (fingerprints == null) {
-            LambdaIntrospector.LambdaClassVisitor visitor = new LambdaIntrospector.LambdaClassVisitor(lambda);
+            LambdaIntrospector.LambdaClassVisitor visitor = new LambdaIntrospector.LambdaClassVisitor();
             try (InputStream classStream = lambdaClassLoader.getResourceAsStream( className.replace( '.', '/' ) + ".class" )) {
                 ClassReader reader = new ClassReader( classStream);
                 reader.accept(visitor, ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
@@ -116,7 +116,7 @@ public class LambdaIntrospector implements LambdaPrinter {
 
         private final Map<String, String> methodsMap = new HashMap<>();
 
-        LambdaClassVisitor( Object lambda ) {
+        LambdaClassVisitor() {
             super( Opcodes.ASM5 );
         }
 
