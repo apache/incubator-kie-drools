@@ -76,7 +76,7 @@ then
             x.setValid( true );
             x.setMissing( false );
             x.setValue( $out );
-            x.setWeight( $conf );
+            x.setWeight( ($conf != null) ? $conf:0.0 );
       insert(x);
 end
 @end{}

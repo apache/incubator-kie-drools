@@ -18,6 +18,7 @@ package org.drools.core.command.runtime;
 
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.runtime.pmml.ApplyPmmlModelCommand;
 import org.drools.core.command.runtime.process.AbortWorkItemCommand;
 import org.drools.core.command.runtime.process.CompleteWorkItemCommand;
 import org.drools.core.command.runtime.process.SignalEventCommand;
@@ -94,7 +95,8 @@ public class BatchExecutionCommandImpl implements Batch, ExecutableCommand<Execu
                          @XmlElement(name = "clear-agenda", type = ClearAgendaCommand.class),
                          @XmlElement(name = "clear-agenda-group", type = ClearAgendaGroupCommand.class),
                          @XmlElement(name = "clear-ruleflow-group", type = ClearRuleFlowGroupCommand.class),
-                         @XmlElement(name = "get-fact-handles", type = GetFactHandlesCommand.class)
+                         @XmlElement(name = "get-fact-handles", type = GetFactHandlesCommand.class),
+                         @XmlElement(name = "apply-pmml-model-command", type = ApplyPmmlModelCommand.class)
                  })
     protected List<Command> commands;
 

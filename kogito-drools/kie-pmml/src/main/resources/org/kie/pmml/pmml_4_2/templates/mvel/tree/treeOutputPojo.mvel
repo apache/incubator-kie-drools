@@ -19,7 +19,7 @@ package @{pmmlPackageName};
 import java.util.List;
 import java.util.Map;
 
-import org.kie.pmml.pmml_4_2.model.datatypes.PMML4Data;
+import org.kie.api.pmml.PMML4Data;
 import org.kie.pmml.pmml_4_2.model.AbstractPMMLData;
 
 public class @{className} {

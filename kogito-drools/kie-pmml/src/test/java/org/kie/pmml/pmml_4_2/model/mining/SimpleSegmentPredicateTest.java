@@ -17,7 +17,7 @@ package org.kie.pmml.pmml_4_2.model.mining;
 
 import static org.junit.Assert.*;
 
-import org.dmg.pmml.pmml_4_2.descr.SimplePredicate;
+import org.kie.dmg.pmml.pmml_4_2.descr.SimplePredicate;
 import org.junit.Before;
 import org.junit.Test;
 

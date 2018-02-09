@@ -150,7 +150,7 @@
           <arguments>
             <argument>-enableIntrospection</argument>
             <argument>-p</argument>
-            <argument>org.dmg.pmml.pmml_4_2.descr</argument>
+            <argument>org.kie.dmg.pmml.pmml_4_2.descr</argument>
             <argument>-extension</argument>
             <argument>-d</argument>
             <argument>${project.build.directory}/generated-sources/java</argument>

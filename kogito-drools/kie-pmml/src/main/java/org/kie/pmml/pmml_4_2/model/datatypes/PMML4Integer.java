@@ -15,6 +15,8 @@
  */
 package org.kie.pmml.pmml_4_2.model.datatypes;
 
+import org.kie.api.pmml.PMML4Data;
+
 public class PMML4Integer extends PMML4Data<Integer> {
 
 	PMML4Integer(String correlationId, String name, String context, String displayName, Integer value) {

@@ -19,11 +19,11 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-import org.dmg.pmml.pmml_4_2.descr.DataDictionary;
-import org.dmg.pmml.pmml_4_2.descr.MiningField;
-import org.dmg.pmml.pmml_4_2.descr.MiningSchema;
-import org.dmg.pmml.pmml_4_2.descr.Output;
-import org.dmg.pmml.pmml_4_2.descr.OutputField;
+import org.kie.dmg.pmml.pmml_4_2.descr.DataDictionary;
+import org.kie.dmg.pmml.pmml_4_2.descr.MiningField;
+import org.kie.dmg.pmml.pmml_4_2.descr.MiningSchema;
+import org.kie.dmg.pmml.pmml_4_2.descr.Output;
+import org.kie.dmg.pmml.pmml_4_2.descr.OutputField;
 import org.kie.pmml.pmml_4_2.model.PMML4ModelType;
 import org.kie.pmml.pmml_4_2.model.PMMLMiningField;
 import org.kie.pmml.pmml_4_2.model.PMMLOutputField;

@@ -1,0 +1,45 @@
+<PMML version="4.2" xsi:schemaLocation="http://www.dmg.org/PMML-4_2 http://www.dmg.org/v4-1/pmml-4-2.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.dmg.org/PMML-4_2">
+  <Header/>
+  <DataDictionary numberOfFields="3">
+    <DataField dataType="double" name="fld1" optype="continuous"/>
+    <DataField dataType="double" name="fld2" optype="continuous"/>
+    <DataField dataType="string" name="fld3" optype="categorical">
+      <Value value="tgtX"/>
+      <Value value="tgtY"/>
+    </DataField>
+  </DataDictionary>
+
+  <TreeModel functionName="classification" modelName="TreeTest" missingValueStrategy="weightedConfidence">
+    <MiningSchema>
+      <MiningField name="fld1"/>
+      <MiningField name="fld2"/>
+      <MiningField name="fld3" usageType="predicted"/>
+    </MiningSchema>
+
+    <Node id="N1" score="tgtX">
+      <True/>
+      <ScoreDistribution value="tgtX" recordCount="60" confidence="0.6"/>
+      <ScoreDistribution value="tgtY" recordCount="40" confidence="0.4"/>
+      <Node id="T1" score="tgtY" recordCount="20">
+        <SimplePredicate field="fld1" operator="lessThan" value="40.0"/>
+        <ScoreDistribution value="tgtX" recordCount="10" confidence="0.5"/>
+        <ScoreDistribution value="tgtY" recordCount="10" confidence="0.5"/>
+      </Node>
+      <Node id="N2" score="tgtY" recordCount="60">
+        <SimplePredicate field="fld1" operator="greaterOrEqual" value="40.0"/>
+        <ScoreDistribution value="tgtX" recordCount="36" confidence="0.5"/>
+        <ScoreDistribution value="tgtY" recordCount="24" confidence="0.5"/>
+        <Node id="T2" score="tgtX" recordCount="20">
+          <SimplePredicate field="fld2" operator="lessThan" value="5.0"/>
+          <ScoreDistribution value="tgtX" recordCount="16" confidence="0.8"/>
+          <ScoreDistribution value="tgtY" recordCount="4" confidence="0.2"/>
+        </Node>
+        <Node id="T3" score="tgtY" recordCount="40">
+          <SimplePredicate field="fld2" operator="greaterOrEqual" value="5.0"/>
+          <ScoreDistribution value="tgtX" recordCount="32" confidence="0.8"/>
+          <ScoreDistribution value="tgtY" recordCount="16" confidence="0.2"/>
+        </Node>
+      </Node>
+    </Node>
+  </TreeModel>
+</PMML>

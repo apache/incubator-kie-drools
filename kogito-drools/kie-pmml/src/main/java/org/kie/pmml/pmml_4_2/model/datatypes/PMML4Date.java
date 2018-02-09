@@ -16,6 +16,7 @@
 package org.kie.pmml.pmml_4_2.model.datatypes;
 
 import java.util.Date;
+import org.kie.api.pmml.PMML4Data;
 
 public class PMML4Date extends PMML4Data<Date> {
 

@@ -18,8 +18,8 @@ package org.kie.pmml.pmml_4_2.model.mining;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kie.pmml.pmml_4_2.PMML4Result;
-import org.kie.pmml.pmml_4_2.model.PMMLRequestData;
+import org.kie.api.pmml.PMML4Result;
+import org.kie.api.pmml.PMMLRequestData;
 
 public class MiningSegmentTransfer {
 	private String correlationId;

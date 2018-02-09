@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.dmg.pmml.pmml_4_2.descr.SimpleSetPredicate;
+import org.kie.dmg.pmml.pmml_4_2.descr.SimpleSetPredicate;
 import org.kie.pmml.pmml_4_2.PMML4Helper;
 import org.mvel2.integration.impl.MapVariableResolverFactory;
 import org.mvel2.templates.CompiledTemplate;

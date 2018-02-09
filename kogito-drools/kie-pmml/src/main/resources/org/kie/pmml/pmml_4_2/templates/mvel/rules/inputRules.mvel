@@ -10,6 +10,7 @@ import org.kie.pmml.pmml_4_2.model.regression.*;
 import org.kie.pmml.pmml_4_2.model.tree.*;
 import org.kie.pmml.pmml_4_2.model.datatypes.*;
 import org.drools.core.factmodel.traits.Traitable;
+import org.kie.api.pmml.PMML4Data;
 
 rule 'RuleUnitIndicator'
 when

@@ -38,9 +38,9 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.RuleUnit;
 import org.kie.api.runtime.rule.RuleUnitExecutor;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.pmml.pmml_4_2.PMML4Result;
-import org.kie.pmml.pmml_4_2.model.PMMLRequestData;
-import org.kie.pmml.pmml_4_2.model.datatypes.PMML4Data;
+import org.kie.api.pmml.PMML4Result;
+import org.kie.api.pmml.PMMLRequestData;
+import org.kie.api.pmml.PMML4Data;
 
 @PropertyReactive
 public class SegmentExecution implements Comparable<SegmentExecution> {
@@ -189,26 +189,26 @@ public class SegmentExecution implements Comparable<SegmentExecution> {
 		}
 			
 			
-		if (ruleUnitClass != null) {
-			helper.run(ruleUnitClass);
-			PMML4Result result = new PMML4Result(this);
-			FactHandle requestFH = data.insert(this.requestData);
-			FactHandle resultsFH = results.insert(result);
-			
-			helper.run(ruleUnitClass);
-			RuleUnit ruNew = ((WrappedStatefulKnowledgeSessionForRHS)helper.getKieRuntime()).getRuleUnitExecutor().getCurrentRuleUnit();
-			System.out.println("** Result **");
-			System.out.println(result);
-			
-			// Update the state and let the Mining session know
-			this.state = SegmentExecutionState.EXECUTING;
-			FactHandle handle = ((InternalDataSource)segmentExecutions).getFactHandleForObject(this);
-			segmentExecutions.update(handle, this);
-
-			helper.run(ruleUnitClass);
-			System.out.println("Sub-Model Results");
-			results.forEach(r -> {System.out.println(r);});
-		}
+//		if (ruleUnitClass != null) {
+//			helper.run(ruleUnitClass);
+//			PMML4Result result = new PMML4Result(this);
+//			FactHandle requestFH = data.insert(this.requestData);
+//			FactHandle resultsFH = results.insert(result);
+//			
+//			helper.run(ruleUnitClass);
+//			RuleUnit ruNew = ((WrappedStatefulKnowledgeSessionForRHS)helper.getKieRuntime()).getRuleUnitExecutor().getCurrentRuleUnit();
+//			System.out.println("** Result **");
+//			System.out.println(result);
+//			
+//			// Update the state and let the Mining session know
+//			this.state = SegmentExecutionState.EXECUTING;
+//			FactHandle handle = ((InternalDataSource)segmentExecutions).getFactHandleForObject(this);
+//			segmentExecutions.update(handle, this);
+//
+//			helper.run(ruleUnitClass);
+//			System.out.println("Sub-Model Results");
+//			results.forEach(r -> {System.out.println(r);});
+//		}
 	}
 	
 	public class SegmentEventListener extends DefaultAgendaEventListener {

@@ -6,24 +6,24 @@
     <property key="drools.propertySpecific" value="ALLOWED"/>
   </configuration>
 
-  <kbase name="PMML-Bayes-Rules" packages="org.kie.pmml.pmml_4_2.compiler.declares,org.kie.pmml.pmml_4_2.compiler.bayes" eventProcessingMode="stream" />
-  <kbase name="PMML-Cluster-Rules" packages="org.kie.pmml.pmml_4_2.compiler.declares,org.kie.pmml.pmml_4_2.compiler.clustering" eventProcessingMode="stream" />
-  <kbase name="PMML-Neural-Rules" packages="org.kie.pmml.pmml_4_2.compiler.declares,org.kie.pmml.pmml_4_2.compiler.neural" eventProcessingMode="stream" />
-  <kbase name="PMML-Regression-Rules" packages="org.kie.pmml.pmml_4_2.compiler.declares,org.kie.pmml.pmml_4_2.compiler.regression" eventProcessingMode="stream" />
-  <kbase name="PMML-Scorecard-Rules" packages="org.kie.pmml.pmml_4_2.compiler.declares,org.kie.pmml.pmml_4_2.compiler.scorecard" eventProcessingMode="stream" />
-  <kbase name="PMML-SVM-Rules" packages="org.kie.pmml.pmml_4_2.compiler.declares,org.kie.pmml.pmml_4_2.compiler.svm" eventProcessingMode="stream" />
-  <kbase name="PMML-Tree-Rules" packages="org.kie.pmml.pmml_4_2.compiler.declares,org.kie.pmml.pmml_4_2.compiler.tree" eventProcessingMode="stream" />
+  <kbase name="KiePMML-Bayes-Rules" packages="org.kie.pmml.pmml_4_2.compiler.declares,org.kie.pmml.pmml_4_2.compiler.bayes" eventProcessingMode="stream" />
+  <kbase name="KiePMML-Cluster-Rules" packages="org.kie.pmml.pmml_4_2.compiler.declares,org.kie.pmml.pmml_4_2.compiler.clustering" eventProcessingMode="stream" />
+  <kbase name="KiePMML-Neural-Rules" packages="org.kie.pmml.pmml_4_2.compiler.declares,org.kie.pmml.pmml_4_2.compiler.neural" eventProcessingMode="stream" />
+  <kbase name="KiePMML-Regression-Rules" packages="org.kie.pmml.pmml_4_2.compiler.declares,org.kie.pmml.pmml_4_2.compiler.regression" eventProcessingMode="stream" />
+  <kbase name="KiePMML-Scorecard-Rules" packages="org.kie.pmml.pmml_4_2.compiler.declares,org.kie.pmml.pmml_4_2.compiler.scorecard" eventProcessingMode="stream" />
+  <kbase name="KiePMML-SVM-Rules" packages="org.kie.pmml.pmml_4_2.compiler.declares,org.kie.pmml.pmml_4_2.compiler.svm" eventProcessingMode="stream" />
+  <kbase name="KiePMML-Tree-Rules" packages="org.kie.pmml.pmml_4_2.compiler.declares,org.kie.pmml.pmml_4_2.compiler.tree" eventProcessingMode="stream" />
 
-  <kbase name="PMML-Base" packages="org.kie.pmml.pmml_4_2.compiler.declares,org.kie.pmml.pmml_4_2.compiler" eventProcessingMode="stream" />
+  <kbase name="KiePMML-Base" packages="org.kie.pmml.pmml_4_2.compiler.declares,org.kie.pmml.pmml_4_2.compiler" eventProcessingMode="stream" />
 
-  <kbase name="PMML-Bayes" packages="-" eventProcessingMode="stream" includes="PMML-Base,PMML-Bayes-Rules" />
-  <kbase name="PMML-Cluster" packages="-" eventProcessingMode="stream" includes="PMML-Base,PMML-Cluster-Rules" />
-  <kbase name="PMML-Neural" packages="-" eventProcessingMode="stream" includes="PMML-Base,PMML-Neural-Rules"/>
-  <kbase name="PMML-Regression" packages="-" eventProcessingMode="stream" includes="PMML-Base,PMML-Regression-Rules"/>
-  <kbase name="PMML-Scorecard" packages="-" eventProcessingMode="stream" includes="PMML-Base,PMML-Scorecard-Rules"/>
-  <kbase name="PMML-SVM" packages="-" eventProcessingMode="stream" includes="PMML-Base,PMML-SVM-Rules"/>
-  <kbase name="PMML-Tree" packages="-" eventProcessingMode="stream" includes="PMML-Base,PMML-Tree-Rules"/>
+  <kbase name="KiePMML-Bayes" packages="-" eventProcessingMode="stream" includes="KiePMML-Base,KiePMML-Bayes-Rules" />
+  <kbase name="KiePMML-Cluster" packages="-" eventProcessingMode="stream" includes="KiePMML-Base,KiePMML-Cluster-Rules" />
+  <kbase name="KiePMML-Neural" packages="-" eventProcessingMode="stream" includes="KiePMML-Base,KiePMML-Neural-Rules"/>
+  <kbase name="KiePMML-Regression" packages="-" eventProcessingMode="stream" includes="KiePMML-Base,KiePMML-Regression-Rules"/>
+  <kbase name="KiePMML-Scorecard" packages="-" eventProcessingMode="stream" includes="KiePMML-Base,KiePMML-Scorecard-Rules"/>
+  <kbase name="KiePMML-SVM" packages="-" eventProcessingMode="stream" includes="KiePMML-Base,KiePMML-SVM-Rules"/>
+  <kbase name="KiePMML-Tree" packages="-" eventProcessingMode="stream" includes="KiePMML-Base,KiePMML-Tree-Rules"/>
 
-  <kbase name="PMML" packages="-" eventProcessingMode="stream" includes="PMML-Base,PMML-Bayes-Rules,PMML-Cluster-Rules,PMML-Neural-Rules,PMML-Regression-Rules,PMML-Scorecard-Rules,PMML-SVM-Rules,PMML-Tree-Rules" />
+  <kbase name="KiePMML" packages="-" eventProcessingMode="stream" includes="KiePMML-Base,KiePMML-Bayes-Rules,KiePMML-Cluster-Rules,KiePMML-Neural-Rules,KiePMML-Regression-Rules,KiePMML-Scorecard-Rules,KiePMML-SVM-Rules,KiePMML-Tree-Rules" />
 
 </kmodule>
