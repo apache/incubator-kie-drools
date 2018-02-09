@@ -167,7 +167,6 @@ public class ModelGenerator {
     public static final String ATTRIBUTE_CALL = "attribute";
     public static final String METADATA_CALL = "metadata";
     public static final String DECLARATION_OF_CALL = "declarationOf";
-    public static final String TYPE_CALL = "type";
     public static final String QUERY_INVOCATION_CALL = "call";
     public static final String VALUE_OF_CALL = "valueOf";
     public static final String UNIT_DATA_CALL = "unitData";
@@ -266,7 +265,6 @@ public class ModelGenerator {
      * Build a list of method calls, representing each needed {@link org.drools.model.impl.RuleBuilder#attribute(org.drools.model.Rule.Attribute, Object)}
      * starting from a drools-compiler {@link RuleDescr}.
      * The tuple represent the Rule Attribute expressed in JavParser form, and the attribute value expressed in JavaParser form.
-     * @param context 
      */
     private static List<MethodCallExpr> ruleAttributes(RuleContext context, RuleDescr ruleDescr) {
         List<MethodCallExpr> ruleAttributes = new ArrayList<>();
@@ -334,16 +332,14 @@ public class ModelGenerator {
                     annotationDefinition = AnnotationDefinition.build(context.getTypeResolver().resolveType(adFqn),
                                                                       ad.getValueMap(),
                                                                       context.getTypeResolver());
-                } catch (NoSuchMethodException e) {
-                    throw new RuntimeException( e );
-                } catch (ClassNotFoundException e) {
+                } catch (NoSuchMethodException | ClassNotFoundException e) {
                     throw new RuntimeException( e );
                 }
                 if ( annotationDefinition.getValues().size() == 1 && annotationDefinition.getValues().containsKey( AnnotationDescr.VALUE ) ) {
                     Object annValue = annotationDefinition.getPropertyValue(AnnotationDescr.VALUE);
                     metaAttributeCall.addArgument(objectAsJPExpression(annValue));
                 } else {
-                    Map<String, Object> map = new HashMap<String, Object>( annotationDefinition.getValues().size() );
+                    Map<String, Object> map = new HashMap<>( annotationDefinition.getValues().size() );
                     for ( String key : annotationDefinition.getValues().keySet() ) {
                         map.put( key, annotationDefinition.getPropertyValue( key ) );
                     }
@@ -429,7 +425,7 @@ public class ModelGenerator {
             return existingDecls.stream().filter(consequenceString::contains).collect(toSet());
         }
 
-        Set<String> declUsedInRHS = ruleConsequence.getChildNodesByType(NameExpr.class).stream().map(NameExpr::getNameAsString).collect(toSet());
+        Set<String> declUsedInRHS = ruleConsequence.findAll(NameExpr.class).stream().map(NameExpr::getNameAsString).collect(toSet());
         return existingDecls.stream().filter(declUsedInRHS::contains).collect(toSet());
     }
 
@@ -471,12 +467,8 @@ public class ModelGenerator {
 
         MethodCallExpr appendCall = new MethodCallExpr(mvelSB, "append");
         appendCall.addArgument(mvelScriptBodyStringLiteral);
-        mvelSB = appendCall;
 
-        MethodCallExpr toStringCall = new MethodCallExpr(mvelSB, "toString");
-        mvelSB = toStringCall;
-
-        executeCall.addArgument(mvelSB);
+        executeCall.addArgument(new MethodCallExpr(appendCall, "toString"));
         return executeCall;
     }
 
@@ -507,10 +499,7 @@ public class ModelGenerator {
 
         MethodCallExpr unitDataCall = new MethodCallExpr(null, UNIT_DATA_CALL);
 
-        MethodCallExpr typeCall = new MethodCallExpr(null, ModelGenerator.TYPE_CALL);
-        typeCall.addArgument( new ClassExpr( declType ));
-        unitDataCall.addArgument(typeCall);
-
+        unitDataCall.addArgument(new ClassExpr( declType ));
         unitDataCall.addArgument(new StringLiteralExpr(unitVar));
 
         AssignExpr var_assign = new AssignExpr(var_, unitDataCall, AssignExpr.Operator.ASSIGN);
@@ -537,10 +526,8 @@ public class ModelGenerator {
         VariableDeclarationExpr var_ = new VariableDeclarationExpr(varType, toVar(decl.getBindingId()), Modifier.FINAL);
 
         MethodCallExpr declarationOfCall = new MethodCallExpr(null, DECLARATION_OF_CALL);
-        MethodCallExpr typeCall = new MethodCallExpr(null, TYPE_CALL);
-        typeCall.addArgument( new ClassExpr(decl.getType() ));
 
-        declarationOfCall.addArgument(typeCall);
+        declarationOfCall.addArgument(new ClassExpr(decl.getType() ));
         declarationOfCall.addArgument(new StringLiteralExpr(decl.getVariableName().orElse(decl.getBindingId())));
 
         decl.getDeclarationSource().ifPresent(declarationOfCall::addArgument);
@@ -601,7 +588,7 @@ public class ModelGenerator {
             NameExpr declAsNameExpr = new NameExpr(decl);
             String originalBlock = consequence.substring(blockStart + 1, blockEnd).trim();
             BlockStmt modifyBlock = JavaParser.parseBlock("{" + originalBlock + ";}");
-            List<MethodCallExpr> originalMethodCalls = modifyBlock.getChildNodesByType(MethodCallExpr.class);
+            List<MethodCallExpr> originalMethodCalls = modifyBlock.findAll(MethodCallExpr.class);
             for (MethodCallExpr mc : originalMethodCalls) {
                 Expression mcWithScope = org.drools.modelcompiler.builder.generator.DrlxParseUtil.prepend(declAsNameExpr, mc);
                 modifyBlock.replace(mc, mcWithScope);
@@ -625,7 +612,7 @@ public class ModelGenerator {
 
     private static boolean rewriteRHS(RuleContext context, BlockStmt ruleBlock, BlockStmt rhs) {
         AtomicBoolean requireDrools = new AtomicBoolean( false );
-        List<MethodCallExpr> methodCallExprs = rhs.getChildNodesByType(MethodCallExpr.class);
+        List<MethodCallExpr> methodCallExprs = rhs.findAll(MethodCallExpr.class);
         List<MethodCallExpr> updateExprs = new ArrayList<>();
 
         for ( MethodCallExpr methodCallExpr : methodCallExprs ) {
@@ -708,7 +695,7 @@ public class ModelGenerator {
         return exprDSL;
     }
 
-    public static Expression buildUnificationExpression(RuleContext context, DrlxParseSuccess drlxParseResult) {
+    private static Expression buildUnificationExpression(RuleContext context, DrlxParseSuccess drlxParseResult) {
         MethodCallExpr exprDSL = buildBinding(drlxParseResult);
         context.addDeclaration(new DeclarationSpec(drlxParseResult.getUnificationVariable(),
                                                    drlxParseResult.getUnificationVariableType(),

@@ -18,6 +18,6 @@ package org.drools.model;
 
 public interface Argument<T> {
 
-    Type<T> getType();
+    Class<T> getType();
 
 }

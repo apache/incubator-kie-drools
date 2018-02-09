@@ -16,7 +16,6 @@ import org.drools.model.Pattern;
 import org.drools.model.Rule;
 import org.drools.model.SingleConstraint;
 import org.drools.model.TupleHandle;
-import org.drools.model.Type;
 import org.drools.model.Variable;
 import org.drools.model.View;
 import org.drools.model.constraints.AndConstraints;
@@ -119,7 +118,7 @@ public class BruteForceEngine {
         return new Bindings(tuples);
     }
 
-    private Stream<Object> getObjectsOfType(DataStore dataStore, Type type) {
+    private Stream<Object> getObjectsOfType(DataStore dataStore, Class type) {
         return dataStore.getObjects().parallelStream()
                 .filter(type::isInstance);
     }

@@ -17,17 +17,16 @@
 package org.drools.model.impl;
 
 import org.drools.model.Global;
-import org.drools.model.Type;
 
 public class GlobalImpl<T> extends VariableImpl<T> implements Global<T>, ModelComponent {
     private final String pkg;
 
-    public GlobalImpl(Type<T> type, String pkg) {
+    public GlobalImpl(Class<T> type, String pkg) {
         super(type);
         this.pkg = pkg;
     }
 
-    public GlobalImpl(Type<T> type, String pkg, String name) {
+    public GlobalImpl(Class<T> type, String pkg, String name) {
         super(type, name);
         this.pkg = pkg;
     }

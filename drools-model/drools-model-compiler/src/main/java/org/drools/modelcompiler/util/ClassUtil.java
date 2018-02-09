@@ -87,9 +87,7 @@ public class ClassUtil {
             if (!retry && clazz.isInterface()) {
                 Method[] objMethods = Object.class.getMethods();
                 Method[] nMethods = new Method[methods.length + objMethods.length];
-                for (int i = 0; i < methods.length; i++) {
-                    nMethods[i] = methods[i];
-                }
+                System.arraycopy( methods, 0, nMethods, 0, methods.length );
 
                 for (int i = 0; i < objMethods.length; i++) {
                     nMethods[i + methods.length] = objMethods[i];

@@ -18,7 +18,7 @@ public class DrlxParseSuccess implements DrlxParseResult {
     private Expression expr;
     private final Class<?> exprType;
 
-    private String exprId;
+    private final String exprId;
     private String patternBinding;
     private boolean isPatternBindingUnification = false;
 
@@ -97,10 +97,6 @@ public class DrlxParseSuccess implements DrlxParseResult {
 
     public String getPatternBinding() {
         return patternBinding;
-    }
-
-    public void setExprId(String exprId) {
-        this.exprId = exprId;
     }
 
     public void setExpr(Expression expr) {

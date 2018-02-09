@@ -37,7 +37,6 @@ import static org.drools.model.DSL.declarationOf;
 import static org.drools.model.DSL.expr;
 import static org.drools.model.DSL.on;
 import static org.drools.model.DSL.rule;
-import static org.drools.model.DSL.type;
 import static org.drools.model.DSL.unitData;
 import static org.junit.Assert.assertTrue;
 
@@ -71,7 +70,7 @@ public class RuleUnitTest {
     public void testRuleUnit() {
         List<String> result = new ArrayList<>();
 
-        Variable<Person> adult = declarationOf( type( Person.class ), unitData( "persons" ) );
+        Variable<Person> adult = declarationOf( Person.class, unitData( "persons" ) );
 
         Rule rule = rule( "org.drools.retebuilder", "Adult" ).unit( AdultUnit.class )
                 .build(
@@ -99,13 +98,13 @@ public class RuleUnitTest {
 
     @Test
     public void testRuleUnitWithVarBinding() {
-        Variable<AdultUnit> unit = declarationOf( type( AdultUnit.class ) );
-        Variable<Person> adult = declarationOf( type( Person.class ), unitData( "persons" ) );
+        Variable<AdultUnit> unit = declarationOf( AdultUnit.class );
+        Variable<Person> adult = declarationOf( Person.class, unitData( "persons" ) );
 
         Rule rule = rule( "org.drools.retebuilder", "Adult" ).unit( RuleUnitTest.AdultUnit.class )
                 .build(
                         expr("$expr$1$", adult, unit, (p, u) -> p.getAge() > u.getAdultAge()),
-                        on(adult, unitData(type(List.class), "results")).execute((p, r) -> {
+                        on(adult, unitData(List.class, "results")).execute((p, r) -> {
                             System.out.println( p.getName() );
                             r.add( p.getName() );
                         })

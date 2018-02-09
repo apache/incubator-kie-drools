@@ -16,19 +16,16 @@
 
 package org.drools.model.impl;
 
-import org.drools.model.Type;
 import org.drools.model.Value;
-
-import static org.drools.model.DSL.type;
 
 public class ValueImpl<T> implements Value<T> {
 
     private final T value;
-    private final Type<T> type;
+    private final Class<T> type;
 
     public ValueImpl( T value ) {
         this.value = value;
-        this.type = type( (Class<T>) value.getClass()) ;
+        this.type = (Class<T>) value.getClass();
     }
 
     @Override
@@ -37,7 +34,7 @@ public class ValueImpl<T> implements Value<T> {
     }
 
     @Override
-    public Type<T> getType() {
+    public Class<T> getType() {
         return type;
     }
 }

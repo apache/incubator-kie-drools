@@ -206,7 +206,7 @@ public class DrlxParseUtil {
     }
 
     public static Node replaceAllHalfBinaryChildren(Node parent) {
-        parent.getChildNodesByType(HalfBinaryExpr.class)
+        parent.findAll(HalfBinaryExpr.class)
                 .forEach(n -> n.replace(trasformHalfBinaryToBinary(n)));
         return parent;
     }
@@ -217,7 +217,7 @@ public class DrlxParseUtil {
 
             HalfBinaryExpr halfBinaryExpr = (HalfBinaryExpr) drlxExpr;
 
-            Expression parentLeft = findLeftLeafOfNameExpr((Expression) parent.get());
+            Expression parentLeft = findLeftLeafOfNameExpr( parent.get() );
             Operator operator = toBinaryExprOperator(halfBinaryExpr.getOperator());
             return new BinaryExpr(parentLeft, halfBinaryExpr.getRight(), operator);
         }

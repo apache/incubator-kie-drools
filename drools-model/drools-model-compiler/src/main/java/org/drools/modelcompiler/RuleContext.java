@@ -92,7 +92,7 @@ public class RuleContext {
             return declaration;
         } else {
             Global global = (( Global ) variable);
-            ClassObjectType objectType = builder.getObjectType( global.getType().asClass() );
+            ClassObjectType objectType = builder.getObjectType( global.getType() );
             InternalReadAccessor globalExtractor = new GlobalExtractor( global.getName(), objectType );
             return new Declaration( global.getName(), globalExtractor, new Pattern( 0, objectType ) );
         }

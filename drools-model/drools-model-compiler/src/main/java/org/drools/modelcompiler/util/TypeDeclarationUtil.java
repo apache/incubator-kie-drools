@@ -19,7 +19,6 @@ package org.drools.modelcompiler.util;
 import java.util.Map;
 
 import org.drools.core.base.evaluators.TimeIntervalParser;
-import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.InternalReadAccessor;
@@ -51,14 +50,14 @@ public class TypeDeclarationUtil {
                     case "duration":
                         for (AnnotationValue annVal : ann.getValue()) {
                             if (annVal.getKey().equals( "value" )) {
-                                wireDurationAccessor( annVal.getValue().toString(), typeDeclaration, pkg );
+                                wireDurationAccessor( annVal.getValue().toString(), typeDeclaration );
                             }
                         }
                         break;
                     case "timestamp":
                         for (AnnotationValue annVal : ann.getValue()) {
                             if (annVal.getKey().equals( "value" )) {
-                                wireTimestampAccessor( annVal.getValue().toString(), typeDeclaration, pkg );
+                                wireTimestampAccessor( annVal.getValue().toString(), typeDeclaration );
                             }
                         }
                         break;
@@ -82,32 +81,32 @@ public class TypeDeclarationUtil {
         }
     }
 
-    public static TypeDeclaration createTypeDeclaration(InternalKnowledgePackage pkg, Class<?> cls) {
+    public static TypeDeclaration createTypeDeclaration(Class<?> cls) {
         TypeDeclaration typeDeclaration = createTypeDeclarationForBean(cls);
 
         Duration duration = cls.getAnnotation( Duration.class );
         if (duration != null) {
-            wireDurationAccessor( duration.value(), typeDeclaration, pkg );
+            wireDurationAccessor( duration.value(), typeDeclaration );
         }
         Timestamp timestamp = cls.getAnnotation( Timestamp.class );
         if (timestamp != null) {
-            wireDurationAccessor( timestamp.value(), typeDeclaration, pkg );
+            wireDurationAccessor( timestamp.value(), typeDeclaration );
         }
 
         return typeDeclaration;
     }
 
-    private static void wireDurationAccessor( String durationField, TypeDeclaration type, InternalKnowledgePackage pkg ) {
+    private static void wireDurationAccessor( String durationField, TypeDeclaration type ) {
         type.setDurationAttribute(durationField);
-        type.setDurationExtractor(getFieldExtractor( type, durationField, pkg, long.class ));
+        type.setDurationExtractor(getFieldExtractor( type, durationField, long.class ));
     }
 
-    private static void wireTimestampAccessor( String timestampField, TypeDeclaration type, InternalKnowledgePackage pkg ) {
+    private static void wireTimestampAccessor( String timestampField, TypeDeclaration type ) {
         type.setTimestampAttribute(timestampField);
-        type.setTimestampExtractor(getFieldExtractor( type, timestampField, pkg, long.class ));
+        type.setTimestampExtractor(getFieldExtractor( type, timestampField, long.class ));
     }
 
-    private static InternalReadAccessor getFieldExtractor( TypeDeclaration type, String field, InternalKnowledgePackage pkg, Class<?> returnType ) {
+    private static InternalReadAccessor getFieldExtractor( TypeDeclaration type, String field, Class<?> returnType ) {
         return new MvelReadAccessor( type.getTypeClass(), returnType, field );
     }
 }

@@ -333,8 +333,7 @@ public class ConstraintParser {
     }
 
     private static List<Expression> recurseCollectArguments(NodeWithArguments<?> methodCallExpr) {
-        List<Expression> res = new ArrayList<>();
-        res.addAll(methodCallExpr.getArguments());
+        List<Expression> res = new ArrayList<>( methodCallExpr.getArguments() );
         if ( methodCallExpr instanceof NodeWithOptionalScope ) {
             NodeWithOptionalScope<?> nodeWithOptionalScope = (NodeWithOptionalScope) methodCallExpr;
             if ( nodeWithOptionalScope.getScope().isPresent() ) {

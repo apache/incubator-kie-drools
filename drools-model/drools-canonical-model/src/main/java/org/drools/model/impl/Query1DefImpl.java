@@ -23,7 +23,6 @@ import org.drools.model.view.QueryCallViewItem;
 import org.drools.model.view.QueryCallViewItemImpl;
 
 import static org.drools.model.DSL.declarationOf;
-import static org.drools.model.DSL.type;
 import static org.drools.model.impl.RuleBuilder.DEFAULT_PACKAGE;
 
 public class Query1DefImpl<A> extends QueryDefImpl implements Query1Def<A> {
@@ -39,12 +38,12 @@ public class Query1DefImpl<A> extends QueryDefImpl implements Query1Def<A> {
 
     public Query1DefImpl( String pkg, String name, Class<A> type1 ) {
         super( pkg, name );
-        this.arg1 = declarationOf( type(type1) );
+        this.arg1 = declarationOf( type1 );
     }
 
     public Query1DefImpl( String pkg, String name, Class<A> type1, String arg1name ) {
         super( pkg, name );
-        this.arg1 = declarationOf( type(type1) , arg1name);
+        this.arg1 = declarationOf( type1, arg1name);
     }
 
     @Override

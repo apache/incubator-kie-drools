@@ -16,7 +16,6 @@ import org.drools.compiler.compiler.BaseKnowledgeBuilderResultImpl;
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
-import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.ruleunit.RuleUnitDescr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.modelcompiler.builder.PackageModel;
@@ -52,7 +51,7 @@ public class RuleContext {
 
 
     private RuleDialect ruleDialect = RuleDialect.JAVA; // assumed is java by default as per Drools manual.
-    public static enum RuleDialect {
+    public enum RuleDialect {
         JAVA,
         MVEL;
     }

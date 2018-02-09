@@ -81,7 +81,7 @@ public class ViewBuilder {
         }
 
         view.ensureVariablesDeclarationInView();
-        Collections.sort( view.getSubConditions(), ConditionComparator.INSTANCE );
+        view.getSubConditions().sort( ConditionComparator.INSTANCE );
         return view;
     }
 
@@ -92,15 +92,7 @@ public class ViewBuilder {
         Iterator<RuleItem> ruleItemIterator = ctx.ruleItems.iterator();
 
         while (ruleItemIterator.hasNext()) {
-
-            Map<Variable<?>, InputViewItemImpl<?>> scopedInputs;
-            if (type.createsScope()) {
-                scopedInputs = new LinkedHashMap<>();
-                scopedInputs.putAll( ctx.inputs );
-            } else {
-                scopedInputs = ctx.inputs;
-            }
-
+            Map<Variable<?>, InputViewItemImpl<?>> scopedInputs = type.createsScope() ? new LinkedHashMap<>( ctx.inputs ) : ctx.inputs;
             RuleItem ruleItem = ruleItemIterator.next();
 
             if (ruleItem instanceof FixedValueItem) {
@@ -158,9 +150,7 @@ public class ViewBuilder {
                     conditionMap.put( bindViewItem.getInputVariable(), pattern );
                 }
                 pattern.addBinding( bindViewItem );
-                if(bindViewItem instanceof ViewItem) {
-                    ctx.usedVars.add(viewItem.getFirstVariable());
-                }
+                ctx.usedVars.add(viewItem.getFirstVariable());
                 ctx.addBinding(bindViewItem);
                 continue;
             }

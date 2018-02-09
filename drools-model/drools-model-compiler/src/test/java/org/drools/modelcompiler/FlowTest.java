@@ -89,7 +89,6 @@ import static org.drools.model.DSL.or;
 import static org.drools.model.DSL.query;
 import static org.drools.model.DSL.reactiveFrom;
 import static org.drools.model.DSL.rule;
-import static org.drools.model.DSL.type;
 import static org.drools.model.DSL.valueOf;
 import static org.drools.model.DSL.when;
 import static org.drools.model.DSL.window;
@@ -106,8 +105,8 @@ public class FlowTest {
 
     @Test
     public void testBindWithEval() {
-        Variable<Person> var_$p1 = declarationOf(type(Person.class), "$p1");
-        Variable<Integer> var_$a1 = declarationOf(type(Integer.class), "$a1");
+        Variable<Person> var_$p1 = declarationOf(Person.class, "$p1");
+        Variable<Integer> var_$a1 = declarationOf(Integer.class, "$a1");
         org.drools.model.Rule rule = rule("R").build(
                 bind(var_$a1).as(var_$p1, (_this) -> _this.getAge()).reactOn("age"),
                 expr("$expr$2$",
@@ -135,8 +134,8 @@ public class FlowTest {
     @Test
     public void testBeta() {
         Result result = new Result();
-        Variable<Person> markV = declarationOf( type( Person.class ) );
-        Variable<Person> olderV = declarationOf( type( Person.class ) );
+        Variable<Person> markV = declarationOf( Person.class );
+        Variable<Person> olderV = declarationOf( Person.class );
 
         Rule rule = rule( "beta" )
                 .build(
@@ -182,9 +181,9 @@ public class FlowTest {
 
     @Test
     public void testBetaWithDeclaration() {
-        Variable<Person> markV = declarationOf(type(Person.class));
-        Variable<Integer> markAge = declarationOf(type(Integer.class));
-        Variable<Person> olderV = declarationOf(type(Person.class));
+        Variable<Person> markV = declarationOf(Person.class);
+        Variable<Integer> markAge = declarationOf(Integer.class);
+        Variable<Person> olderV = declarationOf(Person.class);
 
         Rule rule = rule("beta")
                 .build(expr("exprA", markV, p -> p.getName().equals("Mark"))
@@ -229,9 +228,9 @@ public class FlowTest {
 
     @Test
     public void testBetaWithDeclarationBeforePattern() {
-        Variable<Person> markV = declarationOf(type(Person.class));
-        Variable<Integer> markAge = declarationOf(type(Integer.class));
-        Variable<Person> olderV = declarationOf(type(Person.class));
+        Variable<Person> markV = declarationOf(Person.class);
+        Variable<Integer> markAge = declarationOf(Integer.class);
+        Variable<Person> olderV = declarationOf(Person.class);
 
         Rule rule = rule("beta")
                 .build( bind(markAge).as(markV, Person::getAge ).reactOn("age"),
@@ -276,9 +275,9 @@ public class FlowTest {
 
     @Test
     public void testBetaWithResult() {
-        Variable<Person> markV = declarationOf( type( Person.class ) );
-        Variable<Person> olderV = declarationOf( type( Person.class ) );
-        Variable<Result> resultV = declarationOf( type( Result.class ) );
+        Variable<Person> markV = declarationOf(  Person.class );
+        Variable<Person> olderV = declarationOf(  Person.class );
+        Variable<Result> resultV = declarationOf(  Result.class );
 
         Rule rule = rule( "beta" )
                 .build(
@@ -318,9 +317,9 @@ public class FlowTest {
     @Test
     public void test3Patterns() {
         Result result = new Result();
-        Variable<Person> personV = declarationOf( type( Person.class ) );
-        Variable<Person> markV = declarationOf( type( Person.class ) );
-        Variable<String> nameV = declarationOf( type( String.class ) );
+        Variable<Person> personV = declarationOf( Person.class );
+        Variable<Person> markV = declarationOf( Person.class );
+        Variable<String> nameV = declarationOf( String.class );
 
         Rule rule = rule( "myrule" )
                 .build(
@@ -347,9 +346,9 @@ public class FlowTest {
     @Test
     public void testOr() {
         Result result = new Result();
-        Variable<Person> personV = declarationOf( type( Person.class ) );
-        Variable<Person> markV = declarationOf( type( Person.class ) );
-        Variable<String> nameV = declarationOf( type( String.class ) );
+        Variable<Person> personV = declarationOf(  Person.class );
+        Variable<Person> markV = declarationOf(  Person.class );
+        Variable<String> nameV = declarationOf(  String.class );
 
         Rule rule = rule( "or" )
                 .build(
@@ -381,8 +380,8 @@ public class FlowTest {
     @Test
     public void testNot() {
         Result result = new Result();
-        Variable<Person> oldestV = declarationOf( type( Person.class ) );
-        Variable<Person> otherV = declarationOf( type( Person.class ) );
+        Variable<Person> oldestV = declarationOf(  Person.class );
+        Variable<Person> otherV = declarationOf(  Person.class );
 
         Rule rule = rule("not")
                 .build(
@@ -405,8 +404,8 @@ public class FlowTest {
 
     @Test
     public void testForall() {
-        Variable<Person> p1V = declarationOf( type( Person.class ) );
-        Variable<Person> p2V = declarationOf( type( Person.class ) );
+        Variable<Person> p1V = declarationOf( Person.class );
+        Variable<Person> p2V = declarationOf( Person.class );
 
         Rule rule = rule("not")
                 .build(
@@ -434,9 +433,9 @@ public class FlowTest {
     @Test
     public void testAccumulate1() {
         Result result = new Result();
-        Variable<Person> person = declarationOf( type( Person.class));
-        Variable<Integer> resultSum = declarationOf( type( Integer.class ) );
-        Variable<Integer> age = declarationOf( type( Integer.class ) );
+        Variable<Person> person = declarationOf( Person.class );
+        Variable<Integer> resultSum = declarationOf( Integer.class );
+        Variable<Integer> age = declarationOf( Integer.class );
 
         Rule rule = rule("accumulate")
                 .build(
@@ -463,10 +462,10 @@ public class FlowTest {
     @Test
     public void testAccumulate2() {
         Result result = new Result();
-        Variable<Person> person = declarationOf( type( Person.class ) );
-        Variable<Integer> resultSum = declarationOf( type( Integer.class ) );
-        Variable<Double> resultAvg = declarationOf( type( Double.class ) );
-        Variable<Integer> age = declarationOf( type( Integer.class ) );
+        Variable<Person> person = declarationOf(  Person.class );
+        Variable<Integer> resultSum = declarationOf(  Integer.class );
+        Variable<Double> resultAvg = declarationOf(  Double.class );
+        Variable<Integer> age = declarationOf(  Integer.class );
 
         Rule rule = rule("accumulate")
                 .build(
@@ -494,8 +493,8 @@ public class FlowTest {
 
     @Test
     public void testGlobalInConsequence() {
-        Variable<Person> markV = declarationOf( type( Person.class ) );
-        Global<Result> resultG = globalOf( type( Result.class ), "org.mypkg" );
+        Variable<Person> markV = declarationOf( Person.class );
+        Global<Result> resultG = globalOf( Result.class, "org.mypkg" );
 
         Rule rule = rule( "org.mypkg", "global" )
                 .build(
@@ -528,9 +527,9 @@ public class FlowTest {
 
     @Test
     public void testGlobalInConstraint() {
-        Variable<Person> markV = declarationOf( type( Person.class ) );
-        Global<Result> resultG = globalOf( type( Result.class ), "org.mypkg" );
-        Global<String> nameG = globalOf( type( String.class ), "org.mypkg" );
+        Variable<Person> markV = declarationOf( Person.class );
+        Global<Result> resultG = globalOf( Result.class, "org.mypkg" );
+        Global<String> nameG = globalOf( String.class, "org.mypkg" );
 
         Rule rule = rule( "org.mypkg", "global" )
                 .build(
@@ -564,7 +563,7 @@ public class FlowTest {
     public void testNotEmptyPredicate() {
         Rule rule = rule("R")
                 .build(
-                        not(input(declarationOf(type(Person.class)))),
+                        not(input(declarationOf(Person.class))),
                         execute((drools) -> drools.insert(new Result("ok")) )
                       );
 
@@ -585,7 +584,7 @@ public class FlowTest {
 
     @Test
     public void testQuery() {
-        Variable<Person> personV = declarationOf( type( Person.class ), "$p" );
+        Variable<Person> personV = declarationOf( Person.class, "$p" );
 
         Query1Def<Integer> qdef = query( "olderThan", Integer.class );
         Query query = qdef.build( expr("exprA", personV, qdef.getArg1(), (p, a) -> p.getAge() > a) );
@@ -608,7 +607,7 @@ public class FlowTest {
 
     @Test
     public void testQueryWithNamedArg() {
-        Variable<Person> personV = declarationOf( type( Person.class ), "$p" );
+        Variable<Person> personV = declarationOf( Person.class, "$p" );
 
         Query1Def<Integer> qdef = query( "olderThan", Integer.class, "ageArg");
         Query query = qdef.build( expr("exprA", personV, qdef.getArg("ageArg", Integer.class), (p, a) -> p.getAge() > a) );
@@ -630,12 +629,12 @@ public class FlowTest {
 
     @Test
     public void testQueryInRule() {
-        Variable<Person> personV = declarationOf( type( Person.class ) );
+        Variable<Person> personV = declarationOf(  Person.class );
 
         Query2Def<Person, Integer> qdef = query( "olderThan", Person.class, Integer.class );
         Query query = qdef.build( expr("exprA", qdef.getArg1(), qdef.getArg2(), (p, a) -> p.getAge() > a) );
 
-        Variable<Person> personVRule = declarationOf( type( Person.class ) );
+        Variable<Person> personVRule = declarationOf(  Person.class );
         Rule rule = rule("R")
                 .build(
                         qdef.call(personVRule, valueOf(40)),
@@ -659,7 +658,7 @@ public class FlowTest {
 
     @Test
     public void testQueryInvokingQuery() {
-        Variable<Relationship> relV = declarationOf( type( Relationship.class ) );
+        Variable<Relationship> relV = declarationOf( Relationship.class );
 
         Query2Def<String, String> query1Def = query( "isRelatedTo1", String.class, String.class );
         Query2Def<String, String> query2Def = query( "isRelatedTo2", String.class, String.class );
@@ -687,9 +686,9 @@ public class FlowTest {
 
     @Test
     public void testPositionalRecursiveQueryWithUnification() {
-        Variable<Relationship> var_$pattern_Relationship$1$ = declarationOf( type( Relationship.class ) );
-        Variable<Relationship> var_$pattern_Relationship$2$ = declarationOf( type( Relationship.class ) );
-        Variable<String> var_$unificationExpr$1$ = declarationOf( type( String.class ) );
+        Variable<Relationship> var_$pattern_Relationship$1$ = declarationOf( Relationship.class );
+        Variable<Relationship> var_$pattern_Relationship$2$ = declarationOf( Relationship.class );
+        Variable<String> var_$unificationExpr$1$ = declarationOf(  String.class );
 
         Query2Def<String, String> queryDef_isRelatedTo = query( "isRelatedTo", String.class, String.class );
         Query query = queryDef_isRelatedTo.build(
@@ -724,7 +723,7 @@ public class FlowTest {
 
     @Test
     public void testQueryInRuleWithDeclaration() {
-        Variable<Person> personV = declarationOf( type( Person.class ) );
+        Variable<Person> personV = declarationOf( Person.class );
 
         Query2Def<Person, Integer> qdef = query( "olderThan", Person.class, Integer.class );
         Query query = qdef.build( expr("exprA", qdef.getArg1(), qdef.getArg2(), (p, a) -> p.getAge() > a) );
@@ -754,8 +753,8 @@ public class FlowTest {
 
     @Test
     public void testQueryInvokedWithGlobal() {
-        Global<Integer> ageG = globalOf(type(Integer.class), "defaultpkg", "ageG");
-        Variable<Person> personV = declarationOf( type( Person.class ) );
+        Global<Integer> ageG = globalOf(Integer.class, "defaultpkg", "ageG");
+        Variable<Person> personV = declarationOf( Person.class );
 
         Query2Def<Person, Integer> qdef = query("olderThan", Person.class, Integer.class);
         Query query = qdef.build( expr("exprA", qdef.getArg1(), qdef.getArg2(), (_this, $age) -> _this.getAge() > $age) );
@@ -787,9 +786,9 @@ public class FlowTest {
 
     @Test
     public void testNamedConsequence() {
-        Variable<Result> resultV = declarationOf( type( Result.class ) );
-        Variable<Person> markV = declarationOf( type( Person.class ) );
-        Variable<Person> olderV = declarationOf( type( Person.class ) );
+        Variable<Result> resultV = declarationOf( Result.class );
+        Variable<Person> markV = declarationOf( Person.class );
+        Variable<Person> olderV = declarationOf( Person.class );
 
         Rule rule = rule( "beta" )
                 .build(
@@ -827,9 +826,9 @@ public class FlowTest {
 
     @Test
     public void testBreakingNamedConsequence() {
-        Variable<Result> resultV = declarationOf( type( Result.class ) );
-        Variable<Person> markV = declarationOf( type( Person.class ) );
-        Variable<Person> olderV = declarationOf( type( Person.class ) );
+        Variable<Result> resultV = declarationOf( Result.class );
+        Variable<Person> markV = declarationOf( Person.class );
+        Variable<Person> olderV = declarationOf( Person.class );
 
         Rule rule = rule( "beta" )
                 .build(
@@ -872,9 +871,9 @@ public class FlowTest {
 
     @Test
     public void testFrom() throws Exception {
-        Variable<Result> resultV = declarationOf( type( Result.class ) );
-        Variable<Adult> dadV = declarationOf( type( Adult.class ) );
-        Variable<Child> childV = declarationOf( type( Child.class ), from(dadV, adult -> adult.getChildren()) );
+        Variable<Result> resultV = declarationOf( Result.class );
+        Variable<Adult> dadV = declarationOf( Adult.class );
+        Variable<Child> childV = declarationOf( Child.class, from(dadV, adult -> adult.getChildren()) );
 
         Rule rule = rule( "from" )
                 .build(
@@ -907,11 +906,9 @@ public class FlowTest {
         //   insert($o);
         // end
 
-        final Global<List> var_list = globalOf(type(List.class),
-                                                         "defaultpkg",
-                                                         "list");
+        final Global<List> var_list = globalOf(List.class, "defaultpkg", "list");
 
-        final Variable<String> var_$o = declarationOf(type(String.class),
+        final Variable<String> var_$o = declarationOf(String.class,
                                                       "$o",
                                                       from(var_list, x -> x)); // cannot use Function.identity() here because target type is ?.
 
@@ -944,11 +941,11 @@ public class FlowTest {
 
     @Test
     public void testConcatenatedFrom() {
-        Global<List> listG = globalOf(type(List.class), "defaultpkg", "list");
-        Variable<Man> manV = declarationOf( type( Man.class ) );
-        Variable<Woman> wifeV = declarationOf( type( Woman.class ), from( manV, Man::getWife ) );
-        Variable<Child> childV = declarationOf( type( Child.class ), from( wifeV, Woman::getChildren ) );
-        Variable<Toy> toyV = declarationOf( type( Toy.class ), from( childV, Child::getToys ) );
+        Global<List> listG = globalOf(List.class, "defaultpkg", "list");
+        Variable<Man> manV = declarationOf( Man.class );
+        Variable<Woman> wifeV = declarationOf( Woman.class, from( manV, Man::getWife ) );
+        Variable<Child> childV = declarationOf( Child.class, from( wifeV, Woman::getChildren ) );
+        Variable<Toy> toyV = declarationOf( Toy.class, from( childV, Child::getToys ) );
 
         Rule rule = rule( "froms" )
                 .build(
@@ -984,7 +981,7 @@ public class FlowTest {
 
     @Test(timeout = 5000)
     public void testNoLoopWithModel() {
-        Variable<Person> meV = declarationOf( type( Person.class ) );
+        Variable<Person> meV = declarationOf( Person.class );
 
         Rule rule = rule( "noloop" ).attribute( Rule.Attribute.NO_LOOP, true )
                 .build(
@@ -1035,13 +1032,11 @@ public class FlowTest {
         org.drools.model.WindowReference var_DeclaredWindow = window(org.drools.model.WindowDefinition.Type.TIME,
                                                                      5,
                                                                      java.util.concurrent.TimeUnit.SECONDS,
-                                                                     org.drools.modelcompiler.domain.StockTick.class,
+                                                                     StockTick.class,
                                                                      (_this) -> _this.getCompany().equals("DROO"));
 
 
-        final org.drools.model.Variable<org.drools.modelcompiler.domain.StockTick> var_$a = declarationOf(type(org.drools.modelcompiler.domain.StockTick.class),
-                                                                                                          "$a",
-                                                                                                          var_DeclaredWindow);
+        final Variable<StockTick> var_$a = declarationOf(StockTick.class, "$a", var_DeclaredWindow);
         org.drools.model.Rule rule = rule("R").build(on(var_$a).execute(($a) -> {
             System.out.println($a.getCompany());
         }));
@@ -1069,8 +1064,7 @@ public class FlowTest {
 
     @Test
     public void testMVELinsert() {
-        final org.drools.model.Variable<java.lang.Integer> var_$pattern_Integer$1$ = declarationOf(type(java.lang.Integer.class),
-                                                                                                   "$pattern_Integer$1$");
+        final Variable<Integer> var_$pattern_Integer$1$ = declarationOf(Integer.class, "$pattern_Integer$1$");
 
         org.drools.model.Rule rule = rule("R").build(input(var_$pattern_Integer$1$),
                                                      executeScript("mvel",
@@ -1092,9 +1086,8 @@ public class FlowTest {
 
     @Test
     public void testMVELmodify() {
-        final org.drools.model.Variable<org.drools.modelcompiler.domain.Person> var_$p = declarationOf(type(org.drools.modelcompiler.domain.Person.class),
-                                                                                                       "$p");
-        final org.drools.model.BitMask mask_$p = org.drools.model.BitMask.getPatternMask(org.drools.modelcompiler.domain.Person.class,
+        final  Variable<Person> var_$p = declarationOf(Person.class, "$p");
+        final org.drools.model.BitMask mask_$p = org.drools.model.BitMask.getPatternMask(Person.class,
                                                                                          "age");
 
         org.drools.model.Rule rule = rule("R").build(input(var_$p),
@@ -1114,16 +1107,11 @@ public class FlowTest {
 
     @Test
     public void testAccumuluateWithAnd2() {
-        final org.drools.model.Variable<java.lang.Object> var_$pattern_Object$1$ = declarationOf(type(java.lang.Object.class),
-                                                                                                 "$pattern_Object$1$");
-        final org.drools.model.Variable<org.drools.modelcompiler.domain.Child> var_$c = declarationOf(type(org.drools.modelcompiler.domain.Child.class),
-                                                                                                      "$c");
-        final org.drools.model.Variable<org.drools.modelcompiler.domain.Adult> var_$a = declarationOf(type(org.drools.modelcompiler.domain.Adult.class),
-                                                                                                      "$a");
-        final org.drools.model.Variable<Integer> var_$parentAge = declarationOf(type(Integer.class),
-                                                                                "$parentAge");
-        final org.drools.model.Variable<Integer> var_$expr$5$ = declarationOf(type(Integer.class),
-                                                                              "$expr$5$");
+        Variable<Object> var_$pattern_Object$1$ = declarationOf(Object.class, "$pattern_Object$1$");
+        Variable<Child> var_$c = declarationOf(Child.class, "$c");
+        Variable<Adult> var_$a = declarationOf(Adult.class, "$a");
+        Variable<Integer> var_$parentAge = declarationOf(Integer.class, "$parentAge");
+        Variable<Integer> var_$expr$5$ = declarationOf(Integer.class, "$expr$5$");
         org.drools.model.Rule rule = rule("R").build(bind(var_$expr$5$).as(var_$a,
                                                                            var_$c,
                                                                            ($a, $c) -> $a.getAge() + $c.getAge()),
@@ -1166,23 +1154,21 @@ public class FlowTest {
     public void testQueryOOPathAccumulateTransformed() {
         final org.drools.model.QueryDef queryDef_listSafeCities = query("listSafeCities");
 
-        final org.drools.model.Variable<org.drools.modelcompiler.oopathdtables.Person> var_$p = declarationOf(type(org.drools.modelcompiler.oopathdtables.Person.class),
+        final  Variable<org.drools.modelcompiler.oopathdtables.Person> var_$p = declarationOf(org.drools.modelcompiler.oopathdtables.Person.class,
                                                                                                                   "$p");
-        final org.drools.model.Variable<org.drools.modelcompiler.oopathdtables.InternationalAddress> var_$a = declarationOf(type(org.drools.modelcompiler.oopathdtables.InternationalAddress.class),
+        final  Variable<org.drools.modelcompiler.oopathdtables.InternationalAddress> var_$a = declarationOf(org.drools.modelcompiler.oopathdtables.InternationalAddress.class,
                                                                                                                                 "$a",
                                                                                                                                 from(var_$p,
                                                                                                                                      (_this) -> _this.getAddress()));
-        final org.drools.model.Variable<java.util.List> var_$cities = declarationOf(type(java.util.List.class),
-                                                                                    "$cities");
-        final org.drools.model.Variable<java.lang.String> var_$city = declarationOf(type(java.lang.String.class),
-                                                                                    "$city",
+        final  Variable<java.util.List> var_$cities = declarationOf(java.util.List.class, "$cities");
+        final  Variable<String> var_$city = declarationOf(String.class, "$city",
                                                                                     from(var_$a,
                                                                                          (_this) -> _this.getCity()));
         org.drools.model.Query listSafeCities_build = queryDef_listSafeCities.build(input(var_$p),
                                                                                     expr("$expr$2$",
                                                                                          var_$a,
                                                                                          (_this) -> _this.getState()
-                                                                                                 .equals("Safecountry")).indexedBy(java.lang.String.class,
+                                                                                                 .equals("Safecountry")).indexedBy(String.class,
                                                                                                                                    org.drools.model.Index.ConstraintType.EQUAL,
                                                                                                                                    0,
                                                                                                                                    _this -> _this.getState(),
@@ -1212,9 +1198,9 @@ public class FlowTest {
 
     @Test
     public void testFromAccumulate() {
-        final org.drools.model.Variable<Number> var_$sum = declarationOf(type(Number.class), "$sum");
-        final org.drools.model.Variable<Person> var_$p = declarationOf(type(Person.class), "$p");
-        final org.drools.model.Variable<Integer> var_$expr$3$ = declarationOf(type(Integer.class), "$expr$3$");
+        final  Variable<Number> var_$sum = declarationOf(Number.class, "$sum");
+        final  Variable<Person> var_$p = declarationOf(Person.class, "$p");
+        final  Variable<Integer> var_$expr$3$ = declarationOf(Integer.class, "$expr$3$");
 
         org.drools.model.Rule rule = rule("X").build(
                 bind(var_$expr$3$).as(var_$p, (_this) -> _this.getAge()),
@@ -1248,9 +1234,9 @@ public class FlowTest {
 
     @Test
     public void testAccumulateAnd() {
-        Variable<java.lang.Number> var_$sum = declarationOf(type(Number.class), "$sum");
-        Variable<org.drools.modelcompiler.domain.Person> var_$p = declarationOf(type(Person.class), "$p");
-        Variable<Integer> var_$expr$3$ = declarationOf(type(Integer.class), "$expr$3$");
+        Variable<Number> var_$sum = declarationOf(Number.class, "$sum");
+        Variable<Person> var_$p = declarationOf(Person.class, "$p");
+        Variable<Integer> var_$expr$3$ = declarationOf(Integer.class, "$expr$3$");
 
         org.drools.model.Rule rule = rule("X").build(bind(var_$expr$3$).as(var_$p,
                 (_this) -> _this.getAge()),
@@ -1290,7 +1276,7 @@ public class FlowTest {
 
     @Test
     public void testIn() {
-        final org.drools.model.Variable<java.lang.String> var_$pattern_String$1$ = declarationOf(type(java.lang.String.class),
+        final Variable<String> var_$pattern_String$1$ = declarationOf(String.class,
                 "$pattern_String$1$");
         org.drools.model.Rule rule = rule("R").build(expr("$expr$1$",
                 var_$pattern_String$1$,
@@ -1308,17 +1294,15 @@ public class FlowTest {
 
     @Test
     public void testCustomAccumulate() {
-        final org.drools.model.Variable<org.drools.modelcompiler.domain.Customer> var_$customer = declarationOf(type(org.drools.modelcompiler.domain.Customer.class),
-                "$customer");
-        final org.drools.model.Variable<java.lang.String> var_$code = declarationOf(type(java.lang.String.class),
-                "$code");
-        final org.drools.model.Variable<org.drools.modelcompiler.domain.TargetPolicy> var_$target = declarationOf(type(org.drools.modelcompiler.domain.TargetPolicy.class),
+        final Variable<Customer> var_$customer = declarationOf(Customer.class, "$customer");
+        final Variable<String> var_$code = declarationOf(String.class, "$code");
+        final Variable<TargetPolicy> var_$target = declarationOf(TargetPolicy.class,
                 "$target");
-        final org.drools.model.Variable<java.util.List> var_$pattern_List$1$ = declarationOf(type(java.util.List.class),
+        final Variable<java.util.List> var_$pattern_List$1$ = declarationOf(java.util.List.class,
                 "$pattern_List$1$");
-        final org.drools.model.Variable<org.drools.modelcompiler.domain.TargetPolicy> var_$tp = declarationOf(type(org.drools.modelcompiler.domain.TargetPolicy.class),
+        final Variable<TargetPolicy> var_$tp = declarationOf(TargetPolicy.class,
                 "$tp");
-        final org.drools.model.BitMask mask_$target = org.drools.model.BitMask.getPatternMask(org.drools.modelcompiler.domain.TargetPolicy.class,
+        final org.drools.model.BitMask mask_$target = org.drools.model.BitMask.getPatternMask(TargetPolicy.class,
                 "coefficient");
         org.drools.model.Rule rule = rule("Customer can only have one Target Policy for Product p1 with coefficient 1").build(bind(var_$code).as(var_$customer,
                 (_this) -> _this.getCode())
@@ -1327,7 +1311,7 @@ public class FlowTest {
                         var_$target,
                         var_$code,
                         (_this, $code) -> org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getCustomerCode(),
-                                $code)).indexedBy(java.lang.String.class,
+                                $code)).indexedBy(String.class,
                         org.drools.model.Index.ConstraintType.EQUAL,
                         0,
                         _this -> _this.getCustomerCode(),
@@ -1336,7 +1320,7 @@ public class FlowTest {
                 expr("$expr$3$",
                         var_$target,
                         (_this) -> org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getProductCode(),
-                                "p1")).indexedBy(java.lang.String.class,
+                                "p1")).indexedBy(String.class,
                         org.drools.model.Index.ConstraintType.EQUAL,
                         1,
                         _this -> _this.getProductCode(),
@@ -1362,7 +1346,7 @@ public class FlowTest {
                         var_$tp,
                         var_$code,
                         (_this, $code) -> org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getCustomerCode(),
-                                $code)).indexedBy(java.lang.String.class,
+                                $code)).indexedBy(String.class,
                         org.drools.model.Index.ConstraintType.EQUAL,
                         0,
                         _this -> _this.getCustomerCode(),
@@ -1371,7 +1355,7 @@ public class FlowTest {
                         expr("$expr$3$",
                                 var_$tp,
                                 (_this) -> org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getProductCode(),
-                                        "p1")).indexedBy(java.lang.String.class,
+                                        "p1")).indexedBy(String.class,
                                 org.drools.model.Index.ConstraintType.EQUAL,
                                 1,
                                 _this -> _this.getProductCode(),
@@ -1469,13 +1453,13 @@ public class FlowTest {
 
     @Test
     public void testOrConditional() {
-        final org.drools.model.Global<java.util.List> var_list = globalOf(type(java.util.List.class),
+        final org.drools.model.Global<java.util.List> var_list = globalOf(java.util.List.class,
                 "defaultpkg",
                 "list");
 
-        final org.drools.model.Variable<org.drools.modelcompiler.domain.Employee> var_$pattern_Employee$1$ = declarationOf(type(org.drools.modelcompiler.domain.Employee.class),
+        final  Variable<Employee> var_$pattern_Employee$1$ = declarationOf(Employee.class,
                 "$pattern_Employee$1$");
-        final org.drools.model.Variable<org.drools.modelcompiler.domain.Address> var_$address = declarationOf(type(org.drools.modelcompiler.domain.Address.class),
+        final  Variable<Address> var_$address = declarationOf(Address.class,
                 "$address",
                 reactiveFrom(var_$pattern_Employee$1$,
                         (_this) -> _this.getAddress()));
@@ -1484,7 +1468,7 @@ public class FlowTest {
                 expr("$expr$2$",
                         var_$address,
                         (_this) -> org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getCity(),
-                                "Big City")).indexedBy(java.lang.String.class,
+                                "Big City")).indexedBy(String.class,
                         org.drools.model.Index.ConstraintType.EQUAL,
                         0,
                         _this -> _this.getCity(),
@@ -1494,7 +1478,7 @@ public class FlowTest {
                         expr("$expr$4$",
                                 var_$address,
                                 (_this) -> org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getCity(),
-                                        "Small City")).indexedBy(java.lang.String.class,
+                                        "Small City")).indexedBy(String.class,
                                 org.drools.model.Index.ConstraintType.EQUAL,
                                 0,
                                 _this -> _this.getCity(),
