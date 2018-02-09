@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.domain.common.accessor;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.optaplanner.core.api.domain.solution.drools.ProblemFactProperty;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
@@ -35,6 +34,7 @@ public class MemberAccessorFactoryTest {
         MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(
                 TestdataFieldAnnotatedEntity.class.getDeclaredField("value"),
                 MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD_WITH_SETTER, PlanningVariable.class);
+        assertInstanceOf(ReflectionFieldMemberAccessor.class, memberAccessor);
         assertEquals("value", memberAccessor.getName());
         assertEquals(TestdataValue.class, memberAccessor.getType());
 
@@ -52,6 +52,7 @@ public class MemberAccessorFactoryTest {
         MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(
                 TestdataVisibilityModifierSolution.class.getDeclaredField("privateField"),
                 MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD_WITH_SETTER, ProblemFactProperty.class);
+        assertInstanceOf(ReflectionFieldMemberAccessor.class, memberAccessor);
         assertEquals("privateField", memberAccessor.getName());
         assertEquals(String.class, memberAccessor.getType());
 
@@ -68,60 +69,13 @@ public class MemberAccessorFactoryTest {
         MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(
                 TestdataVisibilityModifierSolution.class.getDeclaredField("publicField"),
                 MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD_WITH_SETTER, ProblemFactProperty.class);
+        assertInstanceOf(ReflectionFieldMemberAccessor.class, memberAccessor);
         assertEquals("publicField", memberAccessor.getName());
         assertEquals(String.class, memberAccessor.getType());
 
         TestdataVisibilityModifierSolution s1 = new TestdataVisibilityModifierSolution("s1",
                 "n/a", "firstValue",
                 "n/a", "n/a", "n/a", "n/a");
-        assertEquals("firstValue", memberAccessor.executeGetter(s1));
-        memberAccessor.executeSetter(s1, "secondValue");
-        assertEquals("secondValue", memberAccessor.executeGetter(s1));
-    }
-
-    @Test @Ignore("Non-public getters/setters are not supported")
-    public void privateProperty() throws NoSuchMethodException {
-        MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(
-                TestdataVisibilityModifierSolution.class.getDeclaredMethod("getPrivateProperty"),
-                MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD_WITH_SETTER, ProblemFactProperty.class);
-        assertEquals("privateProperty", memberAccessor.getName());
-        assertEquals(String.class, memberAccessor.getType());
-
-        TestdataVisibilityModifierSolution s1 = new TestdataVisibilityModifierSolution("s1",
-                "n/a", "n/a",
-                "firstValue", "n/a", "n/a", "n/a");
-        assertEquals("firstValue", memberAccessor.executeGetter(s1));
-        memberAccessor.executeSetter(s1, "secondValue");
-        assertEquals("secondValue", memberAccessor.executeGetter(s1));
-    }
-
-    @Test @Ignore("Non-public getters/setters are not supported")
-    public void friendlyProperty() throws NoSuchMethodException {
-        MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(
-                TestdataVisibilityModifierSolution.class.getDeclaredMethod("getFriendlyProperty"),
-                MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD_WITH_SETTER, ProblemFactProperty.class);
-        assertEquals("friendlyProperty", memberAccessor.getName());
-        assertEquals(String.class, memberAccessor.getType());
-
-        TestdataVisibilityModifierSolution s1 = new TestdataVisibilityModifierSolution("s1",
-                "n/a", "n/a",
-                "n/a", "firstValue", "n/a", "n/a");
-        assertEquals("firstValue", memberAccessor.executeGetter(s1));
-        memberAccessor.executeSetter(s1, "secondValue");
-        assertEquals("secondValue", memberAccessor.executeGetter(s1));
-    }
-
-    @Test @Ignore("Non-public getters/setters are not supported")
-    public void protectedProperty() throws NoSuchMethodException {
-        MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(
-                TestdataVisibilityModifierSolution.class.getDeclaredMethod("getProtectedProperty"),
-                MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD_WITH_SETTER, ProblemFactProperty.class);
-        assertEquals("protectedProperty", memberAccessor.getName());
-        assertEquals(String.class, memberAccessor.getType());
-
-        TestdataVisibilityModifierSolution s1 = new TestdataVisibilityModifierSolution("s1",
-                "n/a", "n/a",
-                "n/a", "n/a", "firstValue", "n/a");
         assertEquals("firstValue", memberAccessor.executeGetter(s1));
         memberAccessor.executeSetter(s1, "secondValue");
         assertEquals("secondValue", memberAccessor.executeGetter(s1));

@@ -50,6 +50,13 @@ public final class LambdaBeanPropertyMemberAccessor implements MemberAccessor {
         propertyType = getterMethod.getReturnType();
         propertyName = ReflectionHelper.getGetterPropertyName(getterMethod);
         MethodHandles.Lookup lookup = MethodHandles.lookup();
+        getterFunction = createGetterFunction(lookup);
+        setterMethod = ReflectionHelper.getSetterMethod(declaringClass, getterMethod.getReturnType(), propertyName);
+        setterFunction = createSetterFunction(lookup);
+    }
+
+    private Function createGetterFunction(MethodHandles.Lookup lookup) {
+        Class<?> declaringClass = getterMethod.getDeclaringClass();
         CallSite getterSite;
         try {
             getterSite = LambdaMetafactory.metafactory(lookup,
@@ -62,30 +69,32 @@ public final class LambdaBeanPropertyMemberAccessor implements MemberAccessor {
             throw new IllegalArgumentException("Lambda creation failed for getterMethod (" + getterMethod + ").", e);
         }
         try {
-            getterFunction = (Function) getterSite.getTarget().invokeExact();
+            return (Function) getterSite.getTarget().invokeExact();
         } catch (Throwable e) {
             throw new IllegalArgumentException("Lambda creation failed for getterMethod (" + getterMethod + ").", e);
         }
-        setterMethod = ReflectionHelper.getSetterMethod(declaringClass, getterMethod.getReturnType(), propertyName);
-        if (setterMethod != null) {
-            CallSite setterSite;
-            try {
-                setterSite = LambdaMetafactory.metafactory(lookup,
-                        "accept",
-                        MethodType.methodType(BiConsumer.class),
-                        MethodType.methodType(void.class, Object.class, Object.class),
-                        lookup.findVirtual(declaringClass, setterMethod.getName(), MethodType.methodType(void.class, propertyType)),
-                        MethodType.methodType(void.class, declaringClass, propertyType));
-            } catch (LambdaConversionException | NoSuchMethodException | IllegalAccessException e) {
-                throw new IllegalArgumentException("Lambda creation failed for getterMethod (" + getterMethod + ").", e);
-            }
-            try {
-                setterFunction = (BiConsumer) setterSite.getTarget().invokeExact();
-            } catch (Throwable e) {
-                throw new IllegalArgumentException("Lambda creation failed for getterMethod (" + getterMethod + ").", e);
-            }
-        } else {
-            setterFunction = null;
+    }
+
+    private BiConsumer createSetterFunction(MethodHandles.Lookup lookup) {
+        if (setterMethod == null) {
+            return null;
+        }
+        Class<?> declaringClass = setterMethod.getDeclaringClass();
+        CallSite setterSite;
+        try {
+            setterSite = LambdaMetafactory.metafactory(lookup,
+                    "accept",
+                    MethodType.methodType(BiConsumer.class),
+                    MethodType.methodType(void.class, Object.class, Object.class),
+                    lookup.findVirtual(declaringClass, setterMethod.getName(), MethodType.methodType(void.class, propertyType)),
+                    MethodType.methodType(void.class, declaringClass, propertyType));
+        } catch (LambdaConversionException | NoSuchMethodException | IllegalAccessException e) {
+            throw new IllegalArgumentException("Lambda creation failed for setterMethod (" + setterMethod + ").", e);
+        }
+        try {
+            return (BiConsumer) setterSite.getTarget().invokeExact();
+        } catch (Throwable e) {
+            throw new IllegalArgumentException("Lambda creation failed for setterMethod (" + setterMethod + ").", e);
         }
     }
 
