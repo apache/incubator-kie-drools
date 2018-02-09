@@ -60,13 +60,13 @@ public class RuleContext {
     public BaseDescr parentDesc = null;
 
     public RuleContext(KnowledgeBuilderImpl kbuilder, TypeResolver typeResolver, PackageModel packageModel, RuleDescr ruleDescr) {
-        this(kbuilder, packageModel, packageModel.getExprIdGenerator(), ruleDescr, typeResolver);
+        this(kbuilder, packageModel, ruleDescr, typeResolver);
     }
 
-    public RuleContext(KnowledgeBuilderImpl kbuilder, PackageModel packageModel, DRLIdGenerator exprIdGenerator, RuleDescr ruleDescr, TypeResolver typeResolver) {
+    public RuleContext(KnowledgeBuilderImpl kbuilder, PackageModel packageModel, RuleDescr ruleDescr, TypeResolver typeResolver) {
         this.kbuilder = kbuilder;
         this.packageModel = packageModel;
-        this.idGenerator = exprIdGenerator;
+        this.idGenerator = packageModel.getExprIdGenerator();
         this.descr = ruleDescr;
         exprPointer.push( this.expressions::add );
         this.typeResolver = typeResolver;
