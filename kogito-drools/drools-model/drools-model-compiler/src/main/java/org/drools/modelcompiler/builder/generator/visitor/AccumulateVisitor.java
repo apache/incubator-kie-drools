@@ -191,19 +191,6 @@ public class AccumulateVisitor {
                     .getDeclarationClass();
 
             final String nameExpr = ((NameExpr) expr).getName().asString();
-
-            // We always need an expr view here, if input pattern doesn't have constraints we have to create one
-            if(!inputPatternHasConstraints) {
-                final MethodCallExpr exprCall = new MethodCallExpr(null, ModelGenerator.EXPR_CALL);
-                exprCall.addArgument(toVar(nameExpr));
-                MethodCallExpr accMethod = getExprsMethod( accumulateDSL );
-                if (accMethod.getArguments().isEmpty()) {
-                    accMethod.addArgument( exprCall );
-                } else {
-                    accMethod.setArgument( 0, exprCall );
-                }
-            }
-
             final AccumulateFunction accumulateFunction = getAccumulateFunction(function, declarationClass);
             functionDSL.addArgument(new ClassExpr(toType(accumulateFunction.getClass())));
             functionDSL.addArgument(new NameExpr(toVar(nameExpr)));
