@@ -19,7 +19,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kie.pmml.pmml_4_2.model.ParameterInfo;
+import org.kie.api.pmml.ParameterInfo;
+import org.kie.api.pmml.PMML4Data;
+import org.kie.api.pmml.PMML4DataType;
 
 public class PMML4DataFactory {
 	private static PMML4DataFactory INSTANCE = new PMML4DataFactory();

@@ -37,15 +37,15 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
-import org.dmg.pmml.pmml_4_2.descr.ClusteringModel;
-import org.dmg.pmml.pmml_4_2.descr.DataDictionary;
-import org.dmg.pmml.pmml_4_2.descr.NaiveBayesModel;
-import org.dmg.pmml.pmml_4_2.descr.NeuralNetwork;
-import org.dmg.pmml.pmml_4_2.descr.PMML;
-import org.dmg.pmml.pmml_4_2.descr.RegressionModel;
-import org.dmg.pmml.pmml_4_2.descr.Scorecard;
-import org.dmg.pmml.pmml_4_2.descr.SupportVectorMachineModel;
-import org.dmg.pmml.pmml_4_2.descr.TreeModel;
+import org.kie.dmg.pmml.pmml_4_2.descr.ClusteringModel;
+import org.kie.dmg.pmml.pmml_4_2.descr.DataDictionary;
+import org.kie.dmg.pmml.pmml_4_2.descr.NaiveBayesModel;
+import org.kie.dmg.pmml.pmml_4_2.descr.NeuralNetwork;
+import org.kie.dmg.pmml.pmml_4_2.descr.PMML;
+import org.kie.dmg.pmml.pmml_4_2.descr.RegressionModel;
+import org.kie.dmg.pmml.pmml_4_2.descr.Scorecard;
+import org.kie.dmg.pmml.pmml_4_2.descr.SupportVectorMachineModel;
+import org.kie.dmg.pmml.pmml_4_2.descr.TreeModel;
 import org.drools.compiler.compiler.PMMLCompiler;
 import org.drools.compiler.compiler.PMMLResource;
 import org.drools.core.io.impl.ByteArrayResource;
@@ -75,7 +75,7 @@ import org.xml.sax.SAXException;
 public class PMML4Compiler implements PMMLCompiler {
 
 
-    public static final String PMML_NAMESPACE = "org.dmg.pmml.pmml_4_2";
+    public static final String PMML_NAMESPACE = "org.kie.dmg.pmml.pmml_4_2";
     public static final String PMML_DROOLS = "org.kie.pmml.pmml_4_2";
     public static final String PMML = PMML_NAMESPACE + ".descr";
     public static final String SCHEMA_PATH = "xsd/org/dmg/pmml/pmml_4_2/pmml-4-2.xsd";
@@ -372,7 +372,7 @@ public class PMML4Compiler implements PMMLCompiler {
                     }
                     naiveBayesLoaded = true;
                 }
-                chosenKieBase = chosenKieBase == null ? "PMML-Bayes" : "PMML";
+                chosenKieBase = chosenKieBase == null ? "KiePMML-Bayes" : "KiePMML";
             }
 
             if ( o instanceof NeuralNetwork ) {
@@ -382,7 +382,7 @@ public class PMML4Compiler implements PMMLCompiler {
                     }
                     neuralLoaded = true;
                 }
-                chosenKieBase = chosenKieBase == null ? "PMML-Neural" : "PMML";
+                chosenKieBase = chosenKieBase == null ? "KiePMML-Neural" : "KiePMML";
             }
 
             if ( o instanceof ClusteringModel ) {
@@ -392,7 +392,7 @@ public class PMML4Compiler implements PMMLCompiler {
                     }
                     clusteringLoaded = true;
                 }
-                chosenKieBase = chosenKieBase == null ? "PMML-Cluster" : "PMML";
+                chosenKieBase = chosenKieBase == null ? "KiePMML-Cluster" : "KiePMML";
             }
 
             if ( o instanceof SupportVectorMachineModel ) {
@@ -402,7 +402,7 @@ public class PMML4Compiler implements PMMLCompiler {
                     }
                     svmLoaded = true;
                 }
-                chosenKieBase = chosenKieBase == null ? "PMML-SVM" : "PMML";
+                chosenKieBase = chosenKieBase == null ? "KiePMML-SVM" : "KiePMML";
             }
 
             if ( o instanceof TreeModel ) {
@@ -412,7 +412,7 @@ public class PMML4Compiler implements PMMLCompiler {
                     }
                     treeLoaded = true;
                 }
-                chosenKieBase = chosenKieBase == null ? "PMML-Tree" : "PMML";
+                chosenKieBase = chosenKieBase == null ? "KiePMML-Tree" : "KiePMML";
             }
 
             if ( o instanceof RegressionModel ) {
@@ -422,7 +422,7 @@ public class PMML4Compiler implements PMMLCompiler {
                     }
                     simpleRegLoaded = true;
                 }
-                chosenKieBase = chosenKieBase == null ? "PMML-Regression" : "PMML";
+                chosenKieBase = chosenKieBase == null ? "KiePMML-Regression" : "KiePMML";
             }
 
             if ( o instanceof Scorecard ) {
@@ -432,12 +432,12 @@ public class PMML4Compiler implements PMMLCompiler {
                     }
                     scorecardLoaded = true;
                 }
-                chosenKieBase = chosenKieBase == null ? "PMML-Scorecard" : "PMML";
+                chosenKieBase = chosenKieBase == null ? "KiePMML-Scorecard" : "KiePMML";
             }
         }
 
         if ( chosenKieBase == null ) {
-            chosenKieBase = "PMML-Base";
+            chosenKieBase = "KiePMML-Base";
         }
         return kieContainer.getKieBase( chosenKieBase );
     }
@@ -449,7 +449,7 @@ public class PMML4Compiler implements PMMLCompiler {
     private static void prepareTemplate( String ntempl ) {
         try {
             String path = TEMPLATE_PATH + ntempl;
-            Resource res = ResourceFactory.newClassPathResource(path, PMML4Compiler.class);
+            Resource res = ResourceFactory.newClassPathResource(path, org.kie.pmml.pmml_4_2.PMML4Compiler.class);
             if ( res != null ) {
                 InputStream stream = res.getInputStream();
                 if ( stream != null ) {

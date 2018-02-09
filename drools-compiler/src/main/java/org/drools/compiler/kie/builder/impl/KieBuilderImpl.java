@@ -155,15 +155,15 @@ public class KieBuilderImpl
      * @return List of strings that are the file names
      */
     private List<String> getPmmlFileNames(ResourceReader mfs) {
-    	List<String> pmmlFileNames = new ArrayList<>();
+        List<String> pmmlFileNames = new ArrayList<>();
         Collection<String> fileNames = mfs.getFileNames();
         if (fileNames != null && !fileNames.isEmpty()) {
-        	for (String fn : fileNames) {
-        		String fileName = (fn.startsWith(RESOURCES_ROOT)) ? fn.substring(RESOURCES_ROOT.length()) : fn;
-        		if (fileName.endsWith(ResourceType.PMML.getDefaultExtension())) {
-        			pmmlFileNames.add(fileName);
-        		}
-        	}
+            for (String fn : fileNames) {
+                String fileName = fn; //(fn.startsWith(RESOURCES_ROOT)) ? fn.substring(RESOURCES_ROOT.length()) : fn;
+                if (fileName.endsWith(ResourceType.PMML.getDefaultExtension())) {
+                    pmmlFileNames.add(fileName);
+                }
+            }
         }
         return pmmlFileNames;
     }
@@ -270,7 +270,7 @@ public class KieBuilderImpl
                 results.addMessage( Level.ERROR, "pom.xml", "Unresolved dependency " + unresolvedDep );
             }
             
-        	List<String> pmmlFileNames = getPmmlFileNames(srcMfs);
+            List<String> pmmlFileNames = getPmmlFileNames(srcMfs);
             
             if (pmmlFileNames != null && !pmmlFileNames.isEmpty()) {
                 buildPMMLPojos(pmmlFileNames,kProject);
@@ -286,44 +286,56 @@ public class KieBuilderImpl
 
     
     private void buildPMMLPojos(List<String> pmmlFileNames, KieProject kProject) {
-    	PMMLCompiler compiler = PMMLCompilerFactory.getPMMLCompiler();
-		KieFileSystem javaSource = KieServices.Factory.get().newKieFileSystem();
-    	Map<String,String> javaSources = new HashMap<>();
-    	for (String fname: pmmlFileNames) {
-    		Map<String,String> modelSources = compiler.getJavaClasses(fname);
-    		if (modelSources != null && !modelSources.isEmpty()) {
-    			javaSources.putAll(modelSources);
-    		}
-    	}
-    	for (String key: javaSources.keySet()) {
-    		String javaCode = javaSources.get(key);
-    		if (javaCode != null && !javaCode.trim().isEmpty()) {
-    			Resource res = ResourceFactory.newByteArrayResource(javaCode.getBytes()).setResourceType(ResourceType.JAVA);
-    			String sourcePath = key.replaceAll("\\.", "/")+".java";
-    			res.setSourcePath(sourcePath);
-    			javaSource.write(res);
-    		}
-    	}
-    		
-		ResourceReader src = ((KieFileSystemImpl)javaSource).asMemoryFileSystem();
+        PMMLCompiler compiler = PMMLCompilerFactory.getPMMLCompiler();
+        System.out.println("!!!!! PMMLCompiler version = "+compiler.getCompilerVersion()+" !!!!!");
+        KieFileSystem javaSource = KieServices.Factory.get().newKieFileSystem();
+        Map<String,String> javaSources = new HashMap<>();
+        for (String fname: pmmlFileNames) {
+            Map<String,String> modelSources = null;
+            Resource pmmlContent = ResourceFactory.newByteArrayResource(srcMfs.getBytes(fname));
+            if (pmmlContent != null) {
+                try {
+                    modelSources = compiler.getJavaClasses(pmmlContent.getInputStream());
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            } else {
+                modelSources = compiler.getJavaClasses(fname);
+            }
+            if (modelSources != null && !modelSources.isEmpty()) {
+                javaSources.putAll(modelSources);
+            }
+        }
+        for (String key: javaSources.keySet()) {
+            String javaCode = javaSources.get(key);
+            if (javaCode != null && !javaCode.trim().isEmpty()) {
+                Resource res = ResourceFactory.newByteArrayResource(javaCode.getBytes()).setResourceType(ResourceType.JAVA);
+                String sourcePath = key.replaceAll("\\.", "/")+".java";
+                res.setSourcePath(sourcePath);
+                javaSource.write(res);
+            }
+        }
+            
+        ResourceReader src = ((KieFileSystemImpl)javaSource).asMemoryFileSystem();
         List<String> javaFileNames = getJavaFileNames(src);
         if (javaFileNames != null && !javaFileNames.isEmpty()) {
             ClassLoader classLoader = kProject.getClassLoader();
             KnowledgeBuilderConfigurationImpl kconf = new KnowledgeBuilderConfigurationImpl( classLoader );
             JavaDialectConfiguration javaConf = (JavaDialectConfiguration) kconf.getDialectConfiguration( "java" );
-        	compileJavaClasses(javaConf, classLoader, javaFileNames, JAVA_ROOT, src);
+            compileJavaClasses(javaConf, classLoader, javaFileNames, JAVA_ROOT, src);
         }
     }
     
     
     private List<String> getJavaFileNames(ResourceReader src) {
-    	List<String> javaFileNames = new ArrayList<>();
+        List<String> javaFileNames = new ArrayList<>();
         for (String fname: src.getFileNames()) {
             if (fname.endsWith(".java")) {
                 javaFileNames.add(fname);
             }
         }
-    	return javaFileNames;
+        return javaFileNames;
     }
 
     void markSource() {
@@ -558,11 +570,11 @@ public class KieBuilderImpl
         }
         
         if (pmmlResources != null && !pmmlResources.isEmpty()) {
-        	for (PMMLResource resource : pmmlResources) {
-        		if (resource.getKieBaseModel() != null) {
-        			((KieModuleModelImpl)kModuleModel).getRawKieBaseModels().put(resource.getKieBaseModel().getName(), resource.getKieBaseModel());
-        		}
-        	}
+            for (PMMLResource resource : pmmlResources) {
+                if (resource.getKieBaseModel() != null) {
+                    ((KieModuleModelImpl)kModuleModel).getRawKieBaseModels().put(resource.getKieBaseModel().getName(), resource.getKieBaseModel());
+                }
+            }
         }
 
         if ( setDefaultsforEmptyKieModule( kModuleModel ) ) {
@@ -762,25 +774,25 @@ public class KieBuilderImpl
             String[] sourceFiles = javaFiles.toArray(new String[ javaFiles.size() ]);
             File dumpDir = javaConf.getPackageBuilderConfiguration().getDumpDir();
             if (dumpDir != null) {
-            	String dumpDirName;
-				try {
-					dumpDirName = dumpDir.getCanonicalPath().endsWith("/") ? dumpDir.getCanonicalPath() : dumpDir.getCanonicalPath() + "/";
-	            	for (String srcFile: sourceFiles) {
-	            		String baseName = (srcFile.startsWith(JAVA_ROOT) ? srcFile.substring(JAVA_ROOT.length()) : srcFile)
-	            				.replaceAll("/", ".");
-	            		
-	            		String fname = dumpDirName + baseName;
-	            		byte[] srcData = source.getBytes(srcFile);
-	            		try (FileOutputStream fos = new FileOutputStream(fname)) {
-	            			fos.write(srcData);
-	            		} catch (IOException iox) {
-	            			results.addMessage(Level.WARNING, fname, "Unable to 'dump' the generated Java class: "+fname);
-	            		}
-	            	}
-				} catch (IOException e) {
-					results.addMessage(Level.WARNING, "", "Unable to get the 'dump directory for the generated Java classes");
-				}
-            	
+                String dumpDirName;
+                try {
+                    dumpDirName = dumpDir.getCanonicalPath().endsWith("/") ? dumpDir.getCanonicalPath() : dumpDir.getCanonicalPath() + "/";
+                    for (String srcFile: sourceFiles) {
+                        String baseName = (srcFile.startsWith(JAVA_ROOT) ? srcFile.substring(JAVA_ROOT.length()) : srcFile)
+                                .replaceAll("/", ".");
+                        
+                        String fname = dumpDirName + baseName;
+                        byte[] srcData = source.getBytes(srcFile);
+                        try (FileOutputStream fos = new FileOutputStream(fname)) {
+                            fos.write(srcData);
+                        } catch (IOException iox) {
+                            results.addMessage(Level.WARNING, fname, "Unable to 'dump' the generated Java class: "+fname);
+                        }
+                    }
+                } catch (IOException e) {
+                    results.addMessage(Level.WARNING, "", "Unable to get the 'dump directory for the generated Java classes");
+                }
+                
             }
             JavaCompiler javaCompiler = createCompiler( javaConf, rootFolder );
             CompilationResult res = javaCompiler.compile(sourceFiles, source, trgMfs, classLoader);

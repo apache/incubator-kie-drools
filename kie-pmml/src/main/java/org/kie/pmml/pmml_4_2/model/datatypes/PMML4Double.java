@@ -15,6 +15,9 @@
  */
 package org.kie.pmml.pmml_4_2.model.datatypes;
 
+
+import org.kie.api.pmml.PMML4Data;
+
 public class PMML4Double extends PMML4Data<Double> {
 
 	PMML4Double(String correlationId, String name, String context, String displayName, Double value) {

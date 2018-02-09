@@ -23,9 +23,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.dmg.pmml.pmml_4_2.descr.MULTIPLEMODELMETHOD;
-import org.dmg.pmml.pmml_4_2.descr.Segment;
-import org.dmg.pmml.pmml_4_2.descr.Segmentation;
+import org.kie.dmg.pmml.pmml_4_2.descr.MULTIPLEMODELMETHOD;
+import org.kie.dmg.pmml.pmml_4_2.descr.Segment;
+import org.kie.dmg.pmml.pmml_4_2.descr.Segmentation;
 import org.kie.api.io.Resource;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.pmml.pmml_4_2.model.Miningmodel;
