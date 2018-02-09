@@ -24,7 +24,7 @@ public class ToTypedExpressionTest {
     private final HashSet<String> imports = new HashSet<>();
     private final PackageModel packageModel = new PackageModel("", null);
     final TypeResolver typeResolver = new ClassTypeResolver(imports, getClass().getClassLoader());
-    private final RuleContext ruleContext = new RuleContext(null, typeResolver, packageModel, null);
+    private final RuleContext ruleContext = new RuleContext(null, packageModel, null, typeResolver);
 
     {
         imports.add("org.drools.modelcompiler.domain.Person");

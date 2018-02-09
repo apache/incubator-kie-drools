@@ -59,10 +59,6 @@ public class RuleContext {
 
     public BaseDescr parentDesc = null;
 
-    public RuleContext(KnowledgeBuilderImpl kbuilder, TypeResolver typeResolver, PackageModel packageModel, RuleDescr ruleDescr) {
-        this(kbuilder, packageModel, ruleDescr, typeResolver);
-    }
-
     public RuleContext(KnowledgeBuilderImpl kbuilder, PackageModel packageModel, RuleDescr ruleDescr, TypeResolver typeResolver) {
         this.kbuilder = kbuilder;
         this.packageModel = packageModel;
