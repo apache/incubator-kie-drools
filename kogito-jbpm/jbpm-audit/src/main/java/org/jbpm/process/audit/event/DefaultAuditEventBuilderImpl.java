@@ -107,6 +107,7 @@ public class DefaultAuditEventBuilderImpl implements AuditEventBuilder {
         log.setExternalId(""+((KieSession) pnte.getKieRuntime()).getIdentifier());
         log.setNodeType(nodeType);
         log.setNodeContainerId(nodeContainerId);
+        log.setDate(pnte.getEventDate());
         return log;
     }
         
@@ -167,6 +168,7 @@ public class DefaultAuditEventBuilderImpl implements AuditEventBuilder {
         logEvent.setExternalId(""+((KieSession) pnle.getKieRuntime()).getIdentifier());
         logEvent.setNodeType(nodeType);
         logEvent.setNodeContainerId(nodeContainerId);
+        logEvent.setDate(pnle.getEventDate());
         return logEvent;
     }
 
