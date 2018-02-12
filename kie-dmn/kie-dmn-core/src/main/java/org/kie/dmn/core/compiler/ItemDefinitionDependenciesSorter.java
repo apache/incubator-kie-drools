@@ -17,7 +17,9 @@
 package org.kie.dmn.core.compiler;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
@@ -35,24 +37,38 @@ public class ItemDefinitionDependenciesSorter {
      * Return a new list of ItemDefinition sorted by dependencies (required dependencies comes first)
      */
     public List<ItemDefinition> sort(List<ItemDefinition> ins) {
-        // this method approximates a topological sort. 
-        
-        List<ItemDefinition> todos = new ArrayList<>(ins);
-        List<ItemDefinition> ordered = new ArrayList<>(ins.size());
-        
-        while ( todos.size() > 0 ) {
-            ItemDefinition c1 = todos.get(0);
-            for ( int i = 1; i < todos.size(); i++) {
-                ItemDefinition other = todos.get(i);
-                QName otherQName = new QName(modelNamespace, other.getName());
-                if ( recurseFind(c1, otherQName) ) {
-                    c1 = other;
-                }
+        // In a graph A -> B -> {C, D}
+        // showing that A requires B, and B requires C,D
+        // then a depth-first visit would satisfy required ordering, for example a valid depth first visit is also a valid sort here: C, D, B, A.
+        Collection<ItemDefinition> visited = new ArrayList<>(ins.size());
+        List<ItemDefinition> dfv = new ArrayList<>(ins.size());
+
+        for (ItemDefinition node : ins) {
+            if (!visited.contains(node)) {
+                dfVisit(node, ins, visited, dfv);
             }
-            ordered.add(c1);
-            todos.remove(c1);
         }
-        return ordered;
+
+        return dfv;
+    }
+        
+    /**
+     * Performs a depth first visit, but keeping a separate reference of visited/visiting nodes, _also_ to avoid potential issues of circularities.
+     */
+    private void dfVisit(ItemDefinition node, List<ItemDefinition> allNodes, Collection<ItemDefinition> visited, List<ItemDefinition> dfv) {
+        visited.add(node);
+
+        List<ItemDefinition> neighbours = allNodes.stream()
+                                                  .filter(n -> !n.getName().equals(node.getName())) // filter out `node`
+                                                  .filter(n -> recurseFind(node, new QName(modelNamespace, n.getName()))) // only neighbours of `node`
+                                                  .collect(Collectors.toList());
+        for (ItemDefinition n : neighbours) {
+            if (!visited.contains(n)) {
+                dfVisit(n, allNodes, visited, dfv);
+            }
+        }
+
+        dfv.add(node);
     }
     
     private static boolean recurseFind(ItemDefinition o1, QName qname2) {
