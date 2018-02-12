@@ -2,7 +2,6 @@ package org.drools.model.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -67,7 +66,7 @@ public class ViewBuilder {
 
     private ViewBuilder() { }
 
-    public static CompositePatterns viewItems2Patterns( RuleItemBuilder[] viewItemBuilders ) {
+    public static CompositePatterns viewItems2Patterns( RuleItemBuilder<?>[] viewItemBuilders ) {
         BuildContext ctx = new BuildContext( viewItemBuilders );
         return ensureVariablesDeclarationInView(viewItems2Condition( ctx, Type.AND, true ), ctx);
     }
@@ -76,7 +75,7 @@ public class ViewBuilder {
         ctx.inputs.keySet().removeAll(ctx.usedVars);
         int i = 0;
         for (Map.Entry<Variable<?>, InputViewItemImpl<?>> entry : ctx.inputs.entrySet()) {
-            view.addCondition(i++, new PatternImpl(entry.getKey(), SingleConstraint.TRUE ));
+            view.addCondition(i++, new PatternImpl(entry.getKey()));
             ctx.usedVars.add(entry.getKey());
         }
 
@@ -159,7 +158,7 @@ public class ViewBuilder {
 
             if ( viewItem instanceof InputViewItemImpl ) {
                 scopedInputs.put( patterVariable, (InputViewItemImpl) viewItem );
-                Condition condition = new PatternImpl( patterVariable, SingleConstraint.TRUE );
+                Condition condition = new PatternImpl( patterVariable );
                 conditions.add( condition );
                 conditionMap.put( patterVariable, condition );
                 ctx.usedVars.add( patterVariable );
@@ -194,7 +193,7 @@ public class ViewBuilder {
                     scopedInputs.putIfAbsent( patterVariable, (InputViewItemImpl) input( patterVariable ) );
                 }
             } else {
-                condition = new PatternImpl( patterVariable, SingleConstraint.TRUE );
+                condition = new PatternImpl( patterVariable );
                 conditions.add( condition );
             }
 
@@ -404,7 +403,7 @@ public class ViewBuilder {
         final Set<Variable<?>> boundVars;
         final Map<Variable<?>, List<Binding>> bindings;
 
-        BuildContext( RuleItemBuilder[] viewItemBuilders ) {
+        BuildContext( RuleItemBuilder<?>[] viewItemBuilders ) {
             this( Stream.of( viewItemBuilders ).map( RuleItemBuilder::get ).collect( toList() ), new LinkedHashMap<>(),
                     new HashSet<>(), new HashSet<>(), new HashMap<>() );
         }

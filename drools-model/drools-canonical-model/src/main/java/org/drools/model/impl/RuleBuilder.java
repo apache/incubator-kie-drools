@@ -7,8 +7,6 @@ import java.util.Map;
 import org.drools.model.Rule;
 import org.drools.model.RuleItemBuilder;
 
-import static org.drools.model.impl.ViewBuilder.viewItems2Patterns;
-
 public class RuleBuilder {
 
     public static final String DEFAULT_PACKAGE = "defaultpkg";
@@ -57,7 +55,11 @@ public class RuleBuilder {
         return this;
     }
 
-    public Rule build( RuleItemBuilder... viewItemBuilders ) {
-        return new RuleImpl(pkg, name, unit, viewItems2Patterns(viewItemBuilders), attributes, metaAttributes);
+    public Rule build( RuleItemBuilder<?>... viewItemBuilders ) {
+        return new RuleImpl(pkg, name, unit, ViewBuilder.viewItems2Patterns(viewItemBuilders), attributes, metaAttributes);
+    }
+
+    public Rule build2( RuleItemBuilder<?>... viewItemBuilders ) {
+        return new RuleImpl(pkg, name, unit, ViewBuilder2.viewItems2Patterns(viewItemBuilders), attributes, metaAttributes);
     }
 }
