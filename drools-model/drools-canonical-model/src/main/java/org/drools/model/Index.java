@@ -19,7 +19,7 @@ public interface Index<A, V> {
 
     IndexType getIndexType();
 
-    Class<?> getIndexedClass();
+    Class<V> getIndexedClass();
 
     ConstraintType getConstraintType();
 

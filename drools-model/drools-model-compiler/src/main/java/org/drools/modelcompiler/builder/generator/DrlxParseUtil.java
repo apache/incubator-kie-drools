@@ -49,6 +49,7 @@ import org.drools.javaparser.ast.expr.FieldAccessExpr;
 import org.drools.javaparser.ast.expr.IntegerLiteralExpr;
 import org.drools.javaparser.ast.expr.LambdaExpr;
 import org.drools.javaparser.ast.expr.LiteralExpr;
+import org.drools.javaparser.ast.expr.LiteralStringValueExpr;
 import org.drools.javaparser.ast.expr.LongLiteralExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
@@ -69,6 +70,7 @@ import org.drools.modelcompiler.util.ClassUtil;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import static java.util.Optional.of;
+
 import static org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper.findLeftLeafOfNameExpr;
 import static org.drools.modelcompiler.util.ClassUtil.findMethod;
 
@@ -160,20 +162,39 @@ public class DrlxParseUtil {
         }
     }
 
+    public static Expression coerceLiteralExprToType( LiteralStringValueExpr expr, Class<?> type ) {
+        if (type == int.class) {
+            return new IntegerLiteralExpr( expr.getValue() );
+        }
+        if (type == long.class) {
+            return new LongLiteralExpr( expr.getValue().endsWith( "l" ) ? expr.getValue() : expr.getValue() + "l" );
+        }
+        if (type == double.class) {
+            return new DoubleLiteralExpr( expr.getValue().endsWith( "d" ) ? expr.getValue() : expr.getValue() + "d" );
+        }
+        throw new RuntimeException("Unknown literal: " + expr);
+    }
+
     public static Class<?> getLiteralExpressionType( LiteralExpr expr ) {
         if (expr instanceof BooleanLiteralExpr) {
             return boolean.class;
-        } else if (expr instanceof CharLiteralExpr) {
+        }
+        if (expr instanceof CharLiteralExpr) {
             return char.class;
-        } else if (expr instanceof DoubleLiteralExpr) {
+        }
+        if (expr instanceof DoubleLiteralExpr) {
             return double.class;
-        } else if (expr instanceof IntegerLiteralExpr) {
+        }
+        if (expr instanceof IntegerLiteralExpr) {
             return int.class;
-        } else if (expr instanceof LongLiteralExpr) {
+        }
+        if (expr instanceof LongLiteralExpr) {
             return long.class;
-        } else if (expr instanceof NullLiteralExpr) {
+        }
+        if (expr instanceof NullLiteralExpr) {
             return ClassUtil.NullType.class;
-        } else if (expr instanceof StringLiteralExpr) {
+        }
+        if (expr instanceof StringLiteralExpr) {
             return String.class;
         }
         throw new RuntimeException("Unknown literal: " + expr);

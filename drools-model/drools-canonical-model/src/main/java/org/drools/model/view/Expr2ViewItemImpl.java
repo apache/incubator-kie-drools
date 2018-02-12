@@ -51,8 +51,8 @@ public class Expr2ViewItemImpl<T, U> extends AbstractExprViewItem<T> implements 
     }
 
     @Override
-    public <V> Expr2ViewItemImpl<T, U> indexedBy( Class<?> indexedClass, Index.ConstraintType constraintType, int indexId, Function1<T, V> leftOperandExtractor, Function1<U, V> rightOperandExtractor ) {
-        index = new BetaIndexImpl<T, U, V>( indexedClass, constraintType, indexId, leftOperandExtractor, rightOperandExtractor );
+    public <V> Expr2ViewItemImpl<T, U> indexedBy( Class<V> indexedClass, Index.ConstraintType constraintType, int indexId, Function1<T, V> leftOperandExtractor, Function1<U, V> rightOperandExtractor ) {
+        index = new BetaIndexImpl<>( indexedClass, constraintType, indexId, leftOperandExtractor, rightOperandExtractor );
         return this;
     }
 
