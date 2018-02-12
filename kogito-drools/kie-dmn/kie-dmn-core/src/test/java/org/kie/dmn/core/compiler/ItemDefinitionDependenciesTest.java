@@ -87,7 +87,7 @@ public class ItemDefinitionDependenciesTest {
     }
     
     @Test
-    public void test1() {
+    public void testOrdering1() {
         ItemDefinition tCollateralRiskCategory = build("tCollateralRiskCategory");
         ItemDefinition tCreditRiskCategory     = build("tCreditRiskCategory");
         ItemDefinition tAffordabilityCategory  = build("tAffordabilityCategory");
@@ -123,7 +123,7 @@ public class ItemDefinitionDependenciesTest {
     }
     
     @Test
-    public void test2() {
+    public void testOrdering2() {
         ItemDefinition tMortgageType      = build("tMortgageType");
         ItemDefinition tObjective         = build("tObjective");
         ItemDefinition tRequested         = build("tRequested", tMortgageType, tObjective);
@@ -154,7 +154,7 @@ public class ItemDefinitionDependenciesTest {
     }
     
     @Test
-    public void test3() {
+    public void testOrdering3() {
         ItemDefinition tNumberList = build("tNumberList");
         ItemDefinition tTax        = build("tTax");
         ItemDefinition tStateModel = build("tStateModel");
