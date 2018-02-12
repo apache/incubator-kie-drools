@@ -183,4 +183,38 @@ public class ItemDefinitionDependenciesTest {
         
         assertTrue("Index of tTax < tTaxList", orderedList.indexOf(tTax) < orderedList.indexOf(tTaxList));
     }
+
+    @Test
+    public void testOrdering4() {
+        ItemDefinition _TypeDecisionA1   = build("TypeDecisionA1");
+        ItemDefinition _TypeDecisionA2_x = build("TypeDecisionA2.x", _TypeDecisionA1);
+        ItemDefinition _TypeDecisionA3   = build("TypeDecisionA3", _TypeDecisionA2_x);
+        ItemDefinition _TypeDecisionB1   = build("TypeDecisionB1");
+        ItemDefinition _TypeDecisionB2_x = build("TypeDecisionB2.x", _TypeDecisionB1);
+        ItemDefinition _TypeDecisionB3   = build("TypeDecisionB3", _TypeDecisionB2_x, _TypeDecisionA3);
+        ItemDefinition _TypeDecisionC1   = build("TypeDecisionC1", _TypeDecisionA3, _TypeDecisionB3);
+        ItemDefinition _TypeDecisionC4   = build("TypeDecisionC4");
+
+        List<ItemDefinition> originalList = Arrays.asList(new ItemDefinition[]{
+               _TypeDecisionA1,  
+               _TypeDecisionA2_x,
+               _TypeDecisionA3,  
+               _TypeDecisionB1,  
+               _TypeDecisionB2_x,
+               _TypeDecisionB3,  
+               _TypeDecisionC1,  
+               _TypeDecisionC4,  
+        });
+
+        List<ItemDefinition> orderedList = orderingStrategy(originalList);
+
+        assertTrue("Index of _TypeDecisionA1 < _TypeDecisionA2_x", orderedList.indexOf(_TypeDecisionA1) < orderedList.indexOf(_TypeDecisionA2_x));
+        assertTrue("Index of _TypeDecisionA2_x < _TypeDecisionA3", orderedList.indexOf(_TypeDecisionA2_x) < orderedList.indexOf(_TypeDecisionA3));
+        assertTrue("Index of _TypeDecisionA3 < _TypeDecisionB3", orderedList.indexOf(_TypeDecisionA3) < orderedList.indexOf(_TypeDecisionB3));
+        assertTrue("Index of _TypeDecisionA3 < _TypeDecisionC1", orderedList.indexOf(_TypeDecisionA3) < orderedList.indexOf(_TypeDecisionC1));
+
+        assertTrue("Index of _TypeDecisionB1 < _TypeDecisionB2_x", orderedList.indexOf(_TypeDecisionB1) < orderedList.indexOf(_TypeDecisionB2_x));
+        assertTrue("Index of _TypeDecisionB2_x < _TypeDecisionB3", orderedList.indexOf(_TypeDecisionB2_x) < orderedList.indexOf(_TypeDecisionB3));
+        assertTrue("Index of _TypeDecisionB3 < _TypeDecisionC1", orderedList.indexOf(_TypeDecisionB3) < orderedList.indexOf(_TypeDecisionC1));
+    }
 }
