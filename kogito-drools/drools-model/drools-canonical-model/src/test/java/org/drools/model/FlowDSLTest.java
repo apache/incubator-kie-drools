@@ -38,12 +38,11 @@ public class FlowDSLTest {
         Rule rule = rule("join")
                 .attribute(Rule.Attribute.SALIENCE, 10)
                 .attribute(Rule.Attribute.AGENDA_GROUP, "myGroup")
-                .view(
+                .build(
                         expr(markV, mark -> mark.getName().equals("Mark")),
                         expr(olderV, older -> !older.getName().equals("Mark")),
-                        expr(olderV, markV, (older, mark) -> older.getAge() > mark.getAge())
-                     )
-                .then(on(olderV, markV)
+                        expr(olderV, markV, (older, mark) -> older.getAge() > mark.getAge()),
+                        on(olderV, markV)
                             .execute((p1, p2) -> list.add(p1.getName() + " is older than " + p2.getName())));
 
         new BruteForceEngine().bind("persons", persons).evaluate(rule);

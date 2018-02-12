@@ -162,6 +162,7 @@ public class ModelGenerator {
     public static final String EXECUTESCRIPT_CALL = "executeScript";
     public static final String ON_CALL = "on";
     public static final String EXPR_CALL = "expr";
+    public static final String INDEXED_BY_CALL = "indexedBy";
     public static final String BIND_CALL = "bind";
     public static final String BIND_AS_CALL = "as";
     public static final String ATTRIBUTE_CALL = "attribute";
@@ -742,7 +743,7 @@ public class ModelGenerator {
             boolean leftContainsThis = left.getExpression().toString().contains("_this");
             indexedBy_leftOperandExtractor.setBody(new ExpressionStmt(leftContainsThis ? left.getExpression() : right.getExpression()) );
 
-            MethodCallExpr indexedByDSL = new MethodCallExpr(exprDSL, "indexedBy");
+            MethodCallExpr indexedByDSL = new MethodCallExpr(exprDSL, INDEXED_BY_CALL);
             indexedByDSL.addArgument( indexedBy_indexedClass );
             indexedByDSL.addArgument( indexedBy_constraintType );
             indexedByDSL.addArgument( "" + indexIdGenerator.getFieldId(drlxParseResult.getPatternType(), left.getFieldName() ) );

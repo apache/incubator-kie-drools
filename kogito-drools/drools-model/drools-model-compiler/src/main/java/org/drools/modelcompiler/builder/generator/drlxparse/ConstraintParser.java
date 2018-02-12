@@ -18,6 +18,7 @@ import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.FieldAccessExpr;
 import org.drools.javaparser.ast.expr.IntegerLiteralExpr;
 import org.drools.javaparser.ast.expr.LiteralExpr;
+import org.drools.javaparser.ast.expr.LiteralStringValueExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
@@ -41,6 +42,7 @@ import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.GREATER_EQUALS;
 import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.LESS;
 import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.LESS_EQUALS;
 import static org.drools.javaparser.printer.PrintUtil.toDrlx;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.coerceLiteralExprToType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getLiteralExpressionType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isPrimitiveExpression;
 
@@ -121,10 +123,12 @@ public class ConstraintParser {
                     context.addCompilationError( new InvalidExpressionErrorResult("Comparison operation requires compatible types. Found " + left.getType() + " and " + right.getType()) );
                     return new DrlxParseFail();
                 }
-                Expression rightExpr = right.getExpression() instanceof StringLiteralExpr ?
-                        new IntegerLiteralExpr( (( StringLiteralExpr ) right.getExpression()).asString() ) :
-                        right.getExpression();
-                combo = new BinaryExpr( left.getExpression(), rightExpr, operator );
+                if (right.getExpression() instanceof StringLiteralExpr) {
+                    right.setExpression( new IntegerLiteralExpr( (( StringLiteralExpr ) right.getExpression()).asString() ) );
+                } else if (right.getExpression() instanceof LiteralStringValueExpr ) {
+                    right.setExpression( coerceLiteralExprToType( (LiteralStringValueExpr) right.getExpression(), left.getType() ) );
+                }
+                combo = new BinaryExpr( left.getExpression(), right.getExpression(), operator );
             } else {
                 switch ( operator ) {
                     case EQUALS:
@@ -273,18 +277,21 @@ public class ConstraintParser {
             return compareBigDecimal(operator, left, right);
         }
 
-        Expression rightOperand = right.getExpression();
         if (isPrimitiveExpression(right.getExpression())) {
             if (left.getType() != String.class) {
-                return new BinaryExpr( left.getExpression(), rightOperand, operator == BinaryExpr.Operator.EQUALS ? BinaryExpr.Operator.EQUALS : BinaryExpr.Operator.NOT_EQUALS );
-            } else if ( rightOperand instanceof LiteralExpr ) {
-                rightOperand = new StringLiteralExpr( rightOperand.toString() );
+                return new BinaryExpr( left.getExpression(), right.getExpression(), operator == BinaryExpr.Operator.EQUALS ? BinaryExpr.Operator.EQUALS : BinaryExpr.Operator.NOT_EQUALS );
+            } else if ( right.getExpression() instanceof LiteralExpr ) {
+                right.setExpression( new StringLiteralExpr( right.getExpression().toString() ) );
             }
+        }
+
+        if (left.getType() == String.class && right.getType() == Object.class) {
+            right.setExpression( new MethodCallExpr( right.getExpression(), "toString" ) );
         }
 
         MethodCallExpr methodCallExpr = new MethodCallExpr( null, "org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals" );
         methodCallExpr.addArgument( left.getExpression() );
-        methodCallExpr.addArgument( rightOperand ); // don't create NodeList with static method because missing "parent for child" would null and NPE
+        methodCallExpr.addArgument( right.getExpression() ); // don't create NodeList with static method because missing "parent for child" would null and NPE
         return operator == BinaryExpr.Operator.EQUALS ? methodCallExpr : new UnaryExpr(methodCallExpr, UnaryExpr.Operator.LOGICAL_COMPLEMENT );
     }
 
@@ -309,10 +316,10 @@ public class ConstraintParser {
     }
 
     public static Expression compareBigDecimal(BinaryExpr.Operator operator, TypedExpression left, TypedExpression right) {
-        final Expression leftBigDecimal = convertExpressionToBigDecimal(left);
-        final Expression rightBigDecimal = convertExpressionToBigDecimal(right);
-        final MethodCallExpr methodCallExpr = new MethodCallExpr(leftBigDecimal, "compareTo");
-        methodCallExpr.addArgument(rightBigDecimal);
+        left.setExpression( convertExpressionToBigDecimal(left) );
+        right.setExpression( convertExpressionToBigDecimal(right) );
+        final MethodCallExpr methodCallExpr = new MethodCallExpr(left.getExpression(), "compareTo");
+        methodCallExpr.addArgument(right.getExpression());
         return new BinaryExpr(methodCallExpr, new IntegerLiteralExpr(0), operator);
     }
 

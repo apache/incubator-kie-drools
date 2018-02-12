@@ -1,16 +1,17 @@
 package org.drools.model.patterns;
 
-import org.drools.model.*;
+import org.drools.model.Constraint;
+import org.drools.model.DataSourceDefinition;
+import org.drools.model.Pattern;
+import org.drools.model.SingleConstraint;
+import org.drools.model.Variable;
 import org.drools.model.constraints.AbstractConstraint;
 import org.drools.model.constraints.AbstractSingleConstraint;
 import org.drools.model.constraints.SingleConstraint1;
 import org.drools.model.constraints.SingleConstraint2;
-import org.drools.model.functions.Function1;
 import org.drools.model.functions.Predicate1;
 import org.drools.model.functions.Predicate2;
 import org.drools.model.impl.DataSourceDefinitionImpl;
-import org.drools.model.index.AlphaIndexImpl;
-import org.drools.model.index.BetaIndexImpl;
 
 import static org.drools.model.DSL.declarationOf;
 
@@ -167,16 +168,6 @@ public class PatternBuilder {
 
         public ConstrainedPatternBuilder<T> or(AbstractConstraint constraint) {
             this.constraint = ((AbstractConstraint)this.constraint).or(constraint);
-            return this;
-        }
-
-        public <U> ConstrainedPatternBuilder<T> indexedBy(Class<?> indexedClass, Index.ConstraintType constraintType, int indexId, Function1<T, U> leftOperandExtractor, U rightValue) {
-            lastConstraint.setIndex(new AlphaIndexImpl<T, U>(indexedClass, constraintType, indexId, leftOperandExtractor, rightValue));
-            return this;
-        }
-
-        public <U, V> ConstrainedPatternBuilder<T> indexedBy(Class<?> indexedClass, Index.ConstraintType constraintType, int indexId, Function1<T, V> leftOperandExtractor, Function1<U, V> rightOperandExtractor) {
-            lastConstraint.setIndex(new BetaIndexImpl<T, U, V>(indexedClass, constraintType, indexId, leftOperandExtractor, rightOperandExtractor));
             return this;
         }
 

@@ -18,6 +18,7 @@ import org.drools.model.SingleConstraint;
 import org.drools.model.TupleHandle;
 import org.drools.model.Variable;
 import org.drools.model.View;
+import org.drools.model.consequences.NamedConsequenceImpl;
 import org.drools.model.constraints.AndConstraints;
 import org.drools.model.constraints.OrConstraints;
 import org.drools.model.datasources.DataSource;
@@ -82,11 +83,13 @@ public class BruteForceEngine {
                 return evaluateExistential(condition.getType(), (Pattern)condition.getSubConditions().get(0), bindings);
             case AND:
                 return condition.getSubConditions().stream()
+                                .filter( c -> !(c instanceof NamedConsequenceImpl) )
                                 .reduce(bindings,
                                         (b, p) -> evaluateCondition(p, b),
                                         (b1, b2) -> null);
             case OR:
                 return condition.getSubConditions().stream()
+                                .filter( c -> !(c instanceof NamedConsequenceImpl) )
                                 .reduce(new Bindings(),
                                         (b, p) -> b.append(evaluateCondition(p, bindings)),
                                         (b1, b2) -> null);
