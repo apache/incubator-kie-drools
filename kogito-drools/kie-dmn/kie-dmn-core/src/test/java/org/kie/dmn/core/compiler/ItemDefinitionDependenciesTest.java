@@ -16,7 +16,6 @@
 
 package org.kie.dmn.core.compiler;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,8 +26,10 @@ import org.kie.dmn.api.marshalling.v1_1.DMNMarshaller;
 import org.kie.dmn.backend.marshalling.v1_1.DMNMarshallerFactory;
 import org.kie.dmn.model.v1_1.ItemDefinition;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 
 public class ItemDefinitionDependenciesTest {
@@ -150,5 +151,36 @@ public class ItemDefinitionDependenciesTest {
         
         assertTrue("Index of tMortgageType < tLoanTypes", orderedList.indexOf(tMortgageType) < orderedList.indexOf(tLoanTypes));
         assertTrue("Index of tConformanceType < tLoanTypes", orderedList.indexOf(tConformanceType) < orderedList.indexOf(tLoanTypes));
+    }
+    
+    @Test
+    public void test3() {
+        ItemDefinition tNumberList = build("tNumberList");
+        ItemDefinition tTax        = build("tTax");
+        ItemDefinition tStateModel = build("tStateModel");
+        ItemDefinition tTaxList    = build("tTaxList", tTax);
+        ItemDefinition tCategory   = build("tCategory");
+        ItemDefinition tItem       = build("tItem", tCategory);
+        ItemDefinition tItemList   = build("tItemList", tItem);
+        ItemDefinition tOrder      = build("tOrder", tItemList);
+     
+        List<ItemDefinition> originalList = Arrays.asList(new ItemDefinition[]{
+               tOrder,
+               tItem,
+               tCategory,
+               tNumberList,
+               tItemList,
+               tTax,
+               tStateModel,
+               tTaxList
+        });
+        
+        List<ItemDefinition> orderedList = orderingStrategy(originalList);
+        
+        assertTrue("Index of tCategory < tItem", orderedList.indexOf(tCategory) < orderedList.indexOf(tItem));
+        assertTrue("Index of tItem < tItemList", orderedList.indexOf(tItem) < orderedList.indexOf(tItemList));
+        assertTrue("Index of tItemList < tOrder", orderedList.indexOf(tItemList) < orderedList.indexOf(tOrder));
+        
+        assertTrue("Index of tTax < tTaxList", orderedList.indexOf(tTax) < orderedList.indexOf(tTaxList));
     }
 }
