@@ -569,14 +569,21 @@ Many human planners fail to accept this, often because they feel threatened by a
 
 But despite that, both can benefit if the human planner becomes the supervisor of Planner:
 
-* *The human planner defines and validates the score function.*
-** Some examples expose a `\*Parametrization` object, which defines the weight for each score constraint. The human planner can then tweak those weights at runtime.
-** When the business changes, the score function often needs to change too. The human planner can notify the developers to add, change or remove score constraints.
+* *The human planner defines, validates and tweaks the score function.*
+** Some examples expose a `Parametrization` object, which defines the weight for each score constraint.
+The human planner can then tweak those weights at runtime.
+** When the business changes, the score function often needs to change too.
+The human planner can notify the developers to add, change or remove score constraints.
 * *The human planner is always in control of Planner.*
-** As shown in the course scheduling example, the human planner can lock one or more planning variables to a specific planning value and make those immovable. Because they are <<immovablePlanningEntities,immovable>>, Planner does not change them: it optimizes the planning around the enforcements made by the human. If the human planner locks all planning variables, he/she sidelines Planner completely.
-** In a prototype implementation, the human planner might use this occasionally. But as the implementation matures, it must become obsolete. But do keep the feature alive: as a reassurance for the humans. Or in case that one day the business changes dramatically before the score constraints can be adjusted.
+** As shown in the course scheduling example, the human planner can pin down one or more planning variables to a specific planning value.
+Because they are <<immovablePlanningEntities,immovable>>, Planner does not change them: it optimizes the planning around the enforcements made by the human.
+If the human planner pins down all planning variables, he/she sidelines Planner completely.
+** In a prototype implementation, the human planner will use pinning occasionally to intervene.
+But as the implementation matures, it should become obsolete.
+But do keep the feature alive, as a reassurance for the humans.
+Or in case that one day the business changes dramatically before the score constraints are adjusted accordingly.
 
-Therefore, it's often a good idea to involve the human planner in your project.
+Therefore, it's often a good idea to actively involve the human planner in your project.
 
 image::Integration/parameterizeTheScoreWeights.png[align="center"]
 

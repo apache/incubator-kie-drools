@@ -4,7 +4,7 @@
 
 
 [[getTheReleaseZipAndRunTheExamples]]
-== Get the Release .zip and Run the Examples
+== Get the Release zip and Run the Examples
 
 To try it now:
 
@@ -34,15 +34,15 @@ Pick an example to try it out:
 
 image::PlannerIntroduction/DownloadAndRunTheExamples/plannerExamplesAppScreenshot.png[align="center"]
 
-
 [NOTE]
 ====
 OptaPlanner itself has no GUI dependencies.
 It runs just as well on a server or a mobile JVM as it does on the desktop.
 ====
 
-[discrete]
-= Run the Webexamples
+
+[[runTheWebexamples]]
+== Run the Webexamples
 
 Besides the GUI examples, there are also a set of webexamples to try out. The webexamples include:
 

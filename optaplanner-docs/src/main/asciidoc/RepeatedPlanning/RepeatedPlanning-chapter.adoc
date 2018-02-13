@@ -164,12 +164,49 @@ In the hospital bed planning example above, notice the difference between the or
 [[immovablePlanningEntities]]
 === Immovable Planning Entities
 
-To make some planning entities immovable, add an entity `SelectionFilter` that returns `true` if an entity is movable, and `false` if it is immovable.
+An immovable planning entity doesn't change during solving.
+This is commonly used by users to pin down one or more specific assignments
+and force Planner to schedule around those fixed assignments.
 
-The following procedure demonstrates how to do this using the nurse rostering example.
+[[pinDownPlanningEntities]]
+==== Pin Down Planning Entities with @PlanningPin
 
-[discrete]
-===== Configuring Immovable Planning Entities
+To make some planning entities immovable, add an `@PlanningPin` annotation
+on a boolean getter or field of the planning entity class.
+That boolean is `true` if the entity is immovable (pinned down to its current planning values) and `false` otherwise.
+
+. Add the `@PlanningPin` annotation on a `boolean`:
++
+[source,java,options="nowrap"]
+----
+@PlanningEntity
+public class Lecture {
+
+    ...
+    private boolean pinned;
+
+    ...
+
+    @PlanningPin
+    public boolean isPinned() {
+        return pinned;
+    }
+
+    ...
+}
+----
+
+In the example above, if `pinned` is `true`, the lecture will not be assigned to another period or room
+(even if the current period and rooms fields are `null`).
+
+[[configureAMovableEntitySelectionFilter]]
+==== Configure a Movable EntitySelectionFilter
+
+Alternatively, to make some planning entities immovable, add an entity `SelectionFilter`
+that returns `true` if an entity is movable, and `false` if it is immovable.
+This is more flexible and more verbose than the `@PlanningPin` approach.
+
+For example on the nurse rostering example:
 
 . Add the `SelectionFilter`:
 +
@@ -196,11 +233,6 @@ public class ShiftAssignment {
     ...
 }
 ----
-
-[WARNING]
-====
-Custom `MoveListFactory` and `MoveIteratorFactory` implementations must ensure that they do not move immovable entities.
-====
 
 
 [[nonvolatileReplanning]]

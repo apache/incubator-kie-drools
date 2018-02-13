@@ -1481,6 +1481,12 @@ Implement the `toString()` method to keep Planner's logs readable:
 
 Now, let's generate instances of this custom ``Move`` class.
 
+[WARNING]
+====
+Custom `MoveListFactory` and `MoveIteratorFactory` implementations must ensure
+that they do not move <<immovablePlanningEntities, immovable entities>>.
+====
+
 
 [[moveListFactory]]
 === ``MoveListFactory``: the Easy Way to Generate Custom Moves

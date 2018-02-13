@@ -15,7 +15,7 @@ These design patterns list and solve common design challenges.
 
 
 [[domainModelingGuide]]
-=== Domain Modeling Guide
+== Domain Modeling Guide
 
 A good model can greatly improve the success of your planning implementation.
 These guidelines help to design a good model:
