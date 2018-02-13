@@ -201,6 +201,10 @@ public class SubnetworkTest extends CommonTestMethodBase {
         kieSession.insert( new X(1) );
         kieSession.insert( new Y(1) );
 
+        // DROOLS-2258
+        kieSession.insert( new X(3) );
+        kieSession.insert( new Y(3) );
+
         final Agenda agenda = kieSession.getAgenda();
         agenda.getAgendaGroup("G2").setFocus();
         agenda.getAgendaGroup("G1").setFocus();

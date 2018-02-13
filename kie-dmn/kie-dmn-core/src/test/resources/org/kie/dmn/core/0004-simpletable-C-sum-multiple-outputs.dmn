@@ -38,7 +38,7 @@
              xsi:schemaLocation="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
              expressionLanguage="http://www.omg.org/spec/FEEL/20140401"
              typeLanguage="http://www.omg.org/spec/FEEL/20140401">
-  <decision id="_0004-simpletable-C-sum-multiple-outputs" name="0004-simpletable-C-sum-multiple-outputs">
+  <decision id="_0004-simpletable-C-sum-multiple-outputs" name="_0004-simpletable-C-sum-multiple-outputs">
     <variable name="Decision Result"/>
     <informationRequirement>
       <requiredInput href="#_Age"/>

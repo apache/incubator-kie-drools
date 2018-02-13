@@ -15,6 +15,8 @@
 
 package org.drools.compiler.integrationtests.incrementalcompilation;
 
+import java.io.ByteArrayOutputStream;
+import java.io.Serializable;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -68,9 +70,12 @@ import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
+import org.kie.api.definition.type.Role;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.io.ResourceType;
 import org.kie.api.logger.KieRuntimeLogger;
+import org.kie.api.marshalling.KieMarshallers;
+import org.kie.api.marshalling.Marshaller;
 import org.kie.api.runtime.Globals;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
@@ -4580,5 +4585,182 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
 
         ksession.insert("2");
         ksession.fireAllRules();
+    }
+
+    @Test
+    public void testGlobalRemovedFromOneDrl() throws Exception {
+        // RHDM-311
+        String drlAWithGlobal = "package org.x.a\nglobal Boolean globalBool\n";
+        String drlANoGlobal = "package org.x.a\n";
+        String drlBWithGlobal = "package org.x.b\nglobal Boolean globalBool\n";
+        String drlBNoGlobal = "package org.x.b\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
+        KieModule km = createAndDeployJar( ks, releaseId1, drlAWithGlobal, drlBWithGlobal );
+
+        KieContainer kc = ks.newKieContainer( releaseId1 );
+        KieSession ksession = kc.newKieSession();
+
+        ksession.setGlobal( "globalBool", Boolean.FALSE );
+
+        ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
+        createAndDeployJar( ks, releaseId2, drlANoGlobal, drlBWithGlobal );
+        kc.updateToVersion( releaseId2 );
+
+        ksession.setGlobal( "globalBool", Boolean.TRUE );
+
+        ReleaseId releaseId3 = ks.newReleaseId( "org.kie", "test-upgrade", "1.2.0" );
+        createAndDeployJar( ks, releaseId3, drlANoGlobal, drlBNoGlobal );
+        kc.updateToVersion( releaseId3 );
+
+        try {
+            ksession.setGlobal( "globalBool", Boolean.TRUE );
+            fail( "the global should be no longer present" );
+        } catch (Exception e) {
+            // expected
+        }
+    }
+
+    @Test
+    public void testGlobalRemovedAndAdded() throws Exception {
+        // RHDM-311
+        String drlAWithGlobal = "package org.x.a\nglobal Boolean globalBool\n";
+        String drlANoGlobal = "package org.x.a\n";
+        String drlBWithGlobal = "package org.x.b\nglobal Boolean globalBool\n";
+        String drlBNoGlobal = "package org.x.b\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
+        KieModule km = createAndDeployJar( ks, releaseId1, drlAWithGlobal, drlBNoGlobal );
+
+        KieContainer kc = ks.newKieContainer( releaseId1 );
+        KieSession ksession = kc.newKieSession();
+
+        ksession.setGlobal( "globalBool", Boolean.FALSE );
+
+        ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
+        createAndDeployJar( ks, releaseId2, drlANoGlobal, drlBWithGlobal );
+        kc.updateToVersion( releaseId2 );
+
+        ksession.setGlobal( "globalBool", Boolean.TRUE );
+    }
+
+    @Test
+    public void testRuleRemovalAndEval() throws Exception {
+        // DROOLS-2276
+        String drl1 = "package org.drools.compiler\n" +
+                "rule R1 when\n" +
+                "   $m : Message()\n" +
+                "   eval($m != null)\n" +
+                "then\n" +
+                "   System.out.println( \"Hello R1\" );\n" +
+                "end\n";
+
+        String drl2 = "package org.drools.compiler\n" +
+                "rule R2 when\n" +
+                "   $m : Message()\n" +
+                "   eval($m != null)\n" +
+                "then\n" +
+                "   System.out.println( \"Hello R2\" );\n" +
+                "end\n";
+
+        String drl3 = "package org.drools.compiler\n" +
+                "rule R3 when\n" +
+                "   $m : Message()\n" +
+                "   eval($m != null)\n" +
+                "then\n" +
+                "   System.out.println( \"Hello R3\" );\n" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        KieFileSystem kfs1 = ks.newKieFileSystem();
+        kfs1.write("src/main/resources/rules/Sample1.drl", drl1);
+        ReleaseId releaseId1 = ks.newReleaseId("com.sample", "my-sample-a", "1.0.0");
+        kfs1.generateAndWritePomXML(releaseId1);
+        ks.newKieBuilder( kfs1 ).buildAll();
+
+        KieFileSystem kfs2 = ks.newKieFileSystem();
+        kfs2.write("src/main/resources/rules/Sample2.drl", drl2);
+        ReleaseId releaseId2 = ks.newReleaseId("com.sample", "my-sample-a", "2.0.0");
+        kfs2.generateAndWritePomXML(releaseId2);
+        ks.newKieBuilder( kfs2 ).buildAll();
+
+        KieFileSystem kfs3 = ks.newKieFileSystem();
+        kfs3.write("src/main/resources/rules/Sample3.drl", drl3);
+        ReleaseId releaseId3 = ks.newReleaseId("com.sample", "my-sample-a", "3.0.0");
+        kfs3.generateAndWritePomXML(releaseId3);
+        ks.newKieBuilder( kfs3 ).buildAll();
+
+        // Create a session and fire rules
+        KieContainer kc = ks.newKieContainer( releaseId1 );
+        KieSession ksession = kc.newKieSession();
+        ksession.insert( new Message( "Hello World" ) );
+        assertEquals( 1, ksession.fireAllRules() );
+
+        kc.updateToVersion( releaseId2 );
+        kc.updateToVersion( releaseId3 );
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    @Role(Role.Type.EVENT)
+    public static class BooleanEvent implements Serializable {
+        private boolean enabled = false;
+
+        public boolean isEnabled() {
+            return enabled;
+        }
+
+        public void setEnabled( boolean enabled ) {
+            this.enabled = enabled;
+        }
+    }
+
+    @Test
+    public void testAddRuleWithSlidingWindows() throws Exception {
+        // DROOLS-2292
+        String drl1 = "package org.drools.compiler\n" +
+                "import " + List.class.getCanonicalName() + "\n" +
+                "import " + BooleanEvent.class.getCanonicalName() + "\n" +
+                "rule R1 when\n" +
+                "    $e : BooleanEvent(!enabled)\n" +
+                "    List(size >= 1) from collect ( BooleanEvent(!enabled) over window:time(1) )\n" +
+                "    $toEdit : List() from collect( BooleanEvent(!enabled) over window:time(2) )\n" +
+                "then\n" +
+                "    modify( (BooleanEvent)$toEdit.get(0) ){ setEnabled( true ) }\n" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        KieModuleModel kproj = ks.newKieModuleModel();
+        KieBaseModel kieBaseModel1 = kproj.newKieBaseModel( "KBase1" ).setDefault( true )
+                .setEventProcessingMode( EventProcessingOption.STREAM );
+        KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel( "KSession1" ).setDefault( true )
+                .setType( KieSessionModel.KieSessionType.STATEFUL )
+                .setClockType( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
+        deployJar( ks, createKJar( ks, kproj, releaseId1, null ) );
+        ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "2.0.0" );
+        deployJar( ks, createKJar( ks, kproj, releaseId2, null, drl1 ) );
+
+        KieContainer kc = ks.newKieContainer( releaseId1 );
+        KieSession kieSession = kc.newKieSession();
+
+        kieSession.insert(new BooleanEvent());
+        kieSession.fireAllRules();
+
+        kc.updateToVersion( releaseId2 );
+
+        kieSession.fireAllRules();
+
+        KieMarshallers marshallers = ks.getMarshallers();
+        Marshaller marshaller = marshallers.newMarshaller(kieSession.getKieBase());
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        marshaller.marshall(outputStream, kieSession);
     }
 }
