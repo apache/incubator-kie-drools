@@ -22,7 +22,7 @@ import org.drools.model.Variable;
 import org.drools.model.view.QueryCallViewItem;
 import org.drools.model.view.QueryCallViewItemImpl;
 
-import static org.drools.model.DSL.declarationOf;
+import static org.drools.model.FlowDSL.declarationOf;
 import static org.drools.model.impl.RuleBuilder.DEFAULT_PACKAGE;
 
 public class Query3DefImpl<A, B, C> extends QueryDefImpl implements Query3Def<A, B, C> {

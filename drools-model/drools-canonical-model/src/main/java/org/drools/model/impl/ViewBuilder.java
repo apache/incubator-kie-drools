@@ -59,7 +59,7 @@ import org.drools.model.view.ViewItem;
 
 import static java.util.stream.Collectors.toList;
 
-import static org.drools.model.DSL.input;
+import static org.drools.model.FlowDSL.input;
 import static org.drools.model.impl.NamesGenerator.generateName;
 
 public class ViewBuilder {

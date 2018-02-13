@@ -33,11 +33,11 @@ import org.kie.api.runtime.rule.RuleUnitExecutor;
 
 import static java.util.Arrays.asList;
 
-import static org.drools.model.DSL.declarationOf;
-import static org.drools.model.DSL.expr;
-import static org.drools.model.DSL.on;
-import static org.drools.model.DSL.rule;
-import static org.drools.model.DSL.unitData;
+import static org.drools.model.FlowDSL.declarationOf;
+import static org.drools.model.FlowDSL.expr;
+import static org.drools.model.FlowDSL.on;
+import static org.drools.model.FlowDSL.rule;
+import static org.drools.model.FlowDSL.unitData;
 import static org.junit.Assert.assertTrue;
 
 public class RuleUnitTest {

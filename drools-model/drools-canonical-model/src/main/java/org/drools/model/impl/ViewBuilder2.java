@@ -25,9 +25,10 @@ import java.util.stream.Stream;
 
 import org.drools.model.Condition;
 import org.drools.model.Consequence;
-import org.drools.model.DSL2.PatternDef;
-import org.drools.model.DSL2.PatternExprImpl;
-import org.drools.model.DSL2.PatternItem;
+import org.drools.model.PatternDSL.PatternBindingImpl;
+import org.drools.model.PatternDSL.PatternDef;
+import org.drools.model.PatternDSL.PatternExprImpl;
+import org.drools.model.PatternDSL.PatternItem;
 import org.drools.model.RuleItem;
 import org.drools.model.RuleItemBuilder;
 import org.drools.model.consequences.NamedConsequenceImpl;
@@ -65,6 +66,8 @@ public class ViewBuilder2 {
                 for (PatternItem patternItem : patternDef.getItems()) {
                     if (patternItem instanceof PatternExprImpl) {
                         pattern.addConstraint( (( PatternExprImpl ) patternItem).asConstraint( patternDef ) );
+                    } else if (patternItem instanceof PatternBindingImpl) {
+                        pattern.addBinding( (( PatternBindingImpl ) patternItem).asBinding( patternDef ) );
                     }
                 }
                 conditions.add(pattern);

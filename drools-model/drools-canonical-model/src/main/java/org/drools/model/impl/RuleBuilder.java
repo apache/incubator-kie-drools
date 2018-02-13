@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.drools.model.Rule;
 import org.drools.model.RuleItemBuilder;
+import org.drools.model.patterns.CompositePatterns;
 
 public class RuleBuilder {
 
@@ -56,10 +57,25 @@ public class RuleBuilder {
     }
 
     public Rule build( RuleItemBuilder<?>... viewItemBuilders ) {
-        return new RuleImpl(pkg, name, unit, ViewBuilder.viewItems2Patterns(viewItemBuilders), attributes, metaAttributes);
+        return new RuleImpl(pkg, name, unit, viewItems2Patterns(viewItemBuilders), attributes, metaAttributes);
     }
 
-    public Rule build2( RuleItemBuilder<?>... viewItemBuilders ) {
-        return new RuleImpl(pkg, name, unit, ViewBuilder2.viewItems2Patterns(viewItemBuilders), attributes, metaAttributes);
+    protected CompositePatterns viewItems2Patterns( RuleItemBuilder<?>[] viewItemBuilders ) {
+        return ViewBuilder.viewItems2Patterns(viewItemBuilders);
+    }
+
+    public static class ForPattern extends RuleBuilder {
+
+        public ForPattern( String name ) {
+            super( name );
+        }
+
+        public ForPattern( String pkg, String name ) {
+            super( pkg, name );
+        }
+
+        protected CompositePatterns viewItems2Patterns( RuleItemBuilder<?>[] viewItemBuilders ) {
+            return ViewBuilder2.viewItems2Patterns(viewItemBuilders);
+        }
     }
 }
