@@ -19,7 +19,7 @@ In the diagram above, it's important to understand the clear separation between 
 The development philosophy includes:
 
 * **Reuse**: The examples are reused as integration tests, stress tests and demo's. The documentation images are reused as slides.
-* **Consistent terminology**: Each example has a class `App` (executable class), `Dao` (Data Access Object) and `Panel` (swing UI).
+* **Consistent terminology**: Each example has a class `App` (executable class) and `Panel` (swing UI).
 * **Consistent structure**: Each example has the same packages: ``domain``, ``persistence``, ``app``, `solver` and ``swingui``.
 * **Real world usefulness**: Every feature is used in an example. Most examples are real world use cases with real world constraints, often with real world data.
 * **Automated testing**: There are unit tests, integration tests, performance regressions tests and stress tests. The test coverage is high.
