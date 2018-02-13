@@ -22,7 +22,6 @@ import java.util.Collections;
 import org.junit.Test;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
-import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
 import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
 import org.optaplanner.core.config.localsearch.LocalSearchType;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
@@ -31,8 +30,6 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.immovable.TestdataImmovableEntity;
 import org.optaplanner.core.impl.testdata.domain.immovable.TestdataImmovableSolution;
-import org.optaplanner.core.impl.testdata.domain.reinitialize.TestdataReinitializeEntity;
-import org.optaplanner.core.impl.testdata.domain.reinitialize.TestdataReinitializeSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 import static org.junit.Assert.assertEquals;
@@ -90,9 +87,9 @@ public class DefaultLocalSearchPhaseTest {
         TestdataValue v3 = new TestdataValue("v3");
         solution.setValueList(Arrays.asList(v1, v2, v3));
         solution.setEntityList(Arrays.asList(
-                new TestdataImmovableEntity("e1", v1, false),
-                new TestdataImmovableEntity("e2", v2, true),
-                new TestdataImmovableEntity("e3", null, true)));
+                new TestdataImmovableEntity("e1", v1, false, false),
+                new TestdataImmovableEntity("e2", v2, true, false),
+                new TestdataImmovableEntity("e3", null, false, true)));
 
         solution = solver.solve(solution);
         assertNotNull(solution);
@@ -180,9 +177,9 @@ public class DefaultLocalSearchPhaseTest {
         TestdataValue v3 = new TestdataValue("v3");
         solution.setValueList(Arrays.asList(v1, v2, v3));
         solution.setEntityList(Arrays.asList(
-                new TestdataImmovableEntity("e1", v1, false),
-                new TestdataImmovableEntity("e2", v2, true),
-                new TestdataImmovableEntity("e3", null, true)));
+                new TestdataImmovableEntity("e1", v1, false, false),
+                new TestdataImmovableEntity("e2", v2, true, false),
+                new TestdataImmovableEntity("e3", null, false, true)));
 
         solution = solver.solve(solution);
         assertNotNull(solution);

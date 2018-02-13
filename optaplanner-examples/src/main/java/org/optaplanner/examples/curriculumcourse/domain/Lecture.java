@@ -20,21 +20,20 @@ import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
+import org.optaplanner.core.api.domain.entity.PlanningPin;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.curriculumcourse.domain.solver.LectureDifficultyWeightFactory;
-import org.optaplanner.examples.curriculumcourse.domain.solver.MovableLectureSelectionFilter;
 import org.optaplanner.examples.curriculumcourse.domain.solver.PeriodStrengthWeightFactory;
 import org.optaplanner.examples.curriculumcourse.domain.solver.RoomStrengthWeightFactory;
 
-@PlanningEntity(movableEntitySelectionFilter = MovableLectureSelectionFilter.class,
-        difficultyWeightFactoryClass = LectureDifficultyWeightFactory.class)
+@PlanningEntity(difficultyWeightFactoryClass = LectureDifficultyWeightFactory.class)
 @XStreamAlias("Lecture")
 public class Lecture extends AbstractPersistable {
 
     private Course course;
     private int lectureIndexInCourse;
-    private boolean locked;
+    private boolean pinned;
 
     // Planning variables: changes during planning, between score calculations.
     private Period period;
@@ -56,16 +55,13 @@ public class Lecture extends AbstractPersistable {
         this.lectureIndexInCourse = lectureIndexInCourse;
     }
 
-    /**
-     * @return true if immovable planning entity
-     * @see MovableLectureSelectionFilter
-     */
-    public boolean isLocked() {
-        return locked;
+    @PlanningPin
+    public boolean isPinned() {
+        return pinned;
     }
 
-    public void setLocked(boolean locked) {
-        this.locked = locked;
+    public void setPinned(boolean pinned) {
+        this.pinned = pinned;
     }
 
     @PlanningVariable(valueRangeProviderRefs = {"periodRange"},

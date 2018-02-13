@@ -236,8 +236,8 @@ public class TennisPanel extends SolutionPanel<TennisSolution> {
     private JButton createButton(TeamAssignment teamAssignment, Color color) {
         JButton button = SwingUtils.makeSmallButton(new JButton(new TeamAssignmentAction(teamAssignment)));
         button.setBackground(color);
-        if (teamAssignment.isLocked()) {
-            button.setIcon(CommonIcons.LOCKED_ICON);
+        if (teamAssignment.isPinned()) {
+            button.setIcon(CommonIcons.PINNED_ICON);
         }
         return button;
     }
@@ -262,10 +262,10 @@ public class TennisPanel extends SolutionPanel<TennisSolution> {
             LabeledComboBoxRenderer.applyToComboBox(teamListField);
             teamListField.setSelectedItem(teamAssignment.getTeam());
             listFieldsPanel.add(teamListField);
-            listFieldsPanel.add(new JLabel("Locked:"));
-            JCheckBox lockedField = new JCheckBox("immovable during planning");
-            lockedField.setSelected(teamAssignment.isLocked());
-            listFieldsPanel.add(lockedField);
+            listFieldsPanel.add(new JLabel("Pinned:"));
+            JCheckBox pinnedField = new JCheckBox("immovable during solving");
+            pinnedField.setSelected(teamAssignment.isPinned());
+            listFieldsPanel.add(pinnedField);
             int result = JOptionPane.showConfirmDialog(TennisPanel.this.getRootPane(), listFieldsPanel,
                     "Select team", JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {
@@ -273,13 +273,13 @@ public class TennisPanel extends SolutionPanel<TennisSolution> {
                 if (teamAssignment.getTeam() != toTeam) {
                     solutionBusiness.doChangeMove(teamAssignment, "team", toTeam);
                 }
-                boolean toLocked = lockedField.isSelected();
-                if (teamAssignment.isLocked() != toLocked) {
+                boolean toPinned = pinnedField.isSelected();
+                if (teamAssignment.isPinned() != toPinned) {
                     if (solutionBusiness.isSolving()) {
                         logger.error("Not doing user change because the solver is solving.");
                         return;
                     }
-                    teamAssignment.setLocked(toLocked);
+                    teamAssignment.setPinned(toPinned);
                 }
                 solverAndPersistenceFrame.resetScreen();
             }

@@ -9598,1309 +9598,1309 @@
       <id>0</id>
       <course reference="229"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1845">
       <id>1</id>
       <course reference="229"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1846">
       <id>2</id>
       <course reference="231"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1847">
       <id>3</id>
       <course reference="231"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1848">
       <id>4</id>
       <course reference="233"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1849">
       <id>5</id>
       <course reference="233"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1850">
       <id>6</id>
       <course reference="233"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1851">
       <id>7</id>
       <course reference="235"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1852">
       <id>8</id>
       <course reference="235"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1853">
       <id>9</id>
       <course reference="237"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1854">
       <id>10</id>
       <course reference="237"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1855">
       <id>11</id>
       <course reference="239"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1856">
       <id>12</id>
       <course reference="239"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1857">
       <id>13</id>
       <course reference="239"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1858">
       <id>14</id>
       <course reference="241"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1859">
       <id>15</id>
       <course reference="241"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1860">
       <id>16</id>
       <course reference="243"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1861">
       <id>17</id>
       <course reference="243"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1862">
       <id>18</id>
       <course reference="245"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1863">
       <id>19</id>
       <course reference="245"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1864">
       <id>20</id>
       <course reference="245"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1865">
       <id>21</id>
       <course reference="247"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1866">
       <id>22</id>
       <course reference="247"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1867">
       <id>23</id>
       <course reference="247"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1868">
       <id>24</id>
       <course reference="249"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1869">
       <id>25</id>
       <course reference="249"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1870">
       <id>26</id>
       <course reference="251"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1871">
       <id>27</id>
       <course reference="251"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1872">
       <id>28</id>
       <course reference="251"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1873">
       <id>29</id>
       <course reference="253"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1874">
       <id>30</id>
       <course reference="253"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1875">
       <id>31</id>
       <course reference="255"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1876">
       <id>32</id>
       <course reference="255"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1877">
       <id>33</id>
       <course reference="255"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1878">
       <id>34</id>
       <course reference="257"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1879">
       <id>35</id>
       <course reference="257"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1880">
       <id>36</id>
       <course reference="259"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1881">
       <id>37</id>
       <course reference="259"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1882">
       <id>38</id>
       <course reference="259"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1883">
       <id>39</id>
       <course reference="261"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1884">
       <id>40</id>
       <course reference="261"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1885">
       <id>41</id>
       <course reference="263"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1886">
       <id>42</id>
       <course reference="263"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1887">
       <id>43</id>
       <course reference="263"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1888">
       <id>44</id>
       <course reference="265"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1889">
       <id>45</id>
       <course reference="265"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1890">
       <id>46</id>
       <course reference="265"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1891">
       <id>47</id>
       <course reference="267"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1892">
       <id>48</id>
       <course reference="267"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1893">
       <id>49</id>
       <course reference="267"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1894">
       <id>50</id>
       <course reference="269"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1895">
       <id>51</id>
       <course reference="269"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1896">
       <id>52</id>
       <course reference="269"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1897">
       <id>53</id>
       <course reference="271"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1898">
       <id>54</id>
       <course reference="271"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1899">
       <id>55</id>
       <course reference="271"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1900">
       <id>56</id>
       <course reference="273"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1901">
       <id>57</id>
       <course reference="273"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1902">
       <id>58</id>
       <course reference="273"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1903">
       <id>59</id>
       <course reference="275"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1904">
       <id>60</id>
       <course reference="275"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1905">
       <id>61</id>
       <course reference="275"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1906">
       <id>62</id>
       <course reference="277"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1907">
       <id>63</id>
       <course reference="277"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1908">
       <id>64</id>
       <course reference="277"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1909">
       <id>65</id>
       <course reference="279"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1910">
       <id>66</id>
       <course reference="279"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1911">
       <id>67</id>
       <course reference="279"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1912">
       <id>68</id>
       <course reference="281"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1913">
       <id>69</id>
       <course reference="281"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1914">
       <id>70</id>
       <course reference="281"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1915">
       <id>71</id>
       <course reference="283"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1916">
       <id>72</id>
       <course reference="283"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1917">
       <id>73</id>
       <course reference="283"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1918">
       <id>74</id>
       <course reference="285"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1919">
       <id>75</id>
       <course reference="285"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1920">
       <id>76</id>
       <course reference="287"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1921">
       <id>77</id>
       <course reference="289"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1922">
       <id>78</id>
       <course reference="289"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1923">
       <id>79</id>
       <course reference="291"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1924">
       <id>80</id>
       <course reference="291"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1925">
       <id>81</id>
       <course reference="291"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1926">
       <id>82</id>
       <course reference="293"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1927">
       <id>83</id>
       <course reference="293"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1928">
       <id>84</id>
       <course reference="293"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1929">
       <id>85</id>
       <course reference="295"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1930">
       <id>86</id>
       <course reference="295"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1931">
       <id>87</id>
       <course reference="297"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1932">
       <id>88</id>
       <course reference="297"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1933">
       <id>89</id>
       <course reference="297"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1934">
       <id>90</id>
       <course reference="299"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1935">
       <id>91</id>
       <course reference="299"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1936">
       <id>92</id>
       <course reference="301"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1937">
       <id>93</id>
       <course reference="301"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1938">
       <id>94</id>
       <course reference="303"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1939">
       <id>95</id>
       <course reference="303"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1940">
       <id>96</id>
       <course reference="303"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1941">
       <id>97</id>
       <course reference="305"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1942">
       <id>98</id>
       <course reference="305"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1943">
       <id>99</id>
       <course reference="305"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1944">
       <id>100</id>
       <course reference="307"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1945">
       <id>101</id>
       <course reference="307"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1946">
       <id>102</id>
       <course reference="307"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1947">
       <id>103</id>
       <course reference="309"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1948">
       <id>104</id>
       <course reference="309"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1949">
       <id>105</id>
       <course reference="311"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1950">
       <id>106</id>
       <course reference="311"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1951">
       <id>107</id>
       <course reference="313"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1952">
       <id>108</id>
       <course reference="313"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1953">
       <id>109</id>
       <course reference="313"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1954">
       <id>110</id>
       <course reference="315"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1955">
       <id>111</id>
       <course reference="315"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1956">
       <id>112</id>
       <course reference="317"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1957">
       <id>113</id>
       <course reference="317"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1958">
       <id>114</id>
       <course reference="319"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1959">
       <id>115</id>
       <course reference="319"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1960">
       <id>116</id>
       <course reference="321"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1961">
       <id>117</id>
       <course reference="321"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1962">
       <id>118</id>
       <course reference="321"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1963">
       <id>119</id>
       <course reference="323"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1964">
       <id>120</id>
       <course reference="323"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1965">
       <id>121</id>
       <course reference="323"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1966">
       <id>122</id>
       <course reference="325"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1967">
       <id>123</id>
       <course reference="325"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1968">
       <id>124</id>
       <course reference="327"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1969">
       <id>125</id>
       <course reference="327"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1970">
       <id>126</id>
       <course reference="327"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1971">
       <id>127</id>
       <course reference="329"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1972">
       <id>128</id>
       <course reference="329"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1973">
       <id>129</id>
       <course reference="329"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1974">
       <id>130</id>
       <course reference="331"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1975">
       <id>131</id>
       <course reference="331"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1976">
       <id>132</id>
       <course reference="331"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1977">
       <id>133</id>
       <course reference="333"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1978">
       <id>134</id>
       <course reference="333"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1979">
       <id>135</id>
       <course reference="333"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1980">
       <id>136</id>
       <course reference="335"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1981">
       <id>137</id>
       <course reference="335"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1982">
       <id>138</id>
       <course reference="337"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1983">
       <id>139</id>
       <course reference="337"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1984">
       <id>140</id>
       <course reference="339"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1985">
       <id>141</id>
       <course reference="339"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1986">
       <id>142</id>
       <course reference="341"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1987">
       <id>143</id>
       <course reference="341"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1988">
       <id>144</id>
       <course reference="343"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1989">
       <id>145</id>
       <course reference="343"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1990">
       <id>146</id>
       <course reference="345"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1991">
       <id>147</id>
       <course reference="345"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1992">
       <id>148</id>
       <course reference="345"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1993">
       <id>149</id>
       <course reference="347"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1994">
       <id>150</id>
       <course reference="347"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1995">
       <id>151</id>
       <course reference="349"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1996">
       <id>152</id>
       <course reference="349"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1997">
       <id>153</id>
       <course reference="351"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1998">
       <id>154</id>
       <course reference="351"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="1999">
       <id>155</id>
       <course reference="351"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2000">
       <id>156</id>
       <course reference="353"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2001">
       <id>157</id>
       <course reference="353"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2002">
       <id>158</id>
       <course reference="353"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2003">
       <id>159</id>
       <course reference="355"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2004">
       <id>160</id>
       <course reference="355"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2005">
       <id>161</id>
       <course reference="357"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2006">
       <id>162</id>
       <course reference="357"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2007">
       <id>163</id>
       <course reference="359"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2008">
       <id>164</id>
       <course reference="359"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2009">
       <id>165</id>
       <course reference="359"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2010">
       <id>166</id>
       <course reference="361"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2011">
       <id>167</id>
       <course reference="361"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2012">
       <id>168</id>
       <course reference="363"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2013">
       <id>169</id>
       <course reference="363"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2014">
       <id>170</id>
       <course reference="365"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2015">
       <id>171</id>
       <course reference="365"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2016">
       <id>172</id>
       <course reference="367"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2017">
       <id>173</id>
       <course reference="367"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2018">
       <id>174</id>
       <course reference="369"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2019">
       <id>175</id>
       <course reference="369"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2020">
       <id>176</id>
       <course reference="371"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2021">
       <id>177</id>
       <course reference="371"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2022">
       <id>178</id>
       <course reference="373"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2023">
       <id>179</id>
       <course reference="373"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2024">
       <id>180</id>
       <course reference="375"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2025">
       <id>181</id>
       <course reference="375"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2026">
       <id>182</id>
       <course reference="377"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2027">
       <id>183</id>
       <course reference="377"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2028">
       <id>184</id>
       <course reference="377"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2029">
       <id>185</id>
       <course reference="379"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2030">
       <id>186</id>
       <course reference="379"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2031">
       <id>187</id>
       <course reference="379"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2032">
       <id>188</id>
       <course reference="381"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2033">
       <id>189</id>
       <course reference="381"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2034">
       <id>190</id>
       <course reference="381"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2035">
       <id>191</id>
       <course reference="383"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2036">
       <id>192</id>
       <course reference="383"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2037">
       <id>193</id>
       <course reference="385"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2038">
       <id>194</id>
       <course reference="385"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2039">
       <id>195</id>
       <course reference="387"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2040">
       <id>196</id>
       <course reference="387"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2041">
       <id>197</id>
       <course reference="389"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2042">
       <id>198</id>
       <course reference="389"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2043">
       <id>199</id>
       <course reference="389"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2044">
       <id>200</id>
       <course reference="391"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2045">
       <id>201</id>
       <course reference="391"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2046">
       <id>202</id>
       <course reference="391"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2047">
       <id>203</id>
       <course reference="393"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2048">
       <id>204</id>
       <course reference="393"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2049">
       <id>205</id>
       <course reference="395"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2050">
       <id>206</id>
       <course reference="395"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2051">
       <id>207</id>
       <course reference="395"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2052">
       <id>208</id>
       <course reference="397"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2053">
       <id>209</id>
       <course reference="397"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2054">
       <id>210</id>
       <course reference="399"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2055">
       <id>211</id>
       <course reference="399"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2056">
       <id>212</id>
       <course reference="401"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2057">
       <id>213</id>
       <course reference="401"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2058">
       <id>214</id>
       <course reference="401"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2059">
       <id>215</id>
       <course reference="403"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2060">
       <id>216</id>
       <course reference="403"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="2061">
       <id>217</id>
       <course reference="403"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
   </lectureList>
 </CourseSchedule>

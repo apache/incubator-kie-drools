@@ -123,25 +123,25 @@
       <id>0</id>
       <course reference="9"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="33">
       <id>1</id>
       <course reference="9"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="34">
       <id>2</id>
       <course reference="11"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
     <Lecture id="35">
       <id>3</id>
       <course reference="13"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
-      <locked>false</locked>
+      <pinned>false</pinned>
     </Lecture>
   </lectureList>
 </CourseSchedule>

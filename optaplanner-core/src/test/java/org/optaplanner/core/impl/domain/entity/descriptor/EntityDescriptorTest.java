@@ -26,7 +26,7 @@ import org.optaplanner.core.impl.testdata.domain.immovable.extended.TestdataExte
 import org.optaplanner.core.impl.testdata.domain.immovable.extended.TestdataExtendedImmovableSolution;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 public class EntityDescriptorTest {
 
@@ -39,9 +39,9 @@ public class EntityDescriptorTest {
         assertNotNull(movableEntitySelectionFilter);
 
         assertEquals(true, movableEntitySelectionFilter.accept(scoreDirector,
-                new TestdataImmovableEntity("e1", null, false)));
+                new TestdataImmovableEntity("e1", null, false, false)));
         assertEquals(false, movableEntitySelectionFilter.accept(scoreDirector,
-                new TestdataImmovableEntity("e2", null, true)));
+                new TestdataImmovableEntity("e2", null, true, false)));
     }
 
     @Test @Ignore // TODO FIXME PLANNER-849
@@ -55,17 +55,21 @@ public class EntityDescriptorTest {
         assertNotNull(parentMovableEntitySelectionFilter);
 
         assertEquals(true, parentMovableEntitySelectionFilter.accept(scoreDirector,
-                new TestdataImmovableEntity("e1", null, false)));
+                new TestdataImmovableEntity("e1", null, false, false)));
         assertEquals(false, parentMovableEntitySelectionFilter.accept(scoreDirector,
-                new TestdataImmovableEntity("e2", null, true)));
+                new TestdataImmovableEntity("e2", null, true, false)));
         assertEquals(true, parentMovableEntitySelectionFilter.accept(scoreDirector,
-                new TestdataExtendedImmovableEntity("e3", null, false, null, false)));
+                new TestdataExtendedImmovableEntity("e3", null, false, false, null, false, false)));
         assertEquals(false, parentMovableEntitySelectionFilter.accept(scoreDirector,
-                new TestdataExtendedImmovableEntity("e4", null, false, null, true)));
+                new TestdataExtendedImmovableEntity("e4", null, true, false, null, false, false)));
         assertEquals(false, parentMovableEntitySelectionFilter.accept(scoreDirector,
-                new TestdataExtendedImmovableEntity("e4", null, true, null, false)));
+                new TestdataExtendedImmovableEntity("e5", null, false, true, null, false, false)));
         assertEquals(false, parentMovableEntitySelectionFilter.accept(scoreDirector,
-                new TestdataExtendedImmovableEntity("e4", null, true, null, true)));
+                new TestdataExtendedImmovableEntity("e6", null, false, false, null, true, false)));
+        assertEquals(false, parentMovableEntitySelectionFilter.accept(scoreDirector,
+                new TestdataExtendedImmovableEntity("e7", null, false, false, null, false, true)));
+        assertEquals(false, parentMovableEntitySelectionFilter.accept(scoreDirector,
+                new TestdataExtendedImmovableEntity("e8", null, true, true, null, true, true)));
     }
 
     @Test
@@ -80,13 +84,17 @@ public class EntityDescriptorTest {
 
         // No new TestdataImmovableEntity() because a child selector would never select a pure parent instance
         assertEquals(true, childMovableEntitySelectionFilter.accept(scoreDirector,
-                new TestdataExtendedImmovableEntity("e3", null, false, null, false)));
+                new TestdataExtendedImmovableEntity("e3", null, false, false, null, false, false)));
         assertEquals(false, childMovableEntitySelectionFilter.accept(scoreDirector,
-                new TestdataExtendedImmovableEntity("e4", null, false, null, true)));
+                new TestdataExtendedImmovableEntity("e4", null, true, false, null, false, false)));
         assertEquals(false, childMovableEntitySelectionFilter.accept(scoreDirector,
-                new TestdataExtendedImmovableEntity("e4", null, true, null, false)));
+                new TestdataExtendedImmovableEntity("e5", null, false, true, null, false, false)));
         assertEquals(false, childMovableEntitySelectionFilter.accept(scoreDirector,
-                new TestdataExtendedImmovableEntity("e4", null, true, null, true)));
+                new TestdataExtendedImmovableEntity("e6", null, false, false, null, true, false)));
+        assertEquals(false, childMovableEntitySelectionFilter.accept(scoreDirector,
+                new TestdataExtendedImmovableEntity("e7", null, false, false, null, false, true)));
+        assertEquals(false, childMovableEntitySelectionFilter.accept(scoreDirector,
+                new TestdataExtendedImmovableEntity("e8", null, true, true, null, true, true)));
     }
 
 }

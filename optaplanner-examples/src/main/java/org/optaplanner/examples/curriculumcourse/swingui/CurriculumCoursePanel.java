@@ -214,8 +214,8 @@ public class CurriculumCoursePanel extends SolutionPanel<CourseSchedule> {
     private JButton createButton(Lecture lecture, Color color, String toolTip) {
         JButton button = SwingUtils.makeSmallButton(new JButton(new LectureAction(lecture)));
         button.setBackground(color);
-        if (lecture.isLocked()) {
-            button.setIcon(CommonIcons.LOCKED_ICON);
+        if (lecture.isPinned()) {
+            button.setIcon(CommonIcons.PINNED_ICON);
         }
         button.setToolTipText(toolTip);
         return button;
@@ -255,10 +255,10 @@ public class CurriculumCoursePanel extends SolutionPanel<CourseSchedule> {
             LabeledComboBoxRenderer.applyToComboBox(roomListField);
             roomListField.setSelectedItem(lecture.getRoom());
             listFieldsPanel.add(roomListField);
-            listFieldsPanel.add(new JLabel("Locked:"));
-            JCheckBox lockedField = new JCheckBox("immovable during planning");
-            lockedField.setSelected(lecture.isLocked());
-            listFieldsPanel.add(lockedField);
+            listFieldsPanel.add(new JLabel("Pinned:"));
+            JCheckBox pinnedField = new JCheckBox("immovable during solving");
+            pinnedField.setSelected(lecture.isPinned());
+            listFieldsPanel.add(pinnedField);
             int result = JOptionPane.showConfirmDialog(CurriculumCoursePanel.this.getRootPane(), listFieldsPanel,
                     "Select period and room", JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {
@@ -270,13 +270,13 @@ public class CurriculumCoursePanel extends SolutionPanel<CourseSchedule> {
                 if (lecture.getRoom() != toRoom) {
                     solutionBusiness.doChangeMove(lecture, "room", toRoom);
                 }
-                boolean toLocked = lockedField.isSelected();
-                if (lecture.isLocked() != toLocked) {
+                boolean toPinned = pinnedField.isSelected();
+                if (lecture.isPinned() != toPinned) {
                     if (solutionBusiness.isSolving()) {
                         logger.error("Not doing user change because the solver is solving.");
                         return;
                     }
-                    lecture.setLocked(toLocked);
+                    lecture.setPinned(toPinned);
                 }
                 solverAndPersistenceFrame.resetScreen();
             }

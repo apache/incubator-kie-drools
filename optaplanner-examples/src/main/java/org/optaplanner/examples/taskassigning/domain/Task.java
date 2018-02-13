@@ -18,18 +18,17 @@ package org.optaplanner.examples.taskassigning.domain;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
+import org.optaplanner.core.api.domain.entity.PlanningPin;
 import org.optaplanner.core.api.domain.variable.AnchorShadowVariable;
 import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableGraphType;
 import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
 import org.optaplanner.examples.common.swingui.components.Labeled;
-import org.optaplanner.examples.taskassigning.domain.solver.MovableTaskSelectionFilter;
 import org.optaplanner.examples.taskassigning.domain.solver.StartTimeUpdatingVariableListener;
 import org.optaplanner.examples.taskassigning.domain.solver.TaskDifficultyComparator;
 
-@PlanningEntity(movableEntitySelectionFilter = MovableTaskSelectionFilter.class,
-        difficultyComparatorClass = TaskDifficultyComparator.class)
+@PlanningEntity(difficultyComparatorClass = TaskDifficultyComparator.class)
 @XStreamAlias("TaTask")
 public class Task extends TaskOrEmployee implements Labeled {
 
@@ -38,7 +37,8 @@ public class Task extends TaskOrEmployee implements Labeled {
     private Customer customer;
     private int readyTime;
     private Priority priority;
-    private boolean locked;
+    @PlanningPin
+    private boolean pinned;
 
     // Planning variables: changes during planning, between score calculations.
     @PlanningVariable(valueRangeProviderRefs = {"employeeRange", "taskRange"},
@@ -65,7 +65,7 @@ public class Task extends TaskOrEmployee implements Labeled {
         this.customer = customer;
         this.readyTime = readyTime;
         this.priority = priority;
-        locked = false;
+        pinned = false;
     }
 
     public TaskType getTaskType() {
@@ -108,12 +108,12 @@ public class Task extends TaskOrEmployee implements Labeled {
         this.priority = priority;
     }
 
-    public boolean isLocked() {
-        return locked;
+    public boolean isPinned() {
+        return pinned;
     }
 
-    public void setLocked(boolean locked) {
-        this.locked = locked;
+    public void setPinned(boolean pinned) {
+        this.pinned = pinned;
     }
 
     public TaskOrEmployee getPreviousTaskOrEmployee() {

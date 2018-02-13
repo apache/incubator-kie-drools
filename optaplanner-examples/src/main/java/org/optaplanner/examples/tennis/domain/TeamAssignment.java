@@ -18,17 +18,17 @@ package org.optaplanner.examples.tennis.domain;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
+import org.optaplanner.core.api.domain.entity.PlanningPin;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
-import org.optaplanner.examples.tennis.domain.solver.MovableTeamAssignmentSelectionFilter;
 
-@PlanningEntity(movableEntitySelectionFilter = MovableTeamAssignmentSelectionFilter.class)
+@PlanningEntity()
 @XStreamAlias("TennisTeamAssignment")
 public class TeamAssignment extends AbstractPersistable {
 
     private Day day;
     private int indexInDay;
-    private boolean locked;
+    private boolean pinned;
 
     // planning variable
     private Team team;
@@ -57,16 +57,14 @@ public class TeamAssignment extends AbstractPersistable {
     public void setIndexInDay(int indexInDay) {
         this.indexInDay = indexInDay;
     }
-    /**
-     * @return true if immovable planning entity
-     * @see MovableTeamAssignmentSelectionFilter
-     */
-    public boolean isLocked() {
-        return locked;
+
+    @PlanningPin
+    public boolean isPinned() {
+        return pinned;
     }
 
-    public void setLocked(boolean locked) {
-        this.locked = locked;
+    public void setPinned(boolean pinned) {
+        this.pinned = pinned;
     }
 
     @PlanningVariable(valueRangeProviderRefs = {"teamRange"})

@@ -244,7 +244,7 @@ public class CurriculumCourseGenerator extends LoggingMain {
             lecture.setCourse(course);
             lecture.setLectureIndexInCourse(course.getLectureSize());
             course.setLectureSize(course.getLectureSize() + 1);
-            lecture.setLocked(false);
+            lecture.setPinned(false);
             lectureList.add(lecture);
         }
         schedule.setLectureList(lectureList);

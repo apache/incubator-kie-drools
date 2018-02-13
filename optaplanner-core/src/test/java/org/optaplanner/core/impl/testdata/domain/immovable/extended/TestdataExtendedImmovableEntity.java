@@ -17,13 +17,12 @@
 package org.optaplanner.core.impl.testdata.domain.immovable.extended;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
+import org.optaplanner.core.api.domain.entity.PlanningPin;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.immovable.TestdataImmovableEntity;
-import org.optaplanner.core.impl.testdata.domain.immovable.TestdataImmovableEntityFilter;
 
 @PlanningEntity(movableEntitySelectionFilter = TestdataExtendedImmovableEntityFilter.class)
 public class TestdataExtendedImmovableEntity extends TestdataImmovableEntity {
@@ -35,6 +34,7 @@ public class TestdataExtendedImmovableEntity extends TestdataImmovableEntity {
 
     private TestdataValue subValue;
     private boolean closed;
+    private boolean pinnedByBoss;
 
     public TestdataExtendedImmovableEntity() {
     }
@@ -48,10 +48,12 @@ public class TestdataExtendedImmovableEntity extends TestdataImmovableEntity {
         this.subValue = subValue;
     }
 
-    public TestdataExtendedImmovableEntity(String code, TestdataValue value, boolean locked, TestdataValue subValue, boolean closed) {
-        super(code, value, locked);
+    public TestdataExtendedImmovableEntity(String code, TestdataValue value, boolean locked, boolean pinned,
+            TestdataValue subValue, boolean closed, boolean pinnedByBoss) {
+        super(code, value, locked, pinned);
         this.subValue = subValue;
         this.closed = closed;
+        this.pinnedByBoss = pinnedByBoss;
     }
 
     @PlanningVariable(valueRangeProviderRefs = "subValueRange")
@@ -69,6 +71,15 @@ public class TestdataExtendedImmovableEntity extends TestdataImmovableEntity {
 
     public void setClosed(boolean closed) {
         this.closed = closed;
+    }
+
+    @PlanningPin
+    public boolean isPinnedByBoss() {
+        return pinnedByBoss;
+    }
+
+    public void setPinnedByBoss(boolean pinnedByBoss) {
+        this.pinnedByBoss = pinnedByBoss;
     }
 
     // ************************************************************************

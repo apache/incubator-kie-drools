@@ -20,11 +20,11 @@ import java.util.List;
 import java.util.Set;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
+import org.optaplanner.core.api.domain.entity.PlanningPin;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
-import org.optaplanner.examples.conferencescheduling.domain.solver.MovableTalkFilter;
 
-@PlanningEntity(movableEntitySelectionFilter = MovableTalkFilter.class)
+@PlanningEntity
 public class Talk extends AbstractPersistable {
 
     private String code;
@@ -45,6 +45,7 @@ public class Talk extends AbstractPersistable {
     private Set<String> prohibitedRoomTagSet;
     private Set<String> undesiredRoomTagSet;
 
+    @PlanningPin
     private boolean pinnedByUser = false;
 
     @PlanningVariable(valueRangeProviderRefs = "timeslotRange")

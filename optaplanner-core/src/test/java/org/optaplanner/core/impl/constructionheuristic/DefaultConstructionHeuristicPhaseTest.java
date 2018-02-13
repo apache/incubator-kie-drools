@@ -84,9 +84,9 @@ public class DefaultConstructionHeuristicPhaseTest {
         TestdataValue v3 = new TestdataValue("v3");
         solution.setValueList(Arrays.asList(v1, v2, v3));
         solution.setEntityList(Arrays.asList(
-                new TestdataImmovableEntity("e1", null, false),
-                new TestdataImmovableEntity("e2", v2, true),
-                new TestdataImmovableEntity("e3", null, true)));
+                new TestdataImmovableEntity("e1", null, false, false),
+                new TestdataImmovableEntity("e2", v2, true, false),
+                new TestdataImmovableEntity("e3", null, false, true)));
 
         solution = solver.solve(solution);
         assertNotNull(solution);

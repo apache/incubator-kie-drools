@@ -132,14 +132,14 @@ public class TaskAssigningPanel extends SolutionPanel<TaskAssigningSolution> {
         doProblemFactChange(scoreDirector -> {
             TaskAssigningSolution solution = scoreDirector.getWorkingSolution();
             for (Task task : solution.getTaskList()) {
-                if (!task.isLocked()) {
+                if (!task.isPinned()) {
                     if (task.getStartTime() != null && task.getStartTime() < consumedDuration) {
                         scoreDirector.beforeProblemPropertyChanged(task);
-                        task.setLocked(true);
+                        task.setPinned(true);
                         scoreDirector.afterProblemPropertyChanged(task);
                         logger.trace("Consumed task ({}).", task);
                     } else if (task.getReadyTime() < consumedDuration) {
-                        // Prevent a non-locked task from being assigned retroactively
+                        // Prevent a non-pinned task from being assigned retroactively
                         scoreDirector.beforeProblemPropertyChanged(task);
                         task.setReadyTime(consumedDuration);
                         scoreDirector.afterProblemPropertyChanged(task);
