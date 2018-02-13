@@ -182,9 +182,7 @@ That boolean is `true` if the entity is immovable (pinned down to its current pl
 @PlanningEntity
 public class Lecture {
 
-    ...
     private boolean pinned;
-
     ...
 
     @PlanningPin
