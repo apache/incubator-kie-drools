@@ -36,8 +36,13 @@ import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.drools.javaparser.printer.PrettyPrinter;
 import org.drools.javaparser.printer.PrettyPrinterConfiguration;
 import org.drools.modelcompiler.builder.errors.CompilationProblemErrorResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class JavaParserCompiler {
+
+    private static final Logger logger          = LoggerFactory.getLogger(JavaParserCompiler.class);
+
 
     private static final JavaDialectConfiguration.CompilerType COMPILER_TYPE = JavaDialectConfiguration.CompilerType.NATIVE;
 
@@ -80,7 +85,7 @@ public class JavaParserCompiler {
         CompilationResult resultCompilation = getCompiler().compile(resources, srcMfs, trgMfs, classLoader);
         CompilationProblem[] errors = resultCompilation.getErrors();
         if(errors.length != 0) {
-            classes.forEach(System.out::println);
+            classes.forEach(c -> logger.error(c.toString()));
             for (CompilationProblem error : errors) {
                 kbuilder.addBuilderResult(new CompilationProblemErrorResult(error));
             }
