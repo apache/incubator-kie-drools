@@ -21,9 +21,11 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.assertj.core.api.Assertions;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.InternalRuleUnitExecutor;
 import org.junit.After;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.io.Resource;
@@ -37,6 +39,8 @@ import org.kie.api.runtime.rule.RuleUnitExecutor;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.utils.KieHelper;
 import org.kie.pmml.pmml_4_2.DroolsAbstractPMMLTest;
+import org.kie.pmml.pmml_4_2.PMMLExecutor;
+import org.kie.pmml.pmml_4_2.PMMLKieBaseUtil;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.pmml_4_2.model.AbstractModel;
 import org.kie.api.pmml.PMMLRequestData;
@@ -50,14 +54,26 @@ import static org.junit.Assert.assertTrue;
 
 public class DecisionTreeTest extends DroolsAbstractPMMLTest {
 
+    private static final String DECISION_TREES_FOLDER = "org/kie/pmml/pmml_4_2/";
 
     private static final boolean VERBOSE = false;
-    private static final String source1 = "org/kie/pmml/pmml_4_2/test_tree_simple.pmml";
-    private static final String source2 = "org/kie/pmml/pmml_4_2/test_tree_missing.pmml";
-    private static final String source3 = "org/kie/pmml/pmml_4_2/test_tree_handwritten.pmml";
+    private static final String source1 = DECISION_TREES_FOLDER + "test_tree_simple.pmml";
+    private static final String source2 = DECISION_TREES_FOLDER + "test_tree_missing.pmml";
+    private static final String source3 = DECISION_TREES_FOLDER + "test_tree_handwritten.pmml";
     private static final String packageName = "org.kie.pmml.pmml_4_2.test";
 
-
+    private static final String TREE_RETURN_NULL_NOTRUECHILD_STRATEGY = DECISION_TREES_FOLDER +
+            "test_tree_return_null_notruechild_strategy.pmml";
+    private static final String TREE_RETURN_LAST_NOTRUE_CHILD_STRATEGY = DECISION_TREES_FOLDER +
+            "test_tree_return_last_notruechild_strategy.pmml";
+    private static final String TREE_DEFAULT_CHILD_MISSING_STRATEGY =
+            DECISION_TREES_FOLDER + "test_tree_default_child_missing_value_strategy.pmml";
+    private static final String TREE_LAST_CHILD_MISSING_STRATEGY = DECISION_TREES_FOLDER +
+            "test_tree_last_missing_value_strategy.pmml";
+    private static final String TREE_RETURN_NULL_MISSING_STRATEGY = DECISION_TREES_FOLDER +
+            "test_tree_return_null_missing_value_strategy.pmml";
+    private static final String TREE_WEIGHTED_CONFIDENCE_MISSING_STRATEGY = DECISION_TREES_FOLDER +
+            "test_tree_weightedconfidence_missing_value_strategy.pmml";
 
     @After
     public void tearDown() {
@@ -125,7 +141,123 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
         assertEquals("tgtY",targetValue);
     }
     
-    
+    @Test
+    public void testReturnNullNoTrueChildPredictionStrategy() {
+        KieBase kieBase = PMMLKieBaseUtil.createKieBaseWithPMML(TREE_RETURN_NULL_NOTRUECHILD_STRATEGY);
+        PMMLExecutor executor = new PMMLExecutor(kieBase);
+
+        PMMLRequestData request = new PMMLRequestData("123","TreeTest");
+        request.addRequestParam("fld1", 30.0);
+        PMML4Result resultHolder = executor.run(request);
+        Assertions.assertThat(resultHolder).isNotNull();
+        String targetValue = resultHolder.getResultValue("Fld2", "value", String.class).orElse(null);
+        Assertions.assertThat(targetValue).isEqualTo("tgtY");
+
+        request = new PMMLRequestData("123","TreeTest");
+        request.addRequestParam("fld1", 50.0);
+        resultHolder = executor.run(request);
+        Assertions.assertThat(resultHolder).isNotNull();
+        Assertions.assertThat(resultHolder.getResultValue("Fld2", "value", String.class)).isEmpty();
+    }
+
+    @Test
+    public void testReturnLastNoTrueChildPredictionStrategy() {
+        KieBase kieBase = PMMLKieBaseUtil.createKieBaseWithPMML(TREE_RETURN_LAST_NOTRUE_CHILD_STRATEGY);
+        PMMLExecutor executor = new PMMLExecutor(kieBase);
+
+        PMMLRequestData request = new PMMLRequestData("123","TreeTest");
+        request.addRequestParam("fld1", 30.0);
+        PMML4Result resultHolder = executor.run(request);
+        Assertions.assertThat(resultHolder).isNotNull();
+        String targetValue = resultHolder.getResultValue("Fld2", "value", String.class).orElse(null);
+        Assertions.assertThat(targetValue).isEqualTo("tgtY");
+
+        request = new PMMLRequestData("123","TreeTest");
+        request.addRequestParam("fld1", 50.0);
+        resultHolder = executor.run(request);
+        Assertions.assertThat(resultHolder).isNotNull();
+        targetValue = resultHolder.getResultValue("Fld2", "value", String.class).orElse(null);
+        Assertions.assertThat(targetValue).isEqualTo("tgtX");
+    }
+
+    @Test
+    @Ignore
+    public void testLastPredictionMissingValueStrategy() {
+        KieBase kieBase = PMMLKieBaseUtil.createKieBaseWithPMML(TREE_LAST_CHILD_MISSING_STRATEGY);
+        PMMLExecutor executor = new PMMLExecutor(kieBase);
+
+        PMMLRequestData request = new PMMLRequestData("123","TreeTest");
+        request.addRequestParam("fld1", 30.0);
+        PMML4Result resultHolder = executor.run(request);
+        Assertions.assertThat(resultHolder).isNotNull();
+        String targetValue = resultHolder.getResultValue("Fld3", "value", String.class).orElse(null);
+        Assertions.assertThat(targetValue).isEqualTo("tgtY");
+
+        executor.setRunWithLogging(true);
+        request = new PMMLRequestData("123","TreeTest");
+        request.addRequestParam("fld1", 100.0);
+        resultHolder = executor.run(request);
+        Assertions.assertThat(resultHolder).isNotNull();
+        targetValue = resultHolder.getResultValue("Fld3", "value", String.class).orElse(null);
+        Assertions.assertThat(targetValue).isEqualTo("tgtA");
+    }
+
+    @Test
+    public void testNullPredictionMissingValueStrategy() {
+        KieBase kieBase = PMMLKieBaseUtil.createKieBaseWithPMML(TREE_RETURN_NULL_MISSING_STRATEGY);
+        PMMLExecutor executor = new PMMLExecutor(kieBase);
+
+        PMMLRequestData request = new PMMLRequestData("123","TreeTest");
+        request.addRequestParam("fld1", 30.0);
+        PMML4Result resultHolder = executor.run(request);
+        Assertions.assertThat(resultHolder).isNotNull();
+        String targetValue = resultHolder.getResultValue("Fld3", "value", String.class).orElse(null);
+        Assertions.assertThat(targetValue).isEqualTo("tgtY");
+
+        request = new PMMLRequestData("123","TreeTest");
+        request.addRequestParam("fld1", 100.0);
+        resultHolder = executor.run(request);
+        Assertions.assertThat(resultHolder).isNotNull();
+        targetValue = resultHolder.getResultValue("Fld3", "value", String.class).orElse(null);
+        Assertions.assertThat(targetValue).isNull();
+    }
+
+    @Test
+    public void testDefaultChildMissingValueStrategy() {
+        KieBase kieBase = PMMLKieBaseUtil.createKieBaseWithPMML(TREE_DEFAULT_CHILD_MISSING_STRATEGY);
+        PMMLExecutor executor = new PMMLExecutor(kieBase);
+
+        PMMLRequestData request = new PMMLRequestData("123","TreeTest");
+        request.addRequestParam("fld1", 30.0);
+        PMML4Result resultHolder = executor.run(request);
+        Assertions.assertThat(resultHolder).isNotNull();
+        Assertions.assertThat(resultHolder.getResultValue("Fld3", "value", String.class).get()).isEqualTo("tgtY");
+
+        request = new PMMLRequestData("123","TreeTest");
+        request.addRequestParam("fld1", 100.0);
+        resultHolder = executor.run(request);
+        Assertions.assertThat(resultHolder).isNotNull();
+        Assertions.assertThat(resultHolder.getResultValue("Fld3", "value", String.class).get()).isEqualTo("tgtZ");
+    }
+
+    @Test
+    @Ignore
+    public void testWeightedConfidenceMissingValueStrategy() {
+        KieBase kieBase = PMMLKieBaseUtil.createKieBaseWithPMML(TREE_WEIGHTED_CONFIDENCE_MISSING_STRATEGY);
+        PMMLExecutor executor = new PMMLExecutor(kieBase);
+
+        PMMLRequestData request = new PMMLRequestData("123","TreeTest");
+        request.addRequestParam("fld1", 30.0);
+        PMML4Result resultHolder = executor.run(request);
+        Assertions.assertThat(resultHolder).isNotNull();
+        Assertions.assertThat(resultHolder.getResultValue("Fld3", "value", String.class).get()).isEqualTo("tgtY");
+
+        request = new PMMLRequestData("123","TreeTest");
+        request.addRequestParam("fld1", 50.0);
+        resultHolder = executor.run(request);
+        Assertions.assertThat(resultHolder).isNotNull();
+        Assertions.assertThat(resultHolder.getResultValue("Fld3", "value", String.class).get()).isEqualTo("tgtX");
+    }
     
     protected Object getToken( KieSession kSession, String treeModelName ) {
         String className = AbstractModel.PMML_JAVA_PACKAGE_NAME + "." + treeModelName + "TreeToken";
