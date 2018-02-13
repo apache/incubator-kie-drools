@@ -49,6 +49,8 @@ public final class LambdaBeanPropertyMemberAccessor implements MemberAccessor {
         }
         propertyType = getterMethod.getReturnType();
         propertyName = ReflectionHelper.getGetterPropertyName(getterMethod);
+        // TODO In JDK 9 switch to (and remove workaround from MemberAccessorFactory)
+        // MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(declaringClass, MethodHandles.lookup())
         MethodHandles.Lookup lookup = MethodHandles.lookup();
         getterFunction = createGetterFunction(lookup);
         setterMethod = ReflectionHelper.getSetterMethod(declaringClass, getterMethod.getReturnType(), propertyName);
