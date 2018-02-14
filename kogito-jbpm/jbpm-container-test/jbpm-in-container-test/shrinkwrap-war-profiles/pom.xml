@@ -179,11 +179,11 @@
     </profile>
 
     <profile>
-      <id>shrinkwrap-remote-wildfly10</id>
+      <id>shrinkwrap-remote-wildfly11</id>
       <activation>
         <property>
           <name>container.profile</name>
-          <value>wildfly10</value>
+          <value>wildfly11</value>
         </property>
       </activation>
       <dependencies>
