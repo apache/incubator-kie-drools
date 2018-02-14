@@ -24,7 +24,7 @@ import java.util.Collection;
 
 import org.junit.runners.Parameterized;
 
-public class KieFEELExtendedFunctionsTest extends KieExtendedFunctionsBaseFEELTest {
+public class KieFEELExtendedFunctionsTest extends KieExtendedBaseFEELTest {
 
     @Parameterized.Parameters(name = "{index}: {0} ({1}) = {2}")
     public static Collection<Object[]> data() {
