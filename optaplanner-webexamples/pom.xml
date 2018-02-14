@@ -23,7 +23,7 @@
   <url>https://www.optaplanner.org</url>
 
   <properties>
-    <version.org.wildfly>10.1.0.Final</version.org.wildfly>
+    <version.org.wildfly>11.0.0.Final</version.org.wildfly>
   </properties>
   <build>
     <testResources>
