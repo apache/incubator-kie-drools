@@ -73,9 +73,6 @@ public class EmailWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
 	}
 
 	public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
-		if (connection == null) {
-			throw new IllegalArgumentException("Connection not initialized for Email");
-		}
 		try {
     		Email email = createEmail(workItem, connection);
     		SendHtml.sendHtml(email, getDebugFlag(workItem));

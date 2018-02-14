@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
+import org.jbpm.services.task.utils.LdapSearcher;
 import org.kie.api.task.model.Group;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.User;
@@ -36,6 +37,7 @@ public class LDAPUserInfoImpl extends AbstractLDAPUserGroupInfo implements UserI
     public static final String USER_FILTER = "ldap.user.filter";
     public static final String ROLE_FILTER = "ldap.role.filter";
     public static final String ROLE_MEMBERS_FILTER = "ldap.role.members.filter";
+    public static final String EMAIL_FILTER = "ldap.email.filter";
 
     public static final String EMAIL_ATTR_ID = "ldap.email.attr.id";
     public static final String NAME_ATTR_ID = "ldap.name.attr.id";
@@ -136,18 +138,24 @@ public class LDAPUserInfoImpl extends AbstractLDAPUserGroupInfo implements UserI
             return entity.getId();
         }
 
-        String entityDN = entity.getId();
-        String[] attributes = entityDN.split(",");
-
-        if (attributes.length == 1) {
-            return entityDN;
-        }
+       
 
         String entityAttrId = null;
         if (entity instanceof User) {
             entityAttrId = getConfigProperty(USER_ATTR_ID, DEFAULT_USER_ATTR_ID);
         } else if (entity instanceof Group) {
             entityAttrId = getConfigProperty(ROLE_ATTR_ID, DEFAULT_ROLE_ATTR_ID);
+        }
+        
+        return extractAttribute(entity.getId(), entityAttrId);
+    }
+    
+    private String extractAttribute(String entityId, String entityAttrId) {
+        String entityDN = entityId;
+        String[] attributes = entityDN.split(",");
+
+        if (attributes.length == 1) {
+            return entityDN;
         }
 
         for (String attribute : attributes) {
@@ -163,6 +171,24 @@ public class LDAPUserInfoImpl extends AbstractLDAPUserGroupInfo implements UserI
 
     private boolean isEntityIdDn() {
         return Boolean.parseBoolean(getConfigProperty(IS_ENTITY_ID_DN, DEFAULT_ENTITY_ID_DN));
+    }
+
+    @Override
+    public String getEntityForEmail(String email) {        
+        String context = getConfigProperty(USER_CTX);
+        String filter = getConfigProperty(EMAIL_FILTER);
+        String attributeId = getConfigProperty(USER_ATTR_ID, DEFAULT_USER_ATTR_ID);
+        LdapSearcher searcher = ldapSearcher.search(context, filter, email);
+
+        if (searcher.getSearchResults().isEmpty()) {
+            return null;
+        }
+        
+        if (isEntityIdDn()) {
+            return searcher.getSingleSearchResult().getNameInNamespace();
+        }
+        
+        return searcher.getSingleAttributeResult(attributeId);
     }
 
 }

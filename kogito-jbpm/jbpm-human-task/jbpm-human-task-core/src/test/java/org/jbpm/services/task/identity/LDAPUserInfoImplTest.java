@@ -47,6 +47,8 @@ public class LDAPUserInfoImplTest extends LDAPBaseTest {
     private static final Group USER_DN = TaskModelProvider.getFactory().newGroup("cn=user,ou=Roles,dc=jbpm,dc=org");
     private static final Group ANALYST = TaskModelProvider.getFactory().newGroup("analyst");
     private static final Group DEVELOPER = TaskModelProvider.getFactory().newGroup("developer");
+    
+    private static final String JOHN_EMAIL = "johndoe@jbpm.org";
 
     private Properties createUserInfoProperties() {
         Properties properties = new Properties();
@@ -55,6 +57,7 @@ public class LDAPUserInfoImplTest extends LDAPBaseTest {
         properties.setProperty(LDAPUserInfoImpl.ROLE_CTX, "ou=Roles,dc=jbpm,dc=org");
         properties.setProperty(LDAPUserInfoImpl.USER_FILTER, "(uid={0})");
         properties.setProperty(LDAPUserInfoImpl.ROLE_FILTER, "(cn={0})");
+        properties.setProperty(LDAPUserInfoImpl.EMAIL_FILTER, "(mail={0})");
         return properties;
     }
 
@@ -371,6 +374,27 @@ public class LDAPUserInfoImplTest extends LDAPBaseTest {
     @Test
     public void testGetDefaultLanguageForGroupByCustomAttribute() {
         testGetLanguageForEntity(MANAGER, "en-UK", true);
+    }
+    
+    private void testGetEntityForEmail(String email, String expected, boolean useDN) {
+        Properties properties = createUserInfoProperties();
+        if (useDN) {
+            properties.setProperty(LDAPUserInfoImpl.IS_ENTITY_ID_DN, "true");
+        }
+        UserInfo ldapUserInfo = new LDAPUserInfoImpl(properties);
+
+        Assertions.assertThat(ldapUserInfo.getEntityForEmail(email)).isEqualTo(expected);
+    }
+    
+    @Test
+    public void testGetEntityForEmail() {
+        testGetEntityForEmail(JOHN_EMAIL, JOHN.getId(), false);
+    }
+    
+    @Test
+    public void testGetEntityForEmailAsDN() {
+        
+        testGetEntityForEmail(JOHN_EMAIL, JOHN_DN.getId(), true);
     }
 
     private UserInfo createLdapUserInfoUid(Properties properties) {

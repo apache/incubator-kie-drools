@@ -46,6 +46,7 @@ public class DBUserInfoImpl extends AbstractUserGroupInfo implements UserInfo {
     public static final String LANG_QUERY = "db.lang.query";
     public static final String HAS_EMAIL_QUERY = "db.has.email.query";
     public static final String MEMBERS_QUERY = "db.group.mem.query";
+    public static final String ID_QUERY = "db.id.query";
     
     private Properties config;
     private DataSource ds; 
@@ -127,6 +128,47 @@ public class DBUserInfoImpl extends AbstractUserGroupInfo implements UserInfo {
 		}
 		return displayName;
 	}
+	
+    @Override
+    public String getEntityForEmail(String email) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        String displayName = null;
+        try {
+            conn = ds.getConnection();
+
+            ps = conn.prepareStatement(this.config.getProperty(ID_QUERY));
+
+            ps.setString(1, email);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                displayName = rs.getString(1);
+            }
+        } catch (Exception e) {
+            logger.error("Error when looking up id for email in db, parameter: " + email, e);
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                }
+            }
+            if (ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException e) {
+                }
+            }
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (Exception ex) {
+                }
+            }
+        }
+        return displayName;
+    }
 
 	@Override
 	public Iterator<OrganizationalEntity> getMembersForGroup(Group group) {

@@ -87,6 +87,13 @@ public class EmailNotificationPublisherTest {
     }
     
     @Test
+    public void testGetEntityForEmail() {
+        
+        String entityId = userInfo.getEntityForEmail("mary@domain.com");
+        assertEquals( "mary", entityId );
+    }
+    
+    @Test
     public void testEmailNotificationWithoutTemplate() throws Exception {
                         
         EmailNotificationPublisher publisher = new EmailNotificationPublisher(connection, userInfo);

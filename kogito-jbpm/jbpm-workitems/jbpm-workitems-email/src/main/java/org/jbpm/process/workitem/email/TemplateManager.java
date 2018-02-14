@@ -97,6 +97,16 @@ public class TemplateManager {
         return out.toString();
     }
     
+    public void registerTemplate(String id, Object template) {
+        this.stringLoader.putTemplate(id, template.toString());
+
+    }
+
+    public void unregisterTemplate(String id) {
+        // no-op
+
+    }
+    
     protected void loadTemplates() {
         if (templateDirectory != null) {
             File directory = new File(templateDirectory);
