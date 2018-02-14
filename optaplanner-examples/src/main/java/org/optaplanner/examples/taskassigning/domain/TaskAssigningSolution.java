@@ -51,6 +51,9 @@ public class TaskAssigningSolution extends AbstractPersistable {
     @PlanningScore(bendableHardLevelsSize = 1, bendableSoftLevelsSize = 4)
     private BendableScore score;
 
+    /** Relates to {@link Task#getStartTime()}. */
+    private int frozenCutoff; // In minutes
+
     public TaskAssigningSolution() {
     }
 
@@ -110,6 +113,14 @@ public class TaskAssigningSolution extends AbstractPersistable {
 
     public void setScore(BendableScore score) {
         this.score = score;
+    }
+
+    public int getFrozenCutoff() {
+        return frozenCutoff;
+    }
+
+    public void setFrozenCutoff(int frozenCutoff) {
+        this.frozenCutoff = frozenCutoff;
     }
 
     // ************************************************************************

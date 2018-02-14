@@ -863,4 +863,5 @@
       <pinned>false</pinned>
     </TaTask>
   </taskList>
+  <frozenCutoff>0</frozenCutoff>
 </TaTaskAssigningSolution>

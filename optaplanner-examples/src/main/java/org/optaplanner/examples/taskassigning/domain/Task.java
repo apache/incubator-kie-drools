@@ -158,6 +158,10 @@ public class Task extends TaskOrEmployee implements Labeled {
         return count;
     }
 
+    /**
+     * In minutes
+     * @return at least 1 minute
+     */
     public int getDuration() {
         Affinity affinity = getAffinity();
         return taskType.getBaseDuration() * affinity.getDurationMultiplier();

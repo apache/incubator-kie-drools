@@ -157,6 +157,7 @@ public class TaskAssigningGenerator extends LoggingMain {
         createEmployeeList(solution, employeeListSize);
         createTaskTypeList(solution, taskTypeListSize);
         createTaskList(solution, taskListSize);
+        solution.setFrozenCutoff(0);
 
         BigInteger a = AbstractSolutionImporter.InputBuilder.factorial(taskListSize + employeeListSize - 1);
         BigInteger b = AbstractSolutionImporter.InputBuilder.factorial(employeeListSize - 1);

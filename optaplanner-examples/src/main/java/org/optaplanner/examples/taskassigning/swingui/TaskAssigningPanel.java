@@ -53,10 +53,10 @@ public class TaskAssigningPanel extends SolutionPanel<TaskAssigningSolution> {
     private AbstractAction produceAction;
     private Timer produceTimer;
 
-    private int consumedDurationInSeconds = 0;
-    private int previousConsumedDuration = 0; // In minutes
-    private int producedDurationInSeconds = 0;
-    private int previousProducedDuration = 0; // In minutes
+    private int consumedTimeInSeconds = 0;
+    private int previousConsumedTime = 0; // In minutes
+    private int producedTimeInSeconds = 0;
+    private int previousProducedTime = 0; // In minutes
     private volatile Random producingRandom;
 
     public TaskAssigningPanel() {
@@ -71,11 +71,11 @@ public class TaskAssigningPanel extends SolutionPanel<TaskAssigningSolution> {
         JPanel headerPanel = new JPanel(new GridLayout(1, 0));
         JPanel consumePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         consumePanel.add(new JLabel("Consume rate:"));
-        consumeRateField = new JSpinner(new SpinnerNumberModel(1000, 10, 3600, 10));
+        consumeRateField = new JSpinner(new SpinnerNumberModel(600, 10, 3600, 10));
         consumePanel.add(consumeRateField);
         consumeTimer = new Timer(1000, e -> {
-            consumedDurationInSeconds += (Integer) consumeRateField.getValue();
-            consumeUpTo(consumedDurationInSeconds / 60);
+            consumedTimeInSeconds += (Integer) consumeRateField.getValue();
+            consumeUpTo(consumedTimeInSeconds / 60);
             repaint();
         });
         consumeAction = new AbstractAction("Consume") {
@@ -94,11 +94,11 @@ public class TaskAssigningPanel extends SolutionPanel<TaskAssigningSolution> {
         headerPanel.add(consumePanel);
         JPanel producePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         producePanel.add(new JLabel("Produce rate:"));
-        produceRateField = new JSpinner(new SpinnerNumberModel(1000, 10, 3600, 10));
+        produceRateField = new JSpinner(new SpinnerNumberModel(600, 10, 3600, 10));
         producePanel.add(produceRateField);
         produceTimer = new Timer(1000, e -> {
-            producedDurationInSeconds += (Integer) produceRateField.getValue();
-            produceUpTo(producedDurationInSeconds / 60);
+            producedTimeInSeconds += (Integer) produceRateField.getValue();
+            produceUpTo(producedTimeInSeconds / 60);
             repaint();
         });
         produceAction = new AbstractAction("Produce") {
@@ -119,29 +119,30 @@ public class TaskAssigningPanel extends SolutionPanel<TaskAssigningSolution> {
     }
 
     /**
-     * @param consumedDuration in minutes, just like {@link Task#getStartTime()}
+     * @param consumedTime in minutes, just like {@link Task#getStartTime()}
      */
-    public void consumeUpTo(final int consumedDuration) {
-        taskOverviewPanel.setConsumedDuration(consumedDuration);
-        if (consumedDuration <= previousConsumedDuration) {
-            // Occurs due to rounding down of consumedDurationInSeconds
+    public void consumeUpTo(final int consumedTime) {
+        taskOverviewPanel.setConsumedDuration(consumedTime);
+        if (consumedTime <= previousConsumedTime) {
+            // Occurs due to rounding down of consumedTimeInSeconds
             return;
         }
-        logger.debug("Scheduling consumption of all tasks up to {} minutes.", consumedDuration);
-        previousConsumedDuration = consumedDuration;
+        logger.debug("Scheduling consumption of all tasks up to {} minutes.", consumedTime);
+        previousConsumedTime = consumedTime;
         doProblemFactChange(scoreDirector -> {
             TaskAssigningSolution solution = scoreDirector.getWorkingSolution();
+            solution.setFrozenCutoff(consumedTime);
             for (Task task : solution.getTaskList()) {
                 if (!task.isPinned()) {
-                    if (task.getStartTime() != null && task.getStartTime() < consumedDuration) {
+                    if (task.getStartTime() != null && task.getStartTime() < consumedTime) {
                         scoreDirector.beforeProblemPropertyChanged(task);
                         task.setPinned(true);
                         scoreDirector.afterProblemPropertyChanged(task);
                         logger.trace("Consumed task ({}).", task);
-                    } else if (task.getReadyTime() < consumedDuration) {
+                    } else if (task.getReadyTime() < consumedTime) {
                         // Prevent a non-pinned task from being assigned retroactively
                         scoreDirector.beforeProblemPropertyChanged(task);
-                        task.setReadyTime(consumedDuration);
+                        task.setReadyTime(consumedTime);
                         scoreDirector.afterProblemPropertyChanged(task);
                     }
                 }
@@ -151,22 +152,22 @@ public class TaskAssigningPanel extends SolutionPanel<TaskAssigningSolution> {
     }
 
     /**
-     * @param producedDuration in minutes, just like {@link Task#getStartTime()}
+     * @param producedTime in minutes, just like {@link Task#getStartTime()}
      */
-    public void produceUpTo(final int producedDuration) {
-        if (producedDuration <= previousProducedDuration) {
+    public void produceUpTo(final int producedTime) {
+        if (producedTime <= previousProducedTime) {
             // Occurs due to rounding down of producedDurationInSeconds
             return;
         }
-        final int baseDurationBudgetPerEmployee = (producedDuration - previousProducedDuration);
-        if (baseDurationBudgetPerEmployee < BASE_DURATION_AVERAGE) {
+        final int baseDurationBudgetPerEmployee = (producedTime - previousProducedTime);
+        final int newTaskCount = getSolution().getEmployeeList().size() * baseDurationBudgetPerEmployee / BASE_DURATION_AVERAGE;
+        if (newTaskCount <= 0) {
+            // Do not change previousProducedDuration
             return;
         }
-        final int newTaskCount = Math.max(1,
-                getSolution().getEmployeeList().size() * baseDurationBudgetPerEmployee / BASE_DURATION_AVERAGE);
         logger.debug("Scheduling production of {} new tasks.", newTaskCount);
-        previousProducedDuration = producedDuration;
-        final int readyTime = previousConsumedDuration;
+        previousProducedTime = producedTime;
+        final int readyTime = previousConsumedTime;
         doProblemFactChange(scoreDirector -> {
             TaskAssigningSolution solution = scoreDirector.getWorkingSolution();
             List<TaskType> taskTypeList = solution.getTaskTypeList();
@@ -210,14 +211,14 @@ public class TaskAssigningPanel extends SolutionPanel<TaskAssigningSolution> {
     }
 
     @Override
-    public void resetPanel(TaskAssigningSolution taskAssigningSolution) {
-        consumedDurationInSeconds = 0;
-        previousConsumedDuration = 0;
-        producedDurationInSeconds = 0;
-        previousProducedDuration = 0;
+    public void resetPanel(TaskAssigningSolution solution) {
+        consumedTimeInSeconds = solution.getFrozenCutoff() * 60;
+        previousConsumedTime = solution.getFrozenCutoff();
+        producedTimeInSeconds = 0;
+        previousProducedTime = 0;
         producingRandom = new Random(0); // Random is thread safe
-        taskOverviewPanel.resetPanel(taskAssigningSolution);
-        taskOverviewPanel.setConsumedDuration(consumedDurationInSeconds / 60);
+        taskOverviewPanel.resetPanel(solution);
+        taskOverviewPanel.setConsumedDuration(consumedTimeInSeconds / 60);
     }
 
     @Override

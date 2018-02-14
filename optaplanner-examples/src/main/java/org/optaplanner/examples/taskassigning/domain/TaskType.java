@@ -28,7 +28,7 @@ public class TaskType extends AbstractPersistable implements Labeled {
 
     private String code;
     private String title;
-    private int baseDuration;
+    private int baseDuration; // In minutes
 
     private List<Skill> requiredSkillList;
 
