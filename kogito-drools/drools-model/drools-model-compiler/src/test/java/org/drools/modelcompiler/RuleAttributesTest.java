@@ -25,6 +25,7 @@ import java.util.Map;
 import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.DefaultAgendaEventListener;
@@ -86,6 +87,61 @@ public class RuleAttributesTest extends BaseModelTest {
         Collection<String> results = getObjectsIntoList(ksession, String.class);
         assertEquals(1, results.size());
         assertTrue(results.contains("R2"));
+    }
+
+    @Test
+    @Ignore("supports dynamic salience where you can use an expression involving bound variables")
+    public void testSalienceExpressionAttribute() throws Exception {
+        String str = "import " + Person.class.getCanonicalName() + ";" +
+                     "\n" +
+                     "rule R1 salience -$p.getAge() when\n" +
+                     "  $p : Person( age == 40 )\n" +
+                     "then\n" +
+                     "   insert(\"R1\");\n" +
+                     "   delete($p);" +
+                     "end\n" +
+                     "rule R2 salience $p.getAge() when\n" +
+                     "  $p : Person( name.length == 5 )\n" +
+                     "then\n" +
+                     "   insert(\"R2\");\n" +
+                     "   delete($p);" +
+                     "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert(new Person("Mario", 40));
+        ksession.fireAllRules();
+
+        Collection<String> results = getObjectsIntoList(ksession, String.class);
+        assertEquals(1, results.size());
+        assertTrue(results.contains("R2"));
+    }
+
+    @Test
+    @Ignore("supports dynamic enabled where you can use an expression involving bound variables")
+    public void testExpressionEnabledAttribute() throws Exception {
+        String str = "import " + Person.class.getCanonicalName() + ";\n" +
+                     "rule R1\n" +
+                     "enabled ($b)\n" +
+                     "when\n" +
+                     "  $b : Boolean( )\n" +
+                     "  $p : Person( )\n" +
+                     "then\n" +
+                     "   insert(\"R1\");\n" +
+                     "   delete($p);" +
+                     "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert(Boolean.FALSE);
+        Person mario = new Person("Mario", 40);
+        ksession.insert(mario);
+        ksession.fireAllRules();
+
+        Collection<Object> results = getObjectsIntoList(ksession, Object.class);
+        assertEquals(2, results.size());
+        assertTrue(results.contains(mario));
+        assertTrue(!results.contains("R1"));
     }
 
     @Test

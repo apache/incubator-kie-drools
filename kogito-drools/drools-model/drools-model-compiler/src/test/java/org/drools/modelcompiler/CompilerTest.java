@@ -40,7 +40,6 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static java.util.Arrays.asList;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -1013,6 +1012,28 @@ public class CompilerTest extends BaseModelTest {
         String str = "import " + Person.class.getCanonicalName() + ";" +
                      "rule R when\n" +
                      "  $p : Person( getAddress().getCity().length() == 5 )\n" +
+                     "then\n" +
+                     "  insert(\"matched\");\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+
+        Person john = new Person("John", 47);
+        Address a = new Address("Italy");
+        john.setAddress(a);
+
+        ksession.insert(john);
+        ksession.fireAllRules();
+
+        Collection<String> results = getObjectsIntoList(ksession, String.class);
+        assertEquals(1, results.size());
+    }
+
+    @Test
+    public void testChainOfMethodCallInConstraintSub() {
+        String str = "import " + Person.class.getCanonicalName() + ";" +
+                     "rule R when\n" +
+                     "  $p : Person( address.( city.length() == 5 && city.startsWith(\"I\") ) )\n" + // DRL feature "Grouped accessors for nested objects" is addressed by the RuleDescr directly. 
                      "then\n" +
                      "  insert(\"matched\");\n" +
                      "end";
