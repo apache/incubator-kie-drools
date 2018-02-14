@@ -32,5 +32,7 @@ public interface UserInfo {
     String getEmailForEntity(OrganizationalEntity entity);
 
     String getLanguageForEntity(OrganizationalEntity entity);
+    
+    String getEntityForEmail(String email);
 
 }
