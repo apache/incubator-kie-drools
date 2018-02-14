@@ -89,6 +89,9 @@ public final class EclipseJavaCompilerSettings extends JavaCompilerSettings {
         put("1.6", CompilerOptions_VERSION_1_6);
         put("1.7", CompilerOptions_VERSION_1_7);
         put("1.8", CompilerOptions_VERSION_1_8);
+        // TODO use Java 8 options when running on Java 9. This should be fixed when ECJ is upgraded to a
+        // version that supports Java 9
+        put("9", CompilerOptions_VERSION_1_8);
     }};
     
     private String toNativeVersion( final String pVersion ) {

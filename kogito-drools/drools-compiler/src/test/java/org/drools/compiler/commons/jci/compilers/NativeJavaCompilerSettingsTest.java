@@ -30,8 +30,8 @@ public class NativeJavaCompilerSettingsTest {
         Assertions.assertThat(options).hasSize(6);
         Assertions.assertThat(options).contains("-source", "-target", "-encoding");
         // check the order is correct, value of the option needs to be right after the option name
-        Assertions.assertThat(options).contains("1.6", Index.atIndex(options.indexOf("-source") + 1));
-        Assertions.assertThat(options).contains("1.6", Index.atIndex(options.indexOf("-target") + 1));
+        Assertions.assertThat(options).contains("1.8", Index.atIndex(options.indexOf("-source") + 1));
+        Assertions.assertThat(options).contains("1.8", Index.atIndex(options.indexOf("-target") + 1));
         Assertions.assertThat(options).contains("UTF-8", Index.atIndex(options.indexOf("-encoding") + 1));
     }
 
