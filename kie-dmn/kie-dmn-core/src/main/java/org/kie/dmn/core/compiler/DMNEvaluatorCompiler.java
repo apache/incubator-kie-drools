@@ -136,7 +136,7 @@ public class DMNEvaluatorCompiler {
         Invocation invocation = expression;
         // expression must be a literal text with the name of the function
         String functionName = ((LiteralExpression) invocation.getExpression()).getText();
-        DMNInvocationEvaluator invEval = new DMNInvocationEvaluator( node.getName(), node.getSource(), functionName, invocation, null );
+        DMNInvocationEvaluator invEval = new DMNInvocationEvaluator( node.getName(), node.getSource(), functionName, invocation, null, feel.newFEELInstance() );
         for ( Binding binding : invocation.getBinding() ) {
             if( binding.getParameter() == null ) {
                 // error, missing binding parameter
@@ -279,7 +279,7 @@ public class DMNEvaluatorCompiler {
                                                                           functionName,
                                                                           node.getIdentifierString() );
                     DMNInvocationEvaluator invoker = new DMNInvocationEvaluator( node.getName(), node.getSource(), functionName, new Invocation(),
-                                                                                 ( fctx, fname ) -> feelFunction );
+                                                                                 ( fctx, fname ) -> feelFunction, null ); // feel can be null as anyway is hardcoded to `feelFunction`
 
                     for( InformationItem p : funcDef.getFormalParameter() ) {
                         invoker.addParameter( p.getName(), func.getParameterType( p.getName() ), (em, dr) -> new EvaluatorResultImpl( dr.getContext().get( p.getName() ), EvaluatorResult.ResultType.SUCCESS ) );
@@ -321,7 +321,7 @@ public class DMNEvaluatorCompiler {
                         }
 
                         DMNInvocationEvaluator invoker = new DMNInvocationEvaluator( node.getName(), node.getSource(), functionName, new Invocation(),
-                                                                                     ( fctx, fname ) -> feelFunction );
+                                                                                     ( fctx, fname ) -> feelFunction, null ); // feel can be null as anyway is hardcoded to `feelFunction`
 
                         DMNFunctionDefinitionEvaluator func = new DMNFunctionDefinitionEvaluator( node.getName(), funcDef );
                         for ( InformationItem p : funcDef.getFormalParameter() ) {

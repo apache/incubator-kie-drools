@@ -17,6 +17,8 @@
 package org.kie.dmn.core.ast;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -36,7 +38,7 @@ import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
-import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
+import org.kie.dmn.feel.lang.impl.FEELImpl;
 import org.kie.dmn.feel.runtime.events.DecisionTableRulesMatchedEvent;
 import org.kie.dmn.feel.runtime.events.DecisionTableRulesSelectedEvent;
 import org.kie.dmn.feel.runtime.functions.DTInvokerFunction;
@@ -52,12 +54,12 @@ public class DMNDTExpressionEvaluator
 
     private final DMNNode           node;
     private       DTInvokerFunction dt;
-    private       FEEL              feel;
+    private       FEELImpl              feel;
 
     public DMNDTExpressionEvaluator(DMNNode node, FEEL feel, DTInvokerFunction dt) {
         this.node = node;
         this.dt = dt;
-        this.feel = feel;
+        this.feel = (FEELImpl) feel;
     }
 
     @Override
@@ -71,9 +73,7 @@ public class DMNDTExpressionEvaluator
             DMNRuntimeEventManagerUtils.fireBeforeEvaluateDecisionTable( dmrem, node.getName(), dt.getName(), result );
             List<String> paramNames = dt.getParameterNames().get( 0 );
             Object[] params = new Object[paramNames.size()];
-            FEELEventListenersManager listenerMgr = new FEELEventListenersManager();
-            listenerMgr.addListener(events::add);
-            EvaluationContextImpl ctx = new EvaluationContextImpl( listenerMgr );
+            EvaluationContextImpl ctx = feel.newEvaluationContext(Arrays.asList(events::add), Collections.emptyMap());
             ctx.setPerformRuntimeTypeCheck(((DMNRuntimeImpl) dmrem.getRuntime()).performRuntimeTypeCheck(result.getModel()));
 
             ctx.enterFrame();
@@ -82,7 +82,7 @@ public class DMNDTExpressionEvaluator
                 ctx.setValue( entry.getKey(), entry.getValue() );
             }
             for ( int i = 0; i < params.length; i++ ) {
-                EvaluationContextImpl evalCtx = new EvaluationContextImpl(listenerMgr);
+                EvaluationContextImpl evalCtx = feel.newEvaluationContext(Arrays.asList(events::add), Collections.emptyMap());
                 evalCtx.setValues(result.getContext().getAll());
                 params[i] = feel.evaluate( paramNames.get( i ), evalCtx );
                 ctx.setValue( paramNames.get( i ), params[i] );

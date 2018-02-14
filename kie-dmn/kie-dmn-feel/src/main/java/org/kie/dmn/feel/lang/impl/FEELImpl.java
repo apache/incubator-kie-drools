@@ -159,7 +159,7 @@ public class FEELImpl
         return ((CompiledExpressionImpl) expr).evaluate(newEvaluationContext(ctx.getListeners(), ctx.getAllValues()));
     }
 
-    private EvaluationContext newEvaluationContext(Collection<FEELEventListener> listeners, Map<String, Object> inputVariables) {
+    public EvaluationContextImpl newEvaluationContext(Collection<FEELEventListener> listeners, Map<String, Object> inputVariables) {
         FEELEventListenersManager eventsManager = getEventsManager(listeners);
         EvaluationContextImpl ctx = new EvaluationContextImpl( eventsManager );
         if (customFrame.isPresent()) {
