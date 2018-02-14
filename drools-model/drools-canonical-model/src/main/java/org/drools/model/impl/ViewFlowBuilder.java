@@ -254,7 +254,7 @@ public class ViewFlowBuilder implements ViewBuilder {
         }
     }
 
-    private static ConditionalNamedConsequenceImpl createConditionalNamedConsequence(Map<String, Consequence> consequences, ConditionalConsequence cond) {
+    static ConditionalNamedConsequenceImpl createConditionalNamedConsequence(Map<String, Consequence> consequences, ConditionalConsequence cond) {
         return new ConditionalNamedConsequenceImpl( createConstraint( cond.getExpr() ),
                                                     createNamedConsequence( consequences, cond.getThen() ),
                                                     cond.getElse() != null ? createConditionalNamedConsequence( consequences, cond.getElse() ) : null );

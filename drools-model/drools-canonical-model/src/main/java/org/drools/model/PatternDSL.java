@@ -16,12 +16,15 @@
 
 package org.drools.model;
 
+import org.drools.model.consequences.ConditionalConsequenceBuilder;
 import org.drools.model.constraints.SingleConstraint1;
 import org.drools.model.constraints.SingleConstraint2;
+import org.drools.model.constraints.TemporalConstraint;
 import org.drools.model.functions.Function1;
 import org.drools.model.functions.Function2;
 import org.drools.model.functions.Predicate1;
 import org.drools.model.functions.Predicate2;
+import org.drools.model.functions.temporal.TemporalPredicate;
 import org.drools.model.impl.DeclarationImpl;
 import org.drools.model.impl.Query0DefImpl;
 import org.drools.model.impl.Query1DefImpl;
@@ -34,6 +37,7 @@ import org.drools.model.index.AlphaIndexImpl;
 import org.drools.model.index.BetaIndexImpl;
 import org.drools.model.view.BindViewItem1;
 import org.drools.model.view.BindViewItem2;
+import org.drools.model.view.ExprViewItem;
 import org.drools.model.view.ViewItem;
 
 import static java.util.UUID.randomUUID;
@@ -88,6 +92,10 @@ public class PatternDSL extends DSL {
 
     public static <T, U> PatternItem<T> expr( String exprId, Variable<U> var2, Predicate2<T, U> predicate, BetaIndexImpl<T, U, ?> index, ReactOn reactOn ) {
         return new PatternExpr2<>( exprId, var2, new Predicate2.Impl<>(predicate), index, reactOn );
+    }
+
+    public static <T, U> TemporalPatternExpr<T, U> expr( String exprId, Variable<U> var1, TemporalPredicate temporalPredicate ) {
+        return new TemporalPatternExpr<T, U>( exprId, var1, temporalPredicate);
     }
 
     public static <T, U> AlphaIndex<T, U> alphaIndexedBy( Class<U> indexedClass, Index.ConstraintType constraintType, int indexId, Function1<T, U> leftOperandExtractor, U rightValue ) {
@@ -207,10 +215,6 @@ public class PatternDSL extends DSL {
             this.index = index;
         }
 
-        public Variable<U> getVar2() {
-            return var2;
-        }
-
         public Predicate2<T, U> getPredicate() {
             return predicate;
         }
@@ -221,10 +225,34 @@ public class PatternDSL extends DSL {
 
         @Override
         public Constraint asConstraint(PatternDef patternDef) {
-            SingleConstraint2 constraint = new SingleConstraint2(getExprId(), patternDef.getFirstVariable(), getVar2(), getPredicate());
+            SingleConstraint2 constraint = new SingleConstraint2(getExprId(), patternDef.getFirstVariable(), var2, getPredicate());
             constraint.setIndex( getIndex() );
             constraint.setReactiveProps( getReactOn() );
             return constraint;
+        }
+    }
+
+    public static class TemporalPatternExpr<T, U> extends PatternExprImpl<T> {
+        private final Variable<U> var2;
+        private final TemporalPredicate temporalPredicate;
+
+        public TemporalPatternExpr(Variable<U> var2, TemporalPredicate temporalPredicate) {
+            this(randomUUID().toString(), var2, temporalPredicate);
+        }
+
+        public TemporalPatternExpr( String exprId, Variable<U> var2, TemporalPredicate temporalPredicate) {
+            super( exprId, null );
+            this.var2 = var2;
+            this.temporalPredicate = temporalPredicate;
+        }
+
+        public Variable<U> getVar2() {
+            return var2;
+        }
+
+        @Override
+        public Constraint asConstraint(PatternDef patternDef) {
+            return new TemporalConstraint(getExprId(), patternDef.getFirstVariable(), var2, temporalPredicate);
         }
     }
 
@@ -300,6 +328,28 @@ public class PatternDSL extends DSL {
         public Binding asBinding( PatternDef patternDef ) {
             return new BindViewItem2(boundVar, f, patternDef.getFirstVariable(), otherVar, getReactOn().length > 0 ? getReactOn()[0] : null);
         }
+    }
+
+    // -- Conditional Named Consequnce --
+
+    public static <A> ConditionalConsequenceBuilder when( Variable<A> var, Predicate1<A> predicate) {
+        return when( FlowDSL.expr( var, predicate ) );
+    }
+
+    public static <A> ConditionalConsequenceBuilder when(String exprId, Variable<A> var, Predicate1<A> predicate) {
+        return when( FlowDSL.expr( exprId, var, predicate ) );
+    }
+
+    public static <A, B> ConditionalConsequenceBuilder when(Variable<A> var1, Variable<B> var2, Predicate2<A, B> predicate) {
+        return when( FlowDSL.expr( var1, var2, predicate ) );
+    }
+
+    public static <A, B> ConditionalConsequenceBuilder when(String exprId, Variable<A> var1, Variable<B> var2, Predicate2<A, B> predicate) {
+        return when( FlowDSL.expr( exprId, var1, var2, predicate ) );
+    }
+
+    public static ConditionalConsequenceBuilder when(ExprViewItem expr) {
+        return new ConditionalConsequenceBuilder( expr );
     }
 
     // -- rule --

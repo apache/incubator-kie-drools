@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import org.drools.model.Condition;
+import org.drools.model.ConditionalConsequence;
 import org.drools.model.Consequence;
 import org.drools.model.PatternDSL.PatternBindingImpl;
 import org.drools.model.PatternDSL.PatternDef;
@@ -46,6 +47,7 @@ import org.drools.model.view.ViewItem;
 import static java.util.stream.Collectors.toList;
 
 import static org.drools.model.impl.NamesGenerator.generateName;
+import static org.drools.model.impl.ViewFlowBuilder.createConditionalNamedConsequence;
 
 public class ViewPatternBuilder implements ViewBuilder {
 
@@ -66,6 +68,11 @@ public class ViewPatternBuilder implements ViewBuilder {
                 String name = ruleItemIterator.hasNext() ? generateName("consequence") : RuleImpl.DEFAULT_CONSEQUENCE_NAME;
                 consequences.put(name, consequence);
                 conditions.add( new NamedConsequenceImpl( name, consequence.isBreaking() ) );
+                continue;
+            }
+
+            if (ruleItem instanceof ConditionalConsequence ) {
+                conditions.add( createConditionalNamedConsequence(consequences, (ConditionalConsequence) ruleItem) );
                 continue;
             }
 

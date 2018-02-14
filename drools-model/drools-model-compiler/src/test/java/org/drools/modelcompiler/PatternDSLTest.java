@@ -17,8 +17,10 @@
 package org.drools.modelcompiler;
 
 import java.util.Collection;
+import java.util.concurrent.TimeUnit;
 
 import org.assertj.core.api.Assertions;
+import org.drools.core.ClockType;
 import org.drools.model.DSL;
 import org.drools.model.Index;
 import org.drools.model.Model;
@@ -33,21 +35,28 @@ import org.drools.modelcompiler.domain.Child;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Relationship;
 import org.drools.modelcompiler.domain.Result;
+import org.drools.modelcompiler.domain.StockTick;
 import org.junit.Test;
 import org.kie.api.KieBase;
+import org.kie.api.KieServices;
+import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
+import org.kie.api.time.SessionPseudoClock;
 
-import static org.drools.model.DSL.valueOf;
 import static org.drools.model.PatternDSL.accFunction;
 import static org.drools.model.PatternDSL.accumulate;
+import static org.drools.model.PatternDSL.after;
 import static org.drools.model.PatternDSL.alphaIndexedBy;
 import static org.drools.model.PatternDSL.and;
 import static org.drools.model.PatternDSL.betaIndexedBy;
 import static org.drools.model.PatternDSL.bind;
 import static org.drools.model.PatternDSL.declarationOf;
+import static org.drools.model.PatternDSL.execute;
 import static org.drools.model.PatternDSL.expr;
 import static org.drools.model.PatternDSL.not;
 import static org.drools.model.PatternDSL.on;
@@ -56,6 +65,8 @@ import static org.drools.model.PatternDSL.pattern;
 import static org.drools.model.PatternDSL.query;
 import static org.drools.model.PatternDSL.reactOn;
 import static org.drools.model.PatternDSL.rule;
+import static org.drools.model.PatternDSL.valueOf;
+import static org.drools.model.PatternDSL.when;
 import static org.drools.modelcompiler.BaseModelTest.getObjectsIntoList;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.assertEquals;
@@ -358,5 +369,100 @@ public class PatternDSLTest {
 
         assertEquals( 1, results.size() );
         assertEquals( "B", results.iterator().next().get( query1Def.getArg2().getName() ) );
+    }
+
+    @Test
+    public void testNegatedAfter() throws Exception {
+        Variable<StockTick> var_$a = declarationOf(StockTick.class, "$a");
+        Variable<StockTick> var_$b = declarationOf(StockTick.class, "$b");
+
+        Rule rule = rule("R").build(
+                pattern(var_$a,
+                        expr("$expr$1$",
+                                (_this) -> org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getCompany(), "DROO"),
+                                alphaIndexedBy(String.class, Index.ConstraintType.EQUAL, 0, _this -> _this.getCompany(), "DROO"),
+                                reactOn("company"))
+                ),
+                pattern(var_$b,
+                        expr("$expr$2$", (_this) -> org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getCompany(), "ACME"),
+                                alphaIndexedBy(String.class, Index.ConstraintType.EQUAL, 0, _this -> _this.getCompany(), "ACME"),
+                                reactOn("company")),
+                        expr("$expr$3$",
+                                var_$a,
+                                not(after(5, java.util.concurrent.TimeUnit.SECONDS, 8, java.util.concurrent.TimeUnit.SECONDS)))
+                ),
+                execute(() -> {
+                    System.out.println("fired");
+                }));
+
+        Model model = new ModelImpl().addRule(rule);
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model, EventProcessingOption.STREAM);
+
+        KieSessionConfiguration conf = KieServices.get().newKieSessionConfiguration();
+        conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        KieSession ksession = kieBase.newKieSession(conf, null);
+        SessionPseudoClock clock = ksession.getSessionClock();
+
+        ksession.insert( new StockTick( "DROO" ) );
+        clock.advanceTime( 6, TimeUnit.SECONDS );
+        ksession.insert( new StockTick( "ACME" ) );
+
+        assertEquals( 0, ksession.fireAllRules() );
+
+        clock.advanceTime( 4, TimeUnit.SECONDS );
+        ksession.insert( new StockTick( "ACME" ) );
+
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testBreakingNamedConsequence() {
+        Variable<Result> resultV = declarationOf( Result.class );
+        Variable<Person> markV = declarationOf( Person.class );
+        Variable<Person> olderV = declarationOf( Person.class );
+
+        Rule rule = rule( "beta" )
+                .build(
+                        pattern( resultV ),
+                        pattern(markV,
+                                expr("exprA", p -> p.getName().equals( "Mark" ),
+                                        alphaIndexedBy( String.class, Index.ConstraintType.EQUAL, 1, p -> p.getName(), "Mark" ),
+                                        reactOn( "name", "age" ))
+                        ),
+                        when("cond1", markV, p -> p.getAge() < 30).then(
+                                on(markV, resultV).breaking().execute((p, r) -> r.addValue( "Found young " + p.getName()))
+                        ).elseWhen("cond2", markV, p -> p.getAge() > 50).then(
+                                on(markV, resultV).breaking().execute((p, r) -> r.addValue( "Found old " + p.getName()))
+                        ).elseWhen().then(
+                                on(markV, resultV).breaking().execute((p, r) -> r.addValue( "Found " + p.getName()))
+                        ),
+                        pattern(olderV,
+                                expr("exprB", p -> !p.getName().equals("Mark"),
+                                        alphaIndexedBy( String.class, Index.ConstraintType.NOT_EQUAL, 1, p -> p.getName(), "Mark" ),
+                                        reactOn( "name" )),
+                                expr("exprC", markV, (p1, p2) -> p1.getAge() > p2.getAge(),
+                                        betaIndexedBy( int.class, Index.ConstraintType.GREATER_THAN, 0, p -> p.getAge(), p -> p.getAge() ),
+                                        reactOn( "age" ))
+                        ),
+                        on(olderV, markV, resultV).execute((p1, p2, r) -> r.addValue( p1.getName() + " is older than " + p2.getName()))
+                );
+
+        Model model = new ModelImpl().addRule( rule );
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
+        KieSession ksession = kieBase.newKieSession();
+
+        Result result = new Result();
+        ksession.insert( result );
+
+        ksession.insert( new Person( "Mark", 37 ) );
+        ksession.insert( new Person( "Edson", 35 ) );
+        ksession.insert( new Person( "Mario", 40 ) );
+        ksession.fireAllRules();
+
+        Collection<String> results = (Collection<String>)result.getValue();
+        assertEquals(1, results.size());
+
+        assertEquals( "Found Mark", results.iterator().next() );
     }
 }
