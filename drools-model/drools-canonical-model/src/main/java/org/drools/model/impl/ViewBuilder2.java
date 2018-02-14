@@ -21,12 +21,10 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.drools.model.Condition;
 import org.drools.model.Consequence;
-import org.drools.model.Pattern;
 import org.drools.model.PatternDSL.PatternBindingImpl;
 import org.drools.model.PatternDSL.PatternDef;
 import org.drools.model.PatternDSL.PatternExprImpl;
@@ -105,15 +103,7 @@ public class ViewBuilder2 {
 
         if ( ruleItem instanceof AccumulateExprViewItem ) {
             AccumulateExprViewItem acc = (AccumulateExprViewItem) ruleItem;
-
-            Condition newCondition = ruleItem2Condition( acc.getExpr() );
-            if (newCondition instanceof Pattern ) {
-                return new AccumulatePatternImpl((Pattern) newCondition, Optional.empty(), acc.getAccumulateFunctions());
-            } else if (newCondition instanceof CompositePatterns) {
-                return new AccumulatePatternImpl(null, Optional.of(newCondition), acc.getAccumulateFunctions());
-            } else {
-                throw new RuntimeException("Unknown pattern");
-            }
+            return new AccumulatePatternImpl(ruleItem2Condition( acc.getExpr() ), acc.getAccumulateFunctions());
         }
 
         throw new UnsupportedOperationException( "Unknown " + ruleItem );

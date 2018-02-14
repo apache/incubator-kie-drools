@@ -1,12 +1,11 @@
 package org.drools.model.patterns;
 
 import java.util.Collection;
-import java.util.Optional;
 
 import org.drools.model.AccumulatePattern;
 import org.drools.model.Binding;
+import org.drools.model.Condition;
 import org.drools.model.Constraint;
-import org.drools.model.DataSourceDefinition;
 import org.drools.model.Pattern;
 import org.drools.model.Variable;
 import org.drools.model.functions.accumulate.AccumulateFunction;
@@ -14,23 +13,43 @@ import org.drools.model.impl.ModelComponent;
 
 public class AccumulatePatternImpl<T> extends AbstractSinglePattern implements AccumulatePattern<T>, ModelComponent {
 
-    private Pattern<T> pattern;
-    private final Optional<CompositePatterns> compositePatterns;
+    private final Condition condition;
     private final AccumulateFunction[] accumulateFunctions;
     private final Variable[] boundVariables;
+    private final Pattern<T> pattern;
 
-    public AccumulatePatternImpl(Pattern<T> pattern, Optional<CompositePatterns> compositePatterns, AccumulateFunction... accumulateFunctions) {
-        this.pattern = pattern;
-        this.compositePatterns = compositePatterns;
+    public AccumulatePatternImpl(Condition condition, AccumulateFunction... accumulateFunctions) {
+        this.condition = condition;
         this.accumulateFunctions = accumulateFunctions;
         boundVariables = new Variable[accumulateFunctions.length];
         for (int i = 0; i < accumulateFunctions.length; i++) {
             boundVariables[i] = accumulateFunctions[i].getVariable();
         }
+        this.pattern = findPatternImplSource();
     }
 
-    public void setPattern(Pattern<T> pattern) {
-        this.pattern = pattern;
+    private Pattern findPatternImplSource() {
+        if (condition instanceof Pattern) {
+            return ( Pattern ) condition;
+        }
+
+        final Variable source = getAccumulateFunctions()[0].getSource();
+
+        for (Condition subCondition : condition.getSubConditions()) {
+            if (subCondition instanceof PatternImpl) {
+                PatternImpl patternImpl = (PatternImpl) subCondition;
+
+                boolean isSource =  patternImpl
+                        .getBindings()
+                        .stream()
+                        .anyMatch(b -> (b instanceof Binding) && ((Binding) b).getBoundVariable().equals(source));
+                if (isSource) {
+                    return patternImpl;
+                }
+
+            }
+        }
+        return null;
     }
 
     @Override
@@ -39,8 +58,13 @@ public class AccumulatePatternImpl<T> extends AbstractSinglePattern implements A
     }
 
     @Override
-    public Optional<CompositePatterns> getCompositePatterns() {
-        return compositePatterns;
+    public boolean isCompositePatterns() {
+        return condition instanceof CompositePatterns;
+    }
+
+    @Override
+    public Condition getCondition() {
+        return condition;
     }
 
     @Override

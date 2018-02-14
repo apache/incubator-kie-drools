@@ -354,18 +354,6 @@ public class KiePackagesBuilder {
             }
             case ACCUMULATE: {
                 AccumulatePattern accumulatePattern = (AccumulatePattern) condition;
-                RuleConditionElement source;
-                if(accumulatePattern.getCompositePatterns().isPresent()) {
-                    CompositePatterns compositePatterns = (CompositePatterns) accumulatePattern.getCompositePatterns().get();
-                    GroupElement ge = new GroupElement(conditionToGroupElementType( compositePatterns.getType() ));
-                    for(Condition c : compositePatterns.getSubConditions()) {
-                        ge.addChild(buildPattern(ctx, group, c));
-                    }
-                    source = ge;
-                } else {
-                    source = buildPattern(ctx, group, condition );
-                }
-
                 Pattern pattern = null;
                 if (accumulatePattern.getAccumulateFunctions().length == 1) {
                     pattern = ctx.getPattern( accumulatePattern.getAccumulateFunctions()[0].getVariable() );
@@ -379,13 +367,25 @@ public class KiePackagesBuilder {
                 Binding binding = null;
 
                 if (sourcePattern != null) {
-                    for (Variable v : sourcePattern.getAllInputVariables()) {
+                    for (Variable v : sourcePattern.getInputVariables()) {
                         usedVariableName.add( v.getName() );
                     }
 
                     if ( !sourcePattern.getBindings().isEmpty() ) {
                         binding = ( Binding ) sourcePattern.getBindings().iterator().next();
                     }
+                }
+
+                RuleConditionElement source;
+                if(accumulatePattern.isCompositePatterns()) {
+                    CompositePatterns compositePatterns = (CompositePatterns) accumulatePattern.getCondition();
+                    GroupElement ge = new GroupElement(conditionToGroupElementType( compositePatterns.getType() ));
+                    for(Condition c : compositePatterns.getSubConditions()) {
+                        ge.addChild(buildPattern(ctx, group, c));
+                    }
+                    source = ge;
+                } else {
+                    source = buildPattern(ctx, group, condition );
                 }
 
                 pattern.setSource(buildAccumulate(ctx, accumulatePattern, source, pattern, usedVariableName, binding) );

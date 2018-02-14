@@ -26,6 +26,8 @@ import org.drools.model.Rule;
 import org.drools.model.Variable;
 import org.drools.model.impl.ModelImpl;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
+import org.drools.modelcompiler.domain.Adult;
+import org.drools.modelcompiler.domain.Child;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
 import org.junit.Test;
@@ -33,10 +35,25 @@ import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
-import static org.drools.model.PatternDSL.*;
+import static org.drools.model.PatternDSL.accFunction;
+import static org.drools.model.PatternDSL.accumulate;
+import static org.drools.model.PatternDSL.alphaIndexedBy;
+import static org.drools.model.PatternDSL.and;
+import static org.drools.model.PatternDSL.betaIndexedBy;
+import static org.drools.model.PatternDSL.bind;
+import static org.drools.model.PatternDSL.declarationOf;
+import static org.drools.model.PatternDSL.expr;
+import static org.drools.model.PatternDSL.not;
+import static org.drools.model.PatternDSL.on;
+import static org.drools.model.PatternDSL.or;
+import static org.drools.model.PatternDSL.pattern;
+import static org.drools.model.PatternDSL.reactOn;
+import static org.drools.model.PatternDSL.rule;
 import static org.drools.modelcompiler.BaseModelTest.getObjectsIntoList;
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 
 public class PatternDSLTest {
 
@@ -233,5 +250,45 @@ public class PatternDSLTest {
 
         ksession.fireAllRules();
         assertEquals("total = 77; average = 38.5", result.getValue());
+    }
+
+    @Test
+    public void testAccumuluateWithAnd2() {
+        Variable<Object> var_$pattern_Object$1$ = declarationOf(Object.class, "$pattern_Object$1$");
+        Variable<Child> var_$c = declarationOf(Child.class, "$c");
+        Variable<Adult> var_$a = declarationOf(Adult.class, "$a");
+        Variable<Integer> var_$parentAge = declarationOf(Integer.class, "$parentAge");
+        Variable<Integer> var_$expr$5$ = declarationOf(Integer.class, "$expr$5$");
+
+        Rule rule = rule("R").build(
+                accumulate(
+                        and(
+                            pattern(var_$c,
+                                    expr("$expr$1$", (_this) -> _this.getAge() < 10, alphaIndexedBy(int.class, Index.ConstraintType.LESS_THAN, 0, _this -> _this.getAge(), 10), reactOn("age"))
+                            ),
+                            pattern(var_$a,
+                                    expr("$expr$2$", var_$c, (_this, $c) -> _this.getName().equals($c.getParent()), reactOn("name")),
+                                    bind(var_$expr$5$, var_$c, ($a, $c) -> $a.getAge() + $c.getAge())
+                            )
+                        ),
+                        accFunction(org.drools.core.base.accumulators.IntegerSumAccumulateFunction.class, var_$expr$5$).as(var_$parentAge)),
+                on(var_$parentAge).execute((drools, $parentAge) -> {
+                    drools.insert(new Result($parentAge));
+                }));
+
+        Model model = new ModelImpl().addRule(rule);
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model);
+
+        KieSession ksession = kieBase.newKieSession();
+
+        Adult a = new Adult( "Mario", 43 );
+        Child c = new Child( "Sofia", 6, "Mario" );
+
+        ksession.insert( a );
+        ksession.insert( c );
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertThat(results, hasItem(new Result(49)));
     }
 }
