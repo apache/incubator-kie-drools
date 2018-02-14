@@ -11,7 +11,6 @@ import org.drools.model.functions.Predicate2;
 import org.drools.model.functions.Predicate3;
 import org.drools.model.functions.Predicate4;
 import org.drools.model.functions.Predicate5;
-import org.drools.model.functions.accumulate.AccumulateFunction;
 import org.drools.model.functions.temporal.AbstractTemporalPredicate;
 import org.drools.model.functions.temporal.AfterPredicate;
 import org.drools.model.functions.temporal.BeforePredicate;
@@ -28,11 +27,8 @@ import org.drools.model.functions.temporal.StartedbyPredicate;
 import org.drools.model.functions.temporal.StartsPredicate;
 import org.drools.model.functions.temporal.TemporalPredicate;
 import org.drools.model.impl.RuleBuilder;
-import org.drools.model.view.AccumulateExprViewItem;
 import org.drools.model.view.BindViewItem1;
 import org.drools.model.view.BindViewItem2;
-import org.drools.model.view.CombinedExprViewItem;
-import org.drools.model.view.ExistentialExprViewItem;
 import org.drools.model.view.Expr1ViewItem;
 import org.drools.model.view.Expr1ViewItemImpl;
 import org.drools.model.view.Expr2ViewItem;
@@ -122,10 +118,6 @@ public class FlowDSL extends DSL {
         return op.test( obj, args );
     }
 
-    public static ExprViewItem not(ViewItemBuilder<?> expression, ViewItemBuilder<?>... expressions) {
-        return new ExistentialExprViewItem( Condition.Type.NOT, and( expression, expressions) );
-    }
-
     public static <T> ExprViewItem<T> not(Variable<T> var) {
         return not( new Expr1ViewItemImpl<T>( "true", var, null ) );
     }
@@ -142,10 +134,6 @@ public class FlowDSL extends DSL {
         return not(new Expr2ViewItemImpl<T, U>( var1, var2, new Predicate2.Impl<T, U>(predicate)) );
     }
 
-    public static ExprViewItem exists(ViewItemBuilder<?> expression, ViewItemBuilder<?>... expressions) {
-        return new ExistentialExprViewItem( Condition.Type.EXISTS, and( expression, expressions) );
-    }
-
     public static <T> ExprViewItem<T> exists(Variable<T> var) {
         return exists(new Expr1ViewItemImpl<T>( "true", var, null ) );
     }
@@ -160,37 +148,6 @@ public class FlowDSL extends DSL {
 
     public static <T, U> ExprViewItem<T> exists(Variable<T> var1, Variable<U> var2, Predicate2<T, U> predicate) {
         return exists(new Expr2ViewItemImpl<T, U>( var1, var2, new Predicate2.Impl<T, U>(predicate)) );
-    }
-
-    public static ExprViewItem forall(ViewItem expression, ViewItem... expressions) {
-        return new ExistentialExprViewItem( Condition.Type.FORALL, and( expression, expressions) );
-    }
-
-    public static <T> ExprViewItem<T> accumulate(ViewItem<?> viewItem, AccumulateFunction... functions) {
-        return new AccumulateExprViewItem(viewItem, functions);
-    }
-
-    public static ViewItem or(ViewItemBuilder<?> expression, ViewItemBuilder<?>... expressions) {
-        if (expressions == null || expressions.length == 0) {
-            return expression.get();
-        }
-        return new CombinedExprViewItem(Condition.Type.OR, combineExprs( expression, expressions ) );
-    }
-
-    public static ViewItem and(ViewItemBuilder<?> expression, ViewItemBuilder<?>... expressions) {
-        if (expressions == null || expressions.length == 0) {
-            return expression.get();
-        }
-        return new CombinedExprViewItem(Condition.Type.AND, combineExprs( expression, expressions ) );
-    }
-
-    private static ViewItem[] combineExprs( ViewItemBuilder<?> expression, ViewItemBuilder<?>... expressions ) {
-        ViewItem[] andExprs = new ViewItem[expressions.length+1];
-        andExprs[0] = expression.get();
-        for (int i = 0; i < expressions.length; i++) {
-            andExprs[i+1] = expressions[i].get();
-        }
-        return andExprs;
     }
 
     public static <T> BindViewItemBuilder<T> bind( Variable<T> var) {

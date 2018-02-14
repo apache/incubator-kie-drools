@@ -325,9 +325,9 @@ public class FlowTest {
     @Test
     public void testOr() {
         Result result = new Result();
-        Variable<Person> personV = declarationOf(  Person.class );
-        Variable<Person> markV = declarationOf(  Person.class );
-        Variable<String> nameV = declarationOf(  String.class );
+        Variable<Person> personV = declarationOf( Person.class );
+        Variable<Person> markV = declarationOf( Person.class );
+        Variable<String> nameV = declarationOf( String.class );
 
         Rule rule = rule( "or" )
                 .build(

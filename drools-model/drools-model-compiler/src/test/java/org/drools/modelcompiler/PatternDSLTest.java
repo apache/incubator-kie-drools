@@ -19,6 +19,7 @@ package org.drools.modelcompiler;
 import java.util.Collection;
 
 import org.assertj.core.api.Assertions;
+import org.drools.model.DSL;
 import org.drools.model.Index;
 import org.drools.model.Model;
 import org.drools.model.Rule;
@@ -32,15 +33,7 @@ import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
-import static org.drools.model.PatternDSL.alphaIndexedBy;
-import static org.drools.model.PatternDSL.betaIndexedBy;
-import static org.drools.model.PatternDSL.bind;
-import static org.drools.model.PatternDSL.declarationOf;
-import static org.drools.model.PatternDSL.expr;
-import static org.drools.model.PatternDSL.on;
-import static org.drools.model.PatternDSL.pattern;
-import static org.drools.model.PatternDSL.reactOn;
-import static org.drools.model.PatternDSL.rule;
+import static org.drools.model.PatternDSL.*;
 import static org.drools.modelcompiler.BaseModelTest.getObjectsIntoList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -152,4 +145,93 @@ public class PatternDSLTest {
         Assertions.assertThat(results).containsExactlyInAnyOrder("Mario is older than Mark", "Edson is older than Mark");
     }
 
+    @Test
+    public void testOr() {
+        Result result = new Result();
+        Variable<Person> personV = declarationOf( Person.class );
+        Variable<Person> markV = declarationOf( Person.class );
+        Variable<String> nameV = declarationOf( String.class );
+
+        Rule rule = rule( "or" )
+                .build(
+                        or(
+                                pattern( personV, expr("exprA", p -> p.getName().equals("Mark")) ),
+                                and(
+                                        pattern( markV, expr("exprA", p -> p.getName().equals("Mark"))),
+                                        pattern( personV, expr("exprB", markV, (p1, p2) -> p1.getAge() > p2.getAge()) )
+                                )
+                        ),
+                        pattern( nameV, expr("exprC", personV, (s, p) -> s.equals( p.getName() )) ),
+                        on(nameV).execute( result::setValue )
+                );
+
+        Model model = new ModelImpl().addRule( rule );
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
+
+        KieSession ksession = kieBase.newKieSession();
+
+        ksession.insert( "Mario" );
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Edson", 35));
+        ksession.insert(new Person("Mario", 40));
+        ksession.fireAllRules();
+
+        assertEquals("Mario", result.getValue());
+    }
+
+    @Test
+    public void testNot() {
+        Result result = new Result();
+        Variable<Person> oldestV = DSL.declarationOf(  Person.class );
+        Variable<Person> otherV = DSL.declarationOf(  Person.class );
+
+        Rule rule = rule("not")
+                .build(
+                        pattern( oldestV ),
+                        not( pattern( otherV, expr( "exprA", oldestV, (p1, p2) -> p1.getAge() > p2.getAge()) ) ),
+                        on(oldestV).execute(p -> result.setValue( "Oldest person is " + p.getName()))
+                );
+
+        Model model = new ModelImpl().addRule( rule );
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
+
+        KieSession ksession = kieBase.newKieSession();
+
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Edson", 35));
+        ksession.insert(new Person("Mario", 40));
+
+        ksession.fireAllRules();
+        assertEquals("Oldest person is Mario", result.getValue());
+    }
+
+    @Test
+    public void testAccumulate() {
+        Result result = new Result();
+        Variable<Person> person = declarationOf(  Person.class );
+        Variable<Integer> resultSum = declarationOf(  Integer.class );
+        Variable<Double> resultAvg = declarationOf(  Double.class );
+        Variable<Integer> age = declarationOf(  Integer.class );
+
+        Rule rule = rule("accumulate")
+                .build(
+                        accumulate( pattern( person, expr(p -> p.getName().startsWith("M")), bind(age, Person::getAge) ),
+                                accFunction(org.drools.core.base.accumulators.IntegerSumAccumulateFunction.class, age).as(resultSum),
+                                accFunction(org.drools.core.base.accumulators.AverageAccumulateFunction.class, age).as(resultAvg)),
+                        on(resultSum, resultAvg)
+                                .execute((sum, avg) -> result.setValue( "total = " + sum + "; average = " + avg ))
+                );
+
+        Model model = new ModelImpl().addRule( rule );
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
+
+        KieSession ksession = kieBase.newKieSession();
+
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Edson", 35));
+        ksession.insert(new Person("Mario", 40));
+
+        ksession.fireAllRules();
+        assertEquals("total = 77; average = 38.5", result.getValue());
+    }
 }

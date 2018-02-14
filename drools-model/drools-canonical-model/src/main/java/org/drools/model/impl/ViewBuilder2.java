@@ -21,10 +21,12 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.drools.model.Condition;
 import org.drools.model.Consequence;
+import org.drools.model.Pattern;
 import org.drools.model.PatternDSL.PatternBindingImpl;
 import org.drools.model.PatternDSL.PatternDef;
 import org.drools.model.PatternDSL.PatternExprImpl;
@@ -32,14 +34,21 @@ import org.drools.model.PatternDSL.PatternItem;
 import org.drools.model.RuleItem;
 import org.drools.model.RuleItemBuilder;
 import org.drools.model.consequences.NamedConsequenceImpl;
+import org.drools.model.patterns.AccumulatePatternImpl;
 import org.drools.model.patterns.CompositePatterns;
+import org.drools.model.patterns.ExistentialPatternImpl;
 import org.drools.model.patterns.PatternImpl;
+import org.drools.model.view.AccumulateExprViewItem;
+import org.drools.model.view.CombinedExprViewItem;
+import org.drools.model.view.ExistentialExprViewItem;
+import org.drools.model.view.ViewItem;
 
 import static java.util.stream.Collectors.toList;
 
 import static org.drools.model.impl.NamesGenerator.generateName;
 
 public class ViewBuilder2 {
+
     private ViewBuilder2() { }
 
     public static CompositePatterns viewItems2Patterns( RuleItemBuilder<?>[] viewItemBuilders ) {
@@ -60,20 +69,53 @@ public class ViewBuilder2 {
                 continue;
             }
 
-            if (ruleItem instanceof PatternDef) {
-                PatternDef patternDef = (PatternDef) ruleItem;
-                PatternImpl pattern = new PatternImpl(patternDef.getVariable());
-                for (PatternItem patternItem : patternDef.getItems()) {
-                    if (patternItem instanceof PatternExprImpl) {
-                        pattern.addConstraint( (( PatternExprImpl ) patternItem).asConstraint( patternDef ) );
-                    } else if (patternItem instanceof PatternBindingImpl) {
-                        pattern.addBinding( (( PatternBindingImpl ) patternItem).asBinding( patternDef ) );
-                    }
+            conditions.add( ruleItem2Condition( ruleItem ) );
+        }
+
+        return new CompositePatterns( Condition.Type.AND, conditions, consequences );
+    }
+
+    private static Condition ruleItem2Condition(RuleItem ruleItem) {
+        if ( ruleItem instanceof PatternDef ) {
+            PatternDef patternDef = ( PatternDef ) ruleItem;
+            PatternImpl pattern = new PatternImpl( patternDef.getFirstVariable() );
+            for (PatternItem patternItem : patternDef.getItems()) {
+                if ( patternItem instanceof PatternExprImpl ) {
+                    pattern.addConstraint( (( PatternExprImpl ) patternItem).asConstraint( patternDef ) );
+                } else if ( patternItem instanceof PatternBindingImpl ) {
+                    pattern.addBinding( (( PatternBindingImpl ) patternItem).asBinding( patternDef ) );
                 }
-                conditions.add(pattern);
+            }
+            return pattern;
+        }
+
+        if ( ruleItem instanceof CombinedExprViewItem ) {
+            CombinedExprViewItem combined = ( CombinedExprViewItem ) ruleItem;
+            List<Condition> conditions = new ArrayList<>();
+            for (ViewItem expr : combined.getExpressions()) {
+                conditions.add(ruleItem2Condition( expr ));
+            }
+            return new CompositePatterns( combined.getType(), conditions );
+        }
+
+        if ( ruleItem instanceof ExistentialExprViewItem ) {
+            ExistentialExprViewItem existential = (ExistentialExprViewItem) ruleItem;
+            return new ExistentialPatternImpl( ruleItem2Condition( existential.getExpression() ), existential.getType() );
+        }
+
+        if ( ruleItem instanceof AccumulateExprViewItem ) {
+            AccumulateExprViewItem acc = (AccumulateExprViewItem) ruleItem;
+
+            Condition newCondition = ruleItem2Condition( acc.getExpr() );
+            if (newCondition instanceof Pattern ) {
+                return new AccumulatePatternImpl((Pattern) newCondition, Optional.empty(), acc.getAccumulateFunctions());
+            } else if (newCondition instanceof CompositePatterns) {
+                return new AccumulatePatternImpl(null, Optional.of(newCondition), acc.getAccumulateFunctions());
+            } else {
+                throw new RuntimeException("Unknown pattern");
             }
         }
 
-        return new CompositePatterns( Condition.Type.AND, conditions, null, consequences );
+        throw new UnsupportedOperationException( "Unknown " + ruleItem );
     }
 }

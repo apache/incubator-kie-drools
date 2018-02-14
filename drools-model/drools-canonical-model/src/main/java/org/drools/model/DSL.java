@@ -43,6 +43,12 @@ import org.drools.model.impl.UnitDataImpl;
 import org.drools.model.impl.ValueImpl;
 import org.drools.model.impl.WindowImpl;
 import org.drools.model.impl.WindowReferenceImpl;
+import org.drools.model.view.AccumulateExprViewItem;
+import org.drools.model.view.CombinedExprViewItem;
+import org.drools.model.view.ExistentialExprViewItem;
+import org.drools.model.view.ExprViewItem;
+import org.drools.model.view.ViewItem;
+import org.drools.model.view.ViewItemBuilder;
 
 public class DSL {
 
@@ -164,7 +170,48 @@ public class DSL {
         return new FromImpl<>( variable, provider, true );
     }
 
+    public static ViewItem or( ViewItemBuilder<?> expression, ViewItemBuilder<?>... expressions) {
+        if (expressions == null || expressions.length == 0) {
+            return expression.get();
+        }
+        return new CombinedExprViewItem(Condition.Type.OR, combineExprs( expression, expressions ) );
+    }
+
+    public static ViewItem and(ViewItemBuilder<?> expression, ViewItemBuilder<?>... expressions) {
+        if (expressions == null || expressions.length == 0) {
+            return expression.get();
+        }
+        return new CombinedExprViewItem(Condition.Type.AND, combineExprs( expression, expressions ) );
+    }
+
+    private static ViewItem[] combineExprs( ViewItemBuilder<?> expression, ViewItemBuilder<?>... expressions ) {
+        ViewItem[] andExprs = new ViewItem[expressions.length+1];
+        andExprs[0] = expression.get();
+        for (int i = 0; i < expressions.length; i++) {
+            andExprs[i+1] = expressions[i].get();
+        }
+        return andExprs;
+    }
+
+    // -- Existential operator --
+
+    public static ExprViewItem not( ViewItemBuilder<?> expression, ViewItemBuilder<?>... expressions) {
+        return new ExistentialExprViewItem( Condition.Type.NOT, and( expression, expressions) );
+    }
+
+    public static ExprViewItem exists(ViewItemBuilder<?> expression, ViewItemBuilder<?>... expressions) {
+        return new ExistentialExprViewItem( Condition.Type.EXISTS, and( expression, expressions) );
+    }
+
+    public static ExprViewItem forall(ViewItemBuilder<?> expression, ViewItemBuilder<?>... expressions) {
+        return new ExistentialExprViewItem( Condition.Type.FORALL, and( expression, expressions) );
+    }
+
     // -- Accumulate Functions --
+
+    public static <T> ExprViewItem<T> accumulate(ViewItem<?> viewItem, AccumulateFunction... functions) {
+        return new AccumulateExprViewItem(viewItem, functions);
+    }
 
     public static AccumulateFunction accFunction( Class<?> accFunctionClass, Variable source) {
         return new AccumulateFunction(source, accFunctionClass);

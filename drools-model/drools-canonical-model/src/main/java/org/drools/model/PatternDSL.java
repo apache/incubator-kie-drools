@@ -28,6 +28,7 @@ import org.drools.model.index.AlphaIndexImpl;
 import org.drools.model.index.BetaIndexImpl;
 import org.drools.model.view.BindViewItem1;
 import org.drools.model.view.BindViewItem2;
+import org.drools.model.view.ViewItem;
 
 import static java.util.UUID.randomUUID;
 
@@ -93,7 +94,7 @@ public class PatternDSL extends DSL {
         return new ReactOn( reactOn );
     }
 
-    public static class PatternDef<T> implements RuleItem, RuleItemBuilder<PatternDef<T>> {
+    public static class PatternDef<T> implements ViewItem<T> {
         private final Variable<T> variable;
         private final PatternItem<T>[] items;
 
@@ -107,12 +108,18 @@ public class PatternDSL extends DSL {
             return this;
         }
 
-        public Variable<T> getVariable() {
+        @Override
+        public Variable<T> getFirstVariable() {
             return variable;
         }
 
         public PatternItem<T>[] getItems() {
             return items;
+        }
+
+        @Override
+        public Variable<?>[] getVariables() {
+            throw new UnsupportedOperationException();
         }
     }
 
@@ -168,7 +175,7 @@ public class PatternDSL extends DSL {
 
         @Override
         public Constraint asConstraint(PatternDef patternDef) {
-            SingleConstraint1 constraint = new SingleConstraint1(getExprId(), patternDef.getVariable(), getPredicate());
+            SingleConstraint1 constraint = new SingleConstraint1(getExprId(), patternDef.getFirstVariable(), getPredicate());
             constraint.setIndex( getIndex() );
             constraint.setReactiveProps( getReactOn() );
             return constraint;
@@ -206,7 +213,7 @@ public class PatternDSL extends DSL {
 
         @Override
         public Constraint asConstraint(PatternDef patternDef) {
-            SingleConstraint2 constraint = new SingleConstraint2(getExprId(), patternDef.getVariable(), getVar2(), getPredicate());
+            SingleConstraint2 constraint = new SingleConstraint2(getExprId(), patternDef.getFirstVariable(), getVar2(), getPredicate());
             constraint.setIndex( getIndex() );
             constraint.setReactiveProps( getReactOn() );
             return constraint;
@@ -267,7 +274,7 @@ public class PatternDSL extends DSL {
 
         @Override
         public Binding asBinding( PatternDef patternDef ) {
-            return new BindViewItem1(boundVar, f, patternDef.getVariable(), getReactOn()[0]);
+            return new BindViewItem1(boundVar, f, patternDef.getFirstVariable(), getReactOn().length > 0 ? getReactOn()[0] : null);
         }
     }
 
@@ -283,7 +290,7 @@ public class PatternDSL extends DSL {
 
         @Override
         public Binding asBinding( PatternDef patternDef ) {
-            return new BindViewItem2(boundVar, f, patternDef.getVariable(), otherVar, getReactOn()[0]);
+            return new BindViewItem2(boundVar, f, patternDef.getFirstVariable(), otherVar, getReactOn().length > 0 ? getReactOn()[0] : null);
         }
     }
 
