@@ -6,11 +6,12 @@ import java.util.Map;
 
 import org.drools.model.Rule;
 import org.drools.model.RuleItemBuilder;
-import org.drools.model.patterns.CompositePatterns;
 
 public class RuleBuilder {
 
     public static final String DEFAULT_PACKAGE = "defaultpkg";
+
+    private final ViewBuilder viewBuilder;
 
     private final String pkg;
     private final String name;
@@ -20,11 +21,12 @@ public class RuleBuilder {
     private final Map<Rule.Attribute, Object> attributes = new IdentityHashMap<>();
     private Map<String, Object> metaAttributes = new HashMap<>();
 
-    public RuleBuilder(String name) {
-        this(DEFAULT_PACKAGE, name);
+    public RuleBuilder( ViewBuilder viewBuilder, String name ) {
+        this( viewBuilder, DEFAULT_PACKAGE, name);
     }
 
-    public RuleBuilder(String pkg, String name) {
+    public RuleBuilder( ViewBuilder viewBuilder, String pkg, String name ) {
+        this.viewBuilder = viewBuilder;
         this.pkg = pkg;
         this.name = name;
     }
@@ -57,25 +59,6 @@ public class RuleBuilder {
     }
 
     public Rule build( RuleItemBuilder<?>... viewItemBuilders ) {
-        return new RuleImpl(pkg, name, unit, viewItems2Patterns(viewItemBuilders), attributes, metaAttributes);
-    }
-
-    protected CompositePatterns viewItems2Patterns( RuleItemBuilder<?>[] viewItemBuilders ) {
-        return ViewBuilder.viewItems2Patterns(viewItemBuilders);
-    }
-
-    public static class ForPattern extends RuleBuilder {
-
-        public ForPattern( String name ) {
-            super( name );
-        }
-
-        public ForPattern( String pkg, String name ) {
-            super( pkg, name );
-        }
-
-        protected CompositePatterns viewItems2Patterns( RuleItemBuilder<?>[] viewItemBuilders ) {
-            return ViewBuilder2.viewItems2Patterns(viewItemBuilders);
-        }
+        return new RuleImpl(pkg, name, unit, viewBuilder.apply(viewItemBuilders), attributes, metaAttributes);
     }
 }

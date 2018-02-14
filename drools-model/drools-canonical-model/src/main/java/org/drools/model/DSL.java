@@ -33,11 +33,6 @@ import org.drools.model.impl.DeclarationImpl;
 import org.drools.model.impl.EntryPointImpl;
 import org.drools.model.impl.FromImpl;
 import org.drools.model.impl.GlobalImpl;
-import org.drools.model.impl.Query0DefImpl;
-import org.drools.model.impl.Query1DefImpl;
-import org.drools.model.impl.Query2DefImpl;
-import org.drools.model.impl.Query3DefImpl;
-import org.drools.model.impl.Query4DefImpl;
 import org.drools.model.impl.TypeMetaDataImpl;
 import org.drools.model.impl.UnitDataImpl;
 import org.drools.model.impl.ValueImpl;
@@ -245,80 +240,6 @@ public class DSL {
 
     public static ConsequenceBuilder._N on(Variable... declarations) {
         return new ConsequenceBuilder._N(declarations);
-    }
-
-    // -- query --
-
-    public static <A> Query0Def query( String name ) {
-        return new Query0DefImpl( name );
-    }
-
-    public static <A> Query0Def query( String pkg, String name ) {
-        return new Query0DefImpl( pkg, name );
-    }
-
-    public static <A> Query1Def<A> query( String name, Class<A> type1 ) {
-        return new Query1DefImpl<A>( name, type1 );
-    }
-
-    public static <A> Query1Def<A> query( String name, Class<A> type1, String arg1name ) {
-        return new Query1DefImpl<A>( name, type1, arg1name);
-    }
-
-    public static <A> Query1Def<A> query( String pkg, String name, Class<A> type1 ) {
-        return new Query1DefImpl<A>( pkg, name, type1 );
-    }
-
-    public static <A,B> Query2Def<A,B> query( String name, Class<A> type1, Class<B> type2 ) {
-        return new Query2DefImpl<A,B>( name, type1, type2 );
-    }
-
-    public static <A,B> Query2Def<A,B> query( String pkg, String name, Class<A> type1, Class<B> type2 ) {
-        return new Query2DefImpl<A,B>( pkg, name, type1, type2 );
-    }
-
-    public static <A,B,C> Query3Def<A,B,C> query( String name, Class<A> type1, Class<B> type2, Class<C> type3 ) {
-        return new Query3DefImpl<A,B,C>(name, type1, type2, type3 );
-    }
-
-    public static <A,B,C> Query3Def<A,B,C> query( String pkg, String name, Class<A> type1, Class<B> type2, Class<C> type3 ) {
-        return new Query3DefImpl<A,B,C>( pkg, name, type1, type2, type3 );
-    }
-
-    public static <A,B,C, D> Query4Def<A,B,C,D> query( String name, Class<A> type1, Class<B> type2, Class<C> type3, Class<D> type4) {
-        return new Query4DefImpl<A,B,C,D>(name, type1, type2, type3, type4 );
-    }
-
-    public static <A,B,C, D> Query4Def<A,B,C,D> query( String pkg, String name, Class<A> type1, Class<B> type2, Class<C> type3, Class<D> type4) {
-        return new Query4DefImpl<A,B,C,D>( pkg, name, type1, type2, type3, type4 );
-    }
-
-    public static <A> Query1Def<A> query( String pkg, String name, Class<A> type1, String arg1name ) {
-        return new Query1DefImpl<A>( pkg, name, type1, arg1name);
-    }
-
-    public static <A,B> Query2Def<A,B> query( String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name ) {
-        return new Query2DefImpl<A,B>( name, type1, arg1name, type2 ,arg2name);
-    }
-
-    public static <A,B> Query2Def<A,B> query( String pkg, String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name ) {
-        return new Query2DefImpl<A,B>( pkg, name, type1, arg1name, type2, arg2name);
-    }
-
-    public static <A,B,C> Query3Def<A,B,C> query( String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name, Class<C> type3, String arg3name ) {
-        return new Query3DefImpl<A,B,C>(name, type1, arg1name, type2, arg2name, type3, arg3name);
-    }
-
-    public static <A,B,C> Query3Def<A,B,C> query( String pkg, String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name, Class<C> type3, String arg3name ) {
-        return new Query3DefImpl<A,B,C>( pkg, name, type1, arg1name, type2, arg2name, type3, arg3name);
-    }
-
-    public static <A,B,C, D> Query4Def<A,B,C,D> query( String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name, Class<C> type3, String arg3name, Class<D> type4, String arg4name) {
-        return new Query4DefImpl<A,B,C,D>(name, type1, type2, type3, type4 );
-    }
-
-    public static <A,B,C, D> Query4Def<A,B,C,D> query( String pkg, String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name, Class<C> type3, String arg3name, Class<D> type4, String arg4name) {
-        return new Query4DefImpl<A,B,C,D>( pkg, name, type1, type2, type3, type4 );
     }
 
     public static <T> Value<T> valueOf(T value) {

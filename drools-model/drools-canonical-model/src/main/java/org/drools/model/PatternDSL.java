@@ -23,7 +23,13 @@ import org.drools.model.functions.Function2;
 import org.drools.model.functions.Predicate1;
 import org.drools.model.functions.Predicate2;
 import org.drools.model.impl.DeclarationImpl;
+import org.drools.model.impl.Query0DefImpl;
+import org.drools.model.impl.Query1DefImpl;
+import org.drools.model.impl.Query2DefImpl;
+import org.drools.model.impl.Query3DefImpl;
+import org.drools.model.impl.Query4DefImpl;
 import org.drools.model.impl.RuleBuilder;
+import org.drools.model.impl.ViewBuilder;
 import org.drools.model.index.AlphaIndexImpl;
 import org.drools.model.index.BetaIndexImpl;
 import org.drools.model.view.BindViewItem1;
@@ -33,6 +39,8 @@ import org.drools.model.view.ViewItem;
 import static java.util.UUID.randomUUID;
 
 public class PatternDSL extends DSL {
+
+    private static final ViewBuilder VIEW_BUILDER = ViewBuilder.PATTERN;
 
     public static <T> Declaration<T> declarationOf( Class<T> type ) {
         return new DeclarationImpl<T>( type );
@@ -297,10 +305,84 @@ public class PatternDSL extends DSL {
     // -- rule --
 
     public static RuleBuilder rule( String name) {
-        return new RuleBuilder.ForPattern(name);
+        return new RuleBuilder( VIEW_BUILDER, name );
     }
 
     public static RuleBuilder rule(String pkg, String name) {
-        return new RuleBuilder.ForPattern(pkg, name);
+        return new RuleBuilder( VIEW_BUILDER, pkg, name);
+    }
+
+    // -- query --
+
+    public static <A> Query0Def query( String name ) {
+        return new Query0DefImpl( VIEW_BUILDER, name );
+    }
+
+    public static <A> Query0Def query( String pkg, String name ) {
+        return new Query0DefImpl( VIEW_BUILDER, pkg, name );
+    }
+
+    public static <A> Query1Def<A> query( String name, Class<A> type1 ) {
+        return new Query1DefImpl<A>( VIEW_BUILDER, name, type1 );
+    }
+
+    public static <A> Query1Def<A> query( String name, Class<A> type1, String arg1name ) {
+        return new Query1DefImpl<A>( VIEW_BUILDER, name, type1, arg1name);
+    }
+
+    public static <A> Query1Def<A> query( String pkg, String name, Class<A> type1 ) {
+        return new Query1DefImpl<A>( VIEW_BUILDER, pkg, name, type1 );
+    }
+
+    public static <A,B> Query2Def<A,B> query( String name, Class<A> type1, Class<B> type2 ) {
+        return new Query2DefImpl<A,B>( VIEW_BUILDER, name, type1, type2 );
+    }
+
+    public static <A,B> Query2Def<A,B> query( String pkg, String name, Class<A> type1, Class<B> type2 ) {
+        return new Query2DefImpl<A,B>( VIEW_BUILDER, pkg, name, type1, type2 );
+    }
+
+    public static <A,B,C> Query3Def<A,B,C> query( String name, Class<A> type1, Class<B> type2, Class<C> type3 ) {
+        return new Query3DefImpl<A,B,C>(VIEW_BUILDER, name, type1, type2, type3 );
+    }
+
+    public static <A,B,C> Query3Def<A,B,C> query( String pkg, String name, Class<A> type1, Class<B> type2, Class<C> type3 ) {
+        return new Query3DefImpl<A,B,C>( VIEW_BUILDER, pkg, name, type1, type2, type3 );
+    }
+
+    public static <A,B,C, D> Query4Def<A,B,C,D> query( String name, Class<A> type1, Class<B> type2, Class<C> type3, Class<D> type4) {
+        return new Query4DefImpl<A,B,C,D>(VIEW_BUILDER, name, type1, type2, type3, type4 );
+    }
+
+    public static <A,B,C, D> Query4Def<A,B,C,D> query( String pkg, String name, Class<A> type1, Class<B> type2, Class<C> type3, Class<D> type4) {
+        return new Query4DefImpl<A,B,C,D>( VIEW_BUILDER, pkg, name, type1, type2, type3, type4 );
+    }
+
+    public static <A> Query1Def<A> query( String pkg, String name, Class<A> type1, String arg1name ) {
+        return new Query1DefImpl<A>( VIEW_BUILDER, pkg, name, type1, arg1name);
+    }
+
+    public static <A,B> Query2Def<A,B> query( String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name ) {
+        return new Query2DefImpl<A,B>( VIEW_BUILDER, name, type1, arg1name, type2 ,arg2name);
+    }
+
+    public static <A,B> Query2Def<A,B> query( String pkg, String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name ) {
+        return new Query2DefImpl<A,B>( VIEW_BUILDER, pkg, name, type1, arg1name, type2, arg2name);
+    }
+
+    public static <A,B,C> Query3Def<A,B,C> query( String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name, Class<C> type3, String arg3name ) {
+        return new Query3DefImpl<A,B,C>(VIEW_BUILDER, name, type1, arg1name, type2, arg2name, type3, arg3name);
+    }
+
+    public static <A,B,C> Query3Def<A,B,C> query( String pkg, String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name, Class<C> type3, String arg3name ) {
+        return new Query3DefImpl<A,B,C>( VIEW_BUILDER, pkg, name, type1, arg1name, type2, arg2name, type3, arg3name);
+    }
+
+    public static <A,B,C, D> Query4Def<A,B,C,D> query( String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name, Class<C> type3, String arg3name, Class<D> type4, String arg4name) {
+        return new Query4DefImpl<A,B,C,D>(VIEW_BUILDER, name, type1, type2, type3, type4 );
+    }
+
+    public static <A,B,C, D> Query4Def<A,B,C,D> query( String pkg, String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name, Class<C> type3, String arg3name, Class<D> type4, String arg4name) {
+        return new Query4DefImpl<A,B,C,D>( VIEW_BUILDER, pkg, name, type1, type2, type3, type4 );
     }
 }

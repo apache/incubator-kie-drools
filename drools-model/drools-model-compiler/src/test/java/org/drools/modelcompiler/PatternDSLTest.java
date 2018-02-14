@@ -22,6 +22,8 @@ import org.assertj.core.api.Assertions;
 import org.drools.model.DSL;
 import org.drools.model.Index;
 import org.drools.model.Model;
+import org.drools.model.Query;
+import org.drools.model.Query2Def;
 import org.drools.model.Rule;
 import org.drools.model.Variable;
 import org.drools.model.impl.ModelImpl;
@@ -29,12 +31,16 @@ import org.drools.modelcompiler.builder.KieBaseBuilder;
 import org.drools.modelcompiler.domain.Adult;
 import org.drools.modelcompiler.domain.Child;
 import org.drools.modelcompiler.domain.Person;
+import org.drools.modelcompiler.domain.Relationship;
 import org.drools.modelcompiler.domain.Result;
 import org.junit.Test;
 import org.kie.api.KieBase;
+import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.QueryResults;
 
+import static org.drools.model.DSL.valueOf;
 import static org.drools.model.PatternDSL.accFunction;
 import static org.drools.model.PatternDSL.accumulate;
 import static org.drools.model.PatternDSL.alphaIndexedBy;
@@ -47,6 +53,7 @@ import static org.drools.model.PatternDSL.not;
 import static org.drools.model.PatternDSL.on;
 import static org.drools.model.PatternDSL.or;
 import static org.drools.model.PatternDSL.pattern;
+import static org.drools.model.PatternDSL.query;
 import static org.drools.model.PatternDSL.reactOn;
 import static org.drools.model.PatternDSL.rule;
 import static org.drools.modelcompiler.BaseModelTest.getObjectsIntoList;
@@ -264,7 +271,9 @@ public class PatternDSLTest {
                 accumulate(
                         and(
                             pattern(var_$c,
-                                    expr("$expr$1$", (_this) -> _this.getAge() < 10, alphaIndexedBy(int.class, Index.ConstraintType.LESS_THAN, 0, _this -> _this.getAge(), 10), reactOn("age"))
+                                    expr("$expr$1$", (_this) -> _this.getAge() < 10,
+                                            alphaIndexedBy(int.class, Index.ConstraintType.LESS_THAN, 0, _this -> _this.getAge(), 10),
+                                            reactOn("age"))
                             ),
                             pattern(var_$a,
                                     expr("$expr$2$", var_$c, (_this, $c) -> _this.getName().equals($c.getParent()), reactOn("name")),
@@ -290,5 +299,64 @@ public class PatternDSLTest {
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
         assertThat(results, hasItem(new Result(49)));
+    }
+
+    @Test
+    public void testQueryInRule() {
+        Variable<Person> personV = DSL.declarationOf(  Person.class );
+
+        Query2Def<Person, Integer> qdef = query( "olderThan", Person.class, Integer.class );
+        Query query = qdef.build( pattern( qdef.getArg1(), expr("exprA", qdef.getArg2(), ( p, a) -> p.getAge() > a) ) );
+
+        Variable<Person> personVRule = DSL.declarationOf(  Person.class );
+        Rule rule = rule("R")
+                .build(
+                        qdef.call(personVRule, valueOf(40)),
+                        on(personVRule).execute((drools, p) -> drools.insert(new Result(p.getName())) )
+                );
+
+        Model model = new ModelImpl().addQuery( query ).addRule( rule );
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
+
+        KieSession ksession = kieBase.newKieSession();
+
+        ksession.insert( new Person( "Mark", 39 ) );
+        ksession.insert( new Person( "Mario", 41 ) );
+
+        ksession.fireAllRules();
+
+        Collection<Result> results = (Collection<Result>) ksession.getObjects( new ClassObjectFilter( Result.class ) );
+        assertEquals( 1, results.size() );
+        assertEquals( "Mario", results.iterator().next().getValue() );
+    }
+
+    @Test
+    public void testQueryInvokingQuery() {
+        Variable<Relationship> relV = DSL.declarationOf( Relationship.class );
+
+        Query2Def<String, String> query1Def = query( "isRelatedTo1", String.class, String.class );
+        Query2Def<String, String> query2Def = query( "isRelatedTo2", String.class, String.class );
+
+        Query query2 = query2Def.build(
+                pattern( relV,
+                        expr("exprA", query2Def.getArg1(), ( r, s) -> r.getStart().equals( s )),
+                        expr("exprB", query2Def.getArg2(), ( r, e) -> r.getEnd().equals( e ))
+                )
+        );
+
+        Query query1 = query1Def.build( query2Def.call(query1Def.getArg1(), query1Def.getArg2()) );
+
+        Model model = new ModelImpl().addQuery( query2 ).addQuery( query1 );
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
+
+        KieSession ksession = kieBase.newKieSession();
+
+        ksession.insert( new Relationship( "A", "B" ) );
+        ksession.insert( new Relationship( "B", "C" ) );
+
+        QueryResults results = ksession.getQueryResults( "isRelatedTo1", "A", "B" );
+
+        assertEquals( 1, results.size() );
+        assertEquals( "B", results.iterator().next().get( query1Def.getArg2().getName() ) );
     }
 }
