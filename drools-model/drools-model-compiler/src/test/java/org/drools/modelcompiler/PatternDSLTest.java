@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.assertj.core.api.Assertions;
 import org.drools.core.ClockType;
+import org.drools.model.BitMask;
 import org.drools.model.DSL;
 import org.drools.model.Index;
 import org.drools.model.Model;
@@ -464,5 +465,32 @@ public class PatternDSLTest {
         assertEquals(1, results.size());
 
         assertEquals( "Found Mark", results.iterator().next() );
+    }
+
+    @Test
+    public void testWatch() {
+        Variable<Person> var_$p = declarationOf(Person.class, "$p");
+        BitMask mask_$p = BitMask.getPatternMask(org.drools.modelcompiler.domain.Person.class, "age");
+
+        Rule rule = rule("R").build(
+                pattern(var_$p,
+                    expr("$expr$1$", (_this) -> _this.getAge() < 50,
+                            alphaIndexedBy(int.class, Index.ConstraintType.LESS_THAN, 0, _this -> _this.getAge(), 50),
+                            reactOn("age"))
+                ).watch("!age"),
+                on(var_$p).execute((drools, $p) -> {
+                    $p.setAge($p.getAge() + 1);
+                    drools.update($p, mask_$p);
+                }));
+
+        Model model = new ModelImpl().addRule( rule );
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
+        KieSession ksession = kieBase.newKieSession();
+
+        Person p = new Person("Mario", 40);
+        ksession.insert( p );
+        ksession.fireAllRules();
+
+        assertEquals(41, p.getAge());
     }
 }

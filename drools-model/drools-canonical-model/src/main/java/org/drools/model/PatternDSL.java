@@ -47,11 +47,11 @@ public class PatternDSL extends DSL {
     private static final ViewBuilder VIEW_BUILDER = ViewBuilder.PATTERN;
 
     public static <T> Declaration<T> declarationOf( Class<T> type ) {
-        return new DeclarationImpl<T>( type );
+        return new DeclarationImpl<>( type );
     }
 
     public static <T> PatternDef<T> pattern( Variable<T> var, PatternItem<T>... items ) {
-        return new PatternDef<>( var, items );
+        return new PatternDefImpl<>( var, items );
     }
 
     public static <T> PatternItem<T> expr( Predicate1<T> predicate ) {
@@ -95,7 +95,7 @@ public class PatternDSL extends DSL {
     }
 
     public static <T, U> TemporalPatternExpr<T, U> expr( String exprId, Variable<U> var1, TemporalPredicate temporalPredicate ) {
-        return new TemporalPatternExpr<T, U>( exprId, var1, temporalPredicate);
+        return new TemporalPatternExpr<>( exprId, var1, temporalPredicate);
     }
 
     public static <T, U> AlphaIndex<T, U> alphaIndexedBy( Class<U> indexedClass, Index.ConstraintType constraintType, int indexId, Function1<T, U> leftOperandExtractor, U rightValue ) {
@@ -110,17 +110,23 @@ public class PatternDSL extends DSL {
         return new ReactOn( reactOn );
     }
 
-    public static class PatternDef<T> implements ViewItem<T> {
+    public interface PatternDef<T> extends ViewItem<T> {
+        PatternDef<T> watch(String... watch);
+    }
+
+    public static class PatternDefImpl<T> implements PatternDef<T> {
         private final Variable<T> variable;
         private final PatternItem<T>[] items;
 
-        public PatternDef( Variable<T> variable, PatternItem<T>... items ) {
+        private String[] watch;
+
+        public PatternDefImpl( Variable<T> variable, PatternItem<T>... items ) {
             this.variable = variable;
             this.items = items;
         }
 
         @Override
-        public PatternDef<T> get() {
+        public PatternDefImpl<T> get() {
             return this;
         }
 
@@ -133,6 +139,15 @@ public class PatternDSL extends DSL {
             return items;
         }
 
+        public PatternDef<T> watch(String... watch) {
+            this.watch = watch;
+            return this;
+        }
+
+        public String[] getWatch() {
+            return watch;
+        }
+
         @Override
         public Variable<?>[] getVariables() {
             throw new UnsupportedOperationException();
@@ -141,11 +156,7 @@ public class PatternDSL extends DSL {
 
     public interface PatternItem<T> { }
 
-    public interface PatternBinding<T> extends PatternItem<T> { }
-
-    public interface PatternExpr<T> extends PatternItem<T> { }
-
-    public static abstract class PatternExprImpl<T> implements PatternExpr<T>  {
+    public static abstract class PatternExprImpl<T> implements PatternItem<T>  {
         private final String exprId;
         private final ReactOn reactOn;
 
@@ -162,7 +173,7 @@ public class PatternDSL extends DSL {
             return reactOn != null ? reactOn.getStrings() : new String[0];
         }
 
-        public abstract Constraint asConstraint( PatternDef patternDef );
+        public abstract Constraint asConstraint( PatternDefImpl patternDef );
     }
 
     public static class PatternExpr1<T> extends PatternExprImpl<T> {
@@ -190,7 +201,7 @@ public class PatternDSL extends DSL {
         }
 
         @Override
-        public Constraint asConstraint(PatternDef patternDef) {
+        public Constraint asConstraint(PatternDefImpl patternDef) {
             SingleConstraint1 constraint = new SingleConstraint1(getExprId(), patternDef.getFirstVariable(), getPredicate());
             constraint.setIndex( getIndex() );
             constraint.setReactiveProps( getReactOn() );
@@ -224,7 +235,7 @@ public class PatternDSL extends DSL {
         }
 
         @Override
-        public Constraint asConstraint(PatternDef patternDef) {
+        public Constraint asConstraint(PatternDefImpl patternDef) {
             SingleConstraint2 constraint = new SingleConstraint2(getExprId(), patternDef.getFirstVariable(), var2, getPredicate());
             constraint.setIndex( getIndex() );
             constraint.setReactiveProps( getReactOn() );
@@ -246,12 +257,8 @@ public class PatternDSL extends DSL {
             this.temporalPredicate = temporalPredicate;
         }
 
-        public Variable<U> getVar2() {
-            return var2;
-        }
-
         @Override
-        public Constraint asConstraint(PatternDef patternDef) {
+        public Constraint asConstraint(PatternDefImpl patternDef) {
             return new TemporalConstraint(getExprId(), patternDef.getFirstVariable(), var2, temporalPredicate);
         }
     }
@@ -284,7 +291,7 @@ public class PatternDSL extends DSL {
         return new PatternBinding2<>(boundVar, otherVar, f, reactOn);
     }
 
-    public static abstract class PatternBindingImpl<T, A> implements PatternBinding<T> {
+    public static abstract class PatternBindingImpl<T, A> implements PatternItem<T> {
         protected final Variable<A> boundVar;
         protected final ReactOn reactOn;
 
@@ -297,7 +304,7 @@ public class PatternDSL extends DSL {
             return reactOn != null ? reactOn.getStrings() : new String[0];
         }
 
-        public abstract Binding asBinding( PatternDef patternDef );
+        public abstract Binding asBinding( PatternDefImpl patternDef );
     }
 
     public static class PatternBinding1<T, A> extends PatternBindingImpl<T, A> {
@@ -309,7 +316,7 @@ public class PatternDSL extends DSL {
         }
 
         @Override
-        public Binding asBinding( PatternDef patternDef ) {
+        public Binding asBinding( PatternDefImpl patternDef ) {
             return new BindViewItem1(boundVar, f, patternDef.getFirstVariable(), getReactOn().length > 0 ? getReactOn()[0] : null);
         }
     }
@@ -325,7 +332,7 @@ public class PatternDSL extends DSL {
         }
 
         @Override
-        public Binding asBinding( PatternDef patternDef ) {
+        public Binding asBinding( PatternDefImpl patternDef ) {
             return new BindViewItem2(boundVar, f, patternDef.getFirstVariable(), otherVar, getReactOn().length > 0 ? getReactOn()[0] : null);
         }
     }
@@ -364,75 +371,74 @@ public class PatternDSL extends DSL {
 
     // -- query --
 
-    public static <A> Query0Def query( String name ) {
+    public static Query0Def query( String name ) {
         return new Query0DefImpl( VIEW_BUILDER, name );
     }
 
-    public static <A> Query0Def query( String pkg, String name ) {
+    public static Query0Def query( String pkg, String name ) {
         return new Query0DefImpl( VIEW_BUILDER, pkg, name );
     }
 
     public static <A> Query1Def<A> query( String name, Class<A> type1 ) {
-        return new Query1DefImpl<A>( VIEW_BUILDER, name, type1 );
+        return new Query1DefImpl<>( VIEW_BUILDER, name, type1 );
     }
 
     public static <A> Query1Def<A> query( String name, Class<A> type1, String arg1name ) {
-        return new Query1DefImpl<A>( VIEW_BUILDER, name, type1, arg1name);
+        return new Query1DefImpl<>( VIEW_BUILDER, name, type1, arg1name);
     }
 
     public static <A> Query1Def<A> query( String pkg, String name, Class<A> type1 ) {
-        return new Query1DefImpl<A>( VIEW_BUILDER, pkg, name, type1 );
+        return new Query1DefImpl<>( VIEW_BUILDER, pkg, name, type1 );
     }
 
     public static <A,B> Query2Def<A,B> query( String name, Class<A> type1, Class<B> type2 ) {
-        return new Query2DefImpl<A,B>( VIEW_BUILDER, name, type1, type2 );
+        return new Query2DefImpl<>( VIEW_BUILDER, name, type1, type2 );
     }
 
     public static <A,B> Query2Def<A,B> query( String pkg, String name, Class<A> type1, Class<B> type2 ) {
-        return new Query2DefImpl<A,B>( VIEW_BUILDER, pkg, name, type1, type2 );
+        return new Query2DefImpl<>( VIEW_BUILDER, pkg, name, type1, type2 );
     }
 
     public static <A,B,C> Query3Def<A,B,C> query( String name, Class<A> type1, Class<B> type2, Class<C> type3 ) {
-        return new Query3DefImpl<A,B,C>(VIEW_BUILDER, name, type1, type2, type3 );
+        return new Query3DefImpl<>(VIEW_BUILDER, name, type1, type2, type3 );
     }
 
     public static <A,B,C> Query3Def<A,B,C> query( String pkg, String name, Class<A> type1, Class<B> type2, Class<C> type3 ) {
-        return new Query3DefImpl<A,B,C>( VIEW_BUILDER, pkg, name, type1, type2, type3 );
+        return new Query3DefImpl<>( VIEW_BUILDER, pkg, name, type1, type2, type3 );
     }
 
     public static <A,B,C, D> Query4Def<A,B,C,D> query( String name, Class<A> type1, Class<B> type2, Class<C> type3, Class<D> type4) {
-        return new Query4DefImpl<A,B,C,D>(VIEW_BUILDER, name, type1, type2, type3, type4 );
+        return new Query4DefImpl<>(VIEW_BUILDER, name, type1, type2, type3, type4 );
     }
 
     public static <A,B,C, D> Query4Def<A,B,C,D> query( String pkg, String name, Class<A> type1, Class<B> type2, Class<C> type3, Class<D> type4) {
-        return new Query4DefImpl<A,B,C,D>( VIEW_BUILDER, pkg, name, type1, type2, type3, type4 );
+        return new Query4DefImpl<>( VIEW_BUILDER, pkg, name, type1, type2, type3, type4 );
     }
 
     public static <A> Query1Def<A> query( String pkg, String name, Class<A> type1, String arg1name ) {
-        return new Query1DefImpl<A>( VIEW_BUILDER, pkg, name, type1, arg1name);
+        return new Query1DefImpl<>( VIEW_BUILDER, pkg, name, type1, arg1name);
     }
 
     public static <A,B> Query2Def<A,B> query( String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name ) {
-        return new Query2DefImpl<A,B>( VIEW_BUILDER, name, type1, arg1name, type2 ,arg2name);
+        return new Query2DefImpl<>( VIEW_BUILDER, name, type1, arg1name, type2 ,arg2name);
     }
 
     public static <A,B> Query2Def<A,B> query( String pkg, String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name ) {
-        return new Query2DefImpl<A,B>( VIEW_BUILDER, pkg, name, type1, arg1name, type2, arg2name);
+        return new Query2DefImpl<>( VIEW_BUILDER, pkg, name, type1, arg1name, type2, arg2name);
     }
 
     public static <A,B,C> Query3Def<A,B,C> query( String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name, Class<C> type3, String arg3name ) {
-        return new Query3DefImpl<A,B,C>(VIEW_BUILDER, name, type1, arg1name, type2, arg2name, type3, arg3name);
+        return new Query3DefImpl<>(VIEW_BUILDER, name, type1, arg1name, type2, arg2name, type3, arg3name);
     }
 
     public static <A,B,C> Query3Def<A,B,C> query( String pkg, String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name, Class<C> type3, String arg3name ) {
-        return new Query3DefImpl<A,B,C>( VIEW_BUILDER, pkg, name, type1, arg1name, type2, arg2name, type3, arg3name);
+        return new Query3DefImpl<>( VIEW_BUILDER, pkg, name, type1, arg1name, type2, arg2name, type3, arg3name);
     }
 
-    public static <A,B,C, D> Query4Def<A,B,C,D> query( String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name, Class<C> type3, String arg3name, Class<D> type4, String arg4name) {
-        return new Query4DefImpl<A,B,C,D>(VIEW_BUILDER, name, type1, type2, type3, type4 );
+    public static <A,B,C,D> Query4Def<A,B,C,D> query( String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name, Class<C> type3, String arg3name, Class<D> type4, String arg4name) {
+        return new Query4DefImpl<>(VIEW_BUILDER, name, type1, arg1name, type2, arg2name, type3, arg3name, type4, arg4name );
     }
 
-    public static <A,B,C, D> Query4Def<A,B,C,D> query( String pkg, String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name, Class<C> type3, String arg3name, Class<D> type4, String arg4name) {
-        return new Query4DefImpl<A,B,C,D>( VIEW_BUILDER, pkg, name, type1, type2, type3, type4 );
-    }
-}
+    public static <A,B,C,D> Query4Def<A,B,C,D> query( String pkg, String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name, Class<C> type3, String arg3name, Class<D> type4, String arg4name) {
+        return new Query4DefImpl<>(VIEW_BUILDER, pkg, name, type1, arg1name, type2, arg2name, type3, arg3name, type4, arg4name );
+    }}

@@ -27,7 +27,7 @@ import org.drools.model.Condition;
 import org.drools.model.ConditionalConsequence;
 import org.drools.model.Consequence;
 import org.drools.model.PatternDSL.PatternBindingImpl;
-import org.drools.model.PatternDSL.PatternDef;
+import org.drools.model.PatternDSL.PatternDefImpl;
 import org.drools.model.PatternDSL.PatternExprImpl;
 import org.drools.model.PatternDSL.PatternItem;
 import org.drools.model.RuleItem;
@@ -35,12 +35,14 @@ import org.drools.model.RuleItemBuilder;
 import org.drools.model.consequences.NamedConsequenceImpl;
 import org.drools.model.patterns.AccumulatePatternImpl;
 import org.drools.model.patterns.CompositePatterns;
+import org.drools.model.patterns.EvalImpl;
 import org.drools.model.patterns.ExistentialPatternImpl;
 import org.drools.model.patterns.PatternImpl;
 import org.drools.model.patterns.QueryCallPattern;
 import org.drools.model.view.AccumulateExprViewItem;
 import org.drools.model.view.CombinedExprViewItem;
 import org.drools.model.view.ExistentialExprViewItem;
+import org.drools.model.view.FixedValueItem;
 import org.drools.model.view.QueryCallViewItem;
 import org.drools.model.view.ViewItem;
 
@@ -83,8 +85,8 @@ public class ViewPatternBuilder implements ViewBuilder {
     }
 
     private static Condition ruleItem2Condition(RuleItem ruleItem) {
-        if ( ruleItem instanceof PatternDef ) {
-            PatternDef patternDef = ( PatternDef ) ruleItem;
+        if ( ruleItem instanceof PatternDefImpl ) {
+            PatternDefImpl patternDef = ( PatternDefImpl ) ruleItem;
             PatternImpl pattern = new PatternImpl( patternDef.getFirstVariable() );
             for (PatternItem patternItem : patternDef.getItems()) {
                 if ( patternItem instanceof PatternExprImpl ) {
@@ -92,8 +94,13 @@ public class ViewPatternBuilder implements ViewBuilder {
                 } else if ( patternItem instanceof PatternBindingImpl ) {
                     pattern.addBinding( (( PatternBindingImpl ) patternItem).asBinding( patternDef ) );
                 }
+                pattern.addWatchedProps(patternDef.getWatch());
             }
             return pattern;
+        }
+
+        if (ruleItem instanceof FixedValueItem ) {
+            return new EvalImpl( (( FixedValueItem ) ruleItem).isValue() );
         }
 
         if ( ruleItem instanceof QueryCallViewItem ) {

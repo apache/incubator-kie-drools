@@ -57,6 +57,7 @@ import org.drools.model.view.AccumulateExprViewItem;
 import org.drools.model.view.CombinedExprViewItem;
 import org.drools.model.view.ExistentialExprViewItem;
 import org.drools.model.view.ExprViewItem;
+import org.drools.model.view.FixedValueItem;
 import org.drools.model.view.ViewItem;
 import org.drools.model.view.ViewItemBuilder;
 
@@ -359,6 +360,14 @@ public class DSL {
 
     public static TemporalPredicate starts( long dev, TimeUnit devUnit) {
         return new StartsPredicate(dev, devUnit);
+    }
+
+    public static FixedValueItem expr( boolean value ) {
+        return new FixedValueItem( null, value );
+    }
+
+    public static FixedValueItem expr( String exprId, boolean value ) {
+        return new FixedValueItem( exprId, value );
     }
 
     // -- RHS --
