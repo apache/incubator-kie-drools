@@ -1763,8 +1763,8 @@ public class DMNRuntimeTest {
     }
 
     @Test
-    public void testMatteo() {
-        // DROOLS-
+    public void testVerifyExtendedKieFEELFunction_now() {
+        // DROOLS-2322
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime("just_now.dmn", this.getClass());
         DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_56fd6445-ff6a-4c28-8206-71fce7f80436", "just now");
         assertThat(dmnModel, notNullValue());
@@ -1773,16 +1773,14 @@ public class DMNRuntimeTest {
         DMNContext emptyContext = DMNFactory.newContext();
 
         DMNResult dmnResult = runtime.evaluateAll(dmnModel, emptyContext);
-
-        System.out.println(dmnResult);
-
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
+        assertThat(dmnResult.getDecisionResultByName("a decision just now").getResult(), notNullValue());
     }
 
     @Test
-    public void testMatteo2() {
-        // DROOLS-
+    public void testVerifyExtendedKieFEELFunction_today() {
+        // DROOLS-2322
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime("just_today.dmn", this.getClass());
         DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_56fd6445-ff6a-4c28-8206-71fce7f80436", "just today");
         assertThat(dmnModel, notNullValue());
@@ -1791,11 +1789,9 @@ public class DMNRuntimeTest {
         DMNContext emptyContext = DMNFactory.newContext();
 
         DMNResult dmnResult = runtime.evaluateAll(dmnModel, emptyContext);
-
-        System.out.println(dmnResult);
-
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
+        assertThat(dmnResult.getDecisionResultByName("a decision just today").getResult(), notNullValue());
     }
 }
 
