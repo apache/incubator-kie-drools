@@ -24,6 +24,11 @@ import org.kie.dmn.api.marshalling.v1_1.DMNExtensionRegister;
 import org.kie.dmn.core.compiler.DMNProfile;
 import org.kie.dmn.core.compiler.DRGElementCompiler;
 import org.kie.dmn.feel.runtime.FEELFunction;
+import org.kie.dmn.feel.runtime.functions.extended.AbsFunction;
+import org.kie.dmn.feel.runtime.functions.extended.ModuloFunction;
+import org.kie.dmn.feel.runtime.functions.extended.NowFunction;
+import org.kie.dmn.feel.runtime.functions.extended.ProductFunction;
+import org.kie.dmn.feel.runtime.functions.extended.TodayFunction;
 import org.kie.dmn.signavio.feel.runtime.functions.AppendAllFunction;
 import org.kie.dmn.signavio.feel.runtime.functions.AreElementsOfFunction;
 import org.kie.dmn.signavio.feel.runtime.functions.AvgFunction;
@@ -32,7 +37,6 @@ import org.kie.dmn.signavio.feel.runtime.functions.DateTimeFunction;
 import org.kie.dmn.signavio.feel.runtime.functions.DayAddFunction;
 import org.kie.dmn.signavio.feel.runtime.functions.DayDiffFunction;
 import org.kie.dmn.signavio.feel.runtime.functions.DayFunction;
-import org.kie.dmn.signavio.feel.runtime.functions.SecondsDiffFunction;
 import org.kie.dmn.signavio.feel.runtime.functions.HourDiffFunction;
 import org.kie.dmn.signavio.feel.runtime.functions.HourFunction;
 import org.kie.dmn.signavio.feel.runtime.functions.IntegerFunction;
@@ -60,6 +64,7 @@ import org.kie.dmn.signavio.feel.runtime.functions.RoundDownFunction;
 import org.kie.dmn.signavio.feel.runtime.functions.RoundFunction;
 import org.kie.dmn.signavio.feel.runtime.functions.RoundUpFunction;
 import org.kie.dmn.signavio.feel.runtime.functions.SecondFunction;
+import org.kie.dmn.signavio.feel.runtime.functions.SecondsDiffFunction;
 import org.kie.dmn.signavio.feel.runtime.functions.SignavioEndsWithFunction;
 import org.kie.dmn.signavio.feel.runtime.functions.SignavioNumberFunction;
 import org.kie.dmn.signavio.feel.runtime.functions.SignavioRemoveFunction;
@@ -99,7 +104,14 @@ public class KieDMNSignavioProfile implements DMNProfile {
         return Arrays.asList(SIGNAVIO_FUNCTIONS);
     }
 
-    public final static FEELFunction[] SIGNAVIO_FUNCTIONS = new FEELFunction[]{// signavio profile functions
+    public final static FEELFunction[] SIGNAVIO_FUNCTIONS = new FEELFunction[]{// can re-use for Signavio, from the extended kie profile
+                                                                               new NowFunction(),
+                                                                               new TodayFunction(),
+                                                                               new AbsFunction(),
+                                                                               new ModuloFunction(),
+                                                                               new ProductFunction(),
+
+                                                                               // signavio profile functions
                                                                                new DayFunction(),
                                                                                new MonthFunction(),
                                                                                new YearFunction(),
