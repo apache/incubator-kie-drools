@@ -162,7 +162,8 @@ class PatternDSLSimpleConstraint implements DSLNode {
         exprDSL = buildExpression(context, drlxParseResult, exprDSL );
         context.addExpression(exprDSL);
         Optional<MethodCallExpr> indexedByExpr = buildIndexedBy(context, drlxParseResult);
-        indexedByExpr.ifPresent(e -> context.addExpression(e));
+        MethodCallExpr finalExprDSL = exprDSL;
+        indexedByExpr.ifPresent(e -> finalExprDSL.addArgument(e));
 //        exprDSL = buildReactOn( drlxParseResult, exprDSL );
         return exprDSL;
     }
