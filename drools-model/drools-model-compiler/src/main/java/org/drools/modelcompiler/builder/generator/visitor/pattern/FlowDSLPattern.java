@@ -36,7 +36,7 @@ import static org.drools.model.impl.NamesGenerator.generateName;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getPatternListenedProperties;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 
-class SimplePattern implements DSLNode {
+class FlowDSLPattern implements DSLNode {
 
     private static final String INPUT_CALL = "input";
 
@@ -47,7 +47,7 @@ class SimplePattern implements DSLNode {
     private final Class<?> patternType;
     private final boolean allConstraintsPositional;
 
-    public SimplePattern(RuleContext context, PackageModel packageModel, PatternDescr pattern, List<? extends BaseDescr> constraintDescrs, Class<?> patternType, boolean allConstraintsPositional) {
+    public FlowDSLPattern(RuleContext context, PackageModel packageModel, PatternDescr pattern, List<? extends BaseDescr> constraintDescrs, Class<?> patternType, boolean allConstraintsPositional) {
         this.context = context;
         this.packageModel = packageModel;
         this.pattern = pattern;
