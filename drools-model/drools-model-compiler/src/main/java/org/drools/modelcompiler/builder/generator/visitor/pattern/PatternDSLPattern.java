@@ -151,17 +151,8 @@ class PatternDSLPattern implements DSLNode {
     }
 
     private void buildConstraints(PatternDescr pattern, Class<?> patternType, List<PatternConstraintParseResult> patternConstraintParseResults, boolean allConstraintsPositional) {
-        if (allConstraintsPositional) {
-            final MethodCallExpr andDSL = new MethodCallExpr(null, "and");
-            context.addExpression(andDSL);
-            context.pushExprPointer(andDSL::addArgument);
-        }
-
         for (PatternConstraintParseResult patternConstraintParseResult : patternConstraintParseResults) {
             buildConstraint(pattern, patternType, patternConstraintParseResult);
-        }
-        if (allConstraintsPositional) {
-            context.popExprPointer();
         }
     }
 
