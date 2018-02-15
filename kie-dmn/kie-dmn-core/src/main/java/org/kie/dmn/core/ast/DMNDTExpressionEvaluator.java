@@ -54,7 +54,7 @@ public class DMNDTExpressionEvaluator
 
     private final DMNNode           node;
     private       DTInvokerFunction dt;
-    private       FEELImpl              feel;
+    private       FEELImpl          feel;
 
     public DMNDTExpressionEvaluator(DMNNode node, FEEL feel, DTInvokerFunction dt) {
         this.node = node;
