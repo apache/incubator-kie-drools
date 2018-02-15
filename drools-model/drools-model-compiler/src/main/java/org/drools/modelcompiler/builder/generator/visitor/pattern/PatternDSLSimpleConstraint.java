@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.drools.compiler.lang.descr.AnnotationDescr;
@@ -32,11 +33,13 @@ import org.drools.modelcompiler.builder.generator.visitor.DSLNode;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.ModelGenerator.BIND_AS_CALL;
 import static org.drools.modelcompiler.builder.generator.ModelGenerator.EXPR_CALL;
-import static org.drools.modelcompiler.builder.generator.ModelGenerator.INDEXED_BY_CALL;
 
 class PatternDSLSimpleConstraint implements DSLNode {
 
     public static final String BIND_CALL = "bind";
+    public static final String ALPHA_INDEXED_BY_CALL = "alphaIndexedBy";
+    public static final String BETA_INDEXED_BY_CALL = "betaIndexedBy";
+
 
     private static final IndexIdGenerator indexIdGenerator = new IndexIdGenerator();
 
@@ -71,8 +74,7 @@ class PatternDSLSimpleConstraint implements DSLNode {
             Expression dslExpr = buildUnificationExpression(context, drlxParseResult);
             context.addExpression(dslExpr);
         } else if ( drlxParseResult.isValidExpression() ) {
-            Expression dslExpr = buildExpressionWithIndexing(context, drlxParseResult);
-            context.addExpression(dslExpr);
+            buildExpressionWithIndexing(context, drlxParseResult);
         }
         if (drlxParseResult.getExprBinding() != null) {
             Expression dslExpr = buildBinding(drlxParseResult);
@@ -93,7 +95,7 @@ class PatternDSLSimpleConstraint implements DSLNode {
         final List<String> usedDeclarationsWithUnification = new ArrayList<>();
         if(!drlxParseResult.isPatternBindingUnification()) {
             if (drlxParseResult.getPatternBinding() != null && !drlxParseResult.getUsedDeclarations().contains( drlxParseResult.getPatternBinding() )) {
-                exprDSL.addArgument(new NameExpr(toVar(drlxParseResult.getPatternBinding())));
+//                exprDSL.addArgument(new NameExpr(toVar(drlxParseResult.getPatternBinding())));
             }
         } else {
             usedDeclarationsWithUnification.add(drlxParseResult.getPatternBinding());
@@ -156,13 +158,16 @@ class PatternDSLSimpleConstraint implements DSLNode {
             exprDSL.addArgument( new StringLiteralExpr(exprId) );
         }
 
+
         exprDSL = buildExpression(context, drlxParseResult, exprDSL );
-        exprDSL = buildIndexedBy(context, drlxParseResult, exprDSL);
-        exprDSL = buildReactOn( drlxParseResult, exprDSL );
+        context.addExpression(exprDSL);
+        Optional<MethodCallExpr> indexedByExpr = buildIndexedBy(context, drlxParseResult);
+        indexedByExpr.ifPresent(e -> context.addExpression(e));
+//        exprDSL = buildReactOn( drlxParseResult, exprDSL );
         return exprDSL;
     }
 
-    private static MethodCallExpr buildIndexedBy(RuleContext context, DrlxParseSuccess drlxParseResult, MethodCallExpr exprDSL) {
+    private static Optional<MethodCallExpr> buildIndexedBy(RuleContext context, DrlxParseSuccess drlxParseResult) {
         IndexUtil.ConstraintType decodeConstraintType = drlxParseResult.getDecodeConstraintType();
         TypedExpression left = drlxParseResult.getLeft();
         TypedExpression right = drlxParseResult.getRight();
@@ -183,7 +188,8 @@ class PatternDSLSimpleConstraint implements DSLNode {
             boolean leftContainsThis = left.getExpression().toString().contains("_this");
             indexedBy_leftOperandExtractor.setBody(new ExpressionStmt(leftContainsThis ? left.getExpression() : right.getExpression()) );
 
-            MethodCallExpr indexedByDSL = new MethodCallExpr(exprDSL, INDEXED_BY_CALL);
+            final boolean isBetaNode = false;
+            MethodCallExpr indexedByDSL = new MethodCallExpr(null, isBetaNode ? BETA_INDEXED_BY_CALL : ALPHA_INDEXED_BY_CALL );
             indexedByDSL.addArgument( indexedBy_indexedClass );
             indexedByDSL.addArgument( indexedBy_constraintType );
             indexedByDSL.addArgument( "" + indexIdGenerator.getFieldId(drlxParseResult.getPatternType(), left.getFieldName() ) );
@@ -201,15 +207,15 @@ class PatternDSLSimpleConstraint implements DSLNode {
                     indexedByDSL.addArgument(indexedBy_rightOperandExtractor);
                 } else {
                     // this is a case where a Beta node should NOT create the index because the "right" is not just-a-symbol, the "right" is not a declaration referenced by name
-                    return exprDSL;
+                    return Optional.of(indexedByDSL);
                 }
             } else {
                 // this is a case where a Beta node should NOT create the index because the "right" is not just-a-symbol, the "right" is not a declaration referenced by name
-                return exprDSL;
+                return Optional.of(indexedByDSL);
             }
-            return indexedByDSL;
+            return Optional.of(indexedByDSL);
         }
-        return exprDSL;
+        return Optional.empty();
     }
 
     public static Expression generateLambdaWithoutParameters(Collection<String> usedDeclarations, Expression expr, boolean skipFirstParamAsThis) {
