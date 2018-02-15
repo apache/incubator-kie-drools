@@ -24,6 +24,11 @@ import org.kie.api.io.Resource;
 public interface KieBuilder {
 
     /**
+     * A marker interace implemented by the different type of projects supported by this KieBuilder
+     */
+    interface ProjectType { }
+
+    /**
      * Sets the other KieModules from which the KieModule that has to be built by this KieBuilder depends on
      */
     KieBuilder setDependencies(KieModule... dependencies);
@@ -37,6 +42,12 @@ public interface KieBuilder {
      * Builds all the KieBases contained in the KieModule for which this KieBuilder has been created
      */
     KieBuilder buildAll();
+
+    /**
+     * Builds all the KieBases contained in the KieModule for which this KieBuilder has been created
+     * creating a project of the type specified by the provided projectClass
+     */
+    KieBuilder buildAll( Class<? extends ProjectType> projectClass );
 
     /**
      * Returns the Results of the building process.
