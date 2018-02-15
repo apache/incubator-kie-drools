@@ -25,7 +25,9 @@ public class InOperator implements Operator.MultipleValue<Object, Object> {
     @Override
     public boolean eval( Object a, Object[] bs ) {
         for (Object b : bs) {
-            if (a.equals( b )) {
+            if (a == null && b == null) {
+                return true;
+            } else if (a != null && a.equals( b )) {
                 return true;
             }
         }
