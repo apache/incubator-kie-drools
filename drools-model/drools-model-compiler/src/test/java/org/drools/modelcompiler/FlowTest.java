@@ -30,7 +30,6 @@ import java.util.concurrent.TimeUnit;
 import org.assertj.core.api.Assertions;
 import org.drools.core.ClockType;
 import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.core.reteoo.AlphaNode;
 import org.drools.model.Global;
 import org.drools.model.Index.ConstraintType;
 import org.drools.model.Model;
@@ -70,7 +69,28 @@ import org.kie.api.time.SessionPseudoClock;
 
 import static java.util.Arrays.asList;
 
-import static org.drools.model.FlowDSL.*;
+import static org.drools.model.FlowDSL.accFunction;
+import static org.drools.model.FlowDSL.accumulate;
+import static org.drools.model.FlowDSL.and;
+import static org.drools.model.FlowDSL.bind;
+import static org.drools.model.FlowDSL.declarationOf;
+import static org.drools.model.FlowDSL.eval;
+import static org.drools.model.FlowDSL.execute;
+import static org.drools.model.FlowDSL.executeScript;
+import static org.drools.model.FlowDSL.expr;
+import static org.drools.model.FlowDSL.forall;
+import static org.drools.model.FlowDSL.from;
+import static org.drools.model.FlowDSL.globalOf;
+import static org.drools.model.FlowDSL.input;
+import static org.drools.model.FlowDSL.not;
+import static org.drools.model.FlowDSL.on;
+import static org.drools.model.FlowDSL.or;
+import static org.drools.model.FlowDSL.query;
+import static org.drools.model.FlowDSL.reactiveFrom;
+import static org.drools.model.FlowDSL.rule;
+import static org.drools.model.FlowDSL.valueOf;
+import static org.drools.model.FlowDSL.when;
+import static org.drools.model.FlowDSL.window;
 import static org.drools.modelcompiler.BaseModelTest.getObjectsIntoList;
 import static org.drools.modelcompiler.domain.Employee.createEmployee;
 import static org.hamcrest.CoreMatchers.hasItem;
@@ -550,8 +570,6 @@ public class FlowTest {
         KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
 
         KieSession ksession = kieBase.newKieSession();
-
-        ReteDumper.checkRete(ksession, node -> !(node instanceof AlphaNode) );
 
         Person mario = new Person("Mario", 40);
 

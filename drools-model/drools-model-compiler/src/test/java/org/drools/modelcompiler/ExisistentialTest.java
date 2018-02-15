@@ -69,8 +69,6 @@ public class ExisistentialTest extends BaseModelTest {
 
         KieSession ksession = getKieSession( str );
 
-        ReteDumper.dumpRete( ksession );
-
         Person mario = new Person( "Mario", 40 );
 
         ksession.insert( mario );
