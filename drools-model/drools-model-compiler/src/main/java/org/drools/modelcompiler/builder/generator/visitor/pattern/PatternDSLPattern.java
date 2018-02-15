@@ -31,9 +31,9 @@ import org.kie.api.definition.type.Position;
 
 import static org.drools.model.impl.NamesGenerator.generateName;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
-import static org.drools.modelcompiler.builder.generator.visitor.pattern.PatternVisitor.INPUT_CALL;
 
 class PatternDSLPattern implements DSLNode {
+    static final String PATTERN_CALL = "pattern";
 
     private final RuleContext context;
     private final PackageModel packageModel;
@@ -70,14 +70,17 @@ class PatternDSLPattern implements DSLNode {
         context.addDeclaration(new DeclarationSpec(pattern.getIdentifier(), patternType, Optional.of(pattern), declarationSource));
 
         if (constraintDescrs.isEmpty() && !(pattern.getSource() instanceof AccumulateDescr)) {
-            context.addExpression(createInputExpression(pattern));
+//            final MethodCallExpr patternExpression = createPatternExpression(pattern);
+//            context.addExpression(patternExpression);
+//            context.pushExprPointer(patternExpression::addArgument);
         } else {
             if (!context.hasErrors()) {
                 final List<PatternConstraintParseResult> patternConstraintParseResults = findAllConstraint(pattern, constraintDescrs, patternType);
-                if(shouldAddInputPattern(patternConstraintParseResults)) {
-                    context.addExpression(createInputExpression(pattern));
-                }
+                final MethodCallExpr patternExpression = createPatternExpression(pattern);
+                context.addExpression(patternExpression);
+                context.pushExprPointer(patternExpression::addArgument);
                 buildConstraints(pattern, patternType, patternConstraintParseResults, allConstraintsPositional);
+                context.popExprPointer();
             }
         }
     }
@@ -121,8 +124,8 @@ class PatternDSLPattern implements DSLNode {
         return declarationSourceFrom.isPresent() ? declarationSourceFrom : declarationSourceWindow;
     }
 
-    private MethodCallExpr createInputExpression(PatternDescr pattern) {
-        MethodCallExpr dslExpr = new MethodCallExpr(null, INPUT_CALL);
+    private MethodCallExpr createPatternExpression(PatternDescr pattern) {
+        MethodCallExpr dslExpr = new MethodCallExpr(null, PATTERN_CALL);
         dslExpr.addArgument(new NameExpr(toVar(pattern.getIdentifier())));
         return dslExpr;
     }
@@ -165,7 +168,7 @@ class PatternDSLPattern implements DSLNode {
             if (drlxParseResult.getExpr() instanceof OOPathExpr) {
                 constraint = new ConstraintOOPath(context, packageModel, pattern, patternType, patternConstraintParseResult, expression, drlxParseResult);
             } else {
-                constraint = new SimpleConstraint(context, pattern, drlxParseResult);
+                constraint = new PatternDSLSimpleConstraint(context, pattern, drlxParseResult);
             }
             constraint.buildPattern();
         });
