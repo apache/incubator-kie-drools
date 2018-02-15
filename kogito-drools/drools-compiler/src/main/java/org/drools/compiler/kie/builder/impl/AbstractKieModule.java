@@ -21,11 +21,9 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -335,7 +333,8 @@ public abstract class AbstractKieModule
         return conf;
     }
 
-    protected CompilationCache getCompilationCache(String kbaseName) {
+    @Override
+    public CompilationCache getCompilationCache(String kbaseName) {
         // Map< DIALECT, Map< RESOURCE, List<BYTECODE> > >
         CompilationCache cache = compilationCache.get(kbaseName);
         if (cache == null) {
@@ -429,45 +428,6 @@ public abstract class AbstractKieModule
         return false;
     }
     
-    public static class CompilationCache implements Serializable {
-        private static final long serialVersionUID = 3812243055974412935L;
-        // this is a { DIALECT -> ( RESOURCE, List<CompilationEntry> ) } cache
-        protected final Map<String, Map<String, List<CompilationCacheEntry>>> compilationCache = new HashMap<String, Map<String, List<CompilationCacheEntry>>>();
-
-        public void addEntry(String dialect, String className, byte[] bytecode) {
-            Map<String, List<CompilationCacheEntry>> resourceEntries = compilationCache.get(dialect);
-            if( resourceEntries == null ) {
-                resourceEntries = new HashMap<String, List<CompilationCacheEntry>>();
-                compilationCache.put(dialect, resourceEntries);
-            }
-                    
-            String key = className.contains("$") ? className.substring(0, className.indexOf('$') ) + ".class" : className; 
-            List<CompilationCacheEntry> bytes = resourceEntries.get(key);
-            if( bytes == null ) {
-                bytes = new ArrayList<CompilationCacheEntry>();
-                resourceEntries.put(key, bytes);
-            }
-            //System.out.println(String.format("Adding to in-memory cache: %s %s", key, className ));
-            bytes.add(new CompilationCacheEntry(className, bytecode));
-        }
-
-        public Map<String, List<CompilationCacheEntry>> getCacheForDialect(String dialect) {
-            return compilationCache.get(dialect);
-        }
-        
-    }
-    
-    public static class CompilationCacheEntry implements Serializable {
-        private static final long serialVersionUID = 1423987159014688588L;
-        public final String className;
-        public final byte[] bytecode;
-        
-        public CompilationCacheEntry( String className, byte[] bytecode) {
-            this.className = className;
-            this.bytecode = bytecode;
-        }
-    }
-
     @Override
     public ResourceProvider createResourceProvider() {
         try {

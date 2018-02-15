@@ -14,8 +14,6 @@
 */
 
 package org.drools.compiler.kie.builder.impl;
-import static org.drools.compiler.kproject.ReleaseIdImpl.adapt;
-
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -72,6 +70,8 @@ import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.internal.builder.KieBuilderSet;
 import org.kie.internal.io.ResourceFactory;
 
+import static org.drools.compiler.kproject.ReleaseIdImpl.adapt;
+
 public class KieBuilderImpl
         implements
         InternalKieBuilder {
@@ -93,7 +93,7 @@ public class KieBuilderImpl
 
     private MemoryFileSystem trgMfs;
 
-    private MemoryKieModule kModule;
+    private InternalKieModule kModule;
 
     private byte[] pomXml;
     private AFReleaseId releaseId;
@@ -112,30 +112,7 @@ public class KieBuilderImpl
     private List<PMMLResource> pmmlResources;
     
     public KieBuilderImpl( File file ) {
-//        PMMLCompiler compiler = PMMLCompilerFactory.getPMMLCompiler();
-//        if (isKiePMMLCompiler(compiler)) {
-//            ResourceReader reader = null;
-//            if (file.isDirectory()) {
-//                List<String> pmmlFileNames = getPmmlFileNames(file);
-//                if (pmmlFileNames != null && !pmmlFileNames.isEmpty()) {
-//                    precompilePmml(compiler, pmmlFileNames);
-//                    DiskResourceReader drr = new DiskResourceReader(file);
-//                    Collection<String> existingFiles = drr.getFileNames();
-//                    KieFileSystem kfs = KieServices.Factory.get().newKieFileSystem();
-//                    for (String fn : existingFiles) {
-//                        kfs.write(fn,drr.getBytes(fn));
-//                    }
-//                    addPrecompiledResources(kfs);
-//                    reader = ((KieFileSystemImpl)kfs).asMemoryFileSystem();
-//                }
-//            }
-//            if (reader == null) {
-//                reader = new DiskResourceReader( file );
-//            }
-//            this.srcMfs = reader;
-//        } else {
-            this.srcMfs = new DiskResourceReader( file );
-//        }
+        this.srcMfs = new DiskResourceReader( file );
     }
 
     public KieBuilderImpl( KieFileSystem kieFileSystem ) {
@@ -151,7 +128,6 @@ public class KieBuilderImpl
     
     /**
      * Gets a list of file names that represent PMML resources from a KieFileSystem
-     * @param kieFileSystem The source file system
      * @return List of strings that are the file names
      */
     private List<String> getPmmlFileNames(ResourceReader mfs) {
@@ -234,15 +210,26 @@ public class KieBuilderImpl
     }
 
     @Override
+    public KieBuilder buildAll( Class<? extends ProjectType> projectClass ) {
+        try {
+            BiFunction<InternalKieModule, ClassLoader, KieModuleKieProject> kprojectSupplier =
+                    (BiFunction<InternalKieModule, ClassLoader, KieModuleKieProject>) projectClass.getField( "SUPPLIER" ).get( null );
+            return buildAll( kprojectSupplier );
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            throw new RuntimeException( e );
+        }
+    }
+
+    @Override
     public KieBuilder buildAll( Predicate<String> classFilter ) {
         return buildAll( KieModuleKieProject::new, classFilter );
     }
 
-    public KieBuilder buildAll(BiFunction<InternalKieModule, ClassLoader, KieProject> kprojectSupplier) {
+    private KieBuilder buildAll(BiFunction<InternalKieModule, ClassLoader, KieModuleKieProject> kprojectSupplier) {
         return buildAll( kprojectSupplier, o -> true );
     }
 
-    public KieBuilder buildAll( BiFunction<InternalKieModule, ClassLoader, KieProject> kprojectSupplier, Predicate<String> classFilter ) {
+    public KieBuilder buildAll( BiFunction<InternalKieModule, ClassLoader, KieModuleKieProject> kprojectSupplier, Predicate<String> classFilter ) {
         PomModel pomModel = init();
 
         // kModuleModel will be null if a provided pom.xml or kmodule.xml is invalid
@@ -252,21 +239,19 @@ public class KieBuilderImpl
             addKBasesFilesToTrg();
             markSource();
 
-            kModule = new MemoryKieModule( adapt( releaseId ),
-                                           kModuleModel,
-                                           trgMfs );
+            MemoryKieModule memoryKieModule = new MemoryKieModule( adapt( releaseId ), kModuleModel, trgMfs );
 
             if ( kieDependencies != null && !kieDependencies.isEmpty() ) {
                 for ( KieModule kieModule : kieDependencies ) {
-                    kModule.addKieDependency( (InternalKieModule) kieModule );
+                    memoryKieModule.addKieDependency( (InternalKieModule) kieModule );
                 }
             }
             if ( pomModel != null ) {
-                kModule.setPomModel( pomModel );
+                memoryKieModule.setPomModel( pomModel );
             }
 
-            KieProject kProject = kprojectSupplier.apply( kModule, classLoader );
-            for ( ReleaseId unresolvedDep : kModule.getUnresolvedDependencies() ) {
+            KieModuleKieProject kProject = kprojectSupplier.apply( memoryKieModule, classLoader );
+            for ( ReleaseId unresolvedDep : memoryKieModule.getUnresolvedDependencies() ) {
                 results.addMessage( Level.ERROR, "pom.xml", "Unresolved dependency " + unresolvedDep );
             }
             
@@ -277,7 +262,8 @@ public class KieBuilderImpl
             }
             compileJavaClasses( kProject.getClassLoader(), classFilter );
 
-            buildKieProject( kModule, results, kProject, trgMfs );
+            buildKieProject( results, kProject, trgMfs );
+            kModule = kProject.getInternalKieModule();
         }
         return this;
     }
@@ -357,17 +343,17 @@ public class KieBuilderImpl
 
     public static void buildKieModule( InternalKieModule kModule,
                                        ResultsImpl messages ) {
-        buildKieProject( kModule, messages, new KieModuleKieProject( kModule ), null );
+        buildKieProject( messages, new KieModuleKieProject( kModule ), null );
     }
 
-    private static void buildKieProject( InternalKieModule kModule,
-                                         ResultsImpl messages,
-                                         KieProject kProject,
+    private static void buildKieProject( ResultsImpl messages,
+                                         KieModuleKieProject kProject,
                                          MemoryFileSystem trgMfs ) {
         kProject.init();
         kProject.verify( messages );
 
         if ( messages.filterMessages( Level.ERROR ).isEmpty() ) {
+            InternalKieModule kModule = kProject.getInternalKieModule();
             if ( trgMfs != null ) {
                 new KieMetaInfoBuilder( kModule ).writeKieModuleMetaInfo( trgMfs );
                 kProject.writeProjectOutput(trgMfs, messages);
@@ -413,10 +399,6 @@ public class KieBuilderImpl
         this.kModule = kModule;
     }
 
-    public MemoryKieModule getkModule() {
-        return kModule;
-    }
-
     public void setTrgMfs( final MemoryFileSystem trgMfs ) {
         this.trgMfs = trgMfs;
     }
@@ -431,7 +413,7 @@ public class KieBuilderImpl
         }
         trgMfs = trgMfs.clone();
         init();
-        kModule = kModule.cloneForIncrementalCompilation( adapt( releaseId ), kModuleModel, trgMfs );
+        kModule = ((MemoryKieModule)kModule).cloneForIncrementalCompilation( adapt( releaseId ), kModuleModel, trgMfs );
     }
 
     private void addMetaInfBuilder() {

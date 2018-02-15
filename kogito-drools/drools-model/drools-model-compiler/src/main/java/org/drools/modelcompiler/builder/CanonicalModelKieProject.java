@@ -22,11 +22,11 @@ import java.util.List;
 import org.drools.compiler.commons.jci.compilers.CompilationResult;
 import org.drools.compiler.commons.jci.problems.CompilationProblem;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.drools.compiler.kie.builder.impl.AbstractKieModule;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieModuleKieProject;
 import org.drools.compiler.kie.builder.impl.ResultsImpl;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
+import org.drools.modelcompiler.CanonicalKieModule;
 import org.kie.internal.builder.KnowledgeBuilder;
 
 import static org.drools.modelcompiler.builder.JavaParserCompiler.getCompiler;
@@ -36,11 +36,11 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
     protected List<ModelBuilderImpl> modelBuilders = new ArrayList<>();
 
     public CanonicalModelKieProject(InternalKieModule kieModule, ClassLoader classLoader) {
-        super(kieModule, classLoader);
+        super(kieModule instanceof CanonicalKieModule ? kieModule : new CanonicalKieModule( kieModule ), classLoader);
     }
 
     @Override
-    protected KnowledgeBuilder createKnowledgeBuilder(KieBaseModelImpl kBaseModel, AbstractKieModule kModule) {
+    protected KnowledgeBuilder createKnowledgeBuilder(KieBaseModelImpl kBaseModel, InternalKieModule kModule) {
         ModelBuilderImpl modelBuilder = new ModelBuilderImpl();
         modelBuilders.add(modelBuilder);
         return modelBuilder;
