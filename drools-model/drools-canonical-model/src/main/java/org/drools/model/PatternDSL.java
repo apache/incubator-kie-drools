@@ -50,7 +50,8 @@ public class PatternDSL extends DSL {
         return new DeclarationImpl<>( type );
     }
 
-    public static <T> PatternDef<T> pattern( Variable<T> var, PatternItem<T>... items ) {
+    @SafeVarargs
+    public static <T> PatternDef<T> pattern(Variable<T> var, PatternItem<T>... items) {
         return new PatternDefImpl<>( var, items );
     }
 
