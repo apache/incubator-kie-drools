@@ -60,7 +60,7 @@ public class DMNInvocationEvaluator
 
     /**
      * @param functionLocator function to be used to resolve the FEELFunction to be invoked.
-     * @param feel in fase functionLocator is not able to resolve the desired function, it will be used for checking the resolution against the configured/built-in FEEL functions.
+     * @param feel in case functionLocator is not able to resolve the desired function, it will be used for checking the resolution against the configured/built-in FEEL functions.
      */
     public DMNInvocationEvaluator(String nodeName, DMNElement node, String functionName, Invocation invocation, BiFunction<DMNContext, String, FEELFunction> functionLocator, FEEL feel) {
         this.nodeName = nodeName;
