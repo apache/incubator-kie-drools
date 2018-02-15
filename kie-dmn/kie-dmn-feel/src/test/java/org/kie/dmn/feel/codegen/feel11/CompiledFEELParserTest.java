@@ -16,11 +16,6 @@
 
 package org.kie.dmn.feel.codegen.feel11;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.kie.dmn.feel.util.DynamicTypeUtils.entry;
-import static org.kie.dmn.feel.util.DynamicTypeUtils.mapOf;
-
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.Collections;
@@ -54,6 +49,11 @@ import org.kie.dmn.feel.parser.feel11.ASTBuilderVisitor;
 import org.kie.dmn.feel.parser.feel11.FEELParser;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser;
 import org.kie.dmn.feel.util.EvalHelper;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.kie.dmn.feel.util.DynamicTypeUtils.entry;
+import static org.kie.dmn.feel.util.DynamicTypeUtils.mapOf;
 
 // TODO Current trying to bypass FEEL AST and go straight to codegen
 @Deprecated()
@@ -140,7 +140,7 @@ public class CompiledFEELParserTest {
     }
 
     private CompiledFEELExpression parse(String input, Map<String, Type> inputTypes) {
-        FEEL_1_1Parser parser = FEELParser.parse(null, input, inputTypes, Collections.emptyMap(), Collections.emptyList());
+        FEEL_1_1Parser parser = FEELParser.parse(null, input, inputTypes, Collections.emptyMap(), Collections.emptyList(), Collections.emptyList());
 
         ParseTree tree = parser.expression();
 
