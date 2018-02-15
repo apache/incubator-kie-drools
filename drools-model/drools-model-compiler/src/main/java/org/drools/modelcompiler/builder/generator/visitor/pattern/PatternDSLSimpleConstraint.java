@@ -30,6 +30,7 @@ import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.visitor.DSLNode;
 
+import static java.util.Optional.of;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.ModelGenerator.BIND_AS_CALL;
 import static org.drools.modelcompiler.builder.generator.ModelGenerator.EXPR_CALL;
@@ -114,23 +115,25 @@ class PatternDSLSimpleConstraint implements DSLNode {
     }
 
 
-    private static MethodCallExpr buildReactOn(DrlxParseSuccess drlxParseResult, MethodCallExpr exprDSL ) {
+    private static Optional<MethodCallExpr> buildReactOn(DrlxParseSuccess drlxParseResult) {
         if ( !drlxParseResult.getReactOnProperties().isEmpty() ) {
-            exprDSL = new MethodCallExpr(exprDSL, "reactOn");
+            MethodCallExpr reactOnDSL = new MethodCallExpr(null, "reactOn");
             drlxParseResult.getReactOnProperties().stream()
                     .map(StringLiteralExpr::new )
-                    .forEach( exprDSL::addArgument );
+                    .forEach( reactOnDSL::addArgument );
+            return of(reactOnDSL);
 
         }
 
         if ( drlxParseResult.getWatchedProperties() != null && drlxParseResult.getWatchedProperties().length > 0 ) {
-            exprDSL = new MethodCallExpr(exprDSL, "watch");
+            MethodCallExpr reactOnDSL = new MethodCallExpr( null, "watch");
             Stream.of(drlxParseResult.getWatchedProperties())
                     .map( StringLiteralExpr::new )
-                    .forEach( exprDSL::addArgument );
+                    .forEach( reactOnDSL::addArgument );
+            return of(reactOnDSL);
         }
 
-        return exprDSL;
+        return Optional.empty();
     }
 
     public static MethodCallExpr buildBinding(DrlxParseSuccess drlxParseResult ) {
@@ -144,7 +147,8 @@ class PatternDSLSimpleConstraint implements DSLNode {
         bindAsDSL.addArgument( new NameExpr(toVar(drlxParseResult.getPatternBinding())) );
         final Expression constraintExpression = buildConstraintExpression(drlxParseResult, org.drools.modelcompiler.builder.generator.DrlxParseUtil.findLeftLeafOfMethodCall(drlxParseResult.getLeft().getExpression())  );
         bindAsDSL.addArgument(constraintExpression);
-        return buildReactOn( drlxParseResult, bindAsDSL );
+        final Optional<MethodCallExpr> methodCallExpr = buildReactOn(drlxParseResult);
+        return bindAsDSL;
     }
 
     private static Expression buildConstraintExpression(DrlxParseSuccess drlxParseResult, Expression expr ) {
@@ -161,10 +165,11 @@ class PatternDSLSimpleConstraint implements DSLNode {
 
         exprDSL = buildExpression(context, drlxParseResult, exprDSL );
         context.addExpression(exprDSL);
-        Optional<MethodCallExpr> indexedByExpr = buildIndexedBy(context, drlxParseResult);
         MethodCallExpr finalExprDSL = exprDSL;
-        indexedByExpr.ifPresent(e -> finalExprDSL.addArgument(e));
-//        exprDSL = buildReactOn( drlxParseResult, exprDSL );
+        Optional<MethodCallExpr> indexedByExpr = buildIndexedBy(context, drlxParseResult);
+        indexedByExpr.ifPresent(finalExprDSL::addArgument);
+        final Optional<MethodCallExpr> reactOnDSL = buildReactOn(drlxParseResult);
+        reactOnDSL.ifPresent(finalExprDSL::addArgument);
         return exprDSL;
     }
 
@@ -208,13 +213,13 @@ class PatternDSLSimpleConstraint implements DSLNode {
                     indexedByDSL.addArgument(indexedBy_rightOperandExtractor);
                 } else {
                     // this is a case where a Beta node should NOT create the index because the "right" is not just-a-symbol, the "right" is not a declaration referenced by name
-                    return Optional.of(indexedByDSL);
+                    return of(indexedByDSL);
                 }
             } else {
                 // this is a case where a Beta node should NOT create the index because the "right" is not just-a-symbol, the "right" is not a declaration referenced by name
-                return Optional.of(indexedByDSL);
+                return of(indexedByDSL);
             }
-            return Optional.of(indexedByDSL);
+            return of(indexedByDSL);
         }
         return Optional.empty();
     }
