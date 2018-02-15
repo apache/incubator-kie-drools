@@ -70,28 +70,7 @@ import org.kie.api.time.SessionPseudoClock;
 
 import static java.util.Arrays.asList;
 
-import static org.drools.model.DSL.accFunction;
-import static org.drools.model.DSL.accumulate;
-import static org.drools.model.DSL.and;
-import static org.drools.model.DSL.bind;
-import static org.drools.model.DSL.declarationOf;
-import static org.drools.model.DSL.eval;
-import static org.drools.model.DSL.execute;
-import static org.drools.model.DSL.executeScript;
-import static org.drools.model.DSL.expr;
-import static org.drools.model.DSL.forall;
-import static org.drools.model.DSL.from;
-import static org.drools.model.DSL.globalOf;
-import static org.drools.model.DSL.input;
-import static org.drools.model.DSL.not;
-import static org.drools.model.DSL.on;
-import static org.drools.model.DSL.or;
-import static org.drools.model.DSL.query;
-import static org.drools.model.DSL.reactiveFrom;
-import static org.drools.model.DSL.rule;
-import static org.drools.model.DSL.valueOf;
-import static org.drools.model.DSL.when;
-import static org.drools.model.DSL.window;
+import static org.drools.model.FlowDSL.*;
 import static org.drools.modelcompiler.BaseModelTest.getObjectsIntoList;
 import static org.drools.modelcompiler.domain.Employee.createEmployee;
 import static org.hamcrest.CoreMatchers.hasItem;
@@ -346,9 +325,9 @@ public class FlowTest {
     @Test
     public void testOr() {
         Result result = new Result();
-        Variable<Person> personV = declarationOf(  Person.class );
-        Variable<Person> markV = declarationOf(  Person.class );
-        Variable<String> nameV = declarationOf(  String.class );
+        Variable<Person> personV = declarationOf( Person.class );
+        Variable<Person> markV = declarationOf( Person.class );
+        Variable<String> nameV = declarationOf( String.class );
 
         Rule rule = rule( "or" )
                 .build(

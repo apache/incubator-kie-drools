@@ -399,7 +399,7 @@ public class PackageModel {
         // fixed part
         cu.addImport(JavaParser.parseImport("import java.util.*;"                          ));
         cu.addImport(JavaParser.parseImport("import org.drools.model.*;"                   ));
-        cu.addImport(JavaParser.parseImport("import static org.drools.model.DSL.*;"        ));
+        cu.addImport(JavaParser.parseImport("import static org.drools.model.FlowDSL.*;"        ));
         cu.addImport(JavaParser.parseImport("import org.drools.model.Index.ConstraintType;"));
         cu.addImport(JavaParser.parseImport("import java.time.*;"));
         cu.addImport(JavaParser.parseImport("import java.time.format.*;"));

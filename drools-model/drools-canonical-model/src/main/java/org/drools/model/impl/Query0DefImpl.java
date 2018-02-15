@@ -25,12 +25,12 @@ import static org.drools.model.impl.RuleBuilder.DEFAULT_PACKAGE;
 
 public class Query0DefImpl extends QueryDefImpl implements Query0Def {
 
-    public Query0DefImpl( String name) {
-        this(DEFAULT_PACKAGE, name);
+    public Query0DefImpl( ViewBuilder viewBuilder, String name ) {
+        this(viewBuilder, DEFAULT_PACKAGE, name);
     }
 
-    public Query0DefImpl( String pkg, String name) {
-        super( pkg, name );
+    public Query0DefImpl( ViewBuilder viewBuilder, String pkg, String name ) {
+        super( viewBuilder, pkg, name );
     }
 
     @Override

@@ -8,14 +8,14 @@ import org.drools.model.engine.BruteForceEngine;
 import org.drools.model.impl.DataSourceDefinitionImpl;
 import org.junit.Test;
 
-import static org.drools.model.DSL.declarationOf;
-import static org.drools.model.DSL.expr;
-import static org.drools.model.DSL.not;
-import static org.drools.model.DSL.on;
-import static org.drools.model.DSL.or;
-import static org.drools.model.DSL.rule;
-import static org.drools.model.DSL.storeOf;
-import static org.drools.model.DSL.view;
+import static org.drools.model.FlowDSL.declarationOf;
+import static org.drools.model.FlowDSL.expr;
+import static org.drools.model.FlowDSL.not;
+import static org.drools.model.FlowDSL.on;
+import static org.drools.model.FlowDSL.or;
+import static org.drools.model.FlowDSL.rule;
+import static org.drools.model.FlowDSL.storeOf;
+import static org.drools.model.FlowDSL.view;
 import static org.junit.Assert.assertEquals;
 
 public class FlowDSLTest {

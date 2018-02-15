@@ -22,27 +22,27 @@ import org.drools.model.Variable;
 import org.drools.model.view.QueryCallViewItem;
 import org.drools.model.view.QueryCallViewItemImpl;
 
-import static org.drools.model.DSL.declarationOf;
+import static org.drools.model.FlowDSL.declarationOf;
 import static org.drools.model.impl.RuleBuilder.DEFAULT_PACKAGE;
 
 public class Query1DefImpl<A> extends QueryDefImpl implements Query1Def<A> {
     private final Variable<A> arg1;
 
-    public Query1DefImpl( String name, Class<A> type1 ) {
-        this(DEFAULT_PACKAGE, name, type1);
+    public Query1DefImpl( ViewBuilder viewBuilder, String name, Class<A> type1 ) {
+        this(viewBuilder, DEFAULT_PACKAGE, name, type1);
     }
 
-    public Query1DefImpl( String name, Class<A> type1, String arg1name ) {
-        this(DEFAULT_PACKAGE, name, type1, arg1name);
+    public Query1DefImpl( ViewBuilder viewBuilder, String name, Class<A> type1, String arg1name ) {
+        this(viewBuilder, DEFAULT_PACKAGE, name, type1, arg1name);
     }
 
-    public Query1DefImpl( String pkg, String name, Class<A> type1 ) {
-        super( pkg, name );
+    public Query1DefImpl( ViewBuilder viewBuilder, String pkg, String name, Class<A> type1 ) {
+        super( viewBuilder, pkg, name );
         this.arg1 = declarationOf( type1 );
     }
 
-    public Query1DefImpl( String pkg, String name, Class<A> type1, String arg1name ) {
-        super( pkg, name );
+    public Query1DefImpl( ViewBuilder viewBuilder, String pkg, String name, Class<A> type1, String arg1name ) {
+        super( viewBuilder, pkg, name );
         this.arg1 = declarationOf( type1, arg1name);
     }
 

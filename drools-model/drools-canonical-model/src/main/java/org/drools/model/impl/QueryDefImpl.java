@@ -22,18 +22,20 @@ import org.drools.model.view.AbstractExprViewItem;
 import org.drools.model.view.ViewItemBuilder;
 
 import static org.drools.model.impl.RuleBuilder.DEFAULT_PACKAGE;
-import static org.drools.model.impl.ViewBuilder.viewItems2Patterns;
 
 public abstract class QueryDefImpl implements QueryDef {
+
+    private final ViewBuilder viewBuilder;
 
     private final String pkg;
     private final String name;
 
-    public QueryDefImpl( String name ) {
-        this(DEFAULT_PACKAGE, name);
+    public QueryDefImpl( ViewBuilder viewBuilder, String name ) {
+        this(viewBuilder, DEFAULT_PACKAGE, name);
     }
 
-    public QueryDefImpl( String pkg, String name ) {
+    public QueryDefImpl( ViewBuilder viewBuilder, String pkg, String name ) {
+        this.viewBuilder = viewBuilder;
         this.pkg = pkg;
         this.name = name;
     }
@@ -50,7 +52,7 @@ public abstract class QueryDefImpl implements QueryDef {
 
     @Override
     public Query build( ViewItemBuilder... viewItemBuilders ) {
-        return new QueryImpl( this, viewItems2Patterns( asQueryExpresssion( viewItemBuilders ) ) );
+        return new QueryImpl( this, viewBuilder.apply( asQueryExpresssion( viewItemBuilders ) ) );
     }
 
     private static ViewItemBuilder[] asQueryExpresssion( ViewItemBuilder[] viewItemBuilders ) {

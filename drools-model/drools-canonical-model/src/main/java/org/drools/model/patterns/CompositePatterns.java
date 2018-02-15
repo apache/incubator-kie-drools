@@ -21,6 +21,14 @@ public class CompositePatterns implements Condition, View, ModelComponent {
     private final Set<Variable<?>> usedVars;
     private final Map<String, Consequence> consequences;
 
+    public CompositePatterns( Type type, List<Condition> patterns ) {
+        this( type, patterns, null, null);
+    }
+
+    public CompositePatterns( Type type, List<Condition> patterns, Map<String, Consequence> consequences ) {
+        this( type, patterns, null, consequences);
+    }
+
     public CompositePatterns( Type type, List<Condition> patterns, Set<Variable<?>> usedVars, Map<String, Consequence> consequences ) {
         this.type = type;
         this.patterns = patterns;
