@@ -22,7 +22,7 @@ import org.drools.model.Variable;
 import org.drools.model.view.QueryCallViewItem;
 import org.drools.model.view.QueryCallViewItemImpl;
 
-import static org.drools.model.DSL.declarationOf;
+import static org.drools.model.FlowDSL.declarationOf;
 import static org.drools.model.impl.RuleBuilder.DEFAULT_PACKAGE;
 
 public class Query3DefImpl<A, B, C> extends QueryDefImpl implements Query3Def<A, B, C> {
@@ -30,23 +30,23 @@ public class Query3DefImpl<A, B, C> extends QueryDefImpl implements Query3Def<A,
     private final Variable<B> arg2;
     private final Variable<C> arg3;
 
-    public Query3DefImpl(String name, Class<A> type1, Class<B> type2, Class<C> type3 ) {
-        this(DEFAULT_PACKAGE, name, type1, type2, type3);
+    public Query3DefImpl(ViewBuilder viewBuilder, String name, Class<A> type1, Class<B> type2, Class<C> type3 ) {
+        this(viewBuilder, DEFAULT_PACKAGE, name, type1, type2, type3);
     }
 
-    public Query3DefImpl(String pkg, String name, Class<A> type1, Class<B> type2, Class<C> type3  ) {
-        super( pkg, name );
+    public Query3DefImpl(ViewBuilder viewBuilder, String pkg, String name, Class<A> type1, Class<B> type2, Class<C> type3  ) {
+        super( viewBuilder, pkg, name );
         this.arg1 = declarationOf( type1 );
         this.arg2 = declarationOf( type2 );
         this.arg3 = declarationOf( type3 );
     }
 
-    public Query3DefImpl(String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name, Class<C> type3, String arg3name ) {
-        this(DEFAULT_PACKAGE, name, type1, arg1name, type2, arg2name, type3, arg3name);
+    public Query3DefImpl(ViewBuilder viewBuilder, String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name, Class<C> type3, String arg3name ) {
+        this(viewBuilder, DEFAULT_PACKAGE, name, type1, arg1name, type2, arg2name, type3, arg3name);
     }
 
-    public Query3DefImpl(String pkg, String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name, Class<C> type3, String arg3name  ) {
-        super( pkg, name );
+    public Query3DefImpl(ViewBuilder viewBuilder, String pkg, String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name, Class<C> type3, String arg3name  ) {
+        super( viewBuilder, pkg, name );
         this.arg1 = declarationOf( type1, arg1name);
         this.arg2 = declarationOf( type2, arg2name );
         this.arg3 = declarationOf( type3, arg3name);

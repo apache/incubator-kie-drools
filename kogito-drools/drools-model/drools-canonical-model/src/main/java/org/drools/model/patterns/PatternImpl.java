@@ -20,7 +20,6 @@ public class PatternImpl<T> extends AbstractSinglePattern implements Pattern<T>,
 
     private final Variable<T> variable;
     private Variable[] inputVariables;
-    private Variable[] allInputVariables = new Variable[0];
     private Constraint constraint;
     private List<Binding> bindings;
     private Collection<String> watchedProps;
@@ -87,14 +86,6 @@ public class PatternImpl<T> extends AbstractSinglePattern implements Pattern<T>,
         for (String prop : props) {
             watchedProps.add(prop);
         }
-    }
-
-    public void addAllInputVariables(Variable[] variables) {
-        this.allInputVariables = variables;
-    }
-
-    public Variable[] getAllInputVariables() {
-        return allInputVariables;
     }
 
     public String[] getWatchedProps() {

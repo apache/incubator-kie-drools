@@ -16,7 +16,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static java.util.Arrays.asList;
-import static org.drools.model.DSL.*;
+import static org.drools.model.FlowDSL.*;
 import static org.junit.Assert.assertTrue;
 
 public class FireAndAlarmUsingDroolsTest {

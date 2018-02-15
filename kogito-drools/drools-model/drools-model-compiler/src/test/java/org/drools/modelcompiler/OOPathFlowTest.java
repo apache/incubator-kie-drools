@@ -37,18 +37,18 @@ import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.QueryResults;
 
-import static org.drools.model.DSL.accFunction;
-import static org.drools.model.DSL.accumulate;
-import static org.drools.model.DSL.and;
-import static org.drools.model.DSL.declarationOf;
-import static org.drools.model.DSL.expr;
-import static org.drools.model.DSL.from;
-import static org.drools.model.DSL.globalOf;
-import static org.drools.model.DSL.input;
-import static org.drools.model.DSL.on;
-import static org.drools.model.DSL.query;
-import static org.drools.model.DSL.reactiveFrom;
-import static org.drools.model.DSL.rule;
+import static org.drools.model.FlowDSL.accFunction;
+import static org.drools.model.FlowDSL.accumulate;
+import static org.drools.model.FlowDSL.and;
+import static org.drools.model.FlowDSL.declarationOf;
+import static org.drools.model.FlowDSL.expr;
+import static org.drools.model.FlowDSL.from;
+import static org.drools.model.FlowDSL.globalOf;
+import static org.drools.model.FlowDSL.input;
+import static org.drools.model.FlowDSL.on;
+import static org.drools.model.FlowDSL.query;
+import static org.drools.model.FlowDSL.reactiveFrom;
+import static org.drools.model.FlowDSL.rule;
 import static org.junit.Assert.assertEquals;
 
 public class OOPathFlowTest {

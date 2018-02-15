@@ -1,8 +1,23 @@
+/*
+ * Copyright 2005 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.drools.model;
 
 import java.util.concurrent.TimeUnit;
 
-import org.drools.model.consequences.ConditionalConsequenceBuilder;
 import org.drools.model.consequences.ConsequenceBuilder;
 import org.drools.model.datasources.DataStore;
 import org.drools.model.datasources.DataStream;
@@ -11,13 +26,7 @@ import org.drools.model.datasources.impl.SetDataStore;
 import org.drools.model.functions.Block0;
 import org.drools.model.functions.Block1;
 import org.drools.model.functions.Function1;
-import org.drools.model.functions.Function2;
-import org.drools.model.functions.Operator;
 import org.drools.model.functions.Predicate1;
-import org.drools.model.functions.Predicate2;
-import org.drools.model.functions.Predicate3;
-import org.drools.model.functions.Predicate4;
-import org.drools.model.functions.Predicate5;
 import org.drools.model.functions.accumulate.AccumulateFunction;
 import org.drools.model.functions.temporal.AbstractTemporalPredicate;
 import org.drools.model.functions.temporal.AfterPredicate;
@@ -39,38 +48,18 @@ import org.drools.model.impl.DeclarationImpl;
 import org.drools.model.impl.EntryPointImpl;
 import org.drools.model.impl.FromImpl;
 import org.drools.model.impl.GlobalImpl;
-import org.drools.model.impl.Query0DefImpl;
-import org.drools.model.impl.Query1DefImpl;
-import org.drools.model.impl.Query2DefImpl;
-import org.drools.model.impl.Query3DefImpl;
-import org.drools.model.impl.Query4DefImpl;
-import org.drools.model.impl.RuleBuilder;
 import org.drools.model.impl.TypeMetaDataImpl;
 import org.drools.model.impl.UnitDataImpl;
 import org.drools.model.impl.ValueImpl;
 import org.drools.model.impl.WindowImpl;
 import org.drools.model.impl.WindowReferenceImpl;
 import org.drools.model.view.AccumulateExprViewItem;
-import org.drools.model.view.BindViewItem1;
-import org.drools.model.view.BindViewItem2;
 import org.drools.model.view.CombinedExprViewItem;
 import org.drools.model.view.ExistentialExprViewItem;
-import org.drools.model.view.Expr1ViewItem;
-import org.drools.model.view.Expr1ViewItemImpl;
-import org.drools.model.view.Expr2ViewItem;
-import org.drools.model.view.Expr2ViewItemImpl;
-import org.drools.model.view.Expr3ViewItemImpl;
-import org.drools.model.view.Expr4ViewItemImpl;
-import org.drools.model.view.Expr5ViewItemImpl;
 import org.drools.model.view.ExprViewItem;
 import org.drools.model.view.FixedValueItem;
-import org.drools.model.view.InputViewItem;
-import org.drools.model.view.InputViewItemImpl;
-import org.drools.model.view.TemporalExprViewItem;
 import org.drools.model.view.ViewItem;
 import org.drools.model.view.ViewItemBuilder;
-
-import static org.drools.model.impl.ViewBuilder.viewItems2Patterns;
 
 public class DSL {
 
@@ -90,7 +79,7 @@ public class DSL {
 
     // -- TypeMetaData --
 
-    public static TypeMetaDataImpl typeMetaData(String pkg, String name) {
+    public static TypeMetaDataImpl typeMetaData( String pkg, String name) {
         return new TypeMetaDataImpl(pkg, name);
     }
 
@@ -192,125 +181,7 @@ public class DSL {
         return new FromImpl<>( variable, provider, true );
     }
 
-    // -- LHS --
-
-    public static View view(ViewItemBuilder... viewItemBuilders ) {
-        return viewItems2Patterns( viewItemBuilders );
-    }
-
-    public static <T> InputViewItem<T> input( Variable<T> var ) {
-        return new InputViewItemImpl<T>( var );
-    }
-
-    public static FixedValueItem expr( boolean value ) {
-        return new FixedValueItem( null, value );
-    }
-
-    public static FixedValueItem expr( String exprId, boolean value ) {
-        return new FixedValueItem( exprId, value );
-    }
-
-    public static <T> Expr1ViewItem<T> expr( Variable<T> var) {
-        return new Expr1ViewItemImpl<T>( var, new Predicate1.Impl<T>(t -> true) );
-    }
-
-    public static <T> Expr1ViewItem<T> expr( Variable<T> var, Predicate1<T> predicate ) {
-        return new Expr1ViewItemImpl<T>( var, new Predicate1.Impl<T>(predicate) );
-    }
-
-    public static <T, U> Expr2ViewItem<T, U> expr(Variable<T> var1, Variable<U> var2, Predicate2<T, U> predicate) {
-        return new Expr2ViewItemImpl<T, U>( var1, var2, new Predicate2.Impl<T, U>(predicate) );
-    }
-
-    public static <T, U, X> ExprViewItem<T> expr(Variable<T> var1, Variable<U> var2, Variable<X> var3, Predicate3<T, U, X> predicate) {
-        return new Expr3ViewItemImpl<T, U, X>(var1, var2, var3, new Predicate3.Impl<T, U, X>(predicate));
-    }
-
-    public static <T> Expr1ViewItem<T> expr(String exprId, Variable<T> var, Predicate1<T> predicate) {
-        return new Expr1ViewItemImpl<T>( exprId, var, new Predicate1.Impl<T>(predicate));
-    }
-
-    public static <T, U> Expr2ViewItem<T, U> expr( String exprId, Variable<T> var1, Variable<U> var2, Predicate2<T, U> predicate ) {
-        return new Expr2ViewItemImpl<T, U>( exprId, var1, var2, new Predicate2.Impl<T, U>(predicate));
-    }
-
-    public static <T, U, X> ExprViewItem<T> expr(String exprId, Variable<T> var1, Variable<U> var2, Variable<X> var3, Predicate3<T, U, X> predicate) {
-        return new Expr3ViewItemImpl<T, U, X>(exprId, var1, var2, var3, new Predicate3.Impl<T, U, X>(predicate));
-    }
-
-    public static <A, B, C, D> ExprViewItem<A> expr(Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Predicate4<A, B, C, D> predicate) {
-        return new Expr4ViewItemImpl<A, B, C, D>(var1, var2, var3, var4, new Predicate4.Impl<A, B, C, D>(predicate));
-    }
-
-    public static <A, B, C, D> ExprViewItem<A> expr(String exprId, Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Predicate4<A, B, C, D> predicate) {
-        return new Expr4ViewItemImpl<A, B, C, D>(exprId, var1, var2, var3, var4, new Predicate4.Impl<A, B, C, D>(predicate));
-    }
-
-    public static <A, B, C, D, E> ExprViewItem<A> expr(Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Variable<E> var5, Predicate5<A, B, C, D, E> predicate) {
-        return new Expr5ViewItemImpl<A, B, C, D, E>(var1, var2, var3, var4, var5, new Predicate5.Impl<A, B, C, D, E>(predicate));
-    }
-
-    public static <A, B, C, D, E> ExprViewItem<A> expr(String exprId, Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Variable<E> var5, Predicate5<A, B, C, D, E> predicate) {
-        return new Expr5ViewItemImpl<A, B, C, D, E>(exprId, var1, var2, var3, var4, var5, new Predicate5.Impl<A, B, C, D, E>(predicate));
-    }
-
-    public static boolean eval( String op, Object obj, Object... args ) {
-        return eval( Operator.Register.getOperator( op ), obj, args );
-    }
-
-    public static boolean eval( Operator op, Object obj, Object... args ) {
-        return op.test( obj, args );
-    }
-
-    public static ExprViewItem not(ViewItemBuilder<?> expression, ViewItemBuilder<?>... expressions) {
-        return new ExistentialExprViewItem( Condition.Type.NOT, and( expression, expressions) );
-    }
-
-    public static <T> ExprViewItem<T> not(Variable<T> var) {
-        return not( new Expr1ViewItemImpl<T>( "true", var, null ) );
-    }
-
-    public static <T> ExprViewItem<T> not(InputViewItem<T> view) {
-        return not( view.getFirstVariable() );
-    }
-
-    public static <T> ExprViewItem<T> not(Variable<T> var, Predicate1<T> predicate) {
-        return not(new Expr1ViewItemImpl<T>( var, new Predicate1.Impl<T>(predicate)) );
-    }
-
-    public static <T, U> ExprViewItem<T> not(Variable<T> var1, Variable<U> var2, Predicate2<T, U> predicate) {
-        return not(new Expr2ViewItemImpl<T, U>( var1, var2, new Predicate2.Impl<T, U>(predicate)) );
-    }
-
-    public static ExprViewItem exists(ViewItemBuilder<?> expression, ViewItemBuilder<?>... expressions) {
-        return new ExistentialExprViewItem( Condition.Type.EXISTS, and( expression, expressions) );
-    }
-
-    public static <T> ExprViewItem<T> exists(Variable<T> var) {
-        return exists(new Expr1ViewItemImpl<T>( "true", var, null ) );
-    }
-
-    public static <T> ExprViewItem<T> exists(InputViewItem<T> view) {
-        return exists( view.getFirstVariable() );
-    }
-
-    public static <T> ExprViewItem<T> exists(Variable<T> var, Predicate1<T> predicate) {
-        return exists(new Expr1ViewItemImpl<T>( var, new Predicate1.Impl<T>(predicate)) );
-    }
-
-    public static <T, U> ExprViewItem<T> exists(Variable<T> var1, Variable<U> var2, Predicate2<T, U> predicate) {
-        return exists(new Expr2ViewItemImpl<T, U>( var1, var2, new Predicate2.Impl<T, U>(predicate)) );
-    }
-
-    public static ExprViewItem forall(ViewItem expression, ViewItem... expressions) {
-        return new ExistentialExprViewItem( Condition.Type.FORALL, and( expression, expressions) );
-    }
-
-    public static <T> ExprViewItem<T> accumulate(ViewItem<?> viewItem, AccumulateFunction... functions) {
-        return new AccumulateExprViewItem(viewItem, functions);
-    }
-
-    public static ViewItem or(ViewItemBuilder<?> expression, ViewItemBuilder<?>... expressions) {
+    public static ViewItem or( ViewItemBuilder<?> expression, ViewItemBuilder<?>... expressions) {
         if (expressions == null || expressions.length == 0) {
             return expression.get();
         }
@@ -333,56 +204,31 @@ public class DSL {
         return andExprs;
     }
 
-    public static <T> BindViewItemBuilder<T> bind( Variable<T> var) {
-        return new BindViewItemBuilder<T>(var);
+    // -- Existential operator --
+
+    public static ExprViewItem not( ViewItemBuilder<?> expression, ViewItemBuilder<?>... expressions) {
+        return new ExistentialExprViewItem( Condition.Type.NOT, and( expression, expressions) );
     }
 
-    public static class BindViewItemBuilder<T> implements ViewItemBuilder<T> {
-        private final Variable<T> boundVariable;
-        private Function1 function1;
-        private Function2 function2;
-        private Variable inputVariable1;
-        private Variable inputVariable2;
-        private String reactOn;
+    public static ExprViewItem exists(ViewItemBuilder<?> expression, ViewItemBuilder<?>... expressions) {
+        return new ExistentialExprViewItem( Condition.Type.EXISTS, and( expression, expressions) );
+    }
 
-        private BindViewItemBuilder( Variable<T> boundVariable) {
-            this.boundVariable = boundVariable;
-        }
+    public static ExprViewItem forall(ViewItemBuilder<?> expression, ViewItemBuilder<?>... expressions) {
+        return new ExistentialExprViewItem( Condition.Type.FORALL, and( expression, expressions) );
+    }
 
-        public <A> BindViewItemBuilder<T> as( Variable<A> var1, Function1<A, T> f) {
-            this.function1 = new Function1.Impl<>(f);
-            this.inputVariable1 = var1;
-            return this;
-        }
+    // -- Accumulate Functions --
 
-        public <A, B> BindViewItemBuilder<T> as( Variable<A> var1, Variable<B> var2, Function2<A, B, T> f) {
-            this.function2 = new Function2.Impl<>(f);
-            this.inputVariable1 = var1;
-            this.inputVariable2 = var2;
-            return this;
-        }
+    public static <T> ExprViewItem<T> accumulate(ViewItem<?> viewItem, AccumulateFunction... functions) {
+        return new AccumulateExprViewItem(viewItem, functions);
+    }
 
-        public BindViewItemBuilder<T> reactOn( String reactOn ) {
-            this.reactOn = reactOn;
-            return this;
-        }
-
-        @Override
-        public ViewItem<T> get() {
-            if(function1 != null) {
-                return new BindViewItem1<T>(boundVariable, function1, inputVariable1, reactOn);
-            } else if(function2 != null) {
-                return new BindViewItem2<T>(boundVariable, function2, inputVariable1, inputVariable2, reactOn);
-            }
-            throw new UnsupportedOperationException("function1 or function2 needed");
-        }
+    public static AccumulateFunction accFunction( Class<?> accFunctionClass, Variable source) {
+        return new AccumulateFunction(source, accFunctionClass);
     }
 
     // -- Temporal Constraints --
-
-    public static <T> TemporalExprViewItem<T> expr( String exprId, Variable<T> var1, Variable<?> var2, TemporalPredicate temporalPredicate ) {
-        return new TemporalExprViewItem<T>( exprId, var1, var2, temporalPredicate);
-    }
 
     public static TemporalPredicate not(TemporalPredicate predicate) {
         return (( AbstractTemporalPredicate ) predicate).setNegated( true );
@@ -516,37 +362,17 @@ public class DSL {
         return new StartsPredicate(dev, devUnit);
     }
 
-    // -- Accumulate Functions --
-
-    public static AccumulateFunction accFunction(Class<?> accFunctionClass, Variable source) {
-        return new AccumulateFunction(source, accFunctionClass);
+    public static FixedValueItem expr( boolean value ) {
+        return new FixedValueItem( null, value );
     }
 
-    // -- Conditional Named Consequnce --
-
-    public static <A> ConditionalConsequenceBuilder when(Variable<A> var, Predicate1<A> predicate) {
-        return when( expr( var, predicate ) );
-    }
-
-    public static <A> ConditionalConsequenceBuilder when(String exprId, Variable<A> var, Predicate1<A> predicate) {
-        return when( expr( exprId, var, predicate ) );
-    }
-
-    public static <A, B> ConditionalConsequenceBuilder when(Variable<A> var1, Variable<B> var2, Predicate2<A, B> predicate) {
-        return when( expr( var1, var2, predicate ) );
-    }
-
-    public static <A, B> ConditionalConsequenceBuilder when(String exprId, Variable<A> var1, Variable<B> var2, Predicate2<A, B> predicate) {
-        return when( expr( exprId, var1, var2, predicate ) );
-    }
-
-    public static ConditionalConsequenceBuilder when(ExprViewItem expr) {
-        return new ConditionalConsequenceBuilder( expr );
+    public static FixedValueItem expr( String exprId, boolean value ) {
+        return new FixedValueItem( exprId, value );
     }
 
     // -- RHS --
 
-    public static ConsequenceBuilder._0 execute(Block0 block) {
+    public static ConsequenceBuilder._0 execute( Block0 block) {
         return new ConsequenceBuilder._0(block);
     }
 
@@ -572,90 +398,6 @@ public class DSL {
 
     public static ConsequenceBuilder._N on(Variable... declarations) {
         return new ConsequenceBuilder._N(declarations);
-    }
-
-    // -- rule --
-
-    public static RuleBuilder rule(String name) {
-        return new RuleBuilder(name);
-    }
-
-    public static RuleBuilder rule(String pkg, String name) {
-        return new RuleBuilder(pkg, name);
-    }
-
-    // -- query --
-
-    public static <A> Query0Def query( String name ) {
-        return new Query0DefImpl( name );
-    }
-
-    public static <A> Query0Def query( String pkg, String name ) {
-        return new Query0DefImpl( pkg, name );
-    }
-
-    public static <A> Query1Def<A> query( String name, Class<A> type1 ) {
-        return new Query1DefImpl<A>( name, type1 );
-    }
-
-    public static <A> Query1Def<A> query( String name, Class<A> type1, String arg1name ) {
-        return new Query1DefImpl<A>( name, type1, arg1name);
-    }
-
-    public static <A> Query1Def<A> query( String pkg, String name, Class<A> type1 ) {
-        return new Query1DefImpl<A>( pkg, name, type1 );
-    }
-
-    public static <A,B> Query2Def<A,B> query( String name, Class<A> type1, Class<B> type2 ) {
-        return new Query2DefImpl<A,B>( name, type1, type2 );
-    }
-
-    public static <A,B> Query2Def<A,B> query( String pkg, String name, Class<A> type1, Class<B> type2 ) {
-        return new Query2DefImpl<A,B>( pkg, name, type1, type2 );
-    }
-
-    public static <A,B,C> Query3Def<A,B,C> query( String name, Class<A> type1, Class<B> type2, Class<C> type3 ) {
-        return new Query3DefImpl<A,B,C>(name, type1, type2, type3 );
-    }
-
-    public static <A,B,C> Query3Def<A,B,C> query( String pkg, String name, Class<A> type1, Class<B> type2, Class<C> type3 ) {
-        return new Query3DefImpl<A,B,C>( pkg, name, type1, type2, type3 );
-    }
-
-    public static <A,B,C, D> Query4Def<A,B,C,D> query( String name, Class<A> type1, Class<B> type2, Class<C> type3, Class<D> type4) {
-        return new Query4DefImpl<A,B,C,D>(name, type1, type2, type3, type4 );
-    }
-
-    public static <A,B,C, D> Query4Def<A,B,C,D> query( String pkg, String name, Class<A> type1, Class<B> type2, Class<C> type3, Class<D> type4) {
-        return new Query4DefImpl<A,B,C,D>( pkg, name, type1, type2, type3, type4 );
-    }
-
-    public static <A> Query1Def<A> query( String pkg, String name, Class<A> type1, String arg1name ) {
-        return new Query1DefImpl<A>( pkg, name, type1, arg1name);
-    }
-
-    public static <A,B> Query2Def<A,B> query( String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name ) {
-        return new Query2DefImpl<A,B>( name, type1, arg1name, type2 ,arg2name);
-    }
-
-    public static <A,B> Query2Def<A,B> query( String pkg, String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name ) {
-        return new Query2DefImpl<A,B>( pkg, name, type1, arg1name, type2, arg2name);
-    }
-
-    public static <A,B,C> Query3Def<A,B,C> query( String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name, Class<C> type3, String arg3name ) {
-        return new Query3DefImpl<A,B,C>(name, type1, arg1name, type2, arg2name, type3, arg3name);
-    }
-
-    public static <A,B,C> Query3Def<A,B,C> query( String pkg, String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name, Class<C> type3, String arg3name ) {
-        return new Query3DefImpl<A,B,C>( pkg, name, type1, arg1name, type2, arg2name, type3, arg3name);
-    }
-
-    public static <A,B,C, D> Query4Def<A,B,C,D> query( String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name, Class<C> type3, String arg3name, Class<D> type4, String arg4name) {
-        return new Query4DefImpl<A,B,C,D>(name, type1, type2, type3, type4 );
-    }
-
-    public static <A,B,C, D> Query4Def<A,B,C,D> query( String pkg, String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name, Class<C> type3, String arg3name, Class<D> type4, String arg4name) {
-        return new Query4DefImpl<A,B,C,D>( pkg, name, type1, type2, type3, type4 );
     }
 
     public static <T> Value<T> valueOf(T value) {
