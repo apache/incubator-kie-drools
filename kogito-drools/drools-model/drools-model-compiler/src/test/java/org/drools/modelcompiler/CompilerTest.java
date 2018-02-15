@@ -27,7 +27,6 @@ import org.drools.core.reteoo.AlphaNode;
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Adult;
 import org.drools.modelcompiler.domain.Child;
-import org.drools.modelcompiler.domain.InternationalAddress;
 import org.drools.modelcompiler.domain.Man;
 import org.drools.modelcompiler.domain.Overloaded;
 import org.drools.modelcompiler.domain.Person;
@@ -40,7 +39,11 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.*;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class CompilerTest extends BaseModelTest {
 
@@ -755,7 +758,6 @@ public class CompilerTest extends BaseModelTest {
                      "end";
 
         KieSession ksession = getKieSession(str);
-        ReteDumper.dumpRete(ksession);
 
         ksession.insert(new Person("Mario", 40));
         ksession.insert(new Person("Mark", 37));
