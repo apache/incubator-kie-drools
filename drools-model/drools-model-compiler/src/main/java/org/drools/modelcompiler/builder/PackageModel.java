@@ -54,11 +54,16 @@ import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.QueryGenerator;
 import org.drools.modelcompiler.builder.generator.QueryParameter;
 import org.kie.api.runtime.rule.AccumulateFunction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.drools.core.util.StringUtils.generateUUID;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 
 public class PackageModel {
+
+    private static final Logger logger          = LoggerFactory.getLogger(PackageModel.class);
+
 
     private static final String RULES_FILE_NAME = "Rules";
 
@@ -425,10 +430,10 @@ public class PackageModel {
         field.getVariables().get(0).setInitializer(declarationOfCall);
     }
 
-    public void sysout(String source) {
-        System.out.println("=====");
-        System.out.println(source);
-        System.out.println("=====");
+    public void logRule(String source) {
+        logger.debug("=====");
+        logger.debug(source);
+        logger.debug("=====");
     }
 
     public void addAccumulateFunctions(Map<String, AccumulateFunction> accumulateFunctions) {

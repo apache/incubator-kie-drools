@@ -2,17 +2,27 @@ package org.drools.modelcompiler.builder.generator;
 
 import java.util.HashSet;
 
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.javaparser.ast.NodeList;
 import org.drools.javaparser.ast.drlx.expr.PointFreeExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.SimpleName;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
+import org.drools.modelcompiler.inlinecast.ICA;
+import org.drools.modelcompiler.inlinecast.ICAbstractA;
+import org.drools.modelcompiler.inlinecast.ICAbstractB;
+import org.drools.modelcompiler.inlinecast.ICAbstractC;
+import org.drools.modelcompiler.inlinecast.ICB;
+import org.drools.modelcompiler.inlinecast.ICC;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper;
 import org.drools.modelcompiler.builder.generator.expressiontyper.TypedExpressionResult;
 import org.drools.modelcompiler.domain.Overloaded;
 import org.drools.modelcompiler.domain.Person;
+import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
@@ -21,15 +31,21 @@ import static org.junit.Assert.*;
 
 public class ToTypedExpressionTest {
 
-    private final HashSet<String> imports = new HashSet<>();
-    private final PackageModel packageModel = new PackageModel("", null);
-    final TypeResolver typeResolver = new ClassTypeResolver(imports, getClass().getClassLoader());
-    private final RuleContext ruleContext = new RuleContext(null, packageModel, null, typeResolver);
+    private HashSet<String> imports;
+    private PackageModel packageModel;
+    private TypeResolver typeResolver;
+    private RuleContext ruleContext;
+    private KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
+    private RuleDescr ruleDescr = new RuleDescr("testRule");
 
-    {
+    @Before
+    public void setUp() throws Exception {
+        imports = new HashSet<>();
+        packageModel = new PackageModel("", null);
+        typeResolver = new ClassTypeResolver(imports, getClass().getClassLoader());
+        ruleContext = new RuleContext(knowledgeBuilder, packageModel, ruleDescr, typeResolver);
         imports.add("org.drools.modelcompiler.domain.Person");
     }
-
 
     @Test
     public void toTypedExpressionTest() {
@@ -43,9 +59,26 @@ public class ToTypedExpressionTest {
         assertEquals(typedResult("_this.method(5,9,\"x\")", int.class), toTypedExpression("method(5,9,\"x\")", Overloaded.class));
         assertEquals(typedResult("_this.getAddress().getCity().length()", int.class), toTypedExpression("address.getCity().length", Person.class));
 
+    }
+
+    @Test
+    public void inlineCastTest() {
         TypedExpression inlineCastResult = typedResult("((org.drools.modelcompiler.domain.Person) _this).getName()", String.class);
         assertEquals(inlineCastResult, toTypedExpression("this#Person.name", Object.class));
+    }
 
+    @Test
+    public void inlineCastTest2() {
+        addInlineCastImport();
+        TypedExpression inlineCastResult = typedResult("((org.drools.modelcompiler.inlinecast.ICC)((org.drools.modelcompiler.inlinecast.ICB) _this.getSomeB()).getSomeC()).onlyConcrete()", String.class);
+        assertEquals(inlineCastResult, toTypedExpression("someB#ICB.someC#ICC.onlyConcrete() ", ICA.class));
+    }
+
+    @Test
+    public void inlineCastTest3() {
+        addInlineCastImport();
+        TypedExpression inlineCastResult = typedResult("((org.drools.modelcompiler.inlinecast.ICB) _this.getSomeB()).onlyConcrete()", String.class);
+        assertEquals(inlineCastResult, toTypedExpression("someB#ICB.onlyConcrete()", ICA.class));
     }
 
     @Test
@@ -74,6 +107,15 @@ public class ToTypedExpressionTest {
 
     private DeclarationSpec aPersonDecl(String $mark) {
         return new DeclarationSpec($mark, Person.class);
+    }
+
+    private void addInlineCastImport() {
+        imports.add(ICAbstractA.class.getCanonicalName());
+        imports.add(ICAbstractB.class.getCanonicalName());
+        imports.add(ICAbstractC.class.getCanonicalName());
+        imports.add(ICA.class.getCanonicalName());
+        imports.add(ICB.class.getCanonicalName());
+        imports.add(ICC.class.getCanonicalName());
     }
 
 }
