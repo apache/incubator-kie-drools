@@ -29,7 +29,6 @@ import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.visitor.DSLNode;
 
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.ModelGenerator.BIND_AS_CALL;
 import static org.drools.modelcompiler.builder.generator.ModelGenerator.EXPR_CALL;
@@ -212,5 +211,20 @@ class PatternDSLSimpleConstraint implements DSLNode {
         }
         return exprDSL;
     }
+
+    public static Expression generateLambdaWithoutParameters(Collection<String> usedDeclarations, Expression expr, boolean skipFirstParamAsThis) {
+        if (skipFirstParamAsThis && usedDeclarations.isEmpty()) {
+            return expr;
+        }
+        LambdaExpr lambdaExpr = new LambdaExpr();
+        lambdaExpr.setEnclosingParameters( true );
+        if (!skipFirstParamAsThis) {
+            lambdaExpr.addParameter(new Parameter(new UnknownType(), "_this"));
+        }
+        usedDeclarations.stream().map( s -> new Parameter( new UnknownType(), s ) ).forEach( lambdaExpr::addParameter );
+        lambdaExpr.setBody( new ExpressionStmt(expr ) );
+        return lambdaExpr;
+    }
+
 
 }
