@@ -114,6 +114,15 @@
            "methodName": "getEventDate",
            "elementKind": "method",
            "justification": "Exposed date when event was created"
+         },
+         {
+           "code": "java.method.addedToInterface",
+           "new": "method org.kie.api.builder.KieBuilder org.kie.api.builder.KieBuilder::buildAll(java.lang.Class<? extends org.kie.api.builder.KieBuilder.ProjectType>)",
+           "package": "org.kie.api.builder",
+           "classSimpleName": "KieBuilder",
+           "methodName": "buildAll",
+           "elementKind": "method",
+           "justification": "Allow to programmatically build an executable model based project"
          }
       ]
     }
