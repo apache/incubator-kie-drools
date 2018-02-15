@@ -204,7 +204,7 @@ public abstract class AbstractKieProject implements KieProject {
 
     public KnowledgeBuilder buildKnowledgePackages( KieBaseModelImpl kBaseModel,
                                                     ResultsImpl messages ) {
-        AbstractKieModule kModule = (AbstractKieModule) getKieModuleForKBase(kBaseModel.getName());
+        InternalKieModule kModule = getKieModuleForKBase(kBaseModel.getName());
         KnowledgeBuilder kbuilder = createKnowledgeBuilder( kBaseModel, kModule );
         CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
 
@@ -266,7 +266,7 @@ public abstract class AbstractKieProject implements KieProject {
         return kbuilder;
     }
 
-    protected KnowledgeBuilder createKnowledgeBuilder( KieBaseModelImpl kBaseModel, AbstractKieModule kModule ) {
+    protected KnowledgeBuilder createKnowledgeBuilder( KieBaseModelImpl kBaseModel, InternalKieModule kModule ) {
         return KnowledgeBuilderFactory.newKnowledgeBuilder( getBuilderConfiguration( kBaseModel, kModule ) );
     }
 
@@ -280,7 +280,7 @@ public abstract class AbstractKieProject implements KieProject {
         }
     }
 
-    protected KnowledgeBuilderConfigurationImpl getBuilderConfiguration( KieBaseModelImpl kBaseModel, AbstractKieModule kModule ) {
+    protected KnowledgeBuilderConfigurationImpl getBuilderConfiguration( KieBaseModelImpl kBaseModel, InternalKieModule kModule ) {
         KnowledgeBuilderConfigurationImpl pconf = new KnowledgeBuilderConfigurationImpl(getClassLoader());
         pconf.setCompilationCache(kModule.getCompilationCache(kBaseModel.getName()));
         AbstractKieModule.setModelPropsOnConf( kBaseModel, pconf );

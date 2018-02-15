@@ -21,11 +21,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
+import org.drools.compiler.kie.builder.impl.DrlProject;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
-import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
 import org.drools.compiler.kie.builder.impl.ZipKieModule;
 import org.drools.modelcompiler.CanonicalKieModule;
-import org.drools.modelcompiler.builder.CanonicalModelKieProject;
+import org.drools.modelcompiler.CanonicalModelProject;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
@@ -81,12 +81,8 @@ public final class BuildtimeUtil {
         }
         kfs.writeKModuleXML(getDefaultKieModuleModel(KieServices.get()).toXML());
 
-        final KieBuilderImpl kbuilder = (KieBuilderImpl) KieServices.Factory.get().newKieBuilder(kfs);
-        if (useCanonicalModel) {
-            kbuilder.buildAll(CanonicalModelKieProject::new);
-        } else {
-            kbuilder.buildAll();
-        }
+        KieBuilder kbuilder = KieServices.Factory.get().newKieBuilder(kfs);
+        kbuilder.buildAll(useCanonicalModel ? CanonicalModelProject.class : DrlProject.class);
 
         final List<Message> msgs = kbuilder.getResults().getMessages(Message.Level.ERROR);
         if (msgs.size() > 0) {

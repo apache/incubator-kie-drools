@@ -31,7 +31,7 @@ import org.drools.compiler.compiler.DialectConfiguration;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.xml.RulesSemanticModule;
-import org.drools.compiler.kie.builder.impl.AbstractKieModule.CompilationCache;
+import org.drools.compiler.kie.builder.impl.InternalKieModule.CompilationCache;
 import org.drools.compiler.rule.builder.DroolsCompilerComponentFactory;
 import org.drools.compiler.rule.builder.util.AccumulateUtil;
 import org.drools.core.base.evaluators.EvaluatorDefinition;

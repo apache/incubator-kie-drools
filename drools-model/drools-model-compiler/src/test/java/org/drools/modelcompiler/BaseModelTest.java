@@ -16,22 +16,18 @@
 
 package org.drools.modelcompiler;
 
-import java.io.File;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
-import org.drools.modelcompiler.builder.CanonicalModelKieProject;
-import org.drools.modelcompiler.util.TestFileUtils;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
-import org.kie.api.builder.KieModule;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
@@ -79,20 +75,7 @@ public abstract class BaseModelTest {
         ReleaseId releaseId = ks.newReleaseId( "org.kie", "kjar-test-" + UUID.randomUUID(), "1.0" );
 
         KieBuilder kieBuilder = createKieBuilder( ks, model, releaseId, stringRules );
-        return getKieContainer( ks, model, releaseId, kieBuilder );
-    }
-
-    protected KieContainer getKieContainer( KieServices ks, KieModuleModel model, ReleaseId releaseId, KieBuilder kieBuilder ) {
-        if ( testRunType == RUN_TYPE.USE_CANONICAL_MODEL ) {
-            addKieModuleFromCanonicalModel( ks, model, releaseId, (InternalKieModule) kieBuilder.getKieModule() );
-        }
         return ks.newKieContainer( releaseId );
-    }
-
-    protected void addKieModuleFromCanonicalModel( KieServices ks, KieModuleModel model, ReleaseId releaseId, InternalKieModule kieModule ) {
-        File kjarFile = TestFileUtils.bytesToTempKJARFile( releaseId, kieModule.getBytes(), ".jar" );
-        KieModule zipKieModule = new CanonicalKieModule( releaseId, model != null ? model : getDefaultKieModuleModel( ks ), kjarFile );
-        ks.getRepository().addKieModule( zipKieModule );
     }
 
     protected KieBuilder createKieBuilder( String... stringRules ) {
@@ -118,7 +101,7 @@ public abstract class BaseModelTest {
         }
 
         KieBuilder kieBuilder = ( testRunType == RUN_TYPE.USE_CANONICAL_MODEL ) ?
-                ( (KieBuilderImpl ) ks.newKieBuilder( kfs ) ).buildAll( CanonicalModelKieProject::new ) :
+                ( (KieBuilderImpl ) ks.newKieBuilder( kfs ) ).buildAll( CanonicalModelProject.class ) :
                 ks.newKieBuilder( kfs ).buildAll();
 
         if ( failIfBuildError ) {
@@ -156,13 +139,7 @@ public abstract class BaseModelTest {
     protected void createAndDeployJar( KieServices ks, KieModuleModel model, ReleaseId releaseId, KieFile... ruleFiles ) {
         KieBuilder kieBuilder = createKieBuilder( ks, model, releaseId, ruleFiles );
         InternalKieModule kieModule = (InternalKieModule) kieBuilder.getKieModule();
-
-        // Deploy jar into the repository
-        if ( testRunType == RUN_TYPE.STANDARD_FROM_DRL ) {
-            ks.getRepository().addKieModule( ks.getResources().newByteArrayResource( kieModule.getBytes() ) );
-        } else if ( testRunType == RUN_TYPE.USE_CANONICAL_MODEL ) {
-            addKieModuleFromCanonicalModel( ks, model, releaseId, kieModule );
-        }
+        ks.getRepository().addKieModule( kieModule );
     }
 
     public static class KieFile {

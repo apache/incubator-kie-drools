@@ -43,7 +43,7 @@ import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.compiler.kie.builder.impl.AbstractKieModule.CompilationCacheEntry;
+import org.drools.compiler.kie.builder.impl.InternalKieModule.CompilationCacheEntry;
 import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.BaseDescr;

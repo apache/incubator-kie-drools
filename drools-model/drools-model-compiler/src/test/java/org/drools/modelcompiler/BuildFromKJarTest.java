@@ -16,21 +16,16 @@
 
 package org.drools.modelcompiler;
 
-import static org.junit.Assert.fail;
-
 import java.io.File;
 import java.util.List;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
-import org.drools.modelcompiler.builder.CanonicalModelKieProject;
 import org.drools.modelcompiler.domain.Person;
-import org.drools.modelcompiler.util.TestFileUtils;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
-import org.kie.api.builder.KieModule;
 import org.kie.api.builder.KieRepository;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
@@ -41,6 +36,8 @@ import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
+import static org.junit.Assert.fail;
+
 public class BuildFromKJarTest {
 
     @Test
@@ -48,15 +45,11 @@ public class BuildFromKJarTest {
         KieServices ks = KieServices.get();
         ReleaseId releaseId = ks.newReleaseId( "org.kie", "kjar-test", "1.0" );
 
-        File jarFile = createJarFile(ks, releaseId);
-
-//        executeSession( ks, releaseId );
-
         KieRepository repo = ks.getRepository();
         repo.removeKieModule( releaseId );
 
-        KieModule zipKieModule = new CanonicalKieModule( releaseId, getDefaultKieModuleModel( ks ), jarFile );
-        repo.addKieModule( zipKieModule );
+        InternalKieModule kmodule = createKieModule(ks, releaseId);
+        repo.addKieModule( kmodule );
 
         executeSession( ks, releaseId );
     }
@@ -71,7 +64,7 @@ public class BuildFromKJarTest {
         kieSession.fireAllRules();
     }
 
-    private File createJarFile(KieServices ks, ReleaseId releaseId) {
+    private InternalKieModule createKieModule(KieServices ks, ReleaseId releaseId) {
 
         KieFileSystem kfs = ks.newKieFileSystem();
         kfs.writeKModuleXML(getDefaultKieModuleModel(ks).toXML());
@@ -84,14 +77,13 @@ public class BuildFromKJarTest {
         kfs.write("src/main/resources/rule.drl", getRule());
 
         KieBuilder kieBuilder = ks.newKieBuilder( kfs );
-        List<Message> messages = ( (KieBuilderImpl) kieBuilder ).buildAll( CanonicalModelKieProject::new )
+        List<Message> messages = ( (KieBuilderImpl) kieBuilder ).buildAll( CanonicalModelProject.class )
                                                                 .getResults().getMessages();
         if (!messages.isEmpty()) {
             fail(messages.toString());
         }
 
-        InternalKieModule kieModule = (InternalKieModule) kieBuilder.getKieModule();
-        return TestFileUtils.bytesToTempKJARFile( releaseId, kieModule.getBytes(), ".jar" );
+        return (InternalKieModule) kieBuilder.getKieModule();
     }
 
 
