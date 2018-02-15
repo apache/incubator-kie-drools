@@ -37,5 +37,12 @@ public class TypedExpressionResult {
         return expressionTyperContext.getPrefixExpresssions();
     }
 
-
+    @Override
+    public String toString() {
+        return "{" +
+                "expression=" + typedExpression.map(TypedExpression::toString).orElse("Parse Fail") +
+                ", usedDeclarations=" + expressionTyperContext.getUsedDeclarations() +
+                ", reactOnProperties =" + expressionTyperContext.getReactOnProperties() +
+                '}';
+    }
 }

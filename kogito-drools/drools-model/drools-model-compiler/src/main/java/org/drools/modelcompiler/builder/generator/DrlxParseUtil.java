@@ -412,6 +412,10 @@ public class DrlxParseUtil {
         return DrlxParser.parseExpression(DrlxParser.buildDrlxParserWithArguments(OperatorsHolder.operators), expression);
     }
 
+    public static Class<?> getClassFromType(TypeResolver typeResolver, Type type) {
+        return getClassFromContext(typeResolver, type.asString());
+    }
+
     public static Class<?> getClassFromContext(TypeResolver typeResolver, String className) {
         Class<?> patternType;
         try {
