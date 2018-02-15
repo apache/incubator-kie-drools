@@ -34,6 +34,7 @@ public class DrlxParseSuccess implements DrlxParseResult {
     private boolean isStatic;
     private boolean isValidExpression;
     private boolean skipThisAsParam;
+    private boolean isBetaNode;
 
     public DrlxParseSuccess(Class<?> patternType, String exprId, String patternBinding, Expression expr, Class<?> exprType) {
         this.patternType = patternType;
@@ -222,5 +223,14 @@ public class DrlxParseSuccess implements DrlxParseResult {
     @Override
     public <T> T acceptWithReturnValue(ParseResultVisitor<T> visitor) {
         return visitor.onSuccess(this);
+    }
+
+    public DrlxParseSuccess setBetaNode(boolean betaNode) {
+        isBetaNode = betaNode;
+        return this;
+    }
+
+    public boolean isBetaNode() {
+        return isBetaNode;
     }
 }

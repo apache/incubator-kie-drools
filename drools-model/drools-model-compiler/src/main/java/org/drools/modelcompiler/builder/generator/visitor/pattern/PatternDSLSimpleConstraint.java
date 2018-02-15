@@ -188,7 +188,7 @@ class PatternDSLSimpleConstraint implements DSLNode {
             boolean leftContainsThis = left.getExpression().toString().contains("_this");
             indexedBy_leftOperandExtractor.setBody(new ExpressionStmt(leftContainsThis ? left.getExpression() : right.getExpression()) );
 
-            final boolean isBetaNode = false;
+            final boolean isBetaNode = drlxParseResult.isBetaNode();
             MethodCallExpr indexedByDSL = new MethodCallExpr(null, isBetaNode ? BETA_INDEXED_BY_CALL : ALPHA_INDEXED_BY_CALL );
             indexedByDSL.addArgument( indexedBy_indexedClass );
             indexedByDSL.addArgument( indexedBy_constraintType );
@@ -200,7 +200,7 @@ class PatternDSLSimpleConstraint implements DSLNode {
                 indexedByDSL.addArgument( right.getExpression() );
             } else if (usedDeclarations.size() == 1) {
                 // we ask if "right" expression is simply a symbol, hence just purely a declaration referenced by name
-                if (context.getDeclarationById(right.getExpressionAsString()).isPresent()) {
+                if (context.getDeclarationById(right.getExpressionAsString()).isPresent() || isBetaNode) {
                     LambdaExpr indexedBy_rightOperandExtractor = new LambdaExpr();
                     indexedBy_rightOperandExtractor.addParameter(new Parameter(new UnknownType(), usedDeclarations.iterator().next()));
                     indexedBy_rightOperandExtractor.setBody(new ExpressionStmt(!leftContainsThis ? left.getExpression() : right.getExpression()));
