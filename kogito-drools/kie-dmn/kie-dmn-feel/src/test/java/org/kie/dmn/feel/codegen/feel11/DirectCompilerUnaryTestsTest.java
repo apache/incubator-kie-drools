@@ -16,9 +16,6 @@
 
 package org.kie.dmn.feel.codegen.feel11;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -34,6 +31,9 @@ import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.parser.feel11.FEELParser;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser;
 import org.kie.dmn.feel.util.EvalHelper;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 public class DirectCompilerUnaryTestsTest {
     
@@ -94,7 +94,7 @@ public class DirectCompilerUnaryTestsTest {
     }
 
     private CompiledFEELUnaryTests parse(String input, Map<String, Type> inputTypes) {
-        FEEL_1_1Parser parser = FEELParser.parse(null, input, inputTypes, Collections.emptyMap(), Collections.emptyList());
+        FEEL_1_1Parser parser = FEELParser.parse(null, input, inputTypes, Collections.emptyMap(), Collections.emptyList(), Collections.emptyList());
 
         ParseTree tree = parser.expressionList();
 

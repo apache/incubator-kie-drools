@@ -16,12 +16,6 @@
 
 package org.kie.dmn.feel.codegen.feel11;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
-import static org.kie.dmn.feel.util.DynamicTypeUtils.entry;
-import static org.kie.dmn.feel.util.DynamicTypeUtils.mapOf;
-
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
@@ -42,6 +36,12 @@ import org.kie.dmn.feel.parser.feel11.FEELParserTest;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser;
 import org.kie.dmn.feel.runtime.FEELConditionsAndLoopsTest;
 import org.kie.dmn.feel.runtime.FEELTernaryLogicTest;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertThat;
+import static org.kie.dmn.feel.util.DynamicTypeUtils.entry;
+import static org.kie.dmn.feel.util.DynamicTypeUtils.mapOf;
 
 public class DirectCompilerTest {
     
@@ -303,7 +303,7 @@ public class DirectCompilerTest {
     }
 
     private CompiledFEELExpression parse(String input, Map<String, Type> inputTypes) {
-        FEEL_1_1Parser parser = FEELParser.parse(null, input, inputTypes, Collections.emptyMap(), Collections.emptyList());
+        FEEL_1_1Parser parser = FEELParser.parse(null, input, inputTypes, Collections.emptyMap(), Collections.emptyList(), Collections.emptyList());
 
         ParseTree tree = parser.compilation_unit();
 
