@@ -399,6 +399,11 @@ public class KieBuilderImpl
         this.kModule = kModule;
     }
 
+    @Override
+    public InternalKieModule getkModule() {
+        return kModule;
+    }
+
     public void setTrgMfs( final MemoryFileSystem trgMfs ) {
         this.trgMfs = trgMfs;
     }
