@@ -661,7 +661,7 @@ public class SolutionDescriptor<Solution_> {
             entityDescriptor.linkEntityDescriptors(descriptorPolicy);
         }
         for (EntityDescriptor<Solution_> entityDescriptor : entityDescriptorMap.values()) {
-            entityDescriptor.linkShadowSources(descriptorPolicy);
+            entityDescriptor.linkVariableDescriptors(descriptorPolicy);
         }
         determineGlobalShadowOrder();
         if (logger.isTraceEnabled()) {

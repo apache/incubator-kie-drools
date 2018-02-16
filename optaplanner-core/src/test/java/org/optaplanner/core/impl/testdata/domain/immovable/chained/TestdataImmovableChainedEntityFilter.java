@@ -23,7 +23,7 @@ public class TestdataImmovableChainedEntityFilter implements SelectionFilter<Tes
 
     @Override
     public boolean accept(ScoreDirector<TestdataImmovableChainedSolution> scoreDirector, TestdataImmovableChainedEntity entity) {
-        return !entity.isLocked();
+        return !entity.isPinned();
     }
 
 }

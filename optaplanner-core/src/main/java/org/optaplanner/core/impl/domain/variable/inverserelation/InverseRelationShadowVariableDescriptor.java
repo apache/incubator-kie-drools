@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.domain.variable.inverserelation;
 
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Collections;
@@ -50,15 +49,15 @@ public class InverseRelationShadowVariableDescriptor<Solution_> extends ShadowVa
 
     @Override
     public void processAnnotations(DescriptorPolicy descriptorPolicy) {
-        processPropertyAnnotations(descriptorPolicy);
-    }
-
-    private void processPropertyAnnotations(DescriptorPolicy descriptorPolicy) {
         // Do nothing
     }
 
     @Override
-    public void linkShadowSources(DescriptorPolicy descriptorPolicy) {
+    public void linkVariableDescriptors(DescriptorPolicy descriptorPolicy) {
+        linkShadowSources(descriptorPolicy);
+    }
+
+    private void linkShadowSources(DescriptorPolicy descriptorPolicy) {
         InverseRelationShadowVariable shadowVariableAnnotation = variableMemberAccessor
                 .getAnnotation(InverseRelationShadowVariable.class);
         Class<?> variablePropertyType = getVariablePropertyType();

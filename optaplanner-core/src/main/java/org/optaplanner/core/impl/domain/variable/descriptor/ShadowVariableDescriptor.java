@@ -42,16 +42,6 @@ public abstract class ShadowVariableDescriptor<Solution_> extends VariableDescri
         super(entityDescriptor, variableMemberAccessor);
     }
 
-    public abstract void processAnnotations(DescriptorPolicy descriptorPolicy);
-
-    public abstract void linkShadowSources(DescriptorPolicy descriptorPolicy);
-
-    /**
-     * Inverse of {@link #getSinkVariableDescriptorList()}.
-     * @return never null, only variables affect this shadow variable directly
-     */
-    public abstract List<VariableDescriptor<Solution_>> getSourceVariableDescriptorList();
-
     public int getGlobalShadowOrder() {
         return globalShadowOrder;
     }
@@ -60,11 +50,23 @@ public abstract class ShadowVariableDescriptor<Solution_> extends VariableDescri
         this.globalShadowOrder = globalShadowOrder;
     }
 
-    public abstract Class<? extends VariableListener> getVariableListenerClass();
+    // ************************************************************************
+    // Lifecycle methods
+    // ************************************************************************
+
+    public abstract void processAnnotations(DescriptorPolicy descriptorPolicy);
 
     // ************************************************************************
     // Worker methods
     // ************************************************************************
+
+    /**
+     * Inverse of {@link #getSinkVariableDescriptorList()}.
+     * @return never null, only variables affect this shadow variable directly
+     */
+    public abstract List<VariableDescriptor<Solution_>> getSourceVariableDescriptorList();
+
+    public abstract Class<? extends VariableListener> getVariableListenerClass();
 
     /**
      * @return never null

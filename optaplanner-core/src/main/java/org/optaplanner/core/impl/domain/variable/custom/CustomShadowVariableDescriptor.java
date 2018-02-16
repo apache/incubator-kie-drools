@@ -98,7 +98,11 @@ public class CustomShadowVariableDescriptor<Solution_> extends ShadowVariableDes
     }
 
     @Override
-    public void linkShadowSources(DescriptorPolicy descriptorPolicy) {
+    public void linkVariableDescriptors(DescriptorPolicy descriptorPolicy) {
+        linkShadowSources(descriptorPolicy);
+    }
+
+    private void linkShadowSources(DescriptorPolicy descriptorPolicy) {
         CustomShadowVariable shadowVariableAnnotation = variableMemberAccessor
                 .getAnnotation(CustomShadowVariable.class);
         PlanningVariableReference variableListenerRef = shadowVariableAnnotation.variableListenerRef();

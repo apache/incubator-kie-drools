@@ -23,6 +23,7 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
+import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -56,10 +57,6 @@ public abstract class VariableDescriptor<Solution_> {
         }
     }
 
-    // ************************************************************************
-    // Worker methods
-    // ************************************************************************
-
     public EntityDescriptor<Solution_> getEntityDescriptor() {
         return entityDescriptor;
     }
@@ -68,6 +65,10 @@ public abstract class VariableDescriptor<Solution_> {
         return variableName;
     }
 
+    // ************************************************************************
+    // Worker methods
+    // ************************************************************************
+
     public String getSimpleEntityAndVariableName() {
         return entityDescriptor.getEntityClass().getSimpleName() + "." + variableName;
     }
@@ -75,6 +76,8 @@ public abstract class VariableDescriptor<Solution_> {
     public Class<?> getVariablePropertyType() {
         return variableMemberAccessor.getType();
     }
+
+    public abstract void linkVariableDescriptors(DescriptorPolicy descriptorPolicy);
 
     // ************************************************************************
     // Shadows

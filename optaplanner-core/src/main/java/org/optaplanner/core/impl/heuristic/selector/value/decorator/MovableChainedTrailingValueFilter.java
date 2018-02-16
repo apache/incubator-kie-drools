@@ -40,7 +40,7 @@ public class MovableChainedTrailingValueFilter<Solution_> implements SelectionFi
     @Override
     public boolean accept(ScoreDirector<Solution_> scoreDirector, Object value) {
         if (value == null) {
-             return true;
+            return true;
         }
         SingletonInverseVariableSupply supply = retrieveSingletonInverseVariableSupply(scoreDirector);
         Object trailingEntity = supply.getInverseSingleton(value);

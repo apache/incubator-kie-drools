@@ -21,6 +21,7 @@ import java.util.Arrays;
 import org.junit.Test;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableDemand;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
@@ -74,6 +75,13 @@ public class MovableChainedTrailingValueFilterTest {
         assertEquals(false, filter.accept(scoreDirector, c0));
         assertEquals(false, filter.accept(scoreDirector, c1));
         assertEquals(true, filter.accept(scoreDirector, c2));
+    }
+
+    @Test
+    public void getMovableChainedTrailingValueFilter() {
+        VariableDescriptor variableDescriptor = TestdataImmovableChainedEntity.buildEntityDescriptor()
+                .getVariableDescriptor("chainedObject");
+        assertNotNull(((GenuineVariableDescriptor) variableDescriptor).getMovableChainedTrailingValueFilter());
     }
 
 }
