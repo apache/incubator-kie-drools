@@ -15,6 +15,7 @@
  */
 package org.jbpm.process.workitem.core.util;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -175,43 +176,6 @@ public class WidProcessorTest {
                      widMavenDepends[0].version());
     }
 
-
-    @Test
-    public void testGeneratedWidAndIndexFiles() throws Exception {
-        Map<String, List<Wid>> processingResults = new HashMap<>();
-
-        widProcessor.setProcessingResults(processingResults);
-        widProcessor.setResetResults(false);
-
-        Compiler compiler = compileWithGenerator();
-        compiler.compile(source1);
-
-        assertNotNull(processingResults);
-        assertEquals(1,
-                     processingResults.keySet().size());
-
-        List<Wid> widInfoList = processingResults.get("org.jbpm.process.workitem.core.util.MyTestClass");
-        assertNotNull(widInfoList);
-        assertEquals(1,
-                     widInfoList.size());
-
-        Map<String, WidInfo> wrappedResults = new HashMap<>();
-        wrappedResults.put("widinfo", new WidInfo(widInfoList));
-
-        try {
-            widProcessor.getTemplateData(widProcessor.WID_ST_TEMPLATE,
-                                         wrappedResults);
-        } catch(Exception e) {
-            fail("Error building wid template: " + e.getMessage());
-        }
-        try {
-            widProcessor.getTemplateData(widProcessor.INDEX_ST_TEMPLATE, wrappedResults);
-        } catch(Exception e) {
-            fail("Error building index template: " + e.getMessage());
-        }
-
-    }
-
     @Test
     public void testWidInheritanceFromInterface() throws Exception {
         Map<String, List<Wid>> processingResults = new HashMap<>();
@@ -262,7 +226,35 @@ public class WidProcessorTest {
                      widInfo.getMavenDepends().get("org.jboss.myworitem").getVersion());
     }
 
+    @Test
+    public void testGenerationWithProcessingOptions() throws Exception {
+        Map<String, List<Wid>> processingResults = new HashMap<>();
+
+        widProcessor.setProcessingResults(processingResults);
+        widProcessor.setResetResults(false);
+
+        List<String> processorOptions = Arrays.asList("-AwidName=testwid",
+                                                      "-AgenerateTemplates=true",
+                                                      "-AtemplateResources=testwid.wid:dummytemplate.st,testwid.json:dummytemplate.st,index.html:dummytemplate.st");
+
+        Compiler compiler = compileWithGenerator(processorOptions);
+        compiler.compile(source1);
+
+        assertNotNull(processingResults);
+        assertEquals(1,
+                     processingResults.keySet().size());
+
+        List<Wid> widInfoList = processingResults.get("org.jbpm.process.workitem.core.util.MyTestClass");
+        assertNotNull(widInfoList);
+        assertEquals(1,
+                     widInfoList.size());
+    }
+
     private Compiler compileWithGenerator() {
         return javac().withProcessors(widProcessor);
+    }
+
+    private Compiler compileWithGenerator(List<String> options) {
+        return javac().withProcessors(widProcessor).withOptions(options);
     }
 }

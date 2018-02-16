@@ -67,6 +67,8 @@
           </annotationProcessors>
           <compilerArgs>
             <arg>-AwidName=${classPrefix}</arg>
+            <arg>-AgenerateTemplates=true</arg>
+            <arg>-AtemplateResources=${classPrefix}.wid:widtemplate.st,${classPrefix}.json:jsontemplate.st,index.html:indextemplate.st</arg>
           </compilerArgs>
         </configuration>
       </plugin>
