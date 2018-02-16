@@ -12,6 +12,7 @@ import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.core.util.index.IndexUtil;
 import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.body.Parameter;
+import org.drools.javaparser.ast.expr.BinaryExpr;
 import org.drools.javaparser.ast.expr.ClassExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.FieldAccessExpr;
@@ -23,7 +24,6 @@ import org.drools.javaparser.ast.stmt.ExpressionStmt;
 import org.drools.javaparser.ast.type.UnknownType;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.IndexIdGenerator;
-import org.drools.modelcompiler.builder.generator.ModelGenerator;
 import org.drools.modelcompiler.builder.generator.QueryGenerator;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
@@ -32,7 +32,6 @@ import org.drools.modelcompiler.builder.generator.visitor.DSLNode;
 
 import static java.util.Optional.of;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
-import static org.drools.modelcompiler.builder.generator.ModelGenerator.BIND_AS_CALL;
 import static org.drools.modelcompiler.builder.generator.ModelGenerator.EXPR_CALL;
 
 class PatternDSLSimpleConstraint implements DSLNode {
@@ -206,6 +205,9 @@ class PatternDSLSimpleConstraint implements DSLNode {
                 indexedByDSL.addArgument( right.getExpression() );
             } else if (usedDeclarations.size() == 1) {
                 // we ask if "right" expression is simply a symbol, hence just purely a declaration referenced by name
+                if(right.getExpression() instanceof BinaryExpr) { // TODO hack
+                    return Optional.empty();
+                }
                 if (context.getDeclarationById(right.getExpressionAsString()).isPresent() || isBetaNode) {
                     LambdaExpr indexedBy_rightOperandExtractor = new LambdaExpr();
                     indexedBy_rightOperandExtractor.addParameter(new Parameter(new UnknownType(), usedDeclarations.iterator().next()));
