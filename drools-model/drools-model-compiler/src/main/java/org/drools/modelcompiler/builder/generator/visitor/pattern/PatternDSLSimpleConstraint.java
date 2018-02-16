@@ -143,12 +143,12 @@ class PatternDSLSimpleConstraint implements DSLNode {
         } else {
             bindDSL.addArgument( new NameExpr(toVar(drlxParseResult.getExprBinding())) );
         }
-        MethodCallExpr bindAsDSL = new MethodCallExpr(bindDSL, BIND_AS_CALL);
-        bindAsDSL.addArgument( new NameExpr(toVar(drlxParseResult.getPatternBinding())) );
+//        bindDSL.addArgument( new NameExpr(toVar(drlxParseResult.getPatternBinding())) );
         final Expression constraintExpression = buildConstraintExpression(drlxParseResult, org.drools.modelcompiler.builder.generator.DrlxParseUtil.findLeftLeafOfMethodCall(drlxParseResult.getLeft().getExpression())  );
-        bindAsDSL.addArgument(constraintExpression);
+        bindDSL.addArgument(constraintExpression);
         final Optional<MethodCallExpr> methodCallExpr = buildReactOn(drlxParseResult);
-        return bindAsDSL;
+        methodCallExpr.ifPresent(bindDSL::addArgument);
+        return bindDSL;
     }
 
     private static Expression buildConstraintExpression(DrlxParseSuccess drlxParseResult, Expression expr ) {
