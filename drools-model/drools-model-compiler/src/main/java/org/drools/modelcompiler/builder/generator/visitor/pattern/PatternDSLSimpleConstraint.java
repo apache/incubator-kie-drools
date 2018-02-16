@@ -215,11 +215,11 @@ class PatternDSLSimpleConstraint implements DSLNode {
                     indexedByDSL.addArgument(indexedBy_rightOperandExtractor);
                 } else {
                     // this is a case where a Beta node should NOT create the index because the "right" is not just-a-symbol, the "right" is not a declaration referenced by name
-                    return of(indexedByDSL);
+                    return Optional.empty();
                 }
             } else {
                 // this is a case where a Beta node should NOT create the index because the "right" is not just-a-symbol, the "right" is not a declaration referenced by name
-                return of(indexedByDSL);
+                return Optional.empty();
             }
             return of(indexedByDSL);
         }

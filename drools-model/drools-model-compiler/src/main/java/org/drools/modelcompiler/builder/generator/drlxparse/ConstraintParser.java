@@ -149,7 +149,14 @@ public class ConstraintParser {
             }
 
 
-            final boolean isBetaNode = right.getExpression() instanceof MethodCallExpr;
+            boolean isBetaNode = false;
+            if(right.getExpression() instanceof  BinaryExpr) {
+                if(((BinaryExpr)right.getExpression()).getRight() instanceof MethodCallExpr) {
+                    isBetaNode = true;
+                }
+            } else if (right.getExpression() instanceof MethodCallExpr) {
+                isBetaNode = true;
+            }
 
             return new DrlxParseSuccess(patternType, exprId, bindingId, combo, left.getType())
                     .setDecodeConstraintType( decodeConstraintType ).setUsedDeclarations( expressionTyperContext.getUsedDeclarations() )
