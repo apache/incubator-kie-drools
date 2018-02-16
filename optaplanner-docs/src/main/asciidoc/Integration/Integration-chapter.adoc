@@ -578,12 +578,12 @@ The human planner can notify the developers to add, change or remove score const
 ** As shown in the course scheduling example, the human planner can pin down one or more planning variables to a specific planning value.
 Because they are <<immovablePlanningEntities,immovable>>, Planner does not change them: it optimizes the planning around the enforcements made by the human.
 If the human planner pins down all planning variables, he/she sidelines Planner completely.
-** In a prototype implementation, the human planner will use pinning occasionally to intervene.
-But as the implementation matures, it should become obsolete.
-But do keep the feature alive, as a reassurance for the humans.
-Or in case that one day the business changes dramatically before the score constraints are adjusted accordingly.
+** In a prototype implementation, the human planner occasionally uses pinning to intervene,
+but as the implementation matures, this should become obsolete.
+The feature should be kept available as a reassurance for the humans,
+and in the event that the business changes dramatically before the score constraints are adjusted accordingly.
 
-Therefore, it's often a good idea to actively involve the human planner in your project.
+For this reason, it is recommended the human planner is actively involved in your project.
 
 image::Integration/parameterizeTheScoreWeights.png[align="center"]
 
