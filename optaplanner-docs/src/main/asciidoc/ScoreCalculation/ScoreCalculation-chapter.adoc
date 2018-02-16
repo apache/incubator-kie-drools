@@ -264,7 +264,7 @@ BigDecimal arithmetic is considerably slower than ``int``, `long` or `double` ar
 In experiments we have seen the score calculation take five times longer.
 
 Therefore, in many cases, it can be worthwhile to multiply _all_ numbers for a single score weight by a plural of ten, so the score weight fits in a scaled `int` or ``long``.
-For example, if we multiple all weights by ``1000``, a fuelCost of `0.07` becomes a fuelCostMillis of `70` and no longer uses a decimal score weight.
+For example, if we multiply all weights by ``1000``, a fuelCost of `0.07` becomes a fuelCostMillis of `70` and no longer uses a decimal score weight.
 ====
 
 
@@ -496,7 +496,7 @@ Alternatively, build a `EasyScoreCalculator` instance at runtime and set it with
 
 [source,java,options="nowrap"]
 ----
-    solverFactory.getSolverConfig().getScoreDirectorFactoryConfig.setEasyScoreCalculator(easyScoreCalculator);
+    solverFactory.getSolverConfig().getScoreDirectorFactoryConfig().setEasyScoreCalculator(easyScoreCalculator);
 ----
 
 
@@ -1123,7 +1123,7 @@ There is no need to dynamically change your score calculation based on the datas
 === Built-in Hard Constraint
 
 Instead of implementing a hard constraint, it can sometimes be built in.
-For example, If `Lecture` A should never be assigned to `Room` X, but it uses `ValueRangeProvider` on Solution, so the `Solver` will often try to assign it to `Room` X too (only to find out that it breaks a hard constraint). Use <<valueRangeProviderOnPlanningEntity,a ValueRangeProvider on the planning entity>> or <<filteredSelection,filtered selection>> to define that Course A should only be assigned a `Room` different than X.
+For example, if `Lecture` A should never be assigned to `Room` X, but it uses `ValueRangeProvider` on Solution, so the `Solver` will often try to assign it to `Room` X too (only to find out that it breaks a hard constraint). Use <<valueRangeProviderOnPlanningEntity,a ValueRangeProvider on the planning entity>> or <<filteredSelection,filtered selection>> to define that Course A should only be assigned a `Room` different than X.
 
 This can give a good performance gain in some use cases, not just because the score calculation is faster, but mainly because most optimization algorithms will spend less time evaluating infeasible solutions.
 However, usually this not a good idea because there is a real risk of trading short term benefits for long term harm:
@@ -1150,7 +1150,7 @@ It effectively lumps its constraint matches together, which creates a flatlined 
 This can cause a solution state in which several moves need to be done to resolve or lower the weight of that single constraint.
 Some examples of score traps:
 
-* You need two doctors at each table, but you are only moving one doctor at a time. So the solver has no incentive to move a doctor to a table with no doctors. Punish a table with no doctors more then a table with only one doctor in that score constraint in the score function.
+* You need two doctors at each table, but you are only moving one doctor at a time. So the solver has no incentive to move a doctor to a table with no doctors. Punish a table with no doctors more than a table with only one doctor in that score constraint in the score function.
 * Two exams need to be conducted at the same time, but you are only moving one exam at a time. So the solver has to move one of those exams to another timeslot without moving the other in the same move. Add a coarse-grained move that moves both exams at the same time.
 
 For example, consider this score trap.
@@ -1205,7 +1205,7 @@ For each employee/asset, count the workload `w` and subtract `w²` from the scor
 image::ScoreCalculation/fairnessScoreConstraint.png[align="center"]
 
 As shown above, the _squared workload_ implementation guarantees that if you select two employees from a given solution and make their distribution between those two employees fairer, then the resulting new solution will have a better overall score.
-Don not just use the difference from the average workload, as that can lead to unfairness, as demonstrated below.
+Do not just use the difference from the average workload, as that can lead to unfairness, as demonstrated below.
 
 image::ScoreCalculation/fairnessScoreConstraintPitfall.png[align="center"]
 

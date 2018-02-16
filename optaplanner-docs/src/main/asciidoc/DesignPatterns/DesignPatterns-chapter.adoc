@@ -33,7 +33,7 @@ Other relationships, such as from `Employee` to `Skill`, are immutable during pl
 because Planner can't decide to give an employee an extra skill.
 
 . If there are multiple relationships (or fields): *check for <<shadowVariable,shadow variables>>*.
-A shadow variables does change during planning,
+A shadow variable does change during planning,
 but its value can be calculated based on one or more genuine planning variables, without dispute.
 Color those shadow relationships (or fields) purple.
 ** Only one side of a bi-directional relationship can be a genuine planning variable,

@@ -285,7 +285,7 @@ The soft penalty of `-1000` means that a better solution is only accepted if it 
 
 To do real-time planning, combine the following planning techniques:
 
-* <<backupPlanning,Backup planning>> - adding extra score constraints to allow for unforeseen changes).
+* <<backupPlanning,Backup planning>> - adding extra score constraints to allow for unforeseen changes.
 * <<continuousPlanning,Continuous planning>> - planning for one or more future planning periods.
 * Short planning windows.
 +
@@ -345,7 +345,7 @@ The `ScoreDirector` must be updated with any change on the problem facts of plan
 
 To write a `ProblemFactChange` correctly, it is important to understand the behavior of <<cloningASolution,a planning clone>>. 
 
-A planning clone of a solution must fulfil these requirements:
+A planning clone of a solution must fulfill these requirements:
 
 * The clone must represent the same planning problem. Usually it reuses the same instances of the problem facts and problem fact collections as the original.
 

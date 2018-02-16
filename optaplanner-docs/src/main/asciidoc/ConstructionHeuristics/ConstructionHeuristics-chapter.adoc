@@ -702,7 +702,7 @@ there is too little time left for <<localSearch,Local Search>> to reach a near o
 
 Ideally, a Construction Heuristic should take less than 20 seconds from scratch
 and less than 50 milliseconds in <<realTimePlanning, real-time planning>>,
-so there plenty of time left for <<localSearch,Local Search>>.
+so there is plenty of time left for <<localSearch,Local Search>>.
 If the <<benchmarker,Benchmarker>> proves that this is not the case, there's a number of improvements that can be done:
 
 

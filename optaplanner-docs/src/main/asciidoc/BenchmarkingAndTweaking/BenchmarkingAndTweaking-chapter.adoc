@@ -71,7 +71,7 @@ To configure a different benchmark directory, pass a `File` parameter to `create
 
 The generated benchmark report already contains interesting information,
 but it doesn't allow comparing solver configurations to find the best algorithm.
-To do that, set up an benchmark configuration:
+To do that, set up a benchmark configuration:
 
 [[buildAndRunAPlannerBenchmark]]
 === Configure and Run an Advanced Benchmark
@@ -142,7 +142,7 @@ Use a forward slash (``/``) as the file separator (for example in the element ``
 Do not use backslash (``\``) as the file separator: that breaks portability because it does not work on Linux and Mac.
 ====
 
-The benchmark report will be written in the directory specified the `<benchmarkDirectory>` element (relative to the working directory).
+The benchmark report will be written in the directory specified by the `<benchmarkDirectory>` element (relative to the working directory).
 
 [NOTE]
 ====
@@ -254,8 +254,8 @@ A `SolutionFileIO` implementation must be thread-safe.
 There are two options if your dataset is in a relational database or another type of repository:
 
 * Extract the datasets from the database and serialize them to a local file (for example as XML with `XStreamSolutionFileIO` if XML isn't too verbose).
-Then use those files an `<inputSolutionFile>` elements.
-** The benchmarks is now more reliable because they run offline.
+Then use those files in `<inputSolutionFile>` elements.
+** The benchmarks are now more reliable because they run offline.
 ** Each dataset is only loaded just in time.
 * Load all the datasets in advance and pass them to the `buildPlannerBenchmark()` method:
 +
@@ -636,7 +636,7 @@ image::BenchmarkingAndTweaking/bestScoreStatistic.png[align="center"]
 ====
 A time gradient based algorithm (such as Simulated Annealing) will have a different statistic if it's run with a different time limit configuration.
 That's because this Simulated Annealing implementation automatically determines its velocity based on the amount of time that can be spent.
-On the other hand, for the Tabu Search and Late Annealing, what you see is what you'd get.
+On the other hand, for the Tabu Search and Late Acceptance, what you see is what you'd get.
 ====
 
 *The best score over time statistic is very useful to detect abnormalities, such as a
@@ -1004,7 +1004,7 @@ If `subSingleCount` is higher than ``1``, the benchmarker will automatically use
 Matrix benchmarking is benchmarking a combination of value sets.
 For example: benchmark four `entityTabuSize` values (``5``, ``7``, `11` and ``13``) combined with three `acceptedCountLimit` values (``500``, `1000` and ``2000``), resulting in 12 solver configurations.
 
-To reduce the verbosity of such a benchmark configuration, you can use a http://freemarker.org//[Freemarker] template for the benchmark configuration instead:
+To reduce the verbosity of such a benchmark configuration, you can use a http://freemarker.org/[Freemarker] template for the benchmark configuration instead:
 
 [source,xml,options="nowrap"]
 ----

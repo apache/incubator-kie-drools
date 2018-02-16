@@ -322,7 +322,7 @@ Advanced configuration:
 ----
 
 The `entitySelector` selects the start of the tail chain that is being moved.
-The valueSelector selects to where that tail chain is moved.
+The `valueSelector` selects to where that tail chain is moved.
 If it has a tail chain itself, that is moved to the location of the original tail chain.
 It uses a `valueSelector` instead of a `secondaryEntitySelector` to be able to include all possible 2opt moves (such as moving to the end of a tail) and to work correctly with <<nearbySelection,nearby selection>> (because of asymmetric distances and also swapped entity distance gives an incorrect selection probability).
 
@@ -781,7 +781,7 @@ There can be certain moves that you don't want to select, because:
 [NOTE]
 ====
 Any built-in hard constraint must probably be filtered on every move type of every solver phase.
-For example if it's filters the change move of Local Search, it must also filter the swap move that swaps the room of a gym lecture with another lecture for which the other lecture's original room isn't a gym room.
+For example if it filters the change move of Local Search, it must also filter the swap move that swaps the room of a gym lecture with another lecture for which the other lecture's original room isn't a gym room.
 Furthermore, it must also filter the change moves of the Construction Heuristics (which requires an advanced configuration).
 ====
 
@@ -968,7 +968,7 @@ public class CloudProcessDifficultyComparator implements Comparator<CloudProcess
 }
 ----
 
-You 'll also need to configure it (unless it's annotated on the domain model and automatically applied by the optimization algorithm):
+You'll also need to configure it (unless it's annotated on the domain model and automatically applied by the optimization algorithm):
 
 [source,xml,options="nowrap"]
 ----
@@ -1030,7 +1030,7 @@ public class QueenDifficultyWeightFactory implements SelectionSorterWeightFactor
 }
 ----
 
-You 'll also need to configure it (unless it's annotated on the domain model and automatically applied by the optimization algorithm):
+You'll also need to configure it (unless it's annotated on the domain model and automatically applied by the optimization algorithm):
 
 [source,xml,options="nowrap"]
 ----
@@ -1123,7 +1123,7 @@ To scale Local Search, setting <<acceptedCountLimit,acceptedCountLimit>> is usua
 
 During mimic selection, one normal selector records its selection and one or multiple other special selectors replay that selection.
 The recording selector acts as a normal selector and supports all other configuration properties.
-A replaying selector mimics the recording selection and support no other configuration properties.
+A replaying selector mimics the recording selection and supports no other configuration properties.
 
 The recording selector needs an ``id``.
 A replaying selector must reference a recorder's id with a ``mimicSelectorRef``:
@@ -1277,7 +1277,7 @@ As always, use the <<benchmarker,Benchmarker>> to tweak values if desired.
 [[whichMoveTypesMightBeMissing]]
 === Which Move Types Might be Missing in my Implementation?
 
-To determine which move types might be missing in your implementation, run a <<benchmarker,Benchmarker>>__for a short amount of time__ and <<writeTheOutputSolutionOfBenchmarkRuns,configure it to write the best solutions to disk>>.
+To determine which move types might be missing in your implementation, run a <<benchmarker,Benchmarker>> __for a short amount of time__ and <<writeTheOutputSolutionOfBenchmarkRuns,configure it to write the best solutions to disk>>.
 Take a look at such a best solution: it will likely be a local optima.
 Try to figure out if there's a move that could get out of that local optima faster.
 
@@ -1302,7 +1302,7 @@ After implementing a custom ``Move``, turn on `environmentMode` ``FULL_ASSERT`` 
 [[theInterfaceMove]]
 === The Interface `Move`
 
-All moves implements the `Move` interface:
+All moves implement the `Move` interface:
 
 [source,java,options="nowrap"]
 ----
@@ -1315,7 +1315,7 @@ public interface Move<Solution_> {
 }
 ----
 
-To implement a custom move, it's recommend to extend `AbstractMove` instead implementing `Move` directly.
+To implement a custom move, it's recommended to extend `AbstractMove` instead implementing `Move` directly.
 Planner calls `AbstractMove.doMove(ScoreDirector)`, which calls `doMoveOnGenuineVariables(ScoreDirector)`.
 For example in cloud balancing, this move changes one process to another computer:
 
@@ -1379,7 +1379,7 @@ In the cloud balancing example, a move which assigns a process to the computer i
 ----
 
 We don't need to check if `toCloudComputer` is in the value range,
-because we only generates moves for which that is the case.
+because we only generate moves for which that is the case.
 A move that is currently not doable can become doable when the working `Solution` changes in a later step,
 otherwise we probably shouldn't have created it in the first place.
 

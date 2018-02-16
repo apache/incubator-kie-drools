@@ -238,7 +238,7 @@ Other phases (especially metaheuristics) will only terminate if the `Phase` is c
 </solver>
 ----
 
-If the `Solver` terminates (before the last `Phase` terminates itself,
+If the `Solver` terminates (before the last `Phase` terminates itself),
 the current phase is terminated and all subsequent phases will not run.
 
 
@@ -620,7 +620,7 @@ So it should return quickly to avoid slowing down the solving.
 [[customSolverPhase]]
 == Custom Solver Phase
 
-Run a custom optmization algorithm etween phases or before the first phase to initialize the `Solution`, or to get a better score quickly.
+Run a custom optimization algorithm between phases or before the first phase to initialize the `Solution`, or to get a better score quickly.
 You will still want to reuse the score calculation.
 For example, to implement a custom Construction Heuristic without implementing an entire `Phase`.
 

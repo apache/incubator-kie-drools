@@ -176,7 +176,7 @@ To evaluate only a random subset of all the moves, use:
 ----
 
 Unlike the n queens problem, real world problems require the use of ``acceptedCountLimit``.
-Start from an `acceptedCountLimit` that takes a step in less then two seconds. <<logging,Turn on INFO logging>> to see the step times.
+Start from an `acceptedCountLimit` that takes a step in less than two seconds. <<logging,Turn on INFO logging>> to see the step times.
 Use the <<benchmarker,Benchmarker>> to tweak the value.
 
 [IMPORTANT]
