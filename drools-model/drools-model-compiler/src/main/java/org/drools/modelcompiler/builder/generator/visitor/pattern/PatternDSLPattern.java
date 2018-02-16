@@ -70,9 +70,9 @@ class PatternDSLPattern implements DSLNode {
         context.addDeclaration(new DeclarationSpec(pattern.getIdentifier(), patternType, Optional.of(pattern), declarationSource));
 
         if (constraintDescrs.isEmpty() && !(pattern.getSource() instanceof AccumulateDescr)) {
-//            final MethodCallExpr patternExpression = createPatternExpression(pattern);
-//            context.addExpression(patternExpression);
-//            context.pushExprPointer(patternExpression::addArgument);
+            final MethodCallExpr patternExpression = createPatternExpression(pattern);
+            context.addExpression(patternExpression);
+            context.pushExprPointer(patternExpression::addArgument);
         } else {
             if (!context.hasErrors()) {
                 final List<PatternConstraintParseResult> patternConstraintParseResults = findAllConstraint(pattern, constraintDescrs, patternType);
@@ -80,9 +80,9 @@ class PatternDSLPattern implements DSLNode {
                 context.addExpression(patternExpression);
                 context.pushExprPointer(patternExpression::addArgument);
                 buildConstraints(pattern, patternType, patternConstraintParseResults, allConstraintsPositional);
-                context.popExprPointer();
             }
         }
+        context.popExprPointer();
     }
 
     private boolean shouldAddInputPattern(List<PatternConstraintParseResult> parseResults) {
