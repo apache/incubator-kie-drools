@@ -156,6 +156,8 @@ public class ConstraintParser {
                 }
             } else if (right.getExpression() instanceof MethodCallExpr) {
                 isBetaNode = true;
+            } else if (right.getExpression() instanceof NameExpr) {
+                isBetaNode = true;
             }
 
             return new DrlxParseSuccess(patternType, exprId, bindingId, combo, left.getType())
