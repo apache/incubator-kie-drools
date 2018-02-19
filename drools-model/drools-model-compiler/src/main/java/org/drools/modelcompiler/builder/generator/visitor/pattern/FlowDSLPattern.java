@@ -1,75 +1,38 @@
 package org.drools.modelcompiler.builder.generator.visitor.pattern;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Predicate;
 
 import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
-import org.drools.compiler.lang.descr.ExprConstraintDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
-import org.drools.compiler.lang.descr.PatternSourceDescr;
 import org.drools.javaparser.ast.drlx.OOPathExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
-import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.RuleContext;
-import org.drools.modelcompiler.builder.generator.WindowReferenceGenerator;
-import org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseFail;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.drlxparse.ParseResultVisitor;
 import org.drools.modelcompiler.builder.generator.visitor.DSLNode;
-import org.drools.modelcompiler.builder.generator.visitor.FromVisitor;
-import org.kie.api.definition.type.Position;
 
-import static org.drools.model.impl.NamesGenerator.generateName;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getPatternListenedProperties;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
+import static org.drools.modelcompiler.builder.generator.visitor.pattern.PatternVisitor.INPUT_CALL;
 
-class FlowDSLPattern implements DSLNode {
-
-    private static final String INPUT_CALL = "input";
-
-    private final RuleContext context;
-    private final PackageModel packageModel;
-    private final PatternDescr pattern;
-    private final List<? extends BaseDescr> constraintDescrs;
-    private final Class<?> patternType;
-    private final boolean allConstraintsPositional;
+class FlowDSLPattern extends PatternDSL {
 
     public FlowDSLPattern(RuleContext context, PackageModel packageModel, PatternDescr pattern, List<? extends BaseDescr> constraintDescrs, Class<?> patternType, boolean allConstraintsPositional) {
-        this.context = context;
-        this.packageModel = packageModel;
-        this.pattern = pattern;
-        this.constraintDescrs = constraintDescrs;
-        this.patternType = patternType;
-        this.allConstraintsPositional = allConstraintsPositional;
+        super(context, packageModel, pattern, constraintDescrs, allConstraintsPositional, patternType);
     }
 
     @Override
     public void buildPattern() {
-        if(pattern.getIdentifier() == null) {
-            final List<PatternConstraintParseResult> firstParsedConstraints = findAllConstraint(pattern, constraintDescrs, patternType);
-            final Optional<String> innerBindingName = findInnerBindingName(firstParsedConstraints);
-
-            final String generatedName = generateName("pattern_" + patternType.getSimpleName());
-
-            final String patternNameAggregated = innerBindingName
-                    .map(ib -> context.getAggregatePatternMap().putIfAbsent(ib, generatedName))
-                    .orElse(generatedName);
-
-            pattern.setIdentifier(patternNameAggregated);
-        }
+        generatePatternIdentifierIfMissing();
 
         final Optional<Expression> declarationSource = buildFromDeclaration(pattern);
         context.addDeclaration(new DeclarationSpec(pattern.getIdentifier(), patternType, Optional.of(pattern), declarationSource));
@@ -107,40 +70,10 @@ class FlowDSLPattern implements DSLNode {
                 .anyMatch(hasOneOOPathExpr);
     }
 
-
-    private Optional<String> findInnerBindingName(List<PatternConstraintParseResult> firstParsedConstraints) {
-        return firstParsedConstraints.stream()
-                .map(PatternConstraintParseResult::getDrlxParseResult)
-                .filter(o -> o instanceof DrlxParseSuccess)
-                .map(d -> (DrlxParseSuccess)d)
-                .map(DrlxParseSuccess::getExprBinding)
-                .filter(Objects::nonNull)
-                .findFirst();
-    }
-
-
-    private Optional<Expression> buildFromDeclaration(PatternDescr pattern) {
-        Optional<PatternSourceDescr> source = Optional.ofNullable(pattern.getSource());
-        Optional<Expression> declarationSourceFrom = source.flatMap(new FromVisitor(context, packageModel)::visit);
-        Optional<Expression> declarationSourceWindow = source.flatMap(new WindowReferenceGenerator(packageModel, context.getTypeResolver())::visit);
-        return declarationSourceFrom.isPresent() ? declarationSourceFrom : declarationSourceWindow;
-    }
-
     private MethodCallExpr createInputExpression(PatternDescr pattern) {
-        MethodCallExpr exprDSL = new MethodCallExpr(null, INPUT_CALL);
-        exprDSL.addArgument(new NameExpr(toVar(pattern.getIdentifier())));
-
-        Set<String> watchedProperties = new HashSet<>();
-        watchedProperties.addAll(context.getRuleDescr().lookAheadFieldsOfIdentifier(pattern));
-        watchedProperties.addAll(getPatternListenedProperties(pattern));
-        if (!watchedProperties.isEmpty()) {
-            exprDSL = new MethodCallExpr(exprDSL, "watch");
-            watchedProperties.stream()
-                    .map( StringLiteralExpr::new )
-                    .forEach( exprDSL::addArgument );
-        }
-
-        return exprDSL;
+        MethodCallExpr dslExpr = new MethodCallExpr(null, INPUT_CALL);
+        dslExpr.addArgument(new NameExpr(toVar(pattern.getIdentifier())));
+        return dslExpr;
     }
 
     public List<PatternConstraintParseResult> findAllConstraint(PatternDescr pattern, List<? extends BaseDescr> constraintDescrs, Class<?> patternType) {
@@ -150,20 +83,6 @@ class FlowDSLPattern implements DSLNode {
             patternConstraintParseResults.add(patternConstraintParseResult);
         }
         return patternConstraintParseResults;
-    }
-
-    private PatternConstraintParseResult parseConstraint(PatternDescr pattern, Class<?> patternType, BaseDescr constraint) {
-        final boolean isPositional = isPositional(constraint);
-        final String patternIdentifier = pattern.getIdentifier();
-
-        String expression = getConstraintExpression(patternType, constraint, isPositional);
-        int unifPos = expression.indexOf( ":=" );
-        if (unifPos > 0) {
-            expression = expression.substring( unifPos+2 ).trim() + " == " + expression.substring( 0, unifPos ).trim();
-        }
-
-        final DrlxParseResult drlxParseResult = new ConstraintParser(context, packageModel).drlxParse(patternType, patternIdentifier, expression, isPositional);
-        return new PatternConstraintParseResult(expression, patternIdentifier, drlxParseResult);
     }
 
     private void buildConstraints(PatternDescr pattern, Class<?> patternType, List<PatternConstraintParseResult> patternConstraintParseResults, boolean allConstraintsPositional) {
@@ -194,27 +113,5 @@ class FlowDSLPattern implements DSLNode {
             }
             constraint.buildPattern();
         });
-    }
-
-    private static String getConstraintExpression(Class<?> patternType, BaseDescr constraint, boolean isPositional) {
-        if (isPositional) {
-            int position = ((ExprConstraintDescr) constraint).getPosition();
-            return getFieldAtPosition(patternType, position) + " == " + constraint.toString();
-        }
-        return constraint.toString();
-    }
-
-    private static boolean isPositional(BaseDescr constraint) {
-        return constraint instanceof ExprConstraintDescr && ((ExprConstraintDescr) constraint).getType() == ExprConstraintDescr.Type.POSITIONAL;
-    }
-
-    private static String getFieldAtPosition(Class<?> patternType, int position) {
-        for (Field field : patternType.getDeclaredFields()) {
-            Position p = field.getAnnotation(Position.class);
-            if (p != null && p.value() == position) {
-                return field.getName();
-            }
-        }
-        throw new RuntimeException("Cannot find field in position " + position + " for " + patternType);
     }
 }
