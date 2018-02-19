@@ -1,6 +1,10 @@
 package org.drools.modelcompiler.builder.generator.visitor.pattern;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
@@ -30,8 +34,8 @@ class PatternDSLSimpleConstraint implements DSLNode {
     public void buildPattern() {
         // need to augment the reactOn inside drlxParseResult with the look-ahead properties.
         Collection<String> lookAheadFieldsOfIdentifier = context.getRuleDescr().lookAheadFieldsOfIdentifier(pattern);
-        drlxParseResult.getReactOnProperties().addAll(lookAheadFieldsOfIdentifier);
-        drlxParseResult.setWatchedProperties(getPatternListenedProperties(pattern));
+        drlxParseResult.addAllWatchedProperties(lookAheadFieldsOfIdentifier);
+        drlxParseResult.addAllWatchedProperties(getPatternListenedProperties(pattern));
 
         if (pattern.isUnification()) {
             drlxParseResult.setPatternBindingUnification(true);
@@ -40,11 +44,8 @@ class PatternDSLSimpleConstraint implements DSLNode {
         new PatternExpressionBuilder(context).processExpression(drlxParseResult);
     }
 
-
-    private static String[] getPatternListenedProperties(PatternDescr pattern) {
+    public static List<String> getPatternListenedProperties(PatternDescr pattern) {
         AnnotationDescr watchAnn = pattern != null ? pattern.getAnnotation("watch") : null;
-        return watchAnn == null ? new String[0] : watchAnn.getValue().toString().split(",");
+        return watchAnn == null ? Collections.emptyList() : Stream.of(watchAnn.getValue().toString().split(",")).map(String::trim).collect(Collectors.toList() );
     }
-
-
 }

@@ -1,6 +1,7 @@
 package org.drools.modelcompiler.builder.generator.visitor.pattern;
 
 import org.drools.compiler.lang.descr.PatternDescr;
+import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.ModelGenerator;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
@@ -23,7 +24,7 @@ class SimpleConstraint implements DSLNode {
     public void buildPattern() {
         // need to augment the watch inside drlxParseResult with the look-ahead properties.
         drlxParseResult.addAllWatchedProperties( context.getRuleDescr().lookAheadFieldsOfIdentifier(pattern) );
-        drlxParseResult.addAllWatchedProperties( DrlxParseUtil.getPatternListenedProperties(pattern) );
+        drlxParseResult.addAllWatchedProperties(DrlxParseUtil.getPatternListenedProperties(pattern) );
 
         if (pattern.isUnification()) {
             drlxParseResult.setPatternBindingUnification(true);

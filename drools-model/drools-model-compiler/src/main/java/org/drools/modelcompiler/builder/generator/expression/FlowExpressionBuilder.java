@@ -121,9 +121,9 @@ public class FlowExpressionBuilder {
 
         }
 
-        if ( drlxParseResult.getWatchedProperties() != null && drlxParseResult.getWatchedProperties().length > 0 ) {
+        if ( !drlxParseResult.getWatchedProperties().isEmpty() ) {
             exprDSL = new MethodCallExpr(exprDSL, "watch");
-            Stream.of(drlxParseResult.getWatchedProperties())
+            drlxParseResult.getWatchedProperties().stream()
                     .map( StringLiteralExpr::new )
                     .forEach( exprDSL::addArgument );
         }

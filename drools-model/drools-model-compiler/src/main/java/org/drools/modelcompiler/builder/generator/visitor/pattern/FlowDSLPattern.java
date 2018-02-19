@@ -1,8 +1,10 @@
 package org.drools.modelcompiler.builder.generator.visitor.pattern;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Predicate;
 
 import org.drools.compiler.lang.descr.AccumulateDescr;
@@ -12,6 +14,7 @@ import org.drools.javaparser.ast.drlx.OOPathExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
+import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.RuleContext;
@@ -21,10 +24,12 @@ import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.drlxparse.ParseResultVisitor;
 import org.drools.modelcompiler.builder.generator.visitor.DSLNode;
 
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getPatternListenedProperties;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
-import static org.drools.modelcompiler.builder.generator.visitor.pattern.PatternVisitor.INPUT_CALL;
 
 class FlowDSLPattern extends PatternDSL {
+
+    private static final String INPUT_CALL = "input";
 
     public FlowDSLPattern(RuleContext context, PackageModel packageModel, PatternDescr pattern, List<? extends BaseDescr> constraintDescrs, Class<?> patternType, boolean allConstraintsPositional) {
         super(context, packageModel, pattern, constraintDescrs, allConstraintsPositional, patternType);
@@ -71,9 +76,20 @@ class FlowDSLPattern extends PatternDSL {
     }
 
     private MethodCallExpr createInputExpression(PatternDescr pattern) {
-        MethodCallExpr dslExpr = new MethodCallExpr(null, INPUT_CALL);
-        dslExpr.addArgument(new NameExpr(toVar(pattern.getIdentifier())));
-        return dslExpr;
+        MethodCallExpr exprDSL = new MethodCallExpr(null, INPUT_CALL);
+        exprDSL.addArgument(new NameExpr(toVar(pattern.getIdentifier())));
+
+        Set<String> watchedProperties = new HashSet<>();
+        watchedProperties.addAll(context.getRuleDescr().lookAheadFieldsOfIdentifier(pattern));
+        watchedProperties.addAll(getPatternListenedProperties(pattern));
+        if (!watchedProperties.isEmpty()) {
+            exprDSL = new MethodCallExpr(exprDSL, "watch");
+            watchedProperties.stream()
+                    .map(StringLiteralExpr::new )
+                    .forEach( exprDSL::addArgument );
+        }
+
+        return exprDSL;
     }
 
     public List<PatternConstraintParseResult> findAllConstraint(PatternDescr pattern, List<? extends BaseDescr> constraintDescrs, Class<?> patternType) {

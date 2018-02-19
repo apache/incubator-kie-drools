@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import org.drools.core.util.index.IndexUtil;
@@ -109,9 +110,9 @@ public class PatternExpressionBuilder {
             return of(reactOnDSL);
         }
 
-        if (drlxParseResult.getWatchedProperties() != null && drlxParseResult.getWatchedProperties().length > 0) {
+        if (drlxParseResult.getWatchedProperties() != null && drlxParseResult.getWatchedProperties().size() > 0) {
             MethodCallExpr reactOnDSL = new MethodCallExpr(null, "watch");
-            Stream.of(drlxParseResult.getWatchedProperties())
+            drlxParseResult.getWatchedProperties().stream()
                     .map(StringLiteralExpr::new)
                     .forEach(reactOnDSL::addArgument);
             return of(reactOnDSL);
