@@ -629,6 +629,13 @@ public class PatternBuilder
             }
         }
 
+        TypeDeclaration typeDeclaration = getTypeDeclaration(pattern, context);
+        if (typeDeclaration != null && typeDeclaration.isPropertyReactive()) {
+            for (String field : context.getRuleDescr().lookAheadFieldsOfIdentifier(patternDescr)) {
+                addFieldToPatternWatchlist(pattern, typeDeclaration, field);
+            }
+        }
+
         combineConstraints(context, pattern, mvelCtx);
     }
 
@@ -928,12 +935,6 @@ public class PatternBuilder
         TypeDeclaration typeDeclaration = getTypeDeclaration(pattern, context);
         for (BindingDescr bind : mvelCtx.getBindings()) {
             buildRuleBindings(context, patternDescr, pattern, bind, typeDeclaration);
-        }
-
-        if (typeDeclaration != null && typeDeclaration.isPropertyReactive()) {
-            for (String field : context.getRuleDescr().lookAheadFieldsOfIdentifier(patternDescr)) {
-                addFieldToPatternWatchlist(pattern, typeDeclaration, field);
-            }
         }
 
         if (expr.length() == 0) {

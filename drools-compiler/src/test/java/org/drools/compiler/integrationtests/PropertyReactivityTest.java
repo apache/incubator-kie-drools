@@ -1686,6 +1686,40 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
     }
 
     @Test
+    public void testWatchFieldInExternalPatternWithNoConstraints() {
+        // DROOLS-2333
+        final String drl =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "global java.util.List list;\n" +
+                "rule R when\n" +
+                "    $p1 : Person()\n" +
+                "    $p2 : Person( name == \"Mark\", age > $p1.age ) \n" +
+                "then\n" +
+                "    list.add(\"t0\");\n" +
+                "end\n" +
+                "rule Z when\n" +
+                "    $p1 : Person( name == \"Mario\" ) \n" +
+                "then\n" +
+                "    modify($p1) { setAge(35); } \n" +
+                "end\n";
+
+        // making the default explicit:
+        final KieSession ksession = new KieHelper(PropertySpecificOption.ALWAYS).addContent(drl, ResourceType.DRL)
+                                                                          .build()
+                                                                          .newKieSession();
+        final List<String> list = new ArrayList<String>();
+        ksession.setGlobal("list", list);
+
+        final Person mario = new Person("Mario", 40);
+        final Person mark = new Person("Mark", 37);
+        final FactHandle fh_mario = ksession.insert(mario);
+        ksession.insert(mark);
+        final int x = ksession.fireAllRules();
+        assertEquals(1, list.size());
+        assertEquals("t0", list.get(0));
+    }
+
+    @Test
     public void testWatchFieldInExternalNotPattern() {
         // DROOLS-1445
         final String drl =

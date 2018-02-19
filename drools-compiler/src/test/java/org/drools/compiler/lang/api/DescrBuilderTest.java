@@ -528,7 +528,7 @@ public class DescrBuilderTest extends CommonTestMethodBase {
                 .rhs("//System.out.println(s);")
                 .end().getDescr();
 
-        KiePackage kpkg = compilePkgDescr( pkg );
+        KiePackage kpkg = compilePkgDescr( pkg, "org.drools" );
         assertEquals( "org.drools",
                       kpkg.getName() );
         
@@ -685,18 +685,24 @@ public class DescrBuilderTest extends CommonTestMethodBase {
     }
 
     private KiePackage compilePkgDescr( PackageDescr pkg ) {
+        return compilePkgDescr( pkg, null );
+    }
+
+    private KiePackage compilePkgDescr( PackageDescr pkg, String pkgName ) {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newDescrResource( pkg ),
                       ResourceType.DESCR );
 
         assertFalse( kbuilder.getErrors().toString(),
                      kbuilder.hasErrors() );
-        Collection<KiePackage> kpkgs = kbuilder.getKnowledgePackages();
-        assertEquals( 1,
-                      kpkgs.size() );
 
-        return kpkgs.iterator().next();
+        if (pkgName == null) {
+            Collection<KiePackage> kpkgs = kbuilder.getKnowledgePackages();
+            assertEquals( 1, kpkgs.size() );
+            return kpkgs.iterator().next();
+        }
 
+        return (( KnowledgeBuilderImpl ) kbuilder).getPackage( pkgName );
     }
 
     @Test
