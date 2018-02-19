@@ -142,6 +142,7 @@ public class ViewFlowBuilder implements ViewBuilder {
                     // This should probably be the bindViewItem.getBoundVariable() instead of the input
                     // as the input variables can be many
                     pattern = new PatternImpl( bindViewItem.getInputVariable() );
+                    pattern.addWatchedProps( bindViewItem.getWatchedProps() );
                     ctx.usedVars.add( bindViewItem.getInputVariable() );
                     conditions.add( pattern );
                     conditionMap.put( bindViewItem.getInputVariable(), pattern );
@@ -156,7 +157,8 @@ public class ViewFlowBuilder implements ViewBuilder {
 
             if ( viewItem instanceof InputViewItemImpl ) {
                 scopedInputs.put( patterVariable, (InputViewItemImpl) viewItem );
-                Condition condition = new PatternImpl( patterVariable );
+                PatternImpl condition = new PatternImpl( patterVariable );
+                condition.addWatchedProps( (( InputViewItemImpl ) viewItem).getWatchedProps() );
                 conditions.add( condition );
                 conditionMap.put( patterVariable, condition );
                 ctx.usedVars.add( patterVariable );

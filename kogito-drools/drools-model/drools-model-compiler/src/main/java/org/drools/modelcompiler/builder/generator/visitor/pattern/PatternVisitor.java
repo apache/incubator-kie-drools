@@ -16,7 +16,6 @@ import static org.drools.modelcompiler.builder.generator.QueryGenerator.toQueryD
 
 public class PatternVisitor {
 
-    static final String INPUT_CALL = "input";
     private final RuleContext context;
     private final PackageModel packageModel;
 

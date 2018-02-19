@@ -142,6 +142,7 @@ public class FlowDSL extends DSL {
         private Variable inputVariable1;
         private Variable inputVariable2;
         private String reactOn;
+        private String[] watchedProps;
 
         private BindViewItemBuilder( Variable<T> boundVariable) {
             this.boundVariable = boundVariable;
@@ -165,12 +166,21 @@ public class FlowDSL extends DSL {
             return this;
         }
 
+        public BindViewItemBuilder<T> watch(String... props) {
+            this.watchedProps = props;
+            return this;
+        }
+
+        public String[] getWatchedProps() {
+            return watchedProps;
+        }
+
         @Override
         public ViewItem<T> get() {
             if(function1 != null) {
-                return new BindViewItem1<>(boundVariable, function1, inputVariable1, reactOn);
+                return new BindViewItem1<>(boundVariable, function1, inputVariable1, reactOn, watchedProps);
             } else if(function2 != null) {
-                return new BindViewItem2<>(boundVariable, function2, inputVariable1, inputVariable2, reactOn);
+                return new BindViewItem2<>(boundVariable, function2, inputVariable1, inputVariable2, reactOn, watchedProps);
             }
             throw new UnsupportedOperationException("function1 or function2 needed");
         }
