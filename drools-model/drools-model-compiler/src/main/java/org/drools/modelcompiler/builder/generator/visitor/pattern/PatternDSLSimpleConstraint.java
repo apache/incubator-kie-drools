@@ -1,24 +1,16 @@
 package org.drools.modelcompiler.builder.generator.visitor.pattern;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
-import org.drools.modelcompiler.builder.generator.IndexIdGenerator;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.expression.PatternExpressionBuilder;
 import org.drools.modelcompiler.builder.generator.visitor.DSLNode;
 
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getPatternListenedProperties;
+
 class PatternDSLSimpleConstraint implements DSLNode {
-
-    private static final IndexIdGenerator indexIdGenerator = new IndexIdGenerator();
-
-
 
     private final RuleContext context;
     private final PatternDescr pattern;
@@ -42,10 +34,5 @@ class PatternDSLSimpleConstraint implements DSLNode {
         }
 
         new PatternExpressionBuilder(context).processExpression(drlxParseResult);
-    }
-
-    public static List<String> getPatternListenedProperties(PatternDescr pattern) {
-        AnnotationDescr watchAnn = pattern != null ? pattern.getAnnotation("watch") : null;
-        return watchAnn == null ? Collections.emptyList() : Stream.of(watchAnn.getValue().toString().split(",")).map(String::trim).collect(Collectors.toList() );
     }
 }

@@ -125,7 +125,7 @@ class FlowDSLPattern extends PatternDSL {
             if (drlxParseResult.getExpr() instanceof OOPathExpr) {
                 constraint = new ConstraintOOPath(context, packageModel, pattern, patternType, patternConstraintParseResult, expression, drlxParseResult);
             } else {
-                constraint = new SimpleConstraint(context, pattern, drlxParseResult);
+                constraint = new FlowDSLSimpleConstraint(context, pattern, drlxParseResult);
             }
             constraint.buildPattern();
         });

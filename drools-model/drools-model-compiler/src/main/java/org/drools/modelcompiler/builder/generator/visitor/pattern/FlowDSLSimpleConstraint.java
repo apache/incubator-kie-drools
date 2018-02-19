@@ -2,19 +2,18 @@ package org.drools.modelcompiler.builder.generator.visitor.pattern;
 
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
-import org.drools.modelcompiler.builder.generator.ModelGenerator;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.expression.FlowExpressionBuilder;
 import org.drools.modelcompiler.builder.generator.visitor.DSLNode;
 
-class SimpleConstraint implements DSLNode {
+class FlowDSLSimpleConstraint implements DSLNode {
 
     private final RuleContext context;
     private final PatternDescr pattern;
     private final DrlxParseSuccess drlxParseResult;
 
-    public SimpleConstraint(RuleContext context, PatternDescr pattern, DrlxParseSuccess drlxParseResult) {
+    public FlowDSLSimpleConstraint(RuleContext context, PatternDescr pattern, DrlxParseSuccess drlxParseResult) {
         this.context = context;
         this.pattern = pattern;
         this.drlxParseResult = drlxParseResult;
