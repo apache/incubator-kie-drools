@@ -22,7 +22,6 @@ import org.drools.modelcompiler.builder.generator.expressiontyper.TypedExpressio
 import org.drools.modelcompiler.domain.Overloaded;
 import org.drools.modelcompiler.domain.Person;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
@@ -41,7 +40,7 @@ public class ToTypedExpressionTest {
     @Before
     public void setUp() throws Exception {
         imports = new HashSet<>();
-        packageModel = new PackageModel("", null);
+        packageModel = new PackageModel("", null, false);
         typeResolver = new ClassTypeResolver(imports, getClass().getClassLoader());
         ruleContext = new RuleContext(knowledgeBuilder, packageModel, ruleDescr, typeResolver);
         imports.add("org.drools.modelcompiler.domain.Person");

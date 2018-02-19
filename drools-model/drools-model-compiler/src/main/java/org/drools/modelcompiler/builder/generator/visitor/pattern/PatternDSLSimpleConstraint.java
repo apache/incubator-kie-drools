@@ -32,7 +32,7 @@ import org.drools.modelcompiler.builder.generator.visitor.DSLNode;
 
 import static java.util.Optional.of;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
-import static org.drools.modelcompiler.builder.generator.ModelGenerator.EXPR_CALL;
+import static org.drools.modelcompiler.builder.generator.expression.ExpressionBuilder.EXPR_CALL;
 
 class PatternDSLSimpleConstraint implements DSLNode {
 

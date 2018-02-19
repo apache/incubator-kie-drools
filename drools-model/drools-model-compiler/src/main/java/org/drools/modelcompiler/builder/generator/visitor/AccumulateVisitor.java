@@ -45,6 +45,7 @@ import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
+import org.drools.modelcompiler.builder.generator.expression.ExpressionBuilder;
 import org.drools.modelcompiler.util.StringUtil;
 import org.kie.api.runtime.rule.AccumulateFunction;
 
@@ -55,7 +56,7 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.rescopeNa
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.ModelGenerator.BIND_AS_CALL;
-import static org.drools.modelcompiler.builder.generator.ModelGenerator.BIND_CALL;
+import static org.drools.modelcompiler.builder.generator.expression.ExpressionBuilder.BIND_CALL;
 
 public class AccumulateVisitor {
 
@@ -179,7 +180,7 @@ public class AccumulateVisitor {
             DrlxParseSuccess result = new DrlxParseSuccess(accumulateFunctionResultType, "", rootNodeName, withThis, accumulateFunctionResultType)
                     .setLeft(typedExpression)
                     .setExprBinding(bindExpressionVariable);
-            context.addExpression(ModelGenerator.buildBinding(result));
+            context.addExpression(ExpressionBuilder.buildBinding(result));
             context.addDeclarationReplacing(new DeclarationSpec(bindExpressionVariable, methodCallExprType));
             functionDSL.addArgument(new NameExpr(toVar(bindExpressionVariable)));
 

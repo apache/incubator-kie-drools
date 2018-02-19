@@ -1,10 +1,10 @@
 package org.drools.modelcompiler.builder.generator.visitor.pattern;
 
 import org.drools.compiler.lang.descr.PatternDescr;
-import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.ModelGenerator;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
+import org.drools.modelcompiler.builder.generator.expression.ExpressionBuilder;
 import org.drools.modelcompiler.builder.generator.visitor.DSLNode;
 
 class SimpleConstraint implements DSLNode {
@@ -29,6 +29,6 @@ class SimpleConstraint implements DSLNode {
             drlxParseResult.setPatternBindingUnification(true);
         }
 
-        ModelGenerator.processExpression(context, drlxParseResult);
+        ExpressionBuilder.processExpression(context, drlxParseResult);
     }
 }

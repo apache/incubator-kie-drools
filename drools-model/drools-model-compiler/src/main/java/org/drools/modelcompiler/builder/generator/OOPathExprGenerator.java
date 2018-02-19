@@ -17,12 +17,12 @@ import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
+import org.drools.modelcompiler.builder.generator.expression.ExpressionBuilder;
 
 import static org.drools.core.util.ClassUtils.extractGenericType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.prepend;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
-import static org.drools.modelcompiler.builder.generator.ModelGenerator.buildExpressionWithIndexing;
 
 public class OOPathExprGenerator {
 
@@ -107,11 +107,11 @@ public class OOPathExprGenerator {
                             .map(x -> (DrlxParseSuccess)x)
                             .collect(Collectors.toList());
                     if (value.size() == 1) {
-                        return buildExpressionWithIndexing(context, value.get(0));
+                        return ExpressionBuilder.buildExpressionWithIndexing(context, value.get(0));
                     } else {
                         final MethodCallExpr andDSL = new MethodCallExpr(null, "and");
                         value.forEach(e -> {
-                            final Expression expression = buildExpressionWithIndexing(context, e);
+                            final Expression expression = ExpressionBuilder.buildExpressionWithIndexing(context, e);
                             andDSL.addArgument(expression);
                         });
                         return andDSL;
