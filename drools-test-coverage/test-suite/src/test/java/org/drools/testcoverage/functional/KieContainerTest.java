@@ -17,15 +17,19 @@
 
 package org.drools.testcoverage.functional;
 
+import java.io.File;
 import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.common.util.TestConstants;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.api.KieBase;
+import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.io.KieResources;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
@@ -75,6 +79,29 @@ public class KieContainerTest {
             firstKSession.dispose();
             secondKSession.dispose();
         }
+    }
+
+    @Test
+    public void testFileSystemResourceBuilding() {
+        KieServices kieServices = KieServices.Factory.get();
+        KieResources kieResources = kieServices.getResources();
+        KieFileSystem kieFileSystem = kieServices.newKieFileSystem();
+
+        File drlFile = new File(
+                "src/test/resources/org/drools/testcoverage/functional/parser/drl/asterisk-imports.drl");
+        kieFileSystem.write(kieResources.newFileSystemResource(drlFile, "UTF-8"));
+
+
+        KieModuleModel kmodel = kieServices.newKieModuleModel();
+        kieFileSystem.writeKModuleXML(kmodel.toXML());
+
+        KieBuilder kieBuilder = kieServices.newKieBuilder(kieFileSystem);
+        kieBuilder.buildAll();
+
+        KieContainer kieContainer = kieServices.newKieContainer(kieBuilder.getKieModule().getReleaseId());
+        KieBaseConfiguration kieBaseConfiguration = kieServices.newKieBaseConfiguration();
+        KieBase kieBase = kieContainer.newKieBase(kieBaseConfiguration);
+        Assertions.assertThat(kieBase.getKiePackages()).isNotEmpty();
     }
 
     /**
