@@ -27,7 +27,7 @@ public class DrlxParseSuccess implements DrlxParseResult {
     private IndexUtil.ConstraintType decodeConstraintType;
     private Collection<String> usedDeclarations = new LinkedHashSet<>();
     private Set<String> reactOnProperties = Collections.emptySet();
-    private String[] watchedProperties;
+    private Set<String> watchedProperties = Collections.emptySet();
 
     private TypedExpression left;
     private TypedExpression right;
@@ -53,6 +53,11 @@ public class DrlxParseSuccess implements DrlxParseResult {
         return this;
     }
 
+    public DrlxParseSuccess setWatchedProperties(Set<String> watchedProperties ) {
+        this.watchedProperties = watchedProperties;
+        return this;
+    }
+
     public DrlxParseSuccess setReactOnProperties(Set<String> reactOnProperties ) {
         this.reactOnProperties = reactOnProperties;
         return this;
@@ -60,6 +65,25 @@ public class DrlxParseSuccess implements DrlxParseResult {
 
     public DrlxParseSuccess setPatternBindingUnification(Boolean unification) {
         this.isPatternBindingUnification = unification;
+        return this;
+    }
+
+    public DrlxParseSuccess addWacthedProperty(String watchedProperty) {
+        if (watchedProperties.isEmpty()) {
+            watchedProperties = new HashSet<>();
+        }
+        this.watchedProperties.add(watchedProperty);
+        return this;
+    }
+
+    public DrlxParseSuccess addAllWacthedProperties(Collection<String> watchedProperties) {
+        if (watchedProperties.isEmpty()) {
+            return this;
+        }
+        if (this.watchedProperties.isEmpty()) {
+            this.watchedProperties = new HashSet<>();
+        }
+        this.watchedProperties.addAll(watchedProperties);
         return this;
     }
 
@@ -161,12 +185,8 @@ public class DrlxParseSuccess implements DrlxParseResult {
         return reactOnProperties;
     }
 
-    public String[] getWatchedProperties() {
+    public Set<String> getWatchedProperties() {
         return watchedProperties;
-    }
-
-    public void setWatchedProperties(String[] watchedProperties) {
-        this.watchedProperties = watchedProperties;
     }
 
     public TypedExpression getLeft() {

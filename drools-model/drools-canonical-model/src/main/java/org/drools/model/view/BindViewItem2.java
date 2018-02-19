@@ -15,13 +15,15 @@ public class BindViewItem2<T> implements ViewItem<T>,
     private final Variable inputVariable1;
     private final Variable inputVariable2;
     private final String reactOn;
+    private final String[] watchedProps;
 
-    public BindViewItem2(Variable<T> boundVariable, Function2 bindingFunction, Variable inputVariable1, Variable inputVariable2, String reactOn) {
+    public BindViewItem2(Variable<T> boundVariable, Function2 bindingFunction, Variable inputVariable1, Variable inputVariable2, String reactOn, String[] watchedProps) {
         this.boundVariable = boundVariable;
         this.bindingFunction = bindingFunction;
         this.inputVariable1 = inputVariable1;
         this.inputVariable2 = inputVariable2;
         this.reactOn = reactOn;
+        this.watchedProps = watchedProps;
     }
 
     @Override
@@ -57,6 +59,10 @@ public class BindViewItem2<T> implements ViewItem<T>,
     @Override
     public String getReactOn() {
         return reactOn;
+    }
+
+    public String[] getWatchedProps() {
+        return watchedProps;
     }
 
     @Override

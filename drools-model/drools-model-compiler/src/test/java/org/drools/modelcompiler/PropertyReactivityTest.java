@@ -17,10 +17,13 @@
 package org.drools.modelcompiler;
 
 import org.drools.modelcompiler.domain.Person;
+import org.drools.modelcompiler.domain.Result;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.FactHandle;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class PropertyReactivityTest extends BaseModelTest {
 
@@ -46,5 +49,87 @@ public class PropertyReactivityTest extends BaseModelTest {
         ksession.fireAllRules();
 
         assertEquals(41, p.getAge());
+    }
+
+    @Test
+    public void testImplicitWatch() {
+        String str =
+                "import " + Result.class.getCanonicalName() + ";" +
+                "import " + Person.class.getCanonicalName() + ";" +
+                "rule R when\n" +
+                "  $r : Result()\n" +
+                "  $p1 : Person()\n" +
+                "  $p2 : Person(name != \"Mark\", this != $p1, age > $p1.age)\n" +
+                "then\n" +
+                "  $r.setValue($p2.getName() + \" is older than \" + $p1.getName());\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+
+        Result result = new Result();
+        ksession.insert(result);
+
+        Person mark = new Person("Mark", 37);
+        Person edson = new Person("Edson", 35);
+        Person mario = new Person("Mario", 40);
+
+        FactHandle markFH = ksession.insert(mark);
+        FactHandle edsonFH = ksession.insert(edson);
+        FactHandle marioFH = ksession.insert(mario);
+
+        ksession.fireAllRules();
+        assertEquals("Mario is older than Mark", result.getValue());
+
+        result.setValue(null);
+        ksession.delete(marioFH);
+        ksession.fireAllRules();
+        assertNull(result.getValue());
+
+        mark.setAge(34);
+        ksession.update(markFH, mark, "age");
+
+        ksession.fireAllRules();
+        assertEquals("Edson is older than Mark", result.getValue());
+    }
+
+    @Test
+    public void testImplicitWatchWithDeclaration() {
+        String str =
+                "import " + Result.class.getCanonicalName() + ";" +
+                "import " + Person.class.getCanonicalName() + ";" +
+                "rule R when\n" +
+                "  $r : Result()\n" +
+                "  $p1 : Person( $a : address )\n" +
+                "  $p2 : Person(name != \"Mark\", this != $p1, age > $p1.age)\n" +
+                "then\n" +
+                "  $r.setValue($p2.getName() + \" is older than \" + $p1.getName());\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+
+        Result result = new Result();
+        ksession.insert(result);
+
+        Person mark = new Person("Mark", 37);
+        Person edson = new Person("Edson", 35);
+        Person mario = new Person("Mario", 40);
+
+        FactHandle markFH = ksession.insert(mark);
+        FactHandle edsonFH = ksession.insert(edson);
+        FactHandle marioFH = ksession.insert(mario);
+
+        ksession.fireAllRules();
+        assertEquals("Mario is older than Mark", result.getValue());
+
+        result.setValue(null);
+        ksession.delete(marioFH);
+        ksession.fireAllRules();
+        assertNull(result.getValue());
+
+        mark.setAge(34);
+        ksession.update(markFH, mark, "age");
+
+        ksession.fireAllRules();
+        assertEquals("Edson is older than Mark", result.getValue());
     }
 }

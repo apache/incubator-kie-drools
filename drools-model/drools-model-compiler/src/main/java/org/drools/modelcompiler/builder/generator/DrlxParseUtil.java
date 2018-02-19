@@ -20,11 +20,16 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import org.drools.compiler.lang.descr.AnnotationDescr;
+import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.index.IndexUtil;
 import org.drools.core.util.index.IndexUtil.ConstraintType;
@@ -489,5 +494,10 @@ public class DrlxParseUtil {
             operators.addAll(ModelGenerator.temporalOperators);
             return operators;
         }
+    }
+
+    public static List<String> getPatternListenedProperties( PatternDescr pattern) {
+        AnnotationDescr watchAnn = pattern != null ? pattern.getAnnotation("watch") : null;
+        return watchAnn == null ? Collections.emptyList() : Stream.of(watchAnn.getValue().toString().split(",")).map(String::trim).collect( Collectors.toList() );
     }
 }

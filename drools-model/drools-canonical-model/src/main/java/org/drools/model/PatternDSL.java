@@ -318,7 +318,7 @@ public class PatternDSL extends DSL {
 
         @Override
         public Binding asBinding( PatternDefImpl patternDef ) {
-            return new BindViewItem1(boundVar, f, patternDef.getFirstVariable(), getReactOn().length > 0 ? getReactOn()[0] : null);
+            return new BindViewItem1(boundVar, f, patternDef.getFirstVariable(), getReactOn().length > 0 ? getReactOn()[0] : null, null);
         }
     }
 
@@ -334,7 +334,7 @@ public class PatternDSL extends DSL {
 
         @Override
         public Binding asBinding( PatternDefImpl patternDef ) {
-            return new BindViewItem2(boundVar, f, patternDef.getFirstVariable(), otherVar, getReactOn().length > 0 ? getReactOn()[0] : null);
+            return new BindViewItem2(boundVar, f, patternDef.getFirstVariable(), otherVar, getReactOn().length > 0 ? getReactOn()[0] : null, null);
         }
     }
 

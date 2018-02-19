@@ -24,5 +24,6 @@ public interface Binding {
     Variable getInputVariable();
     Variable[] getInputVariables();
     String getReactOn();
+    String[] getWatchedProps();
     Object eval(Object... args);
 }
