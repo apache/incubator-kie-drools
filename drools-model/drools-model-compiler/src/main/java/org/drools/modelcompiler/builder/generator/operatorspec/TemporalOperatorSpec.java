@@ -5,12 +5,13 @@ import org.drools.javaparser.ast.drlx.expr.TemporalLiteralChunkExpr;
 import org.drools.javaparser.ast.drlx.expr.TemporalLiteralExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
+import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 
 public class TemporalOperatorSpec implements OperatorSpec {
     public static final TemporalOperatorSpec INSTANCE = new TemporalOperatorSpec();
 
-    public Expression getExpression( PointFreeExpr pointFreeExpr, TypedExpression left ) {
+    public Expression getExpression( RuleContext context, PointFreeExpr pointFreeExpr, TypedExpression left ) {
         MethodCallExpr methodCallExpr = new MethodCallExpr( null, pointFreeExpr.getOperator().asString() );
         if (pointFreeExpr.getArg1() != null) {
             addArgumentToMethodCall( pointFreeExpr.getArg1(), methodCallExpr );

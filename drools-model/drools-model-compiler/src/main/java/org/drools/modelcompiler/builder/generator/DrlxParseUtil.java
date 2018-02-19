@@ -334,10 +334,17 @@ public class DrlxParseUtil {
                 if (e.fieldToResolve.equals( bindingId )) {
                     continue;
                 }
-                TypedExpression te = nameExprToMethodCallExpr(e.fieldToResolve, previousClass, null);
-                Class<?> returnType = te.getType();
-                methodCall.add(te.getExpression());
-                previousClass = returnType;
+                if (previousClass == null) {
+                    previousClass = context.getDeclarationById( e.fieldToResolve )
+                            .map( DeclarationSpec::getDeclarationClass )
+                            .orElseThrow( () -> new RuntimeException( "Unknown field: " + e.fieldToResolve ) );
+                    methodCall.add(e.expression);
+                } else {
+                    TypedExpression te = nameExprToMethodCallExpr( e.fieldToResolve, previousClass, null );
+                    Class<?> returnType = te.getType();
+                    methodCall.add( te.getExpression() );
+                    previousClass = returnType;
+                }
             } else if (e.expression instanceof MethodCallExpr) {
                 Class<?> returnType = returnTypeOfMethodCallExpr(context, typeResolver, (MethodCallExpr) e.expression, previousClass, null);
                 MethodCallExpr cloned = ((MethodCallExpr) e.expression.clone()).removeScope();
