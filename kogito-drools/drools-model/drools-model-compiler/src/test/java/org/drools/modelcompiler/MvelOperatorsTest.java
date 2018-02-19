@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Person;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
@@ -163,5 +163,4 @@ public class MvelOperatorsTest extends BaseModelTest {
         ksession.insert( Arrays.asList("hello", "world") );
         assertEquals(1, ksession.fireAllRules());
     }
-
 }

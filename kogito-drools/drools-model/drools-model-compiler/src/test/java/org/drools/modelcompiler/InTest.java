@@ -16,6 +16,7 @@
 
 package org.drools.modelcompiler;
 
+import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Child;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
@@ -52,5 +53,20 @@ public class InTest extends BaseModelTest {
         KieSession ksession = getKieSession(str);
         ksession.insert(new Child("Ben", 10));
         assertEquals( 0, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testInWithJoin() {
+        String str = "import org.drools.modelcompiler.domain.Address; \n" +
+                "rule R when \n" +
+                "    $a1: Address($street: street, city in (\"Brno\", \"Milan\", \"Bratislava\")) \n" +
+                "    $a2: Address(city in (\"Krakow\", \"Paris\", $a1.city)) \n" +
+                "then \n" +
+                "end\n";
+
+        KieSession ksession = getKieSession(str);
+        ksession.insert(new Address("Brno"));
+        ksession.insert(new Address("Milan"));
+        assertEquals( 2, ksession.fireAllRules() );
     }
 }
