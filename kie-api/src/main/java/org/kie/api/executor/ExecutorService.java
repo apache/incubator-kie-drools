@@ -137,8 +137,7 @@ public interface ExecutorService {
 
         private static synchronized String create() {
             initialized = true;
-            String idSystemProperty = System.getProperty("org.kie.executor.id",
-                    System.getProperty("org.uberfire.cluster.local.id", "default-executor"));
+            String idSystemProperty = System.getProperty("org.kie.executor.id", "default-executor");
             try {
                 InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("/jbpm-executor.properties");
                 if (is != null) {
