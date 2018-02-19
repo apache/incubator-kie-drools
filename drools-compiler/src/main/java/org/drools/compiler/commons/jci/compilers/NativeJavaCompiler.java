@@ -89,8 +89,7 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
             units.add(new CompilationUnit(sourcePath, pReader));
         }
 
-        final List<String> options = new NativeJavaCompilerSettings(pSettings).toOptionsList();
-        options.add("-Xdiags:verbose");
+        Iterable<String> options = new NativeJavaCompilerSettings(pSettings).toOptionsList();
 
         if (compiler.getTask(null, fileManager, diagnostics, options, null, units).call()) {
             for (CompilationOutput compilationOutput : fileManager.getOutputs()) {
