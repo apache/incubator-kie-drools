@@ -29,7 +29,13 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateL
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.ModelGenerator.BIND_AS_CALL;
 
-public class ExpressionBuilder {
+public class FlowExpressionBuilder {
+
+    private RuleContext context;
+
+    public FlowExpressionBuilder(RuleContext context) {
+        this.context = context;
+    }
 
     private static final IndexIdGenerator indexIdGenerator = new IndexIdGenerator();
 
@@ -37,12 +43,12 @@ public class ExpressionBuilder {
     public static final String INDEXED_BY_CALL = "indexedBy";
     public static final String EXPR_CALL = "expr";
 
-    public static void processExpression(RuleContext context, DrlxParseSuccess drlxParseResult) {
+    public void processExpression(DrlxParseSuccess drlxParseResult) {
         if (drlxParseResult.hasUnificationVariable()) {
-            Expression dslExpr = buildUnificationExpression(context, drlxParseResult);
+            Expression dslExpr = buildUnificationExpression(drlxParseResult);
             context.addExpression(dslExpr);
         } else if ( drlxParseResult.isValidExpression() ) {
-            Expression dslExpr = buildExpressionWithIndexing(context, drlxParseResult);
+            Expression dslExpr = buildExpressionWithIndexing(drlxParseResult);
             context.addExpression(dslExpr);
         }
         if (drlxParseResult.getExprBinding() != null) {
@@ -51,20 +57,7 @@ public class ExpressionBuilder {
         }
     }
 
-    public static Expression buildExpressionWithIndexing(RuleContext context, DrlxParseSuccess drlxParseResult) {
-        String exprId = drlxParseResult.getExprId();
-        MethodCallExpr exprDSL = new MethodCallExpr(null, EXPR_CALL);
-        if (exprId != null && !"".equals(exprId)) {
-            exprDSL.addArgument( new StringLiteralExpr(exprId) );
-        }
-
-        exprDSL = buildExpression(context, drlxParseResult, exprDSL );
-        exprDSL = buildIndexedBy(context, drlxParseResult, exprDSL);
-        exprDSL = buildReactOn( drlxParseResult, exprDSL );
-        return exprDSL;
-    }
-
-    private static Expression buildUnificationExpression(RuleContext context, DrlxParseSuccess drlxParseResult) {
+    private Expression buildUnificationExpression(DrlxParseSuccess drlxParseResult) {
         MethodCallExpr exprDSL = buildBinding(drlxParseResult);
         context.addDeclaration(new DeclarationSpec(drlxParseResult.getUnificationVariable(),
                                                    drlxParseResult.getUnificationVariableType(),
@@ -73,7 +66,39 @@ public class ExpressionBuilder {
         return exprDSL;
     }
 
-    public static MethodCallExpr buildBinding(DrlxParseSuccess drlxParseResult ) {
+    public Expression buildExpressionWithIndexing(DrlxParseSuccess drlxParseResult) {
+        String exprId = drlxParseResult.getExprId();
+        MethodCallExpr exprDSL = new MethodCallExpr(null, EXPR_CALL);
+        if (exprId != null && !"".equals(exprId)) {
+            exprDSL.addArgument( new StringLiteralExpr(exprId) );
+        }
+
+        exprDSL = buildExpression(drlxParseResult, exprDSL );
+        exprDSL = buildIndexedBy(drlxParseResult, exprDSL);
+        exprDSL = buildReactOn( drlxParseResult, exprDSL );
+        return exprDSL;
+    }
+
+    private MethodCallExpr buildExpression(DrlxParseSuccess drlxParseResult, MethodCallExpr exprDSL ) {
+        final List<String> usedDeclarationsWithUnification = new ArrayList<>();
+        if(!drlxParseResult.isPatternBindingUnification()) {
+            if (drlxParseResult.getPatternBinding() != null && !drlxParseResult.getUsedDeclarations().contains( drlxParseResult.getPatternBinding() )) {
+                exprDSL.addArgument(new NameExpr(toVar(drlxParseResult.getPatternBinding())));
+            }
+        } else {
+            usedDeclarationsWithUnification.add(drlxParseResult.getPatternBinding());
+        }
+        usedDeclarationsWithUnification.addAll(drlxParseResult.getUsedDeclarations());
+        usedDeclarationsWithUnification.stream()
+                .map(x -> QueryGenerator.substituteBindingWithQueryParameter(context, x))
+                .forEach(exprDSL::addArgument);
+        exprDSL.addArgument(buildConstraintExpression( drlxParseResult, drlxParseResult.getExpr() ));
+        return exprDSL;
+    }
+
+
+
+    public MethodCallExpr buildBinding(DrlxParseSuccess drlxParseResult ) {
         MethodCallExpr bindDSL = new MethodCallExpr(null, BIND_CALL);
         if(drlxParseResult.hasUnificationVariable()) {
             bindDSL.addArgument(new NameExpr(toVar(drlxParseResult.getUnificationVariable())));
@@ -87,7 +112,7 @@ public class ExpressionBuilder {
         return buildReactOn( drlxParseResult, bindAsDSL );
     }
 
-    private static MethodCallExpr buildReactOn(DrlxParseSuccess drlxParseResult, MethodCallExpr exprDSL ) {
+    private MethodCallExpr buildReactOn(DrlxParseSuccess drlxParseResult, MethodCallExpr exprDSL ) {
         if ( !drlxParseResult.getReactOnProperties().isEmpty() ) {
             exprDSL = new MethodCallExpr(exprDSL, "reactOn");
             drlxParseResult.getReactOnProperties().stream()
@@ -106,11 +131,11 @@ public class ExpressionBuilder {
         return exprDSL;
     }
 
-    private static Expression buildConstraintExpression(DrlxParseSuccess drlxParseResult, Expression expr ) {
+    private Expression buildConstraintExpression(DrlxParseSuccess drlxParseResult, Expression expr ) {
         return drlxParseResult.isStatic() ? expr : generateLambdaWithoutParameters(drlxParseResult.getUsedDeclarations(), expr, drlxParseResult.isSkipThisAsParam());
     }
 
-    private static MethodCallExpr buildIndexedBy(RuleContext context, DrlxParseSuccess drlxParseResult, MethodCallExpr exprDSL) {
+    private MethodCallExpr buildIndexedBy(DrlxParseSuccess drlxParseResult, MethodCallExpr exprDSL) {
         IndexUtil.ConstraintType decodeConstraintType = drlxParseResult.getDecodeConstraintType();
         TypedExpression left = drlxParseResult.getLeft();
         TypedExpression right = drlxParseResult.getRight();
@@ -157,23 +182,6 @@ public class ExpressionBuilder {
             }
             return indexedByDSL;
         }
-        return exprDSL;
-    }
-
-    private static MethodCallExpr buildExpression(RuleContext context, DrlxParseSuccess drlxParseResult, MethodCallExpr exprDSL ) {
-        final List<String> usedDeclarationsWithUnification = new ArrayList<>();
-        if(!drlxParseResult.isPatternBindingUnification()) {
-            if (drlxParseResult.getPatternBinding() != null && !drlxParseResult.getUsedDeclarations().contains( drlxParseResult.getPatternBinding() )) {
-                exprDSL.addArgument(new NameExpr(toVar(drlxParseResult.getPatternBinding())));
-            }
-        } else {
-            usedDeclarationsWithUnification.add(drlxParseResult.getPatternBinding());
-        }
-        usedDeclarationsWithUnification.addAll(drlxParseResult.getUsedDeclarations());
-        usedDeclarationsWithUnification.stream()
-                .map(x -> QueryGenerator.substituteBindingWithQueryParameter(context, x))
-                .forEach(exprDSL::addArgument);
-        exprDSL.addArgument(buildConstraintExpression( drlxParseResult, drlxParseResult.getExpr() ));
         return exprDSL;
     }
 
