@@ -32,6 +32,7 @@ import java.util.Set;
 import java.util.StringTokenizer;
 
 import org.kie.dmg.pmml.pmml_4_2.descr.AnyDistribution;
+import org.kie.dmg.pmml.pmml_4_2.descr.Attribute;
 import org.kie.dmg.pmml.pmml_4_2.descr.COMPAREFUNCTION;
 import org.kie.dmg.pmml.pmml_4_2.descr.DATATYPE;
 import org.kie.dmg.pmml.pmml_4_2.descr.DataField;
@@ -42,6 +43,10 @@ import org.kie.dmg.pmml.pmml_4_2.descr.RESULTFEATURE;
 import org.kie.dmg.pmml.pmml_4_2.descr.UniformDistribution;
 import org.kie.dmg.pmml.pmml_4_2.descr.Value;
 import org.kie.pmml.pmml_4_2.extensions.AggregationStrategy;
+import org.kie.pmml.pmml_4_2.model.mining.CompoundSegmentPredicate;
+import org.kie.pmml.pmml_4_2.model.mining.PredicateRuleProducer;
+import org.kie.pmml.pmml_4_2.model.mining.SimpleSegmentPredicate;
+import org.kie.pmml.pmml_4_2.model.mining.SimpleSetSegmentPredicate;
 import org.mvel2.templates.CompiledTemplate;
 import org.mvel2.templates.TemplateRegistry;
 import org.mvel2.templates.TemplateRuntime;
@@ -244,13 +249,13 @@ public class PMML4Helper {
         String s = datatype != null ? datatype.value() : null;
         if (s == null) return Object.class.getName();
         if ("Integer".equalsIgnoreCase(s))
-//			return Integer.class.getName();
+//            return Integer.class.getName();
             return box ? "Integer" : "int";
         else if ("Float".equalsIgnoreCase(s))
-//			return Float.class.getName();
+//            return Float.class.getName();
             return box ? "Float" : "float";
         else if ("Double".equalsIgnoreCase(s))
-//			return Double.class.getName();
+//            return Double.class.getName();
             return box ? "Double" : "double";
         else if ("Boolean".equalsIgnoreCase(s))
 //          return Boolean.class.getName();
@@ -896,11 +901,55 @@ public class PMML4Helper {
         return tok.nextToken();
     }
 
+    public String getPredicate(Attribute attrib) {
+        String predicateText = null;
+        if (attrib.getSimplePredicate() != null) {
+            SimpleSegmentPredicate ssp = new SimpleSegmentPredicate(attrib.getSimplePredicate());
+            predicateText = ssp.getPredicateRule();
+            return "( "+predicateText+" )";
+        } else if (attrib.getSimpleSetPredicate() != null) {
+            SimpleSetSegmentPredicate sssp = new SimpleSetSegmentPredicate(attrib.getSimpleSetPredicate());
+            return sssp.getPredicateRule();
+        } else if (attrib.getCompoundPredicate() != null) {
+            CompoundSegmentPredicate csp = new CompoundSegmentPredicate(attrib.getCompoundPredicate());
+            if (csp.hasSurrogation()) {
+                return getSurrogationPredicateText(csp,-1);
+            } else {
+                return csp.getPredicateRule();
+            }
+        } else if (attrib.getTrue() != null) {
+            return "( 1 == 1 )";
+        } else if (attrib.getFalse() != null) {
+            return "( 1 == 0 )";
+        }
+        throw new IllegalStateException("Unable to determine predicate for Attribute with reason code: "+attrib.getReasonCode());
+    }
+
+    private String getSurrogationPredicateText(CompoundSegmentPredicate predicate, int lastPredicate) {
+        if (lastPredicate >= predicate.getSubpredicateCount()) return "";
+        StringBuilder bldr = new StringBuilder();
+        if (lastPredicate == -1) {
+            bldr.append("(").append(predicate.getPrimaryPredicateRule()).append(")");
+        } else {
+            bldr.append(predicate.getNextPredicateRule(lastPredicate));
+        }
+        String subPredicate = getSurrogationPredicateText(predicate,lastPredicate+1);
+        if (subPredicate != null && !subPredicate.trim().isEmpty()) {
+            bldr.append(" || ").append(subPredicate);
+        }
+        return bldr.toString();
+    }
 
 
     public String[] tokenize( String s, String delimiters ) {
         StringTokenizer tok = new StringTokenizer( s, delimiters );
-        return tokenize( tok );
+        String[] values = tokenize(tok);
+        if ("\"".equals(delimiters)) {
+            for (int c = 0; c < values.length; c++) {
+                values[c] = values[c].trim();
+            }
+        }
+        return values;
     }
 
 
@@ -981,46 +1030,46 @@ public class PMML4Helper {
 //
 //    public String mapDatatypeToQuestion(DATATYPE datatype) {
 //        String s = datatype != null ? datatype.value() : null;
-//		if (s == null) return Object.class.getName();
-//		if ("Integer".equalsIgnoreCase(s))
+//        if (s == null) return Object.class.getName();
+//        if ("Integer".equalsIgnoreCase(s))
 //            return Question.QuestionType.TYPE_NUMBER.getValue();
-//		else if ("Float".equalsIgnoreCase(s))
-//		    return Question.QuestionType.TYPE_DECIMAL.getValue();
+//        else if ("Float".equalsIgnoreCase(s))
+//            return Question.QuestionType.TYPE_DECIMAL.getValue();
 //        else if ("Double".equalsIgnoreCase(s))
-//		    return Question.QuestionType.TYPE_DECIMAL.getValue();
+//            return Question.QuestionType.TYPE_DECIMAL.getValue();
 //        else if ("Boolean".equalsIgnoreCase(s))
 //            return Question.QuestionType.TYPE_BOOLEAN.getValue();
-//		else if ("String".equalsIgnoreCase(s))
-//			return Question.QuestionType.TYPE_TEXT.getValue();
-//		else if ("Date".equalsIgnoreCase(s))
-//			return Question.QuestionType.TYPE_DATE.getValue();
-//		else if ("Time".equalsIgnoreCase(s))
-//			return Question.QuestionType.TYPE_DATE.getValue();
-//		else if ("DateTime".equalsIgnoreCase(s))
-//			return Question.QuestionType.TYPE_DATE.getValue();
-//		else if ("DateDaysSince[0]".equalsIgnoreCase(s))
-//			return Question.QuestionType.TYPE_NUMBER.getValue();
-//		else if ("DateDaysSince[1960]".equalsIgnoreCase(s))
-//			return Question.QuestionType.TYPE_NUMBER.getValue();
-//		else if ("DateDaysSince[1970]".equalsIgnoreCase(s))
-//			return Question.QuestionType.TYPE_NUMBER.getValue();
-//		else if ("DateDaysSince[1980]".equalsIgnoreCase(s))
-//			return Question.QuestionType.TYPE_NUMBER.getValue();
-//		else if ("TimeSeconds".equalsIgnoreCase(s))
-//			return Question.QuestionType.TYPE_NUMBER.getValue();
-//		else if ("DateTimeSecondsSince[0]".equalsIgnoreCase(s))
-//			return Question.QuestionType.TYPE_NUMBER.getValue();
-//		else if ("DateTimeSecondsSince[1960]".equalsIgnoreCase(s))
-//			return Question.QuestionType.TYPE_NUMBER.getValue();
-//		else if ("DateTimeSecondsSince[1970]".equalsIgnoreCase(s))
-//			return Question.QuestionType.TYPE_NUMBER.getValue();
-//		else if ("DateTimeSecondsSince[1980]".equalsIgnoreCase(s))
-//			return Question.QuestionType.TYPE_NUMBER.getValue();
+//        else if ("String".equalsIgnoreCase(s))
+//            return Question.QuestionType.TYPE_TEXT.getValue();
+//        else if ("Date".equalsIgnoreCase(s))
+//            return Question.QuestionType.TYPE_DATE.getValue();
+//        else if ("Time".equalsIgnoreCase(s))
+//            return Question.QuestionType.TYPE_DATE.getValue();
+//        else if ("DateTime".equalsIgnoreCase(s))
+//            return Question.QuestionType.TYPE_DATE.getValue();
+//        else if ("DateDaysSince[0]".equalsIgnoreCase(s))
+//            return Question.QuestionType.TYPE_NUMBER.getValue();
+//        else if ("DateDaysSince[1960]".equalsIgnoreCase(s))
+//            return Question.QuestionType.TYPE_NUMBER.getValue();
+//        else if ("DateDaysSince[1970]".equalsIgnoreCase(s))
+//            return Question.QuestionType.TYPE_NUMBER.getValue();
+//        else if ("DateDaysSince[1980]".equalsIgnoreCase(s))
+//            return Question.QuestionType.TYPE_NUMBER.getValue();
+//        else if ("TimeSeconds".equalsIgnoreCase(s))
+//            return Question.QuestionType.TYPE_NUMBER.getValue();
+//        else if ("DateTimeSecondsSince[0]".equalsIgnoreCase(s))
+//            return Question.QuestionType.TYPE_NUMBER.getValue();
+//        else if ("DateTimeSecondsSince[1960]".equalsIgnoreCase(s))
+//            return Question.QuestionType.TYPE_NUMBER.getValue();
+//        else if ("DateTimeSecondsSince[1970]".equalsIgnoreCase(s))
+//            return Question.QuestionType.TYPE_NUMBER.getValue();
+//        else if ("DateTimeSecondsSince[1980]".equalsIgnoreCase(s))
+//            return Question.QuestionType.TYPE_NUMBER.getValue();
 //        else if ("collection".equalsIgnoreCase(s))
-//			return Question.QuestionType.TYPE_LIST.getValue();
-//		else
-//			return Question.QuestionType.TYPE_TEXT.getValue();
-//	}
+//            return Question.QuestionType.TYPE_LIST.getValue();
+//        else
+//            return Question.QuestionType.TYPE_TEXT.getValue();
+//    }
 
 
     public String mapDatatypeToQuestion(DATATYPE datatype) {

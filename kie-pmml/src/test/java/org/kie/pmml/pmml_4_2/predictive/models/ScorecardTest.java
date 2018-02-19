@@ -132,7 +132,6 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
         
         for (int p = 0; p < 3; p++) {
             checkResult(resultHolder[p],expectedScores[p],expectedResults[p]);
-            results[p].forEach(r -> { System.out.println(r);});
         }
         
     }
@@ -307,7 +306,6 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
     }
 
     @Test
-    @Ignore("RHDM-317")
     public void testScorecardWithSimpleSetPredicateWithSpaceValue() {
         KieBase kieBase = PMMLKieBaseUtil.createKieBaseWithPMML(SOURCE_SIMPLE_SET_SPACE_VALUE_SCORECARD);
         PMMLExecutor executor = new PMMLExecutor(kieBase);
