@@ -36,3 +36,13 @@ They're specifically chosen to be easier for first time contributors.
 It solves all known pitfalls that can disrupt your development.
 It also describes all guidelines, tips and tricks.
 If you want your pull requests (or patches) to be merged into master, please respect those guidelines.
+
+=== Definition of Done
+
+To consider any individual ticket "Done", following requirements must be satisfied:
+
+  . Every change must go through PR; source code of both the feature/bugfix and its tests have been reviewed.
+  . Documentation (if applicable) exists and has been reviewed.
+  . There is test coverage proving the feature works and tests are passing.
+
+In order to avoid introducing unstable features, the PR will be merged only after these points have been fulfilled.
