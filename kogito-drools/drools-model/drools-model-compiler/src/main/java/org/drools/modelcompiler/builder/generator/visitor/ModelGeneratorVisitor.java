@@ -17,6 +17,9 @@ import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.PatternSourceDescr;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.RuleContext;
+import org.drools.modelcompiler.builder.generator.visitor.accumulate.AccumulateVisitor;
+import org.drools.modelcompiler.builder.generator.visitor.accumulate.AccumulateVisitorFlowDSL;
+import org.drools.modelcompiler.builder.generator.visitor.accumulate.AccumulateVisitorPatternDSL;
 import org.drools.modelcompiler.builder.generator.visitor.pattern.PatternVisitor;
 
 public class ModelGeneratorVisitor implements DescrVisitor {
@@ -32,7 +35,11 @@ public class ModelGeneratorVisitor implements DescrVisitor {
     private final FromCollectVisitor fromCollectVisitor;
 
     public ModelGeneratorVisitor(RuleContext context, PackageModel packageModel, boolean isPattern) {
-        accumulateVisitor = new AccumulateVisitor(this, context, packageModel);
+        if (isPattern) {
+            accumulateVisitor = new AccumulateVisitorPatternDSL(this, context, packageModel);
+        } else {
+            accumulateVisitor = new AccumulateVisitorFlowDSL(this, context, packageModel);
+        }
         andVisitor = new AndVisitor(this, context);
         conditionalElementVisitor = new ConditionalElementVisitor(context, this);
         orVisitor = new OrVisitor(this, context);
@@ -108,9 +115,9 @@ public class ModelGeneratorVisitor implements DescrVisitor {
                 AccumulateDescr accSource = (AccumulateDescr) patternSource;
                 if (accSource.getFunctions().isEmpty() || accSource.getFunctions().get(0).getBind() == null) {
                     patternVisitor.visit(descr).buildPattern();
-                    accumulateVisitor.visit( accSource, descr );
+                    accumulateVisitor.visit(accSource, descr );
                 } else {
-                    accumulateVisitor.visit( accSource, descr );
+                    accumulateVisitor.visit(accSource, descr );
                     patternVisitor.visit(descr).buildPattern();
                 }
             } else {
