@@ -71,6 +71,8 @@ import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
 import org.kie.dmn.feel.util.EvalHelper;
 
+import static org.kie.dmn.feel.codegen.feel11.DirectCompilerResult.mergeFDs;
+
 public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerResult> {
 
     private static final Expression DASH_UNARY_TEST = JavaParser.parseExpression(org.kie.dmn.feel.lang.ast.DashNode.DashUnaryTest.class.getCanonicalName() + ".INSTANCE");
@@ -875,17 +877,25 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
 //    private DirectCompilerResult buildNotCall(ParserRuleContext ctx, DirectCompilerResult name, ListNode params) {
 //        throw new UnsupportedOperationException("TODO"); // TODO
 //    }
-//
-//    @Override
-//    public DirectCompilerResult visitType(FEEL_1_1Parser.TypeContext ctx) {
-//        throw new UnsupportedOperationException("TODO"); // TODO
-//    }
-//
-//    @Override
-//    public DirectCompilerResult visitRelExpressionInstanceOf(FEEL_1_1Parser.RelExpressionInstanceOfContext ctx) {
-//        throw new UnsupportedOperationException("TODO"); // TODO
-//    }
-//
+
+    @Override
+    public DirectCompilerResult visitType(FEEL_1_1Parser.TypeContext ctx) {
+        String typeAsText = ParserHelper.getOriginalText(ctx);
+        Expression biT = JavaParser.parseExpression("org.kie.dmn.feel.lang.types.BuiltInType");
+        MethodCallExpr determineCall = new MethodCallExpr(biT, "determineTypeFromName");
+        determineCall.addArgument(new StringLiteralExpr(typeAsText));
+        return DirectCompilerResult.of(determineCall, BuiltInType.UNKNOWN);
+    }
+
+    @Override
+    public DirectCompilerResult visitRelExpressionInstanceOf(FEEL_1_1Parser.RelExpressionInstanceOfContext ctx) {
+        DirectCompilerResult expr = visit(ctx.val);
+        DirectCompilerResult type = visit(ctx.type());
+        MethodCallExpr isInstanceOfCall = new MethodCallExpr(type.getExpression(), "isInstanceOf");
+        isInstanceOfCall.addArgument(expr.getExpression());
+        return DirectCompilerResult.of(isInstanceOfCall, BuiltInType.BOOLEAN, mergeFDs(expr, type));
+    }
+
 //    @Override
 //    public DirectCompilerResult visitFilterPathExpression(FEEL_1_1Parser.FilterPathExpressionContext ctx) {
 //        throw new UnsupportedOperationException("TODO"); // TODO

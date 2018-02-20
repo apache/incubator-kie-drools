@@ -181,6 +181,14 @@ public class DirectCompilerTest {
     }
 
     @Test
+    public void test_instanceOfExpression() {
+        assertThat(parseCompileEvaluate("123 instance of number"), is(true));
+        assertThat(parseCompileEvaluate("\"ciao\" instance of number"), is(false));
+        assertThat(parseCompileEvaluate("123 instance of string"), is(false));
+        assertThat(parseCompileEvaluate("\"ciao\" instance of string"), is(true));
+    }
+
+    @Test
     public void test_contextExpression() {
         assertThat(parseCompileEvaluate("{}"), is(Collections.emptyMap()));
         assertThat(parseCompileEvaluate("{ }"), is(Collections.emptyMap()));
