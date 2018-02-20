@@ -139,8 +139,7 @@ salience -12
 when
     $char   : Characteristic( $attz : attributes, $charName : name, $base : baselineScore )
     $attr   : Attribute( this memberOf $attz, $code : reasonCode, $score : partialScore, $set : simpleSetPredicate != null )
-    $mock   : List() from collect( SimpleSetPredicate() from $set )
-    compilePredicate( $mock, $pred, $set ; )
+    $pred   : String() from utils.getPredicate($attr)
     ?weight( $attr, $w ; )
 then
     HashMap map = utils.container;
