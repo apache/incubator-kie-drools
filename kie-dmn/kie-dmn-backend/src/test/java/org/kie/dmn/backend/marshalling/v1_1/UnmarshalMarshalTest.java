@@ -73,6 +73,11 @@ public class UnmarshalMarshalTest {
     public void test0003() throws Exception {
         testRoundTrip("org/kie/dmn/backend/marshalling/v1_1/", "0003-input-data-string-allowed-values.dmn");
     }
+
+    @Test
+    public void test0004() throws Exception {
+        testRoundTrip("org/kie/dmn/backend/marshalling/v1_1/", "004-decision-services.dmn");
+    }
     
     @Test
     public void testDish() throws Exception {

@@ -37,6 +37,7 @@ public class DefinitionsConverter
     public static final String ARTIFACT = "artifact";
     public static final String ELEMENT_COLLECTION = "elementCollection";
     public static final String BUSINESS_CONTEXT_ELEMENT = "businessContextElement";
+    public static final String DECISION_SERVICE = "decisionService";
 
     public DefinitionsConverter(XStream xstream) {
         super( xstream );
@@ -55,6 +56,8 @@ public class DefinitionsConverter
             def.getItemDefinition().add((ItemDefinition) child);
         } else if (child instanceof DRGElement) {
             def.getDrgElement().add( (DRGElement) child );
+        } else if (child instanceof DecisionService) {
+          def.getDecisionService().add((DecisionService) child);
         } else if (child instanceof Artifact) {
             def.getArtifact().add((Artifact) child);
         } else if (ELEMENT_COLLECTION.equals(nodeName)) {
@@ -99,6 +102,9 @@ public class DefinitionsConverter
         }
         for ( ItemDefinition id : def.getItemDefinition() ) {
             writeChildrenNode(writer, context, id, ITEM_DEFINITION);
+        }
+        for ( DecisionService d : def.getDecisionService() ) {
+            writeChildrenNode(writer, context, d, DECISION_SERVICE);
         }
         for ( DRGElement e : def.getDrgElement() ) {
             String nodeName = DRG_ELEMENT;

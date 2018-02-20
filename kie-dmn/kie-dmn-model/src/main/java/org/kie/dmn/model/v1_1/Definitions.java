@@ -30,6 +30,7 @@ public class Definitions extends NamedElement {
     private List<Artifact> artifact;
     private List<ElementCollection> elementCollection;
     private List<BusinessContextElement> businessContextElement;
+    private List<DecisionService> decisionService;
     private String expressionLanguage;
     private String typeLanguage;
     private String namespace;
@@ -77,6 +78,14 @@ public class Definitions extends NamedElement {
         }
         return this.businessContextElement;
     }
+
+    public List<DecisionService> getDecisionService() {
+        if ( decisionService == null ) {
+            decisionService = new ArrayList<>();
+        }
+        return this.decisionService;
+    }
+
 
     public String getExpressionLanguage() {
         if ( expressionLanguage == null ) {
@@ -132,6 +141,7 @@ public class Definitions extends NamedElement {
                "_import=" + _import +
                ", itemDefinition=" + itemDefinition +
                ", drgElement=" + drgElement +
+               ", decisionService=" + decisionService +
                ", artifact=" + artifact +
                ", elementCollection=" + elementCollection +
                ", businessContextElement=" + businessContextElement +
