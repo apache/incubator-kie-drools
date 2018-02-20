@@ -111,7 +111,7 @@ public final class BenchmarkUtil {
         return "package org.drools.modelcompiler.benchmarks;\n" +
                "" +
                "import org.drools.model.*;\n" +
-               "import static org.drools.model.FlowDSL.*;\n" +
+               "import static org.drools.model.PatternDSL.*;\n" +
                "import " + Person.class.getCanonicalName() + ";\n" +
                "" +
                "public class Variables {\n" +

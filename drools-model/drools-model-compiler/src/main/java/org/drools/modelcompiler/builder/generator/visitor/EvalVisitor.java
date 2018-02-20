@@ -4,10 +4,10 @@ import org.drools.compiler.lang.descr.EvalDescr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
-import org.drools.modelcompiler.builder.generator.ModelGenerator;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
+import org.drools.modelcompiler.builder.generator.expression.FlowExpressionBuilder;
 
 public class EvalVisitor {
 
@@ -27,7 +27,7 @@ public class EvalVisitor {
             Expression rewriteExprAsLambdaWithoutThisParam = DrlxParseUtil.generateLambdaWithoutParameters(drlxParseSuccess.getUsedDeclarations(), drlxParseSuccess.getExpr(), true);
             drlxParseSuccess.setExpr(rewriteExprAsLambdaWithoutThisParam); // rewrites the DrlxParserResult expr as directly the lambda to use
             drlxParseSuccess.setStatic(true);
-            ModelGenerator.processExpression(context, drlxParseSuccess);
+            new FlowExpressionBuilder(context).processExpression(drlxParseSuccess);
         });
 
     }

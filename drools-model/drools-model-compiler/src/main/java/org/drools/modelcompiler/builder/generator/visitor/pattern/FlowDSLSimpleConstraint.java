@@ -2,18 +2,18 @@ package org.drools.modelcompiler.builder.generator.visitor.pattern;
 
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
-import org.drools.modelcompiler.builder.generator.ModelGenerator;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
+import org.drools.modelcompiler.builder.generator.expression.FlowExpressionBuilder;
 import org.drools.modelcompiler.builder.generator.visitor.DSLNode;
 
-class SimpleConstraint implements DSLNode {
+class FlowDSLSimpleConstraint implements DSLNode {
 
     private final RuleContext context;
     private final PatternDescr pattern;
     private final DrlxParseSuccess drlxParseResult;
 
-    public SimpleConstraint(RuleContext context, PatternDescr pattern, DrlxParseSuccess drlxParseResult) {
+    public FlowDSLSimpleConstraint(RuleContext context, PatternDescr pattern, DrlxParseSuccess drlxParseResult) {
         this.context = context;
         this.pattern = pattern;
         this.drlxParseResult = drlxParseResult;
@@ -23,12 +23,12 @@ class SimpleConstraint implements DSLNode {
     public void buildPattern() {
         // need to augment the watch inside drlxParseResult with the look-ahead properties.
         drlxParseResult.addAllWatchedProperties( context.getRuleDescr().lookAheadFieldsOfIdentifier(pattern) );
-        drlxParseResult.addAllWatchedProperties( DrlxParseUtil.getPatternListenedProperties(pattern) );
+        drlxParseResult.addAllWatchedProperties(DrlxParseUtil.getPatternListenedProperties(pattern) );
 
         if (pattern.isUnification()) {
             drlxParseResult.setPatternBindingUnification(true);
         }
 
-        ModelGenerator.processExpression(context, drlxParseResult);
+        new FlowExpressionBuilder(context).processExpression(drlxParseResult);
     }
 }
