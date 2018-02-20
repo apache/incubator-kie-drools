@@ -16,16 +16,6 @@
 
 package org.kie.dmn.core;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.hasEntry;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.internal.verification.VerificationModeFactory.times;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -34,7 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNContext;
@@ -47,6 +36,16 @@ import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
+
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 public class DMNDecisionTableRuntimeTest {
 
@@ -72,7 +71,7 @@ public class DMNDecisionTableRuntimeTest {
         assertThat( ((BigDecimal) result.get( "Logique de décision 1" )).setScale( 1, RoundingMode.CEILING ), is( BigDecimal.valueOf( 0.5 ) ) );
     }
     
-    @Test
+    @Test(timeout = 30_000L)
     public void testDecisionTableWithCalculatedResult_parallel() throws Throwable {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "calculation1.dmn", this.getClass() );
         Runnable task = () -> {
@@ -85,7 +84,7 @@ public class DMNDecisionTableRuntimeTest {
             CompletableFuture<Void> newtask = CompletableFuture.runAsync(task).exceptionally(t -> {problems.add(t); return null;});
             tasks.add( newtask );
         }
-        CompletableFuture.allOf(tasks.toArray(new CompletableFuture<?>[]{})).get(10, TimeUnit.SECONDS);
+        CompletableFuture.allOf(tasks.toArray(new CompletableFuture<?>[]{})).get();
         
         for ( Throwable t : problems ) {
             throw t;
