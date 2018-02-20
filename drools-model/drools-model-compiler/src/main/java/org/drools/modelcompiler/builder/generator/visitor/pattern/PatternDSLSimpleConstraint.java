@@ -24,11 +24,6 @@ class PatternDSLSimpleConstraint implements DSLNode {
 
     @Override
     public void buildPattern() {
-        // need to augment the reactOn inside drlxParseResult with the look-ahead properties.
-        Collection<String> lookAheadFieldsOfIdentifier = context.getRuleDescr().lookAheadFieldsOfIdentifier(pattern);
-        drlxParseResult.addAllWatchedProperties(lookAheadFieldsOfIdentifier);
-        drlxParseResult.addAllWatchedProperties(getPatternListenedProperties(pattern));
-
         if (pattern.isUnification()) {
             drlxParseResult.setPatternBindingUnification(true);
         }
