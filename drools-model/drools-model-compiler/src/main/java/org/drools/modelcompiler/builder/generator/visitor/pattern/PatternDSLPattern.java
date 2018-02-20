@@ -11,16 +11,15 @@ import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.javaparser.ast.drlx.OOPathExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
-import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
+import org.drools.modelcompiler.builder.generator.QueryGenerator;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
 import org.drools.modelcompiler.builder.generator.visitor.DSLNode;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getPatternListenedProperties;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 
 class PatternDSLPattern extends PatternDSL {
     static final String PATTERN_CALL = "pattern";
@@ -40,33 +39,44 @@ class PatternDSLPattern extends PatternDSL {
             final MethodCallExpr patternExpression = createPatternExpression(pattern);
             context.addExpression(patternExpression);
             context.pushExprPointer(patternExpression::addArgument);
+            context.popExprPointer();
         } else {
             if (!context.hasErrors()) {
                 final List<PatternConstraintParseResult> patternConstraintParseResults = findAllConstraint(pattern, constraintDescrs, patternType);
-                final MethodCallExpr patternExpression = createPatternExpression(pattern);
+                MethodCallExpr patternExpression = createPatternExpression(pattern);
 
                 // need to augment the reactOn inside drlxParseResult with the look-ahead properties.
+
+                //context.addExpression( patternExpression );
+
+                List<Expression> exprs = new ArrayList<>();
+                context.pushExprPointer(exprs::add);
+                buildConstraints(pattern, patternType, patternConstraintParseResults, allConstraintsPositional);
+                context.popExprPointer();
+
+                for (Expression expr : exprs) {
+                    MethodCallExpr currentExpr = ( MethodCallExpr ) expr;
+                    (( MethodCallExpr ) expr).setScope( patternExpression );
+                    patternExpression = currentExpr;
+                }
+
+                //context.popExprPointer();
                 Collection<String> watchedProps = new ArrayList<>();
                 watchedProps.addAll(context.getRuleDescr().lookAheadFieldsOfIdentifier(pattern));
                 watchedProps.addAll(getPatternListenedProperties(pattern));
                 if (!watchedProps.isEmpty()) {
-                    MethodCallExpr watchedPatternExpression = new MethodCallExpr( patternExpression, "watch" );
-                    watchedProps.stream().map( StringLiteralExpr::new ).forEach( watchedPatternExpression::addArgument );
-                    context.addExpression(watchedPatternExpression);
-                } else {
-                    context.addExpression(patternExpression);
+                    patternExpression = new MethodCallExpr( patternExpression, "watch" );
+                    watchedProps.stream().map( StringLiteralExpr::new ).forEach( patternExpression::addArgument );
                 }
 
-                context.pushExprPointer(patternExpression::addArgument);
-                buildConstraints(pattern, patternType, patternConstraintParseResults, allConstraintsPositional);
+                context.addExpression( patternExpression );
             }
         }
-        context.popExprPointer();
     }
 
     private MethodCallExpr createPatternExpression(PatternDescr pattern) {
         MethodCallExpr dslExpr = new MethodCallExpr(null, PATTERN_CALL);
-        dslExpr.addArgument(new NameExpr(toVar(pattern.getIdentifier())));
+        dslExpr.addArgument( QueryGenerator.substituteBindingWithQueryParameter(context, pattern.getIdentifier()) );
         return dslExpr;
     }
 
