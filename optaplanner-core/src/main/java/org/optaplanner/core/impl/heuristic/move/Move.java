@@ -86,12 +86,14 @@ public interface Move<Solution_> {
      * Rebases a move from an origin {@link ScoreDirector} to another destination {@link ScoreDirector}
      * which is usually on another {@link Thread} or JVM.
      * The new move returned by this method mutates the entities and problem facts
-     * on the {@link PlanningSolution} of the destination {@link ScoreDirector},
-     * which should be (at least) a deep planning clone of the {@link PlanningSolution}
-     * that this move was generated from.
+     * of the destination {@link PlanningSolution} of the destination {@link ScoreDirector},
+     * That destination {@link PlanningSolution} should be a deep planning clone (or an even deeper clone)
+     * of the origin {@link PlanningSolution} that this move was generated from.
+     * <p>
      * That new move does the exact same change as this move,
      * resulting in the same {@link PlanningSolution} state,
-     * presuming that destination {@link PlanningSolution} was in the same state as the original {@link PlanningSolution}.
+     * presuming that destination {@link PlanningSolution} was in the same state
+     * as the original {@link PlanningSolution} to begin with.
      * <p>
      * Generally speaking, an implementation of this method iterates through every entity and fact instance in this move,
      * translates each one to the destination {@link ScoreDirector} with {@link ScoreDirector#lookUpWorkingObject(Object)}
