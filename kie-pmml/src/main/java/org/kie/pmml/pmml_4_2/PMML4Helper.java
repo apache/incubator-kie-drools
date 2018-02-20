@@ -52,6 +52,10 @@ import org.kie.dmg.pmml.pmml_4_2.descr.RESULTFEATURE;
 import org.kie.dmg.pmml.pmml_4_2.descr.UniformDistribution;
 import org.kie.dmg.pmml.pmml_4_2.descr.Value;
 import org.kie.pmml.pmml_4_2.extensions.AggregationStrategy;
+import org.kie.pmml.pmml_4_2.model.mining.CompoundSegmentPredicate;
+import org.kie.pmml.pmml_4_2.model.mining.PredicateRuleProducer;
+import org.kie.pmml.pmml_4_2.model.mining.SimpleSegmentPredicate;
+import org.kie.pmml.pmml_4_2.model.mining.SimpleSetSegmentPredicate;
 import org.mvel2.templates.CompiledTemplate;
 import org.mvel2.templates.TemplateRegistry;
 import org.mvel2.templates.TemplateRuntime;
@@ -956,11 +960,55 @@ public class PMML4Helper {
         return tok.nextToken();
     }
 
+    public String getPredicate(Attribute attrib) {
+        String predicateText = null;
+        if (attrib.getSimplePredicate() != null) {
+            SimpleSegmentPredicate ssp = new SimpleSegmentPredicate(attrib.getSimplePredicate());
+            predicateText = ssp.getPredicateRule();
+            return "( "+predicateText+" )";
+        } else if (attrib.getSimpleSetPredicate() != null) {
+            SimpleSetSegmentPredicate sssp = new SimpleSetSegmentPredicate(attrib.getSimpleSetPredicate());
+            return sssp.getPredicateRule();
+        } else if (attrib.getCompoundPredicate() != null) {
+            CompoundSegmentPredicate csp = new CompoundSegmentPredicate(attrib.getCompoundPredicate());
+            if (csp.hasSurrogation()) {
+                return getSurrogationPredicateText(csp,-1);
+            } else {
+                return csp.getPredicateRule();
+            }
+        } else if (attrib.getTrue() != null) {
+            return "( 1 == 1 )";
+        } else if (attrib.getFalse() != null) {
+            return "( 1 == 0 )";
+        }
+        throw new IllegalStateException("Unable to determine predicate for Attribute with reason code: "+attrib.getReasonCode());
+    }
+
+    private String getSurrogationPredicateText(CompoundSegmentPredicate predicate, int lastPredicate) {
+        if (lastPredicate >= predicate.getSubpredicateCount()) return "";
+        StringBuilder bldr = new StringBuilder();
+        if (lastPredicate == -1) {
+            bldr.append("(").append(predicate.getPrimaryPredicateRule()).append(")");
+        } else {
+            bldr.append(predicate.getNextPredicateRule(lastPredicate));
+        }
+        String subPredicate = getSurrogationPredicateText(predicate,lastPredicate+1);
+        if (subPredicate != null && !subPredicate.trim().isEmpty()) {
+            bldr.append(" || ").append(subPredicate);
+        }
+        return bldr.toString();
+    }
 
 
     public String[] tokenize( String s, String delimiters ) {
         StringTokenizer tok = new StringTokenizer( s, delimiters );
-        return tokenize( tok );
+        String[] values = tokenize(tok);
+        if ("\"".equals(delimiters)) {
+            for (int c = 0; c < values.length; c++) {
+                values[c] = values[c].trim();
+            }
+        }
+        return values;
     }
 
 

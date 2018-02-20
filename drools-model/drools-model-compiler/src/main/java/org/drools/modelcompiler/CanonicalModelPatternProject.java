@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package org.drools.model;
+package org.drools.modelcompiler;
 
-import org.drools.model.functions.Function1;
+import java.util.function.BiFunction;
 
-public interface Binding {
-    Variable getBoundVariable();
-    Function1 getBindingFunction();
-    Variable getInputVariable();
-    Variable[] getInputVariables();
-    String getReactOn();
-    String[] getWatchedProps();
-    Object eval(Object... args);
+import org.drools.compiler.kie.builder.impl.InternalKieModule;
+import org.drools.compiler.kie.builder.impl.KieModuleKieProject;
+import org.drools.modelcompiler.builder.CanonicalModelKieProject;
+import org.kie.api.builder.KieBuilder;
+
+public class CanonicalModelPatternProject implements KieBuilder.ProjectType {
+    public static final BiFunction<InternalKieModule, ClassLoader, KieModuleKieProject> SUPPLIER = CanonicalModelKieProject.create(true);
 }

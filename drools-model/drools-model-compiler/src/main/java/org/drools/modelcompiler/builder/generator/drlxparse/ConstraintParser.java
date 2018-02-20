@@ -148,9 +148,21 @@ public class ConstraintParser {
                 combo = new BinaryExpr(e, combo, BinaryExpr.Operator.AND );
             }
 
+
+            boolean isBetaNode = false;
+            if(right.getExpression() instanceof  BinaryExpr) {
+                if(((BinaryExpr)right.getExpression()).getRight() instanceof MethodCallExpr) {
+                    isBetaNode = true;
+                }
+            } else if (right.getExpression() instanceof MethodCallExpr) {
+                isBetaNode = true;
+            } else if (right.getExpression() instanceof NameExpr) {
+                isBetaNode = true;
+            }
+
             return new DrlxParseSuccess(patternType, exprId, bindingId, combo, left.getType())
                     .setDecodeConstraintType( decodeConstraintType ).setUsedDeclarations( expressionTyperContext.getUsedDeclarations() )
-                    .setReactOnProperties( expressionTyperContext.getReactOnProperties() ).setLeft( left ).setRight( right );
+                    .setReactOnProperties( expressionTyperContext.getReactOnProperties() ).setLeft( left ).setRight( right ).setBetaNode(isBetaNode);
         }
 
         if ( drlxExpr instanceof UnaryExpr ) {

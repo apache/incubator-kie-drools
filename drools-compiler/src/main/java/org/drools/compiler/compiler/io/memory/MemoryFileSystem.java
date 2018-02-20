@@ -15,18 +15,6 @@
 
 package org.drools.compiler.compiler.io.memory;
 
-import org.drools.compiler.commons.jci.readers.ResourceReader;
-import org.drools.compiler.commons.jci.stores.ResourceStore;
-import org.drools.compiler.compiler.io.File;
-import org.drools.compiler.compiler.io.FileSystem;
-import org.drools.compiler.compiler.io.Folder;
-import org.drools.compiler.compiler.io.Path;
-import org.drools.compiler.compiler.io.Resource;
-import org.drools.core.util.IoUtils;
-import org.drools.core.util.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
@@ -51,6 +39,18 @@ import java.util.jar.JarInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
+
+import org.drools.compiler.commons.jci.readers.ResourceReader;
+import org.drools.compiler.commons.jci.stores.ResourceStore;
+import org.drools.compiler.compiler.io.File;
+import org.drools.compiler.compiler.io.FileSystem;
+import org.drools.compiler.compiler.io.Folder;
+import org.drools.compiler.compiler.io.Path;
+import org.drools.compiler.compiler.io.Resource;
+import org.drools.core.util.IoUtils;
+import org.drools.core.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MemoryFileSystem
     implements
@@ -104,7 +104,7 @@ public class MemoryFileSystem
         if ( lastSlashPos >= 0 ) {
             Folder folder = getFolder( path.substring( 0,
                                                        lastSlashPos ) );
-            String name = decode( path ).substring( lastSlashPos + 1 );
+            String name = decode( path.substring( lastSlashPos + 1 ) );
             return new MemoryFile( this,
                                    name,
                                    folder );

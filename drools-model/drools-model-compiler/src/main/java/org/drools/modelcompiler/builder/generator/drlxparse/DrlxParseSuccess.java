@@ -27,13 +27,14 @@ public class DrlxParseSuccess implements DrlxParseResult {
     private IndexUtil.ConstraintType decodeConstraintType;
     private Collection<String> usedDeclarations = new LinkedHashSet<>();
     private Set<String> reactOnProperties = Collections.emptySet();
-    private String[] watchedProperties;
+    private Set<String> watchedProperties = Collections.emptySet();
 
     private TypedExpression left;
     private TypedExpression right;
     private boolean isStatic;
     private boolean isValidExpression;
     private boolean skipThisAsParam;
+    private boolean isBetaNode;
 
     public DrlxParseSuccess(Class<?> patternType, String exprId, String patternBinding, Expression expr, Class<?> exprType) {
         this.patternType = patternType;
@@ -53,6 +54,11 @@ public class DrlxParseSuccess implements DrlxParseResult {
         return this;
     }
 
+    public DrlxParseSuccess setWatchedProperties(Set<String> watchedProperties ) {
+        this.watchedProperties = watchedProperties;
+        return this;
+    }
+
     public DrlxParseSuccess setReactOnProperties(Set<String> reactOnProperties ) {
         this.reactOnProperties = reactOnProperties;
         return this;
@@ -60,6 +66,25 @@ public class DrlxParseSuccess implements DrlxParseResult {
 
     public DrlxParseSuccess setPatternBindingUnification(Boolean unification) {
         this.isPatternBindingUnification = unification;
+        return this;
+    }
+
+    public DrlxParseSuccess addWatchedProperty( String watchedProperty) {
+        if (watchedProperties.isEmpty()) {
+            watchedProperties = new HashSet<>();
+        }
+        this.watchedProperties.add(watchedProperty);
+        return this;
+    }
+
+    public DrlxParseSuccess addAllWatchedProperties( Collection<String> watchedProperties) {
+        if (watchedProperties.isEmpty()) {
+            return this;
+        }
+        if (this.watchedProperties.isEmpty()) {
+            this.watchedProperties = new HashSet<>();
+        }
+        this.watchedProperties.addAll(watchedProperties);
         return this;
     }
 
@@ -161,12 +186,8 @@ public class DrlxParseSuccess implements DrlxParseResult {
         return reactOnProperties;
     }
 
-    public String[] getWatchedProperties() {
+    public Set<String> getWatchedProperties() {
         return watchedProperties;
-    }
-
-    public void setWatchedProperties(String[] watchedProperties) {
-        this.watchedProperties = watchedProperties;
     }
 
     public TypedExpression getLeft() {
@@ -202,5 +223,14 @@ public class DrlxParseSuccess implements DrlxParseResult {
     @Override
     public <T> T acceptWithReturnValue(ParseResultVisitor<T> visitor) {
         return visitor.onSuccess(this);
+    }
+
+    public DrlxParseSuccess setBetaNode(boolean betaNode) {
+        isBetaNode = betaNode;
+        return this;
+    }
+
+    public boolean isBetaNode() {
+        return isBetaNode;
     }
 }

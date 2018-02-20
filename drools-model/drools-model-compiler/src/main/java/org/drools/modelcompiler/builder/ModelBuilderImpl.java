@@ -42,6 +42,7 @@ import static org.drools.modelcompiler.builder.generator.POJOGenerator.registerT
 public class ModelBuilderImpl extends KnowledgeBuilderImpl {
 
     private final Map<String, PackageModel> packageModels = new HashMap<>();
+    private boolean isPattern = false;
 
     public ModelBuilderImpl() {
         super();
@@ -57,6 +58,10 @@ public class ModelBuilderImpl extends KnowledgeBuilderImpl {
 
     public ModelBuilderImpl(InternalKnowledgeBase kBase, KnowledgeBuilderConfigurationImpl configuration) {
         super(kBase, configuration);
+    }
+
+    public ModelBuilderImpl(boolean isPattern) {
+        this.isPattern = isPattern;
     }
 
     @Override
@@ -126,7 +131,7 @@ public class ModelBuilderImpl extends KnowledgeBuilderImpl {
     protected void generatePOJOs(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
         InternalKnowledgePackage pkg = pkgRegistry.getPackage();
         String pkgName = pkg.getName();
-        PackageModel model = packageModels.computeIfAbsent(pkgName, s -> new PackageModel(pkgName, this.getBuilderConfiguration()));
+        PackageModel model = packageModels.computeIfAbsent(pkgName, s -> new PackageModel(pkgName, this.getBuilderConfiguration(), isPattern));
         model.addImports(pkg.getTypeResolver().getImports());
         generatePOJO(pkg, packageDescr, model);
     }
@@ -136,8 +141,8 @@ public class ModelBuilderImpl extends KnowledgeBuilderImpl {
         validateUniqueRuleNames(packageDescr);
         InternalKnowledgePackage pkg = pkgRegistry.getPackage();
         String pkgName = pkg.getName();
-        PackageModel model = packageModels.computeIfAbsent(pkgName, s -> new PackageModel(pkgName, this.getBuilderConfiguration()));
-        generateModel(this, pkg, packageDescr, model);
+        PackageModel model = packageModels.computeIfAbsent(pkgName, s -> new PackageModel(pkgName, this.getBuilderConfiguration(), isPattern));
+        generateModel(this, pkg, packageDescr, model, isPattern);
     }
 
     public List<PackageModel> getPackageModels() {

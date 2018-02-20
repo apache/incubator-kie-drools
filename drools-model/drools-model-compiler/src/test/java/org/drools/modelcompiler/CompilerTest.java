@@ -150,10 +150,10 @@ public class CompilerTest extends BaseModelTest {
                 "import " + Person.class.getCanonicalName() + ";" +
                 "rule R when\n" +
                 "  $r : Result()\n" +
-                "  $p1 : Person(name == \"Mark\")\n" +
-                "  $p2 : Person(name != \"Mark\", age > $p1.age)\n" +
+                "  $markV : Person(name == \"Mark\")\n" +
+                "  $olderV : Person(name != \"Mark\", age > $markV.age)\n" +
                 "then\n" +
-                "  $r.setValue($p2.getName() + \" is older than \" + $p1.getName());\n" +
+                "  $r.setValue($olderV.getName() + \" is older than \" + $markV.getName());\n" +
                 "end";
 
         KieSession ksession = getKieSession( str );

@@ -31,7 +31,7 @@ public class ModelGeneratorVisitor implements DescrVisitor {
     private final PatternVisitor patternVisitor;
     private final FromCollectVisitor fromCollectVisitor;
 
-    public ModelGeneratorVisitor(RuleContext context, PackageModel packageModel) {
+    public ModelGeneratorVisitor(RuleContext context, PackageModel packageModel, boolean isPattern) {
         accumulateVisitor = new AccumulateVisitor(this, context, packageModel);
         andVisitor = new AndVisitor(this, context);
         conditionalElementVisitor = new ConditionalElementVisitor(context, this);
@@ -39,7 +39,7 @@ public class ModelGeneratorVisitor implements DescrVisitor {
         evalVisitor = new EvalVisitor(context, packageModel);
         fromVisitor = new FromVisitor(context, packageModel);
         namedConsequenceVisitor = new NamedConsequenceVisitor(context, packageModel);
-        patternVisitor = new PatternVisitor(context, packageModel);
+        patternVisitor = new PatternVisitor(context, packageModel, isPattern);
         fromCollectVisitor = new FromCollectVisitor(this);
     }
 

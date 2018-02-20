@@ -20,11 +20,16 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import org.drools.compiler.lang.descr.AnnotationDescr;
+import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.index.IndexUtil;
 import org.drools.core.util.index.IndexUtil.ConstraintType;
@@ -329,10 +334,17 @@ public class DrlxParseUtil {
                 if (e.fieldToResolve.equals( bindingId )) {
                     continue;
                 }
-                TypedExpression te = nameExprToMethodCallExpr(e.fieldToResolve, previousClass, null);
-                Class<?> returnType = te.getType();
-                methodCall.add(te.getExpression());
-                previousClass = returnType;
+                if (previousClass == null) {
+                    previousClass = context.getDeclarationById( e.fieldToResolve )
+                            .map( DeclarationSpec::getDeclarationClass )
+                            .orElseThrow( () -> new RuntimeException( "Unknown field: " + e.fieldToResolve ) );
+                    methodCall.add(e.expression);
+                } else {
+                    TypedExpression te = nameExprToMethodCallExpr( e.fieldToResolve, previousClass, null );
+                    Class<?> returnType = te.getType();
+                    methodCall.add( te.getExpression() );
+                    previousClass = returnType;
+                }
             } else if (e.expression instanceof MethodCallExpr) {
                 Class<?> returnType = returnTypeOfMethodCallExpr(context, typeResolver, (MethodCallExpr) e.expression, previousClass, null);
                 MethodCallExpr cloned = ((MethodCallExpr) e.expression.clone()).removeScope();
@@ -489,5 +501,10 @@ public class DrlxParseUtil {
             operators.addAll(ModelGenerator.temporalOperators);
             return operators;
         }
+    }
+
+    public static List<String> getPatternListenedProperties( PatternDescr pattern) {
+        AnnotationDescr watchAnn = pattern != null ? pattern.getAnnotation("watch") : null;
+        return watchAnn == null ? Collections.emptyList() : Stream.of(watchAnn.getValue().toString().split(",")).map(String::trim).collect( Collectors.toList() );
     }
 }

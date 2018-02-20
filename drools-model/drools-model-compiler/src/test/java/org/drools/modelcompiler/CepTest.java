@@ -419,7 +419,7 @@ public class CepTest extends BaseModelTest {
             FactType stockFactType = ksession.getKieBase().getFactType("org.drools.compiler", "StockFact");
             DROO = stockFactType.newInstance();
             stockFactType.set(DROO, "company", "DROO");
-        } else if (testRunType == RUN_TYPE.USE_CANONICAL_MODEL) {
+        } else if (testRunType == RUN_TYPE.FLOW_DSL) {
             ClassLoader cl = ((KnowledgeBaseImpl) ksession.getKieBase()).getRootClassLoader();
             Class<?> stockFactClass = cl.loadClass("org.drools.compiler.StockFact");
             DROO = stockFactClass.newInstance();

@@ -2,16 +2,19 @@ package org.drools.modelcompiler.builder.generator.operatorspec;
 
 import org.drools.javaparser.ast.drlx.expr.PointFreeExpr;
 import org.drools.javaparser.ast.expr.Expression;
+import org.drools.javaparser.ast.expr.LiteralExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.javaparser.ast.expr.UnaryExpr;
 import org.drools.model.functions.Operator;
+import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
+import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 
 public class CustomOperatorSpec implements OperatorSpec {
     public static final CustomOperatorSpec INSTANCE = new CustomOperatorSpec();
 
-    public Expression getExpression( PointFreeExpr pointFreeExpr, TypedExpression left ) {
+    public Expression getExpression( RuleContext context, PointFreeExpr pointFreeExpr, TypedExpression left ) {
         MethodCallExpr methodCallExpr = new MethodCallExpr( null, "eval" );
 
         String opName = pointFreeExpr.getOperator().asString();
@@ -26,7 +29,12 @@ public class CustomOperatorSpec implements OperatorSpec {
 
         methodCallExpr.addArgument( left.getExpression() );
         for (Expression rightExpr : pointFreeExpr.getRight()) {
-            methodCallExpr.addArgument( rightExpr );
+            if ( rightExpr instanceof LiteralExpr ) {
+                methodCallExpr.addArgument( rightExpr );
+            } else {
+                TypedExpression typedExpression = DrlxParseUtil.toMethodCallWithClassCheck(context, rightExpr, null, null, context.getTypeResolver());
+                methodCallExpr.addArgument( typedExpression.getExpression() );
+            }
         }
 
         return pointFreeExpr.isNegated() ?
