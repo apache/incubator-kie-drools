@@ -519,4 +519,17 @@ public class DrlxParseUtil {
             return pattern.map(Stream::of).orElse(Stream.empty());
         }).findFirst();
     }
+
+    public static Optional<MethodCallExpr> findLastPattern(List<Expression> expressions) {
+        final Stream<MethodCallExpr> patterns = expressions.stream().flatMap((Expression e) -> {
+            final List<MethodCallExpr> pattern = e.findAll(MethodCallExpr.class, expr -> expr.getName().asString().equals("pattern"));
+            return pattern.stream();
+        });
+        final List<MethodCallExpr> collect = patterns.collect(Collectors.toList());
+        if (collect.isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(collect.get(collect.size() - 1));
+        }
+    }
 }
