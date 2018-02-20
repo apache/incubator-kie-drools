@@ -100,16 +100,7 @@ public final class PartitionChangeMove<Solution_> extends AbstractMove<Solution_
     }
 
     @Override
-    public Collection<? extends Object> getPlanningEntities() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Collection<? extends Object> getPlanningValues() {
-        throw new UnsupportedOperationException();
-    }
-
-    public PartitionChangeMove<Solution_> rebase(InnerScoreDirector<Solution_> destinationScoreDirector) {
+    public PartitionChangeMove<Solution_> rebase(ScoreDirector<Solution_> destinationScoreDirector) {
         Map<GenuineVariableDescriptor<Solution_>, List<Pair<Object, Object>>> destinationChangeMap
                 = new LinkedHashMap<>(changeMap.size());
         for (Map.Entry<GenuineVariableDescriptor<Solution_>, List<Pair<Object, Object>>> entry : changeMap.entrySet()) {
@@ -139,6 +130,16 @@ public final class PartitionChangeMove<Solution_> extends AbstractMove<Solution_
             destinationChangeMap.put(variableDescriptor, destinationPairList);
         }
         return new PartitionChangeMove<>(destinationChangeMap, partIndex);
+    }
+
+    @Override
+    public Collection<? extends Object> getPlanningEntities() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Collection<? extends Object> getPlanningValues() {
+        throw new UnsupportedOperationException();
     }
 
     @Override

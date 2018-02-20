@@ -82,6 +82,28 @@ public interface Move<Solution_> {
      */
     Move<Solution_> doMove(ScoreDirector<Solution_> scoreDirector);
 
+    /**
+     * Rebases a move from an origin {@link ScoreDirector} to another destination {@link ScoreDirector}
+     * which is usually on another {@link Thread} or JVM.
+     * The new move returned by this method mutates the entities and problem facts
+     * on the {@link PlanningSolution} of the destination {@link ScoreDirector},
+     * which should be (at least) a deep planning clone of the {@link PlanningSolution}
+     * that this move was generated from.
+     * That new move does the exact same change as this move,
+     * resulting in the same {@link PlanningSolution} state,
+     * presuming that destination {@link PlanningSolution} was in the same state as the original {@link PlanningSolution}.
+     * <p>
+     * Generally speaking, an implementation of this method iterates through every entity and fact instance in this move,
+     * translates each one to the destination {@link ScoreDirector} with {@link ScoreDirector#lookUpWorkingObject(Object)}
+     * and creates a new move instance of the same move type, using those translated instances.
+     * @param destinationScoreDirector never null, the
+     * @return never null,
+     */
+    default Move<Solution_> rebase(ScoreDirector<Solution_> destinationScoreDirector) {
+        throw new UnsupportedOperationException("The custom move class (" + getClass()
+                + ") doesn't implement the rebase() method, so multithreaded solving is impossible.");
+    }
+
     // ************************************************************************
     // Introspection methods
     // ************************************************************************

@@ -78,6 +78,13 @@ public class ChangeMove<Solution_> extends AbstractMove<Solution_> {
         scoreDirector.afterVariableChanged(variableDescriptor, entity);
     }
 
+    @Override
+    public ChangeMove<Solution_> rebase(ScoreDirector<Solution_> destinationScoreDirector) {
+        return new ChangeMove<>(destinationScoreDirector.lookUpWorkingObject(entity),
+                variableDescriptor,
+                destinationScoreDirector.lookUpWorkingObject(toPlanningValue));
+    }
+
     // ************************************************************************
     // Introspection methods
     // ************************************************************************

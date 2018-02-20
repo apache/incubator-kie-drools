@@ -138,7 +138,7 @@ public interface ScoreDirector<Solution_> extends AutoCloseable {
     /**
      * Translates an entity or fact instance (often from another {@link Thread} or JVM)
      * to this {@link ScoreDirector}'s internal working instance.
-     * Useful during {@link Move} rebasing and in a {@link ProblemFactChange}.
+     * Useful for {@link Move#rebase(ScoreDirector)} and in a {@link ProblemFactChange}.
      * <p>
      * Matching is determined by the {@link LookUpStrategyType} on {@link PlanningSolution}.
      * Matching uses a {@link PlanningId} by default.
