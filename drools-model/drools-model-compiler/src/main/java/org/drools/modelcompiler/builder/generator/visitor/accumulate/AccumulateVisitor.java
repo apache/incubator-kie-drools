@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.drools.compiler.lang.descr.AccumulateDescr;
+import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.rule.builder.util.AccumulateUtil;
 import org.drools.core.util.IoUtils;
@@ -65,6 +66,43 @@ public abstract class AccumulateVisitor {
         this.context = context;
         this.modelGeneratorVisitor = modelGeneratorVisitor;
         this.packageModel = packageModel;
+    }
+
+    public void visit(AccumulateDescr descr, PatternDescr basePattern) {
+        final MethodCallExpr accumulateDSL = new MethodCallExpr(null, "accumulate");
+        context.addExpression(accumulateDSL);
+        final MethodCallExpr accumulateExprs = new MethodCallExpr(null, "and");
+        accumulateDSL.addArgument(accumulateExprs);
+
+        context.pushExprPointer(accumulateExprs::addArgument);
+
+        BaseDescr input = descr.getInputPattern() == null ? descr.getInput() : descr.getInputPattern();
+        boolean inputPatternHasConstraints = (input instanceof PatternDescr) && (!((PatternDescr) input).getConstraint().getDescrs().isEmpty());
+        input.accept(modelGeneratorVisitor);
+
+        if (accumulateExprs.getArguments().isEmpty()) {
+            accumulateDSL.remove(accumulateExprs);
+        } else if (accumulateExprs.getArguments().size() == 1) {
+            accumulateDSL.setArgument(0, accumulateExprs.getArguments().get(0));
+        }
+
+        if (!descr.getFunctions().isEmpty()) {
+            for (AccumulateDescr.AccumulateFunctionCallDescr function : descr.getFunctions()) {
+                final Optional<NewBinding> optNewBinding = visit(context, function, accumulateDSL, basePattern, inputPatternHasConstraints);
+                processNewBinding(optNewBinding);
+            }
+        } else if (descr.getFunctions().isEmpty() && descr.getInitCode() != null) {
+            // LEGACY: Accumulate with inline custom code
+            if (input instanceof PatternDescr) {
+                visitAccInlineCustomCode(context, descr, accumulateDSL, basePattern, (PatternDescr) input);
+            } else {
+                throw new UnsupportedOperationException("I was expecting input to be of type PatternDescr. " + input);
+            }
+        } else {
+            throw new UnsupportedOperationException("Unknown type of Accumulate.");
+        }
+
+        postVisit();
     }
 
     protected Optional<AccumulateVisitorPatternDSL.NewBinding> visit(RuleContext context, AccumulateDescr.AccumulateFunctionCallDescr function, MethodCallExpr accumulateDSL, PatternDescr basePattern, boolean inputPatternHasConstraints) {
@@ -160,8 +198,6 @@ public abstract class AccumulateVisitor {
         context.popExprPointer();
         return newBinding;
     }
-
-    public abstract void visit(AccumulateDescr descr, PatternDescr basePattern);
 
     protected AccumulateFunction getAccumulateFunction(AccumulateDescr.AccumulateFunctionCallDescr function, Class<?> methodCallExprType) {
         final String accumulateFunctionName = AccumulateUtil.getFunctionName(() -> methodCallExprType, function.getFunction());
