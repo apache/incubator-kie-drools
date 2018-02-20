@@ -37,6 +37,7 @@ import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
+import org.drools.modelcompiler.builder.generator.expression.AbstractExpressionBuilder;
 import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
 import org.drools.modelcompiler.util.StringUtil;
 import org.kie.api.runtime.rule.AccumulateFunction;
@@ -51,6 +52,7 @@ public abstract class AccumulateVisitor {
     protected final RuleContext context;
     protected final PackageModel packageModel;
     protected final ModelGeneratorVisitor modelGeneratorVisitor;
+    protected AbstractExpressionBuilder expressionBuilder;
 
     public AccumulateVisitor(RuleContext context, ModelGeneratorVisitor modelGeneratorVisitor, PackageModel packageModel) {
         this.context = context;

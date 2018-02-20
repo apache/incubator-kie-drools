@@ -35,6 +35,7 @@ public class AccumulateVisitorFlowDSL extends AccumulateVisitor {
 
     public AccumulateVisitorFlowDSL(ModelGeneratorVisitor modelGeneratorVisitor, RuleContext context, PackageModel packageModel) {
         super(context, modelGeneratorVisitor, packageModel);
+        expressionBuilder = new FlowExpressionBuilder(context);
     }
 
     public void visit(AccumulateDescr descr, PatternDescr basePattern) {
@@ -127,7 +128,7 @@ public class AccumulateVisitorFlowDSL extends AccumulateVisitor {
             DrlxParseSuccess result = new DrlxParseSuccess(accumulateFunctionResultType, "", rootNodeName, withThis, accumulateFunctionResultType)
                     .setLeft(typedExpression)
                     .setExprBinding(bindExpressionVariable);
-            context.addExpression(new FlowExpressionBuilder(context).buildBinding(result));
+            context.addExpression(expressionBuilder.buildBinding(result));
             context.addDeclarationReplacing(new DeclarationSpec(bindExpressionVariable, methodCallExprType));
             functionDSL.addArgument(new NameExpr(toVar(bindExpressionVariable)));
 
