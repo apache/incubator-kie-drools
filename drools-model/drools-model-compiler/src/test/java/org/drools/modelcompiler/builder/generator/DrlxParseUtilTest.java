@@ -22,7 +22,7 @@ import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getExpressionType;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class DrlxParseUtilTest {
 

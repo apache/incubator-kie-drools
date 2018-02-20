@@ -21,7 +21,7 @@ import org.drools.modelcompiler.builder.generator.visitor.pattern.PatternVisitor
 
 public class ModelGeneratorVisitor implements DescrVisitor {
 
-    private final AccumulateVisitor accumulateVisitor;
+    private final AccumulateVisitorPatternDSL accumulateVisitor;
     private final AndVisitor andVisitor;
     private final ConditionalElementVisitor conditionalElementVisitor;
     private final OrVisitor orVisitor;
@@ -32,7 +32,7 @@ public class ModelGeneratorVisitor implements DescrVisitor {
     private final FromCollectVisitor fromCollectVisitor;
 
     public ModelGeneratorVisitor(RuleContext context, PackageModel packageModel, boolean isPattern) {
-        accumulateVisitor = new AccumulateVisitor(this, context, packageModel);
+        accumulateVisitor = new AccumulateVisitorPatternDSL(this, context, packageModel);
         andVisitor = new AndVisitor(this, context);
         conditionalElementVisitor = new ConditionalElementVisitor(context, this);
         orVisitor = new OrVisitor(this, context);
