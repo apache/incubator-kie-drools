@@ -57,17 +57,10 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.expression.FlowExpressionBuilder.BIND_CALL;
 
-public class AccumulateVisitorPatternDSL implements AccumulateVisitor {
-
-    private final RuleContext context;
-    private final PackageModel packageModel;
-
-    private final ModelGeneratorVisitor modelGeneratorVisitor;
+public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
 
     public AccumulateVisitorPatternDSL(ModelGeneratorVisitor modelGeneratorVisitor, RuleContext context, PackageModel packageModel) {
-        this.modelGeneratorVisitor = modelGeneratorVisitor;
-        this.context = context;
-        this.packageModel = packageModel;
+        super(context, modelGeneratorVisitor, packageModel);
     }
 
     public void visit(AccumulateDescr descr, PatternDescr basePattern) {

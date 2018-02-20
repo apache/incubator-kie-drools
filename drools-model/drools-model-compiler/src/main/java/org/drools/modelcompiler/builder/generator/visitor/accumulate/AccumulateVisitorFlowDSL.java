@@ -58,17 +58,10 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.ModelGenerator.BIND_AS_CALL;
 import static org.drools.modelcompiler.builder.generator.expression.FlowExpressionBuilder.BIND_CALL;
 
-public class AccumulateVisitorFlowDSL implements AccumulateVisitor {
-
-    private final RuleContext context;
-    private final PackageModel packageModel;
-
-    private final ModelGeneratorVisitor modelGeneratorVisitor;
+public class AccumulateVisitorFlowDSL extends AccumulateVisitor {
 
     public AccumulateVisitorFlowDSL(ModelGeneratorVisitor modelGeneratorVisitor, RuleContext context, PackageModel packageModel) {
-        this.modelGeneratorVisitor = modelGeneratorVisitor;
-        this.context = context;
-        this.packageModel = packageModel;
+        super(context, modelGeneratorVisitor, packageModel);
     }
 
     public void visit(AccumulateDescr descr, PatternDescr basePattern) {
@@ -103,24 +96,7 @@ public class AccumulateVisitorFlowDSL implements AccumulateVisitor {
         } else {
             throw new UnsupportedOperationException("Unknown type of Accumulate.");
         }
-
-        // Remove eventual binding expression created in pattern
-        // Re-add them as base expressions
-        final List<Node> bindExprs = accumulateDSL
-                .getChildNodes()
-                .stream()
-                .filter(a -> a.toString().startsWith("bind"))
-                .collect( toList());
-
-        for (Node bindExpr : bindExprs) {
-            accumulateDSL.remove(bindExpr);
-        }
-
-        context.popExprPointer();
-
-        for (Node bindExpr : bindExprs) {
-            context.getExpressions().add(0, (MethodCallExpr) bindExpr);
-        }
+        removeBindExpressionAndAddThemAsBaseExpr(accumulateDSL);
     }
 
     /*
@@ -386,6 +362,26 @@ public class AccumulateVisitorFlowDSL implements AccumulateVisitor {
 
     private List<String> collectNamesInBlock( RuleContext context2, BlockStmt block ) {
         return block.findAll(NameExpr.class, n -> context2.getAvailableBindings().contains(n.getNameAsString())).stream().map( NameExpr::getNameAsString ).distinct().collect(toList());
+    }
+
+    private void removeBindExpressionAndAddThemAsBaseExpr(MethodCallExpr accumulateDSL) {
+        // Remove eventual binding expression created in pattern
+        // Re-add them as base expressions
+        final List<Node> bindExprs = accumulateDSL
+                .getChildNodes()
+                .stream()
+                .filter(a -> a.toString().startsWith("bind"))
+                .collect( toList());
+
+        for (Node bindExpr : bindExprs) {
+            accumulateDSL.remove(bindExpr);
+        }
+
+        context.popExprPointer();
+
+        for (Node bindExpr : bindExprs) {
+            context.getExpressions().add(0, (MethodCallExpr) bindExpr);
+        }
     }
 
 }
