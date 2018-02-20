@@ -23,6 +23,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.assertj.core.api.Assertions;
 import org.drools.core.ClockType;
+import org.drools.core.rule.QueryImpl;
 import org.drools.model.BitMask;
 import org.drools.model.DSL;
 import org.drools.model.Global;
@@ -61,10 +62,8 @@ import static org.drools.model.PatternDSL.after;
 import static org.drools.model.PatternDSL.alphaIndexedBy;
 import static org.drools.model.PatternDSL.and;
 import static org.drools.model.PatternDSL.betaIndexedBy;
-import static org.drools.model.PatternDSL.bind;
 import static org.drools.model.PatternDSL.declarationOf;
 import static org.drools.model.PatternDSL.execute;
-import static org.drools.model.PatternDSL.expr;
 import static org.drools.model.PatternDSL.globalOf;
 import static org.drools.model.PatternDSL.not;
 import static org.drools.model.PatternDSL.on;
@@ -92,19 +91,17 @@ public class PatternDSLTest {
 
         Rule rule = rule( "beta" )
                 .build(
-                        pattern(markV,
-                                expr("exprA", p -> p.getName().equals( "Mark" ),
+                        pattern(markV)
+                                .expr("exprA", p -> p.getName().equals( "Mark" ),
                                         alphaIndexedBy( String.class, Index.ConstraintType.EQUAL, 1, p -> p.getName(), "Mark" ),
-                                        reactOn( "name", "age" ))
-                        ),
-                        pattern(olderV,
-                                expr("exprB", p -> !p.getName().equals("Mark"),
+                                        reactOn( "name", "age" )),
+                        pattern(olderV)
+                                .expr("exprB", p -> !p.getName().equals("Mark"),
                                         alphaIndexedBy( String.class, Index.ConstraintType.NOT_EQUAL, 1, p -> p.getName(), "Mark" ),
-                                        reactOn( "name" )),
-                                expr("exprC", markV, (p1, p2) -> p1.getAge() > p2.getAge(),
+                                        reactOn( "name" ))
+                                .expr("exprC", markV, (p1, p2) -> p1.getAge() > p2.getAge(),
                                         betaIndexedBy( int.class, Index.ConstraintType.GREATER_THAN, 0, p -> p.getAge(), p -> p.getAge() ),
-                                        reactOn( "age" ))
-                        ),
+                                        reactOn( "age" )),
                         on(olderV, markV).execute((p1, p2) -> result.setValue( p1.getName() + " is older than " + p2.getName()))
                 );
 
@@ -144,20 +141,19 @@ public class PatternDSLTest {
 
         Rule rule = rule( "beta" )
                 .build(
-                        pattern(markV,
-                                expr("exprA", p -> p.getName().equals( "Mark" ),
+                        pattern(markV)
+                                .expr("exprA", p -> p.getName().equals( "Mark" ),
                                         alphaIndexedBy( String.class, Index.ConstraintType.EQUAL, 1, p -> p.getName(), "Mark" ),
-                                        reactOn( "name", "age" )),
-                                bind(markAge, p -> p.getAge(), reactOn("age"))
+                                        reactOn( "name", "age" ))
+                                .bind(markAge, p -> p.getAge(), reactOn("age")
                         ),
-                        pattern(olderV,
-                                expr("exprB", p -> !p.getName().equals("Mark"),
+                        pattern(olderV)
+                                .expr("exprB", p -> !p.getName().equals("Mark"),
                                         alphaIndexedBy( String.class, Index.ConstraintType.NOT_EQUAL, 1, p -> p.getName(), "Mark" ),
-                                        reactOn( "name" )),
-                                expr("exprC", markAge, (p1, age) -> p1.getAge() > age,
+                                        reactOn( "name" ))
+                                .expr("exprC", markAge, (p1, age) -> p1.getAge() > age,
                                         betaIndexedBy( int.class, Index.ConstraintType.GREATER_THAN, 0, p -> p.getAge(), int.class::cast ),
-                                        reactOn( "age" ))
-                        ),
+                                        reactOn( "age" )),
                         on(olderV, markV).execute((drools, p1, p2) -> drools.insert(p1.getName() + " is older than " + p2.getName()))
                 );
 
@@ -199,13 +195,13 @@ public class PatternDSLTest {
         Rule rule = rule( "or" )
                 .build(
                         or(
-                                pattern( personV, expr("exprA", p -> p.getName().equals("Mark")) ),
+                                pattern( personV ).expr("exprA", p -> p.getName().equals("Mark")),
                                 and(
-                                        pattern( markV, expr("exprA", p -> p.getName().equals("Mark"))),
-                                        pattern( personV, expr("exprB", markV, (p1, p2) -> p1.getAge() > p2.getAge()) )
+                                        pattern( markV ).expr("exprA", p -> p.getName().equals("Mark")),
+                                        pattern( personV ).expr("exprB", markV, (p1, p2) -> p1.getAge() > p2.getAge())
                                 )
                         ),
-                        pattern( nameV, expr("exprC", personV, (s, p) -> s.equals( p.getName() )) ),
+                        pattern( nameV ).expr("exprC", personV, (s, p) -> s.equals( p.getName() )),
                         on(nameV).execute( result::setValue )
                 );
 
@@ -232,7 +228,7 @@ public class PatternDSLTest {
         Rule rule = rule("not")
                 .build(
                         pattern( oldestV ),
-                        not( pattern( otherV, expr( "exprA", oldestV, (p1, p2) -> p1.getAge() > p2.getAge()) ) ),
+                        not( pattern( otherV ).expr( "exprA", oldestV, (p1, p2) -> p1.getAge() > p2.getAge()) ),
                         on(oldestV).execute(p -> result.setValue( "Oldest person is " + p.getName()))
                 );
 
@@ -259,7 +255,7 @@ public class PatternDSLTest {
 
         Rule rule = rule("accumulate")
                 .build(
-                        accumulate( pattern( person, expr(p -> p.getName().startsWith("M")), bind(age, Person::getAge) ),
+                        accumulate( pattern( person ).expr(p -> p.getName().startsWith("M")).bind(age, Person::getAge),
                                 accFunction(org.drools.core.base.accumulators.IntegerSumAccumulateFunction.class, age).as(resultSum),
                                 accFunction(org.drools.core.base.accumulators.AverageAccumulateFunction.class, age).as(resultAvg)),
                         on(resultSum, resultAvg)
@@ -290,15 +286,13 @@ public class PatternDSLTest {
         Rule rule = rule("R").build(
                 accumulate(
                         and(
-                            pattern(var_$c,
-                                    expr("$expr$1$", (_this) -> _this.getAge() < 10,
+                            pattern(var_$c)
+                                    .expr("$expr$1$", (_this) -> _this.getAge() < 10,
                                             alphaIndexedBy(int.class, Index.ConstraintType.LESS_THAN, 0, _this -> _this.getAge(), 10),
-                                            reactOn("age"))
-                            ),
-                            pattern(var_$a,
-                                    expr("$expr$2$", var_$c, (_this, $c) -> _this.getName().equals($c.getParent()), reactOn("name")),
-                                    bind(var_$expr$5$, var_$c, ($a, $c) -> $a.getAge() + $c.getAge())
-                            )
+                                            reactOn("age")),
+                            pattern(var_$a)
+                                    .expr("$expr$2$", var_$c, (_this, $c) -> _this.getName().equals($c.getParent()), reactOn("name"))
+                                    .bind(var_$expr$5$, var_$c, ($a, $c) -> $a.getAge() + $c.getAge())
                         ),
                         accFunction(org.drools.core.base.accumulators.IntegerSumAccumulateFunction.class, var_$expr$5$).as(var_$parentAge)),
                 on(var_$parentAge).execute((drools, $parentAge) -> {
@@ -326,7 +320,7 @@ public class PatternDSLTest {
         Variable<Person> personV = DSL.declarationOf(  Person.class );
 
         Query2Def<Person, Integer> qdef = query( "olderThan", Person.class, Integer.class );
-        Query query = qdef.build( pattern( qdef.getArg1(), expr("exprA", qdef.getArg2(), ( p, a) -> p.getAge() > a) ) );
+        Query query = qdef.build( pattern( qdef.getArg1() ).expr("exprA", qdef.getArg2(), ( p, a) -> p.getAge() > a) );
 
         Variable<Person> personVRule = DSL.declarationOf(  Person.class );
         Rule rule = rule("R")
@@ -358,10 +352,9 @@ public class PatternDSLTest {
         Query2Def<String, String> query2Def = query( "isRelatedTo2", String.class, String.class );
 
         Query query2 = query2Def.build(
-                pattern( relV,
-                        expr("exprA", query2Def.getArg1(), ( r, s) -> r.getStart().equals( s )),
-                        expr("exprB", query2Def.getArg2(), ( r, e) -> r.getEnd().equals( e ))
-                )
+                pattern( relV )
+                        .expr("exprA", query2Def.getArg1(), ( r, s) -> r.getStart().equals( s ))
+                        .expr("exprB", query2Def.getArg2(), ( r, e) -> r.getEnd().equals( e ))
         );
 
         Query query1 = query1Def.build( query2Def.call(query1Def.getArg1(), query1Def.getArg2()) );
@@ -381,25 +374,82 @@ public class PatternDSLTest {
     }
 
     @Test
+    public void testQueryInvokingQuery2() {
+        final org.drools.model.Query2Def<java.lang.String, java.lang.String> queryDef_isRelatedTo2 = query("isRelatedTo2",
+                java.lang.String.class,
+                "x",
+                java.lang.String.class,
+                "y");
+
+        final org.drools.model.Query2Def<java.lang.String, java.lang.String> queryDef_isRelatedTo = query("isRelatedTo",
+                java.lang.String.class,
+                "x",
+                java.lang.String.class,
+                "y");
+
+        org.drools.model.Query isRelatedTo_build = queryDef_isRelatedTo.build(queryDef_isRelatedTo2.call(true,
+                queryDef_isRelatedTo.getArg1(),
+                queryDef_isRelatedTo.getArg2()));
+
+        final org.drools.model.Variable<org.drools.modelcompiler.domain.Relationship> var_$pattern_Relationship$4$ = declarationOf(org.drools.modelcompiler.domain.Relationship.class,
+                "$pattern_Relationship$4$");
+
+        org.drools.model.Query isRelatedTo2_build = queryDef_isRelatedTo2.build(
+                pattern(var_$pattern_Relationship$4$)
+                .expr("$expr$63$",
+                        queryDef_isRelatedTo2.getArg1(),
+                        (_this, x) -> org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getStart(),
+                                x),
+                        betaIndexedBy(java.lang.String.class,
+                                org.drools.model.Index.ConstraintType.EQUAL,
+                                0,
+                                _this -> _this.getStart(),
+                                x -> x),
+                        reactOn("start"))
+                .expr("$expr$64$",
+                        queryDef_isRelatedTo2.getArg2(),
+                        (_this, y) -> org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getEnd(),
+                                y),
+                        betaIndexedBy(java.lang.String.class,
+                                org.drools.model.Index.ConstraintType.EQUAL,
+                                1,
+                                _this -> _this.getEnd(),
+                                y -> y),
+                        reactOn("end")));
+
+        Model model = new ModelImpl().addQuery( isRelatedTo_build ).addQuery( isRelatedTo2_build );
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
+
+        KieSession ksession = kieBase.newKieSession();
+
+        ksession.insert( new Relationship( "A", "B" ) );
+        ksession.insert( new Relationship( "B", "C" ) );
+
+        QueryResults results = ksession.getQueryResults( "isRelatedTo", "A", "B" );
+
+        assertEquals( 1, results.size() );
+        String paramName = ((QueryImpl ) ksession.getKieBase().getQuery("defaultpkg", "isRelatedTo" )).getParameters()[1].getIdentifier();
+        assertEquals("B", results.iterator().next().get(paramName));
+    }
+
+    @Test
     public void testNegatedAfter() throws Exception {
         Variable<StockTick> var_$a = declarationOf(StockTick.class, "$a");
         Variable<StockTick> var_$b = declarationOf(StockTick.class, "$b");
 
         Rule rule = rule("R").build(
-                pattern(var_$a,
-                        expr("$expr$1$",
+                pattern(var_$a)
+                        .expr("$expr$1$",
                                 (_this) -> org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getCompany(), "DROO"),
                                 alphaIndexedBy(String.class, Index.ConstraintType.EQUAL, 0, _this -> _this.getCompany(), "DROO"),
-                                reactOn("company"))
-                ),
-                pattern(var_$b,
-                        expr("$expr$2$", (_this) -> org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getCompany(), "ACME"),
-                                alphaIndexedBy(String.class, Index.ConstraintType.EQUAL, 0, _this -> _this.getCompany(), "ACME"),
                                 reactOn("company")),
-                        expr("$expr$3$",
+                pattern(var_$b)
+                        .expr("$expr$2$", (_this) -> org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getCompany(), "ACME"),
+                                alphaIndexedBy(String.class, Index.ConstraintType.EQUAL, 0, _this -> _this.getCompany(), "ACME"),
+                                reactOn("company"))
+                        .expr("$expr$3$",
                                 var_$a,
-                                not(after(5, java.util.concurrent.TimeUnit.SECONDS, 8, java.util.concurrent.TimeUnit.SECONDS)))
-                ),
+                                not(after(5, java.util.concurrent.TimeUnit.SECONDS, 8, java.util.concurrent.TimeUnit.SECONDS))),
                 execute(() -> {
                     System.out.println("fired");
                 }));
@@ -434,11 +484,10 @@ public class PatternDSLTest {
         Rule rule = rule( "beta" )
                 .build(
                         pattern( resultV ),
-                        pattern(markV,
-                                expr("exprA", p -> p.getName().equals( "Mark" ),
+                        pattern(markV)
+                                .expr("exprA", p -> p.getName().equals( "Mark" ),
                                         alphaIndexedBy( String.class, Index.ConstraintType.EQUAL, 1, p -> p.getName(), "Mark" ),
-                                        reactOn( "name", "age" ))
-                        ),
+                                        reactOn( "name", "age" )),
                         when("cond1", markV, p -> p.getAge() < 30).then(
                                 on(markV, resultV).breaking().execute((p, r) -> r.addValue( "Found young " + p.getName()))
                         ).elseWhen("cond2", markV, p -> p.getAge() > 50).then(
@@ -446,14 +495,13 @@ public class PatternDSLTest {
                         ).elseWhen().then(
                                 on(markV, resultV).breaking().execute((p, r) -> r.addValue( "Found " + p.getName()))
                         ),
-                        pattern(olderV,
-                                expr("exprB", p -> !p.getName().equals("Mark"),
+                        pattern(olderV)
+                                .expr("exprB", p -> !p.getName().equals("Mark"),
                                         alphaIndexedBy( String.class, Index.ConstraintType.NOT_EQUAL, 1, p -> p.getName(), "Mark" ),
-                                        reactOn( "name" )),
-                                expr("exprC", markV, (p1, p2) -> p1.getAge() > p2.getAge(),
+                                        reactOn( "name" ))
+                                .expr("exprC", markV, (p1, p2) -> p1.getAge() > p2.getAge(),
                                         betaIndexedBy( int.class, Index.ConstraintType.GREATER_THAN, 0, p -> p.getAge(), p -> p.getAge() ),
-                                        reactOn( "age" ))
-                        ),
+                                        reactOn( "age" )),
                         on(olderV, markV, resultV).execute((p1, p2, r) -> r.addValue( p1.getName() + " is older than " + p2.getName()))
                 );
 
@@ -481,11 +529,11 @@ public class PatternDSLTest {
         BitMask mask_$p = BitMask.getPatternMask(org.drools.modelcompiler.domain.Person.class, "age");
 
         Rule rule = rule("R").build(
-                pattern(var_$p,
-                    expr("$expr$1$", (_this) -> _this.getAge() < 50,
+                pattern(var_$p)
+                    .expr("$expr$1$", (_this) -> _this.getAge() < 50,
                             alphaIndexedBy(int.class, Index.ConstraintType.LESS_THAN, 0, _this -> _this.getAge(), 50),
                             reactOn("age"))
-                ).watch("!age"),
+                .watch("!age"),
                 on(var_$p).execute((drools, $p) -> {
                     $p.setAge($p.getAge() + 1);
                     drools.update($p, mask_$p);
@@ -514,7 +562,7 @@ public class PatternDSLTest {
                 .build(
                         pattern(manV),
                         pattern(wifeV),
-                        pattern(childV, expr("exprA", c -> c.getAge() > 10)),
+                        pattern(childV).expr("exprA", c -> c.getAge() > 10),
                         pattern(toyV),
                         on(toyV, listG).execute( (t, l) -> l.add(t.getName()) )
                 );

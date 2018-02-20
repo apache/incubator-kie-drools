@@ -86,7 +86,7 @@ public class ViewPatternBuilder implements ViewBuilder {
 
     private static Condition ruleItem2Condition(RuleItem ruleItem) {
         if ( ruleItem instanceof PatternDefImpl ) {
-            PatternDefImpl patternDef = ( PatternDefImpl ) ruleItem;
+            PatternDefImpl<?> patternDef = ( PatternDefImpl ) ruleItem;
             PatternImpl pattern = new PatternImpl( patternDef.getFirstVariable() );
             for (PatternItem patternItem : patternDef.getItems()) {
                 if ( patternItem instanceof PatternExprImpl ) {

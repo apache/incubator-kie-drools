@@ -56,13 +56,6 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
 
     private MethodCallExpr buildExpression(DrlxParseSuccess drlxParseResult, MethodCallExpr exprDSL) {
         final List<String> usedDeclarationsWithUnification = new ArrayList<>();
-        if (!drlxParseResult.isPatternBindingUnification()) {
-            if (drlxParseResult.getPatternBinding() != null && !drlxParseResult.getUsedDeclarations().contains(drlxParseResult.getPatternBinding())) {
-//                exprDSL.addArgument(new NameExpr(toVar(drlxParseResult.getPatternBinding())));
-            }
-        } else {
-            usedDeclarationsWithUnification.add(drlxParseResult.getPatternBinding());
-        }
         usedDeclarationsWithUnification.addAll(drlxParseResult.getUsedDeclarations());
         usedDeclarationsWithUnification.stream()
                 .map(x -> QueryGenerator.substituteBindingWithQueryParameter(context, x))
