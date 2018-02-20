@@ -40,7 +40,7 @@ import static org.junit.Assert.fail;
 public abstract class BaseModelTest {
     public static enum RUN_TYPE {
         FLOW_DSL,
-//        PATTERN_DSL,
+        PATTERN_DSL,
         STANDARD_FROM_DRL;
     }
 
@@ -49,7 +49,7 @@ public abstract class BaseModelTest {
         return new Object[]{
                 BaseModelTest.RUN_TYPE.STANDARD_FROM_DRL,
                 BaseModelTest.RUN_TYPE.FLOW_DSL,
-                BaseModelTest.RUN_TYPE.PATTERN_DSL
+//                BaseModelTest.RUN_TYPE.PATTERN_DSL
         };
     }
 
