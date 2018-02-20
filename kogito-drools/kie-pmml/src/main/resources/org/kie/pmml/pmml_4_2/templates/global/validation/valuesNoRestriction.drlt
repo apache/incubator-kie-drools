@@ -31,7 +31,6 @@ then
    modify($in) {
       setValid( true );
    }
-   System.out.println("Validated "+$in);
 end
 @end{}
 @includeNamed{'valuesNoRestrictionRule'}

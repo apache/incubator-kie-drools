@@ -193,7 +193,6 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
         String targetValue = resultHolder.getResultValue("Fld3", "value", String.class).orElse(null);
         Assertions.assertThat(targetValue).isEqualTo("tgtY");
 
-        executor.setRunWithLogging(true);
         request = new PMMLRequestData("123","TreeTest");
         request.addRequestParam("fld1", 100.0);
         resultHolder = executor.run(request);
