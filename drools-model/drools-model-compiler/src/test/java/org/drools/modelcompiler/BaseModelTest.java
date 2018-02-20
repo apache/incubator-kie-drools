@@ -104,7 +104,7 @@ public abstract class BaseModelTest {
         KieBuilder kieBuilder;
         if (testRunType == RUN_TYPE.FLOW_DSL) {
             kieBuilder = ks.newKieBuilder(kfs).buildAll(CanonicalModelFlowProject.class);
-        } if (testRunType == RUN_TYPE.PATTERN_DSL) {
+        } else if (testRunType == RUN_TYPE.PATTERN_DSL) {
             kieBuilder = ks.newKieBuilder(kfs).buildAll(CanonicalModelPatternProject.class);
         } else {
             kieBuilder = ks.newKieBuilder(kfs).buildAll();

@@ -507,4 +507,29 @@ public class DrlxParseUtil {
         AnnotationDescr watchAnn = pattern != null ? pattern.getAnnotation("watch") : null;
         return watchAnn == null ? Collections.emptyList() : Stream.of(watchAnn.getValue().toString().split(",")).map(String::trim).collect( Collectors.toList() );
     }
+
+
+    public static Optional<MethodCallExpr> findPatternWithBinding(String patternBinding, List<Expression> expressions) {
+        return expressions.stream().flatMap((Expression e) -> {
+            final Optional<MethodCallExpr> pattern = e.findFirst(MethodCallExpr.class, expr -> {
+                final boolean isPatternExpr = expr.getName().asString().equals("pattern");
+                final boolean hasBindingHasArgument = expr.getArguments().contains(new NameExpr(toVar(patternBinding)));
+                return isPatternExpr && hasBindingHasArgument;
+            });
+            return pattern.map(Stream::of).orElse(Stream.empty());
+        }).findFirst();
+    }
+
+    public static Optional<MethodCallExpr> findLastPattern(List<Expression> expressions) {
+        final Stream<MethodCallExpr> patterns = expressions.stream().flatMap((Expression e) -> {
+            final List<MethodCallExpr> pattern = e.findAll(MethodCallExpr.class, expr -> expr.getName().asString().equals("pattern"));
+            return pattern.stream();
+        });
+        final List<MethodCallExpr> collect = patterns.collect(Collectors.toList());
+        if (collect.isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(collect.get(collect.size() - 1));
+        }
+    }
 }
