@@ -39,7 +39,7 @@ public class ItemDefinitionDependenciesGeneratedTest {
 
     private final Logger logger = LoggerFactory.getLogger(ItemDefinitionDependenciesGeneratedTest.class);
 
-    private static final int NUMBER_OF_BASE_ITEM_DEFINITIONS = 10;
+    private static final int NUMBER_OF_BASE_ITEM_DEFINITIONS = 4;
     private static final String ITEM_DEFINITION_NAME_BASE = "ItemDefinition";
 
     private static final String TEST_NS = "https://www.drools.org/";
@@ -48,62 +48,107 @@ public class ItemDefinitionDependenciesGeneratedTest {
     public static List<ItemDefinition> itemDefinitions;
 
     @Parameterized.Parameters
-    public static Collection<List<ItemDefinition>> generateItemDefinitionCollections() {
-        final ItemDefinition[] baseItemDefinitions = getBaseListOfItemDefinitions();
+    public static Collection<List<ItemDefinition>> generateParameters() {
+        final List<ItemDefinition> baseItemDefinitions = getBaseListOfItemDefinitions();
 
-        final Collection<List<ItemDefinition>> result = new ArrayList<>();
+        final Collection<List<ItemDefinition>> permutations = new ArrayList<>();
+        getAllPossiblePermutations(baseItemDefinitions, new ArrayList<>(), permutations);
 
-        // Iterate base definitions, each iteration defining new first item
-        for (int i = 0; i < baseItemDefinitions.length; i++) {
-            final List<ItemDefinition> itemDefinitions = getItemDefinitionsFromIndex(baseItemDefinitions, i);
-            for (int j = 1; j < NUMBER_OF_BASE_ITEM_DEFINITIONS; j++) {
-                result.add(getItemDefinitionsWithDeps(itemDefinitions, j));
+        return generateItemDefinitionsWithDependencies(permutations, permutations);
+    }
+
+    private static void getAllPossiblePermutations(final List<ItemDefinition> itemDefinitions,
+                                                   final List<ItemDefinition> head,
+                                                   final Collection<List<ItemDefinition>> result) {
+        if (itemDefinitions.size() == 1) {
+            final List<ItemDefinition> resultList = new ArrayList<>(head);
+            resultList.addAll(itemDefinitions);
+            result.add(resultList);
+        } else {
+            for (ItemDefinition itemDefinition : itemDefinitions) {
+                final List<ItemDefinition> newHead = new ArrayList<>(head);
+                newHead.add(itemDefinition);
+                final List<ItemDefinition> possibleDependencies =
+                        itemDefinitions.stream().filter(item -> !newHead.contains(item)).collect(Collectors.toList());
+                getAllPossiblePermutations(possibleDependencies, newHead, result);
             }
         }
+    }
 
+    private static Collection<List<ItemDefinition>> generateItemDefinitionsWithDependencies(final Collection<List<ItemDefinition>> itemDefinitionPermutations,
+                                                                                            final Collection<List<ItemDefinition>> dependenciesPermutations) {
+        final Collection<List<ItemDefinition>> result = new HashSet<>();
+        itemDefinitionPermutations.forEach(itemDefinitions -> {
+            // An ItemDefinition could have 1 or more transitive deps, so generate a test for these cases
+            // E.g. maxDependencyLevel = 2, then a first processed itemDefinition gets 2 level of dependencies dependencies and the
+            // processing gets to next itemDefinition which gets 2 levels of dependencies if possible, processing moves to next, etc.
+            // so if maxDependencyLevel = 2, then
+            //     ItemDefinition1 -> Dependency1 -> Dependency2
+            //     ItemDefinition2 -> Dependency3 -> Dependency4
+            for (int maxDependencyLevel = 1; maxDependencyLevel < NUMBER_OF_BASE_ITEM_DEFINITIONS; maxDependencyLevel++) {
+                // Dependencies could be added not just right from the first ItemDefinition. So this
+                // loop specifies from which ItemDefinition should be the deps added
+                // (e.g. if j == 2, deps are added to third ItemDefinition at start)
+                for (int addDependenciesFromItemIndex = 0; addDependenciesFromItemIndex < NUMBER_OF_BASE_ITEM_DEFINITIONS; addDependenciesFromItemIndex++) {
+                    for (List<ItemDefinition> dependencies : dependenciesPermutations) {
+                        result.add(generateItemDefinitionsWithDependencies(itemDefinitions, dependencies, maxDependencyLevel, addDependenciesFromItemIndex));
+                    }
+                }
+            }
+        });
         return result;
     }
 
-    private static List<ItemDefinition> getItemDefinitionsFromIndex(final ItemDefinition[] itemDefinitions, final int beginIndex) {
-        final List<ItemDefinition> result = new ArrayList<>();
-        for (int i = beginIndex; i < itemDefinitions.length; i++) {
-            result.add(itemDefinitions[i]);
-        }
+    private static List<ItemDefinition> generateItemDefinitionsWithDependencies(final List<ItemDefinition> itemDefinitions,
+                                                                                final List<ItemDefinition> dependencies,
+                                                                                final int maxDependencyLevel,
+                                                                                final int startWithItemIndex) {
 
-        for (int i = 0; i < beginIndex; i++) {
-            result.add(itemDefinitions[i]);
-        }
-        return result;
-    }
-
-    private static List<ItemDefinition> getItemDefinitionsWithDeps(final List<ItemDefinition> itemDefinitions,
-                                                                   final int maxNumberOfDepsPerItemDefinition) {
-        final List<ItemDefinition> result = new ArrayList<>();
+        // Original ItemDefinition ordering must be preserved, so this head tail result split trick does the thing.
+        final List<ItemDefinition> resultTail = new ArrayList<>();
         final Set<String> usedNamesSet = new HashSet<>();
-        for (ItemDefinition itemDefinition : itemDefinitions) {
-            // New ItemDefinition is created, so the original one stays untouched.
-            final ItemDefinition it = new ItemDefinition();
-            it.setName(itemDefinition.getName());
-            final List<ItemDefinition> possibleDependencies =
-                    itemDefinitions.stream().filter(item -> !item.getName().equals(it.getName())).collect(Collectors.toList());
-            final List<ItemDefinition> addedDeps =
-                    addDepsToItemDefinition(it, possibleDependencies, maxNumberOfDepsPerItemDefinition, usedNamesSet);
-            result.add(it);
-            result.addAll(addedDeps);
+        for (int i = startWithItemIndex; i < itemDefinitions.size(); i++) {
+            resultTail.addAll(createItemDefinitionWithDeps(itemDefinitions.get(i), dependencies, maxDependencyLevel, usedNamesSet));
         }
+
+        final List<ItemDefinition> resultHead = new ArrayList<>();
+        for (int i = 0; i < startWithItemIndex; i++) {
+            resultHead.addAll(createItemDefinitionWithDeps(itemDefinitions.get(i), dependencies, maxDependencyLevel, usedNamesSet));
+        }
+        resultHead.addAll(resultTail);
+        return resultHead;
+    }
+
+    private static List<ItemDefinition> createItemDefinitionWithDeps(final ItemDefinition itemDefinitionTemplate,
+                                                                     final List<ItemDefinition> dependencies,
+                                                                     final int maxDependencyLevel,
+                                                                     final Set<String> usedNames) {
+        final List<ItemDefinition> result = new ArrayList<>();
+        // New ItemDefinition is created, so the original one stays untouched.
+        final ItemDefinition it = new ItemDefinition();
+        it.setName(itemDefinitionTemplate.getName());
+        final List<ItemDefinition> possibleDependencies =
+                dependencies.stream().filter(item -> !item.getName().equals(it.getName())).collect(Collectors.toList());
+        final List<ItemDefinition> addedDeps =
+                addDepsToItemDefinition(it, possibleDependencies, maxDependencyLevel, usedNames);
+        result.add(it);
+        result.addAll(addedDeps);
         return result;
     }
 
     private static List<ItemDefinition> addDepsToItemDefinition(final ItemDefinition itemDefinition,
-                                                final List<ItemDefinition> possibleDependencies,
-                                                final int numberOfDeps,
-                                                final Set<String> alreadyUsedDependencyNames) {
+                                                final List<ItemDefinition> dependencies,
+                                                final int maxDependencyLevel,
+                                                final Set<String> usedNames) {
         final List<ItemDefinition> addedDependencies = new ArrayList<>();
-        for (ItemDefinition dependency : possibleDependencies) {
-            if (!alreadyUsedDependencyNames.contains(dependency.getName())) {
-                addedDependencies.add(createAndAddDependency(itemDefinition, dependency));
-                alreadyUsedDependencyNames.add(dependency.getName());
-                if (addedDependencies.size() == numberOfDeps) {
+        // For going to deeper dependency levels, we must remember the last added dependency
+        ItemDefinition itemToWhichAddDependency = itemDefinition;
+        for (ItemDefinition dependency : dependencies) {
+            if (!usedNames.contains(dependency.getName())) {
+                itemToWhichAddDependency = createAndAddDependency(itemToWhichAddDependency, dependency);
+                addedDependencies.add(itemToWhichAddDependency);
+                usedNames.add(dependency.getName());
+                if (addedDependencies.size() == maxDependencyLevel) {
                     return addedDependencies;
                 }
             }
@@ -119,25 +164,21 @@ public class ItemDefinitionDependenciesGeneratedTest {
         return newDependency;
     }
 
-    private static ItemDefinition[] getBaseListOfItemDefinitions() {
-        final ItemDefinition[] itemDefinitions = new ItemDefinition[NUMBER_OF_BASE_ITEM_DEFINITIONS];
+    private static List<ItemDefinition> getBaseListOfItemDefinitions() {
+        final List<ItemDefinition> itemDefinitions = new ArrayList<>();
         for (int i = 0; i < NUMBER_OF_BASE_ITEM_DEFINITIONS; i++) {
             final ItemDefinition it = new ItemDefinition();
             it.setName(ITEM_DEFINITION_NAME_BASE + i);
-            itemDefinitions[i] = it;
+            itemDefinitions.add(it);
         }
         return itemDefinitions;
-    }
-    
-    private List<ItemDefinition> orderingStrategy(List<ItemDefinition> ins) {
-        return new ItemDefinitionDependenciesSorter(TEST_NS).sort(ins);
     }
 
     @Test
     public void testOrdering() {
         logger.info("Item definitions:");
         itemDefinitions.forEach(itemDefinition -> logger.info(itemDefinition.getName()));
-        List<ItemDefinition> orderedList = orderingStrategy(itemDefinitions);
+        final List<ItemDefinition> orderedList = new ItemDefinitionDependenciesSorter(TEST_NS).sort(itemDefinitions);
 
         for (ItemDefinition itemDefinition : itemDefinitions) {
             assertOrdering(itemDefinition, orderedList);
