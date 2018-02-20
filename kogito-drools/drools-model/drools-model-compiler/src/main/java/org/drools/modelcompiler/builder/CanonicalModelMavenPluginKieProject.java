@@ -27,7 +27,7 @@ import org.drools.compiler.kie.builder.impl.ResultsImpl;
 public class CanonicalModelMavenPluginKieProject extends CanonicalModelKieProject {
 
     public CanonicalModelMavenPluginKieProject(InternalKieModule kieModule, ClassLoader classLoader) {
-        super(kieModule, classLoader);
+        super(false, kieModule, classLoader);
     }
 
     @Override

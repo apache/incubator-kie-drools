@@ -18,6 +18,7 @@ package org.drools.modelcompiler.builder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiFunction;
 
 import org.drools.compiler.commons.jci.compilers.CompilationResult;
 import org.drools.compiler.commons.jci.problems.CompilationProblem;
@@ -33,15 +34,22 @@ import static org.drools.modelcompiler.builder.JavaParserCompiler.getCompiler;
 
 public class CanonicalModelKieProject extends KieModuleKieProject {
 
+    private boolean isPattern = false;
+
+    public static BiFunction<InternalKieModule, ClassLoader, KieModuleKieProject> create(Boolean isPattern) {
+        return (internalKieModule, classLoader) -> new CanonicalModelKieProject(isPattern, internalKieModule, classLoader);
+    }
+
     protected List<ModelBuilderImpl> modelBuilders = new ArrayList<>();
 
-    public CanonicalModelKieProject(InternalKieModule kieModule, ClassLoader classLoader) {
+    public CanonicalModelKieProject(Boolean isPattern, InternalKieModule kieModule, ClassLoader classLoader) {
         super(kieModule instanceof CanonicalKieModule ? kieModule : new CanonicalKieModule( kieModule ), classLoader);
+        this.isPattern = isPattern;
     }
 
     @Override
     protected KnowledgeBuilder createKnowledgeBuilder(KieBaseModelImpl kBaseModel, InternalKieModule kModule) {
-        ModelBuilderImpl modelBuilder = new ModelBuilderImpl();
+        ModelBuilderImpl modelBuilder = new ModelBuilderImpl(isPattern);
         modelBuilders.add(modelBuilder);
         return modelBuilder;
     }

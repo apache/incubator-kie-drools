@@ -19,11 +19,13 @@ package org.drools.model;
 import org.drools.model.consequences.ConditionalConsequenceBuilder;
 import org.drools.model.constraints.SingleConstraint1;
 import org.drools.model.constraints.SingleConstraint2;
+import org.drools.model.constraints.SingleConstraint3;
 import org.drools.model.constraints.TemporalConstraint;
 import org.drools.model.functions.Function1;
 import org.drools.model.functions.Function2;
 import org.drools.model.functions.Predicate1;
 import org.drools.model.functions.Predicate2;
+import org.drools.model.functions.Predicate3;
 import org.drools.model.functions.temporal.TemporalPredicate;
 import org.drools.model.impl.DeclarationImpl;
 import org.drools.model.impl.Query0DefImpl;
@@ -93,6 +95,10 @@ public class PatternDSL extends DSL {
 
     public static <T, U> PatternItem<T> expr( String exprId, Variable<U> var2, Predicate2<T, U> predicate, BetaIndexImpl<T, U, ?> index, ReactOn reactOn ) {
         return new PatternExpr2<>( exprId, var2, new Predicate2.Impl<>(predicate), index, reactOn );
+    }
+
+    public static <T, U, K> PatternItem<T> expr(String exprId, Variable<U> var2, Variable<K> var3, Predicate3<T, U, K> predicate, ReactOn reactOn ) {
+        return new PatternExpr3<>( exprId, var2, var3, new Predicate3.Impl<>(predicate), null, reactOn );
     }
 
     public static <T, U> TemporalPatternExpr<T, U> expr( String exprId, Variable<U> var1, TemporalPredicate temporalPredicate ) {
@@ -238,6 +244,42 @@ public class PatternDSL extends DSL {
         @Override
         public Constraint asConstraint(PatternDefImpl patternDef) {
             SingleConstraint2 constraint = new SingleConstraint2(getExprId(), patternDef.getFirstVariable(), var2, getPredicate());
+            constraint.setIndex( getIndex() );
+            constraint.setReactiveProps( getReactOn() );
+            return constraint;
+        }
+    }
+
+    public static class PatternExpr3<T, U, K> extends PatternExprImpl<T> {
+        private final Variable<U> var2;
+        private final Variable<K> var3;
+        private final Predicate3<T, U, K> predicate;
+
+        private final BetaIndexImpl<T, U, ?> index;
+
+        public PatternExpr3(Variable<U> var2, Variable<K> var3, Predicate3<T, U, K> predicate, BetaIndexImpl<T, U, ?> index, ReactOn reactOn) {
+            this(randomUUID().toString(), var2, var3, predicate, index, reactOn);
+        }
+
+        public PatternExpr3( String exprId, Variable<U> var2, Variable<K> var3, Predicate3<T, U, K> predicate, BetaIndexImpl<T, U, ?> index, ReactOn reactOn ) {
+            super( exprId, reactOn );
+            this.var2 = var2;
+            this.var3 = var3;
+            this.predicate = predicate;
+            this.index = index;
+        }
+
+        public Predicate3<T, U, K> getPredicate() {
+            return predicate;
+        }
+
+        public BetaIndexImpl<T, U, ?> getIndex() {
+            return index;
+        }
+
+        @Override
+        public Constraint asConstraint(PatternDefImpl patternDef) {
+            SingleConstraint3 constraint = new SingleConstraint3(getExprId(), patternDef.getFirstVariable(), var2, var3, getPredicate());
             constraint.setIndex( getIndex() );
             constraint.setReactiveProps( getReactOn() );
             return constraint;

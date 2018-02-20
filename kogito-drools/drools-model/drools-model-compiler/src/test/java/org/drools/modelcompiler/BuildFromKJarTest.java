@@ -77,7 +77,7 @@ public class BuildFromKJarTest {
         kfs.write("src/main/resources/rule.drl", getRule());
 
         KieBuilder kieBuilder = ks.newKieBuilder( kfs );
-        List<Message> messages = ( (KieBuilderImpl) kieBuilder ).buildAll( CanonicalModelProject.class )
+        List<Message> messages = ( (KieBuilderImpl) kieBuilder ).buildAll( CanonicalModelFlowProject.class )
                                                                 .getResults().getMessages();
         if (!messages.isEmpty()) {
             fail(messages.toString());

@@ -26,7 +26,7 @@ import org.assertj.core.api.Assertions;
 import org.drools.compiler.kie.builder.impl.DrlProject;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.modelcompiler.CanonicalKieModule;
-import org.drools.modelcompiler.CanonicalModelProject;
+import org.drools.modelcompiler.CanonicalModelFlowProject;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -111,7 +111,7 @@ public final class KieUtil {
         }
 
         KieBuilder kbuilder = KieServices.Factory.get().newKieBuilder(kfs);
-        kbuilder.buildAll(kieBaseTestConfiguration.useCanonicalModel() ? CanonicalModelProject.class : DrlProject.class);
+        kbuilder.buildAll(kieBaseTestConfiguration.useCanonicalModel() ? CanonicalModelFlowProject.class : DrlProject.class);
 
         // Messages from KieBuilder with increasing severity
         List<Message> msgs = kbuilder.getResults().getMessages(Message.Level.INFO);

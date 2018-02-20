@@ -26,6 +26,7 @@ import org.drools.model.datasources.impl.SetDataStore;
 import org.drools.model.functions.Block0;
 import org.drools.model.functions.Block1;
 import org.drools.model.functions.Function1;
+import org.drools.model.functions.Operator;
 import org.drools.model.functions.Predicate1;
 import org.drools.model.functions.accumulate.AccumulateFunction;
 import org.drools.model.functions.temporal.AbstractTemporalPredicate;
@@ -402,5 +403,14 @@ public class DSL {
 
     public static <T> Value<T> valueOf(T value) {
         return new ValueImpl<>( value );
+    }
+
+
+    public static boolean eval( String op, Object obj, Object... args ) {
+        return eval(Operator.Register.getOperator(op ), obj, args );
+    }
+
+    public static boolean eval( Operator op, Object obj, Object... args ) {
+        return op.test( obj, args );
     }
 }

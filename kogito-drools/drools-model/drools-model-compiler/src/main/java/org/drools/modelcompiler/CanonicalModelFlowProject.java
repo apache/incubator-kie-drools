@@ -23,6 +23,6 @@ import org.drools.compiler.kie.builder.impl.KieModuleKieProject;
 import org.drools.modelcompiler.builder.CanonicalModelKieProject;
 import org.kie.api.builder.KieBuilder;
 
-public class CanonicalModelProject implements KieBuilder.ProjectType {
-    public static final BiFunction<InternalKieModule, ClassLoader, KieModuleKieProject> SUPPLIER = CanonicalModelKieProject::new;
+public class CanonicalModelFlowProject implements KieBuilder.ProjectType {
+    public static final BiFunction<InternalKieModule, ClassLoader, KieModuleKieProject> SUPPLIER = CanonicalModelKieProject.create(false);
 }

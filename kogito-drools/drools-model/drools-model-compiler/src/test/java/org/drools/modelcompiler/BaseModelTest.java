@@ -21,7 +21,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
-import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -40,7 +39,8 @@ import static org.junit.Assert.fail;
 @RunWith(Parameterized.class)
 public abstract class BaseModelTest {
     public static enum RUN_TYPE {
-        USE_CANONICAL_MODEL,
+        FLOW_DSL,
+        PATTERN_DSL,
         STANDARD_FROM_DRL;
     }
 
@@ -48,7 +48,8 @@ public abstract class BaseModelTest {
     public static Object[] params() {
         return new Object[]{
                 BaseModelTest.RUN_TYPE.STANDARD_FROM_DRL,
-                BaseModelTest.RUN_TYPE.USE_CANONICAL_MODEL
+                BaseModelTest.RUN_TYPE.FLOW_DSL,
+//                BaseModelTest.RUN_TYPE.PATTERN_DSL
         };
     }
 
@@ -100,9 +101,14 @@ public abstract class BaseModelTest {
             kfs.write( stringRules[i].path, stringRules[i].content );
         }
 
-        KieBuilder kieBuilder = ( testRunType == RUN_TYPE.USE_CANONICAL_MODEL ) ?
-                ( (KieBuilderImpl ) ks.newKieBuilder( kfs ) ).buildAll( CanonicalModelProject.class ) :
-                ks.newKieBuilder( kfs ).buildAll();
+        KieBuilder kieBuilder;
+        if (testRunType == RUN_TYPE.FLOW_DSL) {
+            kieBuilder = ks.newKieBuilder(kfs).buildAll(CanonicalModelFlowProject.class);
+        } if (testRunType == RUN_TYPE.PATTERN_DSL) {
+            kieBuilder = ks.newKieBuilder(kfs).buildAll(CanonicalModelPatternProject.class);
+        } else {
+            kieBuilder = ks.newKieBuilder(kfs).buildAll();
+        }
 
         if ( failIfBuildError ) {
             List<Message> messages = kieBuilder.getResults().getMessages();

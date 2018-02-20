@@ -27,7 +27,6 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Stream;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.lang.descr.AndDescr;
@@ -45,7 +44,6 @@ import org.drools.core.time.TimeUtils;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.MVELSafeHelper;
 import org.drools.core.util.StringUtils;
-import org.drools.core.util.index.IndexUtil.ConstraintType;
 import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.Modifier;
 import org.drools.javaparser.ast.NodeList;
@@ -54,7 +52,6 @@ import org.drools.javaparser.ast.body.Parameter;
 import org.drools.javaparser.ast.expr.AssignExpr;
 import org.drools.javaparser.ast.expr.ClassExpr;
 import org.drools.javaparser.ast.expr.Expression;
-import org.drools.javaparser.ast.expr.FieldAccessExpr;
 import org.drools.javaparser.ast.expr.LambdaExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
@@ -65,7 +62,6 @@ import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.javaparser.ast.expr.VariableDeclarationExpr;
 import org.drools.javaparser.ast.stmt.BlockStmt;
 import org.drools.javaparser.ast.stmt.EmptyStmt;
-import org.drools.javaparser.ast.stmt.ExpressionStmt;
 import org.drools.javaparser.ast.stmt.ReturnStmt;
 import org.drools.javaparser.ast.stmt.Statement;
 import org.drools.javaparser.ast.type.ClassOrInterfaceType;
@@ -78,17 +74,14 @@ import org.drools.model.Variable;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.UnknownDeclarationError;
 import org.drools.modelcompiler.builder.generator.RuleContext.RuleDialect;
-import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
 import org.drools.modelcompiler.consequence.DroolsImpl;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
-
 import static org.drools.javaparser.JavaParser.parseExpression;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.classToReferenceType;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.parseBlock;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.visitor.NamedConsequenceVisitor.BREAKING_CALL;
@@ -105,9 +98,6 @@ public class ModelGenerator {
     public static final Set<String> knowledgeHelperMethods = new HashSet<>();
 
     public static final Set<String> temporalOperators = new HashSet<>();
-
-    private static final IndexIdGenerator indexIdGenerator = new IndexIdGenerator();
-
     private static final Expression asKnoledgeHelperExpression = parseExpression("((" + DroolsImpl.class.getCanonicalName() + ") drools).asKnowledgeHelper()");
 
     static {
@@ -161,9 +151,6 @@ public class ModelGenerator {
     public static final String EXECUTE_CALL = "execute";
     public static final String EXECUTESCRIPT_CALL = "executeScript";
     public static final String ON_CALL = "on";
-    public static final String EXPR_CALL = "expr";
-    public static final String INDEXED_BY_CALL = "indexedBy";
-    public static final String BIND_CALL = "bind";
     public static final String BIND_AS_CALL = "as";
     public static final String ATTRIBUTE_CALL = "attribute";
     public static final String METADATA_CALL = "metadata";
@@ -172,7 +159,7 @@ public class ModelGenerator {
     public static final String VALUE_OF_CALL = "valueOf";
     public static final String UNIT_DATA_CALL = "unitData";
 
-    public static void generateModel( KnowledgeBuilderImpl kbuilder, InternalKnowledgePackage pkg, PackageDescr packageDescr, PackageModel packageModel ) {
+    public static void generateModel(KnowledgeBuilderImpl kbuilder, InternalKnowledgePackage pkg, PackageDescr packageDescr, PackageModel packageModel, boolean isPattern) {
         TypeResolver typeResolver = pkg.getTypeResolver();
         packageModel.addImports(pkg.getTypeResolver().getImports());
         packageModel.addGlobals(pkg.getGlobals());
@@ -188,22 +175,22 @@ public class ModelGenerator {
 
         for (RuleDescr descr : packageDescr.getRules()) {
             if (descr instanceof QueryDescr) {
-                QueryGenerator.processQuery(kbuilder, packageModel, (QueryDescr) descr);
+                QueryGenerator.processQuery(kbuilder, packageModel, (QueryDescr) descr, isPattern);
             } else {
-                processRule(kbuilder, typeResolver, packageModel, packageDescr, descr);
+                processRule(kbuilder, typeResolver, packageModel, packageDescr, descr, isPattern);
             }
         }
     }
 
 
-    private static void processRule( KnowledgeBuilderImpl kbuilder, TypeResolver typeResolver, PackageModel packageModel, PackageDescr packageDescr, RuleDescr ruleDescr) {
+    private static void processRule(KnowledgeBuilderImpl kbuilder, TypeResolver typeResolver, PackageModel packageModel, PackageDescr packageDescr, RuleDescr ruleDescr, boolean isPattern) {
         RuleContext context = new RuleContext(kbuilder,packageModel, ruleDescr,  typeResolver);
 
         for(Entry<String, Object> kv : ruleDescr.getNamedConsequences().entrySet()) {
             context.addNamedConsequence(kv.getKey(), kv.getValue().toString());
         }
 
-        new ModelGeneratorVisitor(context, packageModel).visit(getExtendedLhs(packageDescr, ruleDescr));
+        new ModelGeneratorVisitor(context, packageModel, isPattern).visit(getExtendedLhs(packageDescr, ruleDescr));
         final String ruleMethodName = "rule_" + toId(ruleDescr.getName());
         MethodDeclaration ruleMethod = new MethodDeclaration(EnumSet.of(Modifier.PUBLIC, Modifier.STATIC), RULE_TYPE, ruleMethodName);
 
@@ -669,143 +656,4 @@ public class ModelGenerator {
     }
 
 
-    public static void processExpression(RuleContext context, DrlxParseSuccess drlxParseResult) {
-        if (drlxParseResult.hasUnificationVariable()) {
-            Expression dslExpr = buildUnificationExpression(context, drlxParseResult);
-            context.addExpression(dslExpr);
-        } else if ( drlxParseResult.isValidExpression() ) {
-            Expression dslExpr = buildExpressionWithIndexing(context, drlxParseResult);
-            context.addExpression(dslExpr);
-        }
-        if (drlxParseResult.getExprBinding() != null) {
-            Expression dslExpr = buildBinding(drlxParseResult);
-            context.addExpression(dslExpr);
-        }
-    }
-
-    public static Expression buildExpressionWithIndexing(RuleContext context, DrlxParseSuccess drlxParseResult) {
-        String exprId = drlxParseResult.getExprId();
-        MethodCallExpr exprDSL = new MethodCallExpr(null, EXPR_CALL);
-        if (exprId != null && !"".equals(exprId)) {
-            exprDSL.addArgument( new StringLiteralExpr(exprId) );
-        }
-
-        exprDSL = buildExpression(context, drlxParseResult, exprDSL );
-        exprDSL = buildIndexedBy(context, drlxParseResult, exprDSL);
-        exprDSL = buildReactOn( drlxParseResult, exprDSL );
-        return exprDSL;
-    }
-
-    private static Expression buildUnificationExpression(RuleContext context, DrlxParseSuccess drlxParseResult) {
-        MethodCallExpr exprDSL = buildBinding(drlxParseResult);
-        context.addDeclaration(new DeclarationSpec(drlxParseResult.getUnificationVariable(),
-                                                   drlxParseResult.getUnificationVariableType(),
-                                                    drlxParseResult.getUnificationName()
-                                                    ));
-        return exprDSL;
-    }
-
-    private static MethodCallExpr buildExpression(RuleContext context, DrlxParseSuccess drlxParseResult, MethodCallExpr exprDSL ) {
-        final List<String> usedDeclarationsWithUnification = new ArrayList<>();
-        if(!drlxParseResult.isPatternBindingUnification()) {
-            if (drlxParseResult.getPatternBinding() != null && !drlxParseResult.getUsedDeclarations().contains( drlxParseResult.getPatternBinding() )) {
-                exprDSL.addArgument(new NameExpr(toVar(drlxParseResult.getPatternBinding())));
-            }
-        } else {
-            usedDeclarationsWithUnification.add(drlxParseResult.getPatternBinding());
-        }
-        usedDeclarationsWithUnification.addAll(drlxParseResult.getUsedDeclarations());
-        usedDeclarationsWithUnification.stream()
-                .map(x -> QueryGenerator.substituteBindingWithQueryParameter(context, x))
-                .forEach(exprDSL::addArgument);
-        exprDSL.addArgument(buildConstraintExpression( drlxParseResult, drlxParseResult.getExpr() ));
-        return exprDSL;
-    }
-
-    private static MethodCallExpr buildIndexedBy(RuleContext context, DrlxParseSuccess drlxParseResult, MethodCallExpr exprDSL) {
-        ConstraintType decodeConstraintType = drlxParseResult.getDecodeConstraintType();
-        TypedExpression left = drlxParseResult.getLeft();
-        TypedExpression right = drlxParseResult.getRight();
-
-        // .indexBy(..) is only added if left is not an identity expression:
-        if ( decodeConstraintType != null &&
-             !(left.getExpression() instanceof NameExpr &&
-             ((NameExpr)left.getExpression()).getName().getIdentifier().equals("_this")) &&
-             left.getFieldName() != null ) {
-            Class<?> indexType = Stream.of( left, right ).map( TypedExpression::getType )
-                                       .filter( Objects::nonNull )
-                                       .findFirst().get();
-
-            ClassExpr indexedBy_indexedClass = new ClassExpr( JavaParser.parseType( indexType.getCanonicalName() ) );
-            FieldAccessExpr indexedBy_constraintType = new FieldAccessExpr( new NameExpr( "org.drools.model.Index.ConstraintType" ), decodeConstraintType.toString()); // not 100% accurate as the type in "nameExpr" is actually parsed if it was JavaParsers as a big chain of FieldAccessExpr
-            LambdaExpr indexedBy_leftOperandExtractor = new LambdaExpr();
-            indexedBy_leftOperandExtractor.addParameter(new Parameter(new UnknownType(), "_this"));
-            boolean leftContainsThis = left.getExpression().toString().contains("_this");
-            indexedBy_leftOperandExtractor.setBody(new ExpressionStmt(leftContainsThis ? left.getExpression() : right.getExpression()) );
-
-            MethodCallExpr indexedByDSL = new MethodCallExpr(exprDSL, INDEXED_BY_CALL);
-            indexedByDSL.addArgument( indexedBy_indexedClass );
-            indexedByDSL.addArgument( indexedBy_constraintType );
-            indexedByDSL.addArgument( "" + indexIdGenerator.getFieldId(drlxParseResult.getPatternType(), left.getFieldName() ) );
-            indexedByDSL.addArgument( indexedBy_leftOperandExtractor );
-
-            Collection<String> usedDeclarations = drlxParseResult.getUsedDeclarations();
-            if ( usedDeclarations.isEmpty() ) {
-                indexedByDSL.addArgument( right.getExpression() );
-            } else if (usedDeclarations.size() == 1) {
-                // we ask if "right" expression is simply a symbol, hence just purely a declaration referenced by name
-                if (context.getDeclarationById(right.getExpressionAsString()).isPresent()) {
-                    LambdaExpr indexedBy_rightOperandExtractor = new LambdaExpr();
-                    indexedBy_rightOperandExtractor.addParameter(new Parameter(new UnknownType(), usedDeclarations.iterator().next()));
-                    indexedBy_rightOperandExtractor.setBody(new ExpressionStmt(!leftContainsThis ? left.getExpression() : right.getExpression()));
-                    indexedByDSL.addArgument(indexedBy_rightOperandExtractor);
-                } else {
-                    // this is a case where a Beta node should NOT create the index because the "right" is not just-a-symbol, the "right" is not a declaration referenced by name
-                    return exprDSL;
-                }
-            } else {
-                // this is a case where a Beta node should NOT create the index because the "right" is not just-a-symbol, the "right" is not a declaration referenced by name
-                return exprDSL;
-            }
-            return indexedByDSL;
-        }
-        return exprDSL;
-    }
-
-    private static MethodCallExpr buildReactOn(DrlxParseSuccess drlxParseResult, MethodCallExpr exprDSL ) {
-        if ( !drlxParseResult.getReactOnProperties().isEmpty() ) {
-            exprDSL = new MethodCallExpr(exprDSL, "reactOn");
-            drlxParseResult.getReactOnProperties().stream()
-                             .map( StringLiteralExpr::new )
-                             .forEach( exprDSL::addArgument );
-
-        }
-
-        if ( !drlxParseResult.getWatchedProperties().isEmpty() ) {
-            exprDSL = new MethodCallExpr(exprDSL, "watch");
-            drlxParseResult.getWatchedProperties().stream()
-                    .map( StringLiteralExpr::new )
-                    .forEach( exprDSL::addArgument );
-        }
-
-        return exprDSL;
-    }
-
-    private static Expression buildConstraintExpression(DrlxParseSuccess drlxParseResult, Expression expr ) {
-        return drlxParseResult.isStatic() ? expr : generateLambdaWithoutParameters(drlxParseResult.getUsedDeclarations(), expr, drlxParseResult.isSkipThisAsParam());
-    }
-
-    public static MethodCallExpr buildBinding(DrlxParseSuccess drlxParseResult ) {
-        MethodCallExpr bindDSL = new MethodCallExpr(null, BIND_CALL);
-        if(drlxParseResult.hasUnificationVariable()) {
-            bindDSL.addArgument(new NameExpr(toVar(drlxParseResult.getUnificationVariable())));
-        } else {
-            bindDSL.addArgument( new NameExpr(toVar(drlxParseResult.getExprBinding())) );
-        }
-        MethodCallExpr bindAsDSL = new MethodCallExpr(bindDSL, BIND_AS_CALL);
-        bindAsDSL.addArgument( new NameExpr(toVar(drlxParseResult.getPatternBinding())) );
-        final Expression constraintExpression = buildConstraintExpression(drlxParseResult, org.drools.modelcompiler.builder.generator.DrlxParseUtil.findLeftLeafOfMethodCall(drlxParseResult.getLeft().getExpression())  );
-        bindAsDSL.addArgument(constraintExpression);
-        return buildReactOn( drlxParseResult, bindAsDSL );
-    }
 }

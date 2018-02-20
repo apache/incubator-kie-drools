@@ -44,7 +44,7 @@ public class KieBuilderTest {
 
     @Test
     public void testModelBuild() throws Exception {
-        KieSession ksession = checkKieSession( CanonicalModelProject.class );
+        KieSession ksession = checkKieSession( CanonicalModelFlowProject.class );
         assertTrue( getAlphaConstraint( ksession ) instanceof LambdaConstraint );
     }
 

@@ -70,6 +70,7 @@ public class PackageModel {
     private static final int RULES_PER_CLASS = 20;
 
     private final String name;
+    private final boolean isPattern;
     private final String rulesFileName;
     
     private Set<String> imports = new HashSet<>();
@@ -98,8 +99,9 @@ public class PackageModel {
     private Map<String, AccumulateFunction> accumulateFunctions;
 
 
-    public PackageModel(String name, KnowledgeBuilderConfigurationImpl configuration) {
+    public PackageModel(String name, KnowledgeBuilderConfigurationImpl configuration, boolean isPattern) {
         this.name = name;
+        this.isPattern = isPattern;
         this.rulesFileName = generateRulesFileName();
         this.configuration = configuration;
         exprIdGenerator = new DRLIdGenerator();
@@ -399,7 +401,11 @@ public class PackageModel {
         // fixed part
         cu.addImport(JavaParser.parseImport("import java.util.*;"                          ));
         cu.addImport(JavaParser.parseImport("import org.drools.model.*;"                   ));
-        cu.addImport(JavaParser.parseImport("import static org.drools.model.FlowDSL.*;"        ));
+        if(isPattern) {
+            cu.addImport(JavaParser.parseImport("import static org.drools.model.PatternDSL.*;"));
+        } else {
+            cu.addImport(JavaParser.parseImport("import static org.drools.model.FlowDSL.*;"));
+        }
         cu.addImport(JavaParser.parseImport("import org.drools.model.Index.ConstraintType;"));
         cu.addImport(JavaParser.parseImport("import java.time.*;"));
         cu.addImport(JavaParser.parseImport("import java.time.format.*;"));

@@ -6,10 +6,10 @@ import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.modelcompiler.builder.PackageModel;
-import org.drools.modelcompiler.builder.generator.ModelGenerator;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
+import org.drools.modelcompiler.builder.generator.expression.FlowExpressionBuilder;
 import org.drools.modelcompiler.builder.generator.visitor.DSLNode;
 
 class Accumulate implements DSLNode {
@@ -37,7 +37,7 @@ class Accumulate implements DSLNode {
 
             drlxParseResult.accept(success -> {
                 success.setSkipThisAsParam(true);
-                ModelGenerator.processExpression(context, success );
+                new FlowExpressionBuilder(context).processExpression(success );
             });
         }
     }
