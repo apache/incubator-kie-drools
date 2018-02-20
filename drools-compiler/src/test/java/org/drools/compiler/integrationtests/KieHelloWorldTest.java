@@ -17,6 +17,9 @@ package org.drools.compiler.integrationtests;
 
 import java.io.ByteArrayInputStream;
 import java.io.StringReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +33,7 @@ import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
@@ -42,6 +46,7 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
+import org.kie.internal.io.ResourceFactory;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -539,5 +544,36 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
 
         assertEquals( 1, kb.getResults().getMessages().size() );
         assertTrue( kb.getResults().getMessages().get(0).toString().contains( "ABC" ) );
+    }
+
+    @Test
+    public void testHelloWorldWithSpace() throws Exception {
+        // DROOLS-2338
+        final KieServices kieServices = KieServices.get();
+
+        final Path dir = Paths.get("/tmp/t tt");
+        Files.createDirectories(dir);
+        final String text = "rule \"Hello world rule\"\n" +
+                "when\n" +
+                "then\n" +
+                "    System.out.println(\"Hello world\");" +
+                "end\n";
+        final Path filePath = dir.resolve("one.drl");
+        Files.write(filePath, text.getBytes());
+
+        final KieFileSystem fs = kieServices.newKieFileSystem();
+
+        fs.write( ResourceFactory.newUrlResource("file:/tmp/t%20tt/one.drl"));
+
+        KieBuilder kieBuilder = kieServices.newKieBuilder(fs);
+        kieBuilder.buildAll();
+        KieModule kieModule = kieBuilder.getKieModule();
+
+        KieSession ksession = kieServices.newKieContainer(kieModule.getReleaseId()).newKieSession();
+        ksession.insert(new Object());
+
+        int count = ksession.fireAllRules();
+
+        assertEquals( 1, count );
     }
 }
