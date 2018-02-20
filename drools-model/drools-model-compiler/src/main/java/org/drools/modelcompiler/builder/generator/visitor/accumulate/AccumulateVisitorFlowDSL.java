@@ -162,7 +162,8 @@ public class AccumulateVisitorFlowDSL extends AccumulateVisitor {
         context.popExprPointer();
     }
 
-    private MethodCallExpr buildBinding(String bindingName, Collection<String> usedDeclaration, Expression expression) {
+    @Override
+    protected MethodCallExpr buildBinding(String bindingName, Collection<String> usedDeclaration, Expression expression) {
         MethodCallExpr bindDSL = new MethodCallExpr(null, BIND_CALL);
         bindDSL.addArgument(toVar(bindingName));
         MethodCallExpr bindAsDSL = new MethodCallExpr(bindDSL, BIND_AS_CALL);

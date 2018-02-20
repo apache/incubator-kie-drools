@@ -75,8 +75,8 @@ public abstract class AccumulateVisitor {
         final Expression rootNode = methodCallWithoutRootNode.getRootNode().orElseThrow(UnsupportedOperationException::new);
 
         final String rootNodeName;
-        if(rootNode instanceof NameExpr) {
-            rootNodeName = ((NameExpr)rootNode).getName().asString();
+        if (rootNode instanceof NameExpr) {
+            rootNodeName = ((NameExpr) rootNode).getName().asString();
         } else {
             throw new RuntimeException("Root node of expression should be a declaration");
         }
@@ -93,9 +93,9 @@ public abstract class AccumulateVisitor {
 
     protected Expression buildConstraintExpression(Expression expr, Collection<String> usedDeclarations) {
         LambdaExpr lambdaExpr = new LambdaExpr();
-        lambdaExpr.setEnclosingParameters( true );
-        usedDeclarations.stream().map(s -> new Parameter(new UnknownType(), s ) ).forEach(lambdaExpr::addParameter );
-        lambdaExpr.setBody( new ExpressionStmt(expr) );
+        lambdaExpr.setEnclosingParameters(true);
+        usedDeclarations.stream().map(s -> new Parameter(new UnknownType(), s)).forEach(lambdaExpr::addParameter);
+        lambdaExpr.setBody(new ExpressionStmt(expr));
         return lambdaExpr;
     }
 
@@ -117,15 +117,15 @@ public abstract class AccumulateVisitor {
         code = code.replaceAll("AccumulateInlineFunction", targetClassName);
         CompilationUnit templateCU = JavaParser.parse(code);
         ClassOrInterfaceDeclaration templateClass = templateCU.getClassByName(targetClassName).orElseThrow(() -> new RuntimeException("Template did not contain expected type definition."));
-        ClassOrInterfaceDeclaration templateContextClass = templateClass.getMembers().stream().filter(m -> m instanceof ClassOrInterfaceDeclaration && ((ClassOrInterfaceDeclaration)m).getNameAsString().equals("ContextData")).map(ClassOrInterfaceDeclaration.class::cast).findFirst().orElseThrow(() -> new RuntimeException("Template did not contain expected type definition."));
+        ClassOrInterfaceDeclaration templateContextClass = templateClass.getMembers().stream().filter(m -> m instanceof ClassOrInterfaceDeclaration && ((ClassOrInterfaceDeclaration) m).getNameAsString().equals("ContextData")).map(ClassOrInterfaceDeclaration.class::cast).findFirst().orElseThrow(() -> new RuntimeException("Template did not contain expected type definition."));
 
         List<String> contextFieldNames = new ArrayList<>();
         MethodDeclaration initMethod = templateClass.getMethodsByName("init").get(0);
         BlockStmt initBlock = JavaParser.parseBlock("{" + descr.getInitCode() + "}");
-        for (Statement stmt : initBlock.getStatements() ) {
+        for (Statement stmt : initBlock.getStatements()) {
             if (stmt instanceof ExpressionStmt && ((ExpressionStmt) stmt).getExpression() instanceof VariableDeclarationExpr) {
                 VariableDeclarationExpr vdExpr = (VariableDeclarationExpr) ((ExpressionStmt) stmt).getExpression();
-                for ( VariableDeclarator vd : vdExpr.getVariables() ) {
+                for (VariableDeclarator vd : vdExpr.getVariables()) {
                     contextFieldNames.add(vd.getNameAsString());
                     templateContextClass.addField(vd.getType(), vd.getNameAsString(), Modifier.PUBLIC);
                     if (vd.getInitializer().isPresent()) {
@@ -144,7 +144,7 @@ public abstract class AccumulateVisitor {
 
         MethodDeclaration accumulateMethod = templateClass.getMethodsByName("accumulate").get(0);
         BlockStmt actionBlock = JavaParser.parseBlock("{" + descr.getActionCode() + "}");
-        Collection<String> allNamesInActionBlock = collectNamesInBlock( context2, actionBlock );
+        Collection<String> allNamesInActionBlock = collectNamesInBlock(context2, actionBlock);
         if (allNamesInActionBlock.size() == 1) {
             String nameExpr = allNamesInActionBlock.iterator().next();
             accumulateMethod.getParameter(1).setName(nameExpr);
@@ -153,14 +153,14 @@ public abstract class AccumulateVisitor {
             throw new UnsupportedOperationException("By design this legacy accumulate (with inline custome code) visitor supports only with 1-and-only binding");
         }
 
-        writeAccumulateMethod( contextFieldNames, singleAccumulateType, accumulateMethod, actionBlock );
+        writeAccumulateMethod(contextFieldNames, singleAccumulateType, accumulateMethod, actionBlock);
 
         // <result expression>: this is a semantic expression in the selected dialect that is executed after all source objects are iterated.
         MethodDeclaration resultMethod = templateClass.getMethodsByName("getResult").get(0);
         Type returnExpressionType = JavaParser.parseType("java.lang.Object");
         Expression returnExpression = JavaParser.parseExpression(descr.getResultCode());
         if (returnExpression instanceof NameExpr) {
-            returnExpression = new EnclosedExpr(returnExpression );
+            returnExpression = new EnclosedExpr(returnExpression);
         }
         rescopeNamesToNewScope(new NameExpr("data"), contextFieldNames, returnExpression);
         resultMethod.getBody().get().addStatement(new ReturnStmt(returnExpression));
@@ -173,14 +173,13 @@ public abstract class AccumulateVisitor {
 
             MethodDeclaration reverseMethod = templateClass.getMethodsByName("reverse").get(0);
             BlockStmt reverseBlock = JavaParser.parseBlock("{" + descr.getReverseCode() + "}");
-            Collection<String> allNamesInReverseBlock = collectNamesInBlock( context2, reverseBlock );
+            Collection<String> allNamesInReverseBlock = collectNamesInBlock(context2, reverseBlock);
             if (allNamesInReverseBlock.size() == 1) {
                 reverseMethod.getParameter(1).setName(allNamesInReverseBlock.iterator().next());
             } else {
                 throw new UnsupportedOperationException("By design this legacy accumulate (with inline custome code) visitor supports only with 1-and-only binding");
             }
-            writeAccumulateMethod( contextFieldNames, singleAccumulateType, reverseMethod, reverseBlock );
-
+            writeAccumulateMethod(contextFieldNames, singleAccumulateType, reverseMethod, reverseBlock);
         } else {
             MethodDeclaration supportsReverseMethod = templateClass.getMethodsByName("supportsReverse").get(0);
             supportsReverseMethod.getBody().get().addStatement(JavaParser.parseStatement("return false;"));
@@ -203,8 +202,8 @@ public abstract class AccumulateVisitor {
     }
 
     void writeAccumulateMethod(List<String> contextFieldNames, Type singleAccumulateType, MethodDeclaration accumulateMethod, BlockStmt actionBlock) {
-        for (Statement stmt : actionBlock.getStatements() ) {
-            for ( ExpressionStmt eStmt : stmt.findAll(ExpressionStmt.class) ) {
+        for (Statement stmt : actionBlock.getStatements()) {
+            for (ExpressionStmt eStmt : stmt.findAll(ExpressionStmt.class)) {
                 forceCastForName(accumulateMethod.getParameter(1).getNameAsString(), singleAccumulateType, eStmt.getExpression());
                 rescopeNamesToNewScope(new NameExpr("data"), contextFieldNames, eStmt.getExpression());
             }
@@ -213,6 +212,8 @@ public abstract class AccumulateVisitor {
     }
 
     List<String> collectNamesInBlock(RuleContext context2, BlockStmt block) {
-        return block.findAll(NameExpr.class, n -> context2.getAvailableBindings().contains(n.getNameAsString())).stream().map( NameExpr::getNameAsString ).distinct().collect(toList());
+        return block.findAll(NameExpr.class, n -> context2.getAvailableBindings().contains(n.getNameAsString())).stream().map(NameExpr::getNameAsString).distinct().collect(toList());
     }
+
+    protected abstract MethodCallExpr buildBinding(String bindingName, Collection<String> usedDeclaration, Expression expression);
 }

@@ -39,18 +39,18 @@ public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
         final MethodCallExpr accumulateDSL = new MethodCallExpr(null, "accumulate");
         context.addExpression(accumulateDSL);
         final MethodCallExpr accumulateExprs = new MethodCallExpr(null, "and");
-        accumulateDSL.addArgument( accumulateExprs );
+        accumulateDSL.addArgument(accumulateExprs);
 
         context.pushExprPointer(accumulateExprs::addArgument);
 
         BaseDescr input = descr.getInputPattern() == null ? descr.getInput() : descr.getInputPattern();
-        boolean inputPatternHasConstraints = (input instanceof PatternDescr) && (!((PatternDescr)input).getConstraint().getDescrs().isEmpty());
+        boolean inputPatternHasConstraints = (input instanceof PatternDescr) && (!((PatternDescr) input).getConstraint().getDescrs().isEmpty());
         input.accept(modelGeneratorVisitor);
 
         if (accumulateExprs.getArguments().isEmpty()) {
-            accumulateDSL.remove( accumulateExprs );
+            accumulateDSL.remove(accumulateExprs);
         } else if (accumulateExprs.getArguments().size() == 1) {
-            accumulateDSL.setArgument( 0, accumulateExprs.getArguments().get(0) );
+            accumulateDSL.setArgument(0, accumulateExprs.getArguments().get(0));
         }
 
         if (!descr.getFunctions().isEmpty()) {
@@ -61,14 +61,13 @@ public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
         } else if (descr.getFunctions().isEmpty() && descr.getInitCode() != null) {
             // LEGACY: Accumulate with inline custom code
             if (input instanceof PatternDescr) {
-                visitAccInlineCustomCode(context, descr, accumulateDSL, basePattern, (PatternDescr) input);    
+                visitAccInlineCustomCode(context, descr, accumulateDSL, basePattern, (PatternDescr) input);
             } else {
-                throw new UnsupportedOperationException("I was expecting input to be of type PatternDescr. "+input);
+                throw new UnsupportedOperationException("I was expecting input to be of type PatternDescr. " + input);
             }
         } else {
             throw new UnsupportedOperationException("Unknown type of Accumulate.");
         }
-
     }
 
     /*
@@ -89,7 +88,7 @@ public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
 
         Optional<NewBinding> newBinding = Optional.empty();
 
-        if(expr instanceof BinaryExpr) {
+        if (expr instanceof BinaryExpr) {
 
             final DrlxParseResult parseResult = new ConstraintParser(context, packageModel).drlxParse(Object.class, bindingId, expression);
 
@@ -116,8 +115,6 @@ public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
                     return Optional.empty();
                 }
             });
-
-
         } else if (expr instanceof MethodCallExpr) {
 
             final DrlxParseUtil.RemoveRootNodeResult methodCallWithoutRootNode = DrlxParseUtil.removeRootNode(expr);
@@ -157,11 +154,10 @@ public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
             functionDSL.addArgument(new NameExpr(toVar(nameExpr)));
 
             Class accumulateFunctionResultType = accumulateFunction.getResultType();
-            if ( accumulateFunctionResultType == Comparable.class && (Comparable.class.isAssignableFrom( declarationClass ) || declarationClass.isPrimitive()) ) {
+            if (accumulateFunctionResultType == Comparable.class && (Comparable.class.isAssignableFrom(declarationClass) || declarationClass.isPrimitive())) {
                 accumulateFunctionResultType = declarationClass;
             }
             context.addDeclarationReplacing(new DeclarationSpec(bindingId, accumulateFunctionResultType));
-
         } else {
             throw new UnsupportedOperationException("Unsupported expression " + expr);
         }
@@ -174,18 +170,19 @@ public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
         return newBinding;
     }
 
-    private MethodCallExpr buildBinding(String bindingName, Collection<String> usedDeclaration, Expression expression) {
+    @Override
+    protected MethodCallExpr buildBinding(String bindingName, Collection<String> usedDeclaration, Expression expression) {
         MethodCallExpr bindDSL = new MethodCallExpr(null, BIND_CALL);
         bindDSL.addArgument(toVar(bindingName));
         usedDeclaration.stream().map(d -> new NameExpr(toVar(d))).forEach(bindDSL::addArgument);
-        bindDSL.addArgument( buildConstraintExpression(expression, usedDeclaration) );
+        bindDSL.addArgument(buildConstraintExpression(expression, usedDeclaration));
         return bindDSL;
     }
 
     private void addNewBindingToRelativePattern(Optional<NewBinding> optNewBinding) {
         optNewBinding.ifPresent(newBinding -> {
             final Optional<String> patterBinding = newBinding.patternBinding;
-            if(patterBinding.isPresent()) {
+            if (patterBinding.isPresent()) {
                 final Optional<MethodCallExpr> optPattern = DrlxParseUtil.findPatternWithBinding(patterBinding.get(), context.getExpressions());
                 optPattern.ifPresent(p -> p.addArgument(newBinding.bindExpression));
             } else {
@@ -205,6 +202,7 @@ public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
     }
 
     class NewBinding {
+
         Optional<String> patternBinding;
         Expression bindExpression;
 
