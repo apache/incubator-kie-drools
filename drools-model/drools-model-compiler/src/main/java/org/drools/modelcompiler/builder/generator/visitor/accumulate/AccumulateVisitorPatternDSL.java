@@ -6,26 +6,15 @@ import java.util.Optional;
 import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
-import org.drools.javaparser.ast.expr.BinaryExpr;
-import org.drools.javaparser.ast.expr.ClassExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.modelcompiler.builder.PackageModel;
-import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.RuleContext;
-import org.drools.modelcompiler.builder.generator.TypedExpression;
-import org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser;
-import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseFail;
-import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
-import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
-import org.drools.modelcompiler.builder.generator.drlxparse.ParseResultVisitor;
 import org.drools.modelcompiler.builder.generator.expression.PatternExpressionBuilder;
 import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
-import org.kie.api.runtime.rule.AccumulateFunction;
 
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.expression.FlowExpressionBuilder.BIND_CALL;
 
@@ -56,7 +45,7 @@ public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
 
         if (!descr.getFunctions().isEmpty()) {
             for (AccumulateDescr.AccumulateFunctionCallDescr function : descr.getFunctions()) {
-                final Optional<NewBinding> optNewBinding = visit2(context, function, accumulateDSL, basePattern, inputPatternHasConstraints);
+                final Optional<NewBinding> optNewBinding = visit(context, function, accumulateDSL, basePattern, inputPatternHasConstraints);
                 addNewBindingToRelativePattern(optNewBinding);
             }
         } else if (descr.getFunctions().isEmpty() && descr.getInitCode() != null) {
