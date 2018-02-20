@@ -22,6 +22,8 @@ import static org.drools.modelcompiler.builder.generator.expression.FlowExpressi
 
 public class AccumulateVisitorFlowDSL extends AccumulateVisitor {
 
+    final List<NewBinding> newBindingResults = new ArrayList<>();
+
     public AccumulateVisitorFlowDSL(ModelGeneratorVisitor modelGeneratorVisitor, RuleContext context, PackageModel packageModel) {
         super(context, modelGeneratorVisitor, packageModel);
         expressionBuilder = new FlowExpressionBuilder(context);
@@ -45,11 +47,10 @@ public class AccumulateVisitorFlowDSL extends AccumulateVisitor {
             accumulateDSL.setArgument(0, accumulateExprs.getArguments().get(0));
         }
 
-        List<NewBinding> newBindingResults = new ArrayList<>();
         if (!descr.getFunctions().isEmpty()) {
             for (AccumulateDescr.AccumulateFunctionCallDescr function : descr.getFunctions()) {
-                final Optional<NewBinding> newBinding = visit(context, function, accumulateDSL, basePattern, inputPatternHasConstraints);
-                newBinding.ifPresent(newBindingResults::add);
+                final Optional<NewBinding> optNewBinding = visit(context, function, accumulateDSL, basePattern, inputPatternHasConstraints);
+                processNewBinding(optNewBinding);
             }
         } else if (descr.getFunctions().isEmpty() && descr.getInitCode() != null) {
             // LEGACY: Accumulate with inline custom code
@@ -62,9 +63,7 @@ public class AccumulateVisitorFlowDSL extends AccumulateVisitor {
             throw new UnsupportedOperationException("Unknown type of Accumulate.");
         }
 
-        // Bind expressions are outside the Accumulate Expr
-        context.popExprPointer();
-        newBindingResults.forEach(e -> context.getExpressions().add(0, e.bindExpression));
+        postVisit();
     }
 
     @Override
@@ -76,4 +75,17 @@ public class AccumulateVisitorFlowDSL extends AccumulateVisitor {
         bindAsDSL.addArgument(buildConstraintExpression(expression, usedDeclaration));
         return bindAsDSL;
     }
+
+    @Override
+    protected void processNewBinding(Optional<NewBinding> optNewBinding) {
+        optNewBinding.ifPresent(newBindingResults::add);
+    }
+
+    @Override
+    protected void postVisit() {
+        // Bind expressions are outside the Accumulate Expr
+        context.popExprPointer();
+        newBindingResults.forEach(e -> context.getExpressions().add(0, e.bindExpression));
+    }
+
 }

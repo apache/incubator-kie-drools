@@ -46,7 +46,7 @@ public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
         if (!descr.getFunctions().isEmpty()) {
             for (AccumulateDescr.AccumulateFunctionCallDescr function : descr.getFunctions()) {
                 final Optional<NewBinding> optNewBinding = visit(context, function, accumulateDSL, basePattern, inputPatternHasConstraints);
-                addNewBindingToRelativePattern(optNewBinding);
+                processNewBinding(optNewBinding);
             }
         } else if (descr.getFunctions().isEmpty() && descr.getInitCode() != null) {
             // LEGACY: Accumulate with inline custom code
@@ -58,6 +58,8 @@ public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
         } else {
             throw new UnsupportedOperationException("Unknown type of Accumulate.");
         }
+
+        postVisit();
     }
 
     @Override
@@ -69,7 +71,8 @@ public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
         return bindDSL;
     }
 
-    private void addNewBindingToRelativePattern(Optional<NewBinding> optNewBinding) {
+    @Override
+    protected void processNewBinding(Optional<NewBinding> optNewBinding) {
         optNewBinding.ifPresent(newBinding -> {
             final Optional<String> patterBinding = newBinding.patternBinding;
             if (patterBinding.isPresent()) {
@@ -89,5 +92,10 @@ public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
         final Optional<NameExpr> first = bindExpression.findFirst(NameExpr.class, e -> e.equals(bindingId));
         first.ifPresent(bindExpression::remove);
         return bindExpression;
+    }
+
+    @Override
+    protected void postVisit() {
+
     }
 }

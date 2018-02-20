@@ -326,6 +326,9 @@ public abstract class AccumulateVisitor {
 
     protected abstract MethodCallExpr buildBinding(String bindingName, Collection<String> usedDeclaration, Expression expression);
 
+    protected abstract void processNewBinding(Optional<NewBinding> optNewBinding);
+
+    protected abstract void postVisit();
 
     class NewBinding {
 
