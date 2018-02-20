@@ -45,4 +45,4 @@ To consider any individual ticket "Done", following requirements must be satisfi
   . Documentation (if applicable) exists and has been reviewed.
   . There is test coverage proving the feature works and tests are passing.
 
-In order to avoid introducing unstable features, the PR will be merged only after these points have been fulfilled.
+In order to avoid introducing unstable features, the PR will be merged only after these points have been fulfilled. For PRs contributed by community the core team will assist with making the functionality meet these conditions.
