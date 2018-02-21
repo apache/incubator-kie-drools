@@ -154,8 +154,6 @@ public class ConstraintParser {
                 if(((BinaryExpr)right.getExpression()).getRight() instanceof MethodCallExpr) {
                     isBetaNode = true;
                 }
-            } else if (right.getExpression() instanceof MethodCallExpr) {
-                isBetaNode = true;
             } else if (right.getExpression() instanceof NameExpr) {
                 isBetaNode = true;
             }
