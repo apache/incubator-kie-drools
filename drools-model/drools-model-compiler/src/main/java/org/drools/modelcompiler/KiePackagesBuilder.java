@@ -358,7 +358,8 @@ public class KiePackagesBuilder {
                 if (accumulatePattern.getAccumulateFunctions().length == 1) {
                     pattern = ctx.getPattern( accumulatePattern.getAccumulateFunctions()[0].getVariable() );
                 }
-                if (pattern == null) {
+                boolean existingPattern = pattern != null;
+                if (!existingPattern) {
                     pattern = new Pattern( 0, getObjectType( Object.class ) );
                 }
 
@@ -389,7 +390,7 @@ public class KiePackagesBuilder {
                 }
 
                 pattern.setSource(buildAccumulate(ctx, accumulatePattern, source, pattern, usedVariableName, binding) );
-                return pattern;
+                return existingPattern ? null : pattern;
             }
             case QUERY:
                 return buildQueryPattern( ctx, ( (QueryCallPattern) condition ) );

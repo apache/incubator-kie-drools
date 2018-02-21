@@ -96,8 +96,8 @@ public class ViewPatternBuilder implements ViewBuilder {
                 } else if ( patternItem instanceof PatternBindingImpl ) {
                     pattern.addBinding( (( PatternBindingImpl ) patternItem).asBinding( patternDef ) );
                 }
-                pattern.addWatchedProps(patternDef.getWatch());
             }
+            pattern.addWatchedProps(patternDef.getWatch());
             return pattern;
         }
 
