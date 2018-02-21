@@ -119,10 +119,10 @@ public class CompositeMoveTest {
         CompositeMove<TestdataSolution> rebaseMove = new CompositeMove<>(a, b).rebase(destinationScoreDirector);
         Move<TestdataSolution>[] rebasedChildMoves = rebaseMove.getMoves();
         assertEquals(2, rebasedChildMoves.length);
-        ChangeMove rebasedA = (ChangeMove) rebasedChildMoves[0];
+        ChangeMove<TestdataSolution> rebasedA = (ChangeMove<TestdataSolution>) rebasedChildMoves[0];
         assertSame(destinationE1, rebasedA.getEntity());
         assertSame(destinationV2, rebasedA.getToPlanningValue());
-        ChangeMove rebasedB = (ChangeMove) rebasedChildMoves[1];
+        ChangeMove<TestdataSolution> rebasedB = (ChangeMove<TestdataSolution>) rebasedChildMoves[1];
         assertSame(destinationE2, rebasedB.getEntity());
         assertSame(destinationV1, rebasedB.getToPlanningValue());
     }
