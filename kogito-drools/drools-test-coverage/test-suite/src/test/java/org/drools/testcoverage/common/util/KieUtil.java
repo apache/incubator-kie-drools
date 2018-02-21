@@ -27,6 +27,7 @@ import org.drools.compiler.kie.builder.impl.DrlProject;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.modelcompiler.CanonicalKieModule;
 import org.drools.modelcompiler.CanonicalModelFlowProject;
+import org.drools.modelcompiler.CanonicalModelPatternProject;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -111,7 +112,17 @@ public final class KieUtil {
         }
 
         KieBuilder kbuilder = KieServices.Factory.get().newKieBuilder(kfs);
-        kbuilder.buildAll(kieBaseTestConfiguration.useCanonicalModel() ? CanonicalModelFlowProject.class : DrlProject.class);
+
+        final Class<? extends KieBuilder.ProjectType> projectClass;
+        switch (kieBaseTestConfiguration.runType()) {
+            case STANDARD_FROM_DRL: projectClass = DrlProject.class; break;
+            case FLOW_DSL: projectClass = CanonicalModelFlowProject.class; break;
+            case PATTERN_DSL: projectClass = CanonicalModelPatternProject.class; break;
+            default:
+                throw new RuntimeException("Unknown type: " + kieBaseTestConfiguration.runType());
+        }
+
+        kbuilder.buildAll(projectClass);
 
         // Messages from KieBuilder with increasing severity
         List<Message> msgs = kbuilder.getResults().getMessages(Message.Level.INFO);
