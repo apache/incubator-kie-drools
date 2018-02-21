@@ -56,7 +56,15 @@ public class ExtensionElementsConverter extends DMNModelInstrumentedBaseConverte
             while (reader.hasMoreChildren()) {
                 reader.moveDown();
                 String nodeName = reader.getNodeName();
-                // skipping nodeName
+                // skipping everything but decisionServices
+                if (nodeName.equals("decisionServices")) {
+                    Object object = readItem(reader, context, null);
+                    if (object instanceof DMNModelInstrumentedBase) {
+                        ((DMNModelInstrumentedBase) object).setParent((DMNModelInstrumentedBase) obj);
+                        ((DMNModelInstrumentedBase) obj).addChildren((DMNModelInstrumentedBase) object);
+                    }
+                    assignChildElement(obj, nodeName, object);
+                }
                 reader.moveUp();
             }
         } else {
@@ -74,10 +82,6 @@ public class ExtensionElementsConverter extends DMNModelInstrumentedBaseConverte
     @Override
     protected void writeChildren(HierarchicalStreamWriter writer, MarshallingContext context, Object parent) {
         super.writeChildren(writer, context, parent);
-        
-        if(extensionRegisters.size() == 0) {
-            return;
-        }
 
         ExtensionElements ee = (ExtensionElements) parent;
         if ( ee.getAny() != null ) {

@@ -56,8 +56,14 @@ public class DefinitionsConverter
             def.getItemDefinition().add((ItemDefinition) child);
         } else if (child instanceof DRGElement) {
             def.getDrgElement().add( (DRGElement) child );
-        } else if (child instanceof DecisionService) {
-          def.getDecisionService().add((DecisionService) child);
+        } else if (child instanceof DMNElement.ExtensionElements) {
+            DMNElement.ExtensionElements extensions = (DMNElement.ExtensionElements) child;
+            for (Object any : extensions.getAny()) {
+                if (any instanceof DecisionServices) {
+                    def.getDecisionService().addAll(((DecisionServices) any).getDecisionService());
+                }
+            }
+            super.assignChildElement(def, nodeName, child);
         } else if (child instanceof Artifact) {
             def.getArtifact().add((Artifact) child);
         } else if (ELEMENT_COLLECTION.equals(nodeName)) {
@@ -102,9 +108,6 @@ public class DefinitionsConverter
         }
         for ( ItemDefinition id : def.getItemDefinition() ) {
             writeChildrenNode(writer, context, id, ITEM_DEFINITION);
-        }
-        for ( DecisionService d : def.getDecisionService() ) {
-            writeChildrenNode(writer, context, d, DECISION_SERVICE);
         }
         for ( DRGElement e : def.getDrgElement() ) {
             String nodeName = DRG_ELEMENT;
