@@ -42,6 +42,7 @@ import org.drools.model.patterns.QueryCallPattern;
 import org.drools.model.view.AccumulateExprViewItem;
 import org.drools.model.view.CombinedExprViewItem;
 import org.drools.model.view.ExistentialExprViewItem;
+import org.drools.model.view.ExprViewItem;
 import org.drools.model.view.FixedValueItem;
 import org.drools.model.view.QueryCallViewItem;
 import org.drools.model.view.ViewItem;
@@ -50,6 +51,7 @@ import static java.util.stream.Collectors.toList;
 
 import static org.drools.model.impl.NamesGenerator.generateName;
 import static org.drools.model.impl.ViewFlowBuilder.createConditionalNamedConsequence;
+import static org.drools.model.impl.ViewFlowBuilder.createConstraint;
 
 public class ViewPatternBuilder implements ViewBuilder {
 
@@ -124,6 +126,10 @@ public class ViewPatternBuilder implements ViewBuilder {
         if ( ruleItem instanceof AccumulateExprViewItem ) {
             AccumulateExprViewItem acc = (AccumulateExprViewItem) ruleItem;
             return new AccumulatePatternImpl(ruleItem2Condition( acc.getExpr() ), acc.getAccumulateFunctions());
+        }
+
+        if ( ruleItem instanceof ExprViewItem ) {
+            return new EvalImpl( createConstraint( (ExprViewItem) ruleItem ) );
         }
 
         throw new UnsupportedOperationException( "Unknown " + ruleItem );
