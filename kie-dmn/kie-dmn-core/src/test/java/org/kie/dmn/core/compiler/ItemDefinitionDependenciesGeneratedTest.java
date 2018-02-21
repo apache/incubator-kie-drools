@@ -39,9 +39,9 @@ public class ItemDefinitionDependenciesGeneratedTest {
 
     private final Logger logger = LoggerFactory.getLogger(ItemDefinitionDependenciesGeneratedTest.class);
 
-    private static final int NUMBER_OF_BASE_ITEM_DEFINITIONS = 4;
+    private static final int NUMBER_OF_BASE_ITEM_DEFINITIONS = 5;
+    private static final int LEVELS_OF_DEPENDENCIES = 3;
     private static final String ITEM_DEFINITION_NAME_BASE = "ItemDefinition";
-
     private static final String TEST_NS = "https://www.drools.org/";
 
     @Parameterized.Parameter
@@ -50,20 +50,16 @@ public class ItemDefinitionDependenciesGeneratedTest {
     @Parameterized.Parameters
     public static Collection<List<ItemDefinition>> generateParameters() {
         final List<ItemDefinition> baseItemDefinitions = getBaseListOfItemDefinitions(1);
-        final List<ItemDefinition> baseDependencies = getBaseListOfItemDefinitions(10);
 
         final Collection<List<ItemDefinition>> permutations = new ArrayList<>();
-        getAllPossiblePermutations(baseItemDefinitions, new ArrayList<>(), permutations);
+        getPermutations(baseItemDefinitions, new ArrayList<>(), permutations);
 
-        final Collection<List<ItemDefinition>> dependenciesPermutations = new ArrayList<>();
-        getAllPossiblePermutations(baseDependencies, new ArrayList<>(), dependenciesPermutations);
-
-        return generateItemDefinitionsWithDependencies(permutations, dependenciesPermutations);
+        return generateItemDefinitionsWithDependencies(permutations);
     }
 
-    private static void getAllPossiblePermutations(final List<ItemDefinition> itemDefinitions,
-                                                   final List<ItemDefinition> head,
-                                                   final Collection<List<ItemDefinition>> result) {
+    private static void getPermutations(final List<ItemDefinition> itemDefinitions,
+                                        final List<ItemDefinition> head,
+                                        final Collection<List<ItemDefinition>> result) {
         if (itemDefinitions.size() == 1) {
             final List<ItemDefinition> resultList = new ArrayList<>(head);
             resultList.addAll(itemDefinitions);
@@ -74,13 +70,12 @@ public class ItemDefinitionDependenciesGeneratedTest {
                 newHead.add(itemDefinition);
                 final List<ItemDefinition> possibleDependencies =
                         itemDefinitions.stream().filter(item -> !newHead.contains(item)).collect(Collectors.toList());
-                getAllPossiblePermutations(possibleDependencies, newHead, result);
+                getPermutations(possibleDependencies, newHead, result);
             }
         }
     }
 
-    private static Collection<List<ItemDefinition>> generateItemDefinitionsWithDependencies(final Collection<List<ItemDefinition>> itemDefinitionPermutations,
-                                                                                            final Collection<List<ItemDefinition>> dependenciesPermutations) {
+    private static Collection<List<ItemDefinition>> generateItemDefinitionsWithDependencies(final Collection<List<ItemDefinition>> itemDefinitionPermutations) {
         final Collection<List<ItemDefinition>> result = new ArrayList<>();
         itemDefinitionPermutations.forEach(itemDefinitions -> {
             // An ItemDefinition could have 1 or more deps, so generate a test for these cases
@@ -91,9 +86,11 @@ public class ItemDefinitionDependenciesGeneratedTest {
                 // loop specifies from which ItemDefinition should be the deps added
                 // (e.g. if j == 2, deps are added to third ItemDefinition at start)
                 for (int addDependenciesFromItemIndex = 0; addDependenciesFromItemIndex < NUMBER_OF_BASE_ITEM_DEFINITIONS; addDependenciesFromItemIndex++) {
-                    for (List<ItemDefinition> dependencies : dependenciesPermutations) {
-                        result.add(generateItemDefinitionsWithDependencies(itemDefinitions, dependencies, numberOfDependencies, addDependenciesFromItemIndex));
-                    }
+                    result.add(generateItemDefinitionsWithDependencies(itemDefinitions,
+                                                                       getBaseListOfItemDefinitions(10),
+                                                                       numberOfDependencies,
+                                                                       addDependenciesFromItemIndex,
+                                                                       LEVELS_OF_DEPENDENCIES));
                 }
             }
         });
@@ -103,7 +100,8 @@ public class ItemDefinitionDependenciesGeneratedTest {
     private static List<ItemDefinition> generateItemDefinitionsWithDependencies(final List<ItemDefinition> itemDefinitions,
                                                                                 final List<ItemDefinition> dependencies,
                                                                                 final int maxNumberOfDepsPerItemDefinition,
-                                                                                final int startWithItemIndex) {
+                                                                                final int startWithItemIndex,
+                                                                                final int levelsOfDependencies) {
 
         // Original ItemDefinition ordering must be preserved, so this head tail result split trick does the thing.
         final List<ItemDefinition> resultTail = new ArrayList<>();
@@ -117,7 +115,15 @@ public class ItemDefinitionDependenciesGeneratedTest {
             resultHead.add(createItemDefinitionWithDeps(itemDefinitions.get(i), dependencies, maxNumberOfDepsPerItemDefinition, usedNames));
         }
         resultHead.addAll(resultTail);
-        resultHead.addAll(dependencies);
+        if (levelsOfDependencies > 1) {
+            resultHead.addAll(generateItemDefinitionsWithDependencies(dependencies,
+                                                                      getBaseListOfItemDefinitions(levelsOfDependencies * 100),
+                                                                      maxNumberOfDepsPerItemDefinition,
+                                                                      startWithItemIndex,
+                                                                      levelsOfDependencies - 1));
+        } else {
+            resultHead.addAll(dependencies);
+        }
         return resultHead;
     }
 
