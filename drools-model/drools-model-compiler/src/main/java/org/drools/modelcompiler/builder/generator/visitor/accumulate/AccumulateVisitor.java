@@ -369,9 +369,9 @@ public abstract class AccumulateVisitor {
     class NewBinding {
 
         Optional<String> patternBinding;
-        Expression bindExpression;
+        MethodCallExpr bindExpression;
 
-        public NewBinding(Optional<String> patternBinding, Expression bindExpression) {
+        public NewBinding(Optional<String> patternBinding, MethodCallExpr bindExpression) {
             this.patternBinding = patternBinding;
             this.bindExpression = bindExpression;
         }
