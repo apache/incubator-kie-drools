@@ -23,6 +23,9 @@ import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
 
+import static org.drools.testcoverage.common.util.KieBaseModelProvider.RunType.FLOW_DSL;
+import static org.drools.testcoverage.common.util.KieBaseModelProvider.RunType.STANDARD_FROM_DRL;
+
 /**
  * Represents various tested KieBase configurations.
  */
@@ -36,8 +39,8 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      */
     CLOUD_IDENTITY {
         @Override
-        public boolean useCanonicalModel() {
-            return false;
+        public RunType runType() {
+            return STANDARD_FROM_DRL;
         }
 
         @Override
@@ -66,8 +69,8 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      */
     CLOUD_IDENTITY_CANONICAL_MODEL {
         @Override
-        public boolean useCanonicalModel() {
-            return true;
+        public RunType runType() {
+            return FLOW_DSL;
         }
 
         @Override
@@ -96,8 +99,8 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      */
     CLOUD_EQUALITY {
         @Override
-        public boolean useCanonicalModel() {
-            return false;
+        public RunType runType() {
+            return STANDARD_FROM_DRL;
         }
 
         @Override
@@ -126,8 +129,8 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      */
     CLOUD_EQUALITY_CANONICAL_MODEL {
         @Override
-        public boolean useCanonicalModel() {
-            return true;
+        public RunType runType() {
+            return FLOW_DSL;
         }
 
         @Override
@@ -156,8 +159,8 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      */
     STREAM_IDENTITY {
         @Override
-        public boolean useCanonicalModel() {
-            return false;
+        public RunType runType() {
+            return STANDARD_FROM_DRL;
         }
 
         @Override
@@ -186,8 +189,8 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      */
     STREAM_IDENTITY_CANONICAL_MODEL {
         @Override
-        public boolean useCanonicalModel() {
-            return true;
+        public RunType runType() {
+            return FLOW_DSL;
         }
 
         @Override
@@ -216,8 +219,8 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      */
     STREAM_EQUALITY {
         @Override
-        public boolean useCanonicalModel() {
-            return false;
+        public RunType runType() {
+            return STANDARD_FROM_DRL;
         }
 
         @Override
@@ -246,8 +249,8 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      */
     STREAM_EQUALITY_CANONICAL_MODEL {
         @Override
-        public boolean useCanonicalModel() {
-            return true;
+        public RunType runType() {
+            return FLOW_DSL;
         }
 
         @Override

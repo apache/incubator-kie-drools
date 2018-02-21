@@ -20,11 +20,23 @@ import org.kie.api.KieBaseConfiguration;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 
+import static java.util.Arrays.asList;
+
 /**
  * Basic provider class for KieBaseModel instances.
  */
 public interface KieBaseModelProvider {
     KieBaseModel getKieBaseModel(KieModuleModel kieModuleModel);
     KieBaseConfiguration getKieBaseConfiguration();
-    boolean useCanonicalModel();
+    RunType runType();
+
+    enum RunType {
+        FLOW_DSL,
+        PATTERN_DSL,
+        STANDARD_FROM_DRL
+    }
+
+    default boolean useCanonicalModel() {
+        return asList(RunType.FLOW_DSL, RunType.PATTERN_DSL).contains(runType());
+    }
 }
