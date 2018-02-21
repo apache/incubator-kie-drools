@@ -3,12 +3,8 @@ package org.drools.model;
 import org.drools.model.consequences.ConditionalConsequenceBuilder;
 import org.drools.model.functions.Function1;
 import org.drools.model.functions.Function2;
-import org.drools.model.functions.Operator;
 import org.drools.model.functions.Predicate1;
 import org.drools.model.functions.Predicate2;
-import org.drools.model.functions.Predicate3;
-import org.drools.model.functions.Predicate4;
-import org.drools.model.functions.Predicate5;
 import org.drools.model.functions.temporal.TemporalPredicate;
 import org.drools.model.impl.Query0DefImpl;
 import org.drools.model.impl.Query1DefImpl;
@@ -21,11 +17,7 @@ import org.drools.model.view.BindViewItem1;
 import org.drools.model.view.BindViewItem2;
 import org.drools.model.view.Expr1ViewItem;
 import org.drools.model.view.Expr1ViewItemImpl;
-import org.drools.model.view.Expr2ViewItem;
 import org.drools.model.view.Expr2ViewItemImpl;
-import org.drools.model.view.Expr3ViewItemImpl;
-import org.drools.model.view.Expr4ViewItemImpl;
-import org.drools.model.view.Expr5ViewItemImpl;
 import org.drools.model.view.ExprViewItem;
 import org.drools.model.view.InputViewItem;
 import org.drools.model.view.InputViewItemImpl;
@@ -49,46 +41,6 @@ public class FlowDSL extends DSL {
 
     public static <T> Expr1ViewItem<T> expr( Variable<T> var) {
         return new Expr1ViewItemImpl<>( var, new Predicate1.Impl<>(t -> true) );
-    }
-
-    public static <T> Expr1ViewItem<T> expr( Variable<T> var, Predicate1<T> predicate ) {
-        return new Expr1ViewItemImpl<>( var, new Predicate1.Impl<>(predicate) );
-    }
-
-    public static <T, U> Expr2ViewItem<T, U> expr(Variable<T> var1, Variable<U> var2, Predicate2<T, U> predicate) {
-        return new Expr2ViewItemImpl<>( var1, var2, new Predicate2.Impl<>(predicate) );
-    }
-
-    public static <T, U, X> ExprViewItem<T> expr(Variable<T> var1, Variable<U> var2, Variable<X> var3, Predicate3<T, U, X> predicate) {
-        return new Expr3ViewItemImpl<>(var1, var2, var3, new Predicate3.Impl<>(predicate));
-    }
-
-    public static <T> Expr1ViewItem<T> expr(String exprId, Variable<T> var, Predicate1<T> predicate) {
-        return new Expr1ViewItemImpl<>( exprId, var, new Predicate1.Impl<>(predicate));
-    }
-
-    public static <T, U> Expr2ViewItem<T, U> expr( String exprId, Variable<T> var1, Variable<U> var2, Predicate2<T, U> predicate ) {
-        return new Expr2ViewItemImpl<>( exprId, var1, var2, new Predicate2.Impl<>(predicate));
-    }
-
-    public static <T, U, X> ExprViewItem<T> expr(String exprId, Variable<T> var1, Variable<U> var2, Variable<X> var3, Predicate3<T, U, X> predicate) {
-        return new Expr3ViewItemImpl<>(exprId, var1, var2, var3, new Predicate3.Impl<>(predicate));
-    }
-
-    public static <A, B, C, D> ExprViewItem<A> expr(Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Predicate4<A, B, C, D> predicate) {
-        return new Expr4ViewItemImpl<>(var1, var2, var3, var4, new Predicate4.Impl<>(predicate));
-    }
-
-    public static <A, B, C, D> ExprViewItem<A> expr(String exprId, Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Predicate4<A, B, C, D> predicate) {
-        return new Expr4ViewItemImpl<>(exprId, var1, var2, var3, var4, new Predicate4.Impl<>(predicate));
-    }
-
-    public static <A, B, C, D, E> ExprViewItem<A> expr(Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Variable<E> var5, Predicate5<A, B, C, D, E> predicate) {
-        return new Expr5ViewItemImpl<>(var1, var2, var3, var4, var5, new Predicate5.Impl<>(predicate));
-    }
-
-    public static <A, B, C, D, E> ExprViewItem<A> expr(String exprId, Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Variable<E> var5, Predicate5<A, B, C, D, E> predicate) {
-        return new Expr5ViewItemImpl<>(exprId, var1, var2, var3, var4, var5, new Predicate5.Impl<>(predicate));
     }
 
     public static <T> ExprViewItem<T> not(Variable<T> var) {
