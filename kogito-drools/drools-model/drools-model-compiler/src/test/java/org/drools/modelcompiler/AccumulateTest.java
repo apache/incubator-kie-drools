@@ -31,6 +31,7 @@ import org.drools.modelcompiler.domain.Customer;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
 import org.drools.modelcompiler.domain.TargetPolicy;
+import org.drools.modelcompiler.oopathdtables.InternationalAddress;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.AccumulateFunction;
@@ -565,5 +566,29 @@ public class AccumulateTest extends BaseModelTest {
         List<Integer> results = getObjectsIntoList(ksession, Integer.class);
         assertEquals(1, results.size());
         assertThat(results, hasItem(8));
+    }
+
+    @Test
+    public void testAccumulateFromWithConstraint() {
+        String str =
+                "import " + java.util.List.class.getCanonicalName() + ";" +
+                "import " + org.drools.modelcompiler.oopathdtables.Person.class.getCanonicalName() + ";" +
+                "import " + org.drools.modelcompiler.oopathdtables.Address.class.getCanonicalName() + ";" +
+                "import " + org.drools.modelcompiler.oopathdtables.InternationalAddress.class.getCanonicalName() + ";" +
+                "rule listSafeCities when\n" +
+                "  $a : InternationalAddress()\n" +
+                "  $cities : List(size > 0) from accumulate ($city : String() from $a.city, collectList($city))\n" +
+                "then\n" +
+                "   insert($cities.get(0));\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert(new InternationalAddress("", 1, "Milan", "Safecountry"));
+        ksession.fireAllRules();
+
+        List<String> results = getObjectsIntoList(ksession, String.class);
+        assertEquals(1, results.size());
+        assertThat(results, hasItem("Milan"));
     }
 }

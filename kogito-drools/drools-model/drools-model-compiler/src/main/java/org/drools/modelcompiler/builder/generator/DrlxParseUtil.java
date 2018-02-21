@@ -532,10 +532,4 @@ public class DrlxParseUtil {
             return Optional.of(collect.get(collect.size() - 1));
         }
     }
-
-    public static Node getRootScope(NodeWithOptionalScope<?> scopedNode) {
-        return scopedNode.getScope()
-                .map( scope -> scope instanceof NodeWithOptionalScope ? getRootScope( ( NodeWithOptionalScope ) scope ) : scope )
-                .orElse( (Node) scopedNode );
-    }
 }

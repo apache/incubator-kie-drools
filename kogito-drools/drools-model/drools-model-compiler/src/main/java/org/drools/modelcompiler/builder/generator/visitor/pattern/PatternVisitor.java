@@ -53,8 +53,6 @@ public class PatternVisitor {
         }
     }
 
-
-
     private boolean areAllConstraintsPositional(List<? extends BaseDescr> constraintDescrs) {
         return !constraintDescrs.isEmpty() && constraintDescrs.stream()
                 .allMatch(c -> c instanceof ExprConstraintDescr
