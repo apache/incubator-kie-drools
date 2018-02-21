@@ -43,6 +43,9 @@ public class DMNFEELHelper {
     private final FEELEventsListenerImpl listener;
     private final List<FEELProfile> feelProfiles = new ArrayList<>();
 
+    // used internally as a caching mechanism.
+    private List<FEELFunction> feelFunctions = new ArrayList<>();
+
     public DMNFEELHelper() {
         this.listener = new FEELEventsListenerImpl();
         this.feel = createFEELInstance();
@@ -102,6 +105,7 @@ public class DMNFEELHelper {
 
     public void registerFEELProfiles(Collection<FEELProfile> feelProfiles) {
         this.feelProfiles.addAll(feelProfiles);
+        this.feelFunctions = this.feelProfiles.stream().flatMap(p -> p.getFEELFunctions().stream()).collect(Collectors.toList());
     }
 
     public CompiledExpression compileFeelExpression(DMNCompilerContext ctx, String expression, DMNModelImpl model, DMNElement element, Msg.Message errorMsg, Object... msgParams) {
@@ -110,7 +114,7 @@ public class DMNFEELHelper {
         for ( Map.Entry<String, DMNType> entry : ctx.getVariables().entrySet() ) {
             feelctx.addInputVariableType( entry.getKey(), ((BaseDMNTypeImpl) entry.getValue()).getFeelType() );
         }
-        feelctx.addFEELFunctions(this.feelProfiles.stream().flatMap(p -> p.getFEELFunctions().stream()).collect(Collectors.toList()));
+        feelctx.addFEELFunctions(this.feelFunctions);
         CompiledExpression ce = feel.compile( expression, feelctx );
         processEvents( model, element, errorMsg, msgParams );
         return ce;
