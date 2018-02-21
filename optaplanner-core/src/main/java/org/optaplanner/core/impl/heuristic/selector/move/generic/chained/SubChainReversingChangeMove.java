@@ -119,6 +119,13 @@ public class SubChainReversingChangeMove<Solution_> extends AbstractMove<Solutio
         }
     }
 
+    @Override
+    public SubChainReversingChangeMove<Solution_> rebase(ScoreDirector<Solution_> destinationScoreDirector) {
+        return new SubChainReversingChangeMove<>(subChain.rebase(destinationScoreDirector),
+                variableDescriptor, inverseVariableSupply,
+                destinationScoreDirector.lookUpWorkingObject(toPlanningValue));
+    }
+
     // ************************************************************************
     // Introspection methods
     // ************************************************************************

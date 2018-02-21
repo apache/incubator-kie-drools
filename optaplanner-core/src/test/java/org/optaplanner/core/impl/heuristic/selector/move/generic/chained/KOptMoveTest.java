@@ -28,12 +28,17 @@ import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInvers
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedAnchor;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.mockito.Mockito.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.*;
 
 public class KOptMoveTest {
 
@@ -237,6 +242,50 @@ public class KOptMoveTest {
 
         // These moves would create a loop
         // TODO
+    }
+
+    @Test
+    public void rebase() {
+        GenuineVariableDescriptor<TestdataChainedSolution> variableDescriptor = TestdataChainedEntity.buildVariableDescriptorForChainedObject();
+
+        TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
+        TestdataChainedEntity a1 = new TestdataChainedEntity("a1", a0);
+        TestdataChainedEntity a2 = new TestdataChainedEntity("a2", a1);
+        TestdataChainedEntity a3 = new TestdataChainedEntity("a3", a2);
+        TestdataChainedAnchor b0 = new TestdataChainedAnchor("b0");
+        TestdataChainedAnchor c0 = new TestdataChainedAnchor("c0");
+        TestdataChainedEntity c1 = new TestdataChainedEntity("c1", c0);
+
+        TestdataChainedAnchor destinationA0 = new TestdataChainedAnchor("a0");
+        TestdataChainedEntity destinationA1 = new TestdataChainedEntity("a1", destinationA0);
+        TestdataChainedEntity destinationA2 = new TestdataChainedEntity("a2", destinationA1);
+        TestdataChainedEntity destinationA3 = new TestdataChainedEntity("a3", destinationA2);
+        TestdataChainedAnchor destinationB0 = new TestdataChainedAnchor("b0");
+        TestdataChainedAnchor destinationC0 = new TestdataChainedAnchor("c0");
+        TestdataChainedEntity destinationC1 = new TestdataChainedEntity("c1", destinationC0);
+
+        ScoreDirector<TestdataChainedSolution> destinationScoreDirector = mockRebasingScoreDirector(
+                variableDescriptor.getEntityDescriptor().getSolutionDescriptor(), new Object[][]{
+                        {a0, destinationA0},
+                        {a1, destinationA1},
+                        {a2, destinationA2},
+                        {a3, destinationA3},
+                        {b0, destinationB0},
+                        {c0, destinationC0},
+                        {c1, destinationC1},
+                });
+        SingletonInverseVariableSupply inverseVariableSupply = mock(SingletonInverseVariableSupply.class);
+        AnchorVariableSupply anchorVariableSupply = mock(AnchorVariableSupply.class);
+
+        assertSameProperties(destinationA1, new Object[]{destinationC1, destinationB0},
+                new KOptMove<>(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a1, new Object[]{c1, b0}).rebase(destinationScoreDirector));
+        assertSameProperties(destinationA3, new Object[]{destinationA0, destinationB0},
+                new KOptMove<>(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a3, new Object[]{a0, b0}).rebase(destinationScoreDirector));
+    }
+
+    public void assertSameProperties(Object leftentity, Object[] values, KOptMove move) {
+        assertSame(leftentity, move.getEntity());
+        assertArrayElementsSameExactly(values, move.getValues());
     }
 
     @Test

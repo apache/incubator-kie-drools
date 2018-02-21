@@ -98,8 +98,9 @@ public interface Move<Solution_> {
      * Generally speaking, an implementation of this method iterates through every entity and fact instance in this move,
      * translates each one to the destination {@link ScoreDirector} with {@link ScoreDirector#lookUpWorkingObject(Object)}
      * and creates a new move instance of the same move type, using those translated instances.
-     * @param destinationScoreDirector never null, the
-     * @return never null,
+     * @param destinationScoreDirector never null, the {@link ScoreDirector#getWorkingSolution()}
+     * that the new move should change the planning entity instances of.
+     * @return never null, a new move that does the same change as this move on another solution instance
      */
     default Move<Solution_> rebase(ScoreDirector<Solution_> destinationScoreDirector) {
         throw new UnsupportedOperationException("The custom move class (" + getClass()

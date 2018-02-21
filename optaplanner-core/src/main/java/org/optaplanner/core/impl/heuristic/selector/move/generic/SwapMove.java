@@ -98,6 +98,13 @@ public class SwapMove<Solution_> extends AbstractMove<Solution_> {
     }
 
     @Override
+    public SwapMove<Solution_> rebase(ScoreDirector<Solution_> destinationScoreDirector) {
+        return new SwapMove<>(variableDescriptorList,
+                destinationScoreDirector.lookUpWorkingObject(leftEntity),
+                destinationScoreDirector.lookUpWorkingObject(rightEntity));
+    }
+
+    @Override
     protected void doMoveOnGenuineVariables(ScoreDirector<Solution_> scoreDirector) {
         for (GenuineVariableDescriptor<Solution_> variableDescriptor : variableDescriptorList) {
             Object oldLeftValue = variableDescriptor.getValue(leftEntity);

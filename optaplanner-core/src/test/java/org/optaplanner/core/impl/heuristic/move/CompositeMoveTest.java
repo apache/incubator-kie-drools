@@ -90,6 +90,44 @@ public class CompositeMoveTest {
     }
 
     @Test
+    public void rebase() {
+        GenuineVariableDescriptor<TestdataSolution> variableDescriptor = TestdataEntity.buildVariableDescriptorForValue();
+
+        TestdataValue v1 = new TestdataValue("v1");
+        TestdataValue v2 = new TestdataValue("v2");
+        TestdataEntity e1 = new TestdataEntity("e1", v1);
+        TestdataEntity e2 = new TestdataEntity("e2", null);
+        TestdataEntity e3 = new TestdataEntity("e3", v1);
+
+        TestdataValue destinationV1 = new TestdataValue("v1");
+        TestdataValue destinationV2 = new TestdataValue("v2");
+        TestdataEntity destinationE1 = new TestdataEntity("e1", destinationV1);
+        TestdataEntity destinationE2 = new TestdataEntity("e2", null);
+        TestdataEntity destinationE3 = new TestdataEntity("e3", destinationV1);
+
+        ScoreDirector<TestdataSolution> destinationScoreDirector = mockRebasingScoreDirector(
+                variableDescriptor.getEntityDescriptor().getSolutionDescriptor(), new Object[][]{
+                        {v1, destinationV1},
+                        {v2, destinationV2},
+                        {e1, destinationE1},
+                        {e2, destinationE2},
+                        {e3, destinationE3},
+                });
+
+        ChangeMove<TestdataSolution> a = new ChangeMove<>(e1, variableDescriptor, v2);
+        ChangeMove<TestdataSolution> b = new ChangeMove<>(e2, variableDescriptor, v1);
+        CompositeMove<TestdataSolution> rebaseMove = new CompositeMove<>(a, b).rebase(destinationScoreDirector);
+        Move<TestdataSolution>[] rebasedChildMoves = rebaseMove.getMoves();
+        assertEquals(2, rebasedChildMoves.length);
+        ChangeMove rebasedA = (ChangeMove) rebasedChildMoves[0];
+        assertSame(destinationE1, rebasedA.getEntity());
+        assertSame(destinationV2, rebasedA.getToPlanningValue());
+        ChangeMove rebasedB = (ChangeMove) rebasedChildMoves[1];
+        assertSame(destinationE2, rebasedB.getEntity());
+        assertSame(destinationV1, rebasedB.getToPlanningValue());
+    }
+
+    @Test
     public void buildEmptyMove() {
         assertInstanceOf(NoChangeMove.class, CompositeMove.buildMove(new ArrayList<>()));
         assertInstanceOf(NoChangeMove.class, CompositeMove.buildMove());

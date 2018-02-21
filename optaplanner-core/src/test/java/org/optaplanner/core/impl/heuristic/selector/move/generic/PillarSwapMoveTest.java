@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
+import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
@@ -33,6 +34,7 @@ import org.optaplanner.core.impl.testdata.domain.valuerange.entityproviding.Test
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.*;
 
 public class PillarSwapMoveTest {
 
@@ -218,6 +220,49 @@ public class PillarSwapMoveTest {
         assertEquals(v4, b.getValue());
         assertEquals(v3, c.getValue());
         assertEquals(v3, z.getValue());
+    }
+
+    @Test
+    public void rebase() {
+        EntityDescriptor<TestdataSolution> entityDescriptor = TestdataEntity.buildEntityDescriptor();
+        List<GenuineVariableDescriptor<TestdataSolution>> variableDescriptorList = entityDescriptor.getGenuineVariableDescriptorList();
+
+        TestdataValue v1 = new TestdataValue("v1");
+        TestdataValue v2 = new TestdataValue("v2");
+        TestdataValue v3 = new TestdataValue("v3");
+        TestdataEntity e1 = new TestdataEntity("e1", v1);
+        TestdataEntity e2 = new TestdataEntity("e2", null);
+        TestdataEntity e3 = new TestdataEntity("e3", v1);
+        TestdataEntity e4 = new TestdataEntity("e4", v3);
+
+        TestdataValue destinationV1 = new TestdataValue("v1");
+        TestdataValue destinationV2 = new TestdataValue("v2");
+        TestdataValue destinationV3 = new TestdataValue("v3");
+        TestdataEntity destinationE1 = new TestdataEntity("e1", destinationV1);
+        TestdataEntity destinationE2 = new TestdataEntity("e2", null);
+        TestdataEntity destinationE3 = new TestdataEntity("e3", destinationV1);
+        TestdataEntity destinationE4 = new TestdataEntity("e4", destinationV3);
+
+        ScoreDirector<TestdataSolution> destinationScoreDirector = mockRebasingScoreDirector(
+                entityDescriptor.getSolutionDescriptor(), new Object[][]{
+                        {v1, destinationV1},
+                        {v2, destinationV2},
+                        {v3, destinationV3},
+                        {e1, destinationE1},
+                        {e2, destinationE2},
+                        {e3, destinationE3},
+                        {e4, destinationE4},
+                });
+
+        assertSameProperties(Arrays.asList(destinationE1, destinationE3), Arrays.asList(destinationE2),
+                new PillarSwapMove<>(variableDescriptorList, Arrays.asList(e1, e3), Arrays.asList(e2)).rebase(destinationScoreDirector));
+        assertSameProperties(Arrays.asList(destinationE4), Arrays.asList(destinationE1, destinationE3),
+                new PillarSwapMove<>(variableDescriptorList, Arrays.asList(e4), Arrays.asList(e1, e3)).rebase(destinationScoreDirector));
+    }
+
+    public void assertSameProperties(List<Object> leftPillar, List<Object> rightPillar, PillarSwapMove<?> move) {
+        assertListElementsSameExactly(leftPillar, (List<Object>) move.getLeftPillar());
+        assertListElementsSameExactly(rightPillar, (List<Object>) move.getRightPillar());
     }
 
     @Test

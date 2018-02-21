@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Test;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
@@ -32,6 +33,8 @@ import org.optaplanner.core.impl.testdata.domain.valuerange.entityproviding.Test
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertSame;
+import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.*;
 
 public class PillarChangeMoveTest {
 
@@ -114,6 +117,52 @@ public class PillarChangeMoveTest {
         assertEquals(v2, a.getValue());
         assertEquals(v2, b.getValue());
         assertEquals(v2, c.getValue());
+    }
+
+    @Test
+    public void rebase() {
+        GenuineVariableDescriptor<TestdataSolution> variableDescriptor = TestdataEntity.buildVariableDescriptorForValue();
+
+        TestdataValue v1 = new TestdataValue("v1");
+        TestdataValue v2 = new TestdataValue("v2");
+        TestdataValue v3 = new TestdataValue("v3");
+        TestdataEntity e1 = new TestdataEntity("e1", v1);
+        TestdataEntity e2 = new TestdataEntity("e2", null);
+        TestdataEntity e3 = new TestdataEntity("e3", v1);
+        TestdataEntity e4 = new TestdataEntity("e4", v3);
+
+        TestdataValue destinationV1 = new TestdataValue("v1");
+        TestdataValue destinationV2 = new TestdataValue("v2");
+        TestdataValue destinationV3 = new TestdataValue("v3");
+        TestdataEntity destinationE1 = new TestdataEntity("e1", destinationV1);
+        TestdataEntity destinationE2 = new TestdataEntity("e2", null);
+        TestdataEntity destinationE3 = new TestdataEntity("e3", destinationV1);
+        TestdataEntity destinationE4 = new TestdataEntity("e4", destinationV3);
+
+        ScoreDirector<TestdataSolution> destinationScoreDirector = mockRebasingScoreDirector(
+                variableDescriptor.getEntityDescriptor().getSolutionDescriptor(), new Object[][]{
+                        {v1, destinationV1},
+                        {v2, destinationV2},
+                        {v3, destinationV3},
+                        {e1, destinationE1},
+                        {e2, destinationE2},
+                        {e3, destinationE3},
+                        {e4, destinationE4},
+                });
+
+        assertSameProperties(Arrays.asList(destinationE1, destinationE3), null,
+                new PillarChangeMove<>(Arrays.asList(e1, e3), variableDescriptor, null).rebase(destinationScoreDirector));
+        assertSameProperties(Arrays.asList(destinationE1, destinationE3), destinationV3,
+                new PillarChangeMove<>(Arrays.asList(e1, e3), variableDescriptor, v3).rebase(destinationScoreDirector));
+        assertSameProperties(Arrays.asList(destinationE2), destinationV1,
+                new PillarChangeMove<>(Arrays.asList(e2), variableDescriptor, v1).rebase(destinationScoreDirector));
+        assertSameProperties(Arrays.asList(destinationE1), destinationV2,
+                new PillarChangeMove<>(Arrays.asList(e1), variableDescriptor, v2).rebase(destinationScoreDirector));
+    }
+
+    public void assertSameProperties(List<Object> pillar, Object toPlanningVariable, PillarChangeMove<?> move) {
+        assertListElementsSameExactly(pillar, (List<Object>) move.getPillar());
+        assertSame(toPlanningVariable, move.getToPlanningValue());
     }
 
     @Test

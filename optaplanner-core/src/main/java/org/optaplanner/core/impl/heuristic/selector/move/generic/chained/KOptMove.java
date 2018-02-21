@@ -134,6 +134,13 @@ public class KOptMove<Solution_> extends AbstractMove<Solution_> {
         }
     }
 
+    @Override
+    public KOptMove<Solution_> rebase(ScoreDirector<Solution_> destinationScoreDirector) {
+        return new KOptMove<>(variableDescriptor, inverseVariableSupply, anchorVariableSupply,
+                destinationScoreDirector.lookUpWorkingObject(entity),
+                rebaseArray(values, destinationScoreDirector));
+    }
+
     // ************************************************************************
     // Introspection methods
     // ************************************************************************

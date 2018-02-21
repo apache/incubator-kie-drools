@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.optaplanner.core.impl.score.director.ScoreDirector;
+
 /**
  * A subList out of a single chain.
  * <p>
@@ -68,6 +70,14 @@ public class SubChain implements Serializable {
 
     public SubChain subChain(int fromIndex, int toIndex) {
         return new SubChain(entityList.subList(fromIndex, toIndex));
+    }
+
+    public <Solution_> SubChain rebase(ScoreDirector<Solution_> destinationScoreDirector) {
+        List<Object> rebasedEntityList = new ArrayList<>(entityList.size());
+        for (Object entity : entityList) {
+            rebasedEntityList.add(destinationScoreDirector.lookUpWorkingObject(entity));
+        }
+        return new SubChain(rebasedEntityList);
     }
 
     @Override

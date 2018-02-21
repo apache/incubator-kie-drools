@@ -98,4 +98,11 @@ public class ChainedSwapMove<Solution_> extends SwapMove<Solution_> {
         }
     }
 
+    @Override
+    public ChainedSwapMove<Solution_> rebase(ScoreDirector<Solution_> destinationScoreDirector) {
+        return new ChainedSwapMove<>(variableDescriptorList, inverseVariableSupplyList,
+                destinationScoreDirector.lookUpWorkingObject(leftEntity),
+                destinationScoreDirector.lookUpWorkingObject(rightEntity));
+    }
+
 }

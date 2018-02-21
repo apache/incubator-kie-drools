@@ -117,6 +117,15 @@ public class CompositeMove<Solution_> implements Move<Solution_> {
         return new CompositeMove<>(undoMoves);
     }
 
+    @Override
+    public CompositeMove<Solution_> rebase(ScoreDirector<Solution_> destinationScoreDirector) {
+        Move<Solution_>[] rebasedMoves = new Move[moves.length];
+        for (int i = 0; i < moves.length; i++) {
+            rebasedMoves[i] = moves[i].rebase(destinationScoreDirector);
+        }
+        return new CompositeMove<>(rebasedMoves);
+    }
+
     // ************************************************************************
     // Introspection methods
     // ************************************************************************

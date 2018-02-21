@@ -123,6 +123,12 @@ public class PillarSwapMove<Solution_> extends AbstractMove<Solution_> {
         }
     }
 
+    @Override
+    public PillarSwapMove<Solution_> rebase(ScoreDirector<Solution_> destinationScoreDirector) {
+        return new PillarSwapMove<>(variableDescriptorList,
+                rebaseList(leftPillar, destinationScoreDirector), rebaseList(rightPillar, destinationScoreDirector));
+    }
+
     // ************************************************************************
     // Introspection methods
     // ************************************************************************

@@ -190,6 +190,13 @@ public class TailChainSwapMove<Solution_> extends AbstractMove<Solution_> {
         }
     }
 
+    @Override
+    public TailChainSwapMove<Solution_> rebase(ScoreDirector<Solution_> destinationScoreDirector) {
+        return new TailChainSwapMove<>(variableDescriptor, inverseVariableSupply, anchorVariableSupply,
+                destinationScoreDirector.lookUpWorkingObject(leftEntity),
+                destinationScoreDirector.lookUpWorkingObject(rightValue));
+    }
+
     // ************************************************************************
     // Introspection methods
     // ************************************************************************

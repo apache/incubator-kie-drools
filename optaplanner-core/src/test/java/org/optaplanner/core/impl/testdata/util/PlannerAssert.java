@@ -157,6 +157,20 @@ public class PlannerAssert extends Assert {
         }
     }
 
+    public static <E> void assertListElementsSameExactly(List<E> expectedList, List<E> actualList) {
+        assertEquals(expectedList.size(), actualList.size());
+        for (int i = 0; i < expectedList.size(); i++) {
+            assertSame(expectedList.get(i), actualList.get(i));
+        }
+    }
+
+    public static <E> void assertArrayElementsSameExactly(E[] expectedArray, E[] actualArray) {
+        assertEquals(expectedArray.length, actualArray.length);
+        for (int i = 0; i < expectedArray.length; i++) {
+            assertSame(expectedArray[i], actualArray[i]);
+        }
+    }
+
     @SafeVarargs
     public static <K, V> void assertMapContainsKeysExactly(Map<K, V> map, K... keys) {
         assertMapContainsKeys(map, keys);

@@ -99,6 +99,12 @@ public class PillarChangeMove<Solution_> extends AbstractMove<Solution_> {
         }
     }
 
+    @Override
+    public PillarChangeMove<Solution_> rebase(ScoreDirector<Solution_> destinationScoreDirector) {
+        return new PillarChangeMove<>(rebaseList(pillar, destinationScoreDirector), variableDescriptor,
+                destinationScoreDirector.lookUpWorkingObject(toPlanningValue));
+    }
+
     // ************************************************************************
     // Introspection methods
     // ************************************************************************

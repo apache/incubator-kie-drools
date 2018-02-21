@@ -71,4 +71,11 @@ public class ChainedChangeMove<Solution_> extends ChangeMove<Solution_> {
         }
     }
 
+    @Override
+    public ChainedChangeMove<Solution_> rebase(ScoreDirector<Solution_> destinationScoreDirector) {
+        return new ChainedChangeMove<>(destinationScoreDirector.lookUpWorkingObject(entity),
+                variableDescriptor, inverseVariableSupply,
+                destinationScoreDirector.lookUpWorkingObject(toPlanningValue));
+    }
+
 }

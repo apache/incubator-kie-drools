@@ -43,6 +43,11 @@ public class NoChangeMove<Solution_> extends AbstractMove<Solution_> {
         // do nothing
     }
 
+    @Override
+    public NoChangeMove<Solution_> rebase(ScoreDirector<Solution_> destinationScoreDirector) {
+        return new NoChangeMove<>();
+    }
+
     // ************************************************************************
     // Introspection methods
     // ************************************************************************

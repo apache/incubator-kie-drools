@@ -192,7 +192,7 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
         Integer resolvedActiveThreadCount;
         if (runnablePartThreadLimit == null || runnablePartThreadLimit.equals(ACTIVE_THREAD_COUNT_AUTO)) {
             // Leave one for the Operating System and 1 for the solver thread, take the rest
-            resolvedActiveThreadCount = availableProcessorCount <= 2 ? 1 : availableProcessorCount - 2;
+            resolvedActiveThreadCount = Math.max(1, availableProcessorCount - 2);
         } else if (runnablePartThreadLimit.equals(ACTIVE_THREAD_COUNT_UNLIMITED)) {
             resolvedActiveThreadCount = null;
         } else {

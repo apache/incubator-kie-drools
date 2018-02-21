@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic.chained;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Test;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
@@ -24,13 +25,17 @@ import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInvers
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChain;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedAnchor;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.*;
 
 public class SubChainReversingChangeMoveTest {
 
@@ -207,6 +212,46 @@ public class SubChainReversingChangeMoveTest {
 
         undoMove.doMove(scoreDirector);
         SelectorTestUtils.assertChain(a0, a1, a2, a3, a4, a5);
+    }
+
+    @Test
+    public void rebase() {
+        GenuineVariableDescriptor<TestdataChainedSolution> variableDescriptor = TestdataChainedEntity.buildVariableDescriptorForChainedObject();
+
+        TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
+        TestdataChainedEntity a1 = new TestdataChainedEntity("a1", a0);
+        TestdataChainedEntity a2 = new TestdataChainedEntity("a2", a1);
+        TestdataChainedEntity a3 = new TestdataChainedEntity("a3", a2);
+        TestdataChainedAnchor b0 = new TestdataChainedAnchor("b0");
+        TestdataChainedEntity c1 = new TestdataChainedEntity("c1", null);
+
+        TestdataChainedAnchor destinationA0 = new TestdataChainedAnchor("a0");
+        TestdataChainedEntity destinationA1 = new TestdataChainedEntity("a1", destinationA0);
+        TestdataChainedEntity destinationA2 = new TestdataChainedEntity("a2", destinationA1);
+        TestdataChainedEntity destinationA3 = new TestdataChainedEntity("a3", destinationA2);
+        TestdataChainedAnchor destinationB0 = new TestdataChainedAnchor("b0");
+        TestdataChainedEntity destinationC1 = new TestdataChainedEntity("c1", null);
+
+        ScoreDirector<TestdataChainedSolution> destinationScoreDirector = mockRebasingScoreDirector(
+                variableDescriptor.getEntityDescriptor().getSolutionDescriptor(), new Object[][]{
+                        {a0, destinationA0},
+                        {a1, destinationA1},
+                        {a2, destinationA2},
+                        {a3, destinationA3},
+                        {b0, destinationB0},
+                        {c1, destinationC1},
+                });
+        SingletonInverseVariableSupply inverseVariableSupply = mock(SingletonInverseVariableSupply.class);
+
+        assertSameProperties(Arrays.asList(destinationA1, destinationA2), null,
+                new SubChainReversingChangeMove<>(new SubChain(Arrays.asList(a1, a2)), variableDescriptor, inverseVariableSupply, null).rebase(destinationScoreDirector));
+        assertSameProperties(Arrays.asList(destinationA1, destinationA2, destinationA3), destinationB0,
+                new SubChainReversingChangeMove<>(new SubChain(Arrays.asList(a1, a2, a3)), variableDescriptor, inverseVariableSupply, b0).rebase(destinationScoreDirector));
+    }
+
+    public void assertSameProperties(List<Object> entityList, Object toPlanningVariable, SubChainReversingChangeMove move) {
+        assertListElementsSameExactly(entityList, move.getSubChain().getEntityList());
+        assertSame(toPlanningVariable, move.getToPlanningValue());
     }
 
     @Test

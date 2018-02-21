@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.impl.heuristic.move;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
@@ -53,5 +56,25 @@ public abstract class AbstractMove<Solution_> implements Move<Solution_> {
      * @param scoreDirector never null
      */
     protected abstract void doMoveOnGenuineVariables(ScoreDirector<Solution_> scoreDirector);
+
+    // ************************************************************************
+    // Util methods
+    // ************************************************************************
+
+    protected static <E> List<E> rebaseList(List<E> externalObjectList, ScoreDirector<?> destinationScoreDirector) {
+        List<E> rebasedObjectList = new ArrayList<>(externalObjectList.size());
+        for (E entity : externalObjectList) {
+            rebasedObjectList.add(destinationScoreDirector.lookUpWorkingObject(entity));
+        }
+        return rebasedObjectList;
+    }
+
+    protected static Object[] rebaseArray(Object[] externalObjects, ScoreDirector<?> destinationScoreDirector) {
+        Object[] rebasedObjects = new Object[externalObjects.length];
+        for (int i = 0; i < externalObjects.length; i++) {
+            rebasedObjects[i] = destinationScoreDirector.lookUpWorkingObject(externalObjects[i]);
+        }
+        return rebasedObjects;
+    }
 
 }
