@@ -34,15 +34,15 @@ import static org.drools.modelcompiler.builder.JavaParserCompiler.getCompiler;
 
 public class CanonicalModelKieProject extends KieModuleKieProject {
 
-    private boolean isPattern = false;
+    private final boolean isPattern;
 
-    public static BiFunction<InternalKieModule, ClassLoader, KieModuleKieProject> create(Boolean isPattern) {
+    public static BiFunction<InternalKieModule, ClassLoader, KieModuleKieProject> create(boolean isPattern) {
         return (internalKieModule, classLoader) -> new CanonicalModelKieProject(isPattern, internalKieModule, classLoader);
     }
 
     protected List<ModelBuilderImpl> modelBuilders = new ArrayList<>();
 
-    public CanonicalModelKieProject(Boolean isPattern, InternalKieModule kieModule, ClassLoader classLoader) {
+    public CanonicalModelKieProject(boolean isPattern, InternalKieModule kieModule, ClassLoader classLoader) {
         super(kieModule instanceof CanonicalKieModule ? kieModule : new CanonicalKieModule( kieModule ), classLoader);
         this.isPattern = isPattern;
     }
