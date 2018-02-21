@@ -23,6 +23,10 @@ import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
 
+import static org.drools.testcoverage.common.util.KieBaseModelProvider.RunType.FLOW_DSL;
+import static org.drools.testcoverage.common.util.KieBaseModelProvider.RunType.PATTERN_DSL;
+import static org.drools.testcoverage.common.util.KieBaseModelProvider.RunType.STANDARD_FROM_DRL;
+
 /**
  * Represents various tested KieBase configurations.
  */
@@ -36,8 +40,8 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      */
     CLOUD_IDENTITY {
         @Override
-        public boolean useCanonicalModel() {
-            return false;
+        public RunType runType() {
+            return STANDARD_FROM_DRL;
         }
 
         @Override
@@ -66,8 +70,38 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      */
     CLOUD_IDENTITY_CANONICAL_MODEL {
         @Override
-        public boolean useCanonicalModel() {
-            return true;
+        public RunType runType() {
+            return FLOW_DSL;
+        }
+
+        @Override
+        public KieBaseModel getKieBaseModel(final KieModuleModel kieModuleModel) {
+            final KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel();
+            kieBaseModel.setEventProcessingMode(EventProcessingOption.CLOUD);
+            kieBaseModel.setEqualsBehavior(EqualityBehaviorOption.IDENTITY);
+            kieBaseModel.setDefault(true);
+            return kieBaseModel;
+        }
+
+        @Override
+        public KieBaseConfiguration getKieBaseConfiguration() {
+            final KieBaseConfiguration kieBaseConfiguration = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+            kieBaseConfiguration.setOption(EventProcessingOption.CLOUD);
+            kieBaseConfiguration.setOption(EqualityBehaviorOption.IDENTITY);
+            return kieBaseConfiguration;
+        }
+    },
+
+    /**
+     * Represents KieBase configuration with
+     * <code>EventProcessingOption.CLOUD</code> and
+     * <code>EqualityBehaviorOption.IDENTITY</code> options set.
+     * Canonical rule model with pattern dialect is used.
+     */
+    CLOUD_IDENTITY_CANONICAL_MODEL_PATTERN {
+        @Override
+        public RunType runType() {
+            return PATTERN_DSL;
         }
 
         @Override
@@ -96,8 +130,8 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      */
     CLOUD_EQUALITY {
         @Override
-        public boolean useCanonicalModel() {
-            return false;
+        public RunType runType() {
+            return STANDARD_FROM_DRL;
         }
 
         @Override
@@ -126,8 +160,38 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      */
     CLOUD_EQUALITY_CANONICAL_MODEL {
         @Override
-        public boolean useCanonicalModel() {
-            return true;
+        public RunType runType() {
+            return FLOW_DSL;
+        }
+
+        @Override
+        public KieBaseModel getKieBaseModel(final KieModuleModel kieModuleModel) {
+            final KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel();
+            kieBaseModel.setEventProcessingMode(EventProcessingOption.CLOUD);
+            kieBaseModel.setEqualsBehavior(EqualityBehaviorOption.EQUALITY);
+            kieBaseModel.setDefault(true);
+            return kieBaseModel;
+        }
+
+        @Override
+        public KieBaseConfiguration getKieBaseConfiguration() {
+            final KieBaseConfiguration kieBaseConfiguration = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+            kieBaseConfiguration.setOption(EventProcessingOption.CLOUD);
+            kieBaseConfiguration.setOption(EqualityBehaviorOption.EQUALITY);
+            return kieBaseConfiguration;
+        }
+    },
+
+    /**
+     * Represents KieBase configuration with
+     * <code>EventProcessingOption.CLOUD</code> and
+     * <code>EqualityBehaviorOption.EQUALITY</code> options set.
+     * Canonical rule model with pattern dialect is used.
+     */
+    CLOUD_EQUALITY_CANONICAL_MODEL_PATTERN {
+        @Override
+        public RunType runType() {
+            return PATTERN_DSL;
         }
 
         @Override
@@ -156,8 +220,8 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      */
     STREAM_IDENTITY {
         @Override
-        public boolean useCanonicalModel() {
-            return false;
+        public RunType runType() {
+            return STANDARD_FROM_DRL;
         }
 
         @Override
@@ -186,8 +250,38 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      */
     STREAM_IDENTITY_CANONICAL_MODEL {
         @Override
-        public boolean useCanonicalModel() {
-            return true;
+        public RunType runType() {
+            return FLOW_DSL;
+        }
+
+        @Override
+        public KieBaseModel getKieBaseModel(KieModuleModel kieModuleModel) {
+            final KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel();
+            kieBaseModel.setEventProcessingMode(EventProcessingOption.STREAM);
+            kieBaseModel.setEqualsBehavior(EqualityBehaviorOption.IDENTITY);
+            kieBaseModel.setDefault(true);
+            return kieBaseModel;
+        }
+
+        @Override
+        public KieBaseConfiguration getKieBaseConfiguration() {
+            final KieBaseConfiguration kieBaseConfiguration = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+            kieBaseConfiguration.setOption(EventProcessingOption.STREAM);
+            kieBaseConfiguration.setOption(EqualityBehaviorOption.IDENTITY);
+            return kieBaseConfiguration;
+        }
+    },
+
+    /**
+     * Represents KieBase configuration with
+     * <code>EventProcessingOption.STREAM</code> and
+     * <code>EqualityBehaviorOption.IDENTITY</code> options set.
+     * Canonical rule model with pattern dialect is used.
+     */
+    STREAM_IDENTITY_CANONICAL_MODEL_PATTERN {
+        @Override
+        public RunType runType() {
+            return PATTERN_DSL;
         }
 
         @Override
@@ -216,8 +310,8 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      */
     STREAM_EQUALITY {
         @Override
-        public boolean useCanonicalModel() {
-            return false;
+        public RunType runType() {
+            return STANDARD_FROM_DRL;
         }
 
         @Override
@@ -246,8 +340,38 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      */
     STREAM_EQUALITY_CANONICAL_MODEL {
         @Override
-        public boolean useCanonicalModel() {
-            return true;
+        public RunType runType() {
+            return FLOW_DSL;
+        }
+
+        @Override
+        public KieBaseModel getKieBaseModel(KieModuleModel kieModuleModel) {
+            final KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel();
+            kieBaseModel.setEventProcessingMode(EventProcessingOption.STREAM);
+            kieBaseModel.setEqualsBehavior(EqualityBehaviorOption.EQUALITY);
+            kieBaseModel.setDefault(true);
+            return kieBaseModel;
+        }
+
+        @Override
+        public KieBaseConfiguration getKieBaseConfiguration() {
+            final KieBaseConfiguration kieBaseConfiguration = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+            kieBaseConfiguration.setOption(EventProcessingOption.STREAM);
+            kieBaseConfiguration.setOption(EqualityBehaviorOption.EQUALITY);
+            return kieBaseConfiguration;
+        }
+    },
+
+    /**
+     * Represents KieBase configuration with
+     * <code>EventProcessingOption.STREAM</code> and
+     * <code>EqualityBehaviorOption.EQUALITY</code> options set.
+     * Canonical rule model with pattern dialect is used.
+     */
+    STREAM_EQUALITY_CANONICAL_MODEL_PATTERN {
+        @Override
+        public RunType runType() {
+            return PATTERN_DSL;
         }
 
         @Override
