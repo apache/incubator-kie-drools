@@ -20,6 +20,7 @@ import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
 import org.drools.modelcompiler.builder.generator.visitor.DSLNode;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getPatternListenedProperties;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getRootScope;
 
 class PatternDSLPattern extends PatternDSL {
     static final String PATTERN_CALL = "pattern";
@@ -45,22 +46,22 @@ class PatternDSLPattern extends PatternDSL {
                 final List<PatternConstraintParseResult> patternConstraintParseResults = findAllConstraint(pattern, constraintDescrs, patternType);
                 MethodCallExpr patternExpression = createPatternExpression(pattern);
 
-                // need to augment the reactOn inside drlxParseResult with the look-ahead properties.
-
-                //context.addExpression( patternExpression );
-
                 List<Expression> exprs = new ArrayList<>();
                 context.pushExprPointer(exprs::add);
                 buildConstraints(pattern, patternType, patternConstraintParseResults, allConstraintsPositional);
                 context.popExprPointer();
 
+                List<Expression> additionalPatterns = new ArrayList<>();
                 for (Expression expr : exprs) {
                     MethodCallExpr currentExpr = ( MethodCallExpr ) expr;
-                    (( MethodCallExpr ) expr).setScope( patternExpression );
-                    patternExpression = currentExpr;
+                    if ( (( MethodCallExpr ) getRootScope( currentExpr )).getNameAsString().equals( "pattern" ) ) {
+                        additionalPatterns.add( currentExpr );
+                    } else {
+                        (( MethodCallExpr ) expr).setScope( patternExpression );
+                        patternExpression = currentExpr;
+                    }
                 }
 
-                //context.popExprPointer();
                 Collection<String> watchedProps = new ArrayList<>();
                 watchedProps.addAll(context.getRuleDescr().lookAheadFieldsOfIdentifier(pattern));
                 watchedProps.addAll(getPatternListenedProperties(pattern));
@@ -70,6 +71,7 @@ class PatternDSLPattern extends PatternDSL {
                 }
 
                 context.addExpression( patternExpression );
+                additionalPatterns.forEach( context::addExpression );
             }
         }
     }

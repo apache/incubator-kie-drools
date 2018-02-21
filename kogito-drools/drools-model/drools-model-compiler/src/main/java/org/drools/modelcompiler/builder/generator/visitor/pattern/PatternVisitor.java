@@ -18,12 +18,10 @@ public class PatternVisitor {
 
     private final RuleContext context;
     private final PackageModel packageModel;
-    private final boolean isPattern;
 
-    public PatternVisitor(RuleContext context, PackageModel packageModel, boolean isPattern) {
+    public PatternVisitor(RuleContext context, PackageModel packageModel) {
         this.context = context;
         this.packageModel = packageModel;
-        this.isPattern = isPattern;
     }
 
     public DSLNode visit(PatternDescr pattern) {
@@ -48,7 +46,7 @@ public class PatternVisitor {
 
         final boolean allConstraintsPositional = areAllConstraintsPositional(constraintDescrs);
         final Class<?> patternType = getClassFromContext(context.getTypeResolver(), className);
-        if(isPattern) {
+        if (context.isPatternDSL()) {
             return new PatternDSLPattern(context, packageModel, pattern, constraintDescrs, patternType, allConstraintsPositional);
         } else {
             return new FlowDSLPattern(context, packageModel, pattern, constraintDescrs, patternType, allConstraintsPositional);

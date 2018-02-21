@@ -17,7 +17,7 @@ import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
-import org.drools.modelcompiler.builder.generator.expression.FlowExpressionBuilder;
+import org.drools.modelcompiler.builder.generator.expression.AbstractExpressionBuilder;
 
 import static org.drools.core.util.ClassUtils.extractGenericType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
@@ -28,10 +28,12 @@ public class OOPathExprGenerator {
 
     private final RuleContext context;
     private final PackageModel packageModel;
+    private final AbstractExpressionBuilder expressionBuilder;
 
     public OOPathExprGenerator(RuleContext context, PackageModel packageModel) {
         this.context = context;
         this.packageModel = packageModel;
+        this.expressionBuilder = AbstractExpressionBuilder.getExpressionBuilder(context);
     }
 
     public void visit(Class<?> originalClass, String originalBind, DrlxParseSuccess patternParseResult) {
@@ -82,41 +84,53 @@ public class OOPathExprGenerator {
                 final List<DrlxParseResult> conditionParseResult = conditions.stream().map((Expression c) ->
                                                                                                    new ConstraintParser(context, packageModel).drlxParse(finalFieldType, bindingId, c.toString())
                 ).collect(Collectors.toList());
-                ooPathConditionExpressions.put(chunkKey, conditionParseResult);
+                ooPathConditionExpressions.put(bindingId, conditionParseResult);
             } else {
-                final DrlxParseSuccess drlxParseResult = new DrlxParseSuccess(fieldType, "", bindingId, new BooleanLiteralExpr(true), fieldType);
-                ooPathConditionExpressions.put(chunkKey, Collections.singletonList(drlxParseResult));
+                if (context.isPatternDSL()) {
+                    ooPathConditionExpressions.put(bindingId, Collections.emptyList());
+                } else {
+                    final DrlxParseSuccess drlxParseResult = new DrlxParseSuccess(fieldType, "", bindingId, new BooleanLiteralExpr(true), fieldType);
+                    ooPathConditionExpressions.put(bindingId, Collections.singletonList(drlxParseResult));
+                }
             }
 
             previousBind = bindingId;
             previousClass = fieldType;
         }
 
-        final List<Expression> collect = buildExpressions(ooPathConditionExpressions);
-
-        collect.forEach(context::addExpression);
+        ooPathConditionExpressions.forEach( context.isPatternDSL() ? this::toPatternExpr : this::toFlowExpr );
     }
 
-    private List<Expression> buildExpressions(Map<String, List<DrlxParseResult>> ooPathConditionExpressions) {
-        // Condition with same key were defined as , and need to be put in an AND expression
-        return ooPathConditionExpressions.entrySet().stream()
-                .map((Map.Entry<String, List<DrlxParseResult>> kv) -> {
-                    final List<DrlxParseSuccess> value = kv.getValue()
-                            .stream()
-                            .filter(r -> r instanceof DrlxParseSuccess)
-                            .map(x -> (DrlxParseSuccess)x)
-                            .collect(Collectors.toList());
-                    final FlowExpressionBuilder flowExpressionBuilder = new FlowExpressionBuilder(context);
-                    if (value.size() == 1) {
-                        return flowExpressionBuilder.buildExpressionWithIndexing(value.get(0));
-                    } else {
-                        final MethodCallExpr andDSL = new MethodCallExpr(null, "and");
-                        value.forEach(e -> {
-                            final Expression expression = flowExpressionBuilder.buildExpressionWithIndexing(e);
-                            andDSL.addArgument(expression);
-                        });
-                        return andDSL;
-                    }
-                }).collect(Collectors.toList());
+    private void toPatternExpr(String bindingId, List<DrlxParseResult> list) {
+        MethodCallExpr patternExpr = new MethodCallExpr( null, "pattern" );
+        patternExpr.addArgument( toVar( bindingId ) );
+
+        for (DrlxParseResult drlx : list) {
+            if (drlx instanceof DrlxParseSuccess) {
+                MethodCallExpr expr = ( MethodCallExpr ) expressionBuilder.buildExpressionWithIndexing( (( DrlxParseSuccess ) drlx) );
+                expr.setScope( patternExpr );
+                patternExpr = expr;
+            }
+        }
+
+        context.addExpression( patternExpr );
+    }
+
+    private void toFlowExpr(String bindingId, List<DrlxParseResult> list) {
+        final List<DrlxParseSuccess> value = list.stream()
+                .filter(r -> r instanceof DrlxParseSuccess)
+                .map(DrlxParseSuccess.class::cast)
+                .collect(Collectors.toList());
+
+        if (value.size() == 1) {
+            context.addExpression( expressionBuilder.buildExpressionWithIndexing(value.get(0)) );
+        } else {
+            final MethodCallExpr andDSL = new MethodCallExpr(null, "and");
+            value.forEach(e -> {
+                final Expression expression = expressionBuilder.buildExpressionWithIndexing(e);
+                andDSL.addArgument(expression);
+            });
+            context.addExpression( andDSL );
+        }
     }
 }

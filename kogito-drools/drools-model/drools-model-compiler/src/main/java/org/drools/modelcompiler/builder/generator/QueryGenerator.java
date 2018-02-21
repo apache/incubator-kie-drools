@@ -35,8 +35,8 @@ public class QueryGenerator {
 
     public static final String QUERY_CALL = "query";
 
-    public static void processQueryDef( KnowledgeBuilderImpl kbuilder, TypeResolver typeResolver, PackageModel packageModel, QueryDescr queryDescr ) {
-        RuleContext context = new RuleContext(kbuilder, packageModel, queryDescr, typeResolver);
+    public static void processQueryDef( KnowledgeBuilderImpl kbuilder, TypeResolver typeResolver, PackageModel packageModel, QueryDescr queryDescr, boolean isPattern ) {
+        RuleContext context = new RuleContext(kbuilder, packageModel, queryDescr, typeResolver, isPattern);
         String queryName = queryDescr.getName();
         final String queryDefVariableName = toQueryDef(queryName);
         context.setQueryName(Optional.of(queryDefVariableName));
@@ -80,11 +80,11 @@ public class QueryGenerator {
         }
     }
 
-    public static void processQuery(KnowledgeBuilderImpl kbuilder, PackageModel packageModel, QueryDescr queryDescr, boolean isPattern) {
+    public static void processQuery(KnowledgeBuilderImpl kbuilder, PackageModel packageModel, QueryDescr queryDescr) {
         String queryDefVariableName = toQueryDef(queryDescr.getName());
         RuleContext context = packageModel.getQueryDefWithType().get(queryDefVariableName).getContext();
 
-        new ModelGeneratorVisitor(context, packageModel, isPattern).visit(queryDescr.getLhs());
+        new ModelGeneratorVisitor(context, packageModel).visit(queryDescr.getLhs());
         final Type queryType = JavaParser.parseType(Query.class.getCanonicalName());
 
         MethodDeclaration queryMethod = new MethodDeclaration(EnumSet.of(Modifier.PRIVATE), queryType, "query_" + toId(queryDescr.getName()));

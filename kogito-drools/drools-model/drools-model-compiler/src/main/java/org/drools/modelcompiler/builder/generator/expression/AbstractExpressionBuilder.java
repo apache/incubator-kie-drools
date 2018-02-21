@@ -35,7 +35,7 @@ public abstract class AbstractExpressionBuilder {
 
     protected RuleContext context;
 
-    protected AbstractExpressionBuilder( RuleContext context) {
+    protected AbstractExpressionBuilder( RuleContext context ) {
         this.context = context;
     }
 
@@ -85,5 +85,9 @@ public abstract class AbstractExpressionBuilder {
 
     protected boolean isThisExpression( Expression leftExpr ) {
         return leftExpr instanceof NameExpr && ((NameExpr)leftExpr).getName().getIdentifier().equals("_this");
+    }
+
+    public static AbstractExpressionBuilder getExpressionBuilder(RuleContext context) {
+        return context.isPatternDSL() ? new PatternExpressionBuilder( context ) : new FlowExpressionBuilder( context );
     }
 }
