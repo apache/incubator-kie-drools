@@ -34,12 +34,13 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
+ * Applies a new best solution from a partition child solver into the global working solution of the parent solver.
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public final class PartitionChangeMove<Solution_> extends AbstractMove<Solution_> {
 
     public static <Solution_> PartitionChangeMove<Solution_> createMove(InnerScoreDirector<Solution_> scoreDirector,
-                                                                        int partIndex) {
+            int partIndex) {
         SolutionDescriptor<Solution_> solutionDescriptor = scoreDirector.getSolutionDescriptor();
         Solution_ workingSolution = scoreDirector.getWorkingSolution();
 
@@ -71,7 +72,7 @@ public final class PartitionChangeMove<Solution_> extends AbstractMove<Solution_
     private final int partIndex;
 
     public PartitionChangeMove(Map<GenuineVariableDescriptor<Solution_>, List<Pair<Object, Object>>> changeMap,
-                               int partIndex) {
+            int partIndex) {
         this.changeMap = changeMap;
         this.partIndex = partIndex;
     }
@@ -94,8 +95,9 @@ public final class PartitionChangeMove<Solution_> extends AbstractMove<Solution_
     }
 
     @Override
-    protected AbstractMove<Solution_> createUndoMove(ScoreDirector<Solution_> scoreDirector) {
-        // TODO not yet implemented, returns null to fail fast if it is used
+    protected PartitionChangeMove<Solution_> createUndoMove(ScoreDirector<Solution_> scoreDirector) {
+        // HACK Creating an undoMove is a waste of time because it is never used,
+        // but this method is called anyway so it returns null to fail fast if it is used
         return null;
     }
 
@@ -134,12 +136,14 @@ public final class PartitionChangeMove<Solution_> extends AbstractMove<Solution_
 
     @Override
     public Collection<? extends Object> getPlanningEntities() {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("Impossible situation: " + PartitionChangeMove.class.getSimpleName()
+                + " is only used to communicate between a part thread and the solver thread, it's never used in Tabu Search.");
     }
 
     @Override
     public Collection<? extends Object> getPlanningValues() {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("Impossible situation: " + PartitionChangeMove.class.getSimpleName()
+                + " is only used to communicate between a part thread and the solver thread, it's never used in Tabu Search.");
     }
 
     @Override
