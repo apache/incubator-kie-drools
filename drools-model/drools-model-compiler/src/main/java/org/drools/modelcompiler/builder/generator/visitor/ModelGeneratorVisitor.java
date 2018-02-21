@@ -34,8 +34,8 @@ public class ModelGeneratorVisitor implements DescrVisitor {
     private final PatternVisitor patternVisitor;
     private final FromCollectVisitor fromCollectVisitor;
 
-    public ModelGeneratorVisitor(RuleContext context, PackageModel packageModel, boolean isPattern) {
-        if (isPattern) {
+    public ModelGeneratorVisitor(RuleContext context, PackageModel packageModel) {
+        if (context.isPatternDSL()) {
             accumulateVisitor = new AccumulateVisitorPatternDSL(this, context, packageModel);
         } else {
             accumulateVisitor = new AccumulateVisitorFlowDSL(this, context, packageModel);
@@ -46,7 +46,7 @@ public class ModelGeneratorVisitor implements DescrVisitor {
         evalVisitor = new EvalVisitor(context, packageModel);
         fromVisitor = new FromVisitor(context, packageModel);
         namedConsequenceVisitor = new NamedConsequenceVisitor(context, packageModel);
-        patternVisitor = new PatternVisitor(context, packageModel, isPattern);
+        patternVisitor = new PatternVisitor(context, packageModel);
         fromCollectVisitor = new FromCollectVisitor(this);
     }
 

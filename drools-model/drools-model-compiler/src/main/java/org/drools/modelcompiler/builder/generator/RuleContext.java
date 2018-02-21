@@ -35,6 +35,7 @@ public class RuleContext {
     private final TypeResolver typeResolver;
     private DRLIdGenerator idGenerator;
     private final RuleDescr descr;
+    private final boolean generatePatternDSL;
 
     private List<DeclarationSpec> declarations = new ArrayList<>();
     private List<DeclarationSpec> ooPathDeclarations = new ArrayList<>();
@@ -58,13 +59,14 @@ public class RuleContext {
 
     public BaseDescr parentDesc = null;
 
-    public RuleContext(KnowledgeBuilderImpl kbuilder, PackageModel packageModel, RuleDescr ruleDescr, TypeResolver typeResolver) {
+    public RuleContext(KnowledgeBuilderImpl kbuilder, PackageModel packageModel, RuleDescr ruleDescr, TypeResolver typeResolver, boolean generatePatternDSL) {
         this.kbuilder = kbuilder;
         this.packageModel = packageModel;
         this.idGenerator = packageModel.getExprIdGenerator();
         this.descr = ruleDescr;
         exprPointer.push( this.expressions::add );
         this.typeResolver = typeResolver;
+        this.generatePatternDSL = generatePatternDSL;
         findUnitClass();
     }
 
@@ -90,6 +92,10 @@ public class RuleContext {
                 throw new RuntimeException( e );
             }
         }
+    }
+
+    public boolean isPatternDSL() {
+        return generatePatternDSL;
     }
 
     public RuleUnitDescr getRuleUnitDescr() {

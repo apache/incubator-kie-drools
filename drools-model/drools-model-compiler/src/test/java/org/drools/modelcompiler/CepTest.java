@@ -16,13 +16,11 @@
 
 package org.drools.modelcompiler;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.drools.core.ClockType;
-import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.modelcompiler.domain.StockFact;
 import org.drools.modelcompiler.domain.StockTick;
 import org.junit.Test;
@@ -414,18 +412,9 @@ public class CepTest extends BaseModelTest {
         KieSession ksession = getKieSession(getCepKieModuleModel(), str);
         SessionPseudoClock clock = ksession.getSessionClock();
 
-        Object DROO = null;
-        if (testRunType == RUN_TYPE.STANDARD_FROM_DRL) {
-            FactType stockFactType = ksession.getKieBase().getFactType("org.drools.compiler", "StockFact");
-            DROO = stockFactType.newInstance();
-            stockFactType.set(DROO, "company", "DROO");
-        } else if (testRunType == RUN_TYPE.FLOW_DSL) {
-            ClassLoader cl = ((KnowledgeBaseImpl) ksession.getKieBase()).getRootClassLoader();
-            Class<?> stockFactClass = cl.loadClass("org.drools.compiler.StockFact");
-            DROO = stockFactClass.newInstance();
-            Method setCompanyMethod = stockFactClass.getMethod("setCompany", String.class);
-            setCompanyMethod.invoke(DROO, "DROO");
-        }
+        FactType stockFactType = ksession.getKieBase().getFactType("org.drools.compiler", "StockFact");
+        Object DROO = stockFactType.newInstance();
+        stockFactType.set(DROO, "company", "DROO");
 
         ksession.insert(DROO);
 

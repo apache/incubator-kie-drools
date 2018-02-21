@@ -169,13 +169,13 @@ public class ModelGenerator {
 
         for(RuleDescr descr : packageDescr.getRules()) {
             if (descr instanceof QueryDescr) {
-                QueryGenerator.processQueryDef( kbuilder, typeResolver, packageModel, (QueryDescr) descr);
+                QueryGenerator.processQueryDef( kbuilder, typeResolver, packageModel, (QueryDescr) descr, isPattern);
             }
         }
 
         for (RuleDescr descr : packageDescr.getRules()) {
             if (descr instanceof QueryDescr) {
-                QueryGenerator.processQuery(kbuilder, packageModel, (QueryDescr) descr, isPattern);
+                QueryGenerator.processQuery(kbuilder, packageModel, (QueryDescr) descr);
             } else {
                 processRule(kbuilder, typeResolver, packageModel, packageDescr, descr, isPattern);
             }
@@ -184,13 +184,13 @@ public class ModelGenerator {
 
 
     private static void processRule(KnowledgeBuilderImpl kbuilder, TypeResolver typeResolver, PackageModel packageModel, PackageDescr packageDescr, RuleDescr ruleDescr, boolean isPattern) {
-        RuleContext context = new RuleContext(kbuilder,packageModel, ruleDescr,  typeResolver);
+        RuleContext context = new RuleContext(kbuilder, packageModel, ruleDescr,  typeResolver, isPattern);
 
         for(Entry<String, Object> kv : ruleDescr.getNamedConsequences().entrySet()) {
             context.addNamedConsequence(kv.getKey(), kv.getValue().toString());
         }
 
-        new ModelGeneratorVisitor(context, packageModel, isPattern).visit(getExtendedLhs(packageDescr, ruleDescr));
+        new ModelGeneratorVisitor(context, packageModel).visit(getExtendedLhs(packageDescr, ruleDescr));
         final String ruleMethodName = "rule_" + toId(ruleDescr.getName());
         MethodDeclaration ruleMethod = new MethodDeclaration(EnumSet.of(Modifier.PUBLIC, Modifier.STATIC), RULE_TYPE, ruleMethodName);
 
