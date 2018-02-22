@@ -58,6 +58,7 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
         }
         usedDeclarationsWithUnification.addAll(drlxParseResult.getUsedDeclarations());
         usedDeclarationsWithUnification.stream()
+                .filter( s -> !(drlxParseResult.isSkipThisAsParam() && s.equals( drlxParseResult.getPatternBinding() ) ) )
                 .map(x -> QueryGenerator.substituteBindingWithQueryParameter(context, x))
                 .forEach(exprDSL::addArgument);
         exprDSL.addArgument(buildConstraintExpression( drlxParseResult, drlxParseResult.getExpr() ));

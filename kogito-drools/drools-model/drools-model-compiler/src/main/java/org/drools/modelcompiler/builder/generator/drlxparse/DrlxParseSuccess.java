@@ -51,6 +51,7 @@ public class DrlxParseSuccess implements DrlxParseResult {
 
     public DrlxParseSuccess setUsedDeclarations(List<String> usedDeclarations ) {
         this.usedDeclarations = new LinkedHashSet<>(usedDeclarations);
+        skipThisAsParam = usedDeclarations.contains( patternBinding );
         return this;
     }
 

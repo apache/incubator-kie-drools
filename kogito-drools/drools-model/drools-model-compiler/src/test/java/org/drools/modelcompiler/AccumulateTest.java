@@ -100,6 +100,31 @@ public class AccumulateTest extends BaseModelTest {
     }
 
     @Test
+    public void testAccumulateConstrainingValue2() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "import " + Result.class.getCanonicalName() + ";" +
+                        "rule X when\n" +
+                        "  accumulate ( $p: Person ( getName().startsWith(\"M\")); \n" +
+                        "                $sum : sum($p.getAge()); $sum > 100  \n" +
+                        "              )                          \n" +
+                        "then\n" +
+                        "  insert(new Result($sum));\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Edson", 35));
+        ksession.insert(new Person("Mario", 40));
+
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(0, results.size());
+    }
+
+    @Test
     public void testAccumulateConstrainingValueInPattern() {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +

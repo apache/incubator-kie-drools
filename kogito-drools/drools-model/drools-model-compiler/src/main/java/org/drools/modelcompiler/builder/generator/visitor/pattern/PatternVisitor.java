@@ -41,7 +41,11 @@ public class PatternVisitor {
         }
 
         if (pattern.getIdentifier() == null && pattern.getObjectType().equals("Object") && pattern.getSource() instanceof AccumulateDescr) {
-            return new Accumulate(context, packageModel, pattern, ((AccumulateDescr) pattern.getSource()), constraintDescrs);
+            if (context.isPatternDSL()) {
+                return new PatternAccumulateConstraint(context, packageModel, pattern, ((AccumulateDescr) pattern.getSource()), constraintDescrs);
+            } else {
+                return new FlowAccumulateConstraint(context, packageModel, pattern, ((AccumulateDescr) pattern.getSource()), constraintDescrs);
+            }
         }
 
         final boolean allConstraintsPositional = areAllConstraintsPositional(constraintDescrs);

@@ -23,7 +23,7 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findRootN
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getPatternListenedProperties;
 
 class PatternDSLPattern extends PatternDSL {
-    static final String PATTERN_CALL = "pattern";
+    private static final String PATTERN_CALL = "pattern";
 
     public PatternDSLPattern(RuleContext context, PackageModel packageModel, PatternDescr pattern, List<? extends BaseDescr> constraintDescrs, Class<?> patternType, boolean allConstraintsPositional) {
         super(context, packageModel, pattern, constraintDescrs, allConstraintsPositional, patternType);
@@ -45,7 +45,7 @@ class PatternDSLPattern extends PatternDSL {
 
                 List<Expression> exprs = new ArrayList<>();
                 context.pushExprPointer(exprs::add);
-                buildConstraints(pattern, patternType, patternConstraintParseResults, allConstraintsPositional);
+                buildConstraints(pattern, patternType, patternConstraintParseResults);
                 context.popExprPointer();
 
                 List<Expression> additionalPatterns = new ArrayList<>();
@@ -83,7 +83,7 @@ class PatternDSLPattern extends PatternDSL {
         return dslExpr;
     }
 
-    private void buildConstraints(PatternDescr pattern, Class<?> patternType, List<PatternConstraintParseResult> patternConstraintParseResults, boolean allConstraintsPositional) {
+    private void buildConstraints(PatternDescr pattern, Class<?> patternType, List<PatternConstraintParseResult> patternConstraintParseResults) {
         for (PatternConstraintParseResult patternConstraintParseResult : patternConstraintParseResults) {
             buildConstraint(pattern, patternType, patternConstraintParseResult);
         }
