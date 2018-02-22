@@ -67,6 +67,5 @@ public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
 
     @Override
     protected void postVisit() {
-
     }
 }

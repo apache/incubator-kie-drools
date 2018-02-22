@@ -44,8 +44,6 @@ public class AccumulateVisitorFlowDSL extends AccumulateVisitor {
     @Override
     protected void postVisit() {
         // Bind expressions are outside the Accumulate Expr
-        context.popExprPointer();
         newBindingResults.forEach(e -> context.getExpressions().add(0, e.bindExpression));
     }
-
 }

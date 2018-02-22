@@ -102,6 +102,7 @@ public abstract class AccumulateVisitor {
             throw new UnsupportedOperationException("Unknown type of Accumulate.");
         }
 
+        context.popExprPointer();
         postVisit();
     }
 

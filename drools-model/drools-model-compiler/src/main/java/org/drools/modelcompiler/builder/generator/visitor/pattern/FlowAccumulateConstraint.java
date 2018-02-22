@@ -12,7 +12,7 @@ import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
 import org.drools.modelcompiler.builder.generator.expression.FlowExpressionBuilder;
 import org.drools.modelcompiler.builder.generator.visitor.DSLNode;
 
-class Accumulate implements DSLNode {
+class FlowAccumulateConstraint implements DSLNode {
 
     private final RuleContext context;
     private final PackageModel packageModel;
@@ -20,7 +20,7 @@ class Accumulate implements DSLNode {
     private final AccumulateDescr source;
     private final List<? extends BaseDescr> constraintDescrs;
 
-    public Accumulate(RuleContext context, PackageModel packageModel, PatternDescr pattern, AccumulateDescr source, List<? extends BaseDescr> constraintDescrs) {
+    public FlowAccumulateConstraint( RuleContext context, PackageModel packageModel, PatternDescr pattern, AccumulateDescr source, List<? extends BaseDescr> constraintDescrs) {
         this.context = context;
         this.packageModel = packageModel;
         this.pattern = pattern;

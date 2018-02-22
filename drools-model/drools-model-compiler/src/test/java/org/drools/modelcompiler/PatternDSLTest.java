@@ -598,4 +598,39 @@ public class PatternDSLTest {
 
         Assertions.assertThat(list).containsExactlyInAnyOrder("doll");
     }
+
+    @Test
+    public void testAccumulateConstrainingValue() {
+        Variable<org.drools.modelcompiler.domain.Person> var_$p = declarationOf(org.drools.modelcompiler.domain.Person.class, "$p");
+        Variable<Integer> var_$expr$5$ = declarationOf(Integer.class, "$expr$5$");
+        Variable<java.lang.Integer> var_$sum = declarationOf(java.lang.Integer.class, "$sum");
+
+        Rule rule = rule("X").build(
+                accumulate(pattern(var_$p).expr("$expr$4$",
+                (_this) -> _this.getName()
+                        .startsWith("M"))
+                        .bind(var_$expr$5$,
+                                (_this) -> _this.getAge()),
+                accFunction(org.drools.core.base.accumulators.IntegerSumAccumulateFunction.class,
+                        var_$expr$5$).as(var_$sum)),
+                pattern(var_$sum).expr("$expr$3$",
+                        (_this) -> _this > 50),
+                on(var_$sum).execute((drools, $sum) -> {
+                    drools.insert(new Result($sum));
+                }));
+
+        Model model = new ModelImpl().addRule( rule );
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
+        KieSession ksession = kieBase.newKieSession();
+
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Edson", 35));
+        ksession.insert(new Person("Mario", 40));
+
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(1, results.size());
+        assertEquals(77, results.iterator().next().getValue());
+    }
 }
