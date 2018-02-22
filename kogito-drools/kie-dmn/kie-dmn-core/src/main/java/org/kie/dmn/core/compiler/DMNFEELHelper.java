@@ -1,7 +1,6 @@
 package org.kie.dmn.core.compiler;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -22,6 +21,7 @@ import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.CompilerContext;
+import org.kie.dmn.feel.lang.FEELProfile;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
@@ -39,17 +39,26 @@ public class DMNFEELHelper {
 
     private final FEEL                   feel;
     private final FEELEventsListenerImpl listener;
-    private final List<FEELFunction> feelFunctions = new ArrayList<>();
+    private final List<FEELProfile> feelProfiles = new ArrayList<>();
 
-    public DMNFEELHelper() {
+    public DMNFEELHelper(List<FEELProfile> feelProfiles) {
+        this.feelProfiles.addAll(feelProfiles);
         this.listener = new FEELEventsListenerImpl();
         this.feel = createFEELInstance();
     }
 
     private FEEL createFEELInstance() {
-        FEEL feel = FEEL.newInstance();
+        FEEL feel = FEEL.newInstance(feelProfiles);
         feel.addListener( listener );
         return feel;
+    }
+
+    /**
+     * Return a FEEL instance to be used in invokers/impls, which is however configured correctly accordingly to profiles
+     * This FEEL instance is potentially not the same shared by the compiler during the compilation phase.
+     */
+    public FEEL newFEELInstance() {
+        return FEEL.newInstance(feelProfiles);
     }
 
     public static boolean valueMatchesInUnaryTests(List<UnaryTest> unaryTests, Object value, DMNContext dmnContext) {
@@ -90,17 +99,12 @@ public class DMNFEELHelper {
         return false;
     }
 
-    public void registerFEELFunctions(Collection<FEELFunction> feelFunctions) {
-        this.feelFunctions.addAll(feelFunctions);
-    }
-
     public CompiledExpression compileFeelExpression(DMNCompilerContext ctx, String expression, DMNModelImpl model, DMNElement element, Msg.Message errorMsg, Object... msgParams) {
         CompilerContext feelctx = feel.newCompilerContext();
 
         for ( Map.Entry<String, DMNType> entry : ctx.getVariables().entrySet() ) {
             feelctx.addInputVariableType( entry.getKey(), ((BaseDMNTypeImpl) entry.getValue()).getFeelType() );
         }
-        feelctx.addFEELFunctions(this.feelFunctions);
         CompiledExpression ce = feel.compile( expression, feelctx );
         processEvents( model, element, errorMsg, msgParams );
         return ce;

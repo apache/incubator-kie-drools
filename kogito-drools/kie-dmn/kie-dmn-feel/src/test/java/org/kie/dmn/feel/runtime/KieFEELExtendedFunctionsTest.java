@@ -16,15 +16,15 @@
 
 package org.kie.dmn.feel.runtime;
 
-import org.junit.runners.Parameterized;
-
 import java.math.BigDecimal;
-import java.time.*;
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 
-public class FEELExtendedFunctionsTest
-        extends BaseFEELTest {
+import org.junit.runners.Parameterized;
+
+public class KieFEELExtendedFunctionsTest extends KieExtendedBaseFEELTest {
 
     @Parameterized.Parameters(name = "{index}: {0} ({1}) = {2}")
     public static Collection<Object[]> data() {

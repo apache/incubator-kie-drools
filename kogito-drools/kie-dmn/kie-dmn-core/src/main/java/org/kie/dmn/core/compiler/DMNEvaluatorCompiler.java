@@ -1,32 +1,63 @@
 package org.kie.dmn.core.compiler;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.xml.namespace.QName;
+
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
 import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.api.EvaluatorResult;
-import org.kie.dmn.core.ast.*;
+import org.kie.dmn.core.ast.DMNBaseNode;
+import org.kie.dmn.core.ast.DMNContextEvaluator;
+import org.kie.dmn.core.ast.DMNDTExpressionEvaluator;
+import org.kie.dmn.core.ast.DMNFunctionDefinitionEvaluator;
+import org.kie.dmn.core.ast.DMNInvocationEvaluator;
+import org.kie.dmn.core.ast.DMNListEvaluator;
+import org.kie.dmn.core.ast.DMNLiteralExpressionEvaluator;
+import org.kie.dmn.core.ast.DMNRelationEvaluator;
+import org.kie.dmn.core.ast.EvaluatorResultImpl;
 import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
+import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.UnaryTest;
-import org.kie.dmn.feel.runtime.decisiontables.*;
+import org.kie.dmn.feel.runtime.decisiontables.DTDecisionRule;
+import org.kie.dmn.feel.runtime.decisiontables.DTInputClause;
+import org.kie.dmn.feel.runtime.decisiontables.DTOutputClause;
+import org.kie.dmn.feel.runtime.decisiontables.DecisionTableImpl;
 import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
 import org.kie.dmn.feel.runtime.functions.DTInvokerFunction;
-import org.kie.dmn.model.v1_1.*;
+import org.kie.dmn.model.v1_1.Binding;
+import org.kie.dmn.model.v1_1.BusinessKnowledgeModel;
+import org.kie.dmn.model.v1_1.Context;
+import org.kie.dmn.model.v1_1.ContextEntry;
+import org.kie.dmn.model.v1_1.DMNElement;
+import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
+import org.kie.dmn.model.v1_1.Decision;
+import org.kie.dmn.model.v1_1.DecisionRule;
+import org.kie.dmn.model.v1_1.DecisionTable;
+import org.kie.dmn.model.v1_1.Expression;
+import org.kie.dmn.model.v1_1.FunctionDefinition;
 import org.kie.dmn.model.v1_1.HitPolicy;
+import org.kie.dmn.model.v1_1.InformationItem;
+import org.kie.dmn.model.v1_1.InputClause;
+import org.kie.dmn.model.v1_1.Invocation;
+import org.kie.dmn.model.v1_1.LiteralExpression;
+import org.kie.dmn.model.v1_1.OutputClause;
+import org.kie.dmn.model.v1_1.Relation;
+import org.kie.dmn.model.v1_1.UnaryTests;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.*;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.xml.namespace.QName;
 
 import static java.util.stream.Collectors.toList;
 
@@ -105,7 +136,7 @@ public class DMNEvaluatorCompiler {
         Invocation invocation = expression;
         // expression must be a literal text with the name of the function
         String functionName = ((LiteralExpression) invocation.getExpression()).getText();
-        DMNInvocationEvaluator invEval = new DMNInvocationEvaluator( node.getName(), node.getSource(), functionName, invocation, null );
+        DMNInvocationEvaluator invEval = new DMNInvocationEvaluator( node.getName(), node.getSource(), functionName, invocation, null, feel.newFEELInstance() );
         for ( Binding binding : invocation.getBinding() ) {
             if( binding.getParameter() == null ) {
                 // error, missing binding parameter
@@ -248,7 +279,7 @@ public class DMNEvaluatorCompiler {
                                                                           functionName,
                                                                           node.getIdentifierString() );
                     DMNInvocationEvaluator invoker = new DMNInvocationEvaluator( node.getName(), node.getSource(), functionName, new Invocation(),
-                                                                                 ( fctx, fname ) -> feelFunction );
+                                                                                 ( fctx, fname ) -> feelFunction, null ); // feel can be null as anyway is hardcoded to `feelFunction`
 
                     for( InformationItem p : funcDef.getFormalParameter() ) {
                         invoker.addParameter( p.getName(), func.getParameterType( p.getName() ), (em, dr) -> new EvaluatorResultImpl( dr.getContext().get( p.getName() ), EvaluatorResult.ResultType.SUCCESS ) );
@@ -290,7 +321,7 @@ public class DMNEvaluatorCompiler {
                         }
 
                         DMNInvocationEvaluator invoker = new DMNInvocationEvaluator( node.getName(), node.getSource(), functionName, new Invocation(),
-                                                                                     ( fctx, fname ) -> feelFunction );
+                                                                                     ( fctx, fname ) -> feelFunction, null ); // feel can be null as anyway is hardcoded to `feelFunction`
 
                         DMNFunctionDefinitionEvaluator func = new DMNFunctionDefinitionEvaluator( node.getName(), funcDef );
                         for ( InformationItem p : funcDef.getFormalParameter() ) {
@@ -520,9 +551,12 @@ public class DMNEvaluatorCompiler {
             parameterNames.addAll( node.getDependencies().keySet() );
         }
 
-        DecisionTableImpl dti = new DecisionTableImpl( dtName, parameterNames, inputs, outputs, rules, hp );
+        // creates a FEEL instance which will be used by the invoker/impl (s)
+        FEEL feelInstance = feel.newFEELInstance();
+
+        DecisionTableImpl dti = new DecisionTableImpl(dtName, parameterNames, inputs, outputs, rules, hp, feelInstance);
         DTInvokerFunction dtf = new DTInvokerFunction( dti );
-        DMNDTExpressionEvaluator dtee = new DMNDTExpressionEvaluator( node, dtf );
+        DMNDTExpressionEvaluator dtee = new DMNDTExpressionEvaluator(node, feelInstance, dtf);
         return dtee;
     }
     

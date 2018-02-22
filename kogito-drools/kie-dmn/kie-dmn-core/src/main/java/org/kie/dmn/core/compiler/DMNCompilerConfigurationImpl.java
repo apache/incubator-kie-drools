@@ -26,11 +26,14 @@ import java.util.Map;
 import org.kie.api.conf.Option;
 import org.kie.dmn.api.core.DMNCompilerConfiguration;
 import org.kie.dmn.api.marshalling.v1_1.DMNExtensionRegister;
+import org.kie.dmn.feel.lang.FEELProfile;
 
 public class DMNCompilerConfigurationImpl implements DMNCompilerConfiguration {
 
     private List<DMNExtensionRegister> registeredExtensions = new ArrayList<>();
     private Map<String, String> properties = new HashMap<>();
+    private List<DRGElementCompiler> drgElementCompilers = new ArrayList<>();
+    private List<FEELProfile> feelProfiles = new ArrayList<>();
 
     public void addExtensions(List<DMNExtensionRegister> extensionRegisters) {
         this.registeredExtensions.addAll(extensionRegisters);
@@ -57,5 +60,21 @@ public class DMNCompilerConfigurationImpl implements DMNCompilerConfiguration {
             return (T) new RuntimeTypeCheckOption(properties.get(RuntimeTypeCheckOption.PROPERTY_NAME));
         }
         return null;
+    }
+
+    public void addDRGElementCompilers(List<DRGElementCompiler> drgElementCompilers) {
+        this.drgElementCompilers.addAll(drgElementCompilers);
+    }
+
+    public List<DRGElementCompiler> getDRGElementCompilers() {
+        return drgElementCompilers;
+    }
+
+    public List<FEELProfile> getFeelProfiles() {
+        return feelProfiles;
+    }
+
+    public void addFEELProfile(FEELProfile dmnProfile) {
+        this.feelProfiles.add(dmnProfile);
     }
 }

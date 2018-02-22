@@ -1,10 +1,11 @@
 package org.kie.dmn.feel.marshaller;
 
+import java.util.function.Function;
+
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.Type;
-import org.kie.dmn.feel.runtime.functions.*;
-
-import java.util.function.Function;
+import org.kie.dmn.feel.runtime.functions.extended.CodeFunction;
+import org.kie.dmn.feel.runtime.functions.extended.KieExtendedDMNFunctions;
 
 import static org.kie.dmn.feel.lang.types.BuiltInType.justNull;
 
@@ -39,7 +40,7 @@ public class FEELCodeMarshaller
         if( value == null ) {
             return "null";
         }
-        return BuiltInFunctions.getFunction( CodeFunction.class ).invoke( value ).cata( justNull(), Function.identity());
+        return KieExtendedDMNFunctions.getFunction(CodeFunction.class).invoke(value).cata(justNull(), Function.identity());
     }
 
     /**

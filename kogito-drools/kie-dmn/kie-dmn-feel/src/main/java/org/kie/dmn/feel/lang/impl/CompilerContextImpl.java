@@ -33,6 +33,9 @@ public class CompilerContextImpl implements CompilerContext {
     private Map<String, Type> inputVariableTypes = new HashMap<>();
     private Set<FEELFunction> customFunctions = new LinkedHashSet<>();
 
+    /**
+     * PLEASE NOTICE: it is recommended to instance the CompilerContext via the FEEL instance, so to have all profile configuration applied correctly.
+     */
     public CompilerContextImpl(FEELEventListenersManager eventsManager) {
         this.eventsManager = eventsManager;
     }

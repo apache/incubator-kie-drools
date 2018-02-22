@@ -16,9 +16,8 @@
 
 package org.kie.dmn.core.ast;
 
-import org.drools.core.rule.Function;
-import org.kie.dmn.api.core.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.BiFunction;
 
@@ -35,11 +34,13 @@ import org.kie.dmn.core.impl.DMNContextImpl;
 import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
+import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
+import org.kie.dmn.feel.lang.impl.FEELImpl;
 import org.kie.dmn.feel.lang.impl.NamedParameter;
-import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.lang.impl.RootExecutionFrame;
+import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.model.v1_1.DMNElement;
 import org.kie.dmn.model.v1_1.Invocation;
 import org.slf4j.Logger;
@@ -55,8 +56,13 @@ public class DMNInvocationEvaluator
     private final String     functionName;
     private final List<ActualParameter> parameters = new ArrayList<>();
     private final BiFunction<DMNContext, String, FEELFunction> functionLocator;
+    private final FEEL feel;
 
-    public DMNInvocationEvaluator(String nodeName, DMNElement node, String functionName, Invocation invocation, BiFunction<DMNContext, String, FEELFunction> functionLocator ) {
+    /**
+     * @param functionLocator function to be used to resolve the FEELFunction to be invoked.
+     * @param feel in case functionLocator is not able to resolve the desired function, it will be used for checking the resolution against the configured/built-in FEEL functions.
+     */
+    public DMNInvocationEvaluator(String nodeName, DMNElement node, String functionName, Invocation invocation, BiFunction<DMNContext, String, FEELFunction> functionLocator, FEEL feel) {
         this.nodeName = nodeName;
         this.node = node;
         this.functionName = functionName;
@@ -66,6 +72,7 @@ public class DMNInvocationEvaluator
         } else {
             this.functionLocator = functionLocator;
         }
+        this.feel = feel;
     }
 
     public void addParameter(String name, DMNType type, DMNExpressionEvaluator evaluator) {
@@ -88,8 +95,13 @@ public class DMNInvocationEvaluator
         try {
             FEELFunction function = this.functionLocator.apply( previousContext, functionName );
             if( function == null ) {
-                // check if it is a built in function
-                Object r = RootExecutionFrame.INSTANCE.getValue( functionName );
+                // check if it is a configured/built-in function
+                Object r = null;
+                if (feel != null) {
+                    r = ((FEELImpl) feel).newEvaluationContext(Collections.emptyList(), Collections.emptyMap()).getValue(functionName);
+                } else {
+                    r = RootExecutionFrame.INSTANCE.getValue( functionName );
+                }
                 if( r != null && r instanceof FEELFunction ) {
                     function = (FEELFunction) r;
                 }

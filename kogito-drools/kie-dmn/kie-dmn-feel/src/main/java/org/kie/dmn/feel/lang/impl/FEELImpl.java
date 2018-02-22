@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -85,12 +84,12 @@ public class FEELImpl
     }
     
     public CompilerContext newCompilerContext(Collection<FEELEventListener> contextListeners) {
-        return new CompilerContextImpl( getEventsManager(contextListeners) );
+        return new CompilerContextImpl(getEventsManager(contextListeners)).addFEELFunctions(customFunctions);
     }
     
     @Override
     public CompiledExpression compile(String expression, CompilerContext ctx) {
-        FEEL_1_1Parser parser = FEELParser.parse(getEventsManager(ctx.getListeners()), expression, ctx.getInputVariableTypes(), ctx.getInputVariables(), mergeFunctions(ctx), profiles);
+        FEEL_1_1Parser parser = FEELParser.parse(getEventsManager(ctx.getListeners()), expression, ctx.getInputVariableTypes(), ctx.getInputVariables(), ctx.getFEELFunctions(), profiles);
         ParseTree tree = parser.compilation_unit();
         ASTBuilderVisitor v = new ASTBuilderVisitor( ctx.getInputVariableTypes() );
         BaseNode expr = v.visit( tree );
@@ -99,22 +98,12 @@ public class FEELImpl
     }
 
     public CompiledExpression compileExpressionList(String expression, CompilerContext ctx) {
-        FEEL_1_1Parser parser = FEELParser.parse(getEventsManager(ctx.getListeners()), expression, ctx.getInputVariableTypes(), ctx.getInputVariables(), mergeFunctions(ctx), profiles);
+        FEEL_1_1Parser parser = FEELParser.parse(getEventsManager(ctx.getListeners()), expression, ctx.getInputVariableTypes(), ctx.getInputVariables(), ctx.getFEELFunctions(), profiles);
         ParseTree tree = parser.expressionList();
         ASTBuilderVisitor v = new ASTBuilderVisitor(ctx.getInputVariableTypes());
         BaseNode expr = v.visit(tree);
         CompiledExpression ce = new CompiledExpressionImpl(expr);
         return ce;
-    }
-
-    private Collection<FEELFunction> mergeFunctions(CompilerContext ctx) {
-        if (ctx.getFEELFunctions().isEmpty()) {
-            return customFunctions;
-        } else {
-            Collection<FEELFunction> result = new LinkedHashSet<>(customFunctions);
-            result.addAll(ctx.getFEELFunctions());
-            return result;
-        }
     }
 
     @Override
@@ -129,7 +118,6 @@ public class FEELImpl
         if ( inputVariables != null ) {
             inputVariables.entrySet().stream().forEach( e -> compilerCtx.addInputVariable( e.getKey(), e.getValue() ) );
         }
-        compilerCtx.addFEELFunctions(customFunctions);
         CompiledExpression expr = compile( expression, compilerCtx );
         return evaluate( expr, ctx );
     }
@@ -140,7 +128,6 @@ public class FEELImpl
         if ( inputVariables != null ) {
             inputVariables.entrySet().stream().forEach( e -> ctx.addInputVariable( e.getKey(), e.getValue() ) );
         }
-        ctx.addFEELFunctions(customFunctions);
         CompiledExpression expr = compile( expression, ctx );
         if ( inputVariables == null ) {
             return evaluate( expr, EMPTY_INPUT );
@@ -159,7 +146,7 @@ public class FEELImpl
         return ((CompiledExpressionImpl) expr).evaluate(newEvaluationContext(ctx.getListeners(), ctx.getAllValues()));
     }
 
-    private EvaluationContext newEvaluationContext(Collection<FEELEventListener> listeners, Map<String, Object> inputVariables) {
+    public EvaluationContextImpl newEvaluationContext(Collection<FEELEventListener> listeners, Map<String, Object> inputVariables) {
         FEELEventListenersManager eventsManager = getEventsManager(listeners);
         EvaluationContextImpl ctx = new EvaluationContextImpl( eventsManager );
         if (customFrame.isPresent()) {
