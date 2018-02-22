@@ -15,15 +15,20 @@
 
 package org.kie.api.executor;
 
+import java.util.List;
+import java.util.function.Consumer;
+
 public interface ExecutorStoreService {
 
-    void persistRequest(RequestInfo request);
+    void persistRequest(RequestInfo request, Consumer<Object> function);
 
-    void updateRequest(RequestInfo request);
+    void updateRequest(RequestInfo request, Consumer<Object> function);
 
-    RequestInfo removeRequest(Long requestId);
+    RequestInfo removeRequest(Long requestId, Consumer<Object> function);
 
     RequestInfo findRequest(Long id);
+    
+    List<RequestInfo> loadRequests();
 
     void persistError(ErrorInfo error);
 
@@ -32,7 +37,5 @@ public interface ExecutorStoreService {
     ErrorInfo removeError(Long errorId);
 
     ErrorInfo findError(Long id);
-
-    Runnable buildExecutorRunnable();
 
 }
