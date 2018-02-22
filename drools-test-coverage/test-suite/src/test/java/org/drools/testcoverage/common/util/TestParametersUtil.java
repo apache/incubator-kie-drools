@@ -24,8 +24,8 @@ import java.util.Collection;
  */
 public final class TestParametersUtil {
 
-    public static boolean TEST_CANONICAL_MODEL = true;
-    public static boolean TEST_CANONICAL_MODEL_PATTERN = false;
+    public static boolean TEST_EXECUTABLE_MODEL_WITH_FLOW_DSL = true;
+    public static boolean TEST_EXECUTABLE_MODEL_WITH_PATTERN_DSL = true;
 
     /**
      * Prepares collection of KieBaseTestConfiguration.
@@ -38,18 +38,18 @@ public final class TestParametersUtil {
         parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY});
         parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY});
 
-        if (TEST_CANONICAL_MODEL) {
-            parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_CANONICAL_MODEL});
-            parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY_CANONICAL_MODEL});
-            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_CANONICAL_MODEL});
-            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_CANONICAL_MODEL});
+        if ( TEST_EXECUTABLE_MODEL_WITH_FLOW_DSL ) {
+            parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_FLOW});
+            parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY_MODEL_FLOW});
+            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_MODEL_FLOW});
+            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_MODEL_FLOW});
         }
 
-        if(TEST_CANONICAL_MODEL_PATTERN) {
-            parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_CANONICAL_MODEL_PATTERN});
-            parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY_CANONICAL_MODEL_PATTERN});
-            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_CANONICAL_MODEL_PATTERN});
-            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_CANONICAL_MODEL_PATTERN});
+        if( TEST_EXECUTABLE_MODEL_WITH_PATTERN_DSL ) {
+            parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_PATTERN});
+            parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY_MODEL_PATTERN});
+            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_MODEL_PATTERN});
+            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_MODEL_PATTERN});
         }
 
         return parameters;
@@ -64,14 +64,14 @@ public final class TestParametersUtil {
         parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY});
         parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY});
 
-        if (TEST_CANONICAL_MODEL) {
-            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_CANONICAL_MODEL});
-            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_CANONICAL_MODEL});
+        if ( TEST_EXECUTABLE_MODEL_WITH_FLOW_DSL ) {
+            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_MODEL_FLOW});
+            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_MODEL_FLOW});
         }
 
-        if(TEST_CANONICAL_MODEL_PATTERN) {
-            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_CANONICAL_MODEL_PATTERN});
-            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_CANONICAL_MODEL_PATTERN});
+        if( TEST_EXECUTABLE_MODEL_WITH_PATTERN_DSL ) {
+            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_MODEL_PATTERN});
+            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_MODEL_PATTERN});
         }
         return parameters;
     }
@@ -98,57 +98,57 @@ public final class TestParametersUtil {
         parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY, KieSessionTestConfiguration.STATEFUL_PSEUDO});
         parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY, KieSessionTestConfiguration.STATELESS_REALTIME});
 
-        if (TEST_CANONICAL_MODEL) {
-            parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_CANONICAL_MODEL, KieSessionTestConfiguration.STATEFUL_REALTIME});
-            parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_CANONICAL_MODEL, KieSessionTestConfiguration.STATEFUL_PSEUDO});
-            parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_CANONICAL_MODEL, KieSessionTestConfiguration.STATELESS_REALTIME});
+        if ( TEST_EXECUTABLE_MODEL_WITH_FLOW_DSL ) {
+            parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_FLOW, KieSessionTestConfiguration.STATEFUL_REALTIME});
+            parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_FLOW, KieSessionTestConfiguration.STATEFUL_PSEUDO});
+            parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_FLOW, KieSessionTestConfiguration.STATELESS_REALTIME});
         }
 
-        if(TEST_CANONICAL_MODEL_PATTERN) {
-            parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_CANONICAL_MODEL_PATTERN, KieSessionTestConfiguration.STATEFUL_REALTIME});
-            parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_CANONICAL_MODEL_PATTERN, KieSessionTestConfiguration.STATEFUL_PSEUDO});
-            parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_CANONICAL_MODEL_PATTERN, KieSessionTestConfiguration.STATELESS_REALTIME});
+        if( TEST_EXECUTABLE_MODEL_WITH_PATTERN_DSL ) {
+            parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_PATTERN, KieSessionTestConfiguration.STATEFUL_REALTIME});
+            parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_PATTERN, KieSessionTestConfiguration.STATEFUL_PSEUDO});
+            parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_PATTERN, KieSessionTestConfiguration.STATELESS_REALTIME});
         }
 
         parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY, KieSessionTestConfiguration.STATEFUL_REALTIME});
         parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY, KieSessionTestConfiguration.STATEFUL_PSEUDO});
         parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY, KieSessionTestConfiguration.STATELESS_REALTIME});
 
-        if (TEST_CANONICAL_MODEL) {
-            parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY_CANONICAL_MODEL, KieSessionTestConfiguration.STATEFUL_REALTIME});
-            parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY_CANONICAL_MODEL, KieSessionTestConfiguration.STATEFUL_PSEUDO});
-            parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY_CANONICAL_MODEL, KieSessionTestConfiguration.STATELESS_REALTIME});
+        if ( TEST_EXECUTABLE_MODEL_WITH_FLOW_DSL ) {
+            parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY_MODEL_FLOW, KieSessionTestConfiguration.STATEFUL_REALTIME});
+            parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY_MODEL_FLOW, KieSessionTestConfiguration.STATEFUL_PSEUDO});
+            parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY_MODEL_FLOW, KieSessionTestConfiguration.STATELESS_REALTIME});
         }
 
-        if (TEST_CANONICAL_MODEL_PATTERN) {
-            parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY_CANONICAL_MODEL_PATTERN, KieSessionTestConfiguration.STATEFUL_REALTIME});
-            parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY_CANONICAL_MODEL_PATTERN, KieSessionTestConfiguration.STATEFUL_PSEUDO});
-            parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY_CANONICAL_MODEL_PATTERN, KieSessionTestConfiguration.STATELESS_REALTIME});
+        if ( TEST_EXECUTABLE_MODEL_WITH_PATTERN_DSL ) {
+            parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY_MODEL_PATTERN, KieSessionTestConfiguration.STATEFUL_REALTIME});
+            parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY_MODEL_PATTERN, KieSessionTestConfiguration.STATEFUL_PSEUDO});
+            parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY_MODEL_PATTERN, KieSessionTestConfiguration.STATELESS_REALTIME});
         }
 
         parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY, KieSessionTestConfiguration.STATEFUL_REALTIME});
         parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY, KieSessionTestConfiguration.STATEFUL_PSEUDO});
 
-        if (TEST_CANONICAL_MODEL) {
-            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_CANONICAL_MODEL, KieSessionTestConfiguration.STATEFUL_REALTIME});
-            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_CANONICAL_MODEL, KieSessionTestConfiguration.STATEFUL_PSEUDO});
+        if ( TEST_EXECUTABLE_MODEL_WITH_FLOW_DSL ) {
+            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_MODEL_FLOW, KieSessionTestConfiguration.STATEFUL_REALTIME});
+            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_MODEL_FLOW, KieSessionTestConfiguration.STATEFUL_PSEUDO});
         }
 
-        if (TEST_CANONICAL_MODEL_PATTERN) {
-            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_CANONICAL_MODEL_PATTERN, KieSessionTestConfiguration.STATEFUL_REALTIME});
-            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_CANONICAL_MODEL_PATTERN, KieSessionTestConfiguration.STATEFUL_PSEUDO});
+        if ( TEST_EXECUTABLE_MODEL_WITH_PATTERN_DSL ) {
+            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_MODEL_PATTERN, KieSessionTestConfiguration.STATEFUL_REALTIME});
+            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_MODEL_PATTERN, KieSessionTestConfiguration.STATEFUL_PSEUDO});
         }
 
         parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY, KieSessionTestConfiguration.STATEFUL_REALTIME});
         parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY, KieSessionTestConfiguration.STATEFUL_PSEUDO});
 
-        if (TEST_CANONICAL_MODEL) {
-            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_CANONICAL_MODEL, KieSessionTestConfiguration.STATEFUL_REALTIME});
-            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_CANONICAL_MODEL, KieSessionTestConfiguration.STATEFUL_PSEUDO});
+        if ( TEST_EXECUTABLE_MODEL_WITH_FLOW_DSL ) {
+            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_MODEL_FLOW, KieSessionTestConfiguration.STATEFUL_REALTIME});
+            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_MODEL_FLOW, KieSessionTestConfiguration.STATEFUL_PSEUDO});
         }
-        if (TEST_CANONICAL_MODEL_PATTERN) {
-            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_CANONICAL_MODEL_PATTERN, KieSessionTestConfiguration.STATEFUL_REALTIME});
-            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_CANONICAL_MODEL_PATTERN, KieSessionTestConfiguration.STATEFUL_PSEUDO});
+        if ( TEST_EXECUTABLE_MODEL_WITH_PATTERN_DSL ) {
+            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_MODEL_PATTERN, KieSessionTestConfiguration.STATEFUL_REALTIME});
+            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_MODEL_PATTERN, KieSessionTestConfiguration.STATEFUL_PSEUDO});
         }
 
         return parameters;
@@ -168,22 +168,22 @@ public final class TestParametersUtil {
         parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY, KieSessionTestConfiguration.STATEFUL_REALTIME});
         parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY, KieSessionTestConfiguration.STATEFUL_PSEUDO});
 
-        if (TEST_CANONICAL_MODEL) {
-            parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_CANONICAL_MODEL, KieSessionTestConfiguration.STATEFUL_REALTIME});
-            parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY_CANONICAL_MODEL, KieSessionTestConfiguration.STATEFUL_REALTIME});
-            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_CANONICAL_MODEL, KieSessionTestConfiguration.STATEFUL_REALTIME});
-            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_CANONICAL_MODEL, KieSessionTestConfiguration.STATEFUL_PSEUDO});
-            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_CANONICAL_MODEL, KieSessionTestConfiguration.STATEFUL_REALTIME});
-            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_CANONICAL_MODEL, KieSessionTestConfiguration.STATEFUL_PSEUDO});
+        if ( TEST_EXECUTABLE_MODEL_WITH_FLOW_DSL ) {
+            parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_FLOW, KieSessionTestConfiguration.STATEFUL_REALTIME});
+            parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY_MODEL_FLOW, KieSessionTestConfiguration.STATEFUL_REALTIME});
+            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_MODEL_FLOW, KieSessionTestConfiguration.STATEFUL_REALTIME});
+            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_MODEL_FLOW, KieSessionTestConfiguration.STATEFUL_PSEUDO});
+            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_MODEL_FLOW, KieSessionTestConfiguration.STATEFUL_REALTIME});
+            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_MODEL_FLOW, KieSessionTestConfiguration.STATEFUL_PSEUDO});
         }
 
-        if (TEST_CANONICAL_MODEL_PATTERN) {
-            parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_CANONICAL_MODEL_PATTERN, KieSessionTestConfiguration.STATEFUL_REALTIME});
-            parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY_CANONICAL_MODEL_PATTERN, KieSessionTestConfiguration.STATEFUL_REALTIME});
-            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_CANONICAL_MODEL_PATTERN, KieSessionTestConfiguration.STATEFUL_REALTIME});
-            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_CANONICAL_MODEL_PATTERN, KieSessionTestConfiguration.STATEFUL_PSEUDO});
-            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_CANONICAL_MODEL_PATTERN, KieSessionTestConfiguration.STATEFUL_REALTIME});
-            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_CANONICAL_MODEL_PATTERN, KieSessionTestConfiguration.STATEFUL_PSEUDO});
+        if ( TEST_EXECUTABLE_MODEL_WITH_PATTERN_DSL ) {
+            parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_PATTERN, KieSessionTestConfiguration.STATEFUL_REALTIME});
+            parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY_MODEL_PATTERN, KieSessionTestConfiguration.STATEFUL_REALTIME});
+            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_MODEL_PATTERN, KieSessionTestConfiguration.STATEFUL_REALTIME});
+            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_MODEL_PATTERN, KieSessionTestConfiguration.STATEFUL_PSEUDO});
+            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_MODEL_PATTERN, KieSessionTestConfiguration.STATEFUL_REALTIME});
+            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_MODEL_PATTERN, KieSessionTestConfiguration.STATEFUL_PSEUDO});
         }
         return parameters;
     }
@@ -200,18 +200,18 @@ public final class TestParametersUtil {
         parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY, KieSessionTestConfiguration.STATEFUL_REALTIME});
         parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY, KieSessionTestConfiguration.STATEFUL_PSEUDO});
 
-        if (TEST_CANONICAL_MODEL) {
-            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_CANONICAL_MODEL, KieSessionTestConfiguration.STATEFUL_REALTIME});
-            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_CANONICAL_MODEL, KieSessionTestConfiguration.STATEFUL_PSEUDO});
-            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_CANONICAL_MODEL, KieSessionTestConfiguration.STATEFUL_REALTIME});
-            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_CANONICAL_MODEL, KieSessionTestConfiguration.STATEFUL_PSEUDO});
+        if ( TEST_EXECUTABLE_MODEL_WITH_FLOW_DSL ) {
+            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_MODEL_FLOW, KieSessionTestConfiguration.STATEFUL_REALTIME});
+            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_MODEL_FLOW, KieSessionTestConfiguration.STATEFUL_PSEUDO});
+            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_MODEL_FLOW, KieSessionTestConfiguration.STATEFUL_REALTIME});
+            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_MODEL_FLOW, KieSessionTestConfiguration.STATEFUL_PSEUDO});
         }
 
-        if(TEST_CANONICAL_MODEL_PATTERN) {
-            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_CANONICAL_MODEL_PATTERN, KieSessionTestConfiguration.STATEFUL_REALTIME});
-            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_CANONICAL_MODEL_PATTERN, KieSessionTestConfiguration.STATEFUL_PSEUDO});
-            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_CANONICAL_MODEL_PATTERN, KieSessionTestConfiguration.STATEFUL_REALTIME});
-            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_CANONICAL_MODEL_PATTERN, KieSessionTestConfiguration.STATEFUL_PSEUDO});
+        if( TEST_EXECUTABLE_MODEL_WITH_PATTERN_DSL ) {
+            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_MODEL_PATTERN, KieSessionTestConfiguration.STATEFUL_REALTIME});
+            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_MODEL_PATTERN, KieSessionTestConfiguration.STATEFUL_PSEUDO});
+            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_MODEL_PATTERN, KieSessionTestConfiguration.STATEFUL_REALTIME});
+            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_MODEL_PATTERN, KieSessionTestConfiguration.STATEFUL_PSEUDO});
         }
         return parameters;
     }

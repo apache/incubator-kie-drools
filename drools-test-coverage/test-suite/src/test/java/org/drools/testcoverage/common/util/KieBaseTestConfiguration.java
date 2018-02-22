@@ -68,7 +68,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * <code>EqualityBehaviorOption.IDENTITY</code> options set.
      * Canonical rule model is used.
      */
-    CLOUD_IDENTITY_CANONICAL_MODEL {
+    CLOUD_IDENTITY_MODEL_FLOW {
         @Override
         public RunType runType() {
             return FLOW_DSL;
@@ -98,7 +98,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * <code>EqualityBehaviorOption.IDENTITY</code> options set.
      * Canonical rule model with pattern dialect is used.
      */
-    CLOUD_IDENTITY_CANONICAL_MODEL_PATTERN {
+    CLOUD_IDENTITY_MODEL_PATTERN {
         @Override
         public RunType runType() {
             return PATTERN_DSL;
@@ -158,7 +158,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * <code>EqualityBehaviorOption.EQUALITY</code> options set.
      * Canonical rule model is used.
      */
-    CLOUD_EQUALITY_CANONICAL_MODEL {
+    CLOUD_EQUALITY_MODEL_FLOW {
         @Override
         public RunType runType() {
             return FLOW_DSL;
@@ -188,7 +188,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * <code>EqualityBehaviorOption.EQUALITY</code> options set.
      * Canonical rule model with pattern dialect is used.
      */
-    CLOUD_EQUALITY_CANONICAL_MODEL_PATTERN {
+    CLOUD_EQUALITY_MODEL_PATTERN {
         @Override
         public RunType runType() {
             return PATTERN_DSL;
@@ -248,7 +248,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * <code>EqualityBehaviorOption.IDENTITY</code> options set.
      * Canonical rule model is used.
      */
-    STREAM_IDENTITY_CANONICAL_MODEL {
+    STREAM_IDENTITY_MODEL_FLOW {
         @Override
         public RunType runType() {
             return FLOW_DSL;
@@ -278,7 +278,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * <code>EqualityBehaviorOption.IDENTITY</code> options set.
      * Canonical rule model with pattern dialect is used.
      */
-    STREAM_IDENTITY_CANONICAL_MODEL_PATTERN {
+    STREAM_IDENTITY_MODEL_PATTERN {
         @Override
         public RunType runType() {
             return PATTERN_DSL;
@@ -338,7 +338,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * <code>EqualityBehaviorOption.EQUALITY</code> options set.
      * Canonical rule model is used.
      */
-    STREAM_EQUALITY_CANONICAL_MODEL {
+    STREAM_EQUALITY_MODEL_FLOW {
         @Override
         public RunType runType() {
             return FLOW_DSL;
@@ -368,7 +368,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * <code>EqualityBehaviorOption.EQUALITY</code> options set.
      * Canonical rule model with pattern dialect is used.
      */
-    STREAM_EQUALITY_CANONICAL_MODEL_PATTERN {
+    STREAM_EQUALITY_MODEL_PATTERN {
         @Override
         public RunType runType() {
             return PATTERN_DSL;
