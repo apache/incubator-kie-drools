@@ -1793,5 +1793,22 @@ public class DMNRuntimeTest {
 
         assertThat(dmnResult.getDecisionResultByName("a decision just today").getResult(), notNullValue());
     }
+
+    @Test
+    public void testEnhancedForLoop() {
+        // DROOLS-2307
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime("drools2307.dmn", this.getClass());
+        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_03d9481e-dcfc-4a59-9bdd-4f021cb2f0d8", "Drawing 1");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        DMNContext emptyContext = DMNFactory.newContext();
+
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, emptyContext);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnModel.hasErrors(), is(false));
+
+        DMNContext result = dmnResult.getContext();
+        assertThat(result.get("an hardcoded forloop"), is(Arrays.asList(new BigDecimal(2), new BigDecimal(3), new BigDecimal(4))));
+    }
 }
 
