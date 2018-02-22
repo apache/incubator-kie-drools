@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.feel.runtime.functions;
-
-import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
-import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+package org.kie.dmn.feel.runtime.functions.extended;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+
+import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
+import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
+import org.kie.dmn.feel.runtime.functions.FEELFnResult;
+import org.kie.dmn.feel.runtime.functions.ParameterName;
 
 public class ModuloFunction
         extends BaseFEELFunction {

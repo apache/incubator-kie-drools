@@ -18,7 +18,6 @@ package org.kie.dmn.core.compiler;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
@@ -53,7 +52,6 @@ import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.lang.types.BuiltInType;
-import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.model.v1_1.DMNElementReference;
 import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
@@ -90,23 +88,22 @@ public class DMNCompilerImpl
     }
 
     public DMNCompilerImpl(DMNCompilerConfiguration dmnCompilerConfig) {
-        this.feel = new DMNFEELHelper();
-        this.evaluatorCompiler = new DMNEvaluatorCompiler( this, feel );
         this.dmnCompilerConfig = dmnCompilerConfig;
+        DMNCompilerConfigurationImpl cc = (DMNCompilerConfigurationImpl) dmnCompilerConfig;
+        addDRGElementCompilers(cc.getDRGElementCompilers());
+        this.feel = new DMNFEELHelper(cc.getFeelProfiles());
+        this.evaluatorCompiler = new DMNEvaluatorCompiler( this, feel );
     }
     
-    public void addDRGElementCompiler(DRGElementCompiler compiler) {
+    private void addDRGElementCompiler(DRGElementCompiler compiler) {
         drgCompilers.push(compiler);
     }
-    public void addDRGElementCompilers(List<DRGElementCompiler> compilers) {
+
+    private void addDRGElementCompilers(List<DRGElementCompiler> compilers) {
         ListIterator<DRGElementCompiler> listIterator = compilers.listIterator( compilers.size() );
         while ( listIterator.hasPrevious() ) {
             addDRGElementCompiler( listIterator.previous() );
         }
-    }
-
-    public void registerFEELFunctions(Collection<FEELFunction> feelFunctions) {
-        this.feel.registerFEELFunctions(feelFunctions);
     }
 
     @Override
@@ -445,7 +442,7 @@ public class DMNCompilerImpl
         return localElement.getNamespaceURI( prefix );
     }
 
-    private DMNCompilerConfiguration getDmnCompilerConfig() {
+    public DMNCompilerConfiguration getDmnCompilerConfig() {
         return this.dmnCompilerConfig;
     }
 

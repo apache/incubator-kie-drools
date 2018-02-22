@@ -34,6 +34,7 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.dmn.feel.runtime.Range;
+import org.kie.dmn.feel.runtime.functions.extended.CodeFunction;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
 
 public class CodeFunctionTest {

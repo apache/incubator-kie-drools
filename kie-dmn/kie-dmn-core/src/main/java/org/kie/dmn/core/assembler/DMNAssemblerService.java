@@ -35,7 +35,6 @@ import org.kie.dmn.api.core.DMNCompilerConfiguration;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.compiler.DMNCompilerConfigurationImpl;
-import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.compiler.DMNProfile;
 import org.kie.dmn.core.compiler.profiles.ExtendedDMNProfile;
 import org.kie.dmn.core.impl.DMNKnowledgeBuilderError;
@@ -127,35 +126,28 @@ public class DMNAssemblerService implements KieAssemblerService {
     }
 
     private DMNCompiler getCompiler(KnowledgeBuilderImpl kbuilderImpl) {
-        DMNCompilerConfiguration compilerConfig = compilerConfigWithKModulePrefs(kbuilderImpl);
-
         List<DMNProfile> dmnProfiles = kbuilderImpl.getCachedOrCreate(DMN_PROFILES_CACHE_KEY, () -> getDMNProfiles(kbuilderImpl));
-        if (!dmnProfiles.isEmpty()) {
-            for (DMNProfile dmnProfile : dmnProfiles) {
-                compilerConfig.addExtensions(dmnProfile.getExtensionRegisters());
-            }
 
-            DMNCompilerImpl compiler = (DMNCompilerImpl) DMNFactory.newCompiler(compilerConfig);
-            for (DMNProfile dmnProfile : dmnProfiles) {
-                compiler.addDRGElementCompilers(dmnProfile.getDRGElementCompilers());
-            }
-            for (DMNProfile dmnProfile : dmnProfiles) {
-                compiler.registerFEELFunctions(dmnProfile.getFEELFunctions());
-            }
-
-            return compiler;
-        }
+        DMNCompilerConfiguration compilerConfig = compilerConfigWithKModulePrefs(kbuilderImpl, dmnProfiles);
 
         return DMNFactory.newCompiler(compilerConfig);
     }
 
-    private DMNCompilerConfiguration compilerConfigWithKModulePrefs(KnowledgeBuilderImpl kbuilderImpl) {
+    private DMNCompilerConfiguration compilerConfigWithKModulePrefs(KnowledgeBuilderImpl kbuilderImpl, List<DMNProfile> dmnProfiles) {
         DMNCompilerConfigurationImpl config = (DMNCompilerConfigurationImpl) DMNFactory.newCompilerConfiguration();
         
         Map<String, String> dmnPrefs = new HashMap<>();
         kbuilderImpl.getBuilderConfiguration().getChainedProperties().mapStartsWith(dmnPrefs, ORG_KIE_DMN_PREFIX, true);
         config.setProperties(dmnPrefs);
         
+        if (!dmnProfiles.isEmpty()) {
+            for (DMNProfile dmnProfile : dmnProfiles) {
+                config.addExtensions(dmnProfile.getExtensionRegisters());
+                config.addDRGElementCompilers(dmnProfile.getDRGElementCompilers());
+                config.addFEELProfile(dmnProfile);
+            }
+        }
+
         return config;
     }
 }
