@@ -85,7 +85,7 @@ public class FEELImpl
     }
     
     public CompilerContext newCompilerContext(Collection<FEELEventListener> contextListeners) {
-        return new CompilerContextImpl( getEventsManager(contextListeners) );
+        return new CompilerContextImpl(getEventsManager(contextListeners)).addFEELFunctions(customFunctions);
     }
     
     @Override

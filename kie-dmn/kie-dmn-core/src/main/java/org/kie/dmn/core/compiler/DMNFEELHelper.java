@@ -1,14 +1,12 @@
 package org.kie.dmn.core.compiler;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.CommonToken;
 import org.kie.dmn.api.core.DMNContext;
@@ -43,16 +41,14 @@ public class DMNFEELHelper {
     private final FEELEventsListenerImpl listener;
     private final List<FEELProfile> feelProfiles = new ArrayList<>();
 
-    // used internally as a caching mechanism.
-    private List<FEELFunction> feelFunctions = new ArrayList<>();
-
-    public DMNFEELHelper() {
+    public DMNFEELHelper(List<FEELProfile> feelProfiles) {
+        this.feelProfiles.addAll(feelProfiles);
         this.listener = new FEELEventsListenerImpl();
         this.feel = createFEELInstance();
     }
 
     private FEEL createFEELInstance() {
-        FEEL feel = FEEL.newInstance();
+        FEEL feel = FEEL.newInstance(feelProfiles);
         feel.addListener( listener );
         return feel;
     }
@@ -103,18 +99,12 @@ public class DMNFEELHelper {
         return false;
     }
 
-    public void registerFEELProfiles(Collection<FEELProfile> feelProfiles) {
-        this.feelProfiles.addAll(feelProfiles);
-        this.feelFunctions = this.feelProfiles.stream().flatMap(p -> p.getFEELFunctions().stream()).collect(Collectors.toList());
-    }
-
     public CompiledExpression compileFeelExpression(DMNCompilerContext ctx, String expression, DMNModelImpl model, DMNElement element, Msg.Message errorMsg, Object... msgParams) {
         CompilerContext feelctx = feel.newCompilerContext();
 
         for ( Map.Entry<String, DMNType> entry : ctx.getVariables().entrySet() ) {
             feelctx.addInputVariableType( entry.getKey(), ((BaseDMNTypeImpl) entry.getValue()).getFeelType() );
         }
-        feelctx.addFEELFunctions(this.feelFunctions);
         CompiledExpression ce = feel.compile( expression, feelctx );
         processEvents( model, element, errorMsg, msgParams );
         return ce;
