@@ -77,8 +77,11 @@ public abstract class ParserTest {
 
         for (File file : files) {
             set.add(new Object[] { file, KieBaseTestConfiguration.CLOUD_EQUALITY });
-            if (TestParametersUtil.TEST_CANONICAL_MODEL) {
-                set.add(new Object[]{file, KieBaseTestConfiguration.CLOUD_EQUALITY_CANONICAL_MODEL});
+            if (TestParametersUtil.TEST_EXECUTABLE_MODEL_WITH_FLOW_DSL ) {
+                set.add(new Object[]{file, KieBaseTestConfiguration.CLOUD_EQUALITY_MODEL_FLOW});
+            }
+            if (TestParametersUtil.TEST_EXECUTABLE_MODEL_WITH_PATTERN_DSL ) {
+                set.add(new Object[]{file, KieBaseTestConfiguration.CLOUD_EQUALITY_MODEL_PATTERN});
             }
         }
 

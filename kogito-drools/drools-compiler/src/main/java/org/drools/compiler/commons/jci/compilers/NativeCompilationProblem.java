@@ -33,7 +33,7 @@ public class NativeCompilationProblem implements CompilationProblem {
     }
 
     public String getFileName() {
-        return problem.getSource().getName().substring(1);
+        return problem.getSource() == null ? "UNKNOWN" : problem.getSource().getName().substring(1);
     }
 
     public int getStartLine() {
