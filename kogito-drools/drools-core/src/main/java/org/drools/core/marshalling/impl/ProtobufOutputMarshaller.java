@@ -788,7 +788,7 @@ public class ProtobufOutputMarshaller {
             Comparator<InternalFactHandle> {
         public int compare(InternalFactHandle h1,
                            InternalFactHandle h2) {
-            return h1.getId() - h2.getId();
+            return Integer.compare(h1.getId(), h2.getId());
         }
     }
 
