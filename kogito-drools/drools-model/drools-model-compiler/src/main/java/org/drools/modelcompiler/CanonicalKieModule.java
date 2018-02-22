@@ -348,6 +348,9 @@ public class CanonicalKieModule implements InternalKieModule {
         return kbConf;
     }
 
+    public InternalKieModule getInternalKieModule() {
+        return internalKieModule;
+    }
 
     // Delegate methods
 
