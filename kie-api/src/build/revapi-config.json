@@ -123,6 +123,63 @@
            "methodName": "buildAll",
            "elementKind": "method",
            "justification": "Allow to programmatically build an executable model based project"
+         },
+         {
+           "code": "java.method.removed",
+           "old": "method java.lang.Runnable org.kie.api.executor.ExecutorStoreService::buildExecutorRunnable()",
+           "package": "org.kie.api.executor",
+           "classSimpleName": "ExecutorStoreService",
+           "methodName": "buildExecutorRunnable",
+           "elementKind": "method",
+           "justification": "Redesign of jbpm executor to improve overall performance"
+         },
+         {
+           "code": "java.method.numberOfParametersChanged",
+           "old": "method void org.kie.api.executor.ExecutorStoreService::persistRequest(org.kie.api.executor.RequestInfo)",
+           "new": "method void org.kie.api.executor.ExecutorStoreService::persistRequest(org.kie.api.executor.RequestInfo, java.util.function.Consumer<java.lang.Object>)",
+           "package": "org.kie.api.executor",
+           "classSimpleName": "ExecutorStoreService",
+           "methodName": "persistRequest",
+           "elementKind": "method",
+           "justification": "Redesign of jbpm executor to improve overall performance"
+         },
+         {
+           "code": "java.method.numberOfParametersChanged",
+           "old": "method org.kie.api.executor.RequestInfo org.kie.api.executor.ExecutorStoreService::removeRequest(java.lang.Long)",
+           "new": "method org.kie.api.executor.RequestInfo org.kie.api.executor.ExecutorStoreService::removeRequest(java.lang.Long, java.util.function.Consumer<java.lang.Object>)",
+           "package": "org.kie.api.executor",
+           "classSimpleName": "ExecutorStoreService",
+           "methodName": "removeRequest",
+           "elementKind": "method",
+           "justification": "Redesign of jbpm executor to improve overall performance"
+         },
+         {
+           "code": "java.method.numberOfParametersChanged",
+           "old": "method void org.kie.api.executor.ExecutorStoreService::updateRequest(org.kie.api.executor.RequestInfo)",
+           "new": "method void org.kie.api.executor.ExecutorStoreService::updateRequest(org.kie.api.executor.RequestInfo, java.util.function.Consumer<java.lang.Object>)",
+           "package": "org.kie.api.executor",
+           "classSimpleName": "ExecutorStoreService",
+           "methodName": "updateRequest",
+           "elementKind": "method",
+           "justification": "Redesign of jbpm executor to improve overall performance"
+         },
+         {
+           "code": "java.method.addedToInterface",
+           "new": "method java.util.List<org.kie.api.executor.RequestInfo> org.kie.api.executor.ExecutorStoreService::loadRequests()",
+           "package": "org.kie.api.executor",
+           "classSimpleName": "ExecutorStoreService",
+           "methodName": "loadRequests",
+           "elementKind": "method",
+           "justification": "Redesign of jbpm executor to improve overall performance"
+         },
+         {
+           "code": "java.method.addedToInterface",
+           "new": "method int org.kie.api.executor.RequestInfo::getPriority()",
+           "package": "org.kie.api.executor",
+           "classSimpleName": "RequestInfo",
+           "methodName": "getPriority",
+           "elementKind": "method",
+           "justification": "Redesign of jbpm executor to improve overall performance"
          }
       ]
     }

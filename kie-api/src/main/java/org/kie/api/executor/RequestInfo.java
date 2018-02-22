@@ -95,4 +95,9 @@ public interface RequestInfo {
      * @return optional process instance id in case this job is scheduled from within process context
      */
     Long getProcessInstanceId();
+    
+    /**
+     * @return get priority assigned to this job request
+     */
+    int getPriority();
 }
