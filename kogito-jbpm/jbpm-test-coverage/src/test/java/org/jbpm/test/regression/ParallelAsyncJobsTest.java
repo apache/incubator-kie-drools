@@ -28,6 +28,7 @@ import org.jbpm.executor.test.CountDownAsyncJobListener;
 import org.jbpm.test.JbpmAsyncJobTestCase;
 import org.junit.Test;
 import org.kie.api.executor.ExecutorService;
+import org.kie.api.executor.RequestInfo;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.query.QueryContext;
@@ -85,12 +86,13 @@ public class ParallelAsyncJobsTest extends JbpmAsyncJobTestCase {
 
         // assert that more than 1 task was picked up by the executor - if parallel execution
         // does work then more than 1 task got picked up because the scan interval is 1 second!
-        Assertions.assertThat(executorService.getPendingRequests(new QueryContext()).size())
+        List<RequestInfo> pending = executorService.getPendingRequests(new QueryContext());
+        Assertions.assertThat(pending.size())
                 .as("More than 2 async jobs should have been executed").isLessThanOrEqualTo(2);
 
         
         // wait for the process
-        countDownListener.reset(2);
+        countDownListener.reset(pending.size());
         countDownListener.waitTillCompleted();
 
         // assert that all jobs have where completed.

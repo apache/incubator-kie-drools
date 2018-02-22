@@ -168,7 +168,7 @@ public class JpaPersistenceContext implements Context {
 	@SuppressWarnings("unchecked")
 	private <T> T queryStringWithParameters(Map<String, Object> params, boolean singleResult, LockModeType lockMode,
 			Class<T> clazz, Query query) {
-		;
+		
 		if (lockMode != null) {
 			query.setLockMode(lockMode);
 		}

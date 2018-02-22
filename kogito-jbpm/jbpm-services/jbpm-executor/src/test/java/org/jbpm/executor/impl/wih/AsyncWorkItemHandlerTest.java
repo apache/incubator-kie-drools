@@ -36,7 +36,6 @@ import javax.persistence.Persistence;
 
 import org.drools.core.command.runtime.process.SetProcessInstanceVariablesCommand;
 import org.jbpm.executor.ExecutorServiceFactory;
-import org.jbpm.executor.RequeueAware;
 import org.jbpm.executor.commands.error.JobAutoAckErrorCommand;
 import org.jbpm.executor.commands.error.ProcessAutoAckErrorCommand;
 import org.jbpm.executor.commands.error.TaskAutoAckErrorCommand;
@@ -46,6 +45,7 @@ import org.jbpm.executor.test.CountDownAsyncJobListener;
 import org.jbpm.process.core.async.AsyncExecutionMarker;
 import org.jbpm.runtime.manager.impl.AbstractRuntimeManager;
 import org.jbpm.runtime.manager.impl.DefaultRegisterableItemsFactory;
+import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.jbpm.services.task.events.DefaultTaskEventListener;
 import org.jbpm.services.task.exception.TaskExecutionException;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
@@ -92,6 +92,8 @@ public class AsyncWorkItemHandlerTest extends AbstractExecutorBaseTest {
     private RuntimeManager manager;
     private ExecutorService executorService;
     private EntityManagerFactory emf = null;
+    
+    private EntityManagerFactory emfErrors = null;
     @Before
     public void setup() {
         ExecutorTestUtil.cleanupSingletonSessionId();
@@ -101,6 +103,8 @@ public class AsyncWorkItemHandlerTest extends AbstractExecutorBaseTest {
         properties.setProperty("john", "HR");
         userGroupCallback = new JBossUserGroupCallbackImpl(properties);
         executorService = buildExecutorService();
+        
+        emfErrors = EntityManagerFactoryManager.get().getOrCreate("org.jbpm.persistence.complete");
     }
     
     @After
@@ -112,6 +116,9 @@ public class AsyncWorkItemHandlerTest extends AbstractExecutorBaseTest {
         }
         if (emf != null) {
         	emf.close();
+        }
+        if (emfErrors != null) {
+            emfErrors.close();
         }
         pds.close();
     }
@@ -161,7 +168,7 @@ public class AsyncWorkItemHandlerTest extends AbstractExecutorBaseTest {
         final NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("Task 1", 1);
         RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get().newDefaultBuilder()
                 .userGroupCallback(userGroupCallback)
-                .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTaskWithParams.bpmn2"), ResourceType.BPMN2)
                 .registerableItemsFactory(new DefaultRegisterableItemsFactory() {
 
                     @Override
@@ -187,7 +194,10 @@ public class AsyncWorkItemHandlerTest extends AbstractExecutorBaseTest {
         KieSession ksession = runtime.getKieSession();
         assertNotNull(ksession);       
         
-        ProcessInstance processInstance = ksession.startProcess("ScriptTask");
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("delayAsync", "5s");
+        
+        ProcessInstance processInstance = ksession.startProcess("ScriptTask", parameters);
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         
         
@@ -403,6 +413,7 @@ public class AsyncWorkItemHandlerTest extends AbstractExecutorBaseTest {
         
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("businessKey", businessKey);
+        params.put("delay", "5s");
         
         ProcessInstance processInstance = ksession.startProcess("ScriptTask", params);
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
@@ -518,12 +529,13 @@ public class AsyncWorkItemHandlerTest extends AbstractExecutorBaseTest {
         
         assertEquals(0, IncrementService.get());
         
-        Map<String, Object> params = new HashMap<String, Object>();        
+        Map<String, Object> params = new HashMap<String, Object>(); 
+        params.put("retryAsync", "1s, 2s, 4s");
         
         ProcessInstance processInstance = ksession.startProcess("ScriptTask", params);
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         
-        countDownListener.waitTillCompleted(4000);
+        countDownListener.waitTillCompleted(2000);
         
         processInstance = ksession.getProcessInstance(processInstance.getId());
         assertNotNull(processInstance);
@@ -605,7 +617,7 @@ public class AsyncWorkItemHandlerTest extends AbstractExecutorBaseTest {
         final NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("Task 1", 1);
         RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get().newDefaultBuilder()
                 .userGroupCallback(userGroupCallback)
-                .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTaskWithRetryParam.bpmn2"), ResourceType.BPMN2)
                 .registerableItemsFactory(new DefaultRegisterableItemsFactory() {
 
                     @Override
@@ -631,13 +643,14 @@ public class AsyncWorkItemHandlerTest extends AbstractExecutorBaseTest {
         KieSession ksession = runtime.getKieSession();
         assertNotNull(ksession); 
         
-        Map<String, Object> params = new HashMap<String, Object>();        
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("retryAsync", "1s, 2s, 3s");
         
         ProcessInstance processInstance = ksession.startProcess("ScriptTask", params);
         Long processInstanceId = processInstance.getId();
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         
-        countDownListener.waitTillCompleted(4000);
+        countDownListener.waitTillCompleted(2000);
         
         processInstance = ksession.getProcessInstance(processInstance.getId());
         assertNotNull(processInstance);
@@ -853,13 +866,13 @@ public class AsyncWorkItemHandlerTest extends AbstractExecutorBaseTest {
         assertNull(error.getAcknowledgedBy());
         assertFalse(error.isAcknowledged());
         
+        countDownListener.reset(1);
         // first run should not ack the job as it's in error state
         CommandContext ctx = new CommandContext();
         ctx.setData("SingleRun", "true");
         ctx.setData("EmfName", "org.jbpm.persistence.complete");
         executorService.scheduleRequest(JobAutoAckErrorCommand.class.getName(), ctx);
-        
-        countDownListener.reset(1);
+                
         countDownListener.waitTillCompleted();
         
         errors = errorStorage.list(0, 10);
@@ -868,13 +881,12 @@ public class AsyncWorkItemHandlerTest extends AbstractExecutorBaseTest {
         error = errors.get(0);
         assertNotNull(error);        
         assertFalse(error.isAcknowledged());
-        
-        ((RequeueAware)executorService).requeueById(errorJob.getId());
+                
         executorService.cancelRequest(errorJob.getId());        
+        countDownListener.reset(1);
         // since job was canceled auto ack should work
         executorService.scheduleRequest(JobAutoAckErrorCommand.class.getName(), ctx);
-        
-        countDownListener.reset(1);
+                
         countDownListener.waitTillCompleted();
         
         errors = errorStorage.list(0, 10);
@@ -957,13 +969,13 @@ public class AsyncWorkItemHandlerTest extends AbstractExecutorBaseTest {
         assertNull(error.getAcknowledgedBy());
         assertFalse(error.isAcknowledged());
         
+        countDownListener.reset(1);
         // first run should not ack the job as it's in error state
         CommandContext ctx = new CommandContext();
         ctx.setData("SingleRun", "true");
         ctx.setData("EmfName", "org.jbpm.persistence.complete");
         executorService.scheduleRequest(ProcessAutoAckErrorCommand.class.getName(), ctx);
-        
-        countDownListener.reset(1);
+                
         countDownListener.waitTillCompleted();
         
         errors = errorStorage.list(0, 10);
@@ -984,10 +996,10 @@ public class AsyncWorkItemHandlerTest extends AbstractExecutorBaseTest {
         
         taskService.complete(taskId, "john", results);
         manager.disposeRuntimeEngine(runtime);
+        countDownListener.reset(1);
         // since task was completed auto ack should work
         executorService.scheduleRequest(ProcessAutoAckErrorCommand.class.getName(), ctx);
-        
-        countDownListener.reset(1);
+                
         countDownListener.waitTillCompleted();
         
         errors = errorStorage.list(0, 10);
@@ -999,6 +1011,7 @@ public class AsyncWorkItemHandlerTest extends AbstractExecutorBaseTest {
         
     }
     
+    @SuppressWarnings("unchecked")
     @Test(timeout=20000)
     public void testRunProcessWithAsyncHandlerRecordExecutionErrorTaskAutoAck() throws Exception {
         CountDownAsyncJobListener countDownListener = new CountDownAsyncJobListener(1);
@@ -1072,13 +1085,13 @@ public class AsyncWorkItemHandlerTest extends AbstractExecutorBaseTest {
         assertNull(error.getAcknowledgedBy());
         assertFalse(error.isAcknowledged());
         
+        countDownListener.reset(1);
         // first run should not ack the job as it's in error state
         CommandContext ctx = new CommandContext();
         ctx.setData("SingleRun", "true");
         ctx.setData("EmfName", "org.jbpm.persistence.complete");
         executorService.scheduleRequest(TaskAutoAckErrorCommand.class.getName(), ctx);
-        
-        countDownListener.reset(1);
+                
         countDownListener.waitTillCompleted();
         
         errors = errorStorage.list(0, 10);
@@ -1104,10 +1117,10 @@ public class AsyncWorkItemHandlerTest extends AbstractExecutorBaseTest {
         taskService.complete(taskId, "john", results);
         manager.disposeRuntimeEngine(runtime);        
         
+        countDownListener.reset(1);
         // since task was completed auto ack should work
         executorService.scheduleRequest(TaskAutoAckErrorCommand.class.getName(), ctx);
-        
-        countDownListener.reset(1);
+                
         countDownListener.waitTillCompleted();
         
         errors = errorStorage.list(0, 10);

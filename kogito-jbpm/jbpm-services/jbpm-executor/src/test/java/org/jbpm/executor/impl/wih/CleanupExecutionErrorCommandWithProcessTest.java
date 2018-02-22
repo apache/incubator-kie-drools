@@ -198,7 +198,7 @@ public class CleanupExecutionErrorCommandWithProcessTest extends AbstractExecuto
         assertEquals(1, errors.size());
 
         // delete errors which happened 1s or more ago
-        scheduleLogCleanup(null, "1s", true, null, "ScriptTask", String.valueOf(processInstanceId), "yyyy-MM-dd HH:mm:ss", manager.getIdentifier());
+        scheduleLogCleanup(null, "0s", true, null, "ScriptTask", String.valueOf(processInstanceId), "yyyy-MM-dd HH:mm:ss", manager.getIdentifier());
         countDownListener.reset(1);
         countDownListener.waitTillCompleted();
 

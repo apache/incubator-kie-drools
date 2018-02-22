@@ -37,6 +37,7 @@ import org.kie.api.executor.Command;
 import org.kie.api.executor.CommandCallback;
 import org.kie.api.executor.CommandContext;
 import org.kie.api.executor.ExecutionResults;
+import org.kie.api.executor.Executor;
 import org.kie.api.executor.ExecutorQueryService;
 import org.kie.api.executor.ExecutorStoreService;
 import org.kie.api.executor.Reoccurring;
@@ -66,6 +67,8 @@ public abstract class AbstractAvailableJobsExecutor {
     protected ExecutorStoreService executorStoreService;
     
     protected ExecutorEventSupport eventSupport = new ExecutorEventSupport();
+    
+    protected Executor executor;
 
     public void setEventSupport(ExecutorEventSupport eventSupport) {
         this.eventSupport = eventSupport;
@@ -82,7 +85,11 @@ public abstract class AbstractAvailableJobsExecutor {
 	public void setExecutorStoreService(ExecutorStoreService executorStoreService) {
 		this.executorStoreService = executorStoreService;
 	}
-     
+         
+	public void setExecutor(Executor executor) {
+        this.executor = executor;
+    }
+
     public void executeGivenJob(RequestInfo request) {
         Throwable exception = null;
         try {
@@ -143,7 +150,7 @@ public abstract class AbstractAvailableJobsExecutor {
         
                         request.setStatus(STATUS.DONE);
                          
-                        executorStoreService.updateRequest(request);
+                        executorStoreService.updateRequest(request, null);
                         processReoccurring = true;
                     } else {
                         logger.debug("Job was already successfully executed, retrying callbacks only...");
@@ -164,7 +171,7 @@ public abstract class AbstractAvailableJobsExecutor {
                         }
                         request.setStatus(STATUS.DONE);
                         
-                        executorStoreService.updateRequest(request);
+                        executorStoreService.updateRequest(request, null);
                         processReoccurring = true;
                     }
                     // callback handling after job execution
@@ -186,6 +193,7 @@ public abstract class AbstractAvailableJobsExecutor {
                 	processReoccurring = handleException(request, e, ctx, callbacks);
                 	
                 } finally {
+                    ((ExecutorImpl) executor).clearExecution(request.getId());
                     AsyncExecutionMarker.reset();
                 	handleCompletion(processReoccurring, cmd, ctx);
                 	eventSupport.fireAfterJobExecuted(request, exception);
@@ -246,14 +254,15 @@ public abstract class AbstractAvailableJobsExecutor {
             
             logger.debug("Retrying ({}) still available!", request.getRetries());
             
-            executorStoreService.updateRequest(request);
+            executorStoreService.updateRequest(request, ((ExecutorImpl) executor).scheduleExecution(request, request.getTime()));
+            
             
             return false;
         } else {
             logger.debug("Error no retries left!");
             request.setStatus(STATUS.ERROR);
             
-            executorStoreService.updateRequest(request);
+            executorStoreService.updateRequest(request, null);
             AsyncJobException wrappedException = new AsyncJobException(request.getId(), request.getCommandName(), e);
             if (callbacks != null) {
                 for (CommandCallback handler : callbacks) {                        
@@ -300,7 +309,7 @@ public abstract class AbstractAvailableJobsExecutor {
                     }
                 }
                 
-                executorStoreService.persistRequest(requestInfo);
+                executorStoreService.persistRequest(requestInfo, ((ExecutorImpl) executor).scheduleExecution(requestInfo, requestInfo.getTime()));
             }
         }
     }

@@ -23,6 +23,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -277,8 +278,10 @@ public class BasicExecutorIntegrationTest {
         CommandContext ctxCMD = new CommandContext();
         String businessKey = UUID.randomUUID().toString();
         ctxCMD.setData("businessKey", businessKey);
+        
+        Date futureDate = new Date(System.currentTimeMillis() + 5000);
 
-        Long requestId = executorService.scheduleRequest("org.jbpm.executor.commands.PrintOutCommand", ctxCMD);
+        Long requestId = executorService.scheduleRequest("org.jbpm.executor.commands.PrintOutCommand", futureDate, ctxCMD);
         
         List<RequestInfo> requests = executorService.getRequestsByBusinessKey(businessKey, new QueryContext());
         assertNotNull(requests);
@@ -330,7 +333,7 @@ public class BasicExecutorIntegrationTest {
 
         executorService.scheduleRequest("org.jbpm.executor.commands.ReoccurringPrintOutCommand", ctxCMD);
 
-        Thread.sleep(10000);
+        Thread.sleep(4000);
 
         List<RequestInfo> inErrorRequests = executorService.getInErrorRequests(new QueryContext());
         assertEquals(0, inErrorRequests.size());
@@ -349,7 +352,7 @@ public class BasicExecutorIntegrationTest {
         
         Long requestId = executorService.scheduleRequest("org.jbpm.executor.commands.ReoccurringPrintOutCommand", ctxCMD);
 
-        Thread.sleep(9000);
+        Thread.sleep(3000);
 
         List<RequestInfo> inErrorRequests = executorService.getInErrorRequests(new QueryContext());
         assertEquals(0, inErrorRequests.size());
@@ -402,8 +405,10 @@ public class BasicExecutorIntegrationTest {
         CommandContext ctxCMD = new CommandContext();
         String businessKey = UUID.randomUUID().toString();
         ctxCMD.setData("businessKey", businessKey);
+        
+        Date futureDate = new Date(System.currentTimeMillis() + 5000);
 
-        Long requestId = executorService.scheduleRequest("org.jbpm.executor.test.CustomCommand", ctxCMD);
+        Long requestId = executorService.scheduleRequest("org.jbpm.executor.test.CustomCommand", futureDate, ctxCMD);
         
         List<RequestInfo> requests = executorService.getRequestsByCommand("org.jbpm.executor.test.CustomCommand", new QueryContext());
         assertNotNull(requests);

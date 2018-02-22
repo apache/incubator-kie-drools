@@ -19,9 +19,12 @@ package org.jbpm.test.functional.jobexec;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import javax.persistence.EntityManagerFactory;
+
 import org.assertj.core.api.Assertions;
 import org.jbpm.executor.impl.ExecutorServiceImpl;
 import org.jbpm.process.audit.JPAAuditLogService;
+import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.jbpm.services.task.audit.service.TaskJPAAuditService;
 import org.jbpm.test.JbpmAsyncJobTestCase;
 import org.jbpm.test.listener.CountDownAsyncJobListener;
@@ -55,6 +58,8 @@ public class LogCleanupCommandTest extends JbpmAsyncJobTestCase {
 
     private TaskJPAAuditService taskAuditService;
     private JPAAuditLogService auditLogService;
+    
+    private EntityManagerFactory emfErrors = null;
 
     // ------------------------ Test Methods ------------------------
 
@@ -65,6 +70,8 @@ public class LogCleanupCommandTest extends JbpmAsyncJobTestCase {
         taskAuditService.clear();
         auditLogService = new JPAAuditLogService(getEmf());
         auditLogService.clear();
+        
+        emfErrors = EntityManagerFactoryManager.get().getOrCreate("org.jbpm.persistence.complete");
     }
 
     @Override
@@ -74,6 +81,10 @@ public class LogCleanupCommandTest extends JbpmAsyncJobTestCase {
             taskAuditService.dispose();
             auditLogService.clear();
             auditLogService.dispose();
+            
+            if (emfErrors != null) {
+                emfErrors.close();
+            }
         } finally {
             super.tearDown();
         }

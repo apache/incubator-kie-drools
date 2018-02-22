@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-package org.jbpm.services.ejb.api;
+package org.jbpm.executor.ejb.impl;
 
-import javax.ejb.Local;
 
-import org.kie.api.executor.Executor;
-import org.kie.internal.executor.api.ExecutorService;
+import javax.ejb.ConcurrencyManagement;
+import javax.ejb.ConcurrencyManagementType;
+import javax.ejb.Singleton;
 
-@Local
-public interface ExecutorServiceEJB extends ExecutorService {
-    
-    Executor getExecutor();    
+import org.jbpm.executor.impl.event.ExecutorEventSupport;
+
+@Singleton
+@ConcurrencyManagement(ConcurrencyManagementType.CONTAINER)
+public class ExecutorEventSupportEJBImpl extends ExecutorEventSupport {
 
 }

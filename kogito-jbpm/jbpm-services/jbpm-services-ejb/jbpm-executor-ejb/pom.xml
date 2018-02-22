@@ -29,6 +29,10 @@
       <groupId>org.drools</groupId>
       <artifactId>drools-core</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-persistence-api</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.jbpm</groupId>
@@ -136,18 +140,7 @@
       <artifactId>jbpm-persistence-jpa</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.jbpm</groupId>
-      <artifactId>jbpm-persistence-jpa</artifactId>
-      <type>test-jar</type>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jbpm</groupId>
-      <artifactId>jbpm-executor</artifactId>
-      <type>test-jar</type>
-      <scope>test</scope>
-    </dependency>
+
 
     <dependency>
       <groupId>org.hibernate</groupId>

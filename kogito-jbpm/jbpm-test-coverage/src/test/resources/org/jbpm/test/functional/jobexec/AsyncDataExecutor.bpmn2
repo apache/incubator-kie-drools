@@ -5,9 +5,11 @@
   <bpmn2:itemDefinition id="__870BEA75-CEE4-4E98-8C41-6BFBDACB0D78_CommandClassInputXItem" structureRef="String"/>
   <bpmn2:itemDefinition id="__870BEA75-CEE4-4E98-8C41-6BFBDACB0D78_UserInInputXItem" structureRef="org.jbpm.test.jobexec.User"/>
   <bpmn2:itemDefinition id="__870BEA75-CEE4-4E98-8C41-6BFBDACB0D78_UserOutOutputXItem" structureRef="org.jbpm.test.jobexec.User"/>
+  <bpmn2:itemDefinition id="_String" structureRef="String"/>
   <bpmn2:process id="org.jbpm.test.functional.jobexec.AsyncDataExecutor" drools:packageName="org.jbpm.test.functional.jobexec" drools:version="1" name="AsyncDataExecutor" isExecutable="true">
     <bpmn2:property id="command" itemSubjectRef="_commandItem"/>
     <bpmn2:property id="user" itemSubjectRef="_userItem"/>
+    <bpmn2:property id="delayAsync" itemSubjectRef="_String"/>
     <bpmn2:startEvent id="_4DD7BB9A-15F3-4307-94CA-60616BDC5677" drools:bgcolor="#9acd32" drools:selectable="true" name="StartProcess">
       <bpmn2:outgoing>_D519CA30-57FB-40B7-A7EE-8280EDF92881</bpmn2:outgoing>
     </bpmn2:startEvent>
@@ -34,6 +36,7 @@ kcontext.setVariable("user", userIn);]]></bpmn2:script>
         <bpmn2:dataInput id="_870BEA75-CEE4-4E98-8C41-6BFBDACB0D78_TaskNameInputX" name="TaskName"/>
         <bpmn2:dataInput id="_870BEA75-CEE4-4E98-8C41-6BFBDACB0D78_CommandClassInputX" drools:dtype="String" itemSubjectRef="__870BEA75-CEE4-4E98-8C41-6BFBDACB0D78_CommandClassInputXItem" name="CommandClass"/>
         <bpmn2:dataInput id="_870BEA75-CEE4-4E98-8C41-6BFBDACB0D78_UserInInputX" drools:dtype="org.jbpm.test.jobexec.User" itemSubjectRef="__870BEA75-CEE4-4E98-8C41-6BFBDACB0D78_UserInInputXItem" name="UserIn"/>
+        <bpmn2:dataInput id="DataInput_1" itemSubjectRef="_String" name="Delay"/>
         <bpmn2:dataOutput id="_870BEA75-CEE4-4E98-8C41-6BFBDACB0D78_UserOutOutputX" drools:dtype="org.jbpm.test.jobexec.User" itemSubjectRef="__870BEA75-CEE4-4E98-8C41-6BFBDACB0D78_UserOutOutputXItem" name="UserOut"/>
         <bpmn2:inputSet id="_aV-h8RCpEeSRMc8_ZkNxBg">
           <bpmn2:dataInputRefs>_870BEA75-CEE4-4E98-8C41-6BFBDACB0D78_CommandClassInputX</bpmn2:dataInputRefs>
@@ -59,10 +62,14 @@ kcontext.setVariable("user", userIn);]]></bpmn2:script>
         <bpmn2:sourceRef>user</bpmn2:sourceRef>
         <bpmn2:targetRef>_870BEA75-CEE4-4E98-8C41-6BFBDACB0D78_UserInInputX</bpmn2:targetRef>
       </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_1">
+        <bpmn2:sourceRef>delayAsync</bpmn2:sourceRef>
+        <bpmn2:targetRef>DataInput_1</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
       <bpmn2:dataOutputAssociation id="_aV-h-RCpEeSRMc8_ZkNxBg">
-        <bpmn2:sourceRef>_870BEA75-CEE4-4E98-8C41-6BFBDACB0D78_UserOutOutputX</bpmn2:sourceRef>
-        <bpmn2:targetRef>user</bpmn2:targetRef>
-      </bpmn2:dataOutputAssociation>
+         <bpmn2:sourceRef>_870BEA75-CEE4-4E98-8C41-6BFBDACB0D78_UserOutOutputX</bpmn2:sourceRef>
+         <bpmn2:targetRef>user</bpmn2:targetRef>
+       </bpmn2:dataOutputAssociation>
     </bpmn2:task>
     <bpmn2:endEvent id="_05A613EC-51BC-4E25-A819-33499E0C1AF2" drools:bgcolor="#ff6347" drools:selectable="true" name="EndProcess">
       <bpmn2:incoming>_CE2E7B58-6AFB-410D-B16D-E7AE8BB7B81F</bpmn2:incoming>

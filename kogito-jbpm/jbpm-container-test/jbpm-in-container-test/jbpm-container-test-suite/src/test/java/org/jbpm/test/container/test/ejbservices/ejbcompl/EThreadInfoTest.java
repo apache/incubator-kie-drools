@@ -145,7 +145,7 @@ public class EThreadInfoTest extends AbstractRuntimeEJBServicesTest {
         System.out.println("====threadNameHistoryLast====");
         System.out.println(threadNameHistory.iterator().next().getNewValue());
 
-        Assertions.assertThat(threadNameHistory.iterator().next().getNewValue()).startsWith("EJB");
+        Assertions.assertThat(threadNameHistory.iterator().next().getNewValue()).startsWith("EE");
     }
 
     @Test
@@ -191,7 +191,7 @@ public class EThreadInfoTest extends AbstractRuntimeEJBServicesTest {
         System.out.println("====threadNameHistoryLast====");
         System.out.println(threadNameHistory.iterator().next().getNewValue());
 
-        Assertions.assertThat(threadNameHistory.iterator().next().getNewValue()).startsWith("EJB");
+        Assertions.assertThat(threadNameHistory.iterator().next().getNewValue()).startsWith("EE");
     }
 
     @Test
@@ -221,7 +221,7 @@ public class EThreadInfoTest extends AbstractRuntimeEJBServicesTest {
         System.out.println("====threadNameHistoryLast====");
         System.out.println(threadNameHistory.iterator().next().getNewValue());
 
-        Assertions.assertThat(threadNameHistory.iterator().next().getNewValue()).startsWith("EJB");
+        Assertions.assertThat(threadNameHistory.iterator().next().getNewValue()).startsWith("EE");
     }
 
     @Test
@@ -256,7 +256,7 @@ public class EThreadInfoTest extends AbstractRuntimeEJBServicesTest {
         System.out.println("====threadNameHistoryLast====");
         System.out.println(threadNameHistory.iterator().next().getNewValue());
         //in this scenario we have to check the middle value, so it is the old one in the last history entry
-        Assertions.assertThat(threadNameHistory.iterator().next().getOldValue()).startsWith("EJB");
+        Assertions.assertThat(threadNameHistory.iterator().next().getOldValue()).startsWith("EE");
     }
 
     @Test
@@ -286,7 +286,7 @@ public class EThreadInfoTest extends AbstractRuntimeEJBServicesTest {
         System.out.println("====threadNameHistoryLast====");
         System.out.println(threadNameHistory.iterator().next().getNewValue());
 
-        Assertions.assertThat(threadNameHistory.iterator().next().getNewValue()).startsWith("EJB");
+        Assertions.assertThat(threadNameHistory.iterator().next().getNewValue()).startsWith("EE");
     }
 
     @Test
@@ -316,7 +316,7 @@ public class EThreadInfoTest extends AbstractRuntimeEJBServicesTest {
         System.out.println("====threadNameHistoryLast====");
         System.out.println(threadNameHistory.iterator().next().getNewValue());
 
-        Assertions.assertThat(threadNameHistory.iterator().next().getNewValue()).startsWith("EJB");
+        Assertions.assertThat(threadNameHistory.iterator().next().getNewValue()).startsWith("EE");
     }
 
     @Test
@@ -346,7 +346,7 @@ public class EThreadInfoTest extends AbstractRuntimeEJBServicesTest {
         System.out.println("====threadNameHistoryLast====");
         System.out.println(threadNameHistory.iterator().next().getNewValue());
 
-        Assertions.assertThat(threadNameHistory.iterator().next().getNewValue()).startsWith("EJB");
+        Assertions.assertThat(threadNameHistory.iterator().next().getNewValue()).startsWith("EE");
     }
 
     //========== PRIVATE METHODS ==========

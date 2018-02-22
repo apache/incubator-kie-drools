@@ -84,9 +84,10 @@ public class CarInsuranceClaimCaseTest extends AbstractCaseServicesBaseTest {
 
     @After
     public void tearDown() {
-        if (executorService != null && executorService.isActive()) {
+        if (executorService != null && executorService.isActive()) {            
             executorService.destroy();
         }
+        ExecutorServiceFactory.clearExecutorService();
         super.tearDown();
         CountDownListenerFactory.clear();
     }
@@ -822,7 +823,7 @@ public class CarInsuranceClaimCaseTest extends AbstractCaseServicesBaseTest {
         List<NamedObjectModel> handlers = super.getWorkItemHandlers();
 
         handlers.add(new NamedObjectModel("mvel", "async",
-                "new org.jbpm.executor.impl.wih.AsyncWorkItemHandler(org.jbpm.executor.ExecutorServiceFactory.newExecutorService(),\"org.jbpm.executor.commands.PrintOutCommand\")"));
+                "new org.jbpm.executor.impl.wih.AsyncWorkItemHandler(org.jbpm.executor.ExecutorServiceFactory.newExecutorService(null),\"org.jbpm.executor.commands.PrintOutCommand\")"));
 
         return handlers;
     }

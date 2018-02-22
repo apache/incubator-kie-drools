@@ -19,7 +19,9 @@ package org.jbpm.executor.cdi.impl.jms;
 import javax.inject.Inject;
 
 import org.jbpm.executor.impl.ClassCacheManager;
+import org.jbpm.executor.impl.event.ExecutorEventSupport;
 import org.jbpm.executor.impl.jms.JmsAvailableJobsExecutor;
+import org.kie.api.executor.Executor;
 import org.kie.api.executor.ExecutorQueryService;
 import org.kie.api.executor.ExecutorStoreService;
 
@@ -41,5 +43,17 @@ public class JmsAvailableJobsExecutorCDIImpl extends JmsAvailableJobsExecutor {
     @Override
     public void setExecutorStoreService(ExecutorStoreService executorStoreService) {
         super.setExecutorStoreService(executorStoreService);
+    }
+
+    @Inject
+    @Override
+    public void setEventSupport(ExecutorEventSupport eventSupport) {
+        super.setEventSupport(eventSupport);
+    }
+
+    @Inject
+    @Override
+    public void setExecutor(Executor executor) {
+        super.setExecutor(executor);
     }
 }

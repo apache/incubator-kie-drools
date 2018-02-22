@@ -8,9 +8,19 @@
             Select r from RequestInfo as r where (r.status ='QUEUED' or r.status = 'RETRYING') and r.time &lt; :now ORDER BY r.time DESC
         </query>
     </named-query>
+    <named-query name="LoadPendingRequests">
+        <query>
+            Select new org.jbpm.executor.entities.RequestInfo(r.id, r.priority, r.time) from RequestInfo as r where (r.status ='QUEUED' or r.status = 'RETRYING') and (r.owner = :owner or r.owner is null) ORDER BY r.time, priority DESC
+        </query>
+    </named-query>
     <named-query name="PendingRequestById">
         <query>
             Select r from RequestInfo as r where (r.status ='QUEUED' or r.status ='RETRYING') and id = :id
+        </query>
+    </named-query>
+    <named-query name="EligibleRequestById">
+        <query>
+            Select r from RequestInfo as r where (r.status ='QUEUED' or r.status ='RETRYING' or r.status ='ERROR') and id = :id
         </query>
     </named-query>
     <named-query name="RunningRequests">

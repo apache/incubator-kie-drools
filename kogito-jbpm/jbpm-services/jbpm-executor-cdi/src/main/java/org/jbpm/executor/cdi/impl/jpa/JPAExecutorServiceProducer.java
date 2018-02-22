@@ -16,44 +16,64 @@
 
 package org.jbpm.executor.cdi.impl.jpa;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
 
 import org.jbpm.executor.ExecutorServiceFactory;
+import org.jbpm.executor.impl.ExecutorServiceImpl;
+import org.jbpm.executor.impl.event.ExecutorEventSupport;
 import org.jbpm.executor.impl.jpa.ExecutorQueryServiceImpl;
 import org.jbpm.executor.impl.jpa.ExecutorRequestAdminServiceImpl;
 import org.jbpm.executor.impl.jpa.JPAExecutorStoreService;
+import org.jbpm.shared.services.impl.TransactionalCommandService;
+import org.kie.api.executor.Executor;
 import org.kie.api.executor.ExecutorAdminService;
 import org.kie.api.executor.ExecutorQueryService;
 import org.kie.api.executor.ExecutorService;
 import org.kie.api.executor.ExecutorStoreService;
-import org.kie.internal.runtime.cdi.Activate;
 
-/**
- * 
- * IMPORTANT: please keep all classes from package org.jbpm.shared.services.impl as FQCN
- * inside method body to avoid exception logged by CDI when used with in memory mode
- */
-@Activate(whenAvailable="org.jbpm.runtime.manager.impl.RuntimeManagerFactoryImpl")
+@ApplicationScoped
 public class JPAExecutorServiceProducer {
 
 	@Inject
 	@PersistenceUnit(unitName = "org.jbpm.domain")
 	private EntityManagerFactory emf;
+		
+	private ExecutorEventSupport eventSupport = new ExecutorEventSupport();
+	
+	private ExecutorService service;
+	
+	@PostConstruct
+	public void setup() {
+	    service = ExecutorServiceFactory.newExecutorService(emf, eventSupport);
+	}
 
 	@Produces
-	public ExecutorService produceExecutorService() {
-		ExecutorService service = ExecutorServiceFactory.newExecutorService(emf);		
+	public ExecutorService produceExecutorService() {			
 		
 		return service;
 	}
+	
+	@Produces
+    public Executor produceExecutor() {           
+        
+        return ((ExecutorServiceImpl)service).getExecutor();
+    }
+	
+	@Produces
+    public ExecutorEventSupport produceExecutorEventSupport() {           
+        
+        return eventSupport;
+    }
 
 	@Produces
 	public ExecutorStoreService produceStoreService() {
 		ExecutorStoreService storeService = new JPAExecutorStoreService(true);
-		org.jbpm.shared.services.impl.TransactionalCommandService commandService = new org.jbpm.shared.services.impl.TransactionalCommandService(emf);			
+		TransactionalCommandService commandService = new TransactionalCommandService(emf);			
 		((JPAExecutorStoreService) storeService).setCommandService(commandService);
 		((JPAExecutorStoreService) storeService).setEmf(emf);		
 		
@@ -63,7 +83,7 @@ public class JPAExecutorServiceProducer {
 	@Produces
 	public ExecutorAdminService produceAdminService() {
 		ExecutorAdminService adminService = new ExecutorRequestAdminServiceImpl();
-		org.jbpm.shared.services.impl.TransactionalCommandService commandService = new org.jbpm.shared.services.impl.TransactionalCommandService(emf);				
+		TransactionalCommandService commandService = new TransactionalCommandService(emf);				
 		((ExecutorRequestAdminServiceImpl) adminService).setCommandService(commandService);
 		
 		return adminService;
@@ -72,7 +92,7 @@ public class JPAExecutorServiceProducer {
 	@Produces
 	public ExecutorQueryService produceQueryService() {
 		ExecutorQueryService queryService = new ExecutorQueryServiceImpl(true);
-		org.jbpm.shared.services.impl.TransactionalCommandService commandService = new org.jbpm.shared.services.impl.TransactionalCommandService(emf);		
+		TransactionalCommandService commandService = new TransactionalCommandService(emf);		
 		((ExecutorQueryServiceImpl) queryService).setCommandService(commandService);
 		
 		return queryService;

@@ -119,7 +119,7 @@ public class AsyncWorkItemHandler implements WorkItemHandler, Cacheable {
             ctxCMD.setData("priority", Integer.parseInt(workItem.getParameter("Priority").toString()));
         }
         
-        Date scheduleDate = new Date();
+        Date scheduleDate = null;
         if (workItem.getParameter("Delay") != null) {
             long delayInMillis = TimeUtils.parseTimeString((String)workItem.getParameter("Delay"));
             scheduleDate = new Date(System.currentTimeMillis() + delayInMillis);

@@ -16,27 +16,37 @@
 
 package org.jbpm.executor.impl.jpa;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
+
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
+
 import org.drools.core.command.impl.ExecutableCommand;
-import org.jbpm.executor.ExecutorServiceFactory;
 import org.jbpm.executor.impl.event.ExecutorEventSupport;
+import org.jbpm.shared.services.impl.commands.FindObjectCommand;
+import org.jbpm.shared.services.impl.commands.FunctionCommand;
+import org.jbpm.shared.services.impl.commands.MergeObjectCommand;
+import org.jbpm.shared.services.impl.commands.PersistObjectCommand;
+import org.jbpm.shared.services.impl.commands.QueryNameCommand;
+import org.jbpm.shared.services.impl.commands.RemoveObjectCommand;
 import org.kie.api.executor.ErrorInfo;
+import org.kie.api.executor.ExecutorService;
 import org.kie.api.executor.ExecutorStoreService;
 import org.kie.api.executor.RequestInfo;
 import org.kie.api.executor.STATUS;
 import org.kie.api.runtime.CommandExecutor;
 import org.kie.api.runtime.Context;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.NoResultException;
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * 
  * IMPORTANT: please keep all classes from package org.jbpm.shared.services.impl as FQCN
  * inside method body to avoid exception logged by CDI when used with in memory mode
  */
-public class JPAExecutorStoreService implements ExecutorStoreService{
+public class JPAExecutorStoreService implements ExecutorStoreService {
 	
 	private EntityManagerFactory emf;
     private CommandExecutor commandService;
@@ -61,56 +71,57 @@ public class JPAExecutorStoreService implements ExecutorStoreService{
     }
 
 	@Override
-	public void persistRequest(RequestInfo request) {
-		commandService.execute(new org.jbpm.shared.services.impl.commands.PersistObjectCommand(request));
+	public void persistRequest(RequestInfo request, Consumer<Object> function) {
+		commandService.execute(new FunctionCommand(new PersistObjectCommand(request), function));
 	}
 
 	@Override
-	public void updateRequest(RequestInfo request) {
-		commandService.execute(new org.jbpm.shared.services.impl.commands.MergeObjectCommand(request));
+	public void updateRequest(RequestInfo request, Consumer<Object> function) {
+		commandService.execute(new FunctionCommand(new MergeObjectCommand(request), function));
 
 	}
 
 	@Override
-	public RequestInfo removeRequest(Long requestId) {
-		return commandService.execute(new LockAndCancelRequestInfoCommand(requestId));
+	public RequestInfo removeRequest(Long requestId, Consumer<Object> function) {
+		return (RequestInfo) commandService.execute(new FunctionCommand(new LockAndCancelRequestInfoCommand(requestId), function));
 		
 	}
 
 	@Override
 	public RequestInfo findRequest(Long id) {
-		return commandService.execute(new org.jbpm.shared.services.impl.commands.FindObjectCommand<org.jbpm.executor.entities.RequestInfo>(id, org.jbpm.executor.entities.RequestInfo.class));
+		return commandService.execute(new FindObjectCommand<org.jbpm.executor.entities.RequestInfo>(id, org.jbpm.executor.entities.RequestInfo.class));
 	}
 
 	@Override
 	public void persistError(ErrorInfo error) {
-		commandService.execute(new org.jbpm.shared.services.impl.commands.PersistObjectCommand(error));
+		commandService.execute(new PersistObjectCommand(error));
 
 	}
 
 	@Override
 	public void updateError(ErrorInfo error) {
-		commandService.execute(new org.jbpm.shared.services.impl.commands.MergeObjectCommand(error));
+		commandService.execute(new MergeObjectCommand(error));
 
 	}
 
 	@Override
 	public ErrorInfo removeError(Long errorId) {
 		ErrorInfo error = findError(errorId);
-		commandService.execute(new org.jbpm.shared.services.impl.commands.RemoveObjectCommand(error));
+		commandService.execute(new RemoveObjectCommand(error));
 		return error;
 	}
 
 	@Override
 	public ErrorInfo findError(Long id) {
-		return commandService.execute(new org.jbpm.shared.services.impl.commands.FindObjectCommand<ErrorInfo>(id, ErrorInfo.class));
+		return commandService.execute(new FindObjectCommand<ErrorInfo>(id, ErrorInfo.class));
 	}
 
-	@Override
-	public Runnable buildExecutorRunnable() {
-		return ExecutorServiceFactory.buildRunable(emf, eventSupport);
-	}
-
+    @Override
+    public List<RequestInfo> loadRequests() {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("owner", ExecutorService.EXECUTOR_ID);
+        return commandService.execute(new QueryNameCommand<List<RequestInfo>>("LoadPendingRequests", params));
+    }
 
     private class LockAndCancelRequestInfoCommand implements ExecutableCommand<RequestInfo> {
 
@@ -131,7 +142,7 @@ public class JPAExecutorStoreService implements ExecutorStoreService{
 	    	RequestInfo request = null;
 	    	try {
 	    		org.jbpm.shared.services.impl.JpaPersistenceContext ctx = (org.jbpm.shared.services.impl.JpaPersistenceContext) context;
-				request = ctx.queryAndLockWithParametersInTransaction("PendingRequestById",params, true, RequestInfo.class);
+				request = ctx.queryAndLockWithParametersInTransaction("EligibleRequestById", params, true, RequestInfo.class);
 				
 				if (request != null) {
 	                request.setStatus(STATUS.CANCELLED);
@@ -144,4 +155,5 @@ public class JPAExecutorStoreService implements ExecutorStoreService{
 		}
     	
     }
+
 }

@@ -20,6 +20,8 @@ import org.drools.core.command.impl.ExecutableCommand;
 import org.jbpm.executor.RequeueAware;
 import org.jbpm.executor.entities.ErrorInfo;
 import org.jbpm.executor.entities.RequestInfo;
+import org.jbpm.executor.impl.ExecutorImpl;
+import org.kie.api.executor.Executor;
 import org.kie.api.executor.ExecutorAdminService;
 import org.kie.api.executor.STATUS;
 import org.kie.api.runtime.CommandExecutor;
@@ -37,7 +39,7 @@ import java.util.List;
  */
 public class ExecutorRequestAdminServiceImpl implements ExecutorAdminService, RequeueAware  {
 
-    
+    private Executor executor;
     private CommandExecutor commandService;
    
     public ExecutorRequestAdminServiceImpl() {
@@ -45,6 +47,10 @@ public class ExecutorRequestAdminServiceImpl implements ExecutorAdminService, Re
 
     public void setCommandService(CommandExecutor commandService ) {
         this.commandService = commandService;
+    }
+    
+    public void setExecutor(Executor executor) {
+        this.executor = executor;
     }
 
     /**
@@ -104,10 +110,12 @@ public class ExecutorRequestAdminServiceImpl implements ExecutorAdminService, Re
 				
 				for (RequestInfo request : requests) {
 					if (request != null && maxRunningTimeExceeded(request.getTime())) {
-						logger.info("Requeing request as the time exceeded for its running state id : {}, key : {}, start time : {}, max time {}",
+						logger.debug("Requeing request as the time exceeded for its running state id : {}, key : {}, start time : {}, max time {}",
 								request.getId(), request.getKey(), request.getTime(), new Date(upperLimitTime));
 		                request.setStatus(STATUS.QUEUED);
 		                ctx.merge(request);
+		                
+		                ((ExecutorImpl) executor).scheduleExecutionViaSync(request, request.getTime());
 		            }
 				}
 	    	} catch (Exception e) {
@@ -147,9 +155,11 @@ public class ExecutorRequestAdminServiceImpl implements ExecutorAdminService, Re
 								
 				if (request != null && request.getStatus() != STATUS.CANCELLED
 						&& request.getStatus() != STATUS.DONE) {
-					logger.info("Requeing request with id : {}, key : {}, start time : {}", request.getId(), request.getKey(), request.getTime());
+					logger.debug("Requeing request with id : {}, key : {}, start time : {}", request.getId(), request.getKey(), request.getTime());
 	                request.setStatus(STATUS.QUEUED);
 	                ctx.merge(request);
+	                
+	                ((ExecutorImpl) executor).scheduleExecutionViaSync(request, request.getTime());
 	            } else {
 	            	throw new IllegalArgumentException("Retrying completed or cancelled job is not allowed (job id " + requestId +")");
 	            }

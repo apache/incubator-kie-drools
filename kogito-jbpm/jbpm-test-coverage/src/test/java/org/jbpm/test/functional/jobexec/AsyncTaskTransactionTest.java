@@ -108,6 +108,7 @@ public class AsyncTaskTransactionTest extends JbpmAsyncJobTestCase {
 
             Map<String, Object> pm = new HashMap<String, Object>();
             pm.put("command", USER_COMMAND);
+            pm.put("delayAsync", "2s");
             pi = ksession.startProcess(ASYNC_DATA_EXECUTOR_ID, pm);
             // the JobExecutor will act on the job only after commit
             ut.commit();

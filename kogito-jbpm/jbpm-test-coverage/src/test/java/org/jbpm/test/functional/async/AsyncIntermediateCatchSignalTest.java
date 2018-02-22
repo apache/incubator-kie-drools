@@ -52,7 +52,7 @@ public class AsyncIntermediateCatchSignalTest extends JbpmTestCase {
         super.setUp();
 
         executorService = ExecutorServiceFactory.newExecutorService(getEmf());
-        executorService.setInterval(1);
+        executorService.setInterval(0);
         executorService.setThreadPoolSize(3);
         addEnvironmentEntry("ExecutorService", executorService);
         addWorkItemHandler("SyncError", new FirstErrorWorkItemHandler());

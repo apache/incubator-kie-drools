@@ -6,6 +6,7 @@
   <bpmn2:itemDefinition id="__00C2D25E-9307-46BE-8AFD-D0DB405B6A39_ResultOutputXItem" structureRef="java.lang.Object"/>
   <bpmn2:itemDefinition id="__170F70ED-D403-4265-9700-C98F08996BF3_TaskNameInputXItem" structureRef="String"/>
   <bpmn2:itemDefinition id="__170F70ED-D403-4265-9700-C98F08996BF3_CommandClassInputXItem" structureRef="String"/>
+  <bpmn2:itemDefinition id="__170F70ED-D403-4265-9700-C98F08996BF3_DelayInputXItem" structureRef="String"/>
   <bpmn2:itemDefinition id="__170F70ED-D403-4265-9700-C98F08996BF3_PriorityInputXItem" structureRef="Integer"/>
   <bpmn2:itemDefinition id="__170F70ED-D403-4265-9700-C98F08996BF3_ResultOutputXItem" structureRef="java.lang.Object"/>
   <bpmn2:process id="async-examples.priority-jobs" drools:packageName="org.jbpm" drools:version="1.0" name="priority-jobs" isExecutable="true">
@@ -35,11 +36,13 @@
         <bpmn2:dataInput id="_00C2D25E-9307-46BE-8AFD-D0DB405B6A39_TaskNameInputX" drools:dtype="String" itemSubjectRef="__00C2D25E-9307-46BE-8AFD-D0DB405B6A39_TaskNameInputXItem" name="TaskName"/>
         <bpmn2:dataInput id="_00C2D25E-9307-46BE-8AFD-D0DB405B6A39_CommandClassInputX" drools:dtype="String" itemSubjectRef="__00C2D25E-9307-46BE-8AFD-D0DB405B6A39_CommandClassInputXItem" name="CommandClass"/>
         <bpmn2:dataInput id="_00C2D25E-9307-46BE-8AFD-D0DB405B6A39_PriorityInputX" drools:dtype="Integer" itemSubjectRef="__00C2D25E-9307-46BE-8AFD-D0DB405B6A39_PriorityInputXItem" name="Priority"/>
+        <bpmn2:dataInput id="_00C2D25E-9307-46BE-8AFD-D0DB405B6A39_DelayInputX" drools:dtype="Integer" itemSubjectRef="__170F70ED-D403-4265-9700-C98F08996BF3_DelayInputXItem" name="Delay"/>
         <bpmn2:dataOutput id="_00C2D25E-9307-46BE-8AFD-D0DB405B6A39_ResultOutputX" drools:dtype="java.lang.Object" itemSubjectRef="__00C2D25E-9307-46BE-8AFD-D0DB405B6A39_ResultOutputXItem" name="Result"/>
         <bpmn2:inputSet id="_Db8TsQL4EeatD9sQgSOy9g">
           <bpmn2:dataInputRefs>_00C2D25E-9307-46BE-8AFD-D0DB405B6A39_CommandClassInputX</bpmn2:dataInputRefs>
           <bpmn2:dataInputRefs>_00C2D25E-9307-46BE-8AFD-D0DB405B6A39_PriorityInputX</bpmn2:dataInputRefs>
           <bpmn2:dataInputRefs>_00C2D25E-9307-46BE-8AFD-D0DB405B6A39_TaskNameInputX</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_00C2D25E-9307-46BE-8AFD-D0DB405B6A39_DelayInputX</bpmn2:dataInputRefs>
         </bpmn2:inputSet>
         <bpmn2:outputSet id="_Db8TsgL4EeatD9sQgSOy9g">
           <bpmn2:dataOutputRefs>_00C2D25E-9307-46BE-8AFD-D0DB405B6A39_ResultOutputX</bpmn2:dataOutputRefs>
@@ -66,6 +69,13 @@
           <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_Db86wQL4EeatD9sQgSOy9g">_00C2D25E-9307-46BE-8AFD-D0DB405B6A39_PriorityInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="_Db8TuwL4EeatD9sQgSOy9h">
+        <bpmn2:targetRef>_00C2D25E-9307-46BE-8AFD-D0DB405B6A39_DelayInputX</bpmn2:targetRef>
+        <bpmn2:assignment id="_Db8TvAL4EeatD9sQgSOy9h">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_Db86wAL4EeatD9sQgSOy9h"><![CDATA[2s]]></bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_Db86wQL4EeatD9sQgSOy9h">_00C2D25E-9307-46BE-8AFD-D0DB405B6A39_DelayInputX</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
     </bpmn2:task>
     <bpmn2:task id="_170F70ED-D403-4265-9700-C98F08996BF3" drools:selectable="true" drools:taskName="async" color:background-color="#fafad2" color:border-color="#000000" color:color="#000000" name="async - low priority">
       <bpmn2:extensionElements>
@@ -79,11 +89,13 @@
         <bpmn2:dataInput id="_170F70ED-D403-4265-9700-C98F08996BF3_TaskNameInputX" drools:dtype="String" itemSubjectRef="__170F70ED-D403-4265-9700-C98F08996BF3_TaskNameInputXItem" name="TaskName"/>
         <bpmn2:dataInput id="_170F70ED-D403-4265-9700-C98F08996BF3_CommandClassInputX" drools:dtype="String" itemSubjectRef="__170F70ED-D403-4265-9700-C98F08996BF3_CommandClassInputXItem" name="CommandClass"/>
         <bpmn2:dataInput id="_170F70ED-D403-4265-9700-C98F08996BF3_PriorityInputX" drools:dtype="Integer" itemSubjectRef="__170F70ED-D403-4265-9700-C98F08996BF3_PriorityInputXItem" name="Priority"/>
+        <bpmn2:dataInput id="_00C2D25E-9307-46BE-8AFD-D0DB405B6A30_DelayInputX" drools:dtype="Integer" itemSubjectRef="__170F70ED-D403-4265-9700-C98F08996BF3_DelayInputXItem" name="Delay"/>
         <bpmn2:dataOutput id="_170F70ED-D403-4265-9700-C98F08996BF3_ResultOutputX" drools:dtype="java.lang.Object" itemSubjectRef="__170F70ED-D403-4265-9700-C98F08996BF3_ResultOutputXItem" name="Result"/>
         <bpmn2:inputSet id="_Db86wwL4EeatD9sQgSOy9g">
           <bpmn2:dataInputRefs>_170F70ED-D403-4265-9700-C98F08996BF3_CommandClassInputX</bpmn2:dataInputRefs>
           <bpmn2:dataInputRefs>_170F70ED-D403-4265-9700-C98F08996BF3_PriorityInputX</bpmn2:dataInputRefs>
           <bpmn2:dataInputRefs>_170F70ED-D403-4265-9700-C98F08996BF3_TaskNameInputX</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_00C2D25E-9307-46BE-8AFD-D0DB405B6A30_DelayInputX</bpmn2:dataInputRefs>
         </bpmn2:inputSet>
         <bpmn2:outputSet id="_Db86xAL4EeatD9sQgSOy9g">
           <bpmn2:dataOutputRefs>_170F70ED-D403-4265-9700-C98F08996BF3_ResultOutputX</bpmn2:dataOutputRefs>
@@ -108,6 +120,13 @@
         <bpmn2:assignment id="_Db86zgL4EeatD9sQgSOy9g">
           <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_Db86zwL4EeatD9sQgSOy9g"><![CDATA[3]]></bpmn2:from>
           <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_Db860AL4EeatD9sQgSOy9g">_170F70ED-D403-4265-9700-C98F08996BF3_PriorityInputX</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="_Db8TuwL4EeatD9sQgSOy9i">
+        <bpmn2:targetRef>_00C2D25E-9307-46BE-8AFD-D0DB405B6A30_DelayInputX</bpmn2:targetRef>
+        <bpmn2:assignment id="_Db8TvAL4EeatD9sQgSOy9i">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_Db86wAL4EeatD9sQgSOy9i"><![CDATA[3s]]></bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_Db86wQL4EeatD9sQgSOy9i">_00C2D25E-9307-46BE-8AFD-D0DB405B6A30_DelayInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
     </bpmn2:task>

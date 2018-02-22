@@ -32,7 +32,7 @@ public class JbpmAsyncJobTestCase extends JbpmTestCase {
 
     private static final int EXECUTOR_THREADS = 4;
     private static final int EXECUTOR_RETRIES = 3;
-    private static final int EXECUTOR_INTERVAL = 1;
+    private static final int EXECUTOR_INTERVAL = 0;
 
     private int executorThreads;
     private int executorRetries;

@@ -17,12 +17,12 @@
       <property name="hibernate.default_schema" value="${maven.jdbc.schema}"/>
 
       <property name="hibernate.max_fetch_depth" value="3" />
-      <property name="hibernate.hbm2ddl.auto" value="update" />
+      <property name="hibernate.hbm2ddl.auto" value="create" />
       <property name="hibernate.show_sql" value="false" />
 
       <!-- BZ 841786: AS7/EAP 6/Hib 4 uses new (sequence) generators which seem to cause problems -->      
       <property name="hibernate.id.new_generator_mappings" value="false" />            
-
+      <property name="hibernate.connection.release_mode" value="after_transaction"/>
       <!-- needed for JTA testing  -->
       <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.JBossStandAloneJtaPlatform" />
        
@@ -82,7 +82,7 @@
 
     <properties>
       <property name="hibernate.max_fetch_depth" value="3" />
-      <property name="hibernate.hbm2ddl.auto" value="update" />
+      <property name="hibernate.hbm2ddl.auto" value="create" />
       <property name="hibernate.show_sql" value="false" />
 
       <property name="hibernate.dialect" value="${maven.hibernate.dialect}"/>
@@ -90,7 +90,7 @@
       
       <!-- BZ 841786: AS7/EAP 6/Hib 4 uses new (sequence) generators which seem to cause problems -->      
       <property name="hibernate.id.new_generator_mappings" value="false" />            
-      
+      <property name="hibernate.connection.release_mode" value="after_transaction"/>
       <!-- The following line is what's used in Hibernate 4 instead of a TransactionManagerLookup class -->
       <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.JBossStandAloneJtaPlatform" />
     </properties>
@@ -152,7 +152,7 @@
 
     <properties>
       <property name="hibernate.max_fetch_depth" value="3" />
-      <property name="hibernate.hbm2ddl.auto" value="update" />
+      <property name="hibernate.hbm2ddl.auto" value="create" />
       <property name="hibernate.show_sql" value="false" />
 
       <property name="hibernate.dialect" value="${maven.hibernate.dialect}"/>

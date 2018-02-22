@@ -110,9 +110,6 @@ public class AsyncThrowSignalEventTest extends AbstractExecutorBaseTest {
         
         ProcessInstance processInstanceThrow = ksession.startProcess("SendEvent");
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstanceThrow.getState());
-        // make sure that waiting for event process is not finished yet as it must be through executor/async
-        processInstance = runtime.getKieSession().getProcessInstance(processInstance.getId());
-        assertNotNull(processInstance);
         
         countDownListener.waitTillCompleted();
         
@@ -142,9 +139,6 @@ public class AsyncThrowSignalEventTest extends AbstractExecutorBaseTest {
         
         ProcessInstance processInstanceThrow = ksession.startProcess("SendIntermediateEvent");
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstanceThrow.getState());
-        // make sure that waiting for event process is not finished yet as it must be through executor/async
-        processInstance = runtime.getKieSession().getProcessInstance(processInstance.getId());
-        assertNotNull(processInstance);
         
         countDownListener.waitTillCompleted();
         
@@ -171,11 +165,7 @@ public class AsyncThrowSignalEventTest extends AbstractExecutorBaseTest {
         ProcessInstance processInstance = ksession.startProcess("WaitForEvent");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
 
-        ksession.signalEvent("ASYNC-MySignal", null);
-
-        // make sure that waiting for event process is not finished yet as it must be through executor/async
-        processInstance = runtime.getKieSession().getProcessInstance(processInstance.getId());
-        assertNotNull(processInstance);
+        ksession.signalEvent("ASYNC-MySignal", null);      
         
         countDownListener.waitTillCompleted();
         

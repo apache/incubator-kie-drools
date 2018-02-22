@@ -49,6 +49,10 @@ public class TransactionalCommandService implements CommandExecutor {
     public Context getContext() {
         return context;
     }
+    
+    public TransactionManager getTransactionManager() {
+        return this.txm;
+    }
 
     protected void setEmf(EntityManagerFactory emf) {
 		this.emf = emf;

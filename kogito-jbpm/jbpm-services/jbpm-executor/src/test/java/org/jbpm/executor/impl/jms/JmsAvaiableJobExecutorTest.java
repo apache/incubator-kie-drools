@@ -258,6 +258,7 @@ public class JmsAvaiableJobExecutorTest  {
             jmsExecutor.setExecutorStoreService(((ExecutorImpl)((ExecutorServiceImpl)executorService).getExecutor()).getExecutorStoreService());
             jmsExecutor.setQueryService(((ExecutorServiceImpl)executorService).getQueryService());
             jmsExecutor.setEventSupport(((ExecutorServiceImpl)executorService).getEventSupport());
+            jmsExecutor.setExecutor(((ExecutorServiceImpl)executorService).getExecutor());
             consumer.setMessageListener(jmsExecutor);
             // since we use message listener allow it to complete the async processing
             countDownListener.waitTillCompleted(waitTill);

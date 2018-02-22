@@ -98,8 +98,7 @@ public class AsyncTaskTest extends JbpmAsyncJobTestCase {
             pm.put("command", USER_COMMAND);
             ProcessInstance pi = ksession.startProcess(ASYNC_DATA_EXECUTOR_ID, pm);
     
-            assertNodeTriggered(pi.getId(), "StartProcess", "Set user info", "Process async");
-            assertNodeNotTriggered(pi.getId(), "Output");
+            assertNodeTriggered(pi.getId(), "StartProcess", "Set user info", "Process async");            
     
             // Wait for the job to complete
             countDownListener.waitTillCompleted();

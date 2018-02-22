@@ -80,6 +80,17 @@ public class RequestInfo implements org.kie.internal.executor.api.RequestInfo, S
 
     public RequestInfo() {
     }
+    
+    
+
+    public RequestInfo(Long id, int priority, Date time) {
+        super();
+        this.id = id;        
+        this.priority = priority;
+        this.time = time;
+    }
+
+
 
     public List<? extends ErrorInfo> getErrorInfo() {
         return errorInfo;

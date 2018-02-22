@@ -24,9 +24,14 @@ import javax.ejb.Startup;
 
 import org.jbpm.executor.RequeueAware;
 import org.jbpm.executor.ejb.impl.jpa.ExecutorRequestAdminServiceEJBImpl;
+import org.jbpm.executor.ejb.impl.jpa.TransactionalCommandServiceExecutorEJBImpl;
+import org.jbpm.executor.impl.AvailableJobsExecutor;
+import org.jbpm.executor.impl.ClassCacheManager;
 import org.jbpm.executor.impl.ExecutorImpl;
 import org.jbpm.executor.impl.ExecutorServiceImpl;
+import org.jbpm.executor.impl.event.ExecutorEventSupport;
 import org.jbpm.services.ejb.api.ExecutorServiceEJB;
+import org.jbpm.shared.services.impl.TransactionalCommandService;
 import org.kie.api.executor.ExecutorAdminService;
 import org.kie.api.executor.ExecutorQueryService;
 import org.kie.api.executor.ExecutorService;
@@ -37,14 +42,39 @@ import org.kie.api.executor.ExecutorStoreService;
 public class ExecutorServiceEJBImpl extends ExecutorServiceImpl implements ExecutorServiceEJB, ExecutorService, RequeueAware {
 
 	private ExecutorStoreService storeService;
+	private ClassCacheManager classCacheManager;
+	private TransactionalCommandService transactionalCommandService;
+	
+	@EJB(beanInterface=ExecutorEventSupportEJBImpl.class)
+    @Override
+    public void setEventSupport(ExecutorEventSupport eventSupport) {
+        super.setEventSupport(eventSupport);
+    }
+	
+	@EJB(beanInterface=TransactionalCommandServiceExecutorEJBImpl.class)
+    public void setCommandService(TransactionalCommandService commandService ) {
+	    transactionalCommandService = commandService;
+    }
 	
 	@PostConstruct
 	@Override
 	public void init() {
 		ExecutorImpl executor = new ExecutorImpl();
-		executor.setExecutorStoreService(storeService);
+		executor.setExecutorStoreService(this.storeService);
+		executor.setEventSupport(getEventSupport());
+		executor.setTransactionManager(this.transactionalCommandService.getTransactionManager());
+		
+		AvailableJobsExecutor jobExecutor = new AvailableJobsExecutor();             
+        jobExecutor.setClassCacheManager(this.classCacheManager);
+        jobExecutor.setQueryService(getQueryService());
+        jobExecutor.setExecutorStoreService(this.storeService);
+        jobExecutor.setEventSupport(getEventSupport());
+        jobExecutor.setExecutor(executor);        
+		
+		executor.setJobProcessor(jobExecutor);
 		
 		setExecutor(executor);
+		
 		
 		super.init();
 	}
@@ -73,4 +103,8 @@ public class ExecutorServiceEJBImpl extends ExecutorServiceImpl implements Execu
 		this.storeService = storeService;
 	}
 
+	@EJB(beanInterface=ClassCacheManagerEJBImpl.class)
+    public void setClassCacheManager(ClassCacheManager classCacheManager) {
+        this.classCacheManager = classCacheManager;
+    }
 }

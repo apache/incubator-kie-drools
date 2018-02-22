@@ -20,22 +20,19 @@ import org.jbpm.executor.entities.RequestInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * Heart of the executor component - executes the actual tasks.
- * Handles retries and error management. Based on results of execution notifies
- * defined callbacks about the execution results.
- *
- */
+
 public class AvailableJobsExecutor extends AbstractAvailableJobsExecutor {
 
     private static final Logger logger = LoggerFactory.getLogger(AvailableJobsExecutor.class);
     
-    public void executeJob() {
-        logger.debug("Executor Thread {} Waking Up!!!", this.toString());
+    public void executeJob(long requestId) {
+        logger.debug("Executor attempts to run job with id {}", requestId);
         try {
-            RequestInfo request = (RequestInfo) queryService.getRequestForProcessing();
+            RequestInfo request = (RequestInfo) queryService.getRequestForProcessing(requestId);
             if (request != null) {
             	executeGivenJob(request);
+            	
+            	logger.debug("Executor finished running job with id {}", requestId);
             }
         } catch (Exception e) {
             logger.warn("Unexpected error while processin executor's job {}", e.getMessage(), e);
