@@ -20,7 +20,10 @@
           <SimplePredicate field="param" operator="lessThan" value="20"/>
         </Attribute>
         <Attribute>
-          <SimplePredicate field="param" operator="greaterOrEqual" value="20"/>
+          <CompoundPredicate booleanOperator="and">
+            <SimplePredicate field="param" operator="greaterOrEqual" value="20"/>
+            <SimplePredicate field="param" operator="lessThan" value="50"/>
+          </CompoundPredicate>
           <ComplexPartialScore>
             <Apply function="+">
               <Apply function="*">
@@ -28,6 +31,18 @@
                 <FieldRef field="param"/>
               </Apply>
              <Constant>50</Constant>
+            </Apply>
+          </ComplexPartialScore>
+        </Attribute>
+        <Attribute>
+          <SimplePredicate field="param" operator="greaterOrEqual" value="50"/>
+          <ComplexPartialScore>
+            <Apply function="+">
+              <Apply function="*">
+                <Constant>1.8</Constant>
+                <FieldRef field="param"/>
+              </Apply>
+              <Constant>25</Constant>
             </Apply>
           </ComplexPartialScore>
         </Attribute>

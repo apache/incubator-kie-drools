@@ -21,21 +21,30 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.kie.dmg.pmml.pmml_4_2.descr.AnyDistribution;
+import org.kie.dmg.pmml.pmml_4_2.descr.Apply;
 import org.kie.dmg.pmml.pmml_4_2.descr.Attribute;
 import org.kie.dmg.pmml.pmml_4_2.descr.COMPAREFUNCTION;
+import org.kie.dmg.pmml.pmml_4_2.descr.Characteristic;
+import org.kie.dmg.pmml.pmml_4_2.descr.ComplexPartialScore;
+import org.kie.dmg.pmml.pmml_4_2.descr.Constant;
 import org.kie.dmg.pmml.pmml_4_2.descr.DATATYPE;
 import org.kie.dmg.pmml.pmml_4_2.descr.DataField;
+import org.kie.dmg.pmml.pmml_4_2.descr.FieldRef;
 import org.kie.dmg.pmml.pmml_4_2.descr.GaussianDistribution;
 import org.kie.dmg.pmml.pmml_4_2.descr.PoissonDistribution;
 import org.kie.dmg.pmml.pmml_4_2.descr.REGRESSIONNORMALIZATIONMETHOD;
@@ -122,6 +131,56 @@ public class PMML4Helper {
 
     public void setResolver( ClassLoader resolver ) {
         this.resolver = resolver;
+    }
+
+    private String addToFormula(Serializable s) {
+        StringBuilder bldr = new StringBuilder();
+        if (s instanceof Apply) {
+            Apply apply = (Apply)s;
+            String function = apply.getFunction();
+            if (function != null) {
+                Pattern patternOperatorsMath = Pattern.compile("[\\*\\+\\/\\-\\^]");
+                Matcher matcherOperatorsMath = patternOperatorsMath.matcher(function);
+                List<Serializable> applyTo = apply.getConstantsAndFieldRevesAndNormContinuouses();
+                if (matcherOperatorsMath.matches()) {
+                    String leftSide = null;
+                    String rightSide = null;
+                    if (applyTo.size() <= 2) {
+                        leftSide = addToFormula(applyTo.get(0));
+                        rightSide = addToFormula(applyTo.get(1));
+                    }
+                    bldr.append("( ").append(leftSide).append(" ").append(function).append(" ").append(rightSide).append(" )");
+                } else {
+                    bldr.append(function).append("( ");
+                    Iterator<Serializable> iter = applyTo.iterator();
+                    while(iter.hasNext()) {
+                        bldr.append(addToFormula(iter.next()));
+                        if (iter.hasNext()) {
+                            bldr.append(", ");
+                        }
+                    }
+                    bldr.append(" )");
+                }
+            }
+        } else if (s instanceof FieldRef) {
+            FieldRef fr = (FieldRef)s;
+            bldr.append(fr.getField());
+        } else if (s instanceof Constant) {
+            Constant con = (Constant)s;
+            bldr.append(con.getValue());
+        }
+        return bldr.toString();
+    }
+
+    public String createPartialScoreFormula(Attribute attribute) {
+        String formula = null;
+        ComplexPartialScore cps = attribute.getComplexPartialScore();
+        if (cps != null) {
+            formula = addToFormula(cps.getApply());
+        } else {
+            formula = attribute.getPartialScore().toString();
+        }
+        return formula;
     }
 
     public boolean isModelBeanDefined(String beanType) {
