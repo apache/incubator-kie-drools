@@ -74,6 +74,23 @@ then
     utils.applyTemplate( "scorecardScoring.drlt", utils, registry, map, theory );
 end
 
+rule "Add ComplexScore"
+salience -10
+when
+    $sc : Scorecard( $info: extensionsAndCharacteristicsAndMiningSchemas )
+    $cx : Characteristics( this memberOf $info, $charz: characteristics )
+    $c  : Characteristic( this memberOf $charz, $attribz: attributes )
+    $att: Attribute( this memberOf $attribz, complexPartialScore != null )
+then
+    ComplexScore cs = new ComplexScore($c,$att);
+    HashMap map = utils.container;
+    map.put( "name", utils.context );
+    map.put( "complexScore", cs );
+    System.out.println("Attempting to apply template for: "+cs);
+    utils.applyTemplate( "complexPartialScore.mvel", utils, registry, map, theory );
+end
+
+
 rule "Inherit baseline score"
 salience 1
 when

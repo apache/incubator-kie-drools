@@ -242,7 +242,8 @@ public class PMML4Compiler implements PMMLCompiler {
             "models/scorecard/scorecardPartialScore.drlt",
             "models/scorecard/scorecardScoring.drlt",
             "models/scorecard/scorecardOutputGeneration.drlt",
-            "models/scorecard/scorecardOutputRankCode.drlt"
+            "models/scorecard/scorecardOutputRankCode.drlt",
+            "mvel/scorecard/complexPartialScore.mvel"
     };
 
 

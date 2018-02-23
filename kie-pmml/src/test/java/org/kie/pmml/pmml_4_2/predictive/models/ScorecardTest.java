@@ -319,7 +319,6 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
     }
 
     @Test
-    @Ignore("RHDM-316")
     public void testScorecardWithComplexPartialScore() {
         KieBase kieBase = PMMLKieBaseUtil.createKieBaseWithPMML(SOURCE_COMPLEX_PARTIAL_SCORE_SCORECARD);
         PMMLExecutor executor = new PMMLExecutor(kieBase);
@@ -332,11 +331,18 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
         Assertions.assertThat(score).isEqualTo(20);
 
         requestData = new PMMLRequestData("123", "ComplexPartialScoreScorecard");
+        requestData.addRequestParam("param", 40.0);
+        resultHolder = executor.run(requestData);
+        Assertions.assertThat(resultHolder).isNotNull();
+        score = resultHolder.getResultValue("ScoreCard", "score", Double.class).get();
+        Assertions.assertThat(score).isEqualTo(150);
+
+        requestData = new PMMLRequestData("123", "ComplexPartialScoreScorecard");
         requestData.addRequestParam("param", 100.0);
         resultHolder = executor.run(requestData);
         Assertions.assertThat(resultHolder).isNotNull();
         score = resultHolder.getResultValue("ScoreCard", "score", Double.class).get();
-        Assertions.assertThat(score).isEqualTo(300);
+        Assertions.assertThat(score).isEqualTo(205);
     }
 
     @Test
