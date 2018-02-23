@@ -113,52 +113,79 @@ To implement this:
 [[continuousPlanning]]
 == Continuous Planning (Windowed Planning)
 
-Continuous planning is the technique of planning one or more upcoming planning periods at the same time and repeating that process monthly, weekly, daily, hourly, or even more frequently.
+Continuous planning is the technique of planning one or more upcoming planning periods at the same time
+and repeating that process monthly, weekly, daily, hourly, or even more frequently.
 However, as time is infinite, planning all future time periods is impossible.
 
-A planning window allows you to have a fixed number of upcoming planning time periods.
+image::RepeatedPlanning/continuousPlanningEmployeeRostering.png[align="center"]
 
-The planning window can be split up in several parts:
+In the employee rostering example above, we re-plan every four days.
+Each time, we actually plan a window of 12 days, but we only publish the first four days,
+which is stable enough to share with the employees, so they can plan their social life accordingly.
+
+image::RepeatedPlanning/continuousPlanningPatientAdmissionSchedule.png[align="center"]
+
+In the hospital bed planning example above, notice the difference
+between the original planning of November 1st and the new planning of November 5th:
+some problem facts (F, H, I, J, K) changed in the meantime, which results in unrelated planning entities (G) changing too.
+
+The planning window can be split up in several stages:
 
 * _History_ 
 +
 Immutable past time periods. It contains only immovable entities.
 +
-** Historic entities can also affect score constraints that apply to movable entities. For example, in nurse rostering, a nurse that has worked the last five historic days in a row should not be assigned on the first tentative day of the planning window, they will have worked too many consecutive days.
-** Do not load all historic entities in memory: even though immovable entities do not affect solving performance, they can cause out of memory problems when the data grows to years. Only load those that might still affect the current constraints with a good safety margin, for example load the past year.
-* _Tentative_ 
-+
-The first few time periods that are being planned freely for the last time. After this planning, their planning entities become <<immovablePlanningEntities,immovable>> or <<nonvolatileReplanning,semi-immovable>>.
-+
-** The result of the tentative planning is usually shared with the business. For example, in nurse rostering, the nurses will use this schedule to plan their personal lives. Changing that schedule later becomes disruptive, however, were exceptions force us to do so, disruption can be minimized (see <<nonvolatileReplanning,Nonvolatile Replanning>>).
-* _Draft_ 
-+
-The latter time periods that are being planned freely, but not for the last time. They are likely to change again in the next planning effort.
-+
-** The draft part is needed to assure that the tentatively planned entities will allow room of a good, feasible planning afterwards. 
-+
-** That draft part is usually not shared with the business yet, because it is too volatile. However, it is stored in the database and used a starting point for the next plan.
+** Recent historic entities can also affect score constraints that apply to movable entities.
+For example, in nurse rostering, a nurse that has worked the last three historic weekends in a row
+should not be assigned to three more weekends in a row,
+because she requires a one free weekend per month.
+** Do not load all historic entities in memory:
+even though immovable entities do not affect solving performance,
+they can cause out of memory problems when the data grows to years.
+Only load those that might still affect the current constraints with a good safety margin.
 
-* _Future_ (out of scope)
+* _Published_
++
+Upcoming time periods that have been published.
+They contain only <<immovablePlanningEntities,Immovable>> and/or <<nonvolatileReplanning,semi-immovable>> planning entities.
++
+** The published schedule has been shared with the business.
+For example, in nurse rostering, the nurses will use this schedule to plan their personal lives,
+so they require a publish notice of for example 3 weeks in advance.
+Normal planning will not change that part of schedule.
++
+Changing that schedule later is disruptive, but were exceptions force us to do them anyway
+(for example someone calls in sick), do change this part of the planning
+while minimizing disruption with <<nonvolatileReplanning,non-disruptive replanning>>.
+
+* _Draft_
++
+Upcoming time periods after the published time periods that can change freely.
+They contain movable planning entities, except for any that are immovable for other reasons
+(such as being <<pinDownPlanningEntities,pinned by a user>>).
++
+** The first part of the _draft_ will be published, so these planning entities can change one last time.
+The publishing frequency, for example once per week, determines the number of time periods that changes from _draft_ to _published_.
+** The latter time periods of the _draft_ are likely change again in later planning efforts,
+especially if some of the problem facts change by then (for example nurse Ann doesn't want to work on one of those days).
++
+Despite that these latter planning entities might still change a lot,
+we can't leave them out for later, because we would risk _painting ourselves in a corner_.
+For example, in employee rostering we could have all our rare skilled employees working the last 5 days of the week that gets published,
+which won't reduce the score of that week, but will make it impossible for us to deliver a feasible schedule the next week.
+So the draft length needs to be longer than the part that will be published first.
+** That draft part is usually not shared with the business yet, because it is too volatile and it would only raise false expectations.
+However, it is stored in the database and used as a starting point for the next solver.
+
+* _Unplanned_ (out of scope)
 + 
 Planning entities that are not in the current planning window.
 +
-** If <<assigningTimeToPlanningEntities,time is a planning variable>>, there is no future part. Instead, if the planning window is too small to plan all entities, see  <<overconstrainedPlanning,overconstrained planning>>.
+** If the planning window is too small to plan all entities, you're dealing with <<overconstrainedPlanning,overconstrained planning>>.
+** If <<assigningTimeToPlanningEntities,time is a planning variable>>, the size of the planning window is determined dynamically,
+in which case the _unplanned_ stage is not applicable.
 
-image::RepeatedPlanning/continuousPlanningEmployeeRostering.png[align="center"]
-
-In the employee rostering example above, we re-plan every four days.
-Each time, we actually plan a window of 12 days, but we only share the tentative roster of the next four days with the employees.
-
-[NOTE]
-====
-The start of the planning window (so the first tentative time period) does _not_ need to be now.
-That too can be a week in advance.
-====
-
-image::RepeatedPlanning/continuousPlanningPatientAdmissionSchedule.png[align="center"]
-
-In the hospital bed planning example above, notice the difference between the original planning of November 1st and the new planning of November 5th: some problem facts (F, H, I, J, K) changed in the meantime, which results in unrelated planning entities (G) changing too.
+image::RepeatedPlanning/continuousPublishingWithRotation.png[align="center"]
 
 
 [[immovablePlanningEntities]]
