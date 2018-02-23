@@ -16,15 +16,14 @@
 
 package org.kie.dmn.backend.marshalling.v1_1.xstream;
 
-import org.kie.dmn.model.v1_1.DMNElementReference;
-import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_1.DecisionService;
-
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.kie.dmn.model.v1_1.DMNElementReference;
+import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
+import org.kie.dmn.model.v1_1.DecisionService;
 
 public class DecisionServiceConverter extends NamedElementConverter {
 
@@ -64,10 +63,10 @@ public class DecisionServiceConverter extends NamedElementConverter {
             } else {
                 // Default behaviour
                 object = readItem(reader, context, null);
-                if (object instanceof DMNModelInstrumentedBase) {
-                    ((DMNModelInstrumentedBase) object).setParent((DMNModelInstrumentedBase) parent);
-                    ((DMNModelInstrumentedBase) parent).addChildren((DMNModelInstrumentedBase) object);
-                }
+            }
+            if (object instanceof DMNModelInstrumentedBase) {
+                ((DMNModelInstrumentedBase) object).setParent((DMNModelInstrumentedBase) parent);
+                ((DMNModelInstrumentedBase) parent).addChildren((DMNModelInstrumentedBase) object);
             }
             reader.moveUp();
             assignChildElement(parent, nodeName, object);

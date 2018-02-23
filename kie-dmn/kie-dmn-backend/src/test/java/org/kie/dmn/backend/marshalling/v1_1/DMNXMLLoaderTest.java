@@ -18,20 +18,26 @@ package org.kie.dmn.backend.marshalling.v1_1;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 
 import javax.xml.XMLConstants;
 
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.dmn.api.marshalling.v1_1.DMNMarshaller;
+import org.kie.dmn.backend.marshalling.v1_1.xstream.extensions.DecisionServicesExtensionRegister;
 import org.kie.dmn.model.v1_1.Decision;
 import org.kie.dmn.model.v1_1.DecisionService;
 import org.kie.dmn.model.v1_1.Definitions;
 import org.kie.dmn.model.v1_1.InputData;
 import org.kie.dmn.model.v1_1.LiteralExpression;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 
 public class DMNXMLLoaderTest {
 
@@ -77,9 +83,9 @@ public class DMNXMLLoaderTest {
 
     @Test
     public void testLoadingDecisionServices() {
-        final DMNMarshaller DMNMarshaller = DMNMarshallerFactory.newDefaultMarshaller();
+        final DMNMarshaller DMNMarshaller = DMNMarshallerFactory.newMarshallerWithExtensions(Arrays.asList(new DecisionServicesExtensionRegister()));
 
-        final InputStream is = this.getClass().getResourceAsStream("004-decision-services.dmn");
+        final InputStream is = this.getClass().getResourceAsStream("0004-decision-services.dmn");
         final InputStreamReader isr = new InputStreamReader(is);
         final Definitions def = DMNMarshaller.unmarshal(isr);
 
@@ -104,6 +110,18 @@ public class DMNXMLLoaderTest {
         assertThat(decisionService2.getInputData().get(0).getHref(), is("#_bcea16fb-6c19-4bde-b37d-73407002c064"));
         assertThat(decisionService2.getInputData().get(1).getHref(), is("#_207b9195-a441-47f2-9414-2fad64b463f9"));
 
+    }
+
+    @Test
+    public void test0004_multiple_extensions() throws Exception {
+        DMNMarshaller marshaller = DMNMarshallerFactory.newMarshallerWithExtensions(Arrays.asList(new DecisionServicesExtensionRegister()));
+
+        final InputStream is = this.getClass().getResourceAsStream("0004-decision-services_multiple_extensions.dmn");
+        final InputStreamReader isr = new InputStreamReader(is);
+        final Definitions def = marshaller.unmarshal(isr);
+
+        assertThat(def.getExtensionElements().getAny().size(), is(1));
+        // if arrived here, means it did not fail with exception while trying to unmarshall unknown rss extension element, hence it just skipped it.
     }
 
     @Test
