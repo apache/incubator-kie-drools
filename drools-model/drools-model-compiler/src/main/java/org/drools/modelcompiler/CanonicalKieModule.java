@@ -27,6 +27,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.appformer.maven.support.DependencyFilter;
 import org.appformer.maven.support.PomModel;
@@ -42,6 +44,7 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.common.ResourceProvider;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.util.Drools;
 import org.drools.core.util.IoUtils;
 import org.drools.model.Model;
 import org.drools.model.NamedModelItem;
@@ -69,6 +72,8 @@ import static org.drools.modelcompiler.util.StringUtil.fileNameToClass;
 public class CanonicalKieModule implements InternalKieModule {
 
     public static final String MODEL_FILE = "META-INF/kie/drools-model";
+
+    public static final String MODEL_VERSION = "Drools-Model-Version:";
 
     private final InternalKieModule internalKieModule;
 
@@ -180,7 +185,22 @@ public class CanonicalKieModule implements InternalKieModule {
         } catch (IOException e) {
             throw new RuntimeException( e );
         }
-        return Arrays.asList( modelFiles.split( "\n" ) );
+
+        String[] lines = modelFiles.split( "\n" );
+        String header = lines[0];
+        if ( !header.startsWith( MODEL_VERSION ) ) {
+            throw new RuntimeException( "Malformed drools-model file" );
+        }
+        String version = header.substring( MODEL_VERSION.length() );
+        if ( !areModelVersionsCompatible( Drools.getFullVersion(), version ) ) {
+            throw new RuntimeException( "Kjar compiled with version " + version + " is not compatible with current runtime version " + Drools.getFullVersion() );
+        }
+
+        return Stream.of( lines ).skip( 1 ).collect( Collectors.toList() );
+    }
+
+    private static boolean areModelVersionsCompatible( String runtimeVersion, String compileVersion ) {
+        return true;
     }
 
     private static <T> T createInstance( ClassLoader cl, String className ) {
