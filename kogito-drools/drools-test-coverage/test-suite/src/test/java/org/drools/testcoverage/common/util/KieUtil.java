@@ -26,8 +26,8 @@ import org.assertj.core.api.Assertions;
 import org.drools.compiler.kie.builder.impl.DrlProject;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.modelcompiler.CanonicalKieModule;
-import org.drools.modelcompiler.CanonicalModelFlowProject;
-import org.drools.modelcompiler.CanonicalModelPatternProject;
+import org.drools.modelcompiler.ExecutableModelFlowProject;
+import org.drools.modelcompiler.ExecutableModelProject;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -116,8 +116,8 @@ public final class KieUtil {
         final Class<? extends KieBuilder.ProjectType> projectClass;
         switch (kieBaseTestConfiguration.runType()) {
             case STANDARD_FROM_DRL: projectClass = DrlProject.class; break;
-            case FLOW_DSL: projectClass = CanonicalModelFlowProject.class; break;
-            case PATTERN_DSL: projectClass = CanonicalModelPatternProject.class; break;
+            case FLOW_DSL: projectClass = ExecutableModelFlowProject.class; break;
+            case PATTERN_DSL: projectClass = ExecutableModelProject.class; break;
             default:
                 throw new RuntimeException("Unknown type: " + kieBaseTestConfiguration.runType());
         }

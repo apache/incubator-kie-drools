@@ -20,10 +20,9 @@ import java.util.function.BiFunction;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieModuleKieProject;
-import org.drools.modelcompiler.builder.CanonicalModelMavenPluginKieProject;
+import org.drools.modelcompiler.builder.CanonicalModelKieProject;
 import org.kie.api.builder.KieBuilder;
 
-public class CanonicalModelMavenProject implements KieBuilder.ProjectType {
-
-    public static final BiFunction<InternalKieModule, ClassLoader, KieModuleKieProject> SUPPLIER = CanonicalModelMavenPluginKieProject::new;
+public class ExecutableModelProject implements KieBuilder.ProjectType {
+    public static final BiFunction<InternalKieModule, ClassLoader, KieModuleKieProject> SUPPLIER = CanonicalModelKieProject.create(true);
 }

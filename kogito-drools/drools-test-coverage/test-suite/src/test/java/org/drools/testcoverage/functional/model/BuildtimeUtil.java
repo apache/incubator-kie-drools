@@ -25,7 +25,7 @@ import org.drools.compiler.kie.builder.impl.DrlProject;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.ZipKieModule;
 import org.drools.modelcompiler.CanonicalKieModule;
-import org.drools.modelcompiler.CanonicalModelFlowProject;
+import org.drools.modelcompiler.ExecutableModelFlowProject;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
@@ -82,7 +82,7 @@ public final class BuildtimeUtil {
         kfs.writeKModuleXML(getDefaultKieModuleModel(KieServices.get()).toXML());
 
         KieBuilder kbuilder = KieServices.Factory.get().newKieBuilder(kfs);
-        kbuilder.buildAll(useCanonicalModel ? CanonicalModelFlowProject.class : DrlProject.class);
+        kbuilder.buildAll(useCanonicalModel ? ExecutableModelFlowProject.class : DrlProject.class);
 
         final List<Message> msgs = kbuilder.getResults().getMessages(Message.Level.ERROR);
         if (msgs.size() > 0) {
