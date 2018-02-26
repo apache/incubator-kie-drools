@@ -48,6 +48,7 @@ import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.UnaryExpr;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
+import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.UnknownType;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -621,10 +622,41 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         return DirectCompilerResult.of(DASH_UNARY_TEST, BuiltInType.UNARY_TEST);
     }
 
-//    @Override
-//    public DirectCompilerResult visitCompExpression(FEEL_1_1Parser.CompExpressionContext ctx) {
-//        throw new UnsupportedOperationException("TODO"); // TODO
-//    }
+    @Override
+    public DirectCompilerResult visitCompExpression(FEEL_1_1Parser.CompExpressionContext ctx) {
+        DirectCompilerResult left = visit(ctx.left);
+        DirectCompilerResult right = visit(ctx.right);
+
+        String opText = ctx.op.getText();
+        InfixOperator op = InfixOperator.determineOperator(opText);
+        String methodName;
+        switch (op) {
+            case LTE:
+                methodName = "lte";
+                break;
+            case LT:
+                methodName = "lt";
+                break;
+            case GTE:
+                methodName = "gte";
+                break;
+            case GT:
+                methodName = "gt";
+                break;
+            case EQ:
+                methodName = "eq";
+                break;
+            case NE:
+                methodName = "ne";
+                break;
+            default:
+                throw new UnsupportedOperationException("this was a visitCompExpression but unrecognized op: " + opText); // parser problem.
+        }
+        MethodCallExpr result = new MethodCallExpr(null, methodName);
+        result.addArgument(left.getExpression());
+        result.addArgument(right.getExpression());
+        return DirectCompilerResult.of(result, BuiltInType.BOOLEAN).withFD(left).withFD(right);
+    }
 
     @Override
     public DirectCompilerResult visitCondOr(FEEL_1_1Parser.CondOrContext ctx) {
@@ -633,7 +665,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         MethodCallExpr result = new MethodCallExpr(null, "or");
         result.addArgument(left.getExpression());
         result.addArgument(right.getExpression());
-        return DirectCompilerResult.of(result, BuiltInType.BOOLEAN);
+        return DirectCompilerResult.of(result, BuiltInType.BOOLEAN).withFD(left).withFD(right);
     }
 
     @Override
@@ -643,7 +675,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         MethodCallExpr result = new MethodCallExpr(null, "and");
         result.addArgument(left.getExpression());
         result.addArgument(right.getExpression());
-        return DirectCompilerResult.of(result, BuiltInType.BOOLEAN);
+        return DirectCompilerResult.of(result, BuiltInType.BOOLEAN).withFD(left).withFD(right);
     }
 
     @Override
@@ -748,11 +780,15 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
 
     @Override
     public DirectCompilerResult visitQualifiedName(FEEL_1_1Parser.QualifiedNameContext ctx) {
-        List<NameRefContext> parts = ctx.nameRef();
-        DirectCompilerResult nameRef0 = visitNameRef(parts.get(0));
-        Type typeCursor = nameRef0.resultType;
-        Expression exprCursor = nameRef0.getExpression();
-        for (NameRefContext acc : parts.subList(1, parts.size())) {
+        List<NameRefContext> names = ctx.nameRef();
+        DirectCompilerResult nameRef0 = visitNameRef(names.get(0));
+        return telescopeAccessOnScope(nameRef0, names.subList(1, names.size()));
+    }
+
+    private DirectCompilerResult telescopeAccessOnScope(DirectCompilerResult scope, List<NameRefContext> names) {
+        Type typeCursor = scope.resultType;
+        Expression exprCursor = scope.getExpression();
+        for (NameRefContext acc : names) {
             String accText = ParserHelper.getOriginalText(acc);
             if (typeCursor instanceof CompositeType) {
                 CompositeType compositeType = (CompositeType) typeCursor;
@@ -904,10 +940,42 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         return DirectCompilerResult.of(isInstanceOfCall, BuiltInType.BOOLEAN, mergeFDs(expr, type));
     }
 
-//    @Override
-//    public DirectCompilerResult visitFilterPathExpression(FEEL_1_1Parser.FilterPathExpressionContext ctx) {
-//        throw new UnsupportedOperationException("TODO"); // TODO
-//    }
+    @Override
+    public DirectCompilerResult visitFilterPathExpression(FEEL_1_1Parser.FilterPathExpressionContext ctx) {
+        if (ctx.filter != null) {
+            DirectCompilerResult expr = visit(ctx.filterPathExpression());
+            DirectCompilerResult filter = visit(ctx.expression());
+            MethodCallExpr filterCall = new MethodCallExpr(new NameExpr(CompiledFEELSupport.class.getSimpleName()), "filter");
+            filterCall.addArgument(new NameExpr("feelExprCtx"));
+            filterCall.addArgument(expr.getExpression());
+            MethodCallExpr filterWithCall = new MethodCallExpr(filterCall, "with");
+            if (filter.resultType != BuiltInType.BOOLEAN) {
+                // Then is the case Table 54: Semantics of lists, ROW: e1 is a list and e2 is an integer (0 scale number)
+                filterWithCall.addArgument(filter.getExpression());
+            } else {
+                // Then is the case Table 54: Semantics of lists, ROW: e1 is a list and type(FEEL(e2 , s')) is boolean
+                Expression anonFunctionClass = JavaParser.parseExpression("new java.util.function.Function<EvaluationContext, Object>() {\n" +
+                                                                          "    @Override\n" +
+                                                                          "    public Object apply(EvaluationContext feelExprCtx) {\n" +
+                                                                          "        return null;\n" +
+                                                                          "    }\n" +
+                                                                          "}");
+                List<ReturnStmt> lookupReturnList = anonFunctionClass.getChildNodesByType(ReturnStmt.class);
+                if (lookupReturnList.size() != 1) {
+                    throw new RuntimeException("Something unexpected changed in the template.");
+                }
+                ReturnStmt returnStmt = lookupReturnList.get(0);
+                returnStmt.setExpression(filter.getExpression());
+                filterWithCall.addArgument(anonFunctionClass);
+            }
+            return DirectCompilerResult.of(filterWithCall, BuiltInType.UNKNOWN).withFD(expr).withFD(filter);
+        } else if (ctx.qualifiedName() != null) {
+            DirectCompilerResult expr = visit(ctx.filterPathExpression());
+            return telescopeAccessOnScope(expr, ctx.qualifiedName().nameRef()).withFD(expr);
+        } else {
+            return visit(ctx.unaryExpression());
+        }
+    }
 
     @Override
     public DirectCompilerResult visitExpressionTextual(FEEL_1_1Parser.ExpressionTextualContext ctx) {

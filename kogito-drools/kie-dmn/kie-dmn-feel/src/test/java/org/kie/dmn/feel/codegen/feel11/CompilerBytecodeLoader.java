@@ -19,7 +19,10 @@ package org.kie.dmn.feel.codegen.feel11;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 
@@ -51,6 +54,15 @@ public class CompilerBytecodeLoader {
                                b,
                                0,
                                b.length);
+        }
+
+        public Class<CompiledFEELExpression> load(MemoryFileSystem pStore, String string) {
+            Map<String, Class<?>> loaded = new HashMap<>();
+            for (Entry<String, byte[]> kv : pStore.getMap().entrySet() ) {
+                String className = kv.getKey().substring(0, kv.getKey().lastIndexOf(".class")).replaceAll("/", ".");
+                loaded.put(className, defineClass(className, kv.getValue(), 0, kv.getValue().length));
+            }
+            return (Class<CompiledFEELExpression>) loaded.get(string);
         }
 
     }
@@ -106,10 +118,7 @@ public class CompilerBytecodeLoader {
             System.out.println(Arrays.asList(compilationResult.getErrors()));
             System.out.println(Arrays.asList(compilationResult.getWarnings()));
 
-            byte[] b = pStore.getBytes(cuPackage.replaceAll("\\.",
-                                                            "/") + "/TemplateCompiledFEELExpression.class");
-            Class<CompiledFEELExpression> loaded = (Class<CompiledFEELExpression>) new TemplateLoader(this.getClass().getClassLoader()).load(cuPackage + ".TemplateCompiledFEELExpression",
-                                                                                                                                             b);
+            Class<CompiledFEELExpression> loaded = (Class<CompiledFEELExpression>) new TemplateLoader(this.getClass().getClassLoader()).load(pStore, cuPackage + ".TemplateCompiledFEELExpression");
 
             return loaded.newInstance();
         } catch (Exception e) {
