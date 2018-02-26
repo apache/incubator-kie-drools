@@ -17,8 +17,10 @@
 package org.drools.modelcompiler.builder;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -32,22 +34,26 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.CompilationUnit;
 import org.drools.javaparser.ast.Modifier;
+import org.drools.javaparser.ast.NodeList;
 import org.drools.javaparser.ast.body.BodyDeclaration;
 import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.drools.javaparser.ast.body.FieldDeclaration;
 import org.drools.javaparser.ast.body.InitializerDeclaration;
 import org.drools.javaparser.ast.body.MethodDeclaration;
+import org.drools.javaparser.ast.body.VariableDeclarator;
 import org.drools.javaparser.ast.comments.JavadocComment;
 import org.drools.javaparser.ast.expr.ClassExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
+import org.drools.javaparser.ast.expr.SimpleName;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.javaparser.ast.stmt.BlockStmt;
 import org.drools.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.javaparser.ast.type.Type;
 import org.drools.model.Global;
 import org.drools.model.Model;
+import org.drools.model.Rule;
 import org.drools.model.WindowReference;
 import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
@@ -68,6 +74,7 @@ public class PackageModel {
     private static final String RULES_FILE_NAME = "Rules";
 
     private static final int RULES_PER_CLASS = 20;
+    private static final int RULES_DECLARATION_PER_CLASS = 1000;
 
     private final String name;
     private final boolean isPattern;
@@ -298,16 +305,6 @@ public class PackageModel {
                 "    }\n");
         rulesClass.addMember(getTypeMetaDataMethod);
 
-        BodyDeclaration<?> rulesList = JavaParser.parseBodyDeclaration("List<Rule> rules = new ArrayList<>();");
-        rulesClass.addMember(rulesList);
-        BodyDeclaration<?> queriesList = JavaParser.parseBodyDeclaration("List<Query> queries = new ArrayList<>();");
-        rulesClass.addMember(queriesList);
-        BodyDeclaration<?> globalsList = JavaParser.parseBodyDeclaration("List<Global> globals = new ArrayList<>();");
-        rulesClass.addMember(globalsList);
-        BodyDeclaration<?> windowReferencesList = JavaParser.parseBodyDeclaration("List<WindowReference> windowReferences = new ArrayList<>();");
-        rulesClass.addMember(windowReferencesList);
-        BodyDeclaration<?> typeMetaDatasList = JavaParser.parseBodyDeclaration("List<TypeMetaData> typeMetaDatas = new ArrayList<>();");
-        rulesClass.addMember(typeMetaDatasList);
         // end of fixed part
 
 
@@ -331,43 +328,38 @@ public class PackageModel {
         }
 
         // instance initializer block.
-        // add to `rules` list the result of invoking each method for rule 
+        // add to `rules` list the result of invoking each method for rule
         InitializerDeclaration rulesListInitializer = new InitializerDeclaration();
-        rulesClass.addMember(rulesListInitializer);
         BlockStmt rulesListInitializerBody = new BlockStmt();
         rulesListInitializer.setBody(rulesListInitializerBody);
 
-        for ( String methodName : queryMethods.keySet() ) {
-            NameExpr rulesFieldName = new NameExpr( "queries" );
-            MethodCallExpr add = new MethodCallExpr(rulesFieldName, "add");
-            add.addArgument( new NameExpr(methodName) );
-            rulesListInitializerBody.addStatement( add );
-        }
+        queryMethods.values().forEach(rulesClass::addMember);
+        buildArtifactsDeclaration( queryMethods.keySet(), rulesClass, rulesListInitializerBody, "Query", "queries", false );
+        buildArtifactsDeclaration( windowReferences.keySet(), rulesClass, rulesListInitializerBody, "WindowReference", "windowReferences", false );
+        buildArtifactsDeclaration( getGlobals().keySet(), rulesClass, rulesListInitializerBody, "Global", "globals", true );
 
-        for ( String fieldName : windowReferences.keySet() ) {
-            NameExpr rulesFieldName = new NameExpr( "windowReferences" );
-            MethodCallExpr add = new MethodCallExpr(rulesFieldName, "add");
-            add.addArgument( new NameExpr(fieldName) );
-            rulesListInitializerBody.addStatement( add );
-        }
-
-        for ( Map.Entry<String, Class<?>> g : getGlobals().entrySet() ) {
-            NameExpr rulesFieldName = new NameExpr( "globals" );
-            MethodCallExpr add = new MethodCallExpr(rulesFieldName, "add");
-            add.addArgument( new NameExpr(toVar(g.getKey())) );
-            rulesListInitializerBody.addStatement( add );
-        }
-
-        for (Expression expr : typeMetaDataExpressions) {
-            NameExpr rulesFieldName = new NameExpr( "typeMetaDatas" );
-            MethodCallExpr add = new MethodCallExpr(rulesFieldName, "add");
-            add.addArgument( expr );
-            rulesListInitializerBody.addStatement( add );
+        if ( !typeMetaDataExpressions.isEmpty() ) {
+            BodyDeclaration<?> typeMetaDatasList = JavaParser.parseBodyDeclaration("List<TypeMetaData> typeMetaDatas = new ArrayList<>();");
+            rulesClass.addMember(typeMetaDatasList);
+            for (Expression expr : typeMetaDataExpressions) {
+                addInitStatement( rulesListInitializerBody, expr, "typeMetaDatas" );
+            }
+        } else {
+            BodyDeclaration<?> typeMetaDatasList = JavaParser.parseBodyDeclaration("List<TypeMetaData> typeMetaDatas = Collections.emptyList();");
+            rulesClass.addMember(typeMetaDatasList);
         }
 
         functions.forEach(rulesClass::addMember);
 
         RuleSourceResult results = new RuleSourceResult(cu);
+
+        int ruleCount = ruleMethods.size();
+        boolean requiresMultipleRulesLists = ruleCount >= RULES_DECLARATION_PER_CLASS-1;
+
+        MethodCallExpr rules = buildRulesField( rulesClass );
+        if (requiresMultipleRulesLists) {
+            addRulesList( rulesListInitializerBody, "rulesList" );
+        }
 
         // each method per Drlx parser result
         int count = -1;
@@ -384,17 +376,72 @@ public class PackageModel {
             });
             rulesMethodClass.addMember(ruleMethodKV.getValue());
 
+            if (count % RULES_DECLARATION_PER_CLASS == RULES_DECLARATION_PER_CLASS-1) {
+                int index = count / RULES_DECLARATION_PER_CLASS;
+                rules = buildRulesField(results, index);
+                addRulesList( rulesListInitializerBody, rulesFileName + "Rules" + index + ".rulesList" );
+            }
+
             // manage in main class init block:
-            NameExpr rulesFieldName = new NameExpr("rules");
-            MethodCallExpr add = new MethodCallExpr(rulesFieldName, "add");
-            add.addArgument(new MethodCallExpr(new NameExpr(rulesMethodClass.getNameAsString()), ruleMethodKV.getKey()));
-            rulesListInitializerBody.addStatement(add);
+            rules.addArgument(new MethodCallExpr(new NameExpr(rulesMethodClass.getNameAsString()), ruleMethodKV.getKey()));
         }
 
-        queryMethods.values().forEach(rulesClass::addMember);
-        
+        BodyDeclaration<?> rulesList = requiresMultipleRulesLists ?
+                JavaParser.parseBodyDeclaration("List<Rule> rules = new ArrayList<>(" + ruleCount + ");") :
+                JavaParser.parseBodyDeclaration("List<Rule> rules = rulesList;");
+        rulesClass.addMember(rulesList);
+
+        if (!rulesListInitializer.getBody().getStatements().isEmpty()) {
+            rulesClass.addMember( rulesListInitializer );
+        }
 
         return results;
+    }
+
+    private void buildArtifactsDeclaration( Collection<String> artifacts, ClassOrInterfaceDeclaration rulesClass, BlockStmt rulesListInitializerBody, String type, String fieldName, boolean needsToVar ) {
+        if (!artifacts.isEmpty()) {
+            BodyDeclaration<?> queriesList = JavaParser.parseBodyDeclaration("List<" + type + "> " + fieldName + " = new ArrayList<>();");
+            rulesClass.addMember(queriesList);
+            for (String name : artifacts) {
+                addInitStatement( rulesListInitializerBody, new NameExpr( needsToVar ? toVar(name) : name ), fieldName );
+            }
+        } else {
+            BodyDeclaration<?> queriesList = JavaParser.parseBodyDeclaration("List<" + type + "> " + fieldName + " = Collections.emptyList();");
+            rulesClass.addMember(queriesList);
+        }
+    }
+
+    private void addInitStatement( BlockStmt rulesListInitializerBody, Expression expr, String fieldName ) {
+        NameExpr rulesFieldName = new NameExpr( fieldName );
+        MethodCallExpr add = new MethodCallExpr( rulesFieldName, "add" );
+        add.addArgument( expr );
+        rulesListInitializerBody.addStatement( add );
+    }
+
+    private void addRulesList( BlockStmt rulesListInitializerBody, String listName ) {
+        MethodCallExpr add = new MethodCallExpr(new NameExpr("rules"), "addAll");
+        add.addArgument(listName);
+        rulesListInitializerBody.addStatement(add);
+    }
+
+    private MethodCallExpr buildRulesField(RuleSourceResult results, int index) {
+        CompilationUnit cu = new CompilationUnit();
+        results.with(cu);
+        cu.setPackageDeclaration(name);
+        cu.addImport(JavaParser.parseImport("import " + Arrays.class.getCanonicalName() + ";"));
+        cu.addImport(JavaParser.parseImport("import " + List.class.getCanonicalName() + ";"));
+        cu.addImport(JavaParser.parseImport("import " + Rule.class.getCanonicalName() + ";"));
+        String currentRulesMethodClassName = rulesFileName + "Rules" + index;
+        ClassOrInterfaceDeclaration rulesClass = cu.addClass(currentRulesMethodClassName);
+        return buildRulesField( rulesClass );
+    }
+
+    private MethodCallExpr buildRulesField( ClassOrInterfaceDeclaration rulesClass ) {
+        MethodCallExpr rulesInit = new MethodCallExpr( null, "Arrays.asList" );
+        ClassOrInterfaceType rulesType = new ClassOrInterfaceType(null, new SimpleName("List"), new NodeList<Type>(new ClassOrInterfaceType(null, "Rule")));
+        VariableDeclarator rulesVar = new VariableDeclarator( rulesType, "rulesList", rulesInit );
+        rulesClass.addMember( new FieldDeclaration( EnumSet.of( Modifier.PUBLIC, Modifier.STATIC), rulesVar ) );
+        return rulesInit;
     }
 
     private void manageImportForCompilationUnit(CompilationUnit cu) {
