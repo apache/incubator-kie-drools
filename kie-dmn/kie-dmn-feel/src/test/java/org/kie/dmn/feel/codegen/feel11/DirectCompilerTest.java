@@ -199,6 +199,59 @@ public class DirectCompilerTest {
     }
 
     @Test
+    public void test_filterPath() {
+        // Filtering by index
+        assertThat(parseCompileEvaluate("[\"a\", \"b\", \"c\"][1]"), is("a"));
+        assertThat(parseCompileEvaluate("[\"a\", \"b\", \"c\"][2]"), is("b"));
+        assertThat(parseCompileEvaluate("[\"a\", \"b\", \"c\"][3]"), is("c"));
+        assertThat(parseCompileEvaluate("[\"a\", \"b\", \"c\"][-1]"), is("c"));
+        assertThat(parseCompileEvaluate("[\"a\", \"b\", \"c\"][-2]"), is("b"));
+        assertThat(parseCompileEvaluate("[\"a\", \"b\", \"c\"][-3]"), is("a"));
+        assertThat(parseCompileEvaluate("[\"a\", \"b\", \"c\"][4]"), nullValue());
+        assertThat(parseCompileEvaluate("[\"a\", \"b\", \"c\"][984]"), nullValue());
+        assertThat(parseCompileEvaluate("[\"a\", \"b\", \"c\"][-4]"), nullValue());
+        assertThat(parseCompileEvaluate("[\"a\", \"b\", \"c\"][-984]"), nullValue());
+        assertThat(parseCompileEvaluate("\"a\"[1]"), is("a"));
+        assertThat(parseCompileEvaluate("\"a\"[2]"), nullValue());
+        assertThat(parseCompileEvaluate("\"a\"[-1]"), is("a"));
+        assertThat(parseCompileEvaluate("\"a\"[-2]"), nullValue());
+
+        // Filtering by boolean expression
+        assertThat(parseCompileEvaluate("[1, 2, 3, 4][item = 4]"), is(Arrays.asList(BigDecimal.valueOf(4))));
+        assertThat(parseCompileEvaluate("[1, 2, 3, 4][item > 2]"), is(Arrays.asList(BigDecimal.valueOf(3), BigDecimal.valueOf(4))));
+        assertThat(parseCompileEvaluate("[1, 2, 3, 4][item > 5]"), is(Collections.emptyList()));
+        assertThat(parseCompileEvaluate("[ {x:1, y:2}, {x:2, y:3} ][x = 1]"), is(Arrays.asList(mapOf(entry("x", new BigDecimal(1)), entry("y", new BigDecimal(2))))));
+        assertThat(parseCompileEvaluate("[ {x:1, y:2}, {x:2, y:3} ][x > 1]"), is(Arrays.asList(mapOf(entry("x", new BigDecimal(2)), entry("y", new BigDecimal(3))))));
+        assertThat(parseCompileEvaluate("[ {x:1, y:2}, {x:2, y:3} ][x = 0]"), is(Collections.emptyList()));
+    }
+
+    @Test
+    public void test_filterPath_tricky1() {
+        CompiledFEELExpression nameRef = parse( "[ {x:1, y:2}, {x:2, y:3} ][x]");
+        System.out.println(nameRef);
+        
+        EvaluationContext context = new EvaluationContextImpl(null);
+        context.setValue("x", 2);
+        Object result = nameRef.apply(context);
+        System.out.println(result);
+        
+        assertThat(result, is(mapOf(entry("x", new BigDecimal(2)), entry("y", new BigDecimal(3)))));
+    }
+
+    @Test
+    public void test_filterPath_tricky2() {
+        CompiledFEELExpression nameRef = parse("[ {x:1, y:2}, {x:2, y:3} ][x]");
+        System.out.println(nameRef);
+
+        EvaluationContext context = new EvaluationContextImpl(null);
+        context.setValue("x", false);
+        Object result = nameRef.apply(context);
+        System.out.println(result);
+
+        assertThat(result, nullValue());
+    }
+
+    @Test
     public void test_contextExpression() {
         assertThat(parseCompileEvaluate("{}"), is(Collections.emptyMap()));
         assertThat(parseCompileEvaluate("{ }"), is(Collections.emptyMap()));
