@@ -53,6 +53,16 @@ public class DirectCompilerResult {
         return new DirectCompilerResult(expression, resultType, singleton);
     }
     
+    public DirectCompilerResult withFD(DirectCompilerResult from) {
+        this.fieldDeclarations.addAll(from.getFieldDeclarations());
+        return this;
+    }
+
+    public DirectCompilerResult withFD(Set<FieldDeclaration> from) {
+        this.fieldDeclarations.addAll(from);
+        return this;
+    }
+
     public Set<FieldDeclaration> getFieldDeclarations() {
         return Collections.unmodifiableSet(fieldDeclarations);
     }
