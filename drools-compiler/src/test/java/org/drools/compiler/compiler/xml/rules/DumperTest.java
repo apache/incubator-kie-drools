@@ -150,21 +150,28 @@ public class DumperTest {
     public void testRoundTripDRLAccumulate() throws Exception {
         // RHDM-254
         String drl =
-                "package org.test\n" +
-                "\n" +
-                "rule \"last flown date\"\n" +
-                "when\n" +
-                "    $customer : Profile( $ceid : id )\n" +
-                "    accumulate(\n" +
-                "    Flight( status == \"Flown\", $dptDate: departureDate.time ) from $customer.flights,\n" +
-                "        $cnt : count( $dptDate );\n" +
-                "        $cnt > 0 )\n" +
-                "then\n" +
+                "package org.test " +
+                "" +
+                "rule \"last flown date\" " +
+                "when " +
+                "    $customer : Profile( $ceid : id ) " +
+                "    accumulate( " +
+                "    Flight( status == \"Flown\", $dptDate: departureDate.time ) from $customer.flights, " +
+                "        $cnt : count( $dptDate ); " +
+                "        $cnt > 0 ) " +
+                "then " +
                 "end";
         DrlParser parser = new DrlParser( LanguageLevelOption.DRL6);
         final PackageDescr pkgOriginal = parser.parse( false, drl );
         final DrlDumper dumper = new DrlDumper();
         String out = dumper.dump( pkgOriginal );
-        Assertions.assertThat(drl).isEqualToIgnoringWhitespace(out);
+
+        // We need to compare ignoring whitespaces
+        drl = drl.replace(" ", "");
+        out = out.replace(" ", "")
+                .replace(System.getProperty("line.separator"), "")
+                .replace("\n", "");
+
+        Assertions.assertThat(drl).isEqualTo(out);
     }
 }
