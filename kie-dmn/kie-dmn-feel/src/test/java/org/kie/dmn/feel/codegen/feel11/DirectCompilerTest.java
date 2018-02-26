@@ -189,6 +189,16 @@ public class DirectCompilerTest {
     }
 
     @Test
+    public void test_between() {
+        assertThat(parseCompileEvaluate("10 between 5 and 12"), is(true));
+        assertThat(parseCompileEvaluate("10 between 20 and 30"), is(false));
+        assertThat(parseCompileEvaluate("10 between 20 and \"foo\""), nullValue());
+        assertThat(parseCompileEvaluate("\"foo\" between 5 and 12"), nullValue());
+        assertThat(parseCompileEvaluate("\"foo\" between \"bar\" and \"zap\""), is(true));
+        assertThat(parseCompileEvaluate("\"foo\" between null and \"zap\""), nullValue());
+    }
+
+    @Test
     public void test_contextExpression() {
         assertThat(parseCompileEvaluate("{}"), is(Collections.emptyMap()));
         assertThat(parseCompileEvaluate("{ }"), is(Collections.emptyMap()));
