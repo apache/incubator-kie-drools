@@ -16,8 +16,12 @@
 
 package org.kie.dmn.feel.codegen.feel11;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import org.kie.dmn.feel.lang.EvaluationContext;
 
@@ -50,6 +54,76 @@ public class CompiledFEELSupport {
         public Map<String, Object> closeContext() {
             evaluationContext.exitFrame();
             return resultContext;
+        }
+    }
+
+    public static FilterBuilder filter(EvaluationContext ctx, Object value) {
+        return new FilterBuilder(ctx, value);
+    }
+
+    public static class FilterBuilder {
+
+        private EvaluationContext ctx;
+        private Object value;
+
+        public FilterBuilder(EvaluationContext evaluationContext, Object value) {
+            this.ctx = evaluationContext;
+            this.value = value;
+        }
+
+        public Object with(Function<EvaluationContext, Object> filterExpression) {
+            if (value == null) {
+                return null;
+            }
+            List list = value instanceof List ? (List) value : Arrays.asList(value);
+
+            List results = new ArrayList();
+            for (Object v : list) {
+                try {
+                    ctx.enterFrame();
+                    // handle it as a predicate
+                    // Have the "item" variable set first, so to respect the DMN spec: The expression in square brackets can reference a list
+                    // element using the name item, unless the list element is a context that contains the key "item".
+                    ctx.setValue("item", v);
+
+                    // using Root object logic to avoid having to eagerly inspect all attributes.
+                    ctx.setRootObject(v);
+
+                    Object r = filterExpression.apply(ctx);
+                    if (r instanceof Boolean && ((Boolean) r) == Boolean.TRUE) {
+                        results.add(v);
+                    }
+                } catch (Exception e) {
+                    // TODO report error.
+                } finally {
+                    ctx.exitFrame();
+                }                
+            }
+
+            return results;
+        }
+
+        public Object with(Object filterIndex) {
+            if (value == null) {
+                return null;
+            }
+            List list = value instanceof List ? (List) value : Arrays.asList(value);
+
+            if (filterIndex instanceof Number) {
+                int i = ((Number) filterIndex).intValue();
+                if (i > 0 && i <= list.size()) {
+                    return list.get(i - 1);
+                } else if (i < 0 && Math.abs(i) <= list.size()) {
+                    return list.get(list.size() + i);
+                } else {
+                    // TODO report error.
+                    return null;
+                }
+            } else {
+                // TODO this differs behavior from evaluation mode because should actually throw an error as it's doing here.
+                // TODO report error.
+                return null;
+            }
         }
     }
 }
