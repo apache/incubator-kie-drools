@@ -39,7 +39,6 @@ import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
 import org.kie.dmn.model.v1_1.Decision;
 import org.kie.dmn.model.v1_1.DecisionRule;
 import org.kie.dmn.model.v1_1.DecisionService;
-import org.kie.dmn.model.v1_1.DecisionServices;
 import org.kie.dmn.model.v1_1.DecisionTable;
 import org.kie.dmn.model.v1_1.Definitions;
 import org.kie.dmn.model.v1_1.ElementCollection;
@@ -123,8 +122,6 @@ public class XStreamMarshaller
     
     public static void configureQNameMap( QNameMap qmap ) {
         qmap.setDefaultNamespace("http://www.omg.org/spec/DMN/20151101/dmn.xsd");
-        qmap.registerMapping(new QName(DMNModelInstrumentedBase.URI_KIE, "decisionServices", "drools"), "decisionServices");
-
     }
 
     public XStreamMarshaller() {
@@ -256,7 +253,6 @@ public class XStreamMarshaller
         xStream.alias("decisionOwned", DMNElementReference.class );
         xStream.alias("decisionOwner", DMNElementReference.class );
         xStream.alias("decisionService", DecisionService.class );
-        xStream.alias("decisionServices", DecisionServices.class);
         xStream.alias("decisionTable", DecisionTable.class );
         xStream.alias("defaultOutputEntry", LiteralExpression.class );
         xStream.alias("definitions", Definitions.class );
@@ -348,7 +344,6 @@ public class XStreamMarshaller
         xStream.registerConverter(new DecisionConverter( xStream ) );
         xStream.registerConverter(new DecisionRuleConverter( xStream ) );
         xStream.registerConverter(new DecisionServiceConverter(xStream));
-        xStream.registerConverter(new DecisionServicesConverter(xStream));
         xStream.registerConverter(new DecisionTableConverter( xStream ) );
         xStream.registerConverter(new DefinitionsConverter( xStream ) );
         xStream.registerConverter(new DMNElementReferenceConverter( xStream ) );

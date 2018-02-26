@@ -17,6 +17,7 @@ package org.kie.dmn.model.v1_1;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Definitions extends NamedElement {
 
@@ -82,6 +83,12 @@ public class Definitions extends NamedElement {
     public List<DecisionService> getDecisionService() {
         if ( decisionService == null ) {
             decisionService = new ArrayList<>();
+            // as DMN1.1 xsd is broken to allow proper persistence of DecisionService, do fetch them from extensions.
+            List<DecisionService> collectDS = getExtensionElements().getAny().stream()
+                                                                    .filter(DecisionServices.class::isInstance).map(DecisionServices.class::cast)
+                                                                    .flatMap(dss -> dss.getDecisionService().stream())
+                                                                    .collect(Collectors.toList());
+            decisionService.addAll(collectDS);
         }
         return this.decisionService;
     }

@@ -37,7 +37,6 @@ public class DefinitionsConverter
     public static final String ARTIFACT = "artifact";
     public static final String ELEMENT_COLLECTION = "elementCollection";
     public static final String BUSINESS_CONTEXT_ELEMENT = "businessContextElement";
-    public static final String DECISION_SERVICE = "decisionService";
 
     public DefinitionsConverter(XStream xstream) {
         super( xstream );
@@ -56,14 +55,6 @@ public class DefinitionsConverter
             def.getItemDefinition().add((ItemDefinition) child);
         } else if (child instanceof DRGElement) {
             def.getDrgElement().add( (DRGElement) child );
-        } else if (child instanceof DMNElement.ExtensionElements) {
-            DMNElement.ExtensionElements extensions = (DMNElement.ExtensionElements) child;
-            for (Object any : extensions.getAny()) {
-                if (any instanceof DecisionServices) {
-                    def.getDecisionService().addAll(((DecisionServices) any).getDecisionService());
-                }
-            }
-            super.assignChildElement(def, nodeName, child);
         } else if (child instanceof Artifact) {
             def.getArtifact().add((Artifact) child);
         } else if (ELEMENT_COLLECTION.equals(nodeName)) {
