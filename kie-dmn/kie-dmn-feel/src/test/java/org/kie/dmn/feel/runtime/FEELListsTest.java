@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+
 import org.junit.runners.Parameterized;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
@@ -57,10 +58,6 @@ public class FEELListsTest extends BaseFEELTest {
                 {"[1, 2, 3, 4][item > 5]", Collections.emptyList(), null },
                 {"[ {x:1, y:2}, {x:2, y:3} ][x = 1]", Arrays.asList( new HashMap<String, Object>() {{ put("x", BigDecimal.valueOf( 1 )); put("y", BigDecimal.valueOf( 2 ));}} ), null },
                 {"[ {x:1, y:2}, {x:2, y:3} ][x > 1]", Arrays.asList( new HashMap<String, Object>() {
-                    {
-                        put("x", BigDecimal.valueOf( 1 ));
-                        put("y", BigDecimal.valueOf( 2 ));
-                    }
                     {
                         put("x", BigDecimal.valueOf( 2 ));
                         put("y", BigDecimal.valueOf( 3 ));
