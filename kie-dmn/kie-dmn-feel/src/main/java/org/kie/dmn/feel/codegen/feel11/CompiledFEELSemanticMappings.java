@@ -138,6 +138,20 @@ public class CompiledFEELSemanticMappings {
         return EvalHelper.isEqual(left, right, null);
     }
 
+    public static Boolean between(Object val, Object s, Object e) {
+        if (!val.getClass().isAssignableFrom(s.getClass())) {
+            // TODO here in the original code "interpreted" there was an error reporting utility.
+            return null;
+        }
+
+        if (!val.getClass().isAssignableFrom(e.getClass())) {
+            // TODO here in the original code "interpreted" there was an error reporting utility.
+            return null;
+        }
+
+        return gte(val, s) && lte(val, e);
+    }
+
     /**
      * FEEL spec Table 39
      */

@@ -399,10 +399,18 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         }
     }
 
-//    @Override
-//    public DirectCompilerResult visitRelExpressionBetween(FEEL_1_1Parser.RelExpressionBetweenContext ctx) {
-//        throw new UnsupportedOperationException("TODO"); // TODO
-//    }
+    @Override
+    public DirectCompilerResult visitRelExpressionBetween(FEEL_1_1Parser.RelExpressionBetweenContext ctx) {
+        DirectCompilerResult value = visit(ctx.val);
+        DirectCompilerResult start = visit(ctx.start);
+        DirectCompilerResult end = visit(ctx.end);
+        MethodCallExpr betweenCall = new MethodCallExpr(null, "between");
+        betweenCall.addArgument(value.getExpression());
+        betweenCall.addArgument(start.getExpression());
+        betweenCall.addArgument(end.getExpression());
+        Expression result = groundToNullIfAnyIsNull(betweenCall, value.getExpression(), start.getExpression(), end.getExpression());
+        return DirectCompilerResult.of(result, BuiltInType.BOOLEAN).withFD(value).withFD(start).withFD(end);
+    }
 
     /**
      * NOTE: technically this rule of the grammar does not have an equivalent Java expression (or a valid FEEL expression) per-se.
