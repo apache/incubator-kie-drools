@@ -71,7 +71,12 @@ import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.models.guided.dtable.shared.model.RowNumberCol52;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 public class GuidedDTDRLPersistenceTest {
 
@@ -2638,7 +2643,8 @@ public class GuidedDTDRLPersistenceTest {
 
         dt.setData( DataUtilities.makeDataLists( new Object[][]{
                 new Object[]{ 1l, "desc", "Pupa, Brains", "55, 66" },
-                new Object[]{ 2l, "desc", "", "" }
+                new Object[]{ 2l, "desc", "", "" },
+                new Object[]{ 2l, "desc", "A, \"B, C\"", "" }
         } ) );
 
         GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
@@ -2651,6 +2657,9 @@ public class GuidedDTDRLPersistenceTest {
         index = drl.indexOf( "Smurf( )",
                              index + 1 );
         assertFalse( index > -1 );
+
+        index = drl.indexOf( "Smurf( name in ( \"A\", \"B, C\" ) )" );
+        assertTrue( index > -1 );
     }
 
     @Test
