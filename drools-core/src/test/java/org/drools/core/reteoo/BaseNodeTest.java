@@ -82,10 +82,5 @@ public class BaseNodeTest {
         public short getType() {
             return 0;
         }
-
-        @Override
-        protected boolean internalEquals( Object object ) {
-            return false;
-        }
     }
 }

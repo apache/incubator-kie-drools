@@ -127,11 +127,10 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
 
     @Override
     public boolean equals(final Object object) {
-        return this == object || internalEquals( object );
-    }
+        if (this == object) {
+            return true;
+        }
 
-    @Override
-    protected boolean internalEquals( Object object ) {
         if ( object == null || !(object instanceof QueryTerminalNode) || this.hashCode() != object.hashCode() ) {
             return false;
         }

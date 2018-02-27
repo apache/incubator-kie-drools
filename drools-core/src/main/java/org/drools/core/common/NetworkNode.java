@@ -55,6 +55,4 @@ public interface NetworkNode
     int getAssociationsSize( Rule rule );
 
     boolean isAssociatedWith( Rule rule );
-
-    boolean thisNodeEquals(final Object object);
 }

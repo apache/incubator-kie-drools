@@ -234,13 +234,12 @@ public class RightInputAdapterNode extends ObjectSource
 
     @Override
     public boolean equals(Object object) {
-        return this == object ||
-               ( internalEquals( object ) && this.tupleSource.thisNodeEquals( ((RightInputAdapterNode)object).tupleSource ) );
-    }
+        if (this == object) {
+            return true;
+        }
 
-    @Override
-    protected boolean internalEquals( Object object ) {
         return object instanceof RightInputAdapterNode && this.hashCode() == object.hashCode() &&
+               this.tupleSource.getId() == ((RightInputAdapterNode)object).tupleSource.getId() &&
                this.tupleMemoryEnabled == ( (RightInputAdapterNode) object ).tupleMemoryEnabled;
     }
 

@@ -172,9 +172,4 @@ public class MockLeftTupleSink extends LeftTupleSource
     public LeftTuple createPeer(LeftTuple original) {
         return null;
     }
-
-    @Override
-    protected boolean internalEquals( Object object ) {
-        return false;
-    }
 }

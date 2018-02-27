@@ -134,18 +134,20 @@ public class TimerNode extends LeftTupleSource
         return hash;
     }
 
-    public boolean equals(final Object object) {
-        return this == object ||
-               ( internalEquals( object ) && this.leftInput.thisNodeEquals(((TimerNode)object).leftInput) );
-    }
-
     @Override
-    protected boolean internalEquals( Object object ) {
+    public boolean equals(final Object object) {
+        if (this == object) {
+            return true;
+        }
+
         if ( object == null || !(object instanceof TimerNode) || this.hashCode() != object.hashCode() ) {
             return false;
         }
 
         TimerNode other = (TimerNode) object;
+        if (this.leftInput.getId() != other.leftInput.getId()) {
+            return false;
+        }
         if (calendarNames != null) {
             if (other.getCalendarNames() == null || other.getCalendarNames().length != calendarNames.length) {
                 return false;
