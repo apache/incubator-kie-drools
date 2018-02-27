@@ -33,6 +33,7 @@ public class Talk extends AbstractPersistable {
     private List<Speaker> speakerList;
     private Set<String> themeTrackTagSet;
     private Set<String> sectorTagSet;
+    private String audienceType;
     private int audienceLevel;
     private Set<String> contentTagSet;
     private String language;
@@ -271,6 +272,14 @@ public class Talk extends AbstractPersistable {
 
     public void setSectorTagSet(Set<String> sectorTagSet) {
         this.sectorTagSet = sectorTagSet;
+    }
+
+    public String getAudienceType() {
+        return audienceType;
+    }
+
+    public void setAudienceType(String audienceType) {
+        this.audienceType = audienceType;
     }
 
     public int getAudienceLevel() {

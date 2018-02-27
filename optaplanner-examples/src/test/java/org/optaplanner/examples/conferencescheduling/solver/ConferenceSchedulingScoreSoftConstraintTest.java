@@ -38,7 +38,8 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
                 .withPreferredTimeslotTagSet(Collections.emptySet())
                 .withProhibitedTimeslotTagSet(Collections.emptySet())
                 .withUndesiredTimeslotTagSet(Collections.emptySet())
-                .withSectorTagSet(Collections.emptySet());
+                .withSectorTagSet(Collections.emptySet())
+                .withContentTagSet(Collections.emptySet());
         Talk talk2 = new Talk(2L)
                 .withTalkType(talkType)
                 .withSpeakerList(Collections.emptyList())
@@ -46,7 +47,8 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
                 .withPreferredTimeslotTagSet(Collections.emptySet())
                 .withProhibitedTimeslotTagSet(Collections.emptySet())
                 .withUndesiredTimeslotTagSet(Collections.emptySet())
-                .withSectorTagSet(Collections.emptySet());
+                .withSectorTagSet(Collections.emptySet())
+                .withContentTagSet(Collections.emptySet());
         LocalDateTime start1 = LocalDateTime.of(2018, 1, 1, 9, 0);
         LocalDateTime end1 = LocalDateTime.of(2018, 1, 1, 10, 0);
         LocalDateTime start2 = LocalDateTime.of(2018, 1, 1, 9, 30);
@@ -107,7 +109,8 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
                 .withProhibitedTimeslotTagSet(Collections.emptySet())
                 .withUndesiredTimeslotTagSet(Collections.emptySet())
                 .withThemeTrackTagSet(Collections.emptySet())
-                .withSectorTagSet(Collections.emptySet());
+                .withSectorTagSet(Collections.emptySet())
+                .withContentTagSet(Collections.emptySet());
         Talk talk2 = new Talk(2L)
                 .withTalkType(talkType)
                 .withSpeakerList(Collections.emptyList())
@@ -116,7 +119,8 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
                 .withProhibitedTimeslotTagSet(Collections.emptySet())
                 .withUndesiredTimeslotTagSet(Collections.emptySet())
                 .withThemeTrackTagSet(Collections.emptySet())
-                .withSectorTagSet(Collections.emptySet());
+                .withSectorTagSet(Collections.emptySet())
+                .withContentTagSet(Collections.emptySet());
         LocalDateTime start1 = LocalDateTime.of(2018, 1, 1, 9, 0);
         LocalDateTime end1 = LocalDateTime.of(2018, 1, 1, 10, 0);
         LocalDateTime start2 = LocalDateTime.of(2018, 1, 1, 9, 30);
@@ -190,7 +194,8 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
                 .withPreferredRoomTagSet(Collections.emptySet())
                 .withRequiredRoomTagSet(Collections.emptySet())
                 .withThemeTrackTagSet(Collections.emptySet())
-                .withSectorTagSet(Collections.emptySet());
+                .withSectorTagSet(Collections.emptySet())
+                .withContentTagSet(Collections.emptySet());
         Talk talk2 = new Talk(2L)
                 .withTalkType(talkType)
                 .withSpeakerList(Collections.emptyList())
@@ -201,7 +206,8 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
                 .withPreferredRoomTagSet(Collections.emptySet())
                 .withRequiredRoomTagSet(Collections.emptySet())
                 .withThemeTrackTagSet(Collections.emptySet())
-                .withSectorTagSet(Collections.emptySet());
+                .withSectorTagSet(Collections.emptySet())
+                .withContentTagSet(Collections.emptySet());
         ConferenceSolution solution = new ConferenceSolution(1L)
                 .withParametrization(parametrization)
                 .withTalkList(Arrays.asList(talk1, talk2))

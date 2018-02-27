@@ -163,17 +163,33 @@ rule "Sector conflict"
         scoreHolder.addSoftConstraintMatch(kcontext, - $weight * $rightTalk.overlappingSectorCount($leftTalk));
 end
 
-rule "Content audience level flow violation"
+rule "Audience type diversity"
     when
-        ConferenceParametrization($weight : contentAudienceLevelFlowViolation != 0)
-        $leftTalk : Talk(timeslot != null, $timeslot : timeslot,
-                $audienceLevel : audienceLevel)
-        $rightTalk : Talk(timeslot != null,
-                overlappingContentCount($leftTalk) > 0,
-                audienceLevel < $audienceLevel,
-                !timeslot.endsBefore($timeslot))
+        ConferenceParametrization($weight : audienceTypeDiversity != 0)
+        Talk(timeslot != null, $timeslot : timeslot,
+                $audienceType : audienceType,
+                $leftId : id)
+        // Timeslot.overlaps() is deliberately not used
+        Talk(timeslot == $timeslot,
+                audienceType != $audienceType,
+                id > $leftId)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, - $weight * $rightTalk.overlappingContentCount($leftTalk));
+        scoreHolder.addSoftConstraintMatch(kcontext, $weight);
+end
+
+rule "Audience type theme track conflict"
+    when
+        ConferenceParametrization($weight : themeTrackConflict != 0)
+        $leftTalk : Talk(timeslot != null, $timeslot : timeslot,
+                $audienceType : audienceType,
+                $leftId : id)
+        $rightTalk : Talk(timeslot != null,
+                audienceType == $audienceType,
+                overlappingThemeTrackCount($leftTalk) > 0,
+                getTimeslot().overlaps($timeslot),
+                id > $leftId)
+    then
+        scoreHolder.addSoftConstraintMatch(kcontext, - $weight * $rightTalk.overlappingThemeTrackCount($leftTalk));
 end
 
 rule "Audience level diversity"
@@ -188,6 +204,32 @@ rule "Audience level diversity"
                 id > $leftId)
     then
         scoreHolder.addSoftConstraintMatch(kcontext, $weight);
+end
+
+rule "Audience level flow per content violation"
+    when
+        ConferenceParametrization($weight : audienceLevelFlowPerContentViolation != 0)
+        $leftTalk : Talk(timeslot != null, $timeslot : timeslot,
+                $audienceLevel : audienceLevel)
+        $rightTalk : Talk(timeslot != null,
+                overlappingContentCount($leftTalk) > 0,
+                audienceLevel < $audienceLevel,
+                !timeslot.endsBefore($timeslot))
+    then
+        scoreHolder.addSoftConstraintMatch(kcontext, - $weight * $rightTalk.overlappingContentCount($leftTalk));
+end
+
+rule "Content conflict"
+    when
+        ConferenceParametrization($weight : contentConflict != 0)
+        $leftTalk : Talk(timeslot != null, $timeslot : timeslot,
+                $leftId : id)
+        $rightTalk : Talk(timeslot != null,
+                overlappingContentCount($leftTalk) > 0,
+                getTimeslot().overlaps($timeslot),
+                id > $leftId)
+    then
+        scoreHolder.addSoftConstraintMatch(kcontext, - $weight * $rightTalk.overlappingContentCount($leftTalk));
 end
 
 rule "Language diversity"

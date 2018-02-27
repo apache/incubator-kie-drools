@@ -83,9 +83,9 @@ import static org.optaplanner.examples.conferencescheduling.domain.ConferencePar
 
 public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<ConferenceSolution> {
 
-    protected static final Pattern VALID_TAG_PATTERN = Pattern.compile("(?U)^[\\w\\d _&\\-\\.\\(\\)]+$");
+    protected static final Pattern VALID_TAG_PATTERN = Pattern.compile("(?U)^[\\w&\\-\\.\\(\\)][\\w &\\-\\.\\(\\)]*[\\w&\\-\\.\\(\\)]?$");
     protected static final Pattern VALID_NAME_PATTERN = VALID_TAG_PATTERN;
-    protected static final Pattern VALID_CODE_PATTERN = Pattern.compile("(?U)^[\\w\\d_\\-\\.\\(\\)]+$");
+    protected static final Pattern VALID_CODE_PATTERN = Pattern.compile("(?U)^[\\w\\-\\.\\(\\)]+$");
 
     protected static final DateTimeFormatter DAY_FORMATTER
             = DateTimeFormatter.ofPattern("E yyyy-MM-dd", Locale.ENGLISH);
@@ -166,10 +166,16 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                     "Soft penalty per common theme track of 2 talks that have an overlapping timeslot");
             readConstraintLine(SECTOR_CONFLICT, parametrization::setSectorConflict,
                     "Soft penalty per common sector of 2 talks that have an overlapping timeslot");
-            readConstraintLine(CONTENT_AUDIENCE_LEVEL_FLOW_VIOLATION, parametrization::setContentAudienceLevelFlowViolation,
-                    "Soft penalty per common content of 2 talks with a different audience level for which the easier talk isn't scheduled earlier than the other talk");
+            readConstraintLine(AUDIENCE_TYPE_DIVERSITY, parametrization::setAudienceTypeDiversity,
+                    "Soft reward per 2 talks that have the same timeslot and a different audience type");
+            readConstraintLine(AUDIENCE_TYPE_THEME_TRACK_CONFLICT, parametrization::setAudienceTypeThemeTrackConflict,
+                    "Soft penalty per 2 talks that have a common audience type, have a common theme track and have an overlapping timeslot");
             readConstraintLine(AUDIENCE_LEVEL_DIVERSITY, parametrization::setAudienceLevelDiversity,
                     "Soft reward per 2 talks that have the same timeslot and a different audience level");
+            readConstraintLine(AUDIENCE_LEVEL_FLOW_PER_CONTENT_VIOLATION, parametrization::setAudienceLevelFlowPerContentViolation,
+                    "Soft penalty per common content of 2 talks with a different audience level for which the easier talk isn't scheduled earlier than the other talk");
+            readConstraintLine(CONTENT_CONFLICT, parametrization::setContentConflict,
+                    "Soft penalty per common content of 2 talks that have an overlapping timeslot");
             readConstraintLine(LANGUAGE_DIVERSITY, parametrization::setLanguageDiversity,
                     "Soft reward per 2 talks that have the same timeslot and a different language");
             readConstraintLine(SPEAKER_PREFERRED_TIMESLOT_TAG, parametrization::setSpeakerPreferredTimeslotTag,
@@ -188,7 +194,32 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                     "Soft penalty per missing preferred tag in a talk's room");
             readConstraintLine(TALK_UNDESIRED_ROOM_TAG, parametrization::setTalkUndesiredRoomTag,
                     "Soft penalty per undesired tag in a talk's room");
-            // TODO Read hard constraints too, not done for now for backwards compatibility of xlsx file
+            readConstraintLine(TALK_TYPE_OF_TIMESLOT, null,
+                    "Hard penalty per talk in a timeslot with an other talk type");
+            readConstraintLine(ROOM_UNAVAILABLE_TIMESLOT, null,
+                    "Hard penalty per talk with an unavailable room at its timeslot");
+            readConstraintLine(ROOM_CONFLICT, null,
+                    "Hard penalty per pair of talks in the same room in overlapping timeslots");
+            readConstraintLine(SPEAKER_UNAVAILABLE_TIMESLOT, null,
+                    "Hard penalty per talk with an unavailable speaker at its timeslot");
+            readConstraintLine(SPEAKER_CONFLICT, null,
+                    "Hard penalty per pair of talks with the same speaker in overlapping timeslots");
+            readConstraintLine(SPEAKER_REQUIRED_TIMESLOT_TAG, null,
+                    "Hard penalty per missing required tag in a talk's timeslot");
+            readConstraintLine(SPEAKER_PROHIBITED_TIMESLOT_TAG, null,
+                    "Hard penalty per prohibited tag in a talk's timeslot");
+            readConstraintLine(TALK_REQUIRED_TIMESLOT_TAG, null,
+                    "Hard penalty per missing required tag in a talk's timeslot");
+            readConstraintLine(TALK_PROHIBITED_TIMESLOT_TAG, null,
+                    "Hard penalty per prohibited tag in a talk's timeslot");
+            readConstraintLine(SPEAKER_REQUIRED_ROOM_TAG, null,
+                    "Hard penalty per missing required tag in a talk's room");
+            readConstraintLine(SPEAKER_PROHIBITED_ROOM_TAG, null,
+                    "Hard penalty per prohibited tag in a talk's room");
+            readConstraintLine(TALK_REQUIRED_ROOM_TAG, null,
+                    "Hard penalty per missing required tag in a talk's room");
+            readConstraintLine(TALK_PROHIBITED_ROOM_TAG, null,
+                    "Hard penalty per prohibited tag in a talk's room");
             solution.setParametrization(parametrization);
         }
 
@@ -388,6 +419,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             readHeaderCell("Speakers");
             readHeaderCell("Theme track tags");
             readHeaderCell("Sector tags");
+            readHeaderCell("Audience type");
             readHeaderCell("Audience level");
             readHeaderCell("Content tags");
             readHeaderCell("Language");
@@ -451,6 +483,12 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                                 + ") must match to the regular expression (" + VALID_TAG_PATTERN + ").");
                     }
                 }
+                String audienceType = nextCell().getStringCellValue();
+                if (!VALID_TAG_PATTERN.matcher(audienceType).matches()) {
+                    throw new IllegalStateException(currentPosition() + ": The talk (" + talk + ")'s audience type (" + audienceType
+                            + ") must match to the regular expression (" + VALID_TAG_PATTERN + ").");
+                }
+                talk.setAudienceType(audienceType);
                 double audienceLevelDouble = nextCell().getNumericCellValue();
                 if (audienceLevelDouble <= 0 || audienceLevelDouble != Math.floor(audienceLevelDouble)) {
                     throw new IllegalStateException(currentPosition() + ": The talk with code (" + talk.getCode()
@@ -721,6 +759,8 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             writeSpeakersView();
             writeThemeTracksView();
             writeSectorsView();
+            writeAudienceTypeView();
+            writeAudienceLevelView();
             writeContentsView();
             return workbook;
         }
@@ -765,10 +805,16 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                     "Soft penalty per common theme track of 2 talks that have an overlapping timeslot");
             writeConstraintLine(SECTOR_CONFLICT, parametrization::getSectorConflict,
                     "Soft penalty per common sector of 2 talks that have an overlapping timeslot");
-            writeConstraintLine(CONTENT_AUDIENCE_LEVEL_FLOW_VIOLATION, parametrization::getContentAudienceLevelFlowViolation,
-                    "Soft penalty per common content of 2 talks with a different audience level for which the easier talk isn't scheduled earlier than the other talk");
+            writeConstraintLine(AUDIENCE_TYPE_DIVERSITY, parametrization::getAudienceTypeDiversity,
+                    "Soft reward per 2 talks that have the same timeslot and a different audience type");
+            writeConstraintLine(AUDIENCE_TYPE_THEME_TRACK_CONFLICT, parametrization::getAudienceTypeThemeTrackConflict,
+                    "Soft penalty per 2 talks that have a common audience type, have a common theme track and have an overlapping timeslot");
             writeConstraintLine(AUDIENCE_LEVEL_DIVERSITY, parametrization::getAudienceLevelDiversity,
                     "Soft reward per 2 talks that have the same timeslot and a different audience level");
+            writeConstraintLine(AUDIENCE_LEVEL_FLOW_PER_CONTENT_VIOLATION, parametrization::getAudienceLevelFlowPerContentViolation,
+                    "Soft penalty per common content of 2 talks with a different audience level for which the easier talk isn't scheduled earlier than the other talk");
+            writeConstraintLine(CONTENT_CONFLICT, parametrization::getContentConflict,
+                    "Soft penalty per common content of 2 talks that have an overlapping timeslot");
             writeConstraintLine(LANGUAGE_DIVERSITY, parametrization::getLanguageDiversity,
                     "Soft reward per 2 talks that have the same timeslot and a different language");
             writeConstraintLine(SPEAKER_PREFERRED_TIMESLOT_TAG, parametrization::getSpeakerPreferredTimeslotTag,
@@ -923,6 +969,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             nextHeaderCell("Speakers");
             nextHeaderCell("Theme track tags");
             nextHeaderCell("Sector tags");
+            nextHeaderCell("Audience type");
             nextHeaderCell("Audience level");
             nextHeaderCell("Content tags");
             nextHeaderCell("Language");
@@ -948,6 +995,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                         .stream().map(Speaker::getName).collect(joining(", ")));
                 nextCell().setCellValue(String.join(", ", talk.getThemeTrackTagSet()));
                 nextCell().setCellValue(String.join(", ", talk.getSectorTagSet()));
+                nextCell().setCellValue(talk.getAudienceType());
                 nextCell().setCellValue(talk.getAudienceLevel());
                 nextCell().setCellValue(String.join(", ", talk.getContentTagSet()));
                 nextCell().setCellValue(talk.getLanguage());
@@ -978,7 +1026,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             writeTimeslotHoursHeaders();
             for (Room room : solution.getRoomList()) {
                 nextRow();
-                currentRow.setHeightInPoints(2 * currentSheet.getDefaultRowHeightInPoints());
+                currentRow.setHeightInPoints(4 * currentSheet.getDefaultRowHeightInPoints());
                 nextCell().setCellValue(room.getName());
                 List<Talk> roomTalkList = solution.getTalkList().stream()
                         .filter(talk -> talk.getRoom() == room)
@@ -987,7 +1035,8 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                     List<Talk> talkList = roomTalkList.stream()
                             .filter(talk -> talk.getTimeslot() == timeslot).collect(toList());
                     boolean unavailable = room.getUnavailableTimeslotSet().contains(timeslot);
-                    nextTalkListCell(unavailable, talkList, talk -> talk.getCode() + ": " + talk.getTitle());
+                    nextTalkListCell(unavailable, talkList, talk -> talk.getCode() + ": " + talk.getTitle() + "\n  "
+                            + talk.getSpeakerList().stream().map(Speaker::getName).collect(joining(", ")));
                 }
             }
             currentSheet.autoSizeColumn(0);
@@ -1063,6 +1112,56 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             for (Map.Entry<String, Map<Timeslot, List<Talk>>> entry : tagToTimeslotToTalkListMap.entrySet()) {
                 nextRow();
                 nextHeaderCell(entry.getKey());
+                Map<Timeslot, List<Talk>> timeslotToTalkListMap = entry.getValue();
+                for (Timeslot timeslot : solution.getTimeslotList()) {
+                    List<Talk> talkList = timeslotToTalkListMap.get(timeslot);
+                    nextTalkListCell(talkList);
+                }
+            }
+            autoSizeColumnsWithHeader();
+        }
+
+        private void writeAudienceTypeView() {
+            nextSheet("Audience type view", 1, 2, true);
+            nextRow();
+            nextHeaderCell("");
+            writeTimeslotDaysHeaders();
+            nextRow();
+            nextHeaderCell("Audience type");
+            writeTimeslotHoursHeaders();
+
+            Map<String, Map<Timeslot, List<Talk>>> tagToTimeslotToTalkListMap = solution.getTalkList().stream()
+                    .filter(talk -> talk.getTimeslot() != null)
+                    .map(talk -> Pair.of(talk.getAudienceType(), Pair.of(talk.getTimeslot(), talk)))
+                    .collect(groupingBy(Pair::getLeft, groupingBy(o -> o.getRight().getLeft(), mapping(o -> o.getRight().getRight(), toList()))));
+            for (Map.Entry<String, Map<Timeslot, List<Talk>>> entry : tagToTimeslotToTalkListMap.entrySet()) {
+                nextRow();
+                nextHeaderCell(entry.getKey());
+                Map<Timeslot, List<Talk>> timeslotToTalkListMap = entry.getValue();
+                for (Timeslot timeslot : solution.getTimeslotList()) {
+                    List<Talk> talkList = timeslotToTalkListMap.get(timeslot);
+                    nextTalkListCell(talkList);
+                }
+            }
+            autoSizeColumnsWithHeader();
+        }
+
+        private void writeAudienceLevelView() {
+            nextSheet("Audience level view", 1, 2, true);
+            nextRow();
+            nextHeaderCell("");
+            writeTimeslotDaysHeaders();
+            nextRow();
+            nextHeaderCell("Audience level");
+            writeTimeslotHoursHeaders();
+
+            Map<Integer, Map<Timeslot, List<Talk>>> tagToTimeslotToTalkListMap = solution.getTalkList().stream()
+                    .filter(talk -> talk.getTimeslot() != null)
+                    .map(talk -> Pair.of(talk.getAudienceLevel(), Pair.of(talk.getTimeslot(), talk)))
+                    .collect(groupingBy(Pair::getLeft, groupingBy(o -> o.getRight().getLeft(), mapping(o -> o.getRight().getRight(), toList()))));
+            for (Map.Entry<Integer, Map<Timeslot, List<Talk>>> entry : tagToTimeslotToTalkListMap.entrySet()) {
+                nextRow();
+                nextHeaderCell(Integer.toString(entry.getKey()));
                 Map<Timeslot, List<Talk>> timeslotToTalkListMap = entry.getValue();
                 for (Timeslot timeslot : solution.getTimeslotList()) {
                     List<Talk> talkList = timeslotToTalkListMap.get(timeslot);
@@ -1150,11 +1249,11 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
         }
 
         protected void nextTalkListCell(List<Talk> talkList) {
-            nextTalkListCell(false, talkList, Talk::getCode);
+            nextTalkListCell(false, talkList);
         }
 
         protected void nextTalkListCell(boolean unavailable, List<Talk> talkList) {
-            nextTalkListCell(unavailable, talkList, Talk::getCode);
+            nextTalkListCell(unavailable, talkList, talk -> talk.getCode() + " @ " + talk.getRoom().getName());
         }
 
         protected void nextTalkListCell(List<Talk> talkList, Function<Talk, String> stringFunction) {

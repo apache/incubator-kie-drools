@@ -36,8 +36,11 @@ public class ConferenceParametrization extends AbstractPersistable {
 
     public static final String THEME_TRACK_CONFLICT = "Theme track conflict";
     public static final String SECTOR_CONFLICT = "Sector conflict";
-    public static final String CONTENT_AUDIENCE_LEVEL_FLOW_VIOLATION = "Content audience level flow violation";
+    public static final String AUDIENCE_TYPE_DIVERSITY = "Audience type diversity";
+    public static final String AUDIENCE_TYPE_THEME_TRACK_CONFLICT = "Audience type theme track conflict";
     public static final String AUDIENCE_LEVEL_DIVERSITY = "Audience level diversity";
+    public static final String AUDIENCE_LEVEL_FLOW_PER_CONTENT_VIOLATION = "Audience level flow per content violation";
+    public static final String CONTENT_CONFLICT = "Content conflict";
     public static final String LANGUAGE_DIVERSITY = "Language diversity";
     public static final String SPEAKER_PREFERRED_TIMESLOT_TAG = "Speaker preferred timeslot tag";
     public static final String SPEAKER_UNDESIRED_TIMESLOT_TAG = "Speaker undesired timeslot tag";
@@ -50,8 +53,11 @@ public class ConferenceParametrization extends AbstractPersistable {
 
     private int themeTrackConflict = 10;
     private int sectorConflict = 10;
-    private int contentAudienceLevelFlowViolation = 10;
+    private int audienceTypeDiversity = 0;
+    private int audienceTypeThemeTrackConflict = 0;
     private int audienceLevelDiversity = 0;
+    private int audienceLevelFlowPerContentViolation = 10;
+    private int contentConflict = 10;
     private int languageDiversity = 10;
     private int speakerPreferredTimeslotTag = 10;
     private int speakerUndesiredTimeslotTag = 10;
@@ -89,12 +95,20 @@ public class ConferenceParametrization extends AbstractPersistable {
         this.sectorConflict = sectorConflict;
     }
 
-    public int getContentAudienceLevelFlowViolation() {
-        return contentAudienceLevelFlowViolation;
+    public int getAudienceTypeDiversity() {
+        return audienceTypeDiversity;
     }
 
-    public void setContentAudienceLevelFlowViolation(int contentAudienceLevelFlowViolation) {
-        this.contentAudienceLevelFlowViolation = contentAudienceLevelFlowViolation;
+    public void setAudienceTypeDiversity(int audienceTypeDiversity) {
+        this.audienceTypeDiversity = audienceTypeDiversity;
+    }
+
+    public int getAudienceTypeThemeTrackConflict() {
+        return audienceTypeThemeTrackConflict;
+    }
+
+    public void setAudienceTypeThemeTrackConflict(int audienceTypeThemeTrackConflict) {
+        this.audienceTypeThemeTrackConflict = audienceTypeThemeTrackConflict;
     }
 
     public int getAudienceLevelDiversity() {
@@ -103,6 +117,22 @@ public class ConferenceParametrization extends AbstractPersistable {
 
     public void setAudienceLevelDiversity(int audienceLevelDiversity) {
         this.audienceLevelDiversity = audienceLevelDiversity;
+    }
+
+    public int getAudienceLevelFlowPerContentViolation() {
+        return audienceLevelFlowPerContentViolation;
+    }
+
+    public void setAudienceLevelFlowPerContentViolation(int audienceLevelFlowPerContentViolation) {
+        this.audienceLevelFlowPerContentViolation = audienceLevelFlowPerContentViolation;
+    }
+
+    public int getContentConflict() {
+        return contentConflict;
+    }
+
+    public void setContentConflict(int contentConflict) {
+        this.contentConflict = contentConflict;
     }
 
     public int getLanguageDiversity() {
