@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.util.EvalHelper;
 
 public class CompiledFEELSupport {
     
@@ -124,6 +125,51 @@ public class CompiledFEELSupport {
                 // TODO report error.
                 return null;
             }
+        }
+    }
+
+    public static PathBuilder path(EvaluationContext ctx, Object value) {
+        return new PathBuilder(ctx, value);
+    }
+
+    public static class PathBuilder {
+
+        private EvaluationContext ctx;
+        private Object o;
+
+        public PathBuilder(EvaluationContext evaluationContext, Object value) {
+            this.ctx = evaluationContext;
+            this.o = value;
+        }
+
+        public Object with(final String... names) {
+            if (o instanceof List) {
+                List list = (List) o;
+                // list of contexts/elements as defined in the spec, page 114
+                List results = new ArrayList();
+                for (Object element : list) {
+                    Object r = fetchValue(element, names);
+                    if (r != null) {
+                        results.add(r);
+                    }
+                }
+                return results;
+            } else {
+                return fetchValue(o, names);
+            }
+        }
+
+        private Object fetchValue(final Object o, final String... names) {
+            Object result = o;
+            for (String nr : names) {
+                result = EvalHelper.getDefinedValue(result, nr)
+                                   .getValueResult()
+                                   .cata(err -> {
+                                       //TODO report error in ctx.
+                                       return null;
+                                   }, Function.identity());
+            }
+            return result;
         }
     }
 }

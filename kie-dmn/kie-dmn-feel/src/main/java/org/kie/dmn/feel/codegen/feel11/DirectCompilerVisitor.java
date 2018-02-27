@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.github.javaparser.JavaParser;
@@ -780,15 +781,11 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
 
     @Override
     public DirectCompilerResult visitQualifiedName(FEEL_1_1Parser.QualifiedNameContext ctx) {
-        List<NameRefContext> names = ctx.nameRef();
-        DirectCompilerResult nameRef0 = visitNameRef(names.get(0));
-        return telescopeAccessOnScope(nameRef0, names.subList(1, names.size()));
-    }
-
-    private DirectCompilerResult telescopeAccessOnScope(DirectCompilerResult scope, List<NameRefContext> names) {
-        Type typeCursor = scope.resultType;
-        Expression exprCursor = scope.getExpression();
-        for (NameRefContext acc : names) {
+        List<NameRefContext> parts = ctx.nameRef();
+        DirectCompilerResult nameRef0 = visit(parts.get(0)); // previously qualifiedName visitor "ingest"-ed directly by calling directly "visitNameRef"
+        Type typeCursor = nameRef0.resultType;
+        Expression exprCursor = nameRef0.getExpression();
+        for (NameRefContext acc : parts.subList(1, parts.size())) {
             String accText = ParserHelper.getOriginalText(acc);
             if (typeCursor instanceof CompositeType) {
                 CompositeType compositeType = (CompositeType) typeCursor;
@@ -864,7 +861,6 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
 //        throw new UnsupportedOperationException("TODO"); // TODO
 //    }
 
-    // this is never directly covered in test because qualifiedName visitor "ingest" it directly.
     @Override
     public DirectCompilerResult visitNameRef(FEEL_1_1Parser.NameRefContext ctx) {
         String nameRefText = ParserHelper.getOriginalText(ctx);
@@ -971,7 +967,8 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
             return DirectCompilerResult.of(filterWithCall, BuiltInType.UNKNOWN).withFD(expr).withFD(filter);
         } else if (ctx.qualifiedName() != null) {
             DirectCompilerResult expr = visit(ctx.filterPathExpression());
-            return telescopeAccessOnScope(expr, ctx.qualifiedName().nameRef()).withFD(expr);
+            List<String> names = ctx.qualifiedName().nameRef().stream().map(nameRefContext -> ParserHelper.getOriginalText(nameRefContext)).collect(Collectors.toList());
+            return telescopePathAccessor(expr, names);
         } else {
             return visit(ctx.unaryExpression());
         }
@@ -983,10 +980,27 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         return expr;
     }
 
-//    @Override
-//    public DirectCompilerResult visitUenpmPrimary(FEEL_1_1Parser.UenpmPrimaryContext ctx) {
-//        throw new UnsupportedOperationException("TODO"); // TODO
-//    }
+    @Override
+    public DirectCompilerResult visitUenpmPrimary(FEEL_1_1Parser.UenpmPrimaryContext ctx) {
+        DirectCompilerResult expr = visit(ctx.primary());
+        if (ctx.qualifiedName() != null) {
+            List<String> names = ctx.qualifiedName().nameRef().stream().map(nameRefContext -> ParserHelper.getOriginalText(nameRefContext)).collect(Collectors.toList());
+            return telescopePathAccessor(expr, names);
+        }
+        return expr;
+    }
+
+    private DirectCompilerResult telescopePathAccessor(DirectCompilerResult scopeExpr, List<String> names) {
+        MethodCallExpr pathCall = new MethodCallExpr(new NameExpr(CompiledFEELSupport.class.getSimpleName()), "path");
+        pathCall.addArgument(new NameExpr("feelExprCtx"));
+        pathCall.addArgument(scopeExpr.getExpression());
+        MethodCallExpr filterPathCall = new MethodCallExpr(pathCall, "with");
+        for (String n : names) {
+            filterPathCall.addArgument(new StringLiteralExpr(n));
+        }
+        // TODO here I could still try to infer the result type.
+        return DirectCompilerResult.of(filterPathCall, BuiltInType.UNKNOWN).withFD(scopeExpr);
+    }
 
     @Override
     public DirectCompilerResult visitCompilation_unit(FEEL_1_1Parser.Compilation_unitContext ctx) {
