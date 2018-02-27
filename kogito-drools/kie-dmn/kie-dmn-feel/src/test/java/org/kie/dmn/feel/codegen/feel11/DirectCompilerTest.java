@@ -252,6 +252,14 @@ public class DirectCompilerTest {
     }
 
     @Test
+    public void test_filterPathSelection() {
+        // Selection
+        assertThat(parseCompileEvaluate("[ {x:1, y:2}, {x:2, y:3} ].y"), is(Arrays.asList(BigDecimal.valueOf(2), BigDecimal.valueOf(3))));
+        assertThat(parseCompileEvaluate("[ {x:1, y:2}, {x:2} ].y"), is(Arrays.asList(BigDecimal.valueOf(2))));
+        assertThat(parseCompileEvaluate("[ {x:1, y:2}, {x:2, y:3} ].z"), is(Collections.emptyList()));
+    }
+
+    @Test
     public void test_contextExpression() {
         assertThat(parseCompileEvaluate("{}"), is(Collections.emptyMap()));
         assertThat(parseCompileEvaluate("{ }"), is(Collections.emptyMap()));
