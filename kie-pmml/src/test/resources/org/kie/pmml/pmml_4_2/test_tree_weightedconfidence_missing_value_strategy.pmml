@@ -37,7 +37,7 @@
         <Node id="T3" score="tgtY" recordCount="40">
           <SimplePredicate field="fld2" operator="greaterOrEqual" value="5.0"/>
           <ScoreDistribution value="tgtX" recordCount="32" confidence="0.8"/>
-          <ScoreDistribution value="tgtY" recordCount="16" confidence="0.2"/>
+          <ScoreDistribution value="tgtY" recordCount="8" confidence="0.2"/>
         </Node>
       </Node>
     </Node>

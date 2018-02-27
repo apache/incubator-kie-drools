@@ -34,6 +34,7 @@ when
                       $out : outcome, $children : children, $count : recordCount, $confs : confidence )
     $tok  : @{context}TreeToken( context == "@{context}", current == $id, visitMode == "WEIGHTED_CONFIDENCE", $res : results )
 
+    $childNodes: java.util.List() from collect( TreeNode( parent == $id ) )
     not @{name}( context == "@{context}" )
 
     accumulate( $sid : String( this memberOf $children ) from $res.keySet(), $keys : collectList( $sid ), $num : count( $sid );
@@ -41,12 +42,34 @@ when
     accumulate( $d : Double() from $confs.values(), $maxConf : max( $d ) )
 then
 //    System.out.println( " \t\t\t\t Before moving back I'll merge " + $keys );
+    ScoreDistributionInfo winner = $node.getWeightedConfidenceWinner($childNodes);
+    for ( Object o : $keys ) { System.out.println($tok.getResults().get(o)); $tok.getResults().remove( o ); }
+    modify ( $tok ) {
+        setOutcome( winner.getValue() ),
+        setTotalCount( winner.getCount() ),
+        setConfidence( winner.getConfidence() );
+    }
+end
+
+rule "Handle weighted missing values on my way back @{context} without confidence"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
+salience 5
+when
+    $node : TreeNode( context == "@{context}", $id : id,
+                      $out : outcome, $children : children, $count : recordCount, confidence.size == 0 )
+    $tok  : @{context}TreeToken( context == "@{context}", current == $id, visitMode == "WEIGHTED_CONFIDENCE", $res : results )
+
+    not @{name}( context == "@{context}" )
+
+    accumulate( $sid : String( this memberOf $children ) from $res.keySet(), $keys : collectList( $sid ), $num : count( $sid );
+                $num > 0 && $num == $children.size() )
+then
+//    System.out.println( " \t\t\t\t Before moving back I'll merge " + $keys );
 
     for ( Object o : $keys ) { $tok.getResults().remove( o ); }
     modify ( $tok ) {
         setOutcome( $out ),
-        setTotalCount( $count ),
-        setConfidence( (Double) $maxConf );
+        setTotalCount( $count );
     }
 end
 
