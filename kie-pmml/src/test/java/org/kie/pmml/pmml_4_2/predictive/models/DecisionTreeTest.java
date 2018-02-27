@@ -181,7 +181,6 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
     }
 
     @Test
-    @Ignore
     public void testLastPredictionMissingValueStrategy() {
         KieBase kieBase = PMMLKieBaseUtil.createKieBaseWithPMML(TREE_LAST_CHILD_MISSING_STRATEGY);
         PMMLExecutor executor = new PMMLExecutor(kieBase);
@@ -241,7 +240,7 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
     }
 
     @Test
-    @Ignore
+//    @Ignore
     public void testWeightedConfidenceMissingValueStrategy() {
         KieBase kieBase = PMMLKieBaseUtil.createKieBaseWithPMML(TREE_WEIGHTED_CONFIDENCE_MISSING_STRATEGY);
         PMMLExecutor executor = new PMMLExecutor(kieBase);
@@ -252,6 +251,7 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
         Assertions.assertThat(resultHolder).isNotNull();
         Assertions.assertThat(resultHolder.getResultValue("Fld3", "value", String.class).get()).isEqualTo("tgtY");
 
+        executor.setRunWithLogging(true);
         request = new PMMLRequestData("123","TreeTest");
         request.addRequestParam("fld1", 50.0);
         resultHolder = executor.run(request);
@@ -409,7 +409,7 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
 
         AbstractTreeToken token = (AbstractTreeToken)resultHolder.getResultValue("MissingTreeToken", null);
         assertNotNull(token);
-        assertEquals(0.6, token.getConfidence(), 0.0);
+        assertEquals(0.6, token.getConfidence(), 1e-6);
         assertEquals("null", token.getCurrent());
         assertEquals(100.0, token.getTotalCount(), 0.0);
         
