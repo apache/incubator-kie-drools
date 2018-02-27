@@ -21,12 +21,15 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.core.base.ValueType;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.NetworkNode;
 import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.FieldValue;
@@ -59,6 +62,8 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
     private int               alphaNodeHashingThreshold;
 
     private ObjectSink[]      sinks;
+
+    private Map<NetworkNode, NetworkNode> sinksMap;
 
     public CompositeObjectSinkAdapter() {
         this( 3 );
@@ -103,6 +108,9 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
 
     public ObjectSinkPropagator addObjectSink(ObjectSink sink, int alphaNodeHashingThreshold) {
         this.sinks = null; // dirty it, so it'll rebuild on next get
+        if (this.sinksMap != null) {
+            this.sinksMap.put( sink, sink );
+        }
         if ( sink.getType() ==  NodeTypeEnums.AlphaNode ) {
             final AlphaNode alphaNode = (AlphaNode) sink;
             final InternalReadAccessor readAccessor = getHashableAccessor(alphaNode);
@@ -162,6 +170,9 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
 
     public ObjectSinkPropagator removeObjectSink(final ObjectSink sink) {
         this.sinks = null; // dirty it, so it'll rebuild on next get
+        if (this.sinksMap != null) {
+            this.sinksMap.remove( sink );
+        }
         if ( sink.getType() ==  NodeTypeEnums.AlphaNode ) {
             final AlphaNode alphaNode = (AlphaNode) sink;
             final AlphaNodeFieldConstraint fieldConstraint = alphaNode.getConstraint();
@@ -501,19 +512,23 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
     }
 
     public BaseNode getMatchingNode(BaseNode candidate) {
+        if (sinksMap == null) {
+            reIndexNodes();
+        }
+        return (( BaseNode ) sinksMap.get( candidate ));
+    }
+
+    public void reIndexNodes() {
+        sinksMap = new HashMap<>();
         if ( this.otherSinks != null ) {
             for ( ObjectSinkNode sink = this.otherSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
-                if ( sink.thisNodeEquals( candidate ) ) {
-                    return (BaseNode) sink;
-                }
+                sinksMap.put( sink, sink );
             }
         }
 
         if ( this.hashableSinks != null ) {
             for ( ObjectSinkNode sink = this.hashableSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
-                if ( sink.thisNodeEquals( candidate ) ) {
-                    return (BaseNode) sink;
-                }
+                sinksMap.put( sink, sink );
             }
         }
 
@@ -521,12 +536,9 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
             final Iterator it = this.hashedSinkMap.newIterator();
             for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
                 final ObjectSink sink = (ObjectSink) entry.getValue();
-                if ( sink.thisNodeEquals( candidate ) ) {
-                    return (BaseNode) sink;
-                }
+                sinksMap.put( sink, sink );
             }
         }
-        return null;
     }
 
     public ObjectSink[] getSinks() {

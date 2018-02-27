@@ -191,22 +191,19 @@ public class AlphaNode extends ObjectSource
 
     @Override
     public boolean equals(Object object) {
-        return this == object ||
-               (internalEquals((AlphaNode)object) &&
-               (this.source != null ?
-                this.source.thisNodeEquals(((AlphaNode) object).source) :
-                ((AlphaNode) object).source == null) );
-    }
+        if (this == object) {
+            return true;
+        }
 
-    @Override
-    protected boolean internalEquals( Object object ) {
         if ( object == null || !(object instanceof AlphaNode) || this.hashCode() != object.hashCode() ) {
             return false;
         }
 
-        return (constraint instanceof MvelConstraint ?
-                    ((MvelConstraint) constraint).equals(((AlphaNode)object).constraint, getKnowledgeBase()) :
-                    constraint.equals(((AlphaNode)object).constraint));
+        AlphaNode other = (AlphaNode) object;
+        return this.source.getId() == other.source.getId() &&
+                (constraint instanceof MvelConstraint ?
+                    ((MvelConstraint) constraint).equals(other.constraint, getKnowledgeBase()) :
+                    constraint.equals(other.constraint));
     }
 
     /**

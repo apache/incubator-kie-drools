@@ -267,16 +267,14 @@ public class PropagationQueuingNode extends ObjectSource
 
     @Override
     public boolean equals(final Object object) {
-        return this == object ||
-               ( internalEquals( object ) && this.source.thisNodeEquals( ((PropagationQueuingNode)object).source ) );
-    }
+        if (this == object) {
+            return true;
+        }
 
-    @Override
-    protected boolean internalEquals( Object object ) {
         if ( object == null || !(object instanceof PropagationQueuingNode) || this.hashCode() != object.hashCode() ) {
             return false;
         }
-        return true;
+        return this.source.getId() == ((PropagationQueuingNode)object).source.getId();
     }
 
     /**

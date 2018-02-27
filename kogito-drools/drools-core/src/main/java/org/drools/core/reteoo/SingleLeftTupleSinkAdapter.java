@@ -16,12 +16,12 @@
 
 package org.drools.core.reteoo;
 
-import org.drools.core.common.BaseNode;
-import org.drools.core.common.RuleBasePartitionId;
-
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+
+import org.drools.core.common.BaseNode;
+import org.drools.core.common.RuleBasePartitionId;
 
 public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
     protected LeftTupleSink sink;
@@ -41,7 +41,7 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
     }
     
     public BaseNode getMatchingNode(BaseNode candidate) {
-        if ( sink.thisNodeEquals( candidate ) ) {
+        if ( sink.equals( candidate ) ) {
             return (BaseNode) sink;
         }
         return null;

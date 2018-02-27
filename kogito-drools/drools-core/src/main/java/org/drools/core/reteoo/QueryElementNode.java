@@ -562,17 +562,16 @@ public class QueryElementNode extends LeftTupleSource
 
     @Override
     public boolean equals(Object object) {
-        return this == object ||
-               ( internalEquals( object ) && this.leftInput.thisNodeEquals( ((QueryElementNode)object).leftInput ) );
-    }
+        if (this == object) {
+            return true;
+        }
 
-    @Override
-    protected boolean internalEquals( Object object ) {
         if ( object == null || !(object instanceof QueryElementNode) || this.hashCode() != object.hashCode() ) {
             return false;
         }
 
         QueryElementNode other = (QueryElementNode) object;
+        if ( this.leftInput.getId() != other.leftInput.getId() ) return false;
         if ( openQuery != other.openQuery ) return false;
         if ( !openQuery && dataDriven != other.dataDriven ) return false;
         if ( queryElement == null ) {

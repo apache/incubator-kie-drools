@@ -204,12 +204,12 @@ public class Rete extends ObjectSource
         return this.entryPoints.hashCode();
     }
 
-    public boolean equals(final Object object) {
-        return this == object || internalEquals( object );
-    }
-
     @Override
-    protected boolean internalEquals( Object object ) {
+    public boolean equals(final Object object) {
+        if (this == object) {
+            return true;
+        }
+
         if ( object == null || !(object instanceof Rete) || this.hashCode() != object.hashCode() ) {
             return false;
         }

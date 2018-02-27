@@ -125,17 +125,16 @@ public class EvalConditionNode extends LeftTupleSource
 
     @Override
     public boolean equals(final Object object) {
-        return this == object ||
-               ( internalEquals( object ) && this.leftInput.thisNodeEquals( ((EvalConditionNode)object).leftInput ) );
-    }
+        if (this == object) {
+            return true;
+        }
 
-    @Override
-    protected boolean internalEquals( Object object ) {
         if ( object == null || !(object instanceof EvalConditionNode) || this.hashCode() != object.hashCode() ) {
             return false;
         }
 
-        return this.condition.equals( ((EvalConditionNode)object).condition );
+        EvalConditionNode other = (EvalConditionNode)object;
+        return this.leftInput.getId() == other.leftInput.getId() && this.condition.equals( other.condition );
     }
 
     public EvalMemory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {

@@ -110,12 +110,14 @@ public abstract class ObjectSource extends BaseNode
         super.readExternal( in );
         sink = (ObjectSinkPropagator) in.readObject();
         alphaNodeHashingThreshold = in.readInt();
+        source = ( ObjectSource ) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal( out );
         out.writeObject( sink );
         out.writeInt( alphaNodeHashingThreshold );
+        out.writeObject( source );
     }
     
     public ObjectSource getParentObjectSource() {

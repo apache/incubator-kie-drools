@@ -478,17 +478,14 @@ public class LeftInputAdapterNode extends LeftTupleSource
 
     @Override
     public boolean equals(final Object object) {
-        return this == object ||
-               ( internalEquals(object) &&
-                 this.objectSource.equals(((LeftInputAdapterNode)object).objectSource) );
-    }
+        if (this == object) {
+            return true;
+        }
 
-    @Override
-    protected boolean internalEquals( Object object ) {
         if ( object == null || !(object instanceof LeftInputAdapterNode) || this.hashCode() != object.hashCode() ) {
             return false;
         }
-        return this.sinkMask.equals( ((LeftInputAdapterNode) object).sinkMask );
+        return this.objectSource.getId() == ((LeftInputAdapterNode)object).objectSource.getId() && this.sinkMask.equals( ((LeftInputAdapterNode) object).sinkMask );
     }
 
     @Override

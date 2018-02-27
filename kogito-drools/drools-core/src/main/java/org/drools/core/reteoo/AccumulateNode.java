@@ -207,20 +207,17 @@ public class AccumulateNode extends BetaNode {
 
     @Override
     public boolean equals( final Object object ) {
-        return this == object ||
-               ( internalEquals( object ) &&
-               this.leftInput.thisNodeEquals( ((AccumulateNode) object).leftInput ) &&
-               this.rightInput.thisNodeEquals( ((AccumulateNode) object).rightInput ) );
-    }
+        if (this == object) {
+            return true;
+        }
 
-    @Override
-    protected boolean internalEquals( Object object ) {
         if ( object == null || !(object instanceof AccumulateNode ) || this.hashCode() != object.hashCode() ) {
             return false;
         }
 
         AccumulateNode other = (AccumulateNode) object;
-        return this.constraints.equals( other.constraints ) &&
+        return this.leftInput.getId() == other.leftInput.getId() && this.rightInput.getId() == other.rightInput.getId() &&
+               this.constraints.equals( other.constraints ) &&
                this.accumulate.equals( other.accumulate ) &&
                resultBinder.equals( other.resultBinder ) &&
                Arrays.equals( this.resultConstraints, other.resultConstraints );

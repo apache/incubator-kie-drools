@@ -330,11 +330,10 @@ public class RuleTerminalNode extends AbstractTerminalNode {
 
     @Override
     public boolean equals(final Object object) {
-        return this == object || internalEquals( object );
-    }
+        if (this == object) {
+            return true;
+        }
 
-    @Override
-    protected boolean internalEquals( Object object ) {
         if ( object == null || !(object instanceof RuleTerminalNode) || this.hashCode() != object.hashCode() ) {
             return false;
         }

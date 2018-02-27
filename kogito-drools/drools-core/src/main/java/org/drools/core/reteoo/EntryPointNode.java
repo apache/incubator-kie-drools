@@ -423,13 +423,13 @@ public class EntryPointNode extends ObjectSource
 
     @Override
     public boolean equals(final Object object) {
-        return this == object || internalEquals( object );
-    }
+        if (this == object) {
+            return true;
+        }
 
-    @Override
-    protected boolean internalEquals( Object object ) {
-        return object instanceof EntryPointNode && this.hashCode() == object.hashCode() &&
-               this.entryPoint.equals( ( (EntryPointNode) object ).entryPoint );
+        return this == object ||
+                (object instanceof EntryPointNode && this.hashCode() == object.hashCode() &&
+                 this.entryPoint.equals( ( (EntryPointNode) object ).entryPoint ) );
     }
 
     public void updateSink(final ObjectSink sink,

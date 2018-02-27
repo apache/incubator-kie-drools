@@ -222,12 +222,6 @@ public abstract class BaseNode
         return this.associations.contains( rule );
     }
 
-    public boolean thisNodeEquals(final Object object) {
-        return this == object || internalEquals( object );
-    }
-
-    protected abstract boolean internalEquals( Object object );
-
     @Override
     public final int hashCode() {
         return hashcode;

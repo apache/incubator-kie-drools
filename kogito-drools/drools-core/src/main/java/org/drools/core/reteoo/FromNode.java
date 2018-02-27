@@ -127,18 +127,18 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
 
     @Override
     public boolean equals( Object object ) {
-        return this == object || (internalEquals( object ) && leftInput.thisNodeEquals( ((FromNode) object).leftInput ) );
-    }
+        if (this == object) {
+            return true;
+        }
 
-    @Override
-    protected boolean internalEquals( Object obj ) {
-        if (obj == null || !(obj instanceof FromNode ) || this.hashCode() != obj.hashCode() ) {
+        if (object == null || !(object instanceof FromNode ) || this.hashCode() != object.hashCode() ) {
             return false;
         }
 
-        FromNode other = (FromNode) obj;
+        FromNode other = (FromNode) object;
 
-        return dataProvider.equals( other.dataProvider ) &&
+        return this.leftInput.getId() == other.leftInput.getId() &&
+               dataProvider.equals( other.dataProvider ) &&
                areNullSafeEquals(from.getResultPattern(), other.from.getResultPattern() ) &&
                Arrays.equals( alphaConstraints, other.alphaConstraints ) &&
                betaConstraints.equals( other.betaConstraints );

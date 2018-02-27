@@ -539,17 +539,18 @@ public class ObjectTypeNode extends ObjectSource
         return (this.objectType != null ? this.objectType.hashCode() : 0) * 37 + (this.source != null ? this.source.hashCode() : 0) * 31;
     }
 
-    public boolean equals(final Object object) {
-        return this == object ||
-               (internalEquals(object) && this.source.thisNodeEquals(((ObjectTypeNode) object).source));
-    }
-
     @Override
-    protected boolean internalEquals( Object object ) {
+    public boolean equals(final Object object) {
+        if (this == object) {
+            return true;
+        }
+
         if ( object == null || !(object instanceof ObjectTypeNode) || this.hashCode() != object.hashCode() ) {
             return false;
         }
-        return this.objectType.equals( ((ObjectTypeNode)object).objectType );
+
+        ObjectTypeNode other = (ObjectTypeNode)object;
+        return this.source.getId() == other.source.getId() && this.objectType.equals( other.objectType );
     }
 
     /**

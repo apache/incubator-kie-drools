@@ -101,17 +101,17 @@ public class ConditionalBranchNode extends LeftTupleSource implements LeftTupleS
 
     @Override
     public boolean equals(Object object) {
-        return this == object ||
-               ( internalEquals( object ) && getLeftTupleSource().thisNodeEquals( ((ConditionalBranchNode)object).getLeftTupleSource() ) );
-    }
+        if (this == object) {
+            return true;
+        }
 
-    @Override
-    protected boolean internalEquals( Object object ) {
         if ( object == null || !(object instanceof ConditionalBranchNode) || this.hashCode() != object.hashCode() ) {
             return false;
         }
 
-        return this.branchEvaluator.equals( ((ConditionalBranchNode)object).branchEvaluator );
+        ConditionalBranchNode other = (ConditionalBranchNode)object;
+        return getLeftTupleSource().getId() == other.getLeftTupleSource().getId() &&
+                this.branchEvaluator.equals( other.branchEvaluator );
     }
 
     public ConditionalBranchMemory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {

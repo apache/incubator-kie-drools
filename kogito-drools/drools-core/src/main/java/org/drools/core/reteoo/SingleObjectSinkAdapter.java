@@ -140,7 +140,7 @@ public class SingleObjectSinkAdapter implements ObjectSinkPropagator {
     }
 
     public BaseNode getMatchingNode(BaseNode candidate) {
-        return sink.thisNodeEquals(candidate) ? (BaseNode) sink : null;
+        return sink.equals(candidate) ? (BaseNode) sink : null;
     }
 
     public ObjectSink[] getSinks() {
