@@ -104,6 +104,15 @@ public class CompilerBytecodeLoader {
 
         System.out.println(cu);
 
+        Object asd;
+        try {
+            asd = this.getClass().getClassLoader().loadClass("org.drools.compiler.compiler.io.memory.MemoryFile");
+            System.out.println(asd);
+        } catch (ClassNotFoundException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+
         try {
             MemoryResourceReader pReader = new MemoryResourceReader();
             pReader.add(cuPackage.replaceAll("\\.", "/") + "/TemplateCompiledFEELExpression.java",
@@ -114,7 +123,8 @@ public class CompilerBytecodeLoader {
             CompilationResult compilationResult = compiler.compile(new String[]{cuPackage.replaceAll("\\.",
                                                                                                      "/") + "/TemplateCompiledFEELExpression.java"},
                                                                    pReader,
-                                                                   pStore);
+                                                                   pStore,
+                                                                   this.getClass().getClassLoader());
             System.out.println(Arrays.asList(compilationResult.getErrors()));
             System.out.println(Arrays.asList(compilationResult.getWarnings()));
 
