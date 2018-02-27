@@ -33,13 +33,10 @@ when
     $tok  : @{context}TreeToken( context == "@{context}", current == $id, $trail : trail, $res : results, visitMode == "LAST_PREDICTION" )
 
     not @{name}( context == "@{context}" )
-
     accumulate( $sid : String( this memberOf $children ) from $res.keySet(), $keys : collectList( $sid ), $num : count( $sid );
                 $num > 0 && $num == $children.size() )
     accumulate( $d : Double() from $confs.values(), $maxConf : max( $d ) )
 then
-//    System.out.println( " Node " + $id + " has unknown children, we stop here " + $keys );
-
     for ( Object o : $keys ) { $res.remove( o ); }
     modify ( $tok ) {
         setOutcome( $out ),
@@ -49,6 +46,25 @@ then
     }
 end
 
+rule "Handle last-prediction missing values on my way back without confidence @{context}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
+salience 5
+when
+    $node : TreeNode( context == "@{context}", $id : id,
+                      $out : outcome, $children : children, $count : recordCount, confidence.size == 0 )
+    $tok  : @{context}TreeToken( context == "@{context}", current == $id, $trail : trail, $res : results, visitMode == "LAST_PREDICTION" )
+
+    not @{name}( context == "@{context}" )
+    accumulate( $sid : String( this memberOf $children ) from $res.keySet(), $keys : collectList( $sid ), $num : count( $sid );
+                $num > 0 && $num == $children.size() )
+then
+    for ( Object o : $keys ) { $res.remove( o ); }
+    modify ( $tok ) {
+        setOutcome( $out ),
+        setTotalCount( $count ),
+        setCurrent( "null" );
+    }
+end
 
 @end{}
 
