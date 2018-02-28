@@ -378,9 +378,17 @@ public class JPATaskLifeCycleEventListener extends PersistableEventListener impl
         Task ti = event.getTask();
         TaskPersistenceContext persistenceContext = getPersistenceContext(((TaskContext)event.getTaskContext()).getPersistenceContext());
         try {
-            persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.FORWARDED, ti.getTaskData().getProcessInstanceId(), ti.getTaskData().getWorkItemId(), userId));
-    
-    
+            StringBuilder message = new StringBuilder();
+            String entitiesAsString = (ti.getPeopleAssignments().getPotentialOwners()).stream().map(oe -> oe.getId()).collect(Collectors.joining(","));
+            message.append("Forward to [" + entitiesAsString + "]");
+            
+            persistenceContext.persist(new TaskEventImpl(ti.getId(), 
+                                                         org.kie.internal.task.api.model.TaskEvent.TaskEventType.FORWARDED, 
+                                                         ti.getTaskData().getProcessInstanceId(), 
+                                                         ti.getTaskData().getWorkItemId(), 
+                                                         userId, 
+                                                         message.toString()));
+            
             AuditTaskImpl auditTaskImpl = getAuditTask(event, persistenceContext, ti);
             if (auditTaskImpl == null) {
                 logger.warn("Unable find audit task entry for task id {} '{}', skipping audit task update", ti.getId(), ti.getName());

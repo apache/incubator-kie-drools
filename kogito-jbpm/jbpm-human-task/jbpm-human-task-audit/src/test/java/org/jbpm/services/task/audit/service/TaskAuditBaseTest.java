@@ -174,7 +174,6 @@ public abstract class TaskAuditBaseTest extends HumanTaskServicesBaseTest {
     public void testOnlyActiveTasks() {
         Task task = new TaskFluent().setName("This is my task name")
                 .addPotentialUser("salaboy")
-
                 .setAdminUser("Administrator")
                 .getTask();
         taskService.addTask(task, new HashMap<String, Object>());
@@ -1327,6 +1326,41 @@ public abstract class TaskAuditBaseTest extends HumanTaskServicesBaseTest {
         
         Assertions.assertThat(taskEvents.get(5).getType()).isEqualTo(TaskEventType.COMPLETED);
         Assertions.assertThat(taskEvents.get(5).getUserId()).isEqualTo("Darth Vader");
+    }
+    
+    @Test
+    public void testForwardTaskWithMsgEvents() {
+        Task task = new TaskFluent().setName("This is my task name")
+                .addPotentialGroup("Knights Templer")
+                .setAdminUser("Administrator")
+                .addPotentialUser("Administrator")
+                .getTask();
+
+        taskService.addTask(task, new HashMap<String, Object>());
+        long taskId = task.getId();
+
+        assertAuditTaskInfoGroup("Knights Templer", "Ready", taskId);
+        
+        taskService.claim(taskId, "Administrator");
+
+        assertAuditTaskInfo("Administrator", "Reserved", taskId);
+
+        taskService.forward(taskId, "Administrator", "Darth Vader");
+
+        List<TaskEvent> taskEvents = taskAuditService.getAllTaskEvents(taskId, new QueryFilter());
+       
+        Assertions.assertThat(taskEvents).hasSize(3);
+        
+        Assertions.assertThat(taskEvents.get(0).getType()).isEqualTo(TaskEventType.ADDED);
+        Assertions.assertThat(taskEvents.get(0).getUserId()).isNull();
+        
+        Assertions.assertThat(taskEvents.get(1).getType()).isEqualTo(TaskEventType.CLAIMED);
+        Assertions.assertThat(taskEvents.get(1).getUserId()).isEqualTo("Administrator");        
+       
+        Assertions.assertThat(taskEvents.get(2).getType()).isEqualTo(TaskEventType.FORWARDED);
+        Assertions.assertThat(taskEvents.get(2).getUserId()).isEqualTo("Administrator");        
+        Assertions.assertThat(taskEvents.get(2).getMessage()).isNotNull();
+        Assertions.assertThat(taskEvents.get(2).getMessage()).contains("Darth Vader");
     }
 
     protected Map<String, String> collectVariableNameAndValue(List<TaskVariable> variables) {
