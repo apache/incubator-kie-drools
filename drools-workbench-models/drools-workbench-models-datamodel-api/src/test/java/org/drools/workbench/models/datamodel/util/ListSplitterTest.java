@@ -14,7 +14,6 @@
 */
 package org.drools.workbench.models.datamodel.util;
 
-import org.drools.workbench.models.datamodel.util.ListSplitter;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -94,5 +93,77 @@ public class ListSplitterTest {
         assertEquals(2, split.length);
         assertEquals("Helsinki, Finland", split[0]);
         assertEquals(" Boston", split[1]);
+    }
+
+    @Test
+    public void changeQuoteCharacterTrimming_One() throws Exception {
+        final String[] split = ListSplitter.split("\"",
+                                                  true,
+                                                  "Boston, \"Helsinki, Finland\"");
+        assertEquals(2, split.length);
+        assertEquals("Boston", split[0]);
+        assertEquals("Helsinki, Finland", split[1]);
+    }
+
+    @Test
+    public void changeQuoteCharacterTrimming_Two() throws Exception {
+        final String[] split = ListSplitter.split("\"",
+                                                  true,
+                                                  "Boston, \"Helsinki, Finland\", Prague");
+        assertEquals(3, split.length);
+        assertEquals("Boston", split[0]);
+        assertEquals("Helsinki, Finland", split[1]);
+        assertEquals("Prague", split[2]);
+    }
+
+    @Test
+    public void changeQuoteCharacterTrimming_Three() throws Exception {
+        final String[] split = ListSplitter.split("\"",
+                                                  true,
+                                                  "\"Boston\", \"Helsinki, Finland\", \"Prague\"");
+        assertEquals(3, split.length);
+        assertEquals("Boston", split[0]);
+        assertEquals("Helsinki, Finland", split[1]);
+        assertEquals("Prague", split[2]);
+    }
+
+    @Test
+    public void changeQuoteCharacterTrimming_Four() throws Exception {
+        final String[] split = ListSplitter.split("\"",
+                                                  true,
+                                                  "\"Boston\", \"'Helsinki', \"Finland\"\", \"Prague\"");
+        assertEquals(3, split.length);
+        assertEquals("Boston", split[0]);
+        assertEquals("'Helsinki', \"Finland\"", split[1]);
+        assertEquals("Prague", split[2]);
+    }
+
+    @Test
+    public void changeQuoteCharacterTrimming_Five() throws Exception {
+        final String[] split = ListSplitter.split("\"",
+                                                  true,
+                                                  "\"Boston\",\"'Helsinki',\"Finland\"\",\"Prague\"");
+        assertEquals(3, split.length);
+        assertEquals("Boston", split[0]);
+        assertEquals("'Helsinki',\"Finland\"", split[1]);
+        assertEquals("Prague", split[2]);
+    }
+
+    @Test
+    public void changeQuoteCharacterTrimming_Six() throws Exception {
+        final String[] split = ListSplitter.split("\"",
+                                                  true,
+                                                  "\"Boston,'Helsinki',Finland,Prague\"");
+        assertEquals(1, split.length);
+        assertEquals("Boston,'Helsinki',Finland,Prague", split[0]);
+    }
+
+    @Test
+    public void changeQuoteCharacterTrimming_Seven() throws Exception {
+        final String[] split = ListSplitter.split("\"",
+                                                  true,
+                                                  "\"Boston,'Helsinki',Finland,\"Prague\"\"");
+        assertEquals(1, split.length);
+        assertEquals("Boston,'Helsinki',Finland,\"Prague\"", split[0]);
     }
 }

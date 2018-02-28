@@ -64,7 +64,7 @@ class InnerSplitter {
                     } else {
                         result.add(item.substring(item.indexOf(this.quoteCharacter) + 1, item.lastIndexOf(this.quoteCharacter)));
                     }
-                } else if (item.startsWith(this.quoteCharacter)) {
+                } else if (item.trim().startsWith(this.quoteCharacter)) {
                     current = item.substring(item.indexOf(this.quoteCharacter) + 1) + ",";
                 } else {
                     if (trim) {
