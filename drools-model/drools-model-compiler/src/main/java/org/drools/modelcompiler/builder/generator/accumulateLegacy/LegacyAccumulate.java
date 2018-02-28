@@ -2,6 +2,10 @@ package org.drools.modelcompiler.builder.generator.accumulateLegacy;
 
 import java.util.Map;
 
+import org.drools.javaparser.JavaParser;
+import org.drools.javaparser.ast.CompilationUnit;
+import org.drools.javaparser.ast.stmt.BlockStmt;
+
 public class LegacyAccumulate {
 
     public String fixedPart =  "package org.drools;\n" +
@@ -162,7 +166,12 @@ public class LegacyAccumulate {
             "    }\n" +
             "}";
 
-    public String build(Map map) {
-        return fixedPart;
+
+
+    public CompilationUnit build(Map map) {
+
+        final CompilationUnit blockStmt = JavaParser.parse(fixedPart);
+
+        return blockStmt;
     }
 }

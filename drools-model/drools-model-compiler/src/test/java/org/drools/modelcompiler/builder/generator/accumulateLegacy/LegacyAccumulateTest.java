@@ -13,6 +13,8 @@ import org.drools.core.base.ClassObjectType;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.PatternExtractor;
 import org.drools.core.util.StringUtils;
+import org.drools.javaparser.JavaParser;
+import org.drools.javaparser.ast.CompilationUnit;
 import org.drools.modelcompiler.domain.Person;
 import org.junit.Before;
 import org.junit.Test;
@@ -188,6 +190,10 @@ public class LegacyAccumulateTest {
             "    }\n" +
             "}";
 
+
+    final CompilationUnit multiPatternResultParsed = JavaParser.parse(multiPatternResult);
+
+
     @Test
     public void testInvokerGenerationMultiPattern() throws Exception {
 
@@ -268,9 +274,9 @@ public class LegacyAccumulateTest {
 
         LegacyAccumulate la = new LegacyAccumulate();
 
-        final String build = la.build(map);
+        final CompilationUnit build = la.build(map);
 
-        assertEquals(multiPatternResult, build);
+        assertEquals(multiPatternResultParsed, build);
     }
 
 
