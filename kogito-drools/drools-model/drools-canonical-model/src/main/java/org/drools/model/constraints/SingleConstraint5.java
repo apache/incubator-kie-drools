@@ -43,7 +43,7 @@ public class SingleConstraint5<A, B, C, D, E> extends AbstractSingleConstraint {
 
     @Override
     public Variable[] getVariables() {
-        return new Variable[]{var1, var2, var3};
+        return new Variable[]{var1, var2, var3, var4, var5};
     }
 
     @Override
