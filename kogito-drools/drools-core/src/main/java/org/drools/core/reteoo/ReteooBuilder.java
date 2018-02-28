@@ -369,20 +369,21 @@ public class ReteooBuilder
     }
 
     public static class IdGenerator implements Externalizable {
-        private static final String DEFAULT_TOPIC = "DEFAULT_TOPIC";
-
+        private InternalIdGenerator defaultGenerator = new InternalIdGenerator( 1 );
         private Map<String, InternalIdGenerator> generators = new ConcurrentHashMap<>();
 
         public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            defaultGenerator = (InternalIdGenerator) in.readObject();
             generators = (Map<String, InternalIdGenerator>) in.readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject( defaultGenerator );
             out.writeObject( generators );
         }
 
         public int getNextId() {
-            return getNextId( DEFAULT_TOPIC );
+            return defaultGenerator.getNextId();
         }
 
         public int getNextId(String topic) {
@@ -390,14 +391,14 @@ public class ReteooBuilder
         }
 
         public synchronized void releaseId( RuleImpl rule, NetworkNode node ) {
-            generators.get( DEFAULT_TOPIC ).releaseId( node.getId() );
+            defaultGenerator.releaseId( node.getId() );
             if (node instanceof MemoryFactory) {
                 generators.get( DEFAULT_RULE_UNIT ).releaseId( ( (MemoryFactory) node ).getMemoryId() );
             }
         }
 
         public int getLastId() {
-            return getLastId( DEFAULT_TOPIC );
+            return defaultGenerator.getLastId();
         }
 
         public int getLastId(String topic) {

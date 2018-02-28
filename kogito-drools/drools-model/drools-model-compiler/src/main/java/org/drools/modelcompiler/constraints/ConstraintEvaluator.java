@@ -1,6 +1,7 @@
 package org.drools.modelcompiler.constraints;
 
-import java.util.stream.Stream;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -16,44 +17,55 @@ public class ConstraintEvaluator {
     protected final SingleConstraint constraint;
 
     private final Declaration[] declarations;
-    private final Declaration[] requiredDeclarations;
+    private Declaration[] requiredDeclarations;
 
     private final Declaration patternDeclaration;
     private final Pattern pattern;
 
     public ConstraintEvaluator(Declaration[] declarations, SingleConstraint constraint) {
         this.constraint = constraint;
+        this.pattern = null;
         this.declarations = declarations;
         this.requiredDeclarations = declarations;
         this.patternDeclaration = null;
-        this.pattern = null;
     }
 
     public ConstraintEvaluator(Pattern pattern, SingleConstraint constraint) {
         this.constraint = constraint;
-        this.declarations = new Declaration[] { pattern.getDeclaration() };
-        this.patternDeclaration = findPatternDeclaration(pattern);
-        this.requiredDeclarations = new Declaration[0];
         this.pattern = pattern;
+        this.declarations = new Declaration[] { pattern.getDeclaration() };
+        this.patternDeclaration = findPatternDeclaration();
+        this.requiredDeclarations = new Declaration[0];
     }
 
     public ConstraintEvaluator(Declaration[] declarations, Pattern pattern, SingleConstraint constraint) {
         this.constraint = constraint;
         this.declarations = declarations;
         this.pattern = pattern;
-        this.patternDeclaration = findPatternDeclaration(pattern);
-        this.requiredDeclarations = Stream.of( declarations )
-                                          .filter( d -> !d.getIdentifier().equals( pattern.getDeclaration().getIdentifier() ) )
-                                          .toArray( Declaration[]::new );
+        this.patternDeclaration = findPatternAndRequiredDeclaration();
     }
 
-    private Declaration findPatternDeclaration(Pattern pattern) {
-        for ( Declaration declaration : declarations ) {
-            if ( pattern.getDeclaration().getIdentifier().equals( declaration.getIdentifier() ) ) {
-                return declaration;
+    private Declaration findPatternDeclaration() {
+        for ( int i = 0; i < declarations.length; i++ ) {
+            if ( pattern.getDeclaration().getIdentifier().equals( declarations[i].getIdentifier() ) ) {
+                return declarations[i];
             }
         }
         return null;
+    }
+
+    private Declaration findPatternAndRequiredDeclaration() {
+        Declaration patternDeclaration = null;
+        List<Declaration> requiredDeclarationsList = new ArrayList<>();
+        for ( int i = 0; i < declarations.length; i++ ) {
+            if ( pattern.getDeclaration().getIdentifier().equals( declarations[i].getIdentifier() ) ) {
+                patternDeclaration = declarations[i];
+            } else {
+                requiredDeclarationsList.add(declarations[i]);
+            }
+        }
+        this.requiredDeclarations = requiredDeclarationsList.toArray( new Declaration[requiredDeclarationsList.size()] );
+        return patternDeclaration;
     }
 
     public boolean evaluate( InternalFactHandle handle, InternalWorkingMemory workingMemory ) {
@@ -148,11 +160,15 @@ public class ConstraintEvaluator {
     }
 
     public ConstraintEvaluator clone() {
-        Declaration[] clonedDeclarations = Stream.of(declarations).map( Declaration::clone ).toArray(Declaration[]::new);
+        Declaration[] clonedDeclarations = new Declaration[declarations.length];
+        for (int i = 0; i < declarations.length; i++) {
+            clonedDeclarations[i] = declarations[i].clone();
+        }
         return pattern == null ?
                 new ConstraintEvaluator( clonedDeclarations, constraint ) :
                 new ConstraintEvaluator( clonedDeclarations, pattern, constraint );
     }
+
 
     public boolean isTemporal() {
         return false;
