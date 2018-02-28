@@ -83,15 +83,12 @@ public class DeclarationScopeResolver {
         buildStack.push(element);
     }
 
-    private Declaration getExtendedDeclaration(RuleImpl rule,
-                                               String identifier) {
-        if ( rule.getLhs().getInnerDeclarations().containsKey( identifier ) ) {
-            return rule.getLhs().getInnerDeclarations().get( identifier );
-        } else if ( null != rule.getParent() ) {
-            return getExtendedDeclaration( rule.getParent(),
-                                           identifier );
+    private Declaration getExtendedDeclaration(RuleImpl rule, String identifier) {
+        Declaration declaration = rule.getLhs().resolveDeclaration( identifier );
+        if ( declaration != null ) {
+            return declaration;
         }
-        return null;
+        return rule.getParent() == null ? null : getExtendedDeclaration( rule.getParent(), identifier );
 
     }
 
@@ -108,7 +105,7 @@ public class DeclarationScopeResolver {
     public Declaration getDeclaration(String identifier) {
         // it may be a local bound variable
         for ( int i = this.buildStack.size() - 1; i >= 0; i-- ) {
-            final Declaration declaration = buildStack.get( i ).getInnerDeclarations().get( identifier );
+            final Declaration declaration = this.buildStack.get( i ).resolveDeclaration( identifier );
             if ( declaration != null ) {
                 return declaration;
             }
@@ -194,7 +191,7 @@ public class DeclarationScopeResolver {
     public boolean available(RuleImpl rule,
                              final String name) {
         for ( int i = this.buildStack.size() - 1; i >= 0; i-- ) {
-            final Declaration declaration = buildStack.get( i ).getInnerDeclarations().get( name );
+            final Declaration declaration = buildStack.get( i ).resolveDeclaration( name );
             if ( declaration != null ) {
                 return true;
             }
@@ -225,7 +222,7 @@ public class DeclarationScopeResolver {
 
         for ( int i = this.buildStack.size() - 1; i >= 0; i-- ) {
             final RuleConditionElement rce = buildStack.get( i );
-            final Declaration declaration = rce.getInnerDeclarations().get( name );
+            final Declaration declaration = rce.resolveDeclaration( name );
             if ( declaration != null ) {
                 // if it is an OR and it is duplicated, we can stop looking for duplication now
                 // as it is a separate logical branch
@@ -242,9 +239,7 @@ public class DeclarationScopeResolver {
             //     -> lhs.getInnerDeclarations()
             Declaration parentDeclaration = getExtendedDeclaration( rule.getParent(),
                                                                     name );
-            if ( null != parentDeclaration ) {
-                return true;
-            }
+            return null != parentDeclaration;
         }
         return false;
     }

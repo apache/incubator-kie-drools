@@ -46,7 +46,6 @@ public class ForallBuilder
         and.addChild( forall.getBasePattern() );
 
         final GroupElement not2 = GroupElementFactory.newNotInstance();
-        not2.setForallBaseObjectType( forall.getBasePattern().getObjectType() );
         if ( forall.getRemainingPatterns().size() == 1 ) {
             if ( forall.isEmptyBetaConstraints() ) {
                 // The reason why this is here is because forall can inject a

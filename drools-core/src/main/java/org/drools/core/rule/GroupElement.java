@@ -16,9 +16,6 @@
 
 package org.drools.core.rule;
 
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.spi.ObjectType;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -29,6 +26,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import org.drools.core.definitions.rule.impl.RuleImpl;
 
 import static org.drools.core.util.ClassUtils.findCommonSuperClass;
 
@@ -47,8 +46,6 @@ public class GroupElement extends ConditionalElement
 
     private List<RuleConditionElement> children    = new ArrayList<RuleConditionElement>();
 
-    private ObjectType        forallBaseObjectType = null;
-    
     private boolean           root;
     
     private Map<String, Declaration> outerDeclrarations;
@@ -130,11 +127,7 @@ public class GroupElement extends ConditionalElement
      * @inheritDoc
      */
     public Declaration resolveDeclaration(final String identifier) {
-        return this.type.getInnerDeclarations( this.children ).get( identifier );
-    }
-
-    public void setForallBaseObjectType(ObjectType objectType) {
-        this.forallBaseObjectType = objectType;
+        return this.type.resolveDeclaration( this.children, identifier );
     }
 
     /**
@@ -372,6 +365,16 @@ public class GroupElement extends ConditionalElement
         OR(ScopeDelimiter.CONSENSUS),
         NOT(ScopeDelimiter.ALWAYS),
         EXISTS(ScopeDelimiter.ALWAYS);
+
+        private Declaration resolveDeclaration( List<RuleConditionElement> children, String identifier ) {
+            for ( int i = children.size()-1; i >= 0; i-- ) {
+                Declaration result = getOuterDeclarations( children.get(i), RuleImpl.DEFAULT_CONSEQUENCE_NAME ).get(identifier);
+                if ( result != null ) {
+                    return result;
+                }
+            }
+            return null;
+        }
 
         enum ScopeDelimiter {
             NEVER,

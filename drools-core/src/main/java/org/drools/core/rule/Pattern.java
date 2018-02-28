@@ -283,7 +283,7 @@ public class Pattern
     }
 
     public List<Constraint> getConstraints() {
-        return Collections.unmodifiableList( this.constraints );
+        return this.constraints;
     }
 
     public void addConstraint(int index, Constraint constraint) {
@@ -415,7 +415,7 @@ public class Pattern
     }
 
     public Declaration resolveDeclaration(final String identifier) {
-        return this.declarations.get( identifier );
+        return backRefDeclarations != null ? backRefDeclarations.getDeclarationMap().get( identifier ) : this.declarations.get( identifier );
     }
 
     public String toString() {
