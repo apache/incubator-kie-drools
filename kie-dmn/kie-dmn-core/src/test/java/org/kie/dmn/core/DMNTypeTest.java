@@ -16,11 +16,6 @@
 
 package org.kie.dmn.core;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
-import static org.kie.dmn.core.util.DynamicTypeUtils.prototype;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +24,15 @@ import org.junit.Test;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.core.compiler.DMNTypeRegistry;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
+import org.kie.dmn.core.impl.SimpleTypeImpl;
+import org.kie.dmn.feel.FEEL;
+import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
+import static org.kie.dmn.core.util.DynamicTypeUtils.prototype;
 
 public class DMNTypeTest {
 
@@ -80,5 +83,24 @@ public class DMNTypeTest {
         List<Object> groupsContainingBobPartitionedBySize = Arrays.asList(the2ListsThatContainBob, Arrays.asList(bobANDjohn));
         assertTrue(listOfGroups.isAssignableValue(groupsContainingBobPartitionedBySize)); // [ [[B], [B, J]], [[B, J]] ]
     }
+
+    @Test
+    public void testAllowedValuesForASimpleTypeCollection() {
+        // DROOLS-2357
+        final String testNS = "testDROOLS2357";
+
+        FEEL feel = FEEL.newInstance();
+        DMNType tDecision1 = typeRegistry.registerType(new SimpleTypeImpl(testNS, "tListOfVowels", null, true, feel.evaluateUnaryTests("\"a\",\"e\",\"i\",\"o\",\"u\""), FEEL_STRING, BuiltInType.STRING));
+
+        assertTrue(tDecision1.isAssignableValue("a"));
+        assertTrue(tDecision1.isAssignableValue(Arrays.asList("a")));
+
+        assertFalse(tDecision1.isAssignableValue("z"));
+
+        assertTrue(tDecision1.isAssignableValue(Arrays.asList("a", "e")));
+
+        assertFalse(tDecision1.isAssignableValue(Arrays.asList("a", "e", "zzz")));
+    }
+
 }
 
