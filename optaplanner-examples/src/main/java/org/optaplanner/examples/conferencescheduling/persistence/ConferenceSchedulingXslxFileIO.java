@@ -45,6 +45,8 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.ClientAnchor;
 import org.apache.poi.ss.usermodel.Comment;
 import org.apache.poi.ss.usermodel.CreationHelper;
@@ -151,7 +153,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             nextSheet("Configuration");
             nextRow();
             readHeaderCell("Conference name");
-            solution.setConferenceName(nextCell().getStringCellValue());
+            solution.setConferenceName(nextStringCell().getStringCellValue());
             if (!VALID_NAME_PATTERN.matcher(solution.getConferenceName()).matches()) {
                 throw new IllegalStateException(currentPosition() + ": The conference name (" + solution.getConferenceName()
                         + ") must match to the regular expression (" + VALID_NAME_PATTERN + ").");
@@ -228,6 +230,11 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             readHeaderCell(name);
             XSSFCell weightCell = nextCell();
             if (consumer != null) {
+                if (weightCell.getCellTypeEnum() != CellType.NUMERIC) {
+                    throw new IllegalArgumentException(currentPosition() + ": The value ("
+                            + weightCell.getStringCellValue()
+                            + ") for constraint (" + name + ") must be a number and the cell type must be numeric.");
+                }
                 double value = weightCell.getNumericCellValue();
                 if (((double) ((int) value)) != value) {
                     throw new IllegalArgumentException(currentPosition() + ": The value (" + value
@@ -235,7 +242,8 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 }
                 consumer.accept((int) value);
             } else {
-                if (!weightCell.getStringCellValue().equals("n/a")) {
+                if (weightCell.getCellTypeEnum() == CellType.NUMERIC
+                        || !weightCell.getStringCellValue().equals("n/a")) {
                     throw new IllegalArgumentException(currentPosition() + ": The value ("
                             + weightCell.getStringCellValue()
                             + ") for constraint (" + name + ") must be an n/a.");
@@ -257,22 +265,22 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             while (nextRow()) {
                 Timeslot timeslot = new Timeslot();
                 timeslot.setId(id++);
-                LocalDate day = LocalDate.parse(nextCell().getStringCellValue(), DAY_FORMATTER);
-                LocalTime startTime = LocalTime.parse(nextCell().getStringCellValue(), TIME_FORMATTER);
-                LocalTime endTime = LocalTime.parse(nextCell().getStringCellValue(), TIME_FORMATTER);
+                LocalDate day = LocalDate.parse(nextStringCell().getStringCellValue(), DAY_FORMATTER);
+                LocalTime startTime = LocalTime.parse(nextStringCell().getStringCellValue(), TIME_FORMATTER);
+                LocalTime endTime = LocalTime.parse(nextStringCell().getStringCellValue(), TIME_FORMATTER);
                 if (startTime.compareTo(endTime) >= 0) {
                     throw new IllegalStateException(currentPosition() + ": The startTime (" + startTime
                             + ") must be less than the endTime (" + endTime + ").");
                 }
                 timeslot.setStartDateTime(LocalDateTime.of(day, startTime));
                 timeslot.setEndDateTime(LocalDateTime.of(day, endTime));
-                timeslot.setTalkType(nextCell().getStringCellValue());
+                timeslot.setTalkType(nextStringCell().getStringCellValue());
                 if (timeslot.getTalkType().isEmpty()) {
                     throw new IllegalStateException(currentPosition() + ": The talk type (" + timeslot.getTalkType()
                             + ") must not be empty.");
                 }
                 totalTalkTypeSet.add(timeslot.getTalkType());
-                timeslot.setTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
+                timeslot.setTagSet(Arrays.stream(nextStringCell().getStringCellValue().split(", "))
                         .filter(tag -> !tag.isEmpty()).collect(toCollection(LinkedHashSet::new)));
                 for (String tag : timeslot.getTagSet()) {
                     if (!VALID_TAG_PATTERN.matcher(tag).matches()) {
@@ -302,12 +310,12 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             while (nextRow()) {
                 Room room = new Room();
                 room.setId(id++);
-                room.setName(nextCell().getStringCellValue());
+                room.setName(nextStringCell().getStringCellValue());
                 if (!VALID_NAME_PATTERN.matcher(room.getName()).matches()) {
                     throw new IllegalStateException(currentPosition() + ": The room name (" + room.getName()
                             + ") must match to the regular expression (" + VALID_NAME_PATTERN + ").");
                 }
-                room.setTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
+                room.setTagSet(Arrays.stream(nextStringCell().getStringCellValue().split(", "))
                         .filter(tag -> !tag.isEmpty()).collect(toCollection(LinkedHashSet::new)));
                 for (String tag : room.getTagSet()) {
                     if (!VALID_TAG_PATTERN.matcher(tag).matches()) {
@@ -318,7 +326,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 totalRoomTagSet.addAll(room.getTagSet());
                 Set<Timeslot> unavailableTimeslotSet = new LinkedHashSet<>();
                 for (Timeslot timeslot : solution.getTimeslotList()) {
-                    XSSFCell cell = nextCell();
+                    XSSFCell cell = nextStringCell();
                     if (Objects.equals(extractColor(cell, UNAVAILABLE_COLOR), UNAVAILABLE_COLOR)) {
                         unavailableTimeslotSet.add(timeslot);
                     }
@@ -362,38 +370,38 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             while (nextRow()) {
                 Speaker speaker = new Speaker();
                 speaker.setId(id++);
-                speaker.setName(nextCell().getStringCellValue());
+                speaker.setName(nextStringCell().getStringCellValue());
                 if (!VALID_NAME_PATTERN.matcher(speaker.getName()).matches()) {
                     throw new IllegalStateException(currentPosition() + ": The speaker name (" + speaker.getName()
                             + ") must match to the regular expression (" + VALID_NAME_PATTERN + ").");
                 }
-                speaker.setRequiredTimeslotTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
+                speaker.setRequiredTimeslotTagSet(Arrays.stream(nextStringCell().getStringCellValue().split(", "))
                         .filter(tag -> !tag.isEmpty()).collect(toCollection(LinkedHashSet::new)));
                 verifyTimeslotTags(speaker.getRequiredTimeslotTagSet());
-                speaker.setPreferredTimeslotTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
+                speaker.setPreferredTimeslotTagSet(Arrays.stream(nextStringCell().getStringCellValue().split(", "))
                         .filter(tag -> !tag.isEmpty()).collect(toCollection(LinkedHashSet::new)));
                 verifyTimeslotTags(speaker.getPreferredTimeslotTagSet());
-                speaker.setProhibitedTimeslotTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
+                speaker.setProhibitedTimeslotTagSet(Arrays.stream(nextStringCell().getStringCellValue().split(", "))
                         .filter(tag -> !tag.isEmpty()).collect(toCollection(LinkedHashSet::new)));
                 verifyTimeslotTags(speaker.getProhibitedTimeslotTagSet());
-                speaker.setUndesiredTimeslotTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
+                speaker.setUndesiredTimeslotTagSet(Arrays.stream(nextStringCell().getStringCellValue().split(", "))
                         .filter(tag -> !tag.isEmpty()).collect(toCollection(LinkedHashSet::new)));
                 verifyTimeslotTags(speaker.getUndesiredTimeslotTagSet());
-                speaker.setRequiredRoomTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
+                speaker.setRequiredRoomTagSet(Arrays.stream(nextStringCell().getStringCellValue().split(", "))
                         .filter(tag -> !tag.isEmpty()).collect(toCollection(LinkedHashSet::new)));
                 verifyRoomTags(speaker.getRequiredRoomTagSet());
-                speaker.setPreferredRoomTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
+                speaker.setPreferredRoomTagSet(Arrays.stream(nextStringCell().getStringCellValue().split(", "))
                         .filter(tag -> !tag.isEmpty()).collect(toCollection(LinkedHashSet::new)));
                 verifyRoomTags(speaker.getPreferredRoomTagSet());
-                speaker.setProhibitedRoomTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
+                speaker.setProhibitedRoomTagSet(Arrays.stream(nextStringCell().getStringCellValue().split(", "))
                         .filter(tag -> !tag.isEmpty()).collect(toCollection(LinkedHashSet::new)));
                 verifyRoomTags(speaker.getProhibitedRoomTagSet());
-                speaker.setUndesiredRoomTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
+                speaker.setUndesiredRoomTagSet(Arrays.stream(nextStringCell().getStringCellValue().split(", "))
                         .filter(tag -> !tag.isEmpty()).collect(toCollection(LinkedHashSet::new)));
                 verifyRoomTags(speaker.getUndesiredRoomTagSet());
                 Set<Timeslot> unavailableTimeslotSet = new LinkedHashSet<>();
                 for (Timeslot timeslot : solution.getTimeslotList()) {
-                    XSSFCell cell = nextCell();
+                    XSSFCell cell = nextStringCell();
                     if (Objects.equals(extractColor(cell, UNAVAILABLE_COLOR), UNAVAILABLE_COLOR)) {
                         unavailableTimeslotSet.add(timeslot);
                     }
@@ -446,19 +454,19 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             while (nextRow()) {
                 Talk talk = new Talk();
                 talk.setId(id++);
-                talk.setCode(nextCell().getStringCellValue());
+                talk.setCode(nextStringCell().getStringCellValue());
                 if (!VALID_CODE_PATTERN.matcher(talk.getCode()).matches()) {
                     throw new IllegalStateException(currentPosition() + ": The talk code (" + talk.getCode()
                             + ") must match to the regular expression (" + VALID_CODE_PATTERN + ").");
                 }
-                talk.setTitle(nextCell().getStringCellValue());
-                talk.setTalkType(nextCell().getStringCellValue());
+                talk.setTitle(nextStringCell().getStringCellValue());
+                talk.setTalkType(nextStringCell().getStringCellValue());
                 if (!totalTalkTypeSet.contains(talk.getTalkType())) {
                     throw new IllegalStateException(currentPosition() + ": The talk type (" + talk.getTalkType()
                             + ") does not exist in the talk types (" + totalTalkTypeSet
                             + ") of the other sheet (Timeslots).");
                 }
-                talk.setSpeakerList(Arrays.stream(nextCell().getStringCellValue().split(", "))
+                talk.setSpeakerList(Arrays.stream(nextStringCell().getStringCellValue().split(", "))
                         .filter(tag -> !tag.isEmpty()).map(speakerName -> {
                             Speaker speaker = speakerMap.get(speakerName);
                             if (speaker == null) {
@@ -467,7 +475,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                             }
                             return speaker;
                         }).collect(toList()));
-                talk.setThemeTrackTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
+                talk.setThemeTrackTagSet(Arrays.stream(nextStringCell().getStringCellValue().split(", "))
                         .filter(tag -> !tag.isEmpty()).collect(toCollection(LinkedHashSet::new)));
                 for (String tag : talk.getThemeTrackTagSet()) {
                     if (!VALID_TAG_PATTERN.matcher(tag).matches()) {
@@ -475,7 +483,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                                 + ") must match to the regular expression (" + VALID_TAG_PATTERN + ").");
                     }
                 }
-                talk.setSectorTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
+                talk.setSectorTagSet(Arrays.stream(nextStringCell().getStringCellValue().split(", "))
                         .filter(tag -> !tag.isEmpty()).collect(toCollection(LinkedHashSet::new)));
                 for (String tag : talk.getSectorTagSet()) {
                     if (!VALID_TAG_PATTERN.matcher(tag).matches()) {
@@ -483,19 +491,19 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                                 + ") must match to the regular expression (" + VALID_TAG_PATTERN + ").");
                     }
                 }
-                String audienceType = nextCell().getStringCellValue();
+                String audienceType = nextStringCell().getStringCellValue();
                 if (!VALID_TAG_PATTERN.matcher(audienceType).matches()) {
                     throw new IllegalStateException(currentPosition() + ": The talk (" + talk + ")'s audience type (" + audienceType
                             + ") must match to the regular expression (" + VALID_TAG_PATTERN + ").");
                 }
                 talk.setAudienceType(audienceType);
-                double audienceLevelDouble = nextCell().getNumericCellValue();
+                double audienceLevelDouble = nextNumericCell().getNumericCellValue();
                 if (audienceLevelDouble <= 0 || audienceLevelDouble != Math.floor(audienceLevelDouble)) {
                     throw new IllegalStateException(currentPosition() + ": The talk with code (" + talk.getCode()
                             + ")'s has an audience level (" + audienceLevelDouble + ") that isn't a strictly positive integer number.");
                 }
                 talk.setAudienceLevel((int) audienceLevelDouble);
-                talk.setContentTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
+                talk.setContentTagSet(Arrays.stream(nextStringCell().getStringCellValue().split(", "))
                         .filter(tag -> !tag.isEmpty()).collect(toCollection(LinkedHashSet::new)));
                 for (String tag : talk.getContentTagSet()) {
                     if (!VALID_TAG_PATTERN.matcher(tag).matches()) {
@@ -503,35 +511,35 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                                 + ") must match to the regular expression (" + VALID_TAG_PATTERN + ").");
                     }
                 }
-                talk.setLanguage(nextCell().getStringCellValue());
-                talk.setRequiredTimeslotTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
+                talk.setLanguage(nextStringCell().getStringCellValue());
+                talk.setRequiredTimeslotTagSet(Arrays.stream(nextStringCell().getStringCellValue().split(", "))
                         .filter(tag -> !tag.isEmpty()).collect(toCollection(LinkedHashSet::new)));
                 verifyTimeslotTags(talk.getRequiredTimeslotTagSet());
-                talk.setPreferredTimeslotTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
+                talk.setPreferredTimeslotTagSet(Arrays.stream(nextStringCell().getStringCellValue().split(", "))
                         .filter(tag -> !tag.isEmpty()).collect(toCollection(LinkedHashSet::new)));
                 verifyTimeslotTags(talk.getPreferredTimeslotTagSet());
-                talk.setProhibitedTimeslotTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
+                talk.setProhibitedTimeslotTagSet(Arrays.stream(nextStringCell().getStringCellValue().split(", "))
                         .filter(tag -> !tag.isEmpty()).collect(toCollection(LinkedHashSet::new)));
                 verifyTimeslotTags(talk.getProhibitedTimeslotTagSet());
-                talk.setUndesiredTimeslotTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
+                talk.setUndesiredTimeslotTagSet(Arrays.stream(nextStringCell().getStringCellValue().split(", "))
                         .filter(tag -> !tag.isEmpty()).collect(toCollection(LinkedHashSet::new)));
                 verifyTimeslotTags(talk.getUndesiredTimeslotTagSet());
-                talk.setRequiredRoomTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
+                talk.setRequiredRoomTagSet(Arrays.stream(nextStringCell().getStringCellValue().split(", "))
                         .filter(tag -> !tag.isEmpty()).collect(toCollection(LinkedHashSet::new)));
                 verifyRoomTags(talk.getRequiredRoomTagSet());
-                talk.setPreferredRoomTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
+                talk.setPreferredRoomTagSet(Arrays.stream(nextStringCell().getStringCellValue().split(", "))
                         .filter(tag -> !tag.isEmpty()).collect(toCollection(LinkedHashSet::new)));
                 verifyRoomTags(talk.getPreferredRoomTagSet());
-                talk.setProhibitedRoomTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
+                talk.setProhibitedRoomTagSet(Arrays.stream(nextStringCell().getStringCellValue().split(", "))
                         .filter(tag -> !tag.isEmpty()).collect(toCollection(LinkedHashSet::new)));
                 verifyRoomTags(talk.getProhibitedRoomTagSet());
-                talk.setUndesiredRoomTagSet(Arrays.stream(nextCell().getStringCellValue().split(", "))
+                talk.setUndesiredRoomTagSet(Arrays.stream(nextStringCell().getStringCellValue().split(", "))
                         .filter(tag -> !tag.isEmpty()).collect(toCollection(LinkedHashSet::new)));
                 verifyRoomTags(talk.getUndesiredRoomTagSet());
-                talk.setPinnedByUser(nextCell().getBooleanCellValue());
-                String dateString = nextCell().getStringCellValue();
-                String startTimeString = nextCell().getStringCellValue();
-                String endTimeString = nextCell().getStringCellValue();
+                talk.setPinnedByUser(nextBooleanCell().getBooleanCellValue());
+                String dateString = nextStringCell().getStringCellValue();
+                String startTimeString = nextStringCell().getStringCellValue();
+                String endTimeString = nextStringCell().getStringCellValue();
                 if (!dateString.isEmpty() || !startTimeString.isEmpty() || !endTimeString.isEmpty()) {
                     LocalDateTime startDateTime;
                     LocalDateTime endDateTime;
@@ -555,7 +563,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                     }
                     talk.setTimeslot(timeslot);
                 }
-                String roomName = nextCell().getStringCellValue();
+                String roomName = nextStringCell().getStringCellValue();
                 if (!roomName.isEmpty()) {
                     Room room = roomMap.get(roomName);
                     if (room == null) {
@@ -639,7 +647,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 return false;
             }
             currentRow = (XSSFRow) currentRowIterator.next();
-            while (skipEmptyRows && currentRow.getPhysicalNumberOfCells() == 0) {
+            while (skipEmptyRows && currentRowIsEmpty()) {
                 if (!currentRowIterator.hasNext()) {
                     currentRow = null;
                     return false;
@@ -657,12 +665,59 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             return true;
         }
 
+        protected boolean currentRowIsEmpty() {
+            if (currentRow.getPhysicalNumberOfCells() == 0) {
+                return true;
+            }
+            for (Cell cell : currentRow) {
+                if (cell.getCellTypeEnum() == CellType.STRING) {
+                    if (!cell.getStringCellValue().isEmpty()) {
+                        return false;
+                    }
+                } else if (cell.getCellTypeEnum() != CellType.BLANK) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
         protected void readHeaderCell(String value) {
-            XSSFCell cell = currentRow == null ? null : nextCell();
+            XSSFCell cell = currentRow == null ? null : nextStringCell();
             if (cell == null || !cell.getStringCellValue().equals(value)) {
                 throw new IllegalStateException(currentPosition() + ": The cell does not contain the expected value ("
                         + value + ").");
             }
+        }
+
+        protected XSSFCell nextStringCell() {
+            XSSFCell cell = nextCell();
+            if (cell.getCellTypeEnum() == CellType.NUMERIC) {
+                throw new IllegalStateException(currentPosition() + ": The cell with value ("
+                        + cell.getNumericCellValue() + ") has a numeric type but should be a string.");
+            }
+            return cell;
+        }
+
+        protected XSSFCell nextNumericCell() {
+            XSSFCell cell = nextCell();
+            if (cell.getCellTypeEnum() == CellType.STRING) {
+                throw new IllegalStateException(currentPosition() + ": The cell with value ("
+                        + cell.getStringCellValue() + ") has a string type but should be numeric.");
+            }
+            return cell;
+        }
+
+        protected XSSFCell nextBooleanCell() {
+            XSSFCell cell = nextCell();
+            if (cell.getCellTypeEnum() == CellType.STRING) {
+                throw new IllegalStateException(currentPosition() + ": The cell with value ("
+                        + cell.getStringCellValue() + ") has a string type but should be boolean.");
+            }
+            if (cell.getCellTypeEnum() == CellType.NUMERIC) {
+                throw new IllegalStateException(currentPosition() + ": The cell with value ("
+                        + cell.getNumericCellValue() + ") has a numeric type but should be a boolean.");
+            }
+            return cell;
         }
 
         protected XSSFCell nextCell() {
