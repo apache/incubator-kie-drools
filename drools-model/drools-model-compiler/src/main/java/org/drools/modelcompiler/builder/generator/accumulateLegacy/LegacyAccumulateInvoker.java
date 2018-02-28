@@ -10,7 +10,7 @@ public class LegacyAccumulateInvoker {
 
     public final Map<String, String> map;
 
-    public String fixedPart = "package org.drools;\n" +
+    public String fixedPart = "package __mypackage;\n" +
             "\n" +
             "import org.mvel2.asm.ClassReader;\n" +
             "import org.mvel2.asm.util.TraceMethodVisitor;\n" +
@@ -176,9 +176,14 @@ public class LegacyAccumulateInvoker {
 
         final CompilationUnit cu = JavaParser.parse(fixedPart);
 
+        setPackage(cu);
         setInvokerClassName(cu);
 
         return cu;
+    }
+
+    private CompilationUnit setPackage(CompilationUnit cu) {
+        return cu.setPackageDeclaration(map.get("package"));
     }
 
     private void setInvokerClassName(CompilationUnit cu) {
