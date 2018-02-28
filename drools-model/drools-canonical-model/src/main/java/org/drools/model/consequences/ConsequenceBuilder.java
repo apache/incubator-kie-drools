@@ -14,11 +14,17 @@ import org.drools.model.functions.Block1;
 import org.drools.model.functions.Block2;
 import org.drools.model.functions.Block3;
 import org.drools.model.functions.Block4;
+import org.drools.model.functions.Block5;
+import org.drools.model.functions.Block6;
+import org.drools.model.functions.Block7;
 import org.drools.model.functions.BlockN;
 import org.drools.model.functions.Function0;
 import org.drools.model.functions.Function1;
 import org.drools.model.functions.Function2;
 import org.drools.model.functions.Function3;
+import org.drools.model.functions.Function4;
+import org.drools.model.functions.Function5;
+import org.drools.model.functions.Function6;
 import org.drools.model.functions.FunctionN;
 import org.drools.model.functions.ScriptBlock;
 
@@ -195,6 +201,93 @@ public class ConsequenceBuilder {
         }
 
         public <R> _3 insert(final Function3<A, B, C, R> f) {
+            addInsert(toFunctionN(f));
+            return this;
+        }
+    }
+
+    public static class _4<A, B, C, D> extends AbstractValidBuilder<_4<A,B,C,D>> {
+        public _4(Variable<A> decl1, Variable<B> decl2, Variable<C> decl3, Variable<D> decl4) {
+            super(decl1, decl2, decl3, decl4);
+        }
+
+        public _4<A, B, C, D> execute(final Block4<A, B, C, D> block) {
+            this.block = block.asBlockN();
+            return this;
+        }
+
+        public _4<A, B, C, D> execute(final Block5<Drools, A, B, C, D> block ) {
+            this.usingDrools = true;
+            this.block = block.asBlockN();
+            return this;
+        }
+
+        public _4<A, B, C, D> executeScript(String language, String script) {
+            this.usingDrools = true;
+            this.language = language;
+            this.block = new ScriptBlock(script);
+            return this;
+        }
+
+        public <R> _4 insert(final Function4<A, B, C, D, R> f) {
+            addInsert(toFunctionN(f));
+            return this;
+        }
+    }
+
+    public static class _5<A, B, C, D, E> extends AbstractValidBuilder<_5<A,B,C,D,E>> {
+        public _5(Variable<A> decl1, Variable<B> decl2, Variable<C> decl3, Variable<D> decl4, Variable<E> decl5) {
+            super(decl1, decl2, decl3, decl4, decl5);
+        }
+
+        public _5<A, B, C, D, E> execute(final Block5<A, B, C, D, E> block) {
+            this.block = block.asBlockN();
+            return this;
+        }
+
+        public _5<A, B, C, D, E> execute(final Block6<Drools, A, B, C, D, E> block ) {
+            this.usingDrools = true;
+            this.block = block.asBlockN();
+            return this;
+        }
+
+        public _5<A, B, C, D, E> executeScript(String language, String script) {
+            this.usingDrools = true;
+            this.language = language;
+            this.block = new ScriptBlock(script);
+            return this;
+        }
+
+        public <R> _5 insert(final Function5<A, B, C, D, E, R> f) {
+            addInsert(toFunctionN(f));
+            return this;
+        }
+    }
+
+    public static class _6<A, B, C, D, E, F> extends AbstractValidBuilder<_6<A,B,C,D,E,F>> {
+        public _6(Variable<A> decl1, Variable<B> decl2, Variable<C> decl3, Variable<D> decl4, Variable<E> decl5, Variable<F> decl6) {
+            super(decl1, decl2, decl3, decl4, decl5, decl6);
+        }
+
+        public _6<A, B, C, D, E, F> execute(final Block6<A, B, C, D, E, F> block) {
+            this.block = block.asBlockN();
+            return this;
+        }
+
+        public _6<A, B, C, D, E, F> execute(final Block7<Drools, A, B, C, D, E, F> block ) {
+            this.usingDrools = true;
+            this.block = block.asBlockN();
+            return this;
+        }
+
+        public _6<A, B, C, D, E, F> executeScript(String language, String script) {
+            this.usingDrools = true;
+            this.language = language;
+            this.block = new ScriptBlock(script);
+            return this;
+        }
+
+        public <R> _6 insert(final Function6<A, B, C, D, E, F, R> f) {
             addInsert(toFunctionN(f));
             return this;
         }
