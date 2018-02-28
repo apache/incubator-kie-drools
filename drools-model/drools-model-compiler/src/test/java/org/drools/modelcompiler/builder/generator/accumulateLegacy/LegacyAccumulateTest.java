@@ -29,8 +29,7 @@ public class LegacyAccumulateTest {
 
     ClassFieldAccessorStore store = new ClassFieldAccessorStore();
 
-    public String multiPatternResult = "" +
-            "\n" +
+    public String multiPatternResult =
             "package org.drools;\n" +
             "\n" +
             "import org.mvel2.asm.ClassReader;\n" +
