@@ -810,7 +810,10 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
                     throw new UnsupportedOperationException("A Composite type is either MapBacked or JavaBAcked");
                 }
             } else {
-                throw new UnsupportedOperationException("Trying to access" + accText + " but typeCursor not a CompositeType " + typeCursor);
+                //  degraded mode, or accessing fields of DATE etc.
+                DirectCompilerResult telescope = telescopePathAccessor(DirectCompilerResult.of(exprCursor, typeCursor), Arrays.asList(accText));
+                exprCursor = telescope.getExpression();
+                typeCursor = telescope.resultType;
             }
         }
         return DirectCompilerResult.of(exprCursor, typeCursor);

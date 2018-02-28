@@ -17,6 +17,7 @@
 package org.kie.dmn.feel.codegen.feel11;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
@@ -375,6 +376,21 @@ public class DirectCompilerTest {
         System.out.println(result);
         
         assertThat(result, is( "John Doe" ));
+    }
+
+    @Test
+    public void testQualifiedName3() {
+        String inputExpression = "a date.year";
+        Type dateType = BuiltInType.DATE;
+        CompiledFEELExpression qualRef = parse(inputExpression, mapOf(entry("a date", dateType)));
+        System.out.println(qualRef);
+        
+        EvaluationContext context = new EvaluationContextImpl(null);
+        context.setValue("a date", LocalDate.of(2016, 8, 2));
+        Object result = qualRef.apply(context);
+        System.out.println(result);
+        
+        assertThat(result, is(BigDecimal.valueOf(2016)));
     }
 
     private CompiledFEELExpression parse(String input) {
