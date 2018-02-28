@@ -1,0 +1,24 @@
+<PMML version="4.2" xsi:schemaLocation="http://www.dmg.org/PMML-4_2 http://www.dmg.org/v4-1/pmml-4-2.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.dmg.org/PMML-4_2">
+  <Header/>
+  <DataDictionary numberOfFields="2">
+    <DataField dataType="double" name="fld1" optype="continuous"/>
+    <DataField dataType="string" name="fld2" optype="categorical">
+      <Value value="tgtX"/>
+      <Value value="tgtY"/>
+    </DataField>
+  </DataDictionary>
+
+  <TreeModel functionName="classification" modelName="TreeTest" noTrueChildStrategy="returnLastPrediction">
+    <MiningSchema>
+      <MiningField name="fld1"/>
+      <MiningField name="fld2" usageType="predicted"/>
+    </MiningSchema>
+
+    <Node id="N1" score="tgtX">
+      <True/>
+      <Node id="T1" score="tgtY">
+        <SimplePredicate field="fld1" operator="lessThan" value="40.0"/>
+      </Node>
+    </Node>
+  </TreeModel>
+</PMML>

@@ -66,6 +66,14 @@
     <dependency>
       <groupId>org.jboss.spec.javax.xml.bind</groupId>
       <artifactId>jboss-jaxb-api_2.2_spec</artifactId>
+<!-- 
+      <exclusions>
+      	<exclusion>
+      		<groupId>ch.qos.logback</groupId>
+      		<artifactId>logback-classic</artifactId>
+      	</exclusion>
+      </exclusions>
+-->
     </dependency>
     <dependency>
       <groupId>com.sun.xml.bind</groupId>
@@ -82,6 +90,12 @@
 	<dependency>      
 		<groupId>ch.qos.logback</groupId>
 		<artifactId>logback-classic</artifactId>
+		<scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.assertj</groupId>
+        <artifactId>assertj-core</artifactId>
+        <scope>test</scope>
     </dependency>
 
     <dependency>
@@ -150,7 +164,7 @@
           <arguments>
             <argument>-enableIntrospection</argument>
             <argument>-p</argument>
-            <argument>org.dmg.pmml.pmml_4_2.descr</argument>
+            <argument>org.kie.dmg.pmml.pmml_4_2.descr</argument>
             <argument>-extension</argument>
             <argument>-d</argument>
             <argument>${project.build.directory}/generated-sources/java</argument>

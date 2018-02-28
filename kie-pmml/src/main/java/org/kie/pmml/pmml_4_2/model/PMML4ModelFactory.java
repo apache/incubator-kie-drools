@@ -18,11 +18,11 @@ package org.kie.pmml.pmml_4_2.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.dmg.pmml.pmml_4_2.descr.MiningModel;
-import org.dmg.pmml.pmml_4_2.descr.RegressionModel;
-import org.dmg.pmml.pmml_4_2.descr.Scorecard;
-import org.dmg.pmml.pmml_4_2.descr.Segment;
-import org.dmg.pmml.pmml_4_2.descr.TreeModel;
+import org.kie.dmg.pmml.pmml_4_2.descr.MiningModel;
+import org.kie.dmg.pmml.pmml_4_2.descr.RegressionModel;
+import org.kie.dmg.pmml.pmml_4_2.descr.Scorecard;
+import org.kie.dmg.pmml.pmml_4_2.descr.Segment;
+import org.kie.dmg.pmml.pmml_4_2.descr.TreeModel;
 import org.kie.pmml.pmml_4_2.PMML4Model;
 import org.kie.pmml.pmml_4_2.PMML4Unit;
 import org.kie.pmml.pmml_4_2.model.mining.MiningSegmentation;

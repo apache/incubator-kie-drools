@@ -74,13 +74,17 @@ import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.ParserError;
 import org.drools.compiler.compiler.ProcessBuilderFactory;
 import org.drools.compiler.compiler.ProcessLoadError;
+import org.drools.compiler.compiler.ProjectJavaCompiler;
 import org.drools.compiler.compiler.ResourceConversionResult;
 import org.drools.compiler.compiler.ResourceTypeDeclarationWarning;
 import org.drools.compiler.compiler.RuleBuildError;
 import org.drools.compiler.compiler.ScoreCardFactory;
 import org.drools.compiler.compiler.TypeDeclarationError;
 import org.drools.compiler.compiler.xml.XmlPackageReader;
+import org.drools.compiler.kie.builder.impl.KieFileSystemImpl;
 import org.drools.compiler.lang.ExpanderException;
+import org.drools.compiler.lang.api.PackageDescrBuilder;
+import org.drools.compiler.lang.api.impl.PackageDescrBuilderImpl;
 import org.drools.compiler.lang.descr.AbstractClassTypeDeclarationDescr;
 import org.drools.compiler.lang.descr.AccumulateImportDescr;
 import org.drools.compiler.lang.descr.AnnotatedBaseDescr;
@@ -135,6 +139,7 @@ import org.drools.core.util.StringUtils;
 import org.drools.core.xml.XmlChangeSetReader;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
+import org.kie.api.builder.KieFileSystem;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.process.Process;
 import org.kie.api.internal.assembler.KieAssemblerService;
@@ -1674,7 +1679,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         }
     }
 
-    private void validateUniqueRuleNames(final PackageDescr packageDescr) {
+    protected void validateUniqueRuleNames(final PackageDescr packageDescr) {
         final Set<String> names = new HashSet<String>();
         PackageRegistry packageRegistry = this.pkgRegistryMap.get(packageDescr.getNamespace());
         InternalKnowledgePackage pkg = null;

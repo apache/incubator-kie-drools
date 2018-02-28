@@ -18,6 +18,7 @@ package org.drools.core.impl;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -42,8 +43,8 @@ import org.kie.api.KieServices;
 import org.kie.api.logger.KieRuntimeLogger;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.Globals;
-import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.ObjectFilter;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.DataSource;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.RuleUnit;
@@ -74,6 +75,12 @@ public class RuleUnitExecutorSession implements InternalRuleUnitExecutor {
         session.ruleEventListenerSupport = new RuleEventListenerSupport();
     }
 
+    public RuleUnitExecutorSession(KieSession session) {
+        this.session = (( StatefulKnowledgeSessionImpl ) session);
+        this.session.ruleUnitExecutor = this;
+        bind( session.getKieBase() );
+    }
+
     public RuleUnitExecutorSession( final long id,
                                     boolean initInitFactHandle,
                                     final SessionConfiguration config,
@@ -90,10 +97,6 @@ public class RuleUnitExecutorSession implements InternalRuleUnitExecutor {
                                     final Environment environment ) {
         session = new StatefulKnowledgeSessionImpl(id, null, handleFactory, propagationContext, config, agenda, environment);
         initSession(config, environment);
-    }
-
-    public KieSession getKieSession() {
-        return session;
     }
 
     private void initSession(SessionConfiguration config, Environment environment) {
@@ -113,6 +116,11 @@ public class RuleUnitExecutorSession implements InternalRuleUnitExecutor {
 
         this.ruleUnitGuardSystem = new RuleUnitGuardSystem( this );
         return this;
+    }
+
+    @Override
+    public KieSession getKieSession() {
+        return session;
     }
 
     @Override

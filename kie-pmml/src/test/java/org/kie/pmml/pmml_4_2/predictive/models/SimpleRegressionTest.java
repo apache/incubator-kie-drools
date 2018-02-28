@@ -40,9 +40,9 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.utils.KieHelper;
 import org.kie.pmml.pmml_4_2.DroolsAbstractPMMLTest;
 import org.kie.pmml.pmml_4_2.PMML4Compiler;
-import org.kie.pmml.pmml_4_2.PMML4Result;
-import org.kie.pmml.pmml_4_2.model.PMMLRequestData;
-import org.kie.pmml.pmml_4_2.model.datatypes.PMML4Data;
+import org.kie.api.pmml.PMML4Result;
+import org.kie.api.pmml.PMMLRequestData;
+import org.kie.api.pmml.PMML4Data;
 
 public class SimpleRegressionTest extends DroolsAbstractPMMLTest {
 

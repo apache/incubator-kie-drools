@@ -24,25 +24,51 @@ import java.util.Optional;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.InternalRuleUnitExecutor;
 import org.drools.core.ruleunit.RuleUnitDescr;
 import org.drools.core.ruleunit.RuleUnitRegistry;
 import org.kie.api.KieBase;
+import org.kie.api.logger.KieRuntimeLogger;
 import org.kie.api.runtime.rule.DataSource;
 import org.kie.api.runtime.rule.RuleUnit;
 import org.kie.api.runtime.rule.RuleUnitExecutor;
 import org.kie.pmml.pmml_4_2.model.PMML4UnitImpl;
-import org.kie.pmml.pmml_4_2.model.PMMLRequestData;
-import org.kie.pmml.pmml_4_2.model.datatypes.PMML4Data;
+import org.kie.api.pmml.PMMLRequestData;
+import org.kie.api.pmml.PMML4Data;
+import org.kie.api.pmml.PMML4Result;
 
 public class PMMLExecutor {
     private KieBase kieBase;
+    private String loggingFileName;
+    private boolean runWithLogging;
 
     public PMMLExecutor(KieBase kieBase) {
         this.kieBase = kieBase;
     }
 
+    public PMMLExecutor(KieBase kieBase, String loggingFileName) {
+        this.kieBase = kieBase;
+        this.loggingFileName = loggingFileName;
+    }
+
     public KieBase getKieBase() {
         return kieBase;
+    }
+
+    public String getLoggingFileName() {
+        return loggingFileName;
+    }
+
+    public void setLoggingFileName(String loggingFileName) {
+        this.loggingFileName = loggingFileName;
+    }
+
+    public boolean isRunWithLogging() {
+        return runWithLogging;
+    }
+
+    public void setRunWithLogging( boolean runWithLogging ) {
+        this.runWithLogging = runWithLogging;
     }
 
     public PMML4Result run(PMMLRequestData requestData) {
@@ -55,7 +81,15 @@ public class PMMLExecutor {
 
     private PMML4Result run(PMMLRequestData requestData,
             Optional<PMML4Data> data) {
+        KieRuntimeLogger logger = null;
         RuleUnitExecutor ruleUnitExecutor = RuleUnitExecutor.create().bind(kieBase);
+        if (runWithLogging) {
+            if (loggingFileName != null) {
+                logger = ((InternalRuleUnitExecutor)ruleUnitExecutor).addFileLogger(loggingFileName);
+            } else {
+                logger = ((InternalRuleUnitExecutor)ruleUnitExecutor).addConsoleLogger();
+            }
+        }
         DataSource<PMMLRequestData> requestDataSource = ruleUnitExecutor.newDataSource("request");;
         DataSource<PMML4Result> resultDataSource = ruleUnitExecutor.newDataSource("results");
         DataSource<PMML4Data> pmmlDataSource = ruleUnitExecutor.newDataSource("pmmlData");
@@ -67,9 +101,14 @@ public class PMMLExecutor {
             pmmlDataSource.insert(data.get());
         }
 
-        ruleUnitExecutor.run(startingRuleUnit("RuleUnitIndicator", requestData.getModelName(),
-                "org.drools.scorecards.example"));
-
+        try {
+            ruleUnitExecutor.run(startingRuleUnit("RuleUnitIndicator", requestData.getModelName(),
+                    "org.drools.scorecards.example"));
+        } finally {
+            if (logger != null) {
+                logger.close();
+            }
+        }
         return resultHandler;
     }
 
