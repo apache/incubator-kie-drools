@@ -131,7 +131,7 @@ public class ModelBuilderImpl extends KnowledgeBuilderImpl {
     protected void generatePOJOs(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
         InternalKnowledgePackage pkg = pkgRegistry.getPackage();
         String pkgName = pkg.getName();
-        PackageModel model = packageModels.computeIfAbsent(pkgName, s -> new PackageModel(pkgName, this.getBuilderConfiguration(), isPattern));
+        PackageModel model = packageModels.computeIfAbsent(pkgName, s -> new PackageModel(pkgName, this.getBuilderConfiguration(), isPattern, pkgRegistry));
         model.addImports(pkg.getTypeResolver().getImports());
         generatePOJO(pkg, packageDescr, model);
     }
@@ -141,7 +141,7 @@ public class ModelBuilderImpl extends KnowledgeBuilderImpl {
         validateUniqueRuleNames(packageDescr);
         InternalKnowledgePackage pkg = pkgRegistry.getPackage();
         String pkgName = pkg.getName();
-        PackageModel model = packageModels.computeIfAbsent(pkgName, s -> new PackageModel(pkgName, this.getBuilderConfiguration(), isPattern));
+        PackageModel model = packageModels.computeIfAbsent(pkgName, s -> new PackageModel(pkgName, this.getBuilderConfiguration(), isPattern, pkgRegistry));
         generateModel(this, pkg, packageDescr, model, isPattern);
     }
 

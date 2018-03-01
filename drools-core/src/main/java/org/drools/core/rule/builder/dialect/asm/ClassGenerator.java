@@ -42,7 +42,7 @@ import static org.mvel2.asm.Opcodes.*;
 
 public class ClassGenerator {
 
-    public static final boolean DUMP_GENERATED_CLASSES = false;
+    public static final boolean DUMP_GENERATED_CLASSES = true;
 
     private final String className;
     private final TypeResolver typeResolver;

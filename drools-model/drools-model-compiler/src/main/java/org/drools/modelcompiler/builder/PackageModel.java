@@ -31,6 +31,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
+import org.drools.compiler.compiler.PackageRegistry;
+import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.CompilationUnit;
 import org.drools.javaparser.ast.Modifier;
@@ -78,6 +80,7 @@ public class PackageModel {
 
     private final String name;
     private final boolean isPattern;
+    private final PackageRegistry pkgRegistry;
     private final String rulesFileName;
     
     private Set<String> imports = new HashSet<>();
@@ -104,11 +107,12 @@ public class PackageModel {
 
     private KnowledgeBuilderConfigurationImpl configuration;
     private Map<String, AccumulateFunction> accumulateFunctions;
+    private InternalKnowledgePackage pkg;
 
-
-    public PackageModel(String name, KnowledgeBuilderConfigurationImpl configuration, boolean isPattern) {
+    public PackageModel(String name, KnowledgeBuilderConfigurationImpl configuration, boolean isPattern, PackageRegistry pkgRegistry) {
         this.name = name;
         this.isPattern = isPattern;
+        this.pkgRegistry = pkgRegistry;
         this.rulesFileName = generateRulesFileName();
         this.configuration = configuration;
         exprIdGenerator = new DRLIdGenerator();
@@ -218,6 +222,18 @@ public class PackageModel {
 
     public Map<String, AccumulateFunction> getAccumulateFunctions() {
         return accumulateFunctions;
+    }
+
+    public void setInternalKnowledgePackage(InternalKnowledgePackage pkg) {
+        this.pkg = pkg;
+    }
+
+    public InternalKnowledgePackage getPkg() {
+        return pkg;
+    }
+
+    public PackageRegistry getPkgRegistry() {
+        return pkgRegistry;
     }
 
     public static class RuleSourceResult {

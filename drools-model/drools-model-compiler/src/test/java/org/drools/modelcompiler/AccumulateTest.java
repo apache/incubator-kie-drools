@@ -570,7 +570,6 @@ public class AccumulateTest extends BaseModelTest {
     }
 
     @Test
-    @Ignore
     public void testExpandedAccumulateWith2Args2Bindings() {
         String str = "import " + Person.class.getCanonicalName() + ";\n" +
                 "rule R when\n" +
