@@ -167,7 +167,7 @@ public class LegacyAccumulateInvoker {
             "    }\n" +
             "}";
 
-    public LegacyAccumulateInvoker(Map<String, String> map) {
+    public LegacyAccumulateInvoker(Map<String, Object> map) {
         this.map = map;
     }
 

@@ -17,6 +17,7 @@ import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.CompilationUnit;
 import org.drools.modelcompiler.domain.Person;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -193,6 +194,7 @@ public class LegacyAccumulateInvokerTest {
     final CompilationUnit multiPatternResultParsed = JavaParser.parse(multiPatternResult);
 
     @Test
+    @Ignore
     public void testInvokerGenerationMultiPattern() throws Exception {
 
         final String className = "accumulate0";
