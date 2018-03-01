@@ -292,7 +292,8 @@ public abstract class AccumulateVisitor {
         } else {
             final List<String> classes = new LegacyAccumulate(context, descr, basePattern).build();
 
-            throw new UnsupportedOperationException("By design this legacy accumulate (with inline custome code) visitor supports only with 1-and-only binding");
+            return;
+//            throw new UnsupportedOperationException("By design this legacy accumulate (with inline custome code) visitor supports only with 1-and-only binding");
         }
 
         writeAccumulateMethod(contextFieldNames, singleAccumulateType, accumulateMethod, actionBlock);

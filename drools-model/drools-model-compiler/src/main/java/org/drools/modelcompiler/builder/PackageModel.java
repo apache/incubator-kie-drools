@@ -100,6 +100,7 @@ public class PackageModel {
     private List<MethodDeclaration> functions = new ArrayList<>();
 
     private List<ClassOrInterfaceDeclaration> generatedPOJOs = new ArrayList<>();
+    private List<GeneratedClassWithPackage> generatedAccumulateClasses = new ArrayList<>();
 
     private List<Expression> typeMetaDataExpressions = new ArrayList<>();
 
@@ -204,6 +205,14 @@ public class PackageModel {
 
     public List<ClassOrInterfaceDeclaration> getGeneratedPOJOsSource() {
         return generatedPOJOs;
+    }
+
+    public void addGeneratedAccumulateClasses(GeneratedClassWithPackage clazz) {
+        this.generatedAccumulateClasses.add(clazz);
+    }
+
+    public List<GeneratedClassWithPackage> getGeneratedAccumulateClasses() {
+        return generatedAccumulateClasses;
     }
 
     public void addAllWindowReferences(String methodName, MethodCallExpr windowMethod) {

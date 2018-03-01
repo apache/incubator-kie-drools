@@ -126,6 +126,17 @@ public class ModelBuilderImpl extends KnowledgeBuilderImpl {
             compileKnowledgePackages(packageDescr, pkgRegistry);
             setAssetFilter(null);
         }
+
+        final List<GeneratedClassWithPackage> accumulateClasses = packageModels
+                .values()
+                .stream()
+                .flatMap(p -> p.getGeneratedAccumulateClasses().stream()).collect(Collectors.toList());
+
+
+        for (CompositePackageDescr packageDescr : packages) {
+            InternalKnowledgePackage pkg = getPackageRegistry(packageDescr.getNamespace()).getPackage();
+            allCompiledClasses.putAll(compileType(this, pkg.getPackageClassLoader(), accumulateClasses));
+        }
     }
 
     protected void generatePOJOs(PackageDescr packageDescr, PackageRegistry pkgRegistry) {

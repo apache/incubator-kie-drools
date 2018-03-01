@@ -11,9 +11,13 @@ import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.compiler.rule.builder.PatternBuilder;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.dialect.java.JavaAccumulateBuilder;
+import org.drools.compiler.rule.builder.dialect.java.JavaRuleClassBuilder;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.RuleConditionElement;
+import org.drools.javaparser.ast.CompilationUnit;
+import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import org.drools.modelcompiler.builder.GeneratedClassWithPackage;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 
@@ -38,17 +42,28 @@ public class LegacyAccumulate {
         final InternalKnowledgePackage pkg = packageModel.getPkg();
         final RuleDescr ruleDescr = context.getRuleDescr();
 
-
         ruleBuildContext = new RuleBuildContext(context.getKbuilder(), ruleDescr, dialectCompiletimeRegistry, pkg, defaultDialect);
     }
 
     public List<String> build() {
 
         final Pattern pattern = (Pattern) new PatternBuilder().build(ruleBuildContext, basePattern);
-        final RuleConditionElement build = javaAccumulateBuilder.build(ruleBuildContext, descr, pattern);
+        javaAccumulateBuilder.build(ruleBuildContext, descr, pattern);
 
-        context.addAccumulateClasses(ruleBuildContext.getMethods());
+        final List<String> methods = ruleBuildContext.getMethods();
 
-        return ruleBuildContext.getMethods();
+        final String s1 = new JavaRuleClassBuilder().buildRule(ruleBuildContext);
+
+        final CompilationUnit cu = org.drools.javaparser.JavaParser.parse(s1);
+
+        GeneratedClassWithPackage generatedClassWithPackage = new GeneratedClassWithPackage(
+                (ClassOrInterfaceDeclaration) cu.getType(0), ruleBuildContext.getPkg().getName(), ruleBuildContext.getPkg().getImports().keySet()
+        );
+
+        context.getPackageModel().addGeneratedAccumulateClasses(generatedClassWithPackage);
+
+        context.addAccumulateClasses(methods);
+
+        return methods;
     }
 }
