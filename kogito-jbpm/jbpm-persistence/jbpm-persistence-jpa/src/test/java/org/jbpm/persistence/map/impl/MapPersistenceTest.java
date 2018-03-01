@@ -16,8 +16,10 @@
 
 package org.jbpm.persistence.map.impl;
 
+import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.process.instance.WorkItemHandler;
+import org.jbpm.persistence.processinstance.ProcessInstanceInfo;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
@@ -258,8 +260,29 @@ public abstract class MapPersistenceTest extends AbstractBaseTest {
             Assert.assertEquals( processInstancesBeforeTest, getProcessInstancesCount() );
         }
     }
+    
+    @Test
+    public void processWithNotNullStartDateTest() {
+        String processId = "signalProcessTest";
+        String eventType = "myEvent";
+        RuleFlowProcess process = ProcessCreatorForHelp.newSimpleEventProcess( processId,
+                                                                               eventType );
 
+        KieBase kbase = createKieBase(process);
+        StatefulKnowledgeSession crmPersistentSession = createSession(kbase);
+        
+        RuleFlowProcessInstance processInstance = (RuleFlowProcessInstance) crmPersistentSession.startProcess( processId );   
+        InternalKnowledgeRuntime kruntime = processInstance.getKnowledgeRuntime();
+        Assert.assertEquals( ProcessInstance.STATE_ACTIVE,
+                             processInstance.getState() );
 
+        ProcessInstanceInfo processInstanceInfo = new ProcessInstanceInfo(processInstance);
+        processInstance = (RuleFlowProcessInstance) processInstanceInfo.getProcessInstance(kruntime, crmPersistentSession.getEnvironment());
+
+        Assert.assertNotNull(processInstance.getStartDate());
+        Assert.assertEquals(processInstance.getStartDate(), processInstanceInfo.getStartDate());
+    }
+    
     protected abstract StatefulKnowledgeSession createSession(KieBase kbase);
     
     protected abstract StatefulKnowledgeSession disposeAndReloadSession(StatefulKnowledgeSession crmPersistentSession,

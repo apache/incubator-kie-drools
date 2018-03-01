@@ -16,6 +16,7 @@
 
 package org.jbpm.process.instance;
 
+import java.util.Date;
 import java.util.Map;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
@@ -64,5 +65,7 @@ public interface ProcessInstance extends org.kie.api.runtime.process.ProcessInst
 	String getDeploymentId();
 	
 	void setDeploymentId(String deploymentId);
+	
+	Date getStartDate();
     
 }

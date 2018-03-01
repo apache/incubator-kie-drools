@@ -27,6 +27,7 @@ import javax.naming.InitialContext;
 import javax.transaction.UserTransaction;
 
 import org.jbpm.persistence.processinstance.JPAProcessInstanceManager;
+import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.After;
 import org.junit.Before;
@@ -169,6 +170,20 @@ public class GetProcessInstancesTest extends AbstractBaseTest {
         ksession.dispose();
         
         assertProcessInstancesNotExist(notProcess);
+    }
+    
+    @Test
+    public void createProcessInstanceAndGetStartDate() throws Exception {
+        StatefulKnowledgeSession ksession = reloadKnowledgeSession();
+        long  processId= ksession.createProcessInstance("org.jbpm.processinstance.helloworld", null).getId();
+        assertEquals(0, ksession.getProcessInstances().size());
+        
+        RuleFlowProcessInstance processInstance = (RuleFlowProcessInstance) ksession.getProcessInstance(processId); 
+        assertNotNull("Process " + processId + " exist!", processInstance);
+        assertNotNull("Process start at " + processInstance.getStartDate(), processInstance.getStartDate());
+        
+        ksession.dispose();
+        
     }
 
    

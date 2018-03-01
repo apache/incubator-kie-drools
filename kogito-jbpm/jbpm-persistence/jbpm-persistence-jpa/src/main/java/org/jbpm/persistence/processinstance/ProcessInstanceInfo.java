@@ -196,6 +196,7 @@ public class ProcessInstanceInfo implements PersistentProcessInstance {
                                                     e );
             }
         }
+        ((WorkflowProcessInstanceImpl) processInstance).internalSetStartDate(this.startDate);
         return processInstance;
     }
    
