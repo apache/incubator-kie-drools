@@ -180,10 +180,10 @@ public class ItemDefinitionDependenciesGeneratedTest {
 
     @Test
     public void testOrdering() {
-        logger.info("Item definitions:");
+        logger.debug("Item definitions:");
         itemDefinitions.forEach(itemDefinition -> {
-            logger.info(itemDefinition.getName());
-            itemDefinition.getItemComponent().forEach(dependency -> logger.info(dependency.getName()));
+            logger.debug(itemDefinition.getName());
+            itemDefinition.getItemComponent().forEach(dependency -> logger.debug(dependency.getName()));
         });
         List<ItemDefinition> orderedList = orderingStrategy(itemDefinitions);
 
