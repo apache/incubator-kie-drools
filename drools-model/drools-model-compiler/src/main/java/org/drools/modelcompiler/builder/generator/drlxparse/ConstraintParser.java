@@ -86,6 +86,10 @@ public class ConstraintParser {
             drlxExpr = (( EnclosedExpr ) drlxExpr).getInner();
         }
 
+        if (drlxExpr instanceof MethodCallExpr && !(( MethodCallExpr ) drlxExpr).getScope().isPresent() && (( MethodCallExpr ) drlxExpr).getNameAsString().equals( "eval" )) {
+            drlxExpr = (( MethodCallExpr ) drlxExpr).getArgument( 0 );
+        }
+
         String exprId;
         if ( GENERATE_EXPR_ID ) {
             exprId = context.getExprId( patternType, expression );
@@ -217,8 +221,7 @@ public class ConstraintParser {
                     if (arg instanceof NameExpr && !arg.toString().equals("_this")) {
                         usedDeclarations.add(arg.toString());
                     } else if (arg instanceof MethodCallExpr) {
-                        TypedExpressionResult typedExpressionResult = new ExpressionTyper(context, null, bindingId, isPositional)
-                                .toTypedExpression(arg);
+                        TypedExpressionResult typedExpressionResult = new ExpressionTyper(context, null, bindingId, isPositional).toTypedExpression(arg);
                         usedDeclarations.addAll(typedExpressionResult.getUsedDeclarations());
                     }
                 }

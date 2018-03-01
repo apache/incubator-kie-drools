@@ -71,6 +71,7 @@ import org.drools.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.javaparser.ast.type.PrimitiveType;
 import org.drools.javaparser.ast.type.Type;
 import org.drools.javaparser.ast.type.UnknownType;
+import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.util.ClassUtil;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
@@ -124,6 +125,10 @@ public class DrlxParseUtil {
             MethodCallExpr body = new MethodCallExpr( scope, accessor.getName() );
             return new TypedExpression( body, accessor.getReturnType() );
         }
+        if (clazz.isArray() && name.equals( "length" )) {
+            FieldAccessExpr expr = new FieldAccessExpr( scope, name );
+            return new TypedExpression( expr, int.class );
+        }
         try {
             Field field = clazz.getField( name );
             FieldAccessExpr expr = new FieldAccessExpr( scope, name );
@@ -145,26 +150,44 @@ public class DrlxParseUtil {
             return getLiteralExpressionType( ( LiteralExpr ) expr );
         }
 
-        if(expr instanceof ArrayAccessExpr) {
+        if (expr instanceof ArrayAccessExpr) {
             return getClassFromContext(typeResolver, ((ArrayCreationExpr)((ArrayAccessExpr) expr).getName()).getElementType().asString());
-        } else if(expr instanceof ArrayCreationExpr) {
+        }
+
+        if (expr instanceof ArrayCreationExpr) {
             return getClassFromContext(typeResolver, ((ArrayCreationExpr) expr).getElementType().asString());
-        } else if(expr instanceof NameExpr) {
+        }
+
+        if (expr instanceof NameExpr) {
             String name = (( NameExpr ) expr).getNameAsString();
             if (usedDeclarations != null) {
                 usedDeclarations.add(name);
             }
             return context.getDeclarationById( name ).map( DeclarationSpec::getDeclarationClass ).get();
-        } else if(expr instanceof MethodCallExpr) {
+        }
+
+        if (expr instanceof MethodCallExpr) {
             MethodCallExpr methodCallExpr = ( MethodCallExpr ) expr;
             Class<?> scopeType = getExpressionType(context, typeResolver, methodCallExpr.getScope().get(), usedDeclarations);
             return returnTypeOfMethodCallExpr(context, typeResolver, methodCallExpr, scopeType, usedDeclarations);
-        } else if(expr instanceof ObjectCreationExpr){
+        }
+
+        if (expr instanceof ObjectCreationExpr) {
             final ClassOrInterfaceType type = ((ObjectCreationExpr) expr).getType();
             return getClassFromContext (typeResolver, type.asString());
-        }else {
-            throw new RuntimeException("Unknown expression type: " + expr);
         }
+
+        if (expr.isCastExpr()) {
+            String typeName = expr.asCastExpr().getType().toString();
+            try {
+                return typeResolver.resolveType( expr.asCastExpr().getType().toString() );
+            } catch (ClassNotFoundException e) {
+                context.addCompilationError( new InvalidExpressionErrorResult( "Unknown type in cast expression: " + typeName ) );
+                throw new RuntimeException( "Unknown type in cast expression: " + typeName );
+            }
+        }
+
+        throw new RuntimeException("Unknown expression type: " + expr);
     }
 
     public static Expression coerceLiteralExprToType( LiteralStringValueExpr expr, Class<?> type ) {
@@ -327,39 +350,42 @@ public class DrlxParseUtil {
 
         createExpressionCall(expr, callStackLeftToRight);
 
-        List<Expression> methodCall = new ArrayList<>();
         Class<?> previousClass = clazz;
+        Expression previousScope = null;
+
         for (ParsedMethod e : callStackLeftToRight) {
             if (e.expression instanceof NameExpr || e.expression instanceof FieldAccessExpr) {
                 if (e.fieldToResolve.equals( bindingId )) {
                     continue;
                 }
                 if (previousClass == null) {
-                    previousClass = context.getDeclarationById( e.fieldToResolve )
-                            .map( DeclarationSpec::getDeclarationClass )
-                            .orElseThrow( () -> new RuntimeException( "Unknown field: " + e.fieldToResolve ) );
-                    methodCall.add(e.expression);
+                    try {
+                        previousClass = typeResolver.resolveType( e.fieldToResolve );
+                        previousScope = new NameExpr( e.fieldToResolve );
+                    } catch (ClassNotFoundException e1) {
+                        // ignore
+                    }
+                    if (previousClass == null) {
+                        previousClass = context.getDeclarationById( e.fieldToResolve )
+                                .map( DeclarationSpec::getDeclarationClass )
+                                .orElseThrow( () -> new RuntimeException( "Unknown field: " + e.fieldToResolve ) );
+                        previousScope = e.expression;
+                    }
                 } else {
-                    TypedExpression te = nameExprToMethodCallExpr( e.fieldToResolve, previousClass, null );
+                    TypedExpression te = nameExprToMethodCallExpr( e.fieldToResolve, previousClass, previousScope );
                     Class<?> returnType = te.getType();
-                    methodCall.add( te.getExpression() );
+                    previousScope = te.getExpression();
                     previousClass = returnType;
                 }
             } else if (e.expression instanceof MethodCallExpr) {
                 Class<?> returnType = returnTypeOfMethodCallExpr(context, typeResolver, (MethodCallExpr) e.expression, previousClass, null);
-                MethodCallExpr cloned = ((MethodCallExpr) e.expression.clone()).removeScope();
-                methodCall.add(cloned);
+                MethodCallExpr cloned = ((MethodCallExpr) e.expression.clone()).setScope(previousScope);
+                previousScope = cloned;
                 previousClass = returnType;
             }
         }
 
-        Expression call = methodCall.stream()
-                .reduce((a, b) -> {
-                    ((NodeWithOptionalScope) b).setScope(a);
-                    return b;
-                }).orElseThrow(() -> new UnsupportedOperationException("No Expression converted"));
-
-        return new TypedExpression(call, previousClass);
+        return new TypedExpression(previousScope, previousClass);
     }
 
     private static Expression createExpressionCall(Expression expr, Deque<ParsedMethod> expressions) {
