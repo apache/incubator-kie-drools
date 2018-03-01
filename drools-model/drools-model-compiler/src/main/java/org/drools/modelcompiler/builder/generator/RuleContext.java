@@ -1,6 +1,7 @@
 package org.drools.modelcompiler.builder.generator;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.HashMap;
@@ -49,6 +50,8 @@ public class RuleContext {
     private RuleUnitDescr ruleUnitDescr;
 
     private Map<String, String> aggregatePatternMap = new HashMap<>();
+
+    private List<String> accumulateClasses = new ArrayList<>();
 
 
     private RuleDialect ruleDialect = RuleDialect.JAVA; // assumed is java by default as per Drools manual.
@@ -255,6 +258,14 @@ public class RuleContext {
 
     public TypeResolver getTypeResolver() {
         return typeResolver;
+    }
+
+    public void addAccumulateClasses(List<String> classes) {
+        accumulateClasses.addAll(classes);
+    }
+
+    public List<String> getAccumulateClasses() {
+        return accumulateClasses;
     }
 }
 

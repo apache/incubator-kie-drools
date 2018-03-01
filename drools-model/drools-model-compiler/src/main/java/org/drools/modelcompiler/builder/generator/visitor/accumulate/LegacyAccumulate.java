@@ -23,10 +23,12 @@ public class LegacyAccumulate {
     private final PatternDescr basePattern;
     private final RuleBuildContext ruleBuildContext;
     private final JavaAccumulateBuilder javaAccumulateBuilder = new JavaAccumulateBuilder();
+    private final RuleContext context;
 
     public LegacyAccumulate(RuleContext context, AccumulateDescr descr, PatternDescr basePattern) {
         this.descr = descr;
         this.basePattern = basePattern;
+        this.context = context;
 
         final PackageModel packageModel = context.getPackageModel();
 
@@ -44,6 +46,9 @@ public class LegacyAccumulate {
 
         final Pattern pattern = (Pattern) new PatternBuilder().build(ruleBuildContext, basePattern);
         final RuleConditionElement build = javaAccumulateBuilder.build(ruleBuildContext, descr, pattern);
+
+        context.addAccumulateClasses(ruleBuildContext.getMethods());
+
         return ruleBuildContext.getMethods();
     }
 }
