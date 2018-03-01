@@ -93,7 +93,7 @@ public class DMNRuntimeTest {
         context.set( "Monthly Salary", 1000 );
 
         DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
-        assertThat( DMNRuntimeUtil.formatMessages( dmnResult.getMessages() ), dmnModel.hasErrors(), is( false ) );
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
         DMNContext result = dmnResult.getContext();
 
@@ -1805,10 +1805,90 @@ public class DMNRuntimeTest {
         DMNContext emptyContext = DMNFactory.newContext();
 
         DMNResult dmnResult = runtime.evaluateAll(dmnModel, emptyContext);
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnModel.hasErrors(), is(false));
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
         DMNContext result = dmnResult.getContext();
         assertThat(result.get("an hardcoded forloop"), is(Arrays.asList(new BigDecimal(2), new BigDecimal(3), new BigDecimal(4))));
+    }
+
+    @Test
+    public void testDecisionTableOutputDMNTypeCollection() {
+        // DROOLS-2359
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DecisionTableOutputDMNTypeCollection.dmn", this.getClass());
+        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_ae5d2033-c6d0-411f-a394-da33a70e5638", "Drawing 1");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        DMNContext context = DMNFactory.newContext();
+        context.set("selector", "asd");
+
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        DMNContext result = dmnResult.getContext();
+        assertThat(result.get("a decision"), is(Arrays.asList("abc", "xyz")));
+    }
+
+    @Test
+    public void testDecisionTableOutputDMNTypeCollection_NOtypecheck() {
+        // DROOLS-2359
+        // do NOT use the DMNRuntimeUtil as that enables typeSafe check override for runtime.
+        KieServices ks = KieServices.Factory.get();
+        final KieContainer kieContainer = KieHelper.getKieContainer(ks.newReleaseId("org.kie", "dmn-test-" + UUID.randomUUID(), "1.0"),
+                                                                    ks.getResources().newClassPathResource("DecisionTableOutputDMNTypeCollection.dmn", this.getClass()));
+        DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
+        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_ae5d2033-c6d0-411f-a394-da33a70e5638", "Drawing 1");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        DMNContext context = DMNFactory.newContext();
+        context.set("selector", "asd");
+
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        DMNContext result = dmnResult.getContext();
+        assertThat(result.get("a decision"), is(Arrays.asList("abc", "xyz")));
+    }
+
+    @Test
+    public void testDecisionTableOutputDMNTypeCollectionWithLOV() {
+        // DROOLS-2359
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DecisionTableOutputDMNTypeCollectionWithLOV.dmn", this.getClass());
+        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_ae5d2033-c6d0-411f-a394-da33a70e5638", "List of Words in DT");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        DMNContext context = DMNFactory.newContext();
+        context.set("selector", "asd");
+
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        DMNContext result = dmnResult.getContext();
+        assertThat(result.get("a decision"), is(Arrays.asList("abc", "a")));
+    }
+
+    @Test
+    public void testDecisionTableOutputDMNTypeCollectionWithLOV_NOtypecheck() {
+        // DROOLS-2359
+        // do NOT use the DMNRuntimeUtil as that enables typeSafe check override for runtime.
+        KieServices ks = KieServices.Factory.get();
+        final KieContainer kieContainer = KieHelper.getKieContainer(ks.newReleaseId("org.kie", "dmn-test-" + UUID.randomUUID(), "1.0"),
+                                                                    ks.getResources().newClassPathResource("DecisionTableOutputDMNTypeCollectionWithLOV.dmn", this.getClass()));
+        DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
+        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_ae5d2033-c6d0-411f-a394-da33a70e5638", "List of Words in DT");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        DMNContext context = DMNFactory.newContext();
+        context.set("selector", "asd");
+
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        DMNContext result = dmnResult.getContext();
+        assertThat(result.get("a decision"), is(Arrays.asList("abc", "a")));
     }
 }
 
