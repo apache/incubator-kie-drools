@@ -1805,10 +1805,32 @@ public class DMNRuntimeTest {
         DMNContext emptyContext = DMNFactory.newContext();
 
         DMNResult dmnResult = runtime.evaluateAll(dmnModel, emptyContext);
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnModel.hasErrors(), is(false));
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
         DMNContext result = dmnResult.getContext();
         assertThat(result.get("an hardcoded forloop"), is(Arrays.asList(new BigDecimal(2), new BigDecimal(3), new BigDecimal(4))));
+    }
+
+    @Test
+    public void testList_of_Vowels() {
+        // DROOLS-2357
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime("List_of_Vowels.dmn", this.getClass());
+        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_c5f007ce-4d45-4aac-8729-991d4abc7826", "List of Vowels");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        DMNContext emptyContext = DMNFactory.newContext();
+
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, emptyContext);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(true));
+        assertThat(dmnResult.getMessages().stream()
+                            .filter(m -> m.getMessageType() == DMNMessageType.ERROR_EVAL_NODE)
+                            .anyMatch(m -> m.getSourceId().equals("_b2205027-d06c-41b5-8419-e14b501e14a6")),
+                   is(true));
+
+        DMNContext result = dmnResult.getContext();
+        assertThat(result.get("Decide Vowel a"), is("a"));
+        assertThat(result.get("Decide BAD"), nullValue());
     }
 }
 
