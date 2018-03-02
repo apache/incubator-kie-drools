@@ -107,8 +107,7 @@ public class UserTaskInstanceWithPotOwnerQueryMapper extends AbstractQueryMapper
               getColumnStringValue(dataSetResult, COLUMN_FORM_NAME, index),//forname,
               getColumnStringValue(dataSetResult, COLUMN_CORRELATIONKEY, index),//correlationkey,
               getColumnStringValue(dataSetResult, COLUMN_SUBJECT, index),//summary,
-              getColumnStringValue(dataSetResult, COLUMN_DEPLOYMENTID, index),//deploymentId,
-              getColumnStringValue(dataSetResult, COLUMN_PROCESSINSTANCEDESCRIPTION, index)//processInstanceDescription
+              getColumnStringValue(dataSetResult, COLUMN_DEPLOYMENTID, index)//deploymentId,
               );
         return customUserTask;
     }

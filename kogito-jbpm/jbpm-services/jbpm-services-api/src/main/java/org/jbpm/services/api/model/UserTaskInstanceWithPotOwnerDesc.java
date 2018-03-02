@@ -36,6 +36,4 @@ public interface UserTaskInstanceWithPotOwnerDesc extends UserTaskInstanceDesc{
     Map<String,Object> getInputdata();
     
     Map<String,Object> getOutputdata();
-    
-    String getProcessInstanceDescription();
 }

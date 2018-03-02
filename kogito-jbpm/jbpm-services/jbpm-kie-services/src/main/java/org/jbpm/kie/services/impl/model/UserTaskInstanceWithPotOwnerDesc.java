@@ -35,21 +35,19 @@ public class UserTaskInstanceWithPotOwnerDesc extends UserTaskInstanceDesc imple
     private String subject;
     private Map<String,Object> inputdata;
     private Map<String,Object> outputdata;
-    private String processInstanceDescription;
 
     public UserTaskInstanceWithPotOwnerDesc(Long taskId, String name, String formName, 
                                             String subject, String actualOwner, String potOwner, 
                                             String correlationKey, Date createdOn, String createdBy, 
                                             Date expirationDate, Date lastModificationDate, String lastModificationUser,
                                             Integer priority, String status, Long processInstanceId, 
-                                            String processId, String deploymentId, String processInstanceDescription) {
-        super(taskId, status, actualOwner, name, priority, createdBy, processId, processInstanceId, createdOn, formName, deploymentId, expirationDate);
+                                            String processId, String deploymentId) {
+        super(taskId, status, actualOwner, name, priority, createdBy, processId, processInstanceId, createdOn, formName, deploymentId,expirationDate);
         this.potentialOwners.add(potOwner);
         this.correlationKey = correlationKey;
         this.lastModificationDate = lastModificationDate;
         this.lastModificationUser = lastModificationUser;
         this.subject = subject;
-        this.processInstanceDescription = processInstanceDescription;
     }
     
     public UserTaskInstanceWithPotOwnerDesc(String actualOwner, String createdBy,
@@ -59,11 +57,10 @@ public class UserTaskInstanceWithPotOwnerDesc extends UserTaskInstanceDesc imple
                                             String processId, String status,
                                             String potOwner, String formName,
                                             String correlationKey, String subject,
-                                            String deploymentId, String processInstanceDescription) {
+                                            String deploymentId) {
               super(taskId, status, actualOwner, name, priority, createdBy, processId, processInstanceId, createdOn, formName, deploymentId,expirationDate);
               this.potentialOwners.add(potOwner);
               this.correlationKey = correlationKey;
-              this.processInstanceDescription = processInstanceDescription;
               this.subject = subject;
     }
     
@@ -147,14 +144,6 @@ public class UserTaskInstanceWithPotOwnerDesc extends UserTaskInstanceDesc imple
             this.outputdata = new HashMap<String, Object>();
         }
         this.outputdata.put(variable, variableValue);
-    }
-
-    public String getProcessInstanceDescription() {
-        return processInstanceDescription;
-    }
-
-    public void setProcessInstanceDescription(String processInstanceDescription) {
-        this.processInstanceDescription = processInstanceDescription;
     }
  
 }
