@@ -17,6 +17,7 @@
 package org.kie.dmn.feel.runtime.decisiontables;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -142,20 +143,33 @@ public class DecisionTableImpl {
         return msgs;
     }
 
+    /**
+     * This checks one "column" of the decision table output(s).
+     */
     private void checkOneResult(EvaluationContext ctx, DTDecisionRule rule, Map<Integer, String> msgs, DTOutputClause dtOutputClause, Object result) {
-        if (((EvaluationContextImpl) ctx).isPerformRuntimeTypeCheck() && !dtOutputClause.getType().isAssignableValue(result)) {
+        if (dtOutputClause.isCollection() && result instanceof Collection) {
+            for (Object value : (Collection) result) {
+                checkOneValue(ctx, rule, msgs, dtOutputClause, value);
+            }
+        } else {
+            checkOneValue(ctx, rule, msgs, dtOutputClause, result);
+        }
+    }
+
+    private void checkOneValue(EvaluationContext ctx, DTDecisionRule rule, Map<Integer, String> msgs, DTOutputClause dtOutputClause, Object value) {
+        if (((EvaluationContextImpl) ctx).isPerformRuntimeTypeCheck() && !dtOutputClause.getType().isAssignableValue(value)) {
             // invalid type
             int index = outputs.indexOf( dtOutputClause ) + 1;
             msgs.put( index,
                       "Invalid result type on rule #" + rule.getIndex() + ", output " +
                       (dtOutputClause.getName() != null ? "'"+dtOutputClause.getName()+"'" : "#" + index) +
-                      ". Value "+result+" is not of type "+dtOutputClause.getType().getName() +".");
+                            ". Value " + value + " is not of type " + dtOutputClause.getType().getName() + ".");
             return;
         }
         if( dtOutputClause.getOutputValues() != null && ! dtOutputClause.getOutputValues().isEmpty() ) {
             boolean found = false;
             for( UnaryTest test : dtOutputClause.getOutputValues() ) {
-                Boolean succeeded = test.apply( ctx, result );
+                Boolean succeeded = test.apply(ctx, value);
                 if( succeeded != null && succeeded ) {
                     found = true;
                 }
@@ -166,7 +180,7 @@ public class DecisionTableImpl {
                 msgs.put( index,
                           "Invalid result value on rule #"+rule.getIndex()+", output "+
                           (dtOutputClause.getName() != null ? "'"+dtOutputClause.getName()+"'" : "#"+index ) +
-                          ". Value "+result+" does not match list of allowed values.");
+                                ". Value " + value + " does not match list of allowed values.");
             }
         }
     }
