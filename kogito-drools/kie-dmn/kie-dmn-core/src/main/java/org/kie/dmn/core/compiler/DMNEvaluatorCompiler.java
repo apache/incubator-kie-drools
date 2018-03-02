@@ -455,6 +455,12 @@ public class DMNEvaluatorCompiler {
                 if( typeRef == null ) {
                     typeRef = (BaseDMNTypeImpl) DMNTypeRegistry.UNKNOWN;
                 }
+            } else if (dt.getOutput().size() == 1 && (dt.getParent() instanceof Decision || dt.getParent() instanceof BusinessKnowledgeModel || dt.getParent() instanceof ContextEntry)) {
+                QName inferredTypeRef = recurseUpToInferTypeRef(model, oc, dt);
+                // if inferredTypeRef is null, a std err will have been reported
+                if (inferredTypeRef != null) {
+                    typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().resolveType(resolveNamespaceForTypeRef(inferredTypeRef, oc), inferredTypeRef.getLocalPart());
+                }
             }
 
             if ( outputValuesText != null ) {
@@ -468,19 +474,12 @@ public class DMNEvaluatorCompiler {
                                                     ++index );
             } else if ( typeRef != DMNTypeRegistry.UNKNOWN ) {
                 outputValues = typeRef.getAllowedValuesFEEL();
-            } else if ( dt.getOutput().size() == 1
-                        && ( dt.getParent() instanceof Decision || dt.getParent() instanceof BusinessKnowledgeModel || dt.getParent() instanceof ContextEntry ) ) {
-                QName inferredTypeRef = recurseUpToInferTypeRef(model, oc, dt);
-                // if inferredTypeRef is null, a std err will have been reported
-                if ( inferredTypeRef != null ) {
-                    typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().resolveType(resolveNamespaceForTypeRef(inferredTypeRef, oc), inferredTypeRef.getLocalPart());
-                    outputValues = typeRef.getAllowedValuesFEEL();
-                }
             }
+
             if ( outputValues != null && !outputValues.isEmpty() ) {
                 hasOutputValues = true;
             }
-            outputs.add( new DTOutputClause( outputName, id, outputValues, defaultValue, typeRef.getFeelType() ) );
+            outputs.add(new DTOutputClause(outputName, id, outputValues, defaultValue, typeRef.getFeelType(), typeRef.isCollection()));
         }
         if ( dt.getHitPolicy().equals(HitPolicy.PRIORITY) && !hasOutputValues ) {
             MsgUtil.reportMessage( logger,

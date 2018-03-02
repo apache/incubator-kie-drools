@@ -93,7 +93,7 @@ public class DMNRuntimeTest {
         context.set( "Monthly Salary", 1000 );
 
         DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
-        assertThat( DMNRuntimeUtil.formatMessages( dmnResult.getMessages() ), dmnModel.hasErrors(), is( false ) );
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
         DMNContext result = dmnResult.getContext();
 
