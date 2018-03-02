@@ -18,19 +18,26 @@ package org.kie.dmn.backend.marshalling.v1_1;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 
 import javax.xml.XMLConstants;
 
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.dmn.api.marshalling.v1_1.DMNMarshaller;
+import org.kie.dmn.backend.marshalling.v1_1.xstream.extensions.DecisionServicesExtensionRegister;
 import org.kie.dmn.model.v1_1.Decision;
+import org.kie.dmn.model.v1_1.DecisionService;
 import org.kie.dmn.model.v1_1.Definitions;
 import org.kie.dmn.model.v1_1.InputData;
 import org.kie.dmn.model.v1_1.LiteralExpression;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 
 public class DMNXMLLoaderTest {
 
@@ -72,6 +79,49 @@ public class DMNXMLLoaderTest {
         assertThat( idata.getVariable().getTypeRef().getPrefix(), is( "feel" ) );
         assertThat( idata.getVariable().getTypeRef().getLocalPart(), is( "string" ) );
         assertThat( idata.getVariable().getTypeRef().getNamespaceURI(), is( XMLConstants.NULL_NS_URI ) );
+    }
+
+    @Test
+    public void testLoadingDecisionServices() {
+        final DMNMarshaller DMNMarshaller = DMNMarshallerFactory.newMarshallerWithExtensions(Arrays.asList(new DecisionServicesExtensionRegister()));
+
+        final InputStream is = this.getClass().getResourceAsStream("0004-decision-services.dmn");
+        final InputStreamReader isr = new InputStreamReader(is);
+        final Definitions def = DMNMarshaller.unmarshal(isr);
+
+        assertThat(def.getDecisionService().size(), is(2));
+
+        DecisionService decisionService1 = def.getDecisionService().get(0);
+        assertThat(decisionService1.getId(), is("_70386614-9838-420b-a2ae-ff901ada63fb"));
+        assertThat(decisionService1.getName(), is("A Only Knowing B and C"));
+        assertThat(decisionService1.getOutputDecision().size(), is(1));
+        assertThat(decisionService1.getEncapsulatedDecision().size(), is(0));
+        assertThat(decisionService1.getInputDecision().size(), is(2));
+        assertThat(decisionService1.getInputData().size(), is(0));
+        assertThat(decisionService1.getOutputDecision().get(0).getHref(), is("#_c2b44706-d479-4ceb-bb74-73589d26dd04"));
+
+        DecisionService decisionService2 = def.getDecisionService().get(1);
+        assertThat(decisionService2.getId(), is("_4620ef13-248a-419e-bc68-6b601b725a03"));
+        assertThat(decisionService2.getName(), is("A only as output knowing D and E"));
+        assertThat(decisionService2.getOutputDecision().size(), is(1));
+        assertThat(decisionService2.getEncapsulatedDecision().size(), is(2));
+        assertThat(decisionService2.getInputDecision().size(), is(0));
+        assertThat(decisionService2.getInputData().size(), is(2));
+        assertThat(decisionService2.getInputData().get(0).getHref(), is("#_bcea16fb-6c19-4bde-b37d-73407002c064"));
+        assertThat(decisionService2.getInputData().get(1).getHref(), is("#_207b9195-a441-47f2-9414-2fad64b463f9"));
+
+    }
+
+    @Test
+    public void test0004_multiple_extensions() throws Exception {
+        DMNMarshaller marshaller = DMNMarshallerFactory.newMarshallerWithExtensions(Arrays.asList(new DecisionServicesExtensionRegister()));
+
+        final InputStream is = this.getClass().getResourceAsStream("0004-decision-services_multiple_extensions.dmn");
+        final InputStreamReader isr = new InputStreamReader(is);
+        final Definitions def = marshaller.unmarshal(isr);
+
+        assertThat(def.getExtensionElements().getAny().size(), is(1));
+        // if arrived here, means it did not fail with exception while trying to unmarshall unknown rss extension element, hence it just skipped it.
     }
 
     @Test

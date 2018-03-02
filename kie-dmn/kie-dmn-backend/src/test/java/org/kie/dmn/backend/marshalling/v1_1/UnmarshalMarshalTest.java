@@ -16,10 +16,6 @@
 
 package org.kie.dmn.backend.marshalling.v1_1;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -38,6 +34,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.dmn.api.marshalling.v1_1.DMNMarshaller;
 import org.kie.dmn.backend.marshalling.v1_1.extensions.MyTestRegister;
+import org.kie.dmn.backend.marshalling.v1_1.xstream.extensions.DecisionServicesExtensionRegister;
 import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
 import org.kie.dmn.model.v1_1.Definitions;
 import org.slf4j.Logger;
@@ -53,6 +50,10 @@ import org.xmlunit.validation.Languages;
 import org.xmlunit.validation.ValidationProblem;
 import org.xmlunit.validation.ValidationResult;
 import org.xmlunit.validation.Validator;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 
 public class UnmarshalMarshalTest {
@@ -73,7 +74,19 @@ public class UnmarshalMarshalTest {
     public void test0003() throws Exception {
         testRoundTrip("org/kie/dmn/backend/marshalling/v1_1/", "0003-input-data-string-allowed-values.dmn");
     }
+
+    @Test
+    public void test0004() throws Exception {
+        DMNMarshaller marshaller = DMNMarshallerFactory.newMarshallerWithExtensions(Arrays.asList(new DecisionServicesExtensionRegister()));
+        testRoundTrip("org/kie/dmn/backend/marshalling/v1_1/", "0004-decision-services.dmn", marshaller);
+    }
     
+    @Test
+    public void test0004_ns_other_location() throws Exception {
+        DMNMarshaller marshaller = DMNMarshallerFactory.newMarshallerWithExtensions(Arrays.asList(new DecisionServicesExtensionRegister()));
+        testRoundTrip("org/kie/dmn/backend/marshalling/v1_1/", "0004-decision-services_ns_other_location.dmn", marshaller);
+    }
+
     @Test
     public void testDish() throws Exception {
         testRoundTrip("", "dish-decision.xml");
@@ -105,7 +118,13 @@ public class UnmarshalMarshalTest {
         DMNMarshaller marshaller = DMNMarshallerFactory.newMarshallerWithExtensions(Arrays.asList( new MyTestRegister() ));
         testRoundTrip("", "Hello_World_semantic_namespace_with_extensions.dmn", marshaller);
     }
-    
+
+    @Test
+    public void testHello_World_semantic_namespace_with_extensions_other_ns_location() throws Exception {
+        DMNMarshaller marshaller = DMNMarshallerFactory.newMarshallerWithExtensions(Arrays.asList(new MyTestRegister()));
+        testRoundTrip("", "Hello_World_semantic_namespace_with_extensions_other_ns_location.dmn", marshaller);
+    }
+
     @Test
     public void testSemanticNamespace() throws Exception {
         testRoundTrip("", "semantic-namespace.xml");
