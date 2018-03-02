@@ -53,4 +53,9 @@ public class DecisionService extends NamedElement {
         return this.inputData;
     }
 
+    @Override
+    public String toString() {
+        return getName();
+    }
+
 }

@@ -16,19 +16,19 @@
 
 package org.kie.dmn.backend.marshalling.v1_1.xstream;
 
-import org.kie.dmn.api.marshalling.v1_1.DMNExtensionRegister;
-import org.kie.dmn.model.v1_1.DMNElement;
-import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_1.DMNElement.ExtensionElements;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.thoughtworks.xstream.mapper.CannotResolveClassException;
+import org.kie.dmn.api.marshalling.v1_1.DMNExtensionRegister;
+import org.kie.dmn.model.v1_1.DMNElement;
+import org.kie.dmn.model.v1_1.DMNElement.ExtensionElements;
+import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
 
 public class ExtensionElementsConverter extends DMNModelInstrumentedBaseConverter {
 
@@ -50,7 +50,7 @@ public class ExtensionElementsConverter extends DMNModelInstrumentedBaseConverte
 
     @Override
     public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
-        Object obj = createModelObject();
+        DMNModelInstrumentedBase obj = createModelObject();
         assignAttributes( reader, obj );
         if(extensionRegisters.size() == 0) {
             while (reader.hasMoreChildren()) {
@@ -60,7 +60,22 @@ public class ExtensionElementsConverter extends DMNModelInstrumentedBaseConverte
                 reader.moveUp();
             }
         } else {
-            parseElements( reader, context, obj );
+            // do as default behavior, but in case cannot unmarshall an extension element child, just skip it.
+            while (reader.hasMoreChildren()) {
+                reader.moveDown();
+                String nodeName = reader.getNodeName();
+                try {
+                    Object object = readItem(reader, context, null);
+                    if (object instanceof DMNModelInstrumentedBase) {
+                        ((DMNModelInstrumentedBase) object).setParent(obj);
+                        ((DMNModelInstrumentedBase) obj).addChildren((DMNModelInstrumentedBase) object);
+                    }
+                    assignChildElement(obj, nodeName, object);
+                } catch (CannotResolveClassException e) {
+                    // do nothing; I tried to convert the extension element child with the converters, but no converter is registered for this child.
+                }
+                reader.moveUp();
+            }
         }
         return obj;
     }

@@ -343,6 +343,7 @@ public class XStreamMarshaller
         xStream.registerConverter(new ContextEntryConverter( xStream ) );
         xStream.registerConverter(new DecisionConverter( xStream ) );
         xStream.registerConverter(new DecisionRuleConverter( xStream ) );
+        xStream.registerConverter(new DecisionServiceConverter(xStream));
         xStream.registerConverter(new DecisionTableConverter( xStream ) );
         xStream.registerConverter(new DefinitionsConverter( xStream ) );
         xStream.registerConverter(new DMNElementReferenceConverter( xStream ) );
