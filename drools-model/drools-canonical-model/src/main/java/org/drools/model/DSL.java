@@ -288,8 +288,8 @@ public class DSL {
     }
 
     // Legay case - source is defined in the invoker
-    public static LegacyAccumulateFunction accFunction( Class<?> accFunctionClass) {
-        return new LegacyAccumulateFunction(accFunctionClass);
+    public static AccumulateFunction accFunction( Class<?> accFunctionClass) {
+        return new AccumulateFunction(null, accFunctionClass);
     }
 
     public static AccumulateFunction accFunction( Class<?> accFunctionClass, Variable source) {
