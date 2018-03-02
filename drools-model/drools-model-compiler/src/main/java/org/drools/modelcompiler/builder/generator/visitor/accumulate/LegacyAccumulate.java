@@ -69,25 +69,22 @@ public class LegacyAccumulate {
 
         context.getPackageModel().addGeneratedAccumulateClasses(generatedClassWithPackage);
 
+        // Let's assume the first one is the correct invokers (there are two)
+        final String invoker = ruleBuildContext.getInvokers().values().iterator().next();
+        final CompilationUnit cuInvoker = org.drools.javaparser.JavaParser.parse(invoker);
 
-        final Collection<String> invoker = ruleBuildContext.getInvokers().values();
-        for(String i: invoker) {
-            final CompilationUnit cuInvoker = org.drools.javaparser.JavaParser.parse(i);
+        Set<String> imports2 = new HashSet<>();
+        imports2.addAll(imports);
+        imports2.addAll(cuInvoker.getImports().stream().map(importDeclaration -> {
+            return importDeclaration.getName().toString();
+        }).collect(Collectors.toList()));
 
-            Set<String> imports2 = new HashSet<>();
-            imports2.addAll(imports);
-            imports2.addAll(cuInvoker.getImports().stream().map(importDeclaration -> {
-                return importDeclaration.getName().toString();
-            }).collect(Collectors.toList()));
+        GeneratedClassWithPackage invokerGenerated = new GeneratedClassWithPackage(
+                (ClassOrInterfaceDeclaration) cuInvoker.getType(0), ruleBuildContext.getPkg().getName(), imports2
+        );
 
+        context.getPackageModel().addGeneratedAccumulateClasses(invokerGenerated);
 
-            GeneratedClassWithPackage invokerGenerated = new GeneratedClassWithPackage(
-                    (ClassOrInterfaceDeclaration) cuInvoker.getType(0), ruleBuildContext.getPkg().getName(), imports2
-            );
-
-            context.getPackageModel().addGeneratedAccumulateClasses(invokerGenerated);
-
-        }
 
 
         context.addAccumulateClasses(methods);
