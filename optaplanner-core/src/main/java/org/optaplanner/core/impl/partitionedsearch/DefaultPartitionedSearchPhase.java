@@ -54,27 +54,20 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solution_>
         implements PartitionedSearchPhase<Solution_>, PartitionedSearchPhaseLifecycleListener<Solution_> {
 
-    protected SolutionPartitioner<Solution_> solutionPartitioner;
-    protected ThreadFactory threadFactory;
-    protected Integer runnablePartThreadLimit;
+    protected final SolutionPartitioner<Solution_> solutionPartitioner;
+    protected final ThreadFactory threadFactory;
+    protected final Integer runnablePartThreadLimit;
 
     protected List<PhaseConfig> phaseConfigList;
     protected HeuristicConfigPolicy configPolicy;
 
     public DefaultPartitionedSearchPhase(int phaseIndex, String logIndentation,
-            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination termination) {
+            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination termination,
+            SolutionPartitioner<Solution_> solutionPartitioner, ThreadFactory threadFactory,
+            Integer runnablePartThreadLimit) {
         super(phaseIndex, logIndentation, bestSolutionRecaller, termination);
-    }
-
-    public void setSolutionPartitioner(SolutionPartitioner<Solution_> solutionPartitioner) {
         this.solutionPartitioner = solutionPartitioner;
-    }
-
-    public void setThreadFactory(ThreadFactory threadFactory) {
         this.threadFactory = threadFactory;
-    }
-
-    public void setRunnablePartThreadLimit(Integer runnablePartThreadLimit) {
         this.runnablePartThreadLimit = runnablePartThreadLimit;
     }
 
@@ -157,7 +150,7 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
             } else {
                 // 2b. Otherwise, initiate an orderly shutdown of the executor. This allows partition solvers to finish
                 // solving upon detecting the termination issued previously (step 1). Shutting down the executor
-                // service is important because the JVM cannot exit until all nondaemon threads have terminated.
+                // service is important because the JVM cannot exit until all non-daemon threads have terminated.
                 executor.shutdown();
             }
 
@@ -190,16 +183,14 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
     private ExecutorService createThreadPoolExecutor(int partCount) {
         ThreadPoolExecutor threadPoolExecutor
                 = (ThreadPoolExecutor) Executors.newFixedThreadPool(partCount, threadFactory);
-
         if (threadPoolExecutor.getMaximumPoolSize() < partCount) {
             throw new IllegalStateException(
                     "The threadPoolExecutor's maximumPoolSize (" + threadPoolExecutor.getMaximumPoolSize()
                     + ") is less than the partCount (" + partCount + "), so some partitions will starve.\n"
-                    + "Normally this is impossible because the threadPoolExecutor should be unbounded:"
+                    + "Normally this is impossible because the threadPoolExecutor should be unbounded."
                     + " Use runnablePartThreadLimit (" + runnablePartThreadLimit
                     + ") instead to avoid CPU hogging and live locks.");
         }
-
         return threadPoolExecutor;
     }
 

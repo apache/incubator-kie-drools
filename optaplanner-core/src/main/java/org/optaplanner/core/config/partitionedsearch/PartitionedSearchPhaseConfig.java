@@ -138,10 +138,8 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
         HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
         DefaultPartitionedSearchPhase phase = new DefaultPartitionedSearchPhase(
                 phaseIndex, solverConfigPolicy.getLogIndentation(), bestSolutionRecaller,
-                buildPhaseTermination(phaseConfigPolicy, solverTermination));
-        phase.setSolutionPartitioner(buildSolutionPartitioner());
-        phase.setThreadFactory(buildThreadFactory());
-        phase.setRunnablePartThreadLimit(resolvedActiveThreadCount());
+                buildPhaseTermination(phaseConfigPolicy, solverTermination),
+                buildSolutionPartitioner(), buildThreadFactory(), resolvedActiveThreadCount());
         List<PhaseConfig> phaseConfigList_ = phaseConfigList;
         if (ConfigUtils.isEmptyCollection(phaseConfigList_)) {
             phaseConfigList_ = Arrays.asList(
