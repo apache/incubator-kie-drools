@@ -36,6 +36,14 @@ public class ModelWriter {
                 sourceFiles.add( pojoSourceName );
             }
 
+            for (GeneratedClassWithPackage generatedPojo : pkgModel.getGeneratedAccumulateClasses()) {
+                final String source = JavaParserCompiler.toPojoSource(pkgModel.getName(), generatedPojo.getImports(), generatedPojo.getGeneratedClass());
+                pkgModel.logRule(source);
+                String pojoSourceName = "src/main/java/" + folderName + "/" + generatedPojo.getGeneratedClass().getName() + ".java";
+                srcMfs.write( pojoSourceName, source.getBytes() );
+                sourceFiles.add( pojoSourceName );
+            }
+
             RuleSourceResult rulesSourceResult = pkgModel.getRulesSource();
             // main rules file:
             String rulesFileName = pkgModel.getRulesFileName();
