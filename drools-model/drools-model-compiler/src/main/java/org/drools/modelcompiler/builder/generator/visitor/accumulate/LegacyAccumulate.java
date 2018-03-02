@@ -1,6 +1,5 @@
 package org.drools.modelcompiler.builder.generator.visitor.accumulate;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -18,10 +17,11 @@ import org.drools.compiler.rule.builder.dialect.java.JavaAccumulateBuilder;
 import org.drools.compiler.rule.builder.dialect.java.JavaRuleClassBuilder;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.Pattern;
-import org.drools.core.rule.RuleConditionElement;
+import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.CompilationUnit;
-import org.drools.javaparser.ast.Node;
 import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import org.drools.javaparser.ast.expr.ClassExpr;
+import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.modelcompiler.builder.GeneratedClassWithPackage;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.RuleContext;
@@ -63,8 +63,9 @@ public class LegacyAccumulate {
 
         final Set<String> imports = ruleBuildContext.getPkg().getImports().keySet();
 
+        final String packageName = ruleBuildContext.getPkg().getName();
         GeneratedClassWithPackage generatedClassWithPackage = new GeneratedClassWithPackage(
-                (ClassOrInterfaceDeclaration) cu.getType(0), ruleBuildContext.getPkg().getName(), imports
+                (ClassOrInterfaceDeclaration) cu.getType(0), packageName, imports
         );
 
         context.getPackageModel().addGeneratedAccumulateClasses(generatedClassWithPackage);
@@ -80,12 +81,18 @@ public class LegacyAccumulate {
         }).collect(Collectors.toList()));
 
         GeneratedClassWithPackage invokerGenerated = new GeneratedClassWithPackage(
-                (ClassOrInterfaceDeclaration) cuInvoker.getType(0), ruleBuildContext.getPkg().getName(), imports2
+                (ClassOrInterfaceDeclaration) cuInvoker.getType(0), packageName, imports2
         );
 
         context.getPackageModel().addGeneratedAccumulateClasses(invokerGenerated);
 
 
+        final MethodCallExpr accFunctionCall = new MethodCallExpr(null, "accFunction");
+        final String type = invokerGenerated.getGeneratedClass().getName().asString();
+        final String typeWithPackage = packageName + "." + type;
+        accFunctionCall.addArgument(new ClassExpr(JavaParser.parseType(typeWithPackage)));
+
+        context.addExpression(accFunctionCall);
 
         context.addAccumulateClasses(methods);
 
