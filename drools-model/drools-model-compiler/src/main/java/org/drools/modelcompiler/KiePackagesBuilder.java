@@ -589,8 +589,12 @@ public class KiePackagesBuilder {
             ctx.addAccumulateSource( boundVar, accumulate );
         }
 
+        acc = accumulate;
+
         return accumulate;
     }
+
+    Accumulate acc = null;
 
     private org.kie.api.runtime.rule.AccumulateFunction createRuntimeAccumulateFunction(Class<? extends org.kie.api.runtime.rule.AccumulateFunction> functionClass) {
         final org.kie.api.runtime.rule.AccumulateFunction accFunction;
@@ -655,6 +659,9 @@ public class KiePackagesBuilder {
             if ( decl.getWindow() != null ) {
                 pattern.addBehavior( createWindow( decl.getWindow() ) );
             }
+        }
+        if(patternVariable.getName().equals("$avg")) {
+            pattern.setSource(acc);
         }
         ctx.registerPattern( patternVariable, pattern );
         return pattern;
