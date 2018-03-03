@@ -24,6 +24,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Random;
@@ -276,7 +277,8 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
             Pair<LocalTime, LocalTime> pair = timeslotOptions.get(timeslotOptionsIndex);
             timeslot.setStartDateTime(LocalDateTime.of(day, pair.getLeft()));
             timeslot.setEndDateTime(LocalDateTime.of(day, pair.getRight()));
-            timeslot.setTalkType(timeslot.getDurationInMinutes() >= 120 ? LAB_TALK_TYPE : BREAKOUT_TALK_TYPE);
+            timeslot.setTalkTypeSet(Collections.singleton(
+                    timeslot.getDurationInMinutes() >= 120 ? LAB_TALK_TYPE : BREAKOUT_TALK_TYPE));
             timeslotOptionsIndex++;
             Set<String> tagSet = new LinkedHashSet<>(2);
             timeslot.setTagSet(tagSet);
@@ -299,10 +301,10 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
             if (i % 5 == 4) {
                 tagSet.add(LAB_ROOM_TAG);
                 unavailableTimeslotSet.addAll(solution.getTimeslotList().stream()
-                        .filter(timeslot -> !LAB_TALK_TYPE.equals(timeslot.getTalkType())).collect(Collectors.toList()));
+                        .filter(timeslot -> !timeslot.getTalkTypeSet().contains(LAB_TALK_TYPE)).collect(Collectors.toList()));
             } else {
                 unavailableTimeslotSet.addAll(solution.getTimeslotList().stream()
-                        .filter(timeslot -> LAB_TALK_TYPE.equals(timeslot.getTalkType())).collect(Collectors.toList()));
+                        .filter(timeslot -> timeslot.getTalkTypeSet().contains(LAB_TALK_TYPE)).collect(Collectors.toList()));
             }
             room.setUnavailableTimeslotSet(unavailableTimeslotSet);
             for (Pair<String, Double> roomTagProbability : roomTagProbabilityList) {
@@ -445,7 +447,7 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
         Talk pinnedTalk = talkList.get(labTalkCount + random.nextInt(talkListSize - labTalkCount));
         pinnedTalk.setPinnedByUser(true);
         pinnedTalk.setTimeslot(solution.getTimeslotList().stream()
-                .filter(timeslot -> BREAKOUT_TALK_TYPE.equals(timeslot.getTalkType())).findFirst().get());
+                .filter(timeslot -> timeslot.getTalkTypeSet().contains(BREAKOUT_TALK_TYPE)).findFirst().get());
         pinnedTalk.setRoom(solution.getRoomList().get(0));
         solution.setTalkList(talkList);
     }

@@ -56,15 +56,15 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
         LocalDateTime start3 = LocalDateTime.of(2018, 1, 1, 10, 0);
         LocalDateTime end3 = LocalDateTime.of(2018, 1, 1, 11, 0);
         Timeslot slot1 = new Timeslot(1L)
-                .withTalkType(talkType)
+                .withTalkTypeSet(Collections.singleton(talkType))
                 .withStartDateTime(start1)
                 .withEndDateTime(end1);
         Timeslot slot2 = new Timeslot(2L)
-                .withTalkType(talkType)
+                .withTalkTypeSet(Collections.singleton(talkType))
                 .withStartDateTime(start2)
                 .withEndDateTime(end2);
         Timeslot slot3 = new Timeslot(3L)
-                .withTalkType(talkType)
+                .withTalkTypeSet(Collections.singleton(talkType))
                 .withStartDateTime(start3)
                 .withEndDateTime(end3);
         ConferenceSolution solution = new ConferenceSolution(1L)
@@ -128,15 +128,15 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
         LocalDateTime start3 = LocalDateTime.of(2018, 1, 1, 10, 0);
         LocalDateTime end3 = LocalDateTime.of(2018, 1, 1, 11, 0);
         Timeslot slot1 = new Timeslot(1L)
-                .withTalkType(talkType)
+                .withTalkTypeSet(Collections.singleton(talkType))
                 .withStartDateTime(start1)
                 .withEndDateTime(end1);
         Timeslot slot2 = new Timeslot(2L)
-                .withTalkType(talkType)
+                .withTalkTypeSet(Collections.singleton(talkType))
                 .withStartDateTime(start2)
                 .withEndDateTime(end2);
         Timeslot slot3 = new Timeslot(3L)
-                .withTalkType(talkType)
+                .withTalkTypeSet(Collections.singleton(talkType))
                 .withStartDateTime(start3)
                 .withEndDateTime(end3);
         ConferenceSolution solution = new ConferenceSolution(1L)
@@ -177,11 +177,11 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
         LocalDateTime start2 = LocalDateTime.of(2018, 1, 1, 9, 30);
         LocalDateTime end2 = LocalDateTime.of(2018, 1, 1, 10, 30);
         Timeslot slot1 = new Timeslot(1L)
-                .withTalkType(talkType)
+                .withTalkTypeSet(Collections.singleton(talkType))
                 .withStartDateTime(start1)
                 .withEndDateTime(end1);
         Timeslot slot2 = new Timeslot(2L)
-                .withTalkType(talkType)
+                .withTalkTypeSet(Collections.singleton(talkType))
                 .withStartDateTime(start2)
                 .withEndDateTime(end2);
         Talk talk1 = new Talk(1L)
@@ -263,7 +263,7 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
         LocalDateTime start1 = LocalDateTime.of(2018, 1, 1, 9, 0);
         LocalDateTime end1 = LocalDateTime.of(2018, 1, 1, 10, 0);
         Timeslot slot1 = new Timeslot(1L)
-                .withTalkType(talkType)
+                .withTalkTypeSet(Collections.singleton(talkType))
                 .withStartDateTime(start1)
                 .withEndDateTime(end1);
         ConferenceSolution solution = new ConferenceSolution(1L)
@@ -346,7 +346,7 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
         LocalDateTime start1 = LocalDateTime.of(2018, 1, 1, 9, 0);
         LocalDateTime end1 = LocalDateTime.of(2018, 1, 1, 10, 0);
         Timeslot slot1 = new Timeslot(1L)
-                .withTalkType(talkType)
+                .withTalkTypeSet(Collections.singleton(talkType))
                 .withStartDateTime(start1)
                 .withEndDateTime(end1);
         ConferenceSolution solution = new ConferenceSolution(1L)
@@ -415,7 +415,7 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
         LocalDateTime start1 = LocalDateTime.of(2018, 1, 1, 9, 0);
         LocalDateTime end1 = LocalDateTime.of(2018, 1, 1, 10, 0);
         Timeslot slot1 = new Timeslot(1L)
-                .withTalkType(talkType)
+                .withTalkTypeSet(Collections.singleton(talkType))
                 .withStartDateTime(start1)
                 .withEndDateTime(end1);
         ConferenceSolution solution = new ConferenceSolution(1L)
@@ -492,7 +492,7 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
         LocalDateTime start1 = LocalDateTime.of(2018, 1, 1, 9, 0);
         LocalDateTime end1 = LocalDateTime.of(2018, 1, 1, 10, 0);
         Timeslot slot1 = new Timeslot(1L)
-                .withTalkType(talkType)
+                .withTalkTypeSet(Collections.singleton(talkType))
                 .withStartDateTime(start1)
                 .withEndDateTime(end1);
         ConferenceSolution solution = new ConferenceSolution(1L)

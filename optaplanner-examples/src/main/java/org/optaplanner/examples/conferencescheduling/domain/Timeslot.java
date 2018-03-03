@@ -19,6 +19,7 @@ package org.optaplanner.examples.conferencescheduling.domain;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 import org.optaplanner.examples.common.domain.AbstractPersistable;
@@ -27,7 +28,7 @@ public class Timeslot extends AbstractPersistable {
 
     private LocalDateTime startDateTime;
     private LocalDateTime endDateTime;
-    private String talkType;
+    private Set<String> talkTypeSet;
 
     private Set<String> tagSet;
 
@@ -91,12 +92,12 @@ public class Timeslot extends AbstractPersistable {
         this.endDateTime = endDateTime;
     }
 
-    public String getTalkType() {
-        return talkType;
+    public Set<String> getTalkTypeSet() {
+        return talkTypeSet;
     }
 
-    public void setTalkType(String talkType) {
-        this.talkType = talkType;
+    public void setTalkTypeSet(Set<String> talkTypeSet) {
+        this.talkTypeSet = talkTypeSet;
     }
 
     public Set<String> getTagSet() {
@@ -111,8 +112,8 @@ public class Timeslot extends AbstractPersistable {
     // With methods
     // ************************************************************************
 
-    public Timeslot withTalkType(String talkType) {
-        this.talkType = talkType;
+    public Timeslot withTalkTypeSet(Set<String> talkTypeSet) {
+        this.talkTypeSet = talkTypeSet;
         return this;
     }
 

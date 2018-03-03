@@ -33,16 +33,16 @@ global HardSoftScoreHolder scoreHolder;
 
 rule "Talk type of timeslot"
     when
-        Talk(timeslot != null, !getTalkType().equals(getTimeslot().getTalkType()))
+        Talk(timeslot != null, !getTimeslot().getTalkTypeSet().contains(getTalkType()))
     then
-        scoreHolder.addHardConstraintMatch(kcontext, -100);
+        scoreHolder.addHardConstraintMatch(kcontext, -10000);
 end
 
 rule "Room unavailable timeslot"
     when
         Talk(hasUnavailableRoom())
     then
-        scoreHolder.addHardConstraintMatch(kcontext, -10);
+        scoreHolder.addHardConstraintMatch(kcontext, -10000);
 end
 
 rule "Room conflict"

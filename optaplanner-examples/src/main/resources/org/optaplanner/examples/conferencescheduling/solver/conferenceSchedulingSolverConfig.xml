@@ -8,7 +8,7 @@
     <scoreDrl>org/optaplanner/examples/conferencescheduling/solver/conferenceSchedulingScoreRules.drl</scoreDrl>
   </scoreDirectorFactory>
 
-  <termination>
-    <minutesSpentLimit>5</minutesSpentLimit>
-  </termination>
+  <!--<termination>-->
+    <!--<minutesSpentLimit>5</minutesSpentLimit>-->
+  <!--</termination>-->
 </solver>

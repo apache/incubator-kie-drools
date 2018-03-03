@@ -258,7 +258,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             readHeaderCell("Day");
             readHeaderCell("Start");
             readHeaderCell("End");
-            readHeaderCell("Talk type");
+            readHeaderCell("Talk types");
             readHeaderCell("Tags");
             List<Timeslot> timeslotList = new ArrayList<>(currentSheet.getLastRowNum() - 1);
             long id = 0L;
@@ -274,12 +274,21 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 }
                 timeslot.setStartDateTime(LocalDateTime.of(day, startTime));
                 timeslot.setEndDateTime(LocalDateTime.of(day, endTime));
-                timeslot.setTalkType(nextStringCell().getStringCellValue());
-                if (timeslot.getTalkType().isEmpty()) {
-                    throw new IllegalStateException(currentPosition() + ": The talk type (" + timeslot.getTalkType()
+                timeslot.setTalkTypeSet(Arrays.stream(nextStringCell().getStringCellValue().split(", "))
+                        .filter(talkType -> !talkType.isEmpty()).collect(toCollection(LinkedHashSet::new)));
+                for (String talkType : timeslot.getTalkTypeSet()) {
+                    if (!VALID_TAG_PATTERN.matcher(talkType).matches()) {
+                        throw new IllegalStateException(currentPosition()
+                                + ": The timeslot (" + timeslot + ")'s talkType (" + talkType
+                                + ") must match to the regular expression (" + VALID_TAG_PATTERN + ").");
+                    }
+                }
+                if (timeslot.getTalkTypeSet().isEmpty()) {
+                    throw new IllegalStateException(currentPosition()
+                            + ": The timeslot (" + timeslot + ")'s talk types (" + timeslot.getTalkTypeSet()
                             + ") must not be empty.");
                 }
-                totalTalkTypeSet.add(timeslot.getTalkType());
+                totalTalkTypeSet.addAll(timeslot.getTalkTypeSet());
                 timeslot.setTagSet(Arrays.stream(nextStringCell().getStringCellValue().split(", "))
                         .filter(tag -> !tag.isEmpty()).collect(toCollection(LinkedHashSet::new)));
                 for (String tag : timeslot.getTagSet()) {
@@ -936,14 +945,14 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             nextHeaderCell("Day");
             nextHeaderCell("Start");
             nextHeaderCell("End");
-            nextHeaderCell("Talk type");
+            nextHeaderCell("Talk types");
             nextHeaderCell("Tags");
             for (Timeslot timeslot : solution.getTimeslotList()) {
                 nextRow();
                 nextCell().setCellValue(DAY_FORMATTER.format(timeslot.getDate()));
                 nextCell().setCellValue(TIME_FORMATTER.format(timeslot.getStartDateTime()));
                 nextCell().setCellValue(TIME_FORMATTER.format(timeslot.getEndDateTime()));
-                nextCell().setCellValue(timeslot.getTalkType());
+                nextCell().setCellValue(String.join(", ", timeslot.getTalkTypeSet()));
                 nextCell().setCellValue(String.join(", ", timeslot.getTagSet()));
             }
             autoSizeColumnsWithHeader();

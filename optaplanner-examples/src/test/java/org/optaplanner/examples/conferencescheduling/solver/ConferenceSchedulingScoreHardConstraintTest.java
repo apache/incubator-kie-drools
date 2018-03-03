@@ -50,12 +50,12 @@ public class ConferenceSchedulingScoreHardConstraintTest {
         scoreVerifier.assertHardWeight(TALK_TYPE_OF_TIMESLOT, 0, solution);
         // time slot with matching talk type
         talk1.withTalkType(talkType1).withTimeslot(slot1);
-        slot1.setTalkType(talkType1);
+        slot1.setTalkTypeSet(Collections.singleton(talkType1));
         scoreVerifier.assertHardWeight(TALK_TYPE_OF_TIMESLOT, 0, solution);
         // time slot with non matching talk type
         talk2.withTalkType(talkType2).withTimeslot(slot2);
-        slot2.setTalkType(talkType1);
-        scoreVerifier.assertHardWeight(TALK_TYPE_OF_TIMESLOT, -100, solution);
+        slot2.setTalkTypeSet(Collections.singleton(talkType1));
+        scoreVerifier.assertHardWeight(TALK_TYPE_OF_TIMESLOT, -10000, solution);
     }
 
     @Test
@@ -83,8 +83,8 @@ public class ConferenceSchedulingScoreHardConstraintTest {
                 .withPreferredTimeslotTagSet(Collections.emptySet())
                 .withProhibitedTimeslotTagSet(Collections.emptySet())
                 .withUndesiredTimeslotTagSet(Collections.emptySet());
-        Timeslot slot1 = new Timeslot(1L).withTalkType(talkType);
-        Timeslot slot2 = new Timeslot(2L).withTalkType(talkType);
+        Timeslot slot1 = new Timeslot(1L).withTalkTypeSet(Collections.singleton(talkType));
+        Timeslot slot2 = new Timeslot(2L).withTalkTypeSet(Collections.singleton(talkType));
         Room room1 = new Room(1L);
         Room room2 = new Room(2L);
         ConferenceSolution solution = new ConferenceSolution(1L)
@@ -102,10 +102,10 @@ public class ConferenceSchedulingScoreHardConstraintTest {
         // talk with room with unavailable time slot
         room1.setUnavailableTimeslotSet(new HashSet<>(Arrays.asList(slot1)));
         talk1.withTimeslot(slot1).withRoom(room1);
-        scoreVerifier.assertHardWeight(ROOM_UNAVAILABLE_TIMESLOT, -10, solution);
+        scoreVerifier.assertHardWeight(ROOM_UNAVAILABLE_TIMESLOT, -10000, solution);
         room1.setUnavailableTimeslotSet(new HashSet<>(Arrays.asList(slot1, slot2)));
         talk1.withTimeslot(slot1).withRoom(room1);
-        scoreVerifier.assertHardWeight(ROOM_UNAVAILABLE_TIMESLOT, -10, solution);
+        scoreVerifier.assertHardWeight(ROOM_UNAVAILABLE_TIMESLOT, -10000, solution);
     }
 
     @Test
@@ -140,15 +140,15 @@ public class ConferenceSchedulingScoreHardConstraintTest {
         LocalDateTime start3 = LocalDateTime.of(2018, 1, 1, 10, 0);
         LocalDateTime end3 = LocalDateTime.of(2018, 1, 1, 11, 0);
         Timeslot slot1 = new Timeslot(1L)
-                .withTalkType(talkType)
+                .withTalkTypeSet(Collections.singleton(talkType))
                 .withStartDateTime(start1)
                 .withEndDateTime(end1);
         Timeslot slot2 = new Timeslot(2L)
-                .withTalkType(talkType)
+                .withTalkTypeSet(Collections.singleton(talkType))
                 .withStartDateTime(start2)
                 .withEndDateTime(end2);
         Timeslot slot3 = new Timeslot(3L)
-                .withTalkType(talkType)
+                .withTalkTypeSet(Collections.singleton(talkType))
                 .withStartDateTime(start3)
                 .withEndDateTime(end3);
         Room room1 = new Room(1L).withUnavailableTimeslotSet(Collections.emptySet());
@@ -188,8 +188,8 @@ public class ConferenceSchedulingScoreHardConstraintTest {
                 .withPreferredTimeslotTagSet(Collections.emptySet())
                 .withProhibitedTimeslotTagSet(Collections.emptySet())
                 .withUndesiredTimeslotTagSet(Collections.emptySet());
-        Timeslot slot1 = new Timeslot(1L).withTalkType(talkType);
-        Timeslot slot2 = new Timeslot(1L).withTalkType(talkType);
+        Timeslot slot1 = new Timeslot(1L).withTalkTypeSet(Collections.singleton(talkType));
+        Timeslot slot2 = new Timeslot(1L).withTalkTypeSet(Collections.singleton(talkType));
         Talk talk1 = new Talk(1L)
                 .withSpeakerList(Collections.emptyList())
                 .withTalkType(talkType)
@@ -257,15 +257,15 @@ public class ConferenceSchedulingScoreHardConstraintTest {
         LocalDateTime start3 = LocalDateTime.of(2018, 1, 1, 10, 0);
         LocalDateTime end3 = LocalDateTime.of(2018, 1, 1, 11, 0);
         Timeslot slot1 = new Timeslot(1L)
-                .withTalkType(talkType)
+                .withTalkTypeSet(Collections.singleton(talkType))
                 .withStartDateTime(start1)
                 .withEndDateTime(end1);
         Timeslot slot2 = new Timeslot(2L)
-                .withTalkType(talkType)
+                .withTalkTypeSet(Collections.singleton(talkType))
                 .withStartDateTime(start2)
                 .withEndDateTime(end2);
         Timeslot slot3 = new Timeslot(3L)
-                .withTalkType(talkType)
+                .withTalkTypeSet(Collections.singleton(talkType))
                 .withStartDateTime(start3)
                 .withEndDateTime(end3);
         ConferenceSolution solution = new ConferenceSolution(1L)
@@ -311,7 +311,7 @@ public class ConferenceSchedulingScoreHardConstraintTest {
         LocalDateTime start1 = LocalDateTime.of(2018, 1, 1, 9, 0);
         LocalDateTime end1 = LocalDateTime.of(2018, 1, 1, 10, 0);
         Timeslot slot1 = new Timeslot(1L)
-                .withTalkType(talkType)
+                .withTalkTypeSet(Collections.singleton(talkType))
                 .withStartDateTime(start1)
                 .withEndDateTime(end1);
         ConferenceSolution solution = new ConferenceSolution(1L)
@@ -395,7 +395,7 @@ public class ConferenceSchedulingScoreHardConstraintTest {
         LocalDateTime start1 = LocalDateTime.of(2018, 1, 1, 9, 0);
         LocalDateTime end1 = LocalDateTime.of(2018, 1, 1, 10, 0);
         Timeslot slot1 = new Timeslot(1L)
-                .withTalkType(talkType)
+                .withTalkTypeSet(Collections.singleton(talkType))
                 .withStartDateTime(start1)
                 .withEndDateTime(end1);
         ConferenceSolution solution = new ConferenceSolution(1L)
@@ -468,7 +468,7 @@ public class ConferenceSchedulingScoreHardConstraintTest {
         LocalDateTime start1 = LocalDateTime.of(2018, 1, 1, 9, 0);
         LocalDateTime end1 = LocalDateTime.of(2018, 1, 1, 10, 0);
         Timeslot slot1 = new Timeslot(1L)
-                .withTalkType(talkType)
+                .withTalkTypeSet(Collections.singleton(talkType))
                 .withStartDateTime(start1)
                 .withEndDateTime(end1);
         ConferenceSolution solution = new ConferenceSolution(1L)
@@ -519,7 +519,7 @@ public class ConferenceSchedulingScoreHardConstraintTest {
         LocalDateTime start1 = LocalDateTime.of(2018, 1, 1, 9, 0);
         LocalDateTime end1 = LocalDateTime.of(2018, 1, 1, 10, 0);
         Timeslot slot1 = new Timeslot(1L)
-                .withTalkType(talkType)
+                .withTalkTypeSet(Collections.singleton(talkType))
                 .withStartDateTime(start1)
                 .withEndDateTime(end1);
         ConferenceSolution solution = new ConferenceSolution(1L)
