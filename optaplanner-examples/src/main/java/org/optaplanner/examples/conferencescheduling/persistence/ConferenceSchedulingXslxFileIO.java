@@ -32,6 +32,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
@@ -42,6 +43,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -309,9 +311,11 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             nextRow(false);
             readHeaderCell("");
             readHeaderCell("");
+            readHeaderCell("");
             readTimeslotDaysHeaders();
             nextRow(false);
             readHeaderCell("Name");
+            readHeaderCell("Talk types");
             readHeaderCell("Tags");
             readTimeslotHoursHeaders();
             List<Room> roomList = new ArrayList<>(currentSheet.getLastRowNum() - 1);
@@ -324,6 +328,21 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                     throw new IllegalStateException(currentPosition() + ": The room name (" + room.getName()
                             + ") must match to the regular expression (" + VALID_NAME_PATTERN + ").");
                 }
+
+                room.setTalkTypeSet(Arrays.stream(nextStringCell().getStringCellValue().split(", "))
+                        .filter(talkType -> !talkType.isEmpty()).collect(toCollection(LinkedHashSet::new)));
+                for (String talkType : room.getTalkTypeSet()) {
+                    if (!totalTalkTypeSet.contains(talkType)) {
+                        throw new IllegalStateException(currentPosition()
+                                + ": The room (" + room + ")'s talkType (" + talkType
+                                + ") does not exist in the talk types (" + totalTalkTypeSet
+                                + ") of the other sheet (Timeslots).");
+                    }
+                }
+                if (room.getTalkTypeSet().isEmpty()) {
+                    room.setTalkTypeSet(new LinkedHashSet<>(totalTalkTypeSet));
+                }
+
                 room.setTagSet(Arrays.stream(nextStringCell().getStringCellValue().split(", "))
                         .filter(tag -> !tag.isEmpty()).collect(toCollection(LinkedHashSet::new)));
                 for (String tag : room.getTagSet()) {
@@ -819,6 +838,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             writeRoomList();
             writeSpeakerList();
             writeTalkList();
+            writeScoreView();
             writeRoomsView();
             writeSpeakersView();
             writeThemeTracksView();
@@ -963,14 +983,17 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             nextRow();
             nextHeaderCell("");
             nextHeaderCell("");
+            nextHeaderCell("");
             writeTimeslotDaysHeaders();
             nextRow();
             nextHeaderCell("Name");
+            nextHeaderCell("Talk types");
             nextHeaderCell("Tags");
             writeTimeslotHoursHeaders();
             for (Room room : solution.getRoomList()) {
                 nextRow();
                 nextCell().setCellValue(room.getName());
+                nextCell().setCellValue(String.join(", ", room.getTalkTypeSet()));
                 nextCell().setCellValue(String.join(", ", room.getTagSet()));
                 for (Timeslot timeslot : solution.getTimeslotList()) {
                     nextCell(room.getUnavailableTimeslotSet().contains(timeslot) ? unavailableStyle : defaultStyle)
@@ -1077,6 +1100,54 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 nextCell().setCellValue(talk.getTimeslot() == null ? "" : TIME_FORMATTER.format(talk.getTimeslot().getEndDateTime()));
                 nextCell().setCellValue(talk.getRoom() == null ? "" : talk.getRoom().getName());
             }
+            autoSizeColumnsWithHeader();
+        }
+
+        private void writeScoreView() {
+            nextSheet("Score view", 1, 1, true);
+            nextRow();
+            nextHeaderCell("Score");
+            nextCell().setCellValue(solution.getScore() == null ? "Not yet solved" : solution.getScore().toShortString());
+            nextRow();
+            nextRow();
+            nextHeaderCell("Talk type");
+            nextHeaderCell("Count");
+            nextHeaderCell("Usable timeslots");
+            nextHeaderCell("Usable rooms");
+            nextHeaderCell("Usable sessions");
+
+            Map<String, Long> talkTypeToCountMap = solution.getTalkList().stream()
+                    .collect(groupingBy(Talk::getTalkType, LinkedHashMap::new, counting()));
+            for (Map.Entry<String, Long> entry : talkTypeToCountMap.entrySet()) {
+                String talkType = entry.getKey();
+                long count = entry.getValue();
+                nextRow();
+                nextHeaderCell(talkType);
+                nextCell().setCellValue(count);
+                List<Timeslot> timeslotList = solution.getTimeslotList().stream()
+                        .filter(timeslot -> timeslot.getTalkTypeSet().contains(talkType))
+                        .collect(toList());
+                int timeslotListSize = timeslotList.size();
+                nextCell().setCellValue(timeslotListSize);
+                List<Room> roomList = solution.getRoomList().stream()
+                        .filter(room -> room.getTalkTypeSet().contains(talkType))
+                        .collect(toList());
+                int roomListSize = roomList.size();
+                nextCell().setCellValue(roomListSize);
+                int sessionCount = timeslotListSize * roomListSize;
+                nextCell(sessionCount < count ? hardPenaltyStyle : defaultStyle).setCellValue(sessionCount);
+            }
+            nextRow();
+            nextRow();
+            nextHeaderCell("Total");
+            int talkListSize = solution.getTalkList().size();
+            nextCell().setCellValue(talkListSize);
+            int timeslotListSize = solution.getTimeslotList().size();
+            nextCell().setCellValue(timeslotListSize);
+            int roomListSize = solution.getRoomList().size();
+            nextCell().setCellValue(roomListSize);
+            int sessionCount = timeslotListSize * roomListSize;
+            nextCell(sessionCount < talkListSize ? hardPenaltyStyle : defaultStyle).setCellValue(sessionCount);
             autoSizeColumnsWithHeader();
         }
 

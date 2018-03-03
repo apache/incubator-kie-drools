@@ -37,6 +37,12 @@ rule "Talk type of timeslot"
     then
         scoreHolder.addHardConstraintMatch(kcontext, -10000);
 end
+rule "Talk type of room"
+    when
+        Talk(room != null, !getRoom().getTalkTypeSet().contains(getTalkType()))
+    then
+        scoreHolder.addHardConstraintMatch(kcontext, -10000);
+end
 
 rule "Room unavailable timeslot"
     when

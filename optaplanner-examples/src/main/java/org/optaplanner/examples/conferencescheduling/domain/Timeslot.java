@@ -28,8 +28,8 @@ public class Timeslot extends AbstractPersistable {
 
     private LocalDateTime startDateTime;
     private LocalDateTime endDateTime;
-    private Set<String> talkTypeSet;
 
+    private Set<String> talkTypeSet;
     private Set<String> tagSet;
 
     public Timeslot() {

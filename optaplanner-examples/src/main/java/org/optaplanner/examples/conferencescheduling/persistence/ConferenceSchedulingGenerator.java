@@ -71,7 +71,6 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
 
     private static final String LAB_TALK_TYPE = "Lab";
     private static final String BREAKOUT_TALK_TYPE = "Breakout";
-    private static final String LAB_ROOM_TAG = "Lab_room";
 
     private final LocalDate timeslotFirstDay = LocalDate.of(2018, 10, 1);
 
@@ -296,17 +295,20 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
             Room room = new Room();
             room.setId((long) i);
             room.setName("R " + ((i / roomsPerFloor * 100) + (i % roomsPerFloor) + 1));
-            LinkedHashSet<Timeslot> unavailableTimeslotSet = new LinkedHashSet<>();
-            Set<String> tagSet = new LinkedHashSet<>(roomTagProbabilityList.size());
+            Set<String> talkTypeSet = new LinkedHashSet<>();
+            Set<Timeslot> unavailableTimeslotSet = new LinkedHashSet<>();
             if (i % 5 == 4) {
-                tagSet.add(LAB_ROOM_TAG);
+                talkTypeSet.add(LAB_TALK_TYPE);
                 unavailableTimeslotSet.addAll(solution.getTimeslotList().stream()
                         .filter(timeslot -> !timeslot.getTalkTypeSet().contains(LAB_TALK_TYPE)).collect(Collectors.toList()));
             } else {
+                talkTypeSet.add(BREAKOUT_TALK_TYPE);
                 unavailableTimeslotSet.addAll(solution.getTimeslotList().stream()
                         .filter(timeslot -> timeslot.getTalkTypeSet().contains(LAB_TALK_TYPE)).collect(Collectors.toList()));
             }
+            room.setTalkTypeSet(talkTypeSet);
             room.setUnavailableTimeslotSet(unavailableTimeslotSet);
+            Set<String> tagSet = new LinkedHashSet<>(roomTagProbabilityList.size());
             for (Pair<String, Double> roomTagProbability : roomTagProbabilityList) {
                 if (i == 0 || i == 4 || random.nextDouble() < roomTagProbability.getValue()) {
                     tagSet.add(roomTagProbability.getKey());
@@ -432,11 +434,7 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
             talk.setPreferredTimeslotTagSet(new LinkedHashSet<>());
             talk.setProhibitedTimeslotTagSet(new LinkedHashSet<>());
             talk.setUndesiredTimeslotTagSet(new LinkedHashSet<>());
-            Set<String> requiredRoomTagSet = new LinkedHashSet<>();
-            if (i < labTalkCount) {
-                requiredRoomTagSet.add(LAB_ROOM_TAG);
-            }
-            talk.setRequiredRoomTagSet(requiredRoomTagSet);
+            talk.setRequiredRoomTagSet(new LinkedHashSet<>());
             talk.setPreferredRoomTagSet(new LinkedHashSet<>());
             talk.setProhibitedRoomTagSet(new LinkedHashSet<>());
             talk.setUndesiredRoomTagSet(new LinkedHashSet<>());
