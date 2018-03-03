@@ -539,7 +539,7 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
         ConferenceParametrization parametrization = new ConferenceParametrization(1L);
         String tag1 = "tag1";
         String tag2 = "tag2";
-        Room room1 = new Room(1L);
+        Room room1 = new Room(1L).withTalkTypeSet(Collections.emptySet());
         Talk talk1 = new Talk(1L)
                 .withSpeakerList(Collections.emptyList())
                 .withPreferredTimeslotTagSet(Collections.emptySet())
@@ -626,7 +626,7 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
         String tag1 = "tag1";
         String tag2 = "tag2";
         String talkType = "type1";
-        Room room1 = new Room(1L);
+        Room room1 = new Room(1L).withTalkTypeSet(Collections.emptySet());
         Talk talk1 = new Talk(1L)
                 .withTalkType(talkType)
                 .withSpeakerList(Collections.emptyList())
@@ -679,7 +679,7 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
         String tag1 = "tag1";
         String tag2 = "tag2";
         String tag3 = "tag3";
-        Room room1 = new Room(1L);
+        Room room1 = new Room(1L).withTalkTypeSet(Collections.emptySet());
         Talk talk1 = new Talk(1L)
                 .withSpeakerList(Collections.emptyList())
                 .withPreferredTimeslotTagSet(Collections.emptySet())
@@ -768,7 +768,7 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
         String tag1 = "tag1";
         String tag2 = "tag2";
         String talkType = "type1";
-        Room room1 = new Room(1L);
+        Room room1 = new Room(1L).withTalkTypeSet(Collections.emptySet());
         Talk talk1 = new Talk(1L)
                 .withTalkType(talkType)
                 .withSpeakerList(Collections.emptyList())

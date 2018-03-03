@@ -85,8 +85,8 @@ public class ConferenceSchedulingScoreHardConstraintTest {
                 .withUndesiredTimeslotTagSet(Collections.emptySet());
         Timeslot slot1 = new Timeslot(1L).withTalkTypeSet(Collections.singleton(talkType));
         Timeslot slot2 = new Timeslot(2L).withTalkTypeSet(Collections.singleton(talkType));
-        Room room1 = new Room(1L);
-        Room room2 = new Room(2L);
+        Room room1 = new Room(1L).withTalkTypeSet(Collections.emptySet());
+        Room room2 = new Room(2L).withTalkTypeSet(Collections.emptySet());
         ConferenceSolution solution = new ConferenceSolution(1L)
                 .withTalkList(Arrays.asList(talk1, talk2))
                 .withTimeslotList(Arrays.asList(slot1, slot2))
@@ -151,8 +151,12 @@ public class ConferenceSchedulingScoreHardConstraintTest {
                 .withTalkTypeSet(Collections.singleton(talkType))
                 .withStartDateTime(start3)
                 .withEndDateTime(end3);
-        Room room1 = new Room(1L).withUnavailableTimeslotSet(Collections.emptySet());
-        Room room2 = new Room(2L).withUnavailableTimeslotSet(Collections.emptySet());
+        Room room1 = new Room(1L)
+                .withTalkTypeSet(Collections.singleton(talkType))
+                .withUnavailableTimeslotSet(Collections.emptySet());
+        Room room2 = new Room(2L)
+                .withTalkTypeSet(Collections.singleton(talkType))
+                .withUnavailableTimeslotSet(Collections.emptySet());
         ConferenceSolution solution = new ConferenceSolution(1L)
                 .withTalkList(Arrays.asList(talk1, talk2))
                 .withTimeslotList(Arrays.asList(slot1, slot2, slot3))
@@ -560,7 +564,7 @@ public class ConferenceSchedulingScoreHardConstraintTest {
         String tag1 = "tag1";
         String tag2 = "tag2";
         String tag3 = "tag3";
-        Room room1 = new Room(1L);
+        Room room1 = new Room(1L).withTalkTypeSet(Collections.emptySet());
         Talk talk1 = new Talk(1L)
                 .withSpeakerList(Collections.emptyList())
                 .withPreferredTimeslotTagSet(Collections.emptySet())
@@ -641,7 +645,7 @@ public class ConferenceSchedulingScoreHardConstraintTest {
         String tag1 = "tag1";
         String tag2 = "tag2";
         String tag3 = "tag3";
-        Room room1 = new Room(1L);
+        Room room1 = new Room(1L).withTalkTypeSet(Collections.emptySet());
         Talk talk1 = new Talk(1L)
                 .withSpeakerList(Collections.emptyList())
                 .withPreferredTimeslotTagSet(Collections.emptySet())
@@ -723,7 +727,7 @@ public class ConferenceSchedulingScoreHardConstraintTest {
         String tag1 = "tag1";
         String tag2 = "tag2";
         String talkType = "type1";
-        Room room1 = new Room(1L);
+        Room room1 = new Room(1L).withTalkTypeSet(Collections.emptySet());
         Talk talk1 = new Talk(1L)
                 .withTalkType(talkType)
                 .withSpeakerList(Collections.emptyList())
@@ -769,7 +773,7 @@ public class ConferenceSchedulingScoreHardConstraintTest {
         String tag1 = "tag1";
         String tag2 = "tag2";
         String talkType = "type1";
-        Room room1 = new Room(1L);
+        Room room1 = new Room(1L).withTalkTypeSet(Collections.emptySet());
         Talk talk1 = new Talk(1L)
                 .withTalkType(talkType)
                 .withSpeakerList(Collections.emptyList())

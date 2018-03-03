@@ -84,6 +84,11 @@ public class Room extends AbstractPersistable {
     // With methods
     // ************************************************************************
 
+    public Room withTalkTypeSet(Set<String> talkTypeSet) {
+        this.talkTypeSet = talkTypeSet;
+        return this;
+    }
+
     public Room withUnavailableTimeslotSet(Set<Timeslot> unavailableTimeslotTest) {
         this.unavailableTimeslotSet = unavailableTimeslotTest;
         return this;
