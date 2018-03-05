@@ -22,9 +22,12 @@ import org.drools.javaparser.ast.CompilationUnit;
 import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.drools.javaparser.ast.expr.ClassExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
+import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.modelcompiler.builder.GeneratedClassWithPackage;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.RuleContext;
+
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 
 public class LegacyAccumulate {
 
@@ -92,7 +95,13 @@ public class LegacyAccumulate {
         final String typeWithPackage = packageName + "." + type;
         accFunctionCall.addArgument(new ClassExpr(JavaParser.parseType(typeWithPackage)));
 
-        context.addExpression(accFunctionCall);
+
+
+        final String bindingId = basePattern.getIdentifier();
+        final MethodCallExpr asDSL = new MethodCallExpr(accFunctionCall, "as");
+        asDSL.addArgument(new NameExpr(toVar(bindingId)));
+
+        context.addExpression(asDSL);
 
         context.addAccumulateClasses(methods);
 
