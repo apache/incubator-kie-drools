@@ -30,6 +30,7 @@ import javax.persistence.EntityManagerFactory;
 import org.jbpm.kie.services.api.DeploymentIdResolver;
 import org.jbpm.kie.services.impl.audit.ServicesAwareAuditEventBuilder;
 import org.jbpm.kie.services.impl.security.IdentityRolesSecurityManager;
+import org.jbpm.persistence.api.integration.EventManagerProvider;
 import org.jbpm.process.audit.event.AuditEventBuilder;
 import org.jbpm.runtime.manager.impl.AbstractRuntimeManager;
 import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
@@ -287,6 +288,8 @@ public abstract class AbstractDeploymentService implements DeploymentService, Li
     		}
     	}
     	deploymentsMap.clear();
+    	
+    	EventManagerProvider.getInstance().get().close();
     }
 	
 }

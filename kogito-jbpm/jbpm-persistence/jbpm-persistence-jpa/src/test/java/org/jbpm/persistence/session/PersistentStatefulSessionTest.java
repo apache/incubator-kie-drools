@@ -32,6 +32,8 @@ import javax.transaction.UserTransaction;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.io.impl.ClassPathResource;
+import org.jbpm.persistence.api.integration.InstanceView;
+import org.jbpm.persistence.processinstance.objects.TestEventEmitter;
 import org.jbpm.persistence.session.objects.TestWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.test.util.AbstractBaseTest;
@@ -95,6 +97,7 @@ public class PersistentStatefulSessionTest extends AbstractBaseTest {
         if( useLocking ) {
             env.set(EnvironmentName.USE_PESSIMISTIC_LOCKING, true);
         }
+        TestEventEmitter.clear();
     }
 
     @After
@@ -651,4 +654,22 @@ public class PersistentStatefulSessionTest extends AbstractBaseTest {
                       list.size() );
     }
 
+    @Test
+    public void testIntegrationWithEventManager3() {
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( new ClassPathResource( "WorkItemsProcess.rf" ),
+                      ResourceType.DRF );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
+
+        StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
+        ksession.getWorkItemManager().registerWorkItemHandler("MyWork", new SystemOutWorkItemHandler());
+        ProcessInstance processInstance = ksession.startProcess( "org.drools.test.TestProcess" );
+        ksession.insert( "TestString" );
+        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        
+        List<InstanceView<?>> events = TestEventEmitter.getEvents();
+        assertNotNull(events);
+        assertEquals(1, events.size());
+    }
 }

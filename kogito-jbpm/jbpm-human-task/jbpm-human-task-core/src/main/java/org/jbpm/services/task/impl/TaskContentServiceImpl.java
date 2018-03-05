@@ -62,6 +62,7 @@ public class TaskContentServiceImpl implements TaskContentService {
     @SuppressWarnings("unchecked")
 	public long addOutputContent(long taskId, Map<String, Object> params) {
         Task task = persistenceContext.findTask(taskId);
+        loadTaskVariables(task);
         long outputContentId = task.getTaskData().getOutputContentId();
         Content outputContent = persistenceContext.findContent(outputContentId);
 
@@ -92,8 +93,10 @@ public class TaskContentServiceImpl implements TaskContentService {
             contentId = outputContentId;
         }
         taskEventSupport.fireBeforeTaskOutputVariablesChanged(task, context, initialContent);
-        ((InternalTaskData)task.getTaskData()).setTaskOutputVariables(params);
+                
+        ((InternalTaskData)task.getTaskData()).setTaskOutputVariables(params);        
         taskEventSupport.fireAfterTaskOutputVariablesChanged(task, context, params);
+        persistenceContext.updateTask(task);
         
         return contentId;
     }

@@ -29,6 +29,8 @@ import org.drools.persistence.api.TransactionManager;
 import org.drools.persistence.api.TransactionManagerHelper;
 import org.jbpm.persistence.api.ProcessPersistenceContext;
 import org.jbpm.persistence.api.ProcessPersistenceContextManager;
+import org.jbpm.persistence.api.integration.EventManagerProvider;
+import org.jbpm.persistence.api.integration.model.ProcessInstanceView;
 import org.jbpm.persistence.correlation.CorrelationKeyInfo;
 import org.jbpm.persistence.correlation.CorrelationPropertyInfo;
 import org.jbpm.process.instance.InternalProcessRuntime;
@@ -90,6 +92,8 @@ public class JPAProcessInstanceManager
         correlationKeyInfo.setProcessInstanceId(processInstanceInfo.getId());
         context.persist(correlationKeyInfo);
         internalAddProcessInstance(processInstance);
+        
+        EventManagerProvider.getInstance().get().create(new ProcessInstanceView(processInstance));
     }
     
     public void internalAddProcessInstance(ProcessInstance processInstance) {
@@ -126,6 +130,9 @@ public class JPAProcessInstanceManager
                 }  
                 TransactionManagerHelper.addToUpdatableSet(txm, processInstanceInfo);
                 processInstanceInfo.updateLastReadDate();
+                
+
+                EventManagerProvider.getInstance().get().update(new ProcessInstanceView(processInstance));
   
             }
         	return processInstance;
@@ -146,6 +153,7 @@ public class JPAProcessInstanceManager
         if (!readOnly) {
             processInstanceInfo.updateLastReadDate();
             TransactionManagerHelper.addToUpdatableSet(txm, processInstanceInfo);
+            EventManagerProvider.getInstance().get().update(new ProcessInstanceView(processInstance));
         }
         if (((ProcessInstanceImpl) processInstance).getProcessXml() == null) {
 	        Process process = kruntime.getKieBase().getProcess( processInstance.getProcessId() );
@@ -181,6 +189,8 @@ public class JPAProcessInstanceManager
             context.remove( processInstanceInfo );
         }
         internalRemoveProcessInstance(processInstance);
+        
+        EventManagerProvider.getInstance().get().delete(new ProcessInstanceView(processInstance));
     }
 
     public void internalRemoveProcessInstance(ProcessInstance processInstance) {

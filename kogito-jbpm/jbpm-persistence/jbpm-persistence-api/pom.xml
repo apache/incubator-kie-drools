@@ -45,6 +45,10 @@
       <groupId>com.google.protobuf</groupId>
       <artifactId>protobuf-java</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
     <!-- Following 2 dependencies needed for making the build work with JDK5 -->
     <dependency>
       <groupId>com.sun.xml.bind</groupId>

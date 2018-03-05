@@ -116,13 +116,7 @@ public class HumanTaskVariablesAccessTest extends JbpmTestCase {
         assertProcessInstanceNotActive(processInstance.getId(), ksession);
     }
 
-    // In *TaskStarted events, the task is not populated with variables, input variables are accessible after loading.
     private void assertTaskStartedEvent(TaskEvent event) {
-        assertNull(event.getTask().getTaskData().getTaskInputVariables());
-        assertNull(event.getTask().getTaskData().getTaskOutputVariables());
-
-        event.getTaskContext().loadTaskVariables(event.getTask());
-
         assertNotNull(event.getTask().getTaskData().getTaskInputVariables());
         assertEquals(5, event.getTask().getTaskData().getTaskInputVariables().size());
         assertEquals("Simple human task input", event.getTask().getTaskData().getTaskInputVariables().get("humanTaskInput"));

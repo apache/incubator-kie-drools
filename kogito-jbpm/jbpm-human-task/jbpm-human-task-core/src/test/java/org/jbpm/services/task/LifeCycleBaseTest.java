@@ -2410,7 +2410,9 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
 
             @Override
             public void beforeTaskStartedEvent(TaskEvent event) {
-                assertNull(event.getTask().getTaskData().getTaskInputVariables());
+                assertNotNull(event.getTask().getTaskData().getTaskInputVariables());
+                assertEquals(1, event.getTask().getTaskData().getTaskInputVariables().size());
+                assertTrue(event.getTask().getTaskData().getTaskInputVariables().containsKey("input")); 
                 assertNull(event.getTask().getTaskData().getTaskOutputVariables());
                 
                 event.getTaskContext().loadTaskVariables(event.getTask());
@@ -2470,10 +2472,6 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
 
             @Override
             public void afterTaskStartedEvent(TaskEvent event) {
-                assertNull(event.getTask().getTaskData().getTaskInputVariables());
-                assertNull(event.getTask().getTaskData().getTaskOutputVariables());
-                
-                event.getTaskContext().loadTaskVariables(event.getTask());
                 
                 assertNotNull(event.getTask().getTaskData().getTaskInputVariables());
                 assertEquals(1, event.getTask().getTaskData().getTaskInputVariables().size());

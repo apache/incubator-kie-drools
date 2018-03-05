@@ -44,6 +44,8 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.drools.core.util.StringUtils;
+import org.jbpm.persistence.api.integration.EventManagerProvider;
+import org.jbpm.persistence.api.integration.model.TaskInstanceView;
 import org.jbpm.query.jpa.data.QueryWhere;
 import org.jbpm.services.task.impl.model.AttachmentImpl;
 import org.jbpm.services.task.impl.model.CommentImpl;
@@ -69,7 +71,6 @@ import org.kie.internal.task.api.TaskPersistenceContext;
 import org.kie.internal.task.api.model.ContentData;
 import org.kie.internal.task.api.model.Deadline;
 import org.kie.internal.task.api.model.FaultData;
-import org.kie.internal.task.api.model.InternalContent;
 import org.kie.internal.task.api.model.InternalTaskData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -128,20 +129,27 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
         	this.em.flush();
             return this.em.find(TaskImpl.class, task.getId(), LockModeType.PESSIMISTIC_FORCE_INCREMENT );
         }
+        EventManagerProvider.getInstance().get().create(new TaskInstanceView(task));
         return task;
 	}
 
 	@Override
 	public Task updateTask(Task task) {
 		check();
-		return this.em.merge(task);
+		Task updated = this.em.merge(task);
+		
+		EventManagerProvider.getInstance().get().update(new TaskInstanceView(task));
+		
+		return updated;
 	}
 
 	@Override
 	public Task removeTask(Task task) {
 		check();
 		em.remove( task );
-
+		
+		EventManagerProvider.getInstance().get().delete(new TaskInstanceView(task));
+		
 		return task;
 	}
 
@@ -362,12 +370,19 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 	
 	@Override
 	public Attachment removeAttachmentFromTask(Task task, long attachmentId) {
-		return ((InternalTaskData) task.getTaskData()).removeAttachment(attachmentId);
+		Attachment removed = ((InternalTaskData) task.getTaskData()).removeAttachment(attachmentId);
+		
+		EventManagerProvider.getInstance().get().update(new TaskInstanceView(task));
+		
+		return removed;
 	}
 	
 	@Override
 	public Attachment addAttachmentToTask(Attachment attachment, Task task) {
 		((InternalTaskData) task.getTaskData()).addAttachment(attachment);
+		
+		EventManagerProvider.getInstance().get().update(new TaskInstanceView(task));
+		
 		return attachment;
 	}
 
@@ -407,12 +422,18 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 	@Override
 	public Comment removeCommentFromTask(Comment comment, Task task) {
 		((InternalTaskData) task.getTaskData()).removeComment(comment.getId());
+		
+		EventManagerProvider.getInstance().get().update(new TaskInstanceView(task));
+		
 		return comment;
 	}
 	
 	@Override
 	public Comment addCommentToTask(Comment comment, Task task) {
 		((InternalTaskData) task.getTaskData()).addComment(comment);
+		
+		EventManagerProvider.getInstance().get().update(new TaskInstanceView(task));
+		
 		return comment;
 	}
 
