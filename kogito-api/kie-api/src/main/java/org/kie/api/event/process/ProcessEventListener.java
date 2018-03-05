@@ -90,5 +90,17 @@ public interface ProcessEventListener
      * @param event
      */
     void afterVariableChanged(ProcessVariableChangedEvent event);
+    
+    /**
+     * This listener method is invoked right before a process/node instance's SLA has been violated.
+     * @param event
+     */
+    default void beforeSLAViolated(SLAViolatedEvent event){};
+
+    /**
+     * This listener method is invoked right after a process/node instance's SLA has been violated.
+     * @param event
+     */
+    default void afterSLAViolated(SLAViolatedEvent event){};
 
 }
