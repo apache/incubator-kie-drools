@@ -44,8 +44,7 @@ public class LegacyAccumulate {
 
         final PackageModel packageModel = context.getPackageModel();
 
-        final PackageRegistry pkgRegistry = packageModel.getPkgRegistry();
-        final DialectCompiletimeRegistry dialectCompiletimeRegistry = pkgRegistry.getDialectCompiletimeRegistry();
+        final DialectCompiletimeRegistry dialectCompiletimeRegistry = packageModel.getDialectCompiletimeRegistry();
         final Dialect defaultDialect = dialectCompiletimeRegistry.getDialect("java");
         final InternalKnowledgePackage pkg = packageModel.getPkg();
         final RuleDescr ruleDescr = context.getRuleDescr();

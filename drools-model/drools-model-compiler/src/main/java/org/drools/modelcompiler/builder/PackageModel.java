@@ -31,7 +31,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
-import org.drools.compiler.compiler.PackageRegistry;
+import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.CompilationUnit;
@@ -80,7 +80,8 @@ public class PackageModel {
 
     private final String name;
     private final boolean isPattern;
-    private final PackageRegistry pkgRegistry;
+    private final DialectCompiletimeRegistry dialectCompiletimeRegistry;
+
     private final String rulesFileName;
     
     private Set<String> imports = new HashSet<>();
@@ -110,13 +111,13 @@ public class PackageModel {
     private Map<String, AccumulateFunction> accumulateFunctions;
     private InternalKnowledgePackage pkg;
 
-    public PackageModel(String name, KnowledgeBuilderConfigurationImpl configuration, boolean isPattern, PackageRegistry pkgRegistry) {
+    public PackageModel(String name, KnowledgeBuilderConfigurationImpl configuration, boolean isPattern, DialectCompiletimeRegistry dialectCompiletimeRegistry) {
         this.name = name;
         this.isPattern = isPattern;
-        this.pkgRegistry = pkgRegistry;
         this.rulesFileName = generateRulesFileName();
         this.configuration = configuration;
-        exprIdGenerator = new DRLIdGenerator();
+        this.exprIdGenerator = new DRLIdGenerator();
+        this.dialectCompiletimeRegistry = dialectCompiletimeRegistry;
     }
 
     public String getRulesFileName() {
@@ -241,8 +242,9 @@ public class PackageModel {
         return pkg;
     }
 
-    public PackageRegistry getPkgRegistry() {
-        return pkgRegistry;
+
+    public DialectCompiletimeRegistry getDialectCompiletimeRegistry() {
+        return dialectCompiletimeRegistry;
     }
 
     public static class RuleSourceResult {
