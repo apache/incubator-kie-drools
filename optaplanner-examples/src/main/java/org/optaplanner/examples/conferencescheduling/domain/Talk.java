@@ -21,6 +21,7 @@ import java.util.Set;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.entity.PlanningPin;
+import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
@@ -29,7 +30,7 @@ public class Talk extends AbstractPersistable {
 
     private String code;
     private String title;
-    private String talkType;
+    private TalkType talkType;
     private List<Speaker> speakerList;
     private Set<String> themeTrackTagSet;
     private Set<String> sectorTagSet;
@@ -226,6 +227,16 @@ public class Talk extends AbstractPersistable {
         return code;
     }
 
+    @ValueRangeProvider(id = "timeslotRange")
+    public Set<Timeslot> getTimeslotRange() {
+        return talkType.getCompatibleTimeslotSet();
+    }
+
+    @ValueRangeProvider(id = "roomRange")
+    public Set<Room> getRoomRange() {
+        return talkType.getCompatibleRoomSet();
+    }
+
     // ************************************************************************
     // Simple getters and setters
     // ************************************************************************
@@ -246,11 +257,11 @@ public class Talk extends AbstractPersistable {
         this.title = title;
     }
 
-    public String getTalkType() {
+    public TalkType getTalkType() {
         return talkType;
     }
 
-    public void setTalkType(String talkType) {
+    public void setTalkType(TalkType talkType) {
         this.talkType = talkType;
     }
 
@@ -402,7 +413,7 @@ public class Talk extends AbstractPersistable {
     // With methods
     // ************************************************************************
 
-    public Talk withTalkType(String talkType) {
+    public Talk withTalkType(TalkType talkType) {
         this.talkType = talkType;
         return this;
     }

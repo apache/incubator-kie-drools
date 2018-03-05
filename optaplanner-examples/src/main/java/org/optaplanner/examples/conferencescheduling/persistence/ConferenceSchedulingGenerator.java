@@ -42,10 +42,12 @@ import org.optaplanner.examples.conferencescheduling.domain.ConferenceSolution;
 import org.optaplanner.examples.conferencescheduling.domain.Room;
 import org.optaplanner.examples.conferencescheduling.domain.Speaker;
 import org.optaplanner.examples.conferencescheduling.domain.Talk;
+import org.optaplanner.examples.conferencescheduling.domain.TalkType;
 import org.optaplanner.examples.conferencescheduling.domain.Timeslot;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
 public class ConferenceSchedulingGenerator extends LoggingMain {
+
 
     public static void main(String[] args) {
         ConferenceSchedulingGenerator generator = new ConferenceSchedulingGenerator();
@@ -210,6 +212,8 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
     protected final SolutionFileIO<ConferenceSolution> solutionFileIO;
     protected final File outputDir;
 
+    private TalkType breakoutTalkType;
+    private TalkType labTalkType;
     protected int labTalkCount;
     protected Random random;
 
@@ -246,6 +250,7 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
         parametrization.setId(0L);
         solution.setParametrization(parametrization);
 
+        createTalkTypeList(solution);
         createTimeslotList(solution, timeslotListSize);
         createRoomList(solution, roomListSize);
         createSpeakerList(solution, speakerListSize);
@@ -262,6 +267,21 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
         return solution;
     }
 
+    private void createTalkTypeList(ConferenceSolution solution) {
+        List<TalkType> talkTypeList = new ArrayList<>(2);
+        breakoutTalkType = new TalkType(0L);
+        breakoutTalkType.setName(BREAKOUT_TALK_TYPE);
+        breakoutTalkType.setCompatibleTimeslotSet(new LinkedHashSet<>());
+        breakoutTalkType.setCompatibleRoomSet(new LinkedHashSet<>());
+        talkTypeList.add(breakoutTalkType);
+        labTalkType = new TalkType(1L);
+        labTalkType.setName(LAB_TALK_TYPE);
+        labTalkType.setCompatibleTimeslotSet(new LinkedHashSet<>());
+        labTalkType.setCompatibleRoomSet(new LinkedHashSet<>());
+        talkTypeList.add(labTalkType);
+        solution.setTalkTypeList(talkTypeList);
+    }
+
     private void createTimeslotList(ConferenceSolution solution, int timeslotListSize) {
         List<Timeslot> timeslotList = new ArrayList<>(timeslotListSize);
         int timeslotOptionsIndex = 0;
@@ -276,8 +296,9 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
             Pair<LocalTime, LocalTime> pair = timeslotOptions.get(timeslotOptionsIndex);
             timeslot.setStartDateTime(LocalDateTime.of(day, pair.getLeft()));
             timeslot.setEndDateTime(LocalDateTime.of(day, pair.getRight()));
-            timeslot.setTalkTypeSet(Collections.singleton(
-                    timeslot.getDurationInMinutes() >= 120 ? LAB_TALK_TYPE : BREAKOUT_TALK_TYPE));
+            TalkType talkType = timeslot.getDurationInMinutes() >= 120 ? labTalkType : breakoutTalkType;
+            talkType.getCompatibleTimeslotSet().add(timeslot);
+            timeslot.setTalkTypeSet(Collections.singleton(talkType));
             timeslotOptionsIndex++;
             Set<String> tagSet = new LinkedHashSet<>(2);
             timeslot.setTagSet(tagSet);
@@ -295,19 +316,15 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
             Room room = new Room();
             room.setId((long) i);
             room.setName("R " + ((i / roomsPerFloor * 100) + (i % roomsPerFloor) + 1));
-            Set<String> talkTypeSet = new LinkedHashSet<>();
-            Set<Timeslot> unavailableTimeslotSet = new LinkedHashSet<>();
+            TalkType talkType;
             if (i % 5 == 4) {
-                talkTypeSet.add(LAB_TALK_TYPE);
-                unavailableTimeslotSet.addAll(solution.getTimeslotList().stream()
-                        .filter(timeslot -> !timeslot.getTalkTypeSet().contains(LAB_TALK_TYPE)).collect(Collectors.toList()));
+                talkType = labTalkType;
             } else {
-                talkTypeSet.add(BREAKOUT_TALK_TYPE);
-                unavailableTimeslotSet.addAll(solution.getTimeslotList().stream()
-                        .filter(timeslot -> timeslot.getTalkTypeSet().contains(LAB_TALK_TYPE)).collect(Collectors.toList()));
+                talkType = breakoutTalkType;
             }
-            room.setTalkTypeSet(talkTypeSet);
-            room.setUnavailableTimeslotSet(unavailableTimeslotSet);
+            talkType.getCompatibleRoomSet().add(room);
+            room.setTalkTypeSet(Collections.singleton(talkType));
+            room.setUnavailableTimeslotSet(new LinkedHashSet<>());
             Set<String> tagSet = new LinkedHashSet<>(roomTagProbabilityList.size());
             for (Pair<String, Double> roomTagProbability : roomTagProbabilityList) {
                 if (i == 0 || i == 4 || random.nextDouble() < roomTagProbability.getValue()) {
@@ -394,7 +411,7 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
             talk.setCode(String.format("S%0" + ((String.valueOf(talkListSize).length()) + "d"), i));
             talk.setTitle(talkTitleGenerator.generateNextValue());
             double speakerRandomDouble = random.nextDouble();
-            talk.setTalkType(i < labTalkCount ? LAB_TALK_TYPE : BREAKOUT_TALK_TYPE);
+            talk.setTalkType(i < labTalkCount ? labTalkType : breakoutTalkType);
             int speakerCount = (speakerRandomDouble < 0.01) ? 4 :
                     (speakerRandomDouble < 0.03) ? 3 :
                             (speakerRandomDouble < 0.40) ? 2 : 1;
@@ -445,7 +462,7 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
         Talk pinnedTalk = talkList.get(labTalkCount + random.nextInt(talkListSize - labTalkCount));
         pinnedTalk.setPinnedByUser(true);
         pinnedTalk.setTimeslot(solution.getTimeslotList().stream()
-                .filter(timeslot -> timeslot.getTalkTypeSet().contains(BREAKOUT_TALK_TYPE)).findFirst().get());
+                .filter(timeslot -> timeslot.getTalkTypeSet().contains(breakoutTalkType)).findFirst().get());
         pinnedTalk.setRoom(solution.getRoomList().get(0));
         solution.setTalkList(talkList);
     }

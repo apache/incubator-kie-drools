@@ -24,7 +24,7 @@ public class Room extends AbstractPersistable {
 
     private String name;
 
-    private Set<String> talkTypeSet;
+    private Set<TalkType> talkTypeSet;
     private Set<Timeslot> unavailableTimeslotSet;
     private Set<String> tagSet;
 
@@ -56,11 +56,11 @@ public class Room extends AbstractPersistable {
         this.name = name;
     }
 
-    public Set<String> getTalkTypeSet() {
+    public Set<TalkType> getTalkTypeSet() {
         return talkTypeSet;
     }
 
-    public void setTalkTypeSet(Set<String> talkTypeSet) {
+    public void setTalkTypeSet(Set<TalkType> talkTypeSet) {
         this.talkTypeSet = talkTypeSet;
     }
 
@@ -84,7 +84,7 @@ public class Room extends AbstractPersistable {
     // With methods
     // ************************************************************************
 
-    public Room withTalkTypeSet(Set<String> talkTypeSet) {
+    public Room withTalkTypeSet(Set<TalkType> talkTypeSet) {
         this.talkTypeSet = talkTypeSet;
         return this;
     }

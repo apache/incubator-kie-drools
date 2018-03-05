@@ -34,11 +34,12 @@ public class ConferenceSolution extends AbstractPersistable {
     @ProblemFactProperty
     private ConferenceParametrization parametrization;
 
-    @ValueRangeProvider(id = "timeslotRange")
+    @ProblemFactCollectionProperty
+    private List<TalkType> talkTypeList;
+
     @ProblemFactCollectionProperty
     private List<Timeslot> timeslotList;
 
-    @ValueRangeProvider(id = "roomRange")
     @ProblemFactCollectionProperty
     private List<Room> roomList;
 
@@ -81,6 +82,14 @@ public class ConferenceSolution extends AbstractPersistable {
 
     public void setParametrization(ConferenceParametrization parametrization) {
         this.parametrization = parametrization;
+    }
+
+    public List<TalkType> getTalkTypeList() {
+        return talkTypeList;
+    }
+
+    public void setTalkTypeList(List<TalkType> talkTypeList) {
+        this.talkTypeList = talkTypeList;
     }
 
     public List<Timeslot> getTimeslotList() {
@@ -127,8 +136,13 @@ public class ConferenceSolution extends AbstractPersistable {
     // With methods
     // ************************************************************************
 
-    public ConferenceSolution withTalkList(List<Talk> talkList) {
-        this.talkList = talkList;
+    public ConferenceSolution withParametrization(ConferenceParametrization parametrization) {
+        this.parametrization = parametrization;
+        return this;
+    }
+
+    public ConferenceSolution withTalkTypeList(List<TalkType> talkTypeList) {
+        this.talkTypeList = talkTypeList;
         return this;
     }
 
@@ -147,8 +161,8 @@ public class ConferenceSolution extends AbstractPersistable {
         return this;
     }
 
-    public ConferenceSolution withParametrization(ConferenceParametrization parametrization) {
-        this.parametrization = parametrization;
+    public ConferenceSolution withTalkList(List<Talk> talkList) {
+        this.talkList = talkList;
         return this;
     }
 
