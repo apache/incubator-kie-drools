@@ -87,9 +87,9 @@ import static org.optaplanner.examples.conferencescheduling.domain.ConferencePar
 
 public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<ConferenceSolution> {
 
-    protected static final Pattern VALID_TAG_PATTERN = Pattern.compile("(?U)^[\\w&\\-\\.\\(\\)][\\w &\\-\\.\\(\\)]*[\\w&\\-\\.\\(\\)]?$");
+    protected static final Pattern VALID_TAG_PATTERN = Pattern.compile("(?U)^[\\w&\\-\\.\\/\\(\\)\\'][\\w&\\-\\.\\/\\(\\)\\' ]*[\\w&\\-\\.\\/\\(\\)\\']?$");
     protected static final Pattern VALID_NAME_PATTERN = VALID_TAG_PATTERN;
-    protected static final Pattern VALID_CODE_PATTERN = Pattern.compile("(?U)^[\\w\\-\\.\\(\\)]+$");
+    protected static final Pattern VALID_CODE_PATTERN = Pattern.compile("(?U)^[\\w\\-\\.\\/\\(\\)]+$");
 
     protected static final DateTimeFormatter DAY_FORMATTER
             = DateTimeFormatter.ofPattern("E yyyy-MM-dd", Locale.ENGLISH);
