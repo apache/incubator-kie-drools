@@ -48,6 +48,12 @@ public interface ProcessInstance
     int STATE_COMPLETED = 2;
     int STATE_ABORTED   = 3;
     int STATE_SUSPENDED = 4;
+    
+    int SLA_NA = 0;
+    int SLA_PENDING   = 1;
+    int SLA_MET    = 2;
+    int SLA_VIOLATED = 3;
+    int SLA_ABORTED   = 4;    
 
     /**
      * The id of the process definition that is related to this process instance.
