@@ -455,7 +455,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             readHeaderCell("Speakers");
             readHeaderCell("Theme track tags");
             readHeaderCell("Sector tags");
-            readHeaderCell("Audience type");
+            readHeaderCell("Audience types");
             readHeaderCell("Audience level");
             readHeaderCell("Content tags");
             readHeaderCell("Language");
@@ -519,12 +519,14 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                                 + ") must match to the regular expression (" + VALID_TAG_PATTERN + ").");
                     }
                 }
-                String audienceType = nextStringCell().getStringCellValue();
-                if (!VALID_TAG_PATTERN.matcher(audienceType).matches()) {
-                    throw new IllegalStateException(currentPosition() + ": The talk (" + talk + ")'s audience type (" + audienceType
-                            + ") must match to the regular expression (" + VALID_TAG_PATTERN + ").");
+                talk.setAudienceTypeSet(Arrays.stream(nextStringCell().getStringCellValue().split(", "))
+                        .filter(tag -> !tag.isEmpty()).collect(toCollection(LinkedHashSet::new)));
+                for (String audienceType : talk.getAudienceTypeSet()) {
+                    if (!VALID_TAG_PATTERN.matcher(audienceType).matches()) {
+                        throw new IllegalStateException(currentPosition() + ": The talk (" + talk + ")'s audience type (" + audienceType
+                                + ") must match to the regular expression (" + VALID_TAG_PATTERN + ").");
+                    }
                 }
-                talk.setAudienceType(audienceType);
                 double audienceLevelDouble = nextNumericCell().getNumericCellValue();
                 if (audienceLevelDouble <= 0 || audienceLevelDouble != Math.floor(audienceLevelDouble)) {
                     throw new IllegalStateException(currentPosition() + ": The talk with code (" + talk.getCode()
@@ -1056,7 +1058,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             nextHeaderCell("Speakers");
             nextHeaderCell("Theme track tags");
             nextHeaderCell("Sector tags");
-            nextHeaderCell("Audience type");
+            nextHeaderCell("Audience types");
             nextHeaderCell("Audience level");
             nextHeaderCell("Content tags");
             nextHeaderCell("Language");
@@ -1082,7 +1084,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                         .stream().map(Speaker::getName).collect(joining(", ")));
                 nextCell().setCellValue(String.join(", ", talk.getThemeTrackTagSet()));
                 nextCell().setCellValue(String.join(", ", talk.getSectorTagSet()));
-                nextCell().setCellValue(talk.getAudienceType());
+                nextCell().setCellValue(String.join(", ", talk.getAudienceTypeSet()));
                 nextCell().setCellValue(talk.getAudienceLevel());
                 nextCell().setCellValue(String.join(", ", talk.getContentTagSet()));
                 nextCell().setCellValue(talk.getLanguage());
@@ -1265,11 +1267,12 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             nextHeaderCell("Audience type");
             writeTimeslotHoursHeaders();
 
-            Map<String, Map<Timeslot, List<Talk>>> tagToTimeslotToTalkListMap = solution.getTalkList().stream()
+            Map<String, Map<Timeslot, List<Talk>>> audienceTypeToTimeslotToTalkListMap = solution.getTalkList().stream()
                     .filter(talk -> talk.getTimeslot() != null)
-                    .map(talk -> Pair.of(talk.getAudienceType(), Pair.of(talk.getTimeslot(), talk)))
+                    .flatMap(talk -> talk.getAudienceTypeSet().stream()
+                            .map(audienceType -> Pair.of(audienceType, Pair.of(talk.getTimeslot(), talk))))
                     .collect(groupingBy(Pair::getLeft, groupingBy(o -> o.getRight().getLeft(), mapping(o -> o.getRight().getRight(), toList()))));
-            for (Map.Entry<String, Map<Timeslot, List<Talk>>> entry : tagToTimeslotToTalkListMap.entrySet()) {
+            for (Map.Entry<String, Map<Timeslot, List<Talk>>> entry : audienceTypeToTimeslotToTalkListMap.entrySet()) {
                 nextRow();
                 nextHeaderCell(entry.getKey());
                 Map<Timeslot, List<Talk>> timeslotToTalkListMap = entry.getValue();

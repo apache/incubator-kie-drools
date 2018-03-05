@@ -172,30 +172,29 @@ end
 rule "Audience type diversity"
     when
         ConferenceParametrization($weight : audienceTypeDiversity != 0)
-        Talk(timeslot != null, $timeslot : timeslot,
-                $audienceType : audienceType,
+        $leftTalk : Talk(timeslot != null, $timeslot : timeslot,
                 $leftId : id)
         // Timeslot.overlaps() is deliberately not used
-        Talk(timeslot == $timeslot,
-                audienceType != $audienceType,
+        $rightTalk : Talk(timeslot == $timeslot,
+                overlappingAudienceTypeCount($leftTalk) > 0,
                 id > $leftId)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, $weight);
+        scoreHolder.addSoftConstraintMatch(kcontext, $weight * $rightTalk.overlappingAudienceTypeCount($leftTalk));
 end
 
 rule "Audience type theme track conflict"
     when
         ConferenceParametrization($weight : themeTrackConflict != 0)
         $leftTalk : Talk(timeslot != null, $timeslot : timeslot,
-                $audienceType : audienceType,
                 $leftId : id)
         $rightTalk : Talk(timeslot != null,
-                audienceType == $audienceType,
                 overlappingThemeTrackCount($leftTalk) > 0,
+                overlappingAudienceTypeCount($leftTalk) > 0,
                 getTimeslot().overlaps($timeslot),
                 id > $leftId)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, - $weight * $rightTalk.overlappingThemeTrackCount($leftTalk));
+        scoreHolder.addSoftConstraintMatch(kcontext, - $weight * $rightTalk.overlappingThemeTrackCount($leftTalk)
+                * $rightTalk.overlappingAudienceTypeCount($leftTalk));
 end
 
 rule "Audience level diversity"
