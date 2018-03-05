@@ -37,6 +37,9 @@ public class NodeInstanceDesc implements org.jbpm.services.api.model.NodeInstanc
     
     private Long referenceId;    
     private String nodeContainerId;
+    
+    private Date slaDueDate;
+    private Integer slaCompliance;
 
     public NodeInstanceDesc() {
         // default constructor
@@ -46,7 +49,7 @@ public class NodeInstanceDesc implements org.jbpm.services.api.model.NodeInstanc
     public NodeInstanceDesc(String id, String nodeId, String name, String nodeType,
                             String deploymentId, long processInstanceId, Date date, 
                             String connection, int type, Long workItemId,
-                            Long referenceId, String nodeContainerId) {
+                            Long referenceId, String nodeContainerId, Date slaDueDate, Integer slaCompliance) {
         this.id = Long.parseLong(id);
         this.name = name;
         this.nodeId = nodeId;
@@ -59,6 +62,8 @@ public class NodeInstanceDesc implements org.jbpm.services.api.model.NodeInstanc
         this.workItemId = workItemId;
         this.referenceId = referenceId;
         this.nodeContainerId = nodeContainerId;
+        this.slaDueDate = slaDueDate;
+        this.slaCompliance = slaCompliance;
     }
 
     public Long getId() {
@@ -129,6 +134,22 @@ public class NodeInstanceDesc implements org.jbpm.services.api.model.NodeInstanc
     
     public String getNodeContainerId() {
         return nodeContainerId;
+    }
+    
+    public Date getSlaDueDate() {
+        return slaDueDate;
+    }
+    
+    public void setSlaDueDate(Date slaDueDate) {
+        this.slaDueDate = slaDueDate;
+    }
+    
+    public Integer getSlaCompliance() {
+        return slaCompliance;
+    }
+
+    public void setSlaCompliance(Integer slaCompliance) {
+        this.slaCompliance = slaCompliance;
     }
 
 }

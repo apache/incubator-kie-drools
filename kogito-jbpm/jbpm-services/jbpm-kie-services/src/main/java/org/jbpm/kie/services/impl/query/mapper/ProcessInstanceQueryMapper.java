@@ -79,7 +79,9 @@ public class ProcessInstanceQueryMapper extends AbstractQueryMapper<ProcessInsta
                 getColumnStringValue(dataSetResult, COLUMN_IDENTITY, index),
                 getColumnStringValue(dataSetResult, COLUMN_PROCESSINSTANCEDESCRIPTION, index),
                 getColumnStringValue(dataSetResult, COLUMN_CORRELATIONKEY, index), 
-                getColumnLongValue(dataSetResult, COLUMN_PARENTPROCESSINSTANCEID, index)
+                getColumnLongValue(dataSetResult, COLUMN_PARENTPROCESSINSTANCEID, index),
+                getColumnDateValue(dataSetResult, COLUMN_SLA_DUE_DATE, index),
+                getColumnIntValue(dataSetResult, COLUMN_SLA_COMPLIANCE, index)
                 );
         return pi;
     }

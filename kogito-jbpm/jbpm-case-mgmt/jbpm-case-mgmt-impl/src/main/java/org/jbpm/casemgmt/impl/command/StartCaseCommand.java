@@ -16,7 +16,9 @@
 
 package org.jbpm.casemgmt.impl.command;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -30,6 +32,8 @@ import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.services.api.ProcessService;
 import org.kie.api.KieServices;
+import org.kie.api.command.BatchExecutionCommand;
+import org.kie.api.command.Command;
 import org.kie.api.command.KieCommands;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.EnvironmentName;
@@ -76,7 +80,12 @@ public class StartCaseCommand extends CaseCommand<Void> {
         caseEventSupport.fireBeforeCaseStarted(caseId, deploymentId, caseDefinitionId, caseFile);
         
         logger.debug("Inserting case file into working memory");
-        processService.execute(deploymentId, CaseContext.get(caseId), commandsFactory.newInsert(caseFile));
+        List<Command<?>> commands = new ArrayList<>();
+        commands.add(commandsFactory.newInsert(caseFile));
+        commands.add(commandsFactory.newFireAllRules());
+        
+        BatchExecutionCommand batch = commandsFactory.newBatchExecution(commands);
+        processService.execute(deploymentId, CaseContext.get(caseId), batch);
         
         logger.debug("Starting process instance for case {} and case definition {}", caseId, caseDefinitionId);
         CorrelationKey correlationKey = correlationKeyFactory.newCorrelationKey(caseId);

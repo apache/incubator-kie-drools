@@ -19,13 +19,15 @@ package org.jbpm.casemgmt.impl.util;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.jbpm.test.listener.DefaultCountDownProcessEventListener;
 import org.jbpm.test.listener.NodeLeftCountDownProcessEventListener;
+import org.jbpm.test.listener.SLAViolationCountDownProcessEventListener;
 
 public class CountDownListenerFactory {
 
-    private static Map<String, NodeLeftCountDownProcessEventListener> listeners = new ConcurrentHashMap<>();
+    private static Map<String, DefaultCountDownProcessEventListener> listeners = new ConcurrentHashMap<>();
     
-    public static NodeLeftCountDownProcessEventListener get(String id, String nodeName, int threads) {
+    public static DefaultCountDownProcessEventListener get(String id, String nodeName, int threads) {
         if (listeners.containsKey(id)) {
             return listeners.get(id);
         }
@@ -34,11 +36,20 @@ public class CountDownListenerFactory {
         return listener;
     }
     
-    public static NodeLeftCountDownProcessEventListener getExisting(String id) {
+    public static DefaultCountDownProcessEventListener getSLA(String id, int threads) {
+        if (listeners.containsKey(id)) {
+            return listeners.get(id);
+        }
+        SLAViolationCountDownProcessEventListener listener = new SLAViolationCountDownProcessEventListener(threads);
+        listeners.put(id, listener);
+        return listener;
+    }
+    
+    public static DefaultCountDownProcessEventListener getExisting(String id) {
         return listeners.get(id);
     }
     
-    public static NodeLeftCountDownProcessEventListener removeExisting(String id) {
+    public static DefaultCountDownProcessEventListener removeExisting(String id) {
         return listeners.remove(id);
     }
     

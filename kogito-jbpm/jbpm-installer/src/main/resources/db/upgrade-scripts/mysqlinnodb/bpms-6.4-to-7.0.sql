@@ -68,3 +68,8 @@ create table ExecutionErrorInfo (
     ERROR_TYPE varchar(255),
     primary key (id)
 ) ENGINE=InnoDB;
+
+alter table ProcessInstanceLog add column slaCompliance integer;
+alter table ProcessInstanceLog add column sla_due_date datetime;
+ALTER TABLE NodeInstanceLog ADD COLUMN slaCompliance integer;
+ALTER TABLE NodeInstanceLog ADD COLUMN sla_due_date datetime; 

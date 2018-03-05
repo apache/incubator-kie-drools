@@ -224,6 +224,9 @@
         nodeType varchar(255),
         processId varchar(255),
         processInstanceId bigint not null,
+        sla_due_date datetime,
+        -- sla_due_date datetime(6), to be used with mysql 5.6.4 that supports millis precision
+        slaCompliance integer,
         type integer not null,
         workItemId bigint,
         nodeContainerId varchar(255),
@@ -318,6 +321,9 @@
         processName varchar(255),
         processType integer,
         processVersion varchar(255),
+        sla_due_date datetime,
+        -- sla_due_date datetime(6), to be used with mysql 5.6.4 that supports millis precision
+        slaCompliance integer,
         start_date datetime,
         -- start_date datetime(6), to be used with mysql 5.6.4 that supports millis precision
         status integer,

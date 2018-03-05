@@ -130,11 +130,11 @@ public abstract class JbpmBpmn2TestCase extends AbstractBaseTest {
     public static final boolean LOCKING = Boolean.valueOf(System.getProperty("org.jbpm.test.locking", "false"));
 
     private static boolean setupDataSource = false;
-    private boolean sessionPersistence = false;
-    private boolean pessimisticLocking = false;
+    protected boolean sessionPersistence = false;
+    protected boolean pessimisticLocking = false;
     private static H2Server server = new H2Server();
     
-    private WorkingMemoryInMemoryLogger logger;
+    protected WorkingMemoryInMemoryLogger logger;
     protected AuditLogService logService;
 
     protected static EntityManagerFactory emf;

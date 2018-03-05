@@ -19,6 +19,7 @@ package org.jbpm.workflow.instance.impl;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -71,6 +72,10 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
     private org.jbpm.workflow.instance.NodeInstanceContainer nodeInstanceContainer;
     private Map<String, Object> metaData = new HashMap<String, Object>();
     private int level;
+    
+    protected int slaCompliance = ProcessInstance.SLA_NA;
+    protected Date slaDueDate;
+    protected long slaTimerId = -1;
     
     protected transient Map<String, Object> dynamicParameters;
 
@@ -169,6 +174,8 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
 	    	    }
 	    	}
     	}
+    	configureSla();
+    	
     	InternalKnowledgeRuntime kruntime = getProcessInstance().getKnowledgeRuntime();
     	if (!hidden) {
     		((InternalProcessRuntime) kruntime.getProcessRuntime())
@@ -530,5 +537,33 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
             return new NoOpExecutionErrorHandler();
         }
         return errorManager.getHandler();
+    }
+    
+    protected void configureSla() {
+        
+    }
+    
+    public int getSlaCompliance() {
+        return slaCompliance;
+    }
+    
+    public void internalSetSlaCompliance(int slaCompliance) {
+        this.slaCompliance = slaCompliance;
+    }
+    
+    public Date getSlaDueDate() {
+        return slaDueDate;
+    }
+    
+    public void internalSetSlaDueDate(Date slaDueDate) {
+        this.slaDueDate = slaDueDate;
+    }
+    
+    public Long getSlaTimerId() {
+        return slaTimerId;
+    }
+    
+    public void internalSetSlaTimerId(Long slaTimerId) {
+        this.slaTimerId = slaTimerId;
     }
 }

@@ -764,7 +764,7 @@ public class QueryServiceImplTest extends AbstractKieServicesBaseTest {
         List<Object> firstRow = instances.get(0);
         assertNotNull(firstRow);
 
-        assertEquals(16, firstRow.size());
+        assertEquals(18, firstRow.size());
 
         processService.abortProcessInstance(processInstanceId);
         processInstanceId = null;
@@ -813,12 +813,12 @@ public class QueryServiceImplTest extends AbstractKieServicesBaseTest {
         List<Object> firstRow = instances.get(0);
         assertNotNull(firstRow);
 
-        assertEquals(16, firstRow.size());
+        assertEquals(18, firstRow.size());
 
         List<Object> secondRow = instances.get(1);
         assertNotNull(secondRow);
 
-        assertEquals(16, secondRow.size());
+        assertEquals(18, secondRow.size());
 
         Assert.assertNotEquals(firstRow, secondRow);
 

@@ -95,4 +95,14 @@ public interface CaseInstance {
      * Returns completion message (if any) of this case
      */
     String getCompletionMessage();    
+    
+    /**
+     * Returns SLA due date if any is set on case instance
+     */
+    Date getSlaDueDate();
+    
+    /**
+     * Returns up to date SLA compliance level for case instance
+     */
+    Integer getSlaCompliance();
 }

@@ -228,6 +228,8 @@
         nodeType varchar(255) null,
         processId varchar(255) null,
         processInstanceId numeric(19,0) not null,
+        sla_due_date datetime null,
+        slaCompliance int null,
         type int not null,
         workItemId numeric(19,0) null,
         nodeContainerId varchar(255) null,
@@ -330,6 +332,8 @@
         processName varchar(255) null,
         processType int null,
         processVersion varchar(255) null,
+        sla_due_date datetime null,
+        slaCompliance int null,
         start_date datetime null,
         status int null,
         primary key (id)

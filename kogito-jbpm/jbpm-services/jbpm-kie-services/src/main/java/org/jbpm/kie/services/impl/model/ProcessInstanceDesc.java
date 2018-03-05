@@ -40,6 +40,9 @@ public class ProcessInstanceDesc implements org.jbpm.services.api.model.ProcessI
 
     private Long parentId;
     
+    private Date slaDueDate;
+    private Integer slaCompliance;
+    
     private List<org.jbpm.services.api.model.UserTaskInstanceDesc> activeTasks;
 
     public ProcessInstanceDesc() {
@@ -48,11 +51,13 @@ public class ProcessInstanceDesc implements org.jbpm.services.api.model.ProcessI
 
     public ProcessInstanceDesc(long id, String processId, String processName, String processVersion,
                                int state, String deploymentId, Date dataTimeStamp, String initiator,
-                               String processInstanceDescription, String correlationKey, Long parentId) {
+                               String processInstanceDescription, String correlationKey, Long parentId,
+                               Date slaDueDate, Integer slaCompliance) {
         this(id,processId,processName, processVersion,state, deploymentId, dataTimeStamp, initiator,
                 processInstanceDescription, correlationKey);
         this.parentId = parentId;
-
+        this.slaDueDate = slaDueDate;
+        this.slaCompliance = slaCompliance;
 
     }
     
@@ -151,6 +156,22 @@ public class ProcessInstanceDesc implements org.jbpm.services.api.model.ProcessI
 
     public void setParentId(Long parentId) {
         this.parentId = parentId;
+    }
+    
+    public Date getSlaDueDate() {
+        return slaDueDate;
+    }
+    
+    public void setSlaDueDate(Date slaDueDate) {
+        this.slaDueDate = slaDueDate;
+    }
+    
+    public Integer getSlaCompliance() {
+        return slaCompliance;
+    }
+    
+    public void setSlaCompliance(Integer slaCompliance) {
+        this.slaCompliance = slaCompliance;
     }
 
     @Override

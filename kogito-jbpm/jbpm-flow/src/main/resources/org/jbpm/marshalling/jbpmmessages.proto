@@ -45,6 +45,9 @@ message ProcessInstance {
     optional bool signal_completion = 16 [default = true];
     optional string deploymentId = 17;
     optional string correlation_key = 18;
+    optional int64 sla_timer_id = 19;
+    optional int64 sla_due_date = 20;
+    optional int32 sla_compliance = 21;
 
     repeated SwimlaneContextInstance swimlane_context = 6;
     repeated NodeInstance node_instance = 7;
@@ -63,6 +66,9 @@ message ProcessInstance {
         optional int64 node_id = 2;
         optional NodeInstanceContent content = 4;
         optional int32 level = 5;
+        optional int64 sla_timer_id = 6;
+        optional int64 sla_due_date = 7;
+        optional int32 sla_compliance = 8;
     }
 
     message ExclusiveGroupInstance {

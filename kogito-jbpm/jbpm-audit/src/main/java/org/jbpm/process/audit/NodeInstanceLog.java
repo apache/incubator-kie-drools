@@ -61,6 +61,13 @@ public class NodeInstanceLog implements Serializable, AuditEvent, org.kie.api.ru
     private Long referenceId;    
     private String nodeContainerId;
     
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "sla_due_date")
+    private Date slaDueDate;
+    
+    @Column(nullable=true)
+    private Integer slaCompliance;
+    
     public NodeInstanceLog() {
     }
     
@@ -293,6 +300,22 @@ public class NodeInstanceLog implements Serializable, AuditEvent, org.kie.api.ru
     
     public void setNodeContainerId(String nodeContainerId) {
         this.nodeContainerId = nodeContainerId;
+    }
+    
+    public Date getSlaDueDate() {
+        return slaDueDate;
+    }
+   
+    public void setSlaDueDate(Date slaDueDate) {
+        this.slaDueDate = slaDueDate;
+    }
+    
+    public Integer getSlaCompliance() {
+        return slaCompliance;
+    }
+    
+    public void setSlaCompliance(Integer slaCompliance) {
+        this.slaCompliance = slaCompliance;
     }
   	
 }

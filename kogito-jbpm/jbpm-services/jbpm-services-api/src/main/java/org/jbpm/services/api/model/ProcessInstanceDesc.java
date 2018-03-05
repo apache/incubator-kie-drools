@@ -43,5 +43,9 @@ public interface ProcessInstanceDesc {
 
     Long getParentId();
     
+    Date getSlaDueDate();
+    
+    Integer getSlaCompliance();
+    
     List<UserTaskInstanceDesc> getActiveTasks();
 }

@@ -18,6 +18,7 @@ package org.jbpm.workflow.instance;
 
 import org.kie.api.definition.process.Node;
 
+import java.util.Date;
 import java.util.Map;
 
 import org.jbpm.process.instance.ContextInstance;
@@ -42,5 +43,11 @@ public interface NodeInstance extends org.kie.api.runtime.process.NodeInstance {
     int getLevel();
     
     void setDynamicParameters(Map<String, Object> dynamicParameters);
+    
+    int getSlaCompliance();
+    
+    Date getSlaDueDate();
+    
+    Long getSlaTimerId();
     
 }

@@ -210,6 +210,8 @@
         nodeType varchar2(255 char),
         processId varchar2(255 char),
         processInstanceId number(19,0) not null,
+        sla_due_date timestamp,
+        slaCompliance number(10,0),
         type number(10,0) not null,
         workItemId number(19,0),
         nodeContainerId varchar2(255 char),
@@ -300,6 +302,8 @@
         processName varchar2(255 char),
         processType number(10,0),
         processVersion varchar2(255 char),
+        sla_due_date timestamp,
+        slaCompliance number(10,0),
         start_date timestamp,
         status number(10,0),
         primary key (id)

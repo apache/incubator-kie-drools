@@ -1,5 +1,5 @@
-alter table RequestInfo add priority int;
-ALTER TABLE ProcessInstanceLog ADD processType int;
+alter table RequestInfo add priority int null;
+ALTER TABLE ProcessInstanceLog ADD processType int null;
 
 update ProcessInstanceLog set processType = 1;
 update RequestInfo set priority = 5;
@@ -24,12 +24,12 @@ create table CaseRoleAssignmentLog (
 alter table CaseIdInfo 
     add constraint UK_CaseIdInfo_1 unique (caseIdPrefix);
 
-ALTER TABLE NodeInstanceLog ADD COLUMN referenceId bigint null;
-ALTER TABLE NodeInstanceLog ADD COLUMN nodeContainerId varchar(255) null;    
+ALTER TABLE NodeInstanceLog ADD referenceId bigint null;
+ALTER TABLE NodeInstanceLog ADD nodeContainerId varchar(255) null;    
 
-ALTER TABLE RequestInfo ADD COLUMN processInstanceId bigint null;
+ALTER TABLE RequestInfo ADD processInstanceId bigint null;
 
-ALTER TABLE AuditTaskImpl ADD COLUMN lastModificationDate datetime;
+ALTER TABLE AuditTaskImpl ADD lastModificationDate datetime null;
 update AuditTaskImpl ati set lastModificationDate = (
     select max(logTime) from TaskEvent where taskId=ati.taskId group by taskId
 );
@@ -65,3 +65,8 @@ create table ExecutionErrorInfo (
     ERROR_TYPE varchar(255) null,
     primary key (id)
 ) lock datarows;
+
+ALTER TABLE ProcessInstanceLog ADD sla_due_date datetime null;
+ALTER TABLE ProcessInstanceLog ADD slaCompliance int null;    
+ALTER TABLE NodeInstanceLog ADD sla_due_date datetime null;
+ALTER TABLE NodeInstanceLog ADD slaCompliance int null; 

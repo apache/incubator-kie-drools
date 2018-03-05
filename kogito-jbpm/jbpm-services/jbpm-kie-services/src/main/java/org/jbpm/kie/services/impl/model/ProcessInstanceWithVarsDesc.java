@@ -31,8 +31,8 @@ public class ProcessInstanceWithVarsDesc extends ProcessInstanceDesc implements 
         super();
     }
 
-    public ProcessInstanceWithVarsDesc(long id, String processId, String processName, String processVersion, int state, String deploymentId, Date dataTimeStamp, String initiator, String processInstanceDescription, String correlationKey, Long parentId) {
-        super(id, processId, processName, processVersion, state, deploymentId, dataTimeStamp, initiator, processInstanceDescription, correlationKey, parentId);
+    public ProcessInstanceWithVarsDesc(long id, String processId, String processName, String processVersion, int state, String deploymentId, Date dataTimeStamp, String initiator, String processInstanceDescription, String correlationKey, Long parentId, Date slaDueDate, Integer slaCompliance) {
+        super(id, processId, processName, processVersion, state, deploymentId, dataTimeStamp, initiator, processInstanceDescription, correlationKey, parentId, slaDueDate, slaCompliance);
     }
 
     public ProcessInstanceWithVarsDesc(long id, String processId, String processName, String processVersion, int state, String deploymentId, Date dataTimeStamp, String initiator, String processInstanceDescription, String correlationKey) {

@@ -18,6 +18,7 @@ package org.jbpm.workflow.instance.node;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -27,6 +28,7 @@ import java.util.regex.Matcher;
 
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Activation;
@@ -103,8 +105,23 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
                     addActivationListener();
                 }
 		    }
-		}
+		}		
+		
 		((WorkflowProcessInstanceImpl) getProcessInstance()).addActivatingNodeId((String) getNode().getMetaData().get("UniqueId"));
+	}
+	
+	protected void configureSla() {
+	    String slaDueDateExpression = (String) getNode().getMetaData().get("customSLADueDate");
+        if (slaDueDateExpression != null) {
+            TimerInstance timer = ((WorkflowProcessInstanceImpl)getProcessInstance()).configureSLATimer(slaDueDateExpression);
+            if (timer != null) {
+                this.slaTimerId = timer.getId();
+                this.slaDueDate = new Date(System.currentTimeMillis() + timer.getDelay());
+                this.slaCompliance = ProcessInstance.SLA_PENDING;
+                logger.debug("SLA for node instance {} is PENDING with due date {}", this.getId(), this.slaDueDate);
+                addTimerListener();
+            }
+        }
 	}
 
     protected TimerInstance createTimerInstance(Timer timer) {
@@ -287,15 +304,32 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
 
         return s;
     }
+    
+    protected void handleSLAViolation() {
+        if (slaCompliance == ProcessInstance.SLA_PENDING) {
+            InternalProcessRuntime processRuntime = ((InternalProcessRuntime) getProcessInstance().getKnowledgeRuntime().getProcessRuntime());
+            processRuntime.getProcessEventSupport().fireBeforeSLAViolated(getProcessInstance(), this, getProcessInstance().getKnowledgeRuntime());
+            logger.debug("SLA violated on node instance {}", getId());                   
+            this.slaCompliance = ProcessInstance.SLA_VIOLATED;
+            this.slaTimerId = -1;
+            processRuntime.getProcessEventSupport().fireAfterSLAViolated(getProcessInstance(), this, getProcessInstance().getKnowledgeRuntime());
+        }
+    }
 
     @Override
     public void signalEvent(String type, Object event) {
     	if ("timerTriggered".equals(type)) {
     		TimerInstance timerInstance = (TimerInstance) event;
-            if (timerInstances.contains(timerInstance.getId())) {
+            if (timerInstances != null && timerInstances.contains(timerInstance.getId())) {
                 triggerTimer(timerInstance);
+            } else if (timerInstance.getId() == slaTimerId) {                
+                handleSLAViolation();        
             }
-    	} else if (type.equals(getActivationType())) {
+    	} else if (("slaViolation:" + getId()).equals(type)) {
+                           
+            handleSLAViolation();        
+           
+        } else if (type.equals(getActivationType())) {
             if (event instanceof MatchCreatedEvent) {
                 String name = ((MatchCreatedEvent)event).getMatch().getRule().getName();
                 if (checkProcessInstance((Activation) ((MatchCreatedEvent)event).getMatch())) {
@@ -324,22 +358,36 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
     }
 
     public void addEventListeners() {
-    	if (timerInstances != null && timerInstances.size() > 0) {
+    	if (timerInstances != null && timerInstances.size() > 0 || slaTimerId > -1) {
     		addTimerListener();
+    	}
+    	if (slaCompliance == ProcessInstance.SLA_PENDING) {
+    	    ((WorkflowProcessInstance) getProcessInstance()).addEventListener("slaViolation:" + getId(), this, true);
     	}
     }
 
     protected void addTimerListener() {
     	((WorkflowProcessInstance) getProcessInstance()).addEventListener("timerTriggered", this, false);
     	((WorkflowProcessInstance) getProcessInstance()).addEventListener("timer", this, true);
+    	((WorkflowProcessInstance) getProcessInstance()).addEventListener("slaViolation:" + getId(), this, true);
     }
 
     public void removeEventListeners() {
     	((WorkflowProcessInstance) getProcessInstance()).removeEventListener("timerTriggered", this, false);
     	((WorkflowProcessInstance) getProcessInstance()).removeEventListener("timer", this, true);
+    	((WorkflowProcessInstance) getProcessInstance()).removeEventListener("slaViolation:" + getId(), this, true);
     }
 
 	protected void triggerCompleted(String type, boolean remove) {
+	    if (this.slaCompliance == ProcessInstance.SLA_PENDING) {
+	        if (System.currentTimeMillis() > slaDueDate.getTime()) {
+                // completion of the node instance is after expected SLA due date, mark it accordingly
+                this.slaCompliance = ProcessInstance.SLA_VIOLATED;
+            } else {
+                this.slaCompliance = ProcessInstance.STATE_COMPLETED;
+            }
+        }
+	    cancelSlaTimer();
 	    ((org.jbpm.workflow.instance.NodeInstanceContainer)getNodeInstanceContainer()).setCurrentLevel(getLevel());
 		cancelTimers();
 		removeActivationListener();
@@ -355,6 +403,15 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
 	}
 
     public void cancel() {
+        if (this.slaCompliance == ProcessInstance.SLA_PENDING) {
+            if (System.currentTimeMillis() > slaDueDate.getTime()) {
+                // completion of the process instance is after expected SLA due date, mark it accordingly
+                this.slaCompliance = ProcessInstance.SLA_VIOLATED;
+            } else {
+                this.slaCompliance = ProcessInstance.SLA_ABORTED;
+            }
+        }
+        cancelSlaTimer();
         cancelTimers();
         removeEventListeners();
         removeActivationListener();
@@ -370,6 +427,15 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
 				timerManager.cancelTimer(id);
 			}
 		}
+	}
+	
+	private void cancelSlaTimer() {
+	    if (this.slaTimerId > -1) {
+	        TimerManager timerManager = ((InternalProcessRuntime)
+	                getProcessInstance().getKnowledgeRuntime().getProcessRuntime()).getTimerManager();
+	        timerManager.cancelTimer(this.slaTimerId);
+            logger.debug("SLA Timer {} has been canceled", this.slaTimerId);
+        }
 	}
 
 	protected String getActivationType() {

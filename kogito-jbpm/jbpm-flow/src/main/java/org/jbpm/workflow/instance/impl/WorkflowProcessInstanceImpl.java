@@ -16,6 +16,8 @@
 
 package org.jbpm.workflow.instance.impl;
 
+import static org.jbpm.workflow.instance.impl.DummyEventListener.EMPTY_EVENT_LISTENER;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -33,12 +35,15 @@ import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.util.MVELSafeHelper;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.process.core.timer.BusinessCalendar;
+import org.jbpm.process.core.timer.DateTimeUtils;
 import org.jbpm.process.core.timer.Timer;
 import org.jbpm.process.instance.ContextInstance;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
+import org.jbpm.process.instance.timer.TimerInstance;
 import org.jbpm.util.PatternConstants;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.impl.NodeImpl;
@@ -48,8 +53,6 @@ import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.EventNode;
 import org.jbpm.workflow.core.node.EventNodeInterface;
 import org.jbpm.workflow.core.node.EventSubProcessNode;
-import org.jbpm.workflow.core.node.Join;
-import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.core.node.StateBasedNode;
 import org.jbpm.workflow.instance.NodeInstance;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
@@ -75,8 +78,6 @@ import org.kie.internal.runtime.manager.context.CaseContext;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.jbpm.workflow.instance.impl.DummyEventListener.EMPTY_EVENT_LISTENER;
 
 /**
  * Default implementation of a RuleFlow process instance.
@@ -107,7 +108,12 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 
 	private String deploymentId;
 	private String correlationKey;
+
 	private Date startDate;
+	
+	private int slaCompliance = SLA_NA;
+	private Date slaDueDate;
+	private long slaTimerId = -1;
 
     public NodeContainer getNodeContainer() {
 		return getWorkflowProcess();
@@ -355,6 +361,15 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
         // TODO move most of this to ProcessInstanceImpl
         if (state == ProcessInstance.STATE_COMPLETED
                 || state == ProcessInstance.STATE_ABORTED) {
+            if (this.slaCompliance == SLA_PENDING) {
+                if (System.currentTimeMillis() > slaDueDate.getTime()) {
+                    // completion of the process instance is after expected SLA due date, mark it accordingly
+                    this.slaCompliance = SLA_VIOLATED;
+                } else {
+                    this.slaCompliance = state == ProcessInstance.STATE_COMPLETED ? SLA_MET : SLA_ABORTED;
+                }
+            }
+            
             InternalKnowledgeRuntime kruntime = getKnowledgeRuntime();
             InternalProcessRuntime processRuntime = (InternalProcessRuntime) kruntime.getProcessRuntime();
             processRuntime.getProcessEventSupport().fireBeforeProcessCompleted(this, kruntime);
@@ -363,6 +378,10 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
                 NodeInstance nodeInstance = nodeInstances.get(0);
                 ((org.jbpm.workflow.instance.NodeInstance) nodeInstance)
                         .cancel();
+            }
+            if (this.slaTimerId > -1) {
+                processRuntime.getTimerManager().cancelTimer(this.slaTimerId);
+                logger.debug("SLA Timer {} has been canceled", this.slaTimerId);
             }
             removeEventListeners();
             processRuntime.getProcessInstanceManager().removeProcessInstance(this);
@@ -450,7 +469,50 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 	            }
 	        }
 			super.start(trigger);
+						
 		}
+	}
+	
+	public void configureSLA() {
+	    String slaDueDateExpression = (String) getProcess().getMetaData().get("customSLADueDate");
+        if (slaDueDateExpression != null) {
+            TimerInstance timer = configureSLATimer(slaDueDateExpression);
+            if (timer != null) {
+                this.slaTimerId = timer.getId();
+                this.slaDueDate = new Date(System.currentTimeMillis() + timer.getDelay());
+                this.slaCompliance = SLA_PENDING;
+                logger.debug("SLA for process instance {} is PENDING with due date {}", this.getId(), this.slaDueDate);
+            }
+        }
+	}
+	
+	public TimerInstance configureSLATimer(String slaDueDateExpression) {
+	    // setup SLA if provided        
+        slaDueDateExpression = resolveVariable(slaDueDateExpression);
+        if (slaDueDateExpression == null || slaDueDateExpression.trim().isEmpty()) {
+            logger.debug("Sla due date expression resolved to no value '{}'", slaDueDateExpression);
+            return null;
+        }
+        logger.debug("SLA due date is set to {}", slaDueDateExpression);
+        InternalKnowledgeRuntime kruntime = getKnowledgeRuntime();
+        long duration = -1;
+        if (kruntime != null && kruntime.getEnvironment().get("jbpm.business.calendar") != null){
+            BusinessCalendar businessCalendar = (BusinessCalendar) kruntime.getEnvironment().get("jbpm.business.calendar");
+            
+            duration = businessCalendar.calculateBusinessTimeAsDuration(slaDueDateExpression);
+        } else {
+            duration = DateTimeUtils.parseDuration(slaDueDateExpression);
+        }
+
+        TimerInstance timerInstance = new TimerInstance();
+        timerInstance.setId(-1);
+        timerInstance.setDelay(duration);
+        timerInstance.setPeriod(0);
+        if (useTimerSLATracking()) {
+            ((InternalProcessRuntime)kruntime.getProcessRuntime()).getTimerManager().registerTimer(timerInstance, this);
+        }
+        return timerInstance;
+       
 	}
 
 	private void registerExternalEventNodeListeners() {
@@ -480,13 +542,41 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 			}
 		}
 	}
+	
+	private void handleSLAViolation() {
+	    if (slaCompliance == SLA_PENDING) {
+	    
+    	    InternalKnowledgeRuntime kruntime = getKnowledgeRuntime();
+            InternalProcessRuntime processRuntime = (InternalProcessRuntime) kruntime.getProcessRuntime();
+            processRuntime.getProcessEventSupport().fireBeforeSLAViolated(this, kruntime);
+            logger.debug("SLA violated on process instance {}", getId());                   
+            this.slaCompliance = SLA_VIOLATED;
+            this.slaTimerId = -1;
+            processRuntime.getProcessEventSupport().fireAfterSLAViolated(this, kruntime);
+	    }
+	}
 
 	@SuppressWarnings("unchecked")
     public void signalEvent(String type, Object event) {
+	    logger.debug("Signal {} received with data {} in process instance {}", type, event, getId());
 	    synchronized (this) {
 			if (getState() != ProcessInstance.STATE_ACTIVE) {
 				return;
 			}
+			
+			if ("timerTriggered".equals(type)) {
+	            TimerInstance timer = (TimerInstance) event;
+	            if (timer.getId() == slaTimerId) {
+	                handleSLAViolation();
+	                // no need to pass the event along as it was purely for SLA tracking
+	                return;
+	            }
+	        }
+			if ("slaViolation".equals(type)) {
+                handleSLAViolation();
+                // no need to pass the event along as it was purely for SLA tracking
+                return;                
+            }
 
 			List<NodeInstance> currentView = new ArrayList<NodeInstance>(this.nodeInstances);
 
@@ -784,4 +874,42 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
         
         return false;
     }
+    
+    protected boolean useTimerSLATracking() {
+                      
+        String mode = (String) getKnowledgeRuntime().getEnvironment().get("SLATimerMode");
+        if (mode == null) {
+            return true;
+        }
+        
+        return Boolean.parseBoolean(mode);
+        
+    }
+
+    
+    public int getSlaCompliance() {
+        return slaCompliance;
+    }
+    
+    public void internalSetSlaCompliance(int slaCompliance) {
+        this.slaCompliance = slaCompliance;
+    }
+    
+    public Date getSlaDueDate() {
+        return slaDueDate;
+    }
+    
+    public void internalSetSlaDueDate(Date slaDueDate) {
+        this.slaDueDate = slaDueDate;
+    }
+    
+    public Long getSlaTimerId() {
+        return slaTimerId;
+    }
+    
+    public void internalSetSlaTimerId(Long slaTimerId) {
+        this.slaTimerId = slaTimerId;
+    }
+    
+    
 }

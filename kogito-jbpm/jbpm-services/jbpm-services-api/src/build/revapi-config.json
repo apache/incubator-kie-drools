@@ -793,7 +793,43 @@
 		 "methodName": "removeTaskOutputs",
 		 "elementKind": "method",
 		 "justification": "added deploymentid for task operations to allow security enforcement to use always correct deployment id for a task"
-		 }
+		 },
+		 {
+         "code": "java.method.addedToInterface",
+         "new": "method java.lang.Integer org.jbpm.services.api.model.NodeInstanceDesc::getSlaCompliance()",
+         "package": "org.jbpm.services.api.model",
+         "classSimpleName": "NodeInstanceDesc",
+         "methodName": "getSlaCompliance",
+         "elementKind": "method",
+         "justification": "Aded support for time based SLA tracking"
+         },
+         {
+         "code": "java.method.addedToInterface",
+         "new": "method java.util.Date org.jbpm.services.api.model.NodeInstanceDesc::getSlaDueDate()",
+         "package": "org.jbpm.services.api.model",
+         "classSimpleName": "NodeInstanceDesc",
+         "methodName": "getSlaDueDate",
+         "elementKind": "method",
+         "justification": "Aded support for time based SLA tracking"
+         },
+         {
+         "code": "java.method.addedToInterface",
+         "new": "method java.lang.Integer org.jbpm.services.api.model.ProcessInstanceDesc::getSlaCompliance()",
+         "package": "org.jbpm.services.api.model",
+         "classSimpleName": "ProcessInstanceDesc",
+         "methodName": "getSlaCompliance",
+         "elementKind": "method",
+         "justification": "Aded support for time based SLA tracking"
+         },
+         {
+         "code": "java.method.addedToInterface",
+         "new": "method java.util.Date org.jbpm.services.api.model.ProcessInstanceDesc::getSlaDueDate()",
+         "package": "org.jbpm.services.api.model",
+         "classSimpleName": "ProcessInstanceDesc",
+         "methodName": "getSlaDueDate",
+         "elementKind": "method",
+         "justification": "Aded support for time based SLA tracking"
+         }
       ]
     }
   }

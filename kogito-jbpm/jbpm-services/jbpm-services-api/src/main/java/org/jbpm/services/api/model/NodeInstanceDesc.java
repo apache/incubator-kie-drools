@@ -43,4 +43,8 @@ public interface NodeInstanceDesc {
     Long getReferenceId();
     
     String getNodeContainerId();
+    
+    Date getSlaDueDate();
+    
+    Integer getSlaCompliance();
 }

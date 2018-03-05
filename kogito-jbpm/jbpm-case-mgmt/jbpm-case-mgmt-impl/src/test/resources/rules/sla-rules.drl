@@ -1,0 +1,40 @@
+package defaultPackage;
+
+import java.util.Map;
+import java.util.HashMap;
+import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
+
+rule "Set SLA for Gold customers"
+when 
+    $caseData : CaseFileInstance()
+    String(this == "Gold") from $caseData.getData("CustomerType")
+          
+then 
+    
+    System.out.println("Gold customers have 1s SLA");
+    $caseData.add("slaDueDate", "1s");
+    
+end
+
+rule "Set SLA for Silver customers"
+when 
+    $caseData : CaseFileInstance()
+    String(this == "Silver") from $caseData.getData("CustomerType")
+          
+then 
+    
+    System.out.println("Silver customers have 2s SLA");
+    $caseData.add("slaDueDate", "2s");
+    
+end
+
+rule "No SLA for new customers"
+when 
+    $caseData : CaseFileInstance()
+    String(this == "New") from $caseData.getData("CustomerType")
+          
+then 
+    
+    System.out.println("New customers do not get any SLAs");    
+    $caseData.add("slaDueDate", "");
+end

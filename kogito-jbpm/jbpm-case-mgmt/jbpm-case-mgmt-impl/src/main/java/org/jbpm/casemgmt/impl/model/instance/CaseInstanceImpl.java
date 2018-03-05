@@ -46,6 +46,8 @@ public class CaseInstanceImpl implements CaseInstance, Serializable {
     private Date completedAt;
     private Long processInstanceId;
     private String completionMessage;
+    private Date slaDueDate;
+    private Integer slaCompliance;
     
     public CaseInstanceImpl() {
         
@@ -65,7 +67,7 @@ public class CaseInstanceImpl implements CaseInstance, Serializable {
      * @param caseId
      * @param caseDescription
      */
-    public CaseInstanceImpl(String caseId, String caseDescription, String caseDefinitionId, Integer status, String deploymentId, String owner, Date startedAt, Date completedAt, Long processInstanceId, String completionMessage) {
+    public CaseInstanceImpl(String caseId, String caseDescription, String caseDefinitionId, Integer status, String deploymentId, String owner, Date startedAt, Date completedAt, Long processInstanceId, String completionMessage, Date slaDueDate, Integer slaCompliance) {
         this.caseId = caseId;
         this.caseDescription = caseDescription;
         this.caseDefinitionId = caseDefinitionId;
@@ -76,6 +78,8 @@ public class CaseInstanceImpl implements CaseInstance, Serializable {
         this.completedAt = completedAt;
         this.processInstanceId = processInstanceId;
         this.completionMessage = completionMessage;
+        this.slaDueDate = slaDueDate;
+        this.slaCompliance = slaCompliance;
     }
 
     @Override
@@ -205,15 +209,29 @@ public class CaseInstanceImpl implements CaseInstance, Serializable {
     public void setCompletedAt(Date completedAt) {
         this.completedAt = completedAt;
     }
-
     
     public String getCompletionMessage() {
         return completionMessage;
     }
-
     
     public void setCompletionMessage(String completionMessage) {
         this.completionMessage = completionMessage;
+    }
+    
+    public Date getSlaDueDate() {
+        return slaDueDate;
+    }
+    
+    public void setSlaDueDate(Date slaDueDate) {
+        this.slaDueDate = slaDueDate;
+    }
+    
+    public Integer getSlaCompliance() {
+        return slaCompliance;
+    }
+
+    public void setSlaCompliance(Integer slaCompliance) {
+        this.slaCompliance = slaCompliance;
     }
 
     @Override

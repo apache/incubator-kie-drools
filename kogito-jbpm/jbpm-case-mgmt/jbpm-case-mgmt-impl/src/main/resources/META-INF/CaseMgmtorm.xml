@@ -19,7 +19,9 @@
         log.start, <!-- case start date  -->
         log.end, <!-- case end date  -->
         log.processInstanceId, <!-- case top level process instance id -->
-        log.outcome       
+        log.outcome,
+        log.slaDueDate,
+        log.slaCompliance   
       )
       from
         ProcessInstanceLog log
@@ -46,7 +48,9 @@
         log.start, <!-- case start date  -->
         log.end, <!-- case end date  -->
         log.processInstanceId, <!-- case top level process instance id -->
-        log.outcome      
+        log.outcome,
+        log.slaDueDate,
+        log.slaCompliance   
       )
       from
         ProcessInstanceLog log
@@ -75,7 +79,9 @@
         log.start, <!-- case start date  -->
         log.end, <!-- case end date  -->
         log.processInstanceId, <!-- case top level process instance id -->
-        log.outcome     
+        log.outcome,
+        log.slaDueDate,
+        log.slaCompliance
       )
       from
         ProcessInstanceLog log
@@ -104,7 +110,9 @@
         log.start, <!-- case start date  -->
         log.end, <!-- case end date  -->
         log.processInstanceId, <!-- case top level process instance id -->
-        log.outcome    
+        log.outcome,
+        log.slaDueDate,
+        log.slaCompliance
       )
       from
         ProcessInstanceLog log
@@ -132,7 +140,9 @@
         log.start, <!-- case start date  -->
         log.end, <!-- case end date  -->
         log.processInstanceId, <!-- case top level process instance id -->
-        log.outcome    
+        log.outcome,
+        log.slaDueDate,
+        log.slaCompliance
       )
       from
         ProcessInstanceLog log        
@@ -160,7 +170,9 @@
         log.start, <!-- case start date  -->
         log.end, <!-- case end date  -->
         log.processInstanceId, <!-- case top level process instance id -->
-        log.outcome    
+        log.outcome,
+        log.slaDueDate,
+        log.slaCompliance
       )
       from
         ProcessInstanceLog log        
@@ -188,7 +200,9 @@
         log.start, <!-- case start date  -->
         log.end, <!-- case end date  -->
         log.processInstanceId, <!-- case top level process instance id -->
-        log.outcome    
+        log.outcome,
+        log.slaDueDate,
+        log.slaCompliance
       )
       from
         ProcessInstanceLog log
@@ -240,7 +254,9 @@
         log.type,
         log.workItemId,
         log.referenceId,
-        log.nodeContainerId
+        log.nodeContainerId,
+        log.slaDueDate,
+        log.slaCompliance
       )
       from
         ProcessInstanceLog plog,
@@ -276,7 +292,9 @@
         log.type,
         log.workItemId,
         log.referenceId,
-        log.nodeContainerId
+        log.nodeContainerId,
+        log.slaDueDate,
+        log.slaCompliance
       )
       from
         ProcessInstanceLog plog,
@@ -312,7 +330,9 @@
       log.type,
       log.workItemId,
       log.referenceId,
-      log.nodeContainerId
+      log.nodeContainerId,
+      log.slaDueDate,
+      log.slaCompliance
       )
       from
         ProcessInstanceLog plog,
@@ -545,7 +565,9 @@
         log.start, <!-- case start date  -->
         log.end, <!-- case end date  -->
         log.processInstanceId, <!-- case top level process instance id -->
-        log.outcome     
+        log.outcome,
+        log.slaDueDate,
+        log.slaCompliance    
       )
       from
         ProcessInstanceLog log
@@ -574,7 +596,9 @@
         log.start, <!-- case start date  -->
         log.end, <!-- case end date  -->
         log.processInstanceId, <!-- case top level process instance id -->
-        log.outcome     
+        log.outcome,
+        log.slaDueDate,
+        log.slaCompliance
       )
       from
         ProcessInstanceLog log

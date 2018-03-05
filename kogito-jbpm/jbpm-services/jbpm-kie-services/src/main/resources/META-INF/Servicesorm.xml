@@ -20,7 +20,9 @@
       log.identity,
       log.processInstanceDescription,
       log.correlationKey,
-      log.parentProcessInstanceId
+      log.parentProcessInstanceId,
+      log.slaDueDate,
+      log.slaCompliance
       )
       from
         ProcessInstanceLog log
@@ -44,7 +46,9 @@
       log.identity,
       log.processInstanceDescription,
       log.correlationKey,
-      log.parentProcessInstanceId)
+      log.parentProcessInstanceId,
+      log.slaDueDate,
+      log.slaCompliance)
 
       from
         ProcessInstanceLog log
@@ -68,7 +72,9 @@
       log.identity,
       log.processInstanceDescription,
       log.correlationKey,
-      log.parentProcessInstanceId
+      log.parentProcessInstanceId,
+      log.slaDueDate,
+      log.slaCompliance
         )
       from
         ProcessInstanceLog log
@@ -92,7 +98,9 @@
       log.identity,
       log.processInstanceDescription,
       log.correlationKey,
-      log.parentProcessInstanceId
+      log.parentProcessInstanceId,
+      log.slaDueDate,
+      log.slaCompliance
         )
       from
         ProcessInstanceLog log
@@ -117,7 +125,9 @@
       log.identity,
       log.processInstanceDescription,
       log.correlationKey,
-      log.parentProcessInstanceId
+      log.parentProcessInstanceId,
+      log.slaDueDate,
+      log.slaCompliance
         )
       from
         ProcessInstanceLog log
@@ -141,7 +151,9 @@
       log.identity,
       log.processInstanceDescription,
       log.correlationKey,
-      log.parentProcessInstanceId
+      log.parentProcessInstanceId,
+      log.slaDueDate,
+      log.slaCompliance
         )
       from
         ProcessInstanceLog log
@@ -165,7 +177,9 @@
       log.identity,
       log.processInstanceDescription,
       log.correlationKey,
-      log.parentProcessInstanceId
+      log.parentProcessInstanceId,
+      log.slaDueDate,
+      log.slaCompliance
         )
       from
         ProcessInstanceLog log
@@ -190,7 +204,9 @@
       log.identity,
       log.processInstanceDescription,
       log.correlationKey,
-      log.parentProcessInstanceId
+      log.parentProcessInstanceId,
+      log.slaDueDate,
+      log.slaCompliance
         )
       from
         ProcessInstanceLog log
@@ -215,7 +231,9 @@
       log.identity,
       log.processInstanceDescription,
       log.correlationKey,
-      log.parentProcessInstanceId
+      log.parentProcessInstanceId,
+      log.slaDueDate,
+      log.slaCompliance
         )
       from
         ProcessInstanceLog log
@@ -241,7 +259,9 @@
       log.identity,
       log.processInstanceDescription,
       log.correlationKey,
-      log.parentProcessInstanceId
+      log.parentProcessInstanceId,
+      log.slaDueDate,
+      log.slaCompliance
       )
       from
         ProcessInstanceLog log
@@ -265,7 +285,9 @@
       log.identity,
       log.processInstanceDescription,
       log.correlationKey,
-      log.parentProcessInstanceId
+      log.parentProcessInstanceId,
+      log.slaDueDate,
+      log.slaCompliance
       )
       from
         ProcessInstanceLog log
@@ -289,7 +311,9 @@
       log.identity,
       log.processInstanceDescription,
       log.correlationKey,
-      log.parentProcessInstanceId
+      log.parentProcessInstanceId,
+      log.slaDueDate,
+      log.slaCompliance
       )
       from
         ProcessInstanceLog log
@@ -313,7 +337,9 @@
       log.identity,
       log.processInstanceDescription,
       log.correlationKey,
-      log.parentProcessInstanceId
+      log.parentProcessInstanceId,
+      log.slaDueDate,
+      log.slaCompliance
       )
       from
         ProcessInstanceLog log
@@ -338,7 +364,9 @@
       log.identity,
       log.processInstanceDescription,
       log.correlationKey,
-      log.parentProcessInstanceId
+      log.parentProcessInstanceId,
+      log.slaDueDate,
+      log.slaCompliance
       )
       from
         ProcessInstanceLog log
@@ -365,7 +393,9 @@
       log.identity,
       log.processInstanceDescription,
       log.correlationKey,
-      log.parentProcessInstanceId
+      log.parentProcessInstanceId,
+      log.slaDueDate,
+      log.slaCompliance
       )
       from
         ProcessInstanceLog log
@@ -392,7 +422,9 @@
       log.identity,
       log.processInstanceDescription,
       log.correlationKey,
-      log.parentProcessInstanceId)
+      log.parentProcessInstanceId,
+      log.slaDueDate,
+      log.slaCompliance)
 
       from
         ProcessInstanceLog log
@@ -420,7 +452,9 @@
       log.type,
       log.workItemId,
       log.referenceId,
-      log.nodeContainerId
+      log.nodeContainerId,
+      log.slaDueDate,
+      log.slaCompliance
       )
       from
         NodeInstanceLog log
@@ -447,7 +481,9 @@
       log.type,
       log.workItemId,
       log.referenceId,
-      log.nodeContainerId
+      log.nodeContainerId,
+      log.slaDueDate,
+      log.slaCompliance
       )
       from
         NodeInstanceLog log
@@ -476,7 +512,9 @@
       log.type,
       log.workItemId,
       log.referenceId,
-      log.nodeContainerId
+      log.nodeContainerId,
+      log.slaDueDate,
+      log.slaCompliance
       )
       from
         NodeInstanceLog log
@@ -507,7 +545,9 @@
       log.type,
       log.workItemId,
       log.referenceId,
-      log.nodeContainerId
+      log.nodeContainerId,
+      log.slaDueDate,
+      log.slaCompliance
       )
       from
         NodeInstanceLog log
@@ -538,7 +578,9 @@
       log.type,
       log.workItemId,
       log.referenceId,
-      log.nodeContainerId
+      log.nodeContainerId,
+      log.slaDueDate,
+      log.slaCompliance
       )
       from
         NodeInstanceLog log
@@ -566,7 +608,9 @@
       log.type,
       log.workItemId,
       log.referenceId,
-      log.nodeContainerId
+      log.nodeContainerId,
+      log.slaDueDate,
+      log.slaCompliance
       )
       from
         NodeInstanceLog log
@@ -594,7 +638,9 @@
       log.type,
       log.workItemId,
       log.referenceId,
-      log.nodeContainerId
+      log.nodeContainerId,
+      log.slaDueDate,
+      log.slaCompliance
       )
       from
         ProcessInstanceLog plog,

@@ -87,6 +87,13 @@ public class ProcessInstanceLog implements Serializable, AuditEvent, org.kie.api
     private String externalId;
     
     private String processInstanceDescription;
+        
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "sla_due_date")
+    private Date slaDueDate;
+    
+    @Column(nullable=true)
+    private Integer slaCompliance;
     
     public ProcessInstanceLog() {
     }
@@ -333,6 +340,22 @@ public class ProcessInstanceLog implements Serializable, AuditEvent, org.kie.api
     
     public void setProcessType(Integer processType) {
         this.processType = processType;
+    }
+    
+    public Date getSlaDueDate() {
+        return slaDueDate;
+    }
+    
+    public void setSlaDueDate(Date slaDueDate) {
+        this.slaDueDate = slaDueDate;
+    }
+    
+    public Integer getSlaCompliance() {
+        return slaCompliance;
+    }
+    
+    public void setSlaCompliance(Integer slaCompliance) {
+        this.slaCompliance = slaCompliance;
     }
 
 }

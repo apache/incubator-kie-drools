@@ -67,5 +67,11 @@ public interface ProcessInstance extends org.kie.api.runtime.process.ProcessInst
 	void setDeploymentId(String deploymentId);
 	
 	Date getStartDate();
+
+	int getSlaCompliance();
+	
+	Date getSlaDueDate();
+	
+	void configureSLA();
     
 }

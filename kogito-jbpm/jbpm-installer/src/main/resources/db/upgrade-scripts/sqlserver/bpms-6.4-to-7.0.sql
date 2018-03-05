@@ -24,12 +24,12 @@ create table CaseRoleAssignmentLog (
 alter table CaseIdInfo 
     add constraint UK_CaseIdInfo_1 unique (caseIdPrefix);
     
-ALTER TABLE NodeInstanceLog ADD COLUMN referenceId numeric(19,0);
-ALTER TABLE NodeInstanceLog ADD COLUMN nodeContainerId varchar(255);   
+ALTER TABLE NodeInstanceLog ADD referenceId numeric(19,0);
+ALTER TABLE NodeInstanceLog ADD nodeContainerId varchar(255);   
 
-ALTER TABLE RequestInfo ADD COLUMN processInstanceId numeric(19,0);
+ALTER TABLE RequestInfo ADD processInstanceId numeric(19,0);
 
-ALTER TABLE AuditTaskImpl ADD COLUMN lastModificationDate datetime;
+ALTER TABLE AuditTaskImpl ADD lastModificationDate datetime;
 update AuditTaskImpl ati set lastModificationDate = (
     select max(logTime) from TaskEvent where taskId=ati.taskId group by taskId
 );
@@ -65,3 +65,8 @@ create table ExecutionErrorInfo (
     ERROR_TYPE varchar(255),
     primary key (id)
 );
+
+ALTER TABLE ProcessInstanceLog ADD sla_due_date datetime;
+ALTER TABLE ProcessInstanceLog ADD slaCompliance int;
+ALTER TABLE NodeInstanceLog ADD sla_due_date datetime;
+ALTER TABLE NodeInstanceLog ADD slaCompliance int;  

@@ -210,6 +210,8 @@
         nodeType varchar(255),
         processId varchar(255),
         processInstanceId bigint not null,
+        sla_due_date timestamp,
+        slaCompliance integer,
         type integer not null,
         workItemId bigint,
         nodeContainerId varchar(255),
@@ -300,6 +302,8 @@
         processName varchar(255),
         processType integer,
         processVersion varchar(255),
+        sla_due_date timestamp,
+        slaCompliance integer,
         start_date timestamp,
         status integer,
         primary key (id)
