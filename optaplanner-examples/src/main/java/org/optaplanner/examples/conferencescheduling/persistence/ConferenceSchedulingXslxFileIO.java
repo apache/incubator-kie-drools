@@ -1391,7 +1391,8 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
         }
 
         protected void nextTalkListCell(boolean unavailable, List<Talk> talkList) {
-            nextTalkListCell(unavailable, talkList, talk -> talk.getCode() + " @ " + talk.getRoom().getName());
+            nextTalkListCell(unavailable, talkList,
+                    talk -> talk.getCode() + " @ " + (talk.getRoom() == null ? "No room" : talk.getRoom().getName()));
         }
 
         protected void nextTalkListCell(List<Talk> talkList, Function<Talk, String> stringFunction) {
