@@ -99,6 +99,7 @@ import org.drools.model.patterns.QueryCallPattern;
 import org.drools.modelcompiler.consequence.LambdaConsequence;
 import org.drools.modelcompiler.consequence.MVELConsequence;
 import org.drools.modelcompiler.constraints.ConstraintEvaluator;
+import org.drools.modelcompiler.constraints.LambdaAccumulator;
 import org.drools.modelcompiler.constraints.LambdaConstraint;
 import org.drools.modelcompiler.constraints.LambdaDataProvider;
 import org.drools.modelcompiler.constraints.LambdaEvalExpression;
@@ -119,7 +120,6 @@ import static org.drools.model.FlowDSL.declarationOf;
 import static org.drools.model.FlowDSL.entryPoint;
 import static org.drools.model.impl.NamesGenerator.generateName;
 import static org.drools.modelcompiler.ModelCompilerUtil.conditionToGroupElementType;
-import static org.drools.modelcompiler.constraints.LambdaAccumulator.createLambdaAccumulator;
 import static org.drools.modelcompiler.util.TypeDeclarationUtil.createTypeDeclaration;
 
 public class KiePackagesBuilder {
@@ -542,27 +542,13 @@ public class KiePackagesBuilder {
 
         if (accFunctions.length == 1) {
             final Class<?> functionClass = accFunctions[0].getFunctionClass();
-            Accumulator accumulator;
-            if (org.kie.api.runtime.rule.AccumulateFunction.class.isAssignableFrom(functionClass)) {
-                final org.kie.api.runtime.rule.AccumulateFunction accFunction = createRuntimeAccumulateFunction((Class<? extends org.kie.api.runtime.rule.AccumulateFunction>) functionClass);
-                accumulator = createLambdaAccumulator(accFunction, usedVariableName, binding);
-            } else if (Accumulator.class.isAssignableFrom(functionClass)) {
-                try {
-                    accumulator = (Accumulator) functionClass.newInstance();
-                } catch (InstantiationException | IllegalAccessException e) {
-                    throw new RuntimeException(e);
-                }
-            } else {
-                throw new RuntimeException("Unknown functionClass" + functionClass);
-            }
+            final Accumulator accumulator = createAccumulator(usedVariableName, binding, functionClass);
             final Variable boundVar = accPattern.getBoundVariables()[0];
-            if(boundVar != null) {
-                final Declaration declaration = new Declaration(boundVar.getName(),
-                                                                getReadAcessor(getObjectType(Object.class)),
-                                                                pattern,
-                                                                true);
-                pattern.addDeclaration(declaration);
-            }
+            final Declaration declaration = new Declaration(boundVar.getName(),
+                                                            getReadAcessor(getObjectType(Object.class)),
+                                                            pattern,
+                                                            true);
+            pattern.addDeclaration(declaration);
 
             Declaration[] bindingDeclaration = binding != null ? new Declaration[0] : new Declaration[] { ctx.getPattern( accFunctions[0].getSource() ).getDeclaration() };
             accumulate = new SingleAccumulate(source, bindingDeclaration, accumulator);
@@ -571,7 +557,13 @@ public class KiePackagesBuilder {
             InternalReadAccessor reader = new SelfReferenceClassFieldReader( Object[].class );
             Accumulator[] accumulators = new Accumulator[accFunctions.length];
             for (int i = 0; i < accFunctions.length; i++) {
-                final org.kie.api.runtime.rule.AccumulateFunction accFunction = createRuntimeAccumulateFunction((Class<? extends org.kie.api.runtime.rule.AccumulateFunction>) accFunctions[i].getFunctionClass());
+                final org.kie.api.runtime.rule.AccumulateFunction accFunction1;
+                try {
+                    accFunction1 = ((Class<? extends org.kie.api.runtime.rule.AccumulateFunction>) accFunctions[i].getFunctionClass()).newInstance();
+                } catch (InstantiationException | IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
+                final org.kie.api.runtime.rule.AccumulateFunction accFunction = accFunction1;
 
                 Variable boundVar = accPattern.getBoundVariables()[i];
                 pattern.addDeclaration( new Declaration( boundVar.getName(),
@@ -579,7 +571,7 @@ public class KiePackagesBuilder {
                                         pattern,
                                         true ) );
 
-                accumulators[i] = createLambdaAccumulator( accFunction, usedVariableName, binding );
+                accumulators[i] = binding == null ? new LambdaAccumulator.NotBindingAcc(accFunction, usedVariableName) : new LambdaAccumulator.BindingAcc(accFunction, usedVariableName, binding);
             }
 
             accumulate = new MultiAccumulate( source, new Declaration[0], accumulators );
@@ -592,14 +584,38 @@ public class KiePackagesBuilder {
         return accumulate;
     }
 
-    private org.kie.api.runtime.rule.AccumulateFunction createRuntimeAccumulateFunction(Class<? extends org.kie.api.runtime.rule.AccumulateFunction> functionClass) {
-        final org.kie.api.runtime.rule.AccumulateFunction accFunction;
+    private Accumulator createAccumulator(List<String> usedVariableName, Binding binding, Class<?> functionClass) {
+        if (org.kie.api.runtime.rule.AccumulateFunction.class.isAssignableFrom(functionClass)) {
+            return createLambdaAccumulator(usedVariableName, binding, functionClass);
+        } else if (Accumulator.class.isAssignableFrom(functionClass)) {
+            return createLegacyAccumulator(functionClass);
+        } else {
+            throw new RuntimeException("Unknown functionClass" + functionClass);
+        }
+    }
+
+    private Accumulator createLegacyAccumulator(Class<?> functionClass) {
+        Accumulator accumulator;
         try {
-            accFunction = functionClass.newInstance();
+            accumulator = (Accumulator) functionClass.newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
-        return accFunction;
+        return accumulator;
+    }
+
+    private Accumulator createLambdaAccumulator(List<String> usedVariableName, Binding binding, Class<?> functionClass) {
+        final org.kie.api.runtime.rule.AccumulateFunction accFunction1;
+        try {
+            accFunction1 = (org.kie.api.runtime.rule.AccumulateFunction) (functionClass).newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+        if (binding == null) {
+            return new LambdaAccumulator.NotBindingAcc(accFunction1, usedVariableName);
+        } else {
+            return new LambdaAccumulator.BindingAcc(accFunction1, usedVariableName, binding);
+        }
     }
 
     private Pattern addPatternForVariable( RuleContext ctx, GroupElement group, Variable patternVariable ) {

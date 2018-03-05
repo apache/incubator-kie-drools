@@ -22,10 +22,6 @@ public abstract class LambdaAccumulator implements Accumulator {
         this.sourceVariables = sourceVariables;
     }
 
-    public static LambdaAccumulator createLambdaAccumulator(org.kie.api.runtime.rule.AccumulateFunction accumulateFunction, List<String> sourceVariables, Binding binding) {
-        return binding == null ? new NotBindingAcc(accumulateFunction, sourceVariables) : new BindingAcc(accumulateFunction, sourceVariables, binding);
-    }
-
     @Override
     public Object createWorkingMemoryContext() {
         // no working memory context needed
