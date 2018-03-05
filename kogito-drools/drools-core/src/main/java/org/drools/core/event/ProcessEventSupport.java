@@ -24,6 +24,7 @@ import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.event.process.ProcessVariableChangedEvent;
+import org.kie.api.event.process.SLAViolatedEvent;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.ProcessInstance;
@@ -152,6 +153,54 @@ public class ProcessEventSupport extends AbstractEventSupport<ProcessEventListen
 
             do {
                 iter.next().afterVariableChanged(event);
+            } while (iter.hasNext());
+        }
+    }
+    
+    public void fireBeforeSLAViolated(final ProcessInstance instance, KieRuntime kruntime ) {
+        final Iterator<ProcessEventListener> iter = getEventListenersIterator();
+
+        if (iter.hasNext()) {
+            final SLAViolatedEvent event = new SLAViolatedEventImpl(instance, kruntime);
+
+            do{
+                iter.next().beforeSLAViolated(event);
+            } while (iter.hasNext());
+        }
+    }
+
+    public void fireAfterSLAViolated(final ProcessInstance instance, KieRuntime kruntime) {
+        final Iterator<ProcessEventListener> iter = getEventListenersIterator();
+
+        if (iter.hasNext()) {
+            final SLAViolatedEvent event = new SLAViolatedEventImpl(instance, kruntime);
+
+            do {
+                iter.next().afterSLAViolated(event);
+            } while (iter.hasNext());
+        }
+    }
+    
+    public void fireBeforeSLAViolated(final ProcessInstance instance, NodeInstance nodeInstance, KieRuntime kruntime ) {
+        final Iterator<ProcessEventListener> iter = getEventListenersIterator();
+
+        if (iter.hasNext()) {
+            final SLAViolatedEvent event = new SLAViolatedEventImpl(instance, nodeInstance, kruntime);
+
+            do{
+                iter.next().beforeSLAViolated(event);
+            } while (iter.hasNext());
+        }
+    }
+
+    public void fireAfterSLAViolated(final ProcessInstance instance, NodeInstance nodeInstance, KieRuntime kruntime) {
+        final Iterator<ProcessEventListener> iter = getEventListenersIterator();
+
+        if (iter.hasNext()) {
+            final SLAViolatedEvent event = new SLAViolatedEventImpl(instance, nodeInstance, kruntime);
+
+            do {
+                iter.next().afterSLAViolated(event);
             } while (iter.hasNext());
         }
     }
