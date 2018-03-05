@@ -33,7 +33,6 @@ import org.drools.model.functions.Predicate3;
 import org.drools.model.functions.Predicate4;
 import org.drools.model.functions.Predicate5;
 import org.drools.model.functions.accumulate.AccumulateFunction;
-import org.drools.model.functions.accumulate.LegacyAccumulateFunction;
 import org.drools.model.functions.temporal.AbstractTemporalPredicate;
 import org.drools.model.functions.temporal.AfterPredicate;
 import org.drools.model.functions.temporal.BeforePredicate;
@@ -287,7 +286,7 @@ public class DSL {
         return new AccumulateExprViewItem(viewItem, functions);
     }
 
-    // Legay case - source is defined in the invoker
+    // Legay case - source is defined in the generated Invoker class
     public static AccumulateFunction accFunction( Class<?> accFunctionClass) {
         return new AccumulateFunction(null, accFunctionClass);
     }
