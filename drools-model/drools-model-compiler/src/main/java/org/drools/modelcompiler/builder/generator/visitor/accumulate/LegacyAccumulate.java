@@ -102,8 +102,6 @@ public class LegacyAccumulate {
 
         context.addExpression(asDSL);
 
-        context.addAccumulateClasses(methods);
-
         return methods;
     }
 }

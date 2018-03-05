@@ -51,8 +51,6 @@ public class RuleContext {
 
     private Map<String, String> aggregatePatternMap = new HashMap<>();
 
-    private List<String> accumulateClasses = new ArrayList<>();
-
 
     private RuleDialect ruleDialect = RuleDialect.JAVA; // assumed is java by default as per Drools manual.
     public enum RuleDialect {
@@ -258,14 +256,6 @@ public class RuleContext {
 
     public TypeResolver getTypeResolver() {
         return typeResolver;
-    }
-
-    public void addAccumulateClasses(List<String> classes) {
-        accumulateClasses.addAll(classes);
-    }
-
-    public List<String> getAccumulateClasses() {
-        return accumulateClasses;
     }
 }
 
