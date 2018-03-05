@@ -557,13 +557,8 @@ public class KiePackagesBuilder {
             InternalReadAccessor reader = new SelfReferenceClassFieldReader( Object[].class );
             Accumulator[] accumulators = new Accumulator[accFunctions.length];
             for (int i = 0; i < accFunctions.length; i++) {
-                final org.kie.api.runtime.rule.AccumulateFunction accFunction1;
-                try {
-                    accFunction1 = ((Class<? extends org.kie.api.runtime.rule.AccumulateFunction>) accFunctions[i].getFunctionClass()).newInstance();
-                } catch (InstantiationException | IllegalAccessException e) {
-                    throw new RuntimeException(e);
-                }
-                final org.kie.api.runtime.rule.AccumulateFunction accFunction = accFunction1;
+                final Class<?> functionClass = accFunctions[i].getFunctionClass();
+                final Accumulator accumulator = createAccumulator(usedVariableName, binding, functionClass);
 
                 Variable boundVar = accPattern.getBoundVariables()[i];
                 pattern.addDeclaration( new Declaration( boundVar.getName(),
@@ -571,7 +566,7 @@ public class KiePackagesBuilder {
                                         pattern,
                                         true ) );
 
-                accumulators[i] = binding == null ? new LambdaAccumulator.NotBindingAcc(accFunction, usedVariableName) : new LambdaAccumulator.BindingAcc(accFunction, usedVariableName, binding);
+                accumulators[i] = accumulator;
             }
 
             accumulate = new MultiAccumulate( source, new Declaration[0], accumulators );
