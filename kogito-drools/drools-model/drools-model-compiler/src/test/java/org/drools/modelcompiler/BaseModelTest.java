@@ -50,7 +50,7 @@ public abstract class BaseModelTest {
                 BaseModelTest.RUN_TYPE.STANDARD_FROM_DRL,
                 BaseModelTest.RUN_TYPE.FLOW_DSL,
                 BaseModelTest.RUN_TYPE.PATTERN_DSL
-        };
+         };
     }
 
     protected final CompilerTest.RUN_TYPE testRunType;

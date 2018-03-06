@@ -12,10 +12,10 @@ import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.javaparser.ast.stmt.BlockStmt;
 import org.drools.modelcompiler.builder.PackageModel;
+import org.drools.modelcompiler.builder.generator.Consequence;
+import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
-import org.drools.modelcompiler.builder.generator.ModelGenerator;
-import org.drools.modelcompiler.builder.generator.RuleContext;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassFromContext;
@@ -92,6 +92,6 @@ public class NamedConsequenceVisitor {
         String namedConsequenceString = context.getNamedConsequences().get(namedConsequence.getName());
         BlockStmt ruleVariablesBlock = new BlockStmt();
         createVariables(context.getKbuilder(), ruleVariablesBlock, packageModel, context);
-        return ModelGenerator.createConsequenceCall( packageModel, null, context, namedConsequenceString, ruleVariablesBlock, namedConsequence.isBreaking() );
+        return new Consequence(context).createCall(null, namedConsequenceString, ruleVariablesBlock, namedConsequence.isBreaking() );
     }
 }
