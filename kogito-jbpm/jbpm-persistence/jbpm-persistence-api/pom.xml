@@ -122,11 +122,13 @@
               org.kie.api.runtime,
               org.kie.api.runtime.manager,
               org.kie.api.runtime.process,
+              org.kie.api.task.model,
               org.kie.internal.command,
               org.kie.internal.jaxb,
               org.kie.internal.process,              
               org.kie.internal.runtime.manager,
               org.kie.internal.runtime.manager.context,
+              org.kie.internal.task.api.model,
               org.slf4j
             </Import-Package>
             <Export-Package>
