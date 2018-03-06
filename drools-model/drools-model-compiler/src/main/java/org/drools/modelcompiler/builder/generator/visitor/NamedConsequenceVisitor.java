@@ -92,6 +92,6 @@ public class NamedConsequenceVisitor {
         String namedConsequenceString = context.getNamedConsequences().get(namedConsequence.getName());
         BlockStmt ruleVariablesBlock = new BlockStmt();
         createVariables(context.getKbuilder(), ruleVariablesBlock, packageModel, context);
-        return Consequence.createConsequenceCall(packageModel, null, context, namedConsequenceString, ruleVariablesBlock, namedConsequence.isBreaking() );
+        return new Consequence(context).createCall(null, namedConsequenceString, ruleVariablesBlock, namedConsequence.isBreaking() );
     }
 }

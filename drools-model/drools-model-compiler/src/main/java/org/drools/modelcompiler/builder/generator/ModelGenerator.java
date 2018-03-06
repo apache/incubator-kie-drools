@@ -188,7 +188,7 @@ public class ModelGenerator {
         createVariables(kbuilder, ruleVariablesBlock, packageModel, context);
         ruleMethod.setBody(ruleVariablesBlock);
 
-        MethodCallExpr executeCall = Consequence.createConsequenceCall( packageModel, ruleDescr, context, ruleDescr.getConsequence().toString(), ruleVariablesBlock, false );
+        MethodCallExpr executeCall = new Consequence(context).createCall(ruleDescr, ruleDescr.getConsequence().toString(), ruleVariablesBlock, false );
         buildCall.addArgument( executeCall );
 
         ruleVariablesBlock.addStatement(new AssignExpr(ruleVar, buildCall, AssignExpr.Operator.ASSIGN));

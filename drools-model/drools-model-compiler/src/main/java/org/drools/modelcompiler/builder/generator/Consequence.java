@@ -69,33 +69,41 @@ public class Consequence {
         knowledgeHelperMethods.add("insertLogical");
     }
 
-    public static MethodCallExpr createConsequenceCall(PackageModel packageModel, RuleDescr ruleDescr, RuleContext context, String consequenceString, BlockStmt ruleVariablesBlock, boolean isBreaking) {
+    private final RuleContext context;
+    private final PackageModel packageModel;
+
+    public Consequence(RuleContext context) {
+        this.context = context;
+        this.packageModel = context.getPackageModel();
+    }
+
+    public MethodCallExpr createCall(RuleDescr ruleDescr, String consequenceString, BlockStmt ruleVariablesBlock, boolean isBreaking) {
         consequenceString = consequenceString.replaceAll("kcontext", "drools");
-        BlockStmt ruleConsequence = rewriteConsequence(context, consequenceString);
-        Collection<String> usedDeclarationInRHS = extractUsedDeclarations(packageModel, context, ruleConsequence, consequenceString);
+        BlockStmt ruleConsequence = rewriteConsequence(consequenceString);
+        Collection<String> usedDeclarationInRHS = extractUsedDeclarations(ruleConsequence, consequenceString);
         MethodCallExpr onCall = onCall(usedDeclarationInRHS);
         if (isBreaking) {
             onCall = new MethodCallExpr(onCall, BREAKING_CALL);
         }
         MethodCallExpr executeCall = null;
         if (context.getRuleDialect() == RuleContext.RuleDialect.JAVA) {
-            executeCall = executeCall(context, ruleVariablesBlock, ruleConsequence, usedDeclarationInRHS, onCall);
+            executeCall = executeCall(ruleVariablesBlock, ruleConsequence, usedDeclarationInRHS, onCall);
         } else if (context.getRuleDialect() == RuleContext.RuleDialect.MVEL) {
-            executeCall = executeScriptCall(packageModel, ruleDescr, onCall);
+            executeCall = executeScriptCall(ruleDescr, onCall);
         }
         return executeCall;
     }
 
-    private static BlockStmt rewriteConsequence(RuleContext context, String consequence) {
+    private BlockStmt rewriteConsequence(String consequence) {
         if (context.getRuleDialect() == RuleContext.RuleDialect.MVEL) {
             // anyhow the consequence will be used as a ScriptBlock.
             return null;
         }
-        String ruleConsequenceAsBlock = rewriteConsequenceBlock(context, consequence.trim());
+        String ruleConsequenceAsBlock = rewriteConsequenceBlock(consequence.trim());
         return parseBlock(ruleConsequenceAsBlock);
     }
 
-    private static Collection<String> extractUsedDeclarations(PackageModel packageModel, RuleContext context, BlockStmt ruleConsequence, String consequenceString) {
+    private Collection<String> extractUsedDeclarations(BlockStmt ruleConsequence, String consequenceString) {
         Set<String> existingDecls = new HashSet<>();
         existingDecls.addAll(context.getDeclarations().stream().map(DeclarationSpec::getBindingId).collect(toList()));
         existingDecls.addAll(packageModel.getGlobals().keySet());
@@ -111,8 +119,8 @@ public class Consequence {
         return existingDecls.stream().filter(declUsedInRHS::contains).collect(toSet());
     }
 
-    private static MethodCallExpr executeCall(RuleContext context, BlockStmt ruleVariablesBlock, BlockStmt ruleConsequence, Collection<String> verifiedDeclUsedInRHS, MethodCallExpr onCall) {
-        boolean requireDrools = rewriteRHS(context, ruleVariablesBlock, ruleConsequence);
+    private MethodCallExpr executeCall(BlockStmt ruleVariablesBlock, BlockStmt ruleConsequence, Collection<String> verifiedDeclUsedInRHS, MethodCallExpr onCall) {
+        boolean requireDrools = rewriteRHS(ruleVariablesBlock, ruleConsequence);
         MethodCallExpr executeCall = new MethodCallExpr(onCall, EXECUTE_CALL);
         LambdaExpr executeLambda = new LambdaExpr();
         executeCall.addArgument(executeLambda);
@@ -125,7 +133,7 @@ public class Consequence {
         return executeCall;
     }
 
-    private static MethodCallExpr executeScriptCall(PackageModel packageModel, RuleDescr ruleDescr, MethodCallExpr onCall) {
+    private MethodCallExpr executeScriptCall(RuleDescr ruleDescr, MethodCallExpr onCall) {
         MethodCallExpr executeCall = new MethodCallExpr(onCall, EXECUTESCRIPT_CALL);
         executeCall.addArgument(new StringLiteralExpr("mvel"));
 
@@ -164,7 +172,7 @@ public class Consequence {
         return onCall;
     }
 
-    private static String rewriteConsequenceBlock(RuleContext context, String consequence) {
+    private String rewriteConsequenceBlock(String consequence) {
         int modifyPos = StringUtils.indexOfOutOfQuotes(consequence, "modify");
         if (modifyPos < 0) {
             return consequence;
@@ -220,7 +228,7 @@ public class Consequence {
         return sb.toString();
     }
 
-    private static boolean rewriteRHS(RuleContext context, BlockStmt ruleBlock, BlockStmt rhs) {
+    private boolean rewriteRHS(BlockStmt ruleBlock, BlockStmt rhs) {
         AtomicBoolean requireDrools = new AtomicBoolean(false);
         List<MethodCallExpr> methodCallExprs = rhs.findAll(MethodCallExpr.class);
         List<MethodCallExpr> updateExprs = new ArrayList<>();
