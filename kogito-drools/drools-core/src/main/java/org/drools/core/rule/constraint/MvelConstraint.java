@@ -458,11 +458,20 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
 
     private BitMask calculateMask(Class modifiedClass, Condition condition, List<String> settableProperties) {
         BitMask mask = getEmptyPropertyReactiveMask(settableProperties.size());
-        for (Condition c : ((CombinedCondition)condition).getConditions()) {
-            String propertyName = getFirstInvokedPropertyName(((SingleCondition) c).getLeft());
-            if (propertyName != null) {
-                mask = setPropertyOnMask(modifiedClass, mask, settableProperties, propertyName);
+        if (condition instanceof SingleCondition) {
+            mask = setPropertyOnReactiveMask( modifiedClass, settableProperties, mask, ( SingleCondition ) condition );
+        } else {
+            for (Condition c : (( CombinedCondition ) condition).getConditions()) {
+                mask = setPropertyOnReactiveMask( modifiedClass, settableProperties, mask, ( SingleCondition ) c );
             }
+        }
+        return mask;
+    }
+
+    private BitMask setPropertyOnReactiveMask( Class modifiedClass, List<String> settableProperties, BitMask mask, SingleCondition c ) {
+        String propertyName = getFirstInvokedPropertyName( c.getLeft());
+        if (propertyName != null) {
+            mask = setPropertyOnMask(modifiedClass, mask, settableProperties, propertyName);
         }
         return mask;
     }
