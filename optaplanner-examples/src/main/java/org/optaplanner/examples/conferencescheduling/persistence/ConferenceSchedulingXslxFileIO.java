@@ -154,6 +154,9 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             readRoomList();
             readSpeakerList();
             readTalkList();
+            // Needed for merging in the sheet Rooms views
+            solution.getTimeslotList().sort(Comparator.comparing(Timeslot::getStartDateTime)
+                    .thenComparing(Comparator.comparing(Timeslot::getEndDateTime).reversed()));
             return solution;
         }
 
@@ -1205,18 +1208,34 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             writeTimeslotHoursHeaders();
             for (Room room : solution.getRoomList()) {
                 nextRow();
-                currentRow.setHeightInPoints(4 * currentSheet.getDefaultRowHeightInPoints());
+                currentRow.setHeightInPoints(3 * currentSheet.getDefaultRowHeightInPoints());
                 nextCell().setCellValue(room.getName());
                 List<Talk> roomTalkList = solution.getTalkList().stream()
                         .filter(talk -> talk.getRoom() == room)
                         .collect(toList());
+
+                Timeslot mergePreviousTimeslot = null;
+                int mergeStart = -1;
                 for (Timeslot timeslot : solution.getTimeslotList()) {
                     List<Talk> talkList = roomTalkList.stream()
                             .filter(talk -> talk.getTimeslot() == timeslot).collect(toList());
-                    boolean unavailable = room.getUnavailableTimeslotSet().contains(timeslot)
-                            || Collections.disjoint(room.getTalkTypeSet(), timeslot.getTalkTypeSet());
-                    nextTalkListCell(unavailable, talkList, talk -> talk.getCode() + ": " + talk.getTitle() + "\n  "
-                            + talk.getSpeakerList().stream().map(Speaker::getName).collect(joining(", ")));
+                    if (talkList.isEmpty() && mergePreviousTimeslot != null
+                            && timeslot.getStartDateTime().compareTo(mergePreviousTimeslot.getEndDateTime()) < 0) {
+                        nextCell();
+                    } else {
+                        if (mergePreviousTimeslot != null && mergeStart < currentColumnNumber) {
+                            currentSheet.addMergedRegion(new CellRangeAddress(currentRowNumber, currentRowNumber, mergeStart, currentColumnNumber));
+                        }
+                        boolean unavailable = room.getUnavailableTimeslotSet().contains(timeslot)
+                                || Collections.disjoint(room.getTalkTypeSet(), timeslot.getTalkTypeSet());
+                        nextTalkListCell(unavailable, talkList, talk -> talk.getCode() + ": " + talk.getTitle() + "\n  "
+                                + talk.getSpeakerList().stream().map(Speaker::getName).collect(joining(", ")));
+                        mergePreviousTimeslot = talkList.isEmpty() ? null : timeslot;
+                        mergeStart = currentColumnNumber;
+                    }
+                }
+                if (mergePreviousTimeslot != null && mergeStart < currentColumnNumber) {
+                    currentSheet.addMergedRegion(new CellRangeAddress(currentRowNumber, currentRowNumber, mergeStart, currentColumnNumber));
                 }
             }
             currentSheet.autoSizeColumn(0);
@@ -1245,14 +1264,33 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 List<Talk> timeslotTalkList = solution.getTalkList().stream()
                         .filter(talk -> talk.getSpeakerList().contains(speaker))
                         .collect(toList());
+
+                Timeslot mergePreviousTimeslot = null;
+                int mergeStart = -1;
                 for (Timeslot timeslot : solution.getTimeslotList()) {
                     List<Talk> talkList = timeslotTalkList.stream()
                             .filter(talk -> talk.getTimeslot() == timeslot).collect(toList());
-                    boolean unavailable = speaker.getUnavailableTimeslotSet().contains(timeslot);
-                    nextTalkListCell(unavailable, talkList, filteredConstraintNames);
+                    if (talkList.isEmpty() && mergePreviousTimeslot != null
+                            && timeslot.getStartDateTime().compareTo(mergePreviousTimeslot.getEndDateTime()) < 0) {
+                        nextCell();
+                    } else {
+                        if (mergePreviousTimeslot != null && mergeStart < currentColumnNumber) {
+                            currentSheet.addMergedRegion(new CellRangeAddress(currentRowNumber, currentRowNumber, mergeStart, currentColumnNumber));
+                        }
+                        boolean unavailable = speaker.getUnavailableTimeslotSet().contains(timeslot);
+                        nextTalkListCell(unavailable, talkList, filteredConstraintNames);
+                        mergePreviousTimeslot = talkList.isEmpty() ? null : timeslot;
+                        mergeStart = currentColumnNumber;
+                    }
+                }
+                if (mergePreviousTimeslot != null && mergeStart < currentColumnNumber) {
+                    currentSheet.addMergedRegion(new CellRangeAddress(currentRowNumber, currentRowNumber, mergeStart, currentColumnNumber));
                 }
             }
-            autoSizeColumnsWithHeader();
+            currentSheet.autoSizeColumn(0);
+            for (int i = 1; i < headerCellCount; i++) {
+                currentSheet.setColumnWidth(i, 20 * 256);
+            }
         }
 
         private void writeThemeTracksView() {
