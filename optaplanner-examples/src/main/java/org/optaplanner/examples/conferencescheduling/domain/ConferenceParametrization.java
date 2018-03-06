@@ -53,20 +53,20 @@ public class ConferenceParametrization extends AbstractPersistable {
 
     private int themeTrackConflict = 10;
     private int sectorConflict = 10;
-    private int audienceTypeDiversity = 0;
+    private int audienceTypeDiversity = 1;
     private int audienceTypeThemeTrackConflict = 0;
-    private int audienceLevelDiversity = 0;
+    private int audienceLevelDiversity = 1;
     private int audienceLevelFlowPerContentViolation = 10;
-    private int contentConflict = 10;
+    private int contentConflict = 100;
     private int languageDiversity = 10;
-    private int speakerPreferredTimeslotTag = 10;
-    private int speakerUndesiredTimeslotTag = 10;
-    private int talkPreferredTimeslotTag = 10;
-    private int talkUndesiredTimeslotTag = 10;
-    private int speakerPreferredRoomTag = 10;
-    private int speakerUndesiredRoomTag = 10;
-    private int talkPreferredRoomTag = 10;
-    private int talkUndesiredRoomTag = 10;
+    private int speakerPreferredTimeslotTag = 20;
+    private int speakerUndesiredTimeslotTag = 20;
+    private int talkPreferredTimeslotTag = 20;
+    private int talkUndesiredTimeslotTag = 20;
+    private int speakerPreferredRoomTag = 20;
+    private int speakerUndesiredRoomTag = 20;
+    private int talkPreferredRoomTag = 20;
+    private int talkUndesiredRoomTag = 20;
 
     public ConferenceParametrization() {
     }
