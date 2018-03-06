@@ -40,7 +40,7 @@ public class ToTypedExpressionTest {
     @Before
     public void setUp() throws Exception {
         imports = new HashSet<>();
-        packageModel = new PackageModel("", null, false);
+        packageModel = new PackageModel("", null, false, null);
         typeResolver = new ClassTypeResolver(imports, getClass().getClassLoader());
         ruleContext = new RuleContext(knowledgeBuilder, packageModel, ruleDescr, typeResolver, true);
         imports.add("org.drools.modelcompiler.domain.Person");

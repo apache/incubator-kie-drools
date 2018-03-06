@@ -31,6 +31,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
+import org.drools.compiler.compiler.DialectCompiletimeRegistry;
+import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.CompilationUnit;
 import org.drools.javaparser.ast.Modifier;
@@ -78,6 +80,8 @@ public class PackageModel {
 
     private final String name;
     private final boolean isPattern;
+    private final DialectCompiletimeRegistry dialectCompiletimeRegistry;
+
     private final String rulesFileName;
     
     private Set<String> imports = new HashSet<>();
@@ -97,6 +101,7 @@ public class PackageModel {
     private List<MethodDeclaration> functions = new ArrayList<>();
 
     private List<ClassOrInterfaceDeclaration> generatedPOJOs = new ArrayList<>();
+    private List<GeneratedClassWithPackage> generatedAccumulateClasses = new ArrayList<>();
 
     private List<Expression> typeMetaDataExpressions = new ArrayList<>();
 
@@ -104,14 +109,15 @@ public class PackageModel {
 
     private KnowledgeBuilderConfigurationImpl configuration;
     private Map<String, AccumulateFunction> accumulateFunctions;
+    private InternalKnowledgePackage pkg;
 
-
-    public PackageModel(String name, KnowledgeBuilderConfigurationImpl configuration, boolean isPattern) {
+    public PackageModel(String name, KnowledgeBuilderConfigurationImpl configuration, boolean isPattern, DialectCompiletimeRegistry dialectCompiletimeRegistry) {
         this.name = name;
         this.isPattern = isPattern;
         this.rulesFileName = generateRulesFileName();
         this.configuration = configuration;
-        exprIdGenerator = new DRLIdGenerator();
+        this.exprIdGenerator = new DRLIdGenerator();
+        this.dialectCompiletimeRegistry = dialectCompiletimeRegistry;
     }
 
     public String getRulesFileName() {
@@ -202,6 +208,14 @@ public class PackageModel {
         return generatedPOJOs;
     }
 
+    public void addGeneratedAccumulateClasses(GeneratedClassWithPackage clazz) {
+        this.generatedAccumulateClasses.add(clazz);
+    }
+
+    public List<GeneratedClassWithPackage> getGeneratedAccumulateClasses() {
+        return generatedAccumulateClasses;
+    }
+
     public void addAllWindowReferences(String methodName, MethodCallExpr windowMethod) {
         this.windowReferences.put(methodName, windowMethod);
     }
@@ -218,6 +232,19 @@ public class PackageModel {
 
     public Map<String, AccumulateFunction> getAccumulateFunctions() {
         return accumulateFunctions;
+    }
+
+    public void setInternalKnowledgePackage(InternalKnowledgePackage pkg) {
+        this.pkg = pkg;
+    }
+
+    public InternalKnowledgePackage getPkg() {
+        return pkg;
+    }
+
+
+    public DialectCompiletimeRegistry getDialectCompiletimeRegistry() {
+        return dialectCompiletimeRegistry;
     }
 
     public static class RuleSourceResult {

@@ -286,6 +286,11 @@ public class DSL {
         return new AccumulateExprViewItem(viewItem, functions);
     }
 
+    // Legay case - source is defined in the generated Invoker class
+    public static AccumulateFunction accFunction( Class<?> accFunctionClass) {
+        return new AccumulateFunction(null, accFunctionClass);
+    }
+
     public static AccumulateFunction accFunction( Class<?> accFunctionClass, Variable source) {
         return new AccumulateFunction(source, accFunctionClass);
     }
