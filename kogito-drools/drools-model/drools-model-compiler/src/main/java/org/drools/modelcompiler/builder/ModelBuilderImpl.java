@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.builder.impl.TypeDeclarationFactory;
+import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
@@ -131,7 +132,10 @@ public class ModelBuilderImpl extends KnowledgeBuilderImpl {
     protected void generatePOJOs(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
         InternalKnowledgePackage pkg = pkgRegistry.getPackage();
         String pkgName = pkg.getName();
-        PackageModel model = packageModels.computeIfAbsent(pkgName, s -> new PackageModel(pkgName, this.getBuilderConfiguration(), isPattern));
+        PackageModel model = packageModels.computeIfAbsent(pkgName, s -> {
+            final DialectCompiletimeRegistry dialectCompiletimeRegistry = pkgRegistry.getDialectCompiletimeRegistry();
+            return new PackageModel(pkgName, this.getBuilderConfiguration(), isPattern, dialectCompiletimeRegistry);
+        });
         model.addImports(pkg.getTypeResolver().getImports());
         generatePOJO(pkg, packageDescr, model);
     }
@@ -141,7 +145,10 @@ public class ModelBuilderImpl extends KnowledgeBuilderImpl {
         validateUniqueRuleNames(packageDescr);
         InternalKnowledgePackage pkg = pkgRegistry.getPackage();
         String pkgName = pkg.getName();
-        PackageModel model = packageModels.computeIfAbsent(pkgName, s -> new PackageModel(pkgName, this.getBuilderConfiguration(), isPattern));
+        PackageModel model = packageModels.computeIfAbsent(pkgName, s -> {
+            final DialectCompiletimeRegistry dialectCompiletimeRegistry = pkgRegistry.getDialectCompiletimeRegistry();
+            return new PackageModel(pkgName, this.getBuilderConfiguration(), isPattern, dialectCompiletimeRegistry);
+        });
         generateModel(this, pkg, packageDescr, model, isPattern);
     }
 

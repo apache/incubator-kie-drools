@@ -32,6 +32,7 @@ import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
 import org.drools.modelcompiler.domain.TargetPolicy;
 import org.drools.modelcompiler.oopathdtables.InternationalAddress;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.AccumulateFunction;
@@ -567,6 +568,41 @@ public class AccumulateTest extends BaseModelTest {
         assertEquals(2, results.size());
         assertThat(results, hasItem(36));
     }
+
+    @Test
+    public void testExpandedAccumulateWith2Args2Bindings() {
+        String str = "import " + Person.class.getCanonicalName() + ";\n" +
+                "rule R when\n" +
+                "  $avg : Integer() from accumulate (\n" +
+                "            Person( age > 18, $age : age, $name : name ), " +
+                "                                            init( int count = 0; int sum = 0; String allNames = \"\"; ), " +
+                "                                            action( count++; sum += $age; allNames = allNames + $name; ), " +
+                "                                            reverse( count--; sum -= $age; ), " +
+                "                                            result( (sum / count) + allNames.length() )\n" +
+                "         )" +
+                "then\n" +
+                "  insert($avg);\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+
+        FactHandle fh_Mark = ksession.insert(new Person("Mark", 37));
+        FactHandle fh_Edson = ksession.insert(new Person("Edson", 35));
+        FactHandle fh_Mario = ksession.insert(new Person("Mario", 42));
+        ksession.fireAllRules();
+
+        List<Integer> results = getObjectsIntoList(ksession, Integer.class);
+        assertEquals(1, results.size());
+        assertThat(results, hasItem(38 + 14));
+
+        ksession.delete(fh_Mario);
+        ksession.fireAllRules();
+
+        results = getObjectsIntoList(ksession, Integer.class);
+        assertEquals(2, results.size());
+        assertThat(results, hasItem(36 + 14));
+    }
+
 
     @Test
     public void testExpandedAccumulateWith3Args() {

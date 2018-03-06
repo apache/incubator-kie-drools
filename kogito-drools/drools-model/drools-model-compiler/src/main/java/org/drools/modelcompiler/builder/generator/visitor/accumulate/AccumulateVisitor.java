@@ -290,7 +290,8 @@ public abstract class AccumulateVisitor {
             accumulateMethod.getParameter(1).setName(nameExpr);
             singleAccumulateType = context2.getDeclarationById(nameExpr).get().getType();
         } else {
-            throw new UnsupportedOperationException("By design this legacy accumulate (with inline custome code) visitor supports only with 1-and-only binding");
+            new LegacyAccumulate(context, descr, basePattern).build();
+            return;
         }
 
         writeAccumulateMethod(contextFieldNames, singleAccumulateType, accumulateMethod, actionBlock);
@@ -317,7 +318,8 @@ public abstract class AccumulateVisitor {
             if (allNamesInReverseBlock.size() == 1) {
                 reverseMethod.getParameter(1).setName(allNamesInReverseBlock.iterator().next());
             } else {
-                throw new UnsupportedOperationException("By design this legacy accumulate (with inline custome code) visitor supports only with 1-and-only binding");
+                new LegacyAccumulate(context, descr, basePattern).build();
+                return;
             }
             writeAccumulateMethod(contextFieldNames, singleAccumulateType, reverseMethod, reverseBlock);
         } else {
