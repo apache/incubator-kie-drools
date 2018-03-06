@@ -4141,4 +4141,76 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         marshaller.marshall(outputStream, kieSession);
     }
+
+    @Test
+    public void testRemoveAndReaddRulesInDifferentPackages() throws Exception {
+        // RHBRMS-3082
+        String declare =
+                "declare Boolean @role( event ) end\n" +
+                "declare String @role( event ) end\n" +
+                "declare Integer @role( event ) end\n";
+
+        String drl1a =
+                "package org.hightea.a\n" +
+                "rule R1\n" +
+                "    when\n" +
+                "        Boolean()\n" +
+                "        String()\n" +
+                "    then\n" +
+                "	 end";
+
+        String drl1b =
+                "package org.hightea.b\n" +
+                "rule R2\n" +
+                "    when\n" +
+                "        Boolean()\n" +
+                "        Integer()\n" +
+                "    then\n" +
+                "	 end";
+
+        String drl2a =
+                "package org.hightea.a\n" +
+                "rule R1\n" +
+                "    when\n" +
+                "        Boolean()\n" +
+                "        String()\n" +
+                "    then\n" +
+                        " 		 // SimpleComment to update rule \n" +
+                "	 end";
+
+        String drl2b =
+                "package org.hightea.b\n" +
+                "rule R2\n" +
+                "    when\n" +
+                "        Boolean()\n" +
+                "        Integer()\n" +
+                "    then\n" +
+                        " 		 // SimpleComment to update rule \n" +
+                "	 end";
+
+        KieServices ks = KieServices.Factory.get();
+
+        KieModuleModel kproj = ks.newKieModuleModel();
+        KieBaseModel kieBaseModel1 = kproj.newKieBaseModel( "KBase1" ).setDefault( true )
+                .setEventProcessingMode( EventProcessingOption.STREAM );
+        KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel( "KSession1" ).setDefault( true )
+                .setType( KieSessionModel.KieSessionType.STATEFUL )
+                .setClockType( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
+        deployJar( ks, createKJar( ks, kproj, releaseId1, null, declare, drl1a, drl1b ) );
+        ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "2.0.0" );
+        deployJar( ks, createKJar( ks, kproj, releaseId2, null, declare, drl2a, drl2b ) );
+
+        KieContainer kc = ks.newKieContainer( releaseId1 );
+        KieSession ksession = kc.newKieSession();
+
+        ksession.insert(1);
+        ksession.fireAllRules();
+
+        kc.updateToVersion( releaseId2 );
+
+        ksession.insert("test");
+        ksession.fireAllRules();
+    }
 }

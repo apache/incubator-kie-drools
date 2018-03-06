@@ -16,6 +16,14 @@
 package org.drools.core.phreak;
 
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -63,14 +71,6 @@ import org.kie.api.definition.rule.Rule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import static org.drools.core.phreak.SegmentUtilities.isRootNode;
 
 public class AddRemoveRule {
@@ -111,7 +111,7 @@ public class AddRemoveRule {
                 // rule added with no sharing
                 insertLiaFacts(firstSplit, wm);
             } else {
-                PathEndNodeMemories tnms = getPathEndMemories(wm, pathEndNodes);
+                PathEndNodeMemories tnms = getPathEndMemories(wm, pathEndNodes, true);
 
                 if (tnms.subjectPmem == null) {
                     // If the existing PathMemories are not yet initialized there are no Segments or tuples to process
@@ -163,7 +163,7 @@ public class AddRemoveRule {
         for (InternalWorkingMemory wm : wms) {
             wm.flushPropagations();
 
-            PathEndNodeMemories tnms = getPathEndMemories(wm, pathEndNodes);
+            PathEndNodeMemories tnms = getPathEndMemories(wm, pathEndNodes, false);
 
             if ( !tnms.subjectPmems.isEmpty() ) {
                 if (NodeTypeEnums.LeftInputAdapterNode == firstSplit.getType() && firstSplit.getAssociationsSize() == 1) {
@@ -1322,8 +1322,7 @@ public class AddRemoveRule {
         return nodePos;
     }
 
-    private static PathEndNodeMemories getPathEndMemories(InternalWorkingMemory wm,
-                                                          PathEndNodes pathEndNodes) {
+    private static PathEndNodeMemories getPathEndMemories(InternalWorkingMemory wm, PathEndNodes pathEndNodes, boolean initPmem) {
         PathEndNodeMemories tnMems = new PathEndNodeMemories();
 
         for (LeftTupleNode node : pathEndNodes.otherEndNodes) {
@@ -1341,7 +1340,7 @@ public class AddRemoveRule {
         }
 
         tnMems.subjectPmem = (PathMemory) wm.getNodeMemories().peekNodeMemory(pathEndNodes.subjectEndNode.getId());
-        if (tnMems.subjectPmem == null && !tnMems.otherPmems.isEmpty()) {
+        if (tnMems.subjectPmem == null && !tnMems.otherPmems.isEmpty() && initPmem) {
             // If "other pmem's are initialized, then the subject needs to be initialized too.
             tnMems.subjectPmem = (PathMemory) wm.getNodeMemory((MemoryFactory<Memory>) pathEndNodes.subjectEndNode);
         }
