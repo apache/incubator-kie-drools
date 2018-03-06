@@ -537,7 +537,7 @@ public class DrlxParseUtil {
         return mce.getScope().map( s -> isNameExprWithName(s, scope)).orElse(false );
     }
 
-    public static boolean isNameExprWithName(Expression expression, String scope) {
-        return expression instanceof NameExpr && (( NameExpr ) expression).getNameAsString().equals(scope );
+    public static boolean isNameExprWithName(Node expression, String name) {
+        return expression instanceof NameExpr && (( NameExpr ) expression).getNameAsString().equals(name );
     }
 }

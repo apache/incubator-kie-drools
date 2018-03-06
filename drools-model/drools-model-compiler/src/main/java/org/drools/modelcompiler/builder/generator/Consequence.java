@@ -78,8 +78,14 @@ public class Consequence {
     }
 
     public MethodCallExpr createCall(RuleDescr ruleDescr, String consequenceString, BlockStmt ruleVariablesBlock, boolean isBreaking) {
-        consequenceString = consequenceString.replaceAll("kcontext", "drools");
         BlockStmt ruleConsequence = rewriteConsequence(consequenceString);
+        if(ruleConsequence != null) {
+            ruleConsequence.findAll(Expression.class)
+                    .stream()
+                    .filter(s -> isNameExprWithName(s, "kcontext"))
+                    .forEach(n -> n.replace(new NameExpr("drools")));
+        }
+
         Collection<String> usedDeclarationInRHS = extractUsedDeclarations(ruleConsequence, consequenceString);
         MethodCallExpr onCall = onCall(usedDeclarationInRHS);
         if (isBreaking) {
