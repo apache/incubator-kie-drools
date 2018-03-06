@@ -29,7 +29,9 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -45,6 +47,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.poi.ss.usermodel.Cell;
@@ -68,6 +71,8 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.api.score.constraint.ConstraintMatch;
+import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
@@ -826,6 +831,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
     private static class ConferenceSchedulingXlsxWriter {
 
         protected final ConferenceSolution solution;
+        protected final List<ConstraintMatchTotal> constraintMatchTotalList;
         protected final Map<Object, Indictment> indictmentMap;
 
         protected XSSFWorkbook workbook;
@@ -854,6 +860,8 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             try (ScoreDirector<ConferenceSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector()) {
                 scoreDirector.setWorkingSolution(solution);
                 scoreDirector.calculateScore();
+                constraintMatchTotalList = new ArrayList<>(scoreDirector.getConstraintMatchTotals());
+                constraintMatchTotalList.sort(Comparator.comparing(ConstraintMatchTotal::getScoreTotal));
                 indictmentMap = scoreDirector.getIndictmentMap();
             }
         }
@@ -867,7 +875,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             writeRoomList();
             writeSpeakerList();
             writeTalkList();
-            writeScoreView();
+            writeInfeasibleView();
             writeRoomsView();
             writeSpeakersView();
             writeThemeTracksView();
@@ -875,6 +883,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             writeAudienceTypesView();
             writeAudienceLevelsView();
             writeContentsView();
+            writeScoreView();
             return workbook;
         }
 
@@ -1132,8 +1141,11 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             autoSizeColumnsWithHeader();
         }
 
-        private void writeScoreView() {
-            nextSheet("Score view", 1, 1, true);
+        private void writeInfeasibleView() {
+            if (solution.getScore() == null || solution.getScore().isFeasible()) {
+                return;
+            }
+            nextSheet("Infeasible view", 1, 1, true);
             nextRow();
             nextHeaderCell("Score");
             nextCell().setCellValue(solution.getScore() == null ? "Not yet solved" : solution.getScore().toShortString());
@@ -1169,7 +1181,15 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             nextCell().setCellValue(timeslotListSize);
             int roomListSize = solution.getRoomList().size();
             nextCell().setCellValue(roomListSize);
-            int sessionCount = timeslotListSize * roomListSize;
+            int sessionCount = 0;
+            for (Timeslot timeslot : solution.getTimeslotList()) {
+                for (Room room : solution.getRoomList()) {
+                    if (!Collections.disjoint(timeslot.getTalkTypeSet(), room.getTalkTypeSet())
+                            && !room.getUnavailableTimeslotSet().contains(timeslot)) {
+                        sessionCount++;
+                    }
+                }
+            }
             nextCell(sessionCount < talkListSize ? hardPenaltyStyle : defaultStyle).setCellValue(sessionCount);
             autoSizeColumnsWithHeader();
         }
@@ -1358,6 +1378,37 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             autoSizeColumnsWithHeader();
         }
 
+        private void writeScoreView() {
+            nextSheet("Score view", 1, 1, true);
+            nextRow();
+            nextCell();
+            nextHeaderCell("Score");
+            nextCell().setCellValue(solution.getScore() == null ? "Not yet solved" : solution.getScore().toShortString());
+            nextRow();
+            nextRow();
+            nextHeaderCell("Constraint match");
+            nextHeaderCell("Match score");
+            nextHeaderCell("Total score");
+            for (ConstraintMatchTotal constraintMatchTotal : constraintMatchTotalList) {
+                nextRow();
+                nextHeaderCell(constraintMatchTotal.getConstraintName());
+                nextCell();
+                nextCell().setCellValue(constraintMatchTotal.getScoreTotal().toShortString());
+                List<ConstraintMatch> constraintMatchList = new ArrayList<>(constraintMatchTotal.getConstraintMatchSet());
+                constraintMatchList.sort(Comparator.comparing(ConstraintMatch::getScore));
+                for (ConstraintMatch constraintMatch : constraintMatchList) {
+                    nextRow();
+                    nextCell().setCellValue("    " + constraintMatch.getJustificationList().stream()
+                            .filter(o -> o instanceof Talk).map(o -> ((Talk) o).getCode())
+                            .collect(joining(", ")));
+                    nextCell().setCellValue(constraintMatch.getScore().toShortString());
+                    nextCell();
+                    nextCell();
+                }
+            }
+            autoSizeColumnsWithHeader();
+        }
+
         private void writeTimeslotDaysHeaders() {
             LocalDate previousTimeslotDay = null;
             int mergeStart = -1;
@@ -1425,11 +1476,10 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             if (talkList == null) {
                 talkList = Collections.emptyList();
             }
-            List<Indictment> indictmentList = talkList.stream()
-                    .map(indictmentMap::get).filter(Objects::nonNull).collect(Collectors.toList());
-            HardSoftScore score = indictmentList.stream()
+            HardSoftScore score = talkList.stream()
+                    .map(indictmentMap::get).filter(Objects::nonNull)
                     .flatMap(indictment -> indictment.getConstraintMatchSet().stream())
-                    .map(tConstraintMatch -> (HardSoftScore) tConstraintMatch.getScore())
+                    .map(constraintMatch -> (HardSoftScore) constraintMatch.getScore())
                     // Filter out positive constraints
                     .filter(indictmentScore -> !(indictmentScore.getHardScore() >= 0 && indictmentScore.getSoftScore() >= 0))
                     .reduce(Score::add).orElse(HardSoftScore.ZERO);
@@ -1448,27 +1498,42 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             if (!talkList.isEmpty()) {
                 ClientAnchor anchor = creationHelper.createClientAnchor();
                 anchor.setCol1(cell.getColumnIndex());
-                anchor.setCol2(cell.getColumnIndex() + 5);
+                anchor.setCol2(cell.getColumnIndex() + 4);
                 anchor.setRow1(currentRow.getRowNum());
-                anchor.setRow2(currentRow.getRowNum() + 5);
+                anchor.setRow2(currentRow.getRowNum() + 4);
                 Comment comment = currentDrawing.createCellComment(anchor);
-                String commentString = talkList.stream()
-                        .map(talk -> talk.getCode() + ": "
-                                + talk.getTitle() + "\n  "
-                                + talk.getSpeakerList().stream().map(Speaker::getName).collect(joining(", "))
-                                + (talk.isPinnedByUser() ? "\n  PINNED BY USER" : "")
-                        ).collect(joining("\n\n"));
-                if (!indictmentList.isEmpty()) {
-                    commentString += "\n\nConstraint matches:\n  "
-                            + indictmentList.stream().flatMap(indictment -> indictment.getConstraintMatchSet().stream())
-                            .map(constraintMatch -> constraintMatch.getConstraintName() + " ("
-                                    + constraintMatch.getJustificationList().stream()
-                                    .filter(o -> o instanceof Talk).map(o -> ((Talk) o).getCode())
-                                    .collect(joining(", "))
-                                    + "): " + constraintMatch.getScore().toShortString())
-                            .collect(joining("\n  "));
+                StringBuilder commentString = new StringBuilder(talkList.size() * 200);
+                for (Talk talk : talkList) {
+                    commentString.append(talk.getCode()).append(": ").append(talk.getTitle()).append("\n    ")
+                            .append(talk.getSpeakerList().stream().map(Speaker::getName).collect(joining(", ")))
+                            .append(talk.isPinnedByUser() ? "\nPINNED BY USER" : "");
+                    Indictment indictment = indictmentMap.get(talk);
+                    if (indictment != null) {
+                        commentString.append("\n").append(indictment.getScoreTotal().toShortString())
+                                .append(" total");
+                        Set<ConstraintMatch> constraintMatchSet = indictment.getConstraintMatchSet();
+                        List<String> constraintNameList = constraintMatchSet.stream()
+                                .map(ConstraintMatch::getConstraintName).distinct().collect(toList());
+                        for (String constraintName : constraintNameList) {
+                            List<ConstraintMatch> filteredConstraintMatchList = constraintMatchSet.stream()
+                                    .filter(constraintMatch -> constraintMatch.getConstraintName().equals(constraintName))
+                                    .collect(toList());
+                            Score sum = filteredConstraintMatchList.stream()
+                                    .map(ConstraintMatch::getScore)
+                                    .reduce(Score::add).orElse(HardSoftScore.ZERO);
+                            String justificationTalkCodes = filteredConstraintMatchList.stream()
+                                    .flatMap(constraintMatch -> constraintMatch.getJustificationList().stream())
+                                    .filter(justification -> justification instanceof Talk && justification != talk)
+                                    .distinct().map(o -> ((Talk) o).getCode()).collect(joining(", "));
+                            commentString.append("\n    ").append(sum.toShortString())
+                                    .append(" for ").append(filteredConstraintMatchList.size())
+                                    .append(" ").append(constraintName).append("s")
+                                    .append("\n        ").append(justificationTalkCodes);
+                        }
+                    }
+                    commentString.append("\n\n");
                 }
-                comment.setString(creationHelper.createRichTextString(commentString));
+                comment.setString(creationHelper.createRichTextString(commentString.toString()));
                 cell.setCellComment(comment);
             }
             cell.setCellValue(talkList.stream().map(stringFunction).collect(joining("\n")));
