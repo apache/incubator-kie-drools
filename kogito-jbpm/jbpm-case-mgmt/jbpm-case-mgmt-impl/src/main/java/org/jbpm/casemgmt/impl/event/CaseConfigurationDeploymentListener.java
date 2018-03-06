@@ -50,9 +50,15 @@ public class CaseConfigurationDeploymentListener implements DeploymentEventListe
     private static final Logger logger = LoggerFactory.getLogger(CaseConfigurationDeploymentListener.class);
     
     private IdentityProvider identityProvider;
-     
+    private TransactionalCommandService transactionalCommandService;
+    
     public CaseConfigurationDeploymentListener(IdentityProvider identityProvider) {
+        this(identityProvider, null);
+    }
+    
+    public CaseConfigurationDeploymentListener(IdentityProvider identityProvider, TransactionalCommandService transactionalCommandService) {
         this.identityProvider = identityProvider;
+        this.transactionalCommandService = transactionalCommandService;
     }
 
     @Override
@@ -62,7 +68,12 @@ public class CaseConfigurationDeploymentListener implements DeploymentEventListe
             List<CaseEventListener> caseEventListeners = getEventListenerFromDescriptor(runtimeManager);
             logger.debug("Adding following case event listeners {} for deployment {}", caseEventListeners, event.getDeploymentId());
                         
-            CaseInstanceAuditEventListener auditEventListener = new CaseInstanceAuditEventListener(new TransactionalCommandService(((SimpleRuntimeEnvironment) runtimeManager.getEnvironment()).getEmf()));
+            TransactionalCommandService commandService = transactionalCommandService;
+            if (commandService == null) {
+                commandService = new TransactionalCommandService(((SimpleRuntimeEnvironment) runtimeManager.getEnvironment()).getEmf());
+            }
+            
+            CaseInstanceAuditEventListener auditEventListener = new CaseInstanceAuditEventListener(commandService);
             caseEventListeners.add(auditEventListener);
             caseEventListeners.add(new NotifyParentCaseEventListener(identityProvider));
             
