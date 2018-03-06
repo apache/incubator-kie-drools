@@ -558,4 +558,12 @@ public class DrlxParseUtil {
             return Optional.of(collect.get(collect.size() - 1));
         }
     }
+
+    public static boolean hasScope( MethodCallExpr mce, String scope ) {
+        return mce.getScope().map( s -> isNameExprWithName(s, scope)).orElse(false );
+    }
+
+    public static boolean isNameExprWithName(Node expression, String name) {
+        return expression instanceof NameExpr && (( NameExpr ) expression).getNameAsString().equals(name );
+    }
 }
