@@ -33,7 +33,7 @@ public class Either<L,R> {
     }
     
     public static <L,R> Either<L,R> ofRight(R value) {
-        return new Either<>(Optional.empty(), Optional.of(value));
+        return new Either<>(Optional.empty(), Optional.ofNullable(value));
     }
     
     public boolean isLeft() {

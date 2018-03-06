@@ -66,8 +66,15 @@ public class FEELListsTest extends BaseFEELTest {
                 {"[ {x:1, y:2}, {x:2, y:3} ][x = 0]", Collections.emptyList(), null },
 
                 // Other filtering
-                {"[\"a\", \"b\", \"c\"][a]", null, FEELEvent.Severity.ERROR },
-
+                {"[\"a\", \"b\", \"c\"][a]", Collections.emptyList(), null }, // DROOLS-1679
+                {"{ a list : [ { a : false, b : 2 }, { a : true, b : 3 } ], r : a list[a] }.r", Arrays.asList( new HashMap<String, Object>() {{ put("a", true);  put("b", BigDecimal.valueOf( 3 )); } } ), null },
+                {"{ a list : [ { a : false, b : 2 }, { a : null, b : 3 }, { b : 4 } ], r : a list[a] }.r", Collections.emptyList(), null },
+                {"{ a list : [ \"a\", \"b\", \"c\" ], x : 2, a : a list[x]}.a", "b", null },
+                {"{ a list : [ { x : false, y : 2 }, { x : true, y : 3 } ], x : \"asd\", a : a list[x] }.a", Arrays.asList( new HashMap<String, Object>() {{ put("x", true);  put("y", BigDecimal.valueOf( 3 )); } } ), null },
+                {"{ a list : [ { x : false, y : 2 }, { x : true, y : 3 } ], x : false, a : a list[x] }.a", Arrays.asList( new HashMap<String, Object>() {{ put("x", true);  put("y", BigDecimal.valueOf( 3 )); } } ), null },
+                {"{ a list : [ { x : false, y : 2 }, { x : true, y : 3 } ], x : null, a : a list[x] }.a", Arrays.asList( new HashMap<String, Object>() {{ put("x", true);  put("y", BigDecimal.valueOf( 3 )); } } ), null },
+                {"{ people : [ { firstName : \"bob\" }, { firstName : \"max\" } ], result : people[ lastName = null ] }.result", Arrays.asList( new HashMap<String, Object>() {{ put("firstName", "bob"); }}, new HashMap<String, Object>() {{ put("firstName", "max"); }}) , null },
+                
                 // Selection
                 {"[ {x:1, y:2}, {x:2, y:3} ].y", Arrays.asList( BigDecimal.valueOf( 2 ), BigDecimal.valueOf( 3 ) ), null },
                 {"[ {x:1, y:2}, {x:2} ].y", Arrays.asList( BigDecimal.valueOf( 2 ) ), null },
