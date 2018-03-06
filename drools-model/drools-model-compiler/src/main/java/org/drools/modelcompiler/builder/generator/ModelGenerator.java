@@ -82,6 +82,8 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 import static org.drools.javaparser.JavaParser.parseExpression;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.classToReferenceType;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.hasScope;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isNameExprWithName;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.parseBlock;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.visitor.NamedConsequenceVisitor.BREAKING_CALL;
@@ -647,13 +649,9 @@ public class ModelGenerator {
     }
 
     private static boolean isDroolsMethod( MethodCallExpr mce ) {
-        return hasScope( mce, "drools" ) ||
-               ( !mce.getScope().isPresent() && implicitDroolsMethods.contains( mce.getNameAsString() ) );
+        final boolean hasDroolsScope = hasScope(mce, "drools");
+        final boolean isImplicitDroolsMethod = !mce.getScope().isPresent() && implicitDroolsMethods.contains(mce.getNameAsString());
+        final boolean hasDroolsAsParameter = mce.getArguments().stream().anyMatch(a -> isNameExprWithName(a, "drools"));
+        return hasDroolsScope || isImplicitDroolsMethod || hasDroolsAsParameter;
     }
-
-    private static boolean hasScope( MethodCallExpr mce, String scope ) {
-        return mce.getScope().map( s -> s instanceof NameExpr && (( NameExpr ) s).getNameAsString().equals( scope ) ).orElse( false );
-    }
-
-
 }
