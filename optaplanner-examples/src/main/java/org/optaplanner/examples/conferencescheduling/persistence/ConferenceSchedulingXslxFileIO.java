@@ -883,6 +883,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             writeAudienceTypesView();
             writeAudienceLevelsView();
             writeContentsView();
+            writeLanguagesView();
             writeScoreView();
             return workbook;
         }
@@ -1226,6 +1227,12 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
 
         private void writeSpeakersView() {
             nextSheet("Speakers view", 1, 2, true);
+            String[] filteredConstraintNames = {
+                    SPEAKER_UNAVAILABLE_TIMESLOT, SPEAKER_CONFLICT,
+                    SPEAKER_REQUIRED_TIMESLOT_TAG, SPEAKER_PROHIBITED_TIMESLOT_TAG,
+                    SPEAKER_PREFERRED_TIMESLOT_TAG, SPEAKER_UNDESIRED_TIMESLOT_TAG,
+                    SPEAKER_REQUIRED_ROOM_TAG, SPEAKER_PROHIBITED_ROOM_TAG,
+                    SPEAKER_PREFERRED_ROOM_TAG, SPEAKER_UNDESIRED_ROOM_TAG};
             nextRow();
             nextHeaderCell("");
             writeTimeslotDaysHeaders();
@@ -1242,7 +1249,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                     List<Talk> talkList = timeslotTalkList.stream()
                             .filter(talk -> talk.getTimeslot() == timeslot).collect(toList());
                     boolean unavailable = speaker.getUnavailableTimeslotSet().contains(timeslot);
-                    nextTalkListCell(unavailable, talkList);
+                    nextTalkListCell(unavailable, talkList, filteredConstraintNames);
                 }
             }
             autoSizeColumnsWithHeader();
@@ -1250,6 +1257,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
 
         private void writeThemeTracksView() {
             nextSheet("Theme tracks view", 1, 2, true);
+            String[] filteredConstraintNames = {THEME_TRACK_CONFLICT, AUDIENCE_TYPE_THEME_TRACK_CONFLICT};
             nextRow();
             nextHeaderCell("");
             writeTimeslotDaysHeaders();
@@ -1268,7 +1276,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 Map<Timeslot, List<Talk>> timeslotToTalkListMap = entry.getValue();
                 for (Timeslot timeslot : solution.getTimeslotList()) {
                     List<Talk> talkList = timeslotToTalkListMap.get(timeslot);
-                    nextTalkListCell(talkList);
+                    nextTalkListCell(talkList, filteredConstraintNames);
                 }
             }
             autoSizeColumnsWithHeader();
@@ -1276,6 +1284,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
 
         private void writeSectorsView() {
             nextSheet("Sectors view", 1, 2, true);
+            String[] filteredConstraintNames = {SECTOR_CONFLICT};
             nextRow();
             nextHeaderCell("");
             writeTimeslotDaysHeaders();
@@ -1294,7 +1303,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 Map<Timeslot, List<Talk>> timeslotToTalkListMap = entry.getValue();
                 for (Timeslot timeslot : solution.getTimeslotList()) {
                     List<Talk> talkList = timeslotToTalkListMap.get(timeslot);
-                    nextTalkListCell(talkList);
+                    nextTalkListCell(talkList, filteredConstraintNames);
                 }
             }
             autoSizeColumnsWithHeader();
@@ -1302,6 +1311,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
 
         private void writeAudienceTypesView() {
             nextSheet("Audience types view", 1, 2, true);
+            String[] filteredConstraintNames = {AUDIENCE_TYPE_DIVERSITY, AUDIENCE_TYPE_THEME_TRACK_CONFLICT};
             nextRow();
             nextHeaderCell("");
             writeTimeslotDaysHeaders();
@@ -1320,7 +1330,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 Map<Timeslot, List<Talk>> timeslotToTalkListMap = entry.getValue();
                 for (Timeslot timeslot : solution.getTimeslotList()) {
                     List<Talk> talkList = timeslotToTalkListMap.get(timeslot);
-                    nextTalkListCell(talkList);
+                    nextTalkListCell(talkList, filteredConstraintNames);
                 }
             }
             autoSizeColumnsWithHeader();
@@ -1328,6 +1338,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
 
         private void writeAudienceLevelsView() {
             nextSheet("Audience levels view", 1, 2, true);
+            String[] filteredConstraintNames = {AUDIENCE_LEVEL_DIVERSITY, AUDIENCE_LEVEL_FLOW_PER_CONTENT_VIOLATION};
             nextRow();
             nextHeaderCell("");
             writeTimeslotDaysHeaders();
@@ -1335,17 +1346,17 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             nextHeaderCell("Audience level");
             writeTimeslotHoursHeaders();
 
-            Map<Integer, Map<Timeslot, List<Talk>>> tagToTimeslotToTalkListMap = solution.getTalkList().stream()
+            Map<Integer, Map<Timeslot, List<Talk>>> levelToTimeslotToTalkListMap = solution.getTalkList().stream()
                     .filter(talk -> talk.getTimeslot() != null)
                     .map(talk -> Pair.of(talk.getAudienceLevel(), Pair.of(talk.getTimeslot(), talk)))
                     .collect(groupingBy(Pair::getLeft, groupingBy(o -> o.getRight().getLeft(), mapping(o -> o.getRight().getRight(), toList()))));
-            for (Map.Entry<Integer, Map<Timeslot, List<Talk>>> entry : tagToTimeslotToTalkListMap.entrySet()) {
+            for (Map.Entry<Integer, Map<Timeslot, List<Talk>>> entry : levelToTimeslotToTalkListMap.entrySet()) {
                 nextRow();
                 nextHeaderCell(Integer.toString(entry.getKey()));
                 Map<Timeslot, List<Talk>> timeslotToTalkListMap = entry.getValue();
                 for (Timeslot timeslot : solution.getTimeslotList()) {
                     List<Talk> talkList = timeslotToTalkListMap.get(timeslot);
-                    nextTalkListCell(talkList);
+                    nextTalkListCell(talkList, filteredConstraintNames);
                 }
             }
             autoSizeColumnsWithHeader();
@@ -1353,6 +1364,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
 
         private void writeContentsView() {
             nextSheet("Contents view", 1, 2, true);
+            String[] filteredConstraintNames = {AUDIENCE_LEVEL_FLOW_PER_CONTENT_VIOLATION, CONTENT_CONFLICT};
             nextRow();
             nextHeaderCell("");
             writeTimeslotDaysHeaders();
@@ -1372,7 +1384,34 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 for (Timeslot timeslot : solution.getTimeslotList()) {
                     List<Talk> talkList = timeslotToTalkListMap.get(timeslot);
                     nextTalkListCell(talkList,
-                            talk -> talk.getCode() + " (level " + talk.getAudienceLevel() + ")");
+                            talk -> talk.getCode() + " (level " + talk.getAudienceLevel() + ")",
+                            filteredConstraintNames);
+                }
+            }
+            autoSizeColumnsWithHeader();
+        }
+
+        private void writeLanguagesView() {
+            nextSheet("Languages view", 1, 2, true);
+            String[] filteredConstraintNames = {LANGUAGE_DIVERSITY};
+            nextRow();
+            nextHeaderCell("");
+            writeTimeslotDaysHeaders();
+            nextRow();
+            nextHeaderCell("Language");
+            writeTimeslotHoursHeaders();
+
+            Map<String, Map<Timeslot, List<Talk>>> languageToTimeslotToTalkListMap = solution.getTalkList().stream()
+                    .filter(talk -> talk.getTimeslot() != null)
+                    .map(talk -> Pair.of(talk.getLanguage(), Pair.of(talk.getTimeslot(), talk)))
+                    .collect(groupingBy(Pair::getLeft, groupingBy(o -> o.getRight().getLeft(), mapping(o -> o.getRight().getRight(), toList()))));
+            for (Map.Entry<String, Map<Timeslot, List<Talk>>> entry : languageToTimeslotToTalkListMap.entrySet()) {
+                nextRow();
+                nextHeaderCell(entry.getKey());
+                Map<Timeslot, List<Talk>> timeslotToTalkListMap = entry.getValue();
+                for (Timeslot timeslot : solution.getTimeslotList()) {
+                    List<Talk> talkList = timeslotToTalkListMap.get(timeslot);
+                    nextTalkListCell(talkList, filteredConstraintNames);
                 }
             }
             autoSizeColumnsWithHeader();
@@ -1459,26 +1498,37 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             headerCellCount++;
         }
 
-        protected void nextTalkListCell(List<Talk> talkList) {
-            nextTalkListCell(false, talkList);
+        protected void nextTalkListCell(List<Talk> talkList, String[] filteredConstraintNames) {
+            nextTalkListCell(false, talkList, filteredConstraintNames);
         }
 
-        protected void nextTalkListCell(boolean unavailable, List<Talk> talkList) {
+        protected void nextTalkListCell(boolean unavailable, List<Talk> talkList, String[] filteredConstraintNames) {
             nextTalkListCell(unavailable, talkList,
-                    talk -> talk.getCode() + " @ " + (talk.getRoom() == null ? "No room" : talk.getRoom().getName()));
+                    talk -> talk.getCode() + " @ " + (talk.getRoom() == null ? "No room" : talk.getRoom().getName()),
+                    filteredConstraintNames);
         }
 
-        protected void nextTalkListCell(List<Talk> talkList, Function<Talk, String> stringFunction) {
-            nextTalkListCell(false, talkList, stringFunction);
+        protected void nextTalkListCell(List<Talk> talkList, Function<Talk, String> stringFunction, String[] filteredConstraintNames) {
+            nextTalkListCell(false, talkList, stringFunction, filteredConstraintNames);
         }
 
         protected void nextTalkListCell(boolean unavailable, List<Talk> talkList, Function<Talk, String> stringFunction) {
+            nextTalkListCell(unavailable, talkList, stringFunction, null);
+        }
+
+        protected void nextTalkListCell(boolean unavailable, List<Talk> talkList, Function<Talk, String> stringFunction,
+                String[] filteredConstraintNames) {
+            List<String> filteredConstraintNameList = (filteredConstraintNames == null) ? null
+                    : Arrays.asList(filteredConstraintNames);
             if (talkList == null) {
                 talkList = Collections.emptyList();
             }
             HardSoftScore score = talkList.stream()
                     .map(indictmentMap::get).filter(Objects::nonNull)
                     .flatMap(indictment -> indictment.getConstraintMatchSet().stream())
+                    // Filter out filtered constraints
+                    .filter(constraintMatch -> filteredConstraintNameList == null
+                            || filteredConstraintNameList.contains(constraintMatch.getConstraintName()))
                     .map(constraintMatch -> (HardSoftScore) constraintMatch.getScore())
                     // Filter out positive constraints
                     .filter(indictmentScore -> !(indictmentScore.getHardScore() >= 0 && indictmentScore.getSoftScore() >= 0))
