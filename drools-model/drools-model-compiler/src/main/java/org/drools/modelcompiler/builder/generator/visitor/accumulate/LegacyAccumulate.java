@@ -53,8 +53,7 @@ public class LegacyAccumulate {
 
     public void build() {
 
-        final Pattern pattern = (Pattern) new PatternBuilder().build(ruleBuildContext, basePattern);
-        javaAccumulateBuilder.build(ruleBuildContext, descr, pattern);
+        new PatternBuilder().build(ruleBuildContext, basePattern);
 
         final Set<String> imports = ruleBuildContext.getPkg().getImports().keySet();
         final String packageName = ruleBuildContext.getPkg().getName();
@@ -76,7 +75,6 @@ public class LegacyAccumulate {
     }
 
     private GeneratedClassWithPackage createInvokerClass(Set<String> imports, String packageName) {
-        // Let's assume the first one is the correct invokers (there are two)
         final String invokerClass = ruleBuildContext.getInvokers().values().iterator().next();
         final CompilationUnit parsedInvokedClass = JavaParser.parse(invokerClass);
 
