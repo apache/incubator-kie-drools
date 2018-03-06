@@ -44,7 +44,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -873,8 +872,8 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             writeSpeakersView();
             writeThemeTracksView();
             writeSectorsView();
-            writeAudienceTypeView();
-            writeAudienceLevelView();
+            writeAudienceTypesView();
+            writeAudienceLevelsView();
             writeContentsView();
             return workbook;
         }
@@ -1281,8 +1280,8 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             autoSizeColumnsWithHeader();
         }
 
-        private void writeAudienceTypeView() {
-            nextSheet("Audience type view", 1, 2, true);
+        private void writeAudienceTypesView() {
+            nextSheet("Audience types view", 1, 2, true);
             nextRow();
             nextHeaderCell("");
             writeTimeslotDaysHeaders();
@@ -1307,8 +1306,8 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             autoSizeColumnsWithHeader();
         }
 
-        private void writeAudienceLevelView() {
-            nextSheet("Audience level view", 1, 2, true);
+        private void writeAudienceLevelsView() {
+            nextSheet("Audience levels view", 1, 2, true);
             nextRow();
             nextHeaderCell("");
             writeTimeslotDaysHeaders();
