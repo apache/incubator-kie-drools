@@ -70,7 +70,7 @@ public class BuildFromKJarTest {
         kfs.writeKModuleXML(getDefaultKieModuleModel(ks).toXML());
         kfs.writePomXML(KJARUtils.getPom(releaseId));
 
-        String javaSrc = Person.class.getCanonicalName().replace( '.', File.separatorChar ) + ".java";
+        String javaSrc = Person.class.getCanonicalName().replace( '.', '/' ) + ".java";
         Resource javaResource = ks.getResources().newFileSystemResource( "src/test/java/" + javaSrc );
         kfs.write( "src/main/java/" + javaSrc, javaResource );
 
