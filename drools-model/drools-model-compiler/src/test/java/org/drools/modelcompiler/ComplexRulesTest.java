@@ -23,6 +23,7 @@ import org.drools.modelcompiler.domain.ChildFactComplex;
 import org.drools.modelcompiler.domain.ChildFactWithEnum1;
 import org.drools.modelcompiler.domain.ChildFactWithEnum2;
 import org.drools.modelcompiler.domain.ChildFactWithEnum3;
+import org.drools.modelcompiler.domain.ChildFactWithFirings1;
 import org.drools.modelcompiler.domain.ChildFactWithId1;
 import org.drools.modelcompiler.domain.ChildFactWithId2;
 import org.drools.modelcompiler.domain.ChildFactWithId3;
@@ -89,7 +90,62 @@ public class ComplexRulesTest extends BaseModelTest {
                 "    list.add($result);\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( str );
+        testComplexRule(str);
+    }
+
+    @Test
+    public void testNotWithEval() {
+        String str =
+                "import " + EnumFact1.class.getCanonicalName() + ";\n" +
+                "import " + EnumFact2.class.getCanonicalName() + ";\n" +
+                "import " + RootFact.class.getCanonicalName() + ";\n" +
+                "import " + ChildFactWithId1.class.getCanonicalName() + ";\n" +
+                "import " + ChildFactWithId2.class.getCanonicalName() + ";\n" +
+                "import " + ChildFactWithObject.class.getCanonicalName() + ";\n" +
+                "import " + ChildFactWithId3.class.getCanonicalName() + ";\n" +
+                "import " + ChildFactWithEnum1.class.getCanonicalName() + ";\n" +
+                "import " + ChildFactWithEnum2.class.getCanonicalName() + ";\n" +
+                "import " + ChildFactWithEnum3.class.getCanonicalName() + ";\n" +
+                "import " + ChildFactComplex.class.getCanonicalName() + ";\n" +
+                "import " + BusinessFunctions.class.getCanonicalName() + ";\n" +
+                "global BusinessFunctions functions;\n" +
+                "global java.util.List list;\n" +
+                "rule \"R1\"\n" +
+                "    dialect \"java\"\n" +
+                "when\n" +
+                "    $rootFact : RootFact(  ) \n" +
+                "    $childFact1 : ChildFactWithId1(  parentId == $rootFact.id ) \n" +
+                "    $childFact2 : ChildFactWithId2(  parentId == $childFact1.id ) \n" +
+                "    $childFactWithEnum1 : ChildFactWithEnum1(  parentId == $childFact2.id, enumValue == EnumFact1.FIRST ) \n" +
+                "    $childFactWithObject : ChildFactWithObject(  parentId == $childFact2.id ) \n" +
+                "    $childFactWithEnum2 : ChildFactWithEnum2(  parentId == $childFactWithObject.id, enumValue == EnumFact2.SECOND ) \n" +
+                "    $countOf : Long( $result : intValue > 0) from accumulate (\n" +
+                "        $rootFact_acc : RootFact(  ) \n" +
+                "        and $childFact1_acc : ChildFactWithId1(  parentId == $rootFact_acc.id ) \n" +
+                "        and $childFact3_acc : ChildFactWithId3(  parentId == $childFact1_acc.id ) \n" +
+                "        and $childFactComplex_acc : ChildFactComplex(  parentId == $childFact3_acc.id, \n" +
+                "            travelDocReady == true, \n" +
+                "            enum1Value not in (EnumFact1.FIRST, EnumFact1.THIRD, EnumFact1.FOURTH), \n" +
+                "            $childFactComplex_id : id, \n" +
+                "            enum2Value == EnumFact2.FIRST, \n" +
+                "            cheeseReady != true ) \n" +
+                "        ;count($childFactComplex_id))\n" +
+                "    exists ( $childFactWithEnum3_ex : ChildFactWithEnum3(  parentId == $childFact1.id, enumValue == EnumFact1.FIRST ) )\n" +
+                "    not ( \n" +
+                "        $policySet_not : ChildFactWithObject ( " +
+                "            id == $childFactWithObject.id , \n" +
+                "            eval(true == functions.arrayContainsInstanceWithParameters((Object[])$policySet_not.getObjectValue(), new Object[]{\"getMessageId\", \"42103\"}))\n" +
+                "        ) and ChildFactWithId1() and eval(false)\n" +
+                "    )\n" +
+                "  then\n" +
+                "    list.add($result);\n" +
+                "end\n";
+
+        testComplexRule(str);
+    }
+
+    private void testComplexRule(final String rule) {
+        KieSession ksession = getKieSession( rule );
 
         List<Integer> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
@@ -108,6 +164,50 @@ public class ComplexRulesTest extends BaseModelTest {
         assertEquals(1, ksession.fireAllRules());
         assertEquals(1, list.size());
         assertEquals(1, (int)list.get(0));
+    }
+
+    @Test
+    public void test2() {
+        final String drl =
+                " import org.drools.modelcompiler.domain.*;\n" +
+                        " rule \"R1\"\n" +
+                        " dialect \"java\"\n" +
+                        " when\n" +
+                        "     $rootFact : RootFact( )\n" +
+                        "     $childFact1 : ChildFactWithId1( parentId == $rootFact.id )\n" +
+                        "     $childFact2 : ChildFactWithId2( parentId == $childFact1.id )\n" +
+                        "     $childFact3 : ChildFactWithEnum1( \n" +
+                        "         parentId == $childFact2.id, \n" +
+                        "         enumValue == EnumFact1.FIRST, \n" +
+                        "         $enumValue : enumValue )\n" +
+                        "     $childFact4 : ChildFactWithFirings1( \n" +
+                        "         parentId == $childFact1.id, \n" +
+                        "         $evaluationName : evaluationName, \n" +
+                        "         firings not contains \"R1\" )\n" +
+                        " then\n" +
+                        "     $childFact4.setEvaluationName(String.valueOf($enumValue));\n" +
+                        "     $childFact4.getFirings().add(\"R1\");\n" +
+                        "     update($childFact4);\n" +
+                        " end\n";
+
+        KieSession ksession = getKieSession( drl );
+
+        int initialId = 1;
+        final RootFact rootFact = new RootFact(initialId);
+
+        final ChildFactWithId1 childFact1First = new ChildFactWithId1(initialId + 1, rootFact.getId());
+        final ChildFactWithId2 childFact2First = new ChildFactWithId2(initialId + 3, childFact1First.getId());
+        final ChildFactWithEnum1 childFact3First = new ChildFactWithEnum1(initialId + 4, childFact2First.getId(), EnumFact1.FIRST);
+        final ChildFactWithFirings1 childFact4First = new ChildFactWithFirings1(initialId + 2, childFact1First.getId());
+
+        ksession.insert(rootFact);
+        ksession.insert(childFact1First);
+        ksession.insert(childFact2First);
+        ksession.insert(childFact3First);
+        ksession.insert(childFact4First);
+
+        assertEquals(1, ksession.fireAllRules());
+        assertEquals(0, ksession.fireAllRules());
     }
 
     @Test
