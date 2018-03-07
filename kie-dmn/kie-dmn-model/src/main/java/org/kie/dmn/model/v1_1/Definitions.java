@@ -84,11 +84,13 @@ public class Definitions extends NamedElement {
         if ( decisionService == null ) {
             decisionService = new ArrayList<>();
             // as DMN1.1 xsd is broken to allow proper persistence of DecisionService, do fetch them from extensions.
-            List<DecisionService> collectDS = getExtensionElements().getAny().stream()
+			if ( getExtensionElements() != null ) {
+				List<DecisionService> collectDS = getExtensionElements().getAny().stream()
                                                                     .filter(DecisionServices.class::isInstance).map(DecisionServices.class::cast)
                                                                     .flatMap(dss -> dss.getDecisionService().stream())
                                                                     .collect(Collectors.toList());
-            decisionService.addAll(collectDS);
+				decisionService.addAll(collectDS);
+			}
         }
         return this.decisionService;
     }
