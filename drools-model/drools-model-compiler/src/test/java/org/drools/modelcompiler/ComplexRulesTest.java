@@ -61,16 +61,16 @@ public class ComplexRulesTest extends BaseModelTest {
                 "rule \"R1\"\n" +
                 "    dialect \"java\"\n" +
                 "when\n" +
-                "    $rootFact : RootFact(  ) \n" + // invokeDDServices
-                "    $childFact1 : ChildFactWithId1(  parentId == $rootFact.id ) \n" + // lendingTransaction
-                "    $childFact2 : ChildFactWithId2(  parentId == $childFact1.id ) \n" + // transactionDetail
-                "    $childFactWithEnum1 : ChildFactWithEnum1(  parentId == $childFact2.id, enumValue == EnumFact1.FIRST ) \n" + // collateral
-                "    $childFactWithObject : ChildFactWithObject(  parentId == $childFact2.id ) \n" + // policySet
-                "    $childFactWithEnum2 : ChildFactWithEnum2(  parentId == $childFactWithObject.id, enumValue == EnumFact2.SECOND ) \n" + // policySetIdentifier
+                "    $rootFact : RootFact(  ) \n" +
+                "    $childFact1 : ChildFactWithId1(  parentId == $rootFact.id ) \n" +
+                "    $childFact2 : ChildFactWithId2(  parentId == $childFact1.id ) \n" +
+                "    $childFactWithEnum1 : ChildFactWithEnum1(  parentId == $childFact2.id, enumValue == EnumFact1.FIRST ) \n" +
+                "    $childFactWithObject : ChildFactWithObject(  parentId == $childFact2.id ) \n" +
+                "    $childFactWithEnum2 : ChildFactWithEnum2(  parentId == $childFactWithObject.id, enumValue == EnumFact2.SECOND ) \n" +
                 "    $countOf : Long( $result : intValue > 0) from accumulate (\n" +
                 "        $rootFact_acc : RootFact(  ) \n" +
                 "        and $childFact1_acc : ChildFactWithId1(  parentId == $rootFact_acc.id ) \n" +
-                "        and $childFact3_acc : ChildFactWithId3(  parentId == $childFact1_acc.id ) \n" + // borrower
+                "        and $childFact3_acc : ChildFactWithId3(  parentId == $childFact1_acc.id ) \n" +
                 "        and $childFactComplex_acc : ChildFactComplex(  parentId == $childFact3_acc.id, \n" +
                 "            travelDocReady == true, \n" +
                 "            enum1Value not in (EnumFact1.FIRST, EnumFact1.THIRD, EnumFact1.FOURTH), \n" +
