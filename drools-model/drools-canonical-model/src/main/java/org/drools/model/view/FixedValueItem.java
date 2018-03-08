@@ -38,6 +38,6 @@ public class FixedValueItem implements ViewItem {
 
     @Override
     public Variable<?>[] getVariables() {
-        throw new UnsupportedOperationException();
+        return new Variable[0];
     }
 }
