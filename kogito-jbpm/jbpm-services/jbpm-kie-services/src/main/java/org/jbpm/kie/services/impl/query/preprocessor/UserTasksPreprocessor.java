@@ -21,7 +21,6 @@ import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_TASKID;
 import org.dashbuilder.dataset.DataSetLookup;
 import org.dashbuilder.dataset.DataSetMetadata;
 import org.dashbuilder.dataset.def.DataSetPreprocessor;
-import org.dashbuilder.dataset.group.AggregateFunctionType;
 import org.dashbuilder.dataset.group.ColumnGroup;
 import org.dashbuilder.dataset.group.DataSetGroup;
 import org.dashbuilder.dataset.group.GroupFunction;
@@ -45,12 +44,8 @@ public abstract class UserTasksPreprocessor implements DataSetPreprocessor {
             LOGGER.debug("There is no group operation, adding one to eliminate duplicated tasks");
             DataSetGroup gOp = new DataSetGroup();
             gOp.setColumnGroup(new ColumnGroup(COLUMN_TASKID, COLUMN_TASKID));
-            for (String columnId : metadata.getColumnIds()) {
-                AggregateFunctionType functionType = null;
-                if (columnId.equals(COLUMN_TASKID)) {
-                    functionType = AggregateFunctionType.DISTINCT;
-                }
-                gOp.addGroupFunction(new GroupFunction(columnId, columnId, functionType));
+            for (String columnId : metadata.getColumnIds()) {                
+                gOp.addGroupFunction(new GroupFunction(columnId, columnId, null));
             }
             LOGGER.debug("Group operation {} added to dataset lookup {}", gOp, lookup);
             lookup.addOperation(gOp);

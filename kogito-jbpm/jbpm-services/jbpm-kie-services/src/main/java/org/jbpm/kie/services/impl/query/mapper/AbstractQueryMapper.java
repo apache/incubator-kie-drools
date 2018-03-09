@@ -37,6 +37,9 @@ public abstract class AbstractQueryMapper<T> {
         }
         
         Object value = column.getValues().get(index);
+        if (value instanceof String) {
+            value = Long.parseLong((String) value);
+        }
         return value != null ? ((Number) value).longValue() : null;
     }
 

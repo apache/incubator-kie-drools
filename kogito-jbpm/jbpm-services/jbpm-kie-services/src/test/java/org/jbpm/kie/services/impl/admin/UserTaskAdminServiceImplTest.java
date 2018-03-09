@@ -825,6 +825,69 @@ public class UserTaskAdminServiceImplTest extends AbstractKieServicesBaseTest {
         processInstanceId = null;
     }
     
+    @Test
+    public void testGetTaskInstancesAsPotOwnersMultipleInstances() {
+
+        String PO_TASK_QUERY = "select ti.taskId, ti.activationTime, ti.actualOwner, ti.createdBy, ti.createdOn, ti.deploymentId, " + "ti.description, ti.dueDate, ti.name, ti.parentId, ti.priority, ti.processId, ti.processInstanceId, " + "ti.processSessionId, ti.status, ti.workItemId, oe.id, eo.entity_id " + "from AuditTaskImpl ti " + "left join PeopleAssignments_PotOwners po on ti.taskId = po.task_id " + "left join OrganizationalEntity oe on po.entity_id = oe.id " + " left join PeopleAssignments_ExclOwners eo on ti.taskId = eo.task_id ";
+        SqlQueryDefinition query = new SqlQueryDefinition("getMyTaskInstances", "jdbc/testDS1", Target.PO_TASK);
+        query.setExpression(PO_TASK_QUERY);
+
+        queryService.registerQuery(query);
+
+        List<QueryDefinition> queries = queryService.getQueries(new QueryContext());
+        assertNotNull(queries);
+        assertEquals(1, queries.size());
+
+        QueryDefinition registeredQuery = queries.get(0);
+        assertNotNull(registeredQuery);
+        assertEquals(query.getName(), registeredQuery.getName());
+        assertEquals(query.getSource(), registeredQuery.getSource());
+        assertEquals(query.getExpression(), registeredQuery.getExpression());
+        assertEquals(query.getTarget(), registeredQuery.getTarget());
+
+        registeredQuery = queryService.getQuery(query.getName());
+
+        assertNotNull(registeredQuery);
+        assertEquals(query.getName(), registeredQuery.getName());
+        assertEquals(query.getSource(), registeredQuery.getSource());
+        assertEquals(query.getExpression(), registeredQuery.getExpression());
+        assertEquals(query.getTarget(), registeredQuery.getTarget());
+
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("approval_document", "initial content");
+
+        processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument", params);
+        assertNotNull(processInstanceId);
+        Long processInstanceId2 = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument", params);
+        assertNotNull(processInstanceId);
+        assertNotNull(processInstanceId2);
+        identityProvider.setName("notvalid");
+
+        List<UserTaskInstanceDesc> taskInstanceLogs = queryService.query(query.getName(), UserTaskInstanceQueryMapper.get(), new QueryContext());
+        assertNotNull(taskInstanceLogs);
+        assertEquals(0, taskInstanceLogs.size());
+
+        identityProvider.setName("salaboy");
+
+        taskInstanceLogs = queryService.query(query.getName(), UserTaskInstanceQueryMapper.get(), new QueryContext());
+        assertNotNull(taskInstanceLogs);
+        assertEquals(2, taskInstanceLogs.size());
+
+        identityProvider.setName("Administrator");
+        userTaskAdminService.addPotentialOwners(taskInstanceLogs.get(0).getTaskId(), false, factory.newUser("john"));
+        identityProvider.setName("salaboy");
+        
+        taskInstanceLogs = queryService.query(query.getName(), UserTaskInstanceQueryMapper.get(), new QueryContext());
+        assertNotNull(taskInstanceLogs);
+        assertEquals(2, taskInstanceLogs.size());
+
+  
+        processService.abortProcessInstance(processInstanceId);
+        processInstanceId = null;
+        processService.abortProcessInstance(processInstanceId2);
+        processInstanceId2 = null;
+    }
+    
     /*
      * Helper methods 
      */

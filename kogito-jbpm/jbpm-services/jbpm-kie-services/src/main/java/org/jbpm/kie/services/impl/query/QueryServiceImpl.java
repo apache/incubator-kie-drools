@@ -180,6 +180,7 @@ public class QueryServiceImpl implements QueryService, DeploymentEventListener {
                 }
                 
                 for (String columnId : metadata.getColumnIds()) {
+                    logger.debug("Column {} is of type {}", columnId, metadata.getColumnType(columnId));
                     sqlDef.addColumn(columnId, metadata.getColumnType(columnId));
                 }
     
