@@ -16,14 +16,9 @@
 
 package org.kie.dmn.core;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.*;
-
 import org.hamcrest.Matchers;
 import org.junit.Test;
+import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.core.DMNType;
@@ -35,6 +30,13 @@ import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.lang.types.BuiltInType;
+
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 
 public class DMNCompilerTest {
 
@@ -120,4 +122,27 @@ public class DMNCompilerTest {
         assertThat( dmnModel, notNullValue() );
         assertFalse( runtime.evaluateAll( dmnModel, DMNFactory.newContext() ).hasErrors() );
     }
+
+    @Test
+    public void testImport() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("Importing_Model.dmn",
+                                                                                 this.getClass(),
+                                                                                 "Imported_Model.dmn");
+
+        DMNModel importedModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_f27bb64b-6fc7-4e1f-9848-11ba35e0df36",
+                                                  "Imported Model");
+        assertThat(importedModel, notNullValue());
+        for (DMNMessage message : importedModel.getMessages()) {
+            System.out.println(message);
+        }
+
+        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_f79aa7a4-f9a3-410a-ac95-bea496edab52",
+                                             "Importing Model");
+        assertThat(dmnModel, notNullValue());
+
+        for (DMNMessage message : dmnModel.getMessages()) {
+            System.out.println(message);
+        }
+    }
+
 }

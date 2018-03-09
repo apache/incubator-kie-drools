@@ -820,6 +820,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         }
     }
 
+    @Deprecated
     void addPackageForExternalType(Resource resource,
                                    ResourceType type,
                                    ResourceConfiguration configuration) throws Exception {
@@ -836,6 +837,19 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
             throw new RuntimeException("Unknown resource type: " + type);
         }
     }
+
+    void addPackageForExternalType(ResourceType type, List<KieAssemblerService.ResourceDescr> resources) throws Exception {
+        KieAssemblers assemblers = ServiceRegistry.getInstance().get(KieAssemblers.class);
+
+        KieAssemblerService assembler = assemblers.getAssemblers().get(type);
+
+        if (assembler != null) {
+            assembler.addResources(this, resources, type);
+        } else {
+            throw new RuntimeException("Unknown resource type: " + type);
+        }
+    }
+
     public void addPackageFromPMML(Resource resource,
             ResourceType type,
             ResourceConfiguration configuration) throws Exception {

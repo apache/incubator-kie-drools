@@ -15,10 +15,18 @@
 
 package org.drools.compiler.builder.impl;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.drools.compiler.compiler.BPMN2ProcessFactory;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.core.builder.conf.impl.JaxbConfigurationImpl;
+import org.kie.api.internal.assembler.KieAssemblerService;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
@@ -26,12 +34,6 @@ import org.kie.internal.builder.ChangeType;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
 import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResourceChangeSet;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder {
 
@@ -147,17 +149,21 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
     private void buildOthers() {
         try {
             for (Map.Entry<ResourceType, List<ResourceDescr>> entry : resourcesByType.entrySet()) {
-                for (ResourceDescr resourceDescr : entry.getValue()) {
-                    kBuilder.setAssetFilter(resourceDescr.getFilter());
-                    kBuilder.addPackageForExternalType(resourceDescr.resource, entry.getKey(), resourceDescr.configuration);
-                    kBuilder.setAssetFilter(null);
-                }
+                List<org.kie.api.internal.assembler.KieAssemblerService.ResourceDescr> rds = entry.getValue().stream().map(CompositeKnowledgeBuilderImpl::toDescr).collect(Collectors.toList());
+                kBuilder.addPackageForExternalType(entry.getKey(), rds);
             }
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
             throw new RuntimeException( e );
         }
+    }
+
+    private static KieAssemblerService.ResourceDescr toDescr(ResourceDescr rd) {
+        return new KieAssemblerService.ResourceDescr(rd.resource,
+                                                     rd.configuration,
+                                                     kb -> ((KnowledgeBuilderImpl) kb).setAssetFilter(rd.getFilter()),
+                                                     kb -> ((KnowledgeBuilderImpl) kb).setAssetFilter(null));
     }
 
     private Collection<CompositePackageDescr> buildPackageDescr() {
