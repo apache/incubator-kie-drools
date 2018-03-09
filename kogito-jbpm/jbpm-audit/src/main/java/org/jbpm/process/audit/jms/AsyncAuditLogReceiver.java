@@ -56,9 +56,19 @@ import static org.kie.soup.commons.xstream.XStreamUtils.createXStream;
 public class AsyncAuditLogReceiver implements MessageListener {
     
     private EntityManagerFactory entityManagerFactory;
+    private XStream xstream;
     
     public AsyncAuditLogReceiver(EntityManagerFactory entityManagerFactory) {
         this.entityManagerFactory = entityManagerFactory;
+        initXStream();
+    }
+
+    private void initXStream() {
+        if(xstream==null) {
+            xstream = createXStream();
+            String[] voidDeny = {"void.class", "Void.class"};
+            xstream.denyTypes(voidDeny);
+        }
     }
     
     @SuppressWarnings("unchecked")
@@ -70,9 +80,6 @@ public class AsyncAuditLogReceiver implements MessageListener {
             try {
                 String messageContent = textMessage.getText();
                 Integer eventType = textMessage.getIntProperty("EventType");
-                XStream xstream = createXStream();
-                String[] voidDeny = {"void.class", "Void.class"};
-                xstream.denyTypes(voidDeny);
                 Object event = xstream.fromXML(messageContent);
                 
                 switch (eventType) {
