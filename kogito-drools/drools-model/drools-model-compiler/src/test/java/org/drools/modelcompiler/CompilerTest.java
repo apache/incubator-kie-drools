@@ -1237,6 +1237,30 @@ public class CompilerTest extends BaseModelTest {
     }
 
     @Test
+    public void testDroolsContextInString() {
+        String str =
+                "global java.util.List list\n" +
+                        "global java.util.List list2\n" +
+                        "\n" +
+                        "rule R when\n" +
+                        "then\n" +
+                        " list.add(list2.add(\"something\" + kcontext));\n" +
+                        "end";
+
+        KieSession ksession = getKieSession(str);
+
+        List<Object> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+
+        List<Object> list2 = new ArrayList<>();
+        ksession.setGlobal("list2", list2);
+
+        ksession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+    }
+
+    @Test
     public void testDroolsContextWithoutReplacingStrings() {
         String str =
                 "global java.util.List list\n" +

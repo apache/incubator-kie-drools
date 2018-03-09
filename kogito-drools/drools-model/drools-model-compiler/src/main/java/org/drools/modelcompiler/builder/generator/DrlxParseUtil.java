@@ -566,4 +566,17 @@ public class DrlxParseUtil {
     public static boolean isNameExprWithName(Node expression, String name) {
         return expression instanceof NameExpr && (( NameExpr ) expression).getNameAsString().equals(name );
     }
+
+    public static List<Node> findAllChildrenRecursive(Expression e) {
+        final List<Node> accumulator = new ArrayList<>();
+        findAllChildrenRecursiveRec(accumulator, e);
+        return accumulator;
+    }
+
+    private static void findAllChildrenRecursiveRec(List<Node> accumulator, Node e) {
+        for(Node child : e.getChildNodes()) {
+            accumulator.add(child);
+            findAllChildrenRecursiveRec(accumulator, child);
+        }
+    }
 }
