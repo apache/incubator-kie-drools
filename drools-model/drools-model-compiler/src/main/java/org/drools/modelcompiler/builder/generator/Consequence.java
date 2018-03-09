@@ -36,6 +36,7 @@ import org.drools.modelcompiler.consequence.DroolsImpl;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 import static org.drools.javaparser.JavaParser.parseExpression;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findAllChildrenRecursive;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.hasScope;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isNameExprWithName;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.parseBlock;
@@ -285,7 +286,7 @@ public class Consequence {
     private static boolean isDroolsMethod(MethodCallExpr mce) {
         final boolean hasDroolsScope = hasScope(mce, "drools");
         final boolean isImplicitDroolsMethod = !mce.getScope().isPresent() && implicitDroolsMethods.contains(mce.getNameAsString());
-        final boolean hasDroolsAsParameter = mce.getArguments().stream().anyMatch(a -> isNameExprWithName(a, "drools"));
+        final boolean hasDroolsAsParameter = findAllChildrenRecursive(mce).stream().anyMatch(a -> isNameExprWithName(a, "drools"));
         return hasDroolsScope || isImplicitDroolsMethod || hasDroolsAsParameter;
     }
 }
