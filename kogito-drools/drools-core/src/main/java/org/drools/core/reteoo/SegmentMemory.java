@@ -24,6 +24,7 @@ import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.NetworkNode;
 import org.drools.core.common.TupleSets;
 import org.drools.core.common.TupleSetsImpl;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
 import org.drools.core.reteoo.TimerNode.TimerNodeMemory;
 import org.drools.core.util.LinkedList;
@@ -268,10 +269,22 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
 
     public void mergePathMemories(SegmentMemory segmentMemory) {
         for (PathMemory pmem : segmentMemory.getPathMemories()) {
-            if (rootNode.isAssociatedWith( pmem.getRule() )) {
+            if ( isAssociatedWith( pmem ) ) {
                 addPathMemory( pmem );
             }
         }
+    }
+
+    private boolean isAssociatedWith( PathMemory pmem ) {
+        if (pmem instanceof RiaPathMemory) {
+            for (RuleImpl rule : (( RiaPathMemory ) pmem).getAssociatedRules()) {
+                if (rootNode.isAssociatedWith( rule )) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        return rootNode.isAssociatedWith( pmem.getRule() );
     }
 
     public void removePathMemory(PathMemory pathMemory) {
