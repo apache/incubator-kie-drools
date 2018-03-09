@@ -113,6 +113,17 @@ public class DMNXMLLoaderTest {
     }
 
     @Test
+    public void testLoadingWithNoDecisionServices() {
+        final DMNMarshaller DMNMarshaller = DMNMarshallerFactory.newMarshallerWithExtensions(Arrays.asList(new DecisionServicesExtensionRegister()));
+
+        final InputStream is = this.getClass().getResourceAsStream("0001-input-data-string.dmn");
+        final InputStreamReader isr = new InputStreamReader(is);
+        final Definitions def = DMNMarshaller.unmarshal(isr);
+
+        assertThat(def.getDecisionService().size(), is(0)); // check if No DecisionServices in extended v1.1 does not NPE.
+    }
+
+    @Test
     public void test0004_multiple_extensions() throws Exception {
         DMNMarshaller marshaller = DMNMarshallerFactory.newMarshallerWithExtensions(Arrays.asList(new DecisionServicesExtensionRegister()));
 
