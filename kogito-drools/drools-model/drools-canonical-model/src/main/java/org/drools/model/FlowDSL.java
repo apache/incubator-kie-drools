@@ -85,7 +85,7 @@ public class FlowDSL extends DSL {
         private Function2 function2;
         private Variable inputVariable1;
         private Variable inputVariable2;
-        private String reactOn;
+        private String[] reactOn;
         private String[] watchedProps;
 
         private BindViewItemBuilder( Variable<T> boundVariable) {
@@ -105,7 +105,7 @@ public class FlowDSL extends DSL {
             return this;
         }
 
-        public BindViewItemBuilder<T> reactOn( String reactOn ) {
+        public BindViewItemBuilder<T> reactOn( String... reactOn ) {
             this.reactOn = reactOn;
             return this;
         }

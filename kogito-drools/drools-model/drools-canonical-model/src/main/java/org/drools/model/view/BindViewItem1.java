@@ -10,10 +10,10 @@ public class BindViewItem1<T> implements ViewItem<T>, Binding, ModelComponent {
     private final Variable<T> boundVariable;
     private final Function1 bindingFunction;
     private final Variable inputVariable;
-    private final String reactOn;
+    private final String[] reactOn;
     private final String[] watchedProps;
 
-    public BindViewItem1( Variable<T> boundVariable, Function1 bindingFunction, Variable inputVariable, String reactOn, String[] watchedProps ) {
+    public BindViewItem1( Variable<T> boundVariable, Function1 bindingFunction, Variable inputVariable, String[] reactOn, String[] watchedProps ) {
         this.bindingFunction = bindingFunction;
         this.boundVariable = boundVariable;
         this.inputVariable = inputVariable;
@@ -52,7 +52,7 @@ public class BindViewItem1<T> implements ViewItem<T>, Binding, ModelComponent {
     }
 
     @Override
-    public String getReactOn() {
+    public String[] getReactOn() {
         return reactOn;
     }
 

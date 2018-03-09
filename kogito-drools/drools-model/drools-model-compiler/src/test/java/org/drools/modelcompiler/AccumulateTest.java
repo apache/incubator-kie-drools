@@ -32,7 +32,6 @@ import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
 import org.drools.modelcompiler.domain.TargetPolicy;
 import org.drools.modelcompiler.oopathdtables.InternationalAddress;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.AccumulateFunction;
@@ -295,6 +294,32 @@ public class AccumulateTest extends BaseModelTest {
                 "import " + Result.class.getCanonicalName() + ";\n" +
                 "rule R when\n" +
                 "  accumulate( $c : Child( age < 10 ) and $a : Adult( name == $c.parent ), $parentAge : sum($a.getAge() + $c.getAge()) )\n" +
+                "then\n" +
+                "  insert(new Result($parentAge));\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        Adult a = new Adult( "Mario", 43 );
+        Child c = new Child( "Sofia", 6, "Mario" );
+
+        ksession.insert( a );
+        ksession.insert( c );
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        // The original DSL test returns a double while the exec model returns an integer
+        assertEquals(((Number)results.iterator().next().getValue()).intValue(), 49);
+    }
+
+    @Test
+    public void testAccumulateWithAnd3() {
+        String str =
+                "import " + Adult.class.getCanonicalName() + ";\n" +
+                "import " + Child.class.getCanonicalName() + ";\n" +
+                "import " + Result.class.getCanonicalName() + ";\n" +
+                "rule R when\n" +
+                "  accumulate( $x : Child( age < 10 ) and $y : Adult( name == $x.parent ), $parentAge : sum($x.getAge() + $y.getAge()) )\n" +
                 "then\n" +
                 "  insert(new Result($parentAge));\n" +
                 "end";

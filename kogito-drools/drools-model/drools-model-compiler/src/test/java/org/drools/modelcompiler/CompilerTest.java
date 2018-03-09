@@ -1280,5 +1280,25 @@ public class CompilerTest extends BaseModelTest {
         assertEquals("this kcontext shoudln't be replaced", list.iterator().next());
     }
 
+    @Test
+    public void testBindWith2Arguments() {
+        String str =
+                "import " + Adult.class.getCanonicalName() + ";\n" +
+                        "import " + Child.class.getCanonicalName() + ";\n" +
+                        "import " + Result.class.getCanonicalName() + ";\n" +
+                        "rule R when\n" +
+                        "  $y : Adult( $sum : (name.length + age) )\n" +
+                        "then\n" +
+                        "  insert(new Result($sum));\n" +
+                        "end";
 
+        KieSession ksession = getKieSession( str );
+
+        Adult a = new Adult( "Mario", 43 );
+        ksession.insert( a );
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(((Number)results.iterator().next().getValue()).intValue(), 48);
+    }
 }

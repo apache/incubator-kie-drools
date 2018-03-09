@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.drools.core.util.index.IndexUtil;
+import org.drools.javaparser.ast.expr.EnclosedExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 
@@ -204,7 +205,16 @@ public class DrlxParseSuccess implements DrlxParseResult {
     }
 
     public boolean isValidExpression( ) {
-        return this.isValidExpression || ( expr != null && ( right != null || getExprType() == Boolean.class || getExprType() == boolean.class ) );
+        if (this.isValidExpression) {
+            return true;
+        }
+        if (expr != null) {
+            if ( getExprType() == Boolean.class || getExprType() == boolean.class ) {
+                return true;
+            }
+            return !(expr instanceof EnclosedExpr) && right != null;
+        }
+        return false;
     }
 
     public boolean isSkipThisAsParam() {

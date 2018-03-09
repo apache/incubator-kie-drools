@@ -322,6 +322,10 @@ public class DrlxParseUtil {
         return "var_" + key;
     }
 
+    public static String fromVar(String key) {
+        return key.substring( "var_".length() );
+    }
+
     public static BlockStmt parseBlock(String ruleConsequenceAsBlock) {
         return JavaParser.parseBlock(String.format("{\n%s\n}", ruleConsequenceAsBlock)); // if the RHS is composed only of a line of comment like `//do nothing.` then JavaParser would fail to recognize the ending }
     }

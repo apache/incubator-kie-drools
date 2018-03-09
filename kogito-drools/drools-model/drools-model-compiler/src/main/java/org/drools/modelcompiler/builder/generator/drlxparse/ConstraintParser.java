@@ -82,8 +82,10 @@ public class ConstraintParser {
                                                 String bindingId, String expression, DrlxExpression drlx, boolean isPositional ) {
         Expression drlxExpr = drlx.getExpr();
 
+        boolean isEnclosed = false;
         while (drlxExpr instanceof EnclosedExpr) {
             drlxExpr = (( EnclosedExpr ) drlxExpr).getInner();
+            isEnclosed = true;
         }
 
         if (drlxExpr instanceof MethodCallExpr && !(( MethodCallExpr ) drlxExpr).getScope().isPresent() && (( MethodCallExpr ) drlxExpr).getNameAsString().equals( "eval" )) {
@@ -160,6 +162,10 @@ public class ConstraintParser {
                 }
             } else if (right.getExpression() instanceof NameExpr) {
                 isBetaNode = true;
+            }
+
+            if (isEnclosed) {
+                combo = new EnclosedExpr( combo );
             }
 
             return new DrlxParseSuccess(patternType, exprId, bindingId, combo, left.getType())

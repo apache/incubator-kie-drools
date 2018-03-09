@@ -521,12 +521,12 @@ public class PatternDSL extends DSL {
 
         public PatternBinding1( Variable<A> boundVar, Function1<T, A> f, ReactOn reactOn ) {
             super( boundVar, reactOn );
-            this.f = f;
+            this.f = new Function1.Impl<>(f);
         }
 
         @Override
         public Binding asBinding( PatternDefImpl patternDef ) {
-            return new BindViewItem1(boundVar, f, patternDef.getFirstVariable(), getReactOn().length > 0 ? getReactOn()[0] : null, null);
+            return new BindViewItem1(boundVar, f, patternDef.getFirstVariable(), getReactOn(), null);
         }
     }
 
@@ -536,13 +536,13 @@ public class PatternDSL extends DSL {
 
         public PatternBinding2( Variable<A> boundVar, Variable<U> otherVar, Function2<T, U, A> f, ReactOn reactOn ) {
             super( boundVar, reactOn );
-            this.f = f;
+            this.f = new Function2.Impl<>(f);
             this.otherVar = otherVar;
         }
 
         @Override
         public Binding asBinding( PatternDefImpl patternDef ) {
-            return new BindViewItem2(boundVar, f, patternDef.getFirstVariable(), otherVar, getReactOn().length > 0 ? getReactOn()[0] : null, null);
+            return new BindViewItem2(boundVar, f, patternDef.getFirstVariable(), otherVar, getReactOn(), null);
         }
     }
 

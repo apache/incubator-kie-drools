@@ -1,7 +1,6 @@
 package org.drools.modelcompiler.constraints;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.List;
 
 import org.drools.core.WorkingMemory;
@@ -76,9 +75,15 @@ public abstract class LambdaAccumulator implements Accumulator {
         @Override
         protected Object getAccumulatedObject( Declaration[] declarations, Declaration[] innerDeclarations, Object accumulateObject ) {
             if (accumulateObject instanceof SubnetworkTuple ) {
-                final Object[] args = Arrays.stream(innerDeclarations)
-                        .filter(d -> sourceVariables.contains(d.getIdentifier()))
-                        .map( (( SubnetworkTuple ) accumulateObject)::getObject ).toArray();
+                Object[] args = new Object[ sourceVariables.size() ];
+                for (int i = 0; i < sourceVariables.size(); i++) {
+                    for (Declaration d : innerDeclarations) {
+                        if (d.getIdentifier().equals( sourceVariables.get(i) )) {
+                            args[i] = (( SubnetworkTuple ) accumulateObject).getObject(d);
+                            break;
+                        }
+                    }
+                }
                 return binding.eval(args);
             } else {
                 return binding.eval(accumulateObject);
