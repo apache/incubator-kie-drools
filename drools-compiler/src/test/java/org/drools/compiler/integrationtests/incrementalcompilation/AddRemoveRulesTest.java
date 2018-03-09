@@ -15,6 +15,17 @@
 
 package org.drools.compiler.integrationtests.incrementalcompilation;
 
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import org.assertj.core.api.Assertions;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
@@ -32,22 +43,15 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.internal.runtime.StatelessKnowledgeSession;
 import org.kie.internal.utils.KieHelper;
 
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import static org.drools.core.util.DroolsTestUtil.rulestoMap;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
 
@@ -2367,5 +2371,136 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
         ;
 
         runAddRemoveTest(builder.build(), new HashMap<String, Object>());
+    }
+
+    @Test
+    public void testPathMemoryInitialization() {
+
+        final String rule1 = "package com.rules;global java.util.List list\n" +
+                "rule R1 \n" +
+                " when \n" +
+                "  exists(Integer() and Integer()) \n" +
+                " Integer() \n" +
+                " Integer() \n" +
+                " then\n" +
+                " list.add('R1'); \n" +
+                "end\n";
+
+        final String rule2 = "package com.rules;global java.util.List list\n" +
+                "rule R2 \n" +
+                " when \n" +
+                "  exists(Integer() and exists(Integer() and Integer())) \n" +
+                " Integer() \n" +
+                " exists(Integer() and Integer()) \n" +
+                " then\n" +
+                " list.add('R2'); \n" +
+                "end";
+
+        final List<String> globalList = new ArrayList<>();
+
+        final KieSession kieSession = buildSessionInSteps(rule1, rule2);
+        kieSession.setGlobal("list", globalList);
+        kieSession.insert(1);
+        kieSession.insert(2);
+        kieSession.insert(3);
+        kieSession.insert("1");
+
+        final Map<Object, String> mapFact = new HashMap<Object, String>(1);
+        mapFact.put(new Object(), "1");
+        kieSession.insert(mapFact);
+
+        kieSession.getKieBase().removeRule("com.rules", "R2");
+        kieSession.fireAllRules();
+
+        Assertions.assertThat(globalList).contains("R1");
+        globalList.clear();
+
+        kieSession.getKieBase().removeRule("com.rules", "R1");
+        kieSession.fireAllRules();
+
+        Assertions.assertThat(globalList).isEmpty();
+    }
+
+    @Test
+    public void testBuildKieBaseIncrementally() {
+
+        final String rule1 = "package com.rules;global java.util.List list\n" +
+                "rule R1 \n" +
+                " when \n" +
+                "  exists(Integer() and Integer()) \n" +
+                " Integer() \n" +
+                " Integer() \n" +
+                " then\n" +
+                " list.add('R1'); \n" +
+                "end\n";
+
+        final String rule2 = "package com.rules;global java.util.List list\n" +
+                "rule R2 \n" +
+                " when \n" +
+                "  exists(Integer() and exists(Integer() and Integer())) \n" +
+                " Integer() \n" +
+                " exists(Integer() and Integer()) \n" +
+                " then\n" +
+                " list.add('R2'); \n" +
+                "end";
+
+        final List<String> globalList = new ArrayList<>();
+
+        final KieSession kieSession = buildSessionInSteps(rule1, rule2);
+        kieSession.setGlobal("list", globalList);
+        kieSession.insert(1);
+        kieSession.insert(2);
+        kieSession.insert(3);
+        kieSession.insert("1");
+
+        final Map<Object, String> mapFact = new HashMap<Object, String>(1);
+        mapFact.put(new Object(), "1");
+        kieSession.insert(mapFact);
+        kieSession.fireAllRules();
+        Assertions.assertThat(globalList).contains("R1", "R2");
+    }
+
+    @Test
+    public void testBuildKieBaseIncrementally2() {
+
+        final String rule1 = "package com.rules;global java.util.List list\n" +
+                "rule R1 \n" +
+                " when \n" +
+                "  exists(Integer() and Integer()) \n" +
+                " Integer() \n" +
+                " Integer() \n" +
+                " then\n" +
+                " list.add('R1'); \n" +
+                "end\n";
+
+        final String rule2 = "package com.rules;global java.util.List list\n" +
+                "rule R2 \n" +
+                " when \n" +
+                "  exists(Integer() and exists(Integer() and Integer())) \n" +
+                " Integer() \n" +
+                " exists(Integer() and Integer()) \n" +
+                " then\n" +
+                " list.add('R2'); \n" +
+                "end";
+
+        final List<String> globalList = new ArrayList<>();
+
+        final KieSession kieSession = buildSessionInSteps(rule1, rule2);
+        kieSession.setGlobal("list", globalList);
+
+        kieSession.fireAllRules();
+        Assertions.assertThat(globalList).isEmpty();
+
+        kieSession.insert(1);
+        kieSession.insert(2);
+        kieSession.insert(3);
+        kieSession.insert("1");
+
+        final Map<Object, String> mapFact = new HashMap<Object, String>(1);
+        mapFact.put(new Object(), "1");
+        kieSession.insert(mapFact);
+
+        kieSession.fireAllRules();
+        Assertions.assertThat(globalList).contains("R1", "R2");
     }
 }

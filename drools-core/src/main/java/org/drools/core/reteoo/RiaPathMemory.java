@@ -15,16 +15,16 @@
 
 package org.drools.core.reteoo;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class RiaPathMemory extends PathMemory {
 
-    private List<String> terminalNodeNames;
+    private List<RuleImpl> rules;
     
     public RiaPathMemory(RightInputAdapterNode riaNode, InternalWorkingMemory wm) {
         super( riaNode, wm );
@@ -68,34 +68,42 @@ public class RiaPathMemory extends PathMemory {
     }
 
     private void updateRuleTerminalNodes() {
-        terminalNodeNames = new ArrayList<String>();
+        rules = new ArrayList<RuleImpl>();
         for ( ObjectSink osink : getRightInputAdapterNode().getObjectSinkPropagator().getSinks() ) {
             for ( LeftTupleSink ltsink : ((BetaNode)osink).getSinkPropagator().getSinks() )  {
-                findAndAddTN(ltsink, terminalNodeNames);
+                findAndAddTN(ltsink, rules );
             }
         }
     }
 
-    private void findAndAddTN( LeftTupleSink ltsink, List<String> terminalNodeNames) {
+    private void findAndAddTN( LeftTupleSink ltsink, List<RuleImpl> terminalNodes) {
         if ( NodeTypeEnums.isTerminalNode(ltsink)) {
-            terminalNodeNames.add( ((TerminalNode)ltsink).getRule().getName() );
+            terminalNodes.add( ((TerminalNode)ltsink).getRule() );
         } else if ( ltsink.getType() == NodeTypeEnums.RightInputAdaterNode ) {
             // Do not traverse here, as we'll the other side of the target node anyway.
         } else {
             for ( LeftTupleSink childLtSink : ((LeftTupleSource)ltsink).getSinkPropagator().getSinks() )  {
-                findAndAddTN(childLtSink, terminalNodeNames);
+                findAndAddTN(childLtSink, terminalNodes);
             }
         }
     }
 
-    public List<String> getTerminalNodeNames() {
-        if ( terminalNodeNames == null ) {
+    public List<RuleImpl> getAssociatedRules() {
+        if ( rules == null ) {
             updateRuleTerminalNodes();
         }
-        return terminalNodeNames;
+        return rules;
+    }
+
+    public String getRuleNames() {
+        List<String> ruleNames = new ArrayList<>();
+        for (RuleImpl rule : getAssociatedRules()) {
+            ruleNames.add(rule.getName());
+        }
+        return ruleNames.toString();
     }
 
     public String toString() {
-        return "[RiaMem " + getTerminalNodeNames() + "]";
+        return "[RiaMem " + getRuleNames() + "]";
     }
 }
