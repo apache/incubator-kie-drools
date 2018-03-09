@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.drools.javaparser.ast.Node;
+import org.drools.javaparser.ast.body.Parameter;
 import org.drools.javaparser.ast.expr.Expression;
+import org.drools.javaparser.ast.expr.LambdaExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.modelcompiler.builder.PackageModel;
@@ -14,6 +16,7 @@ import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.expression.PatternExpressionBuilder;
 import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
 
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.fromVar;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.expression.FlowExpressionBuilder.BIND_CALL;
 
@@ -58,10 +61,24 @@ public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
         optParent.ifPresent(parent -> parent.replace(newScope, newBindingExpression));
     }
 
-    private MethodCallExpr replaceBindingWithPatternBinding(Expression bindExpression, MethodCallExpr lastPattern) {
+    private MethodCallExpr replaceBindingWithPatternBinding(MethodCallExpr bindExpression, MethodCallExpr lastPattern) {
         final Expression bindingId = lastPattern.getArgument(0);
-        final Optional<NameExpr> first = bindExpression.findFirst(NameExpr.class, e -> e.equals(bindingId));
-        first.ifPresent(bindExpression::remove);
+
+        bindExpression.findFirst(NameExpr.class, e -> e.equals(bindingId)).ifPresent( name -> {
+            bindExpression.remove(name);
+            LambdaExpr lambda = (LambdaExpr)bindExpression.getArgument( bindExpression.getArguments().size()-1 );
+            if (lambda.getParameters().size() > 1) {
+                String formalArg = fromVar( name.getNameAsString() );
+                for (Parameter param : lambda.getParameters()) {
+                    if (param.getNameAsString().equals( formalArg )) {
+                        lambda.getParameters().remove( param );
+                        lambda.getParameters().add( 0, param );
+                        break;
+                    }
+                }
+            }
+        } );
+
         return (MethodCallExpr) bindExpression;
     }
 
