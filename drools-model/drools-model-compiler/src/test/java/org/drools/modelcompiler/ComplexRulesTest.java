@@ -31,6 +31,7 @@ import org.drools.modelcompiler.domain.ChildFactWithObject;
 import org.drools.modelcompiler.domain.EnumFact1;
 import org.drools.modelcompiler.domain.EnumFact2;
 import org.drools.modelcompiler.domain.RootFact;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
@@ -43,6 +44,7 @@ public class ComplexRulesTest extends BaseModelTest {
     }
 
     @Test
+    @Ignore
     public void test1() {
         String str =
                 "import " + EnumFact1.class.getCanonicalName() + ";\n" +
@@ -94,6 +96,7 @@ public class ComplexRulesTest extends BaseModelTest {
     }
 
     @Test
+    @Ignore
     public void testNotWithEval() {
         String str =
                 "import " + EnumFact1.class.getCanonicalName() + ";\n" +
