@@ -96,7 +96,6 @@ import org.drools.model.patterns.CompositePatterns;
 import org.drools.model.patterns.EvalImpl;
 import org.drools.model.patterns.PatternImpl;
 import org.drools.model.patterns.QueryCallPattern;
-import org.drools.model.view.BindViewItem1;
 import org.drools.modelcompiler.consequence.LambdaConsequence;
 import org.drools.modelcompiler.consequence.MVELConsequence;
 import org.drools.modelcompiler.constraints.ConstraintEvaluator;
@@ -369,17 +368,12 @@ public class KiePackagesBuilder {
                 Binding binding = null;
 
                 if (sourcePattern != null) {
-
-                    if (!sourcePattern.getBindings().isEmpty()) {
-                        binding = (Binding) sourcePattern.getBindings().iterator().next();
+                    for (Variable v : sourcePattern.getInputVariables()) {
+                        usedVariableName.add( v.getName() );
                     }
 
-                    if (binding instanceof BindViewItem1) {
-                        usedVariableName.add(sourcePattern.getPatternVariable().getName());
-                    } else {
-                        for (Variable v : sourcePattern.getInputVariables()) {
-                            usedVariableName.add(v.getName());
-                        }
+                    if ( !sourcePattern.getBindings().isEmpty() ) {
+                        binding = ( Binding ) sourcePattern.getBindings().iterator().next();
                     }
                 }
 
