@@ -115,7 +115,7 @@ public class AddRemoveRule {
                     continue;
                 }
 
-                Map<PathMemory, SegmentMemory[]> prevSmemsLookup = reInitPathMemories(wm, tnms.otherPmems, null);
+                Map<PathMemory, SegmentMemory[]> prevSmemsLookup = reInitPathMemories(tnms.otherPmems, null);
 
                 // must collect all visited SegmentMemories, for link notification
                 Set<SegmentMemory> smemsToNotify = handleExistingPaths(tn, prevSmemsLookup, tnms.otherPmems, wm, ExistingPathStrategy.ADD_STRATEGY);
@@ -130,6 +130,10 @@ public class AddRemoveRule {
 
         if (hasWms) {
             insertFacts( pathEndNodes, wms );
+        } else {
+            for (PathEndNode node : pathEndNodes.otherEndNodes) {
+                node.resetPathMemSpec( null );
+            }
         }
     }
 
@@ -174,7 +178,7 @@ public class AddRemoveRule {
 
                     removeNewPaths(wm, tnms.subjectPmems);
 
-                    Map<PathMemory, SegmentMemory[]> prevSmemsLookup = reInitPathMemories(wm, tnms.otherPmems, tn);
+                    Map<PathMemory, SegmentMemory[]> prevSmemsLookup = reInitPathMemories(tnms.otherPmems, tn);
 
                     // must collect all visited SegmentMemories, for link notification
                     Set<SegmentMemory> smemsToNotify = handleExistingPaths(tn, prevSmemsLookup, tnms.otherPmems, wm, ExistingPathStrategy.REMOVE_STRATEGY);
@@ -679,7 +683,7 @@ public class AddRemoveRule {
     }
 
 
-    private static Map<PathMemory, SegmentMemory[]> reInitPathMemories(InternalWorkingMemory wm, List<PathMemory> pathMems, TerminalNode removingTN) {
+    private static Map<PathMemory, SegmentMemory[]> reInitPathMemories(List<PathMemory> pathMems, TerminalNode removingTN) {
         Map<PathMemory, SegmentMemory[]> previousSmems = new HashMap<PathMemory, SegmentMemory[]>();
         for (PathMemory pmem : pathMems) {
             // Re initialise all the PathMemories
