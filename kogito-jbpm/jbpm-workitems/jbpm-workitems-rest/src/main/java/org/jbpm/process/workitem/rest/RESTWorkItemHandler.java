@@ -62,6 +62,8 @@ import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.CoreConnectionPNames;
 import org.apache.http.protocol.BasicHttpContext;
@@ -70,6 +72,7 @@ import org.drools.core.util.StringUtils;
 import org.jbpm.process.workitem.core.AbstractLogOrThrowWorkItemHandler;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
+import org.kie.internal.runtime.Cacheable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -99,9 +102,11 @@ import org.slf4j.LoggerFactory;
  * <li>AcceptHeader - accept header value</li>
  * </ul>
  */
-public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
+public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler implements Cacheable {
 
     private static final Logger logger = LoggerFactory.getLogger(RESTWorkItemHandler.class);
+    private static final int DEFAULT_TOTAL_POOL_CONNECTIONS = 500;
+    private static final int DEFAULT_MAX_POOL_CONNECTIONS_PER_ROUTE = 50;
 
     public static final String PARAM_AUTH_TYPE = "AuthType";
     public static final String PARAM_CONNECT_TIMEOUT = "ConnectTimeout";
@@ -120,8 +125,13 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
     private String password;
     private AuthenticationType type;
     private String authUrl;
+    // default caching to false
+    private boolean doCacheClient = false;
 
     private ClassLoader classLoader;
+
+    protected static PoolingHttpClientConnectionManager connectionManager;
+    protected static CloseableHttpClient cachedClient;
 
     // protected for test purpose
     protected static boolean HTTP_CLIENT_API_43 = true;
@@ -133,6 +143,11 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
         } catch (ClassNotFoundException e) {
             HTTP_CLIENT_API_43 = false;
         }
+
+        // setup pooling connection manager with default connections totals
+        connectionManager = new PoolingHttpClientConnectionManager();
+        connectionManager.setMaxTotal(DEFAULT_TOTAL_POOL_CONNECTIONS);
+        connectionManager.setDefaultMaxPerRoute(DEFAULT_MAX_POOL_CONNECTIONS_PER_ROUTE);
     }
 
     /**
@@ -145,80 +160,326 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
     }
 
     /**
+     * Used when no authentication is required
+     * @param doCacheClient - - true/false setting for client cache
+     */
+    public RESTWorkItemHandler(boolean doCacheClient) {
+        this();
+        this.doCacheClient = doCacheClient;
+    }
+
+    /**
+     * Used when no authentication is required
+     * @param doCacheClient - - true/false setting for client cache
+     * @param totalPoolConnections - max pool connections if caching client is used
+     * @param maxPoolConnectionsPerRoute - max pool connections per route if caching client is used
+     */
+    public RESTWorkItemHandler(boolean doCacheClient,
+                               int totalPoolConnections,
+                               int maxPoolConnectionsPerRoute) {
+        this();
+        this.doCacheClient = doCacheClient;
+        if (doCacheClient) {
+            connectionManager.setMaxTotal(totalPoolConnections);
+            connectionManager.setDefaultMaxPerRoute(maxPoolConnectionsPerRoute);
+        }
+    }
+
+    /**
      * Dedicated constructor when BASIC authentication method shall be used
      * @param username - user name to be used for authentication
      * @param password - password to be used for authentication
      */
     public RESTWorkItemHandler(String username,
                                String password) {
-        this();
-        this.username = username;
-        this.password = password;
-        this.type = AuthenticationType.BASIC;
-        this.classLoader = this.getClass().getClassLoader();
-    }
-
-    /**
-     * Dedicated constructor when FORM BASED authentication method shall be used
-     * @param username - user name to be used for authentication
-     * @param password - password to be used for authentication
-     * @param authUrl
-     */
-    public RESTWorkItemHandler(String username,
-                               String password,
-                               String authUrl) {
-        this();
-        this.username = username;
-        this.password = password;
-        this.type = AuthenticationType.FORM_BASED;
-        this.authUrl = authUrl;
-        this.classLoader = this.getClass().getClassLoader();
-    }
-
-    /**
-     * Used when no authentication is required
-     */
-    public RESTWorkItemHandler(ClassLoader classLoader) {
-        logger.debug("REST work item handler will use http client 4.3 api " + HTTP_CLIENT_API_43);
-        this.type = AuthenticationType.NONE;
-        this.classLoader = classLoader;
+        this(username,
+             password,
+             false);
     }
 
     /**
      * Dedicated constructor when BASIC authentication method shall be used
      * @param username - user name to be used for authentication
      * @param password - password to be used for authentication
+     * @param doCacheClient - true/false setting for client cache
      */
     public RESTWorkItemHandler(String username,
                                String password,
-                               ClassLoader classLoader) {
+                               boolean doCacheClient) {
+        this(username,
+             password,
+             doCacheClient,
+             DEFAULT_TOTAL_POOL_CONNECTIONS,
+             DEFAULT_MAX_POOL_CONNECTIONS_PER_ROUTE);
+    }
+
+    /**
+     * Dedicated constructor when BASIC authentication method shall be used
+     * @param username - user name to be used for authentication
+     * @param password - password to be used for authentication
+     * @param doCacheClient - true/false setting for client cache
+     * @param totalPoolConnections - max pool connections if caching client is used
+     * @param maxPoolConnectionsPerRoute - max pool connections per route if caching client is used
+     */
+    public RESTWorkItemHandler(String username,
+                               String password,
+                               boolean doCacheClient,
+                               int totalPoolConnections,
+                               int maxPoolConnectionsPerRoute) {
         this();
         this.username = username;
         this.password = password;
         this.type = AuthenticationType.BASIC;
-        this.classLoader = classLoader;
+        this.classLoader = this.getClass().getClassLoader();
+        this.doCacheClient = doCacheClient;
+        if (doCacheClient) {
+            connectionManager.setMaxTotal(totalPoolConnections);
+            connectionManager.setDefaultMaxPerRoute(maxPoolConnectionsPerRoute);
+        }
     }
 
     /**
      * Dedicated constructor when FORM BASED authentication method shall be used
      * @param username - user name to be used for authentication
      * @param password - password to be used for authentication
-     * @param authUrl
+     * @param authUrl - authentication url to be used
+     */
+    public RESTWorkItemHandler(String username,
+                               String password,
+                               String authUrl) {
+        this(username,
+             password,
+             authUrl,
+             false);
+    }
+
+    /**
+     * Dedicated constructor when FORM BASED authentication method shall be used
+     * @param username - user name to be used for authentication
+     * @param password - password to be used for authentication
+     * @param authUrl - authentication url to be used
+     * @param doCacheClient - true/false setting for client cache
+     */
+    public RESTWorkItemHandler(String username,
+                               String password,
+                               String authUrl,
+                               boolean doCacheClient) {
+        this(username,
+             password,
+             authUrl,
+             doCacheClient,
+             DEFAULT_TOTAL_POOL_CONNECTIONS,
+             DEFAULT_MAX_POOL_CONNECTIONS_PER_ROUTE);
+    }
+
+    /**
+     * Dedicated constructor when FORM BASED authentication method shall be used
+     * @param username - user name to be used for authentication
+     * @param password - password to be used for authentication
+     * @param authUrl - authentication url to be used
+     * @param doCacheClient - true/false setting for client cache
+     * @param totalPoolConnections - max pool connections if caching client is used
+     * @param maxPoolConnectionsPerRoute - max pool connections per route if caching client is used
+     */
+    public RESTWorkItemHandler(String username,
+                               String password,
+                               String authUrl,
+                               boolean doCacheClient,
+                               int totalPoolConnections,
+                               int maxPoolConnectionsPerRoute) {
+        this();
+        this.username = username;
+        this.password = password;
+        this.type = AuthenticationType.FORM_BASED;
+        this.authUrl = authUrl;
+        this.classLoader = this.getClass().getClassLoader();
+        this.doCacheClient = doCacheClient;
+        if (doCacheClient) {
+            connectionManager.setMaxTotal(totalPoolConnections);
+            connectionManager.setDefaultMaxPerRoute(maxPoolConnectionsPerRoute);
+        }
+    }
+
+    /**
+     * Used when no authentication is required
+     * @param classLoader - given classloader
+     */
+    public RESTWorkItemHandler(ClassLoader classLoader) {
+        this(classLoader,
+             false);
+    }
+
+    /**
+     * Used when no authentication is required
+     * @param classLoader - given classloader
+     * @param doCacheClient - true/false setting for client cache
+     */
+    public RESTWorkItemHandler(ClassLoader classLoader,
+                               boolean doCacheClient) {
+        logger.debug("REST work item handler will use http client 4.3 api " + HTTP_CLIENT_API_43);
+        this.type = AuthenticationType.NONE;
+        this.classLoader = classLoader;
+        this.doCacheClient = doCacheClient;
+    }
+
+    /**
+     * Used when no authentication is required
+     * @param classLoader - given classloader
+     * @param doCacheClient - true/false setting for client cache
+     * @param totalPoolConnections - max pool connections if caching client is used
+     * @param maxPoolConnectionsPerRoute - max pool connections per route if caching client is used
+     */
+    public RESTWorkItemHandler(ClassLoader classLoader,
+                               boolean doCacheClient,
+                               int totalPoolConnections,
+                               int maxPoolConnectionsPerRoute) {
+        logger.debug("REST work item handler will use http client 4.3 api " + HTTP_CLIENT_API_43);
+        this.type = AuthenticationType.NONE;
+        this.classLoader = classLoader;
+        this.doCacheClient = doCacheClient;
+        if (doCacheClient) {
+            connectionManager.setMaxTotal(totalPoolConnections);
+            connectionManager.setDefaultMaxPerRoute(maxPoolConnectionsPerRoute);
+        }
+    }
+
+    /**
+     * Dedicated constructor when BASIC authentication method shall be used
+     * @param username - user name to be used for authentication
+     * @param password - password to be used for authentication
+     * @param classLoader - given classloader
+     */
+    public RESTWorkItemHandler(String username,
+                               String password,
+                               ClassLoader classLoader) {
+        this(username,
+             password,
+             classLoader,
+             false);
+    }
+
+    /**
+     * Dedicated constructor when BASIC authentication method shall be used
+     * @param username - user name to be used for authentication
+     * @param password - password to be used for authentication
+     * @param classLoader - given classloader
+     * @param doCacheClient - true/false setting for client cache
+     */
+    public RESTWorkItemHandler(String username,
+                               String password,
+                               ClassLoader classLoader,
+                               boolean doCacheClient) {
+        this(username,
+             password,
+             classLoader,
+             doCacheClient,
+             DEFAULT_TOTAL_POOL_CONNECTIONS,
+             DEFAULT_MAX_POOL_CONNECTIONS_PER_ROUTE);
+    }
+
+    /**
+     * Dedicated constructor when BASIC authentication method shall be used
+     * @param username - user name to be used for authentication
+     * @param password - password to be used for authentication
+     * @param classLoader - given classloader
+     * @param doCacheClient - true/false setting for client cache
+     * @param totalPoolConnections - max pool connections if caching client is used
+     * @param maxPoolConnectionsPerRoute - max pool connections per route if caching client is used
+     */
+    public RESTWorkItemHandler(String username,
+                               String password,
+                               ClassLoader classLoader,
+                               boolean doCacheClient,
+                               int totalPoolConnections,
+                               int maxPoolConnectionsPerRoute) {
+        this();
+        this.username = username;
+        this.password = password;
+        this.type = AuthenticationType.BASIC;
+        this.classLoader = classLoader;
+        this.doCacheClient = doCacheClient;
+        if (doCacheClient) {
+            connectionManager.setMaxTotal(totalPoolConnections);
+            connectionManager.setDefaultMaxPerRoute(maxPoolConnectionsPerRoute);
+        }
+    }
+
+    /**
+     * Dedicated constructor when FORM BASED authentication method shall be used
+     * @param username - user name to be used for authentication
+     * @param password - password to be used for authentication
+     * @param authUrl - authentication url to be used
+     * @param classLoader - given classloader
      */
     public RESTWorkItemHandler(String username,
                                String password,
                                String authUrl,
                                ClassLoader classLoader) {
+        this(username,
+             password,
+             authUrl,
+             classLoader,
+             false);
+    }
+
+    /**
+     * Dedicated constructor when FORM BASED authentication method shall be used
+     * @param username - user name to be used for authentication
+     * @param password - password to be used for authentication
+     * @param authUrl - authentication url to be used
+     * @param classLoader - given classloader
+     * @param doCacheClient - true/false setting for client cache
+     */
+    public RESTWorkItemHandler(String username,
+                               String password,
+                               String authUrl,
+                               ClassLoader classLoader,
+                               boolean doCacheClient) {
+        this(username,
+             password,
+             authUrl,
+             classLoader,
+             doCacheClient,
+             DEFAULT_TOTAL_POOL_CONNECTIONS,
+             DEFAULT_MAX_POOL_CONNECTIONS_PER_ROUTE);
+    }
+
+    /**
+     * Dedicated constructor when FORM BASED authentication method shall be used
+     * @param username - user name to be used for authentication
+     * @param password - password to be used for authentication
+     * @param authUrl - authentication url to be used
+     * @param classLoader - given classloader
+     * @param doCacheClient - true/false setting for client cache
+     * @param totalPoolConnections - max pool connections if caching client is used
+     * @param maxPoolConnectionsPerRoute - max pool connections per route if caching client is used
+     */
+    public RESTWorkItemHandler(String username,
+                               String password,
+                               String authUrl,
+                               ClassLoader classLoader,
+                               boolean doCacheClient,
+                               int totalPoolConnections,
+                               int maxPoolConnectionsPerRoute) {
         this();
         this.username = username;
         this.password = password;
         this.type = AuthenticationType.FORM_BASED;
         this.authUrl = authUrl;
         this.classLoader = classLoader;
+        this.doCacheClient = doCacheClient;
+        if (doCacheClient) {
+            connectionManager.setMaxTotal(totalPoolConnections);
+            connectionManager.setDefaultMaxPerRoute(maxPoolConnectionsPerRoute);
+        }
     }
 
     public String getAuthUrl() {
         return authUrl;
+    }
+
+    public boolean getDoCacheClient() {
+        return doCacheClient;
     }
 
     public void executeWorkItem(WorkItem workItem,
@@ -317,7 +578,7 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
                 close(httpClient,
                       methodObject);
             } catch (Exception e) {
-                // no idea if this throws something, but we still don't care!
+                handleException(e);
             }
         }
     }
@@ -738,6 +999,14 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
 
     protected HttpClient getHttpClient(Integer readTimeout,
                                        Integer connectTimeout) {
+        if (getDoCacheClient() && HTTP_CLIENT_API_43) {
+            if (cachedClient == null) {
+                cachedClient = getNewPooledHttpClient(readTimeout,
+                                                      connectTimeout);
+            }
+
+            return cachedClient;
+        }
 
         if (HTTP_CLIENT_API_43) {
             RequestConfig config = RequestConfig.custom()
@@ -763,10 +1032,28 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
         }
     }
 
+    protected CloseableHttpClient getNewPooledHttpClient(Integer readTimeout,
+                                                         Integer connectTimeout) {
+
+        RequestConfig config = RequestConfig.custom()
+                .setSocketTimeout(readTimeout)
+                .setConnectTimeout(connectTimeout)
+                .setConnectionRequestTimeout(connectTimeout)
+                .build();
+
+        return HttpClients.custom()
+                .setConnectionManager(connectionManager)
+                .setDefaultRequestConfig(config)
+                .build();
+    }
+
     protected void close(HttpClient httpClient,
                          Object httpMethod) throws IOException {
         if (HTTP_CLIENT_API_43) {
-            ((CloseableHttpClient) httpClient).close();
+            // dont close if we are using pooled connections
+            if (cachedClient == null) {
+                ((CloseableHttpClient) httpClient).close();
+            }
         } else {
             ((HttpRequestBase) httpMethod).releaseConnection();
         }
@@ -827,6 +1114,17 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
             }
 
             return theMethod;
+        }
+    }
+
+    @Override
+    public void close() {
+        try {
+            if (cachedClient != null) {
+                cachedClient.close();
+            }
+        } catch (Exception e) {
+            logger.error("Unable to close cached client connection: " + e.getMessage());
         }
     }
 }
