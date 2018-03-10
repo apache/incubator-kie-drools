@@ -53,7 +53,21 @@ public class ValidatorTest extends AbstractValidatorTest {
         
         DMNValidatorFactory.newValidator().validate(definitions);
     }
-    
+
+    @Test
+    public void testMACD() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "MACD-enhanced_iteration.dmn", DMNInputRuntimeTest.class );
+        DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/definitions/_6cfe7d88-6741-45d1-968c-b61a597d0964", "MACD-enhanced iteration" );
+        assertThat( dmnModel, notNullValue() );
+
+        Definitions definitions = dmnModel.getDefinitions();
+        assertThat( definitions, notNullValue() );
+
+        List<DMNMessage> messages = DMNValidatorFactory.newValidator().validate(definitions, VALIDATE_MODEL, VALIDATE_COMPILATION);
+
+        assertThat( messages.toString(), messages.size(), is( 0 ) );
+    }
+
     private Definitions utilDefinitions(String filename, String modelName) {
 //        List<DMNMessage> validateXML;
 //        try {
