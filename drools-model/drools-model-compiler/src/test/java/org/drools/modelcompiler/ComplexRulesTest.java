@@ -19,6 +19,19 @@ package org.drools.modelcompiler;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.modelcompiler.domain.ChildFactComplex;
+import org.drools.modelcompiler.domain.ChildFactWithEnum1;
+import org.drools.modelcompiler.domain.ChildFactWithEnum2;
+import org.drools.modelcompiler.domain.ChildFactWithEnum3;
+import org.drools.modelcompiler.domain.ChildFactWithFirings1;
+import org.drools.modelcompiler.domain.ChildFactWithId1;
+import org.drools.modelcompiler.domain.ChildFactWithId2;
+import org.drools.modelcompiler.domain.ChildFactWithId3;
+import org.drools.modelcompiler.domain.ChildFactWithObject;
+import org.drools.modelcompiler.domain.EnumFact1;
+import org.drools.modelcompiler.domain.EnumFact2;
+import org.drools.modelcompiler.domain.RootFact;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
@@ -31,108 +44,125 @@ public class ComplexRulesTest extends BaseModelTest {
     }
 
     @Test
+    @Ignore
     public void test1() {
         String str =
-                "import " + PropertyUsageEnum.class.getCanonicalName() + ";\n" +
-                "import " + ExitStrategyTypeEnum.class.getCanonicalName() + ";\n" +
-                "import " + GSEPropertyTypeEnum.class.getCanonicalName() + ";\n" +
-                "import " + AssetTypeEnum.class.getCanonicalName() + ";\n" +
-                "import " + InvokeDDServicesRequest.class.getCanonicalName() + ";\n" +
-                "import " + LoanFile.class.getCanonicalName() + ";\n" +
-                "import " + TransactionDetail.class.getCanonicalName() + ";\n" +
-                "import " + Collateral.class.getCanonicalName() + ";\n" +
-                "import " + PolicySet.class.getCanonicalName() + ";\n" +
-                "import " + PolicySetIdentifier.class.getCanonicalName() + ";\n" +
-                "import " + Borrower.class.getCanonicalName() + ";\n" +
-                "import " + Asset.class.getCanonicalName() + ";\n" +
-                "import " + LendingProduct.class.getCanonicalName() + ";\n" +
+                "import " + EnumFact1.class.getCanonicalName() + ";\n" +
+                "import " + EnumFact2.class.getCanonicalName() + ";\n" +
+                "import " + RootFact.class.getCanonicalName() + ";\n" +
+                "import " + ChildFactWithId1.class.getCanonicalName() + ";\n" +
+                "import " + ChildFactWithId2.class.getCanonicalName() + ";\n" +
+                "import " + ChildFactWithObject.class.getCanonicalName() + ";\n" +
+                "import " + ChildFactWithId3.class.getCanonicalName() + ";\n" +
+                "import " + ChildFactWithEnum1.class.getCanonicalName() + ";\n" +
+                "import " + ChildFactWithEnum2.class.getCanonicalName() + ";\n" +
+                "import " + ChildFactWithEnum3.class.getCanonicalName() + ";\n" +
+                "import " + ChildFactComplex.class.getCanonicalName() + ";\n" +
                 "import " + BusinessFunctions.class.getCanonicalName() + ";\n" +
                 "global BusinessFunctions functions;\n" +
                 "global java.util.List list;\n" +
-                "rule \"RS6106.34.65_RF6365_341_50313085\"\n" +
+                "rule \"R1\"\n" +
                 "    dialect \"java\"\n" +
                 "when\n" +
-                "\n" +
-                "    $invokeDDServices : \n" +
-                "    InvokeDDServicesRequest(  ) \n" +
-                "\n" +
-                "    $lendingTransaction : \n" +
-                "    LoanFile(  parentId == $invokeDDServices.myId ) \n" +
-                "\n" +
-                "    $transactionDetail : \n" +
-                "    TransactionDetail(  parentId == $lendingTransaction.myId ) \n" +
-                "\n" +
-                "    $collateral : \n" +
-                "    Collateral(  parentId == $transactionDetail.myId\n" +
-                "      , occupancy == PropertyUsageEnum.INVESTOR ) \n" +
-                "\n" +
-                "    $policySet : \n" +
-                "    PolicySet(  parentId == $transactionDetail.myId ) \n" +
-                "\n" +
-                "    $policySetIdentifier : \n" +
-                "    PolicySetIdentifier(  parentId == $policySet.myId\n" +
-                "      , exitStrategyType == ExitStrategyTypeEnum.PORTFOLIO ) \n" +
-                "\n" +
-                "// Aggregate function [count] creates a separate context \n" +
-                "    $countOfAll_1 : Long( $result : intValue > 0) from accumulate (\n" +
-                "    $invokeDDServices_C1 : \n" +
-                "    InvokeDDServicesRequest(  ) \n" +
-                "\n" +
-                "    and\n" +
-                "    $lendingTransaction_C1 : \n" +
-                "    LoanFile(  parentId == $invokeDDServices_C1.myId ) \n" +
-                "\n" +
-                "    and\n" +
-                "    $borrower_C1 : \n" +
-                "    Borrower(  parentId == $lendingTransaction_C1.myId ) \n" +
-                "\n" +
-                "    and\n" +
-                "    $asset_C1 : \n" +
-                "    Asset(  parentId == $borrower_C1.myId\n" +
-                "      , isSetPropertyType == true\n" +
-                "      , propertyType not in (GSEPropertyTypeEnum.COMMERCIAL_NON_RESIDENTIAL, GSEPropertyTypeEnum.LAND, GSEPropertyTypeEnum.MULTIFAMILY_MORE_THAN_FOUR_UNITS)\n" +
-                "      , $asset_C1_myId : myId\n" +
-                "      , assetType == AssetTypeEnum.REAL_ESTATE\n" +
-                "      , subjectIndicator != true ) \n" +
-                "    ;count($asset_C1_myId))\n" +
-                "// end of count aggregation\n" +
-                "\n" +
-                "// EXISTS creates a separate context.\n" +
-                "    exists (\n" +
-                "    $lendingProduct_C2 : \n" +
-                "    LendingProduct(  parentId == $lendingTransaction.myId  // IN operator ties this element to the main context (LendingTransaction)\n" +
-                "      , exitStrategyType == ExitStrategyTypeEnum.AGENCY ) \n" +
-                "\n" +
-                "    )\n" +
-                "// end of EXISTS\n" +
-                "\n" +
+                "    $rootFact : RootFact(  ) \n" +
+                "    $childFact1 : ChildFactWithId1(  parentId == $rootFact.id ) \n" +
+                "    $childFact2 : ChildFactWithId2(  parentId == $childFact1.id ) \n" +
+                "    $childFactWithEnum1 : ChildFactWithEnum1(  parentId == $childFact2.id, enumValue == EnumFact1.FIRST ) \n" +
+                "    $childFactWithObject : ChildFactWithObject(  parentId == $childFact2.id ) \n" +
+                "    $childFactWithEnum2 : ChildFactWithEnum2(  parentId == $childFactWithObject.id, enumValue == EnumFact2.SECOND ) \n" +
+                "    $countOf : Long( $result : intValue > 0) from accumulate (\n" +
+                "        $rootFact_acc : RootFact(  ) \n" +
+                "        and $childFact1_acc : ChildFactWithId1(  parentId == $rootFact_acc.id ) \n" +
+                "        and $childFact3_acc : ChildFactWithId3(  parentId == $childFact1_acc.id ) \n" +
+                "        and $childFactComplex_acc : ChildFactComplex(  parentId == $childFact3_acc.id, \n" +
+                "            travelDocReady == true, \n" +
+                "            enum1Value not in (EnumFact1.FIRST, EnumFact1.THIRD, EnumFact1.FOURTH), \n" +
+                "            $childFactComplex_id : id, \n" +
+                "            enum2Value == EnumFact2.FIRST, \n" +
+                "            cheeseReady != true ) \n" +
+                "        ;count($childFactComplex_id))\n" +
+                "    exists ( $childFactWithEnum3_ex : ChildFactWithEnum3(  parentId == $childFact1.id, enumValue == EnumFact1.FIRST ) )\n" +
                 "    not ( \n" +
-                "    $policySet_C1587379_AR0 : PolicySet ( myId == $policySet.myId\n" +
-                "      , eval(true == functions.arrayContainsInstanceWithParameters((Object[])$policySet_C1587379_AR0.getStipulations(),\n" +
-                "        new Object[]{\"getMessageId\", \"42103\"}))\n" +
+                "        $policySet_not : ChildFactWithObject ( " +
+                "            id == $childFactWithObject.id , \n" +
+                "            eval(true == functions.arrayContainsInstanceWithParameters((Object[])$policySet_not.getObjectValue(), new Object[]{\"getMessageId\", \"42103\"}))\n" +
+                "        )\n" +
                 "    )\n" +
-                "\n" +
-                "  )\n" +
-                "\n" +
                 "  then\n" +
                 "    list.add($result);\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( str );
+        testComplexRule(str);
+    }
+
+    @Test
+    @Ignore
+    public void testNotWithEval() {
+        String str =
+                "import " + EnumFact1.class.getCanonicalName() + ";\n" +
+                "import " + EnumFact2.class.getCanonicalName() + ";\n" +
+                "import " + RootFact.class.getCanonicalName() + ";\n" +
+                "import " + ChildFactWithId1.class.getCanonicalName() + ";\n" +
+                "import " + ChildFactWithId2.class.getCanonicalName() + ";\n" +
+                "import " + ChildFactWithObject.class.getCanonicalName() + ";\n" +
+                "import " + ChildFactWithId3.class.getCanonicalName() + ";\n" +
+                "import " + ChildFactWithEnum1.class.getCanonicalName() + ";\n" +
+                "import " + ChildFactWithEnum2.class.getCanonicalName() + ";\n" +
+                "import " + ChildFactWithEnum3.class.getCanonicalName() + ";\n" +
+                "import " + ChildFactComplex.class.getCanonicalName() + ";\n" +
+                "import " + BusinessFunctions.class.getCanonicalName() + ";\n" +
+                "global BusinessFunctions functions;\n" +
+                "global java.util.List list;\n" +
+                "rule \"R1\"\n" +
+                "    dialect \"java\"\n" +
+                "when\n" +
+                "    $rootFact : RootFact(  ) \n" +
+                "    $childFact1 : ChildFactWithId1(  parentId == $rootFact.id ) \n" +
+                "    $childFact2 : ChildFactWithId2(  parentId == $childFact1.id ) \n" +
+                "    $childFactWithEnum1 : ChildFactWithEnum1(  parentId == $childFact2.id, enumValue == EnumFact1.FIRST ) \n" +
+                "    $childFactWithObject : ChildFactWithObject(  parentId == $childFact2.id ) \n" +
+                "    $childFactWithEnum2 : ChildFactWithEnum2(  parentId == $childFactWithObject.id, enumValue == EnumFact2.SECOND ) \n" +
+                "    $countOf : Long( $result : intValue > 0) from accumulate (\n" +
+                "        $rootFact_acc : RootFact(  ) \n" +
+                "        and $childFact1_acc : ChildFactWithId1(  parentId == $rootFact_acc.id ) \n" +
+                "        and $childFact3_acc : ChildFactWithId3(  parentId == $childFact1_acc.id ) \n" +
+                "        and $childFactComplex_acc : ChildFactComplex(  parentId == $childFact3_acc.id, \n" +
+                "            travelDocReady == true, \n" +
+                "            enum1Value not in (EnumFact1.FIRST, EnumFact1.THIRD, EnumFact1.FOURTH), \n" +
+                "            $childFactComplex_id : id, \n" +
+                "            enum2Value == EnumFact2.FIRST, \n" +
+                "            cheeseReady != true ) \n" +
+                "        ;count($childFactComplex_id))\n" +
+                "    exists ( $childFactWithEnum3_ex : ChildFactWithEnum3(  parentId == $childFact1.id, enumValue == EnumFact1.FIRST ) )\n" +
+                "    not ( \n" +
+                "        $policySet_not : ChildFactWithObject ( " +
+                "            id == $childFactWithObject.id , \n" +
+                "            eval(true == functions.arrayContainsInstanceWithParameters((Object[])$policySet_not.getObjectValue(), new Object[]{\"getMessageId\", \"42103\"}))\n" +
+                "        ) and ChildFactWithId1() and eval(false)\n" +
+                "    )\n" +
+                "  then\n" +
+                "    list.add($result);\n" +
+                "end\n";
+
+        testComplexRule(str);
+    }
+
+    private void testComplexRule(final String rule) {
+        KieSession ksession = getKieSession( rule );
 
         List<Integer> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
         ksession.setGlobal( "functions", new BusinessFunctions() );
 
-        ksession.insert( new InvokeDDServicesRequest() );
-        ksession.insert( new LoanFile() );
-        ksession.insert( new TransactionDetail() );
-        ksession.insert( new Collateral() );
-        ksession.insert( new PolicySet() );
-        ksession.insert( new PolicySetIdentifier() );
-        ksession.insert( new Borrower() );
-        ksession.insert( new Asset() );
-        ksession.insert( new LendingProduct() );
+        ksession.insert( new RootFact(1) );
+        ksession.insert( new ChildFactWithId1(2, 1) );
+        ksession.insert( new ChildFactWithId2(3, 2) );
+        ksession.insert( new ChildFactWithEnum1(4, 3, EnumFact1.FIRST) );
+        ksession.insert( new ChildFactWithObject(5, 3, new Object[0]) );
+        ksession.insert( new ChildFactWithEnum2(6, 5, EnumFact2.SECOND) );
+        ksession.insert( new ChildFactWithId3(7, 2) );
+        ksession.insert( new ChildFactComplex(8, 7, true, false, EnumFact1.SECOND, EnumFact2.FIRST) );
+        ksession.insert( new ChildFactWithEnum3(9, 2, EnumFact1.FIRST) );
 
         assertEquals(1, ksession.fireAllRules());
         assertEquals(1, list.size());
@@ -140,49 +170,90 @@ public class ComplexRulesTest extends BaseModelTest {
     }
 
     @Test
+    public void test2() {
+        final String drl =
+                " import org.drools.modelcompiler.domain.*;\n" +
+                        " rule \"R1\"\n" +
+                        " dialect \"java\"\n" +
+                        " when\n" +
+                        "     $rootFact : RootFact( )\n" +
+                        "     $childFact1 : ChildFactWithId1( parentId == $rootFact.id )\n" +
+                        "     $childFact2 : ChildFactWithId2( parentId == $childFact1.id )\n" +
+                        "     $childFact3 : ChildFactWithEnum1( \n" +
+                        "         parentId == $childFact2.id, \n" +
+                        "         enumValue == EnumFact1.FIRST, \n" +
+                        "         $enumValue : enumValue )\n" +
+                        "     $childFact4 : ChildFactWithFirings1( \n" +
+                        "         parentId == $childFact1.id, \n" +
+                        "         $evaluationName : evaluationName, \n" +
+                        "         firings not contains \"R1\" )\n" +
+                        " then\n" +
+                        "     $childFact4.setEvaluationName(String.valueOf($enumValue));\n" +
+                        "     $childFact4.getFirings().add(\"R1\");\n" +
+                        "     update($childFact4);\n" +
+                        " end\n";
+
+        KieSession ksession = getKieSession( drl );
+
+        int initialId = 1;
+        final RootFact rootFact = new RootFact(initialId);
+
+        final ChildFactWithId1 childFact1First = new ChildFactWithId1(initialId + 1, rootFact.getId());
+        final ChildFactWithId2 childFact2First = new ChildFactWithId2(initialId + 3, childFact1First.getId());
+        final ChildFactWithEnum1 childFact3First = new ChildFactWithEnum1(initialId + 4, childFact2First.getId(), EnumFact1.FIRST);
+        final ChildFactWithFirings1 childFact4First = new ChildFactWithFirings1(initialId + 2, childFact1First.getId());
+
+        ksession.insert(rootFact);
+        ksession.insert(childFact1First);
+        ksession.insert(childFact2First);
+        ksession.insert(childFact3First);
+        ksession.insert(childFact4First);
+
+        assertEquals(1, ksession.fireAllRules());
+        assertEquals(0, ksession.fireAllRules());
+    }
+
+    @Test
     public void testEnum() {
         String str =
-                "import " + PropertyUsageEnum.class.getCanonicalName() + ";\n" +
-                "import " + Collateral.class.getCanonicalName() + ";\n" +
+                "import " + EnumFact1.class.getCanonicalName() + ";\n" +
+                "import " + ChildFactWithEnum1.class.getCanonicalName() + ";\n" +
                 "rule R when\n" +
                 "\n" +
-                "    $collateral : \n" +
-                "    Collateral(  parentId == 3, occupancy == PropertyUsageEnum.INVESTOR ) \n" +
+                "    $factWithEnum : ChildFactWithEnum1(  parentId == 3, enumValue == EnumFact1.FIRST ) \n" +
                 "  then\n" +
                 "end\n";
 
         KieSession ksession = getKieSession( str );
-        ksession.insert( new Collateral() );
+        ksession.insert( new ChildFactWithEnum1(1, 3, EnumFact1.FIRST) );
         assertEquals(1, ksession.fireAllRules());
     }
 
     @Test
     public void testNotInEnum() {
         String str =
-                "import " + GSEPropertyTypeEnum.class.getCanonicalName() + ";\n" +
-                "import " + Asset.class.getCanonicalName() + ";\n" +
+                "import " + EnumFact1.class.getCanonicalName() + ";\n" +
+                "import " + ChildFactWithEnum1.class.getCanonicalName() + ";\n" +
                 "rule R when\n" +
                 "\n" +
-                "    $asset : \n" +
-                "    Asset(  propertyType not in (GSEPropertyTypeEnum.COMMERCIAL_NON_RESIDENTIAL, GSEPropertyTypeEnum.LAND, GSEPropertyTypeEnum.MULTIFAMILY_MORE_THAN_FOUR_UNITS) ) \n" +
+                "    $factWithEnum : ChildFactWithEnum1(  enumValue not in (EnumFact1.FIRST, EnumFact1.THIRD, EnumFact1.FOURTH) ) \n" +
                 "  then\n" +
                 "end\n";
 
         KieSession ksession = getKieSession( str );
-        ksession.insert( new Asset() );
+        ksession.insert( new ChildFactWithEnum1(1, 3, EnumFact1.SECOND) );
         assertEquals(1, ksession.fireAllRules());
     }
 
     @Test
     public void testConstraintWithFunctionUsingThis() {
         String str =
-                "import " + PolicySet.class.getCanonicalName() + ";\n" +
+                "import " + ChildFactWithObject.class.getCanonicalName() + ";\n" +
                 "import " + BusinessFunctions.class.getCanonicalName() + ";\n" +
                 "global BusinessFunctions functions;\n" +
                 "rule R when\n" +
-                "\n" +
-                "    $policySet_C1587379_AR0 : PolicySet ( myId == 5\n" +
-                "      , !functions.arrayContainsInstanceWithParameters((Object[])this.getStipulations(),\n" +
+                "    $childFactWithObject : ChildFactWithObject ( id == 5\n" +
+                "      , !functions.arrayContainsInstanceWithParameters((Object[])this.getObjectValue(),\n" +
                 "                                                       new Object[]{\"getMessageId\", \"42103\"})\n" +
                 "    )\n" +
                 "  then\n" +
@@ -190,59 +261,58 @@ public class ComplexRulesTest extends BaseModelTest {
 
         KieSession ksession = getKieSession( str );
         ksession.setGlobal( "functions", new BusinessFunctions() );
-        ksession.insert( new PolicySet() );
+        ksession.insert( new ChildFactWithObject(5, 1, new Object[0]) );
         assertEquals(1, ksession.fireAllRules());
     }
 
     @Test
     public void testCastInConstraint() {
         String str =
-                "import " + PolicySet.class.getCanonicalName() + ";\n" +
+                "import " + ChildFactWithObject.class.getCanonicalName() + ";\n" +
                 "import " + BusinessFunctions.class.getCanonicalName() + ";\n" +
                 "global BusinessFunctions functions;\n" +
                 "rule R when\n" +
-                "\n" +
-                "    PolicySet ( ((Object[])stipulations).length == 0\n )\n" +
+                "    ChildFactWithObject ( ((Object[])objectValue).length == 0\n )\n" +
                 "  then\n" +
                 "end\n";
 
         KieSession ksession = getKieSession( str );
         ksession.setGlobal( "functions", new BusinessFunctions() );
-        ksession.insert( new PolicySet() );
+        ksession.insert( new ChildFactWithObject(5, 1, new Object[0]) );
         assertEquals(1, ksession.fireAllRules());
     }
 
     @Test
     public void testConstraintWithFunctionAndStringConcatenation() {
         String str =
-                "import " + PolicySet.class.getCanonicalName() + ";\n" +
+                "import " + ChildFactWithObject.class.getCanonicalName() + ";\n" +
                 "import " + BusinessFunctions.class.getCanonicalName() + ";\n" +
                 "global BusinessFunctions functions;\n" +
                 "rule R when\n" +
                 "\n" +
-                "    $policySet_C1587379_AR0 : PolicySet ( myId == 5\n" +
-                "      , !functions.arrayContainsInstanceWithParameters((Object[])stipulations,\n" +
-                "                                                       new Object[]{\"getMessageId\", \"\" + myId})\n" +
+                "    $childFactWithObject : ChildFactWithObject ( id == 5\n" +
+                "      , !functions.arrayContainsInstanceWithParameters((Object[])objectValue,\n" +
+                "                                                       new Object[]{\"getMessageId\", \"\" + id})\n" +
                 "    )\n" +
                 "  then\n" +
                 "end\n";
 
         KieSession ksession = getKieSession( str );
         ksession.setGlobal( "functions", new BusinessFunctions() );
-        ksession.insert( new PolicySet() );
+        ksession.insert( new ChildFactWithObject(5, 1, new Object[0]) );
         assertEquals(1, ksession.fireAllRules());
     }
 
     @Test
     public void testEvalWithFunction() {
         String str =
-                "import " + PolicySet.class.getCanonicalName() + ";\n" +
+                "import " + ChildFactWithObject.class.getCanonicalName() + ";\n" +
                 "import " + BusinessFunctions.class.getCanonicalName() + ";\n" +
                 "global BusinessFunctions functions;\n" +
                 "rule R when\n" +
                 "\n" +
-                "    $policySet_C1587379_AR0 : PolicySet ( myId == 5\n" +
-                "      , eval(false == functions.arrayContainsInstanceWithParameters((Object[])$policySet_C1587379_AR0.getStipulations(),\n" +
+                "    $childFactWithObject : ChildFactWithObject ( id == 5\n" +
+                "      , eval(false == functions.arrayContainsInstanceWithParameters((Object[])$childFactWithObject.getObjectValue(),\n" +
                 "                                                                    new Object[]{\"getMessageId\", \"42103\"}))\n" +
                 "    )\n" +
                 "  then\n" +
@@ -250,134 +320,8 @@ public class ComplexRulesTest extends BaseModelTest {
 
         KieSession ksession = getKieSession( str );
         ksession.setGlobal( "functions", new BusinessFunctions() );
-        ksession.insert( new PolicySet() );
+        ksession.insert( new ChildFactWithObject(5, 1, new Object[0]) );
         assertEquals(1, ksession.fireAllRules());
-    }
-
-    public enum PropertyUsageEnum { INVESTOR }
-
-    public enum ExitStrategyTypeEnum { PORTFOLIO, AGENCY }
-
-    public enum GSEPropertyTypeEnum { COMMERCIAL_NON_RESIDENTIAL, LAND, MULTIFAMILY_MORE_THAN_FOUR_UNITS, RESIDENTIAL }
-
-    public enum AssetTypeEnum { REAL_ESTATE }
-
-    public static class InvokeDDServicesRequest {
-        public int getMyId() {
-            return 1;
-        }
-    }
-
-    public static class LoanFile {
-        public int getParentId() {
-            return 1;
-        }
-
-        public int getMyId() {
-            return 2;
-        }
-    }
-
-    public static class TransactionDetail {
-        public int getParentId() {
-            return 2;
-        }
-
-        public int getMyId() {
-            return 3;
-        }
-    }
-
-    public static class Collateral {
-        public int getParentId() {
-            return 3;
-        }
-
-        public int getMyId() {
-            return 4;
-        }
-
-        public PropertyUsageEnum getOccupancy() {
-            return PropertyUsageEnum.INVESTOR;
-        }
-    }
-
-    public static class PolicySet {
-        public int getParentId() {
-            return 3;
-        }
-
-        public int getMyId() {
-            return 5;
-        }
-
-        public Object getStipulations() {
-            return new Object[0];
-        }
-    }
-
-    public static class PolicySetIdentifier {
-        public int getParentId() {
-            return 5;
-        }
-
-        public int getMyId() {
-            return 6;
-        }
-
-        public ExitStrategyTypeEnum getExitStrategyType() {
-            return ExitStrategyTypeEnum.PORTFOLIO;
-        }
-    }
-
-    public static class Borrower {
-        public int getParentId() {
-            return 2;
-        }
-
-        public int getMyId() {
-            return 7;
-        }
-    }
-
-    public static class Asset {
-        public int getParentId() {
-            return 7;
-        }
-
-        public int getMyId() {
-            return 8;
-        }
-
-        public boolean getIsSetPropertyType() {
-            return true;
-        }
-
-        public GSEPropertyTypeEnum getPropertyType() {
-            return GSEPropertyTypeEnum.RESIDENTIAL;
-        }
-
-        public AssetTypeEnum getAssetType() {
-            return AssetTypeEnum.REAL_ESTATE;
-        }
-
-        public boolean isSubjectIndicator() {
-            return false;
-        }
-    }
-
-    public static class LendingProduct {
-        public int getParentId() {
-            return 2;
-        }
-
-        public int getMyId() {
-            return 9;
-        }
-
-        public ExitStrategyTypeEnum getExitStrategyType() {
-            return ExitStrategyTypeEnum.AGENCY;
-        }
     }
 
     public static class BusinessFunctions {
