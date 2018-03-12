@@ -15,23 +15,6 @@
 
 package org.drools.compiler.commons.jci.compilers;
 
-import org.drools.compiler.commons.jci.problems.CompilationProblem;
-import org.drools.compiler.commons.jci.readers.ResourceReader;
-import org.drools.compiler.commons.jci.stores.ResourceStore;
-import org.drools.core.common.ProjectClassLoader;
-import org.drools.core.util.IoUtils;
-
-import javax.lang.model.element.Modifier;
-import javax.lang.model.element.NestingKind;
-import javax.tools.Diagnostic;
-import javax.tools.DiagnosticCollector;
-import javax.tools.FileObject;
-import javax.tools.ForwardingJavaFileManager;
-import javax.tools.JavaFileManager;
-import javax.tools.JavaFileObject;
-import javax.tools.SimpleJavaFileObject;
-import javax.tools.StandardLocation;
-import javax.tools.ToolProvider;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -52,6 +35,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.jar.JarEntry;
+
+import javax.lang.model.element.Modifier;
+import javax.lang.model.element.NestingKind;
+import javax.tools.Diagnostic;
+import javax.tools.DiagnosticCollector;
+import javax.tools.FileObject;
+import javax.tools.ForwardingJavaFileManager;
+import javax.tools.JavaFileManager;
+import javax.tools.JavaFileObject;
+import javax.tools.SimpleJavaFileObject;
+import javax.tools.StandardLocation;
+import javax.tools.ToolProvider;
+import org.drools.compiler.commons.jci.problems.CompilationProblem;
+import org.drools.compiler.commons.jci.readers.ResourceReader;
+import org.drools.compiler.commons.jci.stores.ResourceStore;
+import org.drools.core.common.ProjectClassLoader;
+import org.drools.core.util.IoUtils;
 
 import static org.drools.core.util.ClassUtils.convertResourceToClassName;
 
@@ -270,11 +270,6 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
         MemoryFileManager(JavaFileManager fileManager, ClassLoader classLoader) {
             super(fileManager);
             this.classLoader = classLoader;
-        }
-
-        @Override
-        public ClassLoader getClassLoader(Location location) {
-            return classLoader;
         }
 
         @Override
