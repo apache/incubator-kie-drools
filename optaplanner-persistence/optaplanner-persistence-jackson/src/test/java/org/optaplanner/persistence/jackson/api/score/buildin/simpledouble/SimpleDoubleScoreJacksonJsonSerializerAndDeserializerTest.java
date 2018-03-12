@@ -36,7 +36,7 @@ public class SimpleDoubleScoreJacksonJsonSerializerAndDeserializerTest extends A
 
     public static class TestSimpleDoubleScoreWrapper extends TestScoreWrapper<SimpleDoubleScore> {
 
-        @JsonSerialize(using = ScoreJacksonJsonSerializer.class)
+        @JsonSerialize(using = SimpleDoubleScoreJacksonJsonSerializer.class)
         @JsonDeserialize(using = SimpleDoubleScoreJacksonJsonDeserializer.class)
         private SimpleDoubleScore score;
 

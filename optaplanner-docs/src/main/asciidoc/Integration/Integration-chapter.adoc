@@ -28,7 +28,7 @@ image::Integration/integrationOverview.png[align="center"]
 [[integrationWithJpaAndHibernate]]
 === Database: JPA and Hibernate
 
-Enrich the domain POJO's (solution, entities and problem facts) with JPA annotations
+Enrich domain POJO's (solution, entities and problem facts) with JPA annotations
 to store them in a database by calling `EntityManager.persist()`.
 
 [NOTE]
@@ -189,7 +189,7 @@ Neglecting to do this can lead to persisting duplicate solutions, JPA exceptions
 [[integrationWithXStream]]
 === XML or JSON: XStream
 
-Enrich the domain POJO's (solution, entities and problem facts) with XStream annotations to serialize them to/from XML or JSON.
+Enrich domain POJO's (solution, entities and problem facts) with XStream annotations to serialize them to/from XML or JSON.
 
 Add a dependency to the `optaplanner-persistence-xstream` jar to take advantage of these extra integration features:
 
@@ -256,7 +256,7 @@ The `hardLevelsSize` and `softLevelsSize` implied, when reading a bendable score
 [[integrationWithJaxb]]
 === XML or JSON: JAXB
 
-Enrich the domain POJO's (solution, entities and problem facts) with JAXB annotations to serialize them to/from XML or JSON.
+Enrich domain POJO's (solution, entities and problem facts) with JAXB annotations to serialize them to/from XML or JSON.
 
 Add a dependency to the `optaplanner-persistence-jaxb` jar to take advantage of these extra integration features:
 
@@ -323,16 +323,23 @@ The `hardLevelsSize` and `softLevelsSize` implied, when reading a bendable score
 [[integrationWithJackson]]
 === JSON: Jackson
 
-Enrich the domain POJO's (solution, entities and problem facts) with Jackson annotations to serialize them to/from JSON.
+Enrich domain POJO's (solution, entities and problem facts) with Jackson annotations to serialize them to/from JSON.
 
-Add a dependency to the `optaplanner-persistence-jackson` jar to take advantage of these extra integration features:
+Add a dependency to the `optaplanner-persistence-jackson` jar and register `OptaPlannerJacksonModule`:
+
+[source,java,options="nowrap"]
+----
+ObjectMapper objectMapper = new ObjectMapper();
+objectMapper.registerModule(OptaPlannerJacksonModule.createModule());
+----
 
 
 [[jacksonMarshallingAScore]]
 ==== JAXB: Marshalling a `Score`
 
-When a `Score` is marshalled to JSON by the default Jackson configuration, it fails.
-To fix that, configure a `ScoreJacksonJsonSerializer` and the appropriate ``ScoreJacksonJsonDeserializer``:
+When a `Score` is marshalled to/from JSON by the default Jackson configuration, it fails.
+The `OptaPlannerJacksonModule` fixes that, by using `HardSoftScoreJacksonJsonSerializer`,
+HardSoftScoreJacksonJsonDeserializer`, etc.
 
 [source,java,options="nowrap"]
 ----
@@ -340,52 +347,76 @@ To fix that, configure a `ScoreJacksonJsonSerializer` and the appropriate ``Scor
 public class CloudBalance {
 
     @PlanningScore
-    @JsonSerialize(using = ScoreJacksonJsonSerializer.class)
-    @JsonDeserialize(using = HardSoftScoreJacksonJsonDeserializer.class)
     private HardSoftScore score;
 
     ...
 }
 ----
 
-For example, this will generate pretty JSON:
+For example, this will generate this JSON:
 
 [source,json]
 ----
 {
-   ...
    "score":"0hard/-200soft"
+   ...
 }
 ----
 
-The same applies for a bendable score:
+[NOTE]
+====
+When reading a `BendableScore`, the `hardLevelsSize` and `softLevelsSize` implied in the JSON element,
+must always be in sync with those defined in the `@PlanningScore` annotation in the solution class. For example:
+
+[source,json]
+----
+{
+   "score":"[0/0]hard/[-100/-20/-3]soft"
+   ...
+}
+----
+
+This JSON implies the `hardLevelsSize` is 2 and thet `softLevelsSize` is 3,
+which must be in sync with the `@PlanningScore` annotation:
 
 [source,java,options="nowrap"]
 ----
 @PlanningSolution
 public class Schedule {
 
-    @PlanningScore
-    @JsonSerialize(using = ScoreJacksonJsonSerializer.class)
-    @JsonDeserialize(using = BendableScoreJacksonXmlAdapter.class)
+    @PlanningScore(bendableHardLevelsSize = 2, bendableSoftLevelsSize = 3)
     private BendableScore score;
 
     ...
 }
 ----
+====
 
-For example, with a `hardLevelsSize` of `2` and a `softLevelsSize` of ``3``, that will generate:
+When a field is the `Score` supertype (instead of a specific type such as `HardSoftScore`),
+`PolymorphicScoreJacksonJsonSerializer` and `PolymorphicScoreJacksonJsonDeserializer` are used
+to record the score type in the json, so it can be deserialized too:
+
+[source,java,options="nowrap"]
+----
+@PlanningSolution
+public class CloudBalance {
+
+    @PlanningScore
+    private Score score;
+
+    ...
+}
+----
+
+For example, this will generate this JSON:
 
 [source,json]
 ----
 {
+   "score":{"HardSoftScore":"0hard/-200soft"}
    ...
-   "score":"[0/0]hard/[-100/-20/-3]soft"
 }
 ----
-
-The `hardLevelsSize` and `softLevelsSize` implied, when reading a bendable score from a JSON element, must always be in sync with those in the solver.
-
 
 [[integrationWithSoaAndEsb]]
 == SOA and ESB

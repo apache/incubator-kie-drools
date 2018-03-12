@@ -36,7 +36,7 @@ public class BendableScoreJacksonJsonSerializerAndDeserializerTest extends Abstr
 
     public static class TestBendableScoreWrapper extends TestScoreWrapper<BendableScore> {
 
-        @JsonSerialize(using = ScoreJacksonJsonSerializer.class)
+        @JsonSerialize(using = BendableScoreJacksonJsonSerializer.class)
         @JsonDeserialize(using = BendableScoreJacksonJsonDeserializer.class)
         private BendableScore score;
 

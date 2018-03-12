@@ -36,7 +36,7 @@ public class BendableLongScoreJacksonJsonSerializerAndDeserializerTest extends A
 
     public static class TestBendableLongScoreWrapper extends TestScoreWrapper<BendableLongScore> {
 
-        @JsonSerialize(using = ScoreJacksonJsonSerializer.class)
+        @JsonSerialize(using = BendableLongScoreJacksonJsonSerializer.class)
         @JsonDeserialize(using = BendableLongScoreJacksonJsonDeserializer.class)
         private BendableLongScore score;
 

@@ -21,10 +21,12 @@ import java.io.Serializable;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.persistence.jackson.api.AbstractJacksonJsonSerializerAndDeserializerTest;
 
 import static org.junit.Assert.*;
 
-public abstract class AbstractScoreJacksonJsonSerializerAndDeserializerTest {
+public abstract class AbstractScoreJacksonJsonSerializerAndDeserializerTest
+        extends AbstractJacksonJsonSerializerAndDeserializerTest {
 
     // ************************************************************************
     // Helper methods

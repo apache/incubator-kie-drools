@@ -36,7 +36,7 @@ public class HardSoftScoreJacksonJsonSerializerAndDeserializerTest extends Abstr
 
     public static class TestHardSoftScoreWrapper extends TestScoreWrapper<HardSoftScore> {
 
-        @JsonSerialize(using = ScoreJacksonJsonSerializer.class)
+        @JsonSerialize(using = HardSoftScoreJacksonJsonSerializer.class)
         @JsonDeserialize(using = HardSoftScoreJacksonJsonDeserializer.class)
         private HardSoftScore score;
 

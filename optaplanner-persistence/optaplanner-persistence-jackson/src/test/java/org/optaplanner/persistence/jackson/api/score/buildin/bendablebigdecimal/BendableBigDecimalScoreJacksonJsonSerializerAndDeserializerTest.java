@@ -40,7 +40,7 @@ public class BendableBigDecimalScoreJacksonJsonSerializerAndDeserializerTest ext
 
     public static class TestBendableBigDecimalScoreWrapper extends TestScoreWrapper<BendableBigDecimalScore> {
 
-        @JsonSerialize(using = ScoreJacksonJsonSerializer.class)
+        @JsonSerialize(using = BendableBigDecimalScoreJacksonJsonSerializer.class)
         @JsonDeserialize(using = BendableBigDecimalScoreJacksonJsonDeserializer.class)
         private BendableBigDecimalScore score;
 

@@ -36,7 +36,7 @@ public class HardMediumSoftScoreJacksonJsonSerializerAndDeserializerTest extends
 
     public static class TestHardMediumSoftScoreWrapper extends TestScoreWrapper<HardMediumSoftScore> {
 
-        @JsonSerialize(using = ScoreJacksonJsonSerializer.class)
+        @JsonSerialize(using = HardMediumSoftScoreJacksonJsonSerializer.class)
         @JsonDeserialize(using = HardMediumSoftScoreJacksonJsonDeserializer.class)
         private HardMediumSoftScore score;
 

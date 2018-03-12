@@ -29,6 +29,7 @@ import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.persistence.jackson.api.score.ScoreJacksonJsonSerializer;
 import org.optaplanner.persistence.jackson.api.score.buildin.simple.SimpleScoreJacksonJsonDeserializer;
+import org.optaplanner.persistence.jackson.api.score.buildin.simple.SimpleScoreJacksonJsonSerializer;
 
 @PlanningSolution
 public class JacksonTestdataSolution extends JacksonTestdataObject {
@@ -69,7 +70,7 @@ public class JacksonTestdataSolution extends JacksonTestdataObject {
     }
 
     @PlanningScore
-    @JsonSerialize(using = ScoreJacksonJsonSerializer.class)
+    @JsonSerialize(using = SimpleScoreJacksonJsonSerializer.class)
     @JsonDeserialize(using = SimpleScoreJacksonJsonDeserializer.class)
     public SimpleScore getScore() {
         return score;

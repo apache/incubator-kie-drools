@@ -36,7 +36,7 @@ public class SimpleLongScoreJacksonJsonSerializerAndDeserializerTest extends Abs
 
     public static class TestSimpleLongScoreWrapper extends AbstractScoreJacksonJsonSerializerAndDeserializerTest.TestScoreWrapper<SimpleLongScore> {
 
-        @JsonSerialize(using = ScoreJacksonJsonSerializer.class)
+        @JsonSerialize(using = SimpleLongScoreJacksonJsonSerializer.class)
         @JsonDeserialize(using = SimpleLongScoreJacksonJsonDeserializer.class)
         private SimpleLongScore score;
 

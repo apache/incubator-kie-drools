@@ -38,7 +38,7 @@ public class HardMediumSoftBigDecimalScoreJacksonJsonSerializerAndDeserializerTe
 
     public static class TestHardMediumSoftBigDecimalScoreWrapper extends TestScoreWrapper<HardMediumSoftBigDecimalScore> {
 
-        @JsonSerialize(using = ScoreJacksonJsonSerializer.class)
+        @JsonSerialize(using = HardMediumSoftBigDecimalScoreJacksonJsonSerializer.class)
         @JsonDeserialize(using = HardMediumSoftBigDecimalScoreJacksonJsonDeserializer.class)
         private HardMediumSoftBigDecimalScore score;
 

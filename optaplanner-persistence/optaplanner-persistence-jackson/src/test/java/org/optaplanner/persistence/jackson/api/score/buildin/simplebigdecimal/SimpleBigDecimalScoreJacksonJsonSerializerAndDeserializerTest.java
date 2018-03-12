@@ -38,7 +38,7 @@ public class SimpleBigDecimalScoreJacksonJsonSerializerAndDeserializerTest exten
 
     public static class TestSimpleBigDecimalScoreWrapper extends TestScoreWrapper<SimpleBigDecimalScore> {
 
-        @JsonSerialize(using = ScoreJacksonJsonSerializer.class)
+        @JsonSerialize(using = SimpleBigDecimalScoreJacksonJsonSerializer.class)
         @JsonDeserialize(using = SimpleBigDecimalScoreJacksonJsonDeserializer.class)
         private SimpleBigDecimalScore score;
 
