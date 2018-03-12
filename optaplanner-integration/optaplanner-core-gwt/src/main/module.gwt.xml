@@ -5,5 +5,8 @@
   <!-- Starts from org.optaplanner.core -->
   <source path="api/score/">
     <include name="**/*Score.java"/>
+    <include name="constraint/ConstraintMatch.java"/>
+    <include name="constraint/ConstraintMatchTotal.java"/>
+    <include name="constraint/Indictment.java"/>
   </source>
 </module>
