@@ -2503,4 +2503,47 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
         kieSession.fireAllRules();
         Assertions.assertThat(globalList).contains("R1", "R2");
     }
+
+    @Test
+    public void testBuildKieBaseIncrementally3() {
+
+        final String rule1 = "package com.rules;global java.util.List list\n" +
+                "rule R1 \n" +
+                " when \n" +
+                "  exists(Integer()) \n" +
+                " Integer() \n" +
+                " then\n" +
+                " list.add('R1'); \n" +
+                "end\n";
+
+        final String rule2 = "package com.rules;global java.util.List list\n" +
+                "rule R2 \n" +
+                " when \n" +
+                "  exists(Integer()) \n" +
+                " not(not(Integer() and Integer())) \n" +
+                " then\n" +
+                " list.add('R2'); \n" +
+                "end";
+
+        final List<String> globalList = new ArrayList<>();
+
+        final KieSession kieSession = buildSessionInSteps(rule2, rule1);
+        kieSession.setGlobal("list", globalList);
+
+        Assertions.assertThat(globalList).isEmpty();
+
+        kieSession.insert(1);
+        kieSession.insert("1");
+
+        kieSession.getKieBase().removeRule("com.rules", "R1");
+        kieSession.fireAllRules();
+
+        Assertions.assertThat(globalList).contains("R2");
+        globalList.clear();
+
+        kieSession.getKieBase().removeRule("com.rules", "R2");
+        kieSession.fireAllRules();
+
+        Assertions.assertThat(globalList).isEmpty();
+    }
 }
