@@ -13,12 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.dmn.model.v1_1;
+package org.kie.dmn.model.v1_1.extensions;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DecisionServices extends NamedElement {
+import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
+import org.kie.dmn.model.v1_1.DecisionService;
+
+public class DecisionServices extends DMNModelInstrumentedBase {
 
     private List<DecisionService> decisionService;
 

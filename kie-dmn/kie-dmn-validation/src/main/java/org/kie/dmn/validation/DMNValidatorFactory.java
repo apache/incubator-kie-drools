@@ -16,10 +16,19 @@
 
 package org.kie.dmn.validation;
 
+import java.util.Collections;
+import java.util.List;
+
+import org.kie.dmn.core.compiler.DMNProfile;
+
 public final class DMNValidatorFactory {
 
     public static DMNValidator newValidator() {
-        return new DMNValidatorImpl();
+        return new DMNValidatorImpl(Collections.emptyList());
+    }
+
+    public static DMNValidator newValidator(List<DMNProfile> dmnProfiles) {
+        return new DMNValidatorImpl(dmnProfiles);
     }
 
     private DMNValidatorFactory() {
