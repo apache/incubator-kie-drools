@@ -21,13 +21,13 @@ import java.util.Collection;
 import java.util.List;
 
 import org.assertj.core.api.Assertions;
+import org.drools.core.QueryResultsImpl;
 import org.drools.core.rule.QueryImpl;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Relationship;
 import org.drools.modelcompiler.domain.Result;
 import org.drools.modelcompiler.oopathdtables.InternationalAddress;
 import org.drools.modelcompiler.util.TrackingAgendaEventListener;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.command.Command;
@@ -647,5 +647,60 @@ public class QueryTest extends BaseModelTest {
         assertEquals( 1, results.size() );
         Person p = (Person) results.iterator().next().get( "p" );
         assertEquals( "Mario", p.getName() );
+    }
+
+    @Test
+    public void testQueriesWithVariableUnification() throws Exception {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "query peeps( String $name, int $age ) \n" +
+                "    $p : Person( $name := name, $age := age ) \n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        Person p1 = new Person( "darth", 100 );
+        Person p2 = new Person( "yoda", 300 );
+        Person p3 = new Person( "luke", 300 );
+        Person p4 = new Person( "bobba", 300 );
+
+        ksession.insert( p1 );
+        ksession.insert( p2 );
+        ksession.insert( p3 );
+        ksession.insert( p4 );
+
+        QueryResultsImpl results = (QueryResultsImpl) ksession.getQueryResults( "peeps", Variable.v, Variable.v );
+        assertEquals( 4, results.size() );
+        List names = new ArrayList();
+        for ( org.kie.api.runtime.rule.QueryResultsRow row : results ) {
+            names.add( ((Person) row.get( "$p" )).getName() );
+        }
+        assertEquals( 4,
+                names.size() );
+        assertTrue( names.contains( "luke" ) );
+        assertTrue( names.contains( "yoda" ) );
+        assertTrue( names.contains( "bobba" ) );
+        assertTrue( names.contains( "darth" ) );
+
+        results = (QueryResultsImpl) ksession.getQueryResults( "peeps", Variable.v, 300 );
+        assertEquals( 3, results.size() );
+        names = new ArrayList();
+        for ( org.kie.api.runtime.rule.QueryResultsRow row : results ) {
+            names.add( ((Person) row.get( "$p" )).getName() );
+        }
+        assertEquals( 3,
+                names.size() );
+        assertTrue( names.contains( "luke" ) );
+        assertTrue( names.contains( "yoda" ) );
+        assertTrue( names.contains( "bobba" ) );
+
+        results = (QueryResultsImpl) ksession.getQueryResults( "peeps", "darth", Variable.v );
+        assertEquals( 1, results.size() );
+        names = new ArrayList();
+        for ( org.kie.api.runtime.rule.QueryResultsRow row : results ) {
+            names.add( ((Person) row.get( "$p" )).getName() );
+        }
+        assertEquals( 1, names.size() );
+        assertTrue( names.contains( "darth" ) );
     }
 }
