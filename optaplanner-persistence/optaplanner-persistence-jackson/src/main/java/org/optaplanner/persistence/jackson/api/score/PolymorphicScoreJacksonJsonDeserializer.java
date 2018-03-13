@@ -51,19 +51,10 @@ public class PolymorphicScoreJacksonJsonDeserializer extends JsonDeserializer<Sc
 
     @Override
     public Score deserialize(JsonParser parser, DeserializationContext context) throws IOException {
-        JsonNode node = parser.getCodec().readTree(parser);
-        Iterator<Map.Entry<String, JsonNode>> iterator = node.fields();
-        if (!iterator.hasNext()) {
-            throw new IllegalStateException("A polymorphic score field's JSON node (" + node.toString()
-                    + ") doesn't have any field.");
-        }
-        Map.Entry<String, JsonNode> entry = iterator.next();
-        if (iterator.hasNext()) {
-            throw new IllegalStateException("A polymorphic score field's JSON node (" + node.toString()
-                    + ") has multiple fields.");
-        }
-        String scoreClassSimpleName = entry.getKey();
-        String scoreString = entry.getValue().asText();
+        parser.nextToken();
+        String scoreClassSimpleName = parser.getCurrentName();
+        parser.nextToken();
+        String scoreString = parser.getValueAsString();
         if (scoreClassSimpleName.equals(SimpleScore.class.getSimpleName())) {
             return SimpleScore.parseScore(scoreString);
         } else if (scoreClassSimpleName.equals(SimpleLongScore.class.getSimpleName())) {

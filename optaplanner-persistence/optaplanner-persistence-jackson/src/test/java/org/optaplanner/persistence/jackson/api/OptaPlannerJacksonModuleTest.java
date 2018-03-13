@@ -19,15 +19,10 @@ package org.optaplanner.persistence.jackson.api;
 import java.io.IOException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.junit.Test;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
-import org.optaplanner.core.api.score.constraint.ConstraintMatch;
-import org.optaplanner.persistence.jackson.api.score.constraint.ConstraintMatchJacksonJsonDeserializer;
-import org.optaplanner.persistence.jackson.api.score.constraint.ConstraintMatchJacksonJsonSerializer;
 
 import static org.junit.Assert.*;
 
