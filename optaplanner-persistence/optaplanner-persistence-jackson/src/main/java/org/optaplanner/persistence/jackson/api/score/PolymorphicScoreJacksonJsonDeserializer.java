@@ -41,11 +41,17 @@ import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
 import org.optaplanner.core.api.score.buildin.simpledouble.SimpleDoubleScore;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
-import org.optaplanner.core.api.score.constraint.ConstraintMatch;
-import org.optaplanner.core.impl.score.definition.ScoreDefinition;
+import org.optaplanner.persistence.jackson.api.score.buildin.hardsoft.HardSoftScoreJacksonJsonDeserializer;
 
 /**
- * {@inheritDoc}
+ * Jackson binding support for a {@link Score} type (but not a subtype).
+ * For a {@link Score} subtype field, use {@link HardSoftScoreJacksonJsonDeserializer} or similar instead.
+ * <p>
+ * For example: use {@code @JsonSerialize(using = PolymorphicScoreJacksonJsonSerializer.class) @JsonDeserialize(using = PolymorphicScoreJacksonJsonDeserializer.class)}
+ * on a {@code Score score} field which contains a {@link HardSoftScore} instance
+ * and it will marshalled to JSON as {@code "score":{"type":"HARD_SOFT",score:"-999hard/-999soft"}}.
+ * @see Score
+ * @see PolymorphicScoreJacksonJsonDeserializer
  */
 public class PolymorphicScoreJacksonJsonDeserializer extends JsonDeserializer<Score> {
 

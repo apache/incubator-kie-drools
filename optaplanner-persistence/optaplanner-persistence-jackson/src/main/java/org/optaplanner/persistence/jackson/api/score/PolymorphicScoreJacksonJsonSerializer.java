@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,11 +23,11 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
-import org.optaplanner.core.config.score.definition.ScoreDefinitionType;
+import org.optaplanner.persistence.jackson.api.score.buildin.hardsoft.HardSoftScoreJacksonJsonSerializer;
 
 /**
  * Jackson binding support for a {@link Score} type (but not a subtype).
- * For a {@link Score} subtype field, use {@link ScoreJacksonJsonSerializer} instead.
+ * For a {@link Score} subtype field, use {@link HardSoftScoreJacksonJsonSerializer} or similar instead.
  * <p>
  * For example: use {@code @JsonSerialize(using = PolymorphicScoreJacksonJsonSerializer.class) @JsonDeserialize(using = PolymorphicScoreJacksonJsonDeserializer.class)}
  * on a {@code Score score} field which contains a {@link HardSoftScore} instance

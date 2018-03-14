@@ -250,7 +250,8 @@ For example, this will generate:
 </Schedule>
 ----
 
-The `hardLevelsSize` and `softLevelsSize` implied, when reading a bendable score from an XML element, must always be in sync with those in the solver.
+When reading a bendable score from an XML element, the implied `hardLevelsSize` and `softLevelsSize`
+must always be in sync with those in the solver.
 
 
 [[integrationWithJaxb]]
@@ -393,8 +394,8 @@ public class Schedule {
 ====
 
 When a field is the `Score` supertype (instead of a specific type such as `HardSoftScore`),
-`PolymorphicScoreJacksonJsonSerializer` and `PolymorphicScoreJacksonJsonDeserializer` are used
-to record the score type in the json, so it can be deserialized too:
+it uses `PolymorphicScoreJacksonJsonSerializer` and `PolymorphicScoreJacksonJsonDeserializer`
+to record the score type in JSON too, otherwise it would be impossible to deserialize it:
 
 [source,java,options="nowrap"]
 ----
