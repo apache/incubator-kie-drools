@@ -420,6 +420,9 @@ public class ProjectClassLoader extends ClassLoader {
         typesClassLoader = null;
         nonExistingClasses.clear();
         loadedClasses.clear();
+        if (definedTypes != null) {
+            definedTypes.clear();
+        }
     }
 
     private static class ClassBytecode {
