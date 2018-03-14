@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -60,6 +61,8 @@ public class DMNModelImpl
         // To ensure backward compatibility, append only:
         DMN_XML
     }
+    
+
     private SerializationFormat serializedAs = SerializationFormat.DMN_XML;
     private Resource resource;
     private Definitions definitions;
@@ -78,7 +81,7 @@ public class DMNModelImpl
      */
     private boolean runtimeTypeCheck = false;
 
-    private Map<String, String> importAliases = new HashMap<>();
+    private Map<String, NamespaceAndName> importAliases = new HashMap<>();
 
     public DMNModelImpl() {
     }
@@ -369,16 +372,65 @@ public class DMNModelImpl
         this.runtimeTypeCheck = compiledModel.runtimeTypeCheck;
     }
 
-    public void setImportAliasForNS(String iAlias, String iNS) {
-        this.importAliases.put(iAlias, iNS);
+    public void setImportAliasForNS(String iAlias, String iNS, String iModelName) {
+        if (!getImportAliasFor(iNS, iModelName).isPresent()) {
+            this.importAliases.put(iAlias, new NamespaceAndName(iNS, iModelName));
+        }
     }
 
-    public Map<String, String> getImportAliasesForNS() {
+    public Map<String, NamespaceAndName> getImportAliasesForNS() {
         return Collections.unmodifiableMap(this.importAliases);
     }
 
-    public String getImportNSforAlias(String iAlias) {
+    public Optional<String> getImportAliasFor(String ns, String iModelName) {
+        NamespaceAndName lookup = new NamespaceAndName(ns, iModelName);
+        return this.importAliases.entrySet().stream().filter(kv -> kv.getValue().equals(lookup)).map(kv -> kv.getKey()).findFirst();
+    }
+
+    public NamespaceAndName getImportNamespaceAndNameforAlias(String iAlias) {
         return this.importAliases.get(iAlias);
     }
 
+    public static class NamespaceAndName {
+
+        public final String namespace;
+        public final String name;
+
+        public NamespaceAndName(String namespace, String name) {
+            this.namespace = namespace;
+            this.name = name;
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((name == null) ? 0 : name.hashCode());
+            result = prime * result + ((namespace == null) ? 0 : namespace.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            NamespaceAndName other = (NamespaceAndName) obj;
+            if (name == null) {
+                if (other.name != null)
+                    return false;
+            } else if (!name.equals(other.name))
+                return false;
+            if (namespace == null) {
+                if (other.namespace != null)
+                    return false;
+            } else if (!namespace.equals(other.namespace))
+                return false;
+            return true;
+        }
+
+    }
 }

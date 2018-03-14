@@ -17,10 +17,9 @@
 package org.kie.dmn.core.compiler;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
@@ -76,14 +75,14 @@ public class DecisionCompiler implements DRGElementCompiler {
                 } else if( dep instanceof InputDataNode ) {
                     ctx.setVariable( dep.getName(), ((InputDataNode) dep).getType() );
                 } else if( dep instanceof BusinessKnowledgeModelNode ) {
-                    if (dep.getNamespace().equals(model.getNamespace())) {
+                    if (dep.getModelNamespace().equals(model.getNamespace())) {
                         // might need to create a DMNType for "functions" and replace the type here by that
                         ctx.setVariable(dep.getName(), ((BusinessKnowledgeModelNode) dep).getResultType());
                     } else {
                         // then the BKM dependency is an imported BKM.
-                        List<String> allAliases = model.getImportAliasesForNS().entrySet().stream().filter(kv -> kv.getValue().equals(dep.getNamespace())).map(kv -> kv.getKey()).collect(Collectors.toList());
-                        for (String alias : allAliases) {
-                            CompositeTypeImpl importedComposite = (CompositeTypeImpl) importedTypes.computeIfAbsent(alias, a -> new CompositeTypeImpl());
+                        Optional<String> alias = model.getImportAliasFor(dep.getModelNamespace(), dep.getModelName());
+                        if (alias.isPresent()) {
+                            CompositeTypeImpl importedComposite = (CompositeTypeImpl) importedTypes.computeIfAbsent(alias.get(), a -> new CompositeTypeImpl());
                             importedComposite.addField(dep.getName(), ((BusinessKnowledgeModelNode) dep).getResultType());
                         }
                     }

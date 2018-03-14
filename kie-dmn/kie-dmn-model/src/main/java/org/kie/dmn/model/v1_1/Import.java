@@ -20,6 +20,7 @@ import javax.xml.namespace.QName;
 public class Import extends DMNModelInstrumentedBase {
 
     public static final QName NAME_QNAME = new QName(DMNModelInstrumentedBase.URI_KIE, "name");
+    public static final QName MODELNAME_QNAME = new QName(DMNModelInstrumentedBase.URI_KIE, "modelName");
 
     private String namespace;
     private String locationURI;

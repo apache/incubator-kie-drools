@@ -54,7 +54,8 @@ public abstract class DMNBaseNode
         return source != null ? source.getName() : null;
     }
 
-    public String getNamespace() {
+    @Override
+    public String getModelNamespace() {
         if (source != null) {
             Object parent = source.getParent();
             while (!(parent instanceof Definitions)) {
@@ -64,6 +65,21 @@ public abstract class DMNBaseNode
                 parent = source.getParent();
             }
             return ((Definitions) parent).getNamespace();
+        }
+        return null;
+    }
+
+    @Override
+    public String getModelName() {
+        if (source != null) {
+            Object parent = source.getParent();
+            while (!(parent instanceof Definitions)) {
+                if (parent == null) {
+                    return null;
+                }
+                parent = source.getParent();
+            }
+            return ((Definitions) parent).getName();
         }
         return null;
     }

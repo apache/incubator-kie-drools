@@ -65,6 +65,7 @@ public class DMNAssemblerService implements KieAssemblerService {
     @Override
     public void addResources(Object kbuilder, List<ResourceAndConfig> resources, ResourceType type) throws Exception {
         // TODO
+        resources.forEach(r -> System.out.println(r.getRes().getSourcePath()));
         if (resources.get(0).getRes().getSourcePath().contains("Importing")) {
             for (ListIterator<ResourceAndConfig> iterator = resources.listIterator(resources.size()); iterator.hasPrevious();) {
                 ResourceAndConfig resourceAndConfig = iterator.previous();
@@ -80,6 +81,7 @@ public class DMNAssemblerService implements KieAssemblerService {
     @Override
     public void addResource(Object kbuilder, Resource resource, ResourceType type, ResourceConfiguration configuration)
             throws Exception {
+        System.out.println("addResource " + resource.getSourcePath());
         KnowledgeBuilderImpl kbuilderImpl = (KnowledgeBuilderImpl) kbuilder;
         DMNCompiler dmnCompiler = kbuilderImpl.getCachedOrCreate( DMN_COMPILER_CACHE_KEY, () -> getCompiler( kbuilderImpl ) );
 

@@ -18,8 +18,10 @@ package org.kie.dmn.core;
 
 import org.hamcrest.Matchers;
 import org.junit.Test;
+import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNModel;
+import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.ItemDefNode;
@@ -38,6 +40,8 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
+import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
 
 public class DMNCompilerTest {
 
@@ -141,10 +145,19 @@ public class DMNCompilerTest {
         DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_f79aa7a4-f9a3-410a-ac95-bea496edab52",
                                              "Importing Model");
         assertThat(dmnModel, notNullValue());
-
         for (DMNMessage message : dmnModel.getMessages()) {
             System.out.println(message);
         }
+
+        DMNContext context = runtime.newContext();
+        context.set("A Person", mapOf(entry("name", "John"), entry("age", 47)));
+
+        DMNResult evaluateAll = runtime.evaluateAll(dmnModel, context);
+        for (DMNMessage message : evaluateAll.getMessages()) {
+            System.out.println(message);
+        }
+        System.out.println(evaluateAll);
+        assertThat(evaluateAll.getDecisionResultByName("Greeting").getResult(), is("Hello John!"));
     }
 
 }

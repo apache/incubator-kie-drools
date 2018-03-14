@@ -6,6 +6,7 @@
   <semantic:import xmlns:drools="http://www.drools.org/kie/dmn/1.1"
         drools:name="Imported Model" importType="http://www.omg.org/spec/DMN1-2Alpha/20160929/MODEL"
         namespace="http://www.trisotech.com/dmn/definitions/_f27bb64b-6fc7-4e1f-9848-11ba35e0df36"
+        drools:modelName="Imported Model"
         triso:fileId="eyJmIjp7InNrdSI6IjEwMmM0MDQ3LTg5NjctNGI3ZS1hODgxLTBhY2ZkNWJjOTAwMiIsIm5hbWUiOiJJbXBvcnRlZCBNb2RlbCJ9fQ=="
         triso:fileName="Edson Tirelli/Imported Model"/>
   <semantic:inputData id="_51190b90-924d-479b-872b-4c6f3486c2cb" name="A Person">
