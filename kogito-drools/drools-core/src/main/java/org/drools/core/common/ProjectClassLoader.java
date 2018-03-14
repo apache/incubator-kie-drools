@@ -460,6 +460,9 @@ public class ProjectClassLoader extends ClassLoader implements KieTypeResolver {
         typesClassLoader = null;
         nonExistingClasses.clear();
         loadedClasses.clear();
+        if (definedTypes != null) {
+            definedTypes.clear();
+        }
     }
 
     private static class ClassBytecode {
