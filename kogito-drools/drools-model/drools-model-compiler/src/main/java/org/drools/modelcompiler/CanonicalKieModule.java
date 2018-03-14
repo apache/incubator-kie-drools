@@ -222,7 +222,7 @@ public class CanonicalKieModule implements InternalKieModule {
         for (Map.Entry<String, Model> entry : oldModels.entrySet()) {
             Model newModel = newModels.get( entry.getKey() );
             if ( newModel == null ) {
-                // TODO all the resources from the old model have to be flagged as removed
+                result.removeFile( entry.getKey() );
                 continue;
             }
 
@@ -267,7 +267,7 @@ public class CanonicalKieModule implements InternalKieModule {
     }
 
     private boolean isChange(String fileName, CanonicalKieModule module) {
-        return fileName.endsWith( ".class" ) && !module.getRuleClassNames().contains( fileNameToClass(fileName) );
+        return fileName.endsWith( ".class" ) && !module.getRuleClassNames().stream().anyMatch( fileNameToClass(fileName)::startsWith );
     }
 
     private ResourceChangeSet calculateResourceChangeSet( Model oldModel, Model newModel ) {
