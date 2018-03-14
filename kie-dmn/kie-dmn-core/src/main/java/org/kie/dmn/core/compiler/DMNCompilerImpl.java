@@ -43,6 +43,7 @@ import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.api.core.ast.InputDataNode;
 import org.kie.dmn.api.core.ast.ItemDefNode;
 import org.kie.dmn.api.marshalling.v1_1.DMNExtensionRegister;
+import org.kie.dmn.api.marshalling.v1_1.DMNMarshaller;
 import org.kie.dmn.backend.marshalling.v1_1.DMNMarshallerFactory;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.ast.BusinessKnowledgeModelNodeImpl;
@@ -130,18 +131,21 @@ public class DMNCompilerImpl
     @Override
     public DMNModel compile(Reader source, Collection<DMNModel> dmnModels) {
         try {
-            Definitions dmndefs = null;
-            if(dmnCompilerConfig != null && !dmnCompilerConfig.getRegisteredExtensions().isEmpty()) {
-                dmndefs = DMNMarshallerFactory.newMarshallerWithExtensions(getDmnCompilerConfig().getRegisteredExtensions()).unmarshal( source );
-            } else {
-                dmndefs = DMNMarshallerFactory.newDefaultMarshaller().unmarshal(source);
-            }
+            Definitions dmndefs = getMarshaller().unmarshal(source);
             DMNModel model = compile(dmndefs, dmnModels);
             return model;
         } catch ( Exception e ) {
             logger.error( "Error compiling model from source.", e );
         }
         return null;
+    }
+
+    public DMNMarshaller getMarshaller() {
+        if (dmnCompilerConfig != null && !dmnCompilerConfig.getRegisteredExtensions().isEmpty()) {
+            return DMNMarshallerFactory.newMarshallerWithExtensions(getDmnCompilerConfig().getRegisteredExtensions());
+        } else {
+            return DMNMarshallerFactory.newDefaultMarshaller();
+        }
     }
 
     @Override

@@ -69,11 +69,15 @@ public class DMNAssemblerService implements KieAssemblerService {
         if (resources.get(0).getRes().getSourcePath().contains("Importing")) {
             for (ListIterator<ResourceAndConfig> iterator = resources.listIterator(resources.size()); iterator.hasPrevious();) {
                 ResourceAndConfig resourceAndConfig = iterator.previous();
+                resourceAndConfig.getBeforeAdd().accept(kbuilder);
                 addResource(kbuilder, resourceAndConfig.getRes(), type, resourceAndConfig.getResConfig());
+                resourceAndConfig.getAfterAdd().accept(kbuilder);
             }
         } else {
             for (ResourceAndConfig r : resources) {
+                r.getBeforeAdd().accept(kbuilder);
                 addResource(kbuilder, r.getRes(), type, r.getResConfig());
+                r.getAfterAdd().accept(kbuilder);
             }
         }
     }
