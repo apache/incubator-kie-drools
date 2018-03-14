@@ -22,4 +22,6 @@ public interface DMNNode {
 
     String getName();
 
+    String getNamespace();
+
 }

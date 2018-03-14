@@ -161,10 +161,13 @@ public class DMNCompilerImpl
                     model.setImportAliasForNS(iAlias, iNS);
                 }
 
-                // TODO only import types for the imported models.
+                // TODO only import types for the imported models, and only required bkms.
                 for (DMNModel m : dmnModels) {
                     for (ItemDefNode idn : m.getItemDefinitions()) {
                         model.getTypeRegistry().registerType(idn.getType());
+                    }
+                    for (BusinessKnowledgeModelNode bkm : m.getBusinessKnowledgeModels()) {
+                        model.addBusinessKnowledgeModel(bkm);
                     }
                 }
             }

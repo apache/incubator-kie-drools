@@ -30,6 +30,7 @@ import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.model.v1_1.Definitions;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
@@ -125,6 +126,7 @@ public class DMNCompilerTest {
 
     @Test
     public void testImport() {
+        System.out.println(null instanceof Definitions);
         DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("Importing_Model.dmn",
                                                                                  this.getClass(),
                                                                                  "Imported_Model.dmn");

@@ -16,6 +16,12 @@
 
 package org.kie.dmn.core.compiler;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
+
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
 import org.kie.dmn.api.core.ast.DMNNode;
@@ -23,6 +29,7 @@ import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.api.core.ast.InputDataNode;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.ast.DecisionNodeImpl;
+import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.model.v1_1.DRGElement;
@@ -62,15 +69,28 @@ public class DecisionCompiler implements DRGElementCompiler {
 
         ctx.enterFrame();
         try {
+            Map<String, DMNType> importedTypes = new HashMap<>();
             for( DMNNode dep : di.getDependencies().values() ) {
                 if( dep instanceof DecisionNode ) {
                     ctx.setVariable( dep.getName(), ((DecisionNode) dep).getResultType() );
                 } else if( dep instanceof InputDataNode ) {
                     ctx.setVariable( dep.getName(), ((InputDataNode) dep).getType() );
                 } else if( dep instanceof BusinessKnowledgeModelNode ) {
-                    // might need to create a DMNType for "functions" and replace the type here by that
-                    ctx.setVariable( dep.getName(), ((BusinessKnowledgeModelNode)dep).getResultType() );
+                    if (dep.getNamespace().equals(model.getNamespace())) {
+                        // might need to create a DMNType for "functions" and replace the type here by that
+                        ctx.setVariable(dep.getName(), ((BusinessKnowledgeModelNode) dep).getResultType());
+                    } else {
+                        // then the BKM dependency is an imported BKM.
+                        List<String> allAliases = model.getImportAliasesForNS().entrySet().stream().filter(kv -> kv.getValue().equals(dep.getNamespace())).map(kv -> kv.getKey()).collect(Collectors.toList());
+                        for (String alias : allAliases) {
+                            CompositeTypeImpl importedComposite = (CompositeTypeImpl) importedTypes.computeIfAbsent(alias, a -> new CompositeTypeImpl());
+                            importedComposite.addField(dep.getName(), ((BusinessKnowledgeModelNode) dep).getResultType());
+                        }
+                    }
                 }
+            }
+            for (Entry<String, DMNType> importedType : importedTypes.entrySet()) {
+                ctx.setVariable(importedType.getKey(), importedType.getValue());
             }
             DMNExpressionEvaluator evaluator = compiler.getEvaluatorCompiler().compileExpression( ctx, model, di, di.getName(), di.getDecision().getExpression() );
             di.setEvaluator( evaluator );

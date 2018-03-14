@@ -25,6 +25,7 @@ import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.model.v1_1.BusinessKnowledgeModel;
 import org.kie.dmn.model.v1_1.Decision;
+import org.kie.dmn.model.v1_1.Definitions;
 import org.kie.dmn.model.v1_1.InformationRequirement;
 import org.kie.dmn.model.v1_1.KnowledgeRequirement;
 import org.kie.dmn.model.v1_1.NamedElement;
@@ -51,6 +52,20 @@ public abstract class DMNBaseNode
 
     public String getName() {
         return source != null ? source.getName() : null;
+    }
+
+    public String getNamespace() {
+        if (source != null) {
+            Object parent = source.getParent();
+            while (!(parent instanceof Definitions)) {
+                if (parent == null) {
+                    return null;
+                }
+                parent = source.getParent();
+            }
+            return ((Definitions) parent).getNamespace();
+        }
+        return null;
     }
 
     public String getIdentifierString() {
