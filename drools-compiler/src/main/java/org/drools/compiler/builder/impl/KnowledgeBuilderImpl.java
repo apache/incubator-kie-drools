@@ -838,7 +838,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         }
     }
 
-    void addPackageForExternalType(ResourceType type, List<KieAssemblerService.ResourceDescr> resources) throws Exception {
+    void addPackageForExternalType(ResourceType type, List<KieAssemblerService.ResourceAndConfig> resources) throws Exception {
         KieAssemblers assemblers = ServiceRegistry.getInstance().get(KieAssemblers.class);
 
         KieAssemblerService assembler = assemblers.getAssemblers().get(type);

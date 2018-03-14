@@ -149,7 +149,7 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
     private void buildOthers() {
         try {
             for (Map.Entry<ResourceType, List<ResourceDescr>> entry : resourcesByType.entrySet()) {
-                List<org.kie.api.internal.assembler.KieAssemblerService.ResourceDescr> rds = entry.getValue().stream().map(CompositeKnowledgeBuilderImpl::toDescr).collect(Collectors.toList());
+                List<org.kie.api.internal.assembler.KieAssemblerService.ResourceAndConfig> rds = entry.getValue().stream().map(CompositeKnowledgeBuilderImpl::toDescr).collect(Collectors.toList());
                 kBuilder.addPackageForExternalType(entry.getKey(), rds);
             }
         } catch (RuntimeException e) {
@@ -159,8 +159,8 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         }
     }
 
-    private static KieAssemblerService.ResourceDescr toDescr(ResourceDescr rd) {
-        return new KieAssemblerService.ResourceDescr(rd.resource,
+    private static KieAssemblerService.ResourceAndConfig toDescr(ResourceDescr rd) {
+        return new KieAssemblerService.ResourceAndConfig(rd.resource,
                                                      rd.configuration,
                                                      kb -> ((KnowledgeBuilderImpl) kb).setAssetFilter(rd.getFilter()),
                                                      kb -> ((KnowledgeBuilderImpl) kb).setAssetFilter(null));

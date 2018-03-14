@@ -18,9 +18,11 @@ package org.kie.dmn.core.assembler;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
@@ -61,12 +63,36 @@ public class DMNAssemblerService implements KieAssemblerService {
     }
 
     @Override
+    public void addResources(Object kbuilder, List<ResourceAndConfig> resources, ResourceType type) throws Exception {
+        // TODO
+        if (resources.get(0).getRes().getSourcePath().contains("Importing")) {
+            for (ListIterator<ResourceAndConfig> iterator = resources.listIterator(resources.size()); iterator.hasPrevious();) {
+                ResourceAndConfig resourceAndConfig = iterator.previous();
+                addResource(kbuilder, resourceAndConfig.getRes(), type, resourceAndConfig.getResConfig());
+            }
+        } else {
+            for (ResourceAndConfig r : resources) {
+                addResource(kbuilder, r.getRes(), type, r.getResConfig());
+            }
+        }
+    }
+
+    @Override
     public void addResource(Object kbuilder, Resource resource, ResourceType type, ResourceConfiguration configuration)
             throws Exception {
         KnowledgeBuilderImpl kbuilderImpl = (KnowledgeBuilderImpl) kbuilder;
         DMNCompiler dmnCompiler = kbuilderImpl.getCachedOrCreate( DMN_COMPILER_CACHE_KEY, () -> getCompiler( kbuilderImpl ) );
 
-        DMNModel model = dmnCompiler.compile(resource);
+        Collection<DMNModel> dmnModels = new ArrayList<>();
+        for (PackageRegistry pr : kbuilderImpl.getPackageRegistry().values()) {
+            ResourceTypePackage resourceTypePackage = pr.getPackage().getResourceTypePackages().get(ResourceType.DMN);
+            if (resourceTypePackage != null) {
+                DMNPackageImpl dmnpkg = (DMNPackageImpl) resourceTypePackage;
+                dmnModels.addAll(dmnpkg.getAllModels().values());
+            }
+        }
+
+        DMNModel model = dmnCompiler.compile(resource, dmnModels);
         if( model != null ) {
             String namespace = model.getNamespace();
 

@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -76,6 +77,8 @@ public class DMNModelImpl
      * a compile-time preference to indicate if type-check should be performed during runtime evaluation. 
      */
     private boolean runtimeTypeCheck = false;
+
+    private Map<String, String> importAliases = new HashMap<>();
 
     public DMNModelImpl() {
     }
@@ -364,6 +367,18 @@ public class DMNModelImpl
         this.messages  = compiledModel.messages  ;
         this.types     = compiledModel.types     ;
         this.runtimeTypeCheck = compiledModel.runtimeTypeCheck;
+    }
+
+    public void setImportAliasForNS(String iAlias, String iNS) {
+        this.importAliases.put(iAlias, iNS);
+    }
+
+    public Map<String, String> getImportAliasesForNS() {
+        return Collections.unmodifiableMap(this.importAliases);
+    }
+
+    public String getImportNSforAlias(String iAlias) {
+        return this.importAliases.get(iAlias);
     }
 
 }
