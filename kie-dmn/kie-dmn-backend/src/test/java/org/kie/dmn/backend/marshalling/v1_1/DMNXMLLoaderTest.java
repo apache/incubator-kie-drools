@@ -94,6 +94,7 @@ public class DMNXMLLoaderTest {
         DecisionService decisionService1 = def.getDecisionService().get(0);
         assertThat(decisionService1.getId(), is("_70386614-9838-420b-a2ae-ff901ada63fb"));
         assertThat(decisionService1.getName(), is("A Only Knowing B and C"));
+        assertThat(decisionService1.getDescription(), is("Description of A (BC)"));
         assertThat(decisionService1.getOutputDecision().size(), is(1));
         assertThat(decisionService1.getEncapsulatedDecision().size(), is(0));
         assertThat(decisionService1.getInputDecision().size(), is(2));
