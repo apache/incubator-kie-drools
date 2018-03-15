@@ -89,6 +89,8 @@ public class DecisionServiceConverter extends NamedElementConverter {
         case INPUT_DATA:
             decisionService.getInputData().add((DMNElementReference) child);
             break;
+        default:
+            super.assignChildElement(parent, nodeName, child);
         }
     }
 
