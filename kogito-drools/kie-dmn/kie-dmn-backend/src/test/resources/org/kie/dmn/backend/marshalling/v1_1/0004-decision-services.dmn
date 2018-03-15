@@ -3,6 +3,7 @@
   <semantic:extensionElements>
     <drools:decisionServices xmlns:drools="http://www.drools.org/kie/dmn/1.1">
       <semantic:decisionService id="_70386614-9838-420b-a2ae-ff901ada63fb" name="A Only Knowing B and C">
+        <semantic:description>Description of A (BC)</semantic:description>
         <semantic:outputDecision href="#_c2b44706-d479-4ceb-bb74-73589d26dd04"/>
         <semantic:inputDecision href="#_e878ecd7-ecaa-42b9-b8c9-4437230f2b89"/>
         <semantic:inputDecision href="#_8758871c-af70-4da9-8355-536670bade10"/>
