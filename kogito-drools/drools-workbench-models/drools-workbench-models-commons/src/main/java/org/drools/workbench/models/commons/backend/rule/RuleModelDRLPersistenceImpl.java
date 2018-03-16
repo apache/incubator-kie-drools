@@ -1406,7 +1406,7 @@ public class RuleModelDRLPersistenceImpl
         private Map<String, FieldConstraint> bindingsFields;
         protected DRLConstraintValueBuilder constraintValueBuilder;
         protected RHSGeneratorContextFactory generatorContextFactory;
-        protected Collection<RuleModelIActionPersistenceExtension> extensions;
+        //        protected Collection<RuleModelIActionPersistenceExtension> extensions;
 
         protected final RHSGeneratorContext rootContext;
 
@@ -1425,7 +1425,6 @@ public class RuleModelDRLPersistenceImpl
             this.bindingsFields = bindingsFields;
             this.constraintValueBuilder = constraintValueBuilder;
             this.generatorContextFactory = generatorContextFactory;
-            this.extensions = extensions;
             this.rootContext = generatorContextFactory.newGeneratorContext();
             this.indentation = indentation;
             this.instantiatedWorkItems = new HashSet<String>();
