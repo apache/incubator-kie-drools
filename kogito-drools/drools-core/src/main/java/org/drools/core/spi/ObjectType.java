@@ -16,9 +16,9 @@
 
 package org.drools.core.spi;
 
-import org.drools.core.base.ValueType;
-
 import java.io.Externalizable;
+
+import org.drools.core.base.ValueType;
 
 /**
  * Semantic object type differentiator.
@@ -39,4 +39,8 @@ public interface ObjectType
     boolean isEvent();
 
     ValueType getValueType();
+
+    Class<?> getClassType();
+
+    String getClassName();
 }

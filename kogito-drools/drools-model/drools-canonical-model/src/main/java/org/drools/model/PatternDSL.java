@@ -34,7 +34,6 @@ import org.drools.model.functions.Predicate3;
 import org.drools.model.functions.Predicate4;
 import org.drools.model.functions.Predicate5;
 import org.drools.model.functions.temporal.TemporalPredicate;
-import org.drools.model.impl.DeclarationImpl;
 import org.drools.model.impl.Query0DefImpl;
 import org.drools.model.impl.Query1DefImpl;
 import org.drools.model.impl.Query2DefImpl;
@@ -54,10 +53,6 @@ import static java.util.UUID.randomUUID;
 public class PatternDSL extends DSL {
 
     private static final ViewBuilder VIEW_BUILDER = ViewBuilder.PATTERN;
-
-    public static <T> Declaration<T> declarationOf( Class<T> type ) {
-        return new DeclarationImpl<>( type );
-    }
 
     public static <T> PatternDef<T> pattern(Variable<T> var) {
         return new PatternDefImpl<>( var );

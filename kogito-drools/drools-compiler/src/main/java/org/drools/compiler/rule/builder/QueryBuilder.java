@@ -15,6 +15,8 @@
 
 package org.drools.compiler.rule.builder;
 
+import java.util.Arrays;
+
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.QueryDescr;
@@ -28,8 +30,6 @@ import org.drools.core.rule.QueryImpl;
 import org.drools.core.rule.constraint.QueryNameConstraint;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.ObjectType;
-
-import java.util.Arrays;
 
 
 public class QueryBuilder implements EngineElementBuilder {
@@ -110,9 +110,8 @@ public class QueryBuilder implements EngineElementBuilder {
                 String[] args = argsVal != null ? Arrays.copyOf( argsVal, argsVal.length, String[].class ) : null;
 
                 returnName = types[ numParams ];
-                ClassObjectType objectType = new ClassObjectType( abductionReturnKlass, false );
-                objectType = context.getPkg().getClassFieldAccessorStore().getClassObjectType( objectType,
-                                                                                               (AbductiveQuery) query );
+                ObjectType objectType = new ClassObjectType( abductionReturnKlass, false );
+                objectType = context.getPkg().getClassFieldAccessorStore().wireObjectType( objectType, (AbductiveQuery) query );
 
                 ( (AbductiveQuery) query ).setReturnType( objectType, params, args, declarations );
             } catch ( NoSuchMethodException e ) {

@@ -53,6 +53,8 @@ import org.drools.model.impl.DeclarationImpl;
 import org.drools.model.impl.EntryPointImpl;
 import org.drools.model.impl.FromImpl;
 import org.drools.model.impl.GlobalImpl;
+import org.drools.model.impl.PrototypeImpl;
+import org.drools.model.impl.PrototypeVariableImpl;
 import org.drools.model.impl.TypeMetaDataImpl;
 import org.drools.model.impl.UnitDataImpl;
 import org.drools.model.impl.ValueImpl;
@@ -97,6 +99,20 @@ public class DSL {
 
     public static AnnotationValue annotationValue(String key, String value) {
         return new AnnotationValueImpl( key, value );
+    }
+
+    // -- Prototype --
+
+    public static Prototype prototype(String pkg, String name, Prototype.Field... fields) {
+        return new PrototypeImpl( pkg, name, fields );
+    }
+
+    public static Prototype.Field field(String name, Class<?> type) {
+        return new PrototypeImpl.FieldImpl( name, type );
+    }
+
+    public static PrototypeVariable declarationOf( Prototype prototype ) {
+        return new PrototypeVariableImpl( prototype );
     }
 
     // -- Variable --

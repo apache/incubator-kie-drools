@@ -2392,7 +2392,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     }
 
     public TypeDeclaration getTypeDeclaration(Class<?> cls) {
-        return typeBuilder.getTypeDeclaration(cls);
+        return cls != null ? typeBuilder.getTypeDeclaration(cls) : null;
     }
 
     public void normalizeTypeDeclarationAnnotations(PackageDescr packageDescr, TypeResolver typeResolver) {

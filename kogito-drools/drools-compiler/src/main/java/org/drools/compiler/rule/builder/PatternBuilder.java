@@ -256,7 +256,7 @@ public class PatternBuilder
         boolean duplicateBindings = patternIdentifier != null && objectType instanceof ClassObjectType &&
                 context.getDeclarationResolver().isDuplicated(context.getRule(),
                                                               patternIdentifier,
-                                                              ((ClassObjectType) objectType).getClassName());
+                                                              objectType.getClassName());
 
         Pattern pattern;
         if (!StringUtils.isEmpty(patternIdentifier) && !duplicateBindings) {
@@ -268,8 +268,7 @@ public class PatternBuilder
                                   patternDescr.isInternalFact(context));
             if (objectType instanceof ClassObjectType) {
                 // make sure PatternExtractor is wired up to correct ClassObjectType and set as a target for rewiring
-                context.getPkg().getClassFieldAccessorStore().getClassObjectType(((ClassObjectType) objectType),
-                                                                                 (AcceptsClassObjectType) pattern.getDeclaration().getExtractor());
+                context.getPkg().getClassFieldAccessorStore().wireObjectType(objectType, (AcceptsClassObjectType) pattern.getDeclaration().getExtractor());
             }
         } else {
             pattern = new Pattern(context.getNextPatternId(),
@@ -299,7 +298,7 @@ public class PatternBuilder
     private void processClassObjectType(RuleBuildContext context, ObjectType objectType, Pattern pattern) {
         if (objectType instanceof ClassObjectType) {
             // make sure the Pattern is wired up to correct ClassObjectType and set as a target for rewiring
-            context.getPkg().getClassFieldAccessorStore().getClassObjectType(((ClassObjectType) objectType), pattern);
+            context.getPkg().getClassFieldAccessorStore().wireObjectType(objectType, pattern);
             Class<?> cls = ((ClassObjectType) objectType).getClassType();
             if (cls.getPackage() != null && !cls.getPackage().getName().equals("java.lang")) {
                 // register the class in its own package unless it is primitive or belongs to java.lang
@@ -566,23 +565,14 @@ public class PatternBuilder
         if (!(patternType instanceof ClassObjectType)) {
             return null;
         }
-        Class<?> patternClass = ((ClassObjectType) patternType).getClassType();
-        TypeDeclaration typeDeclaration = getTypeDeclarationForPattern(context, pattern);
+        Class<?> patternClass = patternType.getClassType();
+        TypeDeclaration typeDeclaration = getTypeDeclaration(pattern, context);
         if (!typeDeclaration.isPropertyReactive()) {
             registerDescrBuildError(context, patternDescr,
                                     "Wrong usage of @" + Watch.class.getSimpleName() + " annotation on class " + patternClass.getName() + " that is not annotated as @PropertyReactive");
         }
         typeDeclaration.setTypeClass(patternClass);
         return typeDeclaration.getAccessibleProperties();
-    }
-
-    private TypeDeclaration getTypeDeclarationForPattern(RuleBuildContext context, Pattern pattern) {
-        ObjectType patternType = pattern.getObjectType();
-        if (!(patternType instanceof ClassObjectType)) {
-            return null;
-        }
-        Class<?> patternClass = ((ClassObjectType) patternType).getClassType();
-        return context.getKnowledgeBuilder().getTypeDeclaration(patternClass);
     }
 
     /**
@@ -849,7 +839,7 @@ public class PatternBuilder
 
         XpathConstraint xpathConstraint = new XpathConstraint();
         ObjectType objectType = pattern.getObjectType();
-        Class<?> patternClass = ((ClassObjectType) objectType).getClassType();
+        Class<?> patternClass = objectType.getClassType();
 
         List<Class<?>> backReferenceClasses = new ArrayList<Class<?>>();
         backReferenceClasses.add(patternClass);
@@ -865,7 +855,7 @@ public class PatternBuilder
                 XpathConstraint.XpathChunk xpathChunk = xpathConstraint.addChunck(patternClass, part.getField(), part.getIndex(), part.isIterate(), part.isLazy());
 
                 // make sure the Pattern is wired up to correct ClassObjectType and set as a target for rewiring
-                context.getPkg().getClassFieldAccessorStore().getClassObjectType(((ClassObjectType) currentObjectType), xpathChunk);
+                context.getPkg().getClassFieldAccessorStore().wireObjectType(currentObjectType, xpathChunk);
 
                 if (xpathChunk == null) {
                     registerDescrBuildError(context, patternDescr,
@@ -884,7 +874,7 @@ public class PatternBuilder
                     }
                     part.addInlineCastConstraint(patternClass);
                     currentObjectType = getObjectType(context, patternDescr, patternClass.getName());
-                    xpathChunk.setReturnedType((ClassObjectType) currentObjectType);
+                    xpathChunk.setReturnedType(currentObjectType);
                 } else {
                     patternClass = xpathChunk.getReturnedClass();
                     currentObjectType = getObjectType(context, patternDescr, patternClass.getName());
@@ -1208,14 +1198,10 @@ public class PatternBuilder
         Pattern pattern = (Pattern) context.getDeclarationResolver().peekBuildStack();
         ReturnValueRestrictionDescr returnValueRestrictionDescr = new ReturnValueRestrictionDescr(operator, relDescr, value2);
 
-        Class<?> thisClass = pattern.getObjectType() instanceof ClassObjectType ?
-                ((ClassObjectType) pattern.getObjectType()).getClassType() :
-                null;
-
         AnalysisResult analysis = context.getDialect().analyzeExpression(context,
                                                                          returnValueRestrictionDescr,
                                                                          returnValueRestrictionDescr.getContent(),
-                                                                         new BoundIdentifiers(pattern, context, null, thisClass));
+                                                                         new BoundIdentifiers(pattern, context, null, pattern.getObjectType().getClassType()));
         if (analysis == null) {
             // something bad happened
             return null;
@@ -1480,11 +1466,7 @@ public class PatternBuilder
     }
 
     private TypeDeclaration getTypeDeclaration(Pattern pattern, RuleBuildContext context) {
-        if (pattern.getObjectType() instanceof ClassObjectType) {
-            Class<?> patternClass = ((ClassObjectType) pattern.getObjectType()).getClassType();
-            return context.getKnowledgeBuilder().getTypeDeclaration(patternClass);
-        }
-        return null;
+        return context.getKnowledgeBuilder().getTypeDeclaration( pattern.getObjectType().getClassType() );
     }
 
     @SuppressWarnings("unchecked")
@@ -1551,8 +1533,8 @@ public class PatternBuilder
         }
 
         boolean isDynamic =
-                !((ClassObjectType) pattern.getObjectType()).getClassType().isArray() &&
-                        !context.getKnowledgeBuilder().getTypeDeclaration(((ClassObjectType) pattern.getObjectType()).getClassType()).isTypesafe();
+                !pattern.getObjectType().getClassType().isArray() &&
+                        !context.getKnowledgeBuilder().getTypeDeclaration(pattern.getObjectType().getClassType()).isTypesafe();
 
         return getConstraintBuilder(context).buildMvelConstraint(context.getPkg().getName(), expr, mvelDeclarations, getOperators(usedIdentifiers.getOperators()), compilationUnit, isDynamic);
     }
@@ -1597,16 +1579,13 @@ public class PatternBuilder
     public static AnalysisResult buildAnalysis(RuleBuildContext context, Pattern pattern, PredicateDescr predicateDescr, Map<String, OperatorDescr> aliases) {
         Map<String, EvaluatorWrapper> operators = aliases == null ? new HashMap<String, EvaluatorWrapper>() : buildOperators(context, pattern, predicateDescr, aliases);
 
-        Class<?> thisClass = pattern.getObjectType() instanceof ClassObjectType ?
-                ((ClassObjectType) pattern.getObjectType()).getClassType() : null;
-
         return context.getDialect().analyzeExpression(context,
                                                       predicateDescr,
                                                       predicateDescr.getContent(),
                                                       new BoundIdentifiers(pattern,
                                                                            context,
                                                                            operators,
-                                                                           thisClass));
+                                                                           pattern.getObjectType().getClassType()));
     }
 
     protected static Map<String, EvaluatorWrapper> buildOperators(RuleBuildContext context,
@@ -1658,7 +1637,7 @@ public class PatternBuilder
                     declaration = createDeclarationObject(context, "this", pattern);
                 } else {
                     declaration = new Declaration("this", pattern);
-                    context.getPkg().getClassFieldAccessorStore().getReader(((ClassObjectType) pattern.getObjectType()).getClassName(), expr, declaration);
+                    context.getPkg().getClassFieldAccessorStore().getReader( pattern.getObjectType().getClassName(), expr, declaration );
                 }
             }
         } else {
@@ -1772,7 +1751,7 @@ public class PatternBuilder
                                             final String fieldName,
                                             final AcceptsReadAccessor target) {
         if (!ValueType.FACTTEMPLATE_TYPE.equals(objectType.getValueType())) {
-            context.getPkg().getClassFieldAccessorStore().getReader(((ClassObjectType) objectType).getClassName(), fieldName, target);
+            context.getPkg().getClassFieldAccessorStore().getReader(objectType.getClassName(), fieldName, target);
         }
     }
 
@@ -1818,7 +1797,7 @@ public class PatternBuilder
             }
 
             try {
-                reader = context.getPkg().getClassFieldAccessorStore().getReader(((ClassObjectType) objectType).getClassName(),
+                reader = context.getPkg().getClassFieldAccessorStore().getReader(objectType.getClassName(),
                                                                                  fieldName,
                                                                                  target);
             } catch (final Exception e) {
@@ -1834,7 +1813,7 @@ public class PatternBuilder
 
                 if (reportError) {
                     Collection<KnowledgeBuilderResult> results = context.getPkg().getClassFieldAccessorStore()
-                            .getWiringResults(((ClassObjectType) objectType).getClassType(), fieldName);
+                            .getWiringResults(objectType.getClassType(), fieldName);
                     if (!results.isEmpty()) {
                         for (KnowledgeBuilderResult res : results) {
                             if (res.getSeverity() == ResultSeverity.ERROR) {
@@ -1857,7 +1836,7 @@ public class PatternBuilder
                                                                                        descr,
                                                                                        fieldName,
                                                                                        new BoundIdentifiers(pattern, context, Collections.EMPTY_MAP,
-                                                                                                            ((ClassObjectType) objectType).getClassType()));
+                                                                                                            objectType.getClassType()));
 
                 if (analysis == null) {
                     // something bad happened
@@ -1878,7 +1857,7 @@ public class PatternBuilder
                 }
 
                 reader = context.getPkg().getClassFieldAccessorStore().getMVELReader(context.getPkg().getName(),
-                                                                                     ((ClassObjectType) objectType).getClassName(),
+                                                                                     objectType.getClassName(),
                                                                                      fieldName,
                                                                                      context.isTypesafe(),
                                                                                      ((MVELAnalysisResult) analysis).getReturnType());

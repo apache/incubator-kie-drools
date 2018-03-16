@@ -15,6 +15,20 @@
 
 package org.drools.core.rule.constraint;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.InternalFactHandle;
@@ -30,24 +44,11 @@ import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.Constraint;
 import org.drools.core.spi.DataProvider;
 import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PatternExtractor;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.ClassUtils;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 
 import static org.drools.core.util.ClassUtils.areNullSafeEquals;
 import static org.drools.core.util.ClassUtils.convertFromPrimitiveType;
@@ -249,7 +250,7 @@ public class XpathConstraint extends MutableTypeConstraint {
         private List<Constraint> constraints;
         private Declaration declaration;
         private ClassObjectType classObjectType;
-        private ClassObjectType returnedType;
+        private ObjectType returnedType;
         private Method accessor;
         
         @Override
@@ -363,7 +364,7 @@ public class XpathConstraint extends MutableTypeConstraint {
             }
         }
 
-        public void setReturnedType( ClassObjectType returnedType ) {
+        public void setReturnedType( ObjectType returnedType ) {
             this.returnedType = returnedType;
         }
 

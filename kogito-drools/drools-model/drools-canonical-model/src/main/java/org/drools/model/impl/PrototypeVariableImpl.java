@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2005 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,23 @@
  * limitations under the License.
  */
 
-package org.drools.core.spi;
+package org.drools.model.impl;
 
+import org.drools.model.Prototype;
+import org.drools.model.PrototypeFact;
+import org.drools.model.PrototypeVariable;
 
-public interface ClassWireable {
+public class PrototypeVariableImpl extends DeclarationImpl<PrototypeFact> implements PrototypeVariable {
 
-    void wire( Class<?> klass );
+    private final Prototype prototype;
 
-    String getClassName();
+    public PrototypeVariableImpl( Prototype prototype ) {
+        super( PrototypeFact.class );
+        this.prototype = prototype;
+    }
 
-    Class<?> getClassType();
-
+    @Override
+    public Prototype getPrototype() {
+        return prototype;
+    }
 }

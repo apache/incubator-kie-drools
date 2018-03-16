@@ -38,6 +38,7 @@ import org.drools.core.base.extractors.SelfReferenceClassFieldReader;
 import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.facttemplates.FactTemplateObjectType;
 import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.Behavior;
 import org.drools.core.rule.ConditionalBranch;
@@ -64,6 +65,7 @@ import org.drools.core.spi.Accumulator;
 import org.drools.core.spi.DataProvider;
 import org.drools.core.spi.EvalExpression;
 import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.spi.ObjectType;
 import org.drools.model.AccumulatePattern;
 import org.drools.model.Argument;
 import org.drools.model.Binding;
@@ -75,6 +77,8 @@ import org.drools.model.From;
 import org.drools.model.Global;
 import org.drools.model.Index;
 import org.drools.model.Model;
+import org.drools.model.Prototype;
+import org.drools.model.PrototypeVariable;
 import org.drools.model.Query;
 import org.drools.model.Rule;
 import org.drools.model.SingleConstraint;
@@ -88,7 +92,6 @@ import org.drools.model.WindowReference;
 import org.drools.model.consequences.ConditionalNamedConsequenceImpl;
 import org.drools.model.consequences.NamedConsequenceImpl;
 import org.drools.model.constraints.SingleConstraint1;
-import org.drools.model.functions.Function1;
 import org.drools.model.functions.Predicate1;
 import org.drools.model.functions.accumulate.AccumulateFunction;
 import org.drools.model.impl.DeclarationImpl;
@@ -120,15 +123,18 @@ import static org.drools.model.FlowDSL.declarationOf;
 import static org.drools.model.FlowDSL.entryPoint;
 import static org.drools.model.impl.NamesGenerator.generateName;
 import static org.drools.modelcompiler.ModelCompilerUtil.conditionToGroupElementType;
+import static org.drools.modelcompiler.facttemplate.FactFactory.prototypeToFactTemplate;
 import static org.drools.modelcompiler.util.TypeDeclarationUtil.createTypeDeclaration;
 
 public class KiePackagesBuilder {
+
+    private static final ObjectType JAVA_CLASS_OBJECT_TYPE = new ClassObjectType( Object.class );
 
     private final RuleBaseConfiguration configuration;
 
     private final Map<String, KiePackage> packages = new HashMap<>();
 
-    private final Map<Class<?>, ClassObjectType> objectTypeCache = new HashMap<>();
+    private final Map<String, ObjectType> objectTypeCache = new HashMap<>();
 
     private final Collection<Model> models;
     private final ChainedProperties chainedProperties;
@@ -360,7 +366,7 @@ public class KiePackagesBuilder {
                 }
                 boolean existingPattern = pattern != null;
                 if (!existingPattern) {
-                    pattern = new Pattern( 0, getObjectType( Object.class ) );
+                    pattern = new Pattern( 0, JAVA_CLASS_OBJECT_TYPE );
                 }
 
                 PatternImpl sourcePattern = (PatternImpl) accumulatePattern.getPattern();
@@ -408,7 +414,7 @@ public class KiePackagesBuilder {
                 if (innerCondition instanceof PatternImpl) {
                     basePattern = new Pattern( ctx.getNextPatternIndex(),
                                                0, // offset will be set by ReteooBuilder
-                                               getObjectType( (( PatternImpl ) innerCondition).getPatternVariable().getType() ),
+                                               getObjectType( (( PatternImpl ) innerCondition).getPatternVariable() ),
                                                BASE_IDENTIFIER,
                                                true );
                     remainingPatterns.add( (Pattern) conditionToElement( ctx, group, innerCondition ) );
@@ -507,13 +513,12 @@ public class KiePackagesBuilder {
     }
 
     private Pattern buildPattern( RuleContext ctx, GroupElement group, Condition condition ) {
-        org.drools.model.Pattern<Object> modelPattern = (org.drools.model.Pattern) condition;
+        org.drools.model.Pattern<?> modelPattern = (org.drools.model.Pattern) condition;
         Pattern pattern = addPatternForVariable( ctx, group, modelPattern.getPatternVariable() );
 
         for (Binding binding : modelPattern.getBindings()) {
             Declaration declaration = new Declaration(binding.getBoundVariable().getName(),
-                                                      new LambdaReadAccessor(binding.getBoundVariable().getType(),
-                                                                             new Function1.Impl<>(binding.getBindingFunction())),
+                                                      new LambdaReadAccessor(binding.getBoundVariable().getType(), binding.getBindingFunction()),
                                                       pattern,
                                                       true);
             pattern.addDeclaration( declaration );
@@ -545,7 +550,7 @@ public class KiePackagesBuilder {
             final Accumulator accumulator = createAccumulator(usedVariableName, binding, functionClass);
             final Variable boundVar = accPattern.getBoundVariables()[0];
             final Declaration declaration = new Declaration(boundVar.getName(),
-                                                            getReadAcessor(getObjectType(Object.class)),
+                                                            getReadAcessor( JAVA_CLASS_OBJECT_TYPE ),
                                                             pattern,
                                                             true);
             pattern.addDeclaration(declaration);
@@ -614,10 +619,9 @@ public class KiePackagesBuilder {
     }
 
     private Pattern addPatternForVariable( RuleContext ctx, GroupElement group, Variable patternVariable ) {
-        Class<?> patternClass = patternVariable.getType();
         Pattern pattern = new Pattern( ctx.getNextPatternIndex(),
                                        0, // offset will be set by ReteooBuilder
-                                       getObjectType( patternClass ),
+                                       getObjectType( patternVariable ),
                                        patternVariable.getName(),
                                        true );
 
@@ -674,7 +678,7 @@ public class KiePackagesBuilder {
     private <T> void createWindowReference( RuleContext ctx, WindowReference<T> window ) {
         WindowDeclaration windowDeclaration = new WindowDeclaration( window.getName(), ctx.getPkg().getName() );
         Variable<T> variable = declarationOf( window.getPatternType() );
-        Pattern windowPattern = new Pattern(0, getObjectType( window.getPatternType() ), variable.getName() );
+        Pattern windowPattern = new Pattern(0, getClassObjectType( window.getPatternType() ), variable.getName() );
         windowDeclaration.setPattern( windowPattern );
         for ( Predicate1<T> predicate : window.getPredicates()) {
             SingleConstraint singleConstraint = new SingleConstraint1<>( generateName("expr"), variable, predicate );
@@ -706,7 +710,7 @@ public class KiePackagesBuilder {
                 Declaration unificationDeclaration = null;
                 for (int i = 0; i < vars.length; i++) {
                     declarations[i] = ctx.getDeclaration( vars[i] );
-                    if ( isEqual && (( ClassObjectType ) declarations[i].getPattern().getObjectType()).getClassType() == DroolsQuery.class ) {
+                    if ( isEqual && declarations[i].getPattern().getObjectType().equals( ClassObjectType.DroolsQuery_ObjectType ) ) {
                         unificationDeclaration = declarations[i];
                     } else if ( pattern.getSource() instanceof MultiAccumulate) {
                         Declaration accDeclaration = pattern.getDeclarations().get( declarations[i].getBindingName() );
@@ -747,10 +751,23 @@ public class KiePackagesBuilder {
         return packages.values();
     }
 
-    ClassObjectType getObjectType( Class<?> patternClass ) {
-        return objectTypeCache.computeIfAbsent( patternClass, c -> {
+    ObjectType getObjectType( Variable patternVariable ) {
+        return patternVariable instanceof PrototypeVariable ?
+                getPrototypeObjectType( (( PrototypeVariable ) patternVariable).getPrototype() ) :
+                getClassObjectType( patternVariable.getType() );
+    }
+
+    private ObjectType getPrototypeObjectType( Prototype prototype ) {
+        return objectTypeCache.computeIfAbsent( prototype.getFullName(), name -> {
+            KnowledgePackageImpl pkg = (KnowledgePackageImpl) packages.computeIfAbsent( prototype.getPackage(), this::createKiePackage );
+            return new FactTemplateObjectType(prototypeToFactTemplate( prototype, pkg ));
+        } );
+    }
+
+    private ObjectType getClassObjectType( Class<?> patternClass ) {
+        return objectTypeCache.computeIfAbsent( patternClass.getCanonicalName(), name -> {
             boolean isEvent = false;
-            if (!patternClass.getName().startsWith( "java." ) && !patternClass.isPrimitive()) {
+            if (!name.startsWith( "java." ) && !patternClass.isPrimitive()) {
                 KnowledgePackageImpl pkg = (KnowledgePackageImpl) packages.computeIfAbsent( patternClass.getPackage().getName(), this::createKiePackage );
                 TypeDeclaration typeDeclaration = pkg.getTypeDeclaration( patternClass );
                 if ( typeDeclaration == null ) {
@@ -759,7 +776,7 @@ public class KiePackagesBuilder {
                 }
                 isEvent = typeDeclaration.getRole() == Role.Type.EVENT;
             }
-            return new ClassObjectType( c, isEvent );
+            return new ClassObjectType( patternClass, isEvent );
         } );
     }
 }
