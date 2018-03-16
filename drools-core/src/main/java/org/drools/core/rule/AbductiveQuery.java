@@ -15,9 +15,6 @@
 
 package org.drools.core.rule;
 
-import org.drools.core.base.ClassObjectType;
-import org.drools.core.spi.AcceptsClassObjectType;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -28,9 +25,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.drools.core.base.ClassObjectType;
+import org.drools.core.spi.AcceptsClassObjectType;
+import org.drools.core.spi.ObjectType;
+
 public class AbductiveQuery extends QueryImpl implements Externalizable, AcceptsClassObjectType {
 
-    private ClassObjectType returnType;
+    private ObjectType returnType;
     private transient Constructor cachedConstructor;
 
     private String[] params;
@@ -52,7 +53,7 @@ public class AbductiveQuery extends QueryImpl implements Externalizable, Accepts
         return true;
     }
 
-    public void setReturnType( ClassObjectType objectType, String[] params, String[] args, Declaration[] declarations ) throws NoSuchMethodException, IllegalArgumentException {
+    public void setReturnType( ObjectType objectType, String[] params, String[] args, Declaration[] declarations ) throws NoSuchMethodException, IllegalArgumentException {
         this.returnType = objectType;
         this.params = params;
         if ( args != null ) {
@@ -149,7 +150,7 @@ public class AbductiveQuery extends QueryImpl implements Externalizable, Accepts
         }
     }
 
-    public ClassObjectType getReturnType() {
+    public ObjectType getReturnType() {
         return returnType;
     }
 

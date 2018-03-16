@@ -44,12 +44,6 @@ public class FactTemplateObjectType
 
     }
 
-     /**
-     * Construct.
-     *
-     * @param objectTypeClass
-     *            Java object class.
-     */
     public FactTemplateObjectType(final FactTemplate factTemplate) {
         this.factTemplate = factTemplate;
     }
@@ -127,7 +121,15 @@ public class FactTemplateObjectType
         this.isEvent = isEvent;
     }
 
-   public String toString() {
+    public Class<?> getClassType() {
+        return null;
+    }
+
+    public String getClassName() {
+        return factTemplate.getPackage() + "." + factTemplate.getName();
+    }
+
+    public String toString() {
         return "[FactTemplateObjectType "+( this.isEvent ? "event=" : "template=") + this.factTemplate.getName() + "]";
     }
 

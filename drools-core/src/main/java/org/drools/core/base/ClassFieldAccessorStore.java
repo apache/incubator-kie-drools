@@ -37,6 +37,7 @@ import org.drools.core.spi.AcceptsClassObjectType;
 import org.drools.core.spi.AcceptsReadAccessor;
 import org.drools.core.spi.ClassWireable;
 import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.spi.ObjectType;
 import org.drools.core.util.asm.ClassFieldInspector;
 import org.kie.api.definition.type.FactField;
 import org.kie.internal.builder.KnowledgeBuilderResult;
@@ -188,22 +189,17 @@ public class ClassFieldAccessorStore
         return accessor;
     }
 
-    public ClassObjectType getClassObjectType(final ClassObjectType objectType,
-                                              final AcceptsClassObjectType target) {
-        return getClassObjectType( objectType,
-                                   objectType.isEvent(),
-                                   target );
-    }
+    public ObjectType wireObjectType(ObjectType objectType, AcceptsClassObjectType target) {
+        if (!(objectType instanceof ClassObjectType)) {
+            return objectType;
+        }
 
-    public ClassObjectType getClassObjectType(final ClassObjectType objectType,
-                                              final boolean isEvent,
-                                              final AcceptsClassObjectType target) {
         AccessorKey key = new AccessorKey( objectType.getClassName(),
-                                           isEvent ? "$$DROOLS__isEvent__" : null,
+                                           objectType.isEvent() ? "$$DROOLS__isEvent__" : null,
                                            AccessorKey.AccessorType.ClassObjectType );
 
         ClassObjectTypeLookupEntry entry = (ClassObjectTypeLookupEntry) this.lookup.computeIfAbsent( key, k ->
-                new ClassObjectTypeLookupEntry( cache.getClassObjectType( objectType, false ) ) );
+                new ClassObjectTypeLookupEntry( cache.getClassObjectType( (ClassObjectType) objectType, false ) ) );
 
         if ( target != null ) {
             target.setClassObjectType( entry.getClassObjectType() );

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2005 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package org.drools.core.spi;
+package org.drools.model;
 
+public interface PrototypeFact {
 
-public interface ClassWireable {
+    Object get(int index);
 
-    void wire( Class<?> klass );
+    Object get(String name);
 
-    String getClassName();
+    void set(String name, Object value);
 
-    Class<?> getClassType();
-
+    void set(int index, Object value);
 }

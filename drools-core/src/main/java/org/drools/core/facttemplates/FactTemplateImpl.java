@@ -16,12 +16,12 @@
 
 package org.drools.core.facttemplates;
 
-import org.drools.core.definitions.InternalKnowledgePackage;
-
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Arrays;
+
+import org.drools.core.definitions.InternalKnowledgePackage;
 
 
 public class FactTemplateImpl
@@ -49,7 +49,7 @@ public class FactTemplateImpl
 
     public FactTemplateImpl(final InternalKnowledgePackage pkg,
                             final String name,
-                            final FieldTemplate[] fields) {
+                            final FieldTemplate... fields) {
         this.pkg = pkg;
         this.name = name;
         this.fields = fields;
