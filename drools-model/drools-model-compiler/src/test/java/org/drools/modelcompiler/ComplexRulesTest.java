@@ -30,6 +30,7 @@ import org.drools.modelcompiler.domain.ChildFactWithId3;
 import org.drools.modelcompiler.domain.ChildFactWithObject;
 import org.drools.modelcompiler.domain.EnumFact1;
 import org.drools.modelcompiler.domain.EnumFact2;
+import org.drools.modelcompiler.domain.InterfaceAsEnum;
 import org.drools.modelcompiler.domain.RootFact;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -237,6 +238,22 @@ public class ComplexRulesTest extends BaseModelTest {
                 "rule R when\n" +
                 "\n" +
                 "    $factWithEnum : ChildFactWithEnum1(  enumValue not in (EnumFact1.FIRST, EnumFact1.THIRD, EnumFact1.FOURTH) ) \n" +
+                "  then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+        ksession.insert( new ChildFactWithEnum1(1, 3, EnumFact1.SECOND) );
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testNotInInterfaceAsEnum() {
+        String str =
+                "import " + InterfaceAsEnum.class.getCanonicalName() + ";\n" +
+                "import " + ChildFactWithEnum1.class.getCanonicalName() + ";\n" +
+                "rule R when\n" +
+                "\n" +
+                "    $factWithEnum : ChildFactWithEnum1(  enumValueFromInterface not in (InterfaceAsEnum.FIRST, InterfaceAsEnum.THIRD, InterfaceAsEnum.FOURTH) ) \n" +
                 "  then\n" +
                 "end\n";
 
