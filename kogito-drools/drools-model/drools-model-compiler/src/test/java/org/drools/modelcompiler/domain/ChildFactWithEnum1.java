@@ -39,4 +39,14 @@ public class ChildFactWithEnum1 {
     public EnumFact1 getEnumValue() {
         return enumValue;
     }
+
+    public String getEnumValueFromInterface() {
+        switch (enumValue) {
+            case FIRST: return InterfaceAsEnum.FIRST;
+            case SECOND: return InterfaceAsEnum.SECOND;
+            case THIRD: return InterfaceAsEnum.THIRD;
+            case FOURTH: return InterfaceAsEnum.FOURTH;
+        }
+        throw new RuntimeException( "UNKNOWN" );
+    }
 }

@@ -1301,4 +1301,43 @@ public class CompilerTest extends BaseModelTest {
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
         assertEquals(((Number)results.iterator().next().getValue()).intValue(), 48);
     }
+
+    @Test
+    public void testLockOnActiveWithModify() {
+        String str =
+                "package org.drools.test; \n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "rule \"Rule1\" \n" +
+                "@Propagation(EAGER) \n" +
+                "salience 1 \n" +
+                "lock-on-active true\n" +
+                "when\n" +
+                "  $p: Person()\n" +
+                "then\n" +
+                "  System.out.println( \"Rule1\" ); \n" +
+                "  modify( $p ) { setAge( 44 ); }\n" +
+                "end;\n" +
+                "\n" +
+                "rule \"Rule2\"\n" +
+                "@Propagation(EAGER) \n" +
+                "lock-on-active true\n" +
+                "when\n" +
+                "  $p: Person() \n" +
+                "  String() from $p.getName() \n" +
+                "then\n" +
+                "  System.out.println( \"Rule2\" + $p ); " +
+                "  modify ( $p ) { setName( \"john\" ); } \n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.fireAllRules();
+
+        Person p = new Person( "mark", 76 );
+        ksession.insert( p );
+        ksession.fireAllRules();
+
+        assertEquals( 44, p.getAge() );
+        assertEquals( "john", p.getName() );
+    }
 }

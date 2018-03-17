@@ -32,6 +32,7 @@ import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.javaparser.ast.expr.ThisExpr;
 import org.drools.javaparser.ast.expr.UnaryExpr;
 import org.drools.javaparser.ast.type.ReferenceType;
+import org.drools.javaparser.ast.type.Type;
 import org.drools.javaparser.printer.PrintUtil;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.ParseExpressionErrorResult;
@@ -279,7 +280,7 @@ public class ExpressionTyper {
                 final FieldAccessExpr fieldAccessExpr = (FieldAccessExpr) inlineCastExprPart.getExpression();
                 final TypedExpression toMethodCallExpr = nameExprToMethodCallExpr(fieldAccessExpr.getNameAsString(), typeCursor, previous);
                 final Class<?> castClass = getClassFromType(ruleContext.getTypeResolver(), inlineCastExprPart.getType());
-                previous = addCastToExpression(castClass, toMethodCallExpr.getExpression());
+                previous = addCastToExpression(castClass, toMethodCallExpr.getExpression(), false);
 
             } else {
                 throw new UnsupportedOperationException();
@@ -336,7 +337,7 @@ public class ExpressionTyper {
 
         return result.map(te -> {
             if (isInLineCast) {
-                Expression exprWithInlineCast = addCastToExpression(te.typeCursor, te.expressionCursor);
+                Expression exprWithInlineCast = addCastToExpression(te.typeCursor, te.expressionCursor, isInLineCast);
                 return new TypedExpressionCursor(exprWithInlineCast, te.typeCursor);
             } else {
                 return te;
@@ -354,11 +355,11 @@ public class ExpressionTyper {
 
     private Optional<TypedExpressionCursor> castExpr( CastExpr firstNode, Expression drlxExpr, List<Node> childNodes, boolean isInLineCast, Class<?> originalTypeCursor ) {
         try {
-            ReferenceType type = (ReferenceType) firstNode.getType();
+            Type type = firstNode.getType();
             Class<?> typeClass = ruleContext.getTypeResolver().resolveType( type.toString() );
             Optional<TypedExpressionCursor> result = processFirstNode( drlxExpr, childNodes, firstNode.getExpression(), isInLineCast, originalTypeCursor);
             return result.map(te -> {
-                Expression exprWithInlineCast = addCastToExpression(type, te.expressionCursor);
+                Expression exprWithInlineCast = addCastToExpression(type, te.expressionCursor, isInLineCast);
                 return new TypedExpressionCursor(exprWithInlineCast, typeClass);
             });
         } catch (ClassNotFoundException e) {
@@ -512,13 +513,15 @@ public class ExpressionTyper {
         return teCursor;
     }
 
-    private Expression addCastToExpression(Class<?> typeCursor, Expression previous) {
+    private Expression addCastToExpression(Class<?> typeCursor, Expression previous, boolean isInLineCast) {
         ReferenceType castType = JavaParser.parseClassOrInterfaceType(typeCursor.getName());
-        return addCastToExpression( castType, previous );
+        return addCastToExpression( castType, previous, isInLineCast );
     }
 
-    private Expression addCastToExpression( ReferenceType castType, Expression previous ) {
-        prefixExpressions.add(new InstanceOfExpr(previous, castType));
+    private Expression addCastToExpression( Type castType, Expression previous, boolean isInLineCast ) {
+        if (isInLineCast) {
+            prefixExpressions.add( new InstanceOfExpr( previous, ( ReferenceType ) castType ) );
+        }
         previous = new EnclosedExpr(new CastExpr(castType, previous));
         return previous;
     }

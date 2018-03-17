@@ -287,7 +287,7 @@ public class ModelGenerator {
                 }
                 if ( annotationDefinition.getValues().size() == 1 && annotationDefinition.getValues().containsKey( AnnotationDescr.VALUE ) ) {
                     Object annValue = annotationDefinition.getPropertyValue(AnnotationDescr.VALUE);
-                    metaAttributeCall.addArgument(objectAsJPExpression(annValue));
+                    metaAttributeCall.addArgument(annValue.toString());
                 } else {
                     Map<String, Object> map = new HashMap<>( annotationDefinition.getValues().size() );
                     for ( String key : annotationDefinition.getValues().keySet() ) {

@@ -18,6 +18,7 @@ package org.drools.modelcompiler.builder.generator;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -131,6 +132,13 @@ public class DrlxParseUtil {
         }
         try {
             Field field = clazz.getField( name );
+            if (scope == null) {
+                if ( Modifier.isStatic( field.getModifiers() ) ) {
+                    scope = new NameExpr(clazz.getCanonicalName());
+                } else {
+                    throw new IllegalArgumentException( "Unknown field " + name + " on " + clazz );
+                }
+            }
             FieldAccessExpr expr = new FieldAccessExpr( scope, name );
             return new TypedExpression( expr, field.getType() );
         } catch (NoSuchFieldException e) {
