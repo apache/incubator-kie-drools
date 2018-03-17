@@ -18,6 +18,7 @@ package org.jbpm.workflow.instance.impl;
 
 import static org.jbpm.workflow.instance.impl.DummyEventListener.EMPTY_EVENT_LISTENER;
 
+import java.awt.dnd.DnDConstants;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -49,6 +50,7 @@ import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.core.node.ActionNode;
 import org.jbpm.workflow.core.node.AsyncEventNode;
+import org.jbpm.workflow.core.node.DynamicNode;
 import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.EventNode;
 import org.jbpm.workflow.core.node.EventNodeInterface;
@@ -57,6 +59,7 @@ import org.jbpm.workflow.core.node.StateBasedNode;
 import org.jbpm.workflow.instance.NodeInstance;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.node.CompositeNodeInstance;
+import org.jbpm.workflow.instance.node.DynamicNodeInstance;
 import org.jbpm.workflow.instance.node.EndNodeInstance;
 import org.jbpm.workflow.instance.node.EventBasedNodeInstanceInterface;
 import org.jbpm.workflow.instance.node.EventNodeInstance;
@@ -526,6 +529,11 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
                 for (String type : events) {
                     addEventListener(type, EMPTY_EVENT_LISTENER, true);
                 }
+            }  else if (node instanceof DynamicNode) {
+                if (((DynamicNode) node).getActivationEventName() != null) {
+                
+                    addEventListener(((DynamicNode) node).getActivationEventName(), EMPTY_EVENT_LISTENER, true);
+                }
             }
 		}
 		if( getWorkflowProcess().getMetaData().containsKey("Compensation") ) {
@@ -604,7 +612,10 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 			                    if (node instanceof EventSubProcessNode && ((resolveVariables(((EventSubProcessNode) node).getEvents()).contains(type)))) {
 			                        EventSubProcessNodeInstance eventNodeInstance = (EventSubProcessNodeInstance) getNodeInstance(node);
     			                    eventNodeInstance.signalEvent(type, event);
-			                    } else {
+			                    } if (node instanceof DynamicNode && type.equals(((DynamicNode) node).getActivationEventName())) {
+			                        DynamicNodeInstance dynamicNodeInstance = (DynamicNodeInstance) getNodeInstance(node);
+			                        dynamicNodeInstance.signalEvent(type, event);
+                                }else {
     								List<NodeInstance> nodeInstances = getNodeInstances(node.getId(), currentView);
     			                    if (nodeInstances != null && !nodeInstances.isEmpty()) {
     			                        for (NodeInstance nodeInstance : nodeInstances) {

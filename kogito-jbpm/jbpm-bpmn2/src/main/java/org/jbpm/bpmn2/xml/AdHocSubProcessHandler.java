@@ -58,6 +58,8 @@ public class AdHocSubProcessHandler extends CompositeContextNodeHandler {
     	}
     	// by default it should not autocomplete as it's adhoc
     	dynamicNode.setAutoComplete(false);
+    	dynamicNode.setActivationExpression((String)dynamicNode.getMetaData("customActivationCondition"));
+    	
     	org.w3c.dom.Node xmlNode = element.getFirstChild();
         while (xmlNode != null) {
         	String nodeName = xmlNode.getNodeName();
@@ -81,7 +83,7 @@ public class AdHocSubProcessHandler extends CompositeContextNodeHandler {
                 } else {
                     dynamicNode.setLanguage("mvel"); 
                 }
-        	}
+        	}       
         	xmlNode = xmlNode.getNextSibling();
         }
     	List<SequenceFlow> connections = (List<SequenceFlow>)

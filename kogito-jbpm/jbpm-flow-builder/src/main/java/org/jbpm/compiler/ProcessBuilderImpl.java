@@ -407,7 +407,12 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
                 generateRules( ((NodeContainer) nodes[i]).getNodes(), process, builder);
                 if ( nodes[i] instanceof DynamicNode && "rule".equals(((DynamicNode) nodes[i]).getLanguage())) {
                     DynamicNode dynamicNode = (DynamicNode) nodes[i];
-                    builder.append( createAdHocCompletionRule( process, dynamicNode ) );
+                    if (dynamicNode.getCompletionExpression() != null) {
+                        builder.append( createAdHocCompletionRule( process, dynamicNode ) );
+                    }
+                    if (dynamicNode.getActivationExpression() != null && !dynamicNode.getActivationExpression().isEmpty()) {
+                        builder.append( createAdHocActivationRule( process, dynamicNode ) );
+                    }
                 }
             } else if ( nodes[i] instanceof EventNode ) {
                 EventNode state = (EventNode) nodes[i];
@@ -532,6 +537,16 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
         "      ruleflow-group \"DROOLS_SYSTEM\" \n" +
         "    when \n" +
         "      " + dynamicNode.getCompletionExpression() + "\n" +
+        "    then \n" +
+        "end \n\n";
+    }
+    
+    private String createAdHocActivationRule(Process process, DynamicNode dynamicNode) {
+        return
+        "rule \"RuleFlow-AdHocActivate-" + process.getId() + "-" + dynamicNode.getUniqueId() + "\" @Propagation(EAGER) \n" +
+        "      ruleflow-group \"DROOLS_SYSTEM\" \n" +
+        "    when \n" +
+        "      " + dynamicNode.getActivationExpression() + "\n" +
         "    then \n" +
         "end \n\n";
     }

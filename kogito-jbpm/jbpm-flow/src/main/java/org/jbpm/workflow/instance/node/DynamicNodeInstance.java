@@ -140,7 +140,9 @@ public class DynamicNodeInstance extends CompositeContextNodeInstance implements
     @SuppressWarnings("unchecked")
     @Override
 	public void signalEvent(String type, Object event) {
-        if (getActivationEventType().equals(type)) {
+        if (type.startsWith("RuleFlow-AdHocActivate")) {
+            trigger(null, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
+        } else if (getActivationEventType().equals(type)) {
             if (event instanceof MatchCreatedEvent) {
                 matchCreated((MatchCreatedEvent) event);
             }

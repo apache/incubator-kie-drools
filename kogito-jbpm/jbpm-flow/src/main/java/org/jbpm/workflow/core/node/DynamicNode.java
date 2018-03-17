@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.jbpm.workflow.core.WorkflowProcess;
 import org.kie.api.definition.process.Node;
 
 
@@ -27,10 +28,15 @@ public class DynamicNode extends CompositeContextNode {
 
 	private static final long serialVersionUID = 510l;
 	
+	private String activationExpression;
 	private String completionExpression;
 	private String language;
 			
-	public boolean acceptsEvent(String type, Object event) {
+	public boolean acceptsEvent(String type, Object event) {	    
+	    if (type.equals(getActivationEventName())) {
+	        return true;
+	    }
+	            
 		for (Node node: getNodes()) {
 			if (type.equals(node.getName()) && node.getIncomingConnections().isEmpty()) {
 				return true;
@@ -53,8 +59,16 @@ public class DynamicNode extends CompositeContextNode {
 
 	public void setCompletionExpression(String expression) {
 		this.completionExpression = expression;
-	}
-		
+	}		
+    
+    public String getActivationExpression() {
+        return activationExpression;
+    }
+    
+    public void setActivationExpression(String activationExpression) {
+        this.activationExpression = activationExpression;
+    }
+
     public String getLanguage() {
         return language;
     }
@@ -70,5 +84,14 @@ public class DynamicNode extends CompositeContextNode {
                 .collect(Collectors.toList());
                 
         return nodes;
+    }
+    
+    public String getActivationEventName() {
+        if (activationExpression == null || activationExpression.isEmpty()) {
+            return null;
+        }
+        String activationSignalName = "RuleFlow-AdHocActivate-" + ((WorkflowProcess)getNodeContainer()).getId() + "-" + getUniqueId();
+        
+        return activationSignalName;
     }
 }

@@ -450,7 +450,11 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
                                                                index );
 
                         kruntime.queueWorkingMemoryAction(new SignalManagerSignalAction(eventType, event));
-                    } else if (ruleName.startsWith( "RuleFlowStateEventSubProcess-" ) || ruleName.startsWith( "RuleFlowStateEvent-" ) || ruleName.startsWith( "RuleFlow-Milestone-" ) || ruleName.startsWith( "RuleFlow-AdHocComplete-" )) {
+                    } else if (ruleName.startsWith( "RuleFlowStateEventSubProcess-" ) 
+                            || ruleName.startsWith( "RuleFlowStateEvent-" ) 
+                            || ruleName.startsWith( "RuleFlow-Milestone-" ) 
+                            || ruleName.startsWith( "RuleFlow-AdHocComplete-" )
+                            || ruleName.startsWith( "RuleFlow-AdHocActivate-" )) {
                         kruntime.queueWorkingMemoryAction(new SignalManagerSignalAction(ruleName, event));
                     }
                 }
