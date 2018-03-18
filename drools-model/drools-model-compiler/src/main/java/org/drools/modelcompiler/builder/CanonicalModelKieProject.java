@@ -19,16 +19,22 @@ package org.drools.modelcompiler.builder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
+import java.util.stream.Stream;
 
 import org.drools.compiler.commons.jci.compilers.CompilationResult;
 import org.drools.compiler.commons.jci.problems.CompilationProblem;
+import org.drools.compiler.compiler.io.File;
+import org.drools.compiler.compiler.io.memory.MemoryFile;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieModuleKieProject;
 import org.drools.compiler.kie.builder.impl.ResultsImpl;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.modelcompiler.CanonicalKieModule;
+import org.kie.api.builder.Message;
 import org.kie.internal.builder.KnowledgeBuilder;
+
+import static java.util.stream.Collectors.groupingBy;
 
 import static org.drools.modelcompiler.builder.JavaParserCompiler.getCompiler;
 
@@ -67,9 +73,16 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
             if(sources.length != 0) {
                 CompilationResult res = getCompiler().compile(sources, srcMfs, trgMfs, getClassLoader());
 
-                for (CompilationProblem problem : res.getErrors()) {
-                    messages.addMessage(problem);
-                }
+                Stream.of(res.getErrors()).collect(groupingBy(CompilationProblem::getFileName))
+                    .forEach( (name, errors) -> {
+                        errors.forEach( messages::addMessage );
+                        File srcFile = srcMfs.getFile( name );
+                        if ( srcFile instanceof MemoryFile ) {
+                            String src = new String ( srcMfs.getFileContents( ( MemoryFile ) srcFile ) );
+                            messages.addMessage( Message.Level.ERROR, name, "Java source of " + name + " in error:\n" + src);
+                        }
+                    } );
+
                 for (CompilationProblem problem : res.getWarnings()) {
                     messages.addMessage(problem);
                 }
