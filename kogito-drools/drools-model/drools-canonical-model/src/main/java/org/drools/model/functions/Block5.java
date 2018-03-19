@@ -3,7 +3,7 @@ package org.drools.model.functions;
 import java.io.Serializable;
 
 public interface Block5<A, B, C, D, E> extends Serializable {
-    void execute( A a, B b, C c, D d, E e );
+    void execute( A a, B b, C c, D d, E e ) throws Exception;
 
     default BlockN asBlockN() {
         return new Impl( this );
@@ -18,7 +18,7 @@ public interface Block5<A, B, C, D, E> extends Serializable {
         }
 
         @Override
-        public void execute( Object... objs ) {
+        public void execute( Object... objs ) throws Exception {
             block.execute(objs[0], objs[1], objs[2], objs[3], objs[4]);
         }
 

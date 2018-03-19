@@ -71,14 +71,6 @@ public class DrlxParseSuccess implements DrlxParseResult {
         return this;
     }
 
-    public DrlxParseSuccess addWatchedProperty( String watchedProperty) {
-        if (watchedProperties.isEmpty()) {
-            watchedProperties = new HashSet<>();
-        }
-        this.watchedProperties.add(watchedProperty);
-        return this;
-    }
-
     public DrlxParseSuccess addAllWatchedProperties( Collection<String> watchedProperties) {
         if (watchedProperties.isEmpty()) {
             return this;

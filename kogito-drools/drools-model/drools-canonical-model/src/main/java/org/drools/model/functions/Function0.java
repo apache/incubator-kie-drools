@@ -5,7 +5,7 @@ import java.io.Serializable;
 public interface Function0<R> extends Serializable {
     R apply();
 
-    public static final class Null implements Function0 {
+    final class Null implements Function0 {
 
         public static final Null INSTANCE = new Null();
 

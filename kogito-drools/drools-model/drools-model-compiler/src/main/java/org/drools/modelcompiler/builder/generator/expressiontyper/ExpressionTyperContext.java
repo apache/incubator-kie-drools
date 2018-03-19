@@ -7,14 +7,20 @@ import java.util.Set;
 
 import org.drools.javaparser.ast.expr.Expression;
 
+import static org.drools.core.util.StringUtils.lcFirst;
+
 public class ExpressionTyperContext {
 
-    List<String> usedDeclarations = new ArrayList<>();
-    Set<String> reactOnProperties = new HashSet<>();
-    List<Expression> prefixExpresssions = new ArrayList<>();
+    private List<String> usedDeclarations = new ArrayList<>();
+    private Set<String> reactOnProperties = new HashSet<>();
+    private List<Expression> prefixExpresssions = new ArrayList<>();
 
     public List<String> getUsedDeclarations() {
         return usedDeclarations;
+    }
+
+    public void addReactOnProperties(String prop) {
+        reactOnProperties.add(lcFirst(prop));
     }
 
     public Set<String> getReactOnProperties() {

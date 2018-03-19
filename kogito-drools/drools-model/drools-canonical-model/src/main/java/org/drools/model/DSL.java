@@ -497,6 +497,10 @@ public class DSL {
     }
 
     public static boolean eval( Operator op, Object obj, Object... args ) {
-        return op.test( obj, args );
+        try {
+            return op.test( obj, args );
+        } catch (Exception e) {
+            throw new RuntimeException( e );
+        }
     }
 }

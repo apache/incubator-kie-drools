@@ -341,9 +341,110 @@ public class ComplexRulesTest extends BaseModelTest {
         assertEquals(1, ksession.fireAllRules());
     }
 
+    @Test
+    public void testEqualOnShortField() {
+        String str =
+                "import " + ChildFactWithObject.class.getCanonicalName() + ";\n" +
+                "rule R when\n" +
+                "\n" +
+                "    ChildFactWithObject( idAsShort == 5 )\n" +
+                "  then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+        ksession.insert( new ChildFactWithObject(5, 1, new Object[0]) );
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testGreaterOnShortField() {
+        String str =
+                "import " + ChildFactWithObject.class.getCanonicalName() + ";\n" +
+                "rule R when\n" +
+                "\n" +
+                "    ChildFactWithObject( idAsShort > 0 )\n" +
+                "  then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+        ksession.insert( new ChildFactWithObject(5, 1, new Object[0]) );
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testBooleanField() {
+        String str =
+                "import " + ChildFactWithObject.class.getCanonicalName() + ";\n" +
+                "rule R when\n" +
+                "\n" +
+                "    ChildFactWithObject( idIsEven == false )\n" +
+                "  then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+        ksession.insert( new ChildFactWithObject(5, 1, new Object[0]) );
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testConsequenceThrowingException() {
+        String str =
+                "import " + ChildFactWithObject.class.getCanonicalName() + ";\n" +
+                "import " + BusinessFunctions.class.getCanonicalName() + ";\n" +
+                "global BusinessFunctions functions;\n" +
+                "rule R when\n" +
+                "\n" +
+                "    $c : ChildFactWithObject( idIsEven == false )\n" +
+                "  then\n" +
+                "    functions.doSomethingRisky($c);" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+        ksession.setGlobal( "functions", new BusinessFunctions() );
+        ksession.insert( new ChildFactWithObject(5, 1, new Object[0]) );
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testCompareDate() {
+        String str =
+                "import " + ChildFactWithObject.class.getCanonicalName() + ";\n" +
+                "rule R when\n" +
+                "\n" +
+                "    $c: ChildFactWithObject( )\n" +
+                "    ChildFactWithObject( date > $c.date )\n" +
+                "  then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+        ksession.insert( new ChildFactWithObject(5, 1, new Object[0]) );
+        ksession.insert( new ChildFactWithObject(6, 1, new Object[0]) );
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void test2UpperCaseProp() {
+        String str =
+                "import " + ChildFactWithObject.class.getCanonicalName() + ";\n" +
+                "rule R when\n" +
+                "\n" +
+                        "    $c: ChildFactWithObject( )\n" +
+                        "    ChildFactWithObject( VAr == $c.VAr )\n" +
+                "  then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+        ksession.insert( new ChildFactWithObject(5, 1, new Object[0]) );
+        assertEquals(1, ksession.fireAllRules());
+    }
+
     public static class BusinessFunctions {
         public boolean arrayContainsInstanceWithParameters(Object[] a1, Object[] a2) {
             return false;
+        }
+
+        public void doSomethingRisky(Object arg) throws Exception {
+
         }
     }
 }

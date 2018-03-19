@@ -32,6 +32,7 @@ import java.util.stream.Stream;
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.core.util.ClassUtils;
+import org.drools.core.util.StringUtils;
 import org.drools.core.util.index.IndexUtil;
 import org.drools.core.util.index.IndexUtil.ConstraintType;
 import org.drools.drlx.DrlxParser;
@@ -543,9 +544,13 @@ public class DrlxParseUtil {
 
     public static List<String> getPatternListenedProperties( PatternDescr pattern) {
         AnnotationDescr watchAnn = pattern != null ? pattern.getAnnotation("watch") : null;
-        return watchAnn == null ? Collections.emptyList() : Stream.of(watchAnn.getValue().toString().split(",")).map(String::trim).collect( Collectors.toList() );
+        return watchAnn == null ?
+                Collections.emptyList() :
+                Stream.of(watchAnn.getValue().toString().split(","))
+                        .map( String::trim )
+                        .map( StringUtils::lcFirst )
+                        .collect( Collectors.toList() );
     }
-
 
     public static Optional<MethodCallExpr> findPatternWithBinding(String patternBinding, List<Expression> expressions) {
         return expressions.stream().flatMap((Expression e) -> {

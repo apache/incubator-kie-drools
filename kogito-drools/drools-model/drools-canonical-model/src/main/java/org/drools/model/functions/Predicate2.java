@@ -3,7 +3,7 @@ package org.drools.model.functions;
 import java.io.Serializable;
 
 public interface Predicate2<A, B> extends Serializable {
-    boolean test(A a, B b);
+    boolean test(A a, B b) throws Exception;
 
     class Impl<A, B> extends IntrospectableLambda implements Predicate2<A, B> {
 
@@ -14,7 +14,7 @@ public interface Predicate2<A, B> extends Serializable {
         }
 
         @Override
-        public boolean test(A a, B b) {
+        public boolean test(A a, B b) throws Exception {
             return predicate.test(a, b);
         }
 

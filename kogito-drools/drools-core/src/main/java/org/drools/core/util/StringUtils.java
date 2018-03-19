@@ -164,8 +164,12 @@ public class StringUtils {
         super();
     }
 
-    public static String ucFirst(final String name) {
-        return name.toUpperCase().charAt( 0 ) + name.substring( 1 );
+    public static String ucFirst(final String s) {
+        return Character.isLowerCase(s.charAt( 0 )) ? Character.toUpperCase( s.charAt( 0 ) ) + s.substring( 1 ) : s;
+    }
+
+    public static String lcFirst(String s) {
+        return Character.isUpperCase(s.charAt( 0 )) ? Character.toLowerCase( s.charAt( 0 ) ) + s.substring( 1 ) : s;
     }
 
     // Empty checks
