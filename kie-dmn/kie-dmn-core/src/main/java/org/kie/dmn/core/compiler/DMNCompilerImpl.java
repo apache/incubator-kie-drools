@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
@@ -157,24 +158,27 @@ public class DMNCompilerImpl
 
             if (!dmndefs.getImport().isEmpty()) {
                 for (Import i : dmndefs.getImport()) {
-                    String iAlias = i.getAdditionalAttributes().get(Import.NAME_QNAME);
-
                     String iNS = i.getNamespace();
-                    String iModelName = i.getAdditionalAttributes().get(Import.MODELNAME_QNAME);
-                    if (iAlias == null || iAlias.isEmpty() || iModelName == null || iModelName.isEmpty()) {
-                        // TODO try to use alias as a potential model name.
-                        // TODO throw error.
-                    }
-                    model.setImportAliasForNS(iAlias, iNS, iModelName);
-                }
 
-                // TODO only import types for the imported models, and only required bkms.
-                for (DMNModel m : dmnModels) {
-                    for (ItemDefNode idn : m.getItemDefinitions()) {
-                        model.getTypeRegistry().registerType(idn.getType());
-                    }
-                    for (BusinessKnowledgeModelNode bkm : m.getBusinessKnowledgeModels()) {
-                        model.addBusinessKnowledgeModel(bkm);
+                    List<DMNModel> modelsInNS = dmnModels.stream().filter(m -> m.getNamespace().equals(iNS)).collect(Collectors.toList());
+                    if (modelsInNS.size() == 1) {
+                        // TODO here I actually I haven't checked if the located DMN Model in the NS, correspond for the import `name`. 
+                        String iAlias = i.getAdditionalAttributes().get(Import.NAME_QNAME) != null
+                                ? i.getAdditionalAttributes().get(Import.NAME_QNAME)
+                                : modelsInNS.get(0).getName();
+                        model.setImportAliasForNS(iAlias, iNS, modelsInNS.get(0).getName());
+                        importFromModel(model, modelsInNS.get(0));
+                    } else {
+                        String iAlias = i.getAdditionalAttributes().get(Import.NAME_QNAME);
+                        String iModelName = i.getAdditionalAttributes().get(Import.MODELNAME_QNAME) != null
+                                ? i.getAdditionalAttributes().get(Import.MODELNAME_QNAME)
+                                : iAlias;
+                        if (iAlias == null || iAlias.isEmpty() || iModelName == null || iModelName.isEmpty()) {
+                            // TODO throw error.
+                        }
+                        model.setImportAliasForNS(iAlias, iNS, iModelName);
+                        System.out.println(iModelName);
+                        importFromModel(model, modelsInNS.stream().filter(m -> m.getName().equals(iModelName)).findFirst().get());
                     }
                 }
             }
@@ -184,6 +188,15 @@ public class DMNCompilerImpl
             return model;
         }
         return model;
+    }
+
+    private void importFromModel(DMNModelImpl model, DMNModel m) {
+        for (ItemDefNode idn : m.getItemDefinitions()) {
+            model.getTypeRegistry().registerType(idn.getType());
+        }
+        for (BusinessKnowledgeModelNode bkm : m.getBusinessKnowledgeModels()) {
+            model.addBusinessKnowledgeModel(bkm);
+        }
     }
 
     private void processItemDefinitions(DMNCompilerContext ctx, DMNFEELHelper feel, DMNModelImpl model, Definitions dmndefs) {

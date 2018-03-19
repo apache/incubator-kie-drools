@@ -94,6 +94,7 @@ public class DMNAssemblerService implements KieAssemblerService {
                                                         .filter(m -> m.getModelID().getNamespaceURI().equals(iNamespace))
                                                         .collect(Collectors.toList());
                 if (allInNS.size() == 1) {
+                    // TODO here I actually I haven't checked if the located DMN Model in the NS, correspond for the import `name`. 
                     r.addDependency(allInNS.get(0).getModelID());
                 } else {
                     final String iModelName = i.getAdditionalAttributes().get(Import.MODELNAME_QNAME) != null
@@ -129,6 +130,8 @@ public class DMNAssemblerService implements KieAssemblerService {
 
     @Override
     public void addResource(Object kbuilder, Resource resource, ResourceType type, ResourceConfiguration configuration) throws Exception {
+        if (true)
+            throw new RuntimeException();
         logger.warn("invoked legacy addResource: " + resource.getSourcePath()); // hence I have no control on the order of the assembler compilation.
         KnowledgeBuilderImpl kbuilderImpl = (KnowledgeBuilderImpl) kbuilder;
         DMNCompiler dmnCompiler = kbuilderImpl.getCachedOrCreate( DMN_COMPILER_CACHE_KEY, () -> getCompiler( kbuilderImpl ) );
