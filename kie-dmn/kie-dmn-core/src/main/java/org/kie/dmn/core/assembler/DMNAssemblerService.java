@@ -130,9 +130,7 @@ public class DMNAssemblerService implements KieAssemblerService {
 
     @Override
     public void addResource(Object kbuilder, Resource resource, ResourceType type, ResourceConfiguration configuration) throws Exception {
-        if (true)
-            throw new RuntimeException();
-        logger.warn("invoked legacy addResource: " + resource.getSourcePath()); // hence I have no control on the order of the assembler compilation.
+        logger.warn("invoked legacy addResource (no control on the order of the assembler compilation): " + resource.getSourcePath());
         KnowledgeBuilderImpl kbuilderImpl = (KnowledgeBuilderImpl) kbuilder;
         DMNCompiler dmnCompiler = kbuilderImpl.getCachedOrCreate( DMN_COMPILER_CACHE_KEY, () -> getCompiler( kbuilderImpl ) );
 
