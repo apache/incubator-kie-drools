@@ -305,6 +305,7 @@ public class MiningmodelTest extends DroolsAbstractPMMLTest {
 		executor.run(ruleUnitClass);
 //		console.close();
 		resultData.forEach(rd -> {
+			System.out.println(rd);
 			assertEquals("OK",rd.getResultCode());
 			assertEquals(request.getCorrelationId(),rd.getCorrelationId());
 			ScoreCard sc = rd.getResultValue("ScoreCard", null, ScoreCard.class).orElse(null);
@@ -348,9 +349,12 @@ public class MiningmodelTest extends DroolsAbstractPMMLTest {
 			if (cms.getState() == SegmentExecutionState.COMPLETE) segmentsExecuted++;
 		}
 		assertEquals(2,segmentsExecuted);
-
-		
 	}
 
+	@Test
+	public void testSimpleModelChain() {
+		RuleUnitExecutor executor = createExecutor(source5);
+		assertNotNull(executor);
+	}
 
 }

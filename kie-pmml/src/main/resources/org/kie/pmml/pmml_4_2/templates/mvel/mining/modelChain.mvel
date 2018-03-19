@@ -16,6 +16,7 @@
 }
 
 package @{packageName}
+unit @{ruleUnitClassName}
 
 import org.kie.pmml.pmml_4_2.*;
 import org.kie.pmml.pmml_4_2.model.*;
@@ -28,7 +29,6 @@ import org.kie.api.pmml.PMML4Result;
 
 
 @code{ int salienceValue; }
-
 
 
 rule "Start Mining - @{miningModel.modelId}"
@@ -124,16 +124,18 @@ salience @{salienceValue}
 when
    model: @{miningModel.miningPojoClassName}( @{childSegment.predicateText} ) from miningModelPojo
 then
+/*
    PMMLRequestData rqstData = new PMMLRequestData(model.getCorrelationId(),"@{childSegment.model.modelId}");
    @foreach{ field: childSegment.model.miningFields }
    rqstData.addRequestParam( "@{field.name}",model.getV@{field.compactUpperCaseName}() );
    @end{}
+*/
    SegmentExecution segEx = new SegmentExecution( model.getCorrelationId(),
                                                   "@{childSegment.owner.segmentationId}",
                                                   "@{childSegment.segmentId}",
                                                    @{childSegment.segmentIndex},
                                                   "@{childSegment.segmentRuleUnit}");
-   segEx.setRequestData(rqstData);
+//   segEx.setRequestData(rqstData);
    childModelSegments.insert(segEx);
 end
 
