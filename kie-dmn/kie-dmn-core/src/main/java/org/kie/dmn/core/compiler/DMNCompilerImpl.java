@@ -53,7 +53,6 @@ import org.kie.dmn.core.ast.ItemDefNodeImpl;
 import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
-import org.kie.dmn.core.impl.DMNModelImpl.NamespaceAndName;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.lang.types.BuiltInType;
@@ -419,10 +418,10 @@ public class DMNCompilerImpl
 
     public DMNType resolveTypeRef(DMNModelImpl dmnModel, DMNNode node, NamedElement model, DMNModelInstrumentedBase localElement, QName typeRef) {
         if ( typeRef != null ) {
-            NamespaceAndName nsAndName = getNamespace(localElement, dmnModel.getImportAliasesForNS(), typeRef);
+            QName nsAndName = getNamespaceAndName(localElement, dmnModel.getImportAliasesForNS(), typeRef);
 
-            DMNType type = dmnModel.getTypeRegistry().resolveType(nsAndName.namespace, nsAndName.name);
-            if (type == null && DMNModelInstrumentedBase.URI_FEEL.equals(nsAndName.namespace)) {
+            DMNType type = dmnModel.getTypeRegistry().resolveType(nsAndName.getNamespaceURI(), nsAndName.getLocalPart());
+            if (type == null && DMNModelInstrumentedBase.URI_FEEL.equals(nsAndName.getNamespaceURI())) {
                 if ( model instanceof Decision && ((Decision) model).getExpression() instanceof DecisionTable ) {
                     DecisionTable dt = (DecisionTable) ((Decision) model).getExpression();
                     if ( dt.getOutput().size() > 1 ) {
@@ -454,17 +453,26 @@ public class DMNCompilerImpl
         return dmnModel.getTypeRegistry().resolveType( DMNModelInstrumentedBase.URI_FEEL, BuiltInType.UNKNOWN.getName() );
     }
 
-    private NamespaceAndName getNamespace(DMNModelInstrumentedBase localElement, Map<String, NamespaceAndName> map, QName typeRef) {
+    /**
+     * Given a typeRef in the form of prefix:localname or importalias.localname, resolves namespace and localname appropriately.
+     * <br>Example: <code>feel:string</code> would be resolved as <code>http://www.omg.org/spec/FEEL/20140401, string</code>.
+     * <br>Example: <code>myimport.tPerson</code> assuming an external model namespace as "http://drools.org" would be resolved as <code>http://drools.org, tPerson</code>.
+     * @param localElement the local element is used to determine the namespace from the prefix if present, as in the form prefix:localname
+     * @param importAliases the map of import aliases is used to determine the namespace, as in the form importalias.localname
+     * @param typeRef the typeRef to be resolved.
+     * @return
+     */
+    private QName getNamespaceAndName(DMNModelInstrumentedBase localElement, Map<String, QName> importAliases, QName typeRef) {
         if (!typeRef.getPrefix().equals(XMLConstants.DEFAULT_NS_PREFIX)) {
-            return new NamespaceAndName(localElement.getNamespaceURI(typeRef.getPrefix()), typeRef.getLocalPart());
+            return new QName(localElement.getNamespaceURI(typeRef.getPrefix()), typeRef.getLocalPart());
         } else {
-            for (Entry<String, NamespaceAndName> alias : map.entrySet()) {
+            for (Entry<String, QName> alias : importAliases.entrySet()) {
                 String prefix = alias.getKey() + ".";
                 if (typeRef.getLocalPart().startsWith(prefix)) {
-                    return new NamespaceAndName(alias.getValue().namespace, typeRef.getLocalPart().replace(prefix, ""));
+                    return new QName(alias.getValue().getNamespaceURI(), typeRef.getLocalPart().replace(prefix, ""));
                 }
             }
-            return new NamespaceAndName(localElement.getNamespaceURI(typeRef.getPrefix()), typeRef.getLocalPart());
+            return new QName(localElement.getNamespaceURI(typeRef.getPrefix()), typeRef.getLocalPart());
         }
     }
 

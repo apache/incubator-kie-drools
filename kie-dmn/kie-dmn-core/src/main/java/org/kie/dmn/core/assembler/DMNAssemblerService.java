@@ -22,8 +22,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.xml.namespace.QName;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.PackageRegistry;
@@ -37,12 +39,16 @@ import org.kie.api.io.ResourceType;
 import org.kie.dmn.api.core.DMNCompiler;
 import org.kie.dmn.api.core.DMNCompilerConfiguration;
 import org.kie.dmn.api.core.DMNModel;
+import org.kie.dmn.api.marshalling.v1_1.DMNMarshaller;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.compiler.DMNCompilerConfigurationImpl;
+import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.compiler.DMNProfile;
 import org.kie.dmn.core.compiler.profiles.ExtendedDMNProfile;
 import org.kie.dmn.core.impl.DMNKnowledgeBuilderError;
 import org.kie.dmn.core.impl.DMNPackageImpl;
+import org.kie.dmn.model.v1_1.Definitions;
+import org.kie.dmn.model.v1_1.Import;
 import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.utils.ChainedProperties;
 import org.slf4j.Logger;
@@ -64,28 +70,66 @@ public class DMNAssemblerService implements KieAssemblerService {
 
     @Override
     public void addResources(Object kbuilder, List<ResourceAndConfig> resources, ResourceType type) throws Exception {
-        // TODO
-        resources.forEach(r -> System.out.println(r.getRes().getSourcePath()));
-        if (resources.get(0).getRes().getSourcePath().contains("Importing")) {
-            for (ListIterator<ResourceAndConfig> iterator = resources.listIterator(resources.size()); iterator.hasPrevious();) {
-                ResourceAndConfig resourceAndConfig = iterator.previous();
-                resourceAndConfig.getBeforeAdd().accept(kbuilder);
-                addResource(kbuilder, resourceAndConfig.getRes(), type, resourceAndConfig.getResConfig());
-                resourceAndConfig.getAfterAdd().accept(kbuilder);
+        KnowledgeBuilderImpl kbuilderImpl = (KnowledgeBuilderImpl) kbuilder;
+        DMNCompilerImpl dmnCompiler = (DMNCompilerImpl) kbuilderImpl.getCachedOrCreate(DMN_COMPILER_CACHE_KEY, () -> getCompiler(kbuilderImpl));
+        DMNMarshaller dmnMarshaller = dmnCompiler.getMarshaller();
+        if (resources.size() == 1) {
+            // quick path:
+            internalAddResource(kbuilderImpl, dmnCompiler, resources.get(0), Collections.emptyList());
+            return;
+        }
+        List<DMNResource> dmnResources = new ArrayList<>();
+        for (ResourceAndConfig r : resources) {
+            Definitions definitions = dmnMarshaller.unmarshal(r.getResource().getReader());
+            QName modelID = new QName(definitions.getNamespace(), definitions.getName());
+            DMNResource dmnResource = new DMNResource(modelID, r, definitions);
+            dmnResources.add(dmnResource);
+        }
+        // enrich with imports
+        for (DMNResource r : dmnResources) {
+            for (Import i : r.getDefinitions().getImport()) {
+                String iNamespace = i.getNamespace();
+                List<DMNResource> allInNS = dmnResources.stream()
+                                                        .filter(m -> !m.equals(r))
+                                                        .filter(m -> m.getModelID().getNamespaceURI().equals(iNamespace))
+                                                        .collect(Collectors.toList());
+                if (allInNS.size() == 1) {
+                    r.addDependency(allInNS.get(0).getModelID());
+                } else {
+                    final String iModelName = i.getAdditionalAttributes().get(Import.MODELNAME_QNAME) != null
+                            ? i.getAdditionalAttributes().get(Import.MODELNAME_QNAME)
+                            : i.getAdditionalAttributes().get(Import.NAME_QNAME); // try to use alias as the model name.
+                    List<DMNResource> usingNSandName = dmnResources.stream()
+                                                                   .filter(m -> !m.equals(r))
+                                                                   .filter(m -> m.getModelID().getNamespaceURI().equals(iNamespace) && m.getModelID().getLocalPart().equals(iModelName))
+                                                                   .collect(Collectors.toList());
+                    if (usingNSandName.size() == 1) {
+                        r.addDependency(usingNSandName.get(0).getModelID());
+                    } else {
+                        throw new RuntimeException("I was unable to locate DMN model " + new QName(iNamespace, iModelName != null ? iModelName : "") + " which is declared as Import inside model " + r.getModelID());
+                    }
+                }
             }
-        } else {
-            for (ResourceAndConfig r : resources) {
-                r.getBeforeAdd().accept(kbuilder);
-                addResource(kbuilder, r.getRes(), type, r.getResConfig());
-                r.getAfterAdd().accept(kbuilder);
-            }
+        }
+        List<DMNResource> sortedDmnResources = DMNResourceDependenciesSorter.sort(dmnResources);
+        Collection<DMNModel> dmnModels = new ArrayList<>();
+
+        for (DMNResource dmnRes : sortedDmnResources) {
+            DMNModel dmnModel = internalAddResource(kbuilderImpl, dmnCompiler, dmnRes.getResAndConfig(), dmnModels);
+            dmnModels.add(dmnModel);
         }
     }
 
+    private DMNModel internalAddResource(KnowledgeBuilderImpl kbuilder, DMNCompiler dmnCompiler, ResourceAndConfig r, Collection<DMNModel> dmnModels) throws Exception {
+        r.getBeforeAdd().accept(kbuilder);
+        DMNModel dmnModel = compileResourceToModel(kbuilder, dmnCompiler, r.getResource(), dmnModels);
+        r.getAfterAdd().accept(kbuilder);
+        return dmnModel;
+    }
+
     @Override
-    public void addResource(Object kbuilder, Resource resource, ResourceType type, ResourceConfiguration configuration)
-            throws Exception {
-        System.out.println("addResource " + resource.getSourcePath());
+    public void addResource(Object kbuilder, Resource resource, ResourceType type, ResourceConfiguration configuration) throws Exception {
+        logger.warn("invoked legacy addResource: " + resource.getSourcePath()); // hence I have no control on the order of the assembler compilation.
         KnowledgeBuilderImpl kbuilderImpl = (KnowledgeBuilderImpl) kbuilder;
         DMNCompiler dmnCompiler = kbuilderImpl.getCachedOrCreate( DMN_COMPILER_CACHE_KEY, () -> getCompiler( kbuilderImpl ) );
 
@@ -98,6 +142,10 @@ public class DMNAssemblerService implements KieAssemblerService {
             }
         }
 
+        compileResourceToModel(kbuilderImpl, dmnCompiler, resource, dmnModels);
+    }
+
+    private DMNModel compileResourceToModel(KnowledgeBuilderImpl kbuilderImpl, DMNCompiler dmnCompiler, Resource resource, Collection<DMNModel> dmnModels) {
         DMNModel model = dmnCompiler.compile(resource, dmnModels);
         if( model != null ) {
             String namespace = model.getNamespace();
@@ -124,6 +172,7 @@ public class DMNAssemblerService implements KieAssemblerService {
             kbuilderImpl.addBuilderResult(new DMNKnowledgeBuilderError(ResultSeverity.ERROR, resource, "Unable to compile DMN model for the resource"));
             logger.error( "Unable to compile DMN model for resource {}", resource.getSourcePath() );
         }
+        return model;
     }
 
     private List<DMNProfile> getDMNProfiles(KnowledgeBuilderImpl kbuilderImpl) {

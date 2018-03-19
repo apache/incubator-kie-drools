@@ -30,6 +30,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.xml.namespace.QName;
+
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.DroolsObjectOutputStream;
 import org.kie.api.io.Resource;
@@ -81,7 +83,7 @@ public class DMNModelImpl
      */
     private boolean runtimeTypeCheck = false;
 
-    private Map<String, NamespaceAndName> importAliases = new HashMap<>();
+    private Map<String, QName> importAliases = new HashMap<>();
 
     public DMNModelImpl() {
     }
@@ -374,63 +376,21 @@ public class DMNModelImpl
 
     public void setImportAliasForNS(String iAlias, String iNS, String iModelName) {
         if (!getImportAliasFor(iNS, iModelName).isPresent()) {
-            this.importAliases.put(iAlias, new NamespaceAndName(iNS, iModelName));
+            this.importAliases.put(iAlias, new QName(iNS, iModelName));
         }
     }
 
-    public Map<String, NamespaceAndName> getImportAliasesForNS() {
+    public Map<String, QName> getImportAliasesForNS() {
         return Collections.unmodifiableMap(this.importAliases);
     }
 
     public Optional<String> getImportAliasFor(String ns, String iModelName) {
-        NamespaceAndName lookup = new NamespaceAndName(ns, iModelName);
+        QName lookup = new QName(ns, iModelName);
         return this.importAliases.entrySet().stream().filter(kv -> kv.getValue().equals(lookup)).map(kv -> kv.getKey()).findFirst();
     }
 
-    public NamespaceAndName getImportNamespaceAndNameforAlias(String iAlias) {
+    public QName getImportNamespaceAndNameforAlias(String iAlias) {
         return this.importAliases.get(iAlias);
     }
 
-    public static class NamespaceAndName {
-
-        public final String namespace;
-        public final String name;
-
-        public NamespaceAndName(String namespace, String name) {
-            this.namespace = namespace;
-            this.name = name;
-        }
-
-        @Override
-        public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + ((name == null) ? 0 : name.hashCode());
-            result = prime * result + ((namespace == null) ? 0 : namespace.hashCode());
-            return result;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj)
-                return true;
-            if (obj == null)
-                return false;
-            if (getClass() != obj.getClass())
-                return false;
-            NamespaceAndName other = (NamespaceAndName) obj;
-            if (name == null) {
-                if (other.name != null)
-                    return false;
-            } else if (!name.equals(other.name))
-                return false;
-            if (namespace == null) {
-                if (other.namespace != null)
-                    return false;
-            } else if (!namespace.equals(other.namespace))
-                return false;
-            return true;
-        }
-
-    }
 }
