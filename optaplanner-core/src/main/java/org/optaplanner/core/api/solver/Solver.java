@@ -52,7 +52,7 @@ public interface Solver<Solution_> {
      * {@link SolverEventListener#bestSolutionChanged(BestSolutionChangedEvent)} is often more appropriate).
      * <p>
      * This method is thread-safe.
-     * @return never null, but it can return the original, uninitialized {@link PlanningSolution} with a {@link Score} null.
+     * @return never null, but it can return the uninitialized {@link PlanningSolution} with a {@link Score} null.
      */
     Solution_ getBestSolution();
 
@@ -61,12 +61,22 @@ public interface Solver<Solution_> {
      * <p>
      * This is useful for generic code, which doesn't know the type of the {@link PlanningSolution}
      * to retrieve the {@link Score} from the {@link #getBestSolution()} easily.
+     * <p>
+     * This method is thread-safe.
      * @return null if the {@link PlanningSolution} is still uninitialized
      */
     Score getBestScore();
 
     /**
-     * @return the amount of millis spent between when this solver started (or last restarted) and ended
+     * Returns the amount of milliseconds spent solving since the last start.
+     * If it hasn't started it yet, it runs 0.
+     * If it hasn't ended yet, it returns the time between the last start and now.
+     * If it has ended already, it returns the time between the last start and the ending.
+     * <p>
+     * A {@link #addProblemFactChange(ProblemFactChange)} triggers a restart which resets this time.
+     * <p>
+     * This method is thread-safe.
+     * @return the amount of milliseconds spent solving since the last (re)start, at least 0
      */
     long getTimeMillisSpent();
 

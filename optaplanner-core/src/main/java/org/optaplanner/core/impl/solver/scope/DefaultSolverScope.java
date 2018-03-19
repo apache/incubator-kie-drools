@@ -47,8 +47,8 @@ public class DefaultSolverScope<Solution_> {
      */
     protected Semaphore runnableThreadSemaphore = null;
 
-    protected Long startingSystemTimeMillis;
-    protected Long endingSystemTimeMillis;
+    protected volatile Long startingSystemTimeMillis;
+    protected volatile Long endingSystemTimeMillis;
 
     protected Score startingInitializedScore;
 
