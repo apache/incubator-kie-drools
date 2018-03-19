@@ -21,6 +21,6 @@ jBPM:
   jbpm-${version.org.kie}-eclipse-all.zip
 
 KIE WB:
-  kie-wb-${version.org.kie}-wildfly10.war
+  kie-wb-${version.org.kie}-wildfly11.war
 
 
