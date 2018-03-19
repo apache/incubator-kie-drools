@@ -212,6 +212,10 @@ public class ComparePair {
                 Object copyFieldVal = field.get(copy);
                 String fieldName = field.getName();
 
+                if (origFieldVal == null && copyFieldVal == null) {
+                    continue;
+                }
+
                 boolean skip = false;
                 for (String skipFieldName : skipFields) {
                     if (skipFieldName.matches(fieldName)) {
