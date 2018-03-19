@@ -16,66 +16,47 @@
 
 package org.jbpm.executor.impl.event;
 
-import java.util.Iterator;
+import java.io.Externalizable;
+import java.util.List;
+import java.util.function.Consumer;
 
-import org.drools.core.event.AbstractEventSupport;
 import org.jbpm.executor.AsynchronousJobListener;
 import org.kie.api.executor.RequestInfo;
 
+/**
+ * Interface for ExecutorEventSupportImpl and ExecutorEventSupportEJBImpl so they both can be referenced by
+ * one type because the ExecutorEventSupportEJBImpl is no longer a subtype of ExecutorEventSupportImpl since it would
+ * violate EJB public methods specification like no final and synchronized public methods. This way, both ExecutorEventSupportImpl
+ * and ExecutorEventSupportEJBImpl can be used interchangeably depending on which implementation of ExecutionEventSupport
+ * should be used, i.e. plain Java implementation or EJB implementation.
+ */
+public interface ExecutorEventSupport extends Externalizable {
 
-public class ExecutorEventSupport extends AbstractEventSupport<AsynchronousJobListener> {
+    void notifyAllListeners(Consumer<AsynchronousJobListener> consumer);
 
-    public void fireBeforeJobScheduled(final RequestInfo job, Throwable exception) {
-        final Iterator<AsynchronousJobListener> iter = getEventListenersIterator();
-        if (iter.hasNext()) {
-            do{
-                iter.next().beforeJobScheduled(new AsynchronousJobEventImpl(job, exception));
-            } while (iter.hasNext());
-        }
-    }
-    
-    public void fireBeforeJobExecuted(final RequestInfo job, Throwable exception) {
-        final Iterator<AsynchronousJobListener> iter = getEventListenersIterator();
-        if (iter.hasNext()) {
-            do{
-                iter.next().beforeJobExecuted(new AsynchronousJobEventImpl(job, exception));
-            } while (iter.hasNext());
-        }
-    }
-    
-    public void fireBeforeJobCancelled(final RequestInfo job, Throwable exception) {
-        final Iterator<AsynchronousJobListener> iter = getEventListenersIterator();
-        if (iter.hasNext()) {
-            do{
-                iter.next().beforeJobCancelled(new AsynchronousJobEventImpl(job, exception));
-            } while (iter.hasNext());
-        }
-    }
-    
-    public void fireAfterJobScheduled(final RequestInfo job, Throwable exception) {
-        final Iterator<AsynchronousJobListener> iter = getEventListenersIterator();
-        if (iter.hasNext()) {
-            do{
-                iter.next().afterJobScheduled(new AsynchronousJobEventImpl(job, exception));
-            } while (iter.hasNext());
-        }
-    }
-    
-    public void fireAfterJobExecuted(final RequestInfo job, Throwable exception) {
-        final Iterator<AsynchronousJobListener> iter = getEventListenersIterator();
-        if (iter.hasNext()) {
-            do{
-                iter.next().afterJobExecuted(new AsynchronousJobEventImpl(job, exception));
-            } while (iter.hasNext());
-        }
-    }
-    
-    public void fireAfterJobCancelled(final RequestInfo job, Throwable exception) {
-        final Iterator<AsynchronousJobListener> iter = getEventListenersIterator();
-        if (iter.hasNext()) {
-            do{
-                iter.next().afterJobCancelled(new AsynchronousJobEventImpl(job, exception));
-            } while (iter.hasNext());
-        }
-    }
+    void addEventListener(AsynchronousJobListener listener);
+
+    void removeEventListener(Class cls);
+
+    void removeEventListener(AsynchronousJobListener listener);
+
+    List<AsynchronousJobListener> getEventListeners();
+
+    int size();
+
+    boolean isEmpty();
+
+    void clear();
+
+    void fireBeforeJobScheduled(RequestInfo job, Throwable exception);
+
+    void fireBeforeJobExecuted(RequestInfo job, Throwable exception);
+
+    void fireBeforeJobCancelled(RequestInfo job, Throwable exception);
+
+    void fireAfterJobScheduled(RequestInfo job, Throwable exception);
+
+    void fireAfterJobExecuted(RequestInfo job, Throwable exception);
+
+    void fireAfterJobCancelled(RequestInfo job, Throwable exception);
 }

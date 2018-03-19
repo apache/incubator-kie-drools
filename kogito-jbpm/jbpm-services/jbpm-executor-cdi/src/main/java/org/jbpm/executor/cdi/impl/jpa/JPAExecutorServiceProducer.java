@@ -25,7 +25,7 @@ import javax.persistence.PersistenceUnit;
 
 import org.jbpm.executor.ExecutorServiceFactory;
 import org.jbpm.executor.impl.ExecutorServiceImpl;
-import org.jbpm.executor.impl.event.ExecutorEventSupport;
+import org.jbpm.executor.impl.event.ExecutorEventSupportImpl;
 import org.jbpm.executor.impl.jpa.ExecutorQueryServiceImpl;
 import org.jbpm.executor.impl.jpa.ExecutorRequestAdminServiceImpl;
 import org.jbpm.executor.impl.jpa.JPAExecutorStoreService;
@@ -43,7 +43,7 @@ public class JPAExecutorServiceProducer {
 	@PersistenceUnit(unitName = "org.jbpm.domain")
 	private EntityManagerFactory emf;
 		
-	private ExecutorEventSupport eventSupport = new ExecutorEventSupport();
+	private ExecutorEventSupportImpl eventSupport = new ExecutorEventSupportImpl();
 	
 	private ExecutorService service;
 	
@@ -65,7 +65,7 @@ public class JPAExecutorServiceProducer {
     }
 	
 	@Produces
-    public ExecutorEventSupport produceExecutorEventSupport() {           
+    public ExecutorEventSupportImpl produceExecutorEventSupport() {
         
         return eventSupport;
     }

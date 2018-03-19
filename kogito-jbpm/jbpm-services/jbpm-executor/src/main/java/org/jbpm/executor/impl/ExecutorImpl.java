@@ -51,6 +51,7 @@ import org.jbpm.executor.entities.RequestInfo;
 import org.jbpm.executor.impl.concurrent.LoadAndScheduleRequestsTask;
 import org.jbpm.executor.impl.concurrent.PrioritisedScheduledThreadPoolExecutor;
 import org.jbpm.executor.impl.concurrent.ScheduleTaskTransactionSynchronization;
+import org.jbpm.executor.impl.event.ExecutorEventSupportImpl;
 import org.jbpm.executor.impl.event.ExecutorEventSupport;
 import org.kie.api.executor.CommandContext;
 import org.kie.api.executor.ExecutorStoreService;
@@ -110,7 +111,7 @@ public class ExecutorImpl implements Executor {
     private ScheduledExecutorService scheduler;
     private ScheduledFuture<?> loadTaskFuture;
 
-    private ExecutorEventSupport eventSupport = new ExecutorEventSupport();
+    private ExecutorEventSupport eventSupport = new ExecutorEventSupportImpl();
     private AvailableJobsExecutor jobProcessor;
     private TransactionManager transactionManager;
 

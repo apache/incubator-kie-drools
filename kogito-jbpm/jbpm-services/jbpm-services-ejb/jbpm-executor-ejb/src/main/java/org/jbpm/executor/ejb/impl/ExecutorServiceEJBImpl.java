@@ -41,21 +41,21 @@ import org.kie.api.executor.ExecutorStoreService;
 @Startup
 public class ExecutorServiceEJBImpl extends ExecutorServiceImpl implements ExecutorServiceEJB, ExecutorService, RequeueAware {
 
-	private ExecutorStoreService storeService;
-	private ClassCacheManager classCacheManager;
-	private TransactionalCommandService transactionalCommandService;
-	
-	@EJB(beanInterface=ExecutorEventSupportEJBImpl.class)
+    private ExecutorStoreService storeService;
+    private ClassCacheManager classCacheManager;
+    private TransactionalCommandService transactionalCommandService;
+
+    @EJB(beanInterface = ExecutorEventSupport.class)
     @Override
     public void setEventSupport(ExecutorEventSupport eventSupport) {
         super.setEventSupport(eventSupport);
     }
-	
-	@EJB(beanInterface=TransactionalCommandServiceExecutorEJBImpl.class)
+
+    @EJB(beanInterface=TransactionalCommandServiceExecutorEJBImpl.class)
     public void setCommandService(TransactionalCommandService commandService ) {
 	    transactionalCommandService = commandService;
     }
-	
+
 	@PostConstruct
 	@Override
 	public void init() {

@@ -31,6 +31,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jbpm.executor.AsyncJobException;
 import org.jbpm.executor.entities.ErrorInfo;
 import org.jbpm.executor.entities.RequestInfo;
+import org.jbpm.executor.impl.event.ExecutorEventSupportImpl;
 import org.jbpm.executor.impl.event.ExecutorEventSupport;
 import org.jbpm.process.core.async.AsyncExecutionMarker;
 import org.kie.api.executor.Command;
@@ -66,7 +67,7 @@ public abstract class AbstractAvailableJobsExecutor {
    
     protected ExecutorStoreService executorStoreService;
     
-    protected ExecutorEventSupport eventSupport = new ExecutorEventSupport();
+    protected ExecutorEventSupport eventSupport = new ExecutorEventSupportImpl();
     
     protected Executor executor;
 

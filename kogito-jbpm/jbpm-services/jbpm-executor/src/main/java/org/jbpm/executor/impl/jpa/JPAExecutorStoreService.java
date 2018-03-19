@@ -16,7 +16,6 @@
 
 package org.jbpm.executor.impl.jpa;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +25,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
 
 import org.drools.core.command.impl.ExecutableCommand;
-import org.jbpm.executor.impl.event.ExecutorEventSupport;
+import org.jbpm.executor.impl.event.ExecutorEventSupportImpl;
 import org.jbpm.shared.services.impl.commands.FindObjectCommand;
 import org.jbpm.shared.services.impl.commands.FunctionCommand;
 import org.jbpm.shared.services.impl.commands.MergeObjectCommand;
@@ -51,14 +50,14 @@ public class JPAExecutorStoreService implements ExecutorStoreService {
 	private EntityManagerFactory emf;
     private CommandExecutor commandService;
     
-    private ExecutorEventSupport eventSupport = new ExecutorEventSupport();
+    private ExecutorEventSupportImpl eventSupport = new ExecutorEventSupportImpl();
 
 
     public JPAExecutorStoreService(boolean active) {
     	
     }
         
-    public void setEventSupport(ExecutorEventSupport eventSupport) {
+    public void setEventSupport(ExecutorEventSupportImpl eventSupport) {
         this.eventSupport = eventSupport;
     }
     

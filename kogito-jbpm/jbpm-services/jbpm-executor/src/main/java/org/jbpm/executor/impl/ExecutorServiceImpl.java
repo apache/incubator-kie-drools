@@ -25,6 +25,7 @@ import org.jbpm.executor.AsynchronousJobListener;
 import org.jbpm.executor.ExecutorNotStartedException;
 import org.jbpm.executor.ExecutorServiceFactory;
 import org.jbpm.executor.RequeueAware;
+import org.jbpm.executor.impl.event.ExecutorEventSupportImpl;
 import org.jbpm.executor.impl.event.ExecutorEventSupport;
 import org.kie.api.executor.CommandContext;
 import org.kie.api.executor.ErrorInfo;
@@ -53,7 +54,7 @@ public class ExecutorServiceImpl implements ExecutorService, RequeueAware {
     
     private ExecutorAdminService adminService;
     
-    private ExecutorEventSupport eventSupport = new ExecutorEventSupport();
+    private ExecutorEventSupport eventSupport = new ExecutorEventSupportImpl();
     
     public ExecutorServiceImpl(){
     	

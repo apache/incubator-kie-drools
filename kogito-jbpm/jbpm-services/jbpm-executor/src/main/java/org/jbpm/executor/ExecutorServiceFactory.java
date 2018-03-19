@@ -23,7 +23,7 @@ import org.jbpm.executor.impl.AvailableJobsExecutor;
 import org.jbpm.executor.impl.ClassCacheManager;
 import org.jbpm.executor.impl.ExecutorImpl;
 import org.jbpm.executor.impl.ExecutorServiceImpl;
-import org.jbpm.executor.impl.event.ExecutorEventSupport;
+import org.jbpm.executor.impl.event.ExecutorEventSupportImpl;
 import org.jbpm.executor.impl.jpa.ExecutorQueryServiceImpl;
 import org.jbpm.executor.impl.jpa.ExecutorRequestAdminServiceImpl;
 import org.jbpm.executor.impl.jpa.JPAExecutorStoreService;
@@ -45,10 +45,10 @@ public class ExecutorServiceFactory {
 	private static ExecutorService serviceInstance;
     
     public static synchronized ExecutorService newExecutorService(EntityManagerFactory emf){
-    	return newExecutorService(emf, new ExecutorEventSupport());        
+    	return newExecutorService(emf, new ExecutorEventSupportImpl());
     }
     
-    public static synchronized ExecutorService newExecutorService(EntityManagerFactory emf, ExecutorEventSupport eventSupport){
+    public static synchronized ExecutorService newExecutorService(EntityManagerFactory emf, ExecutorEventSupportImpl eventSupport){
         if ( mode.equalsIgnoreCase( "singleton" ) ) {
             if (serviceInstance == null) {
                 serviceInstance = configure(emf, new TransactionalCommandService(emf), eventSupport);
@@ -59,7 +59,7 @@ public class ExecutorServiceFactory {
         }        
     }
     
-    public static synchronized ExecutorService newExecutorService(EntityManagerFactory emf, TransactionalCommandService commandService, ExecutorEventSupport eventSupport){
+    public static synchronized ExecutorService newExecutorService(EntityManagerFactory emf, TransactionalCommandService commandService, ExecutorEventSupportImpl eventSupport){
         if ( mode.equalsIgnoreCase( "singleton" ) ) {
             if (serviceInstance == null) {
                 serviceInstance = configure(emf, commandService, eventSupport);
@@ -83,7 +83,7 @@ public class ExecutorServiceFactory {
         
     }
 
-    private static ExecutorService configure(EntityManagerFactory emf, TransactionalCommandService commandService, ExecutorEventSupport eventSupport) {
+    private static ExecutorService configure(EntityManagerFactory emf, TransactionalCommandService commandService, ExecutorEventSupportImpl eventSupport) {
         // create instances of executor services
 
     	ExecutorQueryService queryService = new ExecutorQueryServiceImpl(true);
