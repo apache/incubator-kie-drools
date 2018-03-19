@@ -41,8 +41,12 @@ public class BruteForceEngine {
         List<Rule> firedRules = stream(rules).filter(rule -> {
             List<TupleHandle> matches = evaluate(rule.getView());
             matches.forEach(match -> {
-                rule.getDefaultConsequence().getBlock().execute(
-                        stream(rule.getDefaultConsequence().getDeclarations() ).map( match::get ).toArray() );
+                try {
+                    rule.getDefaultConsequence().getBlock().execute(
+                            stream(rule.getDefaultConsequence().getDeclarations() ).map( match::get ).toArray() );
+                } catch (Exception e) {
+                    throw new RuntimeException( e );
+                }
             });
             return !matches.isEmpty();
         }).collect(toList());
@@ -143,14 +147,26 @@ public class BruteForceEngine {
                 Variable[] vars = singleCon.getVariables();
                 switch (vars.length) {
                     case 0:
-                        return singleCon.getPredicate().test();
+                        try {
+                            return singleCon.getPredicate().test();
+                        } catch (Exception e) {
+                            throw new RuntimeException( e );
+                        }
                     case 1:
                         Object obj = tuple.get(vars[0]);
-                        return singleCon.getPredicate().test(obj);
+                        try {
+                            return singleCon.getPredicate().test(obj);
+                        } catch (Exception e) {
+                            throw new RuntimeException( e );
+                        }
                     case 2:
                         Object obj1 = tuple.get(vars[0]);
                         Object obj2 = tuple.get(vars[1]);
-                        return singleCon.getPredicate().test(obj1, obj2);
+                        try {
+                            return singleCon.getPredicate().test(obj1, obj2);
+                        } catch (Exception e) {
+                            throw new RuntimeException( e );
+                        }
                 }
             case AND:
                 AndConstraints andCon = (AndConstraints)constraint;

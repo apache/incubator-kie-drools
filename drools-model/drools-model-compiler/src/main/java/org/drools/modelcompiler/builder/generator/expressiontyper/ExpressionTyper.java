@@ -4,7 +4,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import org.drools.core.util.ClassUtils;
 import org.drools.javaparser.JavaParser;
@@ -70,7 +69,6 @@ public class ExpressionTyper {
     private boolean isPositional;
     private final ExpressionTyperContext context;
     private final List<String> usedDeclarations;
-    private final Set<String> reactOnProperties;
     private final List<Expression> prefixExpressions;
 
     private static final Logger logger          = LoggerFactory.getLogger(ExpressionTyper.class);
@@ -88,7 +86,6 @@ public class ExpressionTyper {
         this.isPositional = isPositional;
         this.context = context;
         this.usedDeclarations = context.getUsedDeclarations();
-        this.reactOnProperties = context.getReactOnProperties();
         this.prefixExpressions = context.getPrefixExpresssions();
     }
 
@@ -168,7 +165,7 @@ public class ExpressionTyper {
                     }
                     return Optional.empty();
                 }
-                reactOnProperties.add(name);
+                context.addReactOnProperties(name);
                 Expression plusThis = prepend(new NameExpr("_this"), expression.getExpression());
                 return of(new TypedExpression(plusThis, expression.getType(), name));
             }
@@ -417,7 +414,7 @@ public class ExpressionTyper {
         String firstName = firstNode.getName().getIdentifier();
         Method firstAccessor = ClassUtils.getAccessor(tc4, firstName);
         if (firstAccessor != null) {
-            reactOnProperties.add(firstName);
+            context.addReactOnProperties(firstName);
             teCursor = new TypedExpressionCursor(new MethodCallExpr(new NameExpr("_this"), firstAccessor.getName()), firstAccessor.getReturnType());
         } else {
             throw new UnsupportedOperationException("firstNode I don't know about");
@@ -465,7 +462,7 @@ public class ExpressionTyper {
             if (firstAccessor != null) {
                 // Hack to review - if a property is upper case it's probably not a react on property
                 if(!"".equals(firstName) && Character.isLowerCase(firstName.charAt(0))) {
-                    reactOnProperties.add(firstName);
+                    context.addReactOnProperties(firstName);
                 }
                 final Class<?> typeOfFirstAccessor;
                 if (!isInLineCast) {
@@ -506,7 +503,7 @@ public class ExpressionTyper {
                 fieldName = ( SimpleName ) childNodes.get(1 );
             }
             if (fieldName != null) {
-                reactOnProperties.add( getFieldName(drlxExpr, fieldName ) );
+                context.addReactOnProperties( getFieldName(drlxExpr, fieldName ) );
             }
         }
         teCursor = new TypedExpressionCursor(new NameExpr("_this"), originalTypeCursor);

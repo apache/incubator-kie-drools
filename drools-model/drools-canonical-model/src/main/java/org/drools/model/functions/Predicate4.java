@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public interface Predicate4<A, B, C, D> extends Serializable {
 
-    boolean test( A a, B b, C c, D d );
+    boolean test( A a, B b, C c, D d ) throws Exception;
 
     class Impl<A, B, C, D> extends IntrospectableLambda implements Predicate4<A, B, C, D> {
 
@@ -15,7 +15,7 @@ public interface Predicate4<A, B, C, D> extends Serializable {
         }
 
         @Override
-        public boolean test(A a, B b, C c, D d) {
+        public boolean test(A a, B b, C c, D d) throws Exception {
             return predicate.test(a, b, c, d);
         }
 

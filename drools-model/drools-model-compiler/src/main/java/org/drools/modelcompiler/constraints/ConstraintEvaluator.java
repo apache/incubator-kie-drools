@@ -69,9 +69,13 @@ public class ConstraintEvaluator {
     }
 
     public boolean evaluate( InternalFactHandle handle, InternalWorkingMemory workingMemory ) {
-        return constraint.getPredicate().test( declarations.length == 1 ?
-                                               getSingleArg( handle, workingMemory ) :
-                                               getAlphaInvocationArgs( handle, workingMemory ) );
+        try {
+            return constraint.getPredicate().test( declarations.length == 1 ?
+                                                   getSingleArg( handle, workingMemory ) :
+                                                   getAlphaInvocationArgs( handle, workingMemory ) );
+        } catch (Exception e) {
+            throw new RuntimeException( e );
+        }
     }
 
     private Object[] getSingleArg( InternalFactHandle handle, InternalWorkingMemory workingMemory ) {
@@ -96,7 +100,11 @@ public class ConstraintEvaluator {
     }
 
     public boolean evaluate(InternalFactHandle handle, Tuple tuple, InternalWorkingMemory workingMemory) {
-        return constraint.getPredicate().test( getBetaInvocationArgs( handle, tuple, workingMemory ) );
+        try {
+            return constraint.getPredicate().test( getBetaInvocationArgs( handle, tuple, workingMemory ) );
+        } catch (Exception e) {
+            throw new RuntimeException( e );
+        }
     }
 
     private Object[] getBetaInvocationArgs( InternalFactHandle handle, Tuple tuple, InternalWorkingMemory workingMemory ) {

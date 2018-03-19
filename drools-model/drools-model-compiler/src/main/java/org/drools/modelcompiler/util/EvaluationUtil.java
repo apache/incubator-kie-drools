@@ -25,7 +25,14 @@ public class EvaluationUtil {
     }
 
     public static boolean compareStringsAsNumbers(String s1, String s2, String op) {
-        int result = new BigDecimal(s1).compareTo( new BigDecimal( s2 ) );
+        return compare(new BigDecimal(s1), new BigDecimal( s2 ), op);
+    }
+
+    public static boolean compare(Comparable c1, Comparable c2, String op) {
+        if (c1 == null || c2 == null) {
+            return false;
+        }
+        int result = c1.compareTo( c2 );
         switch (op) {
             case "<" : return result < 0;
             case "<=" : return result <= 0;
