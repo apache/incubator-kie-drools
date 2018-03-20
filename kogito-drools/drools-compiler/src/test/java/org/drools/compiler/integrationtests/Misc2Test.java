@@ -8969,8 +8969,7 @@ public class Misc2Test extends CommonTestMethodBase {
             "Helpful to test thread dump when a timeout occur on the JUnit listener.\n" + 
             "See org.kie.test.util.TestStatusListener#testFailure()")
     @Test(timeout=5_000L)
-    public void testDeadlock() throws Exception {
-        final Object see_also = org.kie.test.util.TestStatusListener.class;
+    public void testDeadlock() {
         Object lock1 = 1L;
         Object lock2 = 2L;
         Runnable task1 = () -> {
