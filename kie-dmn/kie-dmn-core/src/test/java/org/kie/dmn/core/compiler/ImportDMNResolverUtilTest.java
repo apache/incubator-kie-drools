@@ -147,7 +147,7 @@ public class ImportDMNResolverUtilTest {
     private Import makeImport(String namespace, String name, String modelName) {
         Import i = new Import();
         i.setNamespace(namespace);
-        Map<QName, String> addAttributes = new HashMap();
+        Map<QName, String> addAttributes = new HashMap<>();
         if (name != null) {
             addAttributes.put(Import.NAME_QNAME, name);
         }
