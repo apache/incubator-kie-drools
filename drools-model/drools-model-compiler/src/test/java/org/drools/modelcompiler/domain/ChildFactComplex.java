@@ -16,8 +16,6 @@
 
 package org.drools.modelcompiler.domain;
 
-import org.drools.modelcompiler.ComplexRulesTest;
-
 public class ChildFactComplex {
 
     private final int id;
@@ -64,5 +62,9 @@ public class ChildFactComplex {
 
     public EnumFact2 getEnum2Value() {
         return enum2Value;
+    }
+
+    public Short getIdAsShort() {
+        return (short) id;
     }
 }
