@@ -3,6 +3,7 @@ package org.kie.dmn.api.core;
 public enum DMNMessageType {
     UNSUPPORTED_ELEMENT( "The referenced element is not supported by the implementation", Tag.COMPILATION, Tag.DMN_CORE ),
     REQ_NOT_FOUND( "The referenced node was not found", Tag.COMPILATION, Tag.DMN_CORE ),
+    IMPORT_NOT_FOUND("The referenced import was not found", Tag.COMPILATION, Tag.DMN_CORE),
     TYPE_REF_NOT_FOUND( "The listed type reference could not be resolved", Tag.COMPILATION, Tag.DMN_CORE ),
     TYPE_DEF_NOT_FOUND( "The listed type definition was not found", Tag.COMPILATION, Tag.DMN_CORE ),
     INVALID_NAME( "The listed name is not a valid FEEL identifier", Tag.VALIDATION, Tag.DMN_VALIDATOR, Tag.COMPILATION, Tag.DMN_CORE ),

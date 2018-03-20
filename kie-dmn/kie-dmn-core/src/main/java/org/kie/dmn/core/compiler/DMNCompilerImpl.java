@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.stream.Collectors;
+import java.util.function.Function;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
@@ -58,6 +58,7 @@ import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.UnaryTest;
+import org.kie.dmn.feel.util.Either;
 import org.kie.dmn.model.v1_1.DMNElementReference;
 import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
 import org.kie.dmn.model.v1_1.DRGElement;
@@ -150,43 +151,40 @@ public class DMNCompilerImpl
 
     @Override
     public DMNModel compile(Definitions dmndefs, Collection<DMNModel> dmnModels) {
-        DMNModelImpl model = null;
-        if ( dmndefs != null ) {
-            model = new DMNModelImpl( dmndefs );
-            model.setRuntimeTypeCheck( ((DMNCompilerConfigurationImpl) dmnCompilerConfig).getOption(RuntimeTypeCheckOption.class).isRuntimeTypeCheck() );
-            DMNCompilerContext ctx = new DMNCompilerContext();
+        if (dmndefs == null) {
+            return null;
+        }
+        DMNModelImpl model = new DMNModelImpl(dmndefs);
+        model.setRuntimeTypeCheck(((DMNCompilerConfigurationImpl) dmnCompilerConfig).getOption(RuntimeTypeCheckOption.class).isRuntimeTypeCheck());
+        DMNCompilerContext ctx = new DMNCompilerContext();
 
-            if (!dmndefs.getImport().isEmpty()) {
-                for (Import i : dmndefs.getImport()) {
-                    String iNS = i.getNamespace();
-
-                    List<DMNModel> modelsInNS = dmnModels.stream().filter(m -> m.getNamespace().equals(iNS)).collect(Collectors.toList());
-                    if (modelsInNS.size() == 1) {
-                        // TODO here I actually I haven't checked if the located DMN Model in the NS, correspond for the import `name`. 
-                        String iAlias = i.getAdditionalAttributes().get(Import.NAME_QNAME) != null
-                                ? i.getAdditionalAttributes().get(Import.NAME_QNAME)
-                                : modelsInNS.get(0).getName();
-                        model.setImportAliasForNS(iAlias, iNS, modelsInNS.get(0).getName());
-                        importFromModel(model, modelsInNS.get(0));
-                    } else {
-                        String iAlias = i.getAdditionalAttributes().get(Import.NAME_QNAME);
-                        String iModelName = i.getAdditionalAttributes().get(Import.MODELNAME_QNAME) != null
-                                ? i.getAdditionalAttributes().get(Import.MODELNAME_QNAME)
-                                : iAlias;
-                        if (iAlias == null || iAlias.isEmpty() || iModelName == null || iModelName.isEmpty()) {
-                            // TODO throw error.
-                        }
-                        model.setImportAliasForNS(iAlias, iNS, iModelName);
-                        System.out.println(iModelName);
-                        importFromModel(model, modelsInNS.stream().filter(m -> m.getName().equals(iModelName)).findFirst().get());
-                    }
+        if (!dmndefs.getImport().isEmpty()) {
+            for (Import i : dmndefs.getImport()) {
+                Either<String, DMNModel> resolvedResult = ImportDMNResolverUtil.resolveImportDMN(i, dmnModels, (DMNModel m) -> new QName(m.getNamespace(), m.getName()));
+                DMNModel located = resolvedResult.cata(msg -> {
+                    MsgUtil.reportMessage(logger,
+                                          DMNMessage.Severity.ERROR,
+                                          i,
+                                          model,
+                                          null,
+                                          null,
+                                          Msg.IMPORT_NOT_FOUND_FOR_NODE,
+                                          msg,
+                                          i);
+                    return null;
+                }, Function.identity());
+                if (located != null) {
+                    String iAlias = i.getAdditionalAttributes().get(Import.NAME_QNAME) != null
+                            ? i.getAdditionalAttributes().get(Import.NAME_QNAME)
+                            : located.getName();
+                    model.setImportAliasForNS(iAlias, located.getNamespace(), located.getName());
+                    importFromModel(model, located);
                 }
             }
-
-            processItemDefinitions( ctx, feel, model, dmndefs );
-            processDrgElements( ctx, feel, model, dmndefs );
-            return model;
         }
+
+        processItemDefinitions(ctx, feel, model, dmndefs);
+        processDrgElements(ctx, feel, model, dmndefs);
         return model;
     }
 

@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
@@ -44,9 +43,11 @@ import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.compiler.DMNCompilerConfigurationImpl;
 import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.compiler.DMNProfile;
+import org.kie.dmn.core.compiler.ImportDMNResolverUtil;
 import org.kie.dmn.core.compiler.profiles.ExtendedDMNProfile;
 import org.kie.dmn.core.impl.DMNKnowledgeBuilderError;
 import org.kie.dmn.core.impl.DMNPackageImpl;
+import org.kie.dmn.feel.util.Either;
 import org.kie.dmn.model.v1_1.Definitions;
 import org.kie.dmn.model.v1_1.Import;
 import org.kie.internal.builder.ResultSeverity;
@@ -88,28 +89,9 @@ public class DMNAssemblerService implements KieAssemblerService {
         // enrich with imports
         for (DMNResource r : dmnResources) {
             for (Import i : r.getDefinitions().getImport()) {
-                String iNamespace = i.getNamespace();
-                List<DMNResource> allInNS = dmnResources.stream()
-                                                        .filter(m -> !m.equals(r))
-                                                        .filter(m -> m.getModelID().getNamespaceURI().equals(iNamespace))
-                                                        .collect(Collectors.toList());
-                if (allInNS.size() == 1) {
-                    // TODO here I actually I haven't checked if the located DMN Model in the NS, correspond for the import `name`. 
-                    r.addDependency(allInNS.get(0).getModelID());
-                } else {
-                    final String iModelName = i.getAdditionalAttributes().get(Import.MODELNAME_QNAME) != null
-                            ? i.getAdditionalAttributes().get(Import.MODELNAME_QNAME)
-                            : i.getAdditionalAttributes().get(Import.NAME_QNAME); // try to use alias as the model name.
-                    List<DMNResource> usingNSandName = dmnResources.stream()
-                                                                   .filter(m -> !m.equals(r))
-                                                                   .filter(m -> m.getModelID().getNamespaceURI().equals(iNamespace) && m.getModelID().getLocalPart().equals(iModelName))
-                                                                   .collect(Collectors.toList());
-                    if (usingNSandName.size() == 1) {
-                        r.addDependency(usingNSandName.get(0).getModelID());
-                    } else {
-                        throw new RuntimeException("I was unable to locate DMN model " + new QName(iNamespace, iModelName != null ? iModelName : "") + " which is declared as Import inside model " + r.getModelID());
-                    }
-                }
+                Either<String, DMNResource> resolvedResult = ImportDMNResolverUtil.resolveImportDMN(i, dmnResources, DMNResource::getModelID);
+                DMNResource located = resolvedResult.getOrElseThrow(RuntimeException::new);
+                r.addDependency(located.getModelID());
             }
         }
         List<DMNResource> sortedDmnResources = DMNResourceDependenciesSorter.sort(dmnResources);
