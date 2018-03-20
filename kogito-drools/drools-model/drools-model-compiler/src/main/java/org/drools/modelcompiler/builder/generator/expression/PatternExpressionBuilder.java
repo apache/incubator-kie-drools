@@ -88,7 +88,7 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
         }
         final Expression constraintExpression = drlxParseResult.getExpr() instanceof EnclosedExpr ?
                 buildConstraintExpression(drlxParseResult, (( EnclosedExpr ) drlxParseResult.getExpr()).getInner()) :
-                buildConstraintExpression(drlxParseResult, DrlxParseUtil.findLeftLeafOfMethodCall(drlxParseResult.getLeft().getExpression()));
+                buildConstraintExpression(drlxParseResult, drlxParseResult.getUsedDeclarationsOnLeft(), DrlxParseUtil.findLeftLeafOfMethodCall(drlxParseResult.getLeft().getExpression()));
         bindDSL.addArgument(constraintExpression);
         final Optional<MethodCallExpr> methodCallExpr = buildReactOn(drlxParseResult);
         methodCallExpr.ifPresent(bindDSL::addArgument);
@@ -96,7 +96,11 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
     }
 
     private Expression buildConstraintExpression(DrlxParseSuccess drlxParseResult, Expression expr) {
-        return drlxParseResult.isStatic() ? expr : generateLambdaWithoutParameters(drlxParseResult.getUsedDeclarations(), expr, drlxParseResult.isSkipThisAsParam());
+        return buildConstraintExpression(drlxParseResult, drlxParseResult.getUsedDeclarations(), expr);
+    }
+
+    private Expression buildConstraintExpression(DrlxParseSuccess drlxParseResult, Collection<String> usedDeclarations, Expression expr) {
+        return drlxParseResult.isStatic() ? expr : generateLambdaWithoutParameters(usedDeclarations, expr, drlxParseResult.isSkipThisAsParam());
     }
 
     private Optional<MethodCallExpr> buildIndexedBy(DrlxParseSuccess drlxParseResult) {

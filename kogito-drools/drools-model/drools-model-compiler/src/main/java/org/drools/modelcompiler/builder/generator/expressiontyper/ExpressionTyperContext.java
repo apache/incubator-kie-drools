@@ -15,6 +15,10 @@ public class ExpressionTyperContext {
     private Set<String> reactOnProperties = new HashSet<>();
     private List<Expression> prefixExpresssions = new ArrayList<>();
 
+    public void addUsedDeclarations(String name) {
+        usedDeclarations.add(name);
+    }
+
     public List<String> getUsedDeclarations() {
         return usedDeclarations;
     }

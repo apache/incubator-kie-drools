@@ -13,6 +13,8 @@ import org.drools.javaparser.ast.expr.EnclosedExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 
+import static org.drools.modelcompiler.util.ClassUtil.getAccessibleProperties;
+
 public class DrlxParseSuccess implements DrlxParseResult {
 
     private final Class<?> patternType;
@@ -27,6 +29,7 @@ public class DrlxParseSuccess implements DrlxParseResult {
 
     private IndexUtil.ConstraintType decodeConstraintType;
     private Collection<String> usedDeclarations = new LinkedHashSet<>();
+    private Collection<String> usedDeclarationsOnLeft;
     private Set<String> reactOnProperties = Collections.emptySet();
     private Set<String> watchedProperties = Collections.emptySet();
 
@@ -50,7 +53,16 @@ public class DrlxParseSuccess implements DrlxParseResult {
         return this;
     }
 
-    public DrlxParseSuccess setUsedDeclarations(List<String> usedDeclarations ) {
+    public DrlxParseSuccess setUsedDeclarationsOnLeft( Collection<String> usedDeclarationsOnLeft ) {
+        this.usedDeclarationsOnLeft = usedDeclarationsOnLeft;
+        return this;
+    }
+
+    public Collection<String> getUsedDeclarationsOnLeft() {
+        return usedDeclarationsOnLeft != null ? usedDeclarationsOnLeft : usedDeclarations;
+    }
+
+    public DrlxParseSuccess setUsedDeclarations( List<String> usedDeclarations ) {
         this.usedDeclarations = new LinkedHashSet<>(usedDeclarations);
         skipThisAsParam = usedDeclarations.contains( patternBinding );
         return this;
@@ -62,7 +74,10 @@ public class DrlxParseSuccess implements DrlxParseResult {
     }
 
     public DrlxParseSuccess setReactOnProperties(Set<String> reactOnProperties ) {
-        this.reactOnProperties = reactOnProperties;
+        if ( patternType != null ) {
+            reactOnProperties.retainAll( getAccessibleProperties( patternType ) );
+            this.reactOnProperties = reactOnProperties;
+        }
         return this;
     }
 
@@ -83,10 +98,12 @@ public class DrlxParseSuccess implements DrlxParseResult {
     }
 
     public DrlxParseSuccess addReactOnProperty(String reactOnProperty ) {
-        if (reactOnProperties.isEmpty()) {
-            reactOnProperties = new HashSet<>();
+        if ( patternType != null && getAccessibleProperties(patternType).contains( reactOnProperty ) ) {
+            if ( reactOnProperties.isEmpty() ) {
+                reactOnProperties = new HashSet<>();
+            }
+            this.reactOnProperties.add( reactOnProperty );
         }
-        this.reactOnProperties.add(reactOnProperty);
         return this;
     }
 

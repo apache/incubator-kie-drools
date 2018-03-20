@@ -117,6 +117,8 @@ public class ConstraintParser {
                 return new DrlxParseFail();
             }
 
+            List<String> usedDeclarationsOnLeft = drlx.getBind() == null ? null : new ArrayList<>( expressionTyperContext.getUsedDeclarations() );
+
             TypedExpressionResult rightExpressionResult = expressionTyper.toTypedExpression(binaryExpr.getRight());
             Optional<TypedExpression> optRight = rightExpressionResult.getTypedExpression();
             if( !optRight.isPresent()) {
@@ -176,8 +178,8 @@ public class ConstraintParser {
                 combo = new EnclosedExpr( combo );
             }
 
-            return new DrlxParseSuccess(patternType, exprId, bindingId, combo, left.getType())
-                    .setDecodeConstraintType( decodeConstraintType ).setUsedDeclarations( expressionTyperContext.getUsedDeclarations() )
+            return new DrlxParseSuccess(patternType, exprId, bindingId, combo, left.getType()).setDecodeConstraintType( decodeConstraintType )
+                    .setUsedDeclarations( expressionTyperContext.getUsedDeclarations() ).setUsedDeclarationsOnLeft( usedDeclarationsOnLeft )
                     .setReactOnProperties( expressionTyperContext.getReactOnProperties() ).setLeft( left ).setRight( right ).setBetaNode(isBetaNode);
         }
 

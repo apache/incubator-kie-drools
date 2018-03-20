@@ -68,7 +68,6 @@ public class ExpressionTyper {
     private String bindingId;
     private boolean isPositional;
     private final ExpressionTyperContext context;
-    private final List<String> usedDeclarations;
     private final List<Expression> prefixExpressions;
 
     private static final Logger logger          = LoggerFactory.getLogger(ExpressionTyper.class);
@@ -85,12 +84,11 @@ public class ExpressionTyper {
         this.bindingId = bindingId;
         this.isPositional = isPositional;
         this.context = context;
-        this.usedDeclarations = context.getUsedDeclarations();
         this.prefixExpressions = context.getPrefixExpresssions();
     }
 
     public TypedExpressionResult toTypedExpression(Expression drlxExpr) {
-        logger.debug("Typed expression Input: drlxExpr = {} , patternType = {} ,declarations = {}", PrintUtil.toDrlx(drlxExpr), patternType, usedDeclarations);
+        logger.debug("Typed expression Input: drlxExpr = {} , patternType = {} ,declarations = {}", PrintUtil.toDrlx(drlxExpr), patternType, context.getUsedDeclarations());
         final Optional<TypedExpression> typedExpression = toTypedExpressionRec(drlxExpr);
         final TypedExpressionResult typedExpressionResult = new TypedExpressionResult(typedExpression, context);
         logger.debug("Typed expression Output: {}", typedExpressionResult);
@@ -143,15 +141,15 @@ public class ExpressionTyper {
             Optional<DeclarationSpec> decl = ruleContext.getDeclarationById(name);
             if (decl.isPresent()) {
                 // then drlxExpr is a single NameExpr referring to a binding, e.g.: "$p1".
-                usedDeclarations.add(name);
+                context.addUsedDeclarations(name);
                 return of(new TypedExpression(drlxExpr, decl.get().getDeclarationClass()));
             } if (ruleContext.getQueryParameters().stream().anyMatch(qp -> qp.getName().equals(name))) {
                 // then drlxExpr is a single NameExpr referring to a query parameter, e.g.: "$p1".
-                usedDeclarations.add(name);
+                context.addUsedDeclarations(name);
                 return of(new TypedExpression(drlxExpr));
             } else if(packageModel.getGlobals().containsKey(name)){
                 Expression plusThis = new NameExpr(name);
-                usedDeclarations.add(name);
+                context.addUsedDeclarations(name);
                 return of(new TypedExpression(plusThis, packageModel.getGlobals().get(name)));
             } else {
                 TypedExpression expression;
@@ -323,7 +321,7 @@ public class ExpressionTyper {
         } else if (firstNode instanceof BinaryExpr) {
             result = of( binaryExpr( ( BinaryExpr ) firstNode ));
         } else {
-            result = of(new TypedExpressionCursor( (Expression)firstNode, getExpressionType( ruleContext, ruleContext.getTypeResolver(), (Expression)firstNode, usedDeclarations ) ));
+            result = of(new TypedExpressionCursor( (Expression)firstNode, getExpressionType( ruleContext, ruleContext.getTypeResolver(), (Expression)firstNode, context.getUsedDeclarations() ) ));
         }
 
         result.ifPresent(te -> {
@@ -430,7 +428,7 @@ public class ExpressionTyper {
         if (declarationById.isPresent()) {
             // do NOT append any reactOnProperties.
             // because reactOnProperties is referring only to the properties of the type of the pattern, not other declarations properites.
-            usedDeclarations.add(firstName);
+            context.addUsedDeclarations(firstName);
             final Class<?> typeCursor;
             if (!isInLineCast) {
                 typeCursor = declarationById.get().getDeclarationClass();
@@ -439,7 +437,7 @@ public class ExpressionTyper {
             }
             teCursor = of(new TypedExpressionCursor(new NameExpr(firstName), typeCursor));
         } else if(packageModel.getGlobals().containsKey(firstName)){
-            usedDeclarations.add(firstName);
+            context.addUsedDeclarations(firstName);
             return of(new TypedExpressionCursor(new NameExpr(firstName), packageModel.getGlobals().get(firstName)));
         } else {
 
@@ -453,7 +451,7 @@ public class ExpressionTyper {
                 DeclarationSpec backReferenceDeclaration = ooPathDeclarations.get(ooPathDeclarations.size() - 1 - firstNode.getBackReferencesCount());
                 typeCursor = backReferenceDeclaration.getDeclarationClass();
                 backReference = of(backReferenceDeclaration);
-                usedDeclarations.add(backReferenceDeclaration.getBindingId());
+                context.addUsedDeclarations(backReferenceDeclaration.getBindingId());
             } else {
                 typeCursor = originalTypeCursor;
             }

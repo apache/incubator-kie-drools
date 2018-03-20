@@ -17,10 +17,19 @@
 package org.drools.modelcompiler.util;
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ClassUtil {
 
+    private static final Map<Class<?>, List<String>> ACCESSIBLE_PROPS_CACHE = new HashMap<>();
+
     public static class NullType { }
+
+    public static List<String> getAccessibleProperties( Class<?> clazz ) {
+        return ACCESSIBLE_PROPS_CACHE.computeIfAbsent( clazz, org.drools.core.util.ClassUtils::getAccessibleProperties );
+    }
 
     public static Method findMethod(Class<?> clazz, String methodName, Class[] argsType) {
         try {

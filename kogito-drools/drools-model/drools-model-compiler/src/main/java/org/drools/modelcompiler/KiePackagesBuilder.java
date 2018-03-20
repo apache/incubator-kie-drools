@@ -111,6 +111,9 @@ import org.drools.modelcompiler.constraints.TemporalConstraintEvaluator;
 import org.drools.modelcompiler.constraints.UnificationConstraint;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.definition.KiePackage;
+import org.kie.api.definition.rule.All;
+import org.kie.api.definition.rule.Direct;
+import org.kie.api.definition.rule.Propagation;
 import org.kie.api.definition.type.Role;
 import org.kie.internal.utils.ChainedProperties;
 import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
@@ -245,6 +248,17 @@ public class KiePackagesBuilder {
     private void setRuleMetaAttributes(Rule rule, RuleImpl ruleImpl) {
         for (Entry<String, Object> kv : rule.getMetaData().entrySet()) {
             ruleImpl.addMetaAttribute(kv.getKey(), kv.getValue());
+            if (kv.getKey().equals( Propagation.class.getName() ) || kv.getKey().equals( Propagation.class.getSimpleName() )) {
+                if (Propagation.Type.IMMEDIATE.toString().equals( kv.getValue() )) {
+                    ruleImpl.setDataDriven(true);
+                } else if (Propagation.Type.EAGER.toString().equals( kv.getValue() )) {
+                    ruleImpl.setEager(true);
+                }
+            } else if (kv.getKey().equals( All.class.getName() ) || kv.getKey().equals( All.class.getSimpleName() )) {
+                ruleImpl.setAllMatches(true);
+            } else if (kv.getKey().equals( Direct.class.getName() ) || kv.getKey().equals( Direct.class.getSimpleName() )) {
+                ruleImpl.setActivationListener("direct");
+            }
         }
     }
 
