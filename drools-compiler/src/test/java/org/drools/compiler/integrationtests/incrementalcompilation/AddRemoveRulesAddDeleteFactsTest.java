@@ -1,6 +1,8 @@
 package org.drools.compiler.integrationtests.incrementalcompilation;
 
+import org.drools.compiler.TurtleTestCategory;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.runtime.rule.FactHandle;
@@ -14,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+@Category(TurtleTestCategory.class)
 @RunWith(Parameterized.class)
 public class AddRemoveRulesAddDeleteFactsTest extends AbstractAddRemoveRulesTest {
 
