@@ -316,6 +316,12 @@ public class MigrationManager {
         if (manager.getEnvironment().getKieBase().getProcess(migrationSpec.getToProcessId()) == null) {
             report.addEntry(Type.ERROR, "No process found for " + migrationSpec.getToProcessId() + " in deployment " + migrationSpec.getToDeploymentId());
         }
+        
+        // verify that source and target runtime manager is of the same type - represent the same runtime strategy
+        InternalRuntimeManager sourceManager = (InternalRuntimeManager) RuntimeManagerRegistry.get().getManager(migrationSpec.getDeploymentId());
+        if (!sourceManager.getClass().isAssignableFrom(manager.getClass())) {
+            report.addEntry(Type.ERROR, "Source (" + sourceManager.getClass().getName() + ") and target (" + manager.getClass().getName() + ") deployments are of different type (they represent different runtime strategies)");
+        }
 
         String auditPu = manager.getDeploymentDescriptor().getAuditPersistenceUnit();
 

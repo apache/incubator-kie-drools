@@ -492,6 +492,92 @@ public class MigrationManagerTest extends AbstractBaseTest {
         managerV2.disposeRuntimeEngine(runtime);
     }
     
+    @Test
+    public void testMigrateUserTaskProcessInstanceDifferentRuntimeManagers() {        
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+                .newDefaultBuilder()
+                .entityManagerFactory(emf)
+                .userGroupCallback(userGroupCallback)
+                .addAsset(ResourceFactory.newClassPathResource("migration/v1/BPMN2-UserTask-v1.bpmn2"), ResourceType.BPMN2)
+                .get();
+        
+        managerV1 = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment, DEPLOYMENT_ID_V1);  
+        
+        RuntimeEnvironment environment2 = RuntimeEnvironmentBuilder.Factory.get()
+                .newDefaultBuilder()
+                .entityManagerFactory(emf)
+                .userGroupCallback(userGroupCallback)
+                .addAsset(ResourceFactory.newClassPathResource("migration/v2/BPMN2-UserTask-v2.bpmn2"), ResourceType.BPMN2)
+                .get();
+        
+        managerV2 = RuntimeManagerFactory.Factory.get().newPerProcessInstanceRuntimeManager(environment2, DEPLOYMENT_ID_V2); 
+        
+        assertNotNull(managerV1);
+        assertNotNull(managerV2);
+        
+        RuntimeEngine runtime = managerV1.getRuntimeEngine(EmptyContext.get());
+        KieSession ksession = runtime.getKieSession();
+        assertNotNull(ksession); 
+        
+        ProcessInstance pi1 = ksession.startProcess(PROCESS_ID_V1);
+        assertNotNull(pi1);
+        assertEquals(ProcessInstance.STATE_ACTIVE, pi1.getState()); 
+        JPAAuditLogService auditService = new JPAAuditLogService(emf);
+        ProcessInstanceLog log = auditService.findProcessInstance(pi1.getId());
+        assertNotNull(log);
+        assertEquals(PROCESS_ID_V1, log.getProcessId());
+        assertEquals(PROCESS_NAME_V1, log.getProcessName());
+        assertEquals(DEPLOYMENT_ID_V1, log.getExternalId());
+        
+        TaskService taskService = runtime.getTaskService();
+        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner(USER_JOHN, "en-UK");
+        assertNotNull(tasks);
+        assertEquals(1, tasks.size());
+        
+        TaskSummary task = tasks.get(0);
+        assertNotNull(task);
+        
+        assertEquals(PROCESS_ID_V1, task.getProcessId());
+        assertEquals(DEPLOYMENT_ID_V1, task.getDeploymentId());
+        assertEquals(TASK_NAME_V1, task.getName());
+        managerV1.disposeRuntimeEngine(runtime);
+        
+        MigrationSpec migrationSpec = new MigrationSpec(DEPLOYMENT_ID_V1, pi1.getId(), DEPLOYMENT_ID_V2, PROCESS_ID_V2);
+        
+        MigrationManager migrationManager = new MigrationManager(migrationSpec);
+        
+        try {
+            migrationManager.migrate();
+        } catch (MigrationException e) {
+            assertEquals("Source (org.jbpm.runtime.manager.impl.SingletonRuntimeManager) and target (org.jbpm.runtime.manager.impl.PerProcessInstanceRuntimeManager) deployments are of different type (they represent different runtime strategies)", e.getMessage());
+        }
+        
+        runtime = managerV1.getRuntimeEngine(EmptyContext.get());
+        ksession = runtime.getKieSession();
+        assertNotNull(ksession); 
+               
+        auditService = new JPAAuditLogService(emf);
+        log = auditService.findProcessInstance(pi1.getId());
+        assertNotNull(log);
+        assertEquals(PROCESS_ID_V1, log.getProcessId());
+        assertEquals(PROCESS_NAME_V1, log.getProcessName());
+        assertEquals(DEPLOYMENT_ID_V1, log.getExternalId());
+        
+        taskService = runtime.getTaskService();
+        tasks = taskService.getTasksAssignedAsPotentialOwner(USER_JOHN, "en-UK");
+        assertNotNull(tasks);
+        assertEquals(1, tasks.size());
+        
+        task = tasks.get(0);
+        assertNotNull(task);
+        
+        assertEquals(PROCESS_ID_V1, task.getProcessId());
+        assertEquals(DEPLOYMENT_ID_V1, task.getDeploymentId());
+        assertEquals(TASK_NAME_V1, task.getName());
+        managerV1.disposeRuntimeEngine(runtime);
+        
+    }
+    
     /*
      * Helper methods
      */
