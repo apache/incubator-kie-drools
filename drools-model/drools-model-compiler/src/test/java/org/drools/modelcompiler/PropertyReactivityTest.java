@@ -32,6 +32,26 @@ public class PropertyReactivityTest extends BaseModelTest {
     }
 
     @Test
+    public void testPropertyReactivity() {
+        final String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "rule R when\n" +
+                "    $p : Person( name == \"Mario\" )\n" +
+                "then\n" +
+                "    modify($p) { setAge( $p.getAge()+1 ) };\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        Person p = new Person("Mario", 40);
+        ksession.insert( p );
+        ksession.fireAllRules();
+
+        assertEquals(41, p.getAge());
+    }
+
+    @Test
     public void testWatch() {
         final String str =
                 "import " + Person.class.getCanonicalName() + ";\n" +
@@ -131,5 +151,23 @@ public class PropertyReactivityTest extends BaseModelTest {
 
         ksession.fireAllRules();
         assertEquals("Edson is older than Mark", result.getValue());
+    }
+
+    @Test
+    public void testImmutableField() {
+        final String str =
+                "declare Integer @propertyReactive end\n" +
+                "declare Long @propertyReactive end\n" +
+                "rule R when\n" +
+                "    $i : Integer( intValue > 0 )\n" +
+                "    Long( $l : intValue == $i )\n" +
+                "then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( 42 );
+        ksession.insert( 42L );
+        assertEquals( 1, ksession.fireAllRules() );
     }
 }

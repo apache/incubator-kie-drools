@@ -71,6 +71,12 @@ public class TypeDeclarationUtil {
                             }
                         }
                         break;
+                    case "propertyReactive":
+                        typeDeclaration.setPropertyReactive( true );
+                        break;
+                    case "classReactive":
+                        typeDeclaration.setPropertyReactive( false );
+                        break;
                     default:
                         throw new UnsupportedOperationException("Unknown annotation: " + ann.getKey());
                 }
