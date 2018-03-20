@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.function.Function;
 
 import javax.xml.XMLConstants;
@@ -174,9 +175,7 @@ public class DMNCompilerImpl
                     return null;
                 }, Function.identity());
                 if (located != null) {
-                    String iAlias = i.getAdditionalAttributes().get(Import.NAME_QNAME) != null
-                            ? i.getAdditionalAttributes().get(Import.NAME_QNAME)
-                            : located.getName();
+                    String iAlias = Optional.ofNullable(i.getAdditionalAttributes().get(Import.NAME_QNAME)).orElse(located.getName());
                     model.setImportAliasForNS(iAlias, located.getNamespace(), located.getName());
                     importFromModel(model, located);
                 }
