@@ -30,23 +30,23 @@ import org.kie.api.runtime.rule.FactHandle;
 
 public class SimpleEventGenerator {
 
-    private KieSession ksession;
-    private long generationEndTime;
+    private final KieSession ksession;
+    private final long generationEndTime;
     private static AbstractEventListener sendListener;
-    private boolean endInfinite;
+    private final boolean endInfinite;
     private int eventSourceIdCounter;
-    private Map<String, Integer> eventSourceIds;
-    private LinkedList<EventOccurrence> nextEventSource;
-    private PseudoSessionClock myClock;
+    private final Map<String, Integer> eventSourceIds;
+    private final LinkedList<EventOccurrence> nextEventSource;
+    private final PseudoSessionClock myClock;
     FactHandle clockHandle;
 
-    public SimpleEventGenerator(KieSession ksession, AbstractEventListener l) {
+    public SimpleEventGenerator(final KieSession ksession, final AbstractEventListener l) {
         this (ksession, l, 0);
     }
 
-    public SimpleEventGenerator(KieSession ksession, AbstractEventListener l, long generationDuration) {
+    public SimpleEventGenerator(final KieSession ksession, final AbstractEventListener l, final long generationDuration) {
         this.ksession = ksession;
-        this.sendListener = l;
+        sendListener = l;
         // add session clock to working memory
         this.myClock = new PseudoSessionClock();
         this.clockHandle = ksession.insert(myClock);
@@ -54,8 +54,8 @@ public class SimpleEventGenerator {
         this.generationEndTime = this.myClock.calcFuturePointInTime(generationDuration);
         this.endInfinite = (generationDuration == 0);
         this.eventSourceIdCounter = 0;
-        this.eventSourceIds = new HashMap<String, Integer>();
-        this.nextEventSource = new LinkedList<EventOccurrence>();
+        this.eventSourceIds = new HashMap<>();
+        this.nextEventSource = new LinkedList<>();
     }
 
     /**
@@ -66,15 +66,15 @@ public class SimpleEventGenerator {
     }
 
     // add source which will generate events from current clock time on, possibly forever (i.e. no boundaries)
-    public EventOccurrence addEventSource(String id, Event ev, long minOccur, long avgOccur){
+    public EventOccurrence addEventSource(final String id, final Event ev, final long minOccur, final long avgOccur){
         return addEventSource (id, ev, minOccur, avgOccur, 0, 0);
     }
 
     // add source which will generate events from current clock time on, but only maxItems instances at the most AND not exceeding the time specified by maxDuration
-    public EventOccurrence addEventSource(String id, Event ev, long minOccur, long avgOccur, long maxDuration, int maxItems){
+    public EventOccurrence addEventSource(final String id, final Event ev, final long minOccur, final long avgOccur, final long maxDuration, final int maxItems){
         if (!eventSourceIds.containsKey(id)){
-            this.eventSourceIds.put(id, new Integer(eventSourceIdCounter++));
-            EventOccurrence evOcc = new EventOccurrence(id, ev, minOccur, avgOccur, this.myClock.getCurrentTime(), maxDuration, maxItems);
+            this.eventSourceIds.put(id, eventSourceIdCounter++);
+            final EventOccurrence evOcc = new EventOccurrence(id, ev, minOccur, avgOccur, this.myClock.getCurrentTime(), maxDuration, maxItems);
             this.nextEventSource.add (evOcc);
             return evOcc;
         }
@@ -82,23 +82,23 @@ public class SimpleEventGenerator {
     }
 
     // add source which will generate events from the given start time on, possibly forever (i.e. no boundaries)
-    public EventOccurrence addDelayedEventSource(String id, Event ev, long minOccur, long avgOccur, long startTime){
+    public EventOccurrence addDelayedEventSource(final String id, final Event ev, final long minOccur, final long avgOccur, final long startTime){
         return addDelayedEventSource (id, ev, minOccur, avgOccur, startTime, 0, 0);
     }
 
     // add source which will generate events from the given start time on, but only maxItems instances at the most AND not exceeding the time specified by maxDuration
-    public EventOccurrence addDelayedEventSource(String id, Event ev, long minOccur, long avgOccur, long startTime, long maxDuration, int maxItems){
+    public EventOccurrence addDelayedEventSource(final String id, final Event ev, final long minOccur, final long avgOccur, final long startTime, final long maxDuration, final int maxItems){
         if (!eventSourceIds.containsKey(id)){
-            this.eventSourceIds.put(id, new Integer(eventSourceIdCounter++));
-            EventOccurrence evOcc = new EventOccurrence(id, ev, minOccur, avgOccur, startTime, maxDuration, maxItems);
+            this.eventSourceIds.put(id, eventSourceIdCounter++);
+            final EventOccurrence evOcc = new EventOccurrence(id, ev, minOccur, avgOccur, startTime, maxDuration, maxItems);
             this.nextEventSource.add (evOcc);
             return evOcc;
         }
         return null;
     }
 
-    public void removeEventSource(String id){
-        Integer hashValue = eventSourceIds.get(id);
+    public void removeEventSource(final String id){
+        final Integer hashValue = eventSourceIds.get(id);
         if (hashValue != null){
             this.nextEventSource.remove(hashValue.intValue());
             this.eventSourceIds.remove(id);
@@ -106,7 +106,7 @@ public class SimpleEventGenerator {
         }
     }
 
-    public static void sendGeneratedEvent(Event ev){
+    public static void sendGeneratedEvent(final Event ev){
         sendListener.generatedEventSent(ev);
     }
 
@@ -116,7 +116,7 @@ public class SimpleEventGenerator {
         Event currentEvent;
 
         //sort all events according to their first occurrence
-        Collections.sort(nextEventSource, new EventGenerationTimeComparator());
+        nextEventSource.sort(new EventGenerationTimeComparator());
 
         // simulate ongoing simulation time and upcoming events
         while (!nextEventSource.isEmpty()) {
@@ -136,12 +136,12 @@ public class SimpleEventGenerator {
             ksession.update(clockHandle, myClock);
 
             // determine new event generation time for this event type
-            boolean occIsValid = currentEGT.calculateNextEventOccurrence();
+            final boolean occIsValid = currentEGT.calculateNextEventOccurrence();
             // add the new generation time to the right position in the queue,
             // but only if the generated event met its local restrictions plus
             // it is going to occur within the global time boundaries (or there are no such boundaries, respectively)
             if (occIsValid && (isEndInfinite() || currentEGT.getNextOccurrenceTime() < this.generationEndTime)) {
-                int index = Collections.binarySearch(nextEventSource, currentEGT, new EventGenerationTimeComparator());
+                final int index = Collections.binarySearch(nextEventSource, currentEGT, new EventGenerationTimeComparator());
                 if (index < 0)
                     nextEventSource.add(-index-1, currentEGT);
             }
@@ -158,16 +158,16 @@ public class SimpleEventGenerator {
 
 class EventOccurrence{
 
-    private static Random myRandom = new Random();;
+    private final String eventSenderId;
+    private final Event event;
+    private final long evDeviation;
+    private final long evMinDur;
+    private int itemCounter;
+    private final int maxItems;
+    private final long latestEnd;
+    private final boolean infinite;
 
-    private String eventSenderId;
-    private Event event;
-    private long evDeviation, evMinDur;
-    private int itemCounter, maxItems;
-    private long latestEnd;
-    private boolean infinite;
-
-    public EventOccurrence(String eventSenderId, Event ev, long evMinDur, long avgOccur, long earliestStart, long maxDuration, int maxItems) {
+    public EventOccurrence(final String eventSenderId, final Event ev, final long evMinDur, final long avgOccur, final long earliestStart, final long maxDuration, final int maxItems) {
         this.eventSenderId = eventSenderId;
         this.evMinDur = evMinDur;
         this.evDeviation = 2*(avgOccur-evMinDur);
@@ -182,21 +182,17 @@ class EventOccurrence{
     }
 
     // returns true if event source has no boundaries or all restrictions (i.e. a generation duration or max. number of event instances) are met, false otherwise
-    public boolean calculateNextEventOccurrence (){
-        this.event.setTimes(this.event.getEndTime()+myRandom.nextInt((int)this.evDeviation)+this.evMinDur);
-        if (maxItems <=0){
-            if (isInfinite())
-                return true;
-            else return event.getEndTime()<this.latestEnd;
+    public boolean calculateNextEventOccurrence() {
+        this.event.setTimes(this.event.getEndTime() + (this.evDeviation - 1) + this.evMinDur);
+        if (maxItems <= 0) {
+            return isInfinite() || event.getEndTime() < this.latestEnd;
+        } else {
+            this.itemCounter++;
+            if (this.itemCounter > this.maxItems) {
+                return false;
             }
-            else {
-                this.itemCounter++;
-                if (this.itemCounter>this.maxItems)
-                    return false;
-                if (isInfinite())
-                    return true;
-                else return (event.getEndTime()<this.latestEnd);
-            }
+            return isInfinite() || (event.getEndTime() < this.latestEnd);
+        }
     }
 
     /**
@@ -231,7 +227,7 @@ class EventOccurrence{
 
 class EventGenerationTimeComparator implements Comparator<EventOccurrence>{
 
-    public int compare(EventOccurrence o1, EventOccurrence o2) {
+    public int compare(final EventOccurrence o1, final EventOccurrence o2) {
         return (int)(o1.getNextOccurrenceTime()-o2.getNextOccurrenceTime());
     }
 
