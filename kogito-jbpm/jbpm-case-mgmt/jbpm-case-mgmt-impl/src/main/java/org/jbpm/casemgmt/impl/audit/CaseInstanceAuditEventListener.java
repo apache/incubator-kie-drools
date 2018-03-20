@@ -88,6 +88,26 @@ public class CaseInstanceAuditEventListener implements CaseEventListener, Cachea
             CaseRoleAssignmentLog assignmentLog = new CaseRoleAssignmentLog(event.getProcessInstanceId(), event.getCaseId(), "*", TaskModelProvider.getFactory().newGroup(AuthorizationManager.PUBLIC_GROUP));
             commandService.execute(new PersistObjectCommand(assignmentLog));
         }
+        
+        Map<String, Object> initialData = caseFile.getData();
+        if (initialData.isEmpty()) {
+            return;
+        }
+        List<CaseFileDataLog> insert = new ArrayList<>();
+        initialData.forEach((name, value) -> {
+            
+            if (value != null) {
+                CaseFileDataLog caseFileDataLog = new CaseFileDataLog(event.getCaseId(), caseFile.getDefinitionId(), name);                
+                insert.add(caseFileDataLog);
+                
+                
+                caseFileDataLog.setItemType(value.getClass().getName());
+                caseFileDataLog.setItemValue(value.toString());
+                caseFileDataLog.setLastModified(new Date());
+                caseFileDataLog.setLastModifiedBy(event.getUser());
+            }
+        });
+        commandService.execute(new PersistObjectCommand(insert.toArray()));
 
     }
     
