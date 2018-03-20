@@ -69,7 +69,7 @@ public interface Solver<Solution_> {
 
     /**
      * Returns the amount of milliseconds spent solving since the last start.
-     * If it hasn't started it yet, it runs 0.
+     * If it hasn't started it yet, it returns 0.
      * If it hasn't ended yet, it returns the time between the last start and now.
      * If it has ended already, it returns the time between the last start and the ending.
      * <p>
