@@ -39,7 +39,6 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 /**
  * Abstract class for tests that test adding and removing rules at runtime.
  */
-@Category(TurtleTestCategory.class)
 public abstract class AbstractAddRemoveRulesTest {
 
     protected static final String PKG_NAME_TEST = "com.rules";
