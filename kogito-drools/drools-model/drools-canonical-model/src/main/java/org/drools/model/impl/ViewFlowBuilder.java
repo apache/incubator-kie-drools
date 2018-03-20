@@ -45,7 +45,6 @@ import org.drools.model.view.AbstractExprViewItem;
 import org.drools.model.view.AccumulateExprViewItem;
 import org.drools.model.view.CombinedExprViewItem;
 import org.drools.model.view.ExistentialExprViewItem;
-import org.drools.model.view.Expr1ViewItem;
 import org.drools.model.view.Expr1ViewItemImpl;
 import org.drools.model.view.Expr2ViewItemImpl;
 import org.drools.model.view.Expr3ViewItemImpl;
@@ -154,6 +153,7 @@ public class ViewFlowBuilder implements ViewBuilder {
                 pattern.addBinding( bindViewItem );
                 ctx.usedVars.add(viewItem.getFirstVariable());
                 ctx.addBinding(bindViewItem);
+                scopedInputs.putIfAbsent( viewItem.getFirstVariable(), (InputViewItemImpl) input( viewItem.getFirstVariable() ) );
                 continue;
             }
 
@@ -227,7 +227,7 @@ public class ViewFlowBuilder implements ViewBuilder {
 
     private static Variable<?> findPatterVariable( ViewItem viewItem, Set<Variable<?>> vars ) {
         Variable<?> patternVariable = viewItem.getFirstVariable();
-        if (viewItem instanceof Expr1ViewItem || !vars.contains( patternVariable )) {
+        if (!vars.contains( patternVariable )) {
             return patternVariable;
         }
 

@@ -32,7 +32,6 @@ import org.drools.modelcompiler.domain.EnumFact1;
 import org.drools.modelcompiler.domain.EnumFact2;
 import org.drools.modelcompiler.domain.InterfaceAsEnum;
 import org.drools.modelcompiler.domain.RootFact;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
@@ -45,7 +44,6 @@ public class ComplexRulesTest extends BaseModelTest {
     }
 
     @Test
-    @Ignore
     public void test1() {
         String str =
                 "import " + EnumFact1.class.getCanonicalName() + ";\n" +
@@ -97,7 +95,6 @@ public class ComplexRulesTest extends BaseModelTest {
     }
 
     @Test
-    @Ignore
     public void testNotWithEval() {
         String str =
                 "import " + EnumFact1.class.getCanonicalName() + ";\n" +
@@ -212,6 +209,44 @@ public class ComplexRulesTest extends BaseModelTest {
 
         assertEquals(1, ksession.fireAllRules());
         assertEquals(0, ksession.fireAllRules());
+    }
+
+    @Test
+    public void test3() {
+        String str =
+                "import " + RootFact.class.getCanonicalName() + ";\n" +
+                        "import " + ChildFactWithObject.class.getCanonicalName() + ";\n" +
+                        "import " + ChildFactComplex.class.getCanonicalName() + ";\n" +
+                        "import " + BusinessFunctions.class.getCanonicalName() + ";\n" +
+                        "global BusinessFunctions functions;\n" +
+                        "global java.util.List list;\n" +
+                        "rule \"R1\"\n" +
+                        "    dialect \"java\"\n" +
+                        "when\n" +
+                        "    $childFactWithObject : ChildFactWithObject( $idAsShort : idAsShort ) \n" +
+                        "    $countOf : Long( $result : intValue > 0) from accumulate (\n" +
+                        "        $rootFact_acc : RootFact(  ) \n" +
+                        "        and $childFactComplex_acc : ChildFactComplex(  \n" +
+                        "            $childFactComplex_id : id, \n" +
+                        "            idAsShort == $idAsShort ) \n" +
+                        "        ;count($childFactComplex_id))\n" +
+                        "  then\n" +
+                        "    list.add($result);\n" +
+                        "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        List<Integer> list = new ArrayList<>();
+        ksession.setGlobal( "list", list );
+        ksession.setGlobal( "functions", new BusinessFunctions() );
+
+        ksession.insert( new RootFact(1) );
+        ksession.insert( new ChildFactWithObject(5, 3, new Object[0]) );
+        ksession.insert( new ChildFactComplex(5, 7, true, false, EnumFact1.SECOND, EnumFact2.FIRST) );
+
+        assertEquals(1, ksession.fireAllRules());
+        assertEquals(1, list.size());
+        assertEquals(1, (int)list.get(0));
     }
 
     @Test
