@@ -63,7 +63,7 @@ public class DMNMarshallerTest {
         assertThat( definitions, notNullValue() );
 
         final DMNMarshaller defaultMarshaller = DMNMarshallerFactory.newDefaultMarshaller();
-        try (final Reader reader = new InputStreamReader(getClass().getResourceAsStream("0001-input-data-string.dmn") )) {
+        try (final Reader reader = new InputStreamReader(getClass().getResourceAsStream("Loan_Prequalification_Condensed_Invalid.dmn") )) {
             final Definitions definitionsFromDefaultMarshaller = defaultMarshaller.unmarshal(reader);
             compareDefinitions(definitions, definitionsFromDefaultMarshaller);
         }
