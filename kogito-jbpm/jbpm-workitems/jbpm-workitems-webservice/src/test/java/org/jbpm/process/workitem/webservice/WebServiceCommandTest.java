@@ -13,28 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jbpm.process.workitem.webservice;
 
+import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.cxf.configuration.security.AuthorizationPolicy;
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.drools.core.process.instance.impl.WorkItemImpl;
-import org.jbpm.process.workitem.core.TestWorkItemManager;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.api.executor.CommandContext;
+import org.kie.api.executor.ExecutionResults;
 import org.kie.api.runtime.KieSession;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.Mockito;
-import org.apache.cxf.configuration.security.AuthorizationPolicy;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class WebServiceWorkItemHandlerTest {
+public class WebServiceCommandTest {
 
     @Mock
     KieSession kieSession;
@@ -45,74 +46,75 @@ public class WebServiceWorkItemHandlerTest {
     @Mock
     ConcurrentHashMap<String, Client> clients;
 
+    @Mock
+    CommandContext commandContext;
+
     @Test
-    public void testExecuteSyncOperation() throws Exception {
+    public void testExecuteCommand() throws Exception {
+        Object[] clientObject = Arrays.asList("testResults").toArray();
 
         when(clients.containsKey(anyObject())).thenReturn(true);
         when(clients.get(anyObject())).thenReturn(client);
+        when(client.invoke(anyString(),
+                           any(Object[].class))).thenReturn(clientObject);
 
-        TestWorkItemManager manager = new TestWorkItemManager();
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setParameter("Interface",
                               "someInterface");
         workItem.setParameter("Operation",
                               "someOperation");
-        workItem.setParameter("Parameter",
-                              "myParam");
-        workItem.setParameter("Mode",
-                              "SYNC");
 
-        WebServiceWorkItemHandler handler = new WebServiceWorkItemHandler(kieSession);
-        handler.setClients(clients);
+        when(commandContext.getData(anyString())).thenReturn(workItem);
 
-        handler.executeWorkItem(workItem,
-                                manager);
-        assertNotNull(manager.getResults());
-        assertEquals(1,
-                     manager.getResults().size());
-        assertTrue(manager.getResults().containsKey(workItem.getId()));
+        WebServiceCommand command = new WebServiceCommand();
+        command.setClients(clients);
+        ExecutionResults results = command.execute(commandContext);
+        assertNotNull(results);
+
+        assertEquals("testResults",
+                     results.getData("Result"));
     }
 
     @Test
-    public void testExecuteSyncOperationWithBasicAuth() throws Exception {
-
-        HTTPConduit http = Mockito.mock(HTTPConduit.class,
-                                        Mockito.CALLS_REAL_METHODS);
+    public void testExecuteCommandWithBasicAuth() throws Exception {
+        Object[] clientObject = Arrays.asList("testResults").toArray();
 
         when(clients.containsKey(anyObject())).thenReturn(true);
         when(clients.get(anyObject())).thenReturn(client);
-        when(client.getConduit()).thenReturn(http);
+        when(client.invoke(anyString(),
+                           any(Object[].class))).thenReturn(clientObject);
 
-        TestWorkItemManager manager = new TestWorkItemManager();
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setParameter("Interface",
                               "someInterface");
         workItem.setParameter("Operation",
                               "someOperation");
-        workItem.setParameter("Parameter",
-                              "myParam");
-        workItem.setParameter("Mode",
-                              "SYNC");
+        workItem.setParameter("Username",
+                              "testUserName");
+        workItem.setParameter("Password",
+                              "testPassword");
 
-        WebServiceWorkItemHandler handler = new WebServiceWorkItemHandler(kieSession,
-                                                                          "testusername",
-                                                                          "testpassword");
-        handler.setClients(clients);
+        when(commandContext.getData(anyString())).thenReturn(workItem);
 
-        handler.executeWorkItem(workItem,
-                                manager);
-        assertNotNull(manager.getResults());
-        assertEquals(1,
-                     manager.getResults().size());
-        assertTrue(manager.getResults().containsKey(workItem.getId()));
+        HTTPConduit http = Mockito.mock(HTTPConduit.class,
+                                        Mockito.CALLS_REAL_METHODS);
+        when(client.getConduit()).thenReturn(http);
+
+        WebServiceCommand command = new WebServiceCommand();
+        command.setClients(clients);
+        ExecutionResults results = command.execute(commandContext);
+        assertNotNull(results);
+
+        assertEquals("testResults",
+                     results.getData("Result"));
 
         assertNotNull(http.getAuthorization());
         AuthorizationPolicy authorizationPolicy = http.getAuthorization();
         assertEquals("Basic",
                      authorizationPolicy.getAuthorizationType());
-        assertEquals("testusername",
+        assertEquals("testUserName",
                      authorizationPolicy.getUserName());
-        assertEquals("testpassword",
+        assertEquals("testPassword",
                      authorizationPolicy.getPassword());
     }
 }

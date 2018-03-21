@@ -31,6 +31,8 @@ import org.kie.api.runtime.process.WorkItem;
 import org.kie.internal.runtime.Cacheable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.apache.cxf.transport.http.HTTPConduit;
+import org.apache.cxf.configuration.security.AuthorizationPolicy;
 
 /**
  * Web Service executor command that executes web service call using Apache CXF.
@@ -42,6 +44,8 @@ import org.slf4j.LoggerFactory;
  * <li>Url - location of the wsdl file used to look up service definition</li>
  * <li>Namespace - name space of the web service</li>
  * <li>Endpoint - overrides the endpoint address defined in the referenced WSDL.</li>
+ * <li>Username - username for authentication (optional)</li>
+ * <li>Password - password for authentication (optional)</li>
  * </ul>
  * <p>
  * Web service call is synchronous but since it's executor command it will be invoked as asynchronous task any way.
@@ -64,6 +68,9 @@ public class WebServiceCommand implements Command,
             String interfaceRef = (String) workItem.getParameter("Interface");
             String operationRef = (String) workItem.getParameter("Operation");
             String endpointAddress = (String) workItem.getParameter("Endpoint");
+            String username = (String) workItem.getParameter("Username");
+            String password = (String) workItem.getParameter("Password");
+
             if (workItem.getParameter("Parameter") instanceof Object[]) {
                 parameters = (Object[]) workItem.getParameter("Parameter");
             } else if (workItem.getParameter("Parameter") != null && workItem.getParameter("Parameter").getClass().isArray()) {
@@ -86,6 +93,9 @@ public class WebServiceCommand implements Command,
                 client.getRequestContext().put(Message.ENDPOINT_ADDRESS,
                                                endpointAddress);
             }
+
+            // apply authorization if needed
+            applyAuthorization(username, password, client);
 
             Object[] result = client.invoke(operationRef,
                                             parameters);
@@ -140,6 +150,20 @@ public class WebServiceCommand implements Command,
         return this.dcf;
     }
 
+    protected void applyAuthorization(String userName, String password, Client client) {
+        if(userName != null && password != null) {
+            HTTPConduit httpConduit = (HTTPConduit) client.getConduit();
+            AuthorizationPolicy authorizationPolicy = new AuthorizationPolicy();
+            authorizationPolicy.setUserName(userName);
+            authorizationPolicy.setPassword(password);
+
+            authorizationPolicy.setAuthorizationType("Basic");
+            httpConduit.setAuthorization(authorizationPolicy);
+        } else {
+            logger.warn("UserName and Password must be provided to set the authorization policy.");
+        }
+    }
+
     @Override
     public void close() {
         if (clients != null) {
@@ -147,5 +171,9 @@ public class WebServiceCommand implements Command,
                 client.destroy();
             }
         }
+    }
+
+    public void setClients(ConcurrentHashMap<String, Client> clients) {
+        this.clients = clients;
     }
 }

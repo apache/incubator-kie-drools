@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,11 +24,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import javax.xml.namespace.QName;
 
+import org.apache.cxf.configuration.security.AuthorizationPolicy;
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.endpoint.ClientCallback;
 import org.apache.cxf.endpoint.dynamic.DynamicClientFactory;
 import org.apache.cxf.jaxws.endpoint.dynamic.JaxWsDynamicClientFactory;
 import org.apache.cxf.message.Message;
+import org.apache.cxf.transport.http.HTTPConduit;
 import org.drools.core.process.instance.impl.WorkItemImpl;
 import org.jbpm.bpmn2.core.Bpmn2Import;
 import org.jbpm.process.workitem.core.AbstractLogOrThrowWorkItemHandler;
@@ -55,6 +57,8 @@ public class WebServiceWorkItemHandler extends AbstractLogOrThrowWorkItemHandler
     private KieSession ksession;
     private int asyncTimeout = 10;
     private ClassLoader classLoader;
+    private String username;
+    private String password;
 
     enum WSMode {
         SYNC,
@@ -62,20 +66,80 @@ public class WebServiceWorkItemHandler extends AbstractLogOrThrowWorkItemHandler
         ONEWAY;
     }
 
+    /**
+     * Used when no authentication is required
+     * @param ksession - kie session
+     */
     public WebServiceWorkItemHandler(KieSession ksession) {
-        this.ksession = ksession;
+        this(ksession, null, null);
     }
 
+    /**
+     * Dedicated constructor when BASIC authentication method shall be used
+     * @param kieSession - kie session
+     * @param username - basic auth username
+     * @param password - basic auth password
+     */
+    public WebServiceWorkItemHandler(KieSession kieSession,
+                                     String username,
+                                     String password) {
+        this.ksession = kieSession;
+        this.username = username;
+        this.password = password;
+    }
+
+    /**
+     * Used when no authentication is required
+     * @param ksession - kie session
+     * @param classloader - classloader to use
+     */
     public WebServiceWorkItemHandler(KieSession ksession,
                                      ClassLoader classloader) {
-        this.ksession = ksession;
-        this.classLoader = classloader;
+        this(ksession, classloader, null, null);
     }
 
+    /**
+     * Dedicated constructor when BASIC authentication method shall be used
+     * @param ksession - kie session
+     * @param classloader - classloader to use
+     * @param username - basic auth username
+     * @param password - basic auth password
+     */
+    public WebServiceWorkItemHandler(KieSession ksession,
+                                     ClassLoader classloader,
+                                     String username,
+                                     String password) {
+        this.ksession = ksession;
+        this.classLoader = classloader;
+        this.username = username;
+        this.password = password;
+    }
+
+    /**
+     * Used when no authentication is required
+     * @param ksession - kie session
+     * @param timeout - connection timeout
+     */
     public WebServiceWorkItemHandler(KieSession ksession,
                                      int timeout) {
+        this(ksession, timeout, null, null);
+    }
+
+    /**
+     * Dedicated constructor when BASIC authentication method shall be used
+     * @param ksession - kie session
+     * @param timeout - connection timeout
+     * @param username - basic auth username
+     * @param password - basic auth password
+     */
+    public WebServiceWorkItemHandler(KieSession ksession,
+                                     int timeout,
+                                     String username,
+                                     String password) {
         this.ksession = ksession;
         this.asyncTimeout = timeout;
+        this.username = username;
+        this.password = password;
     }
 
     public void executeWorkItem(WorkItem workItem,
@@ -110,11 +174,15 @@ public class WebServiceWorkItemHandler extends AbstractLogOrThrowWorkItemHandler
             if (client == null) {
                 throw new IllegalStateException("Unable to create client for web service " + interfaceRef + " - " + operationRef);
             }
+
             //Override endpoint address if configured.
             if (endpointAddress != null && !"".equals(endpointAddress)) {
                 client.getRequestContext().put(Message.ENDPOINT_ADDRESS,
                                                endpointAddress);
             }
+
+            // apply authorization if needed
+            applyAuthorization(username, password, client);
 
             switch (mode) {
                 case SYNC:
@@ -307,6 +375,20 @@ public class WebServiceWorkItemHandler extends AbstractLogOrThrowWorkItemHandler
             for (Client client : clients.values()) {
                 client.destroy();
             }
+        }
+    }
+
+    protected void applyAuthorization(String userName, String password, Client client) {
+        if(userName != null && password != null) {
+            HTTPConduit httpConduit = (HTTPConduit) client.getConduit();
+            AuthorizationPolicy authorizationPolicy = new AuthorizationPolicy();
+            authorizationPolicy.setUserName(userName);
+            authorizationPolicy.setPassword(password);
+
+            authorizationPolicy.setAuthorizationType("Basic");
+            httpConduit.setAuthorization(authorizationPolicy);
+        } else {
+            logger.warn("UserName and Password must be provided to set the authorization policy.");
         }
     }
 
