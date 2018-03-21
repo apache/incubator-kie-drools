@@ -16,17 +16,12 @@
 package org.kie.test.util;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.IOException;
-import java.lang.management.LockInfo;
 import java.lang.management.ManagementFactory;
-import java.lang.management.MonitorInfo;
 import java.lang.management.ThreadInfo;
 import java.lang.management.ThreadMXBean;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.junit.runner.Description;
@@ -37,20 +32,28 @@ import org.junit.runners.model.TestTimedOutException;
 
 public class TestStatusListener extends RunListener {
     
-    private static BufferedWriter writer;
-    static {
+    private final BufferedWriter writer;
+
+    public TestStatusListener() {
         try {
-            writer = Files.newBufferedWriter(
+            this.writer = Files.newBufferedWriter(
                     Paths.get("./target/testStatusListener"
-                                + "." + ManagementFactory.getRuntimeMXBean().getName().replaceAll("\\W+", "")
-                                + "." + System.nanoTime()
-                                + ".log"));
-        } catch (IOException e) {
-            new RuntimeException( "TestStatusListener unable to open writer for logging to file test status updates.", e );
+                                      + "." + ManagementFactory.getRuntimeMXBean().getName().replaceAll("\\W+", "")
+                                      + "." + System.nanoTime()
+                                      + ".log"));
+        } catch (final IOException e) {
+            throw new RuntimeException( "TestStatusListener unable to open writer for logging to file test status updates.", e );
         }
     }
-    
-    private static synchronized void write(String method, Description description) throws IOException {
+
+    @Override
+    protected void finalize() throws Throwable {
+        if (writer != null) {
+            writer.close();
+        }
+    }
+
+    private synchronized void write(final String method, final Description description) throws IOException {
         writer.write(method);
         writer.write("\t");
         writer.write(description.getClassName());
@@ -60,7 +63,7 @@ public class TestStatusListener extends RunListener {
         writer.flush();
     }
     
-    private static synchronized void write(String method, Failure failure) throws IOException {
+    private synchronized void write(final String method, final Failure failure) throws IOException {
         writer.write(method);
         writer.write("\t");
         if ( failure.getMessage() != null ) { writer.write(failure.getMessage()); }
@@ -68,7 +71,7 @@ public class TestStatusListener extends RunListener {
         writer.flush();
     }
     
-    private static synchronized void write(String method, Result result) throws IOException {
+    private synchronized void write(final String method, final Result result) throws IOException {
         writer.write(method);
         writer.write("\t");
         writer.write(result.toString());
@@ -76,9 +79,9 @@ public class TestStatusListener extends RunListener {
         writer.flush();
     }
     
-    private static synchronized void writeThreadDump() throws IOException {
-        ThreadMXBean threadMxBean = ManagementFactory.getThreadMXBean();
-        for (ThreadInfo ti : threadMxBean.dumpAllThreads(true, true)) {
+    private synchronized void writeThreadDump() throws IOException {
+        final ThreadMXBean threadMxBean = ManagementFactory.getThreadMXBean();
+        for (final ThreadInfo ti : threadMxBean.dumpAllThreads(true, true)) {
             writer.write( ti.toString() );
             if ( ti.getStackTrace().length > 8 ) { writer.write("full stacktrace:\n"); writer.write(fullStackTrace(ti)); writer.write("\n"); }
         }
@@ -86,8 +89,8 @@ public class TestStatusListener extends RunListener {
         writer.flush();
     }
     
-    private static String fullStackTrace(ThreadInfo ti) {
-        StringBuilder sb = new StringBuilder();
+    private static String fullStackTrace(final ThreadInfo ti) {
+        final StringBuilder sb = new StringBuilder();
         Stream.of( ti.getStackTrace() )
             .forEach( ste -> {
                 sb.append(" ");
@@ -105,27 +108,27 @@ public class TestStatusListener extends RunListener {
     }
 
     @Override
-    public void testRunStarted(Description description) throws Exception {
+    public void testRunStarted(final Description description) throws Exception {
         write("testRunStarted", description);
     }
 
     @Override
-    public void testRunFinished(Result result) throws Exception {
+    public void testRunFinished(final Result result) throws Exception {
         write("testRunFinished", result);
     }
 
     @Override
-    public void testStarted(Description description) throws Exception {
+    public void testStarted(final Description description) throws Exception {
         write("testStarted", description);
     }
 
     @Override
-    public void testFinished(Description description) throws Exception {
+    public void testFinished(final Description description) throws Exception {
         write("testFinished", description);
     }
 
     @Override
-    public void testFailure(Failure failure) throws Exception {
+    public void testFailure(final Failure failure) throws Exception {
         if ( failure.getException() instanceof TestTimedOutException ) {
             writeThreadDump();
         }
@@ -133,17 +136,17 @@ public class TestStatusListener extends RunListener {
     }
 
     @Override
-    public void testAssumptionFailure(Failure failure) {
+    public void testAssumptionFailure(final Failure failure) {
         try {
             write("testAssumptionFailure", failure);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             // can't do anything at this point to report it to log file
             e.printStackTrace();
         }
     }
 
     @Override
-    public void testIgnored(Description description) throws Exception {
+    public void testIgnored(final Description description) throws Exception {
         write("testIgnored", description);
     }
     
