@@ -1,6 +1,8 @@
 package org.drools.compiler.integrationtests.incrementalcompilation;
 
+import org.drools.compiler.TurtleTestCategory;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,9 +14,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+@Category(TurtleTestCategory.class)
 public abstract class AbstractAddRemoveGenerated2RulesTest extends AbstractAddRemoveRulesTest {
 
-    protected static final Logger logger = LoggerFactory.getLogger(AbstractAddRemoveGenerated2RulesTest.class);
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final String rule1;
     private final String rule2;
