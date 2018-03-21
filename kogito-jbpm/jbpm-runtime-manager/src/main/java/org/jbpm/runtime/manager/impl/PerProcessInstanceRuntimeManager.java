@@ -205,8 +205,8 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
         if (ksessionId == null) {
             // make sure ksession is not use by any other context
             Object contextId = mapper.findContextId(ksession.getIdentifier(), this.identifier);
-            if (contextId != null) {
-                throw new IllegalStateException("KieSession with id " + ksession.getIdentifier() + " is already used by another context");
+            if (contextId != null && !contextId.equals(context.getContextId().toString())) {
+                throw new IllegalStateException("KieSession with id " + ksession.getIdentifier() + " is already used by another context " + contextId + " expected is "+ context.getContextId());
             }
             return;
         }
