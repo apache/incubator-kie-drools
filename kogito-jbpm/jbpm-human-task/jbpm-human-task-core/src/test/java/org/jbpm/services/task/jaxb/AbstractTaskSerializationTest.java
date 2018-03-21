@@ -16,12 +16,6 @@
 
 package org.jbpm.services.task.jaxb;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -37,6 +31,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
+import org.assertj.core.api.Assertions;
 import org.jbpm.services.task.MvelFilePath;
 import org.jbpm.services.task.commands.CancelDeadlineCommand;
 import org.jbpm.services.task.commands.CompositeCommand;
@@ -73,9 +68,14 @@ import org.kie.internal.task.api.model.InternalOrganizationalEntity;
 import org.kie.internal.task.api.model.InternalTask;
 import org.kie.internal.task.api.model.InternalTaskData;
 import org.kie.internal.task.api.model.SubTasksStrategy;
-import org.kie.test.util.compare.ComparePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public abstract class AbstractTaskSerializationTest {
 
@@ -170,9 +170,7 @@ public abstract class AbstractTaskSerializationTest {
         JaxbTask bornAgainTask = testRoundTrip(xmlTask);
         assertNotNull(bornAgainTask.getNames());
         assertTrue("Round-tripped task has empty 'names' list!", !bornAgainTask.getNames().isEmpty());
-
-        ComparePair compare = new ComparePair(task, bornAgainTask, Task.class);        
-        compare.recursiveCompare();
+        Assertions.assertThat(xmlTask).isEqualToComparingFieldByFieldRecursively(bornAgainTask);
 
         assertNotNull(((InternalTask) xmlTask).getFormName());
         assertEquals(((InternalTask) xmlTask).getFormName(), ((InternalTask) bornAgainTask).getFormName());
@@ -337,7 +335,7 @@ public abstract class AbstractTaskSerializationTest {
         GetTaskAssignedAsPotentialOwnerCommand cmd = new GetTaskAssignedAsPotentialOwnerCommand( "user", groupIds, statuses, filter );
         GetTaskAssignedAsPotentialOwnerCommand copyCmd = testRoundTrip(cmd);
 
-        ComparePair.compareObjectsViaFields(cmd, copyCmd);
+        Assertions.assertThat(cmd).isEqualToComparingFieldByFieldRecursively(copyCmd);
     }
 
     @Test
@@ -354,7 +352,7 @@ public abstract class AbstractTaskSerializationTest {
 
         JaxbContent jaxbContent = new JaxbContent(content);
         JaxbContent copyJaxbContent = testRoundTrip(jaxbContent);
-        ComparePair.compareObjectsViaFields(jaxbContent, copyJaxbContent);
+        Assertions.assertThat(jaxbContent).isEqualToComparingFieldByFieldRecursively(copyJaxbContent);
     }
 
     @Test
@@ -375,7 +373,7 @@ public abstract class AbstractTaskSerializationTest {
         assertEquals("text", comment.getText(), jaxbComment.getText());
 
         JaxbComment copyJaxbComment = testRoundTrip(jaxbComment);
-        ComparePair.compareObjectsViaFields(jaxbComment, copyJaxbComment);
+        Assertions.assertThat(jaxbComment).isEqualToComparingFieldByFieldRecursively(copyJaxbComment);
     }
 
     @Test
@@ -394,7 +392,7 @@ public abstract class AbstractTaskSerializationTest {
         assertEquals("text", textImpl.getText(), jaxbText.getText());
 
         JaxbI18NText copyJaxbText = testRoundTrip(jaxbText);
-        ComparePair.compareObjectsViaFields(jaxbText, copyJaxbText);
+        Assertions.assertThat(jaxbText).isEqualToComparingFieldByFieldRecursively(copyJaxbText);
 
         List<I18NText> intList = new ArrayList<I18NText>();
         intList.add(textImpl);
