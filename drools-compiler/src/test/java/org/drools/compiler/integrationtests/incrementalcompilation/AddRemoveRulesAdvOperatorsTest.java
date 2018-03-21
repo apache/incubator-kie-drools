@@ -15,8 +15,10 @@
 
 package org.drools.compiler.integrationtests.incrementalcompilation;
 
+import org.drools.compiler.TurtleTestCategory;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,6 +29,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Tests adding and removing rules with advanced operators.
  */
+@Category(TurtleTestCategory.class)
 public class AddRemoveRulesAdvOperatorsTest extends AbstractAddRemoveRulesTest {
 
     @Test
