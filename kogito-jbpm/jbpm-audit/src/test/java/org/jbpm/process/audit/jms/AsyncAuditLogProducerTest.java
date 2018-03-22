@@ -22,7 +22,6 @@ import static org.jbpm.persistence.util.PersistenceUtil.createEnvironment;
 import static org.jbpm.persistence.util.PersistenceUtil.setupWithPoolingDataSource;
 import static org.jbpm.process.audit.AbstractAuditLogServiceTest.createKieSession;
 import static org.jbpm.process.audit.AbstractAuditLogServiceTest.createKnowledgeBase;
-import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,8 +44,6 @@ import javax.persistence.EntityManagerFactory;
 import javax.transaction.UserTransaction;
 
 import org.assertj.core.api.Assertions;
-import org.hamcrest.core.AnyOf;
-import org.hamcrest.core.Is;
 import org.hornetq.jms.server.embedded.EmbeddedJMS;
 import org.jboss.narayana.jta.jms.ConnectionFactoryProxy;
 import org.jboss.narayana.jta.jms.TransactionHelperImpl;
@@ -324,12 +321,12 @@ public class AsyncAuditLogProducerTest extends AbstractBaseTest {
         //verify variables
         List<VariableInstanceLog> variables = logService.findVariableInstances(processInstance.getId());
         Assertions.assertThat(variables).isNotNull();
-        Assertions.assertThat(variables.size()).isEqualTo(2);
+        Assertions.assertThat(variables).hasSize(2);
         
         VariableInstanceLog var = variables.get(0);
         // initial value from rule flow definition
         Assertions.assertThat(var.getValue()).isEqualTo("InitialValue");
-        assertThat(var.getOldValue(), AnyOf.anyOf(Is.is(""), Is.is((String) null), Is.is(" ")));
+        Assertions.assertThat(var.getOldValue()).isIn("", " ", null);
         Assertions.assertThat(var.getProcessInstanceId().longValue()).isEqualTo(processInstance.getId());
         Assertions.assertThat(var.getProcessId()).isEqualTo(processInstance.getProcessId());
         Assertions.assertThat(var.getVariableId()).isEqualTo("s");
@@ -412,7 +409,7 @@ public class AsyncAuditLogProducerTest extends AbstractBaseTest {
         for (VariableInstanceLog var : listVariables) {
             variableValues.add(var.getValue());
             variableIds.add(var.getVariableId());
-            assertThat(var.getOldValue(), AnyOf.anyOf(Is.is(""), Is.is((String) null), Is.is(" ")));
+            Assertions.assertThat(var.getOldValue()).isIn("", " ", null);
             Assertions.assertThat(var.getProcessInstanceId().longValue()).isEqualTo(processInstance.getId());
             Assertions.assertThat(var.getProcessId()).isEqualTo(processInstance.getProcessId());
             Assertions.assertThat(var.getVariableInstanceId()).isEqualTo("list");

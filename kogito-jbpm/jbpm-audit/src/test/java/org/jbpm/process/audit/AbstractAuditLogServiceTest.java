@@ -23,8 +23,6 @@ import org.assertj.core.api.Assertions;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.io.impl.ClassPathResource;
-import org.hamcrest.core.AnyOf;
-import org.hamcrest.core.Is;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.kie.api.KieBase;
@@ -42,8 +40,6 @@ import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.junit.Assert.assertThat;
 
 /**
  * This class tests the following classes: 
@@ -482,7 +478,7 @@ public abstract class AbstractAuditLogServiceTest extends AbstractBaseTest {
             variableValues.add(var.getValue());
             variableIds.add(var.getVariableId());
             // Various DBs return various empty values. (E.g. Oracle returns null.)
-            assertThat(var.getOldValue(), AnyOf.anyOf(Is.is(""), Is.is((String) null), Is.is(" ")));
+            Assertions.assertThat(var.getOldValue()).isIn("", " ", null);
             Assertions.assertThat(var.getProcessInstanceId()).isEqualTo(processInstance.getProcessInstanceId());
             Assertions.assertThat(var.getProcessId()).isEqualTo(processInstance.getProcessId());
             Assertions.assertThat(var.getVariableInstanceId()).isEqualTo("list");

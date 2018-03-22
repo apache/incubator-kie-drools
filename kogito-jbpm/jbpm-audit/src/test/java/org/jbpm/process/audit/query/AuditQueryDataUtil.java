@@ -19,8 +19,10 @@ package org.jbpm.process.audit.query;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
@@ -36,6 +38,8 @@ import org.jbpm.process.audit.strategy.StandaloneJtaStrategy;
 public class AuditQueryDataUtil {
     
     private static Random random = new Random();
+
+    private static List<Object> createdEntities = new LinkedList<>();
 
     static long randomLong() { 
         long result = (long) Math.abs(random.nextInt());
@@ -126,7 +130,8 @@ public class AuditQueryDataUtil {
             em.persist(testData[i]);
         }
         jtaHelper.leaveTransaction(em, tx);
-        
+
+        createdEntities.addAll(Arrays.asList(testData));
         return testData;
     }
 
@@ -184,7 +189,8 @@ public class AuditQueryDataUtil {
             em.persist(testData[i]);
         }
         jtaHelper.leaveTransaction(em, tx);
-        
+
+        createdEntities.addAll(Arrays.asList(testData));
         return testData;
     }
 
@@ -248,7 +254,8 @@ public class AuditQueryDataUtil {
             em.persist(testData[i]);
         }
         jtaHelper.leaveTransaction(em, tx);
-        
+
+        createdEntities.addAll(Arrays.asList(testData));
         return testData;
     }
 
@@ -269,6 +276,20 @@ public class AuditQueryDataUtil {
                assertTrue( "Duration " + dur + " is larger than max " + maxOrMin[1], dur <= maxOrMin[1] ); 
            }
        }
+    }
+
+    static void cleanDB(EntityManagerFactory emf) {
+        StandaloneJtaStrategy jtaHelper = new StandaloneJtaStrategy(emf);
+        EntityManager em = jtaHelper.getEntityManager();
+
+        Object tx = jtaHelper.joinTransaction(em);
+
+        for (Object entity : createdEntities) {
+            Object mergedEntity = em.merge(entity);
+            em.remove(mergedEntity);
+        }
+
+        jtaHelper.leaveTransaction(em, tx);
     }
     
 }
