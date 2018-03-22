@@ -88,6 +88,7 @@ import java.util.Map;
 
 import static org.junit.Assert.*;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class ActivityTest extends JbpmBpmn2TestCase {
@@ -825,6 +826,39 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     	} catch (RuntimeException e) {
     		// there should be build errors
     	}
+    }
+    
+    @Test
+    public void testSubProcessWrongStartEvent() throws Exception {
+        try {
+            KieBase kbase = createKnowledgeBase("BPMN2-SubProcessWrongStartEvent.bpmn2");
+            ksession = createKnowledgeSession(kbase);
+            fail("Process should be invalid, there should be build errors");
+        } catch (RuntimeException e) {
+            assertThat(e.getMessage()).contains("Embedded subprocess can only have none start event.");
+        }
+    }
+    
+    @Test
+    public void testSubProcessWrongStartEventTimer() throws Exception {
+        try {
+            KieBase kbase = createKnowledgeBase("SubprocessWithTimer.bpmn2");
+            ksession = createKnowledgeSession(kbase);
+            fail("Process should be invalid, there should be build errors");
+        } catch (RuntimeException e) {
+            assertThat(e.getMessage()).contains("Embedded subprocess can only have none start event.");
+        }
+    }
+    
+    @Test
+    public void testMultiinstanceSubProcessWrongStartEvent() throws Exception {
+        try {
+            KieBase kbase = createKnowledgeBase("MultipleSubprocessWithSignalStartEvent.bpmn2");
+            ksession = createKnowledgeSession(kbase);
+            fail("Process should be invalid, there should be build errors");
+        } catch (RuntimeException e) {
+            assertThat(e.getMessage()).contains("MultiInstance subprocess can only have none start event.");
+        }
     }
 
     @Test

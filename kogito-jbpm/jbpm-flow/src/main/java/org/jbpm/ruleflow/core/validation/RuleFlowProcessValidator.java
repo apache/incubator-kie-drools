@@ -362,6 +362,14 @@ public class RuleFlowProcessValidator implements ProcessValidator {
 //                    errors.add(new ProcessValidationErrorImpl(process,
 //                        "ForEach node '%s' [%d] has no linked end node"));
 //                }
+                final List<Node> start = RuleFlowProcess.getStartNodes(forEachNode.getNodes());
+                if (start != null) {
+                    for (Node s : start) {
+                        if (((StartNode) s).getTriggers() != null && !((StartNode) s).getTriggers().isEmpty() || ((StartNode) s).getTimer() != null) {
+                            addErrorMessage(process, node, errors, "MultiInstance subprocess can only have none start event.");
+                        }
+                    }
+                }
                 validateNodes(forEachNode.getNodes(), errors, process);
             } else if (node instanceof DynamicNode) {
                 final DynamicNode dynamicNode = (DynamicNode) node;
@@ -424,6 +432,15 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                     }
                 	if( compositeNode.getOutgoingConnections().size() == 0 && !Boolean.TRUE.equals(isForCompensationObject)) {
                         addErrorMessage(process, node, errors, "Embedded subprocess does not have outgoing connection.");
+                    }
+                	
+                	final List<Node> start = RuleFlowProcess.getStartNodes(compositeNode.getNodes());
+                    if (start != null) {
+                        for (Node s : start) {
+                            if (((StartNode) s).getTriggers() != null && !((StartNode) s).getTriggers().isEmpty() || ((StartNode) s).getTimer() != null) {
+                                addErrorMessage(process, node, errors, "Embedded subprocess can only have none start event.");
+                            }
+                        }
                     }
                 }
                 
