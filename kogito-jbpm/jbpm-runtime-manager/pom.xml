@@ -160,6 +160,11 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.jboss.spec.javax.jms</groupId>
+      <artifactId>jboss-jms-api_2.0_spec</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-decisiontables</artifactId>
       <scope>test</scope>
