@@ -259,4 +259,14 @@ public class EndEventTest extends JbpmBpmn2TestCase {
         
     }
 
+    @Test
+    public void testSignalEndWithData() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-EndEventSignalWithData.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        Map<String, Object> params = new HashMap<String, Object>();
+        ProcessInstance processInstance = ksession.startProcess("src.simpleEndSignal", params);
+        
+        assertProcessInstanceCompleted(processInstance);
+        
+    }
 }

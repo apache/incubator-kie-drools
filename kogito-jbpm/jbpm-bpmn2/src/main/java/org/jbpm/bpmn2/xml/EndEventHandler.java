@@ -33,6 +33,8 @@ import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.FaultNode;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -202,9 +204,42 @@ public class EndEventHandler extends AbstractNodeHandler {
     protected void readEndDataInputAssociation(org.w3c.dom.Node xmlNode, EndNode endNode) {
         // sourceRef
         org.w3c.dom.Node subNode = xmlNode.getFirstChild();
-        String eventVariable = subNode.getTextContent();
-        if (eventVariable != null && eventVariable.trim().length() > 0) {
-            endNode.setMetaData("MappingVariable", eventVariable);
+        if ("sourceRef".equals(subNode.getNodeName())) {
+            String eventVariable = subNode.getTextContent();
+            if (eventVariable != null && eventVariable.trim().length() > 0) {
+                if (dataInputs.containsKey(eventVariable)) {
+                    eventVariable = dataInputs.get(eventVariable);
+                }
+                
+                endNode.setMetaData("MappingVariable", eventVariable);
+            }
+        } else {
+            // targetRef
+            // assignment
+            subNode = subNode.getNextSibling();
+            if (subNode != null) {
+                org.w3c.dom.Node subSubNode = subNode.getFirstChild();
+                NodeList nl = subSubNode.getChildNodes();
+                if (nl.getLength() > 1) {
+                    endNode.setMetaData("MappingVariable", subSubNode.getTextContent());
+                    return;
+                } else if (nl.getLength() == 0) {
+                    return;
+                }
+                Object result = null;
+                Object from = nl.item(0);
+                if (from instanceof Text) {
+                    String text = ((Text) from).getTextContent();
+                    if (text.startsWith("\"") && text.endsWith("\"")) {
+                        result = text.substring(1, text.length() -1);
+                    } else {
+                        result = text;
+                    }
+                } else {
+                    result = nl.item(0);
+                }
+                endNode.setMetaData("MappingVariable", "\"" + result + "\"");
+            }
         }
     }
 
