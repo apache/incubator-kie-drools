@@ -92,7 +92,7 @@ public class StartNode extends ExtendedNodeImpl implements Mappable {
             throw new IllegalArgumentException(
                 "A start node [" + this.getMetaData("UniqueId") + ", " + this.getName() + "] only accepts default outgoing connection type!");
         }
-        if (getTo() != null) {
+        if (getTo() != null && !"true".equals(System.getProperty("jbpm.enable.multi.con"))) {
             throw new IllegalArgumentException(
                 "A start node [" + this.getMetaData("UniqueId") + ", " + this.getName() + "] cannot have more than one outgoing connection!");
         }

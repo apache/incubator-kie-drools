@@ -609,6 +609,22 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         assertThatExceptionOfType(Exception.class).isThrownBy(() -> { createKnowledgeBase("timer/BPMN2-StartTimerCycleInvalid.bpmn2"); })
                 .withMessageContaining("Could not parse delay 'abcdef'");
     }
+    
+    @Test
+    public void testStartithMultipleOutgoingFlows() throws Exception {
+        System.setProperty("jbpm.enable.multi.con", "true");
+        try {
+            KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-StartEventWithMultipleOutgoingFlows.bpmn2");
+            ksession = createKnowledgeSession(kbase);
+            
+            ProcessInstance pi = ksession.startProcess("starteventwithmutlipleflows");
+            assertProcessInstanceCompleted(pi);
+            
+            assertNodeTriggered(pi.getId(), "Script 1", "Script 2");
+        } finally {
+            System.clearProperty("jbpm.enable.multi.con");
+        }
+    }
 
 
     private static class StartCountingListener extends DefaultProcessEventListener {
