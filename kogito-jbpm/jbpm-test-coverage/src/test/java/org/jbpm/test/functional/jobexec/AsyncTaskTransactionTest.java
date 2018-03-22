@@ -18,6 +18,7 @@ package org.jbpm.test.functional.jobexec;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.naming.InitialContext;
 import javax.transaction.UserTransaction;
@@ -25,8 +26,10 @@ import javax.transaction.UserTransaction;
 import org.assertj.core.api.Assertions;
 import org.jbpm.executor.impl.ExecutorServiceImpl;
 import org.jbpm.executor.impl.wih.AsyncWorkItemHandler;
+import org.jbpm.persistence.util.PersistenceUtil;
 import org.jbpm.test.JbpmAsyncJobTestCase;
 import org.jbpm.test.listener.CountDownAsyncJobListener;
+import org.jbpm.test.util.PoolingDataSource;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
@@ -86,7 +89,6 @@ public class AsyncTaskTransactionTest extends JbpmAsyncJobTestCase {
             pm.put("_command", USER_COMMAND);
             ProcessInstance pi = ksession.startProcess(ASYNC_EXECUTOR_2_ID, pm);
             processId = pi.getId();
-            assertProcessInstanceCompleted(processId);
         } finally {
             ut.rollback();
         }
@@ -154,4 +156,20 @@ public class AsyncTaskTransactionTest extends JbpmAsyncJobTestCase {
         return ksession;
     }
 
+    @Override
+    protected PoolingDataSource setupPoolingDataSource() {        
+        
+        Properties dsProps = PersistenceUtil.getDatasourceProperties();
+        String jdbcUrl = dsProps.getProperty("url");
+        String driverClass = dsProps.getProperty("driverClassName");        
+
+        // Setup the datasource
+        PoolingDataSource ds1 = PersistenceUtil.setupPoolingDataSource(dsProps, "jdbc/jbpm-ds", false);
+        if (driverClass.startsWith("org.h2")) {
+            ds1.getDriverProperties().setProperty("url", jdbcUrl);
+        }
+        ds1.getDriverProperties().setProperty("POOL_CONNECTIONS", "false");
+        ds1.init();
+        return ds1;
+    }
 }

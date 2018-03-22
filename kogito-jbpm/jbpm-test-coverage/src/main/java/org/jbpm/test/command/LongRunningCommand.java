@@ -25,15 +25,15 @@ import org.kie.api.executor.ExecutionResults;
 public class LongRunningCommand implements Command {
 
     public ExecutionResults execute(CommandContext ctx) {
-        System.out.println("[INFO] Command executed on executor with data " + ctx.getData());
+        System.out.println(Thread.currentThread().getName() + " [INFO] Command executed on executor with data " + ctx.getData());
         long time = 8 * 1000;
 
-        System.out.println("[INFO] Simulating long running task, sleep time " + time + "ms");
+        System.out.println(Thread.currentThread().getName() + " [INFO] Simulating long running task, sleep time " + time + "ms");
         try {
             Thread.sleep(time);
         } catch (Exception ex) {
         }
-        System.out.println("[INFO] Long running task finished after " + time + "ms");
+        System.out.println(Thread.currentThread().getName() + " [INFO] Long running task finished after " + time + "ms");
         ExecutionResults executionResults = new ExecutionResults();
         return executionResults;
     }
