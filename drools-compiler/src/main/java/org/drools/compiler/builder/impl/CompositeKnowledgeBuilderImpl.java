@@ -26,14 +26,15 @@ import org.drools.compiler.compiler.BPMN2ProcessFactory;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.core.builder.conf.impl.JaxbConfigurationImpl;
-import org.kie.api.internal.assembler.KieAssemblerService;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
+import org.kie.api.io.ResourceWithConfiguration;
 import org.kie.internal.builder.ChangeType;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
 import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResourceChangeSet;
+import org.kie.internal.io.ResourceWithConfigurationImpl;
 
 public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder {
 
@@ -149,7 +150,7 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
     private void buildOthers() {
         try {
             for (Map.Entry<ResourceType, List<ResourceDescr>> entry : resourcesByType.entrySet()) {
-                List<org.kie.api.internal.assembler.KieAssemblerService.ResourceAndConfig> rds = entry.getValue().stream().map(CompositeKnowledgeBuilderImpl::toDescr).collect(Collectors.toList());
+                List<ResourceWithConfiguration> rds = entry.getValue().stream().map(CompositeKnowledgeBuilderImpl::descrToResourceWithConfiguration).collect(Collectors.toList());
                 kBuilder.addPackageForExternalType(entry.getKey(), rds);
             }
         } catch (RuntimeException e) {
@@ -159,11 +160,11 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         }
     }
 
-    private static KieAssemblerService.ResourceAndConfig toDescr(ResourceDescr rd) {
-        return new KieAssemblerService.ResourceAndConfig(rd.resource,
-                                                     rd.configuration,
-                                                     kb -> ((KnowledgeBuilderImpl) kb).setAssetFilter(rd.getFilter()),
-                                                     kb -> ((KnowledgeBuilderImpl) kb).setAssetFilter(null));
+    private static ResourceWithConfiguration descrToResourceWithConfiguration(ResourceDescr rd) {
+        return new ResourceWithConfigurationImpl(rd.resource,
+                                                 rd.configuration,
+                                                 kb -> ((KnowledgeBuilderImpl) kb).setAssetFilter(rd.getFilter()),
+                                                 kb -> ((KnowledgeBuilderImpl) kb).setAssetFilter(null));
     }
 
     private Collection<CompositePackageDescr> buildPackageDescr() {

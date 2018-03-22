@@ -35,6 +35,7 @@ import org.kie.api.internal.io.ResourceTypePackage;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
+import org.kie.api.io.ResourceWithConfiguration;
 import org.kie.dmn.api.core.DMNCompiler;
 import org.kie.dmn.api.core.DMNCompilerConfiguration;
 import org.kie.dmn.api.core.DMNModel;
@@ -71,7 +72,7 @@ public class DMNAssemblerService implements KieAssemblerService {
     }
 
     @Override
-    public void addResources(Object kbuilder, List<ResourceAndConfig> resources, ResourceType type) throws Exception {
+    public void addResources(Object kbuilder, List<ResourceWithConfiguration> resources, ResourceType type) throws Exception {
         KnowledgeBuilderImpl kbuilderImpl = (KnowledgeBuilderImpl) kbuilder;
         DMNCompilerImpl dmnCompiler = (DMNCompilerImpl) kbuilderImpl.getCachedOrCreate(DMN_COMPILER_CACHE_KEY, () -> getCompiler(kbuilderImpl));
         DMNMarshaller dmnMarshaller = dmnCompiler.getMarshaller();
@@ -81,7 +82,7 @@ public class DMNAssemblerService implements KieAssemblerService {
             return;
         }
         List<DMNResource> dmnResources = new ArrayList<>();
-        for (ResourceAndConfig r : resources) {
+        for (ResourceWithConfiguration r : resources) {
             Definitions definitions = dmnMarshaller.unmarshal(r.getResource().getReader());
             QName modelID = new QName(definitions.getNamespace(), definitions.getName());
             DMNResource dmnResource = new DMNResource(modelID, r, definitions);
@@ -106,7 +107,7 @@ public class DMNAssemblerService implements KieAssemblerService {
         }
     }
 
-    private DMNModel internalAddResource(KnowledgeBuilderImpl kbuilder, DMNCompiler dmnCompiler, ResourceAndConfig r, Collection<DMNModel> dmnModels) throws Exception {
+    private DMNModel internalAddResource(KnowledgeBuilderImpl kbuilder, DMNCompiler dmnCompiler, ResourceWithConfiguration r, Collection<DMNModel> dmnModels) throws Exception {
         r.getBeforeAdd().accept(kbuilder);
         DMNModel dmnModel = compileResourceToModel(kbuilder, dmnCompiler, r.getResource(), dmnModels);
         r.getAfterAdd().accept(kbuilder);

@@ -5,17 +5,17 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import org.kie.api.internal.assembler.KieAssemblerService.ResourceAndConfig;
+import org.kie.api.io.ResourceWithConfiguration;
 import org.kie.dmn.model.v1_1.Definitions;
 
 public class DMNResource {
 
     private final QName modelID;
-    private final ResourceAndConfig resAndConfig;
+    private final ResourceWithConfiguration resAndConfig;
     private final Definitions definitions;
     private final List<QName> dependencies = new ArrayList<>();
 
-    public DMNResource(QName modelID, ResourceAndConfig resAndConfig, Definitions definitions) {
+    public DMNResource(QName modelID, ResourceWithConfiguration resAndConfig, Definitions definitions) {
         this.modelID = modelID;
         this.resAndConfig = resAndConfig;
         this.definitions = definitions;
@@ -25,7 +25,7 @@ public class DMNResource {
         return modelID;
     }
 
-    public ResourceAndConfig getResAndConfig() {
+    public ResourceWithConfiguration getResAndConfig() {
         return resAndConfig;
     }
 
