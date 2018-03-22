@@ -1,24 +1,24 @@
 package org.drools.compiler.integrationtests.incrementalcompilation;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.assertj.core.api.Assertions;
 import org.drools.compiler.TurtleTestCategory;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 @Category(TurtleTestCategory.class)
 @RunWith(Parameterized.class)
-public class AddRemoveRulesAddDeleteFactsTest extends AbstractAddRemoveRulesTest {
+public class AddRemoveRulesAddDeleteFactsTest {
 
     private StringPermutation rulesPermutation;
 
@@ -32,7 +32,7 @@ public class AddRemoveRulesAddDeleteFactsTest extends AbstractAddRemoveRulesTest
 
         final Set<StringPermutation> parametersPermutations = new HashSet<StringPermutation>();
         getStringPermutations(
-                new String[]{RULE1_NAME, RULE2_NAME, RULE3_NAME},
+                new String[]{TestUtil.RULE1_NAME, TestUtil.RULE2_NAME, TestUtil.RULE3_NAME},
                 new String[]{},
                 parametersPermutations);
 
@@ -45,31 +45,23 @@ public class AddRemoveRulesAddDeleteFactsTest extends AbstractAddRemoveRulesTest
 
     @Test
     public void testAddRemoveRulesAddRemoveFacts() {
-        final List resultsList = new ArrayList();
-        final Map<String, Object> sessionGlobals = new HashMap<String, Object>();
-        sessionGlobals.put("list", resultsList);
-        final TestContext testContext = new TestContext(PKG_NAME_TEST, sessionGlobals, resultsList);
-        final AddRemoveTestBuilder builder = new AddRemoveTestBuilder();
-
-        builder.addOperation(TestOperationType.CREATE_SESSION, getRules())
-                .addOperation(TestOperationType.INSERT_FACTS, getFacts())
-                .addOperation(TestOperationType.FIRE_RULES)
-                .addOperation(TestOperationType.CHECK_RESULTS, new String[]{RULE1_NAME, RULE2_NAME, RULE3_NAME});
-
-        testContext.executeTestOperations(builder.build());
-        builder.clear();
-
-        final Set<FactHandle> insertedFacts = testContext.getActualSessionFactHandles();
-
-        builder.addOperation(TestOperationType.REMOVE_RULES, rulesPermutation.getPermutation())
-                .addOperation(TestOperationType.FIRE_RULES)
-                .addOperation(TestOperationType.CHECK_RESULTS, new String[]{})
-                .addOperation(TestOperationType.REMOVE_FACTS, insertedFacts.toArray(new FactHandle[]{}))
-                .addOperation(TestOperationType.FIRE_RULES)
-                .addOperation(TestOperationType.CHECK_RESULTS, new String[]{});
-
-        testContext.executeTestOperations(builder.build());
-        builder.clear();
+        final KieSession kieSession = TestUtil.createSession(getRules());
+        try {
+            final List resultsList = new ArrayList();
+            kieSession.setGlobal("list", resultsList);
+            final List<FactHandle> insertedFacts = TestUtil.insertFacts(kieSession, getFacts());
+            kieSession.fireAllRules();
+            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME, TestUtil.RULE2_NAME, TestUtil.RULE3_NAME);
+            resultsList.clear();
+            TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, rulesPermutation.getPermutation());
+            kieSession.fireAllRules();
+            Assertions.assertThat(resultsList).isEmpty();
+            TestUtil.removeFacts(kieSession, insertedFacts);
+            kieSession.fireAllRules();
+            Assertions.assertThat(resultsList).isEmpty();
+        } finally {
+            kieSession.dispose();
+        }
     }
 
     private Object[] getFacts() {
@@ -120,35 +112,35 @@ public class AddRemoveRulesAddDeleteFactsTest extends AbstractAddRemoveRulesTest
     private static String[] getRules() {
         final String[] rules = new String[3];
 
-        rules[0] = " package " + PKG_NAME_TEST + ";\n" +
+        rules[0] = " package " + TestUtil.RULES_PACKAGE_NAME + ";\n" +
                 " global java.util.List list\n" +
-                " rule " + RULE1_NAME + " \n" +
+                " rule " + TestUtil.RULE1_NAME + " \n" +
                 " when \n" +
                 "   Integer() \n" +
                 "   not(not(Integer() and Integer())) \n" +
                 " then\n" +
-                "   list.add('" + RULE1_NAME + "'); \n" +
+                "   list.add('" + TestUtil.RULE1_NAME + "'); \n" +
                 " end";
 
-        rules[1] = " package " + PKG_NAME_TEST + ";\n" +
+        rules[1] = " package " + TestUtil.RULES_PACKAGE_NAME + ";\n" +
                 " global java.util.List list\n" +
-                " rule " + RULE2_NAME + " \n" +
+                " rule " + TestUtil.RULE2_NAME + " \n" +
                 " when \n" +
                 "   Integer() \n" +
                 "   exists(Integer() and Integer()) \n" +
                 " then\n" +
-                "   list.add('" + RULE2_NAME + "'); \n" +
+                "   list.add('" + TestUtil.RULE2_NAME + "'); \n" +
                 " end";
 
-        rules[2] = " package " + PKG_NAME_TEST + ";\n" +
+        rules[2] = " package " + TestUtil.RULES_PACKAGE_NAME + ";\n" +
                 " global java.util.List list\n" +
-                " rule " + RULE3_NAME + " \n" +
+                " rule " + TestUtil.RULE3_NAME + " \n" +
                 " when \n" +
                 "   Integer() \n" +
                 "   exists(Integer() and Integer()) \n" +
                 "   String() \n" +
                 " then\n" +
-                "   list.add('" + RULE3_NAME + "'); \n" +
+                "   list.add('" + TestUtil.RULE3_NAME + "'); \n" +
                 " end";
 
         return rules;

@@ -1,11 +1,5 @@
 package org.drools.compiler.integrationtests.incrementalcompilation;
 
-import org.drools.compiler.TurtleTestCategory;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -14,8 +8,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.drools.compiler.TurtleTestCategory;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Category(TurtleTestCategory.class)
-public abstract class AbstractAddRemoveGenerated2RulesTest extends AbstractAddRemoveRulesTest {
+public abstract class AbstractAddRemoveGenerated2RulesTest {
 
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -23,20 +23,20 @@ public abstract class AbstractAddRemoveGenerated2RulesTest extends AbstractAddRe
     private final String rule2;
 
     public AbstractAddRemoveGenerated2RulesTest(final ConstraintsPair constraintsPair) {
-        final String rule1 = "package " + PKG_NAME_TEST + ";" +
+        final String rule1 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                 "global java.util.List list\n" +
-                "rule " + RULE1_NAME + " \n" +
+                "rule " + TestUtil.RULE1_NAME + " \n" +
                 " when \n ${constraints} " +
                 "then\n" +
-                " list.add('" + RULE1_NAME + "'); \n" +
+                " list.add('" + TestUtil.RULE1_NAME + "'); \n" +
                 "end\n";
 
-        final String rule2 = "package " + PKG_NAME_TEST + ";" +
+        final String rule2 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                 "global java.util.List list\n" +
-                "rule " + RULE2_NAME + " \n" +
+                "rule " + TestUtil.RULE2_NAME + " \n" +
                 " when \n ${constraints} " +
                 "then\n" +
-                " list.add('" + RULE2_NAME + "'); \n" +
+                " list.add('" + TestUtil.RULE2_NAME + "'); \n" +
                 "end\n";
 
         this.rule1 = rule1.replace("${constraints}", constraintsPair.getConstraints1());
@@ -85,74 +85,58 @@ public abstract class AbstractAddRemoveGenerated2RulesTest extends AbstractAddRe
 
     @Test(timeout = 10000)
     public void testInsertFactsFireRulesRemoveRules() {
-        final List<List<TestOperation>> testPlans =
-                AddRemoveTestBuilder.createInsertFactsFireRulesRemoveRulesTestPlan(
-                        rule1, rule2, RULE1_NAME, RULE2_NAME, getFacts());
-
-        runAddRemoveTests(testPlans, new HashMap<String, Object>());
+        AddRemoveTestCases.insertFactsFireRulesRemoveRules1(rule1, rule2, TestUtil.RULE1_NAME, TestUtil.RULE2_NAME, null, getFacts());
+        AddRemoveTestCases.insertFactsFireRulesRemoveRules2(rule1, rule2, TestUtil.RULE1_NAME, TestUtil.RULE2_NAME, null, getFacts());
+        AddRemoveTestCases.insertFactsFireRulesRemoveRules3(rule1, rule2, TestUtil.RULE1_NAME, TestUtil.RULE2_NAME, null, getFacts());
     }
 
     @Test(timeout = 10000)
     public void testInsertFactsFireRulesRemoveRulesRevertedRules() {
-        final List<List<TestOperation>> testPlans =
-                AddRemoveTestBuilder.createInsertFactsFireRulesRemoveRulesTestPlan(
-                        rule2, rule1, RULE2_NAME, RULE1_NAME, getFacts());
-
-        runAddRemoveTests(testPlans, new HashMap<String, Object>());
+        AddRemoveTestCases.insertFactsFireRulesRemoveRules1(rule2, rule1, TestUtil.RULE2_NAME, TestUtil.RULE1_NAME, null, getFacts());
+        AddRemoveTestCases.insertFactsFireRulesRemoveRules2(rule2, rule1, TestUtil.RULE2_NAME, TestUtil.RULE1_NAME, null, getFacts());
+        AddRemoveTestCases.insertFactsFireRulesRemoveRules3(rule2, rule1, TestUtil.RULE2_NAME, TestUtil.RULE1_NAME, null, getFacts());
     }
 
     @Test(timeout = 10000)
     public void testFireRulesInsertFactsFireRulesRemoveRules() {
-        final List<List<TestOperation>> testPlans =
-                AddRemoveTestBuilder.createFireRulesInsertFactsFireRulesRemoveRulesTestPlan(
-                        rule1, rule2, RULE1_NAME, RULE2_NAME, getFacts());
-
-        runAddRemoveTests(testPlans, new HashMap<String, Object>());
+        AddRemoveTestCases.fireRulesInsertFactsFireRulesRemoveRules1(rule1, rule2, TestUtil.RULE1_NAME, TestUtil.RULE2_NAME, null, getFacts());
+        AddRemoveTestCases.fireRulesInsertFactsFireRulesRemoveRules2(rule1, rule2, TestUtil.RULE1_NAME, TestUtil.RULE2_NAME, null, getFacts());
+        AddRemoveTestCases.fireRulesInsertFactsFireRulesRemoveRules3(rule1, rule2, TestUtil.RULE1_NAME, TestUtil.RULE2_NAME, null, getFacts());
     }
 
     @Test(timeout = 10000)
     public void testFireRulesInsertFactsFireRulesRemoveRulesRevertedRules() {
-        final List<List<TestOperation>> testPlans =
-                AddRemoveTestBuilder.createFireRulesInsertFactsFireRulesRemoveRulesTestPlan(
-                        rule2, rule1, RULE2_NAME, RULE1_NAME, getFacts());
-
-        runAddRemoveTests(testPlans, new HashMap<String, Object>());
+        AddRemoveTestCases.fireRulesInsertFactsFireRulesRemoveRules1(rule2, rule1, TestUtil.RULE2_NAME, TestUtil.RULE1_NAME, null, getFacts());
+        AddRemoveTestCases.fireRulesInsertFactsFireRulesRemoveRules2(rule2, rule1, TestUtil.RULE2_NAME, TestUtil.RULE1_NAME, null, getFacts());
+        AddRemoveTestCases.fireRulesInsertFactsFireRulesRemoveRules3(rule2, rule1, TestUtil.RULE2_NAME, TestUtil.RULE1_NAME, null, getFacts());
     }
 
     @Test(timeout = 10000)
     public void testInsertFactsRemoveRulesFireRulesRemoveRules() {
-        final List<List<TestOperation>> testPlans =
-                AddRemoveTestBuilder.createInsertFactsRemoveRulesFireRulesRemoveRulesTestPlan(
-                        rule1, rule2, RULE1_NAME, RULE2_NAME, getFacts());
-
-        runAddRemoveTests(testPlans, new HashMap<String, Object>());
+        AddRemoveTestCases.insertFactsRemoveRulesFireRulesRemoveRules1(rule1, rule2, TestUtil.RULE1_NAME, TestUtil.RULE2_NAME, null, getFacts());
+        AddRemoveTestCases.insertFactsRemoveRulesFireRulesRemoveRules2(rule1, rule2, TestUtil.RULE1_NAME, TestUtil.RULE2_NAME, null, getFacts());
+        AddRemoveTestCases.insertFactsRemoveRulesFireRulesRemoveRules3(rule1, rule2, TestUtil.RULE1_NAME, TestUtil.RULE2_NAME, null, getFacts());
     }
 
     @Test(timeout = 10000)
     public void testInsertFactsRemoveRulesFireRulesRemoveRulesRevertedRules() {
-        final List<List<TestOperation>> testPlans =
-                AddRemoveTestBuilder.createInsertFactsRemoveRulesFireRulesRemoveRulesTestPlan(
-                        rule2, rule1, RULE2_NAME, RULE1_NAME, getFacts());
-
-        runAddRemoveTests(testPlans, new HashMap<String, Object>());
+        AddRemoveTestCases.insertFactsRemoveRulesFireRulesRemoveRules1(rule2, rule1, TestUtil.RULE2_NAME, TestUtil.RULE1_NAME, null, getFacts());
+        AddRemoveTestCases.insertFactsRemoveRulesFireRulesRemoveRules2(rule2, rule1, TestUtil.RULE2_NAME, TestUtil.RULE1_NAME, null, getFacts());
+        AddRemoveTestCases.insertFactsRemoveRulesFireRulesRemoveRules3(rule2, rule1, TestUtil.RULE2_NAME, TestUtil.RULE1_NAME, null, getFacts());
     }
 
     @Test(timeout = 10000)
     public void testInsertFactsFireRulesRemoveRulesReinsertRules() {
-        final List<List<TestOperation>> testPlans =
-                AddRemoveTestBuilder.createInsertFactsFireRulesRemoveRulesReinsertRulesTestPlan(
-                        rule1, rule2, RULE1_NAME, RULE2_NAME, getFacts());
-
-        runAddRemoveTests(testPlans, new HashMap<String, Object>());
+        AddRemoveTestCases.insertFactsFireRulesRemoveRulesReinsertRules1(rule1, rule2, TestUtil.RULE1_NAME, TestUtil.RULE2_NAME, null, getFacts());
+        AddRemoveTestCases.insertFactsFireRulesRemoveRulesReinsertRules2(rule1, rule2, TestUtil.RULE1_NAME, TestUtil.RULE2_NAME, null, getFacts());
+        AddRemoveTestCases.insertFactsFireRulesRemoveRulesReinsertRules3(rule1, rule2, TestUtil.RULE1_NAME, TestUtil.RULE2_NAME, null, getFacts());
     }
 
     @Test(timeout = 10000)
     public void testInsertFactsFireRulesRemoveRulesReinsertRulesRevertedRules() {
-        final List<List<TestOperation>> testPlans =
-                AddRemoveTestBuilder.createInsertFactsFireRulesRemoveRulesReinsertRulesTestPlan(
-                        rule2, rule1, RULE2_NAME, RULE1_NAME, getFacts());
-
-        runAddRemoveTests(testPlans, new HashMap<String, Object>());
+        AddRemoveTestCases.insertFactsFireRulesRemoveRulesReinsertRules1(rule2, rule1, TestUtil.RULE2_NAME, TestUtil.RULE1_NAME, null, getFacts());
+        AddRemoveTestCases.insertFactsFireRulesRemoveRulesReinsertRules2(rule2, rule1, TestUtil.RULE2_NAME, TestUtil.RULE1_NAME, null, getFacts());
+        AddRemoveTestCases.insertFactsFireRulesRemoveRulesReinsertRules3(rule2, rule1, TestUtil.RULE2_NAME, TestUtil.RULE1_NAME, null, getFacts());
     }
 
     private Object[] getFacts() {
