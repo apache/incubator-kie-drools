@@ -44,6 +44,7 @@ import org.kie.dmn.core.compiler.DMNCompilerConfigurationImpl;
 import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.compiler.DMNProfile;
 import org.kie.dmn.core.compiler.ImportDMNResolverUtil;
+import org.kie.dmn.core.compiler.ImportDMNResolverUtil.ImportType;
 import org.kie.dmn.core.compiler.profiles.ExtendedDMNProfile;
 import org.kie.dmn.core.impl.DMNKnowledgeBuilderError;
 import org.kie.dmn.core.impl.DMNPackageImpl;
@@ -89,9 +90,11 @@ public class DMNAssemblerService implements KieAssemblerService {
         // enrich with imports
         for (DMNResource r : dmnResources) {
             for (Import i : r.getDefinitions().getImport()) {
-                Either<String, DMNResource> resolvedResult = ImportDMNResolverUtil.resolveImportDMN(i, dmnResources, DMNResource::getModelID);
-                DMNResource located = resolvedResult.getOrElseThrow(RuntimeException::new);
-                r.addDependency(located.getModelID());
+                if (ImportDMNResolverUtil.whichImportType(i) == ImportType.DMN) {
+                    Either<String, DMNResource> resolvedResult = ImportDMNResolverUtil.resolveImportDMN(i, dmnResources, DMNResource::getModelID);
+                    DMNResource located = resolvedResult.getOrElseThrow(RuntimeException::new);
+                    r.addDependency(located.getModelID());
+                }
             }
         }
         List<DMNResource> sortedDmnResources = DMNResourceDependenciesSorter.sort(dmnResources);

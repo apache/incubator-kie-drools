@@ -52,6 +52,7 @@ import org.kie.dmn.core.ast.BusinessKnowledgeModelNodeImpl;
 import org.kie.dmn.core.ast.DMNBaseNode;
 import org.kie.dmn.core.ast.DecisionNodeImpl;
 import org.kie.dmn.core.ast.ItemDefNodeImpl;
+import org.kie.dmn.core.compiler.ImportDMNResolverUtil.ImportType;
 import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
@@ -161,23 +162,25 @@ public class DMNCompilerImpl
 
         if (!dmndefs.getImport().isEmpty()) {
             for (Import i : dmndefs.getImport()) {
-                Either<String, DMNModel> resolvedResult = ImportDMNResolverUtil.resolveImportDMN(i, dmnModels, (DMNModel m) -> new QName(m.getNamespace(), m.getName()));
-                DMNModel located = resolvedResult.cata(msg -> {
-                    MsgUtil.reportMessage(logger,
-                                          DMNMessage.Severity.ERROR,
-                                          i,
-                                          model,
-                                          null,
-                                          null,
-                                          Msg.IMPORT_NOT_FOUND_FOR_NODE,
-                                          msg,
-                                          i);
-                    return null;
-                }, Function.identity());
-                if (located != null) {
-                    String iAlias = Optional.ofNullable(i.getAdditionalAttributes().get(Import.NAME_QNAME)).orElse(located.getName());
-                    model.setImportAliasForNS(iAlias, located.getNamespace(), located.getName());
-                    importFromModel(model, located);
+                if (ImportDMNResolverUtil.whichImportType(i) == ImportType.DMN) {
+                    Either<String, DMNModel> resolvedResult = ImportDMNResolverUtil.resolveImportDMN(i, dmnModels, (DMNModel m) -> new QName(m.getNamespace(), m.getName()));
+                    DMNModel located = resolvedResult.cata(msg -> {
+                        MsgUtil.reportMessage(logger,
+                                              DMNMessage.Severity.ERROR,
+                                              i,
+                                              model,
+                                              null,
+                                              null,
+                                              Msg.IMPORT_NOT_FOUND_FOR_NODE,
+                                              msg,
+                                              i);
+                        return null;
+                    }, Function.identity());
+                    if (located != null) {
+                        String iAlias = Optional.ofNullable(i.getAdditionalAttributes().get(Import.NAME_QNAME)).orElse(located.getName());
+                        model.setImportAliasForNS(iAlias, located.getNamespace(), located.getName());
+                        importFromModel(model, located);
+                    }
                 }
             }
         }
