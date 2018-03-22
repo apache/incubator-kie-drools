@@ -22,6 +22,8 @@ import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATIO
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_SCHEMA;
 
+import java.io.IOException;
+import java.io.Reader;
 import java.util.List;
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNMessage;
@@ -30,28 +32,94 @@ import org.kie.dmn.api.core.DMNMessageType;
 public class ValidatorBusinessKnowledgeModelTest extends AbstractValidatorTest {
 
     @Test
-    public void testBKM_MISSING_VAR() {
+    public void testBKM_MISSING_VAR_ReaderInput() throws IOException {
+        try (final Reader reader = getReader("businessknowledgemodel/BKM_MISSING_VAR.dmn")) {
+            final List<DMNMessage> validate = validator.validate(
+                    reader,
+                    VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
+            assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(1));
+            assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_VARIABLE)));
+        }
+    }
+
+    @Test
+    public void testBKM_MISSING_VAR_FileInput() {
         final List<DMNMessage> validate = validator.validate(
-                getReader("businessknowledgemodel/BKM_MISSING_VAR.dmn"),
+                getFile("businessknowledgemodel/BKM_MISSING_VAR.dmn"),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
         assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(1));
         assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_VARIABLE)));
     }
 
     @Test
-    public void testBKM_MISMATCH_VAR() {
+    public void testBKM_MISSING_VAR_DefinitionsInput() {
         final List<DMNMessage> validate = validator.validate(
-                getReader("businessknowledgemodel/BKM_MISMATCH_VAR.dmn"),
+                getDefinitions("businessknowledgemodel/BKM_MISSING_VAR.dmn",
+                               "https://github.com/kiegroup/kie-dmn",
+                               "BKM_MISSING_VAR"),
+                VALIDATE_MODEL, VALIDATE_COMPILATION);
+        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(1));
+        assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_VARIABLE)));
+    }
+
+    @Test
+    public void testBKM_MISMATCH_VAR_ReaderInput() throws IOException {
+        try (final Reader reader = getReader("businessknowledgemodel/BKM_MISMATCH_VAR.dmn")) {
+            final List<DMNMessage> validate = validator.validate(
+                    reader,
+                    VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
+            assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(1));
+            assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.VARIABLE_NAME_MISMATCH)));
+        }
+    }
+
+    @Test
+    public void testBKM_MISMATCH_VAR_FileInput() {
+        final List<DMNMessage> validate = validator.validate(
+                getFile("businessknowledgemodel/BKM_MISMATCH_VAR.dmn"),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
         assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(1));
         assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.VARIABLE_NAME_MISMATCH)));
     }
 
     @Test
-    public void testBKM_MISSING_EXPR() {
+    public void testBKM_MISMATCH_VAR_DefinitionsInput() {
         final List<DMNMessage> validate = validator.validate(
-                getReader("businessknowledgemodel/BKM_MISSING_EXPR.dmn"),
+                getDefinitions("businessknowledgemodel/BKM_MISMATCH_VAR.dmn",
+                               "https://github.com/kiegroup/kie-dmn",
+                               "BKM_MISSING_VAR"),
+                VALIDATE_MODEL, VALIDATE_COMPILATION);
+        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(1));
+        assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.VARIABLE_NAME_MISMATCH)));
+    }
+
+    @Test
+    public void testBKM_MISSING_EXPR_ReaderInput() throws IOException {
+        try (final Reader reader = getReader("businessknowledgemodel/BKM_MISSING_EXPR.dmn")) {
+            final List<DMNMessage> validate = validator.validate(
+                    reader,
+                    VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
+            assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(1));
+            assertThat(validate.get(0).toString(), validate.get(0).getMessageType(), is(DMNMessageType.MISSING_EXPRESSION));
+        }
+    }
+
+    @Test
+    public void testBKM_MISSING_EXPR_FileInput() {
+        final List<DMNMessage> validate = validator.validate(
+                getFile("businessknowledgemodel/BKM_MISSING_EXPR.dmn"),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
+        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(1));
+        assertThat(validate.get(0).toString(), validate.get(0).getMessageType(), is(DMNMessageType.MISSING_EXPRESSION));
+    }
+
+    @Test
+    public void testBKM_MISSING_EXPR_DefinitionsInput() {
+        final List<DMNMessage> validate = validator.validate(
+                getDefinitions("businessknowledgemodel/BKM_MISSING_EXPR.dmn",
+                               "https://github.com/kiegroup/kie-dmn",
+                               "BKM_MISSING_EXPR"),
+                VALIDATE_MODEL, VALIDATE_COMPILATION);
         assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(1));
         assertThat(validate.get(0).toString(), validate.get(0).getMessageType(), is(DMNMessageType.MISSING_EXPRESSION));
     }
