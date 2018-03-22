@@ -72,13 +72,13 @@ public class DMNAssemblerService implements KieAssemblerService {
     }
 
     @Override
-    public void addResources(Object kbuilder, List<ResourceWithConfiguration> resources, ResourceType type) throws Exception {
+    public void addResources(Object kbuilder, Collection<ResourceWithConfiguration> resources, ResourceType type) throws Exception {
         KnowledgeBuilderImpl kbuilderImpl = (KnowledgeBuilderImpl) kbuilder;
         DMNCompilerImpl dmnCompiler = (DMNCompilerImpl) kbuilderImpl.getCachedOrCreate(DMN_COMPILER_CACHE_KEY, () -> getCompiler(kbuilderImpl));
         DMNMarshaller dmnMarshaller = dmnCompiler.getMarshaller();
         if (resources.size() == 1) {
             // quick path:
-            internalAddResource(kbuilderImpl, dmnCompiler, resources.get(0), Collections.emptyList());
+            internalAddResource(kbuilderImpl, dmnCompiler, resources.iterator().next(), Collections.emptyList());
             return;
         }
         List<DMNResource> dmnResources = new ArrayList<>();
