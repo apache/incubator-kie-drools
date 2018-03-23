@@ -95,7 +95,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 
 	private final List<NodeInstance> nodeInstances = new ArrayList<NodeInstance>();;
 
-	private AtomicLong singleNodeInstanceCounter = new AtomicLong(0);
+	private AtomicLong singleNodeInstanceCounter = new AtomicLong(-1);
 
 	private Map<String, List<EventListener>> eventListeners = new HashMap<String, List<EventListener>>();
 	private Map<String, List<EventListener>> externalEventListeners = new HashMap<String, List<EventListener>>();
@@ -126,7 +126,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 	    if (nodeInstance.getId() == -1) {
             // assign new id only if it does not exist as it might already be set by marshalling
             // it's important to keep same ids of node instances as they might be references e.g. exclusive group
-    	    long id = singleNodeInstanceCounter.getAndIncrement();
+    	    long id = singleNodeInstanceCounter.incrementAndGet();
     		((NodeInstanceImpl) nodeInstance).setId(id);
 	    }
 		this.nodeInstances.add(nodeInstance);

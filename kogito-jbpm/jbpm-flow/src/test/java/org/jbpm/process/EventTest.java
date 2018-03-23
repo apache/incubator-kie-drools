@@ -711,24 +711,24 @@ public class EventTest extends AbstractBaseTest  {
             "bps",
             "bnt-0", "bnl-0",
             "bnt-1",
-            "bnt-1:4", "ant-1:4",
+            "bnt-1:3", "ant-1:3",
             "ant-1",
             "anl-0", "ant-0",
             "aps",
             "bvc-event", "avc-event",
-            "bnl-1:5",
+            "bnl-1:4",
+            "bnt-1:5", "bnl-1:5",
             "bnt-1:6", "bnl-1:6",
-            "bnt-1:7", "bnl-1:7",
             "bnl-1",
             "bnt-8", "bnl-8",
             "bpc",
             "apc",
             "anl-8", "ant-8",
             "anl-1",
-            "anl-1:4",
-            "anl-1:7", "ant-1:7",
+            "anl-1:3",
             "anl-1:6", "ant-1:6",
-            "anl-1:5"
+            "anl-1:5", "ant-1:5",
+            "anl-1:4"
     };
     
     @Test
