@@ -18,11 +18,11 @@ package org.jbpm.services.ejb.timer;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.ConcurrencyManagement;
 import javax.ejb.ConcurrencyManagementType;
@@ -55,6 +55,12 @@ public class EJBTimerScheduler {
 	
 	@Resource
 	private javax.ejb.TimerService timerService;
+	
+	@PostConstruct
+	public void setup() {
+	    // disable auto init of timers since ejb timer service supports persistence of timers
+	    System.setProperty("org.jbpm.rm.init.timer", "false");
+	}
 	
 	@SuppressWarnings("unchecked")
 	@Timeout
