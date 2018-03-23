@@ -49,7 +49,7 @@ public class EnumEvaluationConcurrentSessionsTest extends AbstractConcurrentTest
         super(enforcedJitting, serializeKieBase, sharedKieBase, false);
     }
 
-    @Test
+    @Test(timeout = 20000)
     public void testEnum2() throws InterruptedException {
         final String drl1 =
                 "import " + Product.class.getCanonicalName() + ";\n" +
