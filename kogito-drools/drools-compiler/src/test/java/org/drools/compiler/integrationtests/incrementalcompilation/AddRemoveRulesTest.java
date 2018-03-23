@@ -22,7 +22,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.assertj.core.api.Assertions;
@@ -53,7 +52,7 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
+public class AddRemoveRulesTest {
 
     public String ruleNormal1 = "rule 'rn1' "+
             "when "+
@@ -136,7 +135,7 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
     private InternalKnowledgeBase base = KnowledgeBaseFactory.newKnowledgeBase();
 
     public String getPrefix() {
-        return "package " + PKG_NAME_TEST + " \n"+
+        return "package " + TestUtil.RULES_PACKAGE_NAME + " \n"+
                 "import java.util.Map;\n"+
                 "import java.util.HashMap;\n"+
                 "import org.slf4j.Logger;\n"+
@@ -167,7 +166,7 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
     }
 
     public boolean deleteRule(final String name) {
-        this.base.removeRule(PKG_NAME_TEST, name);
+        this.base.removeRule(TestUtil.RULES_PACKAGE_NAME, name);
         return true;
     }
 
@@ -198,21 +197,21 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
         addRuleToEngine(rule5);
         addRuleToEngine(rule6);
 
-        assertTrue(getRulesCount(base) == 9);
+        assertTrue(TestUtil.getRulesCount(base) == 9);
 
         System.out.println("Primary remove");
         deleteRule("test6");
 
-        assertTrue(getRulesCount(base) == 8);
+        assertTrue(TestUtil.getRulesCount(base) == 8);
 
         addRuleToEngine(rule6);
 
-        assertTrue(getRulesCount(base) == 9);
+        assertTrue(TestUtil.getRulesCount(base) == 9);
 
         System.out.println("Secondary remove");
         deleteRule("test6");
 
-        assertTrue(getRulesCount(base) == 8);
+        assertTrue(TestUtil.getRulesCount(base) == 8);
     }
 
     @Test
@@ -257,7 +256,7 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
                 "";
 
 
-        final KnowledgeBuilder kbuilder = createKnowledgeBuilder(null, drl);
+        final KnowledgeBuilder kbuilder = TestUtil.createKnowledgeBuilder(null, drl);
         final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages(kbuilder.getKnowledgePackages());
 
@@ -282,7 +281,7 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
                 "\n" +
                 "";
 
-        final KnowledgeBuilder kbuilder = createKnowledgeBuilder(null, drl);
+        final KnowledgeBuilder kbuilder = TestUtil.createKnowledgeBuilder(null, drl);
         final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilder.getKnowledgePackages() );
 
@@ -329,7 +328,7 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
                 "\n" +
                 "";
 
-        final KnowledgeBuilder kbuilder = createKnowledgeBuilder(null, drl);
+        final KnowledgeBuilder kbuilder = TestUtil.createKnowledgeBuilder(null, drl);
         final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilder.getKnowledgePackages() );
 
@@ -501,7 +500,7 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
     }
 
     private void testAddRemoveWithReloadInSamePackage(final String drl) {
-        final KieSession knowledgeSession = buildSessionInSteps(drl, simpleRuleInTestPackage);
+        final KieSession knowledgeSession = TestUtil.buildSessionInSteps(drl, simpleRuleInTestPackage);
         final List list = new ArrayList();
         knowledgeSession.setGlobal("list", list);
 
@@ -521,7 +520,7 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
                 "then \n" +
                 "System.out.println('test same condition rule'); \n"+
                 "end";
-        final KnowledgeBuilder kbuilder = createKnowledgeBuilder(null, rule);
+        final KnowledgeBuilder kbuilder = TestUtil.createKnowledgeBuilder(null, rule);
         final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilder.getKnowledgePackages() );
         kbase.removeKiePackage(packageName);
@@ -548,7 +547,7 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
                 "then \n" +
                 "System.out.println('test same condition rule 2'); \n"+
                 "end";
-        final KieSession session = buildSessionInSteps( rule1, rule2 );
+        final KieSession session = TestUtil.buildSessionInSteps( rule1, rule2 );
         session.getKieBase().removeKiePackage(packageName);
         session.fireAllRules();
         final Map<String, Object> fact = new HashMap<String, Object>();
@@ -578,7 +577,7 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
                 "System.out.println('Child rule!'); \n"+
                 "end";
 
-        final KieSession session = buildSessionInSteps( rule1, rule2);
+        final KieSession session = TestUtil.buildSessionInSteps(true, rule1, rule2);
         session.fireAllRules();
         final Map<String, Object> fact = new HashMap<String, Object>();
         fact.put("name", "Michael");
@@ -588,7 +587,7 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
         try {
             session.getKieBase().removeRule(packageName, "parentRule");
             fail("A parent rule cannot be removed if one of its children is still there");
-        } catch (Exception e) {
+        } catch (final Exception e) {
             // OK
         }
     }
@@ -607,7 +606,7 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
                 "System.out.println('test rule 1'); \n"+
                 "end";
 
-        final KnowledgeBuilder kbuilder = createKnowledgeBuilder(null, rule1);
+        final KnowledgeBuilder kbuilder = TestUtil.createKnowledgeBuilder(null, rule1);
         final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilder.getKnowledgePackages() );
         kbase.removeKiePackage(packageName);
@@ -756,7 +755,7 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
                 " System.out.println('test in rule2'); \n"+
                 "end";
 
-        final KieSession session = buildSessionInSteps( rule1, rule2 );
+        final KieSession session = TestUtil.buildSessionInSteps( rule1, rule2 );
         session.getKieBase().removeKiePackage(packageName);
         session.getKieBase().removeKiePackage(packageName2);
         session.insert(new String());
@@ -777,7 +776,7 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
                 "end\n";
 
 
-        final KieSession session = buildSessionInSteps( rule1 );
+        final KieSession session = TestUtil.buildSessionInSteps( rule1 );
 
         session.setGlobal( "globalInt", new AtomicInteger(0) );
         session.insert( 1 );
@@ -789,7 +788,7 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
 
     @Test
     public void testRemoveExistsPopulatedByInitialFact() {
-        final String rule1 = "package " + PKG_NAME_TEST + ";" +
+        final String rule1 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                 "global java.util.List list\n" +
                 "rule R1 when\n" +
                 "    exists( Integer() and Integer() )\n" +
@@ -797,7 +796,7 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
                 " list.add('R1'); \n" +
                 "end\n";
 
-        final String rule2 = "package " + PKG_NAME_TEST + ";" +
+        final String rule2 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                 "global java.util.List list\n" +
                 "rule R2 \n" +
                 "when \n" +
@@ -807,16 +806,12 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
                 " list.add('R2'); \n" +
                 "end";
 
-        final List<TestOperation> testPlan =
-                AddRemoveTestBuilder.createInsertFactsRemoveFireTestPlan(
-                        rule1, rule2, AddRemoveTestBuilder.getDefaultFacts());
-        runAddRemoveTest(testPlan, null);
-
+        AddRemoveTestCases.insertFactsRemoveFire(rule1, rule2, null, TestUtil.getDefaultFacts());
     }
 
     @Test
     public void testAddSplitInSubnetwork() {
-        final String rule1 = "package " + PKG_NAME_TEST + ";" +
+        final String rule1 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                 "global java.util.List list\n" +
                 "rule R1 when\n" +
                 "    exists( Integer() and Integer() )\n" +
@@ -824,7 +819,7 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
                 " list.add('R1'); \n" +
                 "end\n";
 
-        final String rule2 = "package " + PKG_NAME_TEST + ";" +
+        final String rule2 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                 "global java.util.List list\n" +
                 "rule R2 \n" +
                 "when \n" +
@@ -834,426 +829,436 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
                 " list.add('R2'); \n" +
                 "end";
 
-        final List<TestOperation> testPlan =
-                AddRemoveTestBuilder.createInsertFactsRemoveFireTestPlan(
-                        rule1, rule2, AddRemoveTestBuilder.getDefaultFacts());
-        runAddRemoveTest(testPlan, null);
+        AddRemoveTestCases.insertFactsRemoveFire(rule1, rule2, null, TestUtil.getDefaultFacts());
     }
 
     @Test
     public void testRemoveWithSplitStartAtLianAndFollowedBySubNetworkWithSharing() {
-        final String rule1 = "package " + PKG_NAME_TEST + ";" +
+        final String rule1 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                 "global java.util.concurrent.atomic.AtomicInteger globalInt\n" +
                 "global java.util.List list\n" +
-                "rule " + RULE1_NAME + " \n" +
+                "rule " + TestUtil.RULE1_NAME + " \n" +
                 "when\n" +
                 "    $s : String()\n" +
                 "    Integer()\n" +
                 "    exists Integer() from globalInt.get()\n" +
                 "then\n" +
-                " list.add('" + RULE1_NAME + "'); \n" +
+                " list.add('" + TestUtil.RULE1_NAME + "'); \n" +
                 "end\n";
 
-        final String rule2 = "package " + PKG_NAME_TEST + ";" +
+        final String rule2 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                 "global java.util.List list\n" +
-                "rule " + RULE2_NAME + " \n" +
+                "rule " + TestUtil.RULE2_NAME + " \n" +
                 "when \n" +
                 "    $s1 : String()\n" +
                 "    $s2 : String()\n" +
                 "then \n" +
-                " list.add('" + RULE2_NAME + "'); \n" +
+                " list.add('" + TestUtil.RULE2_NAME + "'); \n" +
                 "end";
 
-        testRemoveWithSplitStartBasicTestSet(rule1, rule2, RULE1_NAME, RULE2_NAME);
+        testRemoveWithSplitStartBasicTestSet(rule1, rule2, TestUtil.RULE1_NAME, TestUtil.RULE2_NAME);
     }
 
     @Test
     public void testRemoveWithSplitStartBeforeJoinAndFollowedBySubNetworkWithSharing() {
         //  moved the split start to after the Integer
-        final String rule1 = "package " + PKG_NAME_TEST + ";" +
+        final String rule1 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                 "global java.util.concurrent.atomic.AtomicInteger globalInt\n" +
                 "global java.util.List list\n" +
-                "rule " + RULE1_NAME + " \n" +
+                "rule " + TestUtil.RULE1_NAME + " \n" +
                 "when\n" +
                 "    $s : String()\n" +
                 "    Integer()\n" +
                 "    exists Integer() from globalInt.get()\n" +
                 "then\n" +
-                " list.add('" + RULE1_NAME + "'); \n" +
+                " list.add('" + TestUtil.RULE1_NAME + "'); \n" +
                 "end\n";
 
-        final String rule2 = "package " + PKG_NAME_TEST + ";" +
+        final String rule2 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                 "global java.util.concurrent.atomic.AtomicInteger globalInt\n" +
                 "global java.util.List list\n" +
-                "rule " + RULE2_NAME + " \n" +
+                "rule " + TestUtil.RULE2_NAME + " \n" +
                 "when \n" +
                 "    $s : String()\n" +
                 "    exists Integer() from globalInt.get()\n" +
                 "    Integer()\n" +
                 "    String()\n" +
                 "then \n" +
-                " list.add('" + RULE2_NAME + "'); \n" +
+                " list.add('" + TestUtil.RULE2_NAME + "'); \n" +
                 "end";
 
-        testRemoveWithSplitStartBasicTestSet(rule1, rule2, RULE1_NAME, RULE2_NAME);
+        testRemoveWithSplitStartBasicTestSet(rule1, rule2, TestUtil.RULE1_NAME, TestUtil.RULE2_NAME);
     }
 
     @Test
     public void testRemoveWithSplitStartAtJoinAndFollowedBySubNetworkWithSharing() {
         //  moved the split start to after the Integer
-        final String rule1 = "package " + PKG_NAME_TEST + ";" +
+        final String rule1 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                 "global java.util.concurrent.atomic.AtomicInteger globalInt\n" +
                 "global java.util.List list\n" +
-                "rule " + RULE1_NAME + " \n" +
+                "rule " + TestUtil.RULE1_NAME + " \n" +
                 "when\n" +
                 "    $s : String()\n" +
                 "    Integer()\n" +
                 "    exists Integer() from globalInt.get()\n" +
                 "then\n" +
-                " list.add('" + RULE1_NAME + "'); \n" +
+                " list.add('" + TestUtil.RULE1_NAME + "'); \n" +
                 "end\n";
 
-        final String rule2 = "package " + PKG_NAME_TEST + ";" +
+        final String rule2 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                 "global java.util.concurrent.atomic.AtomicInteger globalInt\n" +
                 "global java.util.List list\n" +
-                "rule " + RULE2_NAME + " \n" +
+                "rule " + TestUtil.RULE2_NAME + " \n" +
                 "when \n" +
                 "    $s : String()\n" +
                 "    Integer()\n" +
                 "    String()\n" +
                 "then \n" +
-                " list.add('" + RULE2_NAME + "'); \n" +
+                " list.add('" + TestUtil.RULE2_NAME + "'); \n" +
                 "end";
 
-        testRemoveWithSplitStartBasicTestSet(rule1, rule2, RULE1_NAME, RULE2_NAME);
+        testRemoveWithSplitStartBasicTestSet(rule1, rule2, TestUtil.RULE1_NAME, TestUtil.RULE2_NAME);
     }
 
     @Test
     public void testRemoveWithSplitStartSameRules() {
-        final String rule1 = "package " + PKG_NAME_TEST + ";" +
+        final String rule1 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                 "global java.util.concurrent.atomic.AtomicInteger globalInt\n" +
                 "global java.util.List list\n" +
-                "rule " + RULE1_NAME + " \n" +
+                "rule " + TestUtil.RULE1_NAME + " \n" +
                 "when\n" +
                 "    $s : String()\n" +
                 "    Integer()\n" +
                 "    exists( Integer() and Integer() )\n" +
                 "then\n" +
-                " list.add('" + RULE1_NAME + "'); \n" +
+                " list.add('" + TestUtil.RULE1_NAME + "'); \n" +
                 "end\n";
 
-        final String rule2 = "package " + PKG_NAME_TEST + ";" +
+        final String rule2 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                 "global java.util.concurrent.atomic.AtomicInteger globalInt\n" +
                 "global java.util.List list\n" +
-                "rule " + RULE2_NAME + " \n" +
+                "rule " + TestUtil.RULE2_NAME + " \n" +
                 "when \n" +
                 "    $s : String()\n" +
                 "    Integer()\n" +
                 "    exists( Integer() and Integer() )\n" +
                 "then \n" +
-                " list.add('" + RULE2_NAME + "'); \n" +
+                " list.add('" + TestUtil.RULE2_NAME + "'); \n" +
                 "end";
 
-        testRemoveWithSplitStartBasicTestSet(rule1, rule2, RULE1_NAME, RULE2_NAME);
+        testRemoveWithSplitStartBasicTestSet(rule1, rule2, TestUtil.RULE1_NAME, TestUtil.RULE2_NAME);
     }
 
     @Test
     public void testRemoveWithSplitStartDoubledExistsConstraint() {
-        final String rule1 = "package " + PKG_NAME_TEST + ";" +
+        final String rule1 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                 "global java.util.concurrent.atomic.AtomicInteger globalInt\n" +
                 "global java.util.List list\n" +
-                "rule " + RULE1_NAME + " \n" +
+                "rule " + TestUtil.RULE1_NAME + " \n" +
                 "when\n" +
                 "    $s : String()\n" +
                 "    Integer()\n" +
                 "    exists( Integer() and Integer() )\n" +
                 "    exists( Integer() and Integer() )\n" +
                 "then\n" +
-                " list.add('" + RULE1_NAME + "'); \n" +
+                " list.add('" + TestUtil.RULE1_NAME + "'); \n" +
                 "end\n";
 
-        final String rule2 = "package " + PKG_NAME_TEST + ";" +
+        final String rule2 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                 "global java.util.concurrent.atomic.AtomicInteger globalInt\n" +
                 "global java.util.List list\n" +
-                "rule " + RULE2_NAME + " \n" +
+                "rule " + TestUtil.RULE2_NAME + " \n" +
                 "when \n" +
                 "    $s : String()\n" +
                 "    Integer()\n" +
                 "    exists( Integer() and Integer() )\n" +
                 "then \n" +
-                " list.add('" + RULE2_NAME + "'); \n" +
+                " list.add('" + TestUtil.RULE2_NAME + "'); \n" +
                 "end";
 
-        testRemoveWithSplitStartBasicTestSet(rule1, rule2, RULE1_NAME, RULE2_NAME);
+        testRemoveWithSplitStartBasicTestSet(rule1, rule2, TestUtil.RULE1_NAME, TestUtil.RULE2_NAME);
     }
 
     @Test
     public void testRemoveWithSplitStartDoubledIntegerConstraint() {
-        final String rule1 = "package " + PKG_NAME_TEST + ";" +
+        final String rule1 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                 "global java.util.concurrent.atomic.AtomicInteger globalInt\n" +
                 "global java.util.List list\n" +
-                "rule " + RULE1_NAME + " \n" +
+                "rule " + TestUtil.RULE1_NAME + " \n" +
                 "when\n" +
                 "    $s : String()\n" +
                 "    Integer()\n" +
                 "    exists( Integer() and Integer() )\n" +
                 "then\n" +
-                " list.add('" + RULE1_NAME + "'); \n" +
+                " list.add('" + TestUtil.RULE1_NAME + "'); \n" +
                 "end\n";
 
-        final String rule2 = "package " + PKG_NAME_TEST + ";" +
+        final String rule2 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                 "global java.util.concurrent.atomic.AtomicInteger globalInt\n" +
                 "global java.util.List list\n" +
-                "rule " + RULE2_NAME + " \n" +
+                "rule " + TestUtil.RULE2_NAME + " \n" +
                 "when \n" +
                 "    $s : String()\n" +
                 "    Integer()\n" +
                 "    Integer()\n" +
                 "    exists( Integer() and Integer() )\n" +
                 "then \n" +
-                " list.add('" + RULE2_NAME + "'); \n" +
+                " list.add('" + TestUtil.RULE2_NAME + "'); \n" +
                 "end";
 
-        testRemoveWithSplitStartBasicTestSet(rule1, rule2, RULE1_NAME, RULE2_NAME);
+        testRemoveWithSplitStartBasicTestSet(rule1, rule2, TestUtil.RULE1_NAME, TestUtil.RULE2_NAME);
     }
 
     @Test
     public void testRemoveWithSplitStartAfterSubnetwork() {
-        final String rule1 = "package " + PKG_NAME_TEST + ";" +
+        final String rule1 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                 "global java.util.concurrent.atomic.AtomicInteger globalInt\n" +
                 "global java.util.List list\n" +
-                "rule " + RULE1_NAME + " \n" +
+                "rule " + TestUtil.RULE1_NAME + " \n" +
                 "when\n" +
                 "    $s : String()\n" +
                 "    Integer()\n" +
                 "    exists( Integer() and Integer() )\n" +
                 "then\n" +
-                " list.add('" + RULE1_NAME + "'); \n" +
+                " list.add('" + TestUtil.RULE1_NAME + "'); \n" +
                 "end\n";
 
-        final String rule2 = "package " + PKG_NAME_TEST + ";" +
+        final String rule2 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                 "global java.util.concurrent.atomic.AtomicInteger globalInt\n" +
                 "global java.util.List list\n" +
-                "rule " + RULE2_NAME + " \n" +
+                "rule " + TestUtil.RULE2_NAME + " \n" +
                 "when \n" +
                 "    $s : String()\n" +
                 "    Integer()\n" +
                 "    exists( Integer() and Integer() )\n" +
                 "    String()\n" +
                 "then \n" +
-                " list.add('" + RULE2_NAME + "'); \n" +
+                " list.add('" + TestUtil.RULE2_NAME + "'); \n" +
                 "end";
 
-        testRemoveWithSplitStartBasicTestSet(rule1, rule2, RULE1_NAME, RULE2_NAME);
+        testRemoveWithSplitStartBasicTestSet(rule1, rule2, TestUtil.RULE1_NAME, TestUtil.RULE2_NAME);
     }
 
     @Test
     public void testRemoveWithSplitStartAfterSubnetwork3Rules() {
-        final String rule1 = "package " + PKG_NAME_TEST + ";" +
+        final String rule1 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                 "global java.util.concurrent.atomic.AtomicInteger globalInt\n" +
                 "global java.util.List list\n" +
-                "rule " + RULE1_NAME + " \n" +
+                "rule " + TestUtil.RULE1_NAME + " \n" +
                 "when\n" +
                 "    $s : String()\n" +
                 "    Integer()\n" +
                 "    exists( Integer() and Integer() )\n" +
                 "then\n" +
-                " list.add('" + RULE1_NAME + "'); \n" +
+                " list.add('" + TestUtil.RULE1_NAME + "'); \n" +
                 "end\n";
 
-        final String rule2 = "package " + PKG_NAME_TEST + ";" +
+        final String rule2 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                 "global java.util.concurrent.atomic.AtomicInteger globalInt\n" +
                 "global java.util.List list\n" +
-                "rule " + RULE2_NAME + " \n" +
+                "rule " + TestUtil.RULE2_NAME + " \n" +
                 "when \n" +
                 "    $s : String()\n" +
                 "    Integer()\n" +
                 "    exists( Integer() and Integer() )\n" +
                 "    String()\n" +
                 "then \n" +
-                " list.add('" + RULE2_NAME + "'); \n" +
+                " list.add('" + TestUtil.RULE2_NAME + "'); \n" +
                 "end";
 
-        final String rule3 = "package " + PKG_NAME_TEST + ";" +
+        final String rule3 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                 "global java.util.concurrent.atomic.AtomicInteger globalInt\n" +
                 "global java.util.List list\n" +
-                "rule " + RULE3_NAME + " \n" +
+                "rule " + TestUtil.RULE3_NAME + " \n" +
                 "when \n" +
                 "    $s : String()\n" +
                 "    Integer()\n" +
                 "    exists( Integer() and exists(Integer() and Integer()))\n" +
                 "    String()\n" +
                 "then \n" +
-                " list.add('" + RULE3_NAME + "'); \n" +
+                " list.add('" + TestUtil.RULE3_NAME + "'); \n" +
                 "end";
 
-        AddRemoveTestBuilder builder = new AddRemoveTestBuilder();
-        builder.addOperation(TestOperationType.CREATE_SESSION, new String[]{rule1, rule2, rule3})
-                .addOperation(TestOperationType.INSERT_FACTS, new Object[] {1, 2, "1"})
-                .addOperation(TestOperationType.FIRE_RULES)
-                .addOperation(TestOperationType.CHECK_RESULTS, new String[]{RULE1_NAME, RULE2_NAME, RULE3_NAME})
-                .addOperation(TestOperationType.REMOVE_RULES, new String[]{RULE1_NAME, RULE2_NAME, RULE3_NAME})
-                .addOperation(TestOperationType.FIRE_RULES)
-                .addOperation(TestOperationType.CHECK_RESULTS, new String[]{});
-
-        final Map<String, Object> additionalGlobals = new HashMap<String, Object>();
-        additionalGlobals.put("globalInt", new AtomicInteger(0));
-
-        runAddRemoveTest(builder.build(), additionalGlobals);
+        final KieSession kieSession = TestUtil.createSession(rule1, rule2, rule3);
+        try {
+            final List resultsList = new ArrayList();
+            kieSession.setGlobal("list", resultsList);
+            kieSession.setGlobal("globalInt", new AtomicInteger(0));
+            TestUtil.insertFacts(kieSession, 1, 2, "1");
+            kieSession.fireAllRules();
+            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME, TestUtil.RULE2_NAME, TestUtil.RULE3_NAME);
+            resultsList.clear();
+            TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE1_NAME, TestUtil.RULE2_NAME, TestUtil.RULE3_NAME);
+            kieSession.fireAllRules();
+            Assertions.assertThat(resultsList).isEmpty();
+        } finally {
+            kieSession.dispose();
+        }
     }
 
     @Test
     public void testRemoveWithSplitStartAfterSubnetwork3RulesAddOneAfterAnother() {
-        final String rule1 = "package " + PKG_NAME_TEST + ";" +
+        final String rule1 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                 "global java.util.concurrent.atomic.AtomicInteger globalInt\n" +
                 "global java.util.List list\n" +
-                "rule " + RULE1_NAME + " \n" +
+                "rule " + TestUtil.RULE1_NAME + " \n" +
                 "when\n" +
                 "    $s : String()\n" +
                 "    Integer()\n" +
                 "    exists( Integer() and Integer() )\n" +
                 "then\n" +
-                " list.add('" + RULE1_NAME + "'); \n" +
+                " list.add('" + TestUtil.RULE1_NAME + "'); \n" +
                 "end\n";
 
-        final String rule2 = "package " + PKG_NAME_TEST + ";" +
+        final String rule2 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                 "global java.util.concurrent.atomic.AtomicInteger globalInt\n" +
                 "global java.util.List list\n" +
-                "rule " + RULE2_NAME + " \n" +
+                "rule " + TestUtil.RULE2_NAME + " \n" +
                 "when \n" +
                 "    $s : String()\n" +
                 "    Integer()\n" +
                 "    exists( Integer() and Integer() )\n" +
                 "    String()\n" +
                 "then \n" +
-                " list.add('" + RULE2_NAME + "'); \n" +
+                " list.add('" + TestUtil.RULE2_NAME + "'); \n" +
                 "end";
 
-        final String rule3 = "package " + PKG_NAME_TEST + ";" +
+        final String rule3 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                 "global java.util.concurrent.atomic.AtomicInteger globalInt\n" +
                 "global java.util.List list\n" +
-                "rule " + RULE3_NAME + " \n" +
+                "rule " + TestUtil.RULE3_NAME + " \n" +
                 "when \n" +
                 "    $s : String()\n" +
                 "    Integer()\n" +
                 "    exists( Integer() and exists(Integer() and Integer()))\n" +
                 "    String()\n" +
                 "then \n" +
-                " list.add('" + RULE3_NAME + "'); \n" +
+                " list.add('" + TestUtil.RULE3_NAME + "'); \n" +
                 "end";
 
-        AddRemoveTestBuilder builder = new AddRemoveTestBuilder();
-        builder.addOperation(TestOperationType.CREATE_SESSION, new String[]{rule1})
-                .addOperation(TestOperationType.INSERT_FACTS, new Object[] {1, 1, "1"})
-                .addOperation(TestOperationType.FIRE_RULES)
-                .addOperation(TestOperationType.CHECK_RESULTS, new String[]{RULE1_NAME})
-                .addOperation(TestOperationType.ADD_RULES, new String[]{rule2})
-                .addOperation(TestOperationType.FIRE_RULES)
-                .addOperation(TestOperationType.CHECK_RESULTS, new String[]{RULE2_NAME})
-                .addOperation(TestOperationType.ADD_RULES, new String[]{rule3})
-                .addOperation(TestOperationType.FIRE_RULES)
-                .addOperation(TestOperationType.CHECK_RESULTS, new String[]{RULE3_NAME})
-                .addOperation(TestOperationType.REMOVE_RULES, new String[]{RULE1_NAME, RULE2_NAME, RULE3_NAME})
-                .addOperation(TestOperationType.FIRE_RULES)
-                .addOperation(TestOperationType.CHECK_RESULTS, new String[]{});
+        final KieSession kieSession = TestUtil.createSession(rule1);
+        try {
+            final List resultsList = new ArrayList();
+            kieSession.setGlobal("list", resultsList);
+            kieSession.setGlobal("globalInt", new AtomicInteger(0));
+            TestUtil.insertFacts(kieSession, 1, 1, "1");
+            kieSession.fireAllRules();
+            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME);
+            resultsList.clear();
 
-        final Map<String, Object> additionalGlobals = new HashMap<String, Object>();
-        additionalGlobals.put("globalInt", new AtomicInteger(0));
+            TestUtil.addRules(kieSession, rule2);
+            kieSession.fireAllRules();
+            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE2_NAME);
+            resultsList.clear();
 
-        runAddRemoveTest(builder.build(), additionalGlobals);
+            TestUtil.addRules(kieSession, rule3);
+            kieSession.fireAllRules();
+            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE3_NAME);
+            resultsList.clear();
+
+            TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE1_NAME, TestUtil.RULE2_NAME, TestUtil.RULE3_NAME);
+            kieSession.fireAllRules();
+            Assertions.assertThat(resultsList).isEmpty();
+        } finally {
+            kieSession.dispose();
+        }
     }
 
     @Test
     public void testRemoveWithSplitStartAfterSubnetwork3RulesReaddRule() {
-        final String rule1 = "package " + PKG_NAME_TEST + ";" +
+        final String rule1 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                              "global java.util.List list\n" +
-                             "rule " + RULE1_NAME + " \n" +
+                             "rule " + TestUtil.RULE1_NAME + " \n" +
                              "when\n" +
                              "    $s : String()\n" +
                              "    Integer()\n" +
                              "    exists( Integer() and Integer() )\n" +
                              "then\n" +
-                             " list.add('" + RULE1_NAME + "'); \n" +
+                             " list.add('" + TestUtil.RULE1_NAME + "'); \n" +
                              "end\n";
 
-        final String rule2 = "package " + PKG_NAME_TEST + ";" +
+        final String rule2 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                              "global java.util.List list\n" +
-                             "rule " + RULE2_NAME + " \n" +
+                             "rule " + TestUtil.RULE2_NAME + " \n" +
                              "when \n" +
                              "    $s : String()\n" +
                              "    Integer()\n" +
                              "    exists( Integer() and Integer() )\n" +
                              "    String()\n" +
                              "then \n" +
-                             " list.add('" + RULE2_NAME + "'); \n" +
+                             " list.add('" + TestUtil.RULE2_NAME + "'); \n" +
                              "end";
 
-        final String rule3 = "package " + PKG_NAME_TEST + ";" +
+        final String rule3 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                              "global java.util.List list\n" +
-                             "rule " + RULE3_NAME + " \n" +
+                             "rule " + TestUtil.RULE3_NAME + " \n" +
                              "when \n" +
                              "    $s : String()\n" +
                              "    Integer()\n" +
                              "    exists( Integer() and exists(Integer() and Integer()))\n" +
                              "    String()\n" +
                              "then \n" +
-                             " list.add('" + RULE3_NAME + "'); \n" +
+                             " list.add('" + TestUtil.RULE3_NAME + "'); \n" +
                              "end";
 
-        AddRemoveTestBuilder builder = new AddRemoveTestBuilder();
-        builder.addOperation(TestOperationType.CREATE_SESSION, new String[]{rule1, rule2, rule3})
-               .addOperation(TestOperationType.INSERT_FACTS, new Object[] {1, 2, "1"})
-               .addOperation(TestOperationType.REMOVE_RULES, new String[]{RULE2_NAME})
-               .addOperation(TestOperationType.FIRE_RULES)
-               .addOperation(TestOperationType.CHECK_RESULTS, new String[]{RULE1_NAME, RULE3_NAME})
-               .addOperation(TestOperationType.ADD_RULES, new String[]{rule2})
-               .addOperation(TestOperationType.FIRE_RULES)
-               .addOperation(TestOperationType.CHECK_RESULTS, new String[]{RULE2_NAME});
-
-        runAddRemoveTest(builder.build(), new HashMap<String, Object>());
+        final KieSession kieSession = TestUtil.createSession(rule1, rule2, rule3);
+        try {
+            final List resultsList = new ArrayList();
+            kieSession.setGlobal("list", resultsList);
+            TestUtil.insertFacts(kieSession, 1, 2, "1");
+            TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE2_NAME);
+            kieSession.fireAllRules();
+            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME, TestUtil.RULE3_NAME);
+            resultsList.clear();
+            TestUtil.addRules(kieSession, rule2);
+            kieSession.fireAllRules();
+            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE2_NAME);
+        } finally {
+            kieSession.dispose();
+        }
     }
 
     String[] getRules1Pattern() {
-        final String rule1 = "package " + PKG_NAME_TEST + ";" +
+        final String rule1 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                              "global java.util.List list\n" +
-                             "rule " + RULE1_NAME + " \n" +
+                             "rule " + TestUtil.RULE1_NAME + " \n" +
                              "when\n" +
                              "    $i : Integer(this>1)\n" +
                              "then\n" +
-                             " list.add('" + RULE1_NAME + "'); \n" +
+                             " list.add('" + TestUtil.RULE1_NAME + "'); \n" +
                              "end\n";
 
-        final String rule2 = "package " + PKG_NAME_TEST + ";" +
+        final String rule2 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                              "global java.util.List list\n" +
-                             "rule " + RULE2_NAME + " \n" +
+                             "rule " + TestUtil.RULE2_NAME + " \n" +
                              "when \n" +
                              "    $i : Integer(this>2)\n" +
                              "then \n" +
-                             " list.add('" + RULE2_NAME + "'); \n" +
+                             " list.add('" + TestUtil.RULE2_NAME + "'); \n" +
                              "end";
 
         return new String[] { rule1, rule2 };
     }
 
     String[] getRules2Pattern() {
-        final String rule1 = "package " + PKG_NAME_TEST + ";" +
+        final String rule1 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                              "global java.util.List list\n" +
-                             "rule " + RULE1_NAME + " \n" +
+                             "rule " + TestUtil.RULE1_NAME + " \n" +
                              "when\n" +
                              "    $i1 : Integer(this>1)\n" +
                              "    $i2 : Integer(this>1)\n" +
                              "then\n" +
-                             " list.add('" + RULE1_NAME + "'); \n" +
+                             " list.add('" + TestUtil.RULE1_NAME + "'); \n" +
                              "end\n";
 
-        final String rule2 = "package " + PKG_NAME_TEST + ";" +
+        final String rule2 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                              "global java.util.List list\n" +
-                             "rule " + RULE2_NAME + " \n" +
+                             "rule " + TestUtil.RULE2_NAME + " \n" +
                              "when \n" +
                              "    $i1 : Integer(this>1)\n" +
                              "    $i2 : Integer(this>2)\n" +
                              "then \n" +
-                             " list.add('" + RULE2_NAME + "'); \n" +
+                             " list.add('" + TestUtil.RULE2_NAME + "'); \n" +
                              "end";
 
         return new String[] { rule1, rule2 };
@@ -1261,120 +1266,131 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
 
     @Test
     public void testRemoveRuleChangeFHFirstLeftTuple() {
-        String[] rules = getRules1Pattern();
+        final String[] rules = getRules1Pattern();
 
-        AddRemoveTestBuilder builder = new AddRemoveTestBuilder();
-        builder.addOperation(TestOperationType.CREATE_SESSION, new String[]{rules[0], rules[1]})
-               .addOperation(TestOperationType.INSERT_FACTS, new Object[] {3})
-               .addOperation(TestOperationType.FIRE_RULES)
-               .addOperation(TestOperationType.CHECK_RESULTS, new String[]{RULE1_NAME, RULE2_NAME})
-               .addOperation(TestOperationType.REMOVE_RULES, new String[]{RULE1_NAME})
-               .addOperation(TestOperationType.FIRE_RULES);
+        final KieSession kieSession = TestUtil.createSession(rules);
+        try {
+            final List resultsList = new ArrayList();
+            kieSession.setGlobal("list", resultsList);
+            TestUtil.insertFacts(kieSession, 3);
+            kieSession.fireAllRules();
+            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME, TestUtil.RULE2_NAME);
+            resultsList.clear();
+            TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE1_NAME);
+            kieSession.fireAllRules();
 
-        final Map<String, Object> additionalGlobals = new HashMap<String, Object>();
-
-        KieSession ksession = runAddRemoveTest(builder.build(), additionalGlobals);
-        InternalFactHandle  fh1 = (InternalFactHandle) ksession.getFactHandle(3);
-        assertNotNull( fh1.getFirstLeftTuple() );
+            final InternalFactHandle  fh1 = (InternalFactHandle) kieSession.getFactHandle(3);
+            assertNotNull( fh1.getFirstLeftTuple() );
+        } finally {
+            kieSession.dispose();
+        }
     }
 
     @Test
     public void testRemoveRuleChangeFHLastLeftTuple() {
-        String[] rules = getRules1Pattern();
+        final String[] rules = getRules1Pattern();
 
-        AddRemoveTestBuilder builder = new AddRemoveTestBuilder();
-        builder.addOperation(TestOperationType.CREATE_SESSION, new String[]{rules[0], rules[1]})
-               .addOperation(TestOperationType.INSERT_FACTS, new Object[] {3})
-               .addOperation(TestOperationType.FIRE_RULES)
-               .addOperation(TestOperationType.CHECK_RESULTS, new String[]{RULE1_NAME, RULE2_NAME})
-               .addOperation(TestOperationType.REMOVE_RULES, new String[]{RULE2_NAME})
-               .addOperation(TestOperationType.FIRE_RULES);
+        final KieSession kieSession = TestUtil.createSession(rules);
+        try {
+            final List resultsList = new ArrayList();
+            kieSession.setGlobal("list", resultsList);
+            TestUtil.insertFacts(kieSession, 3);
+            kieSession.fireAllRules();
+            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME, TestUtil.RULE2_NAME);
+            resultsList.clear();
+            TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE2_NAME);
+            kieSession.fireAllRules();
 
-        final Map<String, Object> additionalGlobals = new HashMap<String, Object>();
-
-        KieSession ksession = runAddRemoveTest(builder.build(), additionalGlobals);
-        InternalFactHandle  fh1 = (InternalFactHandle) ksession.getFactHandle(3);
+            final InternalFactHandle  fh1 = (InternalFactHandle) kieSession.getFactHandle(3);
+            assertNotNull( fh1.getFirstLeftTuple() );
+        } finally {
+            kieSession.dispose();
+        }
     }
 
     @Test
     public void testRemoveRightTupleThatWasFirst() {
-        String[] rules = getRules2Pattern();
+        final String[] rules = getRules2Pattern();
 
-        AddRemoveTestBuilder builder = new AddRemoveTestBuilder();
-        builder.addOperation(TestOperationType.CREATE_SESSION, new String[]{rules[0], rules[1]})
-               .addOperation(TestOperationType.INSERT_FACTS, new Object[] {3})
-               .addOperation(TestOperationType.FIRE_RULES)
-               .addOperation(TestOperationType.CHECK_RESULTS, new String[]{RULE1_NAME, RULE2_NAME})
-               .addOperation(TestOperationType.REMOVE_RULES, new String[]{RULE1_NAME})
-               .addOperation(TestOperationType.FIRE_RULES);
+        final KieSession kieSession = TestUtil.createSession(rules);
+        try {
+            final List resultsList = new ArrayList();
+            kieSession.setGlobal("list", resultsList);
+            TestUtil.insertFacts(kieSession, 3);
+            kieSession.fireAllRules();
+            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME, TestUtil.RULE2_NAME);
+            resultsList.clear();
+            TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE1_NAME);
+            kieSession.fireAllRules();
 
-        final Map<String, Object> additionalGlobals = new HashMap<String, Object>();
-
-        KieSession ksession = runAddRemoveTest(builder.build(), additionalGlobals);
-        Map<String, Rule>        rulesMap = rulestoMap(ksession.getKieBase());
-
-        InternalFactHandle  fh1 = (InternalFactHandle) ksession.getFactHandle(3);
-        assertNotNull( fh1.getFirstRightTuple() );
-        assertEquals( 1, fh1.getFirstRightTuple().getTupleSink().getAssociatedRuleSize() );
-        assertTrue( fh1.getFirstRightTuple().getTupleSink().isAssociatedWith(rulesMap.get(RULE2_NAME)));
+            final Map<String, Rule> rulesMap = rulestoMap(kieSession.getKieBase());
+            final InternalFactHandle  fh1 = (InternalFactHandle) kieSession.getFactHandle(3);
+            assertNotNull( fh1.getFirstRightTuple() );
+            assertEquals( 1, fh1.getFirstRightTuple().getTupleSink().getAssociatedRuleSize() );
+            assertTrue( fh1.getFirstRightTuple().getTupleSink().isAssociatedWith(rulesMap.get(TestUtil.RULE2_NAME)));
+        } finally {
+            kieSession.dispose();
+        }
     }
 
     @Test
     public void testRemoveRightTupleThatWasLast() {
-        String[] rules = getRules2Pattern();
+        final String[] rules = getRules2Pattern();
 
-        AddRemoveTestBuilder builder = new AddRemoveTestBuilder();
-        builder.addOperation(TestOperationType.CREATE_SESSION, new String[]{rules[0], rules[1]})
-               .addOperation(TestOperationType.INSERT_FACTS, new Object[] {3})
-               .addOperation(TestOperationType.FIRE_RULES)
-               .addOperation(TestOperationType.CHECK_RESULTS, new String[]{RULE1_NAME, RULE2_NAME})
-               .addOperation(TestOperationType.REMOVE_RULES, new String[]{RULE2_NAME})
-               .addOperation(TestOperationType.FIRE_RULES);
+        final KieSession kieSession = TestUtil.createSession(rules);
+        try {
+            final List resultsList = new ArrayList();
+            kieSession.setGlobal("list", resultsList);
+            TestUtil.insertFacts(kieSession, 3);
+            kieSession.fireAllRules();
+            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME, TestUtil.RULE2_NAME);
+            resultsList.clear();
+            TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE2_NAME);
+            kieSession.fireAllRules();
 
-        final Map<String, Object> additionalGlobals = new HashMap<String, Object>();
-
-        KieSession ksession = runAddRemoveTest(builder.build(), additionalGlobals);
-        Map<String, Rule>        rulesMap = rulestoMap(ksession.getKieBase());
-
-        InternalFactHandle  fh1 = (InternalFactHandle) ksession.getFactHandle(3);
-        assertNotNull( fh1.getFirstRightTuple() );
-        assertEquals( 1, fh1.getFirstRightTuple().getTupleSink().getAssociatedRuleSize() );
-        assertTrue( fh1.getFirstRightTuple().getTupleSink().isAssociatedWith(rulesMap.get(RULE1_NAME)));
+            final Map<String, Rule> rulesMap = rulestoMap(kieSession.getKieBase());
+            final InternalFactHandle  fh1 = (InternalFactHandle) kieSession.getFactHandle(3);
+            assertNotNull( fh1.getFirstRightTuple() );
+            assertEquals( 1, fh1.getFirstRightTuple().getTupleSink().getAssociatedRuleSize() );
+            assertTrue( fh1.getFirstRightTuple().getTupleSink().isAssociatedWith(rulesMap.get(TestUtil.RULE1_NAME)));
+        } finally {
+            kieSession.dispose();
+        }
     }
 
 
     String[] getRules3Pattern() {
-        final String rule1 = "package " + PKG_NAME_TEST + ";" +
+        final String rule1 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                              "global java.util.List list\n" +
-                             "rule " + RULE1_NAME + " \n" +
+                             "rule " + TestUtil.RULE1_NAME + " \n" +
                              "when\n" +
                              "    $i1 : Integer(this>1)\n" +
                              "    $i2 : Integer(this>1)\n" +
                              "    $i3 : Integer(this>0)\n" +
                              "then\n" +
-                             " list.add('" + RULE1_NAME + "'); \n" +
+                             " list.add('" + TestUtil.RULE1_NAME + "'); \n" +
                              "end\n";
 
-        final String rule2 = "package " + PKG_NAME_TEST + ";" +
+        final String rule2 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                              "global java.util.List list\n" +
-                             "rule " + RULE2_NAME + " \n" +
+                             "rule " + TestUtil.RULE2_NAME + " \n" +
                              "when \n" +
                              "    $i1 : Integer(this>1)\n" +
                              "    $i2 : Integer(this>1)\n" +
                              "    $i3 : Integer(this>1)\n" +
                              "then \n" +
-                             " list.add('" + RULE2_NAME + "'); \n" +
+                             " list.add('" + TestUtil.RULE2_NAME + "'); \n" +
                              "end";
 
-        final String rule3 = "package " + PKG_NAME_TEST + ";" +
+        final String rule3 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                              "global java.util.List list\n" +
-                             "rule " + RULE3_NAME + " \n" +
+                             "rule " + TestUtil.RULE3_NAME + " \n" +
                              "when \n" +
                              "    $i1 : Integer(this>1)\n" +
                              "    $i2 : Integer(this>1)\n" +
                              "    $i3 : Integer(this>2)\n" +
                              "then \n" +
-                             " list.add('" + RULE3_NAME + "'); \n" +
+                             " list.add('" + TestUtil.RULE3_NAME + "'); \n" +
                              "end";
 
         return new String[] { rule1, rule2, rule3 };
@@ -1382,227 +1398,238 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
 
     @Test
     public void testRemoveChildLeftTupleThatWasFirst() {
-        String[] rules = getRules3Pattern();
+        final String[] rules = getRules3Pattern();
 
-        AddRemoveTestBuilder builder = new AddRemoveTestBuilder();
-        builder.addOperation(TestOperationType.CREATE_SESSION, new String[]{rules[0], rules[1]})
-               .addOperation(TestOperationType.INSERT_FACTS, new Object[] {3})
-               .addOperation(TestOperationType.FIRE_RULES)
-               .addOperation(TestOperationType.CHECK_RESULTS, new String[]{RULE1_NAME, RULE2_NAME})
-               .addOperation(TestOperationType.REMOVE_RULES, new String[]{RULE1_NAME})
-               .addOperation(TestOperationType.FIRE_RULES);
+        final KieSession kieSession = TestUtil.createSession(rules[0], rules[1]);
+        try {
+            final List resultsList = new ArrayList();
+            kieSession.setGlobal("list", resultsList);
+            TestUtil.insertFacts(kieSession, 3);
+            kieSession.fireAllRules();
+            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME, TestUtil.RULE2_NAME);
+            resultsList.clear();
+            TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE1_NAME);
+            kieSession.fireAllRules();
 
-        final Map<String, Object> additionalGlobals = new HashMap<String, Object>();
-
-        KieSession ksession = runAddRemoveTest(builder.build(), additionalGlobals);
-        Map<String, Rule>        rulesMap = rulestoMap(ksession.getKieBase());
-
-        InternalFactHandle  fh1 = (InternalFactHandle) ksession.getFactHandle(3);
-        LeftTuple lt = fh1.getFirstLeftTuple().getFirstChild().getFirstChild();
-        assertSame(lt, fh1.getFirstLeftTuple().getFirstChild().getLastChild());
-        assertNull( lt.getPeer() );
-        assertEquals( 1, lt.getTupleSink().getAssociatedRuleSize() );
-        assertTrue( lt.getTupleSink().isAssociatedWith(rulesMap.get(RULE2_NAME)));
+            final Map<String, Rule> rulesMap = rulestoMap(kieSession.getKieBase());
+            final InternalFactHandle  fh1 = (InternalFactHandle) kieSession.getFactHandle(3);
+            final LeftTuple lt = fh1.getFirstLeftTuple().getFirstChild().getFirstChild();
+            assertSame(lt, fh1.getFirstLeftTuple().getFirstChild().getLastChild());
+            assertNull( lt.getPeer() );
+            assertEquals( 1, lt.getTupleSink().getAssociatedRuleSize() );
+            assertTrue( lt.getTupleSink().isAssociatedWith(rulesMap.get(TestUtil.RULE2_NAME)));
+        } finally {
+            kieSession.dispose();
+        }
     }
 
     @Test
     public void testRemoveChildLeftTupleThatWasLast() {
-        String[] rules = getRules3Pattern();
+        final String[] rules = getRules3Pattern();
 
-        AddRemoveTestBuilder builder = new AddRemoveTestBuilder();
-        builder.addOperation(TestOperationType.CREATE_SESSION, new String[]{rules[0], rules[1]})
-               .addOperation(TestOperationType.INSERT_FACTS, new Object[] {3})
-               .addOperation(TestOperationType.FIRE_RULES)
-               .addOperation(TestOperationType.CHECK_RESULTS, new String[]{RULE1_NAME, RULE2_NAME})
-               .addOperation(TestOperationType.REMOVE_RULES, new String[]{RULE2_NAME})
-               .addOperation(TestOperationType.FIRE_RULES);
+        final KieSession kieSession = TestUtil.createSession(rules[0], rules[1]);
+        try {
+            final List resultsList = new ArrayList();
+            kieSession.setGlobal("list", resultsList);
+            TestUtil.insertFacts(kieSession, 3);
+            kieSession.fireAllRules();
+            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME, TestUtil.RULE2_NAME);
+            resultsList.clear();
+            TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE2_NAME);
+            kieSession.fireAllRules();
 
-        final Map<String, Object> additionalGlobals = new HashMap<String, Object>();
-
-        KieSession ksession = runAddRemoveTest(builder.build(), additionalGlobals);
-        Map<String, Rule>        rulesMap = rulestoMap(ksession.getKieBase());
-
-        InternalFactHandle  fh1 = (InternalFactHandle) ksession.getFactHandle(3);
-        LeftTuple lt = fh1.getFirstLeftTuple().getFirstChild().getFirstChild();
-        assertSame(lt, fh1.getFirstLeftTuple().getFirstChild().getLastChild());
-
-        assertNull( lt.getPeer() );
-        assertEquals( 1, lt.getTupleSink().getAssociatedRuleSize() );
-        assertTrue( lt.getTupleSink().isAssociatedWith(rulesMap.get(RULE1_NAME)));
+            final Map<String, Rule> rulesMap = rulestoMap(kieSession.getKieBase());
+            final InternalFactHandle  fh1 = (InternalFactHandle) kieSession.getFactHandle(3);
+            final LeftTuple lt = fh1.getFirstLeftTuple().getFirstChild().getFirstChild();
+            assertSame(lt, fh1.getFirstLeftTuple().getFirstChild().getLastChild());
+            assertNull( lt.getPeer() );
+            assertEquals( 1, lt.getTupleSink().getAssociatedRuleSize() );
+            assertTrue( lt.getTupleSink().isAssociatedWith(rulesMap.get(TestUtil.RULE1_NAME)));
+        } finally {
+            kieSession.dispose();
+        }
     }
 
     @Test
     public void testRemoveChildLeftTupleThatWasMiddle() {
-        String[] rules = getRules3Pattern();
+        final String[] rules = getRules3Pattern();
 
-        AddRemoveTestBuilder builder = new AddRemoveTestBuilder();
-        builder.addOperation(TestOperationType.CREATE_SESSION, new String[]{rules[0], rules[1], rules[2]})
-               .addOperation(TestOperationType.INSERT_FACTS, new Object[] {3})
-               .addOperation(TestOperationType.FIRE_RULES)
-               .addOperation(TestOperationType.CHECK_RESULTS, new String[]{RULE1_NAME, RULE2_NAME, RULE3_NAME})
-               .addOperation(TestOperationType.REMOVE_RULES, new String[]{RULE2_NAME})
-               .addOperation(TestOperationType.FIRE_RULES);
+        final KieSession kieSession = TestUtil.createSession(rules);
+        try {
+            final List resultsList = new ArrayList();
+            kieSession.setGlobal("list", resultsList);
+            TestUtil.insertFacts(kieSession, 3);
+            kieSession.fireAllRules();
+            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME, TestUtil.RULE2_NAME, TestUtil.RULE3_NAME);
+            resultsList.clear();
+            TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE2_NAME);
+            kieSession.fireAllRules();
 
-        final Map<String, Object> additionalGlobals = new HashMap<String, Object>();
+            final Map<String, Rule> rulesMap = rulestoMap(kieSession.getKieBase());
+            final InternalFactHandle  fh1 = (InternalFactHandle) kieSession.getFactHandle(3);
+            final LeftTuple lt = fh1.getFirstLeftTuple().getFirstChild();
+            assertSame(lt, fh1.getFirstLeftTuple().getLastChild());
+            assertEquals( 1, lt.getTupleSink().getAssociatedRuleSize() );
+            assertTrue( lt.getTupleSink().isAssociatedWith(rulesMap.get(TestUtil.RULE1_NAME)));
 
-        KieSession ksession = runAddRemoveTest(builder.build(), additionalGlobals);
-        Map<String, Rule>        rulesMap = rulestoMap(ksession.getKieBase());
-
-        InternalFactHandle  fh1 = (InternalFactHandle) ksession.getFactHandle(3);
-        LeftTuple lt = fh1.getFirstLeftTuple().getFirstChild();
-        assertSame(lt, fh1.getFirstLeftTuple().getLastChild());
-        assertEquals( 1, lt.getTupleSink().getAssociatedRuleSize() );
-        assertTrue( lt.getTupleSink().isAssociatedWith(rulesMap.get(RULE1_NAME)));
-
-        LeftTuple peer = lt.getPeer();
-        assertEquals( 1, peer.getTupleSink().getAssociatedRuleSize() );
-        assertTrue( peer.getTupleSink().isAssociatedWith(rulesMap.get(RULE3_NAME)));
+            final LeftTuple peer = lt.getPeer();
+            assertEquals( 1, peer.getTupleSink().getAssociatedRuleSize() );
+            assertTrue( peer.getTupleSink().isAssociatedWith(rulesMap.get(TestUtil.RULE3_NAME)));
+        } finally {
+            kieSession.dispose();
+        }
     }
 
     @Test
     public void testRemoveChildLeftTupleThatWasFirstWithMultipleData() {
-        String[] rules = getRules3Pattern();
+        final String[] rules = getRules3Pattern();
 
-        AddRemoveTestBuilder builder = new AddRemoveTestBuilder();
-        builder.addOperation(TestOperationType.CREATE_SESSION, new String[]{rules[0], rules[1]})
-               .addOperation(TestOperationType.INSERT_FACTS, new Object[] {3, 4, 5})
-               .addOperation(TestOperationType.FIRE_RULES)
-               .addOperation(TestOperationType.CHECK_RESULTS, new String[]{RULE1_NAME, RULE2_NAME})
-               .addOperation(TestOperationType.REMOVE_RULES, new String[]{RULE1_NAME})
-               .addOperation(TestOperationType.FIRE_RULES);
+        final KieSession kieSession = TestUtil.createSession(rules[0], rules[1]);
+        try {
+            final List resultsList = new ArrayList();
+            kieSession.setGlobal("list", resultsList);
+            TestUtil.insertFacts(kieSession, 3, 4, 5);
+            kieSession.fireAllRules();
+            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME, TestUtil.RULE2_NAME);
+            resultsList.clear();
+            TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE1_NAME);
+            kieSession.fireAllRules();
 
-        final Map<String, Object> additionalGlobals = new HashMap<String, Object>();
+            final Map<String, Rule>        rulesMap = rulestoMap(kieSession.getKieBase());
 
-        KieSession ksession = runAddRemoveTest(builder.build(), additionalGlobals);
-        Map<String, Rule>        rulesMap = rulestoMap(ksession.getKieBase());
+            final InternalFactHandle  fh1 = (InternalFactHandle) kieSession.getFactHandle(3);
+            final InternalFactHandle  fh2 = (InternalFactHandle) kieSession.getFactHandle(4);
+            final InternalFactHandle  fh3 = (InternalFactHandle) kieSession.getFactHandle(5);
+            final LeftTuple lt1 = fh1.getFirstLeftTuple();
 
-        InternalFactHandle  fh1 = (InternalFactHandle) ksession.getFactHandle(3);
-        InternalFactHandle  fh2 = (InternalFactHandle) ksession.getFactHandle(4);
-        InternalFactHandle  fh3 = (InternalFactHandle) ksession.getFactHandle(5);
-        LeftTuple lt1 = fh1.getFirstLeftTuple();
+            final LeftTuple lt1_1 = lt1.getFirstChild();
+            final LeftTuple lt1_2 = lt1_1.getHandleNext();
+            final LeftTuple lt1_3= lt1_2.getHandleNext();
+            assertNotNull( lt1_1 );
+            assertNotNull( lt1_2 );
+            assertNotNull( lt1_3 );
+            assertSame(lt1_3, lt1.getLastChild());
 
-        LeftTuple lt1_1 = lt1.getFirstChild();
-        LeftTuple lt1_2 = lt1_1.getHandleNext();
-        LeftTuple lt1_3= lt1_2.getHandleNext();
-        assertNotNull( lt1_1 );
-        assertNotNull( lt1_2 );
-        assertNotNull( lt1_3 );
-        assertSame(lt1_3, lt1.getLastChild());
+            assertSame(lt1_2, lt1_3.getHandlePrevious() );
+            assertSame(lt1_1, lt1_2.getHandlePrevious() );
 
-        assertSame(lt1_2, lt1_3.getHandlePrevious() );
-        assertSame(lt1_1, lt1_2.getHandlePrevious() );
+            assertEquals( 1, lt1_1.getTupleSink().getAssociatedRuleSize() );
+            assertTrue( lt1_1.getTupleSink().isAssociatedWith(rulesMap.get(TestUtil.RULE2_NAME)));
+            assertNull( lt1_1.getPeer() );
 
-        assertEquals( 1, lt1_1.getTupleSink().getAssociatedRuleSize() );
-        assertTrue( lt1_1.getTupleSink().isAssociatedWith(rulesMap.get(RULE2_NAME)));
-        assertNull( lt1_1.getPeer() );
+            assertEquals( 1, lt1_2.getTupleSink().getAssociatedRuleSize() );
+            assertTrue( lt1_2.getTupleSink().isAssociatedWith(rulesMap.get(TestUtil.RULE2_NAME)));
+            assertNull( lt1_2.getPeer() );
 
-        assertEquals( 1, lt1_2.getTupleSink().getAssociatedRuleSize() );
-        assertTrue( lt1_2.getTupleSink().isAssociatedWith(rulesMap.get(RULE2_NAME)));
-        assertNull( lt1_2.getPeer() );
-
-        assertEquals( 1, lt1_3.getTupleSink().getAssociatedRuleSize() );
-        assertTrue( lt1_3.getTupleSink().isAssociatedWith(rulesMap.get(RULE2_NAME)));
-        assertNull( lt1_3.getPeer() );
+            assertEquals( 1, lt1_3.getTupleSink().getAssociatedRuleSize() );
+            assertTrue( lt1_3.getTupleSink().isAssociatedWith(rulesMap.get(TestUtil.RULE2_NAME)));
+            assertNull( lt1_3.getPeer() );
 
 
-        RightTuple rt1 = fh3.getFirstRightTuple();
-        LeftTuple rt1_1 = rt1.getLastChild();
-        assertSame( lt1_1, rt1_1);
+            final RightTuple rt1 = fh3.getFirstRightTuple();
+            final LeftTuple rt1_1 = rt1.getLastChild();
+            assertSame( lt1_1, rt1_1);
 
-        LeftTuple rt1_2 = rt1_1.getRightParentPrevious();
-        LeftTuple rt1_3 = rt1_2.getRightParentPrevious();
+            final LeftTuple rt1_2 = rt1_1.getRightParentPrevious();
+            final LeftTuple rt1_3 = rt1_2.getRightParentPrevious();
 
-        assertNotNull( rt1_1 );
-        assertNotNull( rt1_2 );
-        assertNotNull( rt1_3 );
+            assertNotNull( rt1_1 );
+            assertNotNull( rt1_2 );
+            assertNotNull( rt1_3 );
 
-        assertSame(rt1_2, rt1_3.getRightParentNext() );
-        assertSame(rt1_1, rt1_2.getRightParentNext() );
+            assertSame(rt1_2, rt1_3.getRightParentNext() );
+            assertSame(rt1_1, rt1_2.getRightParentNext() );
 
-        assertEquals( 1, rt1_1.getTupleSink().getAssociatedRuleSize() );
-        assertTrue( rt1_1.getTupleSink().isAssociatedWith(rulesMap.get(RULE2_NAME)));
-        assertNull( rt1_1.getPeer() );
+            assertEquals( 1, rt1_1.getTupleSink().getAssociatedRuleSize() );
+            assertTrue( rt1_1.getTupleSink().isAssociatedWith(rulesMap.get(TestUtil.RULE2_NAME)));
+            assertNull( rt1_1.getPeer() );
 
-        assertEquals( 1, rt1_2.getTupleSink().getAssociatedRuleSize() );
-        assertTrue( rt1_2.getTupleSink().isAssociatedWith(rulesMap.get(RULE2_NAME)));
-        assertNull( rt1_2.getPeer() );
+            assertEquals( 1, rt1_2.getTupleSink().getAssociatedRuleSize() );
+            assertTrue( rt1_2.getTupleSink().isAssociatedWith(rulesMap.get(TestUtil.RULE2_NAME)));
+            assertNull( rt1_2.getPeer() );
 
-        assertEquals( 1, rt1_3.getTupleSink().getAssociatedRuleSize() );
-        assertTrue( rt1_3.getTupleSink().isAssociatedWith(rulesMap.get(RULE2_NAME)));
-        assertNull( rt1_3.getPeer() );
+            assertEquals( 1, rt1_3.getTupleSink().getAssociatedRuleSize() );
+            assertTrue( rt1_3.getTupleSink().isAssociatedWith(rulesMap.get(TestUtil.RULE2_NAME)));
+            assertNull( rt1_3.getPeer() );
+        } finally {
+            kieSession.dispose();
+        }
     }
 
     @Test
     public void testRemoveChildLeftTupleThatWasLastWithMultipleData() {
-        String[] rules = getRules3Pattern();
+        final String[] rules = getRules3Pattern();
 
-        AddRemoveTestBuilder builder = new AddRemoveTestBuilder();
-        builder.addOperation(TestOperationType.CREATE_SESSION, new String[]{rules[0], rules[1]})
-               .addOperation(TestOperationType.INSERT_FACTS, new Object[] {3, 4, 5})
-               .addOperation(TestOperationType.FIRE_RULES)
-               .addOperation(TestOperationType.CHECK_RESULTS, new String[]{RULE1_NAME, RULE2_NAME})
-               .addOperation(TestOperationType.REMOVE_RULES, new String[]{RULE2_NAME})
-               .addOperation(TestOperationType.FIRE_RULES);
+        final KieSession kieSession = TestUtil.createSession(rules[0], rules[1]);
+        try {
+            final List resultsList = new ArrayList();
+            kieSession.setGlobal("list", resultsList);
+            TestUtil.insertFacts(kieSession, 3, 4, 5);
+            kieSession.fireAllRules();
+            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME, TestUtil.RULE2_NAME);
+            resultsList.clear();
+            TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE2_NAME);
+            kieSession.fireAllRules();
 
-        final Map<String, Object> additionalGlobals = new HashMap<String, Object>();
+            final Map<String, Rule> rulesMap = rulestoMap(kieSession.getKieBase());
 
-        KieSession ksession = runAddRemoveTest(builder.build(), additionalGlobals);
-        Map<String, Rule>        rulesMap = rulestoMap(ksession.getKieBase());
+            final InternalFactHandle  fh1 = (InternalFactHandle) kieSession.getFactHandle(3);
+            final InternalFactHandle  fh2 = (InternalFactHandle) kieSession.getFactHandle(4);
+            final InternalFactHandle  fh3 = (InternalFactHandle) kieSession.getFactHandle(5);
+            final LeftTuple lt1 = fh1.getFirstLeftTuple();
 
-        InternalFactHandle  fh1 = (InternalFactHandle) ksession.getFactHandle(3);
-        InternalFactHandle  fh2 = (InternalFactHandle) ksession.getFactHandle(4);
-        InternalFactHandle  fh3 = (InternalFactHandle) ksession.getFactHandle(5);
-        LeftTuple lt1 = fh1.getFirstLeftTuple();
+            final LeftTuple lt1_1 = lt1.getFirstChild();
+            final LeftTuple lt1_2 = lt1_1.getHandleNext();
+            final LeftTuple lt1_3= lt1_2.getHandleNext();
+            assertNotNull( lt1_1 );
+            assertNotNull( lt1_2 );
+            assertNotNull( lt1_3 );
+            assertSame(lt1_3, lt1.getLastChild());
 
-        LeftTuple lt1_1 = lt1.getFirstChild();
-        LeftTuple lt1_2 = lt1_1.getHandleNext();
-        LeftTuple lt1_3= lt1_2.getHandleNext();
-        assertNotNull( lt1_1 );
-        assertNotNull( lt1_2 );
-        assertNotNull( lt1_3 );
-        assertSame(lt1_3, lt1.getLastChild());
+            assertSame(lt1_2, lt1_3.getHandlePrevious() );
+            assertSame(lt1_1, lt1_2.getHandlePrevious() );
 
-        assertSame(lt1_2, lt1_3.getHandlePrevious() );
-        assertSame(lt1_1, lt1_2.getHandlePrevious() );
+            assertEquals( 1, lt1_1.getTupleSink().getAssociatedRuleSize() );
+            assertTrue( lt1_1.getTupleSink().isAssociatedWith(rulesMap.get(TestUtil.RULE1_NAME)));
+            assertNull( lt1_1.getPeer() );
 
-        assertEquals( 1, lt1_1.getTupleSink().getAssociatedRuleSize() );
-        assertTrue( lt1_1.getTupleSink().isAssociatedWith(rulesMap.get(RULE1_NAME)));
-        assertNull( lt1_1.getPeer() );
+            assertEquals( 1, lt1_2.getTupleSink().getAssociatedRuleSize() );
+            assertTrue( lt1_2.getTupleSink().isAssociatedWith(rulesMap.get(TestUtil.RULE1_NAME)));
+            assertNull( lt1_2.getPeer() );
 
-        assertEquals( 1, lt1_2.getTupleSink().getAssociatedRuleSize() );
-        assertTrue( lt1_2.getTupleSink().isAssociatedWith(rulesMap.get(RULE1_NAME)));
-        assertNull( lt1_2.getPeer() );
-
-        assertEquals( 1, lt1_3.getTupleSink().getAssociatedRuleSize() );
-        assertTrue( lt1_3.getTupleSink().isAssociatedWith(rulesMap.get(RULE1_NAME)));
-        assertNull( lt1_3.getPeer() );
+            assertEquals( 1, lt1_3.getTupleSink().getAssociatedRuleSize() );
+            assertTrue( lt1_3.getTupleSink().isAssociatedWith(rulesMap.get(TestUtil.RULE1_NAME)));
+            assertNull( lt1_3.getPeer() );
 
 
-        RightTuple rt1 = fh3.getFirstRightTuple();
-        LeftTuple rt1_1 = rt1.getLastChild();
-        assertSame( lt1_1, rt1_1);
+            final RightTuple rt1 = fh3.getFirstRightTuple();
+            final LeftTuple rt1_1 = rt1.getLastChild();
+            assertSame( lt1_1, rt1_1);
 
-        LeftTuple rt1_2 = rt1_1.getRightParentPrevious();
-        LeftTuple rt1_3 = rt1_2.getRightParentPrevious();
+            final LeftTuple rt1_2 = rt1_1.getRightParentPrevious();
+            final LeftTuple rt1_3 = rt1_2.getRightParentPrevious();
 
-        assertNotNull( rt1_1 );
-        assertNotNull( rt1_2 );
-        assertNotNull( rt1_3 );
+            assertNotNull( rt1_1 );
+            assertNotNull( rt1_2 );
+            assertNotNull( rt1_3 );
 
-        assertSame(rt1_2, rt1_3.getRightParentNext() );
-        assertSame(rt1_1, rt1_2.getRightParentNext() );
+            assertSame(rt1_2, rt1_3.getRightParentNext() );
+            assertSame(rt1_1, rt1_2.getRightParentNext() );
 
-        assertEquals( 1, rt1_1.getTupleSink().getAssociatedRuleSize() );
-        assertTrue( rt1_1.getTupleSink().isAssociatedWith(rulesMap.get(RULE1_NAME)));
-        assertNull( rt1_1.getPeer() );
+            assertEquals( 1, rt1_1.getTupleSink().getAssociatedRuleSize() );
+            assertTrue( rt1_1.getTupleSink().isAssociatedWith(rulesMap.get(TestUtil.RULE1_NAME)));
+            assertNull( rt1_1.getPeer() );
 
-        assertEquals( 1, rt1_2.getTupleSink().getAssociatedRuleSize() );
-        assertTrue( rt1_2.getTupleSink().isAssociatedWith(rulesMap.get(RULE1_NAME)));
-        assertNull( rt1_2.getPeer() );
+            assertEquals( 1, rt1_2.getTupleSink().getAssociatedRuleSize() );
+            assertTrue( rt1_2.getTupleSink().isAssociatedWith(rulesMap.get(TestUtil.RULE1_NAME)));
+            assertNull( rt1_2.getPeer() );
 
-        assertEquals( 1, rt1_3.getTupleSink().getAssociatedRuleSize() );
-        assertTrue( rt1_3.getTupleSink().isAssociatedWith(rulesMap.get(RULE1_NAME)));
-        assertNull( rt1_3.getPeer() );
+            assertEquals( 1, rt1_3.getTupleSink().getAssociatedRuleSize() );
+            assertTrue( rt1_3.getTupleSink().isAssociatedWith(rulesMap.get(TestUtil.RULE1_NAME)));
+            assertNull( rt1_3.getPeer() );
+        } finally {
+            kieSession.dispose();
+        }
     }
 
     private void testRemoveWithSplitStartBasicTestSet(final String rule1, final String rule2,
@@ -1611,529 +1638,573 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
         final Map<String, Object> additionalGlobals = new HashMap<String, Object>();
         additionalGlobals.put("globalInt", new AtomicInteger(0));
 
-        runAddRemoveTests(rule1, rule2, rule1Name, rule2Name, new Object[] {1, 2, "1"}, additionalGlobals);
+        AddRemoveTestCases.runAllTestCases(rule1, rule2, rule1Name, rule2Name, additionalGlobals,1, 2, "1");
+        AddRemoveTestCases.runAllTestCases(rule2, rule1, rule2Name, rule1Name, additionalGlobals,1, 2, "1");
     }
 
     @Test
     public void testMergeRTN() {
-        final String rule1 = "package " + PKG_NAME_TEST + ";" +
+        final String rule1 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                              "global java.util.List list\n" +
-                             "rule " + RULE1_NAME + " \n" +
+                             "rule " + TestUtil.RULE1_NAME + " \n" +
                              "when\n" +
                              "    Integer()\n" +
                              "    Integer()\n" +
                              "    Integer()\n" +
                              "then\n" +
-                             " list.add('" + RULE1_NAME + "'); \n" +
+                             " list.add('" + TestUtil.RULE1_NAME + "'); \n" +
                              "end\n";
 
-        final String rule2 = "package " + PKG_NAME_TEST + ";" +
+        final String rule2 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                              "global java.util.List list\n" +
-                             "rule " + RULE2_NAME + " \n" +
+                             "rule " + TestUtil.RULE2_NAME + " \n" +
                              "when \n" +
                              "    Integer()\n" +
                              "    exists( Integer() and Integer() )\n" +
                              "    Integer()\n" +
                              "then \n" +
-                             " list.add('" + RULE2_NAME + "'); \n" +
+                             " list.add('" + TestUtil.RULE2_NAME + "'); \n" +
                              "end";
 
-        AddRemoveTestBuilder builder = new AddRemoveTestBuilder();
-        builder.addOperation(TestOperationType.CREATE_SESSION, new String[]{rule1, rule2})
-               .addOperation(TestOperationType.INSERT_FACTS, new Object[] {1, 2, 3})
-               .addOperation(TestOperationType.REMOVE_RULES, new String[]{RULE2_NAME})
-               .addOperation(TestOperationType.FIRE_RULES)
-               .addOperation(TestOperationType.CHECK_RESULTS, new String[]{RULE1_NAME})
-               .addOperation(TestOperationType.REMOVE_RULES, new String[]{RULE1_NAME})
-               .addOperation(TestOperationType.FIRE_RULES)
-               .addOperation(TestOperationType.CHECK_RESULTS, new String[]{});
-
-        runAddRemoveTest(builder.build(), new HashMap<String, Object>());
+        final KieSession kieSession = TestUtil.createSession(rule1, rule2);
+        try {
+            final List resultsList = new ArrayList();
+            kieSession.setGlobal("list", resultsList);
+            TestUtil.insertFacts(kieSession, 1, 2, 3);
+            TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE2_NAME);
+            kieSession.fireAllRules();
+            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME);
+            resultsList.clear();
+            TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE1_NAME);
+            kieSession.fireAllRules();
+            Assertions.assertThat(resultsList).isEmpty();
+        } finally {
+            kieSession.dispose();
+        }
     }
 
     @Test
     public void testSubSubNetwork() {
-        final String rule1 = "package " + PKG_NAME_TEST + ";" +
+        final String rule1 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                              "global java.util.List list\n" +
-                             "rule " + RULE1_NAME + " \n" +
+                             "rule " + TestUtil.RULE1_NAME + " \n" +
                              "when\n" +
                              "    Integer()\n" +
                              "    Integer()\n" +
                              "    Integer()\n" +
                              "then\n" +
-                             " list.add('" + RULE1_NAME + "'); \n" +
+                             " list.add('" + TestUtil.RULE1_NAME + "'); \n" +
                              "end\n";
 
-        final String rule2 = "package " + PKG_NAME_TEST + ";" +
+        final String rule2 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                              "global java.util.List list\n" +
-                             "rule " + RULE2_NAME + " \n" +
+                             "rule " + TestUtil.RULE2_NAME + " \n" +
                              "when \n" +
                              "    Integer()\n" +
                              "    exists( Integer() and Integer() )\n" +
                              "    exists(Integer() and exists(Integer() and Integer()))\n" +
                              "then \n" +
-                             " list.add('" + RULE2_NAME + "'); \n" +
+                             " list.add('" + TestUtil.RULE2_NAME + "'); \n" +
                              "end";
 
-        AddRemoveTestBuilder builder = new AddRemoveTestBuilder();
-        builder.addOperation(TestOperationType.CREATE_SESSION, new String[]{rule1, rule2})
-               .addOperation(TestOperationType.INSERT_FACTS, new Object[] {1})
-               .addOperation(TestOperationType.REMOVE_RULES, new String[]{RULE2_NAME})
-               .addOperation(TestOperationType.FIRE_RULES)
-               .addOperation(TestOperationType.CHECK_RESULTS, new String[]{RULE1_NAME})
-               .addOperation(TestOperationType.REMOVE_RULES, new String[]{RULE1_NAME})
-               .addOperation(TestOperationType.FIRE_RULES)
-               .addOperation(TestOperationType.CHECK_RESULTS, new String[]{})
-        ;
-
-        runAddRemoveTest(builder.build(), new HashMap<String, Object>());
+        final KieSession kieSession = TestUtil.createSession(rule1, rule2);
+        try {
+            final List resultsList = new ArrayList();
+            kieSession.setGlobal("list", resultsList);
+            TestUtil.insertFacts(kieSession, 1);
+            TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE2_NAME);
+            kieSession.fireAllRules();
+            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME);
+            resultsList.clear();
+            TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE1_NAME);
+            kieSession.fireAllRules();
+            Assertions.assertThat(resultsList).isEmpty();
+        } finally {
+            kieSession.dispose();
+        }
     }
 
     @Test
     public void testSubSubNetwork2() {
-        final String rule1 = "package " + PKG_NAME_TEST + ";" +
+        final String rule1 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                              "global java.util.List list\n" +
-                             "rule " + RULE1_NAME + " \n" +
+                             "rule " + TestUtil.RULE1_NAME + " \n" +
                              "when\n" +
                              "    Integer()\n" +
                              "    Integer()\n" +
                              "then\n" +
-                             " list.add('" + RULE1_NAME + "'); \n" +
+                             " list.add('" + TestUtil.RULE1_NAME + "'); \n" +
                              "end\n";
 
-        final String rule2 = "package " + PKG_NAME_TEST + ";" +
+        final String rule2 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                              "global java.util.List list\n" +
-                             "rule " + RULE2_NAME + " \n" +
+                             "rule " + TestUtil.RULE2_NAME + " \n" +
                              "when \n" +
                              "    Integer()\n" +
                              "    exists( Integer() and Integer() )\n" +
                              "    exists(Integer() and exists(Integer() and Integer()))\n" +
                              "then \n" +
-                             " list.add('" + RULE2_NAME + "'); \n" +
+                             " list.add('" + TestUtil.RULE2_NAME + "'); \n" +
                              "end";
 
-        AddRemoveTestBuilder builder = new AddRemoveTestBuilder();
-        builder.addOperation(TestOperationType.CREATE_SESSION, new String[]{rule1, rule2})
-               .addOperation(TestOperationType.INSERT_FACTS, new Object[] {1})
-               .addOperation(TestOperationType.REMOVE_RULES, new String[]{RULE1_NAME, RULE2_NAME})
-               .addOperation(TestOperationType.ADD_RULES, new String[]{rule1})
-               .addOperation(TestOperationType.FIRE_RULES)
-               .addOperation(TestOperationType.CHECK_RESULTS, new String[]{RULE1_NAME})
-        ;
-
-        runAddRemoveTest(builder.build(), new HashMap<String, Object>());
+        final KieSession kieSession = TestUtil.createSession(rule1, rule2);
+        try {
+            final List resultsList = new ArrayList();
+            kieSession.setGlobal("list", resultsList);
+            TestUtil.insertFacts(kieSession, 1);
+            TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE1_NAME, TestUtil.RULE2_NAME);
+            TestUtil.addRules(kieSession, rule1);
+            kieSession.fireAllRules();
+            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME);
+        } finally {
+            kieSession.dispose();
+        }
     }
 
     @Test
     public void testSubSubNetwork3() {
-        final String rule1 = "package " + PKG_NAME_TEST + ";" +
+        final String rule1 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                              "global java.util.List list\n" +
-                             "rule " + RULE1_NAME + " \n" +
+                             "rule " + TestUtil.RULE1_NAME + " \n" +
                              "when\n" +
                              "  exists(Integer() and Integer()) \n" +
                              "  exists(Integer() and Integer()) \n" +
                              "  Integer() \n\n" +
                              "then\n" +
-                             " list.add('" + RULE1_NAME + "'); \n" +
+                             " list.add('" + TestUtil.RULE1_NAME + "'); \n" +
                              "end\n";
 
-        final String rule2 = "package " + PKG_NAME_TEST + ";" +
+        final String rule2 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                              "global java.util.List list\n" +
-                             "rule " + RULE2_NAME + " \n" +
+                             "rule " + TestUtil.RULE2_NAME + " \n" +
                              "when \n" +
                              "  exists(Integer() and Integer()) \n" +
                              "  Integer() \n" +
                              "  exists(Integer() and exists(Integer() and Integer())) \n" +
                              "then \n" +
-                             " list.add('" + RULE2_NAME + "'); \n" +
+                             " list.add('" + TestUtil.RULE2_NAME + "'); \n" +
                              "end";
 
-        AddRemoveTestBuilder builder = new AddRemoveTestBuilder();
-        builder.addOperation(TestOperationType.CREATE_SESSION, new String[]{rule1, rule2})
-               .addOperation(TestOperationType.INSERT_FACTS, new Object[] {1})
-               .addOperation(TestOperationType.FIRE_RULES)
-               .addOperation(TestOperationType.CHECK_RESULTS, new String[]{RULE1_NAME, RULE2_NAME})
-               .addOperation(TestOperationType.REMOVE_RULES, new String[]{RULE1_NAME, RULE2_NAME})
-               .addOperation(TestOperationType.FIRE_RULES)
-               .addOperation(TestOperationType.CHECK_RESULTS, new String[]{})
-        ;
-
-        runAddRemoveTest(builder.build(), new HashMap<String, Object>());
+        final KieSession kieSession = TestUtil.createSession(rule1, rule2);
+        try {
+            final List resultsList = new ArrayList();
+            kieSession.setGlobal("list", resultsList);
+            TestUtil.insertFacts(kieSession, 1);
+            kieSession.fireAllRules();
+            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME, TestUtil.RULE2_NAME);
+            resultsList.clear();
+            TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE1_NAME, TestUtil.RULE2_NAME);
+            kieSession.fireAllRules();
+            Assertions.assertThat(resultsList).isEmpty();
+        } finally {
+            kieSession.dispose();
+        }
     }
 
     @Test
     public void testSubSubNetwork4() {
-        final String rule1 = "package " + PKG_NAME_TEST + ";" +
+        final String rule1 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                              "global java.util.List list\n" +
-                             "rule " + RULE1_NAME + " \n" +
+                             "rule " + TestUtil.RULE1_NAME + " \n" +
                              "when\n" +
                              "  exists(Integer() and Integer()) \n" +
                              "  Integer() \n" +
                              "  Integer() \n" +
                              "then\n" +
-                             " list.add('" + RULE1_NAME + "'); \n" +
+                             " list.add('" + TestUtil.RULE1_NAME + "'); \n" +
                              "end\n";
 
-        final String rule2 = "package " + PKG_NAME_TEST + ";" +
+        final String rule2 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                              "global java.util.List list\n" +
-                             "rule " + RULE2_NAME + " \n" +
+                             "rule " + TestUtil.RULE2_NAME + " \n" +
                              "when \n" +
                              "  exists(Integer() and Integer()) \n" +
                              "  Integer() \n" +
                              "  exists(Integer() and exists(Integer() and Integer())) \n" +
                              "then \n" +
-                             " list.add('" + RULE2_NAME + "'); \n" +
+                             " list.add('" + TestUtil.RULE2_NAME + "'); \n" +
                              "end";
 
-        AddRemoveTestBuilder builder = new AddRemoveTestBuilder();
-        builder.addOperation(TestOperationType.CREATE_SESSION, new String[]{rule1, rule2})
-               .addOperation(TestOperationType.INSERT_FACTS, new Object[] {1})
-               .addOperation(TestOperationType.REMOVE_RULES, new String[]{RULE1_NAME})
-               .addOperation(TestOperationType.FIRE_RULES)
-               .addOperation(TestOperationType.CHECK_RESULTS, new String[]{RULE2_NAME})
-        ;
-
-        runAddRemoveTest(builder.build(), new HashMap<String, Object>());
+        final KieSession kieSession = TestUtil.createSession(rule1, rule2);
+        try {
+            final List resultsList = new ArrayList();
+            kieSession.setGlobal("list", resultsList);
+            TestUtil.insertFacts(kieSession, 1);
+            TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE1_NAME);
+            kieSession.fireAllRules();
+            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE2_NAME);
+        } finally {
+            kieSession.dispose();
+        }
     }
 
     @Test
     public void testSubNetworkWithNot() {
-        final String rule1 = "package " + PKG_NAME_TEST + ";" +
+        final String rule1 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                              "global java.util.List list\n" +
-                             "rule " + RULE1_NAME + " \n" +
+                             "rule " + TestUtil.RULE1_NAME + " \n" +
                              "when\n" +
                              "  exists(Integer() and Integer()) \n" +
                              "  not(Double() and Double()) \n" +
                              "  Integer() \n" +
                              "then\n" +
-                             " list.add('" + RULE1_NAME + "'); \n" +
+                             " list.add('" + TestUtil.RULE1_NAME + "'); \n" +
                              "end\n";
 
-        final String rule2 = "package " + PKG_NAME_TEST + ";" +
+        final String rule2 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                              "global java.util.List list\n" +
-                             "rule " + RULE2_NAME + " \n" +
+                             "rule " + TestUtil.RULE2_NAME + " \n" +
                              "when \n" +
                              "  exists(Integer() and Integer()) \n" +
                              "  not(Double() and Double()) \n" +
                              "then \n" +
-                             " list.add('" + RULE2_NAME + "'); \n" +
+                             " list.add('" + TestUtil.RULE2_NAME + "'); \n" +
                              "end";
 
-        AddRemoveTestBuilder builder = new AddRemoveTestBuilder();
-        builder.addOperation(TestOperationType.CREATE_SESSION, new String[]{rule1, rule2})
-               .addOperation(TestOperationType.INSERT_FACTS, new Object[] {1})
-               .addOperation(TestOperationType.REMOVE_RULES, new String[]{RULE2_NAME})
-               .addOperation(TestOperationType.FIRE_RULES)
-               .addOperation(TestOperationType.CHECK_RESULTS, new String[]{RULE1_NAME})
-        ;
-
-        runAddRemoveTest(builder.build(), new HashMap<String, Object>());
+        final KieSession kieSession = TestUtil.createSession(rule1, rule2);
+        try {
+            final List resultsList = new ArrayList();
+            kieSession.setGlobal("list", resultsList);
+            TestUtil.insertFacts(kieSession, 1);
+            TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE2_NAME);
+            kieSession.fireAllRules();
+            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME);
+        } finally {
+            kieSession.dispose();
+        }
     }
 
     @Test
     public void testSubNetworkWithNot2() {
-        final String rule1 = "package " + PKG_NAME_TEST + ";" +
+        final String rule1 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                              "global java.util.List list\n" +
-                             "rule " + RULE1_NAME + " \n" +
+                             "rule " + TestUtil.RULE1_NAME + " \n" +
                              "when\n" +
                              "  exists(Integer() and Integer()) \n" +
                              "  not(Double() and Double()) \n" +
                              "  Integer() \n" +
                              "then\n" +
-                             " list.add('" + RULE1_NAME + "'); \n" +
+                             " list.add('" + TestUtil.RULE1_NAME + "'); \n" +
                              "end\n";
 
-        final String rule2 = "package " + PKG_NAME_TEST + ";" +
+        final String rule2 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                              "global java.util.List list\n" +
-                             "rule " + RULE2_NAME + " \n" +
+                             "rule " + TestUtil.RULE2_NAME + " \n" +
                              "when \n" +
                              "  exists(Integer() and Integer()) \n" +
                              "  not(Double() and Double()) \n" +
                              "  exists(Integer() and Integer()) \n" +
                              "then \n" +
-                             " list.add('" + RULE2_NAME + "'); \n" +
+                             " list.add('" + TestUtil.RULE2_NAME + "'); \n" +
                              "end";
 
-        AddRemoveTestBuilder builder = new AddRemoveTestBuilder();
-        builder.addOperation(TestOperationType.CREATE_SESSION, new String[]{rule1, rule2})
-               .addOperation(TestOperationType.INSERT_FACTS, new Object[] {1})
-               .addOperation(TestOperationType.REMOVE_RULES, new String[]{RULE2_NAME})
-               .addOperation(TestOperationType.FIRE_RULES)
-               .addOperation(TestOperationType.CHECK_RESULTS, new String[]{RULE1_NAME})
-        ;
-
-        runAddRemoveTest(builder.build(), new HashMap<String, Object>());
+        final KieSession kieSession = TestUtil.createSession(rule1, rule2);
+        try {
+            final List resultsList = new ArrayList();
+            kieSession.setGlobal("list", resultsList);
+            TestUtil.insertFacts(kieSession, 1);
+            TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE2_NAME);
+            kieSession.fireAllRules();
+            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME);
+        } finally {
+            kieSession.dispose();
+        }
     }
 
     @Test
     public void testSubNetworkWithNot3() {
-        final String rule1 = "package " + PKG_NAME_TEST + ";" +
+        final String rule1 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                              "global java.util.List list\n" +
-                             "rule " + RULE1_NAME + " \n" +
+                             "rule " + TestUtil.RULE1_NAME + " \n" +
                              "when\n" +
                              "  exists(Integer()) \n" +
                              "  not(Double() and Double()) \n" +
                              "  Integer() \n" +
                              "then\n" +
-                             " list.add('" + RULE1_NAME + "'); \n" +
+                             " list.add('" + TestUtil.RULE1_NAME + "'); \n" +
                              "end\n";
 
-        final String rule2 = "package " + PKG_NAME_TEST + ";" +
+        final String rule2 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                              "global java.util.List list\n" +
-                             "rule " + RULE2_NAME + " \n" +
+                             "rule " + TestUtil.RULE2_NAME + " \n" +
                              "when \n" +
                              "  exists(Integer()) \n" +
                              "  not(Double() and Double()) \n" +
                              "then \n" +
-                             " list.add('" + RULE2_NAME + "'); \n" +
+                             " list.add('" + TestUtil.RULE2_NAME + "'); \n" +
                              "end";
 
-        AddRemoveTestBuilder builder = new AddRemoveTestBuilder();
-        builder.addOperation(TestOperationType.CREATE_SESSION, new String[]{rule1, rule2})
-               .addOperation(TestOperationType.INSERT_FACTS, new Object[] {1})
-               .addOperation(TestOperationType.FIRE_RULES)
-               .addOperation(TestOperationType.CHECK_RESULTS, new String[]{RULE1_NAME, RULE2_NAME})
-        ;
-
-        runAddRemoveTest(builder.build(), new HashMap<String, Object>());
+        final KieSession kieSession = TestUtil.createSession(rule1, rule2);
+        try {
+            final List resultsList = new ArrayList();
+            kieSession.setGlobal("list", resultsList);
+            TestUtil.insertFacts(kieSession, 1);
+            kieSession.fireAllRules();
+            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME, TestUtil.RULE2_NAME);
+        } finally {
+            kieSession.dispose();
+        }
     }
 
     @Test
     public void testSubNetworkWithNot4() {
-        final String rule1 = "package " + PKG_NAME_TEST + ";" +
+        final String rule1 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                              "global java.util.List list\n" +
-                             "rule " + RULE1_NAME + " \n" +
+                             "rule " + TestUtil.RULE1_NAME + " \n" +
                              "when\n" +
                              "  exists(Integer() and Integer()) \n" +
                              "  exists(Integer() and exists(Integer() and Integer())) \n" +
                              "  Integer() \n" +
                              "  not(Double() and Double()) \n" +
                              "then\n" +
-                             " list.add('" + RULE1_NAME + "'); \n" +
+                             " list.add('" + TestUtil.RULE1_NAME + "'); \n" +
                              "end\n";
 
-        final String rule2 = "package " + PKG_NAME_TEST + ";" +
+        final String rule2 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                              "global java.util.List list\n" +
-                             "rule " + RULE2_NAME + " \n" +
+                             "rule " + TestUtil.RULE2_NAME + " \n" +
                              "when \n" +
                              "  exists(Integer() and Integer()) \n" +
                              "  Integer() \n" +
                              "  not(Double() and Double()) \n" +
                              "  exists(Integer() and Integer()) \n" +
                              "then \n" +
-                             " list.add('" + RULE2_NAME + "'); \n" +
+                             " list.add('" + TestUtil.RULE2_NAME + "'); \n" +
                              "end";
 
-        AddRemoveTestBuilder builder = new AddRemoveTestBuilder();
-        builder.addOperation(TestOperationType.CREATE_SESSION, new String[]{rule1, rule2})
-               .addOperation(TestOperationType.INSERT_FACTS, new Object[] {1})
-               .addOperation(TestOperationType.REMOVE_RULES, new String[]{RULE1_NAME})
-               .addOperation(TestOperationType.FIRE_RULES)
-               .addOperation(TestOperationType.CHECK_RESULTS, new String[]{RULE2_NAME})
-        ;
-
-        runAddRemoveTest(builder.build(), new HashMap<String, Object>());
+        final KieSession kieSession = TestUtil.createSession(rule1, rule2);
+        try {
+            final List resultsList = new ArrayList();
+            kieSession.setGlobal("list", resultsList);
+            TestUtil.insertFacts(kieSession, 1);
+            TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE1_NAME);
+            kieSession.fireAllRules();
+            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE2_NAME);
+        } finally {
+            kieSession.dispose();
+        }
     }
 
     @Test
     public void testInsertFireRemoveWith2Nots() {
-        final String rule1 = " package " + PKG_NAME_TEST + ";\n" +
+        final String rule1 = " package " + TestUtil.RULES_PACKAGE_NAME + ";\n" +
                 " global java.util.List list\n" +
-                " rule " + RULE1_NAME + " \n" +
+                " rule " + TestUtil.RULE1_NAME + " \n" +
                 " when \n" +
                 "   Integer() \n" +
                 "   Integer() \n" +
                 " then\n" +
-                "   list.add('" + RULE1_NAME + "'); \n" +
+                "   list.add('" + TestUtil.RULE1_NAME + "'); \n" +
                 " end";
 
-        final String rule2 = " package " + PKG_NAME_TEST + ";\n" +
+        final String rule2 = " package " + TestUtil.RULES_PACKAGE_NAME + ";\n" +
                 " global java.util.List list\n" +
-                " rule " + RULE2_NAME + " \n" +
+                " rule " + TestUtil.RULE2_NAME + " \n" +
                 " when \n" +
                 "   Integer() \n" +
                 "   Integer() \n" +
                 "   not(not(Integer() and Integer())) \n" +
                 " then\n" +
-                "   list.add('" + RULE2_NAME + "'); \n" +
+                "   list.add('" + TestUtil.RULE2_NAME + "'); \n" +
                 " end";
 
-        final AddRemoveTestBuilder builder = new AddRemoveTestBuilder();
-        builder.addOperation(TestOperationType.CREATE_SESSION, new String[]{rule2, rule1})
-                .addOperation(TestOperationType.INSERT_FACTS, new Object[] {1})
-                .addOperation(TestOperationType.REMOVE_RULES, new String[]{RULE2_NAME})
-                .addOperation(TestOperationType.REMOVE_RULES, new String[]{RULE1_NAME})
-                .addOperation(TestOperationType.FIRE_RULES)
-                .addOperation(TestOperationType.CHECK_RESULTS, new String[]{});
-
-        runAddRemoveTest(builder.build(), new HashMap<String, Object>());
-
+        final KieSession kieSession = TestUtil.createSession(rule2, rule1);
+        try {
+            final List resultsList = new ArrayList();
+            kieSession.setGlobal("list", resultsList);
+            TestUtil.insertFacts(kieSession, 1);
+            TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE2_NAME);
+            TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE1_NAME);
+            kieSession.fireAllRules();
+            Assertions.assertThat(resultsList).isEmpty();
+        } finally {
+            kieSession.dispose();
+        }
     }
 
     @Test
     public void testSubSubNetwork5() {
-        final String rule1 = "package " + PKG_NAME_TEST + ";" +
+        final String rule1 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                              "global java.util.List list\n" +
-                             "rule " + RULE1_NAME + " \n" +
+                             "rule " + TestUtil.RULE1_NAME + " \n" +
                              "when\n" +
                              "  Integer() \n" +
                              "  Integer() \n" +
                              "  exists(Integer() and Integer()) \n" +
                              "then\n" +
-                             " list.add('" + RULE1_NAME + "'); \n" +
+                             " list.add('" + TestUtil.RULE1_NAME + "'); \n" +
                              "end\n";
 
-        final String rule2 = "package " + PKG_NAME_TEST + ";" +
+        final String rule2 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                              "global java.util.List list\n" +
-                             "rule " + RULE2_NAME + " \n" +
+                             "rule " + TestUtil.RULE2_NAME + " \n" +
                              "when \n" +
                              "  Integer() \n" +
                              "  exists(Integer() and Integer()) \n" +
                              "then \n" +
-                             " list.add('" + RULE2_NAME + "'); \n" +
+                             " list.add('" + TestUtil.RULE2_NAME + "'); \n" +
                              "end";
 
-        AddRemoveTestBuilder builder = new AddRemoveTestBuilder();
-        builder.addOperation(TestOperationType.CREATE_SESSION, new String[]{rule1, rule2})
-               .addOperation(TestOperationType.INSERT_FACTS, new Object[] {1})
-               .addOperation(TestOperationType.REMOVE_RULES, new String[]{RULE1_NAME})
-               .addOperation(TestOperationType.FIRE_RULES)
-               .addOperation(TestOperationType.CHECK_RESULTS, new String[]{RULE2_NAME})
-        ;
-
-        runAddRemoveTest(builder.build(), new HashMap<String, Object>());
+        final KieSession kieSession = TestUtil.createSession(rule1, rule2);
+        try {
+            final List resultsList = new ArrayList();
+            kieSession.setGlobal("list", resultsList);
+            TestUtil.insertFacts(kieSession, 1);
+            TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME,  TestUtil.RULE1_NAME);
+            kieSession.fireAllRules();
+            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE2_NAME);
+        } finally {
+            kieSession.dispose();
+        }
     }
 
     @Test
     public void testInsertRemoveFireWith2Nots() {
-        final String rule1 = " package " + PKG_NAME_TEST + ";\n" +
+        final String rule1 = " package " + TestUtil.RULES_PACKAGE_NAME + ";\n" +
                 " global java.util.List list\n" +
-                " rule " + RULE1_NAME + " \n" +
+                " rule " + TestUtil.RULE1_NAME + " \n" +
                 " when \n" +
                 "   exists(Integer() and Integer()) \n" +
                 "   Integer() \n" +
                 "   not(exists(Integer() and Integer())) \n" +
                 " then\n" +
-                "   list.add('" + RULE1_NAME + "'); \n" +
+                "   list.add('" + TestUtil.RULE1_NAME + "'); \n" +
                 " end";
 
-        final String rule2 = " package " + PKG_NAME_TEST + ";\n" +
+        final String rule2 = " package " + TestUtil.RULES_PACKAGE_NAME + ";\n" +
                 " global java.util.List list\n" +
-                " rule " + RULE2_NAME + " \n" +
+                " rule " + TestUtil.RULE2_NAME + " \n" +
                 " when \n" +
                 "   exists(Integer() and Integer()) \n" +
                 "   not(exists(Integer() and Integer())) \n" +
                 " then\n" +
-                "   list.add('" + RULE2_NAME + "'); \n" +
+                "   list.add('" + TestUtil.RULE2_NAME + "'); \n" +
                 " end";
 
-        final AddRemoveTestBuilder builder = new AddRemoveTestBuilder();
-        builder.addOperation(TestOperationType.CREATE_SESSION, new String[]{rule1, rule2});
-
-        runAddRemoveTest(builder.build(), new HashMap<String, Object>());
+        final KieSession kieSession = TestUtil.createSession(rule1, rule2);
+        try {
+            final List resultsList = new ArrayList();
+            kieSession.setGlobal("list", resultsList);
+            TestUtil.insertFacts(kieSession, 1);
+            TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE2_NAME);
+            kieSession.fireAllRules();
+            Assertions.assertThat(resultsList).isEmpty();
+        } finally {
+            kieSession.dispose();
+        }
     }
 
     @Test
     public void testSharedRian() {
 
-        final String rule1 = " package " + PKG_NAME_TEST + ";\n" +
+        final String rule1 = " package " + TestUtil.RULES_PACKAGE_NAME + ";\n" +
                 " global java.util.List list\n" +
-                " rule " + RULE1_NAME + " \n" +
+                " rule " + TestUtil.RULE1_NAME + " \n" +
                 " when \n" +
                 "   Integer() \n" +
                 "   not(Integer() and Integer()) \n" +
                 " then\n" +
-                "   list.add('" + RULE1_NAME + "'); \n" +
+                "   list.add('" + TestUtil.RULE1_NAME + "'); \n" +
                 " end";
 
-        final String rule2 = " package " + PKG_NAME_TEST + ";\n" +
+        final String rule2 = " package " + TestUtil.RULES_PACKAGE_NAME + ";\n" +
                 " global java.util.List list\n" +
-                " rule " + RULE2_NAME + " \n" +
+                " rule " + TestUtil.RULE2_NAME + " \n" +
                 " when \n" +
                 "   Integer() \n" +
                 "   exists(Integer() and Integer()) \n" +
                 " then\n" +
-                "   list.add('" + RULE2_NAME + "'); \n" +
+                "   list.add('" + TestUtil.RULE2_NAME + "'); \n" +
                 " end";
 
-        final AddRemoveTestBuilder builder = new AddRemoveTestBuilder();
-        builder.addOperation(TestOperationType.CREATE_SESSION, new String[]{rule1})
-                .addOperation(TestOperationType.INSERT_FACTS, new Object[]{1})
-                .addOperation(TestOperationType.ADD_RULES, new String[]{rule2})
-                .addOperation(TestOperationType.FIRE_RULES)
-                .addOperation(TestOperationType.CHECK_RESULTS, new String[]{RULE2_NAME});
-
-        runAddRemoveTest(builder.build(), new HashMap<String, Object>());
+        final KieSession kieSession = TestUtil.createSession(rule1);
+        try {
+            final List resultsList = new ArrayList();
+            kieSession.setGlobal("list", resultsList);
+            TestUtil.insertFacts(kieSession, 1);
+            TestUtil.addRules(kieSession, rule2);
+            kieSession.fireAllRules();
+            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE2_NAME);
+        } finally {
+            kieSession.dispose();
+        }
     }
 
     @Test
     public void testSharedRianWithFire() {
 
-        final String rule1 = " package " + PKG_NAME_TEST + ";\n" +
+        final String rule1 = " package " + TestUtil.RULES_PACKAGE_NAME + ";\n" +
                 " global java.util.List list\n" +
-                " rule " + RULE1_NAME + " \n" +
+                " rule " + TestUtil.RULE1_NAME + " \n" +
                 " when \n" +
                 "   Integer() \n" +
                 "   not(Integer() and Integer()) \n" +
                 " then\n" +
-                "   list.add('" + RULE1_NAME + "'); \n" +
+                "   list.add('" + TestUtil.RULE1_NAME + "'); \n" +
                 " end";
 
-        final String rule2 = " package " + PKG_NAME_TEST + ";\n" +
+        final String rule2 = " package " + TestUtil.RULES_PACKAGE_NAME + ";\n" +
                 " global java.util.List list\n" +
-                " rule " + RULE2_NAME + " \n" +
+                " rule " + TestUtil.RULE2_NAME + " \n" +
                 " when \n" +
                 "   Integer() \n" +
                 "   exists(Integer() and Integer()) \n" +
                 " then\n" +
-                "   list.add('" + RULE2_NAME + "'); \n" +
+                "   list.add('" + TestUtil.RULE2_NAME + "'); \n" +
                 " end";
 
-        final AddRemoveTestBuilder builder = new AddRemoveTestBuilder();
-        builder.addOperation(TestOperationType.CREATE_SESSION, new String[]{rule1})
-                .addOperation(TestOperationType.INSERT_FACTS, new Object[]{1})
-                .addOperation(TestOperationType.FIRE_RULES)
-                .addOperation(TestOperationType.ADD_RULES, new String[]{rule2})
-                .addOperation(TestOperationType.FIRE_RULES)
-                .addOperation(TestOperationType.CHECK_RESULTS, new String[]{RULE2_NAME});
-
-        runAddRemoveTest(builder.build(), new HashMap<String, Object>());
+        final KieSession kieSession = TestUtil.createSession(rule1);
+        try {
+            final List resultsList = new ArrayList();
+            kieSession.setGlobal("list", resultsList);
+            TestUtil.insertFacts(kieSession, 1);
+            kieSession.fireAllRules();
+            TestUtil.addRules(kieSession, rule2);
+            kieSession.fireAllRules();
+            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE2_NAME);
+        } finally {
+            kieSession.dispose();
+        }
     }
 
     @Test
     public void testSharedRian2() {
 
-        final String rule1 = " package " + PKG_NAME_TEST + ";\n" +
+        final String rule1 = " package " + TestUtil.RULES_PACKAGE_NAME + ";\n" +
                 " global java.util.List list\n" +
-                " rule " + RULE1_NAME + " \n" +
+                " rule " + TestUtil.RULE1_NAME + " \n" +
                 " when \n" +
                 "   Integer() \n" +
                 "   Integer() \n" +
                 "   not(not(Integer() and Integer())) \n" +
                 " then\n" +
-                "   list.add('" + RULE1_NAME + "'); \n" +
+                "   list.add('" + TestUtil.RULE1_NAME + "'); \n" +
                 " end";
 
-        final String rule2 = " package " + PKG_NAME_TEST + ";\n" +
+        final String rule2 = " package " + TestUtil.RULES_PACKAGE_NAME + ";\n" +
                 " global java.util.List list\n" +
-                " rule " + RULE2_NAME + " \n" +
+                " rule " + TestUtil.RULE2_NAME + " \n" +
                 " when \n" +
                 "   Integer() \n" +
                 "   exists(Integer() and exists(Integer() and Integer())) \n" +
                 " then\n" +
-                "   list.add('" + RULE2_NAME + "'); \n" +
+                "   list.add('" + TestUtil.RULE2_NAME + "'); \n" +
                 " end";
 
-        final AddRemoveTestBuilder builder = new AddRemoveTestBuilder();
-        builder.addOperation(TestOperationType.CREATE_SESSION, new String[]{rule1})
-               .addOperation(TestOperationType.INSERT_FACTS, new Object[]{1})
-               .addOperation(TestOperationType.FIRE_RULES)
-               .addOperation(TestOperationType.CHECK_RESULTS, new String[]{RULE1_NAME})
-               .addOperation(TestOperationType.ADD_RULES, new String[]{rule2})
-               .addOperation(TestOperationType.FIRE_RULES)
-               .addOperation(TestOperationType.CHECK_RESULTS, new String[]{RULE2_NAME});
-
-        runAddRemoveTest(builder.build(), new HashMap<String, Object>());
+        final KieSession kieSession = TestUtil.createSession(rule1);
+        try {
+            final List resultsList = new ArrayList();
+            kieSession.setGlobal("list", resultsList);
+            TestUtil.insertFacts(kieSession, 1);
+            kieSession.fireAllRules();
+            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME);
+            resultsList.clear();
+            TestUtil.addRules(kieSession, rule2);
+            kieSession.fireAllRules();
+            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE2_NAME);
+        } finally {
+            kieSession.dispose();
+        }
     }
 
     @Test
@@ -2156,15 +2227,15 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
                              "System.out.println('test  rule 2'); \n"+
                              "end";
 
-        KieSession session = base.newKieSession();
+        final KieSession session = base.newKieSession();
 
         this.addRuleToEngine(rule1);
-        InternalFactHandle fh = (InternalFactHandle)session.insert( 1 );
+        final InternalFactHandle fh = (InternalFactHandle)session.insert(1 );
         session.fireAllRules();
 
         this.addRuleToEngine(rule2);
 
-        SubnetworkTuple tuple = (SubnetworkTuple)fh.getFirstLeftTuple().getFirstChild().getFirstChild();
+        final SubnetworkTuple tuple = (SubnetworkTuple)fh.getFirstLeftTuple().getFirstChild().getFirstChild();
         assertNotNull( tuple.getPeer() );
 
         this.deleteRule(rule2Name);
@@ -2173,204 +2244,210 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
 
     @Test
     public void testAddRemoveFacts() {
-        final String rule1 = " package " + PKG_NAME_TEST + ";\n" +
+        final String rule1 = " package " + TestUtil.RULES_PACKAGE_NAME + ";\n" +
                 " global java.util.List list\n" +
-                " rule " + RULE1_NAME + " \n" +
+                " rule " + TestUtil.RULE1_NAME + " \n" +
                 " when \n" +
                 "   Integer() \n" +
                 "   not(not(Integer() and Integer())) \n" +
                 " then\n" +
-                "   list.add('" + RULE1_NAME + "'); \n" +
+                "   list.add('" + TestUtil.RULE1_NAME + "'); \n" +
                 " end";
 
-        final String rule2 = " package " + PKG_NAME_TEST + ";\n" +
+        final String rule2 = " package " + TestUtil.RULES_PACKAGE_NAME + ";\n" +
                 " global java.util.List list\n" +
-                " rule " + RULE2_NAME + " \n" +
+                " rule " + TestUtil.RULE2_NAME + " \n" +
                 " when \n" +
                 "   Integer() \n" +
                 "   exists(Integer() and Integer()) \n" +
                 " then\n" +
-                "   list.add('" + RULE2_NAME + "'); \n" +
+                "   list.add('" + TestUtil.RULE2_NAME + "'); \n" +
                 " end";
 
-        final List resultsList = new ArrayList();
-        final Map<String, Object> globals = new HashMap<String, Object>();
-        globals.put("list", resultsList);
-        final TestContext context = new TestContext(PKG_NAME_TEST, globals, resultsList);
 
-        final AddRemoveTestBuilder builder = new AddRemoveTestBuilder();
-        builder.addOperation(TestOperationType.CREATE_SESSION, new String[]{rule1, rule2})
-                .addOperation(TestOperationType.INSERT_FACTS, new Object[]{1});
-
-        context.executeTestOperations(builder.build());
-        builder.clear();
-
-        final Set<FactHandle> sessionFacts = context.getActualSessionFactHandles();
-
-        builder.addOperation(TestOperationType.REMOVE_RULES, new String[]{RULE2_NAME, RULE1_NAME})
-               .addOperation(TestOperationType.FIRE_RULES)
-               .addOperation(TestOperationType.CHECK_RESULTS, new String[]{})
-               .addOperation(TestOperationType.REMOVE_FACTS, sessionFacts.toArray(new FactHandle[]{}))
-               .addOperation(TestOperationType.FIRE_RULES)
-               .addOperation(TestOperationType.CHECK_RESULTS, new String[]{});
-        context.executeTestOperations(builder.build());
+        final KieSession kieSession = TestUtil.createSession(rule1, rule2);
+        try {
+            final List resultsList = new ArrayList();
+            kieSession.setGlobal("list", resultsList);
+            final List<FactHandle> sessionFacts = TestUtil.insertFacts(kieSession, 1);
+            TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE2_NAME, TestUtil.RULE1_NAME);
+            kieSession.fireAllRules();
+            Assertions.assertThat(resultsList).isEmpty();
+            TestUtil.removeFacts(kieSession, sessionFacts);
+            kieSession.fireAllRules();
+            Assertions.assertThat(resultsList).isEmpty();
+        } finally {
+            kieSession.dispose();
+        }
     }
 
     @Test
     public void testReaddRulesSharedRianDoubleNots() {
 
-        final String rule1 = " package " + PKG_NAME_TEST + ";\n" +
+        final String rule1 = " package " + TestUtil.RULES_PACKAGE_NAME + ";\n" +
                              " global java.util.List list\n" +
-                             " rule " + RULE1_NAME + " \n" +
+                             " rule " + TestUtil.RULE1_NAME + " \n" +
                              " when \n" +
                              "   exists(Integer() and Integer()) \n" +
                              " then\n" +
-                             "   list.add('" + RULE1_NAME + "'); \n" +
+                             "   list.add('" + TestUtil.RULE1_NAME + "'); \n" +
                              " end";
 
-        final String rule2 = " package " + PKG_NAME_TEST + ";\n" +
+        final String rule2 = " package " + TestUtil.RULES_PACKAGE_NAME + ";\n" +
                              " global java.util.List list\n" +
-                             " rule " + RULE2_NAME + " \n" +
+                             " rule " + TestUtil.RULE2_NAME + " \n" +
                              " when \n" +
                              "   not(not(exists(Integer() and Integer()))) \n" +
                              " then\n" +
-                             "   list.add('" + RULE2_NAME + "'); \n" +
+                             "   list.add('" + TestUtil.RULE2_NAME + "'); \n" +
                              " end";
 
-        final AddRemoveTestBuilder builder = new AddRemoveTestBuilder();
-        builder.addOperation(TestOperationType.CREATE_SESSION, new String[]{rule1, rule2})
-               .addOperation(TestOperationType.INSERT_FACTS, new Object[]{1})
-               .addOperation(TestOperationType.FIRE_RULES)
-               .addOperation(TestOperationType.CHECK_RESULTS, new String[]{RULE1_NAME, RULE2_NAME})
-               .addOperation(TestOperationType.REMOVE_RULES, new String[]{RULE1_NAME, RULE2_NAME})
-               .addOperation(TestOperationType.FIRE_RULES)
-               .addOperation(TestOperationType.CHECK_RESULTS, new String[]{})
-               .addOperation(TestOperationType.ADD_RULES, new String[]{rule1, rule2})
-               .addOperation(TestOperationType.FIRE_RULES)
-               .addOperation(TestOperationType.CHECK_RESULTS, new String[]{RULE1_NAME, RULE2_NAME});
-
-        runAddRemoveTest(builder.build(), new HashMap<String, Object>());
+        final KieSession kieSession = TestUtil.createSession(rule1, rule2);
+        try {
+            final List resultsList = new ArrayList();
+            kieSession.setGlobal("list", resultsList);
+            TestUtil.insertFacts(kieSession, 1);
+            kieSession.fireAllRules();
+            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME, TestUtil.RULE2_NAME);
+            resultsList.clear();
+            TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE2_NAME, TestUtil.RULE1_NAME);
+            kieSession.fireAllRules();
+            Assertions.assertThat(resultsList).isEmpty();
+            TestUtil.addRules(kieSession, rule1, rule2);
+            kieSession.fireAllRules();
+            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME, TestUtil.RULE2_NAME);
+        } finally {
+            kieSession.dispose();
+        }
     }
 
     @Test
     public void testOr() {
 
-        final String rule1 = " package " + PKG_NAME_TEST + ";\n" +
+        final String rule1 = " package " + TestUtil.RULES_PACKAGE_NAME + ";\n" +
                              " global java.util.List list\n" +
-                             " rule " + RULE1_NAME + " \n" +
+                             " rule " + TestUtil.RULE1_NAME + " \n" +
                              " when \n" +
                              "   $k: Integer()\n" +
                              "   ( Integer(this != 1) or Integer(this == 1) )\n" +
                              " then\n" +
-                             "   list.add('" + RULE1_NAME + "'); \n" +
+                             "   list.add('" + TestUtil.RULE1_NAME + "'); \n" +
                              " end";
 
-        final String rule2 = " package " + PKG_NAME_TEST + ";\n" +
+        final String rule2 = " package " + TestUtil.RULES_PACKAGE_NAME + ";\n" +
                              " global java.util.List list\n" +
-                             " rule " + RULE2_NAME + " \n" +
+                             " rule " + TestUtil.RULE2_NAME + " \n" +
                              " when \n" +
                              "   Integer()\n" +
                              " then\n" +
-                             "   list.add('" + RULE2_NAME + "'); \n" +
+                             "   list.add('" + TestUtil.RULE2_NAME + "'); \n" +
                              " end";
 
-        final AddRemoveTestBuilder builder = new AddRemoveTestBuilder();
-        builder.addOperation(TestOperationType.CREATE_SESSION, new String[]{rule2})
-               .addOperation(TestOperationType.INSERT_FACTS, new Object[]{1})
-               .addOperation(TestOperationType.FIRE_RULES)
-               .addOperation(TestOperationType.CHECK_RESULTS, new String[]{RULE2_NAME})
-               .addOperation(TestOperationType.REMOVE_RULES, new String[]{RULE2_NAME})
-               .addOperation(TestOperationType.FIRE_RULES)
-               .addOperation(TestOperationType.CHECK_RESULTS, new String[]{})
-               .addOperation(TestOperationType.ADD_RULES, new String[]{rule1, rule2})
-               .addOperation(TestOperationType.FIRE_RULES)
-               .addOperation(TestOperationType.CHECK_RESULTS, new String[]{RULE1_NAME, RULE2_NAME});
-
-        runAddRemoveTest(builder.build(), new HashMap<String, Object>());
+        final KieSession kieSession = TestUtil.createSession(rule2);
+        try {
+            final List resultsList = new ArrayList();
+            kieSession.setGlobal("list", resultsList);
+            TestUtil.insertFacts(kieSession, 1);
+            kieSession.fireAllRules();
+            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE2_NAME);
+            resultsList.clear();
+            TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE2_NAME);
+            kieSession.fireAllRules();
+            Assertions.assertThat(resultsList).isEmpty();
+            TestUtil.addRules(kieSession, rule1, rule2);
+            kieSession.fireAllRules();
+            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME, TestUtil.RULE2_NAME);
+        } finally {
+            kieSession.dispose();
+        }
     }
 
     @Test
     public void testOr2() {
 
-        final String rule1 = " package " + PKG_NAME_TEST + ";\n" +
+        final String rule1 = " package " + TestUtil.RULES_PACKAGE_NAME + ";\n" +
                              " global java.util.List list\n" +
-                             " rule " + RULE1_NAME + " \n" +
+                             " rule " + TestUtil.RULE1_NAME + " \n" +
                              " when \n" +
                              "   Integer()\n" +
                              " then\n" +
-                             "   list.add('" + RULE1_NAME + "'); \n" +
+                             "   list.add('" + TestUtil.RULE1_NAME + "'); \n" +
                              " end";
 
-        final String rule2 = " package " + PKG_NAME_TEST + ";\n" +
+        final String rule2 = " package " + TestUtil.RULES_PACKAGE_NAME + ";\n" +
                              " global java.util.List list\n" +
-                             " rule " + RULE2_NAME + " \n" +
+                             " rule " + TestUtil.RULE2_NAME + " \n" +
                              " when \n" +
                              "   $k: Integer()\n" +
                              "   ( Integer(this != 1) or Integer(this == 1) )\n" +
                              " then\n" +
-                             "   list.add('" + RULE2_NAME + "'); \n" +
+                             "   list.add('" + TestUtil.RULE2_NAME + "'); \n" +
                              " end";
 
-        final AddRemoveTestBuilder builder = new AddRemoveTestBuilder();
-        builder.addOperation(TestOperationType.CREATE_SESSION, new String[]{rule1, rule2})
-               .addOperation(TestOperationType.INSERT_FACTS, new Object[]{1})
-               .addOperation(TestOperationType.FIRE_RULES)
-               .addOperation(TestOperationType.CHECK_RESULTS, new String[]{RULE1_NAME, RULE2_NAME})
-               .addOperation(TestOperationType.REMOVE_RULES, new String[]{RULE2_NAME})
-               .addOperation(TestOperationType.FIRE_RULES)
-               .addOperation(TestOperationType.CHECK_RESULTS, new String[]{})
-               .addOperation(TestOperationType.REMOVE_RULES, new String[]{RULE1_NAME})
-               .addOperation(TestOperationType.FIRE_RULES)
-               .addOperation(TestOperationType.CHECK_RESULTS, new String[]{})
-               .addOperation(TestOperationType.ADD_RULES, new String[]{rule2})
-               .addOperation(TestOperationType.FIRE_RULES)
-               .addOperation(TestOperationType.CHECK_RESULTS, new String[]{RULE2_NAME})
-               .addOperation(TestOperationType.ADD_RULES, new String[]{rule1})
-               .addOperation(TestOperationType.FIRE_RULES)
-               .addOperation(TestOperationType.CHECK_RESULTS, new String[]{RULE1_NAME})
-               .addOperation(TestOperationType.REMOVE_RULES, new String[]{RULE2_NAME, RULE1_NAME})
-               .addOperation(TestOperationType.FIRE_RULES)
-               .addOperation(TestOperationType.CHECK_RESULTS, new String[]{})
-        ;
-
-        runAddRemoveTest(builder.build(), new HashMap<String, Object>());
+        final KieSession kieSession = TestUtil.createSession(rule1, rule2);
+        try {
+            final List resultsList = new ArrayList();
+            kieSession.setGlobal("list", resultsList);
+            TestUtil.insertFacts(kieSession, 1);
+            kieSession.fireAllRules();
+            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME, TestUtil.RULE2_NAME);
+            resultsList.clear();
+            TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE2_NAME);
+            kieSession.fireAllRules();
+            Assertions.assertThat(resultsList).isEmpty();
+            TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE1_NAME);
+            kieSession.fireAllRules();
+            Assertions.assertThat(resultsList).isEmpty();
+            TestUtil.addRules(kieSession, rule1);
+            kieSession.fireAllRules();
+            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME);
+            resultsList.clear();
+            TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE1_NAME);
+            kieSession.fireAllRules();
+            Assertions.assertThat(resultsList).isEmpty();
+        } finally {
+            kieSession.dispose();
+        }
     }
 
     @Test
     public void testEvals() {
 
-        final String rule1 = " package " + PKG_NAME_TEST + ";\n" +
+        final String rule1 = " package " + TestUtil.RULES_PACKAGE_NAME + ";\n" +
                              " global java.util.List list\n" +
-                             " rule " + RULE1_NAME + " \n" +
+                             " rule " + TestUtil.RULE1_NAME + " \n" +
                              " when \n" +
                              "   Integer()\n" +
                              " then\n" +
-                             "   list.add('" + RULE1_NAME + "'); \n" +
+                             "   list.add('" + TestUtil.RULE1_NAME + "'); \n" +
                              " end";
 
-        final String rule2 = " package " + PKG_NAME_TEST + ";\n" +
+        final String rule2 = " package " + TestUtil.RULES_PACKAGE_NAME + ";\n" +
                              " global java.util.List list\n" +
-                             " rule " + RULE2_NAME + " \n" +
+                             " rule " + TestUtil.RULE2_NAME + " \n" +
                              " when \n" +
                              "  $j: Integer() \n" +
                              "  eval($j == 1) \n" +
                              "  (eval(true) or eval($j == 1) ) \n" +
                              " then\n" +
-                             "   list.add('" + RULE2_NAME + "'); \n" +
+                             "   list.add('" + TestUtil.RULE2_NAME + "'); \n" +
                              " end";
 
-        final AddRemoveTestBuilder builder = new AddRemoveTestBuilder();
-        builder.addOperation(TestOperationType.CREATE_SESSION, new String[]{rule1, rule2})
-               .addOperation(TestOperationType.INSERT_FACTS, new Object[]{1})
-               .addOperation(TestOperationType.REMOVE_RULES, new String[]{RULE2_NAME})
-               .addOperation(TestOperationType.FIRE_RULES)
-               .addOperation(TestOperationType.CHECK_RESULTS, new String[]{RULE1_NAME})
-               .addOperation(TestOperationType.REMOVE_RULES, new String[]{RULE1_NAME})
-               .addOperation(TestOperationType.FIRE_RULES)
-               .addOperation(TestOperationType.CHECK_RESULTS, new String[]{})
-        ;
-
-        runAddRemoveTest(builder.build(), new HashMap<String, Object>());
+        final KieSession kieSession = TestUtil.createSession(rule1, rule2);
+        try {
+            final List resultsList = new ArrayList();
+            kieSession.setGlobal("list", resultsList);
+            TestUtil.insertFacts(kieSession, 1);
+            TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE2_NAME);
+            kieSession.fireAllRules();
+            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME);
+            resultsList.clear();
+            TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE1_NAME);
+            kieSession.fireAllRules();
+            Assertions.assertThat(resultsList).isEmpty();
+        } finally {
+            kieSession.dispose();
+        }
     }
 
     @Test
@@ -2398,7 +2475,7 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
 
         final List<String> globalList = new ArrayList<>();
 
-        final KieSession kieSession = buildSessionInSteps(rule1, rule2);
+        final KieSession kieSession = TestUtil.buildSessionInSteps(rule1, rule2);
         kieSession.setGlobal("list", globalList);
         kieSession.insert(1);
         kieSession.insert(2);
@@ -2446,7 +2523,7 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
 
         final List<String> globalList = new ArrayList<>();
 
-        final KieSession kieSession = buildSessionInSteps(rule1, rule2);
+        final KieSession kieSession = TestUtil.buildSessionInSteps(rule1, rule2);
         kieSession.setGlobal("list", globalList);
         kieSession.insert(1);
         kieSession.insert(2);
@@ -2485,7 +2562,7 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
 
         final List<String> globalList = new ArrayList<>();
 
-        final KieSession kieSession = buildSessionInSteps(rule1, rule2);
+        final KieSession kieSession = TestUtil.buildSessionInSteps(rule1, rule2);
         kieSession.setGlobal("list", globalList);
 
         kieSession.fireAllRules();
@@ -2527,7 +2604,7 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
 
         final List<String> globalList = new ArrayList<>();
 
-        final KieSession kieSession = buildSessionInSteps(rule2, rule1);
+        final KieSession kieSession = TestUtil.buildSessionInSteps(rule2, rule1);
         kieSession.setGlobal("list", globalList);
 
         Assertions.assertThat(globalList).isEmpty();
