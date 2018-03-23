@@ -23,11 +23,14 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
@@ -39,6 +42,7 @@ import javax.xml.validation.SchemaFactory;
 
 import org.kie.dmg.pmml.pmml_4_2.descr.ClusteringModel;
 import org.kie.dmg.pmml.pmml_4_2.descr.DataDictionary;
+import org.kie.dmg.pmml.pmml_4_2.descr.DataField;
 import org.kie.dmg.pmml.pmml_4_2.descr.NaiveBayesModel;
 import org.kie.dmg.pmml.pmml_4_2.descr.NeuralNetwork;
 import org.kie.dmg.pmml.pmml_4_2.descr.PMML;
@@ -65,6 +69,8 @@ import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.pmml.pmml_4_2.model.Miningmodel;
 import org.kie.pmml.pmml_4_2.model.PMML4UnitImpl;
+import org.kie.pmml.pmml_4_2.model.PMMLMiningField;
+import org.kie.pmml.pmml_4_2.model.PMMLOutputField;
 import org.kie.pmml.pmml_4_2.model.mining.MiningSegment;
 import org.kie.pmml.pmml_4_2.model.mining.MiningSegmentation;
 import org.mvel2.templates.SimpleTemplateRegistry;
@@ -285,8 +291,8 @@ public class PMML4Compiler implements PMMLCompiler {
     
     
     private String getRuleUnitClass(PMML4Unit unit) {
-    	PMML4Model root = unit.getRootModel();
-    	return root.getRuleUnitClassName();
+        PMML4Model root = unit.getRootModel();
+        return root.getRuleUnitClassName();
     }
     
     public String generateTheory( PMML pmml ) {
@@ -322,7 +328,7 @@ public class PMML4Compiler implements PMMLCompiler {
         visitorSession.dispose();
 
         return modelEvaluatingRules;
-	}
+    }
 
 
     
@@ -503,160 +509,194 @@ public class PMML4Compiler implements PMMLCompiler {
     }
     
     private InputStream getInputStreamByFileName(String fileName) {
-    	InputStream is = null;
-    	Resource res = ResourceFactory.newClassPathResource(fileName);
-    	try {
-			is = res.getInputStream();
-		} catch (Exception e) {
-		}
-    	if (is == null) {
-    		res = ResourceFactory.newFileResource(fileName);
-    	}
-    	try {
-    		is = res.getInputStream();
-    	} catch (Exception e) {
-    		this.results.add(new PMMLError("Unable to retrieve file based resource: "+fileName));
-    	}
-    	return is;
+        InputStream is = null;
+        Resource res = ResourceFactory.newClassPathResource(fileName);
+        try {
+            is = res.getInputStream();
+        } catch (Exception e) {
+        }
+        if (is == null) {
+            res = ResourceFactory.newFileResource(fileName);
+        }
+        try {
+            is = res.getInputStream();
+        } catch (Exception e) {
+            this.results.add(new PMMLError("Unable to retrieve file based resource: "+fileName));
+        }
+        return is;
     }
     
     @Override
     public Map<String,String> getJavaClasses(String fileName) {
-    	InputStream is = getInputStreamByFileName(fileName);
-    	if (is != null) {
-    		return getJavaClasses(is);
-    	}
-    	return new HashMap<>();
+        InputStream is = getInputStreamByFileName(fileName);
+        if (is != null) {
+            return getJavaClasses(is);
+        }
+        return new HashMap<>();
     }
     
     @Override
     public Map<String,String> getJavaClasses(InputStream stream) {
-    	Map<String,String> javaClasses = new HashMap<>();
-    	PMML pmml = loadModel(PMML, stream);
-    	if (pmml != null) {
-    		PMML4Unit unit = new PMML4UnitImpl(pmml);
-    		if (unit != null) {
-    			List<PMML4Model> models = unit.getModels();
-    			models.forEach(model -> {
-    				Map.Entry<String, String> inputPojo = model.getMappedMiningPojo();
-    				Map.Entry<String, String> ruleUnit = model.getMappedRuleUnit();
-    				if (inputPojo != null) javaClasses.put(inputPojo.getKey(), inputPojo.getValue());
-    				if (ruleUnit != null) javaClasses.put(ruleUnit.getKey(), ruleUnit.getValue());
-    			});
-    		}
-    	}
-    	return javaClasses;
+        Map<String,String> javaClasses = new HashMap<>();
+        PMML pmml = loadModel(PMML, stream);
+        if (pmml != null) {
+            PMML4Unit unit = new PMML4UnitImpl(pmml);
+            if (unit != null) {
+                List<PMML4Model> models = unit.getModels();
+                models.forEach(model -> {
+                    Map.Entry<String, String> inputPojo = model.getMappedMiningPojo();
+                    Map.Entry<String, String> ruleUnit = model.getMappedRuleUnit();
+                    if (inputPojo != null) javaClasses.put(inputPojo.getKey(), inputPojo.getValue());
+                    if (ruleUnit != null) javaClasses.put(ruleUnit.getKey(), ruleUnit.getValue());
+                });
+            }
+        }
+        return javaClasses;
     }
     
     
     public List<PMMLResource> precompile( String fileName, ClassLoader classLoader, KieBaseModel rootKieBaseModel) {
-    	InputStream is = getInputStreamByFileName(fileName);
-    	List<PMMLResource> resources = null;
-    	if (is != null) {
-    		try {
-    			resources = precompile(is,classLoader,rootKieBaseModel);
-    		} catch (Exception e) {
-    			PMMLError err = new PMMLError("Unable to retrieve pre-compiled resources for PMML: "+e.getMessage());
-    			this.results.add(err);
-    		}
-    	}
-    	return (resources != null) ? resources:Collections.emptyList();
+        InputStream is = getInputStreamByFileName(fileName);
+        List<PMMLResource> resources = null;
+        if (is != null) {
+            try {
+                resources = precompile(is,classLoader,rootKieBaseModel);
+            } catch (Exception e) {
+                PMMLError err = new PMMLError("Unable to retrieve pre-compiled resources for PMML: "+e.getMessage());
+                this.results.add(err);
+            }
+        }
+        return (resources != null) ? resources:Collections.emptyList();
     }
     
     
     public List<PMMLResource> precompile( InputStream stream, ClassLoader classLoader, KieBaseModel rootKieBaseModel) {
-    	List<PMMLResource> resources = new ArrayList<>();
-    	KieServices services = KieServices.Factory.get();
-    	KieModuleModel module = services.newKieModuleModel();
-    	this.results = new ArrayList<KnowledgeBuilderResult>();
-    	PMML pmml = loadModel(PMML, stream);
-    	helper.setResolver(classLoader);
-    	PMML4Unit unit = new PMML4UnitImpl(pmml);
-    	if (unit.containsMiningModel()) {
-    		Miningmodel rootModel = unit.getRootMiningModel();
-    		resources = buildResourcesFromModel(pmml,rootModel,null,classLoader,module);
-    	} else {
-    		PMML4Model rootModel = unit.getRootModel();
-    		if (rootModel != null) {
-    			helper.setPack(rootModel.getModelPackageName());
-	    		KieBaseModel kbm = module.newKieBaseModel(rootModel.getModelId());
-	    		kbm.addPackage(helper.getPack())
-	    			.setDefault(true)
-	    			.setEventProcessingMode(EventProcessingOption.CLOUD);
-	    		PMMLResource resource = new PMMLResource(helper.getPack());
-	    		resource.setKieBaseModel(kbm);
-	    		resource.addRules(rootModel.getModelId(), this.compile(pmml, classLoader));
-	    		resources.add(resource);
-    		}
-    	}
-    	return resources;
+        List<PMMLResource> resources = new ArrayList<>();
+        KieServices services = KieServices.Factory.get();
+        KieModuleModel module = services.newKieModuleModel();
+        this.results = new ArrayList<KnowledgeBuilderResult>();
+        PMML pmml = loadModel(PMML, stream);
+        helper.setResolver(classLoader);
+        PMML4Unit unit = new PMML4UnitImpl(pmml);
+        if (unit.containsMiningModel()) {
+            Miningmodel rootModel = unit.getRootMiningModel();
+            resources = buildResourcesFromModel(pmml,rootModel,null,classLoader,module);
+        } else {
+            PMML4Model rootModel = unit.getRootModel();
+            if (rootModel != null) {
+                helper.setPack(rootModel.getModelPackageName());
+                KieBaseModel kbm = module.newKieBaseModel(rootModel.getModelId());
+                kbm.addPackage(helper.getPack())
+                    .setDefault(true)
+                    .setEventProcessingMode(EventProcessingOption.CLOUD);
+                PMMLResource resource = new PMMLResource(helper.getPack());
+                resource.setKieBaseModel(kbm);
+                resource.addRules(rootModel.getModelId(), this.compile(pmml, classLoader));
+                resources.add(resource);
+            }
+        }
+        return resources;
+    }
+
+    private void addMissingFieldDefinition(PMML pmml, MiningSegmentation msm, MiningSegment seg) {
+        // get the list of models that may contain the field definition
+        List<PMML4Model> models = msm.getMiningSegments().stream()
+                .filter(s -> s != seg && s.getSegmentIndex() < seg.getSegmentIndex())
+                .map(iseg -> { return iseg.getModel(); })
+                .collect(Collectors.toList());
+        seg.getModel().getMiningFields().stream().filter(mf -> !mf.isInDictionary()).forEach(pmf -> {
+            String fldName = pmf.getName();
+            boolean fieldAdded = false;
+            for (Iterator<PMML4Model> iter = models.iterator(); iter.hasNext() && !fieldAdded;) {
+                PMML4Model mdl = iter.next();
+                PMMLOutputField outfield = mdl.findOutputField(fldName);
+                PMMLMiningField target = (outfield != null && outfield.getTargetField() != null) ?
+                        mdl.findMiningField(outfield.getTargetField()) : null;
+                if (outfield != null) {
+                    DataField e = null;
+                    if (outfield.getRawDataField() != null && outfield.getRawDataField().getDataType() != null) {
+                        e = outfield.getRawDataField();
+                    } else if (target != null ) {
+                        e = target.getRawDataField();
+                    }
+                    if (e != null) {
+                        e.setName(fldName);
+                        pmml.getDataDictionary().getDataFields().add(e);
+                        BigInteger bi = pmml.getDataDictionary().getNumberOfFields();
+                        pmml.getDataDictionary().setNumberOfFields(bi.add(BigInteger.ONE));
+                        fieldAdded = true;
+                    }
+                }
+            }
+        });
     }
     
     protected PMMLResource buildResourceFromSegment( PMML pmml_origin, MiningSegment segment, ClassLoader classLoader, KieModuleModel module) {
-    	PMML pmml = new PMML();
-    	DataDictionary dd = pmml_origin.getDataDictionary();
-    	pmml.setDataDictionary(dd);
-    	pmml.setHeader(pmml_origin.getHeader());
-    	pmml.getAssociationModelsAndBaselineModelsAndClusteringModels().add(segment.getModel().getRawModel());
-    	helper.setPack(segment.getModel().getModelPackageName());//PMML4Helper.pmmlDefaultPackageName()+".mining.segment_"+segment.getSegmentId());
-    	
-    	String rules = this.compile(pmml, classLoader);
-    	KieBaseModel kbModel = module.newKieBaseModel(segment.getOwner().getOwner().getModelId()+"_"+segment.getOwner().getSegmentationId()+"_SEGMENT_"+segment.getSegmentId());
-    	kbModel.addPackage(helper.getPack())
-    		.setDefault(false)
-    		.setEventProcessingMode(EventProcessingOption.CLOUD);
-    	KieSessionModel ksm = kbModel.newKieSessionModel("SEGMENT_"+segment.getSegmentId());
-    	ksm.setDefault(true);
-    	PMMLResource resource = new PMMLResource(helper.getPack());
-    	resource.setKieBaseModel(kbModel);
-    	resource.addRules(segment.getModel().getModelId(), rules);
-    	return resource;
+        PMML pmml = new PMML();
+        DataDictionary dd = pmml_origin.getDataDictionary();
+        pmml.setDataDictionary(dd);
+        pmml.setHeader(pmml_origin.getHeader());
+        pmml.getAssociationModelsAndBaselineModelsAndClusteringModels().add(segment.getModel().getRawModel());
+        addMissingFieldDefinition(pmml,segment.getOwner(),segment);
+        helper.setPack(segment.getModel().getModelPackageName());//PMML4Helper.pmmlDefaultPackageName()+".mining.segment_"+segment.getSegmentId());
+
+        String rules = this.compile(pmml, classLoader);
+        KieBaseModel kbModel = module.newKieBaseModel(segment.getOwner().getOwner().getModelId()+"_"+segment.getOwner().getSegmentationId()+"_SEGMENT_"+segment.getSegmentId());
+        kbModel.addPackage(helper.getPack())
+            .setDefault(false)
+            .setEventProcessingMode(EventProcessingOption.CLOUD);
+        KieSessionModel ksm = kbModel.newKieSessionModel("SEGMENT_"+segment.getSegmentId());
+        ksm.setDefault(true);
+        PMMLResource resource = new PMMLResource(helper.getPack());
+        resource.setKieBaseModel(kbModel);
+        resource.addRules(segment.getModel().getModelId(), rules);
+        return resource;
     }
     
     
     
     protected List<PMMLResource> buildResourcesFromModel(PMML pmml, Miningmodel miningModel, List<PMMLResource> resourcesList, ClassLoader classLoader, KieModuleModel module) {
-    	if (resourcesList == null) {
-    		resourcesList = new ArrayList<>();
-    	}
-    	PMMLResource resource = new PMMLResource(miningModel.getModelPackageName());//new PMMLResource(PMML_DROOLS+".mining.model_"+miningModel.getModelId());
-    	KieBaseModel rootKieBaseModel = module.newKieBaseModel(resource.getPackageName());
-		rootKieBaseModel.addPackage(resource.getPackageName());
-		rootKieBaseModel.setDefault(true);
-    	resource.setKieBaseModel(rootKieBaseModel);
-    	resource.addRules(miningModel.getModelId(), miningModel.generateRules());
-    	resourcesList.add(resource);
-    	getChildResources(pmml,miningModel, resourcesList, classLoader, module);
-    	return resourcesList;
+        if (resourcesList == null) {
+            resourcesList = new ArrayList<>();
+        }
+        PMMLResource resource = new PMMLResource(miningModel.getModelPackageName());//new PMMLResource(PMML_DROOLS+".mining.model_"+miningModel.getModelId());
+        KieBaseModel rootKieBaseModel = module.newKieBaseModel(resource.getPackageName());
+        rootKieBaseModel.addPackage(resource.getPackageName());
+        rootKieBaseModel.setDefault(true);
+        resource.setKieBaseModel(rootKieBaseModel);
+        resource.addRules(miningModel.getModelId(), miningModel.generateRules());
+        resourcesList.add(resource);
+        getChildResources(pmml,miningModel, resourcesList, classLoader, module);
+        return resourcesList;
     }
     
     protected List<PMMLResource> getChildResources(PMML pmml_origin, Miningmodel parent, List<PMMLResource> resourceList, ClassLoader classLoader, KieModuleModel module) {
-    	if (parent != null && parent.getSegmentation() != null) {
-    		MiningSegmentation segmentation = parent.getSegmentation();
-    		if (segmentation.getMiningSegments() != null) {
-    			List<MiningSegment> segments = segmentation.getMiningSegments();
-    			for (MiningSegment segment: segments) {
-    				if (segment.getModel() instanceof Miningmodel) {
-    					buildResourcesFromModel(pmml_origin,(Miningmodel)segment.getModel(), resourceList, classLoader, module);
-    				} else {
-    					resourceList.add(buildResourceFromSegment(pmml_origin,segment, classLoader, module));
-    				}
-    			}
-    		}
-    	}
-    	return resourceList;
+        if (parent != null && parent.getSegmentation() != null) {
+            MiningSegmentation segmentation = parent.getSegmentation();
+            if (segmentation.getMiningSegments() != null) {
+                List<MiningSegment> segments = segmentation.getMiningSegments();
+                for (MiningSegment segment: segments) {
+                    if (segment.getModel() instanceof Miningmodel) {
+                        buildResourcesFromModel(pmml_origin,(Miningmodel)segment.getModel(), resourceList, classLoader, module);
+                    } else {
+                        resourceList.add(buildResourceFromSegment(pmml_origin,segment, classLoader, module));
+                    }
+                }
+            }
+        }
+        return resourceList;
     }
     
     
     public String compile( PMML pmml, ClassLoader classLoader) {
         helper.setResolver( classLoader );
-    	
+
         if ( getResults().isEmpty() ) {
             return generateTheory( pmml );
         } else {
             return null;
         }
-   	
+
     }
 
 
@@ -679,52 +719,52 @@ public class PMML4Compiler implements PMMLCompiler {
 
 
     public void dump( String s, OutputStream ostream ) {
-		// write to outstream
-		Writer writer = null;
-		try {
-			writer = new OutputStreamWriter( ostream, "UTF-8" );
-			writer.write(s);
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		finally {
-			try {
+        // write to outstream
+        Writer writer = null;
+        try {
+            writer = new OutputStreamWriter( ostream, "UTF-8" );
+            writer.write(s);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        finally {
+            try {
                 if (writer != null) {
                     writer.flush();
                 }
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
 
-	/**
-	 * Imports a PMML source file, returning a Java descriptor
-	 * @param model			the PMML package name (classes derived from a specific schema)
-	 * @param source		the name of the PMML resource storing the predictive model
-	 * @return				the Java Descriptor of the PMML resource
-	 */
-	public PMML loadModel( String model, InputStream source ) {
-		try {
+    /**
+     * Imports a PMML source file, returning a Java descriptor
+     * @param model            the PMML package name (classes derived from a specific schema)
+     * @param source        the name of the PMML resource storing the predictive model
+     * @return                the Java Descriptor of the PMML resource
+     */
+    public PMML loadModel( String model, InputStream source ) {
+        try {
             if ( schema == null ) {
                 visitorBuildResults.add( new PMMLWarning( ResourceFactory.newInputStreamResource( source ), "Could not validate PMML document, schema not available" ) );
             }
             JAXBContext jc = JAXBContext.newInstance( model );
-			Unmarshaller unmarshaller = jc.createUnmarshaller();
+            Unmarshaller unmarshaller = jc.createUnmarshaller();
             if ( schema != null ) {
                 unmarshaller.setSchema( schema );
             }
 
-			return (PMML) unmarshaller.unmarshal( source );
-		} catch ( JAXBException e ) {
-			this.results.add( new PMMLError( e.toString() ) );
-			return null;
-		}
+            return (PMML) unmarshaller.unmarshal( source );
+        } catch ( JAXBException e ) {
+            this.results.add( new PMMLError( e.toString() ) );
+            return null;
+        }
 
-	}
+    }
 
     public static void dumpModel( PMML model, OutputStream target ) {
         try {
@@ -742,7 +782,7 @@ public class PMML4Compiler implements PMMLCompiler {
     
     @Override
     public String getCompilerVersion() {
-    	return "KIE PMML v2";
+        return "KIE PMML v2";
     }
 
 }
