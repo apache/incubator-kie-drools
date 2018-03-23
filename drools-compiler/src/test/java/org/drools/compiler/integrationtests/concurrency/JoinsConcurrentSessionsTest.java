@@ -54,7 +54,7 @@ public class JoinsConcurrentSessionsTest extends AbstractConcurrentTest {
         super(enforcedJitting, serializeKieBase, sharedKieBase, false);
     }
 
-    @Test
+    @Test(timeout = 20000)
     public void test5() throws InterruptedException {
         final String drlTemplate =
                 " import org.drools.compiler.integrationtests.facts.*;\n" +

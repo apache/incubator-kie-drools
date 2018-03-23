@@ -482,7 +482,7 @@ public class MultithreadTest extends CommonTestMethodBase {
         ksession.dispose();
     }
 
-    @Test
+    @Test(timeout = 20000)
     public void testConcurrentDelete() {
         final String drl =
                 "import " + SlowBean.class.getCanonicalName() + ";\n" +
@@ -651,7 +651,7 @@ public class MultithreadTest extends CommonTestMethodBase {
         ksession.dispose();
     }
 
-    @Test
+    @Test(timeout = 20000)
     public void testJittingShortComparison() {
         // DROOLS-1633
         final String drl =

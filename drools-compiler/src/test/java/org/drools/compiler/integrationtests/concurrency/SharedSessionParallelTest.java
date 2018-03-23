@@ -46,7 +46,7 @@ public class SharedSessionParallelTest extends AbstractConcurrentTest {
         super(enforcedJitting, serializeKieBase, false, false);
     }
 
-    @Test
+    @Test(timeout = 20000)
     public void testNoExceptions() throws InterruptedException {
         final String drl = "rule R1 when String() then end";
 
@@ -74,7 +74,7 @@ public class SharedSessionParallelTest extends AbstractConcurrentTest {
         }
     }
 
-    @Test
+    @Test(timeout = 20000)
     public void testCheckOneThreadOnly() throws InterruptedException {
         final int threadCount = 100;
         final List<String> list = Collections.synchronizedList(new ArrayList<>());
@@ -117,7 +117,7 @@ public class SharedSessionParallelTest extends AbstractConcurrentTest {
         }
     }
 
-    @Test
+    @Test(timeout = 20000)
     public void testCorrectFirings() throws InterruptedException {
         final int threadCount = 100;
 
@@ -146,7 +146,7 @@ public class SharedSessionParallelTest extends AbstractConcurrentTest {
         checkList(threadCount, list);
     }
 
-    @Test
+    @Test(timeout = 20000)
     public void testCorrectFirings2() throws InterruptedException {
         final int threadCount = 100;
 
@@ -177,7 +177,7 @@ public class SharedSessionParallelTest extends AbstractConcurrentTest {
         Assertions.assertThat(list).hasSize(expectedListSize);
     }
 
-    @Test
+    @Test(timeout = 20000)
     public void testLongRunningRule() throws InterruptedException {
         final int threadCount = 100;
         final int seed = threadCount + 200;
@@ -235,7 +235,7 @@ public class SharedSessionParallelTest extends AbstractConcurrentTest {
         checkList(1, threadCount, list2, (threadCount - 1) * objectCount);
     }
 
-    @Test
+    @Test(timeout = 20000)
     public void testLongRunningRule2() throws InterruptedException {
         final int threadCount = 100;
         final int seed = 1000;
@@ -286,7 +286,7 @@ public class SharedSessionParallelTest extends AbstractConcurrentTest {
         checkList(0, seed, list, seed * threadCount);
     }
 
-    @Test
+    @Test(timeout = 20000)
     public void testLongRunningRule3() throws InterruptedException {
         final int threadCount = 10;
         final int seed = threadCount + 50;
@@ -352,7 +352,7 @@ public class SharedSessionParallelTest extends AbstractConcurrentTest {
         Assertions.assertThat(list2).hasSize(list2ExpectedSize);
     }
 
-    @Test
+    @Test(timeout = 20000)
     public void testCountdownBean() throws InterruptedException {
         final int threadCount = 100;
         final int seed = 1000;
@@ -392,7 +392,7 @@ public class SharedSessionParallelTest extends AbstractConcurrentTest {
         Assertions.assertThat(bean).hasFieldOrPropertyWithValue("seed", 0);
     }
 
-    @Test
+    @Test(timeout = 20000)
     public void testCountdownBean2() throws InterruptedException {
         final int threadCount = 100;
         final int seed = 1000;
@@ -433,7 +433,7 @@ public class SharedSessionParallelTest extends AbstractConcurrentTest {
         }
     }
 
-    @Test
+    @Test(timeout = 20000)
     public void testOneRulePerThread() throws InterruptedException {
         final int threadCount = 1000;
 
