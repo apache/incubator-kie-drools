@@ -50,10 +50,10 @@ public abstract class AbstractModel<T> implements PMML4Model {
     protected Map<String, OutputField> outputFieldMap;
     private static Map<String,Integer> generatedModelIds;
     protected static PMML4Helper helper = new PMML4Helper();
-	protected final static String MINING_TEMPLATE_NAME = "MiningSchemaPOJOTemplate";
-	protected final static String OUTPUT_TEMPLATE_NAME = "OutputPOJOTemplate";
-	protected final static String RULE_UNIT_TEMPLATE_NAME = "RuleUnitTemplate";
-	protected static TemplateRegistry templateRegistry;
+    protected final static String MINING_TEMPLATE_NAME = "MiningSchemaPOJOTemplate";
+    protected final static String OUTPUT_TEMPLATE_NAME = "OutputPOJOTemplate";
+    protected final static String RULE_UNIT_TEMPLATE_NAME = "RuleUnitTemplate";
+    protected static TemplateRegistry templateRegistry;
     public final static String PMML_JAVA_PACKAGE_NAME = "org.kie.pmml.pmml_4_2.model";
 
     protected abstract void addMiningTemplateToRegistry(TemplateRegistry registry);
@@ -61,8 +61,8 @@ public abstract class AbstractModel<T> implements PMML4Model {
     protected abstract void addRuleUnitTemplateToRegistry(TemplateRegistry registry);
 
     static {
-    	generatedModelIds = new HashMap<>();
-    	templateRegistry = new SimpleTemplateRegistry();
+        generatedModelIds = new HashMap<>();
+        templateRegistry = new SimpleTemplateRegistry();
     }
 
     public AbstractModel( String modelId, PMML4ModelType modelType, PMML4Unit owner, T rawModel) {
@@ -73,7 +73,7 @@ public abstract class AbstractModel<T> implements PMML4Model {
         this.parentModel = null;
         initFieldMaps();
     }
-    
+ 
     public AbstractModel( String modelId, PMML4ModelType modelType, PMML4Unit owner, PMML4Model parentModel, T rawModel) {
         this.modelId = modelId;
         this.modelType = modelType;
@@ -82,10 +82,10 @@ public abstract class AbstractModel<T> implements PMML4Model {
         this.parentModel = parentModel;
         initFieldMaps();
     }
-    
+ 
     protected void initFieldMaps() {
-    	initMiningFieldMap();
-    	initOutputFieldMap();
+        initMiningFieldMap();
+        initOutputFieldMap();
     }
 
     protected void initMiningFieldMap() {
@@ -100,9 +100,9 @@ public abstract class AbstractModel<T> implements PMML4Model {
         Output output = getOutput();
         outputFieldMap = new HashMap<>();
         if (output != null) {
-	        for (OutputField field: output.getOutputFields()) {
-	            outputFieldMap.put(field.getName(), field);
-	        }
+            for (OutputField field: output.getOutputFields()) {
+                outputFieldMap.put(field.getName(), field);
+            }
         }
     }
 
@@ -112,34 +112,34 @@ public abstract class AbstractModel<T> implements PMML4Model {
         }
         return null;
     }
-    
+ 
     protected String getMiningPojoTemplateName() {
-    	return this.modelType.toString()+"_"+MINING_TEMPLATE_NAME;
+        return this.modelType.toString()+"_"+MINING_TEMPLATE_NAME;
     }
-    
+ 
     protected String getOutputPojoTemplateName() {
-    	return this.modelType.toString()+"_"+OUTPUT_TEMPLATE_NAME;
+        return this.modelType.toString()+"_"+OUTPUT_TEMPLATE_NAME;
     }
-    
+ 
     protected String getRuleUnitTemplateName() {
-    	return this.modelType.toString()+"_"+RULE_UNIT_TEMPLATE_NAME;
+        return this.modelType.toString()+"_"+RULE_UNIT_TEMPLATE_NAME;
     }
-    
+ 
     public String getModelPackageName() {
-    	String pkgName = "";
-    	if (this.getParentModel() != null) {
-    		pkgName = this.getParentModel().getModelPackageName();
-    	} else {
-    		pkgName = this.getOwner().getRootPackage();
-    	}
-    	return pkgName.concat("."+this.getModelId());
+        String pkgName = "";
+        if (this.getParentModel() != null) {
+            pkgName = this.getParentModel().getModelPackageName();
+        } else {
+            pkgName = this.getOwner().getRootPackage();
+        }
+        return pkgName.concat("."+this.getModelId());
     }
-    
+ 
     public Map.Entry<String, String> getMappedMiningPojo() {
-    	Map<String,String> result = new HashMap<>();
-    	if (!templateRegistry.contains(getMiningPojoTemplateName())) {
-    		this.addMiningTemplateToRegistry(templateRegistry);
-    	}
+        Map<String,String> result = new HashMap<>();
+        if (!templateRegistry.contains(getMiningPojoTemplateName())) {
+            this.addMiningTemplateToRegistry(templateRegistry);
+        }
         List<PMMLMiningField> dataFields = this.getMiningFields();
         Map<String, Object> vars = new HashMap<>();
         String className = this.getMiningPojoClassName();
@@ -150,138 +150,149 @@ public abstract class AbstractModel<T> implements PMML4Model {
         vars.put("modelName", this.getModelId());
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
-	        TemplateRuntime.execute( templateRegistry.getNamedTemplate(this.getMiningPojoTemplateName()),
-	                                 null,
-	                                 new MapVariableResolverFactory(vars),
-	                                 baos );
+            TemplateRuntime.execute( templateRegistry.getNamedTemplate(this.getMiningPojoTemplateName()),
+                                     null,
+                                     new MapVariableResolverFactory(vars),
+                                     baos );
         } catch (TemplateRuntimeError tre) {
-        	// need to figure out logging here
-        	return null;
+            // need to figure out logging here
+            return null;
         }
         result.put(PMML_JAVA_PACKAGE_NAME+"."+className, new String(baos.toByteArray()));
         return result.entrySet().iterator().next();
     }
 
-    
+ 
     public Map.Entry<String, String> getMappedOutputPojo() {
-    	Map<String,String> result = new HashMap<>();
-    	if (!templateRegistry.contains(getOutputPojoTemplateName())) {
-    		this.addOutputTemplateToRegistry(templateRegistry);
-    	}
-    	List<PMMLOutputField> dataFields = this.getOutputFields();
-    	Map<String,Object> vars = new HashMap<>();
-    	String className = this.getOutputPojoClassName();
-    	vars.put("pmmlPackageName", PMML_JAVA_PACKAGE_NAME);
-    	vars.put("className", className);
-    	vars.put("imports", new ArrayList<>());
-    	vars.put("dataFields", dataFields);
-    	vars.put("modelName", this.getModelId());
-    	ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    	try {
-    		TemplateRuntime.execute( templateRegistry.getNamedTemplate(this.getOutputPojoTemplateName()),
-    								 null,
-    								 new MapVariableResolverFactory(vars),
-    								 baos);
-    	} catch (TemplateError te) {
-    		return null;
-    	} catch (TemplateRuntimeError tre) {
-    		// need to figure out logging here
-    		return null;
-    	}
-    	result.put(className, new String(baos.toByteArray()));
-    	return result.entrySet().iterator().next();
+        Map<String,String> result = new HashMap<>();
+        if (!templateRegistry.contains(getOutputPojoTemplateName())) {
+            this.addOutputTemplateToRegistry(templateRegistry);
+        }
+        List<PMMLOutputField> dataFields = this.getOutputFields();
+        Map<String,Object> vars = new HashMap<>();
+        String className = this.getOutputPojoClassName();
+        vars.put("pmmlPackageName", PMML_JAVA_PACKAGE_NAME);
+        vars.put("className", className);
+        vars.put("imports", new ArrayList<>());
+        vars.put("dataFields", dataFields);
+        vars.put("modelName", this.getModelId());
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            TemplateRuntime.execute( templateRegistry.getNamedTemplate(this.getOutputPojoTemplateName()),
+                                     null,
+                                     new MapVariableResolverFactory(vars),
+                                     baos);
+        } catch (TemplateError te) {
+            return null;
+        } catch (TemplateRuntimeError tre) {
+            // need to figure out logging here
+            return null;
+        }
+        result.put(className, new String(baos.toByteArray()));
+        return result.entrySet().iterator().next();
     }
 
     @Override
     public Map.Entry<String, String> getMappedRuleUnit() {
-    	Map<String,String> result = new HashMap<>();
-    	if (!templateRegistry.contains(this.getRuleUnitTemplateName())) {
-    		this.addRuleUnitTemplateToRegistry(templateRegistry);
-    	}
-    	Map<String, Object> vars = new HashMap<>();
-    	String className = this.getRuleUnitClassName();
-    	vars.put("pmmlPackageName", this.getModelPackageName());
-    	vars.put("className", className);
-    	vars.put("pojoInputClassName", PMMLRequestData.class.getName());
-    	if (this instanceof Miningmodel) {
-    		vars.put("miningPojoClassName", this.getMiningPojoClassName());
-    	}
-    	ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    	try {
-    		TemplateRuntime.execute( templateRegistry.getNamedTemplate(this.getRuleUnitTemplateName()),
-    								 null,
-    								 new MapVariableResolverFactory(vars),
-    								 baos);
-    	} catch (TemplateError te) {
-    		return null;
-    	} catch (TemplateRuntimeError tre) {
-    		// need to figure out logging here
-    		return null;
-    	}
-    	result.put(this.getModelPackageName()+"."+className, new String(baos.toByteArray()));
-    	
-    	return result.isEmpty() ? null : result.entrySet().iterator().next();
+        Map<String,String> result = new HashMap<>();
+        if (!templateRegistry.contains(this.getRuleUnitTemplateName())) {
+            this.addRuleUnitTemplateToRegistry(templateRegistry);
+        }
+        Map<String, Object> vars = new HashMap<>();
+        String className = this.getRuleUnitClassName();
+        vars.put("pmmlPackageName", this.getModelPackageName());
+        vars.put("className", className);
+        vars.put("pojoInputClassName", PMMLRequestData.class.getName());
+        if (this instanceof Miningmodel) {
+            vars.put("miningPojoClassName", this.getMiningPojoClassName());
+        }
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            TemplateRuntime.execute( templateRegistry.getNamedTemplate(this.getRuleUnitTemplateName()),
+                                     null,
+                                     new MapVariableResolverFactory(vars),
+                                     baos);
+        } catch (TemplateError te) {
+            return null;
+        } catch (TemplateRuntimeError tre) {
+            // need to figure out logging here
+            return null;
+        }
+        result.put(this.getModelPackageName()+"."+className, new String(baos.toByteArray()));
+
+        return result.isEmpty() ? null : result.entrySet().iterator().next();
     }
-    
-    
-    
-    
+ 
     @Override
     public List<PMMLMiningField> getMiningFields() {
-		List<PMMLMiningField> fields = new ArrayList<>();
-		Map<String,MiningField> excludesTargetMap = 
-				getFilteredMiningFieldMap(false, FIELDUSAGETYPE.TARGET);
-		Map<String, PMMLDataField> dataDictionary = getOwner().getDataDictionaryMap();
-		for (String key: excludesTargetMap.keySet()) {
-			PMMLDataField df = dataDictionary.get(key);
-			MiningField mf = miningFieldMap.get(key);
-			if (df != null) {
-				fields.add(new PMMLMiningField(mf, df.getRawDataField(), this.getModelId(), true));
-			} else {
-				PMMLMiningField fld = new PMMLMiningField(mf, this.getModelId());
-				
-				if (this.getParentModel() != null) {
-					PMML4Model ultimateParentModel = this.getParentModel();
-					if (ultimateParentModel instanceof Miningmodel ) {
-						while (ultimateParentModel.getParentModel() != null) {
-							ultimateParentModel = ultimateParentModel.getParentModel();
-						}
-						
-						PMMLOutputField ofld = (( Miningmodel )ultimateParentModel).findOutputField(fld.getName());
-						if (ofld != null) {
-							fld.setType(ofld.getType());
-							fields.add(fld);
-						}
-					}
-				}
-			}
-		}
-		return fields;
+        List<PMMLMiningField> fields = new ArrayList<>();
+        Map<String,MiningField> excludesTargetMap =
+                getFilteredMiningFieldMap(false, FIELDUSAGETYPE.TARGET);
+        Map<String, PMMLDataField> dataDictionary = getOwner().getDataDictionaryMap();
+        for (String key: excludesTargetMap.keySet()) {
+            PMMLDataField df = dataDictionary.get(key);
+            MiningField mf = miningFieldMap.get(key);
+            if (df != null) {
+                fields.add(new PMMLMiningField(mf, df.getRawDataField(), this.getModelId(), true));
+            } else {
+                PMMLMiningField fld = new PMMLMiningField(mf, this.getModelId());
+
+                if (this.getParentModel() != null) {
+                    PMML4Model ultimateParentModel = this.getParentModel();
+                    if (ultimateParentModel instanceof Miningmodel ) {
+                        while (ultimateParentModel.getParentModel() != null) {
+                            ultimateParentModel = ultimateParentModel.getParentModel();
+                        }
+
+                        PMMLOutputField ofld = (( Miningmodel )ultimateParentModel).findOutputField(fld.getName());
+                        if (ofld != null) {
+                            fld.setType(ofld.getType());
+                            fields.add(fld);
+                        }
+                    }
+                }
+            }
+        }
+        return fields;
     }
-    
+
+    @Override
+    public PMMLMiningField findMiningField(String fieldName) {
+        List<PMMLMiningField> candidates = getMiningFields();
+        for (PMMLMiningField fld: candidates) {
+            if (fld.getName().equals(fieldName)) return fld;
+        }
+        return null;
+    }
+
+    @Override
     public PMMLOutputField findOutputField( String fieldName) {
-    	return null;
+        List<PMMLOutputField> candidates = getOutputFields();
+        for (PMMLOutputField fld: candidates) {
+            if (fld.getName().equals(fieldName)) return fld;
+        }
+        return null;
     }
-    
+
     @Override
     public List<PMMLOutputField> getOutputFields() {
-    	List<PMMLOutputField> fields = new ArrayList<>();
-    	for (String key: outputFieldMap.keySet()) {
-    		OutputField of = outputFieldMap.get(key);
-    		fields.add(new PMMLOutputField(of, null, this.getModelId()));
-    	}
-    	Map<String,MiningField> includeFromMining = getFilteredMiningFieldMap(true, FIELDUSAGETYPE.PREDICTED, FIELDUSAGETYPE.TARGET);
-    	Map<String, PMMLDataField> dataDictionary = getOwner().getDataDictionaryMap();
-    	if (includeFromMining != null && !includeFromMining.isEmpty()) {
-    		for (String key: includeFromMining.keySet()) {
-    			MiningField field = includeFromMining.get(key);
-    			PMMLDataField df = dataDictionary.get(key);
-    			fields.add(new PMMLOutputField(field, df.getRawDataField(), this.getModelId()));
-    		}
-    	}
-    	return fields;
+        List<PMMLOutputField> fields = new ArrayList<>();
+        for (String key: outputFieldMap.keySet()) {
+            OutputField of = outputFieldMap.get(key);
+            fields.add(new PMMLOutputField(of, null, this.getModelId()));
+        }
+        Map<String,MiningField> includeFromMining = getFilteredMiningFieldMap(true, FIELDUSAGETYPE.PREDICTED, FIELDUSAGETYPE.TARGET);
+        Map<String, PMMLDataField> dataDictionary = getOwner().getDataDictionaryMap();
+        if (includeFromMining != null && !includeFromMining.isEmpty()) {
+            for (String key: includeFromMining.keySet()) {
+                MiningField field = includeFromMining.get(key);
+                PMMLDataField df = dataDictionary.get(key);
+                fields.add(new PMMLOutputField(field, df.getRawDataField(), this.getModelId()));
+            }
+        }
+        return fields;
     }
-    
+
 
     @Override
     public PMML4ModelType getModelType() {
@@ -290,116 +301,120 @@ public abstract class AbstractModel<T> implements PMML4Model {
 
     @Override
     public String getModelId() {
-    	if (this.modelId == null) {
-    		this.modelId = generateModelId();
-    	}
+        if (this.modelId == null) {
+            this.modelId = generateModelId();
+        }
         return helper.compactAsJavaId(this.modelId,true);
     }
 
     @Override
     public PMML4Unit getOwner() {
-    	PMML4Unit ownedBy = this.owner;
-    	if (ownedBy == null) {
-    		PMML4Model parent = this.getParentModel();
-    		if (parent != null) {
-    			ownedBy = parent.getOwner();
-    		}
-    	}
+        PMML4Unit ownedBy = this.owner;
+        if (ownedBy == null) {
+            PMML4Model parent = this.getParentModel();
+            if (parent != null) {
+                ownedBy = parent.getOwner();
+            }
+        }
         return ownedBy;
     }
-    
+
     @Override
     public List<MiningField> getRawMiningFields() {
-		return (miningFieldMap != null && !miningFieldMap.isEmpty()) ?
-				new ArrayList<>(miningFieldMap.values()) : 
-				new ArrayList<>();
+        return (miningFieldMap != null && !miningFieldMap.isEmpty()) ?
+                new ArrayList<>(miningFieldMap.values()) :
+                new ArrayList<>();
     }
-    
+
     @Override
     public List<OutputField> getRawOutputFields() {
-    	return (outputFieldMap != null && !outputFieldMap.isEmpty()) ? 
-    			new ArrayList<>(outputFieldMap.values()) : 
-    			new ArrayList<>();
+        return (outputFieldMap != null && !outputFieldMap.isEmpty()) ?
+                new ArrayList<>(outputFieldMap.values()) :
+                new ArrayList<>();
     }
-    
+
     /**
      * Default method returns an empty Map
      */
     @Override
     public Map<String,PMML4Model> getChildModels() {
-    	return new HashMap<>();
+        return new HashMap<>();
     }
-    
+
     public PMML4Model getParentModel() {
-    	return this.parentModel;
+        return this.parentModel;
     }
-    
+
     public void setParentModel(PMML4Model parentModel) {
-    	this.parentModel = parentModel;
+        this.parentModel = parentModel;
     }
 
     public Map<String,MiningField> getMiningFieldMap() {
-    	return new HashMap<>(miningFieldMap);
+        return new HashMap<>(miningFieldMap);
     }
-    
+
+    public Map<String,OutputField> getOutputFieldMap() {
+        return new HashMap<>(outputFieldMap);
+    }
+
     public Map<String,MiningField> getFilteredMiningFieldMap(boolean includeFiltered,FIELDUSAGETYPE...filterTypes) {
-    	Map<String, MiningField> mfm = new HashMap<>();
-    	List<FIELDUSAGETYPE> filteredTypes = Arrays.asList(filterTypes);
-    	for (String key: miningFieldMap.keySet()) {
-    		MiningField field = miningFieldMap.get(key);
-    		FIELDUSAGETYPE usageType = field.getUsageType();
-    		if ((includeFiltered && filteredTypes.contains(usageType)) 
-    				|| (!includeFiltered && !filteredTypes.contains(usageType))) {
-    			mfm.put(key, field);
-    		}
-    	}
-    	return mfm;
+        Map<String, MiningField> mfm = new HashMap<>();
+        List<FIELDUSAGETYPE> filteredTypes = Arrays.asList(filterTypes);
+        for (String key: miningFieldMap.keySet()) {
+            MiningField field = miningFieldMap.get(key);
+            FIELDUSAGETYPE usageType = field.getUsageType();
+            if ((includeFiltered && filteredTypes.contains(usageType)) 
+                    || (!includeFiltered && !filteredTypes.contains(usageType))) {
+                mfm.put(key, field);
+            }
+        }
+        return mfm;
     }
-    
+
     public List<PMMLMiningField> getActiveMiningFields() {
-    	List<PMMLMiningField> activeMiningFields = new ArrayList<>();
-    	List<PMMLMiningField> allMiningFields = this.getMiningFields();
-    	for (PMMLMiningField field : allMiningFields) {
-    		if (field.getFieldUsageType() == FIELDUSAGETYPE.ACTIVE) {
-    			activeMiningFields.add(field);
-    		}
-    	}
-    	return activeMiningFields;
+        List<PMMLMiningField> activeMiningFields = new ArrayList<>();
+        List<PMMLMiningField> allMiningFields = this.getMiningFields();
+        for (PMMLMiningField field : allMiningFields) {
+            if (field.getFieldUsageType() == FIELDUSAGETYPE.ACTIVE) {
+                activeMiningFields.add(field);
+            }
+        }
+        return activeMiningFields;
     }
-    
+ 
     /**
      * A method that tries to generate a model identifier
      * for those times when models arrive without an identifier
      * @return The String value that is to be used to identify the model
      */
     private String generateModelId() {
-    	String mt = this.modelType.toString();
-    	StringBuilder mid = new StringBuilder(mt);
-    	Integer lastId = null;
-    	if (generatedModelIds.containsKey(mt)) {
-    		lastId = generatedModelIds.get(mt);
-    	} else {
-    		lastId = new Integer(-1);
-    	}
-    	lastId++;
-    	mid.append(lastId);
-    	generatedModelIds.put(mt, lastId);
-    	return mid.toString();
+        String mt = this.modelType.toString();
+        StringBuilder mid = new StringBuilder(mt);
+        Integer lastId = null;
+        if (generatedModelIds.containsKey(mt)) {
+            lastId = generatedModelIds.get(mt);
+        } else {
+            lastId = new Integer(-1);
+        }
+        lastId++;
+        mid.append(lastId);
+        generatedModelIds.put(mt, lastId);
+        return mid.toString();
     }
-    
+ 
     @Override
     public String getModelRuleUnitName() {
-    	return this.getModelPackageName()+"."+this.getRuleUnitClassName();
+        return this.getModelPackageName()+"."+this.getRuleUnitClassName();
     }
-    
+ 
     public DataDictionary getDataDictionary() {
-    	if (this.getParentModel() == null) {
-    		return this.getOwner().getRawPMML().getDataDictionary();
-    	}
-    	return this.getParentModel().getDataDictionary();
+        if (this.getParentModel() == null) {
+            return this.getOwner().getRawPMML().getDataDictionary();
+        }
+        return this.getParentModel().getDataDictionary();
     }
-    
+ 
     public Serializable getRawModel() {
-    	return (Serializable)this.rawModel;
+        return (Serializable)this.rawModel;
     }
 }

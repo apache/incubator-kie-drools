@@ -348,9 +348,48 @@ public class MiningmodelTest extends DroolsAbstractPMMLTest {
 			if (cms.getState() == SegmentExecutionState.COMPLETE) segmentsExecuted++;
 		}
 		assertEquals(2,segmentsExecuted);
-
-		
 	}
 
+	@Test
+	public void testSimpleModelChain() {
+		RuleUnitExecutor executor = createExecutor(source5);
+		assertNotNull(executor);
+//		KieRuntimeLogger console = ((InternalRuleUnitExecutor)executor).addConsoleLogger();
+		PMMLRequestData request = new PMMLRequestData("1234", "SampleModelChainMine");
+		request.addRequestParam("age", 33.0);
+		request.addRequestParam("occupation", "TEACHER");
+		request.addRequestParam("residenceState", "TN");
+		request.addRequestParam("validLicense", true);
+		PMML4Result resultHolder = new PMML4Result();
+		resultHolder.setCorrelationId(request.getCorrelationId());
+
+		DataSource<PMMLRequestData> childModelRequest = executor.newDataSource("childModelRequest");
+		DataSource<PMML4Result> childModelResults = executor.newDataSource("childModelResults");
+		DataSource<SegmentExecution> childModelSegments = executor.newDataSource("childModelSegments");
+		DataSource<? extends AbstractPMMLData> miningModelPojo = executor.newDataSource("miningModelPojo");
+		
+
+		List<String> possiblePackages = this.calculatePossiblePackageNames("SampleModelChainMine");
+		Class<? extends RuleUnit> ruleUnitClass = this.getStartingRuleUnit("Start Mining - SampleModelChainMine",(InternalKnowledgeBase)kbase,possiblePackages);
+		
+		assertNotNull(ruleUnitClass);
+		
+		data.insert(request);
+		resultData.insert(resultHolder);
+		
+		executor.run(ruleUnitClass);
+//		console.close();
+		assertEquals("OK",resultHolder.getResultCode());
+		Map<String,Object> resultVars = resultHolder.getResultVariables();
+		assertNotNull(resultVars);
+		assertTrue(resultVars.containsKey("QualificationLevel"));
+		assertTrue(resultVars.containsKey("OverallScore"));
+		String qual = resultHolder.getResultValue("QualificationLevel", "value",String.class).orElse(null);
+		Double oscore = resultHolder.getResultValue("OverallScore", "value", Double.class).orElse(null);
+		assertNotNull(qual);
+		assertNotNull(oscore);
+		assertEquals("Well",qual);
+		assertEquals(56.345,oscore,1e-6);
+	}
 
 }

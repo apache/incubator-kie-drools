@@ -179,10 +179,12 @@ public class MiningSegmentation {
 				MiningSegmentTransfer mst = new MiningSegmentTransfer(this.getSegmentationId(), "1","2");
 				mst.addResultToRequestMapping("calculatedScore","calculatedScore");
 				segmentTransfers.add(mst);
+				templateVars.put("segmentTransfers", segmentTransfers);
 				templateVars.put("miningModel", this.getOwner());
 				templateVars.put("childSegments", this.getMiningSegments());
 				templateVars.put("packageName", pkgName);
 				templateVars.put("resultMappings", segmentTransfers);
+				templateVars.put("ruleUnitClassName", this.getOwner().getRuleUnitClassName());
 				ct = templates.getNamedTemplate(this.multipleModelMethod.name());
 				TemplateRuntime.execute(ct,null,new MapVariableResolverFactory(templateVars),baos);
 				builder.append(new String(baos.toByteArray()));

@@ -41,6 +41,7 @@ public class MiningSegment implements Comparable<MiningSegment> {
 	private MiningSegmentation owner;
 	private PredicateRuleProducer predicateRuleProducer;
 	private boolean alwaysTrue;
+	private boolean alwaysFalse;
 	private PMML4Model internalModel;
 	private String segmentRuleUnit;
 	private int segmentIndex;
@@ -61,6 +62,10 @@ public class MiningSegment implements Comparable<MiningSegment> {
 			predicateRuleProducer = new CompoundSegmentPredicate(segment.getCompoundPredicate());
 		} else if (segment.getTrue() != null) {
 			alwaysTrue = true;
+			alwaysFalse = false;
+		} else if (segment.getFalse() != null) {
+			alwaysFalse = true;
+			alwaysTrue = false;
 		}
 	}
 	
@@ -155,7 +160,8 @@ public class MiningSegment implements Comparable<MiningSegment> {
 	}
 	
 	public String getPredicateText() {
-		return this.alwaysTrue ? "" : this.predicateRuleProducer.getPredicateRule();
+		return this.alwaysTrue ? "" : 
+			this.alwaysFalse ? "1 == 0" : this.predicateRuleProducer.getPredicateRule();
 	}
 	
 	public String getSegmentPackageName() {
@@ -177,6 +183,10 @@ public class MiningSegment implements Comparable<MiningSegment> {
 
 	public boolean isAlwaysTrue() {
 		return alwaysTrue;
+	}
+	
+	public boolean isAlwaysFalse() {
+		return alwaysFalse;
 	}
 
 	public PMML4Model getInternalModel() {
