@@ -16,6 +16,7 @@
 }
 
 package @{packageName}
+unit @{ruleUnitClassName}
 
 import org.kie.pmml.pmml_4_2.*;
 import org.kie.pmml.pmml_4_2.model.*;
@@ -28,7 +29,6 @@ import org.kie.api.pmml.PMML4Result;
 
 
 @code{ int salienceValue; }
-
 
 
 rule "Start Mining - @{miningModel.modelId}"
@@ -71,8 +71,18 @@ end
 @code{ salienceValue = 100 - childSegment.segmentIndex; }
 @code{ internalModel = childSegment.model; }
 
+rule "Clean up previous request - @{childSegment.segmentId}"
+salience 9000
+when
+   segEx: SegmentExecution( $cid: correlationId, $segId: segmentId == @{childSegment.segmentId},
+                            state == SegmentExecutionState.COMPLETE, requestData != null ) from childModelSegments
+   data: PMMLRequestData( this == segEx.requestData ) from request
+then
+   retract(data);
+end
+
 rule "Add previous segment results - Segment @{childSegment.segmentId}"
-salience 100
+salience 1000
 no-loop
 when
    segEx: SegmentExecution( $cid: correlationId, $segmId: segmentationId, $segId: segmentId == @{childSegment.segmentId},
@@ -80,7 +90,7 @@ when
                             state == SegmentExecutionState.WAITING, requestData != null ) from childModelSegments
    rqst: PMMLRequestData() from segEx.requestData
    prior: SegmentExecution( correlationId == $cid, segmentationId == $segmId, segmentIndex < $segIndex, 
-                            state == SegmentExecutionState.COMPLETE )
+                            state == SegmentExecutionState.COMPLETE ) from childModelSegments
 then
    System.out.println("doing the mapping!!");
    PMMLRequestData data = segEx.getRequestData();
@@ -100,10 +110,11 @@ when
                            $segmId: segmentationId == "@{childSegment.owner.segmentationId}",
                            segmentId == "@{childSegment.segmentId}",
                            state == SegmentExecutionState.WAITING,
-                           $segIndex: segmentIndex ) from childModelSegments
+                           $segIndex: segmentIndex, requestData != null ) from childModelSegments
    not SegmentExecution( correlationId == $corrId, segmentationId == $segmId, 
       (state == SegmentExecutionState.WAITING && segmentIndex < $segIndex) ) from childModelSegments
 then
+   System.out.println("Executing segment @{childSegment.segmentId}");
    PMML4Result rslt = new PMML4Result();
    rslt.setCorrelationId($seg.getCorrelationId());
    rslt.setSegmentationId($seg.getSegmentationId());
@@ -124,10 +135,12 @@ salience @{salienceValue}
 when
    model: @{miningModel.miningPojoClassName}( @{childSegment.predicateText} ) from miningModelPojo
 then
+
    PMMLRequestData rqstData = new PMMLRequestData(model.getCorrelationId(),"@{childSegment.model.modelId}");
    @foreach{ field: childSegment.model.miningFields }
-   rqstData.addRequestParam( "@{field.name}",model.getV@{field.compactUpperCaseName}() );
+   @if{ field.inDictionary==true }rqstData.addRequestParam( "@{field.name}",model.getV@{field.compactUpperCaseName}() );@end{}
    @end{}
+   rqstData.setSource(model.getClass().getName());
    SegmentExecution segEx = new SegmentExecution( model.getCorrelationId(),
                                                   "@{childSegment.owner.segmentationId}",
                                                   "@{childSegment.segmentId}",

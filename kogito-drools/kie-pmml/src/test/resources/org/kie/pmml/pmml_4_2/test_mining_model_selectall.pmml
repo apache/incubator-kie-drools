@@ -3,7 +3,7 @@
    <Header>
       <Application name="Drools-PMML" version="7.0.0-SNAPSHOT" />
    </Header>
-   <DataDictionary numberOfFields="5">
+   <DataDictionary numberOfFields="15">
       <DataField name="age" optype="continuous" dataType="double" />
       <DataField name="occupation" optype="categorical" dataType="string">
          <Value value="SKYDIVER" />
@@ -19,6 +19,44 @@
       </DataField>
       <DataField name="validLicense" optype="categorical" dataType="boolean" />
       <DataField name="overallScore" optype="continuous" dataType="double" />
+      <DataField dataType="double" name="fld1" optype="continuous">
+         <Value property="missing" value="-1.0" />
+      </DataField>
+      <DataField dataType="double" name="fld2" optype="continuous">
+         <Value property="missing" value="-1.0" />
+      </DataField>
+      <DataField dataType="string" name="fld3" optype="categorical">
+         <Value value="true" />
+         <Value value="false" />
+      </DataField>
+      <DataField dataType="string" name="fld4" optype="categorical">
+         <Value value="optA" />
+         <Value value="optB" />
+         <Value value="optC" />
+      </DataField>
+      <DataField dataType="string" name="fld5" optype="categorical">
+         <Value value="tgtX" />
+         <Value value="tgtY" />
+         <Value value="tgtZ" />
+      </DataField>
+      <DataField dataType="string" name="fld6" optype="categorical">
+         <Value value="optA" />
+         <Value value="optB" />
+         <Value value="optC" />
+         <Value property="missing" value="miss" />
+      </DataField>
+      <DataField dataType="double" name="fld1r" optype="continuous" />
+      <DataField dataType="double" name="fld2r" optype="continuous" />
+      <DataField dataType="string" name="fld3r" optype="categorical">
+         <Value value="x" />
+         <Value value="y" />
+      </DataField>
+      <DataField dataType="string" name="fld4r" optype="categorical">
+         <Value value="klassA" />
+         <Value value="klassB" />
+         <Value value="klassC" />
+         <Value value="klassD" />
+      </DataField>
    </DataDictionary>
    <MiningModel modelName="SampleSelectAllMine" functionName="classification">
       <MiningSchema>
@@ -27,6 +65,16 @@
          <MiningField name="residenceState" />
          <MiningField name="validLicense" />
          <MiningField name="overallScore" />
+         <MiningField name="fld1" />
+         <MiningField name="fld2" />
+         <MiningField name="fld3" />
+         <MiningField name="fld4" />
+         <MiningField name="fld6" />
+         <MiningField name="fld5" usageType="predicted" />
+         <MiningField name="fld1r" />
+         <MiningField name="fld2r" />
+         <MiningField name="fld3r" />
+         <MiningField name="fld4r" usageType="predicted" />
       </MiningSchema>
       <Segmentation multipleModelMethod="selectAll">
          <Segment id="1">
@@ -208,6 +256,42 @@
                   </Characteristic>
                </Characteristics>
             </Scorecard>
+         </Segment>
+         <Segment id="3">
+            <False/>
+            <RegressionModel algorithmName="linearRegression" functionName="classification" modelName="LinReg"
+               normalizationMethod="softmax" targetFieldName="fld4">
+               <MiningSchema>
+                  <MiningField name="fld1r" />
+                  <MiningField name="fld2r" />
+                  <MiningField name="fld3r" />
+                  <MiningField name="fld4r" usageType="predicted" />
+               </MiningSchema>
+               <Output>
+                  <OutputField name="RegOut" feature="predictedValue" targetField="fld4r" />
+                  <OutputField name="RegProb" feature="probability" targetField="fld4r" />
+                  <OutputField name="RegProbA" feature="probability" targetField="fld4r" value="catA" />
+               </Output>
+               <RegressionTable intercept="0.1" targetCategory="catA">
+                  <NumericPredictor coefficient="1" exponent="1" name="fld1r" />
+                  <NumericPredictor coefficient="1" exponent="1" name="fld2r" />
+                  <CategoricalPredictor coefficient="1" name="fld3r" value="0" />
+                  <CategoricalPredictor coefficient="1" name="fld3r" value="1" />
+               </RegressionTable>
+               <RegressionTable intercept="0.2" targetCategory="catB">
+                  <NumericPredictor coefficient="2" exponent="1" name="fld1r" />
+                  <NumericPredictor coefficient="2" exponent="1" name="fld2r" />
+                  <CategoricalPredictor coefficient="2" name="fld3r" value="0" />
+                  <CategoricalPredictor coefficient="2" name="fld3r" value="1" />
+               </RegressionTable>
+               <RegressionTable intercept="0.3" targetCategory="catC">
+                  <NumericPredictor coefficient="3" exponent="1" name="fld1r" />
+                  <NumericPredictor coefficient="3" exponent="1" name="fld2r" />
+                  <CategoricalPredictor coefficient="3" name="fld3r" value="0" />
+                  <CategoricalPredictor coefficient="3" name="fld3r" value="1" />
+               </RegressionTable>
+               <RegressionTable intercept="5.0" targetCategory="catD" />
+            </RegressionModel>
          </Segment>
       </Segmentation>
    </MiningModel>

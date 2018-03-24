@@ -135,7 +135,7 @@
          </Segment>
          <Segment id="2">
             <True />
-            <TreeModel modelName="SampleTree" functionName="classification">
+            <TreeModel modelName="SampleTree" functionName="classification" missingValueStrategy="lastPrediction" noTrueChildStrategy="returnLastPrediction">
                <MiningSchema>
                   <MiningField name="age" usageType="active" />
                   <MiningField name="validLicense" usageType="active" />
@@ -146,18 +146,27 @@
                   <OutputField name="qualification" displayName="Qualification Level" dataType="string" feature="predictedValue"
                      targetField="qualificationLevel" />
                </Output>
-               <Node score="Well">
+               <Node score="Well" id="1">
                   <True/>
-                  <Node score="Well">
-                     <SimplePredicate field="age" operator="greaterOrEqual" value="16" />
-                     <Node score="Well">
+                  <Node score="Barely" id="2">
+                     <CompoundPredicate booleanOperator="and">
+                        <SimplePredicate field="age" operator="greaterOrEqual" value="16" />
                         <SimplePredicate field="validLicense" operator="equal" value="true" />
-                        <Node score="Well">
-                           <SimplePredicate field="calculatedScore" operator="greaterThan" value="40.0" />
-                        </Node>
+                     </CompoundPredicate>
+                     <Node score="Barely" id="3">
+                        <SimplePredicate field="calculatedScore" operator="lessOrEqual" value="50.0" />
+                     </Node>
+                     <Node score="Well" id="4">
+                         <CompoundPredicate booleanOperator="and">
+                           <SimplePredicate field="calculatedScore" operator="greaterThan" value="50.0" />
+                           <SimplePredicate field="calculatedScore" operator="lessOrEqual" value="60.0" />
+                         </CompoundPredicate>
+                     </Node>
+                     <Node score="Over" id="5">
+                        <SimplePredicate field="calculatedScore" operator="greaterThan" value="60.0" />
                      </Node>
                   </Node>
-                  <Node score="Unqualified">
+                  <Node score="Unqualified" id="6">
                      <CompoundPredicate booleanOperator="surrogate">
                         <SimplePredicate field="age" operator="lessThan" value="16" />
                         <SimplePredicate field="calculatedScore" operator="lessOrEqual" value="40.0" />

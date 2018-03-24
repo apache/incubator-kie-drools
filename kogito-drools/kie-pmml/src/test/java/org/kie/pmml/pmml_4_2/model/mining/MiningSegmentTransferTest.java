@@ -19,9 +19,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
+import org.kie.api.pmml.ParameterInfo;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+
+import java.util.Map;
 
 public class MiningSegmentTransferTest {
 	private PMML4Result simpleResult;
@@ -106,5 +109,11 @@ public class MiningSegmentTransferTest {
 		PMMLRequestData rqst = mst.getOutboundRequest();
 		assertNotNull(rqst);
 		assertEquals(complexResult.getCorrelationId(),rqst.getCorrelationId());
+		Map<String,ParameterInfo> params = rqst.getMappedRequestParams();
+		assertEquals(complexResult.getResultValue("firstObject", null), params.get("object1").getValue());
+		assertEquals(complexResult.getResultValue("myComplex", "varA"), params.get("stringFromMyComplex").getValue());
+		assertEquals(complexResult.getResultValue("myComplex", "varB"), params.get("intValue").getValue());
+		System.out.println(rqst);
+		System.out.println(complexResult);
 	}
 }
