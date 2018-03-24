@@ -201,7 +201,7 @@ public class UnaryTestNode
                         throw e;
                     }
                 } else if (test instanceof Collection) {
-                    return !((Collection) val).contains(o);
+                    return !((Collection) test).contains(o);
                 } else {
                     // test is a constant, so return false if it is equal to "o"
                     if( test.equals( o ) ) {
