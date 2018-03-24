@@ -1832,5 +1832,42 @@ public class DMNRuntimeTest {
         assertThat(result.get("Decide Vowel a"), is("a"));
         assertThat(result.get("Decide BAD"), nullValue());
     }
+
+    @Test
+    public void testNotListInDT() {
+        // DROOLS-2416
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime("anot.dmn", this.getClass());
+        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_292c1c7b-6b38-415d-938f-e9ca51d30b2b", "anot");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        DMNContext context = DMNFactory.newContext();
+        context.set("a letter", "a");
+
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        DMNContext result = dmnResult.getContext();
+        assertThat(result.get("what letter decision"), is("vowel"));
+    }
+
+    @Test
+    public void testListContainmentDT() {
+        // DROOLS-2416
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime("list_containment_DT.dmn", this.getClass());
+        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_6ab2bd6d-adaa-45c4-a141-a84382a201eb", "list containment DT");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        DMNContext context = DMNFactory.newContext();
+        context.set("Passenger", prototype(entry("name", "Osama bin Laden")));
+
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        System.out.println(dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        DMNContext result = dmnResult.getContext();
+        assertThat(result.get("Boarding Status"), is("Denied"));
+    }
 }
 
