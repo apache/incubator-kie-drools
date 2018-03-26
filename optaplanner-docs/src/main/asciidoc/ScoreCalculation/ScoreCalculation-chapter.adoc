@@ -1216,7 +1216,7 @@ Instead of the __squared workload__, it is also possible to use the https://en.w
 It is just more work to implement (because the average needs to be known) and trivially slower (because the calculation is a bit longer).
 ====
 
-When the workload is perfect balanced, the user often likes to see a `0` score, instead of the distracting `-34soft` in the image above (for the last solution which is almost perfectly balanced). To nullify this, either add the average multiplied by the number of entities to the score or instead show the variance or standard deviation in the UI.
+When the workload is perfectly balanced, the user often likes to see a `0` score, instead of the distracting `-34soft` in the image above (for the last solution which is almost perfectly balanced). To nullify this, either add the average multiplied by the number of entities to the score or instead show the variance or standard deviation in the UI.
 
 
 [[explainingTheScore]]
