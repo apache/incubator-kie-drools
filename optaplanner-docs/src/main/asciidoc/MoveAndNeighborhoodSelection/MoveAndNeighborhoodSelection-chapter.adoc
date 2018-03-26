@@ -26,7 +26,7 @@ For example, on that original solution, these are all possible ``changeMove``'s:
 
 image::MoveAndNeighborhoodSelection/possibleMovesNQueens04.png[align="center"]
 
-If we ignore the four ``changeMove``'s that have not impact and are therefore not doable, we can see that number of moves is ``n * (n - 1) = 12``.
+If we ignore the four ``changeMove``'s that have no impact and are therefore not doable, we can see that number of moves is ``n * (n - 1) = 12``.
 This is far less than the number of possible solutions, which is ``n ^ n = 256``.
 As the problem scales out, the number of possible moves increases far less than the number of possible solutions.
 
@@ -1347,7 +1347,7 @@ The implementation must notify the `ScoreDirector` of any changes it makes to pl
 Call the `scoreDirector.beforeVariableChanged(Object, String)` and `scoreDirector.afterVariableChanged(Object, String)`
 methods directly before and after modifying an entity's planning variable.
 
-The example move above is a fine-grained move because changes only one planning variable.
+The example move above is a fine-grained move because it changes only one planning variable.
 On the other hand, a coarse-grained move changes multiple entities or multiple planning variables
 in a single move, usually to avoid breaking hard constraints by making multiple related changes at once.
 For example, a swap move is really just two change moves, but it keeps those two changes together.
