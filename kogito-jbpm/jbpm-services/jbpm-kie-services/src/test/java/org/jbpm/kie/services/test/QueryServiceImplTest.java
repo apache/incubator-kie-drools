@@ -16,14 +16,7 @@
 
 package org.jbpm.kie.services.test;
 
-import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_PROCESSID;
-import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_PROCESSINSTANCEID;
-import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_PROCESSNAME;
-import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_START;
-import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_STATUS;
-import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_TASK_VAR_NAME;
-import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_TASK_VAR_VALUE;
-import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_VAR_NAME;
+import static org.jbpm.services.api.query.QueryResultMapper.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -552,20 +545,20 @@ public class QueryServiceImplTest extends AbstractKieServicesBaseTest {
         processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument", params);
         assertNotNull(processInstanceId);
 
-        List<UserTaskInstanceDesc> taskInstanceLogs = queryService.query(query.getName(), UserTaskInstanceQueryMapper.get(), new QueryContext());
+        List<UserTaskInstanceDesc> taskInstanceLogs = queryService.query(query.getName(), UserTaskInstanceQueryMapper.get(), new QueryContext(), QueryParam.groupBy(COLUMN_TASKID));
         assertNotNull(taskInstanceLogs);
         assertEquals(0, taskInstanceLogs.size());
 
         identityProvider.setName("Administrator");
 
-        taskInstanceLogs = queryService.query(query.getName(), UserTaskInstanceQueryMapper.get(), new QueryContext());
+        taskInstanceLogs = queryService.query(query.getName(), UserTaskInstanceQueryMapper.get(), new QueryContext(), QueryParam.groupBy(COLUMN_TASKID));
         assertNotNull(taskInstanceLogs);
         assertEquals(1, taskInstanceLogs.size());
 
         identityProvider.setName("salaboy");
         identityProvider.setRoles(Arrays.asList("Administrators"));
 
-        taskInstanceLogs = queryService.query(query.getName(), UserTaskInstanceQueryMapper.get(), new QueryContext());
+        taskInstanceLogs = queryService.query(query.getName(), UserTaskInstanceQueryMapper.get(), new QueryContext(), QueryParam.groupBy(COLUMN_TASKID));
         assertNotNull(taskInstanceLogs);
         assertEquals(1, taskInstanceLogs.size());
 
@@ -1034,8 +1027,9 @@ public class QueryServiceImplTest extends AbstractKieServicesBaseTest {
         query = new SqlQueryDefinition("getTaskInstancesAdmin", dataSourceJNDIname, Target.FILTERED_BA_TASK);
         query.setExpression("select ti.activationTime, ti.actualOwner, ti.createdBy, ti.createdOn, ti.deploymentId, "
                                     + "ti.description, ti.dueDate, ti.name, ti.parentId, ti.priority, ti.processId, ti.processInstanceId, "
-                                    + "ti.processSessionId, ti.status, ti.taskId, ti.workItemId "
-                                    + "from  AuditTaskImpl ti");
+                                    + "ti.processSessionId, ti.status, ti.taskId, ti.workItemId, oe.id "
+                                    + "from  AuditTaskImpl ti left join PeopleAssignments_BAs ba on ti.taskId = ba.task_id left join "
+                                    + "OrganizationalEntity oe on ba.entity_id = oe.id");
 
         queryService.registerQuery(query);
 
@@ -1062,7 +1056,7 @@ public class QueryServiceImplTest extends AbstractKieServicesBaseTest {
         assertEquals(0, taskInstanceLogs.size());
 
         identityProvider.setName("Administrator");
-        taskInstanceLogs = queryService.query(query.getName(), UserTaskInstanceQueryMapper.get(), new QueryContext());
+        taskInstanceLogs = queryService.query(query.getName(), UserTaskInstanceQueryMapper.get(), new QueryContext(), QueryParam.groupBy(COLUMN_TASKID));
         assertNotNull(taskInstanceLogs);
         assertEquals(1, taskInstanceLogs.size());
 

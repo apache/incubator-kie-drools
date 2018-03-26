@@ -34,6 +34,11 @@ public class BusinessAdminTasksPreprocessor extends UserTasksPreprocessor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BusinessAdminTasksPreprocessor.class);
 
+    public static final String ADMIN_USER = System.getProperty("org.jbpm.ht.admin.user",
+                                                               "Administrator");
+    public static final String ADMIN_GROUP = System.getProperty("org.jbpm.ht.admin.group",
+                                                                "Administrators");
+
     private IdentityProvider identityProvider;    
 
     public BusinessAdminTasksPreprocessor(IdentityProvider identityProvider, DataSetMetadata metadata) {
@@ -46,6 +51,11 @@ public class BusinessAdminTasksPreprocessor extends UserTasksPreprocessor {
     @Override
     public void preprocess(DataSetLookup lookup) {
         if (identityProvider == null) {
+            return;
+        }
+
+        if (ADMIN_USER.equals(identityProvider.getName()) ||
+                identityProvider.getRoles().stream().filter(s -> s.equals(ADMIN_GROUP)).findFirst().isPresent()) {
             return;
         }
 

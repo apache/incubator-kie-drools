@@ -31,17 +31,17 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class BusinessAdminPreprocessorTest {
+public class BusinessAdminTasksPreprocessorTest {
 
     @Mock
     IdentityProvider identityProvider;
-    
+
     @Mock
     DataSetMetadata metaData;
 
     DataSetLookup dataSetLookup;
 
-    BusinessAdminPreprocessor businessAdminPreprocessor;
+    BusinessAdminTasksPreprocessor preprocessor;
 
     @Before
     public void init() {
@@ -49,7 +49,8 @@ public class BusinessAdminPreprocessorTest {
                            "admins");
         System.setProperty("org.jbpm.ht.admin.user",
                            "admin");
-        businessAdminPreprocessor = new BusinessAdminPreprocessor(identityProvider, metaData);
+        preprocessor = new BusinessAdminTasksPreprocessor(identityProvider,
+                                                          metaData);
     }
 
     @Test
@@ -63,7 +64,7 @@ public class BusinessAdminPreprocessorTest {
                                                                    role2));
         when(identityProvider.getName()).thenReturn(userId);
 
-        businessAdminPreprocessor.preprocess(dataSetLookup);
+        preprocessor.preprocess(dataSetLookup);
 
         verifyNoMoreInteractions(dataSetLookup);
         assertNull(dataSetLookup.getFirstFilterOp());
@@ -80,7 +81,7 @@ public class BusinessAdminPreprocessorTest {
                                                                    role2));
         when(identityProvider.getName()).thenReturn(userId);
 
-        businessAdminPreprocessor.preprocess(dataSetLookup);
+        preprocessor.preprocess(dataSetLookup);
 
         verifyNoMoreInteractions(dataSetLookup);
         assertNull(dataSetLookup.getFirstFilterOp());
@@ -97,9 +98,9 @@ public class BusinessAdminPreprocessorTest {
                                                                    role2));
         when(identityProvider.getName()).thenReturn(userId);
 
-        businessAdminPreprocessor.preprocess(dataSetLookup);
+        preprocessor.preprocess(dataSetLookup);
 
-        assertEquals("TASKID = -1",
+        assertEquals("ID = role1, role2, userId",
                      dataSetLookup.getFirstFilterOp().getColumnFilterList().get(0).toString());
     }
 
@@ -111,9 +112,9 @@ public class BusinessAdminPreprocessorTest {
         when(identityProvider.getRoles()).thenReturn(Collections.emptyList());
         when(identityProvider.getName()).thenReturn(userId);
 
-        businessAdminPreprocessor.preprocess(dataSetLookup);
+        preprocessor.preprocess(dataSetLookup);
 
-        assertEquals("TASKID = -1",
+        assertEquals("ID = userId",
                      dataSetLookup.getFirstFilterOp().getColumnFilterList().get(0).toString());
     }
 }
