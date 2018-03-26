@@ -16,14 +16,13 @@
 
 package org.optaplanner.persistence.jackson.api.score.buildin.bendablebigdecimal;
 
-import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore;
-import org.optaplanner.persistence.jackson.api.score.ScoreJacksonJsonSerializer;
+import org.optaplanner.persistence.jackson.api.score.AbstractScoreJacksonJsonSerializer;
 
 @SuppressWarnings("checkstyle:javadocstyle")
 /**
  * {@inheritDoc}
  */
-public class BendableBigDecimalScoreJacksonJsonSerializer extends ScoreJacksonJsonSerializer<BendableBigDecimalScore> {
+public class BendableBigDecimalScoreJacksonJsonSerializer extends AbstractScoreJacksonJsonSerializer<BendableBigDecimalScore> {
 
 }

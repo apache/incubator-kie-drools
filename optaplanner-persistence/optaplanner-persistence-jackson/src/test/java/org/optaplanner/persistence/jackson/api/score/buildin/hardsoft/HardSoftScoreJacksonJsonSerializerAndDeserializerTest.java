@@ -21,7 +21,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.persistence.jackson.api.score.AbstractScoreJacksonJsonSerializerAndDeserializerTest;
-import org.optaplanner.persistence.jackson.api.score.ScoreJacksonJsonSerializer;
 
 public class HardSoftScoreJacksonJsonSerializerAndDeserializerTest extends AbstractScoreJacksonJsonSerializerAndDeserializerTest {
 

@@ -21,7 +21,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.simpledouble.SimpleDoubleScore;
 import org.optaplanner.persistence.jackson.api.score.AbstractScoreJacksonJsonSerializerAndDeserializerTest;
-import org.optaplanner.persistence.jackson.api.score.ScoreJacksonJsonSerializer;
 
 public class SimpleDoubleScoreJacksonJsonSerializerAndDeserializerTest extends AbstractScoreJacksonJsonSerializerAndDeserializerTest {
 

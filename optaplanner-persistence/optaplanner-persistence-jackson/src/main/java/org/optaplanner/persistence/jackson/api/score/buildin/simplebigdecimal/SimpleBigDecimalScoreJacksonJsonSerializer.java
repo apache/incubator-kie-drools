@@ -16,14 +16,13 @@
 
 package org.optaplanner.persistence.jackson.api.score.buildin.simplebigdecimal;
 
-import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
-import org.optaplanner.persistence.jackson.api.score.ScoreJacksonJsonSerializer;
+import org.optaplanner.persistence.jackson.api.score.AbstractScoreJacksonJsonSerializer;
 
 @SuppressWarnings("checkstyle:javadocstyle")
 /**
  * {@inheritDoc}
  */
-public class SimpleBigDecimalScoreJacksonJsonSerializer extends ScoreJacksonJsonSerializer<SimpleBigDecimalScore> {
+public class SimpleBigDecimalScoreJacksonJsonSerializer extends AbstractScoreJacksonJsonSerializer<SimpleBigDecimalScore> {
 
 }

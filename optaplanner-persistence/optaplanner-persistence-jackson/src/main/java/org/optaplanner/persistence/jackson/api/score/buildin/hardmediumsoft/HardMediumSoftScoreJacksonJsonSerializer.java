@@ -17,13 +17,12 @@
 package org.optaplanner.persistence.jackson.api.score.buildin.hardmediumsoft;
 
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
-import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
-import org.optaplanner.persistence.jackson.api.score.ScoreJacksonJsonSerializer;
+import org.optaplanner.persistence.jackson.api.score.AbstractScoreJacksonJsonSerializer;
 
 @SuppressWarnings("checkstyle:javadocstyle")
 /**
  * {@inheritDoc}
  */
-public class HardMediumSoftScoreJacksonJsonSerializer extends ScoreJacksonJsonSerializer<HardMediumSoftScore> {
+public class HardMediumSoftScoreJacksonJsonSerializer extends AbstractScoreJacksonJsonSerializer<HardMediumSoftScore> {
 
 }

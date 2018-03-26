@@ -16,17 +16,9 @@
 
 package org.optaplanner.persistence.jackson.api;
 
-import com.fasterxml.jackson.databind.BeanDescription;
-import com.fasterxml.jackson.databind.BeanProperty;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationConfig;
-import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.databind.ser.BeanSerializerModifier;
-import com.fasterxml.jackson.databind.ser.ContextualSerializer;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore;
@@ -43,7 +35,6 @@ import org.optaplanner.core.api.score.buildin.simpledouble.SimpleDoubleScore;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.persistence.jackson.api.score.PolymorphicScoreJacksonJsonDeserializer;
 import org.optaplanner.persistence.jackson.api.score.PolymorphicScoreJacksonJsonSerializer;
-import org.optaplanner.persistence.jackson.api.score.ScoreJacksonJsonSerializer;
 import org.optaplanner.persistence.jackson.api.score.buildin.bendable.BendableScoreJacksonJsonDeserializer;
 import org.optaplanner.persistence.jackson.api.score.buildin.bendable.BendableScoreJacksonJsonSerializer;
 import org.optaplanner.persistence.jackson.api.score.buildin.bendablebigdecimal.BendableBigDecimalScoreJacksonJsonDeserializer;

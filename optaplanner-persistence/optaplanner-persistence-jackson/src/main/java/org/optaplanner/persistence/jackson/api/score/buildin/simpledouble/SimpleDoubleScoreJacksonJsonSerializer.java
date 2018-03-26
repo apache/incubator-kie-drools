@@ -16,14 +16,13 @@
 
 package org.optaplanner.persistence.jackson.api.score.buildin.simpledouble;
 
-import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.buildin.simpledouble.SimpleDoubleScore;
-import org.optaplanner.persistence.jackson.api.score.ScoreJacksonJsonSerializer;
+import org.optaplanner.persistence.jackson.api.score.AbstractScoreJacksonJsonSerializer;
 
 @SuppressWarnings("checkstyle:javadocstyle")
 /**
  * {@inheritDoc}
  */
-public class SimpleDoubleScoreJacksonJsonSerializer extends ScoreJacksonJsonSerializer<SimpleDoubleScore> {
+public class SimpleDoubleScoreJacksonJsonSerializer extends AbstractScoreJacksonJsonSerializer<SimpleDoubleScore> {
 
 }

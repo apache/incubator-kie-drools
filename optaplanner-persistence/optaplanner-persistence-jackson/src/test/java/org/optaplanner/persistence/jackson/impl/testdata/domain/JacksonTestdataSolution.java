@@ -27,7 +27,6 @@ import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProp
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.persistence.jackson.api.score.ScoreJacksonJsonSerializer;
 import org.optaplanner.persistence.jackson.api.score.buildin.simple.SimpleScoreJacksonJsonDeserializer;
 import org.optaplanner.persistence.jackson.api.score.buildin.simple.SimpleScoreJacksonJsonSerializer;
 

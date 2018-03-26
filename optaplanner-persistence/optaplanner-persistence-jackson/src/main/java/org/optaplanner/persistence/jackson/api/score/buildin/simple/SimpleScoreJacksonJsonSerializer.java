@@ -16,18 +16,13 @@
 
 package org.optaplanner.persistence.jackson.api.score.buildin.simple;
 
-import java.io.IOException;
-
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
-import org.optaplanner.persistence.jackson.api.score.AbstractScoreJacksonJsonDeserializer;
-import org.optaplanner.persistence.jackson.api.score.ScoreJacksonJsonSerializer;
+import org.optaplanner.persistence.jackson.api.score.AbstractScoreJacksonJsonSerializer;
 
 @SuppressWarnings("checkstyle:javadocstyle")
 /**
  * {@inheritDoc}
  */
-public class SimpleScoreJacksonJsonSerializer extends ScoreJacksonJsonSerializer<SimpleScore> {
+public class SimpleScoreJacksonJsonSerializer extends AbstractScoreJacksonJsonSerializer<SimpleScore> {
 
 }

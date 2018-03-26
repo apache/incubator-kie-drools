@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,14 +26,20 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.ContextualSerializer;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.persistence.jackson.api.score.buildin.hardsoft.HardSoftScoreJacksonJsonSerializer;
+import org.optaplanner.persistence.jackson.api.OptaPlannerJacksonModule;
 
 /**
- * This class will be removed in 8.0.
- * @deprecated in favor of {@link HardSoftScoreJacksonJsonSerializer} and variants.
+ * Jackson binding support for a {@link Score} subtype.
+ * For a {@link Score} field, use {@link PolymorphicScoreJacksonJsonSerializer} instead,
+ * so the score type is recorded too and it can be deserialized.
+ * <p>
+ * For example: use {@code @JsonSerialize(using = HardSoftScoreJacksonJsonSerializer.class) @JsonDeserialize(using = HardSoftScoreJacksonJsonDeserializer.class)}
+ * on a {@code HardSoftScore score} field and it will marshalled to JSON as {@code "score":"-999hard/-999soft"}.
+ * Or better yet, use {@link OptaPlannerJacksonModule} instead.
+ * @see Score
+ * @param <Score_> the actual score type
  */
-@Deprecated
-public class ScoreJacksonJsonSerializer<Score_ extends Score<Score_>> extends JsonSerializer<Score_>
+public abstract class AbstractScoreJacksonJsonSerializer<Score_ extends Score<Score_>> extends JsonSerializer<Score_>
         implements ContextualSerializer {
 
     @Override
