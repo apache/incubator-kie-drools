@@ -692,7 +692,7 @@ In this case, the teacher should _not_ be limited in his room value range (becau
 [NOTE]
 ====
 By limiting the value range specifically of one planning entity, you are effectively creating a __built-in hard constraint__.
-This can have the benefit of severely lowering the number of possible solutions; however, it can also away the freedom of the optimization algorithms to temporarily break that constraint in order to escape from a local optimum.
+This can have the benefit of severely lowering the number of possible solutions; however, it can also take away the freedom of the optimization algorithms to temporarily break that constraint in order to escape from a local optimum.
 ====
 
 A planning entity should _not_ use other planning entities to determinate its value range.
