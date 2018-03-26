@@ -33,6 +33,8 @@ import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.model.v1_1.Definitions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
@@ -44,6 +46,8 @@ import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
 
 public class DMNCompilerTest {
+
+    public static final Logger LOG = LoggerFactory.getLogger(DMNCompilerTest.class);
 
     @Test
     public void testItemDefAllowedValuesString() {
@@ -139,14 +143,14 @@ public class DMNCompilerTest {
                                                   "Imported Model");
         assertThat(importedModel, notNullValue());
         for (DMNMessage message : importedModel.getMessages()) {
-            System.out.println(message);
+            LOG.debug("{}", message);
         }
 
         DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_f79aa7a4-f9a3-410a-ac95-bea496edab52",
                                              "Importing Model");
         assertThat(dmnModel, notNullValue());
         for (DMNMessage message : dmnModel.getMessages()) {
-            System.out.println(message);
+            LOG.debug("{}", message);
         }
 
         DMNContext context = runtime.newContext();
@@ -154,9 +158,9 @@ public class DMNCompilerTest {
 
         DMNResult evaluateAll = runtime.evaluateAll(dmnModel, context);
         for (DMNMessage message : evaluateAll.getMessages()) {
-            System.out.println(message);
+            LOG.debug("{}", message);
         }
-        System.out.println(evaluateAll);
+        LOG.debug("{}", evaluateAll);
         assertThat(evaluateAll.getDecisionResultByName("Greeting").getResult(), is("Hello John!"));
     }
 

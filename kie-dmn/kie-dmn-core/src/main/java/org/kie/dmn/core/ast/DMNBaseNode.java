@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.DMNNode;
@@ -54,34 +55,28 @@ public abstract class DMNBaseNode
         return source != null ? source.getName() : null;
     }
 
-    @Override
-    public String getModelNamespace() {
+    private Optional<Definitions> getParentDefinitions() {
         if (source != null) {
             Object parent = source.getParent();
             while (!(parent instanceof Definitions)) {
                 if (parent == null) {
-                    return null;
+                    return Optional.empty();
                 }
                 parent = source.getParent();
             }
-            return ((Definitions) parent).getNamespace();
+            return Optional.of((Definitions) parent);
         }
-        return null;
+        return Optional.empty();
+    }
+
+    @Override
+    public String getModelNamespace() {
+        return getParentDefinitions().map(Definitions::getNamespace).orElse(null);
     }
 
     @Override
     public String getModelName() {
-        if (source != null) {
-            Object parent = source.getParent();
-            while (!(parent instanceof Definitions)) {
-                if (parent == null) {
-                    return null;
-                }
-                parent = source.getParent();
-            }
-            return ((Definitions) parent).getName();
-        }
-        return null;
+        return getParentDefinitions().map(Definitions::getName).orElse(null);
     }
 
     public String getIdentifierString() {
