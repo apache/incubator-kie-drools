@@ -1515,33 +1515,38 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
                 "\n"
                 ;
 
-        KieBase kbase = loadKnowledgeBaseFromString(drl);
+        final KieBase kbase = loadKnowledgeBaseFromString(drl);
         final KieSession ksession = createKnowledgeSession(kbase);
 
-        List list = new ArrayList();
+        final List list = new ArrayList();
         ksession.setGlobal( "list", list );
 
-        FactHandle handle = (FactHandle) ksession.insert( "trigger" );
-        new Thread( new Runnable(){
-            public void run(){ ksession.fireUntilHalt(); }
-        } ).start();
-        Thread.sleep( 350 );
-        assertEquals( 2, list.size() ); // delay 0, repeat after 100
-        assertEquals( asList( 0, 0 ), list );
+        final FactHandle handle = ksession.insert( "trigger" );
 
-        ksession.insert( "halt" );
+        new Thread(ksession::fireUntilHalt).start();
+        try {
+            Thread.sleep( 350 );
+            assertEquals( 2, list.size() ); // delay 0, repeat after 100
+            assertEquals( asList( 0, 0 ), list );
 
-        Thread.sleep( 200 );
-        ksession.delete( handle );
-        assertEquals( 2, list.size() ); // halted, no more rule firing
+            ksession.insert( "halt" );
 
-        new Thread( new Runnable(){
-            public void run(){ ksession.fireUntilHalt(); }
-        } ).start();
-        Thread.sleep( 200 );
+            Thread.sleep( 200 );
+            ksession.delete( handle );
+            assertEquals( 2, list.size() ); // halted, no more rule firing
 
-        assertEquals( 2, list.size() );
-        assertEquals( asList( 0, 0 ), list );
+            new Thread(ksession::fireUntilHalt).start();
+            try {
+                Thread.sleep( 200 );
+
+                assertEquals( 2, list.size() );
+                assertEquals( asList( 0, 0 ), list );
+            } finally {
+                ksession.halt();
+            }
+        } finally {
+            ksession.halt();
+        }
     }
 
     @Test

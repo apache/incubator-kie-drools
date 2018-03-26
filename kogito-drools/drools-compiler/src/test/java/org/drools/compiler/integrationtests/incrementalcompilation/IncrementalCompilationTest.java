@@ -1392,13 +1392,13 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
     @Test @Ignore("this test takes too long and cannot be emulated with a pseudo clock")
     public void testIncrementalCompilationWithFireUntilHalt() throws Exception {
         // DROOLS-782
-        String drl1 = getCronRule(3) + getCronRule(6);
-        String drl2 = getCronRule( 8 ) + getCronRule(10) + getCronRule(5);
+        final String drl1 = getCronRule(3) + getCronRule(6);
+        final String drl2 = getCronRule( 8 ) + getCronRule(10) + getCronRule(5);
 
-        KieServices ks = KieServices.Factory.get();
+        final KieServices ks = KieServices.Factory.get();
 
         // Create an in-memory jar for version 1.0.0
-        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-fireUntilHalt", "1.0.0" );
+        final ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-fireUntilHalt", "1.0.0" );
         //KieModule km = createAndDeployJar( ks, releaseId1, testRuleAdd1, testRuleAdd2 );
         KieModule km = createAndDeployJar( ks, releaseId1, drl1 );
 
@@ -1406,31 +1406,25 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         final KieContainer kc = ks.newKieContainer( km.getReleaseId() );
         final KieSession kieSession = kc.newKieSession();
 
-        new Thread(new Runnable() {
-            public void run() {
-                kieSession.fireUntilHalt();
-                try {
-                    Thread.sleep( 20000 );
-                } catch (InterruptedException e) {
-                    throw new RuntimeException( e );
-                }
-                kieSession.halt();
-            }
-        }).start();
+        try {
+            new Thread(kieSession::fireUntilHalt).start();
 
-        Thread.sleep( 10000 );
+            Thread.sleep( 10000 );
 
-        // Create a new jar for version 1.1.0
-        ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-fireUntilHalt", "1.1.0" );
-        km = createAndDeployJar( ks, releaseId2, drl2 );
+            // Create a new jar for version 1.1.0
+            final ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-fireUntilHalt", "1.1.0" );
+            km = createAndDeployJar( ks, releaseId2, drl2 );
 
-        // try to update the container to version 1.1.0
-        Results results = kc.updateToVersion( releaseId2 );
+            // try to update the container to version 1.1.0
+            final Results results = kc.updateToVersion( releaseId2 );
 
-        assertFalse( "Errors detected on updateToVersion: " + results.getMessages( org.kie.api.builder.Message.Level.ERROR ),
-                     results.hasMessages( org.kie.api.builder.Message.Level.ERROR ) );
+            assertFalse( "Errors detected on updateToVersion: " + results.getMessages( org.kie.api.builder.Message.Level.ERROR ),
+                         results.hasMessages( org.kie.api.builder.Message.Level.ERROR ) );
 
-        Thread.sleep( 10000 );
+            Thread.sleep( 10000 );
+        } finally {
+            kieSession.halt();
+        }
     }
 
     private String getCronRule(int seconds) {
@@ -3964,33 +3958,31 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         CountDownLatch done = new CountDownLatch( 1 );
         list.done = done;
 
-        new Thread( new Runnable() {
-            public void run() {
-                kieSession.fireUntilHalt();
-            }
-        }).start();
-
-        done.await();
-        assertEquals( 1, list.size() );
-        assertEquals( "0 - X", list.get(0) );
-        list.clear();
-
-        for (int i = 1; i < 10; i++) {
-            done = new CountDownLatch( 1 );
-            list.done = done;
-
-            ReleaseId releaseIdI = ks.newReleaseId( "org.kie", "test-fireUntilHalt", "1."+i );
-            km = createAndDeployJar( ks, releaseIdI, getTestRuleForFireUntilHalt(i) );
-
-            kc.updateToVersion( releaseIdI );
+        try {
+            new Thread(kieSession::fireUntilHalt).start();
 
             done.await();
             assertEquals( 1, list.size() );
-            assertEquals( i + " - X", list.get(0) );
+            assertEquals( "0 - X", list.get(0) );
             list.clear();
-        }
 
-        kieSession.halt();
+            for (int i = 1; i < 10; i++) {
+                done = new CountDownLatch( 1 );
+                list.done = done;
+
+                ReleaseId releaseIdI = ks.newReleaseId( "org.kie", "test-fireUntilHalt", "1."+i );
+                km = createAndDeployJar( ks, releaseIdI, getTestRuleForFireUntilHalt(i) );
+
+                kc.updateToVersion( releaseIdI );
+
+                done.await();
+                assertEquals( 1, list.size() );
+                assertEquals( i + " - X", list.get(0) );
+                list.clear();
+            }
+        } finally {
+            kieSession.halt();
+        }
     }
 
     private String getTestRuleForFireUntilHalt(int i) {
