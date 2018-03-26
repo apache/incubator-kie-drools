@@ -769,7 +769,7 @@ The memory use statistic has been seen to affect the solver noticeably.
 [[enableASingleStatistic]]
 === Enable A Single Statistic
 
-A single statistic is a statics for one dataset for one solver configuration.
+A single statistic is static for one dataset for one solver configuration.
 Unlike a problem statistic, it does not aggregate over solver configurations.
 
 The benchmarker supports outputting single statistics as graphs and CSV (comma separated values) files to the ``benchmarkDirectory``.
