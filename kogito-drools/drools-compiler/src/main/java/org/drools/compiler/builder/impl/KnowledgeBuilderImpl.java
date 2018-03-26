@@ -2384,7 +2384,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
             for (KnowledgeBuilderError error : errors) {
                 logger.error(error.toString());
             }
-            throw new IllegalArgumentException("Could not parse knowledge.");
+            throw new IllegalArgumentException("Could not parse knowledge. See the logs for details.");
         }
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(conf);
         kbase.addPackages(Arrays.asList(getPackages()));
