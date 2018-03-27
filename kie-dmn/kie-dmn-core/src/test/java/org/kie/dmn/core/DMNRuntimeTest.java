@@ -1834,6 +1834,28 @@ public class DMNRuntimeTest {
     }
 
     @Test
+    public void testEnhancedForLoop2() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime("MACD-enhanced_iteration.dmn", this.getClass());
+        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_6cfe7d88-6741-45d1-968c-b61a597d0964", "MACD-enhanced iteration");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        DMNContext context = DMNFactory.newContext();
+        Map<String, Object> d1 = prototype(entry("aDate", LocalDate.of(2018, 3, 5)), entry("Close", 1010));
+        Map<String, Object> d2 = prototype(entry("aDate", LocalDate.of(2018, 3, 6)), entry("Close", 1020));
+        Map<String, Object> d3 = prototype(entry("aDate", LocalDate.of(2018, 3, 7)), entry("Close", 1030));
+        context.set("DailyTable", Arrays.asList(d1, d2, d3));
+
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        DMNContext resultContext = dmnResult.getContext();
+        assertThat(((Map<String, Object>) ((List) resultContext.get("MACDTable")).get(0)).get("aDate"), is(LocalDate.of(2018, 3, 5)));
+        assertThat(((Map<String, Object>) ((List) resultContext.get("MACDTable")).get(1)).get("aDate"), is(LocalDate.of(2018, 3, 6)));
+        assertThat(((Map<String, Object>) ((List) resultContext.get("MACDTable")).get(2)).get("aDate"), is(LocalDate.of(2018, 3, 7)));
+    }
+
+    @Test
     public void testNotListInDT() {
         // DROOLS-2416
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime("anot.dmn", this.getClass());
