@@ -16,15 +16,12 @@
 
 package org.kie.dmn.core;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.*;
-
 import org.hamcrest.Matchers;
 import org.junit.Test;
+import org.kie.dmn.api.core.DMNContext;
+import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNModel;
+import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.ItemDefNode;
@@ -35,8 +32,22 @@ import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.model.v1_1.Definitions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
+import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
 
 public class DMNCompilerTest {
+
+    public static final Logger LOG = LoggerFactory.getLogger(DMNCompilerTest.class);
 
     @Test
     public void testItemDefAllowedValuesString() {
@@ -120,4 +131,37 @@ public class DMNCompilerTest {
         assertThat( dmnModel, notNullValue() );
         assertFalse( runtime.evaluateAll( dmnModel, DMNFactory.newContext() ).hasErrors() );
     }
+
+    @Test
+    public void testImport() {
+        System.out.println(null instanceof Definitions);
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("Importing_Model.dmn",
+                                                                                 this.getClass(),
+                                                                                 "Imported_Model.dmn");
+
+        DMNModel importedModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_f27bb64b-6fc7-4e1f-9848-11ba35e0df36",
+                                                  "Imported Model");
+        assertThat(importedModel, notNullValue());
+        for (DMNMessage message : importedModel.getMessages()) {
+            LOG.debug("{}", message);
+        }
+
+        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_f79aa7a4-f9a3-410a-ac95-bea496edab52",
+                                             "Importing Model");
+        assertThat(dmnModel, notNullValue());
+        for (DMNMessage message : dmnModel.getMessages()) {
+            LOG.debug("{}", message);
+        }
+
+        DMNContext context = runtime.newContext();
+        context.set("A Person", mapOf(entry("name", "John"), entry("age", 47)));
+
+        DMNResult evaluateAll = runtime.evaluateAll(dmnModel, context);
+        for (DMNMessage message : evaluateAll.getMessages()) {
+            LOG.debug("{}", message);
+        }
+        LOG.debug("{}", evaluateAll);
+        assertThat(evaluateAll.getDecisionResultByName("Greeting").getResult(), is("Hello John!"));
+    }
+
 }

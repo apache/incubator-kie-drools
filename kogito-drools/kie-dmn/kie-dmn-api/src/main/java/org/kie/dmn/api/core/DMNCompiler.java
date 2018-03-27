@@ -16,17 +16,31 @@
 
 package org.kie.dmn.api.core;
 
-import org.kie.api.io.Resource;
-import org.kie.dmn.api.marshalling.v1_1.DMNExtensionRegister;
-import org.kie.dmn.model.v1_1.Definitions;
-
 import java.io.Reader;
+import java.util.Collection;
+import java.util.Collections;
+
+import org.kie.api.io.Resource;
+import org.kie.dmn.model.v1_1.Definitions;
 
 public interface DMNCompiler {
 
-    DMNModel compile( Resource resource );
+    default DMNModel compile(Resource resource) {
+        return compile(resource, Collections.emptyList());
+    }
 
-    DMNModel compile( Reader source );
+    DMNModel compile(Resource resource, Collection<DMNModel> dmnModels);
 
-    DMNModel compile(Definitions dmndefs);
+    default DMNModel compile(Reader source) {
+        return compile(source, Collections.emptyList());
+    }
+
+    DMNModel compile(Reader source, Collection<DMNModel> dmnModels);
+
+    default DMNModel compile(Definitions dmndefs) {
+        return compile(dmndefs, Collections.emptyList());
+    }
+
+    DMNModel compile(Definitions dmndefs, Collection<DMNModel> dmnModels);
+
 }

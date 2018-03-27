@@ -20,11 +20,13 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.model.v1_1.BusinessKnowledgeModel;
 import org.kie.dmn.model.v1_1.Decision;
+import org.kie.dmn.model.v1_1.Definitions;
 import org.kie.dmn.model.v1_1.InformationRequirement;
 import org.kie.dmn.model.v1_1.KnowledgeRequirement;
 import org.kie.dmn.model.v1_1.NamedElement;
@@ -51,6 +53,30 @@ public abstract class DMNBaseNode
 
     public String getName() {
         return source != null ? source.getName() : null;
+    }
+
+    private Optional<Definitions> getParentDefinitions() {
+        if (source != null) {
+            Object parent = source.getParent();
+            while (!(parent instanceof Definitions)) {
+                if (parent == null) {
+                    return Optional.empty();
+                }
+                parent = source.getParent();
+            }
+            return Optional.of((Definitions) parent);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public String getModelNamespace() {
+        return getParentDefinitions().map(Definitions::getNamespace).orElse(null);
+    }
+
+    @Override
+    public String getModelName() {
+        return getParentDefinitions().map(Definitions::getName).orElse(null);
     }
 
     public String getIdentifierString() {

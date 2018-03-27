@@ -16,14 +16,12 @@
 
 package org.kie.dmn.core.impl;
 
-import static org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus.EVALUATING;
-import static org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus.FAILED;
-import static org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus.SKIPPED;
-
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.drools.core.definitions.InternalKnowledgePackage;
@@ -56,6 +54,10 @@ import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus.EVALUATING;
+import static org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus.FAILED;
+import static org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus.SKIPPED;
 
 public class DMNRuntimeImpl
         implements DMNRuntime {
@@ -193,7 +195,7 @@ public class DMNRuntimeImpl
 
     private void evaluateBKM(DMNContext context, DMNResultImpl result, BusinessKnowledgeModelNode b, boolean typeCheck) {
         BusinessKnowledgeModelNodeImpl bkm = (BusinessKnowledgeModelNodeImpl) b;
-        if( result.getContext().isDefined( bkm.getName() ) ) {
+        if (isNodeValueDefined(result, bkm)) {
             // already resolved
             // TODO: do we need to check if the defined variable is a function as it should?
             return;
@@ -228,7 +230,7 @@ public class DMNRuntimeImpl
                                            );
                     return;
                 }
-                if( ! result.getContext().isDefined( dep.getName() ) ) {
+                if (!isNodeValueDefined(result, dep)) {
                     if( dep instanceof BusinessKnowledgeModelNode ) {
                         evaluateBKM(context, result, (BusinessKnowledgeModelNode) dep, typeCheck);
                     } else {
@@ -250,8 +252,15 @@ public class DMNRuntimeImpl
             EvaluatorResult er = bkm.getEvaluator().evaluate( this, result );
             if( er.getResultType() == EvaluatorResult.ResultType.SUCCESS ) {
                 FEELFunction resultFn = (FEELFunction) er.getResult();
-                // TODO check of the return type will need calculation/inference of function return type.
-                result.getContext().set( bkm.getBusinessKnowledModel().getVariable().getName(), resultFn );
+                if (bkm.getModelNamespace().equals(result.getModel().getNamespace())) {
+                    // TODO check of the return type will need calculation/inference of function return type.
+                    result.getContext().set(bkm.getBusinessKnowledModel().getVariable().getName(), resultFn);
+                } else {
+                    DMNModelImpl model = (DMNModelImpl) result.getModel();
+                    Optional<String> importAlias = model.getImportAliasFor(bkm.getModelNamespace(), bkm.getModelName());
+                    Map<String, Object> aliasContext = (Map) result.getContext().getAll().computeIfAbsent(importAlias.get(), x -> new LinkedHashMap<>());
+                    aliasContext.put(bkm.getBusinessKnowledModel().getVariable().getName(), resultFn);
+                }
             }
         } catch( Throwable t ) {
             MsgUtil.reportMessage( logger,
@@ -265,6 +274,23 @@ public class DMNRuntimeImpl
                                    t.getMessage() );
         } finally {
             DMNRuntimeEventManagerUtils.fireAfterEvaluateBKM( eventManager, bkm, result );
+        }
+    }
+
+    private boolean isNodeValueDefined(DMNResultImpl result, DMNNode node) {
+        if (node.getModelNamespace().equals(result.getModel().getNamespace())) {
+            return result.getContext().isDefined(node.getName());
+        } else {
+            DMNModelImpl model = (DMNModelImpl) result.getModel();
+            Optional<String> importAlias = model.getImportAliasFor(node.getModelNamespace(), node.getModelName());
+            if (importAlias.isPresent()) {
+                Object aliasContext = result.getContext().get(importAlias.get());
+                if (aliasContext != null && (aliasContext instanceof Map<?, ?>)) {
+                    Map<?, ?> map = (Map<?, ?>) aliasContext;
+                    map.containsKey(node.getName());
+                }
+            }
+            return false;
         }
     }
 

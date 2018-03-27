@@ -48,6 +48,14 @@ public class Either<L,R> {
         return cata(e -> default_value, Function.identity());
     }
 
+    public <E extends Exception> R getOrElseThrow(Function<L, E> exceptionFn) throws E {
+        if (isRight()) {
+            return right.orElse(null);
+        } else {
+            throw exceptionFn.apply(left.get());
+        }
+    }
+
     public <X> X cata(Function<L,X> left, Function<R,X> right) {
         // warning: left.invoke, because of FEEL specs, could return null. The below is the safest way to implement cata over this Either.
         return isLeft() ? left.apply( this.left.get() ) : right.apply( this.right.orElse( null ) );

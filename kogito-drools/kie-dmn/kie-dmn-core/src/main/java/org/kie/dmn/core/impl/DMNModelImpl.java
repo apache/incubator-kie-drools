@@ -21,12 +21,16 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import javax.xml.namespace.QName;
 
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.DroolsObjectOutputStream;
@@ -59,6 +63,8 @@ public class DMNModelImpl
         // To ensure backward compatibility, append only:
         DMN_XML
     }
+    
+
     private SerializationFormat serializedAs = SerializationFormat.DMN_XML;
     private Resource resource;
     private Definitions definitions;
@@ -76,6 +82,8 @@ public class DMNModelImpl
      * a compile-time preference to indicate if type-check should be performed during runtime evaluation. 
      */
     private boolean runtimeTypeCheck = false;
+
+    private Map<String, QName> importAliases = new HashMap<>();
 
     public DMNModelImpl() {
     }
@@ -364,6 +372,25 @@ public class DMNModelImpl
         this.messages  = compiledModel.messages  ;
         this.types     = compiledModel.types     ;
         this.runtimeTypeCheck = compiledModel.runtimeTypeCheck;
+    }
+
+    public void setImportAliasForNS(String iAlias, String iNS, String iModelName) {
+        if (!getImportAliasFor(iNS, iModelName).isPresent()) {
+            this.importAliases.put(iAlias, new QName(iNS, iModelName));
+        }
+    }
+
+    public Map<String, QName> getImportAliasesForNS() {
+        return Collections.unmodifiableMap(this.importAliases);
+    }
+
+    public Optional<String> getImportAliasFor(String ns, String iModelName) {
+        QName lookup = new QName(ns, iModelName);
+        return this.importAliases.entrySet().stream().filter(kv -> kv.getValue().equals(lookup)).map(kv -> kv.getKey()).findFirst();
+    }
+
+    public QName getImportNamespaceAndNameforAlias(String iAlias) {
+        return this.importAliases.get(iAlias);
     }
 
 }

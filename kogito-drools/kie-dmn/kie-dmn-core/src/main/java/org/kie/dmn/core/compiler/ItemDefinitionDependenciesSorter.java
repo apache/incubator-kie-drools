@@ -60,7 +60,7 @@ public class ItemDefinitionDependenciesSorter {
 
         List<ItemDefinition> neighbours = allNodes.stream()
                                                   .filter(n -> !n.getName().equals(node.getName())) // filter out `node`
-                                                  .filter(n -> recurseFind(node, new QName(modelNamespace, n.getName()))) // only neighbours of `node`
+                                                  .filter(n -> recurseFind(node, new QName(modelNamespace, n.getName()))) // I pick from allNodes, those referenced by this `node`. Only neighbours of `node`, because N is referenced by NODE.
                                                   .collect(Collectors.toList());
         for (ItemDefinition n : neighbours) {
             if (!visited.contains(n)) {

@@ -143,6 +143,7 @@ import org.kie.api.internal.utils.ServiceRegistry;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
+import org.kie.api.io.ResourceWithConfiguration;
 import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.internal.ChangeSet;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
@@ -820,6 +821,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         }
     }
 
+    @Deprecated
     void addPackageForExternalType(Resource resource,
                                    ResourceType type,
                                    ResourceConfiguration configuration) throws Exception {
@@ -836,6 +838,19 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
             throw new RuntimeException("Unknown resource type: " + type);
         }
     }
+
+    void addPackageForExternalType(ResourceType type, List<ResourceWithConfiguration> resources) throws Exception {
+        KieAssemblers assemblers = ServiceRegistry.getInstance().get(KieAssemblers.class);
+
+        KieAssemblerService assembler = assemblers.getAssemblers().get(type);
+
+        if (assembler != null) {
+            assembler.addResources(this, resources, type);
+        } else {
+            throw new RuntimeException("Unknown resource type: " + type);
+        }
+    }
+
     public void addPackageFromPMML(Resource resource,
             ResourceType type,
             ResourceConfiguration configuration) throws Exception {
