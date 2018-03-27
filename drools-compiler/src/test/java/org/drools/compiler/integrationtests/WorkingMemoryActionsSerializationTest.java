@@ -126,12 +126,7 @@ public class WorkingMemoryActionsSerializationTest {
 
         // Using fire until halt. If firaAllRules is called it works. But for other reasons, I need to run fireUntilHalt
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                ksession.fireUntilHalt();
-            }
-        }).start();
+        new Thread(ksession::fireUntilHalt).start();
 
     }
 
