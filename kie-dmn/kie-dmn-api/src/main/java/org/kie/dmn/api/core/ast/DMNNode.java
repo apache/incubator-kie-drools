@@ -22,4 +22,8 @@ public interface DMNNode {
 
     String getName();
 
+    String getModelNamespace();
+
+    String getModelName();
+
 }

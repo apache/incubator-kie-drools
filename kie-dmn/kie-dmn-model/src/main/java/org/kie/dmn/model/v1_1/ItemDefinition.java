@@ -69,7 +69,6 @@ public class ItemDefinition extends NamedElement {
         this.isCollection = value;
     }
 
-
     @Override
     public String toString() {
         return new StringJoiner(", ")
