@@ -339,7 +339,18 @@ public class DMNDecisionTableRuntimeTest {
         assertThat( dmnResult.hasErrors(), is( false ) );
         assertNull( dmnResult.getContext().get("Logique de décision 1") );
     }
-    
+
+    @Test
+    public void testNullRelation() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime("nullrelation.dmn", getClass());
+        DMNModel model = runtime.getModel("http://www.trisotech.com/definitions/_946a2145-89ae-4197-88b4-40e6f88c8101", "Null in relations");
+        assertThat(model, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(model.getMessages()), model.hasErrors(), is(false));
+        DMNContext context = DMNFactory.newContext();
+        context.set("Value", "a3");
+        DMNResult result = runtime.evaluateByName(model, context, "Mapping");
+        assertThat(DMNRuntimeUtil.formatMessages(result.getMessages()), result.hasErrors(), is(false));
+    }
 
     @Test
     public void testDecisionTableOutputDMNTypeCollection() {
