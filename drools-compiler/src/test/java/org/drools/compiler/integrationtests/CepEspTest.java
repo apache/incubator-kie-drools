@@ -2628,6 +2628,7 @@ public class CepEspTest extends CommonTestMethodBase {
             ksession.halt();
             // not to swallow possible exception
             sessionFuture.get();
+            ksession.dispose();
         }
     }
 
@@ -2734,6 +2735,7 @@ public class CepEspTest extends CommonTestMethodBase {
             ksession.halt();
             // not to swallow possible exception
             sessionFuture.get();
+            ksession.dispose();
         }
     }
 
@@ -3714,32 +3716,32 @@ public class CepEspTest extends CommonTestMethodBase {
         EntryPoint ep01 = session.getEntryPoint("ep01");
 
 
-        new Thread () {
-            public void run () {
-                session.fireUntilHalt();
-            }
-        }.start ();
-
-        int eventLimit = 5000;
-
-        ProbeCounter pc = new ProbeCounter ();
-        long myTotal = 0;
-
+        new Thread(session::fireUntilHalt).start ();
         try {
-            FactHandle pch = session.insert(pc);
-            for ( int i = 0; i < eventLimit; i++ ) {
-                ep01.insert ( new ProbeEvent ( i ) );
-                myTotal++;
+            int eventLimit = 5000;
+
+            ProbeCounter pc = new ProbeCounter ();
+            long myTotal = 0;
+
+            try {
+                FactHandle pch = session.insert(pc);
+                for ( int i = 0; i < eventLimit; i++ ) {
+                    ep01.insert ( new ProbeEvent ( i ) );
+                    myTotal++;
+                }
+
+                Thread.sleep( 2500 );
+            } catch ( Throwable t ) {
+                fail( t.getMessage() );
             }
 
-            Thread.sleep( 2500 );
-        } catch ( Throwable t ) {
-            fail( t.getMessage() );
+            assertEquals( eventLimit, myTotal );
+            assertEquals( eventLimit, list.size() );
+            assertEquals( 0, session.getEntryPoint( "ep01" ).getObjects().size() );
+        } finally {
+            session.halt();
+            session.dispose();
         }
-
-        assertEquals( eventLimit, myTotal );
-        assertEquals( eventLimit, list.size() );
-        assertEquals( 0, session.getEntryPoint( "ep01" ).getObjects().size() );
     }
 
 
@@ -4789,26 +4791,29 @@ public class CepEspTest extends CommonTestMethodBase {
         final KieSession ksession = kbase.newKieSession();
         EntryPoint synthEP =  ksession.getEntryPoint("synth");
 
-        new Thread(){
-            public void run() {
-                System.out.println("[" + new Date() + "] start!");
-                ksession.fireUntilHalt();
-            };
-        }.start();
+        new Thread(() -> {
+            System.out.println("[" + new Date() + "] start!");
+            ksession.fireUntilHalt();
+        }).start();
 
-        long counter = 0;
-        while(true) {
-            counter++;
-            synthEP.insert(new SynthEvent(counter));
-            try {
-                Thread.sleep(20L);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+        try {
+            long counter = 0;
+            while(true) {
+                counter++;
+                synthEP.insert(new SynthEvent(counter));
+                try {
+                    Thread.sleep(20L);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                if ((counter % 1000) == 0) {
+                    System.out.println("Total events: " + counter);
+                }
             }
-            if ((counter % 1000) == 0) {
-                System.out.println("Total events: " + counter);
-            }
-        } 
+        } finally {
+            ksession.halt();
+            ksession.dispose();
+        }
    }
 
 
