@@ -16,10 +16,19 @@
 
 package org.kie.dmn.validation;
 
+import java.io.File;
 import java.io.InputStreamReader;
 import java.io.Reader;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.kie.dmn.api.core.DMNModel;
+import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.core.util.DMNRuntimeUtil;
+import org.kie.dmn.model.v1_1.Definitions;
+
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
 
 public abstract class AbstractValidatorTest {
 
@@ -35,7 +44,21 @@ public abstract class AbstractValidatorTest {
         validator.dispose();
     }
 
-    protected Reader getReader( String filename ) {
-        return new InputStreamReader( getClass().getResourceAsStream( filename ) );
+    protected Reader getReader(final String resourceFileName ) {
+        return new InputStreamReader( getClass().getResourceAsStream( resourceFileName ) );
+    }
+
+    protected File getFile(final String resourceFileName ) {
+        return new File(this.getClass().getResource(resourceFileName).getFile());
+    }
+
+    protected Definitions getDefinitions(final String resourceName, final String namespace, final String modelName ) {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime(resourceName, this.getClass() );
+        final DMNModel dmnModel = runtime.getModel(namespace, modelName );
+        assertThat( dmnModel, notNullValue() );
+
+        final Definitions definitions = dmnModel.getDefinitions();
+        assertThat( definitions, notNullValue() );
+        return definitions;
     }
 }

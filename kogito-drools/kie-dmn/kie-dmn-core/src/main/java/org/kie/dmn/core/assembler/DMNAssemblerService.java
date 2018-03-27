@@ -17,6 +17,8 @@
 package org.kie.dmn.core.assembler;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -93,12 +95,13 @@ public class DMNAssemblerService implements KieAssemblerService {
     }
 
     private List<DMNProfile> getDMNProfiles(KnowledgeBuilderImpl kbuilderImpl) {
-        Map<String, String> dmnProfileProperties = new HashMap<>();
-        kbuilderImpl.getBuilderConfiguration().getChainedProperties().mapStartsWith(dmnProfileProperties, DMN_PROFILE_PREFIX, false);
+        ChainedProperties chainedProperties = kbuilderImpl.getBuilderConfiguration().getChainedProperties();
+
         List<DMNProfile> dmnProfiles = new ArrayList<>();
-        if (!isStrictMode(kbuilderImpl.getBuilderConfiguration().getChainedProperties())) {
-            dmnProfiles.add(new ExtendedDMNProfile());
-        }
+        dmnProfiles.addAll(getDefaultDMNProfiles(chainedProperties));
+
+        Map<String, String> dmnProfileProperties = new HashMap<>();
+        chainedProperties.mapStartsWith(dmnProfileProperties, DMN_PROFILE_PREFIX, false);
         if (!dmnProfileProperties.isEmpty()) {
             try {
                 for (Map.Entry<String, String> dmnProfileProperty : dmnProfileProperties.entrySet()) {
@@ -117,35 +120,44 @@ public class DMNAssemblerService implements KieAssemblerService {
         return dmnProfiles;
     }
 
-    private static boolean isStrictMode(ChainedProperties properties) {
-        String val = System.getProperty("org.kie.dmn.strictConformance");
-        if (val == null) {
-            return Boolean.parseBoolean(properties.getProperty("org.kie.dmn.strictConformance", "false"));
+    public static List<DMNProfile> getDefaultDMNProfiles(ChainedProperties properties) {
+        if (!isStrictMode(properties)) {
+            return Arrays.asList(new ExtendedDMNProfile());
+        } else {
+            return Collections.emptyList();
         }
+    }
+
+    public static boolean isStrictMode(ChainedProperties properties) {
+        String val = properties.getProperty("org.kie.dmn.strictConformance", "false");
         return "".equals(val) || Boolean.parseBoolean(val);
     }
 
     private DMNCompiler getCompiler(KnowledgeBuilderImpl kbuilderImpl) {
         List<DMNProfile> dmnProfiles = kbuilderImpl.getCachedOrCreate(DMN_PROFILES_CACHE_KEY, () -> getDMNProfiles(kbuilderImpl));
 
-        DMNCompilerConfiguration compilerConfig = compilerConfigWithKModulePrefs(kbuilderImpl, dmnProfiles);
+        DMNCompilerConfiguration compilerConfig = compilerConfigWithKModulePrefs(kbuilderImpl.getBuilderConfiguration().getChainedProperties(), dmnProfiles);
 
         return DMNFactory.newCompiler(compilerConfig);
     }
 
-    private DMNCompilerConfiguration compilerConfigWithKModulePrefs(KnowledgeBuilderImpl kbuilderImpl, List<DMNProfile> dmnProfiles) {
+    /**
+     * Returns a DMNCompilerConfiguration with the specified properties set, and applying the explicited dmnProfiles.
+     * @param chainedProperties applies properties --it does not do any classloading nor profile loading based on these properites, just passes the values. 
+     * @param dmnProfiles applies these DMNProfile(s) to the DMNCompilerConfiguration
+     * @return
+     */
+    public static DMNCompilerConfiguration compilerConfigWithKModulePrefs(ChainedProperties chainedProperties, List<DMNProfile> dmnProfiles) {
         DMNCompilerConfigurationImpl config = (DMNCompilerConfigurationImpl) DMNFactory.newCompilerConfiguration();
         
         Map<String, String> dmnPrefs = new HashMap<>();
-        kbuilderImpl.getBuilderConfiguration().getChainedProperties().mapStartsWith(dmnPrefs, ORG_KIE_DMN_PREFIX, true);
+        chainedProperties.mapStartsWith(dmnPrefs, ORG_KIE_DMN_PREFIX, true);
         config.setProperties(dmnPrefs);
         
-        if (!dmnProfiles.isEmpty()) {
-            for (DMNProfile dmnProfile : dmnProfiles) {
-                config.addExtensions(dmnProfile.getExtensionRegisters());
-                config.addDRGElementCompilers(dmnProfile.getDRGElementCompilers());
-                config.addFEELProfile(dmnProfile);
-            }
+        for (DMNProfile dmnProfile : dmnProfiles) {
+            config.addExtensions(dmnProfile.getExtensionRegisters());
+            config.addDRGElementCompilers(dmnProfile.getDRGElementCompilers());
+            config.addFEELProfile(dmnProfile);
         }
 
         return config;

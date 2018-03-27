@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.kie.dmn.model.v1_1.extensions.DecisionServices;
+
 public class Definitions extends NamedElement {
 
     public static final String DEFAULT_EXPRESSION_LANGUAGE = "http://www.omg.org/spec/FEEL/20140401";

@@ -19,12 +19,12 @@ package org.kie.dmn.backend.marshalling.v1_1.xstream.extensions;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import org.kie.dmn.backend.marshalling.v1_1.xstream.DMNElementConverter;
+import org.kie.dmn.backend.marshalling.v1_1.xstream.DMNModelInstrumentedBaseConverter;
 import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
 import org.kie.dmn.model.v1_1.DecisionService;
-import org.kie.dmn.model.v1_1.DecisionServices;
+import org.kie.dmn.model.v1_1.extensions.DecisionServices;
 
-public class DecisionServicesConverter extends DMNElementConverter {
+public class DecisionServicesConverter extends DMNModelInstrumentedBaseConverter {
 
     public static final String DECISION_SERVICE = "decisionService";
 

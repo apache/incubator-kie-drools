@@ -16,35 +16,49 @@
 
 package org.kie.dmn.validation;
 
-import org.drools.core.util.Drools;
-import org.kie.api.KieServices;
-import org.kie.api.runtime.KieContainer;
-import org.kie.api.runtime.StatelessKieSession;
-import org.kie.dmn.api.core.DMNCompiler;
-import org.kie.dmn.api.core.DMNMessage;
-import org.kie.dmn.api.core.DMNModel;
-import org.kie.dmn.backend.marshalling.v1_1.DMNMarshallerFactory;
-import org.kie.dmn.core.api.DMNMessageManager;
-import org.kie.dmn.core.compiler.DMNCompilerImpl;
-import org.kie.dmn.core.impl.DMNMessageImpl;
-import org.kie.dmn.core.util.KieHelper;
-import org.kie.dmn.core.util.DefaultDMNMessagesManager;
-import org.kie.dmn.core.util.Msg;
-import org.kie.dmn.core.util.MsgUtil;
-import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_1.Definitions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.xml.sax.SAXException;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import javax.xml.XMLConstants;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
-import java.io.*;
-import java.util.*;
-import java.util.stream.Stream;
+
+import org.drools.core.util.Drools;
+import org.kie.api.KieServices;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.StatelessKieSession;
+import org.kie.dmn.api.core.DMNCompiler;
+import org.kie.dmn.api.core.DMNCompilerConfiguration;
+import org.kie.dmn.api.core.DMNMessage;
+import org.kie.dmn.api.core.DMNModel;
+import org.kie.dmn.backend.marshalling.v1_1.DMNMarshallerFactory;
+import org.kie.dmn.core.api.DMNMessageManager;
+import org.kie.dmn.core.assembler.DMNAssemblerService;
+import org.kie.dmn.core.compiler.DMNCompilerImpl;
+import org.kie.dmn.core.compiler.DMNProfile;
+import org.kie.dmn.core.impl.DMNMessageImpl;
+import org.kie.dmn.core.util.DefaultDMNMessagesManager;
+import org.kie.dmn.core.util.KieHelper;
+import org.kie.dmn.core.util.Msg;
+import org.kie.dmn.core.util.MsgUtil;
+import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
+import org.kie.dmn.model.v1_1.Definitions;
+import org.kie.internal.utils.ChainedProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
 
 import static java.util.stream.Collectors.toList;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
@@ -73,7 +87,10 @@ public class DMNValidatorImpl implements DMNValidator {
      */
     private List<DMNMessage> failedInitMsg = new ArrayList<>();
 
-    public DMNValidatorImpl() {
+    private final List<DMNProfile> dmnProfiles = new ArrayList<>();
+    private final DMNCompilerConfiguration dmnCompilerConfig;
+
+    public DMNValidatorImpl(List<DMNProfile> dmnProfiles) {
         final KieServices ks = KieServices.Factory.get();
         final KieContainer kieContainer = KieHelper.getKieContainer(
                 ks.newReleaseId( "org.kie", "kie-dmn-validation", Drools.getFullVersion() ),
@@ -98,6 +115,10 @@ public class DMNValidatorImpl implements DMNValidator {
             String message = MsgUtil.createMessage( Msg.FAILED_VALIDATOR );
             failedInitMsg.add(new DMNMessageImpl(DMNMessage.Severity.ERROR, message, Msg.FAILED_VALIDATOR.getType(), null ) );
         }
+        ChainedProperties localChainedProperties = new ChainedProperties();
+        this.dmnProfiles.addAll(DMNAssemblerService.getDefaultDMNProfiles(localChainedProperties));
+        this.dmnProfiles.addAll(dmnProfiles);
+        this.dmnCompilerConfig = DMNAssemblerService.compilerConfigWithKModulePrefs(localChainedProperties, this.dmnProfiles);
     }
     
     public void dispose() {
@@ -255,7 +276,7 @@ public class DMNValidatorImpl implements DMNValidator {
 
     private List<DMNMessage> validateCompilation(Definitions dmnModel, DMNMessageManager results) {
         if( dmnModel != null ) {
-            DMNCompiler compiler = new DMNCompilerImpl();
+            DMNCompiler compiler = new DMNCompilerImpl(dmnCompilerConfig);
             DMNModel model = compiler.compile( dmnModel );
             if( model != null ) {
                 return model.getMessages();

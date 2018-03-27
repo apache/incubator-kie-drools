@@ -26,6 +26,7 @@ import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_SCHEMA;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.URISyntaxException;
 import java.util.List;
 import org.junit.Ignore;
@@ -53,7 +54,29 @@ public class ValidatorTest extends AbstractValidatorTest {
         
         DMNValidatorFactory.newValidator().validate(definitions);
     }
-    
+
+    @Test
+    public void testMACDInputDefinitions() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "MACD-enhanced_iteration.dmn", DMNInputRuntimeTest.class );
+        DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/definitions/_6cfe7d88-6741-45d1-968c-b61a597d0964", "MACD-enhanced iteration" );
+        assertThat( dmnModel, notNullValue() );
+
+        Definitions definitions = dmnModel.getDefinitions();
+        assertThat( definitions, notNullValue() );
+
+        List<DMNMessage> messages = DMNValidatorFactory.newValidator().validate(definitions, VALIDATE_MODEL, VALIDATE_COMPILATION);
+
+        assertThat( messages.toString(), messages.size(), is( 0 ) );
+    }
+
+    @Test
+    public void testMACDInputReader() throws IOException {
+        try (final Reader reader = new InputStreamReader(getClass().getResourceAsStream("/org/kie/dmn/core/MACD-enhanced_iteration.dmn") )) {
+            List<DMNMessage> messages = DMNValidatorFactory.newValidator().validate(reader, VALIDATE_MODEL, VALIDATE_COMPILATION);
+            assertThat( messages.toString(), messages.size(), is( 0 ) );
+        }
+    }
+
     private Definitions utilDefinitions(String filename, String modelName) {
 //        List<DMNMessage> validateXML;
 //        try {

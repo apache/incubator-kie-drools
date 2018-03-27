@@ -22,6 +22,8 @@ import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATIO
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_SCHEMA;
 
+import java.io.IOException;
+import java.io.Reader;
 import java.util.List;
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNMessage;
@@ -30,9 +32,21 @@ import org.kie.dmn.api.core.DMNMessageType;
 public class ValidatorKnowledgeRequirementTest extends AbstractValidatorTest {
 
     @Test
-    public void testKNOWREQ_MISSING_BKM() {
+    public void testKNOWREQ_MISSING_BKM_ReaderInput() throws IOException {
+        try (final Reader reader = getReader( "knowledgerequirement/KNOWREQ_MISSING_BKM.dmn" )) {
+            final List<DMNMessage> validate = validator.validate(
+                    reader,
+                    VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
+            assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 2 ) );
+            assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.MISSING_EXPRESSION ) ) );
+            assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.REQ_NOT_FOUND ) ) );
+        }
+    }
+
+    @Test
+    public void testKNOWREQ_MISSING_BKM_FileInput() {
         final List<DMNMessage> validate = validator.validate(
-                getReader( "knowledgerequirement/KNOWREQ_MISSING_BKM.dmn" ),
+                getFile( "knowledgerequirement/KNOWREQ_MISSING_BKM.dmn" ),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
         assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 2 ) );
         assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.MISSING_EXPRESSION ) ) );
@@ -40,10 +54,46 @@ public class ValidatorKnowledgeRequirementTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testKNOWREQ_REQ_DECISION_NOT_BKM() {
+    public void testKNOWREQ_MISSING_BKM_DefinitionsInput() {
         final List<DMNMessage> validate = validator.validate(
-                getReader( "knowledgerequirement/KNOWREQ_REQ_DECISION_NOT_BKM.dmn" ),
+                getDefinitions( "knowledgerequirement/KNOWREQ_MISSING_BKM.dmn",
+                                "https://github.com/kiegroup/kie-dmn",
+                                "KNOWREQ_MISSING_BKM"),
+                VALIDATE_MODEL, VALIDATE_COMPILATION);
+        assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 2 ) );
+        assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.MISSING_EXPRESSION ) ) );
+        assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.REQ_NOT_FOUND ) ) );
+    }
+
+    @Test
+    public void testKNOWREQ_REQ_DECISION_NOT_BKM_ReaderInput() throws IOException {
+        try (final Reader reader = getReader( "knowledgerequirement/KNOWREQ_REQ_DECISION_NOT_BKM.dmn" )) {
+            final List<DMNMessage> validate = validator.validate(
+                    reader,
+                    VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
+            assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 2 ) );
+            assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.MISSING_EXPRESSION ) ) );
+            assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.REQ_NOT_FOUND ) ) );
+        }
+    }
+
+    @Test
+    public void testKNOWREQ_REQ_DECISION_NOT_BKM_FileInput() {
+        final List<DMNMessage> validate = validator.validate(
+                getFile( "knowledgerequirement/KNOWREQ_REQ_DECISION_NOT_BKM.dmn" ),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
+        assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 2 ) );
+        assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.MISSING_EXPRESSION ) ) );
+        assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.REQ_NOT_FOUND ) ) );
+    }
+
+    @Test
+    public void testKNOWREQ_REQ_DECISION_NOT_BKM_DefinitionsInput() {
+        final List<DMNMessage> validate = validator.validate(
+                getDefinitions( "knowledgerequirement/KNOWREQ_REQ_DECISION_NOT_BKM.dmn",
+                                "https://github.com/kiegroup/kie-dmn",
+                                "KNOWREQ_REQ_DECISION_NOT_BKM"),
+                VALIDATE_MODEL, VALIDATE_COMPILATION);
         assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 2 ) );
         assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.MISSING_EXPRESSION ) ) );
         assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.REQ_NOT_FOUND ) ) );
