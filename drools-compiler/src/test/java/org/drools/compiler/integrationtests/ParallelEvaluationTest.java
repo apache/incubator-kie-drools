@@ -53,7 +53,9 @@ import org.kie.internal.conf.MultithreadEvaluationOption;
 import org.kie.internal.utils.KieHelper;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class ParallelEvaluationTest {
 
@@ -608,36 +610,41 @@ public class ParallelEvaluationTest {
     }
 
     @Test(timeout = 100000L)
-    public void testFireUntilHaltWithExpiration2() {
+    public void testFireUntilHaltWithExpiration2() throws InterruptedException {
         String drl =
                 "import " + A.class.getCanonicalName() + "\n" +
                 "import " + B.class.getCanonicalName() + "\n" +
                 "declare A @role( event ) @expires(11ms) end\n" +
                 "declare B @role( event ) @expires(11ms) end\n" +
                 "global java.util.concurrent.atomic.AtomicInteger counter;\n" +
+                "global java.util.concurrent.CountDownLatch fireLatch;\n" +
                 "rule R0 when\n" +
                 "  $A: A( $Aid : value > 0 )\n" +
                 "  $B: B( ($Bid: value <= $Aid) && (value > ($Aid - 1 )))\n" +
                 "then\n" +
                 "  counter.incrementAndGet();\n" +
+                "  fireLatch.countDown();" +
                 "end\n" +
                 "rule R1 when\n" +
                 "  $A: A( $Aid: value > 1 )\n" +
                 "  $B: B( ($Bid: value <= $Aid) && (value > ($Aid - 1 )))\n" +
                 "then\n" +
                 "  counter.incrementAndGet();\n" +
+                "  fireLatch.countDown();" +
                 "end\n" +
                 "rule R2 when\n" +
                 "  $A: A( $Aid: value > 2 )\n" +
                 "  $B: B( ($Bid: value <= $Aid) && (value > ($Aid - 1 )))\n" +
                 "then\n" +
                 "  counter.incrementAndGet();\n" +
+                "  fireLatch.countDown();" +
                 "end\n" +
                 "rule R3 when\n" +
                 "  $A: A( $Aid: value > 3 )\n" +
                 "  $B: B( ($Bid: value <= $Aid) && (value > ($Aid - 1 )))\n" +
                 "then\n" +
                 "  counter.incrementAndGet();\n" +
+                "  fireLatch.countDown();" +
                 "end";
 
         KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
@@ -658,17 +665,15 @@ public class ParallelEvaluationTest {
         new Thread( () -> ksession.fireUntilHalt() ).start();
 
         int eventsNr = 5;
+        final CountDownLatch fireLatch = new CountDownLatch(eventsNr * 4);
+        ksession.setGlobal("fireLatch", fireLatch);
         for ( int i = 0; i < eventsNr; i++ ) {
             ksession.insert( new A( i + 4 ) );
             ksession.insert( new B( i + 4 ) );
             sessionClock.advanceTime( 10, TimeUnit.MILLISECONDS );
         }
 
-        try {
-            Thread.sleep( 1000L );
-        } catch (InterruptedException e) {
-            throw new RuntimeException( e );
-        }
+        fireLatch.await();
 
         ksession.halt();
         ksession.dispose();
