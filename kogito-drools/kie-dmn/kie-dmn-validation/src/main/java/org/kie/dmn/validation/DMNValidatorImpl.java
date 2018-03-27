@@ -173,6 +173,7 @@ public class DMNValidatorImpl implements DMNValidator {
             Definitions dmndefs = null;
             try {
                 dmndefs = DMNMarshallerFactory.newDefaultMarshaller().unmarshal( new FileReader( xmlFile ) );
+                Definitions.normalize(dmndefs);
                 validateModelCompilation( dmndefs, results, flags );
             } catch ( Throwable t ) {
                 MsgUtil.reportMessage( LOG,
@@ -203,6 +204,7 @@ public class DMNValidatorImpl implements DMNValidator {
             }
             if( flags.contains( VALIDATE_MODEL ) || flags.contains( VALIDATE_COMPILATION ) ) {
                 Definitions dmndefs = DMNMarshallerFactory.newDefaultMarshaller().unmarshal( new StringReader( content ) );
+                Definitions.normalize(dmndefs);
                 validateModelCompilation( dmndefs, results, flags );
             }
         } catch ( Throwable t ) {
