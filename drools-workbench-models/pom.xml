@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools</artifactId>
-    <version>7.8.0-SNAPSHOT</version>
+    <version>7.8.0.t027</version>
   </parent>
 
   <artifactId>drools-workbench-models</artifactId>
