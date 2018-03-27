@@ -609,7 +609,7 @@ public class ParallelEvaluationTest {
         ksession.dispose();
     }
 
-    @Test(timeout = 100000L)
+    @Test(timeout = 20000L)
     public void testFireUntilHaltWithExpiration2() throws InterruptedException {
         String drl =
                 "import " + A.class.getCanonicalName() + "\n" +
