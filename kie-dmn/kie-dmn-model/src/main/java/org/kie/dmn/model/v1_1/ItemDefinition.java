@@ -17,6 +17,7 @@ package org.kie.dmn.model.v1_1;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
 
 import javax.xml.namespace.QName;
 
@@ -24,7 +25,7 @@ public class ItemDefinition extends NamedElement {
 
     private QName typeRef;
     private UnaryTests allowedValues;
-    private List<ItemDefinition> itemComponent;
+    private List<ItemDefinition> itemComponent = new ArrayList<>();
     private String typeLanguage;
     private Boolean isCollection;
 
@@ -45,9 +46,6 @@ public class ItemDefinition extends NamedElement {
     }
 
     public List<ItemDefinition> getItemComponent() {
-        if ( itemComponent == null ) {
-            itemComponent = new ArrayList<>();
-        }
         return this.itemComponent;
     }
 
@@ -71,4 +69,16 @@ public class ItemDefinition extends NamedElement {
         this.isCollection = value;
     }
 
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ")
+                .add("name: " + getName())
+                .add("typeRef: " + typeRef)
+                .add("allowedValues: " + allowedValues)
+                .add("itemComponent: " + itemComponent)
+                .add("typeLanguage: " + typeLanguage)
+                .add("isCollection: " + isCollection)
+                .toString();
+    }
 }

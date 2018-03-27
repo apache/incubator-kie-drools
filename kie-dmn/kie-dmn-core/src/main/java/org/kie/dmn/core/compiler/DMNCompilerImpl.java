@@ -155,7 +155,7 @@ public class DMNCompilerImpl
     }
 
     private void processItemDefinitions(DMNCompilerContext ctx, DMNFEELHelper feel, DMNModelImpl model, Definitions dmndefs) {
-        dmndefs.getItemDefinition().stream().forEach(x->processItemDefQNameURIs(x));
+        Definitions.normalize(dmndefs);
         
         List<ItemDefinition> ordered = new ItemDefinitionDependenciesSorter(model.getNamespace()).sort(dmndefs.getItemDefinition());
         
@@ -164,22 +164,6 @@ public class DMNCompilerImpl
             DMNType type = buildTypeDef( ctx, feel, model, idn, id, true );
             idn.setType( type );
             model.addItemDefinition( idn );
-        }
-    }
-    
-    /**
-     * Utility method to ensure any QName references contained inside the ItemDefinition have the namespace correctly valorized, also accordingly to the prefix.
-     * (Even in the case of {@link XMLConstants.DEFAULT_NS_PREFIX} it will take the DMN model namespace for the no-prefix accordingly.)
-     * @param id the ItemDefinition for which to ensure the QName references are valorized correctly.
-     */
-    private void processItemDefQNameURIs( ItemDefinition id ) {
-        QName typeRef = id.getTypeRef();
-        if ( typeRef != null && XMLConstants.NULL_NS_URI.equals( typeRef.getNamespaceURI() ) ) {
-            String actualNS = id.getNamespaceURI( typeRef.getPrefix() );
-            id.setTypeRef(new QName(actualNS, typeRef.getLocalPart(), typeRef.getPrefix()));
-        }
-        for ( ItemDefinition ic : id.getItemComponent() ) {
-            processItemDefQNameURIs( ic );
         }
     }
 

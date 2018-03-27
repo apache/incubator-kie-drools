@@ -15,6 +15,8 @@
  */
 package org.kie.dmn.model.v1_1;
 
+import javax.xml.XMLConstants;
+import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -162,5 +164,27 @@ public class Definitions extends NamedElement {
                ", exporter='" + exporter + '\'' +
                ", exporterVersion='" + exporterVersion + '\'' +
                '}';
+    }
+
+    /**
+     * Utility method to ensure any QName references contained inside the ItemDefinitions have the namespace correctly valorized, also accordingly to the prefix.
+     * (Even in the case of {@link XMLConstants.DEFAULT_NS_PREFIX} it will take the DMN model namespace for the no-prefix accordingly.)
+     * @param defs the ItemDefinition for which to ensure the QName references are valorized correctly.
+     */
+    public static void normalize(final Definitions defs) {
+        for (ItemDefinition itemDefinition : defs.getItemDefinition()) {
+            processQNameURIs(itemDefinition);
+        }
+    }
+
+    private static void processQNameURIs(ItemDefinition iDef) {
+        final QName typeRef = iDef.getTypeRef();
+        if (typeRef != null && XMLConstants.NULL_NS_URI.equals(typeRef.getNamespaceURI())) {
+            final String namespace = iDef.getNamespaceURI(typeRef.getPrefix());
+            iDef.setTypeRef(new QName(namespace, typeRef.getLocalPart(), typeRef.getPrefix()));
+        }
+        for (ItemDefinition comp : iDef.getItemComponent()) {
+            processQNameURIs(comp);
+        }
     }
 }
