@@ -29,6 +29,7 @@ import org.drools.core.common.InstanceNotEqualsConstraint;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.WindowNode;
+import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.Behavior;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.EntryPointId;
@@ -73,8 +74,11 @@ public class PatternBuilder
 
         final Pattern pattern = (Pattern) rce;
 
-        context.setLastBuiltPattern( pattern );
-        
+        if (!(pattern.getSource() instanceof Accumulate) ) {
+            // if the pattern has an accumulate as source it won't be relevant for calculation of property reactivity masks
+            context.setLastBuiltPattern( pattern );
+        }
+
         context.pushRuleComponent( pattern );
         this.attachPattern( context,
                             utils,

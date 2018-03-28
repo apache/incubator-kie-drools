@@ -394,6 +394,7 @@ public class KiePackagesBuilder {
 
                     if ( !sourcePattern.getBindings().isEmpty() ) {
                         binding = ( Binding ) sourcePattern.getBindings().iterator().next();
+                        usedVariableName.add( binding.getBoundVariable().getName() );
                     }
                 }
 

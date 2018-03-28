@@ -96,7 +96,7 @@ rule "Ensure Tree Scores are Filled"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 dialect "mvel"
 when
-    $node : @{ pmmlPackageName }.TreeNode( $id : id, outcome == null, confidence.size() > 0, $conf : confidence )
+    $node : @{ pmmlPackageName }.TreeNode( $id : id, outcome == null, confidence.size() > 0, $conf : confidence ) @watch(*)
     accumulate( $k : String() from $conf.keySet(),
                      $maxConf : max( $conf[ $k ] ) )
     java.util.Map.Entry( $best : key, value == $maxConf ) from $conf.entrySet()

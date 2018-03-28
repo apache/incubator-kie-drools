@@ -12,7 +12,7 @@ public class AccumulateExprViewItem<T> extends AbstractExprViewItem<T> {
 
     public AccumulateExprViewItem(ViewItem<T> expr, AccumulateFunction... accumulateFunctions) {
         super(expr.getFirstVariable());
-        this.expr = expr;
+        this.expr = expr.get();
         this.accumulateFunctions = accumulateFunctions;
     }
 

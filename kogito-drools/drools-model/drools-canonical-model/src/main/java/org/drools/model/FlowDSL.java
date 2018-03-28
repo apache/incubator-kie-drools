@@ -79,7 +79,7 @@ public class FlowDSL extends DSL {
         return new BindViewItemBuilder<>(var);
     }
 
-    public static class BindViewItemBuilder<T> implements ViewItemBuilder<T> {
+    public static class BindViewItemBuilder<T> implements ViewItem<T> {
         private final Variable<T> boundVariable;
         private Function1 function1;
         private Function2 function2;
@@ -117,6 +117,11 @@ public class FlowDSL extends DSL {
 
         public String[] getWatchedProps() {
             return watchedProps;
+        }
+
+        @Override
+        public Variable<?>[] getVariables() {
+            return inputVariable2 != null ? new Variable[] { inputVariable1, inputVariable2 } : new Variable[] { inputVariable1 };
         }
 
         @Override

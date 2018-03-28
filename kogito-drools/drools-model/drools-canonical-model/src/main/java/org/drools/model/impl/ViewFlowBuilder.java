@@ -325,7 +325,19 @@ public class ViewFlowBuilder implements ViewBuilder {
                 ctx.usedVars.add(accFunc.getVariable());
             }
 
-            final Condition newCondition = acc.getExpr() instanceof InputViewItem ? condition : viewItem2Condition(acc.getExpr(), condition, ctx);
+            Condition newCondition;
+            if (acc.getExpr() instanceof InputViewItem) {
+                newCondition = condition;
+            } else if (acc.getExpr() instanceof Binding) {
+                Binding binding = (( Binding ) acc.getExpr());
+                PatternImpl bindingPattern = new PatternImpl( binding.getInputVariable() );
+                bindingPattern.addBinding( binding );
+                newCondition = bindingPattern;
+                ctx.usedVars.add( binding.getBoundVariable() );
+            } else {
+                newCondition = viewItem2Condition(acc.getExpr(), condition, ctx);
+            }
+
             return new AccumulatePatternImpl(newCondition, acc.getAccumulateFunctions());
         }
 
