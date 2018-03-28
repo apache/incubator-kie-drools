@@ -1832,4 +1832,65 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
         }
     }
 
+    @Test(timeout = 5000L)
+    public void testPRAfterAccumulate() {
+        // DROOLS-2427
+        final String str1 =
+                "import " + Order.class.getCanonicalName() + "\n" +
+                "import " + OrderLine.class.getCanonicalName() + "\n" +
+                "rule R when\n" +
+                "        $o: Order($lines: orderLines)\n" +
+                "        Number(intValue >= 15) from accumulate(\n" +
+                "            OrderLine($q: quantity) from $lines\n" +
+                "            , sum($q)\n" +
+                "        )\n" +
+                "    then\n" +
+                "        modify($o) { setPrice(10) }\n" +
+                "end\n";
+
+        final KieSession ksession = new KieHelper().addContent( str1, ResourceType.DRL )
+                .build()
+                .newKieSession();
+
+        Order order = new Order( Arrays.asList(new OrderLine( 9 ), new OrderLine( 8 )), 12 );
+        ksession.insert( order );
+        ksession.fireAllRules();
+
+        assertEquals( 10, order.getPrice() );
+    }
+
+    public static class Order {
+        private final List<OrderLine> orderLines;
+
+        private int price;
+
+        public Order( List<OrderLine> orderLines, int price ) {
+            this.orderLines = orderLines;
+            this.price = price;
+        }
+
+        public List<OrderLine> getOrderLines() {
+            return orderLines;
+        }
+
+        public int getPrice() {
+            return price;
+        }
+
+        public void setPrice( int price ) {
+            this.price = price;
+        }
+    }
+
+    public static class OrderLine {
+        private final int quantity;
+
+        public OrderLine( int quantity ) {
+            this.quantity = quantity;
+        }
+
+        public int getQuantity() {
+            return quantity;
+        }
+    }
 }

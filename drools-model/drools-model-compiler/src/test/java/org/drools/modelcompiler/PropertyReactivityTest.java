@@ -16,6 +16,9 @@
 
 package org.drools.modelcompiler;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
 import org.junit.Test;
@@ -169,5 +172,66 @@ public class PropertyReactivityTest extends BaseModelTest {
         ksession.insert( 42 );
         ksession.insert( 42L );
         assertEquals( 1, ksession.fireAllRules() );
+    }
+
+
+    @Test(timeout = 5000L)
+    public void testPRAfterAccumulate() {
+        // DROOLS-2427
+        final String str =
+                "import " + Order.class.getCanonicalName() + "\n" +
+                "import " + OrderLine.class.getCanonicalName() + "\n" +
+                "rule R when\n" +
+                "        $o: Order($lines: orderLines)\n" +
+                "        Number(intValue >= 15) from accumulate(\n" +
+                "            OrderLine($q: quantity) from $lines\n" +
+                "            , sum($q)\n" +
+                "        )\n" +
+                "    then\n" +
+                "        modify($o) { setPrice(10) }\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        Order order = new Order( Arrays.asList(new OrderLine( 9 ), new OrderLine( 8 )), 12 );
+        ksession.insert( order );
+        ksession.fireAllRules();
+
+        assertEquals( 10, order.getPrice() );
+    }
+
+    public static class Order {
+        private final List<OrderLine> orderLines;
+
+        private int price;
+
+        public Order( List<OrderLine> orderLines, int price ) {
+            this.orderLines = orderLines;
+            this.price = price;
+        }
+
+        public List<OrderLine> getOrderLines() {
+            return orderLines;
+        }
+
+        public int getPrice() {
+            return price;
+        }
+
+        public void setPrice( int price ) {
+            this.price = price;
+        }
+    }
+
+    public static class OrderLine {
+        private final int quantity;
+
+        public OrderLine( int quantity ) {
+            this.quantity = quantity;
+        }
+
+        public int getQuantity() {
+            return quantity;
+        }
     }
 }
