@@ -156,24 +156,7 @@ public class StringDataGenerator {
 
     public static StringDataGenerator buildAssemblyLineNames() {
         return new StringDataGenerator()
-                .addPart(false, 0,
-                        "Factory A",
-                        "Factory B",
-                        "Factory C",
-                        "Factory D",
-                        "Factory E",
-                        "Factory F",
-                        "Factory G",
-                        "Factory H",
-                        "Factory I",
-                        "Factory J",
-                        "Factory K",
-                        "Factory L",
-                        "Factory M",
-                        "Factory N",
-                        "Factory O")
-                .addPart(true, 1,
-                        "Chassis",
+                .addPart("Chassis",
                         "Engine",
                         "Battery",
                         "Radiator",
@@ -188,8 +171,22 @@ public class StringDataGenerator {
                         "Radio",
                         "Airbag",
                         "GPS")
-                .addPart(false, 0,
-                        "line 1",
+                .addPart("Factory A",
+                        "Factory B",
+                        "Factory C",
+                        "Factory D",
+                        "Factory E",
+                        "Factory F",
+                        "Factory G",
+                        "Factory H",
+                        "Factory I",
+                        "Factory J",
+                        "Factory K",
+                        "Factory L",
+                        "Factory M",
+                        "Factory N",
+                        "Factory O")
+                .addPart("line 1",
                         "line 2",
                         "line 3",
                         "line 4",
@@ -217,6 +214,7 @@ public class StringDataGenerator {
      */
     private final static int[] DEFAULT_ELIMINATION_INDEX_MAP = new int[]{0, 1, 1, 1};
 
+    private final boolean capitalizeFirstLetter;
     private final String delimiter;
     private List<String[]> partValuesList = new ArrayList<>();
     private int partValuesLength;
@@ -228,10 +226,19 @@ public class StringDataGenerator {
     private int indexLimit;
 
     public StringDataGenerator() {
-        this(" ");
+        this(false);
+    }
+
+    public StringDataGenerator(boolean capitalizeFirstLetter) {
+        this(capitalizeFirstLetter, " ");
     }
 
     public StringDataGenerator(String delimiter) {
+        this(false, delimiter);
+    }
+
+    public StringDataGenerator(boolean capitalizeFirstLetter, String delimiter) {
+        this.capitalizeFirstLetter = capitalizeFirstLetter;
         this.delimiter = delimiter;
     }
 
@@ -329,6 +336,9 @@ public class StringDataGenerator {
             result.append(partValues[chosens[i]]);
         }
         index++;
+        if (capitalizeFirstLetter) {
+            result.setCharAt(0 , Character.toUpperCase(result.charAt(0)));
+        }
         return result.toString();
     }
 
