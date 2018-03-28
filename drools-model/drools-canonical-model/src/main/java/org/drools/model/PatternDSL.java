@@ -117,11 +117,6 @@ public class PatternDSL extends DSL {
         }
 
         @Override
-        public PatternDefImpl<T> get() {
-            return this;
-        }
-
-        @Override
         public Variable<T> getFirstVariable() {
             return variable;
         }
