@@ -101,8 +101,8 @@ public class AssertHandler extends AbstractCompilerHandler {
     public void startNonHashedAlphaNode(AlphaNode alphaNode) {
         builder.append("if ( ").append(getVariableName(alphaNode)).
                 append(".isAllowed(").append(FACT_HANDLE_PARAM_NAME).append(",").
-                append(WORKING_MEMORY_PARAM_NAME).append(", ").
-                append(getContextVariableName(alphaNode)).append(") ) {").append(NEWLINE);
+                append(WORKING_MEMORY_PARAM_NAME).
+                append(") ) {").append(NEWLINE);
 
     }
 

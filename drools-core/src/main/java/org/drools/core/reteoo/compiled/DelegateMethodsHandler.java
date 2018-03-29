@@ -40,12 +40,26 @@ public class DelegateMethodsHandler extends AbstractCompilerHandler {
             "        return objectTypeNode.getAssociatedRuleSize();\n" +
             "    }\n" +
             "\n" +
-            "    public int getAssociationsSize( Rule rule ) {\n" +
+            "    public int getAssociationsSize( org.kie.api.definition.rule.Rule rule ) {\n" +
             "        return objectTypeNode.getAssociationsSize(rule);\n" +
             "    }\n" +
             "\n" +
-            "    public boolean isAssociatedWith( Rule rule ) {\n" +
+            "    public boolean isAssociatedWith( org.kie.api.definition.rule.Rule rule ) {\n" +
             "        return objectTypeNode.isAssociatedWith(rule);\n" +
+            "    }\n " +
+            "\n" +
+            "    public void byPassModifyToBetaNode (org.drools.core.common.InternalFactHandle factHandle,\n" +
+            "                                        org.drools.core.reteoo.ModifyPreviousTuples modifyPreviousTuples,\n" +
+            "                                        org.drools.core.spi.PropagationContext context,\n" +
+            "                                        org.drools.core.common.InternalWorkingMemory workingMemory) {\n" +
+            "        throw new UnsupportedOperationException();\n" +
+            "    }\n" +
+            "\n" +
+            "    public void modifyObject(org.drools.core.common.InternalFactHandle factHandle,\n" +
+            "                      org.drools.core.reteoo.ModifyPreviousTuples modifyPreviousTuples,\n" +
+            "                      org.drools.core.spi.PropagationContext context,\n" +
+            "                      org.drools.core.common.InternalWorkingMemory workingMemory) {\n" +
+            "        throw new UnsupportedOperationException();\n" +
             "    }";
 
     public DelegateMethodsHandler(StringBuilder builder) {

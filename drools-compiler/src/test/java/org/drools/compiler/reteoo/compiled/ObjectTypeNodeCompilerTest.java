@@ -16,7 +16,7 @@ public class ObjectTypeNodeCompilerTest extends CommonTestMethodBase {
         String str =
                 "rule \"Bind\"\n" +
                         "when\n" +
-                        "  $s : String( length > 4  )\n" +
+                        "  $s : String( length > 4, length < 10)\n" +
                         "then\n" +
                         "end";
 

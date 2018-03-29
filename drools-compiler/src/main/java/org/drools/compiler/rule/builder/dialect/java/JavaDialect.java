@@ -422,6 +422,7 @@ public class JavaDialect
                                                                this.packageStoreWrapper,
                                                                rootClassLoader);
 
+
         //this will sort out the errors based on what class/file they happened in
         if (result.getErrors().length > 0) {
             for (int i = 0; i < result.getErrors().length; i++) {

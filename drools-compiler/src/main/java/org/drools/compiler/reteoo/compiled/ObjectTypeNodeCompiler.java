@@ -16,10 +16,17 @@
 package org.drools.compiler.reteoo.compiled;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.commons.jci.compilers.CompilationResult;
+import org.drools.compiler.commons.jci.compilers.JavaCompiler;
+import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
+import org.drools.compiler.compiler.io.File;
+import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
+import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.ValueType;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.compiled.AssertHandler;
 import org.drools.core.reteoo.compiled.CompiledNetwork;
@@ -154,12 +161,14 @@ public class ObjectTypeNodeCompiler {
      * @return binary name of generated class
      */
     private String getBinaryName() {
-        return BINARY_PACKAGE_NAME + "." + generatedClassSimpleName + ".class";
+        return BINARY_PACKAGE_NAME + "/" + generatedClassSimpleName + ".java";
     }
 
     private String getPackageName() {
         return PACKAGE_NAME;
     }
+
+    private static final JavaCompiler JAVA_COMPILER = JavaCompilerFactory.getInstance().loadCompiler(JavaDialectConfiguration.CompilerType.NATIVE, "1.8");
 
     /**
      * Creates a {@link CompiledNetwork} for the specified {@link ObjectTypeNode}. The {@link PackageBuilder} is used
@@ -189,21 +198,35 @@ public class ObjectTypeNodeCompiler {
         String source = compiler.generateSource();
 
         System.out.println("\n\n\n\n");
-        System.out.println("source = " + source);
+        System.out.println(source);
         System.out.println("\n\n\n\n");
 
         String generatedSourceName = compiler.getName();
 
+        MemoryFileSystem mfs = new MemoryFileSystem();
+        final String binaryName = compiler.getBinaryName();
+        mfs.write(binaryName, source.getBytes(IoUtils.UTF8_CHARSET));
+
+        MemoryFileSystem trg = new MemoryFileSystem();
+        final ClassLoader rootClassLoader = kBuilder.getRootClassLoader();
+        final CompilationResult compile = JAVA_COMPILER.compile(new String[]{binaryName}, mfs, trg, rootClassLoader);
+
+        final byte[] file = trg.getBytes("org/drools/core/reteoo/compiled/Compiledjava_lang_StringNetwork.class");
+        final ProjectClassLoader projectClassLoader = (ProjectClassLoader) rootClassLoader;
+        projectClassLoader.defineClass("org.drools.core.reteoo.compiled.Compiledjava_lang_StringNetwork", file);
 
 
-        JavaDialect dialect = (JavaDialect) pkgReg.getDialectCompiletimeRegistry().getDialect("java");
-        dialect.addSrc(compiler.getBinaryName(), source.getBytes(IoUtils.UTF8_CHARSET));
-        kBuilder.compileAll();
-        kBuilder.updateResults();
+        System.out.println("errors = " + compile.getErrors());
+
+//        JavaDialect dialect = (JavaDialect) pkgReg.getDialectCompiletimeRegistry().getDialect("java");
+//        dialect.addSrc(compiler.getBinaryName(), source.getBytes(IoUtils.UTF8_CHARSET));
+//        kBuilder.compileAll();
+//        kBuilder.updateResults();
 
         CompiledNetwork network;
         try {
-            network = (CompiledNetwork) Class.forName(generatedSourceName, true, kBuilder.getRootClassLoader()).newInstance();
+            final Class<?> aClass = Class.forName(generatedSourceName, true, rootClassLoader);
+            network = (CompiledNetwork) aClass.newInstance();
         } catch (ClassNotFoundException e) {
             throw new RuntimeException("This is a bug. Please contact the development team", e);
         } catch (IllegalAccessException e) {
