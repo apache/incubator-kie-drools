@@ -32,6 +32,7 @@
       <subChainSwapMoveSelector>
         <selectReversingMoveToo>true</selectReversingMoveToo>
       </subChainSwapMoveSelector>
+      <!-- TODO use nearby selection to scale out -->
     </unionMoveSelector>
     <acceptor>
       <lateAcceptanceSize>200</lateAcceptanceSize>
