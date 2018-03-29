@@ -37,6 +37,12 @@ Soft constraints:
 * Talk undesired room tag: If a talk has a undesired room tag, then it should not be assigned to a room with that tag.
 
 
+[[conferenceSchedulingValueProposition]]
+== Value Proposition
+
+image::UseCasesAndExamples/DifficultExamples/conferenceSchedulingValueProposition.png[align="center"]
+
+
 [[conferenceSchedulingProblemSize]]
 == Problem Size
 
