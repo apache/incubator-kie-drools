@@ -24,11 +24,13 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.compiled.AssertHandler;
 import org.drools.core.reteoo.compiled.CompiledNetwork;
 import org.drools.core.reteoo.compiled.DeclarationsHandler;
+import org.drools.core.reteoo.compiled.DelegateMethodsHandler;
 import org.drools.core.reteoo.compiled.HashedAlphasDeclaration;
 import org.drools.core.reteoo.compiled.ObjectTypeNodeParser;
 import org.drools.core.reteoo.compiled.SetNodeReferenceHandler;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
 import org.drools.core.util.IoUtils;
+import org.omg.CORBA.portable.Delegate;
 
 import java.util.Collection;
 
@@ -85,6 +87,9 @@ public class ObjectTypeNodeCompiler {
         // create assert method
         AssertHandler assertHandler = new AssertHandler(builder, className, hashedAlphaDeclarations.size() > 0);
         parser.accept(assertHandler);
+
+        DelegateMethodsHandler delegateMethodsHandler = new DelegateMethodsHandler(builder);
+        parser.accept(delegateMethodsHandler);
 
         // end of class
         builder.append("}").append(NEWLINE);
@@ -182,7 +187,14 @@ public class ObjectTypeNodeCompiler {
         }
 
         String source = compiler.generateSource();
+
+        System.out.println("\n\n\n\n");
+        System.out.println("source = " + source);
+        System.out.println("\n\n\n\n");
+
         String generatedSourceName = compiler.getName();
+
+
 
         JavaDialect dialect = (JavaDialect) pkgReg.getDialectCompiletimeRegistry().getDialect("java");
         dialect.addSrc(compiler.getBinaryName(), source.getBytes(IoUtils.UTF8_CHARSET));

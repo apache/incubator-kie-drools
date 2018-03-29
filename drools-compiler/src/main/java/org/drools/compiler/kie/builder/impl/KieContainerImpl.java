@@ -28,10 +28,14 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.management.ObjectName;
+
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.kie.util.KieJarChangeSet;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieSessionModelImpl;
 import org.drools.compiler.management.KieContainerMonitor;
+import org.drools.compiler.reteoo.compiled.ObjectTypeNodeCompiler;
+import org.drools.core.InitialFact;
 import org.drools.core.SessionConfigurationImpl;
 import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.impl.InternalKieContainer;
@@ -63,6 +67,7 @@ import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.StatelessKieSession;
 import org.kie.api.runtime.rule.RuleUnitExecutor;
 import org.kie.internal.builder.ChangeType;
+import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.ResourceChangeSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -391,6 +396,15 @@ public class KieContainerImpl
         kBase.setContainerId(containerId);
         kBase.setKieContainer(this);
         kBase.initMBeans();
+
+        if (true) {
+            KnowledgeBuilder kbuilder = kModule.getKnowledgeBuilderForKieBase(kBaseModel.getName());
+            kBase.getRete().getEntryPointNodes().values().stream()
+                    .flatMap(ep -> ep.getObjectTypeNodes().values().stream())
+                    .filter(f -> !InitialFact.class.isAssignableFrom(f.getObjectType().getClassType()))
+                    .forEach(otn -> otn.setCompiledNetwork(ObjectTypeNodeCompiler.compile(((KnowledgeBuilderImpl) kbuilder), otn)));
+        }
+
         return kBase;
     }
 

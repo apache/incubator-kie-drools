@@ -30,7 +30,7 @@ import java.io.ObjectOutput;
  */
 public abstract class CompiledNetwork implements ObjectSink {
 
-    private ObjectTypeNode objectTypeNode;
+    protected ObjectTypeNode objectTypeNode;
 
     /**
      * Returns the unique id that represents the node in the Rete network
