@@ -15,17 +15,19 @@
 
 package org.drools.compiler.reteoo.compiled;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.commons.jci.compilers.CompilationResult;
 import org.drools.compiler.commons.jci.compilers.JavaCompiler;
 import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
-import org.drools.compiler.compiler.io.File;
+import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
+import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.ValueType;
-import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.compiled.AssertHandler;
@@ -35,12 +37,7 @@ import org.drools.core.reteoo.compiled.DelegateMethodsHandler;
 import org.drools.core.reteoo.compiled.HashedAlphasDeclaration;
 import org.drools.core.reteoo.compiled.ObjectTypeNodeParser;
 import org.drools.core.reteoo.compiled.SetNodeReferenceHandler;
-import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
 import org.drools.core.util.IoUtils;
-import org.omg.CORBA.portable.Delegate;
-
-import java.util.Arrays;
-import java.util.Collection;
 
 /**
  * todo: document
