@@ -307,7 +307,7 @@ public class TimeTableLayout implements LayoutManager2, Serializable {
         totalRowHeight = nextRowBoundY;
     }
 
-    private static class Column {
+    private static class Column implements Serializable {
 
         private final int index;
         private final boolean autoWidth;
@@ -325,7 +325,7 @@ public class TimeTableLayout implements LayoutManager2, Serializable {
 
     }
 
-    private static class Row {
+    private static class Row implements Serializable {
 
         private final int index;
         private final boolean autoHeight;
@@ -344,7 +344,7 @@ public class TimeTableLayout implements LayoutManager2, Serializable {
 
     }
 
-    private static class Cell {
+    private static class Cell implements Serializable {
 
         private Column column;
         private Row row;
@@ -359,7 +359,7 @@ public class TimeTableLayout implements LayoutManager2, Serializable {
 
     }
 
-    private static class ComponentSpan {
+    private static class ComponentSpan implements Serializable {
 
         private Component component;
 

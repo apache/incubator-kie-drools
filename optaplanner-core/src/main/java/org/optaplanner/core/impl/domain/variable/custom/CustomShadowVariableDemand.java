@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.impl.domain.variable.custom;
 
-import java.io.Serializable;
-
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.domain.variable.supply.Demand;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
@@ -26,7 +24,7 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
  * Unlike other {@link Demand}s, a custom demand isn't equalized based on its sources, but based on its target.
  * Therefore a custom shadow variable cannot be reused by built-in systems.
  */
-public class CustomShadowVariableDemand implements Demand<SingletonInverseVariableSupply>, Serializable {
+public class CustomShadowVariableDemand implements Demand<SingletonInverseVariableSupply> {
 
     private static final int CLASS_NAME_HASH_CODE = CustomShadowVariableDemand.class.getName().hashCode() * 37;
 

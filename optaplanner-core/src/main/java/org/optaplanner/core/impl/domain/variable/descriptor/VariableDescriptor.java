@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.domain.variable.descriptor;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +29,7 @@ import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-public abstract class VariableDescriptor<Solution_> {
+public abstract class VariableDescriptor<Solution_> implements Serializable {
 
     protected final EntityDescriptor<Solution_> entityDescriptor;
 

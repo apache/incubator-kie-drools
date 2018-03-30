@@ -98,15 +98,19 @@ public class SolutionConverter<Solution_> extends LoggingMain {
         this.outputSolutionFileIO = outputSolutionFileIO;
         File dataDir = CommonApp.determineDataDir(dataDirName);
         inputDir = new File(dataDir, inputDirName);
-        if (!inputDir.exists()) {
+        if (!inputDir.exists() || !inputDir.isDirectory()) {
             throw new IllegalStateException("The directory inputDir (" + inputDir.getAbsolutePath()
-                    + ") does not exist.");
+                    + ") does not exist or is not a directory.");
         }
         outputDir = new File(dataDir, outputDirName);
     }
 
     public void convertAll() {
         File[] inputFiles = inputDir.listFiles();
+        if (inputFiles == null) {
+            throw new IllegalStateException("Unable to list the files in the inputDirectory ("
+                    + inputDir.getAbsolutePath() + ").");
+        }
         Arrays.sort(inputFiles, new ProblemFileComparator());
         for (File inputFile : inputFiles) {
             if (acceptInputFile(inputFile)) {

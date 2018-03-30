@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.impl.domain.variable.inverserelation;
 
-import java.io.Serializable;
-
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.supply.Demand;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
@@ -25,7 +23,7 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 /**
  * To get an instance, demand a {@link CollectionInverseVariableDemand} from {@link InnerScoreDirector#getSupplyManager()}.
  */
-public class CollectionInverseVariableDemand implements Demand<CollectionInverseVariableSupply>, Serializable {
+public class CollectionInverseVariableDemand implements Demand<CollectionInverseVariableSupply> {
 
     private static final int CLASS_NAME_HASH_CODE = CollectionInverseVariableDemand.class.getName().hashCode() * 37;
 

@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.impl.domain.variable.supply;
 
-import java.io.Serializable;
-
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
 /**
@@ -27,7 +25,7 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
  * @see Supply
  * @see SupplyManager
  */
-public interface Demand<S extends Supply> extends Serializable {
+public interface Demand<S extends Supply> {
 
     /**
      * Only called if the domain model doesn't already support the demand (through a shadow variable usually).

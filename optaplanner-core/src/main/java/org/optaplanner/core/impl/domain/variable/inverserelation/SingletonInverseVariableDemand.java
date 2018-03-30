@@ -16,13 +16,11 @@
 
 package org.optaplanner.core.impl.domain.variable.inverserelation;
 
-import java.io.Serializable;
-
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.supply.Demand;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
-public class SingletonInverseVariableDemand implements Demand<SingletonInverseVariableSupply>, Serializable {
+public class SingletonInverseVariableDemand implements Demand<SingletonInverseVariableSupply> {
 
     private static final int CLASS_NAME_HASH_CODE = SingletonInverseVariableDemand.class.getName().hashCode() * 37;
 

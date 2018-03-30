@@ -16,12 +16,11 @@
 
 package org.optaplanner.core.impl.constructionheuristic.placer;
 
-import java.io.Serializable;
 import java.util.Iterator;
 
 import org.optaplanner.core.impl.heuristic.move.Move;
 
-public class Placement implements Iterable<Move>, Serializable {
+public class Placement implements Iterable<Move> {
 
     private final Iterator<Move> moveIterator;
 

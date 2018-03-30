@@ -70,18 +70,17 @@ public class BenchmarkResultIO {
     }
 
     public List<PlannerBenchmarkResult> readPlannerBenchmarkResultList(SolverConfigContext configContext, File benchmarkDirectory) {
-        if (!benchmarkDirectory.exists()) {
+        if (!benchmarkDirectory.exists() || !benchmarkDirectory.isDirectory()) {
             throw new IllegalArgumentException("The benchmarkDirectory (" + benchmarkDirectory
-                    + ") does not exist.");
-        }
-        if (!benchmarkDirectory.isDirectory()) {
-            throw new IllegalArgumentException("The benchmarkDirectory (" + benchmarkDirectory
-                    + ") is not a directory.");
+                    + ") does not exist or is not a directory.");
         }
         File[] benchmarkReportDirectories = benchmarkDirectory.listFiles((FileFilter) DirectoryFileFilter.INSTANCE);
+        if (benchmarkReportDirectories == null) {
+            throw new IllegalStateException("Unable to list the subdirectories in the benchmarkDirectory ("
+                    + benchmarkDirectory.getAbsolutePath() + ").");
+        }
         Arrays.sort(benchmarkReportDirectories);
-        List<PlannerBenchmarkResult> plannerBenchmarkResultList = new ArrayList<>(
-                benchmarkReportDirectories.length);
+        List<PlannerBenchmarkResult> plannerBenchmarkResultList = new ArrayList<>(benchmarkReportDirectories.length);
         for (File benchmarkReportDirectory : benchmarkReportDirectories) {
             File plannerBenchmarkResultFile = new File(benchmarkReportDirectory, PLANNER_BENCHMARK_RESULT_FILENAME);
             if (plannerBenchmarkResultFile.exists()) {

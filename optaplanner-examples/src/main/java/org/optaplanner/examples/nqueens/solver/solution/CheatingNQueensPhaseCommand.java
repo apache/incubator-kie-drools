@@ -44,7 +44,7 @@ public class CheatingNQueensPhaseCommand extends AbstractCustomPhaseCommand<NQue
         List<Queen> queenList = nQueens.getQueenList();
         List<Row> rowList = nQueens.getRowList();
 
-        if (n % 2 == 1) {
+        if (n % 2 != 0) {
             Queen a = queenList.get(n - 1);
             scoreDirector.beforeVariableChanged(a, "row");
             a.setRow(rowList.get(n - 1));

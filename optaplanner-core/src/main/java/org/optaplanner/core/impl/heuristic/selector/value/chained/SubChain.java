@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.heuristic.selector.value.chained;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -28,7 +27,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  * <p>
  * Never includes an anchor.
  */
-public class SubChain implements Serializable {
+public class SubChain {
 
     private final List<Object> entityList;
 

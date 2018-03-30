@@ -16,15 +16,13 @@
 
 package org.optaplanner.core.impl.domain.variable.anchor;
 
-import java.io.Serializable;
-
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableDemand;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.domain.variable.supply.Demand;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
-public class AnchorVariableDemand implements Demand<AnchorVariableSupply>, Serializable {
+public class AnchorVariableDemand implements Demand<AnchorVariableSupply> {
 
     private static final int CLASS_NAME_HASH_CODE = AnchorVariableDemand.class.getName().hashCode() * 37;
 
