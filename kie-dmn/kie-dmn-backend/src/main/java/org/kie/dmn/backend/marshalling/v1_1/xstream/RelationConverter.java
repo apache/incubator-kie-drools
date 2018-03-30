@@ -56,7 +56,7 @@ public class RelationConverter extends ExpressionConverter {
                 LiteralExpression literalExpression = (LiteralExpression) e;
                 if (literalExpression.getText().isEmpty()) {
                     literalExpression.setText("null");
-                    }
+                }
             }
         }
     }
