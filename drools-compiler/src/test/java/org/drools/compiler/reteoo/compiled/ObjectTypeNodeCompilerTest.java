@@ -1,6 +1,7 @@
 package org.drools.compiler.reteoo.compiled;
 
 import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.Person;
 import org.drools.compiler.Result;
 import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
@@ -69,5 +70,37 @@ public class ObjectTypeNodeCompilerTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
         assertEquals("Asdrubale is greater than 4 and smaller than 10", result.getValue());
+    }
+
+    @Test
+    public void testModify() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "rule \"Modify\"\n" +
+                        "when\n" +
+                        "  $p : Person( age == 30)\n" +
+                        "then\n" +
+                        "   modify($p) { setHappy(true); }" +
+                        "end";
+
+        KieBaseConfiguration configuration = KieServices.Factory.get().newKieBaseConfiguration();
+
+        configuration.setProperty(AlphaNetworkCompilerOption.PROPERTY_NAME, String.valueOf(Boolean.TRUE));
+
+        KieSession ksession = new KieHelper()
+                .addContent(str, ResourceType.DRL)
+                .build(configuration)
+                .newKieSession();
+
+        final Person luca = new Person("Luca", 30, false);
+        ksession.insert(luca);
+
+        Result result = new Result();
+        ksession.insert(result);
+
+        assertEquals(1, ksession.fireAllRules());
+
+        ksession.fireAllRules();
+        assertTrue(luca.isHappy());
     }
 }
