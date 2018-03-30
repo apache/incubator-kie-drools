@@ -15,6 +15,7 @@ import org.drools.javaparser.ast.expr.EnclosedExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.FieldAccessExpr;
 import org.drools.javaparser.ast.expr.LambdaExpr;
+import org.drools.javaparser.ast.expr.LiteralExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
@@ -49,10 +50,8 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
 
         exprDSL = buildExpression(drlxParseResult, exprDSL);
         MethodCallExpr finalExprDSL = exprDSL;
-        Optional<MethodCallExpr> indexedByExpr = buildIndexedBy(drlxParseResult);
-        indexedByExpr.ifPresent(finalExprDSL::addArgument);
-        final Optional<MethodCallExpr> reactOnDSL = buildReactOn(drlxParseResult);
-        reactOnDSL.ifPresent(finalExprDSL::addArgument);
+        buildIndexedBy(drlxParseResult).ifPresent(finalExprDSL::addArgument);
+        buildReactOn(drlxParseResult).ifPresent(finalExprDSL::addArgument);
         return exprDSL;
     }
 
@@ -112,6 +111,11 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
         TypedExpression left = drlxParseResult.getLeft();
         TypedExpression right = drlxParseResult.getRight();
 
+        boolean isBeta = drlxParseResult.isBetaNode();
+        if (!isBeta && !(right.getExpression() instanceof LiteralExpr)) {
+            return Optional.empty();
+        }
+
         Class<?> indexType = Stream.of(left, right).map(TypedExpression::getType)
                 .filter(Objects::nonNull)
                 .findFirst().get();
@@ -123,7 +127,7 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
         boolean leftContainsThis = left.getExpression().toString().contains("_this");
         indexedBy_leftOperandExtractor.setBody(new ExpressionStmt(leftContainsThis ? left.getExpression() : right.getExpression()));
 
-        MethodCallExpr indexedByDSL = new MethodCallExpr(null, drlxParseResult.isBetaNode() ? BETA_INDEXED_BY_CALL : ALPHA_INDEXED_BY_CALL);
+        MethodCallExpr indexedByDSL = new MethodCallExpr(null, isBeta ? BETA_INDEXED_BY_CALL : ALPHA_INDEXED_BY_CALL);
         indexedByDSL.addArgument(indexedBy_indexedClass);
         indexedByDSL.addArgument(indexedBy_constraintType);
         indexedByDSL.addArgument("" + indexIdGenerator.getFieldId(drlxParseResult.getPatternType(), left.getFieldName()));

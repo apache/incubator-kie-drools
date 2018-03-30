@@ -13,6 +13,7 @@ import org.drools.javaparser.ast.expr.EnclosedExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.FieldAccessExpr;
 import org.drools.javaparser.ast.expr.LambdaExpr;
+import org.drools.javaparser.ast.expr.LiteralExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
@@ -119,6 +120,10 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
 
         TypedExpression left = drlxParseResult.getLeft();
         TypedExpression right = drlxParseResult.getRight();
+
+        if (!drlxParseResult.isBetaNode() && !(right.getExpression() instanceof LiteralExpr)) {
+            return exprDSL;
+        }
 
         Class<?> indexType = Stream.of( left, right ).map( TypedExpression::getType )
                 .filter(Objects::nonNull )
