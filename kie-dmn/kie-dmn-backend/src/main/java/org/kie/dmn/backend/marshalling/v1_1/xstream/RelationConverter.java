@@ -23,7 +23,6 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
 import org.kie.dmn.model.v1_1.Expression;
 import org.kie.dmn.model.v1_1.InformationItem;
-import org.kie.dmn.model.v1_1.List;
 import org.kie.dmn.model.v1_1.LiteralExpression;
 import org.kie.dmn.model.v1_1.Relation;
 
@@ -39,8 +38,9 @@ public class RelationConverter extends ExpressionConverter {
         if (COLUMN.equals(nodeName)) {
             r.getColumn().add((InformationItem) child);
         } else if (ROW.equals(nodeName)) {
-            r.getRow().add((org.kie.dmn.model.v1_1.List) child);
-            normalizeEmptyCells(r);
+            org.kie.dmn.model.v1_1.List row = (org.kie.dmn.model.v1_1.List) child;
+            normalizeEmptyCells(row);
+            r.getRow().add(row);
         } else {
             super.assignChildElement(parent, nodeName, child);
         }
@@ -49,16 +49,14 @@ public class RelationConverter extends ExpressionConverter {
     /**
      * Normalize empty cell in DMN Relation as null expression.
      */
-    private void normalizeEmptyCells(Relation r) {
+    private void normalizeEmptyCells(org.kie.dmn.model.v1_1.List row) {
         // DROOLS-2439
-        for (List row : r.getRow()) {
-            for (Expression e : row.getExpression()) {
-                if (e instanceof LiteralExpression) {
-                    LiteralExpression literalExpression = (LiteralExpression) e;
-                    if (literalExpression.getText().isEmpty()) {
-                        literalExpression.setText("null");
+        for (Expression e : row.getExpression()) {
+            if (e instanceof LiteralExpression) {
+                LiteralExpression literalExpression = (LiteralExpression) e;
+                if (literalExpression.getText().isEmpty()) {
+                    literalExpression.setText("null");
                     }
-                }
             }
         }
     }
