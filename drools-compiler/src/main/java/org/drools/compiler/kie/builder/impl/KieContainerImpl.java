@@ -26,7 +26,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-
 import javax.management.ObjectName;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
@@ -69,6 +68,7 @@ import org.kie.api.runtime.rule.RuleUnitExecutor;
 import org.kie.internal.builder.ChangeType;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.ResourceChangeSet;
+import org.kie.internal.conf.AlphaNetworkCompilerOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -397,7 +397,7 @@ public class KieContainerImpl
         kBase.setKieContainer(this);
         kBase.initMBeans();
 
-        if (true) {
+        if (conf.getOption(AlphaNetworkCompilerOption.class).isAlphaNetworkCompilerEnabled()) {
             KnowledgeBuilder kbuilder = kModule.getKnowledgeBuilderForKieBase(kBaseModel.getName());
             kBase.getRete().getEntryPointNodes().values().stream()
                     .flatMap(ep -> ep.getObjectTypeNodes().values().stream())
