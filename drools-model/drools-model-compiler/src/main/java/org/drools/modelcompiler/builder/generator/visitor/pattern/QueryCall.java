@@ -15,7 +15,7 @@ import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.visitor.DSLNode;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
-import static org.drools.modelcompiler.builder.generator.ModelGenerator.QUERY_INVOCATION_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.QUERY_INVOCATION_CALL;
 
 class QueryCall implements DSLNode {
 

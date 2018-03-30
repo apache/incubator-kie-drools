@@ -23,6 +23,9 @@ import static org.drools.core.util.ClassUtils.extractGenericType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.prepend;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.AND_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.PATTERN_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.REACTIVE_FROM_CALL;
 
 public class OOPathExprGenerator {
 
@@ -70,7 +73,7 @@ public class OOPathExprGenerator {
             final Expression accessorLambda = generateLambdaWithoutParameters(Collections.emptySortedSet(),
                                                                               prepend(new NameExpr("_this"), callExpr.getExpression()));
 
-            final MethodCallExpr reactiveFrom = new MethodCallExpr(null, "reactiveFrom");
+            final MethodCallExpr reactiveFrom = new MethodCallExpr(null, REACTIVE_FROM_CALL);
             reactiveFrom.addArgument(new NameExpr(toVar(previousBind)));
             reactiveFrom.addArgument(accessorLambda);
 
@@ -102,7 +105,7 @@ public class OOPathExprGenerator {
     }
 
     private void toPatternExpr(String bindingId, List<DrlxParseResult> list) {
-        MethodCallExpr patternExpr = new MethodCallExpr( null, "pattern" );
+        MethodCallExpr patternExpr = new MethodCallExpr( null, PATTERN_CALL );
         patternExpr.addArgument( toVar( bindingId ) );
 
         for (DrlxParseResult drlx : list) {
@@ -125,7 +128,7 @@ public class OOPathExprGenerator {
         if (value.size() == 1) {
             context.addExpression( expressionBuilder.buildExpressionWithIndexing(value.get(0)) );
         } else {
-            final MethodCallExpr andDSL = new MethodCallExpr(null, "and");
+            final MethodCallExpr andDSL = new MethodCallExpr(null, AND_CALL);
             value.forEach(e -> {
                 final Expression expression = expressionBuilder.buildExpressionWithIndexing(e);
                 andDSL.addArgument(expression);

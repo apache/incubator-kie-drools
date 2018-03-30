@@ -14,7 +14,6 @@ import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.dialect.java.JavaAccumulateBuilder;
 import org.drools.compiler.rule.builder.dialect.java.JavaRuleClassBuilder;
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.rule.Pattern;
 import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.CompilationUnit;
 import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -27,6 +26,7 @@ import org.drools.modelcompiler.builder.generator.RuleContext;
 
 import static org.drools.javaparser.ast.NodeList.nodeList;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.ACC_FUNCTION_CALL;
 
 public class LegacyAccumulate {
 
@@ -66,7 +66,7 @@ public class LegacyAccumulate {
 
         final String typeWithPackage = String.format("%s.%s", packageName, invokerGenerated.getGeneratedClass().getName().asString());
         final ClassExpr accFunctionName = new ClassExpr(JavaParser.parseType(typeWithPackage));
-        final MethodCallExpr accFunctionCall = new MethodCallExpr(null, "accFunction", nodeList(accFunctionName));
+        final MethodCallExpr accFunctionCall = new MethodCallExpr(null, ACC_FUNCTION_CALL, nodeList(accFunctionName));
 
         final NameExpr bindingVariable = new NameExpr(toVar(basePattern.getIdentifier()));
         final MethodCallExpr asDSL = new MethodCallExpr(accFunctionCall, "as", nodeList(bindingVariable));

@@ -15,6 +15,7 @@ import org.drools.javaparser.ast.expr.EnclosedExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.FieldAccessExpr;
 import org.drools.javaparser.ast.expr.LambdaExpr;
+import org.drools.javaparser.ast.expr.LiteralExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
@@ -29,11 +30,14 @@ import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 import static java.util.Optional.of;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.ALPHA_INDEXED_BY_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.BETA_INDEXED_BY_CALL;
 
 public class PatternExpressionBuilder extends AbstractExpressionBuilder {
 
-    public static final String ALPHA_INDEXED_BY_CALL = "alphaIndexedBy";
-    public static final String BETA_INDEXED_BY_CALL = "betaIndexedBy";
+    public static final String EXPR_CALL = "expr";
+    public static final String REACT_ON_CALL = "D.reactOn";
+    public static final String BIND_CALL = "bind";
 
     public PatternExpressionBuilder(RuleContext context) {
         super(context);
@@ -49,10 +53,8 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
 
         exprDSL = buildExpression(drlxParseResult, exprDSL);
         MethodCallExpr finalExprDSL = exprDSL;
-        Optional<MethodCallExpr> indexedByExpr = buildIndexedBy(drlxParseResult);
-        indexedByExpr.ifPresent(finalExprDSL::addArgument);
-        final Optional<MethodCallExpr> reactOnDSL = buildReactOn(drlxParseResult);
-        reactOnDSL.ifPresent(finalExprDSL::addArgument);
+        buildIndexedBy(drlxParseResult).ifPresent(finalExprDSL::addArgument);
+        buildReactOn(drlxParseResult).ifPresent(finalExprDSL::addArgument);
         return exprDSL;
     }
 
@@ -69,7 +71,7 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
 
     private Optional<MethodCallExpr> buildReactOn(DrlxParseSuccess drlxParseResult) {
         if (!drlxParseResult.getReactOnProperties().isEmpty()) {
-            MethodCallExpr reactOnDSL = new MethodCallExpr(null, "reactOn");
+            MethodCallExpr reactOnDSL = new MethodCallExpr(null, REACT_ON_CALL);
             drlxParseResult.getReactOnProperties().stream()
                     .map(StringLiteralExpr::new)
                     .forEach(reactOnDSL::addArgument);
@@ -112,6 +114,11 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
         TypedExpression left = drlxParseResult.getLeft();
         TypedExpression right = drlxParseResult.getRight();
 
+        boolean isBeta = drlxParseResult.isBetaNode();
+        if (!isBeta && !(right.getExpression() instanceof LiteralExpr)) {
+            return Optional.empty();
+        }
+
         Class<?> indexType = Stream.of(left, right).map(TypedExpression::getType)
                 .filter(Objects::nonNull)
                 .findFirst().get();
@@ -123,7 +130,7 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
         boolean leftContainsThis = left.getExpression().toString().contains("_this");
         indexedBy_leftOperandExtractor.setBody(new ExpressionStmt(leftContainsThis ? left.getExpression() : right.getExpression()));
 
-        MethodCallExpr indexedByDSL = new MethodCallExpr(null, drlxParseResult.isBetaNode() ? BETA_INDEXED_BY_CALL : ALPHA_INDEXED_BY_CALL);
+        MethodCallExpr indexedByDSL = new MethodCallExpr(null, isBeta ? BETA_INDEXED_BY_CALL : ALPHA_INDEXED_BY_CALL);
         indexedByDSL.addArgument(indexedBy_indexedClass);
         indexedByDSL.addArgument(indexedBy_constraintType);
         indexedByDSL.addArgument("" + indexIdGenerator.getFieldId(drlxParseResult.getPatternType(), left.getFieldName()));

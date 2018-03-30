@@ -18,7 +18,6 @@ import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.fromVar;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
-import static org.drools.modelcompiler.builder.generator.expression.FlowExpressionBuilder.BIND_CALL;
 
 public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
 
@@ -29,7 +28,7 @@ public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
 
     @Override
     protected MethodCallExpr buildBinding(String bindingName, Collection<String> usedDeclaration, Expression expression) {
-        MethodCallExpr bindDSL = new MethodCallExpr(null, BIND_CALL);
+        MethodCallExpr bindDSL = new MethodCallExpr(null, PatternExpressionBuilder.BIND_CALL);
         bindDSL.addArgument(toVar(bindingName));
         usedDeclaration.stream().map(d -> new NameExpr(toVar(d))).forEach(bindDSL::addArgument);
         bindDSL.addArgument(buildConstraintExpression(expression, usedDeclaration));

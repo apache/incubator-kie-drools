@@ -11,11 +11,15 @@ import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getLiteralExpressionType;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.EVAL_CALL;
+import static org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser.coerceRightExpression;
+
 public class CustomOperatorSpec implements OperatorSpec {
     public static final CustomOperatorSpec INSTANCE = new CustomOperatorSpec();
 
     public Expression getExpression( RuleContext context, PointFreeExpr pointFreeExpr, TypedExpression left ) {
-        MethodCallExpr methodCallExpr = new MethodCallExpr( null, "eval" );
+        MethodCallExpr methodCallExpr = new MethodCallExpr( null, EVAL_CALL );
 
         String opName = pointFreeExpr.getOperator().asString();
         Operator operator = Operator.Register.getOperator( opName );
@@ -29,12 +33,13 @@ public class CustomOperatorSpec implements OperatorSpec {
 
         methodCallExpr.addArgument( left.getExpression() );
         for (Expression rightExpr : pointFreeExpr.getRight()) {
-            if ( rightExpr instanceof LiteralExpr ) {
-                methodCallExpr.addArgument( rightExpr );
-            } else {
-                TypedExpression typedExpression = DrlxParseUtil.toMethodCallWithClassCheck(context, rightExpr, null, null, context.getTypeResolver());
-                methodCallExpr.addArgument( typedExpression.getExpression() );
+            TypedExpression right = rightExpr instanceof LiteralExpr ?
+                    new TypedExpression( rightExpr, getLiteralExpressionType( (LiteralExpr) rightExpr ) ) :
+                    DrlxParseUtil.toMethodCallWithClassCheck(context, rightExpr, null, null, context.getTypeResolver());
+            if (operator.requiresCoercion()) {
+                coerceRightExpression( left, right );
             }
+            methodCallExpr.addArgument( right.getExpression() );
         }
 
         return pointFreeExpr.isNegated() ?

@@ -49,14 +49,15 @@ import static java.text.MessageFormat.format;
 import static org.drools.javaparser.JavaParser.parseStatement;
 import static org.drools.javaparser.ast.NodeList.nodeList;
 import static org.drools.modelcompiler.builder.JavaParserCompiler.compileAll;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.ADD_ANNOTATION_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.ANNOTATION_VALUE_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.TYPE_META_DATA_CALL;
 
 public class POJOGenerator {
 
     private static final String EQUALS = "equals";
     private static final String HASH_CODE = "hashCode";
     private static final String TO_STRING = "toString";
-
-    private static final String TYPE_META_DATA_CALL = "typeMetaData";
 
     private static final Statement referenceEquals = parseStatement("if (this == o) { return true; }");
     private static final Statement classCheckEquals = parseStatement("if (o == null || getClass() != o.getClass()) { return false; }");
@@ -96,10 +97,10 @@ public class POJOGenerator {
         MethodCallExpr typeMetaDataCall = registerTypeMetaData( type.getPackage().getName(), type.getSimpleName() );
 
         for (AnnotationDescr ann : typeDescr.getAnnotations()) {
-            typeMetaDataCall = new MethodCallExpr(typeMetaDataCall, "addAnnotation");
+            typeMetaDataCall = new MethodCallExpr(typeMetaDataCall, ADD_ANNOTATION_CALL);
             typeMetaDataCall.addArgument( new StringLiteralExpr( ann.getName() ) );
             for (Map.Entry<String, Object> entry : ann.getValueMap().entrySet()) {
-                MethodCallExpr annotationValueCall = new MethodCallExpr(null, "annotationValue");
+                MethodCallExpr annotationValueCall = new MethodCallExpr(null, ANNOTATION_VALUE_CALL);
                 annotationValueCall.addArgument( new StringLiteralExpr(entry.getKey()) );
                 annotationValueCall.addArgument( new StringLiteralExpr(entry.getValue().toString()) );
                 typeMetaDataCall.addArgument( annotationValueCall );
