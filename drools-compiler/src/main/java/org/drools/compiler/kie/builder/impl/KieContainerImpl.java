@@ -398,7 +398,8 @@ public class KieContainerImpl
         kBase.initMBeans();
 
         // TOOD: why can conf be null here? is it for every test not created with KieHelper?
-        if (conf != null && conf.getOption(AlphaNetworkCompilerOption.class).isAlphaNetworkCompilerEnabled()) {
+//        if (conf != null && conf.getOption(AlphaNetworkCompilerOption.class).isAlphaNetworkCompilerEnabled()) {
+        if(true) {
             KnowledgeBuilder kbuilder = kModule.getKnowledgeBuilderForKieBase(kBaseModel.getName());
             kBase.getRete().getEntryPointNodes().values().stream()
                     .flatMap(ep -> ep.getObjectTypeNodes().values().stream())

@@ -1,6 +1,7 @@
 package org.drools.compiler.reteoo.compiled;
 
 import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.Result;
 import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
@@ -35,5 +36,38 @@ public class ObjectTypeNodeCompilerTest extends CommonTestMethodBase {
         ksession.insert("Asdrubale");
 
         assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testAlphaConstraintWithModification() {
+        String str =
+                "import " + Result.class.getCanonicalName() + ";" +
+                        "rule \"Bind\"\n" +
+                        "when\n" +
+                        "  $r : Result()\n" +
+                        "  $s : String( length > 4, length < 10)\n" +
+                        "then\n" +
+                        "  $r.setValue($s + \" is greater than 4 and smaller than 10\");\n" +
+                        "end";
+
+        KieBaseConfiguration configuration = KieServices.Factory.get().newKieBaseConfiguration();
+
+        configuration.setProperty(AlphaNetworkCompilerOption.PROPERTY_NAME, String.valueOf(Boolean.TRUE));
+
+        KieSession ksession = new KieHelper()
+                .addContent(str, ResourceType.DRL)
+                .build(configuration)
+                .newKieSession();
+
+        ksession.insert("Luca");
+        ksession.insert("Asdrubale");
+
+        Result result = new Result();
+        ksession.insert(result);
+
+        assertEquals(1, ksession.fireAllRules());
+
+        ksession.fireAllRules();
+        assertEquals("Asdrubale is greater than 4 and smaller than 10", result.getValue());
     }
 }
