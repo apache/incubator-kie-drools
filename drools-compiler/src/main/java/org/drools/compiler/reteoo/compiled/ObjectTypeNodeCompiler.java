@@ -228,11 +228,7 @@ public class ObjectTypeNodeCompiler {
         try {
             final Class<?> aClass = Class.forName(compiler.getName(), true, rootClassLoader);
             network = (CompiledNetwork) aClass.newInstance();
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException("This is a bug. Please contact the development team", e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException("This is a bug. Please contact the development team", e);
-        } catch (InstantiationException e) {
+        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
             throw new RuntimeException("This is a bug. Please contact the development team", e);
         }
 
