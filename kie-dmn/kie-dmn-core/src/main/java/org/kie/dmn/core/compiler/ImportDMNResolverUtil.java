@@ -20,14 +20,13 @@ public class ImportDMNResolverUtil {
         final String iNamespace = _import.getNamespace();
         final String iName = _import.getAdditionalAttributes().get(Import.NAME_QNAME);
         final String iModelName = _import.getAdditionalAttributes().get(Import.MODELNAME_QNAME);
-        final String nameLookup = iModelName != null ? iModelName : iName;
         List<T> allInNS = all.stream()
                              .filter(m -> idExtractor.apply(m).getNamespaceURI().equals(iNamespace))
                              .collect(Collectors.toList());
         if (allInNS.size() == 1) {
             T located = allInNS.get(0);
-            // Check if the located DMN Model in the NS, correspond for the import `name`. 
-            if (nameLookup == null || idExtractor.apply(located).getLocalPart().equals(nameLookup)) {
+            // Check if the located DMN Model in the NS, correspond for the import `drools:modelName`. 
+            if (iModelName == null || idExtractor.apply(located).getLocalPart().equals(iModelName)) {
                 return Either.ofRight(located);
             } else {
                 return Either.ofLeft(String.format("While importing DMN for namespace: %s, name: %s, modelName: %s, located within namespace only %s but does not match for the actual name",
@@ -36,7 +35,7 @@ public class ImportDMNResolverUtil {
             }
         } else {
             List<T> usingNSandName = allInNS.stream()
-                                            .filter(m -> idExtractor.apply(m).getLocalPart().equals(nameLookup))
+                                            .filter(m -> idExtractor.apply(m).getLocalPart().equals(iModelName))
                                             .collect(Collectors.toList());
             if (usingNSandName.size() == 1) {
                 return Either.ofRight(usingNSandName.get(0));
