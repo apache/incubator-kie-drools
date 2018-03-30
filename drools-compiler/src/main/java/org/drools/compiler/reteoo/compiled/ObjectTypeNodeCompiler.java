@@ -39,6 +39,7 @@ import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
 import org.drools.core.util.IoUtils;
 import org.omg.CORBA.portable.Delegate;
 
+import java.util.Arrays;
 import java.util.Collection;
 
 /**
@@ -161,6 +162,15 @@ public class ObjectTypeNodeCompiler {
      * @return binary name of generated class
      */
     private String getBinaryName() {
+        return BINARY_PACKAGE_NAME + "/" + generatedClassSimpleName + ".class";
+    }
+
+    /**
+     * Returns the fully qualified source name of the generated subclass of {@link CompiledNetwork}
+     *
+     * @return binary name of generated class
+     */
+    private String getSourceName() {
         return BINARY_PACKAGE_NAME + "/" + generatedClassSimpleName + ".java";
     }
 
@@ -201,31 +211,22 @@ public class ObjectTypeNodeCompiler {
         System.out.println(source);
         System.out.println("\n\n\n\n");
 
-        String generatedSourceName = compiler.getName();
-
         MemoryFileSystem mfs = new MemoryFileSystem();
-        final String binaryName = compiler.getBinaryName();
-        mfs.write(binaryName, source.getBytes(IoUtils.UTF8_CHARSET));
+        mfs.write(compiler.getSourceName(), source.getBytes(IoUtils.UTF8_CHARSET));
 
         MemoryFileSystem trg = new MemoryFileSystem();
-        final ClassLoader rootClassLoader = kBuilder.getRootClassLoader();
-        final CompilationResult compile = JAVA_COMPILER.compile(new String[]{binaryName}, mfs, trg, rootClassLoader);
+        ProjectClassLoader rootClassLoader = (ProjectClassLoader) kBuilder.getRootClassLoader();
+        CompilationResult compiled = JAVA_COMPILER.compile(new String[]{compiler.getSourceName()}, mfs, trg, rootClassLoader);
 
-        final byte[] file = trg.getBytes("org/drools/core/reteoo/compiled/Compiledjava_lang_StringNetwork.class");
-        final ProjectClassLoader projectClassLoader = (ProjectClassLoader) rootClassLoader;
-        projectClassLoader.defineClass("org.drools.core.reteoo.compiled.Compiledjava_lang_StringNetwork", file);
+        if(compiled.getErrors().length > 0) {
+            throw new RuntimeException("This is a bug. Please contact the development team:\n" + Arrays.toString(compiled.getErrors()));
+        }
 
-
-        System.out.println("errors = " + compile.getErrors());
-
-//        JavaDialect dialect = (JavaDialect) pkgReg.getDialectCompiletimeRegistry().getDialect("java");
-//        dialect.addSrc(compiler.getBinaryName(), source.getBytes(IoUtils.UTF8_CHARSET));
-//        kBuilder.compileAll();
-//        kBuilder.updateResults();
+        rootClassLoader.defineClass(compiler.getName(), trg.getBytes(compiler.getBinaryName()));
 
         CompiledNetwork network;
         try {
-            final Class<?> aClass = Class.forName(generatedSourceName, true, rootClassLoader);
+            final Class<?> aClass = Class.forName(compiler.getName(), true, rootClassLoader);
             network = (CompiledNetwork) aClass.newInstance();
         } catch (ClassNotFoundException e) {
             throw new RuntimeException("This is a bug. Please contact the development team", e);
