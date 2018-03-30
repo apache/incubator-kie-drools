@@ -38,6 +38,8 @@ import org.drools.core.reteoo.compiled.HashedAlphasDeclaration;
 import org.drools.core.reteoo.compiled.ObjectTypeNodeParser;
 import org.drools.core.reteoo.compiled.SetNodeReferenceHandler;
 import org.drools.core.util.IoUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * todo: document
@@ -62,6 +64,9 @@ public class ObjectTypeNodeCompiler {
     private ObjectTypeNode objectTypeNode;
 
     private StringBuilder builder = new StringBuilder();
+
+    private static final Logger logger          = LoggerFactory.getLogger(ObjectTypeNodeCompiler.class);
+
 
     private ObjectTypeNodeCompiler(ObjectTypeNode objectTypeNode) {
         this.objectTypeNode = objectTypeNode;
@@ -204,9 +209,7 @@ public class ObjectTypeNodeCompiler {
 
         String source = compiler.generateSource();
 
-        System.out.println("\n\n\n\n");
-        System.out.println(source);
-        System.out.println("\n\n\n\n");
+        logger.debug("Generated alpha node compiled network source:\n" + source);
 
         MemoryFileSystem mfs = new MemoryFileSystem();
         mfs.write(compiler.getSourceName(), source.getBytes(IoUtils.UTF8_CHARSET));
