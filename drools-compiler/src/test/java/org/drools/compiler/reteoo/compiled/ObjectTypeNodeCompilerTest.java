@@ -78,7 +78,7 @@ public class ObjectTypeNodeCompilerTest extends CommonTestMethodBase {
                 "import " + Person.class.getCanonicalName() + ";" +
                         "rule \"Modify\"\n" +
                         "when\n" +
-                        "  $p : Person( age == 30)\n" +
+                        "  $p : Person( age == 30 )\n" +
                         "then\n" +
                         "   modify($p) { setHappy(true); }" +
                         "end";

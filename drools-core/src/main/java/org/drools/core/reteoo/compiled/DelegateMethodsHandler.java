@@ -59,7 +59,9 @@ public class DelegateMethodsHandler extends AbstractCompilerHandler {
             "                      org.drools.core.reteoo.ModifyPreviousTuples modifyPreviousTuples,\n" +
             "                      org.drools.core.spi.PropagationContext context,\n" +
             "                      org.drools.core.common.InternalWorkingMemory workingMemory) {\n" +
-            "        throw new UnsupportedOperationException();\n" +
+            "        if (mvelConstraint4.isAllowed(factHandle, workingMemory)) {\n" +
+            "            leftInputAdapterNode5.modifyObject(factHandle, modifyPreviousTuples, context, workingMemory);\n" +
+            "        }\n" +
             "    }";
 
     public DelegateMethodsHandler(StringBuilder builder) {
