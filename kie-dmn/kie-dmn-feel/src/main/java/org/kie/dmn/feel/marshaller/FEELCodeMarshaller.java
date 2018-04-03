@@ -18,7 +18,7 @@ public class FEELCodeMarshaller
         implements FEELMarshaller<String> {
 
     public static final FEELCodeMarshaller INSTANCE = new FEELCodeMarshaller();
-    private FEEL feel = FEEL.newInstance();
+    private FEEL feel = FEEL.newInstance(Thread.currentThread().getContextClassLoader());
 
     private FEELCodeMarshaller() {}
 

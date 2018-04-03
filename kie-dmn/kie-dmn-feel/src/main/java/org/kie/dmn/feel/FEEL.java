@@ -42,7 +42,16 @@ public interface FEEL {
      * @return a newly instantiated FEEL engine instance
      */
     static FEEL newInstance() {
-        return new FEELImpl();
+        return new FEELImpl(Thread.currentThread().getContextClassLoader());
+    }
+
+    /**
+     * Factory method to create a new FEEL engine instance
+     *
+     * @return a newly instantiated FEEL engine instance
+     */
+    static FEEL newInstance(ClassLoader cl) {
+        return new FEELImpl(cl);
     }
 
     /**
@@ -50,8 +59,8 @@ public interface FEEL {
      *
      * @return a newly instantiated FEEL engine instance
      */
-    static FEEL newInstance(List<FEELProfile> profiles) {
-        return new FEELImpl(profiles);
+    static FEEL newInstance(ClassLoader cl, List<FEELProfile> profiles) {
+        return new FEELImpl(cl, profiles);
     }
 
     /**

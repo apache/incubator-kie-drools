@@ -34,6 +34,7 @@ public class DMNCompilerConfigurationImpl implements DMNCompilerConfiguration {
     private Map<String, String> properties = new HashMap<>();
     private List<DRGElementCompiler> drgElementCompilers = new ArrayList<>();
     private List<FEELProfile> feelProfiles = new ArrayList<>();
+    private ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
     public void addExtensions(List<DMNExtensionRegister> extensionRegisters) {
         this.registeredExtensions.addAll(extensionRegisters);
@@ -77,4 +78,13 @@ public class DMNCompilerConfigurationImpl implements DMNCompilerConfiguration {
     public void addFEELProfile(FEELProfile dmnProfile) {
         this.feelProfiles.add(dmnProfile);
     }
+
+    public ClassLoader getClassLoader() {
+        return this.classLoader;
+    }
+
+    public void setClassLoader(ClassLoader classLoader) {
+        this.classLoader = classLoader;
+    }
+
 }

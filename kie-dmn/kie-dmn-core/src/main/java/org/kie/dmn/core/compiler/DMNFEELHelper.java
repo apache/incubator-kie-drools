@@ -37,18 +37,20 @@ public class DMNFEELHelper {
 
     private static final Logger logger = LoggerFactory.getLogger( DMNFEELHelper.class );
 
+    private final ClassLoader classLoader;
     private final FEEL                   feel;
     private final FEELEventsListenerImpl listener;
     private final List<FEELProfile> feelProfiles = new ArrayList<>();
 
-    public DMNFEELHelper(List<FEELProfile> feelProfiles) {
+    public DMNFEELHelper(ClassLoader classLoader, List<FEELProfile> feelProfiles) {
+        this.classLoader = classLoader;
         this.feelProfiles.addAll(feelProfiles);
         this.listener = new FEELEventsListenerImpl();
         this.feel = createFEELInstance();
     }
 
     private FEEL createFEELInstance() {
-        FEEL feel = FEEL.newInstance(feelProfiles);
+        FEEL feel = FEEL.newInstance(classLoader, feelProfiles);
         feel.addListener( listener );
         return feel;
     }
@@ -58,14 +60,14 @@ public class DMNFEELHelper {
      * This FEEL instance is potentially not the same shared by the compiler during the compilation phase.
      */
     public FEEL newFEELInstance() {
-        return FEEL.newInstance(feelProfiles);
+        return FEEL.newInstance(classLoader, feelProfiles);
     }
 
     public static boolean valueMatchesInUnaryTests(List<UnaryTest> unaryTests, Object value, DMNContext dmnContext) {
         FEELEventListenersManager manager = new FEELEventListenersManager();
         FEELEventsListenerImpl listener = new FEELEventsListenerImpl();
         manager.addListener( listener );
-        EvaluationContextImpl ctx = new EvaluationContextImpl( manager );
+        EvaluationContextImpl ctx = new EvaluationContextImpl(Thread.currentThread().getContextClassLoader(), manager);
         try {
             ctx.enterFrame();
             if ( dmnContext != null ) {

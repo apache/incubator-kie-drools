@@ -44,6 +44,8 @@ public interface EvaluationContext {
 
     DMNRuntime getDMNRuntime();
 
+    ClassLoader getClassLoader();
+
     void notifyEvt(Supplier<FEELEvent> event);
 
 

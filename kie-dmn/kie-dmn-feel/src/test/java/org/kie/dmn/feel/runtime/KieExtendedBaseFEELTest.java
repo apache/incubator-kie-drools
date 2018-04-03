@@ -40,7 +40,7 @@ import static org.mockito.Mockito.verify;
 @RunWith(Parameterized.class)
 public abstract class KieExtendedBaseFEELTest {
 
-    private final FEEL feel = FEEL.newInstance(Arrays.asList(new KieExtendedFEELProfile()));
+    private final FEEL feel = FEEL.newInstance(Thread.currentThread().getContextClassLoader(), Arrays.asList(new KieExtendedFEELProfile()));
 
     @Parameterized.Parameter(0)
     public String expression;

@@ -69,7 +69,7 @@ public class DMNCompilerTest {
 
         SimpleTypeImpl feelType = (SimpleTypeImpl) type;
 
-        EvaluationContext ctx = new EvaluationContextImpl( null );
+        EvaluationContext ctx = new EvaluationContextImpl(Thread.currentThread().getContextClassLoader(), null);
         assertThat( feelType.getFeelType(), is( BuiltInType.STRING ) );
         assertThat( feelType.getAllowedValuesFEEL().size(), is( 4 ) );
         assertThat( feelType.getAllowedValuesFEEL().get( 0 ).apply( ctx, "UNEMPLOYED" ), is( true ) );
