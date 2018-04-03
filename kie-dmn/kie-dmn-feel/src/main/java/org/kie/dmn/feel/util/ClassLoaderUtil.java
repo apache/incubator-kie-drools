@@ -18,21 +18,8 @@ package org.kie.dmn.feel.util;
 
 public class ClassLoaderUtil {
 
-
     public static ClassLoader findDefaultClassLoader() {
         return org.kie.internal.utils.ClassLoaderUtil.getClassLoader(null, null, true);
-
-        /*
-         * As from org.drools.core.common.ProjectClassLoader , and because kie-dmn-feel does not depends on drools-core.
-         */
-        //        ClassLoader parent = Thread.currentThread().getContextClassLoader();
-        //        if (parent == null) {
-        //            parent = ClassLoader.getSystemClassLoader();
-        //        }
-        //        if (parent == null) {
-        //            parent = ClassLoaderUtil.class.getClassLoader();
-        //        }
-        //        return parent;
     }
 
     private ClassLoaderUtil() {
