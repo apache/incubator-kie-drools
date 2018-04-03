@@ -86,6 +86,7 @@ public class ModifyHandler extends AbstractCompilerHandler {
     public void startBetaNode(BetaNode betaNode) {
         builder.append(getVariableName(betaNode)).append(".modifyObject(").
                 append(FACT_HANDLE_PARAM_NAME).append(",").
+                append("modifyPreviousTuples").append(",").
                 append(PROP_CONTEXT_PARAM_NAME).append(",").
                 append(WORKING_MEMORY_PARAM_NAME).append(");").append(NEWLINE);
     }
