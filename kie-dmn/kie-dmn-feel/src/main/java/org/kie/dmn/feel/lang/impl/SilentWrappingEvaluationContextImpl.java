@@ -106,7 +106,7 @@ public class SilentWrappingEvaluationContextImpl implements EvaluationContext {
     }
 
     @Override
-    public ClassLoader getClassLoader() {
-        return wrapped.getClassLoader();
+    public ClassLoader getRootClassLoader() {
+        return wrapped.getRootClassLoader();
     }
 }

@@ -96,7 +96,7 @@ public class FunctionDefNode
                     String methodSignature = (String) java.get( "method signature" );
                     if( clazzName != null && methodSignature != null ) {
                         // might need to explicitly use a classloader here
-                        Class<?> clazz = Class.forName(clazzName, true, ctx.getClassLoader());
+                        Class<?> clazz = Class.forName(clazzName, true, ctx.getRootClassLoader());
                         if( clazz != null ) {
                             String[] mp = parseMethod( methodSignature );
                             if( mp != null ) {

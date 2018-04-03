@@ -120,6 +120,6 @@ public interface DMNRuntime extends DMNRuntimeEventManager {
     /**
      * Returns the ClassLoader used by this DMNRuntime
      */
-    ClassLoader getClassLoader();
+    ClassLoader getRootClassLoader();
 
 }

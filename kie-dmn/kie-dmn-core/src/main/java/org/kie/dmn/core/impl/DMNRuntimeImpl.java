@@ -511,7 +511,7 @@ public class DMNRuntimeImpl
     }
 
     @Override
-    public ClassLoader getClassLoader() {
+    public ClassLoader getRootClassLoader() {
         return ((KnowledgeBaseImpl) runtime.getKieBase()).getRootClassLoader();
     }
 }

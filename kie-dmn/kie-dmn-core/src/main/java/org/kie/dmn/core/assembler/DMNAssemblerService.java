@@ -219,7 +219,7 @@ public class DMNAssemblerService implements KieAssemblerService {
     public static DMNCompilerConfiguration compilerConfigWithKModulePrefs(ClassLoader classLoader, ChainedProperties chainedProperties, List<DMNProfile> dmnProfiles) {
         DMNCompilerConfigurationImpl config = (DMNCompilerConfigurationImpl) DMNFactory.newCompilerConfiguration();
         
-        config.setClassLoader(classLoader);
+        config.setRootClassLoader(classLoader);
 
         Map<String, String> dmnPrefs = new HashMap<>();
         chainedProperties.mapStartsWith(dmnPrefs, ORG_KIE_DMN_PREFIX, true);

@@ -35,11 +35,11 @@ public class EvaluationContextImpl implements EvaluationContext {
     private ArrayDeque<ExecutionFrame> stack;
     private DMNRuntime dmnRuntime;
     private boolean performRuntimeTypeCheck = false;
-    private ClassLoader classloader;
+    private ClassLoader rootClassLoader;
 
     public EvaluationContextImpl(ClassLoader cl, FEELEventListenersManager eventsManager) {
         this.eventsManager = eventsManager;
-        this.classloader = cl;
+        this.rootClassLoader = cl;
         this.stack = new ArrayDeque<>();
         // we create a rootFrame to hold all the built in functions
         push( RootExecutionFrame.INSTANCE );
@@ -50,7 +50,7 @@ public class EvaluationContextImpl implements EvaluationContext {
     }
 
     public EvaluationContextImpl(FEELEventListenersManager eventsManager, DMNRuntime dmnRuntime) {
-        this(dmnRuntime.getClassLoader(), eventsManager);
+        this(dmnRuntime.getRootClassLoader(), eventsManager);
         this.dmnRuntime = dmnRuntime;
     }
 
@@ -162,8 +162,8 @@ public class EvaluationContextImpl implements EvaluationContext {
     }
 
     @Override
-    public ClassLoader getClassLoader() {
-        return this.classloader;
+    public ClassLoader getRootClassLoader() {
+        return this.rootClassLoader;
     }
 
     public void setPerformRuntimeTypeCheck(boolean performRuntimeTypeCheck) {
