@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -99,7 +99,7 @@ public class KieContainerImpl
     public KieModule getMainKieModule() {
         return kr.getKieModule(getReleaseId());
     }
-    
+
     /**
      * Please note: the recommended way of getting a KieContainer is relying on {@link org.kie.api.KieServices KieServices} API,
      * for example: {@link org.kie.api.KieServices#newKieContainer(ReleaseId) KieServices.newKieContainer(...)}.
@@ -108,12 +108,12 @@ public class KieContainerImpl
     public KieContainerImpl(KieProject kProject, KieRepository kr) {
         this("impl"+UUID.randomUUID(), kProject, kr);
     }
-    
+
     /**
      * Please note: the recommended way of getting a KieContainer is relying on {@link org.kie.api.KieServices KieServices} API,
      * for example: {@link org.kie.api.KieServices#newKieContainer(ReleaseId) KieServices.newKieContainer(...)}.
      * The direct manual call to KieContainerImpl constructor instead would not guarantee the consistency of the supplied containerId.
-     */    
+     */
     public KieContainerImpl(KieProject kProject, KieRepository kr, ReleaseId containerReleaseId) {
         this("impl"+UUID.randomUUID(), kProject, kr, containerReleaseId);
     }
@@ -130,7 +130,7 @@ public class KieContainerImpl
         kProject.init();
         initMBeans(containerId);
     }
-    
+
     /**
      * Please note: the recommended way of getting a KieContainer is relying on {@link org.kie.api.KieServices KieServices} API,
      * for example: {@link org.kie.api.KieServices#newKieContainer(ReleaseId) KieServices.newKieContainer(...)}.
@@ -149,17 +149,17 @@ public class KieContainerImpl
 	        DroolsManagementAgent.getInstance().registerMBean( this, monitor, on );
         }
 	}
-    
+
     @Override
     public String getContainerId() {
     	return this.containerId;
     }
-    
+
     @Override
     public ReleaseId getConfiguredReleaseId() {
 		return configuredReleaseId;
 	}
-    
+
 	@Override
 	public ReleaseId getResolvedReleaseId() {
 		return getReleaseId();
@@ -339,7 +339,7 @@ public class KieContainerImpl
         }
         return getKieBase( defaultKieBaseModel.getName() );
     }
-    
+
     public Results verify() {
         return this.kProject.verify();
     }
@@ -397,9 +397,14 @@ public class KieContainerImpl
         kBase.setKieContainer(this);
         kBase.initMBeans();
 
-        // Old tests not created with KieHelper have null conf
-//        if (conf != null && conf.getOption(AlphaNetworkCompilerOption.class).isAlphaNetworkCompilerEnabled()) {
-        if(true) {
+        final String configurationProperty = kBaseModel.getKModule().getConfigurationProperty("drools.alphaNetworkCompiler");
+        Boolean isAlphaNetworkEnabled;
+        if(configurationProperty != null) {
+            isAlphaNetworkEnabled = Boolean.valueOf(configurationProperty);
+        } else {
+            isAlphaNetworkEnabled = false;
+        }
+        if(isAlphaNetworkEnabled) {
         KnowledgeBuilder kbuilder = kModule.getKnowledgeBuilderForKieBase(kBaseModel.getName());
             kBase.getRete().getEntryPointNodes().values().stream()
                     .flatMap(ep -> ep.getObjectTypeNodes().values().stream())
@@ -524,7 +529,7 @@ public class KieContainerImpl
         registerLoggers(kSessionModel, kSession);
 
         ((StatefulKnowledgeSessionImpl) kSession).initMBeans(containerId, ((InternalKnowledgeBase) kBase).getId(), kSessionModel.getName());
-        
+
         kSessions.put(kSessionModel.getName(), kSession);
         return kSession;
     }
@@ -571,9 +576,9 @@ public class KieContainerImpl
             wireSessionComponents( kSessionModel, statelessKieSession );
         }
         registerLoggers(kSessionModel, statelessKieSession);
-        
+
         ((StatelessKnowledgeSessionImpl) statelessKieSession).initMBeans(containerId, ((InternalKnowledgeBase) kBase).getId(), kSessionModel.getName());
-        
+
         statelessKSessions.put(kSessionModel.getName(), statelessKieSession);
         return statelessKieSession;
     }
@@ -616,7 +621,7 @@ public class KieContainerImpl
                 cbskeys.add(new DroolsManagementAgent.CBSKey(containerId, ((InternalKnowledgeBase) kv.getValue().getKieBase()).getId(), kv.getKey()));
             }
         }
-        
+
         for (KieSession kieSession : kSessions.values()) {
             kieSession.dispose();
         }
@@ -632,7 +637,7 @@ public class KieContainerImpl
             }
             DroolsManagementAgent.getInstance().unregisterMBeansFromOwner(this);
         }
-        
+
         ((InternalKieServices) KieServices.Factory.get()).clearRefToContainerId(this.containerId, this);
     }
 

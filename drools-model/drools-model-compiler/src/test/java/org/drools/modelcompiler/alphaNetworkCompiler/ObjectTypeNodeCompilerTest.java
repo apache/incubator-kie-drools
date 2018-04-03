@@ -1,13 +1,17 @@
 package org.drools.compiler.reteoo.compiled;
 
+import org.drools.core.ClockType;
 import org.drools.modelcompiler.BaseModelTest;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
 import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
+import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.internal.conf.AlphaNetworkCompilerOption;
 import org.kie.internal.utils.KieHelper;
 
@@ -76,6 +80,8 @@ public class ObjectTypeNodeCompilerTest extends BaseModelTest {
 //        assertEquals("Asdrubale is greater than 4 and smaller than 10", result.getValue());
 //    }
 
+
+
     @Test
     public void testModify() {
         String str =
@@ -87,11 +93,8 @@ public class ObjectTypeNodeCompilerTest extends BaseModelTest {
                         "   modify($p) { setName($p.getName() + \"30\"); }" +
                         "end";
 
-        KieBaseConfiguration configuration = KieServices.Factory.get().newKieBaseConfiguration();
-
-        configuration.setProperty(AlphaNetworkCompilerOption.PROPERTY_NAME, String.valueOf(Boolean.TRUE));
-
-        KieSession ksession = getKieSession(str);
+        KieModuleModel kproj = getKieModuleModelWithAlphaNetworkCompiler();
+        KieSession ksession = getKieSession(kproj, str );
 
         final Person luca = new Person("Luca", 30);
         ksession.insert(luca);
@@ -101,6 +104,7 @@ public class ObjectTypeNodeCompilerTest extends BaseModelTest {
         ksession.fireAllRules();
         assertEquals("Luca30", luca.getName());
     }
+
 
 //    @Test
 //    public void testModify2() {
@@ -133,4 +137,11 @@ public class ObjectTypeNodeCompilerTest extends BaseModelTest {
 //        ksession.fireAllRules();
 //        assertTrue(luca.getAge() == 40);
 //    }
+
+
+    private KieModuleModel getKieModuleModelWithAlphaNetworkCompiler() {
+        KieModuleModel kproj = KieServices.get().newKieModuleModel();
+        kproj.setConfigurationProperty( "drools.alphaNetworkCompiler", "true" );
+        return kproj;
+    }
 }

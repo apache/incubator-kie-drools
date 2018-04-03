@@ -50,6 +50,41 @@ public class ObjectTypeNodeCompilerTest extends CommonTestMethodBase {
     }
 
     @Test
+    public void testAlphaConstraintsPerson() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "rule \"Bind1\"\n" +
+                        "when\n" +
+                        "  $s : Person( name == \"Luca\") \n" +
+                        "then\n" +
+                        "end\n"+
+                        "rule \"Bind2\"\n" +
+                        "when\n" +
+                        "  $s : Person( name == \"Mario\") \n" +
+                        "then\n" +
+                        "end\n" +
+                        "rule \"Bind3\"\n" +
+                        "when\n" +
+                        "  $s : Person( name == \"Matteo\") \n" +
+                        "then\n" +
+                        "end\n";
+
+        KieBaseConfiguration configuration = KieServices.Factory.get().newKieBaseConfiguration();
+
+        configuration.setProperty(AlphaNetworkCompilerOption.PROPERTY_NAME, String.valueOf(Boolean.TRUE));
+
+        KieSession ksession = new KieHelper()
+                .addContent(str, ResourceType.DRL)
+                .build(configuration)
+                .newKieSession();
+
+        ksession.insert(new Person("Luca"));
+        ksession.insert(new Person("Asdrubale"));
+
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
     public void testAlphaConstraintWithModification() {
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +
