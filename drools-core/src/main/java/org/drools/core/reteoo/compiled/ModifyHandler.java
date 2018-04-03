@@ -22,6 +22,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
+import org.drools.core.reteoo.ModifyPreviousTuples;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.spi.PropagationContext;
 
@@ -34,14 +35,16 @@ public class ModifyHandler extends AbstractCompilerHandler {
     private static final String FACT_HANDLE_PARAM_TYPE = InternalFactHandle.class.getName();
     private static final String PROP_CONTEXT_PARAM_TYPE = PropagationContext.class.getName();
     private static final String WORKING_MEMORY_PARAM_TYPE = InternalWorkingMemory.class.getName();
+    private static final String MODIFY_PREVIOUS_TUPLE_NAME = ModifyPreviousTuples.class.getName();
 
     private static final String FACT_HANDLE_PARAM_NAME = "handle";
     private static final String PROP_CONTEXT_PARAM_NAME = "context";
     private static final String WORKING_MEMORY_PARAM_NAME = "wm";
+    private static final String MODIFY_PREVIOUS_TUPLE_PARAM_NAME = "modifyPreviousTuples";
 
     private static final String ASSERT_METHOD_SIGNATURE = "public final void modifyObject("
             + FACT_HANDLE_PARAM_TYPE + " " + FACT_HANDLE_PARAM_NAME + ","
-            + "org.drools.core.reteoo.ModifyPreviousTuples" + " " + "modifyPreviousTuples" + ","
+            + MODIFY_PREVIOUS_TUPLE_NAME + " " + MODIFY_PREVIOUS_TUPLE_PARAM_NAME + ","
             + PROP_CONTEXT_PARAM_TYPE + " " + PROP_CONTEXT_PARAM_NAME + ","
             + WORKING_MEMORY_PARAM_TYPE + " " + WORKING_MEMORY_PARAM_NAME + "){";
 
@@ -86,7 +89,7 @@ public class ModifyHandler extends AbstractCompilerHandler {
     public void startBetaNode(BetaNode betaNode) {
         builder.append(getVariableName(betaNode)).append(".modifyObject(").
                 append(FACT_HANDLE_PARAM_NAME).append(",").
-                append("modifyPreviousTuples").append(",").
+                append(MODIFY_PREVIOUS_TUPLE_PARAM_NAME).append(",").
                 append(PROP_CONTEXT_PARAM_NAME).append(",").
                 append(WORKING_MEMORY_PARAM_NAME).append(");").append(NEWLINE);
     }
@@ -95,7 +98,7 @@ public class ModifyHandler extends AbstractCompilerHandler {
     public void startLeftInputAdapterNode(LeftInputAdapterNode leftInputAdapterNode) {
         builder.append(getVariableName(leftInputAdapterNode)).append(".modifyObject(").
                 append(FACT_HANDLE_PARAM_NAME).append(",").
-                append("modifyPreviousTuples").append(",").
+                append(MODIFY_PREVIOUS_TUPLE_PARAM_NAME).append(",").
                 append(PROP_CONTEXT_PARAM_NAME).append(",").
                 append(WORKING_MEMORY_PARAM_NAME).append(");").append(NEWLINE);
     }
