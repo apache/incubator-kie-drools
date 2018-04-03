@@ -22,7 +22,6 @@ import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.runtime.functions.extended.CodeFunction;
 import org.kie.dmn.feel.runtime.functions.extended.KieExtendedDMNFunctions;
-import org.kie.dmn.feel.util.ClassLoaderUtil;
 
 import static org.kie.dmn.feel.lang.types.BuiltInType.justNull;
 
@@ -35,7 +34,7 @@ public class FEELCodeMarshaller
         implements FEELMarshaller<String> {
 
     public static final FEELCodeMarshaller INSTANCE = new FEELCodeMarshaller();
-    private FEEL feel = FEEL.newInstance(ClassLoaderUtil.findDefaultClassLoader());
+    private FEEL feel = FEEL.newInstance();
 
     private FEELCodeMarshaller() {}
 

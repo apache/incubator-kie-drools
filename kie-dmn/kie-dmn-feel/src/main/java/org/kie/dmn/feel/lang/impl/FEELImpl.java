@@ -44,6 +44,7 @@ import org.kie.dmn.feel.parser.feel11.FEELParser;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.UnaryTest;
+import org.kie.dmn.feel.util.ClassLoaderUtil;
 
 /**
  * Language runtime entry point
@@ -61,9 +62,16 @@ public class FEELImpl
     private final Optional<ExecutionFrameImpl> customFrame;
     private final Collection<FEELFunction> customFunctions;
 
+    public FEELImpl() {
+        this(ClassLoaderUtil.findDefaultClassLoader(), Collections.emptyList());
+    }
 
     public FEELImpl(ClassLoader cl) {
         this(cl, Collections.emptyList());
+    }
+
+    public FEELImpl(List<FEELProfile> profiles) {
+        this(ClassLoaderUtil.findDefaultClassLoader(), profiles);
     }
 
     public FEELImpl(ClassLoader cl, List<FEELProfile> profiles) {
