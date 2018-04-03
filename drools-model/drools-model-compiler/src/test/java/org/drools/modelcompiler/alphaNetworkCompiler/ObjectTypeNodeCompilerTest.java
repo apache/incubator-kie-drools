@@ -3,10 +3,15 @@ package org.drools.compiler.reteoo.compiled;
 import org.drools.modelcompiler.BaseModelTest;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
 import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
+import org.kie.internal.conf.AlphaNetworkCompilerOption;
+import org.kie.internal.utils.KieHelper;
 
 import static org.junit.Assert.*;
 
@@ -33,7 +38,66 @@ public class ObjectTypeNodeCompilerTest extends BaseModelTest {
 
         assertEquals(1, ksession.fireAllRules());
     }
-//
+
+    @Test
+    public void testAlphaConstraintsPerson() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "rule \"Bind1\"\n" +
+                        "when\n" +
+                        "  $s : Person( name == \"Luca\") \n" +
+                        "then\n" +
+                        "end\n"+
+                        "rule \"Bind2\"\n" +
+                        "when\n" +
+                        "  $s : Person( name == \"Mario\") \n" +
+                        "then\n" +
+                        "end\n" +
+                        "rule \"Bind3\"\n" +
+                        "when\n" +
+                        "  $s : Person( name == \"Matteo\") \n" +
+                        "then\n" +
+                        "end\n";
+
+        KieModuleModel kproj = getKieModuleModelWithAlphaNetworkCompiler();
+        KieSession ksession = getKieSession(kproj, str );
+
+        ksession.insert(new Person("Luca"));
+        ksession.insert(new Person("Asdrubale"));
+
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    @Ignore("length is translated to getLength")
+    public void testAlphaConstraint2() {
+        String str =
+                "rule \"Bind1\"\n" +
+                        "when\n" +
+                        "  $s : String( length == 4) \n" +
+                        "then\n" +
+                        "end\n"+
+                        "rule \"Bind2\"\n" +
+                        "when\n" +
+                        "  $s : String( length == 5) \n" +
+                        "then\n" +
+                        "end\n" +
+                        "rule \"Bind3\"\n" +
+                        "when\n" +
+                        "  $s : String( length == 6) \n" +
+                        "then\n" +
+                        "end\n";
+
+        KieModuleModel kproj = getKieModuleModelWithAlphaNetworkCompiler();
+        KieSession ksession = getKieSession(kproj, str );
+
+        ksession.insert("Luca");
+        ksession.insert("Asdrubale");
+
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+
     @Test
     public void testAlphaConstraintWithModification() {
         String str =
