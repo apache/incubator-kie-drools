@@ -28,7 +28,7 @@ rule "Handle null-prediction missing values on my way back @{context}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience 5
 when
-    $node : TreeNode( context == "@{context}", $id : id, $children : children )
+    $node : @{context}TreeNode( context == "@{context}", $id : id, $children : children )
     $tok  : @{context}TreeToken( context == "@{context}", current == $id, $trail : trail, $res : results, visitMode == "NULL_PREDICTION" )
 
     not @{name}( context == "@{context}" )

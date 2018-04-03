@@ -1,0 +1,93 @@
+<PMML version="4.2"
+	xsi:schemaLocation="http://www.dmg.org/PMML-4_2 http://www.dmg.org/v4-1/pmml-4-2.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.dmg.org/PMML-4_2">
+	<Header>
+		<Application name="Drools-PMML" version="7.0.0-SNAPSHOT" />
+	</Header>
+	<DataDictionary numberOfFields="6">
+		<DataField name="petal_length" optype="continuous" dataType="double" />
+		<DataField name="petal_width" optype="continuous" dataType="double" />
+		<DataField name="continent" optype="categorical" dataType="string">
+			<Value value="north_america" />
+			<Value value="south_america" />
+			<Value value="europe" />
+			<Value value="africa" />
+			<Value value="asia" />
+			<Value value="oceana" />
+			<Value value="antartica" />
+		</DataField>
+		<DataField name="day" optype="categorical" dataType="string">
+			<Value value="sunday" />
+			<Value value="monday" />
+			<Value value="tuesday" />
+			<Value value="wednesday" />
+			<Value value="thursday" />
+			<Value value="friday" />
+			<Value value="saturday" />
+		</DataField>
+		<DataField name="sepal_length" optype="continuous" dataType="double" />
+		<DataField name="sepal_width" optype="continuous" dataType="double" />
+	</DataDictionary>
+	<TreeModel modelName="Iris1" functionName="regression"
+		splitCharacteristic="multiSplit">
+		<MiningSchema>
+			<MiningField name="petal_length" usageType="active" />
+			<MiningField name="petal_width" usageType="active" />
+			<MiningField name="day" usageType="active" />
+			<MiningField name="continent" usageType="active" />
+			<MiningField name="sepal_length" usageType="target" />
+			<MiningField name="sepal_width" usageType="active" />
+		</MiningSchema>
+		<Node score="5.843333" recordCount="150">
+			<True />
+			<Node score="5.179452" recordCount="73">
+				<SimplePredicate field="petal_length" operator="lessThan"
+					value="4.25" />
+				<Node score="5.005660" recordCount="53">
+					<SimplePredicate field="petal_length" operator="lessThan"
+						value="3.40" />
+				</Node>
+				<Node score="4.735000" recordCount="20">
+					<SimplePredicate field="sepal_width" operator="lessThan"
+						value="3.25" />
+				</Node>
+				<Node score="5.169697" recordCount="33">
+					<SimplePredicate field="sepal_width" operator="greaterThan"
+						value="3.25" />
+				</Node>
+				<Node score="5.640000" recordCount="20">
+					<SimplePredicate field="petal_length" operator="greaterThan"
+						value="3.40" />
+				</Node>
+			</Node>
+			<Node score="6.472727" recordCount="77">
+				<SimplePredicate field="petal_length" operator="greaterThan"
+					value="4.25" />
+				<Node score="6.326471" recordCount="68">
+					<SimplePredicate field="petal_length" operator="lessThan"
+						value="6.05" />
+					<Node score="6.165116" recordCount="43">
+						<SimplePredicate field="petal_length" operator="lessThan"
+							value="5.15" />
+						<Node score="6.054545" recordCount="33">
+							<SimplePredicate field="sepal_width" operator="lessThan"
+								value="3.05" />
+						</Node>
+						<Node score="6.530000" recordCount="10">
+							<SimplePredicate field="sepal_width" operator="greaterThan"
+								value="3.05" />
+						</Node>
+					</Node>
+					<Node score="6.604000" recordCount="25">
+						<SimplePredicate field="petal_length" operator="greaterThan"
+							value="5.15" />
+					</Node>
+				</Node>
+				<Node score="7.577778" recordCount="9">
+					<SimplePredicate field="petal_length" operator="greaterThan"
+						value="6.05" />
+				</Node>
+			</Node>
+		</Node>
+	</TreeModel>
+</PMML>
