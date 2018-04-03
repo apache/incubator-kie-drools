@@ -25,6 +25,7 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.parser.feel11.profiles.KieExtendedFEELProfile;
+import org.kie.dmn.feel.util.ClassLoaderUtil;
 import org.mockito.ArgumentCaptor;
 
 import static org.hamcrest.Matchers.instanceOf;
@@ -40,7 +41,7 @@ import static org.mockito.Mockito.verify;
 @RunWith(Parameterized.class)
 public abstract class KieExtendedBaseFEELTest {
 
-    private final FEEL feel = FEEL.newInstance(Thread.currentThread().getContextClassLoader(), Arrays.asList(new KieExtendedFEELProfile()));
+    private final FEEL feel = FEEL.newInstance(ClassLoaderUtil.findDefaultClassLoader(), Arrays.asList(new KieExtendedFEELProfile()));
 
     @Parameterized.Parameter(0)
     public String expression;

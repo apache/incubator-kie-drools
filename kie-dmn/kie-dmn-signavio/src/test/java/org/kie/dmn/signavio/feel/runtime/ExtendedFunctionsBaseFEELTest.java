@@ -24,6 +24,7 @@ import org.junit.runners.Parameterized;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.feel.FEEL;
+import org.kie.dmn.feel.util.ClassLoaderUtil;
 import org.kie.dmn.signavio.KieDMNSignavioProfile;
 import org.mockito.ArgumentCaptor;
 
@@ -40,7 +41,7 @@ import static org.mockito.Mockito.verify;
 @RunWith(Parameterized.class)
 public abstract class ExtendedFunctionsBaseFEELTest {
 
-    private final FEEL feel = FEEL.newInstance(Thread.currentThread().getContextClassLoader(), Arrays.asList(new KieDMNSignavioProfile()));
+    private final FEEL feel = FEEL.newInstance(ClassLoaderUtil.findDefaultClassLoader(), Arrays.asList(new KieDMNSignavioProfile()));
 
     @Parameterized.Parameter(0)
     public String expression;

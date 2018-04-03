@@ -29,6 +29,7 @@ import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
 import org.kie.dmn.feel.runtime.events.UnknownVariableErrorEvent;
+import org.kie.dmn.feel.util.ClassLoaderUtil;
 import org.kie.dmn.model.v1_1.DMNElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,7 +68,7 @@ public class DMNFEELHelper {
         FEELEventListenersManager manager = new FEELEventListenersManager();
         FEELEventsListenerImpl listener = new FEELEventsListenerImpl();
         manager.addListener( listener );
-        EvaluationContextImpl ctx = new EvaluationContextImpl(Thread.currentThread().getContextClassLoader(), manager);
+        EvaluationContextImpl ctx = new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), manager);
         try {
             ctx.enterFrame();
             if ( dmnContext != null ) {

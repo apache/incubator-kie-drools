@@ -28,6 +28,7 @@ import org.kie.dmn.feel.lang.FEELProfile;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.impl.FEELImpl;
 import org.kie.dmn.feel.runtime.UnaryTest;
+import org.kie.dmn.feel.util.ClassLoaderUtil;
 
 /**
  * FEEL expression language engine interface
@@ -42,7 +43,7 @@ public interface FEEL {
      * @return a newly instantiated FEEL engine instance
      */
     static FEEL newInstance() {
-        return new FEELImpl(Thread.currentThread().getContextClassLoader());
+        return new FEELImpl(ClassLoaderUtil.findDefaultClassLoader());
     }
 
     /**
