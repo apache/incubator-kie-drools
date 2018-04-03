@@ -103,4 +103,36 @@ public class ObjectTypeNodeCompilerTest extends CommonTestMethodBase {
         ksession.fireAllRules();
         assertTrue(luca.isHappy());
     }
+
+    @Test
+    public void testModify2() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "rule \"Modify\"\n" +
+                        "when\n" +
+                        "  $p : Person( age < 40 )\n" +
+                        "then\n" +
+                        "   modify($p) { setAge($p.getAge() + 1); }" +
+                        "end";
+
+        KieBaseConfiguration configuration = KieServices.Factory.get().newKieBaseConfiguration();
+
+        configuration.setProperty(AlphaNetworkCompilerOption.PROPERTY_NAME, String.valueOf(Boolean.TRUE));
+
+        KieSession ksession = new KieHelper()
+                .addContent(str, ResourceType.DRL)
+                .build(configuration)
+                .newKieSession();
+
+        final Person luca = new Person("Luca", 30, false);
+        ksession.insert(luca);
+
+        Result result = new Result();
+        ksession.insert(result);
+
+        assertEquals(10, ksession.fireAllRules());
+
+        ksession.fireAllRules();
+        assertTrue(luca.getAge() == 40);
+    }
 }

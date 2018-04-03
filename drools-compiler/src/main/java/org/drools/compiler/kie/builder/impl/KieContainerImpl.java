@@ -398,8 +398,9 @@ public class KieContainerImpl
         kBase.initMBeans();
 
         // Old tests not created with KieHelper have null conf
-        if (conf != null && conf.getOption(AlphaNetworkCompilerOption.class).isAlphaNetworkCompilerEnabled()) {
-            KnowledgeBuilder kbuilder = kModule.getKnowledgeBuilderForKieBase(kBaseModel.getName());
+//        if (conf != null && conf.getOption(AlphaNetworkCompilerOption.class).isAlphaNetworkCompilerEnabled()) {
+        if(true) {
+        KnowledgeBuilder kbuilder = kModule.getKnowledgeBuilderForKieBase(kBaseModel.getName());
             kBase.getRete().getEntryPointNodes().values().stream()
                     .flatMap(ep -> ep.getObjectTypeNodes().values().stream())
                     .filter(f -> !InitialFact.class.isAssignableFrom(f.getObjectType().getClassType()))

@@ -21,7 +21,6 @@ import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 
-
 public class DelegateMethodsHandler extends AbstractCompilerHandler {
 
     private final StringBuilder builder;
@@ -54,20 +53,14 @@ public class DelegateMethodsHandler extends AbstractCompilerHandler {
             "                                        org.drools.core.common.InternalWorkingMemory workingMemory) {\n" +
             "        throw new UnsupportedOperationException();\n" +
             "    }\n" +
-            "\n" +
-            "    public void modifyObject(org.drools.core.common.InternalFactHandle factHandle,\n" +
-            "                      org.drools.core.reteoo.ModifyPreviousTuples modifyPreviousTuples,\n" +
-            "                      org.drools.core.spi.PropagationContext context,\n" +
-            "                      org.drools.core.common.InternalWorkingMemory workingMemory) {\n" +
-            "        if (mvelConstraint4.isAllowed(factHandle, workingMemory)) {\n" +
-            "            leftInputAdapterNode5.modifyObject(factHandle, modifyPreviousTuples, context, workingMemory);\n" +
-            "        }\n" +
-            "    }";
+            "\n";
+
+
+    AlphaNode alphaNode;
 
     public DelegateMethodsHandler(StringBuilder builder) {
         this.builder = builder;
     }
-
 
     @Override
     public void startObjectTypeNode(ObjectTypeNode objectTypeNode) {
@@ -75,18 +68,35 @@ public class DelegateMethodsHandler extends AbstractCompilerHandler {
     }
 
     @Override
-    public void endObjectTypeNode(ObjectTypeNode objectTypeNode) {
+    public void startLeftInputAdapterNode(LeftInputAdapterNode leftInputAdapterNode) {
+
+        final String constraintName = getVariableName(alphaNode);
+
+        final String adapterName = getVariableName(leftInputAdapterNode);
+        final String modifyObjectMethod = String.format(
+                "    public void modifyObject(org.drools.core.common.InternalFactHandle factHandle,\n" +
+                        "                      org.drools.core.reteoo.ModifyPreviousTuples modifyPreviousTuples,\n" +
+                        "                      org.drools.core.spi.PropagationContext context,\n" +
+                        "                      org.drools.core.common.InternalWorkingMemory workingMemory) {\n" +
+                        "        if (%s.isAllowed(factHandle, workingMemory)) {\n" +
+                        "            %s.modifyObject(factHandle, modifyPreviousTuples, context, workingMemory);\n" +
+                        "        }\n" +
+                        "    }", constraintName, adapterName);
+
+        builder.append(modifyObjectMethod).append(NEWLINE);
     }
 
     @Override
     public void startNonHashedAlphaNode(AlphaNode alphaNode) {
+        this.alphaNode = alphaNode;
+
+    }
+
+    @Override
+    public void endObjectTypeNode(ObjectTypeNode objectTypeNode) {
     }
 
     @Override
     public void startBetaNode(BetaNode betaNode) {
-    }
-
-    @Override
-    public void startLeftInputAdapterNode(LeftInputAdapterNode leftInputAdapterNode) {
     }
 }
