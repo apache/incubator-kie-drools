@@ -279,7 +279,7 @@ public class PMML4Compiler implements PMMLCompiler {
         SchemaFactory sf = SchemaFactory.newInstance( XMLConstants.W3C_XML_SCHEMA_NS_URI );
 
         try {
-            schema = sf.newSchema( Thread.currentThread().getContextClassLoader().getResource( SCHEMA_PATH ) );
+            schema = sf.newSchema( PMML4Compiler.class.getClassLoader().getResource( SCHEMA_PATH ) );
         } catch ( SAXException e ) {
             e.printStackTrace();
         }
@@ -364,7 +364,7 @@ public class PMML4Compiler implements PMMLCompiler {
     private static KieBase checkBuildingResources( PMML pmml ) throws IOException {
 
         KieServices ks = KieServices.Factory.get();
-        KieContainer kieContainer = ks.getKieClasspathContainer();
+        KieContainer kieContainer = ks.getKieClasspathContainer( PMML4Compiler.class.getClassLoader() );
 
         if ( registry == null ) {
             initRegistry();
@@ -759,7 +759,14 @@ public class PMML4Compiler implements PMMLCompiler {
             if ( schema == null ) {
                 visitorBuildResults.add( new PMMLWarning( ResourceFactory.newInputStreamResource( source ), "Could not validate PMML document, schema not available" ) );
             }
-            JAXBContext jc = JAXBContext.newInstance( model );
+            final JAXBContext jc;
+            final ClassLoader ccl = Thread.currentThread().getContextClassLoader();
+            try {
+                Thread.currentThread().setContextClassLoader( PMML4Compiler.class.getClassLoader() );
+                jc = JAXBContext.newInstance( model, PMML4Compiler.class.getClassLoader() );
+            } finally {
+                Thread.currentThread().setContextClassLoader( ccl );
+            }
             Unmarshaller unmarshaller = jc.createUnmarshaller();
             if ( schema != null ) {
                 unmarshaller.setSchema( schema );
@@ -775,7 +782,14 @@ public class PMML4Compiler implements PMMLCompiler {
 
     public static void dumpModel( PMML model, OutputStream target ) {
         try {
-            JAXBContext jc = JAXBContext.newInstance( PMML.class.getPackage().getName() );
+            final JAXBContext jc;
+            final ClassLoader ccl = Thread.currentThread().getContextClassLoader();
+            try {
+                Thread.currentThread().setContextClassLoader( PMML4Compiler.class.getClassLoader() );
+                jc = JAXBContext.newInstance( PMML.class.getPackage().getName(), PMML4Compiler.class.getClassLoader() );
+            } finally {
+                Thread.currentThread().setContextClassLoader( ccl );
+            }
             Marshaller marshaller = jc.createMarshaller();
             marshaller.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
 
