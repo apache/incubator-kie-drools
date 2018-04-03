@@ -46,9 +46,11 @@ public class MiningSegmentation {
 	
 	private static TemplateRegistry templates;
 	private static Map<String,String> templateNameToFile;
-	private static final String segmentActivationSelectFirst = "org/kie/pmml/pmml_4_2/templates/mvel/mining/selectFirstSegOnly.mvel";
-	private static final String segmentSelectAll = "org/kie/pmml/pmml_4_2/templates/mvel/mining/selectAllSegments.mvel";
-	private static final String segmentModelChain = "org/kie/pmml/pmml_4_2/templates/mvel/mining/modelChain.mvel";
+	private static final String BASE_DIR = "org/kie/pmml/pmml_4_2/templates/mvel/mining/";
+	private static final String segmentActivationSelectFirst = BASE_DIR+"selectFirstSegOnly.mvel";
+	private static final String segmentSelectAll = BASE_DIR+"selectAllSegments.mvel";
+	private static final String segmentModelChain = BASE_DIR+"modelChain.mvel";
+	private static final String segmentWeightedAvg = BASE_DIR+"weightedAvg.mvel";
 	
 	public MiningSegmentation(Miningmodel owner, Segmentation segmentation) {
 		this.owner = owner;
@@ -77,6 +79,7 @@ public class MiningSegmentation {
 			templateNameToFile.put(MULTIPLEMODELMETHOD.SELECT_FIRST.name(), segmentActivationSelectFirst);
 			templateNameToFile.put(MULTIPLEMODELMETHOD.SELECT_ALL.name(), segmentSelectAll);
 			templateNameToFile.put(MULTIPLEMODELMETHOD.MODEL_CHAIN.name(), segmentModelChain);
+			templateNameToFile.put(MULTIPLEMODELMETHOD.WEIGHTED_AVERAGE.name(), segmentWeightedAvg);
 		}
 	}
 	

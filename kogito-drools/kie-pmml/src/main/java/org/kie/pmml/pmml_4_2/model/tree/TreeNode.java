@@ -31,7 +31,6 @@ import java.util.Set;
     id          : String            @key
     parent      : String
     children    : java.util.List
-    outcome     : String
     recordCount : int
     counts      : java.util.Map
     confidence  : java.util.Map
@@ -43,7 +42,6 @@ public class TreeNode {
     private String id;
     private String parent;
     private List children;
-    private String outcome;
     private int recordCount;
     private Map counts;
     private Map confidence;
@@ -51,13 +49,12 @@ public class TreeNode {
 
 
 
-    public TreeNode(String correlationId, String context, String id, String parent, List children, String outcome, int recordCount,
+    public TreeNode(String correlationId, String context, String id, String parent, List children, int recordCount,
             Map counts, Map confidence, String defaultChld) {
         this.context = context;
         this.id = id;
         this.parent = parent;
         this.children = children;
-        this.outcome = outcome;
         this.recordCount = recordCount;
         this.counts = counts;
         this.confidence = confidence;
@@ -86,12 +83,6 @@ public class TreeNode {
     }
     public void setChildren(List children) {
         this.children = children;
-    }
-    public String getOutcome() {
-        return outcome;
-    }
-    public void setOutcome(String outcome) {
-        this.outcome = outcome;
     }
     public int getRecordCount() {
         return recordCount;
@@ -267,7 +258,6 @@ public class TreeNode {
             }
         }
         builder.append("], ");
-        builder.append("outcome=").append(this.outcome).append(", ");
         builder.append("recordCount=").append(this.recordCount).append(", ");
         builder.append("counts=[");
         Iterator keyIter = this.counts.keySet().iterator();

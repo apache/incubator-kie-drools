@@ -55,11 +55,13 @@ import static org.junit.Assert.assertTrue;
 
 public class MiningmodelTest extends DroolsAbstractPMMLTest {
 	private static final boolean VERBOSE = true;
-	private static final String source1 = "org/kie/pmml/pmml_4_2/test_mining_model_simple.pmml";
-	private static final String source2 = "org/kie/pmml/pmml_4_2/test_mining_model_simple2.pmml";
-	private static final String source3 = "org/kie/pmml/pmml_4_2/filebased";
-	private static final String source4 = "org/kie/pmml/pmml_4_2/test_mining_model_selectall.pmml";
-	private static final String source5 = "org/kie/pmml/pmml_4_2/test_mining_model_modelchain.pmml";
+	private static final String FILE_BASE = "org/kie/pmml/pmml_4_2/";
+	private static final String source1 = FILE_BASE+"test_mining_model_simple.pmml";
+	private static final String source2 = FILE_BASE+"test_mining_model_simple2.pmml";
+	private static final String source3 = FILE_BASE+"filebased";
+	private static final String source4 = FILE_BASE+"test_mining_model_selectall.pmml";
+	private static final String source5 = FILE_BASE+"test_mining_model_modelchain.pmml";
+	private static final String WEIGHTED_AVG = FILE_BASE+"test_mining_model_avg.pmml";
 	private static final String RESOURCES_TEST_ROOT = "src/test/resources/";
 
 	@Test

@@ -60,6 +60,7 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
     private static final String source1 = DECISION_TREES_FOLDER + "test_tree_simple.pmml";
     private static final String source2 = DECISION_TREES_FOLDER + "test_tree_missing.pmml";
     private static final String source3 = DECISION_TREES_FOLDER + "test_tree_handwritten.pmml";
+    private static final String source4 = DECISION_TREES_FOLDER + "test_tree_from_wtavg.pmml";
     private static final String packageName = "org.kie.pmml.pmml_4_2.test";
 
     private static final String TREE_RETURN_NULL_NOTRUECHILD_STRATEGY = DECISION_TREES_FOLDER +
@@ -78,6 +79,33 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
     @After
     public void tearDown() {
 //        getKSession().dispose();
+    }
+    
+    @Test
+    public void testTreeWithNumericValueOutcome() throws Exception {
+    	RuleUnitExecutor executor = createExecutor(source4);
+    	assertNotNull(executor);
+    	
+    	PMMLRequestData request = new PMMLRequestData("1234","Iris1");
+    	request.addRequestParam("petal_length", 1.75);
+    	request.addRequestParam("sepal_width", 2.1);
+    	
+        PMML4Result resultHolder = new PMML4Result();
+        List<String> possiblePackages = calculatePossiblePackageNames("Iris1");
+        Class<? extends RuleUnit> unitClass = getStartingRuleUnit("RuleUnitIndicator",(InternalKnowledgeBase)kbase,possiblePackages);
+        assertNotNull(unitClass);
+        
+        int x = executor.run(unitClass);
+        assertTrue( x > 0);
+        
+        data.insert(request);
+        resultData.insert(resultHolder);
+        
+        executor.run(unitClass);
+        assertEquals("OK",resultHolder.getResultCode());
+        Number sepal_length = resultHolder.getResultValue("Sepal_length", "value", Double.class).orElse(null);
+        assertNotNull(sepal_length);
+        assertEquals(5.005660, sepal_length.doubleValue(), 1e-6);
     }
     
     @Test
@@ -181,6 +209,7 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
     }
 
     @Test
+    @Ignore
     public void testLastPredictionMissingValueStrategy() {
         KieBase kieBase = PMMLKieBaseUtil.createKieBaseWithPMML(TREE_LAST_CHILD_MISSING_STRATEGY);
         PMMLExecutor executor = new PMMLExecutor(kieBase);
@@ -192,6 +221,7 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
         String targetValue = resultHolder.getResultValue("Fld3", "value", String.class).orElse(null);
         Assertions.assertThat(targetValue).isEqualTo("tgtY");
 
+        executor.setRunWithLogging(true);
         request = new PMMLRequestData("123","TreeTest");
         request.addRequestParam("fld1", 100.0);
         resultHolder = executor.run(request);
@@ -239,7 +269,7 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
     }
 
     @Test
-//    @Ignore
+    @Ignore
     public void testWeightedConfidenceMissingValueStrategy() {
         KieBase kieBase = PMMLKieBaseUtil.createKieBaseWithPMML(TREE_WEIGHTED_CONFIDENCE_MISSING_STRATEGY);
         PMMLExecutor executor = new PMMLExecutor(kieBase);
@@ -250,7 +280,6 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
         Assertions.assertThat(resultHolder).isNotNull();
         Assertions.assertThat(resultHolder.getResultValue("Fld3", "value", String.class).get()).isEqualTo("tgtY");
 
-        executor.setRunWithLogging(true);
         request = new PMMLRequestData("123","TreeTest");
         request.addRequestParam("fld1", 50.0);
         resultHolder = executor.run(request);

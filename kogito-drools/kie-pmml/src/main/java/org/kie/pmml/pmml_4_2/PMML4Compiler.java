@@ -68,9 +68,11 @@ import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.pmml.pmml_4_2.model.Miningmodel;
+import org.kie.pmml.pmml_4_2.model.PMML4ModelType;
 import org.kie.pmml.pmml_4_2.model.PMML4UnitImpl;
 import org.kie.pmml.pmml_4_2.model.PMMLMiningField;
 import org.kie.pmml.pmml_4_2.model.PMMLOutputField;
+import org.kie.pmml.pmml_4_2.model.Treemodel;
 import org.kie.pmml.pmml_4_2.model.mining.MiningSegment;
 import org.kie.pmml.pmml_4_2.model.mining.MiningSegmentation;
 import org.mvel2.templates.SimpleTemplateRegistry;
@@ -546,8 +548,13 @@ public class PMML4Compiler implements PMMLCompiler {
                 models.forEach(model -> {
                     Map.Entry<String, String> inputPojo = model.getMappedMiningPojo();
                     Map.Entry<String, String> ruleUnit = model.getMappedRuleUnit();
+                    Map.Entry<String, String> outcome = null;
+                    if (model.getModelType() == PMML4ModelType.TREE) {
+                    	outcome = ((Treemodel)model).getTreeNodeJava();
+                    }
                     if (inputPojo != null) javaClasses.put(inputPojo.getKey(), inputPojo.getValue());
                     if (ruleUnit != null) javaClasses.put(ruleUnit.getKey(), ruleUnit.getValue());
+                    if (outcome != null) javaClasses.put(outcome.getKey(), outcome.getValue());
                 });
             }
         }

@@ -29,7 +29,7 @@ rule "Eval Tree Node @{context} - @{id} - Down"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience $children.size() - $children.indexOf( $child )
 when
-    $node : TreeNode( context == "@{context}", $id : id == "@{id}", $children : children, children.size > 0 )
+    $node : @{context}TreeNode( context == "@{context}", $id : id == "@{id}", $children : children, children.size > 0 )
     $tok  : @{context}TreeToken( context == "@{context}", current == "@{id}", $trail : trail,
                                  ( @{constraints} ) || ( visitMode == "AGGREGATE_NODES" && ( @{missings} ) ) )
     $child : String( this not memberOf $trail ) from $children
@@ -61,7 +61,7 @@ rule "Eval Tree Node @{context} - @{id} - True"
 salience 3
 no-loop
 when
-    $node : TreeNode( context == "@{context}", $id : id == "@{id}", $out : outcome,
+    $node : @{context}TreeNode( context == "@{context}", $id : id == "@{id}", $out : outcome,
                       children.size == 0, $conf : confidence, $tot : recordCount )
     $tok  : @{context}TreeToken( context == "@{context}", current == "@{id}", $baseConf : confidence,
                                  $res : results, results.keySet not contains "@{id}",
@@ -85,7 +85,7 @@ rule "Eval Tree Node @{context} - @{id} - Unknown Weighted"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience 3
 when
-    $node : TreeNode( context == "@{context}", $id : id == "@{id}", $out : outcome )
+    $node : @{context}TreeNode( context == "@{context}", $id : id == "@{id}", $out : outcome )
     $tok  : @{context}TreeToken( context == "@{context}", current == "@{id}",
                                  visitMode == "WEIGHTED_CONFIDENCE" || == "LAST_PREDICTION" || == "NULL_PREDICTION",
                                  results.keySet not contains "@{id}",

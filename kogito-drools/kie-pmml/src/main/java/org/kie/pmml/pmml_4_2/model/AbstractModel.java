@@ -163,6 +163,7 @@ public abstract class AbstractModel<T> implements PMML4Model {
     }
 
  
+    @Override
     public Map.Entry<String, String> getMappedOutputPojo() {
         Map<String,String> result = new HashMap<>();
         if (!templateRegistry.contains(getOutputPojoTemplateName())) {
@@ -226,8 +227,8 @@ public abstract class AbstractModel<T> implements PMML4Model {
     @Override
     public List<PMMLMiningField> getMiningFields() {
         List<PMMLMiningField> fields = new ArrayList<>();
-        Map<String,MiningField> excludesTargetMap =
-                getFilteredMiningFieldMap(false, FIELDUSAGETYPE.TARGET);
+        Map<String,MiningField> excludesTargetMap = miningFieldMap;
+//                getFilteredMiningFieldMap(false, FIELDUSAGETYPE.TARGET);
         Map<String, PMMLDataField> dataDictionary = getOwner().getDataDictionaryMap();
         for (String key: excludesTargetMap.keySet()) {
             PMMLDataField df = dataDictionary.get(key);
@@ -255,6 +256,7 @@ public abstract class AbstractModel<T> implements PMML4Model {
         }
         return fields;
     }
+    
 
     @Override
     public PMMLMiningField findMiningField(String fieldName) {

@@ -55,7 +55,10 @@ public class @{className} extends AbstractTreeToken {
     public @{className}( String correlationId, String modelName ) {
        super(correlationId, modelName);
        @foreach{dataField: dataFields}
+       @code{ fldUsage = dataField.fieldUsageType.value; }
+       @if{ fldUsage != "predicted" && fldUsage != "target" }
        @if{ dataField.type=="Double" }v@{dataField.compactUpperCaseName} = 0.0; @elseif{ dataField.type=="Integer" }v@{dataField.compactUpperCaseName} = 0; @end{}
+       @end{}
        @end{}
     }
 

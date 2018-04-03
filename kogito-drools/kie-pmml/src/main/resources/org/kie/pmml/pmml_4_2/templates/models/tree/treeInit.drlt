@@ -31,7 +31,7 @@ salience 99
 when
     ModelMarker( "@{context}" ; enabled == true )
 then
-    TreeNode node;
+    @{context}TreeNode node;
     java.util.Map count;
     java.util.Map confs;
 
@@ -41,7 +41,7 @@ then
         confs = new java.util.HashMap();
             @foreach{ val : confs[ node.id ].keySet() } confs.put( @{format( tgtType, val ) }, @{ confs[ node.id ][ val ] } ); @end{}
 
-        node = new TreeNode( "","@{context}",
+        node = new @{context}TreeNode( "","@{context}",
                              "@{node.id}",
                              "@{parents[ node.id ]}",
                              java.util.Arrays.asList( @foreach{ child : node.nodes } "@{ child.id }" @end{','} ),
@@ -60,14 +60,14 @@ rule "Ensure Tree Statistics are Filled - @{context}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience 100
 when
-    $node : TreeNode( context == "@{context}", $id : id, $master : counts, $confs : confidence, counts.size() == 0, $children : children, $numChi : children.size() )
+    $node : @{context}TreeNode( context == "@{context}", $id : id, $master : counts, $confs : confidence, counts.size() == 0, $children : children, $numChi : children.size() )
 
-    accumulate( TreeNode( context == $node.context, id memberOf $children, counts.size() > 0, $sub : counts, $x : recordCount )
+    accumulate( @{context}TreeNode( context == $node.context, id memberOf $children, counts.size() > 0, $sub : counts, $x : recordCount )
                 and $k : String() from $sub.keySet(),
                           $keys : collectSet( $k );
                           $keys.size() > 0 )
 
-    accumulate( TreeNode( context == $node.context, id memberOf $children, $sub : counts, $x : recordCount > 0 ),
+    accumulate( @{context}TreeNode( context == $node.context, id memberOf $children, $sub : counts, $x : recordCount > 0 ),
                           $subs : collectList( $sub ),
                           $num  : count( $sub ),
                           $tot  : sum( $x );
@@ -99,7 +99,7 @@ end
 rule "Ensure Tree Scores are Filled - @{context}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
-    $node : TreeNode( context == "@{context}", $id : id, outcome == null, confidence.size() > 0, $conf : confidence )
+    $node : @{context}TreeNode( context == "@{context}", $id : id, outcome == null, confidence.size() > 0, $conf : confidence )
     accumulate( $k : String() from $conf.keySet(),
                      $maxConf : max( $conf.get( $k ) ) )
     java.util.Map.Entry( $best : key, value == $maxConf ) from $conf.entrySet()
