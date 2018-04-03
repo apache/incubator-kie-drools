@@ -15,28 +15,20 @@
  */
 package org.kie.pmml.pmml_4_2.model.mining;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
-import org.kie.dmg.pmml.pmml_4_2.descr.PMML;
-import org.kie.dmg.pmml.pmml_4_2.descr.Segment;
 import org.kie.api.definition.type.PropertyReactive;
-import org.kie.api.io.Resource;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.pmml.pmml_4_2.PMML4Compiler;
+import org.kie.dmg.pmml.pmml_4_2.descr.FIELDUSAGETYPE;
+import org.kie.dmg.pmml.pmml_4_2.descr.Segment;
+import org.kie.pmml.pmml_4_2.PMML4Helper;
 import org.kie.pmml.pmml_4_2.PMML4Model;
 import org.kie.pmml.pmml_4_2.model.PMML4ModelFactory;
 import org.kie.pmml.pmml_4_2.model.PMMLMiningField;
-import org.mvel2.integration.impl.MapVariableResolverFactory;
-import org.mvel2.templates.CompiledTemplate;
-import org.mvel2.templates.TemplateCompiler;
-import org.mvel2.templates.TemplateRuntime;
 
 @PropertyReactive
 public class MiningSegment implements Comparable<MiningSegment> {
+	private static PMML4Helper pmmlHelper = new PMML4Helper();
 	private String segmentId;
 	private MiningSegmentation owner;
 	private PredicateRuleProducer predicateRuleProducer;
@@ -45,7 +37,7 @@ public class MiningSegment implements Comparable<MiningSegment> {
 	private PMML4Model internalModel;
 	private String segmentRuleUnit;
 	private int segmentIndex;
-	private static CompiledTemplate launchTemplate;
+	private Double weight;
 	private static final String segmentPackageRootName = "org.kie.pmml.pmml_4_2";
 	
 	public MiningSegment( MiningSegmentation owner, Segment segment, int segmentIndex) {
@@ -54,6 +46,7 @@ public class MiningSegment implements Comparable<MiningSegment> {
 		this.internalModel = PMML4ModelFactory.getInstance().getModel(segment,owner);
 		this.segmentId = segment.getId();
 		this.segmentIndex = segmentIndex;
+		this.weight = segment.getWeight();
 		if (segment.getSimplePredicate() != null) {
 			predicateRuleProducer = new SimpleSegmentPredicate(segment.getSimplePredicate());
 		} else if (segment.getSimpleSetPredicate() != null) {
@@ -83,6 +76,18 @@ public class MiningSegment implements Comparable<MiningSegment> {
 		return false;
 	}
 	
+	public List<String> getTargetsForWeighting() {
+		return this.internalModel.getMiningFields().stream()
+		.filter(mf -> mf.getFieldUsageType() == FIELDUSAGETYPE.TARGET || mf.getFieldUsageType() == FIELDUSAGETYPE.PREDICTED)
+		.map(mf -> { return pmmlHelper.compactAsJavaId(mf.getName(), true); })
+		.collect(Collectors.toList());
+	}
+	
+	public String getTargetForWeighting() {
+		List<String> targets = this.getTargetsForWeighting();
+		return (targets != null && !targets.isEmpty()) ? targets.get(0):null;
+	}
+	
 	public String getSegmentId() {
 		if (this.segmentId == null || this.segmentId.trim().isEmpty()) {
 			StringBuilder bldr = new StringBuilder(owner.getSegmentationId());
@@ -91,66 +96,7 @@ public class MiningSegment implements Comparable<MiningSegment> {
 		}
 		return this.segmentId;
 	}
-	
-	private synchronized CompiledTemplate getLaunchTemplate() {
-		if (launchTemplate == null) {
-			Resource res = ResourceFactory.newClassPathResource("org/kie/pmml/pmml_4_2/templates/mvel/mining/selectFirstSegOnly.mvel");
-			if (res != null) {
-				try {
-					launchTemplate = TemplateCompiler.compileTemplate(res.getInputStream());
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-		return launchTemplate;
-	}
 
-	public String generateSegmentRules(String segmentationAgenda, int segmentIndex) {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		CompiledTemplate template = getLaunchTemplate();
-		if (template != null) {
-			Map<String, Object> vars = new HashMap<>();
-			vars.put("segmentId", getSegmentId());
-			vars.put("segmentationAgendaId", segmentationAgenda);
-			vars.put("segmentSalience", new Integer(1000 - segmentIndex));
-			if (predicateRuleProducer instanceof CompoundSegmentPredicate) {
-				CompoundSegmentPredicate predProd = (CompoundSegmentPredicate)predicateRuleProducer;
-				if (predProd.hasSurrogation()) {
-					vars.put("segmentPredicate", getSurrogationPredicateText(predProd,-1));
-				} else {
-					vars.put("segmentPredicate", predProd.getPredicateRule());
-				}
-			} else {
-				vars.put("segmentPredicate", predicateRuleProducer.getPredicateRule());
-			}
-			vars.put("miningPojoClass", getOwner().getOwner().getMiningPojoClassName());
-			TemplateRuntime.execute(template, null, new MapVariableResolverFactory(vars),baos);
-		}		
-		PMML pmml = new PMML();
-		pmml.setDataDictionary(this.internalModel.getDataDictionary());
-		pmml.getAssociationModelsAndBaselineModelsAndClusteringModels().add(this.internalModel.getRawModel());
-		PMML4Compiler compiler = new PMML4Compiler();
-		String innerRules = compiler.generateTheory(pmml);
-		return (new String(baos.toByteArray())).concat(innerRules);
-	}
-	
-	private String getSurrogationPredicateText(CompoundSegmentPredicate predicate, int lastPredicate) {
-		if (lastPredicate >= predicate.getSubpredicateCount()) return "";
-		StringBuilder bldr = new StringBuilder();
-		if (lastPredicate == -1) {
-			bldr.append("(").append(predicate.getPrimaryPredicateRule()).append(")");
-		} else {
-			bldr.append(predicate.getNextPredicateRule(lastPredicate));
-		}
-		String subPredicate = getSurrogationPredicateText(predicate,lastPredicate+1);
-		if (subPredicate != null && !subPredicate.trim().isEmpty()) {
-			bldr.append(" || ").append(subPredicate);
-		}
-		return bldr.toString();
-	}
-	
 	public MiningSegmentation getOwner() {
 		return this.owner;
 	}
@@ -191,6 +137,15 @@ public class MiningSegment implements Comparable<MiningSegment> {
 
 	public PMML4Model getInternalModel() {
 		return internalModel;
+	}
+	
+
+	public Double getWeight() {
+		return weight;
+	}
+
+	public void setWeight(Double weight) {
+		this.weight = weight;
 	}
 
 	@Override
