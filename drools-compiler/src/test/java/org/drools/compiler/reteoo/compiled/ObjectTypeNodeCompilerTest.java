@@ -18,11 +18,21 @@ public class ObjectTypeNodeCompilerTest extends CommonTestMethodBase {
     @Test
     public void testAlphaConstraint() {
         String str =
-                "rule \"Bind\"\n" +
+                        "rule \"Bind1\"\n" +
                         "when\n" +
-                        "  $s : String( length > 4, length < 10)\n" +
+                        "  $s : String( length == 4) \n" +
                         "then\n" +
-                        "end";
+                        "end\n"+
+                        "rule \"Bind2\"\n" +
+                        "when\n" +
+                        "  $s : String( length == 5) \n" +
+                        "then\n" +
+                        "end\n" +
+                        "rule \"Bind3\"\n" +
+                        "when\n" +
+                        "  $s : String( length == 6) \n" +
+                        "then\n" +
+                        "end\n";
 
         KieBaseConfiguration configuration = KieServices.Factory.get().newKieBaseConfiguration();
 

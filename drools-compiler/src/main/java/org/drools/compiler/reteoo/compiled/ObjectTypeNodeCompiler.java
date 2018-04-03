@@ -35,6 +35,7 @@ import org.drools.core.reteoo.compiled.CompiledNetwork;
 import org.drools.core.reteoo.compiled.DeclarationsHandler;
 import org.drools.core.reteoo.compiled.DelegateMethodsHandler;
 import org.drools.core.reteoo.compiled.HashedAlphasDeclaration;
+import org.drools.core.reteoo.compiled.ModifyHandler;
 import org.drools.core.reteoo.compiled.ObjectTypeNodeParser;
 import org.drools.core.reteoo.compiled.SetNodeReferenceHandler;
 import org.drools.core.util.IoUtils;
@@ -97,6 +98,9 @@ public class ObjectTypeNodeCompiler {
         // create assert method
         AssertHandler assertHandler = new AssertHandler(builder, className, hashedAlphaDeclarations.size() > 0);
         parser.accept(assertHandler);
+
+        ModifyHandler modifyHandler = new ModifyHandler(builder, className, hashedAlphaDeclarations.size() > 0);
+        parser.accept(modifyHandler);
 
         DelegateMethodsHandler delegateMethodsHandler = new DelegateMethodsHandler(builder);
         parser.accept(delegateMethodsHandler);
