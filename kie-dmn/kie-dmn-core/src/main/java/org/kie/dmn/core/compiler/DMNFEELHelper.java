@@ -43,6 +43,10 @@ public class DMNFEELHelper {
     private final FEELEventsListenerImpl listener;
     private final List<FEELProfile> feelProfiles = new ArrayList<>();
 
+    public DMNFEELHelper(List<FEELProfile> feelProfiles) {
+        this(ClassLoaderUtil.findDefaultClassLoader(), feelProfiles);
+    }
+
     public DMNFEELHelper(ClassLoader classLoader, List<FEELProfile> feelProfiles) {
         this.classLoader = classLoader;
         this.feelProfiles.addAll(feelProfiles);
