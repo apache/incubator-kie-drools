@@ -122,20 +122,15 @@ public class ModifyHandler extends AbstractCompilerHandler {
     @Override
     public void startHashedAlphaNodes(IndexableConstraint indexableConstraint) {
 
-        final ClassFieldReader hashedFieldReader = (ClassFieldReader) indexableConstraint.getFieldExtractor();
+        String localVariableName = "NodeId";
 
-        String attributeName = hashedFieldReader.getFieldName();
-        String localVariableName = attributeName + "NodeId";
-
-        // todo get accessor smarter because of booleans. Note that right now booleans wouldn't be hashed
-        String attributeGetterName = "get" + Character.toTitleCase(attributeName.charAt(0)) + attributeName.substring(1);
-
-        // get the attribute from the fact that we are switching over
         builder.append("Integer ").append(localVariableName);
         // todo we are casting to Integer because generics aren't supported
-        builder.append(" = (Integer)").append(getVariableName(hashedFieldReader.getFieldName())).append(".get(").
-                append(LOCAL_FACT_VAR_NAME).append(".").append(attributeGetterName)
-                .append("());").append(NEWLINE);
+        builder.append(" = (Integer)").append(getVariableName(""))
+                .append(".get(")
+                .append("readAccessor.getValue(")
+                .append(LOCAL_FACT_VAR_NAME).append(")")
+                .append(");").append(NEWLINE);
 
         // ensure that the value is present in the node map
         builder.append("if(").append(localVariableName).append(" != null) {").append(NEWLINE);
