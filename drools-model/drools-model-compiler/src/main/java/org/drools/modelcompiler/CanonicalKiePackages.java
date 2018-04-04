@@ -35,4 +35,8 @@ public class CanonicalKiePackages {
     public KiePackage getKiePackage( String pkgName ) {
         return packages.get(pkgName);
     }
+
+    public void addKiePackage( KiePackage kiePackage ) {
+        packages.put( kiePackage.getName(), kiePackage );
+    }
 }

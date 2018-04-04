@@ -9,7 +9,6 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.drools.compiler.lang.descr.RuleDescr;
-import org.drools.core.util.ClassUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.Modifier;
@@ -35,6 +34,9 @@ import org.drools.modelcompiler.consequence.DroolsImpl;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
+
+import static org.drools.core.util.ClassUtils.getter2property;
+import static org.drools.core.util.ClassUtils.setter2property;
 import static org.drools.javaparser.JavaParser.parseExpression;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findAllChildrenRecursive;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.hasScope;
@@ -267,7 +269,7 @@ public class Consequence {
 
                 methodCallExprs.subList(0, methodCallExprs.indexOf(updateExpr)).stream()
                         .filter(mce -> mce.getScope().isPresent() && hasScope(mce, updatedVar))
-                        .map(mce -> ClassUtils.setter2property(mce.getNameAsString()))
+                        .map(this::methodToProperty)
                         .filter(Objects::nonNull)
                         .distinct()
                         .forEach(s -> bitMaskCreation.addArgument(new StringLiteralExpr(s)));
@@ -281,6 +283,18 @@ public class Consequence {
         }
 
         return requireDrools.get();
+    }
+
+    private String methodToProperty(MethodCallExpr mce) {
+        String propertyName = setter2property(mce.getNameAsString());
+
+        if (propertyName == null && mce.getArguments().isEmpty() && mce.getParentNode().filter( parent -> parent instanceof MethodCallExpr ).isPresent()) {
+            propertyName = getter2property(mce.getNameAsString());
+        }
+
+        // TODO also register additional property in case the invoked method is annotated with @Modifies
+
+        return propertyName;
     }
 
     private static boolean isDroolsMethod(MethodCallExpr mce) {
