@@ -49,7 +49,8 @@ public class MiningmodelTest extends DroolsAbstractPMMLTest {
 	private static final String source3 = FILE_BASE+"filebased";
 	private static final String source4 = FILE_BASE+"test_mining_model_selectall.pmml";
 	private static final String source5 = FILE_BASE+"test_mining_model_modelchain.pmml";
-	private static final String WEIGHTED_AVG = FILE_BASE+"test_mining_model_avg.pmml";
+	private static final String WEIGHTED_AVG = FILE_BASE+"test_mining_model_weighted_avg.pmml";
+	private static final String SUMMED = FILE_BASE+"test_mining_model_summed.pmml";
 	private static final String RESOURCES_TEST_ROOT = "src/test/resources/";
 
 	@Test
@@ -393,12 +394,51 @@ public class MiningmodelTest extends DroolsAbstractPMMLTest {
 		resultData.insert(resultHolder);
 		
 		executor.run(ruleUnitClass);
-		((InternalRuleUnitExecutor)executor).getSessionObjects().forEach(o -> { System.out.println(o);});
-		resultHolder.getResultVariables().keySet().forEach(s -> {System.out.println(s);});
 		
 		Double sepal_length = resultHolder.getResultValue("WeightedAvg_Sepal_length", "value",Double.class).orElse(null);
 		assertEquals(7.1833385,sepal_length,1e-6);
 		Double weight = resultHolder.getResultValue("WeightedAvg_Sepal_length", "weight", Double.class).orElse(null);
 		assertEquals(1.00, weight, 1e-2);
+	}
+	
+	
+	
+	@Test
+	public void testSum() {
+		RuleUnitExecutor executor = createExecutor(SUMMED);
+		assertNotNull(executor);
+		PMMLRequestData request = new PMMLRequestData("1234","SampleMiningModelSum");
+		request.addRequestParam("petal_length", 6.45);
+		request.addRequestParam("petal_width", 1.75);
+		request.addRequestParam("sepal_width", 1.23);
+		PMML4Result resultHolder = new PMML4Result();
+		DataSource<SegmentExecution> childModelSegments = executor.newDataSource("childModelSegments");
+		DataSource<? extends AbstractPMMLData> miningModelPojo = executor.newDataSource("miningModelPojo");
+		
+
+		List<String> possiblePackages = this.calculatePossiblePackageNames("SampleMiningModelSum");
+		Class<? extends RuleUnit> ruleUnitClass = this.getStartingRuleUnit("Start Mining - SampleMiningModelSum",(InternalKnowledgeBase)kbase,possiblePackages);
+		
+		assertNotNull(ruleUnitClass);
+		
+		data.insert(request);
+		resultData.insert(resultHolder);
+		
+		executor.run(ruleUnitClass);
+		
+		Double sepal_length = resultHolder.getResultValue("Sum_Sepal_length", "value",Double.class).orElse(null);
+		Double total_length = 0.0;
+		for (Iterator<PMML4Result> iter = resultData.iterator(); iter.hasNext();) {
+			PMML4Result res = iter.next();
+			if (res.getSegmentationId() != null) {
+				Double segSepalLength = res.getResultValue("Sepal_length", "value", Double.class).orElse(null);
+				if (segSepalLength != null) {
+					System.out.printf("Segment: %s   Sepal length: %f%n", res.getSegmentId(), segSepalLength);
+					total_length += segSepalLength;
+				}
+			}
+		}
+		assertEquals(total_length, sepal_length, 1e-6);
+		System.out.println(sepal_length);
 	}
 }
