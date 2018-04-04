@@ -43,6 +43,7 @@ import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.common.ResourceProvider;
+import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.util.Drools;
 import org.drools.core.util.IoUtils;
@@ -57,6 +58,7 @@ import org.kie.api.builder.Results;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.definition.KiePackage;
+import org.kie.api.definition.process.Process;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.internal.builder.ChangeType;
@@ -122,7 +124,30 @@ public class CanonicalKieModule implements InternalKieModule {
     }
 
     private CanonicalKiePackages createKiePackages( KieBaseModelImpl kBaseModel, KieBaseConfiguration conf ) {
-        return new KiePackagesBuilder(conf, getModelForKBase(kBaseModel), this.moduleClassLoader).build();
+        CanonicalKiePackages canonicalKiePkgs = new KiePackagesBuilder(conf, getModelForKBase(kBaseModel), this.moduleClassLoader).build();
+        return mergeProcesses( kBaseModel, canonicalKiePkgs );
+    }
+
+    private CanonicalKiePackages mergeProcesses( KieBaseModelImpl kBaseModel, CanonicalKiePackages canonicalKiePkgs ) {
+        Collection<KiePackage> pkgs = internalKieModule.getKnowledgePackagesForKieBase(kBaseModel.getName());
+        if (pkgs == null) {
+            // TODO null if the internalKieModule is a ZipKieModule. Is it necessary to get and build the processes from there in this case?
+            return canonicalKiePkgs;
+        }
+        for ( KiePackage pkg : pkgs ) {
+            Collection<Process> processes = pkg.getProcesses();
+            if (!processes.isEmpty()) {
+                InternalKnowledgePackage canonicalKiePkg = ( InternalKnowledgePackage ) canonicalKiePkgs.getKiePackage( pkg.getName() );
+                if (canonicalKiePkg == null) {
+                    canonicalKiePkgs.addKiePackage( pkg );
+                } else {
+                    for (Process process : processes) {
+                        canonicalKiePkg.addProcess( process );
+                    }
+                }
+            }
+        }
+        return canonicalKiePkgs;
     }
 
     public CanonicalKiePackages getKiePackages( KieBaseModelImpl kBaseModel ) {

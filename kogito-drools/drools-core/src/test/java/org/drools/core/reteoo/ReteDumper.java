@@ -18,6 +18,8 @@ package org.drools.core.reteoo;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import org.drools.core.common.BaseNode;
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -27,31 +29,63 @@ import org.kie.api.runtime.KieSession;
 
 public class ReteDumper {
 
-    private ReteDumper() { }
+    private Predicate<BaseNode> nodesFilter;
+
+    private ReteDumper() {
+        this(node -> true);
+    }
+
+    public ReteDumper(Predicate<BaseNode> nodesFilter) {
+        this.nodesFilter = nodesFilter;
+    }
+
+    public ReteDumper(String ruleName) {
+        this( node -> Stream.of( node.getAssociatedRules() ).anyMatch( rule -> rule.getName().equals( ruleName ) ) );
+    }
 
     public static void dumpRete(KieBase kbase ) {
-        dumpRete((InternalKnowledgeBase) kbase);
+        new ReteDumper().dump((InternalKnowledgeBase) kbase);
     }
 
     public static void dumpRete(KieRuntime session ) {
-        dumpRete((InternalKnowledgeBase)session.getKieBase());
+        new ReteDumper().dump((InternalKnowledgeBase)session.getKieBase());
     }
 
     public static void dumpRete(KieSession session) {
-        dumpRete((InternalKnowledgeBase)session.getKieBase());
+        new ReteDumper().dump((InternalKnowledgeBase)session.getKieBase());
     }
 
     public static void dumpRete(InternalKnowledgeBase kBase) {
-        dumpRete(kBase.getRete());
+        new ReteDumper().dump(kBase.getRete());
     }
 
     public static void dumpRete(Rete rete) {
+        new ReteDumper().dump(rete);
+    }
+
+    public void dump(KieBase kbase ) {
+        dump((InternalKnowledgeBase) kbase);
+    }
+
+    public void dump(KieRuntime session ) {
+        dump((InternalKnowledgeBase)session.getKieBase());
+    }
+
+    public void dump(KieSession session) {
+        dump((InternalKnowledgeBase)session.getKieBase());
+    }
+
+    public void dump(InternalKnowledgeBase kBase) {
+        dump(kBase.getRete());
+    }
+
+    public void dump(Rete rete) {
         for (EntryPointNode entryPointNode : rete.getEntryPointNodes().values()) {
             dumpNode( entryPointNode, "", new HashSet<BaseNode>() );
         }
     }
 
-    private static void dumpNode(BaseNode node, String ident, Set<BaseNode> visitedNodes ) {
+    private void dumpNode(BaseNode node, String ident, Set<BaseNode> visitedNodes ) {
         System.out.print(ident + node + " on " + node.getPartitionId());
         try {
             Object declaredMask = node.getClass().getMethod("getDeclaredMask").invoke(node);
@@ -82,7 +116,10 @@ public class ReteDumper {
         if (sinks != null) {
             for (Sink sink : sinks) {
                 if (sink instanceof BaseNode) {
-                    dumpNode((BaseNode)sink, ident + "    ", visitedNodes);
+                    BaseNode sinkNode = ( BaseNode ) sink;
+                    if ( nodesFilter.test( sinkNode ) ) {
+                        dumpNode( sinkNode, ident + "    ", visitedNodes );
+                    }
                 }
             }
         }
