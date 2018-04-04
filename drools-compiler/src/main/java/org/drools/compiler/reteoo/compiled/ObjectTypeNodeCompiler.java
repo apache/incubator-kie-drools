@@ -38,6 +38,8 @@ import org.drools.core.reteoo.compiled.HashedAlphasDeclaration;
 import org.drools.core.reteoo.compiled.ModifyHandler;
 import org.drools.core.reteoo.compiled.ObjectTypeNodeParser;
 import org.drools.core.reteoo.compiled.SetNodeReferenceHandler;
+import org.drools.core.rule.IndexableConstraint;
+import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.util.IoUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,7 +79,17 @@ public class ObjectTypeNodeCompiler {
         generatedClassSimpleName = "Compiled" + classObjectType.getClassName().replace('.', '_') + "Network";
     }
 
-    private String generateSource() {
+    public static class SourceGenerated {
+        public final String source;
+        public final IndexableConstraint indexableConstraint;
+
+        public SourceGenerated(String source, IndexableConstraint indexableConstraint) {
+            this.source = source;
+            this.indexableConstraint = indexableConstraint;
+        }
+    }
+
+    private SourceGenerated generateSource() {
         createClassDeclaration();
 
         ObjectTypeNodeParser parser = new ObjectTypeNodeParser(objectTypeNode);
@@ -108,7 +120,7 @@ public class ObjectTypeNodeCompiler {
         // end of class
         builder.append("}").append(NEWLINE);
 
-        return builder.toString();
+        return new SourceGenerated(builder.toString(), parser.getIndexableConstraint());
     }
 
     /**
@@ -129,8 +141,10 @@ public class ObjectTypeNodeCompiler {
      *                                maps for the generate class
      */
     private void createConstructor(Collection<HashedAlphasDeclaration> hashedAlphaDeclarations) {
-        builder.append("public ").append(generatedClassSimpleName).append("() {").append(NEWLINE);
+        builder.append("public ").append(generatedClassSimpleName).append("(org.drools.core.spi.InternalReadAccessor readAccessor) {").append(NEWLINE);
 
+
+        builder.append("this.readAccessor = readAccessor;\n");
         // for each hashed alpha, we need to fill in the map member variable with the hashed values to node Ids
         for (HashedAlphasDeclaration declaration : hashedAlphaDeclarations) {
             String mapVariableName = declaration.getVariableName();
@@ -211,12 +225,12 @@ public class ObjectTypeNodeCompiler {
             pkgReg = kBuilder.getPackageRegistry(packageName);
         }
 
-        String source = compiler.generateSource();
+        SourceGenerated source = compiler.generateSource();
 
         logger.debug("Generated alpha node compiled network source:\n" + source);
 
         MemoryFileSystem mfs = new MemoryFileSystem();
-        mfs.write(compiler.getSourceName(), source.getBytes(IoUtils.UTF8_CHARSET));
+        mfs.write(compiler.getSourceName(), source.source.getBytes(IoUtils.UTF8_CHARSET));
 
         MemoryFileSystem trg = new MemoryFileSystem();
         ProjectClassLoader rootClassLoader = (ProjectClassLoader) kBuilder.getRootClassLoader();
@@ -231,8 +245,8 @@ public class ObjectTypeNodeCompiler {
         CompiledNetwork network;
         try {
             final Class<?> aClass = Class.forName(compiler.getName(), true, rootClassLoader);
-            network = (CompiledNetwork) aClass.newInstance();
-        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
+            network = (CompiledNetwork) aClass.getConstructor(InternalReadAccessor.class).newInstance(source.indexableConstraint.getFieldExtractor());
+        } catch (Exception e) {
             throw new RuntimeException("This is a bug. Please contact the development team", e);
         }
 

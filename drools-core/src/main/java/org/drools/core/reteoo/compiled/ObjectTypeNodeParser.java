@@ -53,6 +53,7 @@ public class ObjectTypeNodeParser {
      * OTN we are parsing/traversing
      */
     private final ObjectTypeNode objectTypeNode;
+    private IndexableConstraint indexableConstraint;
 
     /**
      * Creates a new parser for the specified ObjectTypeNode
@@ -78,11 +79,12 @@ public class ObjectTypeNodeParser {
         ObjectSinkPropagator propagator = objectTypeNode.getObjectSinkPropagator();
 
         handler.startObjectTypeNode(objectTypeNode);
-        traversePropagator(propagator, handler);
+        indexableConstraint = traversePropagator(propagator, handler);
         handler.endObjectTypeNode(objectTypeNode);
     }
 
-    private void traversePropagator(ObjectSinkPropagator propagator, NetworkHandler handler) {
+    private IndexableConstraint traversePropagator(ObjectSinkPropagator propagator, NetworkHandler handler) {
+        IndexableConstraint indexableConstraint = null;
         if (propagator instanceof SingleObjectSinkAdapter) {
             // we know there is only a single child sink for this propagator
             ObjectSink sink = propagator.getSinks()[0];
@@ -93,8 +95,9 @@ public class ObjectTypeNodeParser {
 
             traverseSinkLisk(composite.getHashableSinks(), handler);
             traverseSinkLisk(composite.getOthers(), handler);
-            traverseHashedAlphaNodes(composite.getHashedSinkMap(), handler);
+            indexableConstraint = traverseHashedAlphaNodes(composite.getHashedSinkMap(), handler);
         }
+        return indexableConstraint;
     }
 
     private void traverseSinkLisk(ObjectSinkNodeList sinks, NetworkHandler handler) {
@@ -106,10 +109,11 @@ public class ObjectTypeNodeParser {
         }
     }
 
-    private void traverseHashedAlphaNodes(ObjectHashMap hashedAlphaNodes, NetworkHandler handler) {
+    private IndexableConstraint traverseHashedAlphaNodes(ObjectHashMap hashedAlphaNodes, NetworkHandler handler) {
+        IndexableConstraint hashedFieldReader = null;
         if (hashedAlphaNodes != null && hashedAlphaNodes.size() > 0) {
             AlphaNode firstAlpha = getFirstAlphaNode(hashedAlphaNodes);
-            IndexableConstraint hashedFieldReader = getClassFieldReaderForHashedAlpha(firstAlpha);
+            hashedFieldReader = getClassFieldReaderForHashedAlpha(firstAlpha);
 
             // start the hashed alphas
             handler.startHashedAlphaNodes(hashedFieldReader);
@@ -129,6 +133,7 @@ public class ObjectTypeNodeParser {
             // end of the hashed alphas
             handler.endHashedAlphaNodes(hashedFieldReader);
         }
+        return hashedFieldReader;
     }
 
     private void traverseSink(ObjectSink sink, NetworkHandler handler) {
@@ -195,5 +200,9 @@ public class ObjectTypeNodeParser {
         // we need to get the first alpha in the map to get the attribute name that be use for the prefix of the
         // generated variable name
         return (IndexableConstraint) fieldConstraint;
+    }
+
+    public IndexableConstraint getIndexableConstraint() {
+        return indexableConstraint;
     }
 }

@@ -129,7 +129,17 @@ public class AssertHandler extends AbstractCompilerHandler {
         // todo we are casting to Integer because generics aren't supported
         builder.append(" = (Integer)").append(getVariableName(hashedFieldReader.getFieldName())).append(".get(").
                 append(LOCAL_FACT_VAR_NAME).append(".").append(attributeGetterName)
-                .append("());").append(NEWLINE);
+                .append("());").append(NEWLINE);      // get the attribute from the fact that we are switching over
+
+
+
+        builder.append("Integer ").append(localVariableName + "2");
+        // todo we are casting to Integer because generics aren't supported
+        builder.append(" = (Integer)").append(getVariableName(hashedFieldReader.getFieldName()))
+                .append(".get(")
+                .append("readAccessor.getValue(")
+                .append(LOCAL_FACT_VAR_NAME).append(")")
+                .append(");").append(NEWLINE);
 
         // ensure that the value is present in the node map
         builder.append("if(").append(localVariableName).append(" != null) {").append(NEWLINE);
