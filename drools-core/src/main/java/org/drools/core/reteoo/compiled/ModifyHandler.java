@@ -133,7 +133,7 @@ public class ModifyHandler extends AbstractCompilerHandler {
         // get the attribute from the fact that we are switching over
         builder.append("Integer ").append(localVariableName);
         // todo we are casting to Integer because generics aren't supported
-        builder.append(" = (Integer)").append(getVariableName(hashedFieldReader)).append(".get(").
+        builder.append(" = (Integer)").append(getVariableName(hashedFieldReader.getFieldName())).append(".get(").
                 append(LOCAL_FACT_VAR_NAME).append(".").append(attributeGetterName)
                 .append("());").append(NEWLINE);
 

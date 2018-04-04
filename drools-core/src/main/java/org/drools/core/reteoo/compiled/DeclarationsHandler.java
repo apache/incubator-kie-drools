@@ -85,14 +85,13 @@ public class DeclarationsHandler extends AbstractCompilerHandler {
         return PRIVATE_MODIFIER + " " + declarationType.getName() + " " + variableName + "; // " + comment;
     }
 
-    private String getVariableDeclaration(ClassFieldReader fieldReader) {
+    private String getVariableDeclaration(String varName) {
         Class<?> declarationType = Map.class;
         Class<?> createType = HashMap.class;
-        String variableName = getVariableName(fieldReader);
 
         // todo JANINO doesn't support generics
         // return "private java.util.Map<Object,Integer> " + variableName + " = new java.util.HashMap<Object,Integer>();";
-        return PRIVATE_MODIFIER + " " + declarationType.getName() + " " + variableName
+        return PRIVATE_MODIFIER + " " + declarationType.getName() + " " + varName
                 + " = new " + createType.getName() + "();";
     }
 
@@ -122,13 +121,15 @@ public class DeclarationsHandler extends AbstractCompilerHandler {
 
         // we create a new hashed alpha that will be used to keep track of the hashes values to node ID for each
         // class field reader.
-        currentHashedAlpha = new HashedAlphasDeclaration(getVariableName(hashedFieldReader),
+        currentHashedAlpha = new HashedAlphasDeclaration(getVariableName(hashedFieldReader.getFieldName()),
                 hashedFieldReader.getValueType());
 
         // add the new declaration
         hashedAlphaDeclarations.add(currentHashedAlpha);
 
-        builder.append(getVariableDeclaration(hashedFieldReader)).append(NEWLINE);
+        final String variableName = getVariableName(hashedFieldReader.getFieldName());
+        final String alphaMap = getVariableDeclaration(variableName);
+        builder.append(alphaMap).append(NEWLINE);
     }
 
     @Override
