@@ -51,8 +51,8 @@ public class ImportDMNResolverUtilTest {
     }
 
     @Test
-    public void testNSnoModelNameDefaultWithAlias() {
-        Import i = makeImport("ns1", "m1", null);
+    public void testNSnoModelNameWithAlias() {
+        Import i = makeImport("ns1", "mymodel", null);
         List<QName> available = Arrays.asList(new QName("ns1", "m1"),
                                               new QName("ns2", "m2"),
                                               new QName("ns3", "m3"));
@@ -72,13 +72,14 @@ public class ImportDMNResolverUtilTest {
     }
 
     @Test
-    public void testNSnoModelNameDefaultWithAliasButUnexistent() {
+    public void testNSnoModelNameDefaultWithAlias2() {
         Import i = makeImport("ns1", "boh", null);
         List<QName> available = Arrays.asList(new QName("ns1", "m1"),
                                               new QName("ns2", "m2"),
                                               new QName("ns3", "m3"));
         Either<String, QName> result = ImportDMNResolverUtil.resolveImportDMN(i, available, Function.identity());
-        assertTrue(result.isLeft());
+        assertTrue(result.isRight());
+        assertEquals(new QName("ns1", "m1"), result.getOrElse(null));
     }
 
     @Test
@@ -93,14 +94,13 @@ public class ImportDMNResolverUtilTest {
     }
 
     @Test
-    public void testLocateInNSdefaultwithAlias() {
+    public void testLocateInNSnoModelNameWithAlias() {
         Import i = makeImport("nsA", "m1", null);
         List<QName> available = Arrays.asList(new QName("nsA", "m1"),
                                               new QName("nsA", "m2"),
                                               new QName("nsB", "m3"));
         Either<String, QName> result = ImportDMNResolverUtil.resolveImportDMN(i, available, Function.identity());
-        assertTrue(result.isRight());
-        assertEquals(new QName("nsA", "m1"), result.getOrElse(null));
+        assertTrue(result.isLeft());
     }
 
     @Test
@@ -125,7 +125,7 @@ public class ImportDMNResolverUtilTest {
     }
 
     @Test
-    public void testLocateInNSdefaultWithAliasunexistent() {
+    public void testLocateInNSnoModelNameWithAlias2() {
         Import i = makeImport("nsA", "boh", null);
         List<QName> available = Arrays.asList(new QName("nsA", "m1"),
                                               new QName("nsA", "m2"),
@@ -136,6 +136,7 @@ public class ImportDMNResolverUtilTest {
 
     @Test
     public void testLocateInNSAliasedBadScenario() {
+        // this is a BAD scenario are in namespace `nsA` there are 2 models with the same name.
         Import i = makeImport("nsA", "aliased", "mA");
         List<QName> available = Arrays.asList(new QName("nsA", "mA"),
                                               new QName("nsA", "mA"),
