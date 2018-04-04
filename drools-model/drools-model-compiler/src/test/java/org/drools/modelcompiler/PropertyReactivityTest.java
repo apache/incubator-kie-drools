@@ -16,6 +16,7 @@
 
 package org.drools.modelcompiler;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -233,5 +234,36 @@ public class PropertyReactivityTest extends BaseModelTest {
         public int getQuantity() {
             return quantity;
         }
+    }
+
+    public static class Bean {
+        private final List<String> firings = new ArrayList<>();
+
+        public List<String> getFirings() {
+            return firings;
+        }
+
+        public String getValue() {
+            return "Bean";
+        }
+
+        public void setValue(String value) {}
+    }
+
+    @Test(timeout = 5000L)
+    public void testPRWithAddOnList() {
+        final String str =
+                "import " + Bean.class.getCanonicalName() + "\n" +
+                "rule R when\n" +
+                "    $b : Bean( firings not contains \"R\" )\n" +
+                "then\n" +
+                "    $b.getFirings().add(\"R\");\n" +
+                "    update($b);\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( new Bean() );
+        assertEquals( 1, ksession.fireAllRules() );
     }
 }

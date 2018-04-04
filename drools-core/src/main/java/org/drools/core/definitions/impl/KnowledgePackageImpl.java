@@ -172,6 +172,9 @@ public class KnowledgePackageImpl
     }
 
     public Collection<Process> getProcesses() {
+        if (getRuleFlows().isEmpty()) {
+            return Collections.emptyList();
+        }
         Collection<org.kie.api.definition.process.Process> processes = getRuleFlows().values();
         List<Process> list = new ArrayList<Process>(processes.size());
         for (org.kie.api.definition.process.Process process : processes) {

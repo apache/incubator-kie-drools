@@ -34,6 +34,7 @@ import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.rule.TypeDeclaration;
+import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 
 import static org.drools.modelcompiler.builder.generator.ModelGenerator.generateModel;
 import static org.drools.modelcompiler.builder.generator.POJOGenerator.compileType;
@@ -41,6 +42,8 @@ import static org.drools.modelcompiler.builder.generator.POJOGenerator.generateP
 import static org.drools.modelcompiler.builder.generator.POJOGenerator.registerType;
 
 public class ModelBuilderImpl extends KnowledgeBuilderImpl {
+
+    private final DRLIdGenerator exprIdGenerator = new DRLIdGenerator();
 
     private final Map<String, PackageModel> packageModels = new HashMap<>();
     private boolean isPattern = false;
@@ -134,7 +137,7 @@ public class ModelBuilderImpl extends KnowledgeBuilderImpl {
         String pkgName = pkg.getName();
         PackageModel model = packageModels.computeIfAbsent(pkgName, s -> {
             final DialectCompiletimeRegistry dialectCompiletimeRegistry = pkgRegistry.getDialectCompiletimeRegistry();
-            return new PackageModel(pkgName, this.getBuilderConfiguration(), isPattern, dialectCompiletimeRegistry);
+            return new PackageModel(pkgName, this.getBuilderConfiguration(), isPattern, dialectCompiletimeRegistry, exprIdGenerator);
         });
         model.addImports(pkg.getTypeResolver().getImports());
         generatePOJO(pkg, packageDescr, model);
@@ -147,7 +150,7 @@ public class ModelBuilderImpl extends KnowledgeBuilderImpl {
         String pkgName = pkg.getName();
         PackageModel model = packageModels.computeIfAbsent(pkgName, s -> {
             final DialectCompiletimeRegistry dialectCompiletimeRegistry = pkgRegistry.getDialectCompiletimeRegistry();
-            return new PackageModel(pkgName, this.getBuilderConfiguration(), isPattern, dialectCompiletimeRegistry);
+            return new PackageModel(pkgName, this.getBuilderConfiguration(), isPattern, dialectCompiletimeRegistry, exprIdGenerator);
         });
         generateModel(this, pkg, packageDescr, model, isPattern);
     }

@@ -298,6 +298,46 @@ public class CompilerTest extends BaseModelTest {
     }
 
     @Test
+    public void testShareAlphaInDifferentRules() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "rule R1 when\n" +
+                "  $p1 : Person(name == \"Edson\")\n" +
+                "then\n" +
+                "end\n" +
+                "rule R2 when\n" +
+                "  $p1 : Person(name == \"Edson\")\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        assertEquals( 1, ReteDumper.dumpRete( ksession ).stream().filter( AlphaNode.class::isInstance ).count() );
+    }
+
+    @Test
+    public void testShareAlphaInDifferentPackages() {
+        String str1 =
+                "package org.drools.a\n" +
+                "import " + Person.class.getCanonicalName() + ";" +
+                "rule R1 when\n" +
+                "  $p1 : Person(name == \"Edson\")\n" +
+                "then\n" +
+                "end\n";
+        String str2 =
+                "package org.drools.b\n" +
+                "import " + Person.class.getCanonicalName() + ";" +
+                "rule R2 when\n" +
+                "  $p1 : Person(name == \"Edson\")\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str1, str2 );
+
+        assertEquals( 1, ReteDumper.dumpRete( ksession ).stream().filter( AlphaNode.class::isInstance ).count() );
+    }
+
+    @Test
     public void test3Patterns() {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
