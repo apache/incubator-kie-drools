@@ -227,7 +227,7 @@ public class ObjectTypeNodeCompiler {
 
         SourceGenerated source = compiler.generateSource();
 
-        logger.debug("Generated alpha node compiled network source:\n" + source);
+        logger.debug("Generated alpha node compiled network source:\n" + source.source);
 
         MemoryFileSystem mfs = new MemoryFileSystem();
         mfs.write(compiler.getSourceName(), source.source.getBytes(IoUtils.UTF8_CHARSET));

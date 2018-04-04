@@ -121,19 +121,8 @@ public class AssertHandler extends AbstractCompilerHandler {
         String attributeName = hashedFieldReader.getFieldName();
         String localVariableName = attributeName + "NodeId";
 
-        // todo get accessor smarter because of booleans. Note that right now booleans wouldn't be hashed
-        String attributeGetterName = "get" + Character.toTitleCase(attributeName.charAt(0)) + attributeName.substring(1);
 
-        // get the attribute from the fact that we are switching over
         builder.append("Integer ").append(localVariableName);
-        // todo we are casting to Integer because generics aren't supported
-        builder.append(" = (Integer)").append(getVariableName(hashedFieldReader.getFieldName())).append(".get(").
-                append(LOCAL_FACT_VAR_NAME).append(".").append(attributeGetterName)
-                .append("());").append(NEWLINE);      // get the attribute from the fact that we are switching over
-
-
-
-        builder.append("Integer ").append(localVariableName + "2");
         // todo we are casting to Integer because generics aren't supported
         builder.append(" = (Integer)").append(getVariableName(hashedFieldReader.getFieldName()))
                 .append(".get(")
