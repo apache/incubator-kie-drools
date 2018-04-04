@@ -61,7 +61,7 @@ abstract class AbstractCompilerHandler extends NetworkHandlerAdaptor {
     }
 
     protected String getVariableName(String fieldName) {
-        return fieldName + MAP_VARIABLE_NAME_SUFFIX;
+        return MAP_VARIABLE_NAME_SUFFIX;
     }
 
     /**
