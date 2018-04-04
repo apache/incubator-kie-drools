@@ -22,6 +22,7 @@ import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.Sink;
 import org.drools.core.rule.ContextEntry;
+import org.drools.core.rule.IndexableConstraint;
 
 import java.util.*;
 
@@ -116,7 +117,9 @@ public class DeclarationsHandler extends AbstractCompilerHandler {
     }
 
     @Override
-    public void startHashedAlphaNodes(ClassFieldReader hashedFieldReader) {
+    public void startHashedAlphaNodes(IndexableConstraint indexableConstraint) {
+        final ClassFieldReader hashedFieldReader = (ClassFieldReader) indexableConstraint.getFieldExtractor();
+
         // we create a new hashed alpha that will be used to keep track of the hashes values to node ID for each
         // class field reader.
         currentHashedAlpha = new HashedAlphasDeclaration(getVariableName(hashedFieldReader),

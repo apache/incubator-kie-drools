@@ -17,6 +17,7 @@
 package org.drools.core.reteoo.compiled;
 
 import org.drools.core.base.ClassFieldReader;
+import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.CompositeObjectSinkAdapter;
@@ -108,7 +109,7 @@ public class ObjectTypeNodeParser {
     private void traverseHashedAlphaNodes(ObjectHashMap hashedAlphaNodes, NetworkHandler handler) {
         if (hashedAlphaNodes != null && hashedAlphaNodes.size() > 0) {
             AlphaNode firstAlpha = getFirstAlphaNode(hashedAlphaNodes);
-            ClassFieldReader hashedFieldReader = getClassFieldReaderForHashedAlpha(firstAlpha);
+            IndexableConstraint hashedFieldReader = getClassFieldReaderForHashedAlpha(firstAlpha);
 
             // start the hashed alphas
             handler.startHashedAlphaNodes(hashedFieldReader);
@@ -185,14 +186,14 @@ public class ObjectTypeNodeParser {
      * @throws IllegalArgumentException thrown if the AlphaNode's {@link org.kie.spi.AlphaNodeFieldConstraint} is not a
      *                                  {@link MvelConstraint}.
      */
-    private ClassFieldReader getClassFieldReaderForHashedAlpha(final AlphaNode alphaNode) throws IllegalArgumentException {
+    private IndexableConstraint getClassFieldReaderForHashedAlpha(final AlphaNode alphaNode) throws IllegalArgumentException {
         final AlphaNodeFieldConstraint fieldConstraint = alphaNode.getConstraint();
 
-        if (!(fieldConstraint instanceof MvelConstraint)) {
-            throw new IllegalArgumentException("Only support MvelConstraint hashed AlphaNodes, not " + fieldConstraint.getClass());
+        if (!(fieldConstraint instanceof IndexableConstraint)) {
+            throw new IllegalArgumentException("Only support IndexableConstraint hashed AlphaNodes, not " + fieldConstraint.getClass());
         }
         // we need to get the first alpha in the map to get the attribute name that be use for the prefix of the
         // generated variable name
-        return (ClassFieldReader) ((MvelConstraint)fieldConstraint).getFieldExtractor();
+        return (IndexableConstraint) fieldConstraint;
     }
 }

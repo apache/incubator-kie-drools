@@ -23,6 +23,7 @@ import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.spi.PropagationContext;
 
 /**
@@ -113,7 +114,10 @@ public class AssertHandler extends AbstractCompilerHandler {
     }
 
     @Override
-    public void startHashedAlphaNodes(ClassFieldReader hashedFieldReader) {
+    public void startHashedAlphaNodes(IndexableConstraint indexableConstraint) {
+
+        final ClassFieldReader hashedFieldReader = (ClassFieldReader) indexableConstraint.getFieldExtractor();
+
         String attributeName = hashedFieldReader.getFieldName();
         String localVariableName = attributeName + "NodeId";
 
@@ -144,7 +148,7 @@ public class AssertHandler extends AbstractCompilerHandler {
     }
 
     @Override
-    public void endHashedAlphaNodes(ClassFieldReader hashedFieldReader) {
+    public void endHashedAlphaNodes(IndexableConstraint indexableConstraint) {
         // close switch statement
         builder.append("}").append(NEWLINE);
         // and if statement for ensuring non-null

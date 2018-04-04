@@ -21,6 +21,7 @@ import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.rule.IndexableConstraint;
 
 /**
  * Receive notification of the logical parts of the RETE-OO network.
@@ -83,9 +84,9 @@ public interface NetworkHandler {
      * @see #endHashedAlphaNodes
      * @see #startHashedAlphaNode
      */
-    void startHashedAlphaNodes(ClassFieldReader hashedFieldReader);
+    void startHashedAlphaNodes(IndexableConstraint hashedFieldReader);
 
-    void endHashedAlphaNodes(ClassFieldReader hashedFieldReader);
+    void endHashedAlphaNodes(IndexableConstraint hashedFieldReader);
 
     void startHashedAlphaNode(AlphaNode hashedAlpha, Object hashedValue);
 
