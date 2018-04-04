@@ -7,7 +7,7 @@
 	xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
 	xmlns:drools="http://www.jboss.org/drools"
 	xmlns="http://www.jboss.org/drools"
-	xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://www.omg.org/spec/BPMN/20100501/BPMN20.xsd
+	xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL https://www.omg.org/spec/BPMN/20100501/BPMN20.xsd
                     http://www.jboss.org/drools drools.xsd 
                     http://www.bpsim.org/schemas/1.0 bpsim.xsd" 
 	id="Definition"
