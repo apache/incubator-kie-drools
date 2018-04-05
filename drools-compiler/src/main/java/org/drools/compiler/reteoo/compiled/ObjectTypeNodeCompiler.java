@@ -130,6 +130,8 @@ public class ObjectTypeNodeCompiler {
         builder.append("package ").append(PACKAGE_NAME).append(";").append(NEWLINE);
         builder.append("public class ").append(generatedClassSimpleName).append(" extends ").
                 append(CompiledNetwork.class.getName()).append("{ ").append(NEWLINE);
+
+        builder.append("org.drools.core.spi.InternalReadAccessor readAccessor;\n");
     }
 
     /**
@@ -245,7 +247,8 @@ public class ObjectTypeNodeCompiler {
         CompiledNetwork network;
         try {
             final Class<?> aClass = Class.forName(compiler.getName(), true, rootClassLoader);
-            network = (CompiledNetwork) aClass.getConstructor(InternalReadAccessor.class).newInstance(source.indexableConstraint.getFieldExtractor());
+            final IndexableConstraint indexableConstraint = source.indexableConstraint;
+            network = (CompiledNetwork) aClass.getConstructor(InternalReadAccessor.class).newInstance(indexableConstraint != null ? indexableConstraint.getFieldExtractor(): null);
         } catch (Exception e) {
             throw new RuntimeException("This is a bug. Please contact the development team", e);
         }

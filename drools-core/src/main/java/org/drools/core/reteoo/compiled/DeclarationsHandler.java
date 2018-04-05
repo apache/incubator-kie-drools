@@ -130,8 +130,6 @@ public class DeclarationsHandler extends AbstractCompilerHandler {
 
         final String alphaMap = getVariableDeclaration(variableName);
         builder.append(alphaMap).append(NEWLINE);
-
-        builder.append("org.drools.core.spi.InternalReadAccessor readAccessor;\n");
     }
 
     @Override
