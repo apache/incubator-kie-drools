@@ -57,6 +57,7 @@ public class AssertHandler extends AbstractCompilerHandler {
 
     private final StringBuilder builder;
     private final String factClassName;
+    private Class fieldType;
 
     AssertHandler(StringBuilder builder, String factClassName) {
         this(builder, factClassName, false);
@@ -117,22 +118,8 @@ public class AssertHandler extends AbstractCompilerHandler {
     @Override
     public void startHashedAlphaNodes(IndexableConstraint indexableConstraint) {
 
-        String localVariableName = "NodeId";
-
-        builder.append("Integer ").append(localVariableName);
-        // todo we are casting to Integer because generics aren't supported
-        builder.append(" = (Integer)").append(getVariableName(""))
-                .append(".get(")
-                .append("readAccessor.getValue(")
-                .append(LOCAL_FACT_VAR_NAME).append(").toString()")
-                .append(");").append(NEWLINE);
-
-        builder.append("System.out.println(\"++++++ key class \" + ToNodeId.keySet().iterator().next().getClass());\n");
-        builder.append("System.out.println(\"++++++ value \" + readAccessor.getValue(fact).getClass());\n");
-        builder.append("System.out.println(\"++++++\" + NodeId);\n");
-
         final InternalReadAccessor fieldExtractor = indexableConstraint.getFieldExtractor();
-        Class fieldType = fieldExtractor.getExtractToClass();
+        fieldType = fieldExtractor.getExtractToClass();
 
         if(String.class.isAssignableFrom(fieldType) || Integer.class.isAssignableFrom(fieldType)) {
             String switchVar = "switchVar";
@@ -147,18 +134,38 @@ public class AssertHandler extends AbstractCompilerHandler {
 
             builder.append("if(").append(switchVar).append(" != null) {").append(NEWLINE);
             builder.append("switch(").append(switchVar).append(")").append("{").append(NEWLINE);
-            builder.append("}};");
+        } else {
+
+            String localVariableName = "NodeId";
+
+            builder.append("Integer ").append(localVariableName);
+            // todo we are casting to Integer because generics aren't supported
+            builder.append(" = (Integer)").append(getVariableName(""))
+                    .append(".get(")
+                    .append("readAccessor.getValue(")
+                    .append(LOCAL_FACT_VAR_NAME).append(").toString()")
+                    .append(");").append(NEWLINE);
+
+            // ensure that the value is present in the node map
+            builder.append("if(").append(localVariableName).append(" != null) {").append(NEWLINE);
+            // todo we had the .intValue() because JANINO has a problem with it
+            builder.append("switch(").append(localVariableName).append(".intValue()) {").append(NEWLINE);
         }
 
-        // ensure that the value is present in the node map
-        builder.append("if(").append(localVariableName).append(" != null) {").append(NEWLINE);
-        // todo we had the .intValue() because JANINO has a problem with it
-        builder.append("switch(").append(localVariableName).append(".intValue()) {").append(NEWLINE);
+
     }
 
     @Override
     public void startHashedAlphaNode(AlphaNode hashedAlpha, Object hashedValue) {
-        builder.append("case ").append(hashedAlpha.getId()).append(" : ").append(NEWLINE);
+        if(String.class.isAssignableFrom(fieldType) || Integer.class.isAssignableFrom(fieldType)) {
+            builder.append("case ")
+                    .append("\"")
+                    .append(hashedValue)
+                    .append("\"")
+                    .append(" : ").append(NEWLINE);
+        } else {
+            builder.append("case ").append(hashedAlpha.getId()).append(" : ").append(NEWLINE);
+        }
     }
 
     @Override
