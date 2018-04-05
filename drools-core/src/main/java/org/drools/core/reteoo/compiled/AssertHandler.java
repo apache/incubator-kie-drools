@@ -123,9 +123,12 @@ public class AssertHandler extends AbstractCompilerHandler {
         builder.append(" = (Integer)").append(getVariableName(""))
                 .append(".get(")
                 .append("readAccessor.getValue(")
-                .append(LOCAL_FACT_VAR_NAME).append(")")
+                .append(LOCAL_FACT_VAR_NAME).append(").toString()")
                 .append(");").append(NEWLINE);
 
+//        builder.append("System.out.println(\"++++++ key class \" + ToNodeId.keySet().iterator().next().getClass());\n");
+//        builder.append("System.out.println(\"++++++ value \" + readAccessor.getValue(fact).getClass());\n");
+//        builder.append("System.out.println(\"++++++\" + NodeId);\n");
         // ensure that the value is present in the node map
         builder.append("if(").append(localVariableName).append(" != null) {").append(NEWLINE);
         // todo we had the .intValue() because JANINO has a problem with it

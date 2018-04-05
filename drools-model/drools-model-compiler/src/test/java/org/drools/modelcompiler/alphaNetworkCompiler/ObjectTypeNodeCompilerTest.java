@@ -68,7 +68,6 @@ public class ObjectTypeNodeCompilerTest extends BaseModelTest {
     }
 
     @Test
-    @Ignore("length is translated to getLength")
     public void testAlphaConstraint2() {
         String str =
                 "rule \"Bind1\"\n" +
