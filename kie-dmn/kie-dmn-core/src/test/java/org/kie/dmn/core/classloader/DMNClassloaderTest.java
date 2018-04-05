@@ -44,7 +44,7 @@ public class DMNClassloaderTest {
     public static final Logger LOG = LoggerFactory.getLogger(DMNClassloaderTest.class);
 
     @Test
-    public void testClassloaderFunctionInvokation() {
+    public void testClassloaderFunctionInvocation() {
         final String javaSource = "package com.acme.functions;\n" +
                                   "\n" +
                                   "import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;\n" +
@@ -64,7 +64,7 @@ public class DMNClassloaderTest {
 
         final KieServices ks = KieServices.Factory.get();
         
-        ReleaseId kjarReleaseId = ks.newReleaseId("org.kie.dmn.core.classloader", "testClassloaderFunctionInvokation", UUID.randomUUID().toString());
+        ReleaseId kjarReleaseId = ks.newReleaseId("org.kie.dmn.core.classloader", "testClassloaderFunctionInvocation", UUID.randomUUID().toString());
         ReleaseId commonsMathGAV = ks.newReleaseId("org.apache.commons", "commons-math3", "3.6.1");
 
         final KieFileSystem kfs = ks.newKieFileSystem();
