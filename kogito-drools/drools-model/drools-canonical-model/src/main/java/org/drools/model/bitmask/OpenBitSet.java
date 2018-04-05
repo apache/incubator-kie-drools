@@ -1227,15 +1227,6 @@ public class OpenBitSet implements BitMask {
             s.append( getBits()[i] );
         }
 
-        s.append( " : " );
-
-        for ( long i = 0, j = 0, length = cardinality(); i < length; i++ ) {
-            for ( long k = nextSetBit(j); j <= k; j++  ) {
-                s.append( get( j ) ? 1 : 0 );
-            }
-
-        }
-
         return s.toString();
     }
 

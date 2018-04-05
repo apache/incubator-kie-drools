@@ -125,7 +125,6 @@ import static org.drools.core.rule.Pattern.getReadAcessor;
 import static org.drools.model.FlowDSL.declarationOf;
 import static org.drools.model.FlowDSL.entryPoint;
 import static org.drools.model.impl.NamesGenerator.generateName;
-import static org.drools.modelcompiler.ModelCompilerUtil.conditionToGroupElementType;
 import static org.drools.modelcompiler.facttemplate.FactFactory.prototypeToFactTemplate;
 import static org.drools.modelcompiler.util.TypeDeclarationUtil.createTypeDeclaration;
 
@@ -793,5 +792,15 @@ public class KiePackagesBuilder {
             }
             return new ClassObjectType( patternClass, isEvent );
         } );
+    }
+
+    private static GroupElement.Type conditionToGroupElementType( Condition.Type type ) {
+        switch (type) {
+            case AND: return GroupElement.Type.AND;
+            case OR: return GroupElement.Type.OR;
+            case EXISTS: return GroupElement.Type.EXISTS;
+            case NOT: return GroupElement.Type.NOT;
+        }
+        throw new UnsupportedOperationException();
     }
 }

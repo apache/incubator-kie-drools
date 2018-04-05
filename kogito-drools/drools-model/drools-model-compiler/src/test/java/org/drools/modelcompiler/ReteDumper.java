@@ -19,32 +19,33 @@ import org.kie.api.runtime.KieSession;
 
 public class ReteDumper {
 
+    private static final BiConsumer<String, BaseNode> voidConsumer = (ident, node) -> {};
     private static final BiConsumer<String, BaseNode> dumpConsumer = (ident, node) -> System.out.println(ident + node);
 
     private ReteDumper() { }
 
+    public static Set<BaseNode> collectNodes(KieBase kbase) {
+        return visitRete( ((InternalKnowledgeBase) kbase).getRete(), voidConsumer );
+    }
+
+    public static Set<BaseNode> collectNodes(KieSession session) {
+        return collectNodes( session.getKieBase() );
+    }
+
     public static Set<BaseNode> dumpRete(KieBase kbase) {
-        return dumpRete((InternalKnowledgeBase) kbase);
+        return visitRete( ((InternalKnowledgeBase) kbase).getRete(), dumpConsumer );
     }
 
     public static Set<BaseNode> dumpRete(KieSession session) {
-        return dumpRete((InternalKnowledgeBase)session.getKieBase());
-    }
-
-    public static Set<BaseNode> dumpRete(InternalKnowledgeBase kBase) {
-        return visitRete( kBase.getRete(), dumpConsumer );
+        return dumpRete( session.getKieBase() );
     }
 
     public static Set<BaseNode> checkRete(KieBase kbase, Predicate<BaseNode> predicate) {
-        return checkRete((InternalKnowledgeBase) kbase, predicate);
+        return visitRete(((InternalKnowledgeBase) kbase).getRete(), toConsumer( predicate ));
     }
 
     public static Set<BaseNode> checkRete(KieSession session, Predicate<BaseNode> predicate) {
-        return checkRete((InternalKnowledgeBase)session.getKieBase(), predicate);
-    }
-
-    public static Set<BaseNode> checkRete(InternalKnowledgeBase kBase, Predicate<BaseNode> predicate) {
-        return visitRete( kBase.getRete(), toConsumer( predicate ) );
+        return checkRete(session.getKieBase(), predicate);
     }
 
     public static Set<BaseNode> visitRete( Rete rete, BiConsumer<String, BaseNode> consumer ) {

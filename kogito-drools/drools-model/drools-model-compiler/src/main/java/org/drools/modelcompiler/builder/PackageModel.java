@@ -75,7 +75,7 @@ public class PackageModel {
 
     private static final String RULES_FILE_NAME = "Rules";
 
-    private static final int RULES_PER_CLASS = 10;
+    private static final int RULES_PER_CLASS = 5;
     private static final int RULES_DECLARATION_PER_CLASS = 1000;
 
     private final String name;

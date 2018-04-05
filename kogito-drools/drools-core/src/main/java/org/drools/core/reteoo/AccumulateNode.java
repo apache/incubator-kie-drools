@@ -87,6 +87,7 @@ public class AccumulateNode extends BetaNode {
                sourceBinder,
                context );
         this.resultBinder = resultBinder;
+        this.resultBinder.init( context, getType() );
         this.resultConstraints = resultConstraints;
         this.accumulate = accumulate;
         this.unwrapRightObject = unwrapRightObject;
@@ -197,7 +198,6 @@ public class AccumulateNode extends BetaNode {
 
     @Override
     public void attach( BuildContext context ) {
-        this.resultBinder.init( context, getType() );
         super.attach( context );
     }
 

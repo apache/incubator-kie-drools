@@ -17,6 +17,10 @@
 
 package org.drools.compiler.factmodel.traits;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+
 import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.factmodel.traits.LogicalTypeInconsistencyException;
 import org.drools.core.factmodel.traits.Trait;
@@ -35,11 +39,6 @@ import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
