@@ -24,6 +24,7 @@ import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.rule.IndexableConstraint;
+import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.PropagationContext;
 
 /**
@@ -126,9 +127,29 @@ public class AssertHandler extends AbstractCompilerHandler {
                 .append(LOCAL_FACT_VAR_NAME).append(").toString()")
                 .append(");").append(NEWLINE);
 
-//        builder.append("System.out.println(\"++++++ key class \" + ToNodeId.keySet().iterator().next().getClass());\n");
-//        builder.append("System.out.println(\"++++++ value \" + readAccessor.getValue(fact).getClass());\n");
-//        builder.append("System.out.println(\"++++++\" + NodeId);\n");
+        builder.append("System.out.println(\"++++++ key class \" + ToNodeId.keySet().iterator().next().getClass());\n");
+        builder.append("System.out.println(\"++++++ value \" + readAccessor.getValue(fact).getClass());\n");
+        builder.append("System.out.println(\"++++++\" + NodeId);\n");
+
+        final InternalReadAccessor fieldExtractor = indexableConstraint.getFieldExtractor();
+        Class fieldType = fieldExtractor.getExtractToClass();
+
+        if(String.class.isAssignableFrom(fieldType) || Integer.class.isAssignableFrom(fieldType)) {
+            String switchVar = "switchVar";
+            builder.append(fieldType.getCanonicalName())
+                    .append(" ")
+                    .append(switchVar);
+            builder.append(" = ")
+                    .append("(" + fieldType.getCanonicalName() + ")")
+                    .append("readAccessor.getValue(")
+                    .append(LOCAL_FACT_VAR_NAME)
+                    .append(");").append(NEWLINE);
+
+            builder.append("if(").append(switchVar).append(" != null) {").append(NEWLINE);
+            builder.append("switch(").append(switchVar).append(")").append("{").append(NEWLINE);
+            builder.append("}};");
+        }
+
         // ensure that the value is present in the node map
         builder.append("if(").append(localVariableName).append(" != null) {").append(NEWLINE);
         // todo we had the .intValue() because JANINO has a problem with it
