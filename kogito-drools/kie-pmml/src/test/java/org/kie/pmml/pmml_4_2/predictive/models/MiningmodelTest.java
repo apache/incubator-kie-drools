@@ -15,43 +15,31 @@
  */
 package org.kie.pmml.pmml_4_2.predictive.models;
 
-import java.io.File;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.ClassObjectFilter;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.InternalRuleUnitExecutor;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.api.KieBase;
-import org.kie.api.io.Resource;
-import org.kie.api.io.ResourceType;
-import org.kie.api.logger.KieRuntimeLogger;
-import org.kie.api.runtime.KieSession;
+import org.kie.api.pmml.PMML4Result;
+import org.kie.api.pmml.PMMLRequestData;
+import org.kie.api.pmml.ParameterInfo;
 import org.kie.api.runtime.rule.DataSource;
 import org.kie.api.runtime.rule.RuleUnit;
 import org.kie.api.runtime.rule.RuleUnitExecutor;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.utils.KieHelper;
 import org.kie.pmml.pmml_4_2.DroolsAbstractPMMLTest;
-import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.pmml_4_2.model.AbstractPMMLData;
-import org.kie.api.pmml.PMMLRequestData;
-import org.kie.api.pmml.ParameterInfo;
-import org.kie.api.pmml.PMML4Data;
 import org.kie.pmml.pmml_4_2.model.ScoreCard;
 import org.kie.pmml.pmml_4_2.model.mining.SegmentExecution;
 import org.kie.pmml.pmml_4_2.model.mining.SegmentExecutionState;
 import org.kie.pmml.pmml_4_2.model.tree.AbstractTreeToken;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 public class MiningmodelTest extends DroolsAbstractPMMLTest {
 	private static final boolean VERBOSE = true;
@@ -78,8 +66,6 @@ public class MiningmodelTest extends DroolsAbstractPMMLTest {
 		PMML4Result resultHolder = new PMML4Result();
 		resultHolder.setCorrelationId(request.getCorrelationId());
 
-		DataSource<PMMLRequestData> childModelRequest = executor.newDataSource("childModelRequest");
-		DataSource<PMML4Result> childModelResults = executor.newDataSource("childModelResults");
 		DataSource<SegmentExecution> childModelSegments = executor.newDataSource("childModelSegments");
 		DataSource<? extends AbstractPMMLData> miningModelPojo = executor.newDataSource("miningModelPojo");
 
@@ -120,8 +106,6 @@ public class MiningmodelTest extends DroolsAbstractPMMLTest {
 		PMML4Result resultHolder = new PMML4Result();
 		resultHolder.setCorrelationId(request.getCorrelationId());
 
-		DataSource<PMMLRequestData> childModelRequest = executor.newDataSource("childModelRequest");
-		DataSource<PMML4Result> childModelResults = executor.newDataSource("childModelResults");
 		DataSource<SegmentExecution> childModelSegments = executor.newDataSource("childModelSegments");
 		DataSource<? extends AbstractPMMLData> miningModelPojo = executor.newDataSource("miningModelPojo");
 		
@@ -172,8 +156,6 @@ public class MiningmodelTest extends DroolsAbstractPMMLTest {
 		PMML4Result resultHolder = new PMML4Result();
 		resultHolder.setCorrelationId(request.getCorrelationId());
 
-		DataSource<PMMLRequestData> childModelRequest = executor.newDataSource("childModelRequest");
-		DataSource<PMML4Result> childModelResults = executor.newDataSource("childModelResults");
 		DataSource<SegmentExecution> childModelSegments = executor.newDataSource("childModelSegments");
 		DataSource<? extends AbstractPMMLData> miningModelPojo = executor.newDataSource("miningModelPojo");
 		
@@ -235,8 +217,6 @@ public class MiningmodelTest extends DroolsAbstractPMMLTest {
 		PMML4Result resultHolder = new PMML4Result();
 		resultHolder.setCorrelationId(request.getCorrelationId());
 
-		DataSource<PMMLRequestData> childModelRequest = executor.newDataSource("childModelRequest");
-		DataSource<PMML4Result> childModelResults = executor.newDataSource("childModelResults");
 		DataSource<SegmentExecution> childModelSegments = executor.newDataSource("childModelSegments");
 		DataSource<? extends AbstractPMMLData> miningModelPojo = executor.newDataSource("miningModelPojo");
 		
@@ -290,8 +270,6 @@ public class MiningmodelTest extends DroolsAbstractPMMLTest {
 		PMML4Result resultHolder = new PMML4Result();
 		resultHolder.setCorrelationId(request.getCorrelationId());
 
-		DataSource<PMMLRequestData> childModelRequest = executor.newDataSource("childModelRequest");
-		DataSource<PMML4Result> childModelResults = executor.newDataSource("childModelResults");
 		DataSource<SegmentExecution> childModelSegments = executor.newDataSource("childModelSegments");
 		DataSource<? extends AbstractPMMLData> miningModelPojo = executor.newDataSource("miningModelPojo");
 		
@@ -365,8 +343,6 @@ public class MiningmodelTest extends DroolsAbstractPMMLTest {
 		PMML4Result resultHolder = new PMML4Result();
 		resultHolder.setCorrelationId(request.getCorrelationId());
 
-		DataSource<PMMLRequestData> childModelRequest = executor.newDataSource("childModelRequest");
-		DataSource<PMML4Result> childModelResults = executor.newDataSource("childModelResults");
 		DataSource<SegmentExecution> childModelSegments = executor.newDataSource("childModelSegments");
 		DataSource<? extends AbstractPMMLData> miningModelPojo = executor.newDataSource("miningModelPojo");
 		
@@ -394,4 +370,35 @@ public class MiningmodelTest extends DroolsAbstractPMMLTest {
 		assertEquals(56.345,oscore,1e-6);
 	}
 
+	@Test
+	public void testWeightedAverage() {
+		RuleUnitExecutor executor = createExecutor(WEIGHTED_AVG);
+		assertNotNull(executor);
+		
+		PMMLRequestData request = new PMMLRequestData("1234","SampleMiningModelAvg");
+		request.addRequestParam("petal_length", 6.45);
+		request.addRequestParam("petal_width", 1.75);
+		request.addRequestParam("sepal_width", 1.23);
+		PMML4Result resultHolder = new PMML4Result();
+		DataSource<SegmentExecution> childModelSegments = executor.newDataSource("childModelSegments");
+		DataSource<? extends AbstractPMMLData> miningModelPojo = executor.newDataSource("miningModelPojo");
+		
+
+		List<String> possiblePackages = this.calculatePossiblePackageNames("SampleMiningModelAvg");
+		Class<? extends RuleUnit> ruleUnitClass = this.getStartingRuleUnit("Start Mining - SampleMiningModelAvg",(InternalKnowledgeBase)kbase,possiblePackages);
+		
+		assertNotNull(ruleUnitClass);
+		
+		data.insert(request);
+		resultData.insert(resultHolder);
+		
+		executor.run(ruleUnitClass);
+		((InternalRuleUnitExecutor)executor).getSessionObjects().forEach(o -> { System.out.println(o);});
+		resultHolder.getResultVariables().keySet().forEach(s -> {System.out.println(s);});
+		
+		Double sepal_length = resultHolder.getResultValue("WeightedAvg_Sepal_length", "value",Double.class).orElse(null);
+		assertEquals(7.1833385,sepal_length,1e-6);
+		Double weight = resultHolder.getResultValue("WeightedAvg_Sepal_length", "weight", Double.class).orElse(null);
+		assertEquals(1.00, weight, 1e-2);
+	}
 }

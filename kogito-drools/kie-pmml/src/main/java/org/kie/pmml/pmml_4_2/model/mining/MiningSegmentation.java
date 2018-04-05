@@ -213,6 +213,13 @@ public class MiningSegmentation {
 			case SUM:
 				break;
 			case WEIGHTED_AVERAGE:
+				templateVars.put("ruleUnitClassName", this.getOwner().getRuleUnitClassName());
+				templateVars.put("miningModel", this.getOwner());
+				templateVars.put("childSegments", this.getMiningSegments());
+				templateVars.put("packageName", pkgName);
+				ct = templates.getNamedTemplate(this.multipleModelMethod.name());
+				TemplateRuntime.execute(ct,null,new MapVariableResolverFactory(templateVars),baos);
+				builder.append(new String(baos.toByteArray()));
 				break;
 			case WEIGHTED_MAJORITY_VOTE:
 				break;
@@ -222,13 +229,6 @@ public class MiningSegmentation {
 	}
 	
  
-	
-	public String generateRulesForSegment(int index) {
-		StringBuilder builder = new StringBuilder();
-		String segRules = miningSegments.get(index).generateSegmentRules(getSegmentationAgendaId(), index);
-		return segRules;
-	}
-	
 	public String getSegmentationAgendaId() {
 		return getOwner().getModelId()+"_"+getSegmentationId();
 	}

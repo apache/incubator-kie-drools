@@ -1,0 +1,165 @@
+@comment{
+
+  Copyright 2017 Red Hat, Inc. and/or its affiliates.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+}
+
+package @{packageName}
+unit @{ruleUnitClassName}
+
+import org.kie.pmml.pmml_4_2.*;
+import org.kie.pmml.pmml_4_2.model.*;
+import org.kie.pmml.pmml_4_2.model.mining.*;
+import org.kie.pmml.pmml_4_2.model.datatypes.*;
+import org.kie.api.pmml.PMMLRequestData;
+import org.kie.api.pmml.ParameterInfo;
+import org.kie.api.pmml.PMML4Result;
+import org.kie.api.runtime.rule.FactHandle;
+
+
+
+@code{ int salienceValue; }
+@code{ String nextSegmentId; }
+
+declare WeightedAvg_@{miningModel.targetField}
+   value: Number
+   weight: Double
+end
+
+rule "Start Mining - @{miningModel.modelId}"
+salience 1000
+when
+   rqst: PMMLRequestData( correlationId != null, modelName == "@{miningModel.modelId}", rqstInf: requestParams != null ) from request
+   not @{miningModel.miningPojoClassName}() from miningModelPojo
+then
+   @{miningModel.miningPojoClassName} modelData = new @{miningModel.miningPojoClassName}(rqst);
+   miningModelPojo.insert(modelData);
+end
+
+
+rule "Segment Complete"
+when
+   $segExec: SegmentExecution( $corrId: correlationId, $segmId: segmentationId, 
+                               $segId: segmentId, state == SegmentExecutionState.EXECUTING, $res: result != null ) from childModelSegments
+   PMML4Result( this == $res, resultCode == "OK" ) from results
+then
+   modify($segExec) {
+      setState(SegmentExecutionState.COMPLETE);
+   }
+end
+
+
+rule "Segment Complete with Error"
+when
+   $segExec: SegmentExecution( $corrId: correlationId, $segmId: segmentationId, 
+                               $segId: segmentId, state == SegmentExecutionState.EXECUTING, $res: result != null ) from childModelSegments
+   PMML4Result( this == $res, resultCode != null && resultCode != "OK" ) from results
+then
+   modify($segExec) {
+      setState(SegmentExecutionState.ERROR);
+   }
+end
+
+rule "Set result value for segment"
+when
+   $segExec: SegmentExecution( $segmId: segmentationId, $segId: segmentId, state == SegmentExecutionState.COMPLETE, $res: result != null ) from childModelSegments
+   $result: PMML4Result( this == $res, resultVariables != null ) from results
+   $msw: MiningSegmentWeight( segmentationId == $segmId, segmentId == $segId, $targ: targetName != null )
+then
+   Number n = $result.getResultValue($targ,"value",Number.class).orElse(null);
+   modify($msw) {
+      setSegmentValue(n);
+   }
+end
+
+
+rule "Calculate weighted average"
+salience -100
+when
+   forall( SegmentExecution( state == SegmentExecutionState.COMPLETE || == SegmentExecutionState.ERROR ) )
+   accumulate( MiningSegmentWeight( $wt: weight, $val: weightedSegmentValue ); $sweight: sum($wt), $svalue: sum($val) )
+   $reslt: PMML4Result( segmentId == null, resultVariables == null || "WeightedAvg_@{miningModel.targetField}" not memberOf resultVariables.keySet() ) from results
+then
+   WeightedAvg_@{miningModel.targetField} target = new WeightedAvg_@{miningModel.targetField}();
+   target.setValue($svalue);
+   target.setWeight($sweight);
+   FactHandle fh = ((org.drools.core.datasources.InternalDataSource)results).getFactHandleForObject($reslt);
+   $reslt.setResultCode("OK");
+   $reslt.addResultVariable("WeightedAvg_@{miningModel.targetField}",target);
+   results.update(fh,$reslt);
+
+   System.out.println("Sum of weights = "+$sweight);
+   System.out.println("Sum of values = "+$svalue);
+end
+
+
+rule "Insert Segment Weights"
+salience 1000
+when
+then
+   @foreach{ childSegment: childSegments }
+   insert( new MiningSegmentWeight( "@{childSegment.owner.segmentationId}", "@{childSegment.segmentId}", "@{childSegment.targetForWeighting}", @{childSegment.weight} ) );
+   @end{}
+end
+
+@foreach{ childSegment: childSegments }
+@code{ salienceValue = 100 - childSegment.segmentIndex; }
+@code{ internalModel = childSegment.model; }
+
+
+rule "Execute Segment @{childSegment.owner.segmentationId}-@{childSegment.segmentId}"
+when
+   $seg: SegmentExecution( $corrId: correlationId,
+                           $segmId: segmentationId == "@{childSegment.owner.segmentationId}",
+                           segmentId == "@{childSegment.segmentId}",
+                           state == SegmentExecutionState.WAITING,
+                           $segIndex: segmentIndex ) from childModelSegments
+   not SegmentExecution( correlationId == $corrId, segmentationId == $segmId, 
+      (state == SegmentExecutionState.WAITING && segmentIndex < $segIndex) ) from childModelSegments
+then
+   PMML4Result rslt = new PMML4Result();
+   rslt.setCorrelationId($seg.getCorrelationId());
+   rslt.setSegmentationId($seg.getSegmentationId());
+   rslt.setSegmentId($seg.getSegmentId());
+   rslt.setSegmentIndex($seg.getSegmentIndex());
+   request.insert($seg.getRequestData());
+   results.insert(rslt);
+   modify( $seg ) {
+      setState(SegmentExecutionState.EXECUTING),
+      setResult(rslt)
+   };
+   drools.run(@{childSegment.segmentRuleUnit}.class);
+end
+
+
+rule "Check Segment Can Fire - Segment @{childSegment.segmentId}"
+salience @{salienceValue}
+when
+   model: @{miningModel.miningPojoClassName}( @{childSegment.predicateText} ) from miningModelPojo
+then
+   PMMLRequestData rqstData = new PMMLRequestData(model.getCorrelationId(),"@{childSegment.model.modelId}");
+   @foreach{ field: childSegment.model.miningFields }
+   rqstData.addRequestParam( "@{field.name}",model.getV@{field.compactUpperCaseName}() );
+   @end{}
+   SegmentExecution segEx = new SegmentExecution( model.getCorrelationId(),
+                                                  "@{childSegment.owner.segmentationId}",
+                                                  "@{childSegment.segmentId}",
+                                                   @{childSegment.segmentIndex},
+                                                  "@{childSegment.segmentRuleUnit}");
+   segEx.setRequestData(rqstData);
+   childModelSegments.insert(segEx);
+end
+
+
+@end{}

@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.kie.dmg.pmml.pmml_4_2.descr.DataDictionary;
+import org.kie.dmg.pmml.pmml_4_2.descr.FIELDUSAGETYPE;
 import org.kie.dmg.pmml.pmml_4_2.descr.MININGFUNCTION;
 import org.kie.dmg.pmml.pmml_4_2.descr.MiningModel;
 import org.kie.dmg.pmml.pmml_4_2.descr.MiningSchema;
@@ -99,6 +100,12 @@ public class Miningmodel extends AbstractModel<MiningModel> {
         return output;
     }
     
+    public String getTargetField() {
+    	return this.getMiningFields().stream()
+    	.filter(mf -> mf.getFieldUsageType() == FIELDUSAGETYPE.TARGET || mf.getFieldUsageType() == FIELDUSAGETYPE.PREDICTED)
+    	.map(mf -> { return helper.compactAsJavaId(mf.getName(),true); })
+    	.findFirst().orElse(null);
+    }
     
     
     @Override
