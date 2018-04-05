@@ -311,4 +311,11 @@ public class ValidatorTest extends AbstractValidatorTest {
         assertThat(messages.toString(), messages.size(), is(0));
     }
 
+    @Test
+    public void testRelationwithemptycellJustValidator() {
+        // DROOLS-2439
+        List<DMNMessage> validate = validator.validate(getReader("relation_with_empty_cell.dmn", DMNRuntimeTest.class), VALIDATE_MODEL, VALIDATE_COMPILATION);
+        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(0));
+    }
+
 }

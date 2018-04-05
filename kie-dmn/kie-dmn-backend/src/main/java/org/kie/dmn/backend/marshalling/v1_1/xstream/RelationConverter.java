@@ -16,15 +16,14 @@
 
 package org.kie.dmn.backend.marshalling.v1_1.xstream;
 
+import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
+import org.kie.dmn.model.v1_1.InformationItem;
+import org.kie.dmn.model.v1_1.Relation;
+
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_1.Expression;
-import org.kie.dmn.model.v1_1.InformationItem;
-import org.kie.dmn.model.v1_1.LiteralExpression;
-import org.kie.dmn.model.v1_1.Relation;
 
 public class RelationConverter extends ExpressionConverter {
     public static final String EXPRESSION = "expression";
@@ -38,26 +37,9 @@ public class RelationConverter extends ExpressionConverter {
         if (COLUMN.equals(nodeName)) {
             r.getColumn().add((InformationItem) child);
         } else if (ROW.equals(nodeName)) {
-            org.kie.dmn.model.v1_1.List row = (org.kie.dmn.model.v1_1.List) child;
-            normalizeEmptyCells(row);
-            r.getRow().add(row);
+            r.getRow().add((org.kie.dmn.model.v1_1.List) child);
         } else {
             super.assignChildElement(parent, nodeName, child);
-        }
-    }
-
-    /**
-     * Normalize empty cell in DMN Relation as null expression.
-     */
-    private void normalizeEmptyCells(org.kie.dmn.model.v1_1.List row) {
-        // DROOLS-2439
-        for (Expression e : row.getExpression()) {
-            if (e instanceof LiteralExpression) {
-                LiteralExpression literalExpression = (LiteralExpression) e;
-                if (literalExpression.getText().isEmpty()) {
-                    literalExpression.setText("null");
-                }
-            }
         }
     }
 
