@@ -26,6 +26,10 @@
   <url>https://www.optaplanner.org</url>
   <inceptionYear>2006</inceptionYear>
 
+  <properties>
+    <findbugs.failOnViolation>true</findbugs.failOnViolation>
+  </properties>
+
   <repositories>
     <!-- Bootstrap repository to locate the parent pom when the parent pom has not been build locally. -->
     <repository>
@@ -101,6 +105,14 @@
   <build>
     <pluginManagement>
       <plugins>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>findbugs-maven-plugin</artifactId>
+          <configuration>
+            <maxRank>14</maxRank>
+            <includeTests>true</includeTests>
+          </configuration>
+        </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-checkstyle-plugin</artifactId>
