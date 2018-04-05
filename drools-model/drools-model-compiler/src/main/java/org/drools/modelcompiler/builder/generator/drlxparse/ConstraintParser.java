@@ -48,6 +48,7 @@ import static org.drools.javaparser.printer.PrintUtil.toDrlx;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.coerceLiteralExprToType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getLiteralExpressionType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isPrimitiveExpression;
+import static org.drools.modelcompiler.builder.generator.expression.AbstractExpressionBuilder.getExpressionSymbol;
 import static org.drools.modelcompiler.util.ClassUtil.toNonPrimitiveType;
 import static org.drools.modelcompiler.util.JavaParserUtil.toJavaParserType;
 
@@ -165,15 +166,7 @@ public class ConstraintParser {
             }
 
 
-            boolean isBetaNode = false;
-            if(right.getExpression() instanceof  BinaryExpr) {
-                if(((BinaryExpr)right.getExpression()).getRight() instanceof MethodCallExpr) {
-                    isBetaNode = true;
-                }
-            } else if (right.getExpression() instanceof NameExpr) {
-                isBetaNode = true;
-            }
-
+            boolean isBetaNode = right.getExpression() != null && context.getDeclarationById( getExpressionSymbol( right.getExpression() ) ).isPresent();
             if (isEnclosed) {
                 combo = new EnclosedExpr( combo );
             }

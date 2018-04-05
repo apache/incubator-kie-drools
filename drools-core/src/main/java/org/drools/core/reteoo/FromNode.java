@@ -82,6 +82,7 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
         setLeftTupleSource(tupleSource);
         this.alphaConstraints = constraints;
         this.betaConstraints = (binder == null) ? EmptyBetaConstraints.getInstance() : binder;
+        this.betaConstraints.init(context, getType());
         this.tupleMemoryEnabled = tupleMemoryEnabled;
         this.from = from;
         resultClass = this.from.getResultClass();
@@ -397,7 +398,6 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
     }
 
     public void attach( BuildContext context ) {
-        betaConstraints.init(context, getType());
         this.leftInput.addTupleSink( this, context );
     }
 

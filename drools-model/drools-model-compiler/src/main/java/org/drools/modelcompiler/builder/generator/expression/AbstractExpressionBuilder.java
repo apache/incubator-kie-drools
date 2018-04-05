@@ -19,6 +19,7 @@ package org.drools.modelcompiler.builder.generator.expression;
 import java.util.Collection;
 
 import org.drools.javaparser.ast.expr.Expression;
+import org.drools.javaparser.ast.expr.FieldAccessExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
@@ -66,7 +67,7 @@ public abstract class AbstractExpressionBuilder {
 
     public abstract MethodCallExpr buildBinding(DrlxParseSuccess drlxParseResult );
 
-    protected boolean hasIndex( DrlxParseSuccess drlxParseResult ) {
+    boolean hasIndex( DrlxParseSuccess drlxParseResult ) {
         TypedExpression left = drlxParseResult.getLeft();
         Collection<String> usedDeclarations = drlxParseResult.getUsedDeclarations();
 
@@ -74,16 +75,26 @@ public abstract class AbstractExpressionBuilder {
                 ( isAlphaIndex( usedDeclarations ) || isBetaIndex( usedDeclarations, drlxParseResult.getRight() ) );
     }
 
-    protected boolean isAlphaIndex( Collection<String> usedDeclarations ) {
+    boolean isAlphaIndex( Collection<String> usedDeclarations ) {
         return usedDeclarations.isEmpty();
     }
 
-    protected boolean isBetaIndex( Collection<String> usedDeclarations, TypedExpression right ) {
+    private boolean isBetaIndex( Collection<String> usedDeclarations, TypedExpression right ) {
         // a Beta node should NOT create the index when the "right" is not just-a-symbol, the "right" is not a declaration referenced by name
-        return usedDeclarations.size() == 1 && context.getDeclarationById(right.getExpressionAsString()).isPresent();
+        return usedDeclarations.size() == 1 && context.getDeclarationById( getExpressionSymbol( right.getExpression() ) ).isPresent();
     }
 
-    protected boolean isThisExpression( Expression leftExpr ) {
+    public static String getExpressionSymbol(Expression expr) {
+        if (expr instanceof MethodCallExpr && (( MethodCallExpr ) expr).getScope().isPresent()) {
+            return getExpressionSymbol( (( MethodCallExpr ) expr).getScope().get() );
+        }
+        if (expr instanceof FieldAccessExpr ) {
+            return getExpressionSymbol( (( FieldAccessExpr ) expr).getScope() );
+        }
+        return expr.toString();
+    }
+
+    private boolean isThisExpression( Expression leftExpr ) {
         return leftExpr instanceof NameExpr && ((NameExpr)leftExpr).getName().getIdentifier().equals("_this");
     }
 
