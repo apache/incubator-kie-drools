@@ -10,7 +10,6 @@ import org.kie.api.KieServices;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.conf.AlphaNetworkCompilerOption;
 import org.kie.internal.utils.KieHelper;
 
 import static org.junit.Assert.*;

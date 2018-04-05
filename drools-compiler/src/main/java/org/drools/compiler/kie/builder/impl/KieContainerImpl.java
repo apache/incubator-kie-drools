@@ -68,7 +68,6 @@ import org.kie.api.runtime.rule.RuleUnitExecutor;
 import org.kie.internal.builder.ChangeType;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.ResourceChangeSet;
-import org.kie.internal.conf.AlphaNetworkCompilerOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
