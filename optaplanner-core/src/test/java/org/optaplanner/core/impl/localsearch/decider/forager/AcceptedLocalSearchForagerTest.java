@@ -35,12 +35,12 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-public class AcceptedForagerTest {
+public class AcceptedLocalSearchForagerTest {
 
     @Test
     public void pickMoveMaxScoreAccepted() {
         // Setup
-        Forager forager = new AcceptedForager(new HighestScoreFinalistPodium(),
+        LocalSearchForager forager = new AcceptedLocalSearchForager(new HighestScoreFinalistPodium(),
                 LocalSearchPickEarlyType.NEVER, Integer.MAX_VALUE, true);
         LocalSearchPhaseScope<TestdataSolution> phaseScope = createPhaseScope();
         forager.phaseStarted(phaseScope);
@@ -72,7 +72,7 @@ public class AcceptedForagerTest {
     @Test
     public void pickMoveMaxScoreUnaccepted() {
         // Setup
-        Forager forager = new AcceptedForager(new HighestScoreFinalistPodium(),
+        LocalSearchForager forager = new AcceptedLocalSearchForager(new HighestScoreFinalistPodium(),
                 LocalSearchPickEarlyType.NEVER, Integer.MAX_VALUE, true);
         LocalSearchPhaseScope<TestdataSolution> phaseScope = createPhaseScope();
         forager.phaseStarted(phaseScope);
@@ -104,7 +104,7 @@ public class AcceptedForagerTest {
     @Test
     public void pickMoveFirstBestScoreImproving() {
         // Setup
-        Forager forager = new AcceptedForager(new HighestScoreFinalistPodium(),
+        LocalSearchForager forager = new AcceptedLocalSearchForager(new HighestScoreFinalistPodium(),
                 LocalSearchPickEarlyType.FIRST_BEST_SCORE_IMPROVING, Integer.MAX_VALUE, true);
         LocalSearchPhaseScope<TestdataSolution> phaseScope = createPhaseScope();
         forager.phaseStarted(phaseScope);
@@ -133,7 +133,7 @@ public class AcceptedForagerTest {
     @Test
     public void pickMoveFirstLastStepScoreImproving() {
         // Setup
-        Forager forager = new AcceptedForager(new HighestScoreFinalistPodium(),
+        LocalSearchForager forager = new AcceptedLocalSearchForager(new HighestScoreFinalistPodium(),
                 LocalSearchPickEarlyType.FIRST_LAST_STEP_SCORE_IMPROVING, Integer.MAX_VALUE, true);
         LocalSearchPhaseScope<TestdataSolution> phaseScope = createPhaseScope();
         forager.phaseStarted(phaseScope);
@@ -162,7 +162,7 @@ public class AcceptedForagerTest {
     @Test
     public void pickMoveAcceptedBreakTieRandomly() {
         // Setup
-        Forager forager = new AcceptedForager(new HighestScoreFinalistPodium(),
+        LocalSearchForager forager = new AcceptedLocalSearchForager(new HighestScoreFinalistPodium(),
                 LocalSearchPickEarlyType.NEVER, 4, true);
         LocalSearchPhaseScope<TestdataSolution> phaseScope = createPhaseScope();
         forager.phaseStarted(phaseScope);
@@ -194,7 +194,7 @@ public class AcceptedForagerTest {
     @Test
     public void pickMoveAcceptedBreakTieFirst() {
         // Setup
-        Forager forager = new AcceptedForager(new HighestScoreFinalistPodium(),
+        LocalSearchForager forager = new AcceptedLocalSearchForager(new HighestScoreFinalistPodium(),
                 LocalSearchPickEarlyType.NEVER, 4, false);
         LocalSearchPhaseScope<TestdataSolution> phaseScope = createPhaseScope();
         forager.phaseStarted(phaseScope);
@@ -242,8 +242,7 @@ public class AcceptedForagerTest {
 
     public LocalSearchMoveScope<TestdataSolution> createMoveScope(LocalSearchStepScope<TestdataSolution> stepScope,
             Score score, boolean accepted) {
-        LocalSearchMoveScope<TestdataSolution> moveScope = new LocalSearchMoveScope<>(stepScope);
-        moveScope.setMove(new DummyMove());
+        LocalSearchMoveScope<TestdataSolution> moveScope = new LocalSearchMoveScope<>(stepScope, 0, new DummyMove());
         moveScope.setScore(score);
         moveScope.setAccepted(accepted);
         return moveScope;

@@ -28,9 +28,9 @@ public class ConstructionHeuristicStepScope<Solution_> extends AbstractStepScope
     private final ConstructionHeuristicPhaseScope<Solution_> phaseScope;
 
     private Object entity = null;
-    private Move step = null;
+    private Move<Solution_> step = null;
     private String stepString = null;
-    private Move undoStep = null;
+    private Move<Solution_> undoStep = null;
     private Long selectedMoveCount = null;
 
     public ConstructionHeuristicStepScope(ConstructionHeuristicPhaseScope<Solution_> phaseScope) {
@@ -55,11 +55,11 @@ public class ConstructionHeuristicStepScope<Solution_> extends AbstractStepScope
         this.entity = entity;
     }
 
-    public Move getStep() {
+    public Move<Solution_> getStep() {
         return step;
     }
 
-    public void setStep(Move step) {
+    public void setStep(Move<Solution_> step) {
         this.step = step;
     }
 
@@ -74,11 +74,11 @@ public class ConstructionHeuristicStepScope<Solution_> extends AbstractStepScope
         this.stepString = stepString;
     }
 
-    public Move getUndoStep() {
+    public Move<Solution_> getUndoStep() {
         return undoStep;
     }
 
-    public void setUndoStep(Move undoStep) {
+    public void setUndoStep(Move<Solution_> undoStep) {
         this.undoStep = undoStep;
     }
 

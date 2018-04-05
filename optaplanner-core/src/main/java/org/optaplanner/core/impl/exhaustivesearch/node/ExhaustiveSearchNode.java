@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.exhaustivesearch.node;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.exhaustivesearch.node.bounder.ScoreBounder;
 import org.optaplanner.core.impl.heuristic.move.Move;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 public class ExhaustiveSearchNode {
 

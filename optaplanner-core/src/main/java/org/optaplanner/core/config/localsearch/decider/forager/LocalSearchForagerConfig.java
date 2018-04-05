@@ -20,26 +20,29 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.localsearch.decider.forager.AcceptedForager;
-import org.optaplanner.core.impl.localsearch.decider.forager.Forager;
+import org.optaplanner.core.impl.localsearch.decider.forager.AcceptedLocalSearchForager;
+import org.optaplanner.core.impl.localsearch.decider.forager.LocalSearchForager;
 
 import static org.apache.commons.lang3.ObjectUtils.*;
 
 @XStreamAlias("localSearchForagerConfig")
 public class LocalSearchForagerConfig extends AbstractConfig<LocalSearchForagerConfig> {
 
-    private Class<? extends Forager> foragerClass = null;
+    @Deprecated // TODO remove in 8.0
+    private Class<? extends LocalSearchForager> foragerClass = null;
 
     protected LocalSearchPickEarlyType pickEarlyType = null;
     protected Integer acceptedCountLimit = null;
     protected FinalistPodiumType finalistPodiumType = null;
     protected Boolean breakTieRandomly = null;
 
-    public Class<? extends Forager> getForagerClass() {
+    @Deprecated
+    public Class<? extends LocalSearchForager> getForagerClass() {
         return foragerClass;
     }
 
-    public void setForagerClass(Class<? extends Forager> foragerClass) {
+    @Deprecated
+    public void setForagerClass(Class<? extends LocalSearchForager> foragerClass) {
         this.foragerClass = foragerClass;
     }
 
@@ -79,7 +82,7 @@ public class LocalSearchForagerConfig extends AbstractConfig<LocalSearchForagerC
     // Builder methods
     // ************************************************************************
 
-    public Forager buildForager(HeuristicConfigPolicy configPolicy) {
+    public LocalSearchForager buildForager(HeuristicConfigPolicy configPolicy) {
         if (foragerClass != null) {
             if (pickEarlyType != null || acceptedCountLimit != null || finalistPodiumType != null) {
                 throw new IllegalArgumentException("The forager with foragerClass (" + foragerClass
@@ -94,7 +97,7 @@ public class LocalSearchForagerConfig extends AbstractConfig<LocalSearchForagerC
         FinalistPodiumType finalistPodiumType_ = defaultIfNull(finalistPodiumType, FinalistPodiumType.HIGHEST_SCORE);
         // Breaking ties randomly leads statistically to much better results
         boolean breakTieRandomly_  = defaultIfNull(breakTieRandomly, true);
-        return new AcceptedForager(finalistPodiumType_.buildFinalistPodium(), pickEarlyType_, acceptedCountLimit_, breakTieRandomly_);
+        return new AcceptedLocalSearchForager(finalistPodiumType_.buildFinalistPodium(), pickEarlyType_, acceptedCountLimit_, breakTieRandomly_);
     }
 
     @Override

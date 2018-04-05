@@ -97,9 +97,10 @@ public class DefaultLocalSearchPhase<Solution_> extends AbstractPhase<Solution_>
     }
 
     protected void doStep(LocalSearchStepScope<Solution_> stepScope) {
-        Move<Solution_> nextStep = stepScope.getStep();
-        nextStep.doMove(stepScope.getScoreDirector());
-        predictWorkingStepScore(stepScope, nextStep);
+        Move<Solution_> step = stepScope.getStep();
+        Move<Solution_> undoStep = step.doMove(stepScope.getScoreDirector());
+        stepScope.setUndoStep(undoStep);
+        predictWorkingStepScore(stepScope, step);
         bestSolutionRecaller.processWorkingSolutionDuringStep(stepScope);
     }
 

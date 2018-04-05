@@ -21,10 +21,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Abstract superclass for {@link Forager}.
- * @see Forager
+ * Abstract superclass for {@link LocalSearchForager}.
+ * @see LocalSearchForager
  */
-public abstract class AbstractForager extends LocalSearchPhaseLifecycleListenerAdapter implements Forager {
+public abstract class AbstractLocalSearchForager extends LocalSearchPhaseLifecycleListenerAdapter implements LocalSearchForager {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 

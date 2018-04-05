@@ -16,20 +16,23 @@
 
 package org.optaplanner.core.impl.constructionheuristic.decider;
 
-import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.constructionheuristic.decider.forager.ConstructionHeuristicForager;
 import org.optaplanner.core.impl.constructionheuristic.placer.Placement;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicMoveScope;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicPhaseScope;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicStepScope;
 import org.optaplanner.core.impl.heuristic.move.Move;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.solver.termination.Termination;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ConstructionHeuristicDecider {
+/**
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ */
+public class ConstructionHeuristicDecider<Solution_> {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -63,34 +66,34 @@ public class ConstructionHeuristicDecider {
     // Worker methods
     // ************************************************************************
 
-    public void solvingStarted(DefaultSolverScope solverScope) {
+    public void solvingStarted(DefaultSolverScope<Solution_> solverScope) {
         forager.solvingStarted(solverScope);
     }
 
-    public void phaseStarted(ConstructionHeuristicPhaseScope phaseScope) {
+    public void phaseStarted(ConstructionHeuristicPhaseScope<Solution_> phaseScope) {
         forager.phaseStarted(phaseScope);
     }
 
-    public void stepStarted(ConstructionHeuristicStepScope stepScope) {
+    public void stepStarted(ConstructionHeuristicStepScope<Solution_> stepScope) {
         forager.stepStarted(stepScope);
     }
 
-    public void stepEnded(ConstructionHeuristicStepScope stepScope) {
+    public void stepEnded(ConstructionHeuristicStepScope<Solution_> stepScope) {
         forager.stepEnded(stepScope);
     }
 
-    public void phaseEnded(ConstructionHeuristicPhaseScope phaseScope) {
+    public void phaseEnded(ConstructionHeuristicPhaseScope<Solution_> phaseScope) {
         forager.phaseEnded(phaseScope);
     }
 
-    public void solvingEnded(DefaultSolverScope solverScope) {
+    public void solvingEnded(DefaultSolverScope<Solution_> solverScope) {
         forager.solvingEnded(solverScope);
     }
 
-    public void decideNextStep(ConstructionHeuristicStepScope stepScope, Placement placement) {
+    public void decideNextStep(ConstructionHeuristicStepScope<Solution_> stepScope, Placement placement) {
         int moveIndex = 0;
         for (Move move : placement) {
-            ConstructionHeuristicMoveScope moveScope = new ConstructionHeuristicMoveScope(stepScope);
+            ConstructionHeuristicMoveScope<Solution_> moveScope = new ConstructionHeuristicMoveScope<>(stepScope);
             moveScope.setMoveIndex(moveIndex);
             moveIndex++;
             moveScope.setMove(move);
@@ -113,34 +116,23 @@ public class ConstructionHeuristicDecider {
             if (logger.isDebugEnabled()) {
                 stepScope.setStepString(step.toString());
             }
-            stepScope.setUndoStep(pickedMoveScope.getUndoMove());
             stepScope.setScore(pickedMoveScope.getScore());
         }
     }
 
-    private void doMove(ConstructionHeuristicMoveScope moveScope) {
-        ScoreDirector scoreDirector = moveScope.getScoreDirector();
-        Move move = moveScope.getMove();
-        Move undoMove = move.doMove(scoreDirector);
-        moveScope.setUndoMove(undoMove);
-        processMove(moveScope);
-        undoMove.doMove(scoreDirector);
+    protected void doMove(ConstructionHeuristicMoveScope<Solution_> moveScope) {
+        InnerScoreDirector<Solution_> scoreDirector = moveScope.getScoreDirector();
+        scoreDirector.doAndProcessMove(moveScope.getMove(), assertMoveScoreFromScratch, score -> {
+            moveScope.setScore(score);
+            forager.addMove(moveScope);
+        });
         if (assertExpectedUndoMoveScore) {
-            ConstructionHeuristicPhaseScope phaseScope = moveScope.getStepScope().getPhaseScope();
-            phaseScope.assertExpectedUndoMoveScore(move, undoMove, phaseScope.getLastCompletedStepScope().getScore());
+            scoreDirector.assertExpectedUndoMoveScore(moveScope.getMove(),
+                    moveScope.getStepScope().getPhaseScope().getLastCompletedStepScope().getScore());
         }
         logger.trace("{}        Move index ({}), score ({}), move ({}).",
                 logIndentation,
                 moveScope.getMoveIndex(), moveScope.getScore(), moveScope.getMove());
-    }
-
-    private void processMove(ConstructionHeuristicMoveScope moveScope) {
-        Score score = moveScope.getStepScope().getPhaseScope().calculateScore();
-        if (assertMoveScoreFromScratch) {
-            moveScope.getStepScope().getPhaseScope().assertWorkingScoreFromScratch(score, moveScope.getMove());
-        }
-        moveScope.setScore(score);
-        forager.addMove(moveScope);
     }
 
 }

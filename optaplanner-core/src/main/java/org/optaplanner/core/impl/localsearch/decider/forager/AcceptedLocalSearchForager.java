@@ -28,11 +28,11 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 /**
- * A {@link Forager} which forages accepted moves and ignores unaccepted moves.
- * @see Forager
+ * A {@link LocalSearchForager} which forages accepted moves and ignores unaccepted moves.
+ * @see LocalSearchForager
  * @see Acceptor
  */
-public class AcceptedForager extends AbstractForager {
+public class AcceptedLocalSearchForager extends AbstractLocalSearchForager {
 
     protected final FinalistPodium finalistPodium;
     protected final LocalSearchPickEarlyType pickEarlyType;
@@ -44,7 +44,7 @@ public class AcceptedForager extends AbstractForager {
 
     protected LocalSearchMoveScope earlyPickedMoveScope;
 
-    public AcceptedForager(FinalistPodium finalistPodium,
+    public AcceptedLocalSearchForager(FinalistPodium finalistPodium,
             LocalSearchPickEarlyType pickEarlyType, int acceptedCountLimit, boolean breakTieRandomly) {
         this.finalistPodium = finalistPodium;
         this.pickEarlyType = pickEarlyType;

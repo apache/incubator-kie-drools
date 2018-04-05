@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.score.director;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
@@ -24,6 +25,7 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
+import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.ChildThreadType;
 
@@ -42,6 +44,13 @@ public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_> 
      * @return used to check {@link #isWorkingEntityListDirty(long)} later on
      */
     long getWorkingEntityListRevision();
+
+    /**
+     * @param move never null
+     * @param assertMoveScoreFromScratch true will hurt performance
+     * @param moveProcessor never null, use this to store the score as well as call the acceptor and forager
+     */
+    void doAndProcessMove(Move<Solution_> move, boolean assertMoveScoreFromScratch, Consumer<Score> moveProcessor);
 
     /**
      * @param expectedWorkingEntityListRevision an
@@ -162,5 +171,16 @@ public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_> 
      * @see InnerScoreDirectorFactory#assertScoreFromScratch
      */
     void assertWorkingScoreFromScratch(Score workingScore, Object completedAction);
+
+    /**
+     * Asserts that if the {@link Score} is calculated for the current {@link PlanningSolution working solution}
+     * in a the current {@link ScoreDirector} (with incremental calculation residue),
+     * it is equal to the parameter {@link Score beforeMoveScore}.
+     * <p>
+     * Furthermore, if the assert fails, a score corruption analysis might be included in the exception message.
+     * @param move never null
+     * @param beforeMoveScore never null
+     */
+    void assertExpectedUndoMoveScore(Move move, Score beforeMoveScore);
 
 }

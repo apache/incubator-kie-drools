@@ -143,11 +143,10 @@ public class StrategicOscillationByLevelFinalistPodiumTest {
 
     protected <Solution_> LocalSearchMoveScope<Solution_> buildMoveScope(
             LocalSearchStepScope<Solution_> stepScope, int hardScore, int softScore) {
-        LocalSearchMoveScope<Solution_> moveScope = new LocalSearchMoveScope<>(stepScope);
         Move<Solution_> move = mock(Move.class);
-        moveScope.setAccepted(true);
-        moveScope.setMove(move);
+        LocalSearchMoveScope<Solution_> moveScope = new LocalSearchMoveScope<>(stepScope, 0, move);
         moveScope.setScore(HardSoftScore.valueOf(hardScore, softScore));
+        moveScope.setAccepted(true);
         return moveScope;
     }
 
@@ -206,11 +205,10 @@ public class StrategicOscillationByLevelFinalistPodiumTest {
 
     protected <Solution_> LocalSearchMoveScope<Solution_> buildMoveScope(
             LocalSearchStepScope<Solution_> stepScope, int hardScore, int mediumScore, int softScore) {
-        LocalSearchMoveScope<Solution_> moveScope = new LocalSearchMoveScope<>(stepScope);
         Move<Solution_> move = mock(Move.class);
-        moveScope.setAccepted(true);
-        moveScope.setMove(move);
+        LocalSearchMoveScope<Solution_> moveScope = new LocalSearchMoveScope<>(stepScope, 0, move);
         moveScope.setScore(HardMediumSoftScore.valueOf(hardScore, mediumScore, softScore));
+        moveScope.setAccepted(true);
         return moveScope;
     }
 

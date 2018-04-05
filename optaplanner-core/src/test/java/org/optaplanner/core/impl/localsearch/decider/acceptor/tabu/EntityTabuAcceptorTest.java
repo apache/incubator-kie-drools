@@ -255,10 +255,9 @@ public class EntityTabuAcceptorTest {
 
     private <Solution_> LocalSearchMoveScope<Solution_> buildMoveScope(
             LocalSearchStepScope<Solution_> stepScope, int score, TestdataEntity... entities) {
-        LocalSearchMoveScope<Solution_> moveScope = new LocalSearchMoveScope<>(stepScope);
         Move move = mock(Move.class);
         when(move.getPlanningEntities()).thenReturn((Collection) Arrays.asList(entities));
-        moveScope.setMove(move);
+        LocalSearchMoveScope<Solution_> moveScope = new LocalSearchMoveScope<>(stepScope, 0, move);
         moveScope.setScore(SimpleScore.valueOf(score));
         return moveScope;
     }

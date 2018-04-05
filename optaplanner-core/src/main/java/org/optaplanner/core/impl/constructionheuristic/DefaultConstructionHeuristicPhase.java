@@ -36,7 +36,7 @@ public class DefaultConstructionHeuristicPhase<Solution_> extends AbstractPhase<
         implements ConstructionHeuristicPhase<Solution_> {
 
     protected EntityPlacer entityPlacer;
-    protected ConstructionHeuristicDecider decider;
+    protected ConstructionHeuristicDecider<Solution_> decider;
 
     // TODO make this configurable or make it constant
     protected final boolean skipBestSolutionCloningInSteps = true;
@@ -50,7 +50,7 @@ public class DefaultConstructionHeuristicPhase<Solution_> extends AbstractPhase<
         this.entityPlacer = entityPlacer;
     }
 
-    public void setDecider(ConstructionHeuristicDecider decider) {
+    public void setDecider(ConstructionHeuristicDecider<Solution_> decider) {
         this.decider = decider;
     }
 
@@ -103,9 +103,10 @@ public class DefaultConstructionHeuristicPhase<Solution_> extends AbstractPhase<
     }
 
     private void doStep(ConstructionHeuristicStepScope<Solution_> stepScope) {
-        Move<Solution_> nextStep = stepScope.getStep();
-        nextStep.doMove(stepScope.getScoreDirector());
-        predictWorkingStepScore(stepScope, nextStep);
+        Move<Solution_> step = stepScope.getStep();
+        Move<Solution_> undoStep = step.doMove(stepScope.getScoreDirector());
+        stepScope.setUndoStep(undoStep);
+        predictWorkingStepScore(stepScope, step);
         if (!skipBestSolutionCloningInSteps) {
             // Causes a planning clone, which is expensive
             // For example, on cloud balancing 1200c-4800p this reduces performance by 18%

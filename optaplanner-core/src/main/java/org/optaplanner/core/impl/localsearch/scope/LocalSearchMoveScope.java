@@ -21,7 +21,7 @@ import java.util.Random;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.heuristic.move.Move;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -29,15 +29,16 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 public class LocalSearchMoveScope<Solution_> {
 
     private final LocalSearchStepScope<Solution_> stepScope;
+    private final int moveIndex;
+    private final Move<Solution_> move;
 
-    private int moveIndex;
-    private Move<Solution_> move = null;
-    private Move<Solution_> undoMove = null;
     private Score score = null;
     private Boolean accepted = null;
 
-    public LocalSearchMoveScope(LocalSearchStepScope<Solution_> stepScope) {
+    public LocalSearchMoveScope(LocalSearchStepScope<Solution_> stepScope, int moveIndex, Move<Solution_> move) {
         this.stepScope = stepScope;
+        this.moveIndex = moveIndex;
+        this.move = move;
     }
 
     public LocalSearchStepScope<Solution_> getStepScope() {
@@ -48,24 +49,8 @@ public class LocalSearchMoveScope<Solution_> {
         return moveIndex;
     }
 
-    public void setMoveIndex(int moveIndex) {
-        this.moveIndex = moveIndex;
-    }
-
     public Move<Solution_> getMove() {
         return move;
-    }
-
-    public void setMove(Move<Solution_> move) {
-        this.move = move;
-    }
-
-    public Move<Solution_> getUndoMove() {
-        return undoMove;
-    }
-
-    public void setUndoMove(Move<Solution_> undoMove) {
-        this.undoMove = undoMove;
     }
 
     public Score getScore() {
@@ -88,7 +73,7 @@ public class LocalSearchMoveScope<Solution_> {
     // Calculated methods
     // ************************************************************************
 
-    public ScoreDirector<Solution_> getScoreDirector() {
+    public InnerScoreDirector<Solution_> getScoreDirector() {
         return stepScope.getScoreDirector();
     }
 
@@ -98,6 +83,21 @@ public class LocalSearchMoveScope<Solution_> {
 
     public Random getWorkingRandom() {
         return stepScope.getWorkingRandom();
+    }
+
+    public LocalSearchMoveScope<Solution_> rebase(LocalSearchStepScope<Solution_> destinationStepScope,
+            InnerScoreDirector<Solution_> destinationScoreDirector) {
+        if (stepScope.getStepIndex() != destinationStepScope.getStepIndex()) {
+            throw new IllegalStateException("Impossible situation: rebasing of MoveScope with stepIndex ("
+                    + stepScope.getStepIndex() + ") and moveIndex (" + moveIndex
+                    + ") fails because the destinationStepScope has a different stepIndex ("
+                    + destinationStepScope.getStepIndex() + ").");
+        }
+        Move<Solution_> rebasedMove = move.rebase(destinationScoreDirector);
+        LocalSearchMoveScope<Solution_> rebasedMoveScope = new LocalSearchMoveScope<>(destinationStepScope, moveIndex, rebasedMove);
+        rebasedMoveScope.setScore(score);
+        rebasedMoveScope.setAccepted(accepted);
+        return rebasedMoveScope;
     }
 
     @Override

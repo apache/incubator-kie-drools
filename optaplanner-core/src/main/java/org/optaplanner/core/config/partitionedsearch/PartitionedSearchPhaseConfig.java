@@ -104,8 +104,8 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
      * this results in a slower score calculation speed per partition {@link Solver}.
      * <p/>
      * Defaults to {@value #ACTIVE_THREAD_COUNT_AUTO} which consumes the majority
-     * but not all of the CPU cores on multi-core machines, preventing other processes (including your IDE or SSH connection)
-     * on the machine from hanging.
+     * but not all of the CPU cores on multi-core machines, to prevent a livelock that hangs other processes
+     * (such as your IDE, REST servlets threads or SSH connections) on the machine.
      * <p/>
      * Use {@value #ACTIVE_THREAD_COUNT_UNLIMITED} to give it all CPU cores.
      * This is useful if you're handling the CPU consumption on an OS level.

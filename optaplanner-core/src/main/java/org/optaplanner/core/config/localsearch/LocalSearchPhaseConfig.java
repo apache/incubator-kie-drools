@@ -42,7 +42,7 @@ import org.optaplanner.core.impl.localsearch.DefaultLocalSearchPhase;
 import org.optaplanner.core.impl.localsearch.LocalSearchPhase;
 import org.optaplanner.core.impl.localsearch.decider.LocalSearchDecider;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.Acceptor;
-import org.optaplanner.core.impl.localsearch.decider.forager.Forager;
+import org.optaplanner.core.impl.localsearch.decider.forager.LocalSearchForager;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
@@ -127,7 +127,7 @@ public class LocalSearchPhaseConfig extends PhaseConfig<LocalSearchPhaseConfig> 
     private LocalSearchDecider buildDecider(HeuristicConfigPolicy configPolicy, Termination termination) {
         MoveSelector moveSelector = buildMoveSelector(configPolicy);
         Acceptor acceptor = buildAcceptor(configPolicy);
-        Forager forager = buildForager(configPolicy);
+        LocalSearchForager forager = buildForager(configPolicy);
         LocalSearchDecider decider = new LocalSearchDecider(configPolicy.getLogIndentation(),
                 termination, moveSelector, acceptor, forager);
         if (moveSelector.isNeverEnding() && !forager.supportsNeverEndingMoveSelector()) {
@@ -181,7 +181,7 @@ public class LocalSearchPhaseConfig extends PhaseConfig<LocalSearchPhaseConfig> 
         return acceptorConfig_.buildAcceptor(configPolicy);
     }
 
-    protected Forager buildForager(HeuristicConfigPolicy configPolicy) {
+    protected LocalSearchForager buildForager(HeuristicConfigPolicy configPolicy) {
         LocalSearchForagerConfig foragerConfig_;
         if (foragerConfig != null) {
             if (localSearchType != null) {

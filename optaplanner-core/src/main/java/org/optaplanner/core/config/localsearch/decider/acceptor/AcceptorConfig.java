@@ -45,6 +45,7 @@ import static org.apache.commons.lang3.ObjectUtils.*;
 @XStreamAlias("acceptor")
 public class AcceptorConfig extends AbstractConfig<AcceptorConfig> {
 
+    @Deprecated // TODO remove in 8.0
     @XStreamImplicit(itemFieldName = "acceptorClass")
     private List<Class<? extends Acceptor>> acceptorClassList = null;
 
@@ -73,10 +74,12 @@ public class AcceptorConfig extends AbstractConfig<AcceptorConfig> {
     protected Integer stepCountingHillClimbingSize = null;
     protected StepCountingHillClimbingType stepCountingHillClimbingType = null;
 
+    @Deprecated
     public List<Class<? extends Acceptor>> getAcceptorClassList() {
         return acceptorClassList;
     }
 
+    @Deprecated
     public void setAcceptorClassList(List<Class<? extends Acceptor>> acceptorClassList) {
         this.acceptorClassList = acceptorClassList;
     }

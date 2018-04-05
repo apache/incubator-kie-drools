@@ -23,10 +23,10 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 
 /**
- * A Forager collects the accepted moves and picks the next step from those for the {@link LocalSearchDecider}.
- * @see AbstractForager
+ * Collects the moves and picks the next step from those for the {@link LocalSearchDecider}.
+ * @see AbstractLocalSearchForager
  */
-public interface Forager extends LocalSearchPhaseLifecycleListener {
+public interface LocalSearchForager extends LocalSearchPhaseLifecycleListener {
 
     /**
      * @return true if it can be combined with a {@link MoveSelector#isNeverEnding()} that returns true.

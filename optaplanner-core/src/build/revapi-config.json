@@ -115,6 +115,31 @@
           "classSimpleName": "MemberAccessorType",
           "elementKind": "enum",
           "justification": "Internal utility enum moved to MemberAccessorFactory"
+        },
+        {
+          "code": "java.method.returnTypeTypeParametersChanged",
+          "old": "method java.lang.Class<? extends org.optaplanner.core.impl.localsearch.decider.forager.Forager> org.optaplanner.core.config.localsearch.decider.forager.LocalSearchForagerConfig::getForagerClass()",
+          "new": "method java.lang.Class<? extends org.optaplanner.core.impl.localsearch.decider.forager.LocalSearchForager> org.optaplanner.core.config.localsearch.decider.forager.LocalSearchForagerConfig::getForagerClass()",
+          "oldType": "java.lang.Class<? extends org.optaplanner.core.impl.localsearch.decider.forager.Forager>",
+          "newType": "java.lang.Class<? extends org.optaplanner.core.impl.localsearch.decider.forager.LocalSearchForager>",
+          "package": "org.optaplanner.core.config.localsearch.decider.forager",
+          "classSimpleName": "LocalSearchForagerConfig",
+          "methodName": "getForagerClass",
+          "elementKind": "method",
+          "justification": "Non-api class changed name. The exposure of this class in the API is now deprecated and will be removed in 8.0."
+        },
+        {
+          "code": "java.method.parameterTypeParameterChanged",
+          "old": "parameter void org.optaplanner.core.config.localsearch.decider.forager.LocalSearchForagerConfig::setForagerClass(===java.lang.Class<? extends org.optaplanner.core.impl.localsearch.decider.forager.Forager>===)",
+          "new": "parameter void org.optaplanner.core.config.localsearch.decider.forager.LocalSearchForagerConfig::setForagerClass(===java.lang.Class<? extends org.optaplanner.core.impl.localsearch.decider.forager.LocalSearchForager>===)",
+          "oldType": "java.lang.Class<? extends org.optaplanner.core.impl.localsearch.decider.forager.Forager>",
+          "newType": "java.lang.Class<? extends org.optaplanner.core.impl.localsearch.decider.forager.LocalSearchForager>",
+          "package": "org.optaplanner.core.config.localsearch.decider.forager",
+          "classSimpleName": "LocalSearchForagerConfig",
+          "methodName": "setForagerClass",
+          "parameterIndex": "0",
+          "elementKind": "parameter",
+          "justification": "Non-api class changed name. The exposure of this class in the API is now deprecated and will be removed in 8.0."
         }
       ]
     }

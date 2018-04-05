@@ -27,9 +27,8 @@ public abstract class AbstractAcceptorTest {
 
     protected <Solution_> LocalSearchMoveScope<Solution_> buildMoveScope(
             LocalSearchStepScope<Solution_> stepScope, int score) {
-        LocalSearchMoveScope<Solution_> moveScope = new LocalSearchMoveScope<>(stepScope);
         Move<Solution_> move = mock(Move.class);
-        moveScope.setMove(move);
+        LocalSearchMoveScope<Solution_> moveScope = new LocalSearchMoveScope<>(stepScope, 0, move);
         moveScope.setScore(SimpleScore.valueOf(score));
         return moveScope;
     }

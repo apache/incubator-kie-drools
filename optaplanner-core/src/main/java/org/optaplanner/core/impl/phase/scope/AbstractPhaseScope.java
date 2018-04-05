@@ -171,7 +171,7 @@ public abstract class AbstractPhaseScope<Solution_> {
         solverScope.assertShadowVariablesAreNotStale(workingScore, completedAction);
     }
 
-    public void assertExpectedUndoMoveScore(Move move, Move undoMove, Score beforeMoveScore) {
+    public void assertExpectedUndoMoveScore(Move move, Score beforeMoveScore) {
         Score undoScore = calculateScore();
         if (!undoScore.equals(beforeMoveScore)) {
             logger.trace("        Corruption detected. Diagnosing...");

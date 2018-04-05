@@ -255,10 +255,9 @@ public class ValueTabuAcceptorTest {
 
     private <Solution_> LocalSearchMoveScope<Solution_> buildMoveScope(
             LocalSearchStepScope<Solution_> stepScope, int score, TestdataValue... values) {
-        LocalSearchMoveScope<Solution_> moveScope = new LocalSearchMoveScope<>(stepScope);
         Move move = mock(Move.class);
         when(move.getPlanningValues()).thenReturn((Collection) Arrays.asList(values));
-        moveScope.setMove(move);
+        LocalSearchMoveScope<Solution_> moveScope = new LocalSearchMoveScope<>(stepScope, 0, move);
         moveScope.setScore(SimpleScore.valueOf(score));
         return moveScope;
     }

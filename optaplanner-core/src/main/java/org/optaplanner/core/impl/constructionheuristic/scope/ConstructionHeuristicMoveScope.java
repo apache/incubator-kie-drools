@@ -21,7 +21,7 @@ import java.util.Random;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.heuristic.move.Move;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -31,8 +31,7 @@ public class ConstructionHeuristicMoveScope<Solution_> {
     private final ConstructionHeuristicStepScope<Solution_> stepScope;
 
     private int moveIndex;
-    private Move move = null;
-    private Move undoMove = null;
+    private Move<Solution_> move = null;
     private Score score = null;
 
     public ConstructionHeuristicMoveScope(ConstructionHeuristicStepScope<Solution_> stepScope) {
@@ -51,20 +50,12 @@ public class ConstructionHeuristicMoveScope<Solution_> {
         this.moveIndex = moveIndex;
     }
 
-    public Move getMove() {
+    public Move<Solution_> getMove() {
         return move;
     }
 
-    public void setMove(Move move) {
+    public void setMove(Move<Solution_> move) {
         this.move = move;
-    }
-
-    public Move getUndoMove() {
-        return undoMove;
-    }
-
-    public void setUndoMove(Move undoMove) {
-        this.undoMove = undoMove;
     }
 
     public Score getScore() {
@@ -79,7 +70,7 @@ public class ConstructionHeuristicMoveScope<Solution_> {
     // Calculated methods
     // ************************************************************************
 
-    public ScoreDirector<Solution_> getScoreDirector() {
+    public InnerScoreDirector<Solution_> getScoreDirector() {
         return stepScope.getScoreDirector();
     }
 

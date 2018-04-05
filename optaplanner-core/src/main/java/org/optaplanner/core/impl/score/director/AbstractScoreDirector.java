@@ -25,6 +25,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.api.score.Score;
@@ -40,6 +41,7 @@ import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.core.impl.domain.variable.listener.support.VariableListenerSupport;
 import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
+import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.ChildThreadType;
 import org.slf4j.Logger;
@@ -161,6 +163,17 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
         }
         variableListenerSupport.resetWorkingSolution();
         setWorkingEntityListDirty();
+    }
+
+    @Override
+    public void doAndProcessMove(Move<Solution_> move, boolean assertMoveScoreFromScratch, Consumer<Score> moveProcessor) {
+        Move<Solution_> undoMove = move.doMove(this);
+        Score score = calculateScore();
+        if (assertMoveScoreFromScratch) {
+            assertWorkingScoreFromScratch(score, move);
+        }
+        moveProcessor.accept(score);
+        undoMove.doMove(this);
     }
 
     @Override
@@ -498,6 +511,30 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
                                 + uncorruptedScore + ") after completedAction (" + completedAction
                                 + "):\n" + scoreCorruptionAnalysis);
             }
+        }
+    }
+
+    @Override
+    public void assertExpectedUndoMoveScore(Move move, Score beforeMoveScore) {
+        Score undoScore = calculateScore();
+        if (!undoScore.equals(beforeMoveScore)) {
+            logger.trace("        Corruption detected. Diagnosing...");
+            // TODO PLANNER-421 Avoid undoMove.toString() because it's stale (because the move is already done)
+            String undoMoveString = "Undo(" + move + ")";
+            // Precondition: assert that are probably no corrupted score rules.
+            assertWorkingScoreFromScratch(undoScore, undoMoveString);
+            // Precondition: assert that shadow variable after the undoMove aren't stale
+            assertShadowVariablesAreNotStale(undoScore, undoMoveString);
+            throw new IllegalStateException("UndoMove corruption: the beforeMoveScore (" + beforeMoveScore
+                    + ") is not the undoScore (" + undoScore
+                    + ") which is the uncorruptedScore (" + undoScore + ") of the workingSolution.\n"
+                    + "  1) Enable EnvironmentMode " + EnvironmentMode.FULL_ASSERT
+                    + " (if you haven't already) to fail-faster in case there's a score corruption.\n"
+                    + "  2) Check the Move.createUndoMove(...) method of the moveClass (" + move.getClass() + ")."
+                    + " The move (" + move + ") might have a corrupted undoMove (" + undoMoveString + ").\n"
+                    + "  3) Check your custom " + VariableListener.class.getSimpleName() + "s (if you have any)"
+                    + " for shadow variables that are used by the score constraints with a different score weight"
+                    + " between the beforeMoveScore (" + beforeMoveScore + ") and the undoScore (" + undoScore + ").");
         }
     }
 
