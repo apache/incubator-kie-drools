@@ -709,11 +709,12 @@ public class KnowledgeBaseImpl
      */
     @Override
     public void addPackages( Collection<KiePackage> newPkgs ) {
-        final List<InternalKnowledgePackage> clonedPkgs = new ArrayList<InternalKnowledgePackage>();
+        final List<InternalKnowledgePackage> clonedPkgs = new ArrayList<>();
         for (KiePackage newPkg : newPkgs) {
             clonedPkgs.add(((InternalKnowledgePackage)newPkg).deepCloneIfAlreadyInUse(rootClassLoader));
         }
 
+        clonedPkgs.sort( (p1, p2) -> p1.getRules().isEmpty() || p2.getRules().isEmpty() ? 0 : p1.getName().compareTo( p2.getName() ) );
         enqueueModification( () -> internalAddPackages( clonedPkgs ) );
     }
     
@@ -826,7 +827,7 @@ public class KnowledgeBaseImpl
         }
     }
 
-    private void internalAddPackages(List<InternalKnowledgePackage> clonedPkgs) {
+    private void internalAddPackages(Collection<InternalKnowledgePackage> clonedPkgs) {
         for ( InternalWorkingMemory wm : getWorkingMemories() ) {
             wm.flushPropagations();
         }
@@ -942,7 +943,7 @@ public class KnowledgeBaseImpl
         }
     }
 
-    public void processAllTypesDeclaration( List<InternalKnowledgePackage> pkgs ) {
+    public void processAllTypesDeclaration( Collection<InternalKnowledgePackage> pkgs ) {
         List<TypeDeclaration> allTypeDeclarations = new ArrayList<TypeDeclaration>();
         // Add all Type Declarations, this has to be done first incase packages cross reference each other during build process.
         for ( InternalKnowledgePackage newPkg : pkgs ) {

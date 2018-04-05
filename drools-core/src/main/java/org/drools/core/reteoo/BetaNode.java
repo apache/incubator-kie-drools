@@ -136,6 +136,7 @@ public abstract class BetaNode extends LeftTupleSource
             throw new RuntimeException("cannot have null constraints, must at least be an instance of EmptyBetaConstraints");
         }
 
+        this.constraints.init(context, getType());
         this.constraints.registerEvaluationContext(context);
 
         initMasks(context, leftInput);
@@ -267,7 +268,7 @@ public abstract class BetaNode extends LeftTupleSource
         super.writeExternal( out );
     }
 
-    public void setUnificationJoin() {
+    private void setUnificationJoin() {
         // If this join uses a indexed, ==, constraint on a query parameter then set indexedUnificationJoin to true
         // This ensure we get the correct iterator
         BetaNodeFieldConstraint[] betaCconstraints = this.constraints.getConstraints();
@@ -475,7 +476,7 @@ public abstract class BetaNode extends LeftTupleSource
         return this.constraints;
     }
     
-    public void setConstraints(BetaConstraints constraints) {
+    private void setConstraints(BetaConstraints constraints) {
         this.constraints = constraints.cloneIfInUse();
     }
     
@@ -518,7 +519,6 @@ public abstract class BetaNode extends LeftTupleSource
     }
 
     public void attach(BuildContext context) {
-        constraints.init(context, getType());
         setUnificationJoin();
 
         this.rightInput.addObjectSink(this);

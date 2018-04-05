@@ -16,6 +16,7 @@ import org.drools.core.rule.IntervalProviderConstraint;
 import org.drools.core.rule.MutableTypeConstraint;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.spi.PatternExtractor;
 import org.drools.core.spi.Tuple;
 import org.drools.core.time.Interval;
 import org.drools.core.util.AbstractHashTable.FieldIndex;
@@ -49,6 +50,10 @@ public class LambdaConstraint extends MutableTypeConstraint implements Indexable
                 field = new ObjectFieldImpl( ( ( AlphaIndex ) index).getRightValue() );
             } else if (index instanceof BetaIndex) {
                 indexingDeclaration = evaluator.getRequiredDeclarations()[0];
+                if ( indexingDeclaration.getExtractor() instanceof PatternExtractor ) {
+                    indexingDeclaration = indexingDeclaration.clone();
+                    indexingDeclaration.setReadAccessor( new LambdaReadAccessor( index.getIndexId(), index.getIndexedClass(), (( BetaIndex ) index).getRightOperandExtractor() ) );
+                }
             }
         }
     }

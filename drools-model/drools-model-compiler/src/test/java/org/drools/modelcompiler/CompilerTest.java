@@ -18,12 +18,9 @@ package org.drools.modelcompiler;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.assertj.core.api.Assertions;
-import org.drools.core.reteoo.AlphaNode;
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Adult;
 import org.drools.modelcompiler.domain.Child;
@@ -258,83 +255,6 @@ public class CompilerTest extends BaseModelTest {
 
         ksession.fireAllRules();
         assertEquals("Edson is older than Mark", result.getValue());
-    }
-
-    @Test
-    public void testShareAlpha() {
-        String str =
-                "import " + Result.class.getCanonicalName() + ";" +
-                "import " + Person.class.getCanonicalName() + ";" +
-                "rule R when\n" +
-                "  $r : java.util.Set()\n" +
-                "  $p1 : Person(name == \"Edson\")\n" +
-                "  $p2 : Person(name != \"Edson\", age > $p1.age)\n" +
-                "  $p3 : Person(name != \"Edson\", age > $p1.age, this != $p2)\n" +
-                "then\n" +
-                "  $r.add($p2);\n" +
-                "  $r.add($p3);\n" +
-                "end";
-
-        KieSession ksession = getKieSession( str );
-
-        Set result = new HashSet<>();
-        ksession.insert( result );
-
-        Person mark = new Person( "Mark", 37 );
-        Person edson = new Person( "Edson", 35 );
-        Person mario = new Person( "Mario", 40 );
-
-        ksession.insert( mark );
-        ksession.insert( edson );
-        ksession.insert( mario );
-        ksession.fireAllRules();
-
-        assertTrue( result.contains( mark ) );
-        assertTrue( result.contains( mario ) );
-
-        // Alpha node "name != Edson" should be shared between 3rd and 4th pattern.
-        // therefore alpha nodes should be a total of 2: name == Edson, name != Edson
-        assertEquals( 2, ReteDumper.dumpRete( ksession ).stream().filter( AlphaNode.class::isInstance ).count() );
-    }
-
-    @Test
-    public void testShareAlphaInDifferentRules() {
-        String str =
-                "import " + Person.class.getCanonicalName() + ";" +
-                "rule R1 when\n" +
-                "  $p1 : Person(name == \"Edson\")\n" +
-                "then\n" +
-                "end\n" +
-                "rule R2 when\n" +
-                "  $p1 : Person(name == \"Edson\")\n" +
-                "then\n" +
-                "end";
-
-        KieSession ksession = getKieSession( str );
-
-        assertEquals( 1, ReteDumper.dumpRete( ksession ).stream().filter( AlphaNode.class::isInstance ).count() );
-    }
-
-    @Test
-    public void testShareAlphaInDifferentPackages() {
-        String str1 =
-                "package org.drools.a\n" +
-                "import " + Person.class.getCanonicalName() + ";" +
-                "rule R1 when\n" +
-                "  $p1 : Person(name == \"Edson\")\n" +
-                "then\n" +
-                "end\n";
-        String str2 =
-                "package org.drools.b\n" +
-                "import " + Person.class.getCanonicalName() + ";" +
-                "rule R2 when\n" +
-                "  $p1 : Person(name == \"Edson\")\n" +
-                "then\n" +
-                "end";
-
-        KieSession ksession = getKieSession( str1, str2 );
-
-        assertEquals( 1, ReteDumper.dumpRete( ksession ).stream().filter( AlphaNode.class::isInstance ).count() );
     }
 
     @Test
