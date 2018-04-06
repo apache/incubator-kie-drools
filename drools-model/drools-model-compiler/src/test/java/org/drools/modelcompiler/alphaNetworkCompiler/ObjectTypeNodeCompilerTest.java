@@ -1,16 +1,12 @@
-package org.drools.compiler.reteoo.compiled;
+package org.drools.modelcompiler.alphaNetworkCompiler;
 
 import org.drools.modelcompiler.BaseModelTest;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
 import org.kie.api.builder.model.KieModuleModel;
-import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.utils.KieHelper;
 
 import static org.junit.Assert.*;
 
@@ -39,7 +35,7 @@ public class ObjectTypeNodeCompilerTest extends BaseModelTest {
     }
 
     @Test
-    public void testAlphaConstraintsPerson() {
+    public void testAlphaConstraintsSwitchString() {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                         "rule \"Bind1\"\n" +
@@ -68,7 +64,7 @@ public class ObjectTypeNodeCompilerTest extends BaseModelTest {
     }
 
     @Test
-    public void testAlphaConstraint2() {
+    public void testAlphaConstraintsSwitchIntegers() {
         String str =
                 "rule \"Bind1\"\n" +
                         "when\n" +
