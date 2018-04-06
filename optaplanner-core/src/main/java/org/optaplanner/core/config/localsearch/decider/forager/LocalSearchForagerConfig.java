@@ -97,7 +97,8 @@ public class LocalSearchForagerConfig extends AbstractConfig<LocalSearchForagerC
         FinalistPodiumType finalistPodiumType_ = defaultIfNull(finalistPodiumType, FinalistPodiumType.HIGHEST_SCORE);
         // Breaking ties randomly leads statistically to much better results
         boolean breakTieRandomly_  = defaultIfNull(breakTieRandomly, true);
-        return new AcceptedLocalSearchForager(finalistPodiumType_.buildFinalistPodium(), pickEarlyType_, acceptedCountLimit_, breakTieRandomly_);
+        return new AcceptedLocalSearchForager(finalistPodiumType_.buildFinalistPodium(), pickEarlyType_,
+                acceptedCountLimit_, breakTieRandomly_);
     }
 
     @Override

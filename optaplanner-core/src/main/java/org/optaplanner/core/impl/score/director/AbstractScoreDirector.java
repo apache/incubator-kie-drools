@@ -521,9 +521,9 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
             logger.trace("        Corruption detected. Diagnosing...");
             // TODO PLANNER-421 Avoid undoMove.toString() because it's stale (because the move is already done)
             String undoMoveString = "Undo(" + move + ")";
-            // Precondition: assert that are probably no corrupted score rules.
+            // Precondition: assert that there are probably no corrupted score rules
             assertWorkingScoreFromScratch(undoScore, undoMoveString);
-            // Precondition: assert that shadow variable after the undoMove aren't stale
+            // Precondition: assert that shadow variables aren't stale after doing the undoMove
             assertShadowVariablesAreNotStale(undoScore, undoMoveString);
             throw new IllegalStateException("UndoMove corruption: the beforeMoveScore (" + beforeMoveScore
                     + ") is not the undoScore (" + undoScore

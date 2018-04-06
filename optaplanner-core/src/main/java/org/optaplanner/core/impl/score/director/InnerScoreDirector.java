@@ -174,7 +174,7 @@ public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_> 
 
     /**
      * Asserts that if the {@link Score} is calculated for the current {@link PlanningSolution working solution}
-     * in a the current {@link ScoreDirector} (with incremental calculation residue),
+     * in the current {@link ScoreDirector} (with incremental calculation residue),
      * it is equal to the parameter {@link Score beforeMoveScore}.
      * <p>
      * Furthermore, if the assert fails, a score corruption analysis might be included in the exception message.
