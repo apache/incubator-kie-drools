@@ -16,7 +16,8 @@
 
 package org.drools.core.reteoo.compiled;
 
-import org.drools.core.base.ClassFieldReader;
+import java.util.stream.Stream;
+
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.reteoo.AlphaNode;
@@ -121,7 +122,7 @@ public class AssertHandler extends AbstractCompilerHandler {
         final InternalReadAccessor fieldExtractor = indexableConstraint.getFieldExtractor();
         fieldType = fieldExtractor.getExtractToClass();
 
-        if(String.class.isAssignableFrom(fieldType) || Integer.class.isAssignableFrom(fieldType)) {
+        if(canInlineValue()) {
             String switchVar = "switchVar";
             builder.append(fieldType.getCanonicalName())
                     .append(" ")
@@ -132,7 +133,7 @@ public class AssertHandler extends AbstractCompilerHandler {
                     .append(LOCAL_FACT_VAR_NAME)
                     .append(");").append(NEWLINE);
 
-            builder.append("if(").append(switchVar).append(" != null) {").append(NEWLINE);
+            builder.append("if(true) {").append(NEWLINE);
             builder.append("switch(").append(switchVar).append(")").append("{").append(NEWLINE);
         } else {
 
@@ -155,13 +156,23 @@ public class AssertHandler extends AbstractCompilerHandler {
 
     }
 
+    private boolean canInlineValue() {
+        return Stream.of(String.class, Integer.class, int.class).anyMatch(c -> c.isAssignableFrom(fieldType));
+    }
+
     @Override
     public void startHashedAlphaNode(AlphaNode hashedAlpha, Object hashedValue) {
-        if(String.class.isAssignableFrom(fieldType) || Integer.class.isAssignableFrom(fieldType)) {
+        if(canInlineValue()) {
+
+            final Object quotedHashedValue;
+            if (hashedValue instanceof String) {
+                quotedHashedValue = String.format("\"%s\"", hashedValue);
+            } else {
+                quotedHashedValue = hashedValue;
+            }
+
             builder.append("case ")
-                    .append("\"")
-                    .append(hashedValue)
-                    .append("\"")
+                    .append(quotedHashedValue)
                     .append(" : ").append(NEWLINE);
         } else {
             builder.append("case ").append(hashedAlpha.getId()).append(" : ").append(NEWLINE);
