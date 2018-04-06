@@ -51,6 +51,7 @@ public class MiningSegmentation {
 	private static final String segmentSelectAll = BASE_DIR+"selectAllSegments.mvel";
 	private static final String segmentModelChain = BASE_DIR+"modelChain.mvel";
 	private static final String segmentWeightedAvg = BASE_DIR+"weightedAvg.mvel";
+	private static final String segmentSummed = BASE_DIR+"summed.mvel";
 	
 	public MiningSegmentation(Miningmodel owner, Segmentation segmentation) {
 		this.owner = owner;
@@ -80,6 +81,7 @@ public class MiningSegmentation {
 			templateNameToFile.put(MULTIPLEMODELMETHOD.SELECT_ALL.name(), segmentSelectAll);
 			templateNameToFile.put(MULTIPLEMODELMETHOD.MODEL_CHAIN.name(), segmentModelChain);
 			templateNameToFile.put(MULTIPLEMODELMETHOD.WEIGHTED_AVERAGE.name(), segmentWeightedAvg);
+			templateNameToFile.put(MULTIPLEMODELMETHOD.SUM.name(), segmentSummed);
 		}
 	}
 	
@@ -211,6 +213,13 @@ public class MiningSegmentation {
 				builder.append(new String(baos.toByteArray()));
 				break;
 			case SUM:
+				templateVars.put("ruleUnitClassName", this.getOwner().getRuleUnitClassName());
+				templateVars.put("miningModel", this.getOwner());
+				templateVars.put("childSegments", this.getMiningSegments());
+				templateVars.put("packageName", pkgName);
+				ct = templates.getNamedTemplate(this.multipleModelMethod.name());
+				TemplateRuntime.execute(ct,null,new MapVariableResolverFactory(templateVars),baos);
+				builder.append(new String(baos.toByteArray()));
 				break;
 			case WEIGHTED_AVERAGE:
 				templateVars.put("ruleUnitClassName", this.getOwner().getRuleUnitClassName());
