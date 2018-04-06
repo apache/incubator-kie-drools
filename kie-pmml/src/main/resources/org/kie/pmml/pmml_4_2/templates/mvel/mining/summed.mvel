@@ -32,7 +32,7 @@ import org.kie.api.runtime.rule.FactHandle;
 @code{ int salienceValue; }
 @code{ String nextSegmentId; }
 
-declare WeightedAvg_@{miningModel.targetField}
+declare Summed_@{miningModel.targetField}
    value: Number
    weight: Double
 end
@@ -84,22 +84,20 @@ then
 end
 
 
-rule "Calculate weighted average"
+rule "Calculate sum"
 salience -100
 when
    forall( SegmentExecution( state == SegmentExecutionState.COMPLETE || == SegmentExecutionState.ERROR ) )
-   accumulate( MiningSegmentWeight( $wt: weight, $val: weightedSegmentValue ); $sweight: sum($wt), $svalue: sum($val) )
-   $reslt: PMML4Result( segmentId == null, resultVariables == null || "WeightedAvg_@{miningModel.targetField}" not memberOf resultVariables.keySet() ) from results
+   accumulate( MiningSegmentWeight( $val: segmentValue != null ); $svalue: sum($val) )
+   $reslt: PMML4Result( segmentId == null, resultVariables == null || "Sum_@{miningModel.targetField}" not memberOf resultVariables.keySet() ) from results
 then
-   WeightedAvg_@{miningModel.targetField} target = new WeightedAvg_@{miningModel.targetField}();
+   Summed_@{miningModel.targetField} target = new Summed_@{miningModel.targetField}();
    target.setValue($svalue);
-   target.setWeight($sweight);
    FactHandle fh = ((org.drools.core.datasources.InternalDataSource)results).getFactHandleForObject($reslt);
    $reslt.setResultCode("OK");
-   $reslt.addResultVariable("WeightedAvg_@{miningModel.targetField}",target);
+   $reslt.addResultVariable("Sum_@{miningModel.targetField}",target);
    results.update(fh,$reslt);
 end
-
 
 rule "Insert Segment Weights"
 salience 1000
@@ -109,6 +107,8 @@ then
    insert( new MiningSegmentWeight( "@{childSegment.owner.segmentationId}", "@{childSegment.segmentId}", "@{childSegment.targetForWeighting}", @{childSegment.weight} ) );
    @end{}
 end
+
+
 
 @foreach{ childSegment: childSegments }
 @code{ salienceValue = 100 - childSegment.segmentIndex; }
