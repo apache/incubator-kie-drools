@@ -2,8 +2,9 @@ package org.drools.modelcompiler.builder.generator.drlxparse;
 
 public interface DrlxParseResult {
 
-    void accept(ParseResultVoidVisitor visitor);
+    void accept( ParseResultVoidVisitor visitor );
 
-    <T> T acceptWithReturnValue(ParseResultVisitor<T> visitor);
+    <T> T acceptWithReturnValue( ParseResultVisitor<T> visitor );
 
+    boolean isSuccess();
 }
