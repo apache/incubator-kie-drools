@@ -10,13 +10,16 @@ import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.ExprConstraintDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.PatternSourceDescr;
+import org.drools.javaparser.ast.drlx.OOPathExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.WindowReferenceGenerator;
 import org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser;
+import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseFail;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
+import org.drools.modelcompiler.builder.generator.drlxparse.ParseResultVoidVisitor;
 import org.drools.modelcompiler.builder.generator.visitor.DSLNode;
 import org.drools.modelcompiler.builder.generator.visitor.FromVisitor;
 import org.kie.api.definition.type.Position;
@@ -66,7 +69,7 @@ abstract class PatternDSL implements DSLNode {
     protected Optional<String> findInnerBindingName(List<PatternConstraintParseResult> firstParsedConstraints) {
         return firstParsedConstraints.stream()
                 .map(PatternConstraintParseResult::getDrlxParseResult)
-                .filter(o -> o instanceof DrlxParseSuccess)
+                .filter(DrlxParseResult::isSuccess)
                 .map(d -> (DrlxParseSuccess)d)
                 .map(DrlxParseSuccess::getExprBinding)
                 .filter(Objects::nonNull)
@@ -95,26 +98,69 @@ abstract class PatternDSL implements DSLNode {
         }
     }
 
-    public List<PatternConstraintParseResult> findAllConstraint(PatternDescr pattern, List<? extends BaseDescr> constraintDescrs, Class<?> patternType) {
-        final List<PatternConstraintParseResult> patternConstraintParseResults = new ArrayList<>();
+    protected List<PatternConstraintParseResult> findAllConstraint(PatternDescr pattern, List<? extends BaseDescr> constraintDescrs, Class<?> patternType) {
+        ConstraintParser constraintParser = new ConstraintParser(context, packageModel);
+        List<PatternConstraintParseResult> patternConstraintParseResults = new ArrayList<>();
+
         for (BaseDescr constraint : constraintDescrs) {
-            final PatternConstraintParseResult patternConstraintParseResult = parseConstraint(pattern, patternType, constraint);
-            patternConstraintParseResults.add(patternConstraintParseResult);
+            String patternIdentifier = pattern.getIdentifier();
+
+            boolean isPositional = isPositional(constraint);
+            String expression = getConstraintExpression(patternType, constraint, isPositional);
+            int unifPos = expression.indexOf( ":=" );
+            if (unifPos > 0) {
+                expression = expression.substring( unifPos+2 ).trim() + " == " + expression.substring( 0, unifPos ).trim();
+            }
+
+            DrlxParseResult drlxParseResult = constraintParser.drlxParse(patternType, patternIdentifier, expression, isPositional);
+
+            if (drlxParseResult.isSuccess() && (( DrlxParseSuccess ) drlxParseResult).isRequiresSplit()) {
+                int splitPos = expression.indexOf( "&&" );
+                String expr1 = expression.substring( 0, splitPos ).trim();
+                String expr2 = expr1.substring( 0, firstNonIdentifierPos( expr1 ) ) + " " + expression.substring( splitPos+2 ).trim();
+
+                DrlxParseResult drlxParseResult1 = constraintParser.drlxParse(patternType, patternIdentifier, expr1, isPositional);
+                patternConstraintParseResults.add(new PatternConstraintParseResult(expr1, patternIdentifier, drlxParseResult1));
+
+                DrlxParseResult drlxParseResult2 = constraintParser.drlxParse(patternType, patternIdentifier, expr2, isPositional);
+                patternConstraintParseResults.add(new PatternConstraintParseResult(expr2, patternIdentifier, drlxParseResult2));
+            } else {
+                patternConstraintParseResults.add(new PatternConstraintParseResult(expression, patternIdentifier, drlxParseResult));
+            }
         }
+
         return patternConstraintParseResults;
     }
 
-    PatternConstraintParseResult parseConstraint(PatternDescr pattern, Class<?> patternType, BaseDescr constraint) {
-        final boolean isPositional = isPositional(constraint);
-        final String patternIdentifier = pattern.getIdentifier();
-
-        String expression = getConstraintExpression(patternType, constraint, isPositional);
-        int unifPos = expression.indexOf( ":=" );
-        if (unifPos > 0) {
-            expression = expression.substring( unifPos+2 ).trim() + " == " + expression.substring( 0, unifPos ).trim();
+    private int firstNonIdentifierPos(String expr) {
+        for (int i = 0; i < expr.length(); i++) {
+            if (!Character.isJavaIdentifierPart( expr.charAt( i ))) {
+                return i;
+            }
         }
-
-        final DrlxParseResult drlxParseResult = new ConstraintParser(context, packageModel).drlxParse(patternType, patternIdentifier, expression, isPositional);
-        return new PatternConstraintParseResult(expression, patternIdentifier, drlxParseResult);
+        return expr.length();
     }
+
+    protected void buildConstraint(PatternDescr pattern, Class<?> patternType, PatternConstraintParseResult patternConstraintParseResult) {
+        DrlxParseResult drlxParseResult1 = patternConstraintParseResult.getDrlxParseResult();
+        String expression = patternConstraintParseResult.getExpression();
+
+        drlxParseResult1.accept(
+                new ParseResultVoidVisitor() {
+                    @Override
+                    public void onSuccess( DrlxParseSuccess drlxParseResult ) {
+                        DSLNode constraint = drlxParseResult.getExpr() instanceof OOPathExpr ?
+                            new ConstraintOOPath( context, packageModel, pattern, patternType, patternConstraintParseResult, expression, drlxParseResult ) :
+                            createSimpleConstraint( drlxParseResult, pattern );
+                        constraint.buildPattern();
+                    }
+
+                    @Override
+                    public void onFail( DrlxParseFail failure ) {
+                        context.addCompilationError( failure.getError() );
+                    }
+                } );
+    }
+
+    protected abstract DSLNode createSimpleConstraint( DrlxParseSuccess drlxParseResult, PatternDescr pattern );
 }

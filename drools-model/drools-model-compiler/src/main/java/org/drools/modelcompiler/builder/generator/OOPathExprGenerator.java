@@ -106,7 +106,7 @@ public class OOPathExprGenerator {
         patternExpr.addArgument( toVar( bindingId ) );
 
         for (DrlxParseResult drlx : list) {
-            if (drlx instanceof DrlxParseSuccess) {
+            if (drlx.isSuccess()) {
                 MethodCallExpr expr = ( MethodCallExpr ) expressionBuilder.buildExpressionWithIndexing( (( DrlxParseSuccess ) drlx) );
                 expr.setScope( patternExpr );
                 patternExpr = expr;
@@ -118,7 +118,7 @@ public class OOPathExprGenerator {
 
     private void toFlowExpr(String bindingId, List<DrlxParseResult> list) {
         final List<DrlxParseSuccess> value = list.stream()
-                .filter(r -> r instanceof DrlxParseSuccess)
+                .filter(DrlxParseResult::isSuccess)
                 .map(DrlxParseSuccess.class::cast)
                 .collect(Collectors.toList());
 

@@ -39,6 +39,7 @@ public class DrlxParseSuccess implements DrlxParseResult {
     private boolean isValidExpression;
     private boolean skipThisAsParam;
     private boolean isBetaNode;
+    private boolean requiresSplit;
 
     public DrlxParseSuccess(Class<?> patternType, String exprId, String patternBinding, Expression expr, Class<?> exprType) {
         this.patternType = patternType;
@@ -241,16 +242,30 @@ public class DrlxParseSuccess implements DrlxParseResult {
     }
 
     @Override
-    public <T> T acceptWithReturnValue(ParseResultVisitor<T> visitor) {
+    public <T> T acceptWithReturnValue(ParseResultVisitor<T> visitor ) {
         return visitor.onSuccess(this);
     }
 
     public DrlxParseSuccess setBetaNode(boolean betaNode) {
-        isBetaNode = betaNode;
+        this.isBetaNode = betaNode;
         return this;
     }
 
     public boolean isBetaNode() {
         return isBetaNode;
+    }
+
+    public DrlxParseSuccess setRequiresSplit(boolean requiresSplit) {
+        this.requiresSplit = requiresSplit;
+        return this;
+    }
+
+    public boolean isRequiresSplit() {
+        return requiresSplit;
+    }
+
+    @Override
+    public boolean isSuccess() {
+        return true;
     }
 }
