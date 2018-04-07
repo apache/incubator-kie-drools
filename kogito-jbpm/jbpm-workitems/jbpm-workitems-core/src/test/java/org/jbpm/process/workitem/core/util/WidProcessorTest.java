@@ -52,9 +52,36 @@ public class WidProcessorTest {
                     "                @WidParameterValues(parameterName=\"sampleParamTwo\", values=\"1,2,3,4,5\")\n" +
                     "        },\n" +
                     "        mavenDepends={\n" +
-                    "                @WidMavenDepends(group=\"org.jboss\", artifact=\"myworitem\", version=\"1.0\")\n" +
+                    "                @WidMavenDepends(group=\"org.jboss\", artifact=\"myworkitem\", version=\"1.0\")\n" +
                     "        })\n" +
                     "public class MyTestClass {\n" +
+                    "    // do nothing\n" +
+                    "}"
+    );
+
+    private static final JavaFileObject source1reflectionhandler = JavaFileObjects.forSourceLines(
+            "org.jbpm.process.workitem.core.util.MyTestClassRefl",
+            "package org.jbpm.process.workitem.core.util;\n" +
+                    "\n" +
+                    "import org.jbpm.process.workitem.core.util.Wid;\n" +
+                    "import org.jbpm.process.workitem.core.util.WidParameter;\n" +
+                    "import org.jbpm.process.workitem.core.util.WidMavenDepends;\n" +
+                    "\n" +
+                    "@Wid(widfile=\"mywidfilerefl.wid\", name=\"MyTestRefl\",\n" +
+                    "        displayName=\"My Test Class Refl\", category=\"testcategory\", icon=\"/my/icons/myicon.png\",\n" +
+                    "        defaultHandler=\"reflection: new com.sample.MyWorkItemHandler()\",\n" +
+                    "        parameters={\n" +
+                    "                @WidParameter(name=\"sampleParam\"),\n" +
+                    "                @WidParameter(name=\"sampleParamTwo\")\n" +
+                    "        },\n" +
+                    "        parameterValues={\n" +
+                    "                @WidParameterValues(parameterName=\"sampleParam\", values=\"a,b,c,d,e\"),\n" +
+                    "                @WidParameterValues(parameterName=\"sampleParamTwo\", values=\"1,2,3,4,5\")\n" +
+                    "        },\n" +
+                    "        mavenDepends={\n" +
+                    "                @WidMavenDepends(group=\"org.jboss\", artifact=\"myworkitem\", version=\"1.0\")\n" +
+                    "        })\n" +
+                    "public class MyTestClassRefl {\n" +
                     "    // do nothing\n" +
                     "}"
     );
@@ -77,7 +104,7 @@ public class WidProcessorTest {
                     "                @WidParameterValues(parameterName=\"sampleParamFour\", values=\"1,2,3,4,5\")\n" +
                     "        },\n" +
                     "        mavenDepends = {\n" +
-                    "                @WidMavenDepends(group = \"org.jboss\", artifact = \"myworitem\", version = \"2.0\"),\n" +
+                    "                @WidMavenDepends(group = \"org.jboss\", artifact = \"myworkitem\", version = \"2.0\"),\n" +
                     "                @WidMavenDepends(group = \"org.jboss\", artifact = \"myotherworkitemdepends\", version = \"2.0\")\n" +
                     "        })\n" +
                     "public class MyTestClassTwo implements MyTestInterface {}"
@@ -103,7 +130,7 @@ public class WidProcessorTest {
                     "                @WidParameterValues(parameterName=\"sampleParamTwo\", values=\"1,2,3,4,5\")\n" +
                     "        },\n" +
                     "        mavenDepends = {\n" +
-                    "                @WidMavenDepends(group = \"org.jboss\", artifact = \"myworitem\", version = \"1.0\")\n" +
+                    "                @WidMavenDepends(group = \"org.jboss\", artifact = \"myworkitem\", version = \"1.0\")\n" +
                     "        })\n" +
                     "public interface MyTestInterface {}"
     );
@@ -170,7 +197,7 @@ public class WidProcessorTest {
                      widMavenDepends.length);
         assertEquals("org.jboss",
                      widMavenDepends[0].group());
-        assertEquals("myworitem",
+        assertEquals("myworkitem",
                      widMavenDepends[0].artifact());
         assertEquals("1.0",
                      widMavenDepends[0].version());
@@ -210,6 +237,8 @@ public class WidProcessorTest {
                      widInfo.getCategory()); // from interface
         assertEquals("mvel: new com.sample.MyWorkItemHandler()",
                      widInfo.getDefaultHandler());
+        assertEquals("new com.sample.MyWorkItemHandler()",
+                     widInfo.getDefaultHandlerNoType());
         assertNotNull(widInfo.getParameters());
         // make sure parameters from interface and class got put together
         assertEquals(4,
@@ -223,7 +252,60 @@ public class WidProcessorTest {
                      widInfo.getMavenDepends().size());
         // make sure version of org.jboss.myworkitem is 2.0 (overwritten)
         assertEquals("2.0",
-                     widInfo.getMavenDepends().get("org.jboss.myworitem").getVersion());
+                     widInfo.getMavenDepends().get("org.jboss.myworkitem").getVersion());
+    }
+
+    @Test
+    public void testWidWithReflectionHandler() throws Exception {
+        Map<String, List<Wid>> processingResults = new HashMap<>();
+
+        widProcessor.setProcessingResults(processingResults);
+        widProcessor.setResetResults(false);
+
+        Compiler compiler = compileWithGenerator();
+        compiler.compile(source1reflectionhandler);
+
+        assertNotNull(processingResults);
+        assertEquals(1,
+                     processingResults.keySet().size());
+
+        List<Wid> widInfoList = processingResults.get("org.jbpm.process.workitem.core.util.MyTestClassRefl");
+        assertNotNull(widInfoList);
+        assertEquals(1,
+                     widInfoList.size());
+
+        WidInfo widInfo = new WidInfo(widInfoList);
+
+        assertNotNull(widInfo);
+
+        assertEquals("mywidfilerefl.wid",
+                     widInfo.getWidfile()); // was overwritten
+        assertEquals("MyTestRefl",
+                     widInfo.getName()); // from interface
+        assertEquals("My Test Class Refl",
+                     widInfo.getDisplayName()); // from interface
+        assertEquals("testcategory",
+                     widInfo.getCategory()); // from interface
+        assertEquals("reflection: new com.sample.MyWorkItemHandler()",
+                     widInfo.getDefaultHandler());
+        assertEquals("new com.sample.MyWorkItemHandler()",
+                     widInfo.getDefaultHandlerNoType());
+        assertNotNull(widInfo.getParameters());
+        // make sure parameters from interface and class got put together
+        assertEquals(2,
+                     widInfo.getParameters().size());
+        // make sure parameter values from interface and class got put together
+        assertEquals(2,
+                     widInfo.getParameterValues().size());
+        // make sure one of the maven depends was overwritten by the class @Wid
+        assertNotNull(widInfo.getMavenDepends());
+        assertEquals(1,
+                     widInfo.getMavenDepends().size());
+        // make sure version of org.jboss.myworkitem is 2.0 (overwritten)
+        assertEquals("1.0",
+                     widInfo.getMavenDepends().get("org.jboss.myworkitem").getVersion());
+
+
     }
 
     @Test

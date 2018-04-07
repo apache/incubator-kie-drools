@@ -28,6 +28,7 @@ public class WidInfo {
     private String icon;
     private String description;
     private String defaultHandler;
+    private String defaultHandlerNoType;
     private Map<String, InternalWidParamsAndResults> parameters;
     private Map<String, InternalWidParameterValues> parameterValues;
     private Map<String, InternalWidParamsAndResults> results;
@@ -55,6 +56,9 @@ public class WidInfo {
                                              wid.description());
             this.defaultHandler = setParamValue(this.defaultHandler,
                                                 wid.defaultHandler());
+
+            this.defaultHandlerNoType = removeType(setParamValue(this.defaultHandler,
+                                                                 wid.defaultHandler()));
 
             if (wid.parameters().length > 0) {
                 for (WidParameter widParam : wid.parameters()) {
@@ -97,6 +101,20 @@ public class WidInfo {
             return newVal;
         } else {
             return (origVal == null || origVal.isEmpty()) ? "" : origVal;
+        }
+    }
+
+    private String removeType(String value) {
+        if(value != null) {
+            if(value.startsWith("mvel: ")) {
+                return value.substring(6);
+            } else if(value.startsWith("reflection: ")) {
+                return value.substring(12);
+            } else {
+                return value;
+            }
+        } else {
+            return value;
         }
     }
 
@@ -249,6 +267,14 @@ public class WidInfo {
 
     public void setDefaultHandler(String defaultHandler) {
         this.defaultHandler = defaultHandler;
+    }
+
+    public String getDefaultHandlerNoType() {
+        return defaultHandlerNoType;
+    }
+
+    public void setDefaultHandlerNoType(String defaultHandlerNoType) {
+        this.defaultHandlerNoType = defaultHandlerNoType;
     }
 
     public Map<String, InternalWidParamsAndResults> getParameters() {
