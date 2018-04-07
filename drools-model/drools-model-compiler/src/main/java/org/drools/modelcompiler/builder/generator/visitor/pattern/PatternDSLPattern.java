@@ -8,7 +8,6 @@ import java.util.Optional;
 import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
-import org.drools.javaparser.ast.drlx.OOPathExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
@@ -16,7 +15,7 @@ import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.QueryGenerator;
 import org.drools.modelcompiler.builder.generator.RuleContext;
-import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
+import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.visitor.DSLNode;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findRootNodeViaScope;
@@ -89,19 +88,8 @@ class PatternDSLPattern extends PatternDSL {
         }
     }
 
-    private void buildConstraint(PatternDescr pattern, Class<?> patternType, PatternConstraintParseResult patternConstraintParseResult) {
-        DrlxParseResult drlxParseResult1 = patternConstraintParseResult.getDrlxParseResult();
-        String expression = patternConstraintParseResult.getExpression();
-
-        drlxParseResult1.accept(drlxParseResult -> {
-            DSLNode constraint;
-            if (drlxParseResult.getExpr() instanceof OOPathExpr) {
-                constraint = new ConstraintOOPath(context, packageModel, pattern, patternType, patternConstraintParseResult, expression, drlxParseResult);
-            } else {
-                constraint = new PatternDSLSimpleConstraint(context, pattern, drlxParseResult);
-            }
-            constraint.buildPattern();
-        });
+    @Override
+    protected DSLNode createSimpleConstraint( DrlxParseSuccess drlxParseResult, PatternDescr pattern ) {
+        return new PatternDSLSimpleConstraint( context, pattern, drlxParseResult );
     }
-
 }

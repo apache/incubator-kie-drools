@@ -85,4 +85,106 @@ public class GlobalTest extends BaseModelTest {
 
         assertEquals( "Mark is 37", result.getValue() );
     }
+
+    public static class Functions {
+        public boolean lengthIs4(String s) {
+            return s.length() == 4;
+        }
+        public int length(String s) {
+            return s.length();
+        }
+    }
+
+    @Test
+    public void testGlobalBooleanFunction() {
+        String str =
+                "package org.mypkg;" +
+                "import " + Person.class.getCanonicalName() + ";" +
+                "import " + Functions.class.getCanonicalName() + ";" +
+                "import " + Result.class.getCanonicalName() + ";" +
+                "global Functions functions;" +
+                "global Result resultG;" +
+                "rule X when\n" +
+                "  $p1 : Person(functions.lengthIs4(name))\n" +
+                "then\n" +
+                " resultG.setValue($p1.getName() + \" is \" + $p1.getAge());\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.setGlobal("functions", new Functions());
+
+        Result result = new Result();
+        ksession.setGlobal("resultG", result);
+
+        ksession.insert(new Person("Edson", 35));
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Mario", 40));
+
+        ksession.fireAllRules();
+
+        assertEquals( "Mark is 37", result.getValue() );
+    }
+
+    @Test
+    public void testGlobalFunctionOnLeft() {
+        String str =
+                "package org.mypkg;" +
+                "import " + Person.class.getCanonicalName() + ";" +
+                "import " + Functions.class.getCanonicalName() + ";" +
+                "import " + Result.class.getCanonicalName() + ";" +
+                "global Functions functions;" +
+                "global Result resultG;" +
+                "rule X when\n" +
+                "  $p1 : Person(functions.length(name) == 4)\n" +
+                "then\n" +
+                " resultG.setValue($p1.getName() + \" is \" + $p1.getAge());\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.setGlobal("functions", new Functions());
+
+        Result result = new Result();
+        ksession.setGlobal("resultG", result);
+
+        ksession.insert(new Person("Edson", 35));
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Mario", 40));
+
+        ksession.fireAllRules();
+
+        assertEquals( "Mark is 37", result.getValue() );
+    }
+
+    @Test
+    public void testGlobalFunctionOnRight() {
+        String str =
+                "package org.mypkg;" +
+                "import " + Person.class.getCanonicalName() + ";" +
+                "import " + Functions.class.getCanonicalName() + ";" +
+                "import " + Result.class.getCanonicalName() + ";" +
+                "global Functions functions;" +
+                "global Result resultG;" +
+                "rule X when\n" +
+                "  $p1 : Person(4 == functions.length(name))\n" +
+                "then\n" +
+                " resultG.setValue($p1.getName() + \" is \" + $p1.getAge());\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.setGlobal("functions", new Functions());
+
+        Result result = new Result();
+        ksession.setGlobal("resultG", result);
+
+        ksession.insert(new Person("Edson", 35));
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Mario", 40));
+
+        ksession.fireAllRules();
+
+        assertEquals( "Mark is 37", result.getValue() );
+    }
 }

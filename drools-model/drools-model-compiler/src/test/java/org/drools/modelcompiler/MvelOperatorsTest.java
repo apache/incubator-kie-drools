@@ -17,15 +17,16 @@
 package org.drools.modelcompiler;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Person;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
+import static java.util.Arrays.asList;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class MvelOperatorsTest extends BaseModelTest {
 
@@ -95,6 +96,58 @@ public class MvelOperatorsTest extends BaseModelTest {
     }
 
     @Test
+    public void testRange() {
+        String str =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "global java.util.List list\n" +
+                "rule R when\n" +
+                "    Person( age > 30 && <= 40, $name : name )" +
+                "then\n" +
+                "    list.add($name);" +
+                "end ";
+
+        KieSession ksession = getKieSession(str);
+
+        List<String> list = new ArrayList<>();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert(new Person("Mario", 44));
+        ksession.insert(new Person("Mark", 40));
+        ksession.insert(new Person("Edson", 31));
+        ksession.insert(new Person("Luca", 30));
+        ksession.fireAllRules();
+
+        assertEquals(2, list.size());
+        assertTrue(list.containsAll( asList("Mark", "Edson") ));
+    }
+
+    @Test
+    public void testExcludedRange() {
+        String str =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "global java.util.List list\n" +
+                "rule R when\n" +
+                "    Person( age <= 30 || > 40, $name : name )" +
+                "then\n" +
+                "    list.add($name);" +
+                "end ";
+
+        KieSession ksession = getKieSession(str);
+
+        List<String> list = new ArrayList<>();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert(new Person("Mario", 44));
+        ksession.insert(new Person("Mark", 40));
+        ksession.insert(new Person("Edson", 31));
+        ksession.insert(new Person("Luca", 30));
+        ksession.fireAllRules();
+
+        assertEquals(2, list.size());
+        assertTrue(list.containsAll( asList("Luca", "Mario") ));
+    }
+
+    @Test
     public void testBinding() {
         String str =
             "import " + Person.class.getCanonicalName() + "\n" +
@@ -142,9 +195,9 @@ public class MvelOperatorsTest extends BaseModelTest {
                 "end ";
 
         KieSession ksession = getKieSession(str);
-        ksession.insert( Arrays.asList("ciao", "test") );
+        ksession.insert( asList("ciao", "test") );
         assertEquals(0, ksession.fireAllRules());
-        ksession.insert( Arrays.asList("hello", "world") );
+        ksession.insert( asList("hello", "world") );
         assertEquals(1, ksession.fireAllRules());
     }
 
@@ -158,9 +211,9 @@ public class MvelOperatorsTest extends BaseModelTest {
                 "end ";
 
         KieSession ksession = getKieSession(str);
-        ksession.insert( Arrays.asList("ciao", "test") );
+        ksession.insert( asList("ciao", "test") );
         assertEquals(0, ksession.fireAllRules());
-        ksession.insert( Arrays.asList("hello", "world") );
+        ksession.insert( asList("hello", "world") );
         assertEquals(1, ksession.fireAllRules());
     }
 }
