@@ -453,7 +453,9 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
         try {
             KieSession ksession = engine.getKieSession();
             WorkflowProcessInstanceImpl pi = (WorkflowProcessInstanceImpl) ksession.getProcessInstance(processInstanceId, true);
-
+            if (pi == null) {
+                throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found");
+            }
         	Map<String, Object> variables = pi.getVariables();
         	
         	for (Object variable : variables.values()) {

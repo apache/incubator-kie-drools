@@ -1096,4 +1096,29 @@ public class ProcessServiceImplTest extends AbstractKieServicesBaseTest {
 		pi = processService.getProcessInstance(processInstanceId);
 		assertNull(pi);
 	}
+	
+    @Test
+    public void testGetProcessInstanceVariablesOfAbortedProcess() {
+        assertNotNull(deploymentService);
+
+        KModuleDeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
+
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);
+
+        boolean isDeployed = deploymentService.isDeployed(deploymentUnit.getIdentifier());
+        assertTrue(isDeployed);
+
+        assertNotNull(processService);
+        long processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
+        assertNotNull(processInstanceId);
+        processService.abortProcessInstance(deploymentUnit.getIdentifier(), processInstanceId);
+
+        try {
+            processService.getProcessInstanceVariables(deploymentUnit.getIdentifier(), processInstanceId);
+            fail("Getting process variables of already aborted process instance should throw ProcessInstanceNotFoundException.");
+        } catch(ProcessInstanceNotFoundException e) {
+            // expected
+        }
+    }
 }
