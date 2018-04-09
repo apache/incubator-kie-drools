@@ -101,28 +101,29 @@ public class CompositeAgendaTest {
 
         final ExecutorService executor = Executors.newFixedThreadPool(2);
         executor.submit(() -> kieSession.fireUntilHalt());
-
-        final EventInsertThread eventInsertThread = new EventInsertThread(kieSession);
-        executor.submit(eventInsertThread);
-
         try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+            final EventInsertThread eventInsertThread = new EventInsertThread(kieSession);
+            executor.submit(eventInsertThread);
 
-        kieSession.halt();
-        eventInsertThread.setActive(false);
-        kieSession.dispose();
-
-        executor.shutdown();
-        try {
-            if (!executor.awaitTermination(10, TimeUnit.MILLISECONDS)) {
-                executor.shutdownNow();
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            Assert.fail(e.getMessage());
+            eventInsertThread.setActive(false);
+        } finally {
+            kieSession.halt();
+            kieSession.dispose();
+
+            executor.shutdown();
+            try {
+                if (!executor.awaitTermination(10, TimeUnit.MILLISECONDS)) {
+                    executor.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                Assert.fail(e.getMessage());
+            }
         }
     }
 

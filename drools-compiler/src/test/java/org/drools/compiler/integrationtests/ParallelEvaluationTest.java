@@ -224,20 +224,24 @@ public class ParallelEvaluationTest {
         }} );
         ksession.setGlobal( "list", list );
 
-        new Thread( () -> ksession.fireUntilHalt() ).start();
-
-        for (int i = 0; i < 10; i++) {
-            ksession.insert( i );
-            ksession.insert( "" + i );
-        }
-
+        new Thread(ksession::fireUntilHalt).start();
         try {
-            done.await();
-        } catch (InterruptedException e) {
-            throw new RuntimeException( e );
-        }
+            for (int i = 0; i < 10; i++) {
+                ksession.insert( i );
+                ksession.insert( "" + i );
+            }
 
-        assertEquals(10, list.size());
+            try {
+                done.await();
+            } catch (InterruptedException e) {
+                throw new RuntimeException( e );
+            }
+
+            assertEquals(10, list.size());
+        } finally {
+            ksession.halt();
+            ksession.dispose();
+        }
     }
 
     @Test(timeout = 10000L)
@@ -273,26 +277,27 @@ public class ParallelEvaluationTest {
             List<String> list = new DebugList<String>();
             ksession.setGlobal( "list", list );
 
-            new Thread( () -> {
-                ksession.fireUntilHalt();
-            } ).start();
-
-            A a = new A( rulesNr + 1 );
-            ksession.insert( a );
-
-            for ( int i = 0; i < factsNr; i++ ) {
-                ksession.insert( new B( rulesNr + i + 3 ) );
-            }
-
+            new Thread(ksession::fireUntilHalt).start();
             try {
-                done.await();
-            } catch (InterruptedException e) {
-                throw new RuntimeException( e );
+                A a = new A( rulesNr + 1 );
+                ksession.insert( a );
+
+                for ( int i = 0; i < factsNr; i++ ) {
+                    ksession.insert( new B( rulesNr + i + 3 ) );
+                }
+
+                try {
+                    done.await();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException( e );
+                }
+
+                assertEquals( fireNr, counter.get() );
+            } finally {
+                ksession.halt();
+                ksession.dispose();
             }
 
-            assertEquals( fireNr, counter.get() );
-            ksession.halt();
-            ksession.dispose();
             System.out.println("Loop " + loop + " terminated");
         }
     }
@@ -367,20 +372,24 @@ public class ParallelEvaluationTest {
         }} );
         ksession.setGlobal( "list", list );
 
-        new Thread( () -> ksession.fireUntilHalt() ).start();
-
-        for (int i = 0; i < 10; i++) {
-            session.insertAsync( i );
-            session.insertAsync( "" + i );
-        }
-
+        new Thread(ksession::fireUntilHalt).start();
         try {
-            done.await();
-        } catch (InterruptedException e) {
-            throw new RuntimeException( e );
-        }
+            for (int i = 0; i < 10; i++) {
+                session.insertAsync( i );
+                session.insertAsync( "" + i );
+            }
 
-        assertEquals(10, list.size());
+            try {
+                done.await();
+            } catch (InterruptedException e) {
+                throw new RuntimeException( e );
+            }
+
+            assertEquals(10, list.size());
+        } finally {
+            ksession.halt();
+            ksession.dispose();
+        }
     }
 
     @Test(timeout = 10000L)
@@ -561,50 +570,51 @@ public class ParallelEvaluationTest {
             ksession.insert( new MyEvent( i, i*2L ) );
         }
 
-        new Thread( () -> ksession.fireUntilHalt() ).start();
-
+        new Thread(ksession::fireUntilHalt).start();
         try {
-            done1.await();
-        } catch (InterruptedException e) {
-            throw new RuntimeException( e );
+            try {
+                done1.await();
+            } catch (InterruptedException e) {
+                throw new RuntimeException( e );
+            }
+
+            assertEquals( 10, list.size() );
+            list.clear();
+
+            CountDownLatch done2 = new CountDownLatch(1);
+            list.onItemAdded = ( l -> { if (l.size() == 5) {
+                done2.countDown();
+            }} );
+
+            ksession.insert( 1 );
+            sessionClock.advanceTime( 29, TimeUnit.MILLISECONDS );
+
+            try {
+                done2.await();
+            } catch (InterruptedException e) {
+                throw new RuntimeException( e );
+            }
+
+            assertEquals( 5, list.size() );
+            list.clear();
+
+            CountDownLatch done3 = new CountDownLatch(1);
+            list.onItemAdded = ( l -> { if (l.size() == 5) {
+                done3.countDown();
+            }} );
+
+            sessionClock.advanceTime( 12, TimeUnit.MILLISECONDS );
+            try {
+                done3.await();
+            } catch (InterruptedException e) {
+                throw new RuntimeException( e );
+            }
+
+            assertEquals( 5, list.size() );
+        } finally {
+            ksession.halt();
+            ksession.dispose();
         }
-
-        assertEquals( 10, list.size() );
-        list.clear();
-
-        CountDownLatch done2 = new CountDownLatch(1);
-        list.onItemAdded = ( l -> { if (l.size() == 5) {
-            done2.countDown();
-        }} );
-
-        ksession.insert( 1 );
-        sessionClock.advanceTime( 29, TimeUnit.MILLISECONDS );
-
-        try {
-            done2.await();
-        } catch (InterruptedException e) {
-            throw new RuntimeException( e );
-        }
-
-        assertEquals( 5, list.size() );
-        list.clear();
-
-        CountDownLatch done3 = new CountDownLatch(1);
-        list.onItemAdded = ( l -> { if (l.size() == 5) {
-            done3.countDown();
-        }} );
-
-        sessionClock.advanceTime( 12, TimeUnit.MILLISECONDS );
-        try {
-            done3.await();
-        } catch (InterruptedException e) {
-            throw new RuntimeException( e );
-        }
-
-        assertEquals( 5, list.size() );
-
-        ksession.halt();
-        ksession.dispose();
     }
 
     @Test(timeout = 100000L)
@@ -655,25 +665,26 @@ public class ParallelEvaluationTest {
         AtomicInteger counter = new AtomicInteger( 0 );
         ksession.setGlobal( "counter", counter );
 
-        new Thread( () -> ksession.fireUntilHalt() ).start();
-
-        int eventsNr = 5;
-        for ( int i = 0; i < eventsNr; i++ ) {
-            ksession.insert( new A( i + 4 ) );
-            ksession.insert( new B( i + 4 ) );
-            sessionClock.advanceTime( 10, TimeUnit.MILLISECONDS );
-        }
-
+        new Thread(ksession::fireUntilHalt).start();
         try {
-            Thread.sleep( 1000L );
-        } catch (InterruptedException e) {
-            throw new RuntimeException( e );
+            int eventsNr = 5;
+            for ( int i = 0; i < eventsNr; i++ ) {
+                ksession.insert( new A( i + 4 ) );
+                ksession.insert( new B( i + 4 ) );
+                sessionClock.advanceTime( 10, TimeUnit.MILLISECONDS );
+            }
+
+            try {
+                Thread.sleep( 1000L );
+            } catch (InterruptedException e) {
+                throw new RuntimeException( e );
+            }
+
+            assertEquals( eventsNr * 4, counter.get() );
+        } finally {
+            ksession.halt();
+            ksession.dispose();
         }
-
-        ksession.halt();
-        ksession.dispose();
-
-        assertEquals( eventsNr * 4, counter.get() );
     }
 
     @Test(timeout = 10000L)

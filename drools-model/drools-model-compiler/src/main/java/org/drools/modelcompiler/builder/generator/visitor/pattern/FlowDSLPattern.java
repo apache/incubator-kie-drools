@@ -1,6 +1,5 @@
 package org.drools.modelcompiler.builder.generator.visitor.pattern;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -19,7 +18,6 @@ import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseFail;
-import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.drlxparse.ParseResultVisitor;
 import org.drools.modelcompiler.builder.generator.visitor.DSLNode;
@@ -92,15 +90,6 @@ class FlowDSLPattern extends PatternDSL {
         return exprDSL;
     }
 
-    public List<PatternConstraintParseResult> findAllConstraint(PatternDescr pattern, List<? extends BaseDescr> constraintDescrs, Class<?> patternType) {
-        final List<PatternConstraintParseResult> patternConstraintParseResults = new ArrayList<>();
-        for (BaseDescr constraint : constraintDescrs) {
-            final PatternConstraintParseResult patternConstraintParseResult = parseConstraint(pattern, patternType, constraint);
-            patternConstraintParseResults.add(patternConstraintParseResult);
-        }
-        return patternConstraintParseResults;
-    }
-
     private void buildConstraints(PatternDescr pattern, Class<?> patternType, List<PatternConstraintParseResult> patternConstraintParseResults, boolean allConstraintsPositional) {
         if (allConstraintsPositional) {
             final MethodCallExpr andDSL = new MethodCallExpr(null, "and");
@@ -116,18 +105,9 @@ class FlowDSLPattern extends PatternDSL {
         }
     }
 
-    private void buildConstraint(PatternDescr pattern, Class<?> patternType, PatternConstraintParseResult patternConstraintParseResult) {
-        DrlxParseResult drlxParseResult1 = patternConstraintParseResult.getDrlxParseResult();
-        String expression = patternConstraintParseResult.getExpression();
-
-        drlxParseResult1.accept(drlxParseResult -> {
-            DSLNode constraint;
-            if (drlxParseResult.getExpr() instanceof OOPathExpr) {
-                constraint = new ConstraintOOPath(context, packageModel, pattern, patternType, patternConstraintParseResult, expression, drlxParseResult);
-            } else {
-                constraint = new FlowDSLSimpleConstraint(context, pattern, drlxParseResult);
-            }
-            constraint.buildPattern();
-        });
+    @Override
+    protected DSLNode createSimpleConstraint( DrlxParseSuccess drlxParseResult, PatternDescr pattern ) {
+        return new FlowDSLSimpleConstraint( context, pattern, drlxParseResult );
     }
+
 }
