@@ -35,7 +35,8 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.internal.runtime.Closeable;
 
-public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
+public class DefaultWorkItemManager implements WorkItemManager,
+                                               Externalizable {
 
     private static final long serialVersionUID = 510l;
 
@@ -64,13 +65,15 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
     }
 
     public void internalExecuteWorkItem(WorkItem workItem) {
-        ((WorkItemImpl) workItem).setId(workItemCounter.incrementAndGet());
+        workItem.setId(workItemCounter.incrementAndGet());
         internalAddWorkItem(workItem);
         WorkItemHandler handler = this.workItemHandlers.get(workItem.getName());
         if (handler != null) {
             handler.executeWorkItem(workItem, this);
-        } else throw new WorkItemHandlerNotFoundException( "Could not find work item handler for " + workItem.getName(),
-                                                    workItem.getName() );
+        } else {
+            throw new WorkItemHandlerNotFoundException("Could not find work item handler for " + workItem.getName(),
+                                                       workItem.getName());
+        }
     }
 
     public void internalAddWorkItem(WorkItem workItem) {
@@ -82,50 +85,52 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
     }
 
     public void internalAbortWorkItem(long id) {
-        WorkItemImpl workItem = (WorkItemImpl) workItems.get(new Long(id));
+        WorkItem workItem = workItems.get(new Long(id));
         // work item may have been aborted
         if (workItem != null) {
             WorkItemHandler handler = this.workItemHandlers.get(workItem.getName());
             if (handler != null) {
-                handler.abortWorkItem(workItem, this);
+                handler.abortWorkItem(workItem.asWorkItem(), this);
             } else {
-                workItems.remove( workItem.getId() );
-                throw new WorkItemHandlerNotFoundException( "Could not find work item handler for " + workItem.getName(),
-                                                                 workItem.getName() );
+                workItems.remove(workItem.getId());
+                throw new WorkItemHandlerNotFoundException("Could not find work item handler for " + workItem.getName(),
+                                                           workItem.getName());
             }
             workItems.remove(workItem.getId());
         }
     }
 
     public WorkItemHandler getWorkItemHandler(String name) {
-    	return this.workItemHandlers.get(name);
+        return this.workItemHandlers.get(name);
     }
 
     public void retryWorkItem(long workItemId) {
-    	WorkItem workItem = workItems.get(workItemId);
-    	retryWorkItem(workItem);
+        WorkItem workItem = workItems.get(workItemId);
+        retryWorkItem(workItem);
     }
 
-    public void retryWorkItemWithParams(long workItemId,Map<String,Object> map) {
+    public void retryWorkItemWithParams(long workItemId, Map<String, Object> map) {
         WorkItem workItem = workItems.get(workItemId);
-        
-        if ( workItem != null ) {
-            workItem.setParameters( map );
-            
-            retryWorkItem( workItem );
+
+        if (workItem != null) {
+            workItem.setParameters(map);
+
+            retryWorkItem(workItem);
         }
     }
-    
+
     private void retryWorkItem(WorkItem workItem) {
         if (workItem != null) {
             WorkItemHandler handler = this.workItemHandlers.get(workItem.getName());
             if (handler != null) {
                 handler.executeWorkItem(workItem, this);
-            } else throw new WorkItemHandlerNotFoundException( "Could not find work item handler for " + workItem.getName(),
-                                                        workItem.getName() );
+            } else {
+                throw new WorkItemHandlerNotFoundException("Could not find work item handler for " + workItem.getName(),
+                                                           workItem.getName());
+            }
         }
     }
-    
+
     public Set<WorkItem> getWorkItems() {
         return new HashSet<WorkItem>(workItems.values());
     }
@@ -170,12 +175,12 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
     public void clear() {
         this.workItems.clear();
     }
-    
-    public void signalEvent(String type, Object event) { 
+
+    public void signalEvent(String type, Object event) {
         this.kruntime.signalEvent(type, event);
-    } 
-    
-    public void signalEvent(String type, Object event, long processInstanceId) { 
+    }
+
+    public void signalEvent(String type, Object event, long processInstanceId) {
         this.kruntime.signalEvent(type, event, processInstanceId);
     }
 
@@ -189,14 +194,13 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
             }
         }
     }
-    
+
     @Override
-    public void retryWorkItem( Long workItemID, Map<String, Object> params ) {
-       if(params==null || params.isEmpty()){
-           retryWorkItem(workItemID);
-       }else{
-           this.retryWorkItemWithParams( workItemID, params );
-       }
-        
+    public void retryWorkItem(Long workItemID, Map<String, Object> params) {
+        if (params == null || params.isEmpty()) {
+            retryWorkItem(workItemID);
+        } else {
+            this.retryWorkItemWithParams(workItemID, params);
+        }
     }
 }

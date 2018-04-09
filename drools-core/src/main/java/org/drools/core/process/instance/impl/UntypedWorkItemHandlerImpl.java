@@ -14,26 +14,29 @@
  * limitations under the License.
  */
 
-package org.drools.core.process.instance;
+package org.drools.core.process.instance.impl;
 
+import org.drools.core.process.instance.TypedWorkItem;
+import org.drools.core.process.instance.TypedWorkItemHandler;
+import org.drools.core.process.instance.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
 
-public class UntypedWorkItemHandler<T extends TypedWorkItem<?, ?>> implements WorkItemHandler {
+public class UntypedWorkItemHandlerImpl<T extends TypedWorkItem<?, ?>> implements WorkItemHandler {
 
     private final TypedWorkItemHandler<T> workItemHandler;
 
-    public UntypedWorkItemHandler(TypedWorkItemHandler<T> workItemHandler) {
+    public UntypedWorkItemHandlerImpl(TypedWorkItemHandler<T> workItemHandler) {
         this.workItemHandler = workItemHandler;
     }
 
     @Override
     public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
-        workItemHandler.executeWorkItem(Types.typed(workItem), manager);
+        workItemHandler.executeWorkItem(TypedWorkItemImpl.forceTyped(workItem), manager);
     }
 
     @Override
     public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
-        workItemHandler.abortWorkItem(Types.typed(workItem), manager);
+        workItemHandler.abortWorkItem(TypedWorkItemImpl.forceTyped(workItem), manager);
     }
 }

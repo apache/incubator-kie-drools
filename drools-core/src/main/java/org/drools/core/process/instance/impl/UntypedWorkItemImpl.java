@@ -23,19 +23,41 @@ import org.apache.commons.beanutils.BeanMap;
 import org.drools.core.process.instance.TypedWorkItem;
 import org.drools.core.process.instance.WorkItem;
 
-public class UntypedWorkItemImpl implements WorkItem,
+/**
+ * An implementation of an untyped WorkItem, that delegates to
+ * a TypedWorkItemImpl.
+ *
+ * For compatibility reasons, TypedWorkItem may be wrapped in an UntypedWorkItemImpl,
+ * behaving like a WorkItem (returning maps of params, results).
+ *
+ * Internally, it uses Apache Commons BeanMap to keep in sync the
+ * map key/value pairs, and the underlying bean implementation.
+ *
+ * This is not publicly instantiable.
+ */
+class UntypedWorkItemImpl implements WorkItem,
                                             Serializable {
 
     private static final long serialVersionUID = 510l;
 
     private final TypedWorkItem<?, ?> workItem;
 
-    public UntypedWorkItemImpl(TypedWorkItem<?, ?> workItem) {
+    UntypedWorkItemImpl(TypedWorkItem<?, ?> workItem) {
         this.workItem = workItem;
     }
 
-    public TypedWorkItem<?, ?> getTyped() {
+    TypedWorkItem<?, ?> asTypedWorkItem() {
         return workItem;
+    }
+
+    @Override
+    public org.kie.api.runtime.process.WorkItem asWorkItem() {
+        return this;
+    }
+
+    @Override
+    public void setId(long id) {
+        workItem.setId(id);
     }
 
     @Override
@@ -113,7 +135,7 @@ public class UntypedWorkItemImpl implements WorkItem,
 
     @Override
     public Object getParameter(String name) {
-        return null;
+        return getParameters().get(name);
     }
 
     @Override
@@ -123,7 +145,7 @@ public class UntypedWorkItemImpl implements WorkItem,
 
     @Override
     public Object getResult(String name) {
-        return null;
+        return getResults().get(name);
     }
 
     @Override
@@ -137,7 +159,7 @@ public class UntypedWorkItemImpl implements WorkItem,
     }
 
     private Map<String, Object> beanMapOf(Object bean) {
-        return upcast(new BeanMap(workItem.getParameters()));
+        return upcast(new BeanMap(bean));
     }
 
     private Map<String, Object> upcast(Map beanMap) {

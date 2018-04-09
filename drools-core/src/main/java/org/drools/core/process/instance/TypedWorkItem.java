@@ -18,11 +18,9 @@ package org.drools.core.process.instance;
 
 public interface TypedWorkItem<P, R> extends org.kie.api.runtime.process.TypedWorkItem<P, R> {
 
+    void setId(long id);
+
     void setName(String name);
-
-    void setParameters(P parameters);
-
-    void setResults(R results);
 
     void setState(int state);
 
@@ -39,4 +37,10 @@ public interface TypedWorkItem<P, R> extends org.kie.api.runtime.process.TypedWo
     long getNodeInstanceId();
 
     long getNodeId();
+
+    void setParameters(P parameters);
+
+    void setResults(R results);
+
+    org.kie.api.runtime.process.WorkItem asWorkItem();
 }

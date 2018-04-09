@@ -16,24 +16,21 @@
 
 package org.drools.core.process.instance.impl;
 
-import java.io.Serializable;
-
 import org.drools.core.process.instance.TypedWorkItem;
+import org.kie.api.runtime.process.WorkItem;
 
-public class TypedWorkItemImpl<P, R> implements TypedWorkItem<P, R>,
-                                                Serializable {
+/**
+ * A TypedWorkItem implementation, using arbitrary classes
+ * to represent parameters and results.
+ */
+public class TypedWorkItemImpl<P, R> implements TypedWorkItem<P, R> {
 
-    private static final long serialVersionUID = 510l;
-
-    private long id;
-    private String name;
-    private int state = 0;
     private P parameters;
     private R results;
-    private long processInstanceId;
-    private String deploymentId;
-    private long nodeInstanceId;
-    private long nodeId;
+
+    public static <W extends TypedWorkItem<?, ?>> W forceTyped(WorkItem workItem) {
+        return (W) ((UntypedWorkItemImpl) workItem).asTypedWorkItem();
+    }
 
     public TypedWorkItemImpl() {
     }
@@ -41,6 +38,16 @@ public class TypedWorkItemImpl<P, R> implements TypedWorkItem<P, R>,
     public TypedWorkItemImpl(P parameters) {
         this.parameters = parameters;
     }
+
+    private static final long serialVersionUID = 510l;
+
+    private long id;
+    private String name;
+    private int state = 0;
+    private long processInstanceId;
+    private String deploymentId;
+    private long nodeInstanceId;
+    private long nodeId;
 
     public void setId(long id) {
         this.id = id;
@@ -64,24 +71,6 @@ public class TypedWorkItemImpl<P, R> implements TypedWorkItem<P, R>,
 
     public int getState() {
         return state;
-    }
-
-    public void setParameters(P parameters) {
-        this.parameters = parameters;
-    }
-
-    public P getParameters() {
-        return parameters;
-    }
-
-    public void setResults(R results) {
-        if (results != null) {
-            this.results = results;
-        }
-    }
-
-    public R getResults() {
-        return results;
     }
 
     public void setProcessInstanceId(long processInstanceId) {
@@ -116,15 +105,37 @@ public class TypedWorkItemImpl<P, R> implements TypedWorkItem<P, R>,
         this.nodeId = nodeId;
     }
 
+    public void setParameters(P parameters) {
+        this.parameters = parameters;
+    }
+
+    public P getParameters() {
+        return parameters;
+    }
+
+    public void setResults(R results) {
+        if (results != null) {
+            this.results = results;
+        }
+    }
+
+    public R getResults() {
+        return results;
+    }
+
+    public WorkItem asWorkItem() {
+        return new UntypedWorkItemImpl(this);
+    }
+
     public String toString() {
         StringBuilder b = new StringBuilder("WorkItem ");
-        b.append(id);
+        b.append(getId());
         b.append(" [name=");
-        b.append(name);
+        b.append(getName());
         b.append(", state=");
-        b.append(state);
+        b.append(getState());
         b.append(", processInstanceId=");
-        b.append(processInstanceId);
+        b.append(getProcessInstanceId());
         b.append(", parameters=");
         b.append(parameters);
         b.append("]");
