@@ -73,7 +73,7 @@ public class DMNValidatorImpl implements DMNValidator {
             schema = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI)
                                   .newSchema(new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20151101/dmn.xsd")));
         } catch (SAXException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Unable to initialize correctly DMNValidator.", e);
         }
     }
     
