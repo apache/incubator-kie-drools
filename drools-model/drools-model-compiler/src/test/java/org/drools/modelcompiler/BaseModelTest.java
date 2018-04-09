@@ -34,14 +34,19 @@ import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.fail;
+import static java.util.Arrays.asList;
+import static org.drools.modelcompiler.BaseModelTest.RUN_TYPE.PATTERN_WITH_ALPHA_NETWORK;
+import static org.drools.modelcompiler.BaseModelTest.RUN_TYPE.STANDARD_WITH_ALPHA_NETWORK;
+import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
 public abstract class BaseModelTest {
     public static enum RUN_TYPE {
         FLOW_DSL,
         PATTERN_DSL,
-        STANDARD_FROM_DRL;
+        STANDARD_FROM_DRL,
+        STANDARD_WITH_ALPHA_NETWORK,
+        PATTERN_WITH_ALPHA_NETWORK;
     }
 
     @Parameters(name = "{0}")
@@ -49,7 +54,9 @@ public abstract class BaseModelTest {
         return new Object[]{
                 BaseModelTest.RUN_TYPE.STANDARD_FROM_DRL,
                 BaseModelTest.RUN_TYPE.FLOW_DSL,
-                BaseModelTest.RUN_TYPE.PATTERN_DSL
+                BaseModelTest.RUN_TYPE.PATTERN_DSL,
+                STANDARD_WITH_ALPHA_NETWORK,
+                PATTERN_WITH_ALPHA_NETWORK,
          };
     }
 
@@ -59,8 +66,14 @@ public abstract class BaseModelTest {
         this.testRunType = testRunType;
     }
 
-    protected KieSession getKieSession( String... rules ) {
-        return getKieSession(null, rules);
+    protected KieSession getKieSession(String... rules) {
+        KieModuleModel kproj;
+        if (asList(PATTERN_WITH_ALPHA_NETWORK, STANDARD_WITH_ALPHA_NETWORK).contains(testRunType)) {
+            kproj = getKieModuleModelWithAlphaNetworkCompiler();
+        } else {
+            kproj = null;
+        }
+        return getKieSession(kproj, rules);
     }
 
     protected KieSession getKieSession(KieModuleModel model, String... stringRules) {
@@ -105,6 +118,8 @@ public abstract class BaseModelTest {
         if (testRunType == RUN_TYPE.FLOW_DSL) {
             kieBuilder = ks.newKieBuilder(kfs).buildAll(ExecutableModelFlowProject.class);
         } else if (testRunType == RUN_TYPE.PATTERN_DSL) {
+            kieBuilder = ks.newKieBuilder(kfs).buildAll(ExecutableModelProject.class);
+        } else if (testRunType == RUN_TYPE.PATTERN_WITH_ALPHA_NETWORK){
             kieBuilder = ks.newKieBuilder(kfs).buildAll(ExecutableModelProject.class);
         } else {
             kieBuilder = ks.newKieBuilder(kfs).buildAll();
@@ -169,5 +184,11 @@ public abstract class BaseModelTest {
             kieFiles[i] = new KieFile( i, stringRules[i] );
         }
         return kieFiles;
+    }
+
+    private KieModuleModel getKieModuleModelWithAlphaNetworkCompiler() {
+        KieModuleModel kproj = KieServices.get().newKieModuleModel();
+        kproj.setConfigurationProperty( "drools.alphaNetworkCompiler", "true" );
+        return kproj;
     }
 }

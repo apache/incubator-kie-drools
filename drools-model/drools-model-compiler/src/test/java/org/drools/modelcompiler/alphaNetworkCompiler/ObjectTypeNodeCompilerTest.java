@@ -6,8 +6,6 @@ import org.drools.modelcompiler.domain.EnumFact1;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
 import org.junit.Test;
-import org.kie.api.KieServices;
-import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.runtime.KieSession;
 
 import static org.junit.Assert.*;
@@ -27,8 +25,7 @@ public class ObjectTypeNodeCompilerTest extends BaseModelTest {
                         "then\n" +
                         "end";
 
-        KieModuleModel kproj = getKieModuleModelWithAlphaNetworkCompiler();
-        KieSession ksession = getKieSession(kproj, str );
+        KieSession ksession = getKieSession(str);
 
         ksession.insert("Luca");
         ksession.insert("Asdrubale");
@@ -44,7 +41,7 @@ public class ObjectTypeNodeCompilerTest extends BaseModelTest {
                         "when\n" +
                         "  $s : Person( name == \"Luca\") \n" +
                         "then\n" +
-                        "end\n"+
+                        "end\n" +
                         "rule \"Bind2\"\n" +
                         "when\n" +
                         "  $s : Person( name == \"Mario\") \n" +
@@ -56,8 +53,7 @@ public class ObjectTypeNodeCompilerTest extends BaseModelTest {
                         "then\n" +
                         "end\n";
 
-        KieModuleModel kproj = getKieModuleModelWithAlphaNetworkCompiler();
-        KieSession ksession = getKieSession(kproj, str );
+        KieSession ksession = getKieSession(str);
 
         ksession.insert(new Person("Luca"));
         ksession.insert(new Person("Asdrubale"));
@@ -72,7 +68,7 @@ public class ObjectTypeNodeCompilerTest extends BaseModelTest {
                         "when\n" +
                         "  $s : String( length == 4) \n" +
                         "then\n" +
-                        "end\n"+
+                        "end\n" +
                         "rule \"Bind2\"\n" +
                         "when\n" +
                         "  $s : String( length == 5) \n" +
@@ -84,8 +80,7 @@ public class ObjectTypeNodeCompilerTest extends BaseModelTest {
                         "then\n" +
                         "end\n";
 
-        KieModuleModel kproj = getKieModuleModelWithAlphaNetworkCompiler();
-        KieSession ksession = getKieSession(kproj, str );
+        KieSession ksession = getKieSession(str);
 
         ksession.insert("Luca");
         ksession.insert("Asdrubale");
@@ -111,14 +106,11 @@ public class ObjectTypeNodeCompilerTest extends BaseModelTest {
                         "then\n" +
                         "end\n";
 
-        final KieModuleModel kproj = getKieModuleModelWithAlphaNetworkCompiler();
-        KieSession ksession = getKieSession( kproj, str );
-        ksession.insert( new ChildFactWithEnum1(1, 3, EnumFact1.FIRST) );
-        ksession.insert( new ChildFactWithEnum1(1, 3, EnumFact1.SECOND) );
+        KieSession ksession = getKieSession(str);
+        ksession.insert(new ChildFactWithEnum1(1, 3, EnumFact1.FIRST));
+        ksession.insert(new ChildFactWithEnum1(1, 3, EnumFact1.SECOND));
         assertEquals(2, ksession.fireAllRules());
     }
-
-
 
     @Test
     public void testAlphaConstraintWithModification() {
@@ -132,8 +124,7 @@ public class ObjectTypeNodeCompilerTest extends BaseModelTest {
                         "  $r.setValue($s + \" is greater than 4 and smaller than 10\");\n" +
                         "end";
 
-        KieModuleModel kproj = getKieModuleModelWithAlphaNetworkCompiler();
-        KieSession ksession = getKieSession(kproj, str );
+        KieSession ksession = getKieSession(str);
 
         ksession.insert("Luca");
         ksession.insert("Asdrubale");
@@ -147,8 +138,6 @@ public class ObjectTypeNodeCompilerTest extends BaseModelTest {
         assertEquals("Asdrubale is greater than 4 and smaller than 10", result.getValue());
     }
 
-
-
     @Test
     public void testModify() {
         String str =
@@ -160,8 +149,7 @@ public class ObjectTypeNodeCompilerTest extends BaseModelTest {
                         "   modify($p) { setName($p.getName() + \"30\"); }" +
                         "end";
 
-        KieModuleModel kproj = getKieModuleModelWithAlphaNetworkCompiler();
-        KieSession ksession = getKieSession(kproj, str );
+        KieSession ksession = getKieSession(str);
 
         final Person luca = new Person("Luca", 30);
         ksession.insert(luca);
@@ -171,7 +159,6 @@ public class ObjectTypeNodeCompilerTest extends BaseModelTest {
         ksession.fireAllRules();
         assertEquals("Luca30", luca.getName());
     }
-
 
     @Test
     public void testModify2() {
@@ -184,8 +171,7 @@ public class ObjectTypeNodeCompilerTest extends BaseModelTest {
                         "   modify($p) { setAge($p.getAge() + 1); }" +
                         "end";
 
-        KieModuleModel kproj = getKieModuleModelWithAlphaNetworkCompiler();
-        KieSession ksession = getKieSession(kproj, str );
+        KieSession ksession = getKieSession(str);
 
         final Person luca = new Person("Luca", 30);
         ksession.insert(luca);
@@ -197,11 +183,5 @@ public class ObjectTypeNodeCompilerTest extends BaseModelTest {
 
         ksession.fireAllRules();
         assertTrue(luca.getAge() == 40);
-    }
-
-    private KieModuleModel getKieModuleModelWithAlphaNetworkCompiler() {
-        KieModuleModel kproj = KieServices.get().newKieModuleModel();
-        kproj.setConfigurationProperty( "drools.alphaNetworkCompiler", "true" );
-        return kproj;
     }
 }
