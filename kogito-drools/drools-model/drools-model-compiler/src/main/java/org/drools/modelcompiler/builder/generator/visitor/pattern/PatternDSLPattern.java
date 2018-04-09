@@ -20,9 +20,10 @@ import org.drools.modelcompiler.builder.generator.visitor.DSLNode;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findRootNodeViaScope;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getPatternListenedProperties;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.PATTERN_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.WATCH_CALL;
 
 class PatternDSLPattern extends PatternDSL {
-    private static final String PATTERN_CALL = "pattern";
 
     public PatternDSLPattern(RuleContext context, PackageModel packageModel, PatternDescr pattern, List<? extends BaseDescr> constraintDescrs, Class<?> patternType, boolean allConstraintsPositional) {
         super(context, packageModel, pattern, constraintDescrs, allConstraintsPositional, patternType);
@@ -50,7 +51,7 @@ class PatternDSLPattern extends PatternDSL {
                 List<Expression> additionalPatterns = new ArrayList<>();
                 for (Expression expr : exprs) {
                     Optional<Expression> rootScope = findRootNodeViaScope( expr );
-                    if ( rootScope.isPresent() && (( MethodCallExpr ) rootScope.get()).getNameAsString().equals( "pattern" ) ) {
+                    if ( rootScope.isPresent() && (( MethodCallExpr ) rootScope.get()).getNameAsString().equals( PATTERN_CALL ) ) {
                         additionalPatterns.add( expr );
                     } else {
                         MethodCallExpr currentExpr = ( MethodCallExpr ) expr;
@@ -70,7 +71,7 @@ class PatternDSLPattern extends PatternDSL {
         watchedProps.addAll(context.getRuleDescr().lookAheadFieldsOfIdentifier(pattern));
         watchedProps.addAll(getPatternListenedProperties(pattern));
         if (!watchedProps.isEmpty()) {
-            patternExpression = new MethodCallExpr( patternExpression, "watch" );
+            patternExpression = new MethodCallExpr( patternExpression, WATCH_CALL );
             watchedProps.stream().map( StringLiteralExpr::new ).forEach( patternExpression::addArgument );
         }
         return patternExpression;

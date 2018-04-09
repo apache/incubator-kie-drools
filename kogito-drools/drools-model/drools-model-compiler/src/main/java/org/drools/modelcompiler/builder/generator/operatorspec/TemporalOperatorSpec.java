@@ -8,11 +8,13 @@ import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.NOT_CALL;
+
 public class TemporalOperatorSpec implements OperatorSpec {
     public static final TemporalOperatorSpec INSTANCE = new TemporalOperatorSpec();
 
     public Expression getExpression( RuleContext context, PointFreeExpr pointFreeExpr, TypedExpression left ) {
-        MethodCallExpr methodCallExpr = new MethodCallExpr( null, pointFreeExpr.getOperator().asString() );
+        MethodCallExpr methodCallExpr = new MethodCallExpr( null, "D." + pointFreeExpr.getOperator().asString() );
         if (pointFreeExpr.getArg1() != null) {
             addArgumentToMethodCall( pointFreeExpr.getArg1(), methodCallExpr );
             if (pointFreeExpr.getArg2() != null) {
@@ -20,7 +22,7 @@ public class TemporalOperatorSpec implements OperatorSpec {
             }
         }
 
-        return pointFreeExpr.isNegated() ? new MethodCallExpr( null, "not" ).addArgument( methodCallExpr ) : methodCallExpr;
+        return pointFreeExpr.isNegated() ? new MethodCallExpr( null, NOT_CALL ).addArgument( methodCallExpr ) : methodCallExpr;
     }
 
     @Override

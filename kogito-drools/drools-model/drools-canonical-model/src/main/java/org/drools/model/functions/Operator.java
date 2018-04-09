@@ -32,6 +32,10 @@ import org.drools.model.operators.StringStartsWithOperator;
 
 public interface Operator<A, B> extends Predicate2<A, B[]> {
 
+    default boolean requiresCoercion() {
+        return false;
+    }
+
     interface SingleValue<A, B> extends Operator<A, B> {
         default boolean test( A o1, B[] o2 ) {
             return eval( o1, o2[0] );

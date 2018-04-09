@@ -27,15 +27,19 @@ import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
-import static org.drools.modelcompiler.builder.generator.ModelGenerator.BIND_AS_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_AS_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.INDEXED_BY_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.WATCH_CALL;
 
 public class FlowExpressionBuilder extends AbstractExpressionBuilder {
+
+    public static final String EXPR_CALL = "D.expr";
+    public static final String REACT_ON_CALL = "reactOn";
+    public static final String BIND_CALL = "D.bind";
 
     public FlowExpressionBuilder(RuleContext context) {
         super(context);
     }
-
-    public static final String INDEXED_BY_CALL = "indexedBy";
 
     public Expression buildExpressionWithIndexing(DrlxParseSuccess drlxParseResult) {
         String exprId = drlxParseResult.getExprId();
@@ -88,7 +92,7 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
 
     private MethodCallExpr buildReactOn(DrlxParseSuccess drlxParseResult, MethodCallExpr exprDSL ) {
         if ( !drlxParseResult.getReactOnProperties().isEmpty() ) {
-            exprDSL = new MethodCallExpr(exprDSL, "reactOn");
+            exprDSL = new MethodCallExpr(exprDSL, REACT_ON_CALL);
             drlxParseResult.getReactOnProperties().stream()
                     .map( StringLiteralExpr::new )
                     .forEach( exprDSL::addArgument );
@@ -96,7 +100,7 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
         }
 
         if ( !drlxParseResult.getWatchedProperties().isEmpty() ) {
-            exprDSL = new MethodCallExpr(exprDSL, "watch");
+            exprDSL = new MethodCallExpr(exprDSL, WATCH_CALL);
             drlxParseResult.getWatchedProperties().stream()
                     .map( StringLiteralExpr::new )
                     .forEach( exprDSL::addArgument );

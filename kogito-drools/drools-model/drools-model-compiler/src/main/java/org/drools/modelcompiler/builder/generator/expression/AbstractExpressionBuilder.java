@@ -29,9 +29,6 @@ import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 
 public abstract class AbstractExpressionBuilder {
-    public static final String BIND_CALL = "bind";
-    public static final String EXPR_CALL = "expr";
-
     protected static final IndexIdGenerator indexIdGenerator = new IndexIdGenerator();
 
     protected RuleContext context;

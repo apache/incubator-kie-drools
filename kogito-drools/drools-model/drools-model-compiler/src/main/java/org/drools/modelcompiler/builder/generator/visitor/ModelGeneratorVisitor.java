@@ -22,6 +22,11 @@ import org.drools.modelcompiler.builder.generator.visitor.accumulate.AccumulateV
 import org.drools.modelcompiler.builder.generator.visitor.accumulate.AccumulateVisitorPatternDSL;
 import org.drools.modelcompiler.builder.generator.visitor.pattern.PatternVisitor;
 
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.EXISTS_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.FORALL_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.NOT_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.OR_CALL;
+
 public class ModelGeneratorVisitor implements DescrVisitor {
 
     private final AccumulateVisitor accumulateVisitor;
@@ -67,22 +72,22 @@ public class ModelGeneratorVisitor implements DescrVisitor {
 
     @Override
     public void visit(NotDescr descr) {
-        conditionalElementVisitor.visit(descr, "not");
+        conditionalElementVisitor.visit(descr, NOT_CALL);
     }
 
     @Override
     public void visit(ExistsDescr descr) {
-        conditionalElementVisitor.visit(descr, "exists");
+        conditionalElementVisitor.visit(descr, EXISTS_CALL);
     }
 
     @Override
     public void visit(ForallDescr descr) {
-        conditionalElementVisitor.visit(descr, "forall");
+        conditionalElementVisitor.visit(descr, FORALL_CALL);
     }
 
     @Override
     public void visit(OrDescr descr) {
-        orVisitor.visit(descr, "or");
+        orVisitor.visit(descr, OR_CALL);
     }
 
     @Override

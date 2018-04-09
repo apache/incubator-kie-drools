@@ -216,4 +216,54 @@ public class MvelOperatorsTest extends BaseModelTest {
         ksession.insert( asList("hello", "world") );
         assertEquals(1, ksession.fireAllRules());
     }
+
+    @Test
+    public void testNotIn() {
+        String str =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "global java.util.List list\n" +
+                "rule R when\n" +
+                "    Person( $name : name, age not in (40, 37))" +
+                "then\n" +
+                "    list.add($name);" +
+                "end ";
+
+        KieSession ksession = getKieSession(str);
+
+        List<String> list = new ArrayList<>();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert(new Person("Mark", 40));
+        ksession.insert(new Person("Mario", 44));
+        ksession.insert(new Person("Edson", 37));
+        ksession.fireAllRules();
+
+        assertEquals(1, list.size());
+        assertEquals("Mario", list.get(0));
+    }
+
+    @Test
+    public void testNotInUsingShort() {
+        String str =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "global java.util.List list\n" +
+                "rule R when\n" +
+                "    Person( $name : name, ageAsShort not in (40, 37))" +
+                "then\n" +
+                "    list.add($name);" +
+                "end ";
+
+        KieSession ksession = getKieSession(str);
+
+        List<String> list = new ArrayList<>();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert(new Person("Mark", 40));
+        ksession.insert(new Person("Mario", 44));
+        ksession.insert(new Person("Edson", 37));
+        ksession.fireAllRules();
+
+        assertEquals(1, list.size());
+        assertEquals("Mario", list.get(0));
+    }
 }

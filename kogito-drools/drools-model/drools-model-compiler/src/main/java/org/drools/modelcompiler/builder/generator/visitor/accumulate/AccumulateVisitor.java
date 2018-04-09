@@ -54,6 +54,9 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.forceCast
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.rescopeNamesToNewScope;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.ACCUMULATE_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.ACC_FUNCTION_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.AND_CALL;
 
 public abstract class AccumulateVisitor {
 
@@ -69,9 +72,9 @@ public abstract class AccumulateVisitor {
     }
 
     public void visit(AccumulateDescr descr, PatternDescr basePattern) {
-        final MethodCallExpr accumulateDSL = new MethodCallExpr(null, "accumulate");
+        final MethodCallExpr accumulateDSL = new MethodCallExpr(null, ACCUMULATE_CALL);
         context.addExpression(accumulateDSL);
-        final MethodCallExpr accumulateExprs = new MethodCallExpr(null, "and");
+        final MethodCallExpr accumulateExprs = new MethodCallExpr(null, AND_CALL);
         accumulateDSL.addArgument(accumulateExprs);
 
         context.pushExprPointer(accumulateExprs::addArgument);
@@ -110,7 +113,7 @@ public abstract class AccumulateVisitor {
 
         context.pushExprPointer(accumulateDSL::addArgument);
 
-        final MethodCallExpr functionDSL = new MethodCallExpr(null, "accFunction");
+        final MethodCallExpr functionDSL = new MethodCallExpr(null, ACC_FUNCTION_CALL);
 
         final String expression = function.getParams()[0];
         final Expression expr = DrlxParseUtil.parseExpression(expression).getExpr();
@@ -244,7 +247,7 @@ public abstract class AccumulateVisitor {
      */
     protected void visitAccInlineCustomCode(RuleContext context2, AccumulateDescr descr, MethodCallExpr accumulateDSL, PatternDescr basePattern, PatternDescr inputDescr) {
         context.pushExprPointer(accumulateDSL::addArgument);
-        final MethodCallExpr functionDSL = new MethodCallExpr(null, "accFunction");
+        final MethodCallExpr functionDSL = new MethodCallExpr(null, ACC_FUNCTION_CALL);
 
         String code = null;
         try {

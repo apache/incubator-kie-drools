@@ -67,6 +67,7 @@ import static java.util.stream.Collectors.toList;
 import static org.drools.javaparser.JavaParser.parseExpression;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.classToReferenceType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.*;
 import static org.drools.modelcompiler.util.StringUtil.toId;
 
 public class ModelGenerator {
@@ -109,17 +110,6 @@ public class ModelGenerator {
 
     public static final boolean GENERATE_EXPR_ID = true;
 
-    public static final String BUILD_CALL = "build";
-    public static final String RULE_CALL = "rule";
-    public static final String UNIT_CALL = "unit";
-    public static final String BIND_AS_CALL = "as";
-    public static final String ATTRIBUTE_CALL = "attribute";
-    public static final String METADATA_CALL = "metadata";
-    public static final String DECLARATION_OF_CALL = "declarationOf";
-    public static final String QUERY_INVOCATION_CALL = "call";
-    public static final String VALUE_OF_CALL = "valueOf";
-    public static final String UNIT_DATA_CALL = "unitData";
-
     public static void generateModel(KnowledgeBuilderImpl kbuilder, InternalKnowledgePackage pkg, PackageDescr packageDescr, PackageModel packageModel, boolean isPattern) {
         TypeResolver typeResolver = pkg.getTypeResolver();
         packageModel.addImports(pkg.getTypeResolver().getImports());
@@ -158,7 +148,7 @@ public class ModelGenerator {
 
         ruleMethod.setJavadocComment(" Rule name: " + ruleDescr.getName() + " ");
 
-        VariableDeclarationExpr ruleVar = new VariableDeclarationExpr(RULE_TYPE, RULE_CALL);
+        VariableDeclarationExpr ruleVar = new VariableDeclarationExpr(RULE_TYPE, "rule");
 
         MethodCallExpr ruleCall = new MethodCallExpr(null, RULE_CALL);
         if (!ruleDescr.getNamespace().isEmpty()) {
@@ -194,7 +184,7 @@ public class ModelGenerator {
 
         ruleVariablesBlock.addStatement(new AssignExpr(ruleVar, buildCall, AssignExpr.Operator.ASSIGN));
 
-        ruleVariablesBlock.addStatement( new ReturnStmt(RULE_CALL) );
+        ruleVariablesBlock.addStatement( new ReturnStmt("rule") );
         packageModel.putRuleMethod(ruleMethodName, ruleMethod);
     }
 
@@ -388,12 +378,12 @@ public class ModelGenerator {
         decl.getDeclarationSource().ifPresent(declarationOfCall::addArgument);
 
         decl.getEntryPoint().ifPresent( ep -> {
-            MethodCallExpr entryPointCall = new MethodCallExpr(null, "entryPoint");
+            MethodCallExpr entryPointCall = new MethodCallExpr(null, ENTRY_POINT_CALL);
             entryPointCall.addArgument( new StringLiteralExpr(ep ) );
             declarationOfCall.addArgument( entryPointCall );
         } );
         for ( BehaviorDescr behaviorDescr : decl.getBehaviors() ) {
-            MethodCallExpr windowCall = new MethodCallExpr(null, "window");
+            MethodCallExpr windowCall = new MethodCallExpr(null, WINDOW_CALL);
             if ( Behavior.BehaviorType.TIME_WINDOW.matches(behaviorDescr.getSubType() ) ) {
                 windowCall.addArgument( "Window.Type.TIME" );
                 windowCall.addArgument( "" + TimeUtils.parseTimeString(behaviorDescr.getParameters().get(0 ) ) );

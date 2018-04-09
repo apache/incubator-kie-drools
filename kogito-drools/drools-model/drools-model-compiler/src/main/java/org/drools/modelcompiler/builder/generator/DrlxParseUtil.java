@@ -79,6 +79,7 @@ import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import static java.util.Optional.of;
 
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.PATTERN_CALL;
 import static org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper.findLeftLeafOfNameExpr;
 import static org.drools.modelcompiler.util.ClassUtil.findMethod;
 
@@ -555,7 +556,7 @@ public class DrlxParseUtil {
     public static Optional<MethodCallExpr> findPatternWithBinding(String patternBinding, List<Expression> expressions) {
         return expressions.stream().flatMap((Expression e) -> {
             final Optional<MethodCallExpr> pattern = e.findFirst(MethodCallExpr.class, expr -> {
-                final boolean isPatternExpr = expr.getName().asString().equals("pattern");
+                final boolean isPatternExpr = expr.getName().asString().equals(PATTERN_CALL);
                 final boolean hasBindingHasArgument = expr.getArguments().contains(new NameExpr(toVar(patternBinding)));
                 return isPatternExpr && hasBindingHasArgument;
             });
@@ -565,7 +566,7 @@ public class DrlxParseUtil {
 
     public static Optional<MethodCallExpr> findLastPattern(List<Expression> expressions) {
         final Stream<MethodCallExpr> patterns = expressions.stream().flatMap((Expression e) -> {
-            final List<MethodCallExpr> pattern = e.findAll(MethodCallExpr.class, expr -> expr.getName().asString().equals("pattern"));
+            final List<MethodCallExpr> pattern = e.findAll(MethodCallExpr.class, expr -> expr.getName().asString().equals(PATTERN_CALL));
             return pattern.stream();
         });
         final List<MethodCallExpr> collect = patterns.collect(Collectors.toList());

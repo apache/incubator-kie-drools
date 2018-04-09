@@ -20,15 +20,12 @@ import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassFromContext;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.ELSE_WHEN_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.THEN_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.WHEN_CALL;
 import static org.drools.modelcompiler.builder.generator.ModelGenerator.createVariables;
 
 public class NamedConsequenceVisitor {
-
-    public static final String WHEN_CALL = "when";
-    public static final String ELSE_WHEN_CALL = "elseWhen";
-    public static final String THEN_CALL = "then";
-    public static final String BREAKING_CALL = "breaking";
-
 
     final RuleContext context;
     final PackageModel packageModel;

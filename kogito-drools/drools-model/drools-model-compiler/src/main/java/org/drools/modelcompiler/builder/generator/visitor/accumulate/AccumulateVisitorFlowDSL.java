@@ -18,8 +18,7 @@ import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.fromVar;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
-import static org.drools.modelcompiler.builder.generator.ModelGenerator.BIND_AS_CALL;
-import static org.drools.modelcompiler.builder.generator.expression.FlowExpressionBuilder.BIND_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_AS_CALL;
 
 public class AccumulateVisitorFlowDSL extends AccumulateVisitor {
 
@@ -32,7 +31,7 @@ public class AccumulateVisitorFlowDSL extends AccumulateVisitor {
 
     @Override
     protected MethodCallExpr buildBinding(String bindingName, Collection<String> usedDeclaration, Expression expression) {
-        MethodCallExpr bindDSL = new MethodCallExpr(null, BIND_CALL);
+        MethodCallExpr bindDSL = new MethodCallExpr(null, FlowExpressionBuilder.BIND_CALL);
         bindDSL.addArgument(toVar(bindingName));
         MethodCallExpr bindAsDSL = new MethodCallExpr(bindDSL, BIND_AS_CALL);
         usedDeclaration.stream().map(d -> new NameExpr(toVar(d))).forEach(bindAsDSL::addArgument);
@@ -53,7 +52,7 @@ public class AccumulateVisitorFlowDSL extends AccumulateVisitor {
 
     private MethodCallExpr findLastPattern(List<Expression> expressions) {
         final List<MethodCallExpr> collect = expressions.stream().flatMap( e ->
-            e.findAll(MethodCallExpr.class, expr -> expr.getName().asString().equals("expr")).stream()
+            e.findAll(MethodCallExpr.class, expr -> expr.getName().asString().equals(FlowExpressionBuilder.EXPR_CALL)).stream()
         ).collect( Collectors.toList());
 
         return collect.isEmpty() ? null : collect.get(collect.size() - 1);

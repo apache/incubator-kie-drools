@@ -24,10 +24,11 @@ import org.drools.modelcompiler.builder.generator.visitor.DSLNode;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getPatternListenedProperties;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.AND_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.INPUT_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.WATCH_CALL;
 
 class FlowDSLPattern extends PatternDSL {
-
-    private static final String INPUT_CALL = "input";
 
     public FlowDSLPattern(RuleContext context, PackageModel packageModel, PatternDescr pattern, List<? extends BaseDescr> constraintDescrs, Class<?> patternType, boolean allConstraintsPositional) {
         super(context, packageModel, pattern, constraintDescrs, allConstraintsPositional, patternType);
@@ -81,7 +82,7 @@ class FlowDSLPattern extends PatternDSL {
         watchedProperties.addAll(context.getRuleDescr().lookAheadFieldsOfIdentifier(pattern));
         watchedProperties.addAll(getPatternListenedProperties(pattern));
         if (!watchedProperties.isEmpty()) {
-            exprDSL = new MethodCallExpr(exprDSL, "watch");
+            exprDSL = new MethodCallExpr(exprDSL, WATCH_CALL);
             watchedProperties.stream()
                     .map(StringLiteralExpr::new )
                     .forEach( exprDSL::addArgument );
@@ -92,7 +93,7 @@ class FlowDSLPattern extends PatternDSL {
 
     private void buildConstraints(PatternDescr pattern, Class<?> patternType, List<PatternConstraintParseResult> patternConstraintParseResults, boolean allConstraintsPositional) {
         if (allConstraintsPositional) {
-            final MethodCallExpr andDSL = new MethodCallExpr(null, "and");
+            final MethodCallExpr andDSL = new MethodCallExpr(null, AND_CALL);
             context.addExpression(andDSL);
             context.pushExprPointer(andDSL::addArgument);
         }

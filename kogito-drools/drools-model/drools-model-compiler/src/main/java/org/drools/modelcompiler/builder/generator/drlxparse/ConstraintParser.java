@@ -45,7 +45,6 @@ import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.GREATER;
 import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.GREATER_EQUALS;
 import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.LESS;
 import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.LESS_EQUALS;
-import static org.drools.javaparser.printer.PrintUtil.toDrlx;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.coerceLiteralExprToType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getLiteralExpressionType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isPrimitiveExpression;
@@ -181,15 +180,13 @@ public class ConstraintParser {
                 return new DrlxParseSuccess(patternType, exprId, bindingId, left.getExpression(), left.getType())
                         .setUsedDeclarations( typedExpressionResult.getUsedDeclarations() ).setReactOnProperties( typedExpressionResult.getReactOnProperties() ).setLeft( left );
             }).orElse(new DrlxParseFail( new ParseExpressionErrorResult(drlxExpr) ));
-
-
         }
 
         if ( drlxExpr instanceof PointFreeExpr ) {
             PointFreeExpr pointFreeExpr = (PointFreeExpr) drlxExpr;
 
             TypedExpressionResult typedExpressionResult = new ExpressionTyper(context, patternType, bindingId, isPositional).toTypedExpression(pointFreeExpr);
-            final Optional<TypedExpression> optTypedExpression =typedExpressionResult.getTypedExpression();
+            final Optional<TypedExpression> optTypedExpression = typedExpressionResult.getTypedExpression();
 
             return optTypedExpression.<DrlxParseResult>map(typedExpression -> {
                 final Expression returnExpression = typedExpression.getExpression();
@@ -202,23 +199,22 @@ public class ConstraintParser {
                         .setStatic(typedExpression.isStatic())
                         .setValidExpression(true);
             }).orElse(new DrlxParseFail( new ParseExpressionErrorResult(drlxExpr) ));
-
         }
 
         if (drlxExpr instanceof MethodCallExpr) {
             MethodCallExpr methodCallExpr = (MethodCallExpr) drlxExpr;
 
-            // when the methodCallExpr will be placed in the model/DSL, any parameter being a "this" need to be implemented as _this by convention.
-            List<ThisExpr> rewriteThisExprs = recurseCollectArguments(methodCallExpr).stream()
-                    .filter(ThisExpr.class::isInstance)
-                    .map(ThisExpr.class::cast)
-                    .collect(Collectors.toList());
-            for (ThisExpr t : rewriteThisExprs) {
-                methodCallExpr.replace(t, new NameExpr("_this"));
-            }
-
             Optional<MethodDeclaration> functionCall = packageModel.getFunctions().stream().filter(m -> m.getName().equals(methodCallExpr.getName())).findFirst();
             if (functionCall.isPresent()) {
+                // when the methodCallExpr will be placed in the model/DSL, any parameter being a "this" need to be implemented as _this by convention.
+                List<ThisExpr> rewriteThisExprs = recurseCollectArguments(methodCallExpr).stream()
+                        .filter(ThisExpr.class::isInstance)
+                        .map(ThisExpr.class::cast)
+                        .collect(Collectors.toList());
+                for (ThisExpr t : rewriteThisExprs) {
+                    methodCallExpr.replace(t, new NameExpr("_this"));
+                }
+
                 Class<?> returnType = DrlxParseUtil.getClassFromContext(context.getTypeResolver(), functionCall.get().getType().asString());
                 NodeList<Expression> arguments = methodCallExpr.getArguments();
                 List<String> usedDeclarations = new ArrayList<>();
@@ -231,31 +227,6 @@ public class ConstraintParser {
                     }
                 }
                 return new DrlxParseSuccess(patternType, exprId, bindingId, methodCallExpr, returnType).setUsedDeclarations(usedDeclarations);
-            } else if (methodCallExpr.getScope().isPresent() && methodCallExpr.getScope().get() instanceof StringLiteralExpr) {
-                TypedExpressionResult typedExpressionResult = new ExpressionTyper(context, String.class, bindingId, isPositional)
-                        .toTypedExpression(methodCallExpr);
-                Optional<TypedExpression> optConverted = typedExpressionResult.getTypedExpression();
-
-                return optConverted.<DrlxParseResult>map(converted -> {
-                    return new DrlxParseSuccess(String.class, exprId, bindingId, converted.getExpression(), converted.getType())
-                            .setLeft(converted )
-                            .setUsedDeclarations(typedExpressionResult.getUsedDeclarations() );
-                }).orElse(new DrlxParseFail( new ParseExpressionErrorResult(drlxExpr) ));
-
-
-            } else if (patternType != null) {
-                ExpressionTyperContext expressionTyperContext = new ExpressionTyperContext();
-                ExpressionTyper expressionTyper = new ExpressionTyper(context, patternType, bindingId, isPositional, expressionTyperContext);
-                TypedExpressionResult leftTypedExpressionResult = expressionTyper.toTypedExpression(drlxExpr);
-                Optional<TypedExpression> optLeft = leftTypedExpressionResult.getTypedExpression();
-                if ( !optLeft.isPresent() ) {
-                    return new DrlxParseFail( new InvalidExpressionErrorResult( "Unable to parse left part of expression: " + expression ) );
-                }
-                TypedExpression left = optLeft.get();
-                return new DrlxParseSuccess(patternType, exprId, bindingId, left.getExpression(), left.getType())
-                        .setUsedDeclarations( expressionTyperContext.getUsedDeclarations() );
-            } else {
-                return new DrlxParseSuccess(patternType, exprId, bindingId, methodCallExpr, null);
             }
         }
 
@@ -291,10 +262,23 @@ public class ConstraintParser {
             return new DrlxParseSuccess( patternType, exprId, bindingId, drlxExpr, getLiteralExpressionType( (( LiteralExpr ) drlxExpr) ) );
         }
 
-        throw new UnsupportedOperationException("Unknown expression: " + toDrlx(drlxExpr)); // TODO
+        if (patternType != null) {
+            ExpressionTyperContext expressionTyperContext = new ExpressionTyperContext();
+            ExpressionTyper expressionTyper = new ExpressionTyper(context, patternType, bindingId, isPositional, expressionTyperContext);
+            TypedExpressionResult leftTypedExpressionResult = expressionTyper.toTypedExpression(drlxExpr);
+            Optional<TypedExpression> optLeft = leftTypedExpressionResult.getTypedExpression();
+            if ( !optLeft.isPresent() ) {
+                return new DrlxParseFail( new InvalidExpressionErrorResult( "Unable to parse left part of expression: " + expression ) );
+            }
+            TypedExpression left = optLeft.get();
+            return new DrlxParseSuccess(patternType, exprId, bindingId, left.getExpression(), left.getType())
+                    .setUsedDeclarations( expressionTyperContext.getUsedDeclarations() );
+        } else {
+            return new DrlxParseSuccess(patternType, exprId, bindingId, drlxExpr, null);
+        }
     }
 
-    private void coerceRightExpression( TypedExpression left, TypedExpression right ) {
+    public static void coerceRightExpression( TypedExpression left, TypedExpression right ) {
         if (right.getExpression() == null) {
             return;
         }
@@ -310,7 +294,7 @@ public class ConstraintParser {
         }
     }
 
-    private boolean areCompatible( Class<?> leftType, Class<?> rightType ) {
+    private static boolean areCompatible( Class<?> leftType, Class<?> rightType ) {
         return toNonPrimitiveType( rightType ).isAssignableFrom( toNonPrimitiveType( leftType ) );
     }
 

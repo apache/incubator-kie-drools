@@ -1316,4 +1316,26 @@ public class CompilerTest extends BaseModelTest {
         ksession.insert( me );
         ksession.fireAllRules();
     }
+
+    @Test
+    public void testStringValueOf() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "import " + Result.class.getCanonicalName() + ";\n" +
+                "rule R when\n" +
+                "  Integer( $i : intValue )\n" +
+                "  Person( name == (String.valueOf($i)) )\n" +
+                "then\n" +
+                "  insert(new Result($i));\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( 44 );
+        ksession.insert( new Person( "44", 44 ) );
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(((Number)results.iterator().next().getValue()).intValue(), 44);
+    }
 }

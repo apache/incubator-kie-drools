@@ -5,6 +5,8 @@ import org.drools.compiler.lang.descr.ConditionalElementDescr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.AND_CALL;
+
 public class OrVisitor {
 
     final ModelGeneratorVisitor modelGeneratorVisitor;
@@ -20,7 +22,7 @@ public class OrVisitor {
         context.addExpression(ceDSL);
 
         for (BaseDescr subDescr : descr.getDescrs()) {
-            final MethodCallExpr andDSL = new MethodCallExpr(null, "and");
+            final MethodCallExpr andDSL = new MethodCallExpr(null, AND_CALL);
             context.pushExprPointer(andDSL::addArgument);
             subDescr.accept(modelGeneratorVisitor);
             context.popExprPointer();

@@ -17,13 +17,12 @@ import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.FROM_CALL;
 
 public class FromVisitor {
 
     final RuleContext ruleContext;
     final PackageModel packageModel;
-
-    private static final String FROM_CALL = "from";
 
     public FromVisitor(RuleContext context, PackageModel packageModel) {
         this.ruleContext = context;

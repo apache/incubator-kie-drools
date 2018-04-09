@@ -13,8 +13,8 @@ import org.drools.modelcompiler.builder.generator.QueryParameter;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.visitor.DSLNode;
 
-import static org.drools.modelcompiler.builder.generator.ModelGenerator.QUERY_INVOCATION_CALL;
-import static org.drools.modelcompiler.builder.generator.ModelGenerator.VALUE_OF_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.QUERY_INVOCATION_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.VALUE_OF_CALL;
 import static org.drools.modelcompiler.builder.generator.QueryGenerator.toQueryDef;
 
 class Query implements DSLNode {

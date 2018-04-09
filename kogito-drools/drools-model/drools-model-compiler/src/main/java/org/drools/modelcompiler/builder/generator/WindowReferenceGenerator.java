@@ -37,6 +37,7 @@ import static java.util.stream.Collectors.toList;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.WINDOW_CALL;
 
 public class WindowReferenceGenerator {
 
@@ -71,7 +72,7 @@ public class WindowReferenceGenerator {
 
         final String windowName = toVar(descr.getName());
 
-        final MethodCallExpr initializer = new MethodCallExpr(null, "window");
+        final MethodCallExpr initializer = new MethodCallExpr(null, WINDOW_CALL);
 
         final PatternDescr pattern = descr.getPattern();
         ParsedBehavior behavior = pattern

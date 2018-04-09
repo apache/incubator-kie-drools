@@ -28,12 +28,11 @@ import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassFromContext;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
-import static org.drools.modelcompiler.builder.generator.ModelGenerator.BUILD_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.BUILD_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.QUERY_CALL;
 import static org.drools.modelcompiler.util.StringUtil.toId;
 
 public class QueryGenerator {
-
-    public static final String QUERY_CALL = "query";
 
     public static void processQueryDef( KnowledgeBuilderImpl kbuilder, TypeResolver typeResolver, PackageModel packageModel, QueryDescr queryDescr, boolean isPattern ) {
         RuleContext context = new RuleContext(kbuilder, packageModel, queryDescr, typeResolver, isPattern);

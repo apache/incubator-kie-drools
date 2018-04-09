@@ -44,6 +44,10 @@ public class Person extends AbstractReactiveObject {
         return age;
     }
 
+    public Short getAgeAsShort() {
+        return (short)age;
+    }
+
     public void setAge(int age) {
         this.age = age;
         notifyModification();
