@@ -42,13 +42,12 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findAllCh
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.hasScope;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isNameExprWithName;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.parseBlock;
-import static org.drools.modelcompiler.builder.generator.visitor.NamedConsequenceVisitor.BREAKING_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.BREAKING_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.EXECUTESCRIPT_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.EXECUTE_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.ON_CALL;
 
 public class Consequence {
-
-    public static final String EXECUTE_CALL = "execute";
-    public static final String EXECUTESCRIPT_CALL = "executeScript";
-    public static final String ON_CALL = "on";
 
     private static final ClassOrInterfaceType BITMASK_TYPE = JavaParser.parseClassOrInterfaceType(BitMask.class.getCanonicalName());
 
@@ -130,7 +129,7 @@ public class Consequence {
 
     private MethodCallExpr executeCall(BlockStmt ruleVariablesBlock, BlockStmt ruleConsequence, Collection<String> verifiedDeclUsedInRHS, MethodCallExpr onCall) {
         boolean requireDrools = rewriteRHS(ruleVariablesBlock, ruleConsequence);
-        MethodCallExpr executeCall = new MethodCallExpr(onCall, EXECUTE_CALL);
+        MethodCallExpr executeCall = new MethodCallExpr(onCall, onCall == null ? "D." + EXECUTE_CALL : EXECUTE_CALL);
         LambdaExpr executeLambda = new LambdaExpr();
         executeCall.addArgument(executeLambda);
         executeLambda.setEnclosingParameters(true);
@@ -143,7 +142,7 @@ public class Consequence {
     }
 
     private MethodCallExpr executeScriptCall(RuleDescr ruleDescr, MethodCallExpr onCall) {
-        MethodCallExpr executeCall = new MethodCallExpr(onCall, EXECUTESCRIPT_CALL);
+        MethodCallExpr executeCall = new MethodCallExpr(onCall, onCall == null ? "D." + EXECUTESCRIPT_CALL : EXECUTESCRIPT_CALL);
         executeCall.addArgument(new StringLiteralExpr("mvel"));
 
         ObjectCreationExpr objectCreationExpr = new ObjectCreationExpr();

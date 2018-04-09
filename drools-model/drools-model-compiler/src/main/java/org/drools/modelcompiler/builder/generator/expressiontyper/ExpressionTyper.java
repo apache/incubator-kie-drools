@@ -88,10 +88,14 @@ public class ExpressionTyper {
     }
 
     public TypedExpressionResult toTypedExpression(Expression drlxExpr) {
-        logger.debug("Typed expression Input: drlxExpr = {} , patternType = {} ,declarations = {}", PrintUtil.toDrlx(drlxExpr), patternType, context.getUsedDeclarations());
+        if (logger.isDebugEnabled()) {
+            logger.debug( "Typed expression Input: drlxExpr = {} , patternType = {} ,declarations = {}", PrintUtil.toDrlx( drlxExpr ), patternType, context.getUsedDeclarations() );
+        }
         final Optional<TypedExpression> typedExpression = toTypedExpressionRec(drlxExpr);
         final TypedExpressionResult typedExpressionResult = new TypedExpressionResult(typedExpression, context);
-        logger.debug("Typed expression Output: {}", typedExpressionResult);
+        if (logger.isDebugEnabled()) {
+            logger.debug( "Typed expression Output: {}", typedExpressionResult );
+        }
         return typedExpressionResult;
     }
 
@@ -474,7 +478,7 @@ public class ExpressionTyper {
             } else {
                 try {
                     Class<?> resolvedType = ruleContext.getTypeResolver().resolveType( firstName );
-                    return of( new TypedExpressionCursor( null, resolvedType ));
+                    return of( new TypedExpressionCursor( new NameExpr(firstName), resolvedType ));
                 } catch (ClassNotFoundException e) {
                     // ignore
                 }

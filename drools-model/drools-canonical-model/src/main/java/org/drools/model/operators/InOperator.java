@@ -38,4 +38,9 @@ public class InOperator implements Operator.MultipleValue<Object, Object> {
     public String getOperatorName() {
         return "in";
     }
+
+    @Override
+    public boolean requiresCoercion() {
+        return true;
+    }
 }

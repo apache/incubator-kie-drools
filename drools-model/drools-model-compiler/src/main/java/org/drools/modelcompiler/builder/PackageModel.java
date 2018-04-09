@@ -67,6 +67,7 @@ import org.slf4j.LoggerFactory;
 
 import static org.drools.core.util.StringUtils.generateUUID;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.GLOBAL_OF_CALL;
 
 public class PackageModel {
 
@@ -476,9 +477,9 @@ public class PackageModel {
         cu.addImport(JavaParser.parseImport("import java.util.*;"                          ));
         cu.addImport(JavaParser.parseImport("import org.drools.model.*;"                   ));
         if(isPattern) {
-            cu.addImport(JavaParser.parseImport("import static org.drools.model.PatternDSL.*;"));
+            cu.addImport(JavaParser.parseImport("import org.drools.modelcompiler.dsl.pattern.D;"));
         } else {
-            cu.addImport(JavaParser.parseImport("import static org.drools.model.FlowDSL.*;"));
+            cu.addImport(JavaParser.parseImport("import org.drools.modelcompiler.dsl.flow.D;"));
         }
         cu.addImport(JavaParser.parseImport("import org.drools.model.Index.ConstraintType;"));
         cu.addImport(JavaParser.parseImport("import java.time.*;"));
@@ -500,7 +501,7 @@ public class PackageModel {
         varType.setTypeArguments(DrlxParseUtil.classToReferenceType(globalClass));
         Type declType = DrlxParseUtil.classToReferenceType(globalClass);
 
-        MethodCallExpr declarationOfCall = new MethodCallExpr(null, "globalOf");
+        MethodCallExpr declarationOfCall = new MethodCallExpr(null, GLOBAL_OF_CALL);
         declarationOfCall.addArgument(new ClassExpr(declType ));
         declarationOfCall.addArgument(new StringLiteralExpr(packageName));
         declarationOfCall.addArgument(new StringLiteralExpr(globalName));
@@ -511,9 +512,11 @@ public class PackageModel {
     }
 
     public void logRule(String source) {
-        logger.debug("=====");
-        logger.debug(source);
-        logger.debug("=====");
+        if ( logger.isDebugEnabled() ) {
+            logger.debug( "=====" );
+            logger.debug( source );
+            logger.debug( "=====" );
+        }
     }
 
     public void addAccumulateFunctions(Map<String, AccumulateFunction> accumulateFunctions) {

@@ -30,11 +30,14 @@ import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 import static java.util.Optional.of;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.ALPHA_INDEXED_BY_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.BETA_INDEXED_BY_CALL;
 
 public class PatternExpressionBuilder extends AbstractExpressionBuilder {
 
-    public static final String ALPHA_INDEXED_BY_CALL = "alphaIndexedBy";
-    public static final String BETA_INDEXED_BY_CALL = "betaIndexedBy";
+    public static final String EXPR_CALL = "expr";
+    public static final String REACT_ON_CALL = "D.reactOn";
+    public static final String BIND_CALL = "bind";
 
     public PatternExpressionBuilder(RuleContext context) {
         super(context);
@@ -68,7 +71,7 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
 
     private Optional<MethodCallExpr> buildReactOn(DrlxParseSuccess drlxParseResult) {
         if (!drlxParseResult.getReactOnProperties().isEmpty()) {
-            MethodCallExpr reactOnDSL = new MethodCallExpr(null, "reactOn");
+            MethodCallExpr reactOnDSL = new MethodCallExpr(null, REACT_ON_CALL);
             drlxParseResult.getReactOnProperties().stream()
                     .map(StringLiteralExpr::new)
                     .forEach(reactOnDSL::addArgument);

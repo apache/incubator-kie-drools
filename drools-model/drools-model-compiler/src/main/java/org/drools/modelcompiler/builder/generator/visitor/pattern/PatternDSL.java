@@ -13,6 +13,7 @@ import org.drools.compiler.lang.descr.PatternSourceDescr;
 import org.drools.javaparser.ast.drlx.OOPathExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.modelcompiler.builder.PackageModel;
+import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.WindowReferenceGenerator;
 import org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser;
@@ -66,7 +67,7 @@ abstract class PatternDSL implements DSLNode {
         throw new RuntimeException("Cannot find field in position " + position + " for " + patternType);
     }
 
-    protected Optional<String> findInnerBindingName(List<PatternConstraintParseResult> firstParsedConstraints) {
+    private Optional<String> findInnerBindingName(List<PatternConstraintParseResult> firstParsedConstraints) {
         return firstParsedConstraints.stream()
                 .map(PatternConstraintParseResult::getDrlxParseResult)
                 .filter(DrlxParseResult::isSuccess)
@@ -84,18 +85,22 @@ abstract class PatternDSL implements DSLNode {
     }
 
     protected void generatePatternIdentifierIfMissing() {
-        if(pattern.getIdentifier() == null) {
-            final List<PatternConstraintParseResult> firstParsedConstraints = findAllConstraint(pattern, constraintDescrs, patternType);
-            final Optional<String> innerBindingName = findInnerBindingName(firstParsedConstraints);
-
+        if (pattern.getIdentifier() == null) {
             final String generatedName = generateName("pattern_" + patternType.getSimpleName());
-
-            final String patternNameAggregated = innerBindingName
+            final String patternNameAggregated = findFirstInnerBinding(pattern, constraintDescrs, patternType)
                     .map(ib -> context.getAggregatePatternMap().putIfAbsent(ib, generatedName))
                     .orElse(generatedName);
-
             pattern.setIdentifier(patternNameAggregated);
         }
+    }
+
+    public Optional<String> findFirstInnerBinding(PatternDescr pattern, List<? extends BaseDescr> constraintDescrs, Class<?> patternType) {
+        return constraintDescrs.stream()
+                .map( constraint -> getExpression( patternType, constraint, isPositional(constraint) ) )
+                .map( DrlxParseUtil::parseExpression )
+                .filter( drlx -> drlx.getBind() != null )
+                .map( drlx -> drlx.getBind().asString() )
+                .findFirst();
     }
 
     protected List<PatternConstraintParseResult> findAllConstraint(PatternDescr pattern, List<? extends BaseDescr> constraintDescrs, Class<?> patternType) {
@@ -106,11 +111,7 @@ abstract class PatternDSL implements DSLNode {
             String patternIdentifier = pattern.getIdentifier();
 
             boolean isPositional = isPositional(constraint);
-            String expression = getConstraintExpression(patternType, constraint, isPositional);
-            int unifPos = expression.indexOf( ":=" );
-            if (unifPos > 0) {
-                expression = expression.substring( unifPos+2 ).trim() + " == " + expression.substring( 0, unifPos ).trim();
-            }
+            String expression = getExpression( patternType, constraint, isPositional );
 
             DrlxParseResult drlxParseResult = constraintParser.drlxParse(patternType, patternIdentifier, expression, isPositional);
 
@@ -130,6 +131,15 @@ abstract class PatternDSL implements DSLNode {
         }
 
         return patternConstraintParseResults;
+    }
+
+    private String getExpression( Class<?> patternType, BaseDescr constraint, boolean isPositional ) {
+        String expression = getConstraintExpression(patternType, constraint, isPositional);
+        int unifPos = expression.indexOf( ":=" );
+        if (unifPos > 0) {
+            expression = expression.substring( unifPos+2 ).trim() + " == " + expression.substring( 0, unifPos ).trim();
+        }
+        return expression;
     }
 
     private int firstNonIdentifierPos(String expr) {

@@ -21,7 +21,6 @@ import java.util.List;
 
 import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
-import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
@@ -56,7 +55,6 @@ public class AbstractCompositeRestrictionTest {
                 KieServices.Factory.get().getResources().newClassPathResource("abstractCompositeRestrictionTest.drl", getClass()));
 
         final List<Message> msgs = builder.getResults().getMessages();
-        Assertions.assertThat(msgs.size()).isEqualTo(1);
 
         final String[] lines = msgs.get(0).getText().split("\n");
         final String unable = "Unable to Analyse Expression valueType == Field.INT || valueType == Field.DOUBLE:";
