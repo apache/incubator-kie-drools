@@ -1048,16 +1048,19 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         KieBase kbase = loadKnowledgeBase("test_Halt_With_Timer.drl");
         final KieSession ksession = createKnowledgeSession(kbase);
 
-        new Thread( new Runnable(){
-            public void run(){ ksession.fireUntilHalt(); }
-            } ).start();
-        Thread.sleep( 1000 );
-        FactHandle handle = (FactHandle) ksession.insert( "halt" );
-        Thread.sleep( 2000 );
+        new Thread(ksession::fireUntilHalt).start();
+        try {
+            Thread.sleep( 1000 );
+            FactHandle handle = (FactHandle) ksession.insert( "halt" );
+            Thread.sleep( 2000 );
 
-        // now check that rule "halt" fired once, creating one Integer
-        assertEquals( 2, ksession.getFactCount() );
-        ksession.retract( handle );
+            // now check that rule "halt" fired once, creating one Integer
+            assertEquals( 2, ksession.getFactCount() );
+            ksession.delete( handle );
+        } finally {
+            ksession.halt();
+            ksession.dispose();
+        }
     }
 
     @Test(timeout=10000)

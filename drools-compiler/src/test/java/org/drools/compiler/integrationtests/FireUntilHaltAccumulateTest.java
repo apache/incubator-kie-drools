@@ -111,12 +111,7 @@ public class FireUntilHaltAccumulateTest {
     public void testFireUntilHaltWithAccumulateAndExpires() throws Exception {
         // thread for firing until halt
         final ExecutorService executor = Executors.newSingleThreadExecutor();
-        final Future sessionFuture = executor.submit(new Runnable() {
-
-            public void run() {
-                statefulSession.fireUntilHalt();
-            }
-        });
+        final Future sessionFuture = executor.submit((Runnable) statefulSession::fireUntilHalt);
 
         try {
             for (int iteration = 0; iteration < 100; iteration++) {
@@ -129,6 +124,8 @@ public class FireUntilHaltAccumulateTest {
             statefulSession.halt();
             // not to swallow possible exception
             sessionFuture.get();
+            statefulSession.dispose();
+            executor.shutdownNow();
         }
     }
 
