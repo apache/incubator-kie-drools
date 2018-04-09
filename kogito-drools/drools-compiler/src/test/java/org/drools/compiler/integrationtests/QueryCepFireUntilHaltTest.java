@@ -90,13 +90,7 @@ public class QueryCepFireUntilHaltTest {
     private void startEngine() {
         // start execution
         executorService = Executors.newSingleThreadExecutor();
-        executorService.submit(new Runnable() {
-
-            @Override
-            public void run() {
-                ksession.fireUntilHalt();
-            }
-        });
+        executorService.submit((Runnable) ksession::fireUntilHalt);
     }
 
     private void stopEngine() {

@@ -897,28 +897,24 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
             }
         });
 
-        new Thread(new Runnable() {
-            public void run() {
-                ksession.fireUntilHalt();
-            }
-        }).start();
+        new Thread(ksession::fireUntilHalt).start();
+        try {
+            ksession.insert( "Test" );
+            assertEquals( 0, list.size() );
 
-        ksession.insert( "Test" );
-        assertEquals( 0,
-                      list.size() );
+            ((InternalAgenda) ksession.getAgenda()).activateRuleFlowGroup("Group1");
 
-        ((InternalAgenda) ksession.getAgenda()).activateRuleFlowGroup("Group1");
-        
-        synchronized( fired ) {
-            if( !fired.get() ) {
-                fired.wait();
+            synchronized( fired ) {
+                if( !fired.get() ) {
+                    fired.wait();
+                }
             }
+
+            assertEquals( 1, list.size() );
+        } finally {
+            ksession.halt();
+            ksession.dispose();
         }
-
-        assertEquals( 1,
-                      list.size() );
-
-        ksession.halt();
     }
 
     @Test

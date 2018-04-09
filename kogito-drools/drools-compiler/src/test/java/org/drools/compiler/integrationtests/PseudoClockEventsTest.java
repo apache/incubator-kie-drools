@@ -118,7 +118,7 @@ public class PseudoClockEventsTest extends CommonTestMethodBase {
     }
 
     private int processStocks(int stockCount, AgendaEventListener agendaEventListener, String drlContentString)
-            throws DroolsParserException, IOException, Exception {
+            throws Exception {
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption(EventProcessingOption.STREAM);
         KieBase kbase = loadKnowledgeBaseFromString(kconf, drlContentString);
@@ -131,29 +131,27 @@ public class PseudoClockEventsTest extends CommonTestMethodBase {
 
         PseudoClockScheduler clock = (PseudoClockScheduler) ksession.<SessionClock>getSessionClock();
 
-        Runnable fireUntilHaltRunnable = new Runnable() {
-            public void run() {
-                ksession.fireUntilHalt();
-            }
-        };
-        Thread fireUntilHaltThread = new Thread(fireUntilHaltRunnable, "Engine's thread");
+        Thread fireUntilHaltThread = new Thread(ksession::fireUntilHalt, "Engine's thread");
         fireUntilHaltThread.start();
+        try {
+            Thread.currentThread().setName("Feeding thread");
 
-        Thread.currentThread().setName("Feeding thread");
+            for (int stIndex = 1; stIndex <= stockCount; stIndex++) {
+                clock.advanceTime(20, TimeUnit.SECONDS);
+                Thread.sleep( 100 );
+                final StockTickInterface st = new StockTick(stIndex,
+                                                            "RHT",
+                                                            100 * stIndex,
+                                                            100 * stIndex);
+                ksession.insert(st);
+                Thread.sleep( 100 );
+            }
 
-        for (int stIndex = 1; stIndex <= stockCount; stIndex++) {
-            clock.advanceTime(20, TimeUnit.SECONDS);
-            Thread.sleep( 100 );
-            final StockTickInterface st = new StockTick(stIndex,
-                                                        "RHT",
-                                                        100 * stIndex,
-                                                        100 * stIndex);
-            ksession.insert(st);
-            Thread.sleep( 100 );
+            Thread.sleep(100);
+        } finally {
+            ksession.halt();
+            ksession.dispose();
         }
-
-        Thread.sleep(100);
-        ksession.halt();
         
         fireUntilHaltThread.join(5000);
 

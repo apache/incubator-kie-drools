@@ -3394,20 +3394,18 @@ public class Misc2Test extends CommonTestMethodBase {
         ArrayList list = new ArrayList();
         ks.setGlobal( "list", list );
 
-        new Thread() {
-            public void run() {
-                ks.fireUntilHalt();
+        new Thread(ks::fireUntilHalt).start();
+        try {
+            for ( int j = 0; j < N; j++ ) {
+                ks.getEntryPoint( "x" ).insert( new Integer( j ) );
             }
-        }.start();
 
-        for ( int j = 0; j < N; j++ ) {
-            ks.getEntryPoint( "x" ).insert( new Integer( j ) );
+            Thread.sleep( 1000 );
+        } finally {
+            ks.halt();
+            ks.dispose();
+            assertEquals( N, list.size() );
         }
-
-        Thread.sleep( 1000 );
-        ks.halt();
-
-        assertEquals( N, list.size() );
     }
 
     @Test
@@ -7604,28 +7602,26 @@ public class Misc2Test extends CommonTestMethodBase {
         ksession.setGlobal( "list", list );
 
         // thread for firing until halt
-        ExecutorService thread = Executors.newSingleThreadExecutor();
-        thread.submit( new Runnable() {
-
-            @Override
-            public void run() {
-                ksession.fireUntilHalt();
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.submit((Runnable) ksession::fireUntilHalt);
+        try {
+            for ( int i = 0; i < factsNr; i++ ) {
+                ksession.insert( "" + i );
             }
-        } );
 
-        for ( int i = 0; i < factsNr; i++ ) {
-            ksession.insert( "" + i );
-        }
-
-        // wait for rule to fire
-        synchronized (monitor) {
-            if ( list.size() < factsNr ) {
-                monitor.wait();
+            // wait for rule to fire
+            synchronized (monitor) {
+                if ( list.size() < factsNr ) {
+                    monitor.wait();
+                }
             }
-        }
 
-        assertEquals( factsNr, list.size() );
-        ksession.halt();
+            assertEquals( factsNr, list.size() );
+        } finally {
+            ksession.halt();
+            ksession.dispose();
+            executorService.shutdownNow();
+        }
     }
 
     public static class NotifyingList<T> extends ArrayList<T> {

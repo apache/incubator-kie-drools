@@ -105,21 +105,21 @@ public class MultithreadTest extends CommonTestMethodBase {
         final int THREAD_NR = 2;
 
         final CompletionService<Boolean> ecs = new ExecutorCompletionService<Boolean>(executor);
-        ecs.submit(new Callable<Boolean>() {
-            public Boolean call() throws Exception {
-                try {
-                    ksession.fireUntilHalt();
-                    return true;
-                } catch (final Exception e) {
-                    errors.add(e);
-                    e.printStackTrace();
-                    return false;
-                }
+        ecs.submit(() -> {
+            try {
+                ksession.fireUntilHalt();
+                return true;
+            } catch (final Exception e) {
+                errors.add(e);
+                e.printStackTrace();
+                return false;
             }
         });
-        for (int i = 0; i < THREAD_NR; i++) {
-            ecs.submit(new Callable<Boolean>() {
-                public Boolean call() throws Exception {
+
+        boolean success = false;
+        try {
+            for (int i = 0; i < THREAD_NR; i++) {
+                ecs.submit(() -> {
                     try {
                         final String s = Thread.currentThread().getName();
                         final long endTS = System.currentTimeMillis() + RUN_TIME;
@@ -138,33 +138,35 @@ public class MultithreadTest extends CommonTestMethodBase {
                         e.printStackTrace();
                         return false;
                     }
-                }
-            });
-        }
+                });
+            }
 
-        boolean success = true;
-        for (int i = 0; i < THREAD_NR; i++) {
+            success = true;
+            for (int i = 0; i < THREAD_NR; i++) {
+                try {
+                    success = ecs.take().get() && success;
+                } catch (final Exception e) {
+                    errors.add(e);
+                }
+            }
+        } finally {
+            ksession.halt();
+
             try {
                 success = ecs.take().get() && success;
             } catch (final Exception e) {
                 errors.add(e);
             }
-        }
-        ksession.halt();
-        try {
-            success = ecs.take().get() && success;
-        } catch (final Exception e) {
-            errors.add(e);
-        }
 
-        for (final Exception e : errors) {
-            e.printStackTrace();
+            for (final Exception e : errors) {
+                e.printStackTrace();
+            }
+
+            Assertions.assertThat(errors).isEmpty();
+            Assertions.assertThat(success).isTrue();
+
+            ksession.dispose();
         }
-
-        Assertions.assertThat(errors).isEmpty();
-        Assertions.assertThat(success).isTrue();
-
-        ksession.dispose();
     }
 
     @Test(timeout = 10000)
@@ -185,25 +187,18 @@ public class MultithreadTest extends CommonTestMethodBase {
         final KieBase kbase = loadKnowledgeBaseFromString(drl);
         final KieSession session = kbase.newKieSession();
 
-        final Thread t = new Thread() {
-            public void run() {
-                session.fireUntilHalt();
-            }
-        };
+        final Thread t = new Thread(session::fireUntilHalt);
         t.start();
-
-        session.fireAllRules();
-
-        for (int j = 0; j < 100; j++) {
-            session.insert(j);
-        }
-
         try {
+            session.fireAllRules();
+
+            for (int j = 0; j < 100; j++) {
+                session.insert(j);
+            }
             Thread.sleep(1000);
-            System.out.println("Halting ..");
+        } finally {
             session.halt();
-        } catch (final Exception e) {
-            Assertions.fail(e.getMessage());
+            session.dispose();
         }
     }
 
@@ -281,26 +276,23 @@ public class MultithreadTest extends CommonTestMethodBase {
 
         final Runner t = new Runner(session);
         t.start();
-
-        Thread.sleep(1000);
-
-        final Server hiwaesdk = new Server("hiwaesdk");
-        session.insert(hiwaesdk);
-        final long LIMIT = 20;
-
-        for (long i = LIMIT; i > 0; i--) {
-            ep01.insert(new IntEvent((int) i)); //Thread.sleep (0x1); }
-            if (i % 1000 == 0) {
-                System.out.println(i);
-            }
-        }
-
         try {
             Thread.sleep(1000);
-            System.out.println("Halting ..");
+
+            final Server hiwaesdk = new Server("hiwaesdk");
+            session.insert(hiwaesdk);
+            final long LIMIT = 20;
+
+            for (long i = LIMIT; i > 0; i--) {
+                ep01.insert(new IntEvent((int) i)); //Thread.sleep (0x1); }
+                if (i % 1000 == 0) {
+                    System.out.println(i);
+                }
+            }
+            Thread.sleep(1000);
+        } finally {
             session.halt();
-        } catch (final Exception e) {
-            Assertions.fail(e.getMessage());
+            session.dispose();
         }
 
         if (t.getError() != null) {
@@ -364,28 +356,31 @@ public class MultithreadTest extends CommonTestMethodBase {
 
         final Runner t = new Runner(ksession);
         t.start();
+        try {
+            final int FACTS_PER_POLL = 1000;
+            final int POLL_INTERVAL = 500;
 
-        final int FACTS_PER_POLL = 1000;
-        final int POLL_INTERVAL = 500;
+            final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+            try {
+                executor.scheduleAtFixedRate(
+                        () -> {
+                            for (int j = 0; j < FACTS_PER_POLL; j++) {
+                                ksession.insert(new MyFact());
+                            }
+                        },
+                        0,
+                        POLL_INTERVAL,
+                        TimeUnit.MILLISECONDS);
 
-        final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-        executor.scheduleAtFixedRate(
-                new Runnable() {
+                Thread.sleep(10200);
+            } finally {
+                executor.shutdownNow();
+            }
+        } finally {
+            ksession.halt();
+            ksession.dispose();
+        }
 
-                    public void run() {
-                        for (int j = 0; j < FACTS_PER_POLL; j++) {
-                            ksession.insert(new MyFact());
-                        }
-                    }
-                },
-                0,
-                POLL_INTERVAL,
-                TimeUnit.MILLISECONDS);
-
-        Thread.sleep(10200);
-
-        executor.shutdownNow();
-        ksession.halt();
         t.join();
 
         if (t.getError() != null) {
@@ -393,7 +388,6 @@ public class MultithreadTest extends CommonTestMethodBase {
         }
 
         System.out.println("Final size " + ksession.getObjects().size());
-        //assertEquals( 2000, ksession.getObjects().size() );
 
         ksession.dispose();
     }
@@ -627,28 +621,25 @@ public class MultithreadTest extends CommonTestMethodBase {
         ksconf.setOption(TimedRuleExecutionOption.YES);
         final KieSession ksession = kbase.newKieSession(ksconf, null);
 
-        new Thread() {
-            @Override
-            public void run() {
-                ksession.fireUntilHalt();
+        new Thread(ksession::fireUntilHalt).start();
+        try {
+            try {
+                Thread.sleep(100);
+            } catch (final InterruptedException e) {
+                // do nothing
             }
-        }.start();
 
-        try {
-            Thread.sleep(100);
-        } catch (final InterruptedException e) {
-            // do nothing
+            ksession.insert("xxx");
+
+            try {
+                Thread.sleep(100);
+            } catch (final InterruptedException e) {
+                // do nothing
+            }
+        } finally {
+            ksession.dispose();
+            ksession.halt();
         }
-
-        ksession.insert("xxx");
-
-        try {
-            Thread.sleep(100);
-        } catch (final InterruptedException e) {
-            // do nothing
-        }
-
-        ksession.dispose();
     }
 
     @Test(timeout = 20000)

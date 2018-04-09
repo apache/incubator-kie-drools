@@ -336,31 +336,30 @@ public class PhreakConcurrencyTest extends CommonTestMethodBase {
 
             assertTrue(success);
 
-            new Thread () {
-                public void run () {
-                    ksession.fireUntilHalt();
-                }
-            }.start ();
-
+            new Thread(ksession::fireUntilHalt).start ();
             try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-
-            ksession.halt();
-
-            if (deleteIndex % 10 == 0) {
-                assertEquals(3, results.size());
-                assertTrue(results.containsAll(asList("R1", "R2", "R3")));
-            } else {
-                if (!results.isEmpty()) {
-                    fail("Results should be empty with deleteIndex = " + deleteIndex + "; got " + results.size() + " items");
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
                 }
-            }
+            } finally {
+                ksession.halt();
 
-            results.clear();
+                if (deleteIndex % 10 == 0) {
+                    assertEquals(3, results.size());
+                    assertTrue(results.containsAll(asList("R1", "R2", "R3")));
+                } else {
+                    if (!results.isEmpty()) {
+                        fail("Results should be empty with deleteIndex = " + deleteIndex + "; got " + results.size() + " items");
+                    }
+                }
+
+                results.clear();
+            }
         }
+
+        ksession.dispose();
     }
 
     public static class EPManipulator3 implements Callable<Boolean> {
@@ -434,31 +433,29 @@ public class PhreakConcurrencyTest extends CommonTestMethodBase {
             epManipulators[i] = new EPManipulator4(ksession, i+1, barrier);
         }
 
-        new Thread () {
-            public void run () {
-                ksession.fireUntilHalt();
-            }
-        }.start();
-
-        for (int deleteIndex = 0; deleteIndex < 11; deleteIndex++) {
-            boolean success = true;
-            CompletionService<Boolean> ecs = new ExecutorCompletionService<Boolean>(executor);
-            for (int i = 0; i < 9; i++) {
-                ecs.submit(epManipulators[i].setDeleteIndex(deleteIndex % 10));
-            }
-
-            for (int i = 0; i < 9; i++) {
-                try {
-                    success = ecs.take().get() && success;
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
+        new Thread(ksession::fireUntilHalt).start();
+        try {
+            for (int deleteIndex = 0; deleteIndex < 11; deleteIndex++) {
+                boolean success = true;
+                CompletionService<Boolean> ecs = new ExecutorCompletionService<Boolean>(executor);
+                for (int i = 0; i < 9; i++) {
+                    ecs.submit(epManipulators[i].setDeleteIndex(deleteIndex % 10));
                 }
+
+                for (int i = 0; i < 9; i++) {
+                    try {
+                        success = ecs.take().get() && success;
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
+                assertTrue(success);
             }
-
-            assertTrue(success);
+        } finally {
+            ksession.halt();
+            ksession.dispose();
         }
-
-        ksession.halt();
     }
 
     public static class EPManipulator4 implements Callable<Boolean> {
@@ -716,30 +713,30 @@ public class PhreakConcurrencyTest extends CommonTestMethodBase {
         ks.setGlobal( "list", list );
         //ks.setGlobal( "counter", counter );
 
-        new Thread () {
-            public void run () {
-                ks.fireUntilHalt();
-            }
-        }.start ();
-
-        for ( int j = 0; j < N; j++ ) {
-            ks.getEntryPoint( "x" ).insert( new Integer( j ) );
-        }
-
-        int count = 0;
-        while ( list.size() != N && count++ != 1000) {
-            Thread.sleep( 200 );
-        }
-
-        ks.halt();
-        if ( list.size() != N ) {
+        new Thread(ks::fireUntilHalt).start();
+        try {
             for ( int j = 0; j < N; j++ ) {
-                if ( !list.contains( new Integer( j ) ) ) {
-                    System.out.println( "missed: " + j );
+                ks.getEntryPoint( "x" ).insert( new Integer( j ) );
+            }
+
+            int count = 0;
+            while ( list.size() != N && count++ != 1000) {
+                Thread.sleep( 200 );
+            }
+        } finally {
+            ks.halt();
+
+            if ( list.size() != N ) {
+                for ( int j = 0; j < N; j++ ) {
+                    if ( !list.contains( new Integer( j ) ) ) {
+                        System.out.println( "missed: " + j );
+                    }
                 }
             }
-        }
 
-        assertEquals( N, list.size() );
+            assertEquals( N, list.size() );
+
+            ks.dispose();
+        }
     }
 }
