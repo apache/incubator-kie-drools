@@ -1,6 +1,8 @@
 package org.drools.modelcompiler.alphaNetworkCompiler;
 
 import org.drools.modelcompiler.BaseModelTest;
+import org.drools.modelcompiler.domain.ChildFactWithEnum1;
+import org.drools.modelcompiler.domain.EnumFact1;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
 import org.junit.Test;
@@ -91,6 +93,32 @@ public class ObjectTypeNodeCompilerTest extends BaseModelTest {
         assertEquals(1, ksession.fireAllRules());
     }
 
+    @Test
+    public void testEnum() {
+        String str =
+                "import " + EnumFact1.class.getCanonicalName() + ";\n" +
+                        "import " + ChildFactWithEnum1.class.getCanonicalName() + ";\n" +
+                        "rule R when\n" +
+                        "    $factWithEnum : ChildFactWithEnum1(  enumValue == EnumFact1.FIRST ) \n" +
+                        "then\n" +
+                        "end\n" +
+                        "rule R2 when\n" +
+                        "    $factWithEnum : ChildFactWithEnum1(  enumValue == EnumFact1.SECOND ) \n" +
+                        "then\n" +
+                        "end\n" +
+                        "rule R3 when\n" +
+                        "    $factWithEnum : ChildFactWithEnum1(  enumValue == EnumFact1.THIRD ) \n" +
+                        "then\n" +
+                        "end\n";
+
+        final KieModuleModel kproj = getKieModuleModelWithAlphaNetworkCompiler();
+        KieSession ksession = getKieSession( kproj, str );
+        ksession.insert( new ChildFactWithEnum1(1, 3, EnumFact1.FIRST) );
+        ksession.insert( new ChildFactWithEnum1(1, 3, EnumFact1.SECOND) );
+        assertEquals(2, ksession.fireAllRules());
+    }
+
+
 
     @Test
     public void testAlphaConstraintWithModification() {
@@ -170,7 +198,6 @@ public class ObjectTypeNodeCompilerTest extends BaseModelTest {
         ksession.fireAllRules();
         assertTrue(luca.getAge() == 40);
     }
-
 
     private KieModuleModel getKieModuleModelWithAlphaNetworkCompiler() {
         KieModuleModel kproj = KieServices.get().newKieModuleModel();
