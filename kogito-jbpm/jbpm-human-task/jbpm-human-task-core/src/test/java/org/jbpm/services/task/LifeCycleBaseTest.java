@@ -1225,6 +1225,97 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
     }
 
     @Test
+    public void testForwardReadyWithBusinessAdministrator() throws Exception {
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet'), new User('Darth Vader') ],businessAdministrators = [ new User('Administrator') ], }),";
+        str += "name = 'This is my task name' })";
+
+
+        Task task = TaskFactory.evalTask(new StringReader(str));
+        taskService.addTask(task, new HashMap<String, Object>());
+
+        long taskId = task.getId();
+
+        // Ready
+        Task task1 = taskService.getTaskById(taskId);
+        assertEquals(Status.Ready, task1.getTaskData().getStatus());
+
+        // Check is Delegated
+        taskService.forward(taskId, "Administrator", "Tony Stark");
+
+
+        Task task2 = taskService.getTaskById(taskId);
+        User user = createUser("Darth Vader");
+        assertTrue(task2.getPeopleAssignments().getPotentialOwners().contains(user));
+        user = createUser("Tony Stark");
+        assertTrue(task2.getPeopleAssignments().getPotentialOwners().contains(user));
+        assertNull(task2.getTaskData().getActualOwner());
+        assertEquals(Status.Ready, task2.getTaskData().getStatus());
+    }
+
+    @Test
+    public void testForwardReservedWithBusinessAdministrator() throws Exception {
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet'), new User('Darth Vader') ],businessAdministrators = [ new User('Administrator') ], }),";
+        str += "name = 'This is my task name' })";
+
+
+        Task task = TaskFactory.evalTask(new StringReader(str));
+        taskService.addTask(task, new HashMap<String, Object>());
+
+        long taskId = task.getId();
+
+        // Claim and Reserved
+        taskService.claim(taskId, "Darth Vader");
+
+        Task task1 = taskService.getTaskById(taskId);
+        assertEquals(Status.Reserved, task1.getTaskData().getStatus());
+        assertEquals("Darth Vader", task1.getTaskData().getActualOwner().getId());
+
+        // Check is Delegated
+        taskService.forward(taskId, "Administrator", "Tony Stark");
+
+
+        Task task2 = taskService.getTaskById(taskId);
+        User user = createUser("Darth Vader");
+        assertTrue(task2.getPeopleAssignments().getPotentialOwners().contains(user));
+        user = createUser("Tony Stark");
+        assertTrue(task2.getPeopleAssignments().getPotentialOwners().contains(user));
+        assertNull(task2.getTaskData().getActualOwner());
+        assertEquals(Status.Ready, task2.getTaskData().getStatus());
+    }
+
+    @Test
+    public void testForwardGroupWithBusinessAdministrator() throws Exception {
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [ new Group('Knights Templer') ], businessAdministrators = [ new User('Administrator') ], }),";
+        str += "name = 'This is my task name' })";
+
+
+        Task task = TaskFactory.evalTask(new StringReader(str));
+        taskService.addTask(task, new HashMap<String, Object>());
+
+        long taskId = task.getId();
+
+        final Group group = createGroup("Knights Templer");
+        Task task1 = taskService.getTaskById(taskId);
+        assertEquals(Status.Ready, task1.getTaskData().getStatus());
+        System.out.println("task1.getPeopleAssignments().getPotentialOwners() = " + task1.getPeopleAssignments().getPotentialOwners());
+        assertTrue(task1.getPeopleAssignments().getPotentialOwners().contains(group));
+
+        // Check is Delegated
+        try {
+            taskService.forward(taskId, "Administrator", "Tony Stark");
+            fail("Forward task from Group to a User should fail");
+        } catch (PermissionDeniedException e) {}
+
+        Task task2 = taskService.getTaskById(taskId);
+        assertTrue(task2.getPeopleAssignments().getPotentialOwners().contains(group));
+        assertNull(task2.getTaskData().getActualOwner());
+        assertEquals(Status.Ready, task2.getTaskData().getStatus());
+    }
+
+    @Test
     public void testForwardFromReservedWithIncorrectUser() throws Exception {
         
 
@@ -1259,7 +1350,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         } catch (PermissionDeniedException e) {
             denied = e;
         }
-        assertNotNull("Should get permissed denied exception", denied);
+        assertNotNull("Should get permission denied exception", denied);
 
 
 

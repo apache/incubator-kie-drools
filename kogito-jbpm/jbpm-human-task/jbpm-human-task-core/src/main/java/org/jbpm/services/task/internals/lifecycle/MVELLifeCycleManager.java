@@ -351,7 +351,11 @@ public class MVELLifeCycleManager implements LifeCycleManager {
                     break;
                 }
                 case Forward: {
-                	taskEventSupport.fireBeforeTaskForwarded(task, context);
+                    taskEventSupport.fireBeforeTaskForwarded(task, context);
+                    if (task.getPeopleAssignments().getPotentialOwners().stream().anyMatch(oe -> oe instanceof Group)) {
+                        // if potential owners contains a group, operation should not be allowed
+                        throw new PermissionDeniedException("Task forward operation not allowed for task with group assignment");
+                    }
                     break;
                 }
                 case Nominate: {

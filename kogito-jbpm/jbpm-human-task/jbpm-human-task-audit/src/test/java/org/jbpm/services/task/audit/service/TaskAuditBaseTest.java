@@ -1331,16 +1331,14 @@ public abstract class TaskAuditBaseTest extends HumanTaskServicesBaseTest {
     @Test
     public void testForwardTaskWithMsgEvents() {
         Task task = new TaskFluent().setName("This is my task name")
-                .addPotentialGroup("Knights Templer")
                 .setAdminUser("Administrator")
                 .addPotentialUser("Administrator")
+                .addPotentialUser("Darth Vader")
                 .getTask();
 
         taskService.addTask(task, new HashMap<String, Object>());
         long taskId = task.getId();
 
-        assertAuditTaskInfoGroup("Knights Templer", "Ready", taskId);
-        
         taskService.claim(taskId, "Administrator");
 
         assertAuditTaskInfo("Administrator", "Reserved", taskId);
@@ -1355,10 +1353,10 @@ public abstract class TaskAuditBaseTest extends HumanTaskServicesBaseTest {
         Assertions.assertThat(taskEvents.get(0).getUserId()).isNull();
         
         Assertions.assertThat(taskEvents.get(1).getType()).isEqualTo(TaskEventType.CLAIMED);
-        Assertions.assertThat(taskEvents.get(1).getUserId()).isEqualTo("Administrator");        
+        Assertions.assertThat(taskEvents.get(1).getUserId()).isEqualTo("Administrator");
        
         Assertions.assertThat(taskEvents.get(2).getType()).isEqualTo(TaskEventType.FORWARDED);
-        Assertions.assertThat(taskEvents.get(2).getUserId()).isEqualTo("Administrator");        
+        Assertions.assertThat(taskEvents.get(2).getUserId()).isEqualTo("Administrator");
         Assertions.assertThat(taskEvents.get(2).getMessage()).isNotNull();
         Assertions.assertThat(taskEvents.get(2).getMessage()).contains("Darth Vader");
     }

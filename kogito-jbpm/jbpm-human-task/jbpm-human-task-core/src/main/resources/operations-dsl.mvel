@@ -90,21 +90,19 @@
         : [ new OperationCommand().{ 
                 status = [ Status.Ready ],
                 allowed = [ Allowed.PotentialOwner, Allowed.BusinessAdministrator  ],
-                userIsExplicitPotentialOwner = true,                
-                addTargetUserToPotentialOwners = true,     
+                addTargetUserToPotentialOwners = true,
                 removeUserFromPotentialOwners = true,
-                groupTargetEntityAllowed = false,   
-                setNewOwnerToNull = true,         
+                groupTargetEntityAllowed = false,
+                setNewOwnerToNull = true,
                 newStatus = Status.Ready
             },
             new OperationCommand().{ 
                 status = [ Status.Reserved, Status.InProgress ],
                 allowed = [ Allowed.Owner, Allowed.BusinessAdministrator ],
-                userIsExplicitPotentialOwner = true,
-                addTargetUserToPotentialOwners = true,     
+                addTargetUserToPotentialOwners = true,
                 removeUserFromPotentialOwners = true,
-                groupTargetEntityAllowed = false, 
-                setNewOwnerToNull = true,                             
+                groupTargetEntityAllowed = false,
+                setNewOwnerToNull = true,
                 newStatus = Status.Ready
             }],            
     Operation.Complete 
