@@ -16,32 +16,16 @@
 
 package org.drools.core.reteoo.compiled;
 
-import org.drools.core.base.ClassFieldReader;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
-import org.drools.core.reteoo.ModifyPreviousTuples;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.rule.IndexableConstraint;
-import org.drools.core.spi.PropagationContext;
 
 /**
  * todo: document
  */
-public class ModifyHandler extends AbstractCompilerHandler {
-    private static final String LOCAL_FACT_VAR_NAME = "fact";
-
-    private static final String FACT_HANDLE_PARAM_TYPE = InternalFactHandle.class.getName();
-    private static final String PROP_CONTEXT_PARAM_TYPE = PropagationContext.class.getName();
-    private static final String WORKING_MEMORY_PARAM_TYPE = InternalWorkingMemory.class.getName();
-    private static final String MODIFY_PREVIOUS_TUPLE_NAME = ModifyPreviousTuples.class.getName();
-
-    private static final String FACT_HANDLE_PARAM_NAME = "handle";
-    private static final String PROP_CONTEXT_PARAM_NAME = "context";
-    private static final String WORKING_MEMORY_PARAM_NAME = "wm";
-    private static final String MODIFY_PREVIOUS_TUPLE_PARAM_NAME = "modifyPreviousTuples";
+public class ModifyHandler extends SwitchCompilerHandler {
 
     private static final String ASSERT_METHOD_SIGNATURE = "public final void modifyObject("
             + FACT_HANDLE_PARAM_TYPE + " " + FACT_HANDLE_PARAM_NAME + ","
@@ -58,7 +42,6 @@ public class ModifyHandler extends AbstractCompilerHandler {
      */
     private final boolean alphaNetContainsHashedField;
 
-    private final StringBuilder builder;
     private final String factClassName;
 
     ModifyHandler(StringBuilder builder, String factClassName) {
@@ -66,7 +49,7 @@ public class ModifyHandler extends AbstractCompilerHandler {
     }
 
     public ModifyHandler(StringBuilder builder, String factClassName, boolean alphaNetContainsHashedField) {
-        this.builder = builder;
+        super(builder);
         this.factClassName = factClassName;
         this.alphaNetContainsHashedField = alphaNetContainsHashedField;
     }
@@ -121,26 +104,12 @@ public class ModifyHandler extends AbstractCompilerHandler {
 
     @Override
     public void startHashedAlphaNodes(IndexableConstraint indexableConstraint) {
-
-        String localVariableName = "NodeId";
-
-        builder.append("Integer ").append(localVariableName);
-        // todo we are casting to Integer because generics aren't supported
-        builder.append(" = (Integer)").append(getVariableName(""))
-                .append(".get(")
-                .append("readAccessor.getValue(")
-                .append(LOCAL_FACT_VAR_NAME).append(")")
-                .append(");").append(NEWLINE);
-
-        // ensure that the value is present in the node map
-        builder.append("if(").append(localVariableName).append(" != null) {").append(NEWLINE);
-        // todo we had the .intValue() because JANINO has a problem with it
-        builder.append("switch(").append(localVariableName).append(".intValue()) {").append(NEWLINE);
+        generateSwitch(indexableConstraint);
     }
 
     @Override
     public void startHashedAlphaNode(AlphaNode hashedAlpha, Object hashedValue) {
-        builder.append("case ").append(hashedAlpha.getId()).append(" : ").append(NEWLINE);
+        generateSwitchCase(hashedAlpha, hashedValue);
     }
 
     @Override

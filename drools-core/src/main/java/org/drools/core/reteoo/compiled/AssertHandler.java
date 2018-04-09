@@ -18,34 +18,16 @@ package org.drools.core.reteoo.compiled;
 
 import java.util.stream.Stream;
 
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.rule.IndexableConstraint;
-import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.spi.PropagationContext;
 
 /**
  * todo: document
  */
-public class AssertHandler extends AbstractCompilerHandler {
-    private static final String LOCAL_FACT_VAR_NAME = "fact";
-
-    private static final String FACT_HANDLE_PARAM_TYPE = InternalFactHandle.class.getName();
-    private static final String PROP_CONTEXT_PARAM_TYPE = PropagationContext.class.getName();
-    private static final String WORKING_MEMORY_PARAM_TYPE = InternalWorkingMemory.class.getName();
-
-    private static final String FACT_HANDLE_PARAM_NAME = "handle";
-    private static final String PROP_CONTEXT_PARAM_NAME = "context";
-    private static final String WORKING_MEMORY_PARAM_NAME = "wm";
-
-    private static final String ASSERT_METHOD_SIGNATURE = "public final void assertObject("
-            + FACT_HANDLE_PARAM_TYPE + " " + FACT_HANDLE_PARAM_NAME + ","
-            + PROP_CONTEXT_PARAM_TYPE + " " + PROP_CONTEXT_PARAM_NAME + ","
-            + WORKING_MEMORY_PARAM_TYPE + " " + WORKING_MEMORY_PARAM_NAME + "){";
+public class AssertHandler extends SwitchCompilerHandler {
 
     /**
      * This flag is used to instruct the AssertHandler to tell it to generate a local varible
@@ -56,16 +38,14 @@ public class AssertHandler extends AbstractCompilerHandler {
      */
     private final boolean alphaNetContainsHashedField;
 
-    private final StringBuilder builder;
     private final String factClassName;
-    private Class fieldType;
 
     AssertHandler(StringBuilder builder, String factClassName) {
         this(builder, factClassName, false);
     }
 
     public AssertHandler(StringBuilder builder, String factClassName, boolean alphaNetContainsHashedField) {
-        this.builder = builder;
+        super(builder);
         this.factClassName = factClassName;
         this.alphaNetContainsHashedField = alphaNetContainsHashedField;
     }
@@ -118,65 +98,12 @@ public class AssertHandler extends AbstractCompilerHandler {
 
     @Override
     public void startHashedAlphaNodes(IndexableConstraint indexableConstraint) {
-
-        final InternalReadAccessor fieldExtractor = indexableConstraint.getFieldExtractor();
-        fieldType = fieldExtractor.getExtractToClass();
-
-        if(canInlineValue()) {
-            String switchVar = "switchVar";
-            builder.append(fieldType.getCanonicalName())
-                    .append(" ")
-                    .append(switchVar);
-            builder.append(" = ")
-                    .append("(" + fieldType.getCanonicalName() + ")")
-                    .append("readAccessor.getValue(")
-                    .append(LOCAL_FACT_VAR_NAME)
-                    .append(");").append(NEWLINE);
-
-            builder.append("if(true) {").append(NEWLINE);
-            builder.append("switch(").append(switchVar).append(")").append("{").append(NEWLINE);
-        } else {
-
-            String localVariableName = "NodeId";
-
-            builder.append("Integer ").append(localVariableName);
-            // todo we are casting to Integer because generics aren't supported
-            builder.append(" = (Integer)").append(getVariableName(""))
-                    .append(".get(")
-                    .append("readAccessor.getValue(")
-                    .append(LOCAL_FACT_VAR_NAME).append(").toString()")
-                    .append(");").append(NEWLINE);
-
-            // ensure that the value is present in the node map
-            builder.append("if(").append(localVariableName).append(" != null) {").append(NEWLINE);
-            // todo we had the .intValue() because JANINO has a problem with it
-            builder.append("switch(").append(localVariableName).append(".intValue()) {").append(NEWLINE);
-        }
-
-
-    }
-
-    private boolean canInlineValue() {
-        return Stream.of(String.class, Integer.class, int.class).anyMatch(c -> c.isAssignableFrom(fieldType));
+        generateSwitch(indexableConstraint);
     }
 
     @Override
     public void startHashedAlphaNode(AlphaNode hashedAlpha, Object hashedValue) {
-        if(canInlineValue()) {
-
-            final Object quotedHashedValue;
-            if (hashedValue instanceof String) {
-                quotedHashedValue = String.format("\"%s\"", hashedValue);
-            } else {
-                quotedHashedValue = hashedValue;
-            }
-
-            builder.append("case ")
-                    .append(quotedHashedValue)
-                    .append(" : ").append(NEWLINE);
-        } else {
-            builder.append("case ").append(hashedAlpha.getId()).append(" : ").append(NEWLINE);
-        }
+        generateSwitchCase(hashedAlpha, hashedValue);
     }
 
     @Override
