@@ -16,6 +16,8 @@
 
 package org.kie.api.runtime;
 
+import java.util.Map;
+
 import org.kie.api.KieBase;
 
 public interface RequestContext extends Context {
@@ -28,6 +30,12 @@ public interface RequestContext extends Context {
     Context getConversationContext();
 
     Context getApplicationContext();
+
+    Map<String, Object> getOutputs();
+
+    void setOutput(String identifier, Object value);
+
+    void removeOutput(String identifier);
 
     static RequestContext create() {
         return create(RequestContext.class.getClassLoader());
