@@ -1885,11 +1885,31 @@ public class DMNRuntimeTest {
         context.set("Passenger", prototype(entry("name", "Osama bin Laden")));
 
         DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
-        System.out.println(dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
         DMNContext result = dmnResult.getContext();
         assertThat(result.get("Boarding Status"), is("Denied"));
+    }
+
+    @Test
+    public void testRelationwithemptycell() {
+        // DROOLS-2439
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime("relation_with_empty_cell.dmn", this.getClass());
+        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_99a00903-2943-47df-bab1-a32f276617ea", "Relation with empty cell");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        DMNContext context = DMNFactory.newContext();
+
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        System.out.println(dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        DMNContext result = dmnResult.getContext();
+        assertThat(result.get("Decision A"), is(Arrays.asList(prototype(entry("name", null), entry("age", null)),
+                                                              prototype(entry("name", "John"), entry("age", new BigDecimal(1))),
+                                                              prototype(entry("name", null), entry("age", null)),
+                                                              prototype(entry("name", "Matteo"), entry("age", null)))));
     }
 }
 

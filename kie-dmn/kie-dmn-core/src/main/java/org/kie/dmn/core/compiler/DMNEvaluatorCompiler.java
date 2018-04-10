@@ -179,6 +179,27 @@ public class DMNEvaluatorCompiler {
         for ( org.kie.dmn.model.v1_1.List row : relationDef.getRow() ) {
             java.util.List<DMNExpressionEvaluator> values = new ArrayList<>();
             for ( Expression expr : row.getExpression() ) {
+                if (expr instanceof LiteralExpression) {
+                    // DROOLS-2439
+                    LiteralExpression literalExpression = (LiteralExpression) expr;
+                    if (literalExpression.getText() == null || literalExpression.getText().isEmpty()) {
+                        LiteralExpression nullProxy = new LiteralExpression();
+                        nullProxy.setText("null");
+                        nullProxy.setImportedValues(literalExpression.getImportedValues());
+                        nullProxy.setExpressionLanguage(literalExpression.getExpressionLanguage());
+                        nullProxy.setTypeRef(literalExpression.getTypeRef());
+                        nullProxy.setId(literalExpression.getId());
+                        nullProxy.setLabel(literalExpression.getLabel());
+                        nullProxy.setDescription(literalExpression.getDescription());
+                        nullProxy.setExtensionElements(literalExpression.getExtensionElements());
+                        nullProxy.setParent(literalExpression.getParent());
+                        nullProxy.getNsContext().putAll(literalExpression.getNsContext());
+                        nullProxy.setAdditionalAttributes(literalExpression.getAdditionalAttributes());
+                        nullProxy.setLocation(literalExpression.getLocation());
+                        // do not add `temp` as child of parent.
+                        expr = nullProxy;
+                    }
+                }
                 values.add( compileExpression( ctx, model, node, relationName, expr ) );
             }
             relationEval.addRow( values );

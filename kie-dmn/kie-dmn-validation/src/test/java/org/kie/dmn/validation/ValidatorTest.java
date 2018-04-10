@@ -32,6 +32,7 @@ import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.marshalling.v1_1.DMNMarshaller;
 import org.kie.dmn.backend.marshalling.v1_1.DMNMarshallerFactory;
 import org.kie.dmn.core.DMNInputRuntimeTest;
+import org.kie.dmn.core.DMNRuntimeTest;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.model.v1_1.Definitions;
 
@@ -295,4 +296,26 @@ public class ValidatorTest extends AbstractValidatorTest {
         List<DMNMessage> validate = validator.validate(getReader("Hello_World_no_prefix_with_extensions.dmn"), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
         assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(0));
     }
+
+    @Test
+    public void testRelationwithemptycell() {
+        // DROOLS-2439
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime("relation_with_empty_cell.dmn", DMNRuntimeTest.class);
+        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_99a00903-2943-47df-bab1-a32f276617ea", "Relation with empty cell");
+        assertThat(dmnModel, notNullValue());
+
+        Definitions definitions = dmnModel.getDefinitions();
+        assertThat(definitions, notNullValue());
+
+        List<DMNMessage> messages = DMNValidatorFactory.newValidator().validate(definitions, VALIDATE_MODEL, VALIDATE_COMPILATION);
+        assertThat(messages.toString(), messages.size(), is(0));
+    }
+
+    @Test
+    public void testRelationwithemptycellJustValidator() {
+        // DROOLS-2439
+        List<DMNMessage> validate = validator.validate(getReader("relation_with_empty_cell.dmn", DMNRuntimeTest.class), VALIDATE_MODEL, VALIDATE_COMPILATION);
+        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(0));
+    }
+
 }
