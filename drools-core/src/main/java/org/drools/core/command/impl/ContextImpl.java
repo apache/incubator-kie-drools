@@ -55,6 +55,7 @@ public class ContextImpl implements RegistryContext {
         set(REGISTRY, new HashMap<String, Object>() );
     }
 
+    @Override
     public Object get(String identifier) {
         if(identifier == null || identifier.equals("")){
             return null;
