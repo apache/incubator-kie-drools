@@ -29,6 +29,7 @@ import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
 import org.kie.dmn.feel.runtime.events.UnknownVariableErrorEvent;
+import org.kie.dmn.feel.util.ClassLoaderUtil;
 import org.kie.dmn.model.v1_1.DMNElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,18 +38,24 @@ public class DMNFEELHelper {
 
     private static final Logger logger = LoggerFactory.getLogger( DMNFEELHelper.class );
 
+    private final ClassLoader classLoader;
     private final FEEL                   feel;
     private final FEELEventsListenerImpl listener;
     private final List<FEELProfile> feelProfiles = new ArrayList<>();
 
     public DMNFEELHelper(List<FEELProfile> feelProfiles) {
+        this(ClassLoaderUtil.findDefaultClassLoader(), feelProfiles);
+    }
+
+    public DMNFEELHelper(ClassLoader classLoader, List<FEELProfile> feelProfiles) {
+        this.classLoader = classLoader;
         this.feelProfiles.addAll(feelProfiles);
         this.listener = new FEELEventsListenerImpl();
         this.feel = createFEELInstance();
     }
 
     private FEEL createFEELInstance() {
-        FEEL feel = FEEL.newInstance(feelProfiles);
+        FEEL feel = FEEL.newInstance(classLoader, feelProfiles);
         feel.addListener( listener );
         return feel;
     }
@@ -58,14 +65,14 @@ public class DMNFEELHelper {
      * This FEEL instance is potentially not the same shared by the compiler during the compilation phase.
      */
     public FEEL newFEELInstance() {
-        return FEEL.newInstance(feelProfiles);
+        return FEEL.newInstance(classLoader, feelProfiles);
     }
 
     public static boolean valueMatchesInUnaryTests(List<UnaryTest> unaryTests, Object value, DMNContext dmnContext) {
         FEELEventListenersManager manager = new FEELEventListenersManager();
         FEELEventsListenerImpl listener = new FEELEventsListenerImpl();
         manager.addListener( listener );
-        EvaluationContextImpl ctx = new EvaluationContextImpl( manager );
+        EvaluationContextImpl ctx = new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), manager);
         try {
             ctx.enterFrame();
             if ( dmnContext != null ) {

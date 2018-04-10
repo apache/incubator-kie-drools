@@ -105,4 +105,8 @@ public class SilentWrappingEvaluationContextImpl implements EvaluationContext {
         return wrapped.getDMNRuntime();
     }
 
+    @Override
+    public ClassLoader getRootClassLoader() {
+        return wrapped.getRootClassLoader();
+    }
 }

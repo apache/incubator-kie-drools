@@ -100,7 +100,7 @@ public class DMNCompilerImpl
         this.dmnCompilerConfig = dmnCompilerConfig;
         DMNCompilerConfigurationImpl cc = (DMNCompilerConfigurationImpl) dmnCompilerConfig;
         addDRGElementCompilers(cc.getDRGElementCompilers());
-        this.feel = new DMNFEELHelper(cc.getFeelProfiles());
+        this.feel = new DMNFEELHelper(cc.getRootClassLoader(), cc.getFeelProfiles());
         this.evaluatorCompiler = new DMNEvaluatorCompiler( this, feel );
     }
     

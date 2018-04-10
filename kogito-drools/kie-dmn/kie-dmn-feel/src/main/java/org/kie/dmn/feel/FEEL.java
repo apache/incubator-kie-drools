@@ -46,12 +46,30 @@ public interface FEEL {
     }
 
     /**
+     * Factory method to create a new FEEL engine instance, using the specified classloader.
+     *
+     * @return a newly instantiated FEEL engine instance
+     */
+    static FEEL newInstance(ClassLoader cl) {
+        return new FEELImpl(cl);
+    }
+
+    /**
      * Factory method to create a new FEEL engine instance using custom FEELProfile(s)
      *
      * @return a newly instantiated FEEL engine instance
      */
     static FEEL newInstance(List<FEELProfile> profiles) {
         return new FEELImpl(profiles);
+    }
+
+    /**
+     * Factory method to create a new FEEL engine instance using custom FEELProfile(s), using the specified classloader.
+     *
+     * @return a newly instantiated FEEL engine instance
+     */
+    static FEEL newInstance(ClassLoader cl, List<FEELProfile> profiles) {
+        return new FEELImpl(cl, profiles);
     }
 
     /**

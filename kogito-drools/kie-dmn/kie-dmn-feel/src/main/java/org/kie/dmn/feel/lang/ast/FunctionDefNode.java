@@ -16,6 +16,14 @@
 
 package org.kie.dmn.feel.lang.ast;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.EvaluationContext;
@@ -24,14 +32,6 @@ import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.functions.CustomFEELFunction;
 import org.kie.dmn.feel.runtime.functions.JavaFunction;
 import org.kie.dmn.feel.util.Msg;
-
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class FunctionDefNode
         extends BaseNode {
@@ -96,7 +96,7 @@ public class FunctionDefNode
                     String methodSignature = (String) java.get( "method signature" );
                     if( clazzName != null && methodSignature != null ) {
                         // might need to explicitly use a classloader here
-                        Class<?> clazz = Class.forName( clazzName );
+                        Class<?> clazz = Class.forName(clazzName, true, ctx.getRootClassLoader());
                         if( clazz != null ) {
                             String[] mp = parseMethod( methodSignature );
                             if( mp != null ) {
