@@ -180,7 +180,34 @@
            "methodName": "getPriority",
            "elementKind": "method",
            "justification": "Redesign of jbpm executor to improve overall performance"
-         }
+         },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method java.util.Map<java.lang.String, java.lang.Object> org.kie.api.runtime.RequestContext::getOutputs()",
+          "package": "org.kie.api.runtime",
+          "classSimpleName": "RequestContext",
+          "methodName": "getOutputs",
+          "elementKind": "method",
+          "justification": "Expose different methods for set and retrieve output variables"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method void org.kie.api.runtime.RequestContext::setOutput(java.lang.String, java.lang.Object)",
+          "package": "org.kie.api.runtime",
+          "classSimpleName": "RequestContext",
+          "methodName": "setOutput",
+          "elementKind": "method",
+          "justification": "Expose different methods for set and retrieve output variables"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method void org.kie.api.runtime.RequestContext::removeOutput(java.lang.String)",
+          "package": "org.kie.api.runtime",
+          "classSimpleName": "RequestContext",
+          "methodName": "removeOutput",
+          "elementKind": "method",
+          "justification": "Expose different methods for set and retrieve output variables"
+        }
       ]
     }
   }
