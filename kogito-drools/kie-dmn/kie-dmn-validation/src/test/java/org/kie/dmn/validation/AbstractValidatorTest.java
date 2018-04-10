@@ -45,7 +45,14 @@ public abstract class AbstractValidatorTest {
     }
 
     protected Reader getReader(final String resourceFileName ) {
-        return new InputStreamReader( getClass().getResourceAsStream( resourceFileName ) );
+        return getReader(resourceFileName, this.getClass());
+    }
+
+    /**
+     * Return the Reader for the specified Resource with resourceFileName, using the supplied Class to locate it.
+     */
+    protected Reader getReader(final String resourceFileName, Class<?> clazz) {
+        return new InputStreamReader(clazz.getResourceAsStream(resourceFileName));
     }
 
     protected File getFile(final String resourceFileName ) {
