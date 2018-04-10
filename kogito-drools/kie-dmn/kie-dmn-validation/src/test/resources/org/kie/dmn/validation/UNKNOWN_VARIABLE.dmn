@@ -19,8 +19,7 @@
     namespace="https://www.drools.org/kie-dmn/definitions"
     xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
     xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.omg.org/spec/DMN/20151101/dmn.xsd https://www.omg.org/spec/DMN/20151101/dmn.xsd ">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <inputData id="_e026e26d-7806-45c8-811e-a4408eee8a31" name="Annual Salary">
     <variable id="_20d1791d-7df5-4579-b6af-ac235ec38c9e" name="Annual Salary" typeRef="feel:number"/>
   </inputData>

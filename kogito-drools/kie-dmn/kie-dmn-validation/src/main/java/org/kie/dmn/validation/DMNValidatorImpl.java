@@ -70,9 +70,10 @@ public class DMNValidatorImpl implements DMNValidator {
     static Schema schema;
     static {
         try {
-            schema = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI).newSchema();
+            schema = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI)
+                                  .newSchema(new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20151101/dmn.xsd")));
         } catch (SAXException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Unable to initialize correctly DMNValidator.", e);
         }
     }
     
@@ -258,7 +259,6 @@ public class DMNValidatorImpl implements DMNValidator {
             problems.add(new DMNMessageImpl( DMNMessage.Severity.ERROR, MsgUtil.createMessage( Msg.FAILED_XML_VALIDATION, e.getMessage() ), Msg.FAILED_XML_VALIDATION.getType(), null, e));
             logDebugMessages( problems );
         }
-        // TODO detect if the XSD is not provided through schemaLocation, and validate against embedded
         return problems;
     }
 
