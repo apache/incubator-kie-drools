@@ -1,17 +1,18 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
  */
 
 package org.drools.core.process.instance.impl;
@@ -19,24 +20,23 @@ package org.drools.core.process.instance.impl;
 import java.io.Serializable;
 import java.util.Map;
 
-import org.apache.commons.beanutils.BeanMap;
 import org.drools.core.process.instance.TypedWorkItem;
 import org.drools.core.process.instance.WorkItem;
 
 /**
  * An implementation of an untyped WorkItem, that delegates to
  * a TypedWorkItemImpl.
- *
+ * <p>
  * For compatibility reasons, TypedWorkItem may be wrapped in an UntypedWorkItemImpl,
  * behaving like a WorkItem (returning maps of params, results).
- *
+ * <p>
  * Internally, it uses Apache Commons BeanMap to keep in sync the
  * map key/value pairs, and the underlying bean implementation.
- *
+ * <p>
  * This is not publicly instantiable.
  */
 class UntypedWorkItemImpl implements WorkItem,
-                                            Serializable {
+                                     Serializable {
 
     private static final long serialVersionUID = 510l;
 
@@ -67,15 +67,15 @@ class UntypedWorkItemImpl implements WorkItem,
 
     @Override
     public void setParameter(String name, Object value) {
-        beanMapOf(workItem.getParameters()).put(name, value);
+        new BeanMap(workItem.getParameters()).put(name, value);
     }
 
     public void setParameters(Map<String, Object> parameters) {
-        beanMapOf(workItem.getParameters()).putAll(parameters);
+        new BeanMap(workItem.getParameters()).putAll(parameters);
     }
 
     public void setResults(Map<String, Object> results) {
-        beanMapOf(workItem.getResults()).putAll(results);
+        new BeanMap(workItem.getResults()).putAll(results);
     }
 
     @Override
@@ -140,7 +140,7 @@ class UntypedWorkItemImpl implements WorkItem,
 
     @Override
     public Map<String, Object> getParameters() {
-        return beanMapOf(workItem.getParameters());
+        return new BeanMap(workItem.getParameters());
     }
 
     @Override
@@ -150,19 +150,11 @@ class UntypedWorkItemImpl implements WorkItem,
 
     @Override
     public Map<String, Object> getResults() {
-        return upcast(new BeanMap(workItem.getResults()));
+        return new BeanMap(workItem.getResults());
     }
 
     @Override
     public long getProcessInstanceId() {
         return workItem.getProcessInstanceId();
-    }
-
-    private Map<String, Object> beanMapOf(Object bean) {
-        return upcast(new BeanMap(bean));
-    }
-
-    private Map<String, Object> upcast(Map beanMap) {
-        return beanMap;
     }
 }
