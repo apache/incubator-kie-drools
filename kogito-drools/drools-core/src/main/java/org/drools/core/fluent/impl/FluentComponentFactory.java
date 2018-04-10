@@ -30,8 +30,8 @@ public class FluentComponentFactory {
     private Map<String, String> fluentTargets;
 
     public FluentComponentFactory() {
-        fluents = new HashMap<String, Class>();
-        fluentTargets = new HashMap<String, String>();
+        fluents = new HashMap<>();
+        fluentTargets = new HashMap<>();
 
         set(KieContainerFluent.class.getName(), KieContainerFluentImpl.class, KieContainer.class.getName());
         set(KieSessionFluent.class.getName(), KieSessionFluentImpl.class, KieSession.class.getName());
@@ -42,7 +42,7 @@ public class FluentComponentFactory {
     public void set(String fluentType, Class fluentImpl, String fluentTarget) {
         fluents.put(fluentType, fluentImpl);
 
-        if ( fluentTargets != null ) {
+        if ( fluentTarget != null ) {
             // only BatchBuilderFluent is currently null
             fluentTargets.put(fluentType, fluentTarget);
         }

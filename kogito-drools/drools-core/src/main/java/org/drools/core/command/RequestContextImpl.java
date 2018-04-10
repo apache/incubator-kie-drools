@@ -24,12 +24,18 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.RequestContext;
 import org.kie.internal.command.ContextManager;
 
+import java.util.Collections;;
+import java.util.HashMap;
+import java.util.Map;
+
 public class RequestContextImpl extends ContextImpl implements RequestContext {
 
     private Context appContext;
     private Context conversationContext;
 
     private ConversationContextManager cvnManager;
+
+    private Map<String, Object> output = new HashMap<>();
 
     private Object result;
 
@@ -67,6 +73,7 @@ public class RequestContextImpl extends ContextImpl implements RequestContext {
         return cvnManager;
     }
 
+    @Override
     public Object get(String identifier) {
         if(identifier == null || identifier.equals("")){
             return null;
@@ -113,6 +120,21 @@ public class RequestContextImpl extends ContextImpl implements RequestContext {
 
     public void setLastSetOrGet(String lastSet) {
         this.lastSet = lastSet;
+    }
+
+    @Override
+    public Map<String, Object> getOutputs() {
+        return Collections.unmodifiableMap(output);
+    }
+
+    @Override
+    public void setOutput(String identifier, Object value) {
+        output.put(identifier, value);
+    }
+
+    @Override
+    public void removeOutput(String identifier) {
+        output.remove(identifier);
     }
 
     public Exception getException() {
