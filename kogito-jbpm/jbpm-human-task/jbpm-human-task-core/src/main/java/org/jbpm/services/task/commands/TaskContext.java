@@ -15,6 +15,8 @@
  */
 package org.jbpm.services.task.commands;
 
+import java.util.Map;
+
 import org.jbpm.services.task.events.TaskEventSupport;
 import org.jbpm.services.task.impl.TaskAdminServiceImpl;
 import org.jbpm.services.task.impl.TaskAttachmentServiceImpl;
@@ -211,6 +213,21 @@ public class TaskContext implements org.kie.internal.task.api.TaskContext, Reque
 
     @Override
     public Context getApplicationContext() {
+        throw new UnsupportedOperationException("Not supported for this type of context.");
+    }
+
+    @Override
+    public Map<String, Object> getOutputs() {
+        throw new UnsupportedOperationException("Not supported for this type of context.");
+    }
+
+    @Override
+    public void setOutput(String identifier, Object value) {
+        throw new UnsupportedOperationException("Not supported for this type of context.");
+    }
+
+    @Override
+    public void removeOutput(String identifier) {
         throw new UnsupportedOperationException("Not supported for this type of context.");
     }
 

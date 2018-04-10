@@ -18,6 +18,7 @@ package org.jbpm.services.task.persistence;
 
 import java.lang.reflect.Constructor;
 import java.util.Collection;
+import java.util.Map;
 
 import org.drools.core.command.impl.AbstractInterceptor;
 import org.drools.core.runtime.ChainableRunner;
@@ -222,7 +223,22 @@ public class TaskTransactionInterceptor extends AbstractInterceptor {
 
 		}
 
-	    @Override
+		@Override
+		public Map<String, Object> getOutputs() {
+			throw new UnsupportedOperationException( "org.jbpm.services.task.persistence.TaskTransactionInterceptor.TransactionContext.getApplicationContext -> TODO" );
+		}
+
+		@Override
+		public void setOutput(String identifier, Object value) {
+			throw new UnsupportedOperationException( "org.jbpm.services.task.persistence.TaskTransactionInterceptor.TransactionContext.getApplicationContext -> TODO" );
+		}
+
+		@Override
+		public void removeOutput(String identifier) {
+			throw new UnsupportedOperationException( "org.jbpm.services.task.persistence.TaskTransactionInterceptor.TransactionContext.getApplicationContext -> TODO" );
+		}
+
+		@Override
 	    public String getUserId() {
 	        return userId;
 	    }
