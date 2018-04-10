@@ -7,7 +7,6 @@
                       xmlns:trisofeed="http://trisotech.com/feed"
                       xmlns:xsd="http://www.w3.org/2001/XMLSchema"
                       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                      xsi:schemaLocation="http://www.omg.org/spec/DMN/20151101/dmn.xsd https://www.omg.org/spec/DMN/20151101/dmn.xsd "
                       exporter="DMN Modeler" exporterVersion="6.0.5.2" id="_15be17d6-e30e-4c43-9fc8-1b3c271edcd8" name="Drawing 1"
                       namespace="http://www.trisotech.com/dmn/definitions/_15be17d6-e30e-4c43-9fc8-1b3c271edcd8" triso:logoChoice="Default">
   <semantic:extensionElements/>

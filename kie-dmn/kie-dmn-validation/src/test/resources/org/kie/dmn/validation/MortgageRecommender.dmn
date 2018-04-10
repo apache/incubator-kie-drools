@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/dmn/definitions/_2b51bb3a-9e6e-4054-9772-b37ea5b006aa" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="5.1.7.201703201809" id="_2b51bb3a-9e6e-4054-9772-b37ea5b006aa" name="Chapter 15 - Mortgage Recommender" namespace="http://www.trisotech.com/dmn/definitions/_2b51bb3a-9e6e-4054-9772-b37ea5b006aa" triso:logoChoice="Default">
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
+                      xmlns="http://www.trisotech.com/dmn/definitions/_2b51bb3a-9e6e-4054-9772-b37ea5b006aa"
+                      xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
+                      xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                      xmlns:trisofeed="http://trisotech.com/feed"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      exporter="DMN Modeler" exporterVersion="5.1.7.201703201809" id="_2b51bb3a-9e6e-4054-9772-b37ea5b006aa"
+                      name="Chapter 15 - Mortgage Recommender"
+                      namespace="http://www.trisotech.com/dmn/definitions/_2b51bb3a-9e6e-4054-9772-b37ea5b006aa" triso:logoChoice="Default">
   <semantic:extensionElements>
     <triso:ProjectCharter>
       <projectDescription xmlns="">&lt;p&gt;Source: DMN Method &amp;amp; Style by Bruce Silver. Publication date: 2016.&lt;/p&gt;</projectDescription>
