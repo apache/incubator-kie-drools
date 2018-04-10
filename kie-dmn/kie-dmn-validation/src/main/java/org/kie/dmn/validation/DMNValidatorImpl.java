@@ -119,7 +119,7 @@ public class DMNValidatorImpl implements DMNValidator {
         ChainedProperties localChainedProperties = new ChainedProperties();
         this.dmnProfiles.addAll(DMNAssemblerService.getDefaultDMNProfiles(localChainedProperties));
         this.dmnProfiles.addAll(dmnProfiles);
-        this.dmnCompilerConfig = DMNAssemblerService.compilerConfigWithKModulePrefs(localChainedProperties, this.dmnProfiles);
+        this.dmnCompilerConfig = DMNAssemblerService.compilerConfigWithKModulePrefs(kieContainer.getClassLoader(), localChainedProperties, this.dmnProfiles);
     }
     
     public void dispose() {

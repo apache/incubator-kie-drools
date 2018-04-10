@@ -25,6 +25,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.impl.KnowledgeBaseImpl;
 import org.kie.api.internal.io.ResourceTypePackage;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieRuntime;
@@ -507,5 +508,10 @@ public class DMNRuntimeImpl
             }
         });
         return profiles;
+    }
+
+    @Override
+    public ClassLoader getRootClassLoader() {
+        return ((KnowledgeBaseImpl) runtime.getKieBase()).getRootClassLoader();
     }
 }

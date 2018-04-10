@@ -54,7 +54,7 @@ public class DMNLiteralExpressionEvaluator
         // in case an exception is thrown, the parent node will report it
         List<DMNProfile> profiles = ((DMNRuntimeImpl) dmrem.getRuntime()).getProfiles();
         @SuppressWarnings({"unchecked", "rawtypes"})
-        Object val = FEEL.newInstance((List) profiles).evaluate(expression, result.getContext().getAll());
+        Object val = FEEL.newInstance(dmrem.getRuntime().getRootClassLoader(), (List) profiles).evaluate(expression, result.getContext().getAll());
         return new EvaluatorResultImpl( val, ResultType.SUCCESS );
     }
 }

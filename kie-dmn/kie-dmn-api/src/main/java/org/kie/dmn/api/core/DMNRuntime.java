@@ -16,9 +16,9 @@
 
 package org.kie.dmn.api.core;
 
-import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
-
 import java.util.List;
+
+import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 
 public interface DMNRuntime extends DMNRuntimeEventManager {
 
@@ -116,5 +116,10 @@ public interface DMNRuntime extends DMNRuntimeEventManager {
      * @return a new empty DMNContext
      */
     DMNContext newContext();
+
+    /**
+     * Returns the ClassLoader used by this DMNRuntime
+     */
+    ClassLoader getRootClassLoader();
 
 }

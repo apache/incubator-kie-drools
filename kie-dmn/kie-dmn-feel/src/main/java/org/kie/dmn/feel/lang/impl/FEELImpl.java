@@ -44,6 +44,7 @@ import org.kie.dmn.feel.parser.feel11.FEELParser;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.UnaryTest;
+import org.kie.dmn.feel.util.ClassLoaderUtil;
 
 /**
  * Language runtime entry point
@@ -55,16 +56,26 @@ public class FEELImpl
 
     private Set<FEELEventListener> instanceEventListeners = new HashSet<>();
 
+    private final ClassLoader classLoader;
     private final List<FEELProfile> profiles;
     // pre-cached results from the above profiles...
     private final Optional<ExecutionFrameImpl> customFrame;
     private final Collection<FEELFunction> customFunctions;
 
     public FEELImpl() {
-        this(Collections.emptyList());
+        this(ClassLoaderUtil.findDefaultClassLoader(), Collections.emptyList());
+    }
+
+    public FEELImpl(ClassLoader cl) {
+        this(cl, Collections.emptyList());
     }
 
     public FEELImpl(List<FEELProfile> profiles) {
+        this(ClassLoaderUtil.findDefaultClassLoader(), profiles);
+    }
+
+    public FEELImpl(ClassLoader cl, List<FEELProfile> profiles) {
+        this.classLoader = cl;
         this.profiles = Collections.unmodifiableList(profiles);
         ExecutionFrameImpl frame = new ExecutionFrameImpl(null);
         Map<String, FEELFunction> functions = new HashMap<>();
@@ -146,9 +157,19 @@ public class FEELImpl
         return ((CompiledExpressionImpl) expr).evaluate(newEvaluationContext(ctx.getListeners(), ctx.getAllValues()));
     }
 
+    /**
+     * Creates a new EvaluationContext using this FEEL instance classloader, and the supplied parameters listeners and inputVariables
+     */
     public EvaluationContextImpl newEvaluationContext(Collection<FEELEventListener> listeners, Map<String, Object> inputVariables) {
+        return newEvaluationContext(this.classLoader, listeners, inputVariables);
+    }
+
+    /**
+     * Creates a new EvaluationContext with the supplied classloader, and the supplied parameters listeners and inputVariables
+     */
+    public EvaluationContextImpl newEvaluationContext(ClassLoader cl, Collection<FEELEventListener> listeners, Map<String, Object> inputVariables) {
         FEELEventListenersManager eventsManager = getEventsManager(listeners);
-        EvaluationContextImpl ctx = new EvaluationContextImpl( eventsManager );
+        EvaluationContextImpl ctx = new EvaluationContextImpl(cl, eventsManager);
         if (customFrame.isPresent()) {
             ExecutionFrameImpl globalFrame = (ExecutionFrameImpl) ctx.pop();
             ExecutionFrameImpl interveawedFrame = customFrame.get();

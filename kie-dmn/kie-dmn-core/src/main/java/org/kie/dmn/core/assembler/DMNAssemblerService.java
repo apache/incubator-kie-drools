@@ -204,20 +204,23 @@ public class DMNAssemblerService implements KieAssemblerService {
     private DMNCompiler getCompiler(KnowledgeBuilderImpl kbuilderImpl) {
         List<DMNProfile> dmnProfiles = kbuilderImpl.getCachedOrCreate(DMN_PROFILES_CACHE_KEY, () -> getDMNProfiles(kbuilderImpl));
 
-        DMNCompilerConfiguration compilerConfig = compilerConfigWithKModulePrefs(kbuilderImpl.getBuilderConfiguration().getChainedProperties(), dmnProfiles);
+        DMNCompilerConfiguration compilerConfig = compilerConfigWithKModulePrefs(kbuilderImpl.getRootClassLoader(), kbuilderImpl.getBuilderConfiguration().getChainedProperties(), dmnProfiles);
 
         return DMNFactory.newCompiler(compilerConfig);
     }
 
     /**
      * Returns a DMNCompilerConfiguration with the specified properties set, and applying the explicited dmnProfiles.
+     * @param classLoader 
      * @param chainedProperties applies properties --it does not do any classloading nor profile loading based on these properites, just passes the values. 
      * @param dmnProfiles applies these DMNProfile(s) to the DMNCompilerConfiguration
      * @return
      */
-    public static DMNCompilerConfiguration compilerConfigWithKModulePrefs(ChainedProperties chainedProperties, List<DMNProfile> dmnProfiles) {
+    public static DMNCompilerConfiguration compilerConfigWithKModulePrefs(ClassLoader classLoader, ChainedProperties chainedProperties, List<DMNProfile> dmnProfiles) {
         DMNCompilerConfigurationImpl config = (DMNCompilerConfigurationImpl) DMNFactory.newCompilerConfiguration();
         
+        config.setRootClassLoader(classLoader);
+
         Map<String, String> dmnPrefs = new HashMap<>();
         chainedProperties.mapStartsWith(dmnPrefs, ORG_KIE_DMN_PREFIX, true);
         config.setProperties(dmnPrefs);
