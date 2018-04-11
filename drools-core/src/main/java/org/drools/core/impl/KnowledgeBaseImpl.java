@@ -348,17 +348,20 @@ public class KnowledgeBaseImpl
 
         readLock();
         try {
-            WorkingMemoryFactory wmFactory = kieComponentFactory.getWorkingMemoryFactory();
-            StatefulKnowledgeSessionImpl session = ( StatefulKnowledgeSessionImpl ) wmFactory.createWorkingMemory( nextWorkingMemoryCounter(), this,
-                                                                                                                   sessionConfig, environment );
-            if ( sessionConfig.isKeepReference() ) {
-                addStatefulSession(session);
-            }
-
-            return session;
+            return internalCreateStatefulKnowledgeSession( environment, sessionConfig );
         } finally {
             readUnlock();
         }
+    }
+
+    StatefulKnowledgeSessionImpl internalCreateStatefulKnowledgeSession( Environment environment, SessionConfiguration sessionConfig ) {
+        WorkingMemoryFactory wmFactory = kieComponentFactory.getWorkingMemoryFactory();
+        StatefulKnowledgeSessionImpl session = ( StatefulKnowledgeSessionImpl ) wmFactory.createWorkingMemory( nextWorkingMemoryCounter(), this,
+                                                                                                               sessionConfig, environment );
+        if ( sessionConfig.isKeepReference() ) {
+            addStatefulSession(session);
+        }
+        return session;
     }
 
     public Collection<? extends KieSession> getKieSessions() {
