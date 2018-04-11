@@ -1490,17 +1490,25 @@ public class KnowledgeBaseImpl
 
         readLock();
         try {
-            WorkingMemoryFactory wmFactory = kieComponentFactory.getWorkingMemoryFactory();
-            StatefulKnowledgeSessionImpl session = ( StatefulKnowledgeSessionImpl ) wmFactory.createWorkingMemory( id, this,
-                                                                                                                   sessionConfig, environment );
-            if ( sessionConfig.isKeepReference() ) {
-                addStatefulSession(session);
-            }
-
-            return session;
+            return internalCreateStatefulKnowledgeSession( id, sessionConfig, environment );
         } finally {
             readUnlock();
         }
+    }
+
+    StatefulKnowledgeSessionImpl internalCreateStatefulKnowledgeSession( SessionConfiguration sessionConfig, Environment environment ) {
+        return internalCreateStatefulKnowledgeSession( nextWorkingMemoryCounter(), sessionConfig, environment );
+    }
+
+    private StatefulKnowledgeSessionImpl internalCreateStatefulKnowledgeSession( int id, SessionConfiguration sessionConfig, Environment environment ) {
+        WorkingMemoryFactory wmFactory = kieComponentFactory.getWorkingMemoryFactory();
+        StatefulKnowledgeSessionImpl session = ( StatefulKnowledgeSessionImpl ) wmFactory.createWorkingMemory( id, this,
+                                                                                                               sessionConfig, environment );
+        if ( sessionConfig.isKeepReference() ) {
+            addStatefulSession(session);
+        }
+
+        return session;
     }
 
     public int getNodeCount() {
