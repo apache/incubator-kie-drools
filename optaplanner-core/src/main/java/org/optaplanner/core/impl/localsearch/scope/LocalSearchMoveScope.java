@@ -16,49 +16,27 @@
 
 package org.optaplanner.core.impl.localsearch.scope;
 
-import java.util.Random;
-
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.heuristic.move.Move;
-import org.optaplanner.core.impl.score.director.InnerScoreDirector;
+import org.optaplanner.core.impl.phase.scope.AbstractMoveScope;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-public class LocalSearchMoveScope<Solution_> {
+public class LocalSearchMoveScope<Solution_> extends AbstractMoveScope<Solution_> {
 
     private final LocalSearchStepScope<Solution_> stepScope;
-    private final int moveIndex;
-    private final Move<Solution_> move;
 
-    private Score score = null;
     private Boolean accepted = null;
 
     public LocalSearchMoveScope(LocalSearchStepScope<Solution_> stepScope, int moveIndex, Move<Solution_> move) {
+        super(moveIndex, move);
         this.stepScope = stepScope;
-        this.moveIndex = moveIndex;
-        this.move = move;
     }
 
+    @Override
     public LocalSearchStepScope<Solution_> getStepScope() {
         return stepScope;
-    }
-
-    public int getMoveIndex() {
-        return moveIndex;
-    }
-
-    public Move<Solution_> getMove() {
-        return move;
-    }
-
-    public Score getScore() {
-        return score;
-    }
-
-    public void setScore(Score score) {
-        this.score = score;
     }
 
     public Boolean getAccepted() {
@@ -72,37 +50,5 @@ public class LocalSearchMoveScope<Solution_> {
     // ************************************************************************
     // Calculated methods
     // ************************************************************************
-
-    public InnerScoreDirector<Solution_> getScoreDirector() {
-        return stepScope.getScoreDirector();
-    }
-
-    public Solution_ getWorkingSolution() {
-        return stepScope.getWorkingSolution();
-    }
-
-    public Random getWorkingRandom() {
-        return stepScope.getWorkingRandom();
-    }
-
-    public LocalSearchMoveScope<Solution_> rebase(LocalSearchStepScope<Solution_> destinationStepScope,
-            InnerScoreDirector<Solution_> destinationScoreDirector) {
-        if (stepScope.getStepIndex() != destinationStepScope.getStepIndex()) {
-            throw new IllegalStateException("Impossible situation: rebasing of MoveScope with stepIndex ("
-                    + stepScope.getStepIndex() + ") and moveIndex (" + moveIndex
-                    + ") fails because the destinationStepScope has a different stepIndex ("
-                    + destinationStepScope.getStepIndex() + ").");
-        }
-        Move<Solution_> rebasedMove = move.rebase(destinationScoreDirector);
-        LocalSearchMoveScope<Solution_> rebasedMoveScope = new LocalSearchMoveScope<>(destinationStepScope, moveIndex, rebasedMove);
-        rebasedMoveScope.setScore(score);
-        rebasedMoveScope.setAccepted(accepted);
-        return rebasedMoveScope;
-    }
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "(" + stepScope.getStepIndex() + "/" + moveIndex + ")";
-    }
 
 }

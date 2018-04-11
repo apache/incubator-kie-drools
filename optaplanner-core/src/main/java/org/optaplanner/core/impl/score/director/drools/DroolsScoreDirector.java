@@ -146,17 +146,6 @@ public class DroolsScoreDirector<Solution_>
     }
 
     @Override
-    public DroolsScoreDirector<Solution_> clone() {
-        // TODO experiment with serializing the KieSession to clone it and its entities but not its other facts.
-        // See drools-compiler's test SerializationHelper.getSerialisedStatefulKnowledgeSession(...)
-        // and use an identity FactFactory that:
-        // - returns the reference for a non-@PlanningEntity fact
-        // - returns a clone for a @PlanningEntity fact (Pitfall: chained planning entities)
-        // Note: currently that will break incremental score calculation, but future drools versions might fix that
-        return (DroolsScoreDirector<Solution_>) super.clone();
-    }
-
-    @Override
     public void close() {
         super.close();
         if (kieSession != null) {

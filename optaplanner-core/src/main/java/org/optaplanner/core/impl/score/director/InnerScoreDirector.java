@@ -48,6 +48,13 @@ public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_> 
     /**
      * @param move never null
      * @param assertMoveScoreFromScratch true will hurt performance
+     * @return never null
+     */
+    Score doAndProcessMove(Move<Solution_> move, boolean assertMoveScoreFromScratch);
+
+    /**
+     * @param move never null
+     * @param assertMoveScoreFromScratch true will hurt performance
      * @param moveProcessor never null, use this to store the score as well as call the acceptor and forager
      */
     void doAndProcessMove(Move<Solution_> move, boolean assertMoveScoreFromScratch, Consumer<Score> moveProcessor);

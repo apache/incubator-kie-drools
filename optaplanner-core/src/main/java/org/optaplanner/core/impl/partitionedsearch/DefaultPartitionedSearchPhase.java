@@ -121,6 +121,8 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
                     } catch (Throwable throwable) {
                         // Any Exception or even Error that happens here (on a partition thread) must be stored
                         // in the partitionQueue in order to be propagated to the solver thread.
+                        logger.trace("{}            Part thread ({}) exception that will be propagated to the solver thread.",
+                                logIndentation, partIndex, throwable);
                         partitionQueue.addExceptionThrown(partIndex, throwable);
                     }
                 });

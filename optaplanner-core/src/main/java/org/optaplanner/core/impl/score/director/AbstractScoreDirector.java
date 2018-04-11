@@ -171,6 +171,17 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
     }
 
     @Override
+    public Score doAndProcessMove(Move<Solution_> move, boolean assertMoveScoreFromScratch) {
+        Move<Solution_> undoMove = move.doMove(this);
+        Score score = calculateScore();
+        if (assertMoveScoreFromScratch) {
+            assertWorkingScoreFromScratch(score, move);
+        }
+        undoMove.doMove(this);
+        return score;
+    }
+
+    @Override
     public void doAndProcessMove(Move<Solution_> move, boolean assertMoveScoreFromScratch, Consumer<Score> moveProcessor) {
         Move<Solution_> undoMove = move.doMove(this);
         Score score = calculateScore();
@@ -320,16 +331,21 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
 
     @Override
     public InnerScoreDirector<Solution_> createChildThreadScoreDirector(ChildThreadType childThreadType) {
-        AbstractScoreDirector<Solution_, Factory_> childThreadScoreDirector = (AbstractScoreDirector<Solution_, Factory_>)
-                scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabledPreference);
         if (childThreadType == ChildThreadType.PART_THREAD) {
+            AbstractScoreDirector<Solution_, Factory_> childThreadScoreDirector = (AbstractScoreDirector<Solution_, Factory_>)
+                    scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabledPreference);
             // ScoreCalculationCountTermination takes into account previous phases
             // but the calculationCount of partitions is maxed, not summed.
             childThreadScoreDirector.calculationCount = calculationCount;
+            return childThreadScoreDirector;
+        } else if (childThreadType == ChildThreadType.MOVE_THREAD) {
+            AbstractScoreDirector<Solution_, Factory_> childThreadScoreDirector = (AbstractScoreDirector<Solution_, Factory_>)
+                    scoreDirectorFactory.buildScoreDirector(true, false);
+            childThreadScoreDirector.setWorkingSolution(cloneWorkingSolution());
+            return childThreadScoreDirector;
         } else {
             throw new IllegalStateException("The childThreadType (" + childThreadType + ") is not implemented.");
         }
-        return childThreadScoreDirector;
     }
 
     @Override

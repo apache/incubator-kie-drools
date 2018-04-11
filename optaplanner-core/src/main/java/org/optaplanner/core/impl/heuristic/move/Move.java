@@ -22,6 +22,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
+import org.optaplanner.core.api.domain.lookup.PlanningId;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.score.Score;
@@ -85,10 +86,10 @@ public interface Move<Solution_> {
     /**
      * Rebases a move from an origin {@link ScoreDirector} to another destination {@link ScoreDirector}
      * which is usually on another {@link Thread} or JVM.
-     * The new move returned by this method mutates the entities and problem facts
-     * of the destination {@link PlanningSolution} of the destination {@link ScoreDirector},
-     * That destination {@link PlanningSolution} should be a deep planning clone (or an even deeper clone)
-     * of the origin {@link PlanningSolution} that this move was generated from.
+     * The new move returned by this method translates the entities and problem facts
+     * to the destination {@link PlanningSolution} of the destination {@link ScoreDirector},
+     * That destination {@link PlanningSolution} is a deep planning clone (or an even deeper clone)
+     * of the origin {@link PlanningSolution} that this move has been generated from.
      * <p>
      * That new move does the exact same change as this move,
      * resulting in the same {@link PlanningSolution} state,
@@ -98,6 +99,14 @@ public interface Move<Solution_> {
      * Generally speaking, an implementation of this method iterates through every entity and fact instance in this move,
      * translates each one to the destination {@link ScoreDirector} with {@link ScoreDirector#lookUpWorkingObject(Object)}
      * and creates a new move instance of the same move type, using those translated instances.
+     * <p>
+     * The destination {@link PlanningSolution} can be in a different state than the original {@link PlanningSolution}.
+     * So, rebasing can only depend on the identity of {@link PlanningEntity planning entities} and planning facts,
+     * which is usually declared by a {@link PlanningId} on those classes.
+     * It must not depend on the state of the {@link PlanningVariable planning variables}.
+     * One thread might rebase a move before, amid or after another thread does that same move instance.
+     * <p>
+     * This method is thread-safe.
      * @param destinationScoreDirector never null, the {@link ScoreDirector#getWorkingSolution()}
      * that the new move should change the planning entity instances of.
      * @return never null, a new move that does the same change as this move on another solution instance
