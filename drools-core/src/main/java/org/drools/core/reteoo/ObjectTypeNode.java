@@ -490,9 +490,19 @@ public class ObjectTypeNode extends ObjectSource
     }
 
     /**
+    * OTN needs to override remove to avoid releasing the node ID, since OTN are
+    * never removed from the rulebase in the current implementation
+    */
+    @Override
+    public boolean remove(RuleRemovalContext context, ReteooBuilder builder) {
+            return doRemove(context, builder);
+    }
+
+    /**
      * OTN needs to override remove to avoid releasing the node ID, since OTN are
      * never removed from the rulebase in the current implementation
      */
+    @Override
     protected boolean doRemove(final RuleRemovalContext context,
                                final ReteooBuilder builder) {
         return false;
