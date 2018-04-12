@@ -715,21 +715,7 @@ public class KnowledgeBaseImpl
             clonedPkgs.add(((InternalKnowledgePackage)newPkg).deepCloneIfAlreadyInUse(rootClassLoader));
         }
 
-        final Comparator<InternalKnowledgePackage> comparator =  (p1, p2) -> {
-
-            Integer p1RulesSize = p1.getRules().size();
-            Integer p2RulesSize = p2.getRules().size();
-
-            int sizeCompared = p2RulesSize.compareTo(p1RulesSize);
-
-            if(sizeCompared == 0) {
-                return p1.getName().compareTo(p2.getName());
-            } else {
-                return sizeCompared;
-            }
-        };
-
-        clonedPkgs.sort(comparator);
+        clonedPkgs.sort(Comparator.comparing( (InternalKnowledgePackage p) -> p.getRules().size() ).reversed().thenComparing( InternalKnowledgePackage::getName ));
         enqueueModification( () -> internalAddPackages( clonedPkgs ) );
     }
     
