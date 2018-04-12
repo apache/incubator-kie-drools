@@ -2683,4 +2683,21 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
         assertProcessInstanceFinished(processInstance, ksession);
     }
+    
+    @Test
+    public void testSignalEndWithData() throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-IntermediateThrowEventSignalWithData.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                                                              new SystemOutWorkItemHandler());
+        Map<String, Object> params = new HashMap<String, Object>();
+        ProcessInstance processInstance = ksession.startProcess("testThrowingSignalEvent", params);
+
+        assertProcessInstanceActive(processInstance);
+        
+        ksession.signalEvent("mysignal", null, processInstance.getId());
+        
+        assertProcessInstanceCompleted(processInstance);
+
+    }
 }

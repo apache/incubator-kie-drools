@@ -24,7 +24,6 @@ import org.drools.core.xml.ExtensibleXmlParser;
 import org.jbpm.bpmn2.core.Escalation;
 import org.jbpm.bpmn2.core.IntermediateLink;
 import org.jbpm.bpmn2.core.Message;
-import org.jbpm.bpmn2.core.Signal;
 import org.jbpm.compiler.xml.ProcessBuildData;
 import org.jbpm.process.core.impl.DataTransformerRegistry;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
@@ -38,6 +37,8 @@ import org.jbpm.workflow.core.node.Transformation;
 import org.kie.api.runtime.process.DataTransformer;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -345,30 +346,65 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
 
 	protected void readDataInputAssociation(org.w3c.dom.Node xmlNode,
 			ActionNode actionNode) {
-		// sourceRef
+		
+		
 		org.w3c.dom.Node subNode = xmlNode.getFirstChild();
-		String eventVariable = subNode.getTextContent();
-		// targetRef
-		subNode = subNode.getNextSibling();
-		String target = subNode.getTextContent();
-		// transformation
-		Transformation transformation = null;
-		subNode = subNode.getNextSibling();
-		if (subNode != null && "transformation".equals(subNode.getNodeName())) {
-			String lang = subNode.getAttributes().getNamedItem("language").getNodeValue();
-			String expression = subNode.getTextContent();
-
-			DataTransformer transformer = transformerRegistry.find(lang);
-			if (transformer == null) {
-				throw new IllegalArgumentException("No transformer registered for language " + lang);
-			}
-			transformation = new Transformation(lang, expression, dataInputs.get(target));
-			actionNode.setMetaData("Transformation", transformation);
-		}
-
-		if (eventVariable != null && eventVariable.trim().length() > 0) {
-			actionNode.setMetaData("MappingVariable", eventVariable);
-		}
+        if ("sourceRef".equals(subNode.getNodeName())) {            
+            // sourceRef
+            String eventVariable = subNode.getTextContent();
+            // targetRef
+            subNode = subNode.getNextSibling();
+            String target = subNode.getTextContent();
+            // transformation
+            Transformation transformation = null;
+            subNode = subNode.getNextSibling();
+            if (subNode != null && "transformation".equals(subNode.getNodeName())) {
+                String lang = subNode.getAttributes().getNamedItem("language").getNodeValue();
+                String expression = subNode.getTextContent();
+    
+                DataTransformer transformer = transformerRegistry.find(lang);
+                if (transformer == null) {
+                    throw new IllegalArgumentException("No transformer registered for language " + lang);
+                }
+                transformation = new Transformation(lang, expression, dataInputs.get(target));
+                actionNode.setMetaData("Transformation", transformation);
+            }
+    
+            if (eventVariable != null && eventVariable.trim().length() > 0) {            
+                if (dataInputs.containsKey(eventVariable)) {
+                    eventVariable = dataInputs.get(eventVariable);
+                }
+                
+                actionNode.setMetaData("MappingVariable", eventVariable);
+            }
+        } else {
+            // targetRef
+            // assignment
+            subNode = subNode.getNextSibling();
+            if (subNode != null) {
+                org.w3c.dom.Node subSubNode = subNode.getFirstChild();
+                NodeList nl = subSubNode.getChildNodes();
+                if (nl.getLength() > 1) {
+                    actionNode.setMetaData("MappingVariable", subSubNode.getTextContent());
+                    return;
+                } else if (nl.getLength() == 0) {
+                    return;
+                }
+                Object result = null;
+                Object from = nl.item(0);
+                if (from instanceof Text) {
+                    String text = ((Text) from).getTextContent();
+                    if (text.startsWith("\"") && text.endsWith("\"")) {
+                        result = text.substring(1, text.length() -1);
+                    } else {
+                        result = text;
+                    }
+                } else {
+                    result = nl.item(0);
+                }
+                actionNode.setMetaData("MappingVariable", "\"" + result + "\"");
+            }
+        }
 	}
 
 	public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
