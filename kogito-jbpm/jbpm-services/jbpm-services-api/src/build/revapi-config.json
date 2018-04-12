@@ -829,6 +829,15 @@
          "methodName": "getSlaDueDate",
          "elementKind": "method",
          "justification": "Aded support for time based SLA tracking"
+         },
+         {
+          "code": "java.method.addedToInterface",
+          "new": "method java.util.Map<java.lang.String, java.lang.String> org.jbpm.services.api.query.model.QueryDefinition::getColumns()",
+          "package": "org.jbpm.services.api.query.model",
+          "classSimpleName": "QueryDefinition",
+          "methodName": "getColumns",
+          "elementKind": "method",
+          "justification": "Expose query definition resolved columns"
          }
       ]
     }

@@ -33,7 +33,7 @@ public class SqlQueryDefinition implements QueryDefinition, Serializable {
     
     private Target target = Target.CUSTOM;
     
-    private Map<String, String> columnsMapping = new HashMap<String, String>();
+    private Map<String, String> columns = new HashMap<String, String>();
 
     public SqlQueryDefinition(String name, String source) {
         this.name = name;
@@ -97,12 +97,12 @@ public class SqlQueryDefinition implements QueryDefinition, Serializable {
                 "{ expression=" + expression + "}]";
     }
 
-    public Map<String, String> getColumnsMapping() {
-        return columnsMapping;
+    public Map<String, String> getColumns() {
+        return columns;
     }
 
-    public void setColumnsMapping(Map<String, String> columnsMapping) {
-        this.columnsMapping = columnsMapping;
+    public void setColumns(Map<String, String> columns) {
+        this.columns = columns;
     }
 
 }

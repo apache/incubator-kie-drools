@@ -16,6 +16,7 @@
 
 package org.jbpm.services.api.query.model;
 
+import java.util.Map;
 
 /**
  * Definition of a query that can be registered in the query service
@@ -78,4 +79,9 @@ public interface QueryDefinition {
      * @return
      */
     Target getTarget();
+    
+    /**
+     * Returns resolved columns types once the query was successfully registered.
+     */
+    Map<String, String> getColumns();
 }

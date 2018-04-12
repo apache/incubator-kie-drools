@@ -225,6 +225,10 @@ public class QueryServiceImplTest extends AbstractKieServicesBaseTest {
         assertEquals(query.getSource(), registeredQuery.getSource());
         assertEquals(query.getExpression(), registeredQuery.getExpression());
         assertEquals(query.getTarget(), registeredQuery.getTarget());
+        
+        Map<String, String> resolvedColumns = registeredQuery.getColumns();
+        assertNotNull(resolvedColumns);
+        assertEquals(18, resolvedColumns.size());
 
         Collection<ProcessInstanceDesc> instances = queryService.query(query.getName(), ProcessInstanceQueryMapper.get(), new QueryContext());
         assertNotNull(instances);

@@ -181,6 +181,7 @@ public class QueryServiceImpl implements QueryService, DeploymentEventListener {
                 for (String columnId : metadata.getColumnIds()) {
                     logger.debug("Column {} is of type {}", columnId, metadata.getColumnType(columnId));
                     sqlDef.addColumn(columnId, metadata.getColumnType(columnId));
+                    sqlQueryDefinition.getColumns().put(columnId, metadata.getColumnType(columnId).toString());
                 }
     
                 logger.info("Registered {} query successfully", queryDefinition.getName());
@@ -280,7 +281,14 @@ public class QueryServiceImpl implements QueryService, DeploymentEventListener {
         List<QueryDefinitionEntity> queries = commandService.execute(new QueryNameCommand<List<QueryDefinitionEntity>>("getQueryDefinitionByName", params));
 
         if (queries.size() == 1) {
-            return queries.get(0).toQueryDefinition();
+            QueryDefinition def = queries.get(0).toQueryDefinition();
+            
+            DataSetMetadata metadata = dataSetManager.getDataSetMetadata(def.getName());
+            for (String columnId : metadata.getColumnIds()) {
+                def.getColumns().put(columnId, metadata.getColumnType(columnId).toString());
+            }
+            
+            return def;
         }
         throw new QueryNotFoundException("Query " + uniqueQueryName + " not found");
     }
