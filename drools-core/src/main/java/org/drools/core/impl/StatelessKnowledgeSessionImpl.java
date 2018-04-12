@@ -90,7 +90,9 @@ public class StatelessKnowledgeSessionImpl extends AbstractRuntime
     public StatefulKnowledgeSession newWorkingMemory() {
         this.kBase.readLock();
         try {
-            StatefulKnowledgeSessionImpl ksession = ((KnowledgeBaseImpl)kBase).internalCreateStatefulKnowledgeSession( this.environment, (SessionConfiguration) this.conf );
+            StatefulKnowledgeSessionImpl ksession = ((KnowledgeBaseImpl)kBase)
+                    .internalCreateStatefulKnowledgeSession( this.environment, (SessionConfiguration) this.conf )
+                    .setStateless( true );
 
             ((Globals) ksession.getGlobalResolver()).setDelegate(this.sessionGlobals);
 

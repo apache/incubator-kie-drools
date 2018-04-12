@@ -106,7 +106,6 @@ import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.StatelessKieSession;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -152,7 +151,7 @@ public class KnowledgeBaseImpl
 
     private KieBaseEventSupport eventSupport = new KieBaseEventSupport(this);
 
-    private transient final Set<StatefulKnowledgeSession> statefulSessions = new HashSet<StatefulKnowledgeSession>();
+    private transient final Set<StatefulKnowledgeSessionImpl> statefulSessions = ConcurrentHashMap.newKeySet();
 
     // lock for entire rulebase, used for dynamic updates
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
@@ -365,11 +364,7 @@ public class KnowledgeBaseImpl
     }
 
     public Collection<? extends KieSession> getKieSessions() {
-        Collection<KieSession> result = new ArrayList<KieSession>();
-        synchronized (statefulSessions) {
-            result.addAll( statefulSessions );
-        }
-        return result;
+        return Collections.unmodifiableSet( statefulSessions );
     }
 
     public StatelessKieSession newStatelessKieSession(KieSessionConfiguration conf) {
@@ -614,12 +609,12 @@ public class KnowledgeBaseImpl
     }
 
     public void disposeStatefulSession(StatefulKnowledgeSessionImpl statefulSession) {
-        synchronized (statefulSessions) {
-            if (sessionsCache != null) {
+        if (sessionsCache != null) {
+            synchronized (sessionsCache) {
                 sessionsCache.store(statefulSession);
             }
-            this.statefulSessions.remove(statefulSession);
         }
+        this.statefulSessions.remove(statefulSession);
         if (kieContainer != null) {
             kieContainer.disposeSession( statefulSession );
         }
@@ -718,6 +713,7 @@ public class KnowledgeBaseImpl
         }
 
         clonedPkgs.sort( (p1, p2) -> p1.getRules().isEmpty() || p2.getRules().isEmpty() ? 0 : p1.getName().compareTo( p2.getName() ) );
+
         enqueueModification( () -> internalAddPackages( clonedPkgs ) );
     }
     
@@ -777,8 +773,8 @@ public class KnowledgeBaseImpl
     }
 
     private boolean tryDeactivateAllSessions() {
-        InternalWorkingMemory[] wms = getWorkingMemories();
-        if (wms.length == 0) {
+        Collection<InternalWorkingMemory> wms = getWorkingMemories();
+        if (wms.isEmpty()) {
             return true;
         }
         List<InternalWorkingMemory> deactivatedWMs = new ArrayList<InternalWorkingMemory>();
@@ -1655,9 +1651,7 @@ public class KnowledgeBaseImpl
     }
 
     public void addStatefulSession( StatefulKnowledgeSessionImpl wm ) {
-        synchronized (statefulSessions) {
-            this.statefulSessions.add( wm );
-        }
+        this.statefulSessions.add( wm );
     }
 
     public InternalKnowledgePackage getPackage( final String name ) {
@@ -1666,12 +1660,8 @@ public class KnowledgeBaseImpl
 
     private static final InternalWorkingMemory[] EMPTY_WMS = new InternalWorkingMemory[0];
 
-    public InternalWorkingMemory[] getWorkingMemories() {
-        synchronized (statefulSessions) {
-            return statefulSessions.isEmpty() ?
-                   EMPTY_WMS :
-                   statefulSessions.toArray( new InternalWorkingMemory[statefulSessions.size()] );
-        }
+    public Collection<InternalWorkingMemory> getWorkingMemories() {
+        return Collections.unmodifiableSet( statefulSessions );
     }
 
     public RuleBaseConfiguration getConfiguration() {

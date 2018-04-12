@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -456,7 +457,7 @@ public class AccumulateNode extends BetaNode {
     }
 
     @Override
-    public boolean doRemove(RuleRemovalContext context, ReteooBuilder builder, InternalWorkingMemory[] workingMemories) {
+    public boolean doRemove(RuleRemovalContext context, ReteooBuilder builder) {
         if ( !isInUse() ) {
             getLeftTupleSource().removeTupleSink( this );
             getRightInput().removeObjectSink( this );
