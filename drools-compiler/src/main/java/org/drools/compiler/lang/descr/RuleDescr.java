@@ -31,6 +31,7 @@ import java.util.Map;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.Dialectable;
 
+import static org.drools.core.util.ClassUtils.getter2property;
 import static org.drools.core.util.StringUtils.extractFirstIdentifier;
 import static org.drools.core.util.StringUtils.lcFirst;
 
@@ -365,7 +366,8 @@ public class RuleDescr extends AnnotatedBaseDescr
                         int pos = text.indexOf( identifier + "." );
                         if ( pos == 0 || ( pos > 0 && !Character.isJavaIdentifierPart(text.charAt( pos-1 ))) ) {
                             String prop = extractFirstIdentifier(text, pos + identifier.length() + 1);
-                            props.add(lcFirst(prop));
+                            String propFromGetter = getter2property(prop);
+                            props.add(propFromGetter != null ? propFromGetter : lcFirst(prop));
                         }
                     }
                 }
