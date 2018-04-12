@@ -16,6 +16,17 @@
 
 package org.drools.core.impl;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.EventListener;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
+
 import org.drools.core.SessionConfiguration;
 import org.drools.core.SessionConfigurationImpl;
 import org.drools.core.base.MapGlobalResolver;
@@ -45,17 +56,6 @@ import org.kie.internal.agent.KnowledgeAgent;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.runtime.StatelessKnowledgeSession;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.EventListener;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicLong;
-
 public class StatelessKnowledgeSessionImpl extends AbstractRuntime
         implements
         StatelessKnowledgeSession,
@@ -72,7 +72,7 @@ public class StatelessKnowledgeSessionImpl extends AbstractRuntime
     private Environment             environment;
 
     private WorkingMemoryFactory wmFactory;
-    
+
     private AtomicBoolean mbeanRegistered = new AtomicBoolean(false);
     private DroolsManagementAgent.CBSKey mbeanRegisteredCBSKey;
     private AtomicLong wmCreated = new AtomicLong(0);
@@ -109,15 +109,13 @@ public class StatelessKnowledgeSessionImpl extends AbstractRuntime
         }
         this.kBase.readLock();
         try {
-            StatefulKnowledgeSession ksession = (StatefulKnowledgeSession) wmFactory.createWorkingMemory(this.kBase.nextWorkingMemoryCounter(),
-                                                                                                         this.kBase,
-                                                                                                         (SessionConfiguration) this.conf,
-                                                                                                         this.environment);
-            StatefulKnowledgeSessionImpl ksessionImpl = (StatefulKnowledgeSessionImpl) ksession;
+            StatefulKnowledgeSessionImpl ksession = ((KnowledgeBaseImpl)kBase)
+                    .internalCreateStatefulKnowledgeSession( (SessionConfiguration) this.conf, this.environment )
+                    .setStateless( true );
 
-            ((Globals) ksessionImpl.getGlobalResolver()).setDelegate(this.sessionGlobals);
+            ((Globals) ksession.getGlobalResolver()).setDelegate(this.sessionGlobals);
 
-            registerListeners( ksessionImpl );
+            registerListeners( ksession );
 
             for( Map.Entry<String, Channel> entry : this.channels.entrySet() ) {
                 ksession.registerChannel( entry.getKey(), entry.getValue() );

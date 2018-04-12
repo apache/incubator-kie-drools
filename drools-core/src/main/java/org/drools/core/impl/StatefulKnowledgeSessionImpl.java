@@ -257,6 +257,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     private AtomicBoolean mbeanRegistered = new AtomicBoolean(false);
     private DroolsManagementAgent.CBSKey mbeanRegisteredCBSKey;
 
+    private boolean stateless;
+
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -379,7 +381,12 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         }
     }
 
-    public void initMBeans(String containerId, String kbaseName, String ksessionName) {
+    public StatefulKnowledgeSessionImpl setStateless( boolean stateless ) {
+        this.stateless = stateless;
+        return this;
+    }
+
+    public void initMBeans( String containerId, String kbaseName, String ksessionName) {
         if (((InternalKnowledgeBase) kBase).getConfiguration() != null && ((InternalKnowledgeBase) kBase).getConfiguration().isMBeansEnabled() && mbeanRegistered.compareAndSet(false, true)) {
             this.mbeanRegisteredCBSKey = new DroolsManagementAgent.CBSKey(containerId, kbaseName, ksessionName);
             DroolsManagementAgent.getInstance().registerKnowledgeSessionUnderName(mbeanRegisteredCBSKey, this);
@@ -753,7 +760,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             return (T) result;
         } finally {
             endBatchExecution();
-            if (kBase.flushModifications()) {
+            if (kBase.flushModifications() && !stateless) {
                 fireAllRules();
             }
         }
@@ -1364,7 +1371,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         try {
             fireCount = this.agenda.fireAllRules( agendaFilter, fireLimit );
         } finally {
-            if (kBase.flushModifications()) {
+            if (kBase.flushModifications() && !stateless) {
                 fireCount += internalFireAllRules(agendaFilter, fireLimit);
             }
         }
