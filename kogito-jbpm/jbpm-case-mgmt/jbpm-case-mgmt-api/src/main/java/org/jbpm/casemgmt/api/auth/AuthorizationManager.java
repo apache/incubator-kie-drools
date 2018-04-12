@@ -33,6 +33,8 @@ public interface AuthorizationManager {
     
     public static final String OWNER_ROLE = "owner";
     public static final String ADMIN_ROLE = "admin";
+
+    public static final String UNKNOWN_USER = "unknown";
     
     public enum ProtectedOperation {
         CLOSE_CASE,

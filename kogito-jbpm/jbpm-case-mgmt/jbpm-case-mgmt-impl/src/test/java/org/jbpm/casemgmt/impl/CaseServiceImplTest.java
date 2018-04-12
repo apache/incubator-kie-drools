@@ -2755,4 +2755,262 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
             }
         }
     }
+
+    @Test
+    public void testSystemUserCaseAuthorization() {
+        Map<String, OrganizationalEntity> roleAssignments = new HashMap<>();
+        roleAssignments.put("owner", new UserImpl("john"));
+        roleAssignments.put("contact", new GroupImpl("HR"));
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("s", "description");
+        CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), USER_TASK_CASE_P_ID, data, roleAssignments);
+
+        String caseId = caseService.startCase(deploymentUnit.getIdentifier(), USER_TASK_CASE_P_ID, caseFile);
+        assertNotNull(caseId);
+        assertEquals(HR_CASE_ID, caseId);
+        try {
+            CaseInstance cInstance = caseService.getCaseInstance(caseId);
+            assertNotNull(cInstance);
+            assertEquals(HR_CASE_ID, cInstance.getCaseId());
+            assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
+
+            identityProvider.setName("mary");
+            try {
+                caseService.getCaseInstance(caseId);
+                fail("Mary is not owner of the case so should not be allowed to retrieve its CaseInstance object");
+            } catch (SecurityException e) {
+                // expected
+            }
+
+            // System user should be allowed to do anything
+            identityProvider.setName(AuthorizationManager.UNKNOWN_USER);
+            caseService.getCaseInstance(caseId);
+
+            identityProvider.setName("mary");
+            try {
+                caseService.cancelCase(caseId);
+                fail("Mary is not owner of the case so should not be allowed to cancel the case");
+            } catch (SecurityException e) {
+                // expected
+            }
+
+            // System user should be allowed to do anything
+            identityProvider.setName(AuthorizationManager.UNKNOWN_USER);
+            caseService.cancelCase(caseId);
+
+            identityProvider.setName("mary");
+            try {
+                caseService.reopenCase(caseId, deploymentUnit.getIdentifier(), USER_TASK_CASE_P_ID);
+                fail("Mary is not owner of the case so should not be allowed to reopen the case");
+            } catch (SecurityException e) {
+                // expected
+            }
+
+            identityProvider.setName(AuthorizationManager.UNKNOWN_USER);
+            caseService.reopenCase(caseId, deploymentUnit.getIdentifier(), USER_TASK_CASE_P_ID);
+            cInstance = caseService.getCaseInstance(caseId);
+            assertNotNull(cInstance);
+            assertEquals(HR_CASE_ID, cInstance.getCaseId());
+        } catch (Exception e) {
+            logger.error("Unexpected error {}", e.getMessage(), e);
+            fail("Unexpected exception " + e.getMessage());
+        } finally {
+            if (caseId != null) {
+                identityProvider.setName("john");
+                caseService.cancelCase(caseId);
+            }
+        }
+    }
+
+    @Test
+    public void testSystemUserCaseDataAuthorization() {
+        Map<String, OrganizationalEntity> roleAssignments = new HashMap<>();
+        roleAssignments.put("owner", new UserImpl("john"));
+        roleAssignments.put("participant", new UserImpl("mary"));
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("contactInfo", "main street 10, NYC");
+        CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), USER_TASK_DATA_RESTRICTIONS_CASE_P_ID, data, roleAssignments);
+
+        String caseId = caseService.startCase(deploymentUnit.getIdentifier(), USER_TASK_DATA_RESTRICTIONS_CASE_P_ID, caseFile);
+        assertNotNull(caseId);
+        assertEquals(FIRST_CASE_ID, caseId);
+        try {
+            CaseInstance cInstance = caseService.getCaseInstance(caseId, true, false, false, false);
+            assertNotNull(cInstance);
+            assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
+
+            // john can see data
+            Map<String, Object> caseData = cInstance.getCaseFile().getData();
+            assertNotNull(caseData);
+            assertEquals(1, caseData.size());
+            assertEquals("main street 10, NYC", caseData.get("contactInfo"));
+
+            // mary cannot see any data yet
+            identityProvider.setName("mary");
+            cInstance = caseService.getCaseInstance(caseId, true, false, false, false);
+            assertNotNull(cInstance);
+            caseData = cInstance.getCaseFile().getData();
+            assertNotNull(caseData);
+            assertEquals(0, caseData.size());
+
+            // system user can see all data
+            identityProvider.setName(AuthorizationManager.UNKNOWN_USER);
+            cInstance = caseService.getCaseInstance(caseId, true, false, false, false);
+            assertNotNull(cInstance);
+            caseData = cInstance.getCaseFile().getData();
+            assertNotNull(caseData);
+            assertEquals(1, caseData.size());
+
+            // add data which are restricted to john and mary
+            caseService.addDataToCaseFile(caseId, "request", "does it actually work?");
+            // add data which are restricted to mary
+            caseService.addDataToCaseFile(caseId, "reply", "oh yes, it does!");
+
+            // system user can see all data
+            cInstance = caseService.getCaseInstance(caseId, true, false, false, false);
+            assertNotNull(cInstance);
+            caseData = cInstance.getCaseFile().getData();
+            assertNotNull(caseData);
+            assertEquals(3, caseData.size());
+            assertEquals("main street 10, NYC", caseData.get("contactInfo"));
+            assertEquals("does it actually work?", caseData.get("request"));
+            assertEquals("oh yes, it does!", caseData.get("reply"));
+
+            identityProvider.setName("john");
+            cInstance = caseService.getCaseInstance(caseId, true, false, false, false);
+            assertNotNull(cInstance);
+            caseData = cInstance.getCaseFile().getData();
+            assertNotNull(caseData);
+            assertEquals(2, caseData.size());
+            assertEquals("main street 10, NYC", caseData.get("contactInfo"));
+            assertEquals("does it actually work?", caseData.get("request"));
+
+            identityProvider.setName("mary");
+            cInstance = caseService.getCaseInstance(caseId, true, false, false, false);
+            assertNotNull(cInstance);
+            caseData = cInstance.getCaseFile().getData();
+            assertNotNull(caseData);
+            assertEquals(2, caseData.size());
+            assertEquals("does it actually work?", caseData.get("request"));
+            assertEquals("oh yes, it does!", caseData.get("reply"));
+
+        } catch (Exception e) {
+            logger.error("Unexpected error {}", e.getMessage(), e);
+            fail("Unexpected exception " + e.getMessage());
+        } finally {
+            if (caseId != null) {
+                identityProvider.setName("john");
+                caseService.cancelCase(caseId);
+            }
+        }
+    }
+
+    @Test
+    public void testSystemUserCaseCommentsAuthorization() {
+        Map<String, OrganizationalEntity> roleAssignments = new HashMap<>();
+        roleAssignments.put("owner", new UserImpl("john"));
+        roleAssignments.put("participant", new UserImpl("mary"));
+
+        Map<String, Object> data = new HashMap<>();
+        CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), USER_TASK_STAGE_AUTO_START_CASE_P_ID, data, roleAssignments);
+
+        String caseId = caseService.startCase(deploymentUnit.getIdentifier(), USER_TASK_STAGE_AUTO_START_CASE_P_ID, caseFile);
+        assertNotNull(caseId);
+        assertEquals(FIRST_CASE_ID, caseId);
+        try {
+            CaseInstance cInstance = caseService.getCaseInstance(caseId);
+            assertNotNull(cInstance);
+            assertEquals(FIRST_CASE_ID, cInstance.getCaseId());
+            assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
+
+            Collection<CommentInstance> caseComments = caseService.getCaseComments(FIRST_CASE_ID, new QueryContext());
+            assertNotNull(caseComments);
+            assertEquals(0, caseComments.size());
+
+            caseService.addCaseComment(FIRST_CASE_ID, "poul", "just a tiny comment", "owner");
+
+            caseComments = caseService.getCaseComments(FIRST_CASE_ID, new QueryContext());
+            assertNotNull(caseComments);
+            assertEquals(1, caseComments.size());
+            CommentInstance comment = caseComments.iterator().next();
+            assertComment(comment, "poul", "just a tiny comment");
+
+            // mary is not the owner so should not see the comment that is only for role owner role
+            identityProvider.setName("mary");
+            caseComments = caseService.getCaseComments(FIRST_CASE_ID, new QueryContext());
+            assertNotNull(caseComments);
+            assertEquals(0, caseComments.size());
+
+            try {
+                caseService.updateCaseComment(FIRST_CASE_ID, comment.getId(), comment.getAuthor(), "Updated " + comment.getComment(), "participant", "owner");
+                fail("mary should not be able to update comment that she has no access to");
+            } catch (SecurityException e) {
+                // mary is not allowed to update comments that she has no access to
+                assertTrue(e.getMessage().contains("User mary does not have access to comment"));
+            }
+
+            // System user can do anything with comments
+            identityProvider.setName(AuthorizationManager.UNKNOWN_USER);
+            caseComments = caseService.getCaseComments(FIRST_CASE_ID, new QueryContext());
+            assertNotNull(caseComments);
+            assertEquals(1, caseComments.size());
+            comment = caseComments.iterator().next();
+            assertComment(comment, "poul", "just a tiny comment");
+
+            caseService.updateCaseComment(FIRST_CASE_ID, comment.getId(), comment.getAuthor(), "System User unknown Updated " + comment.getComment(), "owner");
+
+            caseComments = caseService.getCaseComments(FIRST_CASE_ID, new QueryContext());
+            assertNotNull(caseComments);
+            assertEquals(1, caseComments.size());
+            comment = caseComments.iterator().next();
+            assertComment(comment, "poul", "System User unknown Updated just a tiny comment");
+
+            // john can see the updated comment
+            identityProvider.setName("john");
+            caseComments = caseService.getCaseComments(FIRST_CASE_ID, new QueryContext());
+            assertNotNull(caseComments);
+            assertEquals(1, caseComments.size());
+            comment = caseComments.iterator().next();
+            assertComment(comment, "poul", "System User unknown Updated just a tiny comment");
+
+            // mary still cannot see anything
+            identityProvider.setName("mary");
+            caseComments = caseService.getCaseComments(FIRST_CASE_ID, new QueryContext());
+            assertNotNull(caseComments);
+            assertEquals(0, caseComments.size());
+
+            try {
+                caseService.removeCaseComment(FIRST_CASE_ID, comment.getId());
+                fail("mary should not be able to remove comment that she has no access to");
+            } catch (SecurityException e) {
+                // mary is not allowed to removed comments that she has no access to
+                assertTrue(e.getMessage().contains("User mary does not have access to comment"));
+            }
+
+            identityProvider.setName("john");
+            caseComments = caseService.getCaseComments(FIRST_CASE_ID, CommentSortBy.Author, new QueryContext());
+            assertEquals(1, caseComments.size());
+
+            identityProvider.setName(AuthorizationManager.UNKNOWN_USER);
+            caseService.removeCaseComment(FIRST_CASE_ID, comment.getId());
+
+            caseComments = caseService.getCaseComments(FIRST_CASE_ID, CommentSortBy.Author, new QueryContext());
+            assertEquals(0, caseComments.size());
+
+            identityProvider.setName("john");
+            caseComments = caseService.getCaseComments(FIRST_CASE_ID, CommentSortBy.Author, new QueryContext());
+            assertEquals(0, caseComments.size());
+
+        } catch (Exception e) {
+            logger.error("Unexpected error {}", e.getMessage(), e);
+            fail("Unexpected exception " + e.getMessage());
+        } finally {
+            if (caseId != null) {
+                identityProvider.setName("john");
+                caseService.cancelCase(caseId);
+            }
+        }
+    }
 }

@@ -69,6 +69,12 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
         if (!isEnabled()) {
             return;
         }
+
+        if (loggedInAsSystemUser()) {
+            logger.debug("Logged in as system user 'unknown'. Skipping authorization check.");
+            return;
+        }
+
         logger.debug("Checking authorization to case {} for user {}", caseId, identityProvider.getName());
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("caseId", caseId);
@@ -79,6 +85,11 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
     
     @Override
     public void checkOperationAuthorization(String caseId, ProtectedOperation operation) throws SecurityException {
+        if (loggedInAsSystemUser()) {
+            logger.debug("Logged in as system user 'unknown'. Skipping operation authorization check.");
+            return;
+        }
+
         List<String> rolesForOperation = operationAuthorization.get(operation);
         
         if (rolesForOperation == null || rolesForOperation.isEmpty()) {
@@ -160,6 +171,11 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 
     @Override
     public Map<String, Object> filterByDataAuthorization(String caseId, CaseFileInstance caseFileInstance, Map<String, Object> data) {
+        if (loggedInAsSystemUser()) {
+            logger.debug("Logged in as system user 'unknown'. Returning all data.");
+            return data;
+        }
+
         if (data == null || data.isEmpty()) {
             logger.debug("No data to be filtered");
             return data;
@@ -194,6 +210,11 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 
     @Override
     public void checkDataAuthorization(String caseId, CaseFileInstance caseFileInstance, Collection<String> dataNames) {
+        if (loggedInAsSystemUser()) {
+            logger.debug("Logged in as system user 'unknown'. Skipping data authorization check.");
+            return;
+        }
+
         if (dataNames == null || dataNames.isEmpty()) {
             logger.debug("No data to be checked");
             return;
@@ -228,6 +249,11 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
     
     @Override
     public List<CommentInstance> filterByCommentAuthorization(String caseId, CaseFileInstance caseFileInstance, List<CommentInstance> comments) {
+        if (loggedInAsSystemUser()) {
+            logger.debug("Logged in as system user 'unknown'. Returning all comments.");
+            return comments;
+        }
+
         if (comments == null || comments.isEmpty()) {
             logger.debug("No comments to be filtered");
             return comments;
@@ -261,6 +287,11 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
     
     @Override
     public void checkCommentAuthorization(String caseId, CaseFileInstance caseFileInstance, CommentInstance commentInstance) {
+        if (loggedInAsSystemUser()) {
+            logger.debug("Logged in as system user 'unknown'. Skipping comment authorization check.");
+            return;
+        }
+
         CommentInstanceImpl comment = ((CommentInstanceImpl) commentInstance);
         if (comment.getRestrictedTo() == null || comment.getRestrictedTo().isEmpty()) {
             return;
@@ -288,5 +319,9 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
         callerRoles.add(PUBLIC_GROUP);
         
         return callerRoles;
+    }
+
+    protected boolean loggedInAsSystemUser() {
+        return UNKNOWN_USER.equals(identityProvider.getName());
     }
 }
