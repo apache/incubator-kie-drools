@@ -19,6 +19,7 @@ package org.optaplanner.core.config.solver;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ThreadFactory;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
@@ -46,13 +47,18 @@ import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.solver.termination.BasicPlumbingTermination;
 import org.optaplanner.core.impl.solver.termination.Termination;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.apache.commons.lang3.ObjectUtils.*;
 
 @XStreamAlias("solver")
 public class SolverConfig extends AbstractConfig<SolverConfig> {
 
+    public static final String MOVE_THREAD_COUNT_AUTO = "AUTO";
     protected static final long DEFAULT_RANDOM_SEED = 0L;
+
+    private static final Logger logger = LoggerFactory.getLogger(SolverConfig.class);
 
     // Warning: all fields are null (and not defaulted) because they can be inherited
     // and also because the input config file should match the output config file
@@ -62,6 +68,8 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
     protected RandomType randomType = null;
     protected Long randomSeed = null;
     protected Class<? extends RandomFactory> randomFactoryClass = null;
+    protected String moveThreadCount = null;
+    protected Class<? extends ThreadFactory> threadFactoryClass = null;
 
     @XStreamAlias("scanAnnotatedClasses")
     protected ScanAnnotatedClassesConfig scanAnnotatedClassesConfig = null;
@@ -130,6 +138,22 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
 
     public void setRandomFactoryClass(Class<? extends RandomFactory> randomFactoryClass) {
         this.randomFactoryClass = randomFactoryClass;
+    }
+
+    public String getMoveThreadCount() {
+        return moveThreadCount;
+    }
+
+    public void setMoveThreadCount(String moveThreadCount) {
+        this.moveThreadCount = moveThreadCount;
+    }
+
+    public Class<? extends ThreadFactory> getThreadFactoryClass() {
+        return threadFactoryClass;
+    }
+
+    public void setThreadFactoryClass(Class<? extends ThreadFactory> threadFactoryClass) {
+        this.threadFactoryClass = threadFactoryClass;
     }
 
     public ScanAnnotatedClassesConfig getScanAnnotatedClassesConfig() {
@@ -213,6 +237,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
         boolean daemon_ = defaultIfNull(daemon, false);
 
         RandomFactory randomFactory = buildRandomFactory(environmentMode_);
+        Integer moveThreadCount_ = resolveMoveThreadCount();
         SolutionDescriptor<Solution_> solutionDescriptor = buildSolutionDescriptor(configContext);
         ScoreDirectorFactoryConfig scoreDirectorFactoryConfig_
                 = scoreDirectorFactoryConfig == null ? new ScoreDirectorFactoryConfig()
@@ -223,7 +248,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
         DefaultSolverScope<Solution_> solverScope = new DefaultSolverScope<>();
         solverScope.setScoreDirector(scoreDirectorFactory.buildScoreDirector(true, constraintMatchEnabledPreference));
 
-        HeuristicConfigPolicy configPolicy = new HeuristicConfigPolicy(environmentMode_, scoreDirectorFactory);
+        HeuristicConfigPolicy configPolicy = new HeuristicConfigPolicy(environmentMode_, moveThreadCount_, threadFactoryClass, scoreDirectorFactory);
         TerminationConfig terminationConfig_ = terminationConfig == null ? new TerminationConfig()
                 : terminationConfig;
         BasicPlumbingTermination basicPlumbingTermination = new BasicPlumbingTermination(daemon_);
@@ -231,9 +256,8 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
         BestSolutionRecaller<Solution_> bestSolutionRecaller = new BestSolutionRecallerConfig()
                 .buildBestSolutionRecaller(environmentMode_);
         List<Phase<Solution_>> phaseList = buildPhaseList(configPolicy, bestSolutionRecaller, termination);
-        DefaultSolver<Solution_> solver = new DefaultSolver<>(environmentMode_, randomFactory,
+        return new DefaultSolver<>(environmentMode_, randomFactory,
                 basicPlumbingTermination, termination, bestSolutionRecaller, phaseList, solverScope);
-        return solver;
     }
 
     protected RandomFactory buildRandomFactory(EnvironmentMode environmentMode_) {
@@ -255,6 +279,32 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
             randomFactory = new DefaultRandomFactory(randomType_, randomSeed_);
         }
         return randomFactory;
+    }
+
+    protected Integer resolveMoveThreadCount() {
+        int availableProcessorCount = Runtime.getRuntime().availableProcessors();
+        Integer resolvedMoveThreadCount;
+        if (moveThreadCount == null) {
+            return null;
+        } else if (moveThreadCount.equals(MOVE_THREAD_COUNT_AUTO)) {
+            // Leave one for the Operating System and 1 for the solver thread, take the rest
+            resolvedMoveThreadCount = Math.max(1, availableProcessorCount - 2);
+        } else {
+            resolvedMoveThreadCount = ConfigUtils.resolveThreadPoolSizeScript(
+                    "moveThreadCount", moveThreadCount, MOVE_THREAD_COUNT_AUTO);
+        }
+        if (resolvedMoveThreadCount < 1) {
+            throw new IllegalArgumentException("The moveThreadCount (" + moveThreadCount
+                    + ") resulted in a resolvedMoveThreadCount (" + resolvedMoveThreadCount
+                    + ") that is lower than 1.");
+        }
+        if (resolvedMoveThreadCount > availableProcessorCount) {
+            logger.warn("Because the resolvedMoveThreadCount ({}) is higher "
+                    + "than the availableProcessorCount ({}), it is reduced to "
+                    + "availableProcessorCount.", resolvedMoveThreadCount, availableProcessorCount);
+            resolvedMoveThreadCount = availableProcessorCount;
+        }
+        return resolvedMoveThreadCount;
     }
 
     public <Solution_> SolutionDescriptor<Solution_> buildSolutionDescriptor(SolverConfigContext configContext) {
@@ -310,6 +360,10 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
         randomSeed = ConfigUtils.inheritOverwritableProperty(randomSeed, inheritedConfig.getRandomSeed());
         randomFactoryClass = ConfigUtils.inheritOverwritableProperty(
                 randomFactoryClass, inheritedConfig.getRandomFactoryClass());
+        moveThreadCount = ConfigUtils.inheritOverwritableProperty(moveThreadCount,
+                inheritedConfig.getMoveThreadCount());
+        threadFactoryClass = ConfigUtils.inheritOverwritableProperty(threadFactoryClass,
+                inheritedConfig.getThreadFactoryClass());
         scanAnnotatedClassesConfig = ConfigUtils.inheritConfig(scanAnnotatedClassesConfig, inheritedConfig.getScanAnnotatedClassesConfig());
         solutionClass = ConfigUtils.inheritOverwritableProperty(solutionClass, inheritedConfig.getSolutionClass());
         entityClassList = ConfigUtils.inheritMergeableListProperty(

@@ -30,6 +30,7 @@ import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
 import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
+import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.config.util.KeyAsElementMapConverter;
 import org.optaplanner.core.impl.partitionedsearch.DefaultPartitionedSearchPhase;
@@ -39,7 +40,6 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.ChildThreadType;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
-import org.optaplanner.core.impl.solver.thread.DefaultSolverThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,6 +58,8 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
     @XStreamConverter(KeyAsElementMapConverter.class)
     protected Map<String, String> solutionPartitionerCustomProperties = null;
 
+    /** @deprecated Use {@link SolverConfig#threadFactoryClass} instead.*/
+    @Deprecated // TODO remove in 8.0
     protected Class<? extends ThreadFactory> threadFactoryClass = null;
     protected String runnablePartThreadLimit = null;
 
@@ -84,10 +86,18 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
         this.solutionPartitionerCustomProperties = solutionPartitionerCustomProperties;
     }
 
+    /**
+     * @deprecated Use {@link SolverConfig#getThreadFactoryClass} instead
+     */
+    @Deprecated
     public Class<? extends ThreadFactory> getThreadFactoryClass() {
         return threadFactoryClass;
     }
 
+    /**
+     * @deprecated Use {@link SolverConfig#setThreadFactoryClass} instead.
+     */
+    @Deprecated
     public void setThreadFactoryClass(Class<? extends ThreadFactory> threadFactoryClass) {
         this.threadFactoryClass = threadFactoryClass;
     }
@@ -136,10 +146,16 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
     public PartitionedSearchPhase buildPhase(int phaseIndex, HeuristicConfigPolicy solverConfigPolicy,
             BestSolutionRecaller bestSolutionRecaller, Termination solverTermination) {
         HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
+        ThreadFactory threadFactory;
+        if (threadFactoryClass != null) {
+            threadFactory = ConfigUtils.newInstance(this, "threadFactoryClass", threadFactoryClass);
+        } else {
+            threadFactory = solverConfigPolicy.buildThreadFactory(ChildThreadType.PART_THREAD);
+        }
         DefaultPartitionedSearchPhase phase = new DefaultPartitionedSearchPhase(
                 phaseIndex, solverConfigPolicy.getLogIndentation(), bestSolutionRecaller,
                 buildPhaseTermination(phaseConfigPolicy, solverTermination),
-                buildSolutionPartitioner(), buildThreadFactory(), resolvedActiveThreadCount());
+                buildSolutionPartitioner(), threadFactory, resolvedActiveThreadCount());
         List<PhaseConfig> phaseConfigList_ = phaseConfigList;
         if (ConfigUtils.isEmptyCollection(phaseConfigList_)) {
             phaseConfigList_ = Arrays.asList(
@@ -172,16 +188,8 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
                         + "), then there can be no solutionPartitionerCustomProperties ("
                         + solutionPartitionerCustomProperties + ") either.");
             }
-            // TODO
+            // TODO Implement generic partitioner
             throw new UnsupportedOperationException();
-        }
-    }
-
-    private ThreadFactory buildThreadFactory() {
-        if (threadFactoryClass != null) {
-            return ConfigUtils.newInstance(this, "threadFactoryClass", threadFactoryClass);
-        } else {
-            return new DefaultSolverThreadFactory("PartThread");
         }
     }
 

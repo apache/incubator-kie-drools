@@ -18,10 +18,12 @@ package org.optaplanner.core.config.heuristic.policy;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ThreadFactory;
 
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySorterManner;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSorterManner;
 import org.optaplanner.core.config.solver.EnvironmentMode;
+import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.mimic.EntityMimicRecorder;
@@ -30,11 +32,14 @@ import org.optaplanner.core.impl.heuristic.selector.value.mimic.ValueMimicRecord
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.solver.ChildThreadType;
+import org.optaplanner.core.impl.solver.thread.DefaultSolverThreadFactory;
 
 public class HeuristicConfigPolicy {
 
     private final EnvironmentMode environmentMode;
     private final String logIndentation;
+    private final Integer moveThreadCount;
+    private final Class<? extends ThreadFactory> threadFactoryClass;
     private final InnerScoreDirectorFactory scoreDirectorFactory;
 
     private EntitySorterManner entitySorterManner = EntitySorterManner.NONE;
@@ -47,13 +52,17 @@ public class HeuristicConfigPolicy {
     private Map<String, ValueMimicRecorder> valueMimicRecorderMap
             = new HashMap<>();
 
-    public HeuristicConfigPolicy(EnvironmentMode environmentMode, InnerScoreDirectorFactory scoreDirectorFactory) {
-        this(environmentMode, "", scoreDirectorFactory);
+    public HeuristicConfigPolicy(EnvironmentMode environmentMode, Integer moveThreadCount,
+            Class<? extends ThreadFactory> threadFactoryClass, InnerScoreDirectorFactory scoreDirectorFactory) {
+        this(environmentMode, "", moveThreadCount, threadFactoryClass, scoreDirectorFactory);
     }
 
-    public HeuristicConfigPolicy(EnvironmentMode environmentMode, String logIndentation, InnerScoreDirectorFactory scoreDirectorFactory) {
+    public HeuristicConfigPolicy(EnvironmentMode environmentMode, String logIndentation, Integer moveThreadCount,
+            Class<? extends ThreadFactory> threadFactoryClass, InnerScoreDirectorFactory scoreDirectorFactory) {
         this.environmentMode = environmentMode;
         this.logIndentation = logIndentation;
+        this.moveThreadCount = moveThreadCount;
+        this.threadFactoryClass = threadFactoryClass;
         this.scoreDirectorFactory = scoreDirectorFactory;
     }
 
@@ -63,6 +72,14 @@ public class HeuristicConfigPolicy {
 
     public String getLogIndentation() {
         return logIndentation;
+    }
+
+    public Integer getMoveThreadCount() {
+        return moveThreadCount;
+    }
+
+    public Class<? extends ThreadFactory> getThreadFactoryClass() {
+        return threadFactoryClass;
     }
 
     public SolutionDescriptor getSolutionDescriptor() {
@@ -130,11 +147,13 @@ public class HeuristicConfigPolicy {
     // ************************************************************************
 
     public HeuristicConfigPolicy createPhaseConfigPolicy() {
-        return new HeuristicConfigPolicy(environmentMode, logIndentation, scoreDirectorFactory);
+        return new HeuristicConfigPolicy(environmentMode, logIndentation, moveThreadCount,
+                threadFactoryClass, scoreDirectorFactory);
     }
 
     public HeuristicConfigPolicy createChildThreadConfigPolicy(ChildThreadType childThreadType) {
-        return new HeuristicConfigPolicy(environmentMode, logIndentation + "        ", scoreDirectorFactory);
+        return new HeuristicConfigPolicy(environmentMode, logIndentation + "        ", moveThreadCount,
+                threadFactoryClass, scoreDirectorFactory);
     }
 
     // ************************************************************************
@@ -163,6 +182,25 @@ public class HeuristicConfigPolicy {
 
     public ValueMimicRecorder getValueMimicRecorder(String id) {
         return valueMimicRecorderMap.get(id);
+    }
+
+    public ThreadFactory buildThreadFactory(ChildThreadType childThreadType) {
+        if (threadFactoryClass != null) {
+            return ConfigUtils.newInstance(this, "threadFactoryClass", threadFactoryClass);
+        } else {
+            String threadPrefix;
+            switch (childThreadType) {
+                case MOVE_THREAD:
+                    threadPrefix = "MoveThread";
+                    break;
+                case PART_THREAD:
+                    threadPrefix = "PartThread";
+                    break;
+                default:
+                    throw new IllegalStateException("Unsupported childThreadType (" + childThreadType + ").");
+            }
+            return new DefaultSolverThreadFactory(threadPrefix);
+        }
     }
 
     @Override

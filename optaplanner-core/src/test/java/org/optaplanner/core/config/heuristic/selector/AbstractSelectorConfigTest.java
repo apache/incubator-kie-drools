@@ -35,7 +35,7 @@ public abstract class AbstractSelectorConfigTest {
         InnerScoreDirectorFactory scoreDirectorFactory = mock(InnerScoreDirectorFactory.class);
         when(scoreDirectorFactory.getSolutionDescriptor()).thenReturn(solutionDescriptor);
         when(scoreDirectorFactory.getScoreDefinition()).thenReturn(new SimpleScoreDefinition());
-        return new HeuristicConfigPolicy(EnvironmentMode.REPRODUCIBLE, scoreDirectorFactory);
+        return new HeuristicConfigPolicy(EnvironmentMode.REPRODUCIBLE, null, null, scoreDirectorFactory);
     }
 
 }
