@@ -25,6 +25,7 @@ import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -714,7 +715,7 @@ public class KnowledgeBaseImpl
             clonedPkgs.add(((InternalKnowledgePackage)newPkg).deepCloneIfAlreadyInUse(rootClassLoader));
         }
 
-        clonedPkgs.sort( (p1, p2) -> p1.getRules().isEmpty() || p2.getRules().isEmpty() ? 0 : p1.getName().compareTo( p2.getName() ) );
+        clonedPkgs.sort(Comparator.comparing( (InternalKnowledgePackage p) -> p.getRules().size() ).reversed().thenComparing( InternalKnowledgePackage::getName ));
         enqueueModification( () -> internalAddPackages( clonedPkgs ) );
     }
     
