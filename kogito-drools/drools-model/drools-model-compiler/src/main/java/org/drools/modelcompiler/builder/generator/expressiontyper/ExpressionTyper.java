@@ -313,7 +313,21 @@ public class ExpressionTyper {
         } else if (firstNode instanceof FieldAccessExpr && ((FieldAccessExpr) firstNode).getScope() instanceof ThisExpr) {
             result = of(fieldAccessExpr((FieldAccessExpr) firstNode, originalTypeCursor));
         } else if (firstNode instanceof MethodCallExpr) {
-            result = of(methodCallExpr((MethodCallExpr) firstNode, originalTypeCursor, new NameExpr( "_this" )));
+            Optional<DeclarationSpec> scopeDecl = ((MethodCallExpr) firstNode).getScope()
+                    .flatMap( scope -> ruleContext.getDeclarationById( scope.toString() ) );
+
+            Expression scope;
+            Class<?> type;
+            if (scopeDecl.isPresent() && !scopeDecl.get().getBindingId().equals( bindingId )) {
+                type = scopeDecl.get().getDeclarationClass();
+                scope = new NameExpr( scopeDecl.get().getBindingId() );
+                context.addUsedDeclarations( scopeDecl.get().getBindingId() );
+            } else {
+                type = originalTypeCursor;
+                scope = new NameExpr( "_this" );
+            }
+
+            result = of(methodCallExpr((MethodCallExpr) firstNode, type, scope));
         } else if (firstNode instanceof StringLiteralExpr) {
             result = of(stringLiteralExpr((StringLiteralExpr) firstNode));
         } else if (firstNode instanceof EnclosedExpr) {

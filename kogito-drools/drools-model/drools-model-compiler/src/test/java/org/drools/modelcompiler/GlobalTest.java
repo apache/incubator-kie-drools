@@ -16,6 +16,8 @@
 
 package org.drools.modelcompiler;
 
+import java.lang.reflect.Method;
+
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
 import org.junit.Test;
@@ -92,6 +94,47 @@ public class GlobalTest extends BaseModelTest {
         }
         public int length(String s) {
             return s.length();
+        }
+
+        public boolean arrayContainsInstanceWithParameters(Object[] array, Object[] parms) throws Exception {
+            if (array.length == 0) {
+                return false;
+            }
+
+            for (Object o : array) {
+                boolean fullmatch = true;
+
+                for (int i = 0; fullmatch && i < parms.length; i++) {
+                    if (parms[i] instanceof String && parms[i].toString().startsWith("get")) {
+                        String methodName = parms[i].toString();
+                        if (i + 1 >= parms.length) {
+                            throw new RuntimeException("The parameter list is shorter than expected. Should be pairs of accessor method names and expected values.");
+                        }
+
+                        ++i;
+                        Class<?> c = o.getClass();
+                        Method m = c.getMethod(methodName, (Class[])null);
+                        if (m == null) {
+                            throw new RuntimeException("The method " + methodName + " does not exist on class " + o.getClass().getName() + ".");
+                        }
+
+                        Object result = m.invoke(o, (Object[])null);
+                        if (result == null && parms[i] != null) {
+                            fullmatch = false;
+                        } else if (result != null && parms[i] == null) {
+                            fullmatch = false;
+                        } else if (!result.equals(parms[i])) {
+                            fullmatch = false;
+                        }
+                    }
+                }
+
+                if (fullmatch) {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 
@@ -186,5 +229,97 @@ public class GlobalTest extends BaseModelTest {
         ksession.fireAllRules();
 
         assertEquals( "Mark is 37", result.getValue() );
+    }
+
+    public static class Family {
+        public Object getPersons() {
+            return new Object[]{new Person("Mario", 44), new Person("Mark", 40)};
+        }
+    }
+
+    @Test
+    public void testComplexGlobalFunction() {
+        String str =
+                "package org.mypkg;" +
+                        "import " + Family.class.getCanonicalName() + ";" +
+                        "import " + Person.class.getCanonicalName() + ";" +
+                        "import " + Functions.class.getCanonicalName() + ";" +
+                        "global Functions functions;" +
+                        "rule X when\n" +
+                        "  $f : Family(functions.arrayContainsInstanceWithParameters((Object[])$f.getPersons(),\n" +
+                        "              new Object[]{\"getAge\", 40}))\n" +
+                        "then\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+        ksession.setGlobal("functions", new Functions());
+        ksession.insert(new Family());
+
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testComplexGlobalFunctionWithShort() {
+        String str =
+                "package org.mypkg;" +
+                        "import " + Family.class.getCanonicalName() + ";" +
+                        "import " + Person.class.getCanonicalName() + ";" +
+                        "import " + Functions.class.getCanonicalName() + ";" +
+                        "global Functions functions;" +
+                        "rule X when\n" +
+                        "  $f : Family( eval( true == functions.arrayContainsInstanceWithParameters((Object[])$f.getPersons(),\n" +
+                        "              new Object[]{\"getAgeAsShort\", (short)40}) ) )\n" +
+                        "then\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+        ksession.setGlobal("functions", new Functions());
+        ksession.insert(new Family());
+
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testComplexGlobalFunctionWithShortEvalOnJoin() {
+        String str =
+                "package org.mypkg;" +
+                        "import " + Family.class.getCanonicalName() + ";" +
+                        "import " + Person.class.getCanonicalName() + ";" +
+                        "import " + Functions.class.getCanonicalName() + ";" +
+                        "global Functions functions;" +
+                        "rule X when\n" +
+                        "  $f : Family()\n" +
+                        "  $s : String( eval( true == functions.arrayContainsInstanceWithParameters((Object[])$f.getPersons(),\n" +
+                        "              new Object[]{\"getAgeAsShort\", (short)40}) ) )\n" +
+                        "then\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+        ksession.setGlobal("functions", new Functions());
+        ksession.insert(new Family());
+        ksession.insert("test");
+
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testComplexGlobalFunctionWithShortNotFiring() {
+        String str =
+                "package org.mypkg;" +
+                        "import " + Family.class.getCanonicalName() + ";" +
+                        "import " + Person.class.getCanonicalName() + ";" +
+                        "import " + Functions.class.getCanonicalName() + ";" +
+                        "global Functions functions;" +
+                        "rule X when\n" +
+                        "  $f : Family( eval( true == functions.arrayContainsInstanceWithParameters((Object[])$f.getPersons(),\n" +
+                        "              new Object[]{\"getAgeAsShort\", (short)39}) ) )\n" +
+                        "then\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+        ksession.setGlobal("functions", new Functions());
+        ksession.insert(new Family());
+
+        assertEquals( 0, ksession.fireAllRules() );
     }
 }
