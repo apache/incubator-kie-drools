@@ -17,14 +17,7 @@
 
 package org.drools.core.process.instance;
 
-import org.drools.core.process.instance.impl.UntypedWorkItemHandlerImpl;
-
-public interface TypedWorkItemHandler<W extends TypedWorkItem<?, ?>>
+public interface TypedWorkItemHandler<W extends org.kie.api.runtime.process.TypedWorkItem<?, ?>>
         extends org.kie.api.runtime.process.TypedWorkItemHandler<W> {
 
-    W createTypedWorkItem();
-
-    default WorkItemHandler asWorkItemHandler() {
-        return new UntypedWorkItemHandlerImpl<>(this);
-    }
 }

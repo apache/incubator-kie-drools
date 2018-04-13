@@ -30,6 +30,10 @@ public class TypedWorkItemImpl<P, R> implements TypedWorkItem<P, R> {
     private P parameters;
     private R results;
 
+    public TypedWorkItemImpl(P parameters) {
+        this.parameters = parameters;
+    }
+
     public TypedWorkItemImpl(P parameters, R results) {
         this.parameters = parameters;
         this.results = results;

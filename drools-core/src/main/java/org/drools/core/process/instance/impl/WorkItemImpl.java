@@ -24,12 +24,11 @@ import org.drools.core.process.instance.WorkItem;
 
 public class WorkItemImpl extends TypedWorkItemImpl<Map<String, Object>, Map<String, Object>> implements WorkItem {
 
-    private Map<String, Object> parameters = new HashMap<String, Object>();
-    private Map<String, Object> results = new HashMap<String, Object>();
+    private Map<String, Object> parameters;
+    private Map<String, Object> results;
 
-    @Override
-    public org.kie.api.runtime.process.WorkItem asWorkItem() {
-        return this;
+    public WorkItemImpl() {
+        super(new HashMap<>(), new HashMap<>());
     }
 
     public void setParameters(Map<String, Object> parameters) {
