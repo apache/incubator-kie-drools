@@ -26,5 +26,5 @@ import java.lang.annotation.Documented;
 public @interface WidParameter {
     String name() default "";
     String type() default "StringDataType";
-
+    boolean required() default false;
 }

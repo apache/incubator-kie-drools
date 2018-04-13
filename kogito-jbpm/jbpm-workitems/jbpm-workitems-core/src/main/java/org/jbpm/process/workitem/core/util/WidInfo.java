@@ -64,7 +64,8 @@ public class WidInfo {
                 for (WidParameter widParam : wid.parameters()) {
                     this.parameters.put(widParam.name(),
                                         new InternalWidParamsAndResults(widParam.name(),
-                                                                        widParam.type()));
+                                                                        widParam.type(),
+                                                                        widParam.required()));
                 }
             }
 
@@ -80,7 +81,8 @@ public class WidInfo {
                 for (WidResult widResult : wid.results()) {
                     this.results.put(widResult.name(),
                                      new InternalWidParamsAndResults(widResult.name(),
-                                                                     widResult.type()));
+                                                                     widResult.type(),
+                                                                     false));
                 }
             }
 
@@ -105,10 +107,10 @@ public class WidInfo {
     }
 
     private String removeType(String value) {
-        if(value != null) {
-            if(value.startsWith("mvel: ")) {
+        if (value != null) {
+            if (value.startsWith("mvel: ")) {
                 return value.substring(6);
-            } else if(value.startsWith("reflection: ")) {
+            } else if (value.startsWith("reflection: ")) {
                 return value.substring(12);
             } else {
                 return value;
@@ -122,11 +124,14 @@ public class WidInfo {
 
         private String name;
         private String type;
+        private boolean required;
 
         public InternalWidParamsAndResults(String name,
-                                           String type) {
+                                           String type,
+                                           boolean required) {
             this.name = name;
             this.type = type;
+            this.required = required;
         }
 
         public String getName() {
@@ -143,6 +148,14 @@ public class WidInfo {
 
         public void setType(String type) {
             this.type = type;
+        }
+
+        public boolean isRequired() {
+            return required;
+        }
+
+        public void setRequired(boolean required) {
+            this.required = required;
         }
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,8 +44,8 @@ public class WidProcessorTest {
                     "        displayName=\"My Test Class\", icon=\"/my/icons/myicon.png\",\n" +
                     "        defaultHandler=\"mvel: new com.sample.MyWorkItemHandler()\",\n" +
                     "        parameters={\n" +
-                    "                @WidParameter(name=\"sampleParam\"),\n" +
-                    "                @WidParameter(name=\"sampleParamTwo\")\n" +
+                    "                @WidParameter(name=\"sampleParam\", required = true),\n" +
+                    "                @WidParameter(name=\"sampleParamTwo\", required = true)\n" +
                     "        },\n" +
                     "        parameterValues={\n" +
                     "                @WidParameterValues(parameterName=\"sampleParam\", values=\"a,b,c,d,e\"),\n" +
@@ -71,8 +71,8 @@ public class WidProcessorTest {
                     "        displayName=\"My Test Class Refl\", category=\"testcategory\", icon=\"/my/icons/myicon.png\",\n" +
                     "        defaultHandler=\"reflection: new com.sample.MyWorkItemHandler()\",\n" +
                     "        parameters={\n" +
-                    "                @WidParameter(name=\"sampleParam\"),\n" +
-                    "                @WidParameter(name=\"sampleParamTwo\")\n" +
+                    "                @WidParameter(name=\"sampleParam\", required = true),\n" +
+                    "                @WidParameter(name=\"sampleParamTwo\", required = true)\n" +
                     "        },\n" +
                     "        parameterValues={\n" +
                     "                @WidParameterValues(parameterName=\"sampleParam\", values=\"a,b,c,d,e\"),\n" +
@@ -96,8 +96,8 @@ public class WidProcessorTest {
                     "\n" +
                     "@Wid(widfile = \"mywidfiletwo.wid\",\n" +
                     "        parameters = {\n" +
-                    "                @WidParameter(name = \"sampleParamThree\"),\n" +
-                    "                @WidParameter(name = \"sampleParamFour\")\n" +
+                    "                @WidParameter(name = \"sampleParamThree\", required = true),\n" +
+                    "                @WidParameter(name = \"sampleParamFour\", required = true)\n" +
                     "        },\n" +
                     "        parameterValues={\n" +
                     "                @WidParameterValues(parameterName=\"sampleParamThree\", values=\"a,b,c,d,e\"),\n" +
@@ -122,8 +122,8 @@ public class WidProcessorTest {
                     "        displayName = \"My Test Class\", category=\"testcategory\", icon = \"/my/icons/myicon.png\",\n" +
                     "        defaultHandler = \"mvel: new com.sample.MyWorkItemHandler()\",\n" +
                     "        parameters = {\n" +
-                    "                @WidParameter(name = \"sampleParam\"),\n" +
-                    "                @WidParameter(name = \"sampleParamTwo\")\n" +
+                    "                @WidParameter(name = \"sampleParam\", required = true),\n" +
+                    "                @WidParameter(name = \"sampleParamTwo\", required = true)\n" +
                     "        },\n" +
                     "        parameterValues={\n" +
                     "                @WidParameterValues(parameterName=\"sampleParam\", values=\"a,b,c,d,e\"),\n" +
@@ -173,10 +173,12 @@ public class WidProcessorTest {
                      widParameters.length);
         assertEquals("sampleParam",
                      widParameters[0].name());
+        assertTrue(widParameters[0].required());
         assertEquals("StringDataType",
                      widParameters[0].type());
         assertEquals("sampleParamTwo",
                      widParameters[1].name());
+        assertTrue(widParameters[1].required());
         assertEquals("StringDataType",
                      widParameters[1].type());
 
@@ -304,8 +306,6 @@ public class WidProcessorTest {
         // make sure version of org.jboss.myworkitem is 2.0 (overwritten)
         assertEquals("1.0",
                      widInfo.getMavenDepends().get("org.jboss.myworkitem").getVersion());
-
-
     }
 
     @Test

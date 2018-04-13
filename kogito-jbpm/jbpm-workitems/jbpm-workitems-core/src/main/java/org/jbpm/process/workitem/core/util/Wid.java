@@ -28,7 +28,7 @@ import java.lang.annotation.Documented;
  * values for the handlers workitem configuration.
  * Can be used to auto-generate the handlers workitem configuration (.wid) file.
  */
-@Retention(RetentionPolicy.CLASS)
+@Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Documented
 public @interface Wid {

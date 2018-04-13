@@ -35,6 +35,7 @@
         <include>*.wid</include>
         <include>*.html</include>
         <include>*.json</include>
+        <include>*.xml</include>
       </includes>
     </fileSet>
   </fileSets>
