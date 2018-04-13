@@ -23,6 +23,12 @@ import org.drools.core.process.instance.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
 
+/**
+ * Decorates a {@link TypedWorkItemHandler} and exposes the {@link WorkItemHandler}
+ * interface. Transparently converts between the TypedWorkItem
+ * and WorkItem
+ *
+ */
 public class UntypedWorkItemHandlerImpl<T extends TypedWorkItem<?, ?>> implements WorkItemHandler {
 
     private final TypedWorkItemHandler<T> workItemHandler;
@@ -33,11 +39,27 @@ public class UntypedWorkItemHandlerImpl<T extends TypedWorkItem<?, ?>> implement
 
     @Override
     public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
-        workItemHandler.executeWorkItem(TypedWorkItemImpl.forceTyped(workItem), manager);
+        T typedWorkItem = workItemHandler.createTypedWorkItem();
+        fillTyped(typedWorkItem, workItem);
+        workItemHandler.executeWorkItem(typedWorkItem, manager);
+        fillUntyped(workItem, typedWorkItem);
     }
 
     @Override
     public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
-        workItemHandler.abortWorkItem(TypedWorkItemImpl.forceTyped(workItem), manager);
+        T typedWorkItem = workItemHandler.createTypedWorkItem();
+        fillTyped(typedWorkItem, workItem);
+        workItemHandler.abortWorkItem(typedWorkItem, manager);
+        fillUntyped(workItem, typedWorkItem);
+    }
+
+    private void fillTyped(T typedWorkItem, WorkItem workItem) {
+        BeanMap.fillBean(typedWorkItem.getParameters(), workItem.getParameters());
+        BeanMap.fillBean(typedWorkItem.getResults(), workItem.getResults());
+    }
+
+    private void fillUntyped(WorkItem workItem, T typedWorkItem) {
+        BeanMap.fillMap(workItem.getParameters(), typedWorkItem.getParameters());
+        BeanMap.fillMap(workItem.getResults(), typedWorkItem.getResults());
     }
 }

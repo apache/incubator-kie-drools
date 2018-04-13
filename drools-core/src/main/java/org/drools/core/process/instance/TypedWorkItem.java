@@ -43,5 +43,4 @@ public interface TypedWorkItem<P, R> extends org.kie.api.runtime.process.TypedWo
 
     void setResults(R results);
 
-    org.kie.api.runtime.process.WorkItem asWorkItem();
 }

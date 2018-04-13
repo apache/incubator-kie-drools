@@ -37,6 +37,14 @@ import java.util.Set;
  */
 public class BeanMap extends AbstractMap<String, Object> {
 
+    static void fillBean(Object bean, Map<String, Object> values) {
+        new BeanMap(bean).putAll(values);
+    }
+
+    static void fillMap(Map<String, Object> values, Object bean) {
+        values.putAll(new BeanMap(bean));
+    }
+
     private final Map<String, Entry<String, Object>> accessors;
 
     BeanMap(Object bean) {

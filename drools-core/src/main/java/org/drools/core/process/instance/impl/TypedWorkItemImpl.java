@@ -17,8 +17,9 @@
 
 package org.drools.core.process.instance.impl;
 
+import java.lang.reflect.Constructor;
+
 import org.drools.core.process.instance.TypedWorkItem;
-import org.kie.api.runtime.process.WorkItem;
 
 /**
  * A TypedWorkItem implementation, using arbitrary classes
@@ -29,15 +30,23 @@ public class TypedWorkItemImpl<P, R> implements TypedWorkItem<P, R> {
     private P parameters;
     private R results;
 
-    public static <W extends TypedWorkItem<?, ?>> W forceTyped(WorkItem workItem) {
-        return (W) ((UntypedWorkItemImpl) workItem).asTypedWorkItem();
-    }
-
-    public TypedWorkItemImpl() {
-    }
-
-    public TypedWorkItemImpl(P parameters) {
+    public TypedWorkItemImpl(P parameters, R results) {
         this.parameters = parameters;
+        this.results = results;
+    }
+
+    public TypedWorkItemImpl(Class<P> parametersClass, Class<R> resultsClass) {
+        this(newInstance(parametersClass),
+             newInstance(resultsClass));
+    }
+
+    private static <T> T newInstance(Class<T> cls) {
+        try {
+            Constructor<T> ctor = cls.getConstructor();
+            return ctor.newInstance();
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Cannot instantiate " + cls, e);
+        }
     }
 
     private static final long serialVersionUID = 510l;
@@ -122,10 +131,6 @@ public class TypedWorkItemImpl<P, R> implements TypedWorkItem<P, R> {
 
     public R getResults() {
         return results;
-    }
-
-    public WorkItem asWorkItem() {
-        return new UntypedWorkItemImpl(this);
     }
 
     public String toString() {

@@ -90,7 +90,7 @@ public class DefaultWorkItemManager implements WorkItemManager,
         if (workItem != null) {
             WorkItemHandler handler = this.workItemHandlers.get(workItem.getName());
             if (handler != null) {
-                handler.abortWorkItem(workItem.asWorkItem(), this);
+                handler.abortWorkItem(workItem, this);
             } else {
                 workItems.remove(workItem.getId());
                 throw new WorkItemHandlerNotFoundException("Could not find work item handler for " + workItem.getName(),
