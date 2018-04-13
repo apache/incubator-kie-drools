@@ -28,13 +28,11 @@ import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.jbpm.services.task.audit.service.TaskJPAAuditService;
 import org.jbpm.test.JbpmAsyncJobTestCase;
 import org.jbpm.test.listener.CountDownAsyncJobListener;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.TaskService;
 import org.kie.internal.executor.api.CommandContext;
-
 import qa.tools.ikeeper.annotation.BZ;
 
 /**
@@ -111,7 +109,6 @@ public class LogCleanupCommandTest extends JbpmAsyncJobTestCase {
         Assertions.assertThat(getNodeInstanceLogSize(HELLO_WORLD_ID)).isPositive();
     }
 
-    @Ignore
     @Test(timeout=10000)
     public void skipTaskLog() throws Exception {
         KieSession kieSession = null;
@@ -166,7 +163,6 @@ public class LogCleanupCommandTest extends JbpmAsyncJobTestCase {
         // Verify presence of data
         Assertions.assertThat(getProcessLogSize(runProcess)).isPositive();
         Assertions.assertThat(getNodeInstanceLogSize(runProcess)).isPositive();
-//        Assertions.assertThat(getExecutorLogSize()).isZero(); // TBD: Should be zero but is > zero
 
         // Set to NOW if date was not provided
         if (date == null) {
@@ -188,7 +184,6 @@ public class LogCleanupCommandTest extends JbpmAsyncJobTestCase {
         Assertions.assertThat(getNodeInstanceLogSize(HELLO_WORLD_ID)).isPositive();
     }
 
-    @Ignore
     @Test(timeout=10000)
     @BZ("1190881")
     public void deleteAllLogsOlderThanNow() throws Exception {
@@ -200,7 +195,6 @@ public class LogCleanupCommandTest extends JbpmAsyncJobTestCase {
         Assertions.assertThat(getNodeInstanceLogSize(HELLO_WORLD_ID)).isZero();
     }
 
-    @Ignore
     @Test(timeout=10000)
     public void deleteAllLogsOlderThanTomorrow() throws Exception {
         CountDownAsyncJobListener countDownListener = new CountDownAsyncJobListener(1);
@@ -221,7 +215,6 @@ public class LogCleanupCommandTest extends JbpmAsyncJobTestCase {
         Assertions.assertThat(getNodeInstanceLogSize(HELLO_WORLD_ID)).isPositive();
     }
 
-    @Ignore
     @Test(timeout=10000)
     @BZ("1190881")
     public void deleteAllLogsOlderThanPeriod() throws Exception {
@@ -231,20 +224,20 @@ public class LogCleanupCommandTest extends JbpmAsyncJobTestCase {
         KieSession kieSession = createKSession(HELLO_WORLD);
         startProcess(kieSession, HELLO_WORLD_ID, 3);
 
-        countDownListener.waitTillCompleted();
-
-        startProcess(kieSession, HELLO_WORLD_ID, 2);
+        // Advance time 1+ second forward
+        Thread.sleep(1010);
 
         // Verify presence of data
-        Assertions.assertThat(getProcessLogSize(HELLO_WORLD_ID)).isEqualTo(5);
+        Assertions.assertThat(getProcessLogSize(HELLO_WORLD_ID)).isEqualTo(3);
         Assertions.assertThat(getNodeInstanceLogSize(HELLO_WORLD_ID)).isPositive();
 
         // Schedule cleanup job
-        scheduleLogCleanup(false, false, false, null, "8s", HELLO_WORLD_ID);
+        scheduleLogCleanup(false, false, false, null, "1s", HELLO_WORLD_ID);
         countDownListener.waitTillCompleted();
 
         // Verify absence of data
-        Assertions.assertThat(getProcessLogSize(HELLO_WORLD_ID)).isEqualTo(2);
+        Assertions.assertThat(getProcessLogSize(HELLO_WORLD_ID)).isZero();
+        Assertions.assertThat(getNodeInstanceLogSize(HELLO_WORLD_ID)).isZero();
     }
 
     // ------------------------ Helper Methods ------------------------
