@@ -17,6 +17,7 @@
 package org.drools.compiler.reteoo;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.drools.core.RuleBaseConfiguration;
@@ -69,8 +70,7 @@ public class MockLeftTupleSink extends LeftTupleSource
     }
 
     protected boolean doRemove(final RuleRemovalContext context,
-                               final ReteooBuilder builder,
-                               final InternalWorkingMemory[] workingMemories) {
+                               final ReteooBuilder builder) {
         return true;
     }
 

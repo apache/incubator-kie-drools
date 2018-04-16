@@ -157,7 +157,7 @@ public class ReteooBuilder
 
     public synchronized void removeRules(Collection<RuleImpl> rulesToBeRemoved) {
         // reset working memories for potential propagation
-        InternalWorkingMemory[] workingMemories = this.kBase.getWorkingMemories();
+        Collection<InternalWorkingMemory> workingMemories = this.kBase.getWorkingMemories();
 
         for (RuleImpl rule : rulesToBeRemoved) {
             if (rule.hasChildren() && !rulesToBeRemoved.containsAll( rule.getChildren() )) {
@@ -187,7 +187,7 @@ public class ReteooBuilder
         }
     }
 
-    public void removeTerminalNode(RuleRemovalContext context, TerminalNode tn, InternalWorkingMemory[] workingMemories)  {
+    public void removeTerminalNode(RuleRemovalContext context, TerminalNode tn, Collection<InternalWorkingMemory> workingMemories)  {
         AddRemoveRule.removeRule( tn, workingMemories, kBase );
 
         BaseNode node = (BaseNode) tn;
@@ -196,7 +196,7 @@ public class ReteooBuilder
         resetMasks(removeNodes((AbstractTerminalNode)tn, workingMemories, context));
     }
 
-    private Collection<BaseNode> removeNodes(AbstractTerminalNode terminalNode, InternalWorkingMemory[] wms, RuleRemovalContext context) {
+    private Collection<BaseNode> removeNodes(AbstractTerminalNode terminalNode, Collection<InternalWorkingMemory> wms, RuleRemovalContext context) {
         Map<Integer, BaseNode> stillInUse = new HashMap<Integer, BaseNode>();
         Collection<ObjectSource> alphas = new HashSet<ObjectSource>();
 
@@ -215,7 +215,7 @@ public class ReteooBuilder
      * Each time it reaches a subnetwork beta node, the current path evaluation ends, and instead the subnetwork
      * path continues.
      */
-    private void removePath( InternalWorkingMemory[] wms, RuleRemovalContext context, Map<Integer, BaseNode> stillInUse, Collection<ObjectSource> alphas, PathEndNode endNode ) {
+    private void removePath( Collection<InternalWorkingMemory> wms, RuleRemovalContext context, Map<Integer, BaseNode> stillInUse, Collection<ObjectSource> alphas, PathEndNode endNode ) {
         LeftTupleNode[] nodes = endNode.getPathNodes();
         for (int i = endNode.getPositionInPath(); i >= 0; i--) {
             BaseNode node = (BaseNode) nodes[i];
@@ -242,9 +242,9 @@ public class ReteooBuilder
         }
     }
 
-    private boolean removeLeftTupleNode(InternalWorkingMemory[] wms, RuleRemovalContext context, Map<Integer, BaseNode> stillInUse, BaseNode node) {
+    private boolean removeLeftTupleNode(Collection<InternalWorkingMemory> wms, RuleRemovalContext context, Map<Integer, BaseNode> stillInUse, BaseNode node) {
         boolean removed;
-        removed = node.remove(context, this, wms);
+        removed = node.remove(context, this);
 
         if (removed) {
             stillInUse.remove( node.getId() );
@@ -259,13 +259,13 @@ public class ReteooBuilder
         return removed;
     }
 
-    private void removeObjectSource(InternalWorkingMemory[] wms, Map<Integer, BaseNode> stillInUse, Set<Integer> removedNodes, ObjectSource node, RuleRemovalContext context ) {
+    private void removeObjectSource(Collection<InternalWorkingMemory> wms, Map<Integer, BaseNode> stillInUse, Set<Integer> removedNodes, ObjectSource node, RuleRemovalContext context ) {
         if (removedNodes.contains( node.getId() )) {
             return;
         }
         ObjectSource parent = node.getParentObjectSource();
 
-        boolean removed = node.remove( context, this, wms );
+        boolean removed = node.remove( context, this );
 
         if ( !removed ) {
             stillInUse.put( node.getId(), node );

@@ -17,6 +17,7 @@ package org.drools.core.phreak;
 
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -82,13 +83,13 @@ public class AddRemoveRule {
      * This method is called after the rule nodes have been added to the network
      * For add tuples are processed after the segments and pmems have been adjusted
      */
-    public static void addRule(TerminalNode tn, InternalWorkingMemory[] wms, InternalKnowledgeBase kBase) {
+    public static void addRule(TerminalNode tn, Collection<InternalWorkingMemory> wms, InternalKnowledgeBase kBase) {
         if (log.isTraceEnabled()) {
             log.trace("Adding Rule {}", tn.getRule().getName());
         }
 
         boolean hasProtos = kBase.hasSegmentPrototypes();
-        boolean hasWms = wms.length > 0;
+        boolean hasWms = !wms.isEmpty();
 
         if (!hasProtos && !hasWms) {
             return;
@@ -141,13 +142,13 @@ public class AddRemoveRule {
      * This method is called before the rule nodes are removed from the network.
      * For remove tuples are processed before the segments and pmems have been adjusted
      */
-    public static void removeRule(TerminalNode tn, InternalWorkingMemory[] wms, InternalKnowledgeBase kBase) {
+    public static void removeRule( TerminalNode tn, Collection<InternalWorkingMemory> wms, InternalKnowledgeBase kBase) {
         if (log.isTraceEnabled()) {
             log.trace("Removing Rule {}", tn.getRule().getName());
         }
 
         boolean hasProtos = kBase.hasSegmentPrototypes();
-        boolean hasWms = wms.length > 0;
+        boolean hasWms = !wms.isEmpty();
 
         if (!hasProtos && !hasWms) {
             return;
@@ -750,7 +751,7 @@ public class AddRemoveRule {
         lian.getObjectSource().updateSink(liaAdapter, pctx, wm);
     }
 
-    private static void insertFacts(PathEndNodes endNodes, InternalWorkingMemory[] wms) {
+    private static void insertFacts(PathEndNodes endNodes, Collection<InternalWorkingMemory> wms) {
         Set<LeftTupleNode> visited = new HashSet<LeftTupleNode>();
 
         for ( PathEndNode endNode : endNodes.subjectEndNodes ) {
@@ -764,12 +765,10 @@ public class AddRemoveRule {
                     BetaNode bn = (BetaNode) node;
 
                     if (!bn.isRightInputIsRiaNode()) {
-                        for ( int j = 0; j < wms.length; j++ ) {
-                            PropagationContextFactory pctxFactory = wms[j].getKnowledgeBase().getConfiguration().getComponentFactory().getPropagationContextFactory();
-                            final PropagationContext pctx = pctxFactory.createPropagationContext(wms[j].getNextPropagationIdCounter(), PropagationContext.Type.RULE_ADDITION, null, null, null);
-                            bn.getRightInput().updateSink(bn,
-                                                          pctx,
-                                                          wms[j]);
+                        for ( InternalWorkingMemory wm : wms ) {
+                            PropagationContextFactory pctxFactory = wm.getKnowledgeBase().getConfiguration().getComponentFactory().getPropagationContextFactory();
+                            final PropagationContext pctx = pctxFactory.createPropagationContext(wm.getNextPropagationIdCounter(), PropagationContext.Type.RULE_ADDITION, null, null, null);
+                            bn.getRightInput().updateSink(bn, pctx, wm);
                         }
                     }
                 }

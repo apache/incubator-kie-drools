@@ -138,9 +138,8 @@ public abstract class BaseNode
     public abstract void networkUpdated(UpdateContext updateContext);
 
     public boolean remove(RuleRemovalContext context,
-                       ReteooBuilder builder,
-                       InternalWorkingMemory[] workingMemories) {
-        boolean removed = doRemove( context, builder, workingMemories );
+                          ReteooBuilder builder) {
+        boolean removed = doRemove( context, builder );
         if ( !this.isInUse() && !(this instanceof EntryPointNode) ) {
             builder.getIdGenerator().releaseId( context.getRule(), this );
         }
@@ -151,8 +150,7 @@ public abstract class BaseNode
      * Removes the node from the network. Usually from the parent <code>ObjectSource</code> or <code>TupleSource</code>
      */
     protected abstract boolean doRemove(RuleRemovalContext context,
-                                        ReteooBuilder builder,
-                                        InternalWorkingMemory[] workingMemories);
+                                        ReteooBuilder builder);
 
     /**
      * Returns true in case the current node is in use (is referenced by any other node)

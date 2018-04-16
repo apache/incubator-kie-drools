@@ -105,7 +105,7 @@ public interface InternalKnowledgeBase extends KieBase {
     
     ClassFieldAccessorCache getClassFieldAccessorCache();
 
-    InternalWorkingMemory[] getWorkingMemories();
+    Collection<InternalWorkingMemory> getWorkingMemories();
 
     boolean hasSegmentPrototypes();
     void invalidateSegmentPrototype(LeftTupleNode rootNode);

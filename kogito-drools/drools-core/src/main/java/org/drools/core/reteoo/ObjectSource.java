@@ -249,8 +249,7 @@ public abstract class ObjectSource extends BaseNode
     }
     
     protected boolean doRemove(final RuleRemovalContext context,
-                            final ReteooBuilder builder,
-                            final InternalWorkingMemory[] workingMemories) {
+                            final ReteooBuilder builder) {
         if ( !isInUse() && this instanceof ObjectSink ) {
             this.source.removeObjectSink((ObjectSink) this);
             return true;
