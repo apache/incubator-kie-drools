@@ -250,6 +250,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     protected transient InternalRuleUnitExecutor ruleUnitExecutor;
 
+    private boolean stateless;
+
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -329,6 +331,11 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         if (kBase != null) {
             bindRuleBase( kBase, agenda, initInitFactHandle );
         }
+    }
+
+    public StatefulKnowledgeSessionImpl setStateless( boolean stateless ) {
+        this.stateless = stateless;
+        return this;
     }
 
     protected void init(SessionConfiguration config, Environment environment) {
@@ -718,7 +725,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             return runner.execute( command, context );
         } finally {
             endBatchExecution();
-            if (kBase.flushModifications()) {
+            if (kBase.flushModifications() && !stateless) {
                 fireAllRules();
             }
         }
@@ -1307,7 +1314,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         try {
             fireCount = this.agenda.fireAllRules( agendaFilter, fireLimit );
         } finally {
-            if (kBase.flushModifications()) {
+            if (kBase.flushModifications() && !stateless) {
                 fireCount += internalFireAllRules(agendaFilter, fireLimit);
             }
         }

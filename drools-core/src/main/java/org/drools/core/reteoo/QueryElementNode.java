@@ -19,6 +19,7 @@ package org.drools.core.reteoo;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -771,8 +772,7 @@ public class QueryElementNode extends LeftTupleSource
     }
 
     protected boolean doRemove(RuleRemovalContext context,
-                               ReteooBuilder builder,
-                               InternalWorkingMemory[] workingMemories) {
+                               ReteooBuilder builder) {
         if (!isInUse()) {
             getLeftTupleSource().removeTupleSink(this);
             return true;

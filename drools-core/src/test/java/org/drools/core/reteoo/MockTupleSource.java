@@ -16,6 +16,8 @@
 
 package org.drools.core.reteoo;
 
+import java.util.Collection;
+
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -45,8 +47,7 @@ public class MockTupleSource extends LeftTupleSource {
     }
 
     protected boolean doRemove(final RuleRemovalContext context,
-                               final ReteooBuilder builder,
-                               final InternalWorkingMemory[] workingMemories) {
+                               final ReteooBuilder builder) {
         return true;
     }
 

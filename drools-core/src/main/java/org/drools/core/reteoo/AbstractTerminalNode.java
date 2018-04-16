@@ -174,8 +174,7 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
     }
 
     protected boolean doRemove(final RuleRemovalContext context,
-                               final ReteooBuilder builder,
-                               final InternalWorkingMemory[] workingMemories) {
+                               final ReteooBuilder builder) {
         getLeftTupleSource().removeTupleSink(this);
         this.tupleSource = null;
         return true;

@@ -17,6 +17,7 @@
 package org.drools.core.reteoo.builder;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -65,8 +66,6 @@ public class BuildContext {
     private GroupElement                     subRule;
     // the rule component being processed at the moment
     private Stack<RuleComponent>             ruleComponent;
-    // working memories attached to the given rulebase
-    private InternalWorkingMemory[]          workingMemories;
     // a build stack to track nested elements
     private LinkedList<RuleConditionElement> buildstack;
     // beta constraints from the last pattern attached
@@ -109,8 +108,6 @@ public class BuildContext {
 
     public BuildContext(final InternalKnowledgeBase kBase) {
         this.kBase = kBase;
-
-        this.workingMemories = null;
 
         this.objectType = null;
         this.buildstack = null;
@@ -239,11 +236,8 @@ public class BuildContext {
      * Return the array of working memories associated with the given
      * rulebase.
      */
-    public InternalWorkingMemory[] getWorkingMemories() {
-        if (this.workingMemories == null) {
-            this.workingMemories = this.kBase.getWorkingMemories();
-        }
-        return this.workingMemories;
+    public Collection<InternalWorkingMemory> getWorkingMemories() {
+        return this.kBase.getWorkingMemories();
     }
 
     /**
