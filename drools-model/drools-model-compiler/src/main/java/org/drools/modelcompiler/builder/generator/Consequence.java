@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -29,6 +28,7 @@ import org.drools.javaparser.ast.stmt.Statement;
 import org.drools.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.javaparser.ast.type.UnknownType;
 import org.drools.model.BitMask;
+import org.drools.model.bitmask.AllSetButLastBitMask;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.consequence.DroolsImpl;
 
@@ -263,15 +263,16 @@ public class Consequence {
                 String updatedVar = ((NameExpr) argExpr).getNameAsString();
                 Class<?> updatedClass = context.getDeclarationById(updatedVar).map(DeclarationSpec::getDeclarationClass).orElseThrow(RuntimeException::new);
 
-                MethodCallExpr bitMaskCreation = new MethodCallExpr(new NameExpr(BitMask.class.getCanonicalName()), "getPatternMask");
-                bitMaskCreation.addArgument(new ClassExpr(JavaParser.parseClassOrInterfaceType(updatedClass.getCanonicalName())));
+                Set<String> modifiedProps = findModifiedProperties( methodCallExprs, updateExpr, updatedVar );
 
-                methodCallExprs.subList(0, methodCallExprs.indexOf(updateExpr)).stream()
-                        .filter(mce -> mce.getScope().isPresent() && hasScope(mce, updatedVar))
-                        .map(this::methodToProperty)
-                        .filter(Objects::nonNull)
-                        .distinct()
-                        .forEach(s -> bitMaskCreation.addArgument(new StringLiteralExpr(s)));
+                MethodCallExpr bitMaskCreation;
+                if (modifiedProps != null) {
+                    bitMaskCreation = new MethodCallExpr( new NameExpr( BitMask.class.getCanonicalName() ), "getPatternMask" );
+                    bitMaskCreation.addArgument( new ClassExpr( JavaParser.parseClassOrInterfaceType( updatedClass.getCanonicalName() ) ) );
+                    modifiedProps.forEach( s -> bitMaskCreation.addArgument( new StringLiteralExpr( s ) ) );
+                } else {
+                    bitMaskCreation = new MethodCallExpr( new NameExpr( AllSetButLastBitMask.class.getCanonicalName() ), "get" );
+                }
 
                 VariableDeclarationExpr bitMaskVar = new VariableDeclarationExpr(BITMASK_TYPE, "mask_" + updatedVar, Modifier.FINAL);
                 AssignExpr bitMaskAssign = new AssignExpr(bitMaskVar, bitMaskCreation, AssignExpr.Operator.ASSIGN);
@@ -284,10 +285,26 @@ public class Consequence {
         return requireDrools.get();
     }
 
+    private Set<String> findModifiedProperties( List<MethodCallExpr> methodCallExprs, MethodCallExpr updateExpr, String updatedVar ) {
+        Set<String> modifiedProps = new HashSet<>();
+        for (MethodCallExpr methodCall : methodCallExprs.subList(0, methodCallExprs.indexOf(updateExpr))) {
+            if (methodCall.getScope().isPresent() && hasScope(methodCall, updatedVar)) {
+                String propName = methodToProperty(methodCall);
+                if (propName != null) {
+                    modifiedProps.add(propName);
+                } else {
+                    // if we were unable to detect the property the mask has to be all set, so avoid the rest of the cycle
+                    return null;
+                }
+            }
+        }
+        return modifiedProps;
+    }
+
     private String methodToProperty(MethodCallExpr mce) {
         String propertyName = setter2property(mce.getNameAsString());
 
-        if (propertyName == null && mce.getArguments().isEmpty() && mce.getParentNode().filter( parent -> parent instanceof MethodCallExpr ).isPresent()) {
+        if (propertyName == null && mce.getArguments().isEmpty()) {
             propertyName = getter2property(mce.getNameAsString());
         }
 
