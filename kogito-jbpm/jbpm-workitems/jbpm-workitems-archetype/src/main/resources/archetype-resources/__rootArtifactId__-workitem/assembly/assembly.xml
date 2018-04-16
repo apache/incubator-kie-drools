@@ -1,36 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<assembly>
+<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.0.0 http://maven.apache.org/xsd/assembly-2.0.0.xsd">
   <id>bin</id>
   <formats>
-    <format>zip</format>
+    <format>dir</format>
   </formats>
   <includeBaseDirectory>false</includeBaseDirectory>
 
   <fileSets>
     <fileSet>
-      <directory>src/main/repository</directory>
-      <outputDirectory/>
-      <includes>
-        <include>*.conf</include>
-      </includes>
-    </fileSet>
-    <fileSet>
-      <directory>src/main/repository/${classPrefix}</directory>
-      <outputDirectory>${classPrefix}</outputDirectory>
-      <includes>
-        <include>*.png</include>
-      </includes>
-    </fileSet>
-    <fileSet>
       <directory>target</directory>
-      <outputDirectory>${classPrefix}</outputDirectory>
+      <outputDirectory>repository</outputDirectory>
       <includes>
         <include>*.jar</include>
       </includes>
     </fileSet>
     <fileSet>
       <directory>target/generated-sources/annotations</directory>
-      <outputDirectory>${classPrefix}</outputDirectory>
+      <outputDirectory>repository</outputDirectory>
       <includes>
         <include>*.wid</include>
         <include>*.html</include>

@@ -7,7 +7,7 @@
   </requiredProperties>
 
   <modules>
-    <module id="jbpm-workitems-${rootArtifactId}" dir="jbpm-workitems-__rootArtifactId__" name="jbpm-workitems-${rootArtifactId}">
+    <module id="${rootArtifactId}-workitem" dir="__rootArtifactId__-workitem" name="${rootArtifactId}-workitem">
       <fileSets>
         <fileSet filtered="true" packaged="true" encoding="UTF-8">
           <directory>src/main/java</directory>
@@ -30,7 +30,7 @@
           </includes>
         </fileSet>
         <fileSet filtered="true" encoding="UTF-8">
-          <directory>src/assembly</directory>
+          <directory>assembly</directory>
           <includes>
             <include>**/*.xml</include>
           </includes>
