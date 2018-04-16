@@ -19,6 +19,7 @@ package org.drools.core.reteoo;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Collection;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassObjectType;
@@ -46,7 +47,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.drools.core.phreak.AddRemoveRule.flushLeftTupleIfNecessary;
-import static org.drools.core.reteoo.PropertySpecificUtil.*;
+import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
+import static org.drools.core.reteoo.PropertySpecificUtil.getAccessibleProperties;
+import static org.drools.core.reteoo.PropertySpecificUtil.isPropertyReactive;
 
 /**
  * All asserting Facts must propagated into the right <code>ObjectSink</code> side of a BetaNode, if this is the first Pattern
@@ -422,8 +425,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
 
 
     protected boolean doRemove(final RuleRemovalContext context,
-                            final ReteooBuilder builder,
-                            final InternalWorkingMemory[] workingMemories) {
+                            final ReteooBuilder builder) {
         if (!isInUse()) {
             objectSource.removeObjectSink(this);
             return true;

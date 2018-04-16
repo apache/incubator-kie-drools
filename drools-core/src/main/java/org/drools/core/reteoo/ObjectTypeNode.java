@@ -20,6 +20,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -451,8 +452,8 @@ public class ObjectTypeNode extends ObjectSource
     public void attach(BuildContext context) {
         this.source.addObjectSink(this);
 
-        InternalWorkingMemory[] workingMemories = context.getWorkingMemories();
-        InternalWorkingMemory workingMemory = workingMemories.length > 0 ? workingMemories[0] : null;
+        Collection<InternalWorkingMemory> workingMemories = context.getWorkingMemories();
+        InternalWorkingMemory workingMemory = workingMemories.isEmpty() ? null : workingMemories.iterator().next();
         if ( workingMemory != null ) {
             WorkingMemoryEntryPoint wmEntryPoint = workingMemory.getWorkingMemoryEntryPoint( ((EntryPointNode) source).getEntryPoint().getEntryPointId() );
             ObjectTypeConf objectTypeConf = wmEntryPoint.getObjectTypeConfigurationRegistry().getObjectTypeConfByClass( ((ClassObjectType) objectType).getClassType() );
@@ -489,24 +490,21 @@ public class ObjectTypeNode extends ObjectSource
     }
 
     /**
-     * OTN needs to override remove to avoid releasing the node ID, since OTN are
-     * never removed from the rulebase in the current implementation
-     */
-    public boolean remove(RuleRemovalContext context,
-                       ReteooBuilder builder,
-                       InternalWorkingMemory[] workingMemories) {
-        return doRemove(context,
-                        builder,
-                        workingMemories);
+    * OTN needs to override remove to avoid releasing the node ID, since OTN are
+    * never removed from the rulebase in the current implementation
+    */
+    @Override
+    public boolean remove(RuleRemovalContext context, ReteooBuilder builder) {
+            return doRemove(context, builder);
     }
 
     /**
      * OTN needs to override remove to avoid releasing the node ID, since OTN are
      * never removed from the rulebase in the current implementation
      */
+    @Override
     protected boolean doRemove(final RuleRemovalContext context,
-                               final ReteooBuilder builder,
-                               final InternalWorkingMemory[] workingMemories) {
+                               final ReteooBuilder builder) {
         return false;
     }
 

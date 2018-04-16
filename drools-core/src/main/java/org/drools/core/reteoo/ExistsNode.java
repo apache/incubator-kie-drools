@@ -16,6 +16,8 @@
 
 package org.drools.core.reteoo;
 
+import java.util.Collection;
+
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -122,7 +124,7 @@ public class ExistsNode extends BetaNode {
     }
 
     @Override
-    public boolean doRemove(RuleRemovalContext context, ReteooBuilder builder, InternalWorkingMemory[] workingMemories) {
+    public boolean doRemove(RuleRemovalContext context, ReteooBuilder builder) {
         if ( !isInUse() ) {
             getLeftTupleSource().removeTupleSink( this );
             getRightInput().removeObjectSink( this );

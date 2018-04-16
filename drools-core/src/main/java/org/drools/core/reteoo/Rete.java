@@ -20,6 +20,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -173,8 +174,7 @@ public class Rete extends ObjectSource
     }
 
     protected boolean doRemove(final RuleRemovalContext context,
-                               final ReteooBuilder builder,
-                               final InternalWorkingMemory[] workingMemories) {
+                               final ReteooBuilder builder) {
         // for now, we don't remove EntryPointNodes because they might be referenced by external sources
         return false;
     }
