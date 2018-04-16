@@ -179,7 +179,7 @@ public class ConstraintParser {
             return typedExpressionResult.getTypedExpression().<DrlxParseResult>map(left -> {
                 return new DrlxParseSuccess(patternType, exprId, bindingId, left.getExpression(), left.getType())
                         .setUsedDeclarations( typedExpressionResult.getUsedDeclarations() ).setReactOnProperties( typedExpressionResult.getReactOnProperties() ).setLeft( left );
-            }).orElse(new DrlxParseFail( new ParseExpressionErrorResult(drlxExpr) ));
+            }).orElseGet( () -> new DrlxParseFail( new ParseExpressionErrorResult(unaryExpr) ));
         }
 
         if ( drlxExpr instanceof PointFreeExpr ) {
@@ -198,7 +198,7 @@ public class ConstraintParser {
                         .setLeft(typedExpression.getLeft())
                         .setStatic(typedExpression.isStatic())
                         .setValidExpression(true);
-            }).orElse(new DrlxParseFail( new ParseExpressionErrorResult(drlxExpr) ));
+            }).orElseGet( () -> new DrlxParseFail( new ParseExpressionErrorResult(pointFreeExpr) ));
         }
 
         if (drlxExpr instanceof MethodCallExpr) {

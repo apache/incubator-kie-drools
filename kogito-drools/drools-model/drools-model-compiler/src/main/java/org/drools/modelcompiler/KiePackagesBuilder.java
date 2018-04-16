@@ -781,7 +781,7 @@ public class KiePackagesBuilder {
     private ObjectType getClassObjectType( Class<?> patternClass ) {
         return objectTypeCache.computeIfAbsent( patternClass.getCanonicalName(), name -> {
             boolean isEvent = false;
-            if (!name.startsWith( "java." ) && !patternClass.isPrimitive()) {
+            if (!name.startsWith( "java.lang" ) && !patternClass.isPrimitive()) {
                 KnowledgePackageImpl pkg = (KnowledgePackageImpl) packages.computeIfAbsent( patternClass.getPackage().getName(), this::createKiePackage );
                 TypeDeclaration typeDeclaration = pkg.getTypeDeclaration( patternClass );
                 if ( typeDeclaration == null ) {

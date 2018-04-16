@@ -266,4 +266,25 @@ public class PropertyReactivityTest extends BaseModelTest {
         ksession.insert( new Bean() );
         assertEquals( 1, ksession.fireAllRules() );
     }
+
+    @Test
+    public void testPRWithUpdateOnList() {
+        final String str =
+                "import " + List.class.getCanonicalName() + "\n" +
+                "rule R1 when\n" +
+                "    $l : List( empty == true )\n" +
+                "then\n" +
+                "    $l.add(\"test\");\n" +
+                "    update($l);\n" +
+                "end\n" +
+                "rule R2 when\n" +
+                "    $l : List( !this.contains(\"test\") )\n" +
+                "then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( new ArrayList() );
+        assertEquals( 1, ksession.fireAllRules() );
+    }
 }
