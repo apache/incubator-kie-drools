@@ -55,6 +55,7 @@ import static org.apache.commons.lang3.ObjectUtils.*;
 @XStreamAlias("solver")
 public class SolverConfig extends AbstractConfig<SolverConfig> {
 
+    public static final String MOVE_THREAD_COUNT_NONE = "NONE";
     public static final String MOVE_THREAD_COUNT_AUTO = "AUTO";
     protected static final long DEFAULT_RANDOM_SEED = 0L;
 
@@ -284,14 +285,19 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
     protected Integer resolveMoveThreadCount() {
         int availableProcessorCount = Runtime.getRuntime().availableProcessors();
         Integer resolvedMoveThreadCount;
-        if (moveThreadCount == null) {
+        if (moveThreadCount == null || moveThreadCount.equals(MOVE_THREAD_COUNT_NONE)) {
             return null;
         } else if (moveThreadCount.equals(MOVE_THREAD_COUNT_AUTO)) {
             // Leave one for the Operating System and 1 for the solver thread, take the rest
-            resolvedMoveThreadCount = Math.max(1, availableProcessorCount - 2);
+            resolvedMoveThreadCount = (availableProcessorCount - 2);
+            if (resolvedMoveThreadCount <= 1) {
+                // Fall back to single threaded solving with no move threads.
+                // Set moveThreadCount explicitly to 1 to deliberately test with 1 moveThread.
+                return null;
+            }
         } else {
             resolvedMoveThreadCount = ConfigUtils.resolveThreadPoolSizeScript(
-                    "moveThreadCount", moveThreadCount, MOVE_THREAD_COUNT_AUTO);
+                    "moveThreadCount", moveThreadCount, MOVE_THREAD_COUNT_NONE, MOVE_THREAD_COUNT_AUTO);
         }
         if (resolvedMoveThreadCount < 1) {
             throw new IllegalArgumentException("The moveThreadCount (" + moveThreadCount

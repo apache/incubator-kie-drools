@@ -75,13 +75,13 @@ public enum EnvironmentMode {
      * In this mode, 2 runs on the same computer will execute the same code in the same order.
      * They will also yield the same result, except if they use a time based termination
      * and they have a sufficiently large difference in allocated CPU time.
-     * This allows you to benchmark new optimizations (such as a new Move implementation) fairly.
+     * This allows you to benchmark new optimizations (such as a new {@link Move} implementation) fairly
+     * and reproduce bugs in your code reliably.
      * <p>
      * Warning: some code can disrupt reproducibility regardless of this mode. See the reference manual for more info.
      * <p>
      * In practice, this mode uses the default random seed,
      * and it also disables certain concurrency optimizations (such as work stealing).
-     * TODO: PLANNER-76 Multi-threaded support which implement those concurrency optimizations
      */
     REPRODUCIBLE,
     /**
@@ -99,7 +99,7 @@ public enum EnvironmentMode {
      * Note that in most use cases the impact of the random seed is relatively low on the result.
      * An occasional bad result is far more likely to be caused by another issue (such as a score trap).
      * <p>
-     * In multi-threaded scenarios, this mode allows the use of work stealing and other non deterministic speed tricks.
+     * In multithreaded scenarios, this mode allows the use of work stealing and other non deterministic speed tricks.
      */
     NON_REPRODUCIBLE;
 

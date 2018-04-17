@@ -39,7 +39,7 @@ import org.optaplanner.core.impl.solver.termination.Termination;
  * These methods are not thread-safe and should be called from the same thread,
  * except for the methods that are explicitly marked as thread-safe.
  * Note that despite that {@link #solve} is not thread-safe for clients of this class,
- * that method is free to do multi-threading inside itself.
+ * that method is free to do multithreading inside itself.
  * <p>
  * Build by a {@link SolverFactory}.
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation

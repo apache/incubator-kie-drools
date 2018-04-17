@@ -26,7 +26,7 @@ public class InvestmentNumericUtil {
 
     public static final String MILLIS_NUMBER_PATTERN = "#0.000";
     public static final String MILLIS_PERCENT_PATTERN = "#0.0%";
-    // TODO Remove potential multi-threaded use of a thread-unsafe class
+    // TODO Remove potential multithreaded use of a thread-unsafe class
     protected static final NumberFormat MILLIS_NUMBER_FORMAT = new DecimalFormat(MILLIS_NUMBER_PATTERN);
     protected static final NumberFormat MILLIS_PERCENT_FORMAT = new DecimalFormat(MILLIS_PERCENT_PATTERN);
 

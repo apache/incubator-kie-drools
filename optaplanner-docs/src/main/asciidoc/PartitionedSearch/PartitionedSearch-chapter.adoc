@@ -13,7 +13,7 @@
 
 It is often more efficient to partition large data sets (usually above 5000 planning entities)
 into smaller pieces and solve them separately.
-Partition Search is <<multiThreadedSolving,multi-threaded>>, so it provides a performance boost on multi-core machines
+Partition Search is <<multithreadedSolving,multithreaded>>, so it provides a performance boost on multi-core machines
 due to higher CPU utilization.
 Additionally, even when only using one CPU, it finds an initial solution faster,
 because the search space sum of a partitioned Construction Heuristic is far less than its non-partitioned variant.
@@ -55,7 +55,6 @@ Advanced configuration:
   <partitionedSearch>
     ...
     <solutionPartitionerClass>org.optaplanner.examples.cloudbalancing.optional.partitioner.CloudBalancePartitioner</solutionPartitionerClass>
-    <threadFactoryClass>...MyAppServerThreadFactory</threadFactoryClass>
     <runnablePartThreadLimit>4</runnablePartThreadLimit>
 
     <constructionHeuristic>...</constructionHeuristic>
@@ -63,14 +62,14 @@ Advanced configuration:
   </partitionedSearch>
 ----
 
-The `threadFactoryClass` allows to plug in a custom `ThreadFactory` for environments
-where arbitrary thread creation should be avoided, such as most application servers, Android, or Google App Engine.
-
 The `runnablePartThreadLimit` allows limiting CPU usage to avoid hanging your machine, see below.
+
+If you're running in a environment that doesn't like arbitrary thread creation,
+plug in a <<customThreadFactory, custom thread factory>>.
 
 [IMPORTANT]
 ====
-A <<logging,logging level>> of `debug` or `trace` causes congestion in multi-threaded Partitioned Search
+A <<logging,logging level>> of `debug` or `trace` causes congestion in multithreaded Partitioned Search
 and slows down the <<scoreCalculationSpeed,score calculation speed>>.
 ====
 
@@ -241,7 +240,7 @@ public class CloudBalancePartitioner implements SolutionPartitioner<CloudBalance
 [[runnablePartThreadLimit]]
 == Runnable Part Thread Limit
 
-When running a multi-threaded solver, such as Partitioned Search, CPU power can quickly become a scarce resource,
+When running a multithreaded solver, such as Partitioned Search, CPU power can quickly become a scarce resource,
 which can cause other processes or threads to hang or freeze.
 However, Planner has a system to prevent CPU starving of
 other processes (such as an SSH connection in production or your IDE in development)

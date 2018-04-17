@@ -136,7 +136,7 @@ They build the runtime components (of the package namespace ``org.optaplanner.co
 
 [IMPORTANT]
 ====
-The `SolverFactory` is only multi-thread safe after its configured.
+The `SolverFactory` is only thread-safe after its configured.
 So the `getSolverConfig()` method is not thread-safe.
 To configure a `SolverFactory` dynamically for each user request, build a `SolverFactory` as base during initialization and clone it with the `cloneSolverFactory()` method for a user request:
 
@@ -1863,7 +1863,7 @@ However, it is invaluable during development to discover a bottleneck.
 Even `debug` logging can slow down performance considerably for fast stepping algorithms (such as Late Acceptance and Simulated Annealing),
 but not for slow stepping algorithms (such as Tabu Search).
 
-Both cause congestion in <<multiThreadedSolving, multi-threaded solving>> with most appenders, see below.
+Both cause congestion in <<multithreadedSolving, multithreaded solving>> with most appenders, see below.
 
 In Eclipse, `debug` logging to the console tends to cause congestion with a score calculation speeds above 10 000 per second.
 Nor IntelliJ, nor the Maven command line suffer from this problem.
@@ -1919,7 +1919,7 @@ If it isn't picked up, temporarily add the system property `-Dlogback.debug=true
 
 [NOTE]
 ====
-When running multiple solvers or one <<multiThreadedSolving, multi-threaded solver>>,
+When running multiple solvers or one <<multithreadedSolving, multithreaded solver>>,
 most appenders (including the console) cause congestion with `debug` and `trace` logging.
 Switch to an async appender to avoid this problem or turn off `debug` logging.
 ====

@@ -961,7 +961,7 @@ for example when running benchmarks on an application server or a cloud platform
 [NOTE]
 ====
 In the future, we will also support multi-JVM benchmarking.
-This feature is independent of https://issues.jboss.org/browse/PLANNER-76[multi-threaded solving] or multi-JVM solving.
+This feature is independent of <<multithreadedSolving,multithreaded solving>> or multi-JVM solving.
 ====
 
 

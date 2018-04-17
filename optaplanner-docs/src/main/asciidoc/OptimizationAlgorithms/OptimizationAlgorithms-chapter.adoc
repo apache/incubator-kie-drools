@@ -759,17 +759,92 @@ To avoid those, configure a `NoChangePhase`:
 ----
 
 
-[[multiThreadedSolving]]
-== Multi-threaded Solving
+[[multithreadedSolving]]
+== Multithreaded Solving
 
-There are several ways of doing multi-threaded solving:
+There are several ways of doing multithreaded solving:
+
+* *Multitenancy*: solve different datasets in parallel
+** The `SolverManager` will make it even easier to set this up, in a future version.
+* *Multi bet solving*: solve 1 dataset with multiple, isolated solvers and take the best result.
+** Not recommended: This is a marginal gain for a high cost of hardware resources.
+** Use the <<benchmarker,Benchmarker>> during development to determine the most appropriate algorithm, although that's only on average.
+** Use multithreaded incremental solving instead.
+* *Partitioned Search*: Split 1 dataset in multiple parts and solve them independently.
+** Configure a <<partitionedSearch,Partitioned Search>>.
+* *Multithreaded incremental solving*: solve 1 dataset with multiple threads without sacrificing <<incrementalScoreCalculation, incremental score calculation>>.
+** Donate a portion of your CPU cores to Planner to scale up the score calculation speed and get the same results in fraction of the time.
 
 image::OptimizationAlgorithms/multiThreadingStrategies.png[align="center"]
 
-For now, only Partitioned Search is supported out of the box.
+[NOTE]
+====
+A <<logging,logging level>> of `debug` or `trace` might cause congestion multithreaded solving
+and slow down the <<scoreCalculationSpeed,score calculation speed>>.
+====
+
+[[customThreadFactory]]
+=== Custom Thread Factory (WildFly, Android, GAE, ...)
+
+The `threadFactoryClass` allows to plug in a custom `ThreadFactory` for environments
+where arbitrary thread creation should be avoided,
+such as most application servers (including WildFly), Android, or Google App Engine.
+
+Configure the `ThreadFactory` on the solver and it will be used for all Thread creation:
+
+[source,xml,options="nowrap"]
+----
+<solver>
+  <threadFactoryClass>...MyAppServerThreadFactory</threadFactoryClass>
+  ...
+</solver>
+----
+
+[[multithreadedIncrementalSolving]]
+=== Multithreaded Incremental Solving
+
+Enable multithreaded incremental solving by configuring a `moveThreadCount`:
+
+[source,xml,options="nowrap"]
+----
+<solver>
+  <moveThreadCount>4</moveThreadCount>
+  ...
+</solver>
+----
+
+That one extra line heavily improves the score calculation speed,
+presuming that your machine has enough free CPU cores.
+It <<sizingHardwareAndSoftware,saturates 5 CPU cores>>:
+the 4 move threads fill up 4 CPU cores and the solver thread itself takes another CPU core.
+
+The following ``moveThreadCount``s are supported:
+
+* `NONE` (default): Don't run any move threads. Use the single threaded code.
+* ``AUTO``: Let Planner decide how many move threads to run in parallel.
+On machines or containers with little or no CPU's, this can fall back to the single threaded code.
+* Static number: The number of move threads to run in parallel.
++
+[source,xml,options="nowrap"]
+----
+<moveThreadCount>4</moveThreadCount>
+----
++
+This can be `1` to enforce running the multithreaded code with only 1 move thread.
+* JavaScript formula: Formula for the number of move threads to run in parallel. It can use the variable ``availableProcessorCount``. For example:
++
+[source,xml,options="nowrap"]
+----
+<moveThreadCount>(availableProcessorCount / 2) + 1</moveThreadCount>
+----
+
+It is counter-effective to set a moveThreadCount that is higher than the number of available CPU cores,
+as that will slow down the score calculation speed.
+One good reason to do it anyway, is to reproduce a bug of a high-end production machine.
 
 [NOTE]
 ====
-A <<logging,logging level>> of `debug` or `trace` might cause congestion multi-threaded solving
-and slow down the <<scoreCalculationSpeed,score calculation speed>>.
+Multithreaded solving is _still reproducible_, as long as the resolved `moveThreadCount` is stable.
+A run of the same solver configuration on 2 machines with a different number of CPU's,
+is still reproducible, unless the `moveThreadCount` is set to `AUTO` or a function of `availableProcessorCount`.
 ====
