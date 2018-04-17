@@ -72,6 +72,7 @@ import org.drools.compiler.compiler.PackageBuilderErrors;
 import org.drools.compiler.compiler.PackageBuilderResults;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.ParserError;
+import org.drools.compiler.compiler.ProcessBuilder;
 import org.drools.compiler.compiler.ProcessBuilderFactory;
 import org.drools.compiler.compiler.ProcessLoadError;
 import org.drools.compiler.compiler.ResourceConversionResult;
@@ -761,7 +762,11 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         this.resource = null;
     }
 
-    public void addProcessFromXml(Reader processSource) {
+    public ProcessBuilder getProcessBuilder() {
+        return processBuilder;
+    }
+
+    public void addProcessFromXml( Reader processSource) {
         addProcessFromXml(new ReaderResource(processSource, ResourceType.DRF));
     }
 

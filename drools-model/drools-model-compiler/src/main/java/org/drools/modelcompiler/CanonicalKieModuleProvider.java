@@ -18,6 +18,7 @@ package org.drools.modelcompiler;
 
 import java.io.File;
 
+import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.InternalKieModuleProvider;
 import org.kie.api.builder.ReleaseId;
@@ -27,7 +28,15 @@ public class CanonicalKieModuleProvider extends InternalKieModuleProvider.DrlBas
 
     @Override
     public InternalKieModule createKieModule( ReleaseId releaseId, KieModuleModel kieProject, File file ) {
-        InternalKieModule internalKieModule = super.createKieModule( releaseId, kieProject, file );
+        return createCanonicalKieModule( super.createKieModule( releaseId, kieProject, file ) );
+    }
+
+    @Override
+    public InternalKieModule createKieModule( ReleaseId releaseId, KieModuleModel kieProject, MemoryFileSystem mfs ) {
+        return createCanonicalKieModule( super.createKieModule(releaseId, kieProject, mfs) );
+    }
+
+    private InternalKieModule createCanonicalKieModule( InternalKieModule internalKieModule ) {
         return internalKieModule.hasResource( CanonicalKieModule.MODEL_FILE ) ? new CanonicalKieModule( internalKieModule ) : internalKieModule;
     }
 }
