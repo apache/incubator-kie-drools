@@ -22,7 +22,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class BeanMapTest {
+public class OverflowingBeanMapTest {
 
     Person person;
 
@@ -35,21 +35,30 @@ public class BeanMapTest {
 
     @Test
     public void get() {
-        BeanMap<Person> map = new BeanMap<>(person);
+        BeanMap<Person> map = new OverflowingBeanMap<>(person);
         assertEquals("Paul", map.get("name"));
     }
 
     @Test
     public void put() {
-        BeanMap<Person> map = new BeanMap<>(person);
+        BeanMap<Person> map = new OverflowingBeanMap<>(person);
         map.put("name", "Ringo");
         assertEquals("Ringo", person.getName());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void nullObject() {
-        BeanMap<Void> map = new BeanMap<>(null);
+        BeanMap<Void> map = new OverflowingBeanMap<>(null);
         assertEquals(0, map.size());
         map.put("Blah", "x");
+    }
+
+    @Test
+    public void putExtra() {
+        OverflowingBeanMap<Person> map = new OverflowingBeanMap<>(person);
+        map.put("address", "Liverpool");
+        assertEquals(person.getName(), "Paul");
+        assertEquals("Liverpool", map.get("address"));
+        assertEquals(4, map.size());
     }
 }

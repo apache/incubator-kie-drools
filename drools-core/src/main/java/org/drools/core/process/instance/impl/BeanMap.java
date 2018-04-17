@@ -28,42 +28,24 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 /**
  * A utility class that exposes getters and setters of a bean
  * as key/value pairss in a Map.
  */
-public class BeanMap extends AbstractMap<String, Object> {
+class BeanMap<T> extends AbstractMap<String, Object> {
 
-    static void fillBean(Object bean, Map<String, Object> values) {
-        new BeanMap(bean).putAll(values);
+    private final T bean;
+    private final Map<String, Accessors> accessors;
+
+    BeanMap(T bean) {
+        this.bean = bean;
+        this.accessors = Collections.unmodifiableMap(accessorsOf(bean));
     }
 
-    static void fillMap(Map<String, Object> values, Object bean) {
-        values.putAll(new BeanMap(bean));
-    }
-
-    private final Map<String, Entry<String, Object>> accessors;
-
-    BeanMap(Object bean) {
-        Objects.requireNonNull(bean);
-        HashMap<String, Accessors> accessors = new HashMap<>();
-        try {
-            BeanInfo beanInfo = Introspector.getBeanInfo(bean.getClass());
-            for (PropertyDescriptor pd : beanInfo.getPropertyDescriptors()) {
-                accessors.put(pd.getName(),
-                              new Accessors(
-                                      pd.getName(),
-                                      pd.getReadMethod(),
-                                      pd.getWriteMethod(),
-                                      bean));
-            }
-        } catch (IntrospectionException e) {
-            throw new IllegalArgumentException(e);
-        }
-        this.accessors = Collections.unmodifiableMap(accessors);
+    public T getBean() {
+        return bean;
     }
 
     @Override
@@ -71,9 +53,46 @@ public class BeanMap extends AbstractMap<String, Object> {
         return new HashSet<>(accessors.values());
     }
 
+    protected boolean propertyExists(String prop) {
+        return accessors.containsKey(prop);
+    }
+
+    @Override
+    public boolean containsKey(Object key) {
+        return key instanceof String && propertyExists((String) key);
+    }
+
+    @Override
+    public Object get(Object key) {
+        Accessors a = this.accessors.get(key);
+        if (a == null) {
+            return null;
+        }
+        return a.getValue();
+    }
+
     @Override
     public Object put(String key, Object value) {
-        return accessors.get(key).setValue(value);
+        Accessors accessors = this.accessors.get(key);
+        if (accessors == null) {
+            throw new IllegalArgumentException("Unknown key '" + key + "'");
+        }
+        return accessors.setValue(value);
+    }
+
+    private Map<String, Accessors> accessorsOf(T bean) {
+        HashMap<String, Accessors> accessors = new HashMap<>();
+        if (bean != null) {
+            try {
+                BeanInfo beanInfo = Introspector.getBeanInfo(bean.getClass());
+                for (PropertyDescriptor pd : beanInfo.getPropertyDescriptors()) {
+                    accessors.put(pd.getName(), Accessors.of(bean, pd));
+                }
+            } catch (IntrospectionException e) {
+                throw new IllegalArgumentException(e);
+            }
+        }
+        return accessors;
     }
 
     static class Accessors implements Map.Entry<String, Object> {
@@ -81,6 +100,15 @@ public class BeanMap extends AbstractMap<String, Object> {
         final String id;
         final Method getter, setter;
         final Object target;
+
+        static Accessors of(Object bean, PropertyDescriptor descriptor) {
+            return new Accessors(
+                    descriptor.getName(),
+                    descriptor.getReadMethod(),
+                    descriptor.getWriteMethod(),
+                    bean
+            );
+        }
 
         Accessors(String id, Method getter, Method setter, Object target) {
             this.id = id;

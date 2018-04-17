@@ -54,12 +54,12 @@ public class UntypedWorkItemHandlerImpl<T extends TypedWorkItem<?, ?>> implement
     }
 
     private void fillTyped(T typedWorkItem, WorkItem workItem) {
-        BeanMap.fillBean(typedWorkItem.getParameters(), workItem.getParameters());
-        BeanMap.fillBean(typedWorkItem.getResults(), workItem.getResults());
+        typedWorkItem.setParameters(workItem.getParameters());
+        typedWorkItem.setResults(workItem.getResults());
     }
 
     private void fillUntyped(WorkItem workItem, T typedWorkItem) {
-        BeanMap.fillMap(workItem.getParameters(), typedWorkItem.getParameters());
-        BeanMap.fillMap(workItem.getResults(), typedWorkItem.getResults());
+        workItem.getParameters().putAll(typedWorkItem.getParameters());
+        workItem.getResults().putAll(typedWorkItem.getResults());
     }
 }
