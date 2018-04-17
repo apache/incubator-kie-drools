@@ -335,7 +335,7 @@ public class MultiThreadedLocalSearchDecider<Solution_> extends LocalSearchDecid
                         if (!move.isMoveDoable(scoreDirector)) {
                             logger.trace("{}            Move thread ({}) evaluation: step index ({}), move index ({}), not doable.",
                                     logIndentation, moveThreadIndex, stepIndex, moveIndex);
-                            resultQueue.add(new RearrangingBlockingQueue.MoveResult<>(stepIndex, moveIndex, move, false, null));
+                            resultQueue.addUndoableMove(moveThreadIndex, stepIndex, moveIndex, move);
                         } else {
                             Score score = scoreDirector.doAndProcessMove(move, assertMoveScoreFromScratch);
                             if (assertExpectedUndoMoveScore) {
@@ -344,22 +344,24 @@ public class MultiThreadedLocalSearchDecider<Solution_> extends LocalSearchDecid
                             logger.trace("{}            Move thread ({}) evaluation: step index ({}), move index ({}), score ({}).",
                                     logIndentation, moveThreadIndex, stepIndex, moveIndex, score);
                             // Deliberately add to fail fast if there is not enough capacity (which is impossible)
-                            resultQueue.add(new RearrangingBlockingQueue.MoveResult<>(stepIndex, moveIndex, move, true, score));
+                            resultQueue.addMove(moveThreadIndex, stepIndex, moveIndex, move, score);
                         }
                     } else {
                         throw new IllegalStateException("Unknown operation (" + operation + ").");
                     }
                     // TODO checkYielding();
                 }
-                // TODO if exception (such as NPE) happens then it is currently eaten!!!
-                // TODO scoreDirector.close()
                 logger.trace("{}            Move thread finished.");
-            } catch (Throwable throwable) {
+            } catch (RuntimeException | Error throwable) {
                 // Any Exception or even Error that happens here (on a move thread) must be stored
                 // in the resultQueue in order to be propagated to the solver thread.
                 logger.trace("{}            Move thread ({}) exception that will be propagated to the solver thread.",
                         logIndentation, moveThreadIndex, throwable);
-                // TODO pass to the resultQueue to propagate to the solver thread
+                resultQueue.addExceptionThrown(moveThreadIndex, throwable);
+            } finally {
+                if (scoreDirector != null) {
+                    scoreDirector.close();
+                }
             }
         }
 

@@ -71,6 +71,7 @@ public class PartitionQueue<Solution_> implements Iterable<PartitionChangeMove<S
      * The previous move(s) for this partIndex (if it hasn't been consumed yet), will be skipped during iteration.
      * @param partIndex {@code 0 <= partIndex < partCount}
      * @param move never null
+     * @see BlockingQueue#add(Object)
      */
     public void addMove(int partIndex, PartitionChangeMove<Solution_> move) {
         long eventIndex = nextEventIndexMap.get(partIndex).getAndIncrement();
@@ -82,8 +83,9 @@ public class PartitionQueue<Solution_> implements Iterable<PartitionChangeMove<S
 
     /**
      * This method is thread-safe.
-     * The previous move for this partIndex (if it hasn't been consumed yet), will still be returned during iteration.
+     * The previous move for this partIndex (that haven't been consumed yet), will still be returned during iteration.
      * @param partIndex {@code 0 <= partIndex < partCount}
+     * @see BlockingQueue#add(Object)
      */
     public void addFinish(int partIndex) {
         long eventIndex = nextEventIndexMap.get(partIndex).getAndIncrement();
@@ -98,6 +100,7 @@ public class PartitionQueue<Solution_> implements Iterable<PartitionChangeMove<S
      * before the iteration throws an exception.
      * @param partIndex {@code 0 <= partIndex < partCount}
      * @param throwable never null
+     * @see BlockingQueue#add(Object)
      */
     public void addExceptionThrown(int partIndex, Throwable throwable) {
         long eventIndex = nextEventIndexMap.get(partIndex).getAndIncrement();
