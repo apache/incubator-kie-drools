@@ -86,6 +86,29 @@ public class AuditTaskImpl implements Serializable, AuditTask {
         this.workItemId = workItemId;
         this.lastModificationDate = new Date();
     }
+    
+    public AuditTaskImpl(long taskId, String name, String status, Date activationTime,
+             String actualOwner, String description, int priority, String createdBy,
+             Date createdOn, Date dueDate, long processInstanceId, String processId,
+             long processSessionId, String deploymentId, long parentId, long workItemId, Date lastModificationDate) {
+         this.taskId = taskId;
+         this.status = status;
+         this.activationTime = activationTime;
+         this.name = name;
+         this.description = description;
+         this.priority = priority;
+         this.createdBy = createdBy;
+         this.createdOn = createdOn;
+         this.actualOwner = actualOwner;
+         this.dueDate = dueDate;
+         this.processInstanceId = processInstanceId;
+         this.processId = processId;
+         this.processSessionId = processSessionId;
+         this.deploymentId = deploymentId;
+         this.parentId = parentId;
+         this.workItemId = workItemId;
+         this.lastModificationDate = lastModificationDate;
+    }
 
     public Long getId() {
         return id;

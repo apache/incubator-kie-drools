@@ -40,7 +40,9 @@ import org.jbpm.services.task.audit.commands.GetBAMTaskSummariesCommand;
 import org.jbpm.services.task.audit.impl.model.AuditTaskImpl;
 import org.jbpm.services.task.audit.impl.model.BAMTaskSummaryImpl;
 import org.jbpm.services.task.audit.service.objects.Person;
+import org.jbpm.services.task.events.TaskEventImpl;
 import org.jbpm.services.task.impl.model.I18NTextImpl;
+import org.jbpm.services.task.utils.ClassUtil;
 import org.jbpm.services.task.utils.TaskFluent;
 import org.junit.Test;
 import org.kie.api.task.model.I18NText;
@@ -49,6 +51,8 @@ import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.query.QueryFilter;
 import org.kie.internal.task.api.AuditTask;
+import org.kie.internal.task.api.TaskContext;
+import org.kie.internal.task.api.TaskPersistenceContext;
 import org.kie.internal.task.api.TaskVariable;
 import org.kie.internal.task.api.TaskVariable.VariableType;
 import org.kie.internal.task.api.model.InternalTaskData;
@@ -1360,7 +1364,28 @@ public abstract class TaskAuditBaseTest extends HumanTaskServicesBaseTest {
         Assertions.assertThat(taskEvents.get(2).getMessage()).isNotNull();
         Assertions.assertThat(taskEvents.get(2).getMessage()).contains("Darth Vader");
     }
+    
+    @Test
+    public void testAddTaskWithEventDate() {
+        Task task = new TaskFluent().setName("This is my task name")
+                .setAdminUser("Administrator")
+                .addPotentialUser("Darth Vader")
+                .getTask();
 
+        taskService.addTask(task, new HashMap<String, Object>());
+        long taskId = task.getId();
+        
+        List<TaskEvent> taskEvents = taskAuditService.getAllTaskEvents(taskId, new QueryFilter());
+        Assertions.assertThat(taskEvents).hasSize(1);
+        Assertions.assertThat(taskEvents.get(0).getType()).isEqualTo(TaskEventType.ADDED);
+        Assertions.assertThat(taskEvents.get(0).getUserId()).isNull();
+        
+        List<AuditTask> allGroupAuditTasks = taskAuditService.getAllAuditTasks(new QueryFilter());
+        assertEquals(1, allGroupAuditTasks.size());
+        AuditTaskImpl auditTask = (AuditTaskImpl)allGroupAuditTasks.get(0);
+        assertNotNull(auditTask.getLastModificationDate());
+    }
+    
     protected Map<String, String> collectVariableNameAndValue(List<TaskVariable> variables) {
         Map<String, String> nameValue = new HashMap<String, String>();
 

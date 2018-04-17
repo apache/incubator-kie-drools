@@ -250,7 +250,8 @@ public class JPATaskLifeCycleEventListener extends PersistableEventListener impl
                 ti.getTaskData().getProcessSessionId(),
                 ti.getTaskData().getDeploymentId(),
                 ti.getTaskData().getParentId(),
-                ti.getTaskData().getWorkItemId()
+                ti.getTaskData().getWorkItemId(),
+                event.getEventDate()
             );
             persistenceContext.persist(auditTaskImpl);
             persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.ADDED, ti.getTaskData().getProcessInstanceId(), ti.getTaskData().getWorkItemId(), userId));
@@ -700,7 +701,7 @@ public class JPATaskLifeCycleEventListener extends PersistableEventListener impl
     public void afterTaskNotificationEvent(TaskEvent event) {
 
     }
-
+    
     @Override
     public void afterTaskOutputVariableChangedEvent(TaskEvent event, Map<String, Object> variables) {
         String userId = event.getTaskContext().getUserId();
