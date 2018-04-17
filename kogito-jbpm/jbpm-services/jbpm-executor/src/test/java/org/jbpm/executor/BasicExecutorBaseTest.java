@@ -790,6 +790,58 @@ public abstract class BasicExecutorBaseTest {
         List<RequestInfo> executedRequests = executorService.getCompletedRequests(new QueryContext());
         assertEquals(1, executedRequests.size());
     }
+    
+    @Test(timeout=10000)
+    public void testDeploymentIdParameter() throws InterruptedException {
+
+        CommandContext ctxCMD = new CommandContext();
+        String businessKey = UUID.randomUUID().toString();
+        ctxCMD.setData("businessKey", businessKey);
+        ctxCMD.setData("DeploymentId", "testUpperCase");
+        
+        Date futureDate = new Date(System.currentTimeMillis() + EXTRA_TIME);
+
+        Long requestId = executorService.scheduleRequest("org.jbpm.executor.commands.PrintOutCommand", futureDate, ctxCMD);
+        
+        List<RequestInfo> requests = executorService.getRequestsByBusinessKey(businessKey, new QueryContext());
+        assertNotNull(requests);
+        assertEquals(1, requests.size());
+        assertEquals(requestId, requests.get(0).getId());
+        assertEquals("testUpperCase", requests.get(0).getDeploymentId());
+
+        // cancel the task immediately
+        executorService.cancelRequest(requestId);
+
+        List<RequestInfo> cancelledRequests = executorService.getCancelledRequests(new QueryContext());
+        assertEquals(1, cancelledRequests.size());
+
+    }
+    
+    @Test(timeout=10000)
+    public void testDeploymentIdParameterLowerCase() throws InterruptedException {
+
+        CommandContext ctxCMD = new CommandContext();
+        String businessKey = UUID.randomUUID().toString();
+        ctxCMD.setData("businessKey", businessKey);
+        ctxCMD.setData("deploymentId", "testLowerCase");
+        
+        Date futureDate = new Date(System.currentTimeMillis() + EXTRA_TIME);
+
+        Long requestId = executorService.scheduleRequest("org.jbpm.executor.commands.PrintOutCommand", futureDate, ctxCMD);
+        
+        List<RequestInfo> requests = executorService.getRequestsByBusinessKey(businessKey, new QueryContext());
+        assertNotNull(requests);
+        assertEquals(1, requests.size());
+        assertEquals(requestId, requests.get(0).getId());
+        assertEquals("testLowerCase", requests.get(0).getDeploymentId());
+
+        // cancel the task immediately
+        executorService.cancelRequest(requestId);
+
+        List<RequestInfo> cancelledRequests = executorService.getCancelledRequests(new QueryContext());
+        assertEquals(1, cancelledRequests.size());
+
+    }
 
     private void compareRequestsAreNotSame(RequestInfo firstRequest, RequestInfo secondRequest) {
         assertNotNull(firstRequest);

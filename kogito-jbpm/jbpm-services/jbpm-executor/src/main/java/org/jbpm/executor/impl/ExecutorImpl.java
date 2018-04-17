@@ -325,7 +325,7 @@ public class ExecutorImpl implements Executor {
         requestInfo.setStatus(STATUS.QUEUED);
         requestInfo.setTime(date == null ? new Date() : date);
         requestInfo.setMessage("Ready to execute");
-        requestInfo.setDeploymentId((String) ctx.getData("deploymentId"));
+        requestInfo.setDeploymentId(getDeploymentId(ctx));
         if (ctx.getData("processInstanceId") != null) {
             requestInfo.setProcessInstanceId(((Number) ctx.getData("processInstanceId")).longValue());
         }
@@ -571,6 +571,15 @@ public class ExecutorImpl implements Executor {
         }
 
         return new PrioritisedScheduledThreadPoolExecutor(threadPoolSize, threadFactory);
+    }
+    
+    protected String getDeploymentId(CommandContext ctx) {
+        String deploymentId = (String) ctx.getData("DeploymentId");
+        if (deploymentId == null) {
+            deploymentId = (String) ctx.getData("deploymentId");
+        }
+        
+        return deploymentId;
     }
 
 }
