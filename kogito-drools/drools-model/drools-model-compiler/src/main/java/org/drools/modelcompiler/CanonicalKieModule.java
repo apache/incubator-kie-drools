@@ -27,11 +27,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.appformer.maven.support.DependencyFilter;
 import org.appformer.maven.support.PomModel;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.compiler.ProcessBuilder;
 import org.drools.compiler.kie.builder.impl.FileKieModule;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieBaseUpdateContext;
@@ -44,6 +45,7 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.common.ResourceProvider;
 import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.util.Drools;
 import org.drools.core.util.IoUtils;
@@ -61,15 +63,20 @@ import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.process.Process;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
+import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.ChangeType;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResourceChangeSet;
 
+import static java.util.stream.Collectors.toList;
+
 import static org.drools.model.impl.ModelComponent.areEqualInModel;
 import static org.drools.modelcompiler.util.StringUtil.fileNameToClass;
+import static org.kie.api.io.ResourceType.determineResourceType;
 
 public class CanonicalKieModule implements InternalKieModule {
 
@@ -131,18 +138,45 @@ public class CanonicalKieModule implements InternalKieModule {
     private CanonicalKiePackages mergeProcesses( KieBaseModelImpl kBaseModel, CanonicalKiePackages canonicalKiePkgs ) {
         Collection<KiePackage> pkgs = internalKieModule.getKnowledgePackagesForKieBase(kBaseModel.getName());
         if (pkgs == null) {
-            // TODO null if the internalKieModule is a ZipKieModule. Is it necessary to get and build the processes from there in this case?
-            return canonicalKiePkgs;
-        }
-        for ( KiePackage pkg : pkgs ) {
-            Collection<Process> processes = pkg.getProcesses();
-            if (!processes.isEmpty()) {
-                InternalKnowledgePackage canonicalKiePkg = ( InternalKnowledgePackage ) canonicalKiePkgs.getKiePackage( pkg.getName() );
-                if (canonicalKiePkg == null) {
-                    canonicalKiePkgs.addKiePackage( pkg );
-                } else {
-                    for (Process process : processes) {
-                        canonicalKiePkg.addProcess( process );
+            List<Resource> processResources = internalKieModule.getFileNames().stream()
+                    .filter( fileName -> {
+                        ResourceType resourceType = determineResourceType(fileName);
+                        return resourceType == ResourceType.DRF || resourceType == ResourceType.BPMN2;
+                    } )
+                    .map( internalKieModule::getResource )
+                    .collect( toList() );
+            if (!processResources.isEmpty()) {
+                KnowledgeBuilderImpl kbuilder = (KnowledgeBuilderImpl) KnowledgeBuilderFactory.newKnowledgeBuilder( getBuilderConfiguration( kBaseModel ) );
+                ProcessBuilder processBuilder = kbuilder.getProcessBuilder();
+                if (processBuilder != null) {
+                    for (Resource processResource : processResources) {
+                        try {
+                            List<Process> processes = processBuilder.addProcessFromXml( processResource );
+                            for (Process process : processes) {
+                                InternalKnowledgePackage canonicalKiePkg = ( InternalKnowledgePackage ) canonicalKiePkgs.getKiePackage( process.getPackageName() );
+                                if ( canonicalKiePkg == null ) {
+                                    canonicalKiePkg = new KnowledgePackageImpl( process.getPackageName() );
+                                    canonicalKiePkgs.addKiePackage( canonicalKiePkg );
+                                }
+                                canonicalKiePkg.addProcess( process );
+                            }
+                        } catch (IOException e) {
+                            throw new RuntimeException( e );
+                        }
+                    }
+                }
+            }
+        } else {
+            for (KiePackage pkg : pkgs) {
+                Collection<Process> processes = pkg.getProcesses();
+                if ( !processes.isEmpty() ) {
+                    InternalKnowledgePackage canonicalKiePkg = ( InternalKnowledgePackage ) canonicalKiePkgs.getKiePackage( pkg.getName() );
+                    if ( canonicalKiePkg == null ) {
+                        canonicalKiePkgs.addKiePackage( pkg );
+                    } else {
+                        for (Process process : processes) {
+                            canonicalKiePkg.addProcess( process );
+                        }
                     }
                 }
             }
@@ -221,7 +255,7 @@ public class CanonicalKieModule implements InternalKieModule {
             throw new RuntimeException( "Kjar compiled with version " + version + " is not compatible with current runtime version " + Drools.getFullVersion() );
         }
 
-        return Stream.of( lines ).skip( 1 ).collect( Collectors.toList() );
+        return Stream.of( lines ).skip( 1 ).collect( toList() );
     }
 
     private static boolean areModelVersionsCompatible( String runtimeVersion, String compileVersion ) {

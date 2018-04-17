@@ -15,9 +15,6 @@
 
 package org.drools.compiler.kie.builder.impl;
 
-import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsforEmptyKieModule;
-import static org.drools.compiler.kproject.ReleaseIdImpl.fromPropertiesStream;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,6 +45,9 @@ import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsforEmptyKieModule;
+import static org.drools.compiler.kproject.ReleaseIdImpl.fromPropertiesStream;
 
 public class KieRepositoryImpl
         implements
@@ -291,7 +291,7 @@ public class KieRepositoryImpl
 
                 String pomProperties = mfs.findPomProperties();
                 ReleaseId releaseId = ReleaseIdImpl.fromPropertiesString(pomProperties);
-                kModule = new MemoryKieModule(releaseId, kieProject, mfs);
+                kModule = InternalKieModuleProvider.get( releaseId, kieProject, mfs );
             }
             return kModule;
         } catch (Exception e) {

@@ -18,6 +18,7 @@ package org.drools.compiler.kie.builder.impl;
 
 import java.io.File;
 
+import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.internal.utils.ServiceRegistry;
@@ -25,16 +26,27 @@ import org.kie.api.internal.utils.ServiceRegistry;
 public interface InternalKieModuleProvider {
     InternalKieModule createKieModule( ReleaseId releaseId, KieModuleModel kieProject, File file );
 
+    InternalKieModule createKieModule( ReleaseId releaseId, KieModuleModel kieProject, MemoryFileSystem mfs );
+
     class DrlBasedKieModuleProvider implements InternalKieModuleProvider {
 
         @Override
         public InternalKieModule createKieModule( ReleaseId releaseId, KieModuleModel kieProject, File file ) {
             return file.isDirectory() ? new FileKieModule( releaseId, kieProject, file ) : new ZipKieModule( releaseId, kieProject, file );
         }
+
+        @Override
+        public InternalKieModule createKieModule( ReleaseId releaseId, KieModuleModel kieProject, MemoryFileSystem mfs ) {
+            return new MemoryKieModule(releaseId, kieProject, mfs);
+        }
     }
 
     static InternalKieModule get( ReleaseId releaseId, KieModuleModel kieProject, File file ) {
         return Factory.get().createKieModule(releaseId, kieProject, file);
+    }
+
+    static InternalKieModule get( ReleaseId releaseId, KieModuleModel kieProject, MemoryFileSystem mfs ) {
+        return Factory.get().createKieModule(releaseId, kieProject, mfs);
     }
 
     class Factory {
