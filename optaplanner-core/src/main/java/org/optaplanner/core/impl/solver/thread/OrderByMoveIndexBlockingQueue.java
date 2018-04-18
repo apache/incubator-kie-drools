@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.localsearch.decider.multithreaded;
+package org.optaplanner.core.impl.solver.thread;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,7 +24,7 @@ import java.util.concurrent.BlockingQueue;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.heuristic.move.Move;
 
-public class RearrangingBlockingQueue<Solution_> {
+public class OrderByMoveIndexBlockingQueue<Solution_> {
 
     private final BlockingQueue<MoveResult<Solution_>> innerQueue;
     private final Map<Integer, MoveResult<Solution_>> backlog;
@@ -32,7 +32,7 @@ public class RearrangingBlockingQueue<Solution_> {
     private int filterStepIndex = Integer.MIN_VALUE;
     private int nextMoveIndex =  Integer.MIN_VALUE;
 
-    public RearrangingBlockingQueue(int capacity) {
+    public OrderByMoveIndexBlockingQueue(int capacity) {
         innerQueue = new ArrayBlockingQueue<>(capacity);
         backlog = new HashMap<>(capacity);
     }

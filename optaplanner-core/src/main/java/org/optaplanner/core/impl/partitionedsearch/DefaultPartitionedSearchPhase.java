@@ -24,7 +24,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
@@ -46,6 +45,7 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.solver.termination.ChildThreadPlumbingTermination;
 import org.optaplanner.core.impl.solver.termination.OrCompositeTermination;
 import org.optaplanner.core.impl.solver.termination.Termination;
+import org.optaplanner.core.impl.solver.thread.ThreadUtils;
 
 /**
  * Default implementation of {@link PartitionedSearchPhase}.
@@ -141,45 +141,11 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
             }
             phaseScope.addChildThreadsScoreCalculationCount(partitionQueue.getPartsCalculationCount());
         } finally {
-            // 1. In case one of the partition threads threw an Exception, it is propagated here
+            // In case one of the partition threads threw an Exception, it is propagated here
             // but the other partition threads are not aware of the failure and may continue solving for a long time,
             // so we need to ask them to terminate. In case no exception was thrown, this does nothing.
             childThreadPlumbingTermination.terminateChildren();
-
-            // Intentionally clearing the interrupted flag so that awaitTermination() in step 3 works.
-            if (Thread.interrupted()) {
-                // 2a. If the current thread is interrupted, propagate interrupt signal to children by initiating
-                // an abrupt shutdown.
-                executor.shutdownNow();
-            } else {
-                // 2b. Otherwise, initiate an orderly shutdown of the executor. This allows partition solvers to finish
-                // solving upon detecting the termination issued previously (step 1). Shutting down the executor
-                // service is important because the JVM cannot exit until all non-daemon threads have terminated.
-                executor.shutdown();
-            }
-
-            // 3. Finally, wait until the executor finishes shutting down.
-            try {
-                final int awaitingSeconds = 1;
-                if (!executor.awaitTermination(awaitingSeconds, TimeUnit.SECONDS)) {
-                    // Some solvers refused to complete. Busy threads will be interrupted in the finally block.
-                    // We're only logging the error instead throwing an exception to prevent eating the original
-                    // exception.
-                    logger.error(
-                            "{}Partitioned Search threadPoolExecutor didn't terminate within timeout ({} second).",
-                            logIndentation,
-                            awaitingSeconds);
-                }
-            } catch (InterruptedException e) {
-                // Interrupted while waiting for thread pool termination. Busy threads will be interrupted
-                // in the finally block.
-                Thread.currentThread().interrupt();
-                // If there is an original exception it will be eaten by this.
-                throw new IllegalStateException("Thread pool termination was interrupted.", e);
-            } finally {
-                // Initiate an abrupt shutdown for the case when any of the previous measures failed.
-                executor.shutdownNow();
-            }
+            ThreadUtils.shutdownAwaitOrKill(executor, logIndentation, "Partitioned Search");
         }
         phaseEnded(phaseScope);
     }

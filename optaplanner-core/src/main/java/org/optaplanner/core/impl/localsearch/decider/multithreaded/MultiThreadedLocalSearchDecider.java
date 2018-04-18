@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.localsearch.decider.multithreaded;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.BrokenBarrierException;
@@ -38,6 +40,8 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.ChildThreadType;
 import org.optaplanner.core.impl.solver.termination.Termination;
+import org.optaplanner.core.impl.solver.thread.OrderByMoveIndexBlockingQueue;
+import org.optaplanner.core.impl.solver.thread.ThreadUtils;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -52,8 +56,9 @@ public class MultiThreadedLocalSearchDecider<Solution_> extends LocalSearchDecid
     protected boolean assertExpectedStepScore = false;
     protected boolean assertShadowVariablesAreNotStaleAfterStep = false;
 
+    protected List<MoveThreadRunner> moveThreadRunnerList;
     protected BlockingQueue<MoveThreadOperation<Solution_>> operationQueue;
-    protected RearrangingBlockingQueue<Solution_> resultQueue;
+    protected OrderByMoveIndexBlockingQueue<Solution_> resultQueue;
     protected ExecutorService executor;
     protected CyclicBarrier moveThreadBarrier;
 
@@ -84,12 +89,14 @@ public class MultiThreadedLocalSearchDecider<Solution_> extends LocalSearchDecid
         // Capacity: number of moves in circulation + number of setup xor step operations + number of destroy operations
         operationQueue = new ArrayBlockingQueue<>(selectedMoveBufferSize + moveThreadCount + moveThreadCount);
         // Capacity: number of moves in circulation + number of exception handling results
-        resultQueue = new RearrangingBlockingQueue<>(selectedMoveBufferSize + moveThreadCount);
+        resultQueue = new OrderByMoveIndexBlockingQueue<>(selectedMoveBufferSize + moveThreadCount);
         executor = createThreadPoolExecutor();
         moveThreadBarrier = new CyclicBarrier(moveThreadCount);
         InnerScoreDirector<Solution_> scoreDirector = phaseScope.getScoreDirector();
+        moveThreadRunnerList = new ArrayList<>(moveThreadCount);
         for (int moveThreadIndex = 0; moveThreadIndex < moveThreadCount; moveThreadIndex++) {
-            MoveThreadRunner moveThreadRunner = new MoveThreadRunner(moveThreadIndex); // TODO pass Queue's so phaseEnded can null them
+            MoveThreadRunner moveThreadRunner = new MoveThreadRunner(moveThreadIndex);
+            moveThreadRunnerList.add(moveThreadRunner);
             executor.submit(moveThreadRunner);
             operationQueue.add(new SetupOperation<>(scoreDirector));
         }
@@ -98,10 +105,21 @@ public class MultiThreadedLocalSearchDecider<Solution_> extends LocalSearchDecid
     @Override
     public void phaseEnded(LocalSearchPhaseScope<Solution_> phaseScope) {
         super.phaseEnded(phaseScope);
+        // Tell the move thread runners to stop
+        DestroyOperation<Solution_> destroyOperation = new DestroyOperation<>();
+        for (int i = 0; i < moveThreadCount; i++) {
+            operationQueue.add(destroyOperation);
+        }
+        // TODO This should probably be in a finally that spawns at least the entire phase, maybe even the entire solve
+        ThreadUtils.shutdownAwaitOrKill(executor, logIndentation, "Multithreaded Local Search");
+        long childThreadsScoreCalculationCount = 0;
+        for (MoveThreadRunner moveThreadRunner : moveThreadRunnerList) {
+            childThreadsScoreCalculationCount += moveThreadRunner.scoreDirector.getCalculationCount();
+        }
+        phaseScope.addChildThreadsScoreCalculationCount(childThreadsScoreCalculationCount);
+        moveThreadRunnerList = null;
         operationQueue = null;
         resultQueue = null;
-        // TODO
-
     }
 
     private ExecutorService createThreadPoolExecutor() {
@@ -129,7 +147,7 @@ public class MultiThreadedLocalSearchDecider<Solution_> extends LocalSearchDecid
                 // even if some of those moves won't be evaluated or foraged
                 continue;
             }
-            RearrangingBlockingQueue.MoveResult<Solution_> result;
+            OrderByMoveIndexBlockingQueue.MoveResult<Solution_> result;
             try {
                 result = resultQueue.take();
             } catch (InterruptedException e) {
