@@ -316,10 +316,10 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
                     + ") that is lower than 1.");
         }
         if (resolvedMoveThreadCount > availableProcessorCount) {
-            logger.warn("Because the resolvedMoveThreadCount ({}) is higher "
-                    + "than the availableProcessorCount ({}), it is reduced to "
-                    + "availableProcessorCount.", resolvedMoveThreadCount, availableProcessorCount);
-            resolvedMoveThreadCount = availableProcessorCount;
+            logger.warn("The resolvedMoveThreadCount ({}) is higher "
+                    + "than the availableProcessorCount ({}), which is counter-efficient.",
+                    resolvedMoveThreadCount, availableProcessorCount);
+            // Still allow it, to reproduce issues of a high-end server machine on a low-end developer machine
         }
         return resolvedMoveThreadCount;
     }
