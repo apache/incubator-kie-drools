@@ -117,6 +117,14 @@
       </exclusions>
     </dependency>
     <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-dmn-feel</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-dmn-core</artifactId>
+    </dependency>
+    <dependency>
       <groupId>com.google.protobuf</groupId>
       <artifactId>protobuf-java</artifactId>
     </dependency>

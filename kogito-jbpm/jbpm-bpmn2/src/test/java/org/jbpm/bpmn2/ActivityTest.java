@@ -2029,4 +2029,27 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         })
         .withMessageContaining("Fire rule limit reached 5");        
     }
+    
+    @Test
+    public void testScriptTaskFEEL() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-ScriptTaskFEEL.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler handler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("name", "krisv");
+        Person person = new Person();
+        person.setName("krisv");
+        params.put("person", person);
+
+        WorkflowProcessInstance processInstance = (WorkflowProcessInstance) ksession.startProcess("ScriptTask", params);
+        assertEquals("Entry", processInstance.getVariable("x"));
+        assertNull(processInstance.getVariable("y"));
+
+        ksession.getWorkItemManager().completeWorkItem(handler.getWorkItem().getId(), null);
+        assertEquals("Exit", getProcessVarValue(processInstance, "y"));
+        assertEquals("tester", processInstance.getVariable("surname"));
+        
+        assertNodeTriggered(processInstance.getId(), "Script1");
+    }
 }

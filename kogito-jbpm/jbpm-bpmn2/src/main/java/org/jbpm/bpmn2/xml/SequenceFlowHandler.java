@@ -126,27 +126,24 @@ public class SequenceFlowHandler extends BaseAbstractHandler implements Handler 
 				String expression = xmlNode.getTextContent();
 				org.w3c.dom.Node languageNode = xmlNode.getAttributes()
 						.getNamedItem("language");
-				if (languageNode != null) {
-					String language = languageNode.getNodeValue();
-					if (XmlBPMNProcessDumper.JAVA_LANGUAGE.equals(language)) {
-						sequenceFlow.setLanguage("java");
-					} else if (XmlBPMNProcessDumper.MVEL_LANGUAGE
-							.equals(language)) {
-						sequenceFlow.setLanguage("mvel");
-					} else if (XmlBPMNProcessDumper.RULE_LANGUAGE
-							.equals(language)) {
-						sequenceFlow.setType("rule");
-					} else if (XmlBPMNProcessDumper.XPATH_LANGUAGE
-							.equals(language)) {
-						sequenceFlow.setLanguage("XPath");
-					} else if (XmlBPMNProcessDumper.JAVASCRIPT_LANGUAGE
-                            .equals(language)) {
+                if (languageNode != null) {
+                    String language = languageNode.getNodeValue();
+                    if (XmlBPMNProcessDumper.JAVA_LANGUAGE.equals(language)) {
+                        sequenceFlow.setLanguage("java");
+                    } else if (XmlBPMNProcessDumper.MVEL_LANGUAGE.equals(language)) {
+                        sequenceFlow.setLanguage("mvel");
+                    } else if (XmlBPMNProcessDumper.RULE_LANGUAGE.equals(language)) {
+                        sequenceFlow.setType("rule");
+                    } else if (XmlBPMNProcessDumper.XPATH_LANGUAGE.equals(language)) {
+                        sequenceFlow.setLanguage("XPath");
+                    } else if (XmlBPMNProcessDumper.JAVASCRIPT_LANGUAGE.equals(language)) {
                         sequenceFlow.setLanguage("JavaScript");
+                    } else if (XmlBPMNProcessDumper.FEEL_LANGUAGE.equals(language)) {
+                        sequenceFlow.setLanguage("FEEL");
                     } else {
-						throw new IllegalArgumentException("Unknown language "
-								+ language);
-					}
-				}
+                        throw new IllegalArgumentException("Unknown language " + language);
+                    }
+                }
 				sequenceFlow.setExpression(expression);
 			}
 			xmlNode = xmlNode.getNextSibling();
