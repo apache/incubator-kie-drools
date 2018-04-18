@@ -144,8 +144,15 @@ public class LocalSearchPhaseConfig extends PhaseConfig<LocalSearchPhaseConfig> 
             decider = new LocalSearchDecider(configPolicy.getLogIndentation(),
                     termination, moveSelector, acceptor, forager);
         } else {
+            Integer moveThreadBufferSize = configPolicy.getMoveThreadBufferSize();
+            if (moveThreadBufferSize == null) {
+                // TODO Verify this is a good default by more meticulous benchmarking on multiple machines and JDK's
+                // If it's too low, move threads will need to wait on the buffer, which hurts performance
+                // If it's too high, more moves are selected that aren't foraged
+                moveThreadBufferSize = 10;
+            }
             ThreadFactory threadFactory = configPolicy.buildThreadFactory(ChildThreadType.MOVE_THREAD);
-            int selectedMoveBufferSize = moveThreadCount * 10;
+            int selectedMoveBufferSize = moveThreadCount * moveThreadBufferSize;
             decider = new MultiThreadedLocalSearchDecider(configPolicy.getLogIndentation(),
                     termination, moveSelector, acceptor, forager, threadFactory, moveThreadCount, selectedMoveBufferSize);
         }

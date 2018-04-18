@@ -64,8 +64,8 @@ Advanced configuration:
 
 The `runnablePartThreadLimit` allows limiting CPU usage to avoid hanging your machine, see below.
 
-If you're running in a environment that doesn't like arbitrary thread creation,
-plug in a <<customThreadFactory, custom thread factory>>.
+To run in a environment that doesn't like arbitrary thread creation,
+plug in a <<customThreadFactory,custom thread factory>>.
 
 [IMPORTANT]
 ====

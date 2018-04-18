@@ -70,6 +70,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
     protected Long randomSeed = null;
     protected Class<? extends RandomFactory> randomFactoryClass = null;
     protected String moveThreadCount = null;
+    protected Integer moveThreadBufferSize = null;
     protected Class<? extends ThreadFactory> threadFactoryClass = null;
 
     @XStreamAlias("scanAnnotatedClasses")
@@ -147,6 +148,14 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
 
     public void setMoveThreadCount(String moveThreadCount) {
         this.moveThreadCount = moveThreadCount;
+    }
+
+    public Integer getMoveThreadBufferSize() {
+        return moveThreadBufferSize;
+    }
+
+    public void setMoveThreadBufferSize(Integer moveThreadBufferSize) {
+        this.moveThreadBufferSize = moveThreadBufferSize;
     }
 
     public Class<? extends ThreadFactory> getThreadFactoryClass() {
@@ -249,7 +258,9 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
         DefaultSolverScope<Solution_> solverScope = new DefaultSolverScope<>();
         solverScope.setScoreDirector(scoreDirectorFactory.buildScoreDirector(true, constraintMatchEnabledPreference));
 
-        HeuristicConfigPolicy configPolicy = new HeuristicConfigPolicy(environmentMode_, moveThreadCount_, threadFactoryClass, scoreDirectorFactory);
+        HeuristicConfigPolicy configPolicy = new HeuristicConfigPolicy(environmentMode_,
+                moveThreadCount_, moveThreadBufferSize, threadFactoryClass,
+                scoreDirectorFactory);
         TerminationConfig terminationConfig_ = terminationConfig == null ? new TerminationConfig()
                 : terminationConfig;
         BasicPlumbingTermination basicPlumbingTermination = new BasicPlumbingTermination(daemon_);
@@ -368,6 +379,8 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
                 randomFactoryClass, inheritedConfig.getRandomFactoryClass());
         moveThreadCount = ConfigUtils.inheritOverwritableProperty(moveThreadCount,
                 inheritedConfig.getMoveThreadCount());
+        moveThreadBufferSize = ConfigUtils.inheritOverwritableProperty(moveThreadBufferSize,
+                inheritedConfig.getMoveThreadBufferSize());
         threadFactoryClass = ConfigUtils.inheritOverwritableProperty(threadFactoryClass,
                 inheritedConfig.getThreadFactoryClass());
         scanAnnotatedClassesConfig = ConfigUtils.inheritConfig(scanAnnotatedClassesConfig, inheritedConfig.getScanAnnotatedClassesConfig());

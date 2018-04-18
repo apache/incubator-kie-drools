@@ -790,7 +790,8 @@ The `threadFactoryClass` allows to plug in a custom `ThreadFactory` for environm
 where arbitrary thread creation should be avoided,
 such as most application servers (including WildFly), Android, or Google App Engine.
 
-Configure the `ThreadFactory` on the solver and it will be used for all Thread creation:
+Configure the `ThreadFactory` on the solver to create the <<multithreadedIncrementalSolving,move threads>>
+and the <<partitionedSearch,Partition Search threads>> with it:
 
 [source,xml,options="nowrap"]
 ----
@@ -817,6 +818,18 @@ That one extra line heavily improves the score calculation speed,
 presuming that your machine has enough free CPU cores.
 It <<sizingHardwareAndSoftware,saturates 5 CPU cores>>:
 the 4 move threads fill up 4 CPU cores and the solver thread itself takes another CPU core.
+
+Advanced configuration:
+
+[source,xml,options="nowrap"]
+----
+<solver>
+  <moveThreadCount>4</moveThreadCount>
+  <moveThreadBufferSize>10</moveThreadBufferSize>
+  <threadFactoryClass>...MyAppServerThreadFactory</threadFactoryClass>
+  ...
+</solver>
+----
 
 The following ``moveThreadCount``s are supported:
 
@@ -848,3 +861,10 @@ Multithreaded solving is _still reproducible_, as long as the resolved `moveThre
 A run of the same solver configuration on 2 machines with a different number of CPU's,
 is still reproducible, unless the `moveThreadCount` is set to `AUTO` or a function of `availableProcessorCount`.
 ====
+
+The `moveThreadBufferSize` can be used to power tweak the number of moves that are selected but won't be foraged.
+Setting it too low will reduce performance, setting it too high might too.
+Unless you're deeply familiar with the inner workings of multithreaded solving, don't configure this parameter.
+
+To run in a environment that doesn't like arbitrary thread creation,
+use `threadFactoryClass` to plug in a <<customThreadFactory,custom thread factory>>.

@@ -54,7 +54,7 @@ public class QueuedEntityPlacerConfigTest {
         InnerScoreDirectorFactory scoreDirectorFactory = mock(InnerScoreDirectorFactory.class);
         when(scoreDirectorFactory.getSolutionDescriptor()).thenReturn(solutionDescriptor);
         when(scoreDirectorFactory.getScoreDefinition()).thenReturn(new SimpleScoreDefinition());
-        return new HeuristicConfigPolicy(EnvironmentMode.REPRODUCIBLE, null, null, scoreDirectorFactory);
+        return new HeuristicConfigPolicy(EnvironmentMode.REPRODUCIBLE, null, null, null, scoreDirectorFactory);
     }
 
 }

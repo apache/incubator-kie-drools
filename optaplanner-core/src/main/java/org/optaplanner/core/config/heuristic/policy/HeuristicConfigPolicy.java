@@ -39,6 +39,7 @@ public class HeuristicConfigPolicy {
     private final EnvironmentMode environmentMode;
     private final String logIndentation;
     private final Integer moveThreadCount;
+    private final Integer moveThreadBufferSize;
     private final Class<? extends ThreadFactory> threadFactoryClass;
     private final InnerScoreDirectorFactory scoreDirectorFactory;
 
@@ -52,16 +53,19 @@ public class HeuristicConfigPolicy {
     private Map<String, ValueMimicRecorder> valueMimicRecorderMap
             = new HashMap<>();
 
-    public HeuristicConfigPolicy(EnvironmentMode environmentMode, Integer moveThreadCount,
-            Class<? extends ThreadFactory> threadFactoryClass, InnerScoreDirectorFactory scoreDirectorFactory) {
-        this(environmentMode, "", moveThreadCount, threadFactoryClass, scoreDirectorFactory);
+    public HeuristicConfigPolicy(EnvironmentMode environmentMode,
+            Integer moveThreadCount, Integer moveThreadBufferSize, Class<? extends ThreadFactory> threadFactoryClass,
+            InnerScoreDirectorFactory scoreDirectorFactory) {
+        this(environmentMode, "", moveThreadCount, moveThreadBufferSize, threadFactoryClass, scoreDirectorFactory);
     }
 
-    public HeuristicConfigPolicy(EnvironmentMode environmentMode, String logIndentation, Integer moveThreadCount,
+    public HeuristicConfigPolicy(EnvironmentMode environmentMode, String logIndentation,
+            Integer moveThreadCount, Integer moveThreadBufferSize,
             Class<? extends ThreadFactory> threadFactoryClass, InnerScoreDirectorFactory scoreDirectorFactory) {
         this.environmentMode = environmentMode;
         this.logIndentation = logIndentation;
         this.moveThreadCount = moveThreadCount;
+        this.moveThreadBufferSize = moveThreadBufferSize;
         this.threadFactoryClass = threadFactoryClass;
         this.scoreDirectorFactory = scoreDirectorFactory;
     }
@@ -80,6 +84,10 @@ public class HeuristicConfigPolicy {
 
     public Class<? extends ThreadFactory> getThreadFactoryClass() {
         return threadFactoryClass;
+    }
+
+    public Integer getMoveThreadBufferSize() {
+        return moveThreadBufferSize;
     }
 
     public SolutionDescriptor getSolutionDescriptor() {
@@ -147,13 +155,15 @@ public class HeuristicConfigPolicy {
     // ************************************************************************
 
     public HeuristicConfigPolicy createPhaseConfigPolicy() {
-        return new HeuristicConfigPolicy(environmentMode, logIndentation, moveThreadCount,
-                threadFactoryClass, scoreDirectorFactory);
+        return new HeuristicConfigPolicy(environmentMode, logIndentation,
+                moveThreadCount, moveThreadBufferSize, threadFactoryClass,
+                scoreDirectorFactory);
     }
 
     public HeuristicConfigPolicy createChildThreadConfigPolicy(ChildThreadType childThreadType) {
-        return new HeuristicConfigPolicy(environmentMode, logIndentation + "        ", moveThreadCount,
-                threadFactoryClass, scoreDirectorFactory);
+        return new HeuristicConfigPolicy(environmentMode, logIndentation + "        ",
+                moveThreadCount, moveThreadBufferSize, threadFactoryClass,
+                scoreDirectorFactory);
     }
 
     // ************************************************************************
