@@ -140,4 +140,8 @@ public class PartitionSolver<Solution_> extends AbstractSolver<Solution_> {
         // TODO log?
     }
 
+    public long getScoreCalculationCount() {
+        return solverScope.getScoreCalculationCount();
+    }
+
 }

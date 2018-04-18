@@ -28,13 +28,15 @@ public final class PartitionChangedEvent<Solution_> {
     private final long eventIndex;
     private final PartitionChangedEventType type;
     private final PartitionChangeMove<Solution_> move;
+    private final Long partCalculationCount;
     private final Throwable throwable;
 
-    public PartitionChangedEvent(int partIndex, long eventIndex, PartitionChangedEventType type) {
+    public PartitionChangedEvent(int partIndex, long eventIndex, long partCalculationCount) {
         this.partIndex = partIndex;
         this.eventIndex = eventIndex;
-        this.type = type;
+        this.type = PartitionChangedEventType.FINISHED;
         move = null;
+        this.partCalculationCount = partCalculationCount;
         throwable = null;
     }
 
@@ -43,6 +45,7 @@ public final class PartitionChangedEvent<Solution_> {
         this.eventIndex = eventIndex;
         type = PartitionChangedEventType.MOVE;
         this.move = move;
+        partCalculationCount = null;
         throwable = null;
     }
 
@@ -51,6 +54,7 @@ public final class PartitionChangedEvent<Solution_> {
         this.eventIndex = eventIndex;
         type = PartitionChangedEventType.EXCEPTION_THROWN;
         move = null;
+        partCalculationCount = null;
         this.throwable = throwable;
     }
 
@@ -68,6 +72,10 @@ public final class PartitionChangedEvent<Solution_> {
 
     public PartitionChangeMove<Solution_>  getMove() {
         return move;
+    }
+
+    public Long getPartCalculationCount() {
+        return partCalculationCount;
     }
 
     public Throwable getThrowable() {

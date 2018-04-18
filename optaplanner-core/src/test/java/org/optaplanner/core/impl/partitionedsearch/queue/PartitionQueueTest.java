@@ -86,13 +86,13 @@ public class PartitionQueueTest {
         assertSame(moveA6, it.next());
         assertSame(moveC1, it.next());
 
-        executorService.submit(() -> partitionQueue.addFinish(0)).get();
+        executorService.submit(() -> partitionQueue.addFinish(0, 123)).get();
         PartitionChangeMove<TestdataSolution> moveC2 = buildMove();
         executorService.submit(() -> partitionQueue.addMove(2, moveC2)).get();
-        executorService.submit(() -> partitionQueue.addFinish(1)).get();
+        executorService.submit(() -> partitionQueue.addFinish(1, 123)).get();
         assertSame(moveC2, it.next());
 
-        executorService.submit(() -> partitionQueue.addFinish(2)).get();
+        executorService.submit(() -> partitionQueue.addFinish(2, 123)).get();
         assertSame(false, it.hasNext());
     }
 
@@ -103,13 +103,13 @@ public class PartitionQueueTest {
 
         PartitionChangeMove<TestdataSolution> moveA1 = buildMove();
         executorService.submit(() -> partitionQueue.addMove(0, moveA1)).get();
-        executorService.submit(() -> partitionQueue.addFinish(0)).get();
+        executorService.submit(() -> partitionQueue.addFinish(0, 123)).get();
         PartitionChangeMove<TestdataSolution> moveC1 = buildMove();
         executorService.submit(() -> partitionQueue.addMove(2, moveC1)).get();
         PartitionChangeMove<TestdataSolution> moveC2 = buildMove();
         executorService.submit(() -> partitionQueue.addMove(2, moveC2)).get();
-        executorService.submit(() -> partitionQueue.addFinish(2)).get();
-        executorService.submit(() -> partitionQueue.addFinish(1)).get();
+        executorService.submit(() -> partitionQueue.addFinish(2, 123)).get();
+        executorService.submit(() -> partitionQueue.addFinish(1, 123)).get();
         assertSame(true, it.hasNext());
         assertSame(moveA1, it.next());
         assertSame(true, it.hasNext());
@@ -124,7 +124,7 @@ public class PartitionQueueTest {
 
         PartitionChangeMove<TestdataSolution> moveA1 = buildMove();
         executorService.submit(() -> partitionQueue.addMove(0, moveA1)).get();
-        executorService.submit(() -> partitionQueue.addFinish(0)).get();
+        executorService.submit(() -> partitionQueue.addFinish(0, 123)).get();
         PartitionChangeMove<TestdataSolution> moveC1 = buildMove();
         executorService.submit(() -> partitionQueue.addMove(2, moveC1)).get();
         PartitionChangeMove<TestdataSolution> moveC2 = buildMove();
@@ -133,7 +133,7 @@ public class PartitionQueueTest {
         executorService.submit(() -> partitionQueue.addExceptionThrown(1, exception)).get();
         PartitionChangeMove<TestdataSolution> moveB1 = buildMove();
         executorService.submit(() -> partitionQueue.addMove(1, moveB1)).get();
-        executorService.submit(() -> partitionQueue.addFinish(1)).get();
+        executorService.submit(() -> partitionQueue.addFinish(1, 123)).get();
         assertSame(true, it.hasNext());
         assertSame(moveA1, it.next());
         assertSame(true, it.hasNext());

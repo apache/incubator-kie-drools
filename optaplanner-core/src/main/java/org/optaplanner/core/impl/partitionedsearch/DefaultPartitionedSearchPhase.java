@@ -117,7 +117,8 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
                 executor.submit(() -> {
                     try {
                         partitionSolver.solve(part);
-                        partitionQueue.addFinish(partIndex);
+                        long partCalculationCount = partitionSolver.getScoreCalculationCount();
+                        partitionQueue.addFinish(partIndex, partCalculationCount);
                     } catch (Throwable throwable) {
                         // Any Exception or even Error that happens here (on a partition thread) must be stored
                         // in the partitionQueue in order to be propagated to the solver thread.
@@ -138,6 +139,7 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
                 stepEnded(stepScope);
                 phaseScope.setLastCompletedStepScope(stepScope);
             }
+            phaseScope.addChildThreadsScoreCalculationCount(partitionQueue.getPartsCalculationCount());
         } finally {
             // 1. In case one of the partition threads threw an Exception, it is propagated here
             // but the other partition threads are not aware of the failure and may continue solving for a long time,

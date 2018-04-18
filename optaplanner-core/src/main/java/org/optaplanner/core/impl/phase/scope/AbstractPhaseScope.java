@@ -45,6 +45,7 @@ public abstract class AbstractPhaseScope<Solution_> {
     protected Score startingScore;
     protected Long endingSystemTimeMillis;
     protected Long endingScoreCalculationCount;
+    protected long childThreadsScoreCalculationCount = 0;
 
     protected int bestSolutionStepIndex;
 
@@ -122,8 +123,13 @@ public abstract class AbstractPhaseScope<Solution_> {
         return endingSystemTimeMillis - startingSystemTimeMillis;
     }
 
+    public void addChildThreadsScoreCalculationCount(long addition) {
+        solverScope.addChildThreadsScoreCalculationCount(addition);
+        childThreadsScoreCalculationCount += addition;
+    }
+
     public long getPhaseScoreCalculationCount() {
-        return endingScoreCalculationCount - startingScoreCalculationCount;
+        return endingScoreCalculationCount - startingScoreCalculationCount + childThreadsScoreCalculationCount;
     }
 
     /**

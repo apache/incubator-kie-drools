@@ -49,6 +49,7 @@ public class DefaultSolverScope<Solution_> {
 
     protected volatile Long startingSystemTimeMillis;
     protected volatile Long endingSystemTimeMillis;
+    protected long childThreadsScoreCalculationCount = 0;
 
     protected Score startingInitializedScore;
 
@@ -148,8 +149,12 @@ public class DefaultSolverScope<Solution_> {
         this.startingInitializedScore = startingInitializedScore;
     }
 
+    public void addChildThreadsScoreCalculationCount(long addition) {
+        childThreadsScoreCalculationCount += addition;
+    }
+
     public long getScoreCalculationCount() {
-        return scoreDirector.getCalculationCount();
+        return scoreDirector.getCalculationCount() + childThreadsScoreCalculationCount;
     }
 
     public Solution_ getBestSolution() {

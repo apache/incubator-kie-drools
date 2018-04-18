@@ -47,6 +47,7 @@ public class PartitionQueue<Solution_> implements Iterable<PartitionChangeMove<S
 
     // Only used by consumer
     private int openPartCount;
+    private long partsCalculationCount;
     private final Map<Integer, Long> processedEventIndexMap; // Key is partIndex
 
     public PartitionQueue(int partCount) {
@@ -59,6 +60,7 @@ public class PartitionQueue<Solution_> implements Iterable<PartitionChangeMove<S
         }
         this.nextEventIndexMap = Collections.unmodifiableMap(nextEventIndexMap);
         openPartCount = partCount;
+        partsCalculationCount = 0L;
         // HashMap because only the consumer thread uses it
         processedEventIndexMap = new HashMap<>(partCount);
         for (int i = 0; i < partCount; i++) {
@@ -85,12 +87,13 @@ public class PartitionQueue<Solution_> implements Iterable<PartitionChangeMove<S
      * This method is thread-safe.
      * The previous move for this partIndex (that haven't been consumed yet), will still be returned during iteration.
      * @param partIndex {@code 0 <= partIndex < partCount}
+     * @param partCalculationCount at least 0
      * @see BlockingQueue#add(Object)
      */
-    public void addFinish(int partIndex) {
+    public void addFinish(int partIndex, long partCalculationCount) {
         long eventIndex = nextEventIndexMap.get(partIndex).getAndIncrement();
         PartitionChangedEvent<Solution_> event = new PartitionChangedEvent<>(
-                partIndex, eventIndex, PartitionChangedEvent.PartitionChangedEventType.FINISHED);
+                partIndex, eventIndex, partCalculationCount);
         queue.add(event);
     }
 
@@ -141,6 +144,7 @@ public class PartitionQueue<Solution_> implements Iterable<PartitionChangeMove<S
                         return latestMoveEvent.getMove();
                     case FINISHED:
                         openPartCount--;
+                        partsCalculationCount += triggerEvent.getPartCalculationCount();
                         if (openPartCount <= 0) {
                             return noUpcomingSelection();
                         } else {
@@ -158,6 +162,10 @@ public class PartitionQueue<Solution_> implements Iterable<PartitionChangeMove<S
             }
         }
 
+    }
+
+    public long getPartsCalculationCount() {
+        return partsCalculationCount;
     }
 
 }
