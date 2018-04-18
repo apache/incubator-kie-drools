@@ -17,18 +17,21 @@
 
 package org.drools.core.util;
 
-import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.AbstractMap;
+import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toMap;
 
 /**
  * A utility class that exposes getters and setters of a bean
@@ -41,7 +44,7 @@ public class BeanMap<T> extends AbstractMap<String, Object> {
 
     public BeanMap(T bean) {
         this.bean = bean;
-        this.accessors = Collections.unmodifiableMap(accessorsOf(bean));
+        this.accessors = accessorsMapOf(bean);
     }
 
     public T getBean() {
@@ -75,24 +78,29 @@ public class BeanMap<T> extends AbstractMap<String, Object> {
     public Object put(String key, Object value) {
         Accessors accessors = this.accessors.get(key);
         if (accessors == null) {
-            throw new IllegalArgumentException("Unknown key '" + key + "'");
+            throw new NoSuchElementException("Unknown key '" + key + "'");
         }
         return accessors.setValue(value);
     }
 
-    private Map<String, Accessors> accessorsOf(T bean) {
-        HashMap<String, Accessors> accessors = new HashMap<>();
-        if (bean != null) {
-            try {
-                BeanInfo beanInfo = Introspector.getBeanInfo(bean.getClass());
-                for (PropertyDescriptor pd : beanInfo.getPropertyDescriptors()) {
-                    accessors.put(pd.getName(), Accessors.of(bean, pd));
-                }
-            } catch (IntrospectionException e) {
-                throw new IllegalArgumentException(e);
-            }
+    private static Map<String, Accessors> accessorsMapOf(Object bean) {
+        if (bean == null) {
+            return Collections.emptyMap();
         }
-        return accessors;
+        return propertyDescriptorsOf(bean)
+                .collect(toMap(
+                        PropertyDescriptor::getName,
+                        pd -> Accessors.of(bean, pd)));
+    }
+
+    private static Stream<PropertyDescriptor> propertyDescriptorsOf(Object bean) {
+        try {
+            return Arrays.stream(
+                    Introspector.getBeanInfo(bean.getClass())
+                            .getPropertyDescriptors());
+        } catch (IntrospectionException ex) {
+            throw new IllegalArgumentException(ex);
+        }
     }
 
     private static class Accessors implements Map.Entry<String, Object> {
