@@ -15,7 +15,7 @@
  *
  */
 
-package org.drools.core.process.instance.impl;
+package org.drools.core.util;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -32,14 +32,14 @@ import java.util.Set;
 
 /**
  * A utility class that exposes getters and setters of a bean
- * as key/value pairss in a Map.
+ * as key/value pairs in a Map.
  */
-class BeanMap<T> extends AbstractMap<String, Object> {
+public class BeanMap<T> extends AbstractMap<String, Object> {
 
     private final T bean;
     private final Map<String, Accessors> accessors;
 
-    BeanMap(T bean) {
+    public BeanMap(T bean) {
         this.bean = bean;
         this.accessors = Collections.unmodifiableMap(accessorsOf(bean));
     }
@@ -95,7 +95,7 @@ class BeanMap<T> extends AbstractMap<String, Object> {
         return accessors;
     }
 
-    static class Accessors implements Map.Entry<String, Object> {
+    private static class Accessors implements Map.Entry<String, Object> {
 
         final String id;
         final Method getter, setter;

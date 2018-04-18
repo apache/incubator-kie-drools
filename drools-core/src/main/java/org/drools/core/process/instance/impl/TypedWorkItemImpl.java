@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import org.drools.core.process.instance.TypedWorkItem;
+import org.drools.core.util.OverflowingBeanMap;
 
 /**
  * A TypedWorkItem implementation, using arbitrary classes

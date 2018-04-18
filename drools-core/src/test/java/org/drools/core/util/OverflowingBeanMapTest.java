@@ -15,14 +15,44 @@
  *
  */
 
-package org.drools.core.process.instance.impl;
+package org.drools.core.util;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class BeanMapTest {
+public class OverflowingBeanMapTest {
+
+    static class Person {
+
+        private String name;
+        private int age;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public int getAge() {
+            return age;
+        }
+
+        public void setAge(int age) {
+            this.age = age;
+        }
+
+        @Override
+        public String toString() {
+            return "Person{" +
+                    "name='" + name + '\'' +
+                    ", age=" + age +
+                    '}';
+        }
+    }
 
     Person person;
 
@@ -35,21 +65,30 @@ public class BeanMapTest {
 
     @Test
     public void get() {
-        BeanMap<Person> map = new BeanMap<>(person);
+        BeanMap<Person> map = new OverflowingBeanMap<>(person);
         assertEquals("Paul", map.get("name"));
     }
 
     @Test
     public void put() {
-        BeanMap<Person> map = new BeanMap<>(person);
+        BeanMap<Person> map = new OverflowingBeanMap<>(person);
         map.put("name", "Ringo");
         assertEquals("Ringo", person.getName());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void nullObject() {
-        BeanMap<Void> map = new BeanMap<>(null);
+        BeanMap<Void> map = new OverflowingBeanMap<>(null);
         assertEquals(0, map.size());
         map.put("Blah", "x");
+    }
+
+    @Test
+    public void putExtra() {
+        OverflowingBeanMap<Person> map = new OverflowingBeanMap<>(person);
+        map.put("address", "Liverpool");
+        assertEquals(person.getName(), "Paul");
+        assertEquals("Liverpool", map.get("address"));
+        assertEquals(4, map.size());
     }
 }

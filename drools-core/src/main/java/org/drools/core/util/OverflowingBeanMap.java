@@ -15,29 +15,32 @@
  *
  */
 
-package org.drools.core.process.instance.impl;
+package org.drools.core.util;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.drools.core.util.BeanMap;
+
 /**
  * A utility class that exposes getters and setters of a bean
- * as key/value pairss in a Map, allowing for extra "overflowing"
+ * as key/value pairs in a Map, allowing for extra "overflowing"
  * parameters to be stored in a separate map.
  */
-class OverflowingBeanMap<T> extends BeanMap<T> {
+public class OverflowingBeanMap<T> extends BeanMap<T> {
 
-    Map<String, Object> overflow = new HashMap<>();
+    private Map<String, Object> overflow = new HashMap<>();
 
-    OverflowingBeanMap(T bean) {
+    public OverflowingBeanMap(T bean) {
         super(bean);
     }
 
     @Override
     public Set<Entry<String, Object>> entrySet() {
-        Set<Entry<String, Object>> entries = new HashSet<>(super.entrySet());
+        Set<Entry<String, Object>> entries = new HashSet<>();
+        entries.addAll(super.entrySet());
         entries.addAll(overflow.entrySet());
         return entries;
     }
