@@ -29,8 +29,8 @@ public class RearrangingBlockingQueue<Solution_> {
     private final BlockingQueue<MoveResult<Solution_>> innerQueue;
     private final Map<Integer, MoveResult<Solution_>> backlog;
 
-    private int filterStepIndex = -1;
-    private int searchMoveIndex = -1;
+    private int filterStepIndex = Integer.MIN_VALUE;
+    private int nextMoveIndex =  Integer.MIN_VALUE;
 
     public RearrangingBlockingQueue(int capacity) {
         innerQueue = new ArrayBlockingQueue<>(capacity);
@@ -50,7 +50,7 @@ public class RearrangingBlockingQueue<Solution_> {
             filterStepIndex = stepIndex;
             innerQueue.clear();
         }
-        searchMoveIndex = 0;
+        nextMoveIndex = 0;
         backlog.clear();
     }
 
@@ -115,9 +115,10 @@ public class RearrangingBlockingQueue<Solution_> {
      * @see BlockingQueue#take()
      */
     public MoveResult<Solution_> take() throws InterruptedException {
-        searchMoveIndex++;
+        int moveIndex = nextMoveIndex;
+        nextMoveIndex++;
         if (!backlog.isEmpty()) {
-            MoveResult<Solution_> result = backlog.remove(searchMoveIndex);
+            MoveResult<Solution_> result = backlog.remove(moveIndex);
             if (result != null) {
                 return result;
             }
@@ -130,7 +131,7 @@ public class RearrangingBlockingQueue<Solution_> {
                         + " Relayed here in the parent thread.",
                         result.getThrowable());
             }
-            if (result.getMoveIndex() == searchMoveIndex) {
+            if (result.getMoveIndex() == moveIndex) {
                 return result;
             } else {
                 backlog.put(result.getMoveIndex(), result);
