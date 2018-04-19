@@ -39,6 +39,7 @@ public @interface Wid {
     String icon() default "";
     String description() default "";
     String defaultHandler() default "";
+    String documentation() default "";
     WidParameter[] parameters() default {};
     WidParameterValues[] parameterValues() default {};
     WidResult[] results() default {};

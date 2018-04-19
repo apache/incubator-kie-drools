@@ -29,6 +29,7 @@ public class WidInfo {
     private String description;
     private String defaultHandler;
     private String defaultHandlerNoType;
+    private String documentation;
     private Map<String, InternalWidParamsAndResults> parameters;
     private Map<String, InternalWidParameterValues> parameterValues;
     private Map<String, InternalWidParamsAndResults> results;
@@ -59,6 +60,8 @@ public class WidInfo {
 
             this.defaultHandlerNoType = removeType(setParamValue(this.defaultHandler,
                                                                  wid.defaultHandler()));
+
+            this.documentation = setParamValue(this.documentation, wid.documentation());
 
             if (wid.parameters().length > 0) {
                 for (WidParameter widParam : wid.parameters()) {
@@ -288,6 +291,14 @@ public class WidInfo {
 
     public void setDefaultHandlerNoType(String defaultHandlerNoType) {
         this.defaultHandlerNoType = defaultHandlerNoType;
+    }
+
+    public String getDocumentation() {
+        return documentation;
+    }
+
+    public void setDocumentation(String documentation) {
+        this.documentation = documentation;
     }
 
     public Map<String, InternalWidParamsAndResults> getParameters() {

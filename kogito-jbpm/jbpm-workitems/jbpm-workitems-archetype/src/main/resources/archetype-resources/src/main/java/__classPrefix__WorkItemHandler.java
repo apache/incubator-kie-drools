@@ -27,8 +27,9 @@ import org.jbpm.process.workitem.core.util.WidResult;
 import org.jbpm.process.workitem.core.util.WidMavenDepends;
 
 @Wid(widfile="${classPrefix}Definitions.wid", name="${classPrefix}Definitions",
-        displayName="${classPrefix}Definitions", icon="${classPrefix}Icon.png",
+        displayName="${classPrefix}Definitions", icon="",
         defaultHandler="mvel: new ${package}.${classPrefix}WorkItemHandler()",
+        documentation = "${artifactId}/index.html",
         parameters={
             @WidParameter(name="SampleParam", required = true),
             @WidParameter(name="SampleParamTwo", required = true)
@@ -37,7 +38,7 @@ import org.jbpm.process.workitem.core.util.WidMavenDepends;
             @WidResult(name="SampleResult")
         },
         mavenDepends={
-            @WidMavenDepends(group="${groupId}", artifact="${rootArtifactId}", version="${version}")
+            @WidMavenDepends(group="${groupId}", artifact="${artifactId}", version="${archetypeVersion}")
         })
 public class ${classPrefix}WorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
 
