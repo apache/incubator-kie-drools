@@ -20,17 +20,26 @@ package org.jbpm.casemgmt.impl.command;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.drools.core.ClassObjectFilter;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
+import org.drools.core.common.InternalKnowledgeRuntime;
+import org.drools.core.event.ProcessEventSupport;
 import org.jbpm.casemgmt.api.auth.AuthorizationManager;
 import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
 import org.jbpm.casemgmt.impl.event.CaseEventSupport;
 import org.jbpm.casemgmt.impl.model.instance.CaseFileInstanceImpl;
+import org.jbpm.process.instance.InternalProcessRuntime;
+import org.jbpm.process.instance.ProcessInstance;
+import org.jbpm.services.api.ProcessService;
 import org.kie.api.runtime.Context;
+import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.identity.IdentityProvider;
+import org.kie.internal.runtime.manager.context.CaseContext;
 
 /**
  * Updates case file with new data
@@ -39,16 +48,23 @@ public class AddDataCaseFileInstanceCommand extends CaseCommand<Void> {
 
     private static final long serialVersionUID = 6345222909719335953L;
 
+    private String deploymentId;
+    private Long processInstanceId;
     private Map<String, Object> parameters;
     private AuthorizationManager authorizationManager;
     
     private List<String> accessRestriction;
     
-    public AddDataCaseFileInstanceCommand(IdentityProvider identityProvider, Map<String, Object> parameters, List<String> accessRestriction, AuthorizationManager authorizationManager) {
+    private transient ProcessService processService;
+    
+    public AddDataCaseFileInstanceCommand(String deploymentId, Long processInstanceId, IdentityProvider identityProvider, Map<String, Object> parameters, List<String> accessRestriction, AuthorizationManager authorizationManager, ProcessService processService) {
         super(identityProvider);
+        this.deploymentId = deploymentId;
+        this.processInstanceId = processInstanceId;
         this.parameters = parameters;   
         this.authorizationManager = authorizationManager;
         this.accessRestriction = accessRestriction;
+        this.processService = processService;
     }
 
     @Override
@@ -78,7 +94,32 @@ public class AddDataCaseFileInstanceCommand extends CaseCommand<Void> {
                 ((CaseFileInstanceImpl) caseFile).removeDataAccessRestriction(name);
             }
         }
-        
+                
+        if (parameters != null && !parameters.isEmpty()) {
+            processService.execute(deploymentId, CaseContext.get(caseFile.getCaseId()), new ExecutableCommand<Void>() {
+    
+                private static final long serialVersionUID = -7093369406457484236L;
+    
+                @Override
+                public Void execute(Context context) {
+                    KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
+                    ProcessInstance pi = (ProcessInstance) ksession.getProcessInstance(processInstanceId);
+                    if (pi != null) {
+                        ProcessEventSupport processEventSupport = ((InternalProcessRuntime) ((InternalKnowledgeRuntime) ksession).getProcessRuntime()).getProcessEventSupport();
+                        for (Entry<String, Object> entry : parameters.entrySet()) {  
+                            String name = "caseFile_" + entry.getKey();
+                            processEventSupport.fireAfterVariableChanged(
+                                name,
+                                name,
+                                null, entry.getValue(), 
+                                pi,
+                                (KieRuntime) ksession );
+                        }
+                    }
+                    return null;
+                }
+            });
+        }
         
         ksession.update(factHandle, caseFile);
         triggerRules(ksession);

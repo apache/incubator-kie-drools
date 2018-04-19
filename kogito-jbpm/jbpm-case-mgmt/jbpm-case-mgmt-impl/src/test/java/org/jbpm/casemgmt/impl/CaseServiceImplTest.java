@@ -1162,6 +1162,104 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
             }
         }
     }
+    
+    @Test
+    public void testStartThenReopenEmptyCaseUpdateData() {
+        Map<String, Object> data = new HashMap<>();
+        data.put("name", "my first case");
+        CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), EMPTY_CASE_P_ID, data);
+
+        
+        String caseId = caseService.startCase(deploymentUnit.getIdentifier(), EMPTY_CASE_P_ID, caseFile);
+        assertNotNull(caseId);
+        assertEquals(FIRST_CASE_ID, caseId);
+        try {
+            CaseInstance cInstance = caseService.getCaseInstance(caseId);
+            assertNotNull(cInstance);
+            assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
+            assertEquals("my first case", cInstance.getCaseDescription());
+
+            long firstCaseProcessInstanceId = ((CaseInstanceImpl) cInstance).getProcessInstanceId();
+            
+            Collection<CaseFileItem> caseFileItems = caseRuntimeDataService.getCaseInstanceDataItems(caseId, new QueryContext());
+            assertNotNull(caseFileItems);
+            assertEquals(1, caseFileItems.size());
+            
+            CaseFileItem fileItem = caseFileItems.iterator().next();
+            assertNotNull(fileItem);
+            assertEquals("name", fileItem.getName());
+            assertEquals("my first case", fileItem.getValue());
+            
+            Collection<VariableDesc> vars = runtimeDataService.getVariablesCurrentState(((CaseInstanceImpl) cInstance).getProcessInstanceId());
+            assertNotNull(vars);
+            assertEquals(3, vars.size());
+            Map<String, Object> mappedVars = vars.stream().collect(toMap(v -> v.getVariableId(), v -> v.getNewValue()));
+            assertEquals("my first case", mappedVars.get("caseFile_name"));
+            assertEquals(FIRST_CASE_ID, mappedVars.get("CaseId"));
+            assertEquals("john", mappedVars.get("initiator"));
+
+            caseService.cancelCase(caseId);
+            CaseInstance instance = caseService.getCaseInstance(caseId);
+            Assertions.assertThat(instance.getStatus()).isEqualTo(CaseStatus.CANCELLED.getId());
+            data = new HashMap<>();
+            data.put("name", "my first case reopened");            
+
+            caseService.reopenCase(caseId, deploymentUnit.getIdentifier(), EMPTY_CASE_P_ID, data);
+            cInstance = caseService.getCaseInstance(caseId);
+            assertNotNull(cInstance);
+            assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
+            assertEquals("my first case reopened", cInstance.getCaseDescription());
+
+            long secondCaseProcessInstanceId = ((CaseInstanceImpl) cInstance).getProcessInstanceId();
+            assertTrue(secondCaseProcessInstanceId > firstCaseProcessInstanceId);
+            
+            caseFileItems = caseRuntimeDataService.getCaseInstanceDataItems(caseId, new QueryContext());
+            assertNotNull(caseFileItems);
+            assertEquals(1, caseFileItems.size());
+            
+            fileItem = caseFileItems.iterator().next();
+            assertNotNull(fileItem);
+            assertEquals("name", fileItem.getName());
+            assertEquals("my first case reopened", fileItem.getValue());
+            
+            vars = runtimeDataService.getVariablesCurrentState(secondCaseProcessInstanceId);
+            assertNotNull(vars);
+            assertEquals(3, vars.size());
+            mappedVars = vars.stream().collect(toMap(v -> v.getVariableId(), v -> v.getNewValue()));
+            assertEquals("my first case reopened", mappedVars.get("caseFile_name"));
+            assertEquals(FIRST_CASE_ID, mappedVars.get("CaseId"));
+            assertEquals("john", mappedVars.get("initiator"));
+            
+            caseService.addDataToCaseFile(caseId, "name", "my first case updated");
+            
+            caseFileItems = caseRuntimeDataService.getCaseInstanceDataItems(caseId, new QueryContext());
+            assertNotNull(caseFileItems);
+            assertEquals(1, caseFileItems.size());
+            
+            fileItem = caseFileItems.iterator().next();
+            assertNotNull(fileItem);
+            assertEquals("name", fileItem.getName());
+            assertEquals("my first case updated", fileItem.getValue());
+            
+            vars = runtimeDataService.getVariablesCurrentState(secondCaseProcessInstanceId);
+            assertNotNull(vars);
+            assertEquals(3, vars.size());
+            mappedVars = vars.stream().collect(toMap(v -> v.getVariableId(), v -> v.getNewValue()));
+            assertEquals("my first case updated", mappedVars.get("caseFile_name"));
+            assertEquals(FIRST_CASE_ID, mappedVars.get("CaseId"));
+            assertEquals("john", mappedVars.get("initiator"));
+
+            caseService.destroyCase(caseId);
+            caseId = null;
+        } catch (Exception e) {
+            logger.error("Unexpected error {}", e.getMessage(), e);
+            fail("Unexpected exception " + e.getMessage());
+        } finally {
+            if (caseId != null) {
+                caseService.cancelCase(caseId);
+            }
+        }
+    }
 
     @Test
     public void testStartScriptRoleAssignmentCase() {

@@ -444,7 +444,7 @@ public class CaseServiceImpl implements CaseService {
         
         Map<String, Object> parameters = new HashMap<>();
         parameters.put(name, value);
-        processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new AddDataCaseFileInstanceCommand(identityProvider, parameters, accessRestriction, authorizationManager));        
+        processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new AddDataCaseFileInstanceCommand(pi.getDeploymentId(), pi.getId(), identityProvider, parameters, accessRestriction, authorizationManager, processService));        
     }
 
     @Override
@@ -457,7 +457,7 @@ public class CaseServiceImpl implements CaseService {
             accessRestriction = Arrays.asList(restrictedTo);
         }
         
-        processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new AddDataCaseFileInstanceCommand(identityProvider, data, accessRestriction, authorizationManager));
+        processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new AddDataCaseFileInstanceCommand(pi.getDeploymentId(), pi.getId(), identityProvider, data, accessRestriction, authorizationManager, processService));
     }
     
     @Override

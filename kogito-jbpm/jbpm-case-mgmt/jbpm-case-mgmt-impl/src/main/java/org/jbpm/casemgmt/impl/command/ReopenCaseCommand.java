@@ -19,20 +19,28 @@ package org.jbpm.casemgmt.impl.command;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
+import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
+import org.drools.core.common.InternalKnowledgeRuntime;
+import org.drools.core.event.ProcessEventSupport;
 import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
 import org.jbpm.casemgmt.impl.event.CaseEventSupport;
 import org.jbpm.casemgmt.impl.model.instance.CaseFileInstanceImpl;
+import org.jbpm.process.instance.InternalProcessRuntime;
+import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.services.api.ProcessService;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.EnvironmentName;
+import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.KieInternalServices;
 import org.kie.internal.identity.IdentityProvider;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.process.CorrelationKeyFactory;
+import org.kie.internal.runtime.manager.context.CaseContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,6 +93,32 @@ public class ReopenCaseCommand extends CaseCommand<Void> {
         // set case id to allow it to use CaseContext when creating runtime engine
         params.put(EnvironmentName.CASE_ID, caseId);
         long processInstanceId = processService.startProcess(deploymentId, caseDefinitionId, correlationKey, params);
+        final Map<String, Object> caseData = caseFile.getData();
+        if (caseData != null && !caseData.isEmpty()) {
+            processService.execute(deploymentId, CaseContext.get(caseId), new ExecutableCommand<Void>() {
+    
+                private static final long serialVersionUID = -7093369406457484236L;
+    
+                @Override
+                public Void execute(Context context) {
+                    KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
+                    ProcessInstance pi = (ProcessInstance) ksession.getProcessInstance(processInstanceId);
+                    if (pi != null) {
+                        ProcessEventSupport processEventSupport = ((InternalProcessRuntime) ((InternalKnowledgeRuntime) ksession).getProcessRuntime()).getProcessEventSupport();
+                        for (Entry<String, Object> entry : caseData.entrySet()) {  
+                            String name = "caseFile_" + entry.getKey();
+                            processEventSupport.fireAfterVariableChanged(
+                                name,
+                                name,
+                                null, entry.getValue(), 
+                                pi,
+                                (KieRuntime) ksession );
+                        }
+                    }
+                    return null;
+                }
+            });
+        }
         logger.debug("Case {} successfully reopened (process instance id {})", caseId, processInstanceId);
         caseEventSupport.fireAfterCaseReopened(caseId, caseFile, deploymentId, caseDefinitionId, data, processInstanceId);
         return null;
