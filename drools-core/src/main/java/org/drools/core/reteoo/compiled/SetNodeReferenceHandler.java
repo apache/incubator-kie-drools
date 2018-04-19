@@ -62,17 +62,18 @@ public class SetNodeReferenceHandler extends AbstractCompilerHandler {
         return assignmentStatement;
     }
 
-    private String getContextVariableAssignmentStatement(AlphaNode alphaNode) {
-        String contextVariableName = getContextVariableName(alphaNode);
-        String alphaVariableName = getVariableName(alphaNode);
-        String assignmentStatement;
 
-        // we need the constraint for an alpha node assignment, so generate a cast, plus the method call to get
-        // the constraint
-        assignmentStatement = contextVariableName + " = " + alphaVariableName + ".createContextEntry();";
-
-        return assignmentStatement;
-    }
+//    private String getContextVariableAssignmentStatement(AlphaNode alphaNode) {
+//        String contextVariableName = getContextVariableName(alphaNode);
+//        String alphaVariableName = getVariableName(alphaNode);
+//        String assignmentStatement;
+//
+//        // we need the constraint for an alpha node assignment, so generate a cast, plus the method call to get
+//        // the constraint
+//        assignmentStatement = contextVariableName + " = " + alphaVariableName + ".createContextEntry();";
+//
+//        return assignmentStatement;
+//    }
 
 
     @Override
@@ -99,7 +100,7 @@ public class SetNodeReferenceHandler extends AbstractCompilerHandler {
 
         builder.append("case ").append(alphaNode.getId()).append(": ").append(NEWLINE);
         builder.append(getVariableAssignmentStatement(alphaNode, PARAM_NAME)).append(NEWLINE);
-        builder.append(getContextVariableAssignmentStatement(alphaNode)).append(NEWLINE);
+//        builder.append(getContextVariableAssignmentStatement(alphaNode)).append(NEWLINE);
         builder.append("break;").append(NEWLINE);
     }
 

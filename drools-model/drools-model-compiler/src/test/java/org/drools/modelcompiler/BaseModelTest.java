@@ -55,8 +55,8 @@ public abstract class BaseModelTest {
                 BaseModelTest.RUN_TYPE.STANDARD_FROM_DRL,
                 BaseModelTest.RUN_TYPE.FLOW_DSL,
                 BaseModelTest.RUN_TYPE.PATTERN_DSL,
-//                STANDARD_WITH_ALPHA_NETWORK,
-//                PATTERN_WITH_ALPHA_NETWORK,
+                STANDARD_WITH_ALPHA_NETWORK,
+                PATTERN_WITH_ALPHA_NETWORK,
          };
     }
 
