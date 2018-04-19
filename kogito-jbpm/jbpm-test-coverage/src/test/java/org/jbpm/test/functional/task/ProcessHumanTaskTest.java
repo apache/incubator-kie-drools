@@ -19,7 +19,12 @@ package org.jbpm.test.functional.task;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import org.jbpm.persistence.api.integration.InstanceView;
+import org.jbpm.persistence.api.integration.model.ProcessInstanceView;
+import org.jbpm.persistence.api.integration.model.TaskInstanceView;
+import org.jbpm.persistence.processinstance.objects.TestEventEmitter;
 import org.jbpm.test.JbpmTestCase;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
@@ -187,5 +192,52 @@ public class ProcessHumanTaskTest extends JbpmTestCase {
         assertNodeTriggered(processInstance.getId(), "End");
         assertProcessInstanceNotActive(processInstance.getId(), ksession);
         manager.disposeRuntimeEngine(runtimeEngine);
+    }
+
+    @Test
+    public void testProcessAndTaskIntegrationWithEventManager() {
+        sessionPersistence = true; // so JPAProcessInstanceManager is used
+        TestEventEmitter.clear();
+        createRuntimeManager("org/jbpm/test/functional/task/humantask.bpmn");
+        RuntimeEngine runtimeEngine = getRuntimeEngine();
+        KieSession ksession = runtimeEngine.getKieSession();
+        TaskService taskService = runtimeEngine.getTaskService();
+
+        ProcessInstance processInstance = ksession.startProcess("com.sample.bpmn.hello");
+
+        assertProcessInstanceActive(processInstance.getId(), ksession);
+
+        // let john execute Task 1
+        List<TaskSummary> list = taskService.getTasksAssignedAsPotentialOwner("john", "en-UK");
+        TaskSummary task = list.get(0);
+        logger.info("John is executing task {}", task.getName());
+        taskService.start(task.getId(), "john");
+        taskService.complete(task.getId(), "john", null);
+
+        // let mary execute Task 2
+        list = taskService.getTasksAssignedAsPotentialOwner("mary", "en-UK");
+        task = list.get(0);
+        logger.info("Mary is executing task {}", task.getName());
+        taskService.start(task.getId(), "mary");
+        taskService.complete(task.getId(), "mary", null);
+
+        List<InstanceView<?>> events = TestEventEmitter.getEvents();
+
+        List<InstanceView<?>> piEvents = events
+                                        .stream()
+                                        .filter(instanceView -> instanceView instanceof ProcessInstanceView)
+                                        .collect(Collectors.toList());
+
+        List<InstanceView<?>> tiEvents = events
+                                        .stream()
+                                        .filter(instanceView -> instanceView instanceof TaskInstanceView)
+                                        .collect(Collectors.toList());
+
+        assertEquals(3, events.size());
+        assertEquals(1, piEvents.size());
+        assertEquals(2, tiEvents.size());
+
+        assertNodeTriggered(processInstance.getId(), "End");
+        assertProcessInstanceNotActive(processInstance.getId(), ksession);
     }
 }
