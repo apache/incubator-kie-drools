@@ -65,7 +65,7 @@ public class DeclarationsHandler extends AbstractCompilerHandler {
         Class<?> variableType = getVariableType(alphaNode);
         String variableName = getVariableName(alphaNode);
         // comment for variable declaration is just the toString of the node
-        String comment = alphaNode.toString();
+        String comment = alphaNode.toString().replaceAll("\\n", "");
 
         return PRIVATE_MODIFIER + " " + variableType.getName() + " " + variableName + "; // " + comment;
     }
