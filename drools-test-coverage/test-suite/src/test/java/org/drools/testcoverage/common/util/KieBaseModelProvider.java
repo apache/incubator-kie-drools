@@ -22,6 +22,11 @@ import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.conf.KieBaseOption;
 
 import static java.util.Arrays.asList;
+import static org.drools.testcoverage.common.util.KieBaseModelProvider.RunType.FLOW_DSL;
+import static org.drools.testcoverage.common.util.KieBaseModelProvider.RunType.FLOW_WITH_ALPHA_NETWORK;
+import static org.drools.testcoverage.common.util.KieBaseModelProvider.RunType.PATTERN_DSL;
+import static org.drools.testcoverage.common.util.KieBaseModelProvider.RunType.PATTERN_WITH_ALPHA_NETWORK;
+import static org.drools.testcoverage.common.util.KieBaseModelProvider.RunType.STANDARD_WITH_ALPHA_NETWORK;
 
 /**
  * Basic provider class for KieBaseModel instances.
@@ -37,10 +42,17 @@ public interface KieBaseModelProvider {
     enum RunType {
         FLOW_DSL,
         PATTERN_DSL,
-        STANDARD_FROM_DRL
+        STANDARD_FROM_DRL,
+        STANDARD_WITH_ALPHA_NETWORK,
+        PATTERN_WITH_ALPHA_NETWORK,
+        FLOW_WITH_ALPHA_NETWORK
     }
 
     default boolean useCanonicalModel() {
-        return asList(RunType.FLOW_DSL, RunType.PATTERN_DSL).contains(runType());
+        return asList(FLOW_DSL, PATTERN_DSL, FLOW_WITH_ALPHA_NETWORK, PATTERN_WITH_ALPHA_NETWORK).contains(runType());
+    }
+
+    default boolean useAlphaNetwork() {
+        return asList(STANDARD_WITH_ALPHA_NETWORK, FLOW_WITH_ALPHA_NETWORK,PATTERN_WITH_ALPHA_NETWORK).contains(runType());
     }
 }

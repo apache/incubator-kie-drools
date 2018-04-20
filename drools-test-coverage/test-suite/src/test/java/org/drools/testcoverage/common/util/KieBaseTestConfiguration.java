@@ -29,8 +29,11 @@ import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.conf.KieBaseOption;
 
 import static org.drools.testcoverage.common.util.KieBaseModelProvider.RunType.FLOW_DSL;
+import static org.drools.testcoverage.common.util.KieBaseModelProvider.RunType.FLOW_WITH_ALPHA_NETWORK;
 import static org.drools.testcoverage.common.util.KieBaseModelProvider.RunType.PATTERN_DSL;
+import static org.drools.testcoverage.common.util.KieBaseModelProvider.RunType.PATTERN_WITH_ALPHA_NETWORK;
 import static org.drools.testcoverage.common.util.KieBaseModelProvider.RunType.STANDARD_FROM_DRL;
+import static org.drools.testcoverage.common.util.KieBaseModelProvider.RunType.STANDARD_WITH_ALPHA_NETWORK;
 
 /**
  * Represents various tested KieBase configurations.
@@ -82,6 +85,36 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * Represents KieBase configuration with
      * <code>EventProcessingOption.CLOUD</code> and
      * <code>EqualityBehaviorOption.IDENTITY</code> options set.
+     * Canonical rule model is not used.
+     */
+    CLOUD_IDENTITY_ALPHA_NETWORK {
+        @Override
+        public RunType runType() {
+            return STANDARD_WITH_ALPHA_NETWORK;
+        }
+
+        @Override
+        public KieBaseModel getKieBaseModel(final KieModuleModel kieModuleModel) {
+            final KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel();
+            kieBaseModel.setEventProcessingMode(EventProcessingOption.CLOUD);
+            kieBaseModel.setEqualsBehavior(EqualityBehaviorOption.IDENTITY);
+            kieBaseModel.setDefault(true);
+            return kieBaseModel;
+        }
+
+        @Override
+        public KieBaseConfiguration getKieBaseConfiguration() {
+            final KieBaseConfiguration kieBaseConfiguration = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+            kieBaseConfiguration.setOption(EventProcessingOption.CLOUD);
+            kieBaseConfiguration.setOption(EqualityBehaviorOption.IDENTITY);
+            return kieBaseConfiguration;
+        }
+    },
+
+    /**
+     * Represents KieBase configuration with
+     * <code>EventProcessingOption.CLOUD</code> and
+     * <code>EqualityBehaviorOption.IDENTITY</code> options set.
      * Canonical rule model is used.
      */
     CLOUD_IDENTITY_MODEL_FLOW {
@@ -115,6 +148,37 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
             kieBaseConfiguration.setOption(EventProcessingOption.CLOUD);
             kieBaseConfiguration.setOption(EqualityBehaviorOption.IDENTITY);
             additionalKieBaseOptions.forEach(kieBaseConfiguration::setOption);
+            return kieBaseConfiguration;
+        }
+    },
+
+
+    /**
+     * Represents KieBase configuration with
+     * <code>EventProcessingOption.CLOUD</code> and
+     * <code>EqualityBehaviorOption.IDENTITY</code> options set.
+     * Canonical rule model is used.
+     */
+    CLOUD_IDENTITY_MODEL_FLOW_ALPHA_NETWORK {
+        @Override
+        public RunType runType() {
+            return FLOW_WITH_ALPHA_NETWORK;
+        }
+
+        @Override
+        public KieBaseModel getKieBaseModel(final KieModuleModel kieModuleModel) {
+            final KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel();
+            kieBaseModel.setEventProcessingMode(EventProcessingOption.CLOUD);
+            kieBaseModel.setEqualsBehavior(EqualityBehaviorOption.IDENTITY);
+            kieBaseModel.setDefault(true);
+            return kieBaseModel;
+        }
+
+        @Override
+        public KieBaseConfiguration getKieBaseConfiguration() {
+            final KieBaseConfiguration kieBaseConfiguration = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+            kieBaseConfiguration.setOption(EventProcessingOption.CLOUD);
+            kieBaseConfiguration.setOption(EqualityBehaviorOption.IDENTITY);
             return kieBaseConfiguration;
         }
     },
@@ -156,6 +220,36 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
             kieBaseConfiguration.setOption(EventProcessingOption.CLOUD);
             kieBaseConfiguration.setOption(EqualityBehaviorOption.IDENTITY);
             additionalKieBaseOptions.forEach(kieBaseConfiguration::setOption);
+            return kieBaseConfiguration;
+        }
+    },
+
+    /**
+     * Represents KieBase configuration with
+     * <code>EventProcessingOption.CLOUD</code> and
+     * <code>EqualityBehaviorOption.IDENTITY</code> options set.
+     * Canonical rule model with pattern dialect is used.
+     */
+    CLOUD_IDENTITY_MODEL_PATTERN_ALPHA_NETWORK {
+        @Override
+        public RunType runType() {
+            return PATTERN_WITH_ALPHA_NETWORK;
+        }
+
+        @Override
+        public KieBaseModel getKieBaseModel(final KieModuleModel kieModuleModel) {
+            final KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel();
+            kieBaseModel.setEventProcessingMode(EventProcessingOption.CLOUD);
+            kieBaseModel.setEqualsBehavior(EqualityBehaviorOption.IDENTITY);
+            kieBaseModel.setDefault(true);
+            return kieBaseModel;
+        }
+
+        @Override
+        public KieBaseConfiguration getKieBaseConfiguration() {
+            final KieBaseConfiguration kieBaseConfiguration = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+            kieBaseConfiguration.setOption(EventProcessingOption.CLOUD);
+            kieBaseConfiguration.setOption(EqualityBehaviorOption.IDENTITY);
             return kieBaseConfiguration;
         }
     },
@@ -205,6 +299,36 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * Represents KieBase configuration with
      * <code>EventProcessingOption.CLOUD</code> and
      * <code>EqualityBehaviorOption.EQUALITY</code> options set.
+     * Canonical rule model is not used.
+     */
+    CLOUD_EQUALITY_ALPHA_NETWORK {
+        @Override
+        public RunType runType() {
+            return STANDARD_WITH_ALPHA_NETWORK;
+        }
+
+        @Override
+        public KieBaseModel getKieBaseModel(final KieModuleModel kieModuleModel) {
+            final KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel();
+            kieBaseModel.setEventProcessingMode(EventProcessingOption.CLOUD);
+            kieBaseModel.setEqualsBehavior(EqualityBehaviorOption.EQUALITY);
+            kieBaseModel.setDefault(true);
+            return kieBaseModel;
+        }
+
+        @Override
+        public KieBaseConfiguration getKieBaseConfiguration() {
+            final KieBaseConfiguration kieBaseConfiguration = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+            kieBaseConfiguration.setOption(EventProcessingOption.CLOUD);
+            kieBaseConfiguration.setOption(EqualityBehaviorOption.EQUALITY);
+            return kieBaseConfiguration;
+        }
+    },
+
+    /**
+     * Represents KieBase configuration with
+     * <code>EventProcessingOption.CLOUD</code> and
+     * <code>EqualityBehaviorOption.EQUALITY</code> options set.
      * Canonical rule model is used.
      */
     CLOUD_EQUALITY_MODEL_FLOW {
@@ -246,6 +370,36 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * Represents KieBase configuration with
      * <code>EventProcessingOption.CLOUD</code> and
      * <code>EqualityBehaviorOption.EQUALITY</code> options set.
+     * Canonical rule model is used.
+     */
+    CLOUD_EQUALITY_MODEL_FLOW_ALPHA_NETWORK {
+        @Override
+        public RunType runType() {
+            return FLOW_WITH_ALPHA_NETWORK;
+        }
+
+        @Override
+        public KieBaseModel getKieBaseModel(final KieModuleModel kieModuleModel) {
+            final KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel();
+            kieBaseModel.setEventProcessingMode(EventProcessingOption.CLOUD);
+            kieBaseModel.setEqualsBehavior(EqualityBehaviorOption.EQUALITY);
+            kieBaseModel.setDefault(true);
+            return kieBaseModel;
+        }
+
+        @Override
+        public KieBaseConfiguration getKieBaseConfiguration() {
+            final KieBaseConfiguration kieBaseConfiguration = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+            kieBaseConfiguration.setOption(EventProcessingOption.CLOUD);
+            kieBaseConfiguration.setOption(EqualityBehaviorOption.EQUALITY);
+            return kieBaseConfiguration;
+        }
+    },
+
+    /**
+     * Represents KieBase configuration with
+     * <code>EventProcessingOption.CLOUD</code> and
+     * <code>EqualityBehaviorOption.EQUALITY</code> options set.
      * Canonical rule model with pattern dialect is used.
      */
     CLOUD_EQUALITY_MODEL_PATTERN {
@@ -279,6 +433,36 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
             kieBaseConfiguration.setOption(EventProcessingOption.CLOUD);
             kieBaseConfiguration.setOption(EqualityBehaviorOption.EQUALITY);
             additionalKieBaseOptions.forEach(kieBaseConfiguration::setOption);
+            return kieBaseConfiguration;
+        }
+    },
+
+    /**
+     * Represents KieBase configuration with
+     * <code>EventProcessingOption.CLOUD</code> and
+     * <code>EqualityBehaviorOption.EQUALITY</code> options set.
+     * Canonical rule model with pattern dialect is used.
+     */
+    CLOUD_EQUALITY_MODEL_PATTERN_ALPHA_NETWORK {
+        @Override
+        public RunType runType() {
+            return PATTERN_WITH_ALPHA_NETWORK;
+        }
+
+        @Override
+        public KieBaseModel getKieBaseModel(final KieModuleModel kieModuleModel) {
+            final KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel();
+            kieBaseModel.setEventProcessingMode(EventProcessingOption.CLOUD);
+            kieBaseModel.setEqualsBehavior(EqualityBehaviorOption.EQUALITY);
+            kieBaseModel.setDefault(true);
+            return kieBaseModel;
+        }
+
+        @Override
+        public KieBaseConfiguration getKieBaseConfiguration() {
+            final KieBaseConfiguration kieBaseConfiguration = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+            kieBaseConfiguration.setOption(EventProcessingOption.CLOUD);
+            kieBaseConfiguration.setOption(EqualityBehaviorOption.EQUALITY);
             return kieBaseConfiguration;
         }
     },
@@ -328,6 +512,36 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * Represents KieBase configuration with
      * <code>EventProcessingOption.STREAM</code> and
      * <code>EqualityBehaviorOption.IDENTITY</code> options set.
+     * Canonical rule model is not used.
+     */
+    STREAM_IDENTITY_ALPHA_NETWORK {
+        @Override
+        public RunType runType() {
+            return STANDARD_WITH_ALPHA_NETWORK;
+        }
+
+        @Override
+        public KieBaseModel getKieBaseModel(KieModuleModel kieModuleModel) {
+            final KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel();
+            kieBaseModel.setEventProcessingMode(EventProcessingOption.STREAM);
+            kieBaseModel.setEqualsBehavior(EqualityBehaviorOption.IDENTITY);
+            kieBaseModel.setDefault(true);
+            return kieBaseModel;
+        }
+
+        @Override
+        public KieBaseConfiguration getKieBaseConfiguration() {
+            final KieBaseConfiguration kieBaseConfiguration = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+            kieBaseConfiguration.setOption(EventProcessingOption.STREAM);
+            kieBaseConfiguration.setOption(EqualityBehaviorOption.IDENTITY);
+            return kieBaseConfiguration;
+        }
+    },
+
+    /**
+     * Represents KieBase configuration with
+     * <code>EventProcessingOption.STREAM</code> and
+     * <code>EqualityBehaviorOption.IDENTITY</code> options set.
      * Canonical rule model is used.
      */
     STREAM_IDENTITY_MODEL_FLOW {
@@ -361,6 +575,36 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
             kieBaseConfiguration.setOption(EventProcessingOption.STREAM);
             kieBaseConfiguration.setOption(EqualityBehaviorOption.IDENTITY);
             additionalKieBaseOptions.forEach(kieBaseConfiguration::setOption);
+            return kieBaseConfiguration;
+        }
+    },
+
+    /**
+     * Represents KieBase configuration with
+     * <code>EventProcessingOption.STREAM</code> and
+     * <code>EqualityBehaviorOption.IDENTITY</code> options set.
+     * Canonical rule model is used.
+     */
+    STREAM_IDENTITY_MODEL_FLOW_ALPHA_NETWORK {
+        @Override
+        public RunType runType() {
+            return FLOW_WITH_ALPHA_NETWORK;
+        }
+
+        @Override
+        public KieBaseModel getKieBaseModel(KieModuleModel kieModuleModel) {
+            final KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel();
+            kieBaseModel.setEventProcessingMode(EventProcessingOption.STREAM);
+            kieBaseModel.setEqualsBehavior(EqualityBehaviorOption.IDENTITY);
+            kieBaseModel.setDefault(true);
+            return kieBaseModel;
+        }
+
+        @Override
+        public KieBaseConfiguration getKieBaseConfiguration() {
+            final KieBaseConfiguration kieBaseConfiguration = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+            kieBaseConfiguration.setOption(EventProcessingOption.STREAM);
+            kieBaseConfiguration.setOption(EqualityBehaviorOption.IDENTITY);
             return kieBaseConfiguration;
         }
     },
@@ -409,6 +653,36 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
     /**
      * Represents KieBase configuration with
      * <code>EventProcessingOption.STREAM</code> and
+     * <code>EqualityBehaviorOption.IDENTITY</code> options set.
+     * Canonical rule model with pattern dialect is used.
+     */
+    STREAM_IDENTITY_MODEL_PATTERN_ALPHA_NETWORK {
+        @Override
+        public RunType runType() {
+            return PATTERN_WITH_ALPHA_NETWORK;
+        }
+
+        @Override
+        public KieBaseModel getKieBaseModel(KieModuleModel kieModuleModel) {
+            final KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel();
+            kieBaseModel.setEventProcessingMode(EventProcessingOption.STREAM);
+            kieBaseModel.setEqualsBehavior(EqualityBehaviorOption.IDENTITY);
+            kieBaseModel.setDefault(true);
+            return kieBaseModel;
+        }
+
+        @Override
+        public KieBaseConfiguration getKieBaseConfiguration() {
+            final KieBaseConfiguration kieBaseConfiguration = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+            kieBaseConfiguration.setOption(EventProcessingOption.STREAM);
+            kieBaseConfiguration.setOption(EqualityBehaviorOption.IDENTITY);
+            return kieBaseConfiguration;
+        }
+    },
+
+    /**
+     * Represents KieBase configuration with
+     * <code>EventProcessingOption.STREAM</code> and
      * <code>EqualityBehaviorOption.EQUALITY</code> options set.
      * Canonical rule model is not used.
      */
@@ -443,6 +717,37 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
             kieBaseConfiguration.setOption(EventProcessingOption.STREAM);
             kieBaseConfiguration.setOption(EqualityBehaviorOption.EQUALITY);
             additionalKieBaseOptions.forEach(kieBaseConfiguration::setOption);
+            return kieBaseConfiguration;
+        }
+    },
+
+
+    /**
+     * Represents KieBase configuration with
+     * <code>EventProcessingOption.STREAM</code> and
+     * <code>EqualityBehaviorOption.EQUALITY</code> options set.
+     * Canonical rule model is not used.
+     */
+    STREAM_EQUALITY_ALPHA_NETWORK {
+        @Override
+        public RunType runType() {
+            return STANDARD_WITH_ALPHA_NETWORK;
+        }
+
+        @Override
+        public KieBaseModel getKieBaseModel(KieModuleModel kieModuleModel) {
+            final KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel();
+            kieBaseModel.setEventProcessingMode(EventProcessingOption.STREAM);
+            kieBaseModel.setEqualsBehavior(EqualityBehaviorOption.EQUALITY);
+            kieBaseModel.setDefault(true);
+            return kieBaseModel;
+        }
+
+        @Override
+        public KieBaseConfiguration getKieBaseConfiguration() {
+            final KieBaseConfiguration kieBaseConfiguration = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+            kieBaseConfiguration.setOption(EventProcessingOption.STREAM);
+            kieBaseConfiguration.setOption(EqualityBehaviorOption.EQUALITY);
             return kieBaseConfiguration;
         }
     },
@@ -492,12 +797,72 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * Represents KieBase configuration with
      * <code>EventProcessingOption.STREAM</code> and
      * <code>EqualityBehaviorOption.EQUALITY</code> options set.
+     * Canonical rule model is used.
+     */
+    STREAM_EQUALITY_MODEL_FLOW_ALPHA_NETWORK {
+        @Override
+        public RunType runType() {
+            return FLOW_WITH_ALPHA_NETWORK;
+        }
+
+        @Override
+        public KieBaseModel getKieBaseModel(KieModuleModel kieModuleModel) {
+            final KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel();
+            kieBaseModel.setEventProcessingMode(EventProcessingOption.STREAM);
+            kieBaseModel.setEqualsBehavior(EqualityBehaviorOption.EQUALITY);
+            kieBaseModel.setDefault(true);
+            return kieBaseModel;
+        }
+
+        @Override
+        public KieBaseConfiguration getKieBaseConfiguration() {
+            final KieBaseConfiguration kieBaseConfiguration = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+            kieBaseConfiguration.setOption(EventProcessingOption.STREAM);
+            kieBaseConfiguration.setOption(EqualityBehaviorOption.EQUALITY);
+            return kieBaseConfiguration;
+        }
+    },
+
+    /**
+     * Represents KieBase configuration with
+     * <code>EventProcessingOption.STREAM</code> and
+     * <code>EqualityBehaviorOption.EQUALITY</code> options set.
      * Canonical rule model with pattern dialect is used.
      */
     STREAM_EQUALITY_MODEL_PATTERN {
         @Override
         public RunType runType() {
             return PATTERN_DSL;
+        }
+
+        @Override
+        public KieBaseModel getKieBaseModel(KieModuleModel kieModuleModel) {
+            final KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel();
+            kieBaseModel.setEventProcessingMode(EventProcessingOption.STREAM);
+            kieBaseModel.setEqualsBehavior(EqualityBehaviorOption.EQUALITY);
+            kieBaseModel.setDefault(true);
+            return kieBaseModel;
+        }
+
+        @Override
+        public KieBaseConfiguration getKieBaseConfiguration() {
+            final KieBaseConfiguration kieBaseConfiguration = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+            kieBaseConfiguration.setOption(EventProcessingOption.STREAM);
+            kieBaseConfiguration.setOption(EqualityBehaviorOption.EQUALITY);
+            return kieBaseConfiguration;
+        }
+    },
+
+    /**
+     * Represents KieBase configuration with
+     * <code>EventProcessingOption.STREAM</code> and
+     * <code>EqualityBehaviorOption.EQUALITY</code> options set.
+     * Canonical rule model with pattern dialect is used.
+     */
+    STREAM_EQUALITY_MODEL_PATTERN_ALPHA_NETWORK {
+        @Override
+        public RunType runType() {
+            return PATTERN_WITH_ALPHA_NETWORK;
         }
 
         @Override
