@@ -65,7 +65,9 @@
             <Import-Package>
                 javax.swing.*;resolution:=optional,
                 org.jbpm.persistence.timer;resolution:=optional,
-                org.kie.dmn.api.core;resolution:=optional,                
+                org.kie.dmn.api.core;resolution:=optional,  
+                org.kie.dmn.core.impl;resolution:=optional,
+                org.kie.dmn.feel;resolution:=optional,                 
                 *
             </Import-Package>
             <Export-Package>
