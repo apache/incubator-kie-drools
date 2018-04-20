@@ -585,6 +585,7 @@ public class DMNEvaluatorCompiler {
                                               Msg.IMPORT_NOT_FOUND_FOR_NODE_MISSING_ALIAS,
                                               new QName(depEntry.getValue().getModelNamespace(), depEntry.getValue().getModelName()),
                                               node);
+                        return null;
                     }
                     parameterNames.add(importAlias.get() + "." + depEntry.getKey()); // this dependency is from an imported model, need to add parameter with "alias." DMN Import name prefix.
                 }
