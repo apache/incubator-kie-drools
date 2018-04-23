@@ -58,6 +58,7 @@ import java.util.List;
 
 import static org.drools.core.phreak.AddRemoveRule.flushLeftTupleIfNecessary;
 import static org.drools.core.reteoo.PropertySpecificUtil.*;
+import static org.drools.core.phreak.RuleNetworkEvaluator.doUpdatesReorderChildLeftTuple;
 import static org.drools.core.util.ClassUtils.areNullSafeEquals;
 
 public abstract class BetaNode extends LeftTupleSource
@@ -326,6 +327,7 @@ public abstract class BetaNode extends LeftTupleSource
                 doUpdateRightTuple(rightTuple, wm, bm);
             } else if (rightTuple.getMemory() != null) {
                 getBetaMemory( this, wm ).getRightTupleMemory().removeAdd(rightTuple);
+                doUpdatesReorderChildLeftTuple( rightTuple );
             }
         } else {
             if ( context.getModificationMask().intersects(getRightInferredMask()) ) {
