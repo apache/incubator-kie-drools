@@ -31,8 +31,6 @@ import org.optaplanner.examples.common.swingui.SolverAndPersistenceFrame;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 import org.optaplanner.swing.impl.SwingUncaughtExceptionHandler;
 import org.optaplanner.swing.impl.SwingUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -61,8 +59,6 @@ public abstract class CommonApp<Solution_> extends LoggingMain {
         }
         return dataDir;
     }
-
-    protected static final Logger logger = LoggerFactory.getLogger(CommonApp.class);
 
     /**
      * Some examples are not compatible with every native LookAndFeel.

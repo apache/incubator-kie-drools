@@ -303,7 +303,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
             resolvedMoveThreadCount = (availableProcessorCount - 2);
             if (resolvedMoveThreadCount <= 1) {
                 // Fall back to single threaded solving with no move threads.
-                // Set moveThreadCount explicitly to 1 to deliberately test with 1 moveThread.
+                // To deliberately enforce 1 moveThread, set the moveThreadCount explicitly to 1.
                 return null;
             }
         } else {

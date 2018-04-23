@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 
 public class ThreadUtils {
 
-    protected static final transient Logger logger = LoggerFactory.getLogger(ThreadUtils.class);
+    private static final Logger logger = LoggerFactory.getLogger(ThreadUtils.class);
 
     public static void shutdownAwaitOrKill(ExecutorService executor, String logIndentation, String name) {
         // Intentionally clearing the interrupted flag so that awaitTermination() in step 3 works.

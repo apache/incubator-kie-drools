@@ -835,7 +835,7 @@ The following ``moveThreadCount``s are supported:
 
 * `NONE` (default): Don't run any move threads. Use the single threaded code.
 * ``AUTO``: Let Planner decide how many move threads to run in parallel.
-On machines or containers with little or no CPU's, this can fall back to the single threaded code.
+On machines or containers with little or no CPUs, this can fall back to the single threaded code.
 * Static number: The number of move threads to run in parallel.
 +
 [source,xml,options="nowrap"]
@@ -858,7 +858,7 @@ One good reason to do it anyway, is to reproduce a bug of a high-end production 
 [NOTE]
 ====
 Multithreaded solving is _still reproducible_, as long as the resolved `moveThreadCount` is stable.
-A run of the same solver configuration on 2 machines with a different number of CPU's,
+A run of the same solver configuration on 2 machines with a different number of CPUs,
 is still reproducible, unless the `moveThreadCount` is set to `AUTO` or a function of `availableProcessorCount`.
 ====
 
@@ -866,5 +866,5 @@ The `moveThreadBufferSize` can be used to power tweak the number of moves that a
 Setting it too low will reduce performance, setting it too high might too.
 Unless you're deeply familiar with the inner workings of multithreaded solving, don't configure this parameter.
 
-To run in a environment that doesn't like arbitrary thread creation,
+To run in an environment that doesn't like arbitrary thread creation,
 use `threadFactoryClass` to plug in a <<customThreadFactory,custom thread factory>>.

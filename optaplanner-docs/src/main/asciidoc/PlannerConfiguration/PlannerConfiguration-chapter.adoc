@@ -136,7 +136,7 @@ They build the runtime components (of the package namespace ``org.optaplanner.co
 
 [IMPORTANT]
 ====
-The `SolverFactory` is only thread-safe after its configured.
+The `SolverFactory` is only thread-safe after it's configured.
 So the `getSolverConfig()` method is not thread-safe.
 To configure a `SolverFactory` dynamically for each user request, build a `SolverFactory` as base during initialization and clone it with the `cloneSolverFactory()` method for a user request:
 

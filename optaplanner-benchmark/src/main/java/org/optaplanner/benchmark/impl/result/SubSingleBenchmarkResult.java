@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
 @XStreamAlias("subSingleBenchmarkResult")
 public class SubSingleBenchmarkResult implements BenchmarkResult {
 
-    protected static final transient Logger logger = LoggerFactory.getLogger(SubSingleBenchmarkResult.class);
+    private static final Logger logger = LoggerFactory.getLogger(SubSingleBenchmarkResult.class);
 
     @XStreamOmitField // Bi-directional relationship restored through BenchmarkResultIO
     private SingleBenchmarkResult singleBenchmarkResult;

@@ -122,7 +122,7 @@ public class MultiThreadedLocalSearchDecider<Solution_> extends LocalSearchDecid
         resultQueue = null;
     }
 
-    private ExecutorService createThreadPoolExecutor() {
+    protected ExecutorService createThreadPoolExecutor() {
         ThreadPoolExecutor threadPoolExecutor
                 = (ThreadPoolExecutor) Executors.newFixedThreadPool(moveThreadCount, threadFactory);
         if (threadPoolExecutor.getMaximumPoolSize() < moveThreadCount) {
@@ -160,7 +160,7 @@ public class MultiThreadedLocalSearchDecider<Solution_> extends LocalSearchDecid
             }
             Move<Solution_> foragingMove = result.getMove().rebase(stepScope.getScoreDirector());
             int foragingMoveIndex = result.getMoveIndex();
-            LocalSearchMoveScope moveScope = new LocalSearchMoveScope<>(stepScope, foragingMoveIndex, foragingMove);
+            LocalSearchMoveScope<Solution_> moveScope = new LocalSearchMoveScope<>(stepScope, foragingMoveIndex, foragingMove);
             if (!result.isMoveDoable()) {
                 logger.trace("{}        Move index ({}) not doable, ignoring move ({}).",
                         logIndentation, foragingMoveIndex, foragingMove);
@@ -197,7 +197,7 @@ public class MultiThreadedLocalSearchDecider<Solution_> extends LocalSearchDecid
         // TODO latch barrier
     }
 
-    private static abstract class MoveThreadOperation<Solution_> {
+    protected static abstract class MoveThreadOperation<Solution_> {
 
         @Override
         public String toString() {
@@ -206,7 +206,7 @@ public class MultiThreadedLocalSearchDecider<Solution_> extends LocalSearchDecid
 
     }
 
-    private static class SetupOperation<Solution_> extends MoveThreadOperation<Solution_> {
+    protected static class SetupOperation<Solution_> extends MoveThreadOperation<Solution_> {
 
         private final InnerScoreDirector<Solution_> innerScoreDirector;
 
@@ -219,11 +219,11 @@ public class MultiThreadedLocalSearchDecider<Solution_> extends LocalSearchDecid
         }
     }
 
-    private static class DestroyOperation<Solution_> extends MoveThreadOperation<Solution_> {
+    protected static class DestroyOperation<Solution_> extends MoveThreadOperation<Solution_> {
 
     }
 
-    private static class ApplyStepOperation<Solution_> extends MoveThreadOperation<Solution_> {
+    protected static class ApplyStepOperation<Solution_> extends MoveThreadOperation<Solution_> {
 
         private final int stepIndex;
         private final Move<Solution_> step;
@@ -248,7 +248,7 @@ public class MultiThreadedLocalSearchDecider<Solution_> extends LocalSearchDecid
         }
     }
 
-    private static class MoveEvaluationOperation<Solution_> extends MoveThreadOperation<Solution_> {
+    protected static class MoveEvaluationOperation<Solution_> extends MoveThreadOperation<Solution_> {
 
         private final int stepIndex;
         private final int moveIndex;
@@ -273,9 +273,9 @@ public class MultiThreadedLocalSearchDecider<Solution_> extends LocalSearchDecid
         }
     }
 
-    private class MoveThreadRunner implements Runnable {
+    protected class MoveThreadRunner implements Runnable {
 
-        private int moveThreadIndex;
+        private final int moveThreadIndex;
         private InnerScoreDirector<Solution_> scoreDirector = null;
 
         public MoveThreadRunner(int moveThreadIndex) {
@@ -305,7 +305,7 @@ public class MultiThreadedLocalSearchDecider<Solution_> extends LocalSearchDecid
                         logger.trace("{}            Move thread ({}) setup: step index ({}), score ({}).",
                                 logIndentation, moveThreadIndex, stepIndex, lastStepScore);
                         try {
-                            // Don't consume another operation until every moveThread took his SetupOperation
+                            // Don't consume another operation until every moveThread took this SetupOperation
                             moveThreadBarrier.await();
                         } catch (InterruptedException | BrokenBarrierException e) {
                             Thread.currentThread().interrupt();
@@ -334,7 +334,7 @@ public class MultiThreadedLocalSearchDecider<Solution_> extends LocalSearchDecid
                         logger.trace("{}            Move thread ({}) step: step index ({}), score ({}).",
                                 logIndentation, moveThreadIndex, stepIndex, lastStepScore);
                         try {
-                            // Don't consume an MoveEvaluationOperation until every moveThread took his ApplyStepOperation
+                            // Don't consume an MoveEvaluationOperation until every moveThread took this ApplyStepOperation
                             moveThreadBarrier.await();
                         } catch (InterruptedException | BrokenBarrierException e) {
                             Thread.currentThread().interrupt();
@@ -369,7 +369,7 @@ public class MultiThreadedLocalSearchDecider<Solution_> extends LocalSearchDecid
                     }
                     // TODO checkYielding();
                 }
-                logger.trace("{}            Move thread finished.");
+                logger.trace("{}            Move thread finished.", logIndentation);
             } catch (RuntimeException | Error throwable) {
                 // Any Exception or even Error that happens here (on a move thread) must be stored
                 // in the resultQueue in order to be propagated to the solver thread.
@@ -383,7 +383,7 @@ public class MultiThreadedLocalSearchDecider<Solution_> extends LocalSearchDecid
             }
         }
 
-        private void predictWorkingStepScore(Move<Solution_> step, Score score) {
+        protected void predictWorkingStepScore(Move<Solution_> step, Score score) {
             // There is no need to recalculate the score, but we still need to set it
             scoreDirector.getSolutionDescriptor().setScore(scoreDirector.getWorkingSolution(), score);
             if (assertStepScoreFromScratch) {

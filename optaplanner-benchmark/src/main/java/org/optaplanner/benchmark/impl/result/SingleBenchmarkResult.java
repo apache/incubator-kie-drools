@@ -46,7 +46,7 @@ import org.slf4j.LoggerFactory;
 @XStreamAlias("singleBenchmarkResult")
 public class SingleBenchmarkResult implements BenchmarkResult {
 
-    protected static final transient Logger logger = LoggerFactory.getLogger(SingleBenchmarkResult.class);
+    private static final Logger logger = LoggerFactory.getLogger(SingleBenchmarkResult.class);
 
     @XStreamOmitField // Bi-directional relationship restored through BenchmarkResultIO
     private SolverBenchmarkResult solverBenchmarkResult;
