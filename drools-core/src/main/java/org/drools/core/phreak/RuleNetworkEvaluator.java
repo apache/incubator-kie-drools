@@ -842,12 +842,16 @@ public class RuleNetworkEvaluator {
         for (RightTuple rightTuple = srcRightTuples.getUpdateFirst(); rightTuple != null; rightTuple = rightTuple.getStagedNext()) {
             if ( rightTuple.getTempRightTupleMemory() != null ) {
                 rtm.add(rightTuple);
-                for (LeftTuple childLeftTuple = rightTuple.getFirstChild(); childLeftTuple != null; ) {
-                    LeftTuple childNext = childLeftTuple.getRightParentNext();
-                    childLeftTuple.reAddLeft();
-                    childLeftTuple = childNext;
-                }
+                doUpdatesReorderChildLeftTuple( rightTuple );
             }
+        }
+    }
+
+    public static void doUpdatesReorderChildLeftTuple( RightTuple rightTuple ) {
+        for (LeftTuple childLeftTuple = rightTuple.getFirstChild(); childLeftTuple != null; ) {
+            LeftTuple childNext = childLeftTuple.getRightParentNext();
+            childLeftTuple.reAddLeft();
+            childLeftTuple = childNext;
         }
     }
 
@@ -911,11 +915,7 @@ public class RuleNetworkEvaluator {
                 }
             }
 
-            for (LeftTuple childLeftTuple = rightTuple.getFirstChild(); childLeftTuple != null; ) {
-                LeftTuple childNext = childLeftTuple.getRightParentNext();
-                childLeftTuple.reAddLeft();
-                childLeftTuple = childNext;
-            }
+            doUpdatesReorderChildLeftTuple( rightTuple );
         }
 
         if ( rtm.getIndexType() != TupleMemory.IndexType.NONE) {
