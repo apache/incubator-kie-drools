@@ -58,6 +58,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.drools.core.phreak.AddRemoveRule.flushLeftTupleIfNecessary;
+import static org.drools.core.phreak.RuleNetworkEvaluator.doUpdatesReorderChildLeftTuple;
 import static org.drools.core.reteoo.PropertySpecificUtil.calculateNegativeMask;
 import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
 import static org.drools.core.reteoo.PropertySpecificUtil.getAccessibleProperties;
@@ -343,6 +344,7 @@ public abstract class BetaNode extends LeftTupleSource
                 doUpdateRightTuple(rightTuple, wm, bm);
             } else if (rightTuple.getMemory() != null) {
                 getBetaMemory( this, wm ).getRightTupleMemory().removeAdd(rightTuple);
+                doUpdatesReorderChildLeftTuple( rightTuple );
             }
         } else {
             if ( context.getModificationMask().intersects(getRightInferredMask()) ) {
