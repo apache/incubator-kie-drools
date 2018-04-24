@@ -168,8 +168,6 @@ import static org.drools.core.util.StringUtils.ucFirst;
 
 public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
-    private static final int PARALLEL_RULES_BUILD_THRESHOLD = 10;
-
     protected static final transient Logger logger = LoggerFactory.getLogger(KnowledgeBuilderImpl.class);
 
     private final Map<String, PackageRegistry> pkgRegistryMap = new ConcurrentHashMap<>();
@@ -189,6 +187,8 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     private final String defaultDialect;
 
     private ClassLoader rootClassLoader;
+    
+    private int parallelRulesBuildThreshold;
 
     private final Map<String, Class<?>> globals = new HashMap<String, Class<?>>();
 
@@ -263,6 +263,8 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         this.rootClassLoader = this.configuration.getClassLoader();
 
         this.defaultDialect = this.configuration.getDefaultDialect();
+        
+        this.parallelRulesBuildThreshold = this.configuration.getParallelRulesBuildThreshold();
 
         this.results = new ArrayList<KnowledgeBuilderResult>();
 
@@ -1250,7 +1252,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     }
 
     private void compileRulesLevel(PackageDescr packageDescr, PackageRegistry pkgRegistry, List<RuleDescr> rules) {
-        boolean parallelRulesBuild = this.kBase == null && rules.size() > PARALLEL_RULES_BUILD_THRESHOLD;
+        boolean parallelRulesBuild = this.kBase == null && parallelRulesBuildThreshold != -1 && rules.size() > parallelRulesBuildThreshold;
         if (parallelRulesBuild) {
             Map<String, RuleBuildContext> ruleCxts = new ConcurrentHashMap<>();
             rules.stream().parallel()

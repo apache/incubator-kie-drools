@@ -61,6 +61,7 @@ import org.kie.internal.builder.conf.KBuilderSeverityOption;
 import org.kie.internal.builder.conf.KnowledgeBuilderOption;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.kie.internal.builder.conf.MultiValueKnowledgeBuilderOption;
+import org.kie.internal.builder.conf.ParallelRulesBuildThresholdOption;
 import org.kie.internal.builder.conf.ProcessStringEscapesOption;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.builder.conf.SingleValueKnowledgeBuilderOption;
@@ -82,6 +83,7 @@ import org.slf4j.LoggerFactory;
  * drools.evaluator.<ident> = <qualified class>
  * drools.dump.dir = <String>
  * drools.classLoaderCacheEnabled = true|false
+ * drools.parallelRulesBuildThreshold = <int>
  *
  * default dialect is java.
  * Available preconfigured Accumulate functions are:
@@ -101,9 +103,13 @@ public class KnowledgeBuilderConfigurationImpl
         implements
         KnowledgeBuilderConfiguration {
 
+    private static final int                  DEFAULT_PARALLEL_RULES_BUILD_THRESHOLD = 10;
+    
     private Map<String, DialectConfiguration> dialectConfigurations;
 
     private DefaultDialectOption              defaultDialect;
+    
+    private ParallelRulesBuildThresholdOption parallelRulesBuildThreshold = ParallelRulesBuildThresholdOption.get(DEFAULT_PARALLEL_RULES_BUILD_THRESHOLD);
 
     private ClassLoader                       classLoader;
 
@@ -120,7 +126,7 @@ public class KnowledgeBuilderConfigurationImpl
     private boolean                           processStringEscapes    = true;
 
     private boolean                           classLoaderCache        = true;
-
+    
     private static final PropertySpecificOption DEFAULT_PROP_SPEC_OPT = PropertySpecificOption.ALWAYS;
     private PropertySpecificOption            propertySpecificOption  = DEFAULT_PROP_SPEC_OPT;
 
@@ -209,6 +215,10 @@ public class KnowledgeBuilderConfigurationImpl
                     this.chainedProperties.getProperty(LanguageLevelOption.PROPERTY_NAME,
                                                        DrlParser.DEFAULT_LANGUAGE_LEVEL.toString()));
 
+        setProperty(ParallelRulesBuildThresholdOption.PROPERTY_NAME,
+        			this.chainedProperties.getProperty(ParallelRulesBuildThresholdOption.PROPERTY_NAME, 
+        												String.valueOf(DEFAULT_PARALLEL_RULES_BUILD_THRESHOLD)));
+        
         this.dialectConfigurations = new HashMap<String, DialectConfiguration>();
 
         buildDialectConfigurationMap();
@@ -286,6 +296,8 @@ public class KnowledgeBuilderConfigurationImpl
             } catch (IllegalArgumentException e) {
                 log.warn("Invalid value " + value + " for option " + LanguageLevelOption.PROPERTY_NAME);
             }
+        } else if (name.equals(ParallelRulesBuildThresholdOption.PROPERTY_NAME)) {
+        	setParallelRulesBuildThreshold(Integer.valueOf(value));
         } else {
             // if the property from the kmodule was not intercepted above, just add it to the chained properties.
             Properties additionalProperty = new Properties();
@@ -324,6 +336,8 @@ public class KnowledgeBuilderConfigurationImpl
             return severity.toString();
         } else if (name.equals(LanguageLevelOption.PROPERTY_NAME)) {
             return "" + getLanguageLevel();
+        } else if (name.equals(ParallelRulesBuildThresholdOption.PROPERTY_NAME)) {
+        	return String.valueOf(getParallelRulesBuildThreshold());
         }
         return null;
     }
@@ -629,6 +643,14 @@ public class KnowledgeBuilderConfigurationImpl
     @Deprecated
     public void setClassLoaderCacheEnabled(boolean classLoaderCacheEnabled) {
         this.classLoaderCache = classLoaderCacheEnabled;
+    }
+    
+    public int getParallelRulesBuildThreshold() {
+    	return parallelRulesBuildThreshold.getParallelRulesBuildThreshold();
+    }
+    
+    public void setParallelRulesBuildThreshold(int parallelRulesBuildThreshold) {
+    	this.parallelRulesBuildThreshold = ParallelRulesBuildThresholdOption.get(parallelRulesBuildThreshold);
     }
 
     public String getDefaultPackageName() {
