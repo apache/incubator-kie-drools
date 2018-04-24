@@ -299,6 +299,8 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         // FIXME, we need to get drools to support "default" namespace.
         //this.defaultNamespace = pkg.getName();
         this.defaultDialect = this.configuration.getDefaultDialect();
+        
+        this.parallelRulesBuildThreshold = this.configuration.getParallelRulesBuildThreshold();
 
         this.results = new ArrayList<KnowledgeBuilderResult>();
 
