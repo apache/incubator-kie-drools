@@ -3,6 +3,7 @@ package org.kie.dmn.core.compiler;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -11,6 +12,7 @@ import javax.xml.namespace.QName;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
+import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.api.EvaluatorResult;
@@ -568,7 +570,26 @@ public class DMNEvaluatorCompiler {
             // need to break this statement down and check for nulls
             parameterNames.addAll( ((BusinessKnowledgeModelNode) node).getBusinessKnowledModel().getEncapsulatedLogic().getFormalParameter().stream().map( f -> f.getName() ).collect( toList() ) );
         } else {
-            parameterNames.addAll( node.getDependencies().keySet() );
+            for (Entry<String, DMNNode> depEntry : node.getDependencies().entrySet()) { // DROOLS-1663: dependencies names must be prefixed with "alias." for those not coming from this model but DMN Imports instead.
+                if (depEntry.getValue().getModelNamespace().equals(node.getModelNamespace())) {
+                    parameterNames.add(depEntry.getKey()); // this dependency is from this model, adding parameter name as-is.
+                } else {
+                    Optional<String> importAlias = model.getImportAliasFor(depEntry.getValue().getModelNamespace(), depEntry.getValue().getModelName());
+                    if (!importAlias.isPresent()) {
+                        MsgUtil.reportMessage(logger,
+                                              DMNMessage.Severity.ERROR,
+                                              dt.getParent(),
+                                              model,
+                                              null,
+                                              null,
+                                              Msg.IMPORT_NOT_FOUND_FOR_NODE_MISSING_ALIAS,
+                                              new QName(depEntry.getValue().getModelNamespace(), depEntry.getValue().getModelName()),
+                                              node);
+                        return null;
+                    }
+                    parameterNames.add(importAlias.get() + "." + depEntry.getKey()); // this dependency is from an imported model, need to add parameter with "alias." DMN Import name prefix.
+                }
+            }
         }
 
         // creates a FEEL instance which will be used by the invoker/impl (s)
