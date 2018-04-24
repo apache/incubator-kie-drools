@@ -94,7 +94,7 @@ public class CaseFileInstanceMarshallingStrategy implements ObjectMarshallingStr
     public void onEnd(TransactionManager txm) {
         marshallersByName.values().stream().filter(m -> m instanceof TransactionAware).forEach(m -> {
             logger.debug("Calling onEnd (txm) on {} marshaller", m);
-            ((TransactionAware) m).onStart(txm);
+            ((TransactionAware) m).onEnd(txm);
         });
     }
 
