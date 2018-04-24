@@ -75,7 +75,7 @@ public class ObjectTypeNodeCompiler {
         this.objectTypeNode = objectTypeNode;
 
         ClassObjectType classObjectType = (ClassObjectType) objectTypeNode.getObjectType();
-        this.className = classObjectType.getClassName();
+        this.className = classObjectType.getClassName().replace("$", ".");
         generatedClassSimpleName = "Compiled" + classObjectType.getClassName().replace('.', '_') + "Network";
     }
 
