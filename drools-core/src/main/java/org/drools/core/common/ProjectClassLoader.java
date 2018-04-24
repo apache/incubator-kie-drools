@@ -44,6 +44,10 @@ public class ProjectClassLoader extends ClassLoader implements KieTypeResolver {
 
     private static boolean isIBM_JVM = System.getProperty("java.vendor").toLowerCase().contains("ibm");
 
+    static {
+        registerAsParallelCapable();
+    }
+
     private Map<String, byte[]> store;
 
     private Map<String, ClassBytecode> definedTypes;
@@ -348,7 +352,10 @@ public class ProjectClassLoader extends ClassLoader implements KieTypeResolver {
         }
     }
 
-    protected void setInternalClassLoader(InternalTypesClassLoader classLoader) {
+    // WARNING: This is and should be used just for testing purposes.
+    // If not, dragons will come to the Earth, eat all cookies and
+    // hijack all kittens and puppies.
+    void setInternalClassLoader(InternalTypesClassLoader classLoader) {
         typesClassLoader = classLoader;
     }
 
@@ -366,7 +373,7 @@ public class ProjectClassLoader extends ClassLoader implements KieTypeResolver {
         nonExistingClasses.addAll(other.nonExistingClasses);
     }
 
-    protected InternalTypesClassLoader makeClassLoader() {
+    InternalTypesClassLoader makeClassLoader() {
         return ClassUtils.isAndroid() ?
                 (InternalTypesClassLoader) ClassUtils.instantiateObject(
                         "org.drools.android.DexInternalTypesClassLoader", null, this) :
@@ -409,6 +416,10 @@ public class ProjectClassLoader extends ClassLoader implements KieTypeResolver {
     }
 
     private static class DefaultInternalTypesClassLoader extends ClassLoader implements InternalTypesClassLoader {
+
+        static {
+            registerAsParallelCapable();
+        }
 
         private final ProjectClassLoader projectClassLoader;
 
