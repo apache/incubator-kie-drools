@@ -348,6 +348,10 @@ public class ProjectClassLoader extends ClassLoader implements KieTypeResolver {
         }
     }
 
+    protected void setInternalClassLoader(InternalTypesClassLoader classLoader) {
+        typesClassLoader = classLoader;
+    }
+
     public void setResourceProvider(ResourceProvider resourceProvider) {
         this.resourceProvider = resourceProvider;
     }
@@ -362,7 +366,7 @@ public class ProjectClassLoader extends ClassLoader implements KieTypeResolver {
         nonExistingClasses.addAll(other.nonExistingClasses);
     }
 
-    private InternalTypesClassLoader makeClassLoader() {
+    protected InternalTypesClassLoader makeClassLoader() {
         return ClassUtils.isAndroid() ?
                 (InternalTypesClassLoader) ClassUtils.instantiateObject(
                         "org.drools.android.DexInternalTypesClassLoader", null, this) :
