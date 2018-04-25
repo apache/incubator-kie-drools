@@ -240,7 +240,7 @@ public interface CaseRuntimeDataService {
      * @param statuses list of statuses that case should be in to match
      * @param queryContext control parameters for the result e.g. sorting, paging
      */
-    Collection<CaseInstance> getCaseInstancesByDateItem(String dataItemName, List<CaseStatus> statuses, QueryContext queryContext);
+    Collection<CaseInstance> getCaseInstancesByDataItem(String dataItemName, List<CaseStatus> statuses, QueryContext queryContext);
     
     /**
      * Returns all available active case instances that match given statuses and has case file data item with given name and value
@@ -249,7 +249,7 @@ public interface CaseRuntimeDataService {
      * @param statuses list of statuses that case should be in to match
      * @param queryContext control parameters for the result e.g. sorting, paging
      */
-    Collection<CaseInstance> getCaseInstancesByDateItemAndValue(String dataItemName, String dataItemValue, List<CaseStatus> statuses, QueryContext queryContext);
+    Collection<CaseInstance> getCaseInstancesByDataItemAndValue(String dataItemName, String dataItemValue, List<CaseStatus> statuses, QueryContext queryContext);
     
     /**
      * Returns all tasks associated with given case id that are eligible for user to see.

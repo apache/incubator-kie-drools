@@ -506,7 +506,7 @@ public class CaseRuntimeDataServiceImpl implements CaseRuntimeDataService, Deplo
     }
     
     @Override
-    public Collection<CaseInstance> getCaseInstancesByDateItem(String dataItemName, List<CaseStatus> statuses, QueryContext queryContext) {
+    public Collection<CaseInstance> getCaseInstancesByDataItem(String dataItemName, List<CaseStatus> statuses, QueryContext queryContext) {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("itemName", dataItemName);
         params.put("entities", collectUserAuthInfo());
@@ -520,7 +520,7 @@ public class CaseRuntimeDataServiceImpl implements CaseRuntimeDataService, Deplo
 
 
     @Override
-    public Collection<CaseInstance> getCaseInstancesByDateItemAndValue(String dataItemName, String dataItemValue, List<CaseStatus> statuses, QueryContext queryContext) {
+    public Collection<CaseInstance> getCaseInstancesByDataItemAndValue(String dataItemName, String dataItemValue, List<CaseStatus> statuses, QueryContext queryContext) {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("itemName", dataItemName);
         params.put("itemValue", dataItemValue);
