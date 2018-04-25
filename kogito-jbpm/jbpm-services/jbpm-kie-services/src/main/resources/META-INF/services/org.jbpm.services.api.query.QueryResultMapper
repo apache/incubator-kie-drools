@@ -9,3 +9,4 @@ org.jbpm.kie.services.impl.query.mapper.RawListQueryMapper
 org.jbpm.kie.services.impl.query.mapper.ExecutionErrorQueryMapper
 org.jbpm.kie.services.impl.query.mapper.UserTaskInstanceWithModifVarsQueryMapper
 org.jbpm.kie.services.impl.query.mapper.UserTaskInstanceWithPotOwnerQueryMapper
+org.jbpm.kie.services.impl.query.mapper.ProcessInstanceCustomQueryMapper

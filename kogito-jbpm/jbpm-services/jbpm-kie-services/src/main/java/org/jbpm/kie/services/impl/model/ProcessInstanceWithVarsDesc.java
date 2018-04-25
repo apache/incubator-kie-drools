@@ -42,6 +42,10 @@ public class ProcessInstanceWithVarsDesc extends ProcessInstanceDesc implements 
     public ProcessInstanceWithVarsDesc(long id, String processId, String processName, String processVersion, int state, String deploymentId, Date dataTimeStamp, String initiator, String correlationKey) {
         super(id, processId, processName, processVersion, state, deploymentId, dataTimeStamp, initiator, correlationKey);     
     }
+    
+    public ProcessInstanceWithVarsDesc(long id, String processId, String processName, String processVersion, int state, String deploymentId, Date dataTimeStamp, String initiator, String processInstanceDescription, String correlationKey, Long parentId) {
+        super(id, processId, processName, processVersion, state, deploymentId, dataTimeStamp, initiator, processInstanceDescription, correlationKey, parentId);
+    }
 
     @Override
     public Map<String, Object> getVariables() {

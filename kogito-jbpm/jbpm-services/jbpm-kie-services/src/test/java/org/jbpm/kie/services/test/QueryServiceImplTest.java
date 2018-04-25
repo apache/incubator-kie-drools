@@ -39,6 +39,7 @@ import java.util.Map;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.jbpm.kie.services.impl.query.SqlQueryDefinition;
+import org.jbpm.kie.services.impl.query.mapper.ProcessInstanceCustomQueryMapper;
 import org.jbpm.kie.services.impl.query.mapper.ProcessInstanceQueryMapper;
 import org.jbpm.kie.services.impl.query.mapper.ProcessInstanceWithCustomVarsQueryMapper;
 import org.jbpm.kie.services.impl.query.mapper.ProcessInstanceWithVarsQueryMapper;
@@ -52,6 +53,7 @@ import org.jbpm.kie.test.util.AbstractKieServicesBaseTest;
 import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorImpl;
 import org.jbpm.services.api.ProcessInstanceNotFoundException;
 import org.jbpm.services.api.model.DeploymentUnit;
+import org.jbpm.services.api.model.ProcessInstanceCustomDesc;
 import org.jbpm.services.api.model.ProcessInstanceDesc;
 import org.jbpm.services.api.model.ProcessInstanceWithVarsDesc;
 import org.jbpm.services.api.model.UserTaskInstanceDesc;
@@ -333,12 +335,12 @@ public class QueryServiceImplTest extends AbstractKieServicesBaseTest {
         ProcessInstanceWithVarsDesc instance = processInstanceLogs.get(0);
         assertEquals(3, instance.getVariables().size());
 
-        processInstanceLogs = queryService.query(query.getName(), ProcessInstanceWithVarsQueryMapper.get(), new QueryContext(), QueryParam.equalsTo(COLUMN_VAR_NAME, "approval_document"));
+        processInstanceLogs = queryService.query(query.getName(), ProcessInstanceWithVarsQueryMapper.get(), new QueryContext(), QueryParam.likeTo(COLUMN_PROCESSID, true, "org.jbpm%"));
         assertNotNull(processInstanceLogs);
         assertEquals(1, processInstanceLogs.size());
 
         instance = processInstanceLogs.get(0);
-        assertEquals(1, instance.getVariables().size());
+        assertEquals(3, instance.getVariables().size());
 
         processInstanceLogs = queryService.query(query.getName(), ProcessInstanceWithVarsQueryMapper.get(), new QueryContext(), QueryParam.equalsTo(COLUMN_VAR_NAME, "not existing"));
         assertNotNull(processInstanceLogs);
@@ -348,6 +350,46 @@ public class QueryServiceImplTest extends AbstractKieServicesBaseTest {
         processInstanceId = null;
 
     }
+    
+    @Test
+    public void testGetProcessInstancesCustomWithVars() {
+
+        query = new SqlQueryDefinition("jbpmProcessSearchWithVars", dataSourceJNDIname);
+        query.setExpression("select p. PROCESSINSTANCEID, p.PROCESSID,  p.PROCESSNAME, p.PROCESSVERSION, " +
+                            "p.STATUS,  p.EXTERNALID, pr.STARTDATE,   p.USER_IDENTITY, p.PROCESSINSTANCEDESCRIPTION, " +
+                            "p.CORRELATIONKEY, p.PARENTPROCESSINSTANCEID, pr.LASTMODIFICATIONDATE, var.variableId, " +
+                            "var.value " +
+                            "from PROCESSINSTANCELOG p " +
+                            "inner join PROCESSINSTANCEINFO pr on p.PROCESSINSTANCEID = pr.INSTANCEID " +
+                            "inner join (select v.processInstanceId, v.variableId, v.value from VariableInstanceLog v " +
+                            "where v.id = (select MAX(vil.id) from VariableInstanceLog vil where v.variableId = vil.variableId and v.processInstanceId = vil.processInstanceId)) " +
+                            "var on  p.PROCESSINSTANCEID = var.PROCESSINSTANCEID");
+
+        queryService.registerQuery(query);
+
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("approval_document", "initial content");
+        params.put("approval_translatedDocument", "translated content");
+        params.put("approval_reviewComment", "reviewed content");
+        processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument", params);
+        assertNotNull(processInstanceId);
+
+        List<ProcessInstanceCustomDesc> processInstanceLogs = queryService.query(query.getName(), ProcessInstanceCustomQueryMapper.get(), new QueryContext());
+        assertNotNull(processInstanceLogs);
+        assertEquals(1, processInstanceLogs.size());
+
+        processInstanceLogs = queryService.query(query.getName(), ProcessInstanceCustomQueryMapper.get(), new QueryContext(), QueryParam.equalsTo(COLUMN_VAR_NAME, "approval_document"));
+        assertNotNull(processInstanceLogs);
+        assertEquals(1, processInstanceLogs.size());
+
+        processInstanceLogs = queryService.query(query.getName(), ProcessInstanceCustomQueryMapper.get(), new QueryContext(), QueryParam.equalsTo(COLUMN_VAR_NAME, "not existing"));
+        assertNotNull(processInstanceLogs);
+        assertEquals(0, processInstanceLogs.size());
+
+        processService.abortProcessInstance(processInstanceId);
+        processInstanceId = null;
+
+    }    
 
     @Test
     public void testGetTaskInstances() {

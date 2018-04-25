@@ -76,6 +76,7 @@ public interface QueryResultMapper<T> extends Serializable {
     public static final String COLUMN_PROCESSINSTANCEDESCRIPTION = "PROCESSINSTANCEDESCRIPTION";
     public static final String COLUMN_SLA_DUE_DATE = "SLA_DUE_DATE";
     public static final String COLUMN_SLA_COMPLIANCE = "SLACOMPLIANCE";
+    public static final String COLUMN_PROCESS_LASTMODIFICATIONDATE = "LASTMODIFICATIONDATE";
     
     // process variable related
     public static final String COLUMN_VAR_NAME = "VARIABLEID";

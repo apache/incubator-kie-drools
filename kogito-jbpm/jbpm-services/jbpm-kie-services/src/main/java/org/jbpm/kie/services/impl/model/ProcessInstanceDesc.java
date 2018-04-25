@@ -80,7 +80,16 @@ public class ProcessInstanceDesc implements org.jbpm.services.api.model.ProcessI
        this.dataTimeStamp = dataTimeStamp;
        this.initiator = initiator;
        this.correlationKey = correlationKey==null?"":correlationKey;
-   }
+    }
+    
+    public ProcessInstanceDesc(long id, String processId, String processName, String processVersion,
+                               int state, String deploymentId, Date dataTimeStamp, String initiator,
+                               String processInstanceDescription, String correlationKey, Long parentId) {
+        this(id,processId,processName, processVersion,state, deploymentId, dataTimeStamp, initiator,
+                processInstanceDescription, correlationKey);
+        this.parentId = parentId;
+
+    }
     
     public String getProcessId() {
         return processId;
