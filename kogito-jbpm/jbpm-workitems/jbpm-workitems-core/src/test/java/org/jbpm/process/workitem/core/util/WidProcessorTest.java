@@ -38,6 +38,7 @@ public class WidProcessorTest {
                     "\n" +
                     "import org.jbpm.process.workitem.core.util.Wid;\n" +
                     "import org.jbpm.process.workitem.core.util.WidParameter;\n" +
+                    "import org.jbpm.process.workitem.core.util.WidResult;\n" +
                     "import org.jbpm.process.workitem.core.util.WidMavenDepends;\n" +
                     "\n" +
                     "@Wid(widfile=\"mywidfile.wid\", name=\"MyTest\",\n" +
@@ -50,6 +51,9 @@ public class WidProcessorTest {
                     "        parameterValues={\n" +
                     "                @WidParameterValues(parameterName=\"sampleParam\", values=\"a,b,c,d,e\"),\n" +
                     "                @WidParameterValues(parameterName=\"sampleParamTwo\", values=\"1,2,3,4,5\")\n" +
+                    "        },\n" +
+                    "        results = {\n" +
+                    "                @WidResult(name = \"sampleResult\")\n" +
                     "        },\n" +
                     "        mavenDepends={\n" +
                     "                @WidMavenDepends(group=\"org.jboss\", artifact=\"myworkitem\", version=\"1.0\")\n" +
@@ -174,13 +178,21 @@ public class WidProcessorTest {
         assertEquals("sampleParam",
                      widParameters[0].name());
         assertTrue(widParameters[0].required());
-        assertEquals("StringDataType",
+        assertEquals("new StringDataType()",
                      widParameters[0].type());
         assertEquals("sampleParamTwo",
                      widParameters[1].name());
         assertTrue(widParameters[1].required());
-        assertEquals("StringDataType",
+        assertEquals("new StringDataType()",
                      widParameters[1].type());
+
+        WidResult[] widResults = widInfo.results();
+        assertEquals(1,
+                     widResults.length);
+        assertEquals("sampleResult",
+                     widResults[0].name());
+        assertEquals("new StringDataType()",
+                     widResults[0].type());
 
         WidParameterValues[] widParameterValues = widInfo.parameterValues();
         assertEquals(2,

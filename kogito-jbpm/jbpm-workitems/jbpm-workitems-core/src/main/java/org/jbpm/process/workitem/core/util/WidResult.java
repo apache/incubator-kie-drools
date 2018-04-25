@@ -25,5 +25,5 @@ import java.lang.annotation.Documented;
 @Documented
 public @interface WidResult {
     String name() default "";
-    String type() default "StringDataType";
+    String type() default "new StringDataType()";
 }
