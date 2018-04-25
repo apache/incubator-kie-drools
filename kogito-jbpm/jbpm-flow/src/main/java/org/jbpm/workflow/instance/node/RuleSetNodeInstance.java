@@ -187,12 +187,20 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
         ExceptionScopeInstance exceptionScopeInstance = getExceptionScopeInstance(e);
         if(exceptionScopeInstance != null) {
             exceptionScopeInstance.handleException(e.getClass().getName(), e);
+            
+            return;
         } else {
-            if(ExceptionUtils.getRootCause(e) != null) {
-                handleException(ExceptionUtils.getRootCause(e));
-            } else {
-                throw new WorkflowRuntimeException(this, getProcessInstance(), "Unable to execute Action: " + e.getMessage(), e);
+            Throwable rootCause = ExceptionUtils.getRootCause(e);
+            if(rootCause != null) {                
+                exceptionScopeInstance = getExceptionScopeInstance(rootCause);
+                if(exceptionScopeInstance != null) {
+                    exceptionScopeInstance.handleException(rootCause.getClass().getName(), rootCause);
+                    
+                    return;
+                }
             }
+            throw new WorkflowRuntimeException(this, getProcessInstance(), "Unable to execute Action: " + e.getMessage(), e);
+            
         }
     }
 
