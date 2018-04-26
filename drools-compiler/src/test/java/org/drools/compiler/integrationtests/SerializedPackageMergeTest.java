@@ -34,6 +34,7 @@ import org.drools.core.common.DroolsObjectOutputStream;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
@@ -182,6 +183,42 @@ public class SerializedPackageMergeTest {
 
         assertEquals(2, list.size());
 
+        ksession.dispose();
+    }
+
+    @Test
+    public void testBuildAndSerializePackagesWithGetterInLHS() throws Exception {
+        // DROOLS-2495
+        String drl =   "package com.sample\n" +
+                        "import org.drools.compiler.Person\n" +
+                        "import org.drools.compiler.Cheese\n" +
+                        "rule R1\n" +
+                        "when\n" +
+                        "  $p : Person()\n" +
+                        "  $c : Cheese(type == $p.getName())\n" +
+                        "then\n" +
+                        "end\n";
+
+        KnowledgeBuilder builder1 = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        builder1.add(ResourceFactory.newByteArrayResource(drl.getBytes()), ResourceType.DRL);
+        Collection<KiePackage> knowledgePackages = builder1.getKnowledgePackages();
+
+        byte[] pkgBin = null;
+        try (ByteArrayOutputStream byteOutStream = new ByteArrayOutputStream();
+                DroolsObjectOutputStream out = new DroolsObjectOutputStream(byteOutStream);) {
+            out.writeObject(knowledgePackages);
+            out.flush();
+            pkgBin = byteOutStream.toByteArray();
+        }
+
+        KnowledgeBuilder builder2 = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        builder2.add(ResourceFactory.newByteArrayResource(pkgBin), ResourceType.PKG);
+        KieBase kbase = builder2.newKieBase();
+
+        KieSession ksession = kbase.newKieSession();
+        ksession.insert(new org.drools.compiler.Person("aaa"));
+        ksession.insert(new org.drools.compiler.Cheese("aaa"));
+        ksession.fireAllRules();
         ksession.dispose();
     }
 }
