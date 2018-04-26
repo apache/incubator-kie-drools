@@ -22,11 +22,13 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import org.appformer.maven.support.DependencyFilter;
@@ -41,6 +43,7 @@ import org.drools.compiler.kie.builder.impl.ResultsImpl;
 import org.drools.compiler.kie.builder.impl.ZipKieModule;
 import org.drools.compiler.kie.util.KieJarChangeSet;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
+import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.common.ResourceProvider;
@@ -49,12 +52,14 @@ import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.util.Drools;
 import org.drools.core.util.IoUtils;
+import org.drools.core.util.StringUtils;
 import org.drools.model.Model;
 import org.drools.model.NamedModelItem;
 import org.drools.modelcompiler.builder.CanonicalKieBaseUpdater;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
+import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
 import org.kie.api.builder.model.KieBaseModel;
@@ -126,24 +131,68 @@ public class CanonicalKieModule implements InternalKieModule {
     public InternalKnowledgeBase createKieBase( KieBaseModelImpl kBaseModel, KieProject kieProject, ResultsImpl messages, KieBaseConfiguration conf ) {
         this.moduleClassLoader = (( ProjectClassLoader ) kieProject.getClassLoader());
         KieBaseConfiguration kBaseConf = getKieBaseConfiguration( kBaseModel, moduleClassLoader, conf );
-        CanonicalKiePackages kpkgs = pkgsInKbase.computeIfAbsent( kBaseModel.getName(), k -> createKiePackages(kBaseModel, kBaseConf) );
+        CanonicalKiePackages kpkgs = pkgsInKbase.computeIfAbsent( kBaseModel.getName(), k -> createKiePackages(kieProject, kBaseModel, messages, kBaseConf) );
         return new KieBaseBuilder( kBaseModel, kBaseConf ).createKieBase(kpkgs);
     }
 
-    private CanonicalKiePackages createKiePackages( KieBaseModelImpl kBaseModel, KieBaseConfiguration conf ) {
-        CanonicalKiePackages canonicalKiePkgs = new KiePackagesBuilder(conf, getModelForKBase(kBaseModel), this.moduleClassLoader).build();
-        return mergeProcesses( kBaseModel, canonicalKiePkgs );
+    private CanonicalKiePackages createKiePackages( KieProject kieProject, KieBaseModelImpl kBaseModel, ResultsImpl messages, KieBaseConfiguration conf ) {
+        Set<String> includes = kieProject == null ? Collections.emptySet() : kieProject.getTransitiveIncludes(kBaseModel);
+        List<Process> processes = findProcesses( internalKieModule, kBaseModel );
+        Collection<Model> models;
+
+        if (includes.isEmpty()) {
+            models = getModelForKBase(kBaseModel);
+
+        } else {
+            models = new ArrayList<>( getModelForKBase(kBaseModel) );
+
+            for (String include : includes) {
+                if ( StringUtils.isEmpty( include ) ) {
+                    continue;
+                }
+                InternalKieModule includeModule = kieProject.getKieModuleForKBase( include );
+                if ( includeModule == null ) {
+                    String text = "Unable to build KieBase, could not find include: " + include;
+                    messages.addMessage( Message.Level.ERROR, KieModuleModelImpl.KMODULE_SRC_PATH, text ).setKieBaseName( kBaseModel.getName() );
+                    continue;
+                }
+                if ( !(includeModule instanceof CanonicalKieModule) ) {
+                    String text = "It is not possible to mix drl based and executable model based projects. Found a drl project: " + include;
+                    messages.addMessage( Message.Level.ERROR, KieModuleModelImpl.KMODULE_SRC_PATH, text ).setKieBaseName( kBaseModel.getName() );
+                    continue;
+                }
+                KieBaseModelImpl includeKBaseModel = ( KieBaseModelImpl ) kieProject.getKieBaseModel( include );
+                models.addAll( (( CanonicalKieModule ) includeModule).getModelForKBase( includeKBaseModel ) );
+                processes.addAll( findProcesses( includeModule, includeKBaseModel ) );
+            }
+        }
+
+        CanonicalKiePackages canonicalKiePkgs = new KiePackagesBuilder(conf, models, this.moduleClassLoader).build();
+        return mergeProcesses( processes, canonicalKiePkgs );
     }
 
-    private CanonicalKiePackages mergeProcesses( KieBaseModelImpl kBaseModel, CanonicalKiePackages canonicalKiePkgs ) {
-        Collection<KiePackage> pkgs = internalKieModule.getKnowledgePackagesForKieBase(kBaseModel.getName());
+    private CanonicalKiePackages mergeProcesses( List<Process> processes, CanonicalKiePackages canonicalKiePkgs ) {
+        for (Process process : processes) {
+            InternalKnowledgePackage canonicalKiePkg = ( InternalKnowledgePackage ) canonicalKiePkgs.getKiePackage( process.getPackageName() );
+            if ( canonicalKiePkg == null ) {
+                canonicalKiePkg = new KnowledgePackageImpl( process.getPackageName() );
+                canonicalKiePkgs.addKiePackage( canonicalKiePkg );
+            }
+            canonicalKiePkg.addProcess( process );
+        }
+        return canonicalKiePkgs;
+    }
+
+    private List<Process> findProcesses( InternalKieModule kieModule, KieBaseModelImpl kBaseModel ) {
+        List<Process> processes = new ArrayList<>();
+        Collection<KiePackage> pkgs = kieModule.getKnowledgePackagesForKieBase(kBaseModel.getName());
         if (pkgs == null) {
-            List<Resource> processResources = internalKieModule.getFileNames().stream()
+            List<Resource> processResources = kieModule.getFileNames().stream()
                     .filter( fileName -> {
                         ResourceType resourceType = determineResourceType(fileName);
                         return resourceType == ResourceType.DRF || resourceType == ResourceType.BPMN2;
                     } )
-                    .map( internalKieModule::getResource )
+                    .map( kieModule::getResource )
                     .collect( toList() );
             if (!processResources.isEmpty()) {
                 KnowledgeBuilderImpl kbuilder = (KnowledgeBuilderImpl) KnowledgeBuilderFactory.newKnowledgeBuilder( getBuilderConfiguration( kBaseModel ) );
@@ -151,15 +200,7 @@ public class CanonicalKieModule implements InternalKieModule {
                 if (processBuilder != null) {
                     for (Resource processResource : processResources) {
                         try {
-                            List<Process> processes = processBuilder.addProcessFromXml( processResource );
-                            for (Process process : processes) {
-                                InternalKnowledgePackage canonicalKiePkg = ( InternalKnowledgePackage ) canonicalKiePkgs.getKiePackage( process.getPackageName() );
-                                if ( canonicalKiePkg == null ) {
-                                    canonicalKiePkg = new KnowledgePackageImpl( process.getPackageName() );
-                                    canonicalKiePkgs.addKiePackage( canonicalKiePkg );
-                                }
-                                canonicalKiePkg.addProcess( process );
-                            }
+                            processes.addAll( processBuilder.addProcessFromXml( processResource ) );
                         } catch (IOException e) {
                             throw new RuntimeException( e );
                         }
@@ -168,24 +209,14 @@ public class CanonicalKieModule implements InternalKieModule {
             }
         } else {
             for (KiePackage pkg : pkgs) {
-                Collection<Process> processes = pkg.getProcesses();
-                if ( !processes.isEmpty() ) {
-                    InternalKnowledgePackage canonicalKiePkg = ( InternalKnowledgePackage ) canonicalKiePkgs.getKiePackage( pkg.getName() );
-                    if ( canonicalKiePkg == null ) {
-                        canonicalKiePkgs.addKiePackage( pkg );
-                    } else {
-                        for (Process process : processes) {
-                            canonicalKiePkg.addProcess( process );
-                        }
-                    }
-                }
+                processes.addAll( pkg.getProcesses() );
             }
         }
-        return canonicalKiePkgs;
+        return processes;
     }
 
     public CanonicalKiePackages getKiePackages( KieBaseModelImpl kBaseModel ) {
-        return pkgsInKbase.computeIfAbsent( kBaseModel.getName(), k -> createKiePackages(kBaseModel, getKnowledgeBaseConfiguration(kBaseModel, getModuleClassLoader())) );
+        return pkgsInKbase.computeIfAbsent( kBaseModel.getName(), k -> createKiePackages(null, kBaseModel, null, getKnowledgeBaseConfiguration(kBaseModel, getModuleClassLoader())) );
     }
 
     public ProjectClassLoader getModuleClassLoader() {
