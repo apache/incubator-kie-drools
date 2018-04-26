@@ -33,7 +33,6 @@ import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.DroolsObjectOutputStream;
 import org.junit.Test;
 import org.kie.api.KieBase;
-import org.kie.api.definition.KiePackage;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.KnowledgeBase;
@@ -213,14 +212,15 @@ public class SerializedPackageMergeTest {
 
         KnowledgeBuilder builder2 = KnowledgeBuilderFactory.newKnowledgeBuilder();
         builder2.add(ResourceFactory.newByteArrayResource(pkgBin), ResourceType.PKG);
-        KieBase kbase = builder2.newKnowledgeBase();
 
+        KieBase kbase = builder2.newKnowledgeBase();
         KieSession ksession = kbase.newKieSession();
         ksession.insert(new org.drools.compiler.Person("aaa"));
         ksession.insert(new org.drools.compiler.Cheese("aaa"));
         ksession.fireAllRules();
         ksession.dispose();
     }
+
 
     @Test
     public void testBuildAndSerializePackagesWithGlobalMethodInLHS() throws Exception {
