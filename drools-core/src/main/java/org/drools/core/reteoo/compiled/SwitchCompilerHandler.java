@@ -89,6 +89,7 @@ abstract public class SwitchCompilerHandler extends AbstractCompilerHandler {
     }
 
     protected boolean canInlineValue() {
-        return Stream.of(String.class, Integer.class, int.class).anyMatch(c -> c.isAssignableFrom(fieldType));
+//        return Stream.of(String.class, Integer.class, int.class).anyMatch(c -> c.isAssignableFrom(fieldType));
+        return false;
     }
 }
