@@ -1366,7 +1366,7 @@ public class CompilerTest extends BaseModelTest {
                     "import " + Person.class.getCanonicalName() + ";" +
                     "import " + Result.class.getCanonicalName() + ";" +
                     "rule R1 when\n" +
-                    "  $p : Person( employed == null)\n" +
+                    "  $p : Person( employed == true)\n" +
                     "then\n" +
                     "  insert(new Result($p.getName()));\n" +
                     "end\n";
@@ -1385,7 +1385,7 @@ public class CompilerTest extends BaseModelTest {
                     .stream().map(Result::getValue).collect(Collectors.toList());
             assertEquals(1, results.size());
 
-            Assertions.assertThat(results).containsExactlyInAnyOrder("First");
+            Assertions.assertThat(results).containsExactlyInAnyOrder("Second");
 
         }
 

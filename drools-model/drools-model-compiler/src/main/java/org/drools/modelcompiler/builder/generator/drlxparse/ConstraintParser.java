@@ -305,9 +305,11 @@ public class ConstraintParser {
         }
 
         final Expression rightExpression = right.getExpression();
-        if (isPrimitiveExpression(rightExpression)) {
+        final Expression leftExpression = left.getExpression();
+
+        if (isPrimitiveExpression(rightExpression) && isPrimitiveExpression(leftExpression)) {
             if (left.getType() != String.class) {
-                return new BinaryExpr(left.getExpression(), rightExpression, operator == BinaryExpr.Operator.EQUALS ? BinaryExpr.Operator.EQUALS : BinaryExpr.Operator.NOT_EQUALS );
+                return new BinaryExpr(leftExpression, rightExpression, operator == BinaryExpr.Operator.EQUALS ? BinaryExpr.Operator.EQUALS : BinaryExpr.Operator.NOT_EQUALS );
             } else if ( rightExpression instanceof LiteralExpr && !(rightExpression instanceof NullLiteralExpr)) {
                 right.setExpression( new StringLiteralExpr(rightExpression.toString() ) );
             }
@@ -318,7 +320,7 @@ public class ConstraintParser {
         }
 
         MethodCallExpr methodCallExpr = new MethodCallExpr( null, "org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals" );
-        methodCallExpr.addArgument( left.getExpression() );
+        methodCallExpr.addArgument(leftExpression);
         methodCallExpr.addArgument(rightExpression); // don't create NodeList with static method because missing "parent for child" would null and NPE
         return operator == BinaryExpr.Operator.EQUALS ? methodCallExpr : new UnaryExpr(methodCallExpr, UnaryExpr.Operator.LOGICAL_COMPLEMENT );
     }
