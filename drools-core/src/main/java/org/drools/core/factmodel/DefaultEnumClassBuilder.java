@@ -141,11 +141,6 @@ public class DefaultEnumClassBuilder implements Opcodes, EnumClassBuilder, Seria
                     null);
             fv.visitEnd();
         }
-
-        {
-            fv = cw.visitField(ACC_PRIVATE + ACC_STATIC, "$context", "Lorg/mvel2/ParserContext;", null, null);
-            fv.visitEnd();
-        }
     }
 
 
@@ -346,26 +341,6 @@ public class DefaultEnumClassBuilder implements Opcodes, EnumClassBuilder, Seria
             mv.visitCode();
             mv.visitInsn( RETURN );
             mv.visitMaxs( 0, 1 + BuildUtils.sizeOf( fld.getTypeName() ) );
-            mv.visitEnd();
-        }
-
-
-
-        {
-            mv = cw.visitMethod(ACC_PUBLIC + ACC_STATIC, "get$context", "()Lorg/mvel2/ParserContext;", null, null);
-            mv.visitCode();
-            mv.visitFieldInsn(GETSTATIC, BuildUtils.getInternalType( classDef.getName() ), "$context", "Lorg/mvel2/ParserContext;");
-            mv.visitInsn(ARETURN);
-            mv.visitMaxs(1, 0);
-            mv.visitEnd();
-        }
-        {
-            mv = cw.visitMethod(ACC_PUBLIC + ACC_STATIC, "set$context", "(Lorg/mvel2/ParserContext;)V", null, null);
-            mv.visitCode();
-            mv.visitVarInsn(ALOAD, 0);
-            mv.visitFieldInsn(PUTSTATIC, BuildUtils.getInternalType( classDef.getName() ), "$context", "Lorg/mvel2/ParserContext;");
-            mv.visitInsn(RETURN);
-            mv.visitMaxs(1, 1);
             mv.visitEnd();
         }
     }
