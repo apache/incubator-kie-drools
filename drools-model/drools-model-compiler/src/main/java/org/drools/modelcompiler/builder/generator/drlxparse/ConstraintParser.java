@@ -1,5 +1,6 @@
 package org.drools.modelcompiler.builder.generator.drlxparse;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -336,9 +337,10 @@ public class ConstraintParser {
     private static boolean shouldCoerceBToString(TypedExpression a, TypedExpression b) {
         boolean aIsString = a.getType() == String.class;
         boolean bIsNotString = b.getType() != String.class;
-        boolean bIsNull = b.getExpression() instanceof NullLiteralExpr;
+        boolean bIsNotNull = !(b.getExpression() instanceof NullLiteralExpr);
+        boolean bIsNotSerializable = !(b.getType() == Serializable.class);
         boolean bExpressionExists = b.getExpression() != null;
-        return bExpressionExists && aIsString && (bIsNotString && !bIsNull);
+        return bExpressionExists && aIsString && (bIsNotString &&  bIsNotNull && bIsNotSerializable);
     }
 
     private static Expression handleSpecialComparisonCases(BinaryExpr.Operator operator, TypedExpression left, TypedExpression right ) {
