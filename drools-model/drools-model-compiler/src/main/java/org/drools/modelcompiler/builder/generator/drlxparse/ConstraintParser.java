@@ -310,9 +310,17 @@ public class ConstraintParser {
         if (isPrimitiveExpression(rightExpression) && isPrimitiveExpression(leftExpression)) {
             if (left.getType() != String.class) {
                 return new BinaryExpr(leftExpression, rightExpression, operator == BinaryExpr.Operator.EQUALS ? BinaryExpr.Operator.EQUALS : BinaryExpr.Operator.NOT_EQUALS );
-            } else if ( rightExpression instanceof LiteralExpr && !(rightExpression instanceof NullLiteralExpr)) {
+            }  else if ( rightExpression instanceof LiteralExpr && !(rightExpression instanceof NullLiteralExpr)) {
                 right.setExpression( new StringLiteralExpr(rightExpression.toString() ) );
             }
+        }
+
+        if ((left.getType() == String.class && (right.getType() != String.class && !(rightExpression instanceof NullLiteralExpr)))) {
+            right.setExpression( new StringLiteralExpr(rightExpression.toString() ) );
+        }
+
+        if ((right.getType() == String.class && left.getType() != String.class && !(leftExpression instanceof NullLiteralExpr))) {
+            left.setExpression( new StringLiteralExpr(rightExpression.toString() ) );
         }
 
         if (left.getType() == String.class && right.getType() == Object.class) {
@@ -320,8 +328,8 @@ public class ConstraintParser {
         }
 
         MethodCallExpr methodCallExpr = new MethodCallExpr( null, "org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals" );
-        methodCallExpr.addArgument(leftExpression);
-        methodCallExpr.addArgument(rightExpression); // don't create NodeList with static method because missing "parent for child" would null and NPE
+        methodCallExpr.addArgument(left.getExpression());
+        methodCallExpr.addArgument(right.getExpression()); // don't create NodeList with static method because missing "parent for child" would null and NPE
         return operator == BinaryExpr.Operator.EQUALS ? methodCallExpr : new UnaryExpr(methodCallExpr, UnaryExpr.Operator.LOGICAL_COMPLEMENT );
     }
 
