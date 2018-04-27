@@ -21,12 +21,14 @@ import java.util.Collections;
 import org.jbpm.services.api.DefinitionService;
 import org.jbpm.services.api.RuntimeDataService;
 import org.jbpm.services.api.model.ProcessDefinition;
+import org.jbpm.services.task.commands.GetUserTaskCommand;
 import org.jbpm.services.task.impl.model.TaskDataImpl;
 import org.jbpm.services.task.impl.model.TaskImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.api.task.TaskService;
+import org.kie.internal.identity.IdentityProvider;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -51,6 +53,9 @@ public class FormProviderServiceImplTest {
     FormProvider formProvider;
 
     @Mock
+    IdentityProvider identityProvider;
+
+    @Mock
     DefinitionService bpmn2Service;
 
     @InjectMocks
@@ -59,6 +64,8 @@ public class FormProviderServiceImplTest {
     @Before
     public void init() {
         formProviderService.setProviders(Collections.singleton(formProvider));
+        formProviderService.setIdentityProvider(identityProvider);
+        when(identityProvider.getName()).thenReturn("admin");
     }
 
     @Test
@@ -68,7 +75,7 @@ public class FormProviderServiceImplTest {
         task.setId(taskId);
         task.setName("TaskName");
         task.setTaskData(new TaskDataImpl());
-        when(taskService.getTaskById(taskId)).thenReturn(task);
+        when(taskService.execute(any(GetUserTaskCommand.class))).thenReturn(task);
 
         final String form = formProviderService.getFormDisplayTask(1);
 
@@ -89,7 +96,7 @@ public class FormProviderServiceImplTest {
         final String processId = "org.jbpm.evaluation";
         taskData.setProcessId(processId);
         task.setTaskData(taskData);
-        when(taskService.getTaskById(taskId)).thenReturn(task);
+        when(taskService.execute(any(GetUserTaskCommand.class))).thenReturn(task);
         final ProcessDefinition processDefinition = mock(ProcessDefinition.class);
         when(dataService.getProcessesByDeploymentIdProcessId(deploymentId, processId)).thenReturn(processDefinition);
 

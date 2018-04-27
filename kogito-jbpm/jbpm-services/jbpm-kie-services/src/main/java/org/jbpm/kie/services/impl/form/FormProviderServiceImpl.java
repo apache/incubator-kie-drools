@@ -26,11 +26,13 @@ import org.jbpm.services.api.DeploymentService;
 import org.jbpm.services.api.RuntimeDataService;
 import org.jbpm.services.api.model.DeployedUnit;
 import org.jbpm.services.api.model.ProcessDefinition;
+import org.jbpm.services.task.commands.GetUserTaskCommand;
 import org.jbpm.services.task.impl.TaskContentRegistry;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.Content;
 import org.kie.api.task.model.Task;
+import org.kie.internal.identity.IdentityProvider;
 import org.kie.internal.runtime.manager.InternalRuntimeManager;
 import org.kie.internal.task.api.ContentMarshallerContext;
 import org.slf4j.Logger;
@@ -41,15 +43,17 @@ public class FormProviderServiceImpl implements FormProviderService {
 
     private static Logger logger = LoggerFactory.getLogger(FormProviderServiceImpl.class);
 
-    
+
     private TaskService taskService;
-    
+
     private DefinitionService bpmn2Service;
-    
+
     private RuntimeDataService dataService;
-    
-    private DeploymentService deploymentService;    
-    
+
+    private DeploymentService deploymentService;
+
+    private IdentityProvider identityProvider;
+
     public void setTaskService(TaskService taskService) {
 		this.taskService = taskService;
 	}
@@ -70,9 +74,11 @@ public class FormProviderServiceImpl implements FormProviderService {
 		this.providers = providers;
 	}
 
-	private Set<FormProvider> providers;
+    public void setIdentityProvider(IdentityProvider identityProvider) {
+        this.identityProvider = identityProvider;
+    }
 
-
+    private Set<FormProvider> providers;
 
     @Override
     public String getFormDisplayProcess(String deploymentId, String processId) {
@@ -102,7 +108,7 @@ public class FormProviderServiceImpl implements FormProviderService {
     @Override
     @SuppressWarnings("unchecked")
     public String getFormDisplayTask(long taskId) {
-        Task task = taskService.getTaskById(taskId);
+        Task task = taskService.execute(new GetUserTaskCommand(identityProvider.getName(), taskId));
         if (task == null) {
             return "";
         }
@@ -162,7 +168,7 @@ public class FormProviderServiceImpl implements FormProviderService {
             finalOutput.putAll( (Map<String, Object>) output );
         }
 
-        // merge template with process variables        
+        // merge template with process variables
         renderContext.put("task", task);
         renderContext.put("marshallerContext", marshallerContext);
 

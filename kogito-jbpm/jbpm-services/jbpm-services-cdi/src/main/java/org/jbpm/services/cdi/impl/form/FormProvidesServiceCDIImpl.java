@@ -32,6 +32,7 @@ import org.jbpm.services.api.DefinitionService;
 import org.jbpm.services.api.DeploymentService;
 import org.jbpm.services.api.RuntimeDataService;
 import org.kie.api.task.TaskService;
+import org.kie.internal.identity.IdentityProvider;
 
 @ApplicationScoped
 public class FormProvidesServiceCDIImpl extends FormProviderServiceImpl {
@@ -39,7 +40,7 @@ public class FormProvidesServiceCDIImpl extends FormProviderServiceImpl {
 	@Inject
     @Any
     private Instance<FormProvider> providersInjected;
-	
+
     @PostConstruct
     public void prepare() {
     	Set<FormProvider> providers = new TreeSet<FormProvider>(new Comparator<FormProvider>() {
@@ -52,7 +53,7 @@ public class FormProvidesServiceCDIImpl extends FormProviderServiceImpl {
         for (FormProvider p : providersInjected) {
             providers.add(p);
         }
-        
+
         super.setProviders(providers);
     }
 
@@ -84,6 +85,9 @@ public class FormProvidesServiceCDIImpl extends FormProviderServiceImpl {
 		super.setDeploymentService(deploymentService);
 	}
 
-    
-    
+	@Inject
+    @Override
+    public void setIdentityProvider(IdentityProvider identityProvider) {
+        super.setIdentityProvider(identityProvider);
+    }
 }
