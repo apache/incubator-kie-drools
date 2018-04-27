@@ -315,11 +315,11 @@ public class ConstraintParser {
             }
         }
 
-        if ((left.getType() == String.class && (right.getType() != String.class && !(rightExpression instanceof NullLiteralExpr)))) {
+        if (shouldCoerceBToString(left, right)) {
             right.setExpression( new StringLiteralExpr(rightExpression.toString() ) );
         }
 
-        if ((right.getType() == String.class && left.getType() != String.class && !(leftExpression instanceof NullLiteralExpr))) {
+        if ((shouldCoerceBToString(right, left))) {
             left.setExpression( new StringLiteralExpr(rightExpression.toString() ) );
         }
 
@@ -331,6 +331,14 @@ public class ConstraintParser {
         methodCallExpr.addArgument(left.getExpression());
         methodCallExpr.addArgument(right.getExpression()); // don't create NodeList with static method because missing "parent for child" would null and NPE
         return operator == BinaryExpr.Operator.EQUALS ? methodCallExpr : new UnaryExpr(methodCallExpr, UnaryExpr.Operator.LOGICAL_COMPLEMENT );
+    }
+
+    private static boolean shouldCoerceBToString(TypedExpression a, TypedExpression b) {
+        boolean aIsString = a.getType() == String.class;
+        boolean bIsNotString = b.getType() != String.class;
+        boolean bIsNull = b.getExpression() instanceof NullLiteralExpr;
+        boolean bExpressionExists = b.getExpression() != null;
+        return bExpressionExists && aIsString && (bIsNotString && !bIsNull);
     }
 
     private static Expression handleSpecialComparisonCases(BinaryExpr.Operator operator, TypedExpression left, TypedExpression right ) {
