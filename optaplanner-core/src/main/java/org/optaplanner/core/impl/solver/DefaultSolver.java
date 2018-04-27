@@ -114,6 +114,8 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
         if (bestSolution == null) {
             return null;
         }
+        // Do not simply call getBestScore() because this method is thread-safe
+        // That would create a race condition with the getBestSolution() call earlier.
         if (solverScope.getSolutionDescriptor().getScore(bestSolution) == null) {
             return null;
         }
