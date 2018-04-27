@@ -140,7 +140,143 @@
           "parameterIndex": "0",
           "elementKind": "parameter",
           "justification": "Non-api class changed name. The exposure of this class in the API is now deprecated and will be removed in 8.0."
+        },
+        {
+          "code": "java.field.visibilityReduced",
+          "old": "field org.optaplanner.core.api.score.constraint.ConstraintMatch.constraintName",
+          "new": "field org.optaplanner.core.api.score.constraint.ConstraintMatch.constraintName",
+          "oldVisibility": "protected",
+          "newVisibility": "private",
+          "package": "org.optaplanner.core.api.score.constraint",
+          "classSimpleName": "ConstraintMatch",
+          "fieldName": "constraintName",
+          "elementKind": "field",
+          "justification": "Protected field in final class has become private."
+        },
+        {
+          "code": "java.field.visibilityReduced",
+          "old": "field org.optaplanner.core.api.score.constraint.ConstraintMatch.constraintPackage",
+          "new": "field org.optaplanner.core.api.score.constraint.ConstraintMatch.constraintPackage",
+          "oldVisibility": "protected",
+          "newVisibility": "private",
+          "package": "org.optaplanner.core.api.score.constraint",
+          "classSimpleName": "ConstraintMatch",
+          "fieldName": "constraintPackage",
+          "elementKind": "field",
+          "justification": "Protected field in final class has become private."
+        },
+        {
+          "code": "java.field.visibilityReduced",
+          "old": "field org.optaplanner.core.api.score.constraint.ConstraintMatch.justificationList",
+          "new": "field org.optaplanner.core.api.score.constraint.ConstraintMatch.justificationList",
+          "oldVisibility": "protected",
+          "newVisibility": "private",
+          "package": "org.optaplanner.core.api.score.constraint",
+          "classSimpleName": "ConstraintMatch",
+          "fieldName": "justificationList",
+          "elementKind": "field",
+          "justification": "Protected field in final class has become private."
+        },
+        {
+          "code": "java.field.visibilityReduced",
+          "old": "field org.optaplanner.core.api.score.constraint.ConstraintMatch.score",
+          "new": "field org.optaplanner.core.api.score.constraint.ConstraintMatch.score",
+          "oldVisibility": "protected",
+          "newVisibility": "private",
+          "package": "org.optaplanner.core.api.score.constraint",
+          "classSimpleName": "ConstraintMatch",
+          "fieldName": "score",
+          "elementKind": "field",
+          "justification": "Protected field in final class has become private."
+        },
+        {
+          "code": "java.field.visibilityReduced",
+          "old": "field org.optaplanner.core.api.score.constraint.ConstraintMatchTotal.constraintMatchSet",
+          "new": "field org.optaplanner.core.api.score.constraint.ConstraintMatchTotal.constraintMatchSet",
+          "oldVisibility": "protected",
+          "newVisibility": "private",
+          "package": "org.optaplanner.core.api.score.constraint",
+          "classSimpleName": "ConstraintMatchTotal",
+          "fieldName": "constraintMatchSet",
+          "elementKind": "field",
+          "justification": "Protected field in final class has become private."
+        },
+        {
+          "code": "java.field.visibilityReduced",
+          "old": "field org.optaplanner.core.api.score.constraint.ConstraintMatchTotal.constraintName",
+          "new": "field org.optaplanner.core.api.score.constraint.ConstraintMatchTotal.constraintName",
+          "oldVisibility": "protected",
+          "newVisibility": "private",
+          "package": "org.optaplanner.core.api.score.constraint",
+          "classSimpleName": "ConstraintMatchTotal",
+          "fieldName": "constraintName",
+          "elementKind": "field",
+          "justification": "Protected field in final class has become private."
+        },
+        {
+          "code": "java.field.visibilityReduced",
+          "old": "field org.optaplanner.core.api.score.constraint.ConstraintMatchTotal.constraintPackage",
+          "new": "field org.optaplanner.core.api.score.constraint.ConstraintMatchTotal.constraintPackage",
+          "oldVisibility": "protected",
+          "newVisibility": "private",
+          "package": "org.optaplanner.core.api.score.constraint",
+          "classSimpleName": "ConstraintMatchTotal",
+          "fieldName": "constraintPackage",
+          "elementKind": "field",
+          "justification": "Protected field in final class has become private."
+        },
+        {
+          "code": "java.field.removed",
+          "old": "field org.optaplanner.core.api.score.constraint.ConstraintMatchTotal.scoreTotal",
+          "package": "org.optaplanner.core.api.score.constraint",
+          "classSimpleName": "ConstraintMatchTotal",
+          "fieldName": "scoreTotal",
+          "elementKind": "field",
+          "justification": "Protected field in final class has been renamed to score."
+        },
+        {
+          "code": "java.field.visibilityReduced",
+          "old": "field org.optaplanner.core.api.score.constraint.Indictment.constraintMatchSet",
+          "new": "field org.optaplanner.core.api.score.constraint.Indictment.constraintMatchSet",
+          "oldVisibility": "protected",
+          "newVisibility": "private",
+          "package": "org.optaplanner.core.api.score.constraint",
+          "classSimpleName": "Indictment",
+          "fieldName": "constraintMatchSet",
+          "elementKind": "field",
+          "justification": "Protected field in final class has become private."
+        },
+        {
+          "code": "java.field.visibilityReduced",
+          "old": "field org.optaplanner.core.api.score.constraint.Indictment.justification",
+          "new": "field org.optaplanner.core.api.score.constraint.Indictment.justification",
+          "oldVisibility": "protected",
+          "newVisibility": "private",
+          "package": "org.optaplanner.core.api.score.constraint",
+          "classSimpleName": "Indictment",
+          "fieldName": "justification",
+          "elementKind": "field",
+          "justification": "Protected field in final class has become private."
+        },
+        {
+          "code": "java.field.removed",
+          "old": "field org.optaplanner.core.api.score.constraint.Indictment.scoreTotal",
+          "package": "org.optaplanner.core.api.score.constraint",
+          "classSimpleName": "Indictment",
+          "fieldName": "scoreTotal",
+          "elementKind": "field",
+          "justification": "Protected field in final class has been renamed to score."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method java.lang.String org.optaplanner.core.api.solver.Solver<Solution_>::explainBestScore()",
+          "package": "org.optaplanner.core.api.solver",
+          "classSimpleName": "Solver",
+          "methodName": "explainBestScore",
+          "elementKind": "method",
+          "justification": "New method of Solvers."
         }
+
       ]
     }
   }

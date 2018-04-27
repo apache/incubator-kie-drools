@@ -28,10 +28,10 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  */
 public final class Indictment implements Serializable, Comparable<Indictment> {
 
-    protected final Object justification;
+    private final Object justification;
 
-    protected final Set<ConstraintMatch> constraintMatchSet;
-    protected Score score;
+    private final Set<ConstraintMatch> constraintMatchSet;
+    private Score score;
 
     /**
      * @param justification never null

@@ -29,11 +29,11 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  */
 public final class ConstraintMatchTotal implements Serializable, Comparable<ConstraintMatchTotal> {
 
-    protected final String constraintPackage;
-    protected final String constraintName;
+    private final String constraintPackage;
+    private final String constraintName;
 
-    protected final Set<ConstraintMatch> constraintMatchSet;
-    protected Score score;
+    private final Set<ConstraintMatch> constraintMatchSet;
+    private Score score;
 
     /**
      * @param constraintPackage never null

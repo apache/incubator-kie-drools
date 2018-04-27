@@ -19,7 +19,6 @@ package org.optaplanner.core.api.score.constraint;
 import java.io.Serializable;
 import java.util.List;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.optaplanner.core.api.score.Score;
 
 /**
@@ -27,11 +26,11 @@ import org.optaplanner.core.api.score.Score;
  */
 public final class ConstraintMatch implements Serializable, Comparable<ConstraintMatch> {
 
-    protected final String constraintPackage;
-    protected final String constraintName;
+    private final String constraintPackage;
+    private final String constraintName;
 
-    protected final List<Object> justificationList;
-    protected final Score score;
+    private final List<Object> justificationList;
+    private final Score score;
 
     /**
      * @param constraintPackage never null
