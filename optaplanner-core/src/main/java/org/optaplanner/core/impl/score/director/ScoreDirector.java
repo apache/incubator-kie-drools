@@ -22,6 +22,8 @@ import java.util.Map;
 import org.optaplanner.core.api.domain.lookup.LookUpStrategyType;
 import org.optaplanner.core.api.domain.lookup.PlanningId;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.domain.variable.PlanningVariable;
+import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
@@ -76,7 +78,10 @@ public interface ScoreDirector<Solution_> extends AutoCloseable {
      * Explains the {@link Score} of {@link #calculateScore()} by splitting it up per constraint type
      * (which is usually a score rule).
      * <p>
-     * The sum of {@link ConstraintMatchTotal#getScoreTotal()} equals {@link #calculateScore()}.
+     * The sum of {@link ConstraintMatchTotal#getScore()} equals {@link #calculateScore()}.
+     * <p>
+     * Call {@link #calculateScore()} before calling this method,
+     * unless that method has already been called since the last {@link PlanningVariable} changes.
      * @return never null
      * @throws IllegalStateException if {@link #isConstraintMatchEnabled()} returns false
      */
@@ -91,13 +96,33 @@ public interface ScoreDirector<Solution_> extends AutoCloseable {
      * Warning: In practice, it often doesn't include the full impact on the {@link Score},
      * for example in DRL score rules with accumulate, the accumulate elements won't be indicted.
      * <p>
-     * The sum of {@link ConstraintMatchTotal#getScoreTotal()} differs from {@link #calculateScore()}
+     * The sum of {@link ConstraintMatchTotal#getScore()} differs from {@link #calculateScore()}
      * because each {@link ConstraintMatch#getScore()} is counted
      * for each justification in {@link ConstraintMatch#getJustificationList()}.
+     * <p>
+     * Call {@link #calculateScore()} before calling this method,
+     * unless that method has already been called since the last {@link PlanningVariable} changes.
      * @return never null
      * @throws IllegalStateException if {@link #isConstraintMatchEnabled()} returns false
      */
     Map<Object, Indictment> getIndictmentMap();
+
+    /**
+     * Returns a diagnostic text that explains the {@link Score} through the {@link ConstraintMatch} API
+     * to identify which constraints or planning entities cause that score quality.
+     * In case of an {@link FeasibilityScore#isFeasible() infeasible} solution,
+     * this can help diagnose the cause of that.
+     * <p>
+     * Do not parse this string.
+     * Instead, to provide this information in a UI or a service,
+     * use {@link #getConstraintMatchTotals()} and {@link #getIndictmentMap()}
+     * and convert those into a domain specific API.
+     * <p>
+     * This automatically calls {@link #calculateScore()} first.
+     * @return never null
+     * @throws IllegalStateException if {@link #isConstraintMatchEnabled()} returns false
+     */
+    String explainScore();
 
     void beforeEntityAdded(Object entity);
 

@@ -22,9 +22,12 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Future;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
 import org.optaplanner.core.api.solver.event.SolverEventListener;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.core.impl.solver.termination.Termination;
@@ -66,6 +69,23 @@ public interface Solver<Solution_> {
      * @return null if the {@link PlanningSolution} is still uninitialized
      */
     Score getBestScore();
+
+    /**
+     * Returns a diagnostic text that explains the {@link #getBestSolution()} through the {@link ConstraintMatch} API
+     * to identify which constraints or planning entities cause that {@link #getBestScore()} quality.
+     * In case of an {@link FeasibilityScore#isFeasible() infeasible} solution,
+     * this can help diagnose the cause of that.
+     * <p>
+     * Do not parse this string.
+     * Instead, to provide this information in a UI or a service, use {@link #getScoreDirectorFactory()}
+     * to retrieve {@link ScoreDirector#getConstraintMatchTotals()} and {@link ScoreDirector#getIndictmentMap()}
+     * and convert those into a domain specific API.
+     * <p>
+     * This method is thread-safe.
+     * @return null if {@link #getBestScore()} returns null
+     * @see ScoreDirector#explainScore()
+     */
+    String explainBestScore();
 
     /**
      * Returns the amount of milliseconds spent solving since the last start.

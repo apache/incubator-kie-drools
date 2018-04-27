@@ -32,22 +32,22 @@ public class ConstraintMatchTotalTest {
         TestdataEntity e2 = new TestdataEntity("e2");
         TestdataEntity e3 = new TestdataEntity("e3");
         ConstraintMatchTotal constraintMatchTotal = new ConstraintMatchTotal("package1", "constraint1", SimpleScore.ZERO);
-        assertEquals(SimpleScore.ZERO, constraintMatchTotal.getScoreTotal());
+        assertEquals(SimpleScore.ZERO, constraintMatchTotal.getScore());
 
         ConstraintMatch match1 = constraintMatchTotal.addConstraintMatch(asList(e1, e2), SimpleScore.valueOf(-1));
-        assertEquals(SimpleScore.valueOf(-1), constraintMatchTotal.getScoreTotal());
+        assertEquals(SimpleScore.valueOf(-1), constraintMatchTotal.getScore());
         ConstraintMatch match2 = constraintMatchTotal.addConstraintMatch(asList(e1, e3), SimpleScore.valueOf(-20));
-        assertEquals(SimpleScore.valueOf(-21), constraintMatchTotal.getScoreTotal());
+        assertEquals(SimpleScore.valueOf(-21), constraintMatchTotal.getScore());
         // Almost duplicate, but e2 and e1 are in reverse order, so different justification
         ConstraintMatch match3 = constraintMatchTotal.addConstraintMatch(asList(e2, e1), SimpleScore.valueOf(-300));
-        assertEquals(SimpleScore.valueOf(-321), constraintMatchTotal.getScoreTotal());
+        assertEquals(SimpleScore.valueOf(-321), constraintMatchTotal.getScore());
 
         constraintMatchTotal.removeConstraintMatch(match2);
-        assertEquals(SimpleScore.valueOf(-301), constraintMatchTotal.getScoreTotal());
+        assertEquals(SimpleScore.valueOf(-301), constraintMatchTotal.getScore());
         constraintMatchTotal.removeConstraintMatch(match1);
-        assertEquals(SimpleScore.valueOf(-300), constraintMatchTotal.getScoreTotal());
+        assertEquals(SimpleScore.valueOf(-300), constraintMatchTotal.getScore());
         constraintMatchTotal.removeConstraintMatch(match3);
-        assertEquals(SimpleScore.ZERO, constraintMatchTotal.getScoreTotal());
+        assertEquals(SimpleScore.ZERO, constraintMatchTotal.getScore());
     }
 
     @Test

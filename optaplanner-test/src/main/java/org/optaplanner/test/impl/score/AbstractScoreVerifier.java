@@ -110,7 +110,7 @@ public abstract class AbstractScoreVerifier<Solution_> {
                         + " type (" + expectedWeight.getClass() + ") for expectedWeight (" + expectedWeight + ").");
             }
         } else {
-            assertEquals(expectedWeight, matchTotal.getScoreTotal().toLevelNumbers()[scoreLevel]);
+            assertEquals(expectedWeight, matchTotal.getScore().toLevelNumbers()[scoreLevel]);
         }
     }
 

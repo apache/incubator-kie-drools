@@ -31,7 +31,7 @@ public final class Indictment implements Serializable, Comparable<Indictment> {
     protected final Object justification;
 
     protected final Set<ConstraintMatch> constraintMatchSet;
-    protected Score scoreTotal;
+    protected Score score;
 
     /**
      * @param justification never null
@@ -40,7 +40,7 @@ public final class Indictment implements Serializable, Comparable<Indictment> {
     public Indictment(Object justification, Score zeroScore) {
         this.justification = justification;
         constraintMatchSet = new LinkedHashSet<>();
-        scoreTotal = zeroScore;
+        score = zeroScore;
     }
 
     /**
@@ -65,10 +65,20 @@ public final class Indictment implements Serializable, Comparable<Indictment> {
     }
 
     /**
+     * Sum of the {@link #getConstraintMatchSet()}'s {@link ConstraintMatch#getScore()}.
      * @return never null
      */
+    public Score getScore() {
+        return score;
+    }
+
+    /**
+     * @return never null
+     * @deprecated in favor of {@link #getScore()}
+     */
+    @Deprecated
     public Score getScoreTotal() {
-        return scoreTotal;
+        return getScore();
     }
 
     // ************************************************************************
@@ -76,7 +86,7 @@ public final class Indictment implements Serializable, Comparable<Indictment> {
     // ************************************************************************
 
     public void addConstraintMatch(ConstraintMatch constraintMatch) {
-        scoreTotal = scoreTotal.add(constraintMatch.getScore());
+        score = score.add(constraintMatch.getScore());
         boolean added = constraintMatchSet.add(constraintMatch);
         if (!added) {
             throw new IllegalStateException("The indictment (" + this
@@ -86,7 +96,7 @@ public final class Indictment implements Serializable, Comparable<Indictment> {
     }
 
     public void removeConstraintMatch(ConstraintMatch constraintMatch) {
-        scoreTotal = scoreTotal.subtract(constraintMatch.getScore());
+        score = score.subtract(constraintMatch.getScore());
         boolean removed = constraintMatchSet.remove(constraintMatch);
         if (!removed) {
             throw new IllegalStateException("The indictment (" + this
@@ -128,7 +138,7 @@ public final class Indictment implements Serializable, Comparable<Indictment> {
 
     @Override
     public String toString() {
-        return justification + "=" + scoreTotal;
+        return justification + "=" + score;
     }
 
 }

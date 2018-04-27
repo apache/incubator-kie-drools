@@ -83,8 +83,8 @@ public class HardMediumSoftBigDecimalScoreHolderTest extends AbstractScoreHolder
         assertEquals(HardMediumSoftBigDecimalScore.valueOf(new BigDecimal("-70040.01"), new BigDecimal("-500.20"), new BigDecimal("-6003.00")), scoreHolder.extractScore(0));
         assertEquals(HardMediumSoftBigDecimalScore.valueOfUninitialized(-7, new BigDecimal("-70040.01"), new BigDecimal("-500.20"), new BigDecimal("-6003.00")), scoreHolder.extractScore(-7));
         if (constraintMatchEnabled) {
-            assertEquals(HardMediumSoftBigDecimalScore.valueOf(new BigDecimal("-0.01"), new BigDecimal("0.00"), new BigDecimal("0.00")), findConstraintMatchTotal(scoreHolder, "hard1").getScoreTotal());
-            assertEquals(HardMediumSoftBigDecimalScore.valueOf(new BigDecimal("0.00"), new BigDecimal("0.00"), new BigDecimal("-3.00")), scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScoreTotal());
+            assertEquals(HardMediumSoftBigDecimalScore.valueOf(new BigDecimal("-0.01"), new BigDecimal("0.00"), new BigDecimal("0.00")), findConstraintMatchTotal(scoreHolder, "hard1").getScore());
+            assertEquals(HardMediumSoftBigDecimalScore.valueOf(new BigDecimal("0.00"), new BigDecimal("0.00"), new BigDecimal("-3.00")), scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScore());
             assertNull(scoreHolder.getIndictmentMap().get(UNDO_JUSTIFICATION));
         }
     }

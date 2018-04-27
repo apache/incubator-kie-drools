@@ -25,12 +25,17 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
+import org.optaplanner.core.api.score.constraint.ConstraintMatchScoreComparator;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
+import org.optaplanner.core.api.score.constraint.ConstraintMatchTotalScoreComparator;
+import org.optaplanner.core.api.score.constraint.Indictment;
+import org.optaplanner.core.api.score.constraint.IndictmentScoreComparator;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.lookup.ClassAndPlanningIdComparator;
@@ -245,6 +250,62 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
     protected void setCalculatedScore(Score score) {
         getSolutionDescriptor().setScore(workingSolution, score);
         calculationCount++;
+    }
+
+    @Override
+    public String explainScore() {
+        final int INDICTMENT_LIMIT = 5;
+        final int CONSTRAINT_MATCH_LIMIT = 2;
+        Score workingScore = calculateScore();
+        Collection<ConstraintMatchTotal> constraintMatchTotals = getConstraintMatchTotals();
+        ConstraintMatchScoreComparator constraintMatchScoreComparator = new ConstraintMatchScoreComparator();
+        StringBuilder scoreExplanation = new StringBuilder((constraintMatchTotals.size() + 4 + 2 * INDICTMENT_LIMIT) * 80);
+        scoreExplanation.append("Explanation of score (").append(workingScore).append("):\n");
+        scoreExplanation.append("    Constraint match totals:\n");
+        constraintMatchTotals.stream()
+                .sorted(new ConstraintMatchTotalScoreComparator())
+                .forEach(constraintMatchTotal -> {
+                    Set<ConstraintMatch> constraintMatchSet = constraintMatchTotal.getConstraintMatchSet();
+                    scoreExplanation
+                            .append("        ").append(constraintMatchTotal.getScore().toShortString())
+                            .append(": constraint (").append(constraintMatchTotal.getConstraintName())
+                            .append(") has ").append(constraintMatchSet.size()).append(" matches:\n");
+                    constraintMatchSet.stream()
+                            .sorted(constraintMatchScoreComparator).limit(CONSTRAINT_MATCH_LIMIT)
+                            .forEach(constraintMatch -> scoreExplanation
+                                    .append("            ").append(constraintMatch.getScore().toShortString())
+                                    .append(": justifications (").append(constraintMatch.getJustificationList())
+                                    .append(")\n"));
+                    if (constraintMatchSet.size() > CONSTRAINT_MATCH_LIMIT) {
+                        scoreExplanation.append("            ...\n");
+                    }
+                });
+
+        Collection<Indictment> indictments = getIndictmentMap().values();
+        scoreExplanation.append("    Indictments (top ").append(INDICTMENT_LIMIT)
+                .append(" of ").append(indictments.size()).append("):\n");
+        indictments.stream()
+                .sorted(new IndictmentScoreComparator()).limit(INDICTMENT_LIMIT)
+                .forEach(indictment -> {
+                    Set<ConstraintMatch> constraintMatchSet = indictment.getConstraintMatchSet();
+                    scoreExplanation
+                            .append("        ").append(indictment.getScore().toShortString())
+                            .append(": justification (").append(indictment.getJustification())
+                            .append(") has ").append(constraintMatchSet.size()).append(" matches:\n");
+                    constraintMatchSet.stream()
+                            .sorted(constraintMatchScoreComparator).limit(CONSTRAINT_MATCH_LIMIT)
+                            .forEach(constraintMatch -> scoreExplanation
+                                    .append("            ").append(constraintMatch.getScore().toShortString())
+                                    .append(": constraint (").append(constraintMatch.getConstraintName())
+                                    .append(")\n"));
+                    if (constraintMatchSet.size() > CONSTRAINT_MATCH_LIMIT) {
+                        scoreExplanation.append("            ...\n");
+                    }
+                });
+        if (indictments.size() > INDICTMENT_LIMIT) {
+            scoreExplanation.append("        ...\n");
+        }
+        return scoreExplanation.toString();
     }
 
     @Override

@@ -82,8 +82,8 @@ public class HardMediumSoftScoreHolderTest extends AbstractScoreHolderTest {
         assertEquals(HardMediumSoftScore.valueOf(-7004001, -50020, -600300), scoreHolder.extractScore(0));
         assertEquals(HardMediumSoftScore.valueOfUninitialized(-7, -7004001, -50020, -600300), scoreHolder.extractScore(-7));
         if (constraintMatchEnabled) {
-            assertEquals(HardMediumSoftScore.valueOf(-1, 0, 0), findConstraintMatchTotal(scoreHolder, "hard1").getScoreTotal());
-            assertEquals(HardMediumSoftScore.valueOf(0, 0, -300), scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScoreTotal());
+            assertEquals(HardMediumSoftScore.valueOf(-1, 0, 0), findConstraintMatchTotal(scoreHolder, "hard1").getScore());
+            assertEquals(HardMediumSoftScore.valueOf(0, 0, -300), scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScore());
             assertNull(scoreHolder.getIndictmentMap().get(UNDO_JUSTIFICATION));
         }
     }

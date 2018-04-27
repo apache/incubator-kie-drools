@@ -21,7 +21,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
@@ -34,7 +33,7 @@ public final class ConstraintMatchTotal implements Serializable, Comparable<Cons
     protected final String constraintName;
 
     protected final Set<ConstraintMatch> constraintMatchSet;
-    protected Score scoreTotal;
+    protected Score score;
 
     /**
      * @param constraintPackage never null
@@ -45,7 +44,7 @@ public final class ConstraintMatchTotal implements Serializable, Comparable<Cons
         this.constraintPackage = constraintPackage;
         this.constraintName = constraintName;
         constraintMatchSet = new LinkedHashSet<>();
-        scoreTotal = zeroScore;
+        score = zeroScore;
     }
 
     /**
@@ -77,10 +76,20 @@ public final class ConstraintMatchTotal implements Serializable, Comparable<Cons
     }
 
     /**
+     * Sum of the {@link #getConstraintMatchSet()}'s {@link ConstraintMatch#getScore()}.
      * @return never null
      */
+    public Score getScore() {
+        return score;
+    }
+
+    /**
+     * @return never null
+     * @deprecated in favor of {@link #getScore()}
+     */
+    @Deprecated
     public Score getScoreTotal() {
-        return scoreTotal;
+        return getScore();
     }
 
     // ************************************************************************
@@ -88,7 +97,7 @@ public final class ConstraintMatchTotal implements Serializable, Comparable<Cons
     // ************************************************************************
 
     public ConstraintMatch addConstraintMatch(List<Object> justificationList, Score score) {
-        scoreTotal = scoreTotal.add(score);
+        this.score = this.score.add(score);
         ConstraintMatch constraintMatch = new ConstraintMatch(constraintPackage, constraintName,
                 justificationList, score);
         boolean added = constraintMatchSet.add(constraintMatch);
@@ -101,7 +110,7 @@ public final class ConstraintMatchTotal implements Serializable, Comparable<Cons
     }
 
     public void removeConstraintMatch(ConstraintMatch constraintMatch) {
-        scoreTotal = scoreTotal.subtract(constraintMatch.getScore());
+        score = score.subtract(constraintMatch.getScore());
         boolean removed = constraintMatchSet.remove(constraintMatch);
         if (!removed) {
             throw new IllegalStateException("The constraintMatchTotal (" + this
@@ -151,7 +160,7 @@ public final class ConstraintMatchTotal implements Serializable, Comparable<Cons
 
     @Override
     public String toString() {
-        return getConstraintId() + "=" + getScoreTotal();
+        return getConstraintId() + "=" + getScore();
     }
 
 }

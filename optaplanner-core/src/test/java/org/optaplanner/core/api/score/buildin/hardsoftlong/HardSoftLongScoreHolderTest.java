@@ -73,8 +73,8 @@ public class HardSoftLongScoreHolderTest extends AbstractScoreHolderTest {
         assertEquals(HardSoftLongScore.valueOf(-50301L, -4020L), scoreHolder.extractScore(0));
         assertEquals(HardSoftLongScore.valueOfUninitialized(-7, -50301L, -4020L), scoreHolder.extractScore(-7));
         if (constraintMatchEnabled) {
-            assertEquals(HardSoftLongScore.valueOf(-1L, 0L), findConstraintMatchTotal(scoreHolder, "hard1").getScoreTotal());
-            assertEquals(HardSoftLongScore.valueOf(0L, -20L), scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScoreTotal());
+            assertEquals(HardSoftLongScore.valueOf(-1L, 0L), findConstraintMatchTotal(scoreHolder, "hard1").getScore());
+            assertEquals(HardSoftLongScore.valueOf(0L, -20L), scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScore());
             assertNull(scoreHolder.getIndictmentMap().get(UNDO_JUSTIFICATION));
         }
     }

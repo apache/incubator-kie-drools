@@ -82,8 +82,8 @@ public class BendableScoreHolderTest extends AbstractScoreHolderTest {
         assertEquals(BendableScore.valueOf(new int[]{-7004001}, new int[]{-50020, -600300}), scoreHolder.extractScore(0));
         assertEquals(BendableScore.valueOfUninitialized(-7, new int[]{-7004001}, new int[]{-50020, -600300}), scoreHolder.extractScore(-7));
         if (constraintMatchEnabled) {
-            assertEquals(BendableScore.valueOf(new int[]{-1}, new int[]{0, 0}), findConstraintMatchTotal(scoreHolder, "hard1").getScoreTotal());
-            assertEquals(BendableScore.valueOf(new int[]{0}, new int[]{0, -300}), scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScoreTotal());
+            assertEquals(BendableScore.valueOf(new int[]{-1}, new int[]{0, 0}), findConstraintMatchTotal(scoreHolder, "hard1").getScore());
+            assertEquals(BendableScore.valueOf(new int[]{0}, new int[]{0, -300}), scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScore());
             assertNull(scoreHolder.getIndictmentMap().get(UNDO_JUSTIFICATION));
         }
     }

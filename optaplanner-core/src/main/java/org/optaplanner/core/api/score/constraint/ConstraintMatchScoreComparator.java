@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,14 +20,12 @@ import java.io.Serializable;
 import java.util.Comparator;
 
 /**
- * Compares by {@link Indictment}s based on {@link Indictment#getScore()}.
- * @deprecated in favor {@link IndictmentScoreComparator}
+ * Compares by {@link ConstraintMatch}s based on {@link ConstraintMatch#getScore()}.
  */
-@Deprecated
-public class IndictmentScoreTotalComparator implements Comparator<Indictment>, Serializable {
+public class ConstraintMatchScoreComparator implements Comparator<ConstraintMatch>, Serializable {
 
     @Override
-    public int compare(Indictment a, Indictment b) {
+    public int compare(ConstraintMatch a, ConstraintMatch b) {
         return a.getScore().compareTo(b.getScore());
     }
 

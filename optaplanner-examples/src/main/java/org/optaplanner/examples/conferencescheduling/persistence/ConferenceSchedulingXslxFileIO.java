@@ -29,7 +29,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -47,7 +46,6 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.poi.ss.usermodel.Cell;
@@ -864,7 +862,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 scoreDirector.setWorkingSolution(solution);
                 scoreDirector.calculateScore();
                 constraintMatchTotalList = new ArrayList<>(scoreDirector.getConstraintMatchTotals());
-                constraintMatchTotalList.sort(Comparator.comparing(ConstraintMatchTotal::getScoreTotal));
+                constraintMatchTotalList.sort(Comparator.comparing(ConstraintMatchTotal::getScore));
                 indictmentMap = scoreDirector.getIndictmentMap();
             }
         }
@@ -1470,7 +1468,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 nextRow();
                 nextHeaderCell(constraintMatchTotal.getConstraintName());
                 nextCell();
-                nextCell().setCellValue(constraintMatchTotal.getScoreTotal().toShortString());
+                nextCell().setCellValue(constraintMatchTotal.getScore().toShortString());
                 List<ConstraintMatch> constraintMatchList = new ArrayList<>(constraintMatchTotal.getConstraintMatchSet());
                 constraintMatchList.sort(Comparator.comparing(ConstraintMatch::getScore));
                 for (ConstraintMatch constraintMatch : constraintMatchList) {
@@ -1597,7 +1595,7 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                             .append(talk.isPinnedByUser() ? "\nPINNED BY USER" : "");
                     Indictment indictment = indictmentMap.get(talk);
                     if (indictment != null) {
-                        commentString.append("\n").append(indictment.getScoreTotal().toShortString())
+                        commentString.append("\n").append(indictment.getScore().toShortString())
                                 .append(" total");
                         Set<ConstraintMatch> constraintMatchSet = indictment.getConstraintMatchSet();
                         List<String> constraintNameList = constraintMatchSet.stream()

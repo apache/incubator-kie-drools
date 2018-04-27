@@ -180,7 +180,7 @@ public class ConstraintMatchesDialog extends JDialog {
                 case 1:
                     return constraintMatchTotal.getConstraintMatchCount();
                 case 2:
-                    return constraintMatchTotal.getScoreTotal().toShortString();
+                    return constraintMatchTotal.getScore().toShortString();
                 default:
                     throw new IllegalStateException("The columnIndex (" + columnIndex + ") is invalid.");
             }

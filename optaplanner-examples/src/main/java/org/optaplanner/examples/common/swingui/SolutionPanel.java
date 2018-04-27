@@ -145,7 +145,7 @@ public abstract class SolutionPanel<Solution_> extends JPanel implements Scrolla
             for (Object planningEntity : planningEntityList) {
                 Indictment indictment = solutionBusiness.getIndictmentMap().get(planningEntity);
                 if (indictment != null) {
-                    Number[] levelNumbers = indictment.getScoreTotal().toLevelNumbers();
+                    Number[] levelNumbers = indictment.getScore().toLevelNumbers();
                     if (indictmentMinimumLevelNumbers == null) {
                         indictmentMinimumLevelNumbers = new double[levelNumbers.length];
                         for (int i = 0; i < levelNumbers.length; i++) {
@@ -170,7 +170,7 @@ public abstract class SolutionPanel<Solution_> extends JPanel implements Scrolla
         if (useIndictmentColor) {
             Indictment indictment = solutionBusiness.getIndictmentMap().get(planningEntity);
             if (indictment != null) {
-                Number[] levelNumbers = indictment.getScoreTotal().toLevelNumbers();
+                Number[] levelNumbers = indictment.getScore().toLevelNumbers();
                 for (int i = 0; i < levelNumbers.length; i++) {
                     if (i > INDICTMENT_COLORS.length) {
                         return TangoColorFactory.ALUMINIUM_3;
@@ -194,7 +194,7 @@ public abstract class SolutionPanel<Solution_> extends JPanel implements Scrolla
         if (indictment == null) {
             return "<html>No indictment</html>";
         }
-        StringBuilder s = new StringBuilder("<html>Indictment: ").append(indictment.getScoreTotal().toShortString());
+        StringBuilder s = new StringBuilder("<html>Indictment: ").append(indictment.getScore().toShortString());
         for (ConstraintMatch constraintMatch : indictment.getConstraintMatchSet()) {
             s.append("<br/>&nbsp;&nbsp;").append(constraintMatch.getConstraintName())
                     .append(" = ").append(constraintMatch.getScore().toShortString());

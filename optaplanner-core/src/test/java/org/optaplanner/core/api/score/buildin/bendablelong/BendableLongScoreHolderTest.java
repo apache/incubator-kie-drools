@@ -82,8 +82,8 @@ public class BendableLongScoreHolderTest extends AbstractScoreHolderTest {
         assertEquals(BendableLongScore.valueOf(new long[]{-7004001L}, new long[]{-50020L, -600300L}), scoreHolder.extractScore(0));
         assertEquals(BendableLongScore.valueOfUninitialized(-7, new long[]{-7004001L}, new long[]{-50020L, -600300L}), scoreHolder.extractScore(-7));
         if (constraintMatchEnabled) {
-            assertEquals(BendableLongScore.valueOf(new long[]{-1L}, new long[]{0L, 0L}), findConstraintMatchTotal(scoreHolder, "hard1").getScoreTotal());
-            assertEquals(BendableLongScore.valueOf(new long[]{0L}, new long[]{0L, -300L}), scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScoreTotal());
+            assertEquals(BendableLongScore.valueOf(new long[]{-1L}, new long[]{0L, 0L}), findConstraintMatchTotal(scoreHolder, "hard1").getScore());
+            assertEquals(BendableLongScore.valueOf(new long[]{0L}, new long[]{0L, -300L}), scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScore());
             assertNull(scoreHolder.getIndictmentMap().get(UNDO_JUSTIFICATION));
         }
     }

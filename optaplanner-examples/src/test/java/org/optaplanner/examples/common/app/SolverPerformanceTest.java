@@ -95,7 +95,7 @@ public abstract class SolverPerformanceTest<Solution_> extends LoggingTest {
                 Collection<ConstraintMatchTotal> constraintMatchTotals = scoreDirector.getConstraintMatchTotals();
                 assertNotNull(constraintMatchTotals);
                 assertEquals(score, constraintMatchTotals.stream()
-                        .map(ConstraintMatchTotal::getScoreTotal)
+                        .map(ConstraintMatchTotal::getScore)
                         .reduce(Score::add).orElse(scoreDefinition.getZeroScore()));
                 assertNotNull(scoreDirector.getIndictmentMap());
             }

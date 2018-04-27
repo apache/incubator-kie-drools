@@ -32,28 +32,28 @@ public class IndictmentTest {
         TestdataEntity e2 = new TestdataEntity("e2");
         TestdataEntity e3 = new TestdataEntity("e3");
         Indictment indictment = new Indictment(e1, SimpleScore.ZERO);
-        assertEquals(SimpleScore.ZERO, indictment.getScoreTotal());
+        assertEquals(SimpleScore.ZERO, indictment.getScore());
 
         ConstraintMatch match1 = new ConstraintMatch("package1", "constraint1", asList(e1), SimpleScore.valueOf(-1));
         indictment.addConstraintMatch(match1);
-        assertEquals(SimpleScore.valueOf(-1), indictment.getScoreTotal());
+        assertEquals(SimpleScore.valueOf(-1), indictment.getScore());
         // Different constraintName
         ConstraintMatch match2 = new ConstraintMatch("package1", "constraint2", asList(e1), SimpleScore.valueOf(-20));
         indictment.addConstraintMatch(match2);
-        assertEquals(SimpleScore.valueOf(-21), indictment.getScoreTotal());
+        assertEquals(SimpleScore.valueOf(-21), indictment.getScore());
         indictment.addConstraintMatch(new ConstraintMatch("package1", "constraint3", asList(e1, e2), SimpleScore.valueOf(-300)));
-        assertEquals(SimpleScore.valueOf(-321), indictment.getScoreTotal());
+        assertEquals(SimpleScore.valueOf(-321), indictment.getScore());
         // Different justification
         indictment.addConstraintMatch(new ConstraintMatch("package1", "constraint3", asList(e1, e3), SimpleScore.valueOf(-4000)));
-        assertEquals(SimpleScore.valueOf(-4321), indictment.getScoreTotal());
+        assertEquals(SimpleScore.valueOf(-4321), indictment.getScore());
         // Almost duplicate, but e2 and e1 are in reverse order, so different justification
         indictment.addConstraintMatch(new ConstraintMatch("package1", "constraint3", asList(e2, e1), SimpleScore.valueOf(-50000)));
-        assertEquals(SimpleScore.valueOf(-54321), indictment.getScoreTotal());
+        assertEquals(SimpleScore.valueOf(-54321), indictment.getScore());
 
         indictment.removeConstraintMatch(match2);
-        assertEquals(SimpleScore.valueOf(-54301), indictment.getScoreTotal());
+        assertEquals(SimpleScore.valueOf(-54301), indictment.getScore());
         indictment.removeConstraintMatch(match1);
-        assertEquals(SimpleScore.valueOf(-54300), indictment.getScoreTotal());
+        assertEquals(SimpleScore.valueOf(-54300), indictment.getScore());
     }
 
     @Test

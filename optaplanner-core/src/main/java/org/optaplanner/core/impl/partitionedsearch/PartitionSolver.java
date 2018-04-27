@@ -65,6 +65,11 @@ public class PartitionSolver<Solution_> extends AbstractSolver<Solution_> {
     }
 
     @Override
+    public String explainBestScore() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public long getTimeMillisSpent() {
         Long endingSystemTimeMillis = solverScope.getEndingSystemTimeMillis();
         if (endingSystemTimeMillis == null) {

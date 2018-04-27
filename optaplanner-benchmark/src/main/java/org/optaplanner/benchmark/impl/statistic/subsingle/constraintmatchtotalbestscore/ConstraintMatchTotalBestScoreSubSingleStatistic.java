@@ -120,7 +120,7 @@ public class ConstraintMatchTotalBestScoreSubSingleStatistic<Solution_>
                             constraintMatchTotal.getConstraintPackage(),
                             constraintMatchTotal.getConstraintName(),
                             constraintMatchTotal.getConstraintMatchCount(),
-                            constraintMatchTotal.getScoreTotal()));
+                            constraintMatchTotal.getScore()));
                 }
             }
         }

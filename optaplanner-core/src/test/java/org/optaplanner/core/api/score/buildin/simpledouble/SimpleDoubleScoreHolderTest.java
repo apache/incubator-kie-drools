@@ -52,7 +52,7 @@ public class SimpleDoubleScoreHolderTest extends AbstractScoreHolderTest {
         assertEquals(SimpleDoubleScore.valueOfUninitialized(0, -10.03), scoreHolder.extractScore(0));
         assertEquals(SimpleDoubleScore.valueOfUninitialized(-7, -10.03), scoreHolder.extractScore(-7));
         if (constraintMatchEnabled) {
-            assertEquals(SimpleDoubleScore.valueOf(-10.00), findConstraintMatchTotal(scoreHolder, "scoreRule1").getScoreTotal());
+            assertEquals(SimpleDoubleScore.valueOf(-10.00), findConstraintMatchTotal(scoreHolder, "scoreRule1").getScore());
         }
     }
 

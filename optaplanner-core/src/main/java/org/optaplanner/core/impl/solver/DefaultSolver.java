@@ -26,6 +26,7 @@ import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.phase.Phase;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.random.RandomFactory;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
@@ -105,6 +106,21 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
     @Override
     public Score getBestScore() {
         return solverScope.getBestScore();
+    }
+
+    @Override
+    public String explainBestScore() {
+        Solution_ bestSolution = getBestSolution();
+        if (bestSolution == null) {
+            return null;
+        }
+        if (solverScope.getSolutionDescriptor().getScore(bestSolution) == null) {
+            return null;
+        }
+        try (ScoreDirector<Solution_> scoreDirector = getScoreDirectorFactory().buildScoreDirector()) {
+            scoreDirector.setWorkingSolution(bestSolution);
+            return scoreDirector.explainScore();
+        }
     }
 
     @Override
