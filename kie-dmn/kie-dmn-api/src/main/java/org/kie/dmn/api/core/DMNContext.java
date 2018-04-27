@@ -31,4 +31,15 @@ public interface DMNContext
 
     DMNContext clone();
 
+    /**
+     * Walks inside the current scope for the identifier `name`, and push that as the new current scope.
+     * @param name
+     */
+    void pushScope(String name);
+
+    /**
+     * The current scope is pop-ed from the current scope stack.
+     */
+    void popScope();
+
 }

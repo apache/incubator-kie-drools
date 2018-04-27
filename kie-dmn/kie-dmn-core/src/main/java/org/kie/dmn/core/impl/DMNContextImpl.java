@@ -16,7 +16,9 @@
 
 package org.kie.dmn.core.impl;
 
+import java.util.Deque;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
 import org.kie.dmn.api.core.DMNContext;
@@ -26,37 +28,61 @@ public class DMNContextImpl
     private static final String DEFAULT_IDENT = "    ";
 
     private Map<String, Object> entries    = new LinkedHashMap<String, Object>();
+    private Deque<ScopeReference> stack    = new LinkedList<>();
 
     public DMNContextImpl() {
     }
 
     public DMNContextImpl(Map<String, Object> entries) {
-        this.entries = entries;
+        this.entries.putAll(entries);
     }
 
     @Override
     public Object set(String name, Object value) {
-        return entries.put( name, value );
+        return getCurrentEntries().put(name, value);
     }
 
     @Override
     public Object get(String name) {
-        return entries.get( name );
+        return getCurrentEntries().get(name);
+    }
+
+    private Map<String, Object> getCurrentEntries() {
+        if (stack.isEmpty()) {
+            return entries;
+        } else {
+            return stack.peek().getRef();
+        }
+    }
+
+    @Override
+    public void pushScope(String name) {
+        Map<String, Object> scopeRef = (Map<String, Object>) getCurrentEntries().computeIfAbsent(name, s -> new LinkedHashMap<String, Object>());
+        stack.push(new ScopeReference(name, scopeRef));
+    }
+
+    @Override
+    public void popScope() {
+        stack.pop();
     }
 
     @Override
     public Map<String, Object> getAll() {
-        return entries;
+        return getCurrentEntries();
     }
 
     @Override
     public boolean isDefined(String name) {
-        return entries.containsKey( name );
+        return getCurrentEntries().containsKey(name);
     }
 
     @Override
     public DMNContext clone() {
-        return new DMNContextImpl( new LinkedHashMap<>( entries ) );
+        DMNContextImpl newCtx = new DMNContextImpl(new LinkedHashMap<>(entries));
+        for (ScopeReference e : stack) {
+            newCtx.pushScope(e.getName());
+        }
+        return newCtx;
     }
 
     @Override
@@ -83,4 +109,24 @@ public class DMNContextImpl
         return builder.toString();
     }
 
+    public static class ScopeReference {
+
+        private final String name;
+        private final Map<String, Object> ref;
+
+        public ScopeReference(String name, Map<String, Object> ref) {
+            super();
+            this.name = name;
+            this.ref = ref;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public Map<String, Object> getRef() {
+            return ref;
+        }
+
+    }
 }

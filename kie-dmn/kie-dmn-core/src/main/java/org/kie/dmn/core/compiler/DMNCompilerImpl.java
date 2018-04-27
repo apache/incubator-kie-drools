@@ -47,9 +47,11 @@ import org.kie.dmn.api.core.ast.ItemDefNode;
 import org.kie.dmn.api.marshalling.v1_1.DMNExtensionRegister;
 import org.kie.dmn.api.marshalling.v1_1.DMNMarshaller;
 import org.kie.dmn.backend.marshalling.v1_1.DMNMarshallerFactory;
+import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.ast.BusinessKnowledgeModelNodeImpl;
 import org.kie.dmn.core.ast.DMNBaseNode;
+import org.kie.dmn.core.ast.DMNWalksIntoScopeEvaluator;
 import org.kie.dmn.core.ast.DecisionNodeImpl;
 import org.kie.dmn.core.ast.ItemDefNodeImpl;
 import org.kie.dmn.core.compiler.ImportDMNResolverUtil.ImportType;
@@ -179,7 +181,7 @@ public class DMNCompilerImpl
                     if (located != null) {
                         String iAlias = Optional.ofNullable(i.getAdditionalAttributes().get(Import.NAME_QNAME)).orElse(located.getName());
                         model.setImportAliasForNS(iAlias, located.getNamespace(), located.getName());
-                        importFromModel(model, located);
+                        importFromModel(model, located, iAlias);
                     }
                 } else {
                     MsgUtil.reportMessage(logger,
@@ -199,7 +201,7 @@ public class DMNCompilerImpl
         return model;
     }
 
-    private void importFromModel(DMNModelImpl model, DMNModel m) {
+    private void importFromModel(DMNModelImpl model, DMNModel m, String iAlias) {
         for (ItemDefNode idn : m.getItemDefinitions()) {
             model.getTypeRegistry().registerType(idn.getType());
         }
@@ -341,6 +343,15 @@ public class DMNCompilerImpl
             if ( kr.getRequiredKnowledge() != null ) {
                 String id = getId( kr.getRequiredKnowledge() );
                 BusinessKnowledgeModelNode bkmn = model.getBusinessKnowledgeModelById( id );
+                if (!node.getModelNamespace().equals(bkmn.getModelNamespace())) {
+                    BusinessKnowledgeModelNodeImpl b = (BusinessKnowledgeModelNodeImpl) bkmn;
+                    DMNExpressionEvaluator originalEvaluator = b.getEvaluator();
+                    DMNWalksIntoScopeEvaluator newEvaluator = new DMNWalksIntoScopeEvaluator(originalEvaluator, model.getImportAliasFor(b.getModelNamespace(), b.getModelName()).get());
+                    BusinessKnowledgeModelNodeImpl overriden = new BusinessKnowledgeModelNodeImpl(bkmn.getBusinessKnowledModel(), bkmn.getResultType());
+                    overriden.setDependencies(b.getDependencies());
+                    overriden.setEvaluator(newEvaluator);
+                    bkmn = overriden;
+                }
                 if ( bkmn != null ) {
                     node.addDependency( bkmn.getName(), bkmn );
                 } else {
