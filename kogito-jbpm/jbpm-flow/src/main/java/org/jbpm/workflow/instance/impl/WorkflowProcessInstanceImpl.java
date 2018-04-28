@@ -18,7 +18,6 @@ package org.jbpm.workflow.instance.impl;
 
 import static org.jbpm.workflow.instance.impl.DummyEventListener.EMPTY_EVENT_LISTENER;
 
-import java.awt.dnd.DnDConstants;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -29,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
@@ -79,6 +79,7 @@ import org.kie.internal.runtime.manager.InternalRuntimeManager;
 import org.kie.internal.runtime.manager.SessionNotFoundException;
 import org.kie.internal.runtime.manager.context.CaseContext;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
+import org.mvel2.integration.VariableResolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -604,7 +605,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 				}
 				for (Node node : getWorkflowProcess().getNodes()) {
 			        if (node instanceof EventNodeInterface) {
-			            if (((EventNodeInterface) node).acceptsEvent(type, event, (e) -> resolveVariable(e) )) {
+			            if (((EventNodeInterface) node).acceptsEvent(type, event, getResolver(node, type, currentView))) {
 			                if (node instanceof EventNode && ((EventNode) node).getFrom() == null) {
 			                    EventNodeInstance eventNodeInstance = (EventNodeInstance) getNodeInstance(node);
 			                    eventNodeInstance.signalEvent(type, event);
@@ -615,7 +616,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 			                    } if (node instanceof DynamicNode && type.equals(((DynamicNode) node).getActivationEventName())) {
 			                        DynamicNodeInstance dynamicNodeInstance = (DynamicNodeInstance) getNodeInstance(node);
 			                        dynamicNodeInstance.signalEvent(type, event);
-                                }else {
+                                } else {
     								List<NodeInstance> nodeInstances = getNodeInstances(node.getId(), currentView);
     			                    if (nodeInstances != null && !nodeInstances.isEmpty()) {
     			                        for (NodeInstance nodeInstance : nodeInstances) {
@@ -624,7 +625,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
     			                    }
 			                    }
 			                }
-			            }
+                        } 
 			        }
 				}
 				if (((org.jbpm.workflow.core.WorkflowProcess) getWorkflowProcess()).isDynamic()) {
@@ -644,6 +645,8 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 			                ((org.jbpm.workflow.instance.NodeInstance) nodeInstance).trigger(null, NodeImpl.CONNECTION_DEFAULT_TYPE);
 			    		}
 					}
+					
+
 				}
 			} finally {
 				if (this.activatingNodeIds != null) {
@@ -654,7 +657,30 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 		}
 	}
 
-	private void validate() {
+	private Function<String, String> getResolver(Node node, String type, List<NodeInstance> currentView) {
+        if (node instanceof DynamicNode) {
+            // special handling for dynamic node to allow to resolve variables from individual node instances of the dynamic node
+            // instead of just relying on process instance's variables
+            return (e) -> {
+                List<NodeInstance> nodeInstances = getNodeInstances(node.getId(), currentView);
+                if (nodeInstances != null && !nodeInstances.isEmpty()) {
+                    StringBuilder st = new StringBuilder();
+                    for (NodeInstance ni : nodeInstances) {
+                        String result = resolveVariable(e, new NodeInstanceResolverFactory(ni));
+                        st.append(result).append("###");
+                    }
+                    return st.toString();
+                } else {
+                    return resolveVariable(e);    
+                }        
+            };
+        } else {
+            return (e) -> resolveVariable(e);
+           
+        }
+    }
+
+    private void validate() {
 	    InternalRuntimeManager manager = (InternalRuntimeManager) getKnowledgeRuntime().getEnvironment().get("RuntimeManager");
         if (manager != null) {
             // check if process instance is owned by the same manager as the one owning ksession
@@ -669,7 +695,11 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 	    return events.stream().map( event -> resolveVariable(event)).collect(Collectors.toList());
 	}
 
-    private String resolveVariable(String s) {
+    private String resolveVariable(String s) {       
+        return resolveVariable(s, new ProcessInstanceResolverFactory(this));
+    }
+    
+    private String resolveVariable(String s, VariableResolverFactory factory) {
         Map<String, String> replacements = new HashMap<String, String>();
         Matcher matcher = PatternConstants.PARAMETER_MATCHER.matcher(s);
         while (matcher.find()) {
@@ -682,7 +712,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
                     replacements.put(paramName, variableValueString);
                 } else {
                     try {
-                        variableValue = MVELSafeHelper.getEvaluator().eval(paramName, new ProcessInstanceResolverFactory(this));
+                        variableValue = MVELSafeHelper.getEvaluator().eval(paramName, factory);
                         String variableValueString = variableValue == null ? "" : variableValue.toString();
                         replacements.put(paramName, variableValueString);
                     } catch (Throwable t) {

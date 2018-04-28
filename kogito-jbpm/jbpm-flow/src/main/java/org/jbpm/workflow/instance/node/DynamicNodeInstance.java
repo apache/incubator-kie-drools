@@ -35,6 +35,7 @@ import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.event.rule.RuleFlowGroupActivatedEvent;
 import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.kie.api.runtime.process.NodeInstance;
+import org.kie.api.runtime.rule.Match;
 
 import java.util.HashMap;
 import java.util.List;
@@ -79,7 +80,7 @@ public class DynamicNodeInstance extends CompositeContextNodeInstance implements
     	// activate ad hoc fragments if they are marked as such
         List<Node> autoStartNodes = getDynamicNode().getAutoStartNodes();
         autoStartNodes
-            .forEach(austoStartNode -> signalEvent(austoStartNode.getName(), null));
+            .forEach(austoStartNode -> triggerSelectedNode(austoStartNode, null));
 
     }
     public void addEventListeners() {
@@ -137,10 +138,14 @@ public class DynamicNodeInstance extends CompositeContextNodeInstance implements
     	super.triggerCompleted(outType);
     }
 
-    @SuppressWarnings("unchecked")
+    
     @Override
 	public void signalEvent(String type, Object event) {
         if (type.startsWith("RuleFlow-AdHocActivate")) {
+            if (event instanceof MatchCreatedEvent) {
+                Match match = ((MatchCreatedEvent) event).getMatch();                
+                match.getDeclarationIds().forEach(s -> this.setVariable(s.replaceFirst("\\$", ""), match.getDeclarationValue(s)));                
+            }            
             trigger(null, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
         } else if (getActivationEventType().equals(type)) {
             if (event instanceof MatchCreatedEvent) {
@@ -149,18 +154,9 @@ public class DynamicNodeInstance extends CompositeContextNodeInstance implements
         } else {
     		super.signalEvent(type, event);
     		for (Node node: getCompositeNode().getNodes()) {
-    			if (type.equals(node.getName()) && node.getIncomingConnections().isEmpty()) {
-        			NodeInstance nodeInstance = getNodeInstance(node);
-        			if (event != null) {                             
-                        Map<String, Object> dynamicParams = new HashMap<>();
-                        if (event instanceof Map) {
-                            dynamicParams.putAll((Map<String, Object>) event);                                  
-                        } else {
-                            dynamicParams.put("Data", event);
-                        }
-                        ((org.jbpm.workflow.instance.NodeInstance) nodeInstance).setDynamicParameters(dynamicParams);
-                    }
-                    ((org.jbpm.workflow.instance.NodeInstance) nodeInstance).trigger(null, NodeImpl.CONNECTION_DEFAULT_TYPE);
+    		    
+    			if (type.equals(resolveVariable(node.getName())) && node.getIncomingConnections().isEmpty()) {
+        			triggerSelectedNode(node, event);
         		}
     		}
         }
@@ -175,6 +171,21 @@ public class DynamicNodeInstance extends CompositeContextNodeInstance implements
         return false;
     }
     
+    @SuppressWarnings("unchecked")
+    protected void triggerSelectedNode(Node node, Object event) {
+        NodeInstance nodeInstance = getNodeInstance(node);
+        if (event != null) {                             
+            Map<String, Object> dynamicParams = new HashMap<>();
+            if (event instanceof Map) {
+                dynamicParams.putAll((Map<String, Object>) event);                                  
+            } else {
+                dynamicParams.put("Data", event);
+            }
+            ((org.jbpm.workflow.instance.NodeInstance) nodeInstance).setDynamicParameters(dynamicParams);
+        }
+        ((org.jbpm.workflow.instance.NodeInstance) nodeInstance).trigger(null, NodeImpl.CONNECTION_DEFAULT_TYPE);
+    }
+    
     public void matchCreated(MatchCreatedEvent event) {
         // check whether this activation is from the DROOLS_SYSTEM agenda group
         String ruleFlowGroup = ((RuleImpl) event.getMatch().getRule()).getRuleFlowGroup();
@@ -183,7 +194,7 @@ public class DynamicNodeInstance extends CompositeContextNodeInstance implements
             // trigger node instances of that milestone node
             String ruleName = event.getMatch().getRule().getName();
             String milestoneName = "RuleFlow-AdHocComplete-" + getProcessInstance().getProcessId() + "-" + getNodeId();
-            if (milestoneName.equals(ruleName) && checkProcessInstance((Activation) event.getMatch())) {
+            if (milestoneName.equals(ruleName) && checkProcessInstance((Activation) event.getMatch()) && checkDeclarationMatch(event.getMatch(), (String) getVariable("MatchVariable"))) {
                 synchronized(getProcessInstance()) {
                     DynamicNodeInstance.this.removeEventListeners();
                     DynamicNodeInstance.this.triggerCompleted(NodeImpl.CONNECTION_DEFAULT_TYPE);

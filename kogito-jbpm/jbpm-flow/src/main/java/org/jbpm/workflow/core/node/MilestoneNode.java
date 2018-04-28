@@ -29,6 +29,7 @@ public class MilestoneNode extends StateBasedNode implements Constrainable {
 	private static final long serialVersionUID = 510l;
 
 	private String constraint;
+	private String matchVariable;
 
     public void addConstraint(ConnectionRef connection, Constraint constraint) {
     	if (connection != null) {
@@ -44,8 +45,16 @@ public class MilestoneNode extends StateBasedNode implements Constrainable {
 
     public String getConstraint(){
         return this.constraint;
+    }    
+    
+    public String getMatchVariable() {
+        return matchVariable;
     }
     
+    public void setMatchVariable(String matchVariable) {
+        this.matchVariable = matchVariable;
+    }
+
     public void validateAddIncomingConnection(final String type, final Connection connection) {
         super.validateAddIncomingConnection(type, connection);
         if (!org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals(type)) {

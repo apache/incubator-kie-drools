@@ -1,0 +1,80 @@
+package org.jbpm.casemgmt.demo.enrichment;
+
+import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
+import org.jbpm.document.Document;
+import org.jbpm.document.service.impl.DocumentImpl;
+import java.util.Map;
+import java.util.Map.Entry;
+import org.jbpm.casemgmt.demo.enrichment.DocumentType;
+
+global String docName;
+
+rule "Setup documents"
+
+when 
+    $caseData : CaseFileInstance()
+    not DocumentType()
+then 
+    insert(new DocumentType("test", false, false, "txt", false));
+    insert(new DocumentType("enablement", false, false, "pdf", false));
+    insert(new DocumentType("jbpm", false, false, "doc", false));
+    System.out.println("Documents created");
+end
+
+
+rule "Upload document" ruleflow-group "validate"
+
+when 
+    $caseData : CaseFileInstance()
+    $uploadedDocument : DocumentImpl() from $caseData.getData("uploaded")
+    $documentType : DocumentType(name == $uploadedDocument.getName(), uploaded == false)
+then 
+    drools.getKnowledgeRuntime().setGlobal("docName", $uploadedDocument.getName());
+    
+    modify($documentType) {
+        setUploaded(true);
+    }
+    $caseData.add($documentType.getName()+"_file", $uploadedDocument);
+    $caseData.add($documentType.getName(), $documentType);
+    $caseData.remove("uploaded");
+    
+    update($caseData);
+    System.out.println("Document " + $documentType.getName() + " uploaded");
+end
+
+rule "Approved document" ruleflow-group "ManualApproval"
+
+when 
+    $caseData : CaseFileInstance()
+    $decision : DocumentType(uploaded == true, approved == true) from $caseData.getData("manualApproval")
+    $documentType : DocumentType(name == $decision.getName(), uploaded == true)
+then 
+    drools.getKnowledgeRuntime().setGlobal("docName", $documentType.getName());
+    $caseData.remove("manualApproval");
+    
+    $documentType.setRejected(false);
+    $documentType.setApproved(true);
+    
+    $caseData.add($documentType.getName(), $documentType);
+    
+    update($caseData);
+    System.out.println("Document " + $documentType.getName() + " approved");
+end
+
+rule "Rejected document" ruleflow-group "ManualApproval"
+
+when 
+    $caseData : CaseFileInstance()
+    $decision : DocumentType(uploaded == true, rejected == true) from $caseData.getData("manualApproval")
+    $documentType : DocumentType(name == $decision.getName(), uploaded == true)
+then 
+    drools.getKnowledgeRuntime().setGlobal("docName", $documentType.getName());
+    $caseData.remove("manualApproval");
+    $documentType.setRejected(true);
+    $documentType.setApproved(false);
+    
+    $caseData.add($documentType.getName(), $documentType);
+    
+    update($caseData);
+    System.out.println("Document " + $documentType.getName() + " rejected");
+end

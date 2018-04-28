@@ -18,6 +18,7 @@ package org.jbpm.workflow.core.node;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.jbpm.workflow.core.WorkflowProcess;
@@ -32,18 +33,32 @@ public class DynamicNode extends CompositeContextNode {
 	private String completionExpression;
 	private String language;
 			
-	public boolean acceptsEvent(String type, Object event) {	    
-	    if (type.equals(getActivationEventName())) {
-	        return true;
-	    }
-	            
-		for (Node node: getNodes()) {
-			if (type.equals(node.getName()) && node.getIncomingConnections().isEmpty()) {
-				return true;
-			}
-		}
-		return super.acceptsEvent(type, event);
-	}
+    @Override
+    public boolean acceptsEvent(String type, Object event, Function<String, String> resolver) {
+        if (type.equals(getActivationEventName())) {
+            return true;
+        }
+
+        for (Node node : getNodes()) {
+            if (resolver.apply(node.getName()).contains(type) && node.getIncomingConnections().isEmpty()) {
+                return true;
+            }
+        }
+        return super.acceptsEvent(type, event);
+    }
+
+    public boolean acceptsEvent(String type, Object event) {
+        if (type.equals(getActivationEventName())) {
+            return true;
+        }
+
+        for (Node node : getNodes()) {
+            if (type.equals(node.getName()) && node.getIncomingConnections().isEmpty()) {
+                return true;
+            }
+        }
+        return super.acceptsEvent(type, event);
+    }
 	
     public Node internalGetNode(long id) {
     	try {

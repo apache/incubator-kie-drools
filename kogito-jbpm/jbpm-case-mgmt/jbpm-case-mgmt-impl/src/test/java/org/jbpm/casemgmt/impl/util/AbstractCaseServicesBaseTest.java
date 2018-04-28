@@ -553,6 +553,10 @@ public abstract class AbstractCaseServicesBaseTest {
     protected Map<String, NodeInstanceDesc> mapNodeInstances(Collection<NodeInstanceDesc> nodes) {
         return nodes.stream().collect(toMap(NodeInstanceDesc::getName, n -> n));
     }
+    
+    protected Map<String, TaskSummary> mapTaskSummaries(Collection<TaskSummary> tasks) {
+        return tasks.stream().collect(toMap(TaskSummary::getName, t -> t));
+    }
 
     protected void assertComment(CommentInstance comment, String author, String content) {
         assertThat(comment).isNotNull();

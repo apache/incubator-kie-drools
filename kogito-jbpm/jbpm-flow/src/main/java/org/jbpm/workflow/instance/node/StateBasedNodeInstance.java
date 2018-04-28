@@ -58,6 +58,7 @@ import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.NodeInstance;
+import org.kie.api.runtime.rule.Match;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -465,6 +466,20 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
             }
         }
         return true;
+    }
+    
+    protected boolean checkDeclarationMatch(Match match, String matchVariable) {   
+        if (matchVariable == null) {
+            // no extra check is needed
+            return true;
+        }
+        
+        Object dec = match.getDeclarationIds().contains("$" + matchVariable) ? match.getDeclarationValue("$" + matchVariable) : match.getDeclarationValue(matchVariable);      
+        Object var = getVariable(matchVariable);
+        
+        boolean check = var.equals(dec);
+        
+        return check;
     }
     
     protected void mapDynamicOutputData(Map<String, Object> results) {

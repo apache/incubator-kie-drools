@@ -103,12 +103,14 @@ public class MilestoneNodeInstance extends StateBasedNodeInstance implements Age
             // new activations of the rule associate with a milestone node
             // trigger node instances of that milestone node
             String ruleName = event.getMatch().getRule().getName();
-            String milestoneName = "RuleFlow-Milestone-" + getProcessInstance().getProcessId() + "-" + getNodeId();
-            if (milestoneName.equals(ruleName) && checkProcessInstance((Activation) event.getMatch())) {
-            	synchronized(getProcessInstance()) {
-	                removeEventListeners();
-	                triggerCompleted();
-            	}
+            String milestoneName = "RuleFlow-Milestone-" + getProcessInstance().getProcessId() + "-" + getMilestoneNode().getUniqueId();
+            if (milestoneName.equals(ruleName) && checkProcessInstance((Activation) event.getMatch()) && checkDeclarationMatch(event.getMatch(), getMilestoneNode().getMatchVariable())) {
+                
+                	synchronized(getProcessInstance()) {
+    	                removeEventListeners();
+    	                triggerCompleted();
+                	}
+                
             }
         }
     }

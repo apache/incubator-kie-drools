@@ -17,7 +17,7 @@ usersgroups = [ new User('Darth Vader') : [new Group( "Knights Templer" ),  new 
                 new User('Luke Cage') : [new Group( "Knights Templer" ),  new Group( "Crusaders" )],      
                 new User('Administrator') : [new Group( "Knights Templer" ),  new Group( "Crusaders" ),  new Group( "Administrators" )],
                 new User('krisv') : [new Group( "Knights Templer" ),  new Group( "Crusaders" )],          
-                new User('john') : [new Group( "Knights Templer" ),  new Group( "Crusaders" )],
+                new User('john') : [new Group( "Knights Templer" ),  new Group( "Crusaders" ),  new Group( "HR" )],
                 new User('mary') : [new Group( "Knights Templer" ),  new Group( "Crusaders" )],           
                 new User('sales-rep') : [new Group( "Knights Templer" ),  new Group( "Crusaders" )],
                 new User('nocrusadaer') : [new Group( "Knights Templer" )]

@@ -405,9 +405,9 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
                 }
             } else if ( nodes[i] instanceof NodeContainer ) {
                 generateRules( ((NodeContainer) nodes[i]).getNodes(), process, builder);
-                if ( nodes[i] instanceof DynamicNode && "rule".equals(((DynamicNode) nodes[i]).getLanguage())) {
+                if ( nodes[i] instanceof DynamicNode) {
                     DynamicNode dynamicNode = (DynamicNode) nodes[i];
-                    if (dynamicNode.getCompletionExpression() != null) {
+                    if (dynamicNode.getCompletionExpression() != null && "rule".equals(((DynamicNode) nodes[i]).getLanguage())) {
                         builder.append( createAdHocCompletionRule( process, dynamicNode ) );
                     }
                     if (dynamicNode.getActivationExpression() != null && !dynamicNode.getActivationExpression().isEmpty()) {

@@ -235,7 +235,9 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
 
     public void cancel() {
         super.cancel();
-        ((InternalAgenda) getProcessInstance().getKnowledgeRuntime().getAgenda()).deactivateRuleFlowGroup(getRuleFlowGroup());
+        if (actAsWaitState()) {
+            ((InternalAgenda) getProcessInstance().getKnowledgeRuntime().getAgenda()).deactivateRuleFlowGroup(getRuleFlowGroup());
+        }
     }
 
     public void signalEvent(String type, Object event) {
