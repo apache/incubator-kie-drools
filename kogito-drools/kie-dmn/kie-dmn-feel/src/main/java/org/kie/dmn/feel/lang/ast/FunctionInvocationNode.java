@@ -16,6 +16,9 @@
 
 package org.kie.dmn.feel.lang.ast;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.EvaluationContext;
@@ -69,7 +72,8 @@ public class FunctionInvocationNode
             function = (FEELFunction) value;
             if ( function != null ) {
                 Object[] p = params.getElements().stream().map( e -> e.evaluate( ctx ) ).toArray( Object[]::new );
-                Object result = function.invokeReflectively( ctx, p );
+                List<String> functionNameParts = (name instanceof NameRefNode) ? Arrays.asList(name.getText()) : Arrays.asList(((QualifiedNameNode) name).getPartsAsStringArray());
+                Object result = invokeTheFunction(functionNameParts, function, ctx, p);
                 return result;
             } else {
                 ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.FUNCTION_NOT_FOUND, name.getText())) );
@@ -83,6 +87,22 @@ public class FunctionInvocationNode
             }
         }
         return null;
+    }
+
+    private Object invokeTheFunction(List<String> names, FEELFunction fn, EvaluationContext ctx, Object[] params) {
+        if (names.size() == 1) {
+            Object result = fn.invokeReflectively(ctx, params);
+            return result;
+        } else {
+            try {
+                Object newRoot = ctx.getValue(names.get(0));
+                ctx.enterFrame();
+                ctx.setRootObject(newRoot);
+                return invokeTheFunction(names.subList(1, names.size()), fn, ctx, params);
+            } finally {
+                ctx.exitFrame();
+            }
+        }
     }
 
     @Override
