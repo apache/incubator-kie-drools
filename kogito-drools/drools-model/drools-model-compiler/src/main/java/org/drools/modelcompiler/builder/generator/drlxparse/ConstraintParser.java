@@ -1,5 +1,6 @@
 package org.drools.modelcompiler.builder.generator.drlxparse;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,7 @@ import org.drools.javaparser.ast.expr.LiteralExpr;
 import org.drools.javaparser.ast.expr.LiteralStringValueExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
+import org.drools.javaparser.ast.expr.NullLiteralExpr;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.javaparser.ast.expr.ThisExpr;
 import org.drools.javaparser.ast.expr.UnaryExpr;
@@ -303,22 +305,42 @@ public class ConstraintParser {
             return compareBigDecimal(operator, left, right);
         }
 
-        if (isPrimitiveExpression(right.getExpression())) {
+        final Expression rightExpression = right.getExpression();
+        final Expression leftExpression = left.getExpression();
+
+        if (isPrimitiveExpression(rightExpression) && isPrimitiveExpression(leftExpression)) {
             if (left.getType() != String.class) {
-                return new BinaryExpr( left.getExpression(), right.getExpression(), operator == BinaryExpr.Operator.EQUALS ? BinaryExpr.Operator.EQUALS : BinaryExpr.Operator.NOT_EQUALS );
-            } else if ( right.getExpression() instanceof LiteralExpr ) {
-                right.setExpression( new StringLiteralExpr( right.getExpression().toString() ) );
+                return new BinaryExpr(leftExpression, rightExpression, operator == BinaryExpr.Operator.EQUALS ? BinaryExpr.Operator.EQUALS : BinaryExpr.Operator.NOT_EQUALS );
+            }  else if ( rightExpression instanceof LiteralExpr && !(rightExpression instanceof NullLiteralExpr)) {
+                right.setExpression( new StringLiteralExpr(rightExpression.toString() ) );
             }
         }
 
+        if (shouldCoerceBToString(left, right)) {
+            right.setExpression( new StringLiteralExpr(rightExpression.toString() ) );
+        }
+
+        if ((shouldCoerceBToString(right, left))) {
+            left.setExpression( new StringLiteralExpr(rightExpression.toString() ) );
+        }
+
         if (left.getType() == String.class && right.getType() == Object.class) {
-            right.setExpression( new MethodCallExpr( right.getExpression(), "toString" ) );
+            right.setExpression( new MethodCallExpr(rightExpression, "toString" ) );
         }
 
         MethodCallExpr methodCallExpr = new MethodCallExpr( null, "org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals" );
-        methodCallExpr.addArgument( left.getExpression() );
-        methodCallExpr.addArgument( right.getExpression() ); // don't create NodeList with static method because missing "parent for child" would null and NPE
+        methodCallExpr.addArgument(left.getExpression());
+        methodCallExpr.addArgument(right.getExpression()); // don't create NodeList with static method because missing "parent for child" would null and NPE
         return operator == BinaryExpr.Operator.EQUALS ? methodCallExpr : new UnaryExpr(methodCallExpr, UnaryExpr.Operator.LOGICAL_COMPLEMENT );
+    }
+
+    private static boolean shouldCoerceBToString(TypedExpression a, TypedExpression b) {
+        boolean aIsString = a.getType() == String.class;
+        boolean bIsNotString = b.getType() != String.class;
+        boolean bIsNotNull = !(b.getExpression() instanceof NullLiteralExpr);
+        boolean bIsNotSerializable = !(b.getType() == Serializable.class);
+        boolean bExpressionExists = b.getExpression() != null;
+        return bExpressionExists && aIsString && (bIsNotString &&  bIsNotNull && bIsNotSerializable);
     }
 
     private static Expression handleSpecialComparisonCases(BinaryExpr.Operator operator, TypedExpression left, TypedExpression right ) {
