@@ -132,8 +132,32 @@ public class FromTest extends BaseModelTest {
     }
 
     @Test
-    @Ignore
     public void testFromExternalFunction() {
+        final String str =
+                "import " + FromTest.class.getCanonicalName() + ";\n" +
+                        "global java.util.List list\n" +
+                        "\n" +
+                        "rule R when\n" +
+                        "  $s : String()\n" +
+                        "  $i : Integer( this > 10 ) from FromTest.getLength(\"ignoredArgument\", $s, 0)\n" +
+                        "then\n" +
+                        "  list.add( \"received long message: \" + $s);\n" +
+                        "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        final List<String> list = new ArrayList<>();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert("Hello World!");
+        ksession.fireAllRules();
+
+        Assertions.assertThat(list).containsExactlyInAnyOrder("received long message: Hello World!");
+    }
+
+    @Test
+    @Ignore
+    public void testFromExternalFunctionMultipleBindingArguments() {
         final String str =
                 "import " + FromTest.class.getCanonicalName() + ";\n" +
                         "global java.util.List list\n" +
