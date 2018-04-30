@@ -23,6 +23,8 @@ import java.util.HashMap;
 import java.util.Collection;
 import java.util.Collections;
 
+import static org.drools.core.reteoo.compiled.CompiledNetwork.NULL_ALPHA_DECLARATION;
+
 /**
  * This class is used to hold information for Hashed {@link org.kie.reteoo.AlphaNode}s for generated subclasses
  * of {@link CompiledNetwork}.
@@ -32,6 +34,11 @@ import java.util.Collections;
 public class HashedAlphasDeclaration {
     private final String variableName;
     private final ValueType valueType;
+
+    public static class NullAlphaDeclaration {
+
+
+    }
 
     /**
      * This map contains keys which are different values of the same field and the node id that of the
