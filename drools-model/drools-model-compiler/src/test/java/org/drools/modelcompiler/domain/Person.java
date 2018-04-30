@@ -14,6 +14,7 @@ public class Person extends AbstractReactiveObject {
     private Address address;
     private int id = 0;
     private String likes;
+    private Boolean employed;
 
     public Person() { }
 
@@ -75,6 +76,14 @@ public class Person extends AbstractReactiveObject {
 
     public void setLikes( String likes ) {
         this.likes = likes;
+    }
+
+    public Boolean getEmployed() {
+        return employed;
+    }
+
+    public void setEmployed(Boolean employed) {
+        this.employed = employed;
     }
 
     /**
