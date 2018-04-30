@@ -5,7 +5,6 @@ import java.util.Optional;
 import org.drools.compiler.lang.descr.FromDescr;
 import org.drools.compiler.lang.descr.PatternSourceDescr;
 import org.drools.javaparser.JavaParser;
-import org.drools.javaparser.ast.drlx.expr.DrlxExpression;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.FieldAccessExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
@@ -40,11 +39,11 @@ public class FromVisitor {
             final Expression parsedExpression = DrlxParseUtil.parseExpression(expression).getExpr();
 
             if (parsedExpression instanceof FieldAccessExpr || parsedExpression instanceof NameExpr) {
-                return fromFromFieldOrName(expression);
+                return fromFieldOrName(expression);
             }
 
             if (parsedExpression instanceof MethodCallExpr) {
-                return fromFromMethodExpr(expression, (MethodCallExpr) parsedExpression);
+                return fromMethodExpr(expression, (MethodCallExpr) parsedExpression);
             }
 
             return Optional.empty();
@@ -53,16 +52,15 @@ public class FromVisitor {
         }
     }
 
-    private Optional<Expression> fromFromMethodExpr(String expression, MethodCallExpr parsedExpression) {
-        MethodCallExpr methodCallExpr = parsedExpression;
+    private Optional<Expression> fromMethodExpr(String expression, MethodCallExpr parsedExpression) {
 
-        final Optional<Expression> fromScope = fromExpressionViaScope(expression, methodCallExpr);
-        final Optional<Expression> fromCall = fromExpressionUsingArguments(expression, methodCallExpr);
+        final Optional<Expression> fromScope = fromExpressionViaScope(expression, parsedExpression);
+        final Optional<Expression> fromCall = fromExpressionUsingArguments(expression, parsedExpression);
 
         return fromScope.map(Optional::of).orElse(fromCall);
     }
 
-    private Optional<Expression> fromFromFieldOrName(String expression) {
+    private Optional<Expression> fromFieldOrName(String expression) {
         Optional<String> optContainsBinding = DrlxParseUtil.findBindingIdFromDotExpression(expression);
         final String bindingId = optContainsBinding.orElse(expression);
 
