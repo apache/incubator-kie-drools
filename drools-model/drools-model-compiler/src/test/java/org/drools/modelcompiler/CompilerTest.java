@@ -1319,75 +1319,72 @@ public class CompilerTest extends BaseModelTest {
         ksession.fireAllRules();
     }
 
+    @Test
+    public void testAlphaNull() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "import " + Result.class.getCanonicalName() + ";" +
+                        "rule R1 when\n" +
+                        "  $p : Person( name == null)\n" +
+                        "then\n" +
+                        "  insert(new Result($p.getName()));\n" +
 
-        @Test
-        public void testAlphaNull() {
-            String str =
-                    "import " + Person.class.getCanonicalName() + ";" +
-                    "import " + Result.class.getCanonicalName() + ";" +
-                    "rule R1 when\n" +
-                    "  $p : Person( name == null)\n" +
-                    "then\n" +
-                    "  insert(new Result($p.getName()));\n" +
+                        "end\n" +
+                        "rule R2 when\n" +
+                        "  $p : Person(  name == \"Luca\")\n" +
+                        "then\n" +
+                        "  insert(new Result($p.getName()));\n" +
+                        "end\n" +
+                        "rule R3 when\n" +
+                        "  $p : Person(  name == \"Pippo\")\n" +
+                        "then\n" +
+                        "  insert(new Result($p.getName()));\n" +
+                        "end";
 
-                    "end\n" +
-                    "rule R2 when\n" +
-                    "  $p : Person(  name == \"Luca\")\n" +
-                    "then\n" +
-                    "  insert(new Result($p.getName()));\n" +
-                    "end\n" +
-                    "rule R3 when\n" +
-                    "  $p : Person(  name == \"Pippo\")\n" +
-                    "then\n" +
-                    "  insert(new Result($p.getName()));\n" +
-                    "end";
+        KieSession ksession = getKieSession(str);
 
-            KieSession ksession = getKieSession( str );
+        Person first = new Person(null, 40);
+        Person second = new Person("Luca", 40);
+        Person third = new Person("Mario", 40);
+        ksession.insert(first);
+        ksession.insert(second);
+        ksession.insert(third);
+        ksession.fireAllRules();
 
-            Person first = new Person( null, 40 );
-            Person second = new Person( "Luca", 40 );
-            Person third = new Person( "Mario", 40 );
-            ksession.insert( first );
-            ksession.insert( second );
-            ksession.insert( third );
-            ksession.fireAllRules();
+        List<Object> results = getObjectsIntoList(ksession, Result.class)
+                .stream().map(Result::getValue).collect(Collectors.toList());
+        assertEquals(2, results.size());
 
-            List<Object> results = getObjectsIntoList(ksession, Result.class)
-                    .stream().map(Result::getValue).collect(Collectors.toList());
-            assertEquals(2, results.size());
+        Assertions.assertThat(results).containsExactlyInAnyOrder("Luca", null);
+    }
 
-            Assertions.assertThat(results).containsExactlyInAnyOrder("Luca", null);
+    @Test
+    public void testAlphaNullBoolean() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "import " + Result.class.getCanonicalName() + ";" +
+                        "rule R1 when\n" +
+                        "  $p : Person( employed == true)\n" +
+                        "then\n" +
+                        "  insert(new Result($p.getName()));\n" +
+                        "end\n";
 
-        }
+        KieSession ksession = getKieSession(str);
 
-        @Test
-        public void testAlphaNullBoolean() {
-            String str =
-                    "import " + Person.class.getCanonicalName() + ";" +
-                    "import " + Result.class.getCanonicalName() + ";" +
-                    "rule R1 when\n" +
-                    "  $p : Person( employed == true)\n" +
-                    "then\n" +
-                    "  insert(new Result($p.getName()));\n" +
-                    "end\n";
+        Person first = new Person("First", 40);
+        first.setEmployed(null);
+        Person second = new Person("Second", 40);
+        second.setEmployed(true);
+        ksession.insert(first);
+        ksession.insert(second);
+        ksession.fireAllRules();
 
-            KieSession ksession = getKieSession( str );
+        List<Object> results = getObjectsIntoList(ksession, Result.class)
+                .stream().map(Result::getValue).collect(Collectors.toList());
+        assertEquals(1, results.size());
 
-            Person first = new Person( "First", 40 );
-            first.setEmployed(null);
-            Person second = new Person( "Second", 40 );
-            second.setEmployed(true);
-            ksession.insert( first );
-            ksession.insert( second );
-            ksession.fireAllRules();
-
-            List<Object> results = getObjectsIntoList(ksession, Result.class)
-                    .stream().map(Result::getValue).collect(Collectors.toList());
-            assertEquals(1, results.size());
-
-            Assertions.assertThat(results).containsExactlyInAnyOrder("Second");
-
-        }
+        Assertions.assertThat(results).containsExactlyInAnyOrder("Second");
+    }
 
     @Test
     public void testStringValueOf() {
