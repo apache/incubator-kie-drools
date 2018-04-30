@@ -156,7 +156,7 @@ public class FromTest extends BaseModelTest {
     }
 
     @Test
-    @Ignore
+    @Ignore("from clause supports binding of only one declaration")
     public void testFromExternalFunctionMultipleBindingArguments() {
         final String str =
                 "import " + FromTest.class.getCanonicalName() + ";\n" +
