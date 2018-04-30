@@ -38,7 +38,7 @@ public class FromVisitor {
             final DrlxExpression drlxExpression = DrlxParseUtil.parseExpression(expression);
             final Expression parsedExpression = drlxExpression.getExpr();
 
-            if (parsedExpression instanceof FieldAccessExpr) {
+            if (parsedExpression instanceof FieldAccessExpr || parsedExpression instanceof NameExpr) {
 
                 Optional<String> optContainsBinding = DrlxParseUtil.findBindingIdFromDotExpression(expression);
                 final String bindingId = optContainsBinding.orElse(expression);
