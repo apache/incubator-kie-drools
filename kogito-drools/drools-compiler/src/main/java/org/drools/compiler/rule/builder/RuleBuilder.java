@@ -246,7 +246,7 @@ public class RuleBuilder {
                 case DroolsSoftKeywords.DURATION:
                 case DroolsSoftKeywords.TIMER:
                     String duration = attributeDescr.getValue();
-                    buildTimer( rule, duration, context );
+                    rule.setTimer( buildTimer( rule, duration, context ) );
                     break;
                 case "calendars":
                     buildCalendars( rule, attributeDescr.getValue(), context );
@@ -390,7 +390,7 @@ public class RuleBuilder {
         }
     }
     
-    private static void buildTimer(RuleImpl rule, String timerString, RuleBuildContext context) {
+    public static Timer buildTimer(RuleImpl rule, String timerString, RuleBuildContext context) {
         if( timerString.indexOf( '(' ) >=0 ) {
             timerString = timerString.substring( timerString.indexOf( '(' )+1, timerString.lastIndexOf( ')' ) ).trim();
         }
@@ -403,7 +403,7 @@ public class RuleBuilder {
                 DroolsError err = new RuleBuildError( rule, context.getParentDescr(), null,
                                                       "Incorrect timer definition '" + timerString + "' - missing colon?" );
                 context.addError( err );
-                return;
+                return null;
             }
         } else {
             protocol = timerString.substring( 0, colonPos );
@@ -416,17 +416,18 @@ public class RuleBuilder {
         
         String body = timerString.substring( colonPos + 1, semicolonPos > 0 ? semicolonPos : timerString.length() ).trim();
         
-        Timer timer;
         if ( "cron".equals( protocol ) ) {
             try {
-                timer = new CronTimer( createMVELExpr(startDate, context), createMVELExpr(endDate, context), repeatLimit, new CronExpression( body ) );
+                return new CronTimer( createMVELExpr(startDate, context), createMVELExpr(endDate, context), repeatLimit, new CronExpression( body ) );
             } catch ( ParseException e ) {
                 DroolsError err = new RuleBuildError( rule, context.getParentDescr(), null,
                                                       "Unable to build set timer '" + timerString + "'" );                
                 context.addError( err );
-                return;
+                return null;
             }
-        } else if ( "int".equals( protocol ) ) {
+        }
+
+        if ( "int".equals( protocol ) ) {
             String[] times = body.trim().split( "\\s" );
             long delay = 0;
             long period = 0;
@@ -435,7 +436,7 @@ public class RuleBuilder {
                 DroolsError err = new RuleBuildError( rule, context.getParentDescr(), null,
                                                       "Incorrect number of arguments for interval timer '" + timerString + "'" );
                 context.addError( err );
-                return;
+                return null;
             }
 
             try {
@@ -451,11 +452,13 @@ public class RuleBuilder {
                 DroolsError err = new RuleBuildError( rule, context.getParentDescr(), null,
                                                       "Incorrect timer definition '" + timerString + "' " + e.getMessage() );
                 context.addError( err );
-                return;
+                return null;
             }
 
-            timer = new IntervalTimer( createMVELExpr(startDate, context), createMVELExpr(endDate, context), repeatLimit, delay, period );
-        } else if ( "expr".equals( protocol ) ) {
+            return new IntervalTimer( createMVELExpr(startDate, context), createMVELExpr(endDate, context), repeatLimit, delay, period );
+        }
+
+        if ( "expr".equals( protocol ) ) {
             body = body.trim();
             StringTokenizer tok = new StringTokenizer( body, ",;" );
 
@@ -463,7 +466,7 @@ public class RuleBuilder {
                 DroolsError err = new RuleBuildError( rule, context.getParentDescr(), null,
                         "Incorrect number of arguments for expression timer '" + timerString + "'" );
                 context.addError( err );
-                return;
+                return null;
             }
 
             MVELObjectExpression times = MVELObjectExpressionBuilder.build( tok.nextToken().trim(), context );
@@ -471,14 +474,13 @@ public class RuleBuilder {
                                           MVELObjectExpressionBuilder.build( tok.nextToken().trim(), context ) :
                                           MVELObjectExpressionBuilder.build( "0", context );
 
-            timer = new ExpressionIntervalTimer( createMVELExpr(startDate, context), createMVELExpr(endDate, context), repeatLimit, times, period );
-        } else {
-            DroolsError err = new RuleBuildError( rule, context.getParentDescr(), null,
-                                                  "Protocol for timer does not exist '" + timerString +"'" );
-            context.addError( err );
-            return;
+            return new ExpressionIntervalTimer( createMVELExpr(startDate, context), createMVELExpr(endDate, context), repeatLimit, times, period );
         }
-        rule.setTimer( timer );
+
+        DroolsError err = new RuleBuildError( rule, context.getParentDescr(), null,
+                                              "Protocol for timer does not exist '" + timerString +"'" );
+        context.addError( err );
+        return null;
     }
 
     private static String extractParam(String timerString, String name) {
@@ -493,7 +495,7 @@ public class RuleBuilder {
     }
 
     private static MVELObjectExpression createMVELExpr(String expr, RuleBuildContext context) {
-        if (expr == null) {
+        if (expr == null || context == null) {
             return null;
         }
         try {

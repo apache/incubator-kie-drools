@@ -17,10 +17,12 @@
 package org.drools.modelcompiler;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.drools.core.ClockType;
+import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.modelcompiler.domain.StockFact;
 import org.drools.modelcompiler.domain.StockTick;
 import org.junit.Test;
@@ -30,6 +32,7 @@ import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
+import org.kie.api.time.SessionClock;
 import org.kie.api.time.SessionPseudoClock;
 
 import static org.junit.Assert.assertEquals;
@@ -459,4 +462,49 @@ public class CepTest extends BaseModelTest {
         assertEquals( 1, ksession.fireAllRules() );
     }
 
+    @Test
+    public void testIntervalTimer() throws Exception {
+        String str = "";
+        str += "package org.simple \n";
+        str += "global java.util.List list \n";
+        str += "rule xxx \n";
+        str += "  timer (int:30s 10s) ";
+        str += "when \n";
+        str += "then \n";
+        str += "  list.add(\"fired\"); \n";
+        str += "end  \n";
+
+        KieSession ksession = getKieSession(getCepKieModuleModel(), str);
+        SessionPseudoClock clock = ksession.getSessionClock();
+
+        List list = new ArrayList();
+
+        PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.<SessionClock>getSessionClock();
+        timeService.advanceTime(new Date().getTime(), TimeUnit.MILLISECONDS);
+
+        ksession.setGlobal("list", list);
+
+        ksession.fireAllRules();
+        assertEquals(0, list.size());
+
+        timeService.advanceTime(20, TimeUnit.SECONDS);
+        ksession.fireAllRules();
+        assertEquals(0, list.size());
+
+        timeService.advanceTime(15, TimeUnit.SECONDS);
+        ksession.fireAllRules();
+        assertEquals(1, list.size());
+
+        timeService.advanceTime(3, TimeUnit.SECONDS);
+        ksession.fireAllRules();
+        assertEquals(1, list.size());
+
+        timeService.advanceTime(2, TimeUnit.SECONDS);
+        ksession.fireAllRules();
+        assertEquals(2, list.size());
+
+        timeService.advanceTime(10, TimeUnit.SECONDS);
+        ksession.fireAllRules();
+        assertEquals(3, list.size());
+    }
 }

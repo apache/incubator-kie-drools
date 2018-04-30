@@ -120,6 +120,7 @@ import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import static org.drools.compiler.lang.descr.ForallDescr.BASE_IDENTIFIER;
+import static org.drools.compiler.rule.builder.RuleBuilder.buildTimer;
 import static org.drools.core.rule.GroupElement.AND;
 import static org.drools.core.rule.Pattern.getReadAcessor;
 import static org.drools.model.FlowDSL.declarationOf;
@@ -226,8 +227,8 @@ public class KiePackagesBuilder {
         } );
 
         setAttribute( rule, Rule.Attribute.ACTIVATION_GROUP, ruleImpl::setActivationGroup );
-        setAttribute( rule, Rule.Attribute.DURATION, t -> ruleImpl.setTimer( parseTimer( t ) ) );
-        setAttribute( rule, Rule.Attribute.TIMER, t -> ruleImpl.setTimer( parseTimer( t ) ) );
+        setAttribute( rule, Rule.Attribute.DURATION, t -> ruleImpl.setTimer( parseTimer( ruleImpl, t ) ) );
+        setAttribute( rule, Rule.Attribute.TIMER, t -> ruleImpl.setTimer( parseTimer( ruleImpl, t ) ) );
         setAttribute( rule, Rule.Attribute.CALENDARS, ruleImpl::setCalendars );
         setAttribute( rule, Rule.Attribute.DATE_EFFECTIVE, ruleImpl::setDateEffective );
         setAttribute( rule, Rule.Attribute.DATE_EXPIRES, ruleImpl::setDateExpires );
@@ -261,8 +262,8 @@ public class KiePackagesBuilder {
         }
     }
 
-    private org.drools.core.time.impl.Timer parseTimer( String s ) {
-        throw new UnsupportedOperationException();
+    private org.drools.core.time.impl.Timer parseTimer( RuleImpl ruleImpl, String timerExpr ) {
+        return buildTimer(ruleImpl, timerExpr, null);
     }
 
     private QueryImpl compileQuery( KnowledgePackageImpl pkg, Query query ) {
