@@ -17,6 +17,7 @@ import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
 
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findViaScopeWithPredicate;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.FROM_CALL;
@@ -55,6 +56,20 @@ public class FromVisitor {
 
             if (parsedExpression instanceof MethodCallExpr) {
                 MethodCallExpr methodCallExpr = (MethodCallExpr) parsedExpression;
+
+                final Optional<Expression> bindingIdViaScope = findViaScopeWithPredicate(methodCallExpr, e -> {
+                    if(e instanceof NameExpr) {
+                        final String name = ((NameExpr) e).getName().toString();
+                        return ruleContext.hasDeclaration(name) || packageModel.hasDeclaration(name);
+                    }
+                    return false;
+                });
+
+                if(bindingIdViaScope.isPresent()) {
+                    final String binding = bindingIdViaScope.get().asNameExpr().toString();
+                    return Optional.of(createFromCall(expression, Optional.of(binding), binding));
+                }
+
 
                 for(Expression argument : methodCallExpr.getArguments()) {
                     final String argumentName = argument.toString();
