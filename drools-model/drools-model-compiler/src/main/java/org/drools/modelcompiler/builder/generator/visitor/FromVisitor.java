@@ -17,6 +17,7 @@ import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
 
+import static java.util.Optional.of;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findViaScopeWithPredicate;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
@@ -36,56 +37,69 @@ public class FromVisitor {
         if (sourceDescr instanceof FromDescr) {
             final String expression = ((FromDescr) sourceDescr).getDataSource().toString();
 
-            final DrlxExpression drlxExpression = DrlxParseUtil.parseExpression(expression);
-            final Expression parsedExpression = drlxExpression.getExpr();
+            final Expression parsedExpression = DrlxParseUtil.parseExpression(expression).getExpr();
 
             if (parsedExpression instanceof FieldAccessExpr || parsedExpression instanceof NameExpr) {
-
-                Optional<String> optContainsBinding = DrlxParseUtil.findBindingIdFromDotExpression(expression);
-                final String bindingId = optContainsBinding.orElse(expression);
-
-                Expression fromCall;
-                if (ruleContext.hasDeclaration(bindingId) || packageModel.hasDeclaration(bindingId)) {
-                    fromCall = createFromCall(expression, optContainsBinding, bindingId);
-                } else {
-                    fromCall = createUnitDataCall(optContainsBinding, bindingId);
-                }
-
-                return Optional.of(fromCall);
+                return fromFromFieldOrName(expression);
             }
 
             if (parsedExpression instanceof MethodCallExpr) {
-                MethodCallExpr methodCallExpr = (MethodCallExpr) parsedExpression;
-
-                final Optional<Expression> bindingIdViaScope = findViaScopeWithPredicate(methodCallExpr, e -> {
-                    if(e instanceof NameExpr) {
-                        final String name = ((NameExpr) e).getName().toString();
-                        return ruleContext.hasDeclaration(name) || packageModel.hasDeclaration(name);
-                    }
-                    return false;
-                });
-
-                if(bindingIdViaScope.isPresent()) {
-                    final String binding = bindingIdViaScope.get().asNameExpr().toString();
-                    return Optional.of(createFromCall(expression, Optional.of(binding), binding));
-                }
-
-
-                for(Expression argument : methodCallExpr.getArguments()) {
-                    final String argumentName = argument.toString();
-                    if (ruleContext.hasDeclaration(argumentName) || packageModel.hasDeclaration(argumentName)) {
-                        Expression fromCall = createFromCall(expression, Optional.of(argumentName), argumentName);
-                        return Optional.of(fromCall);
-                    }
-                }
-
-                return Optional.empty();
+                return fromFromMethodExpr(expression, (MethodCallExpr) parsedExpression);
             }
 
             return Optional.empty();
         } else {
             return Optional.empty();
         }
+    }
+
+    private Optional<Expression> fromFromMethodExpr(String expression, MethodCallExpr parsedExpression) {
+        MethodCallExpr methodCallExpr = parsedExpression;
+
+        final Optional<Expression> fromScope = fromExpressionViaScope(expression, methodCallExpr);
+        final Optional<Expression> fromCall = fromExpressionUsingArguments(expression, methodCallExpr);
+
+        return fromScope.map(Optional::of).orElse(fromCall);
+    }
+
+    private Optional<Expression> fromFromFieldOrName(String expression) {
+        Optional<String> optContainsBinding = DrlxParseUtil.findBindingIdFromDotExpression(expression);
+        final String bindingId = optContainsBinding.orElse(expression);
+
+        Expression fromCall;
+        if (ruleContext.hasDeclaration(bindingId) || packageModel.hasDeclaration(bindingId)) {
+            fromCall = createFromCall(expression, optContainsBinding, bindingId);
+        } else {
+            fromCall = createUnitDataCall(optContainsBinding, bindingId);
+        }
+
+        return of(fromCall);
+    }
+
+    private Optional<Expression> fromExpressionUsingArguments(String expression, MethodCallExpr methodCallExpr) {
+        for(Expression argument : methodCallExpr.getArguments()) {
+            final String argumentName = argument.toString();
+            if (ruleContext.hasDeclaration(argumentName) || packageModel.hasDeclaration(argumentName)) {
+                return of(createFromCall(expression, of(argumentName), argumentName));
+            }
+        }
+        return Optional.empty();
+    }
+
+    private Optional<Expression> fromExpressionViaScope(String expression, MethodCallExpr methodCallExpr) {
+        final Optional<Expression> bindingIdViaScope = findViaScopeWithPredicate(methodCallExpr, e -> {
+            if(e instanceof NameExpr) {
+                final String name = ((NameExpr) e).getName().toString();
+                return ruleContext.hasDeclaration(name) || packageModel.hasDeclaration(name);
+            }
+            return false;
+        });
+
+        if(bindingIdViaScope.isPresent()) {
+            final String binding = bindingIdViaScope.get().asNameExpr().toString();
+            return of(createFromCall(expression, of(binding), binding));
+        }
+        return Optional.empty();
     }
 
     private Expression createFromCall( String expression, Optional<String> optContainsBinding, String bindingId ) {
